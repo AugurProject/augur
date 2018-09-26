@@ -8,8 +8,8 @@ import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 
 export const UPDATE_MARKET_CREATOR_FEES = "UPDATE_MARKET_CREATOR_FEES";
 
-export function updateMarketCreatorFees(data) {
-  return { type: UPDATE_MARKET_CREATOR_FEES, data };
+export function updateMarketCreatorFees(marketCreatorFees) {
+  return { type: UPDATE_MARKET_CREATOR_FEES, data: { marketCreatorFees } };
 }
 
 export const loadUnclaimedFees = (marketIds = [], callback = logError) => (

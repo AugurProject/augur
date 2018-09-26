@@ -24,14 +24,16 @@ describe(`modules/reports/actions/update-reports.js`, () => {
     out = [
       {
         type: "UPDATE_REPORTS",
-        reports: {
-          test: {
-            _id: "test",
-            data: "test"
-          },
-          test2: {
-            _id: "test2",
-            data: "example"
+        data: {
+          reportsData: {
+            test: {
+              _id: "test",
+              data: "test"
+            },
+            test2: {
+              _id: "test2",
+              data: "example"
+            }
           }
         }
       }

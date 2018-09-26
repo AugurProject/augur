@@ -17,13 +17,14 @@ const DEFAULT_STATE = {
 
 const KEYS = Object.keys(DEFAULT_STATE);
 
-export default function(filterSortOptions = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(filterSortOptions = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_FILTER_SORT_OPTIONS: {
-      if (KEYS.includes(action.data.optionKey))
+      const { optionKey, optionValue } = data;
+      if (KEYS.includes(optionKey))
         return {
           ...filterSortOptions,
-          [action.data.optionKey]: action.data.optionValue
+          [optionKey]: optionValue
         };
       return filterSortOptions;
     }

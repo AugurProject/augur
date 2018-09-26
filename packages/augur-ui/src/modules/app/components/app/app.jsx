@@ -55,8 +55,7 @@ import {
   CATEGORIES,
   REPORTING_DISPUTE_MARKETS,
   REPORTING_REPORT_MARKETS,
-  REPORTING_RESOLVED_MARKETS,
-  AUTHENTICATION
+  REPORTING_RESOLVED_MARKETS
 } from "modules/routes/constants/views";
 import { MODAL_NETWORK_CONNECT } from "modules/modal/constants/modal-types";
 import { CATEGORY_PARAM_NAME } from "modules/filter-sort/constants/param-names";
@@ -118,7 +117,8 @@ export default class AppView extends Component {
     isLoading: PropTypes.bool,
     augurNode: PropTypes.string,
     ethereumNodeHttp: PropTypes.string,
-    ethereumNodeWs: PropTypes.string
+    ethereumNodeWs: PropTypes.string,
+    useWeb3Transport: PropTypes.bool
   };
 
   constructor(props) {
@@ -172,7 +172,8 @@ export default class AppView extends Component {
         icon: NavAccountIcon,
         mobileClick: () =>
           this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
-        route: ACCOUNT_DEPOSIT
+        route: ACCOUNT_DEPOSIT,
+        requireLogin: true
       }
     ];
 
@@ -195,7 +196,8 @@ export default class AppView extends Component {
       history,
       initAugur,
       location,
-      updateModal
+      updateModal,
+      useWeb3Transport
     } = this.props;
     initAugur(
       history,
@@ -203,7 +205,8 @@ export default class AppView extends Component {
         ...env,
         augurNode,
         ethereumNodeHttp,
-        ethereumNodeWs
+        ethereumNodeWs,
+        useWeb3Transport
       },
       (err, res) => {
         if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
@@ -482,10 +485,7 @@ export default class AppView extends Component {
     let tagsMargin;
 
     if (!isMobile) {
-      if (
-        currentPath === AUTHENTICATION ||
-        (currentPath === CREATE_MARKET && mainMenu.scalar === 1)
-      ) {
+      if (currentPath === CREATE_MARKET && mainMenu.scalar === 1) {
         // NOTE -- quick patch ahead of larger refactor
         categoriesMargin = -110;
       } else {
@@ -546,14 +546,13 @@ export default class AppView extends Component {
                 unseenCount={unseenCount}
                 toggleNotifications={this.toggleNotifications}
                 isLoading={isLoading}
+                notificationsVisible={isLogged && s.isNotificationsVisible}
               />
             </section>
-            {isLogged &&
-              s.isNotificationsVisible && (
-                <NotificationsContainer
-                  toggleNotifications={() => this.toggleNotifications()}
-                />
-              )}
+            <NotificationsContainer
+              notificationsVisible={isLogged && s.isNotificationsVisible}
+              toggleNotifications={() => this.toggleNotifications()}
+            />
             {universe.forkEndTime &&
               universe.forkEndTime !== "0" &&
               blockchain &&

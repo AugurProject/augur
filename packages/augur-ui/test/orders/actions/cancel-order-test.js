@@ -23,7 +23,7 @@ describe("modules/orders/actions/cancel-order.js", () => {
       "../../../services/augurjs": {
         augur
       },
-      "../../bids-asks/actions/update-order-status": { updateOrderStatus }
+      "../../orders/actions/update-order-status": { updateOrderStatus }
     }
   );
 

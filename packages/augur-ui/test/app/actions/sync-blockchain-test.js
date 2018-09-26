@@ -27,8 +27,14 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
   const store = mockStore(state);
   const AugurJS = {
     rpc: {
-      getCurrentBlock: () => ({ number: 10000, timestamp: 4886718345 }),
-      block: { number: 10000, timestamp: 4886718345 }
+      getCurrentBlock: () => ({
+        number: 10000,
+        timestamp: 4886718345
+      }),
+      block: {
+        number: 10000,
+        timestamp: 4886718345
+      }
     },
     api: {
       Controller: {
@@ -39,22 +45,39 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
     }
   };
 
-  const updateBlockchain = data => ({ type: "UPDATE_BLOCKCHAIN", data });
+  const updateBlockchain = data => ({
+    type: "UPDATE_BLOCKCHAIN",
+    data
+  });
+  const updateAssets = data => ({
+    type: "UPDATE_ASSETS"
+  });
 
   ReWireModule.__Rewire__("augur", AugurJS);
   ReWireModule.__Rewire__("updateBlockchain", updateBlockchain);
+  ReWireModule.__Rewire__("updateAssets", updateAssets);
 
   after(() => {
     store.clearActions();
-    ReWireModule.__ResetDependency__("augur", "updateBlockchain");
+    ReWireModule.__ResetDependency__(
+      "augur",
+      "updateBlockchain",
+      "updateAssets"
+    );
   });
 
   it("rpc.block set: should sync with blockchain using rpc.block.number", done => {
-    AugurJS.rpc.block = { number: 10000, timestamp: "0x123456789" };
+    AugurJS.rpc.block = {
+      number: 10000,
+      timestamp: "0x123456789"
+    };
     const out = [
       {
         type: "UPDATE_BLOCKCHAIN",
         data: dataReturned
+      },
+      {
+        type: "UPDATE_ASSETS"
       }
     ];
     store.dispatch(syncBlockchain());

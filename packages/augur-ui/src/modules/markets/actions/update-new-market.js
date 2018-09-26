@@ -10,16 +10,27 @@ export function invalidateMarketCreation(error) {
   };
 }
 
-export function addOrderToNewMarket(data) {
-  return { type: ADD_ORDER_TO_NEW_MARKET, data };
+// order: {
+//   outcome
+//   type
+//   price
+//   quantity
+//   orderEstimate
+// }
+export function addOrderToNewMarket(order) {
+  return { type: ADD_ORDER_TO_NEW_MARKET, data: { order } };
 }
 
-export function removeOrderFromNewMarket(data) {
-  return { type: REMOVE_ORDER_FROM_NEW_MARKET, data };
+// order: {
+//   outcome
+//   index
+// }
+export function removeOrderFromNewMarket(order) {
+  return { type: REMOVE_ORDER_FROM_NEW_MARKET, data: { order } };
 }
 
-export function updateNewMarket(data) {
-  return { type: UPDATE_NEW_MARKET, data };
+export function updateNewMarket(newMarketData) {
+  return { type: UPDATE_NEW_MARKET, data: { newMarketData } };
 }
 
 export function clearNewMarket() {

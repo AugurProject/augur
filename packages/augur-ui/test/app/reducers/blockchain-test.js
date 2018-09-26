@@ -9,13 +9,13 @@ describe(`modules/app/reducers/blockchain.js`, () => {
     const action = {
       type: UPDATE_BLOCKCHAIN,
       data: {
-        currentBlockNumber: 833340
+        blockchainData: { currentBlockNumber: 833340 }
       }
     };
     const expectedOutput = Object.assign(
       {},
       thisTestState.blockchain,
-      action.data
+      action.data.blockchainData
     );
     assert.deepEqual(
       reducer(thisTestState.blockchain, action),

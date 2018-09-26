@@ -42,6 +42,7 @@ AugurNodeServer.prototype.setWindow = function (window) {
 AugurNodeServer.prototype.startServer = function () {
   try {
     log.info('Starting Server')
+    this.isShuttingDown = false
     var propagationDelayWaitMillis = DEFAULT_DELAY_WAIT
     var maxRetries = DEFAULT_MAX_RETRIES
     this.bulkSyncing = false
@@ -62,6 +63,7 @@ AugurNodeServer.prototype.startServer = function () {
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncStarted, this.onBulkSyncStarted.bind(this))
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished.bind(this))
 
+    if (this.statusLoop) clearInterval(this.statusLoop)
     this.statusLoop = setInterval(this.requestLatestSyncedBlock.bind(this), STATUS_LOOP_INTERVAL)
 
     this.augurNodeController.start(function (err) {
@@ -101,14 +103,18 @@ AugurNodeServer.prototype.startServer = function () {
 
 AugurNodeServer.prototype.onEthereumDisconnect = function () {
   if (this.isShuttingDown) return
-  if (this.window) this.window.webContents.send(ERROR_NOTIFICATION, {
-    messageType: RECONNECT_MSG,
-    message: 'Disconnected from Ethereum Node. Attempting to reconnect...'
-  })
+  if (this.statusLoop) clearInterval(this.statusLoop)
+  if (this.window) {
+    this.window.webContents.send(ERROR_NOTIFICATION, {
+      messageType: RECONNECT_MSG,
+      message: 'Disconnected from Ethereum Node. Attempting to reconnect...'
+    });
+  }
 }
 
 AugurNodeServer.prototype.onEthereumReconnect = function () {
   if (this.isShuttingDown) return
+  this.statusLoop = setInterval(this.requestLatestSyncedBlock.bind(this), STATUS_LOOP_INTERVAL)
   if (this.window) this.window.webContents.send(INFO_NOTIFICATION, {
     messageType: RECONNECT_MSG,
     message: 'Reconnected to Ethereum Node.'
@@ -189,7 +195,6 @@ AugurNodeServer.prototype.onResetDatabase = function () {
 AugurNodeServer.prototype.onStartNetwork = function (event, data) {
   try {
     console.log('onStartNetwork has been called')
-    this.isShuttingDown = false
     this.selectedNetwork = data
     this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES
     this.restart()

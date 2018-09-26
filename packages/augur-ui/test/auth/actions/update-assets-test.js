@@ -12,9 +12,9 @@ const REP = "rep";
 
 describe("modules/auth/actions/update-assets.js", () => {
   const mockStore = configureMockStore([thunk]);
-  const stubbedUpdateLoginAccount = sinon
-    .stub()
-    .returns({ type: "updateLoginAccount" });
+  const stubbedUpdateLoginAccount = sinon.stub().returns({
+    type: "updateLoginAccount"
+  });
   updateAssetsRewireAPI.__Rewire__(
     "updateLoginAccount",
     stubbedUpdateLoginAccount
@@ -31,7 +31,9 @@ describe("modules/auth/actions/update-assets.js", () => {
     description: `should dispatch 'updateLoginAccount' if a user is unlogged`,
     state: {
       loginAccount: {},
-      universe: { id: "blah" }
+      universe: {
+        id: "blah"
+      }
     },
     assertions: (store, done) => {
       store.dispatch(updateAssets());
@@ -60,7 +62,9 @@ describe("modules/auth/actions/update-assets.js", () => {
             address: "0xtest"
           },
           assertions: (store, done) => {
-            const ERR = { error: `${asset}-failure` };
+            const ERR = {
+              error: `${asset}-failure`
+            };
             updateEtherBalanceRewireAPI.__Rewire__("augur", {
               rpc: {
                 eth: {
@@ -92,7 +96,12 @@ describe("modules/auth/actions/update-assets.js", () => {
                 }
               }
             });
-            const callbackStub = { callback: () => {} };
+            updateAssetsRewireAPI.__Rewire__("updateEtherBalance", () => ({
+              type: "UPDATE_ASSETS"
+            }));
+            const callbackStub = {
+              callback: () => {}
+            };
             sinon
               .stub(callbackStub, "callback")
               .callsFake(err =>
@@ -162,7 +171,9 @@ describe("modules/auth/actions/update-assets.js", () => {
             }
           },
           assertions: (store, done) => {
-            const speedomatic = { unfix: (value, str) => {} };
+            const speedomatic = {
+              unfix: (value, str) => {}
+            };
             sinon.stub(speedomatic, "unfix").returnsArg(0);
             updateAssetsRewireAPI.__Rewire__("speedomatic", speedomatic);
             const testValue = {
@@ -201,7 +212,9 @@ describe("modules/auth/actions/update-assets.js", () => {
                 }
               }
             });
-            const callbackStub = { callback: () => {} };
+            const callbackStub = {
+              callback: () => {}
+            };
             sinon.stub(callbackStub, "callback").callsFake((err, balances) => {
               assert.isNull(
                 err,

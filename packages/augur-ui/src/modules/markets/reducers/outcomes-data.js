@@ -19,26 +19,28 @@ export default function(outcomesData = DEFAULT_STATE, action) {
     case UPDATE_MARKETS_DATA:
       return {
         ...outcomesData,
-        ...parseOutcomes(action.marketsData, outcomesData)
+        ...parseOutcomes(action.data.marketsData, outcomesData)
       };
-    case UPDATE_OUTCOME_PRICE:
+    case UPDATE_OUTCOME_PRICE: {
+      const { marketId, outcomeId, price } = action.data;
       if (
         !outcomesData ||
-        !outcomesData[action.marketId] ||
-        !outcomesData[action.marketId][action.outcomeId]
+        !outcomesData[marketId] ||
+        !outcomesData[marketId][outcomeId]
       ) {
         return outcomesData;
       }
       return {
         ...outcomesData,
-        [action.marketId]: {
-          ...outcomesData[action.marketId],
-          [action.outcomeId]: {
-            ...outcomesData[action.marketId][action.outcomeId],
-            price: action.price
+        [marketId]: {
+          ...outcomesData[marketId],
+          [outcomeId]: {
+            ...outcomesData[marketId][outcomeId],
+            price
           }
         }
       };
+    }
     case RESET_STATE:
       return DEFAULT_STATE;
     default:

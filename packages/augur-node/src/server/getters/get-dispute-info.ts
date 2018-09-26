@@ -208,11 +208,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
 
   let disputeRound = null;
   if (!totalCompletedStakeOnAllPayouts.isEqualTo(0)) {
-    if (stakeRows.disputeRound[0]) {
-      disputeRound = stakeRows.disputeRound[0].disputeRound;
-    } else {
-      disputeRound = 0;
-    }
+    disputeRound = stakeRows.disputeRound[0] ? stakeRows.disputeRound[0].disputeRound + 1 : 1;
   }
 
   return uiStakeInfoToFixed({

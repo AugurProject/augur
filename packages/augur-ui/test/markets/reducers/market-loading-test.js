@@ -62,7 +62,7 @@ describe("modules/markets/reducers/market-loading", () => {
         {
           type: UPDATE_MARKET_LOADING,
           data: {
-            "0xMARKETID": "current state"
+            marketLoadingState: { "0xMARKETID": "current state" }
           }
         }
       );
@@ -86,7 +86,7 @@ describe("modules/markets/reducers/market-loading", () => {
         },
         {
           type: REMOVE_MARKET_LOADING,
-          data: "0xMARKETID1"
+          data: { marketLoadingState: "0xMARKETID1" }
         }
       );
 

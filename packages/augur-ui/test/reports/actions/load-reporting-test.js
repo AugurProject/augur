@@ -119,7 +119,7 @@ describe("loadReporting action", () => {
 
     const expected = [
       {
-        data: ["1111"],
+        data: { marketIds: ["1111"] },
         type: "UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS"
       },
       {
@@ -129,7 +129,7 @@ describe("loadReporting action", () => {
         type: "LOAD_MARKETS_INFO_IF_NOT_LOADED"
       },
       {
-        data: ["2222", "3333"],
+        data: { marketIds: ["2222", "3333"] },
         type: "UPDATE_DESIGNATED_REPORTING_MARKETS"
       },
       {
@@ -139,7 +139,7 @@ describe("loadReporting action", () => {
         type: "LOAD_MARKETS_INFO_IF_NOT_LOADED"
       },
       {
-        data: ["4444"],
+        data: { marketIds: ["4444"] },
         type: "UPDATE_OPEN_REPORTING_MARKETS"
       },
       {

@@ -7,9 +7,9 @@
   margin-bottom: 24px;
 }
 
-.CoreProperties__lineBreak {
-  border-top: 1px solid #5a536b;
-  margin-bottom: 24px;
+.CoreProperties__rowBorder {
+  border-bottom: 1px solid #5a536b;
+  padding-bottom: 24px;
 }
 
 .CoreProperties__property {
@@ -87,8 +87,9 @@
 
 .CoreProperties__property-winningOutcome {
   color: #9b8bf5 !important;
+  display: flex;
+  flex-grow: 1;
   font-size: 24px;
-  font-weight: 700;
   margin-top: 0.3rem;
 }
 
@@ -129,4 +130,18 @@
   font-weight: 700;
   margin-top: 0.3rem;
   text-transform: none;
+}
+
+.CoreProperties__header__tooltip {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-bottom: 0;
+  margin-right: 0.55rem;
+  width: 0.75rem;
+}
+
+.CoreProperties__header__finalize {
+  display: flex;
+  flex-direction: row;
 }

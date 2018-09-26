@@ -16,7 +16,7 @@ describe(`modules/markets/reducers/favorites.js`, () => {
     };
     const testAction = {
       type: UPDATE_FAVORITES,
-      favorites
+      data: { favorites }
     };
     const expectedOutput = {
       fav1: anotherDate
@@ -46,7 +46,7 @@ describe(`modules/markets/reducers/favorites.js`, () => {
     };
     const action = {
       type: TOGGLE_FAVORITE,
-      marketId: "test2"
+      data: { marketId: "test2" }
     };
 
     assert.isDefined(

@@ -5,7 +5,7 @@ import { Route, Redirect } from "react-router-dom";
 
 import makePath from "modules/routes/helpers/make-path";
 
-import { AUTHENTICATION } from "modules/routes/constants/views";
+import { DEFAULT_VIEW } from "modules/routes/constants/views";
 
 const AuthenticatedRoute = ({ component: Component, isLogged, ...rest }) => (
   <Route
@@ -14,7 +14,7 @@ const AuthenticatedRoute = ({ component: Component, isLogged, ...rest }) => (
       isLogged ? (
         <Component {...props} />
       ) : (
-        <Redirect push to={makePath(AUTHENTICATION)} />
+        <Redirect push to={makePath(DEFAULT_VIEW)} />
       )
     }
   />

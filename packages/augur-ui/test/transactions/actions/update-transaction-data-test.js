@@ -18,8 +18,10 @@ describe(`modules/transactions/actions/update-transactions-data.js`, () => {
     out = [
       {
         type: "UPDATE_TRANSACTIONS_DATA",
-        transactionsData: {
-          test: "testTransactionData"
+        data: {
+          updatedTransactionsData: {
+            test: "testTransactionData"
+          }
         }
       }
     ];

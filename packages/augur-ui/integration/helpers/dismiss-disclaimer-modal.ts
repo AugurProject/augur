@@ -24,10 +24,9 @@ export const dismissDisclaimerModal = async (page: Page) => {
     );
   }
 
-  await expect(page).toClick(
-    "#i_have_read_disclaimer",
-    { timeout: timeoutMilliseconds }
-  );
+  await expect(page).toClick("#i_have_read_disclaimer", {
+    timeout: timeoutMilliseconds
+  });
 
   // dismiss welcome to beta popup.
   return await expect(page).toClick("button", {

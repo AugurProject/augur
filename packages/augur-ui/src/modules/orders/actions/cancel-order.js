@@ -9,12 +9,14 @@ import selectOrder from "modules/orders/selectors/select-order";
 import logError from "utils/log-error";
 
 const TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS = 3000;
-
+// orderDetails: {
+//   orderId,
+//   marketId,
+//   outcome,
+//   orderTypeLabel,
+// }
 export const cancelOrder = (
-  orderId,
-  marketId,
-  outcome,
-  orderTypeLabel,
+  { orderId, marketId, outcome, orderTypeLabel },
   callback = logError
 ) => (dispatch, getState) => {
   const { loginAccount, orderBooks, outcomesData, marketsData } = getState();
@@ -37,46 +39,46 @@ export const cancelOrder = (
       _orderId: orderId,
       onSent: () =>
         dispatch(
-          updateOrderStatus(
+          updateOrderStatus({
             orderId,
-            CLOSE_DIALOG_PENDING,
+            status: CLOSE_DIALOG_PENDING,
             marketId,
             outcome,
             orderTypeLabel
-          )
+          })
         ),
       onSuccess: () => {
         dispatch(
-          updateOrderStatus(
+          updateOrderStatus({
             orderId,
-            CLOSE_DIALOG_CLOSING,
+            status: CLOSE_DIALOG_CLOSING,
             marketId,
             outcome,
             orderTypeLabel
-          )
+          })
         );
         callback(null);
       },
       onFailed: err => {
         dispatch(
-          updateOrderStatus(
+          updateOrderStatus({
             orderId,
-            CLOSE_DIALOG_FAILED,
+            status: CLOSE_DIALOG_FAILED,
             marketId,
             outcome,
             orderTypeLabel
-          )
+          })
         );
         setTimeout(
           () =>
             dispatch(
-              updateOrderStatus(
+              updateOrderStatus({
                 orderId,
-                null,
+                status: null,
                 marketId,
                 outcome,
                 orderTypeLabel
-              )
+              })
             ),
           TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS
         );

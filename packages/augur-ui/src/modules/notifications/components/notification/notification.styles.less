@@ -1,23 +1,32 @@
 @import (reference) '~assets/styles/shared';
 
 .Notification {
+  background-color: @color-lightpurple;
+  border-bottom: 1px solid @color-gray;
   display: flex;
-  flex-direction: column;
-  margin-top: 1.5rem;
+  flex-direction: row;
   overflow: hidden;
-  padding: 0 1.5rem 0 1.75rem;
+  padding: 16px 24px;
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  &:last-of-type {
+    border-bottom: 0;
+  }
 }
 
-.Notification__link {
-  display: flex;
-  flex-direction: column;
+.Notification__seen {
+  background-color: @color-darkpurple;
 }
 
 .Notification__row {
   display: flex;
+}
+
+.Notification__column {
+  display: flex;
+  flex-direction: column;
 }
 
 .Notification__closeButton {
@@ -29,7 +38,7 @@
 }
 
 .Notification__title {
-  color: @color-darkpurple;
+  color: @color-white;
   flex: 0 1 auto;
   font-size: @font-size-medium;
   font-weight: bold;
@@ -47,7 +56,7 @@
 }
 
 .Notification__status {
-  color: @color-darkpurple;
+  color: @color-white;
   font-size: @font-size-extra-small;
   font-weight: 500;
   height: 0.688rem;
@@ -56,7 +65,7 @@
 }
 
 .Notification__etherLink {
-  color: @color-lightpurple;
+  color: @color-white;
   font-size: @font-size-extra-small;
   font-weight: 500;
   text-decoration: underline;
@@ -65,8 +74,8 @@
 .Notification__dot {
   flex: 0 1rem;
   height: 1rem;
-  left: 0.875rem;
-  margin-top: -0.125rem;
+  left: 0.5rem;
+  margin-top: -0.025rem;
   position: absolute;
   transition: flex 500ms ease-out;
   width: 1rem;
@@ -82,9 +91,8 @@
 
 .Notification__close {
   align-self: baseline;
-  height: 1.125rem;
   margin-left: auto;
-  width: 1.125rem;
+  width: 12px;
 }
 
 .Notification__description {
@@ -93,13 +101,14 @@
   height: 0.875rem;
   margin-bottom: 0.25rem;
   overflow: hidden;
+  padding-right: 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 17.188rem;
 }
 
 .Notification__time {
-  color: @color-gray;
+  color: @color-white;
   font-size: @font-size-extra-small;
   margin-right: 0.25rem;
 }

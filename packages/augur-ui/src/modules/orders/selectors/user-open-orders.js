@@ -125,8 +125,15 @@ function getUserOpenOrders(
       unmatchedShares: formatShares(order.amount),
       tokensEscrowed: formatEther(order.tokensEscrowed),
       sharesEscrowed: formatShares(order.sharesEscrowed),
-      cancelOrder: (orderId, marketId, outcome, type) => {
-        store.dispatch(cancelOrder(orderId, marketId, outcome, type));
+      cancelOrder: ({ id, marketId, outcomeId, type }) => {
+        store.dispatch(
+          cancelOrder({
+            orderId: id,
+            marketId,
+            outcome: outcomeId,
+            orderTypeLabel: type
+          })
+        );
       }
     }));
 }

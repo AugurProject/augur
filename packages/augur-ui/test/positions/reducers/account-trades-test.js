@@ -55,13 +55,15 @@ describe("modules/positions/reducers/account-trades.js", () => {
       const actual = accountTrades(undefined, {
         type: UPDATE_ACCOUNT_TRADES_DATA,
         data: {
-          1: [
-            {
-              transactionHash: "0xTRANSACTIONHASH1"
-            }
-          ]
-        },
-        market: "0xMARKETID1"
+          tradeData: {
+            1: [
+              {
+                transactionHash: "0xTRANSACTIONHASH1"
+              }
+            ]
+          },
+          market: "0xMARKETID1"
+        }
       });
       const expected = {
         "0xMARKETID1": {
@@ -106,13 +108,15 @@ describe("modules/positions/reducers/account-trades.js", () => {
         {
           type: UPDATE_ACCOUNT_TRADES_DATA,
           data: {
-            1: [
-              {
-                transactionHash: "0xTRANSACTIONHASH1"
-              }
-            ]
-          },
-          market: "0xMARKETID1"
+            tradeData: {
+              1: [
+                {
+                  transactionHash: "0xTRANSACTIONHASH1"
+                }
+              ]
+            },
+            market: "0xMARKETID1"
+          }
         }
       );
       const expected = {
@@ -171,13 +175,15 @@ describe("modules/positions/reducers/account-trades.js", () => {
         {
           type: UPDATE_ACCOUNT_TRADES_DATA,
           data: {
-            1: [
-              {
-                transactionHash: "0xTRANSACTIONHASH3"
-              }
-            ]
-          },
-          market: "0xMARKETID1"
+            tradeData: {
+              1: [
+                {
+                  transactionHash: "0xTRANSACTIONHASH3"
+                }
+              ]
+            },
+            market: "0xMARKETID1"
+          }
         }
       );
       const expected = {

@@ -275,14 +275,14 @@ export function assembleMarket(
           doNotCreateOrders = false
         ) =>
           dispatch(
-            placeTrade(
+            placeTrade({
               marketId,
               outcomeId,
-              marketTradeInProgress[outcomeId],
+              tradeInProgress: marketTradeInProgress[outcomeId],
               doNotCreateOrders,
               callback,
               onComplete
-            )
+            })
           );
 
         market.report = {
@@ -294,13 +294,13 @@ export function assembleMarket(
             history
           ) =>
             dispatch(
-              submitReport(
+              submitReport({
                 market,
                 reportedOutcomeId,
                 amountToStake,
                 isIndeterminate,
                 history
-              )
+              })
             )
         };
 

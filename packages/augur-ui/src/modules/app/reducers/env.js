@@ -1,13 +1,13 @@
 import { UPDATE_ENV } from "modules/app/actions/update-env";
 
 const DEFAULT_STATE = {
-  useWeb3Transport: false
+  useWeb3Transport: true
 };
 
-export default function(env = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(env = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_ENV:
-      return action.env;
+      return data.env;
     default:
       return env;
   }
