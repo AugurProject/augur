@@ -32,7 +32,7 @@ import { DISCLAIMER_SEEN } from "src/modules/modal/constants/local-storage-keys"
 import { windowRef } from "src/utils/window-ref";
 
 const { ACCOUNT_TYPES } = AugurJS.augur.rpc.constants;
-const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
+const ACCOUNTS_POLL_INTERVAL_DURATION = 1000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
 const NETWORK_NAMES = {
@@ -91,13 +91,13 @@ function loadAccount(dispatch, existing, accountType, callback) {
       account = accounts[0];
       if (account && process.env.AUTO_LOGIN) {
         dispatch(useUnlockedAccount(account));
-      } else if (usingMetaMask && loggedInAccount !== account) {
+      } else if (loggedInAccount && usingMetaMask && loggedInAccount !== account) {
         dispatch(logout());
         account = null;
       } else if (loggedInAccount && loggedInAccount === account) {
         dispatch(useUnlockedAccount(loggedInAccount));
         account = loggedInAccount;
-      } else if (usingMetaMask) {
+      } else if (!account && usingMetaMask) {
         dispatch(logout());
         account = null;
       }
