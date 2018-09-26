@@ -1,3 +1,6 @@
+const ipPortRegex = require("ip-port-regex");
+const urlRegex = require("url-regex");
+
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
@@ -62,7 +65,6 @@ export default class ModalEditConnection extends Component {
   validateField(name, value) {
     const { connections } = this.props
     let { validations, disableButton } = this.state
-    const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
 
     if (name === 'name') {
       const nameRepeat = (Object.values(connections || [])).find(network => network.name.toLowerCase() === value.toLowerCase())
@@ -72,16 +74,24 @@ export default class ModalEditConnection extends Component {
         delete validations[name]
       }
     } else if (name === 'http') {
-      if (value !== '' && !value.match(urlRegex)) {
-        validations[name] = 'Not a valid HTTP Endpoint'
-      } else {
+      const urlProtocol = value.substring(0, value.indexOf('://'))
+      const urlProtocolIsValid = urlProtocol === '' || urlProtocol === 'http' || urlProtocol === 'https'
+      const urlWithoutProtocol = value.replace(/^https?:\/\//, '')
+
+      if (urlProtocolIsValid && (urlRegex({exact: true}).test(value) || ipPortRegex({exact: true}).test(urlWithoutProtocol))) {
         delete validations[name]
+      } else {
+        validations[name] = 'Not a valid HTTP Endpoint'
       }
     } else if (name === 'ws') {
-      if (value !== '' && !value.match(urlRegex)) {
-        validations[name] = 'Not a valid Websocket Endpoint'
-      } else {
+      const urlProtocol = value.substring(0, value.indexOf('://'))
+      const urlProtocolIsValid = urlProtocol === '' || urlProtocol === 'ws' || urlProtocol === 'wss'
+      const urlWithoutProtocol = value.replace(/^wss?:\/\//, '')
+
+      if (urlProtocolIsValid && (urlRegex({exact: true}).test(value) || ipPortRegex({exact: true}).test(urlWithoutProtocol))) {
         delete validations[name]
+      } else {
+        validations[name] = 'Not a valid Websocket Endpoint'
       }
     }
 

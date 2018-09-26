@@ -27,9 +27,11 @@ describe("modules/positions/actions/add-close-position-trade-group.js", () => {
       assertions: res => {
         assert.deepEqual(res, {
           type: ADD_CLOSE_POSITION_TRADE_GROUP,
-          marketId: "0xMarketId",
-          outcomeId: "1",
-          tradeGroupId: "0x00000TradeGroupId"
+          data: {
+            marketId: "0xMarketId",
+            outcomeId: "1",
+            tradeGroupId: "0x00000TradeGroupId"
+          }
         });
       }
     });

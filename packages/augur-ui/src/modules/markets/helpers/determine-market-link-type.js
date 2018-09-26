@@ -10,7 +10,7 @@ import { constants } from "services/augurjs";
 import { isEmpty } from "lodash";
 
 export const determineMarketLinkType = (market, loginAccount) => {
-  if (isEmpty(market) || isEmpty(loginAccount)) return TYPE_VIEW;
+  if (isEmpty(market) || !loginAccount.address) return TYPE_VIEW;
 
   const isDesignatedReporter =
     market.designatedReporter === loginAccount.address;

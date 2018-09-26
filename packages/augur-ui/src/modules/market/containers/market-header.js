@@ -6,6 +6,7 @@ import { ZERO } from "modules/trades/constants/numbers";
 import { selectMarket } from "modules/markets/selectors/market";
 import { selectCurrentTimestamp } from "src/select-state";
 import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
+import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId);
@@ -30,8 +31,15 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
+const mapDispatchToProps = dispatch => ({
+  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId))
+});
+
 const MarketHeaderContainer = withRouter(
-  connect(mapStateToProps)(MarketHeader)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MarketHeader)
 );
 
 export default MarketHeaderContainer;

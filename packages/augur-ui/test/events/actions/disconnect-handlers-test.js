@@ -66,38 +66,44 @@ describe("events/actions/disconnect-handlers", () => {
           {
             type: "UPDATE_MODAL",
             data: {
-              type: "MODAL_NETWORK_DISCONNECTED",
-              connection: {
-                isConnected: true,
-                isConnectedToAugurNode: false,
-                isReconnectionPaused: false
-              },
-              env: undefined
+              modalOptions: {
+                type: "MODAL_NETWORK_DISCONNECTED",
+                connection: {
+                  isConnected: true,
+                  isConnectedToAugurNode: false,
+                  isReconnectionPaused: false
+                },
+                env: undefined
+              }
             }
           },
           { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS", isConnected: false },
           {
             type: "UPDATE_MODAL",
             data: {
-              type: "MODAL_NETWORK_DISCONNECTED",
-              connection: {
-                isConnected: true,
-                isConnectedToAugurNode: false,
-                isReconnectionPaused: false
-              },
-              env: undefined
+              modalOptions: {
+                type: "MODAL_NETWORK_DISCONNECTED",
+                connection: {
+                  isConnected: true,
+                  isConnectedToAugurNode: false,
+                  isReconnectionPaused: false
+                },
+                env: undefined
+              }
             }
           },
           {
             type: "UPDATE_MODAL",
             data: {
-              type: "MODAL_NETWORK_DISCONNECTED",
-              connection: {
-                isConnected: true,
-                isConnectedToAugurNode: false,
-                isReconnectionPaused: false
-              },
-              env: undefined
+              modalOptions: {
+                type: "MODAL_NETWORK_DISCONNECTED",
+                connection: {
+                  isConnected: true,
+                  isConnectedToAugurNode: false,
+                  isReconnectionPaused: false
+                },
+                env: undefined
+              }
             }
           },
           { type: "CONNECT_AUGUR" }
@@ -157,38 +163,44 @@ describe("events/actions/disconnect-handlers", () => {
           {
             type: "UPDATE_MODAL",
             data: {
-              type: "MODAL_NETWORK_DISCONNECTED",
-              connection: {
-                isConnected: true,
-                isConnectedToAugurNode: true,
-                isReconnectionPaused: false
-              },
-              env: undefined
+              modalOptions: {
+                type: "MODAL_NETWORK_DISCONNECTED",
+                connection: {
+                  isConnected: true,
+                  isConnectedToAugurNode: true,
+                  isReconnectionPaused: false
+                },
+                env: undefined
+              }
             }
           },
           { type: "UPDATE_CONNECTION_STATUS", isConnected: false },
           {
             type: "UPDATE_MODAL",
             data: {
-              type: "MODAL_NETWORK_DISCONNECTED",
-              connection: {
-                isConnected: true,
-                isConnectedToAugurNode: true,
-                isReconnectionPaused: false
-              },
-              env: undefined
+              modalOptions: {
+                type: "MODAL_NETWORK_DISCONNECTED",
+                connection: {
+                  isConnected: true,
+                  isConnectedToAugurNode: true,
+                  isReconnectionPaused: false
+                },
+                env: undefined
+              }
             }
           },
           {
             type: "UPDATE_MODAL",
             data: {
-              type: "MODAL_NETWORK_DISCONNECTED",
-              connection: {
-                isConnected: true,
-                isConnectedToAugurNode: true,
-                isReconnectionPaused: false
-              },
-              env: undefined
+              modalOptions: {
+                type: "MODAL_NETWORK_DISCONNECTED",
+                connection: {
+                  isConnected: true,
+                  isConnectedToAugurNode: true,
+                  isReconnectionPaused: false
+                },
+                env: undefined
+              }
             }
           },
           { type: "CONNECT_AUGUR" }

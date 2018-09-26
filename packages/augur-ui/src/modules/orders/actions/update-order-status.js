@@ -10,13 +10,13 @@ export const UPDATE_ORDER_REMOVE = "UPDATE_ORDER_REMOVE";
  * @param outcome
  * @param {String} orderTypeLabel
  */
-export const updateOrderStatus = (
+export const updateOrderStatus = ({
   orderId,
   status,
   marketId,
   outcome,
   orderTypeLabel
-) => (dispatch, getState) => {
+}) => (dispatch, getState) => {
   const { orderBooks } = getState();
   const order = selectOrder(
     orderId,
@@ -36,15 +36,17 @@ export const updateOrderStatus = (
   }
   dispatch({
     type: UPDATE_ORDER_STATUS,
-    orderId,
-    status,
-    marketId,
-    orderType: orderTypeLabel
+    data: {
+      orderId,
+      status,
+      marketId,
+      orderType: orderTypeLabel
+    }
   });
 };
 
 export const removeCanceledOrder = orderId => dispatch =>
-  dispatch({ type: UPDATE_ORDER_REMOVE, orderId });
+  dispatch({ type: UPDATE_ORDER_REMOVE, data: { orderId } });
 
 function warnNonExistingOrder(
   orderId,

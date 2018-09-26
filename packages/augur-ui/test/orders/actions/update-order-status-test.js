@@ -15,44 +15,47 @@ describe("modules/orders/actions/update-order-status.js", () => {
   describe("updateOrderStatus", () => {
     it(`shouldn't dispatch if order cannot be found`, () => {
       store.dispatch(
-        updateOrderStatus(
-          "nonExistingOrderId",
-          CLOSE_DIALOG_CLOSING,
-          "marketId",
-          2,
-          BUY
-        )
+        updateOrderStatus({
+          orderId: "nonExistingOrderId",
+          status: CLOSE_DIALOG_CLOSING,
+          marketId: "marketId",
+          outcome: 2,
+          orderTypeLabel: BUY
+        })
       );
       assert.lengthOf(store.getActions(), 0);
       store.dispatch(
-        updateOrderStatus(
-          "orderId",
-          CLOSE_DIALOG_CLOSING,
-          "nonExistingMarketId",
-          2,
-          BUY
-        )
+        updateOrderStatus({
+          orderId: "orderId",
+          status: CLOSE_DIALOG_CLOSING,
+          marketId: "nonExistingMarketId",
+          outcome: 2,
+          orderTypeLabel: BUY
+        })
       );
       assert.lengthOf(store.getActions(), 0);
     });
     it(`should dispatch action`, () => {
       store.dispatch(
-        updateOrderStatus(
-          "0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3",
-          CLOSE_DIALOG_CLOSING,
-          "testMarketId",
-          2,
-          BUY
-        )
-      );
-      assert.deepEqual(store.getActions(), [
-        {
-          type: "UPDATE_ORDER_STATUS",
+        updateOrderStatus({
           orderId:
             "0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3",
           status: CLOSE_DIALOG_CLOSING,
           marketId: "testMarketId",
-          orderType: BUY
+          outcome: 2,
+          orderTypeLabel: BUY
+        })
+      );
+      assert.deepEqual(store.getActions(), [
+        {
+          type: "UPDATE_ORDER_STATUS",
+          data: {
+            orderId:
+              "0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3",
+            status: CLOSE_DIALOG_CLOSING,
+            marketId: "testMarketId",
+            orderType: BUY
+          }
         }
       ]);
     });

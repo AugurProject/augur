@@ -45,7 +45,7 @@ describe("modules/notifications/actions/notifications", () => {
 
       const expected = {
         type: updateNotifications.REMOVE_NOTIFICATION,
-        data: 1
+        data: { id: 1 }
       };
 
       assert.deepEqual(actual, expected, `Didn't return the expected object`);

@@ -53,6 +53,10 @@
   }
 }
 
+.focusBorder {
+  .border(true, @border-all, @color-input-border, @border-width-2);
+}
+
 .noFocus {
   &:focus-within {
     .border(true, @border-all, @color-transparent, @border-width-2);

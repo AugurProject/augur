@@ -8,7 +8,8 @@ import { MODAL_LEDGER } from "modules/modal/constants/modal-types";
 const ledgerSigner = async (rawTxArgs, ledgerLib, derivationPath, dispatch) => {
   dispatch(
     updateModal({
-      type: MODAL_LEDGER
+      type: MODAL_LEDGER,
+      canClose: true
     })
   );
   const tx = rawTxArgs[0];

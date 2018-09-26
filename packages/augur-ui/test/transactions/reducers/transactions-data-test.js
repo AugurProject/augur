@@ -11,12 +11,14 @@ describe(`modules/transactions/reducers/transactions-data.js`, () => {
   it(`should update transactions data in state`, () => {
     action = {
       type: "UPDATE_TRANSACTIONS_DATA",
-      transactionsData: {
-        test: {
-          example: "example"
-        },
-        example: {
-          test: "test"
+      data: {
+        updatedTransactionsData: {
+          test: {
+            example: "example"
+          },
+          example: {
+            test: "test"
+          }
         }
       }
     };
@@ -38,7 +40,7 @@ describe(`modules/transactions/reducers/transactions-data.js`, () => {
   it(`should delete transaction`, () => {
     action = {
       type: "DELETE_TRANSACTION",
-      transactionId: "transaction2"
+      data: { transactionId: "transaction2" }
     };
     state.transactionsData = {
       transaction1: {

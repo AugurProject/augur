@@ -1,9 +1,14 @@
-@import (reference) '~assets/styles/shared';
+@import (reference) "~assets/styles/shared";
 
 .FilterSearch {
+  display: flex;
+  flex-direction: row;
   min-width: 250px;
-  transition: min-width @animation-speed-normal @animation-default-type;
   width: 100%;
+}
+
+.FilterSearch__transition {
+  transition: min-width @animation-speed-normal @animation-default-type;
 }
 
 .FilterSearch__input {
@@ -45,4 +50,11 @@
   .FilterSearch {
     min-width: 200px;
   }
+}
+
+.FilterSearch__tooltip {
+  margin-bottom: 0;
+  margin-right: 0.25rem;
+  margin-top: 1rem;
+  width: 0.75rem;
 }

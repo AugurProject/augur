@@ -3,142 +3,106 @@ import PropTypes from "prop-types";
 import TransportU2F from "@ledgerhq/hw-transport-u2f";
 import Eth from "@ledgerhq/hw-app-eth";
 
-import * as LEDGER_STATES from "modules/auth/constants/ledger-status";
-
-import { Alert } from "modules/common/components/icons";
-
-import Spinner from "modules/common/components/spinner/spinner";
-
-import Styles from "modules/auth/components/ledger-connect/ledger-connect.styles";
+import DerivationPath, {
+  NUM_DERIVATION_PATHS_TO_DISPLAY
+} from "modules/auth/helpers/derivation-path";
+import HardwareWallet from "modules/auth/components/common/hardware-wallet";
 
 export default class Ledger extends Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
     loginWithLedger: PropTypes.func.isRequired,
-    networkId: PropTypes.number.isRequired,
-    updateLedgerStatus: PropTypes.func.isRequired,
-    ledgerStatus: PropTypes.string.isRequired,
-    onConnectLedgerRequest: PropTypes.func.isRequired,
-    onOpenEthereumAppRequest: PropTypes.func.isRequired,
-    onSwitchLedgerModeRequest: PropTypes.func.isRequired,
-    onEnableContractSupportRequest: PropTypes.func.isRequired
+    showAdvanced: PropTypes.bool,
+    showError: PropTypes.func.isRequired,
+    hideError: PropTypes.func.isRequired,
+    error: PropTypes.bool,
+    setIsLoading: PropTypes.func.isRequired,
+    setShowAdvancedButton: PropTypes.func.isRequired,
+    logout: PropTypes.func.isRequired,
+    isClicked: PropTypes.bool,
+    isLoading: PropTypes.bool
   };
+
+  static ledgerValidation() {
+    if (location.protocol !== "https:") {
+      return false;
+    }
+    return true;
+  }
+
+  static async onDerivationPathChange(derivationPath, pageNumber = 1) {
+    const transport = await TransportU2F.create();
+    const ledgerEthereum = new Eth(transport);
+
+    const components = DerivationPath.parse(derivationPath);
+    const numberOfAddresses = NUM_DERIVATION_PATHS_TO_DISPLAY * pageNumber;
+    const indexes = Array.from(Array(numberOfAddresses).keys());
+    const addresses = [];
+
+    // ledger can only take one request at a time, can't stack up promises
+    /* eslint-disable */
+    for (const index of indexes) {
+      const result = await ledgerEthereum
+        .getAddress(
+          DerivationPath.buildString(
+            DerivationPath.increment(components, index)
+          ),
+          false,
+          true
+        )
+        .catch(err => {
+          console.log("Error:", err);
+          return { success: false };
+        });
+      addresses.push(result && result.address);
+    }
+    /* eslint-enable */
+
+    if (addresses && addresses.length > 0) {
+      if (!addresses.every(element => !element)) {
+        return { success: true, addresses };
+      }
+    }
+
+    return { success: false };
+  }
 
   constructor(props) {
     super(props);
 
-    this.LedgerEthereum = null;
-
-    this.state = {
-      displayInstructions: false,
-      derivationPath: "m/44'/60'/0'/0/0"
-    };
-
-    this.connectLedger = this.connectLedger.bind(this);
-    this.updateDisplayInstructions = this.updateDisplayInstructions.bind(this);
-    this.onConnectLedgerRequestHook = this.onConnectLedgerRequestHook.bind(
-      this
-    );
-    this.onOpenEthereumAppRequestHook = this.onOpenEthereumAppRequestHook.bind(
-      this
-    );
-    this.onSwitchLedgerModeRequestHook = this.onSwitchLedgerModeRequestHook.bind(
-      this
-    );
-    this.onEnableContractSupportRequestHook = this.onEnableContractSupportRequestHook.bind(
-      this
-    );
+    this.connectWallet = this.connectWallet.bind(this);
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (
-      nextProps.ledgerStatus !== LEDGER_STATES.ATTEMPTING_CONNECTION &&
-      this.props.ledgerStatus !== nextProps.ledgerStatus
-    ) {
-      this.updateDisplayInstructions(true);
-    }
-  }
-
-  async onConnectLedgerRequestHook() {
-    this.props.onConnectLedgerRequest();
-  }
-
-  async onOpenEthereumAppRequestHook() {
-    this.props.onOpenEthereumAppRequest();
-  }
-
-  async onSwitchLedgerModeRequestHook() {
-    this.props.onSwitchLedgerModeRequest();
-  }
-
-  async onEnableContractSupportRequestHook() {
-    this.props.onEnableContractSupportRequest();
-  }
-
-  async connectLedger() {
-    const { loginWithLedger } = this.props;
-    this.props.updateLedgerStatus(LEDGER_STATES.ATTEMPTING_CONNECTION);
-
-    if (location.protocol !== "https:") {
-      this.props.updateLedgerStatus(LEDGER_STATES.OTHER_ISSUE);
-    }
-
+  async connectWallet(derivationPath) {
+    const { loginWithLedger, logout } = this.props;
     const transport = await TransportU2F.create();
+
+    transport.on("disconnect", () => {
+      console.log("Ledger is disconected");
+      logout();
+    });
+
     const ledgerEthereum = new Eth(transport);
-    const result = await ledgerEthereum.getAddress(this.state.derivationPath);
+    const result = await ledgerEthereum.getAddress(derivationPath);
     const { address } = result;
 
     if (address) {
       return loginWithLedger(
         address.toLowerCase(),
         ledgerEthereum,
-        this.state.derivationPath
+        derivationPath
       );
     }
-
-    this.props.updateLedgerStatus(LEDGER_STATES.OTHER_ISSUE);
-  }
-
-  updateDisplayInstructions(displayInstructions) {
-    this.setState({ displayInstructions });
   }
 
   render() {
-    const { ledgerStatus, updateLedgerStatus } = this.props;
-    const s = this.state;
-
     return (
-      <section className={Styles.LedgerConnect}>
-        <div className={Styles.LedgerConnect__action}>
-          <button
-            className={Styles.LedgerConnect__button}
-            onClick={() => {
-              this.connectLedger().catch(() =>
-                updateLedgerStatus(LEDGER_STATES.OTHER_ISSUE)
-              );
-            }}
-          >
-            {ledgerStatus !== LEDGER_STATES.ATTEMPTING_CONNECTION ? (
-              "Connect Ledger"
-            ) : (
-              <Spinner light />
-            )}
-          </button>
-        </div>
-        {s.displayInstructions && (
-          <div className={Styles.LedgerConnect__messages}>
-            {Alert}
-            <h3>Make sure you have: </h3>
-            <ul>
-              <li>Accessed Augur via HTTPS</li>
-              <li>Connected your Ledger</li>
-              <li>Opened the Ethereum App</li>
-              <li>Enabled Contract Data</li>
-              <li>Enabled Browser Support</li>
-            </ul>
-          </div>
-        )}
-      </section>
+      <HardwareWallet
+        loginWithWallet={this.connectWallet}
+        walletName="ledger"
+        onDerivationPathChange={Ledger.onDerivationPathChange}
+        validation={Ledger.ledgerValidation}
+        {...this.props}
+      />
     );
   }
 }

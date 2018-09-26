@@ -1,6 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { augur } from "services/augurjs";
+import { logout } from "modules/auth/actions/logout";
 import LedgerConnect from "modules/auth/components/ledger-connect/ledger-connect";
 
 import loginWithLedger from "modules/auth/actions/login-with-ledger";
@@ -8,12 +9,6 @@ import {
   updateAuthStatus,
   LEDGER_STATUS
 } from "modules/auth/actions/update-auth-status";
-import {
-  onConnectLedgerRequest,
-  onOpenEthereumAppRequest,
-  onSwitchLedgerModeRequest,
-  onEnableContractSupportRequest
-} from "modules/auth/actions/ledger-ethereum-hook-actions";
 
 const mapStateToProps = state => ({
   networkId: parseInt(augur.rpc.getNetworkID(), 10),
@@ -25,11 +20,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(loginWithLedger(address, lib, devPath)),
   updateLedgerStatus: status =>
     dispatch(updateAuthStatus(LEDGER_STATUS, status)),
-  onConnectLedgerRequest: () => dispatch(onConnectLedgerRequest()),
-  onOpenEthereumAppRequest: () => dispatch(onOpenEthereumAppRequest()),
-  onSwitchLedgerModeRequest: () => dispatch(onSwitchLedgerModeRequest()),
-  onEnableContractSupportRequest: () =>
-    dispatch(onEnableContractSupportRequest())
+  logout: () => dispatch(logout())
 });
 
 export default withRouter(

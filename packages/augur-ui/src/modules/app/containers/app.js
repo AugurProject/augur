@@ -35,6 +35,7 @@ import {
 } from "src/select-state";
 import { RewriteUrlParams } from "src/modules/app/hocs/rewrite-url-params";
 import { windowRef } from "src/utils/window-ref";
+import isGlobalWeb3 from "modules/auth/helpers/is-global-web3";
 
 const mapStateToProps = state => ({
   blockchain: selectBlockchainState(state),
@@ -54,7 +55,8 @@ const mapStateToProps = state => ({
   notifications: selectInfoNotificationsAndSeenCount(state),
   portfolio: portfolio(),
   universe: selectUniverseState(state),
-  url: selectUrlState(state)
+  url: selectUrlState(state),
+  useWeb3Transport: isGlobalWeb3()
 });
 
 const mapDispatchToProps = dispatch => ({

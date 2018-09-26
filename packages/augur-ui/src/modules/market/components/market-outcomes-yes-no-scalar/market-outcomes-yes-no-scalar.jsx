@@ -30,6 +30,24 @@ const MarketOutcomes = p => {
     left: calculatePosition() + "%"
   };
 
+  const outcomeStyles = pos => {
+    const size = getValue(
+      p.outcomes[0],
+      "lastPricePercent.formatted"
+    ).toString().length;
+    const isMobileAttrs =
+      window.outerWidth < 590
+        ? { charLen: 8, marginTop: 4, fontSize: 16 }
+        : { charLen: 10, marginTop: 7, fontSize: 20 };
+    return {
+      marginLeft: pos < 5 ? size * isMobileAttrs.charLen : 0,
+      marginRight: pos > 95 ? size * isMobileAttrs.charLen : 0,
+      marginTop: isMobileAttrs.marginTop,
+      display: "inline-block",
+      fontSize: isMobileAttrs.fontSize
+    };
+  };
+
   const minValue =
     !isNaN(p.min) && p.type !== YES_NO
       ? `${p.min} ${scalarDenomination}`
@@ -45,7 +63,8 @@ const MarketOutcomes = p => {
       : getValue(p.outcomes[0], "lastPricePercent.denomination");
   const arrowStyles = {
     left: p.type === YES_NO ? "0.9375rem" : "0.5rem",
-    marginLeft: p.type === YES_NO ? "0.625rem" : "0"
+    marginLeft: p.type === YES_NO ? "0.625rem" : "0",
+    marginBottom: -5
   };
 
   return (
@@ -60,11 +79,15 @@ const MarketOutcomes = p => {
         <span
           className={Styles["MarketOutcomes__current-value"]}
           data-testid="midpoint"
+          style={outcomeStyles(calculatePosition())}
         >
           {getValue(p.outcomes[0], "lastPricePercent.formatted")}
         </span>
         <div style={{ position: "relative", display: "inline" }}>
-          <span className={Styles["MarketOutcomes__current-denomination"]}>
+          <span
+            className={Styles["MarketOutcomes__current-denomination"]}
+            style={outcomeStyles(calculatePosition())}
+          >
             {lastPriceDenomination}
           </span>
           <MarketOutcomeTradingIndicator

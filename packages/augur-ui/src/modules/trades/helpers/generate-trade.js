@@ -135,16 +135,16 @@ export const generateTrade = memoize(
       tradeSummary: generateTradeSummary(
         generateTradeOrders(market, outcome, outcomeTradeInProgress)
       ),
-      updateTradeOrder: (shares, limitPrice, side, maxCost) =>
+      updateTradeOrder: (numShares, limitPrice, side, maxCost) =>
         store.dispatch(
-          updateTradesInProgress(
-            market.id,
-            outcome.id,
+          updateTradesInProgress({
+            marketId: market.id,
+            outcomeId: outcome.id,
             side,
-            shares,
+            numShares,
             limitPrice,
             maxCost
-          )
+          })
         ),
       totalSharesUpToOrder: (orderIndex, side) =>
         totalSharesUpToOrder(outcome.id, side, orderIndex, orderBooks)

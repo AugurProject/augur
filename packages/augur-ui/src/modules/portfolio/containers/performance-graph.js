@@ -13,7 +13,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getProfitLoss: (universe, startTime, endTime, periodInterval, callback) =>
     dispatch(
-      getProfitLoss(universe, startTime, endTime, periodInterval, callback)
+      getProfitLoss({ universe, startTime, endTime, periodInterval, callback })
     )
 });
 

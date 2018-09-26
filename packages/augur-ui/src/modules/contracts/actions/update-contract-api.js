@@ -6,13 +6,13 @@ export const UPDATE_FROM_ADDRESS = "UPDATE_FROM_ADDRESS";
 
 export const updateEventsAPI = eventsAPI => ({
   type: UPDATE_EVENTS_API,
-  eventsAPI
+  data: { eventsAPI }
 });
 export const updateFunctionsAPI = functionsAPI => dispatch => {
   augur.api = augur.generateContractApi(functionsAPI);
-  dispatch({ type: UPDATE_FUNCTIONS_API, functionsAPI });
+  dispatch({ type: UPDATE_FUNCTIONS_API, data: { functionsAPI } });
 };
 export const updateFromAddress = fromAddress => (dispatch, getState) => {
-  dispatch({ type: UPDATE_FROM_ADDRESS, fromAddress });
+  dispatch({ type: UPDATE_FROM_ADDRESS, data: { fromAddress } });
   augur.api = augur.generateContractApi(getState().functionsAPI);
 };

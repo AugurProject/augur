@@ -21,25 +21,29 @@ describe(`modules/trades/actions/place-trade.js`, () => {
         "../../markets/selectors/market": SelectMarket
       }
     );
-    store.dispatch(action.placeTrade("testYesNoMarketId", null));
+    store.dispatch(
+      action.placeTrade({ marketId: "testYesNoMarketId", outcomeId: null })
+    );
     assert.deepEqual(
       store.getActions(),
       [
         {
           type: "CLEAR_TRADE_IN_PROGRESS",
-          marketId: "testYesNoMarketId"
+          data: { marketId: "testYesNoMarketId" }
         }
       ],
       `Didn't produce the expected actions for passing a null outcomeId to place-trade`
     );
     store.clearActions();
-    store.dispatch(action.placeTrade("testYesNoMarketId", undefined));
+    store.dispatch(
+      action.placeTrade({ marketId: "testYesNoMarketId", outcomeId: undefined })
+    );
     assert.deepEqual(
       store.getActions(),
       [
         {
           type: "CLEAR_TRADE_IN_PROGRESS",
-          marketId: "testYesNoMarketId"
+          data: { marketId: "testYesNoMarketId" }
         }
       ],
       `Didn't produce the expected actions for passing a undefined outcomeId to place-trade`
@@ -60,14 +64,14 @@ describe(`modules/trades/actions/place-trade.js`, () => {
         "../../markets/selectors/market": SelectMarket
       }
     );
-    store.dispatch(action.placeTrade(null, "1"));
+    store.dispatch(action.placeTrade({ marketId: null, outcomeId: "1" }));
     assert.deepEqual(
       store.getActions(),
       [],
       `Didn't fail out as expected for passing a null marketId to place-trade`
     );
     store.clearActions();
-    store.dispatch(action.placeTrade(undefined, "1"));
+    store.dispatch(action.placeTrade({ marketId: undefined, outcomeId: "1" }));
     assert.deepEqual(
       store.getActions(),
       [],
@@ -105,13 +109,17 @@ describe(`modules/trades/actions/place-trade.js`, () => {
       }
     );
     store.dispatch(
-      action.placeTrade("testYesNoMarketId", "1", {
-        totalCost: "10000000",
-        sharesDepleted: "0",
-        otherSharesDepleted: "0",
-        limitPrice: "0.3",
-        numShares: "1",
-        side: "buy"
+      action.placeTrade({
+        marketId: "testYesNoMarketId",
+        outcomeId: "1",
+        tradeInProgress: {
+          totalCost: "10000000",
+          sharesDepleted: "0",
+          otherSharesDepleted: "0",
+          limitPrice: "0.3",
+          numShares: "1",
+          side: "buy"
+        }
       })
     );
     const storeActions = store.getActions();
@@ -131,8 +139,10 @@ describe(`modules/trades/actions/place-trade.js`, () => {
     assert.isObject(approvalAction);
     assert.deepEqual(approvalAction.type, "UPDATE_MODAL");
     assert.isObject(approvalAction.data);
-    assert.deepEqual(approvalAction.data.type, "MODAL_ACCOUNT_APPROVAL");
-    assert.isFunction(approvalAction.data.approveCallback);
+    assert.isObject(approvalAction.data.modalOptions);
+    const { modalOptions } = approvalAction.data;
+    assert.deepEqual(modalOptions.type, "MODAL_ACCOUNT_APPROVAL");
+    assert.isFunction(modalOptions.approveCallback);
     store.clearActions();
   });
   it("should handle a allowance greater than total (no approval needed.)", () => {
@@ -180,13 +190,17 @@ describe(`modules/trades/actions/place-trade.js`, () => {
       }
     );
     store.dispatch(
-      action.placeTrade("testYesNoMarketId", "1", {
-        totalCost: "10000000",
-        sharesDepleted: "0",
-        otherSharesDepleted: "0",
-        limitPrice: "0.3",
-        amount: "1",
-        side: "buy"
+      action.placeTrade({
+        marketId: "testYesNoMarketId",
+        outcomeId: "1",
+        tradeInProgress: {
+          totalCost: "10000000",
+          sharesDepleted: "0",
+          otherSharesDepleted: "0",
+          limitPrice: "0.3",
+          amount: "1",
+          side: "buy"
+        }
       })
     );
     const storeActions = store.getActions();
@@ -198,7 +212,7 @@ describe(`modules/trades/actions/place-trade.js`, () => {
     const Expected = [
       {
         type: "CLEAR_TRADE_IN_PROGRESS",
-        marketId: "testYesNoMarketId"
+        data: { marketId: "testYesNoMarketId" }
       }
     ];
     assert.deepEqual(

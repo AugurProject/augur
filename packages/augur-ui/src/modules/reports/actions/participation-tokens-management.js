@@ -12,14 +12,16 @@ export const UPDATE_PARTICIPATION_TOKENS_DATA =
 export const UPDATE_PARTICIPATION_TOKENS_BALANCE =
   "UPDATE_PARTICIPATION_TOKENS_BALANCE";
 
-export const updateParticipationTokensData = participationTokensData => ({
+export const updateParticipationTokensData = participationTokensDataUpdated => ({
   type: UPDATE_PARTICIPATION_TOKENS_DATA,
-  participationTokensData
+  data: { participationTokensDataUpdated }
 });
 export const updateParticipationTokenBalance = (feeWindowID, balance) => ({
   type: UPDATE_PARTICIPATION_TOKENS_BALANCE,
-  feeWindowID,
-  balance
+  data: {
+    feeWindowID,
+    balance
+  }
 });
 
 // TODO: is this even in use? on a search, i never see it imported...

@@ -17,6 +17,9 @@ describe(`modules/auth/actions/logout.js`, () => {
   it(`should logout of the logged in account`, () => {
     const expectedOutput = [
       {
+        type: "CLEAR_TRANSACTION_DATA"
+      },
+      {
         type: "CLEAR_LOGIN_ACCOUNT"
       }
     ];

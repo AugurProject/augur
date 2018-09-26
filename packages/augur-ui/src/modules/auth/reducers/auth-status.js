@@ -18,13 +18,14 @@ const DEFAULT_STATE = {
 
 const KEYS = Object.keys(DEFAULT_STATE);
 
-export default function(authStatus = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(authStatus = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_AUTH_STATUS: {
-      if (KEYS.includes(action.data.statusKey))
+      const { statusKey, value } = data;
+      if (KEYS.includes(statusKey))
         return {
           ...authStatus,
-          [action.data.statusKey]: action.data.value
+          [statusKey]: value
         };
       return authStatus;
     }

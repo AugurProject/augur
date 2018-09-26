@@ -12,9 +12,20 @@ jest.setTimeout(100000);
 describe("Trading page", () => {
   it("should update the Unrealized P/L for a categorical market when another account buys shares at a different price", async () => {
     // Go to Market trading page
-    await expect(page).toClick(".side-nav-styles_SideNav__nav li:nth-child(1)", { text: "Markets", timeout: timeoutMilliseconds });
-    await expect(page).toFill(".filter-search-styles_FilterSearch__input", "city", { timeout: timeoutMilliseconds });
-    await expect(page).toClick("a", { text: "Which city will have the highest median single-family home price in 2018?", timeout: timeoutMilliseconds });
+    await expect(page).toClick(
+      ".side-nav-styles_SideNav__nav li:nth-child(1)",
+      { text: "Markets", timeout: timeoutMilliseconds }
+    );
+    await expect(page).toFill(
+      ".filter-search-styles_FilterSearch__input",
+      "city",
+      { timeout: timeoutMilliseconds }
+    );
+    await expect(page).toClick("a", {
+      text:
+        "Which city will have the highest median single-family home price in 2018?",
+      timeout: timeoutMilliseconds
+    });
 
     // Switch to secondary account
     await page.evaluate(
@@ -22,8 +33,14 @@ describe("Trading page", () => {
       UnlockedAccounts.SECONDARY_ACCOUNT
     );
 
-    await expect(page).toClick("li", { text: "London", timeout: timeoutMilliseconds });
-    await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
+    await expect(page).toClick("li", {
+      text: "London",
+      timeout: timeoutMilliseconds
+    });
+    await expect(page).toClick("button", {
+      text: "Buy",
+      timeout: timeoutMilliseconds
+    });
     await page.type("input#tr__input--quantity", "0.001", { delay: 100 });
     await page.type("input#tr__input--limit-price", "0.31", { delay: 100 });
     let isDisabled = await page.$eval(
@@ -36,16 +53,28 @@ describe("Trading page", () => {
         el => el.disabled
       );
     }
-    await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
-    await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", {
+      text: "Review",
+      timeout: timeoutMilliseconds
+    });
+    await expect(page).toClick("button", {
+      text: "Confirm",
+      timeout: timeoutMilliseconds
+    });
 
-    await expect(page).toClick("button", { text: "Approve" , timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", {
+      text: "Approve",
+      timeout: timeoutMilliseconds
+    });
 
     await waitNextBlock(2);
 
     // Perform buy twice since first publicTrade call fails
     // TODO: Figure out why first publicTrade call fails after Approve in integration test. (This does not happen when using the UI manually.)
-    await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", {
+      text: "Buy",
+      timeout: timeoutMilliseconds
+    });
     await page.type("input#tr__input--quantity", "0.001", { delay: 100 });
     await page.type("input#tr__input--limit-price", "0.31", { delay: 100 });
     isDisabled = await page.$eval(
@@ -58,8 +87,14 @@ describe("Trading page", () => {
         el => el.disabled
       );
     }
-    await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
-    await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", {
+      text: "Review",
+      timeout: timeoutMilliseconds
+    });
+    await expect(page).toClick("button", {
+      text: "Confirm",
+      timeout: timeoutMilliseconds
+    });
 
     await waitNextBlock(10);
 
@@ -95,7 +130,10 @@ describe("Trading page", () => {
       UnlockedAccounts.SECONDARY_ACCOUNT
     );
 
-    await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", {
+      text: "Buy",
+      timeout: timeoutMilliseconds
+    });
     await page.type("input#tr__input--quantity", "0.002", { delay: 100 });
     await page.type("input#tr__input--limit-price", "0.35", { delay: 100 });
     isDisabled = await page.$eval(
@@ -108,8 +146,14 @@ describe("Trading page", () => {
         el => el.disabled
       );
     }
-    await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
-    await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", {
+      text: "Review",
+      timeout: timeoutMilliseconds
+    });
+    await expect(page).toClick("button", {
+      text: "Confirm",
+      timeout: timeoutMilliseconds
+    });
 
     await waitNextBlock(10);
 
@@ -148,10 +192,19 @@ describe("Trading page", () => {
     );
 
     // Go to Market trading page
-    await expect(page).toClick(".side-nav-styles_SideNav__nav li:nth-child(1)", { text: "Markets", timeout: timeoutMilliseconds });
-    await expect(page).toClick("a", { text: "Will the Larsen B ice shelf collapse by the end of November 2019?", timeout: timeoutMilliseconds });
+    await expect(page).toClick(
+      ".side-nav-styles_SideNav__nav li:nth-child(1)",
+      { text: "Markets", timeout: timeoutMilliseconds }
+    );
+    await expect(page).toClick("a", {
+      text: "Will the Larsen B ice shelf collapse by the end of November 2019?",
+      timeout: timeoutMilliseconds
+    });
 
-    await expect(page).toClick("button", { text: "Sell", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", {
+      text: "Sell",
+      timeout: timeoutMilliseconds
+    });
     await page.type("input#tr__input--quantity", "0.001", { delay: 100 });
     await page.type("input#tr__input--limit-price", "0.28", { delay: 100 });
     let isDisabled = await page.$eval(
@@ -164,8 +217,14 @@ describe("Trading page", () => {
         el => el.disabled
       );
     }
-    await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
-    await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", {
+      text: "Review",
+      timeout: timeoutMilliseconds
+    });
+    await expect(page).toClick("button", {
+      text: "Confirm",
+      timeout: timeoutMilliseconds
+    });
 
     await waitNextBlock(10);
 
@@ -201,7 +260,10 @@ describe("Trading page", () => {
       UnlockedAccounts.SECONDARY_ACCOUNT
     );
 
-    await expect(page).toClick("button", { text: "Sell", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", {
+      text: "Sell",
+      timeout: timeoutMilliseconds
+    });
     await page.type("input#tr__input--quantity", "0.002", { delay: 100 });
     await page.type("input#tr__input--limit-price", "0.25", { delay: 100 });
     isDisabled = await page.$eval(
@@ -214,8 +276,14 @@ describe("Trading page", () => {
         el => el.disabled
       );
     }
-    await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
-    await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", {
+      text: "Review",
+      timeout: timeoutMilliseconds
+    });
+    await expect(page).toClick("button", {
+      text: "Confirm",
+      timeout: timeoutMilliseconds
+    });
 
     await waitNextBlock(10);
 
@@ -251,7 +319,10 @@ describe("Trading page", () => {
       UnlockedAccounts.SECONDARY_ACCOUNT
     );
 
-    await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", {
+      text: "Buy",
+      timeout: timeoutMilliseconds
+    });
     await page.type("input#tr__input--quantity", "0.001", { delay: 100 });
     await page.type("input#tr__input--limit-price", "0.31", { delay: 100 });
     isDisabled = await page.$eval(
@@ -264,8 +335,14 @@ describe("Trading page", () => {
         el => el.disabled
       );
     }
-    await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
-    await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", {
+      text: "Review",
+      timeout: timeoutMilliseconds
+    });
+    await expect(page).toClick("button", {
+      text: "Confirm",
+      timeout: timeoutMilliseconds
+    });
 
     await waitNextBlock(10);
 

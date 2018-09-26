@@ -151,9 +151,12 @@ describe("Account", () => {
       await expect(page).toMatch("Send ETH", {
         timeout: TIMEOUT
       });
-      await expect(page).toMatch("Send 100.0000 ETH to 0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb", {
-        timeout: TIMEOUT
-      });
+      await expect(page).toMatch(
+        "Send 100.0000 ETH to 0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb",
+        {
+          timeout: TIMEOUT
+        }
+      );
       await expect(page).toClick(
         ".notification-styles_Notification__closeButton"
       );
@@ -181,9 +184,12 @@ describe("Account", () => {
       await expect(page).toMatch("Send REP", {
         timeout: TIMEOUT
       });
-      await expect(page).toMatch("Send 10.0000 REP to 0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb", {
-        timeout: TIMEOUT
-      });
+      await expect(page).toMatch(
+        "Send 10.0000 REP to 0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb",
+        {
+          timeout: TIMEOUT
+        }
+      );
       await expect(page).toClick(
         ".notification-styles_Notification__closeButton"
       );

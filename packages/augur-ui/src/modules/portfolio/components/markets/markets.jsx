@@ -10,7 +10,7 @@ import PortfolioStyles from "modules/portfolio/components/portfolio-view/portfol
 import {
   TYPE_TRADE,
   TYPE_REPORT,
-  TYPE_CLOSED
+  TYPE_FINALIZE_MARKET
 } from "modules/markets/constants/link-types";
 import { constants } from "services/augurjs";
 import { CREATE_MARKET } from "modules/routes/constants/views";
@@ -231,7 +231,7 @@ class MyMarkets extends Component {
             history={history}
             toggleFavorite={toggleFavorite}
             loadMarketsInfo={loadMarketsInfo}
-            linkType={TYPE_CLOSED}
+            linkType={TYPE_FINALIZE_MARKET}
             paginationPageParam="final"
             collectMarketCreatorFees={collectMarketCreatorFees}
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}

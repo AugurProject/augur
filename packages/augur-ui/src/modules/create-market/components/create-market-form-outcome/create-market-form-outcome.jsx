@@ -7,7 +7,7 @@ import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import speedomatic from "speedomatic";
 import { uniq, isEmpty } from "lodash";
-import { formatNumber } from "utils/format-number";
+import { formatNumber, cutOffDecimal } from "utils/format-number";
 import {
   YES_NO,
   CATEGORICAL,
@@ -28,6 +28,8 @@ import Styles from "modules/create-market/components/create-market-form-outcome/
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip";
+
+const NUM_DIGITS_LIMIT = 4;
 
 export default class CreateMarketOutcome extends Component {
   static propTypes = {
@@ -161,10 +163,16 @@ export default class CreateMarketOutcome extends Component {
     updateNewMarket(updatedMarket);
   }
 
-  validateScalarNum(value, type) {
+  validateScalarNum(rawValue, type, limitDigits) {
     const { isValid, newMarket, updateNewMarket } = this.props;
     const { currentStep } = newMarket;
     const { scalarType } = this.state;
+
+    let value = rawValue;
+
+    if (limitDigits) {
+      value = cutOffDecimal(value, NUM_DIGITS_LIMIT);
+    }
 
     const updatedMarket = { ...newMarket };
     let scalarSmallNum =
@@ -484,7 +492,8 @@ export default class CreateMarketOutcome extends Component {
                   onChange={e => {
                     this.validateScalarNum(
                       e.target.value,
-                      s.scalarType.MIN_PRICE
+                      s.scalarType.MIN_PRICE,
+                      true
                     );
                   }}
                   onKeyPress={e => keyPressed(e)}
@@ -517,7 +526,8 @@ export default class CreateMarketOutcome extends Component {
                   onChange={e => {
                     this.validateScalarNum(
                       e.target.value,
-                      s.scalarType.MAX_PRICE
+                      s.scalarType.MAX_PRICE,
+                      true
                     );
                   }}
                   onKeyPress={e => keyPressed(e)}
@@ -571,7 +581,8 @@ export default class CreateMarketOutcome extends Component {
                   onChange={e =>
                     this.validateScalarNum(
                       e.target.value,
-                      s.scalarType.DENOMINATION
+                      s.scalarType.DENOMINATION,
+                      false
                     )
                   }
                   onKeyPress={e => keyPressed(e)}
@@ -597,7 +608,8 @@ export default class CreateMarketOutcome extends Component {
                   onChange={e =>
                     this.validateScalarNum(
                       e.target.value,
-                      s.scalarType.TICK_SIZE
+                      s.scalarType.TICK_SIZE,
+                      true
                     )
                   }
                   onKeyPress={e => keyPressed(e)}

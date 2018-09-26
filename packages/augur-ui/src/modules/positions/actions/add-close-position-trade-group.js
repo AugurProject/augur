@@ -6,9 +6,11 @@ export const REMOVE_CLOSE_POSITION_TRADE_GROUP =
 export function addClosePositionTradeGroup(marketId, outcomeId, tradeGroupId) {
   return {
     type: ADD_CLOSE_POSITION_TRADE_GROUP,
-    marketId,
-    outcomeId,
-    tradeGroupId
+    data: {
+      marketId,
+      outcomeId,
+      tradeGroupId
+    }
   };
 }
 
@@ -19,8 +21,10 @@ export function removeClosePositionTradeGroup(
 ) {
   return {
     type: REMOVE_CLOSE_POSITION_TRADE_GROUP,
-    marketId,
-    outcomeId,
-    tradeGroupId
+    data: {
+      marketId,
+      outcomeId,
+      tradeGroupId
+    }
   };
 }

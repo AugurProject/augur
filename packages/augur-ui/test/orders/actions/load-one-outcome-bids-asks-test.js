@@ -67,9 +67,11 @@ describe(`modules/orders/actions/load-one-outcome-bids-asks.js`, () => {
         default: (marketId, outcome, orderTypeLabel, callback) => dispatch => {
           dispatch({
             type: "LOAD_ONE_OUTCOME_BIDS_OR_ASKS",
-            marketId,
-            outcome,
-            orderTypeLabel
+            data: {
+              marketId,
+              outcome,
+              orderTypeLabel
+            }
           });
           callback(null);
         }
@@ -80,15 +82,19 @@ describe(`modules/orders/actions/load-one-outcome-bids-asks.js`, () => {
       assert.deepEqual(actions, [
         {
           type: "LOAD_ONE_OUTCOME_BIDS_OR_ASKS",
-          marketId: "MARKET_0",
-          outcome: 3,
-          orderTypeLabel: "buy"
+          data: {
+            marketId: "MARKET_0",
+            outcome: 3,
+            orderTypeLabel: "buy"
+          }
         },
         {
           type: "LOAD_ONE_OUTCOME_BIDS_OR_ASKS",
-          marketId: "MARKET_0",
-          outcome: 3,
-          orderTypeLabel: "sell"
+          data: {
+            marketId: "MARKET_0",
+            outcome: 3,
+            orderTypeLabel: "sell"
+          }
         }
       ]);
     }
@@ -104,9 +110,11 @@ describe(`modules/orders/actions/load-one-outcome-bids-asks.js`, () => {
         default: (marketId, outcome, orderTypeLabel, callback) => dispatch => {
           dispatch({
             type: "LOAD_ONE_OUTCOME_BIDS_OR_ASKS",
-            marketId,
-            outcome,
-            orderTypeLabel
+            data: {
+              marketId,
+              outcome,
+              orderTypeLabel
+            }
           });
           callback("ERROR_MESSAGE");
         }
@@ -117,9 +125,11 @@ describe(`modules/orders/actions/load-one-outcome-bids-asks.js`, () => {
       assert.deepEqual(actions, [
         {
           type: "LOAD_ONE_OUTCOME_BIDS_OR_ASKS",
-          marketId: "MARKET_0",
-          outcome: 3,
-          orderTypeLabel: "buy"
+          data: {
+            marketId: "MARKET_0",
+            outcome: 3,
+            orderTypeLabel: "buy"
+          }
         }
       ]);
     }
