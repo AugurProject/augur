@@ -116,51 +116,33 @@ export default class FilterSearch extends Component {
           type="light"
         >
           <h4>Search Syntax</h4>
-          Search specific fields,
-          <ul>
-            <li>
-              <b>category:</b> word or phrase
-            </li>
-            <li>
-              <b>title:</b> word or phrase
-            </li>
-            <li>
-              <b>details:</b> word or phrase
-            </li>
-            <li>
-              <b>source:</b> word or phrase
-            </li>
-            <li>
-              <b>tags:</b> word or phrase
-            </li>
-          </ul>
+          <u>Specific field search</u>, prepend the field name:
+          <b> category </b>, <b>title</b>, <b>details</b>, <b>source</b>,{" "}
+          <b>tags</b>
           <p style={{ color: "#372e4b" }} />
           <p>
-            example, <b>title: ethereum</b>, returns only markets with ethereum
-            in market title.
-          </p>
-          <hr />
-          <p>
-            Use a <b>double quoted string</b> to search exact phrase.
+            Example: <b>title: ethereum</b>, returns markets with ethereum in
+            market title.
           </p>
           <p>
-            example, <b>&#34;price of bitcoin&#34;</b>
-          </p>
-          <hr />
-          <p>
-            Use capitalized <b>OR</b> between word(s) and/or phrase(s) to get
-            matches for either word(s) or phrase(s)
+            <u>Exact match</u> Use a <b>double quoted string</b> to search exact
+            phrase.
           </p>
           <p>
-            example, <b>bitcoin OR ethereum OR litecoin</b>
-          </p>
-          <hr />
-          <p>
-            By default words and phrases are ANDed. Markets returned will
-            contain all word(s) and phrase(s)
+            Example: <b>&#34;price of bitcoin&#34;</b>
           </p>
           <p>
-            example, <b>bitcoin ethereum litecoin</b>
+            <u>Either/Or:</u> Use capitalized <b>OR</b> between word(s) and/or
+            phrase(s) to get matches for either word(s) or phrase(s)
+          </p>
+          <p>
+            Example: <b>bitcoin OR ethereum OR litecoin</b>
+          </p>
+          <p>
+            <u>All words</u> Markets will contain all word(s) and phrase(s)
+          </p>
+          <p>
+            Example: <b>bitcoin ethereum litecoin</b>
           </p>
         </ReactTooltip>
         <div
