@@ -11,7 +11,7 @@ describe("modules/modal/actions/update-modal", () => {
       const expected = {
         type: UPDATE_MODAL,
         data: {
-          test: "TEST"
+          modalOptions: { test: "TEST" }
         }
       };
 

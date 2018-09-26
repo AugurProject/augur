@@ -10,28 +10,32 @@ const DEFAULT_STATE = [];
 
 export default function(state = DEFAULT_STATE, { type, data }) {
   switch (type) {
-    case ADD_ORPHANED_ORDER:
-      if (state.findIndex(it => it.orderId === data.orderId) !== -1)
+    case ADD_ORPHANED_ORDER: {
+      const { order } = data;
+      if (state.findIndex(it => it.orderId === order.orderId) !== -1)
         return state;
       return [
         ...state,
         {
           dismissed: false,
-          ...data
+          ...order
         }
       ];
-    case DISMISS_ORPHANED_ORDER:
+    }
+    case DISMISS_ORPHANED_ORDER: {
+      const { orderId } = data;
       return state.map(it => {
-        if (it.orderId !== data) return it;
+        if (it.orderId !== orderId) return it;
         return {
           ...it,
           dismissed: true
         };
       });
-
-    case REMOVE_ORPHANED_ORDER:
-      return state.filter(it => it.orderId !== data);
-
+    }
+    case REMOVE_ORPHANED_ORDER: {
+      const { orderId } = data;
+      return state.filter(it => it.orderId !== orderId);
+    }
     case CLEAR_ORPHANED_ORDER_DATA:
       return DEFAULT_STATE;
 

@@ -6,15 +6,19 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
 
-export default function(participationTokensData = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(
+  participationTokensData = DEFAULT_STATE,
+  { type, data }
+) {
+  switch (type) {
     case UPDATE_PARTICIPATION_TOKENS_DATA: {
+      const { participationTokensDataUpdated } = data;
       const updatedParticipationTokens = Object.keys(
-        action.participationTokensData
+        participationTokensDataUpdated
       ).reduce((p, feeWindowID) => {
         p[feeWindowID] = {
           ...participationTokensData[feeWindowID],
-          ...action.participationTokensData[feeWindowID]
+          ...participationTokensDataUpdated[feeWindowID]
         };
         return p;
       }, {});
@@ -25,12 +29,13 @@ export default function(participationTokensData = DEFAULT_STATE, action) {
       };
     }
     case UPDATE_PARTICIPATION_TOKENS_BALANCE: {
-      if (!action.feeWindowID) return participationTokensData;
+      const { feeWindowID, balance } = data;
+      if (!feeWindowID) return participationTokensData;
       return {
         ...participationTokensData,
-        [action.feeWindowID]: {
-          ...participationTokensData[action.feeWindowID],
-          balance: action.balance
+        [feeWindowID]: {
+          ...participationTokensData[feeWindowID],
+          balance
         }
       };
     }

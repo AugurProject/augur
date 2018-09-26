@@ -6,15 +6,19 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
 
-export default function(disputeCrowdsourcersData = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(
+  disputeCrowdsourcersData = DEFAULT_STATE,
+  { type, data }
+) {
+  switch (type) {
     case UPDATE_DISPUTE_CROWDSOURCERS_DATA: {
+      const { disputeCrowdsourcersDataUpdated } = data;
       const updatedDisputeCrowdsourcers = Object.keys(
-        action.disputeCrowdsourcersData
+        disputeCrowdsourcersDataUpdated
       ).reduce((p, disputeCrowdsourcerID) => {
         p[disputeCrowdsourcerID] = {
           ...disputeCrowdsourcersData[disputeCrowdsourcerID],
-          ...action.disputeCrowdsourcersData[disputeCrowdsourcerID]
+          ...disputeCrowdsourcersDataUpdated[disputeCrowdsourcerID]
         };
         return p;
       }, {});
@@ -25,12 +29,13 @@ export default function(disputeCrowdsourcersData = DEFAULT_STATE, action) {
       };
     }
     case UPDATE_DISPUTE_CROWDSOURCERS_BALANCE: {
-      if (!action.disputeCrowdsourcerID) return disputeCrowdsourcersData;
+      const { disputeCrowdsourcerID, balance } = data;
+      if (!disputeCrowdsourcerID) return disputeCrowdsourcersData;
       return {
         ...disputeCrowdsourcersData,
-        [action.disputeCrowdsourcerID]: {
-          ...disputeCrowdsourcersData[action.disputeCrowdsourcerID],
-          balance: action.balance
+        [disputeCrowdsourcerID]: {
+          ...disputeCrowdsourcersData[disputeCrowdsourcerID],
+          balance
         }
       };
     }

@@ -11,7 +11,7 @@ const PATHS = {
 
 // COMMON CONFIG
 module.exports = {
-  devtool: "eval-source-map",
+  mode: "development",
   entry: {
     // 'assets/styles/styles': `${PATHS.APP}/styles`,
     "assets/scripts/vendor": [
@@ -47,42 +47,43 @@ module.exports = {
     },
     symlinks: false
   },
-  resolveLoader: {
-    moduleExtensions: ["-loader"]
-  },
   module: {
     rules: [
       {
         test: /npm-cli|node-hid/,
-        loader: "null"
+        loader: "null-loader"
       },
       {
-        test: /\.less/,
+        test: /\.less$/,
         enforce: "pre",
-        loader: "import-glob"
+        loader: "import-glob-loader"
       },
       {
-        test: /\.html/,
-        loader: "html",
+        test: /\.html$/,
+        loader: "html-loader",
         query: {
           minimize: true
         }
       },
       {
-        test: /\.jsx?/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: "babel"
+        loader: "babel-loader"
       },
       {
-        test: /\.json/,
-        loader: "json"
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "fonts/"
+            }
+          }
+        ]
       },
       {
-        test: /\.(woff|woff2)/,
-        loader: "file"
-      },
-      {
-        test: /\.less/,
+        test: /\.less$/,
         use: [
           "style-loader",
           {
@@ -97,14 +98,12 @@ module.exports = {
         ]
       },
       {
-        test: /\.css/,
+        test: /\.css$/,
         use: ["style-loader", "postcss-loader"]
       }
     ]
   },
   plugins: [
-    // new config.optimize.ModuleConcatenationPlugin(), // NOTE -- was causing hot-reload errors, removing until diagnosed
-    new webpack.optimize.OccurrenceOrderPlugin(true),
     new CopyWebpackPlugin([
       {
         from: path.resolve(PATHS.APP, "splash.css"),
@@ -131,10 +130,6 @@ module.exports = {
         to: PATHS.BUILD
       }
     ]),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: "common",
-      filename: "assets/scripts/common.js"
-    }),
     new HtmlWebpackPlugin({
       template: path.resolve(PATHS.APP, "index.ejs"),
       environment: process.env.NODE_ENV,
@@ -151,7 +146,6 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       "process.env": {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         GETH_PASSWORD: JSON.stringify(process.env.GETH_PASSWORD),
         ETHEREUM_NETWORK: JSON.stringify(process.env.ETHEREUM_NETWORK || "dev"),
         AUTO_LOGIN: process.env.AUTO_LOGIN || false,

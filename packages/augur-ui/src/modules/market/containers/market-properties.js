@@ -6,6 +6,7 @@ import { determineMarketLinkType } from "modules/markets/helpers/determine-marke
 import MarketProperties from "modules/market/components/market-properties/market-properties";
 import { selectMarket } from "modules/markets/selectors/market";
 import { updateModal } from "modules/modal/actions/update-modal";
+import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 
 const mapStateToProps = (state, ownProps) => ({
   currentTimestamp: selectCurrentTimestamp(state),
@@ -22,7 +23,8 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateModal: modal => dispatch(updateModal(modal))
+  updateModal: modal => dispatch(updateModal(modal)),
+  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId))
 });
 
 const MarketPropertiesContainer = withRouter(

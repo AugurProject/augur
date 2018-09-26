@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import classNames from "classnames";
 
 import { Notifications } from "modules/common/components/icons";
+import ConnectAccount from "modules/auth/containers/connect-account";
 import makePath from "modules/routes/helpers/make-path";
 import { CATEGORIES } from "modules/routes/constants/views";
 import Styles from "modules/app/components/top-bar/top-bar.styles";
@@ -66,20 +67,25 @@ const TopBar = props => (
             </span>
           </div>
         </div>
-        <div className={Styles.TopBar__notifications}>
-          <div className={Styles["TopBar__notifications-container"]}>
-            <button
-              className={Styles["TopBar__notification-icon"]}
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                props.toggleNotifications();
-              }}
-            >
-              {props.unseenCount > 99
-                ? Notifications("99+", "7.4591451")
-                : Notifications(props.unseenCount, "6.4591451")}
-            </button>
+      </div>
+    )}
+    <ConnectAccount />
+    {props.isLogged && (
+      <div
+        className={classNames(Styles.TopBar__notifications, {
+          [Styles.TopBar__notificationsDark]: props.notificationsVisible
+        })}
+        onClick={e => {
+          props.toggleNotifications();
+        }}
+        role="button"
+        tabIndex="-1"
+      >
+        <div className={Styles["TopBar__notifications-container"]}>
+          <div className={Styles["TopBar__notification-icon"]}>
+            {props.unseenCount > 99
+              ? Notifications("99+", "7.4591451")
+              : Notifications(props.unseenCount, "6.4591451")}
           </div>
         </div>
       </div>
@@ -94,7 +100,8 @@ TopBar.propTypes = {
   isLogged: PropTypes.bool.isRequired,
   stats: PropTypes.array.isRequired,
   unseenCount: PropTypes.number.isRequired,
-  toggleNotifications: PropTypes.func.isRequired
+  toggleNotifications: PropTypes.func.isRequired,
+  notificationsVisible: PropTypes.bool.isRequired
 };
 
 export default TopBar;

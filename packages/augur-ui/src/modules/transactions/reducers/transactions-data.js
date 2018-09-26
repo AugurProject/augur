@@ -1,23 +1,23 @@
-import { UPDATE_TRANSACTIONS_DATA } from "modules/transactions/actions/update-transactions-data";
 import {
+  UPDATE_TRANSACTIONS_DATA,
   DELETE_TRANSACTION,
   DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH,
   CLEAR_TRANSACTION_DATA
-} from "modules/transactions/actions/delete-transaction";
+} from "modules/transactions/actions/update-transactions-data";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/auth/actions/update-login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { PENDING } from "modules/transactions/constants/statuses";
 
 const DEFAULT_STATE = {};
 
-export default function(transactionsData = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(transactionsData = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_TRANSACTIONS_DATA:
-      return Object.keys(action.transactionsData).reduce(
+      return Object.keys(data.updatedTransactionsData).reduce(
         (p, transactionId) => {
           p[transactionId] = {
             ...transactionsData[transactionId],
-            ...action.transactionsData[transactionId],
+            ...data.updatedTransactionsData[transactionId],
             id: transactionId
           };
           return p;
@@ -27,8 +27,7 @@ export default function(transactionsData = DEFAULT_STATE, action) {
     case DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH:
       return Object.keys(transactionsData).reduce((p, transactionId) => {
         if (
-          action.transactionHash !==
-          (transactionsData[transactionId] || {}).hash
+          data.transactionHash !== (transactionsData[transactionId] || {}).hash
         ) {
           p[transactionId] = transactionsData[transactionId];
         }
@@ -36,7 +35,7 @@ export default function(transactionsData = DEFAULT_STATE, action) {
       }, {});
     case DELETE_TRANSACTION:
       return Object.keys(transactionsData).reduce((p, transactionId) => {
-        if (action.transactionId !== transactionId) {
+        if (data.transactionId !== transactionId) {
           p[transactionId] = transactionsData[transactionId];
         }
         return p;

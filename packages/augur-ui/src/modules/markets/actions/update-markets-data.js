@@ -10,31 +10,42 @@ export const REMOVE_MARKET = "REMOVE_MARKET";
 
 export const updateMarketsData = marketsData => ({
   type: UPDATE_MARKETS_DATA,
-  marketsData
+  data: { marketsData }
 });
 export const clearMarketsData = () => ({ type: CLEAR_MARKETS_DATA });
 export const updateMarketCategory = (marketId, category) => ({
   type: UPDATE_MARKET_CATEGORY,
-  marketId,
-  category
+  data: {
+    marketId,
+    category
+  }
 });
 export const updateMarketRepBalance = (marketId, repBalance) => ({
   type: UPDATE_MARKET_REP_BALANCE,
-  marketId,
-  repBalance
+  data: {
+    marketId,
+    repBalance
+  }
 });
 export const updateMarketFrozenSharesValue = (marketId, frozenSharesValue) => ({
   type: UPDATE_MARKET_FROZEN_SHARES_VALUE,
-  marketId,
-  frozenSharesValue
+  data: {
+    marketId,
+    frozenSharesValue
+  }
 });
 export const updateMarketsDisputeInfo = marketsDisputeInfo => ({
   type: UPDATE_MARKETS_DISPUTE_INFO,
-  marketsDisputeInfo
+  data: { marketsDisputeInfo }
 });
 export const updateMarketEthBalance = (marketId, ethBalance) => ({
   type: UPDATE_MARKET_ETH_BALANCE,
-  marketId,
-  ethBalance
+  data: {
+    marketId,
+    ethBalance
+  }
 });
-export const removeMarket = marketId => ({ type: REMOVE_MARKET, marketId });
+export const removeMarket = marketId => ({
+  type: REMOVE_MARKET,
+  data: { marketId }
+});

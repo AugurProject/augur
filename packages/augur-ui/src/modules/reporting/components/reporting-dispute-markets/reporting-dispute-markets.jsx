@@ -22,7 +22,7 @@ export default class ReportingDisputeMarkets extends Component {
     loadMarkets: PropTypes.func.isRequired,
     outcomes: PropTypes.object.isRequired,
     isForking: PropTypes.bool.isRequired,
-    forkingMarketId: PropTypes.string.isRequired,
+    forkingMarketId: PropTypes.string,
     pageinationCount: PropTypes.number.isRequired,
     disputableMarketsLength: PropTypes.number,
     forkEndTime: PropTypes.string,
@@ -31,8 +31,8 @@ export default class ReportingDisputeMarkets extends Component {
   };
 
   componentWillMount() {
-    const { loadMarkets } = this.props;
-    loadMarkets();
+    const { loadMarkets, isConnected } = this.props;
+    if (isConnected) loadMarkets();
   }
 
   render() {

@@ -52,7 +52,7 @@ export default function(notifications = DEFAULT_STATE, { data, type }) {
     }
     case REMOVE_NOTIFICATION:
       return notifications.filter(
-        (notification, i) => notification.id !== data
+        (notification, i) => notification.id !== data.id
       );
     case UPDATE_NOTIFICATION:
       return notifications.map((notification, i) => {

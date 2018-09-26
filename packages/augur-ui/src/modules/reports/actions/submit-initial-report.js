@@ -4,7 +4,7 @@ import makePath from "modules/routes/helpers/make-path";
 import logError from "utils/log-error";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 
-export const submitInitialReport = (
+export const submitInitialReport = ({
   estimateGas,
   marketId,
   selectedOutcome,
@@ -12,7 +12,7 @@ export const submitInitialReport = (
   history,
   returnPath = REPORTING_REPORT_MARKETS,
   callback = logError
-) => (dispatch, getState) => {
+}) => (dispatch, getState) => {
   const { loginAccount, marketsData } = getState();
   const outcome = parseFloat(selectedOutcome);
 

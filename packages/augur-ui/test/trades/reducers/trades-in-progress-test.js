@@ -72,7 +72,7 @@ describe(`modules/trades/reducers/trade-in-progress.js`, () => {
   it(`should be able to clear a trade in progress`, () => {
     const testAction = {
       type: CLEAR_TRADE_IN_PROGRESS,
-      marketId: "MarketID2"
+      data: { marketId: "MarketID2" }
     };
 
     const expectedState = {

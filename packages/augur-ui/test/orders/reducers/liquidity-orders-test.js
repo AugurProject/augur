@@ -48,7 +48,7 @@ describe("modules/orders/reducers/liquidity-orders.js", () => {
   test({
     describe: "should handle loading pending liquidity orders",
     assertions: () => {
-      const data = {
+      const pendingLiquidityOrders = {
         marketId: {
           1: [
             { quantity: "3", price: "0.5", type: "bid", estimatedCost: "1.5" }
@@ -57,10 +57,10 @@ describe("modules/orders/reducers/liquidity-orders.js", () => {
       };
       const actual = liquidityOrders(undefined, {
         type: LOAD_PENDING_LIQUIDITY_ORDERS,
-        data
+        data: { pendingLiquidityOrders }
       });
 
-      const expected = data;
+      const expected = pendingLiquidityOrders;
 
       assert.deepEqual(
         actual,
@@ -134,7 +134,7 @@ describe("modules/orders/reducers/liquidity-orders.js", () => {
   test({
     describe: "should handle clearing all market orders",
     assertions: () => {
-      const data = "marketId";
+      const marketId = "marketId";
       const actual = liquidityOrders(
         {
           marketId: {
@@ -163,7 +163,7 @@ describe("modules/orders/reducers/liquidity-orders.js", () => {
             ]
           }
         },
-        { type: CLEAR_ALL_MARKET_ORDERS, data }
+        { type: CLEAR_ALL_MARKET_ORDERS, data: { marketId } }
       );
 
       const expected = {};

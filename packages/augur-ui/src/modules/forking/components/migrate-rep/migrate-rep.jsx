@@ -82,14 +82,14 @@ export default class MigrateRep extends Component {
     const { submitMigrateREP, market } = this.props;
     if (this.state.repAmount !== "") {
       const amount = speedomatic.fix(this.state.repAmount, "hex");
-      submitMigrateREP(
-        true,
-        market.id,
-        this.state.selectedOutcome,
-        this.state.isMarketInValid,
+      submitMigrateREP({
+        estimateGas: true,
+        marketId: market.id,
+        selectedOutcome: this.state.selectedOutcome,
+        invalid: this.state.isMarketInValid,
         amount,
-        null,
-        (err, gasEstimateValue) => {
+        history: null,
+        callback: (err, gasEstimateValue) => {
           if (err) return console.error(err);
 
           const gasPrice = augur.rpc.getGasPrice();
@@ -101,7 +101,7 @@ export default class MigrateRep extends Component {
             )
           });
         }
-      );
+      });
     }
   }
 
@@ -193,14 +193,14 @@ export default class MigrateRep extends Component {
                 <button
                   className={FormStyles.Form__submit}
                   onClick={() =>
-                    submitMigrateREP(
-                      false,
-                      market.id,
-                      s.selectedOutcome,
-                      s.isMarketInValid,
-                      speedomatic.fix(s.repAmount, "hex"),
+                    submitMigrateREP({
+                      estimateGas: false,
+                      marketId: market.id,
+                      selectedOutcome: s.selectedOutcome,
+                      invalid: s.isMarketInValid,
+                      amount: speedomatic.fix(s.repAmount, "hex"),
                       history
-                    )
+                    })
                   }
                 >
                   Submit

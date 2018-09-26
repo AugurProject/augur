@@ -1,4 +1,4 @@
-import { deleteTransactionsWithTransactionHash } from "modules/transactions/actions/delete-transaction";
+import { deleteTransactionsWithTransactionHash } from "modules/transactions/actions/update-transactions-data";
 import { constructTransaction } from "modules/transactions/actions/construct-transaction";
 
 export const updateLoggedTransactions = log => (dispatch, getState) => {

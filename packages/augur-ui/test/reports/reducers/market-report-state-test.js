@@ -30,19 +30,19 @@ describe("market report state", () => {
   });
 
   describe("actions", () => {
-    const payload = ["1", "2", "3"];
+    const marketIds = ["1", "2", "3"];
 
     describe("UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS action", () => {
       it("should replace upcoming attribute with data payload", () => {
         const result = reducer(defaultState, {
           type: UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS,
-          data: payload
+          data: { marketIds }
         });
         assert.deepEqual(
           {
             designated: [],
             open: [],
-            upcoming: payload,
+            upcoming: marketIds,
             awaiting: [],
             dispute: [],
             resolved: []
@@ -56,11 +56,11 @@ describe("market report state", () => {
       it("should replace designated attribute with data payload", () => {
         const result = reducer(defaultState, {
           type: UPDATE_DESIGNATED_REPORTING_MARKETS,
-          data: payload
+          data: { marketIds }
         });
         assert.deepEqual(
           {
-            designated: payload,
+            designated: marketIds,
             open: [],
             upcoming: [],
             awaiting: [],
@@ -76,12 +76,12 @@ describe("market report state", () => {
       it("should replace open attribute with data payload", () => {
         const result = reducer(defaultState, {
           type: UPDATE_OPEN_REPORTING_MARKETS,
-          data: payload
+          data: { marketIds }
         });
         assert.deepEqual(
           {
             designated: [],
-            open: payload,
+            open: marketIds,
             upcoming: [],
             awaiting: [],
             dispute: [],
@@ -96,7 +96,7 @@ describe("market report state", () => {
       it("should replace open attribute with data payload", () => {
         const result = reducer(defaultState, {
           type: UPDATE_AWAITING_DISPUTE_MARKETS,
-          data: payload
+          data: { marketIds }
         });
         assert.deepEqual(
           {
@@ -104,7 +104,7 @@ describe("market report state", () => {
             open: [],
             upcoming: [],
             resolved: [],
-            awaiting: payload,
+            awaiting: marketIds,
             dispute: []
           },
           result
@@ -116,7 +116,7 @@ describe("market report state", () => {
       it("should replace open attribute with data payload", () => {
         const result = reducer(defaultState, {
           type: UPDATE_CROWD_DISPUTE_MARKETS,
-          data: payload
+          data: { marketIds }
         });
         assert.deepEqual(
           {
@@ -125,7 +125,7 @@ describe("market report state", () => {
             upcoming: [],
             resolved: [],
             awaiting: [],
-            dispute: payload
+            dispute: marketIds
           },
           result
         );
@@ -136,14 +136,14 @@ describe("market report state", () => {
       it("should replace resolved attribute with data payload", () => {
         const result = reducer(defaultState, {
           type: UPDATE_RESOLVED_REPORTING_MARKETS,
-          data: payload
+          data: { marketIds }
         });
         assert.deepEqual(
           {
             designated: [],
             open: [],
             upcoming: [],
-            resolved: payload,
+            resolved: marketIds,
             awaiting: [],
             dispute: []
           },
@@ -156,7 +156,7 @@ describe("market report state", () => {
       it("should return default state", () => {
         const result = reducer(
           { randomattr: [] },
-          { type: RESET_STATE, data: payload }
+          { type: RESET_STATE, data: { marketIds } }
         );
         assert.deepEqual(defaultState, result);
       });

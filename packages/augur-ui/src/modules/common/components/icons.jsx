@@ -94,68 +94,70 @@ export const ExportIcon = (
 
 export const Ledger = (
   <svg
-    id="851e3d33-36d6-418a-b807-c2fa479dc650"
-    data-name="Layer 1"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 25 25"
+    width="18px"
+    height="18px"
+    viewBox="0 0 18 18"
+    version="1.1"
+    xmlns="http://www.w3.org/1999/xlink"
   >
-    <defs>
-      <style>
-        {`.\\32 c7d4756-5441-4b6b-b846-659c95fc7d51 {
-            fill: none;
-            stroke: #fff;
-            stroke-miterlimit: 10;
-          }`}
-      </style>
-    </defs>
-    <title>ledger</title>
-    <g>
-      <path
-        className="2c7d4756-5441-4b6b-b846-659c95fc7d51"
-        d="M19.77,19V24.5h4a.73.73,0,0,0,.73-.73V19Z"
-      />
-      <rect
-        className="2c7d4756-5441-4b6b-b846-659c95fc7d51"
-        x="10.68"
-        y="19.05"
-        width="4.73"
-        height="5.45"
-      />
-      <path
-        className="2c7d4756-5441-4b6b-b846-659c95fc7d51"
-        d="M10.68,14.68H24.5V1.23A.73.73,0,0,0,23.77.5H10.68Z"
-      />
-      <rect
-        className="2c7d4756-5441-4b6b-b846-659c95fc7d51"
-        x="0.5"
-        y="11.05"
-        width="5.82"
-        height="3.64"
-      />
-      <path
-        className="2c7d4756-5441-4b6b-b846-659c95fc7d51"
-        d="M6.32,6.68V.5H1.23a.73.73,0,0,0-.73.73V6.68Z"
-      />
-      <path
-        className="2c7d4756-5441-4b6b-b846-659c95fc7d51"
-        d="M6.32,19H.5v4.73a.73.73,0,0,0,.73.73H6.32Z"
-      />
+    <defs />
+    <g
+      id="Create/Connect-Account"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="SoftwareWalletDisconnectedActive"
+        transform="translate(-24.000000, -239.000000)"
+        fill="#FFFFFF"
+        fillRule="nonzero"
+      >
+        <g id="dropdown" transform="translate(0.000000, 72.000000)">
+          <g id="ledger" transform="translate(0.000000, 152.000000)">
+            <g id="ledgerLogo" transform="translate(24.000000, 15.000000)">
+              <path d="M15.1127835,0 L6.82994618,0 L6.82994618,11.1103292 L17.9461595,11.1103292 L17.9461475,2.89067605 C17.9506737,1.32998241 16.674302,1.60715874e-16 15.1127835,0 Z M4.28625516,0 L2.89672999,0 C1.33521148,0 0,1.27117366 0,2.8951998 L0,4.28399095 L4.28625516,4.28399095 L4.28625516,0 Z M0,6.88514702 L4.28625516,6.88514702 L4.28625516,11.169138 L0,11.169138 L0,6.88514702 Z M13.6644185,17.9954763 L15.0539437,17.9954763 C16.6154622,17.9954763 17.9506737,16.7243026 17.9506737,15.1002765 L17.9506737,13.716009 L13.6644185,13.716009 L13.6644185,17.9954763 Z M6.82994618,13.716009 L11.1162013,13.716009 L11.1162013,18 L6.82994618,18 L6.82994618,13.716009 Z M0,13.716009 L0,15.1048002 C0,16.6654938 1.27184551,18 2.89672999,18 L4.28625516,18 L4.28625516,13.716009 L0,13.716009 Z" />
+            </g>
+          </g>
+        </g>
+      </g>
     </g>
   </svg>
 );
 
 export const Edge = (
   <svg
-    id="5146e58a-82e2-4f67-a236-2c765e0c2589"
+    width="18px"
+    height="18px"
+    viewBox="0 0 18 18"
+    version="1.1"
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 100 90"
   >
-    <title>Edge</title>
-    <path
-      style={{ stroke: "#ffffff", strokeWidth: 2 }}
-      id="Combined-Shape"
-      d="M97.2816934,16.4998357 L61.1033863,16.4998357 L48.3660257,51.0653264 L24.1402173,51.0628958 L10.7170264,87.4988463 L71.1236286,87.4988463 L97.2816934,16.4998357 Z M60.4061504,15.4998357 L98.7158329,15.4998357 L71.8209109,88.4988463 L9.28291856,88.4988463 L23.4429455,50.0628259 L47.6688155,50.0652565 L60.4061504,15.4998357 Z M22.2869673,4.54686471 L8.71982374,40.7888235 L40.7024059,40.7888235 L54.2599205,4.54686471 L22.2869673,4.54686471 Z M41.3960015,41.7888235 L7.27770258,41.7888235 L21.5935443,3.54686471 L55.7016829,3.54686471 L41.3960015,41.7888235 Z"
-    />
+    <defs />
+    <g
+      id="Create/Connect-Account"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="SoftwareWalletDisconnectedActive"
+        transform="translate(-24.000000, -143.000000)"
+        fill="#FFFFFF"
+        fillRule="nonzero"
+      >
+        <g id="dropdown" transform="translate(0.000000, 72.000000)">
+          <g id="edge" transform="translate(0.000000, 56.000000)">
+            <path
+              d="M26.7901934,15 L33.4904666,15 L30.5986628,22.673431 L24,22.673431 L26.7901934,15 Z M31.8857655,24.4729727 L34.4520286,17.5466409 L41.974343,17.5466409 L36.6694783,32.0513509 L24.2990517,32.0513509 L27.0278822,24.4155608 L31.8857655,24.4729727 Z"
+              id="edgeLogo"
+            />
+          </g>
+        </g>
+      </g>
+    </g>
   </svg>
 );
 
@@ -190,37 +192,33 @@ export const uPort = (
 
 export const Trezor = (
   <svg
-    id="95007830-37d6-4982-8573-1f6d27b2f0dd"
-    data-name="Layer 1"
+    width="13px"
+    height="18px"
+    viewBox="0 0 13 18"
+    version="1.1"
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 30.28 45.2"
   >
-    <defs>
-      <style>
-        {`.\\33 e03130b-26ad-44ba-9a96-afce36420a03 {
-            fill: none;
-            stroke: #fff;
-          }`}
-      </style>
-    </defs>
-    <title>Trezor</title>
-    <g id="053ac296-c68d-46df-b61c-170cfcd30748" data-name="Symbols">
-      <g id="a9ff1b5b-ad6d-4890-8b84-13afa64d537d" data-name="Icon/Trezor">
-        <g id="34d6c3e5-5684-402c-982b-e7ed12c2fb56" data-name="Page-1">
-          <path
-            id="da272c69-7d51-4842-933a-edff0f4f6a71"
-            data-name="Stroke-1"
-            className="3e03130b-26ad-44ba-9a96-afce36420a03"
-            d="M35.34,18.57V13.7a11.78,11.78,0,0,0-23.56,0v4.87Q17.67,18,23.56,18T35.34,18.57Z"
-            transform="translate(-8.42 -1.42)"
-          />
-          <path
-            id="75d68b99-d377-4392-9a37-cbc55eba2e6a"
-            data-name="Stroke-3"
-            className="3e03130b-26ad-44ba-9a96-afce36420a03"
-            d="M11.78,18.57c-1,.09-1.9.18-2.86.3V40l14.93,6.08L38.2,40V18.87c-1-.11-1.9-.21-2.86-.3"
-            transform="translate(-8.42 -1.42)"
-          />
+    <defs />
+    <g
+      id="Create/Connect-Account"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="SoftwareWalletDisconnectedActive"
+        transform="translate(-27.000000, -191.000000)"
+        fill="#FFFFFF"
+        fillRule="nonzero"
+      >
+        <g id="dropdown" transform="translate(0.000000, 72.000000)">
+          <g id="trezor" transform="translate(0.000000, 104.000000)">
+            <path
+              d="M37.5237142,20.5296365 L39.326924,20.5296365 L39.326924,30.1125063 L39.3145205,30.1125063 L33.1636759,33 L27.0124035,30.1125063 L27,30.1125063 L27,20.5296365 L28.8040653,20.5296365 L28.8040653,19.1842878 C28.8040653,16.8773006 30.760394,15 33.1645313,15 C35.5673854,15 37.5237142,16.8773006 37.5237142,19.1842878 L37.5237142,20.5296365 Z M36.8462273,28.5187988 L36.8462273,22.7781863 L29.4806967,22.7781863 L29.4806967,28.5187988 L33.1636759,30.2435607 L36.8462273,28.5187988 Z M31.0405417,19.1842878 L31.0405417,20.5296365 L35.2872378,20.5296365 L35.2872378,19.1842878 C35.2872378,18.1165167 34.3343081,17.2476904 33.1645313,17.2476904 C31.9934714,17.2476904 31.0405417,18.1165167 31.0405417,19.1842878 Z"
+              id="trezorLogo"
+            />
+          </g>
         </g>
       </g>
     </g>
@@ -345,80 +343,69 @@ export const Key = (
 
 export const MetaMask = (
   <svg
-    id="c4506631-ac2b-422f-a95b-84a8a4c4482a"
-    data-name="Layer 1"
+    width="19px"
+    height="20px"
+    viewBox="0 0 19 20"
+    version="1.1"
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 41.89 45.08"
   >
-    <defs>
-      <style>
-        {`
-          .\\36 2c8b009-d5dc-4d34-b47d-9b2663c59e03, .a77395d2-2c0c-4381-9940-a909fb55ffd3 {
-            fill: none;
-            stroke: #fff;
-            strokeLinejoin: round;
-          }
-
-          .a77395d2-2c0c-4381-9940-a909fb55ffd3 {
-            strokeLinecap: round;
-          }
-        `}
-      </style>
-    </defs>
-    <title>Metamask</title>
-    <g id="d298480b-ab61-442c-9693-56e6bc77e210" data-name="Symbols">
-      <g id="498f43ba-ff6a-4d7a-a447-f176e542e633" data-name="Icon/Metamask">
-        <g id="0fa8c596-f75b-4e5f-b8dd-406a311cf7f6" data-name="Page-1">
-          <g id="00607a21-9cef-4a9c-9bdb-f783ebf11a71" data-name="Group-5">
-            <polygon
-              id="b39a4b7d-97f6-4f21-b47f-b27ad33a82c4"
-              data-name="Stroke-1"
-              className="a77395d2-2c0c-4381-9940-a909fb55ffd3"
-              points="13.24 0.5 18.02 6.34 26.52 6.34 40.86 2.62 36.61 13.78 38.2 15.37 37.14 16.43 38.2 16.96 37.14 18.02 37.67 19.62 36.28 22.54 36.08 25.46 36.61 29.18 36.61 33.42 39.8 37.14 41.39 38.2 40.33 40.86 37.14 44.58 31.3 44.58 17.88 39.92 4.22 44.58 0.5 35.02 5.81 22.8 3.69 20.68 5.28 20.15 2.62 18.56 4.75 18.02 2.09 16.43 3.69 15.9 3.69 13.24 6.87 6.87 13.24 0.5"
-            />
-            <polyline
-              id="304d2004-82b8-43d4-b4ff-1af5aed312a7"
-              data-name="Stroke-3"
-              className="a77395d2-2c0c-4381-9940-a909fb55ffd3"
-              points="40.06 37.41 37.41 37.41 36.88 38.47 36.88 41.66 40.01 41.17"
-            />
+    <defs />
+    <g
+      id="Create/Connect-Account"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="SoftwareWalletDisconnectedActive"
+        transform="translate(-23.000000, -94.000000)"
+        stroke="#FFFFFF"
+      >
+        <g id="dropdown" transform="translate(0.000000, 72.000000)">
+          <g id="metaMask" transform="translate(0.000000, 8.000000)">
+            <g id="metamaskLogo" transform="translate(23.909091, 15.000000)">
+              <polygon
+                id="Stroke-1"
+                strokeLinecap="round"
+                points="5.42289817 0.156604444 7.37789817 2.49299556 10.8538254 2.49299556 16.7192436 1.00627556 14.98128 5.46684444 15.6332255 6.10389332 15.1983164 6.52872888 15.6332255 6.74135112 15.1983164 7.16618668 15.4157709 7.80364444 14.8453709 8.97184 14.7638255 10.1400356 14.98128 11.6267556 14.98128 13.3260978 16.2847527 14.8128178 16.93628 15.2376533 16.5017891 16.2995378 15.1983164 17.7866667 12.8088254 17.7866667 7.31809816 15.9229511 1.72951637 17.7866667 0.209007273 13.9635556 2.38146182 9.07774224 1.51248 8.22807112 2.16442546 8.01585776 1.07798909 7.37880888 1.94697091 7.16618668 0.860952727 6.52872888 1.51248 6.31651556 1.51248 5.25463112 2.81595273 2.70561778"
+              />
+              <polyline
+                id="Stroke-3"
+                strokeLinecap="round"
+                points="16.3932291 14.9191289 15.3072109 14.9191289 15.0897564 15.3439644 15.0897564 16.6184711 16.3719018 16.4267022"
+              />
+              <polygon
+                id="Stroke-6"
+                strokeLinecap="round"
+                points="14.1816431 10.6363636 14.7272727 11.2907831 13.9090909 11.4545455"
+              />
+              <polygon
+                id="Stroke-7"
+                strokeLinecap="round"
+                points="9.74372357 10.6363636 10.6363636 12.2727273 8.18181818 11.7272728"
+              />
+              <polyline
+                id="Stroke-8"
+                points="7.31079802 2.45454545 9 5.11343951 5.62159599 8.7952577 2.45454545 9"
+              />
+              <polyline
+                id="Stroke-9"
+                strokeLinecap="round"
+                points="8.75830948 13.9090909 14.7272727 15.645097 7.36363636 16.3636364"
+              />
+              <polyline
+                id="Stroke-10"
+                strokeLinecap="round"
+                points="9 13.0909091 6.38165021 10.6363637 5.72727273 9"
+              />
+              <polyline
+                id="Stroke-11"
+                strokeLinecap="round"
+                points="14.7272727 14.7272727 11.6590768 11.802648 11.0452014 10.1314339 9 4.90909091"
+              />
+            </g>
           </g>
-          <polygon
-            id="67fe00ad-2767-49c5-8557-9e1b3030e1c1"
-            data-name="Stroke-6"
-            className="a77395d2-2c0c-4381-9940-a909fb55ffd3"
-            points="34.22 26.25 35.28 28.38 33.69 28.91 34.22 26.25"
-          />
-          <polygon
-            id="f0b6dbd3-0bf4-47d2-891f-9900aeba1030"
-            data-name="Stroke-7"
-            className="a77395d2-2c0c-4381-9940-a909fb55ffd3"
-            points="24.13 26.79 26.25 29.97 20.41 28.91 24.13 26.79"
-          />
-          <polyline
-            id="ea9aaffe-ae35-44e0-a60f-2cc205d607d6"
-            data-name="Stroke-8"
-            className="62c8b009-d5dc-4d34-b47d-9b2663c59e03"
-            points="17.76 6.08 22.01 12.98 13.51 22.54 5.54 23.07"
-          />
-          <polyline
-            id="8940912d-65b4-40d4-899b-a86fe3b92c36"
-            data-name="Stroke-9"
-            className="a77395d2-2c0c-4381-9940-a909fb55ffd3"
-            points="21.48 33.16 36.88 37.94 17.88 39.91"
-          />
-          <polyline
-            id="0ea7cb76-fe1b-4713-b139-91e8a28603e9"
-            data-name="Stroke-10"
-            className="a77395d2-2c0c-4381-9940-a909fb55ffd3"
-            points="21.48 33.16 15.1 26.79 13.51 22.54"
-          />
-          <polyline
-            id="cbfb7bf6-3149-4b6a-9cc4-f2dec64acb3b"
-            data-name="Stroke-11"
-            className="a77395d2-2c0c-4381-9940-a909fb55ffd3"
-            points="36.88 37.94 28.91 30.5 27.32 26.25 22.01 12.98"
-          />
         </g>
       </g>
     </g>
@@ -894,6 +881,61 @@ export const CloseWithCircle = (
         rx=".5"
         transform="rotate(-135 16.5 16.5)"
       />
+    </g>
+  </svg>
+);
+
+export const ChevronFlipIcon = (className = "", fillColor = "#A7A2B2") => (
+  <svg className={className} viewBox="0 0 16 16">
+    <g
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <g stroke={fillColor}>
+        <polyline
+          transform="translate(8.156854, 11.156854) scale(1, -1) rotate(-225.000000) translate(-8.156854, -11.156854) "
+          points="3.65685425 6.65685425 12.6568542 6.65685425 12.6568542 15.6568542"
+        />
+      </g>
+    </g>
+  </svg>
+);
+
+export const ChevronFlipFilledIcon = (className = "", fillColor = "#FFF") => (
+  <svg
+    width="12px"
+    height="8px"
+    viewBox="0 0 12 8"
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <defs />
+    <g
+      id="Create/Connect-Account"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="SoftwareWalletDisconnectedInactive"
+        transform="translate(-281.000000, -32.000000)"
+        fill={fillColor}
+        fillRule="nonzero"
+      >
+        <g id="connectWallet" transform="translate(125.000000, 0.000000)">
+          <polygon
+            id="Triangle"
+            transform="translate(162.000000, 36.000000) scale(1, -1) translate(-162.000000, -36.000000) "
+            points="162 32 168 40 156 40"
+          />
+        </g>
+      </g>
     </g>
   </svg>
 );
@@ -1536,6 +1578,105 @@ export const showMore = (
                 cx="9"
                 cy="6"
                 r="1"
+              />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
+export const errorIcon = (
+  <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+    <defs />
+    <g id="Design" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g id="Error-Message" transform="translate(-24.000000, -607.000000)">
+        <g id="error" transform="translate(24.000000, 607.000000)">
+          <g id="Icon/Error">
+            <g>
+              <circle id="Oval" fill="#FF0050" cx="8" cy="8" r="8" />
+              <path
+                d="M8.87821659,10.1462941 L6.93119318,10.1462941 L6.62451916,3.05 L9.1848906,3.05 L8.87821659,10.1462941 Z M6.55319962,12.3571998 C6.55319962,12.005355 6.68038486,11.7165137 6.93475916,11.4906674 C7.18913345,11.2648211 7.50650222,11.1518996 7.886875,11.1518996 C8.26724777,11.1518996 8.58461655,11.2648211 8.83899084,11.4906674 C9.09336513,11.7165137 9.22055037,12.005355 9.22055037,12.3571998 C9.22055037,12.7090446 9.09336513,12.9978859 8.83899084,13.2237322 C8.58461655,13.4495785 8.26724777,13.5625 7.886875,13.5625 C7.50650222,13.5625 7.18913345,13.4495785 6.93475916,13.2237322 C6.68038486,12.9978859 6.55319962,12.7090446 6.55319962,12.3571998 Z"
+                id="!"
+                fill="#FFFFFF"
+                transform="translate(7.886875, 8.306250) scale(-1, 1) translate(-7.886875, -8.306250) "
+              />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
+export const prevIcon = (
+  <svg
+    width="7px"
+    height="11px"
+    viewBox="0 0 7 11"
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs />
+    <g
+      id="Create/Connect-Account"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="hardWareWalletDisconnectedAddressesLoadedHover"
+        transform="translate(-24.000000, -406.000000)"
+        fill="#FFFFFF"
+        fillRule="nonzero"
+      >
+        <g id="dropdown" transform="translate(-1.000000, 72.000000)">
+          <g id="derivationPath" transform="translate(0.000000, 152.000000)">
+            <g id="previous" transform="translate(25.000000, 179.000000)">
+              <polygon
+                id="TrianglePrevious"
+                transform="translate(3.333333, 8.083333) rotate(-90.000000) translate(-3.333333, -8.083333) "
+                points="3.33333333 4.75 8.33333333 11.4166667 -1.66666667 11.4166667"
+              />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
+export const nextIcon = (
+  <svg
+    width="7px"
+    height="11px"
+    viewBox="0 0 7 11"
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs />
+    <g
+      id="Create/Connect-Account"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="hardWareWalletDisconnectedAddressesLoadedHover"
+        transform="translate(-156.000000, -406.000000)"
+        fill="#FFFFFF"
+        fillRule="nonzero"
+      >
+        <g id="dropdown" transform="translate(-1.000000, 72.000000)">
+          <g id="derivationPath" transform="translate(0.000000, 152.000000)">
+            <g id="next" transform="translate(119.000000, 179.000000)">
+              <polygon
+                id="TriangleNext"
+                transform="translate(41.333333, 8.083333) scale(-1, 1) rotate(-90.000000) translate(-41.333333, -8.083333) "
+                points="41.3333333 4.75 46.3333333 11.4166667 36.3333333 11.4166667"
               />
             </g>
           </g>

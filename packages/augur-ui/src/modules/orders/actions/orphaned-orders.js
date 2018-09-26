@@ -14,17 +14,17 @@ export const CLEAR_ORPHANED_ORDER_DATA = "CLEAR_TRANSACTION_DATA";
 
 export const addOrphanedOrder = order => ({
   type: ADD_ORPHANED_ORDER,
-  data: order
+  data: { order }
 });
 
 export const removeOrphanedOrder = orderId => ({
   type: REMOVE_ORPHANED_ORDER,
-  data: orderId
+  data: { orderId }
 });
 
 export const dismissOrphanedOrder = ({ orderId }) => ({
   type: DISMISS_ORPHANED_ORDER,
-  data: orderId
+  data: { orderId }
 });
 
 export const cancelOrphanedOrder = (

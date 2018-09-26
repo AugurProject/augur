@@ -7,7 +7,7 @@ import {
   TRANSACTIONS_LOADING,
   updateAppStatus
 } from "modules/app/actions/update-app-status";
-import { clearTransactions } from "modules/transactions/actions/delete-transaction";
+import { clearTransactions } from "modules/transactions/actions/update-transactions-data";
 import { augur } from "services/augurjs";
 
 export const loadAccountHistory = (beginTime, endTime) => (

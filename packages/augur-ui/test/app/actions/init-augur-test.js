@@ -138,7 +138,13 @@ describe("modules/app/actions/init-augur.js", () => {
             contracts: { addresses: { 4: { Universe: "0xb0b" } } },
             rpc: {
               getNetworkID: () => 4,
-              eth: { accounts: cb => cb(null, ["0xa11ce"]) }
+              eth: { accounts: cb => cb(null, ["0xa11ce"]) },
+              constants: {
+                ACCOUNT_TYPES: {
+                  UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+                  META_MASK: "metaMask"
+                }
+              }
             },
             api: { Controller: { stopped: () => {} } }
           }
@@ -178,134 +184,7 @@ describe("modules/app/actions/init-augur.js", () => {
         );
       }
     });
-    test({
-      description: "Should InitAugur successfully, not logged in",
-      assertions: done => {
-        ReWireModule.__Rewire__("AugurJS", {
-          connect: (env, cb) => {
-            cb(null, {
-              ethereumNode: {
-                ...ethereumNodeConnectionInfo,
-                contracts: {},
-                abi: {
-                  functions: {},
-                  events: {}
-                }
-              },
-              augurNode: augurNodeWS
-            });
-          },
-          augur: {
-            contracts: { addresses: { 4: { Universe: "0xb0b" } } },
-            rpc: {
-              getNetworkID: () => 4,
-              eth: { accounts: cb => cb(null, []) }
-            },
-            api: { Controller: { stopped: () => {} } }
-          }
-        });
 
-        store.dispatch(
-          initAugur({}, {}, (err, connInfo) => {
-            assert.isUndefined(
-              err,
-              "callback passed to initAugur had a first argument when expecting undefined."
-            );
-            assert.isUndefined(
-              connInfo,
-              "callback passed to initAugur had a second argument when expecting undefined."
-            );
-            done();
-          })
-        );
-
-        const expected = [
-          { type: "UPDATE_ENV" },
-          { type: "UPDATE_CONNECTION_STATUS" },
-          { type: "UPDATE_CONTRACT_ADDRESSES" },
-          { type: "UPDATE_FUNCTIONS_API" },
-          { type: "UPDATE_EVENTS_API" },
-          { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
-          { type: "REGISTER_TRANSACTION_RELAY" },
-          { type: "LOAD_UNIVERSE" },
-          { type: "CLOSE_MODAL" },
-          { type: "LOGOUT" }
-        ];
-
-        assert.deepEqual(
-          store.getActions(),
-          expected,
-          `Didn't fire the expected actions`
-        );
-      }
-    });
-    test({
-      description:
-        "Should InitAugur successfully, not logged in, unexpectedNetworkId",
-      assertions: done => {
-        ReWireModule.__Rewire__("AugurJS", {
-          connect: (env, cb) => {
-            cb(null, {
-              ethereumNode: {
-                ...ethereumNodeConnectionInfo,
-                contracts: {},
-                abi: {
-                  functions: {},
-                  events: {}
-                }
-              },
-              augurNode: augurNodeWS
-            });
-          },
-          augur: {
-            contracts: {
-              addresses: {
-                4: { Universe: "0xb0b" },
-                3: { Universe: "0xc41231e2" }
-              }
-            },
-            rpc: {
-              getNetworkID: () => 3,
-              eth: { accounts: cb => cb(null, []) }
-            },
-            api: { Controller: { stopped: () => {} } }
-          }
-        });
-
-        store.dispatch(
-          initAugur({}, {}, (err, connInfo) => {
-            assert.isUndefined(
-              err,
-              "callback passed to initAugur had a first argument when expecting undefined."
-            );
-            assert.isUndefined(
-              connInfo,
-              "callback passed to initAugur had a second argument when expecting undefined."
-            );
-            done();
-          })
-        );
-
-        const expected = [
-          { type: "UPDATE_ENV" },
-          { type: "UPDATE_CONNECTION_STATUS" },
-          { type: "UPDATE_CONTRACT_ADDRESSES" },
-          { type: "UPDATE_FUNCTIONS_API" },
-          { type: "UPDATE_EVENTS_API" },
-          { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
-          { type: "REGISTER_TRANSACTION_RELAY" },
-          { type: "LOAD_UNIVERSE" },
-          { type: "UPDATE_MODAL" },
-          { type: "LOGOUT" }
-        ];
-
-        assert.deepEqual(
-          store.getActions(),
-          expected,
-          `Didn't fire the expected actions`
-        );
-      }
-    });
     describe("connectAugur", () => {
       const test = t => it(t.description, done => t.assertions(done));
 
@@ -331,7 +210,13 @@ describe("modules/app/actions/init-augur.js", () => {
               contracts: { addresses: { 4: { Universe: "0xb0b" } } },
               rpc: {
                 getNetworkID: () => 4,
-                eth: { accounts: cb => cb(null, ["0xa11ce"]) }
+                eth: { accounts: cb => cb(null, ["0xa11ce"]) },
+                constants: {
+                  ACCOUNT_TYPES: {
+                    UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+                    META_MASK: "metaMask"
+                  }
+                }
               },
               api: { Controller: { stopped: () => {} } }
             }
@@ -391,7 +276,13 @@ describe("modules/app/actions/init-augur.js", () => {
               contracts: { addresses: { 4: { Universe: "0xb0b" } } },
               rpc: {
                 getNetworkID: () => 4,
-                eth: { accounts: cb => cb(null, []) }
+                eth: { accounts: cb => cb(null, []) },
+                constants: {
+                  ACCOUNT_TYPES: {
+                    UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+                    META_MASK: "metaMask"
+                  }
+                }
               },
               api: { Controller: { stopped: () => {} } }
             }
@@ -454,7 +345,13 @@ describe("modules/app/actions/init-augur.js", () => {
               },
               rpc: {
                 getNetworkID: () => 4,
-                eth: { accounts: cb => cb(null, []) }
+                eth: { accounts: cb => cb(null, []) },
+                constants: {
+                  ACCOUNT_TYPES: {
+                    UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+                    META_MASK: "metaMask"
+                  }
+                }
               }
             }
           });
@@ -513,7 +410,13 @@ describe("modules/app/actions/init-augur.js", () => {
               },
               rpc: {
                 getNetworkID: () => 4,
-                eth: { accounts: cb => cb(null, []) }
+                eth: { accounts: cb => cb(null, []) },
+                constants: {
+                  ACCOUNT_TYPES: {
+                    UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+                    META_MASK: "metaMask"
+                  }
+                }
               }
             }
           });
@@ -567,7 +470,13 @@ describe("modules/app/actions/init-augur.js", () => {
               },
               rpc: {
                 getNetworkID: () => 4,
-                eth: { accounts: cb => cb(null, []) }
+                eth: { accounts: cb => cb(null, []) },
+                constants: {
+                  ACCOUNT_TYPES: {
+                    UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+                    META_MASK: "metaMask"
+                  }
+                }
               }
             }
           });

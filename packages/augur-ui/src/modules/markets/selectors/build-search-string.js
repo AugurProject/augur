@@ -1,5 +1,10 @@
 export const buildSearchString = (keywords, tags) => {
   const MIN_KEYWORDS_LENGTH = 1;
+  const propertyTranslation = [
+    { find: "title:", replace: "shortDescription:" },
+    { find: "details:", replace: "longDescription:" },
+    { find: "source:", replace: "resolutionSource:" }
+  ];
 
   let keywordSearch =
     keywords && keywords.length > MIN_KEYWORDS_LENGTH ? keywords : undefined;
@@ -16,5 +21,10 @@ export const buildSearchString = (keywords, tags) => {
   const search =
     terms && terms.length > 1 ? terms.join(" OR ").trim(" OR ") : terms[0];
 
-  return search;
+  if (!search) return;
+
+  return propertyTranslation.reduce(
+    (p, property) => p.replace(property.find, property.replace, search),
+    search
+  );
 };
