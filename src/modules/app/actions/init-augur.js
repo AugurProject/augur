@@ -31,6 +31,7 @@ import {
 import { DISCLAIMER_SEEN } from "src/modules/modal/constants/local-storage-keys";
 import { windowRef } from "src/utils/window-ref";
 
+const { ACCOUNT_TYPES } = AugurJS.augur.rpc.constants;
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -41,17 +42,23 @@ const NETWORK_NAMES = {
 };
 
 function pollForAccount(dispatch, getState, callback) {
-  const { env } = getState();
-  loadAccount(dispatch, null, env, (err, loadedAccount) => {
+  const { loginAccount } = getState();
+  let accountType =
+    loginAccount && loginAccount.meta && loginAccount.meta.accountType;
+
+  loadAccount(dispatch, null, accountType, (err, loadedAccount) => {
     if (err) {
       console.error(err);
       return callback(err);
     }
     let account = loadedAccount;
     setInterval(() => {
-      const { authStatus } = getState();
+      const { authStatus, loginAccount } = getState();
+      accountType =
+        loginAccount && loginAccount.meta && loginAccount.meta.accountType;
+
       if (authStatus.isLogged) {
-        loadAccount(dispatch, account, env, (err, loadedAccount) => {
+        loadAccount(dispatch, account, accountType, (err, loadedAccount) => {
           if (err) console.error(err);
           account = loadedAccount;
         });
@@ -71,7 +78,12 @@ function pollForAccount(dispatch, getState, callback) {
   });
 }
 
-function loadAccount(dispatch, existing, env, callback) {
+function loadAccount(dispatch, existing, accountType, callback) {
+  let loggedInAccount = null;
+  const usingMetaMask = accountType === ACCOUNT_TYPES.META_MASK;
+  if (windowRef.localStorage && windowRef.localStorage.getItem) {
+    loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
+  }
   AugurJS.augur.rpc.eth.accounts((err, accounts) => {
     if (err) return callback(err);
     let account = existing;
@@ -79,8 +91,15 @@ function loadAccount(dispatch, existing, env, callback) {
       account = accounts[0];
       if (account && process.env.AUTO_LOGIN) {
         dispatch(useUnlockedAccount(account));
-      } else {
+      } else if (usingMetaMask && loggedInAccount !== account) {
         dispatch(logout());
+        account = null;
+      } else if (loggedInAccount && loggedInAccount === account) {
+        dispatch(useUnlockedAccount(loggedInAccount));
+        account = loggedInAccount;
+      } else if (usingMetaMask) {
+        dispatch(logout());
+        account = null;
       }
     }
     callback(null, account);
