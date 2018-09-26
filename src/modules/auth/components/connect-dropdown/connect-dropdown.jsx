@@ -145,7 +145,7 @@ export default class ConnectDropdown extends Component {
         {isLogged && (
           <div
             className={classNames(Styles.ConnectDropdown__item)}
-            onClick={this.logout}
+            onClick={() => this.logout()}
             role="button"
             tabIndex="-1"
           >

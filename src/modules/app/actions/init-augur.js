@@ -32,7 +32,7 @@ import { DISCLAIMER_SEEN } from "src/modules/modal/constants/local-storage-keys"
 import { windowRef } from "src/utils/window-ref";
 
 const { ACCOUNT_TYPES } = AugurJS.augur.rpc.constants;
-const ACCOUNTS_POLL_INTERVAL_DURATION = 1000;
+const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
 const NETWORK_NAMES = {
