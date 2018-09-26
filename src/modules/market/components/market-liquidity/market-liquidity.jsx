@@ -248,8 +248,9 @@ export default class MarketLiquidity extends Component {
                     e.preventDefault();
                     updateModal({
                       title: "Cancel all unsigned orders?",
-                      description:
-                        "Cancelling will permenantly remove them from your initial liquidity list",
+                      description: [
+                        "Cancelling will permenantly remove them from your initial liquidity list"
+                      ],
                       cancelButtonText: "keep orders",
                       submitAction: this.handleClearAllMarketOrders,
                       submitButtonText: "cancel orders"

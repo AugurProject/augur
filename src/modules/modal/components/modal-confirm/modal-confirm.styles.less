@@ -4,11 +4,10 @@
   background-color: @color-white;
   border-radius: 0.32rem;
   color: @color-almostblack;
-  // margin: 0 2rem;
   max-width: 35rem;
-  // padding: 2rem 1.5rem;
-  padding: 1.5rem;
+  padding: 1.5rem 0;
   position: relative;
+  text-align: center;
   width: 100%;
 
   > * {
@@ -19,29 +18,35 @@
     color: @color-almostblack;
     font-size: @font-size-somewhat-large;
     font-weight: 500;
-    margin: 0;
-    margin-top: 0.5rem;
+    line-height: 1.75rem;
+    margin: 0.5rem 0 1.5rem;
   }
 
   > p {
     color: @color-almostblack;
     font-size: @font-size-small;
-    line-height: 1.25rem;
-    margin: 0.5rem 0;
+    line-height: @font-size-large;
+    margin: 0 0 1.5rem;
+    padding: 0 4rem;
   }
 }
 
 .ModalConfirm__ActionButtons {
+  border-top: 1px solid #d8d8d8;
   display: flex;
   flex-flow: row nowrap;
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
+  max-width: 35rem;
+  padding: 1.5rem 0 0;
 }
 
 .ModalConfirm__cancel {
   &:extend(.button--gray all);
 
-  margin-right: 2rem;
-  padding: 0 1.5rem;
+  line-height: 2.2rem;
+  margin-left: auto;
+  margin-right: 1rem;
+  padding: 0;
 
   &.disabled {
     &:extend(.button--grey-disabled);
@@ -53,7 +58,10 @@
 .ModalConfirm__submit {
   &:extend(.button--purple all);
 
-  padding: 0 1.5rem;
+  line-height: 2.2rem;
+  margin-left: 0;
+  margin-right: auto;
+  padding: 0;
 
   &.disabled {
     &:extend(.button--purple--disabled);
