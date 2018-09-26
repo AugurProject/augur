@@ -2,46 +2,96 @@ variables:
     SOLC_VERSION: v0.4.24
     SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
 
-pool:
-  vmImage: 'Ubuntu 16.04'
+jobs:
+  - job: Test
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    strategy:
+      matrix:
+        test1:
+          TESTS: tests/test*.py tests/libraries tests/trading
+        test2:
+          TESTS: tests/reporting
+        test3:
+          TESTS: tests/fuzzy
+        test4:
+          TESTS: tests/unit
+        test5:
+          TESTS: tests/test*.py tests/libraries tests/trading --subFork
+        test6:
+          TESTS: tests/reporting --subFork
+        test7:
+          TESTS: tests/fuzzy --subFork
+        test8:
+          TESTS: tests/unit --subFork
+        test9:
+          TESTS: integration:geth
+        test10:
+          TESTS: integration:parity
+        test11:
+          TESTS: security:mythril
+        test12:
+          TESTS: security:maian
+    steps:
+      - script: |
+          if [[ "$TESTS" == "integration:geth" ]]; then
+            npm run docker:run:test:integration:geth;
+          elif [[ "$TESTS" == "integration:parity" ]]; then
+            npm run docker:run:test:integration:parity;
+          elif [[ "$TESTS" == "security:mythril" ]]; then
+            npm run docker:run:test:security:mythril;
+            cat source/contracts/test-results.log;
+          elif [[ "$TESTS" == "security:maian" ]]; then
+            npm run docker:run:test:security:maian;
+          elif [[ "$TESTS" == "security:smt" ]]; then
+            npm run docker:run:test:security:smt;
+          elif [[ "$TESTS" == "security:oyente" ]]; then
+            npm run docker:run:test:security:oyente;
+          else
+            npm run docker:run:test:unit -- $TESTS;
+          fi
 
-strategy:
-  matrix:
-    node_8_x:
-      node_version: 8.x
-    node_9_x:
-      node_version: 9.x
 
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.6.5'
 
-- script: |
-    set -euxo pipefail
-    yarn install --ignore-scripts --frozen-lockfile
-    git config --global user.email "team@augur.net"
-    git config --global user.name "Augur Developers"
-    python -m pip install --upgrade pip pip-tools setuptools wheel
-    pip install virtualenv
-  displayName: 'setup'
+  - job: Build
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    strategy:
+      matrix:
+        node_8_x:
+          node_version: 8.x
+        node_9_x:
+          node_version: 9.x
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.6.5'
 
-- script: |
-    set -euxo pipefail
-    PATH=$(Agent.BuildDirectory)/bin:$PATH
-    echo $(Agent.BuildDirectory)
-    mkdir $(Agent.BuildDirectory)/bin
-    echo "$(SOLC_MD5) *$(Agent.BuildDirectory)/bin/solc" > solc.md5
-    curl -vL -o $(Agent.BuildDirectory)/bin/solc https://github.com/ethereum/solidity/releases/download/$(SOLC_VERSION)/solc-static-linux
-    md5sum -c solc.md5
-    ls -l $(Agent.BuildDirectory)
-    ls -l $(Agent.BuildDirectory)/bin
-    chmod a+x $(Agent.BuildDirectory)/bin/solc
-  displayName: 'contracts'
+    - script: |
+        set -euxo pipefail
+        yarn install --ignore-scripts --frozen-lockfile
+        git config --global user.email "team@augur.net"
+        git config --global user.name "Augur Developers"
+        python -m pip install --upgrade pip pip-tools setuptools wheel
+        pip install virtualenv
+      displayName: 'setup'
 
-- script: |
-    set -euxo pipefail
-    PATH=$(Agent.BuildDirectory)/bin:$PATH
-    yarn workspace augur-core run build
-    yarn workspace augur-node run build
-  displayName: 'build and test'
+    - script: |
+        set -euxo pipefail
+        PATH=$(Agent.BuildDirectory)/bin:$PATH
+        echo $(Agent.BuildDirectory)
+        mkdir $(Agent.BuildDirectory)/bin
+        echo "$(SOLC_MD5) *$(Agent.BuildDirectory)/bin/solc" > solc.md5
+        curl -vL -o $(Agent.BuildDirectory)/bin/solc https://github.com/ethereum/solidity/releases/download/$(SOLC_VERSION)/solc-static-linux
+        md5sum -c solc.md5
+        ls -l $(Agent.BuildDirectory)
+        ls -l $(Agent.BuildDirectory)/bin
+        chmod a+x $(Agent.BuildDirectory)/bin/solc
+      displayName: 'contracts'
+
+    - script: |
+        set -euxo pipefail
+        PATH=$(Agent.BuildDirectory)/bin:$PATH
+        yarn workspace augur-core run build
+        yarn workspace augur-node run build
+      displayName: 'build and test'
