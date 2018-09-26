@@ -116,8 +116,8 @@ export default class FilterSearch extends Component {
           type="light"
         >
           <h4>Search Syntax</h4>
-          <u>Specific field search</u>, prepend the field name:
-          <b> category </b>, <b>title</b>, <b>details</b>, <b>source</b>,{" "}
+          <u>Specific field search:</u> prepend the field name:
+          <b> category</b>, <b>title</b>, <b>details</b>, <b>source</b>,{" "}
           <b>tags</b>
           <p style={{ color: "#372e4b" }} />
           <p>
@@ -125,8 +125,8 @@ export default class FilterSearch extends Component {
             market title.
           </p>
           <p>
-            <u>Exact match</u> Use a <b>double quoted string</b> to search exact
-            phrase.
+            <u>Exact match:</u> Use a <b>double quoted string</b> to search
+            exact phrase.
           </p>
           <p>
             Example: <b>&#34;price of bitcoin&#34;</b>
@@ -139,7 +139,7 @@ export default class FilterSearch extends Component {
             Example: <b>bitcoin OR ethereum OR litecoin</b>
           </p>
           <p>
-            <u>All words</u> Markets will contain all word(s) and phrase(s)
+            <u>All words:</u> Markets will contain all word(s) and phrase(s)
           </p>
           <p>
             Example: <b>bitcoin ethereum litecoin</b>
