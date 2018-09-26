@@ -32,8 +32,14 @@ jobs:
           TESTS: security:mythril
         test12:
           TESTS: security:maian
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '9.x'
+
     steps:
       - script: |
+          set -euxo pipefail
           if [[ "$TESTS" == "integration:geth" ]]; then
             npm run docker:run:test:integration:geth;
           elif [[ "$TESTS" == "integration:parity" ]]; then
