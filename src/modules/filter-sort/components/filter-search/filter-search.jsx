@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Input from "modules/common/components/input/input";
-
+import classNames from "classnames";
 import parseQuery from "modules/routes/helpers/parse-query";
 import makeQuery from "modules/routes/helpers/make-query";
 
 import { FILTER_SEARCH_PARAM } from "modules/filter-sort/constants/param-names";
-
+import { Hint } from "modules/common/components/icons";
 import Styles from "modules/filter-sort/components/filter-search/filter-search.styles";
+import ReactTooltip from "react-tooltip";
+import TooltipStyles from "modules/common/less/tooltip";
 
 export default class FilterSearch extends Component {
   static propTypes = {
@@ -95,19 +97,88 @@ export default class FilterSearch extends Component {
     const s = this.state;
 
     return (
-      <article className={Styles.FilterSearch} style={{ minWidth: s.width }}>
-        <Input
-          className={Styles.FilterSearch__input}
-          isSearch
-          isClearable
-          noFocus
-          placeholder={s.placeholder}
-          value={s.search}
-          onChange={this.onChange}
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
-          isLoading={Boolean(!hasLoadedMarkets && s.search && s.search !== "")}
-        />
+      <article className={Styles.FilterSearch}>
+        <label
+          className={classNames(
+            TooltipStyles.TooltipHint,
+            Styles.FilterSearch__tooltip
+          )}
+          data-tip
+          data-for="tooltip--search-input"
+        >
+          {Hint}
+        </label>
+        <ReactTooltip
+          id="tooltip--search-input"
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="bottom"
+          type="light"
+        >
+          <h4>Search Syntax</h4>
+          Search specific fields, prepend
+          <ul>
+            <li>
+              <b>category:</b> word or phrase
+            </li>
+            <li>
+              <b>title:</b> word or phrase
+            </li>
+            <li>
+              <b>details:</b> word or phrase
+            </li>
+            <li>
+              <b>source:</b> word or phrase
+            </li>
+            <li>
+              <b>tags:</b> word or phrase
+            </li>
+          </ul>
+          <p style={{ color: "#372e4b" }} />
+          <p>
+            example, title: ethereum, returns only markets with ethereum in
+            market title.
+          </p>
+          <p>
+            Use <b>double quoted string</b> to search exact phrase.
+          </p>
+          <p>
+            example, <b>&#34;price of bitcoin&#34;</b>
+          </p>
+          <p>
+            Use capitalized <b>OR</b> between word(s) and/or phrase(s) to get
+            matches for either word(s) or phrase(s)
+          </p>
+          <p>
+            example, <b>bitcoin OR ethereum OR litecoin</b>
+          </p>
+          <p>
+            By default words and phrases are ANDed. Markets returned will
+            contain all word(s) and phrase(s)
+          </p>
+          <p>
+            example, <b>bitcoin ethereum litecoin</b>
+          </p>
+        </ReactTooltip>
+        <div
+          className={Styles.FilterSearch__transition}
+          style={{ minWidth: s.width }}
+        >
+          <Input
+            className={Styles.FilterSearch__input}
+            isSearch
+            isClearable
+            noFocus
+            placeholder={s.placeholder}
+            value={s.search}
+            onChange={this.onChange}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+            isLoading={Boolean(
+              !hasLoadedMarkets && s.search && s.search !== ""
+            )}
+          />
+        </div>
       </article>
     );
   }
