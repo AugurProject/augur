@@ -94,8 +94,8 @@ function loadAccount(dispatch, existing, accountType, callback) {
       } else if (
         loggedInAccount &&
         usingMetaMask &&
-        loggedInAccount !== account 
-        && account
+        loggedInAccount !== account &&
+        account
       ) {
         // local storage does not match mm account and mm is signed in
         dispatch(useUnlockedAccount(account));
@@ -104,7 +104,12 @@ function loadAccount(dispatch, existing, accountType, callback) {
         // local storage matchs mm account
         dispatch(useUnlockedAccount(loggedInAccount));
         account = loggedInAccount;
-      } else if (!loggedInAccount && usingMetaMask && existing !== account && account) {
+      } else if (
+        !loggedInAccount &&
+        usingMetaMask &&
+        existing !== account &&
+        account
+      ) {
         // no local storage set and logged in account does not match mm account, they want to switch accounts
         dispatch(useUnlockedAccount(account));
       } else if (!account && usingMetaMask) {
