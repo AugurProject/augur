@@ -396,7 +396,7 @@ describe("modules/markets/reducers/new-market.js", () => {
           order: {
             outcome: "Outcome1",
             index: 0
-          } 
+          }
         }
       });
 
