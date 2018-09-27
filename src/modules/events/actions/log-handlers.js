@@ -219,22 +219,26 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
         dispatch(updateAssets());
         dispatch(updateLoggedTransactions(log));
         if (!log.removed) {
-          // Trigger the notification addition here because calling other
-          // API functions, such as `InitialReporter.redeem` can indirectly
-          // cause a MarketFinalized event to be logged.
-          dispatch(
-            addNotification({
-              id: `${log.transactionHash}_finalize`,
-              timestamp: log.timestamp,
-              blockNumber: log.blockNumber,
-              log,
-              params: {
-                type: "finalize"
-              },
-              status: "Confirmed",
-              linkPath: makePath(MY_MARKETS)
-            })
-          );
+          const { notifications } = getState();
+          if (!notifications.filter(notification => notification.id === log.transactionHash).length) {
+            console.log('add new')
+            dispatch(
+              addNotification({
+                id: `${log.transactionHash}_finalize`,
+                timestamp: log.timestamp,
+                blockNumber: log.blockNumber,
+                log,
+                params: {
+                  type: "finalize"
+                },
+                status: "Confirmed",
+                linkPath: makePath(MY_MARKETS)
+              })
+            );
+          } else {
+            console.log('update notification')
+            handleNotificationUpdate(log, dispatch, getState);
+          }
         }
       }
     })
