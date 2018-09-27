@@ -1,5 +1,5 @@
 /**
- * Direct no-frills bindings to Augur's contract (Serpent) API.
+ * Direct no-frills bindings to Augur's contract API.
  *  - Parameter positions and types are the same as the underlying
  *    contract method's parameters.
  *  - Parameters should be passed in exactly as they would be
@@ -12,14 +12,14 @@
 
 var generateContractApi = require("./generate-contract-api");
 
-var api = generateContractApi(require("../contracts").abi.functions);
+var api = generateContractApi.bind(this)(require("../contracts").abi.functions);
 
 function getAPI() {
   return api;
 }
 
 getAPI.generateContractApi = function (functionsAbi) {
-  api = generateContractApi(functionsAbi);
+  api = generateContractApi.bind(this)(functionsAbi);
   return api;
 };
 
