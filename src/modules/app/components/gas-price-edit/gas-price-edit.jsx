@@ -29,43 +29,17 @@ export default class GasPriceEdit extends Component {
     const s = this.state;
 
     return (
-      <div
-        className={classNames(Styles.ConnectAccount, {
-          [Styles.ConnectAccount__selected]: s.dropdownOpen
-        })}
-        ref={connectAccount => {
-          this.connectAccount = connectAccount;
-        }}
-      >
+      <div className={classNames(Styles.GasPriceEdit)}>
         <div
-          className={Styles.ConnectAccount__container}
-          onClick={this.toggleDropdown}
+          className={Styles.GasPriceEdit__container}
           role="button"
           tabIndex="-1"
         >
-          <div className={Styles.ConnectAccount__column}>
-            <div className={Styles.ConnectAccount__status}>
-              <div
-                className={classNames(
-                  Styles["ConnectAccount__status-indicator"],
-                  {
-                    [Styles.ConnectAccount__statusGreen]: isLogged
-                  }
-                )}
-              />
-              {isLogged ? "Connected" : "Disconnected"}
-            </div>
-            <div className={Styles.ConnectAccount__title}>
-              {isLogged ? formatAddress(address || "") : "Connect A Wallet"}
-            </div>
-          </div>
-          <div className={Styles.ConnectAccount__arrow}>
-            <ChevronFlip
-              pointDown={s.dropdownOpen}
-              stroke="#fff"
-              filledInIcon
-              quick
-            />
+          <div className={Styles.GasPriceEdit__title}>GAS PRICE (GWEI)</div>
+          <div className={Styles.GasPriceEdit__info}>
+            <div className={Styles.GasPriceEdit__price}> 23 </div>
+            <div className={Styles.GasPriceEdit__description}> (FAST) </div>
+            <div className={Styles.GasPriceEdit__edit}> Edit </div>
           </div>
         </div>
       </div>

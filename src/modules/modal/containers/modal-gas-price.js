@@ -5,11 +5,11 @@ import ModalGasPrice from "modules/modal/components/modal-gas-price/modal-gas-pr
 import { closeModal } from "modules/modal/actions/close-modal";
 
 const mapStateToProps = state => ({
-  modal: state.modal,
+  modal: state.modal
 });
 
 const mapDispatchToProps = dispatch => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => dispatch(closeModal())
 });
 
 export default withRouter(
