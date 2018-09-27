@@ -7,6 +7,7 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
+      maxParallel: 10
       matrix:
         test1:
           TESTS: tests/test*.py tests/libraries tests/trading
