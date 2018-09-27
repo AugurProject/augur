@@ -17,7 +17,7 @@ export const loadMarketTradingHistory = (options, callback = logError) => (
   dispatch,
   getState
 ) => {
-  if (options === null || !options.marketId) callback(null);
+  if (options === null || !options.marketId) return callback(null);
   const allOptions = Object.assign(
     { limit: 10, sortBy: "timestamp", isSortDescending: true },
     options
