@@ -5,6 +5,8 @@ import classNames from "classnames";
 
 import { Notifications } from "modules/common/components/icons";
 import ConnectAccount from "modules/auth/containers/connect-account";
+import GasPriceEdit from "modules/app/components/gas-price-edit/gas-price-edit";
+
 import makePath from "modules/routes/helpers/make-path";
 import { CATEGORIES } from "modules/routes/constants/views";
 import Styles from "modules/app/components/top-bar/top-bar.styles";
@@ -69,6 +71,7 @@ const TopBar = props => (
         </div>
       </div>
     )}
+    {props.isLogged && <GasPriceEdit />}
     <ConnectAccount />
     {props.isLogged && (
       <div
