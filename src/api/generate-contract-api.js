@@ -7,7 +7,7 @@ function generateContractApi(functionsAbi) {
   return Object.keys(functionsAbi).reduce(function (p, contractName) {
     p[contractName] = {};
     Object.keys(functionsAbi[contractName]).map(function (functionName) {
-      p[contractName][functionName] = bindContractFunction.bind(self)(functionsAbi[contractName][functionName]);
+      p[contractName][functionName] = bindContractFunction.call(self, functionsAbi[contractName][functionName]);
     });
     return p;
   }, {});
