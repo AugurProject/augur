@@ -35,6 +35,9 @@ jobs:
           TESTS: security:maian
 
     steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.6.5'
       - task: NodeTool@0
         inputs:
           versionSpec: '9.x'
