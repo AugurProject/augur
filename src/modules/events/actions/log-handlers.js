@@ -225,7 +225,6 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
               notification => notification.id === log.transactionHash
             ).length
           ) {
-            console.log("add new");
             dispatch(
               addNotification({
                 id: `${log.transactionHash}_finalize`,
@@ -240,7 +239,6 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
               })
             );
           } else {
-            console.log("update notification");
             handleNotificationUpdate(log, dispatch, getState);
           }
         }
