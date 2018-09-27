@@ -228,7 +228,7 @@ export interface RpcInterface {
   sendEther(to: Address, value: string|number, from: Address, onSent: (result: any) => void, onSuccess: (result: any) => void, onFailed: (err: any) => void): any;
   packageAndSubmitRawTransaction(payload: any, address: Address, privateKeyOrSigner: Buffer|null, callback: (err: Error|null, transactionHash: Bytes32|Error) => void): void; // TODO define payload type
   callContractFunction(payload: any, callback: (err: Error|null, returnValue: Bytes32|Error) => void): Bytes32|void;
-  transact(payload: any, privateKeyOrSigner: Buffer|null, onSent: (result: any) => void, onSuccess: (result: any) => void, onFailed: (err: any) => void): void;
+  transact(payload: any, privateKeyOrSigner: Buffer|null, accountType: string, onSent: (result: any) => void, onSuccess: (result: any) => void, onFailed: (err: any) => void): void;
   excludeFromTransactionRelay(method: string): void;
   registerTransactionRelay(relayer: any): void; // TODO define relayer type
   setDebugOptions(debugOptions: {[debugOptionName: string]: boolean}): void;
