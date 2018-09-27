@@ -12,14 +12,14 @@
 
 var generateContractApi = require("./generate-contract-api");
 
-var api = generateContractApi.bind(this)(require("../contracts").abi.functions);
+var api = generateContractApi.call(this, require("../contracts").abi.functions);
 
 function getAPI() {
   return api;
 }
 
 getAPI.generateContractApi = function (functionsAbi) {
-  api = generateContractApi.bind(this)(functionsAbi);
+  api = generateContractApi.call(this, functionsAbi);
   return api;
 };
 
