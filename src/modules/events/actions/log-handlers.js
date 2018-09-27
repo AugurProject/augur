@@ -222,7 +222,9 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
           const { notifications } = getState();
           if (
             !notifications.filter(
-              notification => notification.id === log.transactionHash
+              notification =>
+                notification.id === log.transactionHash &&
+                notification.params.type === "finalize"
             ).length
           ) {
             dispatch(
