@@ -227,6 +227,9 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
                 notification.params.type === "finalize"
             ).length
           ) {
+            // Trigger the notification addition here because calling other
+            // API functions, such as `InitialReporter.redeem` can indirectly
+            // cause a MarketFinalized event to be logged.
             dispatch(
               addNotification({
                 id: `${log.transactionHash}_finalize`,
