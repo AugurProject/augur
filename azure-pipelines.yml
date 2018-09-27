@@ -40,23 +40,21 @@ jobs:
       - script: |
           set -euxo pipefail
           if [[ "$TESTS" == "integration:geth" ]]; then
-            npm run docker:run:test:integration:geth;
+            yarn workspace augur-core docker:run:test:integration:geth;
           elif [[ "$TESTS" == "integration:parity" ]]; then
-            npm run docker:run:test:integration:parity;
+            yarn workspace augur-core docker:run:test:integration:parity;
           elif [[ "$TESTS" == "security:mythril" ]]; then
-            npm run docker:run:test:security:mythril;
+            yarn workspace augur-core docker:run:test:security:mythril;
             cat source/contracts/test-results.log;
           elif [[ "$TESTS" == "security:maian" ]]; then
-            npm run docker:run:test:security:maian;
+            yarn workspace augur-core docker:run:test:security:maian;
           elif [[ "$TESTS" == "security:smt" ]]; then
-            npm run docker:run:test:security:smt;
+            yarn workspace augur-core docker:run:test:security:smt;
           elif [[ "$TESTS" == "security:oyente" ]]; then
-            npm run docker:run:test:security:oyente;
+            yarn workspace augur-core docker:run:test:security:oyente;
           else
-            npm run docker:run:test:unit -- $TESTS;
+            yarn workspace augur-core docker:run:test:unit -- $TESTS;
           fi
-
-
 
   - job: Build
     pool:
