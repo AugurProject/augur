@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "execa": "^0.10.0",
-    "lerna": "^2.11.0",
+    "lerna": "3.4.0",
     "listr": "^0.14.1",
     "mocha": "5.1.1",
     "rxjs-compat": "^6.2.2",
