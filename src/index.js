@@ -23,7 +23,7 @@ function Augur() {
     },
   };
   this.accounts = require("./accounts");
-  this.api = require("./api").bind(this)();
+  this.api = require("./api").call(this);
   this.generateContractApi = require("./api").generateContractApi;
   this.assets = require("./assets");
   this.connect = require("./connect").bind(this);
