@@ -220,8 +220,12 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
         dispatch(updateLoggedTransactions(log));
         if (!log.removed) {
           const { notifications } = getState();
-          if (!notifications.filter(notification => notification.id === log.transactionHash).length) {
-            console.log('add new')
+          if (
+            !notifications.filter(
+              notification => notification.id === log.transactionHash
+            ).length
+          ) {
+            console.log("add new");
             dispatch(
               addNotification({
                 id: `${log.transactionHash}_finalize`,
@@ -236,7 +240,7 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
               })
             );
           } else {
-            console.log('update notification')
+            console.log("update notification");
             handleNotificationUpdate(log, dispatch, getState);
           }
         }
