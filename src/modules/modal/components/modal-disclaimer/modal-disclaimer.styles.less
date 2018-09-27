@@ -1,53 +1,59 @@
 @import (reference) "~assets/styles/shared";
 
 .ModalDisclaimer {
-  margin: 0 2rem;
-  max-width: 30rem;
+  background-color: @color-white;
+  border-radius: 0.32rem;
+  color: @color-almostblack;
+  max-width: 35rem;
+  padding: 1.5rem 0;
   position: relative;
+  text-align: center;
+  width: 100%;
 
   > * {
     width: 100%;
   }
 
   h1 {
-    .caps--extra-large();
-
-    color: @color-white;
-    margin-bottom: 2rem;
-  }
-
-  > p {
-    color: @color-white;
-    line-height: 1.25rem;
-    margin: 0 0 1rem;
-
-    &:not(:first-of-type) {
-      margin-bottom: 3rem;
-    }
+    color: @color-almostblack;
+    font-size: @font-size-somewhat-large;
+    font-weight: 500;
+    line-height: 1.75rem;
+    margin: 0.5rem 0 1.5rem;
   }
 }
 
 .ModalDisclaimer__TextBox {
-  margin-bottom: 1rem;
+  background-color: @color-offwhite;
+  margin-bottom: 1.5rem;
   max-height: 25rem;
   overflow: auto;
-  padding-right: 1rem;
+  padding: 0.5rem 1.5rem;
+  text-align: left;
+  max-width: 35rem;
+  width: 32rem;
 
   > p {
-    margin-bottom: 1rem;
-    margin-top: 0;
+    color: @color-almostblack;
+    font-size: @font-size-medium;
+    line-height: @font-size-somewhat-large;
+    margin: 0 0 1.5rem;
   }
 }
 
 .ModalDisclaimer__ActionButtons {
+  border-top: 1px solid #d8d8d8;
   display: flex;
   flex-flow: column;
   justify-content: space-between;
+  padding: 0 2rem;
+  max-width: 35rem;
 
   > label {
     align-items: flex-end;
+    color: @color-almostblack;
     display: flex;
-    margin: 1rem 0 2rem;
+    margin: 1.5rem 0 1.5rem;
 
     > input {
       height: 1rem;
@@ -57,7 +63,15 @@
   }
 
   > button {
-    .button--white();
+    &:extend(.button--purple all);
+
+     margin: 0 auto;
+
+    &.disabled {
+      &:extend(.button--purple--disabled);
+
+      pointer-events: none;
+    }
   }
 }
 
