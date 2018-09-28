@@ -8,7 +8,9 @@ import Styles from "modules/app/components/gas-price-edit/gas-price-edit.styles"
 
 export default class GasPriceEdit extends Component {
   static propTypes = {
-    updateModal: PropTypes.func.isRequired
+    updateModal: PropTypes.func.isRequired,
+    userDefinedGasPrice: PropTypes.number.isRequired,
+    gasPriceSpeed: PropTypes.string.isRequired
   };
 
   constructor(props) {
@@ -24,6 +26,7 @@ export default class GasPriceEdit extends Component {
   }
 
   render() {
+    const { userDefinedGasPrice, gasPriceSpeed } = this.props;
     return (
       <div className={classNames(Styles.GasPriceEdit)}>
         <div
@@ -34,8 +37,12 @@ export default class GasPriceEdit extends Component {
         >
           <div className={Styles.GasPriceEdit__title}>GAS PRICE (GWEI)</div>
           <div className={Styles.GasPriceEdit__info}>
-            <div className={Styles.GasPriceEdit__price}> 23 </div>
-            <div className={Styles.GasPriceEdit__description}> (FAST) </div>
+            <div className={Styles.GasPriceEdit__price}>
+              {userDefinedGasPrice}
+            </div>
+            <div className={Styles.GasPriceEdit__description}>
+              ({gasPriceSpeed})
+            </div>
             <div className={Styles.GasPriceEdit__edit}> Edit </div>
           </div>
         </div>
