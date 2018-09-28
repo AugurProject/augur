@@ -229,11 +229,7 @@ Deploying to: ${networkConfiguration.networkName}
     private async uploadAndAddToController(contract: Contract, registrationContractName: string = contract.contractName, constructorArgs: Array<any> = []): Promise<string> {
         const address = await this.construct(contract, constructorArgs, `Uploading ${contract.contractName}`);
         const bytecodeHash = await ContractDeployer.getBytecodeSha(contract.bytecode);
-<<<<<<< HEAD
-        await this.controller!.registerContract(stringTo32ByteHex(registrationContractName), address, commitHash, bytecodeHash);
-=======
         await this.controller.registerContract(stringTo32ByteHex(registrationContractName), address, DEPRECATED_COMMIT_HASH_PLACEHOLDER, bytecodeHash);
->>>>>>> 95e7636a9fb1ec022f50a15a29f29cbacf7557ce
         return address;
     }
 
