@@ -1,12 +1,12 @@
 @import (reference) "~assets/styles/shared";
 
-.ModalConfirm {
+.ModalGasPrice {
   background-color: @color-white;
   border-radius: 0.5rem;
   color: @color-almostblack;
   margin: 0 2rem;
-  max-width: 35rem;
-  padding: 2rem 1.5rem;
+  max-width: 300px;
+  padding: 32px 24px;
   position: relative;
   width: 100%;
 
@@ -16,9 +16,9 @@
 
   h1 {
     color: @color-almostblack;
-    font-size: @font-size-somewhat-large;
-    font-weight: 500;
-    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1.27;
   }
 
   > p {
@@ -29,16 +29,23 @@
   }
 }
 
-.ModalConfirm__ActionButtons {
+.ModalGasPrice__ActionButtons {
   display: flex;
   flex-flow: row nowrap;
   margin-top: 1.5rem;
 }
 
-.ModalConfirm__cancel {
+.ModalGasPrice__input {
+  > label {
+    color: @color-darkpurple;
+    font-weight: 500;
+  }
+}
+
+.ModalGasPrice__cancel {
   &:extend(.button--gray all);
 
-  margin-right: 2rem;
+  margin-right: 16px;
   padding: 0 1.5rem;
 
   &.disabled {
@@ -48,7 +55,7 @@
   }
 }
 
-.ModalConfirm__submit {
+.ModalGasPrice__save {
   &:extend(.button--purple all);
 
   padding: 0 1.5rem;
@@ -57,5 +64,88 @@
     &:extend(.button--purple--disabled);
 
     pointer-events: none;
+  }
+}
+
+.ModalGasPrice__save,
+.ModalGasPrice__cancel {
+  min-width: 118px;
+  padding: 9px 24px;
+  width: 118px;
+}
+
+.ModalGasPrice__explanationTitle {
+  border-top: 1px solid #d8d8d8;
+  color: @color-almostblack;
+  font-size: 16px;
+  font-stretch: normal;
+  font-style: normal;
+  font-weight: bold;
+  letter-spacing: normal;
+  line-height: 1.13;
+  margin-top: 32px;
+  padding-top: 16px;
+}
+
+.ModalGasPrice__explanationSubheader {
+  color: @color-almostblack;
+  font-size: 12px;
+  font-stretch: normal;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.ModalGasPrice__table {
+  border: 1px solid @color-lightgray;
+  border-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ModalGasPrice__row {
+  border-bottom: 1px solid @color-lightgray;
+  color: @color-almostblack;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  font-size: 12px;
+
+  &:hover {
+    background-color: @color-lightpurple;
+    color: @color-white;
+  }
+
+  &:first-of-type {
+    background-color: @color-input-background;
+    color: @color-gray;
+    cursor: default;
+    font-size: 14px;
+    font-weight: bold;
+
+    &:hover {
+      background-color: @color-input-background;
+      color: @color-gray;
+    }
+
+    .ModalGasPrice__col {
+      padding: 6px 16px 6px 14px;
+    }
+  }
+}
+
+.ModalGasPrice__col {
+  border-right: 1px solid @color-lightgray;
+  padding: 4px 16px 4px 14px;
+  width: 115px;
+
+  &:last-of-type {
+    border: 0;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    font-weight: bold;
   }
 }
