@@ -7,15 +7,24 @@ export default function insufficientFunds(
   gasCost,
   designatedReportNoShowReputationBond,
   availableEth,
-  availableRep
+  availableRep,
+  formattedInitialLiquidityGas,
+  formattedInitialLiquidityEth,
+  testWithLiquidity = false
 ) {
   let insufficientFundsString = "";
 
   const BNvalidityBond = createBigNumber(
     formatEther(validityBond).fullPrecision
   );
+  const BNLiqGas = createBigNumber(formattedInitialLiquidityGas);
+  const BNLiqEth = createBigNumber(formattedInitialLiquidityEth);
   const BNgasCost = createBigNumber(formatEther(gasCost).fullPrecision);
-  const BNtotalEthCost = BNvalidityBond.plus(BNgasCost);
+  const BNtotalEthCost = testWithLiquidity
+    ? BNvalidityBond.plus(BNgasCost)
+        .plus(BNLiqGas)
+        .plus(BNLiqEth)
+    : BNvalidityBond.plus(BNgasCost);
   const insufficientEth = createBigNumber(availableEth).lt(BNtotalEthCost);
 
   const BNdesignatedReportNoShowReputationBond = createBigNumber(

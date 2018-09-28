@@ -152,6 +152,19 @@ export default class ConnectDropdown extends Component {
             Logout
           </div>
         )}
+        {!isLogged && (
+          <div
+            className={classNames(
+              Styles.ConnectDropdown__item,
+              Styles.ConnectDropdown_explanation
+            )}
+          >
+            Connect a wallet to log into Augur.{" "}
+            {!process.env.AUGUR_HOSTED
+              ? "Use Edge to login with a username and password."
+              : null}
+          </div>
+        )}
         {!isLogged &&
           ITEMS.map(item => (
             <div key={item.param}>
