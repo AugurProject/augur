@@ -14,8 +14,6 @@ import {
   SCALAR
 } from "modules/markets/constants/market-types";
 
-import { CreateMarketEdit } from "modules/common/components/icons";
-
 import CreateMarketPreviewRange from "modules/create-market/components/create-market-preview-range/create-market-preview-range";
 import CreateMarketPreviewCategorical from "modules/create-market/components/create-market-preview-categorical/create-market-preview-categorical";
 import { dateHasPassed, formatDate } from "utils/format-date";
@@ -177,9 +175,6 @@ export default class CreateMarketPreview extends Component {
                   newMarket.outcomes.length === 0)) &&
                 "Outcome"}
             </div>
-            <span className={Styles.CreateMarketPreview__icon}>
-              {CreateMarketEdit}
-            </span>
           </div>
         </div>
         <div className={Styles.CreateMarketPreview__footer}>
