@@ -25,6 +25,7 @@ export const startAugurNode = () => {
   const { networks } = store.getState().configuration
   const selected = Object.values(networks).find(n => n.selected)
   ipcRenderer.send(START_AUGUR_NODE, selected)
+  startUiServer()
 }
 
 export const stopAugurNode = () => {
@@ -44,11 +45,11 @@ export const stopGethNode = () => {
 }
 
 export const saveConfiguration = (config) => {
+  startUiServer() // start UI server ssl setting might have changed
   ipcRenderer.send(SAVE_CONFIG, config)
 }
 
 export const openAugurUi = (networkConfig) => {
-  startUiServer() // start UI server before connecting
   const { sslEnabled, sslPort, uiPort } = store.getState().configuration
   const protocol = sslEnabled ? 'https' : 'http'
   const port = sslEnabled ? sslPort : uiPort

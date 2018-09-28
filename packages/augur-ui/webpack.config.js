@@ -29,7 +29,7 @@ let config = merge(baseConfig, {
 
 // DEVELOPMENT CONFIG
 if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === "development") {
-  config = merge(config, {});
+  config = merge(config, { devtool: "eval-source-map" });
   // PRODUCTION DEBUG CONFIG (unminified build + more specific source maps + no hot reload)
 } else if (process.env.DEBUG_BUILD && process.env.NODE_ENV === "development") {
   // get network name like 'rinkeby' or 'clique' to set environment for UI
