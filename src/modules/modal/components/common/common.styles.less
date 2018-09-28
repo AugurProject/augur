@@ -1,5 +1,36 @@
 @import (reference) "~assets/styles/shared";
 
+.ModalContainer {
+  background-color: @color-white;
+  border-radius: 0.32rem;
+  color: @color-almostblack;
+  max-width: 35rem;
+  padding: 1.5rem 0;
+  position: relative;
+  text-align: center;
+  width: 100%;
+
+  > * {
+    width: 100%;
+  }
+
+  h1 {
+    color: @color-almostblack;
+    font-size: @font-size-somewhat-large;
+    font-weight: 500;
+    line-height: 1.75rem;
+    margin: 0.5rem 0 1.5rem;
+  }
+
+  > p {
+    color: @color-almostblack;
+    font-size: @font-size-small;
+    line-height: @font-size-large;
+    margin: 0 0 1.5rem;
+    padding: 0 4rem;
+  }
+}
+
 .ActionButtons {
   border-top: 1px solid #d8d8d8;
   display: flex;

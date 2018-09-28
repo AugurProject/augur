@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 
 // TODO -- generalize modals where possible
 
-import ModalLedger from "modules/modal/components/modal-ledger/modal-ledger";
+// import ModalLedger from "modules/modal/components/modal-ledger/modal-ledger";
+import ModalSignTransaction from "modules/modal/containers/modal-sign-transaction";
 import ModalUport from "modules/modal/components/modal-uport/modal-uport";
-import ModalTrezor from "modules/modal/components/modal-trezor/modal-trezor";
 import ModalConfirm from "modules/modal/components/modal-confirm/modal-confirm";
 import ModalNetworkMismatch from "modules/modal/components/modal-network-mismatch/modal-network-mismatch";
 import ModalNetworkDisabled from "modules/modal/components/modal-network-disabled/modal-network-disabled";
@@ -65,9 +65,7 @@ export default class ModalView extends Component {
     const s = this.state;
     console.log("render view", modal, this.props);
     // in place to keep big Cancel button func for ledger/uport
-    const showBigCancel =
-      modal.canClose &&
-      (modal.type === TYPES.MODAL_LEDGER || modal.type === TYPES.MODAL_UPORT);
+    const showBigCancel = modal.canClose && modal.type === TYPES.MODAL_UPORT;
 
     return (
       <section
@@ -83,19 +81,12 @@ export default class ModalView extends Component {
                 {Close}
               </button>
             )}
-          {modal.type === TYPES.MODAL_CONFIRM && (
-            <ModalConfirm {...this.props.modal} closeModal={closeModal} />
+          {modal.type === TYPES.MODAL_CONFIRM && <ModalConfirm {...modal} />}
+          {modal.type === (TYPES.MODAL_LEDGER || TYPES.MODAL_TREZOR) && (
+            <ModalSignTransaction {...modal} />
           )}
-          {modal.type === TYPES.MODAL_LEDGER && <ModalLedger {...modal} />}
           {modal.type === TYPES.MODAL_UPORT && (
             <ModalUport
-              {...modal}
-              modalWidth={s.modalWidth}
-              modalHeight={s.modalHeight}
-            />
-          )}
-          {modal.type === TYPES.MODAL_TREZOR && (
-            <ModalTrezor
               {...modal}
               modalWidth={s.modalWidth}
               modalHeight={s.modalHeight}

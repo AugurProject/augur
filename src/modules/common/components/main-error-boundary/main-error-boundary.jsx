@@ -31,7 +31,7 @@ export default class MainErrorBoundary extends Component {
 
   render() {
     const { children } = this.props;
-    if (this.state.hasError || true) {
+    if (this.state.hasError) {
       return (
         <section className={Styles.MainErrorBoundary}>
           <div className={Styles.MainErrorBoundary__container}>
