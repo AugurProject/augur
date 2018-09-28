@@ -73,7 +73,8 @@ export default class ConnectAccount extends Component {
     return (
       <div
         className={classNames(Styles.ConnectAccount, {
-          [Styles.ConnectAccount__selected]: s.dropdownOpen
+          [Styles.ConnectAccount__selected]: s.dropdownOpen,
+          [Styles.ConnectAccount__wide]: !isLogged
         })}
         ref={connectAccount => {
           this.connectAccount = connectAccount;
