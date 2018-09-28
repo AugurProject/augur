@@ -1,12 +1,21 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-import Styles from "modules/modal/components/modal-ledger/modal-ledger.styles";
+import Styles from "modules/modal/components/modal-gas-price/modal-gas-price.styles";
 
-const ModalGasPrice = p => (
-  <section className={Styles.ModalLedger}>
-    <h1>Sign Transaction On Ledger</h1>
-    {p.error && <span>{p.error}</span>}
+const ModalConfirm = p => (
+  <section className={Styles.ModalConfirm}>
+    <h1>Gas Price (gwei)</h1>
+    <div className={Styles.ModalConfirm__ActionButtons}>
+      <button className={Styles.ModalConfirm__cancel} onClick={p.closeModal}>
+        Cancel
+      </button>
+    </div>
   </section>
 );
 
-export default ModalGasPrice;
+ModalConfirm.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+};
+
+export default ModalConfirm;

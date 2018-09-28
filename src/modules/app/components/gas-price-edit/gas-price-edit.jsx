@@ -6,14 +6,14 @@ import toggleHeight from "utils/toggle-height/toggle-height";
 import ConnectDropdown from "modules/auth/containers/connect-dropdown";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 import formatAddress from "modules/auth/helpers/format-address";
+import { MODAL_GAS_PRICE } from "modules/modal/constants/modal-types";
 
 import Styles from "modules/app/components/gas-price-edit/gas-price-edit.styles";
 import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
 
 export default class GasPriceEdit extends Component {
   static propTypes = {
-    isLogged: PropTypes.bool,
-    address: PropTypes.string
+    updateModal: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -22,6 +22,14 @@ export default class GasPriceEdit extends Component {
     this.state = {
       dropdownOpen: false
     };
+
+    this.showModal = this.showModal.bind(this);
+  }
+
+  showModal() {
+    this.props.updateModal({
+      type: MODAL_GAS_PRICE,
+    })
   }
 
   render() {
@@ -32,6 +40,7 @@ export default class GasPriceEdit extends Component {
       <div className={classNames(Styles.GasPriceEdit)}>
         <div
           className={Styles.GasPriceEdit__container}
+          onClick={this.showModal}
           role="button"
           tabIndex="-1"
         >
