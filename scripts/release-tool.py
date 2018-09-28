@@ -320,7 +320,7 @@ if __name__ == "__main__":
     if 'n' in ready_to_release.lower():
         print('quitting without releasing')
         sys.exit(0)
-    if 'y' in ready_to_release:
+    if 'y' in ready_to_release.lower():
         cleanup_sha256_files(github_release_assets)
         # tag release and change remove draft flag
         release.update_release(name=tag_name, message=release.body, draft=False)
