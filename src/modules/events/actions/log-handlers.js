@@ -247,6 +247,8 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
             handleNotificationUpdate(log, dispatch, getState);
           }
         }
+      } else {
+        handleNotificationUpdate(log, dispatch, getState);
       }
     })
   );
