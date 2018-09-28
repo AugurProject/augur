@@ -20,7 +20,6 @@ export const loadAccountData = (account, callback = logError) => dispatch => {
   if (
     localStorageRef &&
     localStorageRef.setItem &&
-    !process.env.AUGUR_HOSTED &&
     account.meta.accountType === ACCOUNT_TYPES.META_MASK
   ) {
     localStorageRef.setItem("loggedInAccount", account.address);
