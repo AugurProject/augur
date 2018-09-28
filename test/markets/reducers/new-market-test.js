@@ -393,8 +393,10 @@ describe("modules/markets/reducers/new-market.js", () => {
       const actual = newMarket(newMarketState, {
         type: REMOVE_ORDER_FROM_NEW_MARKET,
         data: {
-          outcome: "Outcome1",
-          index: 0
+          order: {
+            outcome: "Outcome1",
+            index: 0
+          }
         }
       });
 
