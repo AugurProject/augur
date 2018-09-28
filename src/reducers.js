@@ -14,6 +14,7 @@ import eventsAPI from "modules/contracts/reducers/events-api";
 import favorites from "modules/markets/reducers/favorites";
 import filterSortOptions from "modules/filter-sort/reducers/filter-sort-options";
 import functionsAPI from "modules/contracts/reducers/functions-api";
+import gasInfo from "modules/app/reducers/gas-info";
 import initialReporters from "modules/reports/reducers/initial-reporters-data";
 import isFirstOrderBookChunkLoaded from "modules/orders/reducers/is-first-order-book-chunk-loaded";
 import loginAccount from "modules/auth/reducers/login-account";
@@ -59,6 +60,7 @@ export function createReducer() {
     favorites,
     filterSortOptions,
     functionsAPI,
+    gasInfo,
     initialReporters,
     isFirstOrderBookChunkLoaded,
     loginAccount,
