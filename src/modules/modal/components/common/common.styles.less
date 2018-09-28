@@ -1,0 +1,54 @@
+@import (reference) "~assets/styles/shared";
+
+.ActionButtons {
+  border-top: 1px solid #d8d8d8;
+  display: flex;
+  flex-flow: row nowrap;
+  margin-top: 0.5rem;
+  max-width: 35rem;
+  padding: 1.5rem 0 0;
+}
+
+.ActionButtons__button {
+  margin-right: 1rem;
+
+  &:first-of-type {
+    margin-left: auto;
+  }
+
+  &:only-of-type {
+    margin: auto;
+  }
+
+  &:last-of-type {
+    margin-right: auto;
+  }
+
+  &.disabled {
+    pointer-events: none;
+  }
+}
+
+.ActionButtons__button-gray {
+  &:extend(.button--gray all);
+
+  &.disabled {
+    &:extend(.button--grey-disabled);
+  }
+}
+
+.ActionButtons__button-offWhite {
+  &:extend(.button--offWhite all);
+
+  &.disabled {
+    &:extend(.button--offWhite--disabled);
+  }
+}
+
+.ActionButtons__button-purple {
+  &:extend(.button--purple all);
+
+  &.disabled {
+    &:extend(.button--purple--disabled);
+  }
+}

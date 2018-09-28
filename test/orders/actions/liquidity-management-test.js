@@ -35,7 +35,8 @@ describe(`modules/orders/actions/liquidity-management.js`, () => {
       meta: {
         test: "object"
       },
-      address: "0x1233"
+      address: "0x1233",
+      allowance: "12312451124912481204918240912480412"
     }
   };
 

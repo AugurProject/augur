@@ -23,10 +23,12 @@ const mergeProps = (sP, dP, oP) => ({
   ],
   cancelAction: () => {
     sP.modal.approveCallback("close_modal");
+    dP.closeModal();
   },
   submitButtonText: "Approve",
   submitAction: () => {
     dP.approveAccount(sP.modal.approveOnSent, sP.modal.approveCallback);
+    dP.closeModal();
   },
   closeModal: dP.closeModal
 });

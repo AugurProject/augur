@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import Styles from "modules/modal/components/modal-disclaimer/modal-disclaimer.styles";
 
+import ModalActions from "modules/modal/components/common/modal-actions";
+
 const EST_HEIGHT_PERCENT = 0.98;
 
 export default class ModalDisclaimer extends Component {
@@ -135,7 +137,7 @@ export default class ModalDisclaimer extends Component {
             with any applicable laws.
           </p>
         </div>
-        <div className={Styles.ModalDisclaimer__ActionButtons}>
+        <div className={Styles.ModalDisclaimer__checkbox}>
           <label htmlFor="i_have_read_disclaimer">
             I have Read and Understand the above
             <input
@@ -146,10 +148,17 @@ export default class ModalDisclaimer extends Component {
               onClick={e => this.checkCheckbox(!s.didCheck)}
             />
           </label>
-          <button disabled={!s.didScroll || !s.didCheck} onClick={p.closeModal}>
-            I Agree and Accept the above
-          </button>
         </div>
+        <ModalActions
+          buttons={[
+            {
+              label: "I Agree and Accept the above",
+              type: "purple",
+              isDisabled: !s.didScroll || !s.didCheck,
+              action: p.closeModal
+            }
+          ]}
+        />
       </section>
     );
   }

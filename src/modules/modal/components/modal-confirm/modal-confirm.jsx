@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import noop from "utils/noop";
 
 import ModalDescription from "modules/modal/components/common/modal-description";
+import ModalActions from "modules/modal/components/common/modal-actions";
 
 import Styles from "modules/modal/components/modal-confirm/modal-confirm.styles";
 
@@ -12,35 +13,26 @@ const ModalConfirm = p => (
     {p.description.map(text => (
       <ModalDescription text={text} key={text} />
     ))}
-    <div className={Styles.ModalConfirm__ActionButtons}>
-      <button
-        className={Styles.ModalConfirm__cancel}
-        onClick={e => {
-          if (!p.continueDefault) e.preventDefault();
-          p.cancelAction();
-          p.closeModal();
-        }}
-      >
-        {p.cancelButtonText}
-      </button>
-      <button
-        className={Styles.ModalConfirm__submit}
-        onClick={e => {
-          if (!p.continueDefault) e.preventDefault();
-          p.submitAction();
-          p.closeModal();
-        }}
-      >
-        {p.submitButtonText}
-      </button>
-    </div>
+    <ModalActions
+      buttons={[
+        {
+          label: p.cancelButtonText,
+          action: p.cancelAction,
+          type: "gray"
+        },
+        {
+          label: p.submitButtonText,
+          action: p.submitAction,
+          type: "purple"
+        }
+      ]}
+    />
   </section>
 );
 
 ModalConfirm.propTypes = {
   description: PropTypes.arrayOf(PropTypes.string).isRequired,
   title: PropTypes.string.isRequired,
-  closeModal: PropTypes.func.isRequired,
   submitAction: PropTypes.func.isRequired,
   continueDefault: PropTypes.bool,
   cancelButtonText: PropTypes.string,

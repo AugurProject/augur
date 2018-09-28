@@ -2,7 +2,6 @@
 
 .MainErrorBoundary {
   align-items: center;
-  color: @color-white;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -10,18 +9,50 @@
   width: 100%;
 }
 
+.MainErrorBoundary__container {
+  background-color: white;
+  border-radius: 0.32rem;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  max-width: 35rem;
+  padding: 1.5rem 0;
+  text-align: center;
+  width: 100%;
+}
+
 .MainErrorBoundary__header {
-  color: @color-white;
-  font-size: @font-size-massive;
-  line-height: @font-size-massive;
+  font-size: @font-size-somewhat-large;
+  line-height: 1.75rem;
+  margin: 0;
+  margin-bottom: 1.5rem;
+  margin-top: 0.5rem;
+  padding: 0;
 }
 
 .MainErrorBoundary__description {
-  color: @color-white;
-  margin-bottom: 4rem;
-  padding: 0 2rem;
+  margin: 0;
+  margin-bottom: 1.5rem;
+  padding: 0 1.5rem;
 }
 
-.MainErrorBoundary__button {
-  &:extend(.button--white);
+.MainErrorBoundary__buttons {
+  border-top: 1px solid #d8d8d8;
+  display: flex;
+  flex-flow: row;
+  padding: 1.5rem 0 0;
+}
+
+.MainErrorBoundary__refresh {
+  &:extend(.button--gray all);
+
+  line-height: 0;
+  margin-left: auto;
+  margin-right: 1rem;
+}
+
+.MainErrorBoundary__return {
+  &:extend(.button--purple all);
+
+  margin-right: auto;
 }

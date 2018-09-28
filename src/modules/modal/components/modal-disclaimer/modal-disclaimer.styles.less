@@ -25,12 +25,11 @@
 
 .ModalDisclaimer__TextBox {
   background-color: @color-offwhite;
-  margin-bottom: 1.5rem;
   max-height: 25rem;
+  max-width: 35rem;
   overflow: auto;
   padding: 0.5rem 1.5rem;
   text-align: left;
-  max-width: 35rem;
   width: 32rem;
 
   > p {
@@ -41,19 +40,40 @@
   }
 }
 
-.ModalDisclaimer__ActionButtons {
-  border-top: 1px solid #d8d8d8;
+.ModalDisclaimer__checkbox {
   display: flex;
   flex-flow: column;
   justify-content: space-between;
-  padding: 0 2rem;
   max-width: 35rem;
+  padding: 0 2rem;
 
   > label {
     align-items: flex-end;
     color: @color-almostblack;
     display: flex;
-    margin: 1.5rem 0 1.5rem;
+    margin: 1.5rem 0 1rem;
+
+    > input {
+      height: 1rem;
+      margin-left: 1rem;
+      width: 1rem;
+    }
+  }
+}
+
+.ModalDisclaimer__ActionButtons {
+  border-top: 1px solid #d8d8d8;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  max-width: 35rem;
+  padding: 0 2rem;
+
+  > label {
+    align-items: flex-end;
+    color: @color-almostblack;
+    display: flex;
+    margin: 1.5rem 0;
 
     > input {
       height: 1rem;
@@ -65,7 +85,7 @@
   > button {
     &:extend(.button--purple all);
 
-     margin: 0 auto;
+    margin: 0 auto;
 
     &.disabled {
       &:extend(.button--purple--disabled);
