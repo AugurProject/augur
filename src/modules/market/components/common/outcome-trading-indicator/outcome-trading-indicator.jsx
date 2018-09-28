@@ -24,10 +24,29 @@ export default function OutcomeTradingIndicator({
 
   const indicatorStyle = indicatorArray[tradingIndicator];
 
+  const topSpace = tradingIndicator => {
+    if (tradingIndicator === BUY_UP || tradingIndicator === SELL_UP) {
+      return -1.125;
+    } else if (
+      tradingIndicator === BUY_DOWN ||
+      tradingIndicator === SELL_DOWN
+    ) {
+      return 1.125;
+    }
+    return 0;
+  };
+
+  const arrowStyles = tradingIndicator => ({
+    ...style,
+    top: topSpace(tradingIndicator) + "rem",
+    left: "-0.25rem",
+    position: "relative"
+  });
+
   return (
     <span
       className={classNames(indicatorStyle, { [`${Styles.small}`]: isMobile })}
-      style={style}
+      style={arrowStyles(tradingIndicator)}
     />
   );
 }

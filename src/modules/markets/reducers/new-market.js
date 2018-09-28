@@ -103,7 +103,7 @@ export default function(newMarket = DEFAULT_STATE(), action) {
       };
     }
     case REMOVE_ORDER_FROM_NEW_MARKET: {
-      const { outcome, index } = action.data;
+      const { outcome, index } = action.data && action.data.order;
       const updatedOutcome = [
         ...newMarket.orderBook[outcome].slice(0, index),
         ...newMarket.orderBook[outcome].slice(index + 1)
