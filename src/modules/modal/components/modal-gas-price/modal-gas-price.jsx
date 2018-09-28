@@ -7,19 +7,24 @@ import Styles from "modules/modal/components/modal-gas-price/modal-gas-price.sty
 
 export default class ModalGasPrice extends Component {
   static propTypes = {
-    closeModal: PropTypes.func.isRequired
+    closeModal: PropTypes.func.isRequired,
+    saveModal: PropTypes.func.isRequired,
+    safeLow: PropTypes.number.isRequired,
+    average: PropTypes.number.isRequired,
+    fast: PropTypes.number.isRequired,
+    userDefinedGasPrice: PropTypes.number.isRequired
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      amount: 12
+      amount: props.userDefinedGasPrice
     };
   }
 
   updateAmount(amount) {
-    this.setState({ amount });
+    this.setState({ amount: parseInt(amount, 10) });
   }
 
   render() {
@@ -49,7 +54,10 @@ export default class ModalGasPrice extends Component {
           >
             Cancel
           </button>
-          <button className={Styles.ModalGasPrice__save} onClick={p.closeModal}>
+          <button
+            className={Styles.ModalGasPrice__save}
+            onClick={() => p.saveModal(s.amount)}
+          >
             Save
           </button>
         </div>
@@ -66,15 +74,15 @@ export default class ModalGasPrice extends Component {
           </div>
           <div className={Styles.ModalGasPrice__row}>
             <div className={Styles.ModalGasPrice__col}>{"Slow (<30m)"}</div>
-            <div className={Styles.ModalGasPrice__col}>4</div>
+            <div className={Styles.ModalGasPrice__col}>{p.safeLow}</div>
           </div>
           <div className={Styles.ModalGasPrice__row}>
             <div className={Styles.ModalGasPrice__col}>{"Standard (<5m)"}</div>
-            <div className={Styles.ModalGasPrice__col}>10</div>
+            <div className={Styles.ModalGasPrice__col}>{p.average}</div>
           </div>
           <div className={Styles.ModalGasPrice__row}>
             <div className={Styles.ModalGasPrice__col}>{"Fast (<2m)"}</div>
-            <div className={Styles.ModalGasPrice__col}>12</div>
+            <div className={Styles.ModalGasPrice__col}>{p.fast}</div>
           </div>
         </div>
       </section>
