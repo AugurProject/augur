@@ -22,19 +22,21 @@ describe(`modules/reports/reducers/reports.js`, () => {
       assert.deepEqual(
         reducer(state.reports, {
           type: "UPDATE_REPORTS",
-          reports: {
-            [testState.universe.id]: {
-              test: {
-                marketId: "test",
-                example: "example",
-                isScalar: false,
-                isIndeterminate: false
-              },
-              example: {
-                marketId: "example",
-                test: "test",
-                isScalar: false,
-                isIndeterminate: false
+          data: {
+            reportsData: {
+              [testState.universe.id]: {
+                test: {
+                  marketId: "test",
+                  example: "example",
+                  isScalar: false,
+                  isIndeterminate: false
+                },
+                example: {
+                  marketId: "example",
+                  test: "test",
+                  isScalar: false,
+                  isIndeterminate: false
+                }
               }
             }
           }
@@ -73,9 +75,11 @@ describe(`modules/reports/reducers/reports.js`, () => {
         t.assertions(
           reducer(t.state.reports, {
             type: "UPDATE_REPORT",
-            universeId: t.params.universeId,
-            marketId: t.params.marketId,
-            report: t.params.report
+            data: {
+              universeId: t.params.universeId,
+              marketId: t.params.marketId,
+              report: t.params.report
+            }
           })
         )
       );

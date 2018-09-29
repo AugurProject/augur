@@ -4,24 +4,26 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
 
-export default function(accountPositions = DEFAULT_STATE, action) {
-  switch (action.type) {
-    case UPDATE_ACCOUNT_POSITIONS_DATA:
-      if (action.data) {
-        if (action.marketId) {
+export default function(accountPositions = DEFAULT_STATE, { type, data }) {
+  switch (type) {
+    case UPDATE_ACCOUNT_POSITIONS_DATA: {
+      const { positionData, marketId } = data;
+      if (positionData) {
+        if (marketId) {
           return {
             ...accountPositions,
-            [action.marketId]: {
-              ...action.data[action.marketId]
+            [marketId]: {
+              ...positionData[marketId]
             }
           };
         }
         return {
           ...accountPositions,
-          ...action.data
+          ...positionData
         };
       }
       return accountPositions;
+    }
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;

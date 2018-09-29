@@ -61,10 +61,15 @@ describe("modules/forking/actions/submit-migrate-rep.js", () => {
           }
         });
 
-        submitMigrateREP(false, "0xMARKET", 1, false, 42, null, () => {})(
-          null,
-          getState
-        );
+        submitMigrateREP({
+          estimateGas: false,
+          marketId: "0xMARKET",
+          selectedOutcome: 1,
+          invalid: false,
+          amount: 42,
+          history: null,
+          callback: () => {}
+        })(null, getState);
       }
     });
   });

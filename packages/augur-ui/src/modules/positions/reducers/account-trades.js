@@ -7,15 +7,15 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
 
-export default function(accountTrades = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(accountTrades = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_ACCOUNT_TRADES_DATA: {
-      const updatedMarketOutcomes = Object.keys(action.data || {}).reduce(
+      const { tradeData, market } = data;
+      const updatedMarketOutcomes = Object.keys(tradeData || {}).reduce(
         (p, outcome) => {
-          const filteredTrades = action.data[outcome].filter(actionTrade => {
+          const filteredTrades = tradeData[outcome].filter(actionTrade => {
             const hasIdenticalTrade = (
-              (!!accountTrades[action.market] &&
-                accountTrades[action.market][outcome]) ||
+              (!!accountTrades[market] && accountTrades[market][outcome]) ||
               []
             ).find(
               trade => trade.transactionHash === actionTrade.transactionHash
@@ -27,19 +27,18 @@ export default function(accountTrades = DEFAULT_STATE, action) {
           return {
             ...p,
             [outcome]: [
-              ...((!!accountTrades[action.market] &&
-                accountTrades[action.market][outcome]) ||
+              ...((!!accountTrades[market] && accountTrades[market][outcome]) ||
                 []),
               ...filteredTrades
             ]
           };
         },
-        accountTrades[action.market] || {}
+        accountTrades[market] || {}
       );
 
       return {
         ...accountTrades,
-        [action.market]: {
+        [market]: {
           ...updatedMarketOutcomes
         }
       };

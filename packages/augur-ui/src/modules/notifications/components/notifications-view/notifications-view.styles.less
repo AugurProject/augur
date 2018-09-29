@@ -1,37 +1,28 @@
 @import (reference) '~assets/styles/shared';
 
 .NotificationsView {
-  background: @color-offwhite;
-  box-shadow: @box-shadow-notifications;
-  color: @color-text-dark;
+  background-color: @color-lightpurple;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
+  color: @color-white;
   display: flex;
-  height: 30.25rem;
-  max-height: 80%;
-  position: absolute;
-  right: 1.65rem;
+  flex-direction: column;
+  max-height: 470px;
+  position: relative;
   text-align: left;
-  top: 3.6rem;
-  width: 22.75rem;
+  width: 360px;
   z-index: @mask-above;
 }
 
-.NotificationsView::after {
-  border: solid transparent;
-  border-color: @color-transparent @color-transparent @color-offwhite @color-transparent;
-  border-width: 10px;
-  bottom: 100%;
-  content: " ";
-  height: 0;
-  margin-left: -10px;
-  pointer-events: none;
+.NotificationsView__parent {
   position: absolute;
-  right: 0.2rem;
-  width: 0;
+  right: 0;
+  top: @top-bar-height;
 }
 
 .NotificationsView__box {
   overflow-y: auto;
-  padding-bottom: 1.5rem;
   width: 100%;
 }
 
@@ -50,15 +41,49 @@
   color: @color-lightgray;
   font-size: 1rem;
   font-weight: 400;
+  margin-top: 0.5rem;
+  padding: 30px;
   text-align: center;
   width: 100%;
 }
 
+.NotificationsView__dismissContainer {
+  align-items: flex-end;
+  background-color: @color-lightpurple;
+  border-top: 1px solid @color-gray;
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+  min-height: 27px;
+  padding: 7px 16px;
+}
+
+.NotificationsView__dismissContainerBorder {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
+.NotificationsView__dismissButton {
+  border-bottom: dotted 0.5px @color-lightergray;
+  color: @color-lightergray;
+  cursor: pointer;
+  display: inline;
+  font-size: 12px;
+
+  &:hover {
+    border-bottom: dotted 0.5px @color-white;
+    color: @color-white;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
 @media @breakpoint-mobile {
   .NotificationsView {
-    background: @color-lightergray;
     bottom: 0;
-    color: @color-text-dark;
     display: flex;
     flex-flow: column nowrap;
     height: 100%;

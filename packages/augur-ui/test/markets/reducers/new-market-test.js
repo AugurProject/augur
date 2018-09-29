@@ -111,11 +111,13 @@ describe("modules/markets/reducers/new-market.js", () => {
       const actual = newMarket(newMarketState, {
         type: ADD_ORDER_TO_NEW_MARKET,
         data: {
-          outcome: "Outcome1",
-          type: "bid",
-          price: createBigNumber(0.5),
-          quantity: createBigNumber(1),
-          orderEstimate: "0.5 ETH"
+          order: {
+            outcome: "Outcome1",
+            type: "bid",
+            price: createBigNumber(0.5),
+            quantity: createBigNumber(1),
+            orderEstimate: "0.5 ETH"
+          }
         }
       });
 
@@ -167,11 +169,13 @@ describe("modules/markets/reducers/new-market.js", () => {
       const actual = newMarket(newMarketState, {
         type: ADD_ORDER_TO_NEW_MARKET,
         data: {
-          outcome: "Outcome1",
-          type: "bid",
-          price: createBigNumber(0.5),
-          quantity: createBigNumber(1),
-          orderEstimate: "0.5 ETH"
+          order: {
+            outcome: "Outcome1",
+            type: "bid",
+            price: createBigNumber(0.5),
+            quantity: createBigNumber(1),
+            orderEstimate: "0.5 ETH"
+          }
         }
       });
 
@@ -236,11 +240,13 @@ describe("modules/markets/reducers/new-market.js", () => {
       const actual = newMarket(newMarketState, {
         type: ADD_ORDER_TO_NEW_MARKET,
         data: {
-          outcome: "Outcome1",
-          type: "bid",
-          price: createBigNumber(0.3),
-          quantity: createBigNumber(1),
-          orderEstimate: "0.3 ETH"
+          order: {
+            outcome: "Outcome1",
+            type: "bid",
+            price: createBigNumber(0.3),
+            quantity: createBigNumber(1),
+            orderEstimate: "0.3 ETH"
+          }
         }
       });
 
@@ -299,33 +305,39 @@ describe("modules/markets/reducers/new-market.js", () => {
       const action1 = newMarket(newMarketState, {
         type: ADD_ORDER_TO_NEW_MARKET,
         data: {
-          outcome: "Outcome1",
-          type: "bid",
-          price: createBigNumber(0.3),
-          quantity: createBigNumber(1),
-          orderEstimate: "0.3 ETH"
+          order: {
+            outcome: "Outcome1",
+            type: "bid",
+            price: createBigNumber(0.3),
+            quantity: createBigNumber(1),
+            orderEstimate: "0.3 ETH"
+          }
         }
       });
 
       const action2 = newMarket(action1, {
         type: ADD_ORDER_TO_NEW_MARKET,
         data: {
-          outcome: "Outcome1",
-          type: "ask",
-          price: createBigNumber(0.9),
-          quantity: createBigNumber(5),
-          orderEstimate: "0.5 ETH"
+          order: {
+            outcome: "Outcome1",
+            type: "ask",
+            price: createBigNumber(0.9),
+            quantity: createBigNumber(5),
+            orderEstimate: "0.5 ETH"
+          }
         }
       });
 
       const actual = newMarket(action2, {
         type: ADD_ORDER_TO_NEW_MARKET,
         data: {
-          outcome: "Outcome1",
-          type: "bid",
-          price: createBigNumber(0.3),
-          quantity: createBigNumber(5),
-          orderEstimate: "1.5 ETH"
+          order: {
+            outcome: "Outcome1",
+            type: "bid",
+            price: createBigNumber(0.3),
+            quantity: createBigNumber(5),
+            orderEstimate: "1.5 ETH"
+          }
         }
       });
 
@@ -381,8 +393,10 @@ describe("modules/markets/reducers/new-market.js", () => {
       const actual = newMarket(newMarketState, {
         type: REMOVE_ORDER_FROM_NEW_MARKET,
         data: {
-          outcome: "Outcome1",
-          index: 0
+          order: {
+            outcome: "Outcome1",
+            index: 0
+          }
         }
       });
 
@@ -418,7 +432,7 @@ describe("modules/markets/reducers/new-market.js", () => {
       const actual = newMarket(newMarketState, {
         type: UPDATE_NEW_MARKET,
         data: {
-          test: "updated test"
+          newMarketData: { test: "updated test" }
         }
       });
 

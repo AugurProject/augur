@@ -6,8 +6,10 @@ export const UPDATE_MARKET_TRADING_HISTORY = "UPDATE_MARKET_TRADING_HISTORY";
 export function updateMarketTradingHistory(marketId, tradingHistory) {
   return {
     type: UPDATE_MARKET_TRADING_HISTORY,
-    marketId,
-    tradingHistory
+    data: {
+      marketId,
+      tradingHistory
+    }
   };
 }
 
@@ -15,7 +17,7 @@ export const loadMarketTradingHistory = (options, callback = logError) => (
   dispatch,
   getState
 ) => {
-  if (options === null || !options.marketId) callback(null);
+  if (options === null || !options.marketId) return callback(null);
   const allOptions = Object.assign(
     { limit: 10, sortBy: "timestamp", isSortDescending: true },
     options

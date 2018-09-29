@@ -12,8 +12,10 @@ describe(`modules/markets/actions/update-markets-data.js`, () => {
 
       const expected = {
         type: updateMarketsDataReducer.UPDATE_MARKETS_DATA,
-        marketsData: {
-          test: "object"
+        data: {
+          marketsData: {
+            test: "object"
+          }
         }
       };
 
@@ -44,8 +46,10 @@ describe(`modules/markets/actions/update-markets-data.js`, () => {
 
       const expected = {
         type: updateMarketsDataReducer.UPDATE_MARKET_CATEGORY,
-        marketId: "0xMarket1",
-        category: "cat1"
+        data: {
+          marketId: "0xMarket1",
+          category: "cat1"
+        }
       };
 
       assert.deepEqual(actual, expected, `didn't return the expected value`);
@@ -62,8 +66,10 @@ describe(`modules/markets/actions/update-markets-data.js`, () => {
 
       const expected = {
         type: updateMarketsDataReducer.UPDATE_MARKET_REP_BALANCE,
-        marketId: "0xMarket1",
-        repBalance: 10
+        data: {
+          marketId: "0xMarket1",
+          repBalance: 10
+        }
       };
 
       assert.deepEqual(actual, expected, `didn't return the expected value`);
@@ -81,8 +87,10 @@ describe(`modules/markets/actions/update-markets-data.js`, () => {
 
       const expected = {
         type: updateMarketsDataReducer.UPDATE_MARKET_FROZEN_SHARES_VALUE,
-        marketId: "0xMarket1",
-        frozenSharesValue: 5
+        data: {
+          marketId: "0xMarket1",
+          frozenSharesValue: 5
+        }
       };
 
       assert.deepEqual(actual, expected, `didn't return the expected value`);

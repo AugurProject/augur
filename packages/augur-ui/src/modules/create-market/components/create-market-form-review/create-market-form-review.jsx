@@ -63,7 +63,7 @@ export default class CreateMarketReview extends Component {
     this.calculateMarketCreationCosts();
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps, nextState) {
     const { newMarket } = this.props;
     if (
       newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth
@@ -75,19 +75,39 @@ export default class CreateMarketReview extends Component {
       });
     if (
       newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas
-    )
-      this.setState({
-        formattedInitialLiquidityGas: formatEtherEstimate(
-          formatGasCostToEther(
-            nextProps.newMarket.initialLiquidityGas,
-            { decimalsRounded: 4 },
-            this.state.gasPrice
+    ) {
+      this.setState(
+        {
+          formattedInitialLiquidityGas: formatEtherEstimate(
+            formatGasCostToEther(
+              nextProps.newMarket.initialLiquidityGas,
+              { decimalsRounded: 4 },
+              this.state.gasPrice
+            )
           )
-        )
-      });
+        },
+        () => {
+          this.calculateMarketCreationCosts();
+        }
+      );
+    }
+    if (this.state.validityBond !== nextState.validityBond) {
+      if (nextState.validityBond) {
+        const insufficientFundsString = this.getFundsString();
+        if (this.state.insufficientFundsString !== insufficientFundsString) {
+          this.updateFunds(insufficientFundsString);
+        }
+      }
+    }
+    if (
+      this.props.availableEth !== nextProps.availableEth ||
+      this.props.availableRep !== nextProps.availableRep
+    ) {
+      this.calculateMarketCreationCosts();
+    }
   }
 
-  getFundsString() {
+  getFundsString(testWithLiquidity = false) {
     const { availableEth, availableRep } = this.props;
     const s = this.state;
     let insufficientFundsString = "";
@@ -99,12 +119,23 @@ export default class CreateMarketReview extends Component {
         s,
         "designatedReportNoShowReputationBond.formattedValue"
       );
+      const formattedInitialLiquidityGas = getValue(
+        s,
+        "formattedInitialLiquidityGas.formattedValue"
+      );
+      const formattedInitialLiquidityEth = getValue(
+        s,
+        "formattedInitialLiquidityEth.formattedValue"
+      );
       insufficientFundsString = insufficientFunds(
         validityBond,
-        gasCost,
+        gasCost || "0",
         designatedReportNoShowReputationBond,
         createBigNumber(availableEth, 10),
-        createBigNumber(availableRep, 10)
+        createBigNumber(availableRep, 10),
+        formattedInitialLiquidityGas || "0",
+        formattedInitialLiquidityEth || "0",
+        testWithLiquidity
       );
     }
 
@@ -119,48 +150,60 @@ export default class CreateMarketReview extends Component {
 
   calculateMarketCreationCosts() {
     const { meta, universe, newMarket } = this.props;
-    this.props.estimateSubmitNewMarket(newMarket, (err, gasEstimateValue) => {
-      if (err) console.error(err);
-      augur.createMarket.getMarketCreationCostBreakdown(
-        { universe: universe.id, meta },
-        (err, marketCreationCostBreakdown) => {
-          if (err) return console.error(err);
-          // TODO add designatedReportNoShowReputationBond to state / display
-          const gasPrice = augur.rpc.getGasPrice();
-          this.setState(
-            {
-              gasPrice,
-              gasCost: formatEtherEstimate(
-                formatGasCostToEther(
-                  gasEstimateValue || "0",
-                  { decimalsRounded: 4 },
-                  gasPrice
-                )
-              ),
-              designatedReportNoShowReputationBond: formatEtherEstimate(
-                marketCreationCostBreakdown.designatedReportNoShowReputationBond
-              ),
-              validityBond: formatEtherEstimate(
-                marketCreationCostBreakdown.validityBond
-              )
-            },
-            this.updateFunds(this.getFundsString())
-          );
-        }
-      );
-    });
+
+    augur.createMarket.getMarketCreationCostBreakdown(
+      { universe: universe.id, meta },
+      (err, marketCreationCostBreakdown) => {
+        if (err) return console.error(err);
+        // TODO add designatedReportNoShowReputationBond to state / display
+        const gasPrice = augur.rpc.getGasPrice();
+
+        this.setState(
+          {
+            gasPrice,
+            designatedReportNoShowReputationBond: formatEtherEstimate(
+              marketCreationCostBreakdown.designatedReportNoShowReputationBond
+            ),
+            validityBond: formatEtherEstimate(
+              marketCreationCostBreakdown.validityBond
+            )
+          },
+          () => {
+            const funds = this.getFundsString();
+            if (funds) {
+              return this.updateFunds(funds);
+            }
+
+            this.props.estimateSubmitNewMarket(
+              newMarket,
+              (err, gasEstimateValue) => {
+                if (err) console.error(err);
+                this.setState(
+                  {
+                    gasCost: formatEtherEstimate(
+                      formatGasCostToEther(
+                        gasEstimateValue || "0",
+                        { decimalsRounded: 4 },
+                        gasPrice
+                      )
+                    )
+                  },
+                  () => {
+                    this.updateFunds(this.getFundsString(true));
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
+    );
   }
 
   render() {
     const { newMarket } = this.props;
     const s = this.state;
 
-    if (s.validityBond) {
-      const insufficientFundsString = this.getFundsString();
-      if (s.insufficientFundsString !== insufficientFundsString) {
-        this.updateFunds(insufficientFundsString);
-      }
-    }
     if (this.additionalDetails && this.additionalDetails.scrollHeight) {
       this.additionalDetails.style.height = `${
         this.additionalDetails.scrollHeight

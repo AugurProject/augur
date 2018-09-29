@@ -37,7 +37,7 @@ export function addNotification(notification) {
 export function removeNotification(id) {
   return {
     type: REMOVE_NOTIFICATION,
-    data: id
+    data: { id }
   };
 }
 

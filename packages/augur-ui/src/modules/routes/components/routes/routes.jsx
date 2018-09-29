@@ -2,7 +2,6 @@ import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 
 import AuthenticatedRoute from "modules/routes/components/authenticated-route/authenticated-route";
-import UnauthenticatedRoute from "modules/routes/components/unauthenticated-route/unauthenticated-route";
 import makePath from "modules/routes/helpers/make-path";
 
 import * as VIEWS from "modules/routes/constants/views";
@@ -21,7 +20,6 @@ const Routes = p => (
     />
     <Route path={makePath(VIEWS.MARKETS)} component={COMPONENTS.Markets} />
     <Route path={makePath(VIEWS.MARKET)} component={COMPONENTS.Market} />
-    <Route path={makePath(VIEWS.CONNECT)} component={COMPONENTS.Connect} />
     <AuthenticatedRoute
       path={makePath(VIEWS.DISPUTE)}
       component={COMPONENTS.Dispute}
@@ -89,10 +87,6 @@ const Routes = p => (
     <Route
       path={makePath(VIEWS.REPORTING_RESOLVED_MARKETS)}
       component={COMPONENTS.Reporting}
-    />
-    <UnauthenticatedRoute
-      path={makePath(VIEWS.AUTHENTICATION)}
-      component={COMPONENTS.Auth}
     />
     <Redirect to={makePath(VIEWS.CATEGORIES)} />
   </Switch>

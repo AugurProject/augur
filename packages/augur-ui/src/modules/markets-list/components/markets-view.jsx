@@ -40,8 +40,8 @@ export default class MarketsView extends Component {
   componentDidMount() {
     if (this.props.universe) {
       this.updateFilteredMarkets();
+      this.props.loadDisputing();
     }
-    this.props.loadDisputing();
   }
 
   componentDidUpdate(prevProps) {

@@ -92,7 +92,7 @@ export default class MobileOrders extends Component {
             <div className={Styles["MobileOrder__confirm-options"]}>
               <button
                 onClick={e => {
-                  order.cancelOrder();
+                  order.cancelOrder(order);
                   this.toggleConfirm();
                 }}
               >

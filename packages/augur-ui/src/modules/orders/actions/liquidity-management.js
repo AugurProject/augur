@@ -13,29 +13,42 @@ export const CLEAR_ALL_MARKET_ORDERS = "CLEAR_ALL_MARKET_ORDERS";
 // liquidity should be an orderbook, example with yesNo:
 // { 1: [{ type, quantity, price, orderEstimate }, ...], ... }
 
-export const loadPendingLiquidityOrders = data => ({
+export const loadPendingLiquidityOrders = pendingLiquidityOrders => ({
   type: LOAD_PENDING_LIQUIDITY_ORDERS,
-  data
+  data: { pendingLiquidityOrders }
 });
 
-export const addMarketLiquidityOrders = data => ({
+export const addMarketLiquidityOrders = ({ liquidityOrders, marketId }) => ({
   type: ADD_MARKET_LIQUIDITY_ORDERS,
-  data
+  data: {
+    liquidityOrders,
+    marketId
+  }
 });
 
-export const clearMarketLiquidityOrders = data => ({
+export const clearMarketLiquidityOrders = marketId => ({
   type: CLEAR_ALL_MARKET_ORDERS,
-  data
+  data: { marketId }
 });
 
-export const updateLiquidityOrder = data => ({
+export const updateLiquidityOrder = ({
+  order,
+  updates,
+  marketId,
+  outcomeId
+}) => ({
   type: UPDATE_LIQUIDITY_ORDER,
-  data
+  data: {
+    order,
+    updates,
+    marketId,
+    outcomeId
+  }
 });
 
-export const removeLiquidityOrder = data => ({
+export const removeLiquidityOrder = ({ marketId, outcomeId, orderId }) => ({
   type: REMOVE_LIQUIDITY_ORDER,
-  data
+  data: { marketId, outcomeId, orderId }
 });
 
 export const startOrderSending = options => (dispatch, getState) => {
@@ -100,7 +113,6 @@ export const startOrderSending = options => (dispatch, getState) => {
                 updateLiquidityOrder({
                   marketId,
                   order,
-                  orderId,
                   outcomeId,
                   updates: {
                     onSent: true,

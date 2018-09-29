@@ -13,9 +13,11 @@ describe(`modules/auth/reducers/login-account.js`, () => {
     action = {
       type: UPDATE_LOGIN_ACCOUNT,
       data: {
-        ether: 5,
-        rep: 15,
-        realEther: 25
+        loginAccount: {
+          ether: 5,
+          rep: 15,
+          realEther: 25
+        }
       }
     };
 

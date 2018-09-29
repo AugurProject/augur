@@ -792,7 +792,7 @@ describe("Create market page", () => {
         outcome: "Outcome 3",
         quantity: "2.0000",
         price: "0.4100"
-      },
+      }
     ];
     await createLiquidity(orders);
 

@@ -11,14 +11,14 @@ import { selectCurrentTimestampInSeconds } from "src/select-state";
 import logError from "utils/log-error";
 import noop from "utils/noop";
 
-export const placeTrade = (
+export const placeTrade = ({
   marketId,
   outcomeId,
   tradeInProgress,
   doNotCreateOrders,
   callback = logError,
   onComplete = noop
-) => (dispatch, getState) => {
+}) => (dispatch, getState) => {
   if (!marketId) return null;
   const { loginAccount, marketsData } = getState();
   const market = marketsData[marketId];

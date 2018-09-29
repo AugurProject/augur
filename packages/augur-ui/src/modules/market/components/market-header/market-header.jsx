@@ -28,7 +28,8 @@ export default class MarketHeader extends Component {
     selectedOutcome: PropTypes.any,
     isLogged: PropTypes.bool,
     isDesignatedReporter: PropTypes.bool,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    finalizeMarket: PropTypes.func
   };
 
   constructor(props) {
@@ -59,7 +60,8 @@ export default class MarketHeader extends Component {
       currentTimestamp,
       tentativeWinner,
       isLogged,
-      isDesignatedReporter
+      isDesignatedReporter,
+      finalizeMarket
     } = this.props;
 
     let { details } = this.props;
@@ -97,12 +99,7 @@ export default class MarketHeader extends Component {
         <div className={Styles[`MarketHeader__main-values`]}>
           <div className={Styles.MarketHeader__descContainer}>
             <h1 className={Styles.MarketHeader__description}>{description}</h1>
-            <div
-              className={Styles.MarketHeader__descriptionContainer}
-              onClick={this.toggleReadMore}
-              role="button"
-              tabIndex="0"
-            >
+            <div className={Styles.MarketHeader__descriptionContainer}>
               <div className={Styles.MarketHeader__details}>
                 <h4>Resolution Source</h4>
                 <span>{resolutionSource || "General knowledge"}</span>
@@ -125,9 +122,12 @@ export default class MarketHeader extends Component {
                     {details}
                   </label>
                   {detailsTooLong && (
-                    <div className={Styles.MarketHeader__readMoreButton}>
+                    <button
+                      className={Styles.MarketHeader__readMoreButton}
+                      onClick={this.toggleReadMore}
+                    >
                       {!this.state.showReadMore ? "read more" : "read less"}
-                    </div>
+                    </button>
                   )}
                 </div>
               )}
@@ -145,6 +145,7 @@ export default class MarketHeader extends Component {
               isLogged={isLogged}
               isDesignatedReporter={isDesignatedReporter}
               location={location}
+              finalizeMarket={finalizeMarket}
             />
           </div>
         </div>

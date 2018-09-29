@@ -7,9 +7,11 @@ describe(`modules/markets/actions/update-outcome-price.js`, () => {
     const price = 6.44;
     const expectedOutput = {
       type: action.UPDATE_OUTCOME_PRICE,
-      marketId,
-      outcomeId,
-      price
+      data: {
+        marketId,
+        outcomeId,
+        price
+      }
     };
     assert.deepEqual(
       action.updateOutcomePrice(marketId, outcomeId, price),

@@ -15,10 +15,7 @@ import getValue from "utils/get-value";
 import { isEqual } from "lodash";
 
 import { BUY, SELL, LIMIT } from "modules/transactions/constants/types";
-import {
-  AUTHENTICATION,
-  ACCOUNT_DEPOSIT
-} from "modules/routes/constants/views";
+import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 import Styles from "modules/trading/components/trading--wrapper/trading--wrapper.styles";
 
@@ -242,22 +239,7 @@ class MarketTradingWrapper extends Component {
             </ul>
             {initialMessage && (
               <p className={Styles["TradingWrapper__initial-message"]}>
-                {!isLogged ? (
-                  <span>
-                    <Link
-                      to={makePath(AUTHENTICATION)}
-                      style={{
-                        textDecoration: "underline",
-                        marginRight: "4px"
-                      }}
-                    >
-                      Log in
-                    </Link>
-                    to trade.
-                  </span>
-                ) : (
-                  initialMessage
-                )}
+                {!isLogged ? <span>Log in to trade.</span> : initialMessage}
               </p>
             )}
             {initialMessage &&

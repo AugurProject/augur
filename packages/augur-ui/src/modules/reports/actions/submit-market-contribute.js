@@ -5,7 +5,7 @@ import logError from "utils/log-error";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { removeAccountDispute } from "modules/reports/actions/update-account-disputes";
 
-export const submitMarketContribute = (
+export const submitMarketContribute = ({
   estimateGas,
   marketId,
   selectedOutcome,
@@ -14,7 +14,7 @@ export const submitMarketContribute = (
   history,
   returnPath = REPORTING_DISPUTE_MARKETS,
   callback = logError
-) => (dispatch, getState) => {
+}) => (dispatch, getState) => {
   const { loginAccount, marketsData } = getState();
   const outcome = parseFloat(selectedOutcome);
 

@@ -67,7 +67,8 @@ export default class CoreProperties extends Component {
     tentativeWinner: PropTypes.object,
     isLogged: PropTypes.bool,
     isDesignatedReporter: PropTypes.bool,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    finalizeMarket: PropTypes.func.isRequired
   };
 
   determinePhase() {
@@ -107,7 +108,8 @@ export default class CoreProperties extends Component {
       tentativeWinner,
       isLogged,
       isDesignatedReporter,
-      location
+      location,
+      finalizeMarket
     } = this.props;
 
     const marketCreatorFee = getValue(
@@ -200,19 +202,16 @@ export default class CoreProperties extends Component {
         }
       });
       renderedProperties.push(
-        <div key={"row" + numRow} className={Styles.CoreProperties__row}>
+        <div
+          key={"row" + numRow}
+          className={classNames(Styles.CoreProperties__row, {
+            [Styles.CoreProperties__rowBorder]: numRow === 0
+          })}
+        >
           {" "}
           {row}
         </div>
       );
-      if (numRow === 0) {
-        renderedProperties.push(
-          <div
-            key={"linebreak" + numRow}
-            className={Styles.CoreProperties__lineBreak}
-          />
-        );
-      }
     });
 
     let headerContent = null;
@@ -225,7 +224,47 @@ export default class CoreProperties extends Component {
             <div>Winning Outcome:</div>
           </span>
           <span className={Styles[`CoreProperties__property-winningOutcome`]}>
-            {consensus}
+            <div
+              className={Styles[`CoreProperties__header-firstElement`]}
+              style={{ fontWeight: "700" }}
+            >
+              {consensus}
+            </div>
+            {isLogged &&
+              reportingState ===
+                constants.REPORTING_STATE.AWAITING_FINALIZATION && (
+                <div className={Styles.CoreProperties__header__finalize}>
+                  <label
+                    className={classNames(
+                      TooltipStyles.TooltipHint,
+                      Styles.CoreProperties__header__tooltip
+                    )}
+                    data-tip
+                    data-for="tooltip--finalize"
+                  >
+                    {Hint}
+                  </label>
+                  <ReactTooltip
+                    id="tooltip--finalize"
+                    className={TooltipStyles.Tooltip}
+                    effect="solid"
+                    place="bottom"
+                    type="light"
+                  >
+                    <h4>Market Finalization</h4>
+                    <p>
+                      Finalizing a market allows users to trade in winning
+                      shares for ETH.
+                    </p>
+                  </ReactTooltip>
+                  <button
+                    className={Styles[`CoreProperties__property-button`]}
+                    onClick={() => finalizeMarket(market.id)}
+                  >
+                    FINALIZE
+                  </button>
+                </div>
+              )}
           </span>
         </div>
       ];
