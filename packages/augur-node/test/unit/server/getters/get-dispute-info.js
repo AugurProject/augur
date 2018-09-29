@@ -79,7 +79,7 @@ describe("server/getters/get-dispute-info", () => {
               tentativeWinning: false,
             },
           ],
-          disputeRound: 0,
+          disputeRound: 1,
         },
         {
           marketId: "0x0000000000000000000000000000000000000011",
@@ -114,7 +114,7 @@ describe("server/getters/get-dispute-info", () => {
               tentativeWinning: true,
             },
           ],
-          disputeRound: 2,
+          disputeRound: 3,
         },
       ]);
     },
@@ -180,7 +180,7 @@ describe("server/getters/get-dispute-info", () => {
               tentativeWinning: false,
             },
           ],
-          disputeRound: 0,
+          disputeRound: 1,
         },
         {
           marketId: "0x0000000000000000000000000000000000000011",
@@ -215,7 +215,7 @@ describe("server/getters/get-dispute-info", () => {
               tentativeWinning: true,
             },
           ],
-          disputeRound: 2,
+          disputeRound: 3,
         },
       ]);
     },
@@ -282,7 +282,7 @@ describe("server/getters/get-dispute-info", () => {
               tentativeWinning: false,
             },
           ],
-          disputeRound: 0,
+          disputeRound: 1,
         },
         null,
       ]);
@@ -332,7 +332,7 @@ describe("server/getters/get-dispute-info", () => {
               tentativeWinning: true,
             },
           ],
-          disputeRound: 2,
+          disputeRound: 3,
         },
         {
           marketId: "0x0000000000000000000000000000000000000211",
@@ -383,7 +383,7 @@ describe("server/getters/get-dispute-info", () => {
               tentativeWinning: false,
             },
           ],
-          disputeRound: 0,
+          disputeRound: 1,
         },
       ]);
     },

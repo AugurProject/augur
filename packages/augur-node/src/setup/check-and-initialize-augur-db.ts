@@ -120,7 +120,7 @@ export async function createDbAndConnect(errorCallback: ErrorCallback|undefined,
       const networkId: string = augur.rpc.getNetworkID();
       if (networkId == null) return reject(new Error("could not get networkId"));
       try {
-        monitorEthereumNodeHealth(errorCallback, augur);
+        await monitorEthereumNodeHealth(augur, errorCallback);
         await checkAndUpdateContractUploadBlock(augur, networkId, databaseDir);
         const db = await checkAndInitializeAugurDb(augur, networkId, databaseDir);
         resolve(db);
