@@ -102,6 +102,7 @@
     "webpack-hot-middleware": "^2.22.3"
   },
   "electronWebpack": {
-    "electronVersion": "2.0.0"
+    "electronVersion": "2.0.0",
+    "whiteListedModules": ["react", "redux-thunk", "source-map-support", "ip-port-regex", "url-regex"]
   }
 }
