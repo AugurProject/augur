@@ -1,7 +1,7 @@
 {
   "name": "augur",
   "productName": "Augur",
-  "version": "1.6.0-snapshot",
+  "version": "1.7.0-snapshot",
   "description": "Augur Desktop Application",
   "main": "./dist/main/main.js",
   "scripts": {
@@ -36,9 +36,9 @@
   "dependencies": {
     "app-data-folder": "1.0.0",
     "augur-core": "1.1.0",
-    "augur-node": "5.9.1",
-    "augur-ui": "5.8.1",
-    "augur.js": "5.7.0",
+    "augur-node": "5.10.0",
+    "augur-ui": "5.9.3",
+    "augur.js": "5.8.0",
     "debounce": "1.1.0",
     "electron-is-dev": "^0.3.0",
     "electron-log": "^2.2.16",
@@ -48,6 +48,7 @@
     "file-loader": "^2.0.0",
     "helmet": "3.13.0",
     "immutable-delete": "^1.1.0",
+    "ip-port-regex": "^2.0.0",
     "knex": "0.14.6",
     "lodash": "^4.17.10",
     "node-pre-gyp": "~0.6.38",
@@ -67,6 +68,7 @@
     "source-map-support": "^0.5.9",
     "sqlite3": "4.0.2",
     "style-loader": "^0.22.1",
+    "url-regex": "^4.1.1",
     "webpack-cli": "^3.1.0"
   },
   "devDependencies": {

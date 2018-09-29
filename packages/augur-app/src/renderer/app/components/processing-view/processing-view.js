@@ -51,12 +51,11 @@ export class ProcessingView extends Component {
   		if (!processing) percent = 0
 
   		const blocksRemaining = parseInt(augurNodeBlockInfo.highestBlockNumber, 10) - parseInt(augurNodeBlockInfo.lastSyncBlockNumber, 10)
-  		if (blocksRemaining <= 5) {
+  		if (blocksRemaining <= 5 || percent > 100) {
 	      percent = 100
 	    }
 
   		const blocksBehind = addCommas(blocksRemaining) || 0
-
   		const blocksProcessed = addCommas(augurNodeBlockInfo.lastSyncBlockNumber) || 0
   		const highestBlocks = addCommas(augurNodeBlockInfo.highestBlockNumber) || 0
 
@@ -64,10 +63,6 @@ export class ProcessingView extends Component {
 	      width: `${percent}%`,
 	      backgroundColor: (openBrowserEnabled && processing ? '#00f1c4' : (processing ? '#cbc5d9' : 'transparent')),
 	    };
-
-
-	   
-
 
 	  	return (
 	  		<section className={classNames(Styles.ProcessingView, {
