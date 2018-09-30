@@ -10,19 +10,29 @@ const MAINNET_ID = "102"; // "1";
 
 export function loadGasPriceInfo(callback = logError) {
   return (dispatch, getState) => {
-    const { loginAccount } = getState();
+    const { loginAccount, blockchain } = getState();
     if (!loginAccount.address) return callback(null);
     const networkId = augur.rpc.getNetworkID();
     if (augur.getGasPrice) {
       augur.getGasPrice(gasPrice =>
         getGasPriceRanges(networkId, gasPrice, result => {
-          dispatch(updateGasPriceInfo(result));
+          dispatch(
+            updateGasPriceInfo({
+              ...result,
+              blockNumber: blockchain.currentBlockNumber
+            })
+          );
         })
       );
     } else {
       const gasPrice = augur.rpc.getGasPrice();
       return getGasPriceRanges(networkId, gasPrice, result => {
-        dispatch(updateGasPriceInfo(result));
+        dispatch(
+          updateGasPriceInfo({
+            ...result,
+            blockNumber: blockchain.currentBlockNumber
+          })
+        );
       });
     }
   };

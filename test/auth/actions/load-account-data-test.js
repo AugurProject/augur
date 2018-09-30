@@ -15,7 +15,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       const LoadAccountTrades = { loadAccountTrades: () => {} };
       const UpdateLoginAccount = { updateLoginAccount: () => {} };
       const approveAccount = { checkAccountAllowance: () => {} };
-      const loadGasPriceInfo = { loadGasPriceInfo: () => {} };
+
       const action = proxyquire(
         "../../../src/modules/auth/actions/load-account-data.js",
         {
@@ -24,8 +24,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
           "../../orders/actions/orphaned-orders": ClearOrphanedOrderData,
           "./update-login-account": UpdateLoginAccount,
           "../../positions/actions/load-account-trades": LoadAccountTrades,
-          "./approve-account": approveAccount,
-          "../../app/actions/load-gas-price-info": loadGasPriceInfo
+          "./approve-account": approveAccount
         }
       );
       LoadAccountDataFromLocalStorage.loadAccountDataFromLocalStorage = sinon
@@ -46,9 +45,6 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       sinon
         .stub(approveAccount, "checkAccountAllowance")
         .callsFake(data => ({ type: "CHECK_ACCOUNT_ALLOWANCE" }));
-      sinon
-        .stub(loadGasPriceInfo, "loadGasPriceInfo")
-        .callsFake(() => ({ type: "UPDATE_GAS_PRICE_INFO" }));
       store.dispatch(action.loadAccountData(t.params.account));
       t.assertions(store.getActions());
       store.clearActions();
@@ -94,8 +90,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         { type: "UPDATE_LOGIN_ACCOUNT", data: { address: "0xb0b" } },
         { type: "UPDATE_ACCOUNT_TRADES_DATA" },
         { type: "CHECK_ACCOUNT_ALLOWANCE" },
-        { type: "UPDATE_ASSETS" },
-        { type: "UPDATE_GAS_PRICE_INFO" }
+        { type: "UPDATE_ASSETS" }
       ]);
     }
   });
@@ -132,8 +127,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         },
         { type: "UPDATE_ACCOUNT_TRADES_DATA" },
         { type: "CHECK_ACCOUNT_ALLOWANCE" },
-        { type: "UPDATE_ASSETS" },
-        { type: "UPDATE_GAS_PRICE_INFO" }
+        { type: "UPDATE_ASSETS" }
       ]);
     }
   });

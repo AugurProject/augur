@@ -12,14 +12,14 @@ export default class ModalGasPrice extends Component {
     safeLow: PropTypes.number.isRequired,
     average: PropTypes.number.isRequired,
     fast: PropTypes.number.isRequired,
-    userDefinedGasPrice: PropTypes.number.isRequired
+    userDefinedGasPrice: PropTypes.number
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      amount: props.userDefinedGasPrice
+      amount: props.userDefinedGasPrice || props.average
     };
   }
 

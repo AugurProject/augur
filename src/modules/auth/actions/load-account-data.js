@@ -6,7 +6,6 @@ import { loadAccountTrades } from "modules/positions/actions/load-account-trades
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { clearOrphanedOrderData } from "modules/orders/actions/orphaned-orders";
-import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
 import getValue from "utils/get-value";
 import logError from "utils/log-error";
 
@@ -32,5 +31,4 @@ export const loadAccountData = (account, callback = logError) => dispatch => {
   dispatch(checkAccountAllowance());
   dispatch(updateAssets());
   dispatch(loadReportingWindowBounds());
-  dispatch(loadGasPriceInfo());
 };

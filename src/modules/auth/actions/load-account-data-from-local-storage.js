@@ -3,6 +3,7 @@ import { updateScalarMarketShareDenomination } from "modules/markets/actions/upd
 import { updateReports } from "modules/reports/actions/update-reports";
 import { addNotification } from "modules/notifications/actions/notifications";
 import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-management";
+import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
 
 export const loadAccountDataFromLocalStorage = address => (
   dispatch,
@@ -50,6 +51,17 @@ export const loadAccountDataFromLocalStorage = address => (
       ) {
         dispatch(
           loadPendingLiquidityOrders(storedAccountData.pendingLiquidityOrders)
+        );
+      }
+      if (
+        storedAccountData.gasPriceInfo &&
+        storedAccountData.gasPriceInfo.userDefinedGasPrice
+      ) {
+        dispatch(
+          updateGasPriceInfo({
+            userDefinedGasPrice:
+              storedAccountData.gasPriceInfo.userDefinedGasPrice
+          })
         );
       }
     }
