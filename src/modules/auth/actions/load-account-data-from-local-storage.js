@@ -4,6 +4,7 @@ import { updateReports } from "modules/reports/actions/update-reports";
 import { addNotification } from "modules/notifications/actions/notifications";
 import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-management";
 import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
+import { registerUserDefinedGasPriceFunction } from "modules/app/actions/register-user-defined-gasPrice-function";
 
 export const loadAccountDataFromLocalStorage = address => (
   dispatch,
@@ -63,6 +64,7 @@ export const loadAccountDataFromLocalStorage = address => (
               storedAccountData.gasPriceInfo.userDefinedGasPrice
           })
         );
+        dispatch(registerUserDefinedGasPriceFunction());
       }
     }
   }
