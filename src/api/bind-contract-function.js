@@ -2,6 +2,7 @@
 
 var assign = require("lodash").assign;
 var encodeTransactionInputs = require("./encode-transaction-inputs");
+var ethrpc = require("../rpc-interface");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 
@@ -19,7 +20,7 @@ function bindContractFunction(functionAbi) {
         }
         if (!isFunction(params[params.length - 1])) return console.error("Callback required");
         var callback = params.pop();
-        return self.rpc.callContractFunction(payload, function (err, response) {
+        return ethrpc.callContractFunction(payload, function (err, response) {
           if (err) return callback(err);
           if (response == null) return callback(new Error("Null eth_call response"));
           callback(null, response);
