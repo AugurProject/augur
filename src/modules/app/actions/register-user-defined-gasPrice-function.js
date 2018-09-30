@@ -1,24 +1,12 @@
 import { augur } from "services/augurjs";
-import { createBigNumber } from "utils/create-big-number";
+import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 export const registerUserDefinedGasPriceFunction = () => (
   dispatch,
   getState
 ) => {
-  const { gasPriceInfo } = getState();
-  const GWEI_CONVERSION = 1000000000;
-
-  const userDefinedGasPriceFunction = callback => {
-    const gweiValue = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
-    let weiValue = augur.rpc.getGasPrice();
-
-    if (gweiValue) {
-      weiValue = createBigNumber(gweiValue)
-        .times(createBigNumber(GWEI_CONVERSION))
-        .toNumber();
-    }
-    callback(weiValue);
-  };
+  const userDefinedGasPriceFunction = callback =>
+    callback(getGasPrice(getState()));
 
   augur.setGasPriceFunction(userDefinedGasPriceFunction);
 };

@@ -6,40 +6,27 @@ import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
 
 const GAS_PRICE_API_ENDPOINT = "https://ethgasstation.info/json/ethgasAPI.json";
 const GWEI_CONVERSION = 1000000000;
-const MAINNET_ID = "102"; // "1";
+const MAINNET_ID = "1";
 
 export function loadGasPriceInfo(callback = logError) {
   return (dispatch, getState) => {
     const { loginAccount, blockchain } = getState();
     if (!loginAccount.address) return callback(null);
     const networkId = augur.rpc.getNetworkID();
-    if (augur.getGasPrice) {
-      augur.getGasPrice(gasPrice =>
-        getGasPriceRanges(networkId, gasPrice, result => {
-          dispatch(
-            updateGasPriceInfo({
-              ...result,
-              blockNumber: blockchain.currentBlockNumber
-            })
-          );
+
+    getGasPriceRanges(networkId, result => {
+      dispatch(
+        updateGasPriceInfo({
+          ...result,
+          blockNumber: blockchain.currentBlockNumber
         })
       );
-    } else {
-      const gasPrice = augur.rpc.getGasPrice();
-      return getGasPriceRanges(networkId, gasPrice, result => {
-        dispatch(
-          updateGasPriceInfo({
-            ...result,
-            blockNumber: blockchain.currentBlockNumber
-          })
-        );
-      });
-    }
+    });
   };
 }
 
-function getGasPriceRanges(networkId, gasPrice, callback) {
-  const defaultGasPrice = setDefaultGasInfo(gasPrice);
+function getGasPriceRanges(networkId, callback) {
+  const defaultGasPrice = setDefaultGasInfo();
   if (networkId === MAINNET_ID) {
     getGasPriceValues(defaultGasPrice, result => callback(result));
   } else {
@@ -76,17 +63,16 @@ function getGasPriceValues(defaultGasPrice, callback) {
     );
 }
 
-function setDefaultGasInfo(gasPrice) {
+function setDefaultGasInfo() {
+  const gasPrice = augur.rpc.getGasPrice();
   const inGwei = createBigNumber(gasPrice).dividedBy(
     createBigNumber(GWEI_CONVERSION)
   );
-  const highValue = formatGasCost(inGwei.times("1.1")).value;
-  const lowValue = formatGasCost(inGwei.times("0.9")).value;
   const gasPriceValue = formatGasCost(inGwei).value;
 
   return {
     average: gasPriceValue,
-    fast: highValue,
-    safeLow: lowValue
+    fast: gasPriceValue,
+    safeLow: gasPriceValue
   };
 }

@@ -7,6 +7,7 @@ import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
 import { selectMarket } from "modules/markets/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
+import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 import { submitMigrateREP } from "modules/forking/actions/submit-migrate-rep";
 import { getForkMigrationTotals } from "modules/forking/actions/get-fork-migration-totals";
@@ -18,7 +19,8 @@ const mapStateToProps = state => ({
   marketsData: state.marketsData,
   isMobile: state.appStatus.isMobile,
   accountREP: state.loginAccount.rep,
-  currentBlockNumber: state.blockchain.currentBlockNumber
+  currentBlockNumber: state.blockchain.currentBlockNumber,
+  gasPrice: getGasPrice(state)
 });
 
 const mapDispatchToProps = dispatch => ({
