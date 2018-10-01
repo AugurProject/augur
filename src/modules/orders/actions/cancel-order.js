@@ -116,7 +116,12 @@ export const cancelOpenOrdersInClosedMarkets = () => dispatch => {
                 openOrder.type
               );
               dispatch(
-                cancelOrder(openOrder.id, market.id, outcome.id, openOrder.type)
+                cancelOrder({
+                  orderId: openOrder.id,
+                  marketId: market.id,
+                  outcome: outcome.id,
+                  orderTypeLabel: openOrder.type
+                })
               );
             }
           }
