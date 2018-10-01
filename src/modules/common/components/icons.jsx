@@ -940,7 +940,7 @@ export const ChevronFlipFilledIcon = (className = "", fillColor = "#FFF") => (
   </svg>
 );
 
-export const Notifications = (unseenCount, rxWidth) => (
+export const Notifications = (unseenCount, rxWidth, stroke = "#FFFFFF") => (
   <svg viewBox="0 0 24 24">
     <defs />
     <g
@@ -954,7 +954,7 @@ export const Notifications = (unseenCount, rxWidth) => (
         <g
           id="Page-1"
           transform="translate(4.000000, 1.000000)"
-          stroke="#FFFFFF"
+          stroke={stroke}
           strokeWidth="0.894"
         >
           <path
@@ -978,7 +978,7 @@ export const Notifications = (unseenCount, rxWidth) => (
           >
             <ellipse
               id="Oval"
-              fill="#FFFFFF"
+              fill={stroke}
               cx="6.4591451"
               cy="7.00261291"
               rx={rxWidth}
