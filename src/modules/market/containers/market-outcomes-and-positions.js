@@ -5,11 +5,12 @@ import MarketOutcomesAndPositions from "modules/market/components/market-outcome
 import { selectMarket } from "modules/markets/selectors/market";
 import { sortOpenOrders } from "modules/orders/selectors/open-orders";
 import { sellCompleteSets } from "modules/positions/actions/sell-complete-sets";
-import getClosePositionStatus from "modules/positions/selectors/close-position-status";
 import { selectOrphanOrders } from "src/select-state";
 import { cancelOrphanedOrder } from "modules/orders/actions/orphaned-orders";
 import { CATEGORICAL } from "modules/markets/constants/market-types";
 import { find } from "lodash";
+import { constants } from "services/augurjs";
+import claimTradingProceeds from "modules/positions/actions/claim-trading-proceeds";
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId);
@@ -50,19 +51,22 @@ const mapStateToProps = (state, ownProps) => {
       (market.myPositionsSummary &&
         market.myPositionsSummary.numCompleteSets) ||
       undefined,
-    closePositionStatus: getClosePositionStatus(),
     isMobile: state.appStatus.isMobile,
     outcomes: market.outcomes || [],
     positions,
     openOrders,
-    orphanedOrders: filteredOrphanOrders
+    orphanedOrders: filteredOrphanOrders,
+    showAction:
+      market.reportingState === constants.REPORTING_STATE.FINALIZED &&
+      !!market.outstandingReturns
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   sellCompleteSets: (marketId, numCompleteSets) =>
     dispatch(sellCompleteSets(marketId, numCompleteSets)),
-  cancelOrphanedOrder: order => dispatch(cancelOrphanedOrder(order))
+  cancelOrphanedOrder: order => dispatch(cancelOrphanedOrder(order)),
+  claimTradingProceeds: marketId => dispatch(claimTradingProceeds([marketId]))
 });
 
 const MarketOutcomesAndPositionsContainer = withRouter(
