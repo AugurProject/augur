@@ -7,6 +7,7 @@
   "engines": {
     "node": "8 || 9 || 10"
   },
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/AugurProject/augur-ui"
@@ -44,8 +45,7 @@
     "docker:spin-down": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose down",
     "git:push:protected": "PUSH_PROTECTED_BRANCHES=true git push",
     "prepush": "node scripts/pre-push.js",
-    "version": "npm run build:mainnet",
-    "watch": "node scripts/watch.js --dev"
+    "version": "npm run build:mainnet"
   },
   "dependencies": {
     "@ledgerhq/hw-app-eth": "4.21.0",
