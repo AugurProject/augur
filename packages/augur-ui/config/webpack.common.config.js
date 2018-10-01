@@ -68,7 +68,18 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: "babel-loader"
+        loader: "babel-loader",
+        options: {
+          "presets":     [
+            "@babel/preset-react",
+            "@babel/preset-env"
+          ],
+          "plugins": [
+            "transform-class-properties",
+            "@babel/plugin-syntax-dynamic-import",
+            "@babel/plugin-transform-runtime"
+          ]
+        }
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
