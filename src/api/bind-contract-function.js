@@ -2,11 +2,11 @@
 
 var assign = require("lodash").assign;
 var encodeTransactionInputs = require("./encode-transaction-inputs");
+var ethrpc = require("../rpc-interface");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 
 function bindContractFunction(functionAbi) {
-  var self = this;
   return function () {
     var payload = assign({}, functionAbi);
     if (arguments && arguments.length) {
@@ -19,7 +19,7 @@ function bindContractFunction(functionAbi) {
         }
         if (!isFunction(params[params.length - 1])) return console.error("Callback required");
         var callback = params.pop();
-        return self.rpc.callContractFunction(payload, function (err, response) {
+        return ethrpc.callContractFunction(payload, function (err, response) {
           if (err) return callback(err);
           if (response == null) return callback(new Error("Null eth_call response"));
           callback(null, response);
@@ -37,15 +37,7 @@ function bindContractFunction(functionAbi) {
       signer = (params[0].meta || {}).signer;
       accountType = (params[0].meta || {}).accountType;
     }
-    var transact = function () { self.rpc.transact(payload, signer, accountType, onSent, onSuccess, onFailed); };
-    if (params[0].gasPrice == null && self.getGasPrice) {
-      self.getGasPrice(function (gasPrice) {
-        payload.gasPrice = gasPrice;
-        transact();
-      });
-      return;
-    }
-    transact();
+    ethrpc.transact(payload, signer, accountType, onSent, onSuccess, onFailed);
   };
 }
 
