@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import Input from "modules/common/components/input/input";
+import { yellowAlertIcon } from "modules/common/components/icons";
 
 import Styles from "modules/modal/components/modal-gas-price/modal-gas-price.styles";
 
@@ -19,23 +20,48 @@ export default class ModalGasPrice extends Component {
     super(props);
 
     this.state = {
-      amount: props.userDefinedGasPrice || props.average
+      amount: props.userDefinedGasPrice || props.average,
+      showLowAlert: false
     };
+
+    this.checkShowAlert = this.checkShowAlert.bind(this);
+  }
+
+  componentDidMount() {
+    this.checkShowAlert(this.props.userDefinedGasPrice);
   }
 
   updateAmount(amount) {
     let amt = "";
     if (amount) amt = parseFloat(amount, 10);
     this.setState({ amount: amt });
+    this.checkShowAlert(amt);
+  }
+
+  checkShowAlert(amount) {
+    console.log(amount < this.props.safeLow);
+    this.setState({ showLowAlert: amount < this.props.safeLow });
   }
 
   render() {
     const p = this.props;
     const s = this.state;
 
+    const disableButton = !s.amount || s.amount < 0;
+
     return (
       <section className={Styles.ModalGasPrice}>
         <h1>Gas Price (gwei)</h1>
+        {s.showLowAlert &&
+          !disableButton && (
+            <div className={Styles.ModalGasPrice__warning}>
+              {yellowAlertIcon}
+              <p>
+                Transactions are unlikely to be processed at your current gas
+                price.
+              </p>
+            </div>
+          )}
         <div className={Styles.ModalGasPrice__input}>
           <Input
             id="price"
@@ -59,7 +85,7 @@ export default class ModalGasPrice extends Component {
           </button>
           <button
             className={Styles.ModalGasPrice__save}
-            disabled={!s.amount || s.amount < 0}
+            disabled={disableButton}
             onClick={() => p.saveModal(s.amount)}
           >
             Save
