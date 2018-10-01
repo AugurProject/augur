@@ -73,7 +73,7 @@ const TopBar = props => (
     <div
       className={classNames(Styles.TopBar__notifications, {
         [Styles.TopBar__notificationsDark]: props.notificationsVisible,
-        [Styles.TopBar__notificationsDisabled]: !props.isLogged,
+        [Styles.TopBar__notificationsDisabled]: !props.isLogged
       })}
       onClick={e => {
         props.toggleNotifications();
@@ -84,8 +84,16 @@ const TopBar = props => (
       <div className={Styles["TopBar__notifications-container"]}>
         <div className={Styles["TopBar__notification-icon"]}>
           {props.unseenCount > 99
-            ? Notifications("99+", "7.4591451", props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)")
-            : Notifications(props.unseenCount, "6.4591451", props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)")}
+            ? Notifications(
+                "99+",
+                "7.4591451",
+                props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)"
+              )
+            : Notifications(
+                props.unseenCount,
+                "6.4591451",
+                props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)"
+              )}
         </div>
       </div>
     </div>

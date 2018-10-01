@@ -58,10 +58,12 @@ export default class NotificationsView extends Component {
           ToggleHeightStyles["toggle-height-target-quick"]
         )}
       >
-        <section 
-          id="notifications_view" 
+        <section
+          id="notifications_view"
           className={classNames(Styles.NotificationsView, {
-            [Styles.NotificationsView__dark]: !(notifications && notifications.length),
+            [Styles.NotificationsView__dark]: !(
+              notifications && notifications.length
+            )
           })}
         >
           <button
