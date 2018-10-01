@@ -1,4 +1,4 @@
-"use strict";
+"utse strict";
 
 const Augur = require("augur.js");
 const assert = require("chai").assert;
@@ -29,8 +29,14 @@ describe("blockchain/log-processors/market-created", () => {
                 assert.ifError(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
-                  db.destroy();
-                  done();
+                  processMarketCreatedLog(trx, t.params.augur, t.params.log, (err) => {
+                    assert.ifError(err);
+                    getState(trx, t.params, (err, records) => {
+                      t.assertions.onReAdded(err, records);
+                      db.destroy();
+                      done();
+                    });
+                  });
                 });
               });
             });
@@ -896,6 +902,119 @@ describe("blockchain/log-processors/market-created", () => {
           outcomes: [],
           search: [],
           tokens: [],
+        });
+      },
+      onReAdded: (err, records) => {
+        assert.ifError(err);
+        assert.deepEqual(records, {
+          markets: [{
+            marketId: "0x1111111111111111111111111111111111111112",
+            universe: "0x000000000000000000000000000000000000000b",
+            marketType: "categorical",
+            numOutcomes: 4,
+            minPrice: new BigNumber("0", 10),
+            maxPrice: new BigNumber("1", 10),
+            marketCreator: "0x0000000000000000000000000000000000000b0b",
+            creationBlockNumber: 7,
+            creationFee: new BigNumber("0.1", 10),
+            creationTime: 10000000,
+            reportingFeeRate: new BigNumber("0.001", 10),
+            disputeRounds: null,
+            marketCreatorFeeRate: new BigNumber("0.01", 10),
+            marketCreatorFeesBalance: new BigNumber("0", 10),
+            marketCreatorMailbox: "0xbbb1111111111111111111111111111111111112",
+            marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
+            initialReportSize: null,
+            category: "TEST_CATEGORY",
+            tag1: "TEST_TAG_1",
+            tag2: "TEST_TAG_2",
+            volume: new BigNumber("0", 10),
+            shareVolume: new BigNumber("0", 10),
+            sharesOutstanding: new BigNumber("0", 10),
+            openInterest: "0",
+            reportingState: "PRE_REPORTING",
+            feeWindow: "0x1000000000000000000000000000000000000001",
+            endTime: 4886718345,
+            finalizationBlockNumber: null,
+            lastTradeBlockNumber: null,
+            marketStateId: 19,
+            shortDescription: "this is a test market",
+            longDescription: "this is the long description of a test market",
+            scalarDenomination: null,
+            designatedReporter: "0x000000000000000000000000000000000000b0b2",
+            designatedReportStake: new BigNumber("16777216", 10),
+            resolutionSource: "https://www.trusted-third-party-co.com",
+            numTicks: new BigNumber("10000", 10),
+            consensusPayoutId: null,
+            isInvalid: null,
+            forking: 0,
+            needsMigration: 0,
+            needsDisavowal: 0,
+          }],
+          categories: [{
+            category: "TEST_CATEGORY",
+            popularity: 0,
+            universe: "0x000000000000000000000000000000000000000b",
+          }],
+          outcomes: [{
+            marketId: "0x1111111111111111111111111111111111111112",
+            outcome: 0,
+            price: new BigNumber("0.25", 10),
+            volume: new BigNumber("0", 10),
+            shareVolume: new BigNumber("0", 10),
+            description: "test outcome 0",
+          }, {
+            marketId: "0x1111111111111111111111111111111111111112",
+            outcome: 1,
+            price: new BigNumber("0.25", 10),
+            volume: new BigNumber("0", 10),
+            shareVolume: new BigNumber("0", 10),
+            description: "test outcome 1",
+          }, {
+            marketId: "0x1111111111111111111111111111111111111112",
+            outcome: 2,
+            price: new BigNumber("0.25", 10),
+            volume: new BigNumber("0", 10),
+            shareVolume: new BigNumber("0", 10),
+            description: "test outcome 2",
+          }, {
+            marketId: "0x1111111111111111111111111111111111111112",
+            outcome: 3,
+            price: new BigNumber("0.25", 10),
+            volume: new BigNumber("0", 10),
+            shareVolume: new BigNumber("0", 10),
+            description: "test outcome 3",
+          }],
+          search: [{
+            category: "TEST_CATEGORY",
+            longDescription: "this is the long description of a test market",
+            resolutionSource: "https://www.trusted-third-party-co.com",
+            scalarDenomination: "",
+            shortDescription: "this is a test market",
+            tags: "TEST_TAG_1 TEST_TAG_2",
+            marketId: "0x1111111111111111111111111111111111111112",
+          }],
+          tokens: [{
+            contractAddress: "SHARE_TOKEN_0",
+            symbol: "shares",
+            marketId: "0x1111111111111111111111111111111111111112",
+            outcome: 0,
+          }, {
+            contractAddress: "SHARE_TOKEN_1",
+            symbol: "shares",
+            marketId: "0x1111111111111111111111111111111111111112",
+            outcome: 1,
+          }, {
+            contractAddress: "SHARE_TOKEN_2",
+            symbol: "shares",
+            marketId: "0x1111111111111111111111111111111111111112",
+            outcome: 2,
+          }, {
+            contractAddress: "SHARE_TOKEN_3",
+            symbol: "shares",
+            marketId: "0x1111111111111111111111111111111111111112",
+            outcome: 3,
+          }],
         });
       },
     },
