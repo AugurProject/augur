@@ -24,13 +24,25 @@ describe("blockchain/log-processors/market-created", () => {
           processMarketCreatedLog(trx, t.params.augur, t.params.log, (err) => {
             assert.ifError(err);
             getState(trx, t.params, (err, records) => {
-              t.assertions.onAdded(err, records);
+              t.assertions.onAdded(err, records, false);
               processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 assert.ifError(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
-                  db.destroy();
-                  done();
+                  processMarketCreatedLog(trx, t.params.augur, t.params.log, (err) => {
+                    assert.ifError(err);
+                    getState(trx, t.params, (err, records) => {
+                      t.assertions.onAdded(err, records, true);
+                      processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                        assert.ifError(err);
+                        getState(trx, t.params, (err, records) => {
+                          t.assertions.onRemoved(err, records);
+                          db.destroy();
+                          done();
+                        });
+                      });
+                    });
+                  });
                 });
               });
             });
@@ -102,7 +114,7 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records) => {
+      onAdded: (err, records, isReAdded) => {
         assert.ifError(err);
         assert.deepEqual(records, {
           markets: [{
@@ -135,7 +147,7 @@ describe("blockchain/log-processors/market-created", () => {
             endTime: 4886718345,
             finalizationBlockNumber: null,
             lastTradeBlockNumber: null,
-            marketStateId: 18,
+            marketStateId: isReAdded ? 19 : 18,
             shortDescription: "this is a test market",
             longDescription: "this is the long description of a test market",
             scalarDenomination: null,
@@ -270,7 +282,7 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records) => {
+      onAdded: (err, records, isReAdded) => {
         assert.ifError(err);
         assert.deepEqual(records, {
           markets: [{
@@ -303,7 +315,7 @@ describe("blockchain/log-processors/market-created", () => {
             endTime: 4886718345,
             finalizationBlockNumber: null,
             lastTradeBlockNumber: null,
-            marketStateId: 18,
+            marketStateId: isReAdded ? 19 : 18,
             shortDescription: "this is a test market",
             longDescription: "this is the long description of a test market",
             scalarDenomination: null,
@@ -461,7 +473,7 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records) => {
+      onAdded: (err, records, isReAdded) => {
         assert.ifError(err);
         assert.deepEqual(records, {
           markets: [{
@@ -494,7 +506,7 @@ describe("blockchain/log-processors/market-created", () => {
             endTime: 4886718345,
             finalizationBlockNumber: null,
             lastTradeBlockNumber: null,
-            marketStateId: 18,
+            marketStateId: isReAdded ? 19 : 18,
             shortDescription: "this is a test market",
             longDescription: "this is the long description of a test market",
             scalarDenomination: null,
@@ -624,7 +636,7 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records) => {
+      onAdded: (err, records, isReAdded) => {
         assert.ifError(err);
         assert.deepEqual(records, {
           markets: [{
@@ -657,7 +669,7 @@ describe("blockchain/log-processors/market-created", () => {
             endTime: 4886718345,
             finalizationBlockNumber: null,
             lastTradeBlockNumber: null,
-            marketStateId: 18,
+            marketStateId: isReAdded ? 19 : 18,
             shortDescription: "this is a test market",
             longDescription: null,
             scalarDenomination: null,
@@ -795,7 +807,7 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records) => {
+      onAdded: (err, records, isReAdded) => {
         assert.ifError(err);
         assert.deepEqual(records, {
           markets: [{
@@ -828,7 +840,7 @@ describe("blockchain/log-processors/market-created", () => {
             endTime: 4886718345,
             finalizationBlockNumber: null,
             lastTradeBlockNumber: null,
-            marketStateId: 18,
+            marketStateId: isReAdded ? 19 : 18,
             shortDescription: "this is a test market",
             longDescription: "this is the long description of a test market",
             scalarDenomination: null,

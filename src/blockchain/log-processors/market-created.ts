@@ -141,26 +141,24 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
   });
 }
 
+async function marketCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog): Promise<void> {
+  const marketId = log.market;
+  await db.from("markets").where({ marketId }).del();
+  await db.from("outcomes").where({ marketId }).del();
+  await db.from("token_supply").whereIn("token", (queryBuilder) => {
+    return queryBuilder.select("contractAddress").from("tokens").where({ marketId});
+  }).del();
+  await db.from("tokens").where({ marketId }).del();
+  await db.from("market_state").where({ marketId }).del();
+
+  const searchProvider = createSearchProvider(db);
+  if (searchProvider !== null) {
+    await searchProvider.removeSeachData(log.market);
+  }
+
+  augurEmitter.emit(SubscriptionEventNames.MarketCreated, log);
+}
+
 export function processMarketCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  series([
-    (next: AsyncCallback): void => {
-      db.from("markets").where({ marketId: log.market }).del().asCallback(next);
-    },
-    (next: AsyncCallback): void => {
-      db.from("outcomes").where({ marketId: log.market }).del().asCallback(next);
-    },
-    (next: AsyncCallback): void => {
-      db.from("tokens").where({ marketId: log.market }).del().asCallback(next);
-    },
-    (next: AsyncCallback): void => {
-      db.from("market_state").where({ marketId: log.market }).del().asCallback(next);
-    },
-    (next: AsyncCallback): void => {
-      db.from("search_en").where({ marketId: log.market }).del().asCallback(next);
-    },
-  ], (err) => {
-    if (err) callback(err);
-    augurEmitter.emit(SubscriptionEventNames.MarketCreated, log);
-    callback(null);
-  });
+  marketCreatedLogRemoval(db, augur, log).then(() => callback(null), callback);
 }
