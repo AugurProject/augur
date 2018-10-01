@@ -1,4 +1,4 @@
-"utse strict";
+"use strict";
 
 const Augur = require("augur.js");
 const assert = require("chai").assert;
