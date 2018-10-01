@@ -59,7 +59,7 @@ export default class ModalGasPrice extends Component {
           </button>
           <button
             className={Styles.ModalGasPrice__save}
-            disabled={!s.amount}
+            disabled={!s.amount || s.amount < 0}
             onClick={() => p.saveModal(s.amount)}
           >
             Save
