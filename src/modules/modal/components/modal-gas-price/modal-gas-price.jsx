@@ -24,7 +24,9 @@ export default class ModalGasPrice extends Component {
   }
 
   updateAmount(amount) {
-    this.setState({ amount: parseInt(amount, 10) });
+    let amt = "";
+    if (amount) amt = parseInt(amount, 10);
+    this.setState({ amount: amt });
   }
 
   render() {
@@ -56,6 +58,7 @@ export default class ModalGasPrice extends Component {
           </button>
           <button
             className={Styles.ModalGasPrice__save}
+            disabled={!s.amount}
             onClick={() => p.saveModal(s.amount)}
           >
             Save
@@ -72,15 +75,32 @@ export default class ModalGasPrice extends Component {
             <div className={Styles.ModalGasPrice__col}>Speed</div>
             <div className={Styles.ModalGasPrice__col}>Gas Price (gwei)</div>
           </div>
-          <div className={Styles.ModalGasPrice__row}>
+          <div
+            role="button"
+            className={Styles.ModalGasPrice__row}
+            onClick={() => {
+              this.updateAmount(p.safeLow);
+            }}
+            tabIndex={0}
+          >
             <div className={Styles.ModalGasPrice__col}>{"Slow (<30m)"}</div>
             <div className={Styles.ModalGasPrice__col}>{p.safeLow}</div>
           </div>
-          <div className={Styles.ModalGasPrice__row}>
+          <div
+            role="button"
+            className={Styles.ModalGasPrice__row}
+            onClick={() => this.updateAmount(p.average)}
+            tabIndex={-1}
+          >
             <div className={Styles.ModalGasPrice__col}>{"Standard (<5m)"}</div>
             <div className={Styles.ModalGasPrice__col}>{p.average}</div>
           </div>
-          <div className={Styles.ModalGasPrice__row}>
+          <div
+            className={Styles.ModalGasPrice__row}
+            role="button"
+            onClick={() => this.updateAmount(p.fast)}
+            tabIndex={-2}
+          >
             <div className={Styles.ModalGasPrice__col}>{"Fast (<2m)"}</div>
             <div className={Styles.ModalGasPrice__col}>{p.fast}</div>
           </div>
