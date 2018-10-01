@@ -33,8 +33,14 @@ describe("blockchain/log-processors/market-created", () => {
                     assert.ifError(err);
                     getState(trx, t.params, (err, records) => {
                       t.assertions.onReAdded(err, records);
-                      db.destroy();
-                      done();
+                      processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                        assert.ifError(err);
+                        getState(trx, t.params, (err, records) => {
+                          t.assertions.onRemoved(err, records);
+                          db.destroy();
+                          done();
+                        });
+                      });
                     });
                   });
                 });
