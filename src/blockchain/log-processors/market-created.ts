@@ -160,5 +160,5 @@ async function marketCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEve
 }
 
 export function processMarketCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  marketCreatedLogRemoval(db, augur, log).then(callback, callback);
+  marketCreatedLogRemoval(db, augur, log).then(() => callback(null), callback);
 }
