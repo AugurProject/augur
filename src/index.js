@@ -23,7 +23,7 @@ function Augur() {
     },
   };
   this.accounts = require("./accounts");
-  this.api = require("./api").call(this);
+  this.api = require("./api")();
   this.generateContractApi = require("./api").generateContractApi;
   this.assets = require("./assets");
   this.connect = require("./connect").bind(this);
@@ -34,7 +34,6 @@ function Augur() {
   this.markets = require("./markets");
   this.reporting = require("./reporting");
   this.rpc = require("./rpc-interface");
-  this.setGasPriceFunction = require("./set-gas-price-function").bind(this);
   this.trading = require("./trading");
   this.augurNode = require("./augur-node");
   this.utils = require("./utils");
