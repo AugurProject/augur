@@ -245,8 +245,9 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
               linkPath: makePath(MY_MARKETS)
             })
           );
-        } else if (!doesntExist)
+        } else if (!doesntExist) {
           handleNotificationUpdate(log, dispatch, getState);
+        }
       }
     })
   );
