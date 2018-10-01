@@ -47,6 +47,7 @@ export default class ModalGasPrice extends Component {
             value={s.amount}
             onChange={amount => this.updateAmount(amount)}
             updateValue={amount => this.updateAmount(amount)}
+            lightBorder
           />
         </div>
         <div className={Styles.ModalGasPrice__ActionButtons}>

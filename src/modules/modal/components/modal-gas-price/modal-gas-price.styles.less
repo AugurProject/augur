@@ -36,6 +36,8 @@
 }
 
 .ModalGasPrice__input {
+  color: @color-lightgray-2;
+
   > label {
     color: @color-darkpurple;
     font-weight: 500;
@@ -47,12 +49,6 @@
 
   margin-right: 16px;
   padding: 0 1.5rem;
-
-  &.disabled {
-    &:extend(.button--grey-disabled);
-
-    pointer-events: none;
-  }
 }
 
 .ModalGasPrice__save {
