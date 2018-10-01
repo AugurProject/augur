@@ -155,11 +155,10 @@ async function marketCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEve
   if (searchProvider !== null) {
     await searchProvider.removeSeachData(log.market);
   }
+
+  augurEmitter.emit(SubscriptionEventNames.MarketCreated, log);
 }
 
 export function processMarketCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  marketCreatedLogRemoval(db, augur, log).then(() => {
-    augurEmitter.emit(SubscriptionEventNames.MarketCreated, log);
-    callback(null);
-  }).catch(callback);
+  marketCreatedLogRemoval(db, augur, log).then(callback, callback);
 }
