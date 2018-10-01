@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build:ci-docker": "docker build . -t augurproject/gitlab-ci-base-node:latest",
+    "clean": "lerna clean -y",
     "watch": " lerna run watch --parallel"
   },
   "devDependencies": {
