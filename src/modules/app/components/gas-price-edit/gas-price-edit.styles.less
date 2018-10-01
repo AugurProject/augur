@@ -6,7 +6,8 @@
   color: white;
   flex-direction: column;
   justify-content: center;
-  max-width: 132px;
+  max-width: 162px;
+  width: unset !important;
 
   &:hover {
     background-color: @color-lightpurple;
@@ -47,6 +48,9 @@
   font-weight: bold;
   margin-bottom: -2px;
   margin-right: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .GasPriceEdit__description {

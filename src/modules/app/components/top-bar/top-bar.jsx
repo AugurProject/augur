@@ -14,7 +14,7 @@ import Styles from "modules/app/components/top-bar/top-bar.styles";
 const TopBar = props => (
   <header className={Styles.TopBar}>
     {props.isLogged && (
-      <div>
+      <div className={Styles.TopBar__statsContainer}>
         <div
           className={classNames(
             Styles.TopBar__stats,

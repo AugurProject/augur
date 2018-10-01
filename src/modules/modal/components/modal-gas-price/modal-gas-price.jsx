@@ -25,7 +25,7 @@ export default class ModalGasPrice extends Component {
 
   updateAmount(amount) {
     let amt = "";
-    if (amount) amt = parseInt(amount, 10);
+    if (amount) amt = parseFloat(amount, 10);
     this.setState({ amount: amt });
   }
 
