@@ -2,15 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import {
-  AugurLoadingLogo,
-  ExclamationCircle as InputErrorIcon
-} from "modules/common/components/icons";
+import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import Input from "modules/common/components/input/input";
 
 import Styles from "modules/modal/components/modal-network-connect/modal-network-connect.styles";
+import commonStyles from "modules/modal/components/common/common.styles";
 import { windowRef } from "src/utils/window-ref";
 import { editEndpointParams } from "src/utils/edit-endpoint-params";
+import { MODAL_NETWORK_CONNECT } from "modules/modal/constants/modal-types";
 
 export default class ModalNetworkConnect extends Component {
   static propTypes = {
@@ -44,7 +43,6 @@ export default class ModalNetworkConnect extends Component {
     this.state = {
       augurNode: props.env["augur-node"] || "",
       ethereumNode,
-      isAttemptingConnection: false,
       connectErrors: [],
       formErrors: {
         augurNode: [],
@@ -126,7 +124,7 @@ export default class ModalNetworkConnect extends Component {
   }
 
   render() {
-    const { isConnectedThroughWeb3 } = this.props;
+    const { isConnectedThroughWeb3, modal } = this.props;
     const s = this.state;
     const AugurNodeInValid = s.formErrors.augurNode.length > 0;
     const ethereumNodeInValid = s.formErrors.ethereumNode.length > 0;
@@ -135,12 +133,13 @@ export default class ModalNetworkConnect extends Component {
 
     return (
       <form
-        className={Styles.ModalNetworkConnect__form}
+        className={classNames(commonStyles.ModalForm, {
+          [`${commonStyles.ModalContainer}`]:
+            modal.type === MODAL_NETWORK_CONNECT
+        })}
         onSubmit={this.submitForm}
       >
-        <h1 className={Styles.ModalNetworkConnect__formTitle}>
-          Connect to Augur Via
-        </h1>
+        <h1>Connect to Augur</h1>
         <label htmlFor="modal__augurNode-input">Augur Node Address:</label>
         <Input
           id="modal__augurNode-input"
@@ -153,17 +152,18 @@ export default class ModalNetworkConnect extends Component {
           onChange={value => this.validateField("augurNode", value)}
           required
         />
-        <div className={Styles.ModalNetworkConnect__formErrors}>
-          {AugurNodeInValid &&
-            s.formErrors.augurNode.map(error => (
+        {AugurNodeInValid && (
+          <div className={Styles.ModalNetworkConnect__formErrors}>
+            {s.formErrors.augurNode.map(error => (
               <p key={error} className={Styles.ModalNetworkConnect__error}>
                 {InputErrorIcon} {error}
               </p>
             ))}
-        </div>
+          </div>
+        )}
         <label htmlFor="modal__ethNode-input">Ethereum Node address:</label>
         {isConnectedThroughWeb3 && (
-          <div className={Styles.ModalNetworkConnect__web3}>
+          <div>
             You are already connected to an Ethereum Node through Metamask. If
             you would like to specify a node, please disable Metamask.
           </div>
@@ -193,23 +193,25 @@ export default class ModalNetworkConnect extends Component {
               ))}
           </div>
         )}
-        <div className={Styles.ModalNetworkConnect__ConnectErrors}>
-          {hasConnectionErrors &&
-            s.connectErrors.map(error => (
+        {hasConnectionErrors && (
+          <div className={Styles.ModalNetworkConnect__ConnectErrors}>
+            {s.connectErrors.map(error => (
               <span key={error}>
                 {InputErrorIcon} {error}
               </span>
             ))}
-        </div>
-        <div className={Styles.ModalNetworkConnect__actions}>
-          <button type="submit" disabled={formInvalid}>
+          </div>
+        )}
+        <div className={commonStyles.ActionButtons}>
+          <button
+            className={classNames(commonStyles.ActionButtons__button, {
+              [`${commonStyles["ActionButtons__button-purple"]}`]: true
+            })}
+            type="submit"
+            disabled={formInvalid}
+          >
             Connect
           </button>
-          {s.isAttemptingConnection && (
-            <div className={Styles.ModalNetworkConnect__AugurLogo}>
-              {AugurLoadingLogo}
-            </div>
-          )}
         </div>
       </form>
     );

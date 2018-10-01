@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .Input {
-  .border(true, @border-all, @color-transparent, @border-width-2);
+  .border(true, @border-all, @color-transparent, @border-width-1);
 
   background-color: @color-input-background;
   display: flex;
@@ -13,18 +13,18 @@
   }
 
   input {
-    .border(true, @border-all, @color-transparent, @border-width-2);
+    .border(true, @border-all, @color-transparent, @border-width-1);
 
     display: flex;
     flex: 1;
   }
 
   input:focus {
-    .border(true, @border-all, @color-transparent, @border-width-2);
+    .border(true, @border-all, @color-transparent, @border-width-1);
   }
 
   &:focus-within {
-    .border(true, @border-all, @color-input-border, @border-width-2);
+    .border(true, @border-all, @color-input-border, @border-width-1);
   }
 
   .fa-search {
@@ -55,7 +55,7 @@
 
 .noFocus {
   &:focus-within {
-    .border(true, @border-all, @color-transparent, @border-width-2);
+    .border(true, @border-all, @color-transparent, @border-width-1);
   }
 }
 
@@ -67,7 +67,7 @@
 }
 
 .Input__Incremental {
-  .border(true, @border-all, @color-transparent, @border-width-2);
+  .border(true, @border-all, @color-transparent, @border-width-1);
 
   background-color: @color-input-background;
   display: flex;
@@ -88,18 +88,18 @@
   }
 
   input {
-    .border(true, @border-all, @color-transparent, @border-width-2);
+    .border(true, @border-all, @color-transparent, @border-width-1);
 
     display: flex;
     flex: 1 1 auto;
   }
 
   input:focus {
-    .border(true, @border-all, @color-transparent, @border-width-2);
+    .border(true, @border-all, @color-transparent, @border-width-1);
   }
 
   &:focus-within {
-    .border(true, @border-all, @color-input-border, @border-width-2);
+    .border(true, @border-all, @color-input-border, @border-width-1);
   }
 
   input[type='number'] {

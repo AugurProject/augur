@@ -28,6 +28,70 @@
     line-height: @font-size-large;
     margin: 0 0 1.5rem;
     padding: 0 4rem;
+
+    > button {
+      text-decoration: underline;
+    }
+  }
+}
+
+.ModalForm {
+  background-color: @color-white;
+  color: @color-almostblack;
+  max-width: 35rem;
+  text-align: left;
+  width: 100%;
+
+  > * {
+    color: @color-almostblack;
+    width: 100%;
+  }
+
+  h1 {
+    color: @color-almostblack;
+    font-size: @font-size-somewhat-large;
+    font-weight: 500;
+    line-height: 1.75rem;
+    margin: 0.5rem 0 1.5rem;
+    text-align: center;
+  }
+
+  label {
+    font-size: @font-size-medium;
+    font-weight: 600;
+    line-height: @font-size-large;
+    margin: 0 4rem 0.5rem;
+    width: auto;
+  }
+
+  div {
+    font-size: @font-size-medium;
+    line-height: @font-size-normal;
+    margin: 0 4rem 1.5rem;
+    width: auto;
+
+    > input {
+      font-size: @font-size-medium;
+      line-height: @font-size-normal;
+      padding: @font-size-small @font-size-normal;
+    }
+  }
+
+  div:last-of-type {
+    margin: 0.5rem 0 0;
+  }
+}
+
+.Loading {
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0.5rem 0;
+  max-width: 35rem;
+  padding: 0;
+
+  > div {
+    display: flex;
+    margin: auto;
   }
 }
 

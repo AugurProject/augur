@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import ModalNetworkConnect from "modules/modal/containers/modal-network-connect";
+import ModalLoading from "modules/modal/components/common/modal-loading";
 
-import { AugurLoadingLogo } from "modules/common/components/icons";
-import Styles from "modules/modal/components/modal-network-disconnected/modal-network-disconnected.styles";
+import commonStyles from "modules/modal/components/common/common.styles";
 
 import getValue from "utils/get-value";
 
@@ -73,24 +73,20 @@ export default class ModalNetworkDisconnected extends Component {
     }
     // assemble the text based on disconnections
     const titleText = `Reconnecting${nodeTitleText}`;
-    const descriptionText = `You have been disconnected${nodeDescriptionText}. Please wait while we try to reconnect you, or update your node addresses `;
+    const descriptionText = `Please wait while we try to reconnect you, or update your node addresses `;
 
     return (
-      <section className={Styles.ModalNetworkDisconnected}>
+      <section className={commonStyles.ModalContainer}>
+        {!s.showEnvForm && <h1>{titleText}</h1>}
         {!s.showEnvForm && (
-          <div className={Styles.ModalNetworkDisconnected__AugurLogo}>
-            {AugurLoadingLogo}
-          </div>
+          <p>
+            {`You have been disconnected${nodeDescriptionText}.`}
+            <br />
+            {descriptionText}
+            <button onClick={this.showForm}>here</button>.
+          </p>
         )}
-        {!s.showEnvForm && (
-          <div>
-            <h1>{titleText}</h1>
-            <span>
-              {descriptionText}
-              <button onClick={this.showForm}>here</button>.
-            </span>
-          </div>
-        )}
+        {!s.showEnvForm && <ModalLoading />}
         {s.showEnvForm && (
           <ModalNetworkConnect submitForm={this.submitForm} env={modal.env} />
         )}
