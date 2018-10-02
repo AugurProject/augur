@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
 import { safeBigNumberCompare } from "../../utils/safe-big-number-compare";
-import { GenericCallback } from "../../types";
+import { GenericCallback, SortLimit } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { isFieldBigNumber } from "../post-process-database-results";
 import {
@@ -28,6 +28,8 @@ import Augur from "augur.js";
 export interface Dictionary {
   [key: string]: any;
 }
+
+export const SORT_LIMIT_KEYS = ["sortBy", "isSortDescending", "limit", "offset"];
 
 export function queryModifierDB(
   query: Knex.QueryBuilder,
@@ -99,6 +101,26 @@ export function queryModifier<T>(
   } else {
     queryModifierDB(query, defaultSortBy, defaultSortOrder, sortBy, isSortDescending, limit, offset).asCallback(callback);
   }
+}
+
+export async function queryModifierParams<T>(
+  db: Knex,
+  query: Knex.QueryBuilder,
+  defaultSortBy: string,
+  defaultSortOrder: string,
+  sortLimitParams: SortLimit,
+): Promise<Array<T>> {
+  return new Promise<Array<T>>( (resolve, reject) => {
+   queryModifier(db, query, defaultSortBy, defaultSortOrder,
+    sortLimitParams.sortBy,
+    sortLimitParams.isSortDescending,
+    sortLimitParams.limit,
+    sortLimitParams.offset,
+     (err, result: Array<T>) => {
+        if (err) return reject(err);
+        resolve(result);
+     });
+  });
 }
 
 export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow<BigNumber>): UIOutcomeInfo<BigNumber> {
@@ -329,4 +351,12 @@ export async function batchAndCombine<T, K>(lookupIds: Array<K>, dataFetch: (chu
   // sort results
   // limit results
   return fullResults;
+}
+
+export function checkOptionalOrderingParams(params: any): boolean {
+  if (params.sortBy != null && (!_.isString(params.sortBy))) return false;
+  if (params.isSortDescending != null && (!_.isBoolean(params.isSortDescending))) return false;
+  if (params.limit != null && (!_.isNumber(params.limit))) return false;
+  if (params.offset != null && (!_.isNumber(params.offset))) return false;
+  return true;
 }

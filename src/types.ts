@@ -128,6 +128,13 @@ export interface JsonRpcResponse {
   result: any;
 }
 
+export interface SortLimit {
+  sortBy: string|null|undefined;
+  isSortDescending: boolean|null|undefined;
+  limit: number|null|undefined;
+  offset: number|null|undefined;
+}
+
 export interface GetMarketInfoRequest {
   jsonrpc: string;
   id: string|number;

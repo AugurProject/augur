@@ -2,13 +2,13 @@ import * as Knex from "knex";
 import Augur from "augur.js";
 import { JsonRpcRequest } from "../types";
 import { getAccountTransferHistory } from "./getters/get-account-transfer-history";
-import { getCategories } from "./getters/get-categories";
+import { extractGetCategoriesParams, getCategories } from "./getters/get-categories";
 import { getMarketsInCategory } from "./getters/get-markets-in-category";
 import { getMarketsCreatedByUser } from "./getters/get-markets-created-by-user";
 import { getReportingHistory } from "./getters/get-reporting-history";
 import { extractGetReportingSummaryParams, getReportingSummary } from "./getters/get-reporting-summary";
 import { getTradingHistory } from "./getters/get-trading-history";
-import { getMarketPriceHistory } from "./getters/get-market-price-history";
+import { extractGetMarketPriceHistoryParams, getMarketPriceHistory } from "./getters/get-market-price-history";
 import { getMarketPriceCandlesticks } from "./getters/get-market-price-candlesticks";
 import { getUserTradingPositions } from "./getters/get-user-trading-positions";
 import { getUserShareBalances } from "./getters/get-user-share-balances";
@@ -53,11 +53,13 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getDisputeInfo, extractGetDisputeInfoParams);
     case "getReportingSummary":
       return dispatchResponse(getReportingSummary, extractGetReportingSummaryParams);
+    case "getMarketPriceHistory":
+      return dispatchResponse(getMarketPriceHistory, extractGetMarketPriceHistoryParams);
+    case "getCategories":
+      return dispatchResponse(getCategories, extractGetCategoriesParams);
 
     case "getAccountTransferHistory":
       return getAccountTransferHistory(db, request.params.account, request.params.token, request.params.isInternalTransfer, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
-    case "getCategories":
-      return getCategories(db, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsInCategory":
       return getMarketsInCategory(db, request.params.universe, request.params.category, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsCreatedByUser":
@@ -69,8 +71,6 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getUserTradingHistory":
       // TODO: remove reference to getUserTradingHistory from UI and delete this (ch12974)
       return getTradingHistory(db, request.params.universe, request.params.account, request.params.marketId, request.params.outcome, request.params.orderType, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, request.params.ignoreSelfTrades, callback);
-    case "getMarketPriceHistory":
-      return getMarketPriceHistory(db, request.params.marketId, callback);
     case "getMarketPriceCandlesticks":
       return getMarketPriceCandlesticks(db, request.params.marketId, request.params.outcome, request.params.start, request.params.end, request.params.period, callback);
     case "getUserTradingPositions":
