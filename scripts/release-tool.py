@@ -327,6 +327,7 @@ if __name__ == "__main__":
         # update release info so we have correct asset browser_urls
         repo = g.get_repo("augurproject/augur-app")
         release = repo.get_release(release_id)
+        github_release_assets = release.get_assets()
         message_table = release_message_table(github_release_assets, comparison)
         verboseprint('message table: {}'.format(message_table))
         markdown_table = message_table_markup(message_table)
