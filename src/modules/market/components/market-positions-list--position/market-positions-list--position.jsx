@@ -61,6 +61,7 @@ export default class MarketPositionsListPosition extends Component {
         }
       >
         <li>{outcomeName || getValue(position, "purchasePrice.formatted")}</li>
+        {hasOrders && <li />}
         <li>{netPositionShares}</li>
         <li>{positionShares}</li>
         <li>{getValue(position, "purchasePrice.formatted")}</li>
@@ -68,6 +69,7 @@ export default class MarketPositionsListPosition extends Component {
           !isMobile && <li>{getValue(outcome, "lastPrice.formatted")}</li>}
         {!isMobile && (
           <li style={{ position: "relative" }}>
+            {getValue(outcome, "lastPrice.formatted")}
             <MarketOutcomeTradingIndicator
               outcome={outcome}
               style={{
@@ -77,14 +79,13 @@ export default class MarketPositionsListPosition extends Component {
                 width: "0.325rem"
               }}
             />
-            {getValue(position, "unrealizedNet.formatted")}
           </li>
         )}
+        {!isMobile && <li>{getValue(position, "unrealizedNet.formatted")} </li>}
         {!isMobile && <li>{getValue(position, "realizedNet.formatted")} </li>}
         {isExtendedDisplay && (
           <li>{getValue(position, "totalNet.formatted")}</li>
         )}
-        {hasOrders && <li />}
       </ul>
     );
   }
