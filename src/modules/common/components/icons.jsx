@@ -1731,7 +1731,8 @@ export const yellowAlertIcon = (
           </g>
         </g>
       </g>
-   </svg>
+    </g>
+  </svg>
 );
 
 export const logoutIcon = (

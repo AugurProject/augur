@@ -5,8 +5,7 @@ export const registerUserDefinedGasPriceFunction = () => (
   dispatch,
   getState
 ) => {
-  const userDefinedGasPriceFunction = callback =>
+  augur.getGasPrice = callback => {
     callback(getGasPrice(getState()));
-
-  augur.setGasPriceFunction(userDefinedGasPriceFunction);
+  };
 };
