@@ -17,6 +17,9 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
       currentBlockTimestamp: 4886718335,
       currentBlockNumber: 9999,
       currentAugurTimestamp: 42
+    },
+    gasPriceInfo: {
+      blockNumber: undefined
     }
   });
   const dataReturned = {
@@ -52,17 +55,21 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
   const updateAssets = data => ({
     type: "UPDATE_ASSETS"
   });
-
+  const loadGasPriceInfo = () => ({
+    type: "UPDATE_GAS_PRICE_INFO"
+  });
   ReWireModule.__Rewire__("augur", AugurJS);
   ReWireModule.__Rewire__("updateBlockchain", updateBlockchain);
   ReWireModule.__Rewire__("updateAssets", updateAssets);
+  ReWireModule.__Rewire__("loadGasPriceInfo", loadGasPriceInfo);
 
   after(() => {
     store.clearActions();
     ReWireModule.__ResetDependency__(
       "augur",
       "updateBlockchain",
-      "updateAssets"
+      "updateAssets",
+      "loadGasPriceInfo"
     );
   });
 
@@ -75,6 +82,9 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
       {
         type: "UPDATE_BLOCKCHAIN",
         data: dataReturned
+      },
+      {
+        type: "UPDATE_GAS_PRICE_INFO"
       },
       {
         type: "UPDATE_ASSETS"

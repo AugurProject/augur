@@ -1686,6 +1686,55 @@ export const nextIcon = (
   </svg>
 );
 
+export const yellowAlertIcon = (
+  <svg
+    width="35px"
+    height="23px"
+    viewBox="0 0 23 23"
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <title>alert</title>
+    <desc>Created with Sketch.</desc>
+    <defs />
+    <g
+      id="Core-Stats-Bar"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="gasPriceModuleToHigh"
+        transform="translate(-593.000000, -398.000000)"
+      >
+        <g id="gasPrice" transform="translate(570.000000, 311.000000)">
+          <g id="Group-9" transform="translate(24.000000, 84.000000)">
+            <g id="alert" transform="translate(0.000000, 4.000000)">
+              <path
+                d="M9.66956376,0.449701198 C9.97324687,-0.149900399 10.7324546,-0.149900399 11.035275,0.449701198 L15.8174213,9.90270077 L20.5987048,19.3548376 C20.9023879,19.9553019 20.522784,20.7058824 19.9154178,20.7058824 L10.3528508,20.7058824 L0.790283701,20.7058824 C0.182054742,20.7058824 -0.19668641,19.9553019 0.106996701,19.3548376 L4.88828023,9.90270077 L9.66956376,0.449701198 Z"
+                id="Stroke-1"
+                stroke="#FFD500"
+              />
+              <text
+                id="!"
+                fontFamily="Roboto-Bold, Roboto"
+                fontSize="13"
+                fontWeight="bold"
+                fill="#FFD500"
+              >
+                <tspan x="8.41176471" y="17.0882353">
+                  !
+                </tspan>
+              </text>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
 export const logoutIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"

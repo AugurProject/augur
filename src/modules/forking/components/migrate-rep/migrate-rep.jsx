@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Helmet } from "react-helmet";
-import { augur } from "services/augurjs";
 
 import speedomatic from "speedomatic";
 import { formatGasCostToEther } from "utils/format-number";
@@ -28,7 +27,8 @@ export default class MigrateRep extends Component {
     market: PropTypes.object.isRequired,
     marketId: PropTypes.string.isRequired,
     submitMigrateREP: PropTypes.func.isRequired,
-    currentBlockNumber: PropTypes.number.isRequired
+    currentBlockNumber: PropTypes.number.isRequired,
+    gasPrice: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -79,7 +79,7 @@ export default class MigrateRep extends Component {
   }
 
   calculateGasEstimates() {
-    const { submitMigrateREP, market } = this.props;
+    const { submitMigrateREP, market, gasPrice } = this.props;
     if (this.state.repAmount !== "") {
       const amount = speedomatic.fix(this.state.repAmount, "hex");
       submitMigrateREP({
@@ -92,7 +92,6 @@ export default class MigrateRep extends Component {
         callback: (err, gasEstimateValue) => {
           if (err) return console.error(err);
 
-          const gasPrice = augur.rpc.getGasPrice();
           this.setState({
             gasEstimate: formatGasCostToEther(
               gasEstimateValue,

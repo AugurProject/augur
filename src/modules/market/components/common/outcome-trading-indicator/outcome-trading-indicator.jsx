@@ -37,10 +37,10 @@ export default function OutcomeTradingIndicator({
   };
 
   const arrowStyles = tradingIndicator => ({
-    ...style,
     top: topSpace(tradingIndicator) + "rem",
     left: "-0.25rem",
-    position: "relative"
+    position: "relative",
+    ...style
   });
 
   return (

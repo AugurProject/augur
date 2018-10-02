@@ -37,7 +37,7 @@ const PortfolioReportsForkedMarketCard = ({
     onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history)
   }));
 
-  const localButtonText = "Claim";
+  const localButtonText = "Claim Proceeds";
 
   return (
     <article

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { augur } from "services/augurjs";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 import { createBigNumber } from "utils/create-big-number";
 import { formatEther, formatGasCostToEther } from "utils/format-number";
@@ -21,7 +20,8 @@ export default class MarketLiquidity extends Component {
     removeLiquidityOrder: PropTypes.func.isRequired,
     submitLiquidityOrders: PropTypes.func.isRequired,
     clearMarketLiquidityOrders: PropTypes.func.isRequired,
-    updateModal: PropTypes.func.isRequired
+    updateModal: PropTypes.func.isRequired,
+    gasPrice: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -31,8 +31,7 @@ export default class MarketLiquidity extends Component {
       isOpen: false,
       showAllOrders: false,
       estimatedGas: createBigNumber("0"),
-      totalCost: createBigNumber("0"),
-      gasPrice: augur.rpc.getGasPrice()
+      totalCost: createBigNumber("0")
     };
 
     this.handleCancelOrder = this.handleCancelOrder.bind(this);
@@ -114,15 +113,10 @@ export default class MarketLiquidity extends Component {
       pendingLiquidityOrders,
       marketId,
       market,
-      updateModal
+      updateModal,
+      gasPrice
     } = this.props;
-    const {
-      isOpen,
-      estimatedGas,
-      totalCost,
-      gasPrice,
-      showAllOrders
-    } = this.state;
+    const { isOpen, estimatedGas, totalCost, showAllOrders } = this.state;
     const isNullState = !(
       pendingLiquidityOrders && pendingLiquidityOrders[marketId]
     );

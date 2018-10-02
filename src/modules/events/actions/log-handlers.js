@@ -214,6 +214,7 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
         )
       );
       dispatch(loadReporting());
+      dispatch(getWinningBalance([log.market]));
       const isOwnMarket = getState().loginAccount.address === author;
       if (isOwnMarket) {
         dispatch(updateAssets());
