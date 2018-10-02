@@ -42,9 +42,8 @@
   color: @color-white;
   cursor: pointer;
   display: flex;
-  flex: 1;
   justify-content: flex-end;
-  max-width: 80px;
+  width: unset !important;
 
   &:hover {
     background-color: @color-lightpurple;
@@ -52,6 +51,14 @@
 
   &:focus {
     outline: none;
+  }
+}
+
+.TopBar__notificationsDisabled {
+  cursor: default;
+
+  &:hover {
+    background-color: @color-purple;
   }
 }
 

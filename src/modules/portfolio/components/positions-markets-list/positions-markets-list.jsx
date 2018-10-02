@@ -40,7 +40,7 @@ export default class PositionsMarketsList extends Component {
 
   componentWillMount() {
     const { lowerBound, boundedLength } = this.state;
-    this.setFilteredMarkets(lowerBound, boundedLength);
+    this.setFilteredMarkets(this.props.markets, lowerBound, boundedLength);
   }
 
   componentWillUpdate(nextProps, nextState) {

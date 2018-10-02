@@ -218,34 +218,35 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
       if (isOwnMarket) {
         dispatch(updateAssets());
         dispatch(updateLoggedTransactions(log));
-        if (!log.removed) {
-          const { notifications } = getState();
-          if (
-            !notifications.filter(
-              notification =>
-                notification.id === log.transactionHash &&
-                notification.params.type === "finalize"
-            ).length
-          ) {
-            // Trigger the notification addition here because calling other
-            // API functions, such as `InitialReporter.redeem` can indirectly
-            // cause a MarketFinalized event to be logged.
-            dispatch(
-              addNotification({
-                id: `${log.transactionHash}_finalize`,
-                timestamp: log.timestamp,
-                blockNumber: log.blockNumber,
-                log,
-                params: {
-                  type: "finalize"
-                },
-                status: "Confirmed",
-                linkPath: makePath(MY_MARKETS)
-              })
-            );
-          } else {
-            handleNotificationUpdate(log, dispatch, getState);
-          }
+      }
+      if (!log.removed) {
+        const { notifications } = getState();
+        const doesntExist =
+          !notifications.filter(
+            notification =>
+              notification.id === log.transactionHash &&
+              notification.params.type === "finalize"
+          ).length > 0;
+
+        if (doesntExist && isOwnMarket) {
+          // Trigger the notification addition here because calling other
+          // API functions, such as `InitialReporter.redeem` can indirectly
+          // cause a MarketFinalized event to be logged.
+          dispatch(
+            addNotification({
+              id: `${log.transactionHash}_finalize`,
+              timestamp: log.timestamp,
+              blockNumber: log.blockNumber,
+              log,
+              params: {
+                type: "finalize"
+              },
+              status: "Confirmed",
+              linkPath: makePath(MY_MARKETS)
+            })
+          );
+        } else if (!doesntExist) {
+          handleNotificationUpdate(log, dispatch, getState);
         }
       }
     })
