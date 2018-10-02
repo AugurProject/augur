@@ -34,7 +34,8 @@ export default class Input extends Component {
     onMaxButtonClick: PropTypes.func,
     noFocus: PropTypes.bool,
     isLoading: PropTypes.bool,
-    onFocus: PropTypes.func
+    onFocus: PropTypes.func,
+    lightBorder: PropTypes.bool
   };
 
   constructor(props) {
@@ -145,6 +146,7 @@ export default class Input extends Component {
       onMaxButtonClick,
       noFocus,
       isLoading,
+      lightBorder,
       ...p
     } = this.props; // eslint-disable-line no-unused-vars
     const s = this.state;
@@ -156,8 +158,9 @@ export default class Input extends Component {
           p.className,
           {
             "can-toggle-visibility": canToggleVisibility,
-            [Styles.focusBorder]: s.focused && !noFocus,
-            [`${Styles.noFocus}`]: noFocus
+            [Styles.focusBorder]: s.focused && !noFocus && !lightBorder,
+            [`${Styles.noFocus}`]: noFocus,
+            [`${Styles.lightBorder}`]: lightBorder
           }
         )}
         ref={inputHandler => {

@@ -17,6 +17,7 @@ export const selectEdgeContextState = state => state.authStatus.edgeContext;
 export const selectEdgeLoadingState = state => state.authStatus.edgeLoading;
 export const selectEnvState = state => state.env;
 export const selectFavoritesState = state => state.favorites;
+export const selectGasPriceInfo = state => state.gasPriceInfo;
 export const selectHasLoadedMarketsState = state =>
   state.appStatus.hasLoadedMarkets;
 export const selectInitialReporters = state => state.initialReporters;
