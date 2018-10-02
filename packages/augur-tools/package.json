@@ -10,6 +10,9 @@
     "type": "git",
     "url": "git+https://github.com/augurproject/augur.git"
   },
+  "files": [
+    "babel.config.js"
+  ],
   "keywords": [
     "ethereum",
     "augur",
