@@ -23,7 +23,7 @@ import { getOrders } from "./getters/get-orders";
 import { getAllOrders } from "./getters/get-all-orders";
 import { getCompleteSets } from "./getters/get-complete-sets";
 import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
-import { getSyncData } from "./getters/get-sync-data";
+import { extractNoParams, getSyncData } from "./getters/get-sync-data";
 import { extractGetDisputeInfoParams, getDisputeInfo } from "./getters/get-dispute-info";
 import { getInitialReporters } from "./getters/get-initial-reporters";
 import { getForkMigrationTotals } from "./getters/get-fork-migration-totals";
@@ -57,6 +57,9 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getMarketPriceHistory, extractGetMarketPriceHistoryParams);
     case "getCategories":
       return dispatchResponse(getCategories, extractGetCategoriesParams);
+    case "getContractAddresses":
+    case "getSyncData":
+      return dispatchResponse(getSyncData, extractNoParams);
 
     case "getAccountTransferHistory":
       return getAccountTransferHistory(db, request.params.account, request.params.token, request.params.isInternalTransfer, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
@@ -107,10 +110,6 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getBetterWorseOrders(db, request.params.marketId, request.params.outcome, request.params.orderType, request.params.price, callback);
     case "getCompleteSets":
       return getCompleteSets(db, request.params.universe, request.params.account, callback);
-    case "getContractAddresses":
-      return getSyncData(db, augur, callback);
-    case "getSyncData":
-      return getSyncData(db, augur, callback);
     case "getUniversesInfo":
       return getUniversesInfo(db, augur, request.params.universe, request.params.account, callback);
     case "getProfitLoss":
