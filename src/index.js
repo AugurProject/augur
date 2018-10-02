@@ -30,6 +30,7 @@ function Augur() {
   this.constants = require("./constants");
   this.contracts = require("./contracts");
   this.createMarket = require("./create-market");
+  this.disconnect = require("./disconnect");
   this.events = require("./events");
   this.markets = require("./markets");
   this.reporting = require("./reporting");
