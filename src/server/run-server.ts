@@ -2,7 +2,7 @@ import * as express from "express";
 import * as Knex from "knex";
 import * as helmet from "helmet";
 import Augur from "augur.js";
-import { Address, ErrorCallback, ServersData } from "../types";
+import { Address, ServersData } from "../types";
 import { runWebsocketServer } from "./run-websocket-server";
 import { getMarkets } from "./getters/get-markets";
 import { isSyncFinished } from "../blockchain/bulk-sync-augur-node-with-blockchain";

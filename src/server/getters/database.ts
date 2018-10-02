@@ -357,6 +357,6 @@ export function checkOptionalOrderingParams(params: any): boolean {
   if (params.sortBy != null && (!_.isString(params.sortBy))) return false;
   if (params.isSortDescending != null && (!_.isBoolean(params.isSortDescending))) return false;
   if (params.limit != null && (!_.isNumber(params.limit))) return false;
-  if (params.offset != null && (!_.isNumber(params.offset))) return false;
-  return true;
+  return !(params.offset != null && (!_.isNumber(params.offset)));
+
 }

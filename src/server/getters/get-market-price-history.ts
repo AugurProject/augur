@@ -24,8 +24,8 @@ export function extractGetMarketPriceHistoryParams(params: any): GetMarketPriceH
 
 export function isGetMarketPriceHistoryParams(params: any): params is GetMarketPriceHistoryParams {
   if (!_.isObject(params)) return false;
-  if (!_.isString(params.marketId)) return false;
-  return true;
+  return _.isString(params.marketId);
+
 }
 
 // Input: MarketId

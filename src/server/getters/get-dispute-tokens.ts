@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { Address, ReportingState, DisputeTokensRowWithTokenState, DisputeTokenState, UIDisputeTokens, UIDisputeTokenInfo } from "../../types";
-import { getMarketsWithReportingState, reshapeDisputeTokensRowToUIDisputeTokenInfo } from "./database";
+import { reshapeDisputeTokensRowToUIDisputeTokenInfo } from "./database";
 
 export function getDisputeTokens(db: Knex, universe: Address, account: Address, disputeTokenState: DisputeTokenState|null, callback: (err: Error|null, result?: any) => void): void {
     if (universe == null || account == null) return callback(new Error("Must provide both universe and account"));

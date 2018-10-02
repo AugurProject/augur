@@ -16,14 +16,14 @@ export interface GetCategoriesParams extends SortLimit {
 export function extractGetCategoriesParams(params: any): GetCategoriesParams|undefined {
   const pickedParams = _.pick(params, ["universe", ...SORT_LIMIT_KEYS]);
   if (!checkOptionalOrderingParams(pickedParams)) return undefined;
-  if (isGetCategoriesParams(pickedParams)) return pickedParams;
-  return undefined;
+  if (!isGetCategoriesParams(pickedParams)) return undefined;
+  return pickedParams;
 }
 
 export function isGetCategoriesParams(params: any): params is GetCategoriesParams {
   if (!_.isObject(params)) return false;
-  if (!_.isString(params.universe)) return false;
-  return true;
+  return _.isString(params.universe);
+
 }
 
 //        //(db, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);

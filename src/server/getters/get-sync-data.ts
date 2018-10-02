@@ -23,7 +23,7 @@ export async function getSyncData(db: Knex, augur: Augur, params: {}): Promise<U
     hash: currentBlock.hash,
     timestamp: parseInt(currentBlock.timestamp, 16),
   };
-  const lastProcessedBlock = await db("blocks").first(["blockNumber as number", "blockHash as hash", "timestamp"]).orderBy("blockNumber", "DESC")
+  const lastProcessedBlock = await db("blocks").first(["blockNumber as number", "blockHash as hash", "timestamp"]).orderBy("blockNumber", "DESC");
   return {
     version: augur.version,
     net_version: augur.rpc.getNetworkID(),

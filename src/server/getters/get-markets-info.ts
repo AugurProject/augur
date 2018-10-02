@@ -2,16 +2,30 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { Address, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcomeInfo, PayoutRow, MarketsContractAddressRow } from "../../types";
-import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState, batchAndCombine } from "./database";
+import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState, batchAndCombine, checkOptionalOrderingParams, SORT_LIMIT_KEYS } from "./database";
 
-export function getMarketsInfo(db: Knex, marketIds: Array<Address>, callback: (err: Error|null, result?: UIMarketsInfo<string>) => void) {
-  if (marketIds == null || ! _.isArray(marketIds) ) return callback(new Error("must include marketIds parameter"));
-  batchAndCombine<UIMarketInfo<string>, string>(marketIds, _.partial(getUIMarketsInfo, db)).then((marketInfoComplete: Array<UIMarketInfo<string>>) => {
-    const marketsInfoByMarket = _.keyBy(marketInfoComplete, (r): string => r.id);
-    callback(null, _.map(marketIds, (marketId: string): UIMarketInfo<string>|null => {
-      return marketsInfoByMarket[marketId] || null;
-    }));
-  }).catch(callback);
+export interface GetMarketsInfoParams  {
+  marketIds: Array<Address>;
+}
+export function extractGetMarketsInfoParams(params: any): GetMarketsInfoParams|undefined {
+  const pickedParams = _.pick(params, ["marketIds"]);
+  if (isGetMarketsInfoParams(pickedParams)) return pickedParams;
+  return undefined;
+}
+
+export function isGetMarketsInfoParams(params: any): params is GetMarketsInfoParams {
+  if (!_.isObject(params)) return false;
+  if (!_.isArray(params.marketIds)) return false;
+  return !(params.marketIds.filter((value: any) => typeof value !== "string" && value != null).length > 0);
+}
+
+export async function getMarketsInfo(db: Knex, augur: {}, params: GetMarketsInfoParams): Promise<UIMarketsInfo<string>> {
+  if (params.marketIds == null || ! _.isArray(params.marketIds) ) throw new Error("must include marketIds parameter");
+  const marketInfoComplete: Array<UIMarketInfo<string>> = await batchAndCombine<UIMarketInfo<string>, string>(params.marketIds, _.partial(getUIMarketsInfo, db));
+  const marketsInfoByMarket = _.keyBy(marketInfoComplete, (r): string => r.id);
+  return _.map(params.marketIds, (marketId: string): UIMarketInfo<string>|null => {
+    return marketsInfoByMarket[marketId] || null;
+  });
 }
 
 export async function getUIMarketsInfo(db: Knex, marketIds: Array<Address>): Promise<Array<UIMarketInfo<string>>> {

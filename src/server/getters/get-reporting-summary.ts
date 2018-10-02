@@ -16,8 +16,8 @@ export function extractGetReportingSummaryParams(params: any): GetReportingSumma
 
 export function isGetReportingSummaryParams(params: any): params is GetReportingSummaryParams {
   if (!_.isObject(params)) return false;
-  if (!_.isString(params.feeWindow)) return false;
-  return true;
+  return _.isString(params.feeWindow);
+
 }
 
 // Look up reporting summary values. Should take feeWindow (address) as a parameter and the response should include total number of markets up for reporting, total number of markets up for dispute, total number of markets undergoing and/or resolved via each reporting "tier" (automated, limited, full, fork), etc.
