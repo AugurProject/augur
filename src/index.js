@@ -39,6 +39,8 @@ function Augur() {
   this.utils = require("./utils");
 }
 
+Object.defineProperty(Augur.prototype, "getGasPrice", require("./get-gas-price"));
+
 module.exports = Augur;
 module.exports.version = version;
 module.exports.Augur = Augur;
