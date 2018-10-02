@@ -11,7 +11,10 @@ import CommonStyles from "modules/market/components/market-positions-list--mobil
 export default class MobilePositions extends Component {
   static propTypes = {
     position: PropTypes.object.isRequired,
-    pendingOrders: PropTypes.array.isRequired
+    pendingOrders: PropTypes.array.isRequired,
+    marketId: PropTypes.string.isRequired,
+    showAction: PropTypes.bool,
+    claimTradingProceeds: PropTypes.func
   };
 
   static calcAvgDiff(position, orders) {
@@ -52,7 +55,13 @@ export default class MobilePositions extends Component {
   }
 
   render() {
-    const { pendingOrders, position } = this.props;
+    const {
+      pendingOrders,
+      position,
+      showAction,
+      claimTradingProceeds,
+      marketId
+    } = this.props;
     const s = this.state;
 
     const orderText = pendingOrders.length > 1 ? "Orders" : "Order";
@@ -68,12 +77,14 @@ export default class MobilePositions extends Component {
               </span>
             )}
           </h2>
-          <button
-            className={Styles.MobilePositions__close}
-            onClick={e => this.setState({ showConfirm: !s.showConfirm })}
-          >
-            Close
-          </button>
+          {showAction && (
+            <button
+              className={Styles.MobilePositions__close}
+              onClick={() => claimTradingProceeds(marketId)}
+            >
+              claim proceeds
+            </button>
+          )}
         </div>
         <div className={Styles.MobilePositions__positions}>
           <ul className={Styles.MobilePositions__position}>

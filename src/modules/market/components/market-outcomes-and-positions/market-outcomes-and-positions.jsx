@@ -43,6 +43,9 @@ const MarketOutcomesAndPositions = p => (
           openOrders={p.openOrders.filter(
             order => order.outcomeId === p.selectedOutcome
           )}
+          showAction={p.showAction}
+          claimTradingProceeds={p.claimTradingProceeds}
+          marketId={p.marketId}
         />
       )}
   </section>
