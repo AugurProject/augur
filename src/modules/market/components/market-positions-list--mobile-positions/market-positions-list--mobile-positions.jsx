@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
 
 import getValue from "utils/get-value";
@@ -11,8 +10,7 @@ import CommonStyles from "modules/market/components/market-positions-list--mobil
 export default class MobilePositions extends Component {
   static propTypes = {
     position: PropTypes.object.isRequired,
-    pendingOrders: PropTypes.array.isRequired,
-    marketId: PropTypes.string.isRequired
+    pendingOrders: PropTypes.array.isRequired
   };
 
   static calcAvgDiff(position, orders) {
@@ -44,18 +42,8 @@ export default class MobilePositions extends Component {
     return avgDiff < 0 ? avgDiff : `+${avgDiff}`;
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showConfirm: false
-    };
-  }
-
   render() {
     const { pendingOrders, position } = this.props;
-    const s = this.state;
-
     const orderText = pendingOrders.length > 1 ? "Orders" : "Order";
 
     return (
@@ -107,54 +95,6 @@ export default class MobilePositions extends Component {
               {getValue(position, "realizedNet.formatted")} ETH
             </li>
           </ul>
-        </div>
-        <div
-          className={classNames(Styles.MobilePositions__confirm, {
-            [`${Styles["is-open"]}`]: s.showConfirm
-          })}
-        >
-          {pendingOrders.length > 0 ? (
-            <div
-              className={classNames(
-                Styles["MobilePositions__confirm-details"],
-                Styles.pending
-              )}
-            >
-              <p>Positions cannot be closed while orders are pending.</p>
-              <div className={Styles["MobilePositions__confirm-options"]}>
-                <button
-                  onClick={e => this.setState({ showConfirm: !s.showConfirm })}
-                >
-                  Ok
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className={Styles["MobilePositions__confirm-details"]}>
-              <h3>Close Position?</h3>
-              <p>
-                This will sell your {getValue(position, "qtyShares.formatted")}{" "}
-                shares of &ldquo;
-                {getValue(position, "name")}
-                &rdquo; at market rate.
-              </p>
-              <div className={Styles["MobilePositions__confirm-options"]}>
-                <button
-                  onClick={e => this.setState({ showConfirm: !s.showConfirm })}
-                >
-                  No
-                </button>
-                <button
-                  onClick={e => {
-                    position.closePosition();
-                    this.setState({ showConfirm: !s.showConfirm });
-                  }}
-                >
-                  Yes
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     );

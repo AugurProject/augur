@@ -8,8 +8,6 @@ export const selectActiveViewState = state => state.activeView;
 export const selectAuthState = state => state.auth;
 export const selectBlockchainState = state => state.blockchain;
 export const selectCategoriesState = state => state.categories;
-export const selectClosePositionTradeGroupsState = state =>
-  state.closePositionTradeGroups;
 export const selectConnectionState = state => state.connection;
 export const selectDisputeCrowdsourcerTokens = state =>
   state.disputeCrowdsourcerTokens;
