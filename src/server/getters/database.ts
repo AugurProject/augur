@@ -1,5 +1,6 @@
 import * as Knex from "knex";
 import * as _ from "lodash";
+import Augur from "augur.js";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
 import { safeBigNumberCompare } from "../../utils/safe-big-number-compare";
@@ -23,7 +24,6 @@ import {
   TradingHistoryRow,
 } from "../../types";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
-import Augur from "augur.js";
 
 export interface Dictionary {
   [key: string]: any;

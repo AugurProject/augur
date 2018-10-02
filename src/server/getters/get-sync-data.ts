@@ -1,6 +1,6 @@
+import * as Knex from "knex";
 import Augur from "augur.js";
 import { isSyncFinished } from "../../blockchain/bulk-sync-augur-node-with-blockchain";
-import * as Knex from "knex";
 
 export function extractNoParams(params: any): {} {
   return {};

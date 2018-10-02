@@ -1,9 +1,9 @@
 import * as Knex from "knex";
+import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
+import Augur from "augur.js";
 import { Address, MarketPriceHistory, TimestampedPriceAmount } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import * as _ from "lodash";
-import Augur from "augur.js";
 
 interface MarketPriceHistoryRow {
   timestamp: number;
