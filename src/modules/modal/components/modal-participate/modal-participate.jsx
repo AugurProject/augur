@@ -5,13 +5,13 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
 import FormStyles from "modules/common/less/form";
-import {
-  Participate,
-  ExclamationCircle as InputErrorIcon
-} from "modules/common/components/icons";
+import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import Styles from "modules/modal/components/modal-participate/modal-participate.styles";
 import Input from "modules/common/components/input/input";
-import ModalParticipateReview from "modules/modal/components/modal-participate-review/modal-participate-review";
+import ModalActions from "modules/modal/components/common/modal-actions";
+import ModalReview from "modules/modal/components/modal-review/modal-review";
+import commonStyles from "modules/modal/components/common/common.styles";
+import { formatRep, formatEther } from "utils/format-number";
 
 export default class ModalParticipate extends Component {
   static propTypes = {
@@ -41,7 +41,7 @@ export default class ModalParticipate extends Component {
 
   triggerReview(e, ...args) {
     const { purchaseParticipationTokens } = this.props;
-    e.preventDefault();
+    // e.preventDefault();
     if (this.state.isValid) {
       purchaseParticipationTokens(
         this.state.quantity,
@@ -56,7 +56,7 @@ export default class ModalParticipate extends Component {
 
   submitForm(e, ...args) {
     const { purchaseParticipationTokens } = this.props;
-    e.preventDefault();
+    // e.preventDefault();
     purchaseParticipationTokens(this.state.quantity, false, (err, res) => {
       console.log("onSuccess for purchaseParticipationTokens", err, res);
     });
@@ -117,22 +117,48 @@ export default class ModalParticipate extends Component {
     const { closeModal } = this.props;
     const s = this.state;
     const invalidWithErrors = !s.isValid && s.errors.length > 0;
+    const formattedQuantity = formatRep(s.quantity || 0);
+    const formattedGas = formatEther(s.gasEstimate);
+    const items = [
+      {
+        label: "Purchase",
+        value: "Participation Tokens",
+        denomination: ""
+      },
+      {
+        label: "quantity",
+        value: formattedQuantity.fullPrecision,
+        denomination: ""
+      },
+      {
+        label: "price",
+        value: formattedQuantity.fullPrecision,
+        denomination: "REP"
+      },
+      {
+        label: "gas",
+        value: formattedGas.fullPrecision,
+        denomination: "ETH"
+      }
+    ];
+    const buttons = [
+      {
+        label: "Back",
+        action: this.switchPages,
+        type: "gray"
+      },
+      {
+        label: "submit",
+        action: this.submitForm,
+        type: "purple"
+      }
+    ];
 
     return (
-      <section className={Styles.ModalParticipate}>
+      <section className={commonStyles.ModalContainer}>
         {s.page === 1 && (
-          <form
-            className={Styles.ModalParticipate__form}
-            onSubmit={this.triggerReview}
-          >
-            <div className={Styles.ModalParticipate__heading}>
-              {Participate}
-              <h1>Buy Participation Tokens</h1>
-            </div>
-            <span className={Styles.ModalParticipate__helperText}>
-              Purchase participation tokens to earn a share of the reporting
-              fees collected during this dispute window.
-            </span>
+          <form>
+            <h1>Buy Participation Tokens</h1>
             <label htmlFor="modal__participate-quantity">
               Quantity (1 token @ 1 REP)
             </label>
@@ -154,33 +180,32 @@ export default class ModalParticipate extends Component {
             />
             {!!s.errors.length &&
               s.errors.map((error, index) => (
-                <p key={error} className={Styles.ModalParticipate__error}>
+                <span key={error} className={commonStyles.Error}>
                   {InputErrorIcon} {error}
-                </p>
+                </span>
               ))}
-            <div className={Styles["ModalParticipate__form-actions"]}>
-              <button
-                className={Styles.ModalParticipate__button}
-                onClick={() => closeModal()}
-              >
-                Cancel
-              </button>
-              <button
-                className={Styles.ModalParticipate__button}
-                type="submit"
-                disabled={!s.isValid}
-              >
-                Review
-              </button>
-            </div>
+            <ModalActions
+              buttons={[
+                {
+                  label: "cancel",
+                  action: closeModal,
+                  type: "gray"
+                },
+                {
+                  label: "review",
+                  action: this.triggerReview,
+                  type: "purple",
+                  isDisabled: !s.isValid
+                }
+              ]}
+            />
           </form>
         )}
         {s.page === 2 && (
-          <ModalParticipateReview
-            quantity={s.quantity}
-            onSubmit={this.submitForm}
-            switchPages={this.switchPages}
-            gasEstimate={s.gasEstimate}
+          <ModalReview
+            title="Buy Participation Tokens"
+            items={items}
+            buttons={buttons}
           />
         )}
       </section>

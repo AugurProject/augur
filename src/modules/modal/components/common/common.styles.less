@@ -14,14 +14,27 @@
     width: 100%;
   }
 
+  form > h1,
   h1 {
     color: @color-almostblack;
     font-size: @font-size-somewhat-large;
     font-weight: 500;
     line-height: 1.75rem;
     margin: 0.5rem 0 1.5rem;
+    text-align: center;
   }
 
+  form > label {
+    color: @color-almostblack;
+    font-size: @font-size-medium;
+    font-weight: 600;
+    line-height: @font-size-large;
+    margin: 0 7rem 0.5rem;
+    text-align: left;
+    width: auto;
+  }
+
+  form > p,
   > p {
     color: @color-almostblack;
     font-size: @font-size-small;
@@ -32,6 +45,27 @@
     > button {
       text-decoration: underline;
     }
+  }
+
+  form > div {
+    font-size: @font-size-medium;
+    line-height: @font-size-normal;
+    margin: 0 7rem 1.5rem;
+    width: auto;
+
+    > input {
+      font-size: @font-size-medium;
+      line-height: @font-size-normal;
+      padding: @font-size-small @font-size-normal;
+    }
+
+    > input::placeholder {
+      color: @color-input-border-no-focus;
+    }
+  }
+
+  form > div:last-of-type {
+    margin: 0.5rem 0 0;
   }
 }
 
@@ -57,10 +91,12 @@
   }
 
   label {
+    color: @color-almostblack;
     font-size: @font-size-medium;
     font-weight: 600;
     line-height: @font-size-large;
     margin: 0 4rem 0.5rem;
+    text-align: left;
     width: auto;
   }
 
@@ -82,6 +118,20 @@
   }
 }
 
+.Error {
+  color: @color-red;
+  display: flex;
+  margin: 0 7rem 1.5rem;
+  padding: 0;
+
+  > svg {
+    height: 1rem;
+    line-height: 1rem;
+    margin-right: 0.3rem;
+    width: 1rem;
+  }
+}
+
 .Loading {
   display: flex;
   flex-flow: row nowrap;
@@ -92,6 +142,43 @@
   > div {
     display: flex;
     margin: auto;
+  }
+}
+
+.Receipt {
+  background-color: @color-offwhite;
+  color: @color-almostblack;
+  list-style: none;
+  margin: 0 2rem 1.5rem;
+  padding: 1rem 0;
+
+  > li {
+    align-items: baseline;
+    display: flex;
+    flex-flow: row nowrap;
+    font-size: @font-size-medium;
+    line-height: @font-size-normal;
+    padding: 0.5rem 0;
+
+    > label {
+      color: @color-almostblack;
+      flex: 1;
+      font-weight: 600;
+      margin: 0 1rem 0 auto;
+      text-align: right;
+    }
+
+    > span:first-of-type {
+      color: @color-almostblack;
+      flex: 3;
+      margin: 0 auto 0 0;
+      text-align: left;
+
+      > span {
+        font-size: @font-size-extra-small;
+        margin-left: 0.25rem;
+      }
+    }
   }
 }
 

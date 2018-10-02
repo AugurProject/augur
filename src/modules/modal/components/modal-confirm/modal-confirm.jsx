@@ -5,10 +5,10 @@ import noop from "utils/noop";
 import ModalDescription from "modules/modal/components/common/modal-description";
 import ModalActions from "modules/modal/components/common/modal-actions";
 
-import Styles from "modules/modal/components/modal-confirm/modal-confirm.styles";
+import Styles from "modules/modal/components/common/common.styles";
 
 const ModalConfirm = p => (
-  <section className={Styles.ModalConfirm}>
+  <section className={Styles.ModalContainer}>
     <h1>{p.title}</h1>
     {p.description.map(text => (
       <ModalDescription text={text} key={text} />
