@@ -1,3 +1,6 @@
+import { augur } from "services/augurjs";
+import store from "src/store";
+
 import { updateFavorites } from "modules/markets/actions/update-favorites";
 import { updateScalarMarketShareDenomination } from "modules/markets/actions/update-scalar-market-share-denomination";
 import { updateReports } from "modules/reports/actions/update-reports";
@@ -16,10 +19,18 @@ export const loadAccountDataFromLocalStorage = address => (
         dispatch(updateFavorites(storedAccountData.favorites));
       }
       if (storedAccountData.notifications) {
+        const networkId = augur.rpc.getNetworkID();
+        const { universe } = store.getState();
         storedAccountData.notifications.map(n => {
           let notification = null;
           try {
-            notification = addNotification(n);
+            if (
+              (n.networkId === networkId && n.universe === universe) ||
+              typeof n.networkId === "undefined" ||
+              typeof n.universe === "undefined"
+            ) {
+              notification = addNotification(n);
+            }
           } catch (e) {
             console.error("could not process notification", e.message);
           }

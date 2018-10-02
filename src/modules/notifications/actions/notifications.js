@@ -1,4 +1,5 @@
 import store from "src/store";
+import { augur } from "services/augurjs";
 import * as notificationLevels from "modules/notifications/constants/notifications";
 import setNotificationText from "modules/notifications/actions/set-notification-text";
 
@@ -16,6 +17,7 @@ export function addCriticalNotification(notification) {
 
 export function addNotification(notification) {
   if (notification != null) {
+    const { universe } = store.getState();
     const callback = notification => {
       const fullNotification = {
         type: ADD_NOTIFICATION,
@@ -23,6 +25,8 @@ export function addNotification(notification) {
           notification: {
             seen: false,
             level: notificationLevels.INFO,
+            networkId: augur.rpc.getNetworkID(),
+            universe: universe.id,
             ...notification
           }
         }
