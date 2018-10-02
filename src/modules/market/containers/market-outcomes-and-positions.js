@@ -58,7 +58,8 @@ const mapStateToProps = (state, ownProps) => {
     orphanedOrders: filteredOrphanOrders,
     showAction:
       market.reportingState === constants.REPORTING_STATE.FINALIZED &&
-      !!market.outstandingReturns
+      !!market.outstandingReturns,
+    winningOutcome: market.consensus && market.consensus.winningOutcome
   };
 };
 

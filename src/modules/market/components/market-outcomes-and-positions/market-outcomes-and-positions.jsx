@@ -26,6 +26,7 @@ const MarketOutcomesAndPositions = p => (
         cancelOrphanedOrder={p.cancelOrphanedOrder}
         showAction={p.showAction}
         claimTradingProceeds={p.claimTradingProceeds}
+        winningOutcome={p.winningOutcome}
       />
     )}
     {p.isMobile &&

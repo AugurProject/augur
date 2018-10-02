@@ -19,7 +19,8 @@ export default class MarketPositionsListPosition extends Component {
     showAction: PropTypes.bool,
     claimTradingProceeds: PropTypes.func,
     marketId: PropTypes.string,
-    hasOrders: PropTypes.bool
+    hasOrders: PropTypes.bool,
+    winningOutcome: PropTypes.string
   };
 
   static calcAvgDiff(position, order) {
@@ -49,7 +50,8 @@ export default class MarketPositionsListPosition extends Component {
       position,
       outcome,
       showAction,
-      hasOrders
+      hasOrders,
+      winningOutcome
     } = this.props;
 
     const netPositionShares = getValue(position, "netPosition.formatted");
@@ -92,17 +94,20 @@ export default class MarketPositionsListPosition extends Component {
         {isExtendedDisplay && (
           <li>{getValue(position, "totalNet.formatted")}</li>
         )}
-        {showAction && (
-          <li>
-            <button
-              className={Styles.Position__closeButton}
-              onClick={this.claimProceeds}
-            >
-              Claim Proceeds
-            </button>
-          </li>
-        )}
-        {!showAction && hasOrders && <li />}
+        {showAction &&
+          winningOutcome === position.outcomeId.toString() && (
+            <li>
+              <button
+                className={Styles.Position__closeButton}
+                onClick={this.claimProceeds}
+              >
+                Claim Proceeds
+              </button>
+            </li>
+          )}
+        {(!showAction && hasOrders) ||
+          (showAction &&
+            winningOutcome !== position.outcomeId.toString() && <li />)}
       </ul>
     );
   }

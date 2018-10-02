@@ -14,7 +14,8 @@ export default class MobilePositions extends Component {
     pendingOrders: PropTypes.array.isRequired,
     marketId: PropTypes.string.isRequired,
     showAction: PropTypes.bool,
-    claimTradingProceeds: PropTypes.func
+    claimTradingProceeds: PropTypes.func,
+    winningOutcome: PropTypes.string
   };
 
   static calcAvgDiff(position, orders) {
@@ -60,7 +61,8 @@ export default class MobilePositions extends Component {
       position,
       showAction,
       claimTradingProceeds,
-      marketId
+      marketId,
+      winningOutcome
     } = this.props;
     const s = this.state;
 
@@ -77,14 +79,15 @@ export default class MobilePositions extends Component {
               </span>
             )}
           </h2>
-          {showAction && (
-            <button
-              className={Styles.MobilePositions__close}
-              onClick={() => claimTradingProceeds(marketId)}
-            >
-              claim proceeds
-            </button>
-          )}
+          {showAction &&
+            winningOutcome === position.outcomeId.toString() && (
+              <button
+                className={Styles.MobilePositions__close}
+                onClick={() => claimTradingProceeds(marketId)}
+              >
+                claim proceeds
+              </button>
+            )}
         </div>
         <div className={Styles.MobilePositions__positions}>
           <ul className={Styles.MobilePositions__position}>

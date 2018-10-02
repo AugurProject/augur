@@ -22,9 +22,12 @@ export default class MarketView extends Component {
     isConnected: PropTypes.bool.isRequired,
     loadFullMarket: PropTypes.func.isRequired,
     description: PropTypes.string.isRequired,
+    location: PropTypes.object.isRequired,
+    isLogged: PropTypes.bool,
     marketType: PropTypes.string,
     loadingState: PropTypes.any,
-    location: PropTypes.object.isRequired
+    isFinalized: PropTypes.bool,
+    getWinningBalances: PropTypes.func
   };
 
   constructor(props) {
@@ -56,9 +59,20 @@ export default class MarketView extends Component {
   }
 
   componentWillMount() {
-    const { isConnected, loadFullMarket, loadingState, marketId } = this.props;
+    const {
+      isConnected,
+      loadFullMarket,
+      loadingState,
+      marketId,
+      isFinalized,
+      getWinningBalances,
+      isLogged
+    } = this.props;
     if (isConnected && loadingState === null && !!marketId) {
       loadFullMarket(marketId);
+    }
+    if (isConnected && isFinalized && isLogged) {
+      getWinningBalances([marketId]);
     }
   }
 
@@ -67,7 +81,12 @@ export default class MarketView extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    const { isConnected, loadingState, marketId } = this.props;
+    const {
+      isConnected,
+      loadingState,
+      marketId,
+      getWinningBalances
+    } = this.props;
     if (
       (isConnected !== nextProps.isConnected ||
         loadingState !== nextProps.loadingState) &&
@@ -77,6 +96,12 @@ export default class MarketView extends Component {
         (nextProps.marketId !== marketId || nextProps.marketType === undefined))
     ) {
       nextProps.loadFullMarket(nextProps.marketId);
+    }
+    if (
+      this.props.isFinalized !== nextProps.isFinalized &&
+      nextProps.isFinalized
+    ) {
+      getWinningBalances([marketId]);
     }
   }
 

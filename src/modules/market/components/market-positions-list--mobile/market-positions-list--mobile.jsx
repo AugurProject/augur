@@ -16,7 +16,8 @@ export default class MarketPositionsListMobile extends Component {
     openOrders: PropTypes.array.isRequired,
     marketId: PropTypes.string.isRequired,
     showAction: PropTypes.bool,
-    claimTradingProceeds: PropTypes.func
+    claimTradingProceeds: PropTypes.func,
+    winningOutcome: PropTypes.string
   };
 
   constructor(props) {
@@ -35,7 +36,8 @@ export default class MarketPositionsListMobile extends Component {
       positions,
       showAction,
       claimTradingProceeds,
-      marketId
+      marketId,
+      winningOutcome
     } = this.props;
     const s = this.state;
 
@@ -48,6 +50,7 @@ export default class MarketPositionsListMobile extends Component {
             showAction={showAction}
             claimTradingProceeds={claimTradingProceeds}
             marketId={marketId}
+            winningOutcome={winningOutcome}
           />
         )}
         {openOrders.length > 0 && (

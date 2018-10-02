@@ -24,7 +24,8 @@ export default class MarketPositionsList extends Component {
     orphanedOrders: PropTypes.array.isRequired,
     cancelOrphanedOrder: PropTypes.func.isRequired,
     showAction: PropTypes.bool,
-    claimTradingProceeds: PropTypes.func
+    claimTradingProceeds: PropTypes.func,
+    winningOutcome: PropTypes.string
   };
 
   constructor(props) {
@@ -45,7 +46,8 @@ export default class MarketPositionsList extends Component {
       orphanedOrders,
       cancelOrphanedOrder,
       showAction,
-      claimTradingProceeds
+      claimTradingProceeds,
+      winningOutcome
     } = this.props;
     const s = this.state;
 
@@ -125,6 +127,7 @@ export default class MarketPositionsList extends Component {
                       showAction={showAction}
                       claimTradingProceeds={claimTradingProceeds}
                       hasOrders={hasOrders}
+                      winningOutcome={winningOutcome}
                     />
                   ))}
               </div>
