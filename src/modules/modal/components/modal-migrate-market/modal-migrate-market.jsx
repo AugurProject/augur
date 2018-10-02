@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { SigningPen } from "modules/common/components/icons";
 import { formatEther } from "utils/format-number";
-import Styles from "modules/modal/components/modal-migrate-market/modal-migrate-market.styles";
+import Styles from "modules/modal/components/common/common.styles";
+import ModalReview from "modules/modal/components/modal-review/modal-review";
 
 export default class ModalMigrateMarket extends Component {
   static propTypes = {
     marketId: PropTypes.string.isRequired,
     marketDescription: PropTypes.string.isRequired,
     migrateMarketThroughFork: PropTypes.func.isRequired,
-    closeModal: PropTypes.func.isRequired
+    closeModal: PropTypes.func.isRequired,
+    type: PropTypes.string.isRequired
   };
 
   constructor(props) {
@@ -30,49 +31,48 @@ export default class ModalMigrateMarket extends Component {
     });
   }
 
-  submitForm(e, ...args) {
+  submitForm() {
     const { marketId, migrateMarketThroughFork } = this.props;
-    e.preventDefault();
     migrateMarketThroughFork(marketId, false, (err, res) => {
       console.log("onSuccess for migrateMarketThroughFork", err, res);
     });
   }
 
   render() {
-    const { closeModal, marketDescription } = this.props;
+    const { closeModal, marketDescription, type } = this.props;
     const s = this.state;
-
+    const reviewDetails = {
+      title: "Migrate Market",
+      type,
+      items: [
+        {
+          label: "Market",
+          value: marketDescription,
+          denomination: ""
+        },
+        {
+          label: "gas",
+          value: formatEther(s.gasEstimate).fullPrecision,
+          denomination: "ETH"
+        }
+      ],
+      buttons: [
+        {
+          label: "back",
+          action: closeModal,
+          type: "gray"
+        },
+        {
+          label: "submit",
+          action: this.submitForm,
+          type: "purple"
+        }
+      ]
+    };
     return (
-      <form
-        className={Styles.ModalMigrateMarket__form}
-        onSubmit={this.submitForm}
-      >
-        <h1 className={Styles.ModalMigrateMarket__heading}>
-          {SigningPen} Migrate Market
-        </h1>
-        <div className={Styles.ModalMigrateMarket__details}>
-          <ul className={Styles.ModalMigrateMarket__row}>
-            <li>market</li>
-            <li>{marketDescription}</li>
-          </ul>
-          <ul className={Styles.ModalMigrateMarket__row}>
-            <li>gas</li>
-            <li>{formatEther(s.gasEstimate).full}</li>
-          </ul>
-        </div>
-        <div className={Styles.ModalMigrateMarket__actions}>
-          <button
-            className={Styles.ModalMigrateMarket__button}
-            type="button"
-            onClick={closeModal}
-          >
-            Back
-          </button>
-          <button className={Styles.ModalMigrateMarket__button} type="submit">
-            submit
-          </button>
-        </div>
-      </form>
+      <section className={Styles.ModalContainer}>
+        <ModalReview {...reviewDetails} />
+      </section>
     );
   }
 }

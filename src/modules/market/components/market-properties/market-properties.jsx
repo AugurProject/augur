@@ -144,8 +144,7 @@ const MarketProperties = p => {
                   p.updateModal({
                     type: MODAL_MIGRATE_MARKET,
                     marketId: p.id,
-                    marketDescription: p.description,
-                    canClose: true
+                    marketDescription: p.description
                   })
                 }
               >

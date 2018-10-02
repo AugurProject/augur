@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-// TODO -- generalize modals where possible
-
-// import ModalLedger from "modules/modal/components/modal-ledger/modal-ledger";
 import ModalSignTransaction from "modules/modal/containers/modal-sign-transaction";
 import ModalUport from "modules/modal/components/modal-uport/modal-uport";
 import ModalConfirm from "modules/modal/components/modal-confirm/modal-confirm";
+import ModalReview from "modules/modal/components/modal-review/modal-review";
 import ModalNetworkDisabled from "modules/modal/containers/modal-network-disabled";
 import ModalNetworkMismatch from "modules/modal/containers/modal-mismatch";
 import ModalNetworkDisconnected from "modules/modal/containers/modal-network-disconnected";
@@ -17,8 +15,6 @@ import ModalParticipate from "modules/modal/containers/modal-participate";
 import ModalMigrateMarket from "modules/modal/containers/modal-migrate-market";
 import ModalNetworkConnect from "modules/modal/containers/modal-network-connect";
 import ModalDisclaimer from "modules/modal/containers/modal-disclaimer";
-
-import { Close } from "modules/common/components/icons";
 
 import debounce from "utils/debounce";
 import getValue from "utils/get-value";
@@ -64,8 +60,6 @@ export default class ModalView extends Component {
     const { closeModal, modal } = this.props;
     const s = this.state;
     console.log("render view", modal, this.props);
-    // in place to keep big Cancel button func for ledger/uport
-    const showBigCancel = modal.canClose && modal.type === TYPES.MODAL_UPORT;
 
     return (
       <section
@@ -75,13 +69,8 @@ export default class ModalView extends Component {
         className={Styles.ModalView}
       >
         <div className={Styles.ModalView__content}>
-          {modal.canClose &&
-            !showBigCancel && (
-              <button className={Styles.ModalView__close} onClick={closeModal}>
-                {Close}
-              </button>
-            )}
           {modal.type === TYPES.MODAL_CONFIRM && <ModalConfirm {...modal} />}
+          {modal.type === TYPES.MODAL_REVIEW && <ModalReview {...modal} />}
           {modal.type === (TYPES.MODAL_LEDGER || TYPES.MODAL_TREZOR) && (
             <ModalSignTransaction {...modal} />
           )}
@@ -122,11 +111,6 @@ export default class ModalView extends Component {
           )}
           {modal.type === TYPES.MODAL_DISCLAIMER && (
             <ModalDisclaimer {...modal} />
-          )}
-          {showBigCancel && (
-            <button className={Styles.ModalView__button} onClick={closeModal}>
-              Close
-            </button>
           )}
         </div>
       </section>
