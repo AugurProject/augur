@@ -69,6 +69,7 @@ export default class MarketPositionsListPosition extends Component {
           !isMobile && <li>{getValue(outcome, "lastPrice.formatted")}</li>}
         {!isMobile && (
           <li style={{ position: "relative" }}>
+            {getValue(outcome, "lastPrice.formatted")}
             <MarketOutcomeTradingIndicator
               outcome={outcome}
               style={{
@@ -78,9 +79,9 @@ export default class MarketPositionsListPosition extends Component {
                 width: "0.325rem"
               }}
             />
-            {getValue(position, "unrealizedNet.formatted")}
           </li>
         )}
+        {!isMobile && <li>{getValue(position, "unrealizedNet.formatted")} </li>}
         {!isMobile && <li>{getValue(position, "realizedNet.formatted")} </li>}
         {isExtendedDisplay && (
           <li>{getValue(position, "totalNet.formatted")}</li>
