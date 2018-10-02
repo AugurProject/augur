@@ -264,7 +264,6 @@ export default class MarketPortfolioCard extends Component {
                       isExtendedDisplay
                       isMobile={isMobile}
                       outcome={outcome}
-                      showAction={false}
                     />
                   ))}
             </div>

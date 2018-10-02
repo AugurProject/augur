@@ -7,10 +7,7 @@ import { sortOpenOrders } from "modules/orders/selectors/open-orders";
 import { sellCompleteSets } from "modules/positions/actions/sell-complete-sets";
 import { selectOrphanOrders } from "src/select-state";
 import { cancelOrphanedOrder } from "modules/orders/actions/orphaned-orders";
-import { CATEGORICAL } from "modules/markets/constants/market-types";
 import { find } from "lodash";
-import { constants } from "services/augurjs";
-import claimTradingProceeds from "modules/positions/actions/claim-trading-proceeds";
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId);
@@ -55,19 +52,14 @@ const mapStateToProps = (state, ownProps) => {
     outcomes: market.outcomes || [],
     positions,
     openOrders,
-    orphanedOrders: filteredOrphanOrders,
-    showAction:
-      market.reportingState === constants.REPORTING_STATE.FINALIZED &&
-      !!market.outstandingReturns,
-    winningOutcome: market.consensus && market.consensus.winningOutcome
+    orphanedOrders: filteredOrphanOrders
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   sellCompleteSets: (marketId, numCompleteSets) =>
     dispatch(sellCompleteSets(marketId, numCompleteSets)),
-  cancelOrphanedOrder: order => dispatch(cancelOrphanedOrder(order)),
-  claimTradingProceeds: marketId => dispatch(claimTradingProceeds([marketId]))
+  cancelOrphanedOrder: order => dispatch(cancelOrphanedOrder(order))
 });
 
 const MarketOutcomesAndPositionsContainer = withRouter(

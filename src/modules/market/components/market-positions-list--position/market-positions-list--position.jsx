@@ -16,11 +16,7 @@ export default class MarketPositionsListPosition extends Component {
     isExtendedDisplay: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
     outcome: PropTypes.object,
-    showAction: PropTypes.bool,
-    claimTradingProceeds: PropTypes.func,
-    marketId: PropTypes.string,
-    hasOrders: PropTypes.bool,
-    winningOutcome: PropTypes.string
+    hasOrders: PropTypes.bool
   };
 
   static calcAvgDiff(position, order) {
@@ -38,10 +34,6 @@ export default class MarketPositionsListPosition extends Component {
     return avgDiff < 0 ? avgDiff : `+${avgDiff}`;
   }
 
-  claimProceeds = () => {
-    this.props.claimTradingProceeds(this.props.marketId);
-  };
-
   render() {
     const {
       isExtendedDisplay,
@@ -49,9 +41,7 @@ export default class MarketPositionsListPosition extends Component {
       outcomeName,
       position,
       outcome,
-      showAction,
-      hasOrders,
-      winningOutcome
+      hasOrders
     } = this.props;
 
     const netPositionShares = getValue(position, "netPosition.formatted");
@@ -94,20 +84,7 @@ export default class MarketPositionsListPosition extends Component {
         {isExtendedDisplay && (
           <li>{getValue(position, "totalNet.formatted")}</li>
         )}
-        {showAction &&
-          winningOutcome === position.outcomeId.toString() && (
-            <li>
-              <button
-                className={Styles.Position__closeButton}
-                onClick={this.claimProceeds}
-              >
-                Claim Proceeds
-              </button>
-            </li>
-          )}
-        {(!showAction && hasOrders) ||
-          (showAction &&
-            winningOutcome !== position.outcomeId.toString() && <li />)}
+        {hasOrders && <li />}
       </ul>
     );
   }

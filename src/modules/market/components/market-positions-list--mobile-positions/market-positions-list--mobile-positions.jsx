@@ -12,10 +12,7 @@ export default class MobilePositions extends Component {
   static propTypes = {
     position: PropTypes.object.isRequired,
     pendingOrders: PropTypes.array.isRequired,
-    marketId: PropTypes.string.isRequired,
-    showAction: PropTypes.bool,
-    claimTradingProceeds: PropTypes.func,
-    winningOutcome: PropTypes.string
+    marketId: PropTypes.string.isRequired
   };
 
   static calcAvgDiff(position, orders) {
@@ -56,14 +53,7 @@ export default class MobilePositions extends Component {
   }
 
   render() {
-    const {
-      pendingOrders,
-      position,
-      showAction,
-      claimTradingProceeds,
-      marketId,
-      winningOutcome
-    } = this.props;
+    const { pendingOrders, position } = this.props;
     const s = this.state;
 
     const orderText = pendingOrders.length > 1 ? "Orders" : "Order";
@@ -79,15 +69,6 @@ export default class MobilePositions extends Component {
               </span>
             )}
           </h2>
-          {showAction &&
-            winningOutcome === position.outcomeId.toString() && (
-              <button
-                className={Styles.MobilePositions__close}
-                onClick={() => claimTradingProceeds(marketId)}
-              >
-                claim proceeds
-              </button>
-            )}
         </div>
         <div className={Styles.MobilePositions__positions}>
           <ul className={Styles.MobilePositions__position}>

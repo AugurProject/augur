@@ -22,10 +22,7 @@ export default class MarketPositionsList extends Component {
     sellCompleteSets: PropTypes.func.isRequired,
     marketId: PropTypes.string.isRequired,
     orphanedOrders: PropTypes.array.isRequired,
-    cancelOrphanedOrder: PropTypes.func.isRequired,
-    showAction: PropTypes.bool,
-    claimTradingProceeds: PropTypes.func,
-    winningOutcome: PropTypes.string
+    cancelOrphanedOrder: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -44,10 +41,7 @@ export default class MarketPositionsList extends Component {
       sellCompleteSets,
       marketId,
       orphanedOrders,
-      cancelOrphanedOrder,
-      showAction,
-      claimTradingProceeds,
-      winningOutcome
+      cancelOrphanedOrder
     } = this.props;
     const s = this.state;
 
@@ -101,12 +95,7 @@ export default class MarketPositionsList extends Component {
                     P/L
                   </span>
                 </li>
-                {showAction && (
-                  <li>
-                    <span>Action</span>
-                  </li>
-                )}
-                {!showAction && hasOrders && <li />}
+                {hasOrders && <li />}
               </ul>
             )}
             {positions.length > 0 && (
@@ -124,10 +113,7 @@ export default class MarketPositionsList extends Component {
                       isExtendedDisplay={false}
                       isMobile={false}
                       marketId={marketId}
-                      showAction={showAction}
-                      claimTradingProceeds={claimTradingProceeds}
                       hasOrders={hasOrders}
-                      winningOutcome={winningOutcome}
                     />
                   ))}
               </div>

@@ -24,9 +24,6 @@ const MarketOutcomesAndPositions = p => (
         sellCompleteSets={p.sellCompleteSets}
         orphanedOrders={p.orphanedOrders}
         cancelOrphanedOrder={p.cancelOrphanedOrder}
-        showAction={p.showAction}
-        claimTradingProceeds={p.claimTradingProceeds}
-        winningOutcome={p.winningOutcome}
       />
     )}
     {p.isMobile &&
@@ -44,9 +41,6 @@ const MarketOutcomesAndPositions = p => (
           openOrders={p.openOrders.filter(
             order => order.outcomeId === p.selectedOutcome
           )}
-          showAction={p.showAction}
-          claimTradingProceeds={p.claimTradingProceeds}
-          marketId={p.marketId}
         />
       )}
   </section>

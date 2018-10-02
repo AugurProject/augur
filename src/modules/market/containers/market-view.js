@@ -3,9 +3,7 @@ import { withRouter } from "react-router-dom";
 import MarketView from "modules/market/components/market-view/market-view";
 import { loadFullMarket } from "modules/markets/actions/load-full-market";
 import { selectMarket } from "modules/markets/selectors/market";
-import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import parseQuery from "modules/routes/helpers/parse-query";
-import { constants } from "services/augurjs";
 import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
 
 const mapStateToProps = (state, ownProps) => {
@@ -30,14 +28,12 @@ const mapStateToProps = (state, ownProps) => {
     orderBooks,
     isMobile: appStatus.isMobile,
     marketId,
-    marketsData,
-    isFinalized: market.reportingState === constants.REPORTING_STATE.FINALIZED
+    marketsData
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
-  getWinningBalances: marketIds => dispatch(getWinningBalance(marketIds))
+  loadFullMarket: marketId => dispatch(loadFullMarket(marketId))
 });
 
 const Market = withRouter(
