@@ -74,6 +74,7 @@ export default class MarketPositionsList extends Component {
             {positions.length > 0 && (
               <ul className={Styles["MarketPositionsList__table-header"]}>
                 <li>Position</li>
+                {hasOrders && <li />}
                 <li>
                   <span>Net Position</span>
                 </li>
@@ -95,7 +96,6 @@ export default class MarketPositionsList extends Component {
                     P/L
                   </span>
                 </li>
-                {hasOrders && <li />}
               </ul>
             )}
             {positions.length > 0 && (

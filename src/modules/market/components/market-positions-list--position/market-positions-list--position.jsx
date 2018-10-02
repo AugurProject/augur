@@ -61,6 +61,7 @@ export default class MarketPositionsListPosition extends Component {
         }
       >
         <li>{outcomeName || getValue(position, "purchasePrice.formatted")}</li>
+        {hasOrders && <li />}
         <li>{netPositionShares}</li>
         <li>{positionShares}</li>
         <li>{getValue(position, "purchasePrice.formatted")}</li>
@@ -84,7 +85,6 @@ export default class MarketPositionsListPosition extends Component {
         {isExtendedDisplay && (
           <li>{getValue(position, "totalNet.formatted")}</li>
         )}
-        {hasOrders && <li />}
       </ul>
     );
   }
