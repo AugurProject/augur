@@ -18,7 +18,9 @@ describe("modules/notifications/actions/notifications", () => {
         data: {
           notification: {
             level: notificationLevels.INFO,
-            seen: false
+            networkId: null,
+            seen: false,
+            universe: undefined
           }
         }
       };
