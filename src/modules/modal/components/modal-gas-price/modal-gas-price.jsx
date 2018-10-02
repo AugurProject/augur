@@ -39,7 +39,6 @@ export default class ModalGasPrice extends Component {
   }
 
   checkShowAlert(amount) {
-    console.log(amount < this.props.safeLow);
     this.setState({ showLowAlert: amount < this.props.safeLow });
   }
 
