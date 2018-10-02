@@ -7,6 +7,7 @@ import { sortOpenOrders } from "modules/orders/selectors/open-orders";
 import { sellCompleteSets } from "modules/positions/actions/sell-complete-sets";
 import { selectOrphanOrders } from "src/select-state";
 import { cancelOrphanedOrder } from "modules/orders/actions/orphaned-orders";
+import { CATEGORICAL } from "modules/markets/constants/market-types";
 import { find } from "lodash";
 
 const mapStateToProps = (state, ownProps) => {
