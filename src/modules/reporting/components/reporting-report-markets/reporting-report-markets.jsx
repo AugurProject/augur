@@ -72,7 +72,8 @@ ReportSection.propTypes = {
   lower: PropTypes.number.isRequired,
   boundedLength: PropTypes.number.isRequired,
   items: PropTypes.arrayOf(PropTypes.object),
-  addNullPadding: PropTypes.bool
+  addNullPadding: PropTypes.bool,
+  universe: PropTypes.string
 };
 
 class ReportingReporting extends React.Component {
@@ -106,8 +107,15 @@ class ReportingReporting extends React.Component {
   }
 
   componentDidMount() {
-    const { loadReporting } = this.props;
-    loadReporting();
+    const { loadReporting, universe } = this.props;
+    if (universe) loadReporting();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { universe, loadReporting } = this.props;
+    if (nextProps.universe !== universe && nextProps.universe) {
+      loadReporting();
+    }
   }
 
   setDrSegment(lower, upperBound, boundedLength) {
