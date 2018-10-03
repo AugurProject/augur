@@ -54,6 +54,15 @@ jobs:
       skip_cleanup: true
       on:
         all_branches: true
+  - stage: Deploy to kovan
+    if: branch = master
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- kovan
+      skip_cleanup: true
+      on:
+        all_branches: true
 env:
   global:
     - DOCKER_USERNAME=augurintegration
