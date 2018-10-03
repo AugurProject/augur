@@ -320,9 +320,15 @@ export interface UIFeeWindowCurrent<BigNumberType> {
   startTime: number;
   universe: Address;
   totalStake?: BigNumberType;
+  feeWindowEthFees?: BigNumberType;
+  feeWindowRepStaked?: BigNumberType;
+  feeWindowFeeTokens?: BigNumberType;
+  feeWindowParticipationTokens?: BigNumberType;
   participantContributions?: BigNumberType;
+  participantContributionsCrowdsourcer?: BigNumberType;
+  participantContributionsInitialReport?: BigNumberType;
+  participantParticipationTokens?: BigNumberType;
   participationTokens?: BigNumberType;
-
 }
 
 export interface UIMarketCreatorFee {

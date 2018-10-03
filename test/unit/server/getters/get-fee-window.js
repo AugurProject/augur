@@ -57,6 +57,8 @@ describe("server/getters/get-fee-window", () => {
         feeWindow: "0x2000000000000000000000000000000000000000",
         feeToken: "FEE_TOKEN_2",
         feeWindowId: 457,
+        feeWindowFeeTokens: "100",
+        feeWindowParticipationTokens: "1000",
         startTime: 1509065473,
         feeWindowEthFees: "2000",
         feeWindowRepStaked: "1100",
@@ -82,6 +84,8 @@ describe("server/getters/get-fee-window", () => {
         startTime: 1509065473,
         feeWindowEthFees: "2000",
         feeWindowRepStaked: "1100",
+        feeWindowFeeTokens: "100",
+        feeWindowParticipationTokens: "1000",
         universe: "0x000000000000000000000000000000000000000b",
       });
     },
@@ -110,6 +114,8 @@ describe("server/getters/get-fee-window", () => {
         participationTokens: "30",
         feeWindowEthFees: "2000",
         feeWindowRepStaked: "1100",
+        feeWindowFeeTokens: "100",
+        feeWindowParticipationTokens: "1000",
         universe: "0x000000000000000000000000000000000000000b",
       });
     },
@@ -150,6 +156,8 @@ describe("server/getters/get-fee-window", () => {
         feeWindowEthFees: "0",
         feeWindowId: 459,
         feeWindowRepStaked: "0",
+        feeWindowFeeTokens: "0",
+        feeWindowParticipationTokens: "0",
         startTime: 1509065473,
         universe: "CHILD_UNIVERSE",
       });
@@ -198,6 +206,8 @@ describe("server/getters/get-fee-window", () => {
         participationTokens: "0",
         feeWindowEthFees: "2000",
         feeWindowRepStaked: "1100",
+        feeWindowFeeTokens: "100",
+        feeWindowParticipationTokens: "1000",
         universe: "0x000000000000000000000000000000000000000b",
       });
     },
