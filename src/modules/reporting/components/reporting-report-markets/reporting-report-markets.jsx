@@ -72,8 +72,7 @@ ReportSection.propTypes = {
   lower: PropTypes.number.isRequired,
   boundedLength: PropTypes.number.isRequired,
   items: PropTypes.arrayOf(PropTypes.object),
-  addNullPadding: PropTypes.bool,
-  universe: PropTypes.string
+  addNullPadding: PropTypes.bool
 };
 
 class ReportingReporting extends React.Component {
@@ -194,7 +193,8 @@ ReportingReporting.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   markets: PropTypes.object.isRequired,
-  loadReporting: PropTypes.func.isRequired
+  loadReporting: PropTypes.func.isRequired,
+  universe: PropTypes.string
 };
 
 export default ReportingReporting;
