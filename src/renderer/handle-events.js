@@ -4,7 +4,7 @@ import { initializeConfiguration } from './app/actions/configuration'
 import { updateGethBlockInfo, clearGethBlockInfo, updateAugurNodeBlockInfo, clearAugurNodeBlockInfo } from './app/actions/blockInfo'
 import { updateServerAttrib } from './app/actions/serverStatus'
 import { addInfoNotification, addErrorNotification } from './app/actions/notifications'
-import { startAugurNode } from './app/actions/local-server-cmds'
+import { startAugurNode, stopAugurNode, stopGethNode } from './app/actions/local-server-cmds'
 import store from './store'
 
 export const handleEvents = () => {
@@ -46,6 +46,11 @@ export const handleEvents = () => {
       }
       lastSyncBlockNumber = newLastSyncBlockNumber
     }, 10 * 60 * 1000) // 10 minutes
+
+    if (store.getState().serverStatus.DISCONNECT_REQUESTED) {
+      stopAugurNode()
+      store.dispatch(updateServerAttrib({ DISCONNECT_REQUESTED: false }))
+    }
   })
 
   ipcRenderer.on(ON_SERVER_DISCONNECTED, () => {
@@ -57,6 +62,10 @@ export const handleEvents = () => {
 
   ipcRenderer.on(ON_GETH_SERVER_CONNECTED, () => {
     store.dispatch(updateServerAttrib({ GETH_CONNECTED: true, GETH_INITIATED: true, CONNECTING: false, GETH_FINISHED_SYNCING: false }))
+    if (store.getState().serverStatus.DISCONNECT_REQUESTED) {
+      stopGethNode()
+      store.dispatch(updateServerAttrib({ DISCONNECT_REQUESTED: false }))
+    }
   })
 
   ipcRenderer.on(ON_GETH_SERVER_DISCONNECTED, () => {
