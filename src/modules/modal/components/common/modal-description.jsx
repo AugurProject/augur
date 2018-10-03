@@ -1,7 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const ModalDescription = p => <p>{p.text}</p>;
+import Styles from "modules/modal/components/common/common.styles";
+
+const ModalDescription = p => <p className={Styles.Description}>{p.text}</p>;
 
 ModalDescription.propTypes = {
   text: PropTypes.string.isRequired

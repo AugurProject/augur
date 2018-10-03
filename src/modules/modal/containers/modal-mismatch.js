@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import ModalMessage from "modules/modal/components/modal-message/modal-message";
+import ModalMessage from "modules/modal/components/modal-message";
 import isMetaMask from "modules/auth/helpers/is-meta-mask";
 
 const mapStateToProps = state => ({

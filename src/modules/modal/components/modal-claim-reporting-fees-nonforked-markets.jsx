@@ -4,7 +4,8 @@ import PropTypes from "prop-types";
 import { augur } from "services/augurjs";
 import { formatGasCostToEther } from "utils/format-number";
 
-import Styles from "modules/modal/components/modal-claim-reporting-fees-nonforked-markets/modal-claim-reporting-fees-nonforked-markets.styles";
+import Styles from "modules/modal/components/common/common.styles";
+import ModalReview from "modules/modal/components/modal-review";
 
 export default class ModalClaimReportingFeesNonforkedMarkets extends Component {
   static propTypes = {
@@ -16,7 +17,8 @@ export default class ModalClaimReportingFeesNonforkedMarkets extends Component {
     nonforkedMarkets: PropTypes.array.isRequired,
     unclaimedEth: PropTypes.object.isRequired,
     unclaimedRep: PropTypes.object.isRequired,
-    modalCallback: PropTypes.func.isRequired
+    modalCallback: PropTypes.func.isRequired,
+    type: PropTypes.string.isRequired
   };
 
   constructor(props) {
@@ -68,7 +70,6 @@ export default class ModalClaimReportingFeesNonforkedMarkets extends Component {
   }
 
   handleClaimReportingFeesNonforkedMarkets(e) {
-    e.preventDefault();
     const ClaimReportingFeesNonforkedMarketsOptions = {
       feeWindows: this.props.feeWindows,
       forkedMarket: this.props.forkedMarket,
@@ -89,64 +90,67 @@ export default class ModalClaimReportingFeesNonforkedMarkets extends Component {
   }
 
   render() {
-    const { recipient, unclaimedRep, unclaimedEth } = this.props;
+    const {
+      recipient,
+      unclaimedRep,
+      unclaimedEth,
+      closeModal,
+      type
+    } = this.props;
     const s = this.state;
 
     // In theory, this modal should never be shown if there is no unclaimed ETH/REP, but check whether button should be disabled anyway.
-    let disableClaimReportingFeesNonforkedMarketsButton = "";
+    let disableClaimReportingFeesNonforkedMarketsButton = false;
     if (unclaimedRep.formatted === "-" && unclaimedEth.formatted === "-") {
-      disableClaimReportingFeesNonforkedMarketsButton = "disabled";
+      disableClaimReportingFeesNonforkedMarketsButton = true;
     }
+    const reviewDetails = {
+      title: "Review Withdrawal",
+      type,
+      items: [
+        {
+          label: "Recipient",
+          value: recipient,
+          denomination: ""
+        },
+        {
+          label: "REP",
+          value: unclaimedRep.formatted,
+          denomination: "REP"
+        },
+        {
+          label: "ETH",
+          value: unclaimedEth.formatted,
+          denomination: "ETH"
+        },
+        {
+          label: "GAS",
+          value: s.ClaimReportingFeesNonforkedMarketsGasEstimate,
+          denomination: "ETH"
+        }
+      ],
+      description: [
+        "Transferring all funds may require multiple signed transactions."
+      ],
+      buttons: [
+        {
+          label: "cancel",
+          action: closeModal,
+          type: "gray"
+        },
+        {
+          label: "submit",
+          action: this.handleClaimReportingFeesNonforkedMarkets,
+          type: "purple",
+          isDisabled: disableClaimReportingFeesNonforkedMarketsButton
+        }
+      ]
+    };
 
     return (
-      <form
-        className={Styles.ModalClaimReportingFeesNonforkedMarkets__form}
-        onSubmit={this.handleClaimReportingFeesNonforkedMarkets}
-      >
-        <div
-          className={Styles.ModalClaimReportingFeesNonforkedMarkets__heading}
-        >
-          <h1>Review Withdrawal</h1>
-        </div>
-        <div
-          className={Styles.ModalClaimReportingFeesNonforkedMarkets__details}
-        >
-          <ul className={Styles.ModalClaimReportingFeesNonforkedMarkets__info}>
-            <li>
-              <span>Recipient</span>
-              <span>{recipient}</span>
-            </li>
-            <li>
-              <span>Rep</span>
-              <span>{unclaimedRep.formattedValue}</span>
-            </li>
-            <li>
-              <span>Eth</span>
-              <span>{unclaimedEth.formattedValue}</span>
-            </li>
-            <li>
-              <span>Gas</span>
-              <span>{s.ClaimReportingFeesNonforkedMarketsGasEstimate}</span>
-            </li>
-          </ul>
-        </div>
-        <div
-          className={Styles.ModalClaimReportingFeesNonforkedMarkets__message}
-        >
-          Transferring all funds may require multiple signed transactions.
-        </div>
-        <div
-          className={Styles.ModalClaimReportingFeesNonforkedMarkets__actions}
-        >
-          <button
-            className={Styles.ModalClaimReportingFeesNonforkedMarkets__button}
-            disabled={disableClaimReportingFeesNonforkedMarketsButton}
-            type="submit"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
+      <section className={Styles.ModalContainer}>
+        <ModalReview {...reviewDetails} />
+      </section>
     );
   }
 }

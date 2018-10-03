@@ -31,7 +31,6 @@ export default class ModalNetworkDisconnected extends Component {
 
   showForm(e) {
     const { updateIsReconnectionPaused } = this.props;
-    e.preventDefault();
     this.setState({ showEnvForm: !this.state.showEnvForm });
     // if the form is going to be shown, we pass true to pause reconnection
     updateIsReconnectionPaused(!this.state.showEnvForm);
@@ -39,7 +38,6 @@ export default class ModalNetworkDisconnected extends Component {
 
   submitForm(e, env) {
     const { updateIsReconnectionPaused } = this.props;
-    e.preventDefault();
     // unpause reconnection
     updateIsReconnectionPaused(false);
     this.setState({ showEnvForm: false });

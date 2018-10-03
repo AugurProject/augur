@@ -11,7 +11,7 @@ import { shallow } from "enzyme";
 
 import BigNumber from "bignumber.js";
 
-import ModalClaimReportingFeesForkedMarket from "src/modules/modal/components/modal-claim-reporting-fees-forked-market/modal-claim-reporting-fees-forked-market";
+import ModalClaimReportingFeesForkedMarket from "src/modules/modal/components/modal-claim-reporting-fees-forked-market";
 import { formatAttoRep, formatEther } from "utils/format-number";
 
 describe("modal-claim-reporting-fees-forked-market", () => {

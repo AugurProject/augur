@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import Styles from "modules/modal/components/modal-disclaimer/modal-disclaimer.styles";
+import Styles from "modules/modal/components/common/common.styles";
 
 import ModalActions from "modules/modal/components/common/modal-actions";
 
@@ -139,7 +139,7 @@ export default class ModalDisclaimer extends Component {
         </div>
         <div className={Styles.ModalDisclaimer__checkbox}>
           <label htmlFor="i_have_read_disclaimer">
-            I have Read and Understand the above
+            I have read and understand the above
             <input
               id="i_have_read_disclaimer"
               type="checkbox"

@@ -4,7 +4,8 @@ import PropTypes from "prop-types";
 import { augur } from "services/augurjs";
 import { formatGasCostToEther } from "utils/format-number";
 
-import Styles from "modules/modal/components/modal-claim-reporting-fees-forked-market/modal-claim-reporting-fees-forked-market.styles";
+import Styles from "modules/modal/components/common/common.styles";
+import ModalReview from "modules/modal/components/modal-review";
 
 export default class ModalClaimReportingFeesForkedMarket extends Component {
   static propTypes = {
@@ -14,7 +15,8 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
     forkedMarket: PropTypes.object.isRequired,
     unclaimedEth: PropTypes.object.isRequired,
     unclaimedRep: PropTypes.object.isRequired,
-    modalCallback: PropTypes.func.isRequired
+    modalCallback: PropTypes.func.isRequired,
+    type: PropTypes.string.isRequired
   };
 
   constructor(props) {
@@ -64,7 +66,6 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
   }
 
   handleClaimReportingFeesForkedMarket(e) {
-    e.preventDefault();
     const ClaimReportingFeesForkedMarketOptions = {
       forkedMarket: this.props.forkedMarket,
       estimateGas: false,
@@ -83,56 +84,68 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
   }
 
   render() {
-    const { recipient, unclaimedRep, unclaimedEth } = this.props;
+    const {
+      recipient,
+      unclaimedRep,
+      unclaimedEth,
+      closeModal,
+      type
+    } = this.props;
     const s = this.state;
 
     // In theory, this modal should never be shown if there is no unclaimed ETH/REP, but check whether button should be disabled anyway.
-    let disableClaimReportingFeesForkedMarketButton = "";
+    let disableClaimReportingFeesForkedMarketButton = false;
     if (unclaimedRep.formatted === "-" && unclaimedEth.formatted === "-") {
-      disableClaimReportingFeesForkedMarketButton = "disabled";
+      disableClaimReportingFeesForkedMarketButton = true;
     }
 
+    const reviewDetails = {
+      title: "Review Withdrawal",
+      type,
+      items: [
+        {
+          label: "Recipient",
+          value: recipient,
+          denomination: ""
+        },
+        {
+          label: "REP",
+          value: unclaimedRep.formatted,
+          denomination: "REP"
+        },
+        {
+          label: "ETH",
+          value: unclaimedEth.formatted,
+          denomination: "ETH"
+        },
+        {
+          label: "GAS",
+          value: s.ClaimReportingFeesForkedMarketGasEstimate,
+          denomination: "ETH"
+        }
+      ],
+      description: [
+        "Transferring all funds may require multiple signed transactions."
+      ],
+      buttons: [
+        {
+          label: "cancel",
+          action: closeModal,
+          type: "gray"
+        },
+        {
+          label: "submit",
+          action: this.handleClaimReportingFeesForkedMarket,
+          type: "purple",
+          isDisabled: disableClaimReportingFeesForkedMarketButton
+        }
+      ]
+    };
+
     return (
-      <form
-        className={Styles.ModalClaimReportingFeesForkedMarket__form}
-        onSubmit={this.handleClaimReportingFeesForkedMarket}
-      >
-        <div className={Styles.ModalClaimReportingFeesForkedMarket__heading}>
-          <h1>Review Withdrawal</h1>
-        </div>
-        <div className={Styles.ModalClaimReportingFeesForkedMarket__details}>
-          <ul className={Styles.ModalClaimReportingFeesForkedMarket__info}>
-            <li>
-              <span>Recipient</span>
-              <span>{recipient}</span>
-            </li>
-            <li>
-              <span>Rep</span>
-              <span>{unclaimedRep.formatted}</span>
-            </li>
-            <li>
-              <span>Eth</span>
-              <span>{unclaimedEth.formatted}</span>
-            </li>
-            <li>
-              <span>Gas</span>
-              <span>{s.ClaimReportingFeesForkedMarketGasEstimate}</span>
-            </li>
-          </ul>
-        </div>
-        <div className={Styles.ModalClaimReportingFeesForkedMarket__message}>
-          Transferring all funds may require multiple signed transactions.
-        </div>
-        <div className={Styles.ModalClaimReportingFeesForkedMarket__actions}>
-          <button
-            className={Styles.ModalClaimReportingFeesForkedMarket__button}
-            disabled={disableClaimReportingFeesForkedMarketButton}
-            type="submit"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
+      <section className={Styles.ModalContainer}>
+        <ModalReview {...reviewDetails} />
+      </section>
     );
   }
 }

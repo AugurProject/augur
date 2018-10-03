@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import ModalConfirm from "modules/modal/components/modal-confirm/modal-confirm";
+import ModalConfirm from "modules/modal/components/modal-confirm";
 
 import { closeModal } from "modules/modal/actions/close-modal";
 import { approveAccount } from "modules/auth/actions/approve-account";

@@ -12,7 +12,7 @@ import { shallow } from "enzyme";
 
 import BigNumber from "bignumber.js";
 
-import ModalClaimReportingFeesNonforkedMarkets from "src/modules/modal/components/modal-claim-reporting-fees-nonforked-markets/modal-claim-reporting-fees-nonforked-markets";
+import ModalClaimReportingFeesNonforkedMarkets from "src/modules/modal/components/modal-claim-reporting-fees-nonforked-markets";
 import { formatAttoRep, formatEther } from "utils/format-number";
 
 describe("modal-claim-reporting-fees-nonforked-markets", () => {

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { formatEther } from "utils/format-number";
 import Styles from "modules/modal/components/common/common.styles";
-import ModalReview from "modules/modal/components/modal-review/modal-review";
+import ModalReview from "modules/modal/components/modal-review";
 
 export default class ModalMigrateMarket extends Component {
   static propTypes = {

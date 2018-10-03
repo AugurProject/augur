@@ -4,13 +4,11 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
-import FormStyles from "modules/common/less/form";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
-import Styles from "modules/modal/components/modal-participate/modal-participate.styles";
 import Input from "modules/common/components/input/input";
 import ModalActions from "modules/modal/components/common/modal-actions";
-import ModalReview from "modules/modal/components/modal-review/modal-review";
-import commonStyles from "modules/modal/components/common/common.styles";
+import ModalReview from "modules/modal/components/modal-review";
+import Styles from "modules/modal/components/common/common.styles";
 import { formatRep, formatEther } from "utils/format-number";
 
 export default class ModalParticipate extends Component {
@@ -41,7 +39,6 @@ export default class ModalParticipate extends Component {
 
   triggerReview(e, ...args) {
     const { purchaseParticipationTokens } = this.props;
-    // e.preventDefault();
     if (this.state.isValid) {
       purchaseParticipationTokens(
         this.state.quantity,
@@ -56,7 +53,6 @@ export default class ModalParticipate extends Component {
 
   submitForm(e, ...args) {
     const { purchaseParticipationTokens } = this.props;
-    // e.preventDefault();
     purchaseParticipationTokens(this.state.quantity, false, (err, res) => {
       console.log("onSuccess for purchaseParticipationTokens", err, res);
     });
@@ -155,9 +151,9 @@ export default class ModalParticipate extends Component {
     ];
 
     return (
-      <section className={commonStyles.ModalContainer}>
+      <section className={Styles.ModalContainer}>
         {s.page === 1 && (
-          <form>
+          <form className={Styles.ModalTightForm}>
             <h1>Buy Participation Tokens</h1>
             <label htmlFor="modal__participate-quantity">
               Quantity (1 token @ 1 REP)
@@ -165,10 +161,8 @@ export default class ModalParticipate extends Component {
             <Input
               id="modal__participate-quantity"
               type="number"
-              className={classNames(FormStyles.Form__input, {
-                [`${
-                  Styles["ModalParticipate__error--field"]
-                }`]: invalidWithErrors
+              className={classNames({
+                [`${Styles.ErrorField}`]: invalidWithErrors
               })}
               value={s.quantity}
               placeholder="0.0"
@@ -180,9 +174,9 @@ export default class ModalParticipate extends Component {
             />
             {!!s.errors.length &&
               s.errors.map((error, index) => (
-                <span key={error} className={commonStyles.Error}>
+                <p key={error} className={Styles.Error}>
                   {InputErrorIcon} {error}
-                </span>
+                </p>
               ))}
             <ModalActions
               buttons={[

@@ -19,6 +19,10 @@
     flex: 1;
   }
 
+  input::placeholder {
+    color: @color-input-border-no-focus;
+  }
+
   input:focus {
     .border(true, @border-all, @color-transparent, @border-width-1);
   }
@@ -92,6 +96,10 @@
 
     display: flex;
     flex: 1 1 auto;
+  }
+
+  input::placeholder {
+    color: @color-input-border-no-focus;
   }
 
   input:focus {

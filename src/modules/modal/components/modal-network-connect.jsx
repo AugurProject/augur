@@ -5,8 +5,8 @@ import classNames from "classnames";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import Input from "modules/common/components/input/input";
 
-import Styles from "modules/modal/components/modal-network-connect/modal-network-connect.styles";
-import commonStyles from "modules/modal/components/common/common.styles";
+import Styles from "modules/modal/components/common/common.styles";
+import ModalActions from "modules/modal/components/common/modal-actions";
 import { windowRef } from "src/utils/window-ref";
 import { editEndpointParams } from "src/utils/edit-endpoint-params";
 import { MODAL_NETWORK_CONNECT } from "modules/modal/constants/modal-types";
@@ -133,11 +133,9 @@ export default class ModalNetworkConnect extends Component {
 
     return (
       <form
-        className={classNames(commonStyles.ModalForm, {
-          [`${commonStyles.ModalContainer}`]:
-            modal.type === MODAL_NETWORK_CONNECT
+        className={classNames(Styles.ModalForm, {
+          [`${Styles.ModalContainer}`]: modal.type === MODAL_NETWORK_CONNECT
         })}
-        onSubmit={this.submitForm}
       >
         <h1>Connect to Augur</h1>
         <label htmlFor="modal__augurNode-input">Augur Node Address:</label>
@@ -145,22 +143,19 @@ export default class ModalNetworkConnect extends Component {
           id="modal__augurNode-input"
           type="text"
           className={classNames({
-            [`${Styles["ModalNetworkConnect__error--field"]}`]: AugurNodeInValid
+            [`${Styles.ErrorField}`]: AugurNodeInValid
           })}
           value={s.augurNode}
           placeholder="Enter the augurNode address you would like to connect to."
           onChange={value => this.validateField("augurNode", value)}
           required
         />
-        {AugurNodeInValid && (
-          <div className={Styles.ModalNetworkConnect__formErrors}>
-            {s.formErrors.augurNode.map(error => (
-              <p key={error} className={Styles.ModalNetworkConnect__error}>
-                {InputErrorIcon} {error}
-              </p>
-            ))}
-          </div>
-        )}
+        {AugurNodeInValid &&
+          s.formErrors.augurNode.map(error => (
+            <p key={error} className={Styles.Error}>
+              {InputErrorIcon} {error}
+            </p>
+          ))}
         <label htmlFor="modal__ethNode-input">Ethereum Node address:</label>
         {isConnectedThroughWeb3 && (
           <div>
@@ -173,9 +168,7 @@ export default class ModalNetworkConnect extends Component {
             id="modal__ethNode-input"
             type="text"
             className={classNames({
-              [`${
-                Styles["ModalNetworkConnect__error--field"]
-              }`]: ethereumNodeInValid
+              [`${Styles.ErrorField}`]: ethereumNodeInValid
             })}
             value={s.ethereumNode}
             placeholder="Enter the Ethereum Node address you would like to connect to."
@@ -183,36 +176,29 @@ export default class ModalNetworkConnect extends Component {
             required
           />
         )}
-        {!isConnectedThroughWeb3 && (
-          <div className={Styles.ModalNetworkConnect__formErrors}>
-            {ethereumNodeInValid &&
-              s.formErrors.ethereumNode.map(error => (
-                <p key={error} className={Styles.ModalNetworkConnect__error}>
-                  {InputErrorIcon} {error}
-                </p>
-              ))}
-          </div>
-        )}
-        {hasConnectionErrors && (
-          <div className={Styles.ModalNetworkConnect__ConnectErrors}>
-            {s.connectErrors.map(error => (
-              <span key={error}>
-                {InputErrorIcon} {error}
-              </span>
-            ))}
-          </div>
-        )}
-        <div className={commonStyles.ActionButtons}>
-          <button
-            className={classNames(commonStyles.ActionButtons__button, {
-              [`${commonStyles["ActionButtons__button-purple"]}`]: true
-            })}
-            type="submit"
-            disabled={formInvalid}
-          >
-            Connect
-          </button>
-        </div>
+        {!isConnectedThroughWeb3 &&
+          ethereumNodeInValid &&
+          s.formErrors.ethereumNode.map(error => (
+            <p key={error} className={Styles.Error}>
+              {InputErrorIcon} {error}
+            </p>
+          ))}
+        {hasConnectionErrors &&
+          s.connectErrors.map(error => (
+            <p key={error} className={Styles.Error}>
+              {InputErrorIcon} {error}
+            </p>
+          ))}
+        <ModalActions
+          buttons={[
+            {
+              label: "Connect",
+              isDisabled: formInvalid,
+              type: "purple",
+              action: this.submitForm
+            }
+          ]}
+        />
       </form>
     );
   }

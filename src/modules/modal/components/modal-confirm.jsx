@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import noop from "utils/noop";
 
 import ModalDescription from "modules/modal/components/common/modal-description";
 import ModalActions from "modules/modal/components/common/modal-actions";
@@ -17,7 +16,7 @@ const ModalConfirm = p => (
       buttons={[
         {
           label: p.cancelButtonText,
-          action: p.cancelAction,
+          action: p.cancelAction || p.closeModal,
           type: "gray"
         },
         {
@@ -31,6 +30,7 @@ const ModalConfirm = p => (
 );
 
 ModalConfirm.propTypes = {
+  closeModal: PropTypes.func.isRequired,
   description: PropTypes.arrayOf(PropTypes.string).isRequired,
   title: PropTypes.string.isRequired,
   submitAction: PropTypes.func.isRequired,
@@ -44,7 +44,7 @@ ModalConfirm.defaultProps = {
   continueDefault: false,
   cancelButtonText: "cancel",
   submitButtonText: "submit",
-  cancelAction: noop
+  cancelAction: undefined
 };
 
 export default ModalConfirm;

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import ModalSignTransaction from "modules/modal/components/modal-sign-transaction/modal-sign-transaction";
+import ModalSignTransaction from "modules/modal/components/modal-sign-transaction";
 import { closeModal } from "modules/modal/actions/close-modal";
 import {
   MODAL_LEDGER,
