@@ -27,7 +27,8 @@ export const loadAccountDataFromLocalStorage = address => (
           let notification = null;
           try {
             if (
-              (n.networkId === networkId && n.universe === universe) ||
+              (n.networkId === networkId.toString() &&
+                n.universe === universe.id) ||
               typeof n.networkId === "undefined" ||
               typeof n.universe === "undefined"
             ) {
