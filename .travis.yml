@@ -36,7 +36,7 @@ script:
 jobs:
   include:
   - stage: Deploy to stable
-    if: branch = stable
+    if: TRAVIS_PULL_REQUEST == false && branch = stable
     node_js: '8'
     script: skip
     deploy:
@@ -46,11 +46,20 @@ jobs:
       on:
         all_branches: true
   - stage: Deploy to dev
-    if: branch = master
+    if: TRAVIS_PULL_REQUEST == false && branch = master
     script: skip
     deploy:
       provider: script
       script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- dev
+      skip_cleanup: true
+      on:
+        all_branches: true
+  - stage: Deploy to kovan
+    if: TRAVIS_PULL_REQUEST == false && branch = master
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- kovan
       skip_cleanup: true
       on:
         all_branches: true

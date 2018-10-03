@@ -23,7 +23,7 @@ export default class ReportingDisputeMarkets extends Component {
     outcomes: PropTypes.object.isRequired,
     isForking: PropTypes.bool.isRequired,
     forkingMarketId: PropTypes.string,
-    pageinationCount: PropTypes.number.isRequired,
+    paginationCount: PropTypes.number.isRequired,
     disputableMarketsLength: PropTypes.number,
     forkEndTime: PropTypes.string,
     showPagination: PropTypes.bool,
@@ -51,7 +51,7 @@ export default class ReportingDisputeMarkets extends Component {
       outcomes,
       upcomingMarketsCount,
       forkingMarketId,
-      pageinationCount,
+      paginationCount,
       disputableMarketsLength,
       showPagination,
       showUpcomingPagination
@@ -89,7 +89,7 @@ export default class ReportingDisputeMarkets extends Component {
           outcomes={outcomes}
           isForking={isForking}
           forkingMarketId={forkingMarketId}
-          pageinationCount={pageinationCount}
+          paginationCount={paginationCount}
           disputableMarketsLength={disputableMarketsLength}
           showPagination={showPagination}
           showUpcomingPagination={showUpcomingPagination}

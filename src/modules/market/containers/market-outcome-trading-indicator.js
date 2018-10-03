@@ -10,10 +10,13 @@ const mapStateToProps = (state, ownProps) => {
       marketTradingHistory,
       ownProps.outcome
     ),
+    location: ownProps.location,
     isMobile
   };
 };
 
-const MarketBasicsContainer = connect(mapStateToProps)(OutcomeTradingIndicator);
+const MarketOutcomeTradingIndicator = connect(mapStateToProps)(
+  OutcomeTradingIndicator
+);
 
-export default MarketBasicsContainer;
+export default MarketOutcomeTradingIndicator;
