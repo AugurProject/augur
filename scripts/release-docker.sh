@@ -28,6 +28,11 @@ case ${augur_env} in
         cluster="stable-augur-net"
         augur_service="stable-augur-ui"
         ;;
+    kovan)
+        network="kovan"
+        cluster="kovan-augur-net"
+        augur_service="kovan-augur-ui"
+        ;;
     *)
         network=${augur_env}
         ;;
