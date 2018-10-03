@@ -36,7 +36,7 @@ script:
 jobs:
   include:
   - stage: Deploy to stable
-    if: (branch = master) AND (NOT (type IN (pull_request)))
+    if: (branch = stable) AND (NOT (type IN (pull_request)))
     node_js: '8'
     script: skip
     deploy:
