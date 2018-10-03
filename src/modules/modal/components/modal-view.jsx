@@ -14,6 +14,7 @@ import ModalParticipate from "modules/modal/containers/modal-participate";
 import ModalMigrateMarket from "modules/modal/containers/modal-migrate-market";
 import ModalNetworkConnect from "modules/modal/containers/modal-network-connect";
 import ModalDisclaimer from "modules/modal/containers/modal-disclaimer";
+import ModalGasPrice from "modules/modal/containers/modal-gas-price";
 
 import * as TYPES from "modules/modal/constants/modal-types";
 
@@ -25,6 +26,9 @@ const ModalView = p => {
   return (
     <section className={Styles.ModalView}>
       <div className={Styles.ModalView__content}>
+        {modal.type === TYPES.MODAL_GAS_PRICE && (
+          <ModalGasPrice {...p} />
+        )}
         {modal.type === TYPES.MODAL_CONFIRM && (
           <ModalConfirm {...modal} closeModal={closeModal} />
         )}

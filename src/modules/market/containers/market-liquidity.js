@@ -9,7 +9,7 @@ import {
 import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { MODAL_CONFIRM } from "modules/modal/constants/modal-types";
-
+import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import MarketLiquidity from "modules/market/components/market-liquidity/market-liquidity";
 
 const mapStateToProps = (state, ownProps) => ({
@@ -17,7 +17,8 @@ const mapStateToProps = (state, ownProps) => ({
   isMobile: state.appStatus.isMobile,
   isMobileSmall: state.appStatus.isMobileSmall,
   availableEth: getValue(state, "loginAccount.eth") || "0",
-  loginAccount: state.loginAccount
+  loginAccount: state.loginAccount,
+  gasPrice: getGasPrice(state)
 });
 
 const mapDispatchToProps = dispatch => ({

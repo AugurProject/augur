@@ -202,19 +202,16 @@ export default class CoreProperties extends Component {
         }
       });
       renderedProperties.push(
-        <div key={"row" + numRow} className={Styles.CoreProperties__row}>
+        <div
+          key={"row" + numRow}
+          className={classNames(Styles.CoreProperties__row, {
+            [Styles.CoreProperties__rowBorder]: numRow === 0
+          })}
+        >
           {" "}
           {row}
         </div>
       );
-      if (numRow === 0) {
-        renderedProperties.push(
-          <div
-            key={"linebreak" + numRow}
-            className={Styles.CoreProperties__lineBreak}
-          />
-        );
-      }
     });
 
     let headerContent = null;

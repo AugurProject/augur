@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { augur } from "services/augurjs";
 import { formatGasCostToEther } from "utils/format-number";
 
 import Styles from "modules/modal/components/common/common.styles";
@@ -16,7 +15,8 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
     unclaimedEth: PropTypes.object.isRequired,
     unclaimedRep: PropTypes.object.isRequired,
     modalCallback: PropTypes.func.isRequired,
-    type: PropTypes.string.isRequired
+    type: PropTypes.string.isRequired,
+    gasPrice: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -38,24 +38,22 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
       onSent: () => {},
       onSuccess: result => {
         const ClaimReportingFeesForkedMarketGasEstimate = result.gasEstimates.totals.all.toString();
-        const gasPrice = augur.rpc.getGasPrice();
         this.setState({
           ClaimReportingFeesForkedMarketGasEstimate: formatGasCostToEther(
             ClaimReportingFeesForkedMarketGasEstimate,
             { decimalsRounded: 4 },
-            gasPrice
+            this.props.gasPrice
           )
         });
       },
       onFailed: err => {
         // Default to 0 for now if we recieve an error.
         const ClaimReportingFeesForkedMarketGasEstimate = "0";
-        const gasPrice = augur.rpc.getGasPrice();
         this.setState({
           ClaimReportingFeesForkedMarketGasEstimate: formatGasCostToEther(
             ClaimReportingFeesForkedMarketGasEstimate,
             { decimalsRounded: 4 },
-            gasPrice
+            this.props.gasPrice
           )
         });
       }

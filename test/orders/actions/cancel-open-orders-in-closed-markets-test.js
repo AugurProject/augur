@@ -13,14 +13,17 @@ describe(`modules/orders/actions/cancel-order.js`, () => {
       const { openOrders } = t;
       ReWireModule.__Rewire__(
         "cancelOrder",
-        (orderId, marketId, outcome, type) => (dispatch, getState) => {
+        ({ orderId, marketId, outcome, orderTypeLabel }, callback) => (
+          dispatch,
+          getState
+        ) => {
           dispatch({
             type: "CANCEL_ORDER",
             params: {
               orderId,
               marketId,
               outcome,
-              type
+              orderTypeLabel
             }
           });
         }
@@ -88,7 +91,7 @@ describe(`modules/orders/actions/cancel-order.js`, () => {
             orderId: "0xd1",
             marketId: "0xa1",
             outcome: "0xc1",
-            type: "buy"
+            orderTypeLabel: "buy"
           }
         }
       ]);
@@ -125,7 +128,7 @@ describe(`modules/orders/actions/cancel-order.js`, () => {
             orderId: "0xd1",
             marketId: "0xa1",
             outcome: "0xc1",
-            type: "buy"
+            orderTypeLabel: "buy"
           }
         },
         {
@@ -134,7 +137,7 @@ describe(`modules/orders/actions/cancel-order.js`, () => {
             orderId: "0xd2",
             marketId: "0xa1",
             outcome: "0xc1",
-            type: "sell"
+            orderTypeLabel: "sell"
           }
         }
       ]);
@@ -190,7 +193,7 @@ describe(`modules/orders/actions/cancel-order.js`, () => {
             orderId: "0xd1",
             marketId: "0xa1",
             outcome: "0xc1",
-            type: "buy"
+            orderTypeLabel: "buy"
           }
         },
         {
@@ -199,7 +202,7 @@ describe(`modules/orders/actions/cancel-order.js`, () => {
             orderId: "0xd2",
             marketId: "0xa1",
             outcome: "0xc1",
-            type: "sell"
+            orderTypeLabel: "sell"
           }
         },
         {
@@ -208,7 +211,7 @@ describe(`modules/orders/actions/cancel-order.js`, () => {
             orderId: "0xd3",
             marketId: "0xa2",
             outcome: "0xc1",
-            type: "buy"
+            orderTypeLabel: "buy"
           }
         },
         {
@@ -217,7 +220,7 @@ describe(`modules/orders/actions/cancel-order.js`, () => {
             orderId: "0xd4",
             marketId: "0xa2",
             outcome: "0xc1",
-            type: "buy"
+            orderTypeLabel: "buy"
           }
         }
       ]);
@@ -273,7 +276,7 @@ describe(`modules/orders/actions/cancel-order.js`, () => {
             orderId: "0xd1",
             marketId: "0xa1",
             outcome: "0xc1",
-            type: "buy"
+            orderTypeLabel: "buy"
           }
         },
         {
@@ -282,7 +285,7 @@ describe(`modules/orders/actions/cancel-order.js`, () => {
             orderId: "0xd2",
             marketId: "0xa1",
             outcome: "0xc1",
-            type: "sell"
+            orderTypeLabel: "sell"
           }
         }
       ]);

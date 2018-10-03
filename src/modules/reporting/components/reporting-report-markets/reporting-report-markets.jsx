@@ -13,13 +13,13 @@ export const ReportSection = ({
   title,
   items,
   nullMessage,
-  pageinationName,
+  paginationName,
   setSegment,
   lower,
   boundedLength,
   history,
   location,
-  pageinationCount,
+  paginationCount,
   addNullPadding
 }) => {
   let theChildren;
@@ -46,14 +46,14 @@ export const ReportSection = ({
       <MarketsHeaderLabel title={title} />
       <article>
         <section>{theChildren}</section>
-        {count > pageinationCount && (
+        {count > paginationCount && (
           <Paginator
             itemsLength={count}
-            itemsPerPage={pageinationCount}
+            itemsPerPage={paginationCount}
             location={location}
             history={history}
             setSegment={setSegment}
-            pageParam={pageinationName}
+            pageParam={paginationName}
           />
         )}
       </article>
@@ -64,8 +64,8 @@ export const ReportSection = ({
 ReportSection.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-  pageinationName: PropTypes.string.isRequired,
-  pageinationCount: PropTypes.number.isRequired,
+  paginationName: PropTypes.string.isRequired,
+  paginationCount: PropTypes.number.isRequired,
   nullMessage: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   setSegment: PropTypes.func.isRequired,
@@ -142,11 +142,11 @@ class ReportingReporting extends React.Component {
         <ReportSection
           location={location}
           history={history}
-          pageinationCount={PAGINATION_LENGTH}
+          paginationCount={PAGINATION_LENGTH}
           title="Designated Reporting"
           items={designated}
           nullMessage="There are no markets available for you to report on. "
-          pageinationName="designated"
+          paginationName="designated"
           lower={paginations.dr.lower}
           boundedLength={paginations.dr.boundedLength}
           setSegment={this.setDrSegment}
@@ -154,11 +154,11 @@ class ReportingReporting extends React.Component {
         <ReportSection
           location={location}
           history={history}
-          pageinationCount={PAGINATION_LENGTH}
+          paginationCount={PAGINATION_LENGTH}
           title="Open Reporting"
           items={open}
           nullMessage="There are no markets in Open Reporting."
-          pageinationName="open"
+          paginationName="open"
           lower={paginations.or.lower}
           boundedLength={paginations.or.boundedLength}
           setSegment={this.setOrSegment}
@@ -166,12 +166,12 @@ class ReportingReporting extends React.Component {
         <ReportSection
           location={location}
           history={history}
-          pageinationCount={PAGINATION_LENGTH}
+          paginationCount={PAGINATION_LENGTH}
           title="Upcoming Reporting"
           items={upcoming}
           buttonText="View"
           nullMessage="There are no upcoming markets for you to report on."
-          pageinationName="upcoming"
+          paginationName="upcoming"
           lower={paginations.ur.lower}
           boundedLength={paginations.ur.boundedLength}
           setSegment={this.setUrSegment}

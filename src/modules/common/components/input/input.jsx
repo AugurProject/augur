@@ -34,7 +34,8 @@ export default class Input extends Component {
     onMaxButtonClick: PropTypes.func,
     noFocus: PropTypes.bool,
     isLoading: PropTypes.bool,
-    onFocus: PropTypes.func
+    onFocus: PropTypes.func,
+    lightBorder: PropTypes.bool
   };
 
   constructor(props) {
@@ -42,7 +43,8 @@ export default class Input extends Component {
 
     this.state = {
       value: this.props.value || "",
-      isHiddenContentVisible: false
+      isHiddenContentVisible: false,
+      focused: false
     };
 
     this.handleOnChange = this.handleOnChange.bind(this);
@@ -50,10 +52,15 @@ export default class Input extends Component {
     this.handleClear = this.handleClear.bind(this);
     this.handleOnFocus = this.handleOnFocus.bind(this);
     this.handleToggleVisibility = this.handleToggleVisibility.bind(this);
+    this.handleWindowOnClick = this.handleWindowOnClick.bind(this);
     this.timeoutVisibleHiddenContent = debounce(
       this.timeoutVisibleHiddenContent.bind(this),
       1200
     );
+  }
+
+  componentDidMount() {
+    window.addEventListener("click", this.handleWindowOnClick);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -78,6 +85,10 @@ export default class Input extends Component {
     ) {
       this.timeoutVisibleHiddenContent();
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("click", this.handleWindowOnClick);
   }
 
   handleOnChange = e => {
@@ -107,6 +118,12 @@ export default class Input extends Component {
 
   timeoutVisibleHiddenContent = () => this.updateIsHiddenContentVisible(false);
 
+  handleWindowOnClick(event) {
+    this.setState({
+      focused: this.inputHandler && this.inputHandler.contains(event.target)
+    });
+  }
+
   updateIsHiddenContentVisible(isHiddenContentVisible) {
     this.setState({
       isHiddenContentVisible
@@ -129,6 +146,7 @@ export default class Input extends Component {
       onMaxButtonClick,
       noFocus,
       isLoading,
+      lightBorder,
       ...p
     } = this.props; // eslint-disable-line no-unused-vars
     const s = this.state;
@@ -140,9 +158,16 @@ export default class Input extends Component {
           p.className,
           {
             "can-toggle-visibility": canToggleVisibility,
-            [`${Styles.noFocus}`]: noFocus
+            [Styles.focusBorder]: s.focused && !noFocus && !lightBorder,
+            [`${Styles.noFocus}`]: noFocus,
+            [`${Styles.lightBorder}`]: lightBorder
           }
         )}
+        ref={inputHandler => {
+          this.inputHandler = inputHandler;
+        }}
+        onFocus={this.onFocusIn}
+        onBlur={this.onBlurThing}
       >
         {isSearch && IconSearch}
         {!p.isMultiline && (

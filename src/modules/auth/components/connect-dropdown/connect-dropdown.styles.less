@@ -1,5 +1,4 @@
 @import (reference) '~assets/styles/shared';
-@import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); // todo: import font the right way
 
 .ConnectDropdown {
   padding-top: 8px;
@@ -25,6 +24,17 @@
 
   &:focus {
     outline: none;
+  }
+}
+
+.ConnectDropdown_explanation {
+  cursor: default;
+  font-size: 13px;
+  line-height: 1.1rem;
+  padding-right: 24px;
+
+  &:hover {
+    background-color: @color-lightpurple;
   }
 }
 

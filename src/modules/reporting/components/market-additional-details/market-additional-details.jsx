@@ -13,11 +13,6 @@ const MarketAdditonalDetails = p => {
     scalarDenomination
   } = p.market;
   const denomination = scalarDenomination ? " " + scalarDenomination : "";
-  if (this.additionalDetails && this.additionalDetails.scrollHeight) {
-    this.additionalDetails.style.height = `${
-      this.additionalDetails.scrollHeight
-    }px`;
-  }
   return (
     <article>
       <div className={Styles[`MarketAdditionalDetails__details-wrapper`]}>
@@ -31,17 +26,13 @@ const MarketAdditonalDetails = p => {
             )}
           </span>
           {details && (
-            <textarea
-              ref={additionalDetails => {
-                this.additionalDetails = additionalDetails;
-              }}
+            <label
               className={
                 Styles[`MarketAdditionalDetails__details-details-text`]
               }
-              disabled
-              readOnly
-              value={details}
-            />
+            >
+              {details}
+            </label>
           )}
           {marketType === SCALAR && (
             <p

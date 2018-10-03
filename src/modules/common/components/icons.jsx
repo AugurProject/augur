@@ -940,7 +940,7 @@ export const ChevronFlipFilledIcon = (className = "", fillColor = "#FFF") => (
   </svg>
 );
 
-export const Notifications = (unseenCount, rxWidth) => (
+export const Notifications = (unseenCount, rxWidth, stroke = "#FFFFFF") => (
   <svg viewBox="0 0 24 24">
     <defs />
     <g
@@ -954,7 +954,7 @@ export const Notifications = (unseenCount, rxWidth) => (
         <g
           id="Page-1"
           transform="translate(4.000000, 1.000000)"
-          stroke="#FFFFFF"
+          stroke={stroke}
           strokeWidth="0.894"
         >
           <path
@@ -978,7 +978,7 @@ export const Notifications = (unseenCount, rxWidth) => (
           >
             <ellipse
               id="Oval"
-              fill="#FFFFFF"
+              fill={stroke}
               cx="6.4591451"
               cy="7.00261291"
               rx={rxWidth}
@@ -1682,6 +1682,69 @@ export const nextIcon = (
           </g>
         </g>
       </g>
+    </g>
+  </svg>
+);
+
+export const yellowAlertIcon = (
+  <svg
+    width="35px"
+    height="23px"
+    viewBox="0 0 23 23"
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <title>alert</title>
+    <desc>Created with Sketch.</desc>
+    <defs />
+    <g
+      id="Core-Stats-Bar"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="gasPriceModuleToHigh"
+        transform="translate(-593.000000, -398.000000)"
+      >
+        <g id="gasPrice" transform="translate(570.000000, 311.000000)">
+          <g id="Group-9" transform="translate(24.000000, 84.000000)">
+            <g id="alert" transform="translate(0.000000, 4.000000)">
+              <path
+                d="M9.66956376,0.449701198 C9.97324687,-0.149900399 10.7324546,-0.149900399 11.035275,0.449701198 L15.8174213,9.90270077 L20.5987048,19.3548376 C20.9023879,19.9553019 20.522784,20.7058824 19.9154178,20.7058824 L10.3528508,20.7058824 L0.790283701,20.7058824 C0.182054742,20.7058824 -0.19668641,19.9553019 0.106996701,19.3548376 L4.88828023,9.90270077 L9.66956376,0.449701198 Z"
+                id="Stroke-1"
+                stroke="#FFD500"
+              />
+              <text
+                id="!"
+                fontFamily="Roboto-Bold, Roboto"
+                fontSize="13"
+                fontWeight="bold"
+                fill="#FFD500"
+              >
+                <tspan x="8.41176471" y="17.0882353">
+                  !
+                </tspan>
+              </text>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
+export const logoutIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+  >
+    <g fill="#FFF" fillRule="nonzero">
+      <path d="M14.16 10.123H5.624a1.125 1.125 0 0 1 0-2.25h8.534l-1.454-1.455a1.125 1.125 0 0 1 1.59-1.59l3.375 3.374a1.125 1.125 0 0 1 0 1.591l-3.375 3.375a1.125 1.125 0 1 1-1.59-1.59l1.454-1.455z" />
+      <path d="M9 15.5v-2a1 1 0 0 1 2 0v4H0V0h11v4a1 1 0 0 1-2 0V2H2v13.5h7z" />
     </g>
   </svg>
 );

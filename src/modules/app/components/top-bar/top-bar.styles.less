@@ -15,6 +15,11 @@
   }
 }
 
+.TopBar__statsContainer {
+  flex: 1;
+  width: unset;
+}
+
 .TopBar__stats {
   border-right: 0.0625rem solid @color-lightpurple;
   display: flex;
@@ -35,9 +40,30 @@
 
 .TopBar__notifications {
   color: @color-white;
+  cursor: pointer;
   display: flex;
-  flex: 1;
   justify-content: flex-end;
+  width: unset !important;
+
+  &:hover {
+    background-color: @color-lightpurple;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.TopBar__notificationsDisabled {
+  cursor: default;
+
+  &:hover {
+    background-color: @color-purple;
+  }
+}
+
+.TopBar__notificationsDark {
+  background-color: @color-lightpurple;
 }
 
 .TopBar__notifications-container {
@@ -47,6 +73,9 @@
 }
 
 .TopBar__notification-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   margin-right: 2rem;
   width: 1.25rem;
 }

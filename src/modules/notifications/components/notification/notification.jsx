@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import classNames from "classnames";
 
-import { AlertCircle, Close } from "modules/common/components/icons";
+import { Close } from "modules/common/components/icons";
 import Styles from "modules/notifications/components/notification/notification.styles";
 import EtherscanLink from "modules/common/containers/etherscan-link";
 
@@ -56,12 +56,6 @@ export default class Notification extends Component {
             }}
           >
             <div className={Styles.Notification__row}>
-              {AlertCircle(
-                !seen
-                  ? Styles.Notification__dot
-                  : Styles["Notification__dot-seen"],
-                "#fff"
-              )}
               <div className={Styles.Notification__status}>{status}</div>
             </div>
             <div className={Styles.Notification__row}>

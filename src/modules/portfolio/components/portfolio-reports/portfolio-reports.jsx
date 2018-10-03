@@ -25,7 +25,7 @@ export default class PortfolioReports extends Component {
     outcomes: PropTypes.object.isRequired,
     isForking: PropTypes.bool.isRequired,
     forkingMarketId: PropTypes.string.isRequired,
-    pageinationCount: PropTypes.number.isRequired,
+    paginationCount: PropTypes.number.isRequired,
     disputableMarketsLength: PropTypes.number,
     showPagination: PropTypes.bool,
     showUpcomingPagination: PropTypes.bool,
@@ -103,7 +103,7 @@ export default class PortfolioReports extends Component {
       outcomes,
       upcomingMarketsCount,
       forkingMarketId,
-      pageinationCount,
+      paginationCount,
       disputableMarketsLength,
       showPagination,
       showUpcomingPagination,
@@ -188,7 +188,7 @@ export default class PortfolioReports extends Component {
             outcomes={outcomes}
             isForking={isForking}
             forkingMarketId={forkingMarketId}
-            pageinationCount={pageinationCount}
+            paginationCount={paginationCount}
             disputableMarketsLength={disputableMarketsLength}
             showPagination={showPagination}
             showUpcomingPagination={showUpcomingPagination}

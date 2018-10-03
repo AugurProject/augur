@@ -30,15 +30,13 @@ export default class NotificationsView extends Component {
       !nextProps.notificationsVisible
     ) {
       toggleHeight(this.notificationsContainer, true, () => {});
-    }
-  }
 
-  componentWillUnmount() {
-    const notifications = getValue(this.props, "notifications.notifications");
-    const { updateNotification } = this.props;
-    notifications.forEach(notification => {
-      updateNotification(notification.id, { seen: true });
-    });
+      const notifications = getValue(this.props, "notifications.notifications");
+      const { updateNotification } = this.props;
+      notifications.forEach(notification => {
+        updateNotification(notification.id, { seen: true });
+      });
+    }
   }
 
   render() {
@@ -60,7 +58,14 @@ export default class NotificationsView extends Component {
           ToggleHeightStyles["toggle-height-target-quick"]
         )}
       >
-        <section id="notifications_view" className={Styles.NotificationsView}>
+        <section
+          id="notifications_view"
+          className={classNames(Styles.NotificationsView, {
+            [Styles.NotificationsView__dark]: !(
+              notifications && notifications.length
+            )
+          })}
+        >
           <button
             className={Styles.Notification__close}
             onClick={e => {

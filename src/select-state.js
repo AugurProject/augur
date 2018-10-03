@@ -8,8 +8,6 @@ export const selectActiveViewState = state => state.activeView;
 export const selectAuthState = state => state.auth;
 export const selectBlockchainState = state => state.blockchain;
 export const selectCategoriesState = state => state.categories;
-export const selectClosePositionTradeGroupsState = state =>
-  state.closePositionTradeGroups;
 export const selectConnectionState = state => state.connection;
 export const selectDisputeCrowdsourcerTokens = state =>
   state.disputeCrowdsourcerTokens;
@@ -17,6 +15,7 @@ export const selectEdgeContextState = state => state.authStatus.edgeContext;
 export const selectEdgeLoadingState = state => state.authStatus.edgeLoading;
 export const selectEnvState = state => state.env;
 export const selectFavoritesState = state => state.favorites;
+export const selectGasPriceInfo = state => state.gasPriceInfo;
 export const selectHasLoadedMarketsState = state =>
   state.appStatus.hasLoadedMarkets;
 export const selectInitialReporters = state => state.initialReporters;

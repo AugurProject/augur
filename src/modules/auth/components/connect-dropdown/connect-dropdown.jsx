@@ -10,6 +10,7 @@ import {
   ERROR_TYPES
 } from "modules/auth/constants/connect-nav";
 import isMetaMaskPresent from "src/modules/auth/helpers/is-meta-mask";
+import { logoutIcon } from "modules/common/components/icons";
 
 import Styles from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
 import Ledger from "modules/auth/containers/ledger-connect";
@@ -143,13 +144,29 @@ export default class ConnectDropdown extends Component {
     return (
       <div className={Styles.ConnectDropdown}>
         {isLogged && (
+          <div>
+            <div
+              className={classNames(Styles.ConnectDropdown__item)}
+              onClick={() => this.logout()}
+              role="button"
+              tabIndex="-1"
+            >
+              <div className={Styles.ConnectDropdown__icon}>{logoutIcon}</div>
+              <div className={Styles.ConnectDropdown__title}>Logout</div>
+            </div>
+          </div>
+        )}
+        {!isLogged && (
           <div
-            className={classNames(Styles.ConnectDropdown__item)}
-            onClick={this.logout}
-            role="button"
-            tabIndex="-1"
+            className={classNames(
+              Styles.ConnectDropdown__item,
+              Styles.ConnectDropdown_explanation
+            )}
           >
-            Logout
+            Connect a wallet to log into Augur.{" "}
+            {!process.env.AUGUR_HOSTED
+              ? "Use Edge to login with a username and password."
+              : null}
           </div>
         )}
         {!isLogged &&

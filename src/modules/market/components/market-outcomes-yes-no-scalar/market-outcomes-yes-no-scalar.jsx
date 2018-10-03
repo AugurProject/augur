@@ -34,6 +34,7 @@ const MarketOutcomes = p => {
     !isNaN(p.min) && p.type !== YES_NO
       ? `${p.min} ${scalarDenomination}`
       : "0 %";
+
   const maxValue =
     !isNaN(p.max) && p.type !== YES_NO
       ? `${p.max} ${scalarDenomination}`
@@ -43,9 +44,22 @@ const MarketOutcomes = p => {
     p.type !== YES_NO
       ? ""
       : getValue(p.outcomes[0], "lastPricePercent.denomination");
-  const arrowStyles = {
-    left: p.type === YES_NO ? "0.9375rem" : "0.5rem",
-    marginLeft: p.type === YES_NO ? "0.625rem" : "0"
+
+  const currentMarketStyles = pos => {
+    let size = getValue(p.outcomes[0], "lastPricePercent.formatted").toString()
+      .length;
+    const isMobileAttrs =
+      window.outerWidth < 590
+        ? { marginTop: 4, fontSize: 16 }
+        : { marginTop: 7, fontSize: 20 };
+    for (let i = 6; i < size; i += 6) {
+      size *= 0.8;
+    }
+    return {
+      marginLeft: pos < 15 ? size + "rem" : 0,
+      marginRight: pos > 85 ? size + "rem" : 0,
+      ...isMobileAttrs
+    };
   };
 
   return (
@@ -57,19 +71,19 @@ const MarketOutcomes = p => {
         className={Styles.MarketOutcomes__current}
         style={currentValuePosition}
       >
-        <span
-          className={Styles["MarketOutcomes__current-value"]}
-          data-testid="midpoint"
-        >
-          {getValue(p.outcomes[0], "lastPricePercent.formatted")}
-        </span>
-        <div style={{ position: "relative", display: "inline" }}>
+        <div style={currentMarketStyles(calculatePosition())}>
+          <span
+            className={Styles["MarketOutcomes__current-value"]}
+            data-testid="midpoint"
+          >
+            {getValue(p.outcomes[0], "lastPricePercent.formatted")}
+          </span>
           <span className={Styles["MarketOutcomes__current-denomination"]}>
             {lastPriceDenomination}
           </span>
           <MarketOutcomeTradingIndicator
             outcome={p.outcomes[0]}
-            style={arrowStyles}
+            location="yes-no-scalar"
           />
         </div>
       </span>

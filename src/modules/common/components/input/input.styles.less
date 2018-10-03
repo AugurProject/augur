@@ -144,3 +144,15 @@
     }
   }
 }
+
+.focusBorder {
+  .border(true, @border-all, @color-input-border, @border-width-2);
+}
+
+.lightBorder {
+  .border(true, @border-all, @color-lightgray, @border-width-1);
+
+  &:focus-within {
+    .border(true, @border-all, @color-lightgray, @border-width-1);
+  }
+}

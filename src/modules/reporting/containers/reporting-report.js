@@ -12,6 +12,7 @@ import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
 import { submitInitialReport } from "modules/reports/actions/submit-initial-report";
 import { constants } from "services/augurjs";
+import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 const mapStateToProps = state => ({
   isLogged: state.authStatus.isLogged,
@@ -21,7 +22,8 @@ const mapStateToProps = state => ({
   marketsData: state.marketsData,
   isMobile: state.appStatus.isMobile,
   availableRep: getValue(state, "loginAccount.rep") || "0",
-  userAddress: state.loginAccount.address
+  userAddress: state.loginAccount.address,
+  gasPrice: getGasPrice(state)
 });
 
 const mapDispatchToProps = dispatch => ({

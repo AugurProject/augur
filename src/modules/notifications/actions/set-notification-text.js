@@ -194,16 +194,16 @@ export default function setNotificationText(notification, callback) {
 
       // Mailbox
       case "WITHDRAWETHER":
-        notification.title = "Withdraw ETH from mailbox";
+        notification.title = "Withdraw ETH";
         break;
       case "WITHDRAWTOKENS":
-        notification.title = "Withdraw tokens from mailbox";
+        notification.title = "Withdraw tokens";
         break;
 
       // Market
       case "CONTRIBUTE":
         notification.title = "Contribute to Dispute Bond";
-        if (!notification.description && notification.log) {
+        if (!notification.description) {
           dispatch(
             loadMarketsInfoIfNotLoaded([notification.to], () => {
               const marketInfo = selectMarket(notification.to);
@@ -233,7 +233,7 @@ export default function setNotificationText(notification, callback) {
         break;
       case "DOINITIALREPORT":
         notification.title = "Submit report";
-        if (!notification.description && notification.log) {
+        if (!notification.description) {
           dispatch(
             loadMarketsInfoIfNotLoaded([notification.to], () => {
               const marketInfo = selectMarket(notification.to);
@@ -379,7 +379,7 @@ export default function setNotificationText(notification, callback) {
       case "CREATESCALARMARKET":
       case "CREATEYESNOMARKET":
         notification.title = "Create new market";
-        if (!notification.description && notification.log) {
+        if (!notification.description) {
           notification.description = `Create market "${
             notification.params._description
           }"`;
