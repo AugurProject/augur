@@ -1,7 +1,6 @@
 /**
  * @todo Update text for FINALIZE once notification triggering is moved
  */
-import store from "src/store";
 import { augur } from "services/augurjs";
 import { isEmpty } from "lodash/fp";
 import { selectMarket } from "modules/markets/selectors/market";
@@ -501,5 +500,5 @@ export default function setNotificationText(notification, callback) {
       }
     }
     dispatch(callback(notification));
-  }
+  };
 }
