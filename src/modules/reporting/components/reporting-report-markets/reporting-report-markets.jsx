@@ -106,8 +106,15 @@ class ReportingReporting extends React.Component {
   }
 
   componentDidMount() {
-    const { loadReporting } = this.props;
-    loadReporting();
+    const { loadReporting, universe } = this.props;
+    if (universe) loadReporting();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { universe, loadReporting } = this.props;
+    if (nextProps.universe !== universe && nextProps.universe) {
+      loadReporting();
+    }
   }
 
   setDrSegment(lower, upperBound, boundedLength) {
@@ -186,7 +193,8 @@ ReportingReporting.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   markets: PropTypes.object.isRequired,
-  loadReporting: PropTypes.func.isRequired
+  loadReporting: PropTypes.func.isRequired,
+  universe: PropTypes.string
 };
 
 export default ReportingReporting;
