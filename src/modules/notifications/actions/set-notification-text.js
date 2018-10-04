@@ -14,7 +14,7 @@ import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-va
 import { createBigNumber } from "utils/create-big-number";
 
 export default function setNotificationText(notification, callback) {
-  const result = (dispatch, getState) => {
+  return (dispatch, getState) => {
     if (!notification || isEmpty(notification)) {
       return callback(notification);
     }
@@ -501,6 +501,5 @@ export default function setNotificationText(notification, callback) {
       }
     }
     dispatch(callback(notification));
-  };
-  return result(store.dispatch, store.getState);
+  }
 }
