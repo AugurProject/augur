@@ -18,15 +18,7 @@ export const loadAccountDataFromLocalStorage = address => (
         dispatch(updateFavorites(storedAccountData.favorites));
       }
       if (storedAccountData.notifications) {
-        storedAccountData.notifications.map(n => {
-          let notification = null;
-          try {
-            notification = addNotification(n);
-          } catch (e) {
-            console.error("could not process notification", e.message);
-          }
-          return notification && dispatch(notification);
-        });
+        storedAccountData.notifications.map(n => dispatch(addNotification(n)));
       }
       if (storedAccountData.scalarMarketsShareDenomination) {
         Object.keys(storedAccountData.scalarMarketsShareDenomination).forEach(
