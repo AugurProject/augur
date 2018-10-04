@@ -1,7 +1,15 @@
 import * as updateNotifications from "modules/notifications/actions/notifications";
 import * as notificationLevels from "modules/notifications/constants/notifications";
+import thunk from "redux-thunk";
+import testState from "test/testState";
+import configureMockStore from "redux-mock-store";
 
 describe("modules/notifications/actions/notifications", () => {
+  const middlewares = [thunk];
+  const mockStore = configureMockStore(middlewares);
+  const state = Object.assign({}, testState);
+  const store = mockStore(state);
+
   describe("addNotification", () => {
     it("should return nothing when the notifications param is null/undefined", () => {
       const actual = updateNotifications.addNotification();
@@ -11,7 +19,7 @@ describe("modules/notifications/actions/notifications", () => {
     });
 
     it("should return the expected object when a notification is passed in", () => {
-      const actual = updateNotifications.addNotification({});
+      const actual = store.dispatch(updateNotifications.addNotification({}));
 
       const expected = {
         type: updateNotifications.ADD_NOTIFICATION,
@@ -29,21 +37,23 @@ describe("modules/notifications/actions/notifications", () => {
     });
 
     it("should default notification level to the 'INFO' constant", () => {
-      const actual = updateNotifications.addNotification({});
+      const actual = store.dispatch(updateNotifications.addNotification({}));
       assert.equal(actual.data.notification.level, notificationLevels.INFO);
     });
 
     it("should override the default notification level with the value passed in the notification object param", () => {
-      const actual = updateNotifications.addNotification({
-        level: notificationLevels.CRITICAL
-      });
+      const actual = store.dispatch(
+        updateNotifications.addNotification({
+          level: notificationLevels.CRITICAL
+        })
+      );
       assert.equal(actual.data.notification.level, notificationLevels.CRITICAL);
     });
   });
 
   describe("removeNotification", () => {
     it("should return the expected object", () => {
-      const actual = updateNotifications.removeNotification(1);
+      const actual = store.dispatch(updateNotifications.removeNotification(1));
 
       const expected = {
         type: updateNotifications.REMOVE_NOTIFICATION,
@@ -56,9 +66,11 @@ describe("modules/notifications/actions/notifications", () => {
 
   describe("updateNotification", () => {
     it("should should return the expected object", () => {
-      const actual = updateNotifications.updateNotification(1, {
-        testing: "test"
-      });
+      const actual = store.dispatch(
+        updateNotifications.updateNotification(1, {
+          testing: "test"
+        })
+      );
 
       const expected = {
         type: updateNotifications.UPDATE_NOTIFICATION,
