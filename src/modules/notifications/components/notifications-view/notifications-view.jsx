@@ -55,7 +55,7 @@ export default class NotificationsView extends Component {
       this.props,
       "notifications.notifications"
     );
-    let notifications = [];
+    const notifications = [];
     allNotifications.forEach(notification => {
       if (
         (notification.networkId === networkId.toString() &&
