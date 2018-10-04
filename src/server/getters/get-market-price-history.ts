@@ -4,6 +4,11 @@ import { BigNumber } from "bignumber.js";
 import Augur from "augur.js";
 import { Address, MarketPriceHistory, TimestampedPriceAmount } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+import * as t from "io-ts";
+
+export const MarketPriceHistoryParams = t.type({
+  marketId: t.string,
+});
 
 interface MarketPriceHistoryRow {
   timestamp: number;
@@ -12,25 +17,9 @@ interface MarketPriceHistoryRow {
   amount: BigNumber;
 }
 
-export interface GetMarketPriceHistoryParams {
-  marketId: Address;
-}
-
-export function extractGetMarketPriceHistoryParams(params: any): GetMarketPriceHistoryParams|undefined {
-  const pickedParams = _.pick(params, ["marketId"]);
-  if (isGetMarketPriceHistoryParams(pickedParams)) return pickedParams;
-  return undefined;
-}
-
-export function isGetMarketPriceHistoryParams(params: any): params is GetMarketPriceHistoryParams {
-  if (!_.isObject(params)) return false;
-  return _.isString(params.marketId);
-
-}
-
 // Input: MarketId
 // Output: { outcome: [{ price, timestamp }] }
-export async function getMarketPriceHistory(db: Knex, augur: Augur, params: GetMarketPriceHistoryParams): Promise<MarketPriceHistory<string>> {
+export async function getMarketPriceHistory(db: Knex, augur: Augur, params: t.TypeOf<typeof MarketPriceHistoryParams>): Promise<MarketPriceHistory<string>> {
   const tradesRows: Array<MarketPriceHistoryRow> = await db.select([
     "trades.outcome",
     "trades.price",

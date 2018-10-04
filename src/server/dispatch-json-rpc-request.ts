@@ -1,15 +1,16 @@
+import * as t from "io-ts";
+import { PathReporter } from "io-ts/lib/PathReporter";
 import * as Knex from "knex";
-import { PathReporter } from 'io-ts/lib/PathReporter'
 import Augur from "augur.js";
 import { JsonRpcRequest } from "../types";
 import { getAccountTransferHistory } from "./getters/get-account-transfer-history";
-import { extractGetCategoriesParams, getCategories } from "./getters/get-categories";
+import { CategoriesParams, getCategories } from "./getters/get-categories";
 import { getMarketsInCategory } from "./getters/get-markets-in-category";
 import { getMarketsCreatedByUser } from "./getters/get-markets-created-by-user";
 import { getReportingHistory } from "./getters/get-reporting-history";
-import { extractGetReportingSummaryParams, getReportingSummary } from "./getters/get-reporting-summary";
+import { getReportingSummary, ReportingSummaryParams } from "./getters/get-reporting-summary";
 import { getTradingHistory } from "./getters/get-trading-history";
-import { extractGetMarketPriceHistoryParams, getMarketPriceHistory } from "./getters/get-market-price-history";
+import { getMarketPriceHistory, MarketPriceHistoryParams } from "./getters/get-market-price-history";
 import { getMarketPriceCandlesticks } from "./getters/get-market-price-candlesticks";
 import { getUserTradingPositions } from "./getters/get-user-trading-positions";
 import { getUserShareBalances } from "./getters/get-user-share-balances";
@@ -18,14 +19,14 @@ import { getFeeWindow } from "./getters/get-fee-window";
 import { getUnclaimedMarketCreatorFees } from "./getters/get-unclaimed-market-creator-fees";
 import { getDisputeTokens } from "./getters/get-dispute-tokens";
 import { getMarkets } from "./getters/get-markets";
-import { extractGetMarketsClosingInDateRangeParams, getMarketsClosingInDateRange } from "./getters/get-markets-closing-in-date-range";
-import { extractGetMarketsInfoParams, getMarketsInfo } from "./getters/get-markets-info";
+import { getMarketsClosingInDateRange, MarketsClosingInDateRangeParams } from "./getters/get-markets-closing-in-date-range";
+import { getMarketsInfo, MarketsInfoParams } from "./getters/get-markets-info";
 import { getOrders } from "./getters/get-orders";
 import { getAllOrders } from "./getters/get-all-orders";
 import { getCompleteSets } from "./getters/get-complete-sets";
 import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
-import { extractNoParams, getSyncData } from "./getters/get-sync-data";
-import { extractGetDisputeInfoParams, getDisputeInfo } from "./getters/get-dispute-info";
+import { getSyncData, NoParams } from "./getters/get-sync-data";
+import { DisputeInfoParams, getDisputeInfo } from "./getters/get-dispute-info";
 import { getInitialReporters } from "./getters/get-initial-reporters";
 import { getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 import { getReportingFees } from "./getters/get-reporting-fees";
@@ -33,64 +34,39 @@ import { getUniversesInfo } from "./getters/get-universes-info";
 import { getProfitLoss } from "./getters/get-profit-loss";
 import { getWinningBalance } from "./getters/get-winning-balance";
 import { logger } from "../utils/logger";
-import { Validation } from "io-ts";
-import * as t from "io-ts";
 
 type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
-type ParamExtract<T> = (params: any) => T|undefined;
-
-export const MarketsInfoParams = t.type({
-  marketIds: t.array(t.string),
-});
-
 
 export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
   logger.info(JSON.stringify(request));
 
-  function dispatchResponse<T, R>(getterFunction: GetterFunction<T, R>, paramExtract: ParamExtract<T>) {
-    const extractedParams = paramExtract(request.params);
-    if (extractedParams === undefined) return callback(new Error("Invalid parameters"));
-    getterFunction(db, augur, extractedParams).then((response) => {
-      callback(null, response);
-    }).catch(callback);
-    return;
+  function dispatchResponse<T, R>(getterFunction: GetterFunction<T, R>, decodedParams: t.Validation<T>) {
+    if (decodedParams.isRight()) {
+      getterFunction(db, augur, decodedParams.value).then((response) => {
+        callback(null, response);
+      }).catch(callback);
+      return;
+    } else {
+      return callback(new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`));
+    }
   }
 
-  // function dispatchResponse2<T, R>(getterFunction: GetterFunction<T, R>, paramDecoder: Validation<T>) {
-  //   const decodedParams = paramDecoder(params);
-  //
-  //   if (!decodedParams.isRight()) return callback(new Error("Invalid parameters"));
-  //   getterFunction(db, augur, decodedParams.).then((response) => {
-  //     callback(null, response);
-  //   }).catch(callback);
-  //   return;
-  // }
-
-    switch (request.method) {
+  switch (request.method) {
     case "getDisputeInfo":
-      return dispatchResponse(getDisputeInfo, extractGetDisputeInfoParams);
+      return dispatchResponse(getDisputeInfo, DisputeInfoParams.decode(request.params));
     case "getReportingSummary":
-      return dispatchResponse(getReportingSummary, extractGetReportingSummaryParams);
+      return dispatchResponse(getReportingSummary, ReportingSummaryParams.decode(request.params));
     case "getMarketPriceHistory":
-      return dispatchResponse(getMarketPriceHistory, extractGetMarketPriceHistoryParams);
+      return dispatchResponse(getMarketPriceHistory, MarketPriceHistoryParams.decode(request.params));
     case "getCategories":
-      return dispatchResponse(getCategories, extractGetCategoriesParams);
+      return dispatchResponse(getCategories, CategoriesParams.decode(request.params));
     case "getContractAddresses":
     case "getSyncData":
-      return dispatchResponse(getSyncData, extractNoParams);
+      return dispatchResponse(getSyncData, NoParams.decode({}));
     case "getMarketsClosingInDateRange":
-      return dispatchResponse(getMarketsClosingInDateRange, extractGetMarketsClosingInDateRangeParams);
-
+      return dispatchResponse(getMarketsClosingInDateRange, MarketsClosingInDateRangeParams.decode(request.params));
     case "getMarketsInfo":
-      const decodedParams = MarketsInfoParams.decode(request.params);
-      if (decodedParams.isRight()) {
-        getMarketsInfo(db, augur, decodedParams.value).then((response) => {
-          callback(null, response);
-        }).catch(callback);
-        return;
-      } else {
-        return callback(new Error("Invalid request object: " + PathReporter.report(decodedParams)));
-      }
+      return dispatchResponse( getMarketsInfo, MarketsInfoParams.decode(request.params));
 
     case "getAccountTransferHistory":
       return getAccountTransferHistory(db, request.params.account, request.params.token, request.params.isInternalTransfer, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);

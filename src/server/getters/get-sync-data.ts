@@ -1,10 +1,11 @@
 import * as Knex from "knex";
 import Augur from "augur.js";
 import { isSyncFinished } from "../../blockchain/bulk-sync-augur-node-with-blockchain";
+import * as t from "io-ts";
+import { MarketsInfoParams } from "./get-markets-info";
 
-export function extractNoParams(params: any): {} {
-  return {};
-}
+export const NoParams = t.type({
+});
 
 export interface UISyncData {
   version: string;
@@ -16,7 +17,7 @@ export interface UISyncData {
   lastProcessedBlock: {};
 }
 
-export async function getSyncData(db: Knex, augur: Augur, params: {}): Promise<UISyncData> {
+export async function getSyncData(db: Knex, augur: Augur, params: t.TypeOf<typeof MarketsInfoParams>): Promise<UISyncData> {
   const currentBlock = augur.rpc.getCurrentBlock();
   const highestBlock = {
     number: parseInt(currentBlock.number, 16),

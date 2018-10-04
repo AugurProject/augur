@@ -6,6 +6,7 @@ import * as Knex from "knex";
 import * as WebSocket from "ws";
 import * as https from "https";
 import * as http from "http";
+import * as t from "io-ts";
 
 export { BlockDetail, FormattedEventLog } from "augur.js";
 
@@ -128,6 +129,12 @@ export interface JsonRpcResponse {
   result: any;
 }
 
+export const SortLimitParams = t.partial({
+  sortBy: t.string,
+  isSortDescending: t.boolean,
+  limit: t.number,
+  offset: t.number,
+});
 export interface SortLimit {
   sortBy: string|null|undefined;
   isSortDescending: boolean|null|undefined;

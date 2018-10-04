@@ -25,11 +25,11 @@ import {
 } from "../../types";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
+const MAX_DB_CHUNK_SIZE = 800;
+
 export interface Dictionary {
   [key: string]: any;
 }
-
-export const SORT_LIMIT_KEYS = ["sortBy", "isSortDescending", "limit", "offset"];
 
 export function queryModifierDB(
   query: Knex.QueryBuilder,
@@ -108,7 +108,7 @@ export async function queryModifierParams<T>(
   query: Knex.QueryBuilder,
   defaultSortBy: string,
   defaultSortOrder: string,
-  sortLimitParams: SortLimit,
+  sortLimitParams: Partial<SortLimit>,
 ): Promise<Array<T>> {
   return new Promise<Array<T>>( (resolve, reject) => {
    queryModifier(db, query, defaultSortBy, defaultSortOrder,
@@ -342,7 +342,7 @@ export function getCashAddress(augur: Augur) {
 
 // move to database utils.
 export async function batchAndCombine<T, K>(lookupIds: Array<K>, dataFetch: (chunkLookupIds: Array<K>) => Promise<Array<T>>) {
-  const chunkedIds = _.chunk(lookupIds, 2);
+  const chunkedIds = _.chunk(lookupIds, MAX_DB_CHUNK_SIZE);
   const result: Array<Array<T>> = [];
 
   for (const chunk of chunkedIds) result.push(await dataFetch(chunk));
@@ -351,12 +351,4 @@ export async function batchAndCombine<T, K>(lookupIds: Array<K>, dataFetch: (chu
   // sort results
   // limit results
   return fullResults;
-}
-
-export function checkOptionalOrderingParams(params: any): boolean {
-  if (params.sortBy != null && (!_.isString(params.sortBy))) return false;
-  if (params.isSortDescending != null && (!_.isBoolean(params.isSortDescending))) return false;
-  if (params.limit != null && (!_.isNumber(params.limit))) return false;
-  return !(params.offset != null && (!_.isNumber(params.offset)));
-
 }
