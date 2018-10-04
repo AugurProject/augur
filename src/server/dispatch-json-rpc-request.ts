@@ -1,4 +1,5 @@
 import * as Knex from "knex";
+import { PathReporter } from 'io-ts/lib/PathReporter'
 import Augur from "augur.js";
 import { JsonRpcRequest } from "../types";
 import { getAccountTransferHistory } from "./getters/get-account-transfer-history";
@@ -32,9 +33,16 @@ import { getUniversesInfo } from "./getters/get-universes-info";
 import { getProfitLoss } from "./getters/get-profit-loss";
 import { getWinningBalance } from "./getters/get-winning-balance";
 import { logger } from "../utils/logger";
+import { Validation } from "io-ts";
+import * as t from "io-ts";
 
 type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
 type ParamExtract<T> = (params: any) => T|undefined;
+
+export const MarketsInfoParams = t.type({
+  marketIds: t.array(t.string),
+});
+
 
 export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
   logger.info(JSON.stringify(request));
@@ -48,7 +56,17 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     return;
   }
 
-  switch (request.method) {
+  // function dispatchResponse2<T, R>(getterFunction: GetterFunction<T, R>, paramDecoder: Validation<T>) {
+  //   const decodedParams = paramDecoder(params);
+  //
+  //   if (!decodedParams.isRight()) return callback(new Error("Invalid parameters"));
+  //   getterFunction(db, augur, decodedParams.).then((response) => {
+  //     callback(null, response);
+  //   }).catch(callback);
+  //   return;
+  // }
+
+    switch (request.method) {
     case "getDisputeInfo":
       return dispatchResponse(getDisputeInfo, extractGetDisputeInfoParams);
     case "getReportingSummary":
@@ -60,10 +78,19 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getContractAddresses":
     case "getSyncData":
       return dispatchResponse(getSyncData, extractNoParams);
-    case "getMarketsInfo":
-      return dispatchResponse(getMarketsInfo, extractGetMarketsInfoParams);
     case "getMarketsClosingInDateRange":
       return dispatchResponse(getMarketsClosingInDateRange, extractGetMarketsClosingInDateRangeParams);
+
+    case "getMarketsInfo":
+      const decodedParams = MarketsInfoParams.decode(request.params);
+      if (decodedParams.isRight()) {
+        getMarketsInfo(db, augur, decodedParams.value).then((response) => {
+          callback(null, response);
+        }).catch(callback);
+        return;
+      } else {
+        return callback(new Error("Invalid request object: " + PathReporter.report(decodedParams)));
+      }
 
     case "getAccountTransferHistory":
       return getAccountTransferHistory(db, request.params.account, request.params.token, request.params.isInternalTransfer, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);

@@ -3,6 +3,8 @@ import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { Address, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcomeInfo, PayoutRow, MarketsContractAddressRow } from "../../types";
 import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState, batchAndCombine, checkOptionalOrderingParams, SORT_LIMIT_KEYS } from "./database";
+import * as t from "io-ts";
+import { MarketsInfoParams } from "../dispatch-json-rpc-request";
 
 export interface GetMarketsInfoParams  {
   marketIds: Array<Address>;
@@ -19,7 +21,7 @@ export function isGetMarketsInfoParams(params: any): params is GetMarketsInfoPar
   return !(params.marketIds.filter((value: any) => typeof value !== "string" && value != null).length > 0);
 }
 
-export async function getMarketsInfo(db: Knex, augur: {}, params: GetMarketsInfoParams): Promise<UIMarketsInfo<string>> {
+export async function getMarketsInfo(db: Knex, augur: {}, params: t.TypeOf<typeof MarketsInfoParams>): Promise<UIMarketsInfo<string>> {
   if (params.marketIds == null || ! _.isArray(params.marketIds) ) throw new Error("must include marketIds parameter");
   const marketInfoComplete: Array<UIMarketInfo<string>> = await batchAndCombine<UIMarketInfo<string>, string>(params.marketIds, _.partial(getUIMarketsInfo, db));
   const marketsInfoByMarket = _.keyBy(marketInfoComplete, (r): string => r.id);
