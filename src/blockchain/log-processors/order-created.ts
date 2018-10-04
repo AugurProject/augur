@@ -44,11 +44,11 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
         price: formatOrderPrice(orderTypeLabel, minPrice, maxPrice, fullPrecisionPrice),
         amount: formatOrderAmount(fullPrecisionAmount),
         originalAmount: formatOrderAmount(fullPrecisionAmount),
-        fullPrecisionPrice: fullPrecisionPrice.toFixed(),
-        fullPrecisionAmount: fullPrecisionAmount.toFixed(),
-        originalFullPrecisionAmount: fullPrecisionAmount.toFixed(),
-        tokensEscrowed: fixedPointToDecimal(moneyEscrowed, BN_WEI_PER_ETHER).toFixed(),
-        sharesEscrowed: augur.utils.convertOnChainAmountToDisplayAmount(sharesEscrowed, tickSize).toFixed(),
+        fullPrecisionPrice: fullPrecisionPrice.toString(),
+        fullPrecisionAmount: fullPrecisionAmount.toString(),
+        originalFullPrecisionAmount: fullPrecisionAmount.toString(),
+        tokensEscrowed: fixedPointToDecimal(moneyEscrowed, BN_WEI_PER_ETHER).toString(),
+        sharesEscrowed: augur.utils.convertOnChainAmountToDisplayAmount(sharesEscrowed, tickSize).toString(),
       };
       const orderId = { orderId: log.orderId };
       db.select("marketId").from("orders").where(orderId).asCallback((err: Error|null, ordersRows?: Array<Partial<OrdersRow<BigNumber>>>): void => {

@@ -50,11 +50,11 @@ export function getMarketPriceCandlesticks(db: Knex, marketId: Address, outcome:
         return _.map(outcomeTradeRowsByPeriod, (trades: Array<MarketPriceHistoryRow>, startTimestamp): Candlestick => {
           return {
             startTimestamp: parseInt(startTimestamp, 10),
-            start: _.minBy(trades, "timestamp")!.price.toFixed(),
-            end: _.maxBy(trades, "timestamp")!.price.toFixed(),
-            min: _.minBy(trades, "price")!.price.toFixed(),
-            max: _.maxBy(trades, "price")!.price.toFixed(),
-            volume: _.reduce(trades, (totalAmount: BigNumber, tradeRow: MarketPriceHistoryRow) =>  totalAmount.plus(tradeRow.amount), ZERO)!.toFixed(),
+            start: _.minBy(trades, "timestamp")!.price.toString(),
+            end: _.maxBy(trades, "timestamp")!.price.toString(),
+            min: _.minBy(trades, "price")!.price.toString(),
+            max: _.maxBy(trades, "price")!.price.toString(),
+            volume: _.reduce(trades, (totalAmount: BigNumber, tradeRow: MarketPriceHistoryRow) =>  totalAmount.plus(tradeRow.amount), ZERO)!.toString(),
           };
         });
       }),

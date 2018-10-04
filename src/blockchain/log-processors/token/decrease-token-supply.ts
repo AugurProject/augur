@@ -13,6 +13,6 @@ export function decreaseTokenSupply(db: Knex, augur: Augur, token: Address, amou
     if (amount.isZero()) return callback(null);
     if (oldSupply == null) return callback(new Error(`Could not find supply for token decrease (token: ${token})`));
     const supply = oldSupply.supply.minus(amount);
-    db.update({ supply: supply.toFixed() }).into("token_supply").where({ token }).asCallback(callback);
+    db.update({ supply: supply.toString() }).into("token_supply").where({ token }).asCallback(callback);
   });
 }

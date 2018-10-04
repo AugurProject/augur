@@ -141,7 +141,7 @@ export function getFeeWindow(db: Knex, augur: Augur, universe: Address, reporter
     }, (err: Error|null, stakes: FeeWindowStakes): void => {
       if (err) return callback(err);
       const feeWindowResponse = Object.assign({
-        feeWindowEthFees: stakes.feeWindowEthFees.toFixed(),
+        feeWindowEthFees: stakes.feeWindowEthFees.toString(),
       },
         formatBigNumberAsFixed(stakes.feeWindowRepStaked), feeWindowRow);
       if (reporter == null) {
@@ -156,12 +156,12 @@ export function getFeeWindow(db: Knex, augur: Augur, universe: Address, reporter
         const totalStake = totalParticipantContributions.plus((stakes.participationTokens));
         callback(null, Object.assign(
           {
-            totalStake: totalStake.toFixed(),
-            participantContributions: totalParticipantContributions.toFixed(),
-            participantContributionsInitialReport: stakes.participantContributions.initial_report.toFixed(),
-            participantContributionsCrowdsourcer: stakes.participantContributions.crowdsourcer.toFixed(),
-            participationTokens: stakes.participationTokens.toFixed(),
-            participantParticipationTokens: stakes.participationTokens.toFixed(),
+            totalStake: totalStake.toString(),
+            participantContributions: totalParticipantContributions.toString(),
+            participantContributionsInitialReport: stakes.participantContributions.initial_report.toString(),
+            participantContributionsCrowdsourcer: stakes.participantContributions.crowdsourcer.toString(),
+            participationTokens: stakes.participationTokens.toString(),
+            participantParticipationTokens: stakes.participationTokens.toString(),
           }, feeWindowResponse,
         ));
       });

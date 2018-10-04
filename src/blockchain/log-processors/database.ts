@@ -107,7 +107,7 @@ export function insertPayout(db: Knex, marketId: Address, payoutNumerators: Arra
   };
   payoutNumerators.forEach((value, i): void => {
     if (value == null) return;
-    payoutRow["payout" + i] = new BigNumber(value, 10).toFixed();
+    payoutRow["payout" + i] = new BigNumber(value, 10).toString();
   });
   db.select("payoutId").from("payouts").where(payoutRow).first().asCallback((err: Error|null, payoutIdRow?: { payoutId: number }|null): void => {
     if (err) return callback(err);
@@ -144,7 +144,7 @@ export function refreshMarketMailboxEthBalance(db: Knex, augur: Augur, marketId:
     augur.rpc.eth.getBalance([marketCreatorMailboxRow.marketCreatorMailbox, "latest"], (err: Error|null, mailboxBalanceResponse: string): void => {
       if (err) return callback(err);
       const mailboxBalance = new BigNumber(mailboxBalanceResponse, 16);
-      db("markets").update("marketCreatorFeesBalance", mailboxBalance.toFixed()).where({ marketId }).asCallback(callback);
+      db("markets").update("marketCreatorFeesBalance", mailboxBalance.toString()).where({ marketId }).asCallback(callback);
     });
   });
 }

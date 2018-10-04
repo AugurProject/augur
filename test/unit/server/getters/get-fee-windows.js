@@ -50,13 +50,13 @@ describe("server/getters/get-fee-windows", () => {
           startTime: 1506473473,
           endTime: 1506473515,
           balance: "100",
-          expectedFees: new BigNumber("100").times(1000).dividedBy(300).toFixed(),
+          expectedFees: new BigNumber("100").times(1000).dividedBy(300).toString(),
         },
         "0x2000000000000000000000000000000000000000": {
           startTime: 1509065473,
           endTime: 1509670273,
           balance: "500",
-          expectedFees: new BigNumber("500").times(2000).dividedBy(1100).toFixed(),
+          expectedFees: new BigNumber("500").times(2000).dividedBy(1100).toString(),
         },
       });
     },
@@ -89,7 +89,7 @@ describe("server/getters/get-fee-windows", () => {
           startTime: 1506473473,
           endTime: 1506473515,
           balance: "100",
-          expectedFees: new BigNumber("100").times(1000).dividedBy(300).toFixed(),
+          expectedFees: new BigNumber("100").times(1000).dividedBy(300).toString(),
         },
       });
     },

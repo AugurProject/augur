@@ -111,7 +111,7 @@ export function processDisputeCrowdsourcerContributionLog(db: Knex, augur: Augur
     if (err) return callback(err);
     db("crowdsourcers").first("amountStaked").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null, result: { amountStaked: BigNumber }): void => {
       if (err) return callback(err);
-      const amountStaked = result.amountStaked.plus(new BigNumber(log.amountStaked, 10)).toFixed();
+      const amountStaked = result.amountStaked.plus(new BigNumber(log.amountStaked, 10)).toString();
       db("crowdsourcers").update({ amountStaked }).where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
         if (err) return callback(err);
         augurEmitter.emit(SubscriptionEventNames.DisputeCrowdsourcerContribution, Object.assign({},
@@ -132,7 +132,7 @@ export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur
     if (err) return callback(err);
     db("crowdsourcers").first("amountStaked").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null, result: { amountStaked: BigNumber }): void => {
       if (err) return callback(err);
-      const amountStaked = result.amountStaked.minus(new BigNumber(log.amountStaked, 10)).toFixed();
+      const amountStaked = result.amountStaked.minus(new BigNumber(log.amountStaked, 10)).toString();
       db("crowdsourcers").update({ amountStaked }).where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
         if (err) return callback(err);
         augurEmitter.emit(SubscriptionEventNames.DisputeCrowdsourcerContribution, Object.assign({},
