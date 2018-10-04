@@ -12,8 +12,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   closeModal: () => dispatch(closeModal()),
-  saveModal: gasPrice => {
-    dispatch(updateGasPriceInfo({ userDefinedGasPrice: gasPrice }));
+  saveModal: userDefinedGasPrice => {
+    dispatch(updateGasPriceInfo({ userDefinedGasPrice }));
     dispatch(closeModal());
     dispatch(registerUserDefinedGasPriceFunction());
   }

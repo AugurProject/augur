@@ -21,7 +21,7 @@ export default class MarketLiquidity extends Component {
     submitLiquidityOrders: PropTypes.func.isRequired,
     clearMarketLiquidityOrders: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
-    closeModal: PropTypes.func.isRequired
+    closeModal: PropTypes.func.isRequired,
     gasPrice: PropTypes.number.isRequired
   };
 
@@ -116,7 +116,7 @@ export default class MarketLiquidity extends Component {
       marketId,
       market,
       updateModal,
-      closeModal
+      closeModal,
       gasPrice
     } = this.props;
     const { isOpen, estimatedGas, totalCost, showAllOrders } = this.state;

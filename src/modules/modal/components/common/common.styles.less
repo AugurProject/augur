@@ -165,6 +165,58 @@
   }
 }
 
+.TightModalContainer {
+  background-color: @color-white;
+  border-radius: 0.32rem;
+  color: @color-almostblack;
+  max-width: 20rem;
+  padding: 1.5rem 0;
+  position: relative;
+  text-align: center;
+  width: 100%;
+
+  > * {
+    width: 100%;
+  }
+
+  h1 {
+    color: @color-almostblack;
+    font-size: @font-size-somewhat-large;
+    font-weight: 500;
+    line-height: 1.75rem;
+    margin: 0.5rem 0 1.5rem;
+    text-align: center;
+  }
+
+  h2 {
+    color: @color-almostblack;
+    font-size: @font-size-normal;
+    font-weight: 500;
+    line-height: @font-size-large;
+    margin: 1.5rem 0 0;
+    padding: 0 1.5rem;
+    text-align: left;
+  }
+
+  h3 {
+    color: @color-almostblack;
+    font-size: @font-size-small;
+    font-weight: 400;
+    line-height: @font-size-large;
+    margin: 0 0 1rem;
+    padding: 0 1.5rem;
+    text-align: left;
+  }
+
+  > div {
+    width: 17rem;
+  }
+
+  div.ActionButtons {
+    width: 100%;
+  }
+}
+
 .Error {
   color: @color-red;
   display: flex;
@@ -184,6 +236,20 @@ div.ErrorField:focus {
   .border(true, @border-all, @color-red, @border-width-2);
 
   margin-bottom: 0.5rem;
+}
+
+.Warning {
+  color: @color-almostblack;
+  font-size: @font-size-medium;
+  line-height: @font-size-normal;
+  margin: 0 0 1.5rem;
+  padding: 0 1.5rem;
+
+  > svg {
+    height: 1rem;
+    line-height: 1rem;
+    width: 1rem;
+  }
 }
 
 .Loading {
@@ -244,6 +310,47 @@ div.ErrorField:focus {
   padding: 0 4rem;
 }
 
+.ModalTable {
+  border-left: 1px solid @color-lightergray;
+  border-top: 1px solid @color-lightergray;
+  color: @color-almostblack;
+  display: flex;
+  flex-flow: column;
+  margin: 0 0 1.5rem;
+}
+
+.ModalTableRow {
+  border-bottom: 1px solid @color-lightergray;
+  display: flex;
+  flex: 1;
+  flex-flow: row;
+
+  &:hover {
+    background-color: @color-lightpurple;
+    color: @color-white;
+  }
+}
+
+.ModalTableRow__header {
+  background-color: @color-offwhite;
+  font-size: @font-size-medium;
+  line-height: @font-size-normal;
+
+  &:hover {
+    background-color: @color-offwhite;
+    color: @color-almostblack;
+  }
+}
+
+.ModalTableColumn {
+  border-right: 1px solid @color-lightergray;
+  flex: 1;
+  font-size: @font-size-small;
+  line-height: @font-size-medium;
+  padding: 0.25rem 0 0.25rem 1rem;
+  text-align: left;
+}
+
 .ActionButtons {
   border-top: 1px solid #d8d8d8;
   display: flex;
@@ -254,6 +361,7 @@ div.ErrorField:focus {
 
   > button {
     line-height: 0;
+    min-width: 7rem;
   }
 }
 
@@ -437,7 +545,7 @@ div.ErrorField:focus {
 
   .ActionButtons {
     > button {
-      min-width: auto;
+      min-width: 7rem;
     }
   }
 

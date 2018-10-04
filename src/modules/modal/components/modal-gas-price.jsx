@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import Input from "modules/common/components/input/input";
+import ModalTable from "modules/modal/components/common/modal-table";
+import ModalActions from "modules/modal/components/common/modal-actions";
 import { yellowAlertIcon } from "modules/common/components/icons";
 
-import Styles from "modules/modal/components/modal-gas-price.styles";
+import Styles from "modules/modal/components/common/common.styles";
 
 export default class ModalGasPrice extends Component {
   static propTypes = {
@@ -21,25 +23,14 @@ export default class ModalGasPrice extends Component {
 
     this.state = {
       amount: props.userDefinedGasPrice || props.average,
-      showLowAlert: false
+      showLowAlert: (props.userDefinedGasPrice || props.average) < props.safeLow
     };
-
-    this.checkShowAlert = this.checkShowAlert.bind(this);
-  }
-
-  componentDidMount() {
-    this.checkShowAlert(this.props.userDefinedGasPrice);
   }
 
   updateAmount(amount) {
     let amt = "";
     if (amount) amt = parseFloat(amount, 10);
-    this.setState({ amount: amt });
-    this.checkShowAlert(amt);
-  }
-
-  checkShowAlert(amount) {
-    this.setState({ showLowAlert: amount < this.props.safeLow });
+    this.setState({ amount: amt, showLowAlert: amt < this.props.safeLow });
   }
 
   render() {
@@ -48,89 +39,69 @@ export default class ModalGasPrice extends Component {
 
     const disableButton = !s.amount || s.amount < 0;
 
+    const buttons = [
+      {
+        label: "cancel",
+        action: p.closeModal,
+        type: "gray"
+      },
+      {
+        label: "Save",
+        action: () => p.saveModal(s.amount),
+        type: "purple",
+        isDisabled: disableButton
+      }
+    ];
+
+    const rows = [
+      {
+        columnLabels: ["Speed", "Gas Price (gwei)"],
+        isHeading: true,
+        rowNumber: 0
+      },
+      {
+        columnLabels: ["Slow (<30m)", p.safeLow],
+        rowAction: () => this.updateAmount(p.safeLow),
+        rowNumber: 1
+      },
+      {
+        columnLabels: ["Standard (<5m)", p.average],
+        rowAction: () => this.updateAmount(p.average),
+        rowNumber: 2
+      },
+      {
+        columnLabels: ["Fast (<2m)", p.fast],
+        rowAction: () => this.updateAmount(p.fast),
+        rowNumber: 3
+      }
+    ];
+
     return (
-      <section className={Styles.ModalGasPrice}>
+      <section className={Styles.TightModalContainer}>
         <h1>Gas Price (gwei)</h1>
         {s.showLowAlert &&
           !disableButton && (
-            <div className={Styles.ModalGasPrice__warning}>
-              {yellowAlertIcon}
-              <p>
-                Transactions are unlikely to be processed at your current gas
-                price.
-              </p>
-            </div>
+            <p className={Styles.Warning}>
+              {yellowAlertIcon} Transactions are unlikely to be processed at
+              your current gas price.
+            </p>
           )}
-        <div className={Styles.ModalGasPrice__input}>
-          <Input
-            id="price"
-            name="price"
-            label="price"
-            type="number"
-            isIncrementable
-            incrementAmount={1}
-            value={s.amount}
-            onChange={amount => this.updateAmount(amount)}
-            updateValue={amount => this.updateAmount(amount)}
-            lightBorder
-          />
-        </div>
-        <div className={Styles.ModalGasPrice__ActionButtons}>
-          <button
-            className={Styles.ModalGasPrice__cancel}
-            onClick={p.closeModal}
-          >
-            Cancel
-          </button>
-          <button
-            className={Styles.ModalGasPrice__save}
-            disabled={disableButton}
-            onClick={() => p.saveModal(s.amount)}
-          >
-            Save
-          </button>
-        </div>
-        <div className={Styles.ModalGasPrice__explanationTitle}>
-          Recommended Gas Prices
-        </div>
-        <div className={Styles.ModalGasPrice__explanationSubheader}>
-          (based on current network conditions)
-        </div>
-        <div className={Styles.ModalGasPrice__table}>
-          <div className={Styles.ModalGasPrice__row}>
-            <div className={Styles.ModalGasPrice__col}>Speed</div>
-            <div className={Styles.ModalGasPrice__col}>Gas Price (gwei)</div>
-          </div>
-          <div
-            role="button"
-            className={Styles.ModalGasPrice__row}
-            onClick={() => {
-              this.updateAmount(p.safeLow);
-            }}
-            tabIndex={0}
-          >
-            <div className={Styles.ModalGasPrice__col}>{"Slow (<30m)"}</div>
-            <div className={Styles.ModalGasPrice__col}>{p.safeLow}</div>
-          </div>
-          <div
-            role="button"
-            className={Styles.ModalGasPrice__row}
-            onClick={() => this.updateAmount(p.average)}
-            tabIndex={-1}
-          >
-            <div className={Styles.ModalGasPrice__col}>{"Standard (<5m)"}</div>
-            <div className={Styles.ModalGasPrice__col}>{p.average}</div>
-          </div>
-          <div
-            className={Styles.ModalGasPrice__row}
-            role="button"
-            onClick={() => this.updateAmount(p.fast)}
-            tabIndex={-2}
-          >
-            <div className={Styles.ModalGasPrice__col}>{"Fast (<2m)"}</div>
-            <div className={Styles.ModalGasPrice__col}>{p.fast}</div>
-          </div>
-        </div>
+        <Input
+          id="price"
+          name="price"
+          label="price"
+          type="number"
+          isIncrementable
+          incrementAmount={1}
+          value={s.amount}
+          onChange={amount => this.updateAmount(amount)}
+          updateValue={amount => this.updateAmount(amount)}
+          lightBorder
+        />
+        <h2>Recommended Gas Price</h2>
+        <h3>(based on current network conditions)</h3>
+        <ModalTable rows={rows} />
+        <ModalActions buttons={buttons} />
       </section>
     );
   }

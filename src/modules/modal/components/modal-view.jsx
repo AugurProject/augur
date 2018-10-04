@@ -26,9 +26,7 @@ const ModalView = p => {
   return (
     <section className={Styles.ModalView}>
       <div className={Styles.ModalView__content}>
-        {modal.type === TYPES.MODAL_GAS_PRICE && (
-          <ModalGasPrice {...p} />
-        )}
+        {modal.type === TYPES.MODAL_GAS_PRICE && <ModalGasPrice {...p} />}
         {modal.type === TYPES.MODAL_CONFIRM && (
           <ModalConfirm {...modal} closeModal={closeModal} />
         )}
