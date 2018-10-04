@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
+import { augur } from "services/augurjs";
+import store from "src/store";
+
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import Notification from "modules/notifications/components/notification/notification";
 import toggleHeight from "utils/toggle-height/toggle-height";
@@ -46,7 +49,24 @@ export default class NotificationsView extends Component {
       clearNotifications
     } = this.props;
 
-    const notifications = getValue(this.props, "notifications.notifications");
+    const networkId = augur.rpc.getNetworkID();
+    const { universe } = store.getState();
+    const allNotifications = getValue(
+      this.props,
+      "notifications.notifications"
+    );
+    let notifications = [];
+    allNotifications.forEach(notification => {
+      if (
+        (notification.networkId === networkId.toString() &&
+          notification.universe === universe.id) ||
+        typeof notification.networkId === "undefined" ||
+        typeof notification.universe === "undefined"
+      ) {
+        notifications.push(notification);
+      }
+    });
+
     return (
       <div
         ref={notificationsContainer => {
