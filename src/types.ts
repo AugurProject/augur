@@ -12,7 +12,7 @@ import * as http from "http";
 BigNumber.config({
   MODULO_MODE: BigNumber.EUCLID,
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
-  EXPONENTIAL_AT: [-1E9, 1E9]
+  EXPONENTIAL_AT: [-1E9, 1E9],
 });
 
 export { BlockDetail, FormattedEventLog } from "augur.js";
