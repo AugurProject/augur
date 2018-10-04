@@ -24,15 +24,19 @@ export const selectInfoNotificationsAndSeenCount = createSelector(
     const networkId = augur.rpc.getNetworkID();
     const { universe } = store.getState();
 
-    const sortedNotifications = notifications
-      .filter(
-        notification =>
-          (notification.networkId === networkId.toString() &&
-            notification.universe === universe.id) ||
-          typeof notification.networkId === "undefined" ||
-          typeof notification.universe === "undefined"
-      )
-      .reverse()
+    let sortedNotifications = notifications;
+    if (networkId && universe) {
+      sortedNotifications = sortedNotifications
+        .filter(
+          notification =>
+            (notification.networkId === networkId.toString() &&
+              notification.universe === universe.id) ||
+            typeof notification.networkId === "undefined" ||
+            typeof notification.universe === "undefined"
+        )
+        .reverse();
+    }
+    sortedNotifications = sortedNotifications
       .map((notification, i) => ({
         ...notification,
         index: i
