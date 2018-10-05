@@ -12,7 +12,7 @@ describe("modules/notifications/actions/notifications", () => {
 
   describe("addNotification", () => {
     it("should return nothing when the notifications param is null/undefined", () => {
-      const actual = updateNotifications.addNotification();
+      const actual = store.dispatch(updateNotifications.addNotification());
       const expected = undefined;
 
       assert.strictEqual(actual, expected, `Didn't return the expected result`);
