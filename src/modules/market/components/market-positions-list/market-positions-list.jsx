@@ -18,7 +18,6 @@ export default class MarketPositionsList extends Component {
   static propTypes = {
     openOrders: PropTypes.array,
     positions: PropTypes.array.isRequired,
-    closePositionStatus: PropTypes.object.isRequired,
     numCompleteSets: PropTypes.object,
     sellCompleteSets: PropTypes.func.isRequired,
     marketId: PropTypes.string.isRequired,
@@ -38,7 +37,6 @@ export default class MarketPositionsList extends Component {
     const {
       openOrders,
       positions,
-      closePositionStatus,
       numCompleteSets,
       sellCompleteSets,
       marketId,
@@ -46,6 +44,8 @@ export default class MarketPositionsList extends Component {
       cancelOrphanedOrder
     } = this.props;
     const s = this.state;
+
+    const hasOrders = openOrders.length > 0;
 
     return (
       <section className={Styles.MarketPositionsList}>
@@ -74,6 +74,7 @@ export default class MarketPositionsList extends Component {
             {positions.length > 0 && (
               <ul className={Styles["MarketPositionsList__table-header"]}>
                 <li>Position</li>
+                {hasOrders && <li />}
                 <li>
                   <span>Net Position</span>
                 </li>
@@ -95,9 +96,6 @@ export default class MarketPositionsList extends Component {
                     P/L
                   </span>
                 </li>
-                <li>
-                  <span>Action</span>
-                </li>
               </ul>
             )}
             {positions.length > 0 && (
@@ -114,7 +112,8 @@ export default class MarketPositionsList extends Component {
                       )}
                       isExtendedDisplay={false}
                       isMobile={false}
-                      closePositionStatus={closePositionStatus}
+                      marketId={marketId}
+                      hasOrders={hasOrders}
                     />
                   ))}
               </div>
@@ -159,7 +158,6 @@ export default class MarketPositionsList extends Component {
                     pending={false}
                     isExtendedDisplay={false}
                     outcome={order}
-                    closePositionStatus={closePositionStatus}
                     cancelOrphanedOrder={cancelOrphanedOrder}
                   />
                 ))}

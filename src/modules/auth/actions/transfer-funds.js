@@ -74,7 +74,6 @@ export function transferFunds(amount, currency, toAddress) {
                   type: "sendReputation"
                 },
                 timestamp: selectCurrentTimestampInSeconds(getState()),
-                universe: universe.id,
                 reputationToSend: amount,
                 _to: to
               })

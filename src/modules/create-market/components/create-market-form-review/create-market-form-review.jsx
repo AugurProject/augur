@@ -23,16 +23,14 @@ export default class CreateMarketReview extends Component {
     meta: PropTypes.object,
     availableEth: PropTypes.string.isRequired,
     availableRep: PropTypes.string.isRequired,
-    updateStateValue: PropTypes.func.isRequired
+    updateStateValue: PropTypes.func.isRequired,
+    gasPrice: PropTypes.number.isRequired
   };
 
   constructor(props) {
     super(props);
 
-    const gasPrice = augur.rpc.getGasPrice();
-
     this.state = {
-      gasPrice,
       gasCost: null,
       validityBond: null,
       designatedReportNoShowReputationBond: null,
@@ -47,7 +45,7 @@ export default class CreateMarketReview extends Component {
         formatGasCostToEther(
           this.props.newMarket.initialLiquidityGas,
           { decimalsRounded: 4 },
-          gasPrice
+          props.gasPrice
         )
       )
     };
@@ -64,7 +62,7 @@ export default class CreateMarketReview extends Component {
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    const { newMarket } = this.props;
+    const { newMarket, gasPrice } = this.props;
     if (
       newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth
     )
@@ -74,7 +72,9 @@ export default class CreateMarketReview extends Component {
         )
       });
     if (
-      newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas
+      newMarket.initialLiquidityGas !==
+        nextProps.newMarket.initialLiquidityGas ||
+      gasPrice !== nextProps.gasPrice
     ) {
       this.setState(
         {
@@ -82,7 +82,7 @@ export default class CreateMarketReview extends Component {
             formatGasCostToEther(
               nextProps.newMarket.initialLiquidityGas,
               { decimalsRounded: 4 },
-              this.state.gasPrice
+              gasPrice
             )
           )
         },
@@ -149,18 +149,16 @@ export default class CreateMarketReview extends Component {
   }
 
   calculateMarketCreationCosts() {
-    const { meta, universe, newMarket } = this.props;
+    const { meta, universe, newMarket, gasPrice } = this.props;
 
     augur.createMarket.getMarketCreationCostBreakdown(
       { universe: universe.id, meta },
       (err, marketCreationCostBreakdown) => {
         if (err) return console.error(err);
         // TODO add designatedReportNoShowReputationBond to state / display
-        const gasPrice = augur.rpc.getGasPrice();
 
         this.setState(
           {
-            gasPrice,
             designatedReportNoShowReputationBond: formatEtherEstimate(
               marketCreationCostBreakdown.designatedReportNoShowReputationBond
             ),

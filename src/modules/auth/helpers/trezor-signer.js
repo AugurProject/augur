@@ -15,8 +15,7 @@ const trezorSigner = async (connect, path, dispatch, rawTxArgs) => {
 
   dispatch(
     updateModal({
-      type: MODAL_TREZOR,
-      info: "Please sign transaction on Trezor"
+      type: MODAL_TREZOR
     })
   );
 
@@ -63,8 +62,7 @@ const trezorSigner = async (connect, path, dispatch, rawTxArgs) => {
       dispatch(
         updateModal({
           type: MODAL_TREZOR,
-          info: `Error signing transaction: "${err}"`,
-          canClose: true
+          error: `Error signing transaction: "${err}"`
         })
       );
     });

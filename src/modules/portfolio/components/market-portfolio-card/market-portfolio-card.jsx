@@ -23,7 +23,6 @@ export default class MarketPortfolioCard extends Component {
   static propTypes = {
     buttonText: PropTypes.string,
     claimTradingProceeds: PropTypes.func,
-    closePositionStatus: PropTypes.object.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
     isMobile: PropTypes.bool,
     linkType: PropTypes.string,
@@ -70,13 +69,13 @@ export default class MarketPortfolioCard extends Component {
   claimProceeds = () => {
     this.props.claimTradingProceeds([this.props.market.id]);
   };
+
   render() {
     const {
       currentTimestamp,
       isMobile,
       linkType,
       market,
-      closePositionStatus,
       orphanedOrders,
       cancelOrphanedOrder
     } = this.props;
@@ -87,7 +86,7 @@ export default class MarketPortfolioCard extends Component {
     let buttonAction;
     switch (linkType) {
       case TYPE_CLAIM_PROCEEDS:
-        localButtonText = "Claim";
+        localButtonText = "Claim Proceeds";
         buttonAction = this.claimProceeds;
         break;
       case TYPE_FINALIZE_MARKET:
@@ -242,9 +241,6 @@ export default class MarketPortfolioCard extends Component {
                       P/L
                     </span>
                   </li>
-                  <li>
-                    <span>Action</span>
-                  </li>
                 </ul>
               )}
             <div className={PositionStyles["MarketPositionsList__table-body"]}>
@@ -268,7 +264,6 @@ export default class MarketPortfolioCard extends Component {
                       isExtendedDisplay
                       isMobile={isMobile}
                       outcome={outcome}
-                      closePositionStatus={closePositionStatus}
                     />
                   ))}
             </div>
@@ -363,7 +358,6 @@ export default class MarketPortfolioCard extends Component {
                           isExtendedDisplay
                           isMobile={isMobile}
                           outcome={outcome}
-                          closePositionStatus={closePositionStatus}
                         />
                       ))
                     )}
@@ -377,7 +371,6 @@ export default class MarketPortfolioCard extends Component {
                       isExtendedDisplay
                       isMobile={isMobile}
                       outcome={order}
-                      closePositionStatus={closePositionStatus}
                       isOrphaned
                       cancelOrphanedOrder={cancelOrphanedOrder}
                     />

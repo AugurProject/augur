@@ -7,7 +7,8 @@ import { selectMarketsToReport } from "modules/reports/selectors/select-markets-
 
 const mapStateToProps = state => ({
   isLogged: state.authStatus.isLogged,
-  markets: selectMarketsToReport(state)
+  markets: selectMarketsToReport(state),
+  universe: state.universe.id
 });
 
 const mapDispatchToProps = dispatch => ({

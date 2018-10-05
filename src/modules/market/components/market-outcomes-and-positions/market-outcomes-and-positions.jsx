@@ -19,7 +19,6 @@ const MarketOutcomesAndPositions = p => (
       <MarketPositionsList
         positions={p.positions}
         openOrders={p.openOrders}
-        closePositionStatus={p.closePositionStatus}
         numCompleteSets={p.numCompleteSets}
         marketId={p.marketId}
         sellCompleteSets={p.sellCompleteSets}

@@ -13,7 +13,7 @@ export default class PositionsMarketsList extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
-    pageinationName: PropTypes.string.isRequired,
+    paginationName: PropTypes.string.isRequired,
     linkType: PropTypes.string,
     positionsDefault: PropTypes.bool,
     claimTradingProceeds: PropTypes.func,
@@ -25,12 +25,12 @@ export default class PositionsMarketsList extends Component {
   constructor(props) {
     super(props);
 
-    const pageinationCount = 10;
+    const paginationCount = 10;
 
     this.state = {
       lowerBound: 1,
-      boundedLength: pageinationCount,
-      pageinationCount,
+      boundedLength: paginationCount,
+      paginationCount,
       filteredMarkets: []
     };
 
@@ -40,7 +40,7 @@ export default class PositionsMarketsList extends Component {
 
   componentWillMount() {
     const { lowerBound, boundedLength } = this.state;
-    this.setFilteredMarkets(lowerBound, boundedLength);
+    this.setFilteredMarkets(this.props.markets, lowerBound, boundedLength);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -81,11 +81,11 @@ export default class PositionsMarketsList extends Component {
       isMobile,
       currentTimestamp,
       title,
-      pageinationName,
+      paginationName,
       noTopPadding,
       addNullPadding
     } = this.props;
-    const { pageinationCount, filteredMarkets } = this.state;
+    const { paginationCount, filteredMarkets } = this.state;
 
     return (
       <div>
@@ -105,14 +105,14 @@ export default class PositionsMarketsList extends Component {
               currentTimestamp={currentTimestamp}
             />
           ))}
-        {markets.length > pageinationCount && (
+        {markets.length > paginationCount && (
           <Paginator
             itemsLength={markets.length}
-            itemsPerPage={pageinationCount}
+            itemsPerPage={paginationCount}
             location={location}
             history={history}
             setSegment={this.setSegment}
-            pageParam={pageinationName}
+            pageParam={paginationName}
           />
         )}
         {markets.length === 0 && (

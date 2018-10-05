@@ -6,21 +6,31 @@ import getValue from "utils/get-value";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 import Styles from "modules/market/components/market-outcomes-categorical/market-outcomes-categorical.styles";
 
-const CategoricalOutcome = ({ className, outcome, lastTradeStatus }) => (
-  <div className={className || Styles.MarketOutcomesCategorical__outcome}>
-    <span className={Styles["MarketOutcomesCategorical__outcome-name"]}>
-      {outcome.name}
+const fontSize = winWidth => (winWidth < 590 ? "0.875rem" : "1.25rem");
+
+const CategoricalOutcome = ({ className, outcome }) => (
+  <div
+    className={className || Styles.MarketOutcomesCategorical__outcome}
+    style={{
+      display: "inline-block",
+      overflow: "hidden",
+      textOverflow: "ellipsis"
+    }}
+  >
+    <span
+      className={Styles["MarketOutcomesCategorical__outcome-name"]}
+      style={{ fontSize: fontSize(window.outerWidth) }}
+    >
+      {window.outerWidth >= 590 ? outcome.name : outcome.name[0] + "... "}
     </span>
-    <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
+    <span
+      className={Styles["MarketOutcomesCategorical__outcome-value"]}
+      style={{ fontSize: fontSize(window.outerWidth) }}
+    >
       {getValue(outcome, "lastPricePercent.full")}
     </span>
-    <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
-      {lastTradeStatus}
-    </span>
-    <MarketOutcomeTradingIndicator
-      outcome={outcome}
-      style={{ right: "0", bottom: "40%", width: "0.325rem" }}
-    />
+    <span>&nbsp;&nbsp;</span>
+    <MarketOutcomeTradingIndicator outcome={outcome} location="categorical" />
   </div>
 );
 
@@ -110,8 +120,7 @@ MarketOutcomesCategorical.propTypes = {
 
 CategoricalOutcome.propTypes = {
   outcome: PropTypes.object.isRequired,
-  className: PropTypes.string,
-  lastTradeStatus: PropTypes.string
+  className: PropTypes.string
 };
 
 export default MarketOutcomesCategorical;
