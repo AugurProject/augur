@@ -1,7 +1,6 @@
 /**
  * @todo Update text for FINALIZE once notification triggering is moved
  */
-import store from "src/store";
 import { augur } from "services/augurjs";
 import { isEmpty } from "lodash/fp";
 import { selectMarket } from "modules/markets/selectors/market";
@@ -14,13 +13,14 @@ import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-va
 import { createBigNumber } from "utils/create-big-number";
 
 export default function setNotificationText(notification, callback) {
-  const result = (dispatch, getState) => {
+  return (dispatch, getState) => {
     if (!notification || isEmpty(notification)) {
       return dispatch(callback(notification));
     }
     if (!callback) {
       throw new Error("Callback function is not set");
     }
+
     if (
       !notification.params ||
       (notification.title && notification.description)
@@ -500,7 +500,7 @@ export default function setNotificationText(notification, callback) {
         break;
       }
     }
-    return dispatch(callback(notification));
+
+    dispatch(callback(notification));
   };
-  return result(store.dispatch, store.getState);
 }

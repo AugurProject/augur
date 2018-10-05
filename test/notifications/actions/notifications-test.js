@@ -4,7 +4,7 @@ import thunk from "redux-thunk";
 import testState from "test/testState";
 import configureMockStore from "redux-mock-store";
 
-describe("modules/notifications/actions/notifications", () => {
+describe.only("modules/notifications/actions/notifications", () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const state = Object.assign({}, testState);
@@ -65,10 +65,10 @@ describe("modules/notifications/actions/notifications", () => {
   });
 
   describe("updateNotification", () => {
-    it("should should return the expected object", () => {
+    it("update should should return the expected object", () => {
       const actual = store.dispatch(
         updateNotifications.updateNotification(1, {
-          testing: "test"
+          testing: "test_update"
         })
       );
 
@@ -77,18 +77,23 @@ describe("modules/notifications/actions/notifications", () => {
         data: {
           id: 1,
           notification: {
-            testing: "test"
+            testing: "test_update"
           }
         }
       };
 
-      assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      console.log("actual results: ", actual);
+      assert.deepEqual(
+        expected,
+        actual,
+        `Didn't return the expected updated object`
+      );
     });
   });
 
   describe("clearNotifications", () => {
-    it("should return the expected object", () => {
-      const actual = updateNotifications.clearNotifications();
+    it("clear should return the expected object", () => {
+      const actual = store.dispatch(updateNotifications.clearNotifications());
 
       const expected = {
         type: updateNotifications.CLEAR_NOTIFICATIONS,
@@ -101,7 +106,7 @@ describe("modules/notifications/actions/notifications", () => {
 
     describe("notificationLevel", () => {
       it("should default to the 'INFO' constant", () => {
-        const actual = updateNotifications.clearNotifications();
+        const actual = store.dispatch(updateNotifications.clearNotifications());
         assert.equal(actual.data.level, notificationLevels.INFO);
       });
 
