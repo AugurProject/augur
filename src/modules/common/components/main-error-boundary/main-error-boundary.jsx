@@ -44,8 +44,6 @@ export default class MainErrorBoundary extends Component {
               <button
                 className={Styles.MainErrorBoundary__refresh}
                 onClick={e => {
-                  // change location to DEFAULT_VIEW and update state.
-                  this.setState({ hasError: false });
                   window.location.reload();
                 }}
               >

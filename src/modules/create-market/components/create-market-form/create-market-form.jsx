@@ -372,7 +372,6 @@ export default class CreateMarketForm extends Component {
                     onClick={e => {
                       this.setState({ awaitingSignature: true }, () => {
                         submitNewMarket(newMarket, history, (err, market) => {
-                          console.log("submitNewMarket CB", err, market);
                           if (err) this.setState({ awaitingSignature: false });
                         });
                       });
