@@ -15,7 +15,7 @@ import { createBigNumber } from "utils/create-big-number";
 export default function setNotificationText(notification, callback) {
   return (dispatch, getState) => {
     if (!notification || isEmpty(notification)) {
-      return callback(notification);
+      return dispatch(callback(notification));
     }
     if (!callback) {
       throw new Error("Callback function is not set");
@@ -24,7 +24,7 @@ export default function setNotificationText(notification, callback) {
       !notification.params ||
       (notification.title && notification.description)
     ) {
-      return callback(notification);
+      return dispatch(callback(notification));
     }
 
     switch (notification.params.type.toUpperCase()) {
@@ -49,7 +49,7 @@ export default function setNotificationText(notification, callback) {
               ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
               } ETH`;
-              return callback(notification);
+              return dispatch(callback(notification));
             })
           );
         }
@@ -69,7 +69,7 @@ export default function setNotificationText(notification, callback) {
               ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
               } ETH`;
-              return callback(notification);
+              return dispatch(callback(notification));
             })
           );
         }
@@ -119,7 +119,7 @@ export default function setNotificationText(notification, callback) {
               } of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
               } ETH`;
-              return callback(notification);
+              return dispatch(callback(notification));
             })
           );
         }
@@ -180,7 +180,7 @@ export default function setNotificationText(notification, callback) {
                   marketInfo.tickSize
                 )} ETH.`;
               }
-              return callback(notification);
+              return dispatch(callback(notification));
             })
           );
         }
@@ -222,7 +222,7 @@ export default function setNotificationText(notification, callback) {
                   )
                 ).formatted
               } REP on "${outcomeDescription}"`;
-              return callback(notification);
+              return dispatch(callback(notification));
             })
           );
         }
@@ -248,7 +248,7 @@ export default function setNotificationText(notification, callback) {
               notification.description = `Report "${outcomeDescription}" on "${
                 marketInfo.description
               }"`;
-              return callback(notification);
+              return dispatch(callback(notification));
             })
           );
         }
@@ -264,7 +264,7 @@ export default function setNotificationText(notification, callback) {
                 .description;
               notification.description =
                 'Finalize market "' + marketDescription + '"';
-              return callback(notification);
+              return dispatch(callback(notification));
             })
           );
         }
@@ -309,7 +309,7 @@ export default function setNotificationText(notification, callback) {
                   )
                 ).formatted
               } REP to child universe "${outcomeDescription}"`;
-              return callback(notification);
+              return dispatch(callback(notification));
             })
           );
         }
@@ -352,7 +352,7 @@ export default function setNotificationText(notification, callback) {
               ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
               } ETH`;
-              return callback(notification);
+              return dispatch(callback(notification));
             })
           );
         }
@@ -499,6 +499,6 @@ export default function setNotificationText(notification, callback) {
         break;
       }
     }
-    dispatch(callback(notification));
+    return dispatch(callback(notification));
   };
 }
