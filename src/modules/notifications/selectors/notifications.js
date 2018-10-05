@@ -24,9 +24,10 @@ export const selectInfoNotificationsAndSeenCount = createSelector(
     const networkId = augur.rpc.getNetworkID();
     const { universe } = store.getState();
 
-    let sortedNotifications = [];
+    let filteredNotifications = notifications;
     if (networkId && universe) {
-      sortedNotifications = notifications
+      // Filter out notifications from other networks/universes
+      filteredNotifications = notifications
         .filter(
           notification =>
             (notification.networkId === networkId.toString() &&
@@ -34,20 +35,14 @@ export const selectInfoNotificationsAndSeenCount = createSelector(
             typeof notification.networkId === "undefined" ||
             typeof notification.universe === "undefined"
         )
-        .reverse()
-        .map((notification, i) => ({
-          ...notification,
-          index: i
-        }))
-        .sort((a, b) => getValue(b, "timestamp") - getValue(a, "timestamp"));
-    } else {
-      sortedNotifications = notifications
-        .map((notification, i) => ({
-          ...notification,
-          index: i
-        }))
-        .sort((a, b) => getValue(b, "timestamp") - getValue(a, "timestamp"));
+        .reverse();
     }
+    const sortedNotifications = filteredNotifications
+      .map((notification, i) => ({
+        ...notification,
+        index: i
+      }))
+      .sort((a, b) => getValue(b, "timestamp") - getValue(a, "timestamp"));
 
     const unseenCount = sortedNotifications.reduce((p, notification) => {
       if (!notification.seen) return 1 + p;
