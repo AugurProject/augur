@@ -158,7 +158,10 @@ export default class MarketLiquidity extends Component {
             You have unsigned orders pending for this Market&apos;s Initial
             Liquidity. Please submit or cancel these orders.
           </h1>
-          <ChevronFlip big stroke="#372e4b" pointDown={!isOpen} />
+          <div>
+            <div style={{ height: "0.445rem" }}>&nbsp;</div>
+            <ChevronFlip big stroke="#372e4b" pointDown={!isOpen} />
+          </div>
         </button>
         {isOpen &&
           pendingLiquidityOrders && (
