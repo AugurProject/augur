@@ -9,7 +9,7 @@ describe("server/getters/get-reporting-summary", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-        t.method = "getReportingSummary"
+        t.method = "getReportingSummary";
         dispatchJsonRpcRequest(db, t, null, (err, reportingSummary) => {
           assert.ifError(err);
           t.assertions(reportingSummary);
