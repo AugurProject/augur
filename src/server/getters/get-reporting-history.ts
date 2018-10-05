@@ -79,7 +79,7 @@ export function getReportingHistory(db: Knex, reporter: Address, universe: Addre
     allParticipants.forEach((row: JoinedReportsMarketsRow<BigNumber>): void => {
       if (!reports[row.universe]) reports[row.universe] = {};
       if (!reports[row.universe][row.marketId]) reports[row.universe][row.marketId] = {initialReporter: null, crowdsourcers: []};
-      const payoutNumerators: Array<string> = ([row.payout0, row.payout1, row.payout2, row.payout3, row.payout4, row.payout5, row.payout6, row.payout7].filter((payout: BigNumber|null): boolean => payout != null) as Array<BigNumber>).map((n) => n.toFixed());
+      const payoutNumerators: Array<string> = ([row.payout0, row.payout1, row.payout2, row.payout3, row.payout4, row.payout5, row.payout6, row.payout7].filter((payout: BigNumber|null): boolean => payout != null) as Array<BigNumber>).map((n) => n.toString());
       const report: UIReport<string> = Object.assign(
         formatBigNumberAsFixed<Partial<UIReport<BigNumber>>, Partial<UIReport<string>>>({
           transactionHash: row.transactionHash,

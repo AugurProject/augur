@@ -8,7 +8,7 @@ export function roundToPrecision(value: string|number|BigNumber, minimumValue: s
   if (bnAbsValue.lt(bnMinimumValue)) return "0";
   if (bnAbsValue.lt(PRECISION.limit)) return bnValue.toPrecision(PRECISION.decimals, roundingMode || BigNumber.ROUND_DOWN);
   if (round === "ceil") {
-    return bnValue.times(PRECISION.multiple).integerValue(BigNumber.ROUND_CEIL).dividedBy(PRECISION.multiple).toFixed();
+    return bnValue.times(PRECISION.multiple).integerValue(BigNumber.ROUND_CEIL).dividedBy(PRECISION.multiple).toString();
   }
-  return bnValue.times(PRECISION.multiple).integerValue(BigNumber.ROUND_FLOOR).dividedBy(PRECISION.multiple).toFixed();
+  return bnValue.times(PRECISION.multiple).integerValue(BigNumber.ROUND_FLOOR).dividedBy(PRECISION.multiple).toString();
 }
