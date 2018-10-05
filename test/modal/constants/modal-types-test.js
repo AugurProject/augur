@@ -16,18 +16,6 @@ describe("modules/modal/constants/modal-types", () => {
     }
   });
   test({
-    description: `should return the expected value 'MODAL_UPORT'`,
-    assertions: () => {
-      const expected = "MODAL_UPORT";
-
-      assert.strictEqual(
-        modalTypes.MODAL_UPORT,
-        expected,
-        `didn't return the expected string`
-      );
-    }
-  });
-  test({
     description: `should return the expected value 'MODAL_NETWORK_MISMATCH'`,
     assertions: () => {
       const expected = "MODAL_NETWORK_MISMATCH";

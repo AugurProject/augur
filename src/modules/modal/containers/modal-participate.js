@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import ModalParticipate from "modules/modal/components/modal-participate/modal-participate";
+import ModalParticipate from "modules/modal/components/modal-participate";
 import { purchaseParticipationTokens } from "modules/reports/actions/participation-tokens-management";
 
 import { closeModal } from "modules/modal/actions/close-modal";

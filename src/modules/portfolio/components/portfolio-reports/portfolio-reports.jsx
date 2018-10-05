@@ -63,7 +63,6 @@ export default class PortfolioReports extends Component {
     this.props.updateModal({
       type: MODAL_CLAIM_REPORTING_FEES_NONFORKED_MARKETS,
       ...this.props.reportingFees,
-      canClose: true,
       modalCallback: this.modalCallback
     });
   }
@@ -79,7 +78,6 @@ export default class PortfolioReports extends Component {
       unclaimedEth: unclaimedForkEth,
       unclaimedRep: unclaimedForkRepStaked,
       forkedMarket,
-      canClose: true,
       modalCallback: this.modalCallback
     });
   };

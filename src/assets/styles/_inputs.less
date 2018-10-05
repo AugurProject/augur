@@ -16,7 +16,7 @@ label {
 
 input,
 textarea {
-  .border(true, @border-all, transparent, @border-width-2);
+  .border(true, @border-all, @color-transparent, @border-width-1);
 
   background-color: @color-input-background;
   color: @color-text-dark;
@@ -26,7 +26,7 @@ textarea {
   width: 100%;
 
   &:focus {
-    .border(true, @border-all, @color-input-border, @border-width-2);
+    .border(true, @border-all, @color-input-border, @border-width-1);
   }
 
   &:disabled {

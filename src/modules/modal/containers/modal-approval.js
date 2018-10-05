@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import ModalApproval from "modules/modal/components/modal-approval/modal-approval";
+import ModalConfirm from "modules/modal/components/modal-confirm";
 
 import { closeModal } from "modules/modal/actions/close-modal";
 import { approveAccount } from "modules/auth/actions/approve-account";
@@ -15,9 +15,28 @@ const mapDispatchToProps = dispatch => ({
     dispatch(approveAccount(onSent, onSuccess))
 });
 
+const mergeProps = (sP, dP, oP) => ({
+  title: "Approve Augur",
+  description: [
+    `In order to trade on Augur you must first approve the Augur Contracts to move Ether on your behalf. You will be unable to trade until approval has completed.`,
+    `After clicking "Approve" you will be asked to sign a transaction, followed by a second transaction to complete your requested trade.`
+  ],
+  cancelAction: () => {
+    sP.modal.approveCallback("close_modal");
+    dP.closeModal();
+  },
+  submitButtonText: "Approve",
+  submitAction: () => {
+    dP.approveAccount(sP.modal.approveOnSent, sP.modal.approveCallback);
+    dP.closeModal();
+  },
+  closeModal: dP.closeModal
+});
+
 export default withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(ModalApproval)
+    mapDispatchToProps,
+    mergeProps
+  )(ModalConfirm)
 );

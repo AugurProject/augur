@@ -21,6 +21,7 @@ export default class MarketLiquidity extends Component {
     submitLiquidityOrders: PropTypes.func.isRequired,
     clearMarketLiquidityOrders: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
+    closeModal: PropTypes.func.isRequired,
     gasPrice: PropTypes.number.isRequired
   };
 
@@ -104,8 +105,9 @@ export default class MarketLiquidity extends Component {
   }
 
   handleClearAllMarketOrders(e) {
-    const { marketId, clearMarketLiquidityOrders } = this.props;
+    const { marketId, clearMarketLiquidityOrders, closeModal } = this.props;
     clearMarketLiquidityOrders(marketId);
+    closeModal();
   }
 
   render() {
@@ -114,6 +116,7 @@ export default class MarketLiquidity extends Component {
       marketId,
       market,
       updateModal,
+      closeModal,
       gasPrice
     } = this.props;
     const { isOpen, estimatedGas, totalCost, showAllOrders } = this.state;
@@ -242,8 +245,10 @@ export default class MarketLiquidity extends Component {
                     e.preventDefault();
                     updateModal({
                       title: "Cancel all unsigned orders?",
-                      description:
-                        "Cancelling will permenantly remove them from your initial liquidity list",
+                      description: [
+                        "Cancelling will permenantly remove them from your initial liquidity list"
+                      ],
+                      cancelAction: closeModal,
                       cancelButtonText: "keep orders",
                       submitAction: this.handleClearAllMarketOrders,
                       submitButtonText: "cancel orders"
@@ -259,22 +264,3 @@ export default class MarketLiquidity extends Component {
     );
   }
 }
-
-// { isWarningShowing &&
-//   <div className={Styles['MarketLiquidity__warning-container']}>
-//     <div>This action cannot be reversed. Are you sure you want to cancel all initial liquidity orders?</div>
-//     <button
-//       onClick={(e) => {
-//         this.setState({ isWarningShowing: false })
-//         e.preventDefault()
-//       }}
-//     >
-//       Cancel
-//     </button>
-//     <button
-//       onClick={this.handleClearAllMarketOrders}
-//     >
-//       Clear All Orders
-//     </button>
-//   </div>
-// }

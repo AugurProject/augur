@@ -1,7 +1,11 @@
 import { eachOfSeries, eachOfLimit } from "async";
 import { augur } from "services/augurjs";
 import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
+import { updateModal } from "modules/modal/actions/update-modal";
+import { checkAccountAllowance } from "modules/auth/actions/approve-account";
+import { createBigNumber } from "utils/create-big-number";
 
+import { MODAL_ACCOUNT_APPROVAL } from "modules/modal/constants/modal-types";
 import { BID } from "modules/transactions/constants/types";
 import { CATEGORICAL } from "modules/markets/constants/market-types";
 
@@ -54,6 +58,7 @@ export const removeLiquidityOrder = ({ marketId, outcomeId, orderId }) => ({
 export const startOrderSending = options => (dispatch, getState) => {
   const { marketId } = options;
   const { loginAccount, marketsData, pendingLiquidityOrders } = getState();
+  const bnAllowance = createBigNumber(loginAccount.allowance, 10);
   const market = marketsData[marketId];
   const orderBook = Object.assign({}, pendingLiquidityOrders[marketId]);
   // if market is undefined (marketsData not loaded yet), try again...
@@ -97,43 +102,77 @@ export const startOrderSending = options => (dispatch, getState) => {
             maxDisplayPrice: maxPrice || 1
           });
           const { onChainAmount, onChainPrice, cost } = tradeCost;
-          augur.api.CreateOrder.publicCreateOrder({
-            meta: loginAccount.meta,
-            tx: { value: augur.utils.convertBigNumberToHexString(cost) },
-            _type: orderType,
-            _attoshares: augur.utils.convertBigNumberToHexString(onChainAmount),
-            _displayPrice: augur.utils.convertBigNumberToHexString(
-              onChainPrice
-            ),
-            _market: marketId,
-            _outcome: outcomeIndex,
-            _tradeGroupId: augur.trading.generateTradeGroupId(),
-            onSent: res => {
-              dispatch(
-                updateLiquidityOrder({
-                  marketId,
-                  order,
-                  outcomeId,
-                  updates: {
-                    onSent: true,
-                    orderId: res.callReturn,
-                    txhash: res.hash
-                  }
-                })
-              );
-              orderCB();
-            },
-            onSuccess: res => {
-              dispatch(removeLiquidityOrder({ marketId, orderId, outcomeId }));
-            },
-            onFailed: err => {
-              console.error(
-                "ERROR creating order in initial market liquidity: ",
-                err
-              );
-              orderCB();
-            }
-          });
+          const sendOrder = () => {
+            augur.api.CreateOrder.publicCreateOrder({
+              meta: loginAccount.meta,
+              tx: { value: augur.utils.convertBigNumberToHexString(cost) },
+              _type: orderType,
+              _attoshares: augur.utils.convertBigNumberToHexString(
+                onChainAmount
+              ),
+              _displayPrice: augur.utils.convertBigNumberToHexString(
+                onChainPrice
+              ),
+              _market: marketId,
+              _outcome: outcomeIndex,
+              _tradeGroupId: augur.trading.generateTradeGroupId(),
+              onSent: res => {
+                dispatch(
+                  updateLiquidityOrder({
+                    marketId,
+                    order,
+                    outcomeId,
+                    updates: {
+                      onSent: true,
+                      orderId: res.callReturn,
+                      txhash: res.hash
+                    }
+                  })
+                );
+                orderCB();
+              },
+              onSuccess: res => {
+                dispatch(
+                  removeLiquidityOrder({ marketId, orderId, outcomeId })
+                );
+              },
+              onFailed: err => {
+                console.error(
+                  "ERROR creating order in initial market liquidity: ",
+                  err
+                );
+                orderCB();
+              }
+            });
+          };
+
+          const promptApprovalandSend = () => {
+            dispatch(
+              updateModal({
+                type: MODAL_ACCOUNT_APPROVAL,
+                approveOnSent: () => {
+                  sendOrder();
+                },
+                approveCallback: (err, res) => {
+                  if (err) return seriesCB(err);
+                }
+              })
+            );
+          };
+
+          if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(cost))) {
+            dispatch(
+              checkAccountAllowance((err, allowance) => {
+                if (allowance === "0") {
+                  promptApprovalandSend();
+                } else {
+                  sendOrder();
+                }
+              })
+            );
+          } else {
+            sendOrder();
+          }
         },
         err => {
           if (err !== null) console.error("ERROR: ", err);

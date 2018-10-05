@@ -7,6 +7,7 @@ import {
   clearMarketLiquidityOrders
 } from "modules/orders/actions/liquidity-management";
 import { updateModal } from "modules/modal/actions/update-modal";
+import { closeModal } from "modules/modal/actions/close-modal";
 import { MODAL_CONFIRM } from "modules/modal/constants/modal-types";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import MarketLiquidity from "modules/market/components/market-liquidity/market-liquidity";
@@ -25,7 +26,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(clearMarketLiquidityOrders(data)),
   removeLiquidityOrder: data => dispatch(removeLiquidityOrder(data)),
   submitLiquidityOrders: data => dispatch(startOrderSending(data)),
-  updateModal: data => dispatch(updateModal({ type: MODAL_CONFIRM, ...data }))
+  updateModal: data => dispatch(updateModal({ type: MODAL_CONFIRM, ...data })),
+  closeModal: () => dispatch(closeModal())
 });
 
 const MarketLiquidityContainer = withRouter(

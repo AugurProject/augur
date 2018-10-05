@@ -1687,16 +1687,7 @@ export const nextIcon = (
 );
 
 export const yellowAlertIcon = (
-  <svg
-    width="35px"
-    height="23px"
-    viewBox="0 0 23 23"
-    version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <title>alert</title>
-    <desc>Created with Sketch.</desc>
-    <defs />
+  <svg viewBox="0 0 23 23">
     <g
       id="Core-Stats-Bar"
       stroke="none"

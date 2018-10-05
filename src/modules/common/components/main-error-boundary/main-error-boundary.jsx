@@ -34,23 +34,35 @@ export default class MainErrorBoundary extends Component {
     if (this.state.hasError) {
       return (
         <section className={Styles.MainErrorBoundary}>
-          <h1 className={Styles.MainErrorBoundary__header}>Error</h1>
-          <p className={Styles.MainErrorBoundary__description}>
-            Sorry, something went wrong! Try reloading this page or returning
-            home.
-          </p>
-          <Link
-            className={Styles.MainErrorBoundary__button}
-            to={{
-              pathname: makePath(DEFAULT_VIEW)
-            }}
-            onClick={e => {
-              // change location to DEFAULT_VIEW and update state.
-              this.setState({ hasError: false });
-            }}
-          >
-            Return Home
-          </Link>
+          <div className={Styles.MainErrorBoundary__container}>
+            <h1 className={Styles.MainErrorBoundary__header}>Error</h1>
+            <p className={Styles.MainErrorBoundary__description}>
+              Sorry, something went wrong! Try reloading this page or returning
+              home.
+            </p>
+            <div className={Styles.MainErrorBoundary__buttons}>
+              <button
+                className={Styles.MainErrorBoundary__refresh}
+                onClick={e => {
+                  window.location.reload();
+                }}
+              >
+                Refresh Page
+              </button>
+              <Link
+                className={Styles.MainErrorBoundary__return}
+                to={{
+                  pathname: makePath(DEFAULT_VIEW)
+                }}
+                onClick={e => {
+                  // change location to DEFAULT_VIEW and update state.
+                  this.setState({ hasError: false });
+                }}
+              >
+                Return Home
+              </Link>
+            </div>
+          </div>
         </section>
       );
     }
