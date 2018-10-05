@@ -3,7 +3,6 @@ import { augur } from "services/augurjs";
 import { UNIVERSE_ID } from "modules/app/constants/network";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
 import { updateEtherBalance } from "modules/auth/actions/update-ether-balance";
-import { allAssetsLoaded } from "modules/auth/selectors/balances";
 import logError from "utils/log-error";
 
 export function updateAssets(callback = logError) {
@@ -29,17 +28,16 @@ export function updateAssets(callback = logError) {
             if (!loginAccount.rep || loginAccount.rep !== repBalance) {
               dispatch(updateLoginAccount({ rep: repBalance }));
             }
-            if (allAssetsLoaded(balances)) callback(null, balances);
           }
         );
+        dispatch(
+          updateEtherBalance((err, etherBalance) => {
+            if (err) return callback(err);
+            balances.eth = etherBalance;
+            callback(null, balances);
+          })
+        );
       }
-    );
-    dispatch(
-      updateEtherBalance((err, etherBalance) => {
-        if (err) console.log("updateEtherBalance error: ", err);
-        balances.eth = etherBalance;
-        if (allAssetsLoaded(balances)) callback(null, balances);
-      })
     );
   };
 }
