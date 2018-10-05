@@ -1,8 +1,11 @@
 import { createSelector } from "reselect";
+
 import { selectNotificationsState } from "src/select-state";
+import store from "src/store";
 
 import * as notificationLevels from "modules/notifications/constants/notifications";
 
+import { augur } from "services/augurjs";
 import getValue from "utils/get-value";
 
 export const selectNotificationsByLevel = level => state =>
@@ -18,7 +21,23 @@ export const selectInfoNotifications = selectNotificationsByLevel(
 export const selectInfoNotificationsAndSeenCount = createSelector(
   selectInfoNotifications,
   notifications => {
-    const sortedNotifications = notifications
+    const networkId = augur.rpc.getNetworkID();
+    const { universe } = store.getState();
+
+    let filteredNotifications = notifications;
+    if (networkId && universe) {
+      // Filter out notifications from other networks/universes
+      filteredNotifications = notifications
+        .filter(
+          notification =>
+            (notification.networkId === networkId.toString() &&
+              notification.universe === universe.id) ||
+            typeof notification.networkId === "undefined" ||
+            typeof notification.universe === "undefined"
+        )
+        .reverse();
+    }
+    const sortedNotifications = filteredNotifications
       .map((notification, i) => ({
         ...notification,
         index: i
