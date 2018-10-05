@@ -24,7 +24,7 @@ describe("loadDisputing action", () => {
     universe: universeAddress
   };
 
-  let mockAugur;
+  let MockAugurJS;
   let mockStore;
   let store;
   let submitRequestStub;
@@ -34,15 +34,15 @@ describe("loadDisputing action", () => {
   });
 
   beforeEach(() => {
-    mockAugur = {
+    MockAugurJS = {
       augurNode: {
         submitRequest: () => {}
       }
     };
 
-    submitRequestStub = stub(mockAugur.augurNode, "submitRequest");
+    submitRequestStub = stub(MockAugurJS.augurNode, "submitRequest");
 
-    loadDisputingRewire.__Rewire__("augur", mockAugur);
+    loadDisputingRewire.__Rewire__("augur", MockAugurJS);
     loadDisputingRewire.__Rewire__(
       "loadMarketsInfoIfNotLoaded",
       () => () => {}

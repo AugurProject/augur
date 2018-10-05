@@ -23,7 +23,7 @@ describe("loadReporting action", () => {
     }
   };
 
-  let mockAugur;
+  let MockAugurJS;
   let mockStore;
   let store;
   let submitRequestStub;
@@ -33,15 +33,15 @@ describe("loadReporting action", () => {
   });
 
   beforeEach(() => {
-    mockAugur = {
+    MockAugurJS = {
       augurNode: {
         submitRequest: () => {}
       }
     };
 
-    submitRequestStub = stub(mockAugur.augurNode, "submitRequest");
+    submitRequestStub = stub(MockAugurJS.augurNode, "submitRequest");
 
-    loadReportingRewire.__Rewire__("augur", mockAugur);
+    loadReportingRewire.__Rewire__("augur", MockAugurJS);
     loadReportingRewire.__Rewire__(
       "loadMarketsInfoIfNotLoaded",
       (marketIds, callback) => {
