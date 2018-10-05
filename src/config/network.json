@@ -68,7 +68,7 @@
     }
   },
   "rinkeby": {
-    "augur-node": "wss://rinkeby.augur.nodes.augur.net",
+    "augur-node": "wss://dev.augur.net/augur-node",
     "ethereum-node": {
       "http": "https://rinkeby.augur.net/ethereum-http",
       "ws": "wss://rinkeby.augur.net/ethereum-ws",
@@ -85,7 +85,7 @@
     }
   },
   "kovan": {
-    "augur-node": "ws://127.0.0.1:9001",
+    "augur-node": "wss://kovan.augur.net/augur-node",
     "ethereum-node": {
       "http": "https://kovan.augur.net/ethereum-http",
       "ws": null,
