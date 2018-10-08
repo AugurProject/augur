@@ -16,7 +16,7 @@ export function processMintLog(db: Knex, augur: Augur, log: FormattedEventLog, c
     logIndex:        log.logIndex,
     sender:          null,
     recipient:       log.target,
-    value:           value.toFixed(),
+    value:           value.toString(),
     blockNumber:     log.blockNumber,
     token,
   }).into("transfers").asCallback((err: Error|null): void => {

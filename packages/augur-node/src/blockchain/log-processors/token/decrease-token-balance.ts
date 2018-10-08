@@ -15,6 +15,6 @@ export function decreaseTokenBalance(db: Knex, augur: Augur, token: Address, own
     if (amount.isZero()) return callback(null);
     if (oldBalance == null) return callback(new Error(`Could not find balance for token decrease (token: ${token}, owner: ${owner})`));
     const balance = oldBalance.balance.minus(amount);
-    db.update({ balance: balance.toFixed() }).into("balances").where({ token, owner }).asCallback(callback);
+    db.update({ balance: balance.toString() }).into("balances").where({ token, owner }).asCallback(callback);
   });
 }

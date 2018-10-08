@@ -26,7 +26,7 @@ export function getForkMigrationTotals(db: Knex, augur: Augur, parentUniverse: A
     callback(null, forkMigrationTotals.reduce((acc: UIForkMigrationTotals<string>, cur) => {
       const payout: Array<string> = [
         cur.payout0, cur.payout1, cur.payout2, cur.payout3, cur.payout4, cur.payout5, cur.payout6, cur.payout7,
-      ].filter((payout: BigNumber|null): boolean => payout != null).map( (payout: BigNumber) => payout.toFixed());
+      ].filter((payout: BigNumber|null): boolean => payout != null).map( (payout: BigNumber) => payout.toString());
       const universeTotals = formatBigNumberAsFixed<Partial<UIForkMigrationTotalsRow<BigNumber>>, Partial<UIForkMigrationTotalsRow<string>>>({
         universe: cur.universe,
         repTotal: cur.repTotal,

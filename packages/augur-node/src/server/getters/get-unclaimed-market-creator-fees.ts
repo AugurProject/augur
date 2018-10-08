@@ -32,7 +32,7 @@ export function getUnclaimedMarketCreatorFees(db: Knex, augur: Augur, marketIds:
       } else {
         return {
           marketId,
-          unclaimedFee: market.marketCreatorFeesBalance.plus(market.balance || ZERO).toFixed(),
+          unclaimedFee: market.marketCreatorFeesBalance.plus(market.balance || ZERO).toString(),
         };
       }
     });

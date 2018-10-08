@@ -125,8 +125,7 @@ export class AugurNodeController {
       this.db = undefined;
     }
     clearOverrideTimestamp();
-    // When we have real shutdown feature in augur.js and ethrpc, implement here.
-    this.augur = new Augur();
+    this.augur.disconnect();
     this.logger.clear();
   }
 
