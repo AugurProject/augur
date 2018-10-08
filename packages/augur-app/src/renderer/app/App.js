@@ -74,13 +74,32 @@ export class App extends Component {
   }
 
   disconnect() {
+    const {
+      addInfoNotification,
+      serverStatus,
+      updateServerAttrib,
+    } = this.props;
+
     if (this.props.serverStatus.AUGUR_NODE_CONNECTED || this.props.serverStatus.GETH_CONNECTED) {
-      this.props.addInfoNotification({
+      addInfoNotification({
         messageType: GEN_INFO,
         message: 'Network disconnect requested',
         time: 2000,
       })
     }
+
+    if (!serverStatus.AUGUR_NODE_CONNECTED && !serverStatus.GETH_CONNECTED && 
+      (serverStatus.CONNECTING || (serverStatus.GETH_CONNECTED && serverStatus.GETH_INITIATED))) 
+    {
+      // need to wait to disconnect, after connecting process is done
+      addInfoNotification({
+        messageType: GEN_INFO,
+        message: 'Network disconnect requested',
+        time: 2000,
+      })
+      updateServerAttrib({ DISCONNECT_REQUESTED: true })
+    }
+  
     const selected = this.props.selected
     stopAugurNode()
     if (selected.name === localLightNodeName) stopGethNode()
@@ -196,4 +215,5 @@ App.propTypes = {
   augurNodeBlockInfo: PropTypes.object,
   addInfoNotification: PropTypes.func,
   downloadModalSeen: PropTypes.bool,
+  updateServerAttrib: PropTypes.func,
 };
