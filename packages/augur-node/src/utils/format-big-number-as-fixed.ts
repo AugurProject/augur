@@ -8,7 +8,7 @@ export function formatBigNumberAsFixed<InputType, OutputType> (row: InputType): 
     if (row.hasOwnProperty(key)) {
       const field: any = row[key];
       if (field && BigNumber.isBigNumber(field)) {
-        copy[key] = field.toFixed();
+        copy[key] = field.toString();
       } else {
         copy[key] = field;
       }

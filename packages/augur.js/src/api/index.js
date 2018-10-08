@@ -1,5 +1,5 @@
 /**
- * Direct no-frills bindings to Augur's contract (Serpent) API.
+ * Direct no-frills bindings to Augur's contract API.
  *  - Parameter positions and types are the same as the underlying
  *    contract method's parameters.
  *  - Parameters should be passed in exactly as they would be

@@ -13,10 +13,10 @@ export function increaseTokenBalance(db: Knex, augur: Augur, token: Address, own
   db.first("balance").from("balances").where({ token, owner }).asCallback((err: Error|null, oldBalance?: BalanceResult): void => {
     if (err) return callback(err);
     if (oldBalance == null) {
-      db.insert({ owner, token, balance: amount.toFixed() }).into("balances").asCallback(callback);
+      db.insert({ owner, token, balance: amount.toString() }).into("balances").asCallback(callback);
     } else {
       const balance = oldBalance.balance.plus(amount);
-      db.update({ balance: balance.toFixed() }).into("balances").where({ token, owner }).asCallback(callback);
+      db.update({ balance: balance.toString() }).into("balances").where({ token, owner }).asCallback(callback);
     }
   });
 }

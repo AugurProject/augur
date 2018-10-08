@@ -34,7 +34,8 @@ export default class CreateMarketForm extends Component {
     submitNewMarket: PropTypes.func.isRequired,
     universe: PropTypes.object.isRequired,
     estimateSubmitNewMarket: PropTypes.func.isRequired,
-    updateNewMarket: PropTypes.func.isRequired
+    updateNewMarket: PropTypes.func.isRequired,
+    gasPrice: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -269,7 +270,8 @@ export default class CreateMarketForm extends Component {
       submitNewMarket,
       universe,
       updateNewMarket,
-      estimateSubmitNewMarket
+      estimateSubmitNewMarket,
+      gasPrice
     } = this.props;
     const s = this.state;
 
@@ -336,6 +338,7 @@ export default class CreateMarketForm extends Component {
                 universe={universe}
                 updateStateValue={this.updateStateValue}
                 keyPressed={this.keyPressed}
+                gasPrice={gasPrice}
               />
             )}
           </div>

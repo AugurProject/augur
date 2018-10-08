@@ -1,18 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import {
-  getDaysRemaining,
-  convertUnixToFormattedDate,
-  getHoursRemaining,
-  getMinutesRemaining
-} from "utils/format-date";
 import { formatAttoRep, formatAttoEth } from "utils/format-number";
 import Styles from "modules/reporting/components/reporting-header/reporting-header.styles";
 import { MODAL_PARTICIPATE } from "modules/modal/constants/modal-types";
 import ForkingContent from "modules/forking/components/forking-content/forking-content";
 import { showMore } from "modules/common/components/icons";
-import classNames from "classnames";
+import TimeProgressBar from "modules/reporting/components/time-progress-bar/time-progress-bar";
 
 export default class ReportingHeader extends Component {
   static propTypes = {
@@ -93,25 +87,7 @@ export default class ReportingHeader extends Component {
       isForkingMarketFinalized,
       isLogged
     } = this.props;
-    const totalHours = getHoursRemaining(
-      reportingWindowStats.endTime,
-      reportingWindowStats.startTime
-    );
-    const hoursLeft = getHoursRemaining(
-      reportingWindowStats.endTime,
-      currentTime
-    );
-    const minutesLeft = getMinutesRemaining(
-      reportingWindowStats.endTime,
-      currentTime
-    );
-    const daysLeft = getDaysRemaining(
-      reportingWindowStats.endTime,
-      currentTime
-    );
-    const formattedDate = convertUnixToFormattedDate(
-      reportingWindowStats.endTime
-    );
+
     const disableParticipate = repBalance === "0";
     const disputeRep =
       formatAttoRep(reportingWindowStats.stake, {
@@ -144,19 +120,6 @@ export default class ReportingHeader extends Component {
         decimals: 4,
         denomination: " REP"
       }).formattedValue || 0;
-
-    const currentPeriodStyle = {
-      width: `${((totalHours - hoursLeft) / totalHours) * 100}%`
-    };
-
-    let timeLeft = `${daysLeft} ${daysLeft === 1 ? "day" : "days"} left`;
-    if (daysLeft === 0)
-      timeLeft = `${hoursLeft} ${hoursLeft === 1 ? "hour" : "hours"} left`;
-    if (hoursLeft === 0) {
-      timeLeft = `${minutesLeft} ${
-        minutesLeft === 1 ? "minute" : "minutes"
-      } left`;
-    }
 
     return (
       <article className={Styles.ReportingHeader}>
@@ -453,53 +416,12 @@ export default class ReportingHeader extends Component {
                         </div>
                       </div>
                     </div>
-
-                    <div
-                      className={classNames(
-                        Styles.ReportingHeader__endTimeRow,
-                        Styles.ReportingHeader__row
-                      )}
-                    >
-                      <span
-                        data-testid="endTime"
-                        className={Styles.ReportingHeader__endTime}
-                      >
-                        <span
-                          className={Styles.ReportingHeader__endTimeValue}
-                          style={{ fontSize: "12px" }}
-                        >
-                          {" "}
-                          {formattedDate.clockTimeLocal}
-                        </span>
-                      </span>
-                    </div>
-                    <div
-                      className={classNames(
-                        Styles.ReportingHeader__row,
-                        Styles.ReportingHeader__endTimeRow
-                      )}
-                    >
-                      <span
-                        data-testid="endTime"
-                        className={Styles.ReportingHeader__endTime}
-                      >
-                        Dispute Window ends{" "}
-                        <span className={Styles.ReportingHeader__endTimeValue}>
-                          {" "}
-                          {formattedDate.formattedSimpleData}{" "}
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-                  <div className={Styles["ReportingHeader__dispute-graph"]}>
-                    <div className={Styles.ReportingHeader__graph}>
-                      <div className={Styles["ReportingHeader__graph-current"]}>
-                        <div style={currentPeriodStyle} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className={Styles.ReportingHeader__daysLeft}>
-                    <span data-testid="daysLeft">{timeLeft}</span>
+                    <TimeProgressBar
+                      endTime={parseInt(reportingWindowStats.endTime, 10)}
+                      currentTime={currentTime}
+                      startTime={reportingWindowStats.startTime}
+                      timePeriodLabel="Dispute Window"
+                    />
                   </div>
                 </div>
               )}

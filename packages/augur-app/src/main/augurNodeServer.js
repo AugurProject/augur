@@ -22,10 +22,10 @@ function AugurNodeServer(selectedNetwork) {
   this.statusLoop = null
   this.selectedNetwork = selectedNetwork
   this.augur = new Augur()
+  this.appDataPath = appData('augur')
   this.augurNodeController = new AugurNodeController(this.augur, this.selectedNetwork, this.appDataPath)
   this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES
   this.bulkSyncing = false
-  this.appDataPath = appData('augur')
   ipcMain.on(START_AUGUR_NODE, this.onStartNetwork.bind(this))
   ipcMain.on(RESET_DATABASE, this.onResetDatabase.bind(this))
   ipcMain.on(STOP_AUGUR_NODE, this.shutDownServer.bind(this))
@@ -177,7 +177,7 @@ AugurNodeServer.prototype.onResetDatabase = function () {
         message: 'Cannot reset database while in use'
       })
     } else {
-      this.augurNodeController.resetDatabase()
+      this.augurNodeController.resetDatabase(this.selectedNetwork.id)
       this.sendMsgToWindowContents(INFO_NOTIFICATION, {
         messageType: GEN_INFO,
         message: 'Database Reset'

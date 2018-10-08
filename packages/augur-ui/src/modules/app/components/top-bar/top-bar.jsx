@@ -5,6 +5,8 @@ import classNames from "classnames";
 
 import { Notifications } from "modules/common/components/icons";
 import ConnectAccount from "modules/auth/containers/connect-account";
+import GasPriceEdit from "modules/app/containers/gas-price-edit";
+
 import makePath from "modules/routes/helpers/make-path";
 import { CATEGORIES } from "modules/routes/constants/views";
 import Styles from "modules/app/components/top-bar/top-bar.styles";
@@ -12,7 +14,7 @@ import Styles from "modules/app/components/top-bar/top-bar.styles";
 const TopBar = props => (
   <header className={Styles.TopBar}>
     {props.isLogged && (
-      <div>
+      <div className={Styles.TopBar__statsContainer}>
         <div
           className={classNames(
             Styles.TopBar__stats,
@@ -69,27 +71,35 @@ const TopBar = props => (
         </div>
       </div>
     )}
+    {props.isLogged && <GasPriceEdit />}
     <ConnectAccount />
-    {props.isLogged && (
-      <div
-        className={classNames(Styles.TopBar__notifications, {
-          [Styles.TopBar__notificationsDark]: props.notificationsVisible
-        })}
-        onClick={e => {
-          props.toggleNotifications();
-        }}
-        role="button"
-        tabIndex="-1"
-      >
-        <div className={Styles["TopBar__notifications-container"]}>
-          <div className={Styles["TopBar__notification-icon"]}>
-            {props.unseenCount > 99
-              ? Notifications("99+", "7.4591451")
-              : Notifications(props.unseenCount, "6.4591451")}
-          </div>
+    <div
+      className={classNames(Styles.TopBar__notifications, {
+        [Styles.TopBar__notificationsDark]: props.notificationsVisible,
+        [Styles.TopBar__notificationsDisabled]: !props.isLogged
+      })}
+      onClick={e => {
+        props.toggleNotifications();
+      }}
+      role="button"
+      tabIndex="-1"
+    >
+      <div className={Styles["TopBar__notifications-container"]}>
+        <div className={Styles["TopBar__notification-icon"]}>
+          {props.unseenCount > 99
+            ? Notifications(
+                "99+",
+                "7.4591451",
+                props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)"
+              )
+            : Notifications(
+                props.unseenCount,
+                "6.4591451",
+                props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)"
+              )}
         </div>
       </div>
-    )}
+    </div>
     <span className={Styles["TopBar__logo-text"]}>
       <Link to={makePath(CATEGORIES)}>Augur</Link>
     </span>

@@ -30,6 +30,7 @@ function Augur() {
   this.constants = require("./constants");
   this.contracts = require("./contracts");
   this.createMarket = require("./create-market");
+  this.disconnect = require("./disconnect");
   this.events = require("./events");
   this.markets = require("./markets");
   this.reporting = require("./reporting");
@@ -38,6 +39,8 @@ function Augur() {
   this.augurNode = require("./augur-node");
   this.utils = require("./utils");
 }
+
+Object.defineProperty(Augur.prototype, "getGasPrice", require("./get-gas-price"));
 
 module.exports = Augur;
 module.exports.version = version;

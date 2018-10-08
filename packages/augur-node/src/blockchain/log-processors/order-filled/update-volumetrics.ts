@@ -37,7 +37,7 @@ function incrementOutcomeVolume(db: Knex, marketId: Address, outcome: number, am
 }
 
 function incrementCategoryPopularity(db: Knex, category: string, amount: BigNumber, callback: ErrorCallback) {
-  db.raw(`UPDATE categories SET popularity = popularity + :amount WHERE category = :category`, { amount: amount.toFixed(), category }).asCallback(callback);
+  db.raw(`UPDATE categories SET popularity = popularity + :amount WHERE category = :category`, { amount: amount.toString(), category }).asCallback(callback);
 }
 
 function setMarketLastTrade(db: Knex, marketId: Address, blockNumber: number, callback: ErrorCallback) {
@@ -64,7 +64,7 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
     .asCallback((err: Error|null, shareTokenRow?: { supply: BigNumber }): void => {
       if (err) return callback(err);
       if (shareTokenRow == null) return callback(new Error(`No shareToken found for market: ${marketId} outcome: ${outcome}`));
-      const sharesOutstanding = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(shareTokenRow.supply, 10), tickSize).toFixed();
+      const sharesOutstanding = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(shareTokenRow.supply, 10), tickSize).toString();
       db("markets").where({ marketId }).update({ sharesOutstanding })
         .asCallback((err: Error|null): void => {
           if (err) return callback(err);

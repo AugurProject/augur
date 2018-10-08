@@ -92,6 +92,7 @@ function connect(connectOptions, callback) {
         console.log("connected to ethereum");
         self.api = api.generateContractApi(functionsAbi);
         self.rpc = rpcInterface.createRpcInterface(ethrpc);
+        self.getGasPrice = undefined;
         ethrpc.getTransport().addReconnectListener(function () {
           events.nodes.ethereum.emit("reconnect");
         });

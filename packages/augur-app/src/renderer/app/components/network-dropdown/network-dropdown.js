@@ -57,6 +57,7 @@ export class NetworkDropdown extends Component {
 	}
 
 	setMenuIsOpen(value) {
+	    document.body.style.overflowY = value ? "hidden" : "visible"; 
 		this.setState({menuIsOpen: value})
 	}
 

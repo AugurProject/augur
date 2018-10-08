@@ -33,7 +33,8 @@ export default class ReportingReport extends Component {
     marketId: PropTypes.string.isRequired,
     submitInitialReport: PropTypes.func.isRequired,
     universe: PropTypes.string.isRequired,
-    availableRep: PropTypes.string.isRequired
+    availableRep: PropTypes.string.isRequired,
+    gasPrice: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -70,6 +71,15 @@ export default class ReportingReport extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (
+      this.props.gasPrice !== nextProps.gasPrice &&
+      this.state.currentStep === 1
+    ) {
+      this.calculateGasEstimates(nextProps.gasPrice);
+    }
+  }
+
   prevPage() {
     this.setState({
       currentStep: this.state.currentStep <= 0 ? 0 : this.state.currentStep - 1
@@ -77,10 +87,10 @@ export default class ReportingReport extends Component {
   }
 
   nextPage() {
-    if (this.state.currentStep === 0) this.calculateGasEstimates();
     this.setState({
       currentStep: this.state.currentStep >= 1 ? 1 : this.state.currentStep + 1
     });
+    this.calculateGasEstimates(this.props.gasPrice);
   }
 
   updateState(newState) {
@@ -106,7 +116,7 @@ export default class ReportingReport extends Component {
     );
   }
 
-  calculateGasEstimates() {
+  calculateGasEstimates(gasPrice) {
     const { submitInitialReport, market } = this.props;
     const { selectedOutcome, isMarketInValid } = this.state;
     submitInitialReport({
@@ -118,7 +128,6 @@ export default class ReportingReport extends Component {
       returnPath: null,
       callback: (err, gasEstimateValue) => {
         if (err) return console.error(err);
-        const gasPrice = augur.rpc.getGasPrice();
         this.setState({
           gasEstimate: formatGasCostToEther(
             gasEstimateValue,

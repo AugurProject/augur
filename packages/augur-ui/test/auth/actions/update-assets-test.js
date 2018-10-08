@@ -85,14 +85,6 @@ describe("modules/auth/actions/update-assets.js", () => {
                   balanceOf: (value, callback) => {
                     callback(ERR, "10000");
                   }
-                },
-                LegacyReputationToken: {
-                  balanceOf: (value, callback) => {
-                    callback(ERR, "2000");
-                  },
-                  allowance: (value, callback) => {
-                    callback(ERR, "0");
-                  }
                 }
               }
             });
@@ -162,9 +154,7 @@ describe("modules/auth/actions/update-assets.js", () => {
               address: "0xtest",
               ethTokens: "10",
               eth: "10",
-              rep: "10",
-              legacyRep: "10",
-              legacyRepAllowance: "0"
+              rep: "10"
             },
             universe: {
               id: "0xuniverse"
@@ -178,7 +168,6 @@ describe("modules/auth/actions/update-assets.js", () => {
             updateAssetsRewireAPI.__Rewire__("speedomatic", speedomatic);
             const testValue = {
               eth: 10,
-              legacyRep: 2000,
               rep: 20
             };
             updateEtherBalanceRewireAPI.__Rewire__("augur", {
@@ -200,14 +189,6 @@ describe("modules/auth/actions/update-assets.js", () => {
                 ReputationToken: {
                   balanceOf: (value, callback) => {
                     callback(null, testValue.rep);
-                  }
-                },
-                LegacyReputationToken: {
-                  balanceOf: (value, callback) => {
-                    callback(null, testValue.legacyRep);
-                  },
-                  allowance: (value, callback) => {
-                    callback(null, testValue.legacyRepAllowance);
                   }
                 }
               }

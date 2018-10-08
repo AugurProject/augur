@@ -1,4 +1,5 @@
 import store from "src/store";
+import { augur } from "services/augurjs";
 import * as notificationLevels from "modules/notifications/constants/notifications";
 import setNotificationText from "modules/notifications/actions/set-notification-text";
 
@@ -15,23 +16,27 @@ export function addCriticalNotification(notification) {
 }
 
 export function addNotification(notification) {
-  if (notification != null) {
-    const callback = notification => {
-      const fullNotification = {
-        type: ADD_NOTIFICATION,
-        data: {
-          notification: {
-            seen: false,
-            level: notificationLevels.INFO,
-            ...notification
+  return (dispatch, getState) => {
+    if (notification != null) {
+      const { universe } = store.getState();
+      const callback = notification => {
+        const fullNotification = {
+          type: ADD_NOTIFICATION,
+          data: {
+            notification: {
+              seen: false,
+              level: notificationLevels.INFO,
+              networkId: augur.rpc.getNetworkID(),
+              universe: universe.id,
+              ...notification
+            }
           }
-        }
+        };
+        return fullNotification;
       };
-      return fullNotification;
-    };
-
-    return setNotificationText(notification, callback);
-  }
+      return dispatch(setNotificationText(notification, callback));
+    }
+  };
 }
 
 export function removeNotification(id) {
@@ -42,35 +47,36 @@ export function removeNotification(id) {
 }
 
 export function updateNotification(id, notification) {
-  const callback = notification => {
-    const fullNotification = {
-      type: UPDATE_NOTIFICATION,
-      data: {
-        id,
-        notification
-      }
+  return (dispatch, getState) => {
+    const callback = notification => {
+      const fullNotification = {
+        type: UPDATE_NOTIFICATION,
+        data: {
+          id,
+          notification
+        }
+      };
+      return fullNotification;
     };
-    return fullNotification;
-  };
 
-  // Set notification.params if it is not already set.
-  // (This occurs the first time the notification is updated.)
-  if (notification && !notification.params) {
-    const { notifications } = store.getState();
-    for (
-      let index = Object.keys(notifications).length - 1;
-      index >= 0;
-      index--
-    ) {
-      if (notifications[index].id === notification.id) {
-        notification.params = notifications[index].params;
-        notification.to = notifications[index].to;
+    // Set notification.params if it is not already set.
+    // (This occurs the first time the notification is updated.)
+    if (notification && !notification.params) {
+      const { notifications } = store.getState();
+      for (
+        let index = Object.keys(notifications).length - 1;
+        index >= 0;
+        index--
+      ) {
+        if (notifications[index].id === notification.id) {
+          notification.params = notifications[index].params;
+          notification.to = notifications[index].to;
+        }
       }
     }
-  }
-  return setNotificationText(notification, callback);
+    return dispatch(setNotificationText(notification, callback));
+  };
 }
-
 // We clear by 'notification level'.
 // This will not surface in the UI just yet.
 export function clearNotifications(

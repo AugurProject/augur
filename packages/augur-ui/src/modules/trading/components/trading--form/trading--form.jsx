@@ -1,11 +1,11 @@
 /* eslint jsx-a11y/label-has-for: 0 */
-
+import { augur } from "services/augurjs";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
-
 import { MARKET, LIMIT } from "modules/transactions/constants/types";
+import { ZERO } from "modules/trades/constants/numbers";
 import {
   YES_NO,
   CATEGORICAL,
@@ -20,7 +20,11 @@ import {
 } from "modules/common/components/icons";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/trading/components/trading--form/trading--form.styles";
-import { formatEther, formatShares } from "utils/format-number";
+import {
+  formatEther,
+  formatShares,
+  formatGasCostToEther
+} from "utils/format-number";
 import Checkbox from "src/modules/common/components/checkbox/checkbox";
 
 class MarketTradingForm extends Component {
@@ -50,7 +54,8 @@ class MarketTradingForm extends Component {
     selectedNav: PropTypes.string.isRequired,
     selectedOutcome: PropTypes.object.isRequired,
     updateState: PropTypes.func.isRequired,
-    doNotCreateOrders: PropTypes.bool.isRequired
+    doNotCreateOrders: PropTypes.bool.isRequired,
+    gasPrice: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -61,6 +66,13 @@ class MarketTradingForm extends Component {
       PRICE: "orderPrice",
       MARKET_ORDER_SIZE: "marketOrderTotal",
       DO_NOT_CREATE_ORDERS: "doNotCreateOrders"
+    };
+    this.gas = {
+      fillGasLimit: augur.constants.WORST_CASE_FILL[props.market.numOutcomes],
+      placeOrderNoSharesGasLimit:
+        augur.constants.PLACE_ORDER_NO_SHARES[props.market.numOutcomes],
+      placeOrderWithSharesGasLimit:
+        augur.constants.PLACE_ORDER_WITH_SHARES[props.market.numOutcomes]
     };
     this.TRADE_MAX_COST = "tradeMaxCost";
     this.MINIMUM_TRADE_VALUE = createBigNumber(1, 10).dividedBy(10000);
@@ -258,7 +270,7 @@ class MarketTradingForm extends Component {
       this.props.selectedOutcome.trade.potentialEthLoss
     ) {
       const props = nextProps || this.props;
-      const { selectedOutcome, availableFunds } = props;
+      const { selectedOutcome, availableFunds, gasPrice } = props;
       const { trade } = selectedOutcome;
       const { totalCost } = trade;
       if (
@@ -271,6 +283,29 @@ class MarketTradingForm extends Component {
         errors = {
           ...errors,
           [this.TRADE_MAX_COST]: ["You need more ETH to make this trade."]
+        };
+        errorCount += 1;
+      }
+
+      const gas =
+        trade.shareCost.formattedValue > 0
+          ? this.gas.placeOrderWithSharesGasLimit
+          : this.gas.fillGasLimit;
+      const gasCost = formatGasCostToEther(
+        gas,
+        { decimalsRounded: 4 },
+        gasPrice
+      );
+      const tradeTotalCost = createBigNumber(totalCost.formattedValue, 10);
+      if (
+        tradeTotalCost.gt(ZERO) &&
+        createBigNumber(gasCost).gt(createBigNumber(tradeTotalCost))
+      ) {
+        errors = {
+          ...errors,
+          [this.TRADE_MAX_COST]: [
+            `Est. gas cost ${gasCost} ETH, higer than order cost`
+          ]
         };
         errorCount += 1;
       }
