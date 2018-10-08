@@ -32,7 +32,8 @@ class MarketTradingWrapper extends Component {
     showOrderPlaced: PropTypes.func.isRequired,
     clearTradeInProgress: PropTypes.func.isRequired,
     selectedOutcome: PropTypes.object,
-    updateSelectedOrderProperties: PropTypes.func.isRequired
+    updateSelectedOrderProperties: PropTypes.func.isRequired,
+    gasPrice: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -178,7 +179,8 @@ class MarketTradingWrapper extends Component {
       market,
       selectedOutcome,
       toggleForm,
-      showOrderPlaced
+      showOrderPlaced,
+      gasPrice
     } = this.props;
     const s = this.state;
 
@@ -273,6 +275,7 @@ class MarketTradingWrapper extends Component {
                 nextPage={this.nextPage}
                 updateState={this.updateState}
                 isMobile={isMobile}
+                gasPrice={gasPrice}
               />
             )}
           </div>

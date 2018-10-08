@@ -214,11 +214,22 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
         )
       );
       dispatch(loadReporting());
+      dispatch(getWinningBalance([log.market]));
       const isOwnMarket = getState().loginAccount.address === author;
       if (isOwnMarket) {
         dispatch(updateAssets());
         dispatch(updateLoggedTransactions(log));
-        if (!log.removed) {
+      }
+      if (!log.removed) {
+        const { notifications } = getState();
+        const doesntExist =
+          !notifications.filter(
+            notification =>
+              notification.id === log.transactionHash &&
+              notification.params.type === "finalize"
+          ).length > 0;
+
+        if (doesntExist && isOwnMarket) {
           // Trigger the notification addition here because calling other
           // API functions, such as `InitialReporter.redeem` can indirectly
           // cause a MarketFinalized event to be logged.
@@ -235,6 +246,8 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
               linkPath: makePath(MY_MARKETS)
             })
           );
+        } else if (!doesntExist) {
+          handleNotificationUpdate(log, dispatch, getState);
         }
       }
     })

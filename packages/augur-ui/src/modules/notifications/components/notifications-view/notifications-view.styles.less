@@ -15,6 +15,10 @@
   z-index: @mask-above;
 }
 
+.NotificationsView__dark {
+  background-color: @color-darkpurple;
+}
+
 .NotificationsView__parent {
   position: absolute;
   right: 0;
@@ -54,6 +58,7 @@
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
+  min-height: 27px;
   padding: 7px 16px;
 }
 
@@ -73,6 +78,10 @@
   &:hover {
     border-bottom: dotted 0.5px @color-white;
     color: @color-white;
+  }
+
+  &:focus {
+    outline: none;
   }
 }
 

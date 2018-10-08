@@ -12,6 +12,7 @@ import {
   ExclamationCircle as InputErrorIcon,
   Withdraw
 } from "modules/common/components/icons";
+import { formatEther, formatRep } from "utils/format-number";
 import isAddress from "modules/auth/helpers/is-address";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/account/components/account-withdraw/account-withdraw.styles";
@@ -21,7 +22,9 @@ export default class AccountWithdraw extends Component {
     isMobileSmall: PropTypes.bool.isRequired,
     eth: PropTypes.object.isRequired,
     rep: PropTypes.object.isRequired,
-    transferFunds: PropTypes.func.isRequired
+    transferFunds: PropTypes.func.isRequired,
+    withdrawReviewModal: PropTypes.func.isRequired,
+    closeModal: PropTypes.func.isRequired
   };
 
   static validateAddress(address, callback) {
@@ -53,6 +56,7 @@ export default class AccountWithdraw extends Component {
     this.state = Object.assign(this.DEFAULT_STATE, { errors: {} });
     this.validateForm = this.validateForm.bind(this);
     this.submitForm = this.submitForm.bind(this);
+    this.withdrawReview = this.withdrawReview.bind(this);
   }
 
   validateAmount(amount, callback) {
@@ -99,6 +103,43 @@ export default class AccountWithdraw extends Component {
         }
       );
     });
+  }
+
+  withdrawReview() {
+    const { withdrawReviewModal, closeModal } = this.props;
+    const s = this.state;
+    if (s.isValid) {
+      withdrawReviewModal({
+        title: "Review Withdrawal",
+        items: [
+          {
+            label: "Recipient",
+            value: s.address,
+            denomination: ""
+          },
+          {
+            label: s.selectedAsset,
+            value:
+              s.selectedAsset === ETH
+                ? formatEther(s.amount).fullPrecision
+                : formatRep(s.amount).fullPrecision,
+            denomination: s.selectedAsset
+          }
+        ],
+        buttons: [
+          {
+            label: "cancel",
+            action: closeModal,
+            type: "gray"
+          },
+          {
+            label: "submit",
+            action: this.submitForm,
+            type: "purple"
+          }
+        ]
+      });
+    }
   }
 
   submitForm() {
@@ -218,7 +259,7 @@ export default class AccountWithdraw extends Component {
             <button
               className={Styles.AccountWithdraw__submitButton}
               disabled={!s.isValid}
-              onClick={this.submitForm}
+              onClick={this.withdrawReview}
               id="withdraw-button"
             >
               Withdraw

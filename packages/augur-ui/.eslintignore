@@ -6,3 +6,4 @@ config/*
 server.js
 postcss.config.js
 scripts/*
+test/*

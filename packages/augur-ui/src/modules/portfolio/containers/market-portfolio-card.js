@@ -9,7 +9,6 @@ import { determineMarketLinkType } from "modules/markets/helpers/determine-marke
 import MarketPortfolioCard from "modules/portfolio/components/market-portfolio-card/market-portfolio-card";
 import { selectMarket } from "modules/markets/selectors/market";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
-import getClosePositionStatus from "modules/positions/selectors/close-position-status";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { cancelOrphanedOrder } from "modules/orders/actions/orphaned-orders";
 import { CATEGORICAL } from "modules/markets/constants/market-types";
@@ -37,7 +36,6 @@ const mapStateToProps = (state, ownProps) => {
         selectMarket(ownProps.market.id),
         state.loginAccount
       ),
-    closePositionStatus: getClosePositionStatus(),
     orphanedOrders: filteredOrphanOrders
   };
 };

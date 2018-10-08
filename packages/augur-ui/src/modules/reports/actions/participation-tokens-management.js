@@ -6,6 +6,7 @@ import { UNIVERSE_ID } from "modules/app/constants/network";
 import { formatGasCostToEther } from "utils/format-number";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
+import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 export const UPDATE_PARTICIPATION_TOKENS_DATA =
   "UPDATE_PARTICIPATION_TOKENS_DATA";
@@ -93,7 +94,7 @@ const callMethod = (method, amount, address, estimateGas = false, callback) => (
     },
     onSuccess: res => {
       if (estimateGas) {
-        const gasPrice = augur.rpc.getGasPrice();
+        const gasPrice = getGasPrice(getState());
         return callback(
           null,
           formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice)

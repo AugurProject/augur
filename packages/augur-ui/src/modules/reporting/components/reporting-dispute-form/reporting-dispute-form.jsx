@@ -14,6 +14,7 @@ import Styles from "modules/reporting/components/reporting-dispute-form/reportin
 import ReportingDisputeProgress from "modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress";
 import { MALFORMED_OUTCOME } from "utils/constants";
 
+const { ETHER } = augur.rpc.constants;
 export default class ReportingDisputeForm extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
@@ -28,7 +29,6 @@ export default class ReportingDisputeForm extends Component {
   };
 
   static constructRepObject(raw) {
-    const { ETHER } = augur.rpc.constants;
     const adjRaw = raw;
 
     return {
@@ -165,6 +165,11 @@ export default class ReportingDisputeForm extends Component {
       return updatedValidations;
     }
 
+    const availableAttoRep = this.state.bnAvailableRep.times(ETHER).toFixed();
+    const availableRepFormatted = ReportingDisputeForm.constructRepObject(
+      availableAttoRep
+    );
+
     const bnStake = createBigNumber(stakeValue);
     if (stakeValue < 0) {
       updatedValidations.stake = "The stake field must be a positive value.";
@@ -172,7 +177,11 @@ export default class ReportingDisputeForm extends Component {
       bnStake.gt(createBigNumber(maxRepObject.formatted.formattedValue, 10))
     ) {
       updatedValidations.stake = `Max value is ${maxRepObject.formatted.full}`;
-    } else if (this.state.bnAvailableRep.lt(bnStake)) {
+    } else if (
+      createBigNumber(availableRepFormatted.formatted.formattedValue).lt(
+        bnStake
+      )
+    ) {
       updatedValidations.stake = `Desposit Stake is greater then your available amount`;
     } else {
       delete updatedValidations.stake;
@@ -205,7 +214,6 @@ export default class ReportingDisputeForm extends Component {
 
   validateStake(rawStakeObj) {
     const { updateState } = this.props;
-    const { ETHER } = augur.rpc.constants;
     const updatedValidations = { ...this.state.validations };
     let completeStakeObj = rawStakeObj;
     const maxInfo = this.calculateMaxRep(this.state.selectedOutcome);
@@ -373,6 +381,16 @@ export default class ReportingDisputeForm extends Component {
       const result = o.id === selectedOutcome;
       return result;
     });
+
+    const stakeNeeded = outcome
+      ? outcome.stakeRemaining
+      : this.state.disputeBondValue;
+
+    const availableAttoRep = this.state.bnAvailableRep.times(ETHER).toFixed();
+
+    if (createBigNumber(availableAttoRep).lt(createBigNumber(stakeNeeded))) {
+      return ReportingDisputeForm.constructRepObject(availableAttoRep);
+    }
 
     return ReportingDisputeForm.constructRepObject(
       outcome ? outcome.stakeRemaining : this.state.disputeBondValue

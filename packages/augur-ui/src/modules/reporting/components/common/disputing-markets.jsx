@@ -19,7 +19,7 @@ export default class DisputingMarkets extends Component {
     outcomes: PropTypes.object.isRequired,
     isForking: PropTypes.bool.isRequired,
     forkingMarketId: PropTypes.string,
-    pageinationCount: PropTypes.number.isRequired,
+    paginationCount: PropTypes.number.isRequired,
     disputableMarketsLength: PropTypes.number,
     showPagination: PropTypes.bool,
     showUpcomingPagination: PropTypes.bool,
@@ -34,9 +34,9 @@ export default class DisputingMarkets extends Component {
 
     this.state = {
       lowerBound: 1,
-      boundedLength: this.props.pageinationCount,
+      boundedLength: this.props.paginationCount,
       lowerBoundUpcoming: 1,
-      boundedLengthUpcoming: this.props.pageinationCount,
+      boundedLengthUpcoming: this.props.paginationCount,
       loadedMarkets: [],
       filteredMarkets: [],
       loadedUpcomingMarkets: [],
@@ -126,7 +126,7 @@ export default class DisputingMarkets extends Component {
       outcomes,
       upcomingMarketsCount,
       forkingMarketId,
-      pageinationCount,
+      paginationCount,
       disputableMarketsLength,
       showPagination,
       showUpcomingPagination,
@@ -177,7 +177,7 @@ export default class DisputingMarkets extends Component {
           showPagination && (
             <Paginator
               itemsLength={disputableMarketsLength}
-              itemsPerPage={pageinationCount}
+              itemsPerPage={paginationCount}
               location={location}
               history={history}
               setSegment={this.setSegment}
@@ -224,7 +224,7 @@ export default class DisputingMarkets extends Component {
           showUpcomingPagination && (
             <Paginator
               itemsLength={upcomingMarketsCount}
-              itemsPerPage={pageinationCount}
+              itemsPerPage={paginationCount}
               location={location}
               history={history}
               setSegment={this.setSegmentUpcoming}

@@ -1,6 +1,5 @@
 import { createBigNumber } from "utils/create-big-number";
 import { createSelector } from "reselect";
-import store from "src/store";
 import {
   selectAccountTradesState,
   selectCurrentTimestamp,
@@ -13,10 +12,6 @@ import { ZERO } from "modules/trades/constants/numbers";
 import { selectLoginAccount } from "modules/auth/selectors/login-account";
 import selectLoginAccountPositions from "modules/positions/selectors/login-account-positions";
 import getValue from "utils/get-value";
-
-export default function() {
-  return selectCoreStats(store.getState());
-}
 
 export const selectOutcomeLastPrice = (marketOutcomeData, outcomeId) => {
   if (!marketOutcomeData || !outcomeId) return null;
@@ -85,9 +80,7 @@ export const selectCoreStats = createSelector(
     blockchain,
     outcomesData,
     loginAccount,
-    loginAccountPositions,
-    totalPLMonth,
-    totalPLDay
+    loginAccountPositions
   ) => [
     // Group 1
     {

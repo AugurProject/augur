@@ -15,6 +15,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       const LoadAccountTrades = { loadAccountTrades: () => {} };
       const UpdateLoginAccount = { updateLoginAccount: () => {} };
       const approveAccount = { checkAccountAllowance: () => {} };
+
       const action = proxyquire(
         "../../../src/modules/auth/actions/load-account-data.js",
         {

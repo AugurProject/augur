@@ -9,7 +9,8 @@ import {
   TYPE_FINALIZE_MARKET,
   TYPE_DISPUTE,
   TYPE_VIEW,
-  TYPE_CLAIM_PROCEEDS
+  TYPE_CLAIM_PROCEEDS,
+  TYPE_TRADE
 } from "modules/markets/constants/link-types";
 import { SCALAR } from "modules/markets/constants/market-types";
 
@@ -135,6 +136,20 @@ const MarketProperties = p => {
                 Finalize
               </button>
             )}
+          {linkType &&
+            linkType !== TYPE_VIEW &&
+            linkType !== TYPE_TRADE &&
+            p.finalizationTime && (
+              <MarketLink
+                className={classNames(Styles.MarketProperties__trade, {
+                  [Styles.disabled]: disableDispute
+                })}
+                id={p.id}
+                linkType={TYPE_VIEW}
+              >
+                {TYPE_VIEW}
+              </MarketLink>
+            )}
           {p.isForking &&
             p.isForkingMarketFinalized &&
             p.forkingMarket !== p.id &&
@@ -145,8 +160,7 @@ const MarketProperties = p => {
                   p.updateModal({
                     type: MODAL_MIGRATE_MARKET,
                     marketId: p.id,
-                    marketDescription: p.description,
-                    canClose: true
+                    marketDescription: p.description
                   })
                 }
               >

@@ -20,7 +20,8 @@ class MarketTrading extends Component {
     market: PropTypes.object.isRequired,
     selectedOrderProperties: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.string,
-    updateSelectedOrderProperties: PropTypes.func.isRequired
+    updateSelectedOrderProperties: PropTypes.func.isRequired,
+    gasPrice: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -87,7 +88,8 @@ class MarketTrading extends Component {
       isLogged,
       isMobile,
       market,
-      selectedOrderProperties
+      selectedOrderProperties,
+      gasPrice
     } = this.props;
     const s = this.state;
 
@@ -127,6 +129,7 @@ class MarketTrading extends Component {
             updateSelectedOrderProperties={
               this.props.updateSelectedOrderProperties
             }
+            gasPrice={gasPrice}
           />
         )}
         {isMobile &&

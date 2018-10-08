@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import ModalNetworkConnect from "modules/modal/components/modal-network-connect/modal-network-connect";
+import ModalNetworkConnect from "modules/modal/components/modal-network-connect";
 
 import { closeModal } from "modules/modal/actions/close-modal";
 import { updateEnv } from "modules/app/actions/update-env";
