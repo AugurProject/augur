@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { augur } from "services/augurjs";
 import classNames from "classnames";
 import { formatAttoRep } from "utils/format-number";
 import { convertUnixToFormattedDate, dateHasPassed } from "utils/format-date";
-import ForkingProgressBar from "modules/forking/components/forking-progress-bar/forking-progress-bar";
+import TimeProgressBar from "modules/reporting/components/time-progress-bar/time-progress-bar";
 import { TYPE_MIGRATE_REP } from "modules/markets/constants/link-types";
 import MarketLink from "modules/market/components/market-link/market-link";
-
+import { createBigNumber } from "utils/create-big-number";
 import Styles from "modules/forking/components/forking-content/forking-content.styles";
 
 const ForkingContent = p => {
@@ -15,7 +16,11 @@ const ForkingContent = p => {
     p.currentTime * 1000,
     Number(p.forkEndTime)
   );
-
+  const startTime = createBigNumber(p.forkEndTime)
+    .minus(
+      createBigNumber(augur.constants.CONTRACT_INTERVAL.FORK_DURATION_SECONDS)
+    )
+    .toNumber();
   const threshold = formatAttoRep(p.forkReputationGoal);
 
   return (
@@ -31,13 +36,11 @@ const ForkingContent = p => {
           p.expanded ? Styles.expanded : ""
         )}
       >
-        <h4>
-          Forking window {forkWindowActive ? `ends` : `ended`}{" "}
-          {unixFormattedDate.formattedLocal}
-        </h4>
-        <ForkingProgressBar
-          forkEndTime={p.forkEndTime}
+        <TimeProgressBar
+          endTime={parseInt(p.forkEndTime, 10)}
           currentTime={p.currentTime}
+          startTime={startTime}
+          timePeriodLabel="Fork Window"
         />
         {forkWindowActive && (
           <p>
