@@ -13,7 +13,7 @@ describe("modules/app/actions/get-augur-node-network-id.js", () => {
     jest.resetModules();
   });
 
-  test("augur-node network id already in state", () => {
+  test("that augur-node network id already in state", () => {
     store = configureMockStore([thunk])({
       connection: { augurNodeNetworkId: "4" }
     });
@@ -22,7 +22,7 @@ describe("modules/app/actions/get-augur-node-network-id.js", () => {
       getAugurNodeNetworkId((err, augurNodeNetworkId) => {
         expect(err).toBeNull();
         expect(augurNodeNetworkId).toStrictEqual("4");
-        expect(store.getActions()).toEqual([]);
+        expect(store.getActions()).toHaveLength(0);
       })
     );
   });

@@ -99,7 +99,7 @@ describe("modules/app/actions/init-augur.js", () => {
       }
     };
 
-    test("Should InitAugur successfully, with logged in account", () => {
+    test("if initializes augur successfully with logged in account", () => {
       store.dispatch(
         initAugur({}, {}, (err, connInfo) => {
           expect(err).toBeUndefined();
@@ -119,7 +119,7 @@ describe("modules/app/actions/init-augur.js", () => {
       );
     });
 
-    test("Should InitAugur successfully, not logged in", () => {
+    test("if initializes augur successfully when not logged in", () => {
       augur.mockConnect = (env, cb) => {
         cb(null, {
           ethereumNode: {
@@ -158,7 +158,7 @@ describe("modules/app/actions/init-augur.js", () => {
       );
     });
 
-    test("Should InitAugur successfully, not logged in, unexpectedNetworkId", () => {
+    test("if initializes augur successfully when not logged in and unexpectedNetworkId", () => {
       augur.mockConnect = (env, cb) => {
         cb(null, {
           ethereumNode: {
@@ -211,7 +211,7 @@ describe("modules/app/actions/init-augur.js", () => {
     });
 
     describe("connectAugur", () => {
-      test("Should connectAugur successfully as an initial connection, with logged in account", () => {
+      test("connectAugur as an initial connection, with logged in account", () => {
         augur.mockConnect = (env, cb) => {
           cb(null, {
             ethereumNode: {
@@ -249,7 +249,7 @@ describe("modules/app/actions/init-augur.js", () => {
         );
       });
 
-      test("Should connectAugur successfully as a reconnection", () => {
+      test("if connectAugur successfully reconnects", () => {
         augur.mockConnect = (env, cb) => {
           cb(null, {
             ethereumNode: {
@@ -294,7 +294,7 @@ describe("modules/app/actions/init-augur.js", () => {
         })
       );
 
-      test("Should handle a undefined augurNode from AugurJS.connect", () => {
+      test("if handles an undefined augurNode from AugurJS.connect", () => {
         augur.mockConnect = (env, cb) => {
           cb(null, {
             ethereumNode: {
@@ -337,7 +337,7 @@ describe("modules/app/actions/init-augur.js", () => {
         );
       });
 
-      test("Should handle a undefined ethereumNode from AugurJS.connect", () => {
+      test("if handles an undefined ethereumNode from AugurJS.connect", () => {
         augur.mockConnect = (env, cb) => {
           cb(null, {
             ethereumNode: undefined,
@@ -373,7 +373,7 @@ describe("modules/app/actions/init-augur.js", () => {
         );
       });
 
-      test("Should handle a error object back from AugurJS.connect", () => {
+      test("if handles an error object back from AugurJS.connect", () => {
         augur.mockConnect = (env, cb) => {
           cb(
             { error: 2000, message: "There was a mistake." },
@@ -403,7 +403,7 @@ describe("modules/app/actions/init-augur.js", () => {
               ethereumNode: undefined,
               augurNode: undefined
             });
-            expect(store.getActions()).deepEqual([]);
+            expect(store.getActions()).toHaveLength(0);
           })
         );
       });

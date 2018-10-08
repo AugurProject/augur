@@ -11,12 +11,12 @@ describe("modules/account/selectors/core-stats", () => {
   describe("selectOutcomeLastPrice", () => {
     test("should return null when 'marketOutcomeData' is undefined", () => {
       const actual = coreStats.selectOutcomeLastPrice(undefined, 1);
-      expect(actual).toStrictEqual(null);
+      expect(actual).toBeNull();
     });
 
     test("should return null when 'outcomeId' is undefined", () => {
       const actual = coreStats.selectOutcomeLastPrice({}, undefined);
-      expect(actual).toStrictEqual(null);
+      expect(actual).toBeNull();
     });
 
     test("should return the price when data exists", () => {
@@ -32,7 +32,7 @@ describe("modules/account/selectors/core-stats", () => {
         { 2: { price: "0.1" } },
         1
       );
-      expect(actual).toStrictEqual(undefined);
+      expect(actual).toBeUndefined();
     });
   });
 
@@ -40,13 +40,13 @@ describe("modules/account/selectors/core-stats", () => {
     test("should return null when 'accountTrades' is undefined", () => {
       const selector = coreStats.createPeriodPLSelector(1);
       const actual = selector.resultFunc(undefined, {}, undefined);
-      expect(actual).toStrictEqual(null);
+      expect(actual).toBeNull();
     });
 
     test("should return null when 'blockchain' is undefined", () => {
       const selector = coreStats.createPeriodPLSelector(1);
       const actual = selector.resultFunc({}, undefined, undefined);
-      expect(actual).toStrictEqual(null);
+      expect(actual).toBeNull();
     });
 
     test("should return 0 for a set period with no trades", () => {
