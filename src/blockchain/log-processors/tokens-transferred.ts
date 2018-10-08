@@ -16,7 +16,7 @@ export function processTokensTransferredLog(db: Knex, augur: Augur, log: Formatt
     logIndex: log.logIndex,
     sender: log.from,
     recipient: log.to,
-    value: value.toFixed(),
+    value: value.toString(),
     blockNumber: log.blockNumber,
     token,
   };

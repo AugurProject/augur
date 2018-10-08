@@ -43,7 +43,7 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
       const marketBalancesRow = balancesByMarketOutcome[`${marketId}_${outcome}`];
       if (marketBalancesRow) {
         const tickSize = numTicksToTickSize(marketDetailsRow.numTicks, marketDetailsRow.minPrice, marketDetailsRow.maxPrice);
-        numShares = augur.utils.convertOnChainAmountToDisplayAmount(marketBalancesRow.balance, tickSize).toFixed();
+        numShares = augur.utils.convertOnChainAmountToDisplayAmount(marketBalancesRow.balance, tickSize).toString();
       }
 
       return {

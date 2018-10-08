@@ -219,7 +219,7 @@ export function normalizePayouts(payoutRow: Payout<BigNumber>): NormalizedPayout
 export function normalizedPayoutsToFixed(payout: NormalizedPayout<BigNumber>): NormalizedPayout<string> {
   return {
     isInvalid: Boolean(payout.isInvalid),
-    payout: payout.payout.map((payout: BigNumber) => payout.toFixed()),
+    payout: payout.payout.map((payout: BigNumber) => payout.toString()),
   };
 }
 

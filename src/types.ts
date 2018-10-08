@@ -8,6 +8,14 @@ import * as https from "https";
 import * as http from "http";
 import * as t from "io-ts";
 
+// BigNumber Configs
+//
+BigNumber.config({
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
+  EXPONENTIAL_AT: [-1E9, 1E9],
+});
+
 export { BlockDetail, FormattedEventLog } from "augur.js";
 
 export enum ReportingState {
@@ -334,9 +342,15 @@ export interface UIFeeWindowCurrent<BigNumberType> {
   startTime: number;
   universe: Address;
   totalStake?: BigNumberType;
+  feeWindowEthFees?: BigNumberType;
+  feeWindowRepStaked?: BigNumberType;
+  feeWindowFeeTokens?: BigNumberType;
+  feeWindowParticipationTokens?: BigNumberType;
   participantContributions?: BigNumberType;
+  participantContributionsCrowdsourcer?: BigNumberType;
+  participantContributionsInitialReport?: BigNumberType;
+  participantParticipationTokens?: BigNumberType;
   participationTokens?: BigNumberType;
-
 }
 
 export interface UIMarketCreatorFee {

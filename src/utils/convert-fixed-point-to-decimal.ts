@@ -5,7 +5,7 @@ export function fixedPointToDecimal(fixedPointValue: BigNumber, conversionFactor
 }
 
 export function convertFixedPointToDecimal(fixedPointValue: string|number|BigNumber, conversionFactor: string|number): string {
-  return fixedPointToDecimal(new BigNumber(fixedPointValue, 10), new BigNumber(conversionFactor, 10)).toFixed();
+  return fixedPointToDecimal(new BigNumber(fixedPointValue, 10), new BigNumber(conversionFactor, 10)).toString();
 }
 
 export function decimalToFixedPoint(decimalValue: BigNumber, conversionFactor: BigNumber): BigNumber {
@@ -13,7 +13,7 @@ export function decimalToFixedPoint(decimalValue: BigNumber, conversionFactor: B
 }
 
 export function convertDecimalToFixedPoint(decimalValue: string|number, conversionFactor: string|number): string {
-  return decimalToFixedPoint(new BigNumber(decimalValue, 10), new BigNumber(conversionFactor, 10)).toFixed();
+  return decimalToFixedPoint(new BigNumber(decimalValue, 10), new BigNumber(conversionFactor, 10)).toString();
 }
 
 export function numTicksToTickSize(numTicks: BigNumber, minPrice: BigNumber, maxPrice: BigNumber): BigNumber {
@@ -21,5 +21,5 @@ export function numTicksToTickSize(numTicks: BigNumber, minPrice: BigNumber, max
 }
 
 export function convertNumTicksToTickSize(numTicks: string|number, minPrice: string|number, maxPrice: string|number): string {
-  return numTicksToTickSize(new BigNumber(maxPrice, 10), new BigNumber(minPrice, 10), new BigNumber(numTicks, 10)).toFixed();
+  return numTicksToTickSize(new BigNumber(maxPrice, 10), new BigNumber(minPrice, 10), new BigNumber(numTicks, 10)).toString();
 }
