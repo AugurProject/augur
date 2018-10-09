@@ -143,4 +143,5 @@ jobs:
         PATH=$(Agent.BuildDirectory)/bin:$PATH
         yarn workspace augur-core run build
         yarn workspace augur-node run build
+        yarn workspace augur-ui run build
       displayName: 'build and test'
