@@ -72,6 +72,8 @@ jobs:
     steps:
       - script: |
           set -euxo pipefail
+          yarn install --ignore-scripts --frozen-lockfile
+          PATH=$(Agent.BuildDirectory)/bin:$PATH
           lerna run test --stream --scope augur-node
         displayName: 'test augur node'
 
@@ -87,6 +89,8 @@ jobs:
     steps:
       - script: |
           set -euxo pipefail
+          yarn install --ignore-scripts --frozen-lockfile
+          PATH=$(Agent.BuildDirectory)/bin:$PATH
           lerna run test --stream --scope augur-ui
         displayName: 'test augur UI'
 
@@ -102,6 +106,8 @@ jobs:
     steps:
       - script: |
           set -euxo pipefail
+          yarn install --ignore-scripts --frozen-lockfile
+          PATH=$(Agent.BuildDirectory)/bin:$PATH
           lerna run test --stream --scope augur.js
         displayName: 'test augur.js'
 
