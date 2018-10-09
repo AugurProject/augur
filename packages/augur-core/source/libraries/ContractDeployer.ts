@@ -167,8 +167,8 @@ Deploying to: ${networkConfiguration.networkName}
         const bytecodeHash = await ContractDeployer.getBytecodeSha(contract.bytecode);
         const augur = new Augur(this.connector, this.accountManager, address, this.connector.gasPrice);
         contract.address = address;
-        await augur.setController(this.controller.address);
-        await this.controller.registerContract(stringTo32ByteHex("Augur"), address, DEPRECATED_COMMIT_HASH_PLACEHOLDER, bytecodeHash);
+        await augur.setController(this.controller!.address);
+        await this.controller!.registerContract(stringTo32ByteHex("Augur"), address, DEPRECATED_COMMIT_HASH_PLACEHOLDER, bytecodeHash);
     }
 
     private async uploadAllContracts(): Promise<void> {
