@@ -69,10 +69,11 @@ jobs:
           node_version: 8.x
         node_9_x:
           node_version: 9.x
-    - script: |
-        set -euxo pipefail
-        lerna run test --stream --scope augur-node
-      displayName: 'test augur node'
+    steps:
+      - script: |
+          set -euxo pipefail
+          lerna run test --stream --scope augur-node
+        displayName: 'test augur node'
 
   - job: Test Augur UI
     pool:
@@ -83,10 +84,11 @@ jobs:
           node_version: 8.x
         node_9_x:
           node_version: 9.x
-    - script: |
-        set -euxo pipefail
-        lerna run test --stream --scope augur-ui
-      displayName: 'test augur UI'
+    steps:
+      - script: |
+          set -euxo pipefail
+          lerna run test --stream --scope augur-ui
+        displayName: 'test augur UI'
 
   - job: Test Augur.js
     pool:
@@ -97,10 +99,11 @@ jobs:
           node_version: 8.x
         node_9_x:
           node_version: 9.x
-    - script: |
-        set -euxo pipefail
-        lerna run test --stream --scope augur.js
-      displayName: 'test augur.js'
+    steps:
+      - script: |
+          set -euxo pipefail
+          lerna run test --stream --scope augur.js
+        displayName: 'test augur.js'
 
   - job: Build
     pool:
