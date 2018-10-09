@@ -73,7 +73,7 @@ jobs:
       - script: |
           set -euxo pipefail
           yarn install --ignore-scripts --frozen-lockfile
-          PATH=$(Agent.BuildDirectory)/bin:$PATH
+          PATH=$(Agent.BuildDirectory)/node_modules/.bin:$PATH
           lerna run test --stream --scope augur-node
         displayName: 'test augur node'
 
@@ -90,7 +90,7 @@ jobs:
       - script: |
           set -euxo pipefail
           yarn install --ignore-scripts --frozen-lockfile
-          PATH=$(Agent.BuildDirectory)/bin:$PATH
+          PATH=$(Agent.BuildDirectory)/node_modules/.bin:$PATH
           lerna run test --stream --scope augur-ui
         displayName: 'test augur UI'
 
@@ -107,7 +107,7 @@ jobs:
       - script: |
           set -euxo pipefail
           yarn install --ignore-scripts --frozen-lockfile
-          PATH=$(Agent.BuildDirectory)/bin:$PATH
+          PATH=$(Agent.BuildDirectory)/node_modules/.bin:$PATH
           lerna run test --stream --scope augur.js
         displayName: 'test augur.js'
 
@@ -137,7 +137,6 @@ jobs:
     - script: |
         set -euxo pipefail
         PATH=$(Agent.BuildDirectory)/bin:$PATH
-        echo $(Agent.BuildDirectory)
         mkdir $(Agent.BuildDirectory)/bin
         echo "$(SOLC_MD5) *$(Agent.BuildDirectory)/bin/solc" > solc.md5
         curl -vL -o $(Agent.BuildDirectory)/bin/solc https://github.com/ethereum/solidity/releases/download/$(SOLC_VERSION)/solc-static-linux
@@ -149,7 +148,6 @@ jobs:
 
     - script: |
         set -euxo pipefail
-        PATH=$(Agent.BuildDirectory)/bin:$PATH
         yarn workspace augur-core run build
         yarn workspace augur-node run build
         yarn workspace augur-ui run build
