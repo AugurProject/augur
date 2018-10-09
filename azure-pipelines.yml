@@ -3,7 +3,7 @@ variables:
     SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
 
 jobs:
-  - job: Augur Core Test
+  - job: Test_Augur_Core
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -60,7 +60,7 @@ jobs:
             yarn workspace augur-core docker:run:test:unit -- $TESTS;
           fi
 
-  - job: Test Augur Node
+  - job: Test_Augur_Node
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -75,7 +75,7 @@ jobs:
           lerna run test --stream --scope augur-node
         displayName: 'test augur node'
 
-  - job: Test Augur UI
+  - job: Test_Augur_UI
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -90,7 +90,7 @@ jobs:
           lerna run test --stream --scope augur-ui
         displayName: 'test augur UI'
 
-  - job: Test Augur.js
+  - job: Test_Augur_js
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
