@@ -16,7 +16,7 @@ export function processCompleteSetsPurchasedOrSoldLog(db: Knex, augur: Augur, lo
     const maxPrice = marketsRow.maxPrice!;
     const numTicks = marketsRow.numTicks!;
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-    const numCompleteSets = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numCompleteSets, 10), tickSize).toFixed();
+    const numCompleteSets = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numCompleteSets, 10), tickSize).toString();
     const completeSetPurchasedData: CompleteSetsRow<string> = {
       marketId,
       account: log.account,

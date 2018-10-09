@@ -21,6 +21,10 @@ describe("modules/auth/actions/load-account-data-from-local-storage.js", () => {
     );
     storageRewireAPI.__Rewire__("updateFavorites", () => {});
     storageRewireAPI.__Rewire__("localStorageRef", localStorageRef);
+    storageRewireAPI.__Rewire__(
+      "registerUserDefinedGasPriceFunction",
+      () => {}
+    );
 
     store.dispatch(loadAccountDataFromLocalStorage("address"));
 

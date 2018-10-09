@@ -73,9 +73,9 @@ export function calculateEarningsPerTimePeriod(augur: Augur, trades: Array<Trade
     return windowPLs.map((pl) => {
       if (pl.profitLoss == null) return pl;
       const profitLoss = Object.assign({}, pl.profitLoss, {
-        realized: sub(pl.profitLoss.realized, basisPL.profitLoss!.realized).toFixed(),
-        total: sub(pl.profitLoss.total, basisPL.profitLoss!.total).toFixed(),
-        unrealized: sub(pl.profitLoss.unrealized, basisPL.profitLoss!.unrealized).toFixed(),
+        realized: sub(pl.profitLoss.realized, basisPL.profitLoss!.realized).toString(),
+        total: sub(pl.profitLoss.total, basisPL.profitLoss!.total).toString(),
+        unrealized: sub(pl.profitLoss.unrealized, basisPL.profitLoss!.unrealized).toString(),
       });
       return Object.assign({}, pl, { profitLoss });
     });
@@ -135,7 +135,7 @@ async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: A
     // defined in the `payouts` table. This will effectively adjust the unrealized
     // profit and loss for the shares held for this outcome for this bucket.
     if (outcomeFinalized !== null && outcomeFinalized.timestamp < bucket.timestamp) {
-      return Object.assign({}, bucket, { lastPrice: outcomeFinalized.price.toFixed() });
+      return Object.assign({}, bucket, { lastPrice: outcomeFinalized.price.toString() });
     }
 
     // This insertion point will give us the place in the sorted "outcomeTrades" array
@@ -143,7 +143,7 @@ async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: A
     // before that location is the "last trade" in that window.
     const insertPoint: number = _.sortedIndexBy(outcomeTrades, { timestamp: bucket.timestamp }, (trade) => trade.timestamp);
     if (insertPoint > 0) {
-      return Object.assign({}, bucket, { lastPrice: outcomeTrades[insertPoint - 1].price!.toFixed() });
+      return Object.assign({}, bucket, { lastPrice: outcomeTrades[insertPoint - 1].price!.toString() });
     }
 
     // If the insertPoint is zero and we get here, then we don't have any

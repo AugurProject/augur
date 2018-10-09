@@ -18,7 +18,7 @@ export function processBurnLog(db: Knex, augur: Augur, log: FormattedEventLog, c
     logIndex:        log.logIndex,
     sender:          log.target,
     recipient:       null,
-    value:           value.toFixed(),
+    value:           value.toString(),
     blockNumber:     log.blockNumber,
     token,
   };

@@ -7,6 +7,7 @@ import { ZERO } from "../../constants";
 import { getCurrentTime } from "../../blockchain/process-block";
 import Augur from "augur.js";
 import * as _ from "lodash";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 
 const RELATIVE_FEE_WINDOW_STATE: {[state: string]: number} = {
   PREVIOUS: -1,
@@ -21,7 +22,11 @@ interface StakeRows {
 
 interface FeeWindowStakes {
   feeWindowEthFees: BigNumber;
-  feeWindowRepStaked: BigNumber;
+  feeWindowRepStaked: {
+    feeWindowRepStaked: BigNumber;
+    feeWindowParticipationTokens: BigNumber;
+    feeWindowFeetokens: BigNumber;
+  };
 }
 
 interface ParticipantStake {
@@ -46,22 +51,28 @@ function fabricateFeeWindow(db: Knex, augur: Augur, universe: Address, targetTim
   });
 }
 
-function getFeeWindowEthFees(db: Knex, augur: Augur, feeWindow: Address, next: AsyncCallback) {
+function getFeeWindowEthFees(db: Knex, augur: Augur, feeWindow: Address, callback: AsyncCallback) {
   const feeWindowEthFeesQuery = db("balances").first("balance")
     .where("owner", feeWindow)
     .where("token", getCashAddress(augur));
   feeWindowEthFeesQuery.asCallback((err: Error|null, results?: { balance: BigNumber }) => {
-    if (err || results == null) return next(err, ZERO);
-    next(null, results.balance);
+    if (err || results == null) return callback(err, ZERO);
+    callback(null, results.balance);
   });
 }
 
-function getFeeWindowRepStaked(db: Knex, feeWindow: Address, feeToken: Address, next: AsyncCallback) {
-  const feeWindowRepStakedQuery = db("token_supply").select("supply")
+function getFeeWindowRepStaked(db: Knex, feeWindow: Address, feeToken: Address, callback: AsyncCallback) {
+  const feeWindowRepStakedQuery = db("token_supply").select("token", "supply")
     .whereIn("token_supply.token", [feeWindow, feeToken]);
   feeWindowRepStakedQuery.asCallback((err: Error|null, results?: Array<{ supply: BigNumber }>) => {
-    if (err || results == null || results.length === 0) return next(err, ZERO);
-    next(null, sumBy(results, "supply").supply);
+    const result = _.keyBy(results, "token");
+    const feeWindowParticipationTokens = result[feeWindow] ? result[feeWindow].supply : ZERO;
+    const feeWindowFeeTokens = result[feeToken] ? result[feeToken].supply : ZERO;
+    callback(null, {
+      feeWindowParticipationTokens,
+      feeWindowFeeTokens,
+      feeWindowRepStaked: feeWindowParticipationTokens.plus(feeWindowFeeTokens),
+    });
   });
 }
 
@@ -130,9 +141,9 @@ export function getFeeWindow(db: Knex, augur: Augur, universe: Address, reporter
     }, (err: Error|null, stakes: FeeWindowStakes): void => {
       if (err) return callback(err);
       const feeWindowResponse = Object.assign({
-        feeWindowEthFees: stakes.feeWindowEthFees.toFixed(),
-        feeWindowRepStaked: stakes.feeWindowRepStaked.toFixed(),
-      }, feeWindowRow);
+        feeWindowEthFees: stakes.feeWindowEthFees.toString(),
+      },
+        formatBigNumberAsFixed(stakes.feeWindowRepStaked), feeWindowRow);
       if (reporter == null) {
         return callback(null, feeWindowResponse);
       }
@@ -145,11 +156,12 @@ export function getFeeWindow(db: Knex, augur: Augur, universe: Address, reporter
         const totalStake = totalParticipantContributions.plus((stakes.participationTokens));
         callback(null, Object.assign(
           {
-            totalStake: totalStake.toFixed(),
-            participantContributions: totalParticipantContributions.toFixed(),
-            participantContributionsInitialReport: stakes.participantContributions.initial_report.toFixed(),
-            participantContributionsCrowdsourcer: stakes.participantContributions.crowdsourcer.toFixed(),
-            participationTokens: stakes.participationTokens.toFixed(),
+            totalStake: totalStake.toString(),
+            participantContributions: totalParticipantContributions.toString(),
+            participantContributionsInitialReport: stakes.participantContributions.initial_report.toString(),
+            participantContributionsCrowdsourcer: stakes.participantContributions.crowdsourcer.toString(),
+            participationTokens: stakes.participationTokens.toString(),
+            participantParticipationTokens: stakes.participationTokens.toString(),
           }, feeWindowResponse,
         ));
       });

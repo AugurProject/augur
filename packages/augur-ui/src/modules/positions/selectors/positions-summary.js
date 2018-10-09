@@ -1,10 +1,6 @@
 import memoize from "memoizee";
 import { createBigNumber } from "utils/create-big-number";
 
-import store from "src/store";
-
-import { closePosition } from "modules/positions/actions/close-position";
-
 import { ZERO } from "modules/trades/constants/numbers";
 
 // import { augur } from 'services/augurjs'
@@ -28,11 +24,6 @@ export const generateOutcomePositionSummary = memoize(
     // todo: check if this calculation is correct for UI
     const averagePrice = accumulate(adjustedPosition, "averagePrice");
     // use qtyShares if it's not 0 or netPosition if it's not 0, otherwise default to 0.
-    const sharesValueToUse =
-      (!qtyShares.eq(0) && qtyShares) ||
-      (!netPosition.eq(0) && netPosition) ||
-      "0";
-    const isClosable = !!createBigNumber(sharesValueToUse).toNumber(); // Based on position, can we attempt to close this position
 
     const marketId =
       Array.isArray(adjustedPosition) && adjustedPosition.length > 0
@@ -54,11 +45,7 @@ export const generateOutcomePositionSummary = memoize(
         averagePrice,
         realized,
         unrealized
-      ),
-      isClosable,
-      closePosition: (marketId, outcomeId) => {
-        store.dispatch(closePosition(marketId, outcomeId));
-      }
+      )
     };
   },
   { max: 50 }

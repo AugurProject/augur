@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Helmet } from "react-helmet";
-import { augur } from "services/augurjs";
 
 import speedomatic from "speedomatic";
 import { createBigNumber } from "utils/create-big-number";
@@ -29,7 +28,8 @@ export default class ReportingDispute extends Component {
     marketId: PropTypes.string.isRequired,
     submitMarketContribute: PropTypes.func.isRequired,
     universe: PropTypes.string.isRequired,
-    availableRep: PropTypes.string.isRequired
+    availableRep: PropTypes.string.isRequired,
+    gasPrice: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -60,6 +60,15 @@ export default class ReportingDispute extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (
+      this.props.gasPrice !== nextProps.gasPrice &&
+      this.state.currentStep === 1
+    ) {
+      this.calculateGasEstimates(nextProps.gasPrice);
+    }
+  }
+
   prevPage() {
     this.setState({
       currentStep: this.state.currentStep <= 0 ? 0 : this.state.currentStep - 1
@@ -70,15 +79,14 @@ export default class ReportingDispute extends Component {
     this.setState({
       currentStep: this.state.currentStep >= 1 ? 1 : this.state.currentStep + 1
     });
-    // estimate gas, user is moving to confirm
-    this.calculateGasEstimates();
+    this.calculateGasEstimates(this.props.gasPrice);
   }
 
   updateState(newState) {
     this.setState(newState);
   }
 
-  calculateGasEstimates() {
+  calculateGasEstimates(gasPrice) {
     const { submitMarketContribute, market } = this.props;
     const { selectedOutcome, isMarketInValid, stakeInfo } = this.state;
     if (createBigNumber(stakeInfo.repValue).gt(ZERO)) {
@@ -94,7 +102,6 @@ export default class ReportingDispute extends Component {
         callback: (err, gasEstimateValue) => {
           if (err) return console.error(err);
 
-          const gasPrice = augur.rpc.getGasPrice();
           this.setState({
             gasEstimate: formatGasCostToEther(
               gasEstimateValue,

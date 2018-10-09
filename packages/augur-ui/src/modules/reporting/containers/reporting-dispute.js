@@ -10,7 +10,7 @@ import {
 import { selectMarket } from "modules/markets/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
-
+import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { submitMarketContribute } from "modules/reports/actions/submit-market-contribute";
 
 const mapStateToProps = state => ({
@@ -20,7 +20,8 @@ const mapStateToProps = state => ({
   universe: state.universe.id,
   marketsData: state.marketsData,
   isMobile: state.appStatus.isMobile,
-  availableRep: getValue(state, "loginAccount.rep") || "0"
+  availableRep: getValue(state, "loginAccount.rep") || "0",
+  gasPrice: getGasPrice(state)
 });
 
 const mapDispatchToProps = dispatch => ({

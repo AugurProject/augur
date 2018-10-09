@@ -340,9 +340,11 @@ export default class AppView extends Component {
   }
 
   toggleNotifications() {
-    this.setState({
-      isNotificationsVisible: !this.state.isNotificationsVisible
-    });
+    if (this.props.isLogged) {
+      this.setState({
+        isNotificationsVisible: !this.state.isNotificationsVisible
+      });
+    }
   }
 
   toggleMenuTween(menuKey, forceOpen, cb) {

@@ -33,6 +33,7 @@ const CreateMarketView = p => (
         universe={p.universe}
         currentTimestamp={p.currentTimestamp}
         estimateSubmitNewMarket={p.estimateSubmitNewMarket}
+        gasPrice={p.gasPrice}
       />
     </div>
   </section>
@@ -46,7 +47,8 @@ CreateMarketView.propTypes = {
   history: PropTypes.object.isRequired,
   universe: PropTypes.object.isRequired,
   isMobileSmall: PropTypes.bool.isRequired,
-  estimateSubmitNewMarket: PropTypes.func.isRequired
+  estimateSubmitNewMarket: PropTypes.func.isRequired,
+  gasPrice: PropTypes.number.isRequired
 };
 
 export default CreateMarketView;

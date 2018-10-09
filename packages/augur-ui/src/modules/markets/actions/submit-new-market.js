@@ -29,7 +29,7 @@ export function submitNewMarket(newMarket, history, callback = noop) {
 
     dispatch(
       getHasApproval(hasOrders, err => {
-        if (err) return console.error("ERROR: ", err);
+        if (err) return callback(err);
         createMarket({
           ...formattedNewMarket,
           meta: loginAccount.meta,

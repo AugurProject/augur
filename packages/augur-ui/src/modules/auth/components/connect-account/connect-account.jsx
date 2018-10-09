@@ -117,10 +117,7 @@ export default class ConnectAccount extends Component {
           className={classNames(
             Styles.ConnectAccount__connectDropdown,
             ToggleHeightStyles["toggle-height-target"],
-            ToggleHeightStyles["toggle-height-target-quick"],
-            {
-              [Styles.ConnectAccount__connectDropdown__isLogged]: !isLogged
-            }
+            ToggleHeightStyles["toggle-height-target-quick"]
           )}
         >
           <ConnectDropdown toggleDropdown={this.toggleDropdown} />

@@ -6,11 +6,13 @@ import { createBigNumber } from "utils/create-big-number";
 import { selectMarket } from "modules/markets/selectors/market";
 import MarketTrading from "modules/trading/components/trading/trading";
 import { clearTradeInProgress } from "modules/trades/actions/update-trades-in-progress";
+import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 const mapStateToProps = state => ({
   availableFunds: createBigNumber(state.loginAccount.eth || 0),
   isLogged: state.authStatus.isLogged,
-  isMobile: state.appStatus.isMobile
+  isMobile: state.appStatus.isMobile,
+  gasPrice: getGasPrice(state)
 });
 
 const mapDispatchToProps = dispatch => ({

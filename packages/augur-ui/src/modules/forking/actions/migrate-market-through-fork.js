@@ -2,6 +2,7 @@ import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { formatGasCostToEther } from "utils/format-number";
 import { closeModal } from "modules/modal/actions/close-modal";
+import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 export const migrateMarketThroughFork = (
   marketId,
@@ -22,7 +23,7 @@ export const migrateMarketThroughFork = (
     onSuccess: res => {
       if (estimateGas) {
         // if just a gas estimate, return the gas cost.
-        const gasPrice = augur.rpc.getGasPrice();
+        const gasPrice = getGasPrice(getState());
         return callback(
           null,
           formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice)

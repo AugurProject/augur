@@ -17,8 +17,8 @@ export class SearchSqlite implements SearchProvider {
     await this.db.schema.raw(`CREATE VIRTUAL TABLE search_en USING fts4(marketId, category, tags, shortDescription, longDescription, scalarDenomination, resolutionSource)`);
     const markets: Array<MarketsRow<BigNumber>>  = await this.db.select("*").from("markets");
     for (const market of markets) {
-      await this.addSearchData(formatBigNumberAsFixed(market));
-    }
+        await this.addSearchData(contentSearchBuilder(formatBigNumberAsFixed(market)));
+      }
   }
 
   public async migrateDown(): Promise<any> {

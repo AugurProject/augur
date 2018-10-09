@@ -43,7 +43,7 @@ describe("order-orphaned", () => {
         orderType: "0",
         shareToken: "0x0100000000000000000000000000000000000000",
         price: "7500",
-        amount: augur.utils.convertDisplayAmountToOnChainAmount("3", new BigNumber(1), new BigNumber(10000)).toFixed(),
+        amount: augur.utils.convertDisplayAmountToOnChainAmount("3", new BigNumber(1), new BigNumber(10000)).toString(),
         sharesEscrowed: "0",
         moneyEscrowed: fix("2.25", "string"),
         creator: "CREATOR_ADDRESS",

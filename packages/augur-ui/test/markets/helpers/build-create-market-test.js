@@ -23,7 +23,7 @@ describe("modules/markets/helpers/build-create-market", () => {
     buildCreateMarket,
     __RewireAPI__
   } = require("modules/markets/helpers/build-create-market");
-  const mockAugur = {
+  const MockAugurJS = {
     createMarket: {
       createCategoricalMarket: () => {},
       createYesNoMarket: () => {},
@@ -33,7 +33,7 @@ describe("modules/markets/helpers/build-create-market", () => {
       DEFAULT_MAX_GAS: "blah"
     }
   };
-  __RewireAPI__.__Rewire__("augur", mockAugur);
+  __RewireAPI__.__Rewire__("augur", MockAugurJS);
   test({
     description: `should build new market data for categorical market`,
     state: {
@@ -97,7 +97,7 @@ describe("modules/markets/helpers/build-create-market", () => {
       );
       assert.deepEqual(
         actual.createMarket,
-        mockAugur.createMarket.createCategoricalMarket,
+        MockAugurJS.createMarket.createCategoricalMarket,
         `Didn't form the method object as expected`
       );
     }
@@ -165,7 +165,7 @@ describe("modules/markets/helpers/build-create-market", () => {
       );
       assert.deepEqual(
         actual.createMarket,
-        mockAugur.createMarket.createYesNoMarket,
+        MockAugurJS.createMarket.createYesNoMarket,
         `Didn't form the method object as expected`
       );
     }
@@ -241,7 +241,7 @@ describe("modules/markets/helpers/build-create-market", () => {
       );
       assert.deepEqual(
         actual.createMarket,
-        mockAugur.createMarket.createScalarMarket,
+        MockAugurJS.createMarket.createScalarMarket,
         `Didn't form the method object as expected`
       );
     }

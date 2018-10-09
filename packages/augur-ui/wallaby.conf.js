@@ -5,24 +5,24 @@ module.exports = function(wallaby) {
     files: [
       "src/**/*.@(js|jsx|json|less)",
       "!src/**/*[.-]test.js?(x)",
-      "test/**/*.@(less|json)",
-      "test/*.js"
+      "test/testState.js"
     ],
-    tests: ["src/**/*[.-]test.js?(x)", "test/**/*.js?(x)", "!test/*.js"],
+    tests: ["src/**/*[.-]test.js?(x)"],
     compilers: {
       "**/*.js?(x)": wallaby.compilers.babel()
     },
     env: {
-      type: "node"
+      type: "node",
+      runner: "node"
     },
-    testFramework: "mocha",
-    setup: function(wallaby) {
-      // eslint-disable-line
-      require("./test/setup");
-      require("chai/register-assert");
-    },
-    delays: {
-      run: 500
+
+    testFramework: "jest",
+
+    setup(wallaby) {
+      const jestConfig = require("./package.json").jest;
+      // for example:
+      // jestConfig.globals = { "__DEV__": true };
+      wallaby.testFramework.configure(jestConfig);
     }
   };
 };

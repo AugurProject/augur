@@ -81,7 +81,10 @@ const MarketOutcomes = p => {
           <span className={Styles["MarketOutcomes__current-denomination"]}>
             {lastPriceDenomination}
           </span>
-          <MarketOutcomeTradingIndicator outcome={p.outcomes[0]} />
+          <MarketOutcomeTradingIndicator
+            outcome={p.outcomes[0]}
+            location="yes-no-scalar"
+          />
         </div>
       </span>
     </div>

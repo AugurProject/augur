@@ -16,8 +16,8 @@ describe("purchase participation tokens tests", () => {
   const ACTIONS = {
     CLOSE_MODAL: { type: "CLOSE_MODAL" }
   };
-  const mockRPC = { getGasPrice: () => "0x2fdaf" };
 
+  ReWireModule.__Rewire__("getGasPrice", () => 100000);
   afterEach(() => {
     store.clearActions();
   });
@@ -46,10 +46,8 @@ describe("purchase participation tokens tests", () => {
             assert.isFunction(cb);
             cb(null, { feeWindow: "0xfeeWindow01" });
           }
-        },
-        rpc: mockRPC
+        }
       });
-
       store.dispatch(
         purchaseParticipationTokens("10.25", false, (err, res) => {
           assert.isNull(err);
@@ -87,8 +85,7 @@ describe("purchase participation tokens tests", () => {
             assert.isFunction(cb);
             cb(null, { feeWindow: "0xfeeWindow01" });
           }
-        },
-        rpc: mockRPC
+        }
       });
 
       store.dispatch(
@@ -97,7 +94,7 @@ describe("purchase participation tokens tests", () => {
           const expectedResponse = formatGasCostToEther(
             "0xdeadbeef",
             { decimalsRounded: 4 },
-            "0x2fdaf"
+            100000
           );
           assert.deepEqual(res, expectedResponse);
           const expectedActions = [];
@@ -133,8 +130,7 @@ describe("purchase participation tokens tests", () => {
             assert.isFunction(cb);
             cb(null, { feeWindow: "0xfeeWindow01" });
           }
-        },
-        rpc: mockRPC
+        }
       });
 
       store.dispatch(
@@ -166,8 +162,7 @@ describe("purchase participation tokens tests", () => {
             assert.isFunction(cb);
             cb({ error: 1000, message: "Uh-Oh!" });
           }
-        },
-        rpc: mockRPC
+        }
       });
 
       store.dispatch(
@@ -204,8 +199,7 @@ describe("purchase participation tokens tests", () => {
             assert.isFunction(cb);
             cb(null);
           }
-        },
-        rpc: mockRPC
+        }
       });
 
       store.dispatch(

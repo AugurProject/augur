@@ -62,7 +62,7 @@ const mapStateToProps = state => {
     upcomingMarkets: upcomingDisputableMarkets,
     upcomingMarketsCount: upcomingDisputableMarkets.length,
     showUpcomingPagination: upcomingDisputableMarkets.length > PAGINATION_COUNT,
-    pageinationCount: PAGINATION_COUNT,
+    paginationCount: PAGINATION_COUNT,
     outcomes: disputeOutcomes,
     resolvedMarkets,
     isForking: state.universe.isForking,

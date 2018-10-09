@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import { App } from "../App";
 import { updateConfig } from "../actions/configuration"
 import { addInfoNotification } from "../actions/notifications"
+import { updateServerAttrib } from "../actions/serverStatus"
 
 const mapStateToProps = state => {
 
@@ -18,7 +19,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   updateConfig: sslEnabled => dispatch(updateConfig(sslEnabled)),
-  addInfoNotification: message => dispatch(addInfoNotification(message))
+  addInfoNotification: message => dispatch(addInfoNotification(message)),
+  updateServerAttrib: obj => dispatch(updateServerAttrib(obj)),
 });
 
 const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
