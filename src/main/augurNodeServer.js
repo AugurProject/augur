@@ -34,9 +34,11 @@ function AugurNodeServer(selectedNetwork) {
 // We wait until the window is provided so that if it fails we can send an error message to the renderer
 AugurNodeServer.prototype.setWindow = function (window) {
   this.window = window
-  window.once('closed', () => {
-    this.window = null
-  })
+  if (window != null) {
+    window.once('closed', () => {
+      this.window = null
+    })
+  }
 }
 
 AugurNodeServer.prototype.startServer = function () {
