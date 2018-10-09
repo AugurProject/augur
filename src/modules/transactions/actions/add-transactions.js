@@ -432,11 +432,18 @@ function processReport(market, transaction) {
   return header;
 }
 
-export function getOutcome(market, outcome) {
+export function getOutcome(
+  market,
+  outcome,
+  alwaysReturnYesForBinaryMarket = true
+) {
   let value = null;
   if (!market || isNaN(outcome)) return outcome;
   if (market.marketType === YES_NO) {
     value = "Yes";
+    if (!alwaysReturnYesForBinaryMarket && outcome === "0") {
+      value = "No";
+    }
   } else if (market.marketType === CATEGORICAL) {
     value = market.outcomes[outcome] && market.outcomes[outcome].description;
   } else {

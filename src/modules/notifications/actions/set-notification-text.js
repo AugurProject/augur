@@ -45,7 +45,7 @@ export default function setNotificationText(notification, callback) {
                 marketInfo,
                 notification.log.outcome
               );
-              notification.description = `Cancel order for ${formatShares(
+              notification.description = `Cancel orphaned order for ${formatShares(
                 notification.log.quantity
               ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
@@ -215,7 +215,7 @@ export default function setNotificationText(notification, callback) {
               const outcomeDescription =
                 outcome === null
                   ? "Market Is Invalid"
-                  : getOutcome(marketInfo, outcome);
+                  : getOutcome(marketInfo, outcome, false);
               notification.description = `Place ${
                 formatRep(
                   createBigNumber(notification.params._amount).dividedBy(
@@ -245,7 +245,7 @@ export default function setNotificationText(notification, callback) {
               const outcomeDescription =
                 outcome === null
                   ? "Market Is Invalid"
-                  : getOutcome(marketInfo, outcome);
+                  : getOutcome(marketInfo, outcome, false);
               notification.description = `Report "${outcomeDescription}" on "${
                 marketInfo.description
               }"`;
@@ -302,7 +302,7 @@ export default function setNotificationText(notification, callback) {
                 notification.params._payoutNumerators,
                 notification.params._invalid
               );
-              const outcomeDescription = getOutcome(marketInfo, outcome);
+              const outcomeDescription = getOutcome(marketInfo, outcome, false);
               notification.description = `Migrate ${
                 formatRep(
                   createBigNumber(notification.log.value).dividedBy(
