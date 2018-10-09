@@ -9,29 +9,29 @@ jobs:
     strategy:
       maxParallel: 10
       matrix:
-        test1:
+        trading and libs:
           TESTS: tests/test*.py tests/libraries tests/trading
-        test2:
+        reporting:
           TESTS: tests/reporting
-        test3:
+        fuzzy:
           TESTS: tests/fuzzy
-        test4:
+        unit:
           TESTS: tests/unit
-        test5:
+        trading and libs subfork:
           TESTS: tests/test*.py tests/libraries tests/trading --subFork
-        test6:
+        reporting subfork:
           TESTS: tests/reporting --subFork
-        test7:
+        fuzzy subfork:
           TESTS: tests/fuzzy --subFork
-        test8:
+        unit subfork:
           TESTS: tests/unit --subFork
-        test9:
+        geth integration:
           TESTS: integration:geth
-        test10:
+        parity integration:
           TESTS: integration:parity
-        test11:
+        security mithril:
           TESTS: security:mythril
-        test12:
+        security main:
           TESTS: security:maian
 
     steps:
