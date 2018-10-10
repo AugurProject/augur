@@ -18,7 +18,6 @@ export const PRECISION: Precision = {
   multiple: multiple.toString(),
 };
 
-
 export const ETHER = "ether";
 
 export const MINIMUM_TRADE_SIZE = "0.000001";
