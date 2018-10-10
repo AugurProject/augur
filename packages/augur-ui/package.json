@@ -26,7 +26,7 @@
     "lit": "echo 'so lit'",
     "eslint-check": "eslint --print-config . | eslint-config-prettier-check",
     "format": "prettier --write '**/*.{js,jsx,ts,tsx}'",
-    "test": "node scripts/test.js",
+    "test": "jest -c=jest.unit.config.js",
     "kickoff": "./scripts/setup-local-dev.sh",
     "___": "",
     "link": "npm link augur.js keythereum",
