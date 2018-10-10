@@ -16,6 +16,7 @@ describe("blockchain/log-processors/market-created", () => {
       outcomes: next => db("outcomes").where({marketId: params.log.market}).asCallback(next),
       tokens: next => db("tokens").select(["contractAddress", "symbol", "marketId", "outcome"]).where({marketId: params.log.market}).asCallback(next),
       search: next => db("search_en").where({marketId: params.log.market}).asCallback(next),
+      transfers: next => db("transfers").where({ recipient: params.log.market }).asCallback(next),
     }, callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
@@ -209,6 +210,15 @@ describe("blockchain/log-processors/market-created", () => {
             marketId: "0x1111111111111111111111111111111111111111",
             outcome: 1,
           }],
+          transfers: [{
+            blockNumber: 7,
+            logIndex: 0,
+            recipient: "0x1111111111111111111111111111111111111111",
+            sender: "0x0000000000000000000000000000000000000b0b",
+            token: "ether",
+            transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A000",
+            value: new BigNumber("800", 10),
+          }],
         });
       },
       onRemoved: (err, records) => {
@@ -223,6 +233,7 @@ describe("blockchain/log-processors/market-created", () => {
           outcomes: [],
           search: [],
           tokens: [],
+          transfers: [],
         });
       },
     },
@@ -409,6 +420,15 @@ describe("blockchain/log-processors/market-created", () => {
             marketId: "0x1111111111111111111111111111111111111112",
             outcome: 3,
           }],
+          transfers: [{
+            blockNumber: 7,
+            logIndex: 0,
+            recipient: "0x1111111111111111111111111111111111111112",
+            sender: "0x0000000000000000000000000000000000000b0b",
+            token: "ether",
+            transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A001",
+            value: new BigNumber("800", 10),
+          }],
         });
       },
       onRemoved: (err, records) => {
@@ -423,6 +443,7 @@ describe("blockchain/log-processors/market-created", () => {
           outcomes: [],
           search: [],
           tokens: [],
+          transfers: [],
         });
       },
     },
@@ -584,6 +605,15 @@ describe("blockchain/log-processors/market-created", () => {
             marketId: "0x1111111111111111111111111111111111111113",
             outcome: 1,
           }],
+          transfers: [{
+            blockNumber: 7,
+            logIndex: 0,
+            recipient: "0x1111111111111111111111111111111111111113",
+            sender: "0x0000000000000000000000000000000000000b0b",
+            token: "ether",
+            transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A002",
+            value: new BigNumber("800", 10),
+          }],
         });
       },
       onRemoved: (err, records) => {
@@ -598,6 +628,7 @@ describe("blockchain/log-processors/market-created", () => {
           outcomes: [],
           search: [],
           tokens: [],
+          transfers: [],
         });
       },
     },
@@ -755,6 +786,15 @@ describe("blockchain/log-processors/market-created", () => {
             marketId: "0x1111111111111111111111111111111111111111",
             outcome: 1,
           }],
+          transfers: [{
+            blockNumber: 7,
+            logIndex: 0,
+            recipient: "0x1111111111111111111111111111111111111111",
+            sender: "0x0000000000000000000000000000000000000b0b",
+            token: "ether",
+            transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A003",
+            value: new BigNumber("800", 10),
+          }],
         });
       },
       onRemoved: (err, records) => {
@@ -769,6 +809,7 @@ describe("blockchain/log-processors/market-created", () => {
           outcomes: [],
           search: [],
           tokens: [],
+          transfers: [],
         });
       },
     },
@@ -934,6 +975,15 @@ describe("blockchain/log-processors/market-created", () => {
             marketId: "0x1111111111111111111111111111111111111111",
             outcome: 1,
           }],
+          transfers: [{
+            blockNumber: 7,
+            logIndex: 0,
+            recipient: "0x1111111111111111111111111111111111111111",
+            sender: "0x0000000000000000000000000000000000000b0b",
+            token: "ether",
+            transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A004",
+            value: new BigNumber("800", 10),
+          }],
         });
       },
       onRemoved: (err, records) => {
@@ -948,6 +998,7 @@ describe("blockchain/log-processors/market-created", () => {
           outcomes: [],
           search: [],
           tokens: [],
+          transfers: [],
         });
       },
     },
