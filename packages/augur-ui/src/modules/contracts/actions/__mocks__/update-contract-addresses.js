@@ -1,5 +1,5 @@
 const mockUpdateContractAddresses = jest.genMockFromModule(
-  "modules/contracts/actions/update-contract-addresses.js"
+  "../update-contract-addresses.js"
 );
 
 mockUpdateContractAddresses.updateContractAddresses = () => ({

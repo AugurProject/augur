@@ -1,5 +1,5 @@
 const mockUpdateBlockchain = jest.genMockFromModule(
-  "modules/app/actions/update-blockchain"
+  "../update-blockchain"
 );
 
 mockUpdateBlockchain.updateBlockchain = data => ({

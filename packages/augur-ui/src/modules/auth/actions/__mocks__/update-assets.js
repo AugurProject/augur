@@ -1,5 +1,5 @@
 const mockUpdateAssets = jest.genMockFromModule(
-  "modules/auth/actions/update-assets"
+  "../update-assets"
 );
 
 mockUpdateAssets.updateAssets = data => ({

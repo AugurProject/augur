@@ -1,5 +1,5 @@
 const mockVerifyMatchingNetworkIds = jest.genMockFromModule(
-  "modules/app/actions/verify-matching-network-ids.js"
+  "../verify-matching-network-ids.js"
 );
 
 mockVerifyMatchingNetworkIds.verifyMatchingNetworkIds = callback => dispatch =>
