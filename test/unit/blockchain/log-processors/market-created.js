@@ -57,6 +57,8 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A000",
+        logIndex: 0,
         universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111111",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
@@ -102,6 +104,9 @@ describe("blockchain/log-processors/market-created", () => {
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
             },
+            getValidityBondAttoeth: (p, callback) => {
+              callback(null, "800");
+            },
           },
           Universe: {
             getOrCacheReportingFeeDivisor: (p, callback) => {
@@ -125,6 +130,8 @@ describe("blockchain/log-processors/market-created", () => {
             minPrice: new BigNumber("0", 10),
             maxPrice: new BigNumber("1", 10),
             marketCreator: "0x0000000000000000000000000000000000000b0b",
+            transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A000",
+            logIndex: 0,
             creationBlockNumber: 7,
             creationFee: new BigNumber("0.1", 10),
             creationTime: 10000000,
@@ -135,6 +142,7 @@ describe("blockchain/log-processors/market-created", () => {
             marketCreatorMailbox: "0xbbb1111111111111111111111111111111111111",
             marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
+            validityBondSize: new BigNumber("800", 10),
             category: "TEST_CATEGORY",
             tag1: "TEST_TAG_1",
             tag2: "TEST_TAG_2",
@@ -224,6 +232,8 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A001",
+        logIndex: 0,
         universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111112",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
@@ -270,6 +280,9 @@ describe("blockchain/log-processors/market-created", () => {
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
             },
+            getValidityBondAttoeth: (p, callback) => {
+              callback(null, "800");
+            },
           },
           Universe: {
             getOrCacheReportingFeeDivisor: (p, callback) => {
@@ -293,6 +306,8 @@ describe("blockchain/log-processors/market-created", () => {
             minPrice: new BigNumber("0", 10),
             maxPrice: new BigNumber("1", 10),
             marketCreator: "0x0000000000000000000000000000000000000b0b",
+            transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A001",
+            logIndex: 0,
             creationBlockNumber: 7,
             creationFee: new BigNumber("0.1", 10),
             creationTime: 10000000,
@@ -303,6 +318,7 @@ describe("blockchain/log-processors/market-created", () => {
             marketCreatorMailbox: "0xbbb1111111111111111111111111111111111112",
             marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
+            validityBondSize: new BigNumber("800", 10),
             category: "TEST_CATEGORY",
             tag1: "TEST_TAG_1",
             tag2: "TEST_TAG_2",
@@ -416,6 +432,8 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A002",
+        logIndex: 0,
         universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111113",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
@@ -461,6 +479,9 @@ describe("blockchain/log-processors/market-created", () => {
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
             },
+            getValidityBondAttoeth: (p, callback) => {
+              callback(null, "800");
+            },
           },
           Universe: {
             getOrCacheReportingFeeDivisor: (p, callback) => {
@@ -484,6 +505,8 @@ describe("blockchain/log-processors/market-created", () => {
             minPrice: new BigNumber("-3", 10),
             maxPrice: new BigNumber("15.2", 10),
             marketCreator: "0x0000000000000000000000000000000000000b0b",
+            transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A002",
+            logIndex: 0,
             creationBlockNumber: 7,
             creationFee: new BigNumber("0.1", 10),
             creationTime: 10000000,
@@ -494,6 +517,7 @@ describe("blockchain/log-processors/market-created", () => {
             marketCreatorMailbox: "0xbbb1111111111111111111111111111111111113",
             marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
+            validityBondSize: new BigNumber("800", 10),
             category: "TEST_CATEGORY",
             tag1: "TEST_TAG_1",
             tag2: "TEST_TAG_2",
@@ -583,6 +607,8 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A003",
+        logIndex: 0,
         universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111111",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
@@ -624,6 +650,9 @@ describe("blockchain/log-processors/market-created", () => {
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
             },
+            getValidityBondAttoeth: (p, callback) => {
+              callback(null, "800");
+            },
           },
           Universe: {
             getOrCacheReportingFeeDivisor: (p, callback) => {
@@ -647,6 +676,8 @@ describe("blockchain/log-processors/market-created", () => {
             minPrice: new BigNumber("0", 10),
             maxPrice: new BigNumber("1", 10),
             marketCreator: "0x0000000000000000000000000000000000000b0b",
+            transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A003",
+            logIndex: 0,
             creationBlockNumber: 7,
             creationFee: new BigNumber("0.1", 10),
             creationTime: 10000000,
@@ -657,6 +688,7 @@ describe("blockchain/log-processors/market-created", () => {
             marketCreatorMailbox: "0xbbb1111111111111111111111111111111111111",
             marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
+            validityBondSize: new BigNumber("800", 10),
             category: "TEST_CATEGORY",
             tag1: null,
             tag2: null,
@@ -746,6 +778,8 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A004",
+        logIndex: 0,
         universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111111",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
@@ -795,6 +829,9 @@ describe("blockchain/log-processors/market-created", () => {
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
             },
+            getValidityBondAttoeth: (p, callback) => {
+              callback(null, "800");
+            },
           },
           Universe: {
             getOrCacheReportingFeeDivisor: (p, callback) => {
@@ -818,6 +855,8 @@ describe("blockchain/log-processors/market-created", () => {
             minPrice: new BigNumber("0", 10),
             maxPrice: new BigNumber("1", 10),
             marketCreator: "0x0000000000000000000000000000000000000b0b",
+            transactionHash: "0x000000000000000000000000000000000000000000000000000000000000A004",
+            logIndex: 0,
             creationBlockNumber: 7,
             creationFee: new BigNumber("0", 10),
             creationTime: 10000000,
@@ -829,6 +868,7 @@ describe("blockchain/log-processors/market-created", () => {
             marketCreatorMailbox: "0xbbb1111111111111111111111111111111111111",
             marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
+            validityBondSize: new BigNumber("800", 10),
             category: "TEST_CATEGORY",
             tag1: "TEST_TAG_1",
             tag2: "TEST_TAG_2",

@@ -18,6 +18,9 @@ export const PRECISION: Precision = {
   multiple: multiple.toString(),
 };
 
+
+export const ETHER = "ether";
+
 export const MINIMUM_TRADE_SIZE = "0.000001";
 
 export const BN_WEI_PER_ETHER: BigNumber = new BigNumber(10, 10).exponentiatedBy(18);
