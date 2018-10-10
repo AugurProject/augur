@@ -441,7 +441,7 @@ export function getOutcome(
   if (!market || isNaN(outcome)) return outcome;
   if (market.marketType === YES_NO) {
     value = "Yes";
-    if (!alwaysReturnYesForBinaryMarket && outcome === "0") {
+    if (!alwaysReturnYesForBinaryMarket && outcome.toString() === "0") {
       value = "No";
     }
   } else if (market.marketType === CATEGORICAL) {
