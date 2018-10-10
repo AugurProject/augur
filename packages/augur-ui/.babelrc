@@ -1,0 +1,61 @@
+{
+  "presets": [["es2015", {"modules": false}], "stage-0", "react"],
+  "env": {
+    "production": {
+      "plugins": [
+        [
+          "transform-runtime",
+          {
+            "polyfill": false,
+            "regenerator": true
+          }
+        ],
+        [
+          "transform-react-remove-prop-types",
+          {
+            "ignoreFilenames": ["node_modules"],
+            "mode": "remove",
+            "removeImport": true
+          }
+        ],
+      ],
+      "compact": false,
+    },
+    "development": {
+      "plugins": [
+        ["transform-runtime", {
+          "polyfill": false,
+          "regenerator": true
+        }]
+      ],
+      "compact": false
+    },
+    "test": {
+      "presets": ["es2015", "stage-0", "react"],
+      "plugins": [
+        [
+          "transform-runtime",
+          {
+            "polyfill": false,
+            "regenerator": true
+          }
+        ],
+        "rewire",
+        ["module-resolver", {
+          "root": ["./src", "./test"],
+          "alias": {
+            "src": "./src",
+            "test": "./test",
+            "assertions": "./test/assertions",
+            "config": "./src/config",
+            "assets": "./src/assets",
+            "modules": "./src/modules",
+            "utils": "./src/utils",
+            "services": "./src/services"
+          },
+          "extensions": [".js", ".jsx"]
+        }]
+      ]
+    },
+  }
+}

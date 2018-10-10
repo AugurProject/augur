@@ -1,0 +1,42 @@
+@import (reference) '~assets/styles/shared';
+
+.ReportDisputeNoRep {
+  align-items: center;
+  background: @color-darkpurple;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 2rem 2rem;
+  padding: 0.5em 2em;
+
+  &__message {
+    color: @color-lightgray;
+    font-size: @font-size-large;
+    padding: 0.625rem 1em 0.625rem 0;
+  }
+
+  &__cta {
+    &:extend(.button--white--short all);
+
+    white-space: nowrap;
+  }
+
+  @media @breakpoint-mobile {
+    flex-flow: wrap;
+    justify-content: flex-end;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    padding: 0;
+
+    &__message {
+      padding: 1rem 1em 1.2rem;
+      text-align: center;
+      width: 100%;
+    }
+
+    &__cta {
+      border-radius: 0;
+      margin-top: 2.25rem;
+      width: 100%;
+    }
+  }
+}

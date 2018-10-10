@@ -1,0 +1,88 @@
+@import '~assets/styles/shared.less';
+
+.InputDropdown {
+  background-color: @color-input-background;
+  color: @color-lightgray;
+  cursor: pointer;
+  display: flex;
+  padding: 0.5rem 1rem;
+  position: relative;
+  width: 100%;
+  z-index: 1;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.InputDropdown__label {
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+
+  &.selected {
+    color: @color-darkpurple;
+  }
+}
+
+.InputDropdown__list {
+  background-color: @color-white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  color: @color-darkpurple;
+  display: none;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  max-height: 10rem;
+  overflow: scroll;
+  padding: 0.5rem 0;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  width: 100%;
+
+  &.active {
+    display: block;
+  }
+
+  > button {
+    background-color: inherit;
+    cursor: pointer;
+    padding: 0.25rem 1rem;
+    text-align: left;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+    width: 100%;
+
+    &:hover,
+    &.active {
+      background-color: @color-lightergray;
+    }
+  }
+}
+
+.InputDropdown__select {
+  display: none;
+  width: 100%;
+
+  &.selected {
+    color: @color-darkpurple;
+  }
+}
+
+.InputDropdown__icon {
+  align-self: center;
+}
+
+@media @breakpoint-mobile-small {
+  .InputDropdown__label,
+  .InputDropdown__list,
+  .InputDropdown__list.active {
+    display: none;
+  }
+
+  .InputDropdown__select {
+    display: block;
+  }
+}

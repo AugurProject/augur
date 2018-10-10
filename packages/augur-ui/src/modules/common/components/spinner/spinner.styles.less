@@ -1,0 +1,30 @@
+@import (reference) '~assets/styles/shared';
+
+.Spinner {
+  position: relative;
+}
+
+.Spinner__icon {
+  animation: spinner @animation-speed-very-slow linear infinite;
+  border: 1px solid transparent;
+  border-bottom-color: @color-base;
+  border-radius: 50%;
+  border-top-color: @color-base;
+  box-sizing: border-box;
+  height: 1em;
+  left: 50%;
+  margin-left: -0.5em;
+  margin-top: -0.5em;
+  position: absolute;
+  top: 50%;
+  width: 1em;
+}
+
+.Spinner__icon--light {
+  border-bottom-color: @color-white;
+  border-top-color: @color-white;
+}
+
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}

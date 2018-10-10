@@ -1,0 +1,60 @@
+@import (reference) "~assets/styles/shared";
+
+.FilterSearch {
+  display: flex;
+  flex-direction: row;
+  min-width: 250px;
+  width: 100%;
+}
+
+.FilterSearch__transition {
+  transition: min-width @animation-speed-normal @animation-default-type;
+}
+
+.FilterSearch__input {
+  .caps--medium;
+
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 17px;
+  color: @color-lightpurple;
+  display: flex;
+  font-size: 14px;
+  padding: 5px 12px;
+
+  > svg {
+    height: 0.75rem;
+    width: 0.75rem;
+  }
+
+  > input {
+    border: none;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    padding: 0 0 0 0.5rem;
+    text-transform: none;
+
+    &::placeholder {
+      color: @color-gray2;
+      text-transform: uppercase;
+    }
+
+    &:focus {
+      .border(false);
+    }
+  }
+}
+
+@media @breakpoint-mobile {
+  .FilterSearch {
+    min-width: 200px;
+  }
+}
+
+.FilterSearch__tooltip {
+  margin-bottom: 0;
+  margin-right: 0.25rem;
+  margin-top: 1rem;
+  width: 0.75rem;
+}

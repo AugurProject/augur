@@ -1,0 +1,37 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketOutstandingReturns {
+  align-items: center;
+  background-color: @color-lightgray-2;
+  display: flex;
+  justify-content: space-between;
+}
+
+.MarketOutstandingReturns__text {
+  font-size: @font-size-large;
+}
+
+.MarketOutstandingReturns__value {
+  &:extend(.caps all);
+
+  padding: 0 0.5rem;
+}
+
+.MarketOutstandingReturns__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.MarketOutstandingReturns__collect {
+  &:extend(.button--offWhite all);
+}
+
+@media @breakpoint-mobile-medium {
+  .MarketOutstandingReturns {
+    display: block;
+  }
+
+  .MarketOutstandingReturns__actions {
+    margin-top: 1.5rem;
+  }
+}

@@ -1,0 +1,15 @@
+.side-bar-mask {
+
+  .transition(bottom @animation-speed-very-fast);
+
+  background-color: @color-mask-background;
+  display: none;
+  left: 0;
+  position: fixed;
+  right: 0;
+  z-index: @mask;
+
+  @media @breakpoint-mobile {
+    display: block;
+  }
+}

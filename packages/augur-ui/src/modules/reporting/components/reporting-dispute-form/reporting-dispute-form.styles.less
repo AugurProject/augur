@@ -1,0 +1,144 @@
+@import (reference) '~assets/styles/shared';
+
+ul.ReportingDisputeForm__fields {
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+}
+
+.ReportingDisputeForm__table {
+  display: table;
+
+  > li {
+    display: table-row;
+
+    @media @breakpoint-mobile-medium {
+      display: block;
+    }
+
+    > button,
+    > article {
+      display: table-cell;
+      padding-bottom: 1rem;
+      vertical-align: middle;
+
+      @media @breakpoint-mobile-medium {
+        padding-bottom: 0.5rem;
+      }
+    }
+
+    > button {
+      line-height: 1.75rem;
+      padding-right: 2rem;
+    }
+
+    > input {
+      margin-right: 1rem;
+      width: 18rem;
+    }
+
+    &:last-child > button,
+    &:last-child > article {
+      padding-bottom: 0;
+
+      @media @breakpoint-mobile-medium {
+        padding-bottom: 0.5rem;
+      }
+    }
+
+    > article {
+      @media @breakpoint-mobile-medium {
+        display: table-row;
+      }
+    }
+  }
+}
+
+.ReportingDisputeForm__table__input {
+  display: table;
+
+  > li {
+    display: table-row;
+    white-space: nowrap;
+
+    > button,
+    > input {
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    > article {
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    > button {
+      line-height: 1.75rem;
+    }
+
+    > input {
+      margin-right: 1rem;
+      width: 17.45rem;
+    }
+
+    &:last-child > button,
+    &:last-child > article {
+      padding-bottom: 0;
+    }
+  }
+}
+
+.ReportingDisputeForm__container {
+  margin-right: 0.6em;
+  position: absolute;
+  right: 0;
+}
+
+.ReportingDisputeForm__button {
+  background: @color-lighter-purple;
+  border-radius: 3px;
+  color: @color-white;
+  font-size: @font-size-extra-small;
+  font-weight: 500;
+  padding: 0.8em;
+}
+
+.ReportingDisputeForm__malformed {
+  color: @color-negative;
+  font-size: @font-size-normal;
+  font-weight: 700;
+  margin-left: 0;
+  text-transform: uppercase;
+}
+
+.ReportingDisputeForm__tentative {
+  color: @color-lighter-purple;
+  font-size: @font-size-small;
+  margin-left: 1.5rem;
+  text-transform: uppercase;
+}
+
+.ReportingDisputeForm__disputeEnded > svg {
+  margin: 0 0.2rem;
+  max-height: 1rem;
+  max-width: 1rem;
+  vertical-align: top;
+}
+
+.ReportingDisputeForm__disputeEnded {
+  color: @color-negative;
+  display: inline-block;
+  font-size: 1rem;
+  line-height: 1rem;
+  margin: 4rem 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.ReportingReport__malformed_msg {
+  color: @color-negative;
+  font-size: 1rem;
+  line-height: 1rem;
+  margin-bottom: 1rem;
+  margin-top: -2rem;
+  text-transform: none;
+}

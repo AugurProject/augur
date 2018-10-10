@@ -13,11 +13,11 @@ For more information about the Augur protocol and the Forecast Foundation, [chec
 
 You can view, edit, and contribute to Augur via the 100% open source repositories hosted on GitHub!
 
-- [Augur Core](https://github.com/AugurProject/augur-core) - The core implementation of the Augur Project as Smart Contracts written in Solidity for the Ethereum Network.
-- [Augur.js](https://github.com/AugurProject/augur.js) - Javascript library for Node.js and the browser to help you communicate with the Augur smart contracts, and Augur Node.
-- [Augur Node](https://github.com/AugurProject/augur-node) - Helper application to aggregrate the activity of the Augur community on the Ethereum Network. Allows you to quickly build responsive and performant user interfaces.
-- [Augur UI](https://github.com/AugurProject/augur-ui/) - A reference client UI which uses Augur Node and a connection to the Ethereum Network to interact with the Augur community.
-- [Augur App](https://github.com/AugurProject/augur-app/) - Augur App is a lightweight Electron app that bundles the [Augur UI](https://github.com/AugurProject/augur) and [Augur Node](https://github.com/AugurProject/augur-node).
+- [Augur Core](https://github.com/AugurProject/augur/packages/augur-core) - The core implementation of the Augur Project as Smart Contracts written in Solidity for the Ethereum Network.
+- [Augur.js](https://github.com/AugurProject/augur/packages/augur.js) - Javascript library for Node.js and the browser to help you communicate with the Augur smart contracts, and Augur Node.
+- [Augur Node](https://github.com/AugurProject/augur/packages/augur-node) - Helper application to aggregrate the activity of the Augur community on the Ethereum Network. Allows you to quickly build responsive and performant user interfaces.
+- [Augur UI](https://github.com/AugurProject/augur/packages/augur-ui/) - A reference client UI which uses Augur Node and a connection to the Ethereum Network to interact with the Augur community.
+- [Augur App](https://github.com/AugurProject/augur/packages/augur-app/) - Augur App is a lightweight Electron app that bundles the [Augur UI](https://github.com/AugurProject/augur/packages/augur) and [Augur Node](https://github.com/AugurProject/augur/packages/augur-node).
 
 ## Documentation and Whitepaper
 

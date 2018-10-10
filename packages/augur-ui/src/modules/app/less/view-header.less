@@ -1,0 +1,29 @@
+@import (reference) '~assets/styles/shared';
+
+// NOTE -- additional styles located in common/less/layout.less
+.view-header {
+  color: @color-text-dark;
+  display: flex;
+  flex-wrap: wrap-reverse;
+
+  .view-header-group {
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+    margin: 0 1em 1em 0;
+  }
+
+  .view-header-group:not(:first-child) {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  .view-header-group:last-child {
+    margin: 0 0 1em;
+  }
+
+  h2 {
+    font-weight: 300;
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": 3,
+  "jsonrpc": "2.0",
+  "method": "getOpenOrders",
+  "params": {
+    "marketId": "0x0000000000000000000000000000000000000001",
+    "outcome": null,
+    "orderType": "sell",
+    "creator": null
+  }
+}

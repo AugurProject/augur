@@ -1,0 +1,87 @@
+@import (reference) '~assets/styles/shared';
+
+.PeriodSelector {
+  position: relative;
+  z-index: @above-all-content;
+}
+
+.PeriodSelector__button {
+  &:extend(.caps--small);
+
+  background-color: transparent;
+  color: @color-lightgray;
+  display: flex;
+  margin-bottom: 0.66em;
+  white-space: nowrap;
+
+  svg {
+    margin-left: 0.1875em;
+    min-height: 1em;
+    min-width: 1em;
+    width: 1em;
+  }
+}
+
+.PeriodSelector__modal {
+  background-color: @color-selection-modal-background;
+  box-shadow: @box-shadow-small-modal;
+  display: none;
+  position: absolute;
+  right: 0;
+  width: 12rem;
+
+  &--active {
+    display: flex;
+  }
+}
+
+.PeriodSelector__column {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  &:first-of-type {
+    h1 {
+      margin: 1em 0 0.75em 1.33em;
+    }
+  }
+
+  &:last-of-type {
+    h1 {
+      margin: 1em 0 0.75em 1.33em;
+    }
+  }
+
+  h1 {
+    &:extend(.caps--small);
+  }
+
+  ul {
+    & li:last-of-type {
+      padding-bottom: 1.33em;
+    }
+  }
+}
+
+.PeriodSelector__value {
+  button {
+    font-size: @font-size-small;
+    height: 100%;
+    padding: 0.25em 0 0.5em 1.33em;
+    text-align: left;
+    width: 100%;
+
+    &:hover:not(:disabled) {
+      background-color: @color-lightergray;
+      cursor: default;
+    }
+
+    &:disabled {
+      color: @color-white;
+    }
+  }
+
+  &--active {
+    background-color: @color-lightergray;
+  }
+}

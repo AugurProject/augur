@@ -1,0 +1,35 @@
+// ARRANGEMENT
+// styles for the layering of the elements
+
+//	Vars
+// 	these are intended for use with `z-index`
+//	so will ultimately be applied within the respective stacking context.
+
+// Content Layout
+//  Variables are not defined, but should all be below 100
+
+// NOTE --  If you're having to use these, double check your thinking around layout.
+//          Using these is a sniff test.
+
+// Shared view positoning
+.standard-view-padding {
+  padding: 0 1.25rem;
+}
+
+// Behind
+@default-behind: -1;
+
+// Base Container Index
+@default-z-index: 1;
+
+//	Above Content
+@above-all-content: 10;
+@above-all-content-above: 11;
+
+//	View Chrome
+// TODO -- Need to refactor z-index utilization with this
+@mask: 20;
+@mask-above: 30;
+
+// Modal
+@mask-modal: 100;

@@ -1,0 +1,228 @@
+@import (reference) "~assets/styles/shared";
+
+.TradingForm__form-body {
+  padding: 1.875rem;
+
+  > li {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+
+    &:last-child {
+      margin-top: 1.5rem;
+    }
+
+    &.TradingForm__error-message {
+      color: @color-red;
+      display: block;
+      font-size: @font-size-medium;
+      line-height: @font-size-medium;
+      margin-bottom: 2rem;
+
+      > p {
+        display: inline-block;
+        margin: 0;
+        margin-bottom: 0.5rem;
+      }
+
+      > svg {
+        margin: -0.1rem 0.2rem 0;
+        max-height: 1rem;
+        max-width: 1rem;
+        vertical-align: top;
+      }
+    }
+
+    > label {
+      &:extend(.caps--small);
+
+      color: @color-darkpurple;
+      font-weight: 500;
+      margin-bottom: 0;
+      width: 4.6rem;
+
+      &:last-child {
+        width: 88%;
+      }
+    }
+
+    > div,
+    > input,
+    > ul {
+      width: 70%;
+
+      &:not(:last-child) {
+        width: 12%;
+      }
+    }
+
+    > input[type="number"] {
+      background-color: @color-input-background;
+      border-width: 1px;
+
+      &::placeholder {
+        color: @color-lightgray;
+        line-height: @font-size-rather-large;
+      }
+
+      &.error {
+        border-color: @color-red;
+      }
+    }
+  }
+}
+
+.TradingForm__form-estimated-cost {
+  border: solid @color-lightgray;
+  border-width: 1px 0;
+  display: flex;
+  padding: 1.5rem 2rem;
+
+  > li {
+    align-items: stretch;
+    display: flex;
+    max-width: 15rem;
+
+    &:not(:first-child) {
+      margin-top: 1rem;
+    }
+
+    > span {
+      font-size: @font-size-large;
+      line-height: @font-size-large;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &:first-child {
+        &:extend(.caps--small);
+
+        color: @color-darkpurple;
+        font-weight: 500;
+        margin: 0 1.5rem 0 0;
+      }
+    }
+  }
+
+  > li:nth-child(2) {
+    display: block;
+    margin-top: 0;
+  }
+
+  > li:nth-child(2) > span:nth-child(1) {
+    padding-bottom: 1rem;
+  }
+
+  > li > span:first-child,
+  > li > span:last-child {
+    display: block;
+    font-size: @font-size-large;
+    font-weight: 700;
+    line-height: @font-size-large;
+  }
+}
+
+.TradingForm__form-body > li.TradingForm__button--review {
+  justify-content: flex-end;
+
+  > button {
+    &:extend(.button--purple all);
+  }
+}
+
+.TradingForm__form-body > li.TradingForm__button__yes_no--review {
+  > label {
+    justify-content: flex-start;
+  }
+
+  > button {
+    &:extend(.button--purple all);
+  }
+}
+
+.TradingForm__static-field {
+  color: @color-text-dark;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  min-height: 3rem;
+  padding: 0.75rem 1rem 0.75rem 0;
+  text-align: left;
+}
+
+.TradingForm__type {
+  display: flex;
+
+  > button {
+    &:extend(.caps--small);
+
+    background-color: @color-lightgray;
+    color: @color-lightergray;
+    font-weight: 500;
+    padding: 0.4rem 0;
+    width: 50%;
+
+    &.active {
+      background-color: @color-purple;
+      color: @color-white;
+    }
+
+    &:first-child {
+      border-radius: 3px 0 0 3px;
+    }
+
+    &:last-child {
+      border-radius: 0 3px 3px 0;
+    }
+  }
+}
+
+@media @breakpoint-mobile {
+  .TradingForm__form-body > li {
+    > label {
+      color: @color-white;
+    }
+
+    > input[type="number"] {
+      background-color: @color-lightergray;
+    }
+  }
+
+  .TradingForm__form-estimated-cost {
+    > li > span:first-child,
+    > li > span:last-child {
+      color: @color-white;
+    }
+  }
+
+  .TradingForm__form-body > li.TradingForm__button--review,
+  .TradingForm__form-body > li.TradingForm__button__yes_no--review {
+    justify-content: flex-end;
+
+    > label {
+      display: none;
+    }
+
+    > button {
+      border-radius: 0;
+      bottom: 0;
+      left: 0;
+      padding-bottom: 1rem;
+      padding-top: 1rem;
+      position: fixed;
+      width: 100%;
+    }
+  }
+
+  .TradingForm__static-field {
+    color: @color-white;
+  }
+}
+
+.TradingForm__error-message p:not(:first-of-type) {
+  margin-left: 1.65rem !important;
+}

@@ -1,0 +1,9 @@
+node_modules
+out
+*.db*
+src/config.json*
+dist
+log.txt
+dev-app-update.yml
+
+.DS_Store

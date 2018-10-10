@@ -1,0 +1,11 @@
+{
+  "id": 22,
+  "jsonrpc": "2.0",
+  "method": "getBetterWorseOrders",
+  "params": {
+    "marketId": "0x866b5edd2a58dc095a52f2b18bba290b79fb253f",
+    "outcome": 0,
+    "orderType": "buy",
+    "price": 0.16
+  }
+}

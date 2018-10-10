@@ -1,0 +1,7 @@
+{ "id": 913,
+  "jsonrpc": "2.0",
+  "method": "getMarkets",
+  "params": 
+   { "universe": "0xe215c98a7dd9aead48af48b1533fe8cf09dd8c88",
+     "sortBy": "reportingRoundsCompleted",
+     "isSortDescending": true } }

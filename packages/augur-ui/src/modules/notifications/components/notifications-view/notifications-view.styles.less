@@ -1,0 +1,126 @@
+@import (reference) '~assets/styles/shared';
+
+.NotificationsView {
+  background-color: @color-lightpurple;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
+  color: @color-white;
+  display: flex;
+  flex-direction: column;
+  max-height: 470px;
+  position: relative;
+  text-align: left;
+  width: 360px;
+  z-index: @mask-above;
+}
+
+.NotificationsView__dark {
+  background-color: @color-darkpurple;
+}
+
+.NotificationsView__parent {
+  position: absolute;
+  right: 0;
+  top: @top-bar-height;
+}
+
+.NotificationsView__box {
+  overflow-y: auto;
+  width: 100%;
+}
+
+.Notification__close {
+  cursor: pointer;
+  display: none;
+  height: @font-size-normal;
+  left: @font-size-normal;
+  position: absolute;
+  top: @font-size-normal;
+  width: @font-size-normal;
+}
+
+.NullStateMessage {
+  align-self: center;
+  color: @color-lightgray;
+  font-size: 1rem;
+  font-weight: 400;
+  margin-top: 0.5rem;
+  padding: 30px;
+  text-align: center;
+  width: 100%;
+}
+
+.NotificationsView__dismissContainer {
+  align-items: flex-end;
+  background-color: @color-lightpurple;
+  border-top: 1px solid @color-gray;
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+  min-height: 27px;
+  padding: 7px 16px;
+}
+
+.NotificationsView__dismissContainerBorder {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
+.NotificationsView__dismissButton {
+  border-bottom: dotted 0.5px @color-lightergray;
+  color: @color-lightergray;
+  cursor: pointer;
+  display: inline;
+  font-size: 12px;
+
+  &:hover {
+    border-bottom: dotted 0.5px @color-white;
+    color: @color-white;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@media @breakpoint-mobile {
+  .NotificationsView {
+    bottom: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+    left: 0;
+    max-height: 100%;
+    padding: 0.25em;
+    position: absolute;
+    right: 0;
+    text-align: left;
+    top: 0;
+    width: 100%;
+    z-index: @mask-above;
+  }
+
+  .NotificationsView::after {
+    border: none;
+    bottom: 0;
+    content: "";
+    display: none;
+    right: 0;
+  }
+
+  .NotificationsView__box {
+    margin-top: 2rem;
+    max-height: 85%;
+    overflow-y: auto;
+  }
+
+  .Notification__close {
+    display: block;
+  }
+
+  .NullStateMessage {
+    margin-top: 0.5rem;
+  }
+}

@@ -1,0 +1,126 @@
+@import (reference) '../../../../assets/styles/shared';
+
+:local(.ConnectingView) {
+	margin-top: 50px;
+	margin-bottom: 24px;
+	border: solid 1px #736e89;
+  transition: all 300ms ease-in,
+}
+
+:local(.ConnectingView-connecting) {
+  border: 0;
+  background-color: white;
+}
+
+:local(.ConnectingView-connected) {
+  height: 80px;
+  border: 0;
+  margin-top: 0px;
+  margin-bottom: 40px;
+  background-color: transparent;
+  transition:
+    background-color 100ms ease-in,
+    margin-top .3s ease-in .25s,
+    height .35s ease-in 0.3s;
+}
+
+:local(.ConnectingView__connectingContainer) {
+	padding: 24px 16px;
+}
+
+:local(.ConnectingView__connectingContainer-connected) {
+}
+
+:local(.ConnectingView__conectingTitle) {
+  opacity: 0.8;
+  font-size: 22px;
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #736e89;
+  margin-bottom: 14px;
+}
+
+:local(.ConnectingView__conectingTitle-connecting) {
+  color: #383b41;
+  opacity: 1;
+
+}
+
+:local(.ConnectingView__conectingTitle-connected) {
+  color: white;
+  opacity: 1;
+
+}
+
+:local(.ConnectingView__conectingText) {
+  opacity: 0.8;
+  font-size: 14px;
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: rgba(115, 110, 137, 0.99);
+  display: flex;
+  align-items: center;
+}
+
+:local(.ConnectingView__conectingText-connecting) {
+  color: #a7a2b2;
+  opacity: 1;
+}
+
+:local(.ConnectingView__conectingText-connected) {
+  color: white;
+  opacity: 1;
+}
+
+:local(.ConnectingView__loadingIndicator) {
+	max-height: 32px;
+  min-height: 32px;
+	border-top: solid 1px #736e89;
+}
+
+:local(.ConnectingView__loadingIndicator-connecting) {
+  background-color: #39314e;
+  min-height: 34px;
+  border: 0;
+
+}
+
+:local(.ConnectingView__loadingIndicator-connected) {
+  max-height: 0px;
+  border: 0;
+}
+
+:local(.ConnectingView__loader){
+  margin-left: 5px;
+}
+
+:local(.ConnectingView__connectedSvg) {
+  width: 24px;
+  height: 24px;
+  margin-left: 8px;
+  background: url(../../../../assets/images/connected.svg);
+  background-repeat: no-repeat;
+}
+
+:local(.ConnectingView__graph) {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+:local(.ConnectingView__graph-current) {
+  width: 100%;
+
+  > div {
+    background-color: #cbc5d9;
+    height: 32px;
+    position: relative;
+    transition: width 500ms ease;
+  }
+}
