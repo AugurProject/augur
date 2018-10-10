@@ -1,0 +1,5 @@
+module.exports = {
+  "babelrcRoots": [
+    "./packages/*"
+  ]
+};
