@@ -1,8 +1,5 @@
 import * as Knex from "knex";
-import BigNumber from "bignumber.js";
-import { MarketsRow, SearchRow, Address } from "../../types";
-import { contentSearchBuilder} from "../../utils/content-search-builder";
-import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+import { SearchRow, Address } from "../../types";
 import { SearchProvider } from "./provider";
 
 export class SearchPostgres implements SearchProvider {

@@ -1,7 +1,6 @@
 import Augur from "augur.js";
 import { isSyncFinished } from "../../blockchain/bulk-sync-augur-node-with-blockchain";
 import * as Knex from "knex";
-import { getCashAddress } from "./database";
 
 export function getSyncData(db: Knex, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
   const currentBlock = augur.rpc.getCurrentBlock();

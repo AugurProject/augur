@@ -1,12 +1,9 @@
 import Augur from "augur.js";
-import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
-import { Address, PositionsRow } from "../../types";
-import { queryModifier } from "./database";
-import { getOutcomesProfitLoss, MarketOutcomeEarnings, EarningsAtTime, ProfitLoss, formatProfitLossResults } from "./get-profit-loss";
+import { Address} from "../../types";
+import { getOutcomesProfitLoss, EarningsAtTime, ProfitLoss, formatProfitLossResults } from "./get-profit-loss";
 
 async function queryUniverse(db: Knex, marketId: Address): Promise<Address> {
   const market = await db.first("universe").from("markets").where({ marketId });
