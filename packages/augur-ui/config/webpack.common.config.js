@@ -34,8 +34,6 @@ module.exports = {
     modules: ["node_modules", PATHS.APP],
     extensions: [".html", ".less", ".json", ".js", ".jsx"],
     alias: {
-      // NOTE --  these aliases are utilized during build + linting,
-      //          only testing utilizes the aliases w/in .babelrc
       src: PATHS.APP,
       config: path.resolve(PATHS.APP, "config"),
       assets: path.resolve(PATHS.APP, "assets"),
