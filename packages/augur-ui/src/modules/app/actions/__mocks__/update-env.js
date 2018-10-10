@@ -1,5 +1,5 @@
 const mockUpdateEnv = jest.genMockFromModule(
-  "modules/app/actions/update-env.js"
+  "../update-env.js"
 );
 
 mockUpdateEnv.updateEnv = () => ({

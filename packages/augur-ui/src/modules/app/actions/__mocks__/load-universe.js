@@ -1,5 +1,5 @@
 const mockLoadUniverse = jest.genMockFromModule(
-  "modules/app/actions/load-universe.js"
+  "../load-universe.js"
 );
 
 mockLoadUniverse.loadUniverse = () => ({

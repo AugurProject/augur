@@ -1,5 +1,5 @@
 const mockUpdateContractAPI = jest.genMockFromModule(
-  "modules/contracts/actions/update-contract-api.js"
+  "../update-contract-api.js"
 );
 
 mockUpdateContractAPI.updateFunctionsAPI = () => ({
