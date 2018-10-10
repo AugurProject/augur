@@ -12,8 +12,8 @@ exports.up = async (knex: Knex): Promise<any> => {
     }
     const etherTokenRow = await knex("tokens").where("contractAddress", "ether");
     if (etherTokenRow.length === 0) {
-      knex.insert({contractAddress: ETHER, symbol: ETHER}).into("tokens");
-      knex.insert({token: ETHER, supply: null}).into("token_supply");
+      await knex.insert({contractAddress: ETHER, symbol: ETHER}).into("tokens");
+      await knex.insert({token: ETHER, supply: null}).into("token_supply");
     }
   });
 };
