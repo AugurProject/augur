@@ -37,7 +37,7 @@
   "license": "MIT",
   "dependencies": {
     "app-data-folder": "1.0.0",
-    "augur-core": "1.1.0",
+    "augur-core": "1.2.0-0",
     "augur-node": "6.0.0-0",
     "augur-ui": "6.0.0-0",
     "augur.js": "6.0.0-0",
