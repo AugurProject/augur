@@ -1,2 +1,0 @@
-export const UPPER_FIXED_PRECISION_BOUND = 8;
-export const LOWER_FIXED_PRECISION_BOUND = 0;

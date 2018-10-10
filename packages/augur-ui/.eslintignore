@@ -1,9 +1,0 @@
-.git
-node_modules
-build
-webpack.config.js
-config/*
-server.js
-postcss.config.js
-scripts/*
-test/*

@@ -1,8 +1,0 @@
-{
-  "id": 11,
-  "jsonrpc": "2.0",
-  "method": "getReportingSummary",
-  "params": {
-    "feeWindow": "0x1000000000000000000000000000000000000000"
-  }
-}
