@@ -42,10 +42,10 @@
     "augur-ui": "6.0.0-0",
     "augur.js": "6.0.0-0",
     "debounce": "1.1.0",
-    "electron-is-dev": "^0.3.0",
-    "electron-log": "^2.2.16",
-    "electron-progressbar": "^1.1.0",
-    "electron-updater": "^3.0.3",
+    "electron-is-dev": "1.0.1",
+    "electron-log": "2.2.17",
+    "electron-progressbar": "1.1.0",
+    "electron-updater": "3.1.2",
     "express": "4.16.2",
     "file-loader": "^2.0.0",
     "helmet": "3.13.0",
@@ -75,11 +75,12 @@
   },
   "devDependencies": {
     "app-builder-lib": "20.28.4",
-    "electron": "2.0.0",
-    "electron-builder": "^20.19.1",
-    "electron-builder-squirrel-windows": "^20.19.0",
-    "electron-publisher-s3": "^20.15.0",
-    "electron-webpack": "^2.1.2",
+    "electron": "3.0.3",
+    "electron-builder": "20.28.4",
+    "electron-builder-squirrel-windows": "20.28.3",
+    "electron-publisher-s3": "20.17.2",
+    "electron-webpack": "2.3.1",
+
     "eslint": "4.19.1",
     "eslint-config-airbnb": "16.1.0",
     "eslint-config-airbnb-base": "13.1.0",
@@ -93,10 +94,12 @@
     "prettier": "1.14.3",
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "webpack-dev-middleware": "3.4.0",
+    "webpack-dev-server": "3.1.9"
   },
   "electronWebpack": {
-    "electronVersion": "2.0.0",
+    "electronVersion": "3.0.3",
     "whiteListedModules": ["react", "redux-thunk", "source-map-support", "ip-port-regex", "url-regex"]
   }
 }
