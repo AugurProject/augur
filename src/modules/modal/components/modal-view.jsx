@@ -15,6 +15,7 @@ import ModalMigrateMarket from "modules/modal/containers/modal-migrate-market";
 import ModalNetworkConnect from "modules/modal/containers/modal-network-connect";
 import ModalDisclaimer from "modules/modal/containers/modal-disclaimer";
 import ModalGasPrice from "modules/modal/containers/modal-gas-price";
+import ModalClaimTradingProceeds from "modules/modal/containers/modal-claim-trading-proceeds";
 
 import * as TYPES from "modules/modal/constants/modal-types";
 
@@ -38,6 +39,9 @@ export default class ModalView extends Component {
     return (
       <section className={Styles.ModalView}>
         <div className={Styles.ModalView__content}>
+          {modal.type === TYPES.MODAL_CLAIM_TRADING_PROCEEDS && (
+            <ModalClaimTradingProceeds {...this.props} />
+          )}
           {modal.type === TYPES.MODAL_GAS_PRICE && (
             <ModalGasPrice {...this.props} />
           )}

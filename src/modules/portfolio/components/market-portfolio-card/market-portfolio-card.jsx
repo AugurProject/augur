@@ -67,7 +67,7 @@ export default class MarketPortfolioCard extends Component {
   };
 
   claimProceeds = () => {
-    this.props.claimTradingProceeds([this.props.market.id]);
+    this.props.claimTradingProceeds(this.props.market.id);
   };
 
   render() {
