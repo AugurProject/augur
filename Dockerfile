@@ -1,6 +1,6 @@
 FROM node:8.11.2-alpine
-ARG SOLC_VERSION=v0.4.20
-ARG SOLC_MD5=ae7047eb018ec59d241b478ae6ea1f8a
+ARG SOLC_VERSION=v0.4.24
+ARG SOLC_MD5=dc791cd7db87b7df5e47975d222dc5fe
 
 RUN apk add --update \
     python \
