@@ -31,6 +31,7 @@ const whitelist: TableWhitelist = {
     shareVolume: true,
     sharesOutstanding: true,
     designatedReportStake: true,
+    openInterest: true,
   },
   orders: {
     price: true,
