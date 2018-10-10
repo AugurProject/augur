@@ -19,7 +19,7 @@ export interface RunServerResult {
 enum ServerStatus {
   DOWN = "down",
   UP = "up",
-  SYCING = "syncing",
+  SYNCING = "syncing",
 }
 
 export function runServer(db: Knex, augur: Augur, controlEmitter: EventEmitter = new EventEmitter()): RunServerResult {
@@ -38,7 +38,7 @@ export function runServer(db: Knex, augur: Augur, controlEmitter: EventEmitter =
   app.get("/status", (req, res) => {
     try {
       if (!isSyncFinished()) {
-        res.status(503).send({ status: SeverStatus.SYNCING, reason: "server syncing" });
+        res.status(503).send({ status: ServerStatus.SYNCING, reason: "server syncing" });
         return;
       }
 
@@ -59,7 +59,7 @@ export function runServer(db: Knex, augur: Augur, controlEmitter: EventEmitter =
 
   app.get("/status/database", (req, res) => {
     if (!isSyncFinished()) {
-      res.status(503).send({ status: SeverStatus.SYNCING, reason: "server syncing" });
+      res.status(503).send({ status: ServerStatus.SYNCING, reason: "server syncing" });
       return;
     }
 
@@ -78,7 +78,7 @@ export function runServer(db: Knex, augur: Augur, controlEmitter: EventEmitter =
 
   app.get("/status/blockage", (req, res) => {
     if (!isSyncFinished()) {
-      res.status(503).send({ status: SeverStatus.SYNCING, reason: "server syncing" });
+      res.status(503).send({ status: ServerStatus.SYNCING, reason: "server syncing" });
       return;
     }
 
