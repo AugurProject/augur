@@ -12,6 +12,7 @@ export default class MarketOutcomeDepthHeader extends Component {
   static propTypes = {
     hoveredDepth: PropTypes.array.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
+    pricePrecision: PropTypes.number.isRequired,
     isMobile: PropTypes.bool.isRequired,
     headerHeight: PropTypes.number.isRequired,
     updateChartHeaderHeight: PropTypes.func.isRequired
@@ -23,7 +24,13 @@ export default class MarketOutcomeDepthHeader extends Component {
   }
 
   render() {
-    const { headerHeight, hoveredDepth, isMobile, fixedPrecision } = this.props;
+    const {
+      headerHeight,
+      hoveredDepth,
+      isMobile,
+      fixedPrecision,
+      pricePrecision
+    } = this.props;
 
     if (isMobile) {
       return <section style={{ minHeight: headerHeight }} />;
@@ -63,7 +70,7 @@ export default class MarketOutcomeDepthHeader extends Component {
             </span>
             <span className={Styles["MarketOutcomeChartsHeader__stat-value"]}>
               {isNumber(hoveredDepth[1]) ? (
-                hoveredDepth[1].toFixed(fixedPrecision).toString()
+                hoveredDepth[1].toFixed(pricePrecision).toString()
               ) : (
                 <span>&mdash;</span>
               )}

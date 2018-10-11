@@ -31,13 +31,14 @@ class MarketOutcomeCandlestick extends React.Component {
     sharedChartMargins: PropTypes.object.isRequired,
     updateSelectedPeriod: PropTypes.func.isRequired,
     updateSelectedRange: PropTypes.func.isRequired,
-    updateSelectedOrderProperties: PropTypes.func.isRequired
+    updateSelectedOrderProperties: PropTypes.func.isRequired,
+    pricePrecision: PropTypes.number.isRequired
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const {
       currentTimeInSeconds,
-      fixedPrecision,
+      pricePrecision,
       marketMax,
       marketMin,
       orderBookKeys,
@@ -59,7 +60,7 @@ class MarketOutcomeCandlestick extends React.Component {
       containerHeight,
       containerWidth,
       currentTimeInSeconds,
-      fixedPrecision,
+      pricePrecision,
       marketMax,
       marketMin,
       orderBookKeys,
@@ -163,6 +164,7 @@ class MarketOutcomeCandlestick extends React.Component {
     const {
       currentTimeInSeconds,
       fixedPrecision,
+      pricePrecision,
       isMobile,
       orderBookKeys,
       outcomeName,
@@ -234,7 +236,7 @@ class MarketOutcomeCandlestick extends React.Component {
         chartDim,
         containerHeight,
         containerWidth,
-        fixedPrecision,
+        pricePrecision,
         marketMax,
         marketMin,
         orderBookKeys,
@@ -264,7 +266,6 @@ class MarketOutcomeCandlestick extends React.Component {
         chartDim,
         containerHeight,
         containerWidth,
-        fixedPrecision,
         priceTimeSeries,
         xScale,
         yDomain
@@ -295,7 +296,7 @@ class MarketOutcomeCandlestick extends React.Component {
         chartDim,
         containerHeight,
         containerWidth,
-        fixedPrecision,
+        pricePrecision,
         marketMax,
         marketMin,
         orderBookKeys,
@@ -312,7 +313,7 @@ class MarketOutcomeCandlestick extends React.Component {
         hoveredPrice,
         yScale,
         containerWidth,
-        fixedPrecision
+        pricePrecision
       );
     }
 
@@ -328,6 +329,7 @@ class MarketOutcomeCandlestick extends React.Component {
           close={hoveredPeriod.close}
           priceTimeSeries={priceTimeSeries}
           fixedPrecision={fixedPrecision}
+          pricePrecision={pricePrecision}
           selectedPeriod={selectedPeriod}
           selectedRange={selectedRange}
           updateSelectedPeriod={updateSelectedPeriod}
@@ -441,7 +443,7 @@ function drawTicks({
   candleTicks,
   chartDim,
   containerWidth,
-  fixedPrecision,
+  pricePrecision,
   yDomain,
   yScale
 }) {
@@ -472,7 +474,7 @@ function drawTicks({
     .attr("x2", containerWidth)
     .attr("y1", d => yScale(d))
     .attr("y2", d => yScale(d))
-    .text(d => d.toFixed(fixedPrecision));
+    .text(d => d.toFixed(pricePrecision));
 
   yTicks
     .selectAll("text")
@@ -484,7 +486,7 @@ function drawTicks({
     .attr("y", d => yScale(d))
     .attr("dx", 0)
     .attr("dy", chartDim.tickOffset)
-    .text(d => d.toFixed(fixedPrecision));
+    .text(d => d.toFixed(pricePrecision));
 }
 
 function drawCandles({
@@ -595,7 +597,7 @@ function attachHoverClickHandlers({
   chartDim,
   containerHeight,
   drawableWidth,
-  fixedPrecision,
+  pricePrecision,
   marketMax,
   marketMin,
   orderBookKeys,
@@ -616,13 +618,13 @@ function attachHoverClickHandlers({
       updateHoveredPrice(
         yScale
           .invert(d3.mouse(d3.select("#candlestick_chart").node())[1])
-          .toFixed(fixedPrecision)
+          .toFixed(pricePrecision)
       )
     )
     .on("mouseout", clearCrosshairs)
     .on("click", () => {
       const mouse = d3.mouse(d3.select("#candlestick_chart").node());
-      const orderPrice = yScale.invert(mouse[1]).toFixed(fixedPrecision);
+      const orderPrice = yScale.invert(mouse[1]).toFixed(pricePrecision);
 
       if (orderPrice > marketMin && orderPrice < marketMax) {
         updateSelectedOrderProperties({
@@ -648,7 +650,7 @@ function attachHoverClickHandlers({
       updateHoveredPrice(
         yScale
           .invert(d3.mouse(d3.select("#candlestick_chart").node())[1])
-          .toFixed(fixedPrecision)
+          .toFixed(pricePrecision)
       )
     )
     .on("mouseout", clearCrosshairs);
@@ -660,7 +662,7 @@ function updateHoveredPriceCrosshair(
   hoveredPrice,
   yScale,
   chartWidth,
-  fixedPrecision
+  pricePrecision
 ) {
   if (hoveredPrice == null) {
     d3.select("#candlestick_crosshairs").style("display", "none");
@@ -677,7 +679,7 @@ function updateHoveredPriceCrosshair(
     d3.select("#hovered_candlestick_price_label")
       .attr("x", 0)
       .attr("y", yScale(hoveredPrice) + 12)
-      .text(clampedHoveredPrice.toFixed(fixedPrecision));
+      .text(clampedHoveredPrice.toFixed(pricePrecision));
   }
 }
 
