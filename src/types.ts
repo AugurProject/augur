@@ -138,11 +138,12 @@ export interface JsonRpcResponse {
 }
 
 export const SortLimitParams = t.partial({
-  sortBy: t.string,
-  isSortDescending: t.boolean,
-  limit: t.number,
-  offset: t.number,
+  sortBy: t.union([t.string, t.null, t.undefined]),
+  isSortDescending: t.union([t.boolean, t.null, t.undefined]),
+  limit: t.union([t.number, t.null, t.undefined]),
+  offset: t.union([t.number, t.null, t.undefined]),
 });
+
 export interface SortLimit {
   sortBy: string|null|undefined;
   isSortDescending: boolean|null|undefined;

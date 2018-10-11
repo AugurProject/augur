@@ -1,5 +1,4 @@
 import * as Knex from "knex";
-import * as _ from "lodash";
 import Augur from "augur.js";
 import { SortLimitParams } from "../../types";
 import { groupByAndSum, queryModifierParams } from "./database";

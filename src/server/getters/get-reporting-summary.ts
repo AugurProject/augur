@@ -1,5 +1,4 @@
 import * as Knex from "knex";
-import { Address } from "../../types";
 import { getMarketsWithReportingState } from "./database";
 import Augur from "augur.js";
 import * as t from "io-ts";

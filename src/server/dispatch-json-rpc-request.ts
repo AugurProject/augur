@@ -9,7 +9,7 @@ import { getMarketsInCategory } from "./getters/get-markets-in-category";
 import { getMarketsCreatedByUser } from "./getters/get-markets-created-by-user";
 import { getReportingHistory, ReportingHistoryParams } from "./getters/get-reporting-history";
 import { getReportingSummary, ReportingSummaryParams } from "./getters/get-reporting-summary";
-import { getTradingHistory } from "./getters/get-trading-history";
+import { getTradingHistory, TradingHistoryParams } from "./getters/get-trading-history";
 import { getMarketPriceHistory, MarketPriceHistoryParams } from "./getters/get-market-price-history";
 import { getMarketPriceCandlesticks } from "./getters/get-market-price-candlesticks";
 import { getUserTradingPositions } from "./getters/get-user-trading-positions";
@@ -71,12 +71,9 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getAccountTransferHistory, AccountTransferHistoryParams.decode(request.params));
     case "getReportingHistory":
       return dispatchResponse(getReportingHistory, ReportingHistoryParams.decode(request.params));
-
     case "getTradingHistory":
-      return getTradingHistory(db, request.params.universe, request.params.account, request.params.marketId, request.params.outcome, request.params.orderType, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, request.params.ignoreSelfTrades, callback);
-    case "getUserTradingHistory":
-      // TODO: remove reference to getUserTradingHistory from UI and delete this (ch12974)
-      return getTradingHistory(db, request.params.universe, request.params.account, request.params.marketId, request.params.outcome, request.params.orderType, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, request.params.ignoreSelfTrades, callback);
+      return dispatchResponse(getTradingHistory, TradingHistoryParams.decode(request.params));
+
     case "getMarketPriceCandlesticks":
       return getMarketPriceCandlesticks(db, request.params.marketId, request.params.outcome, request.params.start, request.params.end, request.params.period, callback);
     case "getUserTradingPositions":
