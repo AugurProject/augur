@@ -1,13 +1,17 @@
 import { Augur } from "augur.js";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
-import { Address, FormattedEventLog, TradesRow, TokensRow, MarketsRow, OrdersRow, ErrorCallback } from "../../../types";
+import { Address, FormattedEventLog, TradesRow, TokensRow, MarketsRow, OrdersRow, ErrorCallback, AsyncCallback } from "../../../types";
 import { updateOrder } from "./update-order";
 import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";
 import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
 import { fixedPointToDecimal, numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
 import { BN_WEI_PER_ETHER, SubscriptionEventNames } from "../../../constants";
+import { updateOutcomeValueFromOrders, removeOutcomeValue } from "../profit-loss/update-outcome-value";
+import { updateProfitLossBuyShares, updateProfitLossSellShares, updateProfitLossSellEscrowedShares } from "../profit-loss/update-profit-loss";
+import { series } from "async";
+
 
 interface TokensRowWithNumTicksAndCategory extends TokensRow {
   category: string;
@@ -25,13 +29,14 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
     if (!tokensRow) return callback(new Error(`market and outcome not found for shareToken: ${shareToken} (${log.transactionHash})`));
     const marketId = tokensRow.marketId!;
     const outcome = tokensRow.outcome!;
-    db.first("minPrice", "maxPrice", "numTicks", "category").from("markets").where({ marketId }).asCallback((err: Error|null, marketsRow?: Partial<MarketsRow<BigNumber>>): void => {
+    db.first("minPrice", "maxPrice", "numTicks", "category", "numOutcomes").from("markets").where({ marketId }).asCallback((err: Error|null, marketsRow?: Partial<MarketsRow<BigNumber>>): void => {
       if (err) return callback(err);
       if (!marketsRow) return callback(new Error("market min price, max price, category, and/or num ticks not found"));
       const minPrice = marketsRow.minPrice!;
       const maxPrice = marketsRow.maxPrice!;
       const numTicks = marketsRow.numTicks!;
       const category = marketsRow.category!;
+      const numOutcomes = marketsRow.numOutcomes!;
       const orderId = log.orderId;
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
       db.first("orderCreator", "fullPrecisionPrice", "orderType").from("orders").where({ orderId }).asCallback((err: Error|null, ordersRow?: Partial<OrdersRow<BigNumber>>): void => {
@@ -73,7 +78,24 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
           if (err) return callback(err);
           updateVolumetrics(db, augur, category, marketId, outcome, blockNumber, orderId, orderCreator, tickSize, minPrice, maxPrice, true, (err: Error|null): void => {
             if (err) return callback(err);
-            updateOrder(db, augur, marketId, orderId, amount, orderCreator, filler, tickSize, minPrice, callback);
+            updateOrder(db, augur, marketId, orderId, amount, orderCreator, filler, tickSize, minPrice, numCreatorShares, (err: Error|null): void => {
+              if (err) return callback(err);
+              updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash, (err: Error|null): void => {
+                if (err) return callback(err);
+                const orderOutcome = [outcome];
+                const otherOutcomes = Array.from(Array(numOutcomes).keys())
+                otherOutcomes.splice(outcome, 1);
+                const displayRange = augur.utils.convertOnChainPriceToDisplayPrice(maxPrice.minus(minPrice), minPrice, tickSize);
+                const profitLossUpdates = [];
+                if (numCreatorTokens.gt(0)) profitLossUpdates.push((next: AsyncCallback): void => updateProfitLossBuyShares(db, marketId, orderCreator, numCreatorTokens, orderType == "buy" ? orderOutcome : otherOutcomes, log.transactionHash, next));
+                if (numFillerTokens.gt(0)) profitLossUpdates.push((next: AsyncCallback): void => updateProfitLossBuyShares(db, marketId, filler, numFillerTokens, orderType == "sell" ? orderOutcome : otherOutcomes, log.transactionHash, next));
+                const creatorShares = new BigNumber(numCreatorShares, 10);
+                const fillerShares = new BigNumber(numFillerShares, 10);
+                if (creatorShares.gt(0)) profitLossUpdates.push((next: AsyncCallback): void => updateProfitLossSellEscrowedShares(db, marketId, creatorShares, orderCreator, orderType == "buy" ? otherOutcomes : orderOutcome, creatorShares.multipliedBy(orderType == "buy" ? displayRange.minus(price) : price), log.transactionHash, next));
+                if (fillerShares.gt(0)) profitLossUpdates.push((next: AsyncCallback): void => updateProfitLossSellShares(db, marketId, fillerShares, filler, orderType == "sell" ? otherOutcomes : orderOutcome, fillerShares.multipliedBy(orderType == "sell" ? displayRange.minus(price) : price), log.transactionHash, next));
+                series(profitLossUpdates, callback);
+              });
+            });
           });
         });
       });
@@ -112,7 +134,7 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
         if (err) return callback(err);
         db.from("trades").where({ marketId, outcome, orderId, blockNumber }).del().asCallback((err?: Error|null): void => {
           if (err) return callback(err);
-          updateOrder(db, augur, marketId, orderId, amount.negated(), orderCreator, log.filler, tickSize, minPrice, (err: Error|null) => {
+          updateOrder(db, augur, marketId, orderId, amount.negated(), orderCreator, log.filler, tickSize, minPrice, numCreatorShares, (err: Error|null) => {
             if (err) return callback(err);
             augurEmitter.emit(SubscriptionEventNames.OrderFilled, Object.assign({}, log, {
               marketId,
@@ -128,7 +150,7 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
               marketCreatorFees,
               reporterFees,
             }));
-            return callback(err);
+            return removeOutcomeValue(db, log.transactionHash, callback);
           });
         });
       });

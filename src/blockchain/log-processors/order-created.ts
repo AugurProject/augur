@@ -7,6 +7,8 @@ import { fixedPointToDecimal, numTicksToTickSize } from "../../utils/convert-fix
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
 import { BN_WEI_PER_ETHER, SubscriptionEventNames } from "../../constants";
 import { QueryBuilder } from "knex";
+import { updateOutcomeValueFromOrders, removeOutcomeValue } from "./profit-loss/update-outcome-value";
+import { updateProfitLossNumEscrowed, updateProfitLossRemoveRow } from "./profit-loss/update-profit-loss";
 
 export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const amount: BigNumber = new BigNumber(log.amount, 10);
@@ -20,16 +22,18 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
     if (!tokensRow) return callback(new Error(`market and outcome not found for shareToken ${shareToken} (${log.transactionHash}`));
     const marketId = tokensRow.marketId!;
     const outcome = tokensRow.outcome!;
-    db.first("minPrice", "maxPrice", "numTicks").from("markets").where({ marketId }).asCallback((err: Error|null, marketsRow?: MarketsRow<BigNumber>): void => {
+    db.first("minPrice", "maxPrice", "numTicks", "numOutcomes").from("markets").where({ marketId }).asCallback((err: Error|null, marketsRow?: MarketsRow<BigNumber>): void => {
       if (err) return callback(err);
       if (!marketsRow) return callback(new Error(`market min price, max price, and/or num ticks not found for market: ${marketId} (${log.transactionHash}`));
       const minPrice = marketsRow.minPrice!;
       const maxPrice = marketsRow.maxPrice!;
       const numTicks = marketsRow.numTicks!;
+      const numOutcomes = marketsRow.numOutcomes!;
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
       const fullPrecisionAmount = augur.utils.convertOnChainAmountToDisplayAmount(amount, tickSize);
       const fullPrecisionPrice = augur.utils.convertOnChainPriceToDisplayPrice(price, minPrice, tickSize);
       const orderTypeLabel = orderType === "0" ? "buy" : "sell";
+      const displaySharesEscrowed = augur.utils.convertOnChainAmountToDisplayAmount(sharesEscrowed, tickSize).toString();
       const orderData: OrdersRow<string> = {
         marketId,
         blockNumber: log.blockNumber,
@@ -48,7 +52,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
         fullPrecisionAmount: fullPrecisionAmount.toString(),
         originalFullPrecisionAmount: fullPrecisionAmount.toString(),
         tokensEscrowed: fixedPointToDecimal(moneyEscrowed, BN_WEI_PER_ETHER).toString(),
-        sharesEscrowed: augur.utils.convertOnChainAmountToDisplayAmount(sharesEscrowed, tickSize).toString(),
+        sharesEscrowed: displaySharesEscrowed,
       };
       const orderId = { orderId: log.orderId };
       db.select("marketId").from("orders").where(orderId).asCallback((err: Error|null, ordersRows?: Array<Partial<OrdersRow<BigNumber>>>): void => {
@@ -63,8 +67,18 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
           if (err) return callback(err);
           checkForOrphanedOrders(db, augur, orderData, (err) => {
             if (err) return callback(err);
-            augurEmitter.emit(SubscriptionEventNames.OrderCreated, Object.assign({}, log, orderData));
-            callback(null);
+            updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash, (err: Error) => {
+              if (err) return callback(err);
+              if (sharesEscrowed.eq(0)) return callback(null);
+              const otherOutcomes = Array.from(Array(numOutcomes).keys())
+              otherOutcomes.splice(outcome, 1);
+              const outcomes = orderTypeLabel == "buy" ? otherOutcomes : [outcome];
+              updateProfitLossNumEscrowed(db, marketId, displaySharesEscrowed, log.creator, outcomes, log.transactionHash, (err: Error) => {
+                if (err) return callback(err);
+                augurEmitter.emit(SubscriptionEventNames.OrderCreated, Object.assign({}, log, orderData));
+                return callback(null);
+              });
+            });
           });
         });
       });
@@ -75,8 +89,14 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
 export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   db.from("orders").where("orderId", log.orderId).delete().asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    augurEmitter.emit(SubscriptionEventNames.OrderCreated, log);
-    return callback(null);
+    removeOutcomeValue(db, log.transactionHash, (err: Error|null): void => {
+      if (err) return callback(err);
+      updateProfitLossRemoveRow(db, log.transactionHash, (err: Error) => {
+        if (err) return callback(err);
+        augurEmitter.emit(SubscriptionEventNames.OrderCreated, log);
+        return callback(null);
+      })
+    });
   });
 }
 

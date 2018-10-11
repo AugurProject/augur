@@ -7,6 +7,7 @@ import { increaseTokenBalance } from "./increase-token-balance";
 import { increaseTokenSupply } from "./increase-token-supply";
 import { decreaseTokenBalance } from "./decrease-token-balance";
 import { decreaseTokenSupply } from "./decrease-token-supply";
+import { updateProfitLossRemoveRow } from "../profit-loss/update-profit-loss";
 
 export function processMintLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const value = new BigNumber(log.amount || log.value);
@@ -23,7 +24,7 @@ export function processMintLog(db: Knex, augur: Augur, log: FormattedEventLog, c
     if (err) return callback(err);
     series([
       (next: AsyncCallback): void => increaseTokenSupply(db, augur, token, value, next),
-      (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.target, value, next),
+      (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.target, value, log, next),
     ], callback);
   });
 }
@@ -35,7 +36,8 @@ export function processMintLogRemoval(db: Knex, augur: Augur, log: FormattedEven
     if (err) return callback(err);
     series([
       (next: AsyncCallback): void => decreaseTokenSupply(db, augur, token, value, next),
-      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.target, value, next),
+      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.target, value, log, next),
+      (next: AsyncCallback): void => updateProfitLossRemoveRow(db, log.transactionHash, next),
     ], callback);
   });
 }

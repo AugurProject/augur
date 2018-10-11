@@ -7,6 +7,7 @@ import { augurEmitter } from "../../events";
 import { increaseTokenBalance } from "./token/increase-token-balance";
 import { decreaseTokenBalance } from "./token/decrease-token-balance";
 import { SubscriptionEventNames } from "../../constants";
+import { updateProfitLossRemoveRow } from "./profit-loss/update-profit-loss";
 
 export function processTokensTransferredLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const token = log.token || log.address;
@@ -24,8 +25,8 @@ export function processTokensTransferredLog(db: Knex, augur: Augur, log: Formatt
     if (err) return callback(err);
     augurEmitter.emit(SubscriptionEventNames.TokensTransferred, Object.assign({}, log, tokenTransferDataToInsert));
     series([
-      (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.to, value, next),
-      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.from, value, next),
+      (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.to, value, log, next),
+      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.from, value, log, next),
     ], callback);
   });
 }
@@ -37,8 +38,9 @@ export function processTokensTransferredLogRemoval(db: Knex, augur: Augur, log: 
     const token = log.token || log.address;
     const value = new BigNumber(log.value || log.amount, 10);
     series([
-      (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.from, value, next),
-      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.to, value, next),
+      (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.from, value, log, next),
+      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.to, value, log, next),
+      (next: AsyncCallback): void => updateProfitLossRemoveRow(db, log.transactionHash, next),
     ], callback);
   });
 }

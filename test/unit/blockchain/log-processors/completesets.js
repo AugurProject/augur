@@ -27,6 +27,16 @@ describe("blockchain/log-processors/completesets", () => {
         tradeGroupId: 12,
       },
       augur: {
+        rpc: {
+          getNetworkID: () => 974,
+        },
+        contracts: {
+          addresses: {
+            974: {
+              FillOrder: "FILL_ORDER_ADDRESS",
+            },
+          }
+        },
         api: {
           Orders: {
             getLastOutcomePrice: (p, callback) => {

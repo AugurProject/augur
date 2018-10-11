@@ -8,17 +8,23 @@ import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixe
 
 interface OrderFilledRow {
   fullPrecisionAmount: BigNumber;
+  sharesEscrowed: BigNumber,
   outcome: number;
   price: BigNumber;
 }
 
-export function updateOrder(db: Knex, augur: Augur, marketId: Address, orderId: Bytes32, amount: BigNumber, creator: Address, filler: Address, tickSize: BigNumber, minPrice: BigNumber, callback: ErrorCallback): void {
-  db("orders").first("fullPrecisionAmount", "outcome", "price").where({ orderId }).asCallback((err: Error|null, orderRow?: OrderFilledRow): void => {
+export function updateOrder(db: Knex, augur: Augur, marketId: Address, orderId: Bytes32, amount: BigNumber, creator: Address, filler: Address, tickSize: BigNumber, minPrice: BigNumber, escrowedShares: BigNumber, callback: ErrorCallback): void {
+  db("orders").first("fullPrecisionAmount", "sharesEscrowed", "outcome", "price").where({ orderId }).asCallback((err: Error|null, orderRow?: OrderFilledRow): void => {
     if (err) return callback(err);
     if (orderRow == null) return callback(new Error(`Could not fetch order amount for order ${orderId}`));
     const fullPrecisionAmountRemainingInOrder = orderRow.fullPrecisionAmount.minus(amount);
+    let sharesEscrowedRemainingInOrder = orderRow.sharesEscrowed.minus(escrowedShares);
     const amountRemainingInOrder = formatOrderAmount(fullPrecisionAmountRemainingInOrder);
-    const updateAmountsParams = { fullPrecisionAmount: fullPrecisionAmountRemainingInOrder, amount: amountRemainingInOrder };
+    const updateAmountsParams = {
+      fullPrecisionAmount: fullPrecisionAmountRemainingInOrder,
+      sharesEscrowed: sharesEscrowedRemainingInOrder,
+      amount: amountRemainingInOrder
+    };
     const orderState = fullPrecisionAmountRemainingInOrder.eq(ZERO) ? OrderState.FILLED : OrderState.OPEN;
     const updateParams = Object.assign({ orderState }, updateAmountsParams);
     augur.api.Orders.getLastOutcomePrice({ _market: marketId, _outcome: orderRow.outcome }, (err: Error|null, lastOutcomePrice: Int256): void => {
