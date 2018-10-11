@@ -17,7 +17,12 @@ import { isNull, orderBy } from "lodash";
 import { createBigNumber } from "utils/create-big-number";
 import { convertUnixToFormattedDate } from "src/utils/format-date";
 import { YES_NO, CATEGORICAL } from "modules/markets/constants/market-types";
-import { formatAttoRep, formatShares, formatEther } from "utils/format-number";
+import {
+  formatAttoRep,
+  formatShares,
+  formatEther,
+  formatAttoEth
+} from "utils/format-number";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 
 import { groupBy } from "lodash/fp";
@@ -130,7 +135,17 @@ export function addTransferTransactions(transfers) {
       const meta = {
         value: transaction.value
       };
-      if (transaction.symbol === "ParticipationToken") {
+      if (transaction.symbol === "ether") {
+        meta.value = `${
+          formatAttoEth(transaction.value, { decimals: 4, roundUp: true })
+            .formatted
+        }`;
+        meta.block = transaction.blockNumber || transaction.creationBlockNumber;
+        meta.sender = transaction.sender;
+        transaction.symbol = "ETH";
+        header.message = "ETH Transfer";
+        header.description = `${meta.value} ${transaction.symbol} transferred`;
+      } else if (transaction.symbol === "ParticipationToken") {
         meta.value = `${
           formatAttoRep(transaction.value, { decimals: 4, roundUp: true })
             .formatted
@@ -194,6 +209,7 @@ export function addNewMarketCreationTransactions(market) {
       ...buildHeader(transaction, MARKET_CREATION, PENDING),
       message: "Market Creation",
       description: market._description,
+      type: MARKET_CREATION,
       transactions: [transaction]
     };
 
@@ -347,6 +363,7 @@ export function addOpenOrderTransactions(openOrders) {
       // TODO: last order creation time will be in header, earliest activite
       marketHeader.timestamp = creationTime;
       marketHeader.message = formatTransactionMessage(sumBuy, sumSell, "Order");
+      marketHeader.type = OPEN_ORDER;
       marketHeader.transactions = marketTradeTransactions;
       marketHeader.hash = `${marketTradeTransactions[0].orderId}`;
       transactions[marketHeader.hash] = marketHeader;
@@ -456,6 +473,7 @@ function buildHeader(item, type, status) {
   const header = {};
   header.status = status;
   header.hash = item.id;
+  header.type = type;
   // TODO: need to sort by datetime in render
   if (item.timestamp) {
     header.timestamp = convertUnixToFormattedDate(item.timestamp);
@@ -468,13 +486,10 @@ function buildHeader(item, type, status) {
 
 // TODO: this should be dynamic by user control
 export function getSortOrder(type) {
-  if (type === PUBLIC_TRADE) {
-    return 5;
-  }
   if (type === OPEN_ORDER) {
     return 10;
   }
-  if (type === TRADE) {
+  if (type === TRADE || type === PUBLIC_TRADE) {
     return 20;
   }
   if (type === COMPLETE_SETS_SOLD) {

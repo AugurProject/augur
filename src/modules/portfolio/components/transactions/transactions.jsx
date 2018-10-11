@@ -9,12 +9,21 @@ import Paginator from "modules/common/components/paginator/paginator";
 import {
   DAY,
   WEEK,
-  MONTH,
-  ALL
+  MONTH
 } from "modules/transactions/constants/transaction-periods";
 
-import { getBeginDate } from "src/utils/format-date";
+import {
+  ALL,
+  MARKET_CREATION,
+  TRANSFER,
+  REPORTING,
+  TRADE,
+  OPEN_ORDER,
+  COMPLETE_SETS_SOLD
+} from "modules/transactions/constants/types";
 
+import { getBeginDate } from "src/utils/format-date";
+import { isEqual, orderBy } from "lodash";
 import Styles from "modules/portfolio/components/transactions/transactions.styles";
 import PortfolioStyles from "modules/portfolio/components/portfolio-view/portfolio-view.styles";
 
@@ -27,8 +36,7 @@ export default class Transactions extends Component {
     loadAccountHistoryTransactions: PropTypes.func.isRequired,
     transactionPeriod: PropTypes.string.isRequired,
     transactionsLoading: PropTypes.bool,
-    updateTransactionPeriod: PropTypes.func.isRequired,
-    loadAccountCompleteSets: PropTypes.func.isRequired
+    updateTransactionPeriod: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -43,22 +51,52 @@ export default class Transactions extends Component {
         { label: "Past Month", value: MONTH },
         { label: "All", value: ALL }
       ],
+      transactionTypeOptions: [
+        { label: "All", value: ALL },
+        { label: "Trades", value: TRADE },
+        { label: "Orders", value: OPEN_ORDER },
+        { label: "Transfers", value: TRANSFER },
+        { label: "Market Creation", value: MARKET_CREATION },
+        { label: "Reporting", value: REPORTING },
+        { label: "Complete Sets", value: COMPLETE_SETS_SOLD }
+      ],
       transactionPeriodDefault: props.transactionPeriod,
-      transactionPeriod: props.transactionPeriod
+      transactionPeriod: props.transactionPeriod,
+      filteredTransactions: [],
+      transactionTypeDefault: ALL,
+      transactionType: ALL
     };
 
     this.setSegment = this.setSegment.bind(this);
     this.changeTransactionDropdown = this.changeTransactionDropdown.bind(this);
+    this.changeTransactionTypeDropdown = this.changeTransactionTypeDropdown.bind(
+      this
+    );
   }
 
   componentWillMount() {
-    this.loadTransactions(this.state.transactionPeriodDefault);
-    this.props.loadAccountCompleteSets();
+    this.loadTransactions(
+      this.state.transactionPeriodDefault,
+      this.state.transactionTypeDefault
+    );
+    this.updateFilteredTransactions(this.props.transactions);
+  }
+
+  componentWillUpdate(nextProp) {
+    if (!isEqual(nextProp.transactions, this.props.transactions)) {
+      this.updateFilteredTransactions(nextProp.transactions);
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.transactionPeriod !== this.state.transactionPeriod) {
-      this.loadTransactions(this.state.transactionPeriod);
+    if (
+      prevState.transactionPeriod !== this.state.transactionPeriod ||
+      prevState.transactionType !== this.state.transactionType
+    ) {
+      this.loadTransactions(
+        this.state.transactionPeriod,
+        this.state.transactionType
+      );
     }
   }
 
@@ -66,10 +104,31 @@ export default class Transactions extends Component {
     this.setState({ lowerBound, boundedLength });
   }
 
-  loadTransactions(value) {
+  updateFilteredTransactions(transactions) {
+    const { transactionType } = this.state;
+    let filteredTransactions = transactions;
+
+    if (transactionType !== ALL) {
+      filteredTransactions = transactions.filter(
+        t => t.type === transactionType
+      );
+    }
+
+    const sortedFilteredTransactions = orderBy(
+      filteredTransactions,
+      ["sortOrder"],
+      ["timestamp.timestamp"]
+    );
+
+    this.setState({
+      filteredTransactions: sortedFilteredTransactions
+    });
+  }
+
+  loadTransactions(period, type) {
     const { currentTimestamp, loadAccountHistoryTransactions } = this.props;
-    const beginDate = getBeginDate(currentTimestamp, value);
-    loadAccountHistoryTransactions(beginDate, null);
+    const beginDate = getBeginDate(currentTimestamp, period);
+    loadAccountHistoryTransactions(beginDate, null, type);
   }
 
   changeTransactionDropdown(value) {
@@ -85,8 +144,20 @@ export default class Transactions extends Component {
     this.props.updateTransactionPeriod(newPeriod);
   }
 
+  changeTransactionTypeDropdown(value) {
+    let newType = this.state.transactionType;
+
+    this.state.transactionTypeOptions.forEach((type, ind) => {
+      if (type.value === value) {
+        newType = value;
+      }
+    });
+
+    this.setState({ transactionType: newType });
+  }
+
   render() {
-    const { history, location, transactions, transactionsLoading } = this.props;
+    const { history, location, transactionsLoading } = this.props;
     const s = this.state;
 
     return (
@@ -99,6 +170,11 @@ export default class Transactions extends Component {
             <h2 className={Styles.Transactions__heading}>Transactions</h2>
           </div>
           <div className={Styles["Transaction__data-filter"]}>
+            <Dropdown
+              default={s.transactionTypeDefault}
+              options={s.transactionTypeOptions}
+              onChange={this.changeTransactionTypeDropdown}
+            />
             <Dropdown
               default={s.transactionPeriodDefault}
               options={s.transactionPeriodOptions}
@@ -113,17 +189,17 @@ export default class Transactions extends Component {
           </div>
         )}
         {transactionsLoading === false &&
-          transactions.length === 0 && (
+          s.filteredTransactions.length === 0 && (
             <div className={PortfolioStyles.NoMarkets__container}>
               <span>You don&apos;t have any transactions.</span>
             </div>
           )}
         <div className={Styles.Transactions__list}>
           {transactionsLoading === false &&
-            transactions.length > 0 &&
+            s.filteredTransactions.length > 0 &&
             s.boundedLength &&
             [...Array(s.boundedLength)].map((unused, i) => {
-              const transaction = transactions[s.lowerBound - 1 + i];
+              const transaction = s.filteredTransactions[s.lowerBound - 1 + i];
               if (transaction) {
                 if (
                   !transaction.transactions ||
@@ -148,9 +224,9 @@ export default class Transactions extends Component {
             })}
         </div>
         {transactionsLoading === false &&
-          transactions.length > 0 && (
+          s.filteredTransactions.length > 0 && (
             <Paginator
-              itemsLength={transactions.length}
+              itemsLength={s.filteredTransactions.length}
               itemsPerPage={10}
               location={location}
               history={history}
