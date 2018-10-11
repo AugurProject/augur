@@ -113,10 +113,8 @@ export default function setNotificationText(notification, callback) {
               );
               notification.description = `Create ${
                 notification.log.orderType
-              } order for ${
-                formatShares(notification.log.quantity).formatted
-              } ${
-                formatShares(notification.log.quantity).denomination
+              } order for ${formatShares(notification.log.amount).formatted} ${
+                formatShares(notification.log.amount).denomination
               } of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
               } ETH`;
