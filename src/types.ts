@@ -182,6 +182,8 @@ export interface MarketPricing<BigNumberType> {
 
 export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> {
   marketId: Address;
+  transactionHash: Bytes32;
+  logIndex: number;
   universe: Address;
   marketType: string;
   marketCreator: Address;
@@ -194,6 +196,7 @@ export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> 
   marketCreatorMailbox: Address;
   marketCreatorMailboxOwner: Address;
   initialReportSize: BigNumberType|null;
+  validityBondSize: BigNumberType;
   category: string;
   tag1: string|null;
   tag2: string|null;
