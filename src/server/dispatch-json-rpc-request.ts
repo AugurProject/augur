@@ -5,13 +5,12 @@ import Augur from "augur.js";
 import { JsonRpcRequest } from "../types";
 import { AccountTransferHistoryParams, getAccountTransferHistory } from "./getters/get-account-transfer-history";
 import { CategoriesParams, getCategories } from "./getters/get-categories";
-import { getMarketsInCategory } from "./getters/get-markets-in-category";
 import { getMarketsCreatedByUser } from "./getters/get-markets-created-by-user";
 import { getReportingHistory, ReportingHistoryParams } from "./getters/get-reporting-history";
 import { getReportingSummary, ReportingSummaryParams } from "./getters/get-reporting-summary";
 import { getTradingHistory, TradingHistoryParams } from "./getters/get-trading-history";
 import { getMarketPriceHistory, MarketPriceHistoryParams } from "./getters/get-market-price-history";
-import { getMarketPriceCandlesticks } from "./getters/get-market-price-candlesticks";
+import { getMarketPriceCandlesticks, MarketPriceCandlesticksParams } from "./getters/get-market-price-candlesticks";
 import { getUserTradingPositions } from "./getters/get-user-trading-positions";
 import { getUserShareBalances } from "./getters/get-user-share-balances";
 import { getFeeWindows } from "./getters/get-fee-windows";
@@ -73,9 +72,9 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getReportingHistory, ReportingHistoryParams.decode(request.params));
     case "getTradingHistory":
       return dispatchResponse(getTradingHistory, TradingHistoryParams.decode(request.params));
-
     case "getMarketPriceCandlesticks":
-      return getMarketPriceCandlesticks(db, request.params.marketId, request.params.outcome, request.params.start, request.params.end, request.params.period, callback);
+      return dispatchResponse(getMarketPriceCandlesticks, MarketPriceCandlesticksParams.decode(request.params));
+
     case "getUserTradingPositions":
       return getUserTradingPositions(db, augur, request.params.universe, request.params.account, request.params.marketId, request.params.outcome, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getFeeWindowCurrent":
@@ -113,9 +112,6 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getUserShareBalances":
       return getUserShareBalances(db, augur, request.params.marketIds, request.params.account, callback);
 
-      // DELETE?
-    case "getMarketsInCategory":
-      return getMarketsInCategory(db, request.params.universe, request.params.category, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsCreatedByUser":
       return getMarketsCreatedByUser(db, request.params.universe, request.params.creator, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     default:
