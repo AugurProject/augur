@@ -7,7 +7,7 @@ import { AccountTransferHistoryParams, getAccountTransferHistory } from "./gette
 import { CategoriesParams, getCategories } from "./getters/get-categories";
 import { getMarketsInCategory } from "./getters/get-markets-in-category";
 import { getMarketsCreatedByUser } from "./getters/get-markets-created-by-user";
-import { getReportingHistory } from "./getters/get-reporting-history";
+import { getReportingHistory, ReportingHistoryParams } from "./getters/get-reporting-history";
 import { getReportingSummary, ReportingSummaryParams } from "./getters/get-reporting-summary";
 import { getTradingHistory } from "./getters/get-trading-history";
 import { getMarketPriceHistory, MarketPriceHistoryParams } from "./getters/get-market-price-history";
@@ -67,12 +67,11 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getMarketsClosingInDateRange, MarketsClosingInDateRangeParams.decode(request.params));
     case "getMarketsInfo":
       return dispatchResponse(getMarketsInfo, MarketsInfoParams.decode(request.params));
-
     case "getAccountTransferHistory":
       return dispatchResponse(getAccountTransferHistory, AccountTransferHistoryParams.decode(request.params));
+    case "getReportingHistory":
+      return dispatchResponse(getReportingHistory, ReportingHistoryParams.decode(request.params));
 
-      case "getReportingHistory":
-      return getReportingHistory(db, request.params.reporter, request.params.universe, request.params.marketId, request.params.reportingWindow, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getTradingHistory":
       return getTradingHistory(db, request.params.universe, request.params.account, request.params.marketId, request.params.outcome, request.params.orderType, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, request.params.ignoreSelfTrades, callback);
     case "getUserTradingHistory":

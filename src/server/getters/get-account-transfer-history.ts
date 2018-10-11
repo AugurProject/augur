@@ -1,10 +1,8 @@
 import * as Knex from "knex";
-import { Address, Bytes32, SortLimitParams, UIMarketsInfo } from "../../types";
-import { queryModifier, queryModifierParams } from "./database";
+import { Address, Bytes32, SortLimitParams } from "../../types";
+import { queryModifierParams } from "./database";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import * as t from "io-ts";
-import { CategoriesParamsSpecific } from "./get-categories";
-import { MarketsInfoParams } from "./get-markets-info";
 
 export const AccountTransferHistoryParamsSpecific = t.type({
   account: t.string,
