@@ -17,7 +17,7 @@ export interface UISyncData {
   lastProcessedBlock: {};
 }
 
-export async function getSyncData(db: Knex, augur: Augur, params: t.TypeOf<typeof MarketsInfoParams>): Promise<UISyncData> {
+export async function getSyncData(db: Knex, augur: Augur, params: t.TypeOf<typeof NoParams>): Promise<UISyncData> {
   const currentBlock = augur.rpc.getCurrentBlock();
   const highestBlock = {
     number: parseInt(currentBlock.number, 16),
