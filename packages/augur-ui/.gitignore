@@ -57,3 +57,5 @@ src/newrelic.js
 augur-local.key
 augur-local.crt
 augur-local.csr
+
+junit.xml

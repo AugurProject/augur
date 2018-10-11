@@ -91,6 +91,10 @@ jobs:
           yarn install --ignore-scripts --frozen-lockfile
           npx lerna run test --stream --scope augur-ui
         displayName: 'test augur UI'
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'packages/augur-ui/junit.xml'
 
   - job: Test_Augur_js
     pool:
