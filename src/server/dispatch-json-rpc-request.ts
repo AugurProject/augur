@@ -3,7 +3,7 @@ import { PathReporter } from "io-ts/lib/PathReporter";
 import * as Knex from "knex";
 import Augur from "augur.js";
 import { JsonRpcRequest } from "../types";
-import { getAccountTransferHistory } from "./getters/get-account-transfer-history";
+import { AccountTransferHistoryParams, getAccountTransferHistory } from "./getters/get-account-transfer-history";
 import { CategoriesParams, getCategories } from "./getters/get-categories";
 import { getMarketsInCategory } from "./getters/get-markets-in-category";
 import { getMarketsCreatedByUser } from "./getters/get-markets-created-by-user";
@@ -66,11 +66,12 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getMarketsClosingInDateRange":
       return dispatchResponse(getMarketsClosingInDateRange, MarketsClosingInDateRangeParams.decode(request.params));
     case "getMarketsInfo":
-      return dispatchResponse( getMarketsInfo, MarketsInfoParams.decode(request.params));
+      return dispatchResponse(getMarketsInfo, MarketsInfoParams.decode(request.params));
 
     case "getAccountTransferHistory":
-      return getAccountTransferHistory(db, request.params.account, request.params.token, request.params.isInternalTransfer, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
-    case "getReportingHistory":
+      return dispatchResponse(getAccountTransferHistory, AccountTransferHistoryParams.decode(request.params));
+
+      case "getReportingHistory":
       return getReportingHistory(db, request.params.reporter, request.params.universe, request.params.marketId, request.params.reportingWindow, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getTradingHistory":
       return getTradingHistory(db, request.params.universe, request.params.account, request.params.marketId, request.params.outcome, request.params.orderType, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, request.params.ignoreSelfTrades, callback);

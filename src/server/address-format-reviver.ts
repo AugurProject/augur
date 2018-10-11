@@ -17,7 +17,6 @@ export const inputsExpectedAsAddress: StringToBoolMap = {
   marketIds: true,
   reporter: true,
   feeWindow: true,
-  token: true,
   universe: true,
 };
 
