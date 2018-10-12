@@ -44,6 +44,7 @@
     "prettier": "1.14.3",
 
     "jest": "23.6.0",
+    "jest-junit": "^5.2.0",
 
     "uglifyjs-webpack-plugin": "1.2.2",
     "url-loader": "^1.1.1",
