@@ -1,7 +1,6 @@
 import { BigNumber } from "bignumber.js";
 import { Augur, FormattedEventLog } from "augur.js";
 import { EventEmitter } from "events";
-import { NetworkConfiguration } from "augur-core";
 import * as Knex from "knex";
 import * as WebSocket from "ws";
 import * as https from "https";
@@ -49,9 +48,31 @@ export enum OrderState {
   CANCELED = "CANCELED",
 }
 
-export interface ConnectOptions extends NetworkConfiguration {
+export class ConnectOptions {
+  http?: string = "http://localhost:8545";
+  ws?: string = "ws://localhost:8546";
+  ipc?: string;
   propagationDelayWaitMillis?: number;
   maxRetries?: number;
+
+  private readFromEnvironment() {
+    const env = process.env;
+    if(env.MAX_REQUEST_RETRIES) this.maxRetries = parseInt(env.MAX_REQUEST_RETRIES);
+    if(env.DELAY_WAIT_MILLIS) this.propagationDelayWaitMillis = parseInt(env.DELAY_WAIT_MILLIS);
+
+    if (env.ETHEREUM_HTTP || env.ETHEREUM_WS || env.ETHEREUM_IPC) {
+      this.http = env.ETHEREUM_HTTP;
+      this.ws = env.ETHEREUM_WS;
+      this.ipc = env.ETHEREUM_IPC;
+    }
+  }
+
+  static createFromEnvironment(): ConnectOptions {
+    const options = new ConnectOptions();
+    options.readFromEnvironment();
+    return options;
+  }
+
 }
 
 export interface BaseTransactionRow {

@@ -59,7 +59,6 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-core": "2.0.0-0",
     "augur-artifacts": "6.0.0-0",
     "bignumber.js": "6.0.0",
     "clone": "2.1.1",
@@ -81,6 +80,7 @@
   },
   "devDependencies": {
     "@babel/cli": "7.1.2",
+    "augur-core": "2.0.0-0",
     "babelify": "10.0.0",
     "browserify": "16.2.2",
     "chai": "3.5.0",
