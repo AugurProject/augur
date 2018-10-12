@@ -73,8 +73,8 @@ jobs:
       - script: |
           set -euxo pipefail
           yarn install --ignore-scripts --frozen-lockfile
-          npx lerna run test --stream --scope build
-          npx lerna run test --stream --scope augur-node
+          yarn workspace augur-node build
+          yarn workspace augur-node test
         displayName: 'test augur node'
 
   - job: Test_Augur_UI
