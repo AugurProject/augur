@@ -75,9 +75,9 @@ describe("server/address-format-reviver", () => {
   describe("verify completeness of inputs expected to be address", () => {
     const addressDefinitions = {};
     const nonAddressDefinitions = {};
-    const files = fs.readdirSync("./definitions/server/getters");
+    const files = fs.readdirSync("./packages/augur-node/definitions/server/getters");
     files.forEach(path => {
-      const content = fs.readFileSync(`./definitions/server/getters/${path}`, "utf8");
+      const content = fs.readFileSync(`./packages/augur-node/definitions/server/getters/${path}`, "utf8");
       const publicFunctionDefinitions = content.split("\n").filter(line => line.startsWith("export declare"));
       const componentParts = publicFunctionDefinitions.reduce((a, b) => a.concat(b)).split(/[(),]+/);
       componentParts.forEach(componentPart => {
