@@ -1,4 +1,4 @@
-@import (reference) '~assets/styles/shared';
+@import (reference) "~assets/styles/shared";
 
 .GasPriceEdit {
   align-items: center;
@@ -53,8 +53,15 @@
   white-space: nowrap;
 }
 
-.GasPriceEdit__description {
+.GasPriceEdit__description_non_standard {
   color: @color-yellow-alert;
+  font-size: 10px;
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.GasPriceEdit__description_standard {
+  color: @color-white;
   font-size: 10px;
   font-weight: bold;
   margin-right: 4px;

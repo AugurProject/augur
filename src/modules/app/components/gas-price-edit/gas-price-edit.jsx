@@ -6,6 +6,7 @@ import { MODAL_GAS_PRICE } from "modules/modal/constants/modal-types";
 
 import Styles from "modules/app/components/gas-price-edit/gas-price-edit.styles";
 
+const STANDARD = "Standard";
 export default class GasPriceEdit extends Component {
   static propTypes = {
     updateModal: PropTypes.func.isRequired,
@@ -27,6 +28,7 @@ export default class GasPriceEdit extends Component {
 
   render() {
     const { userDefinedGasPrice, gasPriceSpeed } = this.props;
+
     return (
       <div className={classNames(Styles.GasPriceEdit)}>
         <div
@@ -40,7 +42,14 @@ export default class GasPriceEdit extends Component {
             <div className={Styles.GasPriceEdit__price}>
               {userDefinedGasPrice}
             </div>
-            <div className={Styles.GasPriceEdit__description}>
+            <div
+              className={classNames({
+                [Styles.GasPriceEdit__description_non_standard]:
+                  gasPriceSpeed !== STANDARD,
+                [Styles.GasPriceEdit__description_standard]:
+                  gasPriceSpeed === STANDARD
+              })}
+            >
               ({gasPriceSpeed})
             </div>
             <div className={Styles.GasPriceEdit__edit}> Edit </div>
