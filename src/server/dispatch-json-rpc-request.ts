@@ -13,9 +13,9 @@ import { getMarketPriceHistory, MarketPriceHistoryParams } from "./getters/get-m
 import { getMarketPriceCandlesticks, MarketPriceCandlesticksParams } from "./getters/get-market-price-candlesticks";
 import { getUserTradingPositions, UserTradingPositionsParams } from "./getters/get-user-trading-positions";
 import { getUserShareBalances } from "./getters/get-user-share-balances";
-import { getFeeWindows } from "./getters/get-fee-windows";
+import { FeeWindowsParams, getFeeWindows } from "./getters/get-fee-windows";
 import { FeeWindowParams, getFeeWindow } from "./getters/get-fee-window";
-import { getUnclaimedMarketCreatorFees } from "./getters/get-unclaimed-market-creator-fees";
+import { getUnclaimedMarketCreatorFees, UnclaimedMarketCreatorFeesParams } from "./getters/get-unclaimed-market-creator-fees";
 import { getDisputeTokens } from "./getters/get-dispute-tokens";
 import { getMarkets } from "./getters/get-markets";
 import { getMarketsClosingInDateRange, MarketsClosingInDateRangeParams } from "./getters/get-markets-closing-in-date-range";
@@ -80,11 +80,11 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getFeeWindow, FeeWindowParams.decode(Object.assign({feeWindowState: "current" }, request.params)));
     case "getFeeWindow":
       return dispatchResponse(getFeeWindow, FeeWindowParams.decode(request.params));
-
-      case "getFeeWindows":
-      return getFeeWindows(db, augur, request.params.universe, request.params.account, request.params.includeCurrent, callback);
+    case "getFeeWindows":
+      return dispatchResponse(getFeeWindows, FeeWindowsParams.decode(request.params));
     case "getUnclaimedMarketCreatorFees":
-      return getUnclaimedMarketCreatorFees(db, augur, request.params.marketIds, callback);
+      return dispatchResponse(getUnclaimedMarketCreatorFees, UnclaimedMarketCreatorFeesParams.decode(request.params));
+
     case "getWinningBalance":
       return getWinningBalance(db, augur, request.params.marketIds, request.params.account, callback);
     case "getDisputeTokens":
