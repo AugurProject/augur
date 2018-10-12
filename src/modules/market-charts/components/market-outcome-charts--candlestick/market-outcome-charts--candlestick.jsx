@@ -5,7 +5,7 @@ import * as d3 from "d3";
 import ReactFauxDOM from "react-faux-dom";
 
 import { map } from "lodash/fp";
-import { sortBy } from "lodash";
+import { sortBy, maxBy } from "lodash";
 
 import findPeriodSeriesBounds from "modules/markets/helpers/find-period-series-bounds";
 import MarketOutcomeChartsHeaderCandlestick from "modules/market-charts/components/market-outcome-charts--header-candlestick/market-outcome-charts--header-candlestick";
@@ -268,7 +268,8 @@ class MarketOutcomeCandlestick extends React.Component {
         containerWidth,
         priceTimeSeries,
         xScale,
-        yDomain
+        yDomain,
+        candleTicks
       });
 
       const tickInterval = getTickIntervalForRange(selectedRange);
@@ -473,8 +474,7 @@ function drawTicks({
     .attr("x1", 0)
     .attr("x2", containerWidth)
     .attr("y1", d => yScale(d))
-    .attr("y2", d => yScale(d))
-    .text(d => d.toFixed(pricePrecision));
+    .attr("y2", d => yScale(d));
 
   yTicks
     .selectAll("text")
@@ -527,13 +527,16 @@ function drawCandles({
       .attr("class", d => (d.close > d.open ? "up-period" : "down-period")); // eslint-disable-line no-confusing-arrow
   }
 }
+
 function drawVolume({
   priceTimeSeries,
   candleChart,
   containerHeight,
   chartDim,
   candleDim,
-  xScale
+  xScale,
+  containerWidth,
+  candleTicks
 }) {
   const yVolumeDomain = [0, ...map("volume")(priceTimeSeries)];
 
@@ -542,7 +545,7 @@ function drawVolume({
     .domain(d3.extent(yVolumeDomain))
     .range([
       containerHeight - chartDim.bottom,
-      chartDim.top + (containerHeight - chartDim.bottom) * 0.66
+      chartDim.top + (containerHeight - chartDim.bottom) * 0.85
     ]);
 
   candleChart
@@ -558,6 +561,33 @@ function drawVolume({
     )
     .attr("width", d => candleDim.width)
     .attr("class", "period-volume");
+
+  const maxVolume = maxBy(priceTimeSeries, v => v.volume);
+  if (!maxVolume || maxVolume.volume === 0) return;
+
+  const volumeTicks = [maxVolume, { volume: maxVolume.volume / 2 }];
+  const yTicks = candleTicks.append("g").attr("id", "depth_y_ticks");
+
+  yTicks
+    .selectAll("line")
+    .data(volumeTicks)
+    .enter()
+    .append("line")
+    .attr("class", "tick-line-volume")
+    .attr("x1", 0)
+    .attr("x2", containerWidth)
+    .attr("y1", d => yVolumeScale(d.volume))
+    .attr("y2", d => yVolumeScale(d.volume));
+
+  candleChart
+    .selectAll("text")
+    .data(volumeTicks)
+    .enter()
+    .append("text")
+    .attr("class", "tick-value")
+    .attr("x", containerWidth - 90)
+    .attr("y", d => yVolumeScale(d.volume) - 4)
+    .text(d => d.volume.toFixed(4));
 }
 
 function drawXAxisLabels({
