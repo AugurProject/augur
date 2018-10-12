@@ -1,3 +1,4 @@
 module.exports = {
-  projects: ['<rootDir>/packages/*'],
+  reporters: [ "default", "jest-junit" ],
+  projects: ["<rootDir>/packages/*"],
 };
