@@ -72,7 +72,7 @@ jobs:
     steps:
       - script: |
           set -euxo pipefail
-          yarn add sqlite3 --force --build-from-source
+          yarn workspace augur-node add sqlite3 --force --build-from-source
           yarn install --ignore-scripts --frozen-lockfile
           yarn workspace augur-node build
           yarn workspace augur-node test
