@@ -14,7 +14,7 @@ import { getMarketPriceCandlesticks, MarketPriceCandlesticksParams } from "./get
 import { getUserTradingPositions, UserTradingPositionsParams } from "./getters/get-user-trading-positions";
 import { getUserShareBalances } from "./getters/get-user-share-balances";
 import { getFeeWindows } from "./getters/get-fee-windows";
-import { getFeeWindow } from "./getters/get-fee-window";
+import { FeeWindowParams, getFeeWindow } from "./getters/get-fee-window";
 import { getUnclaimedMarketCreatorFees } from "./getters/get-unclaimed-market-creator-fees";
 import { getDisputeTokens } from "./getters/get-dispute-tokens";
 import { getMarkets } from "./getters/get-markets";
@@ -76,12 +76,12 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getMarketPriceCandlesticks, MarketPriceCandlesticksParams.decode(request.params));
     case "getUserTradingPositions":
       return dispatchResponse(getUserTradingPositions, UserTradingPositionsParams.decode(request.params));
-
-      case "getFeeWindowCurrent":
-      return getFeeWindow(db, augur, request.params.universe, request.params.reporter, "current", null, callback);
+    case "getFeeWindowCurrent":
+      return dispatchResponse(getFeeWindow, FeeWindowParams.decode(Object.assign({feeWindowState: "current" }, request.params)));
     case "getFeeWindow":
-      return getFeeWindow(db, augur, request.params.universe, request.params.reporter, request.params.feeWindowState, request.params.feeWindow, callback);
-    case "getFeeWindows":
+      return dispatchResponse(getFeeWindow, FeeWindowParams.decode(request.params));
+
+      case "getFeeWindows":
       return getFeeWindows(db, augur, request.params.universe, request.params.account, request.params.includeCurrent, callback);
     case "getUnclaimedMarketCreatorFees":
       return getUnclaimedMarketCreatorFees(db, augur, request.params.marketIds, callback);
