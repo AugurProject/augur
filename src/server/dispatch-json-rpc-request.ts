@@ -31,7 +31,7 @@ import { getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 import { getReportingFees } from "./getters/get-reporting-fees";
 import { getUniversesInfo } from "./getters/get-universes-info";
 import { getProfitLoss } from "./getters/get-profit-loss";
-import { getWinningBalance } from "./getters/get-winning-balance";
+import { getWinningBalance, WinningBalanceParams } from "./getters/get-winning-balance";
 import { logger } from "../utils/logger";
 
 type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
@@ -84,9 +84,9 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getFeeWindows, FeeWindowsParams.decode(request.params));
     case "getUnclaimedMarketCreatorFees":
       return dispatchResponse(getUnclaimedMarketCreatorFees, UnclaimedMarketCreatorFeesParams.decode(request.params));
-
     case "getWinningBalance":
-      return getWinningBalance(db, augur, request.params.marketIds, request.params.account, callback);
+      return dispatchResponse(getWinningBalance, WinningBalanceParams.decode(request.params));
+
     case "getDisputeTokens":
       return getDisputeTokens(db, request.params.universe, request.params.account, request.params.stakeTokenState, callback);
     case "getInitialReporters":
