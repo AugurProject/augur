@@ -8,3 +8,5 @@ definitions/
 augur.db
 tags
 >>>>>>> augur-node/master
+
+junit.xml
