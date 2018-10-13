@@ -3,8 +3,13 @@ import Augur from "augur.js";
 import { BigNumber } from "bignumber.js";
 import { Address, ForkMigrationTotalsRow, UIForkMigrationTotals, UIForkMigrationTotalsRow } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+import * as t from "io-ts";
 
-export function getForkMigrationTotals(db: Knex, augur: Augur, parentUniverse: Address, callback: (err: Error|null, result?: any) => void): void {
+export const ForkMigrationTotalsParams = t.type({
+  parentUniverse: t.string,
+});
+
+export async function getForkMigrationTotals(db: Knex, augur: Augur, params: t.TypeOf<typeof ForkMigrationTotalsParams>) {
   const query = db.select([
       "universe",
       "payouts.isInvalid",
@@ -19,21 +24,19 @@ export function getForkMigrationTotals(db: Knex, augur: Augur, parentUniverse: A
       "token_supply.supply AS repTotal"]).from("universes")
     .join("token_supply", "universes.reputationToken", "token_supply.token")
     .join("payouts", "payouts.marketId", "universes.universe")
-    .where("universes.parentUniverse", parentUniverse);
+    .where("universes.parentUniverse", params.parentUniverse);
 
-  query.asCallback((err: Error|null, forkMigrationTotals: Array<ForkMigrationTotalsRow<BigNumber>>): void => {
-    if (err) return callback(err);
-    callback(null, forkMigrationTotals.reduce((acc: UIForkMigrationTotals<string>, cur) => {
-      const payout: Array<string> = [
-        cur.payout0, cur.payout1, cur.payout2, cur.payout3, cur.payout4, cur.payout5, cur.payout6, cur.payout7,
-      ].filter((payout: BigNumber|null): boolean => payout != null).map( (payout: BigNumber) => payout.toString());
-      const universeTotals = formatBigNumberAsFixed<Partial<UIForkMigrationTotalsRow<BigNumber>>, Partial<UIForkMigrationTotalsRow<string>>>({
-        universe: cur.universe,
-        repTotal: cur.repTotal,
-        isInvalid: Boolean(cur.isInvalid),
-      });
-      acc[cur.universe] = Object.assign({ payout }, universeTotals) as UIForkMigrationTotalsRow<string>;
-      return acc;
-    }, {}));
-  });
+  const forkMigrationTotals: Array<ForkMigrationTotalsRow<BigNumber>> = await query;
+  return forkMigrationTotals.reduce((acc: UIForkMigrationTotals<string>, cur) => {
+    const payout: Array<string> = [
+      cur.payout0, cur.payout1, cur.payout2, cur.payout3, cur.payout4, cur.payout5, cur.payout6, cur.payout7,
+    ].filter((payout: BigNumber|null): boolean => payout != null).map( (payout: BigNumber) => payout.toString());
+    const universeTotals = formatBigNumberAsFixed<Partial<UIForkMigrationTotalsRow<BigNumber>>, Partial<UIForkMigrationTotalsRow<string>>>({
+      universe: cur.universe,
+      repTotal: cur.repTotal,
+      isInvalid: Boolean(cur.isInvalid),
+    });
+    acc[cur.universe] = Object.assign({ payout }, universeTotals) as UIForkMigrationTotalsRow<string>;
+    return acc;
+  }, {});
 }
