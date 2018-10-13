@@ -24,7 +24,7 @@ import { getMarketsInfo, MarketsInfoParams } from "./getters/get-markets-info";
 import { getOrders, OrdersParams } from "./getters/get-orders";
 import { AllOrdersParams, getAllOrders } from "./getters/get-all-orders";
 import { getCompleteSets } from "./getters/get-complete-sets";
-import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
+import { BetterWorseOrdersParams, getBetterWorseOrders } from "./getters/get-better-worse-orders";
 import { getSyncData, NoParams } from "./getters/get-sync-data";
 import { DisputeInfoParams, getDisputeInfo } from "./getters/get-dispute-info";
 import { getInitialReporters, InitialReportersParams } from "./getters/get-initial-reporters";
@@ -100,9 +100,9 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getOrders, OrdersParams.decode(request.params));
     case "getAllOrders":
       return dispatchResponse(getAllOrders, AllOrdersParams.decode(request.params));
-
     case "getBetterWorseOrders":
-      return getBetterWorseOrders(db, request.params.marketId, request.params.outcome, request.params.orderType, request.params.price, callback);
+      return dispatchResponse(getBetterWorseOrders, BetterWorseOrdersParams.decode(request.params));
+
     case "getCompleteSets":
       return getCompleteSets(db, request.params.universe, request.params.account, callback);
     case "getUniversesInfo":

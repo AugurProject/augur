@@ -1,11 +1,10 @@
+import * as t from "io-ts";
 import * as _ from "lodash";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
-import { Address, OrdersRow, OrderState, UIOrder, UIOrders, GenericCallback, Bytes32, SortLimitParams } from "../../types";
-import { queryModifier, queryModifierParams } from "./database";
+import { OrdersRow, OrderState, UIOrder, UIOrders, Bytes32, SortLimitParams } from "../../types";
+import { queryModifierParams } from "./database";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import * as t from "io-ts";
-import { GetMarketsParamsSpecific } from "./get-markets";
 
 export const OrdersParamsSpecific = t.type({
   universe: t.union([t.string, t.null, t.undefined]),
