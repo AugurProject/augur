@@ -11,10 +11,8 @@ export interface StringToBoolMap {
 export const inputsExpectedAsAddress: StringToBoolMap = {
   account: true,
   creator: true,
-  designatedReporter: true,
   marketId: true,
   marketIds: true,
-  feeWindow: true,
   universe: true,
 };
 

@@ -2,6 +2,7 @@ import * as t from "io-ts";
 import { PathReporter } from "io-ts/lib/PathReporter";
 import * as Knex from "knex";
 import Augur from "augur.js";
+import { logger } from "../utils/logger";
 import { JsonRpcRequest } from "../types";
 import { AccountTransferHistoryParams, getAccountTransferHistory } from "./getters/get-account-transfer-history";
 import { CategoriesParams, getCategories } from "./getters/get-categories";
@@ -20,7 +21,7 @@ import { DisputeTokensParams, getDisputeTokens } from "./getters/get-dispute-tok
 import { getMarkets, GetMarketsParams } from "./getters/get-markets";
 import { getMarketsClosingInDateRange, MarketsClosingInDateRangeParams } from "./getters/get-markets-closing-in-date-range";
 import { getMarketsInfo, MarketsInfoParams } from "./getters/get-markets-info";
-import { getOrders } from "./getters/get-orders";
+import { getOrders, OrdersParams } from "./getters/get-orders";
 import { getAllOrders } from "./getters/get-all-orders";
 import { getCompleteSets } from "./getters/get-complete-sets";
 import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
@@ -32,7 +33,6 @@ import { getReportingFees, ReportingFeesParams } from "./getters/get-reporting-f
 import { getUniversesInfo } from "./getters/get-universes-info";
 import { getProfitLoss } from "./getters/get-profit-loss";
 import { getWinningBalance, WinningBalanceParams } from "./getters/get-winning-balance";
-import { logger } from "../utils/logger";
 
 type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
 
@@ -96,9 +96,9 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getForkMigrationTotals, ForkMigrationTotalsParams.decode(request.params));
     case "getMarkets":
       return dispatchResponse(getMarkets, GetMarketsParams.decode(request.params));
-
     case "getOrders":
-      return getOrders(db, request.params.universe, request.params.marketId, request.params.outcome, request.params.orderType, request.params.creator, request.params.orderState, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, request.params.orphaned, callback);
+      return dispatchResponse(getOrders, OrdersParams.decode(request.params));
+
     case "getAllOrders":
       return getAllOrders(db, request.params.account, callback);
     case "getBetterWorseOrders":
