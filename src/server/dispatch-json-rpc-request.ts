@@ -16,7 +16,7 @@ import { getUserShareBalances } from "./getters/get-user-share-balances";
 import { FeeWindowsParams, getFeeWindows } from "./getters/get-fee-windows";
 import { FeeWindowParams, getFeeWindow } from "./getters/get-fee-window";
 import { getUnclaimedMarketCreatorFees, UnclaimedMarketCreatorFeesParams } from "./getters/get-unclaimed-market-creator-fees";
-import { getDisputeTokens } from "./getters/get-dispute-tokens";
+import { DisputeTokensParams, getDisputeTokens } from "./getters/get-dispute-tokens";
 import { getMarkets } from "./getters/get-markets";
 import { getMarketsClosingInDateRange, MarketsClosingInDateRangeParams } from "./getters/get-markets-closing-in-date-range";
 import { getMarketsInfo, MarketsInfoParams } from "./getters/get-markets-info";
@@ -26,7 +26,7 @@ import { getCompleteSets } from "./getters/get-complete-sets";
 import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
 import { getSyncData, NoParams } from "./getters/get-sync-data";
 import { DisputeInfoParams, getDisputeInfo } from "./getters/get-dispute-info";
-import { getInitialReporters } from "./getters/get-initial-reporters";
+import { getInitialReporters, InitialReportersParams } from "./getters/get-initial-reporters";
 import { getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 import { getReportingFees } from "./getters/get-reporting-fees";
 import { getUniversesInfo } from "./getters/get-universes-info";
@@ -86,11 +86,10 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getUnclaimedMarketCreatorFees, UnclaimedMarketCreatorFeesParams.decode(request.params));
     case "getWinningBalance":
       return dispatchResponse(getWinningBalance, WinningBalanceParams.decode(request.params));
-
     case "getDisputeTokens":
-      return getDisputeTokens(db, request.params.universe, request.params.account, request.params.stakeTokenState, callback);
+      return dispatchResponse(getDisputeTokens, DisputeTokensParams.decode(request.params));
     case "getInitialReporters":
-      return getInitialReporters(db, augur, request.params.universe, request.params.reporter, request.params.redeemed, request.params.withRepBalance, callback);
+      return dispatchResponse(getInitialReporters, InitialReportersParams.decode(request.params));
     case "getReportingFees":
       return getReportingFees(db, augur, request.params.reporter, request.params.universe, callback);
     case "getForkMigrationTotals":

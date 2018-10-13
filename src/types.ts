@@ -37,12 +37,6 @@ export enum FeeWindowState {
   FUTURE = "FUTURE",
 }
 
-export enum DisputeTokenState {
-  ALL = "ALL",
-  UNCLAIMED = "UNCLAIMED",
-  UNFINALIZED = "UNFINALIZED",
-}
-
 export enum OrderState {
   ALL = "ALL",
   OPEN = "OPEN",

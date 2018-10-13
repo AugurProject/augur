@@ -23,8 +23,6 @@ export interface MarketWinnings {
 }
 
 export async function getWinningBalance(db: Knex, augur: {}, params: t.TypeOf<typeof WinningBalanceParams>): Promise<Array<MarketWinnings>> {
-  if (params.marketIds == null) throw new Error("must include marketIds parameter");
-  if (params.account == null) throw new Error("must include account parameter");
   const marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db, ["markets.marketId", "balances.balance", "balances.owner", "shareTokens.outcome", "payouts.*"]);
   marketsQuery.whereIn("markets.marketId", params.marketIds);
   marketsQuery.whereIn("reportingState", [ReportingState.FINALIZED, ReportingState.AWAITING_FINALIZATION]);
