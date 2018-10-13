@@ -2,14 +2,15 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getInitialReporters } = require("../../../../src/server/getters/get-initial-reporters");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-initial-reporters", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-        getInitialReporters(db, t.params.augur, t.params.universe, t.params.reporter, t.params.redeemed, t.params.withRepBalance, (err, initialReporters) => {
+        t.method = "getInitialReporters";
+        dispatchJsonRpcRequest(db, t, t.params.augur, (err, initialReporters) => {
           t.assertions(err, initialReporters);
           db.destroy();
           done();

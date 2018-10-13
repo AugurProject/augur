@@ -28,7 +28,7 @@ import { getSyncData, NoParams } from "./getters/get-sync-data";
 import { DisputeInfoParams, getDisputeInfo } from "./getters/get-dispute-info";
 import { getInitialReporters, InitialReportersParams } from "./getters/get-initial-reporters";
 import { getForkMigrationTotals } from "./getters/get-fork-migration-totals";
-import { getReportingFees } from "./getters/get-reporting-fees";
+import { getReportingFees, ReportingFeesParams } from "./getters/get-reporting-fees";
 import { getUniversesInfo } from "./getters/get-universes-info";
 import { getProfitLoss } from "./getters/get-profit-loss";
 import { getWinningBalance, WinningBalanceParams } from "./getters/get-winning-balance";
@@ -91,7 +91,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getInitialReporters":
       return dispatchResponse(getInitialReporters, InitialReportersParams.decode(request.params));
     case "getReportingFees":
-      return getReportingFees(db, augur, request.params.reporter, request.params.universe, callback);
+      return dispatchResponse(getReportingFees, ReportingFeesParams.decode(request.params) );
+
     case "getForkMigrationTotals":
       return getForkMigrationTotals(db, augur, request.params.parentUniverse, callback);
     case "getMarkets":
