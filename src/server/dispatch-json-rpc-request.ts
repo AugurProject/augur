@@ -17,7 +17,7 @@ import { FeeWindowsParams, getFeeWindows } from "./getters/get-fee-windows";
 import { FeeWindowParams, getFeeWindow } from "./getters/get-fee-window";
 import { getUnclaimedMarketCreatorFees, UnclaimedMarketCreatorFeesParams } from "./getters/get-unclaimed-market-creator-fees";
 import { DisputeTokensParams, getDisputeTokens } from "./getters/get-dispute-tokens";
-import { getMarkets } from "./getters/get-markets";
+import { getMarkets, GetMarketsParams } from "./getters/get-markets";
 import { getMarketsClosingInDateRange, MarketsClosingInDateRangeParams } from "./getters/get-markets-closing-in-date-range";
 import { getMarketsInfo, MarketsInfoParams } from "./getters/get-markets-info";
 import { getOrders } from "./getters/get-orders";
@@ -92,12 +92,11 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getInitialReporters, InitialReportersParams.decode(request.params));
     case "getReportingFees":
       return dispatchResponse(getReportingFees, ReportingFeesParams.decode(request.params) );
-
     case "getForkMigrationTotals":
       return dispatchResponse(getForkMigrationTotals, ForkMigrationTotalsParams.decode(request.params));
-
     case "getMarkets":
-      return getMarkets(db, request.params.universe, request.params.creator, request.params.category, request.params.search, request.params.reportingState, request.params.feeWindow, request.params.designatedReporter, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+      return dispatchResponse(getMarkets, GetMarketsParams.decode(request.params));
+
     case "getOrders":
       return getOrders(db, request.params.universe, request.params.marketId, request.params.outcome, request.params.orderType, request.params.creator, request.params.orderState, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, request.params.orphaned, callback);
     case "getAllOrders":
