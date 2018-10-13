@@ -22,7 +22,7 @@ import { getMarkets, GetMarketsParams } from "./getters/get-markets";
 import { getMarketsClosingInDateRange, MarketsClosingInDateRangeParams } from "./getters/get-markets-closing-in-date-range";
 import { getMarketsInfo, MarketsInfoParams } from "./getters/get-markets-info";
 import { getOrders, OrdersParams } from "./getters/get-orders";
-import { getAllOrders } from "./getters/get-all-orders";
+import { AllOrdersParams, getAllOrders } from "./getters/get-all-orders";
 import { getCompleteSets } from "./getters/get-complete-sets";
 import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
 import { getSyncData, NoParams } from "./getters/get-sync-data";
@@ -98,9 +98,9 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getMarkets, GetMarketsParams.decode(request.params));
     case "getOrders":
       return dispatchResponse(getOrders, OrdersParams.decode(request.params));
-
     case "getAllOrders":
-      return getAllOrders(db, request.params.account, callback);
+      return dispatchResponse(getAllOrders, AllOrdersParams.decode(request.params));
+
     case "getBetterWorseOrders":
       return getBetterWorseOrders(db, request.params.marketId, request.params.outcome, request.params.orderType, request.params.price, callback);
     case "getCompleteSets":
