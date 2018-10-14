@@ -23,14 +23,14 @@ import { getMarketsClosingInDateRange, MarketsClosingInDateRangeParams } from ".
 import { getMarketsInfo, MarketsInfoParams } from "./getters/get-markets-info";
 import { getOrders, OrdersParams } from "./getters/get-orders";
 import { AllOrdersParams, getAllOrders } from "./getters/get-all-orders";
-import { getCompleteSets } from "./getters/get-complete-sets";
+import { CompleteSetsParams, getCompleteSets } from "./getters/get-complete-sets";
 import { BetterWorseOrdersParams, getBetterWorseOrders } from "./getters/get-better-worse-orders";
 import { getSyncData, NoParams } from "./getters/get-sync-data";
 import { DisputeInfoParams, getDisputeInfo } from "./getters/get-dispute-info";
 import { getInitialReporters, InitialReportersParams } from "./getters/get-initial-reporters";
 import { ForkMigrationTotalsParams, getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 import { getReportingFees, ReportingFeesParams } from "./getters/get-reporting-fees";
-import { getUniversesInfo } from "./getters/get-universes-info";
+import { getUniversesInfo, UniverseInfoParams } from "./getters/get-universes-info";
 import { getProfitLoss } from "./getters/get-profit-loss";
 import { getWinningBalance, WinningBalanceParams } from "./getters/get-winning-balance";
 
@@ -102,11 +102,11 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getAllOrders, AllOrdersParams.decode(request.params));
     case "getBetterWorseOrders":
       return dispatchResponse(getBetterWorseOrders, BetterWorseOrdersParams.decode(request.params));
-
     case "getCompleteSets":
-      return getCompleteSets(db, request.params.universe, request.params.account, callback);
+      return dispatchResponse(getCompleteSets, CompleteSetsParams.decode(request.params));
     case "getUniversesInfo":
-      return getUniversesInfo(db, augur, request.params.universe, request.params.account, callback);
+      return dispatchResponse(getUniversesInfo,  UniverseInfoParams.decode(request.params));
+
     case "getProfitLoss":
       return getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, callback);
     case "getUserShareBalances":
