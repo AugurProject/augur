@@ -1,6 +1,6 @@
 import { BigNumber } from "bignumber.js";
 import * as Knex from "knex";
-import { TradingHistoryRow, UITrade, SortLimitParams } from "../../types";
+import { TradingHistoryRow, UITrade, SortLimitParams, OutcomeParam } from "../../types";
 import { queryTradingHistoryParams } from "./database";
 import Augur from "augur.js";
 import * as t from "io-ts";
@@ -9,7 +9,7 @@ export const TradingHistoryParamsSpecific = t.type({
   universe: t.union([t.string, t.null, t.undefined]),
   account: t.union([t.string, t.null, t.undefined]),
   marketId: t.union([t.string, t.null, t.undefined]),
-  outcome: t.union([t.number, t.null, t.undefined]),
+  outcome: t.union([OutcomeParam, t.number, t.null, t.undefined]),
   orderType: t.union([t.string, t.null, t.undefined]),
   ignoreSelfTrades: t.union([t.boolean, t.null, t.undefined]),
   earliestCreationTime: t.union([t.number, t.null, t.undefined]),

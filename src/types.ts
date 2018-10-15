@@ -131,6 +131,17 @@ export interface JsonRpcResponse {
   result: any;
 }
 
+export const OutcomeParam = t.keyof({
+  0: null,
+  1: null,
+  2: null,
+  3: null,
+  4: null,
+  5: null,
+  6: null,
+  7: null,
+});
+
 export const SortLimitParams = t.partial({
   sortBy: t.union([t.string, t.null, t.undefined]),
   isSortDescending: t.union([t.boolean, t.null, t.undefined]),

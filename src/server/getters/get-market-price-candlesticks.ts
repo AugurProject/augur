@@ -3,10 +3,11 @@ import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { ZERO } from "../../constants";
 import * as t from "io-ts";
+import { OutcomeParam } from "../../types";
 
 export const MarketPriceCandlesticksParams = t.type({
   marketId: t.string,
-  outcome: t.union([t.number, t.null, t.undefined]),
+  outcome: t.union([OutcomeParam, t.number, t.null, t.undefined]),
   start: t.union([t.number, t.null, t.undefined]),
   end: t.union([t.number, t.null, t.undefined]),
   period: t.union([t.number, t.null, t.undefined]),
