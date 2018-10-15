@@ -2,7 +2,7 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
-import { Address, SortLimitParams } from "../../types";
+import { Address, OutcomeParam, SortLimitParams } from "../../types";
 import { getOutcomesProfitLoss, EarningsAtTime, ProfitLoss, formatProfitLossResults } from "./get-profit-loss";
 import * as t from "io-ts";
 
@@ -10,7 +10,7 @@ export const UserTradingPositionsParamsSpecific = t.type({
   universe: t.union([t.string, t.null, t.undefined]),
   marketId: t.union([t.string, t.null, t.undefined]),
   account: t.union([t.string, t.null, t.undefined]),
-  outcome: t.union([t.number, t.null, t.undefined]),
+  outcome: t.union([OutcomeParam, t.number, t.null, t.undefined]),
 });
 
 export const UserTradingPositionsParams = t.intersection([
