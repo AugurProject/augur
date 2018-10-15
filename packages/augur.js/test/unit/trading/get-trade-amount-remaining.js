@@ -5,7 +5,7 @@
 var BigNumber = require("bignumber.js");
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache().noCallThru();
-var orderFilledInputs = require("augur-core").abi.Augur.find(function (functionOrEventAbi) {
+var orderFilledInputs = require("augur-artifacts/abi").Augur.find(function (functionOrEventAbi) {
   return functionOrEventAbi.name === "OrderFilled" && functionOrEventAbi.type === "event";
 }).inputs;
 
