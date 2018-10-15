@@ -1,7 +1,7 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
 import { CompleteSetsRow, UICompleteSetsRow } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import * as t from "io-ts";
 
 export const CompleteSetsParams = t.type({
   universe: t.string,

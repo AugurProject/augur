@@ -1,9 +1,9 @@
-import { BigNumber } from "bignumber.js";
+import * as t from "io-ts";
 import * as Knex from "knex";
+import Augur from "augur.js";
+import { BigNumber } from "bignumber.js";
 import { TradingHistoryRow, UITrade, SortLimitParams, OutcomeParam } from "../../types";
 import { queryTradingHistoryParams } from "./database";
-import Augur from "augur.js";
-import * as t from "io-ts";
 
 export const TradingHistoryParamsSpecific = t.type({
   universe: t.union([t.string, t.null, t.undefined]),

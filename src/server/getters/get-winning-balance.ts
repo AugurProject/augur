@@ -1,9 +1,9 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { Address, ReportingState, PayoutRow } from "../../types";
 import { getMarketsWithReportingState, groupByAndSum } from "./database";
-import * as t from "io-ts";
 
 export const WinningBalanceParams = t.type({
   marketIds: t.array(t.string),

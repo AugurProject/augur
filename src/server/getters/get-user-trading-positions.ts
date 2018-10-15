@@ -1,10 +1,10 @@
-import Augur from "augur.js";
+import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
+import Augur from "augur.js";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { Address, OutcomeParam, SortLimitParams } from "../../types";
 import { getOutcomesProfitLoss, EarningsAtTime, ProfitLoss, formatProfitLossResults } from "./get-profit-loss";
-import * as t from "io-ts";
 
 export const UserTradingPositionsParamsSpecific = t.type({
   universe: t.union([t.string, t.null, t.undefined]),

@@ -1,12 +1,12 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
+import Augur from "augur.js";
 import { Address, MarketsRowWithTime, Payout, UIStakeInfo, PayoutRow, StakeDetails, ReportingState } from "../../types";
 import { getMarketsWithReportingState, normalizePayouts, uiStakeInfoToFixed, groupByAndSum } from "./database";
 import { BigNumber } from "bignumber.js";
 import { QueryBuilder } from "knex";
 import { ZERO } from "../../constants";
-import Augur from "augur.js";
-import * as t from "io-ts";
 
 export const DisputeInfoParams = t.intersection([
   t.type({

@@ -1,8 +1,8 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
 import { Address, Bytes32, SortLimitParams } from "../../types";
 import { queryModifierParams } from "./database";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import * as t from "io-ts";
 
 export const AccountTransferHistoryParamsSpecific = t.type({
   account: t.string,

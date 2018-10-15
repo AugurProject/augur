@@ -1,9 +1,9 @@
-import Augur from "augur.js";
+import * as t from "io-ts";
 import * as Knex from "knex";
+import Augur from "augur.js";
 import { Address, UniverseInfoRow, UIUniverseInfoRow } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { normalizePayouts, normalizedPayoutsToFixed } from "./database";
-import * as t from "io-ts";
 
 export const UniverseInfoParams = t.type({
   universe: t.string,

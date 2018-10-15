@@ -1,9 +1,9 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
 import Augur from "augur.js";
 import { MarketPriceHistory, TimestampedPriceAmount } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import * as t from "io-ts";
 
 export const MarketPriceHistoryParams = t.type({
   marketId: t.string,

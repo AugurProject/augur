@@ -1,8 +1,8 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { ReportingState, DisputeTokensRowWithTokenState, UIDisputeTokens, UIDisputeTokenInfo } from "../../types";
 import { reshapeDisputeTokensRowToUIDisputeTokenInfo } from "./database";
-import * as t from "io-ts";
 
 export const DisputeTokenState = t.keyof({
   ALL: null,

@@ -1,13 +1,13 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
+import * as _ from "lodash";
+import Augur from "augur.js";
 import { Address, FeeWindowRow, UIFeeWindowCurrent } from "../../types";
 import { BigNumber } from "bignumber.js";
 import { getCashAddress, groupByAndSum } from "./database";
 import { ZERO } from "../../constants";
 import { getCurrentTime } from "../../blockchain/process-block";
-import Augur from "augur.js";
-import * as _ from "lodash";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import * as t from "io-ts";
 
 export const FeeWindowParams = t.type({
   universe: t.string,

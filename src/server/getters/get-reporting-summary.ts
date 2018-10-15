@@ -1,7 +1,7 @@
-import * as Knex from "knex";
-import { getMarketsWithReportingState } from "./database";
-import Augur from "augur.js";
 import * as t from "io-ts";
+import * as Knex from "knex";
+import Augur from "augur.js";
+import { getMarketsWithReportingState } from "./database";
 
 export const ReportingSummaryParams = t.type({
   feeWindow: t.string,

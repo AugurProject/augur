@@ -1,9 +1,9 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { Address } from "../../types";
 import { ZERO } from "../../constants";
-import * as t from "io-ts";
 
 export const OrderType = t.keyof({
   buy: null,

@@ -1,8 +1,8 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { ZERO } from "../../constants";
-import * as t from "io-ts";
 import { OutcomeParam } from "../../types";
 
 export const MarketPriceCandlesticksParams = t.type({

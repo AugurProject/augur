@@ -1,10 +1,10 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
+import Augur from "augur.js";
 import { Address, UIMarketCreatorFee, ReportingState } from "../../types";
 import { getCashAddress, getMarketsWithReportingState } from "./database";
-import Augur from "augur.js";
 import { ZERO } from "../../constants";
-import * as t from "io-ts";
 
 export const UnclaimedMarketCreatorFeesParams = t.type({
   marketIds: t.array(t.string),

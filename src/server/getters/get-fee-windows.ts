@@ -1,10 +1,10 @@
+import * as t from "io-ts";
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { UnclaimedFeeWindowsRow, UnclaimedFeeWindows, UnclaimedFeeWindowInfo } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { getCurrentTime } from "../../blockchain/process-block";
 import { getCashAddress } from "./database";
-import * as t from "io-ts";
 
 export const FeeWindowsParams = t.type({
   universe: t.string,

@@ -1,8 +1,8 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
 import Augur from "augur.js";
 import { SortLimitParams } from "../../types";
 import { groupByAndSum, queryModifierParams } from "./database";
-import * as t from "io-ts";
 
 export const CategoriesParamsSpecific = t.type({
   universe: t.string,
