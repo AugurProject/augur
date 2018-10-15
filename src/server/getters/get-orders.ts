@@ -9,7 +9,7 @@ import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 export const OrdersParamsSpecific = t.type({
   universe: t.union([t.string, t.null, t.undefined]),
   marketId: t.union([t.string, t.null, t.undefined]),
-  outcome: t.union([OutcomeParam, t.string, t.null, t.undefined]),
+  outcome: t.union([OutcomeParam, t.number, t.null, t.undefined]),
   orderType: t.union([t.string, t.null, t.undefined]),
   creator: t.union([t.string, t.null, t.undefined]),
   orderState: t.union([t.string, t.null, t.undefined]),
