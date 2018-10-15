@@ -1,48 +1,43 @@
-import { describe, it } from "mocha";
-import mockStore from "test/mockStore";
+import mockStore from "../../../../test/mockStore";
 import {
   handleAugurNodeDisconnect,
-  handleEthereumDisconnect,
-  __RewireAPI__ as RewireDisconnectHandlers
-} from "modules/events/actions/disconnect-handlers";
-import { __RewireAPI__ as RewireReInitAugur } from "modules/app/actions/re-init-augur";
-import { connectAugur} from "../../../src/modules/app/actions/init-augur";
+  handleEthereumDisconnect
+} from "./disconnect-handlers";
+import { connectAugur } from "../../app/actions/init-augur";
 
-jest.mock("../../../src/modules/app/actions/init-augur");
+jest.mock("../../app/actions/init-augur");
 
 describe("events/actions/disconnect-handlers", () => {
   let store;
   let state;
+  let params;
   const mockHistory = { push: arg => assert.deepEqual(arg, "/categories") };
 
   test("it should handle a augurNode disconnection event with pausedReconnection", () => {
     state = {
       connection: {
         isConnected: true,
-          isConnectedToAugurNode: true,
-          isReconnectionPaused: false
+        isConnectedToAugurNode: true,
+        isReconnectionPaused: false
       }
     };
+    params = {
+      history: mockHistory
+    };
     store = mockStore.mockStore(state);
-
+    connectAugur.mockImplementation((history, env, isInitialConnection, cb) => {
+      expect(history).toEqual(params.history);
+      expect(isInitialConnection).toBe(false);
+      expect(env).toEqual(store.getState().env);
+      cb();
+      // just to confirm this is actually called.
+      return { type: "CONNECT_AUGUR" };
+    });
   });
-
 
   describe("handleAugurNodeDisconnect", () => {
     const test = t =>
       it(t.description, done => {
-
-        RewireReInitAugur.__Rewire__(
-          "connectAugur",
-          (history, env, isInitialConnection, cb) => {
-            assert.deepEqual(history, t.params.history);
-            assert.isFalse(isInitialConnection);
-            assert.deepEqual(env, store.getState().env);
-            cb();
-            // just to confirm this is actually called.
-            return { type: "CONNECT_AUGUR" };
-          }
-        );
         RewireReInitAugur.__Rewire__("debounce", (func, wait) => {
           assert.deepEqual(wait, 3000);
           assert.isFunction(func);
@@ -70,9 +65,6 @@ describe("events/actions/disconnect-handlers", () => {
     test({
       description:
         "it should handle a augurNode disconnection event with pausedReconnection",
-      params: {
-        history: mockHistory
-      },
       assertions: actions =>
         assert.deepEqual(actions, [
           {
