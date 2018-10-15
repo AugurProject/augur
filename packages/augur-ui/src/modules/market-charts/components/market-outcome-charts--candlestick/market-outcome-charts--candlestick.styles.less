@@ -46,6 +46,12 @@
       stroke-width: 2px;
     }
 
+    .tick-line-volume {
+      opacity: 0.25;
+      stroke: @color-gray;
+      stroke-width: 1px;
+    }
+
     .overlay {
       fill: none;
       pointer-events: visible;
@@ -63,6 +69,13 @@
       &:extend(.caps--extra-small all);
 
       fill: @color-lightgray;
+    }
+
+    .tick-value-volume {
+      &:extend(.caps--extra-small all);
+
+      fill: @color-lightgray;
+      opacity: 0.55;
     }
 
     rect {

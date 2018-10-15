@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 
 import { selectCurrentTimestamp } from "src/select-state";
 import { loadAccountHistory } from "modules/auth/actions/load-account-history";
-import { loadAccountCompleteSets } from "modules/positions/actions/load-account-complete-sets";
 import { selectTransactions } from "modules/transactions/selectors/transactions";
 import TransactionsList from "modules/portfolio/components/transactions/transactions";
 import {
@@ -19,11 +18,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  loadAccountHistoryTransactions: (beginTime, endTime) =>
-    dispatch(loadAccountHistory(beginTime, endTime)),
+  loadAccountHistoryTransactions: (beginTime, endTime, type) =>
+    dispatch(loadAccountHistory(beginTime, endTime, type)),
   updateTransactionPeriod: transactionPeriod =>
-    dispatch(updateFilterSortOptions(TRANSACTION_PERIOD, transactionPeriod)),
-  loadAccountCompleteSets: () => dispatch(loadAccountCompleteSets())
+    dispatch(updateFilterSortOptions(TRANSACTION_PERIOD, transactionPeriod))
 });
 
 const Transactions = withRouter(

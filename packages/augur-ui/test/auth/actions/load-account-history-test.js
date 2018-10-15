@@ -17,7 +17,8 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
     LOAD_CREATE_MARKET_HISTORY: "LOAD_CREATE_MARKET_HISTORY",
     LOAD_REPORTING_HISTORY: "LOAD_REPORTING_HISTORY",
     UPDATE_APP_STATUS: "UPDATE_APP_STATUS",
-    CLEAR_TRANSACTION_DATA: "CLEAR_TRANSACTION_DATA"
+    CLEAR_TRANSACTION_DATA: "CLEAR_TRANSACTION_DATA",
+    LOAD_COMPLETE_SETS: "LOAD_COMPLETE_SETS"
   };
   const TRANSACTIONS_LOADING = "transactionsLoading";
 
@@ -37,6 +38,9 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
     __RewireAPI__.__Rewire__("loadReportingHistory", () => ({
       type: ACTIONS.LOAD_REPORTING_HISTORY
     }));
+    __RewireAPI__.__Rewire__("loadAccountCompleteSets", () => ({
+      type: ACTIONS.LOAD_COMPLETE_SETS
+    }));
   });
 
   afterEach(() => {
@@ -45,6 +49,7 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
     __RewireAPI__.__ResetDependency__("loadFundingHistory");
     __RewireAPI__.__ResetDependency__("loadCreateMarketHistory");
     __RewireAPI__.__ResetDependency__("loadReportingHistory");
+    __RewireAPI__.__ResetDependency__("loadAccountCompleteSets");
   });
 
   it("get actions for running through", () => {
@@ -63,6 +68,9 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
       },
       {
         type: ACTIONS.LOAD_ACCOUNT_TRADES
+      },
+      {
+        type: ACTIONS.LOAD_COMPLETE_SETS
       },
       {
         type: ACTIONS.LOAD_FUNDING_HISTORY

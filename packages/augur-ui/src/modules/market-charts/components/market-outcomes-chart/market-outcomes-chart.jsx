@@ -18,10 +18,10 @@ export default class MarketOutcomesChart extends Component {
     minPrice: PropTypes.number,
     outcomes: PropTypes.array.isRequired,
     updateSelectedOutcome: PropTypes.func.isRequired,
-    fixedPrecision: PropTypes.number.isRequired,
     hasPriceHistory: PropTypes.bool.isRequired,
     bucketedPriceTimeSeries: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.any // NOTE -- There is a PR in the prop-types lib to handle null values, but until then..
+    selectedOutcome: PropTypes.any, // NOTE -- There is a PR in the prop-types lib to handle null values, but until then..
+    pricePrecision: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -45,23 +45,17 @@ export default class MarketOutcomesChart extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    const { outcomes, fixedPrecision } = this.props;
+    const { outcomes } = this.props;
 
-    if (
-      !isEqual(outcomes, nextProps.outcomes) ||
-      fixedPrecision !== nextProps.fixedPrecision
-    )
-      this.drawChart(nextProps);
+    if (!isEqual(outcomes, nextProps.outcomes)) this.drawChart(nextProps);
 
     if (
       !isEqual(this.state.hoveredLocation, nextState.hoveredLocation) ||
-      !isEqual(this.state.drawParams, nextState.drawParams) ||
-      fixedPrecision !== nextProps.fixedPrecision
+      !isEqual(this.state.drawParams, nextState.drawParams)
     ) {
       updateHoveredLocationCrosshair({
         hoveredLocation: nextState.hoveredLocation,
-        drawParams: nextState.drawParams,
-        fixedPrecision: nextProps.fixedPrecision
+        drawParams: nextState.drawParams
       });
     }
   }
@@ -78,12 +72,12 @@ export default class MarketOutcomesChart extends Component {
     creationTime,
     currentTimestamp,
     estimatedInitialPrice,
-    fixedPrecision,
     maxPrice,
     minPrice,
     outcomes,
     hasPriceHistory,
-    bucketedPriceTimeSeries
+    bucketedPriceTimeSeries,
+    pricePrecision
   }) {
     if (this.outcomesChart) {
       const drawParams = determineDrawParams({
@@ -108,7 +102,7 @@ export default class MarketOutcomesChart extends Component {
       drawTicks({
         drawParams,
         chart,
-        fixedPrecision
+        pricePrecision
       });
 
       drawXAxisLabels({
@@ -156,6 +150,7 @@ export default class MarketOutcomesChart extends Component {
   }
 
   render() {
+    const { pricePrecision } = this.props;
     const s = this.state;
 
     return (
@@ -171,7 +166,7 @@ export default class MarketOutcomesChart extends Component {
                   {s.hoveredOutcome.name}
                 </span>
                 <span className={Styles.MarketOutcomesChart__price}>
-                  last: {s.hoveredOutcome.price.toFixed(4)} eth
+                  last: {s.hoveredOutcome.price.toFixed(pricePrecision)} eth
                 </span>
                 <span className={Styles.MarketOutcomesChart__instruction}>
                   click to view more information about this outcome
@@ -237,7 +232,7 @@ function determineDrawParams(options) {
 }
 
 function drawTicks(options) {
-  const { drawParams, chart, fixedPrecision } = options;
+  const { drawParams, chart, pricePrecision } = options;
 
   // Y axis
   //  Bounds
@@ -295,7 +290,7 @@ function drawTicks(options) {
     .attr("y", d => drawParams.yScale(d))
     .attr("dx", 0)
     .attr("dy", drawParams.chartDim.tickOffset)
-    .text(d => d.toFixed(fixedPrecision));
+    .text(d => d.toFixed(pricePrecision));
 }
 
 function drawXAxisLabels(options) {
@@ -389,7 +384,7 @@ function attachHoverHandler(options) {
 }
 
 function updateHoveredLocationCrosshair(options) {
-  const { drawParams, hoveredLocation, fixedPrecision } = options;
+  const { drawParams, hoveredLocation, pricePrecision } = options;
 
   if (hoveredLocation.length === 0) {
     d3.select("#priceTimeSeries_crosshairs").style("display", "none");
@@ -409,7 +404,7 @@ function updateHoveredLocationCrosshair(options) {
     d3.select("#hovered_priceTimeSeries_price_label")
       .attr("x", 0)
       .attr("y", drawParams.yScale(hoveredLocation[1]) + 12)
-      .text(hoveredLocation[1].toFixed(fixedPrecision));
+      .text(hoveredLocation[1].toFixed(pricePrecision));
   }
 }
 
