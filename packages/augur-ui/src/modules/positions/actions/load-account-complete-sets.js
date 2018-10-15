@@ -10,7 +10,7 @@ export function loadAccountCompleteSets(options = {}, callback = logError) {
     if (address == null) return callback(null);
     augur.augurNode.submitRequest(
       "getCompleteSets",
-      { account: address, universe: id },
+      { account: address, universe: id, ...options },
       (err, completeSetsLogs) => {
         if (err) callback(err);
         dispatch(addCompleteSetsSoldLogs(completeSetsLogs));

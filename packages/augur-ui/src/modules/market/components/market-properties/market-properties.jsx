@@ -35,6 +35,7 @@ const ShowResolutionStates = [
 ];
 
 const MarketProperties = p => {
+  const openInterest = getValue(p, "openInterest");
   const shareVolume = getValue(p, "volume");
   const isScalar = p.marketType === SCALAR;
   let consensus = getValue(
@@ -59,6 +60,14 @@ const MarketProperties = p => {
             <ValueDenomination
               valueClassname="volume"
               formatted={shareVolume.full}
+            />
+          </li>
+          <li>
+            <span>Open Interest</span>
+            <ValueDenomination
+              valueClassname="volume"
+              formatted={openInterest}
+              denomination="ETH"
             />
           </li>
           <li>

@@ -1,4 +1,5 @@
-// for add-transactions.js
+// for add-transactions.js and transactions.jsx
+export const ALL = "all";
 export const PUBLIC_TRADE = "publicTrade";
 export const TRANSFER = "Transfer";
 export const OPEN_ORDER = "OpenOrder";

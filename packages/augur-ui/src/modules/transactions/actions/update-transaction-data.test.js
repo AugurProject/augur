@@ -1,21 +1,20 @@
-import proxyquire from "proxyquire";
+import { updateTransactionsData } from "modules/transactions/actions/update-transactions-data";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import testState from "test/testState";
 
 describe(`modules/transactions/actions/update-transactions-data.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-  let out;
   const state = Object.assign({}, testState);
   const store = mockStore(state);
-  const action = proxyquire(
-    "../../../src/modules/transactions/actions/update-transactions-data",
-    {}
-  );
-  it(`should fire update and process transaction actions`, () => {
-    out = [
+  test("fired update and processes transaction actions", () => {
+    store.dispatch(
+      updateTransactionsData({
+        test: "testTransactionData"
+      })
+    );
+    expect(store.getActions()).toEqual([
       {
         type: "UPDATE_TRANSACTIONS_DATA",
         data: {
@@ -24,16 +23,6 @@ describe(`modules/transactions/actions/update-transactions-data.js`, () => {
           }
         }
       }
-    ];
-    store.dispatch(
-      action.updateTransactionsData({
-        test: "testTransactionData"
-      })
-    );
-    assert.deepEqual(
-      store.getActions(),
-      out,
-      `Didn't dispatch the correct actions`
-    );
+    ]);
   });
 });

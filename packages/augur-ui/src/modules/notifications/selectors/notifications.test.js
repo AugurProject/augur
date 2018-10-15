@@ -33,7 +33,7 @@ describe("modules/notifications/selectors/notifications", () => {
       };
     });
 
-    test("if returns the expected object", () => {
+    test("returned the expected object", () => {
       expect(selectInfoNotificationsAndSeenCount(state)).toEqual({
         unseenCount: 2,
         notifications: [
@@ -83,7 +83,7 @@ describe("modules/notifications/selectors/notifications", () => {
       };
     });
 
-    test("if only returns notifications with a matching level", () => {
+    test("returned notifications with a matching level", () => {
       const actual = selectNotificationsByLevel(notificationLevels.INFO)(state);
       expect(actual).toHaveLength(2);
     });
