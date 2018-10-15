@@ -1,9 +1,15 @@
+import * as t from "io-ts";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import Augur from "augur.js";
 import { Address } from "../../types";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
+
+export const UserShareBalancesParams = t.type({
+  marketIds: t.array(t.string),
+  account: t.string,
+});
 
 interface ShareTokenBalances {
   marketId: Address;
@@ -19,9 +25,9 @@ export interface MarketBalances {
   [market: string]: Array<string>;
 }
 
-export function getUserShareBalances(db: Knex, augur: Augur, marketIds: Array<Address>, account: Address, callback: (err: Error|null, result?: MarketBalances) => void): void {
-  if (marketIds == null) return callback(new Error("must include marketIds parameter"));
-  if (account == null) return callback(new Error("must include account parameter"));
+export async function getUserShareBalances(db: Knex, augur: Augur, params: t.TypeOf<typeof UserShareBalancesParams>): Promise<MarketBalances> {
+  if (params.marketIds == null) throw new Error("must include marketIds parameter");
+  if (params.account == null) throw new Error("must include account parameter");
 
   // NB: we don't really need market state here, but this is a convenient
   // helper non-the-less considering simplifing.
@@ -35,27 +41,22 @@ export function getUserShareBalances(db: Knex, augur: Augur, marketIds: Array<Ad
     .leftJoin("balances", function () {
       this
         .on("balances.token", "tokens.contractAddress")
-        .andOn("balances.owner", db.raw("?", account));
+        .andOn("balances.owner", db.raw("?", params.account));
     })
     .orderBy("tokens.marketId")
     .orderBy("tokens.outcome")
-    .whereIn("tokens.marketId", marketIds);
+    .whereIn("tokens.marketId", params.marketIds);
 
-  query.asCallback(( err: Error|null, balances: Array<ShareTokenBalances>): void => {
-    if (err != null) return callback(err);
+  const balances: Array<ShareTokenBalances> = await query;
 
-    const balancesByMarket = _.chain(balances)
-      .groupBy((row) => row.marketId)
-      .mapValues((groupedBalances: Array<ShareTokenBalances>) => {
-        return groupedBalances.map((row) => {
-          if (row.balance === null) return "0";
-
-          const tickSize = numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice);
-          return augur.utils.convertOnChainAmountToDisplayAmount(row.balance, tickSize).toString();
-        });
-      })
-      .value();
-
-    callback(null, balancesByMarket);
-  });
+  return _.chain(balances)
+    .groupBy((row) => row.marketId)
+    .mapValues((groupedBalances: Array<ShareTokenBalances>) => {
+      return groupedBalances.map((row) => {
+        if (row.balance === null) return "0";
+        const tickSize = numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice);
+        return augur.utils.convertOnChainAmountToDisplayAmount(row.balance, tickSize).toString();
+      });
+    })
+    .value();
 }

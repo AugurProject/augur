@@ -13,7 +13,7 @@ import { getTradingHistory, TradingHistoryParams } from "./getters/get-trading-h
 import { getMarketPriceHistory, MarketPriceHistoryParams } from "./getters/get-market-price-history";
 import { getMarketPriceCandlesticks, MarketPriceCandlesticksParams } from "./getters/get-market-price-candlesticks";
 import { getUserTradingPositions, UserTradingPositionsParams } from "./getters/get-user-trading-positions";
-import { getUserShareBalances } from "./getters/get-user-share-balances";
+import { getUserShareBalances, UserShareBalancesParams } from "./getters/get-user-share-balances";
 import { FeeWindowsParams, getFeeWindows } from "./getters/get-fee-windows";
 import { FeeWindowParams, getFeeWindow } from "./getters/get-fee-window";
 import { getUnclaimedMarketCreatorFees, UnclaimedMarketCreatorFeesParams } from "./getters/get-unclaimed-market-creator-fees";
@@ -106,12 +106,11 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getCompleteSets, CompleteSetsParams.decode(request.params));
     case "getUniversesInfo":
       return dispatchResponse(getUniversesInfo,  UniverseInfoParams.decode(request.params));
+    case "getUserShareBalances":
+      return dispatchResponse(getUserShareBalances, UserShareBalancesParams.decode(request.params));
 
     case "getProfitLoss":
       return getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, callback);
-    case "getUserShareBalances":
-      return getUserShareBalances(db, augur, request.params.marketIds, request.params.account, callback);
-
     case "getMarketsCreatedByUser":
       return getMarketsCreatedByUser(db, request.params.universe, request.params.creator, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     default:
