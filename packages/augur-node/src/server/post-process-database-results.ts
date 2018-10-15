@@ -26,10 +26,12 @@ const whitelist: TableWhitelist = {
     marketCreatorFeesClaimed: true,
     marketCreatorFeesBalance: true,
     initialReportSize: true,
+    validityBondSize: true,
     volume: true,
     shareVolume: true,
     sharesOutstanding: true,
     designatedReportStake: true,
+    openInterest: true,
   },
   orders: {
     price: true,

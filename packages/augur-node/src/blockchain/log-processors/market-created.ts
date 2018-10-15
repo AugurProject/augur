@@ -2,14 +2,14 @@ import { forEachOf, series, parallel } from "async";
 import Augur from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, FormattedEventLog, MarketCreatedLogExtraInfo, MarketsRow, SearchRow, OutcomesRow, TokensRow, CategoriesRow, ErrorCallback, AsyncCallback } from "../../types";
+import { Address, FormattedEventLog, MarketCreatedLogExtraInfo, MarketsRow, OutcomesRow, TokensRow, CategoriesRow, ErrorCallback, AsyncCallback } from "../../types";
 import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { createSearchProvider } from "../../database/fts";
 import { contentSearchBuilder} from "../../utils/content-search-builder";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
-import { MarketType, SubscriptionEventNames, WEI_PER_ETHER, ZERO } from "../../constants";
+import { ETHER, MarketType, SubscriptionEventNames, WEI_PER_ETHER, ZERO } from "../../constants";
 import { getCurrentTime } from "../process-block";
 
 export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
@@ -23,6 +23,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
     numTicks: (next: AsyncCallback): void => augur.api.Market.getNumTicks(marketPayload, next),
     marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next),
     reportingFeeDivisor: (next: AsyncCallback): void => augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload, next),
+    validityBondAttoeth: (next: AsyncCallback): void => augur.api.Market.getValidityBondAttoeth(marketPayload, next),
   }, (err: Error|null, onContractData?: any): void => {
     if (err) return callback(err);
     if (!onContractData) return callback(new Error(`Could not fetch market details for market: ${log.market}`));
@@ -47,6 +48,8 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
         const marketType: string = MarketType[log.marketType];
         const marketsDataToInsert: MarketsRow<string|number> = {
           marketType,
+          transactionHash:            log.transactionHash,
+          logIndex:                   log.logIndex,
           marketId:                   log.market,
           marketCreator:              log.marketCreator,
           creationBlockNumber:        log.blockNumber,
@@ -77,6 +80,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           volume:                     "0",
           sharesOutstanding:          "0",
           openInterest:               "0",
+          validityBondSize:           onContractData.validityBondAttoeth,
           forking:                    0,
           needsMigration:             0,
           needsDisavowal:             0,
@@ -123,6 +127,17 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
             (next: AsyncCallback): void => {
               db.batchInsert("token_supply", shareTokens.map((contractAddress: Address, outcome: number): Partial<TokensRow> => Object.assign({ token: contractAddress, supply: "0" })), numOutcomes).asCallback(next);
             },
+            (next: AsyncCallback): void => {
+              db.insert({
+                blockNumber: log.blockNumber,
+                transactionHash: log.transactionHash,
+                logIndex: log.logIndex,
+                token: ETHER,
+                sender: log.marketCreator,
+                recipient: log.market,
+                value: onContractData.validityBondAttoeth,
+              }).into("transfers").asCallback(next);
+            },
           ], (err: Error|null): void => {
             if (err) return callback(err);
             augurEmitter.emit(SubscriptionEventNames.MarketCreated, Object.assign(
@@ -150,6 +165,7 @@ async function marketCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEve
   }).del();
   await db.from("tokens").where({ marketId }).del();
   await db.from("market_state").where({ marketId }).del();
+  await db.from("transfers").where({ recipient: marketId, token: ETHER }).del();
 
   const searchProvider = createSearchProvider(db);
   if (searchProvider !== null) {
