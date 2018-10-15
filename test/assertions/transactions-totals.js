@@ -1,12 +1,12 @@
 export default function(transactionsTotals) {
-  assert.isObject(transactionsTotals);
+  expect(typeof transactionsTotals).toEqual("object");
 
-  assert.isString(transactionsTotals.title);
-  assert.isString(transactionsTotals.shortTitle);
+  expect(typeof transactionsTotals.title).toEqual("string");
+  expect(typeof transactionsTotals.shortTitle).toEqual("string");
 
-  assert.isNumber(transactionsTotals.numWorking);
-  assert.isNumber(transactionsTotals.numPending);
-  assert.isNumber(transactionsTotals.numComplete);
-  assert.isNumber(transactionsTotals.numWorkingAndPending);
-  assert.isNumber(transactionsTotals.numTotal);
+  expect(typeof transactionsTotals.numWorking).toEqual("number");
+  expect(typeof transactionsTotals.numPending).toEqual("number");
+  expect(typeof transactionsTotals.numComplete).toEqual("number");
+  expect(typeof transactionsTotals.numWorkingAndPending).toEqual("number");
+  expect(typeof transactionsTotals.numTotal).toEqual("number");
 }
