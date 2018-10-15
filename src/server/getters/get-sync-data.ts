@@ -2,7 +2,6 @@ import * as t from "io-ts";
 import * as Knex from "knex";
 import Augur from "augur.js";
 import { isSyncFinished } from "../../blockchain/bulk-sync-augur-node-with-blockchain";
-import { MarketsInfoParams } from "./get-markets-info";
 
 export const NoParams = t.type({
 });

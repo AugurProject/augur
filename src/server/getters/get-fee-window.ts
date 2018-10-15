@@ -1,6 +1,5 @@
 import * as Knex from "knex";
-import { Address, AsyncCallback, FeeWindowRow, UIFeeWindowCurrent } from "../../types";
-import { series } from "async";
+import { Address, FeeWindowRow, UIFeeWindowCurrent } from "../../types";
 import { BigNumber } from "bignumber.js";
 import { getCashAddress, groupByAndSum } from "./database";
 import { ZERO } from "../../constants";

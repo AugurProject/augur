@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import Augur from "augur.js";
 import { BigNumber } from "bignumber.js";
-import { Address, ForkMigrationTotalsRow, UIForkMigrationTotals, UIForkMigrationTotalsRow } from "../../types";
+import { ForkMigrationTotalsRow, UIForkMigrationTotals, UIForkMigrationTotalsRow } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import * as t from "io-ts";
 

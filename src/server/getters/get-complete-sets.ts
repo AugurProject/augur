@@ -1,5 +1,5 @@
 import * as Knex from "knex";
-import { Address, CompleteSetsRow, UICompleteSetsRow } from "../../types";
+import { CompleteSetsRow, UICompleteSetsRow } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import * as t from "io-ts";
 

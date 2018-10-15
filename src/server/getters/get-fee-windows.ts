@@ -1,6 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { Address, UnclaimedFeeWindowsRow, UnclaimedFeeWindows, UnclaimedFeeWindowInfo } from "../../types";
+import { UnclaimedFeeWindowsRow, UnclaimedFeeWindows, UnclaimedFeeWindowInfo } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { getCurrentTime } from "../../blockchain/process-block";
 import { getCashAddress } from "./database";
