@@ -11,8 +11,8 @@ describe("src/modules/filter-sort/helpers/filter-array-of-objects-by-array.js", 
       result = filterArrayByArrayPredicate(null, []);
     });
 
-    it("should return identity function", () => {
-      assert.equal(result, identity);
+    test("should return identity function", () => {
+      expect(result).toEqual(identity);
     });
   });
 
@@ -21,8 +21,8 @@ describe("src/modules/filter-sort/helpers/filter-array-of-objects-by-array.js", 
       result = filterArrayByArrayPredicate(examplePropertyToFilterOn, null);
     });
 
-    it("should return identity function", () => {
-      assert.equal(result, identity);
+    test("should return identity function", () => {
+      expect(result).toEqual(identity);
     });
   });
 
@@ -31,8 +31,8 @@ describe("src/modules/filter-sort/helpers/filter-array-of-objects-by-array.js", 
       result = filterArrayByArrayPredicate("some-prop", []);
     });
 
-    it("should return identity function", () => {
-      assert.equal(result, identity);
+    test("should return identity function", () => {
+      expect(result).toEqual(identity);
     });
   });
 
@@ -48,8 +48,8 @@ describe("src/modules/filter-sort/helpers/filter-array-of-objects-by-array.js", 
       );
     });
 
-    it("should return a filter function", () => {
-      assert.isFunction(filterPredicateFn);
+    test("should return a filter function", () => {
+      expect(typeof filterPredicateFn).toBe("function");
     });
 
     describe("when passed an object that has one matching members", () => {
@@ -59,8 +59,8 @@ describe("src/modules/filter-sort/helpers/filter-array-of-objects-by-array.js", 
         });
       });
 
-      it("should be true", () => {
-        assert.isOk(result);
+      test("should be true", () => {
+        expect(result).toBeTruthy();
       });
     });
 
@@ -71,8 +71,8 @@ describe("src/modules/filter-sort/helpers/filter-array-of-objects-by-array.js", 
         });
       });
 
-      it("should be true", () => {
-        assert.isOk(result);
+      test("should be true", () => {
+        expect(result).toBeTruthy();
       });
     });
 
@@ -83,8 +83,8 @@ describe("src/modules/filter-sort/helpers/filter-array-of-objects-by-array.js", 
         });
       });
 
-      it("should be true", () => {
-        assert.isNotOk(result);
+      test("should be true", () => {
+        expect(result).toBeFalsy();
       });
     });
 
@@ -93,8 +93,8 @@ describe("src/modules/filter-sort/helpers/filter-array-of-objects-by-array.js", 
         result = filterPredicateFn({});
       });
 
-      it("should be false", () => {
-        assert.isNotOk(result);
+      test("should be false", () => {
+        expect(result).toBeFalsy();
       });
     });
   });
