@@ -49,7 +49,7 @@ jobs:
             yarn workspace augur-core docker:run:test:integration:parity;
           elif [[ "$TESTS" == "security:mythril" ]]; then
             yarn workspace augur-core docker:run:test:security:mythril;
-            cat source/contracts/test-results.log;
+            cat $(find . -name test-results.log)
           elif [[ "$TESTS" == "security:maian" ]]; then
             yarn workspace augur-core docker:run:test:security:maian;
           elif [[ "$TESTS" == "security:smt" ]]; then
