@@ -14,7 +14,7 @@ interface ParentUniverseRow {
   parentUniverse: Address;
 }
 
-export async function getUniversesInfo(db: Knex, augur: Augur, params: t.TypeOf<typeof UniverseInfoParams>): Promise<any> {
+export async function getUniversesInfo(db: Knex, augur: Augur, params: t.TypeOf<typeof UniverseInfoParams>): Promise<Array<UIUniverseInfoRow<string>>> {
   const parentUniverseRow: ParentUniverseRow = await db.select("parentUniverse").from("universes").where("universe", params.universe).first();
   if (parentUniverseRow === undefined) return [];
   const query = db.select([

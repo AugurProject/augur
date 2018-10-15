@@ -18,13 +18,23 @@ export const UserTradingPositionsParams = t.intersection([
   SortLimitParams,
 ]);
 
+interface TradingPosition {
+  marketId: string;
+  outcome: number;
+  numShares: string;
+  realizedProfitLoss: string;
+  unrealizedProfitLoss: string;
+  numSharesAdjustedForUserIntention: string;
+  averagePrice: string;
+}
+
 async function queryUniverse(db: Knex, marketId: Address): Promise<Address> {
   const market = await db.first("universe").from("markets").where({ marketId });
   if (!market || market.universe == null) throw new Error("If universe isn't provided, you must provide a valid marketId");
   return market.universe;
 }
 
-export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.TypeOf<typeof UserTradingPositionsParams>): Promise<any> {
+export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.TypeOf<typeof UserTradingPositionsParams>): Promise<Array<TradingPosition>> {
   if (params.universe == null && params.marketId == null) throw new Error("Must provide reference to universe, specify universe or marketId");
   if (params.account == null) throw new Error("Missing required parameter: account");
 
@@ -70,7 +80,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
       };
     });
 
-    if (typeof params.outcome === "number" && byOutcomes[params.outcome]) return [byOutcomes[params.outcome]];
+    if (params.outcome != null && byOutcomes[params.outcome]) return [byOutcomes[params.outcome]];
     return byOutcomes;
   });
 
