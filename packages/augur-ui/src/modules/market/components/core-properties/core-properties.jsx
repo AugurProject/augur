@@ -309,6 +309,7 @@ export default class CoreProperties extends Component {
             className={
               Styles[`CoreProperties__property-tentativeWinningOutcome`]
             }
+            style={{ marginBottom: "-0.125rem" }}
           >
             <div
               className={classNames(
@@ -334,7 +335,12 @@ export default class CoreProperties extends Component {
     return (
       <div className={Styles.CoreProperties__coreContainer}>
         {headerContent && (
-          <div className={Styles.CoreProperties__row}>
+          <div
+            className={classNames(
+              Styles.CoreProperties__row,
+              Styles.CoreProperties__rowBorder
+            )}
+          >
             <div
               className={Styles.CoreProperties__property}
               style={{ flexGrow: "1" }}
@@ -343,7 +349,6 @@ export default class CoreProperties extends Component {
             </div>
           </div>
         )}
-        {headerContent && <div className={Styles.CoreProperties__lineBreak} />}
         {renderedProperties}
       </div>
     );

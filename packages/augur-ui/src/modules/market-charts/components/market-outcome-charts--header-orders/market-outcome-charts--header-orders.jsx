@@ -53,7 +53,6 @@ const MarketOutcomeChartsHeaderOrders = p => (
 export default MarketOutcomeChartsHeaderOrders;
 
 MarketOutcomeChartsHeaderOrders.propTypes = {
-  fixedPrecision: PropTypes.number.isRequired,
   updatePrecision: PropTypes.func,
   isMobile: PropTypes.bool.isRequired,
   headerHeight: PropTypes.number.isRequired

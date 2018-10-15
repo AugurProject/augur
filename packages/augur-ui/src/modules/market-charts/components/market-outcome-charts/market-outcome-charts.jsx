@@ -35,7 +35,8 @@ export default class MarketOutcomeCharts extends Component {
     priceTimeSeries: PropTypes.array,
     selectedOutcome: PropTypes.object.isRequired,
     updatePrecision: PropTypes.func,
-    updateSelectedOrderProperties: PropTypes.func.isRequired
+    updateSelectedOrderProperties: PropTypes.func.isRequired,
+    pricePrecision: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -222,6 +223,7 @@ export default class MarketOutcomeCharts extends Component {
       excludeCandlestick,
       isMobile,
       fixedPrecision,
+      pricePrecision,
       updatePrecision,
       hasPriceHistory
     } = this.props;
@@ -255,6 +257,7 @@ export default class MarketOutcomeCharts extends Component {
                 selectedPeriod={s.selectedPeriod}
                 selectedRange={s.selectedRange}
                 fixedPrecision={fixedPrecision}
+                pricePrecision={pricePrecision}
                 orderBookKeys={orderBookKeys}
                 marketMax={maxPrice}
                 marketMin={minPrice}
@@ -279,6 +282,7 @@ export default class MarketOutcomeCharts extends Component {
                 priceTimeSeries={priceTimeSeries}
                 sharedChartMargins={s.sharedChartMargins}
                 fixedPrecision={fixedPrecision}
+                pricePrecision={pricePrecision}
                 orderBookKeys={orderBookKeys}
                 marketDepth={marketDepth}
                 marketMax={maxPrice}
@@ -299,6 +303,7 @@ export default class MarketOutcomeCharts extends Component {
                 isMobile={isMobile}
                 sharedChartMargins={s.sharedChartMargins}
                 fixedPrecision={fixedPrecision}
+                pricePrecision={pricePrecision}
                 orderBook={orderBook}
                 marketMidpoint={orderBookKeys.mid}
                 hoveredPrice={s.hoveredPrice}

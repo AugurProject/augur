@@ -17,8 +17,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  transferFunds: (amount, asset, to) =>
-    dispatch(transferFunds(amount, asset, to)),
+  transferFunds: (amount, asset, to) => {
+    dispatch(closeModal());
+    dispatch(transferFunds(amount, asset, to));
+  },
   withdrawReviewModal: modal =>
     dispatch(
       updateModal({

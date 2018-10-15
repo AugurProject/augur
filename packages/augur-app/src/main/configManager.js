@@ -4,6 +4,7 @@ const path = require('path')
 const { ipcMain } = require('electron')
 const appData = require('app-data-folder')
 const log = require('electron-log')
+const { isEqual, merge } = require('lodash')
 
 const defaultConfig = {
   'uiPort': '8080',
@@ -50,6 +51,14 @@ const defaultConfig = {
       'http': 'http://127.0.0.1:8545',
       'name': 'Local (Light Node)',
       'ws': 'ws://127.0.0.1:8546'
+    },
+    thunder: {
+      http: 'http://testnet-rpc.thundercore.com:8545',
+      id: '16',
+      name: 'Thunder',
+      selected: true,
+      userCreated: false,
+      ws: ''
     }
   }
 }
@@ -65,6 +74,11 @@ function ConfigManager() {
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
   } else {
     this.config = JSON.parse(fs.readFileSync(this.configPath))
+
+    if (!isEqual(this.config, defaultConfig)) {
+      this.config = merge(defaultConfig, this.config)
+      fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
+    }
   }
 
   ipcMain.on(REQUEST_CONFIG, this.onRequestConfig.bind(this))

@@ -1,19 +1,8 @@
-import proxyquire from "proxyquire";
+import unpackTransactionParameters from "modules/transactions/helpers/unpack-transaction-parameters";
 
-describe(`modules/transactions/helpers/unpack-transaction-parameters.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const test = t => {
-    it(t.description, () => {
-      const action = proxyquire(
-        "../../../src/modules/transactions/helpers/unpack-transaction-parameters.js",
-        {}
-      );
-      t.assertions(action.default(t.params.tx));
-    });
-  };
-  test({
-    description: "unpack sent transaction parameters (buy)",
-    params: {
+describe("modules/transactions/helpers/unpack-transaction-parameters.js", () => {
+  test("unpacked sent transaction parameters (buy)", () => {
+    const params = {
       tx: {
         type: "Bid",
         status: "sent",
@@ -59,24 +48,25 @@ describe(`modules/transactions/helpers/unpack-transaction-parameters.js`, () => 
           callReturn: null
         }
       }
-    },
-    assertions: output => {
-      assert.deepEqual(output, {
-        amount: "0x4563918244f40000",
-        price: "0x6f05b59d3b20000",
-        market:
-          "0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2",
-        outcome: "2",
-        minimumTradeSize: "0x2386f26fc10000",
-        tradeGroupId:
-          "0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036",
-        type: "Bid"
-      });
-    }
+    };
+
+    const actual = unpackTransactionParameters(params.tx);
+
+    expect(actual).toEqual({
+      amount: "0x4563918244f40000",
+      price: "0x6f05b59d3b20000",
+      market:
+        "0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2",
+      outcome: "2",
+      minimumTradeSize: "0x2386f26fc10000",
+      tradeGroupId:
+        "0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036",
+      type: "Bid"
+    });
   });
-  test({
-    description: "unpack successful transaction parameters (buy)",
-    params: {
+
+  test("unpacked successful transaction parameters (buy)", () => {
+    const params = {
       tx: {
         type: "Bid",
         status: "success",
@@ -140,24 +130,25 @@ describe(`modules/transactions/helpers/unpack-transaction-parameters.js`, () => 
           gasFees: "0.00651868"
         }
       }
-    },
-    assertions: output => {
-      assert.deepEqual(output, {
-        amount: "0x4563918244f40000",
-        price: "0x6f05b59d3b20000",
-        market:
-          "0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2",
-        outcome: "2",
-        minimumTradeSize: "0x2386f26fc10000",
-        tradeGroupId:
-          "0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036",
-        type: "Bid"
-      });
-    }
+    };
+
+    const actual = unpackTransactionParameters(params.tx);
+
+    expect(actual).toEqual({
+      amount: "0x4563918244f40000",
+      price: "0x6f05b59d3b20000",
+      market:
+        "0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2",
+      outcome: "2",
+      minimumTradeSize: "0x2386f26fc10000",
+      tradeGroupId:
+        "0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036",
+      type: "Bid"
+    });
   });
-  test({
-    description: "Unpacking pending transaction without input",
-    params: {
+
+  test("Unpacked pending transaction without input", () => {
+    const params = {
       tx: {
         hash:
           "0x262f96eb267a36a58a8f6d870d8c8eb7cca78dfc26860db3a8302a72a1f0acaf",
@@ -176,11 +167,12 @@ describe(`modules/transactions/helpers/unpack-transaction-parameters.js`, () => 
           callReturn: null
         }
       }
-    },
-    assertions: output => {
-      assert.deepEqual(output, {
-        type: "emergencyStop"
-      });
-    }
+    };
+
+    const actual = unpackTransactionParameters(params.tx);
+
+    expect(actual).toEqual({
+      type: "emergencyStop"
+    });
   });
 });

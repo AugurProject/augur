@@ -5,6 +5,7 @@ import { loadFullMarket } from "modules/markets/actions/load-full-market";
 import { selectMarket } from "modules/markets/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
+import getPrecision from "utils/get-number-precision";
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -17,6 +18,7 @@ const mapStateToProps = (state, ownProps) => {
   } = state;
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const market = selectMarket(marketId);
+  const pricePrecision = market && getPrecision(market.tickSize, 4);
 
   return {
     isConnected: connection.isConnected && universe.id != null,
@@ -28,7 +30,8 @@ const mapStateToProps = (state, ownProps) => {
     orderBooks,
     isMobile: appStatus.isMobile,
     marketId,
-    marketsData
+    marketsData,
+    pricePrecision
   };
 };
 
