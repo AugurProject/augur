@@ -66,7 +66,8 @@
     ],
     "nohoist": [
       "augur-ui/@types/jest",
-      "augur-ui/@types/expect-puppeteer"
+      "augur-ui/@types/expect-puppeteer",
+      "augur.js/uuid-parse"
     ]
   }
 }
