@@ -2,14 +2,15 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {getTradingHistory} = require("../../../../src/server/getters/get-trading-history");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-trading-history", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-        getTradingHistory(db, t.params.universe, t.params.account, t.params.marketId, t.params.outcome, t.params.orderType, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, false, (err, userTradingHistory) => {
+        t.method = "getTradingHistory";
+        dispatchJsonRpcRequest(db,  t, null, (err, userTradingHistory) => {
           t.assertions(err, userTradingHistory);
           db.destroy();
           done();

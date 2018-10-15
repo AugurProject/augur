@@ -2,14 +2,15 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getAllOrders } = require("../../../../src/server/getters/get-all-orders");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-all-orders", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-        getAllOrders(db, t.params.account, (err, orders) => {
+        t.method = "getAllOrders";
+        dispatchJsonRpcRequest(db, t, {}, (err, orders) => {
           t.assertions(err, orders);
           db.destroy();
           done();

@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getFeeWindow } = require("../../../../src/server/getters/get-fee-window");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 const { setOverrideTimestamp, removeOverrideTimestamp } = require("../../../../src/blockchain/process-block");
 
 const augurMock = {
@@ -30,7 +30,8 @@ describe("server/getters/get-fee-window", () => {
         if (err) assert.fail(err);
         setOverrideTimestamp(db, t.params.overrideTimestamp || 1, (err) => {
           assert.ifError(err);
-          getFeeWindow(db, t.params.augur, t.params.universe, t.params.reporter, t.params.feeWindowState, t.params.feeWindow, (err, feeWindow) => {
+          t.method = "getFeeWindow";
+          dispatchJsonRpcRequest(db,  t, t.params.augur, (err, feeWindow) => {
             t.assertions(err, feeWindow);
             removeOverrideTimestamp(db, t.params.overrideTimestamp || 1, (err) => {
               assert.isNotNull(err);
