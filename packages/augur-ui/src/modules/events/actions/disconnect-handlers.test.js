@@ -6,13 +6,32 @@ import {
   __RewireAPI__ as RewireDisconnectHandlers
 } from "modules/events/actions/disconnect-handlers";
 import { __RewireAPI__ as RewireReInitAugur } from "modules/app/actions/re-init-augur";
+import { connectAugur} from "../../../src/modules/app/actions/init-augur";
+
+jest.mock("../../../src/modules/app/actions/init-augur");
 
 describe("events/actions/disconnect-handlers", () => {
+  let store;
+  let state;
   const mockHistory = { push: arg => assert.deepEqual(arg, "/categories") };
+
+  test("it should handle a augurNode disconnection event with pausedReconnection", () => {
+    state = {
+      connection: {
+        isConnected: true,
+          isConnectedToAugurNode: true,
+          isReconnectionPaused: false
+      }
+    };
+    store = mockStore.mockStore(state);
+
+  });
+
+
   describe("handleAugurNodeDisconnect", () => {
     const test = t =>
       it(t.description, done => {
-        const store = mockStore.mockStore(t.state);
+
         RewireReInitAugur.__Rewire__(
           "connectAugur",
           (history, env, isInitialConnection, cb) => {
@@ -53,13 +72,6 @@ describe("events/actions/disconnect-handlers", () => {
         "it should handle a augurNode disconnection event with pausedReconnection",
       params: {
         history: mockHistory
-      },
-      state: {
-        connection: {
-          isConnected: true,
-          isConnectedToAugurNode: true,
-          isReconnectionPaused: false
-        }
       },
       assertions: actions =>
         assert.deepEqual(actions, [
