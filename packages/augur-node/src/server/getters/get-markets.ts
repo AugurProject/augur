@@ -1,32 +1,44 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
-import { Address, MarketsContractAddressRow } from "../../types";
-import { queryModifier, getMarketsWithReportingState } from "./database";
+import { Address, MarketsContractAddressRow, SortLimitParams } from "../../types";
+import { getMarketsWithReportingState, queryModifierParams } from "./database";
 import { createSearchProvider } from "../../database/fts";
 
+export const GetMarketsParamsSpecific = t.type({
+  universe: t.string,
+  creator: t.union([t.string, t.null, t.undefined]),
+  category: t.union([t.string, t.null, t.undefined]),
+  search: t.union([t.string, t.null, t.undefined]),
+  reportingState: t.union([t.string, t.null, t.undefined]),
+  feeWindow: t.union([t.string, t.null, t.undefined]),
+  designatedReporter: t.union([t.string, t.null, t.undefined]),
+});
+
+export const GetMarketsParams = t.intersection([
+  GetMarketsParamsSpecific,
+  SortLimitParams,
+]);
+
 // Returning marketIds should likely be more generalized, since it is a single line change for most getters (awaiting reporting, by user, etc)
-export function getMarkets(db: Knex, universe: Address, creator: Address|null|undefined, category: string|null|undefined, searchQuery: string|null|undefined, reportingState: string|null|undefined, feeWindow: Address|null|undefined, designatedReporter: Address|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err?: Error|null, result?: any) => void): void {
-  if (universe == null) return callback(new Error("Must provide universe"));
+export async function getMarkets(db: Knex, augur: {}, params: t.TypeOf<typeof GetMarketsParams>) {
   const query = getMarketsWithReportingState(db, ["markets.marketId", "marketStateBlock.timestamp as reportingStateUpdatedOn"]);
   query.join("blocks as marketStateBlock", "marketStateBlock.blockNumber", "market_state.blockNumber");
   query.leftJoin("blocks as lastTradeBlock", "lastTradeBlock.blockNumber", "markets.lastTradeBlockNumber").select("lastTradeBlock.timestamp as lastTradeTime");
 
-  if (universe != null) query.where({ universe });
-  if (creator != null) query.where({ marketCreator: creator });
-  if (category != null) query.whereRaw("LOWER(markets.category) = ?", [category.toLowerCase()]);
-  if (reportingState != null) query.where({ reportingState });
-  if (feeWindow != null) query.where({ feeWindow });
-  if (designatedReporter != null) query.where({ designatedReporter });
+  if (params.universe != null) query.where("universe", params.universe);
+  if (params.creator != null) query.where({ marketCreator: params.creator });
+  if (params.category != null) query.whereRaw("LOWER(markets.category) = ?", [params.category.toLowerCase()]);
+  if (params.reportingState != null) query.where("reportingState", params.reportingState);
+  if (params.feeWindow != null) query.where("feeWindow", params.feeWindow);
+  if (params.designatedReporter != null) query.where("designatedReporter", params.designatedReporter);
 
   const searchProvider = createSearchProvider(db);
-  if (searchQuery != null && searchProvider !== null) {
+  if (params.search != null && searchProvider !== null) {
     query.whereIn("markets.marketId", function (this: Knex.QueryBuilder) {
-      searchProvider.searchBuilder(this, searchQuery);
+      searchProvider.searchBuilder(this, params.search!);
     });
   }
 
-  queryModifier(db, query, "volume", "desc", sortBy, isSortDescending, limit, offset, (err?: Error|null, marketsRows?: Array<MarketsContractAddressRow>): void => {
-    if (err) return callback(err);
-    if (!marketsRows) return callback(null);
-    callback(null, marketsRows.map((marketsRow: MarketsContractAddressRow): Address => marketsRow.marketId));
-  });
+  const marketsRows = await queryModifierParams<MarketsContractAddressRow>(db, query, "volume", "desc", params);
+  return marketsRows.map((marketsRow: MarketsContractAddressRow): Address => marketsRow.marketId);
 }

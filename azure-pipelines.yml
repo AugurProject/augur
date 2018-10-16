@@ -91,12 +91,12 @@ jobs:
       - script: |
           set -euxo pipefail
           yarn install --ignore-scripts --frozen-lockfile
-          npx lerna run test --stream --scope augur-ui
+          yarn test
         displayName: 'test augur UI'
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'JUnit'
-          testResultsFiles: 'packages/augur-ui/junit.xml'
+          testResultsFiles: 'junit.xml'
 
   - job: Test_Augur_js
     pool:

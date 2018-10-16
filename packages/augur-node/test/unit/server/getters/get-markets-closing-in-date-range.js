@@ -2,14 +2,15 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getMarketsClosingInDateRange } = require("../../../../src/server/getters/get-markets-closing-in-date-range");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-markets-closing-in-date-range", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarketsClosingInDateRange(db, t.params.universe, t.params.earliestClosingTime, t.params.latestClosingTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsClosingInDateRange) => {
+        t.method = "getMarketsClosingInDateRange";
+        dispatchJsonRpcRequest(db, t, null, (err, marketsClosingInDateRange) => {
           t.assertions(err, marketsClosingInDateRange);
           db.destroy();
           done();

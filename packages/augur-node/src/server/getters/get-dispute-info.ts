@@ -1,11 +1,19 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
+import Augur from "augur.js";
 import { Address, MarketsRowWithTime, Payout, UIStakeInfo, PayoutRow, StakeDetails, ReportingState } from "../../types";
 import { getMarketsWithReportingState, normalizePayouts, uiStakeInfoToFixed, groupByAndSum } from "./database";
 import { BigNumber } from "bignumber.js";
 import { QueryBuilder } from "knex";
 import { ZERO } from "../../constants";
-import Augur from "augur.js";
+
+export const DisputeInfoParams = t.intersection([
+  t.type({
+    marketIds: t.array(t.string),
+  }),
+  t.partial({account: t.string}),
+]);
 
 interface DisputeRound {
   marketId: Address;
@@ -75,7 +83,7 @@ async function getCompletedStakes(db: Knex, marketIds: Array<Address>) {
   return groupByAndSum(results, ["marketId", "payoutId"], ["amountStaked"]);
 }
 
-async function getAccountStakes(db: Knex, marketIds: Array<Address>, account: Address|null, completed: boolean): Promise<Array<any>> {
+async function getAccountStakes(db: Knex, marketIds: Array<Address>, account: Address|undefined, completed: boolean): Promise<Array<any>> {
   if (account == null) {
     return [];
   }
@@ -104,25 +112,7 @@ function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completed
   return totalCompletedStakeOnAllPayouts.times(2).minus(completedStakeAmount.times(3));
 }
 
-export interface GetDisputeInfoParams {
-  marketIds: Array<Address>;
-  account: Address|null;
-}
-
-export function extractGetDisputeInfoParams(params: any): GetDisputeInfoParams|undefined {
-  const pickedParams = _.pick(params, ["marketIds", "account"]);
-  if (isGetDisputeInfoParams(pickedParams)) return pickedParams;
-  return undefined;
-}
-
-export function isGetDisputeInfoParams(params: any): params is GetDisputeInfoParams {
-  if (!_.isObject(params)) return false;
-  if (!_.isArray(params.marketIds)) return false;
-  // return !(params.marketIds.filter((value: any) => typeof value !== "string" && !_.isNull(value) && !_.isUndefined(value)).length > 0);
-  return !(params.marketIds.filter((value: any) => typeof value !== "string").length > 0);
-}
-
-export async function getDisputeInfo(db: Knex, augur: Augur, params: GetDisputeInfoParams): Promise<Array<UIStakeInfo<string>|null>> {
+export async function getDisputeInfo(db: Knex, augur: Augur, params: t.TypeOf<typeof DisputeInfoParams>): Promise<Array<UIStakeInfo<string>|null>> {
   const cleanMarketIds = _.compact(params.marketIds);
   const markets: Array<MarketsRowWithTime> = await getMarketsWithReportingState(db).whereIn("markets.marketId", cleanMarketIds);
   const payouts: Array<PayoutRow<BigNumber>> = await db("payouts").whereIn("marketId", cleanMarketIds);

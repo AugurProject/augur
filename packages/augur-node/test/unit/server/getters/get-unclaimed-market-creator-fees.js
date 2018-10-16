@@ -2,15 +2,15 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getUnclaimedMarketCreatorFees } = require("../../../../src/server/getters/get-unclaimed-market-creator-fees");
-
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-unclaimed-market-creator-fees", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getUnclaimedMarketCreatorFees(db, t.params.augur, t.params.marketIds, (err, marketFees) => {
+        t.method = "getUnclaimedMarketCreatorFees";
+        dispatchJsonRpcRequest(db,  t, t.params.augur, (err, marketFees) => {
           t.assertions(err, marketFees);
           db.destroy();
           done();

@@ -2,14 +2,15 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getMarketPriceHistory } = require("../../../../src/server/getters/get-market-price-history");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-market-price-history", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-        getMarketPriceHistory(db, t.params.marketId, (err, marketPriceHistory) => {
+        t.method = "getMarketPriceHistory";
+        dispatchJsonRpcRequest(db, t, null, (err, marketPriceHistory) => {
           t.assertions(err, marketPriceHistory);
           db.destroy();
           done();

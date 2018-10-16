@@ -2,14 +2,15 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getUniversesInfo } = require("../../../../src/server/getters/get-universes-info");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-universes-info", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-        getUniversesInfo(db, t.params.augur, t.params.universe, t.params.account, (err, universes) => {
+        t.method = "getUniversesInfo";
+        dispatchJsonRpcRequest(db, t, {}, (err, universes) => {
           t.assertions(err, universes);
           db.destroy();
           done();
