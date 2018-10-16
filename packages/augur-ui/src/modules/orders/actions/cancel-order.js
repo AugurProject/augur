@@ -7,7 +7,6 @@ import {
 import { updateOrderStatus } from "modules/orders/actions/update-order-status";
 import selectOrder from "modules/orders/selectors/select-order";
 import logError from "utils/log-error";
-import { selectOpenOrdersMarkets } from "modules/orders/selectors/open-orders";
 
 const TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS = 3000;
 // orderDetails: {
