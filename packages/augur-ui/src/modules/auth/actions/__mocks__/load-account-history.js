@@ -1,5 +1,5 @@
 const mockLoadAccountHistoryModule = jest.genMockFromModule(
-  "modules/auth/actions/load-account-history.js"
+  "../load-account-history.js"
 );
 
 mockLoadAccountHistoryModule.loadAccountHistory = () => {};

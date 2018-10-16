@@ -5,16 +5,28 @@ import {
   INTERRUPTED
 } from "modules/transactions/constants/statuses";
 import transactionsTotalsAssertions from "assertions/transactions-totals";
-import { selectTransactions } from "modules/transactions/selectors/transactions";
+import * as transactions from "modules/transactions/selectors/transactions";
 import { selectTransactionsTotals } from "src/modules/transactions/selectors/transactions-totals";
+import { selectTransactions } from "./transactions";
 
-jest.mock("modules/transactions/selectors/transactions");
+jest.mock("modules/transactions/selectors/transactions", () => ({
+  selectTransactions: jest.fn()
+}));
 
 describe(`modules/transactions/selectors/transactions-totals.js`, () => {
+  let selectTransactionsSpy;
   let actual;
 
+  beforeEach(() => {
+    selectTransactionsSpy = jest.spyOn(transactions, "selectTransactions");
+  });
+
+  afterEach(() => {
+    selectTransactionsSpy.mockRestore();
+  });
+
   test("returned the transaction totals for a blank state", () => {
-    selectTransactions.mockImplementation(() => []);
+    selectTransactionsSpy.mockImplementation(() => []);
 
     actual = selectTransactionsTotals({});
     expect(actual).toEqual({
@@ -30,7 +42,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
   });
 
   test("properly returned total info on transactions", () => {
-    selectTransactions.mockImplementation(() => [
+    selectTransactionsSpy.mockImplementation(() => [
       {
         id: "fake",
         status: PENDING
@@ -48,7 +60,6 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
         status: INTERRUPTED
       }
     ]);
-
     const actual = selectTransactionsTotals({});
     transactionsTotalsAssertions(actual);
     expect(actual).toEqual({

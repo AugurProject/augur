@@ -2,15 +2,25 @@ import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import { triggerTransactionsExport } from "modules/transactions/actions/trigger-transactions-export";
 import * as mockLoadAccountHistory from "modules/auth/actions/load-account-history";
-import { selectTransactions } from "src/modules/transactions/selectors/transactions";
+import * as transactions from "../selectors/transactions";
 
-jest.mock("modules/transactions/selectors/transactions");
-jest.mock("modules/auth/actions/load-account-history");
+jest.mock("../selectors/transactions");
+jest.mock("../../auth/actions/load-account-history");
 
 describe("modules/transactions/actions/trigger-transactions-export.js", () => {
+  let selectTransactionsSpy;
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-  selectTransactions.mockImplementation(state => state.transactions);
+
+  beforeEach(() => {
+    selectTransactionsSpy = jest
+      .spyOn(transactions, "selectTransactions")
+      .mockImplementation(state => state.transactions);
+  });
+
+  afterEach(() => {
+    selectTransactionsSpy.mockRestore();
+  });
 
   test("triggered a download if transactionsLoading is false", () => {
     const store = mockStore({
