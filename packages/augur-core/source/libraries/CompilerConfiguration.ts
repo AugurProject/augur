@@ -20,7 +20,7 @@ export class CompilerConfiguration {
     }
 
     public static create(): CompilerConfiguration {
-        const contractSourceRoot = path.join(__dirname, "../../output/contracts/");
+        const contractSourceRoot = path.join(__dirname, "../../source/contracts/");
         const outputRoot = (typeof process.env.OUTPUT_PATH === "undefined") ? path.join(__dirname, "../../output/contracts/") : path.normalize(<string> process.env.OUTPUT_ROOT);
         const useFlattener = (typeof process.env.TESTRPC === "undefined") ? true : process.env.TESTRPC !== "true";
         const enableSdb = (typeof process.env.ENABLE_SOLIDITY_DEBUG === "undefined") ? false : process.env.ENABLE_SOLIDITY_DEBUG === "true";
