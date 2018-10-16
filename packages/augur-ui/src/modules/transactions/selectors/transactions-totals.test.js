@@ -7,7 +7,6 @@ import {
 import transactionsTotalsAssertions from "assertions/transactions-totals";
 import * as transactions from "modules/transactions/selectors/transactions";
 import { selectTransactionsTotals } from "src/modules/transactions/selectors/transactions-totals";
-import { selectTransactions } from "./transactions";
 
 jest.mock("modules/transactions/selectors/transactions", () => ({
   selectTransactions: jest.fn()
@@ -42,6 +41,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
   });
 
   test("properly returned total info on transactions", () => {
+
     selectTransactionsSpy.mockImplementation(() => [
       {
         id: "fake",
