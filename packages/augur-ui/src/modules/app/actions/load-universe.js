@@ -3,7 +3,7 @@ import { createBigNumber } from "utils/create-big-number";
 import { augur } from "services/augurjs";
 import { updateUniverse } from "modules/universe/actions/update-universe";
 import syncUniverse from "modules/universe/actions/sync-universe";
-import getReportingCycle from "modules/universe/selectors/reporting-cycle";
+import { selectReportingCycle } from "modules/universe/selectors/reporting-cycle";
 import { syncBlockchain } from "modules/app/actions/sync-blockchain";
 import { listenToUpdates } from "modules/events/actions/listen-to-updates";
 import loadCategories from "modules/categories/actions/load-categories";
@@ -44,7 +44,7 @@ export const loadUniverse = (universeId, history, callback = logError) => (
     (err, staticUniverseData) => {
       if (err) return callback(err);
       dispatch(updateUniverse({ ...staticUniverseData, id: universeId }));
-      dispatch(updateUniverse(getReportingCycle()));
+      dispatch(updateUniverse(selectReportingCycle(getState())));
       dispatch(syncBlockchain());
       dispatch(
         syncUniverse(err => {

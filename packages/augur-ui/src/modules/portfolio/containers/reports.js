@@ -8,7 +8,7 @@ import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { selectMarket } from "modules/markets/selectors/market";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
-import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
+import { selectMarketDisputeOutcomes } from "modules/reports/selectors/select-market-dispute-outcomes";
 import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
@@ -18,7 +18,7 @@ const mapStateToProps = state => {
   const forkedMarket = state.universe.isForking
     ? selectMarket(state.universe.forkingMarket)
     : null;
-  const disputeOutcomes = marketDisputeOutcomes() || {};
+  const disputeOutcomes = selectMarketDisputeOutcomes(state) || {};
   const disputableMarkets = [];
   const upcomingDisputableMarkets = [];
   const resolvedMarkets = [];

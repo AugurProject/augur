@@ -30,7 +30,7 @@ const process = compose(
   Object.values
 );
 
-export const selectAllCategories = createSelector(
-  selectMarketsDataState,
-  process
-);
+const selectAllCategoriesSelector = () =>
+  createSelector(selectMarketsDataState, process);
+
+export const selectAllCategories = selectAllCategoriesSelector();

@@ -1,6 +1,5 @@
 import { createSelector } from "reselect";
 import { createBigNumber } from "utils/create-big-number";
-import store from "src/store";
 import { selectTransactionsDataState } from "src/select-state";
 
 import { BUY } from "modules/transactions/constants/types";
@@ -15,13 +14,8 @@ import {
 import getValue from "utils/get-value";
 import { formatShares, formatEther, formatRep } from "utils/format-number";
 
-export default function() {
-  return selectTransactions(store.getState());
-}
-
-export const selectTransactions = createSelector(
-  selectTransactionsDataState,
-  transactionsData => {
+const selectTransactionsSelector = () =>
+  createSelector(selectTransactionsDataState, transactionsData => {
     const tradeGroups = [];
     const formattedTransactions = Object.keys(transactionsData || {})
       .reduce((p, id) => {
@@ -55,10 +49,9 @@ export const selectTransactions = createSelector(
       );
 
     return formattedTransactions;
-  }
-);
+  });
 
-export function formatTransaction(transaction) {
+function formatTransaction(transaction) {
   return {
     ...transaction,
     data: transaction.data,
@@ -70,7 +63,7 @@ export function formatTransaction(transaction) {
   };
 }
 
-export function formatGroupedTransactions(transactions) {
+function formatGroupedTransactions(transactions) {
   const formattedTransactions = transactions
     .map(transaction => formatTransaction(transaction))
     .sort(
@@ -107,3 +100,5 @@ export function formatGroupedTransactions(transactions) {
     transactions: formattedTransactions
   };
 }
+
+export const selectTransactions = selectTransactionsSelector();

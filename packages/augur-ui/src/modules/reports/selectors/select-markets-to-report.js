@@ -12,9 +12,8 @@ function filterForkedMarket(market) {
   );
 }
 
-export const selectMarketsToReport = createSelector(
-  selectMarketReportState,
-  reportData => ({
+const selectMarketsToReportSelector = () =>
+  createSelector(selectMarketReportState, reportData => ({
     designated: reportData.designated
       .map(selectMarket)
       .sort((a, b) => a.endTime.timestamp - b.endTime.timestamp),
@@ -28,5 +27,6 @@ export const selectMarketsToReport = createSelector(
       .map(selectMarket)
       .filter(filterForkedMarket)
       .sort((a, b) => a.endTime.timestamp - b.endTime.timestamp)
-  })
-);
+  }));
+
+export const selectMarketsToReport = selectMarketsToReportSelector();

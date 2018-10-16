@@ -246,7 +246,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
     ];
 
     store = mockStore(state);
-    const actual = selectTransactions(store.getState());
+    const actual = selectTransactions(store.getState())();
 
     expect(actual).toEqual(expected);
   });
