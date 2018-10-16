@@ -1,0 +1,28 @@
+@import (reference) '~assets/styles/shared';
+
+.WordTrail {
+  .caps--medium;
+
+  display: inline-flex;
+  // Required to make ellipsis work.
+  min-width: 0;
+
+  &__label {
+    color: @color-lightgray;
+
+    &::after {
+      content: "/";
+      margin: 0 4px;
+    }
+  }
+
+  > button {
+    .caps--medium;
+    .overflow-ellipsis;
+
+    &:not(:first-of-type)::before {
+      content: "/";
+      margin: 0 4px;
+    }
+  }
+}

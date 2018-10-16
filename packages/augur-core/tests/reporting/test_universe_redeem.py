@@ -1,0 +1,37 @@
+from ethereum.tools import tester
+from ethereum.tools.tester import TransactionFailed
+from pytest import fixture, raises, mark
+from utils import longToHexString, EtherDelta, TokenDelta, PrintGasUsed
+from reporting_utils import proceedToNextRound, proceedToFork, finalizeFork
+
+def test_redeem_reporting_participants(kitchenSinkFixture, market, categoricalMarket, scalarMarket, universe, cash):
+    reputationToken = kitchenSinkFixture.applySignature("ReputationToken", universe.getReputationToken())
+    constants = kitchenSinkFixture.contracts["Constants"]
+
+    # Initial Report
+    proceedToNextRound(kitchenSinkFixture, market, doGenerateFees = True)
+    # Initial Report Losing
+    proceedToNextRound(kitchenSinkFixture, market, doGenerateFees = True)
+    # Initial Report Winning
+    proceedToNextRound(kitchenSinkFixture, market, doGenerateFees = True)
+    # Initial Report Losing
+    proceedToNextRound(kitchenSinkFixture, market, doGenerateFees = True)
+    # Initial Report Winning
+    proceedToNextRound(kitchenSinkFixture, market, doGenerateFees = True)
+
+    # Get the winning reporting participants
+    initialReporter = kitchenSinkFixture.applySignature('InitialReporter', market.getReportingParticipant(0))
+    winningDisputeCrowdsourcer1 = kitchenSinkFixture.applySignature('DisputeCrowdsourcer', market.getReportingParticipant(2))
+    winningDisputeCrowdsourcer2 = kitchenSinkFixture.applySignature('DisputeCrowdsourcer', market.getReportingParticipant(4))
+
+    # Fast forward time until the new fee window is over and we can redeem
+    feeWindow = kitchenSinkFixture.applySignature("FeeWindow", market.getFeeWindow())
+    kitchenSinkFixture.contracts["Time"].setTimestamp(feeWindow.getEndTime() + 1)
+    assert market.finalize()
+
+    expectedRep = long(winningDisputeCrowdsourcer2.getStake() + winningDisputeCrowdsourcer1.getStake())
+    expectedRep = long(expectedRep + expectedRep / 2)
+    expectedRep += long(initialReporter.getStake() + initialReporter.getStake() / 2)
+    with TokenDelta(reputationToken, expectedRep, tester.a0, "Redeeming didn't refund REP"):
+        with PrintGasUsed(kitchenSinkFixture, "Universe Redeem:", 0):
+            assert universe.redeemStake([initialReporter.address, winningDisputeCrowdsourcer1.address, winningDisputeCrowdsourcer2.address])

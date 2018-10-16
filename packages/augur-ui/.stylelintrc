@@ -1,0 +1,22 @@
+{
+  "plugins": [
+    "stylelint-order",
+    "./node_modules/stylelint-no-browser-hacks/lib"
+  ],
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "indentation": 2,
+    "color-hex-length": "long",
+    "order/properties-alphabetical-order": true,
+    "function-url-quotes": "always",
+    "property-no-vendor-prefix": true,
+    "value-no-vendor-prefix": true,
+    "declaration-block-no-duplicate-properties": true,
+    "no-duplicate-selectors": true,
+    "plugin/no-browser-hacks": true,
+    # "declaration-block-trailing-semicolon": "never",
+    selector-pseudo-class-no-unknown: [true, {
+      ignorePseudoClasses: ["global", "local"]
+    }],
+  }
+}

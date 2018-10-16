@@ -1,0 +1,16 @@
+:local(.ChevronFlip) {
+  transition: transform 0.3s ease;
+  width: 1rem;
+
+  &:local(.pointDown) {
+    transform: rotate(-180deg);
+  }
+
+  > polyline {
+    fill: white;
+  }
+
+  &.big {
+    width: 1.5rem;
+  }
+}

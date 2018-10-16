@@ -1,0 +1,8 @@
+{ "id": 913,
+  "jsonrpc": "2.0",
+  "method": "getMarkets",
+  "params": 
+   { "universe": "0xf7a6dff0f7777cdbf2d1c3b99e0ed08f09d49818",
+     "reportingState": "FINALIZED",
+     "sortBy": "reportingStateUpdatedOn",
+     "isSortDescending": true } }

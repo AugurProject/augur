@@ -1,0 +1,25 @@
+
+<svg width="13px" height="16px" viewBox="0 0 13 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.1 (51147) - http://www.bohemiancoding.com/sketch -->
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M2.03635184,2 L10.9636482,2 C11.5159329,2 11.9636482,2.44771525 11.9636482,3 C11.9636482,3.01190002 11.9634357,3.02379909 11.963011,3.03569153 L11.5344396,15.0356915 C11.5152235,15.5737429 11.0734711,16 10.5350767,16 L2.46492327,16 C1.92652891,16 1.48477653,15.5737429 1.46556041,15.0356915 L1.03698898,3.03569153 C1.0172771,2.48375867 1.44872744,2.02034903 2.00066031,2.00063715 C2.01255275,2.00021242 2.02445182,2 2.03635184,2 Z" id="path-1"></path>
+    </defs>
+    <g id="Design" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Edit-Custom-Connection" transform="translate(-303.000000, -117.000000)">
+            <g id="icon/delete" transform="translate(303.000000, 117.000000)">
+                <g>
+                    <g id="Rectangle-5" fill-rule="nonzero">
+                        <use fill="#412468" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        <path stroke="#412468" stroke-width="1" d="M2.03635184,2.5 C2.02742706,2.5000531 2.02742706,2.5000531 2.01850607,2.50031857 C1.74253964,2.51017452 1.52681447,2.74187933 1.53667041,3.01784577 L1.96524184,15.0178458 C1.9748499,15.2868714 2.19572609,15.5 2.46492327,15.5 L10.5350767,15.5 C10.8042739,15.5 11.0251501,15.2868714 11.0347582,15.0178458 L11.4633296,3.01784577 C11.4635951,3.00892478 11.4635951,3.00892478 11.4636482,3 C11.4636482,2.72385763 11.2397905,2.5 10.9636482,2.5 L2.03635184,2.5 Z"></path>
+                    </g>
+                    <path d="M6.5,6 L6.5,14" id="Line" stroke="#FFFFFF" stroke-linecap="round" fill-rule="nonzero"></path>
+                    <path d="M9.5,6 L9,14" id="Line" stroke="#FFFFFF" stroke-linecap="round" fill-rule="nonzero"></path>
+                    <path d="M0.5,2.5 L12.5,2.5" id="Line-2" stroke="#412468" stroke-linecap="round" fill-rule="nonzero"></path>
+                    <path d="M4.02458744,1.96320307 L8.90283137,1.67287828 L8.79897789,1.25746437 C8.68768614,0.812297374 8.28770303,0.5 7.82883539,0.5 L5.17116461,0.5 C4.71229697,0.5 4.31231386,0.812297374 4.20102211,1.25746437 L4.02458744,1.96320307 Z" id="Rectangle-6" stroke="#412468" fill-rule="nonzero"></path>
+                    <path d="M3.5,6 L4,14" id="Line" stroke="#FFFFFF" stroke-linecap="round" fill-rule="nonzero"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

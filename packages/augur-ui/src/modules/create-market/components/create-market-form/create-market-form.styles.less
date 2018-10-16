@@ -1,0 +1,389 @@
+@import (reference) '~assets/styles/shared';
+
+.CreateMarketForm {
+  padding: 3.75rem 0 0;
+}
+
+.CreateMarketForm__button-outer-wrapper,
+.CreateMarketForm__form-outer-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: 81.25rem;
+}
+
+.CreateMarketForm__button-inner-wrapper,
+.CreateMarketForm__form-inner-wrapper,
+.CreateMarketForm__submit-wrapper {
+  flex: 1 100%;
+  margin: auto;
+  max-width: 65.75rem;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.CreateMarketForm__submit-wrapper {
+  display: flex;
+}
+
+.CreateMarketForm__submitWarning,
+.CreateMarketForm__error {
+  color: @color-negative;
+  display: inline-block;
+  font-size: 1rem;
+  line-height: 1rem;
+  margin-right: 1.5rem;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.CreateMarketForm__submitWarning {
+  line-height: 1.2em;
+  margin-left: auto;
+  margin-right: 0;
+  max-width: 13.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+  text-align: left;
+  text-indent: -1.75rem;
+  white-space: pre-wrap;
+
+  > svg {
+    margin-top: 1.5px !important;
+  }
+}
+
+.CreateMarketForm__error--abs {
+  &:extend(.CreateMarketForm__error);
+
+  position: absolute;
+}
+
+.CreateMarketForm__error_tick,
+.CreateMarketForm__error--bottom {
+  &:extend(.CreateMarketForm__error);
+
+  margin-top: 0.675rem;
+  position: absolute;
+}
+
+.CreateMarketForm__error_tick {
+  line-height: 1.2em;
+  padding-left: 1.5rem;
+  text-align: left;
+  text-indent: -1.3rem;
+  white-space: pre-wrap;
+  width: 210px;
+
+  > svg {
+    margin-top: 1.5px !important;
+  }
+}
+
+.CreateMarketForm__error_tick > svg,
+.CreateMarketForm__error > svg,
+.CreateMarketForm__submitWarning > svg,
+.CreateMarketForm__error--abs > svg,
+.CreateMarketForm__error--bottom > svg,
+.CreateMarketForm__error--field-50 > svg,
+.CreateMarketForm__error--insufficient-funds > svg {
+  margin: 0 0.2rem;
+  max-height: 1rem;
+  max-width: 1rem;
+  vertical-align: top;
+}
+
+.CreateMarketForm__error--field {
+  border-color: @color-negative;
+  border-width: 0.1rem;
+}
+
+.CreateMarketForm__error--field-50 {
+  &:extend(.CreateMarketForm__error);
+
+  left: 52%;
+  line-height: 0.8rem;
+  position: absolute;
+  top: -3px;
+}
+
+.CreateMarketForm__error--insufficient-funds {
+  &:extend(.CreateMarketForm__error);
+
+  margin-bottom: 3rem;
+}
+
+.CreateMarketForm__fields {
+  align-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  min-height: 28.75rem;
+
+  > li {
+    margin-bottom: 3.7rem;
+    position: relative;
+    width: 100%;
+
+    &.field--50 {
+      width: 48%;
+    }
+
+    > label {
+      display: inline-block;
+      position: relative;
+
+      > span:first-child {
+        margin-right: 0.5rem;
+      }
+    }
+
+    p {
+      color: @color-lightgray;
+      margin: 0;
+
+      &.error {
+        color: @color-red;
+        font-size: 0.875rem;
+      }
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      background-color: @color-lightergray;
+      font-size: 1.125rem;
+      line-height: 1.5rem;
+
+      &.error {
+        border-color: @color-red;
+      }
+
+      &::placeholder {
+        color: @color-lightgray;
+        line-height: 1.5rem;
+      }
+    }
+
+    textarea {
+      height: 9.5rem;
+      padding-top: 1rem;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+.CreateMarketForm__navigation {
+  display: flex;
+  justify-content: space-between;
+}
+
+.CreateMarketForm__next,
+.CreateMarketForm__prev,
+.CreateMarketForm__submit {
+  &:extend(.button--white all);
+
+  min-width: 13.5rem;
+
+  &.hide-button {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.CreateMarketForm__page {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+
+  &.show-page {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.CreateMarketForm__radio-buttons {
+  display: flex;
+
+  > li {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+
+    &:not(:first-child) {
+      margin-left: 4.75rem;
+    }
+
+    > button {
+      color: @color-white;
+      cursor: pointer;
+      display: block;
+      font-size: 1.125rem;
+      line-height: 1.125rem;
+      min-height: 1.7rem;
+      padding-left: 2.5rem;
+      position: relative;
+      text-align: left;
+
+      &::before {
+        border: 1px solid @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        height: 1.5rem;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        width: 1.5rem;
+      }
+
+      &::after {
+        background-color: @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        display: none;
+        height: 0.875rem;
+        left: 6px;
+        margin: auto;
+        position: absolute;
+        top: 6px;
+        width: 0.875rem;
+      }
+
+      &.active::after {
+        display: block;
+      }
+    }
+  }
+}
+
+.CreateMarketForm__radio-buttons--per-line {
+  &:extend(.CreateMarketForm__radio-buttons all);
+
+  display: block;
+
+  > li:not(:first-child) {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+}
+
+@media @breakpoint-mobile {
+  .CreateMarketForm__button-outer-wrapper {
+    order: 3;
+  }
+
+  .CreateMarketForm__form-outer-wrapper {
+    order: 1;
+  }
+
+  .CreateMarketForm__form-outer-wrapper:nth-of-type(2) {
+    order: 2;
+  }
+
+  .CreateMarketForm__fields > li textarea {
+    height: 5.1rem;
+  }
+
+  .CreateMarketForm__fields > li > label {
+    display: block;
+  }
+
+  .CreateMarketForm__error,
+  .CreateMarketForm__error--field-50 {
+    margin-top: 0.675rem;
+    white-space: normal;
+    width: 100%;
+  }
+
+  .CreateMarketForm__radio-buttons {
+    display: block;
+
+    > li:not(:first-child) {
+      margin-left: 0;
+      margin-top: 1rem;
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .CreateMarketForm__form-inner-wrapper {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .CreateMarketForm__submit-wrapper,
+  .CreateMarketForm__button-inner-wrapper {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .CreateMarketForm__next,
+  .CreateMarketForm__prev,
+  .CreateMarketForm__submit {
+    border-radius: 0;
+    white-space: nowrap;
+    width: 50%;
+
+    &.hide-button {
+      display: none;
+    }
+  }
+
+  .CreateMarketForm__next,
+  .CreateMarketForm__submit {
+    background-color: @color-purple;
+    color: @color-white;
+  }
+
+  .CreateMarketForm__prev.hide-button + .CreateMarketForm__next {
+    width: 100%;
+  }
+
+  .CreateMarketForm__error--field-50 {
+    left: 0;
+    position: relative;
+    top: auto;
+  }
+
+  // .CreateMarketForm__error + .CreateMarketForm__error--field-50 {
+  //   left: 0.5rem;
+  // }
+  .CreateMarketForm__fields > li.field--50 {
+    width: 100%;
+  }
+
+  .CreateMarketForm__submitWarning {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .CreateMarketForm__fields > li textarea {
+    height: 6.5rem;
+  }
+
+  .CreateMarketForm__navigation {
+    flex-wrap: wrap;
+  }
+
+  .CreateMarketForm__next,
+  .CreateMarketForm__prev,
+  .CreateMarketForm__submit {
+    width: 100%;
+  }
+
+  .CreateMarketForm__next,
+  .CreateMarketForm__submit {
+    order: 1;
+  }
+
+  .CreateMarketForm__prev {
+    order: 2;
+  }
+}

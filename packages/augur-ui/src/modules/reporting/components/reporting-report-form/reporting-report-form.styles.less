@@ -1,0 +1,32 @@
+@import (reference) '~assets/styles/shared';
+
+ul.ReportingReportForm__fields {
+  flex-flow: column nowrap;
+  font-size: @font-size-normal;
+  justify-content: flex-start;
+  min-height: 0;
+}
+
+.ReportingReport__RepAmount {
+  color: @color-white;
+  font-size: @font-size-large;
+  margin-top: 2rem;
+}
+
+.ReportingReport__insufficient-funds > svg {
+  margin: 0 0.2rem;
+  max-height: 1rem;
+  max-width: 1rem;
+  vertical-align: top;
+}
+
+.ReportingReport__insufficient-funds {
+  color: @color-negative;
+  display: inline-block;
+  font-size: 1rem;
+  line-height: 1rem;
+  margin-bottom: 3rem;
+  margin-right: 1.5rem;
+  text-transform: none;
+  white-space: nowrap;
+}

@@ -1,0 +1,440 @@
+@import (reference) '~assets/styles/shared';
+
+.Form {
+  margin: auto;
+  max-width: 62.75rem;
+  padding: 3.75rem 0 9.125rem;
+}
+
+.Form__error {
+  color: @color-negative;
+  display: inline-block;
+  font-size: 1rem;
+  line-height: 1rem;
+  margin-left: 2.32rem;
+  margin-right: 1.5rem;
+  position: absolute;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.Form__error__space {
+  &:extend(.Form__error);
+
+  margin-top: 0.5rem;
+}
+
+.Form__error--even {
+  color: @color-negative;
+  display: inline-block;
+  font-size: 1rem;
+  line-height: 1rem;
+  margin-left: 0;
+  margin-right: 1.5rem;
+  position: absolute;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.Form__error--even__space {
+  &:extend(.Form__error--even);
+
+  margin-top: 0.5rem;
+  position: relative;
+}
+
+.Form__error__space > svg,
+.Form__error--even > svg,
+.Form__error--even__space > svg,
+.Form__error--field-50 > svg {
+  margin: 0 0.2rem;
+  max-height: 1rem;
+  max-width: 1rem;
+  vertical-align: top;
+}
+
+.Form__error--field-50 {
+  &:extend(.Form__error);
+
+  left: 52%;
+  line-height: 0.8rem;
+  position: absolute;
+  top: -3px;
+}
+
+.Form__error > svg,
+.Form__error--field-50 > svg {
+  margin: 0 0.2rem;
+  max-height: 1rem;
+  max-width: 1rem;
+  vertical-align: top;
+}
+
+.Form__error--field {
+  border-color: @color-negative;
+  border-width: 0.1rem;
+}
+
+.Form__input::-webkit-inner-spin-button,
+.Form__input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.Form__fields {
+  align-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  min-height: 30rem;
+  padding: 0 2rem;
+
+  > li {
+    margin-bottom: 3.7rem;
+    position: relative;
+    width: 100%;
+
+    &.field--50 {
+      width: 48%;
+    }
+
+    > label {
+      display: inline-block;
+      margin-bottom: 1rem;
+      position: relative;
+
+      > span:first-child {
+        margin-right: 0.5rem;
+      }
+    }
+
+    p {
+      color: @color-white;
+      display: flex;
+      font-size: @font-size-large;
+      line-height: @font-size-large;
+      margin: 0;
+      text-transform: capitalize;
+
+      label {
+        margin: 0.3rem 1rem;
+      }
+
+      &.text--field-style {
+        color: @color-white;
+        font-size: @font-size-large;
+        line-height: @font-size-rather-large;
+      }
+
+      &.error {
+        color: @color-red;
+        font-size: @font-size-medium;
+      }
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      background-color: @color-lightergray;
+      font-size: @font-size-large;
+      line-height: @font-size-rather-large;
+
+      &.error {
+        border-color: @color-red;
+      }
+
+      &::placeholder {
+        color: @color-lightgray;
+        line-height: @font-size-rather-large;
+      }
+    }
+
+    textarea {
+      height: 3.5rem;
+      padding-top: 1rem;
+    }
+  }
+}
+
+li.field--short {
+  max-width: 21rem;
+}
+
+.Form__navigation {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+.Form__next,
+.Form__prev,
+.Form__submit {
+  &:extend(.button--white all);
+
+  &.hide-button {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.Form__page {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+
+  &.show-page {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.Form__radio-buttons {
+  display: flex;
+
+  > li {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+
+    &:not(:first-child) {
+      margin-left: 4.75rem;
+    }
+
+    > button {
+      color: @color-white;
+      cursor: pointer;
+      display: block;
+      font-size: @font-size-large;
+      line-height: @font-size-large;
+      min-height: 1.7rem;
+      padding-left: 2.5rem;
+      position: relative;
+      text-align: left;
+
+      &::before {
+        border: 1px solid @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        height: 1.5rem;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        width: 1.5rem;
+      }
+
+      &::after {
+        background-color: @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        display: none;
+        height: 0.875rem;
+        left: 0.38rem;
+        margin: auto;
+        position: absolute;
+        top: 0.38rem;
+        width: 0.875rem;
+      }
+
+      &.active::after {
+        display: block;
+      }
+    }
+  }
+}
+
+.Form__radio-buttons--per-line {
+  &:extend(.Form__radio-buttons all);
+
+  display: block;
+
+  > li {
+    > button {
+      text-transform: capitalize;
+    }
+  }
+
+  > li:not(:first-child) {
+    margin-left: 0;
+    margin-top: 1rem;
+
+    &.field--inline {
+      display: block;
+      margin-top: 0;
+      max-width: 21rem;
+    }
+  }
+}
+
+.Form__radio-buttons--per-line-inline {
+  display: block;
+
+  > li {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+
+    input[type='number'] {
+      appearance: textfield;
+    }
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
+    &:not(:first-child) {
+      margin-left: 0;
+      margin-top: 1rem;
+
+      &.field--inline {
+        display: block;
+        max-width: 18rem;
+      }
+    }
+
+    > button {
+      color: @color-white;
+      cursor: pointer;
+      display: block;
+      font-size: @font-size-small;
+      line-height: @font-size-large;
+      min-height: 1.7rem;
+      padding-left: 2.5rem;
+      position: absolute;
+      text-align: left;
+
+      &::after {
+        background-color: @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        display: none;
+        height: 0.875rem;
+        left: 0.38rem;
+        margin: auto;
+        position: absolute;
+        top: 0.38rem;
+        width: 0.875rem;
+      }
+
+      &.active::after {
+        display: block;
+      }
+
+      &.button--inline {
+        background-color: transparent;
+        border: none;
+        border-radius: 0;
+        color: @color-gray;
+        display: inline-block;
+        margin-left: 75%;
+      }
+    }
+  }
+}
+
+.Form__radio-buttons--per-line-long {
+  &:extend(.Form__radio-buttons--per-line all);
+
+  margin-top: 1rem;
+  white-space: nowrap;
+  width: 18rem;
+}
+
+@media @breakpoint-mobile {
+  .Form__fields > li textarea {
+    height: 5.1rem;
+  }
+
+  .Form__radio-buttons {
+    display: block;
+
+    > li:not(:first-child) {
+      margin-left: 0;
+      margin-top: 1rem;
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .Form {
+    padding-bottom: 0;
+  }
+
+  .Form__fields {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .Form__navigation {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .Form__next,
+  .Form__prev,
+  .Form__submit {
+    border-radius: 0;
+    white-space: nowrap;
+    width: 50%;
+
+    &.hide-button {
+      display: none;
+    }
+  }
+
+  .Form__next,
+  .Form__submit {
+    background-color: @color-purple;
+    color: @color-white;
+  }
+
+  .Form__prev.hide-button + .Form__next {
+    width: 100%;
+  }
+
+  .Form__error--field-50 {
+    left: 0;
+    position: relative;
+    top: auto;
+  }
+
+  .Form__error--field {
+    border-color: @color-negative;
+    border-width: 0.1rem;
+  }
+
+  .Form__error + .Form__error--field-50 {
+    left: 0.5rem;
+  }
+
+  .Form__fields > li.field--50 {
+    width: 100%;
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .Form__fields > li textarea {
+    height: 6.5rem;
+  }
+
+  .Form__navigation {
+    flex-wrap: wrap;
+  }
+
+  .Form__next,
+  .Form__prev,
+  .Form__submit {
+    width: 100%;
+  }
+
+  .Form__next,
+  .Form__submit {
+    order: 1;
+  }
+
+  .Form__prev {
+    order: 2;
+  }
+}

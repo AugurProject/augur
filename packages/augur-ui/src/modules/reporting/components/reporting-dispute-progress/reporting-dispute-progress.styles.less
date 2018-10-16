@@ -1,0 +1,94 @@
+@import (reference) '~assets/styles/shared';
+
+.ReportingDisputeProgress__dispute-wrapper {
+  align-items: center;
+  display: flex;
+  width: 100%;
+
+  @media @breakpoint-mobile-medium {
+    flex-wrap: wrap;
+  }
+}
+
+.ReportingDisputeProgress__graph {
+  background-color: @color-darkgray;
+  display: flex;
+  height: 0.5rem;
+  justify-content: space-between;
+  overflow: hidden;
+  white-space: nowrap;
+
+  @media @breakpoint-mobile-small {
+    margin-right: 1rem;
+  }
+}
+
+.ReportingDisputeProgress__dispute-label {
+  letter-spacing: 0.3px;
+  margin-left: 1rem;
+  white-space: nowrap;
+
+  @media @breakpoint-mobile-small {
+    margin-left: 0;
+  }
+}
+
+.ReportingDisputeProgress__dispute-label-total-rep-text {
+  color: @color-lightergray;
+  font-size: @font-size-medium;
+  font-weight: 500;
+}
+
+.ReportingDisputeProgress__dispute-label-break {
+  color: @color-lightgray;
+  font-size: @font-size-medium;
+  font-weight: 500;
+  margin-left: 0.2em;
+}
+
+.ReportingDisputeProgress__dispute-label-goal-text {
+  color: @color-lightgray;
+  font-size: @font-size-small;
+  font-weight: 500;
+  line-height: 1em;
+  margin-left: 0.2em;
+  white-space: nowrap;
+}
+
+.ReportingDisputeProgress__dispute-tentative {
+  &:extend(.ReportingDisputeProgress__dispute-label);
+
+  color: @color-lighter-purple;
+  font-size: @font-size-small;
+  margin-left: 1.5rem;
+  text-transform: uppercase;
+
+  @media @breakpoint-mobile-medium {
+    margin-left: 0;
+    margin-top: 0.2rem;
+  }
+
+  @media @breakpoint-mobile-small {
+    margin-left: 0.2rem;
+  }
+}
+
+.ReportingDisputeProgress__graph-current {
+  background: #4f4761;
+  display: flex;
+  min-width: 8em;
+  position: relative;
+  width: 15rem;
+
+  > div:first-child {
+    background: @color-purple;
+    height: 100%;
+    transition: width 0.4s linear;
+  }
+
+  > div:last-child {
+    background: @color-lighter-purple;
+    height: 100%;
+    transition: width 0.4s linear;
+  }
+}

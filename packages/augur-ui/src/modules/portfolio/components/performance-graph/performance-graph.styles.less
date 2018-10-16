@@ -1,0 +1,41 @@
+@import (reference) '~assets/styles/shared';
+
+.PerformanceGraph {
+  :global {
+    .highcharts-container {
+      max-width: 100%;
+      min-width: 100%;
+      position: relative;
+      top: -0.65rem;
+
+      > svg {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.PerformanceGraph__SortBar {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+}
+
+.PerformanceGraph__SortBar-title {
+  &:extend(.caps--small);
+
+  flex: 1;
+  font-weight: 500;
+}
+
+.PerformanceGraph__SortBar-dropdowns {
+  display: flex;
+
+  > div > button:first-child {
+    &:extend(.caps--small);
+
+    color: @color-white;
+    font-weight: 500;
+  }
+}

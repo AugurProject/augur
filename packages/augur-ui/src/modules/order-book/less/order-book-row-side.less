@@ -1,0 +1,39 @@
+.order-book-row-side {
+  flex: 1;
+
+  &:first-child {
+
+    .border(true, @border-right, @border-light);
+  }
+
+  &.order-book-row-side-trading {
+    background-color: @color-blue-extra-light;
+  }
+
+  .order-book-side-row {
+
+    .border(true, @border-top, @border-light);
+    .table-row();
+
+    display: flex;
+
+    &.is-of-current-user {
+      background-color: @color-green-extra-light;
+
+      &:hover {
+        background-color: @color-green-extra-light;
+      }
+    }
+
+    & > * {
+
+      .table-cell-spacing();
+
+      flex: 1;
+    }
+  }
+
+  .tooltip-text {
+    padding: 0.5em;
+  }
+}

@@ -1,0 +1,232 @@
+.rdt {
+  position: relative;
+}
+
+.rdtPicker {
+
+  .border();
+
+  background: white;
+  border-radius: 1px;
+  display: none;
+  margin-top: 1px;
+  padding: 4px;
+  width: 300px;
+}
+
+.rdt.rdtOpen > input.form-control {
+
+  .border();
+
+  border-radius: 1px;
+  width: 300px;
+}
+
+// @media screen and (max-width: @media-mobile-width) {
+// 	.rdtPicker {
+// 		width: 100%;
+// 	}
+//
+// 	.rdt.rdtOpen > input.form-control {
+// 		width: 100%;
+// 	}
+// }
+
+.rdtOpen .rdtPicker {
+  display: block;
+}
+
+.rdtStatic .rdtPicker {
+  box-shadow: none;
+  position: static;
+}
+
+.rdtPicker .rdtTimeToggle {
+  line-height: 2;
+  text-align: center;
+}
+
+.rdtPicker table {
+  margin: 0;
+  width: 100%;
+}
+
+.rdtPicker td,
+.rdtPicker th {
+  height: 28px;
+  text-align: center;
+}
+
+.rdtPicker td {
+  cursor: pointer;
+}
+
+.rdtPicker td.rdtToday:hover,
+.rdtPicker td.rdtDay:hover,
+.rdtPicker td.rdtHour:hover,
+.rdtPicker td.rdtMinute:hover,
+.rdtPicker td.rdtSecond:hover,
+.rdtPicker .rdtTimeToggle:hover {
+  background: @color-gray-extra-light;
+  cursor: pointer;
+}
+
+.rdtPicker td.rdtOld,
+.rdtPicker td.rdtNew {
+  color: @color-gray-light;
+}
+
+.rdtPicker td.rdtToday {
+  color: @color-gray-muted;
+  font-style: italic;
+  position: relative;
+}
+
+.rdtPicker td.rdtActive {
+  background-color: @color-blue;
+  color: white;
+  font-weight: bold;
+}
+
+.rdtPicker td.rdtActive:hover {
+  background-color: @color-blue-subtle;
+}
+
+.rdtPicker td.rdtActive.rdtToday::before {
+  border-bottom-color: white;
+}
+
+.rdtPicker td.rdtDisabled,
+.rdtPicker td.rdtDisabled:hover {
+  background: none;
+  color: @color-gray-muted;
+  cursor: not-allowed;
+}
+
+.rdtPicker td span.rdtOld {
+  color: @color-gray-muted;
+}
+
+.rdtPicker td span.rdtDisabled,
+.rdtPicker td span.rdtDisabled:hover {
+  background: none;
+  color: @color-gray-muted;
+  cursor: not-allowed;
+}
+
+.rdtPicker th {
+  .border(true, @border-bottom);
+}
+
+.rdtPicker .dow {
+  border-bottom: none;
+  width: 14.2857%;
+}
+
+.rdtPicker th.rdtSwitch {
+  width: 100px;
+}
+
+.rdtPicker th.rdtNext,
+.rdtPicker th.rdtPrev {
+  font-size: 21px;
+  vertical-align: top;
+}
+
+.rdtPrev span,
+.rdtNext span {
+  display: block;
+  user-select: none;
+}
+
+.rdtPicker th.rdtDisabled,
+.rdtPicker th.rdtDisabled:hover {
+  background: none;
+  color: @color-gray-muted;
+  cursor: not-allowed;
+}
+
+.rdtPicker thead tr:first-child th {
+  cursor: pointer;
+}
+
+.rdtPicker tfoot {
+  .border(true, @border-top);
+}
+
+.rdtPicker button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.rdtPicker button:hover {
+  background: @color-gray-extra-light;
+}
+
+.rdtPicker thead button {
+  height: 100%;
+  width: 100%;
+}
+
+td.rdtMonth,
+td.rdtYear {
+  cursor: pointer;
+  height: 50px;
+  width: 25%;
+}
+
+td.rdtMonth:hover,
+td.rdtYear:hover {
+  background: @color-gray-extra-light;
+}
+
+.rdtCounters {
+  display: inline-block;
+}
+
+.rdtCounters > div {
+  float: left;
+}
+
+.rdtCounter {
+  height: 100px;
+  width: 40px;
+}
+
+.rdtCounterSeparator {
+  line-height: 100px;
+}
+
+.rdtCounter .rdtBtn {
+  cursor: pointer;
+  display: block;
+  height: 40%;
+  line-height: 40px;
+  user-select: none;
+}
+
+.rdtCounter .rdtBtn:hover {
+  background: @color-gray-extra-light;
+}
+
+.rdtCounter .rdtCount {
+  font-size: 1.2em;
+  height: 20%;
+}
+
+.rdtMilli {
+  padding-left: 8px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.rdtMilli input {
+  font-size: 1.2em;
+  margin-top: 37px;
+  width: 100%;
+}
+
+.rdtDayPart {
+  margin-top: 43px;
+}

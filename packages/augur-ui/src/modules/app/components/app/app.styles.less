@@ -1,0 +1,143 @@
+@import '~assets/styles/shared'; // NOTE -- this is the ONLY location this file should be brought in w/out the `(reference)` directive
+
+body,
+html,
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: @color-almostblack;
+
+  @media @breakpoint-mobile {
+    --is-mobile: true;
+  }
+
+  @media @breakpoint-mobile-small {
+    --is-mobile-small: true;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: @roboto;
+}
+
+#root {
+  height: 100%;
+}
+
+.App {
+  display: grid;
+
+  /* sidebar width */
+  grid-template-columns: @top-bar-height auto;
+  height: 100%;
+
+  @media @breakpoint-mobile {
+    /* disable sidebar mobile grid width */
+    grid-template-columns: 0 auto;
+  }
+}
+
+.App--blur {
+  filter: blur(2px);
+}
+
+.Main {
+  display: grid;
+
+  /* topbar height */
+  grid-template-rows: @top-bar-height auto;
+  height: 100vh;
+  overflow: hidden;
+
+  @media @breakpoint-mobile {
+    /* topbar mobile height */
+    grid-template-rows: 1.5rem auto;
+  }
+}
+
+.Main__wrap {
+  display: grid;
+
+  /* inner menubar width */
+  grid-template-columns: 6.875rem auto;
+  margin-left: -100px;
+  overflow: hidden;
+
+  @media @breakpoint-mobile {
+    /*
+    disable inner menubar mobile grid width */
+    grid-template-columns: 0 auto;
+    margin-left: 0;
+  }
+}
+
+.Main__content {
+  height: calc(~"100vh - @{top-bar-height}");
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  @media @breakpoint-mobile {
+    height: calc(~"100vh - @{top-bar-height-mobile}");
+  }
+}
+
+.SideBar {
+  background: @color-purple;
+  height: 100vh;
+  position: relative;
+  z-index: @mask-above;
+}
+
+.SideBar__mobile-bars {
+  background: none;
+  border: none;
+  display: none;
+  height: 16px;
+  left: 16px;
+  outline: none;
+  padding: 0;
+  position: absolute;
+  top: 16px;
+  width: 16px;
+  z-index: @mask-above;
+
+  svg {
+    height: 100%;
+    width: 100%;
+  }
+
+  @media @breakpoint-mobile {
+    display: block;
+  }
+}
+
+.App__loadingIndicator {
+  background: @color-lighter-purple;
+  display: none;
+  height: 0.25rem;
+  left: 0;
+  position: absolute;
+  right: 0;
+  z-index: 100;
+}
+
+svg.SideBar__mobile-bars-unseen {
+  bottom: 1.4rem;
+  position: relative;
+  right: 0.35rem;
+}
+
+.TopBar {
+  z-index: @above-all-content-above;
+
+  @media @breakpoint-mobile {
+    height: 50px;
+  }
+}

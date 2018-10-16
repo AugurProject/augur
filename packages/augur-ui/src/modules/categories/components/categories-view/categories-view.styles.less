@@ -1,0 +1,61 @@
+@import (reference) '~assets/styles/shared';
+
+.Categories {
+  color: @color-white;
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+}
+
+.Categories__container {
+  .standard-view-padding();
+
+  margin-bottom: 5rem;
+  position: relative;
+  z-index: @default-z-index;
+}
+
+.CategoriesHeading {
+  margin: 5.5rem 0 5.625rem;
+
+  > h2,
+  > h3 {
+    margin: 0;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  > h2 {
+    .caps--massive();
+
+    font-weight: 400;
+    letter-spacing: 0.051em;
+    margin-bottom: 1.75rem;
+
+    > a,
+    > a:hover,
+    > a:active,
+    > a:visited {
+      text-decoration: none;
+    }
+  }
+
+  > h3 {
+    .caps--extra-large();
+
+    letter-spacing: 0.075em;
+    margin-bottom: 2.125rem;
+  }
+}
+
+.CategoriesHeading__separator {
+  background: @color-offwhite;
+  height: 4px;
+  margin: 0 auto;
+  width: 4.375rem;
+}
+
+.Categories__paginator {
+  position: relative;
+  z-index: @default-z-index;
+}

@@ -1,0 +1,82 @@
+@import (reference) '~assets/styles/shared';
+
+.ForkingNotification__Container {
+  position: absolute;
+  right: 0;
+  width: 100%;
+}
+
+.ForkingNotification {
+  background: @color-pink;
+  height: 100%;
+  padding-left: 14rem;
+
+  section {
+    display: flex;
+  }
+}
+
+.ForkingNotification__SubContainer {
+  padding-left: 5em;
+}
+
+.ForkingNotification__message {
+  color: white;
+  font-size: 0.875rem;
+  line-height: 2.65rem;
+  margin-left: 1em;
+  text-transform: uppercase;
+}
+
+.ForkingNotification__AlertIcon {
+  height: 1.125rem;
+  margin-bottom: auto;
+  margin-top: auto;
+  width: 1.125rem;
+}
+
+.ForkingNotification__addition_details {
+  color: white;
+  display: flex;
+  flex: 1;
+  font-size: 0.75rem;
+  justify-content: flex-end;
+  text-transform: uppercase;
+}
+
+.ForkingNotification__addition_details_button {
+  margin-bottom: auto;
+  margin-right: 6em;
+  margin-top: auto;
+  text-transform: uppercase;
+}
+
+.ForkingNotification__arrow {
+  margin-left: 1em;
+}
+
+@media @breakpoint-mobile {
+  .ForkingNotification {
+    padding: 1.5em 1em;
+  }
+
+  .ForkingNotification__SubContainer {
+    padding-left: 0;
+  }
+
+  .ForkingNotification__message {
+    color: white;
+    font-size: 0.7rem;
+    line-height: 1em;
+    margin: 0 2em;
+    padding: 0.25em;
+    text-transform: uppercase;
+  }
+
+  .ForkingNotification__addition_details_button {
+    margin-bottom: auto;
+    margin-right: 0.5em;
+    margin-top: auto;
+    text-transform: uppercase;
+  }
+}

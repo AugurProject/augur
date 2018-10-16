@@ -1,0 +1,37 @@
+Note, these test cases are designed such that you can write while loops and randomly vary the # of shares and the price once you've written the first one of each [as long as the price you specify is within the range] and the math'll add up.
+
+Filling a bid [so selling]:
+
+    creator escrowed shares in all outcomes except this one, filler does not have shares in this outcome /// creator is closing a short position, filler is going short:
+
+        - The creator has n shares escrowed in every outcome except the one bidding on and is wanting to buy them at price x for a total of (x - min)*n ETH. Filler fills the bid and should pay a cost of (max - x)*n ETH [since they're shorting]. The filler doesn't have shares so complete sets need to be issued by combining the (x - min)*n from the creator + (max - x)*n from the filler [which makes range] ETH. The creator gets shares in the outcome they're missing, which completes their sets which are sold for range eth, and they then get to keep (max - x)*n ETH, the other part of the range (x-min)*n is used to issue the filler's complete set. N shares of every outcome except the one being sold go to the filler, the n being sold go to the creator.
+
+    creator escrowed cash, filler does not have shares in this outcome /// creator is going long, filler is going short:
+
+        - The creator is placing a bid for n shares at x each, costing them (x - min)*n ETH in escrow with the market. The filler fills the bid and has to pay (max - x)*n ETH total to the market. They get paid (x-min)*n ETH from the creator and need to pay (max - x)*n more ETH to the market + that (x-min)*n from the creator, and complete sets are issued.  Then the creator gets n of the outcome and n of every other outcome go to the filler.
+
+    creator escrowed shares in all outcomes except this one, filler has shares in this outcome /// creator is closing a short position, filler is closing a long position:
+
+        - The creator is placing a bid for n shares at x each and has shares escrowed in every outcome except the one bidding on. Filler fills the bid at x for n shares and has n shares. These n shares are sent to the creator. The creator's now formed complete sets are then sold and (x - min)*n ETH are sent to the filler. The creator ends up with (max - x)*n ETH proceeds after closing their short.
+
+    creator escrowed cash, filler has shares in this outcome /// creator is going long, filler is closing a long position:
+
+        - The creator is placing a bid for n shares at x each, costing them (x - min)*n ETH in escrow with the market. Filler fills the bid at x for n shares and already has n shares. These n shares are sent to the creator. The creator's (x - min)*n ETH are then sent to the filler.
+
+Filling an ask [so buying]:
+
+    creator escrowed shares in this outcome, filler does not have shares in all outcomes except this one /// creator is closing a long position, filler is going long:
+
+        - The creator had n shares escrowed by placing an ask for n shares @ x each. Filler fills an ask at x for n shares, they should spend (price - min)*n ETH on this trade and end up with n more shares of the outcome. The creator should receive (price - min)*n ETH and not have access to those n shares anymore [like they shouldn't be able to cancel their order and get the 10 shares back, they've gone from their account -> market -> filler]. The market should no longer have those n shares in escrow.
+
+    creator escrowed cash, filler does not have shares in all outcomes except this one /// creator is going short, filler is going long:
+
+        - The creator wants to sell n shares and places an ask for n shares @ x each, the creator doesn't own shares so (max - x)*n ETH is escrowed. Filler fills an ask at x for n shares, they should spend (x - min)*n ETH on this trade and end up with n more shares of the outcome. The creator should receive n shares in each outcome except the one they sold. The market should no longer have the creator's (max - x)*n ETH in escrow since they were used with the filler's (x - min)*n ETH to issue a complete set and split it up between the creator and filler. This is effectively short selling by the creator.
+
+    creator escrowed shares in this outcome, filler has shares in all outcomes except this one /// creator is closing a long position, filler is short the outcome and closing:
+
+        - The creator had n shares escrowed by placing an ask for n shares @ x each. Filler fills an ask at x for n shares, they should receive (max - x)*n ETH on this trade and end up with n less shares of every outcome except for no change in the outcome they're buying, the reason is buying this outcome completes a complete set and that is then sold, which essentially closes out a short position. The creator should receive (price - min)*n ETH and not have access to those n shares anymore [like they shouldn't be able to cancel their order and get the n shares back, they've gone from their account -> market -> filler -> complete set sold]. The market should no longer have those n shares in escrow either.
+
+    creator escrowed cash, filler has shares in all outcomes except this one /// creator is going short, filler is short the outcome and closing:
+
+        - The creator wants to sell n shares and places an ask for n shares @ x each, the creator doesn't own shares so (max - x)*n ETH is escrowed. Filler fills an ask at x for n shares, they should receive (max - x)*n ETH on this trade and end up with n less shares of every outcome except for no change in the outcome they're buying, the reason is buying this outcome completes a complete set and that is then sold, which essentially closes out a short position. The creator should receive n shares in each outcome except the one they sold. This is effectively short selling by the creator and closing out a short by the filler. Note, this one is a bit more complex, so more explanation of what is happening under the hood: What happens here is the filler gets the final outcome needed to close their short, which is then sold [the complete sets] and yields range*n ETH. The creator has escrowed (max - x)*n ETH, that's combined with (price - min)*n ETH from the filler's complete set money to then issue n shares in each outcome to the creator who is shorting, except for the one outcome they're shorting. (max - x)*n ETH is left over which is the filler's payment for closing out their short position. Intuitively this makes sense, if you are short outcome x and decide to close your short by buying outcome x back at price x, then your proceeds are (max - x) per share, or (max - x)*n ETH. And as the creator, if you are shorting outcome x at price x, your WCL is (max - x) per share or (max - x)*n ETH as you'd expect.

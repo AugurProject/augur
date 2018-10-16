@@ -1,0 +1,74 @@
+@import (reference) "~assets/styles/shared";
+
+.GasPriceEdit {
+  align-items: center;
+  border-left: 0.0625rem solid @color-lightpurple;
+  color: white;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 162px;
+  width: unset !important;
+
+  &:hover {
+    background-color: @color-lightpurple;
+  }
+}
+
+.GasPriceEdit__container {
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 18px 24px;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+  }
+
+  @media @breakpoint-mobile {
+    padding-top: 10px;
+  }
+}
+
+.GasPriceEdit__title {
+  color: @color-lightergray;
+  font-size: 10px;
+  line-height: 2;
+}
+
+.GasPriceEdit__info {
+  align-items: flex-end;
+  display: flex;
+}
+
+.GasPriceEdit__price {
+  color: @color-white;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: -2px;
+  margin-right: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.GasPriceEdit__description_non_standard {
+  color: @color-yellow-alert;
+  font-size: 10px;
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.GasPriceEdit__description_standard {
+  color: @color-white;
+  font-size: 10px;
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.GasPriceEdit__edit {
+  color: @color-lightergray;
+  font-size: 10px;
+  text-decoration: underline;
+}

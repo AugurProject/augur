@@ -1,0 +1,170 @@
+@import (reference) '~assets/styles/shared';
+
+.CreateMarketLiquidity__order {
+  display: flex;
+  justify-content: space-between;
+
+  > div:first-child {
+    width: 40%;
+  }
+
+  > div:last-child {
+    width: 58%;
+  }
+}
+
+.CreateMarketLiquidity__order-form {
+  background-color: @color-white;
+}
+
+.CreateMarketLiquidity__order-form-body {
+  padding: 1.875rem;
+
+  > li {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+
+    > label {
+      &:extend(.caps--small);
+
+      color: @color-darkpurple;
+      font-weight: 500;
+      margin-bottom: 0;
+      width: 4.6rem;
+    }
+
+    > div,
+    > input,
+    > ul {
+      width: 70%;
+    }
+
+    > input[type="number"] {
+      background-color: @color-input-background;
+      border-width: 1px;
+    }
+  }
+}
+
+li.CreateMarketLiquidity__order-add {
+  justify-content: flex-end;
+
+  > button {
+    &:extend(.button--purple all);
+  }
+}
+
+.CreateMarketLiquidity__outcomes-categorical {
+  background-color: @color-input-background;
+}
+
+.CreateMarketLiquidity__order-est {
+  color: @color-text-dark;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.CreateMarketLiquidity__order-form-header {
+  border-bottom: 1px solid @color-negative;
+  display: flex;
+  padding: 0.625rem 1.875rem 0;
+
+  &.headerPositive {
+    border-bottom-color: @color-positive;
+  }
+
+  > li {
+    border-bottom: 8px solid transparent;
+    color: @color-lightgray;
+    text-align: center;
+    width: 50%;
+
+    &.active {
+      border-bottom-color: @color-negative;
+      color: @color-darkpurple;
+    }
+
+    &.activePositive {
+      border-bottom-color: @color-positive;
+    }
+
+    > button {
+      &:extend(.caps--large);
+
+      font-weight: 700;
+      padding: 1.25rem 0;
+      width: 100%;
+    }
+  }
+}
+
+.CreateMarketLiquidity__radio-buttons > li {
+  &:not(:first-child) {
+    margin-left: 2rem;
+  }
+
+  > button {
+    color: @color-darkpurple;
+
+    &::before {
+      border-color: @color-darkpurple;
+    }
+
+    &::after {
+      background-color: @color-darkpurple;
+    }
+  }
+}
+
+.CreateMarketLiquidity__settlementLabel {
+  display: block;
+}
+
+.CreateMarketLiquidity__settlementFeePercent {
+  font-size: 1.25rem;
+  margin-left: -1.75rem;
+}
+
+.CreateMarketLiquidity__settlement > div > input {
+  display: inline-block;
+  max-width: 21rem;
+  padding-right: 2rem;
+}
+
+@media @breakpoint-mobile {
+  .CreateMarketLiquidity__order {
+    display: block;
+
+    > div:first-child,
+    > div:last-child {
+      width: 100%;
+    }
+
+    > div:first-child {
+      margin-bottom: 3.75rem;
+    }
+  }
+
+  .CreateMarketLiquidity__radio-buttons {
+    display: flex;
+
+    > li:not(:first-child) {
+      margin-top: 0;
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .CreateMarketLiquidity__settlement > input {
+    max-width: none;
+  }
+}

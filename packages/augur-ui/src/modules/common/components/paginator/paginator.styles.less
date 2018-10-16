@@ -1,0 +1,44 @@
+@import (reference) '~assets/styles/shared';
+
+.Paginator {
+  color: @color-lightgray;
+  height: 3.125rem;
+  margin: 2.5rem 0;
+}
+
+.Paginator__controls {
+  display: flex;
+  height: 100%;
+}
+
+.Paginator__back,
+.Paginator__location,
+.Paginator__forward {
+  flex: 1;
+  height: 100%;
+}
+
+.Paginator__location {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.Paginator__button {
+  align-items: center;
+  background: none;
+  display: flex;
+  height: 100%;
+  padding: 0;
+  text-decoration: none;
+}
+
+.Paginator__back > .Paginator__button {
+  justify-content: flex-end;
+  padding-left: 1.25rem;
+}
+
+.Paginator__forward > .Paginator__button {
+  justify-content: flex-start;
+  padding-right: 1.25rem;
+}

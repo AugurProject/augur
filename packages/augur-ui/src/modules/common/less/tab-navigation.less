@@ -1,0 +1,68 @@
+.tab-navigator {
+  align-items: stretch;
+  display: flex;
+  font-size: 2vmin;
+  width: 100%;
+
+  .nav-item {
+
+    .border();
+
+    align-items: center;
+    background: @color-white;
+    color: @color-black;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    line-height: 2em;
+
+    &:hover,
+    &:active {
+      background: @color-white-muted;
+    }
+
+    &.active {
+      background: @color-black-light;
+      color: @color-white-muted;
+    }
+
+    &:not(:last-of-type) {
+      border-right: none;
+    }
+
+    .nav-label {
+      align-items: center;
+      display: flex;
+      flex: 5;
+      font-size: 2.5vmin;
+      justify-content: center;
+    }
+
+    .nav-values {
+      align-items: center;
+      border-top: 1px solid @color-border;
+      display: flex;
+      flex: 2;
+      font-size: 1.6vmin;
+      width: 100%;
+
+      .value-denomination {
+        align-items: center;
+        border-right: 1px solid @color-border;
+        display: flex;
+        flex: 1;
+        height: 100%;
+        justify-content: center;
+
+        &:last-of-type {
+          border-right: none;
+          padding-right: 0;
+        }
+
+        &.colorize {
+          .colorize();
+        }
+      }
+    }
+  }
+}

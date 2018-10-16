@@ -1,0 +1,85 @@
+@import (reference) '~assets/styles/shared';
+
+.ConnectAccount {
+  align-items: center;
+  border-left: 0.0625rem solid @color-lightpurple;
+  color: white;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 184px;
+
+  &:hover {
+    background-color: @color-lightpurple;
+  }
+}
+
+.ConnectAccount__selected {
+  background-color: @color-lightpurple;
+}
+
+.ConnectAccount__container {
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  padding: 20px 16px 18px 23px;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+  }
+
+  @media @breakpoint-mobile {
+    padding-top: 10px;
+  }
+}
+
+.ConnectAccount__status {
+  color: @color-lightergray;
+  font-size: 12px;
+  font-weight: normal;
+  margin-bottom: 4px;
+}
+
+.ConnectAccount__status-indicator {
+  background-color: @color-offwhite;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  min-height: 8px;
+  min-width: 8px;
+}
+
+.ConnectAccount__statusGreen {
+  background-color: #00ffb1;
+}
+
+.ConnectAccount__title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.ConnectAccount__arrow {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-left: 24px;
+  max-width: 12px;
+}
+
+.ConnectAccount__connectDropdown {
+  background-color: @color-lightpurple;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
+  height: 0;
+  position: absolute;
+  right: 81px;
+  text-align: left;
+  top: @top-bar-height;
+  width: 308px;
+  z-index: @above-all-content;
+
+  @media @breakpoint-mobile {
+    top: 3rem;
+  }
+}

@@ -1,0 +1,42 @@
+@import (reference) "~assets/styles/shared";
+
+.Market__upper {
+  .view();
+}
+
+.Market__graphs {
+  height: 400px;
+}
+
+.Market__details {
+  background-color: @color-white;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Market__details-outcomes {
+  width: calc(100% - 25rem);
+}
+
+.Market__details-trading {
+  width: 25rem;
+}
+
+@media @breakpoint-mobile {
+  .Market__upper {
+    padding: 0 1rem;
+  }
+
+  .Market__details {
+    background-color: transparent;
+    display: block;
+  }
+
+  .Market__details-outcomes {
+    width: 100%;
+  }
+
+  .Market__details-trading {
+    width: auto;
+  }
+}

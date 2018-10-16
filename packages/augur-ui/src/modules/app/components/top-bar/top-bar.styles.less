@@ -1,0 +1,127 @@
+@import (reference) '~assets/styles/shared';
+
+.TopBar {
+  align-items: center;
+  background: @color-purple;
+  display: flex;
+  font-size: @font-size-medium;
+  height: 100%;
+  justify-content: flex-end;
+
+  > div {
+    display: flex;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.TopBar__statsContainer {
+  flex: 1;
+  width: unset;
+}
+
+.TopBar__stats {
+  border-right: 0.0625rem solid @color-lightpurple;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.TopBar__stat {
+  align-items: baseline;
+  display: flex;
+  letter-spacing: 0.05em;
+  margin: 0 1.5rem;
+}
+
+.TopBar__performance-stat {
+  justify-content: flex-end;
+}
+
+.TopBar__notifications {
+  color: @color-white;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  width: unset !important;
+
+  &:hover {
+    background-color: @color-lightpurple;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.TopBar__notificationsDisabled {
+  cursor: default;
+
+  &:hover {
+    background-color: @color-purple;
+  }
+}
+
+.TopBar__notificationsDark {
+  background-color: @color-lightpurple;
+}
+
+.TopBar__notifications-container {
+  border-left: 0.0625rem solid @color-lightpurple;
+  display: flex;
+  padding-left: 1.8rem;
+}
+
+.TopBar__notification-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: 2rem;
+  width: 1.25rem;
+}
+
+.TopBar__stat-label {
+  color: @color-lightergray;
+  display: inline;
+  font-size: @font-size-extra-small;
+  font-weight: 400 !important;
+  line-height: 1.25rem;
+  margin-right: 0.35rem;
+  text-transform: uppercase;
+}
+
+.TopBar__stat-value {
+  color: @color-white;
+  font-size: @font-size-medium;
+  font-weight: 700;
+  line-height: 1.25rem;
+}
+
+.TopBar__logo-text {
+  color: @color-white;
+  display: none;
+  font-size: @font-size-medium;
+  letter-spacing: 0.0625em;
+  line-height: @font-size-medium;
+  margin: -2px 0.625rem 0 0;
+  text-transform: uppercase;
+}
+
+.TopBar__stat-unit {
+  font-size: @font-size-extra-small;
+  margin-left: 0.25rem;
+}
+
+@media @breakpoint-mobile {
+  .TopBar {
+    padding-left: 2.875rem;
+  }
+
+  .TopBar__notifications {
+    display: none;
+  }
+
+  .TopBar__regular-stats {
+    border-left: 0.0625rem solid @color-lightpurple;
+  }
+}
