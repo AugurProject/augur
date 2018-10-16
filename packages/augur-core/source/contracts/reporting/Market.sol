@@ -30,7 +30,7 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
     using SafeMathInt256 for int256;
 
     // Constants
-    uint256 private constant MAX_FEE_PER_ETH_IN_ATTOETH = 1 ether / 2;
+    uint256 private constant MAX_FEE_PER_ETH_IN_ATTOETH = 15 * 10**16; // 15%
     uint256 private constant APPROVAL_AMOUNT = 2 ** 256 - 1;
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant MIN_OUTCOMES = 2;
@@ -47,7 +47,7 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
     uint256 private endTime;
     uint256 private numOutcomes;
     bytes32 private winningPayoutDistributionHash;
-    uint256 private validityBondAttoeth;
+    uint256 private validityBondAttoEth;
     IMailbox private marketCreatorMailbox;
     uint256 private finalizationTime;
     uint256 private noShowBond;
@@ -59,12 +59,12 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
     Map public crowdsourcers;
     IShareToken[] private shareTokens;
 
-    function initialize(IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoeth, ICash _cash, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public payable beforeInitialized returns (bool _success) {
+    function initialize(IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, ICash _cash, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public payable beforeInitialized returns (bool _success) {
         endInitialization();
         require(MIN_OUTCOMES <= _numOutcomes && _numOutcomes <= MAX_OUTCOMES);
         require(_designatedReporterAddress != NULL_ADDRESS);
         require((_numTicks >= _numOutcomes));
-        require(_feePerEthInAttoeth <= MAX_FEE_PER_ETH_IN_ATTOETH);
+        require(_feePerEthInAttoEth <= MAX_FEE_PER_ETH_IN_ATTOETH);
         require(_creator != NULL_ADDRESS);
         uint256 _timestamp = controller.getTimestamp();
         require(_timestamp < _endTime);
@@ -77,7 +77,7 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
         endTime = _endTime;
         numOutcomes = _numOutcomes;
         numTicks = _numTicks;
-        feeDivisor = _feePerEthInAttoeth == 0 ? 0 : 1 ether / _feePerEthInAttoeth;
+        feeDivisor = _feePerEthInAttoEth == 0 ? 0 : 1 ether / _feePerEthInAttoEth;
         cash = _cash;
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(controller.lookup("InitialReporterFactory"));
         participants.push(_initialReporterFactory.createInitialReporter(controller, this, _designatedReporterAddress));
@@ -87,18 +87,14 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
             shareTokens.push(createShareToken(_outcome));
         }
         approveSpenders();
-        // If the value was not at least equal to this fee this will throw. The addition here cannot overflow as these fees are capped
-        uint256 _refund = msg.value.sub(validityBondAttoeth);
-        if (_refund > 0) {
-            owner.transfer(_refund);
-        }
         return true;
     }
 
     function assessFees() private returns (bool) {
         noShowBond = universe.getOrCacheDesignatedReportNoShowBond();
         require(getReputationToken().balanceOf(this) >= noShowBond);
-        validityBondAttoeth = universe.getOrCacheValidityBond();
+        require(msg.value >= universe.getOrCacheValidityBond());
+        validityBondAttoEth = msg.value;
         return true;
     }
 
@@ -180,14 +176,7 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
             if (_crowdsourcerSize >= universe.getDisputeThresholdForDisputePacing()) {
                 disputePacingOn = true;
             }
-            IFeeWindow _originalFeeWindow = feeWindow;
             feeWindow = universe.getOrCreateNextFeeWindow();
-            if (feeWindow != _originalFeeWindow) {
-                // Participants is implicitly bounded by the floor of the initial report REP cost to be no more than 21
-                for (uint256 i = 0; i < participants.length; i++) {
-                    participants[i].migrate();
-                }
-            }
         }
         controller.getAugur().logDisputeCrowdsourcerCompleted(universe, this, _reportingParticipant);
         return true;
@@ -263,11 +252,11 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
     }
 
     function distributeValidityBond() private returns (bool) {
-        // If the market resolved to invalid the bond gets sent to the fee window. Otherwise it gets returned to the market creator mailbox.
+        // If the market resolved to invalid the bond gets sent to the auction. Otherwise it gets returned to the market creator mailbox.
         if (!isInvalid()) {
-            marketCreatorMailbox.depositEther.value(validityBondAttoeth)();
+            marketCreatorMailbox.depositEther.value(validityBondAttoEth)();
         } else {
-            cash.depositEtherFor.value(validityBondAttoeth)(universe.getCurrentFeeWindow());
+            cash.depositEtherFor.value(validityBondAttoEth)(universe.getAuction());
         }
         return true;
     }
@@ -480,8 +469,8 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
         return participants.length;
     }
 
-    function getValidityBondAttoeth() public view returns (uint256) {
-        return validityBondAttoeth;
+    function getValidityBondAttoEth() public view returns (uint256) {
+        return validityBondAttoEth;
     }
 
     function getDisputePacingOn() public view returns (bool) {
