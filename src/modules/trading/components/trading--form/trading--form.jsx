@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { MARKET, LIMIT } from "modules/transactions/constants/types";
-import { ZERO } from "modules/trades/constants/numbers";
+import { ZERO, MIN_QUANTITY } from "modules/trades/constants/numbers";
 import {
   YES_NO,
   CATEGORICAL,
@@ -80,7 +80,7 @@ class MarketTradingForm extends Component {
     this.testQuantity = this.testQuantity.bind(this);
     this.testPrice = this.testPrice.bind(this);
     this.updateTrade = this.updateTrade.bind(this);
-    this.state = {
+    const startState = {
       [this.INPUT_TYPES.QUANTITY]: props.orderQuantity,
       [this.INPUT_TYPES.PRICE]: props.orderPrice,
       [this.INPUT_TYPES.MARKET_ORDER_SIZE]: props.marketOrderTotal,
@@ -90,18 +90,11 @@ class MarketTradingForm extends Component {
         [this.INPUT_TYPES.PRICE]: [],
         [this.INPUT_TYPES.MARKET_ORDER_SIZE]: [],
         [this.TRADE_MAX_COST]: []
-      },
-      isOrderValid: this.orderValidation({
-        [this.INPUT_TYPES.QUANTITY]: props.orderQuantity,
-        [this.INPUT_TYPES.PRICE]: props.orderPrice,
-        [this.INPUT_TYPES.MARKET_ORDER_SIZE]: props.marketOrderTotal,
-        errors: {
-          [this.INPUT_TYPES.QUANTITY]: [],
-          [this.INPUT_TYPES.PRICE]: [],
-          [this.INPUT_TYPES.MARKET_ORDER_SIZE]: [],
-          [this.TRADE_MAX_COST]: []
-        }
-      }).isOrderValid
+      }
+    };
+    this.state = {
+      ...startState,
+      isOrderValid: this.orderValidation(startState).isOrderValid
     };
   }
 
@@ -414,6 +407,13 @@ class MarketTradingForm extends Component {
         ...s.errors[this.TRADE_MAX_COST]
       ])
     );
+    let quantityValue = s[this.INPUT_TYPES.QUANTITY];
+    if (BigNumber.isBigNumber(quantityValue)) {
+      quantityValue =
+        s[this.INPUT_TYPES.QUANTITY].dp() > MIN_QUANTITY.dp()
+          ? s[this.INPUT_TYPES.QUANTITY].dp(8, 0).toFixed()
+          : s[this.INPUT_TYPES.QUANTITY].toNumber();
+    }
 
     if (orderType === MARKET) {
       return (
@@ -529,15 +529,12 @@ class MarketTradingForm extends Component {
                 })}
                 id="tr__input--quantity"
                 type="number"
-                step={tickSize}
+                step={MIN_QUANTITY.toFixed()}
+                min={MIN_QUANTITY.toFixed()}
                 placeholder={`${
-                  marketType === SCALAR ? tickSize : "0.0001"
+                  marketType === SCALAR ? tickSize : MIN_QUANTITY.toFixed()
                 } Shares`}
-                value={
-                  BigNumber.isBigNumber(s[this.INPUT_TYPES.QUANTITY])
-                    ? s[this.INPUT_TYPES.QUANTITY].toNumber()
-                    : s[this.INPUT_TYPES.QUANTITY]
-                }
+                value={quantityValue}
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.QUANTITY, e.target.value)
                 }
