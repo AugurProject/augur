@@ -7,10 +7,11 @@ import getLoginAccountPositions from "modules/positions/selectors/login-account-
 import getOpenOrders from "modules/orders/selectors/open-orders";
 import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import { triggerTransactionsExport } from "modules/transactions/actions/trigger-transactions-export";
-import claimTradingProceeds from "modules/positions/actions/claim-trading-proceeds";
 import { constants } from "services/augurjs";
 import { orderBy } from "lodash";
 import { selectMarket } from "modules/markets/selectors/market";
+import { updateModal } from "modules/modal/actions/update-modal";
+import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/modal/constants/modal-types";
 
 const mapStateToProps = state => {
   const positions = getLoginAccountPositions();
@@ -62,7 +63,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   loadAccountTrades: () => dispatch(loadAccountTrades()),
   triggerTransactionsExport: () => dispatch(triggerTransactionsExport()),
-  claimTradingProceeds: marketIds => dispatch(claimTradingProceeds(marketIds))
+  claimTradingProceeds: marketId =>
+    dispatch(updateModal({ type: MODAL_CLAIM_TRADING_PROCEEDS, marketId }))
 });
 
 const getPositionsMarkets = memoize(
