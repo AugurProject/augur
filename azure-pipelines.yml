@@ -90,6 +90,7 @@ jobs:
     steps:
       - script: |
           set -euxo pipefail
+          yarn install --ignore-scripts --frozen-lockfile
           yarn test
         displayName: 'test augur UI'
       - task: PublishTestResults@2
