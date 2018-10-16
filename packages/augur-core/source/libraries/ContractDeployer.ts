@@ -158,7 +158,7 @@ Deploying to: ${networkConfiguration.networkName}
         const address = await this.construct(contract, [], `Uploading ${contract.contractName}`);
         const augur = new Augur(this.connector, this.accountManager, address, this.connector.gasPrice);
         contract.address = address;
-        await augur.setController(this.controller.address);
+        await augur.setController(this.controller!.address);
         await this.controller!.registerContract(stringTo32ByteHex("Augur"), address);
     }
 
