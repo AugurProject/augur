@@ -4,9 +4,6 @@ import { triggerTransactionsExport } from "modules/transactions/actions/trigger-
 import * as mockLoadAccountHistory from "modules/auth/actions/load-account-history";
 import { selectTransactions } from "src/modules/transactions/selectors/transactions";
 
-jest.mock("modules/transactions/selectors/transactions");
-jest.mock("modules/auth/actions/load-account-history");
-
 describe("modules/transactions/actions/trigger-transactions-export.js", () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
