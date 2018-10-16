@@ -1,7 +1,13 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
-import { Address, MarketPriceHistory, TimestampedPriceAmount } from "../../types";
+import Augur from "augur.js";
+import { MarketPriceHistory, TimestampedPriceAmount } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+
+export const MarketPriceHistoryParams = t.type({
+  marketId: t.string,
+});
 
 interface MarketPriceHistoryRow {
   timestamp: number;
@@ -12,25 +18,22 @@ interface MarketPriceHistoryRow {
 
 // Input: MarketId
 // Output: { outcome: [{ price, timestamp }] }
-export function getMarketPriceHistory(db: Knex, marketId: Address, callback: (err: Error|null, result?: MarketPriceHistory<string>) => void): void {
-  db.select([
+export async function getMarketPriceHistory(db: Knex, augur: Augur, params: t.TypeOf<typeof MarketPriceHistoryParams>): Promise<MarketPriceHistory<string>> {
+  const tradesRows: Array<MarketPriceHistoryRow> = await db.select([
     "trades.outcome",
     "trades.price",
     "trades.amount",
     "blocks.timestamp",
-  ]).from("trades").leftJoin("blocks", "trades.blockNumber", "blocks.blockNumber").where({ marketId })
-  .asCallback((err: Error|null, tradesRows?: Array<MarketPriceHistoryRow>): void => {
-    if (err) return callback(err);
-    if (!tradesRows) return callback(new Error("Internal error retrieving market price history"));
-    const marketPriceHistory: MarketPriceHistory<string> = {};
-    tradesRows.forEach((trade: MarketPriceHistoryRow): void => {
-      if (!marketPriceHistory[trade.outcome]) marketPriceHistory[trade.outcome] = [];
-      marketPriceHistory[trade.outcome].push(formatBigNumberAsFixed<TimestampedPriceAmount<BigNumber>, TimestampedPriceAmount<string>>({
-        price: trade.price,
-        timestamp: trade.timestamp,
-        amount: trade.amount,
-      }));
-    });
-    callback(null, marketPriceHistory);
+  ]).from("trades").leftJoin("blocks", "trades.blockNumber", "blocks.blockNumber").where({ marketId: params.marketId });
+  if (!tradesRows) throw new Error("Internal error retrieving market price history");
+  const marketPriceHistory: MarketPriceHistory<string> = {};
+  tradesRows.forEach((trade: MarketPriceHistoryRow): void => {
+    if (!marketPriceHistory[trade.outcome]) marketPriceHistory[trade.outcome] = [];
+    marketPriceHistory[trade.outcome].push(formatBigNumberAsFixed<TimestampedPriceAmount<BigNumber>, TimestampedPriceAmount<string>>({
+      price: trade.price,
+      timestamp: trade.timestamp,
+      amount: trade.amount,
+    }));
   });
+  return marketPriceHistory;
 }

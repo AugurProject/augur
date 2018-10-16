@@ -1,15 +1,21 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
-import { Address, MarketsContractAddressRow } from "../../types";
-import { queryModifier } from "./database";
+import { Address, MarketsContractAddressRow, SortLimitParams } from "../../types";
+import { queryModifierParams } from "./database";
 
-// Input: Date Range
-// Output: Markets Closing in Range
-export function getMarketsClosingInDateRange(db: Knex, universe: Address, earliestClosingTime: number, latestClosingTime: number, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
-  if (universe == null) return callback(new Error("Must provide universe"));
-  const query = db.select("marketId").from("markets").whereBetween("endTime", [earliestClosingTime, latestClosingTime]).where("universe", universe);
-  queryModifier(db, query, "endTime", "desc", sortBy, isSortDescending, limit, offset, (err: Error|null, rows?: Array<MarketsContractAddressRow>): void => {
-    if (err) return callback(err);
-    if (!rows) return callback(null);
-    callback(null, rows.map((row: MarketsContractAddressRow): Address => row.marketId));
-  });
+export const MarketsClosingInDateRangeParamsSpecific = t.type({
+  universe: t.string,
+  earliestClosingTime: t.number,
+  latestClosingTime: t.number,
+});
+
+export const MarketsClosingInDateRangeParams = t.intersection([
+  MarketsClosingInDateRangeParamsSpecific,
+  SortLimitParams,
+]);
+
+export async function getMarketsClosingInDateRange(db: Knex, augur: {}, params: t.TypeOf<typeof MarketsClosingInDateRangeParams>): Promise<Array<Address>> {
+  const query = db.select("marketId").from("markets").whereBetween("endTime", [params.earliestClosingTime, params.latestClosingTime]).where("universe", params.universe);
+  const rows = await queryModifierParams<MarketsContractAddressRow>(db, query, "endTime", "desc", params);
+  return rows.map((row: MarketsContractAddressRow): Address => row.marketId);
 }

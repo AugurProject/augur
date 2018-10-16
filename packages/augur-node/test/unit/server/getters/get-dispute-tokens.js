@@ -2,14 +2,15 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getDisputeTokens } = require("../../../../src/server/getters/get-dispute-tokens");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-dispute-tokens", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-        getDisputeTokens(db, t.params.universe, t.params.account, t.params.stakeTokenState, (err, stakeTokens) => {
+        t.method = "getDisputeTokens";
+        dispatchJsonRpcRequest(db,  t, {}, (err, stakeTokens) => {
           t.assertions(err, stakeTokens);
           db.destroy();
           done();

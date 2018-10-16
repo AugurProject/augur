@@ -2,14 +2,15 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getAccountTransferHistory } = require("../../../../src/server/getters/get-account-transfer-history");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-account-transfer-history", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getAccountTransferHistory(db, t.params.account, t.params.token, t.params.isInternalTransfer, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, accountTransferHistory) => {
+        t.method = "getAccountTransferHistory";
+        dispatchJsonRpcRequest(db, t, null, (err, accountTransferHistory) => {
           t.assertions(err, accountTransferHistory);
           db.destroy();
           done();
