@@ -1,6 +1,4 @@
-import { selectTransactions } from "src/modules/transactions/selectors/transactions";
-import configureMockStore from "redux-mock-store";
-import thunk from "redux-thunk";
+import { selectTransactionsSelector } from "src/modules/transactions/selectors/transactions";
 
 import {
   SUCCESS,
@@ -14,12 +12,9 @@ import { formatShares, formatEther, formatRep } from "utils/format-number";
 import { formatDate } from "utils/format-date";
 
 describe(`modules/transactions/selectors/transactions.js`, () => {
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
-  let store;
-
-  afterEach(() => {
-    jest.resetAllMocks();
+  let selectTransactions;
+  beforeEach(() => {
+    selectTransactions = selectTransactionsSelector();
   });
 
   test("returned the expected array", () => {
@@ -245,9 +240,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
       }
     ];
 
-    store = mockStore(state);
-    const actual = selectTransactions(store.getState());
-
+    const actual = selectTransactions(state);
     expect(actual).toEqual(expected);
   });
 });

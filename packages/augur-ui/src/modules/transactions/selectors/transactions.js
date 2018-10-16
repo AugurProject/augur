@@ -14,10 +14,10 @@ import {
 import getValue from "utils/get-value";
 import { formatShares, formatEther, formatRep } from "utils/format-number";
 
-const selectTransactionsSelector = () =>
+export const selectTransactionsSelector = () =>
   createSelector(selectTransactionsDataState, transactionsData => {
     const tradeGroups = [];
-    const formattedTransactions = Object.keys(transactionsData || {})
+    return Object.keys(transactionsData || {})
       .reduce((p, id) => {
         const { tradeGroupId } = transactionsData[id];
         if (tradeGroupId) {
@@ -47,8 +47,6 @@ const selectTransactionsSelector = () =>
               getValue(a, "timestamp.timestamp")
             : a.sortOrder - b.sortOrder
       );
-
-    return formattedTransactions;
   });
 
 function formatTransaction(transaction) {
