@@ -1,10 +1,11 @@
 import * as express from "express";
 import * as Knex from "knex";
 import * as helmet from "helmet";
+import * as t from "io-ts";
 import Augur from "augur.js";
 import { Address, ServersData } from "../types";
 import { runWebsocketServer } from "./run-websocket-server";
-import { getMarkets } from "./getters/get-markets";
+import { getMarkets, GetMarketsParams } from "./getters/get-markets";
 import { isSyncFinished } from "../blockchain/bulk-sync-augur-node-with-blockchain";
 import { EventEmitter } from "events";
 
@@ -45,9 +46,9 @@ export function runServer(db: Knex, augur: Augur, controlEmitter: EventEmitter =
       const networkId: string = augur.rpc.getNetworkID();
       const universe: Address = augur.contracts.addresses[networkId].Universe;
 
-      getMarkets(db, universe, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, (err: Error | null, result?: any): void => {
-        if (err || result.length === 0) {
-          res.send({ status: ServerStatus.DOWN, reason: err || "No markets found", universe });
+      getMarkets(db, augur, {universe} as t.TypeOf<typeof GetMarketsParams>).then((result: any) => {
+        if (result.length === 0) {
+          res.send({ status: ServerStatus.DOWN, reason: "No markets found", universe });
         } else {
           res.send({ status: ServerStatus.UP, universe });
         }

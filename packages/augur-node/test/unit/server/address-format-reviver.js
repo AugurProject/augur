@@ -85,7 +85,7 @@ describe("server/address-format-reviver", () => {
         if (variableDeclaration.length === 2) {
           const variableName = variableDeclaration[0].trim().replace("?", "");
           const variableType = variableDeclaration[1];
-          const isTypeAddress = variableType.includes("Address");
+          const isTypeAddress = variableType.includes("Address") && !variableType.includes("Promise<");
           (isTypeAddress ? addressDefinitions : nonAddressDefinitions)[variableName] = "";
         }
       });

@@ -1,9 +1,27 @@
+import * as t from "io-ts";
 import * as _ from "lodash";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
-import { Address, OrdersRow, OrderState, UIOrder, UIOrders, GenericCallback, Bytes32 } from "../../types";
-import { queryModifier } from "./database";
+import { OrdersRow, OrderState, UIOrder, UIOrders, Bytes32, SortLimitParams, OutcomeParam } from "../../types";
+import { queryModifierParams } from "./database";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+
+export const OrdersParamsSpecific = t.type({
+  universe: t.union([t.string, t.null, t.undefined]),
+  marketId: t.union([t.string, t.null, t.undefined]),
+  outcome: t.union([OutcomeParam, t.number, t.null, t.undefined]),
+  orderType: t.union([t.string, t.null, t.undefined]),
+  creator: t.union([t.string, t.null, t.undefined]),
+  orderState: t.union([t.string, t.null, t.undefined]),
+  orphaned: t.union([t.boolean, t.null, t.undefined]),
+  earliestCreationTime: t.union([t.number, t.null, t.undefined]),
+  latestCreationTime: t.union([t.number, t.null, t.undefined]),
+});
+
+export const OrdersParams = t.intersection([
+  OrdersParamsSpecific,
+  SortLimitParams,
+]);
 
 interface OrdersRowWithCreationTimeAndCanceled extends OrdersRow<BigNumber> {
   creationTime: number;
@@ -12,15 +30,14 @@ interface OrdersRowWithCreationTimeAndCanceled extends OrdersRow<BigNumber> {
   canceledTime: number;
 }
 
-// market, outcome, creator, orderType, limit, sort
-export function getOrders(db: Knex, universe: Address|null, marketId: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, orderState: OrderState|null, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, orphaned: boolean|null|undefined, callback: GenericCallback<UIOrders<string>>): void {
-  if (universe == null && marketId == null) return callback(new Error("Must provide universe, either via universe or marketId"));
+export async function getOrders(db: Knex, augur: {}, params: t.TypeOf<typeof OrdersParams>): Promise<UIOrders<string>> {
+  if (params.universe == null && params.marketId == null) throw new Error("Must provide universe, either via universe or marketId");
   const queryData: {} = _.omitBy({
-    universe,
-    outcome,
-    orderType,
-    "orderCreator": creator,
-    "orders.marketId": marketId,
+    "universe": params.universe,
+    "outcome": params.outcome,
+    "orderType": params.orderType,
+    "orderCreator": params.creator,
+    "orders.marketId": params.marketId,
   }, _.isNil);
   const query: Knex.QueryBuilder = db.select([
     "orders.*",
@@ -35,44 +52,42 @@ export function getOrders(db: Knex, universe: Address|null, marketId: Address|nu
   query.leftJoin("orders_canceled", "orders_canceled.orderId", "orders.orderId");
   query.leftJoin("blocks as canceledBlock", "orders_canceled.blockNumber", "canceledBlock.blockNumber");
   query.where(queryData);
-  query.where("orphaned", !!orphaned ? 1 : 0);
-  if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
-  if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
-  if (orderState != null && orderState !== OrderState.ALL) query.where("orderState", orderState);
-  queryModifier(db, query, "volume", "desc", sortBy, isSortDescending, limit, offset, (err: Error|null, ordersRows?: Array<OrdersRowWithCreationTimeAndCanceled>): void => {
-    if (err) return callback(err);
-    if (!ordersRows) return callback(new Error("Unexpected error fetching order rows"));
-    const orders: UIOrders<string> = {};
-    ordersRows.forEach((row: OrdersRowWithCreationTimeAndCanceled): void => {
-      if (!orders[row.marketId]) orders[row.marketId] = {};
-      if (!orders[row.marketId][row.outcome]) orders[row.marketId][row.outcome] = {};
-      if (!orders[row.marketId][row.outcome][row.orderType]) orders[row.marketId][row.outcome][row.orderType] = {};
-      orders[row.marketId][row.outcome][row.orderType][row.orderId!] = Object.assign(
-        formatBigNumberAsFixed<UIOrder<BigNumber>, UIOrder<string>>({
-          orderId: row.orderId!,
-          creationBlockNumber: row.blockNumber,
-          transactionHash: row.transactionHash,
-          logIndex: row.logIndex,
-          shareToken: row.shareToken,
-          owner: row.orderCreator,
-          creationTime: row.creationTime,
-          orderState: row.orderState,
-          price: row.price,
-          amount: row.amount,
-          originalAmount: row.originalAmount,
-          fullPrecisionPrice: row.fullPrecisionPrice,
-          fullPrecisionAmount: row.fullPrecisionAmount,
-          originalFullPrecisionAmount: row.originalFullPrecisionAmount,
-          tokensEscrowed: row.tokensEscrowed,
-          sharesEscrowed: row.sharesEscrowed,
-        }),
-        row.orderState !== OrderState.CANCELED ? {} : {
-          canceledTransactionHash: row.canceledTransactionHash,
-          canceledBlockNumber: row.canceledBlockNumber,
-          canceledTime: row.canceledTime,
-        },
-      );
-    });
-    callback(null, orders);
+  query.where("orphaned", !!params.orphaned ? 1 : 0);
+  if (params.earliestCreationTime != null) query.where("creationTime", ">=", params.earliestCreationTime);
+  if (params.latestCreationTime != null) query.where("creationTime", "<=", params.latestCreationTime);
+  if (params.orderState != null && params.orderState !== OrderState.ALL) query.where("orderState", params.orderState);
+  const ordersRows = await queryModifierParams<OrdersRowWithCreationTimeAndCanceled>(db, query, "volume", "desc", params);
+  if (!ordersRows) throw new Error("Unexpected error fetching order rows");
+  const orders: UIOrders<string> = {};
+  ordersRows.forEach((row: OrdersRowWithCreationTimeAndCanceled): void => {
+    if (!orders[row.marketId]) orders[row.marketId] = {};
+    if (!orders[row.marketId][row.outcome]) orders[row.marketId][row.outcome] = {};
+    if (!orders[row.marketId][row.outcome][row.orderType]) orders[row.marketId][row.outcome][row.orderType] = {};
+    orders[row.marketId][row.outcome][row.orderType][row.orderId!] = Object.assign(
+      formatBigNumberAsFixed<UIOrder<BigNumber>, UIOrder<string>>({
+        orderId: row.orderId!,
+        creationBlockNumber: row.blockNumber,
+        transactionHash: row.transactionHash,
+        logIndex: row.logIndex,
+        shareToken: row.shareToken,
+        owner: row.orderCreator,
+        creationTime: row.creationTime,
+        orderState: row.orderState,
+        price: row.price,
+        amount: row.amount,
+        originalAmount: row.originalAmount,
+        fullPrecisionPrice: row.fullPrecisionPrice,
+        fullPrecisionAmount: row.fullPrecisionAmount,
+        originalFullPrecisionAmount: row.originalFullPrecisionAmount,
+        tokensEscrowed: row.tokensEscrowed,
+        sharesEscrowed: row.sharesEscrowed,
+      }),
+      row.orderState !== OrderState.CANCELED ? {} : {
+        canceledTransactionHash: row.canceledTransactionHash,
+        canceledBlockNumber: row.canceledBlockNumber,
+        canceledTime: row.canceledTime,
+      },
+    );
   });
+  return orders;
 }

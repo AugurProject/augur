@@ -3,7 +3,7 @@
 const ReportingState = require("../../../../src/types").ReportingState;
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getMarkets } = require("../../../../src/server/getters/get-markets");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 
 describe("server/getters/get-markets", () => {
@@ -11,7 +11,8 @@ describe("server/getters/get-markets", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarkets(db, t.params.universe, t.params.creator, t.params.category, t.params.search, t.params.reportingState, t.params.feeWindow, t.params.designatedReporter, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsMatched) => {
+        t.method = "getMarkets";
+        dispatchJsonRpcRequest(db,  t, {}, (err, marketsMatched) => {
           t.assertions(err, marketsMatched);
           db.destroy();
           done();

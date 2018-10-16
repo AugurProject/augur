@@ -3,17 +3,17 @@
 const Augur = require("augur.js");
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getUserTradingPositions } = require("../../../../src/server/getters/get-user-trading-positions");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-user-trading-positions", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-
-        getUserTradingPositions(db, new Augur(), t.params.universe, t.params.account, t.params.marketId, t.params.outcome, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (error, userTradingPositions) => {
+        t.method = "getUserTradingPositions";
+        dispatchJsonRpcRequest(db,  t, new Augur(), (err, userTradingPositions) => {
           try {
-            t.assertions(error, userTradingPositions);
+            t.assertions(err, userTradingPositions);
             db.destroy();
             done();
           } catch (e) {

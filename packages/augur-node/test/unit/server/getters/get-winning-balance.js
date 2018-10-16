@@ -3,15 +3,15 @@
 const { BigNumber } = require("bignumber.js");
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getWinningBalance } = require("../../../../src/server/getters/get-winning-balance");
-
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-winning-balance", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getWinningBalance(db, t.params.augur, t.params.marketIds, t.params.account, (err, winningBalance) => {
+        t.method = "getWinningBalance";
+        dispatchJsonRpcRequest(db,  t, {}, (err, winningBalance) => {
           t.assertions(err, winningBalance);
           db.destroy();
           done();
