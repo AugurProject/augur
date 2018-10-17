@@ -1,3 +1,4 @@
+import { each } from "bluebird";
 import { Augur, BlockRange } from "augur.js";
 import { mapLimit, queue } from "async";
 import * as Knex from "knex";
@@ -7,7 +8,6 @@ import { processLog } from "./process-logs";
 import { logProcessors } from "./log-processors";
 import { processBlockByBlockDetails } from "./process-block";
 import { logger } from "../utils/logger";
-import Bluebird = require("bluebird");
 
 const BLOCK_DOWNLOAD_PARALLEL_LIMIT = 15;
 const BLOCK_DETAIL_PROGRESS_INTERVAL_MS = 5000;
@@ -52,13 +52,13 @@ async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): 
 async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<FormattedEventLog>, blockNumbers: Array<number>, blockDetailsByBlockPromise: Promise<BlockDetailsByBlock>) {
   const blockDetailsByBlock = await blockDetailsByBlockPromise;
   const logsByBlock: { [blockNumber: number]: Array<FormattedEventLog> } = _.groupBy(allAugurLogs, (log) => log.blockNumber);
-  await Bluebird.each(blockNumbers, async (blockNumber: number) => {
+  await each(blockNumbers, async (blockNumber: number) => {
     const logs = logsByBlock[blockNumber];
     if (logs === undefined || logs.length === 0) return;
     db.transaction(async (trx: Knex.Transaction) => {
       await processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber]);
       logger.info(`Processing ${logs.length} logs`);
-      await Bluebird.each(logs, async (log: FormattedEventLog) => {
+      await each(logs, async (log: FormattedEventLog) => {
         const contractName = log.contractName;
         const eventName = log.eventName;
         if (logProcessors[contractName] == null || logProcessors[contractName][eventName] == null) {
