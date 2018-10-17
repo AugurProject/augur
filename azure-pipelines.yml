@@ -135,10 +135,6 @@ jobs:
         git config --global user.name "Augur Developers"
         python -m pip install --upgrade pip pip-tools setuptools wheel
         pip install virtualenv
-      displayName: 'setup'
-
-    - script: |
-        set -euxo pipefail
         PATH=$(Agent.BuildDirectory)/bin:$PATH
         mkdir $(Agent.BuildDirectory)/bin
         echo "$(SOLC_MD5) *$(Agent.BuildDirectory)/bin/solc" > solc.md5
@@ -147,10 +143,6 @@ jobs:
         ls -l $(Agent.BuildDirectory)
         ls -l $(Agent.BuildDirectory)/bin
         chmod a+x $(Agent.BuildDirectory)/bin/solc
-      displayName: 'contracts'
-
-    - script: |
-        set -euxo pipefail
         yarn workspace augur-core run build
         yarn workspace augur-node run build
         yarn workspace augur-ui run build
