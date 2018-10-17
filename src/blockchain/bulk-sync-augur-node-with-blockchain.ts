@@ -5,8 +5,9 @@ import { downloadAugurLogs } from "./download-augur-logs";
 import { augurEmitter } from "../events";
 import { logger } from "../utils/logger";
 import { SubscriptionEventNames } from "../constants";
+import Bluebird = require("bluebird");
 
-const BLOCKSTREAM_HANDOFF_BLOCKS = 5;
+const BLOCKSTREAM_HANDOFF_BLOCKS = 55;
 let syncFinished = false;
 
 interface HighestBlockNumberRow {

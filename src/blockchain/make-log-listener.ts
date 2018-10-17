@@ -15,7 +15,7 @@ export function makeLogListener(augur: Augur, contractName: string, eventName: s
         const subscriptionEventName = eventName as keyof typeof SubscriptionEventNames;
         augurEmitter.emit(SubscriptionEventNames[subscriptionEventName], log);
       }
-      processLog(db, augur, log, logProcessors[contractName][eventName], callback);
+      processLog(db, augur, log, logProcessors[contractName][eventName]).then(() => callback(null)).catch(callback);
     });
   };
 }

@@ -3,7 +3,6 @@ import { series } from "async";
 import * as Knex from "knex";
 import { each } from "async";
 import { augurEmitter } from "../events";
-import { logError } from "../utils/log-error";
 import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow, ReportingState, Address, FeeWindowState } from "../types";
 import { updateActiveFeeWindows, updateMarketState } from "./log-processors/database";
 import { processQueue, logQueueProcess } from "./process-queue";
@@ -47,29 +46,16 @@ export function clearOverrideTimestamp(): void {
   blockHeadTimestamp = 0;
 }
 
-function processBlockDetailsAndLogs(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback) {
-  if (!block || !block.timestamp) return callback(new Error(JSON.stringify(block)));
-  db.transaction((trx: Knex.Transaction): void => {
-    processBlockByBlockDetails(trx, augur, block, (err) => {
-      if (err) {
-        trx.rollback(err);
-        return callback(err);
-      }
-      logQueueProcess(trx, block.hash, (err: Error|null) => {
-        if (err != null) trx.rollback(err);
-        else trx.commit();
-
-        return callback(err);
-      });
-    });
+async function processBlockDetailsAndLogs(db: Knex, augur: Augur, block: BlockDetail) {
+  if (!block || !block.timestamp) throw new Error(JSON.stringify(block));
+  db.transaction(async (trx: Knex.Transaction) => {
+    await processBlockByBlockDetails(trx, augur, block);
+    await logQueueProcess(trx, block.hash);
   });
 }
 
 export function processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback): void {
-  processQueue.push((next) => processBlockDetailsAndLogs(db, augur, block, (err: Error|null): void => {
-    if (err) return callback(err);
-    return next(null);
-  }));
+  processQueue.push((next) => processBlockDetailsAndLogs(db, augur, block).then(() => next(null)).catch(callback));
 }
 
 export function processBlockRemoval(db: Knex, block: BlockDetail, callback: ErrorCallback): void {
@@ -80,74 +66,68 @@ export function processBlockRemoval(db: Knex, block: BlockDetail, callback: Erro
 }
 
 export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number, callback: ErrorCallback): void {
-  augur.rpc.eth.getBlockByNumber([blockNumber, false], (err: Error|null, block: BlockDetail): void => {
+  augur.rpc.eth.getBlockByNumber([blockNumber, false], async (err: Error|null, block: BlockDetail) => {
     if (err) return callback(err);
-    processBlockByBlockDetails(db, augur, block, callback);
-  });
-}
-
-function insertBlockRow(db: Knex, blockNumber: number, blockHash: string, timestamp: number, callback: ErrorCallback) {
-  db("blocks").where({ blockNumber }).asCallback((err: Error|null, blocksRows?: Array<BlocksRow>): void => {
-    if (err) {
+    try {
+      await processBlockByBlockDetails(db, augur, block);
+    } catch (err) {
       return callback(err);
     }
-    let query: Knex.QueryBuilder;
-    if (!blocksRows || !blocksRows.length) {
-      query = db.insert({ blockNumber, blockHash, timestamp }).into("blocks");
-    } else {
-      query = db("blocks").where({ blockNumber }).update({ blockHash, timestamp });
-    }
-    query.asCallback(callback);
+    callback(null);
   });
 }
 
-export function processBlockByBlockDetails(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback): void {
-  if (!block || !block.timestamp) return callback(new Error(JSON.stringify(block)));
+async function insertBlockRow(db: Knex, blockNumber: number, blockHash: string, timestamp: number) {
+  const blocksRows: Array<BlocksRow> = await db("blocks").where({ blockNumber });
+  let query: Knex.QueryBuilder;
+  if (!blocksRows || !blocksRows.length) {
+    query = db.insert({ blockNumber, blockHash, timestamp }).into("blocks");
+  } else {
+    query = db("blocks").where({ blockNumber }).update({ blockHash, timestamp });
+  }
+  return query;
+}
+
+export async function processBlockByBlockDetails(db: Knex, augur: Augur, block: BlockDetail) {
+  if (!block || !block.timestamp) throw new Error(JSON.stringify(block));
   const blockNumber = parseInt(block.number, 16);
   const blockHash = block.hash;
   blockHeadTimestamp = parseInt(block.timestamp, 16);
   const timestamp = getOverrideTimestamp() || blockHeadTimestamp;
   logger.info("new block:", `${blockNumber}, ${timestamp} (${(new Date(timestamp * 1000)).toString()})`);
-  insertBlockRow(db, blockNumber, blockHash, timestamp, (err: Error|null) => {
-    if (err) {
-      return callback(err);
-    } else {
-      advanceTime(db, augur, blockNumber, timestamp, callback);
-    }
-  });
+  await insertBlockRow(db, blockNumber, blockHash, timestamp);
+  await advanceTime(db, augur, blockNumber, timestamp);
 }
 
 function _processBlockRemoval(db: Knex, block: BlockDetail, callback: ErrorCallback): void {
   const blockNumber = parseInt(block.number, 16);
   logger.info("block removed:", `${blockNumber}`);
-  db.transaction((trx: Knex.Transaction): void => {
+  db.transaction(async (trx: Knex.Transaction) => {
     const blockHash = block.hash;
-    logQueueProcess(trx, blockHash, (err: Error|null) => {
-      if (err != null) {
-        trx.rollback(err);
-        return callback(err);
-      }
+    try {
+      await logQueueProcess(trx, blockHash);
       // TODO: un-advance time
-      db("blocks").transacting(trx).where({ blockNumber }).del().asCallback((err: Error|null): void => {
-        if (err) {
-          trx.rollback(err);
-          logError(err);
-          callback(err);
-        } else {
-          trx.commit();
-          callback(null);
-        }
-      });
-    });
+      await db("blocks").transacting(trx).where({ blockNumber }).del();
+    } catch (err) {
+      trx.rollback(err);
+      return callback(err);
+    }
+    trx.commit();
+    return callback(null);
   });
 }
 
-function advanceTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  series([
-    (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, blockNumber, timestamp, next),
-    (next: AsyncCallback) => advanceMarketMissingDesignatedReport(db, augur, blockNumber, timestamp, next),
-    (next: AsyncCallback) => advanceFeeWindowActive(db, augur, blockNumber, timestamp, next),
-  ], callback);
+function advanceTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number) {
+  return new Promise((resolve, reject) => {
+    series([
+      (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, blockNumber, timestamp, next),
+      (next: AsyncCallback) => advanceMarketMissingDesignatedReport(db, augur, blockNumber, timestamp, next),
+      (next: AsyncCallback) => advanceFeeWindowActive(db, augur, blockNumber, timestamp, next),
+    ], (err) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
 }
 
 function advanceMarketReachingEndTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
