@@ -61,6 +61,7 @@ jobs:
           fi
 
   - job: Test_Augur_UI_and_Node
+    displayName: 'Test augur UI and augur-node'
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -71,11 +72,12 @@ jobs:
           node_version: 9.x
     steps:
       - script: |
-          set -euxo pipefail
           yarn workspace augur-node add sqlite3 --force --build-from-source
           yarn install --ignore-scripts --frozen-lockfile
+        displayName: 'Install Dependencies'
+      - script: |
           yarn test
-        displayName: 'test augur UI and augur-node'
+        displayName: 'Run Tests'
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'JUnit'
