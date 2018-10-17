@@ -2,18 +2,6 @@ const realAugur = require.requireActual("../augurjs.js");
 
 const MockAugurJS = jest.genMockFromModule("augur.js");
 
-MockAugurJS.rpc = {
-  block: { number: 10000, timestamp: 4886718345 },
-  constants: realAugur.augur.rpc.constants,
-  set mockEth(e) {
-    MockAugurJS.rpc.eth = e;
-  },
-  eth: {},
-  getCurrentBlock: () => ({ number: 10000, timestamp: 4886718345 }),
-  clear: realAugur.augur.rpc.clear,
-  getNetworkID: () => 4
-};
-
 MockAugurJS.constants = realAugur.augur.constants;
 MockAugurJS.mockConstants = {};
 Object.defineProperty(MockAugurJS, "mockConstants", {
