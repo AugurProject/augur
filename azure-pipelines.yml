@@ -60,7 +60,7 @@ jobs:
             yarn workspace augur-core docker:run:test:unit -- $TESTS;
           fi
 
-  - job: Test_Augur_Node
+  - job: Test_Augur_UI_and_Node
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -74,25 +74,8 @@ jobs:
           set -euxo pipefail
           yarn workspace augur-node add sqlite3 --force --build-from-source
           yarn install --ignore-scripts --frozen-lockfile
-          yarn workspace augur-node build
-          yarn workspace augur-node test
-        displayName: 'test augur node'
-
-  - job: Test_Augur_UI
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    strategy:
-      matrix:
-        node_8_x:
-          node_version: 8.x
-        node_9_x:
-          node_version: 9.x
-    steps:
-      - script: |
-          set -euxo pipefail
-          yarn install --ignore-scripts --frozen-lockfile
           yarn test
-        displayName: 'test augur UI'
+        displayName: 'test augur UI and augur-node'
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'JUnit'
