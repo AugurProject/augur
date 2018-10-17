@@ -1,7 +1,6 @@
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 import realStore from "src/store";
-import * as augur from "services/augurjs";
 
 import * as updateEnvModule from "modules/app/actions/update-env";
 import * as updateConnectionModule from "modules/app/actions/update-connection";
@@ -19,7 +18,7 @@ jest.mock("config/network.json", () => ({
     "ethereum-node": {
       http: "http://127.0.0.1:8545",
       ws: "ws://127.0.0.1:8546",
-      pollingIntervalMilliseconds: 500,
+      pollingIntervalMilliseconds: 5000,
       blockRetention: 100,
       connectionTimeout: 60000
     },
@@ -34,44 +33,6 @@ jest.mock("config/network.json", () => ({
 }));
 
 describe("modules/app/actions/init-augur.js", () => {
-  let mockAugur = {
-    connect: (env, cb) => {
-      cb(null, {
-        ethereumNode: {
-          ...ethereumNodeConnectionInfo,
-          contracts: {},
-          abi: {
-            functions: {},
-            events: {}
-          }
-        },
-        augurNode: augurNodeWS
-      });
-    },
-    augur: {
-      api: {
-        Controller: {
-          stopped: () => {}
-        }
-      },
-      rpc: {
-        eth: {
-          accounts: cb => cb(null, [])
-        }
-      },
-      contracts: {
-        addresses: {
-          4: { Universe: "0xb0b" }
-        }
-      }
-    },
-    constants: {
-      ACCOUNT_TYPES: {
-        UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
-        META_MASK: "metaMask"
-      }
-    }
-  };
   const ethereumNodeConnectionInfo = {
     http: "http://some.eth.node.com",
     ws: "wss://some.eth.ws.node.com"
@@ -88,6 +49,45 @@ describe("modules/app/actions/init-augur.js", () => {
     ...realStore.getState(),
     env: mockEnv
   });
+  let mockAugur = {
+    connect: (env, cb) => {
+      cb(null, {
+        ethereumNode: {
+          http: "http://some.eth.node.com",
+          ws: "wss://some.eth.ws.node.com",
+          contracts: {},
+          abi: {
+            functions: {},
+            events: {}
+          }
+        },
+        augurNode: "wss://some.web.socket.com"
+      });
+    },
+    augur: {
+      api: {
+        Controller: {
+          stopped: () => {}
+        }
+      },
+      rpc: {
+        eth: {
+          accounts: () => {}
+        },
+        constants: []
+      },
+      contracts: {
+        addresses: {}
+      }
+    },
+    constants: {
+      ACCOUNT_TYPES: {
+        UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+        META_MASK: "metaMask"
+      }
+    }
+  };
+  let augurModule;
 
   const ACTIONS = {
     UPDATE_ENV: { type: "UPDATE_ENV" },
@@ -116,13 +116,13 @@ describe("modules/app/actions/init-augur.js", () => {
     .mockImplementation(() => ACTIONS.UPDATE_FUNCTIONS_API);
   jest
     .spyOn(updateContractApiModule, "updateEventsAPI")
-    .mockImplementation(() => ACTIONS.UPDATE_MODAL);
+    .mockImplementation(() => ACTIONS.UPDATE_EVENTS_API);
   jest
     .spyOn(updateConnectionModule, "updateAugurNodeConnectionStatus")
     .mockImplementation(() => ACTIONS.UPDATE_AUGUR_NODE_CONNECTION_STATUS);
   jest
     .spyOn(registerTransactionRelayModule, "registerTransactionRelay")
-    .mockImplementation(ACTIONS.REGISTER_TRANSACTION_RELAY);
+    .mockImplementation(() => ACTIONS.REGISTER_TRANSACTION_RELAY);
   jest
     .spyOn(loadUniverseModule, "loadUniverse")
     .mockImplementation(() => ACTIONS.LOAD_UNIVERSE);
@@ -138,7 +138,6 @@ describe("modules/app/actions/init-augur.js", () => {
     global.setInterval = f => {
       f();
     };
-
     store.clearActions();
   });
 
@@ -149,16 +148,21 @@ describe("modules/app/actions/init-augur.js", () => {
 
   afterAll(() => {
     delete process.env.ETHEREUM_NETWORK;
-    augur.resetConstants();
   });
 
   describe("initAugur", () => {
-    jest.doMock("services/augurjs", () => mockAugur);
-
     test("initialized augur successfully with logged in account", () => {
-      store.dispatch(
+      mockAugur.augur.contracts = { 4: { Universe: "0xb0b" } };
+      mockAugur.augur.rpc.eth = { accounts: cb => cb(null, ["0xa11ce"]) };
+      mockAugur.augur.rpc.getNetworkID = jest.fn(() => 4);
+
+      jest.doMock("services/augurjs", () => mockAugur);
+      augurModule = require("services/augurjs");
+
+      augurModule.augur.rpc = store.dispatch(
         initAugur({}, {}, (err, connInfo) => {
           expect(err).toBeUndefined();
+          console.log("test");
           expect(connInfo).toBeUndefined();
           expect(store.getActions()).deepEqual([
             { type: "UPDATE_ENV" },

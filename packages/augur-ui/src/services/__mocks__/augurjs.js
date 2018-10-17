@@ -2,6 +2,8 @@ const realAugur = require.requireActual("../augurjs.js");
 
 const MockAugurJS = jest.genMockFromModule("augur.js");
 
+console.log("IN MOCKAUGUR");
+
 MockAugurJS.constants = realAugur.augur.constants;
 MockAugurJS.mockConstants = {};
 Object.defineProperty(MockAugurJS, "mockConstants", {
