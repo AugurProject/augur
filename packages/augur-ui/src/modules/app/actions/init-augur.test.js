@@ -164,19 +164,19 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(err).toBeUndefined();
           console.log("test");
           expect(connInfo).toBeUndefined();
-          expect(store.getActions()).deepEqual([
-            { type: "UPDATE_ENV" },
-            { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
-            { type: "UPDATE_FUNCTIONS_API" },
-            { type: "UPDATE_EVENTS_API" },
-            { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
-            { type: "REGISTER_TRANSACTION_RELAY" },
-            { type: "LOAD_UNIVERSE" },
-            { type: "CLOSE_MODAL" }
-          ]);
         })
       );
+      expect(store.getActions()).deepEqual([
+        { type: "UPDATE_ENV" },
+        { type: "UPDATE_CONNECTION_STATUS" },
+        { type: "UPDATE_CONTRACT_ADDRESSES" },
+        { type: "UPDATE_FUNCTIONS_API" },
+        { type: "UPDATE_EVENTS_API" },
+        { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
+        { type: "REGISTER_TRANSACTION_RELAY" },
+        { type: "LOAD_UNIVERSE" },
+        { type: "CLOSE_MODAL" }
+      ]);
     });
 
     test("initialized augur successfully when not logged in", () => {
@@ -184,20 +184,20 @@ describe("modules/app/actions/init-augur.js", () => {
         initAugur({}, {}, (err, connInfo) => {
           expect(err).toBeUndefined();
           expect(connInfo).toBeUndefined();
-          expect(store.getActions).deepEqual([
-            { type: "UPDATE_ENV" },
-            { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
-            { type: "UPDATE_FUNCTIONS_API" },
-            { type: "UPDATE_EVENTS_API" },
-            { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
-            { type: "REGISTER_TRANSACTION_RELAY" },
-            { type: "LOAD_UNIVERSE" },
-            { type: "CLOSE_MODAL" },
-            { type: "LOGOUT" }
-          ]);
         })
       );
+      expect(store.getActions).deepEqual([
+        { type: "UPDATE_ENV" },
+        { type: "UPDATE_CONNECTION_STATUS" },
+        { type: "UPDATE_CONTRACT_ADDRESSES" },
+        { type: "UPDATE_FUNCTIONS_API" },
+        { type: "UPDATE_EVENTS_API" },
+        { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
+        { type: "REGISTER_TRANSACTION_RELAY" },
+        { type: "LOAD_UNIVERSE" },
+        { type: "CLOSE_MODAL" },
+        { type: "LOGOUT" }
+      ]);
     });
 
     test("initialized augur successfully when not logged in and unexpectedNetworkId", () => {
@@ -215,26 +215,24 @@ describe("modules/app/actions/init-augur.js", () => {
         }
       };
 
-      jest.doMock("services/augurjs", () => mockAugur);
-
       store.dispatch(
         initAugur({}, {}, (err, connInfo) => {
           expect(err).toBeUndefined();
           expect(connInfo).toBeUndefined();
-          expect(store.getActions()).deepEqual([
-            { type: "UPDATE_ENV" },
-            { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
-            { type: "UPDATE_FUNCTIONS_API" },
-            { type: "UPDATE_EVENTS_API" },
-            { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
-            { type: "REGISTER_TRANSACTION_RELAY" },
-            { type: "LOAD_UNIVERSE" },
-            { type: "UPDATE_MODAL" },
-            { type: "LOGOUT" }
-          ]);
         })
       );
+      expect(store.getActions()).deepEqual([
+        { type: "UPDATE_ENV" },
+        { type: "UPDATE_CONNECTION_STATUS" },
+        { type: "UPDATE_CONTRACT_ADDRESSES" },
+        { type: "UPDATE_FUNCTIONS_API" },
+        { type: "UPDATE_EVENTS_API" },
+        { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
+        { type: "REGISTER_TRANSACTION_RELAY" },
+        { type: "LOAD_UNIVERSE" },
+        { type: "UPDATE_MODAL" },
+        { type: "LOGOUT" }
+      ]);
     });
 
     describe("connectAugur", () => {
@@ -243,19 +241,19 @@ describe("modules/app/actions/init-augur.js", () => {
           connectAugur({}, mockEnv, true, (err, connInfo) => {
             expect(err).toBeUndefined();
             expect(connInfo).toBeUndefined();
-            expect(store.getActions()).deepEqual([
-              { type: "UPDATE_CONNECTION_STATUS" },
-              { type: "UPDATE_CONTRACT_ADDRESSES" },
-              { type: "UPDATE_FUNCTIONS_API" },
-              { type: "UPDATE_EVENTS_API" },
-              { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
-              { type: "REGISTER_TRANSACTION_RELAY" },
-              { type: "LOAD_UNIVERSE" },
-              { type: "CLOSE_MODAL" },
-              { type: "SET_LOGIN_ACCOUNT" }
-            ]);
           })
         );
+        expect(store.getActions()).deepEqual([
+          { type: "UPDATE_CONNECTION_STATUS" },
+          { type: "UPDATE_CONTRACT_ADDRESSES" },
+          { type: "UPDATE_FUNCTIONS_API" },
+          { type: "UPDATE_EVENTS_API" },
+          { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
+          { type: "REGISTER_TRANSACTION_RELAY" },
+          { type: "LOAD_UNIVERSE" },
+          { type: "CLOSE_MODAL" },
+          { type: "SET_LOGIN_ACCOUNT" }
+        ]);
       });
 
       test("connectAugur successfully reconnects", () => {
@@ -263,18 +261,18 @@ describe("modules/app/actions/init-augur.js", () => {
           connectAugur({}, mockEnv, false, (err, connInfo) => {
             expect(err).toBeUndefined();
             expect(connInfo).toBeUndefined();
-            expect(store.getActions()).deepEqual([
-              { type: "UPDATE_ENV" },
-              { type: "UPDATE_CONNECTION_STATUS" },
-              { type: "UPDATE_CONTRACT_ADDRESSES" },
-              { type: "UPDATE_FUNCTIONS_API" },
-              { type: "UPDATE_EVENTS_API" },
-              { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
-              { type: "REGISTER_TRANSACTION_RELAY" },
-              { type: "LOAD_UNIVERSE" }
-            ]);
           })
         );
+        expect(store.getActions()).deepEqual([
+          { type: "UPDATE_ENV" },
+          { type: "UPDATE_CONNECTION_STATUS" },
+          { type: "UPDATE_CONTRACT_ADDRESSES" },
+          { type: "UPDATE_FUNCTIONS_API" },
+          { type: "UPDATE_EVENTS_API" },
+          { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
+          { type: "REGISTER_TRANSACTION_RELAY" },
+          { type: "LOAD_UNIVERSE" }
+        ]);
       });
 
       test("handled an undefined augurNode from AugurJS.connect", () => {
@@ -305,9 +303,9 @@ describe("modules/app/actions/init-augur.js", () => {
               ethereumNode: undefined,
               augurNode: augurNodeWS
             });
-            expect(store.getActions()).deepEqual([]);
           })
         );
+        expect(store.getActions()).deepEqual([]);
       });
 
       test("handled an error object back from AugurJS.connect", () => {
@@ -321,9 +319,9 @@ describe("modules/app/actions/init-augur.js", () => {
               ethereumNode: undefined,
               augurNode: undefined
             });
-            expect(store.getActions()).toHaveLength(0);
           })
         );
+        expect(store.getActions()).toHaveLength(0);
       });
     });
   });
