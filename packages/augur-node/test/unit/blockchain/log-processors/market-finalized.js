@@ -1,11 +1,10 @@
 "use strict";
 
 const Augur = require("augur.js");
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const {BigNumber} = require("bignumber.js");
-const {processMarketFinalizedLog, processMarketFinalizedLogRemoval} = require("../../../../src/blockchain/log-processors/market-finalized");
-const {getMarketsWithReportingState} = require("../../../../src/server/getters/database");
+const {processMarketFinalizedLog, processMarketFinalizedLogRemoval} = require("src/blockchain/log-processors/market-finalized");
+const {getMarketsWithReportingState} = require("src/server/getters/database");
 const {series} = require("async");
 
 const getMarketState = (db, params, callback) => {
@@ -16,31 +15,29 @@ const getMarketState = (db, params, callback) => {
 };
 
 describe("blockchain/log-processors/market-finalized", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        db.transaction((trx) => {
-          processMarketFinalizedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.ifError(err);
-            getMarketState(trx, t.params, (err, records) => {
-              t.assertions.onAdded(err, records);
-              processMarketFinalizedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.ifError(err);
-                getMarketState(trx, t.params, (err, records) => {
-                  t.assertions.onRemoved(err, records);
-                  db.destroy();
-                  done();
-                });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      db.transaction((trx) => {
+        processMarketFinalizedLog(trx, t.params.augur, t.params.log, (err) => {
+          expect(err).toBeFalsy();
+          getMarketState(trx, t.params, (err, records) => {
+            t.assertions.onAdded(err, records);
+            processMarketFinalizedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+              expect(err).toBeFalsy();
+              getMarketState(trx, t.params, (err, records) => {
+                t.assertions.onRemoved(err, records);
+                db.destroy();
+                done();
               });
             });
           });
         });
       });
-    });
+    })
   };
   const constants = new Augur().constants;
-  test({
+  runTest({
     description: "yesNo market MarketFinalized log and removal",
     params: {
       log: {
@@ -55,7 +52,7 @@ describe("blockchain/log-processors/market-finalized", () => {
         rpc: {
           eth: {
             getBalance: (p, callback) => {
-              assert.deepEqual(p, ["0xbbb0000000000000000000000000000000000013", "latest"]);
+              expect(p).toEqual(["0xbbb0000000000000000000000000000000000013", "latest"]);
               callback(null, "0x91f");
             },
           },
@@ -64,8 +61,8 @@ describe("blockchain/log-processors/market-finalized", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+        expect(err).toBeFalsy();
+        expect(records).toEqual({
           market: {
             marketId: "0x0000000000000000000000000000000000000013",
             reportingState: "FINALIZED",
@@ -89,8 +86,8 @@ describe("blockchain/log-processors/market-finalized", () => {
         });
       },
       onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+        expect(err).toBeFalsy();
+        expect(records).toEqual({
           market: {
             marketId: "0x0000000000000000000000000000000000000013",
             reportingState: "AWAITING_FINALIZATION",
