@@ -35,10 +35,10 @@ module.exports = {
       filename: ":memory:",
     },
     seeds: {
-      directory: "./src/seeds/test",
+      directory: path.resolve(__dirname, "./src/seeds/test"),
     },
     migrations: {
-      directory: "./src/migrations",
+      directory: path.resolve(__dirname, "./src/migrations"),
     },
     useNullAsDefault: true,
   },
