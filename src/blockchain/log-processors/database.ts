@@ -22,6 +22,12 @@ function setMarketStateToLatest(db: Knex, marketId: Address, callback: AsyncCall
   }).where({ marketId }).asCallback(callback);
 }
 
+async function setMarketStateToLatestPromise(db: Knex, marketId: Address) {
+  return db("markets").update({
+    marketStateId: queryCurrentMarketStateId(db, marketId),
+  }).where({ marketId });
+}
+
 // We fallback to the on-chain lookup if we have no row, because there is a possibility due to transaction log ordering
 // that we have not yet seen a FeeWindowCreated event. Only happens in test, where a "next" isn't created ahead of time
 function getFeeWindow(db: Knex, augur: Augur, universe: Address, next: boolean, callback: GenericCallback<Address>) {
@@ -54,6 +60,17 @@ export function updateMarketState(db: Knex, marketId: Address, blockNumber: numb
     if (!marketStateId || !marketStateId.length) return callback(new Error("Failed to generate new marketStateId for marketId:" + marketId));
     setMarketStateToLatest(db, marketId, callback);
   });
+}
+
+export async function updateMarketStatePromise(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState) {
+  const marketStateDataToInsert = { marketId, reportingState, blockNumber };
+  let query = db.insert(marketStateDataToInsert).into("market_state");
+  if (db.client.config.client !== "sqlite3") {
+    query = query.returning("marketStateId");
+  }
+  const marketStateId: Array<number> = await query;
+  if (!marketStateId || !marketStateId.length) throw new Error("Failed to generate new marketStateId for marketId:" + marketId);
+  return setMarketStateToLatestPromise(db, marketId);
 }
 
 export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp: number, callback: (err: Error|null, results?: FeeWindowModifications) => void) {

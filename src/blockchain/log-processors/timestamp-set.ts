@@ -6,13 +6,13 @@ import { advanceFeeWindowActive, getCurrentTime, removeOverrideTimestamp, setOve
 export function processTimestampSetLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   setOverrideTimestamp(db, parseInt(log.newTimestamp, 10), (err) => {
     if (err) return callback(err);
-    advanceFeeWindowActive(db, augur, log.blockNumber, log.newTimestamp, callback);
+    advanceFeeWindowActive(db, augur, log.blockNumber, log.newTimestamp).then(() => callback(null)).catch(callback);
   });
 }
 
 export function processTimestampSetLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   removeOverrideTimestamp(db, parseInt(log.newTimestamp, 10), (err) => {
     if (err) return callback(err);
-    advanceFeeWindowActive(db, augur, log.blockNumber, getCurrentTime(), callback);
+    advanceFeeWindowActive(db, augur, log.blockNumber, getCurrentTime()).then(() => callback(null)).catch(callback);
   });
 }
