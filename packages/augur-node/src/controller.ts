@@ -1,6 +1,5 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { NetworkConfiguration } from "augur-core";
 import { runServer, RunServerResult, shutdownServers } from "./server/run-server";
 import { bulkSyncAugurNodeWithBlockchain } from "./blockchain/bulk-sync-augur-node-with-blockchain";
 import { startAugurListeners } from "./blockchain/start-augur-listeners";
@@ -21,7 +20,7 @@ export interface SyncedBlockInfo {
 
 export class AugurNodeController {
   private augur: Augur;
-  private networkConfig: NetworkConfiguration;
+  private networkConfig: ConnectOptions;
   private databaseDir: string | undefined;
   private running: boolean;
   private controlEmitter: EventEmitter;

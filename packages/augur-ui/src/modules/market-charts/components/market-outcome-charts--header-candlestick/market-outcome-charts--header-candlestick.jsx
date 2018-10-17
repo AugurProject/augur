@@ -12,6 +12,7 @@ const MarketOutcomeCandlestickHeader = ({
   isMobile,
   volume,
   fixedPrecision,
+  pricePrecision,
   open,
   high,
   low,
@@ -57,7 +58,7 @@ const MarketOutcomeCandlestickHeader = ({
             className={StylesHeader[`MarketOutcomeChartsHeader__stat-value`]}
           >
             {open ? (
-              open.toFixed(fixedPrecision).toString()
+              open.toFixed(pricePrecision).toString()
             ) : (
               <span>&mdash;</span>
             )}
@@ -73,7 +74,7 @@ const MarketOutcomeCandlestickHeader = ({
             className={StylesHeader[`MarketOutcomeChartsHeader__stat-value`]}
           >
             {high ? (
-              high.toFixed(fixedPrecision).toString()
+              high.toFixed(pricePrecision).toString()
             ) : (
               <span>&mdash;</span>
             )}
@@ -89,7 +90,7 @@ const MarketOutcomeCandlestickHeader = ({
             className={StylesHeader[`MarketOutcomeChartsHeader__stat-value`]}
           >
             {low ? (
-              low.toFixed(fixedPrecision).toString()
+              low.toFixed(pricePrecision).toString()
             ) : (
               <span>&mdash;</span>
             )}
@@ -105,7 +106,7 @@ const MarketOutcomeCandlestickHeader = ({
             className={StylesHeader[`MarketOutcomeChartsHeader__stat-value`]}
           >
             {close ? (
-              close.toFixed(fixedPrecision).toString()
+              close.toFixed(pricePrecision).toString()
             ) : (
               <span>&mdash;</span>
             )}
@@ -132,6 +133,7 @@ const MarketOutcomeCandlestickHeader = ({
 MarketOutcomeCandlestickHeader.propTypes = {
   outcomeName: PropTypes.string,
   fixedPrecision: PropTypes.number.isRequired,
+  pricePrecision: PropTypes.number.isRequired,
   isMobile: PropTypes.bool.isRequired,
   updateSelectedPeriod: PropTypes.func.isRequired,
   updateSelectedRange: PropTypes.func.isRequired,

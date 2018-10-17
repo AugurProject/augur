@@ -1,5 +1,5 @@
 const mockRegisterTransactionRelay = jest.genMockFromModule(
-  "modules/transactions/actions/register-transaction-relay.js"
+  "../register-transaction-relay.js"
 );
 
 mockRegisterTransactionRelay.registerTransactionRelay = () => ({

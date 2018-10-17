@@ -2,23 +2,20 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {getReportingSummary, extractGetReportingSummaryParams} = require("../../../../src/server/getters/get-reporting-summary");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-reporting-summary", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-        const paramsExtracted = extractGetReportingSummaryParams(t.params);
-        getReportingSummary(db, null, paramsExtracted)
-          .then((reportingSummary) => {
-            t.assertions(reportingSummary);
-            done();
-          })
-          .catch(done)
-          .then(() => {
-            db.destroy();
-          });
+        t.method = "getReportingSummary";
+        dispatchJsonRpcRequest(db, t, null, (err, reportingSummary) => {
+          assert.ifError(err);
+          t.assertions(reportingSummary);
+          done();
+          db.destroy();
+        });
       });
     });
   };

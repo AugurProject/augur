@@ -11,13 +11,13 @@ describe("modules/notifications/actions/notifications", () => {
   const store = mockStore(state);
 
   describe("addNotification", () => {
-    test("if returns nothing when the notifications param is null/undefined", () => {
+    test("returned nothing when the notifications param is null/undefined", () => {
       expect(
         store.dispatch(updateNotifications.addNotification())
       ).toBeUndefined();
     });
 
-    test("if returns the expected object when a notification is passed in", () => {
+    test("returned the expected object when a notification is passed in", () => {
       const actual = store.dispatch(updateNotifications.addNotification({}));
 
       expect(actual).toEqual({
@@ -33,14 +33,14 @@ describe("modules/notifications/actions/notifications", () => {
       });
     });
 
-    test("if the notification level defaults to the 'INFO' constant", () => {
+    test("notification level defaulted to the 'INFO' constant", () => {
       const actual = store.dispatch(updateNotifications.addNotification({}))
         .data.notification.level;
 
       expect(actual).toBe(notificationLevels.INFO);
     });
 
-    test("if overrides the default notification level with the value passed in the notification object param", () => {
+    test("overrode the default notification level with the value passed in the notification object param", () => {
       const actual = store.dispatch(
         updateNotifications.addNotification({
           level: notificationLevels.CRITICAL
@@ -52,7 +52,7 @@ describe("modules/notifications/actions/notifications", () => {
   });
 
   describe("removeNotification", () => {
-    test("if returns the expected object", () => {
+    test("returned the expected object", () => {
       const actual = store.dispatch(updateNotifications.removeNotification(1));
 
       expect(actual).toEqual({
@@ -63,7 +63,7 @@ describe("modules/notifications/actions/notifications", () => {
   });
 
   describe("updateNotification", () => {
-    test("if returns the expected object", () => {
+    test("returned the expected object", () => {
       const actual = store.dispatch(
         updateNotifications.updateNotification(1, {
           testing: "test_update"
@@ -83,7 +83,7 @@ describe("modules/notifications/actions/notifications", () => {
   });
 
   describe("clearNotifications", () => {
-    test("if returns the expected object", () => {
+    test("returned the expected object", () => {
       const actual = store.dispatch(updateNotifications.clearNotifications());
 
       expect(actual).toEqual({
@@ -95,14 +95,14 @@ describe("modules/notifications/actions/notifications", () => {
     });
 
     describe("notificationLevel", () => {
-      test("the 'INFO' constant", () => {
+      test("returned the 'INFO' constant", () => {
         const actual = store.dispatch(updateNotifications.clearNotifications())
           .data.level;
 
         expect(actual).toBe(notificationLevels.INFO);
       });
 
-      test("if passes notificationLevel", () => {
+      test("passed notificationLevel", () => {
         const actual = updateNotifications.clearNotifications(
           notificationLevels.CRITICAL
         ).data.level;

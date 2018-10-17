@@ -2,14 +2,15 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getForkMigrationTotals } = require("../../../../src/server/getters/get-fork-migration-totals");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-fork-migration-totals", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-        getForkMigrationTotals(db, t.params.augur, t.params.parentUniverse, (err, forkMigrationTotals) => {
+        t.method = "getForkMigrationTotals";
+        dispatchJsonRpcRequest(db, t, t.params.augur, (err, forkMigrationTotals) => {
           t.assertions(err, forkMigrationTotals);
           db.destroy();
           done();

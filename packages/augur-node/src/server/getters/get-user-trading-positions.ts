@@ -1,12 +1,32 @@
-import Augur from "augur.js";
-import BigNumber from "bignumber.js";
+import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+import Augur from "augur.js";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
-import { Address, PositionsRow } from "../../types";
-import { queryModifier } from "./database";
-import { getOutcomesProfitLoss, MarketOutcomeEarnings, EarningsAtTime, ProfitLoss, formatProfitLossResults } from "./get-profit-loss";
+import { Address, OutcomeParam, SortLimitParams } from "../../types";
+import { getOutcomesProfitLoss, EarningsAtTime, ProfitLoss, formatProfitLossResults } from "./get-profit-loss";
+
+export const UserTradingPositionsParamsSpecific = t.type({
+  universe: t.union([t.string, t.null, t.undefined]),
+  marketId: t.union([t.string, t.null, t.undefined]),
+  account: t.union([t.string, t.null, t.undefined]),
+  outcome: t.union([OutcomeParam, t.number, t.null, t.undefined]),
+});
+
+export const UserTradingPositionsParams = t.intersection([
+  UserTradingPositionsParamsSpecific,
+  SortLimitParams,
+]);
+
+interface TradingPosition {
+  marketId: string;
+  outcome: number;
+  numShares: string;
+  realizedProfitLoss: string;
+  unrealizedProfitLoss: string;
+  numSharesAdjustedForUserIntention: string;
+  averagePrice: string;
+}
 
 async function queryUniverse(db: Knex, marketId: Address): Promise<Address> {
   const market = await db.first("universe").from("markets").where({ marketId });
@@ -14,12 +34,12 @@ async function queryUniverse(db: Knex, marketId: Address): Promise<Address> {
   return market.universe;
 }
 
-async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Address|null, account: Address, marketId: Address|null|undefined, outcome: number|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Promise<any> {
-  if (universe == null && marketId == null) throw new Error("Must provide reference to universe, specify universe or marketId");
-  if (account == null) throw new Error("Missing required parameter: account");
+export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.TypeOf<typeof UserTradingPositionsParams>): Promise<Array<TradingPosition>> {
+  if (params.universe == null && params.marketId == null) throw new Error("Must provide reference to universe, specify universe or marketId");
+  if (params.account == null) throw new Error("Missing required parameter: account");
 
-  const universeId = universe || await queryUniverse(db, marketId as string);
-  const results = await getOutcomesProfitLoss(db, augur, Date.now(), universeId as Address, account as Address, marketId || null, null, null, null);
+  const universeId = params.universe || await queryUniverse(db, params.marketId!);
+  const results = await getOutcomesProfitLoss(db, augur, Date.now(), universeId as Address, params.account, params.marketId || null, null, null, null);
 
   if (results === null) return [];
 
@@ -29,7 +49,7 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
     return outcomes.map((earnings: Array<EarningsAtTime>) => earnings === null ? null : earnings[earnings.length - 1].profitLoss);
   });
 
-  const marketBalances = await db.select("marketId", "outcome", "balance").from("balances_detail").whereIn("marketId", _.keys(allTimeEarningsPerMarket)).where({ owner: account });
+  const marketBalances = await db.select("marketId", "outcome", "balance").from("balances_detail").whereIn("marketId", _.keys(allTimeEarningsPerMarket)).where({ owner: params.account });
   const marketDetails = await db.select("marketId", "numTicks", "maxPrice", "minPrice").from("markets").whereIn("marketId", _.keys(allTimeEarningsPerMarket));
 
   const balancesByMarketOutcome = _.keyBy(marketBalances, (balance) => `${balance.marketId}_${balance.outcome}`);
@@ -60,14 +80,9 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
       };
     });
 
-    if (typeof outcome === "number" && byOutcomes[outcome]) return [byOutcomes[outcome]];
+    if (params.outcome != null && byOutcomes[params.outcome]) return [byOutcomes[params.outcome]];
     return byOutcomes;
   });
 
   return positionsRows;
-}
-
-// Look up a user's current trading positions. Should take account (address) as a required parameter and market and outcome as optional parameters. Response should include the user's position after the trade, in both "raw" and "adjusted" formats -- the latter meaning that short positions are shown as negative for yesNo and scalar markets, and realized and unrealized profit/loss.
-export function getUserTradingPositions(db: Knex, augur: Augur, universe: Address|null, account: Address, marketId: Address|null|undefined, outcome: number|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
-  queryUserTradingPositions(db, augur, universe, account, marketId, outcome, sortBy, isSortDescending, limit, offset).then((result) => { callback(null, result); }).catch((err) => callback(err));
 }

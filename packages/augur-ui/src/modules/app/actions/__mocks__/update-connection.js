@@ -1,5 +1,5 @@
 const mockUpdateConnection = jest.genMockFromModule(
-  "modules/app/actions/update-connection.js"
+  "../update-connection.js"
 );
 
 mockUpdateConnection.updateConnectionStatus = () => ({

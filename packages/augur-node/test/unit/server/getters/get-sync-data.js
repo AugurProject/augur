@@ -2,14 +2,15 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getSyncData } = require("../../../../src/server/getters/get-sync-data");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-sync-data", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getSyncData(db, t.params.augur, (err, contractAddresses) => {
+        t.method = "getSyncData";
+        dispatchJsonRpcRequest(db, t, t.params.augur, (err, contractAddresses) => {
           t.assertions(err, contractAddresses);
           db.destroy();
           done();

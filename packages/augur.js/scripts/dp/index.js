@@ -93,7 +93,7 @@ function help() {
 }
 
 function runCannedData(command, networks, callback) {
-  var deployerConfiguration = core.DeployerConfiguration.create(path.join(__dirname, "../../src/contracts"));
+  var deployerConfiguration = core.DeployerConfiguration.create(path.join(__dirname, "../../../augur-artifacts"));
   var networkConfigurations = networks.map(core.NetworkConfiguration.create);
   // This is done in two steps on purpose, create validates the envs and will throw an error
   // if it doesn't work

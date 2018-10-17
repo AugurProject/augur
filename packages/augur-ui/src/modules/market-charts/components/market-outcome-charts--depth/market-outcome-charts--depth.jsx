@@ -19,6 +19,7 @@ export default class MarketOutcomeDepth extends Component {
     marketDepth: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
+    pricePrecision: PropTypes.number.isRequired,
     updateChartHeaderHeight: PropTypes.func.isRequired,
     updateHoveredPrice: PropTypes.func.isRequired,
     updateHoveredDepth: PropTypes.func.isRequired,
@@ -51,7 +52,7 @@ export default class MarketOutcomeDepth extends Component {
 
   componentDidMount() {
     const {
-      fixedPrecision,
+      pricePrecision,
       marketDepth,
       marketMax,
       marketMin,
@@ -66,7 +67,7 @@ export default class MarketOutcomeDepth extends Component {
       marketDepth,
       orderBookKeys,
       sharedChartMargins,
-      fixedPrecision,
+      pricePrecision,
       marketMin,
       marketMax,
       updateHoveredPrice,
@@ -80,7 +81,6 @@ export default class MarketOutcomeDepth extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     const {
-      fixedPrecision,
       hoveredPrice,
       marketDepth,
       marketMax,
@@ -101,7 +101,6 @@ export default class MarketOutcomeDepth extends Component {
         updateSelectedOrderProperties,
         nextProps.updateSelectedOrderProperties
       ) ||
-      fixedPrecision !== nextProps.fixedPrecision ||
       marketMin !== nextProps.marketMin ||
       marketMax !== nextProps.marketMax ||
       isMobile !== nextProps.isMobile ||
@@ -110,8 +109,8 @@ export default class MarketOutcomeDepth extends Component {
       this.drawDepth({
         marketDepth: nextProps.marketDepth,
         orderBookKeys: nextProps.orderBookKeys,
+        pricePrecision: nextProps.pricePrecision,
         sharedChartMargins: nextProps.sharedChartMargins,
-        fixedPrecision: nextProps.fixedPrecision,
         marketMin: nextProps.marketMin,
         marketMax: nextProps.marketMax,
         updateHoveredPrice: nextProps.updateHoveredPrice,
@@ -133,7 +132,7 @@ export default class MarketOutcomeDepth extends Component {
     ) {
       this.drawCrosshairs({
         hoveredPrice: nextProps.hoveredPrice,
-        fixedPrecision: nextProps.fixedPrecision,
+        pricePrecision: nextProps.pricePrecision,
         marketDepth: nextProps.marketDepth,
         yScale: nextState.yScale,
         xScale: nextState.xScale,
@@ -155,7 +154,7 @@ export default class MarketOutcomeDepth extends Component {
         marketDepth,
         orderBookKeys,
         sharedChartMargins,
-        fixedPrecision,
+        pricePrecision,
         marketMin,
         marketMax,
         updateHoveredPrice,
@@ -169,7 +168,7 @@ export default class MarketOutcomeDepth extends Component {
         sharedChartMargins,
         marketDepth,
         orderBookKeys,
-        fixedPrecision,
+        pricePrecision,
         isMobile,
         marketMax,
         marketMin
@@ -199,7 +198,7 @@ export default class MarketOutcomeDepth extends Component {
         drawParams,
         depthChart,
         orderBookKeys,
-        fixedPrecision,
+        pricePrecision,
         marketMax,
         marketMin,
         isMobile,
@@ -216,7 +215,7 @@ export default class MarketOutcomeDepth extends Component {
         depthChart,
         marketDepth,
         orderBookKeys,
-        fixedPrecision,
+        pricePrecision,
         marketMin,
         marketMax,
         updateHoveredPrice,
@@ -235,7 +234,7 @@ export default class MarketOutcomeDepth extends Component {
 
   drawDepthOnResize() {
     const {
-      fixedPrecision,
+      pricePrecision,
       marketDepth,
       marketMax,
       marketMin,
@@ -249,7 +248,7 @@ export default class MarketOutcomeDepth extends Component {
       marketDepth,
       orderBookKeys,
       sharedChartMargins,
-      fixedPrecision,
+      pricePrecision,
       marketMin,
       marketMax,
       updateHoveredPrice,
@@ -270,7 +269,7 @@ export default class MarketOutcomeDepth extends Component {
         containerWidth,
         marketMin,
         marketMax,
-        fixedPrecision
+        pricePrecision
       } = options;
 
       if (hoveredPrice == null) {
@@ -317,7 +316,7 @@ export default class MarketOutcomeDepth extends Component {
         d3.select("#hovered_price_label")
           .attr("x", xScale(hoveredPrice) + labelOffset)
           .attr("y", containerHeight - sharedChartMargins.bottom - 12)
-          .text(clampedHoveredPrice.toFixed(fixedPrecision));
+          .text(clampedHoveredPrice.toFixed(pricePrecision));
       }
     }
   }
@@ -325,6 +324,7 @@ export default class MarketOutcomeDepth extends Component {
   render() {
     const {
       fixedPrecision,
+      pricePrecision,
       hoveredDepth,
       isMobile,
       headerHeight,
@@ -335,6 +335,7 @@ export default class MarketOutcomeDepth extends Component {
       <section className={Styles.MarketOutcomeDepth}>
         <MarketOutcomeChartHeaderDepth
           fixedPrecision={fixedPrecision}
+          pricePrecision={pricePrecision}
           hoveredDepth={hoveredDepth}
           isMobile={isMobile}
           headerHeight={headerHeight}
@@ -468,7 +469,7 @@ function drawTicks(options) {
     drawParams,
     depthChart,
     orderBookKeys,
-    fixedPrecision,
+    pricePrecision,
     isMobile,
     marketMax,
     marketMin,
@@ -527,7 +528,7 @@ function drawTicks(options) {
       .attr("dx", midOffset)
       .attr("dy", 0)
       .text(
-        orderBookKeys.mid && `${orderBookKeys.mid.toFixed(fixedPrecision)} ETH`
+        orderBookKeys.mid && `${orderBookKeys.mid.toFixed(pricePrecision)} ETH`
       );
   }
   if (hasOrders) {
@@ -550,7 +551,7 @@ function drawTicks(options) {
       .attr("y", d => drawParams.yScale(d))
       .attr("dx", 0)
       .attr("dy", drawParams.chartDim.tickOffset)
-      .text(d => d.toFixed(fixedPrecision));
+      .text(d => d.toFixed(pricePrecision));
   }
 
   // X Axis
@@ -672,7 +673,7 @@ function attachHoverClickHandlers(options) {
     drawParams,
     depthChart,
     marketDepth,
-    fixedPrecision,
+    pricePrecision,
     marketMin,
     marketMax,
     updateHoveredPrice,
@@ -692,7 +693,7 @@ function attachHoverClickHandlers(options) {
       // Determine closest order
       const hoveredPrice = drawParams.xScale
         .invert(mouse[0])
-        .toFixed(fixedPrecision);
+        .toFixed(pricePrecision);
 
       updateHoveredPrice(hoveredPrice);
     })
@@ -700,7 +701,7 @@ function attachHoverClickHandlers(options) {
       const mouse = d3.mouse(d3.select("#depth_chart").node());
       const orderPrice = drawParams.xScale
         .invert(mouse[0])
-        .toFixed(fixedPrecision);
+        .toFixed(pricePrecision);
       const nearestFillingOrder = nearestCompletelyFillingOrder(
         orderPrice,
         marketDepth

@@ -2,8 +2,6 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import { ZERO } from "../constants";
 import { BigNumber } from "bignumber.js";
-import { fix } from "speedomatic";
-import { numTicksToTickSize } from "../utils/convert-fixed-point-to-decimal";
 
 interface MinimalTradeRow {
   price: BigNumber;

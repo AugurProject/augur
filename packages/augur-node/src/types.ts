@@ -1,11 +1,11 @@
 import { BigNumber } from "bignumber.js";
 import { Augur, FormattedEventLog } from "augur.js";
 import { EventEmitter } from "events";
-import { NetworkConfiguration } from "augur-core";
 import * as Knex from "knex";
 import * as WebSocket from "ws";
 import * as https from "https";
 import * as http from "http";
+import * as t from "io-ts";
 
 // BigNumber Configs
 //
@@ -36,12 +36,6 @@ export enum FeeWindowState {
   FUTURE = "FUTURE",
 }
 
-export enum DisputeTokenState {
-  ALL = "ALL",
-  UNCLAIMED = "UNCLAIMED",
-  UNFINALIZED = "UNFINALIZED",
-}
-
 export enum OrderState {
   ALL = "ALL",
   OPEN = "OPEN",
@@ -49,9 +43,31 @@ export enum OrderState {
   CANCELED = "CANCELED",
 }
 
-export interface ConnectOptions extends NetworkConfiguration {
+export class ConnectOptions {
+  http?: string = "http://localhost:8545";
+  ws?: string = "ws://localhost:8546";
+  ipc?: string;
   propagationDelayWaitMillis?: number;
   maxRetries?: number;
+
+  private readFromEnvironment() {
+    const env = process.env;
+    if(env.MAX_REQUEST_RETRIES) this.maxRetries = parseInt(env.MAX_REQUEST_RETRIES);
+    if(env.DELAY_WAIT_MILLIS) this.propagationDelayWaitMillis = parseInt(env.DELAY_WAIT_MILLIS);
+
+    if (env.ETHEREUM_HTTP || env.ETHEREUM_WS || env.ETHEREUM_IPC) {
+      this.http = env.ETHEREUM_HTTP;
+      this.ws = env.ETHEREUM_WS;
+      this.ipc = env.ETHEREUM_IPC;
+    }
+  }
+
+  static createFromEnvironment(): ConnectOptions {
+    const options = new ConnectOptions();
+    options.readFromEnvironment();
+    return options;
+  }
+
 }
 
 export interface BaseTransactionRow {
@@ -136,6 +152,31 @@ export interface JsonRpcResponse {
   result: any;
 }
 
+export const OutcomeParam = t.keyof({
+  0: null,
+  1: null,
+  2: null,
+  3: null,
+  4: null,
+  5: null,
+  6: null,
+  7: null,
+});
+
+export const SortLimitParams = t.partial({
+  sortBy: t.union([t.string, t.null, t.undefined]),
+  isSortDescending: t.union([t.boolean, t.null, t.undefined]),
+  limit: t.union([t.number, t.null, t.undefined]),
+  offset: t.union([t.number, t.null, t.undefined]),
+});
+
+export interface SortLimit {
+  sortBy: string|null|undefined;
+  isSortDescending: boolean|null|undefined;
+  limit: number|null|undefined;
+  offset: number|null|undefined;
+}
+
 export interface GetMarketInfoRequest {
   jsonrpc: string;
   id: string|number;
@@ -167,6 +208,8 @@ export interface MarketPricing<BigNumberType> {
 
 export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> {
   marketId: Address;
+  transactionHash: Bytes32;
+  logIndex: number;
   universe: Address;
   marketType: string;
   marketCreator: Address;
@@ -179,6 +222,7 @@ export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> 
   marketCreatorMailbox: Address;
   marketCreatorMailboxOwner: Address;
   initialReportSize: BigNumberType|null;
+  validityBondSize: BigNumberType;
   category: string;
   tag1: string|null;
   tag2: string|null;

@@ -95,5 +95,5 @@ describe("blockchain/log-processors/completesets", () => {
     });
 
 
-  });
+  }).timeout(20000);
 });

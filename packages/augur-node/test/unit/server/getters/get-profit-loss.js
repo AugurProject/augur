@@ -1,9 +1,9 @@
-const Augur = require("augur.js");
 const assert = require("chai").assert;
-const setupTestDb = require("../../test.database");
-const { calculateEarningsPerTimePeriod, getProfitLoss, bucketRangeByInterval } = require("../../../../src/server/getters/get-profit-loss");
+const Augur = require("augur.js");
 const sqlite3 = require("sqlite3");
 const Knex = require("knex");
+const setupTestDb = require("../../test.database");
+const { calculateEarningsPerTimePeriod, getProfitLoss, bucketRangeByInterval } = require("../../../../src/server/getters/get-profit-loss");
 const { postProcessDatabaseResults } = require("../../../../src/server/post-process-database-results");
 
 const START_TIME = 1506474500;

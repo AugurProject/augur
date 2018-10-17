@@ -3,7 +3,7 @@
 const { BigNumber } = require("bignumber.js");
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getFeeWindows } = require("../../../../src/server/getters/get-fee-windows");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 const { setOverrideTimestamp } = require("../../../../src/blockchain/process-block");
 
 describe("server/getters/get-fee-windows", () => {
@@ -13,7 +13,8 @@ describe("server/getters/get-fee-windows", () => {
         assert.ifError(err);
         setOverrideTimestamp(db, 1509065471, (err) => {
           assert.ifError(err);
-          getFeeWindows(db, t.params.augur, t.params.universe, t.params.account, t.params.includeCurrent, (err, feeWindows) => {
+          t.method = "getFeeWindows";
+          dispatchJsonRpcRequest(db,  t, t.params.augur, (err, feeWindows) => {
             t.assertions(err, feeWindows);
             db.destroy();
             done();
