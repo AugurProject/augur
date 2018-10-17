@@ -6,7 +6,7 @@ import {
 } from "modules/markets/actions/update-market-loading";
 
 describe("modules/markets/actions/update-market-loading.js", () => {
-  const test = t => it(t.description, () => t.assertions());
+  const test = t => test(t.description, () => t.assertions());
 
   describe("updateMarketLoading", () => {
     test({

@@ -1,10 +1,9 @@
-import { describe, it } from "mocha";
 import { assert } from "chai";
 import insufficientFunds from "modules/markets/helpers/insufficient-funds";
 
 describe("src/modules/markets/helpers/insufficient-funds.js", () => {
   describe("when user has insufficient ETH", () => {
-    it("should output 'ETH'", () => {
+    test("should output 'ETH'", () => {
       const validityBond = 0.01;
       const gasCost = 0.001;
       const designatedReportNoShowReputationBond = 0.035;
@@ -24,7 +23,7 @@ describe("src/modules/markets/helpers/insufficient-funds.js", () => {
     });
   });
   describe("when user has insufficient REP", () => {
-    it("should output 'REP'", () => {
+    test("should output 'REP'", () => {
       const validityBond = 0.01;
       const gasCost = 0.001;
       const designatedReportNoShowReputationBond = 0.035;
@@ -44,7 +43,7 @@ describe("src/modules/markets/helpers/insufficient-funds.js", () => {
     });
   });
   describe("when user has insufficient ETH and REP", () => {
-    it("should output 'ETH and REP'", () => {
+    test("should output 'ETH and REP'", () => {
       const validityBond = 0.01;
       const gasCost = 0.001;
       const designatedReportNoShowReputationBond = 0.035;
@@ -64,7 +63,7 @@ describe("src/modules/markets/helpers/insufficient-funds.js", () => {
     });
   });
   describe("when user has sufficient funds", () => {
-    it("should output empty string", () => {
+    test("should output empty string", () => {
       const validityBond = 0.01;
       const gasCost = 0.001;
       const designatedReportNoShowReputationBond = 0.035;

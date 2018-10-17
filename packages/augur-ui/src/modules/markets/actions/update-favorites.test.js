@@ -1,7 +1,7 @@
 import * as actions from "modules/markets/actions/update-favorites";
 
 describe(`modules/markets/actions/update-favorites.js`, () => {
-  it(`should dispatch a toggle favorite action`, () => {
+  test(`should dispatch a toggle favorite action`, () => {
     const marketId = "market123";
     const expectedOutput = {
       type: actions.TOGGLE_FAVORITE,
@@ -14,7 +14,7 @@ describe(`modules/markets/actions/update-favorites.js`, () => {
     );
   });
 
-  it(`should dispatch a update favorites action`, () => {
+  test(`should dispatch a update favorites action`, () => {
     const favorites = ["some favorite", "another favorite"];
     const expectedOutput = {
       type: actions.UPDATE_FAVORITES,

@@ -93,7 +93,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
     }
   ];
 
-  it(`no trades in categorical market`, () => {
+  test(`no trades in categorical market`, () => {
     const creationTimestamp = 1533312112000;
     const currentTimestamp = 1533312312000;
     const actual = selectBucketedPriceTimeSeries(
@@ -108,7 +108,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
     assert.deepEqual(actual, expected, `Didn't call the expected method`);
   });
 
-  it(`bucketed trades in categorical market`, () => {
+  test(`bucketed trades in categorical market`, () => {
     const creationTimestamp = 1533312111000;
     const currentTimestamp = 1533322111000;
     const actual = selectBucketedPriceTimeSeries(
@@ -136,7 +136,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
     assert.deepEqual(actual, expected, `Didn't call the expected method`);
   });
 
-  it(`bucketed trades in categorical market`, () => {
+  test(`bucketed trades in categorical market`, () => {
     const creationTimestamp = 1533312111000;
     const currentTimestamp = 1533322111000;
     const actual = selectBucketedPriceTimeSeries(

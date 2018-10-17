@@ -4,7 +4,7 @@ import { UPDATE_MARKET_REP_BALANCE } from "src/modules/markets/actions/update-ma
 describe(`modules/markets/reducers/markets-data.js`, () => {
   describe("UPDATE_MARKET_CATEGORY", () => {
     const test = t =>
-      it(t.description, () => {
+      test(t.description, () => {
         t.assertions(reducer(t.marketsData, t.action));
       });
     test({
@@ -137,7 +137,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
     });
   });
   describe("UPDATE_MARKET_REP_BALANCE", () => {
-    it("should add repBalance attribute to market data", () => {
+    test("should add repBalance attribute to market data", () => {
       const result = reducer(
         {
           "0xa2": {}
@@ -157,7 +157,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
   });
 
   describe("UPDATE_MARKETS_DATA", () => {
-    it("should update markets data", () => {
+    test("should update markets data", () => {
       const marketsData = {
         "0x04be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801": {
           id: 2,

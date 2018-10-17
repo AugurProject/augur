@@ -24,7 +24,7 @@ describe("modules/markets/actions/load-markets-info.js", () => {
   const marketIds = ["0xMarket1", "0xMarket2"];
 
   const test = t =>
-    it(t.description, done => {
+    test(t.description, done => {
       const store = mockStore();
 
       t.assertions(store, done);
@@ -315,7 +315,7 @@ describe("modules/markets/actions/load-markets-info.js", () => {
       }
     }));
 
-    after(() => {
+    afterAll(() => {
       __RewireAPI__.__ResetDependency__("removeMarketLoading");
     });
 

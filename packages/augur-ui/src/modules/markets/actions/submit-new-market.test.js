@@ -67,7 +67,7 @@ describe("modules/markets/actions/submit-new-market", () => {
   });
 
   const test = t =>
-    it(t.description, () => {
+    test(t.description, () => {
       __RewireAPI__.__Rewire__("clearNewMarket", () => clearNewMarket);
       __RewireAPI__.__Rewire__("constants", constants);
       __RewireAPI__.__Rewire__("buildCreateMarket", t.buildCreateMarket);

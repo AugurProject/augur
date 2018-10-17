@@ -13,7 +13,7 @@ describe("modules/markets/actions/market-creator-fees-management.js", () => {
     data: { marketCreatorFees: data }
   };
 
-  it("should return the expected object", () => {
+  test("should return the expected object", () => {
     assert.deepEqual(
       actual,
       expected,

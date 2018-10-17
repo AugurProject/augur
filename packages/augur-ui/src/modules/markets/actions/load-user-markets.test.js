@@ -9,7 +9,7 @@ describe("modules/markets/actions/load-markets.js", () => {
   };
 
   const test = t =>
-    it(t.description, () => {
+    test(t.description, () => {
       const state = { ...t.state, env: mockEnv };
       const store = mockStore(state);
 

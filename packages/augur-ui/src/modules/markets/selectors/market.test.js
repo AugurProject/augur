@@ -1,12 +1,30 @@
-import { describe, it, beforeEach, afterEach } from "mocha";
-import proxyquire from "proxyquire";
 import sinon from "sinon";
 
 import * as mockStore from "test/mockStore";
 import marketAssertions from "assertions/market";
 
+jest.mock("../../../store", () => store);
+
+jest.mock("../../orders/selectors/user-open-orders-summary", () => proxyquire(
+  "../../../src/modules/orders/selectors/user-open-orders-summary",
+  {
+    "../../../store": store
+  }
+));
+
+jest.mock("../../../modules/markets/selectors/user-markets", () => proxyquire(
+  "../../../src/modules/markets/selectors/user-markets",
+  {
+    "../../../services/augurjs": stubbedAugurJS,
+    "../../../selectors": stubbedSelectors
+  }
+));
+
+jest.mock("../../../store", () => store);
+jest.mock("../../../services/augurjs", () => stubbedAugurJS);
+jest.mock("../../../selectors", () => stubbedSelectors);
+
 describe(`modules/markets/selectors/market.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
   const { store } = mockStore.default;
 
   const { loginAccount } = store.getState();
@@ -20,26 +38,7 @@ describe(`modules/markets/selectors/market.js`, () => {
     .stub(stubbedAugurJS, "getMarketCreatorFeesCollected")
     .callsFake(() => 10);
 
-  const selector = proxyquire(
-    "../../../src/modules/markets/selectors/market.js",
-    {
-      "../../../store": store,
-      // make selectors/user-open-orders-summary use the same store as selectors/market.js
-      "../../orders/selectors/user-open-orders-summary": proxyquire(
-        "../../../src/modules/orders/selectors/user-open-orders-summary",
-        {
-          "../../../store": store
-        }
-      ),
-      "../../../modules/markets/selectors/user-markets": proxyquire(
-        "../../../src/modules/markets/selectors/user-markets",
-        {
-          "../../../services/augurjs": stubbedAugurJS,
-          "../../../selectors": stubbedSelectors
-        }
-      )
-    }
-  );
+  const selector = require("../../../src/modules/markets/selectors/market.js");
 
   beforeEach(() => {
     store.clearActions();
@@ -49,7 +48,7 @@ describe(`modules/markets/selectors/market.js`, () => {
     store.clearActions();
   });
 
-  it(`should return the expected values to components`, () => {
+  test(`should return the expected values to components`, () => {
     const actual = selector.default();
     marketAssertions(actual);
   });

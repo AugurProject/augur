@@ -15,7 +15,7 @@ import {
 
 describe("modules/markets/actions/update-new-market.js", () => {
   const test = t => {
-    it(t.description, () => {
+    test(t.description, () => {
       t.assertions();
     });
   };

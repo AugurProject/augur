@@ -5,35 +5,38 @@ import {
 } from "modules/markets/actions/update-favorites";
 
 describe(`modules/markets/reducers/favorites.js`, () => {
-  it(`should return an update favorites action with new favorites data`, () => {
-    const someDate = Date.now();
-    const anotherDate = Date.now();
-    const favorites = {
-      fav1: anotherDate
-    };
-    const currentFavorites = {
-      fav1: someDate
-    };
-    const testAction = {
-      type: UPDATE_FAVORITES,
-      data: { favorites }
-    };
-    const expectedOutput = {
-      fav1: anotherDate
-    };
-    assert.deepEqual(
-      reducer(currentFavorites, testAction),
-      expectedOutput,
-      `Reducer didn't update correctly given favorites`
-    );
-    assert.deepEqual(
-      reducer(undefined, testAction),
-      expectedOutput,
-      `Reducer didn't output correctly given empty favorites`
-    );
-  });
+  test(
+    `should return an update favorites action with new favorites data`,
+    () => {
+      const someDate = Date.now();
+      const anotherDate = Date.now();
+      const favorites = {
+        fav1: anotherDate
+      };
+      const currentFavorites = {
+        fav1: someDate
+      };
+      const testAction = {
+        type: UPDATE_FAVORITES,
+        data: { favorites }
+      };
+      const expectedOutput = {
+        fav1: anotherDate
+      };
+      assert.deepEqual(
+        reducer(currentFavorites, testAction),
+        expectedOutput,
+        `Reducer didn't update correctly given favorites`
+      );
+      assert.deepEqual(
+        reducer(undefined, testAction),
+        expectedOutput,
+        `Reducer didn't output correctly given empty favorites`
+      );
+    }
+  );
 
-  it(`should be able to toggle favorites`, () => {
+  test(`should be able to toggle favorites`, () => {
     const someDate = Date.now();
     const currFavorites = {
       test: someDate,

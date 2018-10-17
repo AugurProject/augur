@@ -1,5 +1,3 @@
-import proxyquire from "proxyquire";
-
 import { createBigNumber } from "utils/create-big-number";
 
 import * as mockStore from "test/mockStore";
@@ -7,9 +5,10 @@ import * as mockStore from "test/mockStore";
 import { formatNumber, formatEther, formatShares } from "utils/format-number";
 import { formatDate } from "utils/format-date";
 
-describe("modules/markets/selectors/user-markets", () => {
-  proxyquire.noPreserveCache().noCallThru();
+jest.mock("../../../store", () => store);
+jest.mock("./markets-all", () => MarketsAll);
 
+describe("modules/markets/selectors/user-markets", () => {
   const { store, state } = mockStore.default;
   state.marketCreatorFees = {
     "0xMARKET1": createBigNumber("10", 10),
@@ -20,13 +19,7 @@ describe("modules/markets/selectors/user-markets", () => {
 
   const MarketsAll = () => allMarkets;
 
-  const proxiedSelector = proxyquire(
-    "../../../src/modules/markets/selectors/user-markets",
-    {
-      "../../../store": store,
-      "./markets-all": MarketsAll
-    }
-  );
+  const proxiedSelector = require("../../../src/modules/markets/selectors/user-markets");
 
   const actual = proxiedSelector.default();
 
@@ -141,7 +134,7 @@ describe("modules/markets/selectors/user-markets", () => {
     }
   ];
 
-  it("should return the expected array", () => {
+  test("should return the expected array", () => {
     assert.deepEqual(actual, expected, `Didn't return the expected array`);
   });
 });

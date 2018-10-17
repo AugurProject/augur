@@ -7,7 +7,7 @@ import {
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 describe("modules/markets/reducers/market-loading", () => {
-  const test = t => it(t.description, () => t.assertions());
+  const test = t => test(t.description, () => t.assertions());
 
   test({
     description: "should return the default state, existing state undefined",

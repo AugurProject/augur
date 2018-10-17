@@ -24,7 +24,7 @@ describe("modules/markets/actions/load-full-market.js", () => {
   };
 
   const test = t =>
-    it(t.description, done => {
+    test(t.description, done => {
       const store = mockStore(t.state || {});
 
       t.assertions(store, done);
@@ -45,7 +45,7 @@ describe("modules/markets/actions/load-full-market.js", () => {
       __RewireAPI__.__ResetDependency__("loadMarketsInfo");
     });
 
-    after(() => {
+    afterAll(() => {
       __RewireAPI__.__ResetDependency__("updateMarketLoading");
       __RewireAPI__.__ResetDependency__("loadMarketDetails");
     });
@@ -471,7 +471,7 @@ describe("modules/markets/actions/load-full-market.js", () => {
       }
     }));
 
-    after(() => {
+    afterAll(() => {
       __RewireAPI__.__ResetDependency__("removeMarketLoading");
     });
 

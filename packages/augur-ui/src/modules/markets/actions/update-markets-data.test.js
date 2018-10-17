@@ -1,7 +1,7 @@
 import * as updateMarketsDataReducer from "modules/markets/actions/update-markets-data";
 
 describe(`modules/markets/actions/update-markets-data.js`, () => {
-  const test = t => it(t.description, () => t.assertions());
+  const test = t => test(t.description, () => t.assertions());
 
   test({
     description: "`updateMarketsData` should return the expected object",

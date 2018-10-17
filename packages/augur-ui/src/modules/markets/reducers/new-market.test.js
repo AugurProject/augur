@@ -12,7 +12,7 @@ import { createBigNumber } from "utils/create-big-number";
 
 describe("modules/markets/reducers/new-market.js", () => {
   const test = t => {
-    it(t.describe, () => {
+    test(t.describe, () => {
       t.assertions();
     });
   };

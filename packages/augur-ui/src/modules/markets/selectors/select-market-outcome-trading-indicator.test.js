@@ -31,7 +31,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
     ]
   };
 
-  it(`no trades in market`, () => {
+  test(`no trades in market`, () => {
     const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
       id: 1,
       marketId: "marketId1"
@@ -40,7 +40,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
     assert.deepEqual(actual, expected, `Didn't call the expected method`);
   });
 
-  it(`one buy trades in market`, () => {
+  test(`one buy trades in market`, () => {
     const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
       id: 1,
       marketId: "marketId1_buy"
@@ -49,7 +49,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
     assert.deepEqual(actual, expected, `Didn't call the expected method`);
   });
 
-  it(`one sell trades in market`, () => {
+  test(`one sell trades in market`, () => {
     const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
       id: 1,
       marketId: "marketId1_sell"
@@ -58,7 +58,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
     assert.deepEqual(actual, expected, `Didn't call the expected method`);
   });
 
-  it(`multiple buy down trades in market`, () => {
+  test(`multiple buy down trades in market`, () => {
     const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
       id: 1,
       marketId: "marketId2_buy"
@@ -67,7 +67,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
     assert.deepEqual(actual, expected, `Didn't call the expected method`);
   });
 
-  it(`multiple buy up trades in market`, () => {
+  test(`multiple buy up trades in market`, () => {
     const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
       id: 2,
       marketId: "marketId2_buy"
@@ -76,7 +76,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
     assert.deepEqual(actual, expected, `Didn't call the expected method`);
   });
 
-  it(`multiple sell down trades in market`, () => {
+  test(`multiple sell down trades in market`, () => {
     const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
       id: 1,
       marketId: "marketId2_sell"
@@ -85,7 +85,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
     assert.deepEqual(actual, expected, `Didn't call the expected method`);
   });
 
-  it(`multiple sell up trades in market`, () => {
+  test(`multiple sell up trades in market`, () => {
     const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
       id: 2,
       marketId: "marketId2_sell"

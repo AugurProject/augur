@@ -1,11 +1,14 @@
-import { describe, it, beforeEach, afterEach } from "mocha";
-import proxyquire from "proxyquire";
 import sinon from "sinon";
 import * as mockStore from "test/mockStore";
 import marketsTotalsAssertions from "assertions/markets-totals";
 
+jest.mock("../../../store", () => store);
+jest.mock("../../markets/selectors/markets-all", () => AllMarkets);
+jest.mock("../../markets/selectors/markets-filtered", () => FilteredMarkets);
+jest.mock("../../markets/selectors/markets-unpaginated", () => UnpaginatedMarkets);
+jest.mock("../../markets/selectors/markets-favorite", () => FavoriteMarkets);
+
 describe(`modules/markets/selectors/markets-totals.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
   const { store } = mockStore.default;
 
   const mockPositions = {
@@ -197,16 +200,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
       totalCost
     }));
 
-  const selector = proxyquire(
-    "../../../src/modules/markets/selectors/markets-totals.js",
-    {
-      "../../../store": store,
-      "../../markets/selectors/markets-all": AllMarkets,
-      "../../markets/selectors/markets-filtered": FilteredMarkets,
-      "../../markets/selectors/markets-unpaginated": UnpaginatedMarkets,
-      "../../markets/selectors/markets-favorite": FavoriteMarkets
-    }
-  );
+  const selector = require("../../../src/modules/markets/selectors/markets-totals.js");
 
   beforeEach(() => {
     store.clearActions();
@@ -216,7 +210,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
     store.clearActions();
   });
 
-  it(`should return the market totals for selected market`, () => {
+  test(`should return the market totals for selected market`, () => {
     const actual = selector.default();
     marketsTotalsAssertions(actual);
   });

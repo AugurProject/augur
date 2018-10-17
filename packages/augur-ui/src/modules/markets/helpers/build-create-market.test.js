@@ -15,7 +15,7 @@ describe("modules/markets/helpers/build-create-market", () => {
   const mockStore = configureMockStore([thunk]);
 
   const test = t =>
-    it(t.description, () => {
+    test(t.description, () => {
       const store = mockStore(t.state || {});
       t.assertions(store);
     });
