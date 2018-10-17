@@ -3,7 +3,7 @@ variables:
     SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
 
 trigger:
-  batch: true
+  batch: false
   branches:
     include:
     - master
@@ -105,6 +105,7 @@ jobs:
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: 'junit.xml'
+        condition: always()
 
   - job: Test_Augur_js
     pool:
