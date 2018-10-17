@@ -13,40 +13,6 @@ MockAugurJS.resetConstants = () => {
   MockAugurJS.constants = realAugur.augur.constants;
 };
 
-MockAugurJS.api = {
-  set mockController(c) {
-    MockAugurJS.api.Controller = c;
-  },
-  Controller: {},
-  Universe: {
-    getParentUniverse: (args, callback) => {
-      expect(args).toStrictEqual({
-        tx: { to: "0xGENESIS" }
-      });
-      return callback(null, "0x0000000000000000000000000000000000000000");
-    },
-    getOpenInterestInAttoEth: (args, callback) => {
-      callback(null, "1000000");
-    }
-  }
-};
-
-MockAugurJS.augurNode = {
-  set mockGetSyncData(f) {
-    MockAugurJS.augurNode.getSyncData = f;
-  },
-  getSyncData: () => {},
-
-  submitRequest: (methodName, args, callback) => {
-    expect(methodName).toEqual("getUniversesInfo");
-    expect(args).toStrictEqual({
-      universe: "0xGENESIS",
-      account: "0xACCOUNT"
-    });
-    return callback(null, universesData);
-  }
-};
-
 MockAugurJS.trading = {
   calculateProfitLoss: () => ({
     realized: "-1",
