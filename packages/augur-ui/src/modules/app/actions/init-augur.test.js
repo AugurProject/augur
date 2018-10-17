@@ -3,17 +3,17 @@ import configureMockStore from "redux-mock-store";
 import realStore from "src/store";
 import * as augur from "services/augurjs";
 
+import * as updateEnvModule from "modules/app/actions/update-env";
+import * as updateConnectionModule from "modules/app/actions/update-connection";
+import * as updateContractAddressesModule from "modules/contracts/actions/update-contract-addresses";
+import * as updateContractApiModule from "modules/contracts/actions/update-contract-api";
+import * as registerTransactionRelayModule from "modules/transactions/actions/register-transaction-relay";
+import * as loadUniverseModule from "modules/app/actions/load-universe";
+import * as verifyMatchingNetworkIdsModule from "modules/app/actions/verify-matching-network-ids";
+
 import { initAugur, connectAugur } from "modules/app/actions/init-augur";
 
 jest.mock("services/augurjs");
-
-jest.mock("modules/app/actions/update-env");
-jest.mock("modules/app/actions/update-connection");
-jest.mock("modules/contracts/actions/update-contract-addresses");
-jest.mock("modules/contracts/actions/update-contract-api");
-jest.mock("modules/transactions/actions/register-transaction-relay");
-jest.mock("modules/app/actions/load-universe");
-jest.mock("modules/app/actions/verify-matching-network-ids");
 
 jest.mock("config/network.json", () => ({
   test: {
@@ -52,6 +52,47 @@ describe("modules/app/actions/init-augur.js", () => {
     ...realStore.getState(),
     env: mockEnv
   });
+
+  const ACTIONS = {
+    UPDATE_ENV: { type: "UPDATE_ENV" },
+    UPDATE_CONNECTION_STATUS: { type: "UPDATE_CONNECTION_STATUS" },
+    UPDATE_AUGUR_NODE_CONNECTION_STATUS: {
+      type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS"
+    },
+    UPDATE_CONTRACT_ADDRESSES: { type: "UPDATE_CONTRACT_ADDRESSES" },
+    UPDATE_FUNCTIONS_API: { type: "UPDATE_FUNCTIONS_API" },
+    UPDATE_EVENTS_API: { type: "UPDATE_EVENTS_API" },
+    LOAD_UNIVERSE: { type: "LOAD_UNIVERSE" },
+    REGISTER_TRANSACTION_RELAY: { type: "REGISTER_TRANSACTION_RELAY" }
+  };
+
+  jest
+    .spyOn(updateEnvModule, "updateEnv")
+    .mockImplementation(() => ACTIONS.UPDATE_ENV);
+  jest
+    .spyOn(updateConnectionModule, "updateConnectionStatus")
+    .mockImplementation(() => ACTIONS.UPDATE_CONNECTION_STATUS);
+  jest
+    .spyOn(updateContractAddressesModule, "updateContractAddresses")
+    .mockImplementation(() => ACTIONS.UPDATE_CONTRACT_ADDRESSES);
+  jest
+    .spyOn(updateContractApiModule, "updateFunctionsAPI")
+    .mockImplementation(() => ACTIONS.UPDATE_FUNCTIONS_API);
+  jest
+    .spyOn(updateContractApiModule, "updateEventsAPI")
+    .mockImplementation(() => ACTIONS.UPDATE_MODAL);
+  jest
+    .spyOn(updateConnectionModule, "updateAugurNodeConnectionStatus")
+    .mockImplementation(() => ACTIONS.UPDATE_AUGUR_NODE_CONNECTION_STATUS);
+  jest
+    .spyOn(registerTransactionRelayModule, "registerTransactionRelay")
+    .mockImplementation(ACTIONS.REGISTER_TRANSACTION_RELAY);
+  jest
+    .spyOn(loadUniverseModule, "loadUniverse")
+    .mockImplementation(() => ACTIONS.LOAD_UNIVERSE);
+  jest
+    .spyOn(verifyMatchingNetworkIdsModule, "verifyMatchingNetworkIds")
+    .mockImplementation(callback => () => callback(null, true));
 
   beforeAll(() => {
     process.env.ETHEREUM_NETWORK = "test";
