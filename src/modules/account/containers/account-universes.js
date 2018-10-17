@@ -13,12 +13,25 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getUniverses: callback => dispatch(loadUniverseInfo(callback)),
-  switchUniverse: universeId => {
-    if (windowRef.localStorage && windowRef.localStorage.setItem) {
-      windowRef.localStorage.setItem("selectedUniverse", universeId);
-      location.reload();
-    }
-  }
+  switchUniverse: universeId =>
+    dispatch((_, getState) => {
+      const { loginAccount, connection } = getState();
+      const { address } = loginAccount;
+      const { augurNodeNetworkId } = connection;
+      if (windowRef.localStorage && windowRef.localStorage.setItem) {
+        const storedAccountData = JSON.parse(
+          windowRef.localStorage.getItem(address)
+        );
+        windowRef.localStorage.setItem(address, {
+          ...storedAccountData,
+          selectedUniverse: {
+            ...storedAccountData.selectedUniverse,
+            [augurNodeNetworkId]: universeId
+          }
+        });
+        location.reload();
+      }
+    })
 });
 
 const AccountUniversesContainer = connect(

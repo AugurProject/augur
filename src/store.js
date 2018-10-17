@@ -25,18 +25,37 @@ const localStorageMiddleware = store => next => action => {
   if (!state || !state.loginAccount || !state.loginAccount.address) {
     return;
   }
+  const { address } = state.loginAccount;
+  const {
+    pendingLiquidityOrders,
+    scalarMarketsShareDenomination,
+    favorites,
+    reports,
+    accountName,
+    notifications,
+    universe,
+    connection
+  } = state;
   if (windowRef.localStorage && windowRef.localStorage.setItem) {
+    let storedAccountData = JSON.parse(windowRef.localStorage.getItem(address));
+    if (!storedAccountData) {
+      storedAccountData = { selectedUniverse: {} };
+    }
     windowRef.localStorage.setItem(
-      state.loginAccount.address,
+      address,
       JSON.stringify({
-        pendingLiquidityOrders: state.pendingLiquidityOrders,
-        scalarMarketsShareDenomination: state.scalarMarketsShareDenomination,
-        favorites: state.favorites,
-        reports: state.reports,
-        accountName: state.accountName,
-        notifications: state.notifications,
+        pendingLiquidityOrders,
+        scalarMarketsShareDenomination,
+        favorites,
+        reports,
+        accountName,
+        notifications,
         gasPriceInfo: {
           userDefinedGasPrice: state.gasPriceInfo.userDefinedGasPrice
+        },
+        selectedUniverse: {
+          ...storedAccountData.selectedUniverse,
+          [connection.augurNodeNetworkId]: universe.id
         }
       })
     );
