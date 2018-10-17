@@ -1,31 +1,28 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-all-orders", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        t.method = "getAllOrders";
-        dispatchJsonRpcRequest(db, t, {}, (err, orders) => {
-          t.assertions(err, orders);
-          db.destroy();
-          done();
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      t.method = "getAllOrders";
+      dispatchJsonRpcRequest(db, t, {}, (err, orders) => {
+        t.assertions(err, orders);
+        db.destroy();
+        done();
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "get all orders from the account",
     params: {
       account: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (err, orders) => {
-      assert.ifError(err);
-      assert.deepEqual(orders, {
+      expect(err).toBeFalsy();
+      expect(orders).toEqual({
         "0x2000000000000000000000000000000000000000000000000000000000000000": {
           "orderId": "0x2000000000000000000000000000000000000000000000000000000000000000",
           "sharesEscrowed": "0",

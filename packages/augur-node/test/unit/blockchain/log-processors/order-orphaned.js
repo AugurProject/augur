@@ -1,42 +1,48 @@
 "use strict";
 
-const assert = require("chai").assert;
 const { fix } = require("speedomatic");
 const setupTestDb = require("../../test.database");
 const { BigNumber } = require("bignumber.js");
-const { processOrderCreatedLog } = require("../../../../src/blockchain/log-processors/order-created");
+const { processOrderCreatedLog } = require("src/blockchain/log-processors/order-created");
 const Augur = require("augur.js");
 const augur = new Augur();
 
 describe("order-orphaned", () => {
-  const test = (t) => {
+  const runTest = (t) => {
     const getState = (db, orderId, callback) => db("orders").where("orderId", orderId).asCallback(callback);
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        db.del().from("orders").asCallback((err) => {
-          assert.ifError(err);
-          db.transaction((trx) => {
-            processOrderCreatedLog(trx, t.params.augur, Object.assign({}, t.params.log, {logIndex: 0, orderId: "ORDER_ID_1"}), (err) => {
-              assert.ifError(err);
-              processOrderCreatedLog(trx, t.params.augur, Object.assign({}, t.params.log, {logIndex: 1, orderId: "ORDER_ID_2" }), (err) => {
-                assert.ifError(err);
-                processOrderCreatedLog(trx, t.params.augur, Object.assign({}, t.params.log, {logIndex: 2, orderId: "ORDER_ID_3"}), (err) => {
-                  assert.ifError(err);
-                  getState(trx, "ORDER_ID_2", (err, records) => {
-                    t.assertions.onAdded(err, records);
-                    db.destroy();
-                    done();
-                  });
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      db.del().from("orders").asCallback((err) => {
+        expect(err).toBeFalsy();
+        db.transaction((trx) => {
+          processOrderCreatedLog(trx, t.params.augur, Object.assign({}, t.params.log, {
+            logIndex: 0,
+            orderId: "ORDER_ID_1"
+          }), (err) => {
+            expect(err).toBeFalsy();
+            processOrderCreatedLog(trx, t.params.augur, Object.assign({}, t.params.log, {
+              logIndex: 1,
+              orderId: "ORDER_ID_2"
+            }), (err) => {
+              expect(err).toBeFalsy();
+              processOrderCreatedLog(trx, t.params.augur, Object.assign({}, t.params.log, {
+                logIndex: 2,
+                orderId: "ORDER_ID_3"
+              }), (err) => {
+                expect(err).toBeFalsy();
+                getState(trx, "ORDER_ID_2", (err, records) => {
+                  t.assertions.onAdded(err, records);
+                  db.destroy();
+                  done();
                 });
               });
             });
           });
         });
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "Same OrderCreated 3 times in a row resulting in the second being removed",
     params: {
       log: {
@@ -55,7 +61,7 @@ describe("order-orphaned", () => {
         utils: augur.utils,
         api: {
           OrdersFinder: {
-            getExistingOrders5: function (data, cb) {
+            getExistingOrders5: function(data, cb) {
               return cb(null, ["ORDER_ID_1", "ORDER_ID_3"]);
             },
           },
@@ -64,12 +70,12 @@ describe("order-orphaned", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.ifError(err);
-        assert.equal(records[0].orphaned, 1);
+        expect(err).toBeFalsy();
+        expect(records[0].orphaned).toEqual(1);
       },
       onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.equal(records[0].orphaned, 0);
+        expect(err).toBeFalsy();
+        expect(records[0].orphaned).toEqual(0);
       },
     },
   });

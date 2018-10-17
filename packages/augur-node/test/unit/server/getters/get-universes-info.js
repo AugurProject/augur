@@ -1,32 +1,29 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-universes-info", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        t.method = "getUniversesInfo";
-        dispatchJsonRpcRequest(db, t, {}, (err, universes) => {
-          t.assertions(err, universes);
-          db.destroy();
-          done();
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      t.method = "getUniversesInfo";
+      dispatchJsonRpcRequest(db, t, {}, (err, universes) => {
+        t.assertions(err, universes);
+        db.destroy();
+        done();
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "get universes for the user provided genesis universe",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       account: "0x0000000000000000000000000000000000000021",
     },
     assertions: (err, universes) => {
-      assert.ifError(err);
-      assert.deepEqual(universes, [
+      expect(err).toBeFalsy();
+      expect(universes).toEqual([
         {
           universe: "0x000000000000000000000000000000000000000b",
           parentUniverse: null,
@@ -51,15 +48,15 @@ describe("server/getters/get-universes-info", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "get universes for the user provided child universe",
     params: {
       universe: "CHILD_UNIVERSE",
       account: "0x0000000000000000000000000000000000000021",
     },
     assertions: (err, universes) => {
-      assert.ifError(err);
-      assert.deepEqual(universes, [
+      expect(err).toBeFalsy();
+      expect(universes).toEqual([
         {
           universe: "0x000000000000000000000000000000000000000b",
           parentUniverse: null,
@@ -102,15 +99,15 @@ describe("server/getters/get-universes-info", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "get universes for the user provided grandchild universe",
     params: {
       universe: "FIRST_GRAND_CHILD_UNIVERSE",
       account: "0x0000000000000000000000000000000000000021",
     },
     assertions: (err, universes) => {
-      assert.ifError(err);
-      assert.deepEqual(universes, [
+      expect(err).toBeFalsy();
+      expect(universes).toEqual([
         {
           universe: "CHILD_UNIVERSE",
           parentUniverse: "0x000000000000000000000000000000000000000b",
@@ -144,15 +141,15 @@ describe("server/getters/get-universes-info", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "get universes for the user with no REP provided grandchild universe",
     params: {
       universe: "FIRST_GRAND_CHILD_UNIVERSE",
       account: "0x0000000000000000000000000000000000000abe",
     },
     assertions: (err, universes) => {
-      assert.ifError(err);
-      assert.deepEqual(universes, [
+      expect(err).toBeFalsy();
+      expect(universes).toEqual([
         {
           universe: "CHILD_UNIVERSE",
           parentUniverse: "0x000000000000000000000000000000000000000b",
@@ -186,15 +183,15 @@ describe("server/getters/get-universes-info", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "get universes will handle the case where the universe does not exist",
     params: {
       universe: "BAD_INPUT",
       account: "0x0000000000000000000000000000000000000abe",
     },
     assertions: (err, universes) => {
-      assert.ifError(err);
-      assert.deepEqual(universes, []);
+      expect(err).toBeFalsy();
+      expect(universes).toEqual([]);
     },
   });
 });

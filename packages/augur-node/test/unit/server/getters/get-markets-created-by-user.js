@@ -1,31 +1,28 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getMarketsCreatedByUser } = require("../../../../src/server/getters/get-markets-created-by-user");
+const { getMarketsCreatedByUser } = require("src/server/getters/get-markets-created-by-user");
 
 describe("server/getters/get-markets-created-by-user", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        getMarketsCreatedByUser(db, t.params.universe, t.params.creator, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsCreatedByUser) => {
-          t.assertions(err, marketsCreatedByUser);
-          db.destroy();
-          done();
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      getMarketsCreatedByUser(db, t.params.universe, t.params.creator, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsCreatedByUser) => {
+        t.assertions(err, marketsCreatedByUser);
+        db.destroy();
+        done();
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "user has created 3 markets",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       creator: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, marketsCreatedByUser) => {
-      assert.ifError(err);
-      assert.deepEqual(marketsCreatedByUser, [
+      expect(err).toBeFalsy();
+      expect(marketsCreatedByUser).toEqual([
         "0x0000000000000000000000000000000000000016",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000013",
@@ -43,7 +40,7 @@ describe("server/getters/get-markets-created-by-user", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "user has created many markets but we filter by time",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -51,8 +48,8 @@ describe("server/getters/get-markets-created-by-user", () => {
       earliestCreationTime: 1506474500,
     },
     assertions: (err, marketsCreatedByUser) => {
-      assert.ifError(err);
-      assert.deepEqual(marketsCreatedByUser, [
+      expect(err).toBeFalsy();
+      expect(marketsCreatedByUser).toEqual([
         "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000211",
         "0x0000000000000000000000000000000000000222",
@@ -60,28 +57,28 @@ describe("server/getters/get-markets-created-by-user", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "user has created 1 market",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       creator: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (err, marketsCreatedByUser) => {
-      assert.ifError(err);
-      assert.deepEqual(marketsCreatedByUser, [
+      expect(err).toBeFalsy();
+      expect(marketsCreatedByUser).toEqual([
         "0x0000000000000000000000000000000000000003",
       ]);
     },
   });
-  test({
+  runTest({
     description: "user has not created any markets",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       creator: "0x0000000000000000000000000000000000000bbb",
     },
     assertions: (err, marketsCreatedByUser) => {
-      assert.ifError(err);
-      assert.deepEqual(marketsCreatedByUser, []);
+      expect(err).toBeFalsy();
+      expect(marketsCreatedByUser).toEqual([]);
     },
   });
 });
