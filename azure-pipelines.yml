@@ -147,3 +147,11 @@ jobs:
         yarn workspace augur-node run build
         yarn workspace augur-ui run build
       displayName: 'build and test'
+
+    - script: |
+        set -euxo pipefail
+        echo "$(secret.DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)"
+        yarn workspace augur-node run docker:release -- dev
+        yarn workspace augur-ui run docker:release -- dev
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      displayName: 'build and push docker image'
