@@ -76,7 +76,7 @@ jobs:
           yarn install --ignore-scripts --frozen-lockfile
         displayName: 'Install Dependencies'
       - script: |
-          yarn test
+          yarn test --forceExit
         displayName: 'Run Tests'
       - task: PublishTestResults@2
         inputs:
