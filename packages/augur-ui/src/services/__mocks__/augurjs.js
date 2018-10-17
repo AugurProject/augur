@@ -2,32 +2,6 @@ const realAugur = require.requireActual("../augurjs.js");
 
 const MockAugurJS = jest.genMockFromModule("augur.js");
 
-const universesData = [
-  {
-    universe: "0xGENESIS",
-    payout: [],
-    isInvalid: false,
-    numMarkets: 15,
-    supply: "1100000000000000000000000",
-    parentUniverse: "0x0000000000000000000000000000000000000000"
-  },
-  {
-    universe: "0xGENESIS_2",
-    payout: [],
-    isInvalid: false,
-    numMarkets: 0,
-    supply: "50000000000000000000000",
-    parentUniverse: "0x0000000000000000000000000000000000000000"
-  },
-  {
-    universe: "0xCHILD_1",
-    payout: [10000, 0],
-    isInvalid: false,
-    numMarkets: 400,
-    parentUniverse: "0xGENESIS"
-  }
-];
-
 MockAugurJS.rpc = {
   block: { number: 10000, timestamp: 4886718345 },
   constants: realAugur.augur.rpc.constants,
