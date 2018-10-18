@@ -6,6 +6,7 @@
   padding: 4.5rem 2rem 0;
 }
 
+.TimeProgressBar__graph__forking,
 .TimeProgressBar__graph {
   background-color: @color-darkpurple;
   border-radius: 0.1875rem;
@@ -16,11 +17,19 @@
   overflow: hidden;
 }
 
+.TimeProgressBar__graph__forking {
+  background-color: @color-grayish-purple;
+}
+
 .TimeProgressBar__current {
   width: 100%;
 
   > div {
-    background-image: linear-gradient(-90deg, rgba(155, 139, 245, 0.5) 3%, rgba(155, 139, 245, 0) 96%);
+    background-image: linear-gradient(
+      -90deg,
+      rgba(155, 139, 245, 0.5) 3%,
+      rgba(155, 139, 245, 0) 96%
+    );
     border-right: 0.125rem solid @color-white;
     height: 100%;
     position: relative;
@@ -42,7 +51,11 @@
   width: 100%;
 
   > div {
-    background-image: linear-gradient(-90deg, rgba(155, 139, 245, 0.5) 3%, rgba(155, 139, 245, 0) 96%);
+    background-image: linear-gradient(
+      -90deg,
+      rgba(155, 139, 245, 0.5) 3%,
+      rgba(155, 139, 245, 0) 96%
+    );
     border-right: 0.125rem solid @color-white;
     height: 100%;
     position: relative;
@@ -70,7 +83,11 @@
   width: 100%;
 
   > div {
-    background-image: linear-gradient(-90deg, rgba(155, 139, 245, 0.5) 3%, rgba(155, 139, 245, 0) 96%);
+    background-image: linear-gradient(
+      -90deg,
+      rgba(155, 139, 245, 0.5) 3%,
+      rgba(155, 139, 245, 0) 96%
+    );
     height: 100%;
     position: relative;
 

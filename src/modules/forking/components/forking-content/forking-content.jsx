@@ -41,6 +41,7 @@ const ForkingContent = p => {
           currentTime={p.currentTime}
           startTime={startTime}
           timePeriodLabel="Fork Window"
+          forking
         />
         {forkWindowActive && (
           <p>
