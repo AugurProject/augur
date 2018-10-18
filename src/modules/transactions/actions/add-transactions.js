@@ -35,13 +35,9 @@ function formatTransactionMessage(sumBuy, sumSell, txType, isFill) {
       sumBuy + sumSell > 1 ? "s" : ""
     } Filled`;
   }
-  return (
-    buys +
-    (sumBuy !== 0 && sumSell !== 0 ? " & " : " ") +
-    sells +
-    " " +
-    (sumBuy + sumSell > 1 ? txType + "s" : txType)
-  );
+  return `${buys}${
+    sumBuy !== 0 && sumSell !== 0 ? " & " : " "
+  }${sells} ${txType}${sumBuy + sumSell > 1 ? "s" : ""}`;
 }
 
 export function addTradeTransactions(trades) {

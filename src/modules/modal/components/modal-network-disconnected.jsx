@@ -13,7 +13,7 @@ export default class ModalNetworkDisconnected extends Component {
     modal: PropTypes.shape({
       env: PropTypes.object.isRequired,
       connection: PropTypes.object.isRequired
-    }),
+    }).isRequired,
     updateIsReconnectionPaused: PropTypes.func.isRequired
   };
 

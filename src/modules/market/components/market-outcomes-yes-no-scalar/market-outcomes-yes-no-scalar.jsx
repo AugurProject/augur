@@ -9,19 +9,24 @@ import { createBigNumber } from "utils/create-big-number";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 import Styles from "modules/market/components/market-outcomes-yes-no-scalar/market-outcomes-yes-no-scalar.styles";
 
-const MarketOutcomes = p => {
-  const scalarDenomination = !p.scalarDenomination ? "" : p.scalarDenomination;
+const MarketOutcomes = ({
+  outcomes,
+  max,
+  min,
+  type,
+  scalarDenomination = ""
+}) => {
   const calculatePosition = () => {
     const lastPrice =
-      getValue(p.outcomes[0], "lastPricePercent.fullPrecision") || 0;
+      getValue(outcomes[0], "lastPricePercent.fullPrecision") || 0;
 
-    if (p.type === YES_NO) {
+    if (type === YES_NO) {
       return lastPrice;
     }
 
-    const range = p.max.minus(p.min);
+    const range = max.minus(min);
     return `${createBigNumber(lastPrice)
-      .minus(p.min)
+      .minus(min)
       .dividedBy(range)
       .times(createBigNumber(100))}`;
   };
@@ -31,22 +36,18 @@ const MarketOutcomes = p => {
   };
 
   const minValue =
-    !isNaN(p.min) && p.type !== YES_NO
-      ? `${p.min} ${scalarDenomination}`
-      : "0 %";
+    !isNaN(min) && type !== YES_NO ? `${min} ${scalarDenomination}` : "0 %";
 
   const maxValue =
-    !isNaN(p.max) && p.type !== YES_NO
-      ? `${p.max} ${scalarDenomination}`
-      : "100 %";
+    !isNaN(max) && type !== YES_NO ? `${max} ${scalarDenomination}` : "100 %";
 
   const lastPriceDenomination =
-    p.type !== YES_NO
+    type !== YES_NO
       ? ""
-      : getValue(p.outcomes[0], "lastPricePercent.denomination");
+      : getValue(outcomes[0], "lastPricePercent.denomination");
 
   const currentMarketStyles = pos => {
-    let size = getValue(p.outcomes[0], "lastPricePercent.formatted").toString()
+    let size = getValue(outcomes[0], "lastPricePercent.formatted").toString()
       .length;
     const isMobileAttrs =
       window.outerWidth < 590
@@ -76,13 +77,13 @@ const MarketOutcomes = p => {
             className={Styles["MarketOutcomes__current-value"]}
             data-testid="midpoint"
           >
-            {getValue(p.outcomes[0], "lastPricePercent.formatted")}
+            {getValue(outcomes[0], "lastPricePercent.formatted")}
           </span>
           <span className={Styles["MarketOutcomes__current-denomination"]}>
             {lastPriceDenomination}
           </span>
           <MarketOutcomeTradingIndicator
-            outcome={p.outcomes[0]}
+            outcome={outcomes[0]}
             location="yes-no-scalar"
           />
         </div>
@@ -93,10 +94,14 @@ const MarketOutcomes = p => {
 
 MarketOutcomes.propTypes = {
   outcomes: PropTypes.array.isRequired,
-  max: CustomPropTypes.bigNumber,
-  min: CustomPropTypes.bigNumber,
-  type: PropTypes.string,
+  max: CustomPropTypes.bigNumber.isRequired,
+  min: CustomPropTypes.bigNumber.isRequired,
+  type: PropTypes.string.isRequired,
   scalarDenomination: PropTypes.string
+};
+
+MarketOutcomes.defaultProps = {
+  scalarDenomination: ""
 };
 
 export default MarketOutcomes;

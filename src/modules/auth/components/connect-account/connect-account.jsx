@@ -12,8 +12,12 @@ import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
 
 export default class ConnectAccount extends Component {
   static propTypes = {
-    isLogged: PropTypes.bool,
+    isLogged: PropTypes.bool.isRequired,
     address: PropTypes.string
+  };
+
+  static defaultProps = {
+    address: ""
   };
 
   constructor(props) {
@@ -98,7 +102,7 @@ export default class ConnectAccount extends Component {
               {isLogged ? "Connected" : "Disconnected"}
             </div>
             <div className={Styles.ConnectAccount__title}>
-              {isLogged ? formatAddress(address || "") : "Connect A Wallet"}
+              {isLogged ? formatAddress(address) : "Connect A Wallet"}
             </div>
           </div>
           <div className={Styles.ConnectAccount__arrow}>

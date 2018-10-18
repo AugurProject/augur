@@ -40,7 +40,7 @@ export default class ModalMigrateMarket extends Component {
 
   render() {
     const { closeModal, marketDescription, type } = this.props;
-    const s = this.state;
+    const { gasEstimate } = this.state;
     const reviewDetails = {
       title: "Migrate Market",
       type,
@@ -52,7 +52,7 @@ export default class ModalMigrateMarket extends Component {
         },
         {
           label: "gas",
-          value: formatEther(s.gasEstimate).fullPrecision,
+          value: formatEther(gasEstimate).fullPrecision,
           denomination: "ETH"
         }
       ],

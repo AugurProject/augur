@@ -6,7 +6,6 @@ import NullStateMessage from "modules/common/components/null-state-message/null-
 import Notification from "modules/notifications/components/notification/notification";
 import toggleHeight from "utils/toggle-height/toggle-height";
 
-import getValue from "utils/get-value";
 import { Close } from "modules/common/components/icons";
 
 import Styles from "modules/notifications/components/notifications-view/notifications-view.styles";
@@ -14,7 +13,7 @@ import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
 
 export default class NotificationsView extends Component {
   static propTypes = {
-    notifications: PropTypes.object.isRequired,
+    notifications: PropTypes.array.isRequired,
     updateNotification: PropTypes.func.isRequired,
     removeNotification: PropTypes.func.isRequired,
     clearNotifications: PropTypes.func.isRequired,
@@ -22,7 +21,7 @@ export default class NotificationsView extends Component {
     notificationsVisible: PropTypes.bool.isRequired
   };
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate(nextProps) {
     if (!this.props.notificationsVisible && nextProps.notificationsVisible) {
       toggleHeight(this.notificationsContainer, false, () => {});
     } else if (
@@ -31,8 +30,7 @@ export default class NotificationsView extends Component {
     ) {
       toggleHeight(this.notificationsContainer, true, () => {});
 
-      const notifications = getValue(this.props, "notifications.notifications");
-      const { updateNotification } = this.props;
+      const { updateNotification, notifications } = this.props;
       notifications.forEach(notification => {
         updateNotification(notification.id, { seen: true });
       });
@@ -43,10 +41,10 @@ export default class NotificationsView extends Component {
     const {
       removeNotification,
       toggleNotifications,
-      clearNotifications
+      clearNotifications,
+      notifications
     } = this.props;
 
-    const notifications = getValue(this.props, "notifications.notifications");
     return (
       <div
         ref={notificationsContainer => {

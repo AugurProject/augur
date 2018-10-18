@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 import ModalTableRow from "modules/modal/components/common/modal-table-row";
 import Styles from "modules/modal/components/common/common.styles";
 
-const ModalTable = p => (
+const ModalTable = ({ rows }) => (
   <div className={Styles.ModalTable}>
-    {p.rows.map(row => (
+    {rows.map(row => (
       <ModalTableRow key={row.rowNumber} {...row} />
     ))}
   </div>

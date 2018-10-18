@@ -9,8 +9,12 @@ import {
 import classNames from "classnames";
 import Styles from "modules/reporting/components/time-progress-bar/time-progress-bar.styles";
 
-const TimeProgressBar = p => {
-  const { currentTime, startTime, endTime } = p;
+const TimeProgressBar = ({
+  endTime,
+  currentTime,
+  startTime,
+  timePeriodLabel
+}) => {
   const totalHours = (startTime && getHoursRemaining(endTime, startTime)) || 0;
   const hoursLeft =
     (currentTime && getHoursRemaining(endTime, currentTime)) || 0;
@@ -60,7 +64,7 @@ const TimeProgressBar = p => {
         )}
       >
         <span data-testid="endTime" className={Styles.TimeProgressBar__endTime}>
-          {p.timePeriodLabel} ends{" "}
+          {timePeriodLabel} ends{" "}
           <span className={Styles.TimeProgressBar__endTimeValue}>
             {" "}
             {formattedDate.formattedSimpleData}{" "}
@@ -86,6 +90,12 @@ TimeProgressBar.propTypes = {
   currentTime: PropTypes.number,
   startTime: PropTypes.number,
   timePeriodLabel: PropTypes.string.isRequired
+};
+
+TimeProgressBar.defaultProps = {
+  endTime: null,
+  currentTime: null,
+  startTime: null
 };
 
 export default TimeProgressBar;

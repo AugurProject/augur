@@ -36,6 +36,10 @@ class MarketTradingWrapper extends Component {
     gasPrice: PropTypes.number.isRequired
   };
 
+  static defaultProps = {
+    selectedOutcome: null
+  };
+
   constructor(props) {
     super(props);
 
@@ -205,6 +209,7 @@ class MarketTradingWrapper extends Component {
             <span className={Styles["TradingWrapper__mobile-header-last"]}>
               <ValueDenomination formatted={lastPrice} />
               <MarketOutcomeTradingIndicator
+                isMobile={isMobile}
                 outcome={selectedOutcome}
                 style={{ bottom: "8%" }}
               />

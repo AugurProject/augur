@@ -11,12 +11,11 @@ import TimeProgressBar from "modules/reporting/components/time-progress-bar/time
 export default class ReportingHeader extends Component {
   static propTypes = {
     heading: PropTypes.string.isRequired,
-    isMobile: PropTypes.bool.isRequired,
     loadReportingWindowBounds: PropTypes.func.isRequired,
     reportingWindowStats: PropTypes.object.isRequired,
     repBalance: PropTypes.string.isRequired,
     updateModal: PropTypes.func.isRequired,
-    currentTime: PropTypes.number,
+    currentTime: PropTypes.number.isRequired,
     doesUserHaveRep: PropTypes.bool.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
     isForking: PropTypes.bool,
@@ -24,8 +23,17 @@ export default class ReportingHeader extends Component {
     forkEndTime: PropTypes.string,
     forkReputationGoal: PropTypes.string,
     isForkingMarketFinalized: PropTypes.bool,
-    isLogged: PropTypes.bool,
+    isLogged: PropTypes.bool.isRequired,
     universe: PropTypes.string
+  };
+
+  static defaultProps = {
+    isForking: false,
+    isForkingMarketFinalized: false,
+    universe: null,
+    forkingMarket: null,
+    forkEndTime: null,
+    forkReputationGoal: null
   };
 
   constructor(props) {

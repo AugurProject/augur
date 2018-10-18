@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-// import FilterSort from 'modules/filter-sort/containers/filter-sort-controller'
 import FilterSearch from "modules/filter-sort/containers/filter-search";
 import FilterDropDowns from "modules/filter-sort/containers/filter-dropdowns";
-// import FilterMarketState from 'modules/filter-sort/containers/filter-market-state'
-// import SortMarketParam from 'modules/filter-sort/containers/sort-market-param'
 
 import parseQuery from "modules/routes/helpers/parse-query";
 import parsePath from "modules/routes/helpers/parse-path";
@@ -18,12 +15,10 @@ import Styles from "modules/markets-list/components/markets-header/markets-heade
 // NOTE -- commented out state due to temp lack of utilization + linting
 export default class MarketsHeader extends Component {
   static propTypes = {
-    isLogged: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
     filter: PropTypes.string.isRequired,
     sort: PropTypes.string.isRequired,
     updateFilter: PropTypes.func.isRequired
-    // updateFilteredItems: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -31,25 +26,20 @@ export default class MarketsHeader extends Component {
 
     this.state = {
       headerTitle: null
-      // capitalizeTitle: false,
-      // filterByMarketFavorites: false
     };
 
     this.setHeaderTitle = this.setHeaderTitle.bind(this);
-    // this.setPathDependentFilters = this.setPathDependentFilters.bind(this)
   }
 
   componentWillMount() {
     const { location } = this.props;
     this.setHeaderTitle(location);
-    // this.setPathDependentFilters(this.props.location)
   }
 
   componentWillReceiveProps(nextProps) {
     const { location } = this.props;
     if (location !== nextProps.location) {
       this.setHeaderTitle(nextProps.location);
-      // this.setPathDependentFilters(nextProps.location)
     }
   }
 
@@ -59,7 +49,6 @@ export default class MarketsHeader extends Component {
     if (searchParams[CATEGORY_PARAM_NAME]) {
       this.setState({
         headerTitle: searchParams[CATEGORY_PARAM_NAME]
-        // capitalizeTitle: false
       });
     } else {
       const path = parsePath(location.pathname);
@@ -67,7 +56,6 @@ export default class MarketsHeader extends Component {
       if (path[0] === MARKETS) {
         this.setState({
           headerTitle: path[0]
-          // capitalizeTitle: true
         });
       }
     }

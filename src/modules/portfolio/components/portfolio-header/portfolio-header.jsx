@@ -16,23 +16,23 @@ import {
 
 import Styles from "modules/portfolio/components/portfolio-header/portfolio-header.styles";
 
-const PortfolioHeader = p => (
+const PortfolioHeader = ({ location, triggerTransactionsExport }) => (
   <section className={Styles.PortfolioHeader}>
     <div className={Styles.PortfolioHeader__header}>
       <h1 className={Styles.PortfolioHeader__title}>
         portfolio
-        <span>: {getTitle(p.location.pathname)}</span>
+        <span>: {getTitle(location.pathname)}</span>
       </h1>
-      {p.location.pathname.indexOf(PORTFOLIO_REPORTS) === -1 && (
+      {location.pathname.indexOf(PORTFOLIO_REPORTS) === -1 && (
         <button
           className={Styles.PortfolioHeader__export}
-          onClick={p.triggerTransactionsExport}
+          onClick={triggerTransactionsExport}
         >
           {ExportIcon} Export Data
         </button>
       )}
     </div>
-    {p.location.pathname.indexOf(PORTFOLIO_REPORTS) === -1 && (
+    {location.pathname.indexOf(PORTFOLIO_REPORTS) === -1 && (
       <PerformanceGraph />
     )}
   </section>
@@ -58,8 +58,7 @@ function getTitle(path) {
 
 PortfolioHeader.propTypes = {
   triggerTransactionsExport: PropTypes.func.isRequired,
-  location: PropTypes.object,
-  match: PropTypes.object
+  location: PropTypes.object.isRequired
 };
 
 export default PortfolioHeader;

@@ -33,12 +33,11 @@ const NUM_DIGITS_LIMIT = 4;
 
 export default class CreateMarketOutcome extends Component {
   static propTypes = {
-    newMarket: PropTypes.object.isRequired,
-    updateNewMarket: PropTypes.func.isRequired,
-    validateField: PropTypes.func.isRequired,
-    isValid: PropTypes.func.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
-    keyPressed: PropTypes.func.isRequired
+    newMarket: PropTypes.object.isRequired,
+    isValid: PropTypes.func.isRequired,
+    keyPressed: PropTypes.func.isRequired,
+    updateNewMarket: PropTypes.func.isRequired
   };
 
   static calculateOutcomeFieldCount(p) {

@@ -6,9 +6,9 @@ import Styles from "modules/common/components/augur-logo-icon/styles";
 
 // NOTE -- This stateless component is simply a responsive SVG of the Complete Augur Icon
 // To employ, just set the width or height on the containing element and this SVG will respond appropriately
-const AugurLogoIcon = p => (
+const AugurLogoIcon = ({ className }) => (
   <svg
-    className={classNames(Styles.Icon, { [p.className]: p.className })}
+    className={classNames(Styles.Icon, { [className]: className })}
     viewBox="0 0 1500 1500"
   >
     <path
@@ -22,4 +22,8 @@ export default AugurLogoIcon;
 
 AugurLogoIcon.propTypes = {
   className: PropTypes.string
+};
+
+AugurLogoIcon.defaultProps = {
+  className: null
 };

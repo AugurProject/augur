@@ -8,11 +8,9 @@ import AccountUniverseDescription from "../account-universe-description/account-
 
 export default class AccountUniverses extends Component {
   static propTypes = {
-    address: PropTypes.string.isRequired,
     universe: PropTypes.string.isRequired,
     getUniverses: PropTypes.func.isRequired,
-    switchUniverse: PropTypes.func.isRequired,
-    winningChild: PropTypes.string
+    switchUniverse: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -63,10 +61,8 @@ export default class AccountUniverses extends Component {
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
-
-    const { parent, currentLevel, children } = s.universesInfo;
+    const { switchUniverse, universe } = this.props;
+    const { parent, currentLevel, children } = this.state.universesInfo;
 
     return (
       <section className={Styles.AccountUniverses}>
@@ -78,7 +74,7 @@ export default class AccountUniverses extends Component {
             <div className={Styles.AccountUniverses__description}>
               <h4>Parent Universe</h4>
               <AccountUniverseDescription
-                switchUniverse={p.switchUniverse}
+                switchUniverse={switchUniverse}
                 getUniverses={this.getUniverses}
                 isCurrentUniverse={false}
                 universeDescription={parent.description}
@@ -98,9 +94,9 @@ export default class AccountUniverses extends Component {
                 <h4>Current Universe and Siblings</h4>
                 {currentLevel.map(universeInfo => (
                   <AccountUniverseDescription
-                    switchUniverse={p.switchUniverse}
+                    switchUniverse={switchUniverse}
                     getUniverses={this.getUniverses}
-                    isCurrentUniverse={universeInfo.universe === p.universe}
+                    isCurrentUniverse={universeInfo.universe === universe}
                     universeDescription={universeInfo.description}
                     accountRep={universeInfo.balance}
                     universeRep={universeInfo.supply}
@@ -119,7 +115,7 @@ export default class AccountUniverses extends Component {
                 <h4>Child Universes</h4>
                 {children.map(universeInfo => (
                   <AccountUniverseDescription
-                    switchUniverse={p.switchUniverse}
+                    switchUniverse={switchUniverse}
                     getUniverses={this.getUniverses}
                     isCurrentUniverse={false}
                     universeDescription={universeInfo.description}

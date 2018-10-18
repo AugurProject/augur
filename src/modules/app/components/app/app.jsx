@@ -93,32 +93,34 @@ const navTypes = {
 export default class AppView extends Component {
   static propTypes = {
     blockchain: PropTypes.object.isRequired,
-    categories: PropTypes.any,
-    connection: PropTypes.object.isRequired,
     coreStats: PropTypes.array.isRequired,
     env: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     initAugur: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
-    isMobileSmall: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
     loginAccount: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
     modal: PropTypes.object.isRequired,
-    selectedCategory: PropTypes.string,
     universe: PropTypes.object.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
     updateIsMobileSmall: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
     updateIsAnimating: PropTypes.func.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
-    url: PropTypes.string,
-    isLoading: PropTypes.bool,
+    isLoading: PropTypes.bool.isRequired,
     augurNode: PropTypes.string,
     ethereumNodeHttp: PropTypes.string,
     ethereumNodeWs: PropTypes.string,
     useWeb3Transport: PropTypes.bool
+  };
+
+  static defaultProps = {
+    augurNode: null,
+    ethereumNodeHttp: null,
+    ethereumNodeWs: null,
+    useWeb3Transport: false
   };
 
   constructor(props) {
@@ -362,13 +364,13 @@ export default class AppView extends Component {
         }
       });
     };
-
+    const { updateIsAnimating } = this.props;
     const alreadyDone =
       (!nowOpen && this.state[menuKey].scalar === 0) ||
       (nowOpen && this.state[menuKey].scalar === 1);
     if (alreadyDone) {
       if (cb && typeof cb === "function") cb();
-      this.props.updateIsAnimating(false);
+      updateIsAnimating(false);
     } else {
       const baseMenuState = { open: nowOpen };
       const currentTween = tween({
@@ -382,11 +384,11 @@ export default class AppView extends Component {
           );
         }
       }).then(() => {
-        this.props.updateIsAnimating(false);
+        updateIsAnimating(false);
         if (cb && typeof cb === "function") cb();
         setMenuState({ locked: false, currentTween: null });
       });
-      this.props.updateIsAnimating(true);
+      updateIsAnimating(true);
       setMenuState({ currentTween });
     }
   }
@@ -585,7 +587,6 @@ export default class AppView extends Component {
                   subMenuScalar={subMenu.scalar}
                   markets={markets}
                   openSubMenu={this.openSubMenu}
-                  privateKey={loginAccount.privateKey}
                 />
               )}
               {!InnerNav && <div className="no-nav-placehold" />}

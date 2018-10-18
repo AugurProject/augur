@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-const NavReportingIcon = p => (
+const NavReportingIcon = ({ className }) => (
   <svg
     viewBox="0 0 24 24"
-    className={classNames("nav-reporting-icon", { [p.className]: p.className })}
+    className={classNames("nav-reporting-icon", { [className]: className })}
   >
     <g
       id="Symbols"
@@ -30,4 +30,8 @@ export default NavReportingIcon;
 
 NavReportingIcon.propTypes = {
   className: PropTypes.string
+};
+
+NavReportingIcon.defaultProps = {
+  className: null
 };

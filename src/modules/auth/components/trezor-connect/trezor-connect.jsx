@@ -4,20 +4,20 @@ import PropTypes from "prop-types";
 import DerivationPath, {
   NUM_DERIVATION_PATHS_TO_DISPLAY
 } from "modules/auth/helpers/derivation-path";
-import TrezorConnectImport from "trezor-connect";
+import TrezorConnectImport, { DEVICE_EVENT, DEVICE } from "trezor-connect";
 import HardwareWallet from "modules/auth/components/common/hardware-wallet";
 
 export default class TrezorConnect extends Component {
   static propTypes = {
     loginWithTrezor: PropTypes.func.isRequired,
-    showAdvanced: PropTypes.bool,
+    showAdvanced: PropTypes.bool.isRequired,
     showError: PropTypes.func.isRequired,
     hideError: PropTypes.func.isRequired,
-    error: PropTypes.bool,
+    error: PropTypes.bool.isRequired,
     setIsLoading: PropTypes.func.isRequired,
     setShowAdvancedButton: PropTypes.func.isRequired,
-    isClicked: PropTypes.bool,
-    isLoading: PropTypes.bool
+    isClicked: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired
   };
 
   static async onDerivationPathChange(derivationPath, pageNumber = 1) {
@@ -64,9 +64,20 @@ export default class TrezorConnect extends Component {
   }
 
   async connectWallet(derivationPath) {
-    const { loginWithTrezor } = this.props;
+    const { loginWithTrezor, logout } = this.props;
     const result = await TrezorConnectImport.ethereumGetAddress({
       path: derivationPath
+    });
+
+    TrezorConnectImport.on(DEVICE_EVENT, event => {
+      switch (event.type) {
+        case DEVICE.DISCONNECT: {
+          logout();
+          break;
+        }
+        default:
+          break;
+      }
     });
 
     if (result.success) {

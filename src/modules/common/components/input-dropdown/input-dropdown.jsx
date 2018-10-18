@@ -10,7 +10,7 @@ class InputDropdown extends Component {
 
     this.state = {
       label: props.default || props.label,
-      value: props.default || "",
+      value: props.default,
       showList: false,
       selected: !!props.default
     };
@@ -78,7 +78,7 @@ class InputDropdown extends Component {
         ref={InputDropdown => {
           this.refInputDropdown = InputDropdown;
         }}
-        className={classNames(Styles.InputDropdown, className || "")}
+        className={classNames(Styles.InputDropdown, className)}
         onClick={this.toggleList}
         role="listbox"
         tabIndex="-1"
@@ -90,7 +90,7 @@ class InputDropdown extends Component {
             [`${Styles.selected}`]: s.selected
           })}
         >
-          {this.state.label}
+          {s.label}
         </span>
         <div
           className={classNames(Styles.InputDropdown__list, {
@@ -141,9 +141,14 @@ InputDropdown.propTypes = {
   default: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   isMobileSmall: PropTypes.bool.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.string.isRequired,
   className: PropTypes.string,
   onKeyPress: PropTypes.func
+};
+
+InputDropdown.defaultProps = {
+  onKeyPress: null,
+  className: null
 };
 
 export default InputDropdown;

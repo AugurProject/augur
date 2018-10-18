@@ -7,41 +7,49 @@ import {
   calculateTentativeCurrentRep
 } from "modules/reports/helpers/progress-calculations";
 
-const ReportingDisputeProgress = p => {
-  let totalPercentageComplete = p.percentageComplete || 0;
-  let userPercentage = p.percentageAccount || 0;
-  const currentPercentageComplete = p.percentageComplete || 0;
-  const userStaked = p.tentativeStake > 0 && p.isSelected;
-  const bondSizeCurrent = formatAttoRep(p.bondSizeCurrent, {
+const ReportingDisputeProgress = ({
+  percentageComplete = 0,
+  percentageAccount = 0,
+  bondSizeCurrent = "0",
+  isSelected,
+  tentativeStake = 0,
+  accountStakeCurrent = "0",
+  stakeCurrent = "0"
+}) => {
+  let totalPercentageComplete = percentageComplete;
+  let userPercentage = percentageAccount;
+  const currentPercentageComplete = percentageComplete;
+  const userStaked = tentativeStake > 0 && isSelected;
+  const bondSizeCurrentFormatted = formatAttoRep(bondSizeCurrent, {
     decimals: 4,
     roundUp: true
   });
-  let repStakedFormatted = formatAttoRep(p.stakeCurrent, {
+  let repStakedFormatted = formatAttoRep(stakeCurrent, {
     decimals: 4,
     roundUp: true
   }).formatted;
 
   if (userStaked) {
-    const accountStakeCurrentFormatted = formatAttoRep(p.accountStakeCurrent, {
+    const accountStakeCurrentFormatted = formatAttoRep(accountStakeCurrent, {
       decimals: 4,
       roundUp: true
     }).formattedValue;
     userPercentage = calculateAddedStakePercentage(
-      bondSizeCurrent.fullPrecision,
-      accountStakeCurrentFormatted || 0,
-      p.tentativeStake
+      bondSizeCurrentFormatted.fullPrecision,
+      accountStakeCurrentFormatted,
+      tentativeStake
     );
     repStakedFormatted = calculateTentativeCurrentRep(
-      p.stakeCurrent,
-      p.tentativeStake
+      stakeCurrent,
+      tentativeStake
     );
     totalPercentageComplete = currentPercentageComplete + userPercentage;
   }
 
-  const percentageAccount = {
+  const percentageAccountStyle = {
     width: `${userPercentage}%`
   };
-  const percentageComplete = {
+  const percentageCompleteStyle = {
     width: `${currentPercentageComplete}%`
   };
 
@@ -51,8 +59,8 @@ const ReportingDisputeProgress = p => {
         <div className={Styles["ReportingDisputeProgress__dispute-graph"]}>
           <div className={Styles.ReportingDisputeProgress__graph}>
             <div className={Styles["ReportingDisputeProgress__graph-current"]}>
-              <div style={percentageComplete} />
-              <div style={percentageAccount} />
+              <div style={percentageCompleteStyle} />
+              <div style={percentageAccountStyle} />
             </div>
           </div>
         </div>
@@ -75,7 +83,7 @@ const ReportingDisputeProgress = p => {
               Styles["ReportingDisputeProgress__dispute-label-goal-text"]
             }
           >
-            {bondSizeCurrent.formatted} REP
+            {bondSizeCurrentFormatted.formatted} REP
           </span>
         </div>
         {userStaked &&
@@ -97,9 +105,17 @@ ReportingDisputeProgress.propTypes = {
   percentageAccount: PropTypes.number,
   tentativeStake: PropTypes.number,
   bondSizeCurrent: PropTypes.string,
-  stakeRemaining: PropTypes.string,
   stakeCurrent: PropTypes.string,
   accountStakeCurrent: PropTypes.string
+};
+
+ReportingDisputeProgress.defaultProps = {
+  percentageComplete: 0,
+  percentageAccount: 0,
+  tentativeStake: 0,
+  bondSizeCurrent: "0",
+  stakeCurrent: "0",
+  accountStakeCurrent: "0"
 };
 
 export default ReportingDisputeProgress;

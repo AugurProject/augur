@@ -21,22 +21,31 @@ export default class MarketOutcomeCharts extends Component {
   static propTypes = {
     currentTimeInSeconds: PropTypes.number,
     excludeCandlestick: PropTypes.bool,
-    fixedPrecision: PropTypes.number.isRequired,
     hasOrders: PropTypes.bool.isRequired,
-    hasPriceHistory: PropTypes.bool,
     isMobile: PropTypes.bool.isRequired,
     marketDepth: PropTypes.object.isRequired,
-    marketId: PropTypes.string,
     maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
     minPrice: PropTypes.instanceOf(BigNumber).isRequired,
     orderBook: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
-    outcomeName: PropTypes.string,
-    priceTimeSeries: PropTypes.array,
     selectedOutcome: PropTypes.object.isRequired,
-    updatePrecision: PropTypes.func,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
-    pricePrecision: PropTypes.number.isRequired
+    pricePrecision: PropTypes.number.isRequired,
+    marketId: PropTypes.string,
+    updatePrecision: PropTypes.func,
+    priceTimeSeries: PropTypes.array,
+    fixedPrecision: PropTypes.number,
+    outcomeName: PropTypes.string
+  };
+
+  static defaultProps = {
+    marketId: null,
+    fixedPrecision: 4,
+    outcomeName: "",
+    priceTimeSeries: [],
+    excludeCandlestick: false,
+    currentTimeInSeconds: null,
+    updatePrecision: () => {}
   };
 
   constructor(props) {
@@ -50,6 +59,12 @@ export default class MarketOutcomeCharts extends Component {
     this.snapScroller = null;
 
     const { range, period } = defaultRangePeriodDurations;
+
+    this.sharedChartMargins = {
+      top: 0,
+      bottom: 30
+    };
+
     this.state = {
       candleScrolled: true,
       selectedPeriod: period,
@@ -58,10 +73,6 @@ export default class MarketOutcomeCharts extends Component {
       hoveredPrice: null,
       headerHeight: props.isMobile ? 20 : 0,
       priceTimeSeriesCandleStick: [],
-      sharedChartMargins: {
-        top: 0,
-        bottom: 30
-      },
       ordersWidth: 0
     };
 
@@ -224,8 +235,7 @@ export default class MarketOutcomeCharts extends Component {
       isMobile,
       fixedPrecision,
       pricePrecision,
-      updatePrecision,
-      hasPriceHistory
+      updatePrecision
     } = this.props;
     const s = this.state;
 
@@ -252,7 +262,7 @@ export default class MarketOutcomeCharts extends Component {
                 currentTimeInSeconds={currentTimeInSeconds}
                 outcomeName={outcomeName}
                 isMobile={isMobile}
-                sharedChartMargins={s.sharedChartMargins}
+                sharedChartMargins={this.sharedChartMargins}
                 priceTimeSeries={s.priceTimeSeriesCandleStick}
                 selectedPeriod={s.selectedPeriod}
                 selectedRange={s.selectedRange}
@@ -280,7 +290,7 @@ export default class MarketOutcomeCharts extends Component {
                 headerHeight={s.headerHeight}
                 isMobile={isMobile}
                 priceTimeSeries={priceTimeSeries}
-                sharedChartMargins={s.sharedChartMargins}
+                sharedChartMargins={this.sharedChartMargins}
                 fixedPrecision={fixedPrecision}
                 pricePrecision={pricePrecision}
                 orderBookKeys={orderBookKeys}
@@ -301,7 +311,7 @@ export default class MarketOutcomeCharts extends Component {
               <MarketOutcomeChartsOrders
                 headerHeight={s.headerHeight}
                 isMobile={isMobile}
-                sharedChartMargins={s.sharedChartMargins}
+                sharedChartMargins={this.sharedChartMargins}
                 fixedPrecision={fixedPrecision}
                 pricePrecision={pricePrecision}
                 orderBook={orderBook}
@@ -312,7 +322,6 @@ export default class MarketOutcomeCharts extends Component {
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
                 hasOrders={hasOrders}
                 orderBookKeys={orderBookKeys}
-                hasPriceHistory={hasPriceHistory}
               />
             </div>
           </div>

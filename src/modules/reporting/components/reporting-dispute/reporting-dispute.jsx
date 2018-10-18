@@ -7,7 +7,7 @@ import speedomatic from "speedomatic";
 import { createBigNumber } from "utils/create-big-number";
 import { ZERO } from "modules/trades/constants/numbers";
 import { formatGasCostToEther } from "utils/format-number";
-import MarketPreview from "modules/market/components/market-preview/market-preview";
+import MarketPreview from "modules/market/containers/market-preview";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import ReportingDisputeForm from "modules/reporting/containers/reporting-dispute-form";
 import ReportingDisputeConfirm from "modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm";
@@ -20,10 +20,10 @@ export default class ReportingDispute extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     isConnected: PropTypes.bool.isRequired,
-    isLogged: PropTypes.bool,
+    isLogged: PropTypes.bool.isRequired,
     isMarketLoaded: PropTypes.bool.isRequired,
     loadFullMarket: PropTypes.func.isRequired,
-    location: PropTypes.object,
+    location: PropTypes.object.isRequired,
     market: PropTypes.object.isRequired,
     marketId: PropTypes.string.isRequired,
     submitMarketContribute: PropTypes.func.isRequired,
@@ -155,7 +155,6 @@ export default class ReportingDispute extends Component {
             )}
             {s.currentStep === 1 && (
               <ReportingDisputeConfirm
-                market={market}
                 isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcomeName}
                 stakeInfo={s.stakeInfo}

@@ -121,6 +121,42 @@
   }
 }
 
+.ConnectDropdown__rowTransition {
+  animation-duration: 0.5s;
+  animation-name: appear;
+}
+
+.FadeInAndOut {
+  animation-duration: 1.25s;
+  animation-iteration-count: infinite;
+  animation-name: flashAnimation;
+  opacity: 0;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes flashAnimation {
+  0% {
+    opacity: 0;
+  }
+
+  33% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 .ConnectDropdown__addressColumn {
   display: flex;
 }

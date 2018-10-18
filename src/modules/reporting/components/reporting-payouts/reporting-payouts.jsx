@@ -34,7 +34,7 @@ const Outcome = ({ className, outcome, marketId }) => {
     outcome.name === "Indeterminate" ? "Invalid" : outcome.name;
 
   return (
-    <div className={className || Styles.MarketReportingPayouts__outcome}>
+    <div className={className}>
       <div className={Styles["MarketReportingPayouts__outcome-name"]}>
         {outcome.potentialFork && (
           <span className={Styles["MarketReportingPayouts__tooltip-container"]}>
@@ -260,6 +260,7 @@ class MarketReportingPayouts extends Component {
                   outcome =>
                     outcome.display && (
                       <Outcome
+                        className={Styles.MarketReportingPayouts__outcome}
                         key={outcome.id}
                         outcome={outcome}
                         marketId={marketId}
@@ -292,14 +293,14 @@ class MarketReportingPayouts extends Component {
 MarketReportingPayouts.propTypes = {
   outcomes: PropTypes.array.isRequired,
   marketId: PropTypes.string.isRequired,
-  isMobile: PropTypes.bool,
-  isMobileSmall: PropTypes.bool
+  isMobile: PropTypes.bool.isRequired,
+  isMobileSmall: PropTypes.bool.isRequired
 };
 
 Outcome.propTypes = {
   outcome: PropTypes.object.isRequired,
-  className: PropTypes.string,
-  marketId: PropTypes.string
+  className: PropTypes.string.isRequired,
+  marketId: PropTypes.string.isRequired
 };
 
 export default MarketReportingPayouts;

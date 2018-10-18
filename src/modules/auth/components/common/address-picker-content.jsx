@@ -17,7 +17,7 @@ export default class AddressPickerContent extends Component {
     clickAction: PropTypes.func.isRequired,
     clickPrevious: PropTypes.func.isRequired,
     clickNext: PropTypes.func.isRequired,
-    disablePrevious: PropTypes.bool
+    disablePrevious: PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -92,7 +92,13 @@ export default class AddressPickerContent extends Component {
           </div>
         </div>
         {indexArray.map(i => (
-          <div key={i} className={StylesDropdown.ConnectDropdown__row}>
+          <div
+            key={i}
+            className={classNames(StylesDropdown.ConnectDropdown__row, {
+              [StylesDropdown.FadeInAndOut]: !addresses[i],
+              [StylesDropdown.ConnectDropdown__rowTransition]: true
+            })}
+          >
             <button
               className={StylesDropdown.ConnectDropdown__addressColumn}
               onClick={() => clickAction(i)}

@@ -34,22 +34,46 @@ const ShowResolutionStates = [
   AWAITING_NEXT_WINDOW
 ];
 
-const MarketProperties = p => {
-  const openInterest = getValue(p, "openInterest");
-  const shareVolume = getValue(p, "volume");
-  const isScalar = p.marketType === SCALAR;
+const MarketProperties = ({
+  marketType,
+  openInterest,
+  volume,
+  isForking,
+  loginAccount,
+  reportingState,
+  settlementFeePercent,
+  currentTimestamp,
+  endTime,
+  resolutionSource,
+  id,
+  isLogged,
+  isMobile,
+  toggleFavorite,
+  isFavorite,
+  finalizeMarket,
+  isForkingMarketFinalized,
+  forkingMarket,
+  updateModal,
+  description,
+  showAdditionalDetailsToggle,
+  showingDetails,
+  finalizationTime,
+  toggleDetails,
+  ...p
+}) => {
+  const isScalar = marketType === SCALAR;
   let consensus = getValue(
     p,
     isScalar ? "consensus.winningOutcome" : "consensus.outcomeName"
   );
   const linkType =
-    p.isForking && p.linkType === TYPE_DISPUTE ? TYPE_VIEW : p.linkType;
+    isForking && p.linkType === TYPE_DISPUTE ? TYPE_VIEW : p.linkType;
   const disableDispute =
-    p.loginAccount.rep === "0" && p.linkType === TYPE_DISPUTE;
+    loginAccount.rep === "0" && p.linkType === TYPE_DISPUTE;
   if (getValue(p, "consensus.isInvalid")) {
     consensus = "Invalid";
   }
-  const showResolution = ShowResolutionStates.indexOf(p.reportingState) !== -1;
+  const showResolution = ShowResolutionStates.indexOf(reportingState) !== -1;
 
   return (
     <article>
@@ -59,7 +83,7 @@ const MarketProperties = p => {
             <span>Volume</span>
             <ValueDenomination
               valueClassname="volume"
-              formatted={shareVolume.full}
+              formatted={volume.full}
             />
           </li>
           <li>
@@ -72,29 +96,25 @@ const MarketProperties = p => {
           </li>
           <li>
             <span>Fee</span>
-            <ValueDenomination
-              valueClassname="fee"
-              {...p.settlementFeePercent}
-            />
+            <ValueDenomination valueClassname="fee" {...settlementFeePercent} />
           </li>
           <li>
             <span>
-              {p.endTime &&
-              dateHasPassed(p.currentTimestamp, p.endTime.timestamp)
+              {endTime && dateHasPassed(currentTimestamp, endTime.timestamp)
                 ? "Expired"
                 : "Expires"}
             </span>
             <span className="value_expires">
-              {p.isMobile
-                ? p.endTime.formattedLocalShort
-                : p.endTime.formattedLocalShortTime}
+              {isMobile
+                ? endTime.formattedLocalShort
+                : endTime.formattedLocalShortTime}
             </span>
           </li>
           {showResolution && (
             <li className={Styles.MarketProperties__resolutionSource}>
               <span>Resolution Source</span>
               <span className={Styles.MarketProperties__resolutionSource}>
-                {p.resolutionSource || "General Knowledge"}
+                {resolutionSource}
               </span>
             </li>
           )}
@@ -106,22 +126,22 @@ const MarketProperties = p => {
           )}
         </ul>
         <div className={Styles.MarketProperties__actions}>
-          {p.isLogged &&
-            p.toggleFavorite && (
+          {isLogged &&
+            toggleFavorite && (
               <button
                 className={classNames(Styles.MarketProperties__favorite, {
-                  [Styles.favorite]: p.isFavorite
+                  [Styles.favorite]: isFavorite
                 })}
-                onClick={() => p.toggleFavorite(p.id)}
+                onClick={() => toggleFavorite(id)}
               >
-                {p.isFavorite ? (
+                {isFavorite ? (
                   <i className="fa fa-star" />
                 ) : (
                   <i className="fa fa-star-o" />
                 )}
               </button>
             )}
-          {(linkType === undefined ||
+          {(!linkType ||
             (linkType &&
               linkType !== TYPE_FINALIZE_MARKET &&
               linkType !== TYPE_CLAIM_PROCEEDS)) && (
@@ -129,7 +149,7 @@ const MarketProperties = p => {
               className={classNames(Styles.MarketProperties__trade, {
                 [Styles.disabled]: disableDispute
               })}
-              id={p.id}
+              id={id}
               linkType={linkType}
             >
               {linkType || "view"}
@@ -137,10 +157,10 @@ const MarketProperties = p => {
           )}
           {linkType &&
             linkType === TYPE_FINALIZE_MARKET &&
-            !p.finalizationTime && (
+            !finalizationTime && (
               <button
                 className={Styles.MarketProperties__trade}
-                onClick={e => p.finalizeMarket(p.id)}
+                onClick={e => finalizeMarket(id)}
               >
                 Finalize
               </button>
@@ -148,28 +168,28 @@ const MarketProperties = p => {
           {linkType &&
             linkType !== TYPE_VIEW &&
             linkType !== TYPE_TRADE &&
-            p.finalizationTime && (
+            finalizationTime && (
               <MarketLink
                 className={classNames(Styles.MarketProperties__trade, {
                   [Styles.disabled]: disableDispute
                 })}
-                id={p.id}
+                id={id}
                 linkType={TYPE_VIEW}
               >
                 {TYPE_VIEW}
               </MarketLink>
             )}
-          {p.isForking &&
-            p.isForkingMarketFinalized &&
-            p.forkingMarket !== p.id &&
-            !p.finalizationTime && (
+          {isForking &&
+            isForkingMarketFinalized &&
+            forkingMarket !== id &&
+            !finalizationTime && (
               <button
                 className={Styles.MarketProperties__migrate}
                 onClick={() =>
-                  p.updateModal({
+                  updateModal({
                     type: MODAL_MIGRATE_MARKET,
-                    marketId: p.id,
-                    marketDescription: p.description
+                    marketId: id,
+                    marketDescription: description
                   })
                 }
               >
@@ -178,16 +198,16 @@ const MarketProperties = p => {
             )}
         </div>
       </section>
-      {p.showAdditionalDetailsToggle && (
+      {showAdditionalDetailsToggle && (
         <button
           className={Styles[`MarketProperties__additional-details`]}
-          onClick={() => p.toggleDetails()}
+          onClick={() => toggleDetails()}
         >
           Additional Details
           <span
             className={Styles["MarketProperties__additional-details-chevron"]}
           >
-            <ChevronFlip pointDown={p.showingDetails} />
+            <ChevronFlip pointDown={showingDetails} />
           </span>
         </button>
       )}
@@ -200,13 +220,53 @@ MarketProperties.propTypes = {
   updateModal: PropTypes.func.isRequired,
   linkType: PropTypes.string,
   finalizationTime: PropTypes.number,
-  buttonText: PropTypes.string,
   showAdditionalDetailsToggle: PropTypes.bool,
   showingDetails: PropTypes.bool,
   toggleDetails: PropTypes.func,
   isForking: PropTypes.bool,
   isForkingMarketFinalized: PropTypes.bool,
-  forkingMarket: PropTypes.string
+  forkingMarket: PropTypes.string,
+  resolutionSource: PropTypes.string,
+  marketType: PropTypes.string,
+  openInterest: PropTypes.string,
+  volume: PropTypes.object,
+  loginAccount: PropTypes.object,
+  reportingState: PropTypes.string,
+  settlementFeePercent: PropTypes.object,
+  endTime: PropTypes.object,
+  id: PropTypes.string,
+  isLogged: PropTypes.bool,
+  isMobile: PropTypes.bool,
+  toggleFavorite: PropTypes.func,
+  isFavorite: PropTypes.bool,
+  finalizeMarket: PropTypes.func,
+  description: PropTypes.string
+};
+
+MarketProperties.defaultProps = {
+  linkType: null,
+  finalizationTime: null,
+  showAdditionalDetailsToggle: false,
+  showingDetails: false,
+  isForking: false,
+  isForkingMarketFinalized: false,
+  forkingMarket: null,
+  toggleDetails: () => {},
+  resolutionSource: "General Knowledge",
+  marketType: null,
+  openInterest: null,
+  volume: null,
+  loginAccount: null,
+  reportingState: null,
+  settlementFeePercent: null,
+  endTime: null,
+  id: null,
+  isLogged: false,
+  isMobile: false,
+  toggleFavorite: () => {},
+  isFavorite: false,
+  finalizeMarket: () => {},
+  description: null
 };
 
 export default MarketProperties;

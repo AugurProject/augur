@@ -18,11 +18,11 @@ import StylesForm from "modules/create-market/components/create-market-form/crea
 export default class CreateMarketDefine extends Component {
   static propTypes = {
     categories: PropTypes.array.isRequired,
-    isValid: PropTypes.func.isRequired,
     newMarket: PropTypes.object.isRequired,
+    isValid: PropTypes.func.isRequired,
+    keyPressed: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
-    validateField: PropTypes.func.isRequired,
-    keyPressed: PropTypes.func.isRequired
+    validateField: PropTypes.func.isRequired
   };
 
   constructor(props) {

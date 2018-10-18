@@ -23,10 +23,14 @@ export default class MarketView extends Component {
     loadFullMarket: PropTypes.func.isRequired,
     description: PropTypes.string.isRequired,
     location: PropTypes.object.isRequired,
-    isLogged: PropTypes.bool,
     marketType: PropTypes.string,
     loadingState: PropTypes.any,
     pricePrecision: PropTypes.number.isRequired
+  };
+
+  static defaultProps = {
+    marketType: undefined,
+    loadingState: null
   };
 
   constructor(props) {
