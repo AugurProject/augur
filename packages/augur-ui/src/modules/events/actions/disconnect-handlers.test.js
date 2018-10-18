@@ -3,9 +3,13 @@ import {
   handleAugurNodeDisconnect,
   handleEthereumDisconnect
 } from "./disconnect-handlers";
-import { connectAugur } from "../../app/actions/init-augur";
+import * as connectAugurModule from "../../app/actions/init-augur";
+import * as lodash from "lodash";
+import * as updateConnectionModule from "../../app/actions/update-connection";
 
 jest.mock("../../app/actions/init-augur");
+jest.mock("lodash");
+jest.mock("../../app/actions/update-connection");
 
 describe("events/actions/disconnect-handlers", () => {
   let store;
@@ -13,202 +17,224 @@ describe("events/actions/disconnect-handlers", () => {
   let params;
   const mockHistory = { push: arg => assert.deepEqual(arg, "/categories") };
 
-  test("it should handle a augurNode disconnection event with pausedReconnection", () => {
-    state = {
-      connection: {
-        isConnected: true,
-        isConnectedToAugurNode: true,
-        isReconnectionPaused: false
-      }
-    };
-    params = {
-      history: mockHistory
-    };
-    store = mockStore.mockStore(state);
-    connectAugur.mockImplementation((history, env, isInitialConnection, cb) => {
-      expect(history).toEqual(params.history);
-      expect(isInitialConnection).toBe(false);
-      expect(env).toEqual(store.getState().env);
-      cb();
-      // just to confirm this is actually called.
-      return { type: "CONNECT_AUGUR" };
-    });
-  });
-
   describe("handleAugurNodeDisconnect", () => {
-    const test = t =>
-      it(t.description, done => {
-        RewireReInitAugur.__Rewire__("debounce", (func, wait) => {
-          assert.deepEqual(wait, 3000);
-          assert.isFunction(func);
+    let initAugurSpy;
+    let lodashSpy;
+    let updateConnectionSpy;
+
+    beforeEach(() => {
+      initAugurSpy = jest
+        .spyOn(connectAugurModule, "connectAugur")
+        .mockImplementation((history, env, isInitialConnection, cb) => {
+          expect(history).toEqual(params.history);
+          expect(isInitialConnection).toBe(false);
+          expect(env).toEqual(store.getState().env);
+          cb();
+          // just to confirm this is actually called.
+          return { type: "CONNECT_AUGUR" };
+        });
+
+      lodashSpy = jest
+        .spyOn(lodash, "debounce")
+        .mockImplementation((func, wait) => {
+          expect(wait).toBe(3000);
+          expect(typeof func).toEqual("function");
           return cb => {
             // flip the connection.isReconnectionPaused value, should go from false to true, then true to false on the 2nd call.
-            t.state.connection.isReconnectionPaused = !t.state.connection
+            state.connection.isReconnectionPaused = !state.connection
               .isReconnectionPaused;
             func(cb);
           };
         });
-        RewireDisconnectHandlers.__Rewire__(
-          "updateAugurNodeConnectionStatus",
-          isConnected => {
-            t.state.connection.isConnectedToAugurNode = isConnected;
-            return {
-              type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS",
-              isConnected: false
-            };
-          }
-        );
-        store.dispatch(handleAugurNodeDisconnect(t.params.history));
-        t.assertions(store.getActions());
-        done();
-      });
-    test({
-      description:
-        "it should handle a augurNode disconnection event with pausedReconnection",
-      assertions: actions =>
-        assert.deepEqual(actions, [
-          {
-            type: "UPDATE_MODAL",
-            data: {
-              modalOptions: {
-                type: "MODAL_NETWORK_DISCONNECTED",
-                connection: {
-                  isConnected: true,
-                  isConnectedToAugurNode: false,
-                  isReconnectionPaused: false
-                },
-                env: undefined
-              }
-            }
-          },
-          { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS", isConnected: false },
-          {
-            type: "UPDATE_MODAL",
-            data: {
-              modalOptions: {
-                type: "MODAL_NETWORK_DISCONNECTED",
-                connection: {
-                  isConnected: true,
-                  isConnectedToAugurNode: false,
-                  isReconnectionPaused: false
-                },
-                env: undefined
-              }
-            }
-          },
-          {
-            type: "UPDATE_MODAL",
-            data: {
-              modalOptions: {
-                type: "MODAL_NETWORK_DISCONNECTED",
-                connection: {
-                  isConnected: true,
-                  isConnectedToAugurNode: false,
-                  isReconnectionPaused: false
-                },
-                env: undefined
-              }
-            }
-          },
-          { type: "CONNECT_AUGUR" }
-        ])
+
+      updateConnectionSpy = jest
+        .spyOn(updateConnectionModule, "updateAugurNodeConnectionStatus")
+        .mockImplementation(isConnected => {
+          state.connection.isConnectedToAugurNode = isConnected;
+          return {
+            type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS",
+            isConnected: false
+          };
+        });
     });
-  });
-  describe("handleEthereumDisconnect", () => {
-    const test = t =>
-      it(t.description, done => {
-        const store = mockStore.mockStore(t.state);
-        RewireDisconnectHandlers.__Rewire__(
-          "connectAugur",
-          (history, env, isInitialConnection, cb) => {
-            assert.deepEqual(history, mockHistory);
-            assert.isFalse(isInitialConnection);
-            assert.deepEqual(env, store.getState().env);
-            cb();
-            // just to confirm this is actually called.
-            return { type: "CONNECT_AUGUR" };
-          }
-        );
-        RewireDisconnectHandlers.__Rewire__("debounce", (func, wait) => {
-          assert.deepEqual(wait, 3000);
-          assert.isFunction(func);
-          return cb => {
-            // flip the connection.isReconnectionPaused value, should go from false to true, then true to false on the 2nd call.
-            t.state.connection.isReconnectionPaused = !t.state.connection
-              .isReconnectionPaused;
-            func(cb);
-          };
-        });
-        RewireDisconnectHandlers.__Rewire__(
-          "updateConnectionStatus",
-          isConnected => {
-            t.state.connection.isConnected = isConnected;
-            return { type: "UPDATE_CONNECTION_STATUS", isConnected: false };
-          }
-        );
-        store.dispatch(handleEthereumDisconnect(t.params.history));
-        done();
-      });
-    test({
-      description:
-        "it should handle a ethereumNode disconnection event with pausedReconnection",
-      params: {
-        history: mockHistory
-      },
-      state: {
+
+    afterEach(() => {
+      initAugurSpy.mockReset();
+      lodashSpy.mockReset();
+      updateConnectionSpy.mockReset();
+    });
+
+    test("handled a augurNode disconnection event with pausedReconnection", done => {
+      state = {
         connection: {
           isConnected: true,
           isConnectedToAugurNode: true,
           isReconnectionPaused: false
         }
-      },
-      assertions: actions =>
-        assert.deepEqual(actions, [
-          {
-            type: "UPDATE_MODAL",
-            data: {
-              modalOptions: {
-                type: "MODAL_NETWORK_DISCONNECTED",
-                connection: {
-                  isConnected: true,
-                  isConnectedToAugurNode: true,
-                  isReconnectionPaused: false
-                },
-                env: undefined
-              }
+      };
+      params = {
+        history: mockHistory
+      };
+
+      store = mockStore.mockStore(state);
+      store.dispatch(handleAugurNodeDisconnect(params.history));
+      expect(store.getActions()).toEqual([
+        {
+          type: "UPDATE_MODAL",
+          data: {
+            modalOptions: {
+              type: "MODAL_NETWORK_DISCONNECTED",
+              connection: {
+                isConnected: true,
+                isConnectedToAugurNode: false,
+                isReconnectionPaused: false
+              },
+              env: undefined
             }
-          },
-          { type: "UPDATE_CONNECTION_STATUS", isConnected: false },
-          {
-            type: "UPDATE_MODAL",
-            data: {
-              modalOptions: {
-                type: "MODAL_NETWORK_DISCONNECTED",
-                connection: {
-                  isConnected: true,
-                  isConnectedToAugurNode: true,
-                  isReconnectionPaused: false
-                },
-                env: undefined
-              }
+          }
+        },
+        { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS", isConnected: false },
+        {
+          type: "UPDATE_MODAL",
+          data: {
+            modalOptions: {
+              type: "MODAL_NETWORK_DISCONNECTED",
+              connection: {
+                isConnected: true,
+                isConnectedToAugurNode: false,
+                isReconnectionPaused: false
+              },
+              env: undefined
             }
-          },
-          {
-            type: "UPDATE_MODAL",
-            data: {
-              modalOptions: {
-                type: "MODAL_NETWORK_DISCONNECTED",
-                connection: {
-                  isConnected: true,
-                  isConnectedToAugurNode: true,
-                  isReconnectionPaused: false
-                },
-                env: undefined
-              }
+          }
+        },
+        {
+          type: "UPDATE_MODAL",
+          data: {
+            modalOptions: {
+              type: "MODAL_NETWORK_DISCONNECTED",
+              connection: {
+                isConnected: true,
+                isConnectedToAugurNode: false,
+                isReconnectionPaused: false
+              },
+              env: undefined
             }
-          },
-          { type: "CONNECT_AUGUR" }
-        ])
+          }
+        },
+        { type: "CONNECT_AUGUR" }
+      ]);
+      done();
+    });
+  });
+
+  describe("handleEthereumDisconnect", () => {
+    let initAugurSpy;
+    let lodashSpy;
+    let updateConnectionSpy;
+
+    beforeEach(() => {
+      initAugurSpy = jest
+        .spyOn(connectAugurModule, "connectAugur")
+        .mockImplementation((history, env, isInitialConnection, cb) => {
+          expect(history).toEqual(mockHistory);
+          expect(isInitialConnection).toBe(false);
+          expect(env).toEqual(store.getState().env);
+          cb();
+          // just to confirm this is actually called.
+          return { type: "CONNECT_AUGUR" };
+        });
+
+      lodashSpy = jest
+        .spyOn(lodash, "debounce")
+        .mockImplementation((func, wait) => {
+          expect(wait).toBe(3000);
+          expect(typeof func).toEqual("function");
+          return cb => {
+            // flip the connection.isReconnectionPaused value, should go from false to true, then true to false on the 2nd call.
+            state.connection.isReconnectionPaused = !state.connection
+              .isReconnectionPaused;
+            func(cb);
+          };
+        });
+
+      updateConnectionSpy = jest
+        .spyOn(updateConnectionModule, "updateConnectionStatus")
+        .mockImplementation(isConnected => {
+          state.connection.isConnected = isConnected;
+          return { type: "UPDATE_CONNECTION_STATUS", isConnected: false };
+        });
+    });
+
+    afterEach(() => {
+      initAugurSpy.mockReset();
+      lodashSpy.mockReset();
+      updateConnectionSpy.mockReset();
+    });
+
+    test("handled an ethereumNode disconnection event with pausedReconnection", done => {
+      params = {
+        history: mockHistory
+      };
+      state = {
+        connection: {
+          isConnected: true,
+          isConnectedToAugurNode: true,
+          isReconnectionPaused: false
+        }
+      };
+      store = mockStore.mockStore(state);
+      store.dispatch(handleEthereumDisconnect(params.history));
+      //TODO: Figure out what the correct state should be; this was never tested in the original test.
+      /*
+      expect(store.getActions()).toEqual([
+        {
+          type: "UPDATE_MODAL",
+          data: {
+            modalOptions: {
+              type: "MODAL_NETWORK_DISCONNECTED",
+              connection: {
+                isConnected: true,
+                isConnectedToAugurNode: true,
+                isReconnectionPaused: false
+              },
+              env: undefined
+            }
+          }
+        },
+        { type: "UPDATE_CONNECTION_STATUS", isConnected: false },
+        {
+          type: "UPDATE_MODAL",
+          data: {
+            modalOptions: {
+              type: "MODAL_NETWORK_DISCONNECTED",
+              connection: {
+                isConnected: true,
+                isConnectedToAugurNode: true,
+                isReconnectionPaused: false
+              },
+              env: undefined
+            }
+          }
+        },
+        {
+          type: "UPDATE_MODAL",
+          data: {
+            modalOptions: {
+              type: "MODAL_NETWORK_DISCONNECTED",
+              connection: {
+                isConnected: true,
+                isConnectedToAugurNode: true,
+                isReconnectionPaused: false
+              },
+              env: undefined
+            }
+          }
+        },
+        { type: "CONNECT_AUGUR" }
+      ]);
+      */
+      done();
     });
   });
 });
