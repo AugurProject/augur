@@ -160,7 +160,7 @@ jobs:
     - script: |
         set -euxo pipefail
         echo "$(secret.DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)"
-        yarn workspace augur-node run docker:release -- dev
-        yarn workspace augur-ui run docker:release -- dev
+        yarn workspace augur-node run docker:release -- monorepo
+        yarn workspace augur-ui run docker:release -- monorepo
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       displayName: 'build and push docker image'
