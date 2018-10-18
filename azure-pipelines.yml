@@ -27,10 +27,10 @@ jobs:
       - script: |
           set -euxo pipefail
           echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
-          docker pull $CORE_IMAGE_BUILD;
+          docker pull $CORE_IMAGE_LATEST;
           npm run docker:build;
-          docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST;
-          docker push $CORE_IMAGE_LATEST
+          docker push $CORE_IMAGE_BUILD
+          docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
 
   - job: Test_Augur_Core
     dependsOn: Build_Core_Docker
