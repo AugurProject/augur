@@ -1,6 +1,9 @@
 variables:
     SOLC_VERSION: v0.4.24
     SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
+    CORE_IMAGE_BUILD: augurproject/augur-core:monorepobuild.$(BuildID)
+    CORE_IMAGE_LATEST: augurproject/augur-core:latest
+
 
 trigger:
   batch: false
@@ -11,7 +14,26 @@ trigger:
     - monorepo-integration
 
 jobs:
+  - job: Build_Core_Docker
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.6.5'
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '9.x'
+      - script: |
+          set -euxo pipefail
+          echo "$(secret.DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+          docker pull $CORE_IMAGE_BUILD;
+          npm run docker:build;
+          docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST;
+          docker push $CORE_IMAGE_LATEST
+
   - job: Test_Augur_Core
+    dependsOn: Build_Core_Docker
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -159,7 +181,7 @@ jobs:
 
     - script: |
         set -euxo pipefail
-        echo "$(secret.DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)"
+        echo "$(secret.DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
         yarn workspace augur-node run docker:release -- monorepo
         yarn workspace augur-ui run docker:release -- monorepo
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
