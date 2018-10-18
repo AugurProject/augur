@@ -16,6 +16,7 @@ jobs:
         node_9_x:
           node_version: 9.x
     steps:
-      - script: printenv
-        env:
-          system.accesstoken: $( System.PullRequest.TargetBranch )
+      - script:
+          yarn
+      - script:
+          npx lerna ls --since $SYSTEM_PULLREQUEST_TARGETBRANCH
