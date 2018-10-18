@@ -55,7 +55,7 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
   await each(blockNumbers, async (blockNumber: number) => {
     const logs = logsByBlock[blockNumber];
     if (logs === undefined || logs.length === 0) return;
-    db.transaction(async (trx: Knex.Transaction) => {
+    await db.transaction(async (trx: Knex.Transaction) => {
       await processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber]);
       logger.info(`Processing ${logs.length} logs`);
       await each(logs, async (log: FormattedEventLog) => {

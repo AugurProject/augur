@@ -77,13 +77,13 @@ export async function updateActiveFeeWindows(db: Knex, blockNumber: number, time
   const expiredFeeWindowRows: Array<{ feeWindow: Address; universe: Address }> = await db("fee_windows").select("feeWindow", "universe")
     .whereNot("state", FeeWindowState.PAST)
     .where("endTime", "<", timestamp);
-  await db("fee_windows").update("state", FeeWindowState.PAST).whereIn("feeWindow", _.map(expiredFeeWindowRows, (result) => result.feeWindow))
+  await db("fee_windows").update("state", FeeWindowState.PAST).whereIn("feeWindow", _.map(expiredFeeWindowRows, (result) => result.feeWindow));
 
   const newActiveFeeWindowRows: Array<{ feeWindow: Address; universe: Address }> = await db("fee_windows").select("feeWindow", "universe")
     .whereNot("state", FeeWindowState.CURRENT)
     .where("endTime", ">", timestamp)
     .where("startTime", "<", timestamp);
-  await db("fee_windows").update("state", FeeWindowState.CURRENT).whereIn("feeWindow", _.map(newActiveFeeWindowRows, (row) => row.feeWindow))
+  await db("fee_windows").update("state", FeeWindowState.CURRENT).whereIn("feeWindow", _.map(newActiveFeeWindowRows, (row) => row.feeWindow));
 
   if (expiredFeeWindowRows != null) {
     expiredFeeWindowRows.forEach((expiredFeeWindowRow) => {

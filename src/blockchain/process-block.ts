@@ -150,7 +150,7 @@ async function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, bloc
     .where("universes.forked", 0)
     .whereIn("markets.feeWindow", expiredFeeWindows)
     .whereNot("markets.needsMigration", 1)
-    .whereNot("markets.forking", 1)
+    .whereNot("markets.forking", 1);
 
   await each(marketIds, async (marketIdRow) => {
     await updateMarketStatePromise(db, marketIdRow.marketId, blockNumber, ReportingState.AWAITING_FINALIZATION);
