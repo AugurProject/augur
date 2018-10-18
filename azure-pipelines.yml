@@ -7,10 +7,6 @@ jobs:
     displayName: 'Test augur UI and augur-node'
     pool:
       vmImage: 'Ubuntu 16.04'
-    variables:
-      runIfChanged:
-        - augur-ui
-        - augur-node
     strategy:
       matrix:
         node_9_x:
