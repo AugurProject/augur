@@ -51,7 +51,7 @@ const db = await setupTestDb();
         expect(records.universe).toEqual("0x000000000000000000000000000000000000000c");
         expect(records.parentUniverse).toEqual("0x000000000000000000000000000000000000000b");
         expect(records.reputationToken).toEqual("0x0000000000000000000000000000000000000222");
-        expect(records.forked).toEqual(false);
+        expect(records.forked).toEqual(0);
         expect(typeof records.payoutId).toBe("number");
       },
       onRemoved: (err, records) => {

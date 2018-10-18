@@ -195,7 +195,7 @@ describe("server/getters/get-reporting-fees", () => {
     },
     assertions: (err, marketsMatched) => {
       expect(err).toEqual(Error("Universe not found"));
-      expect(marketsMatched).toEqual(null);
+      expect(marketsMatched).toEqual(undefined);
     },
   });
 });
