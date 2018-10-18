@@ -145,40 +145,10 @@ jobs:
           npx lerna run test --stream --scope augur.js
         displayName: 'test augur.js'
 
-  - job: Build
+  - job: Docker_monorepo
     pool:
       vmImage: 'Ubuntu 16.04'
-    strategy:
-      matrix:
-        node_8_x:
-          node_version: 8.x
-        node_9_x:
-          node_version: 9.x
     steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.6.5'
-
-    - script: |
-        set -euxo pipefail
-        yarn install --ignore-scripts --frozen-lockfile
-        git config --global user.email "team@augur.net"
-        git config --global user.name "Augur Developers"
-        python -m pip install --upgrade pip pip-tools setuptools wheel
-        pip install virtualenv
-        PATH=$(Agent.BuildDirectory)/bin:$PATH
-        mkdir $(Agent.BuildDirectory)/bin
-        echo "$(SOLC_MD5) *$(Agent.BuildDirectory)/bin/solc" > solc.md5
-        curl -vL -o $(Agent.BuildDirectory)/bin/solc https://github.com/ethereum/solidity/releases/download/$(SOLC_VERSION)/solc-static-linux
-        md5sum -c solc.md5
-        ls -l $(Agent.BuildDirectory)
-        ls -l $(Agent.BuildDirectory)/bin
-        chmod a+x $(Agent.BuildDirectory)/bin/solc
-        yarn workspace augur-core run build
-        yarn workspace augur-node run build
-        yarn workspace augur-ui run build
-      displayName: 'build and test'
-
     - script: |
         set -euxo pipefail
         echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
