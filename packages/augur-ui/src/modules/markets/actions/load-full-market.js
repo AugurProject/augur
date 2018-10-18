@@ -35,7 +35,7 @@ export const loadFullMarket = (marketId, callback = logError) => (
 
 // load price history, and other non-basic market details here, dispatching
 // the necessary actions to save each part in relevant state
-export const loadMarketDetails = (marketId, callback = logError) => dispatch =>
+const loadMarketDetails = (marketId, callback = logError) => dispatch =>
   dispatch(
     loadBidsAsks(marketId, err => {
       if (err) return loadingError(dispatch, callback, err, marketId);
