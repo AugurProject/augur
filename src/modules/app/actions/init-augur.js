@@ -236,7 +236,7 @@ export function connectAugur(
                   ];
                   windowRef.localStorage.setItem(
                     loginAccount.address,
-                    locallyStoredInfo
+                    JSON.stringify(locallyStoredInfo)
                   );
                 }
                 location.reload();

@@ -6,7 +6,7 @@ import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-man
 import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
 import { registerUserDefinedGasPriceFunction } from "modules/app/actions/register-user-defined-gasPrice-function";
 import { updateUniverse } from "modules/universe/actions/update-universe";
-import { loadUniverseInfo } from "modules/universe/actions/load-universe-info";
+import { loadUniverse } from "modules/app/actions/load-universe";
 
 export const loadAccountDataFromLocalStorage = address => (
   dispatch,
@@ -14,23 +14,20 @@ export const loadAccountDataFromLocalStorage = address => (
 ) => {
   const localStorageRef = typeof window !== "undefined" && window.localStorage;
   const { universe, connection } = getState();
+  const { augurNodeNetworkId } = connection;
   if (localStorageRef && localStorageRef.getItem && address) {
     const storedAccountData = JSON.parse(localStorageRef.getItem(address));
     if (storedAccountData) {
-      if (storedAccountData.selectedUniverse) {
-        if (
-          universe.id !==
-          storedAccountData.selectedUniverse[connection.augurNodeNetworkId]
-        ) {
+      const { selectedUniverse } = storedAccountData;
+      if (selectedUniverse) {
+        const selectedUniverseId = selectedUniverse[augurNodeNetworkId];
+        if (universe.id !== selectedUniverseId) {
           dispatch(
             updateUniverse({
-              id:
-                storedAccountData.selectedUniverse[
-                  connection.augurNodeNetworkId
-                ]
+              id: selectedUniverseId
             })
           );
-          dispatch(loadUniverseInfo());
+          dispatch(loadUniverse(selectedUniverseId));
         }
       }
       if (storedAccountData.favorites) {

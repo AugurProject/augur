@@ -172,6 +172,7 @@ function getUniversesInfoWithParentContext(
         },
         err => {
           callback(
+            err,
             result.reduce((acc, universeData) => {
               const supply = createBigNumber(universeData.supply || "0", 10);
               if (

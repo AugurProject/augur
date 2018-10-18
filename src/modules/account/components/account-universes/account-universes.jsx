@@ -21,6 +21,8 @@ export default class AccountUniverses extends Component {
     this.state = {
       universesInfo: {}
     };
+
+    this.getUniverses = this.getUniverses.bind(this);
   }
 
   componentWillMount() {
@@ -35,7 +37,7 @@ export default class AccountUniverses extends Component {
 
   getUniverses() {
     const { getUniverses } = this.props;
-    getUniverses(universesInfo => {
+    getUniverses((err, universesInfo) => {
       const children = universesInfo.children.map(c => ({
         ...c,
         totalRep: formatAttoRep(c.supply, { decimals: 2, roundUp: true })
@@ -77,6 +79,7 @@ export default class AccountUniverses extends Component {
               <h4>Parent Universe</h4>
               <AccountUniverseDescription
                 switchUniverse={p.switchUniverse}
+                getUniverses={this.getUniverses}
                 isCurrentUniverse={false}
                 universeDescription={parent.description}
                 accountRep={parent.balance}
@@ -96,6 +99,7 @@ export default class AccountUniverses extends Component {
                 {currentLevel.map(universeInfo => (
                   <AccountUniverseDescription
                     switchUniverse={p.switchUniverse}
+                    getUniverses={this.getUniverses}
                     isCurrentUniverse={universeInfo.universe === p.universe}
                     universeDescription={universeInfo.description}
                     accountRep={universeInfo.balance}
@@ -116,6 +120,7 @@ export default class AccountUniverses extends Component {
                 {children.map(universeInfo => (
                   <AccountUniverseDescription
                     switchUniverse={p.switchUniverse}
+                    getUniverses={this.getUniverses}
                     isCurrentUniverse={false}
                     universeDescription={universeInfo.description}
                     accountRep={universeInfo.balance}

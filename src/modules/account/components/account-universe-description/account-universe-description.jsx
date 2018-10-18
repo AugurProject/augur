@@ -19,6 +19,7 @@ const AccountUniverseDescription = p => (
         <button
           onClick={() => {
             p.switchUniverse(p.universe);
+            p.getUniverses();
           }}
           className={Styles.AccountUniversesDescription__button}
         >
@@ -66,6 +67,7 @@ const AccountUniverseDescription = p => (
 );
 
 AccountUniverseDescription.propTypes = {
+  getUniverses: PropTypes.func.isRequired,
   switchUniverse: PropTypes.func.isRequired,
   accountRep: PropTypes.string.isRequired,
   openInterest: PropTypes.string.isRequired,
