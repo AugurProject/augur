@@ -1,6 +1,9 @@
 variables:
     SOLC_VERSION: v0.4.24
     SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
+    CORE_IMAGE_BUILD: augurproject/augur-core:monorepobuild.$(Build.BuildID)
+    CORE_IMAGE_LATEST: augurproject/augur-core:latest
+
 
 trigger:
   batch: false
@@ -11,7 +14,26 @@ trigger:
     - monorepo-integration
 
 jobs:
+  - job: Build_Core_Docker
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.6.5'
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '9.x'
+      - script: |
+          set -euxo pipefail
+          echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+          docker pull $CORE_IMAGE_LATEST;
+          yarn workspace augur-core docker:build;
+          docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
+          docker push $CORE_IMAGE_BUILD
+
   - job: Test_Augur_Core
+    dependsOn: Build_Core_Docker
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -108,44 +130,14 @@ jobs:
           npx lerna run test --stream --scope augur.js
         displayName: 'test augur.js'
 
-  - job: Build
+  - job: Docker_monorepo
     pool:
       vmImage: 'Ubuntu 16.04'
-    strategy:
-      matrix:
-        node_8_x:
-          node_version: 8.x
-        node_9_x:
-          node_version: 9.x
     steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.6.5'
-
     - script: |
         set -euxo pipefail
-        yarn install --ignore-scripts --frozen-lockfile
-        git config --global user.email "team@augur.net"
-        git config --global user.name "Augur Developers"
-        python -m pip install --upgrade pip pip-tools setuptools wheel
-        pip install virtualenv
-        PATH=$(Agent.BuildDirectory)/bin:$PATH
-        mkdir $(Agent.BuildDirectory)/bin
-        echo "$(SOLC_MD5) *$(Agent.BuildDirectory)/bin/solc" > solc.md5
-        curl -vL -o $(Agent.BuildDirectory)/bin/solc https://github.com/ethereum/solidity/releases/download/$(SOLC_VERSION)/solc-static-linux
-        md5sum -c solc.md5
-        ls -l $(Agent.BuildDirectory)
-        ls -l $(Agent.BuildDirectory)/bin
-        chmod a+x $(Agent.BuildDirectory)/bin/solc
-        yarn workspace augur-core run build
-        yarn workspace augur-node run build
-        yarn workspace augur-ui run build
-      displayName: 'build and test'
-
-    - script: |
-        set -euxo pipefail
-        echo "$(secret.DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)"
-        yarn workspace augur-node run docker:release -- dev
-        yarn workspace augur-ui run docker:release -- dev
+        echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+        yarn workspace augur-node run docker:release -- monorepo
+        yarn workspace augur-ui run docker:release -- monorepo
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       displayName: 'build and push docker image'
