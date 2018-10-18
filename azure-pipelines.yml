@@ -14,14 +14,6 @@ jobs:
         node_9_x:
           node_version: 9.x
     steps:
-      - script: |
-          yarn workspace augur-node add sqlite3 --force --build-from-source
-          yarn install --ignore-scripts --frozen-lockfile
-        displayName: 'Install Dependencies'
-      - script: |
-          yarn test --detectOpenHandles
-        displayName: 'Run Tests'
-      - task: PublishTestResults@2
-        inputs:
-          testResultsFormat: 'JUnit'
-          testResultsFiles: 'junit.xml'
+      - script: echo This is a script that could use $SYSTEM_ACCESSTOKEN
+        env:
+          system.accesstoken: $( System.PullRequest.TargetBranch )
