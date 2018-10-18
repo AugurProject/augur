@@ -5,6 +5,7 @@ import Styles from "modules/account/components/account-universe-description/acco
 import { formatAttoRep, formatAttoEth } from "utils/format-number";
 
 const AccountUniverseDescription = ({
+  getUniverses,
   switchUniverse,
   accountRep,
   openInterest,
