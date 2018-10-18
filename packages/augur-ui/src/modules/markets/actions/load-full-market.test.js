@@ -1,7 +1,7 @@
 import thunk from "redux-thunk";
 import { isObject, omit, isEmpty, isNull } from "lodash";
-import { MARKET_FULLY_LOADING } from "../constants/market-loading-states";
-import { UPDATE_MARKET_LOADING } from "./update-market-loading";
+import { MARKET_FULLY_LOADING } from "modules/markets/constants/market-loading-states";
+import { UPDATE_MARKET_LOADING } from "modules/markets/actions/update-market-loading";
 
 const create = state => {
   let actions = [];
