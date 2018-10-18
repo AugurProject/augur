@@ -1,5 +1,3 @@
-import { selectMarkets } from "./markets-all";
-
 describe(`modules/markets/selectors/markets-all.js`, () => {
   const state = Object.assign(
     {},
@@ -107,6 +105,8 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
       }
     }
   }));
+
+  const { selectMarkets } = require("./markets-all");
 
   test(`should return the correct selectedMarket function`, () => {
     const markets = selectMarkets(state);
