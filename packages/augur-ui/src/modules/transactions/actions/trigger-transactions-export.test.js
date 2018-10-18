@@ -1,7 +1,7 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import { triggerTransactionsExport } from "modules/transactions/actions/trigger-transactions-export";
-import * as mockLoadAccountHistory from "modules/auth/actions/load-account-history";
+import * as loadAccountHistoryModule from "../../auth/actions/load-account-history";
 import * as transactions from "../selectors/transactions";
 
 jest.mock("../selectors/transactions");
@@ -30,10 +30,13 @@ describe("modules/transactions/actions/trigger-transactions-export.js", () => {
       ],
       appStatus: { transactionsLoading: false }
     });
-    mockLoadAccountHistory.setLoadAccountHistory(loadAll => ({
-      type: "LOAD_ACCOUNT_HISTORY",
-      loadAll
-    }));
+
+    jest
+      .spyOn(loadAccountHistoryModule, "loadAccountHistory")
+      .mockImplementation(loadAll => ({
+        type: "LOAD_ACCOUNT_HISTORY",
+        loadAll
+      }));
 
     global.document = {
       createElement: type => {
@@ -75,11 +78,13 @@ describe("modules/transactions/actions/trigger-transactions-export.js", () => {
       appStatus: { transactionsLoading: true }
     });
 
-    mockLoadAccountHistory.setLoadAccountHistory((loadAll, cb) => {
-      expect(loadAll).toBeTruthy();
-      expect({}.toString.call(cb)).toStrictEqual("[object Function]");
-      return { type: "LOAD_ACCOUNT_HISTORY", loadAll };
-    });
+    jest
+      .spyOn(loadAccountHistoryModule, "loadAccountHistory")
+      .mockImplementation((loadAll, cb) => {
+        expect(loadAll).toBeTruthy();
+        expect({}.toString.call(cb)).toStrictEqual("[object Function]");
+        return { type: "LOAD_ACCOUNT_HISTORY", loadAll };
+      });
 
     store.dispatch(triggerTransactionsExport());
 
