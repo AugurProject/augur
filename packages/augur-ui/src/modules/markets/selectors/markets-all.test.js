@@ -5,7 +5,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
   const { selectMarketsDataState } = require("../../../select-state");
 
   selectMarket.mockImplementation(value => value);
-  selectMarketsDataState.mockImplementation(() => ({
+  selectMarketsDataState.mockImplementationOnce(() => ({
     test: {
       endTime: parseInt(new Date("01/01/3000").getTime() / 1000, 10),
       outcomes: {
