@@ -26,7 +26,7 @@ jobs:
           versionSpec: '9.x'
       - script: |
           set -euxo pipefail
-          echo "$(secret.DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+          echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
           docker pull $CORE_IMAGE_BUILD;
           npm run docker:build;
           docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST;
@@ -181,7 +181,7 @@ jobs:
 
     - script: |
         set -euxo pipefail
-        echo "$(secret.DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+        echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
         yarn workspace augur-node run docker:release -- monorepo
         yarn workspace augur-ui run docker:release -- monorepo
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
