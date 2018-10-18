@@ -1,14 +1,14 @@
 describe(`modules/markets/selectors/markets-all.js`, () => {
   beforeEach(() => {
-    jest.mock("./market");
-    jest.mock("../../../select-state");
-    const { selectMarket } = require("./market");
+    jest.mock("modules/markets/selectors/market");
+    jest.mock("src/select-state");
+    const { selectMarket } = require("modules/markets/selectors/market");
 
     selectMarket.mockImplementation(value => value);
   });
 
   test(`should return the correct selectedMarket function`, () => {
-    const { selectMarketsDataState } = require("../../../select-state");
+    const { selectMarketsDataState } = require("src/select-state");
     selectMarketsDataState.mockImplementationOnce(() => ({
       test: {
         endTime: parseInt(new Date("01/01/3000").getTime() / 1000, 10),
@@ -48,7 +48,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
   });
 
   test(`should return zero markets`, () => {
-    const { selectMarketsDataState } = require("../../../select-state");
+    const { selectMarketsDataState } = require("src/select-state");
     selectMarketsDataState.mockImplementationOnce(() => ({}));
 
     const { selectMarkets } = require("./markets-all");

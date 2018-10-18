@@ -28,27 +28,48 @@ const create = state => {
   };
 };
 
-describe("modules/markets/actions/load-full-market.js", () => {
-  describe("loadFullMarket", () => {
-    test(`should dispatch the expected actions when basic market data IS NOT loaded and info loads WITHOUT errors`, () => {
-      const { invoke, store } = create({ marketsData: {} });
-      const { loadFullMarket } = require("./load-full-market");
+describe("loadFullMarket no market data in state", () => {
+  test(`should dispatch the expected actions when basic market data IS NOT loaded and info loads WITHOUT errors`, () => {
+    const { invoke, store } = create({ marketsData: {} });
+    const { loadFullMarket } = require("./load-full-market");
 
-      invoke(loadFullMarket("0xMARKETID"), () => {});
-      const actual = store.getActions();
+    invoke(loadFullMarket("0xMARKETID"), () => {});
+    const actual = store.getActions();
 
-      const expected = [
-        {
-          data: {
-            marketLoadingState: {
-              "0xMARKETID": MARKET_FULLY_LOADING
-            }
-          },
-          type: UPDATE_MARKET_LOADING
-        }
-      ];
+    const expected = [
+      {
+        data: {
+          marketLoadingState: {
+            "0xMARKETID": MARKET_FULLY_LOADING
+          }
+        },
+        type: UPDATE_MARKET_LOADING
+      }
+    ];
 
-      expect(actual).toEqual(expected);
+    expect(actual).toEqual(expected);
+  });
+
+  test(`should dispatch the expected actions when basic market data IS NOT loaded and info loads WITHOUT errors`, () => {
+    const { invoke, store } = create({
+      marketsData: { "0xMARKETID": { bob: "bob" } }
     });
+    const { loadFullMarket } = require("./load-full-market");
+
+    invoke(loadFullMarket("0xMARKETID"), () => {});
+    const actual = store.getActions();
+
+    const expected = [
+      {
+        data: {
+          marketLoadingState: {
+            "0xMARKETID": MARKET_FULLY_LOADING
+          }
+        },
+        type: UPDATE_MARKET_LOADING
+      }
+    ];
+
+    expect(actual).toEqual(expected);
   });
 });
