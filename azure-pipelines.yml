@@ -15,4 +15,6 @@ jobs:
       - script:
           yarn
       - script:
+          git fetch origin $SYSTEM_PULLREQUEST_TARGETBRANCH
+      - script:
           npx lerna ls --since $SYSTEM_PULLREQUEST_TARGETBRANCH
