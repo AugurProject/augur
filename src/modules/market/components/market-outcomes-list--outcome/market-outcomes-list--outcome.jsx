@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */ // needed because <button> cannot take the place <ul> in the table structure
 
 import React from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import ValueDenomination from "modules/common/components/value-denomination/value-denomination";
@@ -9,24 +10,24 @@ import getValue from "utils/get-value";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 import Styles from "modules/market/components/market-outcomes-list--outcome/market-outcomes-list--outcome.styles";
 
-const Outcome = p => {
-  const outcomeName = getValue(p, "outcome.name");
+const Outcome = ({ outcome, selectedOutcome, updateSelectedOutcome }) => {
+  const outcomeName = getValue(outcome, "name");
 
-  const topBidShares = getValue(p, "outcome.topBid.shares.formatted");
-  const topAskShares = getValue(p, "outcome.topAsk.shares.formatted");
+  const topBidShares = getValue(outcome, "topBid.shares.formatted");
+  const topAskShares = getValue(outcome, "topAsk.shares.formatted");
 
-  const topBidPrice = getValue(p, "outcome.topBid.price.formatted");
-  const topAskPrice = getValue(p, "outcome.topAsk.price.formatted");
+  const topBidPrice = getValue(outcome, "topBid.price.formatted");
+  const topAskPrice = getValue(outcome, "topAsk.price.formatted");
 
-  const lastPrice = getValue(p, "outcome.lastPrice.formatted");
-  const lastPricePercent = getValue(p, "outcome.lastPricePercent.full");
+  const lastPrice = getValue(outcome, "lastPrice.formatted");
+  const lastPricePercent = getValue(outcome, "lastPricePercent.full");
 
   return (
     <ul
       className={classNames(Styles.Outcome, {
-        [`${Styles.active}`]: p.selectedOutcome === p.outcome.id
+        [`${Styles.active}`]: selectedOutcome === outcome.id
       })}
-      onClick={e => p.updateSelectedOutcome(p.outcome.id)}
+      onClick={e => updateSelectedOutcome(outcome.id)}
       role="menu"
     >
       <li>
@@ -47,13 +48,33 @@ const Outcome = p => {
       </li>
       <li style={{ position: "relative" }}>
         <ValueDenomination formatted={lastPrice} />
-        <MarketOutcomeTradingIndicator
-          outcome={p.outcome}
-          location="outcomes"
-        />
+        <MarketOutcomeTradingIndicator outcome={outcome} location="outcomes" />
       </li>
     </ul>
   );
+};
+
+Outcome.propTypes = {
+  outcome: PropTypes.shape({
+    name: PropTypes.string,
+    id: PropTypes.string,
+    topBid: PropTypes.shape({
+      shares: PropTypes.object,
+      price: PropTypes.object
+    }),
+    topAsk: PropTypes.shape({
+      shares: PropTypes.object,
+      price: PropTypes.object
+    }),
+    lastPrice: PropTypes.object,
+    lastPricePercent: PropTypes.object
+  }).isRequired,
+  selectedOutcome: PropTypes.string,
+  updateSelectedOutcome: PropTypes.func.isRequired
+};
+
+Outcome.defaultProps = {
+  selectedOutcome: null
 };
 
 export default Outcome;

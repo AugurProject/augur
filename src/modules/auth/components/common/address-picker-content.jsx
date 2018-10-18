@@ -17,7 +17,7 @@ export default class AddressPickerContent extends Component {
     clickAction: PropTypes.func.isRequired,
     clickPrevious: PropTypes.func.isRequired,
     clickNext: PropTypes.func.isRequired,
-    disablePrevious: PropTypes.bool
+    disablePrevious: PropTypes.bool.isRequired
   };
 
   constructor(props) {

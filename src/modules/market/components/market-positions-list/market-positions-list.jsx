@@ -25,6 +25,11 @@ export default class MarketPositionsList extends Component {
     cancelOrphanedOrder: PropTypes.func.isRequired
   };
 
+  static defaultProps = {
+    openOrders: [],
+    numCompleteSets: null
+  };
+
   constructor(props) {
     super(props);
 

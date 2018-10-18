@@ -16,6 +16,7 @@ const mapStateToProps = state => {
 
   return {
     isLogged: state.authStatus.isLogged,
+    isMobile: state.appStatus.isMobile,
     markets,
     filteredMarkets: Object.keys(favorites),
     transactionsLoading: state.appStatus.transactionsLoading

@@ -9,7 +9,7 @@ import { augur } from "services/augurjs";
 
 import InputDropdown from "modules/common/components/input-dropdown/input-dropdown";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
-import CreateMarketFormLiquidityCharts from "modules/create-market/containers/create-market-form-liquidity-charts";
+import CreateMarketFormLiquidityCharts from "modules/market-charts/containers/create-market-form-liquidity-charts";
 
 import { BID, ASK } from "modules/transactions/constants/types";
 import { CATEGORICAL, SCALAR } from "modules/markets/constants/market-types";
@@ -23,16 +23,20 @@ const PRECISION = 4;
 
 export default class CreateMarketLiquidity extends Component {
   static propTypes = {
-    newMarket: PropTypes.object.isRequired,
-    updateNewMarket: PropTypes.func.isRequired,
-    validateNumber: PropTypes.func.isRequired,
-    addOrderToNewMarket: PropTypes.func.isRequired,
-    availableEth: PropTypes.string.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
-    keyPressed: PropTypes.func.isRequired,
     liquidityState: PropTypes.object.isRequired,
+    newMarket: PropTypes.object.isRequired,
+    addOrderToNewMarket: PropTypes.func.isRequired,
+    keyPressed: PropTypes.func.isRequired,
+    updateInitialLiquidityCosts: PropTypes.func.isRequired,
+    updateNewMarket: PropTypes.func.isRequired,
     updateState: PropTypes.func.isRequired,
-    updateInitialLiquidityCosts: PropTypes.func.isRequired
+    validateNumber: PropTypes.func.isRequired,
+    availableEth: PropTypes.string
+  };
+
+  static defaultProps = {
+    availableEth: "0"
   };
 
   static formatOrderValue(orderValue) {

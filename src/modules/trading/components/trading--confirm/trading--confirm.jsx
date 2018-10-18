@@ -1,62 +1,74 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import { CreateMarketEdit } from "modules/common/components/icons";
 
 import ValueDenomination from "modules/common/components/value-denomination/value-denomination";
 import classNames from "classnames";
-import getValue from "utils/get-value";
 import { CATEGORICAL } from "modules/markets/constants/market-types";
 import { MARKET, BUY, LIMIT, SELL } from "modules/transactions/constants/types";
 
 import Styles from "modules/trading/components/trading--confirm/trading--confirm.styles";
 
-const MarketTradingConfirm = p => {
-  const numShares = getValue(p, "trade.numShares");
-  const limitPrice = getValue(p, "trade.limitPrice");
-  const tradingFees = getValue(p, "trade.totalFee");
-  const potentialEthProfit = getValue(p, "trade.potentialEthProfit");
-  const potentialProfitPercent = getValue(p, "trade.potentialProfitPercent");
-  const potentialEthLoss = getValue(p, "trade.potentialEthLoss");
-  const potentialLossPercent = getValue(p, "trade.potentialLossPercent");
-  const totalCost = getValue(p, "trade.totalCost");
-  const shareCost = getValue(p, "trade.shareCost");
-  const { doNotCreateOrders } = p;
+const MarketTradingConfirm = ({
+  trade,
+  isMobile,
+  orderType,
+  selectedNav,
+  prevPage,
+  market,
+  selectedOutcome,
+  doNotCreateOrders,
+  showOrderPlaced,
+  marketQuantity
+}) => {
+  const {
+    numShares,
+    limitPrice,
+    tradingFees,
+    potentialEthProfit,
+    potentialProfitPercent,
+    potentialEthLoss,
+    potentialLossPercent,
+    totalCost,
+    shareCost
+  } = trade;
   return (
     <section className={Styles.TradingConfirm}>
       <div className={Styles.TradingConfirm__header}>
-        {!p.isMobile && (
+        {!isMobile && (
           <div
             className={
-              p.selectedNav === BUY
+              selectedNav === BUY
                 ? Styles.TradingConfirm_arrow_buy
                 : Styles.TradingConfirm_arrow_sell
             }
           />
         )}
-        {!p.isMobile && <h2>Confirm {p.selectedNav} order?</h2>}
-        {p.isMobile && (
+        {!isMobile && <h2>Confirm {selectedNav} order?</h2>}
+        {isMobile && (
           <h2
             className={classNames({
-              [`${Styles.order__buy}`]: p.selectedNav === BUY,
-              [`${Styles.order__sell}`]: p.selectedNav === SELL
+              [`${Styles.order__buy}`]: selectedNav === BUY,
+              [`${Styles.order__sell}`]: selectedNav === SELL
             })}
           >
-            Confirm {p.selectedNav} order?
+            Confirm {selectedNav} order?
           </h2>
         )}
         <span>
-          <button onClick={p.prevPage}>{CreateMarketEdit}</button>
+          <button onClick={prevPage}>{CreateMarketEdit}</button>
         </span>
       </div>
       <ul className={Styles.TradingConfirm__details}>
-        {!p.isMobile &&
-          p.market.marketType === CATEGORICAL && (
+        {!isMobile &&
+          market.marketType === CATEGORICAL && (
             <li>
               <span>Outcome</span>
-              <span>{p.selectedOutcome.name}</span>
+              <span>{selectedOutcome.name}</span>
             </li>
           )}
-        {p.orderType === MARKET && (
+        {orderType === MARKET && (
           <li>
             <span>Total Cost</span>
             <span>
@@ -67,13 +79,13 @@ const MarketTradingConfirm = p => {
             </span>
           </li>
         )}
-        {p.orderType === LIMIT && (
+        {orderType === LIMIT && (
           <li>
             <span>Quantity</span>
             <span>{numShares} Shares</span>
           </li>
         )}
-        {p.orderType === LIMIT && (
+        {orderType === LIMIT && (
           <li>
             <span>Limit Price</span>
             <span>{limitPrice} ETH</span>
@@ -86,7 +98,7 @@ const MarketTradingConfirm = p => {
           </span>
         </li>
       </ul>
-      {p.orderType === LIMIT && (
+      {orderType === LIMIT && (
         <ul className={Styles.TradingConfirm__total}>
           <li>
             <span>Est. Cost</span>
@@ -107,11 +119,11 @@ const MarketTradingConfirm = p => {
           </li>
         </ul>
       )}
-      {p.orderType === MARKET && (
+      {orderType === MARKET && (
         <ul className={Styles.TradingConfirm__total}>
           <li>
             <span>Quantity</span>
-            <span>{p.marketQuantity}</span>
+            <span>{marketQuantity}</span>
           </li>
         </ul>
       )}
@@ -156,7 +168,7 @@ const MarketTradingConfirm = p => {
       <div className={Styles.TradingConfirmation__actions}>
         <button
           className={Styles["TradingConfirmation__button--back"]}
-          onClick={p.prevPage}
+          onClick={prevPage}
         >
           Back
         </button>
@@ -164,12 +176,12 @@ const MarketTradingConfirm = p => {
           className={Styles["TradingConfirmation__button--submit"]}
           onClick={e => {
             e.preventDefault();
-            p.market.onSubmitPlaceTrade(
-              p.selectedOutcome.id,
+            market.onSubmitPlaceTrade(
+              selectedOutcome.id,
               (err, tradeGroupID) => {
                 // onSent/onFailed CB
                 if (!err) {
-                  p.showOrderPlaced();
+                  showOrderPlaced();
                 }
               },
               res => {
@@ -177,14 +189,37 @@ const MarketTradingConfirm = p => {
               },
               doNotCreateOrders
             );
-            p.prevPage(e, true);
+            prevPage(e, true);
           }}
         >
-          Confirm {p.selectedNav}
+          Confirm {selectedNav}
         </button>
       </div>
     </section>
   );
+};
+
+MarketTradingConfirm.propTypes = {
+  market: PropTypes.object.isRequired,
+  selectedNav: PropTypes.string.isRequired,
+  orderType: PropTypes.string.isRequired,
+  marketQuantity: PropTypes.string.isRequired,
+  doNotCreateOrders: PropTypes.bool.isRequired,
+  selectedOutcome: PropTypes.object.isRequired,
+  prevPage: PropTypes.func.isRequired,
+  trade: PropTypes.shape({
+    numShares: PropTypes.string,
+    limitPrice: PropTypes.string,
+    tradingFees: PropTypes.object,
+    potentialEthProfit: PropTypes.object,
+    potentialProfitPercent: PropTypes.object,
+    potentialEthLoss: PropTypes.object,
+    potentialLossPercent: PropTypes.object,
+    totalCost: PropTypes.object,
+    shareCost: PropTypes.object
+  }).isRequired,
+  isMobile: PropTypes.bool.isRequired,
+  showOrderPlaced: PropTypes.func.isRequired
 };
 
 export default MarketTradingConfirm;

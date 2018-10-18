@@ -19,7 +19,7 @@ import ErrorContainer from "modules/auth/components/common/error-container";
 
 export default class ConnectDropdown extends Component {
   static propTypes = {
-    isLogged: PropTypes.bool,
+    isLogged: PropTypes.bool.isRequired,
     connectMetaMask: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired,
     logout: PropTypes.func.isRequired,
@@ -58,16 +58,16 @@ export default class ConnectDropdown extends Component {
     }
   }
 
-  setIsLedgerLoading(value) {
-    this.setState({ isLedgerLoading: value });
+  setIsLedgerLoading(isLedgerLoading) {
+    this.setState({ isLedgerLoading });
   }
 
-  setIsTrezorLoading(value) {
-    this.setState({ isTrezorLoading: value });
+  setIsTrezorLoading(isTrezorLoading) {
+    this.setState({ isTrezorLoading });
   }
 
-  setShowAdvancedButton(value) {
-    this.setState({ showAdvancedButton: value });
+  setShowAdvancedButton(showAdvancedButton) {
+    this.setState({ showAdvancedButton });
   }
 
   clearState() {
@@ -84,26 +84,27 @@ export default class ConnectDropdown extends Component {
   }
 
   connect(param) {
+    const { history, connectMetaMask, edgeLoginLink } = this.props;
     if (param === PARAMS.METAMASK) {
       if (!isMetaMaskPresent()) {
-        this.showError(param, ERROR_TYPES.UNABLE_TO_CONNECT);
+        this.showError(ERROR_TYPES.UNABLE_TO_CONNECT);
         return;
       }
-      this.props.connectMetaMask((err, res) => {
+      connectMetaMask((err, res) => {
         if (err) {
-          this.showError(param, ERROR_TYPES.NOT_SIGNED_IN);
+          this.showError(ERROR_TYPES.NOT_SIGNED_IN);
         }
       });
     } else if (param === PARAMS.EDGE) {
-      this.props.edgeLoginLink(this.props.history);
+      edgeLoginLink(history);
     }
   }
 
-  showError(param, error) {
+  showError(error) {
     this.setState({ error });
   }
 
-  hideError(param) {
+  hideError() {
     this.setState({ error: null });
   }
 
@@ -129,10 +130,11 @@ export default class ConnectDropdown extends Component {
   }
 
   logout() {
-    this.props.toggleDropdown(() => {
+    const { toggleDropdown, logout } = this.props;
+    toggleDropdown(() => {
       setTimeout(() => {
         // need to wait for animation to be done
-        this.props.logout();
+        logout();
       }, 500);
     });
   }

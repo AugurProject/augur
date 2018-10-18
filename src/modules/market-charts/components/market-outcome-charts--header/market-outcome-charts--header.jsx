@@ -7,33 +7,42 @@ import MarketOutcomeChartHeaderOrders from "modules/market-charts/components/mar
 
 import Styles from "modules/market-charts/components/market-outcome-charts--header/market-outcome-charts--header.styles";
 
-const MarketOutcomeChartsHeader = p => (
+const MarketOutcomeChartsHeader = ({
+  outcomeName,
+  hoveredPeriod,
+  hoveredDepth,
+  fixedPrecision,
+  updatePrecision,
+  updateSelectedPeriod,
+  priceTimeSeries,
+  excludeCandlestick
+}) => (
   <section className={Styles.MarketOutcomeChartsHeader}>
-    {p.excludeCandlestick || (
+    {excludeCandlestick || (
       <div className={Styles.MarketOutcomeChartsHeader__Candlestick}>
         <MarketOutcomeChartsHeaderCandlestick
-          outcomeName={p.outcomeName}
-          volume={p.hoveredPeriod.volume}
-          open={p.hoveredPeriod.open}
-          high={p.hoveredPeriod.high}
-          low={p.hoveredPeriod.low}
-          close={p.hoveredPeriod.close}
-          priceTimeSeries={p.priceTimeSeries}
-          fixedPrecision={p.fixedPrecision}
-          updateSelectedPeriod={p.updateSelectedPeriod}
+          outcomeName={outcomeName}
+          volume={hoveredPeriod.volume}
+          open={hoveredPeriod.open}
+          high={hoveredPeriod.high}
+          low={hoveredPeriod.low}
+          close={hoveredPeriod.close}
+          priceTimeSeries={priceTimeSeries}
+          fixedPrecision={fixedPrecision}
+          updateSelectedPeriod={updateSelectedPeriod}
         />
       </div>
     )}
     <div className={Styles.MarketOutcomeChartsHeader__Depth}>
       <MarketOutcomeChartHeaderDepth
-        fixedPrecision={p.fixedPrecision}
-        hoveredDepth={p.hoveredDepth}
+        fixedPrecision={fixedPrecision}
+        hoveredDepth={hoveredDepth}
       />
     </div>
     <div className={Styles.MarketOutcomeChartsHeader__Orders}>
       <MarketOutcomeChartHeaderOrders
-        fixedPrecision={p.fixedPrecision}
-        updatePrecision={p.updatePrecision}
+        fixedPrecision={fixedPrecision}
+        updatePrecision={updatePrecision}
       />
     </div>
   </section>
@@ -42,7 +51,7 @@ const MarketOutcomeChartsHeader = p => (
 export default MarketOutcomeChartsHeader;
 
 MarketOutcomeChartsHeader.propTypes = {
-  outcomeName: PropTypes.string,
+  outcomeName: PropTypes.string.isRequired,
   hoveredPeriod: PropTypes.object.isRequired,
   hoveredDepth: PropTypes.array.isRequired,
   fixedPrecision: PropTypes.number.isRequired,
@@ -50,4 +59,9 @@ MarketOutcomeChartsHeader.propTypes = {
   updateSelectedPeriod: PropTypes.func.isRequired,
   priceTimeSeries: PropTypes.array,
   excludeCandlestick: PropTypes.bool
+};
+
+MarketOutcomeChartsHeader.defaultProps = {
+  excludeCandlestick: false,
+  priceTimeSeries: []
 };

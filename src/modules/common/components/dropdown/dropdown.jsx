@@ -119,4 +119,8 @@ Dropdown.propTypes = {
   alignLeft: PropTypes.bool
 };
 
+Dropdown.defaultProps = {
+  alignLeft: false
+};
+
 export default Dropdown;

@@ -5,10 +5,10 @@ import ModalDescription from "modules/modal/components/common/modal-description"
 
 import Styles from "modules/modal/components/common/common.styles";
 
-const ModalMessage = p => (
+const ModalMessage = ({ title, description }) => (
   <section className={Styles.ModalContainer}>
-    <h1>{p.title}</h1>
-    {p.description.map(text => (
+    <h1>{title}</h1>
+    {description.map(text => (
       <ModalDescription text={text} key={text} />
     ))}
   </section>

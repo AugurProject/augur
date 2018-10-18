@@ -4,28 +4,38 @@ import PropTypes from "prop-types";
 import Styles from "modules/account/components/account-universe-description/account-universe-description.styles";
 import { formatAttoRep, formatAttoEth } from "utils/format-number";
 
-const AccountUniverseDescription = p => (
+const AccountUniverseDescription = ({
+  switchUniverse,
+  accountRep,
+  openInterest,
+  universeRep,
+  numMarkets,
+  isWinningUniverse,
+  isCurrentUniverse,
+  universeDescription,
+  universe
+}) => (
   <div className={Styles.AccountUniverseDescription}>
     <div className={Styles.AccountUniverseDescription__container}>
       <div className={Styles.AccountUniverseDescription__label}>
-        <h3>Universe {p.universeDescription}</h3>
-        {p.isWinningUniverse && (
+        <h3>Universe {universeDescription}</h3>
+        {isWinningUniverse && (
           <div className={Styles.AccountUniverseDescription__winning_universe}>
             Winning Universe
           </div>
         )}
       </div>
-      {!p.isCurrentUniverse && (
+      {!isCurrentUniverse && (
         <button
           onClick={() => {
-            p.switchUniverse(p.universe);
+            switchUniverse(universe);
           }}
           className={Styles.AccountUniversesDescription__button}
         >
           Switch
         </button>
       )}
-      {p.isCurrentUniverse && (
+      {isCurrentUniverse && (
         <span
           className={
             Styles.AccountUniversesDescription__current_universe_button
@@ -38,29 +48,29 @@ const AccountUniverseDescription = p => (
     <div className={Styles.AccountUniverseDescription__description}>
       <div>
         Your REP:{" "}
-        {p.accountRep === "0"
+        {accountRep === "0"
           ? "0"
-          : formatAttoRep(p.accountRep, { decimals: 2, roundUp: true })
+          : formatAttoRep(accountRep, { decimals: 2, roundUp: true })
               .formatted}{" "}
         REP
       </div>
       <div>
         Total REP Supply:{" "}
-        {p.universeRep === "0"
+        {universeRep === "0"
           ? "0"
-          : formatAttoRep(p.universeRep, { decimals: 2, roundUp: true })
+          : formatAttoRep(universeRep, { decimals: 2, roundUp: true })
               .formatted}{" "}
         REP
       </div>
       <div>
         Total Open Interest:{" "}
-        {p.openInterest === "0"
+        {openInterest === "0"
           ? "0"
-          : formatAttoEth(p.openInterest, { decimals: 2, roundUp: true })
+          : formatAttoEth(openInterest, { decimals: 2, roundUp: true })
               .formatted}{" "}
         ETH
       </div>
-      <div>Number of Markets: {p.numMarkets}</div>
+      <div>Number of Markets: {numMarkets}</div>
     </div>
   </div>
 );

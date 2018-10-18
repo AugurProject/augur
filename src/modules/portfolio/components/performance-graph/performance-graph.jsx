@@ -30,11 +30,11 @@ class PerformanceGraph extends Component {
       MONTH: 2592000,
       YEAR: 39030400
     };
-
+    const { currentAugurTimestamp } = props;
     this.timeFrames = {
-      DAY: props.currentAugurTimestamp - this.periodIntervals.DAY,
-      WEEK: props.currentAugurTimestamp - this.periodIntervals.WEEK,
-      MONTH: props.currentAugurTimestamp - this.periodIntervals.MONTH,
+      DAY: currentAugurTimestamp - this.periodIntervals.DAY,
+      WEEK: currentAugurTimestamp - this.periodIntervals.WEEK,
+      MONTH: currentAugurTimestamp - this.periodIntervals.MONTH,
       ALL: 0
     };
 
@@ -55,7 +55,7 @@ class PerformanceGraph extends Component {
       ],
       graphPeriodDefault: "DAY",
       startTime: this.timeFrames.DAY,
-      endTime: props.currentAugurTimestamp,
+      endTime: currentAugurTimestamp,
       selectedSeriesData: [],
       performanceData: []
     };

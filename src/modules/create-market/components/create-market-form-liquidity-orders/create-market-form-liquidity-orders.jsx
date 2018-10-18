@@ -53,8 +53,8 @@ const CreateMarketLiquidityOrders = props => {
 };
 
 CreateMarketLiquidityOrders.propTypes = {
-  newMarket: PropTypes.object.isRequired,
   liquidityState: PropTypes.object.isRequired,
+  newMarket: PropTypes.object.isRequired,
   removeOrderFromNewMarket: PropTypes.func.isRequired
 };
 

@@ -19,15 +19,15 @@ import {
   TYPE_DISPUTE
 } from "modules/markets/constants/link-types";
 
-const Property = p => (
+const Property = ({ numRow, property }) => (
   <div
     className={classNames(Styles.CoreProperties__property, {
-      [Styles.CoreProperties__propertySmall]: p.numRow !== 0
+      [Styles.CoreProperties__propertySmall]: numRow !== 0
     })}
   >
     <span className={Styles[`CoreProperties__property-name`]}>
-      <div>{p.property.name}</div>
-      {p.property.tooltip && (
+      <div>{property.name}</div>
+      {property.tooltip && (
         <div>
           <label
             className={classNames(
@@ -49,26 +49,43 @@ const Property = p => (
             <h4>Trading Settlement Fee</h4>
             <p>
               The trading settlement fee is a combination of the Market Creator
-              Fee (<b>{p.property.marketCreatorFee}</b>) and the Reporting Fee (
-              <b>{p.property.reportingFee}</b>)
+              Fee (<b>{property.marketCreatorFee}</b>) and the Reporting Fee (
+              <b>{property.reportingFee}</b>)
             </p>
           </ReactTooltip>
         </div>
       )}
     </span>
-    <span style={p.property.textStyle}>{p.property.value}</span>
+    <span style={property.textStyle}>{property.value}</span>
   </div>
 );
+
+Property.propTypes = {
+  numRow: PropTypes.number.isRequired,
+  property: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    value: PropTypes.any,
+    tooltip: PropTypes.bool,
+    textStyle: PropTypes.object,
+    marketCreatorFee: PropTypes.string,
+    reportingFee: PropTypes.string
+  }).isRequired
+};
 
 export default class CoreProperties extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
     tentativeWinner: PropTypes.object,
-    isLogged: PropTypes.bool,
+    isLogged: PropTypes.bool.isRequired,
     isDesignatedReporter: PropTypes.bool,
     location: PropTypes.object.isRequired,
     finalizeMarket: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    tentativeWinner: null,
+    isDesignatedReporter: false
   };
 
   determinePhase() {
@@ -112,13 +129,15 @@ export default class CoreProperties extends Component {
       finalizeMarket
     } = this.props;
 
+    const { id, marketType } = market;
+
     const marketCreatorFee = getValue(
       market,
       "marketCreatorFeeRatePercent.full"
     );
     const reportingFee = getValue(market, "reportingFeeRatePercent.full");
 
-    const isScalar = market.marketType === SCALAR;
+    const isScalar = marketType === SCALAR;
     const consensus = getValue(
       market,
       isScalar ? "consensus.winningOutcome" : "consensus.outcomeName"
@@ -156,10 +175,7 @@ export default class CoreProperties extends Component {
         },
         {
           name: "min",
-          value:
-            market.marketType === SCALAR
-              ? getValue(market, "minPrice").toString()
-              : null
+          value: isScalar ? getValue(market, "minPrice").toString() : null
         }
       ],
       [
@@ -179,10 +195,7 @@ export default class CoreProperties extends Component {
         },
         {
           name: "max",
-          value:
-            market.marketType === SCALAR
-              ? getValue(market, "maxPrice").toString()
-              : null
+          value: isScalar ? getValue(market, "maxPrice").toString() : null
         }
       ]
     ];
@@ -194,7 +207,7 @@ export default class CoreProperties extends Component {
         if (property.value) {
           row.push(
             <Property
-              key={"property" + numRow + numCol}
+              key={`property${numRow}${numCol}`}
               property={property}
               numRow={numRow}
             />
@@ -203,7 +216,7 @@ export default class CoreProperties extends Component {
       });
       renderedProperties.push(
         <div
-          key={"row" + numRow}
+          key={`row${numRow}`}
           className={classNames(Styles.CoreProperties__row, {
             [Styles.CoreProperties__rowBorder]: numRow === 0
           })}
@@ -259,7 +272,7 @@ export default class CoreProperties extends Component {
                   </ReactTooltip>
                   <button
                     className={Styles[`CoreProperties__property-button`]}
-                    onClick={() => finalizeMarket(market.id)}
+                    onClick={() => finalizeMarket(id)}
                   >
                     FINALIZE
                   </button>
@@ -288,7 +301,7 @@ export default class CoreProperties extends Component {
             </div>
             <MarketLink
               className={Styles[`CoreProperties__property-button`]}
-              id={market.id}
+              id={id}
               linkType={TYPE_DISPUTE}
               location={location}
             >
@@ -321,7 +334,7 @@ export default class CoreProperties extends Component {
             </div>
             <MarketLink
               className={Styles[`CoreProperties__property-button`]}
-              id={market.id}
+              id={id}
               linkType={TYPE_REPORT}
               location={location}
             >

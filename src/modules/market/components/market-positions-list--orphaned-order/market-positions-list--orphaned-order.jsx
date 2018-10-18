@@ -13,13 +13,17 @@ import { formatEther, formatShares } from "utils/format-number";
 
 export default class OrphanedOrder extends Component {
   static propTypes = {
-    isExtendedDisplay: PropTypes.bool,
-    isMobile: PropTypes.bool,
+    isExtendedDisplay: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool.isRequired,
     outcomeName: PropTypes.string,
-    order: PropTypes.object,
-    pending: PropTypes.bool,
-    outcome: PropTypes.object,
+    order: PropTypes.object.isRequired,
+    pending: PropTypes.bool.isRequired,
+    outcome: PropTypes.object.isRequired,
     cancelOrphanedOrder: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    outcomeName: null
   };
 
   constructor(props) {

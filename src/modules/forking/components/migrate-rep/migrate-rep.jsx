@@ -20,10 +20,10 @@ export default class MigrateRep extends Component {
     getForkMigrationTotals: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     isConnected: PropTypes.bool.isRequired,
-    isLogged: PropTypes.bool,
+    isLogged: PropTypes.bool.isRequired,
     isMarketLoaded: PropTypes.bool.isRequired,
     loadFullMarket: PropTypes.func.isRequired,
-    location: PropTypes.object,
+    location: PropTypes.object.isRequired,
     market: PropTypes.object.isRequired,
     marketId: PropTypes.string.isRequired,
     submitMigrateREP: PropTypes.func.isRequired,
@@ -153,8 +153,6 @@ export default class MigrateRep extends Component {
             )}
             {s.currentStep === 1 && (
               <MigrateRepConfirm
-                market={market}
-                isMarketInValid={s.isMarketInValid}
                 selectedOutcomeName={s.selectedOutcomeName}
                 repAmount={s.repAmount}
                 gasEstimate={s.gasEstimate}

@@ -72,14 +72,14 @@ export const ChevronRight = () => (
 
 export default class CreateMarketResolution extends Component {
   static propTypes = {
-    currentTimestamp: PropTypes.number.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
-    isValid: PropTypes.func.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
     newMarket: PropTypes.object.isRequired,
+    isValid: PropTypes.func.isRequired,
+    keyPressed: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
     validateField: PropTypes.func.isRequired,
-    validateNumber: PropTypes.func.isRequired,
-    keyPressed: PropTypes.func.isRequired
+    validateNumber: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -365,13 +365,13 @@ export default class CreateMarketResolution extends Component {
               validateField("endTime", formatDate(date.toDate()));
             }}
             isOutsideRange={day =>
-              day.isAfter(moment(this.props.currentTimestamp).add(6, "M")) ||
-              day.isBefore(moment(this.props.currentTimestamp))
+              day.isAfter(moment(currentTimestamp).add(6, "M")) ||
+              day.isBefore(moment(currentTimestamp))
             }
             focused={this.state.focused}
             onFocusChange={({ focused }) => {
               if (this.state.date == null) {
-                const date = moment(this.props.currentTimestamp);
+                const date = moment(currentTimestamp);
                 this.setState({
                   date
                 });

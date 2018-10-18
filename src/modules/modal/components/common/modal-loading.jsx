@@ -4,9 +4,9 @@ import { PulseLoader } from "react-spinners";
 
 import Styles from "modules/modal/components/common/common.styles";
 
-const ModalLoading = p => (
+const ModalLoading = loaderOptions => (
   <div className={Styles.Loading}>
-    <PulseLoader {...p} />
+    <PulseLoader {...loaderOptions} />
   </div>
 );
 

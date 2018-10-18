@@ -8,24 +8,31 @@ import {
 } from "src/modules/common/components/icons";
 import Styles from "modules/common/components/chevron-flip/chevron-flip.styles";
 
-const ChevronFlip = p => (
+const ChevronFlip = ({
+  filledInIcon,
+  className,
+  pointDown,
+  big,
+  quick,
+  stroke
+}) => (
   <span>
-    {p.filledInIcon
+    {filledInIcon
       ? ChevronFlipFilledIcon(
-          classNames(Styles.ChevronFlip, p.className, {
-            [Styles.pointDown]: p.pointDown,
-            [Styles.big]: p.big,
-            [Styles.quick]: p.quick
+          classNames(Styles.ChevronFlip, className, {
+            [Styles.pointDown]: pointDown,
+            [Styles.big]: big,
+            [Styles.quick]: quick
           }),
-          p.stroke
+          stroke
         )
       : ChevronFlipIcon(
-          classNames(Styles.ChevronFlip, p.className, {
-            [Styles.pointDown]: p.pointDown,
-            [Styles.big]: p.big,
-            [Styles.quick]: p.quick
+          classNames(Styles.ChevronFlip, className, {
+            [Styles.pointDown]: pointDown,
+            [Styles.big]: big,
+            [Styles.quick]: quick
           }),
-          p.stroke
+          stroke
         )}
   </span>
 );
@@ -37,6 +44,15 @@ ChevronFlip.propTypes = {
   big: PropTypes.bool,
   filledInIcon: PropTypes.bool,
   quick: PropTypes.bool
+};
+
+ChevronFlip.defaultProps = {
+  className: undefined,
+  pointDown: false,
+  stroke: undefined,
+  big: undefined,
+  filledInIcon: undefined,
+  quick: false
 };
 
 export default ChevronFlip;

@@ -20,21 +20,19 @@ function makeSearch(location, param, value, isItemDefault) {
   return makeQuery(updatedSearch);
 }
 
-export default function NavPanel(p) {
+export default function NavPanel({ items, location, selectedNav, param }) {
   return (
     <div className={Styles.NavPanel}>
       <aside className={Styles.NavPanel__controls}>
-        {p.items.map(item => (
+        {items.map(item => (
           <Link
             key={item.title}
             className={classNames(Styles.NavPanel__control, {
               [Styles["NavPanel__control--active"]]:
-                p.selectedNav != null
-                  ? item.param === p.selectedNav
-                  : item.default
+                selectedNav != null ? item.param === selectedNav : item.default
             })}
             to={{
-              search: makeSearch(p.location, p.param, item.param, item.default)
+              search: makeSearch(location, param, item.param, item.default)
             }}
           >
             <div className={Styles.NavPanel__icon}>{item.icon}</div>
@@ -48,7 +46,11 @@ export default function NavPanel(p) {
 
 NavPanel.propTypes = {
   location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
   items: PropTypes.array.isRequired,
-  param: PropTypes.string.isRequired
+  param: PropTypes.string.isRequired,
+  selectedNav: PropTypes.string
+};
+
+NavPanel.defaultProps = {
+  selectedNav: null
 };

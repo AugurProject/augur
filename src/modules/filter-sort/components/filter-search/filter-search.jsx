@@ -18,6 +18,10 @@ export default class FilterSearch extends Component {
     hasLoadedMarkets: PropTypes.bool
   };
 
+  static defaultProps = {
+    hasLoadedMarkets: false
+  };
+
   constructor(props) {
     super(props);
 
@@ -94,7 +98,7 @@ export default class FilterSearch extends Component {
 
   render() {
     const { hasLoadedMarkets } = this.props;
-    const s = this.state;
+    const { width, placeholder, search } = this.state;
 
     return (
       <article className={Styles.FilterSearch}>
@@ -147,21 +151,19 @@ export default class FilterSearch extends Component {
         </ReactTooltip>
         <div
           className={Styles.FilterSearch__transition}
-          style={{ minWidth: s.width }}
+          style={{ minWidth: width }}
         >
           <Input
             className={Styles.FilterSearch__input}
             isSearch
             isClearable
             noFocus
-            placeholder={s.placeholder}
-            value={s.search}
+            placeholder={placeholder}
+            value={search}
             onChange={this.onChange}
             onFocus={this.onFocus}
             onBlur={this.onBlur}
-            isLoading={Boolean(
-              !hasLoadedMarkets && s.search && s.search !== ""
-            )}
+            isLoading={Boolean(!hasLoadedMarkets && search && search !== "")}
           />
         </div>
       </article>

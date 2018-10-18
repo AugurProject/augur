@@ -15,7 +15,8 @@ export default class BaseInnerNav extends Component {
     history: PropTypes.object.isRequired,
     isMobile: PropTypes.bool.isRequired,
     mobileMenuState: PropTypes.number.isRequired,
-    subMenuScalar: PropTypes.number.isRequired
+    subMenuScalar: PropTypes.number.isRequired,
+    currentBasePath: PropTypes.string.isRequired
   };
 
   getMainMenuData() {

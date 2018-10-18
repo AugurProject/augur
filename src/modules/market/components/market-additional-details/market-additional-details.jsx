@@ -1,30 +1,24 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Styles from "modules/reporting/components/market-additional-details/market-additional-details.style";
+import CustomPropTypes from "utils/custom-prop-types";
+import Styles from "modules/market/components/market-additional-details/market-additional-details.style";
 import { SCALAR } from "modules/markets/constants/market-types";
 
-const MarketAdditonalDetails = p => {
-  const {
-    details,
-    resolutionSource,
-    marketType,
-    minPrice,
-    maxPrice,
-    scalarDenomination
-  } = p.market;
-  const denomination = scalarDenomination ? " " + scalarDenomination : "";
+const MarketAdditonalDetails = ({
+  details,
+  resolutionSource = "General knowledge",
+  marketType,
+  minPrice,
+  maxPrice,
+  scalarDenomination
+}) => {
+  const denomination = scalarDenomination ? ` ${scalarDenomination}` : "";
   return (
     <article>
       <div className={Styles[`MarketAdditionalDetails__details-wrapper`]}>
         <div className={Styles[`MarketAdditionalDetails__details-container`]}>
           <h4>Resolution Source:</h4>
-          <span>
-            {resolutionSource ? (
-              <span>{resolutionSource}</span>
-            ) : (
-              "General knowledge"
-            )}
-          </span>
+          <span>{resolutionSource}</span>
           {details && (
             <label
               className={
@@ -54,7 +48,18 @@ const MarketAdditonalDetails = p => {
 };
 
 MarketAdditonalDetails.propTypes = {
-  market: PropTypes.object.isRequired
+  details: PropTypes.string,
+  resolutionSource: PropTypes.string,
+  scalarDenomination: PropTypes.string,
+  marketType: PropTypes.string.isRequired,
+  minPrice: CustomPropTypes.bigNumber.isRequired,
+  maxPrice: CustomPropTypes.bigNumber.isRequired
+};
+
+MarketAdditonalDetails.defaultProps = {
+  resolutionSource: "General knowledge",
+  details: null,
+  scalarDenomination: null
 };
 
 export default MarketAdditonalDetails;

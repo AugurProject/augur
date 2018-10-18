@@ -11,7 +11,7 @@ import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
 
 export default class LinkedTransaction extends Component {
   static propTypes = {
-    transaction: PropTypes.object
+    transaction: PropTypes.object.isRequired
   };
 
   constructor(props) {

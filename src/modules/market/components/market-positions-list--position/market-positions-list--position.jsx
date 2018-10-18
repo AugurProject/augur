@@ -11,12 +11,23 @@ import MarketOutcomeTradingIndicator from "modules/market/containers/market-outc
 export default class MarketPositionsListPosition extends Component {
   static propTypes = {
     outcomeName: PropTypes.string.isRequired,
-    position: PropTypes.object.isRequired,
-    openOrders: PropTypes.array.isRequired,
+    position: PropTypes.shape({
+      netPosition: PropTypes.object,
+      qtyShares: PropTypes.object,
+      purchasePrice: PropTypes.object,
+      unrealizedNet: PropTypes.object,
+      realizedNet: PropTypes.object,
+      totalNet: PropTypes.object
+    }).isRequired,
     isExtendedDisplay: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
     outcome: PropTypes.object,
     hasOrders: PropTypes.bool
+  };
+
+  static defaultProps = {
+    hasOrders: false,
+    outcome: null
   };
 
   static calcAvgDiff(position, order) {

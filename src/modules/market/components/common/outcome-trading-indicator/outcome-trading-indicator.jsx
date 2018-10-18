@@ -16,12 +16,13 @@ export default function OutcomeTradingIndicator({
   location,
   isMobile
 }) {
-  const indicatorArray = {};
-  indicatorArray[BUY_UP] = Styles.TradingIndicator_arrow_buy_up;
-  indicatorArray[BUY_DOWN] = Styles.TradingIndicator_arrow_buy_down;
-  indicatorArray[SELL_UP] = Styles.TradingIndicator_arrow_sell_up;
-  indicatorArray[SELL_DOWN] = Styles.TradingIndicator_arrow_sell_down;
-  indicatorArray[NONE] = "";
+  const indicatorArray = {
+    [BUY_UP]: Styles.TradingIndicator_arrow_buy_up,
+    [BUY_DOWN]: Styles.TradingIndicator_arrow_buy_down,
+    [SELL_UP]: Styles.TradingIndicator_arrow_sell_up,
+    [SELL_DOWN]: Styles.TradingIndicator_arrow_sell_down,
+    [NONE]: ""
+  };
 
   const indicatorStyle = indicatorArray[tradingIndicator];
 
@@ -35,7 +36,7 @@ export default function OutcomeTradingIndicator({
 
   const spacing = (loc, direction) => {
     if (direction !== NONE) {
-      switch (loc + "|" + direction) {
+      switch (`${loc}|${direction}`) {
         case "yes-no-scalar|up":
           return { bottom: "0.975rem" };
         case "yes-no-scalar|down":
@@ -76,6 +77,11 @@ export default function OutcomeTradingIndicator({
 OutcomeTradingIndicator.propTypes = {
   tradingIndicator: PropTypes.string.isRequired,
   style: PropTypes.object,
-  location: PropTypes.string,
+  location: PropTypes.string.isRequired,
   isMobile: PropTypes.bool
+};
+
+OutcomeTradingIndicator.defaultProps = {
+  style: {},
+  isMobile: false
 };

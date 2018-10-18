@@ -7,7 +7,7 @@ import classNames from "classnames";
 import Styles from "modules/create-market/components/create-market-preview-categorical/create-market-preview-categorical.styles";
 
 const CategoricalOutcome = ({ className, outcome }) => (
-  <div className={className || Styles.MarketPreviewCategorical__outcome}>
+  <div className={className}>
     <span className={Styles["MarketPreviewCategorical__outcome-name"]}>
       {outcome}
     </span>
@@ -103,6 +103,10 @@ MarketPreviewCategorical.propTypes = {
 CategoricalOutcome.propTypes = {
   outcome: PropTypes.string.isRequired,
   className: PropTypes.string
+};
+
+CategoricalOutcome.defaultProps = {
+  className: Styles.MarketPreviewCategorical__outcome
 };
 
 export default MarketPreviewCategorical;

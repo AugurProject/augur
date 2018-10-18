@@ -1,22 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const EtherscanLink = p => (
+const EtherscanLink = ({ baseUrl, txhash, label, showNonLink }) => (
   <span>
-    {p.baseUrl && (
-      <a href={p.baseUrl + p.txhash} target="blank">
-        {p.label}
+    {baseUrl && (
+      <a href={baseUrl + txhash} target="blank">
+        {label}
       </a>
     )}
-    {!p.baseUrl && p.showNonLink && <span>{p.label}</span>}
+    {!baseUrl && showNonLink && <span>{label}</span>}
   </span>
 );
 
 EtherscanLink.propTypes = {
   baseUrl: PropTypes.string,
-  txhash: PropTypes.string,
-  label: PropTypes.string,
+  txhash: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
   showNonLink: PropTypes.bool
+};
+
+EtherscanLink.defaultProps = {
+  baseUrl: null,
+  showNonLink: false
 };
 
 export default EtherscanLink;

@@ -31,7 +31,7 @@ rules:
   prefer-template: 0
   import/prefer-default-export: 0
   no-underscore-dangle: 0
-  react/require-default-props: 0
+  react/require-default-props: 1
   no-prototype-builtins: 0
   no-restricted-globals:
   - 0
@@ -84,5 +84,5 @@ rules:
     object: true
   jsx-a11y/click-events-have-key-events: 0
   react/no-string-refs: 0
-  react/no-unused-prop-types: 0
+  react/no-unused-prop-types: 1
   react/forbid-prop-types: 0

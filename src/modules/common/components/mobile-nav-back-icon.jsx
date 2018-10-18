@@ -2,11 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-const MobileNavBackIcon = p => (
+const MobileNavBackIcon = ({ className }) => (
   <svg
     viewBox="0 0 8 14"
     className={classNames("mobile-nav-back-icon", {
-      [p.className]: p.className
+      [className]: className
     })}
   >
     <g
@@ -39,4 +39,8 @@ export default MobileNavBackIcon;
 
 MobileNavBackIcon.propTypes = {
   className: PropTypes.string
+};
+
+MobileNavBackIcon.defaultProps = {
+  className: null
 };

@@ -39,7 +39,6 @@ const mapStateToProps = (state, ownProps) => {
     isMobile: state.appStatus.isMobile,
     currentTimeInSeconds: selectCurrentTimestampInSeconds(state),
     orderBook: cumulativeOrderBook,
-    hasPriceHistory: priceTimeSeries.length !== 0,
     hasOrders:
       !isEmpty(cumulativeOrderBook[BIDS]) ||
       !isEmpty(cumulativeOrderBook[ASKS]),

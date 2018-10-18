@@ -108,7 +108,11 @@ class ForkMigrationTotals extends Component {
   }
 
   render() {
-    const { forkMigrationTotalsMap } = this.state;
+    const {
+      forkMigrationTotalsMap,
+      forkMigrationTotalWrapperHeight,
+      isOpen
+    } = this.state;
 
     const { reportableOutcomes } = this.props.forkingMarket;
     const forkMigrationTotals = selectMigrateTotals(
@@ -118,12 +122,12 @@ class ForkMigrationTotals extends Component {
 
     const totalForkMigrationTotals = forkMigrationTotals.length;
     const displayShowMore = totalForkMigrationTotals > 3;
-    const showMoreText = this.state.isOpen
+    const showMoreText = isOpen
       ? `- ${totalForkMigrationTotals - 3} less`
       : `+ ${totalForkMigrationTotals - 3} more`;
 
     const forkMigrationTotalWrapperStyle = {
-      minHeight: this.state.forkMigrationTotalWrapperHeight
+      minHeight: forkMigrationTotalWrapperHeight
     };
 
     return (
@@ -174,7 +178,6 @@ class ForkMigrationTotals extends Component {
 }
 
 ForkMigrationTotals.propTypes = {
-  universe: PropTypes.string.isRequired,
   forkingMarket: PropTypes.object.isRequired,
   getForkMigrationTotals: PropTypes.func.isRequired,
   currentBlockNumber: PropTypes.number.isRequired
@@ -183,6 +186,10 @@ ForkMigrationTotals.propTypes = {
 ForkMigrationTotal.propTypes = {
   forkMigrationTotal: PropTypes.object.isRequired,
   className: PropTypes.string
+};
+
+ForkMigrationTotal.defaultProps = {
+  className: null
 };
 
 export default ForkMigrationTotals;

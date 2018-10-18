@@ -11,12 +11,24 @@ import Styles from "modules/market/components/market-positions-list--order/marke
 
 export default class Order extends Component {
   static propTypes = {
-    isExtendedDisplay: PropTypes.bool,
-    isMobile: PropTypes.bool,
-    outcomeName: PropTypes.string,
-    order: PropTypes.object,
-    pending: PropTypes.bool,
+    isExtendedDisplay: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+    outcomeName: PropTypes.string.isRequired,
+    order: PropTypes.shape({
+      type: PropTypes.string.isRequired,
+      orderCancellationStatus: PropTypes.string,
+      avgPrice: PropTypes.object,
+      unmatchedShares: PropTypes.object,
+      tokensEscrowed: PropTypes.object,
+      sharesEscrowed: PropTypes.object,
+      cancelOrder: PropTypes.func.isRequired
+    }).isRequired,
+    pending: PropTypes.bool.isRequired,
     outcome: PropTypes.object
+  };
+
+  static defaultProps = {
+    outcome: null
   };
 
   constructor(props) {
@@ -98,7 +110,7 @@ export default class Order extends Component {
         </li>
         <li />
         <li>
-          {order.type === SELL ? <span>-</span> : <span>+</span>} {orderShares}
+          {orderType === SELL ? <span>-</span> : <span>+</span>} {orderShares}
         </li>
         <li>{orderPrice}</li>
         {isExtendedDisplay &&

@@ -46,7 +46,7 @@ export const RewriteUrlParams = windowRef => BaseCmp => {
   };
 
   WrapperCmp.propTypes = {
-    location: PropTypes.object,
+    location: PropTypes.object.isRequired,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
       replace: PropTypes.func.isRequired,

@@ -11,7 +11,6 @@ export default class FormattedMigrationTotals extends Component {
   static propTypes = {
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
-    forkMigrationTotals: PropTypes.object,
     currentBlockNumber: PropTypes.number.isRequired,
     getForkMigrationTotals: PropTypes.func.isRequired,
     market: PropTypes.object.isRequired,
@@ -53,10 +52,10 @@ export default class FormattedMigrationTotals extends Component {
   }
 
   getForkMigrationTotals() {
-    const { getForkMigrationTotals } = this.props;
+    const { getForkMigrationTotals, market } = this.props;
     getForkMigrationTotals((err, forkMigrationTotals) => {
       if (err) return console.error(err);
-      const { reportableOutcomes } = this.props.market;
+      const { reportableOutcomes } = market;
       const formattedMigrationTotals = selectMigrateTotals(
         reportableOutcomes,
         forkMigrationTotals

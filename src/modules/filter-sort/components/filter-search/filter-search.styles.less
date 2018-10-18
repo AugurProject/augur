@@ -3,7 +3,7 @@
 .FilterSearch {
   display: flex;
   flex-direction: row;
-  min-width: 250px;
+  min-width: 15.625rem; // 250px
   width: 100%;
 }
 
@@ -15,11 +15,11 @@
   .caps--medium;
 
   align-items: center;
-  background-color: #ffffff;
+  background-color: @color-white;
   border-radius: 17px;
   color: @color-lightpurple;
   display: flex;
-  font-size: 14px;
+  font-size: @font-size-medium;
   padding: 5px 12px;
 
   > svg {
@@ -48,7 +48,7 @@
 
 @media @breakpoint-mobile {
   .FilterSearch {
-    min-width: 200px;
+    min-width: 12.5rem; //200px
   }
 }
 
