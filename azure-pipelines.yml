@@ -29,8 +29,8 @@ jobs:
           echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
           docker pull $CORE_IMAGE_LATEST;
           yarn workspace augur-core docker:build;
-          docker push $CORE_IMAGE_BUILD
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
+          docker push $CORE_IMAGE_BUILD
 
   - job: Test_Augur_Core
     dependsOn: Build_Core_Docker
