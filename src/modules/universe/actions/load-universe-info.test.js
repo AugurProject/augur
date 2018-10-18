@@ -57,7 +57,8 @@ describe("modules/account/actions/load-universe-info.js", () => {
         ]
       };
 
-      loadUniverseInfo(actual => {
+      loadUniverseInfo((err, actual) => {
+        expect(err).toStrictEqual(null);
         expect(actual).toStrictEqual(expected);
       })(null, getState);
     });
