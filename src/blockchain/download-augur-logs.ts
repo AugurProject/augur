@@ -1,8 +1,8 @@
-import { each } from "bluebird";
-import { Augur, BlockRange } from "augur.js";
-import { mapLimit, queue } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
+import { mapLimit, queue } from "async";
+import { each } from "bluebird";
+import { Augur, BlockRange } from "augur.js";
 import { BlockDetail, ErrorCallback, FormattedEventLog } from "../types";
 import { processLog } from "./process-logs";
 import { logProcessors } from "./log-processors";

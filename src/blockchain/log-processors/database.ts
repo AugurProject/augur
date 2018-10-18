@@ -1,10 +1,10 @@
+import * as _ from "lodash";
 import * as Knex from "knex";
-import { Address, ReportingState, AsyncCallback, ErrorCallback, FeeWindowState, GenericCallback } from "../../types";
+import Augur from "augur.js";
 import { BigNumber } from "bignumber.js";
+import { Address, ReportingState, AsyncCallback, ErrorCallback, FeeWindowState, GenericCallback } from "../../types";
 import { getCurrentTime } from "../process-block";
 import { augurEmitter } from "../../events";
-import * as _ from "lodash";
-import Augur from "augur.js";
 import { SubscriptionEventNames } from "../../constants";
 
 export interface FeeWindowModifications {
