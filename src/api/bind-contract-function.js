@@ -18,13 +18,18 @@ function bindContractFunction(functionAbi) {
           if (isObject(params[0].meta) && params[0].meta.address) assign(payload, { from: params[0].meta.address });
           if (isObject(params[0].tx)) assign(payload, { from: (params[0].meta || {}).address }, params[0].tx);
         }
-        if (!isFunction(params[params.length - 1])) return console.error("Callback required");
-        var callback = params.pop();
-        return ethrpc.callContractFunction(payload, function (err, response) {
-          if (err) return callback(err);
-          if (response == null) return callback(new Error("Null eth_call response"));
-          callback(null, response);
+        var callPromise = new Promise(function (resolve, reject) {
+          return ethrpc.callContractFunction(payload, function (err, response) {
+            if (err) return reject(err);
+            if (response == null) return reject(new Error("Null eth_call response"));
+            resolve(response);
+          });
         });
+        if (isFunction(params[params.length - 1])) {
+          var callback = params.pop();
+          callPromise.then(function (response) { callback(null, response); }).catch(callback);
+        }
+        return callPromise;
       }
     }
     var onSent, onSuccess, onFailed, signer, accountType;
