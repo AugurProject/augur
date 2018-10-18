@@ -187,7 +187,8 @@ export const helpers = store => {
           })
         )
       ),
-    getMarketDisputeOutcomes: () => selectMarketDisputeOutcomes(),
+    getMarketDisputeOutcomes: () =>
+      selectMarketDisputeOutcomes(store.getState()),
     getReportingWindowStats: () => getReportingWindowStats(),
     getDaysRemaining: (endTime, startTime) =>
       new Promise(resolve =>

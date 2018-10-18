@@ -1,131 +1,117 @@
-import sinon from "sinon";
-import configureMockStore from "redux-mock-store";
-import thunk from "redux-thunk";
-import testState from "test/testState";
-import marketsAssertions from "assertions/markets";
-
-// TODO -- should be refactored to use local state in requiring test
-let allMarkets; // eslint-disable-line import/no-mutable-exports
-
-jest.mock("./market", () => mockMarket);
-jest.mock("../../../store", () => store);
+import { selectMarkets } from "./markets-all";
 
 describe(`modules/markets/selectors/markets-all.js`, () => {
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
-  const state = Object.assign({}, testState, {
-    marketsData: {
-      test: {
-        endTime: parseInt(new Date("01/01/3000").getTime() / 1000, 10),
-        outcomes: {
-          test: {}
+  const state = Object.assign(
+    {},
+    {
+      marketsData: {
+        test: {
+          endTime: parseInt(new Date("01/01/3000").getTime() / 1000, 10),
+          outcomes: {
+            test: {}
+          },
+          volume: {
+            value: 5
+          }
         },
-        volume: {
-          value: 5
+        test2: {
+          endTime: parseInt(new Date("01/01/3000").getTime() / 1000, 10),
+          outcomes: {
+            test2: {}
+          },
+          volume: {
+            value: 10
+          }
+        },
+        test3: {
+          endTime: parseInt(new Date("01/01/3000").getTime() / 1000, 10),
+          outcomes: {
+            test3: {}
+          },
+          volume: {
+            value: 7
+          }
         }
       },
-      test2: {
-        endTime: parseInt(new Date("01/01/3000").getTime() / 1000, 10),
-        outcomes: {
-          test2: {}
+      priceHistory: {
+        test: {},
+        test2: {},
+        test3: {}
+      },
+      favorites: {
+        test: true,
+        test2: true,
+        test3: false
+      },
+      reports: {
+        testEvent: {
+          id: "testEvent"
         },
-        volume: {
-          value: 10
+        testEvent2: {
+          id: "testEvent2"
+        },
+        testEvent3: {
+          id: "testEvent2"
         }
       },
-      test3: {
-        endTime: parseInt(new Date("01/01/3000").getTime() / 1000, 10),
-        outcomes: {
-          test3: {}
-        },
-        volume: {
-          value: 7
-        }
+      accountTrades: {
+        test: {},
+        test2: {},
+        test3: {}
+      },
+      orderBooks: {
+        test: {},
+        test2: {},
+        test3: {}
+      },
+      tradesInProgress: {
+        test: {},
+        test2: {},
+        test3: {}
       }
-    },
-    priceHistory: {
-      test: {},
-      test2: {},
-      test3: {}
-    },
-    favorites: {
-      test: true,
-      test2: true,
-      test3: false
-    },
-    reports: {
-      testEvent: {
-        id: "testEvent"
-      },
-      testEvent2: {
-        id: "testEvent2"
-      },
-      testEvent3: {
-        id: "testEvent2"
-      }
-    },
-    accountTrades: {
-      test: {},
-      test2: {},
-      test3: {}
-    },
-    orderBooks: {
-      test: {},
-      test2: {},
-      test3: {}
-    },
-    tradesInProgress: {
-      test: {},
-      test2: {},
-      test3: {}
     }
-  });
-  const store = mockStore(state);
-  const mockMarket = {
-    selectMarket: () => {},
-    selectMarketReport: () => {}
-  };
-  sinon
-    .stub(mockMarket, "selectMarket")
-    .callsFake(
-      (
-        marketId,
-        market,
-        priceHistory,
-        isMarketOpen,
-        isMarketExpired,
-        favorite,
-        outcomes,
-        reports,
-        accountTrades,
-        tradesInProgress,
-        endYear,
-        endMonth,
-        endTime,
-        isBlockchainReportPhase,
-        marketOrderBook,
-        orderCancellation,
-        loginAccount,
-        dispatch
-      ) => market
-    );
-  sinon
-    .stub(mockMarket, "selectMarketReport")
-    .callsFake((marketId, universeReports) => ({}));
+  );
 
-  const selector = require("../../../src/modules/markets/selectors/markets-all.js");
+  jest.mock("./market");
+  jest.mock("../../../select-state");
+  const { selectMarket } = require("./market");
+  const { selectMarketsDataState } = require("../../../select-state");
 
-  allMarkets = selector.default;
+  selectMarket.mockImplementation(value => value);
+  selectMarketsDataState.mockImplementation(() => ({
+    test: {
+      endTime: parseInt(new Date("01/01/3000").getTime() / 1000, 10),
+      outcomes: {
+        test: {}
+      },
+      volume: {
+        value: 5
+      }
+    },
+    test2: {
+      endTime: parseInt(new Date("01/01/3000").getTime() / 1000, 10),
+      outcomes: {
+        test2: {}
+      },
+      volume: {
+        value: 10
+      }
+    },
+    test3: {
+      endTime: parseInt(new Date("01/01/3000").getTime() / 1000, 10),
+      outcomes: {
+        test3: {}
+      },
+      volume: {
+        value: 7
+      }
+    }
+  }));
 
   test(`should return the correct selectedMarket function`, () => {
-    const actual = selector.default();
+    const markets = selectMarkets(state);
 
-    marketsAssertions(actual);
-    assert(
-      mockMarket.selectMarket.calledThrice,
-      `selectMarket wasn't called 3 times as expected`
-    );
+    expect(markets).toBeDefined();
+    expect(markets).toHaveLength(3);
   });
 });
-
-export default allMarkets;
