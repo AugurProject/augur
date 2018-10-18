@@ -2,6 +2,14 @@ variables:
     SOLC_VERSION: v0.4.24
     SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
 
+trigger:
+  batch: false
+  branches:
+    include:
+    - master
+    - azure-pipelines
+    - monorepo-integration
+
 jobs:
   - job: Test_Augur_Core
     pool:
@@ -82,6 +90,7 @@ jobs:
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: 'junit.xml'
+        condition: always()
 
   - job: Test_Augur_js
     pool:
@@ -120,10 +129,6 @@ jobs:
         git config --global user.name "Augur Developers"
         python -m pip install --upgrade pip pip-tools setuptools wheel
         pip install virtualenv
-      displayName: 'setup'
-
-    - script: |
-        set -euxo pipefail
         PATH=$(Agent.BuildDirectory)/bin:$PATH
         mkdir $(Agent.BuildDirectory)/bin
         echo "$(SOLC_MD5) *$(Agent.BuildDirectory)/bin/solc" > solc.md5
@@ -132,11 +137,15 @@ jobs:
         ls -l $(Agent.BuildDirectory)
         ls -l $(Agent.BuildDirectory)/bin
         chmod a+x $(Agent.BuildDirectory)/bin/solc
-      displayName: 'contracts'
-
-    - script: |
-        set -euxo pipefail
         yarn workspace augur-core run build
         yarn workspace augur-node run build
         yarn workspace augur-ui run build
       displayName: 'build and test'
+
+    - script: |
+        set -euxo pipefail
+        echo "$(secret.DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)"
+        yarn workspace augur-node run docker:release -- dev
+        yarn workspace augur-ui run docker:release -- dev
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      displayName: 'build and push docker image'
