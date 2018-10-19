@@ -156,17 +156,18 @@ export default class DisputingMarkets extends Component {
 
     return (
       <section>
-        {isForking && (
-          <DisputeMarketCard
-            key={forkingMarketId}
-            market={forkingMarket}
-            isMobile={isMobile}
-            location={location}
-            history={history}
-            outcomes={outcomes}
-            isForkingMarket
-          />
-        )}
+        {isForking &&
+          forkingMarket && (
+            <DisputeMarketCard
+              key={forkingMarketId}
+              market={forkingMarket}
+              isMobile={isMobile}
+              location={location}
+              history={history}
+              outcomes={outcomes}
+              isForkingMarket
+            />
+          )}
         {nonForkingMarketsCount > 0 &&
           !isForking &&
           nonForkingMarkets.map(market => (
@@ -192,7 +193,9 @@ export default class DisputingMarkets extends Component {
             />
           )}
         {nonForkingMarketsCount === 0 &&
-          !isForking && <NullStateMessage message={nullDisputeMessage} />}
+          (!isForking || (isForking && !forkingMarket)) && (
+            <NullStateMessage message={nullDisputeMessage} />
+          )}
         <MarketsHeaderLabel
           title={isForking ? "Dispute Paused" : "Upcoming Dispute Window"}
         />

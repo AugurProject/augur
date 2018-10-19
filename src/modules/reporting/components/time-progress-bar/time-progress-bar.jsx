@@ -13,7 +13,8 @@ const TimeProgressBar = ({
   endTime,
   currentTime,
   startTime,
-  timePeriodLabel
+  timePeriodLabel,
+  forking
 }) => {
   const totalHours = (startTime && getHoursRemaining(endTime, startTime)) || 0;
   const hoursLeft =
@@ -72,7 +73,12 @@ const TimeProgressBar = ({
         </span>
       </div>
       <div className={Styles["TimeProgressBar__dispute-graph"]}>
-        <div className={Styles.TimeProgressBar__graph}>
+        <div
+          className={classNames({
+            [Styles.TimeProgressBar__graph]: !forking,
+            [Styles.TimeProgressBar__graph__forking]: forking
+          })}
+        >
           <div className={Styles["TimeProgressBar__graph-current"]}>
             <div style={currentPeriodStyle} />
           </div>
@@ -89,13 +95,15 @@ TimeProgressBar.propTypes = {
   endTime: PropTypes.number,
   currentTime: PropTypes.number,
   startTime: PropTypes.number,
+  forking: PropTypes.bool,
   timePeriodLabel: PropTypes.string.isRequired
 };
 
 TimeProgressBar.defaultProps = {
   endTime: null,
   currentTime: null,
-  startTime: null
+  startTime: null,
+  forking: false
 };
 
 export default TimeProgressBar;

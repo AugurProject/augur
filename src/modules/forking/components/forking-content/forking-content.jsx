@@ -50,6 +50,7 @@ const ForkingContent = ({
           currentTime={currentTime}
           startTime={startTime}
           timePeriodLabel="Fork Window"
+          forking
         />
         {forkWindowActive && (
           <p>
