@@ -8,7 +8,7 @@ FROM augurproject/python2-and-3:latest
 #FROM python:3.6.6-stretch
 ARG SOLC_VERSION=v0.4.24
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
 	&& apt-get install -y nodejs
 
 RUN wget --quiet --output-document /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux \
