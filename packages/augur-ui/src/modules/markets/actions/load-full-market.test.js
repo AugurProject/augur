@@ -1,6 +1,9 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
-import { MARKET_FULLY_LOADING } from "modules/markets/constants/market-loading-states";
+import {
+  MARKET_FULLY_LOADING,
+  MARKET_FULLY_LOADED
+} from "modules/markets/constants/market-loading-states";
 import { UPDATE_MARKET_LOADING } from "modules/markets/actions/update-market-loading";
 
 jest.mock("modules/markets/actions/load-markets-info");
@@ -21,47 +24,92 @@ describe("loadFullMarket no market data in state", () => {
     const actual = store.getActions();
     const expected = [
       {
+        type: UPDATE_MARKET_LOADING,
         data: {
           marketLoadingState: {
-            marketId: MARKET_FULLY_LOADING
+            "0xMARKETID": MARKET_FULLY_LOADING
           }
         }
       },
       {
+        type: UPDATE_MARKET_LOADING,
+        data: {
+          marketLoadingState: {
+            "0xMARKETID": MARKET_FULLY_LOADED
+          }
+        }
+      },
+      {
+        type: "LOAD_MARKET_TRADING_HISTORY",
+        value: { marketId: "0xMARKETID" }
+      },
+      {
+        type: "LOAD_PRICE_HISTORY",
+        value: { marketId: "0xMARKETID" }
+      },
+      {
+        type: "LOAD_ACCOUNT_TRADES",
+        value: { marketId: "0xMARKETID" }
+      },
+      {
+        type: "LOAD_BID_ASKS",
+        value: "0xMARKETID"
+      },
+      {
         type: "LOAD_MARKETS_INFO",
-        value: [marketId]
+        value: ["0xMARKETID"]
       }
     ];
 
     expect(actual).toEqual(expected);
   });
 
-  test(`should dispatch empty marketId`, () => {
+  test(`should dispatch all but load markets info`, () => {
     const marketId = "0xMARKETID";
     const store = mockStore({
       marketsData: {
-        marketId: {
+        "0xMARKETID": {
           prop: "value"
         }
       }
     });
     const { loadFullMarket } = require("./load-full-market");
 
-    store.dispatch(loadFullMarket());
+    store.dispatch(loadFullMarket(marketId));
     const actual = store.getActions();
 
     const expected = [
       {
+        type: UPDATE_MARKET_LOADING,
         data: {
           marketLoadingState: {
-            marketId: MARKET_FULLY_LOADING
+            "0xMARKETID": MARKET_FULLY_LOADING
           }
-        },
-        type: UPDATE_MARKET_LOADING
+        }
       },
       {
-        type: "LOAD_MARKETS_INFO",
-        value: [marketId]
+        type: UPDATE_MARKET_LOADING,
+        data: {
+          marketLoadingState: {
+            "0xMARKETID": MARKET_FULLY_LOADED
+          }
+        }
+      },
+      {
+        type: "LOAD_MARKET_TRADING_HISTORY",
+        value: { marketId: "0xMARKETID" }
+      },
+      {
+        type: "LOAD_PRICE_HISTORY",
+        value: { marketId: "0xMARKETID" }
+      },
+      {
+        type: "LOAD_ACCOUNT_TRADES",
+        value: { marketId: "0xMARKETID" }
+      },
+      {
+        type: "LOAD_BID_ASKS",
+        value: "0xMARKETID"
       }
     ];
 
