@@ -26,6 +26,8 @@ jobs:
           versionSpec: '9.x'
       - script: |
           set -euxo pipefail
+          which node
+          node --version
           echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
           docker pull $CORE_IMAGE_LATEST;
           yarn workspace augur-core docker:build;
@@ -70,9 +72,11 @@ jobs:
           versionSpec: '3.6.5'
       - task: NodeTool@0
         inputs:
-          versionSpec: '9.x'
+          versionSpec: '10.x'
       - script: |
           set -euxo pipefail
+          which node
+          node --version
           if [[ "$TESTS" == "integration:geth" ]]; then
             yarn workspace augur-core docker:run:test:integration:geth;
           elif [[ "$TESTS" == "integration:parity" ]]; then
@@ -104,6 +108,9 @@ jobs:
           node_version: 10.x
     steps:
       - script: |
+          set -euxo pipefail
+          which node
+          node --version
           yarn workspace augur-node add sqlite3 --force --build-from-source
           yarn install --ignore-scripts --frozen-lockfile
         displayName: 'Install Dependencies'
@@ -130,6 +137,8 @@ jobs:
     steps:
       - script: |
           set -euxo pipefail
+          which node
+          node --version
           yarn install --ignore-scripts --frozen-lockfile
           npx lerna run test --stream --scope augur.js
         displayName: 'test augur.js'
