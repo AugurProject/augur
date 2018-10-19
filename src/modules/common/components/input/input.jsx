@@ -36,7 +36,7 @@ export default class Input extends Component {
     isLoading: PropTypes.bool,
     onFocus: PropTypes.func,
     lightBorder: PropTypes.bool,
-    darkMaxBtn: PropTypes.bool,
+    darkMaxBtn: PropTypes.bool
   };
 
   static defaultProps = {
@@ -61,7 +61,7 @@ export default class Input extends Component {
     incrementAmount: null,
     comparisonValue: null,
     placeholder: null,
-    darkMaxBtn: false,
+    darkMaxBtn: false
   };
 
   constructor(props) {
@@ -191,7 +191,8 @@ export default class Input extends Component {
             "can-toggle-visibility": canToggleVisibility,
             [Styles.focusBorder]: focused && !noFocus && !lightBorder,
             [`${Styles.noFocus}`]: noFocus,
-            [`${Styles.lightBorder}`]: lightBorder
+            [`${Styles.lightBorder}`]: lightBorder,
+            [Styles.setWidth]: darkMaxBtn
           }
         )}
         ref={inputHandler => {

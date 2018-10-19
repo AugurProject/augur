@@ -4,8 +4,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
-import Input from "modules/common/components/input/input";
 
+import Input from "modules/common/components/input/input";
 import FormStyles from "modules/common/less/form";
 import { SCALAR } from "modules/markets/constants/market-types";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
@@ -281,6 +281,7 @@ export default class MigrateRepForm extends Component {
               <Input
                 id="sr__input--repAmount"
                 type="number"
+                min="0"
                 className={classNames({
                   [`${FormStyles["Form__error--field"]}`]:
                     validations.hasOwnProperty("repAmount") &&
@@ -290,8 +291,12 @@ export default class MigrateRepForm extends Component {
                 placeholder="0.0000 REP"
                 onChange={value => this.validateRepAmount(value)}
                 autoComplete="off"
-                maxButton={Boolean(selectedOutcomeName && selectedOutcomeName.length > 0)}
-                onMaxButtonClick={() => this.validateRepAmount(accountREP, true)}
+                maxButton={Boolean(
+                  selectedOutcomeName && selectedOutcomeName.length > 0
+                )}
+                onMaxButtonClick={() =>
+                  this.validateRepAmount(accountREP, true)
+                }
                 darkMaxBtn
               />
             </li>
