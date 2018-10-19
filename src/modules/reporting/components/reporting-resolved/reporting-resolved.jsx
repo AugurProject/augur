@@ -34,9 +34,8 @@ export default class ReportingResolved extends Component {
     isForkingMarketFinalized: PropTypes.bool,
     noShowHeader: PropTypes.bool,
     forkingMarket: PropTypes.object,
-    loadReporting: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool.isRequired,
-    universeId: PropTypes.string
+    loadReporting: PropTypes.func,
+    isMobile: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
@@ -44,7 +43,7 @@ export default class ReportingResolved extends Component {
     isForkingMarketFinalized: false,
     noShowHeader: false,
     forkingMarket: null,
-    universeId: null
+    loadReporting: null
   };
 
   constructor(props) {
@@ -56,8 +55,8 @@ export default class ReportingResolved extends Component {
   }
 
   componentWillMount() {
-    const { loadReporting, universeId } = this.props;
-    if (loadReporting && universeId) loadReporting();
+    const { loadReporting } = this.props;
+    if (loadReporting) loadReporting();
   }
 
   componentWillReceiveProps(nextProps) {

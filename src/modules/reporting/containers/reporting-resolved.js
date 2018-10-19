@@ -12,7 +12,6 @@ import { selectMarket } from "modules/markets/selectors/market";
 
 const mapStateToProps = state => ({
   isLogged: state.authStatus.isLogged,
-  universe: (state.universe || {}).id,
   isMobile: state.appStatus.isMobile,
   markets: getValue(selectMarketsToReport(state), "resolved"),
   isForkingMarketFinalized: state.universe.isForkingMarketFinalized,

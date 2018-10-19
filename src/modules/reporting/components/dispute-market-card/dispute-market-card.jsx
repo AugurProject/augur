@@ -113,12 +113,11 @@ DisputeMarketCard.propTypes = {
   history: PropTypes.object.isRequired,
   market: PropTypes.object.isRequired,
   isForkingMarket: PropTypes.bool,
-  isMobile: PropTypes.bool
+  isMobile: PropTypes.bool.isRequired
 };
 
 DisputeMarketCard.defaultProps = {
-  isForkingMarket: false,
-  isMobile: false
+  isForkingMarket: false
 };
 
 export default DisputeMarketCard;

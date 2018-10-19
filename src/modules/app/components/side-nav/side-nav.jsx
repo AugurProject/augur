@@ -19,11 +19,7 @@ export default class SideNav extends Component {
     toggleNotifications: PropTypes.func.isRequired,
     unseenCount: PropTypes.number.isRequired,
     stats: PropTypes.array.isRequired,
-    currentBasePath: PropTypes.string
-  };
-
-  static defaultProps = {
-    currentBasePath: ""
+    currentBasePath: PropTypes.string.isRequired
   };
 
   constructor() {

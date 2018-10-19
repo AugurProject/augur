@@ -156,18 +156,17 @@ export default class DisputingMarkets extends Component {
 
     return (
       <section>
-        {isForking &&
-          forkingMarket && (
-            <DisputeMarketCard
-              key={forkingMarketId}
-              market={forkingMarket}
-              isMobile={isMobile}
-              location={location}
-              history={history}
-              outcomes={outcomes}
-              isForkingMarket
-            />
-          )}
+        {isForking && (
+          <DisputeMarketCard
+            key={forkingMarketId}
+            market={forkingMarket}
+            isMobile={isMobile}
+            location={location}
+            history={history}
+            outcomes={outcomes}
+            isForkingMarket
+          />
+        )}
         {nonForkingMarketsCount > 0 &&
           !isForking &&
           nonForkingMarkets.map(market => (

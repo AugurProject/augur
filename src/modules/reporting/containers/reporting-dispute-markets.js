@@ -16,7 +16,7 @@ const mapStateToProps = (state, { history }) => {
   const disputeOutcomes = marketDisputeOutcomes() || {};
   const disputableMarkets = disputeMarkets() || [];
   const upcomingDisputableMarkets = awaitingDisputeMarkets() || [];
-  const { isForking, forkEndTime, forkingMarketId, id } = state.universe;
+  const { isForking, forkEndTime, forkingMarket, id } = state.universe;
   return {
     isLogged: state.authStatus.isLogged,
     isConnected: state.connection.isConnected && id != null,
@@ -34,7 +34,7 @@ const mapStateToProps = (state, { history }) => {
     outcomes: disputeOutcomes,
     isForking,
     forkEndTime,
-    forkingMarketId
+    forkingMarketId: forkingMarket
   };
 };
 
