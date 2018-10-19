@@ -1,4 +1,5 @@
 import async from "async";
+// import { UNIVERSE_ID } from "modules/app/constants/network";
 import { createBigNumber } from "utils/create-big-number";
 import { augur } from "services/augurjs";
 import { updateUniverse } from "modules/universe/actions/update-universe";

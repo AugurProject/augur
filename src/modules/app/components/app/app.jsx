@@ -130,7 +130,7 @@ export default class AppView extends Component {
       mainMenu: { scalar: 0, open: false, currentTween: null },
       subMenu: { scalar: 0, open: false, currentTween: null },
       mobileMenuState: mobileMenuStates.CLOSED,
-      currentBasePath: null,
+      currentBasePath: CATEGORIES,
       currentInnerNavType: null,
       isNotificationsVisible: false
     };
@@ -221,6 +221,7 @@ export default class AppView extends Component {
     );
 
     const currentPath = parsePath(location.pathname)[0];
+    console.log("currentPath", currentPath);
     this.setState({ currentBasePath: currentPath });
 
     this.changeMenu(currentPath);

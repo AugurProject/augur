@@ -5,8 +5,8 @@ import { addNotification } from "modules/notifications/actions/notifications";
 import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-management";
 import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
 import { registerUserDefinedGasPriceFunction } from "modules/app/actions/register-user-defined-gasPrice-function";
-import { updateUniverse } from "modules/universe/actions/update-universe";
 import { loadUniverse } from "modules/app/actions/load-universe";
+import { setSelectedUniverse } from "./selected-universe-management";
 
 export const loadAccountDataFromLocalStorage = address => (
   dispatch,
@@ -19,16 +19,14 @@ export const loadAccountDataFromLocalStorage = address => (
     const storedAccountData = JSON.parse(localStorageRef.getItem(address));
     if (storedAccountData) {
       const { selectedUniverse } = storedAccountData;
-      if (selectedUniverse) {
+      if (selectedUniverse && selectedUniverse[augurNodeNetworkId]) {
         const selectedUniverseId = selectedUniverse[augurNodeNetworkId];
         if (universe.id !== selectedUniverseId) {
-          dispatch(
-            updateUniverse({
-              id: selectedUniverseId
-            })
-          );
           dispatch(loadUniverse(selectedUniverseId));
         }
+      } else {
+        // we have a no selectedUniveres for this account, default to default universe for this network.
+        dispatch(setSelectedUniverse());
       }
       if (storedAccountData.favorites) {
         dispatch(updateFavorites(storedAccountData.favorites));

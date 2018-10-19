@@ -15,7 +15,7 @@ export default class ReportingHeader extends Component {
     reportingWindowStats: PropTypes.object.isRequired,
     repBalance: PropTypes.string.isRequired,
     updateModal: PropTypes.func.isRequired,
-    currentTime: PropTypes.number.isRequired,
+    currentTime: PropTypes.number,
     doesUserHaveRep: PropTypes.bool.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
     isForking: PropTypes.bool,
@@ -33,7 +33,8 @@ export default class ReportingHeader extends Component {
     universe: null,
     forkingMarket: null,
     forkEndTime: null,
-    forkReputationGoal: null
+    forkReputationGoal: null,
+    currentTime: Date.now()
   };
 
   constructor(props) {
@@ -95,7 +96,6 @@ export default class ReportingHeader extends Component {
       isForkingMarketFinalized,
       isLogged
     } = this.props;
-
     const disableParticipate = repBalance === "0";
     const disputeRep =
       formatAttoRep(reportingWindowStats.stake, {

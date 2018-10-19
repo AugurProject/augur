@@ -4,7 +4,7 @@ import AccountUniverses from "modules/account/components/account-universes/accou
 
 import { loadUniverseInfo } from "modules/universe/actions/load-universe-info";
 import { updateUniverse } from "modules/universe/actions/update-universe";
-import { windowRef } from "src/utils/window-ref";
+import { setSelectedUniverse } from "../../auth/actions/selected-universe-management";
 
 const mapStateToProps = state => ({
   address: state.loginAccount.address,
@@ -16,26 +16,8 @@ const mapDispatchToProps = dispatch => ({
   getUniverses: callback => dispatch(loadUniverseInfo(callback)),
   switchUniverse: id =>
     dispatch((_, getState) => {
-      const { loginAccount, connection } = getState();
-      const { address } = loginAccount;
-      const { augurNodeNetworkId } = connection;
       dispatch(updateUniverse({ id }));
-      if (windowRef && windowRef.localStorage) {
-        const { localStorage } = windowRef;
-        const accountStorage = JSON.parse(localStorage.getItem(address));
-        if (accountStorage) {
-          localStorage.setItem(
-            address,
-            JSON.stringify({
-              ...accountStorage,
-              selectedUniverse: {
-                ...accountStorage.selectedUniverse,
-                [augurNodeNetworkId]: id
-              }
-            })
-          );
-        }
-      }
+      dispatch(setSelectedUniverse(id));
     })
 });
 

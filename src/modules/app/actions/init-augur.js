@@ -29,8 +29,9 @@ import {
   MODAL_DISCLAIMER,
   MODAL_NETWORK_DISABLED
 } from "modules/modal/constants/modal-types";
-import { DISCLAIMER_SEEN } from "src/modules/modal/constants/local-storage-keys";
-import { windowRef } from "src/utils/window-ref";
+import { DISCLAIMER_SEEN } from "modules/modal/constants/local-storage-keys";
+import { windowRef } from "utils/window-ref";
+import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
 
 const { ACCOUNT_TYPES } = AugurJS.augur.rpc.constants;
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
@@ -221,24 +222,8 @@ export function connectAugur(
               _universe: universeId
             },
             (err, data) => {
-              if (
-                data === false &&
-                windowRef.localStorage &&
-                windowRef.localStorage.removeItem
-              ) {
-                const { connection, loginAccount } = getState();
-                const locallyStoredInfo = JSON.parse(
-                  windowRef.localStorage.getItem(loginAccount.address)
-                );
-                if (locallyStoredInfo) {
-                  delete locallyStoredInfo.selectedUniverse[
-                    connection.augurNodeNetwrokId
-                  ];
-                  windowRef.localStorage.setItem(
-                    loginAccount.address,
-                    JSON.stringify(locallyStoredInfo)
-                  );
-                }
+              if (data === false) {
+                dispatch(setSelectedUniverse());
                 location.reload();
               }
 
