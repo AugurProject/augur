@@ -221,7 +221,6 @@ export default class AppView extends Component {
     );
 
     const currentPath = parsePath(location.pathname)[0];
-    console.log("currentPath", currentPath);
     this.setState({ currentBasePath: currentPath });
 
     this.changeMenu(currentPath);
