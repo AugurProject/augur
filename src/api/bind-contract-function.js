@@ -18,13 +18,23 @@ function bindContractFunction(functionAbi) {
           if (isObject(params[0].meta) && params[0].meta.address) assign(payload, { from: params[0].meta.address });
           if (isObject(params[0].tx)) assign(payload, { from: (params[0].meta || {}).address }, params[0].tx);
         }
-        if (!isFunction(params[params.length - 1])) return console.error("Callback required");
-        var callback = params.pop();
-        return ethrpc.callContractFunction(payload, function (err, response) {
-          if (err) return callback(err);
-          if (response == null) return callback(new Error("Null eth_call response"));
-          callback(null, response);
+        var callback = isFunction(params[params.length - 1]) ? params.pop() : undefined;
+        var callPromise = new Promise(function (resolve, reject) {
+          return ethrpc.callContractFunction(payload, function (err, response) {
+            if (err) return reject(err);
+            if (response == null) return reject(new Error("Null eth_call response"));
+            resolve(response);
+          });
+        }).catch(function (err) {
+          if (callback) return callback(err);
+          throw err;
         });
+        if (callback) {
+          callPromise.then(function (response) {
+            callback(null, response);
+          });
+        }
+        return callPromise;
       }
     }
     var onSent, onSuccess, onFailed, signer, accountType;
@@ -38,15 +48,24 @@ function bindContractFunction(functionAbi) {
       signer = (params[0].meta || {}).signer;
       accountType = (params[0].meta || {}).accountType;
     }
-    var transact = function () { ethrpc.transact(payload, signer, accountType, onSent, onSuccess, onFailed); };
-    if (params[0].gasPrice == null && getGasPrice.get()) {
-      getGasPrice.get()(function (gasPrice) {
-        payload.gasPrice = gasPrice;
-        transact();
-      });
-      return;
-    }
-    transact();
+    var transactSuccessPromise = new Promise(function (resolve, reject) {
+      var transact = function () {
+        ethrpc.transact(payload, signer, accountType, onSent, resolve, reject);
+      };
+      if (params[0].gasPrice == null && getGasPrice.get()) {
+        getGasPrice.get()(function (gasPrice) {
+          payload.gasPrice = gasPrice;
+          transact();
+        });
+        return;
+      }
+      transact();
+    }).catch(function (err) {
+      if (onFailed) return onFailed(err);
+      throw err;
+    });
+    if (onSuccess) transactSuccessPromise.then(onSuccess);
+    return transactSuccessPromise;
   };
 }
 
