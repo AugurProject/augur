@@ -145,7 +145,7 @@ export default class MarketsList extends Component {
             const market = markets.find(market => market.id === id);
 
             if (market && market.id) {
-              if (showDisputingCard && market) {
+              if (showDisputingCard) {
                 return (
                   <DisputeMarketCard
                     key={market.id}
