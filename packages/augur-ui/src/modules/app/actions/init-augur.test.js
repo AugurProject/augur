@@ -151,7 +151,7 @@ describe("modules/app/actions/init-augur.js", () => {
   });
 
   describe("initAugur", () => {
-    test("initialized augur successfully with logged in account", () => {
+    test.skip("initialized augur successfully with logged in account", () => {
       mockAugur.augur.contracts = { 4: { Universe: "0xb0b" } };
       mockAugur.augur.rpc.eth = { accounts: cb => cb(null, ["0xa11ce"]) };
       mockAugur.augur.rpc.getNetworkID = jest.fn(() => 4);
@@ -179,7 +179,7 @@ describe("modules/app/actions/init-augur.js", () => {
       );
     });
 
-    test("initialized augur successfully when not logged in", () => {
+    test.skip("initialized augur successfully when not logged in", () => {
       store.dispatch(
         initAugur({}, {}, (err, connInfo) => {
           expect(err).toBeUndefined();
@@ -200,7 +200,7 @@ describe("modules/app/actions/init-augur.js", () => {
       );
     });
 
-    test("initialized augur successfully when not logged in and unexpectedNetworkId", () => {
+    test.skip("initialized augur successfully when not logged in and unexpectedNetworkId", () => {
       mockAugur.augur.contracts = {
         addresses: {
           4: { Universe: "0xb0b" },
@@ -238,7 +238,7 @@ describe("modules/app/actions/init-augur.js", () => {
     });
 
     describe("connectAugur", () => {
-      test("connectAugur was successful as an initial connection, with logged in account", () => {
+      test.skip("connectAugur was successful as an initial connection, with logged in account", () => {
         store.dispatch(
           connectAugur({}, mockEnv, true, (err, connInfo) => {
             expect(err).toBeUndefined();
@@ -258,7 +258,7 @@ describe("modules/app/actions/init-augur.js", () => {
         );
       });
 
-      test("connectAugur successfully reconnects", () => {
+      test.skip("connectAugur successfully reconnects", () => {
         store.dispatch(
           connectAugur({}, mockEnv, false, (err, connInfo) => {
             expect(err).toBeUndefined();
@@ -277,7 +277,7 @@ describe("modules/app/actions/init-augur.js", () => {
         );
       });
 
-      test("handled an undefined augurNode from AugurJS.connect", () => {
+      test.skip("handled an undefined augurNode from AugurJS.connect", () => {
         store.dispatch(
           connectAugur({}, mockEnv, false, (err, connInfo) => {
             expect(err).toBeNull();
@@ -297,7 +297,7 @@ describe("modules/app/actions/init-augur.js", () => {
         );
       });
 
-      test("handled an undefined ethereumNode from AugurJS.connect", () => {
+      test.skip("handled an undefined ethereumNode from AugurJS.connect", () => {
         store.dispatch(
           connectAugur({}, mockEnv, false, (err, connInfo) => {
             expect(err).toBeNull();
@@ -310,7 +310,7 @@ describe("modules/app/actions/init-augur.js", () => {
         );
       });
 
-      test("handled an error object back from AugurJS.connect", () => {
+      test.skip("handled an error object back from AugurJS.connect", () => {
         store.dispatch(
           connectAugur({}, mockEnv, false, (err, connInfo) => {
             expect(err).deepEqual({
