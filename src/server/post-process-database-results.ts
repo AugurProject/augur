@@ -102,6 +102,11 @@ const whitelist: TableWhitelist = {
     numShares: true,
     numPayoutTokens: true,
   },
+  profit_loss_timeseries: {
+    moneySpent: true,
+    numEscrowed: true,
+    profit: true
+  }
 };
 
 const FIELD_NAMES: FieldWhitelist = (() => {

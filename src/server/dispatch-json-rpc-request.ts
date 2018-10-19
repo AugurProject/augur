@@ -31,7 +31,7 @@ import { getInitialReporters, InitialReportersParams } from "./getters/get-initi
 import { ForkMigrationTotalsParams, getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 import { getReportingFees, ReportingFeesParams } from "./getters/get-reporting-fees";
 import { getUniversesInfo, UniverseInfoParams } from "./getters/get-universes-info";
-import { getProfitLoss } from "./getters/get-profit-loss";
+import { getProfitLoss, GetProfitLossParams } from "./getters/get-profit-loss";
 import { getWinningBalance, WinningBalanceParams } from "./getters/get-winning-balance";
 
 type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
@@ -110,7 +110,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getUserShareBalances, UserShareBalancesParams.decode(request.params));
 
     case "getProfitLoss":
-      return getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, callback);
+      return dispatchResponse(getProfitLoss, GetProfitLossParams.decode(request.params));
     case "getMarketsCreatedByUser":
       return getMarketsCreatedByUser(db, request.params.universe, request.params.creator, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     default:

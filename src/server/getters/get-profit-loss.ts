@@ -1,7 +1,8 @@
-import { promisify } from "util";
+import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import BigNumber from "bignumber.js";
+import { promisify } from "util";
 import { Augur } from "augur.js";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
@@ -22,7 +23,6 @@ import {
   normalizePayouts,
 } from "./database";
 
-const queryTradingHistory = promisify(queryTradingHistoryCallback);
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 // Make the math tolerable until we have a chance to fix the BN->Stringness in augur.js
@@ -57,34 +57,7 @@ export interface MarketOutcomeEarnings {
   earnings: Array<EarningsAtTime>;
 }
 
-export function calculateEarningsPerTimePeriod(augur: Augur, trades: Array<TradeRow>, buckets: Array<EarningsAtTime>): Array<EarningsAtTime> {
-  if (buckets == null) throw new Error("Buckets are required");
-  if (typeof buckets.map === "undefined") throw new Error(`buckets must be an array, got ${buckets}`);
-
-  const [basisPL, ...windowPLs] = buckets.map((bucket: EarningsAtTime) => {
-    if (bucket.lastPrice == null) return bucket;
-
-    const bucketTrades = _.filter(trades, (t: TradeRow) => t.timestamp < bucket.timestamp);
-    const profitLoss = augur.trading.calculateProfitLoss({ trades: bucketTrades, lastPrice: bucket.lastPrice });
-    return Object.assign({}, bucket, { profitLoss });
-  });
-
-  if (basisPL.profitLoss != null && windowPLs.length > 0) {
-    return windowPLs.map((pl) => {
-      if (pl.profitLoss == null) return pl;
-      const profitLoss = Object.assign({}, pl.profitLoss, {
-        realized: sub(pl.profitLoss.realized, basisPL.profitLoss!.realized).toString(),
-        total: sub(pl.profitLoss.total, basisPL.profitLoss!.total).toString(),
-        unrealized: sub(pl.profitLoss.unrealized, basisPL.profitLoss!.unrealized).toString(),
-      });
-      return Object.assign({}, pl, { profitLoss });
-    });
-  }
-
-  return windowPLs;
-}
-
-export function bucketRangeByInterval(startTime: number, endTime: number, periodInterval: number | null): Array<EarningsAtTime> {
+export function bucketRangeByInterval(startTime: number, endTime: number, periodInterval: number | null): Array<Timestamped> {
   if (startTime < 0) throw new Error("startTime must be a valid unix timestamp, greater than 0");
   if (endTime < 0) throw new Error("endTime must be a valid unix timestamp, greater than 0");
   if (endTime < startTime) throw new Error("endTime must be greater than or equal startTime");
@@ -94,67 +67,11 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
 
   const buckets: Array<EarningsAtTime> = [];
   for (let bucketEndTime = startTime; bucketEndTime < endTime; bucketEndTime += interval) {
-    buckets.push({ timestamp: bucketEndTime, profitLoss: null });
+    buckets.push({ timestamp: bucketEndTime });
   }
-  buckets.push({ timestamp: endTime, profitLoss: null });
+  buckets.push({ timestamp: endTime });
 
   return buckets;
-}
-
-function queryWinningPayoutForMarket(db: Knex, marketId: Address): Knex.QueryBuilder {
-  return db("markets")
-    .first(["payouts.*", "blocks.*", "markets.minPrice", "markets.maxPrice", "markets.numTicks"])
-    .join("blocks", "blocks.blockNumber", "markets.finalizationBlockNumber")
-    .join("payouts", function() {
-      this.on("payouts.marketId", "markets.marketId").andOn("payouts.winning", db.raw("1"));
-    })
-    .where("markets.marketId", marketId);
-}
-
-async function getFinalizedOutcomePrice(db: Knex, marketId: Address, outcome: number) {
-  const payout: PayoutBlockAndPricing | null | undefined  = await queryWinningPayoutForMarket(db, marketId);
-  if (payout == null)  return null;
-
-  const marketPayout: NormalizedPayout<BigNumber> = normalizePayouts(payout);
-
-  // this is the same as augur.utils.convertOnChainPriceToDisplayPrice
-  // I hate having to get it off an `augur` instance when its unrelated
-  // to a connection
-  const tickSize = numTicksToTickSize(payout.numTicks, payout.minPrice, payout.maxPrice);
-  const price = marketPayout.payout[outcome]!.times(tickSize).plus(payout.minPrice);
-  return { timestamp: payout.timestamp, price };
-}
-
-async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: Address, outcome: number, endTime: number | null, buckets: Array<EarningsAtTime>): Promise<Array<EarningsAtTime>> {
-  const outcomeTrades: Array<Partial<TradingHistoryRow>> = await queryTradingHistory(db, universe, null, marketId, outcome, null, null, endTime, "trades.blockNumber", false, null, null, true);
-  const outcomeFinalized = await getFinalizedOutcomePrice(db, marketId, outcome);
-
-  return buckets.map((bucket: EarningsAtTime) => {
-    // This market has been finalized and this bucket is after the time which
-    // that happened. We will fix the price for this outcome at the value
-    // defined in the `payouts` table. This will effectively adjust the unrealized
-    // profit and loss for the shares held for this outcome for this bucket.
-    if (outcomeFinalized !== null && outcomeFinalized.timestamp < bucket.timestamp) {
-      return Object.assign({}, bucket, { lastPrice: outcomeFinalized.price.toString() });
-    }
-
-    // This insertion point will give us the place in the sorted "outcomeTrades" array
-    // where out bucket can go without changing the sort order, which means that one entry
-    // before that location is the "last trade" in that window.
-    const insertPoint: number = _.sortedIndexBy(outcomeTrades, { timestamp: bucket.timestamp }, (trade) => trade.timestamp);
-    if (insertPoint > 0) {
-      return Object.assign({}, bucket, { lastPrice: outcomeTrades[insertPoint - 1].price!.toString() });
-    }
-
-    // If the insertPoint is zero and we get here, then we don't have any
-    // "lastPrice" value -- e.g. there are no trades in that point which will
-    // result in a `null` PL.
-    return bucket;
-  });
-}
-
-function groupOutcomesProfitLossByBucket(results: any) {
-  return _.zip(..._.values(results));
 }
 
 function sumProfitLossResults(left: EarningsAtTime, right: EarningsAtTime): EarningsAtTime {
@@ -189,87 +106,85 @@ function sumProfitLossResults(left: EarningsAtTime, right: EarningsAtTime): Earn
   };
 }
 
-export async function getOutcomesProfitLoss(db: Knex, augur: Augur, nowTimestamp: number, universe: Address, account: Address, marketId: Address|null, startTime: number|null, endTime: number|null, periodInterval: number | null): Promise<Array<MarketOutcomeEarnings> | null> {
-  // get all the trades for this user from the beginning of time, until
-  // `endTime`
-  const tradeHistory: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, marketId, null, null, null, endTime, "trades.blockNumber", false, null, null, true);
-  const marketIds = _.uniq(_.map(tradeHistory, "marketId"));
-  const claimHistory: Array<ProceedTradesRow<BigNumber>> = await getProceedTradeRows(db, augur, marketIds, account, endTime);
-  const trades: Array<TradeRow> = tradeHistory.map((trade: TradingHistoryRow): TradeRow => {
-    return Object.assign({}, trade, {
-      type: trade.orderType! === "buy" ? "sell" : "buy",
-      maker: account === trade.creator!,
+export interface Timestamped {
+  timestamp: number
+}
+
+export interface ProfitLossTimeseries extends Timestamped {
+  account: string;
+  marketId: string;
+  outcome: number;
+  transactionHash: string;
+  moneySpent: BigNumber;
+  numEscrowed: BigNumber;
+  profit: BigNumber;
+}
+
+export interface ProfitLossResult extends Timestamped {
+  profit: BigNumber;
+}
+
+export const GetProfitLossParams = t.type({
+  universe: t.string,
+  account: t.string,
+  marketId: t.union([t.string, t.null]),
+  startTime: t.union([t.number, t.null]),
+  endTime: t.union([t.number, t.null]),
+  periodInterval: t.union([t.number, t.null]),
+});
+
+async function queryProfitLossTimeseries(db: Knex, now: number, params: t.TypeOf<typeof GetProfitLossParams>): Promise<Array<ProfitLossTimeseries>> {
+  const query = db("profit_loss_timeseries")
+    .join("markets", "profit_loss_timeseries.marketId", "markets.marketId")
+    .where({ account: params.account, universe: params.universe });
+
+  if (params.marketId !== null) query.where({ marketId: params.marketId });
+  if (params.startTime) query.where("timestamp", ">=", params.startTime);
+  
+  query.where("timestamp", "<=", params.endTime || now);
+
+  return await query;
+}
+
+function getProfitAtTimestamps(data: Array<ProfitLossTimeseries>, timestamps: Array<Timestamped>): Array<ProfitLossResult> {
+  const profits = [];
+  let timestampIndex = 0;
+  let dataIndex = 0;
+  while(timestampIndex < timestamps.length && dataIndex < data.length) {
+    const result = data[dataIndex];
+    const bucket = timestamps[timestampIndex];
+
+    if (result.timestamp > bucket.timestamp) {
+      if (dataIndex == 0) throw Error("Internal Error: Profit calculation should always begin with valid bucket timestamp");
+      profits.push({
+        timestamp: bucket.timestamp,
+        profit: result.profit,
+      });
+
+      timestampIndex++;
+    }
+    dataIndex++;
+  }
+
+  const finalBucketProfit = profits[profits.length - 1].profit;
+  while(timestampIndex < timestamps.length) {
+    const bucket = timestamps[timestampIndex];
+    // If we ran out of results before we ran out of buckets
+    // use the last result for each bucket moving forward
+    profits.push({
+      timestamp: bucket.timestamp,
+      profit: finalBucketProfit,
     });
-  }).concat(claimHistory).sort((a, b) => {
-    const blockDiff = a.blockNumber - b.blockNumber;
-    if (blockDiff !== 0) return blockDiff;
+  }
 
-    return a.logIndex - b.logIndex;
-  });
-
-  if (trades.length === 0) return null;
-
-  const buckets = bucketRangeByInterval(startTime || trades[0].timestamp, endTime || Math.max(trades[trades.length - 1].timestamp, nowTimestamp) + 1, periodInterval);
-
-  // group these trades by their market & outcome, so we can process each
-  // separately
-  const tradesByOutcome = _.groupBy(trades, (trade) => _.values(_.pick(trade, ["marketId", "outcome"])));
-
-  const results = await Promise.all(
-    _.map(tradesByOutcome, async (trades: Array<TradeRow>): Promise<MarketOutcomeEarnings> => {
-      const { marketId, outcome } = trades[0];
-      const bucketsWithLastPrice: Array<EarningsAtTime> = await getBucketLastTradePrices(db, universe, marketId, outcome, endTime, buckets);
-      return {marketId, outcome, earnings: calculateEarningsPerTimePeriod(augur, trades, bucketsWithLastPrice)};
-    }),
-  );
-
-  return results;
+  return profits;
 }
 
-export async function formatProfitLossResults(db: Knex, results: Array<MarketOutcomeEarnings>): Promise<ProfitLossResults> {
+export async function getProfitLoss(db: Knex, augur: Augur, params: t.TypeOf<typeof GetProfitLossParams>): Promise<Array<ProfitLossResult>> {
+  const now = Date.now();
+  const results = await queryProfitLossTimeseries(db, now, params);
+  const buckets = bucketRangeByInterval(params.startTime || 0, params.endTime || now, params.periodInterval);
 
-  const marketNumOutcomes = await db.select("marketId", "numOutcomes").from("markets").whereIn("marketId", _.map(results, "marketId"));
-  const numOutcomesByMarket = _.keyBy(marketNumOutcomes, "marketId");
-
-  // We have results! Drop the market & outcome groups, and then re-group by
-  // bucket timestamp, and aggregate all of the EarningsAtTimes by bucket
-  const aggregate = groupOutcomesProfitLossByBucket(results.map((r) => r.earnings)).map((bucket: Array<EarningsAtTime>) => {
-    return bucket.reduce(sumProfitLossResults, { timestamp: 0, profitLoss: null });
-  });
-
-  const all = _
-    .chain(results)
-    .groupBy((result) => result.marketId)
-    .mapValues((results: Array<MarketOutcomeEarnings>, marketId: Address) => {
-      const byOutcome = _
-        .chain(results)
-        .groupBy((result) => result.outcome)
-        .mapValues((results: Array<MarketOutcomeEarnings>) => results.map((result) => result.earnings))
-        .value();
-
-      const array = [];
-      for (let i = 0; i < numOutcomesByMarket[marketId].numOutcomes; i++) {
-        array.push(byOutcome[i.toString()] || null);
-      }
-
-      return _.flatten(array);
-    })
-    .value();
-
-  return { aggregate, all};
+  return getProfitAtTimestamps(results, buckets);
 }
 
-export function getProfitLoss(db: Knex, augur: Augur, universe: Address|null|undefined, account: Address|null|undefined, startTime: number|null, endTime: number|null, periodInterval: number|null, callback: GenericCallback<ProfitLossResults>) {
-  if (typeof universe !== "string" || universe === null) return callback(new Error("Universe Address Required"));
-  if (typeof account !== "string" || account === null) return callback(new Error("Account Address Required"));
-
-  const nowTimestamp = Date.now();
-  getOutcomesProfitLoss(db, augur, nowTimestamp, universe.toLowerCase(), account.toLowerCase(), null, startTime || 0, endTime, periodInterval)
-    .then((results: Array<MarketOutcomeEarnings> | null) => {
-      if (results === null) {
-        callback(null, { aggregate: bucketRangeByInterval(startTime || 0, endTime || nowTimestamp, periodInterval).slice(1), all: {} });
-      } else {
-        formatProfitLossResults(db, results).then((results) => callback(null, results)).catch(callback);
-      }
-    }).catch(callback);
-}
