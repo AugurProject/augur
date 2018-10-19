@@ -4,17 +4,19 @@ const Listr = require("listr");
 process.env.NODE_ENV = process.env.BABEL_ENV = "test";
 process.env.FORCE_COLOR = true;
 
+const silent = true;
+
 const mochaTests = () =>
   new Promise((resolve, reject) => {
     shell.exec(
       `mocha ${process.argv[2] ||
         `"test/**/*.js?(x)"`} --timeout 10000 --reporter=min`,
       {
-        silent: true
+        silent
       },
-      (code, stdout) => {
+      (code, stdout, stderr) => {
         if (code !== 0) {
-          console.error(stdout);
+          console.error(stdout, stderr);
           reject(new Error());
           shell.exit(code);
         }
@@ -28,10 +30,10 @@ const jestTests = () =>
   new Promise((resolve, reject) => {
     shell.exec(
       `jest -c=jest.unit.config.js`,
-      { silent: true },
-      (code, stdout) => {
+      { silent },
+      (code, stdout, stderr) => {
         if (code !== 0) {
-          console.error(stdout);
+          console.error(stdout, stderr);
           reject(new Error());
           shell.exit(code);
         }
