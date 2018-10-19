@@ -1,11 +1,11 @@
 import sinon from "sinon";
 import marketDisputeOutcomes, {
-  selectMarketDisputeOutcomes,
-  __RewireAPI__
+  __RewireAPI__,
+  selectMarketDisputeOutcomes
 } from "modules/reports/selectors/select-market-dispute-outcomes";
 
 describe(`modules/reports/selectors/select-market-dispute-outcomes.js`, () => {
-  const test = t => it(t.description, done => t.assertions(done));
+  const test = t => test(t.description, done => t.assertions(done));
 
   describe("default method", () => {
     test({
@@ -20,10 +20,7 @@ describe(`modules/reports/selectors/select-market-dispute-outcomes.js`, () => {
 
         marketDisputeOutcomes();
 
-        assert.isTrue(
-          stubbedSelectmarketDisputeOutcomes.calledOnce,
-          `didn't call 'selectMarketDisputeOutcomes' once as expected`
-        );
+        expect(stubbedSelectmarketDisputeOutcomes.calledOnce).toBe(true);
 
         __RewireAPI__.__ResetDependency__("selectMarketDisputeOutcomes");
 
@@ -40,7 +37,7 @@ describe(`modules/reports/selectors/select-market-dispute-outcomes.js`, () => {
 
         const expected = {};
 
-        assert.deepEqual(actual, expected, `didn't return the expected result`);
+        expect(actual).toEqual(expected);
 
         done();
       }
@@ -87,11 +84,7 @@ describe(`modules/reports/selectors/select-market-dispute-outcomes.js`, () => {
             market2: [],
             market3: []
           };
-          assert.deepEqual(
-            actual,
-            expected,
-            `didn't return the expected result`
-          );
+          expect(actual).toEqual(expected);
 
           __RewireAPI__.__ResetDependency__("selectDisputeOutcomes");
           __RewireAPI__.__ResetDependency__("fillDisputeOutcomeProgress");

@@ -1,7 +1,7 @@
 import reportableOutcomesAssertions from "assertions/reportable-outcomes";
 
 import { selectReportableOutcomes } from "modules/reports/selectors/reportable-outcomes";
-import { YES_NO, CATEGORICAL } from "modules/markets/constants/market-types";
+import { CATEGORICAL, YES_NO } from "modules/markets/constants/market-types";
 import {
   YES_NO_NO_ID,
   YES_NO_NO_OUTCOME_NAME,
@@ -13,7 +13,7 @@ describe("modules/reports/selectors/reportable-outcomes.js", () => {
   let actual;
   let expected;
 
-  it("should return the correct array for a YES_NO market", () => {
+  test("should return the correct array for a YES_NO market", () => {
     actual = selectReportableOutcomes(YES_NO);
     expected = [
       {
@@ -26,15 +26,11 @@ describe("modules/reports/selectors/reportable-outcomes.js", () => {
       }
     ];
 
-    assert.deepEqual(
-      actual,
-      expected,
-      `expected array for a yes/no  market was not returned`
-    );
+    expect(actual).toEqual(expected);
     // assertions.reportableOutcomes(actual);
   });
 
-  it("should return the correct array for a CATEGORICAL market", () => {
+  test("should return the correct array for a CATEGORICAL market", () => {
     const outcomes = [
       {
         id: "3",
@@ -66,22 +62,14 @@ describe("modules/reports/selectors/reportable-outcomes.js", () => {
       }
     ];
 
-    assert.deepEqual(
-      actual,
-      expected,
-      `expected array for a CATEGORICAL market was not returned`
-    );
+    expect(actual).toEqual(expected);
     reportableOutcomesAssertions(actual);
   });
 
-  it("should return the correct array for DEFAULT case", () => {
+  test("should return the correct array for DEFAULT case", () => {
     actual = selectReportableOutcomes(null);
     expected = [];
 
-    assert.deepEqual(
-      actual,
-      expected,
-      `expected array for a DEFAULT case was not returned`
-    );
+    expect(actual).toEqual(expected);
   });
 });

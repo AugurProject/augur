@@ -1,21 +1,10 @@
 import immutableDelete from "immutable-delete";
-import {
-  YES_NO,
-  CATEGORICAL,
-  SCALAR
-} from "modules/markets/constants/market-types";
-import selectMigratedTotals, {
-  __RewireAPI__ as RewireAPI
-} from "modules/reports/selectors/select-migrated-totals";
+import { CATEGORICAL, SCALAR, YES_NO } from "modules/markets/constants/market-types";
+import selectMigratedTotals, { __RewireAPI__ as RewireAPI } from "modules/reports/selectors/select-migrated-totals";
 
 describe(`modules/reports/selectors/select-migrated-totals.js`, () => {
-  const test = t => {
-    it(t.description, () => {
-      t.assertions();
-    });
-  };
 
-  after(() => {
+  afterAll(() => {
     RewireAPI.__ResetDependency__("formatAttoRep");
   });
 
@@ -60,16 +49,13 @@ describe(`modules/reports/selectors/select-migrated-totals.js`, () => {
     reportableOutcomes: [{ id: "0.5", name: "Indeterminate" }]
   };
 
-  const echoStub = value => {
-    const result = { formatted: value.toString(), fullPrecision: value };
-    return result;
-  };
+  const echoStub = value => ({ formatted: value.toString(), fullPrecision: value });
 
   RewireAPI.__Rewire__("formatAttoRep", echoStub);
 
-  test({
-    description: `scalar market with more than 9 disputes and includes indeterminate`,
-    assertions: () => {
+  test(
+    `scalar market with more than 9 disputes and includes indeterminate`,
+    () => {
       const totals = {
         2202: {
           repTotal: 201,
@@ -183,13 +169,13 @@ describe(`modules/reports/selectors/select-migrated-totals.js`, () => {
         marketScalar.reportableOutcomes,
         totals
       );
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
+      expect(actual).toEqual(expected);
     }
-  });
+  );
 
-  test({
-    description: `scalar market with more than 9 disputes and without indeterminate`,
-    assertions: () => {
+  test(
+    `scalar market with more than 9 disputes and without indeterminate`,
+    () => {
       const totals = {
         2202: {
           repTotal: 201,
@@ -303,114 +289,105 @@ describe(`modules/reports/selectors/select-migrated-totals.js`, () => {
         marketScalar.reportableOutcomes,
         totals
       );
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
+      expect(actual).toEqual(expected);
     }
+  );
+
+  test(`yes/no  market with NO disputes`, () => {
+    const actual = selectMigratedTotals(marketBinary.reportableOutcomes, {});
+    const expected = [
+      {
+        ...marketBinary.reportableOutcomes[0],
+        rep: "0",
+        winner: false,
+        isInvalid: false
+      },
+      {
+        ...marketBinary.reportableOutcomes[1],
+        rep: "0",
+        winner: false,
+        isInvalid: false
+      },
+      {
+        ...marketBinary.reportableOutcomes[2],
+        rep: "0",
+        winner: false,
+        isInvalid: true
+      }
+    ];
+
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `yes/no  market with NO disputes`,
-    assertions: () => {
-      const actual = selectMigratedTotals(marketBinary.reportableOutcomes, {});
-      const expected = [
-        {
-          ...marketBinary.reportableOutcomes[0],
-          rep: "0",
-          winner: false,
-          isInvalid: false
-        },
-        {
-          ...marketBinary.reportableOutcomes[1],
-          rep: "0",
-          winner: false,
-          isInvalid: false
-        },
-        {
-          ...marketBinary.reportableOutcomes[2],
-          rep: "0",
-          winner: false,
-          isInvalid: true
-        }
-      ];
-
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+  test(`category market with NO disputes`, () => {
+    const actual = selectMigratedTotals(
+      marketCategorical.reportableOutcomes,
+      {}
+    );
+    const expected = [
+      {
+        ...marketCategorical.reportableOutcomes[0],
+        rep: "0",
+        winner: false,
+        isInvalid: false
+      },
+      {
+        ...marketCategorical.reportableOutcomes[1],
+        rep: "0",
+        winner: false,
+        isInvalid: false
+      },
+      {
+        ...marketCategorical.reportableOutcomes[2],
+        rep: "0",
+        winner: false,
+        isInvalid: false
+      },
+      {
+        ...marketCategorical.reportableOutcomes[3],
+        rep: "0",
+        winner: false,
+        isInvalid: false
+      },
+      {
+        ...marketCategorical.reportableOutcomes[4],
+        rep: "0",
+        winner: false,
+        isInvalid: false
+      },
+      {
+        ...marketCategorical.reportableOutcomes[5],
+        rep: "0",
+        winner: false,
+        isInvalid: false
+      },
+      {
+        ...marketCategorical.reportableOutcomes[6],
+        rep: "0",
+        winner: false,
+        isInvalid: false
+      },
+      {
+        ...marketCategorical.reportableOutcomes[7],
+        rep: "0",
+        winner: false,
+        isInvalid: true
+      }
+    ];
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `category market with NO disputes`,
-    assertions: () => {
-      const actual = selectMigratedTotals(
-        marketCategorical.reportableOutcomes,
-        {}
-      );
-      const expected = [
-        {
-          ...marketCategorical.reportableOutcomes[0],
-          rep: "0",
-          winner: false,
-          isInvalid: false
-        },
-        {
-          ...marketCategorical.reportableOutcomes[1],
-          rep: "0",
-          winner: false,
-          isInvalid: false
-        },
-        {
-          ...marketCategorical.reportableOutcomes[2],
-          rep: "0",
-          winner: false,
-          isInvalid: false
-        },
-        {
-          ...marketCategorical.reportableOutcomes[3],
-          rep: "0",
-          winner: false,
-          isInvalid: false
-        },
-        {
-          ...marketCategorical.reportableOutcomes[4],
-          rep: "0",
-          winner: false,
-          isInvalid: false
-        },
-        {
-          ...marketCategorical.reportableOutcomes[5],
-          rep: "0",
-          winner: false,
-          isInvalid: false
-        },
-        {
-          ...marketCategorical.reportableOutcomes[6],
-          rep: "0",
-          winner: false,
-          isInvalid: false
-        },
-        {
-          ...marketCategorical.reportableOutcomes[7],
-          rep: "0",
-          winner: false,
-          isInvalid: true
-        }
-      ];
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
-  });
-
-  test({
-    description: `scalar market with NO disputes`,
-    assertions: () => {
-      const actual = selectMigratedTotals(marketScalar.reportableOutcomes, {});
-      const expected = [
-        {
-          id: "0.5",
-          rep: "0",
-          name: "Indeterminate",
-          winner: false,
-          isInvalid: true
-        }
-      ];
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+  test(`scalar market with NO disputes`, () => {
+    const actual = selectMigratedTotals(marketScalar.reportableOutcomes, {});
+    const expected = [
+      {
+        id: "0.5",
+        rep: "0",
+        name: "Indeterminate",
+        winner: false,
+        isInvalid: true
+      }
+    ];
+    expect(actual).toEqual(expected);
   });
 });

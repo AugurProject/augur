@@ -1,5 +1,3 @@
-import { describe, it, afterEach } from "mocha";
-
 import testState from "test/testState";
 import reducer from "modules/reports/reducers/reports";
 
@@ -18,60 +16,56 @@ describe(`modules/reports/reducers/reports.js`, () => {
   });
 
   describe(`UPDATE_REPORTS`, () => {
-    it("should update reports", () => {
-      assert.deepEqual(
-        reducer(state.reports, {
-          type: "UPDATE_REPORTS",
-          data: {
-            reportsData: {
-              [testState.universe.id]: {
-                test: {
-                  marketId: "test",
-                  example: "example",
-                  isScalar: false,
-                  isIndeterminate: false
-                },
-                example: {
-                  marketId: "example",
-                  test: "test",
-                  isScalar: false,
-                  isIndeterminate: false
-                }
+    test("should update reports", () => {
+      expect(reducer(state.reports, {
+        type: "UPDATE_REPORTS",
+        data: {
+          reportsData: {
+            [testState.universe.id]: {
+              test: {
+                marketId: "test",
+                example: "example",
+                isScalar: false,
+                isIndeterminate: false
+              },
+              example: {
+                marketId: "example",
+                test: "test",
+                isScalar: false,
+                isIndeterminate: false
               }
             }
           }
-        }),
-        {
-          [testState.universe.id]: {
-            test: {
-              marketId: "test",
-              example: "example",
-              isScalar: false,
-              isIndeterminate: false
-            },
-            example: {
-              marketId: "example",
-              test: "test",
-              isScalar: false,
-              isIndeterminate: false
-            },
-            testMarketId: {
-              marketId: "testMarketId",
-              isScalar: false,
-              isSubmitted: false,
-              isIndeterminate: false
-            }
+        }
+      })).toEqual({
+        [testState.universe.id]: {
+          test: {
+            marketId: "test",
+            example: "example",
+            isScalar: false,
+            isIndeterminate: false
           },
-          markets: []
+          example: {
+            marketId: "example",
+            test: "test",
+            isScalar: false,
+            isIndeterminate: false
+          },
+          testMarketId: {
+            marketId: "testMarketId",
+            isScalar: false,
+            isSubmitted: false,
+            isIndeterminate: false
+          }
         },
-        `Didn't update report information`
-      );
+        markets: []
+      });
     });
   });
 
   describe("UPDATE_REPORT", () => {
     const test = t =>
-      it(t.description, () =>
+      test(t.description, () =>
         t.assertions(
           reducer(t.state.reports, {
             type: "UPDATE_REPORT",
@@ -81,8 +75,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               report: t.params.report
             }
           })
-        )
-      );
+        ));
     test({
       description: "no report data",
       params: {
@@ -105,7 +98,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         }
       },
       assertions: reduced => {
-        assert.deepEqual(reduced, {
+        expect(reduced).toEqual({
           "0xb1": {
             "0xe1": {
               marketId: "0xe1",
@@ -146,7 +139,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         }
       },
       assertions: reduced => {
-        assert.deepEqual(reduced, {
+        expect(reduced).toEqual({
           "0xb1": {
             "0xe1": {
               marketId: "0xe1",
@@ -189,7 +182,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         }
       },
       assertions: reduced => {
-        assert.deepEqual(reduced, {
+        expect(reduced).toEqual({
           "0xb1": {
             "0xe1": {
               marketId: "0xe1",
@@ -217,7 +210,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {}
       },
       assertions: reduced => {
-        assert.deepEqual(reduced, {
+        expect(reduced).toEqual({
           "0xb1": {
             "0xe1": {
               marketId: "0xe1",

@@ -1,26 +1,14 @@
 import sinon from "sinon";
-import {
-  YES_NO,
-  CATEGORICAL,
-  SCALAR
-} from "modules/markets/constants/market-types";
-import selectDisputeOutcomes, {
-  __RewireAPI__ as RewireAPI
-} from "modules/reports/selectors/select-dispute-outcomes";
+import { CATEGORICAL, SCALAR, YES_NO } from "modules/markets/constants/market-types";
+import selectDisputeOutcomes, { __RewireAPI__ as RewireAPI } from "modules/reports/selectors/select-dispute-outcomes";
 
 describe(`modules/reports/selectors/select-dispute-outcomes.js`, () => {
-  const test = t => {
-    it(t.description, () => {
-      t.assertions();
-    });
-  };
 
-  after(() => {
+  afterAll(() => {
     RewireAPI.__ResetDependency__("calculatePayoutNumeratorsValue");
   });
 
-  const getDefaultStake = size => {
-    const defaultValues = {
+  const getDefaultStake = size => ({
       stakeCurrent: "0",
       accountStakeCurrent: "0",
       accountStakeCompleted: "0",
@@ -29,9 +17,7 @@ describe(`modules/reports/selectors/select-dispute-outcomes.js`, () => {
       stakeCompleted: "0",
       stakeRemaining: size,
       tentativeWinning: false
-    };
-    return defaultValues;
-  };
+  });
 
   const marketBinary = {
     maxPrice: 100,
@@ -144,9 +130,9 @@ describe(`modules/reports/selectors/select-dispute-outcomes.js`, () => {
     calculatePayoutNumeratorsValueStubb
   );
 
-  test({
-    description: `scalar market with more than 9 disputes and includes indeterminate`,
-    assertions: () => {
+  test(
+    `scalar market with more than 9 disputes and includes indeterminate`,
+    () => {
       const stakes = [
         {
           payout: [1000, 9000],
@@ -320,13 +306,13 @@ describe(`modules/reports/selectors/select-dispute-outcomes.js`, () => {
         100,
         10000000000
       );
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
+      expect(actual).toEqual(expected);
     }
-  });
+  );
 
-  test({
-    description: `scalar market with more than 3 disputes and does not include indeterminate`,
-    assertions: () => {
+  test(
+    `scalar market with more than 3 disputes and does not include indeterminate`,
+    () => {
       const stakes = [
         {
           payout: [1000, 9000],
@@ -386,462 +372,423 @@ describe(`modules/reports/selectors/select-dispute-outcomes.js`, () => {
         100,
         10000000000
       );
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
+      expect(actual).toEqual(expected);
     }
+  );
+
+  test(`scalar market with invalid disputes`, () => {
+    const stakes = [
+      {
+        payout: [5000, 5000],
+        isInvalid: true,
+        tentativeWinning: true
+      }
+    ];
+    const actual = selectDisputeOutcomes(
+      marketScalar,
+      stakes,
+      100,
+      1000000000
+    );
+    const expected = [
+      {
+        ...getDefaultStake(100),
+        display: true,
+        id: "0.5",
+        name: "Indeterminate",
+        ...stakes[0]
+      }
+    ];
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `scalar market with invalid disputes`,
-    assertions: () => {
-      const stakes = [
-        {
-          payout: [5000, 5000],
-          isInvalid: true,
-          tentativeWinning: true
-        }
-      ];
-      const actual = selectDisputeOutcomes(
-        marketScalar,
-        stakes,
-        100,
-        1000000000
-      );
-      const expected = [
-        {
-          ...getDefaultStake(100),
-          display: true,
-          id: "0.5",
-          name: "Indeterminate",
-          ...stakes[0]
-        }
-      ];
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+  test(`scalar market with invalid disputes sort`, () => {
+    const stakes = [
+      {
+        payout: [2000, 8000],
+        isInvalid: false,
+        potentialFork: false,
+        tentativeWinning: true,
+        display: true,
+        id: "80",
+        name: "name"
+      },
+      {
+        payout: [1000, 9000],
+        isInvalid: false,
+        potentialFork: false,
+        tentativeWinning: false,
+        stakeCurrent: "10",
+        stakeRemaining: "10",
+        display: true,
+        id: "90",
+        name: "90"
+      },
+      {
+        payout: [9000, 1000],
+        isInvalid: false,
+        potentialFork: false,
+        tentativeWinning: false,
+        stakeCurrent: "70",
+        stakeRemaining: "70",
+        display: true,
+        id: "10",
+        name: "10"
+      },
+      {
+        accountStakeCompleted: "0",
+        accountStakeCurrent: "0",
+        bondSizeCurrent: "100",
+        stakeCompleted: "0",
+        payout: [5000, 5000],
+        isInvalid: true,
+        potentialFork: false,
+        tentativeWinning: false,
+        stakeCurrent: "25",
+        stakeRemaining: "25",
+        display: true,
+        id: "0.5",
+        name: "Indeterminate"
+      },
+      {
+        payout: [1500, 8500],
+        isInvalid: false,
+        potentialFork: false,
+        tentativeWinning: false,
+        stakeCurrent: "85",
+        stakeRemaining: "85",
+        display: true,
+        id: "85",
+        name: "85"
+      }
+    ];
+    const actual = selectDisputeOutcomes(
+      marketScalar,
+      stakes,
+      100,
+      1000000000
+    );
+    const expected = [
+      { ...stakes[0] },
+      { ...stakes[1], stakeRemaining: "10" },
+      { ...stakes[3], stakeRemaining: "25" },
+      { ...stakes[2], stakeRemaining: "70" },
+      { ...stakes[4], stakeRemaining: "85" }
+    ];
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `scalar market with invalid disputes sort`,
-    assertions: () => {
-      const stakes = [
-        {
-          payout: [2000, 8000],
-          isInvalid: false,
-          potentialFork: false,
-          tentativeWinning: true,
-          display: true,
-          id: "80",
-          name: "name"
-        },
-        {
-          payout: [1000, 9000],
-          isInvalid: false,
-          potentialFork: false,
-          tentativeWinning: false,
-          stakeCurrent: "10",
-          stakeRemaining: "10",
-          display: true,
-          id: "90",
-          name: "90"
-        },
-        {
-          payout: [9000, 1000],
-          isInvalid: false,
-          potentialFork: false,
-          tentativeWinning: false,
-          stakeCurrent: "70",
-          stakeRemaining: "70",
-          display: true,
-          id: "10",
-          name: "10"
-        },
-        {
-          accountStakeCompleted: "0",
-          accountStakeCurrent: "0",
-          bondSizeCurrent: "100",
-          stakeCompleted: "0",
-          payout: [5000, 5000],
-          isInvalid: true,
-          potentialFork: false,
-          tentativeWinning: false,
-          stakeCurrent: "25",
-          stakeRemaining: "25",
-          display: true,
-          id: "0.5",
-          name: "Indeterminate"
-        },
-        {
-          payout: [1500, 8500],
-          isInvalid: false,
-          potentialFork: false,
-          tentativeWinning: false,
-          stakeCurrent: "85",
-          stakeRemaining: "85",
-          display: true,
-          id: "85",
-          name: "85"
-        }
-      ];
-      const actual = selectDisputeOutcomes(
-        marketScalar,
-        stakes,
-        100,
-        1000000000
-      );
-      const expected = [
-        { ...stakes[0] },
-        { ...stakes[1], stakeRemaining: "10" },
-        { ...stakes[3], stakeRemaining: "25" },
-        { ...stakes[2], stakeRemaining: "70" },
-        { ...stakes[4], stakeRemaining: "85" }
-      ];
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+  test(`scalar market with two disputes`, () => {
+    const stakes = [
+      {
+        payout: [2000, 8000],
+        isInvalid: false,
+        potentialFork: false,
+        tentativeWinning: true
+      },
+      {
+        payout: [1000, 9000],
+        isInvalid: false,
+        potentialFork: false,
+        tentativeWinning: false,
+        stakeRemaining: 50
+      }
+    ];
+    const actual = selectDisputeOutcomes(
+      marketScalar,
+      stakes,
+      100,
+      1000000000
+    );
+    const expected = [
+      { ...stakes[0], display: true, id: "80", name: "80" },
+      { ...stakes[1], display: true, id: "90", name: "90" },
+      {
+        display: true,
+        id: "0.5",
+        name: "Indeterminate",
+        ...getDefaultStake(100)
+      }
+    ];
+
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `scalar market with two disputes`,
-    assertions: () => {
-      const stakes = [
-        {
-          payout: [2000, 8000],
-          isInvalid: false,
-          potentialFork: false,
-          tentativeWinning: true
-        },
-        {
-          payout: [1000, 9000],
-          isInvalid: false,
-          potentialFork: false,
-          tentativeWinning: false,
-          stakeRemaining: 50
-        }
-      ];
-      const actual = selectDisputeOutcomes(
-        marketScalar,
-        stakes,
-        100,
-        1000000000
-      );
-      const expected = [
-        { ...stakes[0], display: true, id: "80", name: "80" },
-        { ...stakes[1], display: true, id: "90", name: "90" },
-        {
-          display: true,
-          id: "0.5",
-          name: "Indeterminate",
-          ...getDefaultStake(100)
-        }
-      ];
-
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+  test(`scalar market with one disputes`, () => {
+    const stakes = [
+      {
+        payout: [2000, 8000],
+        isInvalid: false,
+        potentialFork: false,
+        tentativeWinning: true
+      }
+    ];
+    const actual = selectDisputeOutcomes(
+      marketScalar,
+      stakes,
+      100,
+      1000000000
+    );
+    const expected = [
+      {
+        ...stakes[0],
+        display: true,
+        id: "80",
+        name: "80"
+      },
+      {
+        ...getDefaultStake(100),
+        display: true,
+        id: "0.5",
+        name: "Indeterminate"
+      }
+    ];
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `scalar market with one disputes`,
-    assertions: () => {
-      const stakes = [
-        {
-          payout: [2000, 8000],
-          isInvalid: false,
-          potentialFork: false,
-          tentativeWinning: true
-        }
-      ];
-      const actual = selectDisputeOutcomes(
-        marketScalar,
-        stakes,
-        100,
-        1000000000
-      );
-      const expected = [
-        {
-          ...stakes[0],
-          display: true,
-          id: "80",
-          name: "80"
-        },
-        {
-          ...getDefaultStake(100),
-          display: true,
-          id: "0.5",
-          name: "Indeterminate"
-        }
-      ];
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+  test(`categorical market with invalid disputes`, () => {
+    const stakes = [
+      {
+        payout: [1429, 1429, 1429, 1429, 1429, 1429, 1429],
+        isInvalid: true,
+        tentativeWinning: true
+      }
+    ];
+    const actual = selectDisputeOutcomes(
+      marketCategorical,
+      stakes,
+      100,
+      1000000000
+    );
+    const expected = [
+      {
+        ...getDefaultStake(100),
+        ...stakes[0],
+        display: true,
+        id: "0.5",
+        name: "Indeterminate"
+      },
+      { ...getDefaultStake(100), display: true, id: "0", name: "Bob" },
+      { ...getDefaultStake(100), display: true, id: "1", name: "Sue" },
+      { ...getDefaultStake(100), display: true, id: "2", name: "John" },
+      { ...getDefaultStake(100), display: true, id: "3", name: "Mark" },
+      { ...getDefaultStake(100), display: true, id: "4", name: "Joe" },
+      { ...getDefaultStake(100), display: true, id: "5", name: "Mike" },
+      { ...getDefaultStake(100), display: true, id: "6", name: "Ed" }
+    ];
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `categorical market with invalid disputes`,
-    assertions: () => {
-      const stakes = [
-        {
-          payout: [1429, 1429, 1429, 1429, 1429, 1429, 1429],
-          isInvalid: true,
-          tentativeWinning: true
-        }
-      ];
-      const actual = selectDisputeOutcomes(
-        marketCategorical,
-        stakes,
-        100,
-        1000000000
-      );
-      const expected = [
-        {
-          ...getDefaultStake(100),
-          ...stakes[0],
-          display: true,
-          id: "0.5",
-          name: "Indeterminate"
-        },
-        { ...getDefaultStake(100), display: true, id: "0", name: "Bob" },
-        { ...getDefaultStake(100), display: true, id: "1", name: "Sue" },
-        { ...getDefaultStake(100), display: true, id: "2", name: "John" },
-        { ...getDefaultStake(100), display: true, id: "3", name: "Mark" },
-        { ...getDefaultStake(100), display: true, id: "4", name: "Joe" },
-        { ...getDefaultStake(100), display: true, id: "5", name: "Mike" },
-        { ...getDefaultStake(100), display: true, id: "6", name: "Ed" }
-      ];
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+  test(`categorical market with two disputes`, () => {
+    const stakes = [
+      {
+        payout: [10003, 0, 0, 0, 0, 0, 0],
+        isInvalid: false,
+        tentativeWinning: true
+      },
+      {
+        payout: [0, 0, 0, 0, 10003, 0, 0],
+        isInvalid: false,
+        tentativeWinning: false
+      }
+    ];
+    const actual = selectDisputeOutcomes(
+      marketCategorical,
+      stakes,
+      100,
+      1000000000
+    );
+    const expected = [
+      {
+        ...getDefaultStake(100),
+        ...stakes[0],
+        display: true,
+        id: "0",
+        name: "Bob"
+      },
+      { ...getDefaultStake(100), display: true, id: "1", name: "Sue" },
+      { ...getDefaultStake(100), display: true, id: "2", name: "John" },
+      { ...getDefaultStake(100), display: true, id: "3", name: "Mark" },
+      {
+        ...getDefaultStake(100),
+        ...stakes[1],
+        display: true,
+        id: "4",
+        name: "Joe"
+      },
+      { ...getDefaultStake(100), display: true, id: "5", name: "Mike" },
+      { ...getDefaultStake(100), display: true, id: "6", name: "Ed" },
+      {
+        ...getDefaultStake(100),
+        display: true,
+        id: "0.5",
+        name: "Indeterminate"
+      }
+    ];
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `categorical market with two disputes`,
-    assertions: () => {
-      const stakes = [
-        {
-          payout: [10003, 0, 0, 0, 0, 0, 0],
-          isInvalid: false,
-          tentativeWinning: true
-        },
-        {
-          payout: [0, 0, 0, 0, 10003, 0, 0],
-          isInvalid: false,
-          tentativeWinning: false
-        }
-      ];
-      const actual = selectDisputeOutcomes(
-        marketCategorical,
-        stakes,
-        100,
-        1000000000
-      );
-      const expected = [
-        {
-          ...getDefaultStake(100),
-          ...stakes[0],
-          display: true,
-          id: "0",
-          name: "Bob"
-        },
-        { ...getDefaultStake(100), display: true, id: "1", name: "Sue" },
-        { ...getDefaultStake(100), display: true, id: "2", name: "John" },
-        { ...getDefaultStake(100), display: true, id: "3", name: "Mark" },
-        {
-          ...getDefaultStake(100),
-          ...stakes[1],
-          display: true,
-          id: "4",
-          name: "Joe"
-        },
-        { ...getDefaultStake(100), display: true, id: "5", name: "Mike" },
-        { ...getDefaultStake(100), display: true, id: "6", name: "Ed" },
-        {
-          ...getDefaultStake(100),
-          display: true,
-          id: "0.5",
-          name: "Indeterminate"
-        }
-      ];
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+  test(`categorical market with one disputes`, () => {
+    const stakes = [
+      {
+        payout: [10003, 0, 0, 0, 0, 0, 0],
+        isInvalid: false,
+        tentativeWinning: true
+      }
+    ];
+    const actual = selectDisputeOutcomes(
+      marketCategorical,
+      stakes,
+      100,
+      1000000000
+    );
+    const expected = [
+      {
+        ...getDefaultStake(100),
+        ...stakes[0],
+        display: true,
+        id: "0",
+        name: "Bob"
+      },
+      { ...getDefaultStake(100), display: true, id: "1", name: "Sue" },
+      { ...getDefaultStake(100), display: true, id: "2", name: "John" },
+      { ...getDefaultStake(100), display: true, id: "3", name: "Mark" },
+      { ...getDefaultStake(100), display: true, id: "4", name: "Joe" },
+      { ...getDefaultStake(100), display: true, id: "5", name: "Mike" },
+      { ...getDefaultStake(100), display: true, id: "6", name: "Ed" },
+      {
+        ...getDefaultStake(100),
+        display: true,
+        id: "0.5",
+        name: "Indeterminate"
+      }
+    ];
+
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `categorical market with one disputes`,
-    assertions: () => {
-      const stakes = [
-        {
-          payout: [10003, 0, 0, 0, 0, 0, 0],
-          isInvalid: false,
-          tentativeWinning: true
-        }
-      ];
-      const actual = selectDisputeOutcomes(
-        marketCategorical,
-        stakes,
-        100,
-        1000000000
-      );
-      const expected = [
-        {
-          ...getDefaultStake(100),
-          ...stakes[0],
-          display: true,
-          id: "0",
-          name: "Bob"
-        },
-        { ...getDefaultStake(100), display: true, id: "1", name: "Sue" },
-        { ...getDefaultStake(100), display: true, id: "2", name: "John" },
-        { ...getDefaultStake(100), display: true, id: "3", name: "Mark" },
-        { ...getDefaultStake(100), display: true, id: "4", name: "Joe" },
-        { ...getDefaultStake(100), display: true, id: "5", name: "Mike" },
-        { ...getDefaultStake(100), display: true, id: "6", name: "Ed" },
-        {
-          ...getDefaultStake(100),
-          display: true,
-          id: "0.5",
-          name: "Indeterminate"
-        }
-      ];
+  test(`yes/no  market with two disputes`, () => {
+    const stakes = [
+      {
+        payout: [10000, 0],
+        isInvalid: false,
+        tentativeWinning: true
+      },
+      {
+        payout: [0, 10000],
+        isInvalid: false,
+        tentativeWinning: false
+      }
+    ];
+    const actual = selectDisputeOutcomes(
+      marketBinary,
+      stakes,
+      100,
+      1000000000
+    );
+    const expected = [
+      {
+        ...getDefaultStake(100),
+        ...stakes[0],
+        display: true,
+        id: "0",
+        name: "No"
+      },
+      {
+        ...getDefaultStake(100),
+        ...stakes[1],
+        display: true,
+        id: "1",
+        name: "Yes"
+      },
+      {
+        ...getDefaultStake(100),
+        display: true,
+        id: "0.5",
+        name: "Indeterminate"
+      }
+    ];
 
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `yes/no  market with two disputes`,
-    assertions: () => {
-      const stakes = [
-        {
-          payout: [10000, 0],
-          isInvalid: false,
-          tentativeWinning: true
-        },
-        {
-          payout: [0, 10000],
-          isInvalid: false,
-          tentativeWinning: false
-        }
-      ];
-      const actual = selectDisputeOutcomes(
-        marketBinary,
-        stakes,
-        100,
-        1000000000
-      );
-      const expected = [
-        {
-          ...getDefaultStake(100),
-          ...stakes[0],
-          display: true,
-          id: "0",
-          name: "No"
-        },
-        {
-          ...getDefaultStake(100),
-          ...stakes[1],
-          display: true,
-          id: "1",
-          name: "Yes"
-        },
-        {
-          ...getDefaultStake(100),
-          display: true,
-          id: "0.5",
-          name: "Indeterminate"
-        }
-      ];
+  test(`yes/no  market with invalid disputes`, () => {
+    const stakes = [
+      {
+        payout: [5000, 5000],
+        isInvalid: true,
+        tentativeWinning: true
+      }
+    ];
+    const actual = selectDisputeOutcomes(
+      marketBinary,
+      stakes,
+      100,
+      1000000000
+    );
+    const expected = [
+      {
+        ...getDefaultStake(100),
+        display: true,
+        id: "0.5",
+        name: "Indeterminate",
+        ...stakes[0]
+      },
+      { display: true, id: "0", name: "No", ...getDefaultStake(100) },
+      { display: true, id: "1", name: "Yes", ...getDefaultStake(100) }
+    ];
 
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `yes/no  market with invalid disputes`,
-    assertions: () => {
-      const stakes = [
-        {
-          payout: [5000, 5000],
-          isInvalid: true,
-          tentativeWinning: true
-        }
-      ];
-      const actual = selectDisputeOutcomes(
-        marketBinary,
-        stakes,
-        100,
-        1000000000
-      );
-      const expected = [
-        {
-          ...getDefaultStake(100),
-          display: true,
-          id: "0.5",
-          name: "Indeterminate",
-          ...stakes[0]
-        },
-        { display: true, id: "0", name: "No", ...getDefaultStake(100) },
-        { display: true, id: "1", name: "Yes", ...getDefaultStake(100) }
-      ];
-
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+  test(`yes/no  market with one dispute`, () => {
+    const stakes = [
+      {
+        payout: [10000, 0],
+        isInvalid: false,
+        tentativeWinning: true
+      }
+    ];
+    const actual = selectDisputeOutcomes(
+      marketBinary,
+      stakes,
+      100,
+      1000000000
+    );
+    const expected = [
+      {
+        ...getDefaultStake(100),
+        display: true,
+        id: "0",
+        name: "No",
+        ...stakes[0]
+      },
+      { display: true, id: "1", name: "Yes", ...getDefaultStake(100) },
+      {
+        display: true,
+        id: "0.5",
+        name: "Indeterminate",
+        ...getDefaultStake(100)
+      }
+    ];
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `yes/no  market with one dispute`,
-    assertions: () => {
-      const stakes = [
-        {
-          payout: [10000, 0],
-          isInvalid: false,
-          tentativeWinning: true
-        }
-      ];
-      const actual = selectDisputeOutcomes(
-        marketBinary,
-        stakes,
-        100,
-        1000000000
-      );
-      const expected = [
-        {
-          ...getDefaultStake(100),
-          display: true,
-          id: "0",
-          name: "No",
-          ...stakes[0]
-        },
-        { display: true, id: "1", name: "Yes", ...getDefaultStake(100) },
-        {
-          display: true,
-          id: "0.5",
-          name: "Indeterminate",
-          ...getDefaultStake(100)
-        }
-      ];
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+  test(`yes/no  market with NO disputes`, () => {
+    const actual = selectDisputeOutcomes(marketBinary, []);
+    const expected = marketBinary.reportableOutcomes;
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `yes/no  market with NO disputes`,
-    assertions: () => {
-      const actual = selectDisputeOutcomes(marketBinary, []);
-      const expected = marketBinary.reportableOutcomes;
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+  test(`category market with NO disputes`, () => {
+    const actual = selectDisputeOutcomes(marketCategorical, []);
+    const expected = marketCategorical.reportableOutcomes;
+    expect(actual).toEqual(expected);
   });
 
-  test({
-    description: `category market with NO disputes`,
-    assertions: () => {
-      const actual = selectDisputeOutcomes(marketCategorical, []);
-      const expected = marketCategorical.reportableOutcomes;
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
-  });
-
-  test({
-    description: `scalar market with NO disputes`,
-    assertions: () => {
-      const actual = selectDisputeOutcomes(marketScalar, []);
-      const expected = marketScalar.reportableOutcomes;
-      assert.deepEqual(actual, expected, `Didn't call the expected method`);
-    }
+  test(`scalar market with NO disputes`, () => {
+    const actual = selectDisputeOutcomes(marketScalar, []);
+    const expected = marketScalar.reportableOutcomes;
+    expect(actual).toEqual(expected);
   });
 });
