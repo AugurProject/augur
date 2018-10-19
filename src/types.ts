@@ -104,7 +104,7 @@ export type GenericCallback<ResultType> = (err: Error|null, result?: ResultType)
 
 export type AsyncCallback = (err: Error|null, result?: any) => void;
 
-export type LogProcessor = (db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback) => void;
+export type LogProcessor = (db: Knex, augur: Augur, log: FormattedEventLog) => Promise<void>;
 
 export interface EventLogProcessor {
   add: LogProcessor;

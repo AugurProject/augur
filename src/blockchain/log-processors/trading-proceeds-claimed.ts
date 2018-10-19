@@ -1,11 +1,11 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import { FormattedEventLog, ErrorCallback } from "../../types";
+import { FormattedEventLog } from "../../types";
 import { augurEmitter } from "../../events";
 import { SubscriptionEventNames } from "../../constants";
 
-export function processTradingProceedsClaimedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+export async function processTradingProceedsClaimedLog(db: Knex, augur: Augur, log: FormattedEventLog) {
   const tradingProceedsToInsert = formatBigNumberAsFixed({
     marketId: log.market,
     shareToken: log.shareToken,
@@ -16,17 +16,11 @@ export function processTradingProceedsClaimedLog(db: Knex, augur: Augur, log: Fo
     transactionHash: log.transactionHash,
     logIndex: log.logIndex,
   });
-  db("trading_proceeds").insert(tradingProceedsToInsert).asCallback((err?: Error|null) => {
-    if (err) return callback(err);
-    augurEmitter.emit(SubscriptionEventNames.TradingProceedsClaimed, log);
-    callback(null);
-  });
+  await db("trading_proceeds").insert(tradingProceedsToInsert);
+  augurEmitter.emit(SubscriptionEventNames.TradingProceedsClaimed, log);
 }
 
-export function processTradingProceedsClaimedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  db.from("trading_proceeds").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err?: Error|null) => {
-    if (err) return callback(err);
-    augurEmitter.emit(SubscriptionEventNames.TradingProceedsClaimed, log);
-    callback(null);
-  });
+export async function processTradingProceedsClaimedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog) {
+  await db.from("trading_proceeds").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
+  augurEmitter.emit(SubscriptionEventNames.TradingProceedsClaimed, log);
 }

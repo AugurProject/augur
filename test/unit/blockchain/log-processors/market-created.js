@@ -1,59 +1,47 @@
-"use strict";
-
 const Augur = require("augur.js");
-const assert = require("chai").assert;
-const {series} = require("async");
-const {BigNumber} = require("bignumber.js");
+const { BigNumber } = require("bignumber.js");
 const setupTestDb = require("../../test.database");
-const {processMarketCreatedLog, processMarketCreatedLogRemoval} = require("../../../../src/blockchain/log-processors/market-created");
-const {getMarketsWithReportingState} = require("../../../../src/server/getters/database");
+const { processMarketCreatedLog, processMarketCreatedLogRemoval } = require("src/blockchain/log-processors/market-created");
+const { getMarketsWithReportingState } = require("src/server/getters/database");
+
+async function getState(db, log) {
+  return {
+    markets: await getMarketsWithReportingState(db).where({ "markets.marketId": log.market }),
+    categories: await db("categories").where({ category: log.topic }),
+    outcomes: await db("outcomes").where({ marketId: log.market }),
+    tokens: await db("tokens").select(["contractAddress", "symbol", "marketId", "outcome"]).where({ marketId: log.market }),
+    search: await db("search_en").where({ marketId: log.market }),
+    transfers: await db("transfers").where({ recipient: log.market }),
+  };
+}
 
 describe("blockchain/log-processors/market-created", () => {
-  const test = (t) => {
-    const getState = (db, params, callback) => series({
-      markets: next => getMarketsWithReportingState(db).where({"markets.marketId": params.log.market}).asCallback(next),
-      categories: next => db("categories").where({category: params.log.topic}).asCallback(next),
-      outcomes: next => db("outcomes").where({marketId: params.log.market}).asCallback(next),
-      tokens: next => db("tokens").select(["contractAddress", "symbol", "marketId", "outcome"]).where({marketId: params.log.market}).asCallback(next),
-      search: next => db("search_en").where({marketId: params.log.market}).asCallback(next),
-      transfers: next => db("transfers").where({ recipient: params.log.market }).asCallback(next),
-    }, callback);
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        db.transaction((trx) => {
-          processMarketCreatedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.ifError(err);
-            getState(trx, t.params, (err, records) => {
-              t.assertions.onAdded(err, records, false);
-              processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.ifError(err);
-                getState(trx, t.params, (err, records) => {
-                  t.assertions.onRemoved(err, records);
-                  processMarketCreatedLog(trx, t.params.augur, t.params.log, (err) => {
-                    assert.ifError(err);
-                    getState(trx, t.params, (err, records) => {
-                      t.assertions.onAdded(err, records, true);
-                      processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                        assert.ifError(err);
-                        getState(trx, t.params, (err, records) => {
-                          t.assertions.onRemoved(err, records);
-                          db.destroy();
-                          done();
-                        });
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
+  const runTest = (t) => {
+    test(t.description, async () => {
+      return db.transaction(async (trx) => {
+        await processMarketCreatedLog(trx, t.params.augur, t.params.log);
+        t.assertions.onAdded(await getState(trx, t.params.log), false);
+        await processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log);
+        t.assertions.onRemoved(await getState(trx, t.params.log));
+        await processMarketCreatedLog(trx, t.params.augur, t.params.log);
+        t.assertions.onAdded(await getState(trx, t.params.log), true);
+        await processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log);
+        t.assertions.onRemoved(await getState(trx, t.params.log));
       });
     });
   };
   const constants = new Augur().constants;
-  test({
+  runTest({
     description: "yesNo market MarketCreated log and removal",
     params: {
       log: {
@@ -78,41 +66,41 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getFeeWindow: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x1000000000000000000000000000000000000001");
+            getFeeWindow: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
-            getEndTime: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "4886718345");
+            getEndTime: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("4886718345");
             },
-            getDesignatedReporter: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x000000000000000000000000000000000000b0b2");
+            getDesignatedReporter: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("0x000000000000000000000000000000000000b0b2");
             },
-            getNumTicks: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "10000");
+            getNumTicks: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("10000");
             },
-            getMarketCreatorSettlementFeeDivisor: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "100");
+            getMarketCreatorSettlementFeeDivisor: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("100");
             },
-            getMarketCreatorMailbox: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0xbbb1111111111111111111111111111111111111");
+            getMarketCreatorMailbox: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("0xbbb1111111111111111111111111111111111111");
             },
-            getShareToken: (p, callback) => {
-              callback(null, `SHARE_TOKEN_${p._outcome}`);
+            getShareToken: (p) => {
+              return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p, callback) => {
-              callback(null, "800");
+            getValidityBondAttoeth: (p) => {
+              return Promise.resolve("800");
             },
           },
           Universe: {
-            getOrCacheReportingFeeDivisor: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "1000");
+            getOrCacheReportingFeeDivisor: (p) => {
+              expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
+              return Promise.resolve("1000");
             },
           },
         },
@@ -120,9 +108,9 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records, isReAdded) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+      onAdded: (records, isReAdded) => {
+
+        expect(records).toEqual({
           markets: [{
             marketId: "0x1111111111111111111111111111111111111111",
             universe: "0x000000000000000000000000000000000000000b",
@@ -221,9 +209,9 @@ describe("blockchain/log-processors/market-created", () => {
           }],
         });
       },
-      onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+      onRemoved: (records) => {
+
+        expect(records).toEqual({
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
@@ -238,7 +226,7 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
   });
-  test({
+  runTest({
     description: "categorical market MarketCreated log and removal",
     params: {
       log: {
@@ -264,41 +252,41 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getFeeWindow: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
-              callback(null, "0x1000000000000000000000000000000000000001");
+            getFeeWindow: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
+              return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
-            getEndTime: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
-              callback(null, "4886718345");
+            getEndTime: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
+              return Promise.resolve("4886718345");
             },
-            getDesignatedReporter: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
-              callback(null, "0x000000000000000000000000000000000000b0b2");
+            getDesignatedReporter: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
+              return Promise.resolve("0x000000000000000000000000000000000000b0b2");
             },
-            getNumTicks: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
-              callback(null, "10000");
+            getNumTicks: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
+              return Promise.resolve("10000");
             },
-            getMarketCreatorSettlementFeeDivisor: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
-              callback(null, "100");
+            getMarketCreatorSettlementFeeDivisor: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
+              return Promise.resolve("100");
             },
-            getMarketCreatorMailbox: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
-              callback(null, "0xbbb1111111111111111111111111111111111112");
+            getMarketCreatorMailbox: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
+              return Promise.resolve("0xbbb1111111111111111111111111111111111112");
             },
-            getShareToken: (p, callback) => {
-              callback(null, `SHARE_TOKEN_${p._outcome}`);
+            getShareToken: (p) => {
+              return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p, callback) => {
-              callback(null, "800");
+            getValidityBondAttoeth: (p) => {
+              return Promise.resolve("800");
             },
           },
           Universe: {
-            getOrCacheReportingFeeDivisor: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "1000");
+            getOrCacheReportingFeeDivisor: (p) => {
+              expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
+              return Promise.resolve("1000");
             },
           },
         },
@@ -306,9 +294,9 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records, isReAdded) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+      onAdded: (records, isReAdded) => {
+
+        expect(records).toEqual({
           markets: [{
             marketId: "0x1111111111111111111111111111111111111112",
             universe: "0x000000000000000000000000000000000000000b",
@@ -431,9 +419,9 @@ describe("blockchain/log-processors/market-created", () => {
           }],
         });
       },
-      onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+      onRemoved: (records) => {
+
+        expect(records).toEqual({
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
@@ -448,7 +436,7 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
   });
-  test({
+  runTest({
     description: "scalar market MarketCreated log and removal",
     params: {
       log: {
@@ -473,41 +461,41 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getFeeWindow: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
-              callback(null, "0x1000000000000000000000000000000000000001");
+            getFeeWindow: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
+              return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
-            getEndTime: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
-              callback(null, "4886718345");
+            getEndTime: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
+              return Promise.resolve("4886718345");
             },
-            getDesignatedReporter: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
-              callback(null, "0x000000000000000000000000000000000000b0b2");
+            getDesignatedReporter: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
+              return Promise.resolve("0x000000000000000000000000000000000000b0b2");
             },
-            getNumTicks: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
-              callback(null, "10000");
+            getNumTicks: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
+              return Promise.resolve("10000");
             },
-            getMarketCreatorSettlementFeeDivisor: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
-              callback(null, "100");
+            getMarketCreatorSettlementFeeDivisor: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
+              return Promise.resolve("100");
             },
-            getMarketCreatorMailbox: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
-              callback(null, "0xbbb1111111111111111111111111111111111113");
+            getMarketCreatorMailbox: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
+              return Promise.resolve("0xbbb1111111111111111111111111111111111113");
             },
-            getShareToken: (p, callback) => {
-              callback(null, `SHARE_TOKEN_${p._outcome}`);
+            getShareToken: (p) => {
+              return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p, callback) => {
-              callback(null, "800");
+            getValidityBondAttoeth: (p) => {
+              return Promise.resolve("800");
             },
           },
           Universe: {
-            getOrCacheReportingFeeDivisor: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "1000");
+            getOrCacheReportingFeeDivisor: (p) => {
+              expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
+              return Promise.resolve("1000");
             },
           },
         },
@@ -515,9 +503,9 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records, isReAdded) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+      onAdded: (records, isReAdded) => {
+
+        expect(records).toEqual({
           markets: [{
             marketId: "0x1111111111111111111111111111111111111113",
             universe: "0x000000000000000000000000000000000000000b",
@@ -616,9 +604,9 @@ describe("blockchain/log-processors/market-created", () => {
           }],
         });
       },
-      onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+      onRemoved: (records) => {
+
+        expect(records).toEqual({
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
@@ -633,7 +621,7 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
   });
-  test({
+  runTest({
     description: "yesNo market MarketCreated log and removal, with NULL extraInfo",
     params: {
       log: {
@@ -654,41 +642,41 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getFeeWindow: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x1000000000000000000000000000000000000001");
+            getFeeWindow: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
-            getEndTime: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "4886718345");
+            getEndTime: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("4886718345");
             },
-            getDesignatedReporter: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x000000000000000000000000000000000000b0b2");
+            getDesignatedReporter: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("0x000000000000000000000000000000000000b0b2");
             },
-            getNumTicks: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "10000");
+            getNumTicks: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("10000");
             },
-            getMarketCreatorSettlementFeeDivisor: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "100");
+            getMarketCreatorSettlementFeeDivisor: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("100");
             },
-            getMarketCreatorMailbox: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0xbbb1111111111111111111111111111111111111");
+            getMarketCreatorMailbox: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("0xbbb1111111111111111111111111111111111111");
             },
-            getShareToken: (p, callback) => {
-              callback(null, `SHARE_TOKEN_${p._outcome}`);
+            getShareToken: (p) => {
+              return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p, callback) => {
-              callback(null, "800");
+            getValidityBondAttoeth: (p) => {
+              return Promise.resolve("800");
             },
           },
           Universe: {
-            getOrCacheReportingFeeDivisor: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "1000");
+            getOrCacheReportingFeeDivisor: (p) => {
+              expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
+              return Promise.resolve("1000");
             },
           },
         },
@@ -696,9 +684,9 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records, isReAdded) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+      onAdded: (records, isReAdded) => {
+
+        expect(records).toEqual({
           markets: [{
             marketId: "0x1111111111111111111111111111111111111111",
             universe: "0x000000000000000000000000000000000000000b",
@@ -797,9 +785,9 @@ describe("blockchain/log-processors/market-created", () => {
           }],
         });
       },
-      onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+      onRemoved: (records) => {
+
+        expect(records).toEqual({
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
@@ -814,7 +802,7 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
   });
-  test({
+  runTest({
     description: "yesNo market MarketCreated log and removal, with 0 creator fee rate",
     params: {
       log: {
@@ -839,45 +827,45 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getNumberOfOutcomes: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "2");
+            getNumberOfOutcomes: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("2");
             },
-            getFeeWindow: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x1000000000000000000000000000000000000001");
+            getFeeWindow: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
-            getEndTime: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "4886718345");
+            getEndTime: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("4886718345");
             },
-            getDesignatedReporter: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x000000000000000000000000000000000000b0b2");
+            getDesignatedReporter: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("0x000000000000000000000000000000000000b0b2");
             },
-            getNumTicks: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "10000");
+            getNumTicks: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("10000");
             },
-            getMarketCreatorSettlementFeeDivisor: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "100");
+            getMarketCreatorSettlementFeeDivisor: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("100");
             },
-            getMarketCreatorMailbox: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0xbbb1111111111111111111111111111111111111");
+            getMarketCreatorMailbox: (p) => {
+              expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
+              return Promise.resolve("0xbbb1111111111111111111111111111111111111");
             },
-            getShareToken: (p, callback) => {
-              callback(null, `SHARE_TOKEN_${p._outcome}`);
+            getShareToken: (p) => {
+              return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p, callback) => {
-              callback(null, "800");
+            getValidityBondAttoeth: (p) => {
+              return Promise.resolve("800");
             },
           },
           Universe: {
-            getOrCacheReportingFeeDivisor: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "1000");
+            getOrCacheReportingFeeDivisor: (p) => {
+              expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
+              return Promise.resolve("1000");
             },
           },
         },
@@ -885,9 +873,9 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records, isReAdded) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+      onAdded: (records, isReAdded) => {
+
+        expect(records).toEqual({
           markets: [{
             marketId: "0x1111111111111111111111111111111111111111",
             universe: "0x000000000000000000000000000000000000000b",
@@ -986,9 +974,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
         });
       },
-      onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+      onRemoved: (records) => {
+        expect(records).toEqual({
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",

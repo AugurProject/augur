@@ -1,32 +1,27 @@
-"use strict";
-
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-reporting-history", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        t.method = "getReportingHistory";
-        dispatchJsonRpcRequest(db, t, null, (err, reportingHistory) => {
-          t.assertions(err, reportingHistory);
-          db.destroy();
-          done();
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      t.method = "getReportingHistory";
+      dispatchJsonRpcRequest(db, t, null, (err, reportingHistory) => {
+        t.assertions(err, reportingHistory);
+        db.destroy();
+        done();
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "get reporter history that actually exists",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000021",
     },
     assertions: (err, reportingHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(reportingHistory, {
+      expect(err).toBeFalsy();
+      expect(reportingHistory).toEqual({
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000011": {
             initialReporter: null,
@@ -74,15 +69,15 @@ describe("server/getters/get-reporting-history", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "get reporter history of initial reports that actually exists",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, reportingHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(reportingHistory, {
+      expect(err).toBeFalsy();
+      expect(reportingHistory).toEqual({
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000011": {
             initialReporter: {
@@ -176,7 +171,7 @@ describe("server/getters/get-reporting-history", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "get reporter history that actually exists, filtered by date",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -185,8 +180,8 @@ describe("server/getters/get-reporting-history", () => {
       latestCreationTime: 1506474515,
     },
     assertions: (err, reportingHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(reportingHistory, {
+      expect(err).toBeFalsy();
+      expect(reportingHistory).toEqual({
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000019": {
             initialReporter: null,
@@ -211,15 +206,15 @@ describe("server/getters/get-reporting-history", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "reporter has not submitted any reports",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x2100000000000000000000000000000000000021",
     },
     assertions: (err, reportingHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(reportingHistory, {});
+      expect(err).toBeFalsy();
+      expect(reportingHistory).toEqual({});
     },
   });
 });

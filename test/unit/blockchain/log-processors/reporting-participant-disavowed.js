@@ -1,97 +1,78 @@
-"use strict";
-
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {processReportingParticipantDisavowedLog, processReportingParticipantDisavowedLogRemoval} = require("../../../../src/blockchain/log-processors/reporting-participant-disavowed");
-const {series} = require("async");
+const { processReportingParticipantDisavowedLog, processReportingParticipantDisavowedLogRemoval } = require("src/blockchain/log-processors/reporting-participant-disavowed");
 
-const getParticipantState = (db, params, callback) => {
-  series({
-    initialReporter: (next) => db("initial_reports").first(["initialReporter", "disavowed"]).where("initialReporter", params.log.reportingParticipant).asCallback(next),
-    crowdsourcer: (next) => db("crowdsourcers").first(["crowdsourcerId", "disavowed"]).where("crowdsourcerId", params.log.reportingParticipant).asCallback(next),
-  }, callback);
-};
-
+async function getParticipantState(db, log) {
+  return {
+    initialReporter: await db("initial_reports").first(["initialReporter", "disavowed"]).where("initialReporter", log.reportingParticipant),
+    crowdsourcer: await db("crowdsourcers").first(["crowdsourcerId", "disavowed"]).where("crowdsourcerId", log.reportingParticipant),
+  };
+}
 describe("blockchain/log-processors/reporting-participant-disavowed", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        db.transaction((trx) => {
-          processReportingParticipantDisavowedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.ifError(err);
-            getParticipantState(trx, t.params, (err, records) => {
-              t.assertions.onAdded(err, records);
-              processReportingParticipantDisavowedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.ifError(err);
-                getParticipantState(trx, t.params, (err, records) => {
-                  t.assertions.onRemoved(err, records);
-                  db.destroy();
-                  done();
-                });
-              });
-            });
-          });
-        });
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  test("initialReporter", async () => {
+    const log = {
+      universe: "0x000000000000000000000000000000000000000b",
+      market: "0x0000000000000000000000000000000000000211",
+      reportingParticipant: "0x0000000000000000000000000000000000abe123",
+      blockNumber: 1400001,
+      transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
+      logIndex: 0,
+    };
+    return db.transaction(async (trx) => {
+      await processReportingParticipantDisavowedLog(trx, {}, log);
+      await expect(getParticipantState(trx, log)).resolves.toEqual({
+        crowdsourcer: undefined,
+        initialReporter: {
+          disavowed: 1,
+          initialReporter: "0x0000000000000000000000000000000000abe123",
+        },
+      });
+
+      await processReportingParticipantDisavowedLogRemoval(trx, {}, log);
+      await expect(getParticipantState(trx, log)).resolves.toEqual({
+        crowdsourcer: undefined,
+        initialReporter: {
+          disavowed: 0,
+          initialReporter: "0x0000000000000000000000000000000000abe123",
+        },
       });
     });
-  };
-  test({
-    description: "initialReporter",
-    params: {
-      log: {
-        universe: "0x000000000000000000000000000000000000000b",
-        market: "0x0000000000000000000000000000000000000211",
-        reportingParticipant: "0x0000000000000000000000000000000000abe123",
-        blockNumber: 1400001,
-        transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
-        logIndex: 0,
-      },
-    },
-    assertions: {
-      onAdded: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records.initialReporter, {
-          disavowed: 1,
-          initialReporter: "0x0000000000000000000000000000000000abe123",
-        });
-      },
-      onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records.initialReporter, {
-          disavowed: 0,
-          initialReporter: "0x0000000000000000000000000000000000abe123",
-        });
-      },
-    },
   });
-  test({
-    description: "crowdsourcer",
-    params: {
-      log: {
-        universe: "0x000000000000000000000000000000000000000b",
-        market: "0x0000000000000000000000000000000000000011",
-        reportingParticipant: "0x0000000000000000001000000000000000000005",
-        blockNumber: 1400001,
-        transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
-        logIndex: 0,
-      },
-    },
-    assertions: {
-      onAdded: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records.crowdsourcer, {
+
+  test("crowdsourcer", async () => {
+    const log = {
+      universe: "0x000000000000000000000000000000000000000b",
+      market: "0x0000000000000000000000000000000000000011",
+      reportingParticipant: "0x0000000000000000001000000000000000000005",
+      blockNumber: 1400001,
+      transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
+      logIndex: 0,
+    };
+    return db.transaction(async (trx) => {
+      await processReportingParticipantDisavowedLog(trx, {}, log);
+      await expect(getParticipantState(trx, log)).resolves.toEqual({
+        crowdsourcer: {
           disavowed: 1,
           crowdsourcerId: "0x0000000000000000001000000000000000000005",
-        });
-      },
-      onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records.crowdsourcer, {
+        },
+        initialReporter: undefined,
+      });
+      await processReportingParticipantDisavowedLogRemoval(trx, {}, log);
+      await expect(getParticipantState(trx, log)).resolves.toEqual({
+        crowdsourcer: {
           disavowed: 0,
           crowdsourcerId: "0x0000000000000000001000000000000000000005",
-        });
-      },
-    },
+        },
+        initialReporter: undefined,
+      });
+    });
+  });
+
+  afterEach(async () => {
+    await db.destroy();
   });
 });

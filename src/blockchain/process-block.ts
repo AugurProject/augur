@@ -21,18 +21,18 @@ export function getCurrentTime(): number {
   return getOverrideTimestamp() || blockHeadTimestamp;
 }
 
-export function setOverrideTimestamp(db: Knex, overrideTimestamp: number, callback: ErrorCallback): void {
+export async function setOverrideTimestamp(db: Knex, overrideTimestamp: number) {
   overrideTimestamps.push(overrideTimestamp);
-  db("network_id").update("overrideTimestamp", overrideTimestamp).asCallback(callback);
+  return db("network_id").update("overrideTimestamp", overrideTimestamp);
 }
 
-export function removeOverrideTimestamp(db: Knex, overrideTimestamp: number, callback: ErrorCallback): void {
+export async function removeOverrideTimestamp(db: Knex, overrideTimestamp: number) {
   const removedTimestamp = overrideTimestamps.pop();
   const priorTimestamp = getOverrideTimestamp();
   if (removedTimestamp !== overrideTimestamp || priorTimestamp == null) {
-    return callback(new Error(`Timestamp removal failed ${removedTimestamp} ${overrideTimestamp}`));
+    throw new Error(`Timestamp removal failed ${removedTimestamp} ${overrideTimestamp}`);
   }
-  db("network_id").update("overrideTimestamp", priorTimestamp).asCallback(callback);
+  return db("network_id").update("overrideTimestamp", priorTimestamp);
 }
 
 export function getOverrideTimestamp(): number|null {

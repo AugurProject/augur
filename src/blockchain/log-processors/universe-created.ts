@@ -1,42 +1,30 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback, Address } from "../../types";
+import { FormattedEventLog, Address } from "../../types";
 import { insertPayout } from "./database";
 import { augurEmitter } from "../../events";
 import { SubscriptionEventNames } from "../../constants";
 
-export function processUniverseCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  augur.api.Universe.getReputationToken({ tx: { to: log.childUniverse }}, (err: Error|null, reputationToken?: Address): void => {
-    if (err) return callback(err);
-    insertPayout( db, log.childUniverse, log.payoutNumerators, log.invalid, true, (err, payoutId) => {
-      if (err) return callback(err);
-      const universeToInsert = {
-        universe: log.childUniverse,
-        parentUniverse: log.parentUniverse,
-        payoutId,
-        reputationToken,
-        forked: false,
-      };
-      db.insert(universeToInsert).into("universes").asCallback((err: Error|null): void => {
-        if (err) return callback(err);
-        augurEmitter.emit(SubscriptionEventNames.UniverseCreated, log);
-        const repToken = [{
-          contractAddress: reputationToken,
-          symbol: "REP",
-        }];
-        db("tokens").insert(repToken).asCallback((err) => {
-          if (err) return callback(err);
-          callback(null);
-        });
-      });
-    });
-  });
+export async function processUniverseCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog) {
+  const reputationToken: Address = await augur.api.Universe.getReputationToken({ tx: { to: log.childUniverse } });
+  const payoutId: number = await insertPayout(db, log.childUniverse, log.payoutNumerators, log.invalid, true);
+  const universeToInsert = {
+    universe: log.childUniverse,
+    parentUniverse: log.parentUniverse,
+    payoutId,
+    reputationToken,
+    forked: false,
+  };
+  await db.insert(universeToInsert).into("universes");
+  augurEmitter.emit(SubscriptionEventNames.UniverseCreated, log);
+  const repToken = [{
+    contractAddress: reputationToken,
+    symbol: "REP",
+  }];
+  await db("tokens").insert(repToken);
 }
 
-export function processUniverseCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  db("universes").where({universe: log.childUniverse}).del().asCallback((err: Error|null): void => {
-    if (err) return callback(err);
-    augurEmitter.emit(SubscriptionEventNames.UniverseCreated, log);
-    callback(null);
-  });
+export async function processUniverseCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog) {
+  await db("universes").where({ universe: log.childUniverse }).del();
+  augurEmitter.emit(SubscriptionEventNames.UniverseCreated, log);
 }
