@@ -1,10 +1,10 @@
+import * as _ from "lodash";
 import * as Knex from "knex";
-import { Address, ReportingState, AsyncCallback, ErrorCallback, FeeWindowState, GenericCallback } from "../../types";
+import Augur from "augur.js";
 import { BigNumber } from "bignumber.js";
+import { Address, ReportingState, AsyncCallback, ErrorCallback, FeeWindowState, GenericCallback } from "../../types";
 import { getCurrentTime } from "../process-block";
 import { augurEmitter } from "../../events";
-import * as _ from "lodash";
-import Augur from "augur.js";
 import { SubscriptionEventNames } from "../../constants";
 
 export interface FeeWindowModifications {
@@ -20,6 +20,12 @@ function setMarketStateToLatest(db: Knex, marketId: Address, callback: AsyncCall
   db("markets").update({
     marketStateId: queryCurrentMarketStateId(db, marketId),
   }).where({ marketId }).asCallback(callback);
+}
+
+async function setMarketStateToLatestPromise(db: Knex, marketId: Address) {
+  return db("markets").update({
+    marketStateId: queryCurrentMarketStateId(db, marketId),
+  }).where({ marketId });
 }
 
 // We fallback to the on-chain lookup if we have no row, because there is a possibility due to transaction log ordering
@@ -56,51 +62,51 @@ export function updateMarketState(db: Knex, marketId: Address, blockNumber: numb
   });
 }
 
-export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp: number, callback: (err: Error|null, results?: FeeWindowModifications) => void) {
-  db("fee_windows").select("feeWindow", "universe")
+export async function updateMarketStatePromise(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState) {
+  const marketStateDataToInsert = { marketId, reportingState, blockNumber };
+  let query = db.insert(marketStateDataToInsert).into("market_state");
+  if (db.client.config.client !== "sqlite3") {
+    query = query.returning("marketStateId");
+  }
+  const marketStateId: Array<number> = await query;
+  if (!marketStateId || !marketStateId.length) throw new Error("Failed to generate new marketStateId for marketId:" + marketId);
+  return setMarketStateToLatestPromise(db, marketId);
+}
+
+export async function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp: number): Promise<FeeWindowModifications> {
+  const expiredFeeWindowRows: Array<{ feeWindow: Address; universe: Address }> = await db("fee_windows").select("feeWindow", "universe")
     .whereNot("state", FeeWindowState.PAST)
-    .where("endTime", "<", timestamp)
-    .asCallback((err, expiredFeeWindowRows?: Array<{ feeWindow: Address; universe: Address }>) => {
-      if (err) return callback(err);
-      db("fee_windows").update("state", FeeWindowState.PAST).whereIn("feeWindow", _.map(expiredFeeWindowRows, (result) => result.feeWindow))
-        .asCallback((err) => {
-          if (err) return callback(err);
-          db("fee_windows").select("feeWindow", "universe")
-            .whereNot("state", FeeWindowState.CURRENT)
-            .where("endTime", ">", timestamp)
-            .where("startTime", "<", timestamp)
-            .asCallback((err, newActiveFeeWindowRows?: Array<{ feeWindow: Address; universe: Address }>) => {
-              if (err) return callback(err);
-              db("fee_windows").update("state", FeeWindowState.CURRENT).whereIn("feeWindow", _.map(newActiveFeeWindowRows, (row) => row.feeWindow))
-                .asCallback((err) => {
-                    if (err) return callback(err);
-                    if (expiredFeeWindowRows != null) {
-                      expiredFeeWindowRows.forEach((expiredFeeWindowRow) => {
-                        augurEmitter.emit(SubscriptionEventNames.FeeWindowClosed, Object.assign({
-                            blockNumber,
-                            timestamp,
-                          },
-                          expiredFeeWindowRow));
-                      });
-                    }
-                    if (newActiveFeeWindowRows != null) {
-                      newActiveFeeWindowRows.forEach((newActiveFeeWindowRow) => {
-                        augurEmitter.emit(SubscriptionEventNames.FeeWindowOpened, Object.assign({
-                            blockNumber,
-                            timestamp,
-                          },
-                          newActiveFeeWindowRow));
-                      });
-                      return callback(null, {
-                        newActiveFeeWindows: _.map(newActiveFeeWindowRows, (row) => row.feeWindow),
-                        expiredFeeWindows: _.map(expiredFeeWindowRows, (row) => row.feeWindow),
-                      });
-                    }
-                  },
-                );
-            });
-        });
+    .where("endTime", "<", timestamp);
+  await db("fee_windows").update("state", FeeWindowState.PAST).whereIn("feeWindow", _.map(expiredFeeWindowRows, (result) => result.feeWindow));
+
+  const newActiveFeeWindowRows: Array<{ feeWindow: Address; universe: Address }> = await db("fee_windows").select("feeWindow", "universe")
+    .whereNot("state", FeeWindowState.CURRENT)
+    .where("endTime", ">", timestamp)
+    .where("startTime", "<", timestamp);
+  await db("fee_windows").update("state", FeeWindowState.CURRENT).whereIn("feeWindow", _.map(newActiveFeeWindowRows, (row) => row.feeWindow));
+
+  if (expiredFeeWindowRows != null) {
+    expiredFeeWindowRows.forEach((expiredFeeWindowRow) => {
+      augurEmitter.emit(SubscriptionEventNames.FeeWindowClosed, Object.assign({
+          blockNumber,
+          timestamp,
+        },
+        expiredFeeWindowRow));
     });
+  }
+  if (newActiveFeeWindowRows != null) {
+    newActiveFeeWindowRows.forEach((newActiveFeeWindowRow) => {
+      augurEmitter.emit(SubscriptionEventNames.FeeWindowOpened, Object.assign({
+          blockNumber,
+          timestamp,
+        },
+        newActiveFeeWindowRow));
+    });
+  }
+  return {
+    newActiveFeeWindows: _.map(newActiveFeeWindowRows, (row) => row.feeWindow),
+    expiredFeeWindows: _.map(expiredFeeWindowRows, (row) => row.feeWindow),
+  };
 }
 
 export function rollbackMarketState(db: Knex, marketId: Address, expectedState: ReportingState, callback: AsyncCallback): void {

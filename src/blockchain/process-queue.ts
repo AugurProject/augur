@@ -20,7 +20,7 @@ export function logQueueAdd(blockHash: string, logCallback: LogProcessCallback|A
   if (logQueue[blockHash] === undefined) {
     logQueue[blockHash] = [];
   }
-  if (Array.isArray(logCallback) ) {
+  if (Array.isArray(logCallback)) {
     logQueue[blockHash] = logQueue[blockHash].concat(logCallback);
   } else {
     logQueue[blockHash].push(logCallback);
@@ -34,12 +34,17 @@ export function logQueuePop(blockHash: string): Array<LogProcessCallback> {
   return callbacks;
 }
 
-export function logQueueProcess(db: Knex, blockHash: string, callback: ErrorCallback): void {
-  const logCallbacks = logQueuePop(blockHash);
-  const remainingCallbacksByBlock = _.mapValues(logQueue, (callbacks) => callbacks.length);
-  if (!_.isEmpty(remainingCallbacksByBlock)) console.log("Future Callbacks", remainingCallbacksByBlock);
-  if (logCallbacks.length > 0) logger.info(`Processing ${logCallbacks.length} logs`);
-  async.eachSeries(logCallbacks,
-    (logCallback: LogProcessCallback, next: ErrorCallback) => logCallback(db, (err) => next(err)),
-    callback);
+export async function logQueueProcess(db: Knex, blockHash: string) {
+  return new Promise((resolve, reject) => {
+    const logCallbacks = logQueuePop(blockHash);
+    const remainingCallbacksByBlock = _.mapValues(logQueue, (callbacks) => callbacks.length);
+    if (!_.isEmpty(remainingCallbacksByBlock)) console.log("Future Callbacks", remainingCallbacksByBlock);
+    if (logCallbacks.length > 0) logger.info(`Processing ${logCallbacks.length} logs`);
+    async.eachSeries(logCallbacks,
+      (logCallback: LogProcessCallback, next: ErrorCallback) => logCallback(db, (err) => next(err)),
+      (err) => {
+        if (err) return reject(err);
+        resolve();
+      });
+  });
 }

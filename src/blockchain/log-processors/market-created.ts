@@ -1,7 +1,7 @@
-import { forEachOf, series, parallel } from "async";
-import Augur from "augur.js";
-import BigNumber from "bignumber.js";
 import * as Knex from "knex";
+import BigNumber from "bignumber.js";
+import Augur from "augur.js";
+import { forEachOf, series, parallel } from "async";
 import { Address, FormattedEventLog, MarketCreatedLogExtraInfo, MarketsRow, OutcomesRow, TokensRow, CategoriesRow, ErrorCallback, AsyncCallback, GenericCallback } from "../../types";
 import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
