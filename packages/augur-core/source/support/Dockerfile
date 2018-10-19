@@ -5,6 +5,7 @@
 # that this image's build will fail earlier for compiling contracts than
 # for other pieces
 FROM augurproject/python2-and-3:latest
+#FROM python:3.6.6-stretch
 ARG SOLC_VERSION=v0.4.24
 
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
@@ -16,9 +17,9 @@ RUN wget --quiet --output-document /usr/local/bin/solc https://github.com/ethere
 COPY requirements.txt /app/requirements.txt
 
 WORKDIR /app
-RUN pip2 install --upgrade pip setuptools \
-	&& pip2 install --upgrade pip-tools \
-	&& pip2 install -r requirements.txt
+RUN /usr/local/bin/pip2 install --upgrade pip setuptools \
+	&& /usr/local/bin/pip2 install --upgrade pip-tools \
+	&& /usr/local/bin/pip2 install -r requirements.txt
 
 # Install basics of the application
 COPY .soliumrc.json /app/.soliumrc.json
