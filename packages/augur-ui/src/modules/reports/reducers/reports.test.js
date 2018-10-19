@@ -1,5 +1,3 @@
-import { describe, it, afterEach } from "mocha";
-
 import testState from "test/testState";
 import reducer from "modules/reports/reducers/reports";
 
@@ -18,8 +16,8 @@ describe(`modules/reports/reducers/reports.js`, () => {
   });
 
   describe(`UPDATE_REPORTS`, () => {
-    it("should update reports", () => {
-      assert.deepEqual(
+    test("should update reports", () => {
+      expect(
         reducer(state.reports, {
           type: "UPDATE_REPORTS",
           data: {
@@ -40,38 +38,36 @@ describe(`modules/reports/reducers/reports.js`, () => {
               }
             }
           }
-        }),
-        {
-          [testState.universe.id]: {
-            test: {
-              marketId: "test",
-              example: "example",
-              isScalar: false,
-              isIndeterminate: false
-            },
-            example: {
-              marketId: "example",
-              test: "test",
-              isScalar: false,
-              isIndeterminate: false
-            },
-            testMarketId: {
-              marketId: "testMarketId",
-              isScalar: false,
-              isSubmitted: false,
-              isIndeterminate: false
-            }
+        })
+      ).toEqual({
+        [testState.universe.id]: {
+          test: {
+            marketId: "test",
+            example: "example",
+            isScalar: false,
+            isIndeterminate: false
           },
-          markets: []
+          example: {
+            marketId: "example",
+            test: "test",
+            isScalar: false,
+            isIndeterminate: false
+          },
+          testMarketId: {
+            marketId: "testMarketId",
+            isScalar: false,
+            isSubmitted: false,
+            isIndeterminate: false
+          }
         },
-        `Didn't update report information`
-      );
+        markets: []
+      });
     });
   });
 
   describe("UPDATE_REPORT", () => {
-    const test = t =>
-      it(t.description, () =>
+    const runTests = t =>
+      test(t.description, () =>
         t.assertions(
           reducer(t.state.reports, {
             type: "UPDATE_REPORT",
@@ -83,7 +79,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
           })
         )
       );
-    test({
+    runTests({
       description: "no report data",
       params: {
         universeId: "0xb1",
@@ -105,7 +101,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         }
       },
       assertions: reduced => {
-        assert.deepEqual(reduced, {
+        expect(reduced).toEqual({
           "0xb1": {
             "0xe1": {
               marketId: "0xe1",
@@ -122,7 +118,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         });
       }
     });
-    test({
+    runTests({
       description: "insert new report",
       params: {
         universeId: "0xb1",
@@ -146,7 +142,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         }
       },
       assertions: reduced => {
-        assert.deepEqual(reduced, {
+        expect(reduced).toEqual({
           "0xb1": {
             "0xe1": {
               marketId: "0xe1",
@@ -164,7 +160,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         });
       }
     });
-    test({
+    runTests({
       description: "update existing report",
       params: {
         universeId: "0xb1",
@@ -189,7 +185,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         }
       },
       assertions: reduced => {
-        assert.deepEqual(reduced, {
+        expect(reduced).toEqual({
           "0xb1": {
             "0xe1": {
               marketId: "0xe1",
@@ -204,7 +200,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         });
       }
     });
-    test({
+    runTests({
       description: "insert first report on universe",
       params: {
         universeId: "0xb1",
@@ -217,7 +213,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {}
       },
       assertions: reduced => {
-        assert.deepEqual(reduced, {
+        expect(reduced).toEqual({
           "0xb1": {
             "0xe1": {
               marketId: "0xe1",

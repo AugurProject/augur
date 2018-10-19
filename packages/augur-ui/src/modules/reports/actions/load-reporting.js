@@ -1,4 +1,4 @@
-import { augur} from "services/augurjs";
+import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 
