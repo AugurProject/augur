@@ -1,5 +1,5 @@
 import * as Knex from "knex";
-import { Address, ReportingState, AsyncCallback, ErrorCallback, FeeWindowState } from "../../types";
+import { Address, ReportingState, AsyncCallback, ErrorCallback, FeeWindowState, GenericCallback } from "../../types";
 import { BigNumber } from "bignumber.js";
 import { getCurrentTime } from "../process-block";
 import { augurEmitter } from "../../events";
@@ -22,9 +22,22 @@ function setMarketStateToLatest(db: Knex, marketId: Address, callback: AsyncCall
   }).where({ marketId }).asCallback(callback);
 }
 
-export function updateMarketFeeWindow(db: Knex, augur: Augur, universe: Address, marketId: Address, next: boolean, callback: AsyncCallback) {
+// We fallback to the on-chain lookup if we have no row, because there is a possibility due to transaction log ordering
+// that we have not yet seen a FeeWindowCreated event. Only happens in test, where a "next" isn't created ahead of time
+function getFeeWindow(db: Knex, augur: Augur, universe: Address, next: boolean, callback: GenericCallback<Address>) {
   const feeWindowAtTime = getCurrentTime() + (next ? augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS : 0);
-  augur.api.Universe.getFeeWindowByTimestamp({ _timestamp: feeWindowAtTime, tx: { to: universe } }, (err: Error, feeWindow: Address) => {
+  db("fee_windows").first("feeWindow").where({ universe }).where("startTime", "<", feeWindowAtTime).where("endTime", ">", feeWindowAtTime).asCallback((err, feeWindowRow?) => {
+    if (err) return callback(err);
+    if (feeWindowRow !== undefined) return callback(null, feeWindowRow.feeWindow);
+    augur.api.Universe.getFeeWindowByTimestamp({ _timestamp: feeWindowAtTime, tx: { to: universe } }, (err: Error, feeWindow: Address) => {
+      if (err) return callback(err);
+      callback(null, feeWindow);
+    });
+  });
+}
+
+export function updateMarketFeeWindow(db: Knex, augur: Augur, universe: Address, marketId: Address, next: boolean, callback: AsyncCallback) {
+  getFeeWindow(db, augur, universe, next, (err: Error, feeWindow: Address) => {
     if (err) return callback(err);
     db("markets").update({ feeWindow }).where({ marketId }).asCallback(callback);
   });
@@ -138,7 +151,7 @@ export function updateDisputeRound(db: Knex, marketId: Address, callback: ErrorC
 }
 
 export function refreshMarketMailboxEthBalance(db: Knex, augur: Augur, marketId: Address, callback: ErrorCallback) {
-  db("markets").first("marketCreatorMailbox").where({ marketId }).asCallback((err, marketCreatorMailboxRow?: {marketCreatorMailbox: Address}) => {
+  db("markets").first("marketCreatorMailbox").where({ marketId }).asCallback((err, marketCreatorMailboxRow?: { marketCreatorMailbox: Address }) => {
     if (err) return callback(err);
     if (!marketCreatorMailboxRow) return callback(new Error(`Could not get market creator mailbox for market: ${marketId}`));
     augur.rpc.eth.getBalance([marketCreatorMailboxRow.marketCreatorMailbox, "latest"], (err: Error|null, mailboxBalanceResponse: string): void => {
