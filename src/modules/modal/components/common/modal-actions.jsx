@@ -5,9 +5,9 @@ import ModalButton from "modules/modal/components/common/modal-button";
 
 import Styles from "modules/modal/components/common/common.styles";
 
-const ModalActions = p => (
+const ModalActions = ({ buttons }) => (
   <div className={Styles.ActionButtons}>
-    {p.buttons.map(button => (
+    {buttons.map(button => (
       <ModalButton key={JSON.stringify(button)} {...button} />
     ))}
   </div>

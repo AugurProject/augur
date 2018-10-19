@@ -13,7 +13,7 @@ export default class LoadingLogo extends Component {
     super(props);
 
     this.state = {
-      loading: false
+      loading: props.isLoading
     };
   }
 

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import Styles from "modules/modal/components/common/common.styles";
 
@@ -7,6 +8,10 @@ import ModalActions from "modules/modal/components/common/modal-actions";
 const EST_HEIGHT_PERCENT = 0.98;
 
 export default class ModalDisclaimer extends Component {
+  static propTypes = {
+    closeModal: PropTypes.func.isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -33,8 +38,8 @@ export default class ModalDisclaimer extends Component {
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const { closeModal } = this.props;
+    const { didScroll, didCheck } = this.state;
 
     return (
       <section className={Styles.ModalDisclaimer}>
@@ -143,9 +148,9 @@ export default class ModalDisclaimer extends Component {
             <input
               id="i_have_read_disclaimer"
               type="checkbox"
-              value={s.didCheck}
-              disabled={!s.didScroll}
-              onClick={e => this.checkCheckbox(!s.didCheck)}
+              value={didCheck}
+              disabled={!didScroll}
+              onClick={e => this.checkCheckbox(!didCheck)}
             />
           </label>
         </div>
@@ -154,8 +159,8 @@ export default class ModalDisclaimer extends Component {
             {
               label: "I Agree and Accept the above",
               type: "purple",
-              isDisabled: !s.didScroll || !s.didCheck,
-              action: p.closeModal
+              isDisabled: !didScroll || !didCheck,
+              action: closeModal
             }
           ]}
         />

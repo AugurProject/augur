@@ -9,31 +9,26 @@ import { formatEtherEstimate } from "utils/format-number";
 import getValue from "utils/get-value";
 
 import newMarketCreationOrder from "modules/markets/constants/new-market-creation-order";
-// import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
 import { NEW_MARKET_REVIEW } from "modules/markets/constants/new-market-creation-steps";
 
 export default class CreateMarketReview extends Component {
   static propTypes = {
-    isValid: PropTypes.bool.isRequired,
-    className: PropTypes.string,
-    creationError: PropTypes.string.isRequired,
     universe: PropTypes.object.isRequired,
     endTime: PropTypes.object.isRequired,
     currentStep: PropTypes.number.isRequired,
     initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
-    settlementFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-      .isRequired
+    className: PropTypes.string
+  };
+
+  static defaultProps = {
+    className: ""
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      // gasCost: null,
-      // initialLiquidity: {
-      // gas: null,
-      // },
       formattedInitialLiquidityEth: formatEtherEstimate(
         this.props.initialLiquidityEth
       ),
@@ -105,8 +100,7 @@ export default class CreateMarketReview extends Component {
 
     return (
       <article
-        className={`create-market-form-part create-market-form-review ${className ||
-          ""}`}
+        className={`create-market-form-part create-market-form-review ${className}`}
       >
         <div className="create-market-form-part-content">
           <div className="create-market-form-part-input">
@@ -172,9 +166,3 @@ export default class CreateMarketReview extends Component {
     );
   }
 }
-
-// { !p.isValid &&
-//   <CreateMarketFormInputNotifications
-//     errors={[p.creationError]}
-//   />
-// }

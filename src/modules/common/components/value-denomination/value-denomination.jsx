@@ -1,43 +1,54 @@
 import React from "react";
 import PropTypes from "prop-types";
-// import ReactTooltip from 'react-tooltip'
 
 import Styles from "modules/common/components/value-denomination/value-denomination.styles";
 
-const ValueDenomination = p => (
-  <span className={Styles[p.className]}>
-    {p.prefix &&
-      !p.hidePrefix && (
-        <span className={Styles.ValueDenomination__prefix}>{p.prefix}</span>
+const ValueDenomination = ({
+  className,
+  prefix,
+  hidePrefix,
+  formatted,
+  fullPrecision,
+  valueClassname,
+  denomination,
+  hideDenomination,
+  postfix,
+  hidePostfix,
+  value
+}) => (
+  <span className={Styles[className]}>
+    {prefix &&
+      !hidePrefix && (
+        <span className={Styles.ValueDenomination__prefix}>{prefix}</span>
       )}
-    {p.formatted &&
-      p.fullPrecision && (
+    {formatted &&
+      fullPrecision && (
         <span
-          data-tip={p.fullPrecision}
+          data-tip={fullPrecision}
           data-event="click focus"
-          className={"value_" + p.valueClassname}
+          className={`value_${valueClassname}`}
         >
-          {p.formatted}
+          {formatted}
         </span>
       )}
-    {p.formatted &&
-      !p.fullPrecision && (
-        <span className={"value_" + p.valueClassname}>{p.formatted}</span>
+    {formatted &&
+      !fullPrecision && (
+        <span className={`value_${valueClassname}`}>{formatted}</span>
       )}
-    {p.denomination &&
-      !p.hideDenomination && (
+    {denomination &&
+      !hideDenomination && (
         <span className={Styles.ValueDenomination__denomination}>
-          {p.denomination}
+          {denomination}
         </span>
       )}
-    {p.postfix &&
-      !p.hidePostfix && (
-        <span className={Styles.ValueDenomimntion__postfix}>{p.postfix}</span>
+    {postfix &&
+      !hidePostfix && (
+        <span className={Styles.ValueDenomimntion__postfix}>{postfix}</span>
       )}
-    {!p.value &&
-      p.value !== 0 &&
-      !p.formatted &&
-      p.formatted !== "0" && <span>&mdash;</span> // null/undefined state handler
+    {!value &&
+      value !== 0 &&
+      !formatted &&
+      formatted !== "0" && <span>&mdash;</span> // null/undefined state handler
     }
   </span>
 );
@@ -46,7 +57,6 @@ ValueDenomination.propTypes = {
   valueClassname: PropTypes.string,
   className: PropTypes.string,
   value: PropTypes.number,
-  formattedValue: PropTypes.number,
   formatted: PropTypes.string,
   fullPrecision: PropTypes.string,
   denomination: PropTypes.string,
@@ -57,6 +67,18 @@ ValueDenomination.propTypes = {
   hideDenomination: PropTypes.bool
 };
 
-export default ValueDenomination;
+ValueDenomination.defaultProps = {
+  className: null,
+  valueClassname: null,
+  prefix: null,
+  postfix: null,
+  value: null,
+  formatted: null,
+  fullPrecision: null,
+  denomination: null,
+  hidePrefix: false,
+  hidePostfix: false,
+  hideDenomination: false
+};
 
-// <ReactTooltip type="light" effect="solid" place="top" />
+export default ValueDenomination;

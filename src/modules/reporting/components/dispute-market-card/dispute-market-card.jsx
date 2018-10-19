@@ -116,4 +116,9 @@ DisputeMarketCard.propTypes = {
   isMobile: PropTypes.bool
 };
 
+DisputeMarketCard.defaultProps = {
+  isForkingMarket: false,
+  isMobile: false
+};
+
 export default DisputeMarketCard;

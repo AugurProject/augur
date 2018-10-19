@@ -27,14 +27,13 @@ class MyMarkets extends Component {
     loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
-    isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool.isRequired,
     loadMarkets: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired,
     myMarkets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
-    pendingLiquidityOrders: PropTypes.object,
+    pendingLiquidityOrders: PropTypes.object.isRequired,
     outcomes: PropTypes.object.isRequired,
     loadDisputingMarkets: PropTypes.func.isRequired
   };

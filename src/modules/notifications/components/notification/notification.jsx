@@ -12,15 +12,21 @@ export default class Notification extends Component {
   static propTypes = {
     description: PropTypes.string,
     id: PropTypes.string.isRequired,
-    index: PropTypes.number.isRequired,
     linkPath: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     onClick: PropTypes.func,
     removeNotification: PropTypes.func.isRequired,
     seen: PropTypes.bool.isRequired,
     timestamp: PropTypes.number,
     title: PropTypes.string.isRequired,
-    status: PropTypes.string,
+    status: PropTypes.string.isRequired,
     toggleNotifications: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    description: "",
+    linkPath: null,
+    onClick: null,
+    timestamp: null
   };
 
   render() {

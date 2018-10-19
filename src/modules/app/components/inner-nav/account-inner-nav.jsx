@@ -1,5 +1,3 @@
-import PropTypes from "prop-types";
-
 import BaseInnerNav from "modules/app/components/inner-nav/base-inner-nav";
 
 import { augur } from "services/augurjs";
@@ -13,8 +11,7 @@ import {
 
 export default class AccountInnerNav extends BaseInnerNav {
   static propTypes = {
-    ...BaseInnerNav.propTypes,
-    privateKey: PropTypes.string
+    ...BaseInnerNav.propTypes
   };
 
   getMainMenuData() {
@@ -48,7 +45,7 @@ export default class AccountInnerNav extends BaseInnerNav {
       {
         label: "Universes",
         visible: true,
-        isSelected: this.props.currentBasePath === ACCOUNT_UNIVERSES,
+        isSelected: currentBasePath === ACCOUNT_UNIVERSES,
         link: {
           pathname: ACCOUNT_UNIVERSES
         }

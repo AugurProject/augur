@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import ConfirmStyles from "modules/common/less/confirm-table";
 
-const MigrateRepConfirm = p => (
+const MigrateRepConfirm = ({ selectedOutcomeName, repAmount, gasEstimate }) => (
   <article className={ConfirmStyles.Confirm}>
     <h2 className={ConfirmStyles.Confirm__heading}>Confirm Migration</h2>
     <div className={ConfirmStyles["Confirm__wrapper--wide"]}>
@@ -12,18 +12,18 @@ const MigrateRepConfirm = p => (
           <li>
             <span>Outcome</span>
             <span>
-              {p.selectedOutcomeName === "Indeterminate"
+              {selectedOutcomeName === "Indeterminate"
                 ? "Invalid"
-                : p.selectedOutcomeName}
+                : selectedOutcomeName}
             </span>
           </li>
           <li>
             <span>Migrating</span>
-            <span>{p.repAmount} REP</span>
+            <span>{repAmount} REP</span>
           </li>
           <li>
             <span>Gas</span>
-            <span>{p.gasEstimate} ETH</span>
+            <span>{gasEstimate} ETH</span>
           </li>
         </ul>
       </div>
@@ -36,11 +36,9 @@ const MigrateRepConfirm = p => (
 );
 
 MigrateRepConfirm.propTypes = {
-  market: PropTypes.object.isRequired,
   selectedOutcomeName: PropTypes.string.isRequired,
   repAmount: PropTypes.string.isRequired,
-  gasEstimate: PropTypes.string.isRequired,
-  isMarketInValid: PropTypes.bool
+  gasEstimate: PropTypes.string.isRequired
 };
 
 export default MigrateRepConfirm;

@@ -24,17 +24,27 @@ function getMarketIds(markets) {
 
 export default class ReportingResolved extends Component {
   static propTypes = {
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
     nullMessage: PropTypes.string,
-    history: PropTypes.object,
-    isLogged: PropTypes.bool,
-    loadMarketsInfoIfNotLoaded: PropTypes.func,
-    location: PropTypes.object,
-    toggleFavorite: PropTypes.func,
+    isLogged: PropTypes.bool.isRequired,
+    loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
+    toggleFavorite: PropTypes.func.isRequired,
     isForkingMarketFinalized: PropTypes.bool,
     noShowHeader: PropTypes.bool,
     forkingMarket: PropTypes.object,
-    loadReporting: PropTypes.func
+    loadReporting: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+    universeId: PropTypes.string
+  };
+
+  static defaultProps = {
+    nullMessage: null,
+    isForkingMarketFinalized: false,
+    noShowHeader: false,
+    forkingMarket: null,
+    universeId: null
   };
 
   constructor(props) {
@@ -46,8 +56,8 @@ export default class ReportingResolved extends Component {
   }
 
   componentWillMount() {
-    const { loadReporting } = this.props;
-    if (loadReporting) loadReporting();
+    const { loadReporting, universeId } = this.props;
+    if (loadReporting && universeId) loadReporting();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -60,16 +70,17 @@ export default class ReportingResolved extends Component {
 
   render() {
     const {
-      history,
       isLogged,
+      isMobile,
       loadMarketsInfoIfNotLoaded,
-      location,
       markets,
       toggleFavorite,
       isForkingMarketFinalized,
       forkingMarket,
       noShowHeader,
-      nullMessage
+      nullMessage,
+      location,
+      history
     } = this.props;
     const s = this.state;
 
@@ -95,6 +106,7 @@ export default class ReportingResolved extends Component {
         <MarketsHeaderLabel title="Resolved" />
         <MarketsList
           isLogged={isLogged}
+          isMobile={isMobile}
           markets={markets}
           filteredMarkets={s.filteredMarkets}
           location={location}

@@ -28,6 +28,11 @@ export default class ReportingDisputeForm extends Component {
     outcomes: PropTypes.array
   };
 
+  static defaultProps = {
+    accountDisputeData: null,
+    outcomes: []
+  };
+
   static constructRepObject(raw) {
     const adjRaw = raw;
 
@@ -44,16 +49,17 @@ export default class ReportingDisputeForm extends Component {
 
   constructor(props) {
     super(props);
-    const { bondSizeOfNewStake, disputeRound } = props.market.disputeInfo;
+    const { availableRep, stakeInfo, market } = props;
+    const { bondSizeOfNewStake, disputeRound } = market.disputeInfo;
 
     this.state = {
-      inputStake: this.props.stakeInfo.displayValue || "",
+      inputStake: stakeInfo.displayValue || "",
       inputSelectedOutcome: "",
       selectedOutcome: "",
       selectedOutcomeName: "",
       currentDisputeRound: disputeRound,
       disputeBondValue: bondSizeOfNewStake,
-      bnAvailableRep: createBigNumber(this.props.availableRep, 10),
+      bnAvailableRep: createBigNumber(availableRep, 10),
       isMarketInValid: false,
       validations: {
         stake: false,
@@ -67,14 +73,16 @@ export default class ReportingDisputeForm extends Component {
   }
 
   componentWillMount() {
+    const { accountDisputeData } = this.props;
     this.updateDisptueInfoState();
-    if (this.props.accountDisputeData) {
-      this.setAccountDisputeData(this.props.accountDisputeData);
+    if (accountDisputeData) {
+      this.setAccountDisputeData(accountDisputeData);
     }
   }
 
   componentWillReceiveProps(newProps) {
     const { disputeInfo } = newProps.market;
+    const { updateState } = this.props;
     const updatedValidations = { ...this.state.validations };
     if (disputeInfo.disputeRound !== this.state.currentDisputeRound) {
       updatedValidations.isDisputeActive =
@@ -82,7 +90,7 @@ export default class ReportingDisputeForm extends Component {
       this.setState({
         validations: updatedValidations
       });
-      this.props.updateState({
+      updateState({
         validations: updatedValidations
       });
     }
@@ -90,13 +98,19 @@ export default class ReportingDisputeForm extends Component {
 
   componentWillUnmount() {
     const { addUpdateAccountDispute, market } = this.props;
-    if (this.state.selectedOutcome !== "" || this.state.isMarketInValid) {
+    const {
+      selectedOutcome,
+      selectedOutcomeName,
+      isMarketInValid,
+      validations
+    } = this.state;
+    if (selectedOutcome !== "" || isMarketInValid) {
       addUpdateAccountDispute({
         marketId: market.id,
-        selectedOutcome: this.state.selectedOutcome,
-        selectedOutcomeName: this.state.selectedOutcomeName,
-        isMarketInValid: this.state.isMarketInValid,
-        validations: this.state.validations
+        selectedOutcome,
+        selectedOutcomeName,
+        isMarketInValid,
+        validations
       });
     }
   }
@@ -121,11 +135,17 @@ export default class ReportingDisputeForm extends Component {
         validations: accountDisputeData.validations
       },
       () => {
+        const {
+          isMarketInValid,
+          selectedOutcome,
+          selectedOutcomeName,
+          validations
+        } = this.state;
         updateState({
-          isMarketInValid: this.state.isMarketInValid,
-          selectedOutcome: this.state.selectedOutcome,
-          selectedOutcomeName: this.state.selectedOutcomeName,
-          validations: this.state.validations
+          isMarketInValid,
+          selectedOutcome,
+          selectedOutcomeName,
+          validations
         });
       }
     );
@@ -191,23 +211,29 @@ export default class ReportingDisputeForm extends Component {
 
   validateSavedValues() {
     const { market, outcomes } = this.props;
+    const {
+      validations,
+      selectedOutcome,
+      selectedOutcomeName,
+      isMarketInValid
+    } = this.state;
     if (market.marketType === SCALAR) {
-      if (!outcomes.find(o => o.id === this.state.selectedOutcome)) {
+      if (!outcomes.find(o => o.id === selectedOutcome)) {
         this.validateScalar(
-          this.state.selectedOutcome,
+          selectedOutcome,
           "outcome",
           market.minPrice,
           market.maxPrice,
           market.tickSize,
-          this.state.isMarketInValid
+          isMarketInValid
         );
       }
     } else {
       this.validateOutcome(
-        this.state.validations,
-        this.state.selectedOutcome,
-        this.state.selectedOutcomeName,
-        this.state.isMarketInValid
+        validations,
+        selectedOutcome,
+        selectedOutcomeName,
+        isMarketInValid
       );
     }
   }

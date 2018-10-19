@@ -75,6 +75,11 @@ ReportSection.propTypes = {
   addNullPadding: PropTypes.bool
 };
 
+ReportSection.defaultProps = {
+  items: [],
+  addNullPadding: false
+};
+
 class ReportingReporting extends React.Component {
   constructor(props) {
     super(props);
@@ -195,6 +200,10 @@ ReportingReporting.propTypes = {
   markets: PropTypes.object.isRequired,
   loadReporting: PropTypes.func.isRequired,
   universe: PropTypes.string
+};
+
+ReportingReporting.defaultProps = {
+  universe: null
 };
 
 export default ReportingReporting;

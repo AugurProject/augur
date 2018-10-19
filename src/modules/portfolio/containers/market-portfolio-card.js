@@ -13,6 +13,8 @@ import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { cancelOrphanedOrder } from "modules/orders/actions/orphaned-orders";
 import { CATEGORICAL } from "modules/markets/constants/market-types";
 import { find } from "lodash";
+import { updateModal } from "modules/modal/actions/update-modal";
+import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/modal/constants/modal-types";
 
 const mapStateToProps = (state, ownProps) => {
   const filteredOrphanOrders = selectOrphanOrders(state).filter(
@@ -43,7 +45,9 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => ({
   getWinningBalances: marketIds => dispatch(getWinningBalance(marketIds)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
-  cancelOrphanedOrder: order => dispatch(cancelOrphanedOrder(order))
+  cancelOrphanedOrder: order => dispatch(cancelOrphanedOrder(order)),
+  claimTradingProceeds: marketId =>
+    dispatch(updateModal({ type: MODAL_CLAIM_TRADING_PROCEEDS, marketId }))
 });
 
 const MarketPortfolioCardContainer = withRouter(

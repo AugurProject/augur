@@ -19,12 +19,17 @@ export default class CreateMarketReview extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
     universe: PropTypes.object.isRequired,
+    gasPrice: PropTypes.number.isRequired,
     estimateSubmitNewMarket: PropTypes.func.isRequired,
-    meta: PropTypes.object,
-    availableEth: PropTypes.string.isRequired,
-    availableRep: PropTypes.string.isRequired,
     updateStateValue: PropTypes.func.isRequired,
-    gasPrice: PropTypes.number.isRequired
+    availableEth: PropTypes.string,
+    availableRep: PropTypes.string,
+    meta: PropTypes.object.isRequired
+  };
+
+  static defaultProps = {
+    availableEth: "0",
+    availableRep: "0"
   };
 
   constructor(props) {
@@ -35,9 +40,6 @@ export default class CreateMarketReview extends Component {
       validityBond: null,
       designatedReportNoShowReputationBond: null,
       insufficientFundsString: "",
-      // initialLiquidity: {
-      // gas: null,
-      // },
       formattedInitialLiquidityEth: formatEtherEstimate(
         this.props.newMarket.initialLiquidityEth
       ),

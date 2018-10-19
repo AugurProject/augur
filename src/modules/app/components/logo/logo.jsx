@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 import LoadingLogo from "modules/app/components/loading-logo/loading-logo";
 import Styles from "modules/app/components/logo/logo.styles";
 
-const Logo = props => (
+const Logo = ({ isLoading }) => (
   <section className={Styles.Logo}>
-    <LoadingLogo isLoading={props.isLoading} />
+    <LoadingLogo isLoading={isLoading} />
   </section>
 );
 
 Logo.propTypes = {
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool.isRequired
 };
 export default Logo;

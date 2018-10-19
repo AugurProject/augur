@@ -13,7 +13,7 @@ const OVERFLOW_DETAILS_LENGTH = 560;
 
 export default class MarketHeader extends Component {
   static propTypes = {
-    clearSelectedOutcome: PropTypes.func,
+    clearSelectedOutcome: PropTypes.func.isRequired,
     description: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
     history: PropTypes.object.isRequired,
@@ -29,7 +29,17 @@ export default class MarketHeader extends Component {
     isLogged: PropTypes.bool,
     isDesignatedReporter: PropTypes.bool,
     location: PropTypes.object.isRequired,
-    finalizeMarket: PropTypes.func
+    finalizeMarket: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    isLogged: false,
+    isDesignatedReporter: false,
+    tentativeWinner: null,
+    scalarDenomination: null,
+    resolutionSource: null,
+    selectedOutcome: null,
+    marketType: null
   };
 
   constructor(props) {
@@ -50,6 +60,7 @@ export default class MarketHeader extends Component {
       clearSelectedOutcome,
       description,
       history,
+      location,
       marketType,
       resolutionSource,
       selectedOutcome,
@@ -68,7 +79,7 @@ export default class MarketHeader extends Component {
     const detailsTooLong = details.length > OVERFLOW_DETAILS_LENGTH;
 
     if (marketType === SCALAR) {
-      const denomination = scalarDenomination ? " " + scalarDenomination : "";
+      const denomination = scalarDenomination ? ` ${scalarDenomination}` : "";
       const warningText =
         (details.length > 0 ? `\n\n` : ``) +
         `If the real-world outcome for this market is above this market's maximum value, the maximum value (${maxPrice.toNumber()}${denomination}) should be reported. If the real-world outcome for this market is below this market's minimum value, the minimum value (${minPrice.toNumber()}${denomination}) should be reported.`;

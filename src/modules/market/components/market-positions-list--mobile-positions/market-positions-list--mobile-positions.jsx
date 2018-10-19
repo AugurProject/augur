@@ -9,8 +9,24 @@ import CommonStyles from "modules/market/components/market-positions-list--mobil
 
 export default class MobilePositions extends Component {
   static propTypes = {
-    position: PropTypes.object.isRequired,
-    pendingOrders: PropTypes.array.isRequired
+    position: PropTypes.shape({
+      qtyShares: PropTypes.object,
+      avgPrice: PropTypes.object,
+      unrealizedNet: PropTypes.object,
+      realizedNet: PropTypes.object,
+      purchasePrice: PropTypes.object
+    }),
+    pendingOrders: PropTypes.arrayOf(
+      PropTypes.shape({
+        purchasePrice: PropTypes.object,
+        qtyShares: PropTypes.object
+      })
+    )
+  };
+
+  static defaultProps = {
+    position: {},
+    pendingOrders: []
   };
 
   static calcAvgDiff(position, orders) {
@@ -67,7 +83,7 @@ export default class MobilePositions extends Component {
                   <span className={Styles.MobilePositions__pending}>
                     +
                     {pendingOrders.reduce(
-                      (sum, order) => sum + +order.order.qtyShares.formatted,
+                      (sum, order) => sum + +order.qtyShares.formatted,
                       0
                     )}
                   </span>

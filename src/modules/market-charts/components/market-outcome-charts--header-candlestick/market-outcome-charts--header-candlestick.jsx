@@ -147,4 +147,14 @@ MarketOutcomeCandlestickHeader.propTypes = {
   priceTimeSeries: PropTypes.array
 };
 
+MarketOutcomeCandlestickHeader.defaultProps = {
+  outcomeName: null,
+  volume: null,
+  open: null,
+  high: null,
+  low: null,
+  close: null,
+  priceTimeSeries: []
+};
+
 export default MarketOutcomeCandlestickHeader;

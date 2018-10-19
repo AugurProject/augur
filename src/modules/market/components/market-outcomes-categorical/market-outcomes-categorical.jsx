@@ -123,4 +123,8 @@ CategoricalOutcome.propTypes = {
   className: PropTypes.string
 };
 
+CategoricalOutcome.defaultProps = {
+  className: null
+};
+
 export default MarketOutcomesCategorical;

@@ -13,8 +13,8 @@ export default class PeriodSelector extends Component {
   static propTypes = {
     updateSelectedPeriod: PropTypes.func.isRequired,
     updateSelectedRange: PropTypes.func.isRequired,
-    selectedPeriod: PropTypes.number,
-    selectedRange: PropTypes.number
+    selectedPeriod: PropTypes.number.isRequired,
+    selectedRange: PropTypes.number.isRequired
   };
 
   constructor(props) {

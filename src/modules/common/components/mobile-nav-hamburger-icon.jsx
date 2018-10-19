@@ -2,11 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-const MobileNavHamburgerIcon = p => (
+const MobileNavHamburgerIcon = ({ className }) => (
   <svg
     viewBox="0 0 16 12"
     className={classNames("mobile-nav-hamburger-icon", {
-      [p.className]: p.className
+      [className]: className
     })}
   >
     <g
@@ -44,4 +44,8 @@ export default MobileNavHamburgerIcon;
 
 MobileNavHamburgerIcon.propTypes = {
   className: PropTypes.string
+};
+
+MobileNavHamburgerIcon.defaultProps = {
+  className: null
 };

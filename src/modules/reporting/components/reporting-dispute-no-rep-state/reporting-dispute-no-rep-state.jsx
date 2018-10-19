@@ -23,4 +23,8 @@ ReportDisputeNoRepState.propTypes = {
   btnText: PropTypes.string
 };
 
+ReportDisputeNoRepState.defaultProps = {
+  btnText: "OK"
+};
+
 export default ReportDisputeNoRepState;

@@ -21,14 +21,14 @@ export default class HardwareWallet extends Component {
   static propTypes = {
     loginWithWallet: PropTypes.func.isRequired,
     walletName: PropTypes.string.isRequired,
-    showAdvanced: PropTypes.bool,
+    showAdvanced: PropTypes.bool.isRequired,
     showError: PropTypes.func.isRequired,
     hideError: PropTypes.func.isRequired,
-    error: PropTypes.bool,
+    error: PropTypes.bool.isRequired,
     setIsLoading: PropTypes.func.isRequired,
     setShowAdvancedButton: PropTypes.func.isRequired,
-    isClicked: PropTypes.bool,
-    isLoading: PropTypes.bool,
+    isClicked: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired,
     onDerivationPathChange: PropTypes.func.isRequired,
     validation: PropTypes.func.isRequired
   };
@@ -177,7 +177,7 @@ export default class HardwareWallet extends Component {
       this.getWalletAddresses(value, 1);
       hideError(walletName);
     } else {
-      showError(walletName, ERROR_TYPES.INCORRECT_FORMAT);
+      showError(ERROR_TYPES.INCORRECT_FORMAT);
     }
   }
 

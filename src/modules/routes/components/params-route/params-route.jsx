@@ -25,7 +25,7 @@ const ParamsRoute = ({ component: Component, ...rest }) => (
 
 ParamsRoute.propTypes = {
   location: PropTypes.object.isRequired,
-  component: PropTypes.any
+  component: PropTypes.any.isRequired
 };
 
 export default withRouter(ParamsRoute);

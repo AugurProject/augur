@@ -1,5 +1,6 @@
 import { constants } from "services/augurjs";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { selectCurrentTimestamp } from "src/select-state";
 import { each, orderBy } from "lodash";
 import PortfolioReports from "modules/portfolio/components/portfolio-reports/portfolio-reports";
@@ -82,7 +83,9 @@ const mapDispatchToProps = dispatch => ({
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId))
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PortfolioReports);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PortfolioReports)
+);

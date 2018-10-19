@@ -11,7 +11,7 @@ const mapStateToProps = state => ({
   isMobile: state.appStatus.isMobile,
   repBalance: state.loginAccount.rep || "0",
   forkingMarket: state.universe.forkingMarket,
-  currentTime: state.blockchain.currentAugurTimestamp,
+  currentTime: state.blockchain.currentAugurTimestamp || new Date().getTime(),
   doesUserHaveRep: state.loginAccount.rep > 0,
   forkReputationGoal: state.universe.forkReputationGoal,
   isForkingMarketFinalized: state.universe.isForkingMarketFinalized,

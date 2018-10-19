@@ -10,15 +10,14 @@ import HardwareWallet from "modules/auth/components/common/hardware-wallet";
 export default class TrezorConnect extends Component {
   static propTypes = {
     loginWithTrezor: PropTypes.func.isRequired,
-    showAdvanced: PropTypes.bool,
+    showAdvanced: PropTypes.bool.isRequired,
     showError: PropTypes.func.isRequired,
     hideError: PropTypes.func.isRequired,
-    error: PropTypes.bool,
+    error: PropTypes.bool.isRequired,
     setIsLoading: PropTypes.func.isRequired,
     setShowAdvancedButton: PropTypes.func.isRequired,
-    logout: PropTypes.func.isRequired,
-    isClicked: PropTypes.bool,
-    isLoading: PropTypes.bool
+    isClicked: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired
   };
 
   static async onDerivationPathChange(derivationPath, pageNumber = 1) {

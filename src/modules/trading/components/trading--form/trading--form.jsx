@@ -262,8 +262,8 @@ class MarketTradingForm extends Component {
       (nextProps && nextProps.selectedOutcome.trade.potentialEthLoss) ||
       this.props.selectedOutcome.trade.potentialEthLoss
     ) {
-      const props = nextProps || this.props;
-      const { selectedOutcome, availableFunds, gasPrice } = props;
+      const { selectedOutcome } = nextProps || this.props;
+      const { availableFunds, gasPrice } = this.props;
       const { trade } = selectedOutcome;
       const { totalCost } = trade;
       if (

@@ -11,16 +11,15 @@ import Styles from "modules/market-charts/components/market-outcomes-chart/marke
 
 export default class MarketOutcomesChart extends Component {
   static propTypes = {
-    creationTime: PropTypes.number,
-    currentTimestamp: PropTypes.number,
-    estimatedInitialPrice: PropTypes.number,
-    maxPrice: PropTypes.number,
-    minPrice: PropTypes.number,
+    creationTime: PropTypes.number.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
+    estimatedInitialPrice: PropTypes.number.isRequired,
+    maxPrice: PropTypes.number.isRequired,
+    minPrice: PropTypes.number.isRequired,
     outcomes: PropTypes.array.isRequired,
-    updateSelectedOutcome: PropTypes.func.isRequired,
+    fixedPrecision: PropTypes.number.isRequired,
     hasPriceHistory: PropTypes.bool.isRequired,
     bucketedPriceTimeSeries: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.any, // NOTE -- There is a PR in the prop-types lib to handle null values, but until then..
     pricePrecision: PropTypes.number.isRequired
   };
 
@@ -65,7 +64,29 @@ export default class MarketOutcomesChart extends Component {
   }
 
   onResize() {
-    this.drawChart(this.props);
+    const {
+      creationTime,
+      currentTimestamp,
+      estimatedInitialPrice,
+      fixedPrecision,
+      maxPrice,
+      minPrice,
+      outcomes,
+      hasPriceHistory,
+      bucketedPriceTimeSeries
+    } = this.props;
+    // this is stupid but done for prop-type validation.
+    this.drawChart({
+      creationTime,
+      currentTimestamp,
+      estimatedInitialPrice,
+      fixedPrecision,
+      maxPrice,
+      minPrice,
+      outcomes,
+      hasPriceHistory,
+      bucketedPriceTimeSeries
+    });
   }
 
   drawChart({

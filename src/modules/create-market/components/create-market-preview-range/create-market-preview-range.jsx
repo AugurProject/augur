@@ -6,13 +6,13 @@ import { SCALAR } from "modules/markets/constants/market-types";
 
 import Styles from "modules/create-market/components/create-market-preview-range/create-market-preview-range.styles";
 
-const MarketPreviewRange = p => {
+const MarketPreviewRange = ({ newMarket }) => {
   let minValue = "0%";
   let maxValue = "100%";
 
-  const { scalarSmallNum, scalarBigNum } = p.newMarket;
+  const { scalarSmallNum, scalarBigNum, type } = newMarket;
 
-  if (p.newMarket.type === SCALAR) {
+  if (type === SCALAR) {
     minValue =
       scalarSmallNum && !BigNumber.isBigNumber(scalarSmallNum)
         ? scalarSmallNum

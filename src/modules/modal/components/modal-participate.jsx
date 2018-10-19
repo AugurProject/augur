@@ -13,7 +13,6 @@ import { formatRep, formatEther } from "utils/format-number";
 
 export default class ModalParticipate extends Component {
   static propTypes = {
-    modal: PropTypes.object.isRequired,
     rep: PropTypes.string.isRequired,
     closeModal: PropTypes.func.isRequired,
     purchaseParticipationTokens: PropTypes.func.isRequired
@@ -111,10 +110,10 @@ export default class ModalParticipate extends Component {
 
   render() {
     const { closeModal } = this.props;
-    const s = this.state;
-    const invalidWithErrors = !s.isValid && s.errors.length > 0;
-    const formattedQuantity = formatRep(s.quantity || 0);
-    const formattedGas = formatEther(s.gasEstimate);
+    const { errors, isValid, quantity, gasEstimate, page } = this.state;
+    const invalidWithErrors = !isValid && errors.length > 0;
+    const formattedQuantity = formatRep(quantity || 0);
+    const formattedGas = formatEther(gasEstimate);
     const items = [
       {
         label: "Purchase",
@@ -152,7 +151,7 @@ export default class ModalParticipate extends Component {
 
     return (
       <section className={Styles.ModalContainer}>
-        {s.page === 1 && (
+        {page === 1 && (
           <form className={Styles.ModalTightForm}>
             <h1>Buy Participation Tokens</h1>
             <label htmlFor="modal__participate-quantity">
@@ -164,7 +163,7 @@ export default class ModalParticipate extends Component {
               className={classNames({
                 [`${Styles.ErrorField}`]: invalidWithErrors
               })}
-              value={s.quantity}
+              value={quantity}
               placeholder="0.0"
               onChange={value => this.updateQuantity(value)}
               onKeyDown={e => this.handleKeyDown(e)}
@@ -172,8 +171,8 @@ export default class ModalParticipate extends Component {
               maxButton
               onMaxButtonClick={() => this.handleMaxClick()}
             />
-            {!!s.errors.length &&
-              s.errors.map((error, index) => (
+            {!!errors.length &&
+              errors.map((error, index) => (
                 <p key={error} className={Styles.Error}>
                   {InputErrorIcon} {error}
                 </p>
@@ -189,13 +188,13 @@ export default class ModalParticipate extends Component {
                   label: "review",
                   action: this.triggerReview,
                   type: "purple",
-                  isDisabled: !s.isValid
+                  isDisabled: !isValid
                 }
               ]}
             />
           </form>
         )}
-        {s.page === 2 && (
+        {page === 2 && (
           <ModalReview
             title="Buy Participation Tokens"
             items={items}

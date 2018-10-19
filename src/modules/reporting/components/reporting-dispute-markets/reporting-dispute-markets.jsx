@@ -16,18 +16,24 @@ export default class ReportingDisputeMarkets extends Component {
     markets: PropTypes.array.isRequired,
     upcomingMarkets: PropTypes.array.isRequired,
     upcomingMarketsCount: PropTypes.number.isRequired,
-    isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool.isRequired,
     navigateToAccountDepositHandler: PropTypes.func.isRequired,
     isConnected: PropTypes.bool.isRequired,
     loadMarkets: PropTypes.func.isRequired,
     outcomes: PropTypes.object.isRequired,
-    isForking: PropTypes.bool.isRequired,
+    isForking: PropTypes.bool,
     forkingMarketId: PropTypes.string,
     paginationCount: PropTypes.number.isRequired,
-    disputableMarketsLength: PropTypes.number,
+    disputableMarketsLength: PropTypes.number.isRequired,
     forkEndTime: PropTypes.string,
-    showPagination: PropTypes.bool,
-    showUpcomingPagination: PropTypes.bool
+    showPagination: PropTypes.bool.isRequired,
+    showUpcomingPagination: PropTypes.bool.isRequired
+  };
+
+  static defaultProps = {
+    isForking: false,
+    forkingMarketId: null,
+    forkEndTime: null
   };
 
   componentWillMount() {
