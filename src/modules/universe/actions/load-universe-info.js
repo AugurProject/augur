@@ -177,7 +177,8 @@ function getUniversesInfoWithParentContext(
               if (
                 universeData.parentUniverse ===
                   "0x0000000000000000000000000000000000000000" &&
-                supply.lt(REQUIRED_GENESIS_SUPPLY)
+                supply.lt(REQUIRED_GENESIS_SUPPLY) &&
+                universeData.numMarkets === 0
               ) {
                 return acc;
               } else if (
