@@ -1,24 +1,21 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {getReportingFees} = require("../../../../src/server/getters/get-reporting-fees");
-
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-reporting-fees", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((dbErr, db) => {
-        if (dbErr) assert.fail(dbErr);
-        getReportingFees(db, t.params.augur, t.params.reporter, t.params.universe, (err, marketsMatched) => {
-          t.assertions(err, marketsMatched);
-          db.destroy();
-          done();
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+      const db = await setupTestDb();
+      t.method = "getReportingFees";
+      dispatchJsonRpcRequest(db, t, t.params.augur, (err, reportingFees) => {
+        t.assertions(err, reportingFees);
+        db.destroy();
+        done();
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "Get reporting fees that exist in forked universe",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -43,8 +40,8 @@ describe("server/getters/get-reporting-fees", () => {
       },
     },
     assertions: (err, marketsMatched) => {
-      assert.ifError(err);
-      assert.deepEqual(marketsMatched, {
+      expect(err).toBeFalsy();
+      expect(marketsMatched).toEqual({
         total: {
           "unclaimedEth": "1200",
           "unclaimedRepEarned": "0",
@@ -85,7 +82,7 @@ describe("server/getters/get-reporting-fees", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "Get reporting fees that exist in child universe",
     params: {
       universe: "CHILD_UNIVERSE",
@@ -110,8 +107,8 @@ describe("server/getters/get-reporting-fees", () => {
       },
     },
     assertions: (err, marketsMatched) => {
-      assert.ifError(err);
-      assert.deepEqual(marketsMatched, {
+      expect(err).toBeFalsy();
+      expect(marketsMatched).toEqual({
         total: {
           "unclaimedEth": "0",
           "unclaimedRepStaked": "0",
@@ -126,7 +123,7 @@ describe("server/getters/get-reporting-fees", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "Get reporting fees for user that does not exist",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -151,8 +148,8 @@ describe("server/getters/get-reporting-fees", () => {
       },
     },
     assertions: (err, marketsMatched) => {
-      assert.ifError(err);
-      assert.deepEqual(marketsMatched, {
+      expect(err).toBeFalsy();
+      expect(marketsMatched).toEqual({
         total: {
           "unclaimedEth": "0",
           "unclaimedRepStaked": "0",
@@ -172,7 +169,7 @@ describe("server/getters/get-reporting-fees", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "Get reporting fees for universe that does not exist",
     params: {
       universe: "0x000000000000000000000000000000000000n0n0",
@@ -197,8 +194,8 @@ describe("server/getters/get-reporting-fees", () => {
       },
     },
     assertions: (err, marketsMatched) => {
-      assert.deepEqual(err, Error("Universe not found"));
-      assert.equal(marketsMatched, null);
+      expect(err).toEqual(Error("Universe not found"));
+      expect(marketsMatched).toEqual(undefined);
     },
   });
 });

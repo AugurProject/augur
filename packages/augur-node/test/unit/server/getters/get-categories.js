@@ -1,23 +1,21 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getCategories } = require("../../../../src/server/getters/get-categories");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-categories", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        if (err) assert.fail(err);
-        getCategories(db, t.params.universe, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, categoriesInfo) => {
-          t.assertions(err, categoriesInfo);
-          db.destroy();
-          done();
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+      const db = await setupTestDb();
+      t.method = "getCategories";
+      dispatchJsonRpcRequest(db, t, null, (err, categoriesInfo) => {
+        t.assertions(err, categoriesInfo);
+        db.destroy();
+        done();
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "get categories in universe b sorted by popularity",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -25,8 +23,8 @@ describe("server/getters/get-categories", () => {
       isSortDescending: true,
     },
     assertions: (err, categoriesInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(categoriesInfo, [
+      expect(err).toBeFalsy();
+      expect(categoriesInfo).toEqual([
         { category: "FINANCE", popularity: "12345" },
         { category: "POLITICS", popularity: "5000" },
         { category: "ETHEREUM", popularity: "1000" },
@@ -35,14 +33,14 @@ describe("server/getters/get-categories", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "nonexistent universe",
     params: {
       universe: "0x1010101010101010101010101010101010101010",
     },
     assertions: (err, categoriesInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(categoriesInfo, []);
+      expect(err).toBeFalsy();
+      expect(categoriesInfo).toEqual([]);
     },
   });
 });

@@ -1,33 +1,30 @@
+import * as t from "io-ts";
 import * as Knex from "knex";
-import * as _ from "lodash";
-import { Address } from "../../types";
-import { getMarketsWithReportingState } from "./database";
 import Augur from "augur.js";
+import { getMarketsWithReportingState } from "./database";
 
-export interface GetReportingSummaryParams {
-  feeWindow: Address;
+export const ReportingSummaryParams = t.type({
+  feeWindow: t.string,
+});
+
+interface UIReportingSummary {
+  [reportingState: string]: number;
 }
 
-export function extractGetReportingSummaryParams(params: any): GetReportingSummaryParams|undefined {
-  const pickedParams = _.pick(params, ["feeWindow"]);
-  if (isGetReportingSummaryParams(pickedParams)) return pickedParams;
-  return undefined;
+interface ReportingStateRow {
+  reportingState: string;
+  count: number;
 }
 
-export function isGetReportingSummaryParams(params: any): params is GetReportingSummaryParams {
-  if (!_.isObject(params)) return false;
-  if (!_.isString(params.feeWindow)) return false;
-  return true;
-}
-
-// Look up reporting summary values. Should take feeWindow (address) as a parameter and the response should include total number of markets up for reporting, total number of markets up for dispute, total number of markets undergoing and/or resolved via each reporting "tier" (automated, limited, full, fork), etc.
-export async function getReportingSummary(db: Knex, augur: Augur, params: GetReportingSummaryParams): Promise<{}> {
+// Look up reporting summary values. Should take feeWindow (address) as a parameter and the response should include total number of markets up for reporting, total number of markets up for dispute,
+// total number of markets undergoing and/or resolved via each reporting "tier" (automated, limited, full, fork), etc.
+export async function getReportingSummary(db: Knex, augur: Augur, params: t.TypeOf<typeof ReportingSummaryParams>): Promise<UIReportingSummary> {
   const query = getMarketsWithReportingState(db, []).countDistinct("markets.marketId as count").where({ feeWindow: params.feeWindow });
   query.select("market_state.reportingState").groupBy("market_state.reportingState");
-  const summaryRows: Array<any> = await query;
+  const summaryRows: Array<ReportingStateRow> = await query;
   if (!summaryRows) return {};
   return summaryRows.reduce((acc, cur) => {
     acc[cur.reportingState] = cur.count;
     return acc;
-  }, {});
+  }, {} as UIReportingSummary);
 }

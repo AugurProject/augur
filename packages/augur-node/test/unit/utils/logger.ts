@@ -1,7 +1,4 @@
-import { describe, it } from "mocha";
-import { assert } from "chai";
-import * as sinon from "sinon";
-import { Logger, LoggerInterface } from "../../../src/utils/logger/logger";
+import { Logger, LoggerInterface } from "src/utils/logger/logger";
 
 describe("utils/logger", () => {
   class ExampleLogger implements LoggerInterface {
@@ -20,7 +17,7 @@ describe("utils/logger", () => {
 
   ["error", "info", "warn", "debug"].map((method: keyof LoggerInterface) => {
     const exampleLogger = new ExampleLogger();
-    const spy = sinon.spy<LoggerInterface>(exampleLogger, method);
+    const spy = jest.spyOn<LoggerInterface>(exampleLogger, method);
 
     const exampleMsg = "Some example message";
 
@@ -28,9 +25,9 @@ describe("utils/logger", () => {
     logger.addLogger(exampleLogger);
 
     describe(`${method} method`, () => {
-      it(`should call the ${method} method of passed logger`, () => {
+      test(`should call the ${method} method of passed logger`, () => {
         logger[method].call(logger, exampleMsg);
-        assert.isOk(spy.calledWith(exampleMsg), `${method} was not called with message`);
+        expect(spy).toHaveBeenCalledWith(exampleMsg);
       });
     });
   });

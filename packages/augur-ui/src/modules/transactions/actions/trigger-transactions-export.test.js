@@ -1,24 +1,28 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import { triggerTransactionsExport } from "modules/transactions/actions/trigger-transactions-export";
-import * as loadAccountHistoryModule from "../../auth/actions/load-account-history";
-import * as transactions from "../selectors/transactions";
 
-jest.mock("../selectors/transactions");
-jest.mock("../../auth/actions/load-account-history");
+import * as loadAccountHistory from "modules/auth/actions/load-account-history";
+import * as transactions from "modules/transactions/selectors/transactions";
 
 describe("modules/transactions/actions/trigger-transactions-export.js", () => {
-  let selectTransactionsSpy;
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
+  let loadAccountHistorySpy;
+  let selectTransactionsSpy;
 
   beforeEach(() => {
-    selectTransactionsSpy = jest
-      .spyOn(transactions, "selectTransactions")
-      .mockImplementation(state => state.transactions);
+    loadAccountHistorySpy = jest.spyOn(
+      loadAccountHistory,
+      "loadAccountHistory"
+    );
+
+    selectTransactionsSpy = jest.spyOn(transactions, "selectTransactions");
+    selectTransactionsSpy.mockImplementation(state => state.transactions);
   });
 
   afterEach(() => {
+    loadAccountHistorySpy.mockRestore();
     selectTransactionsSpy.mockRestore();
   });
 
@@ -30,13 +34,10 @@ describe("modules/transactions/actions/trigger-transactions-export.js", () => {
       ],
       appStatus: { transactionsLoading: false }
     });
-
-    jest
-      .spyOn(loadAccountHistoryModule, "loadAccountHistory")
-      .mockImplementation(loadAll => ({
-        type: "LOAD_ACCOUNT_HISTORY",
-        loadAll
-      }));
+    loadAccountHistorySpy.mockImplementation(loadAll => ({
+      type: "LOAD_ACCOUNT_HISTORY",
+      loadAll
+    }));
 
     global.document = {
       createElement: type => {
@@ -65,7 +66,6 @@ describe("modules/transactions/actions/trigger-transactions-export.js", () => {
       }
     };
     store.dispatch(triggerTransactionsExport());
-
     expect(store.getActions()).toHaveLength(0);
   });
 
@@ -78,13 +78,11 @@ describe("modules/transactions/actions/trigger-transactions-export.js", () => {
       appStatus: { transactionsLoading: true }
     });
 
-    jest
-      .spyOn(loadAccountHistoryModule, "loadAccountHistory")
-      .mockImplementation((loadAll, cb) => {
-        expect(loadAll).toBeTruthy();
-        expect({}.toString.call(cb)).toStrictEqual("[object Function]");
-        return { type: "LOAD_ACCOUNT_HISTORY", loadAll };
-      });
+    loadAccountHistorySpy.mockImplementation((loadAll, cb) => {
+      expect(loadAll).toBeTruthy();
+      expect({}.toString.call(cb)).toStrictEqual("[object Function]");
+      return { type: "LOAD_ACCOUNT_HISTORY", loadAll };
+    });
 
     store.dispatch(triggerTransactionsExport());
 

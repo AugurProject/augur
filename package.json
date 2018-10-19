@@ -11,6 +11,8 @@
   "scripts": {
     "build:ci-docker": "docker build . -t augurproject/gitlab-ci-base-node:latest",
     "clean": "lerna clean -y",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "watch": " lerna run watch --parallel"
   },
   "devDependencies": {

@@ -1,23 +1,21 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getAccountTransferHistory } = require("../../../../src/server/getters/get-account-transfer-history");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-account-transfer-history", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        if (err) assert.fail(err);
-        getAccountTransferHistory(db, t.params.account, t.params.token, t.params.isInternalTransfer, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, accountTransferHistory) => {
-          t.assertions(err, accountTransferHistory);
-          db.destroy();
-          done();
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+      const db = await setupTestDb();
+      t.method = "getAccountTransferHistory";
+      dispatchJsonRpcRequest(db, t, null, (err, accountTransferHistory) => {
+        t.assertions(err, accountTransferHistory);
+        db.destroy();
+        done();
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "get account transfer history for all tokens",
     params: {
       account: "0x0000000000000000000000000000000000000b0b",
@@ -25,8 +23,8 @@ describe("server/getters/get-account-transfer-history", () => {
       isSortDescending: false,
     },
     assertions: (err, accountTransferHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(accountTransferHistory, [{
+      expect(err).toBeFalsy();
+      expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
         creationBlockNumber: 1400000,
@@ -71,7 +69,7 @@ describe("server/getters/get-account-transfer-history", () => {
       }]);
     },
   });
-  test({
+  runTest({
     description: "get account transfer history for all tokens, excluding trades",
     params: {
       account: "0x0000000000000000000000000000000000000b0b",
@@ -80,8 +78,8 @@ describe("server/getters/get-account-transfer-history", () => {
       isSortDescending: false,
     },
     assertions: (err, accountTransferHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(accountTransferHistory, [{
+      expect(err).toBeFalsy();
+      expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
         creationBlockNumber: 1400000,
@@ -113,7 +111,7 @@ describe("server/getters/get-account-transfer-history", () => {
       }]);
     },
   });
-  test({
+  runTest({
     description: "get account transfer history for all tokens, filtered to date",
     params: {
       account: "0x0000000000000000000000000000000000000b0b",
@@ -123,8 +121,8 @@ describe("server/getters/get-account-transfer-history", () => {
       latestCreationTime: 1506473474,
     },
     assertions: (err, accountTransferHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(accountTransferHistory, [{
+      expect(err).toBeFalsy();
+      expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
         creationBlockNumber: 1400000,
@@ -141,7 +139,7 @@ describe("server/getters/get-account-transfer-history", () => {
       }]);
     },
   });
-  test({
+  runTest({
     description: "get account transfer history for REP tokens only",
     params: {
       account: "0x0000000000000000000000000000000000000b0b",
@@ -149,8 +147,8 @@ describe("server/getters/get-account-transfer-history", () => {
       isSortDescending: false,
     },
     assertions: (err, accountTransferHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(accountTransferHistory, [{
+      expect(err).toBeFalsy();
+      expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadb33f",
         creationBlockNumber: 1400001,
         blockHash: "0x1400001",
@@ -167,26 +165,26 @@ describe("server/getters/get-account-transfer-history", () => {
       }]);
     },
   });
-  test({
+  runTest({
     description: "get account transfer history for nonexistent token",
     params: {
       account: "0x0000000000000000000000000000000000000b0b",
       token: "0x000000000000000000000000000000000000000e",
     },
     assertions: (err, accountTransferHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(accountTransferHistory, []);
+      expect(err).toBeFalsy();
+      expect(accountTransferHistory).toEqual([]);
     },
   });
-  test({
+  runTest({
     description: "get account transfer history for nonexistent account",
     params: {
       account: "0x0000000000000000000000000000000000000bbb",
       token: null,
     },
     assertions: (err, accountTransferHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(accountTransferHistory, []);
+      expect(err).toBeFalsy();
+      expect(accountTransferHistory).toEqual([]);
     },
   });
 });

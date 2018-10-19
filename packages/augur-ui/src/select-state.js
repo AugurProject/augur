@@ -57,32 +57,41 @@ export const selectUrlState = state => state.url;
 export const selectPendingLiquidityOrders = state =>
   state.PendingLiquidityOrders;
 
-export const selectCurrentTimestamp = createSelector(
-  selectBlockchainState,
-  blockchain => blockchain.currentAugurTimestamp * 1000
-);
+const selectCurrentTimestampSelector = () =>
+  createSelector(
+    selectBlockchainState,
+    blockchain => blockchain.currentAugurTimestamp * 1000
+  );
+export const selectCurrentTimestamp = selectCurrentTimestampSelector();
 
-export const selectCurrentTimestampInSeconds = createSelector(
-  selectBlockchainState,
-  blockchain => blockchain.currentAugurTimestamp
-);
+const selectCurrentTimestampInSecondsSelector = () =>
+  createSelector(
+    selectBlockchainState,
+    blockchain => blockchain.currentAugurTimestamp
+  );
+export const selectCurrentTimestampInSeconds = selectCurrentTimestampInSecondsSelector();
 
-export const selectBlockchainCurrentBlockTimestamp = createSelector(
-  selectBlockchainState,
-  blockchain => blockchain.currentBlockTimestamp
-);
+const selectBlockchainCurrentBlockTimestampSelector = () =>
+  createSelector(
+    selectBlockchainState,
+    blockchain => blockchain.currentBlockTimestamp
+  );
+export const selectBlockchainCurrentBlockTimestamp = selectBlockchainCurrentBlockTimestampSelector();
 
-export const selectUniverseReportingPeriodDurationInSeconds = createSelector(
-  selectUniverseState,
-  universe => universe.reportingPeriodDurationInSeconds
-);
+const selectUniverseReportingPeriodDurationInSecondsSelector = () =>
+  createSelector(
+    selectUniverseState,
+    universe => universe.reportingPeriodDurationInSeconds
+  );
+export const selectUniverseReportingPeriodDurationInSeconds = selectUniverseReportingPeriodDurationInSecondsSelector();
 
-export const selectUniverseReportPeriod = createSelector(
-  selectUniverseState,
-  universe => universe.currentReportingWindowAddress
-);
+const selectUniverseReportPeriodSelector = () =>
+  createSelector(
+    selectUniverseState,
+    universe => universe.currentReportingWindowAddress
+  );
+export const selectUniverseReportPeriod = selectUniverseReportPeriodSelector();
 
-export const selectLoginAccountAddress = createSelector(
-  selectLoginAccountState,
-  loginAccount => loginAccount.address
-);
+const selectLoginAccountAddressSelector = () =>
+  createSelector(selectLoginAccountState, loginAccount => loginAccount.address);
+export const selectLoginAccountAddress = selectLoginAccountAddressSelector();

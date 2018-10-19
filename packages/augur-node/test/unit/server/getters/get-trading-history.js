@@ -1,23 +1,21 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {getTradingHistory} = require("../../../../src/server/getters/get-trading-history");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-trading-history", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        getTradingHistory(db, t.params.universe, t.params.account, t.params.marketId, t.params.outcome, t.params.orderType, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, false, (err, userTradingHistory) => {
-          t.assertions(err, userTradingHistory);
-          db.destroy();
-          done();
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      t.method = "getTradingHistory";
+      dispatchJsonRpcRequest(db, t, null, (err, userTradingHistory) => {
+        t.assertions(err, userTradingHistory);
+        db.destroy();
+        done();
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "user was filler in 1 trade in market and outcome",
     params: {
       universe: null,
@@ -31,8 +29,8 @@ describe("server/getters/get-trading-history", () => {
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(userTradingHistory, [{
+      expect(err).toBeFalsy();
+      expect(userTradingHistory).toEqual([{
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
         logIndex: 0,
         orderId: "0x1100000000000000000000000000000000000000000000000000000000000000",
@@ -69,7 +67,7 @@ describe("server/getters/get-trading-history", () => {
       }]);
     },
   });
-  test({
+  runTest({
     description: "user was creator in many markets and outcomes",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -83,8 +81,8 @@ describe("server/getters/get-trading-history", () => {
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(userTradingHistory, [
+      expect(err).toBeFalsy();
+      expect(userTradingHistory).toEqual([
         {
           amount: "0.1",
           logIndex: 0,
@@ -284,7 +282,7 @@ describe("server/getters/get-trading-history", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "user was creator in many markets and outcomes, filter to one market",
     params: {
       universe: null,
@@ -298,8 +296,8 @@ describe("server/getters/get-trading-history", () => {
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(userTradingHistory, [
+      expect(err).toBeFalsy();
+      expect(userTradingHistory).toEqual([
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
           logIndex: 0,
@@ -338,7 +336,7 @@ describe("server/getters/get-trading-history", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "user was creator in many markets and outcomes, filter by timestamp",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -354,8 +352,8 @@ describe("server/getters/get-trading-history", () => {
       latestCreationTime: 1506474516,
     },
     assertions: (err, userTradingHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(userTradingHistory, [
+      expect(err).toBeFalsy();
+      expect(userTradingHistory).toEqual([
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
           logIndex: 0,
@@ -395,7 +393,7 @@ describe("server/getters/get-trading-history", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "lookup trades by market, not account, filter by timestamp",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -411,8 +409,8 @@ describe("server/getters/get-trading-history", () => {
       latestCreationTime: 1506474516,
     },
     assertions: (err, userTradingHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(userTradingHistory, [
+      expect(err).toBeFalsy();
+      expect(userTradingHistory).toEqual([
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
           logIndex: 0,
@@ -434,7 +432,7 @@ describe("server/getters/get-trading-history", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "user has not performed any trades",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -448,8 +446,8 @@ describe("server/getters/get-trading-history", () => {
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(userTradingHistory, []);
+      expect(err).toBeFalsy();
+      expect(userTradingHistory).toEqual([]);
     },
   });
 });

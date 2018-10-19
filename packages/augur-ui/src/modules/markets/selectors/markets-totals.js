@@ -1,14 +1,9 @@
 import { createSelector } from "reselect";
-import store from "src/store";
+
 import selectAllMarkets from "modules/markets/selectors/markets-all";
 
-export default function() {
-  return selectMarketsTotals(store.getState());
-}
-
-export const selectMarketsTotals = createSelector(
-  selectAllMarkets,
-  allMarkets => {
+const selectMarketsTotalsSelector = () =>
+  createSelector(selectAllMarkets, allMarkets => {
     const totals = allMarkets.reduce(
       (p, market) => {
         p.numAll += 1;
@@ -28,5 +23,6 @@ export const selectMarketsTotals = createSelector(
     totals.numUnpaginated = allMarkets.length;
 
     return totals;
-  }
-);
+  });
+
+export const selectMarketsTotals = selectMarketsTotalsSelector();

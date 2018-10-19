@@ -18,9 +18,8 @@ export const selectInfoNotifications = selectNotificationsByLevel(
   notificationLevels.INFO
 );
 
-export const selectInfoNotificationsAndSeenCount = createSelector(
-  selectInfoNotifications,
-  notifications => {
+const selectInfoNotificationsAndSeenCountSelector = () =>
+  createSelector(selectInfoNotifications, notifications => {
     const networkId = augur.rpc.getNetworkID();
     const { universe } = store.getState();
 
@@ -53,5 +52,6 @@ export const selectInfoNotificationsAndSeenCount = createSelector(
       unseenCount,
       notifications: sortedNotifications
     };
-  }
-);
+  });
+
+export const selectInfoNotificationsAndSeenCount = selectInfoNotificationsAndSeenCountSelector();
