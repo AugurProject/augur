@@ -31,7 +31,7 @@ export function loadAccountTrades(options, callback = logError) {
   };
 }
 
-export function loadUserTradingHistory(options = {}, callback = logError) {
+function loadUserTradingHistory(options = {}, callback = logError) {
   return (dispatch, getState) => {
     const { universe, loginAccount } = getState();
     if (loginAccount.address == null) return callback(null);
