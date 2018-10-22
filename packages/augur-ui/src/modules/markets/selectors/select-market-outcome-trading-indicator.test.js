@@ -37,7 +37,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       marketId: "marketId1"
     });
     const expected = NONE;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
+    expect(actual).toEqual(expected);
   });
 
   test(`one buy trades in market`, () => {
@@ -46,7 +46,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       marketId: "marketId1_buy"
     });
     const expected = BUY_UP;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
+    expect(actual).toEqual(expected);
   });
 
   test(`one sell trades in market`, () => {
@@ -55,7 +55,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       marketId: "marketId1_sell"
     });
     const expected = SELL_DOWN;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
+    expect(actual).toEqual(expected);
   });
 
   test(`multiple buy down trades in market`, () => {
@@ -64,7 +64,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       marketId: "marketId2_buy"
     });
     const expected = BUY_DOWN;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
+    expect(actual).toEqual(expected);
   });
 
   test(`multiple buy up trades in market`, () => {
@@ -73,7 +73,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       marketId: "marketId2_buy"
     });
     const expected = BUY_UP;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
+    expect(actual).toEqual(expected);
   });
 
   test(`multiple sell down trades in market`, () => {
@@ -82,7 +82,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       marketId: "marketId2_sell"
     });
     const expected = SELL_DOWN;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
+    expect(actual).toEqual(expected);
   });
 
   test(`multiple sell up trades in market`, () => {
@@ -91,6 +91,6 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       marketId: "marketId2_sell"
     });
     const expected = SELL_UP;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
+    expect(actual).toEqual(expected);
   });
 });

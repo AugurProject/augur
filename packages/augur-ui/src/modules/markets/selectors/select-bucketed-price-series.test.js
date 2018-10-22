@@ -105,7 +105,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       priceTimeSeries: { 0: [], 1: [] },
       timeBuckets: [1533312112000, 1533312312000]
     };
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
+    expect(actual).toEqual(expected);
   });
 
   test(`bucketed trades in categorical market`, () => {
@@ -133,7 +133,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
         ]
       }
     };
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
+    expect(actual).toEqual(expected);
   });
 
   test(`bucketed trades in categorical market`, () => {
@@ -169,6 +169,6 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
         ]
       }
     };
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
+    expect(actual).toEqual(expected);
   });
 });

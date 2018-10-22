@@ -1,44 +1,28 @@
-import sinon from "sinon";
-
-import * as mockStore from "test/mockStore";
 import marketAssertions from "assertions/market";
+import configureMockStore from "redux-mock-store";
+import thunk from "redux-thunk";
 
-jest.mock("../../../store", () => store);
-
-jest.mock("../../orders/selectors/user-open-orders-summary", () => proxyquire(
-  "../../../src/modules/orders/selectors/user-open-orders-summary",
-  {
-    "../../../store": store
-  }
-));
-
-jest.mock("../../../modules/markets/selectors/user-markets", () => proxyquire(
-  "../../../src/modules/markets/selectors/user-markets",
-  {
-    "../../../services/augurjs": stubbedAugurJS,
-    "../../../selectors": stubbedSelectors
-  }
-));
-
-jest.mock("../../../store", () => store);
-jest.mock("../../../services/augurjs", () => stubbedAugurJS);
-jest.mock("../../../selectors", () => stubbedSelectors);
+jest.mock("modules/trades/actions/place-trade");
+jest.mock("modules/reports/actions/submit-report");
+jest.mock("modules/orders/selectors/positions-plus-asks");
+jest.mock("modules/orders/selectors/user-open-orders");
+jest.mock("modules/orders/selectors/user-open-orders-summary");
+jest.mock("modules/markets/selectors/price-time-series");
+jest.mock("modules/orders/selectors/order-book-series");
+jest.mock("modules/trades/helpers/has-user-enough-funds");
+jest.mock("modules/reports/selectors/reportable-outcomes");
+jest.mock("utils/calculate-payout-numerators-value");
 
 describe(`modules/markets/selectors/market.js`, () => {
-  const { store } = mockStore.default;
-
-  const { loginAccount } = store.getState();
-  const stubbedSelectors = { loginAccount };
-
-  const stubbedAugurJS = {
-    getMarketCreatorFeesCollected: () => {},
-    abi: { bignum: n => n }
+  const middlewares = [thunk];
+  const mockStore = configureMockStore(middlewares);
+  const state = {
+    loginAccount: {
+      address: "0x0000000000000000000000000000000000000001"
+    }
   };
-  sinon
-    .stub(stubbedAugurJS, "getMarketCreatorFeesCollected")
-    .callsFake(() => 10);
-
-  const selector = require("../../../src/modules/markets/selectors/market.js");
+  const store = mockStore(state);
+  const selector = require("modules/markets/selectors/market.js");
 
   beforeEach(() => {
     store.clearActions();
@@ -49,7 +33,7 @@ describe(`modules/markets/selectors/market.js`, () => {
   });
 
   test(`should return the expected values to components`, () => {
-    const actual = selector.default();
+    const actual = selector.default(state);
     marketAssertions(actual);
   });
 });
