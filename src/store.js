@@ -7,6 +7,7 @@ import thunk from "redux-thunk";
 
 import { createReducer } from "src/reducers";
 import { windowRef } from "src/utils/window-ref";
+import { augur } from "services/augurjs";
 
 // console log middleware
 const consoleLog = store => next => action => {
@@ -32,13 +33,21 @@ const localStorageMiddleware = store => next => action => {
     favorites,
     reports,
     accountName,
-    notifications
+    notifications,
+    env,
+    connection
   } = state;
   if (windowRef.localStorage && windowRef.localStorage.setItem) {
     const { localStorage } = windowRef;
     let storedAccountData = JSON.parse(localStorage.getItem(address));
-    if (!storedAccountData) {
-      storedAccountData = { selectedUniverse: {} };
+    if (!storedAccountData || !storedAccountData.selectedUniverse) {
+      const { augurNodeNetworkId } = connection;
+      const networkIdToUse = augurNodeNetworkId || augur.rpc.getNetworkID();
+      const defaultUniverseId =
+        env.universe || augur.contracts.addresses[networkIdToUse].Universe;
+      storedAccountData = {
+        selectedUniverse: { [networkIdToUse]: defaultUniverseId }
+      };
     }
     localStorage.setItem(
       address,
