@@ -11,6 +11,13 @@ jest.mock("services/augurjs");
 
 describe("events/actions/listen-to-updates", () => {
   describe("setup shape tests", () => {
+    let stopBlockListenersSpy;
+    let stopAugurNodeEventListenersSpy;
+    let startBlockListenersSpy;
+    let startAugurNodeEventListenersSpy;
+    let augurOnSpy;
+    let ethereumOnSpy;
+
     const store = mockStore.mockStore({});
     const ACTIONS = {
       STOP_BLOCK_LISTENERS: { type: "STOP_BLOCK_LISTENERS" },
@@ -27,20 +34,26 @@ describe("events/actions/listen-to-updates", () => {
 
     afterEach(() => {
       store.clearActions();
+      stopBlockListenersSpy.mockReset();
+      stopAugurNodeEventListenersSpy.mockReset();
+      startBlockListenersSpy.mockReset();
+      startAugurNodeEventListenersSpy.mockReset();
+      augurOnSpy.mockReset();
+      ethereumOnSpy.mockReset();
     });
 
-    beforeAll(() => {
-      jest
+    beforeEach(() => {
+      stopBlockListenersSpy = jest
         .spyOn(augurjs.augur.events, "stopBlockListeners")
         .mockImplementationOnce(() =>
           store.dispatch(ACTIONS.STOP_BLOCK_LISTENERS)
         );
-      jest
+      stopAugurNodeEventListenersSpy = jest
         .spyOn(augurjs.augur.events, "stopAugurNodeEventListeners")
         .mockImplementationOnce(() =>
           store.dispatch(ACTIONS.STOP_AUGUR_NODE_EVENT_LISTENERS)
         );
-      jest
+      startBlockListenersSpy = jest
         .spyOn(augurjs.augur.events, "startBlockListeners")
         .mockImplementationOnce(listeners => {
           const expected = "function";
@@ -48,7 +61,7 @@ describe("events/actions/listen-to-updates", () => {
           expect(typeof listeners.onRemoved).toStrictEqual(expected);
           store.dispatch(ACTIONS.START_BLOCK_LISTENERS);
         });
-      jest
+      startAugurNodeEventListenersSpy = jest
         .spyOn(augurjs.augur.events, "startAugurNodeEventListeners")
         .mockImplementationOnce(listeners => {
           const expected = "function";
@@ -69,14 +82,14 @@ describe("events/actions/listen-to-updates", () => {
           expect(typeof listeners.FeeWindowCreated).toStrictEqual(expected);
           store.dispatch(ACTIONS.START_AUGUR_NODE_EVENT_LISTENERS);
         });
-      jest
+      augurOnSpy = jest
         .spyOn(augurjs.augur.events.nodes.augur, "on")
         .mockImplementationOnce((label, onDisconnect) => {
           expect(label).toStrictEqual("disconnect");
           expect(typeof onDisconnect).toStrictEqual("function");
           store.dispatch(ACTIONS.NODES_AUGUR_ON_SET);
         });
-      jest
+      ethereumOnSpy = jest
         .spyOn(augurjs.augur.events.nodes.ethereum, "on")
         .mockImplementationOnce((label, onDisconnect) => {
           expect(label).toStrictEqual("disconnect");
@@ -102,39 +115,46 @@ describe("events/actions/listen-to-updates", () => {
   describe("MarketState", () => {
     let state;
     let store;
+    let loadMarketsInfoSpy;
+    let stopAugurNodeEventListenersSpy;
+    let startBlockListenersSpy;
+    let augurOnSpy;
+    let ethereumOnSpy;
+
+    afterEach(() => {
+      store.clearActions();
+      loadMarketsInfoSpy.mockReset();
+      stopAugurNodeEventListenersSpy.mockReset();
+      startBlockListenersSpy.mockReset();
+      augurOnSpy.mockReset();
+      ethereumOnSpy.mockReset();
+    });
 
     beforeEach(() => {
       state = {
         universe: { id: "UNIVERSE_ADDRESS" }
       };
       store = mockStore.mockStore(state);
-    });
-
-    afterEach(() => {
-      store.clearActions();
-    });
-
-    beforeAll(() => {
-      jest
+      loadMarketsInfoSpy = jest
         .spyOn(loadMarketsInfoModule, "loadMarketsInfo")
         .mockImplementation(marketIds => ({
           type: "LOAD_MARKETS_INFO",
           marketIds
         }));
 
-      jest
+      stopAugurNodeEventListenersSpy = jest
         .spyOn(augurjs.augur.events, "stopBlockListeners")
         .mockImplementation(() => {});
-      jest
+      stopAugurNodeEventListenersSpy = jest
         .spyOn(augurjs.augur.events, "stopAugurNodeEventListeners")
         .mockImplementation(() => {});
-      jest
+      startBlockListenersSpy = jest
         .spyOn(augurjs.augur.events, "startBlockListeners")
         .mockImplementation(() => {});
-      jest
+      augurOnSpy = jest
         .spyOn(augurjs.augur.events.nodes.augur, "on")
         .mockImplementation(() => {});
-      jest
+      ethereumOnSpy = jest
         .spyOn(augurjs.augur.events.nodes.ethereum, "on")
         .mockImplementation(() => {});
     });
@@ -166,6 +186,30 @@ describe("events/actions/listen-to-updates", () => {
   describe("InitialReportSubmitted", () => {
     let state;
     let store;
+    let loadMarketsInfoSpy;
+    let loadUnclaimedFeesSpy;
+    let updateLoggedTransactionsSpy;
+    let updateAssetsSpy;
+    let loadReportingSpy;
+    let stopBlockListenersSpy;
+    let stopAugurNodeEventListenersSpy;
+    let startBlockListenersSpy;
+    let augurOnSpy;
+    let ethereumOnSpy;
+
+    afterEach(() => {
+      store.clearActions();
+      loadReportingSpy.mockReset();
+      loadUnclaimedFeesSpy.mockReset();
+      updateLoggedTransactionsSpy.mockReset();
+      updateAssetsSpy.mockReset();
+      loadReportingSpy.mockReset();
+      stopBlockListenersSpy.mockReset();
+      stopAugurNodeEventListenersSpy.mockReset();
+      startBlockListenersSpy.mockReset();
+      augurOnSpy.mockReset();
+      ethereumOnSpy.mockReset();
+    });
 
     beforeEach(() => {
       state = {
@@ -173,52 +217,45 @@ describe("events/actions/listen-to-updates", () => {
         loginAccount: { address: "MY_ADDRESS" }
       };
       store = mockStore.mockStore(state);
-    });
-
-    afterEach(() => {
-      store.clearActions();
-    });
-
-    beforeAll(() => {
-      jest
+      loadMarketsInfoSpy = jest
         .spyOn(loadMarketsInfoModule, "loadMarketsInfo")
         .mockImplementation(marketIds => ({
           type: "LOAD_MARKETS_INFO",
           marketIds
         }));
-      jest
+      loadUnclaimedFeesSpy = jest
         .spyOn(loadUnclaimedFeesModule, "loadUnclaimedFees")
         .mockImplementation(marketIds => ({
           type: "UPDATE_UNCLAIMED_DATA",
           marketIds
         }));
-      jest
+      updateLoggedTransactionsSpy = jest
         .spyOn(convertLogsToTransactionsModule, "updateLoggedTransactions")
         .mockImplementation(log => ({
           type: "UPDATE_LOGGED_TRANSACTIONS",
           log
         }));
-      jest.spyOn(updateAssetsModule, "updateAssets").mockImplementation(() => ({
+      updateAssetsSpy = jest.spyOn(updateAssetsModule, "updateAssets").mockImplementation(() => ({
         type: "UPDATE_ASSETS"
       }));
-      jest
+      loadReportingSpy = jest
         .spyOn(loadReportingModule, "loadReporting")
         .mockImplementation(() => ({
           type: "LOAD_REPORTING"
         }));
-      jest
+      stopBlockListenersSpy = jest
         .spyOn(augurjs.augur.events, "stopBlockListeners")
         .mockImplementation(() => {});
-      jest
+      stopAugurNodeEventListenersSpy = jest
         .spyOn(augurjs.augur.events, "stopAugurNodeEventListeners")
         .mockImplementation(() => {});
-      jest
+      startBlockListenersSpy = jest
         .spyOn(augurjs.augur.events, "startBlockListeners")
         .mockImplementation(() => {});
-      jest
+      augurOnSpy = jest
         .spyOn(augurjs.augur.events.nodes.augur, "on")
         .mockImplementation(() => {});
-      jest
+      ethereumOnSpy = jest
         .spyOn(augurjs.augur.events.nodes.ethereum, "on")
         .mockImplementation(() => {});
     });
@@ -272,46 +309,70 @@ describe("events/actions/listen-to-updates", () => {
     });
   });
   describe("InitialReporterRedeemed", () => {
-    beforeAll(() => {
-      jest
+    let loadMarketsInfoSpy;
+    let loadUnclaimedFeesSpy;
+    let updateLoggedTransactionsSpy;
+    let updateAssetsSpy;
+    let loadReportingSpy;
+    let stopBlockListenersSpy;
+    let stopAugurNodeEventListenersSpy;
+    let startBlockListenersSpy;
+    let augurOnSpy;
+    let ethereumOnSpy;
+
+    afterEach(() => {
+      loadMarketsInfoSpy.mockReset();
+      loadUnclaimedFeesSpy.mockReset();
+      updateLoggedTransactionsSpy.mockReset();
+      updateAssetsSpy.mockReset();
+      loadReportingSpy.mockReset();
+      stopBlockListenersSpy.mockReset();
+      stopAugurNodeEventListenersSpy.mockReset();
+      startBlockListenersSpy.mockReset();
+      augurOnSpy.mockReset();
+      ethereumOnSpy.mockReset();
+    });
+
+    beforeEach(() => {
+      loadMarketsInfoSpy = jest
         .spyOn(loadMarketsInfoModule, "loadMarketsInfo")
         .mockImplementation(marketIds => ({
           type: "LOAD_MARKETS_INFO",
           marketIds
         }));
-      jest
+      loadUnclaimedFeesSpy = jest
         .spyOn(loadUnclaimedFeesModule, "loadUnclaimedFees")
         .mockImplementation(marketIds => ({
           type: "UPDATE_UNCLAIMED_DATA",
           marketIds
         }));
-      jest
+      updateLoggedTransactionsSpy = jest
         .spyOn(convertLogsToTransactionsModule, "updateLoggedTransactions")
         .mockImplementation(log => ({
           type: "UPDATE_LOGGED_TRANSACTIONS",
           log
         }));
-      jest.spyOn(updateAssetsModule, "updateAssets").mockImplementation(() => ({
+      updateAssetsSpy = jest.spyOn(updateAssetsModule, "updateAssets").mockImplementation(() => ({
         type: "UPDATE_ASSETS"
       }));
-      jest
+      loadReportingSpy = jest
         .spyOn(loadReportingModule, "loadReporting")
         .mockImplementation(() => ({
           type: "LOAD_REPORTING"
         }));
-      jest
+      stopBlockListenersSpy = jest
         .spyOn(augurjs.augur.events, "stopBlockListeners")
         .mockImplementation(() => {});
-      jest
+      stopAugurNodeEventListenersSpy = jest
         .spyOn(augurjs.augur.events, "stopAugurNodeEventListeners")
         .mockImplementation(() => {});
-      jest
+      startBlockListenersSpy = jest
         .spyOn(augurjs.augur.events, "startBlockListeners")
         .mockImplementation(() => {});
-      jest
+      augurOnSpy = jest
         .spyOn(augurjs.augur.events.nodes.augur, "on")
         .mockImplementation(() => {});
-      jest
+      ethereumOnSpy = jest
         .spyOn(augurjs.augur.events.nodes.ethereum, "on")
         .mockImplementation(() => {});
     });
@@ -374,20 +435,34 @@ describe("events/actions/listen-to-updates", () => {
     });
   });
   describe("TokensTransferred", () => {
-    beforeAll(() => {
-      jest
+    let stopBlockListenersSpy;
+    let stopAugurNodeEventListenersSpy;
+    let startBlockListenersSpy;
+    let augurOnSpy;
+    let ethereumOnSpy;
+
+    afterEach(() => {
+      stopBlockListenersSpy.mockReset();
+      stopAugurNodeEventListenersSpy.mockReset();
+      startBlockListenersSpy.mockReset();
+      augurOnSpy.mockReset();
+      ethereumOnSpy.mockReset();
+    });
+
+    beforeEach(() => {
+      stopBlockListenersSpy = jest
         .spyOn(augurjs.augur.events, "stopBlockListeners")
         .mockImplementation(() => {});
-      jest
+      stopAugurNodeEventListenersSpy = jest
         .spyOn(augurjs.augur.events, "stopAugurNodeEventListeners")
         .mockImplementation(() => {});
-      jest
+      startBlockListenersSpy = jest
         .spyOn(augurjs.augur.events, "startBlockListeners")
         .mockImplementation(() => {});
-      jest
+      augurOnSpy = jest
         .spyOn(augurjs.augur.events.nodes.augur, "on")
         .mockImplementation(() => {});
-      jest
+      ethereumOnSpy = jest
         .spyOn(augurjs.augur.events.nodes.ethereum, "on")
         .mockImplementation(() => {});
     });
