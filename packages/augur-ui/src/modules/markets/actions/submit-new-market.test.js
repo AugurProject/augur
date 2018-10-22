@@ -1,274 +1,160 @@
 import { createBigNumber } from "utils/create-big-number";
-
-import sinon from "sinon";
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 import { BUY, SELL } from "modules/transactions/constants/types";
+import { buildCreateMarket } from "modules/markets/helpers/build-create-market";
+
+jest.mock("modules/transactions/actions/add-transactions");
+jest.mock("modules/markets/helpers/build-create-market");
 
 describe("modules/markets/actions/submit-new-market", () => {
   const mockStore = configureMockStore([thunk]);
-  const pendingTransaction = { type: "addPendingTransaction" };
-  const clearNewMarket = { type: "clearNewMarket" };
-  const invalidateMarketCreation = { type: "invalidateMarketCreation" };
-  const addNewMarketCreationTransactions = function addTransaction() {
-    return pendingTransaction;
+  const pendingTransaction = { type: "ADD_NEW_MARKET_CREATION_TRANSACTIONS" };
+  const clearNewMarket = { type: "CLEAR_NEW_MARKET" };
+  const invalidateMarketCreation = {
+    data: { newMarketData: { isValid: false } },
+    type: "UPDATE_NEW_MARKET"
   };
-
-  const buildCreateMarketSuccess = newMarket => {
-    const result = {
-      createMarket: options => {
-        options.onSent({ hash: "blah blah blah", callReturn: "marketId" });
-        options.onSuccess({ callReturn: "marketId" });
-      },
-      formattedNewMarket: newMarket
-    };
-    return result;
-  };
-
-  const buildCreateMarketFailure = newMarket => {
-    const result = {
-      createMarket: options => {
-        options.onSent();
-        options.onFailed({ message: "error" });
-      },
-      formattedNewMarket: newMarket
-    };
-    return result;
-  };
-
   const {
-    submitNewMarket,
-    __RewireAPI__
+    submitNewMarket
   } = require("modules/markets/actions/submit-new-market");
 
   const history = {
-    push: sinon.stub()
+    push: jest.fn()
   };
 
-  const constants = {
-    PARALLEL_LIMIT: "4"
-  };
-
-  beforeEach(() => {
-    history.push.reset();
-  });
-
-  afterEach(() => {
-    __RewireAPI__.__ResetDependency__("constants", constants);
-    __RewireAPI__.__ResetDependency__(
-      "addNewMarketCreationTransactions",
-      addNewMarketCreationTransactions
-    );
-    __RewireAPI__.__ResetDependency__(
-      "invalidateMarketCreation",
-      () => invalidateMarketCreation
-    );
-    __RewireAPI__.__ResetDependency__("clearNewMarket", () => clearNewMarket);
-  });
-
-  const test = t =>
-    test(t.description, () => {
-      __RewireAPI__.__Rewire__("clearNewMarket", () => clearNewMarket);
-      __RewireAPI__.__Rewire__("constants", constants);
-      __RewireAPI__.__Rewire__("buildCreateMarket", t.buildCreateMarket);
-      __RewireAPI__.__Rewire__(
-        "addNewMarketCreationTransactions",
-        addNewMarketCreationTransactions
-      );
-      __RewireAPI__.__Rewire__(
-        "invalidateMarketCreation",
-        () => invalidateMarketCreation
-      );
-
-      const store = mockStore(t.state || {});
-
-      t.assertions(store);
+  describe("successful create market tests", () => {
+    beforeEach(() => {
+      history.push.mockClear();
+      buildCreateMarket.mockImplementationOnce(() => ({
+        createMarket: jest.fn(value => {
+          value.onSent({
+            callReturn: "marketId"
+          });
+          value.onSuccess({
+            res: {
+              callReturn: "marketId"
+            }
+          });
+        }),
+        formattedNewMarket: {}
+      }));
     });
 
-  test({
-    description: `should dispatch the expected action and call the expected function from the 'onSent' callback`,
-    state: {
-      universe: {
-        id: "1010101"
-      },
-      contractAddresses: {
-        Cash: "domnination"
-      },
-      loginAccount: {
-        meta: {
-          test: "object"
+    test(`should dispatch the expected action and call the expected function from the 'onSent' callback`, () => {
+      const state = {
+        universe: {
+          id: "1010101"
         },
-        address: "0x1233"
-      },
-      newMarket: {
-        properties: "value",
-        orderBook: {}
-      }
-    },
-    buildCreateMarket: buildCreateMarketSuccess,
-    assertions: store => {
+        contractAddresses: {
+          Cash: "domnination"
+        },
+        loginAccount: {
+          meta: {
+            test: "object"
+          },
+          address: "0x1233"
+        },
+        newMarket: {
+          properties: "value",
+          orderBook: {}
+        }
+      };
+      const store = mockStore(state || {});
       store.dispatch(submitNewMarket(store.getState().newMarket, history));
-      assert.isTrue(
-        history.push.calledOnce,
-        `didn't push a new path to history`
-      );
+      expect(history.push).toHaveBeenCalledTimes(1);
       const actual = store.getActions();
       const expected = [pendingTransaction, clearNewMarket];
-      assert.deepEqual(
-        actual,
-        expected,
-        `Didn't dispatch the expected actions`
-      );
-    }
-  });
+      expect(actual).toEqual(expected);
+    });
 
-  test({
-    description: `should dispatch the expected actions from the 'onSuccess' callback when an orderbook IS NOT present`,
-    state: {
-      universe: {
-        id: "1010101"
-      },
-      contractAddresses: {
-        Cash: "domnination"
-      },
-      loginAccount: {
-        meta: {
-          test: "object"
+    test(`should dispatch the expected actions from the 'onSuccess' callback when an orderbook IS present`, () => {
+      const state = {
+        universe: {
+          id: "1010101"
         },
-        address: "0x1233"
-      },
-      newMarket: { properties: "value", orderBook: {} }
-    },
-    buildCreateMarket: buildCreateMarketSuccess,
-    assertions: store => {
-      store.dispatch(submitNewMarket(store.getState().newMarket, history));
-      const actual = store.getActions();
-      const expected = [pendingTransaction, clearNewMarket];
-      assert.isTrue(
-        history.push.calledOnce,
-        `didn't push a new path to history`
-      );
-      assert.deepEqual(
-        actual,
-        expected,
-        `Didn't dispatch the expected actions`
-      );
-    }
-  });
-
-  test({
-    description: `should dispatch the expected actions from the 'onSuccess' callback when an orderbook IS present`,
-    state: {
-      universe: {
-        id: "1010101"
-      },
-      contractAddresses: {
-        Cash: "domnination"
-      },
-      loginAccount: {
-        meta: {
-          test: "object"
+        contractAddresses: {
+          Cash: "domnination"
         },
-        address: "0x1233",
-        allowance: "100"
-      },
-      newMarket: {
-        properties: "value",
-        outcomes: ["one", "two"],
-        orderBook: {
-          one: [
-            {
-              type: BUY,
-              price: createBigNumber("0.1"),
-              quantity: createBigNumber("1")
-            },
-            {
-              type: SELL,
-              price: createBigNumber("0.6"),
-              quantity: createBigNumber("1")
-            },
-            {
-              type: BUY,
-              price: createBigNumber("0.2"),
-              quantity: createBigNumber("1")
-            },
-            {
-              type: SELL,
-              price: createBigNumber("0.7"),
-              quantity: createBigNumber("1")
-            },
-            {
-              type: BUY,
-              price: createBigNumber("0.3"),
-              quantity: createBigNumber("1")
-            },
-            {
-              type: SELL,
-              price: createBigNumber("0.8"),
-              quantity: createBigNumber("1")
-            }
-          ],
-          two: [
-            {
-              type: BUY,
-              price: createBigNumber("0.1"),
-              quantity: createBigNumber("1")
-            },
-            {
-              type: SELL,
-              price: createBigNumber("0.6"),
-              quantity: createBigNumber("1")
-            },
-            {
-              type: BUY,
-              price: createBigNumber("0.2"),
-              quantity: createBigNumber("1")
-            },
-            {
-              type: SELL,
-              price: createBigNumber("0.7"),
-              quantity: createBigNumber("1")
-            },
-            {
-              type: BUY,
-              price: createBigNumber("0.3"),
-              quantity: createBigNumber("1")
-            },
-            {
-              type: SELL,
-              price: createBigNumber("0.8"),
-              quantity: createBigNumber("1")
-            }
-          ]
-        }
-      }
-    },
-    buildCreateMarket: buildCreateMarketSuccess,
-    assertions: store => {
-      let ordersCreated = 0;
-      __RewireAPI__.__Rewire__("augur", {
-        utils: {
-          convertBigNumberToHexString: data => ""
+        loginAccount: {
+          meta: {
+            test: "object"
+          },
+          address: "0x1233",
+          allowance: "100"
         },
-        trading: {
-          calculateTradeCost: data => ({}),
-          generateTradeGroupId: () => ""
-        },
-        constants: {
-          DEFAULT_NUM_TICKS: {
-            2: 10000
-          }
-        },
-        api: {
-          CreateOrder: {
-            publicCreateOrder: data => {
-              data.onSent();
-              ordersCreated += 1;
-            }
+        newMarket: {
+          properties: "value",
+          outcomes: ["one", "two"],
+          orderBook: {
+            one: [
+              {
+                type: BUY,
+                price: createBigNumber("0.1"),
+                quantity: createBigNumber("1")
+              },
+              {
+                type: SELL,
+                price: createBigNumber("0.6"),
+                quantity: createBigNumber("1")
+              },
+              {
+                type: BUY,
+                price: createBigNumber("0.2"),
+                quantity: createBigNumber("1")
+              },
+              {
+                type: SELL,
+                price: createBigNumber("0.7"),
+                quantity: createBigNumber("1")
+              },
+              {
+                type: BUY,
+                price: createBigNumber("0.3"),
+                quantity: createBigNumber("1")
+              },
+              {
+                type: SELL,
+                price: createBigNumber("0.8"),
+                quantity: createBigNumber("1")
+              }
+            ],
+            two: [
+              {
+                type: BUY,
+                price: createBigNumber("0.1"),
+                quantity: createBigNumber("1")
+              },
+              {
+                type: SELL,
+                price: createBigNumber("0.6"),
+                quantity: createBigNumber("1")
+              },
+              {
+                type: BUY,
+                price: createBigNumber("0.2"),
+                quantity: createBigNumber("1")
+              },
+              {
+                type: SELL,
+                price: createBigNumber("0.7"),
+                quantity: createBigNumber("1")
+              },
+              {
+                type: BUY,
+                price: createBigNumber("0.3"),
+                quantity: createBigNumber("1")
+              },
+              {
+                type: SELL,
+                price: createBigNumber("0.8"),
+                quantity: createBigNumber("1")
+              }
+            ]
           }
         }
-      });
-
+      };
+      const store = mockStore(state || {});
       store.dispatch(submitNewMarket(store.getState().newMarket, history));
 
       const actual = store.getActions();
@@ -350,42 +236,66 @@ describe("modules/markets/actions/submit-new-market", () => {
         clearNewMarket,
         addMarketLiquidityOrders
       ];
-      assert.isTrue(
-        history.push.calledOnce,
-        `didn't push a new path to history`
-      );
-      assert.deepEqual(
-        actual,
-        expected,
-        `Didn't dispatch the expected actions`
-      );
-      assert.deepEqual(
-        ordersCreated,
-        0,
-        `created orders when it shouldn't have.`
-      );
-    }
+      expect(history.push).toHaveBeenCalledTimes(1);
+      expect(actual).toEqual(expected);
+    });
+
+    test(`should dispatch the expected actions from the 'onSuccess' callback when an orderbook IS NOT present`, () => {
+      const state = {
+        universe: {
+          id: "1010101"
+        },
+        contractAddresses: {
+          Cash: "domnination"
+        },
+        loginAccount: {
+          meta: {
+            test: "object"
+          },
+          address: "0x1233"
+        },
+        newMarket: { properties: "value", orderBook: {} }
+      };
+      const store = mockStore(state || {});
+      store.dispatch(submitNewMarket(store.getState().newMarket, history));
+      const actual = store.getActions();
+      const expected = [pendingTransaction, clearNewMarket];
+      expect(history.push).toHaveBeenCalledTimes(1);
+      expect(actual).toEqual(expected);
+    });
   });
 
-  test({
-    description: `should dispatch the expected actions from the 'onFailed' callback`,
-    state: {
-      universe: {
-        id: "1010101"
-      },
-      contractAddresses: {
-        Cash: "domnination"
-      },
-      loginAccount: {
-        meta: {
-          test: "object"
+  describe("not successful test", () => {
+    beforeEach(() => {
+      history.push.mockClear();
+      buildCreateMarket.mockImplementationOnce(() => ({
+        createMarket: jest.fn(value => {
+          value.onSent();
+          value.onFailed({
+            message: "blah error blah"
+          });
+        }),
+        formattedNewMarket: {}
+      }));
+    });
+
+    test(`should dispatch the expected actions from the 'onFailed' callback`, () => {
+      const state = {
+        universe: {
+          id: "1010101"
         },
-        address: "0x1233"
-      },
-      newMarket: { properties: "value", orderBook: {} }
-    },
-    buildCreateMarket: buildCreateMarketFailure,
-    assertions: store => {
+        contractAddresses: {
+          Cash: "domnination"
+        },
+        loginAccount: {
+          meta: {
+            test: "object"
+          },
+          address: "0x1233"
+        },
+        newMarket: { properties: "value", orderBook: {} }
+      };
+      const store = mockStore(state || {});
       store.dispatch(submitNewMarket(store.getState().newMarket, history));
       const actual = store.getActions();
       const expected = [
@@ -393,15 +303,8 @@ describe("modules/markets/actions/submit-new-market", () => {
         clearNewMarket,
         invalidateMarketCreation
       ];
-      assert.isTrue(
-        history.push.calledOnce,
-        `didn't push a new path to history`
-      );
-      assert.deepEqual(
-        actual,
-        expected,
-        `Didn't dispatch the expected actions`
-      );
-    }
+      expect(history.push).toHaveBeenCalledTimes(1);
+      expect(actual).toEqual(expected);
+    });
   });
 });
