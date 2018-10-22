@@ -3,7 +3,7 @@ import { augur } from "services/augurjs";
 
 describe("modules/forking/actions/migrate-market-through-fork.js", () => {
   describe("migrateMarketThroughFork", () => {
-    test("should call the function as expected", () => {
+    test("Called the function as expected", () => {
       const getState = () => ({
         loginAccount: {
           meta: "META"
