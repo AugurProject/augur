@@ -730,9 +730,9 @@ augur-core@1.1.0:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur.js@5.9.0-0:
-  version "5.9.0-0"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.9.0-0.tgz#893d7d7b170561101e8cbca1324814096b6ca0a3"
+augur.js@5.10.0:
+  version "5.10.0"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.10.0.tgz#ff141c5a123c370ae2eb0e6df35d17d39f8fe97f"
   dependencies:
     async "1.5.2"
     augur-core "1.1.0"
@@ -740,7 +740,7 @@ augur.js@5.9.0-0:
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-blockstream "4.0.1"
-    ethrpc "5.5.5"
+    ethrpc "5.6.0"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -2875,9 +2875,9 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@5.5.5:
-  version "5.5.5"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.5.5.tgz#90ca320a69d55ae6eb353c565da6c2a9eafe1ce1"
+ethrpc@5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.6.0.tgz#c8428cef8aceb7bf8d3002f3d801432d4f269a6e"
   dependencies:
     async "2.6.0"
     augur-blockstream "5.0.0"
@@ -3282,6 +3282,10 @@ form-data@~2.3.1, form-data@~2.3.2:
 forwarded@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
+
+fp-ts@^1.0.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-1.9.0.tgz#52acf85692025b34285ff4014f39af72d1107e0b"
 
 fragment-cache@^0.2.1:
   version "0.2.1"
@@ -3989,6 +3993,12 @@ invariant@^2.2.0, invariant@^2.2.2:
 invert-kv@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-1.0.0.tgz#104a8e4aaca6d3d8cd157a8ef8bfab2d7a3ffdb6"
+
+io-ts@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-1.3.0.tgz#72a5e7dbbb650b9c26030bac0c22d9b18c321f54"
+  dependencies:
+    fp-ts "^1.0.0"
 
 ipaddr.js@1.8.0:
   version "1.8.0"
