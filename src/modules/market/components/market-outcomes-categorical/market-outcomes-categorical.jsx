@@ -61,10 +61,12 @@ class MarketOutcomesCategorical extends Component {
     const { outcomes } = this.props;
     const totalOutcomes = outcomes.length;
 
-    const displayShowMore = totalOutcomes > 3;
+    const nums = window.outerWidth >= 590 ? 3 : 6
+
+    const displayShowMore = totalOutcomes > nums;
     const showMoreText = this.state.isOpen
-      ? `- ${totalOutcomes - 3} less`
-      : `+ ${totalOutcomes - 3} more`;
+      ? `- ${totalOutcomes - nums} less`
+      : `+ ${totalOutcomes - nums} more`;
 
     const outcomeWrapperStyle = {
       minHeight: this.state.outcomeWrapperHeight
