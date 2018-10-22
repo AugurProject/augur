@@ -1,27 +1,141 @@
 import { createBigNumber } from "utils/create-big-number";
-
-import * as mockStore from "test/mockStore";
-
 import { formatNumber, formatEther, formatShares } from "utils/format-number";
 import { formatDate } from "utils/format-date";
 
-jest.mock("../../../store", () => store);
-jest.mock("./markets-all", () => MarketsAll);
+jest.mock("modules/markets/selectors/markets-all");
 
 describe("modules/markets/selectors/user-markets", () => {
-  const { store, state } = mockStore.default;
-  state.marketCreatorFees = {
-    "0xMARKET1": createBigNumber("10", 10),
-    "0xMARKET2": createBigNumber("11", 10)
+  const state = {
+    marketsData: {
+      "0xMARKET1": {
+        author: "0x0000000000000000000000000000000000000001",
+        id: "0xMARKET1",
+        description: "test-market-1",
+        endTime: formatDate(new Date("2017/12/12")),
+        repBalance: undefined,
+        fees: formatEther(createBigNumber("10", 10)),
+        volume: formatNumber(100),
+        outcomes: [
+          {
+            orderBook: {
+              bid: [
+                {
+                  shares: formatShares(10)
+                },
+                {
+                  shares: formatShares(10)
+                }
+              ],
+              ask: [
+                {
+                  shares: formatShares(10)
+                },
+                {
+                  shares: formatShares(10)
+                }
+              ]
+            }
+          },
+          {
+            orderBook: {
+              bid: [
+                {
+                  shares: formatShares(10)
+                },
+                {
+                  shares: formatShares(10)
+                }
+              ],
+              ask: [
+                {
+                  shares: formatShares(10)
+                },
+                {
+                  shares: formatShares(10)
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "0xMARKET2": {
+        author: "0x0000000000000000000000000000000000000001",
+        id: "0xMARKET2",
+        description: "test-market-2",
+        endTime: formatDate(new Date("2017/12/12")),
+        repBalance: undefined,
+        volume: formatNumber(100),
+        outcomes: [
+          {
+            orderBook: {
+              bid: [
+                {
+                  shares: formatShares(10)
+                },
+                {
+                  shares: formatShares(10)
+                }
+              ],
+              ask: [
+                {
+                  shares: formatShares(10)
+                },
+                {
+                  shares: formatShares(10)
+                }
+              ]
+            }
+          },
+          {
+            orderBook: {
+              bid: [
+                {
+                  shares: formatShares(10)
+                },
+                {
+                  shares: formatShares(10)
+                }
+              ],
+              ask: [
+                {
+                  shares: formatShares(10)
+                },
+                {
+                  shares: formatShares(10)
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    marketCreatorFees: {
+      "0xMARKET1": createBigNumber("10", 10),
+      "0xMARKET2": createBigNumber("11", 10)
+    },
+    loginAccount: {
+      address: "0x0000000000000000000000000000000000000001"
+    },
+    priceHistory: {
+      testMarketId: {},
+      "0xMARKET1": {
+        0: [{ amount: 10 }, { amount: 20 }],
+        1: [{ amount: 10 }, { amount: 20 }]
+      },
+      "0xMARKET2": {
+        0: [{ amount: 10 }, { amount: 20 }],
+        1: [{ amount: 10 }, { amount: 20 }]
+      }
+    }
   };
+  const selectMarketAll = require("modules/markets/selectors/markets-all");
+  selectMarketAll.selectMarkets.__set(
+    Object.keys(state.marketsData).map(marketId => state.marketsData[marketId])
+  );
 
-  const { allMarkets } = store.getState();
+  const selector = require("modules/markets/selectors/user-markets");
 
-  const MarketsAll = () => allMarkets;
-
-  const proxiedSelector = require("../../../src/modules/markets/selectors/user-markets");
-
-  const actual = proxiedSelector.default();
+  const actual = selector.getUserMarkets(state);
 
   const expected = [
     {
@@ -135,6 +249,6 @@ describe("modules/markets/selectors/user-markets", () => {
   ];
 
   test("should return the expected array", () => {
-    assert.deepEqual(actual, expected, `Didn't return the expected array`);
+    expect(actual).toEqual(expected);
   });
 });
