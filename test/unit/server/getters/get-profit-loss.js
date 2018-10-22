@@ -93,3 +93,20 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
   });
 });
 
+
+describe("server/getters/get-profit-loss#getProfitLoss", () => {
+  var connection = null;
+  var augur = new Augur();
+
+  beforeEach((done) => {
+    setupTestDb((err, db) => {
+      if (err) return done(new Error(err));
+      connection = db;
+      done();
+    });
+  });
+
+  it("generates a 3-value timeseries P/L", () => {
+  });
+});
+
