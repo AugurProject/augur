@@ -1,6 +1,6 @@
 {
   "name": "augur-node",
-  "version": "5.11.0-1",
+  "version": "5.11.0",
   "description": "Augur Node",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
