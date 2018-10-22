@@ -4,7 +4,6 @@ import {
   FAILED,
   INTERRUPTED
 } from "modules/transactions/constants/statuses";
-import transactionsTotalsAssertions from "assertions/transactions-totals";
 import * as transactions from "modules/transactions/selectors/transactions";
 
 import { selectTransactionsTotalsCreator } from "src/modules/transactions/selectors/transactions-totals";
@@ -61,7 +60,6 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
       }
     ]);
     const actual = selectTransactionsTotals();
-    transactionsTotalsAssertions(actual);
     expect(actual).toEqual({
       numWorking: 0,
       numPending: 1,
