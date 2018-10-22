@@ -4,7 +4,7 @@ import * as _ from "lodash";
 import Augur from "augur.js";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { Address, OutcomeParam, SortLimitParams } from "../../types";
-import { EarningsAtTime, ProfitLoss } from "./get-profit-loss";
+import { EarningsAtTime, ProfitLoss, getProfitLoss } from "./get-profit-loss";
 
 export const UserTradingPositionsParamsSpecific = t.type({
   universe: t.union([t.string, t.null, t.undefined]),
@@ -39,11 +39,19 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
   if (params.account == null) throw new Error("Missing required parameter: account");
 
   const universeId = params.universe || await queryUniverse(db, params.marketId!);
-  const results = await getOutcomesProfitLoss(db, augur, Date.now(), universeId as Address, params.account, params.marketId || null, null, null, null);
+  const results = await getProfitLoss(db, augur, {
+    universe: universeId,
+    account: params.account,
+    marketId: params.marketId || null,
+    startTime: null,
+    endTime: null,
+    periodInterval: null
+  });
 
   if (results === null) return [];
 
-  const { all: earningsPerMarket } = await formatProfitLossResults(db, results);
+  //const { all: earningsPerMarket } = await formatProfitLossResults(db, results);
+  const earningsPerMarket: Array<any> = [];
 
   const allTimeEarningsPerMarket = _.mapValues(earningsPerMarket, (outcomes: Array<Array<EarningsAtTime>>, marketId: Address) => {
     return outcomes.map((earnings: Array<EarningsAtTime>) => earnings === null ? null : earnings[earnings.length - 1].profitLoss);

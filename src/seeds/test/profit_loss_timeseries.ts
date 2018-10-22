@@ -1,9 +1,9 @@
 import * as Knex from "knex";
 
-exports.seed = function (knex: Knex): Promise<any> {
+exports.seed = async function (knex: Knex): Promise<any> {
     // Deletes ALL existing entries
     return knex("profit_loss_timeseries").del()
-        .then(function () {
+        .then(async function (): Promise<any> {
             // Inserts seed entries
             return knex("profit_loss_timeseries").insert([
                 { id: 1, colName: "rowValue1" },
