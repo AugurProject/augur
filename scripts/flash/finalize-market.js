@@ -38,7 +38,7 @@ function finalizeMarket(augur, args, auth, callback) {
   }
   var marketId = args.opt.marketId;
   var noPush = args.opt.noPush;
-  if (noPush) return callFinalize(augur, marketId, callback);
+  if (noPush) return callFinalize(augur, marketId, auth, callback);
 
   var marketPayload = { tx: { to: marketId } };
   augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowAddress) {
