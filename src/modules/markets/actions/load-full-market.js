@@ -1,4 +1,7 @@
-import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
+import {
+  loadMarketsInfo,
+  loadMarketsDisputeInfo
+} from "modules/markets/actions/load-markets-info";
 import loadBidsAsks from "modules/orders/actions/load-bids-asks";
 import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import { loadPriceHistory } from "modules/markets/actions/price-history-management";
@@ -49,6 +52,7 @@ export const loadMarketDetails = (marketId, callback = logError) => dispatch =>
                 updateMarketLoading({ [marketId]: MARKET_FULLY_LOADED })
               );
               dispatch(loadMarketTradingHistory({ marketId }));
+              dispatch(loadMarketsDisputeInfo([marketId]));
               callback(null);
             })
           );

@@ -20,7 +20,8 @@ describe("modules/markets/actions/load-full-market.js", () => {
     LOAD_MARKETS_INFO: "LOAD_MARKETS_INFO",
     LOAD_BIDS_ASKS: "LOAD_BIDS_ASKS",
     LOAD_ACCOUNT_TRADES: "LOAD_ACCOUNT_TRADES",
-    LOAD_PRICE_HISTORY: "LOAD_PRICE_HISTORY"
+    LOAD_PRICE_HISTORY: "LOAD_PRICE_HISTORY",
+    LOAD_DISPUTE_INFO: "LOAD_DISPUTE_INFO"
   };
 
   const test = t =>
@@ -203,6 +204,7 @@ describe("modules/markets/actions/load-full-market.js", () => {
       __RewireAPI__.__ResetDependency__("loadPriceHistory");
       __RewireAPI__.__ResetDependency__("updateMarketLoading");
       __RewireAPI__.__ResetDependency__("loadingError");
+      __RewireAPI__.__ResetDependency__("loadMarketsDisputeInfo");
     });
 
     test({
@@ -240,6 +242,12 @@ describe("modules/markets/actions/load-full-market.js", () => {
           type: MOCK_ACTION_TYPES.MARKET_FULLY_LOADED,
           data
         }));
+        __RewireAPI__.__Rewire__("loadMarketsDisputeInfo", marketId => ({
+          type: MOCK_ACTION_TYPES.LOAD_DISPUTE_INFO,
+          data: {
+            marketId
+          }
+        }));
 
         store.dispatch(loadMarketDetails("0xMARKETID"));
 
@@ -250,6 +258,12 @@ describe("modules/markets/actions/load-full-market.js", () => {
             type: MOCK_ACTION_TYPES.MARKET_FULLY_LOADED,
             data: {
               "0xMARKETID": MOCK_ACTION_TYPES.MARKET_FULLY_LOADED
+            }
+          },
+          {
+            type: MOCK_ACTION_TYPES.LOAD_DISPUTE_INFO,
+            data: {
+              marketId: ["0xMARKETID"]
             }
           },
           {
@@ -300,7 +314,12 @@ describe("modules/markets/actions/load-full-market.js", () => {
             }
           };
         });
-
+        __RewireAPI__.__Rewire__("loadMarketsDisputeInfo", marketId => ({
+          type: MOCK_ACTION_TYPES.LOAD_DISPUTE_INFO,
+          data: {
+            marketId
+          }
+        }));
         store.dispatch(loadMarketDetails("0xMARKETID"));
 
         const actual = store.getActions();
@@ -352,7 +371,12 @@ describe("modules/markets/actions/load-full-market.js", () => {
             }
           };
         });
-
+        __RewireAPI__.__Rewire__("loadMarketsDisputeInfo", marketId => ({
+          type: MOCK_ACTION_TYPES.LOAD_DISPUTE_INFO,
+          data: {
+            marketId
+          }
+        }));
         store.dispatch(loadMarketDetails("0xMARKETID"));
 
         const actual = store.getActions();
@@ -420,7 +444,12 @@ describe("modules/markets/actions/load-full-market.js", () => {
             }
           };
         });
-
+        __RewireAPI__.__Rewire__("loadMarketsDisputeInfo", marketId => ({
+          type: MOCK_ACTION_TYPES.LOAD_DISPUTE_INFO,
+          data: {
+            marketId
+          }
+        }));
         store.dispatch(loadMarketDetails("0xMARKETID"));
 
         const actual = store.getActions();
