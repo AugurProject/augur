@@ -6,21 +6,21 @@ import { advanceFeeWindowActive, getCurrentTime } from "../process-block";
 import { SubscriptionEventNames } from "../../constants";
 
 export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  augur.api.FeeWindow.getFeeToken({ tx: { to: log.feeWindow } }, (err: Error|null, feeToken?: Address): void => {
+  augur.api.FeeWindow.getFeeToken({ tx: { to: log.feeWindow } }, async (err: Error|null, feeToken?: Address) => {
     if (err) return callback(err);
-    const feeWindowToInsert = {
-      feeWindow: log.feeWindow,
-      feeWindowId: log.id,
-      universe: log.universe,
-      startTime: log.startTime,
-      endTime: log.endTime,
-      state: FeeWindowState.FUTURE,
-      fees: 0,
-      feeToken,
-    };
-    augurEmitter.emit(SubscriptionEventNames.FeeWindowCreated, Object.assign({}, log, feeWindowToInsert));
-    db.from("fee_windows").insert(feeWindowToInsert).asCallback((err) => {
-      if (err) return callback(err);
+    await new Promise(async (resolve) => {
+      const feeWindowToInsert = {
+        feeWindow: log.feeWindow,
+        feeWindowId: log.id,
+        universe: log.universe,
+        startTime: log.startTime,
+        endTime: log.endTime,
+        state: FeeWindowState.FUTURE,
+        fees: 0,
+        feeToken,
+      };
+      augurEmitter.emit(SubscriptionEventNames.FeeWindowCreated, Object.assign({}, log, feeWindowToInsert));
+      await db.from("fee_windows").insert(feeWindowToInsert);
       const feeWindowTokens = [{
         contractAddress: log.feeWindow,
         symbol: "ParticipationToken",
@@ -29,12 +29,12 @@ export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: Formatte
         symbol: `FeeToken`,
         feeWindow: log.feeWindow,
       }];
-      db("tokens").insert(feeWindowTokens).asCallback((err) => {
-        if (err) return callback(err);
-        // Re-running this is important for if the FeeWindow was created on the same block it started (not pre-created as part of getOrCreateNext)
-        advanceFeeWindowActive(db, augur, log.blockNumber, getCurrentTime(), callback);
-      });
-    });
+      await db("tokens").insert(feeWindowTokens);
+
+      // Re-running this is important for if the FeeWindow was created on the same block it started (not pre-created as part of getOrCreateNext)
+      await advanceFeeWindowActive(db, augur, log.blockNumber, getCurrentTime());
+      resolve();
+    }).then(() => callback(null)).catch(callback);
   });
 }
 
