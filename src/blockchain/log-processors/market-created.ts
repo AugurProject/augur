@@ -39,14 +39,14 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
   const marketPayload: {} = { tx: { to: log.market } };
   const universePayload: {} = { tx: { to: log.universe, send: false } };
   parallel({
-    feeWindow: (next: AsyncCallback): void => { augur.api.Market.getFeeWindow(marketPayload, next) },
-    endTime: (next: AsyncCallback): void => { augur.api.Market.getEndTime(marketPayload, next) },
-    designatedReporter: (next: AsyncCallback): void => { augur.api.Market.getDesignatedReporter(marketPayload, next) },
-    marketCreatorMailbox: (next: AsyncCallback): void => { augur.api.Market.getMarketCreatorMailbox(marketPayload, next) },
-    numTicks: (next: AsyncCallback): void => { augur.api.Market.getNumTicks(marketPayload, next) },
-    marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => { augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next) },
-    reportingFeeDivisor: (next: AsyncCallback): void => { augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload, next) },
-    validityBondAttoeth: (next: AsyncCallback): void => { augur.api.Market.getValidityBondAttoeth(marketPayload, next) },
+    feeWindow: (next: AsyncCallback): void => { augur.api.Market.getFeeWindow(marketPayload, next); },
+    endTime: (next: AsyncCallback): void => { augur.api.Market.getEndTime(marketPayload, next); },
+    designatedReporter: (next: AsyncCallback): void => { augur.api.Market.getDesignatedReporter(marketPayload, next); },
+    marketCreatorMailbox: (next: AsyncCallback): void => { augur.api.Market.getMarketCreatorMailbox(marketPayload, next); },
+    numTicks: (next: AsyncCallback): void => { augur.api.Market.getNumTicks(marketPayload, next); },
+    marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => { augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next); },
+    reportingFeeDivisor: (next: AsyncCallback): void => { augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload, next); },
+    validityBondAttoeth: (next: AsyncCallback): void => { augur.api.Market.getValidityBondAttoeth(marketPayload, next); },
     getOutcomes: (next: AsyncCallback): void => getOutcomes(augur, log, next),
   }, (err: Error|null, onContractData?: any): void => {
     if (err) return callback(err);
