@@ -15,30 +15,33 @@ const TopBar = props => (
   <header className={Styles.TopBar}>
     {props.isLogged && (
       <div className={Styles.TopBar__statsContainer}>
+        {!props.isMobile && 
+          <div
+            className={classNames(
+              Styles.TopBar__stats,
+              Styles["TopBar__regular-stats"]
+            )}
+          >
+            <div className={Styles.TopBar__stat}>
+              <span className={Styles["TopBar__stat-label"]}>ETH</span>
+              <span className={Styles["TopBar__stat-value"]} id="core-bar-eth">
+                {props.stats[0].totalRealEth.value.formatted}
+              </span>
+            </div>
+            <div className={Styles.TopBar__stat}>
+              <span className={Styles["TopBar__stat-label"]}>REP</span>
+              <span className={Styles["TopBar__stat-value"]} id="core-bar-rep">
+                {props.stats[0].totalRep.value.formatted}
+              </span>
+            </div>
+          </div>
+        }
         <div
           className={classNames(
             Styles.TopBar__stats,
-            Styles["TopBar__regular-stats"]
-          )}
-        >
-          <div className={Styles.TopBar__stat}>
-            <span className={Styles["TopBar__stat-label"]}>ETH</span>
-            <span className={Styles["TopBar__stat-value"]} id="core-bar-eth">
-              {props.stats[0].totalRealEth.value.formatted}
-            </span>
-          </div>
-          <div className={Styles.TopBar__stat}>
-            <span className={Styles["TopBar__stat-label"]}>REP</span>
-            <span className={Styles["TopBar__stat-value"]} id="core-bar-rep">
-              {props.stats[0].totalRep.value.formatted}
-            </span>
-          </div>
-        </div>
-        <div
-          className={classNames(
-            Styles.TopBar__stats,
-            Styles.TopBar__performance
-          )}
+            Styles.TopBar__performance, {
+            [Styles.TopBar__leftBorder]: props.isMobile,
+          })}
         >
           <div
             className={classNames(
@@ -73,33 +76,35 @@ const TopBar = props => (
     )}
     {props.isLogged && <GasPriceEdit />}
     <ConnectAccount />
-    <div
-      className={classNames(Styles.TopBar__notifications, {
-        [Styles.TopBar__notificationsDark]: props.notificationsVisible,
-        [Styles.TopBar__notificationsDisabled]: !props.isLogged
-      })}
-      onClick={e => {
-        props.toggleNotifications();
-      }}
-      role="button"
-      tabIndex="-1"
-    >
-      <div className={Styles["TopBar__notifications-container"]}>
-        <div className={Styles["TopBar__notification-icon"]}>
-          {props.unseenCount > 99
-            ? Notifications(
-                "99+",
-                "7.4591451",
-                props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)"
-              )
-            : Notifications(
-                props.unseenCount,
-                "6.4591451",
-                props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)"
-              )}
+    {!props.isMobile && 
+      <div
+        className={classNames(Styles.TopBar__notifications, {
+          [Styles.TopBar__notificationsDark]: props.notificationsVisible,
+          [Styles.TopBar__notificationsDisabled]: !props.isLogged
+        })}
+        onClick={e => {
+          props.toggleNotifications();
+        }}
+        role="button"
+        tabIndex="-1"
+      >
+        <div className={Styles["TopBar__notifications-container"]}>
+          <div className={Styles["TopBar__notification-icon"]}>
+            {props.unseenCount > 99
+              ? Notifications(
+                  "99+",
+                  "7.4591451",
+                  props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)"
+                )
+              : Notifications(
+                  props.unseenCount,
+                  "6.4591451",
+                  props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)"
+                )}
+          </div>
         </div>
       </div>
-    </div>
+    }
     <span className={Styles["TopBar__logo-text"]}>
       <Link to={makePath(CATEGORIES)}>Augur</Link>
     </span>
@@ -111,7 +116,9 @@ TopBar.propTypes = {
   stats: PropTypes.array.isRequired,
   unseenCount: PropTypes.number.isRequired,
   toggleNotifications: PropTypes.func.isRequired,
-  notificationsVisible: PropTypes.bool.isRequired
+  notificationsVisible: PropTypes.bool.isRequired,
+  isMobile: PropTypes.bool,
+  isMobileSmall: PropTypes.bool,
 };
 
 export default TopBar;

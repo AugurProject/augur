@@ -99,6 +99,7 @@ export default class AppView extends Component {
     initAugur: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
     loginAccount: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
@@ -545,6 +546,7 @@ export default class AppView extends Component {
             >
               <TopBar
                 isMobile={isMobile}
+                isMobileSmall={isMobileSmall}
                 isLogged={isLogged}
                 stats={coreStats}
                 unseenCount={unseenCount}
