@@ -165,7 +165,8 @@ MarketBasics.defaultProps = {
   disputeInfo: null,
   cardStyle: null,
   reportingState: null,
-  scalarDenomination: null
+  scalarDenomination: null,
+  isMobileSmall: false
 };
 
 export default MarketBasics;
