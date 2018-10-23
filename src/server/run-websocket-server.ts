@@ -37,9 +37,9 @@ function safePing(websocket: WebSocket) {
 
 export function runWebsocketServer(db: Knex, app: express.Application, augur: Augur, webSocketConfigs: WebSocketConfigs, controlEmitter: EventEmitter = new EventEmitter()): ServersData {
   const servers: Array<WebSocket.Server> = [];
-  const httpServers: Array<http.Server | https.Server> = [];
+  const httpServers: Array<http.Server|https.Server> = [];
 
-  if ( webSocketConfigs.wss != null ) {
+  if (webSocketConfigs.wss != null) {
     logger.info("Starting websocket secure server on port", webSocketConfigs.wss.port);
     const httpsOptions: https.ServerOptions = {
       cert: fs.readFileSync(path.join(__dirname, "..", "..", webSocketConfigs.wss.certificateFile)),
@@ -48,15 +48,15 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
     const server = https.createServer(httpsOptions, app);
     httpServers.push(server);
     server.listen(webSocketConfigs.wss.port);
-    servers.push( new WebSocket.Server({ server }) );
+    servers.push(new WebSocket.Server({ server }));
   }
 
-  if ( webSocketConfigs.ws != null ) {
+  if (webSocketConfigs.ws != null) {
     logger.info("Starting websocket server on port", process.env.PORT || webSocketConfigs.ws.port);
     const server = http.createServer(app);
     httpServers.push(server);
     server.listen(process.env.PORT || webSocketConfigs.ws.port);
-    servers.push( new WebSocket.Server({ server }) );
+    servers.push(new WebSocket.Server({ server }));
   }
   controlEmitter.emit(ControlMessageType.ServerStart);
 
@@ -91,13 +91,11 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
             subscriptions.unsubscribe(subscription);
             safeSend(websocket, makeJsonRpcResponse(message.id, true));
           } else {
-            dispatchJsonRpcRequest(db, message as JsonRpcRequest, augur, (err: Error|null, result?: any): void => {
-              if (err) {
-                logger.error("getter error: ", err);
-                safeSend(websocket, makeJsonRpcError(message.id, JsonRpcErrorCode.InvalidParams, err.message, false));
-              } else {
-                safeSend(websocket, makeJsonRpcResponse(message.id, result || null));
-              }
+            dispatchJsonRpcRequest(db, message as JsonRpcRequest, augur).then((result): void => {
+              safeSend(websocket, makeJsonRpcResponse(message.id, result || null));
+            }).catch((err) => {
+              logger.error("getter error: ", err);
+              safeSend(websocket, makeJsonRpcError(message.id, JsonRpcErrorCode.InvalidParams, err.message, false));
             });
           }
         } catch (exc) {

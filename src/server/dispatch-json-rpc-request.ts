@@ -36,17 +36,14 @@ import { getWinningBalance, WinningBalanceParams } from "./getters/get-winning-b
 
 type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
 
-export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
+export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur): Promise<any> {
   logger.info(JSON.stringify(request));
 
-  function dispatchResponse<T, R>(getterFunction: GetterFunction<T, R>, decodedParams: t.Validation<T>) {
+  function dispatchResponse<T, R>(getterFunction: GetterFunction<T, R>, decodedParams: t.Validation<T>): Promise<any> {
     if (decodedParams.isRight()) {
-      getterFunction(db, augur, decodedParams.value).then((response) => {
-        callback(null, response);
-      }).catch(callback);
-      return;
+      return getterFunction(db, augur, decodedParams.value);
     } else {
-      return callback(new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`));
+      throw new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`);
     }
   }
 
@@ -109,11 +106,11 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getUserShareBalances":
       return dispatchResponse(getUserShareBalances, UserShareBalancesParams.decode(request.params));
 
-    case "getProfitLoss":
-      return getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, callback);
-    case "getMarketsCreatedByUser":
-      return getMarketsCreatedByUser(db, request.params.universe, request.params.creator, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+    // case "getProfitLoss":
+    //   return getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, callback);
+    // case "getMarketsCreatedByUser":
+    //   return getMarketsCreatedByUser(db, request.params.universe, request.params.creator, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     default:
-      callback(new Error("unknown json rpc method"));
+      throw new Error(`unknown json rpc method ${request.method}`);
   }
 }
