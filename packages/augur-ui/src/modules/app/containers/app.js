@@ -8,7 +8,6 @@ import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { selectInfoNotificationsAndSeenCount } from "modules/notifications/selectors/notifications";
 import { selectCoreStats } from "modules/account/selectors/core-stats";
 import { selectCategories } from "modules/categories/selectors/categories";
-import portfolioTotals from "modules/positions/selectors/portfolio-totals";
 import {
   IS_ANIMATING,
   IS_MOBILE,
@@ -51,7 +50,6 @@ const mapStateToProps = state => ({
   markets: selectMarkets(state),
   modal: selectModal(state),
   notifications: selectInfoNotificationsAndSeenCount(state),
-  portfolio: portfolioTotals(state),
   universe: selectUniverseState(state),
   url: selectUrlState(state),
   useWeb3Transport: isGlobalWeb3()
