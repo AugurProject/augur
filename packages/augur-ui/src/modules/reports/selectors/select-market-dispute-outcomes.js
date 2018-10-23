@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
-import { constants } from "services/augurjs";
+import { constants } from "services/constants";
 import { isEmpty } from "lodash";
 
 import selectDisputeOutcomes from "modules/reports/selectors/select-dispute-outcomes";
