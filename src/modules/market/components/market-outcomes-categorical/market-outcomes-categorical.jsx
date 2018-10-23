@@ -6,9 +6,7 @@ import getValue from "utils/get-value";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 import Styles from "modules/market/components/market-outcomes-categorical/market-outcomes-categorical.styles";
 
-const fontSize = winWidth => (winWidth < 590 ? "0.875rem" : "1.25rem");
-
-const CategoricalOutcome = ({ className, outcome }) => (
+const CategoricalOutcome = ({ className, outcome, isMobileSmall }) => (
   <div
     className={className || Styles.MarketOutcomesCategorical__outcome}
     style={{
@@ -17,16 +15,10 @@ const CategoricalOutcome = ({ className, outcome }) => (
       textOverflow: "ellipsis"
     }}
   >
-    <span
-      className={Styles["MarketOutcomesCategorical__outcome-name"]}
-      style={{ fontSize: fontSize(window.outerWidth) }}
-    >
-      {window.outerWidth >= 590 ? outcome.name : outcome.name[0] + "... "}
+    <span className={Styles["MarketOutcomesCategorical__outcome-name"]}>
+      {isMobileSmall ? outcome.name[0] + "... " : outcome.name}
     </span>
-    <span
-      className={Styles["MarketOutcomesCategorical__outcome-value"]}
-      style={{ fontSize: fontSize(window.outerWidth) }}
-    >
+    <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
       {getValue(outcome, "lastPricePercent.full")}
     </span>
     <span>&nbsp;&nbsp;</span>
@@ -58,17 +50,21 @@ class MarketOutcomesCategorical extends Component {
   }
 
   render() {
-    const { outcomes } = this.props;
+    const { outcomes, isMobileSmall } = this.props;
     const totalOutcomes = outcomes.length;
 
-    const displayShowMore = totalOutcomes > 3;
+    const numOutcomesToShow = !isMobileSmall ? 3 : 6;
+
+    const displayShowMore = totalOutcomes > numOutcomesToShow;
     const showMoreText = this.state.isOpen
-      ? `- ${totalOutcomes - 3} less`
-      : `+ ${totalOutcomes - 3} more`;
+      ? `- ${totalOutcomes - numOutcomesToShow} less`
+      : `+ ${totalOutcomes - numOutcomesToShow} more`;
 
     const outcomeWrapperStyle = {
       minHeight: this.state.outcomeWrapperHeight
     };
+
+    console.log(isMobileSmall);
 
     return (
       <div
@@ -79,6 +75,7 @@ class MarketOutcomesCategorical extends Component {
           <CategoricalOutcome
             className={Styles["MarketOutcomesCategorical__height-sentinel"]}
             outcome={outcomes[0]}
+            isMobileSmall={isMobileSmall}
           />
         )}
         <div
@@ -105,7 +102,11 @@ class MarketOutcomesCategorical extends Component {
           >
             {outcomes.length > 0 &&
               outcomes.map(outcome => (
-                <CategoricalOutcome key={outcome.id} outcome={outcome} />
+                <CategoricalOutcome
+                  key={outcome.id}
+                  outcome={outcome}
+                  isMobileSmall={isMobileSmall}
+                />
               ))}
           </div>
         </div>
@@ -115,12 +116,14 @@ class MarketOutcomesCategorical extends Component {
 }
 
 MarketOutcomesCategorical.propTypes = {
-  outcomes: PropTypes.array.isRequired
+  outcomes: PropTypes.array.isRequired,
+  isMobileSmall: PropTypes.bool
 };
 
 CategoricalOutcome.propTypes = {
   outcome: PropTypes.object.isRequired,
-  className: PropTypes.string
+  className: PropTypes.string,
+  isMobileSmall: PropTypes.bool
 };
 
 CategoricalOutcome.defaultProps = {
