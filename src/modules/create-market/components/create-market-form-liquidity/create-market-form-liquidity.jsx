@@ -370,6 +370,9 @@ export default class CreateMarketLiquidity extends Component {
     };
     let isOrderValid;
 
+    const ZERO = createBigNumber(0);
+    const ONE = createBigNumber(1);
+
     // Validate Quantity
     if (orderQuantity !== "" && orderQuantity.lte(createBigNumber(0))) {
       errors.quantity.push("Quantity must be positive");
@@ -405,9 +408,9 @@ export default class CreateMarketLiquidity extends Component {
           errors.price.push(
             `Price must be greater than best bid price of: ${bids[0].price.toNumber()}`
           );
-        } else if (orderPrice.gte(this.state.maxPrice)) {
+        } else if (orderPrice.gte(ONE)) {
           errors.price.push("Price must be less than 1");
-        } else if (orderPrice.lt(this.state.minPrice)) {
+        } else if (orderPrice.lt(ZERO)) {
           errors.price.push("Price must be greater than 0");
         }
       } else if (
