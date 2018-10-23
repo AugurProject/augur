@@ -3,13 +3,8 @@ import { UPDATE_MARKET_REP_BALANCE } from "src/modules/markets/actions/update-ma
 
 describe(`modules/markets/reducers/markets-data.js`, () => {
   describe("UPDATE_MARKET_CATEGORY", () => {
-    const test = t =>
-      test(t.description, () => {
-        t.assertions(reducer(t.marketsData, t.action));
-      });
-    test({
-      description: "no market ID = no change to markets data",
-      marketsData: {
+    test("no market ID = no change to markets data", () => {
+      const marketsData = {
         "0xa1": {
           id: "0xa1",
           category: undefined
@@ -18,30 +13,17 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
           id: "0xa2",
           category: "regular potables"
         }
-      },
-      action: {
+      };
+
+      const action = {
         type: "UPDATE_MARKET_CATEGORY",
         data: {
           marketId: undefined,
           category: "potent potables"
         }
-      },
-      assertions: reducedData => {
-        assert.deepEqual(reducedData, {
-          "0xa1": {
-            id: "0xa1",
-            category: undefined
-          },
-          "0xa2": {
-            id: "0xa2",
-            category: "regular potables"
-          }
-        });
-      }
-    });
-    test({
-      description: "set market category",
-      marketsData: {
+      };
+
+      expect(reducer(marketsData, action)).toEqual({
         "0xa1": {
           id: "0xa1",
           category: undefined
@@ -50,30 +32,29 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
           id: "0xa2",
           category: "regular potables"
         }
-      },
-      action: {
+      });
+    });
+
+    test("set market category", () => {
+      const marketsData = {
+        "0xa1": {
+          id: "0xa1",
+          category: undefined
+        },
+        "0xa2": {
+          id: "0xa2",
+          category: "regular potables"
+        }
+      };
+      const action = {
         type: "UPDATE_MARKET_CATEGORY",
         data: {
           marketId: "0xa1",
           category: "potent potables"
         }
-      },
-      assertions: reducedData => {
-        assert.deepEqual(reducedData, {
-          "0xa1": {
-            id: "0xa1",
-            category: "potent potables"
-          },
-          "0xa2": {
-            id: "0xa2",
-            category: "regular potables"
-          }
-        });
-      }
-    });
-    test({
-      description: "unset market category",
-      marketsData: {
+      };
+
+      expect(reducer(marketsData, action)).toEqual({
         "0xa1": {
           id: "0xa1",
           category: "potent potables"
@@ -82,30 +63,42 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
           id: "0xa2",
           category: "regular potables"
         }
-      },
-      action: {
+      });
+    });
+
+    test("unset market category", () => {
+      const marketsData = {
+        "0xa1": {
+          id: "0xa1",
+          category: "potent potables"
+        },
+        "0xa2": {
+          id: "0xa2",
+          category: "regular potables"
+        }
+      };
+      const action = {
         type: "UPDATE_MARKET_CATEGORY",
         data: {
           marketId: "0xa1",
           category: undefined
         }
-      },
-      assertions: reducedData => {
-        assert.deepEqual(reducedData, {
-          "0xa1": {
-            id: "0xa1",
-            category: undefined
-          },
-          "0xa2": {
-            id: "0xa2",
-            category: "regular potables"
-          }
-        });
-      }
+      };
+
+      expect(reducer(marketsData, action)).toEqual({
+        "0xa1": {
+          id: "0xa1",
+          category: undefined
+        },
+        "0xa2": {
+          id: "0xa2",
+          category: "regular potables"
+        }
+      });
     });
-    test({
-      description: "update market category",
-      marketsData: {
+
+    test("update market category", () => {
+      const marketsData = {
         "0xa1": {
           id: "0xa1",
           category: "regular potables"
@@ -114,26 +107,25 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
           id: "0xa2",
           category: "regular potables"
         }
-      },
-      action: {
+      };
+      const action = {
         type: "UPDATE_MARKET_CATEGORY",
         data: {
           marketId: "0xa1",
           category: "potent potables"
         }
-      },
-      assertions: reducedData => {
-        assert.deepEqual(reducedData, {
-          "0xa1": {
-            id: "0xa1",
-            category: "potent potables"
-          },
-          "0xa2": {
-            id: "0xa2",
-            category: "regular potables"
-          }
-        });
-      }
+      };
+
+      expect(reducer(marketsData, action)).toEqual({
+        "0xa1": {
+          id: "0xa1",
+          category: "potent potables"
+        },
+        "0xa2": {
+          id: "0xa2",
+          category: "regular potables"
+        }
+      });
     });
   });
   describe("UPDATE_MARKET_REP_BALANCE", () => {
@@ -152,7 +144,8 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       );
 
       const d = result["0xa2"];
-      assert.propertyVal(d, "repBalance", 0.3496805826822917);
+      expect(d).toHaveProperty("repBalance");
+      expect(d.repBalance).toBe(0.3496805826822917);
     });
   });
 
@@ -232,21 +225,9 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
         type: "UPDATE_MARKETS_DATA",
         data: { marketsData: marketsData2 }
       };
-      assert.deepEqual(
-        reducer(curMarketsData1, action),
-        expectedOutput,
-        `didn't add a new market to markets data`
-      );
-      assert.deepEqual(
-        reducer(curMarketsData2, action),
-        expectedOutput,
-        `didn't update a market in markets data`
-      );
-      assert.deepEqual(
-        reducer(undefined, action2),
-        expectedOutput,
-        `didn't get the correct output when marketsData is empty`
-      );
+      expect(reducer(curMarketsData1, action)).toEqual(expectedOutput);
+      expect(reducer(curMarketsData2, action)).toEqual(expectedOutput);
+      expect(reducer(undefined, action2)).toEqual(expectedOutput);
     });
   });
 });

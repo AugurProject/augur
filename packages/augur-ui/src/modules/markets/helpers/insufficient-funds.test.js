@@ -1,5 +1,6 @@
-import { assert } from "chai";
 import insufficientFunds from "modules/markets/helpers/insufficient-funds";
+
+jest.mock("utils/log-error");
 
 describe("src/modules/markets/helpers/insufficient-funds.js", () => {
   describe("when user has insufficient ETH", () => {
@@ -19,7 +20,7 @@ describe("src/modules/markets/helpers/insufficient-funds.js", () => {
         availableRep
       );
 
-      assert.equal(result, expected);
+      expect(result).toEqual(expected);
     });
   });
   describe("when user has insufficient REP", () => {
@@ -39,7 +40,7 @@ describe("src/modules/markets/helpers/insufficient-funds.js", () => {
         availableRep
       );
 
-      assert.equal(result, expected);
+      expect(result).toEqual(expected);
     });
   });
   describe("when user has insufficient ETH and REP", () => {
@@ -59,7 +60,7 @@ describe("src/modules/markets/helpers/insufficient-funds.js", () => {
         availableRep
       );
 
-      assert.equal(result, expected);
+      expect(result).toEqual(expected);
     });
   });
   describe("when user has sufficient funds", () => {
@@ -79,7 +80,7 @@ describe("src/modules/markets/helpers/insufficient-funds.js", () => {
         availableRep
       );
 
-      assert.equal(result, expected);
+      expect(result).toEqual(expected);
     });
   });
 });
