@@ -2,39 +2,36 @@
 
 const Augur = require("augur.js");
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { processInitialReporterRedeemedLog, processInitialReporterRedeemedLogRemoval } = require("../../../../src/blockchain/log-processors/initial-report-redeemed");
+const { processInitialReporterRedeemedLog, processInitialReporterRedeemedLogRemoval } = require("src/blockchain/log-processors/initial-report-redeemed");
 
 const getInitialReport = (db, params, callback) => {
   db("initial_reports").first(["redeemed"]).where("initial_reports.marketId", params.log.market).asCallback(callback);
 };
 
 describe("blockchain/log-processors/initial-report-redeemed", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        db.transaction((trx) => {
-          processInitialReporterRedeemedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.ifError(err);
-            getInitialReport(trx, t.params, (err, records) => {
-              t.assertions.onAdded(err, records);
-              processInitialReporterRedeemedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.ifError(err);
-                getInitialReport(trx, t.params, (err, records) => {
-                  t.assertions.onRemoved(err, records);
-                  db.destroy();
-                  done();
-                });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      db.transaction((trx) => {
+        processInitialReporterRedeemedLog(trx, t.params.augur, t.params.log, (err) => {
+          expect(err).toBeFalsy();
+          getInitialReport(trx, t.params, (err, records) => {
+            t.assertions.onAdded(err, records);
+            processInitialReporterRedeemedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+              expect(err).toBeFalsy();
+              getInitialReport(trx, t.params, (err, records) => {
+                t.assertions.onRemoved(err, records);
+                db.destroy();
+                done();
               });
             });
           });
         });
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "Initial report redeemed",
     params: {
       log: {
@@ -52,14 +49,14 @@ describe("blockchain/log-processors/initial-report-redeemed", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+        expect(err).toBeFalsy();
+        expect(records).toEqual({
           redeemed: 1,
         });
       },
       onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+        expect(err).toBeFalsy();
+        expect(records).toEqual({
           redeemed: 0,
         });
       },

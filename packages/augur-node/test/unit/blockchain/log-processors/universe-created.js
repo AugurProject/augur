@@ -1,35 +1,32 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { processUniverseCreatedLog, processUniverseCreatedLogRemoval } = require("../../../../src/blockchain/log-processors/universe-created");
+const { processUniverseCreatedLog, processUniverseCreatedLogRemoval } = require("src/blockchain/log-processors/universe-created");
 
 describe("blockchain/log-processors/universe-created", () => {
-  const test = (t) => {
+  const runTest = (t) => {
     const getUniverse = (db, params, callback) => db("universes").first().where({ universe: params.log.childUniverse }).asCallback(callback);
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        db.transaction((trx) => {
-          processUniverseCreatedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.ifError(err);
-            getUniverse(trx, t.params, (err, records) => {
-              t.assertions.onAdded(err, records);
-              processUniverseCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.ifError(err);
-                getUniverse(trx, t.params, (err, records) => {
-                  t.assertions.onRemoved(err, records);
-                  db.destroy();
-                  done();
-                });
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      db.transaction((trx) => {
+        processUniverseCreatedLog(trx, t.params.augur, t.params.log, (err) => {
+          expect(err).toBeFalsy();
+          getUniverse(trx, t.params, (err, records) => {
+            t.assertions.onAdded(err, records);
+            processUniverseCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+              expect(err).toBeFalsy();
+              getUniverse(trx, t.params, (err, records) => {
+                t.assertions.onRemoved(err, records);
+                db.destroy();
+                done();
               });
             });
           });
         });
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "New universe created",
     params: {
       log: {
@@ -50,16 +47,16 @@ describe("blockchain/log-processors/universe-created", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.ifError(err);
-        assert.equal(records.universe, "0x000000000000000000000000000000000000000c");
-        assert.equal(records.parentUniverse, "0x000000000000000000000000000000000000000b");
-        assert.equal(records.reputationToken, "0x0000000000000000000000000000000000000222");
-        assert.equal(records.forked, false);
-        assert.isNumber(records.payoutId);
+        expect(err).toBeFalsy();
+        expect(records.universe).toEqual("0x000000000000000000000000000000000000000c");
+        expect(records.parentUniverse).toEqual("0x000000000000000000000000000000000000000b");
+        expect(records.reputationToken).toEqual("0x0000000000000000000000000000000000000222");
+        expect(records.forked).toEqual(0);
+        expect(typeof records.payoutId).toBe("number");
       },
       onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.isUndefined(records);
+        expect(err).toBeFalsy();
+        expect(records).not.toBeDefined();
       },
     },
   });

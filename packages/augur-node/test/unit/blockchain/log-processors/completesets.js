@@ -1,8 +1,7 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSoldLogRemoval } = require("../../../../src/blockchain/log-processors/completesets");
+const { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSoldLogRemoval } = require("src/blockchain/log-processors/completesets");
 const Augur = require("augur.js");
 const augur = new Augur();
 
@@ -12,7 +11,7 @@ describe("blockchain/log-processors/completesets", () => {
     marketId: params.log.market,
   }).asCallback(callback);
 
-  it("CompleteSetsPurchased log and removal", (done) => {
+  test("CompleteSetsPurchased log and removal", async (done) => {
     const params = {
       log: {
         universe: "0x0000000000000000000000000000000000000001",
@@ -30,7 +29,7 @@ describe("blockchain/log-processors/completesets", () => {
         api: {
           Orders: {
             getLastOutcomePrice: (p, callback) => {
-              assert.strictEqual(p._market, "0x0000000000000000000000000000000000000002");
+              expect(p._market).toBe("0x0000000000000000000000000000000000000002");
               if (p._outcome === 0) {
                 callback(null, "7000");
               } else {
@@ -42,7 +41,7 @@ describe("blockchain/log-processors/completesets", () => {
         utils: augur.utils,
         trading: {
           calculateProfitLoss: (p) => {
-            assert.isObject(p);
+            expect(typeof p).toBe("object");
             return {
               position: "2",
               realized: "0",
@@ -52,8 +51,8 @@ describe("blockchain/log-processors/completesets", () => {
             };
           },
           getPositionInMarket: (p, callback) => {
-            assert.strictEqual(p.market, "0x0000000000000000000000000000000000000002");
-            assert.strictEqual(p.address, "0x0000000000000000000000000000000000000b0b");
+            expect(p.market).toBe("0x0000000000000000000000000000000000000002");
+            expect(p.address).toBe("0x0000000000000000000000000000000000000b0b");
             callback(null, ["2", "2", "2", "2", "2", "2", "2", "2"]);
           },
           normalizePrice: p => p.price,
@@ -61,39 +60,35 @@ describe("blockchain/log-processors/completesets", () => {
       },
     };
 
-    setupTestDb((err, db) => {
-      assert.ifError(err);
-      db.transaction((trx) => {
-        processCompleteSetsPurchasedOrSoldLog(trx, params.augur, params.log, (err) => {
-          assert.ifError(err);
-          getState(trx, params, (err, completeSetsRows) => {
-            assert.ifError(err);
-            assert.deepEqual(completeSetsRows, [{
-              account: "0x0000000000000000000000000000000000000b0b",
-              blockNumber: 437,
-              logIndex: 0,
-              eventName: "CompleteSetsPurchased",
-              marketId: "0x0000000000000000000000000000000000000002",
-              numCompleteSets: "2",
-              numPurchasedOrSold: "2",
-              tradeGroupId: 12,
-              transactionHash: "0x00000000000000000000000000000000deadbeef",
-              universe: "0x0000000000000000000000000000000000000001",
-            }]);
-            processCompleteSetsPurchasedOrSoldLogRemoval(trx, params.augur, params.log, (err) => {
-              assert.ifError(err);
-              getState(trx, params, (err, completeSetsRows) => {
-                assert.ifError(err);
-                assert.deepEqual(completeSetsRows, []);
-                db.destroy();
-                done();
-              });
+    const db = await setupTestDb();
+    db.transaction((trx) => {
+      processCompleteSetsPurchasedOrSoldLog(trx, params.augur, params.log, (err) => {
+        expect(err).toBeFalsy();
+        getState(trx, params, (err, completeSetsRows) => {
+          expect(err).toBeFalsy();
+          expect(completeSetsRows).toEqual([{
+            account: "0x0000000000000000000000000000000000000b0b",
+            blockNumber: 437,
+            logIndex: 0,
+            eventName: "CompleteSetsPurchased",
+            marketId: "0x0000000000000000000000000000000000000002",
+            numCompleteSets: "2",
+            numPurchasedOrSold: "2",
+            tradeGroupId: 12,
+            transactionHash: "0x00000000000000000000000000000000deadbeef",
+            universe: "0x0000000000000000000000000000000000000001",
+          }]);
+          processCompleteSetsPurchasedOrSoldLogRemoval(trx, params.augur, params.log, (err) => {
+            expect(err).toBeFalsy();
+            getState(trx, params, (err, completeSetsRows) => {
+              expect(err).toBeFalsy();
+              expect(completeSetsRows).toEqual([]);
+              db.destroy();
+              done();
             });
           });
         });
       });
     });
-
-
-  }).timeout(20000);
+  });
 });

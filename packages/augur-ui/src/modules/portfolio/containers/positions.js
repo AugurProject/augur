@@ -7,7 +7,7 @@ import getLoginAccountPositions from "modules/positions/selectors/login-account-
 import { selectOpenOrdersMarkets } from "modules/orders/selectors/open-orders";
 import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import { triggerTransactionsExport } from "modules/transactions/actions/trigger-transactions-export";
-import { constants } from "services/augurjs";
+import { constants } from "services/constants";
 import { orderBy } from "lodash";
 import { selectMarket } from "modules/markets/selectors/market";
 import { updateModal } from "modules/modal/actions/update-modal";

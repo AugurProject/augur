@@ -1,9 +1,41 @@
 variables:
     SOLC_VERSION: v0.4.24
     SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
+    CORE_IMAGE_BUILD: augurproject/augur-core:monorepobuild.$(Build.BuildID)
+    CORE_IMAGE_LATEST: augurproject/augur-core:latest
+
+
+trigger:
+  batch: false
+  branches:
+    include:
+    - master
+    - azure-pipelines
+    - monorepo-integration
 
 jobs:
+  - job: Build_Core_Docker
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.6.5'
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '9.x'
+      - script: |
+          set -euxo pipefail
+          which node
+          node --version
+          echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+          docker pull $CORE_IMAGE_LATEST;
+          yarn workspace augur-core docker:build;
+          docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
+          docker push $CORE_IMAGE_BUILD
+
   - job: Test_Augur_Core
+    dependsOn: Build_Core_Docker
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -40,9 +72,11 @@ jobs:
           versionSpec: '3.6.5'
       - task: NodeTool@0
         inputs:
-          versionSpec: '9.x'
+          versionSpec: '10.x'
       - script: |
           set -euxo pipefail
+          which node
+          node --version
           if [[ "$TESTS" == "integration:geth" ]]; then
             yarn workspace augur-core docker:run:test:integration:geth;
           elif [[ "$TESTS" == "integration:parity" ]]; then
@@ -60,7 +94,8 @@ jobs:
             yarn workspace augur-core docker:run:test:unit -- $TESTS;
           fi
 
-  - job: Test_Augur_Node
+  - job: Test_Augur_UI_and_Node
+    displayName: 'Test augur UI and augur-node'
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -69,34 +104,24 @@ jobs:
           node_version: 8.x
         node_9_x:
           node_version: 9.x
+        node_10_x:
+          node_version: 10.x
     steps:
       - script: |
           set -euxo pipefail
+          which node
+          node --version
           yarn workspace augur-node add sqlite3 --force --build-from-source
           yarn install --ignore-scripts --frozen-lockfile
-          yarn workspace augur-node build
-          yarn workspace augur-node test
-        displayName: 'test augur node'
-
-  - job: Test_Augur_UI
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    strategy:
-      matrix:
-        node_8_x:
-          node_version: 8.x
-        node_9_x:
-          node_version: 9.x
-    steps:
+        displayName: 'Install Dependencies'
       - script: |
-          set -euxo pipefail
-          yarn install --ignore-scripts --frozen-lockfile
-          yarn test
-        displayName: 'test augur UI'
+          yarn test --forceExit
+        displayName: 'Run Tests'
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: 'junit.xml'
+        condition: always()
 
   - job: Test_Augur_js
     pool:
@@ -107,51 +132,25 @@ jobs:
           node_version: 8.x
         node_9_x:
           node_version: 9.x
+        node_10_x:
+          node_version: 10.x
     steps:
       - script: |
           set -euxo pipefail
+          which node
+          node --version
           yarn install --ignore-scripts --frozen-lockfile
           npx lerna run test --stream --scope augur.js
         displayName: 'test augur.js'
 
-  - job: Build
+  - job: Docker_monorepo
     pool:
       vmImage: 'Ubuntu 16.04'
-    strategy:
-      matrix:
-        node_8_x:
-          node_version: 8.x
-        node_9_x:
-          node_version: 9.x
     steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.6.5'
-
     - script: |
         set -euxo pipefail
-        yarn install --ignore-scripts --frozen-lockfile
-        git config --global user.email "team@augur.net"
-        git config --global user.name "Augur Developers"
-        python -m pip install --upgrade pip pip-tools setuptools wheel
-        pip install virtualenv
-      displayName: 'setup'
-
-    - script: |
-        set -euxo pipefail
-        PATH=$(Agent.BuildDirectory)/bin:$PATH
-        mkdir $(Agent.BuildDirectory)/bin
-        echo "$(SOLC_MD5) *$(Agent.BuildDirectory)/bin/solc" > solc.md5
-        curl -vL -o $(Agent.BuildDirectory)/bin/solc https://github.com/ethereum/solidity/releases/download/$(SOLC_VERSION)/solc-static-linux
-        md5sum -c solc.md5
-        ls -l $(Agent.BuildDirectory)
-        ls -l $(Agent.BuildDirectory)/bin
-        chmod a+x $(Agent.BuildDirectory)/bin/solc
-      displayName: 'contracts'
-
-    - script: |
-        set -euxo pipefail
-        yarn workspace augur-core run build
-        yarn workspace augur-node run build
-        yarn workspace augur-ui run build
-      displayName: 'build and test'
+        echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+        yarn workspace augur-node run docker:release -- monorepo
+        yarn workspace augur-ui run docker:release -- monorepo
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      displayName: 'build and push docker image'

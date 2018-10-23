@@ -1,7 +1,6 @@
 "use strict";
 
 const Augur = require("augur.js");
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const {BigNumber} = require("bignumber.js");
 const {
@@ -9,9 +8,9 @@ const {
   processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval,
   processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval,
 }
-  = require("../../../../src/blockchain/log-processors/crowdsourcer");
-const {getMarketsWithReportingState} = require("../../../../src/server/getters/database");
-const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../src/blockchain/process-block");
+  = require("src/blockchain/log-processors/crowdsourcer");
+const {getMarketsWithReportingState} = require("src/server/getters/database");
+const {setOverrideTimestamp, removeOverrideTimestamp} = require("src/blockchain/process-block");
 
 
 const getCrowdsourcer = (db, params, callback) => {
@@ -45,35 +44,33 @@ const getCrowdsourcerAndMarket = (db, params, callback) => {
 
 
 describe("blockchain/log-processors/crowdsourcers", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        setOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
-          assert.ifError(err);
-          db.transaction((trx) => {
-            function verify(processor, getter, checker, callback) {
-              processor(trx, t.params.augur, t.params.log, (err) => {
-                assert.ifError(err);
-                getter(trx, t.params, (err, records) => {
-                  assert.ifError(err);
-                  checker(err, records);
-                  callback();
-                });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      setOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
+        expect(err).toBeFalsy();
+        db.transaction((trx) => {
+          function verify (processor, getter, checker, callback) {
+            processor(trx, t.params.augur, t.params.log, (err) => {
+              expect(err).toBeFalsy();
+              getter(trx, t.params, (err, records) => {
+                expect(err).toBeFalsy();
+                checker(err, records);
+                callback();
               });
-            }
+            });
+          }
 
-            verify(processDisputeCrowdsourcerCreatedLog, getCrowdsourcer, t.assertions.onCreated, () => {
-              verify(processDisputeCrowdsourcerContributionLog, getDisputesFromCrowdsourcer, t.assertions.onContributed, () => {
-                verify(processDisputeCrowdsourcerCompletedLog, getCrowdsourcerAndMarket, t.assertions.onCompleted, () => {
-                  verify(processDisputeCrowdsourcerCompletedLogRemoval, getCrowdsourcerAndMarket, t.assertions.onCompletedRemoved, () => {
-                    verify(processDisputeCrowdsourcerContributionLogRemoval, getDisputesFromCrowdsourcer, t.assertions.onContributedRemoved, () => {
-                      verify(processDisputeCrowdsourcerCreatedLogRemoval, getCrowdsourcer, t.assertions.onCreatedRemoved, () => {
-                        removeOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
-                          assert.isNotNull(err);
-                          db.destroy();
-                          done();
-                        });
+          verify(processDisputeCrowdsourcerCreatedLog, getCrowdsourcer, t.assertions.onCreated, () => {
+            verify(processDisputeCrowdsourcerContributionLog, getDisputesFromCrowdsourcer, t.assertions.onContributed, () => {
+              verify(processDisputeCrowdsourcerCompletedLog, getCrowdsourcerAndMarket, t.assertions.onCompleted, () => {
+                verify(processDisputeCrowdsourcerCompletedLogRemoval, getCrowdsourcerAndMarket, t.assertions.onCompletedRemoved, () => {
+                  verify(processDisputeCrowdsourcerContributionLogRemoval, getDisputesFromCrowdsourcer, t.assertions.onContributedRemoved, () => {
+                    verify(processDisputeCrowdsourcerCreatedLogRemoval, getCrowdsourcer, t.assertions.onCreatedRemoved, () => {
+                      removeOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
+                        expect(err).not.toBeNull();
+                        db.destroy();
+                        done();
                       });
                     });
                   });
@@ -83,9 +80,9 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           });
         });
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "report submitted",
     params: {
       log: {
@@ -106,13 +103,13 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         api: {
           Universe: {
             getFeeWindowByTimestamp: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
+              expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
               const feeWindowByTimestamp = {
                 1509085473: "0x2000000000000000000000000000000000000000",
                 1509690273: "0x2100000000000000000000000000000000000000",
               };
               const feeWindow = feeWindowByTimestamp[p._timestamp];
-              assert.isString(feeWindow);
+              expect(typeof feeWindow).toBe("string");
               callback(null, feeWindow);
             },
           },
@@ -122,8 +119,8 @@ describe("blockchain/log-processors/crowdsourcers", () => {
     },
     assertions: {
       onCreated: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+        expect(err).toBeFalsy();
+        expect(records).toEqual({
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
           feeWindow: "0x2000000000000000000000000000000000000000",
@@ -133,12 +130,12 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         });
       },
       onCreatedRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.isUndefined(records);
+        expect(err).toBeFalsy();
+        expect(records).not.toBeDefined();
       },
       onContributed: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, [{
+        expect(err).toBeFalsy();
+        expect(records).toEqual([{
           blockNumber: 1400100,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
           logIndex: 0,
@@ -149,12 +146,12 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         }]);
       },
       onContributedRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, []);
+        expect(err).toBeFalsy();
+        expect(records).toEqual([]);
       },
       onCompleted: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records.crowdsourcer, {
+        expect(err).toBeFalsy();
+        expect(records.crowdsourcer).toEqual({
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
           feeWindow: "0x2000000000000000000000000000000000000000",
@@ -163,7 +160,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           winning: null,
         });
 
-        assert.deepEqual(records.market, {
+        expect(records.market).toEqual({
           category: "TEST CATEGORY",
           consensusPayoutId: null,
           creationBlockNumber: 1500001,
@@ -212,8 +209,8 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         });
       },
       onCompletedRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records.crowdsourcer, {
+        expect(err).toBeFalsy();
+        expect(records.crowdsourcer).toEqual({
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
           feeWindow: "0x2000000000000000000000000000000000000000",
@@ -222,7 +219,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           winning: null,
         });
 
-        assert.deepEqual(records.market, {
+        expect(records.market).toEqual({
           marketId: "0x0000000000000000000000000000000000000211",
           universe: "0x000000000000000000000000000000000000000b",
           marketType: "yesNo",

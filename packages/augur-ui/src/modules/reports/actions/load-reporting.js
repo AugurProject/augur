@@ -1,4 +1,4 @@
-import { augur, constants } from "services/augurjs";
+import { augur} from "services/augurjs";
 import logError from "utils/log-error";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 
@@ -8,6 +8,7 @@ import {
   updateOpenMarkets,
   updateResolvedMarkets
 } from "modules/reports/actions/update-markets-in-reporting-state";
+import { constants } from "src/services/constants";
 
 export const loadReporting = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState();

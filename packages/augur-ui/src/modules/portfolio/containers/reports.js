@@ -1,4 +1,4 @@
-import { constants } from "services/augurjs";
+import { constants } from "services/constants";
 import { connect } from "react-redux";
 import { selectCurrentTimestamp } from "src/select-state";
 import { each, orderBy } from "lodash";

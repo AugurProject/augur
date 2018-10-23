@@ -14,12 +14,6 @@
     "outDir": "build",
     "rootDir": "src",
     "baseUrl": "./",
-    "paths": {
-      "*":  [
-        "*",
-        "../augur-core/typings/*"
-      ]
-    },
     "typeRoots": [
       "../../node_modules/@types",
       "../augur-core/typings",
