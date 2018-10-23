@@ -14,6 +14,7 @@ describe("events/actions/listen-to-updates", () => {
   const middleware = [thunk];
   const mockStore = configureMockStore(middleware);
 
+
   describe("setup shape tests", () => {
     let stopBlockListenersSpy;
     let stopAugurNodeEventListenersSpy;
