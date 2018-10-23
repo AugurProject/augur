@@ -1,11 +1,5 @@
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
-import sinon from "sinon";
-
-import {
-  loadMarketsInfo,
-  __RewireAPI__
-} from "modules/markets/actions/load-markets-info";
 
 import {
   MARKET_INFO_LOADING,
@@ -16,38 +10,33 @@ import {
   REMOVE_MARKET_LOADING
 } from "modules/markets/actions/update-market-loading";
 import { UPDATE_MARKETS_DATA } from "modules/markets/actions/update-markets-data";
+import { augur } from "services/augurjs";
+
+jest.mock("modules/markets/actions/market-trading-history-management");
+jest.mock("services/augurjs");
 
 describe("modules/markets/actions/load-markets-info.js", () => {
   const middleware = [thunk];
   const mockStore = configureMockStore(middleware);
-
   const marketIds = ["0xMarket1", "0xMarket2"];
+  const store = mockStore({});
+  const {
+    loadMarketsInfo
+  } = require("modules/markets/actions/load-markets-info");
 
-  const test = t =>
-    test(t.description, done => {
-      const store = mockStore();
+  augur.markets = jest.fn(() => {});
+  augur.markets.getMarketsInfo = jest.fn(() => {});
+  describe("loadMarketsInfo successful", () => {
+    beforeEach(() => {
+      store.clearActions();
+      augur.markets.getMarketsInfo.mockImplementation((value, cb) =>
+        cb(null, [
+          { id: "0xMarket1", test: "value" },
+          { id: "0xMarket2", test: "value" }
+        ])
+      );
 
-      t.assertions(store, done);
-    });
-
-  describe("loadMarketsInfo", () => {
-    __RewireAPI__.__Rewire__("updateMarketLoading", marketLoading => ({
-      type: UPDATE_MARKET_LOADING,
-      data: {
-        ...marketLoading
-      }
-    }));
-
-    test({
-      description: `should dispatch the expected actions + call 'getMarketsInfo'`,
-      assertions: (store, done) => {
-        const stubbedAugur = {
-          markets: {
-            getMarketsInfo: sinon.stub()
-          }
-        };
-        __RewireAPI__.__Rewire__("augur", stubbedAugur);
-
+      test(`should dispatch the expected actions + call 'getMarketsInfo'`, () => {
         store.dispatch(loadMarketsInfo(marketIds));
 
         const actual = store.getActions();
@@ -66,187 +55,12 @@ describe("modules/markets/actions/load-markets-info.js", () => {
             }
           }
         ];
+        expect(augur.markets.getMarketsInfo).toHaveBeenCalledTimes(1);
+        expect(actual).toEqual(expected);
+      });
 
-        assert.deepEqual(
-          actual,
-          expected,
-          `didn't dispatch the expected actions`
-        );
-        assert.isTrue(
-          stubbedAugur.markets.getMarketsInfo.calledOnce,
-          `didn't call 'getMarketsInfo' once as expected`
-        );
-
-        __RewireAPI__.__ResetDependency__("augur");
-
-        done();
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions + call 'loadingError' due to error returned from 'getMarketsInfo'`,
-      assertions: (store, done) => {
-        const stubbedAugur = {
-          markets: {
-            getMarketsInfo: (marketIds, cb) => cb(true)
-          }
-        };
-        __RewireAPI__.__Rewire__("augur", stubbedAugur);
-
-        const stubbedLoadingError = sinon.stub();
-        __RewireAPI__.__Rewire__("loadingError", stubbedLoadingError);
-
-        store.dispatch(loadMarketsInfo(marketIds));
-
-        const actual = store.getActions();
-
-        const expected = [
-          {
-            type: "UPDATE_MARKET_LOADING",
-            data: {
-              "0xMarket1": "MARKET_INFO_LOADING"
-            }
-          },
-          {
-            type: "UPDATE_MARKET_LOADING",
-            data: {
-              "0xMarket2": "MARKET_INFO_LOADING"
-            }
-          }
-        ];
-
-        assert.deepEqual(
-          actual,
-          expected,
-          `didn't dispatch the expected actions`
-        );
-        assert.isTrue(
-          stubbedLoadingError.calledOnce,
-          `didn't call 'loadingError' once as expected`
-        );
-
-        __RewireAPI__.__ResetDependency__("augur");
-        __RewireAPI__.__ResetDependency__("loadingError");
-
-        done();
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions + call 'loadingError' due to null return value from 'getMarketsInfo'`,
-      assertions: (store, done) => {
-        const stubbedAugur = {
-          markets: {
-            getMarketsInfo: (marketIds, cb) => cb(null, [])
-          }
-        };
-        __RewireAPI__.__Rewire__("augur", stubbedAugur);
-
-        const stubbedLoadingError = sinon.stub();
-        __RewireAPI__.__Rewire__("loadingError", stubbedLoadingError);
-
-        store.dispatch(loadMarketsInfo(marketIds));
-
-        const actual = store.getActions();
-
-        const expected = [
-          {
-            type: "UPDATE_MARKET_LOADING",
-            data: {
-              "0xMarket1": "MARKET_INFO_LOADING"
-            }
-          },
-          {
-            type: "UPDATE_MARKET_LOADING",
-            data: {
-              "0xMarket2": "MARKET_INFO_LOADING"
-            }
-          }
-        ];
-
-        assert.deepEqual(
-          actual,
-          expected,
-          `didn't dispatch the expected actions`
-        );
-        assert.isTrue(
-          stubbedLoadingError.calledOnce,
-          `didn't call 'loadingError' once as expected`
-        );
-
-        __RewireAPI__.__ResetDependency__("augur");
-        __RewireAPI__.__ResetDependency__("loadingError");
-
-        done();
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions + call 'loadingError' due to malformed return value from 'getMarketsInfo'`,
-      assertions: (store, done) => {
-        const stubbedAugur = {
-          markets: {
-            getMarketsInfo: (marketIds, cb) => cb(null, [{ mal: "formed" }])
-          }
-        };
-        __RewireAPI__.__Rewire__("augur", stubbedAugur);
-
-        const stubbedLoadingError = sinon.stub();
-        __RewireAPI__.__Rewire__("loadingError", stubbedLoadingError);
-
-        store.dispatch(loadMarketsInfo(marketIds));
-
-        const actual = store.getActions();
-
-        const expected = [
-          {
-            type: "UPDATE_MARKET_LOADING",
-            data: {
-              "0xMarket1": "MARKET_INFO_LOADING"
-            }
-          },
-          {
-            type: "UPDATE_MARKET_LOADING",
-            data: {
-              "0xMarket2": "MARKET_INFO_LOADING"
-            }
-          }
-        ];
-
-        assert.deepEqual(
-          actual,
-          expected,
-          `didn't dispatch the expected actions`
-        );
-        assert.isTrue(
-          stubbedLoadingError.calledOnce,
-          `didn't call 'loadingError' once as expected`
-        );
-
-        __RewireAPI__.__ResetDependency__("augur");
-        __RewireAPI__.__ResetDependency__("loadingError");
-
-        done();
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions`,
-      assertions: (store, done) => {
-        const stubbedAugur = {
-          markets: {
-            getMarketsInfo: (marketIds, cb) =>
-              cb(
-                false,
-                marketIds.marketIds.reduce(
-                  (p, marketId) => [...p, { id: marketId, test: "value" }],
-                  []
-                )
-              )
-          }
-        };
-        __RewireAPI__.__Rewire__("augur", stubbedAugur);
-
+      test(`should dispatch the expected actions`, () => {
+        const store = mockStore({});
         store.dispatch(loadMarketsInfo(marketIds));
 
         const actual = store.getActions();
@@ -292,73 +106,123 @@ describe("modules/markets/actions/load-markets-info.js", () => {
             }
           }
         ];
-
-        assert.deepEqual(
-          actual,
-          expected,
-          `didn't dispatch the expected actions`
-        );
-
-        __RewireAPI__.__ResetDependency__("augur");
-        __RewireAPI__.__ResetDependency__("loadingError");
-
-        done();
-      }
+        expect(augur.markets.getMarketsInfo).toHaveBeenCalledTimes(1);
+        expect(actual).toEqual(expected);
+      });
     });
   });
 
-  describe("loadingError", () => {
-    __RewireAPI__.__Rewire__("removeMarketLoading", marketId => ({
-      type: REMOVE_MARKET_LOADING,
-      data: {
-        marketId
-      }
-    }));
+  describe("loadmarketsInfo with errors", () => {
+    test(`should dispatch the expected actions + call 'loadingError' due to null return value from 'getMarketsInfo'`, () => {
+      augur.markets.getMarketsInfo.mockImplementationOnce((value, cb) => {
+        cb("error", []);
+      });
 
-    afterAll(() => {
-      __RewireAPI__.__ResetDependency__("removeMarketLoading");
-    });
+      store.dispatch(loadMarketsInfo(marketIds));
 
-    const loadingError = __RewireAPI__.__get__("loadingError");
+      const actual = store.getActions();
 
-    test({
-      description:
-        "should remove the market from the loading state + call the callback with error parameter",
-      assertions: (store, done) => {
-        let callbackReturnValue;
-
-        const callback = err => {
-          callbackReturnValue = err;
-        };
-
-        loadingError(store.dispatch, callback, "ERROR", marketIds);
-
-        const actual = store.getActions();
-
-        const expected = [
-          {
-            type: "REMOVE_MARKET_LOADING",
-            data: {
-              marketId: "0xMarket1"
-            }
-          },
-          {
-            type: "REMOVE_MARKET_LOADING",
-            data: {
-              marketId: "0xMarket2"
+      const expected = [
+        {
+          type: "UPDATE_MARKET_LOADING",
+          data: {
+            marketLoadingState: {
+              "0xMarket1": MARKET_INFO_LOADING
             }
           }
-        ];
+        },
+        {
+          type: "UPDATE_MARKET_LOADING",
+          data: {
+            marketLoadingState: {
+              "0xMarket2": MARKET_INFO_LOADING
+            }
+          }
+        },
+        {
+          type: "REMOVE_MARKET_LOADING",
+          data: {
+            marketLoadingState: "0xMarket1"
+          }
+        },
+        {
+          type: "REMOVE_MARKET_LOADING",
+          data: { marketLoadingState: "0xMarket2" }
+        }
+      ];
+      expect(augur.markets.getMarketsInfo).toHaveBeenCalledTimes(1);
+      expect(actual).toEqual(expected);
+    });
+  });
 
-        assert.deepEqual(actual, expected, `didn't return the expected values`);
-        assert.equal(
-          "ERROR",
-          callbackReturnValue,
-          `didn't return the expected value`
-        );
+  describe("loadmarketsInfo with malformed data", () => {
+    test(`should dispatch the expected actions + call 'loadingError' due to malformed return value from 'getMarketsInfo'`, () => {
+      augur.markets.getMarketsInfo.mockImplementationOnce((value, cb) => {
+        cb(null, {});
+      });
+      store.dispatch(loadMarketsInfo(marketIds));
 
-        done();
-      }
+      const actual = store.getActions();
+
+      const expected = [
+        {
+          type: "UPDATE_MARKET_LOADING",
+          data: {
+            marketLoadingState: {
+              "0xMarket1": "MARKET_INFO_LOADING"
+            }
+          }
+        },
+        {
+          type: "UPDATE_MARKET_LOADING",
+          data: {
+            marketLoadingState: {
+              "0xMarket2": "MARKET_INFO_LOADING"
+            }
+          }
+        },
+        {
+          type: "REMOVE_MARKET_LOADING",
+          data: {
+            marketLoadingState: "0xMarket1"
+          }
+        },
+        {
+          type: "REMOVE_MARKET_LOADING",
+          data: {
+            marketLoadingState: "0xMarket2"
+          }
+        },
+        {
+          type: "UPDATE_MARKET_LOADING",
+          data: {
+            marketLoadingState: {
+              "0xMarket1": "MARKET_INFO_LOADING"
+            }
+          }
+        },
+        {
+          type: "UPDATE_MARKET_LOADING",
+          data: {
+            marketLoadingState: {
+              "0xMarket2": "MARKET_INFO_LOADING"
+            }
+          }
+        },
+        {
+          type: "REMOVE_MARKET_LOADING",
+          data: {
+            marketLoadingState: "0xMarket1"
+          }
+        },
+        {
+          type: "REMOVE_MARKET_LOADING",
+          data: { marketLoadingState: "0xMarket2" }
+        }
+      ];
+
+      expect(augur.markets.getMarketsInfo).toHaveBeenCalledTimes(1);
+      expect(actual).toEqual(expected);
     });
   });
 });
