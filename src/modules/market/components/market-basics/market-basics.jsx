@@ -125,7 +125,7 @@ const MarketBasics = ({
         )}
 
         {marketType === CATEGORICAL && (
-          <MarketOutcomesCategorical outcomes={p.outcomes} />
+          <MarketOutcomesCategorical outcomes={p.outcomes} isMobileSmall={p.isMobileSmall}/>
         )}
       </div>
     </article>
@@ -151,7 +151,8 @@ MarketBasics.propTypes = {
   cardStyle: PropTypes.string,
   hideReportEndingIndicator: PropTypes.bool,
   showDisputeRound: PropTypes.bool,
-  tags: PropTypes.arrayOf(PropTypes.string)
+  tags: PropTypes.arrayOf(PropTypes.string),
+  isMobileSmall: PropTypes.bool,
 };
 
 MarketBasics.defaultProps = {
