@@ -1,4 +1,4 @@
-import { augur, constants } from "services/augurjs";
+import { augur} from "services/augurjs";
 import logError from "utils/log-error";
 import { parallel } from "async";
 import {
@@ -17,6 +17,7 @@ import {
   updateAppStatus,
   HAS_LOADED_MARKETS
 } from "modules/app/actions/update-app-status";
+import { constants } from "src/services/constants";
 
 const { REPORTING_STATE } = constants;
 
