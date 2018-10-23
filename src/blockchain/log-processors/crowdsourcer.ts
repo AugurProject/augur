@@ -4,7 +4,7 @@ import { BigNumber } from "bignumber.js";
 import { FormattedEventLog, Address, FeeWindowState } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
-import { rollbackMarketState, insertPayout, updateDisputeRound, updateMarketFeeWindowPromise, updateMarketStatePromise } from "./database";
+import { rollbackMarketState, insertPayout, updateDisputeRound, updateMarketFeeWindow, updateMarketState } from "./database";
 import { groupByAndSum } from "../../server/getters/database";
 import { QueryBuilder } from "knex";
 import { SubscriptionEventNames } from "../../constants";
@@ -115,9 +115,9 @@ export async function processDisputeCrowdsourcerContributionLogRemoval(db: Knex,
 
 export async function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, log: FormattedEventLog) {
   await db("crowdsourcers").update({ completed: 1 }).where({ crowdsourcerId: log.disputeCrowdsourcer });
-  await updateMarketStatePromise(db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW);
+  await updateMarketState(db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW);
   await updateDisputeRound(db, log.market);
-  await updateMarketFeeWindowPromise(db, augur, log.universe, log.market, true);
+  await updateMarketFeeWindow(db, augur, log.universe, log.market, true);
   await updateIncompleteCrowdsourcers(db, log.market);
   await updateTentativeWinningPayout(db, log.market);
   augurEmitter.emit(SubscriptionEventNames.DisputeCrowdsourcerCompleted, Object.assign({},
@@ -129,7 +129,7 @@ export async function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, au
   await rollbackCrowdsourcerCompletion(db, log.disputeCrowdsourcer, log.market);
   await rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW);
   await updateDisputeRound(db, log.market);
-  await updateMarketFeeWindowPromise(db, augur, log.universe, log.market, false);
+  await updateMarketFeeWindow(db, augur, log.universe, log.market, false);
   await rollbackIncompleteCrowdsourcers(db, log.market);
   await updateTentativeWinningPayout(db, log.market);
   augurEmitter.emit(SubscriptionEventNames.DisputeCrowdsourcerCompleted, Object.assign({},

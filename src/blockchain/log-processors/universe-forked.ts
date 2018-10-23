@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, Address, ReportingState, MarketsContractAddressRow } from "../../types";
-import { updateMarketStatePromise } from "./database";
+import { updateMarketState } from "./database";
 import { augurEmitter } from "../../events";
 import { getMarketsWithReportingState } from "../../server/getters/database";
 import { each } from "bluebird";
@@ -20,7 +20,7 @@ export async function processUniverseForkedLog(db: Knex, augur: Augur, log: Form
   const forkingMarket: Address|undefined = await augur.api.Universe.getForkingMarket({ tx: { to: log.universe } });
   if (forkingMarket == null) throw new Error(`Could not retrieve forking market for universe ${log.universe}`);
   await db("markets").update("forking", 1).where("marketId", forkingMarket);
-  await updateMarketStatePromise(db, forkingMarket, log.blockNumber, ReportingState.FORKING);
+  await updateMarketState(db, forkingMarket, log.blockNumber, ReportingState.FORKING);
   augurEmitter.emit(SubscriptionEventNames.MarketState, {
     universe: log.universe,
     marketId: forkingMarket,
@@ -32,7 +32,7 @@ export async function processUniverseForkedLog(db: Knex, augur: Augur, log: Form
     .where({ universe: log.universe })
     .whereIn("reportingState", [ReportingState.AWAITING_FINALIZATION, ReportingState.CROWDSOURCING_DISPUTE, ReportingState.AWAITING_NEXT_WINDOW]);
   each(marketsToRevert, async (marketIdRow: MarketsContractAddressRow) => {
-    await updateMarketStatePromise(db, marketIdRow.marketId, log.blockNumber, ReportingState.AWAITING_FORK_MIGRATION);
+    await updateMarketState(db, marketIdRow.marketId, log.blockNumber, ReportingState.AWAITING_FORK_MIGRATION);
     augurEmitter.emit(SubscriptionEventNames.MarketState, {
       universe: log.universe,
       marketId: marketIdRow.marketId,

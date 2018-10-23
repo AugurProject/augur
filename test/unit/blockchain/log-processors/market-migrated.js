@@ -2,12 +2,13 @@ const setupTestDb = require("../../test.database");
 const { processMarketMigratedLog, processMarketMigratedLogRemoval } = require("src/blockchain/log-processors/market-migrated");
 const { getMarketsWithReportingState } = require("src/server/getters/database");
 const ReportingState = require("src/types").ReportingState;
-const updateMarketStatePromise = require("src/blockchain/log-processors/database").updateMarketStatePromise;
+const updateMarketState = require("src/blockchain/log-processors/database").updateMarketState;
 
 function getMarket(db, log) {
   return getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "markets.needsMigration", "markets.needsDisavowal", "feeWindow", "reportingState"])
     .from("markets").where({ "markets.marketId": log.market });
 }
+
 const augur = {
   constants: {
     CONTRACT_INTERVAL: {
@@ -43,7 +44,7 @@ describe("blockchain/log-processors/market-migrated", () => {
         needsMigration: 1,
         needsDisavowal: 1,
       }).where("marketId", log.market);
-      await updateMarketStatePromise(trx, log.market, 999, ReportingState.AWAITING_FORK_MIGRATION);
+      await updateMarketState(trx, log.market, 999, ReportingState.AWAITING_FORK_MIGRATION);
 
       await processMarketMigratedLog(trx, augur, log);
       await expect(getMarket(trx, log)).resolves.toEqual([

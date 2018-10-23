@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, CategoriesRow, CategoryRow, ReportingState, Address } from "../../types";
-import { rollbackMarketState, updateMarketFeeWindowPromise, updateMarketStatePromise } from "./database";
+import { rollbackMarketState, updateMarketFeeWindow, updateMarketState } from "./database";
 import { getMarketsWithReportingState } from "../../server/getters/database";
 
 async function advanceToAwaitingNextWindow(db: Knex, marketId: Address, blockNumber: number) {
@@ -10,13 +10,13 @@ async function advanceToAwaitingNextWindow(db: Knex, marketId: Address, blockNum
   if (reportingStateRow.reportingState === ReportingState.AWAITING_FORK_MIGRATION) {
     const initialReportMade = reportingStateRow.feeWindow !== "0x0000000000000000000000000000000000000000";
     const reportingState = initialReportMade ? ReportingState.AWAITING_NEXT_WINDOW : ReportingState.OPEN_REPORTING;
-    return updateMarketStatePromise(db, marketId, blockNumber, reportingState);
+    return updateMarketState(db, marketId, blockNumber, reportingState);
   }
 }
 
 export async function processMarketMigratedLog(db: Knex, augur: Augur, log: FormattedEventLog) {
   await advanceToAwaitingNextWindow(db, log.market, log.blockNumber);
-  await updateMarketFeeWindowPromise(db, augur, log.newUniverse, log.market, true);
+  await updateMarketFeeWindow(db, augur, log.newUniverse, log.market, true);
   await db.update({
     universe: log.newUniverse,
     needsMigration: db.raw("needsMigration - 1"),

@@ -16,13 +16,7 @@ function queryCurrentMarketStateId(db: Knex, marketId: Address) {
   return db("market_state").max("marketStateId as latestMarketStateId").first().where({ marketId });
 }
 
-function setMarketStateToLatest(db: Knex, marketId: Address, callback: AsyncCallback) {
-  db("markets").update({
-    marketStateId: queryCurrentMarketStateId(db, marketId),
-  }).where({ marketId }).asCallback(callback);
-}
-
-async function setMarketStateToLatestPromise(db: Knex, marketId: Address) {
+async function setMarketStateToLatest(db: Knex, marketId: Address) {
   return db("markets").update({
     marketStateId: queryCurrentMarketStateId(db, marketId),
   }).where({ marketId });
@@ -37,34 +31,12 @@ async function getFeeWindow(db: Knex, augur: Augur, universe: Address, next: boo
   return augur.api.Universe.getFeeWindowByTimestamp({ _timestamp: feeWindowAtTime, tx: { to: universe } });
 }
 
-export function updateMarketFeeWindow(db: Knex, augur: Augur, universe: Address, marketId: Address, next: boolean, callback: AsyncCallback) {
-  getFeeWindow(db, augur, universe, next)
-    .then(async (feeWindow) => {
-      await db("markets").update({ feeWindow }).where({ marketId });
-      callback(null);
-    })
-    .catch(callback);
-}
-
-export async function updateMarketFeeWindowPromise(db: Knex, augur: Augur, universe: Address, marketId: Address, next: boolean) {
+export async function updateMarketFeeWindow(db: Knex, augur: Augur, universe: Address, marketId: Address, next: boolean) {
   const feeWindow = await getFeeWindow(db, augur, universe, next);
   return db("markets").update({ feeWindow }).where({ marketId });
 }
 
-export function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState, callback: AsyncCallback) {
-  const marketStateDataToInsert = { marketId, reportingState, blockNumber };
-  let query = db.insert(marketStateDataToInsert).into("market_state");
-  if (db.client.config.client !== "sqlite3") {
-    query = query.returning("marketStateId");
-  }
-  query.asCallback((err: Error|null, marketStateId?: Array<number>): void => {
-    if (err) return callback(err);
-    if (!marketStateId || !marketStateId.length) return callback(new Error("Failed to generate new marketStateId for marketId:" + marketId));
-    setMarketStateToLatest(db, marketId, callback);
-  });
-}
-
-export async function updateMarketStatePromise(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState) {
+export async function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState) {
   const marketStateDataToInsert = { marketId, reportingState, blockNumber };
   let query = db.insert(marketStateDataToInsert).into("market_state");
   if (db.client.config.client !== "sqlite3") {
@@ -72,7 +44,7 @@ export async function updateMarketStatePromise(db: Knex, marketId: Address, bloc
   }
   const marketStateId: Array<number> = await query;
   if (!marketStateId || !marketStateId.length) throw new Error("Failed to generate new marketStateId for marketId:" + marketId);
-  return setMarketStateToLatestPromise(db, marketId);
+  return setMarketStateToLatest(db, marketId);
 }
 
 export async function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp: number): Promise<FeeWindowModifications> {
@@ -117,7 +89,7 @@ export async function rollbackMarketState(db: Knex, marketId: Address, expectedS
     reportingState: expectedState,
   });
   if (rowsAffected === 0) throw new Error(`Unable to rollback market "${marketId}" from reporting state "${expectedState}" because it is not the most current state`);
-  return setMarketStateToLatestPromise(db, marketId);
+  return setMarketStateToLatest(db, marketId);
 }
 
 export async function insertPayout(db: Knex, marketId: Address, payoutNumerators: Array<string|number|null>, invalid: boolean, tentativeWinning: boolean): Promise<number> {
