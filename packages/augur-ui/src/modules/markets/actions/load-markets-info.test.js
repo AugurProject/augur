@@ -140,13 +140,13 @@ describe("modules/markets/actions/load-markets-info.js", () => {
           }
         },
         {
-          type: "REMOVE_MARKET_LOADING",
+          type: REMOVE_MARKET_LOADING,
           data: {
             marketLoadingState: "0xMarket1"
           }
         },
         {
-          type: "REMOVE_MARKET_LOADING",
+          type: REMOVE_MARKET_LOADING,
           data: { marketLoadingState: "0xMarket2" }
         }
       ];
@@ -182,13 +182,13 @@ describe("modules/markets/actions/load-markets-info.js", () => {
           }
         },
         {
-          type: "REMOVE_MARKET_LOADING",
+          type: REMOVE_MARKET_LOADING,
           data: {
             marketLoadingState: "0xMarket1"
           }
         },
         {
-          type: "REMOVE_MARKET_LOADING",
+          type: REMOVE_MARKET_LOADING,
           data: {
             marketLoadingState: "0xMarket2"
           }
@@ -210,13 +210,13 @@ describe("modules/markets/actions/load-markets-info.js", () => {
           }
         },
         {
-          type: "REMOVE_MARKET_LOADING",
+          type: REMOVE_MARKET_LOADING,
           data: {
             marketLoadingState: "0xMarket1"
           }
         },
         {
-          type: "REMOVE_MARKET_LOADING",
+          type: REMOVE_MARKET_LOADING,
           data: { marketLoadingState: "0xMarket2" }
         }
       ];
