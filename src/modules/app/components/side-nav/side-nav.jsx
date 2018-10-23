@@ -135,25 +135,24 @@ export default class SideNav extends Component {
           })}
         </ul>
         {isLogged &&
-          window.innerWidth < 850 && (
-            <div className={Styles.SideNav__amt}>
-              <div className={Styles.SideNav__nav__separator} />
-              <div className={Styles.SideName__placement}>
-                <div className={Styles["SideNav__stat-label"]}>
-                  ETH
-                  <span className={Styles["SideNav__stat-value"]}>
-                    {stats[0].totalRealEth.value.formatted}
-                  </span>
-                </div>
-                <div className={Styles["SideNav__stat-label"]}>
-                  REP
-                  <span className={Styles["SideNav__stat-value"]}>
-                    {stats[0].totalRep.value.formatted}
-                  </span>
-                </div>
+          <div className={Styles.SideNav__amt}>
+            <div className={Styles.SideNav__nav__separator} />
+            <div className={Styles.SideName__placement}>
+              <div className={Styles["SideNav__stat-label"]}>
+                ETH
+                <span className={Styles["SideNav__stat-value"]}>
+                  {stats[0].totalRealEth.value.formatted}
+                </span>
+              </div>
+              <div className={Styles["SideNav__stat-label"]}>
+                REP
+                <span className={Styles["SideNav__stat-value"]}>
+                  {stats[0].totalRep.value.formatted}
+                </span>
               </div>
             </div>
-          )}
+          </div>
+        }
       </aside>
     );
   }

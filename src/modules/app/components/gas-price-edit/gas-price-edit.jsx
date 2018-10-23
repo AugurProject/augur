@@ -11,7 +11,12 @@ export default class GasPriceEdit extends Component {
   static propTypes = {
     updateModal: PropTypes.func.isRequired,
     userDefinedGasPrice: PropTypes.number.isRequired,
-    gasPriceSpeed: PropTypes.string.isRequired
+    gasPriceSpeed: PropTypes.string.isRequired,
+    className: PropTypes.string,
+  };
+
+  static defaultProps = {
+    className: undefined,
   };
 
   constructor(props) {
@@ -27,10 +32,10 @@ export default class GasPriceEdit extends Component {
   }
 
   render() {
-    const { userDefinedGasPrice, gasPriceSpeed } = this.props;
+    const { userDefinedGasPrice, gasPriceSpeed, className } = this.props;
 
     return (
-      <div className={classNames(Styles.GasPriceEdit)}>
+      <div className={classNames(Styles.GasPriceEdit, className)}>
         <div
           className={Styles.GasPriceEdit__container}
           onClick={this.showModal}

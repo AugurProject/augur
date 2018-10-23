@@ -129,3 +129,17 @@
     border-left: 0.0625rem solid @color-lightpurple;
   }
 }
+
+@media @breakpoint-mobile-mid {
+  .TopBar__regular-stats {
+    border: 0;
+  }
+
+  .TopBar__statsContainer {
+    justify-content: flex-end;
+  }
+
+  .TopBar__hideForSmallScreens {
+    display: none !important;
+  }
+}

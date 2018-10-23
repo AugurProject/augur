@@ -34,11 +34,11 @@ const TopBar = props => (
             </span>
           </div>
         </div>
-        {window.innerWidth > 850 &&
           <div
             className={classNames(
               Styles.TopBar__stats,
               Styles.TopBar__performance,
+              Styles.TopBar__hideForSmallScreens,
               {
                 [Styles.TopBar__leftBorder]: props.isMobileSmall
               }
@@ -73,11 +73,17 @@ const TopBar = props => (
             </span>
           </div>
         </div>
-        }
       </div>
     )}
-    {props.isLogged && window.innerWidth > 850 && <GasPriceEdit />}
-    {window.innerWidth > 850  && <ConnectAccount />}
+    {props.isLogged && 
+      <GasPriceEdit className={Styles.TopBar__hideForSmallScreens} />
+    }
+    <ConnectAccount className={
+        classNames({
+          [Styles.TopBar__hideForSmallScreens]: props.isLogged,
+        })
+      }
+    />
     <div
       className={classNames(Styles.TopBar__notifications, {
         [Styles.TopBar__notificationsDark]: props.notificationsVisible,

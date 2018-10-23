@@ -13,11 +13,13 @@ import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
 export default class ConnectAccount extends Component {
   static propTypes = {
     isLogged: PropTypes.bool.isRequired,
-    address: PropTypes.string
+    address: PropTypes.string,
+    className: PropTypes.string,
   };
 
   static defaultProps = {
-    address: ""
+    address: "",
+    className: undefined,
   };
 
   constructor(props) {
@@ -71,12 +73,12 @@ export default class ConnectAccount extends Component {
   }
 
   render() {
-    const { isLogged, address } = this.props;
+    const { isLogged, address, className } = this.props;
     const s = this.state;
 
     return (
       <div
-        className={classNames(Styles.ConnectAccount, {
+        className={classNames(Styles.ConnectAccount, className, {
           [Styles.ConnectAccount__selected]: s.dropdownOpen
         })}
         ref={connectAccount => {
