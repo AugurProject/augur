@@ -7,7 +7,7 @@ export function loadCreateMarketHistory(options = {}, callback = logError) {
   return (dispatch, getState) => {
     const { universe, loginAccount } = getState();
     if (!loginAccount.address) return callback(null);
-    augur.markets.getMarketsCreatedByUser(
+    augur.markets.getMarkets(
       { ...options, creator: loginAccount.address, universe: universe.id },
       (err, marketsCreatedByUser) => {
         // note: marketsCreatedByUser is an array of market IDs

@@ -53,7 +53,7 @@ export const loadUserMarkets = (callback = logError) => (
 ) => {
   const { universe, loginAccount } = getState();
 
-  augur.markets.getMarketsCreatedByUser(
+  augur.markets.getMarkets(
     { universe: universe.id, creator: loginAccount.address },
     (err, marketsArray) => {
       if (err || !marketsArray) return callback(err);
