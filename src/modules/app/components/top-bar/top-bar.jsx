@@ -122,7 +122,7 @@ TopBar.propTypes = {
   unseenCount: PropTypes.number.isRequired,
   toggleNotifications: PropTypes.func.isRequired,
   notificationsVisible: PropTypes.bool.isRequired,
-  isMobileSmall: PropTypes.bool.isRequired,
+  isMobileSmall: PropTypes.bool.isRequired
 };
 
 export default TopBar;
