@@ -2,7 +2,7 @@ import * as t from "io-ts";
 import * as Knex from "knex";
 import { JoinedReportsMarketsRow, SortLimitParams, UIReport } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import { queryModifierParams } from "./database";
+import { queryModifier } from "./database";
 
 export const ReportingHistoryParamsSpecific = t.type({
   reporter: t.string,
@@ -77,8 +77,8 @@ export async function getReportingHistory(db: Knex, augur: {}, params: t.TypeOf<
   crowdsourcersQuery.join("markets", "markets.marketId", "crowdsourcers.marketId");
   crowdsourcersQuery.join("payouts", "crowdsourcers.payoutId", "payouts.payoutId");
   if (params.marketId != null) crowdsourcersQuery.where("crowdsourcers.marketId", params.marketId);
-  const initialReport = await queryModifierParams<JoinedReportsMarketsRow<BigNumber>>(db, initialReportQuery, "creationBlockNumber", "asc", params);
-  const crowdsourcers = await queryModifierParams<JoinedReportsMarketsRow<BigNumber>>(db, crowdsourcersQuery, "creationBlockNumber", "asc", params);
+  const initialReport = await queryModifier<JoinedReportsMarketsRow<BigNumber>>(db, initialReportQuery, "creationBlockNumber", "asc", params);
+  const crowdsourcers = await queryModifier<JoinedReportsMarketsRow<BigNumber>>(db, crowdsourcersQuery, "creationBlockNumber", "asc", params);
   const reports: UIReports<string> = {};
   const allParticipants = crowdsourcers.concat(initialReport);
   allParticipants.forEach((row: JoinedReportsMarketsRow<BigNumber>): void => {

@@ -94,13 +94,10 @@
     "@babel/preset-stage-0": "7.0.0",
     "@babel/register": "7.0.0",
     "@babel/runtime": "7.1.2",
-
     "babel-loader": "8.0.4",
     "babel-jest": "23.6.0",
-
     "jest": "23.6.0",
     "jest-cli": "23.6.0",
-
     "@babel/plugin-transform-typescript": "^7.1.0",
     "@babel/preset-typescript": "^7.1.0",
     "@types/chai": "^4.1.3",
