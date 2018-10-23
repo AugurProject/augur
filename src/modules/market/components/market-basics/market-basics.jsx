@@ -125,7 +125,10 @@ const MarketBasics = ({
         )}
 
         {marketType === CATEGORICAL && (
-          <MarketOutcomesCategorical outcomes={p.outcomes} isMobileSmall={p.isMobileSmall}/>
+          <MarketOutcomesCategorical
+            outcomes={p.outcomes}
+            isMobileSmall={p.isMobileSmall}
+          />
         )}
       </div>
     </article>
@@ -152,7 +155,7 @@ MarketBasics.propTypes = {
   hideReportEndingIndicator: PropTypes.bool,
   showDisputeRound: PropTypes.bool,
   tags: PropTypes.arrayOf(PropTypes.string),
-  isMobileSmall: PropTypes.bool,
+  isMobileSmall: PropTypes.bool
 };
 
 MarketBasics.defaultProps = {

@@ -15,14 +15,10 @@ const CategoricalOutcome = ({ className, outcome, isMobileSmall }) => (
       textOverflow: "ellipsis"
     }}
   >
-    <span
-      className={Styles["MarketOutcomesCategorical__outcome-name"]}
-    >
+    <span className={Styles["MarketOutcomesCategorical__outcome-name"]}>
       {isMobileSmall ? outcome.name[0] + "... " : outcome.name}
     </span>
-    <span
-      className={Styles["MarketOutcomesCategorical__outcome-value"]}
-    >
+    <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
       {getValue(outcome, "lastPricePercent.full")}
     </span>
     <span>&nbsp;&nbsp;</span>
@@ -57,8 +53,8 @@ class MarketOutcomesCategorical extends Component {
     const { outcomes, isMobileSmall } = this.props;
     const totalOutcomes = outcomes.length;
 
-    const numOutcomesToShow = !isMobileSmall ? 3 : 6
-    
+    const numOutcomesToShow = !isMobileSmall ? 3 : 6;
+
     const displayShowMore = totalOutcomes > numOutcomesToShow;
     const showMoreText = this.state.isOpen
       ? `- ${totalOutcomes - numOutcomesToShow} less`
@@ -68,7 +64,7 @@ class MarketOutcomesCategorical extends Component {
       minHeight: this.state.outcomeWrapperHeight
     };
 
-    console.log(isMobileSmall)
+    console.log(isMobileSmall);
 
     return (
       <div
@@ -106,7 +102,11 @@ class MarketOutcomesCategorical extends Component {
           >
             {outcomes.length > 0 &&
               outcomes.map(outcome => (
-                <CategoricalOutcome key={outcome.id} outcome={outcome} isMobileSmall={isMobileSmall} />
+                <CategoricalOutcome
+                  key={outcome.id}
+                  outcome={outcome}
+                  isMobileSmall={isMobileSmall}
+                />
               ))}
           </div>
         </div>
@@ -117,17 +117,17 @@ class MarketOutcomesCategorical extends Component {
 
 MarketOutcomesCategorical.propTypes = {
   outcomes: PropTypes.array.isRequired,
-  isMobileSmall: PropTypes.bool,
+  isMobileSmall: PropTypes.bool
 };
 
 CategoricalOutcome.propTypes = {
   outcome: PropTypes.object.isRequired,
   className: PropTypes.string,
-  isMobileSmall: PropTypes.bool,
+  isMobileSmall: PropTypes.bool
 };
 
 CategoricalOutcome.defaultProps = {
-  className: null,
+  className: null
 };
 
 export default MarketOutcomesCategorical;
