@@ -5,7 +5,7 @@ describe(`modules/markets/actions/update-outcome-price.js`, () => {
     const marketId = "123";
     const outcomeId = "456";
     const price = 6.44;
-    const expectedOutput = {
+    const expected = {
       type: action.UPDATE_OUTCOME_PRICE,
       data: {
         marketId,
@@ -13,10 +13,8 @@ describe(`modules/markets/actions/update-outcome-price.js`, () => {
         price
       }
     };
-    assert.deepEqual(
-      action.updateOutcomePrice(marketId, outcomeId, price),
-      expectedOutput,
-      `action didn't return the correct object`
+    expect(action.updateOutcomePrice(marketId, outcomeId, price)).toEqual(
+      expected
     );
   });
 });

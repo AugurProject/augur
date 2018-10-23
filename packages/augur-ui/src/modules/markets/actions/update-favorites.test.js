@@ -3,27 +3,19 @@ import * as actions from "modules/markets/actions/update-favorites";
 describe(`modules/markets/actions/update-favorites.js`, () => {
   test(`should dispatch a toggle favorite action`, () => {
     const marketId = "market123";
-    const expectedOutput = {
+    const expected = {
       type: actions.TOGGLE_FAVORITE,
       data: { marketId }
     };
-    assert.deepEqual(
-      actions.toggleFavorite(marketId),
-      expectedOutput,
-      `toggle favorite action didn't return the correct object`
-    );
+    expect(actions.toggleFavorite(marketId)).toEqual(expected);
   });
 
   test(`should dispatch a update favorites action`, () => {
     const favorites = ["some favorite", "another favorite"];
-    const expectedOutput = {
+    const expected = {
       type: actions.UPDATE_FAVORITES,
       data: { favorites }
     };
-    assert.deepEqual(
-      actions.updateFavorites(favorites),
-      expectedOutput,
-      `update favorites didn't return the correct object`
-    );
+    expect(actions.updateFavorites(favorites)).toEqual(expected);
   });
 });

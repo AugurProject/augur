@@ -10,123 +10,55 @@ import { determineMarketLinkType } from "modules/markets/helpers/determine-marke
 describe(`modules/markets/helpers/determine-market-link-type.js`, () => {
   const account = { address: "userId" };
 
-  const test = t => {
-    test(t.description, () => {
-      t.assertions();
-    });
-  };
-
-  describe("empty market", () => {
-    test({
-      description: `should call the expected method`,
-      assertions: () => {
-        const market = {};
-        const actual = determineMarketLinkType(market, account);
-        assert.deepEqual(actual, TYPE_VIEW, `Didn't call the expected method`);
-      }
-    });
+  test(`should be type_view result`, () => {
+    expect(determineMarketLinkType({}, account)).toEqual(TYPE_VIEW);
   });
 
-  describe("empty login account", () => {
-    test({
-      description: `should call the expected method`,
-      assertions: () => {
-        const market = {
-          reportingState: constants.REPORTING_STATE.PRE_REPORTING
-        };
-        const actual = determineMarketLinkType(market, {});
-        assert.deepEqual(actual, TYPE_VIEW, `Didn't call the expected method`);
-      }
-    });
+  test(`should be type_view result for reporting state`, () => {
+    const market = {
+      reportingState: constants.REPORTING_STATE.PRE_REPORTING
+    };
+    expect(determineMarketLinkType(market, {})).toEqual(TYPE_VIEW);
   });
 
-  describe("null market", () => {
-    test({
-      description: `should call the expected method`,
-      assertions: () => {
-        const market = null;
-        const actual = determineMarketLinkType(market, account);
-        assert.deepEqual(actual, TYPE_VIEW, `Didn't call the expected method`);
-      }
-    });
+  test(`should call the expected method`, () => {
+    expect(determineMarketLinkType(null, account)).toEqual(TYPE_VIEW);
   });
 
-  describe("pre reporting market", () => {
-    test({
-      description: `should call the expected method`,
-      assertions: () => {
-        const market = {
-          reportingState: constants.REPORTING_STATE.PRE_REPORTING
-        };
-        const actual = determineMarketLinkType(market, account);
-        assert.deepEqual(actual, TYPE_TRADE, `Didn't call the expected method`);
-      }
-    });
+  test(`should call the expected method`, () => {
+    const market = {
+      reportingState: constants.REPORTING_STATE.PRE_REPORTING
+    };
+    expect(determineMarketLinkType(market, account)).toEqual(TYPE_TRADE);
   });
 
-  describe("designated reporting market", () => {
-    test({
-      description: `should call the expected method`,
-      assertions: () => {
-        const market = {
-          reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING,
-          designatedReporter: account.address
-        };
-        const actual = determineMarketLinkType(market, account);
-        assert.deepEqual(
-          actual,
-          TYPE_REPORT,
-          `Didn't call the expected method`
-        );
-      }
-    });
+  test(`should call the expected method`, () => {
+    const market = {
+      reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING,
+      designatedReporter: account.address
+    };
+    expect(determineMarketLinkType(market, account)).toEqual(TYPE_REPORT);
   });
 
-  describe("non-designated reporting market", () => {
-    test({
-      description: `should call the expected method`,
-      assertions: () => {
-        const market = {
-          reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING,
-          designatedReporter: "snuggles"
-        };
-        const actual = determineMarketLinkType(market, account);
-        assert.deepEqual(actual, TYPE_VIEW, `Didn't call the expected method`);
-      }
-    });
+  test(`should call the expected method`, () => {
+    const market = {
+      reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING,
+      designatedReporter: "snuggles"
+    };
+    expect(determineMarketLinkType(market, account)).toEqual(TYPE_VIEW);
   });
 
-  describe("open reporting market", () => {
-    test({
-      description: `should call the expected method`,
-      assertions: () => {
-        const market = {
-          reportingState: constants.REPORTING_STATE.OPEN_REPORTING
-        };
-        const actual = determineMarketLinkType(market, account);
-        assert.deepEqual(
-          actual,
-          TYPE_REPORT,
-          `Didn't call the expected method`
-        );
-      }
-    });
+  test(`should call the expected method`, () => {
+    const market = {
+      reportingState: constants.REPORTING_STATE.OPEN_REPORTING
+    };
+    expect(determineMarketLinkType(market, account)).toEqual(TYPE_REPORT);
   });
 
-  describe("dispute reporting market", () => {
-    test({
-      description: `should call the expected method`,
-      assertions: () => {
-        const market = {
-          reportingState: constants.REPORTING_STATE.CROWDSOURCING_DISPUTE
-        };
-        const actual = determineMarketLinkType(market, account);
-        assert.deepEqual(
-          actual,
-          TYPE_DISPUTE,
-          `Didn't call the expected method`
-        );
-      }
-    });
+  test(`should call the expected method`, () => {
+    const market = {
+      reportingState: constants.REPORTING_STATE.CROWDSOURCING_DISPUTE
+    };
+    expect(determineMarketLinkType(market, account)).toEqual(TYPE_DISPUTE);
   });
 });

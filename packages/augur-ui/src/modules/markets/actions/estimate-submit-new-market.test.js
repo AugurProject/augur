@@ -1,15 +1,14 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
-import {
-  estimateSubmitNewMarket,
-  __RewireAPI__ as estimateSubmitNewMarketReqireAPI
-} from "modules/markets/actions/estimate-submit-new-market";
 import { YES_NO } from "modules/markets/constants/market-types";
+import { buildCreateMarket } from "modules/markets/helpers/build-create-market";
 
-describe(`modules/markets/actions/estimate-submit-new-market.js`, () => {
+jest.mock("modules/markets/helpers/build-create-market");
+
+describe("modules/markets/actions/estimate-submit-new-market.js", () => {
   const mockStore = configureMockStore([thunk]);
   const newBinaryMarket = { properties: "value", type: YES_NO };
-  const stateData = {
+  const state = {
     universe: {
       id: "1010101"
     },
@@ -24,39 +23,32 @@ describe(`modules/markets/actions/estimate-submit-new-market.js`, () => {
     }
   };
 
-  function buildCreateMarket() {
-    return {
-      createMarket(p) {
-        p.onSuccess("GAS COST");
-      },
-      formattedNewMarket: {}
-    };
-  }
+  const {
+    estimateSubmitNewMarket
+  } = require("modules/markets/actions/estimate-submit-new-market");
 
-  afterAll(() => {
-    estimateSubmitNewMarketReqireAPI.__ResetDependency__("buildCreateMarket");
-  });
-
-  const test = t =>
-    test(t.description, () => {
-      estimateSubmitNewMarketReqireAPI.__Rewire__(
-        "buildCreateMarket",
-        buildCreateMarket
-      );
-      const store = mockStore(t.state || {});
-      t.assertions(store);
+  describe(`get gas cost estimation`, () => {
+    beforeEach(() => {
+      buildCreateMarket.mockImplementationOnce(() => ({
+        createMarket: jest.fn(value => {
+          value.onSent({
+            callReturn: "marketId"
+          });
+          value.onSuccess("GAS COST");
+        }),
+        formattedNewMarket: {}
+      }));
     });
 
-  test({
-    description: "should call callback with success and gas cost value",
-    state: stateData,
-    assertions: store => {
+    test("should call callback with success and gas cost value", () => {
+      const store = mockStore(state);
+
       store.dispatch(
         estimateSubmitNewMarket(newBinaryMarket, (err, value) => {
-          assert.deepEqual(err, null, `Error value not as expected`);
-          assert.deepEqual(value, "GAS COST", `Didn't value as expected`);
+          expect(err).toBeNull();
+          expect(value).toBe("GAS COST");
         })
       );
-    }
+    });
   });
 });

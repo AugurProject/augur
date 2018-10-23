@@ -5,36 +5,26 @@ import {
 } from "modules/markets/actions/update-favorites";
 
 describe(`modules/markets/reducers/favorites.js`, () => {
-  test(
-    `should return an update favorites action with new favorites data`,
-    () => {
-      const someDate = Date.now();
-      const anotherDate = Date.now();
-      const favorites = {
-        fav1: anotherDate
-      };
-      const currentFavorites = {
-        fav1: someDate
-      };
-      const testAction = {
-        type: UPDATE_FAVORITES,
-        data: { favorites }
-      };
-      const expectedOutput = {
-        fav1: anotherDate
-      };
-      assert.deepEqual(
-        reducer(currentFavorites, testAction),
-        expectedOutput,
-        `Reducer didn't update correctly given favorites`
-      );
-      assert.deepEqual(
-        reducer(undefined, testAction),
-        expectedOutput,
-        `Reducer didn't output correctly given empty favorites`
-      );
-    }
-  );
+  test(`should return an update favorites action with new favorites data`, () => {
+    const someDate = Date.now();
+    const anotherDate = Date.now();
+    const favorites = {
+      fav1: anotherDate
+    };
+    const currentFavorites = {
+      fav1: someDate
+    };
+    const testAction = {
+      type: UPDATE_FAVORITES,
+      data: { favorites }
+    };
+    const expected = {
+      fav1: anotherDate
+    };
+    expect(reducer(currentFavorites, testAction)).toEqual(expected);
+
+    expect(reducer(undefined, testAction)).toEqual(expected);
+  });
 
   test(`should be able to toggle favorites`, () => {
     const someDate = Date.now();
@@ -43,7 +33,7 @@ describe(`modules/markets/reducers/favorites.js`, () => {
       test2: someDate,
       test3: someDate
     };
-    const expectedOutput = {
+    const expected = {
       test: someDate,
       test3: someDate
     };
@@ -52,14 +42,7 @@ describe(`modules/markets/reducers/favorites.js`, () => {
       data: { marketId: "test2" }
     };
 
-    assert.isDefined(
-      reducer(undefined, action).test2,
-      `cannot toggle a favorite that doesn't exist.`
-    );
-    assert.deepEqual(
-      reducer(currFavorites, action),
-      expectedOutput,
-      `cannot untoggle a favorite that already exists`
-    );
+    expect(reducer(undefined, action).test2).toBeDefined();
+    expect(reducer(currFavorites, action)).toEqual(expected);
   });
 });

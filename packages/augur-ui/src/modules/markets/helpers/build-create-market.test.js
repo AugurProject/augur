@@ -10,33 +10,24 @@ import {
   DESIGNATED_REPORTER_SELF,
   DESIGNATED_REPORTER_SPECIFIC
 } from "modules/markets/constants/new-market-constraints";
+import { augur } from "services/augurjs";
+
+jest.mock("services/augurjs");
 
 describe("modules/markets/helpers/build-create-market", () => {
   const mockStore = configureMockStore([thunk]);
 
-  const test = t =>
-    test(t.description, () => {
-      const store = mockStore(t.state || {});
-      t.assertions(store);
-    });
+  augur.createMarket = jest.fn(() => {});
+  augur.createMarket.createCategoricalMarket = jest.fn(() => {});
+  augur.createMarket.createScalarMarket = jest.fn(() => {});
+  augur.createMarket.createYesNoMarket = jest.fn(() => {});
+
   const {
-    buildCreateMarket,
-    __RewireAPI__
+    buildCreateMarket
   } = require("modules/markets/helpers/build-create-market");
-  const MockAugurJS = {
-    createMarket: {
-      createCategoricalMarket: () => {},
-      createYesNoMarket: () => {},
-      createScalarMarket: () => {}
-    },
-    constants: {
-      DEFAULT_MAX_GAS: "blah"
-    }
-  };
-  __RewireAPI__.__Rewire__("augur", MockAugurJS);
-  test({
-    description: `should build new market data for categorical market`,
-    state: {
+
+  test(`should build new market data for categorical market`, () => {
+    const state = {
       universe: {
         id: "1010101"
       },
@@ -64,48 +55,40 @@ describe("modules/markets/helpers/build-create-market", () => {
         type: CATEGORICAL,
         outcomes: ["one", "two"]
       }
-    },
-    assertions: store => {
-      const actual = buildCreateMarket(
-        store.getState().newMarket,
-        false,
-        store.getState().universe,
-        store.getState().loginAccount,
-        store.getState().contractAddresses
-      );
+    };
+    const store = mockStore(state);
+    const actual = buildCreateMarket(
+      store.getState().newMarket,
+      false,
+      store.getState().universe,
+      store.getState().loginAccount,
+      store.getState().contractAddresses
+    );
 
-      const expected = {
-        _designatedReporterAddress: "0x1233",
-        universe: "1010101",
-        _endTime: 1234567890000,
-        _denominationToken: "domnination",
-        _description: "test description",
-        _extraInfo: {
-          longDescription: "",
-          resolutionSource: "",
-          tags: []
-        },
-        _outcomes: ["one", "two"],
-        _topic: "TEST CATEGORY",
-        _feePerEthInWei: "0x470de4df820000"
-      };
+    const expected = {
+      _designatedReporterAddress: "0x1233",
+      universe: "1010101",
+      _endTime: 1234567890000,
+      _denominationToken: "domnination",
+      _description: "test description",
+      _extraInfo: {
+        longDescription: "",
+        resolutionSource: "",
+        tags: []
+      },
+      _outcomes: ["one", "two"],
+      _topic: "TEST CATEGORY",
+      _feePerEthInWei: "0x470de4df820000"
+    };
 
-      assert.deepEqual(
-        actual.formattedNewMarket,
-        expected,
-        `Didn't form the formattedNewMarket object as expected`
-      );
-      assert.deepEqual(
-        actual.createMarket,
-        MockAugurJS.createMarket.createCategoricalMarket,
-        `Didn't form the method object as expected`
-      );
-    }
+    expect(actual.formattedNewMarket).toEqual(expected);
+    expect(actual.createMarket).toEqual(
+      augur.createMarket.createCategoricalMarket
+    );
   });
 
-  test({
-    description: `should market object for yes/no  market`,
-    state: {
+  test(`should market object for yes/no  market`, () => {
+    const state = {
       universe: {
         id: "1010101"
       },
@@ -133,47 +116,38 @@ describe("modules/markets/helpers/build-create-market", () => {
         tags: [],
         type: YES_NO
       }
-    },
-    assertions: store => {
-      const actual = buildCreateMarket(
-        store.getState().newMarket,
-        false,
-        store.getState().universe,
-        store.getState().loginAccount,
-        store.getState().contractAddresses
-      );
+    };
 
-      const expected = {
-        _designatedReporterAddress: "0x01234abcd",
-        universe: "1010101",
-        _endTime: 1234567890000,
-        _denominationToken: "domnination",
-        _description: "test description",
-        _extraInfo: {
-          longDescription: "",
-          resolutionSource: "",
-          tags: []
-        },
-        _topic: "TEST CATEGORY",
-        _feePerEthInWei: "0x470de4df820000"
-      };
+    const store = mockStore(state);
+    const actual = buildCreateMarket(
+      store.getState().newMarket,
+      false,
+      store.getState().universe,
+      store.getState().loginAccount,
+      store.getState().contractAddresses
+    );
 
-      assert.deepEqual(
-        actual.formattedNewMarket,
-        expected,
-        `Didn't form the formattedNewMarket object as expected`
-      );
-      assert.deepEqual(
-        actual.createMarket,
-        MockAugurJS.createMarket.createYesNoMarket,
-        `Didn't form the method object as expected`
-      );
-    }
+    const expected = {
+      _designatedReporterAddress: "0x01234abcd",
+      universe: "1010101",
+      _endTime: 1234567890000,
+      _denominationToken: "domnination",
+      _description: "test description",
+      _extraInfo: {
+        longDescription: "",
+        resolutionSource: "",
+        tags: []
+      },
+      _topic: "TEST CATEGORY",
+      _feePerEthInWei: "0x470de4df820000"
+    };
+
+    expect(actual.formattedNewMarket).toEqual(expected);
+    expect(actual.createMarket).toEqual(augur.createMarket.createYesNoMarket);
   });
 
-  test({
-    description: `should build market object for scalar market`,
-    state: {
+  test(`should build market object for scalar market`, () => {
+    const state = {
       universe: {
         id: "1010101"
       },
@@ -205,45 +179,36 @@ describe("modules/markets/helpers/build-create-market", () => {
         scalarDenomination: "%",
         tickSize: 1000
       }
-    },
-    assertions: store => {
-      const actual = buildCreateMarket(
-        store.getState().newMarket,
-        false,
-        store.getState().universe,
-        store.getState().loginAccount,
-        store.getState().contractAddresses
-      );
+    };
+    const store = mockStore(state);
+    const actual = buildCreateMarket(
+      store.getState().newMarket,
+      false,
+      store.getState().universe,
+      store.getState().loginAccount,
+      store.getState().contractAddresses
+    );
 
-      const expected = {
-        _designatedReporterAddress: "0x01234abcd",
-        universe: "1010101",
-        _endTime: 1234567890000,
-        _denominationToken: "domnination",
-        _description: "test description",
-        _extraInfo: {
-          _scalarDenomination: "%",
-          longDescription: "",
-          resolutionSource: "",
-          tags: []
-        },
-        _maxPrice: "10",
-        _minPrice: "-10",
-        tickSize: 1000,
-        _topic: "TEST CATEGORY",
-        _feePerEthInWei: "0x470de4df820000"
-      };
+    const expected = {
+      _designatedReporterAddress: "0x01234abcd",
+      universe: "1010101",
+      _endTime: 1234567890000,
+      _denominationToken: "domnination",
+      _description: "test description",
+      _extraInfo: {
+        _scalarDenomination: "%",
+        longDescription: "",
+        resolutionSource: "",
+        tags: []
+      },
+      _maxPrice: "10",
+      _minPrice: "-10",
+      tickSize: 1000,
+      _topic: "TEST CATEGORY",
+      _feePerEthInWei: "0x470de4df820000"
+    };
 
-      assert.deepEqual(
-        actual.formattedNewMarket,
-        expected,
-        `Didn't form the formattedNewMarket object as expected`
-      );
-      assert.deepEqual(
-        actual.createMarket,
-        MockAugurJS.createMarket.createScalarMarket,
-        `Didn't form the method object as expected`
-      );
-    }
+    expect(actual.formattedNewMarket).toEqual(expected);
+    expect(actual.createMarket).toEqual(augur.createMarket.createScalarMarket);
   });
 });
