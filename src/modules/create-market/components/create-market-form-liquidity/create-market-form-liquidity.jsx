@@ -13,7 +13,7 @@ import CreateMarketFormLiquidityCharts from "modules/market-charts/containers/cr
 
 import { BID, ASK } from "modules/transactions/constants/types";
 import { CATEGORICAL, SCALAR } from "modules/markets/constants/market-types";
-
+import { ONE, ZERO } from "modules/trades/constants/numbers";
 import getValue from "utils/get-value";
 
 import Styles from "modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity.styles";
@@ -202,8 +202,6 @@ export default class CreateMarketLiquidity extends Component {
     scalarBigNum
   ) {
     const oppositeSide = selectedSide === BID ? ASK : BID;
-    const ZERO = createBigNumber(0);
-    const ONE = createBigNumber(1);
     const precision = createBigNumber(10 ** -PRECISION);
     let minPrice;
     let maxPrice;
@@ -405,9 +403,9 @@ export default class CreateMarketLiquidity extends Component {
           errors.price.push(
             `Price must be greater than best bid price of: ${bids[0].price.toNumber()}`
           );
-        } else if (orderPrice.gte(this.state.maxPrice)) {
+        } else if (orderPrice.gte(ONE)) {
           errors.price.push("Price must be less than 1");
-        } else if (orderPrice.lt(this.state.minPrice)) {
+        } else if (orderPrice.lt(ZERO)) {
           errors.price.push("Price must be greater than 0");
         }
       } else if (
