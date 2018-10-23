@@ -1,4 +1,3 @@
-import mockStore from "test/mockStore";
 import { listenToUpdates } from "modules/events/actions/listen-to-updates";
 import * as augurjs from "services/augurjs";
 import * as loadMarketsInfoModule from "modules/markets/actions/load-markets-info";
@@ -6,10 +5,16 @@ import * as loadUnclaimedFeesModule from "modules/markets/actions/market-creator
 import * as convertLogsToTransactionsModule from "modules/transactions/actions/convert-logs-to-transactions";
 import * as updateAssetsModule from "modules/auth/actions/update-assets";
 import * as loadReportingModule from "modules/reports/actions/load-reporting";
+import thunk from "redux-thunk";
+import configureMockStore from "redux-mock-store";
 
 jest.mock("services/augurjs");
 
 describe("events/actions/listen-to-updates", () => {
+  const middleware = [thunk];
+  const mockStore = configureMockStore(middleware);
+
+
   describe("setup shape tests", () => {
     let stopBlockListenersSpy;
     let stopAugurNodeEventListenersSpy;
@@ -18,7 +23,7 @@ describe("events/actions/listen-to-updates", () => {
     let augurOnSpy;
     let ethereumOnSpy;
 
-    const store = mockStore.mockStore({});
+    const store = mockStore({});
     const ACTIONS = {
       STOP_BLOCK_LISTENERS: { type: "STOP_BLOCK_LISTENERS" },
       STOP_AUGUR_NODE_EVENT_LISTENERS: {
@@ -134,7 +139,7 @@ describe("events/actions/listen-to-updates", () => {
       state = {
         universe: { id: "UNIVERSE_ADDRESS" }
       };
-      store = mockStore.mockStore(state);
+      store = mockStore(state);
       loadMarketsInfoSpy = jest
         .spyOn(loadMarketsInfoModule, "loadMarketsInfo")
         .mockImplementation(marketIds => ({
@@ -216,7 +221,7 @@ describe("events/actions/listen-to-updates", () => {
         universe: { id: "UNIVERSE_ADDRESS" },
         loginAccount: { address: "MY_ADDRESS" }
       };
-      store = mockStore.mockStore(state);
+      store = mockStore(state);
       loadMarketsInfoSpy = jest
         .spyOn(loadMarketsInfoModule, "loadMarketsInfo")
         .mockImplementation(marketIds => ({
@@ -235,9 +240,11 @@ describe("events/actions/listen-to-updates", () => {
           type: "UPDATE_LOGGED_TRANSACTIONS",
           log
         }));
-      updateAssetsSpy = jest.spyOn(updateAssetsModule, "updateAssets").mockImplementation(() => ({
-        type: "UPDATE_ASSETS"
-      }));
+      updateAssetsSpy = jest
+        .spyOn(updateAssetsModule, "updateAssets")
+        .mockImplementation(() => ({
+          type: "UPDATE_ASSETS"
+        }));
       loadReportingSpy = jest
         .spyOn(loadReportingModule, "loadReporting")
         .mockImplementation(() => ({
@@ -352,9 +359,11 @@ describe("events/actions/listen-to-updates", () => {
           type: "UPDATE_LOGGED_TRANSACTIONS",
           log
         }));
-      updateAssetsSpy = jest.spyOn(updateAssetsModule, "updateAssets").mockImplementation(() => ({
-        type: "UPDATE_ASSETS"
-      }));
+      updateAssetsSpy = jest
+        .spyOn(updateAssetsModule, "updateAssets")
+        .mockImplementation(() => ({
+          type: "UPDATE_ASSETS"
+        }));
       loadReportingSpy = jest
         .spyOn(loadReportingModule, "loadReporting")
         .mockImplementation(() => ({
@@ -382,7 +391,7 @@ describe("events/actions/listen-to-updates", () => {
         universe: { id: "UNIVERSE_ADDRESS" },
         loginAccount: { address: "MY_ADDRESS" }
       };
-      const store = mockStore.mockStore(state);
+      const store = mockStore(state);
       jest
         .spyOn(augurjs.augur.events, "startAugurNodeEventListeners")
         .mockImplementation(listeners =>
@@ -405,7 +414,7 @@ describe("events/actions/listen-to-updates", () => {
         universe: { id: "UNIVERSE_ADDRESS" },
         loginAccount: { address: "MY_ADDRESS" }
       };
-      const store = mockStore.mockStore(state);
+      const store = mockStore(state);
       jest
         .spyOn(augurjs.augur.events, "startAugurNodeEventListeners")
         .mockImplementation(listeners =>
@@ -472,7 +481,7 @@ describe("events/actions/listen-to-updates", () => {
         universe: { id: "UNIVERSE_ADDRESS" },
         loginAccount: { address: "MY_ADDRESS" }
       };
-      const store = mockStore.mockStore(state);
+      const store = mockStore(state);
       jest
         .spyOn(augurjs.augur.events, "startAugurNodeEventListeners")
         .mockImplementation(listeners =>
