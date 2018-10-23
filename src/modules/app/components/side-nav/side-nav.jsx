@@ -133,24 +133,9 @@ export default class SideNav extends Component {
               </li>
             );
           })}
-          {isLogged &&
-            isMobile && (
-              <li key="notifications">
-                <button
-                  onClick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleNotifications();
-                  }}
-                >
-                  {Notifications(unseenCount)}
-                  <span className="item-title">Notifications</span>
-                </button>
-              </li>
-            )}
         </ul>
         {isLogged &&
-          isMobile && (
+          window.innerWidth < 850 && (
             <div className={Styles.SideNav__amt}>
               <div className={Styles.SideNav__nav__separator} />
               <div className={Styles.SideName__placement}>

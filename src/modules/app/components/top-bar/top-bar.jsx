@@ -15,50 +15,49 @@ const TopBar = props => (
   <header className={Styles.TopBar}>
     {props.isLogged && (
       <div className={Styles.TopBar__statsContainer}>
-        {!props.isMobile && (
-          <div
-            className={classNames(
-              Styles.TopBar__stats,
-              Styles["TopBar__regular-stats"]
-            )}
-          >
-            <div className={Styles.TopBar__stat}>
-              <span className={Styles["TopBar__stat-label"]}>ETH</span>
-              <span className={Styles["TopBar__stat-value"]} id="core-bar-eth">
-                {props.stats[0].totalRealEth.value.formatted}
-              </span>
-            </div>
-            <div className={Styles.TopBar__stat}>
-              <span className={Styles["TopBar__stat-label"]}>REP</span>
-              <span className={Styles["TopBar__stat-value"]} id="core-bar-rep">
-                {props.stats[0].totalRep.value.formatted}
-              </span>
-            </div>
-          </div>
-        )}
         <div
           className={classNames(
             Styles.TopBar__stats,
-            Styles.TopBar__performance,
-            {
-              [Styles.TopBar__leftBorder]: props.isMobile
-            }
+            Styles["TopBar__regular-stats"]
           )}
         >
-          <div
-            className={classNames(
-              Styles.TopBar__stat,
-              Styles["TopBar__performance-stat"]
-            )}
-          >
-            <div className={Styles["TopBar__stat-label"]}>
-              <span>{props.stats[1].totalPLMonth.label}</span>
-            </div>
-            <span className={Styles["TopBar__stat-value"]}>
-              {props.stats[1].totalPLMonth.value.formatted}
-              <span className={Styles["TopBar__stat-unit"]}>ETH</span>
+          <div className={Styles.TopBar__stat}>
+            <span className={Styles["TopBar__stat-label"]}>ETH</span>
+            <span className={Styles["TopBar__stat-value"]} id="core-bar-eth">
+              {props.stats[0].totalRealEth.value.formatted}
             </span>
           </div>
+          <div className={Styles.TopBar__stat}>
+            <span className={Styles["TopBar__stat-label"]}>REP</span>
+            <span className={Styles["TopBar__stat-value"]} id="core-bar-rep">
+              {props.stats[0].totalRep.value.formatted}
+            </span>
+          </div>
+        </div>
+        {window.innerWidth > 850 &&
+          <div
+            className={classNames(
+              Styles.TopBar__stats,
+              Styles.TopBar__performance,
+              {
+                [Styles.TopBar__leftBorder]: props.isMobileSmall
+              }
+            )}
+          >
+            <div
+              className={classNames(
+                Styles.TopBar__stat,
+                Styles["TopBar__performance-stat"]
+              )}
+            >
+              <div className={Styles["TopBar__stat-label"]}>
+                <span>{props.stats[1].totalPLMonth.label}</span>
+              </div>
+              <span className={Styles["TopBar__stat-value"]}>
+                {props.stats[1].totalPLMonth.value.formatted}
+                <span className={Styles["TopBar__stat-unit"]}>ETH</span>
+              </span>
+            </div>
           <div
             className={classNames(
               Styles.TopBar__stat,
@@ -74,39 +73,38 @@ const TopBar = props => (
             </span>
           </div>
         </div>
+        }
       </div>
     )}
-    {props.isLogged && <GasPriceEdit />}
-    <ConnectAccount />
-    {!props.isMobile && (
-      <div
-        className={classNames(Styles.TopBar__notifications, {
-          [Styles.TopBar__notificationsDark]: props.notificationsVisible,
-          [Styles.TopBar__notificationsDisabled]: !props.isLogged
-        })}
-        onClick={e => {
-          props.toggleNotifications();
-        }}
-        role="button"
-        tabIndex="-1"
-      >
-        <div className={Styles["TopBar__notifications-container"]}>
-          <div className={Styles["TopBar__notification-icon"]}>
-            {props.unseenCount > 99
-              ? Notifications(
-                  "99+",
-                  "7.4591451",
-                  props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)"
-                )
-              : Notifications(
-                  props.unseenCount,
-                  "6.4591451",
-                  props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)"
-                )}
-          </div>
+    {props.isLogged && window.innerWidth > 850 && <GasPriceEdit />}
+    {window.innerWidth > 850  && <ConnectAccount />}
+    <div
+      className={classNames(Styles.TopBar__notifications, {
+        [Styles.TopBar__notificationsDark]: props.notificationsVisible,
+        [Styles.TopBar__notificationsDisabled]: !props.isLogged
+      })}
+      onClick={e => {
+        props.toggleNotifications();
+      }}
+      role="button"
+      tabIndex="-1"
+    >
+      <div className={Styles["TopBar__notifications-container"]}>
+        <div className={Styles["TopBar__notification-icon"]}>
+          {props.unseenCount > 99
+            ? Notifications(
+                "99+",
+                "7.4591451",
+                props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)"
+              )
+            : Notifications(
+                props.unseenCount,
+                "6.4591451",
+                props.isLogged ? "#FFFFFF" : "rgba(255,255,255,.25)"
+              )}
         </div>
       </div>
-    )}
+    </div>
     <span className={Styles["TopBar__logo-text"]}>
       <Link to={makePath(CATEGORIES)}>Augur</Link>
     </span>
