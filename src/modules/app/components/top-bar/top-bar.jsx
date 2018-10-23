@@ -15,7 +15,7 @@ const TopBar = props => (
   <header className={Styles.TopBar}>
     {props.isLogged && (
       <div className={Styles.TopBar__statsContainer}>
-        {!props.isMobile && 
+        {!props.isMobile && (
           <div
             className={classNames(
               Styles.TopBar__stats,
@@ -35,13 +35,15 @@ const TopBar = props => (
               </span>
             </div>
           </div>
-        }
+        )}
         <div
           className={classNames(
             Styles.TopBar__stats,
-            Styles.TopBar__performance, {
-            [Styles.TopBar__leftBorder]: props.isMobile,
-          })}
+            Styles.TopBar__performance,
+            {
+              [Styles.TopBar__leftBorder]: props.isMobile
+            }
+          )}
         >
           <div
             className={classNames(
@@ -76,7 +78,7 @@ const TopBar = props => (
     )}
     {props.isLogged && <GasPriceEdit />}
     <ConnectAccount />
-    {!props.isMobile && 
+    {!props.isMobile && (
       <div
         className={classNames(Styles.TopBar__notifications, {
           [Styles.TopBar__notificationsDark]: props.notificationsVisible,
@@ -104,7 +106,7 @@ const TopBar = props => (
           </div>
         </div>
       </div>
-    }
+    )}
     <span className={Styles["TopBar__logo-text"]}>
       <Link to={makePath(CATEGORIES)}>Augur</Link>
     </span>
@@ -118,7 +120,7 @@ TopBar.propTypes = {
   toggleNotifications: PropTypes.func.isRequired,
   notificationsVisible: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool,
-  isMobileSmall: PropTypes.bool,
+  isMobileSmall: PropTypes.bool
 };
 
 export default TopBar;

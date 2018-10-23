@@ -472,7 +472,8 @@ export default class AppView extends Component {
       modal,
       universe,
       isLoading,
-      finalizeMarket
+      finalizeMarket,
+      isMobileSmall
     } = this.props;
     const s = this.state;
 
