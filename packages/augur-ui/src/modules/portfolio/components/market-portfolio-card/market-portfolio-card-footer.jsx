@@ -9,7 +9,7 @@ import { createBigNumber } from "utils/create-big-number";
 import moment from "moment";
 import { TYPE_CLAIM_PROCEEDS } from "modules/markets/constants/link-types";
 import Styles from "modules/portfolio/components/market-portfolio-card/market-portfolio-card.styles";
-import { constants } from "services/augurjs";
+import { constants } from "services/constants";
 import { formatEther } from "utils/format-number";
 
 const MarketPortfolioCardFooter = p => {

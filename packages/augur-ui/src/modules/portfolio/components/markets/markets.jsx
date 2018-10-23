@@ -12,7 +12,7 @@ import {
   TYPE_REPORT,
   TYPE_FINALIZE_MARKET
 } from "modules/markets/constants/link-types";
-import { constants } from "services/augurjs";
+import { constants } from "services/constants";
 import { CREATE_MARKET } from "modules/routes/constants/views";
 import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
 
