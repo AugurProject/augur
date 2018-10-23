@@ -34,30 +34,30 @@ const TopBar = props => (
             </span>
           </div>
         </div>
+        <div
+          className={classNames(
+            Styles.TopBar__stats,
+            Styles.TopBar__performance,
+            Styles.TopBar__hideForSmallScreens,
+            {
+              [Styles.TopBar__leftBorder]: props.isMobileSmall
+            }
+          )}
+        >
           <div
             className={classNames(
-              Styles.TopBar__stats,
-              Styles.TopBar__performance,
-              Styles.TopBar__hideForSmallScreens,
-              {
-                [Styles.TopBar__leftBorder]: props.isMobileSmall
-              }
+              Styles.TopBar__stat,
+              Styles["TopBar__performance-stat"]
             )}
           >
-            <div
-              className={classNames(
-                Styles.TopBar__stat,
-                Styles["TopBar__performance-stat"]
-              )}
-            >
-              <div className={Styles["TopBar__stat-label"]}>
-                <span>{props.stats[1].totalPLMonth.label}</span>
-              </div>
-              <span className={Styles["TopBar__stat-value"]}>
-                {props.stats[1].totalPLMonth.value.formatted}
-                <span className={Styles["TopBar__stat-unit"]}>ETH</span>
-              </span>
+            <div className={Styles["TopBar__stat-label"]}>
+              <span>{props.stats[1].totalPLMonth.label}</span>
             </div>
+            <span className={Styles["TopBar__stat-value"]}>
+              {props.stats[1].totalPLMonth.value.formatted}
+              <span className={Styles["TopBar__stat-unit"]}>ETH</span>
+            </span>
+          </div>
           <div
             className={classNames(
               Styles.TopBar__stat,
@@ -75,14 +75,13 @@ const TopBar = props => (
         </div>
       </div>
     )}
-    {props.isLogged && 
+    {props.isLogged && (
       <GasPriceEdit className={Styles.TopBar__hideForSmallScreens} />
-    }
-    <ConnectAccount className={
-        classNames({
-          [Styles.TopBar__hideForSmallScreens]: props.isLogged,
-        })
-      }
+    )}
+    <ConnectAccount
+      className={classNames({
+        [Styles.TopBar__hideForSmallScreens]: props.isLogged
+      })}
     />
     <div
       className={classNames(Styles.TopBar__notifications, {
@@ -123,8 +122,7 @@ TopBar.propTypes = {
   unseenCount: PropTypes.number.isRequired,
   toggleNotifications: PropTypes.func.isRequired,
   notificationsVisible: PropTypes.bool.isRequired,
-  isMobile: PropTypes.bool,
-  isMobileSmall: PropTypes.bool
+  isMobileSmall: PropTypes.bool.isRequired,
 };
 
 export default TopBar;

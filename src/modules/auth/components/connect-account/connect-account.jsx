@@ -14,12 +14,12 @@ export default class ConnectAccount extends Component {
   static propTypes = {
     isLogged: PropTypes.bool.isRequired,
     address: PropTypes.string,
-    className: PropTypes.string,
+    className: PropTypes.string
   };
 
   static defaultProps = {
     address: "",
-    className: undefined,
+    className: undefined
   };
 
   constructor(props) {
@@ -79,14 +79,17 @@ export default class ConnectAccount extends Component {
     return (
       <div
         className={classNames(Styles.ConnectAccount, className, {
-          [Styles.ConnectAccount__selected]: s.dropdownOpen
+          [Styles.ConnectAccount__selected]: s.dropdownOpen,
+          [Styles.ConnectAccountLoggedIn]: isLogged
         })}
         ref={connectAccount => {
           this.connectAccount = connectAccount;
         }}
       >
         <div
-          className={Styles.ConnectAccount__container}
+          className={classNames(Styles.ConnectAccount__container, {
+            [Styles.ConnectAccount__containerLoggedIn]: isLogged
+          })}
           onClick={this.toggleDropdown}
           role="button"
           tabIndex="-1"
@@ -107,7 +110,11 @@ export default class ConnectAccount extends Component {
               {isLogged ? formatAddress(address) : "Connect A Wallet"}
             </div>
           </div>
-          <div className={Styles.ConnectAccount__arrow}>
+          <div
+            className={classNames(Styles.ConnectAccount__arrow, {
+              [Styles.ConnectAccount__arrowHide]: isLogged
+            })}
+          >
             <ChevronFlip
               pointDown={s.dropdownOpen}
               stroke="#fff"

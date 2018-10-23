@@ -12,11 +12,11 @@ export default class GasPriceEdit extends Component {
     updateModal: PropTypes.func.isRequired,
     userDefinedGasPrice: PropTypes.number.isRequired,
     gasPriceSpeed: PropTypes.string.isRequired,
-    className: PropTypes.string,
+    className: PropTypes.string
   };
 
   static defaultProps = {
-    className: undefined,
+    className: undefined
   };
 
   constructor(props) {

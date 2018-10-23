@@ -4,8 +4,9 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 
 import makePath from "modules/routes/helpers/make-path";
+import ConnectAccount from "modules/auth/containers/connect-account";
+import GasPriceEdit from "modules/app/containers/gas-price-edit";
 
-import { Notifications } from "modules/common/components/icons";
 import { MARKETS } from "modules/routes/constants/views";
 import Styles from "modules/app/components/side-nav/side-nav.styles";
 
@@ -78,8 +79,6 @@ export default class SideNav extends Component {
     const {
       isMobile,
       isLogged,
-      toggleNotifications,
-      unseenCount,
       defaultMobileClick,
       menuData,
       mobileShow,
@@ -87,7 +86,8 @@ export default class SideNav extends Component {
     } = this.props;
 
     const accessFilteredMenu = menuData.filter(
-      item => !(item.requireLogin && !isLogged)
+      item =>
+        !(item.requireLogin && !isLogged) && !(item.onlyForMobile && !isMobile)
     );
 
     return (
@@ -134,25 +134,32 @@ export default class SideNav extends Component {
             );
           })}
         </ul>
-        {isLogged &&
-          <div className={Styles.SideNav__amt}>
-            <div className={Styles.SideNav__nav__separator} />
-            <div className={Styles.SideName__placement}>
-              <div className={Styles["SideNav__stat-label"]}>
-                ETH
-                <span className={Styles["SideNav__stat-value"]}>
-                  {stats[0].totalRealEth.value.formatted}
-                </span>
-              </div>
-              <div className={Styles["SideNav__stat-label"]}>
-                REP
-                <span className={Styles["SideNav__stat-value"]}>
-                  {stats[0].totalRep.value.formatted}
-                </span>
+        {isLogged && (
+          <div className={Styles.SideNav__hideForMidScreens}>
+            <GasPriceEdit />
+            <div className={Styles.SideNav__amt}>
+              <div className={Styles.SideNav__nav__separator} />
+              <div className={Styles.SideName__placement}>
+                <div className={Styles["SideNav__stat-label"]}>
+                  {stats[1].totalPLMonth.label}
+                  <span className={Styles["SideNav__stat-value"]}>
+                    {stats[1].totalPLMonth.value.formatted}
+                  </span>
+                </div>
+                <div
+                  className={Styles["SideNav__stat-label"]}
+                  style={{ paddingBottom: "0" }}
+                >
+                  {stats[1].totalPLDay.label}
+                  <span className={Styles["SideNav__stat-value"]}>
+                    {stats[1].totalPLDay.value.formatted}
+                  </span>
+                </div>
               </div>
             </div>
+            <ConnectAccount />
           </div>
-        }
+        )}
       </aside>
     );
   }

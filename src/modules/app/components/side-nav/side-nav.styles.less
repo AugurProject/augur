@@ -86,6 +86,12 @@
     svg.nav-portfolio-icon {
       transform: translateY(0.5rem) scale(0.95);
     }
+
+    svg.nav-logout-icon {
+      height: 1.2rem;
+      margin-left: 0.2rem;
+      width: 1.2rem;
+    }
   }
 }
 
@@ -113,8 +119,6 @@
   .SideNav__nav__separator {
     background: @color-grayish-purple;
     height: 1px;
-    margin: 1rem 0 0.5rem;
-    width: 12.125rem;
   }
 
   .SideNav__stat-label {
@@ -138,10 +142,10 @@
 
   .SideNav__amt {
     align-self: flex-end;
-    font-size: 0.925rem;
-    margin-top: auto;
-    width: 100%;
+    border-bottom: 0.0625rem solid @color-lightpurple;
     display: none;
+    font-size: 0.925rem;
+    width: 100%;
   }
 
   .SideNav__nav {
@@ -180,7 +184,18 @@
   }
 }
 
+.SideNav__hideForMidScreens {
+  display: none;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
 @media @breakpoint-mobile-mid {
+  .SideNav__hideForMidScreens {
+    display: flex;
+  }
+
   .SideNav__amt {
     display: block;
   }
