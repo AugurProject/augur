@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import AccountUniverses from "modules/account/components/account-universes/account-universes";
 
 import { loadUniverseInfo } from "modules/universe/actions/load-universe-info";
-import { updateUniverse } from "modules/universe/actions/update-universe";
-import { setSelectedUniverse } from "../../auth/actions/selected-universe-management";
+import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
+import { loadUniverse } from "modules/app/actions/load-universe";
 
 const mapStateToProps = state => ({
   address: state.loginAccount.address,
@@ -16,8 +16,8 @@ const mapDispatchToProps = dispatch => ({
   getUniverses: callback => dispatch(loadUniverseInfo(callback)),
   switchUniverse: id =>
     dispatch((_, getState) => {
-      dispatch(updateUniverse({ id }));
       dispatch(setSelectedUniverse(id));
+      dispatch(loadUniverse(id));
     })
 });
 
