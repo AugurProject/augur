@@ -33,15 +33,15 @@ export interface Dictionary {
   [key: string]: any;
 }
 
-export function queryModifierDB(
+export async function queryModifierDB<T>(
   query: Knex.QueryBuilder,
   defaultSortBy: string,
   defaultSortOrder: string,
-  sortLimitParams: Partial<SortLimit>): Knex.QueryBuilder {
+  sortLimitParams: Partial<SortLimit>): Promise<Array<T>> {
   query = query.orderBy(sortLimitParams.sortBy || defaultSortBy, sortDirection(sortLimitParams.isSortDescending, defaultSortOrder));
   if (sortLimitParams.limit != null) query = query.limit(sortLimitParams.limit);
   if (sortLimitParams.offset != null) query = query.offset(sortLimitParams.offset);
-  return query;
+  return await query;
 }
 
 async function queryModifierUserland<T>(
@@ -81,9 +81,9 @@ export async function queryModifier<T>(
 ): Promise<Array<T>> {
   const sortFieldName = (sortLimitParams.sortBy || defaultSortBy || "").split(".").pop();
   if (sortFieldName !== "" && isFieldBigNumber(sortFieldName!)) {
-    return queryModifierUserland(db, query, defaultSortBy, defaultSortOrder, sortLimitParams);
+    return queryModifierUserland<T>(db, query, defaultSortBy, defaultSortOrder, sortLimitParams);
   } else {
-    return queryModifierDB(query, defaultSortBy, defaultSortOrder, sortLimitParams);
+    return queryModifierDB<T>(query, defaultSortBy, defaultSortOrder, sortLimitParams);
   }
 }
 
@@ -270,7 +270,7 @@ export function queryTradingHistory(
   if (latestCreationTime != null) query.where("timestamp", "<=", latestCreationTime);
   if (ignoreSelfTrades) query.where("trades.creator", "!=", db.raw("trades.filler"));
 
-  queryModifier(db, query, "trades.blockNumber", "desc", {sortBy, isSortDescending, limit, offset})
+  queryModifier<TradingHistoryRow>(db, query, "trades.blockNumber", "desc", {sortBy, isSortDescending, limit, offset})
     .then((results) => callback(null, results))
     .catch(callback);
 }
