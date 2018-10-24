@@ -36,6 +36,7 @@ import {
 import { RewriteUrlParams } from "src/modules/app/hocs/rewrite-url-params";
 import { windowRef } from "src/utils/window-ref";
 import isGlobalWeb3 from "modules/auth/helpers/is-global-web3";
+import { logout } from "modules/auth/actions/logout";
 
 const mapStateToProps = state => ({
   blockchain: selectBlockchainState(state),
@@ -68,7 +69,8 @@ const mapDispatchToProps = dispatch => ({
   updateIsAnimating: isAnimating =>
     dispatch(updateAppStatus(IS_ANIMATING, isAnimating)),
   updateModal: modal => dispatch(updateModal(modal)),
-  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId))
+  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
+  logout: () => dispatch(logout())
 });
 
 const AppContainer = compose(

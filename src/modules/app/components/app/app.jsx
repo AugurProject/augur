@@ -28,6 +28,7 @@ import MobileNavHamburgerIcon from "modules/common/components/mobile-nav-hamburg
 import MobileNavCloseIcon from "modules/common/components/mobile-nav-close-icon";
 import MobileNavBackIcon from "modules/common/components/mobile-nav-back-icon";
 
+import NavLogoutIcon from "modules/common/components/nav-logout-icon";
 import NavAccountIcon from "modules/common/components/nav-account-icon";
 import NavCreateIcon from "modules/common/components/nav-create-icon";
 import NavMarketsIcon from "modules/common/components/nav-markets-icon";
@@ -99,6 +100,7 @@ export default class AppView extends Component {
     initAugur: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
     loginAccount: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
@@ -113,7 +115,8 @@ export default class AppView extends Component {
     augurNode: PropTypes.string,
     ethereumNodeHttp: PropTypes.string,
     ethereumNodeWs: PropTypes.string,
-    useWeb3Transport: PropTypes.bool
+    useWeb3Transport: PropTypes.bool,
+    logout: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -176,6 +179,15 @@ export default class AppView extends Component {
           this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
         route: ACCOUNT_DEPOSIT,
         requireLogin: true
+      },
+      {
+        title: "Logout",
+        iconName: "nav-logout-icon",
+        icon: NavLogoutIcon,
+        mobileClick: () => props.logout(),
+        route: ACCOUNT_DEPOSIT,
+        requireLogin: true,
+        onlyForMobile: true
       }
     ];
 
@@ -471,7 +483,8 @@ export default class AppView extends Component {
       modal,
       universe,
       isLoading,
-      finalizeMarket
+      finalizeMarket,
+      isMobileSmall
     } = this.props;
     const s = this.state;
 
@@ -544,7 +557,7 @@ export default class AppView extends Component {
               role="presentation"
             >
               <TopBar
-                isMobile={isMobile}
+                isMobileSmall={isMobileSmall}
                 isLogged={isLogged}
                 stats={coreStats}
                 unseenCount={unseenCount}

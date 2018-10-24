@@ -14,6 +14,16 @@
   }
 }
 
+.ConnectAccountLoggedIn {
+  @media @breakpoint-mobile-mid {
+    pointer-events: none;
+
+    &:hover {
+      background-color: unset;
+    }
+  }
+}
+
 .ConnectAccount__selected {
   background-color: @color-lightpurple;
 }
@@ -31,6 +41,16 @@
 
   @media @breakpoint-mobile {
     padding-top: 10px;
+  }
+
+  @media @breakpoint-mobile-mid {
+    padding-top: 10px;
+  }
+}
+
+.ConnectAccount__containerLoggedIn {
+  @media @breakpoint-mobile-mid {
+    padding-top: 18px;
   }
 }
 
@@ -67,6 +87,12 @@
   max-width: 12px;
 }
 
+.ConnectAccount__arrowHide {
+  @media @breakpoint-mobile-mid {
+    display: none;
+  }
+}
+
 .ConnectAccount__connectDropdown {
   background-color: @color-lightpurple;
   border-bottom-left-radius: 2px;
@@ -81,6 +107,6 @@
   z-index: @above-all-content;
 
   @media @breakpoint-mobile {
-    top: 3rem;
+    top: 3.1rem;
   }
 }

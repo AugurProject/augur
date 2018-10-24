@@ -12,6 +12,10 @@
   &:hover {
     background-color: @color-lightpurple;
   }
+
+  @media @breakpoint-mobile-mid {
+    max-width: unset;
+  }
 }
 
 .GasPriceEdit__container {
@@ -27,7 +31,8 @@
   }
 
   @media @breakpoint-mobile {
-    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-top: 8px;
   }
 }
 
