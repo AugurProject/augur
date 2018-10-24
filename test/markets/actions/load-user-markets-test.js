@@ -28,7 +28,7 @@ describe("modules/markets/actions/load-markets.js", () => {
 
     __RewireAPI__.__Rewire__("augur", {
       markets: {
-        getMarketsCreatedByUser: (p, cb) => {
+        getMarkets: (p, cb) => {
           if (!p.universe || !p.creator) return cb({ error: "error message" });
           if (p.universe === "noUserMarketsUniverse") return cb(null);
           cb(null, ["0xabc1", "0xabc2", "0xabc3"]);
