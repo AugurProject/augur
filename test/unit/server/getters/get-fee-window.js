@@ -24,11 +24,12 @@ describe("server/getters/get-fee-window", () => {
   const runTest = (t) => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
-      await setOverrideTimestamp(db, t.params.overrideTimestamp || 1);
+      const timestamp = t.params.overrideTimestamp || 1;
+      await setOverrideTimestamp(db, timestamp);
       t.method = "getFeeWindow";
       dispatchJsonRpcRequest(db, t, t.params.augur, async (err, feeWindow) => {
         t.assertions(err, feeWindow);
-        expect(removeOverrideTimestamp(db, t.params.overrideTimestamp || 1)).rejects.toEqual(new Error(`Timestamp removal failed ${t.params.overrideTimestamp} ${t.params.overrideTimestamp}`));
+        expect(removeOverrideTimestamp(db, timestamp)).rejects.toEqual(new Error(`Timestamp removal failed ${timestamp} ${timestamp}`));
         db.destroy();
         done();
       });
