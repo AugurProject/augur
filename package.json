@@ -45,7 +45,7 @@
     "docker:geth:pop": "npm explore augur.js -- npm run docker:geth:pop",
     "docker:build": "scripts/docker/build.sh",
     "docker:release": "bash scripts/release-docker.sh",
-    "prepush": "npm run lint && npm run test -- --reporter min"
+    "prepush": "npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
