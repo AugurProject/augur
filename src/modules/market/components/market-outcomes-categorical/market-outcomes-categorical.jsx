@@ -117,7 +117,7 @@ class MarketOutcomesCategorical extends Component {
 
 MarketOutcomesCategorical.propTypes = {
   outcomes: PropTypes.array.isRequired,
-  isMobileSmall: PropTypes.bool
+  isMobileSmall: PropTypes.bool.isRequired
 };
 
 CategoricalOutcome.propTypes = {
@@ -127,7 +127,8 @@ CategoricalOutcome.propTypes = {
 };
 
 CategoricalOutcome.defaultProps = {
-  className: null
+  className: null,
+  isMobileSmall: false
 };
 
 export default MarketOutcomesCategorical;

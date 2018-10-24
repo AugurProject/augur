@@ -9,6 +9,7 @@ const NavLogoutIcon = ({ className }) => (
     height="16"
     viewBox="0 0 18 18"
     className={classNames("nav-logout-icon", { [className]: className })}
+    style={{ marginLeft: ".28rem", width: "1.2rem" }}
   >
     <g fill="#FFF" fillRule="nonzero">
       <path d="M14.16 10.123H5.624a1.125 1.125 0 0 1 0-2.25h8.534l-1.454-1.455a1.125 1.125 0 0 1 1.59-1.59l3.375 3.374a1.125 1.125 0 0 1 0 1.591l-3.375 3.375a1.125 1.125 0 1 1-1.59-1.59l1.454-1.455z" />

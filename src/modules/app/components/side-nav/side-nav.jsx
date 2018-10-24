@@ -17,8 +17,6 @@ export default class SideNav extends Component {
     isLogged: PropTypes.bool.isRequired,
     menuData: PropTypes.array.isRequired,
     mobileShow: PropTypes.bool.isRequired,
-    toggleNotifications: PropTypes.func.isRequired,
-    unseenCount: PropTypes.number.isRequired,
     stats: PropTypes.array.isRequired,
     currentBasePath: PropTypes.string.isRequired
   };
@@ -144,6 +142,7 @@ export default class SideNav extends Component {
                   {stats[1].totalPLMonth.label}
                   <span className={Styles["SideNav__stat-value"]}>
                     {stats[1].totalPLMonth.value.formatted}
+                    <span className={Styles["SideNav__stat-unit"]}>ETH</span>
                   </span>
                 </div>
                 <div
@@ -153,6 +152,7 @@ export default class SideNav extends Component {
                   {stats[1].totalPLDay.label}
                   <span className={Styles["SideNav__stat-value"]}>
                     {stats[1].totalPLDay.value.formatted}
+                    <span className={Styles["SideNav__stat-unit"]}>ETH</span>
                   </span>
                 </div>
               </div>
