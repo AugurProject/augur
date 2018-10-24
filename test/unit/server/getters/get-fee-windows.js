@@ -1,29 +1,22 @@
-"use strict";
-
 const { BigNumber } = require("bignumber.js");
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
-const { setOverrideTimestamp } = require("../../../../src/blockchain/process-block");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
+const { setOverrideTimestamp } = require("src/blockchain/process-block");
 
 describe("server/getters/get-fee-windows", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        setOverrideTimestamp(db, 1509065471, (err) => {
-          assert.ifError(err);
-          t.method = "getFeeWindows";
-          dispatchJsonRpcRequest(db,  t, t.params.augur, (err, feeWindows) => {
-            t.assertions(err, feeWindows);
-            db.destroy();
-            done();
-          });
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+      const db = await setupTestDb();
+      await setOverrideTimestamp(db, 1509065471);
+      t.method = "getFeeWindows";
+      dispatchJsonRpcRequest(db, t, t.params.augur, (err, feeWindows) => {
+        t.assertions(err, feeWindows);
+        db.destroy();
+        done();
       });
     });
   };
-  test({
+  runTest({
     description: "get fee windows for the user",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -45,8 +38,8 @@ describe("server/getters/get-fee-windows", () => {
       },
     },
     assertions: (err, feeWindows) => {
-      assert.ifError(err);
-      assert.deepEqual(feeWindows, {
+      expect(err).toBeFalsy();
+      expect(feeWindows).toEqual({
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
           endTime: 1506473515,
@@ -62,7 +55,7 @@ describe("server/getters/get-fee-windows", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "get fee windows for the user except current one",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -84,8 +77,8 @@ describe("server/getters/get-fee-windows", () => {
       },
     },
     assertions: (err, feeWindows) => {
-      assert.ifError(err);
-      assert.deepEqual(feeWindows, {
+      expect(err).toBeFalsy();
+      expect(feeWindows).toEqual({
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
           endTime: 1506473515,
@@ -95,7 +88,7 @@ describe("server/getters/get-fee-windows", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "get fee windows for user with no participation token balance",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -117,8 +110,8 @@ describe("server/getters/get-fee-windows", () => {
       },
     },
     assertions: (err, feeWindows) => {
-      assert.ifError(err);
-      assert.deepEqual(feeWindows, {});
+      expect(err).toBeFalsy();
+      expect(feeWindows).toEqual({});
     },
   });
 });
