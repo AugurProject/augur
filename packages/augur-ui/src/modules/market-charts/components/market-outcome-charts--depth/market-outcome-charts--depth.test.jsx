@@ -25,50 +25,50 @@ describe("src/modules/market-charts/components/market-outcome-charts--depth/mark
   };
 
   describe("price 0.19", () => {
-    before(() => {
+    beforeEach(() => {
       price = 0.19;
       result = nearestCompletelyFillingOrder(price, marketDepth);
     });
 
-    it("should return an order with depth 0.006", () => {
-      assert.strictEqual(result[0].toNumber(), 0.006);
+    test("should return an order with depth 0.006", () => {
+      expect(result[0].toNumber()).toBe(0.006);
     });
 
-    it("should return the order with matching price", () => {
-      assert.strictEqual(result[1], price);
+    test("should return the order with matching price", () => {
+      expect(result[1]).toBe(price);
     });
 
-    it("should return an order that is selectable", () => {
-      assert.isTrue(result[3]);
+    test("should return an order that is selectable", () => {
+      expect(result[3]).toBeTruthy();
     });
 
-    it("should be a bid order", () => {
-      assert.strictEqual(result[4], BIDS);
+    test("should be a bid order", () => {
+      expect(result[4]).toEqual(BIDS);
     });
   });
 
   describe("price 0.4", () => {
-    before(() => {
+    beforeEach(() => {
       price = 0.4;
       result = nearestCompletelyFillingOrder(price, marketDepth);
     });
 
-    it("should return the order with matching price", () => {
-      assert.strictEqual(result[1], price);
+    test("should return the order with matching price", () => {
+      expect(result[1]).toEqual(price);
     });
 
-    it("should return an asks order", () => {
-      assert.strictEqual(result[4], ASKS);
+    test("should return an asks order", () => {
+      expect(result[4]).toEqual(ASKS);
     });
   });
 
   describe("undefined price", () => {
-    before(() => {
+    beforeEach(() => {
       result = nearestCompletelyFillingOrder(undefined, marketDepth);
     });
 
-    it("should return undefined", () => {
-      assert.isNull(result);
+    test("should return undefined", () => {
+      expect(result).toBeNull();
     });
   });
 
@@ -88,11 +88,11 @@ describe("src/modules/market-charts/components/market-outcome-charts--depth/mark
       ]
     };
 
-    it("should work be selectable", () => {
+    test("should work be selectable", () => {
       price = 0.35;
       result = nearestCompletelyFillingOrder(price, marketDepth);
 
-      assert.isTrue(result[3]);
+      expect(result[3]).toBeTruthy();
     });
   });
 });

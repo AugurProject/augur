@@ -58,12 +58,12 @@ describe("modules/markets/helpers/get-default-range-period-durations.js", () => 
       result = getDefaultRangePeriodDuration(rangeList, periodList);
     });
 
-    it("should return first period with a true isDefault attribute", () => {
-      assert.equal(result.period, 3600);
+    test("should return first period with a true isDefault attribute", () => {
+      expect(result.period).toEqual(3600);
     });
 
-    it("should return first range with a true isDefault attribute", () => {
-      assert.equal(result.range, 86400);
+    test("should return first range with a true isDefault attribute", () => {
+      expect(result.range).toEqual(86400);
     });
   });
 });

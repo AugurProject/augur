@@ -1,12 +1,12 @@
 import { selectCategories } from "modules/categories/selectors/categories";
 
 describe(`modules/categories/selectors/categories.js`, () => {
-  it("no categories", () => {
+  test("no categories", () => {
     const categories = {};
     const output = selectCategories({ categories });
     expect(output).toEqual([]);
   });
-  it("1 category", () => {
+  test("1 category", () => {
     const categories = {
       0: {
         category: "testing",
@@ -16,7 +16,7 @@ describe(`modules/categories/selectors/categories.js`, () => {
     const output = selectCategories({ categories });
     expect(output).toEqual([{ category: "testing", popularity: 10 }]);
   });
-  it("2 categories of unequal popularity", () => {
+  test("2 categories of unequal popularity", () => {
     const categories = {
       0: {
         category: "testing",
@@ -33,7 +33,7 @@ describe(`modules/categories/selectors/categories.js`, () => {
       { category: "backflips", popularity: 2 }
     ]);
   });
-  it("2 categories of equal popularity", () => {
+  test("2 categories of equal popularity", () => {
     const categories = {
       0: {
         category: "testing",
@@ -50,7 +50,7 @@ describe(`modules/categories/selectors/categories.js`, () => {
       { category: "frontflips", popularity: 10 }
     ]);
   });
-  it("3 categories of unequal popularity", () => {
+  test("3 categories of unequal popularity", () => {
     const categories = {
       0: {
         category: "testing",
@@ -72,7 +72,7 @@ describe(`modules/categories/selectors/categories.js`, () => {
       { category: "backflips", popularity: 2 }
     ]);
   });
-  it("3 categories, 2 of equal popularity", () => {
+  test("3 categories, 2 of equal popularity", () => {
     const categories = {
       0: {
         category: "testing",
@@ -94,7 +94,7 @@ describe(`modules/categories/selectors/categories.js`, () => {
       { category: "backflips", popularity: 2 }
     ]);
   });
-  it("3 categories of equal popularity", () => {
+  test("3 categories of equal popularity", () => {
     const categories = {
       0: {
         category: "testing",
@@ -116,7 +116,7 @@ describe(`modules/categories/selectors/categories.js`, () => {
       { category: "frontflips", popularity: 10 }
     ]);
   });
-  it("4 categories of equal popularity, one is empty name and shouldnt get passed out of selector.", () => {
+  test("4 categories of equal popularity, one is empty name and shouldnt get passed out of selector.", () => {
     const categories = {
       0: {
         category: "testing",

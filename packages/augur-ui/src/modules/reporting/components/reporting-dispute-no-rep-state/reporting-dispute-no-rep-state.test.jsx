@@ -1,8 +1,5 @@
 import React from "react";
-
-import { spy } from "sinon";
 import { shallow } from "enzyme";
-
 import ReportDisputeNoRepState from "src/modules/reporting/components/reporting-dispute-no-rep-state/reporting-dispute-no-rep-state";
 
 describe("ReportDisputeNoRepState", () => {
@@ -11,7 +8,7 @@ describe("ReportDisputeNoRepState", () => {
   let onClickSpy;
 
   beforeEach(() => {
-    onClickSpy = spy();
+    onClickSpy = jest.fn(() => {});
     exampleMessage = "some message";
     cmp = shallow(
       <ReportDisputeNoRepState
@@ -29,24 +26,24 @@ describe("ReportDisputeNoRepState", () => {
     });
 
     describe("message", () => {
-      it("should be rendered into the DOM", () => {
-        assert.include(cmp.text(), exampleMessage);
+      test("should be rendered into the DOM", () => {
+        expect(cmp.text()).toEqual(expect.stringContaining(exampleMessage));
       });
     });
 
     describe("onClick", () => {
-      it("should fire when action button is clicked", () => {
+      test("should fire when action button is clicked", () => {
         btn.simulate("click");
-        assert.ok(onClickSpy.called);
+        expect(onClickSpy).toHaveBeenCalled();
       });
     });
 
     describe("btnText", () => {
-      it('should default to "OK"', () => {
-        assert.include(btn.text(), "OK");
+      test("should default to 'OK'", () => {
+        expect(btn.text()).toEqual(expect.stringContaining("OK"));
       });
 
-      it("should appear in the body of the button", () => {
+      test("should appear in the body of the button", () => {
         const btnText = "some button text";
         cmp = shallow(
           <ReportDisputeNoRepState
@@ -55,8 +52,9 @@ describe("ReportDisputeNoRepState", () => {
             btnText={btnText}
           />
         );
-
-        assert.include(cmp.find("button").text(), btnText);
+        expect(cmp.find("button").text()).toEqual(
+          expect.stringContaining(btnText)
+        );
       });
     });
   });

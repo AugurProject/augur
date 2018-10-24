@@ -1,8 +1,4 @@
 import React from "react";
-
-import { describe, it } from "mocha";
-import { assert } from "chai";
-
 import { shallow } from "enzyme";
 import { RewriteUrlParams } from "src/modules/app/hocs/rewrite-url-params";
 
@@ -32,12 +28,11 @@ describe("src/modules/app/hocs/rewrite-url-params/index.jsx", () => {
         };
       });
 
-      it("should move the params from the router search string to the window", () => {
+      test("should move the params from the router search string to the window", () => {
         const Cmp = RewriteUrlParams(windowRef)(EmptyComponent);
         shallow(<Cmp location={routerLocationRef} />);
 
-        assert.equal(
-          windowRef.location.href,
+        expect(windowRef.location.href).toEqual(
           "http://example.com?augur_node=ws%3A%2F%2F127.0.0.1%3A9001&ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546#/markets?some_other_param=somevalue"
         );
       });
@@ -64,31 +59,19 @@ describe("src/modules/app/hocs/rewrite-url-params/index.jsx", () => {
         cmp = shallow(<Cmp location={routerLocationRef} />);
       });
 
-      it("should do nothing to the url", () => {
-        assert.equal(
-          windowRef.location.href,
+      test("should do nothing to the url", () => {
+        expect(windowRef.location.href).toEqual(
           "http://example.com?augur_node=ws%3A%2F%2F127.0.0.1%3A9001&ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546#/markets?some_other_param=somevalue"
         );
       });
 
-      it("should pass endpoints as props to wrapped component", () => {
+      test("should pass endpoints as props to wrapped component", () => {
         const wrappedCmp = cmp.find(EmptyComponent);
-        console.log(wrappedCmp.props());
-        assert.propertyVal(
-          wrappedCmp.props(),
-          "augurNode",
-          "ws://127.0.0.1:9001"
-        );
-        assert.propertyVal(
-          wrappedCmp.props(),
-          "ethereumNodeHttp",
+        expect(wrappedCmp.props().augurNode).toBe("ws://127.0.0.1:9001");
+        expect(wrappedCmp.props().ethereumNodeHttp).toBe(
           "http://127.0.0.1:8545"
         );
-        assert.propertyVal(
-          wrappedCmp.props(),
-          "ethereumNodeWs",
-          "ws://127.0.0.1:8546"
-        );
+        expect(wrappedCmp.props().ethereumNodeWs).toBe("ws://127.0.0.1:8546");
       });
     });
   });
