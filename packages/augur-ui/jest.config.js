@@ -67,11 +67,11 @@ module.exports = {
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    "^.+\\.less?$": "<rootDir>/test/mockStyle.js",
     "^src/(.*)$": "<rootDir>/src/$1",
     "^(config|modules|utils|services)/(.*)$": "<rootDir>/src/$1/$2",
     "^assertions/(.*)$": "<rootDir>/test/assertions/$1",
-    "^test/(.*)$": "<rootDir>/test/$1"
+    "^test/(.*)$": "<rootDir>/test/$1",
+    "\\.(styles)$": "<rootDir>/test/mockStyle.js"
   },
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],

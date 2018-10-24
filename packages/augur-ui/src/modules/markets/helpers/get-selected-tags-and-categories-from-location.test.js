@@ -20,8 +20,8 @@ describe("src/modules/markets/helpers/get-tags-and-categories-from-location.js",
       );
     });
 
-    it("should return an object with the relevant parsed data in an object", () => {
-      assert.deepEqual(result, {
+    test("should return an object with the relevant parsed data in an object", () => {
+      expect(result).toEqual({
         category: "Augur",
         keywords: "test keywords",
         tags: ["Ethereum", "trading"],
@@ -35,8 +35,8 @@ describe("src/modules/markets/helpers/get-tags-and-categories-from-location.js",
       result = composedGetTagsAndCategoriesFromLocation("category=Augur");
     });
 
-    it("should return an object with the relevant parsed data", () => {
-      assert.deepEqual(result, {
+    test("should return an object with the relevant parsed data", () => {
+      expect(result).toEqual({
         category: "Augur",
         keywords: undefined,
         tags: [],
@@ -50,8 +50,8 @@ describe("src/modules/markets/helpers/get-tags-and-categories-from-location.js",
       result = composedGetTagsAndCategoriesFromLocation("");
     });
 
-    it("should return an object with a null category and empty tags array", () => {
-      assert.deepEqual(result, {
+    test("should return an object with a null category and empty tags array", () => {
+      expect(result).toEqual({
         category: undefined,
         keywords: undefined,
         tags: [],
@@ -69,8 +69,8 @@ describe("src/modules/markets/helpers/get-tags-and-categories-from-location.js",
       result = getSelectedTagsAndCategoriesFromLocation({});
     });
 
-    it("should do something", () => {
-      assert.deepEqual(result, {
+    test("should do something", () => {
+      expect(result).toEqual({
         category: undefined,
         keywords: undefined,
         tags: [],
@@ -86,8 +86,8 @@ describe("src/modules/markets/helpers/get-tags-and-categories-from-location.js",
       );
     });
 
-    it('should be returned as part of the "balanceOfSearchParams"', () => {
-      assert.deepEqual(result, {
+    test("should be returned as part of the balanceOfSearchParams", () => {
+      expect(result).toEqual({
         category: "Augur",
         keywords: undefined,
         tags: [],

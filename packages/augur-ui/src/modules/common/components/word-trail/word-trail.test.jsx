@@ -18,13 +18,13 @@ describe("word-trail", () => {
       wrapper = shallow(<WordTrail items={items} typeLabel={SOME_LABEL} />);
     });
 
-    it("should render a list", () => {
-      assert.include(wrapper.html(), SOME_LABEL);
+    test("should render a list", () => {
+      expect(wrapper.html()).toEqual(expect.stringContaining(SOME_LABEL));
     });
 
-    it("should only display the label prop", () => {
+    test("should only display the label prop", () => {
       const topLabel = wrapper.find("button");
-      assert.lengthOf(topLabel, 0);
+      expect(topLabel).toHaveLength(0);
     });
   });
 
@@ -44,17 +44,17 @@ describe("word-trail", () => {
       wrapper = shallow(<WordTrail items={items} typeLabel={SOME_LABEL} />);
     });
 
-    it("should render each of them", () => {
-      assert.lengthOf(wrapper.find(SimpleButton), 2);
+    test("should render each of them", () => {
+      expect(wrapper.find(SimpleButton)).toHaveLength(2);
     });
 
-    it("should display the passed label for each item", () => {
+    test("should display the passed label for each item", () => {
       const titlesArr = wrapper.find(SimpleButton).map(cmp => cmp.props().text);
-      assert.deepEqual(titlesArr, ["tag1", "tag2"]);
+      expect(titlesArr).toEqual(["tag1", "tag2"]);
     });
 
-    it("should display the top label prop", () => {
-      assert.include(wrapper.html(), SOME_LABEL);
+    test("should display the top label prop", () => {
+      expect(wrapper.html()).toEqual(expect.stringContaining(SOME_LABEL));
     });
   });
 });

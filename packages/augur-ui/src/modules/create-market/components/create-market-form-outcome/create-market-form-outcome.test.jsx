@@ -1,11 +1,8 @@
 import React from "react";
-
-import { spy } from "sinon";
 import { shallow } from "enzyme";
-
-import CreateMarketOutcome from "src/modules/create-market/components/create-market-form-outcome/create-market-form-outcome";
-import { SCALAR } from "src/modules/markets/constants/market-types";
-import { createBigNumber } from "src/utils/create-big-number";
+import CreateMarketOutcome from "modules/create-market/components/create-market-form-outcome/create-market-form-outcome";
+import { SCALAR } from "modules/markets/constants/market-types";
+import { createBigNumber } from "utils/create-big-number";
 
 describe("create-market-form-outcome", () => {
   let cmp;
@@ -68,9 +65,9 @@ describe("create-market-form-outcome", () => {
         "Unable to create market.  Ensure your market is unique and all values are valid."
     };
 
-    isValidSpy = spy();
-    updateNewMarketSpy = spy();
-    validateFieldSpy = spy();
+    isValidSpy = jest.fn(() => {});
+    updateNewMarketSpy = jest.fn(() => {});
+    validateFieldSpy = jest.fn(() => {});
   });
 
   describe("scalar market", () => {
@@ -94,15 +91,14 @@ describe("create-market-form-outcome", () => {
 
     describe("tick size field", () => {
       describe("when less tha zero", () => {
-        it("should render validation message", () => {
+        test("should render validation message", () => {
           tickSizeInput.simulate("change", { target: { value: "-7" } });
-          const newMarketObj = updateNewMarketSpy.args[0][0];
+          const newMarketObj = updateNewMarketSpy.mock.calls[0][0];
 
-          assert.equal(newMarketObj.tickSize, "-7");
-          assert.equal(
-            newMarketObj.validations[newMarketObj.currentStep].tickSize,
-            "Tick size cannot be negative."
-          );
+          expect(newMarketObj.tickSize).toBe("-7");
+          expect(
+            newMarketObj.validations[newMarketObj.currentStep].tickSize
+          ).toBe("Tick size cannot be negative.");
         });
       });
 
@@ -111,18 +107,17 @@ describe("create-market-form-outcome", () => {
 
         beforeEach(() => {
           tickSizeInput.simulate("change", { target: { value: 0 } });
-          newMarketObj = updateNewMarketSpy.args[0][0];
+          newMarketObj = updateNewMarketSpy.mock.calls[0][0];
         });
 
-        it("should update market with new value", () => {
-          assert.equal(newMarketObj.tickSize, 0);
+        test("should update market with new value", () => {
+          expect(newMarketObj.tickSize).toBe(0);
         });
 
-        it("should set validation message to true", () => {
-          assert.equal(
-            newMarketObj.validations[newMarketObj.currentStep].tickSize,
-            "Tick size is required."
-          );
+        test("should set validation message to true", () => {
+          expect(
+            newMarketObj.validations[newMarketObj.currentStep].tickSize
+          ).toBe("Tick size is required.");
         });
       });
 
@@ -131,22 +126,22 @@ describe("create-market-form-outcome", () => {
 
         beforeEach(() => {
           tickSizeInput.simulate("change", { target: { value: 1000 } });
-          newMarketObj = updateNewMarketSpy.args[0][0];
+          newMarketObj = updateNewMarketSpy.mock.calls[0][0];
         });
 
-        it("should update market with new value", () => {
-          assert.equal(newMarketObj.tickSize, 1000);
+        test("should update market with new value", () => {
+          expect(newMarketObj.tickSize).toBe(1000);
         });
 
-        it("should set validation message to true", () => {
-          assert.isTrue(
+        test("should set validation message to true", () => {
+          expect(
             newMarketObj.validations[newMarketObj.currentStep].tickSize
-          );
+          ).toBeTruthy();
         });
       });
 
       describe("validation message", () => {
-        it("should render into the dom tree when provided", () => {
+        test("should render into the dom tree when provided", () => {
           const validationMessage = "Some fancy validation message";
           newMarket.validations[
             newMarket.currentStep
@@ -156,7 +151,9 @@ describe("create-market-form-outcome", () => {
             newMarket
           });
 
-          assert.include(cmp.text(), validationMessage);
+          expect(cmp.text()).toEqual(
+            expect.stringContaining(validationMessage)
+          );
         });
       });
     });

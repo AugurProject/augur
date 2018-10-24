@@ -1,6 +1,5 @@
 import React from "react";
 
-import { spy } from "sinon";
 import { shallow } from "enzyme";
 import ReportingDispute from "src/modules/reporting/components/reporting-dispute-markets/reporting-dispute-markets";
 
@@ -14,8 +13,8 @@ describe("report dispute component", () => {
         location: {},
         markets: [],
         marketsCount: 0,
-        navigateToAccountDepositHandler: spy(),
-        loadMarkets: spy()
+        navigateToAccountDepositHandler: jest.fn(() => {}),
+        loadMarkets: jest.fn(() => {})
       };
     });
 
@@ -26,11 +25,11 @@ describe("report dispute component", () => {
           doesUserHaveRep = true;
         });
 
-        it("should not render ReportDisputeNoRepState component", () => {
+        test("should not render ReportDisputeNoRepState component", () => {
           const cmp = shallow(
             <ReportingDispute {...props} doesUserHaveRep={doesUserHaveRep} />
           );
-          assert.lengthOf(cmp.find("ReportDisputeNoRepState"), 0);
+          expect(cmp.find("ReportDisputeNoRepState")).toHaveLength(0);
         });
       });
 
@@ -39,11 +38,11 @@ describe("report dispute component", () => {
           doesUserHaveRep = false;
         });
 
-        it("should render ReportDisputeNoRepState component", () => {
+        test("should render ReportDisputeNoRepState component", () => {
           const cmp = shallow(
             <ReportingDispute {...props} doesUserHaveRep={doesUserHaveRep} />
           );
-          assert.lengthOf(cmp.find("ReportDisputeNoRepState"), 1);
+          expect(cmp.find("ReportDisputeNoRepState")).toHaveLength(1);
         });
       });
     });

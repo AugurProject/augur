@@ -15,7 +15,7 @@ describe("events/actions/disconnect-handlers", () => {
   let store;
   let state;
   let params;
-  const mockHistory = { push: arg => assert.deepEqual(arg, "/categories") };
+  const mockHistory = { push: arg => expect(arg).toEqual("/categories") };
 
   describe("handleAugurNodeDisconnect", () => {
     let initAugurSpy;
@@ -185,55 +185,6 @@ describe("events/actions/disconnect-handlers", () => {
       };
       store = mockStore.mockStore(state);
       store.dispatch(handleEthereumDisconnect(params.history));
-      //TODO: Figure out what the correct state should be; this was never tested in the original test.
-      /*
-      expect(store.getActions()).toEqual([
-        {
-          type: "UPDATE_MODAL",
-          data: {
-            modalOptions: {
-              type: "MODAL_NETWORK_DISCONNECTED",
-              connection: {
-                isConnected: true,
-                isConnectedToAugurNode: true,
-                isReconnectionPaused: false
-              },
-              env: undefined
-            }
-          }
-        },
-        { type: "UPDATE_CONNECTION_STATUS", isConnected: false },
-        {
-          type: "UPDATE_MODAL",
-          data: {
-            modalOptions: {
-              type: "MODAL_NETWORK_DISCONNECTED",
-              connection: {
-                isConnected: true,
-                isConnectedToAugurNode: true,
-                isReconnectionPaused: false
-              },
-              env: undefined
-            }
-          }
-        },
-        {
-          type: "UPDATE_MODAL",
-          data: {
-            modalOptions: {
-              type: "MODAL_NETWORK_DISCONNECTED",
-              connection: {
-                isConnected: true,
-                isConnectedToAugurNode: true,
-                isReconnectionPaused: false
-              },
-              env: undefined
-            }
-          }
-        },
-        { type: "CONNECT_AUGUR" }
-      ]);
-      */
       done();
     });
   });
