@@ -1,32 +1,27 @@
-"use strict";
-
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-fork-migration-totals", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        t.method = "getForkMigrationTotals";
-        dispatchJsonRpcRequest(db, t, t.params.augur, (err, forkMigrationTotals) => {
-          t.assertions(err, forkMigrationTotals);
-          db.destroy();
-          done();
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+      const db = await setupTestDb();
+      t.method = "getForkMigrationTotals";
+      dispatchJsonRpcRequest(db, t, t.params.augur, (err, forkMigrationTotals) => {
+        t.assertions(err, forkMigrationTotals);
+        db.destroy();
+        done();
       });
     });
   };
-  test({
+  runTest({
     description: "get the fork migration totals",
     params: {
       parentUniverse: "0x000000000000000000000000000000000000000b",
       augur: {},
     },
     assertions: (err, forkMigrationTotals) => {
-      assert.ifError(err);
-      assert.deepEqual(forkMigrationTotals, {
+      expect(err).toBeFalsy();
+      expect(forkMigrationTotals).toEqual({
         "CHILD_UNIVERSE": {
           "isInvalid": false,
           "payout": [

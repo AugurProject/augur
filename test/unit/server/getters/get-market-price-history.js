@@ -1,24 +1,19 @@
-"use strict";
-
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-market-price-history", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        t.method = "getMarketPriceHistory";
-        dispatchJsonRpcRequest(db, t, null, (err, marketPriceHistory) => {
-          t.assertions(err, marketPriceHistory);
-          db.destroy();
-          done();
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+      const db = await setupTestDb();
+      t.method = "getMarketPriceHistory";
+      dispatchJsonRpcRequest(db, t, null, (err, marketPriceHistory) => {
+        t.assertions(err, marketPriceHistory);
+        db.destroy();
+        done();
       });
     });
   };
-  test({
+  runTest({
     description: "market has a single price point",
     params: {
       marketId: "0x0000000000000000000000000000000000000001",
@@ -28,8 +23,8 @@ describe("server/getters/get-market-price-history", () => {
       offset: null,
     },
     assertions: (err, marketPriceHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(marketPriceHistory, {
+      expect(err).toBeFalsy();
+      expect(marketPriceHistory).toEqual({
         0: [{
           price: "5.5",
           amount: "0.2",
@@ -42,7 +37,7 @@ describe("server/getters/get-market-price-history", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "market has no price history",
     params: {
       marketId: "0x0000000000000000000000000000000000001111",
@@ -52,8 +47,8 @@ describe("server/getters/get-market-price-history", () => {
       offset: null,
     },
     assertions: (err, marketPriceHistory) => {
-      assert.ifError(err);
-      assert.deepEqual(marketPriceHistory, {});
+      expect(err).toBeFalsy();
+      expect(marketPriceHistory).toEqual({});
     },
   });
 });

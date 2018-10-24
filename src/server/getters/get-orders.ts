@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
 import { OrdersRow, OrderState, UIOrder, UIOrders, Bytes32, SortLimitParams, OutcomeParam } from "../../types";
-import { queryModifierParams } from "./database";
+import { queryModifier } from "./database";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 
 export const OrdersParamsSpecific = t.type({
@@ -56,7 +56,7 @@ export async function getOrders(db: Knex, augur: {}, params: t.TypeOf<typeof Ord
   if (params.earliestCreationTime != null) query.where("creationTime", ">=", params.earliestCreationTime);
   if (params.latestCreationTime != null) query.where("creationTime", "<=", params.latestCreationTime);
   if (params.orderState != null && params.orderState !== OrderState.ALL) query.where("orderState", params.orderState);
-  const ordersRows = await queryModifierParams<OrdersRowWithCreationTimeAndCanceled>(db, query, "volume", "desc", params);
+  const ordersRows = await queryModifier<OrdersRowWithCreationTimeAndCanceled>(db, query, "volume", "desc", params);
   if (!ordersRows) throw new Error("Unexpected error fetching order rows");
   const orders: UIOrders<string> = {};
   ordersRows.forEach((row: OrdersRowWithCreationTimeAndCanceled): void => {

@@ -1,21 +1,18 @@
-"use strict";
-
 const Augur = require("augur.js");
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {BigNumber} = require("bignumber.js");
+const { BigNumber } = require("bignumber.js");
 const {
   processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedLogRemoval,
   processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval,
   processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval,
 }
-  = require("../../../../src/blockchain/log-processors/crowdsourcer");
-const {getMarketsWithReportingState} = require("../../../../src/server/getters/database");
-const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../src/blockchain/process-block");
+  = require("src/blockchain/log-processors/crowdsourcer");
+const { getMarketsWithReportingState } = require("src/server/getters/database");
+const { setOverrideTimestamp, removeOverrideTimestamp } = require("src/blockchain/process-block");
 
 
-const getCrowdsourcer = (db, params, callback) => {
-  db("crowdsourcers").first(
+function getCrowdsourcer(db, log) {
+  return db("crowdsourcers").first(
     ["crowdSourcerId",
       "crowdsourcers.marketId",
       "completed",
@@ -23,69 +20,48 @@ const getCrowdsourcer = (db, params, callback) => {
       "payouts.winning",
       "payouts.tentativeWinning"])
     .join("payouts", "payouts.payoutId", "crowdsourcers.payoutId")
-    .where({crowdsourcerId: params.log.disputeCrowdsourcer}).asCallback(callback);
-};
+    .where({ crowdsourcerId: log.disputeCrowdsourcer });
+}
 
-const getDisputesFromCrowdsourcer = (db, params, callback) => {
-  db("disputes").where({crowdsourcerId: params.log.disputeCrowdsourcer}).asCallback(callback);
-};
-
-const getCrowdsourcerAndMarket = (db, params, callback) => {
-  getCrowdsourcer(db, params, (err, crowdsourcer) => {
-    if (err) return callback(err);
-
-    getMarketsWithReportingState(db).first().where({"markets.marketId": crowdsourcer.marketId})
-      .asCallback((err, market) => {
-        if (err) return callback(err);
-
-        callback(null, {market, crowdsourcer});
-      });
-  });
-};
-
+function getDisputesFromCrowdsourcer(db, log) {
+  return db("disputes").where({ crowdsourcerId: log.disputeCrowdsourcer });
+}
+async function getCrowdsourcerAndMarket(db, log) {
+  const crowdsourcerRow = await getCrowdsourcer(db, log);
+  return {
+    crowdsourcer: crowdsourcerRow,
+    market: await getMarketsWithReportingState(db).first().where({ "markets.marketId": crowdsourcerRow.marketId }),
+  };
+}
 
 describe("blockchain/log-processors/crowdsourcers", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        setOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
-          assert.ifError(err);
-          db.transaction((trx) => {
-            function verify(processor, getter, checker, callback) {
-              processor(trx, t.params.augur, t.params.log, (err) => {
-                assert.ifError(err);
-                getter(trx, t.params, (err, records) => {
-                  assert.ifError(err);
-                  checker(err, records);
-                  callback();
-                });
-              });
-            }
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
 
-            verify(processDisputeCrowdsourcerCreatedLog, getCrowdsourcer, t.assertions.onCreated, () => {
-              verify(processDisputeCrowdsourcerContributionLog, getDisputesFromCrowdsourcer, t.assertions.onContributed, () => {
-                verify(processDisputeCrowdsourcerCompletedLog, getCrowdsourcerAndMarket, t.assertions.onCompleted, () => {
-                  verify(processDisputeCrowdsourcerCompletedLogRemoval, getCrowdsourcerAndMarket, t.assertions.onCompletedRemoved, () => {
-                    verify(processDisputeCrowdsourcerContributionLogRemoval, getDisputesFromCrowdsourcer, t.assertions.onContributedRemoved, () => {
-                      verify(processDisputeCrowdsourcerCreatedLogRemoval, getCrowdsourcer, t.assertions.onCreatedRemoved, () => {
-                        removeOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
-                          assert.isNotNull(err);
-                          db.destroy();
-                          done();
-                        });
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
+  const runTest = (t) => {
+    test(t.description, async () => {
+      setOverrideTimestamp(db, t.params.overrideTimestamp);
+
+      await db.transaction(async (trx) => {
+        async function verify(processor, getter, checker) {
+          await processor(trx, t.params.augur, t.params.log);
+          checker(await getter(trx, t.params.log));
+        }
+
+        await verify(processDisputeCrowdsourcerCreatedLog, getCrowdsourcer, t.assertions.onCreated);
+        await verify(processDisputeCrowdsourcerContributionLog, getDisputesFromCrowdsourcer, t.assertions.onContributed);
+        await verify(processDisputeCrowdsourcerCompletedLog, getCrowdsourcerAndMarket, t.assertions.onCompleted);
+        await verify(processDisputeCrowdsourcerCompletedLogRemoval, getCrowdsourcerAndMarket, t.assertions.onCompletedRemoved);
+        await verify(processDisputeCrowdsourcerContributionLogRemoval, getDisputesFromCrowdsourcer, t.assertions.onContributedRemoved);
+        await verify(processDisputeCrowdsourcerCreatedLogRemoval, getCrowdsourcer, t.assertions.onCreatedRemoved);
+        await expect(removeOverrideTimestamp(db, t.params.overrideTimestamp)).rejects.toEqual(new Error("Timestamp removal failed 1509085473 1509085473"));
       });
+      await db.destroy();
     });
   };
-  test({
+  runTest({
     description: "report submitted",
     params: {
       log: {
@@ -106,13 +82,13 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         api: {
           Universe: {
             getFeeWindowByTimestamp: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
+              expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
               const feeWindowByTimestamp = {
                 1509085473: "0x2000000000000000000000000000000000000000",
                 1509690273: "0x2100000000000000000000000000000000000000",
               };
               const feeWindow = feeWindowByTimestamp[p._timestamp];
-              assert.isString(feeWindow);
+              expect(typeof feeWindow).toBe("string");
               callback(null, feeWindow);
             },
           },
@@ -121,9 +97,9 @@ describe("blockchain/log-processors/crowdsourcers", () => {
       overrideTimestamp: 1509085473,
     },
     assertions: {
-      onCreated: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, {
+      onCreated: (records) => {
+
+        expect(records).toEqual({
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
           feeWindow: "0x2000000000000000000000000000000000000000",
@@ -132,13 +108,13 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           winning: null,
         });
       },
-      onCreatedRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.isUndefined(records);
+      onCreatedRemoved: (records) => {
+
+        expect(records).not.toBeDefined();
       },
-      onContributed: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, [{
+      onContributed: (records) => {
+
+        expect(records).toEqual([{
           blockNumber: 1400100,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
           logIndex: 0,
@@ -148,13 +124,13 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           amountStaked: new BigNumber("19381", 10),
         }]);
       },
-      onContributedRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, []);
+      onContributedRemoved: (records) => {
+
+        expect(records).toEqual([]);
       },
-      onCompleted: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records.crowdsourcer, {
+      onCompleted: (records) => {
+
+        expect(records.crowdsourcer).toEqual({
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
           feeWindow: "0x2000000000000000000000000000000000000000",
@@ -163,7 +139,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           winning: null,
         });
 
-        assert.deepEqual(records.market, {
+        expect(records.market).toEqual({
           category: "TEST CATEGORY",
           consensusPayoutId: null,
           creationBlockNumber: 1500001,
@@ -211,9 +187,9 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           shareVolume: new BigNumber("0", 10),
         });
       },
-      onCompletedRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records.crowdsourcer, {
+      onCompletedRemoved: (records) => {
+
+        expect(records.crowdsourcer).toEqual({
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
           feeWindow: "0x2000000000000000000000000000000000000000",
@@ -222,7 +198,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           winning: null,
         });
 
-        assert.deepEqual(records.market, {
+        expect(records.market).toEqual({
           marketId: "0x0000000000000000000000000000000000000211",
           universe: "0x000000000000000000000000000000000000000b",
           marketType: "yesNo",
@@ -271,5 +247,9 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         });
       },
     },
+  });
+
+  afterEach(async () => {
+    await db.destroy();
   });
 });

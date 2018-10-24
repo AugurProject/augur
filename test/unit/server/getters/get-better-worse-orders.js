@@ -1,24 +1,19 @@
-"use strict";
-
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-better-worse-orders", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        t.method = "getBetterWorseOrders";
-        dispatchJsonRpcRequest(db, t, {}, (err, betterWorseOrders) => {
-          t.assertions(err, betterWorseOrders);
-          db.destroy();
-          done();
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+      const db = await setupTestDb();
+      t.method = "getBetterWorseOrders";
+      dispatchJsonRpcRequest(db, t, {}, (err, betterWorseOrders) => {
+        t.assertions(err, betterWorseOrders);
+        db.destroy();
+        done();
       });
     });
   };
-  test({
+  runTest({
     description: "get better worse with no orders",
     params: {
       marketId: "0x00000000000000000000000000000fffffffff11",
@@ -27,14 +22,14 @@ describe("server/getters/get-better-worse-orders", () => {
       price: "2",
     },
     assertions: (err, betterWorseOrders) => {
-      assert.ifError(err);
-      assert.deepEqual(betterWorseOrders, {
+      expect(err).toBeFalsy();
+      expect(betterWorseOrders).toEqual({
         betterOrderId: null,
         worseOrderId: null,
       });
     },
   });
-  test({
+  runTest({
     description: "get better worse with better orders",
     params: {
       marketId: "0x0000000000000000000000000000000000000001",
@@ -43,14 +38,14 @@ describe("server/getters/get-better-worse-orders", () => {
       price: "0.4",
     },
     assertions: (err, betterWorseOrders) => {
-      assert.ifError(err);
-      assert.deepEqual(betterWorseOrders, {
+      expect(err).toBeFalsy();
+      expect(betterWorseOrders).toEqual({
         betterOrderId: "0x2000000000000000000000000000000000000000000000000000000000000000",
         worseOrderId: null,
       });
     },
   });
-  test({
+  runTest({
     description: "get better worse with worse orders",
     params: {
       marketId: "0x0000000000000000000000000000000000000001",
@@ -59,14 +54,14 @@ describe("server/getters/get-better-worse-orders", () => {
       price: "0.99",
     },
     assertions: (err, betterWorseOrders) => {
-      assert.ifError(err);
-      assert.deepEqual(betterWorseOrders, {
+      expect(err).toBeFalsy();
+      expect(betterWorseOrders).toEqual({
         betterOrderId: null,
         worseOrderId: "0x5000000000000000000000000000000000000000000000000000000000000000",
       });
     },
   });
-  test({
+  runTest({
     description: "get better worse with better and worse orders",
     params: {
       marketId: "0x0000000000000000000000000000000000000001",
@@ -75,8 +70,8 @@ describe("server/getters/get-better-worse-orders", () => {
       price: "0.65",
     },
     assertions: (err, betterWorseOrders) => {
-      assert.ifError(err);
-      assert.deepEqual(betterWorseOrders, {
+      expect(err).toBeFalsy();
+      expect(betterWorseOrders).toEqual({
         betterOrderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
         worseOrderId: "0x2000000000000000000000000000000000000000000000000000000000000000",
       });

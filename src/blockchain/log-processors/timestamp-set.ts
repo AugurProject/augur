@@ -1,18 +1,14 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback } from "../../types";
+import { FormattedEventLog} from "../../types";
 import { advanceFeeWindowActive, getCurrentTime, removeOverrideTimestamp, setOverrideTimestamp } from "../process-block";
 
-export function processTimestampSetLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  setOverrideTimestamp(db, parseInt(log.newTimestamp, 10), (err) => {
-    if (err) return callback(err);
-    advanceFeeWindowActive(db, augur, log.blockNumber, log.newTimestamp).then(() => callback(null)).catch(callback);
-  });
+export async function processTimestampSetLog(db: Knex, augur: Augur, log: FormattedEventLog) {
+  await setOverrideTimestamp(db, parseInt(log.newTimestamp, 10));
+  return advanceFeeWindowActive(db, augur, log.blockNumber, log.newTimestamp);
 }
 
-export function processTimestampSetLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  removeOverrideTimestamp(db, parseInt(log.newTimestamp, 10), (err) => {
-    if (err) return callback(err);
-    advanceFeeWindowActive(db, augur, log.blockNumber, getCurrentTime()).then(() => callback(null)).catch(callback);
-  });
+export async function processTimestampSetLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog) {
+  await removeOverrideTimestamp(db, parseInt(log.newTimestamp, 10));
+  return advanceFeeWindowActive(db, augur, log.blockNumber, getCurrentTime());
 }

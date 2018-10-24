@@ -1,88 +1,56 @@
-"use strict";
-
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {processTimestampSetLog, processTimestampSetLogRemoval} = require("../../../../src/blockchain/log-processors/timestamp-set");
-const {getOverrideTimestamp} = require("../../../../src/blockchain/process-block");
+const { processTimestampSetLog, processTimestampSetLogRemoval } = require("src/blockchain/log-processors/timestamp-set");
+const { getOverrideTimestamp } = require("src/blockchain/process-block");
 
-function initializeNetwork(db, callback) {
-  db.insert({networkId: 9999}).into("network_id").asCallback(callback);
+function initializeNetwork(db) {
+  return db.insert({ networkId: 9999 }).into("network_id");
+}
+
+function getTimestampState(db) {
+  return db.select("overrideTimestamp").from("network_id").first();
 }
 
 describe("blockchain/log-processors/timestamp-set", () => {
-  const test = (t) => {
-    const getTimestampState = (db, params, callback) => db.select("overrideTimestamp").from("network_id").first().asCallback(callback);
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        db.transaction((trx) => {
-          initializeNetwork(trx, (err) => {
-            assert.ifError(err);
-            processTimestampSetLog(trx, t.params.augur, t.params.log1, (err) => {
-              assert.ifError(err);
-              getTimestampState(trx, t.params, (err, records) => {
-                t.assertions.onAdded1(err, records, getOverrideTimestamp());
-                processTimestampSetLog(trx, t.params.augur, t.params.log2, (err) => {
-                  assert.ifError(err);
-                  getTimestampState(trx, t.params, (err, records) => {
-                    t.assertions.onAdded2(err, records, getOverrideTimestamp());
-                    processTimestampSetLogRemoval(trx, t.params.augur, t.params.log2, (err) => {
-                      assert.ifError(err);
-                      getTimestampState(trx, t.params, (err, records) => {
-                        t.assertions.onRemoved2(err, records, getOverrideTimestamp());
-                        processTimestampSetLogRemoval(trx, t.params.augur, t.params.log1, (err) => {
-                          t.assertions.onRemoved1(err, records, getOverrideTimestamp());
-                          db.destroy();
-                          done();
-                        });
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    });
-  };
-  test({
-    description: "set timestamp",
-    params: {
-      log1: {
-        blockNumber: 1400002,
-        newTimestamp: 919191,
-      },
-      log2: {
-        blockNumber: 1400001,
-        newTimestamp: 828282,
-      },
-    },
-    assertions: {
-      onAdded1: (err, records, overrideTimestamp) => {
-        assert.ifError(err);
-        assert.equal(overrideTimestamp, 919191);
-        assert.deepEqual(records, {
-          overrideTimestamp: 919191,
-        });
-      },
-      onAdded2: (err, records, overrideTimestamp) => {
-        assert.ifError(err);
-        assert.equal(overrideTimestamp, 828282);
-        assert.deepEqual(records, {
-          overrideTimestamp: 828282,
-        });
-      },
-      onRemoved1: (err, records, overrideTimestamp) => {
-        assert.isNotNull(err);
-      },
-      onRemoved2: (err, records, overrideTimestamp) => {
-        assert.ifError(err);
-        assert.equal(overrideTimestamp, 919191);
-        assert.deepEqual(records, {
-          overrideTimestamp: 919191,
-        });
-      },
-    },
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+    await initializeNetwork(db);
   });
-});
+
+  const log1 = {
+    blockNumber: 1400002,
+    newTimestamp: 919191,
+  };
+  const log2 = {
+    blockNumber: 1400001,
+    newTimestamp: 828282,
+  };
+  test("set timestamp", async () => {
+    return db.transaction(async (trx) => {
+      await processTimestampSetLog(trx, {}, log1);
+      expect(getOverrideTimestamp()).toEqual(919191);
+      await expect(getTimestampState(trx)).resolves.toEqual({
+        overrideTimestamp: 919191,
+      });
+
+      await processTimestampSetLog(trx, {}, log2);
+      expect(getOverrideTimestamp()).toEqual(828282);
+      await expect(getTimestampState(trx)).resolves.toEqual({
+        overrideTimestamp: 828282,
+      });
+
+      await processTimestampSetLogRemoval(trx, {}, log2);
+      expect(getOverrideTimestamp()).toEqual(919191);
+      await expect(getTimestampState(trx)).resolves.toEqual({
+        overrideTimestamp: 919191,
+      });
+
+      await expect(processTimestampSetLogRemoval(trx, {}, log1)).rejects.toEqual(new Error("Timestamp removal failed 919191 919191"));
+    });
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+})
+;

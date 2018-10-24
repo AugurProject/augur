@@ -2,7 +2,7 @@ import * as t from "io-ts";
 import * as Knex from "knex";
 import Augur from "augur.js";
 import { SortLimitParams } from "../../types";
-import { groupByAndSum, queryModifierParams } from "./database";
+import { groupByAndSum, queryModifier } from "./database";
 
 export const CategoriesParamsSpecific = t.type({
   universe: t.string,
@@ -20,7 +20,7 @@ export interface CategoriesRow {
 
 export async function getCategories(db: Knex, augur: Augur, params: t.TypeOf<typeof CategoriesParams>): Promise<Array<CategoriesRow>> {
   const query = db.select(["category", "popularity"]).from("categories").where({ universe: params.universe });
-  const categoriesInfo = await queryModifierParams<CategoriesRow>(db, query, "popularity", "desc", params);
+  const categoriesInfo = await queryModifier<CategoriesRow>(db, query, "popularity", "desc", params);
   // Group categories by upper case in case DB has not been fully sync'd with upper casing code. This can be removed once DB version > 2
   const upperCaseCategoryInfo = categoriesInfo.map((category) => {
     return {

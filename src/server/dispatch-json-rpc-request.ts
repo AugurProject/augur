@@ -6,7 +6,6 @@ import { logger } from "../utils/logger";
 import { JsonRpcRequest } from "../types";
 import { AccountTransferHistoryParams, getAccountTransferHistory } from "./getters/get-account-transfer-history";
 import { CategoriesParams, getCategories } from "./getters/get-categories";
-import { getMarketsCreatedByUser } from "./getters/get-markets-created-by-user";
 import { getReportingHistory, ReportingHistoryParams } from "./getters/get-reporting-history";
 import { getReportingSummary, ReportingSummaryParams } from "./getters/get-reporting-summary";
 import { getTradingHistory, TradingHistoryParams } from "./getters/get-trading-history";
@@ -74,7 +73,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getUserTradingPositions":
       return dispatchResponse(getUserTradingPositions, UserTradingPositionsParams.decode(request.params));
     case "getFeeWindowCurrent":
-      return dispatchResponse(getFeeWindow, FeeWindowParams.decode(Object.assign({feeWindowState: "current" }, request.params)));
+      return dispatchResponse(getFeeWindow, FeeWindowParams.decode(Object.assign({ feeWindowState: "current" }, request.params)));
     case "getFeeWindow":
       return dispatchResponse(getFeeWindow, FeeWindowParams.decode(request.params));
     case "getFeeWindows":
@@ -88,7 +87,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getInitialReporters":
       return dispatchResponse(getInitialReporters, InitialReportersParams.decode(request.params));
     case "getReportingFees":
-      return dispatchResponse(getReportingFees, ReportingFeesParams.decode(request.params) );
+      return dispatchResponse(getReportingFees, ReportingFeesParams.decode(request.params));
     case "getForkMigrationTotals":
       return dispatchResponse(getForkMigrationTotals, ForkMigrationTotalsParams.decode(request.params));
     case "getMarkets":
@@ -102,14 +101,17 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getCompleteSets":
       return dispatchResponse(getCompleteSets, CompleteSetsParams.decode(request.params));
     case "getUniversesInfo":
-      return dispatchResponse(getUniversesInfo,  UniverseInfoParams.decode(request.params));
+      return dispatchResponse(getUniversesInfo, UniverseInfoParams.decode(request.params));
     case "getUserShareBalances":
       return dispatchResponse(getUserShareBalances, UserShareBalancesParams.decode(request.params));
 
-    // case "getProfitLoss":
-    //   return getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, callback);
-    // case "getMarketsCreatedByUser":
-    //   return getMarketsCreatedByUser(db, request.params.universe, request.params.creator, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+    case "getProfitLoss":
+      return new Promise((resolve, reject) => {
+        getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, (err, result) => {
+          if (err) return reject(err);
+          resolve(result);
+        });
+      });
     default:
       throw new Error(`unknown json rpc method ${request.method}`);
   }

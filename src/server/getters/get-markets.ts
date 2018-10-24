@@ -1,7 +1,7 @@
 import * as t from "io-ts";
 import * as Knex from "knex";
 import { Address, MarketsContractAddressRow, SortLimitParams } from "../../types";
-import { getMarketsWithReportingState, queryModifierParams } from "./database";
+import { getMarketsWithReportingState, queryModifier } from "./database";
 import { createSearchProvider } from "../../database/fts";
 
 export const GetMarketsParamsSpecific = t.type({
@@ -39,6 +39,6 @@ export async function getMarkets(db: Knex, augur: {}, params: t.TypeOf<typeof Ge
     });
   }
 
-  const marketsRows = await queryModifierParams<MarketsContractAddressRow>(db, query, "volume", "desc", params);
+  const marketsRows = await queryModifier<MarketsContractAddressRow>(db, query, "volume", "desc", params);
   return marketsRows.map((marketsRow: MarketsContractAddressRow): Address => marketsRow.marketId);
 }
