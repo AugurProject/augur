@@ -1,12 +1,11 @@
 import { BUY } from "modules/transactions/constants/types";
 
 describe("modules/orders/selectors/select-order.js", () => {
-  const selectOrder = require("../../../src/modules/orders/selectors/select-order")
-    .default;
-  it(`shouldn't return order if it's not there`, () => {
-    assert.isNull(selectOrder("orderId", "marketId", 2, BUY, {}));
+  const selectOrder = require("modules/orders/selectors/select-order").default;
+  test(`shouldn't return order if it's not there`, () => {
+    expect(selectOrder("orderId", "marketId", 2, BUY, {})).toBeNull();
   });
-  it(`should return order if it's there`, () => {
+  test(`should return order if it's there`, () => {
     const order = selectOrder("0x1", "MARKET_1", 2, BUY, {
       MARKET_1: {
         2: {
@@ -29,7 +28,7 @@ describe("modules/orders/selectors/select-order.js", () => {
         }
       }
     });
-    assert.deepEqual(order, {
+    expect(order).toEqual({
       amount: "1.1111",
       fullPrecisionAmount: "1.1111111",
       price: "0.7778",

@@ -4,7 +4,7 @@ import {
 } from "modules/orders/actions/update-order-book";
 
 describe(`modules/orders/actions/update-order-book.js`, () => {
-  it(`should fire the UPDATE_ORDER_BOOK action with data`, () => {
+  test(`should fire the UPDATE_ORDER_BOOK action with data`, () => {
     const marketId = "MARKET_1";
     const outcome = 3;
     const orderTypeLabel = "buy";
@@ -47,10 +47,8 @@ describe(`modules/orders/actions/update-order-book.js`, () => {
         orderBook
       }
     };
-    assert.deepEqual(
-      updateOrderBook({ marketId, outcome, orderTypeLabel, orderBook }),
-      expectedOutput,
-      `Updating order book didn't return the correct action!`
-    );
+    expect(
+      updateOrderBook({ marketId, outcome, orderTypeLabel, orderBook })
+    ).toEqual(expectedOutput);
   });
 });

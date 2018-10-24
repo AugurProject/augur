@@ -1,7 +1,5 @@
 import React from "react";
 
-import { it } from "mocha";
-
 import { shallow } from "enzyme";
 import WordTrail from "modules/common/components/word-trail/word-trail";
 import { SimpleButton } from "modules/common/components/simple-button";

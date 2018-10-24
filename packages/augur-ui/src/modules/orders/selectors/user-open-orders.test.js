@@ -1,14 +1,10 @@
-import proxyquire from "proxyquire";
-import configureMockStore from "redux-mock-store";
-import thunk from "redux-thunk";
 import { formatEther, formatShares, formatNone } from "utils/format-number";
 import { CLOSE_DIALOG_CLOSING } from "modules/markets/constants/close-dialog-status";
+import store from "src/store";
+
+jest.mock("src/store");
 
 describe(`modules/orders/selectors/user-open-orders.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
-
   const state = {
     loginAccount: {
       address: "0x7c0d52faab596c08f484e3478aebc6205f3f5d8c"
@@ -17,26 +13,20 @@ describe(`modules/orders/selectors/user-open-orders.js`, () => {
       order8: CLOSE_DIALOG_CLOSING
     }
   };
-  const store = mockStore(state);
-  const { selectUserOpenOrders } = proxyquire(
-    "../../../src/modules/orders/selectors/user-open-orders",
-    {
-      "../../../store": store
-    }
-  );
 
-  it(`should return no user open orders for not logged-in user`, () => {
+  beforeEach(() => {
+    store.getState = jest.fn(() => state);
+  });
+
+  const {
+    selectUserOpenOrders
+  } = require("modules/orders/selectors/user-open-orders");
+
+  test(`should return no user open orders for not logged-in user`, () => {
     const state = {
       loginAccount: {}
     };
-    const store = mockStore(state);
-    const { selectUserOpenOrders } = proxyquire(
-      "../../../src/modules/orders/selectors/user-open-orders",
-      {
-        "../../../store": store
-      }
-    );
-
+    store.getState = jest.fn(() => state);
     const orderBooks = {
       bobMarket: {
         0: {
@@ -62,14 +52,14 @@ describe(`modules/orders/selectors/user-open-orders.js`, () => {
       }
     };
 
-    assert.lengthOf(selectUserOpenOrders("1", orderBooks), 0);
+    expect(selectUserOpenOrders("1", orderBooks)).toHaveLength(0);
   });
 
-  it(`should return no user open orders if there are no orders`, () => {
-    assert.lengthOf(selectUserOpenOrders("1", "bobMarket"), 0);
+  test(`should return no user open orders if there are no orders`, () => {
+    expect(selectUserOpenOrders("1", "bobMarket")).toHaveLength(0);
   });
 
-  it(`should return empty user open orders if there are no matching orders`, () => {
+  test(`should return empty user open orders if there are no matching orders`, () => {
     const orderBooks = {
       bobMarket: {
         0: {
@@ -115,10 +105,10 @@ describe(`modules/orders/selectors/user-open-orders.js`, () => {
         }
       }
     };
-    assert.lengthOf(selectUserOpenOrders("1", orderBooks), 0);
+    expect(selectUserOpenOrders("1", orderBooks)).toHaveLength(0);
   });
 
-  it(`should return user open orders for logged-in user who has orders`, () => {
+  test(`should return user open orders for logged-in user who has orders`, () => {
     const orderBooks = {
       1: {
         buy: {
@@ -194,7 +184,7 @@ describe(`modules/orders/selectors/user-open-orders.js`, () => {
     };
 
     const userOpenOrders = selectUserOpenOrders("MARKET_ID", "1", orderBooks);
-    assert.lengthOf(userOpenOrders, 6);
+    expect(userOpenOrders).toHaveLength(6);
 
     const results = [
       {
@@ -269,45 +259,13 @@ describe(`modules/orders/selectors/user-open-orders.js`, () => {
       const expected = results[i];
       const actual = userOpenOrders[i];
 
-      assert.deepEqual(
-        actual.id,
-        expected.id,
-        `id Didn't return the expected object`
-      );
-      assert.deepEqual(
-        actual.type,
-        expected.type,
-        `type Didn't return the expected object`
-      );
-      assert.deepEqual(
-        actual.matchedShares,
-        expected.matchedShares,
-        `matchedShares Didn't return the expected object`
-      );
-      assert.deepEqual(
-        actual.originalShares,
-        expected.originalShares,
-        `originalShares Didn't return the expected object`
-      );
-      assert.deepEqual(
-        actual.unmatchedShares,
-        expected.unmatchedShares,
-        `unmatchedShares Didn't return the expected object`
-      );
-      assert.deepEqual(
-        actual.marketId,
-        expected.marketId,
-        `marketId Didn't return the expected object`
-      );
-      assert.strictEqual(
-        actual.outcomeId,
-        expected.outcomeId,
-        `outcomeId Didn't return the expected value`
-      );
-      assert.isFunction(
-        actual.cancelOrder,
-        `cancelOrder Didn't return a function as expected`
-      );
+      expect(actual.id).toEqual(expected.id);
+      expect(actual.type).toEqual(expected.type);
+      expect(actual.matchedShares).toEqual(expected.matchedShares);
+      expect(actual.originalShares).toEqual(expected.originalShares);
+      expect(actual.unmatchedShares).toEqual(expected.unmatchedShares);
+      expect(actual.marketId).toEqual(expected.marketId);
+      expect(actual.outcomeId).toEqual(expected.outcomeId);
     }
   });
 });

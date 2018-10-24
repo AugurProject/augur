@@ -3,18 +3,16 @@ import { formatShares, formatEther } from "utils/format-number";
 describe(`modules/orders/helpers/select-order-book.js`, () => {
   const {
     selectAggregateOrderBook
-  } = require("../../../src/modules/orders/helpers/select-order-book");
+  } = require("modules/orders/helpers/select-order-book");
 
-  it(`should return empty order book for no orders`, () => {
+  test(`should return empty order book for no orders`, () => {
     const orderBook = selectAggregateOrderBook("1", null, {});
 
-    assert.isArray(orderBook.bids);
-    assert.isArray(orderBook.asks);
-    assert.lengthOf(orderBook.bids, 0);
-    assert.lengthOf(orderBook.asks, 0);
+    expect(orderBook.bids).toEqual([]);
+    expect(orderBook.asks).toEqual([]);
   });
 
-  it(`should return aggregate sorted orders for specified outcome`, () => {
+  test(`should return aggregate sorted orders for specified outcome`, () => {
     const orderBook = selectAggregateOrderBook(
       "1",
       {
@@ -105,11 +103,10 @@ describe(`modules/orders/helpers/select-order-book.js`, () => {
       {}
     );
 
-    assert.lengthOf(orderBook.bids, 3);
-    assert.lengthOf(orderBook.asks, 4);
+    expect(orderBook.bids).toHaveLength(3);
+    expect(orderBook.asks).toHaveLength(4);
 
-    assert.deepEqual(
-      orderBook.bids[0],
+    expect(orderBook.bids[0]).toEqual(
       {
         price: formatEther(0.4),
         shares: formatShares(10),
@@ -119,8 +116,7 @@ describe(`modules/orders/helpers/select-order-book.js`, () => {
       },
       "first bid"
     );
-    assert.deepEqual(
-      orderBook.bids[1],
+    expect(orderBook.bids[1]).toEqual(
       {
         price: formatEther(0.2),
         shares: formatShares(10),
@@ -130,8 +126,7 @@ describe(`modules/orders/helpers/select-order-book.js`, () => {
       },
       "second bid"
     );
-    assert.deepEqual(
-      orderBook.bids[2],
+    expect(orderBook.bids[2]).toEqual(
       {
         price: formatEther(0.1),
         shares: formatShares(16),
@@ -142,8 +137,7 @@ describe(`modules/orders/helpers/select-order-book.js`, () => {
       "third bid"
     );
 
-    assert.deepEqual(
-      orderBook.asks[0],
+    expect(orderBook.asks[0]).toEqual(
       {
         price: formatEther(0.5),
         shares: formatShares(14),
@@ -153,8 +147,7 @@ describe(`modules/orders/helpers/select-order-book.js`, () => {
       },
       "first ask"
     );
-    assert.deepEqual(
-      orderBook.asks[1],
+    expect(orderBook.asks[1]).toEqual(
       {
         price: formatEther(0.6),
         shares: formatShares(23),
@@ -164,8 +157,7 @@ describe(`modules/orders/helpers/select-order-book.js`, () => {
       },
       "second ask"
     );
-    assert.deepEqual(
-      orderBook.asks[2],
+    expect(orderBook.asks[2]).toEqual(
       {
         price: formatEther(0.7),
         shares: formatShares(10),
@@ -175,8 +167,7 @@ describe(`modules/orders/helpers/select-order-book.js`, () => {
       },
       "third ask"
     );
-    assert.deepEqual(
-      orderBook.asks[3],
+    expect(orderBook.asks[3]).toEqual(
       {
         price: formatEther(0.8),
         shares: formatShares(2),

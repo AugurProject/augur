@@ -1,31 +1,16 @@
-import { describe, it, afterEach } from "mocha";
-
-import proxyquire from "proxyquire";
-import sinon from "sinon";
 import mocks from "test/mockStore";
 import { CANCEL_ORDER, BID, ASK } from "modules/transactions/constants/types";
+import { augur } from "services/augurjs";
+
+jest.mock("services/augurjs");
 
 describe("modules/orders/actions/cancel-order.js", () => {
-  proxyquire.noPreserveCache().noCallThru();
+  augur.api = jest.fn(() => {});
+  augur.api.CancelOrder = jest.fn(() => {});
+  augur.api.CancelOrder.cancelOrder = jest.fn(() => {});
 
-  const { mockStore, actionCreator, state } = mocks;
-  const augur = {
-    api: {
-      CancelOrder: {
-        cancelOrder: sinon.stub()
-      }
-    }
-  };
-  const updateOrderStatus = actionCreator();
-  const cancelOrderModule = proxyquire(
-    "../../../src/modules/orders/actions/cancel-order",
-    {
-      "../../../services/augurjs": {
-        augur
-      },
-      "../../orders/actions/update-order-status": { updateOrderStatus }
-    }
-  );
+  const { mockStore, state } = mocks;
+  const cancelOrderModule = require("modules/orders/actions/cancel-order");
 
   const store = mockStore({
     ...state,
@@ -46,13 +31,11 @@ describe("modules/orders/actions/cancel-order.js", () => {
   });
 
   afterEach(() => {
-    augur.api.CancelOrder.cancelOrder.reset();
-    updateOrderStatus.reset();
     store.clearActions();
   });
 
   describe("cancelOrder", () => {
-    it(`shouldn't dispatch if order doesn't exist`, () => {
+    test(`shouldn't dispatch if order doesn't exist`, () => {
       store.dispatch(
         cancelOrderModule.cancelOrder("nonExistingOrderId", "testMarketId", BID)
       );
@@ -71,7 +54,7 @@ describe("modules/orders/actions/cancel-order.js", () => {
         )
       );
 
-      assert.deepEqual(store.getActions(), []);
+      expect(store.getActions()).toEqual([]);
     });
   });
 });
