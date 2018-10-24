@@ -2,15 +2,19 @@ const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-account-transfer-history", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getAccountTransferHistory";
-      dispatchJsonRpcRequest(db, t, null, (err, accountTransferHistory) => {
-        t.assertions(err, accountTransferHistory);
-        db.destroy();
-        done();
-      });
+      const accountTransferHistory = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(accountTransferHistory);
     });
   };
   runTest({
@@ -20,8 +24,7 @@ describe("server/getters/get-account-transfer-history", () => {
       token: null,
       isSortDescending: false,
     },
-    assertions: (err, accountTransferHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (accountTransferHistory) => {
       expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
@@ -75,8 +78,7 @@ describe("server/getters/get-account-transfer-history", () => {
       token: null,
       isSortDescending: false,
     },
-    assertions: (err, accountTransferHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (accountTransferHistory) => {
       expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
@@ -118,8 +120,7 @@ describe("server/getters/get-account-transfer-history", () => {
       earliestCreationTime: 1506473473,
       latestCreationTime: 1506473474,
     },
-    assertions: (err, accountTransferHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (accountTransferHistory) => {
       expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
@@ -144,8 +145,7 @@ describe("server/getters/get-account-transfer-history", () => {
       token: "0x7a305d9b681fb164dc5ad628b5992177dc66aec8",
       isSortDescending: false,
     },
-    assertions: (err, accountTransferHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (accountTransferHistory) => {
       expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadb33f",
         creationBlockNumber: 1400001,
@@ -169,8 +169,7 @@ describe("server/getters/get-account-transfer-history", () => {
       account: "0x0000000000000000000000000000000000000b0b",
       token: "0x000000000000000000000000000000000000000e",
     },
-    assertions: (err, accountTransferHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (accountTransferHistory) => {
       expect(accountTransferHistory).toEqual([]);
     },
   });
@@ -180,8 +179,7 @@ describe("server/getters/get-account-transfer-history", () => {
       account: "0x0000000000000000000000000000000000000bbb",
       token: null,
     },
-    assertions: (err, accountTransferHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (accountTransferHistory) => {
       expect(accountTransferHistory).toEqual([]);
     },
   });

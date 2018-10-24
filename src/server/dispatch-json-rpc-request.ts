@@ -35,17 +35,14 @@ import { getWinningBalance, WinningBalanceParams } from "./getters/get-winning-b
 
 type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
 
-export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
+export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur): Promise<any> {
   logger.info(JSON.stringify(request));
 
-  function dispatchResponse<T, R>(getterFunction: GetterFunction<T, R>, decodedParams: t.Validation<T>) {
+  function dispatchResponse<T, R>(getterFunction: GetterFunction<T, R>, decodedParams: t.Validation<T>): Promise<any> {
     if (decodedParams.isRight()) {
-      getterFunction(db, augur, decodedParams.value).then((response) => {
-        callback(null, response);
-      }).catch(callback);
-      return;
+      return getterFunction(db, augur, decodedParams.value);
     } else {
-      return callback(new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`));
+      throw new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`);
     }
   }
 
@@ -76,7 +73,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getUserTradingPositions":
       return dispatchResponse(getUserTradingPositions, UserTradingPositionsParams.decode(request.params));
     case "getFeeWindowCurrent":
-      return dispatchResponse(getFeeWindow, FeeWindowParams.decode(Object.assign({feeWindowState: "current" }, request.params)));
+      return dispatchResponse(getFeeWindow, FeeWindowParams.decode(Object.assign({ feeWindowState: "current" }, request.params)));
     case "getFeeWindow":
       return dispatchResponse(getFeeWindow, FeeWindowParams.decode(request.params));
     case "getFeeWindows":
@@ -90,7 +87,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getInitialReporters":
       return dispatchResponse(getInitialReporters, InitialReportersParams.decode(request.params));
     case "getReportingFees":
-      return dispatchResponse(getReportingFees, ReportingFeesParams.decode(request.params) );
+      return dispatchResponse(getReportingFees, ReportingFeesParams.decode(request.params));
     case "getForkMigrationTotals":
       return dispatchResponse(getForkMigrationTotals, ForkMigrationTotalsParams.decode(request.params));
     case "getMarkets":
@@ -104,13 +101,18 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getCompleteSets":
       return dispatchResponse(getCompleteSets, CompleteSetsParams.decode(request.params));
     case "getUniversesInfo":
-      return dispatchResponse(getUniversesInfo,  UniverseInfoParams.decode(request.params));
+      return dispatchResponse(getUniversesInfo, UniverseInfoParams.decode(request.params));
     case "getUserShareBalances":
       return dispatchResponse(getUserShareBalances, UserShareBalancesParams.decode(request.params));
 
     case "getProfitLoss":
-      return getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, callback);
+      return new Promise((resolve, reject) => {
+        getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, (err, result) => {
+          if (err) return reject(err);
+          resolve(result);
+        });
+      });
     default:
-      callback(new Error("unknown json rpc method"));
+      throw new Error(`unknown json rpc method ${request.method}`);
   }
 }

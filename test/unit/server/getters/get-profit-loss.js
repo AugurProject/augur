@@ -85,7 +85,7 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
       ]);
 
       done();
-    }
+    },
   );
 
   test("generates 31 buckets with explicit periodInteval", (done) => {
@@ -143,7 +143,7 @@ describe("tests for test/trading-proceeds-claimed-2.db", () => {
   });
 
   test("calculates PL for a user for all time", (done) => {
-    getProfitLoss(connection, augur, universe, account1, 1550877478, 1551827939, (1551827939 - 1550877478)/4, (err, results) => {
+    getProfitLoss(connection, augur, universe, account1, 1550877478, 1551827939, (1551827939 - 1550877478) / 4, (err, results) => {
       try {
         expect(results.aggregate).toEqual([
           {
@@ -374,9 +374,9 @@ describe("server/getters/get-profit-loss", () => {
             ]);
           },
         },
-        done
+        done,
       );
-    }
+    },
   );
 
 
@@ -426,7 +426,7 @@ describe("server/getters/get-profit-loss", () => {
           ]);
         },
       },
-      done
+      done,
     );
   });
 
@@ -454,9 +454,9 @@ describe("server/getters/get-profit-loss", () => {
             expect(Date.now() - profitLoss.aggregate[29].timestamp).toBeLessThanOrEqual(250);
           },
         },
-        done
+        done,
       );
-    }
+    },
   );
 
   test(
@@ -466,7 +466,7 @@ describe("server/getters/get-profit-loss", () => {
         {
           params: {
             universe: "0x000000000000000000000000000000000000000b",
-            account:  "0x0badbadbadbadbadbadbadbadbadbadbadbadbad",
+            account: "0x0badbadbadbadbadbadbadbadbadbadbadbadbad",
           },
           assertions: (err, profitLoss) => {
             expect(err).toBeFalsy();
@@ -479,9 +479,9 @@ describe("server/getters/get-profit-loss", () => {
             expect(Date.now() - profitLoss.aggregate[29].timestamp).toBeLessThanOrEqual(250);
           },
         },
-        done
+        done,
       );
-    }
+    },
   );
 
   test(
@@ -562,9 +562,9 @@ describe("server/getters/get-profit-loss", () => {
             ]);
           },
         },
-        done
+        done,
       );
-    }
+    },
   );
 
   test("generates 30 PLs all with null profitLoss", (done) => {
@@ -584,7 +584,7 @@ describe("server/getters/get-profit-loss", () => {
           expect(profitLoss.all).toEqual({});
         },
       },
-      done
+      done,
     );
   });
 
@@ -652,7 +652,7 @@ describe("server/getters/get-profit-loss", () => {
           ]);
         },
       },
-      done
+      done,
     );
   });
 
@@ -734,7 +734,7 @@ describe("server/getters/get-profit-loss", () => {
           ]);
         },
       },
-      done
+      done,
     );
   });
 
@@ -791,7 +791,7 @@ describe("server/getters/get-profit-loss", () => {
       expect(pls2[3].profitLoss).toEqual(result);
 
       done();
-    }
+    },
   );
 
   test("calculates pl for 1 periods and ignores trailing trades", (done) => {

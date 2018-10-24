@@ -2,15 +2,20 @@ const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-categories", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getCategories";
-      dispatchJsonRpcRequest(db, t, null, (err, categoriesInfo) => {
-        t.assertions(err, categoriesInfo);
-        db.destroy();
-        done();
-      });
+      const categoriesInfo = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(categoriesInfo);
     });
   };
   runTest({
@@ -20,8 +25,7 @@ describe("server/getters/get-categories", () => {
       sortBy: "popularity",
       isSortDescending: true,
     },
-    assertions: (err, categoriesInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (categoriesInfo) => {
       expect(categoriesInfo).toEqual([
         { category: "FINANCE", popularity: "12345" },
         { category: "POLITICS", popularity: "5000" },
@@ -36,8 +40,7 @@ describe("server/getters/get-categories", () => {
     params: {
       universe: "0x1010101010101010101010101010101010101010",
     },
-    assertions: (err, categoriesInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (categoriesInfo) => {
       expect(categoriesInfo).toEqual([]);
     },
   });

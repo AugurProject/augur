@@ -1,21 +1,23 @@
 const Augur = require("augur.js");
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
+const augur = new Augur();
 
 describe("server/getters/get-user-trading-positions", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getUserTradingPositions";
-      dispatchJsonRpcRequest(db, t, new Augur(), (err, userTradingPositions) => {
-        try {
-          t.assertions(err, userTradingPositions);
-          db.destroy();
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
+      const userTradingPositions = await dispatchJsonRpcRequest(db, t, augur);
+      t.assertions(userTradingPositions);
     });
   };
   runTest({
@@ -30,8 +32,7 @@ describe("server/getters/get-user-trading-positions", () => {
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingPositions) => {
-      expect(err).toBeFalsy();
+    assertions: (userTradingPositions) => {
       expect(userTradingPositions).toEqual([{
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 0,
@@ -110,8 +111,7 @@ describe("server/getters/get-user-trading-positions", () => {
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingPositions) => {
-      expect(err).toBeFalsy();
+    assertions: (userTradingPositions) => {
       expect(userTradingPositions).toEqual([{
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 4,
@@ -134,8 +134,7 @@ describe("server/getters/get-user-trading-positions", () => {
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingPositions) => {
-      expect(err).toBeFalsy();
+    assertions: (userTradingPositions) => {
       expect(userTradingPositions).toEqual([{
         "marketId": "0x1000000000000000000000000000000000000001",
         "outcome": 0,
@@ -158,8 +157,7 @@ describe("server/getters/get-user-trading-positions", () => {
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingPositions) => {
-      expect(err).toBeFalsy();
+    assertions: (userTradingPositions) => {
       expect(userTradingPositions).toEqual([{
         "marketId": "0x1000000000000000000000000000000000000001",
         "outcome": 0,
@@ -182,8 +180,7 @@ describe("server/getters/get-user-trading-positions", () => {
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingPositions) => {
-      expect(err).toBeFalsy();
+    assertions: (userTradingPositions) => {
       expect(userTradingPositions).toEqual([]);
     },
   });

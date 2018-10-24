@@ -4,16 +4,21 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 const { setOverrideTimestamp } = require("src/blockchain/process-block");
 
 describe("server/getters/get-fee-windows", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       await setOverrideTimestamp(db, 1509065471);
       t.method = "getFeeWindows";
-      dispatchJsonRpcRequest(db, t, t.params.augur, (err, feeWindows) => {
-        t.assertions(err, feeWindows);
-        db.destroy();
-        done();
-      });
+      const feeWindows = await dispatchJsonRpcRequest(db, t, t.params.augur);
+      t.assertions(feeWindows);
     });
   };
   runTest({
@@ -37,8 +42,7 @@ describe("server/getters/get-fee-windows", () => {
         },
       },
     },
-    assertions: (err, feeWindows) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindows) => {
       expect(feeWindows).toEqual({
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
@@ -76,8 +80,7 @@ describe("server/getters/get-fee-windows", () => {
         },
       },
     },
-    assertions: (err, feeWindows) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindows) => {
       expect(feeWindows).toEqual({
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
@@ -109,8 +112,7 @@ describe("server/getters/get-fee-windows", () => {
         },
       },
     },
-    assertions: (err, feeWindows) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindows) => {
       expect(feeWindows).toEqual({});
     },
   });

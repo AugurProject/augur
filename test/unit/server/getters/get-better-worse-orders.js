@@ -2,15 +2,20 @@ const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-better-worse-orders", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getBetterWorseOrders";
-      dispatchJsonRpcRequest(db, t, {}, (err, betterWorseOrders) => {
-        t.assertions(err, betterWorseOrders);
-        db.destroy();
-        done();
-      });
+      const betterWorseOrders = await dispatchJsonRpcRequest(db, t, {});
+      t.assertions(betterWorseOrders);
     });
   };
   runTest({
@@ -21,8 +26,7 @@ describe("server/getters/get-better-worse-orders", () => {
       orderType: "buy",
       price: "2",
     },
-    assertions: (err, betterWorseOrders) => {
-      expect(err).toBeFalsy();
+    assertions: (betterWorseOrders) => {
       expect(betterWorseOrders).toEqual({
         betterOrderId: null,
         worseOrderId: null,
@@ -37,8 +41,7 @@ describe("server/getters/get-better-worse-orders", () => {
       orderType: "buy",
       price: "0.4",
     },
-    assertions: (err, betterWorseOrders) => {
-      expect(err).toBeFalsy();
+    assertions: (betterWorseOrders) => {
       expect(betterWorseOrders).toEqual({
         betterOrderId: "0x2000000000000000000000000000000000000000000000000000000000000000",
         worseOrderId: null,
@@ -53,8 +56,7 @@ describe("server/getters/get-better-worse-orders", () => {
       orderType: "buy",
       price: "0.99",
     },
-    assertions: (err, betterWorseOrders) => {
-      expect(err).toBeFalsy();
+    assertions: (betterWorseOrders) => {
       expect(betterWorseOrders).toEqual({
         betterOrderId: null,
         worseOrderId: "0x5000000000000000000000000000000000000000000000000000000000000000",
@@ -69,8 +71,7 @@ describe("server/getters/get-better-worse-orders", () => {
       orderType: "buy",
       price: "0.65",
     },
-    assertions: (err, betterWorseOrders) => {
-      expect(err).toBeFalsy();
+    assertions: (betterWorseOrders) => {
       expect(betterWorseOrders).toEqual({
         betterOrderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
         worseOrderId: "0x2000000000000000000000000000000000000000000000000000000000000000",
