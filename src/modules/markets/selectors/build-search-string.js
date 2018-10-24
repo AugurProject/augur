@@ -11,10 +11,16 @@ export const buildSearchString = (keywords, tags) => {
   if (
     keywordSearch &&
     (!keywordSearch.endsWith(" ") && !keywordSearch.endsWith('"'))
-  )
+  ) {
     keywordSearch += "*";
+  }
+
   const terms = [];
-  [...tags, keywordSearch].forEach(i => {
+  tags.forEach(i => {
+    if (i) terms.push(`tags: ${i}`);
+  });
+
+  [keywordSearch].forEach(i => {
     if (i) terms.push(i);
   });
 
