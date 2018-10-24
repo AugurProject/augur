@@ -9,11 +9,10 @@ describe("server/getters/get-fee-windows", () => {
       const db = await setupTestDb();
       await setOverrideTimestamp(db, 1509065471);
       t.method = "getFeeWindows";
-      dispatchJsonRpcRequest(db, t, t.params.augur, (err, feeWindows) => {
-        t.assertions(err, feeWindows);
-        db.destroy();
-        done();
-      });
+      const feeWindows = await dispatchJsonRpcRequest(db, t, t.params.augur);
+      t.assertions(feeWindows);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -37,9 +36,8 @@ describe("server/getters/get-fee-windows", () => {
         },
       },
     },
-    assertions: (err, feeWindows) => {
-      expect(err).toBeFalsy();
-      expect(feeWindows).toEqual({
+    assertions: (feeWindows) => {
+            expect(feeWindows).toEqual({
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
           endTime: 1506473515,
@@ -76,9 +74,8 @@ describe("server/getters/get-fee-windows", () => {
         },
       },
     },
-    assertions: (err, feeWindows) => {
-      expect(err).toBeFalsy();
-      expect(feeWindows).toEqual({
+    assertions: (feeWindows) => {
+            expect(feeWindows).toEqual({
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
           endTime: 1506473515,
@@ -109,9 +106,8 @@ describe("server/getters/get-fee-windows", () => {
         },
       },
     },
-    assertions: (err, feeWindows) => {
-      expect(err).toBeFalsy();
-      expect(feeWindows).toEqual({});
+    assertions: (feeWindows) => {
+            expect(feeWindows).toEqual({});
     },
   });
 });

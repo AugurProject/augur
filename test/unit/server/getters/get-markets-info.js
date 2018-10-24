@@ -6,11 +6,10 @@ describe("server/getters/get-markets-info", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getMarketsInfo";
-      dispatchJsonRpcRequest(db, t, null, (err, marketsInfo) => {
-        t.assertions(err, marketsInfo);
-        db.destroy();
-        done();
-      });
+      const marketsInfo = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(marketsInfo);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -21,9 +20,8 @@ describe("server/getters/get-markets-info", () => {
         "0x0000000000000000000000000000000000000002",
       ],
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketsInfo).toEqual([
+    assertions: (marketsInfo) => {
+            expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000001",
           universe: "0x000000000000000000000000000000000000000b",
@@ -173,9 +171,8 @@ describe("server/getters/get-markets-info", () => {
         "0x0000000000000000000000000000000000000002",
       ],
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketsInfo).toEqual([
+    assertions: (marketsInfo) => {
+            expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000001",
           universe: "0x000000000000000000000000000000000000000b",
@@ -325,9 +322,8 @@ describe("server/getters/get-markets-info", () => {
         "0x0000000000000000000000000000000000000001",
       ],
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketsInfo).toEqual([
+    assertions: (marketsInfo) => {
+            expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000002",
           universe: "0x000000000000000000000000000000000000000b",
@@ -475,9 +471,8 @@ describe("server/getters/get-markets-info", () => {
         "0x0000000000000000000000000000000000000019",
       ],
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketsInfo).toEqual([
+    assertions: (marketsInfo) => {
+            expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000019",
           universe: "0x000000000000000000000000000000000000000b",
@@ -571,9 +566,8 @@ describe("server/getters/get-markets-info", () => {
     params: {
       marketIds: [undefined],
     },
-    assertions: (err, marketInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketInfo).toEqual([null]);
+    assertions: (marketInfo) => {
+            expect(marketInfo).toEqual([null]);
     },
   });
   runTest({
@@ -581,9 +575,8 @@ describe("server/getters/get-markets-info", () => {
     params: {
       marketIds: ["0x1010101010101010101010101010101010101010"],
     },
-    assertions: (err, marketInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketInfo).toEqual([null]);
+    assertions: (marketInfo) => {
+            expect(marketInfo).toEqual([null]);
     },
   });
   runTest({
@@ -591,9 +584,8 @@ describe("server/getters/get-markets-info", () => {
     params: {
       marketIds: Array.from({ length: 1000 }, () => "0x0000000000000000000000000000000000000001"),
     },
-    assertions: (err, marketInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketInfo).toEqual(Array.from({ length: 1000 }, () => {
+    assertions: (marketInfo) => {
+            expect(marketInfo).toEqual(Array.from({ length: 1000 }, () => {
         return {
           id: "0x0000000000000000000000000000000000000001",
           universe: "0x000000000000000000000000000000000000000b",
@@ -686,9 +678,8 @@ describe("server/getters/get-markets-info", () => {
     params: {
       marketIds: [],
     },
-    assertions: (err, marketInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketInfo).toEqual([]);
+    assertions: (marketInfo) => {
+            expect(marketInfo).toEqual([]);
     },
   });
 });

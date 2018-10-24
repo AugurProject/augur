@@ -6,11 +6,10 @@ describe("server/getters/get-orders", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getOrders";
-      dispatchJsonRpcRequest(db, t, {}, (err, openOrders) => {
-        t.assertions(err, openOrders);
-        db.destroy();
-        done();
-      });
+      const openOrders = await dispatchJsonRpcRequest(db, t, {});
+      t.assertions(openOrders);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -23,9 +22,8 @@ describe("server/getters/get-orders", () => {
       creator: null,
       orderState: "OPEN",
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
-      expect(openOrders).toEqual({
+    assertions: (openOrders) => {
+            expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           0: {
             buy: {
@@ -121,9 +119,8 @@ describe("server/getters/get-orders", () => {
       creator: null,
       orderState: "OPEN",
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
-      expect(openOrders).toEqual({
+    assertions: (openOrders) => {
+            expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           1: {
             sell: {
@@ -161,9 +158,8 @@ describe("server/getters/get-orders", () => {
       creator: null,
       orderState: "FILLED",
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
-      expect(openOrders).toEqual({
+    assertions: (openOrders) => {
+            expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           1: {
             sell: {
@@ -201,9 +197,8 @@ describe("server/getters/get-orders", () => {
       creator: null,
       orderState: "CANCELED",
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
-      expect(openOrders).toEqual({
+    assertions: (openOrders) => {
+            expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           1: {
             sell: {
@@ -243,9 +238,8 @@ describe("server/getters/get-orders", () => {
       orderType: null,
       creator: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
-      expect(openOrders).toEqual({
+    assertions: (openOrders) => {
+            expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           0: {
             buy: {
@@ -350,9 +344,8 @@ describe("server/getters/get-orders", () => {
       earliestCreationTime: 1506473501,
       latestCreationTime: 1506473515,
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
-      expect(openOrders).toEqual({
+    assertions: (openOrders) => {
+            expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000011": {
           1: {
             buy: {
@@ -413,9 +406,8 @@ describe("server/getters/get-orders", () => {
       orderType: null,
       creator: null,
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
-      expect(openOrders).toEqual({});
+    assertions: (openOrders) => {
+            expect(openOrders).toEqual({});
     },
   });
   runTest({
@@ -428,9 +420,8 @@ describe("server/getters/get-orders", () => {
       creator: null,
       orphaned: true,
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
-      expect(openOrders).toEqual({
+    assertions: (openOrders) => {
+            expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000003": {
           1: {
             sell: {

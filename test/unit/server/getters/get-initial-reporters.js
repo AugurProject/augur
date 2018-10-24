@@ -6,11 +6,10 @@ describe("server/getters/get-initial-reporters", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getInitialReporters";
-      dispatchJsonRpcRequest(db, t, t.params.augur, (err, initialReporters) => {
-        t.assertions(err, initialReporters);
-        db.destroy();
-        done();
-      });
+      const initialReporters = await dispatchJsonRpcRequest(db, t, t.params.augur);
+      t.assertions(initialReporters);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -19,9 +18,8 @@ describe("server/getters/get-initial-reporters", () => {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, initialReporters) => {
-      expect(err).toBeFalsy();
-      expect(initialReporters).toEqual({
+    assertions: (initialReporters) => {
+            expect(initialReporters).toEqual({
         "0x0000000000000000000000000000000000abe111": {
           amountStaked: "102",
           blockNumber: 1400100,

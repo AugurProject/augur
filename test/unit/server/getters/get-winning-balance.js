@@ -7,11 +7,10 @@ describe("server/getters/get-winning-balance", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getWinningBalance";
-      dispatchJsonRpcRequest(db, t, {}, (err, winningBalance) => {
-        t.assertions(err, winningBalance);
-        db.destroy();
-        done();
-      });
+      const winningBalance = await dispatchJsonRpcRequest(db, t, {});
+      t.assertions(winningBalance);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -20,9 +19,8 @@ describe("server/getters/get-winning-balance", () => {
       marketIds: ["0x0000000000000000000000000000000000000019"],
       account: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, winningBalance) => {
-      expect(err).toBeFalsy();
-      expect(winningBalance).toEqual([
+    assertions: (winningBalance) => {
+            expect(winningBalance).toEqual([
         {
           marketId: "0x0000000000000000000000000000000000000019",
           winnings: new BigNumber("100000000000"),
@@ -36,9 +34,8 @@ describe("server/getters/get-winning-balance", () => {
       marketIds: ["0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0"],
       account: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, winningBalance) => {
-      expect(err).toBeFalsy();
-      expect(winningBalance).toEqual([]);
+    assertions: (winningBalance) => {
+            expect(winningBalance).toEqual([]);
     },
   });
 });

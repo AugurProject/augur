@@ -6,11 +6,10 @@ describe("server/getters/get-market-price-history", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getMarketPriceHistory";
-      dispatchJsonRpcRequest(db, t, null, (err, marketPriceHistory) => {
-        t.assertions(err, marketPriceHistory);
-        db.destroy();
-        done();
-      });
+      const marketPriceHistory = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(marketPriceHistory);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -22,9 +21,8 @@ describe("server/getters/get-market-price-history", () => {
       limit: null,
       offset: null,
     },
-    assertions: (err, marketPriceHistory) => {
-      expect(err).toBeFalsy();
-      expect(marketPriceHistory).toEqual({
+    assertions: (marketPriceHistory) => {
+            expect(marketPriceHistory).toEqual({
         0: [{
           price: "5.5",
           amount: "0.2",
@@ -46,9 +44,8 @@ describe("server/getters/get-market-price-history", () => {
       limit: null,
       offset: null,
     },
-    assertions: (err, marketPriceHistory) => {
-      expect(err).toBeFalsy();
-      expect(marketPriceHistory).toEqual({});
+    assertions: (marketPriceHistory) => {
+            expect(marketPriceHistory).toEqual({});
     },
   });
 });

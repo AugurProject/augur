@@ -6,11 +6,10 @@ describe("server/getters/get-universes-info", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getUniversesInfo";
-      dispatchJsonRpcRequest(db, t, {}, (err, universes) => {
-        t.assertions(err, universes);
-        db.destroy();
-        done();
-      });
+      const universes = await dispatchJsonRpcRequest(db, t, {});
+      t.assertions(universes);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -19,9 +18,8 @@ describe("server/getters/get-universes-info", () => {
       universe: "0x000000000000000000000000000000000000000b",
       account: "0x0000000000000000000000000000000000000021",
     },
-    assertions: (err, universes) => {
-      expect(err).toBeFalsy();
-      expect(universes).toEqual([
+    assertions: (universes) => {
+            expect(universes).toEqual([
         {
           universe: "0x000000000000000000000000000000000000000b",
           parentUniverse: null,
@@ -52,9 +50,8 @@ describe("server/getters/get-universes-info", () => {
       universe: "CHILD_UNIVERSE",
       account: "0x0000000000000000000000000000000000000021",
     },
-    assertions: (err, universes) => {
-      expect(err).toBeFalsy();
-      expect(universes).toEqual([
+    assertions: (universes) => {
+            expect(universes).toEqual([
         {
           universe: "0x000000000000000000000000000000000000000b",
           parentUniverse: null,
@@ -103,9 +100,8 @@ describe("server/getters/get-universes-info", () => {
       universe: "FIRST_GRAND_CHILD_UNIVERSE",
       account: "0x0000000000000000000000000000000000000021",
     },
-    assertions: (err, universes) => {
-      expect(err).toBeFalsy();
-      expect(universes).toEqual([
+    assertions: (universes) => {
+            expect(universes).toEqual([
         {
           universe: "CHILD_UNIVERSE",
           parentUniverse: "0x000000000000000000000000000000000000000b",
@@ -145,9 +141,8 @@ describe("server/getters/get-universes-info", () => {
       universe: "FIRST_GRAND_CHILD_UNIVERSE",
       account: "0x0000000000000000000000000000000000000abe",
     },
-    assertions: (err, universes) => {
-      expect(err).toBeFalsy();
-      expect(universes).toEqual([
+    assertions: (universes) => {
+            expect(universes).toEqual([
         {
           universe: "CHILD_UNIVERSE",
           parentUniverse: "0x000000000000000000000000000000000000000b",
@@ -187,9 +182,8 @@ describe("server/getters/get-universes-info", () => {
       universe: "BAD_INPUT",
       account: "0x0000000000000000000000000000000000000abe",
     },
-    assertions: (err, universes) => {
-      expect(err).toBeFalsy();
-      expect(universes).toEqual([]);
+    assertions: (universes) => {
+            expect(universes).toEqual([]);
     },
   });
 });

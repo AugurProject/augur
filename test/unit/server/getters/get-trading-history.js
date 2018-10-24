@@ -6,11 +6,10 @@ describe("server/getters/get-trading-history", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getTradingHistory";
-      dispatchJsonRpcRequest(db, t, null, (err, userTradingHistory) => {
-        t.assertions(err, userTradingHistory);
-        db.destroy();
-        done();
-      });
+      const userTradingHistory = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(userTradingHistory);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -26,9 +25,8 @@ describe("server/getters/get-trading-history", () => {
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
-      expect(userTradingHistory).toEqual([{
+    assertions: (userTradingHistory) => {
+            expect(userTradingHistory).toEqual([{
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
         logIndex: 0,
         orderId: "0x1100000000000000000000000000000000000000000000000000000000000000",
@@ -78,9 +76,8 @@ describe("server/getters/get-trading-history", () => {
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
-      expect(userTradingHistory).toEqual([
+    assertions: (userTradingHistory) => {
+            expect(userTradingHistory).toEqual([
         {
           amount: "0.1",
           logIndex: 0,
@@ -293,9 +290,8 @@ describe("server/getters/get-trading-history", () => {
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
-      expect(userTradingHistory).toEqual([
+    assertions: (userTradingHistory) => {
+            expect(userTradingHistory).toEqual([
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
           logIndex: 0,
@@ -349,9 +345,8 @@ describe("server/getters/get-trading-history", () => {
       earliestCreationTime: 1506474514,
       latestCreationTime: 1506474516,
     },
-    assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
-      expect(userTradingHistory).toEqual([
+    assertions: (userTradingHistory) => {
+            expect(userTradingHistory).toEqual([
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
           logIndex: 0,
@@ -406,9 +401,8 @@ describe("server/getters/get-trading-history", () => {
       earliestCreationTime: 1506474514,
       latestCreationTime: 1506474516,
     },
-    assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
-      expect(userTradingHistory).toEqual([
+    assertions: (userTradingHistory) => {
+            expect(userTradingHistory).toEqual([
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
           logIndex: 0,
@@ -443,9 +437,8 @@ describe("server/getters/get-trading-history", () => {
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
-      expect(userTradingHistory).toEqual([]);
+    assertions: (userTradingHistory) => {
+            expect(userTradingHistory).toEqual([]);
     },
   });
 });

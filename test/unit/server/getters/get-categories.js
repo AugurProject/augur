@@ -6,11 +6,10 @@ describe("server/getters/get-categories", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getCategories";
-      dispatchJsonRpcRequest(db, t, null, (err, categoriesInfo) => {
-        t.assertions(err, categoriesInfo);
-        db.destroy();
-        done();
-      });
+      const categoriesInfo = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(categoriesInfo);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -20,9 +19,8 @@ describe("server/getters/get-categories", () => {
       sortBy: "popularity",
       isSortDescending: true,
     },
-    assertions: (err, categoriesInfo) => {
-      expect(err).toBeFalsy();
-      expect(categoriesInfo).toEqual([
+    assertions: (categoriesInfo) => {
+            expect(categoriesInfo).toEqual([
         { category: "FINANCE", popularity: "12345" },
         { category: "POLITICS", popularity: "5000" },
         { category: "ETHEREUM", popularity: "1000" },
@@ -36,9 +34,8 @@ describe("server/getters/get-categories", () => {
     params: {
       universe: "0x1010101010101010101010101010101010101010",
     },
-    assertions: (err, categoriesInfo) => {
-      expect(err).toBeFalsy();
-      expect(categoriesInfo).toEqual([]);
+    assertions: (categoriesInfo) => {
+            expect(categoriesInfo).toEqual([]);
     },
   });
 });

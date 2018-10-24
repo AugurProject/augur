@@ -6,11 +6,10 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getMarketsClosingInDateRange";
-      dispatchJsonRpcRequest(db, t, null, (err, marketsClosingInDateRange) => {
-        t.assertions(err, marketsClosingInDateRange);
-        db.destroy();
-        done();
-      });
+      const marketsClosingInDateRange = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(marketsClosingInDateRange);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -21,9 +20,8 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
       universe: "0x000000000000000000000000000000000000000b",
       limit: 10,
     },
-    assertions: (err, marketsClosingInDateRange) => {
-      expect(err).toBeFalsy();
-      expect(marketsClosingInDateRange).toEqual([
+    assertions: (marketsClosingInDateRange) => {
+            expect(marketsClosingInDateRange).toEqual([
         "0x0000000000000000000000000000000000000001",
       ]);
     },
@@ -36,9 +34,8 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
       universe: "0x000000000000000000000000000000000000000b",
       limit: 3,
     },
-    assertions: (err, marketsClosingInDateRange) => {
-      expect(err).toBeFalsy();
-      expect(marketsClosingInDateRange).toEqual([
+    assertions: (marketsClosingInDateRange) => {
+            expect(marketsClosingInDateRange).toEqual([
         "0x0000000000000000000000000000000000000003",
         "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000001",
@@ -53,9 +50,8 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
       universe: "0x000000000000000000000000000000000000000b",
       limit: 2,
     },
-    assertions: (err, marketsClosingInDateRange) => {
-      expect(err).toBeFalsy();
-      expect(marketsClosingInDateRange).toEqual([
+    assertions: (marketsClosingInDateRange) => {
+            expect(marketsClosingInDateRange).toEqual([
         "0x0000000000000000000000000000000000000003",
         "0x0000000000000000000000000000000000000002",
       ]);
@@ -69,9 +65,8 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
       universe: "0x000000000000000000000000000000000000000b",
       limit: 10,
     },
-    assertions: (err, marketsClosingInDateRange) => {
-      expect(err).toBeFalsy();
-      expect(marketsClosingInDateRange).toEqual([]);
+    assertions: (marketsClosingInDateRange) => {
+            expect(marketsClosingInDateRange).toEqual([]);
     },
   });
 });

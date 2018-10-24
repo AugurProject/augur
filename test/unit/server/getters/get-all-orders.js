@@ -6,11 +6,10 @@ describe("server/getters/get-all-orders", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getAllOrders";
-      dispatchJsonRpcRequest(db, t, {}, (err, orders) => {
-        t.assertions(err, orders);
-        db.destroy();
-        done();
-      });
+      const orders = await dispatchJsonRpcRequest(db, t, {});
+      t.assertions(orders);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -18,9 +17,8 @@ describe("server/getters/get-all-orders", () => {
     params: {
       account: "0x000000000000000000000000000000000000d00d",
     },
-    assertions: (err, orders) => {
-      expect(err).toBeFalsy();
-      expect(orders).toEqual({
+    assertions: (orders) => {
+            expect(orders).toEqual({
         "0x2000000000000000000000000000000000000000000000000000000000000000": {
           "orderId": "0x2000000000000000000000000000000000000000000000000000000000000000",
           "sharesEscrowed": "0",

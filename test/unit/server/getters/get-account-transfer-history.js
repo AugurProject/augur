@@ -6,11 +6,10 @@ describe("server/getters/get-account-transfer-history", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getAccountTransferHistory";
-      dispatchJsonRpcRequest(db, t, null, (err, accountTransferHistory) => {
-        t.assertions(err, accountTransferHistory);
-        db.destroy();
-        done();
-      });
+      const accountTransferHistory = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(accountTransferHistory);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -20,9 +19,8 @@ describe("server/getters/get-account-transfer-history", () => {
       token: null,
       isSortDescending: false,
     },
-    assertions: (err, accountTransferHistory) => {
-      expect(err).toBeFalsy();
-      expect(accountTransferHistory).toEqual([{
+    assertions: (accountTransferHistory) => {
+            expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
         creationBlockNumber: 1400000,
@@ -75,9 +73,8 @@ describe("server/getters/get-account-transfer-history", () => {
       token: null,
       isSortDescending: false,
     },
-    assertions: (err, accountTransferHistory) => {
-      expect(err).toBeFalsy();
-      expect(accountTransferHistory).toEqual([{
+    assertions: (accountTransferHistory) => {
+            expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
         creationBlockNumber: 1400000,
@@ -118,9 +115,8 @@ describe("server/getters/get-account-transfer-history", () => {
       earliestCreationTime: 1506473473,
       latestCreationTime: 1506473474,
     },
-    assertions: (err, accountTransferHistory) => {
-      expect(err).toBeFalsy();
-      expect(accountTransferHistory).toEqual([{
+    assertions: (accountTransferHistory) => {
+            expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
         creationBlockNumber: 1400000,
@@ -144,9 +140,8 @@ describe("server/getters/get-account-transfer-history", () => {
       token: "0x7a305d9b681fb164dc5ad628b5992177dc66aec8",
       isSortDescending: false,
     },
-    assertions: (err, accountTransferHistory) => {
-      expect(err).toBeFalsy();
-      expect(accountTransferHistory).toEqual([{
+    assertions: (accountTransferHistory) => {
+            expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadb33f",
         creationBlockNumber: 1400001,
         blockHash: "0x1400001",
@@ -169,9 +164,8 @@ describe("server/getters/get-account-transfer-history", () => {
       account: "0x0000000000000000000000000000000000000b0b",
       token: "0x000000000000000000000000000000000000000e",
     },
-    assertions: (err, accountTransferHistory) => {
-      expect(err).toBeFalsy();
-      expect(accountTransferHistory).toEqual([]);
+    assertions: (accountTransferHistory) => {
+            expect(accountTransferHistory).toEqual([]);
     },
   });
   runTest({
@@ -180,9 +174,8 @@ describe("server/getters/get-account-transfer-history", () => {
       account: "0x0000000000000000000000000000000000000bbb",
       token: null,
     },
-    assertions: (err, accountTransferHistory) => {
-      expect(err).toBeFalsy();
-      expect(accountTransferHistory).toEqual([]);
+    assertions: (accountTransferHistory) => {
+            expect(accountTransferHistory).toEqual([]);
     },
   });
 });

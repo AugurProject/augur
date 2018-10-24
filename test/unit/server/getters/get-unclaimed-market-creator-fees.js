@@ -6,11 +6,10 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getUnclaimedMarketCreatorFees";
-      dispatchJsonRpcRequest(db, t, t.params.augur, (err, marketFees) => {
-        t.assertions(err, marketFees);
-        db.destroy();
-        done();
-      });
+      const marketFees = await dispatchJsonRpcRequest(db, t, t.params.augur);
+      t.assertions(marketFees);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -33,9 +32,8 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
         },
       },
     },
-    assertions: (err, marketFees) => {
-      expect(err).toBeFalsy();
-      expect(marketFees).toEqual([
+    assertions: (marketFees) => {
+            expect(marketFees).toEqual([
         {
           marketId: "0x0000000000000000000000000000000000000001",
           unclaimedFee: "0",
@@ -64,9 +62,8 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
         },
       },
     },
-    assertions: (err, marketFees) => {
-      expect(err).toBeFalsy();
-      expect(marketFees).toEqual([]);
+    assertions: (marketFees) => {
+            expect(marketFees).toEqual([]);
     },
   });
 });

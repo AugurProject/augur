@@ -6,11 +6,10 @@ describe("server/getters/get-reporting-history", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getReportingHistory";
-      dispatchJsonRpcRequest(db, t, null, (err, reportingHistory) => {
-        t.assertions(err, reportingHistory);
-        db.destroy();
-        done();
-      });
+      const reportingHistory = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(reportingHistory);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -19,9 +18,8 @@ describe("server/getters/get-reporting-history", () => {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000021",
     },
-    assertions: (err, reportingHistory) => {
-      expect(err).toBeFalsy();
-      expect(reportingHistory).toEqual({
+    assertions: (reportingHistory) => {
+            expect(reportingHistory).toEqual({
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000011": {
             initialReporter: null,
@@ -75,9 +73,8 @@ describe("server/getters/get-reporting-history", () => {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, reportingHistory) => {
-      expect(err).toBeFalsy();
-      expect(reportingHistory).toEqual({
+    assertions: (reportingHistory) => {
+            expect(reportingHistory).toEqual({
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000011": {
             initialReporter: {
@@ -179,9 +176,8 @@ describe("server/getters/get-reporting-history", () => {
       earliestCreationTime: 1506474501,
       latestCreationTime: 1506474515,
     },
-    assertions: (err, reportingHistory) => {
-      expect(err).toBeFalsy();
-      expect(reportingHistory).toEqual({
+    assertions: (reportingHistory) => {
+            expect(reportingHistory).toEqual({
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000019": {
             initialReporter: null,
@@ -212,9 +208,8 @@ describe("server/getters/get-reporting-history", () => {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x2100000000000000000000000000000000000021",
     },
-    assertions: (err, reportingHistory) => {
-      expect(err).toBeFalsy();
-      expect(reportingHistory).toEqual({});
+    assertions: (reportingHistory) => {
+            expect(reportingHistory).toEqual({});
     },
   });
 });

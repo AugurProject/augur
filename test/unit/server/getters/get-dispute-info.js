@@ -2,15 +2,20 @@ const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-dispute-info", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getDisputeInfo";
-      dispatchJsonRpcRequest(db, t, null, (err, disputeInfo) => {
-        t.assertions(err, disputeInfo);
-        done();
-        db.destroy();
-      });
+      const disputeInfo = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(disputeInfo);
     });
   };
   runTest({
@@ -22,8 +27,7 @@ describe("server/getters/get-dispute-info", () => {
       ],
       account: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, disputeInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (disputeInfo) => {
       expect(disputeInfo).toEqual([
         {
           marketId: "0x0000000000000000000000000000000000000211",
@@ -123,8 +127,7 @@ describe("server/getters/get-dispute-info", () => {
       ],
       account: "0x0000000000000000000000000000000000000021",
     },
-    assertions: (err, disputeInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (disputeInfo) => {
       expect(disputeInfo).toEqual([
         {
           marketId: "0x0000000000000000000000000000000000000211",
@@ -224,8 +227,7 @@ describe("server/getters/get-dispute-info", () => {
         "0x0000000000000000000000077777777777777777",
       ],
     },
-    assertions: (err, disputeInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (disputeInfo) => {
       expect(disputeInfo).toEqual([
         null,
         {
@@ -291,8 +293,7 @@ describe("server/getters/get-dispute-info", () => {
         "0x0000000000000000000000000000000000000211",
       ],
     },
-    assertions: (err, disputeInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (disputeInfo) => {
       expect(disputeInfo).toEqual([
         {
           marketId: "0x0000000000000000000000000000000000000011",
@@ -388,19 +389,8 @@ describe("server/getters/get-dispute-info", () => {
     params: {
       marketIds: ["0x1010101010101010101010101010101010101010"],
     },
-    assertions: (err, disputeInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (disputeInfo) => {
       expect(disputeInfo).toEqual([null]);
-    },
-  });
-  runTest({
-    description: "marketIds array with null, expect error",
-    params: {
-      marketIds: [undefined],
-      account: "0x0000000000000000000000000000000000000b0b",
-    },
-    assertions: (err, disputeInfo) => {
-      expect(err).not.toBeNull();
     },
   });
   runTest({
@@ -408,9 +398,21 @@ describe("server/getters/get-dispute-info", () => {
     params: {
       marketIds: [],
     },
-    assertions: (err, disputeInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (disputeInfo) => {
       expect(disputeInfo).toEqual([]);
     },
+  });
+
+  test("marketIds array with null, expect error", async () => {
+    const params = {
+      marketIds: [undefined],
+      account: "0x0000000000000000000000000000000000000b0b",
+    };
+    try {
+      await expect(dispatchJsonRpcRequest(db, { method: "getDisputeInfo", params }, null));
+      throw new Error("Did not fail");
+    } catch (err) {
+      expect(err.message).toMatch("Invalid request object");
+    }
   });
 });

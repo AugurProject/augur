@@ -6,11 +6,10 @@ describe("server/getters/get-sync-data", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getSyncData";
-      dispatchJsonRpcRequest(db, t, t.params.augur, (err, contractAddresses) => {
-        t.assertions(err, contractAddresses);
-        db.destroy();
-        done();
-      });
+      const contractAddresses = await dispatchJsonRpcRequest(db, t, t.params.augur);
+      t.assertions(contractAddresses);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -38,9 +37,8 @@ describe("server/getters/get-sync-data", () => {
         },
       },
     },
-    assertions: (err, contractAddresses) => {
-      expect(err).toBeFalsy();
-      expect(contractAddresses).toEqual({
+    assertions: (contractAddresses) => {
+            expect(contractAddresses).toEqual({
         version: "the-version-string",
         net_version: 974,
         netId: 974,

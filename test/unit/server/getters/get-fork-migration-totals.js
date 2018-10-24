@@ -6,11 +6,10 @@ describe("server/getters/get-fork-migration-totals", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getForkMigrationTotals";
-      dispatchJsonRpcRequest(db, t, t.params.augur, (err, forkMigrationTotals) => {
-        t.assertions(err, forkMigrationTotals);
-        db.destroy();
-        done();
-      });
+      const forkMigrationTotals = await dispatchJsonRpcRequest(db, t, t.params.augur);
+      t.assertions(forkMigrationTotals);
+      db.destroy();
+      done();
     });
   };
   runTest({
@@ -19,9 +18,8 @@ describe("server/getters/get-fork-migration-totals", () => {
       parentUniverse: "0x000000000000000000000000000000000000000b",
       augur: {},
     },
-    assertions: (err, forkMigrationTotals) => {
-      expect(err).toBeFalsy();
-      expect(forkMigrationTotals).toEqual({
+    assertions: (forkMigrationTotals) => {
+            expect(forkMigrationTotals).toEqual({
         "CHILD_UNIVERSE": {
           "isInvalid": false,
           "payout": [

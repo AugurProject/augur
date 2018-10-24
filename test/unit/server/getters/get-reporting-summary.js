@@ -6,12 +6,10 @@ describe("server/getters/get-reporting-summary", () => {
     test(t.description, async (done) => {
       const db = await setupTestDb();
       t.method = "getReportingSummary";
-      dispatchJsonRpcRequest(db, t, null, (err, reportingSummary) => {
-        expect(err).toBeFalsy();
-        t.assertions(reportingSummary);
-        done();
-        db.destroy();
-      });
+      const reportingSummary = await dispatchJsonRpcRequest(db, t, null);
+            t.assertions(reportingSummary);
+      done();
+      db.destroy();
     });
   };
   runTest({
