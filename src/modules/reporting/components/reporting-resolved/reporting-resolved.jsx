@@ -34,7 +34,7 @@ export default class ReportingResolved extends Component {
     isForkingMarketFinalized: PropTypes.bool,
     noShowHeader: PropTypes.bool,
     forkingMarket: PropTypes.object,
-    loadReporting: PropTypes.func.isRequired,
+    loadReporting: PropTypes.func,
     isMobile: PropTypes.bool.isRequired
   };
 
@@ -42,7 +42,8 @@ export default class ReportingResolved extends Component {
     nullMessage: null,
     isForkingMarketFinalized: false,
     noShowHeader: false,
-    forkingMarket: null
+    forkingMarket: null,
+    loadReporting: null
   };
 
   constructor(props) {

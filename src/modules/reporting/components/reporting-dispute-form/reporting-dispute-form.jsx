@@ -13,6 +13,7 @@ import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles";
 import ReportingDisputeProgress from "modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress";
 import { MALFORMED_OUTCOME } from "utils/constants";
+import Input from "modules/common/components/input/input";
 
 const { ETHER } = augur.rpc.constants;
 export default class ReportingDisputeForm extends Component {
@@ -613,36 +614,25 @@ export default class ReportingDisputeForm extends Component {
           </label>
           <ul className={FormStyles["Form__radio-buttons--per-line-inline"]}>
             <li>
-              <input
+              <Input
                 id="sr__input--stake"
                 type="number"
-                min="0"
-                placeholder="0.0000 REP"
-                value={s.inputStake}
-                className={classNames(FormStyles.Form__input, {
+                className={classNames({
                   [`${FormStyles["Form__error--field"]}`]:
                     s.validations.hasOwnProperty("stake") &&
                     s.validations.selectedOutcome
                 })}
-                style={{ boxShadow: "none" }}
-                onChange={e => this.validateStake({ raw: e.target.value })}
-              />
-              {s.selectedOutcomeName &&
-                s.selectedOutcomeName.length > 0 && (
-                  <div className={Styles.ReportingDisputeForm__container}>
-                    <button
-                      className={classNames(
-                        Styles.ReportingDisputeForm__button,
-                        FormStyles["button--inline"]
-                      )}
-                      onClick={() => {
-                        this.setMAXStake();
-                      }}
-                    >
-                      MAX
-                    </button>
-                  </div>
+                min="0"
+                value={s.inputStake}
+                placeholder="0.0000 REP"
+                onChange={value => this.validateStake({ raw: value })}
+                autoComplete="off"
+                maxButton={Boolean(
+                  s.selectedOutcomeName && s.selectedOutcomeName.length > 0
                 )}
+                onMaxButtonClick={() => this.setMAXStake()}
+                darkMaxBtn
+              />
             </li>
             <li>
               {s.validations.hasOwnProperty("stake") &&

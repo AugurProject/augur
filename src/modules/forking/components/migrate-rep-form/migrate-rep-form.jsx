@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 
+import Input from "modules/common/components/input/input";
 import FormStyles from "modules/common/less/form";
 import { SCALAR } from "modules/markets/constants/market-types";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
@@ -277,37 +278,27 @@ export default class MigrateRepForm extends Component {
           </label>
           <ul className={FormStyles["Form__radio-buttons--per-line-inline"]}>
             <li>
-              <input
+              <Input
                 id="sr__input--repAmount"
                 type="number"
                 min="0"
-                placeholder="0.0000 REP"
-                value={inputRepAmount}
-                className={classNames(FormStyles.Form__input, {
+                className={classNames({
                   [`${FormStyles["Form__error--field"]}`]:
                     validations.hasOwnProperty("repAmount") &&
                     validations.selectedOutcome
                 })}
-                onChange={e => {
-                  this.validateRepAmount(e.target.value);
-                }}
-              />
-              {selectedOutcomeName &&
-                selectedOutcomeName.length > 0 && (
-                  <div className={Styles.MigrateRepForm__container}>
-                    <button
-                      className={classNames(
-                        FormStyles["button--inline"],
-                        Styles.MigrateRepForm__button
-                      )}
-                      onClick={() => {
-                        this.validateRepAmount(accountREP, true);
-                      }}
-                    >
-                      MAX
-                    </button>
-                  </div>
+                value={inputRepAmount}
+                placeholder="0.0000 REP"
+                onChange={value => this.validateRepAmount(value)}
+                autoComplete="off"
+                maxButton={Boolean(
+                  selectedOutcomeName && selectedOutcomeName.length > 0
                 )}
+                onMaxButtonClick={() =>
+                  this.validateRepAmount(accountREP, true)
+                }
+                darkMaxBtn
+              />
             </li>
             <li>
               {validations.hasOwnProperty("repAmount") &&

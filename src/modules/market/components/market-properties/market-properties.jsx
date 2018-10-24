@@ -114,7 +114,7 @@ const MarketProperties = ({
             <li className={Styles.MarketProperties__resolutionSource}>
               <span>Resolution Source</span>
               <span className={Styles.MarketProperties__resolutionSource}>
-                {resolutionSource}
+                {resolutionSource || "General knowledge"}
               </span>
             </li>
           )}

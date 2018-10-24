@@ -539,7 +539,7 @@ export default class AppView extends Component {
           </section>
           <section className={Styles.Main}>
             <section
-              className={Styles.TopBar}
+              className={classNames(Styles.TopBar, Styles.TopBar__floatAbove)}
               onClick={this.mainSectionClickHandler}
               role="presentation"
             >
