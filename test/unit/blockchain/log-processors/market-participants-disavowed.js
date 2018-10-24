@@ -15,7 +15,6 @@ describe("blockchain/log-processors/market-participants-disavowed", () => {
     market: "0x0000000000000000000000000000000000000011",
   };
   test("Market Participants Disavowed", async () => {
-    const db = await setupTestDb();
     return db.transaction(async (trx) => {
       await processMarketParticipantsDisavowedLog(trx, {}, log);
 
