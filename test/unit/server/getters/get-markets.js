@@ -4,14 +4,20 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 
 
 describe("server/getters/get-markets", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getMarkets";
       const marketsMatched = await dispatchJsonRpcRequest(db, t, {});
       t.assertions(marketsMatched);
-      db.destroy();
-      done();
     });
   };
   runTest({

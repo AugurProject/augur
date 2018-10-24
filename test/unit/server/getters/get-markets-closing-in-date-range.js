@@ -2,14 +2,20 @@ const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-markets-closing-in-date-range", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getMarketsClosingInDateRange";
       const marketsClosingInDateRange = await dispatchJsonRpcRequest(db, t, null);
       t.assertions(marketsClosingInDateRange);
-      db.destroy();
-      done();
     });
   };
   runTest({

@@ -4,15 +4,22 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 const { setOverrideTimestamp } = require("src/blockchain/process-block");
 
 describe("server/getters/get-fee-windows", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
+    test(t.description, async () => {
       const db = await setupTestDb();
       await setOverrideTimestamp(db, 1509065471);
       t.method = "getFeeWindows";
       const feeWindows = await dispatchJsonRpcRequest(db, t, t.params.augur);
       t.assertions(feeWindows);
-      db.destroy();
-      done();
     });
   };
   runTest({

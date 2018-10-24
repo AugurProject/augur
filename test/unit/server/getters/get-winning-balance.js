@@ -3,14 +3,16 @@ const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-winning-balance", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getWinningBalance";
       const winningBalance = await dispatchJsonRpcRequest(db, t, {});
       t.assertions(winningBalance);
-      db.destroy();
-      done();
     });
   };
   runTest({
@@ -37,5 +39,9 @@ describe("server/getters/get-winning-balance", () => {
     assertions: (winningBalance) => {
       expect(winningBalance).toEqual([]);
     },
+  });
+
+  afterEach(async () => {
+    await db.destroy();
   });
 });
