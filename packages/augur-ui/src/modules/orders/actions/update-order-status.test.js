@@ -1,19 +1,15 @@
-import { describe, it, afterEach } from "mocha";
-
-import proxyquire from "proxyquire";
 import mocks from "test/mockStore";
 import { CLOSE_DIALOG_CLOSING } from "modules/markets/constants/close-dialog-status";
 import { BUY } from "modules/transactions/constants/types";
 import { updateOrderStatus } from "modules/orders/actions/update-order-status";
 
 describe("modules/orders/actions/update-order-status.js", () => {
-  proxyquire.noPreserveCache();
   const store = mocks.mockStore(mocks.state);
   afterEach(() => {
     store.clearActions();
   });
   describe("updateOrderStatus", () => {
-    it(`shouldn't dispatch if order cannot be found`, () => {
+    test(`shouldn't dispatch if order cannot be found`, () => {
       store.dispatch(
         updateOrderStatus({
           orderId: "nonExistingOrderId",
@@ -23,7 +19,7 @@ describe("modules/orders/actions/update-order-status.js", () => {
           orderTypeLabel: BUY
         })
       );
-      assert.lengthOf(store.getActions(), 0);
+      expect(store.getActions()).toHaveLength(0);
       store.dispatch(
         updateOrderStatus({
           orderId: "orderId",
@@ -33,9 +29,9 @@ describe("modules/orders/actions/update-order-status.js", () => {
           orderTypeLabel: BUY
         })
       );
-      assert.lengthOf(store.getActions(), 0);
+      expect(store.getActions()).toHaveLength(0);
     });
-    it(`should dispatch action`, () => {
+    test(`should dispatch action`, () => {
       store.dispatch(
         updateOrderStatus({
           orderId:
@@ -46,7 +42,7 @@ describe("modules/orders/actions/update-order-status.js", () => {
           orderTypeLabel: BUY
         })
       );
-      assert.deepEqual(store.getActions(), [
+      expect(store.getActions()).toEqual([
         {
           type: "UPDATE_ORDER_STATUS",
           data: {

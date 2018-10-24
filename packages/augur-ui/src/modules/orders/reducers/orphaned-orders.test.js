@@ -1,29 +1,39 @@
-import OrphanedOrdersReducer from "modules/orders/reducers/orphaned-orders";
 import {
   addOrphanedOrder,
   dismissOrphanedOrder,
   removeOrphanedOrder,
-  cancelOrphanedOrder,
-  __RewireAPI__ as cancelOrphanedOrderRequireAPI
+  cancelOrphanedOrder
 } from "modules/orders/actions/orphaned-orders";
 import { RESET_STATE } from "modules/app/actions/reset-state";
+import configureMockStore from "redux-mock-store";
+import thunk from "redux-thunk";
+import { augur } from "services/augurjs";
+
+jest.mock("services/augurjs");
+jest.mock("src/select-state");
+jest.mock("utils/log-error");
 
 // I'm back door testing action creators here.
 describe("modules/orders/reducers/orphaned-orders.js", () => {
-  describe("default state", () => {
-    it("should be an empty array", () => {
-      const actual = OrphanedOrdersReducer([], {});
+  augur.api = jest.fn(() => {});
+  augur.api.CancelOrder = jest.fn(() => {});
+  augur.api.CancelOrder.cancelOrder = jest.fn(() => {});
 
-      assert.isArray(actual);
-      assert.isEmpty(actual);
+  const OrphanedOrdersReducer = require("modules/orders/reducers/orphaned-orders")
+    .default;
+
+  describe("default state", () => {
+    test("should be an empty array", () => {
+      const actual = OrphanedOrdersReducer([], {});
+      expect(actual).toEqual([]);
     });
   });
 
   describe("ADD_ORPHANED_ORDER", () => {
-    it("should push the data payload onto the state with an added dismissed property", () => {
+    test("should push the data payload onto the state with an added dismissed property", () => {
       const action = addOrphanedOrder({ orderId: "12345" });
       const actual = OrphanedOrdersReducer([], action);
-      assert.deepEqual(actual, [
+      expect(actual).toEqual([
         {
           dismissed: false,
           orderId: "12345"
@@ -31,7 +41,7 @@ describe("modules/orders/reducers/orphaned-orders.js", () => {
       ]);
     });
 
-    it("should do nothing if an order exists with the same orderId", () => {
+    test("should do nothing if an order exists with the same orderId", () => {
       // I'm back door testing action creators here.
       const action = addOrphanedOrder({ orderId: "12345", timestamp: 123456 });
       const actual = OrphanedOrdersReducer(
@@ -45,7 +55,7 @@ describe("modules/orders/reducers/orphaned-orders.js", () => {
         action
       );
 
-      assert.deepEqual(actual, [
+      expect(actual).toEqual([
         {
           dismissed: false,
           orderId: "12345",
@@ -56,7 +66,7 @@ describe("modules/orders/reducers/orphaned-orders.js", () => {
   });
 
   describe("DISMISS_ORPHANED_ORDER", () => {
-    it("should set dismissed propert to true", () => {
+    test("should set dismissed propert to true", () => {
       const actual = OrphanedOrdersReducer(
         [
           {
@@ -73,7 +83,7 @@ describe("modules/orders/reducers/orphaned-orders.js", () => {
         dismissOrphanedOrder({ orderId: "12345" })
       );
 
-      assert.deepEqual(actual, [
+      expect(actual).toEqual([
         {
           dismissed: false,
           orderId: "54321",
@@ -89,7 +99,7 @@ describe("modules/orders/reducers/orphaned-orders.js", () => {
   });
 
   describe("REMOVE_ORPHANED_ORDER", () => {
-    it("should filter out anything with a matching orderId", () => {
+    test("should filter out anything with a matching orderId", () => {
       const action = removeOrphanedOrder("12345");
       const actual = OrphanedOrdersReducer(
         [
@@ -101,12 +111,12 @@ describe("modules/orders/reducers/orphaned-orders.js", () => {
         action
       );
 
-      assert.deepEqual(actual, []);
+      expect(actual).toEqual([]);
     });
   });
 
   describe("RESET_STATE", () => {
-    it("should return to the default state", () => {
+    test("should return to the default state", () => {
       const actual = OrphanedOrdersReducer(
         [
           {
@@ -119,24 +129,22 @@ describe("modules/orders/reducers/orphaned-orders.js", () => {
         }
       );
 
-      assert.deepEqual(actual, []);
+      expect(actual).toEqual([]);
     });
   });
 
   describe("CANCEL_ORDER", () => {
-    it("should return to the default state", () => {
-      cancelOrphanedOrderRequireAPI.__Rewire__(
-        "selectCurrentTimestampInSeconds",
-        () => {}
+    test("should return to the default state", () => {
+      const mockStore = configureMockStore([thunk]);
+      const store = mockStore({
+        blockchain: { currentAugurTimestamp: 1234 },
+        loginAccount: { meta: {} }
+      });
+      store.dispatch(
+        cancelOrphanedOrder({ orderId: "12345" }, actual => {
+          expect(actual).toEqual([]);
+        })
       );
-      cancelOrphanedOrderRequireAPI.__Rewire__("augur", {
-        api: {
-          CancelOrder: () => {}
-        }
-      });
-      cancelOrphanedOrder({ orderId: "12345" }, actual => {
-        assert.deepEqual(actual, []);
-      });
     });
   });
 });

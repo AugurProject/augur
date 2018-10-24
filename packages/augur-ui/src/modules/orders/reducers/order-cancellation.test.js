@@ -1,8 +1,10 @@
-import orderCancellationReducer from "modules/orders/reducers/order-cancellation";
 import { UPDATE_ORDER_STATUS } from "modules/orders/actions/update-order-status";
 
 describe("modules/orders/reducers/order-cancellation.js", () => {
-  it("should react to UPDATE_ORDER_STATUS action", () => {
+  const orderCancellationReducer = require("modules/orders/reducers/order-cancellation")
+    .default;
+
+  test("should react to UPDATE_ORDER_STATUS action", () => {
     const currentState = {};
 
     const newState = orderCancellationReducer(currentState, {
@@ -13,7 +15,6 @@ describe("modules/orders/reducers/order-cancellation.js", () => {
       }
     });
 
-    assert.deepEqual(newState, { "an orderId": "a status" });
-    assert.notStrictEqual(currentState, newState);
+    expect(newState).toEqual({ "an orderId": "a status" });
   });
 });

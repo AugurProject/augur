@@ -1,5 +1,3 @@
-import { describe, it, beforeEach } from "mocha";
-
 import testState from "test/testState";
 import { UPDATE_ORDER_BOOK } from "modules/orders/actions/update-order-book";
 import reducer from "modules/orders/reducers/order-books";
@@ -11,7 +9,7 @@ describe(`modules/orders/reducers/order-books.js`, () => {
     thisTestState = Object.assign({}, testState);
   });
 
-  it(`Should set market order book`, () => {
+  test(`Should set market order book`, () => {
     const action = {
       type: UPDATE_ORDER_BOOK,
       data: {
@@ -76,10 +74,6 @@ describe(`modules/orders/reducers/order-books.js`, () => {
       }
     };
 
-    assert.deepEqual(
-      reducer(thisTestState.orderBooks, action),
-      expectedOutput,
-      `Didn't properly set market order book`
-    );
+    expect(reducer(thisTestState.orderBooks, action)).toEqual(expectedOutput);
   });
 });
