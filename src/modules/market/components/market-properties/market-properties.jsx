@@ -113,7 +113,12 @@ const MarketProperties = ({
           {showResolution && (
             <li className={Styles.MarketProperties__resolutionSource}>
               <span>Resolution Source</span>
-              <span className={Styles.MarketProperties__resolutionSource}>
+              <span 
+                className={classNames(Styles.MarketProperties__resolutionSource, {
+                  [Styles.MarketProperties__resolutionSourceDoubleButtons]: 
+                    (isForking && isForkingMarketFinalized && forkingMarket !== id && !finalizationTime)
+                })}
+              >
                 {resolutionSource || "General knowledge"}
               </span>
             </li>
