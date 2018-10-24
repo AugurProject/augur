@@ -15,7 +15,6 @@ describe("server/getters/get-fee-windows", () => {
 
   const runTest = (t) => {
     test(t.description, async () => {
-      const db = await setupTestDb();
       await setOverrideTimestamp(db, 1509065471);
       t.method = "getFeeWindows";
       const feeWindows = await dispatchJsonRpcRequest(db, t, t.params.augur);
