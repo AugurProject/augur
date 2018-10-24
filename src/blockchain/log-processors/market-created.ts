@@ -53,8 +53,6 @@ export async function processMarketCreatedLog(db: Knex, augur: Augur, log: Forma
     validityBondAttoeth: augur.api.Market.getValidityBondAttoeth(marketPayload),
     getOutcomes: getOutcomes(augur, log),
   };
-  console.log(_.values(callPromises));
-  await Promise.all(_.values(callPromises));
   const calls = _.zipObject(_.keys(callPromises), await Promise.all(_.values(callPromises)));
 
   const designatedReportStakeRow: { balance: BigNumber } = await db("balances_detail").first("balance").where({ owner: log.market, symbol: "REP" });
