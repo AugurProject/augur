@@ -64,8 +64,6 @@ class MarketOutcomesCategorical extends Component {
       minHeight: this.state.outcomeWrapperHeight
     };
 
-    console.log(isMobileSmall);
-
     return (
       <div
         className={Styles.MarketOutcomesCategorical}
