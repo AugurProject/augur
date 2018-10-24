@@ -26,7 +26,7 @@
     "watch": "tsc -w",
     "init-git": "if [ -d \".git\" ]; then exit 0; else git init; fi",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; npm run clean",
-    "coveralls": "jest --coverage --coverageReporters=text-lcov | coveralls",
+    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "migrate_pg": "knex migrate:latest --env pg",
     "migrate:make": "knex migrate:make -x ts $1",
     "postinstall": "postinstall-build build",
