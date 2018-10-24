@@ -15,7 +15,11 @@ export default class ModalGasPrice extends Component {
     safeLow: PropTypes.number.isRequired,
     average: PropTypes.number.isRequired,
     fast: PropTypes.number.isRequired,
-    userDefinedGasPrice: PropTypes.number.isRequired
+    userDefinedGasPrice: PropTypes.number
+  };
+
+  static defaultProps = {
+    userDefinedGasPrice: null
   };
 
   constructor(props) {
