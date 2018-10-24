@@ -12,7 +12,7 @@ describe("server/getters/get-winning-balance", () => {
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get winning balances that exist",

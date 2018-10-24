@@ -4,14 +4,14 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 describe("server/getters/get-better-worse-orders", () => {
   const runTest = (t) => {
     test(t.description, async (done) => {
-const db = await setupTestDb();
+      const db = await setupTestDb();
       t.method = "getBetterWorseOrders";
       dispatchJsonRpcRequest(db, t, {}, (err, betterWorseOrders) => {
         t.assertions(err, betterWorseOrders);
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get better worse with no orders",

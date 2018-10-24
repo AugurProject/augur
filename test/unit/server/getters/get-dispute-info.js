@@ -11,7 +11,7 @@ describe("server/getters/get-dispute-info", () => {
         done();
         db.destroy();
       });
-    })
+    });
   };
   runTest({
     description: "get dispute info from 2 markets for user 0xb0b (an initial reporter)",

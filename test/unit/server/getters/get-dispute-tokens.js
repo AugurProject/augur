@@ -4,14 +4,14 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 describe("server/getters/get-dispute-tokens", () => {
   const runTest = (t) => {
     test(t.description, async (done) => {
-const db = await setupTestDb();
+      const db = await setupTestDb();
       t.method = "getDisputeTokens";
       dispatchJsonRpcRequest(db, t, {}, (err, stakeTokens) => {
         t.assertions(err, stakeTokens);
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get unfinalized tokens for user that actually exists",

@@ -4,7 +4,7 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 describe("server/getters/get-reporting-summary", () => {
   const runTest = (t) => {
     test(t.description, async (done) => {
-const db = await setupTestDb();
+      const db = await setupTestDb();
       t.method = "getReportingSummary";
       dispatchJsonRpcRequest(db, t, null, (err, reportingSummary) => {
         expect(err).toBeFalsy();
@@ -12,7 +12,7 @@ const db = await setupTestDb();
         done();
         db.destroy();
       });
-    })
+    });
   };
   runTest({
     description: "get valid reporting window",

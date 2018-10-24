@@ -1,6 +1,6 @@
 const Augur = require("augur.js");
 const sqlite3 = require("sqlite3");
-const path = require('path');
+const path = require("path");
 const Knex = require("knex");
 const setupTestDb = require("../../test.database");
 const { calculateEarningsPerTimePeriod, getProfitLoss, bucketRangeByInterval } = require("src/server/getters/get-profit-loss");

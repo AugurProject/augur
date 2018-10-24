@@ -4,14 +4,14 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 describe("server/getters/get-universes-info", () => {
   const runTest = (t) => {
     test(t.description, async (done) => {
-const db = await setupTestDb();
+      const db = await setupTestDb();
       t.method = "getUniversesInfo";
       dispatchJsonRpcRequest(db, t, {}, (err, universes) => {
         t.assertions(err, universes);
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get universes for the user provided genesis universe",

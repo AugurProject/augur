@@ -10,7 +10,7 @@ describe("blockchain/log-processors/token/approval", () => {
   beforeEach(async () => {
     db = await setupTestDb();
   });
-  
+
   const log = {
     transactionHash: "TRANSACTION_HASH",
     logIndex: 0,
@@ -37,7 +37,7 @@ describe("blockchain/log-processors/token/approval", () => {
       await expect(getState(trx, log)).resolves.toEqual([]);
     });
   });
-  
+
   afterEach(async () => {
     await db.destroy();
   });

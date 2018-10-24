@@ -11,7 +11,7 @@ describe("server/getters/get-categories", () => {
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get categories in universe b sorted by popularity",

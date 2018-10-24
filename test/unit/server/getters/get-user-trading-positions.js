@@ -5,7 +5,7 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 describe("server/getters/get-user-trading-positions", () => {
   const runTest = (t) => {
     test(t.description, async (done) => {
-const db = await setupTestDb();
+      const db = await setupTestDb();
       t.method = "getUserTradingPositions";
       dispatchJsonRpcRequest(db, t, new Augur(), (err, userTradingPositions) => {
         try {
@@ -16,7 +16,7 @@ const db = await setupTestDb();
           done(e);
         }
       });
-    })
+    });
   };
   runTest({
     description: "get user's full position",

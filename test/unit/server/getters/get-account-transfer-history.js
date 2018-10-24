@@ -11,7 +11,7 @@ describe("server/getters/get-account-transfer-history", () => {
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get account transfer history for all tokens",

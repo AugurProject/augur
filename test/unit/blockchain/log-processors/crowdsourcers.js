@@ -32,7 +32,7 @@ async function getCrowdsourcerAndMarket(db, log) {
     crowdsourcer: crowdsourcerRow,
     market: await getMarketsWithReportingState(db).first().where({ "markets.marketId": crowdsourcerRow.marketId }),
   };
-};
+}
 
 describe("blockchain/log-processors/crowdsourcers", () => {
   let db;

@@ -11,7 +11,7 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get fees by specifying unfinalized market IDs",

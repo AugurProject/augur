@@ -1,6 +1,8 @@
 const setupTestDb = require("../../test.database");
 const { processUniverseForkedLog, processUniverseForkedLogRemoval } = require("src/blockchain/log-processors/universe-forked");
 
+const otherMarket = "0x0000000000000000000000000000000000000222";
+
 async function getForkRows(db, log) {
   return {
     forkingMarket: await db("markets").where({ universe: log.universe, forking: 1 }),
@@ -8,8 +10,6 @@ async function getForkRows(db, log) {
     universe: await db("universes").where({ universe: log.universe }),
   };
 }
-
-const otherMarket = "0x0000000000000000000000000000000000000222";
 
 const augur = {
   api: {

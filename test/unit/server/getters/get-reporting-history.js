@@ -4,14 +4,14 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 describe("server/getters/get-reporting-history", () => {
   const runTest = (t) => {
     test(t.description, async (done) => {
-const db = await setupTestDb();
+      const db = await setupTestDb();
       t.method = "getReportingHistory";
       dispatchJsonRpcRequest(db, t, null, (err, reportingHistory) => {
         t.assertions(err, reportingHistory);
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get reporter history that actually exists",

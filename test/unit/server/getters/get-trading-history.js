@@ -4,14 +4,14 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 describe("server/getters/get-trading-history", () => {
   const runTest = (t) => {
     test(t.description, async (done) => {
-const db = await setupTestDb();
+      const db = await setupTestDb();
       t.method = "getTradingHistory";
       dispatchJsonRpcRequest(db, t, null, (err, userTradingHistory) => {
         t.assertions(err, userTradingHistory);
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "user was filler in 1 trade in market and outcome",

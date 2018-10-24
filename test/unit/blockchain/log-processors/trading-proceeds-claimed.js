@@ -27,13 +27,13 @@ describe("blockchain/log-processors/trading-proceeds-claimed", () => {
 
   const log =        {
     transactionHash: "TRANSACTION_HASH",
-      logIndex: 0,
-      blockNumber: 1400101,
-      market: "0x0000000000000000000000000000000000000001",
-      shareToken: "SHARE_TOKEN_ADDRESS",
-      sender: "FROM_ADDRESS",
-      numShares: new BigNumber("140", 10),
-      numPayoutTokens: new BigNumber("9000", 10),
+    logIndex: 0,
+    blockNumber: 1400101,
+    market: "0x0000000000000000000000000000000000000001",
+    shareToken: "SHARE_TOKEN_ADDRESS",
+    sender: "FROM_ADDRESS",
+    numShares: new BigNumber("140", 10),
+    numPayoutTokens: new BigNumber("9000", 10),
   };
 
   test("Claim Trading Proceeds", async () => {

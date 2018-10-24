@@ -11,7 +11,7 @@ describe("server/getters/get-sync-data", () => {
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get contract addresses",

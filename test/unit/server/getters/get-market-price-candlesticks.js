@@ -4,14 +4,14 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 describe("server/getters/get-market-price-candlesticks", () => {
   const runTest = (t) => {
     test(t.description, async (done) => {
-const db = await setupTestDb();
+      const db = await setupTestDb();
       t.method = "getMarketPriceCandlesticks";
       dispatchJsonRpcRequest(db, t, null, (err, marketPriceHistory) => {
         t.assertions(err, marketPriceHistory);
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "market has a one candlestick",
@@ -50,14 +50,14 @@ const db = await setupTestDb();
           startTimestamp: 1506474493,
           volume: "0.2",
         },
-          {
-            end: "4.2",
-            max: "4.2",
-            min: "4.2",
-            start: "4.2",
-            startTimestamp: 1506474513,
-            volume: "0.1",
-          }],
+        {
+          end: "4.2",
+          max: "4.2",
+          min: "4.2",
+          start: "4.2",
+          startTimestamp: 1506474513,
+          volume: "0.1",
+        }],
       });
     },
   });

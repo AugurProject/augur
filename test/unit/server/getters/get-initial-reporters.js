@@ -4,14 +4,14 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 describe("server/getters/get-initial-reporters", () => {
   const runTest = (t) => {
     test(t.description, async (done) => {
-const db = await setupTestDb();
+      const db = await setupTestDb();
       t.method = "getInitialReporters";
       dispatchJsonRpcRequest(db, t, t.params.augur, (err, initialReporters) => {
         t.assertions(err, initialReporters);
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get the initial reporter contracts owned by this reporter",

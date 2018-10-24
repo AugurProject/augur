@@ -11,7 +11,7 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "date range with 1 market closing",

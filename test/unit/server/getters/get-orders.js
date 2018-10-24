@@ -11,7 +11,7 @@ describe("server/getters/get-orders", () => {
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get open buy orders for market 1",

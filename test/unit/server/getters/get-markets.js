@@ -13,7 +13,7 @@ describe("server/getters/get-markets", () => {
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get markets in universe b",

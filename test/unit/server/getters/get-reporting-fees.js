@@ -11,7 +11,7 @@ describe("server/getters/get-reporting-fees", () => {
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "Get reporting fees that exist in forked universe",

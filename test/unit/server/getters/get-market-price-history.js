@@ -4,14 +4,14 @@ const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request
 describe("server/getters/get-market-price-history", () => {
   const runTest = (t) => {
     test(t.description, async (done) => {
-const db = await setupTestDb();
+      const db = await setupTestDb();
       t.method = "getMarketPriceHistory";
       dispatchJsonRpcRequest(db, t, null, (err, marketPriceHistory) => {
         t.assertions(err, marketPriceHistory);
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "market has a single price point",

@@ -11,7 +11,7 @@ describe("server/getters/get-markets-info", () => {
         db.destroy();
         done();
       });
-    })
+    });
   };
   runTest({
     description: "get markets by specifying market IDs",

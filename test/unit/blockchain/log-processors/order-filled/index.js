@@ -21,9 +21,9 @@ const augur = {
         expect(p._market).toBe("0x0000000000000000000000000000000000000001");
         if (p._outcome === 0) {
           return Promise.resolve("7000");
-        } else {
-          return Promise.resolve("1250");
         }
+        return Promise.resolve("1250");
+
       },
     },
   },
@@ -40,7 +40,7 @@ const augur = {
     },
     getPositionInMarket: (p, callback) => {
       expect(p.market).toBe("0x0000000000000000000000000000000000000001");
-      assert.oneOf(p.address, ["0x0000000000000000000000000000000000000b0b", "FILLER_ADDRESS"]);
+      expect(["0x0000000000000000000000000000000000000b0b", "FILLER_ADDRESS"].indexOf(p.address)).toBeGreaterThan(-1);
       callback(null, ["2", "0", "0", "0", "0", "0", "0", "0"]);
     },
     normalizePrice: p => p.price,
@@ -264,10 +264,10 @@ describe("blockchain/log-processors/order-filled", () => {
       transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000F00",
       logIndex: 0,
     };
-     const aux = {
-        marketId: "0x0000000000000000000000000000000000000001",
-        category: "TEST CATEGORY",
-      };
+    const aux = {
+      marketId: "0x0000000000000000000000000000000000000001",
+      category: "TEST CATEGORY",
+    };
     return db.transaction(async (trx) => {
       await processOrderFilledLog(trx, augur, log);
 
@@ -325,48 +325,48 @@ describe("blockchain/log-processors/order-filled", () => {
         {
           price: new BigNumber("0.7", 10),
           volume: new BigNumber("100.28", 10),
-          shareVolume: new BigNumber("12.9", 10)
+          shareVolume: new BigNumber("12.9", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
       ]);
       expect(records.categories).toEqual({
         popularity: 0.4,
       });
-      
+
       await processOrderFilledLogRemoval(trx, augur, log);
       const recordsAfterRemoval = await getState(trx, log, aux);
       expect(recordsAfterRemoval.orders).toEqual([{
@@ -402,37 +402,37 @@ describe("blockchain/log-processors/order-filled", () => {
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
         {
           price: new BigNumber("0.125", 10),
           volume: new BigNumber("100", 10),
-          shareVolume: new BigNumber("12.5", 10)
+          shareVolume: new BigNumber("12.5", 10),
         },
       ]);
       expect(recordsAfterRemoval.categories).toEqual({
