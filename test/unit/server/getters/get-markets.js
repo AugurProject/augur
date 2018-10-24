@@ -20,7 +20,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x000000000000000000000000000000000000000b",
     },
     assertions: (marketsMatched) => {
-            expect(marketsMatched).toEqual([
+      expect(marketsMatched).toEqual([
         "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000013",
@@ -45,7 +45,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x1010101010101010101010101010101010101010",
     },
     assertions: (marketsMatched) => {
-            expect(marketsMatched).toEqual([]);
+      expect(marketsMatched).toEqual([]);
     },
   });
   runTest({
@@ -55,7 +55,7 @@ describe("server/getters/get-markets", () => {
       creator: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (marketsCreatedByUser) => {
-            expect(marketsCreatedByUser).toEqual([
+      expect(marketsCreatedByUser).toEqual([
         "0x0000000000000000000000000000000000000016",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000013",
@@ -80,7 +80,7 @@ describe("server/getters/get-markets", () => {
       creator: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (marketsCreatedByUser) => {
-            expect(marketsCreatedByUser).toEqual([
+      expect(marketsCreatedByUser).toEqual([
         "0x0000000000000000000000000000000000000003",
       ]);
     },
@@ -92,7 +92,7 @@ describe("server/getters/get-markets", () => {
       creator: "0x0000000000000000000000000000000000000bbb",
     },
     assertions: (marketsCreatedByUser) => {
-            expect(marketsCreatedByUser).toEqual([]);
+      expect(marketsCreatedByUser).toEqual([]);
     },
   });
   runTest({
@@ -102,7 +102,7 @@ describe("server/getters/get-markets", () => {
       category: "TEST CATEGORY",
     },
     assertions: (marketsInCategory) => {
-            expect(marketsInCategory).toEqual([
+      expect(marketsInCategory).toEqual([
         "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000013",
@@ -129,7 +129,7 @@ describe("server/getters/get-markets", () => {
       limit: 2,
     },
     assertions: (marketsInCategory) => {
-            expect(marketsInCategory).toEqual([
+      expect(marketsInCategory).toEqual([
         "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
       ]);
@@ -142,7 +142,7 @@ describe("server/getters/get-markets", () => {
       category: "empty category",
     },
     assertions: (marketsInCategory) => {
-            expect(marketsInCategory).toEqual([]);
+      expect(marketsInCategory).toEqual([]);
     },
   });
   runTest({
@@ -153,7 +153,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (marketsUpcomingDesignatedReporting) => {
-            expect(marketsUpcomingDesignatedReporting).toEqual([]);
+      expect(marketsUpcomingDesignatedReporting).toEqual([]);
     },
   });
   runTest({
@@ -165,7 +165,7 @@ describe("server/getters/get-markets", () => {
       isSortDescending: false,
     },
     assertions: (marketsUpcomingDesignatedReporting) => {
-            expect(marketsUpcomingDesignatedReporting).toEqual([
+      expect(marketsUpcomingDesignatedReporting).toEqual([
         "0x0000000000000000000000000000000000000222",
       ]);
     },
@@ -178,7 +178,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (marketsInfo) => {
-            expect(marketsInfo).toEqual([
+      expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000222",
       ]);
     },
@@ -191,7 +191,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (marketsAwaitingDesignatedReporting) => {
-            expect(marketsAwaitingDesignatedReporting).toEqual([]);
+      expect(marketsAwaitingDesignatedReporting).toEqual([]);
     },
   });
   runTest({
@@ -203,7 +203,7 @@ describe("server/getters/get-markets", () => {
       isSortDescending: false,
     },
     assertions: (marketsInfo) => {
-            expect(marketsInfo).toEqual([
+      expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000003",
@@ -224,7 +224,7 @@ describe("server/getters/get-markets", () => {
       isSortDescending: true,
     },
     assertions: (marketsInfo) => {
-            expect(marketsInfo).toEqual([
+      expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000003",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000014",
@@ -244,7 +244,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (marketsInfo) => {
-            expect(marketsInfo).toEqual([
+      expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000003",
       ]);
     },
@@ -256,7 +256,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (marketsAwaitingDesignatedReporting) => {
-            expect(marketsAwaitingDesignatedReporting).toEqual([]);
+      expect(marketsAwaitingDesignatedReporting).toEqual([]);
     },
   });
   runTest({
@@ -268,7 +268,7 @@ describe("server/getters/get-markets", () => {
       isSortDescending: false,
     },
     assertions: (marketsInfo) => {
-            expect(marketsInfo).toEqual([
+      expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000003",
@@ -287,7 +287,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (marketsInfo) => {
-            expect(marketsInfo).toEqual([
+      expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000003",
       ]);
     },
@@ -299,7 +299,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (marketsUpcomingDesignatedReporting) => {
-            expect(marketsUpcomingDesignatedReporting).toEqual([]);
+      expect(marketsUpcomingDesignatedReporting).toEqual([]);
     },
   });
   runTest({
@@ -311,7 +311,7 @@ describe("server/getters/get-markets", () => {
       isSortDescending: false,
     },
     assertions: (marketsUpcomingDesignatedReporting) => {
-            expect(marketsUpcomingDesignatedReporting).toEqual([
+      expect(marketsUpcomingDesignatedReporting).toEqual([
         "0x0000000000000000000000000000000000000222",
       ]);
     },
@@ -324,7 +324,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (marketsInfo) => {
-            expect(marketsInfo).toEqual([
+      expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000222",
       ]);
     },
@@ -336,7 +336,7 @@ describe("server/getters/get-markets", () => {
       search: "bob",
     },
     assertions: (marketsMatched) => {
-            expect(marketsMatched).toEqual([
+      expect(marketsMatched).toEqual([
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000015",
       ]);
@@ -350,7 +350,7 @@ describe("server/getters/get-markets", () => {
       category: "TEST CATEGORY",
     },
     assertions: (marketsMatched) => {
-            expect(marketsMatched).toEqual([
+      expect(marketsMatched).toEqual([
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000015",
       ]);
@@ -363,7 +363,7 @@ describe("server/getters/get-markets", () => {
       search: "sue",
     },
     assertions: (marketsCreatedByUser) => {
-            expect(marketsCreatedByUser).toEqual([
+      expect(marketsCreatedByUser).toEqual([
         "0x0000000000000000000000000000000000000014",
         "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000016",

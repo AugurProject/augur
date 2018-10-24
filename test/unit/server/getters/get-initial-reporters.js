@@ -19,7 +19,7 @@ describe("server/getters/get-initial-reporters", () => {
       reporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (initialReporters) => {
-            expect(initialReporters).toEqual({
+      expect(initialReporters).toEqual({
         "0x0000000000000000000000000000000000abe111": {
           amountStaked: "102",
           blockNumber: 1400100,

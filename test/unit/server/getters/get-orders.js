@@ -23,7 +23,7 @@ describe("server/getters/get-orders", () => {
       orderState: "OPEN",
     },
     assertions: (openOrders) => {
-            expect(openOrders).toEqual({
+      expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           0: {
             buy: {
@@ -120,7 +120,7 @@ describe("server/getters/get-orders", () => {
       orderState: "OPEN",
     },
     assertions: (openOrders) => {
-            expect(openOrders).toEqual({
+      expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           1: {
             sell: {
@@ -159,7 +159,7 @@ describe("server/getters/get-orders", () => {
       orderState: "FILLED",
     },
     assertions: (openOrders) => {
-            expect(openOrders).toEqual({
+      expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           1: {
             sell: {
@@ -198,7 +198,7 @@ describe("server/getters/get-orders", () => {
       orderState: "CANCELED",
     },
     assertions: (openOrders) => {
-            expect(openOrders).toEqual({
+      expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           1: {
             sell: {
@@ -239,7 +239,7 @@ describe("server/getters/get-orders", () => {
       creator: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (openOrders) => {
-            expect(openOrders).toEqual({
+      expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           0: {
             buy: {
@@ -345,7 +345,7 @@ describe("server/getters/get-orders", () => {
       latestCreationTime: 1506473515,
     },
     assertions: (openOrders) => {
-            expect(openOrders).toEqual({
+      expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000011": {
           1: {
             buy: {
@@ -407,7 +407,7 @@ describe("server/getters/get-orders", () => {
       creator: null,
     },
     assertions: (openOrders) => {
-            expect(openOrders).toEqual({});
+      expect(openOrders).toEqual({});
     },
   });
   runTest({
@@ -421,7 +421,7 @@ describe("server/getters/get-orders", () => {
       orphaned: true,
     },
     assertions: (openOrders) => {
-            expect(openOrders).toEqual({
+      expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000003": {
           1: {
             sell: {

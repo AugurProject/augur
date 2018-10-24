@@ -18,7 +18,7 @@ describe("server/getters/get-all-orders", () => {
       account: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (orders) => {
-            expect(orders).toEqual({
+      expect(orders).toEqual({
         "0x2000000000000000000000000000000000000000000000000000000000000000": {
           "orderId": "0x2000000000000000000000000000000000000000000000000000000000000000",
           "sharesEscrowed": "0",

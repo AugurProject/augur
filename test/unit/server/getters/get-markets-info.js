@@ -21,7 +21,7 @@ describe("server/getters/get-markets-info", () => {
       ],
     },
     assertions: (marketsInfo) => {
-            expect(marketsInfo).toEqual([
+      expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000001",
           universe: "0x000000000000000000000000000000000000000b",
@@ -172,7 +172,7 @@ describe("server/getters/get-markets-info", () => {
       ],
     },
     assertions: (marketsInfo) => {
-            expect(marketsInfo).toEqual([
+      expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000001",
           universe: "0x000000000000000000000000000000000000000b",
@@ -323,7 +323,7 @@ describe("server/getters/get-markets-info", () => {
       ],
     },
     assertions: (marketsInfo) => {
-            expect(marketsInfo).toEqual([
+      expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000002",
           universe: "0x000000000000000000000000000000000000000b",
@@ -472,7 +472,7 @@ describe("server/getters/get-markets-info", () => {
       ],
     },
     assertions: (marketsInfo) => {
-            expect(marketsInfo).toEqual([
+      expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000019",
           universe: "0x000000000000000000000000000000000000000b",
@@ -567,7 +567,7 @@ describe("server/getters/get-markets-info", () => {
       marketIds: [undefined],
     },
     assertions: (marketInfo) => {
-            expect(marketInfo).toEqual([null]);
+      expect(marketInfo).toEqual([null]);
     },
   });
   runTest({
@@ -576,7 +576,7 @@ describe("server/getters/get-markets-info", () => {
       marketIds: ["0x1010101010101010101010101010101010101010"],
     },
     assertions: (marketInfo) => {
-            expect(marketInfo).toEqual([null]);
+      expect(marketInfo).toEqual([null]);
     },
   });
   runTest({
@@ -585,7 +585,7 @@ describe("server/getters/get-markets-info", () => {
       marketIds: Array.from({ length: 1000 }, () => "0x0000000000000000000000000000000000000001"),
     },
     assertions: (marketInfo) => {
-            expect(marketInfo).toEqual(Array.from({ length: 1000 }, () => {
+      expect(marketInfo).toEqual(Array.from({ length: 1000 }, () => {
         return {
           id: "0x0000000000000000000000000000000000000001",
           universe: "0x000000000000000000000000000000000000000b",
@@ -679,7 +679,7 @@ describe("server/getters/get-markets-info", () => {
       marketIds: [],
     },
     assertions: (marketInfo) => {
-            expect(marketInfo).toEqual([]);
+      expect(marketInfo).toEqual([]);
     },
   });
 });

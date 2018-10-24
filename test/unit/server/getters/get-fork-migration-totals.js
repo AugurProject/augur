@@ -19,7 +19,7 @@ describe("server/getters/get-fork-migration-totals", () => {
       augur: {},
     },
     assertions: (forkMigrationTotals) => {
-            expect(forkMigrationTotals).toEqual({
+      expect(forkMigrationTotals).toEqual({
         "CHILD_UNIVERSE": {
           "isInvalid": false,
           "payout": [

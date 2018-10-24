@@ -33,7 +33,7 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
       },
     },
     assertions: (marketFees) => {
-            expect(marketFees).toEqual([
+      expect(marketFees).toEqual([
         {
           marketId: "0x0000000000000000000000000000000000000001",
           unclaimedFee: "0",
@@ -63,7 +63,7 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
       },
     },
     assertions: (marketFees) => {
-            expect(marketFees).toEqual([]);
+      expect(marketFees).toEqual([]);
     },
   });
 });

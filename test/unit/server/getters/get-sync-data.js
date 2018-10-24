@@ -38,7 +38,7 @@ describe("server/getters/get-sync-data", () => {
       },
     },
     assertions: (contractAddresses) => {
-            expect(contractAddresses).toEqual({
+      expect(contractAddresses).toEqual({
         version: "the-version-string",
         net_version: 974,
         netId: 974,

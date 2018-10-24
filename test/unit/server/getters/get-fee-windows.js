@@ -37,7 +37,7 @@ describe("server/getters/get-fee-windows", () => {
       },
     },
     assertions: (feeWindows) => {
-            expect(feeWindows).toEqual({
+      expect(feeWindows).toEqual({
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
           endTime: 1506473515,
@@ -75,7 +75,7 @@ describe("server/getters/get-fee-windows", () => {
       },
     },
     assertions: (feeWindows) => {
-            expect(feeWindows).toEqual({
+      expect(feeWindows).toEqual({
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
           endTime: 1506473515,
@@ -107,7 +107,7 @@ describe("server/getters/get-fee-windows", () => {
       },
     },
     assertions: (feeWindows) => {
-            expect(feeWindows).toEqual({});
+      expect(feeWindows).toEqual({});
     },
   });
 });

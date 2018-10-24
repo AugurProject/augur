@@ -26,7 +26,7 @@ describe("server/getters/get-trading-history", () => {
       offset: null,
     },
     assertions: (userTradingHistory) => {
-            expect(userTradingHistory).toEqual([{
+      expect(userTradingHistory).toEqual([{
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
         logIndex: 0,
         orderId: "0x1100000000000000000000000000000000000000000000000000000000000000",
@@ -77,7 +77,7 @@ describe("server/getters/get-trading-history", () => {
       offset: null,
     },
     assertions: (userTradingHistory) => {
-            expect(userTradingHistory).toEqual([
+      expect(userTradingHistory).toEqual([
         {
           amount: "0.1",
           logIndex: 0,
@@ -291,7 +291,7 @@ describe("server/getters/get-trading-history", () => {
       offset: null,
     },
     assertions: (userTradingHistory) => {
-            expect(userTradingHistory).toEqual([
+      expect(userTradingHistory).toEqual([
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
           logIndex: 0,
@@ -346,7 +346,7 @@ describe("server/getters/get-trading-history", () => {
       latestCreationTime: 1506474516,
     },
     assertions: (userTradingHistory) => {
-            expect(userTradingHistory).toEqual([
+      expect(userTradingHistory).toEqual([
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
           logIndex: 0,
@@ -402,7 +402,7 @@ describe("server/getters/get-trading-history", () => {
       latestCreationTime: 1506474516,
     },
     assertions: (userTradingHistory) => {
-            expect(userTradingHistory).toEqual([
+      expect(userTradingHistory).toEqual([
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
           logIndex: 0,
@@ -438,7 +438,7 @@ describe("server/getters/get-trading-history", () => {
       offset: null,
     },
     assertions: (userTradingHistory) => {
-            expect(userTradingHistory).toEqual([]);
+      expect(userTradingHistory).toEqual([]);
     },
   });
 });

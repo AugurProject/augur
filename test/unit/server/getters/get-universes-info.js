@@ -19,7 +19,7 @@ describe("server/getters/get-universes-info", () => {
       account: "0x0000000000000000000000000000000000000021",
     },
     assertions: (universes) => {
-            expect(universes).toEqual([
+      expect(universes).toEqual([
         {
           universe: "0x000000000000000000000000000000000000000b",
           parentUniverse: null,
@@ -51,7 +51,7 @@ describe("server/getters/get-universes-info", () => {
       account: "0x0000000000000000000000000000000000000021",
     },
     assertions: (universes) => {
-            expect(universes).toEqual([
+      expect(universes).toEqual([
         {
           universe: "0x000000000000000000000000000000000000000b",
           parentUniverse: null,
@@ -101,7 +101,7 @@ describe("server/getters/get-universes-info", () => {
       account: "0x0000000000000000000000000000000000000021",
     },
     assertions: (universes) => {
-            expect(universes).toEqual([
+      expect(universes).toEqual([
         {
           universe: "CHILD_UNIVERSE",
           parentUniverse: "0x000000000000000000000000000000000000000b",
@@ -142,7 +142,7 @@ describe("server/getters/get-universes-info", () => {
       account: "0x0000000000000000000000000000000000000abe",
     },
     assertions: (universes) => {
-            expect(universes).toEqual([
+      expect(universes).toEqual([
         {
           universe: "CHILD_UNIVERSE",
           parentUniverse: "0x000000000000000000000000000000000000000b",
@@ -183,7 +183,7 @@ describe("server/getters/get-universes-info", () => {
       account: "0x0000000000000000000000000000000000000abe",
     },
     assertions: (universes) => {
-            expect(universes).toEqual([]);
+      expect(universes).toEqual([]);
     },
   });
 });

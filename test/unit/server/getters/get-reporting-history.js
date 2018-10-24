@@ -19,7 +19,7 @@ describe("server/getters/get-reporting-history", () => {
       reporter: "0x0000000000000000000000000000000000000021",
     },
     assertions: (reportingHistory) => {
-            expect(reportingHistory).toEqual({
+      expect(reportingHistory).toEqual({
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000011": {
             initialReporter: null,
@@ -74,7 +74,7 @@ describe("server/getters/get-reporting-history", () => {
       reporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (reportingHistory) => {
-            expect(reportingHistory).toEqual({
+      expect(reportingHistory).toEqual({
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000011": {
             initialReporter: {
@@ -177,7 +177,7 @@ describe("server/getters/get-reporting-history", () => {
       latestCreationTime: 1506474515,
     },
     assertions: (reportingHistory) => {
-            expect(reportingHistory).toEqual({
+      expect(reportingHistory).toEqual({
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000019": {
             initialReporter: null,
@@ -209,7 +209,7 @@ describe("server/getters/get-reporting-history", () => {
       reporter: "0x2100000000000000000000000000000000000021",
     },
     assertions: (reportingHistory) => {
-            expect(reportingHistory).toEqual({});
+      expect(reportingHistory).toEqual({});
     },
   });
 });

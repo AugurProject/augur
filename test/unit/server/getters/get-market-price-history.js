@@ -22,7 +22,7 @@ describe("server/getters/get-market-price-history", () => {
       offset: null,
     },
     assertions: (marketPriceHistory) => {
-            expect(marketPriceHistory).toEqual({
+      expect(marketPriceHistory).toEqual({
         0: [{
           price: "5.5",
           amount: "0.2",
@@ -45,7 +45,7 @@ describe("server/getters/get-market-price-history", () => {
       offset: null,
     },
     assertions: (marketPriceHistory) => {
-            expect(marketPriceHistory).toEqual({});
+      expect(marketPriceHistory).toEqual({});
     },
   });
 });

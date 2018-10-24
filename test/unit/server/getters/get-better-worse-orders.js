@@ -21,7 +21,7 @@ describe("server/getters/get-better-worse-orders", () => {
       price: "2",
     },
     assertions: (betterWorseOrders) => {
-            expect(betterWorseOrders).toEqual({
+      expect(betterWorseOrders).toEqual({
         betterOrderId: null,
         worseOrderId: null,
       });
@@ -36,7 +36,7 @@ describe("server/getters/get-better-worse-orders", () => {
       price: "0.4",
     },
     assertions: (betterWorseOrders) => {
-            expect(betterWorseOrders).toEqual({
+      expect(betterWorseOrders).toEqual({
         betterOrderId: "0x2000000000000000000000000000000000000000000000000000000000000000",
         worseOrderId: null,
       });
@@ -51,7 +51,7 @@ describe("server/getters/get-better-worse-orders", () => {
       price: "0.99",
     },
     assertions: (betterWorseOrders) => {
-            expect(betterWorseOrders).toEqual({
+      expect(betterWorseOrders).toEqual({
         betterOrderId: null,
         worseOrderId: "0x5000000000000000000000000000000000000000000000000000000000000000",
       });
@@ -66,7 +66,7 @@ describe("server/getters/get-better-worse-orders", () => {
       price: "0.65",
     },
     assertions: (betterWorseOrders) => {
-            expect(betterWorseOrders).toEqual({
+      expect(betterWorseOrders).toEqual({
         betterOrderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
         worseOrderId: "0x2000000000000000000000000000000000000000000000000000000000000000",
       });

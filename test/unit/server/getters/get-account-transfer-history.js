@@ -20,7 +20,7 @@ describe("server/getters/get-account-transfer-history", () => {
       isSortDescending: false,
     },
     assertions: (accountTransferHistory) => {
-            expect(accountTransferHistory).toEqual([{
+      expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
         creationBlockNumber: 1400000,
@@ -74,7 +74,7 @@ describe("server/getters/get-account-transfer-history", () => {
       isSortDescending: false,
     },
     assertions: (accountTransferHistory) => {
-            expect(accountTransferHistory).toEqual([{
+      expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
         creationBlockNumber: 1400000,
@@ -116,7 +116,7 @@ describe("server/getters/get-account-transfer-history", () => {
       latestCreationTime: 1506473474,
     },
     assertions: (accountTransferHistory) => {
-            expect(accountTransferHistory).toEqual([{
+      expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
         creationBlockNumber: 1400000,
@@ -141,7 +141,7 @@ describe("server/getters/get-account-transfer-history", () => {
       isSortDescending: false,
     },
     assertions: (accountTransferHistory) => {
-            expect(accountTransferHistory).toEqual([{
+      expect(accountTransferHistory).toEqual([{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadb33f",
         creationBlockNumber: 1400001,
         blockHash: "0x1400001",
@@ -165,7 +165,7 @@ describe("server/getters/get-account-transfer-history", () => {
       token: "0x000000000000000000000000000000000000000e",
     },
     assertions: (accountTransferHistory) => {
-            expect(accountTransferHistory).toEqual([]);
+      expect(accountTransferHistory).toEqual([]);
     },
   });
   runTest({
@@ -175,7 +175,7 @@ describe("server/getters/get-account-transfer-history", () => {
       token: null,
     },
     assertions: (accountTransferHistory) => {
-            expect(accountTransferHistory).toEqual([]);
+      expect(accountTransferHistory).toEqual([]);
     },
   });
 });

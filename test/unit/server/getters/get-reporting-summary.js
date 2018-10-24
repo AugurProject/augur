@@ -7,7 +7,7 @@ describe("server/getters/get-reporting-summary", () => {
       const db = await setupTestDb();
       t.method = "getReportingSummary";
       const reportingSummary = await dispatchJsonRpcRequest(db, t, null);
-            t.assertions(reportingSummary);
+      t.assertions(reportingSummary);
       done();
       db.destroy();
     });

@@ -20,7 +20,7 @@ describe("server/getters/get-categories", () => {
       isSortDescending: true,
     },
     assertions: (categoriesInfo) => {
-            expect(categoriesInfo).toEqual([
+      expect(categoriesInfo).toEqual([
         { category: "FINANCE", popularity: "12345" },
         { category: "POLITICS", popularity: "5000" },
         { category: "ETHEREUM", popularity: "1000" },
@@ -35,7 +35,7 @@ describe("server/getters/get-categories", () => {
       universe: "0x1010101010101010101010101010101010101010",
     },
     assertions: (categoriesInfo) => {
-            expect(categoriesInfo).toEqual([]);
+      expect(categoriesInfo).toEqual([]);
     },
   });
 });

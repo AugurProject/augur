@@ -20,7 +20,7 @@ describe("server/getters/get-winning-balance", () => {
       account: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (winningBalance) => {
-            expect(winningBalance).toEqual([
+      expect(winningBalance).toEqual([
         {
           marketId: "0x0000000000000000000000000000000000000019",
           winnings: new BigNumber("100000000000"),
@@ -35,7 +35,7 @@ describe("server/getters/get-winning-balance", () => {
       account: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (winningBalance) => {
-            expect(winningBalance).toEqual([]);
+      expect(winningBalance).toEqual([]);
     },
   });
 });
