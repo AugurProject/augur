@@ -136,16 +136,16 @@ const MarketBasics = ({
 };
 
 MarketBasics.propTypes = {
-  category: PropTypes.string.isRequired,
+  category: PropTypes.string,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   isMobile: PropTypes.bool.isRequired,
   currentTimestamp: PropTypes.number.isRequired,
-  marketType: PropTypes.string.isRequired,
+  marketType: PropTypes.string,
   id: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  minPrice: PropTypes.object.isRequired,
-  maxPrice: PropTypes.object.isRequired,
+  minPrice: PropTypes.object,
+  maxPrice: PropTypes.object,
   reportingState: PropTypes.string,
   scalarDenomination: PropTypes.string,
   endTime: PropTypes.object.isRequired,
@@ -166,7 +166,11 @@ MarketBasics.defaultProps = {
   cardStyle: null,
   reportingState: null,
   scalarDenomination: null,
-  isMobileSmall: false
+  isMobileSmall: false,
+  minPrice: null,
+  maxPrice: null,
+  marketType: null,
+  category: null
 };
 
 export default MarketBasics;

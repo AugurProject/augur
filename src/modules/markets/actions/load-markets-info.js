@@ -37,11 +37,12 @@ export const loadMarketsInfo = (marketIds, callback = logError) => (
         `no markets data received`,
         marketIds
       );
-
+    const universeId = getState().universe.id;
     const marketsData = marketsDataArray
       .filter(marketHasData => marketHasData)
       .reduce((p, marketData) => {
-        if (marketData.id == null) return p;
+        if (marketData.id == null || marketData.universe !== universeId)
+          return p;
 
         return {
           ...p,
