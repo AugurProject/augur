@@ -122,8 +122,11 @@
   }
 
   .SideNav__stat-label {
-    color: @color-white;
-    font-weight: 500;
+    color: @color-lightergray;
+    display: flex;
+    flex-direction: row;
+    font-size: @font-size-extra-small;
+    font-weight: 400;
     max-width: 100%;
     overflow: hidden;
     padding-bottom: 0.5rem;
@@ -132,12 +135,24 @@
 
   .SideNav__stat-value {
     color: @color-white;
-    font-weight: 400;
-    padding-left: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    font-size: @font-size-medium;
+    font-weight: 700;
+    justify-content: flex-end;
   }
 
   .SideName__placement {
-    padding: 1.5rem;
+    padding: 16px 24px;
+  }
+
+  .SideNav__stat-unit {
+    align-items: flex-end;
+    display: flex;
+    font-size: @font-size-extra-small;
+    margin-bottom: 2px;
+    margin-left: 0.25rem;
   }
 
   .SideNav__amt {
