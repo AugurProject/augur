@@ -4,7 +4,6 @@ import {
   updateCategories
 } from "modules/categories/actions/update-categories";
 import logError from "utils/log-error";
-import { assign } from "lodash";
 
 const loadCategories = (callback = logError) => (dispatch, getState) => {
   const { universe } = getState();
@@ -12,16 +11,9 @@ const loadCategories = (callback = logError) => (dispatch, getState) => {
   augur.markets.getCategories({ universe: universe.id }, (err, categories) => {
     if (err) return callback(err);
     if (categories == null) return callback(null);
-
-    const newCategories = categories.reduce(
-      (p, c) => [...p, assign(c, { tags: ["hello", "bye"] })],
-      []
-    );
-
     dispatch(clearCategories());
-    dispatch(updateCategories(newCategories));
-
-    callback(null, newCategories);
+    dispatch(updateCategories(categories));
+    callback(null, categories);
   });
 };
 
