@@ -65,6 +65,8 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
 
   const interval = periodInterval == null ? Math.ceil((endTime - startTime) / DEFAULT_NUMBER_OF_BUCKETS) : periodInterval;
 
+  console.log('Start time: ', startTime, 'End Time: ', endTime, 'Interval (minutes)', interval/60);
+
   const buckets: Array<EarningsAtTime> = [];
   for (let bucketEndTime = startTime; bucketEndTime < endTime; bucketEndTime += interval) {
     buckets.push({ timestamp: bucketEndTime });
@@ -139,10 +141,10 @@ export interface GetOutcomeProfitLossParams extends t.TypeOf<typeof GetProfitLos
 
 async function queryProfitLossTimeseries(db: Knex, now: number, params: t.TypeOf<typeof GetProfitLossParams>): Promise<Array<ProfitLossTimeseries>> {
   const query = db("profit_loss_timeseries")
+    .select("profit_loss_timeseries.*", "markets.universe")
     .join("markets", "profit_loss_timeseries.marketId", "markets.marketId")
     .where({ account: params.account, universe: params.universe });
 
-  if (params.marketId !== null) query.where({ marketId: params.marketId });
   if (params.startTime) query.where("timestamp", ">=", params.startTime);
   
   query.where("timestamp", "<=", params.endTime || now);
@@ -157,18 +159,19 @@ function getProfitAtTimestamps(data: Array<ProfitLossTimeseries>, timestamps: Ar
   while(timestampIndex < timestamps.length && dataIndex < data.length) {
     const result = data[dataIndex];
     const bucket = timestamps[timestampIndex];
+    console.log("Timestamp: ", bucket.timestamp, "Result: ", result.timestamp);
 
     if (result.timestamp > bucket.timestamp) {
-      if (dataIndex == 0) throw Error("Internal Error: Profit calculation should always begin with valid bucket timestamp");
       profits.push({
         timestamp: bucket.timestamp,
-        profit: result.profit,
+        profit: result.profit
       });
 
       timestampIndex++;
     }
     dataIndex++;
   }
+
 
   const finalBucketProfit = profits[profits.length - 1].profit;
   while(timestampIndex < timestamps.length) {
@@ -179,6 +182,8 @@ function getProfitAtTimestamps(data: Array<ProfitLossTimeseries>, timestamps: Ar
       timestamp: bucket.timestamp,
       profit: finalBucketProfit,
     });
+
+    timestampIndex++;
   }
 
   return profits;
@@ -192,8 +197,8 @@ interface ProfitLossData {
 async function getProfitLossData(db: Knex, params: t.TypeOf<typeof GetProfitLossParams>): Promise<ProfitLossData> {
   const now = Date.now();
   const results = await queryProfitLossTimeseries(db, now, params);
+  if( results.length === 0 ) return { results: [], buckets: [] };
   const buckets = bucketRangeByInterval(params.startTime || 0, params.endTime || now, params.periodInterval);
-
   return {results, buckets};
 }
 

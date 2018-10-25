@@ -34,6 +34,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000001",
       universe: "0x000000000000000000000000000000000000000b",
@@ -64,6 +65,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000002",
       universe: "0x000000000000000000000000000000000000000b",
@@ -94,6 +96,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000003",
       universe: "0x000000000000000000000000000000000000000b",
@@ -124,6 +127,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000011",
       universe: "0x000000000000000000000000000000000000000b",
@@ -154,6 +158,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000012",
       universe: "0x000000000000000000000000000000000000000b",
@@ -184,6 +189,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000013",
       universe: "0x000000000000000000000000000000000000000b",
@@ -214,6 +220,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000014",
       universe: "0x000000000000000000000000000000000000000b",
@@ -244,6 +251,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000015",
       universe: "0x000000000000000000000000000000000000000b",
@@ -274,6 +282,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000016",
       universe: "0x000000000000000000000000000000000000000b",
@@ -304,6 +313,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000017",
       universe: "0x000000000000000000000000000000000000000b",
@@ -334,6 +344,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000018",
       universe: "0x000000000000000000000000000000000000000b",
@@ -364,6 +375,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000019",
       universe: "0x000000000000000000000000000000000000000b",
@@ -395,6 +407,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000211",
       universe: "0x000000000000000000000000000000000000000b",
@@ -426,6 +439,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000222",
       universe: "0x000000000000000000000000000000000000000b",
@@ -456,6 +470,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000233",
       universe: "CHILD_UNIVERSE",
@@ -486,6 +501,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 0,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
     }, {
       marketId: "0x00000000000000000000000000000000000000f1",
       universe: "0x000000000000000000000000000000000000000b",
@@ -516,6 +532,51 @@ exports.seed = async (knex: Knex): Promise<any> => {
       forking: 1,
       needsMigration: 0,
       needsDisavowal: 0,
+      logIndex: 0,
+    }, {
+      marketId: "0x0000000000000000000000000000000000000ff1",
+      universe: "0x000000000000000000000000000000000000000b",
+      marketType: "scalar",
+      numOutcomes: 2,
+      minPrice: "200",
+      maxPrice: "400",
+      marketCreator: "0x6d28fdd8f0295692eee024f53e42b6458f3f55f5",
+      creationBlockNumber: 2786923,
+      creationFee: "0.01",
+      reportingFeeRate: "0.01",
+      marketCreatorFeeRate: "0",
+      marketCreatorFeesBalance: "0",
+      marketCreatorMailbox: "0x8dc68e6f091f4147a823dbb129005035b2cf4f18",
+      marketCreatorMailboxOwner: "0x6d28fdd8f0295692eee024f53e42b6458f3f55f5",
+      initialReportSize: "349680582682291667",
+      category: "CRYPTO",
+      tag1: "ETH",
+      tag2: "",
+      volume: "9.945",
+      sharesOutstanding: "0.0208",
+      feeWindow: "0x436ee596d5c2996b3bc00b18fbd58a1af759a0c6",
+      endTime: 1534539600,
+      finalizationBlockNumber: 2943251,
+      forking: 0,
+      needsMigration: 0,
+      marketStateId: 1024,
+      shortDescription: "What will be the price of ETH on 8/17/2018 5PM EDT",
+      longDescription: "As reported by Coinbase.pro (Last trade before 08/17/2018 5PM EDT)",
+      scalarDenomination: "USD",
+      designatedReporter: "0x6d28fdd8f0295692eee024f53e42b6458f3f55f5",
+      designatedReportStake: "0.349680582682291667",
+      resolutionSource: "https://pro.coinbase.com/trade/ETH-USD",
+      numTicks: "2000000",
+      consensusPayoutId: null,
+      disputeRounds: 0,
+      isInvalid: null,
+      needsDisavowal: 0,
+      lastTradeBlockNumber: 2827777,
+      openInterest: "4.16",
+      shareVolume: "0.0665",
+      validityBondSize: "10000000000000000",
+      transactionHash: "`0x8486e213d47dd971b5e52123a023e53e7bef68dccb6fa78e95743207a12fdef4",
+      logIndex: 1,
     }];
     return knex.batchInsert("markets", seedData, seedData.length);
   });

@@ -98,7 +98,7 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
   var connection = null;
   var augur = new Augur();
 
-  beforeEach((done) => {
+  beforeEach('Initialize Database', (done) => {
     setupTestDb((err, db) => {
       if (err) return done(new Error(err));
       connection = db;
@@ -106,7 +106,19 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
     });
   });
 
-  it("generates a 3-value timeseries P/L", () => {
+  afterEach('Destroy DB and Disconnect', async() => {
+    if(connection) await connection.destroy();
+  });
+
+  it("generates a 3-value timeseries P/L", async () => {
+    const results = await getProfitLoss(connection, augur, {
+      universe: "0x000000000000000000000000000000000000000b",
+			account:  "0xffff000000000000000000000000000000000000",
+      marketId: "0x0000000000000000000000000000000000000ff1"
+    });
+
+    console.log(JSON.stringify(results));
+		assert.equal(results.length, 3);
   });
 });
 
