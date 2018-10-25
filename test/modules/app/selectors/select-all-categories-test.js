@@ -30,7 +30,7 @@ describe("modules/categories/selectors/select-all-categories.js", () => {
   it("should group tags by category", () => {
     const expected = {
       "CATEGORY-WITH-TAGS-0": ["unique-tag"],
-      "CATEGORY-WITH-TAGS": ["unique-tag", "duplicate-tag"],
+      "CATEGORY-WITH-TAGS": ["unique-tag-1", "duplicate-tag"],
       "CATEGORY-WITH-TAGS-2": ["unique-tag-1", "duplicate-tag", "another-tag"],
       "CATEGORY-WITHOUT-TAGS": []
     };
