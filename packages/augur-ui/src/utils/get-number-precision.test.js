@@ -50,12 +50,10 @@ describe("utils/format-number.js", () => {
     }
   ];
 
-  values.forEach(test => {
-    describe(`test precision: ${test.value}`, () => {
+  values.forEach(t => {
+    describe(`test precision: ${t.value}`, () => {
       test("number should have specific precision", () => {
-        expect(getPrecision(test.value, test.defaultValue)).toEqual(
-          test.result
-        );
+        expect(getPrecision(t.value, t.defaultValue)).toEqual(t.result);
       });
     });
   });
