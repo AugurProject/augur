@@ -8,9 +8,6 @@ import { syncBlockchain } from "modules/app/actions/sync-blockchain";
 import { listenToUpdates } from "modules/events/actions/listen-to-updates";
 import loadCategories from "modules/categories/actions/load-categories";
 import { loadMarketsToReportOn } from "modules/reports/actions/load-markets-to-report-on";
-import { clearMarketsData } from "modules/markets/actions/update-markets-data";
-import { loadMarkets } from "modules/markets/actions/load-markets";
-import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
 import logError from "utils/log-error";
 
 export const loadUniverse = (universeId, history, callback = logError) => (
@@ -54,12 +51,6 @@ export const loadUniverse = (universeId, history, callback = logError) => (
           if (err) return callback(err);
           dispatch(listenToUpdates(history));
           callback(null);
-        })
-      );
-      dispatch(clearMarketsData());
-      dispatch(
-        loadMarkets(null, (err, markets) => {
-          if (!err && markets) dispatch(loadMarketsInfo(markets));
         })
       );
       dispatch(loadCategories());

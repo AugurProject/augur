@@ -5,6 +5,7 @@ import AccountUniverses from "modules/account/components/account-universes/accou
 import { loadUniverseInfo } from "modules/universe/actions/load-universe-info";
 import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
 import { loadUniverse } from "modules/app/actions/load-universe";
+import { windowRef } from "utils/window-ref";
 
 const mapStateToProps = state => ({
   address: state.loginAccount.address,
@@ -17,7 +18,10 @@ const mapDispatchToProps = dispatch => ({
   switchUniverse: id =>
     dispatch((_, getState) => {
       dispatch(setSelectedUniverse(id));
+      // incase there is no window, we loadUniverse to update state.
       dispatch(loadUniverse(id));
+      // if there is a windowRef just reload.
+      windowRef.location.reload();
     })
 });
 

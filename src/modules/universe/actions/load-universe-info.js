@@ -28,7 +28,7 @@ export function loadUniverseInfo(callback = logError) {
       openInterest: universe.openInterest || "0"
     };
 
-    if (universe.isForking) {
+    if (universe.isForking && marketsData[universe.forkingMarket]) {
       const forkingMarket = marketsData[universe.forkingMarket];
       universeData.market = forkingMarket;
       universeData.reportableOutcomes = selectReportableOutcomes(

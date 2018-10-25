@@ -5,7 +5,6 @@ import Styles from "modules/account/components/account-universe-description/acco
 import { formatAttoRep, formatAttoEth } from "utils/format-number";
 
 const AccountUniverseDescription = ({
-  getUniverses,
   switchUniverse,
   accountRep,
   openInterest,
@@ -30,7 +29,6 @@ const AccountUniverseDescription = ({
         <button
           onClick={() => {
             switchUniverse(universe);
-            getUniverses();
           }}
           className={Styles.AccountUniversesDescription__button}
         >
@@ -78,7 +76,6 @@ const AccountUniverseDescription = ({
 );
 
 AccountUniverseDescription.propTypes = {
-  getUniverses: PropTypes.func.isRequired,
   switchUniverse: PropTypes.func.isRequired,
   accountRep: PropTypes.string.isRequired,
   openInterest: PropTypes.string.isRequired,
