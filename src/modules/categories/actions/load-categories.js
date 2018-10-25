@@ -11,8 +11,10 @@ const loadCategories = (callback = logError) => (dispatch, getState) => {
   augur.markets.getCategories({ universe: universe.id }, (err, categories) => {
     if (err) return callback(err);
     if (categories == null) return callback(null);
-    dispatch(clearCategories());
-    dispatch(updateCategories(categories));
+    if (Object.keys(categories).length) {
+      dispatch(clearCategories());
+      dispatch(updateCategories(categories));
+    }
     callback(null, categories);
   });
 };
