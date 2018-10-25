@@ -1,11 +1,11 @@
-import mockStore from "../../../../test/mockStore";
+import mockStore from "test/mockStore";
 import {
   handleAugurNodeDisconnect,
   handleEthereumDisconnect
 } from "./disconnect-handlers";
-import * as connectAugurModule from "../../app/actions/init-augur";
+import * as connectAugurModule from "modules/app/actions/init-augur";
 import * as lodash from "lodash";
-import * as updateConnectionModule from "../../app/actions/update-connection";
+import * as updateConnectionModule from "modules/app/actions/update-connection";
 
 jest.mock("../../app/actions/init-augur");
 jest.mock("lodash");
