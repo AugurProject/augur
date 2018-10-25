@@ -283,12 +283,12 @@ describe("modules/markets/actions/load-markets-info.js", () => {
                 "0xMarket1": {
                   id: "0xMarket1",
                   test: "value",
-                  universe: "0xbob"
+                  universe: "0xbob",
                 },
                 "0xMarket2": {
                   id: "0xMarket2",
                   test: "value",
-                  universe: "0xbob"
+                  universe: "0xbob",
                 }
               }
             }

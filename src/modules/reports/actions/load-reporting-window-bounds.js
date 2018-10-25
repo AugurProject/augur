@@ -2,14 +2,12 @@ import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { createBigNumber } from "utils/create-big-number";
 import { updateReportingWindowStats } from "modules/reports/actions/update-reporting-window-stats";
-import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
-import { loadUniverse } from "modules/app/actions/load-universe";
 
 export const loadReportingWindowBounds = (callback = logError) => (
   dispatch,
   getState
 ) => {
-  const { universe, loginAccount, env } = getState();
+  const { universe, loginAccount } = getState();
   augur.augurNode.submitRequest(
     "getFeeWindowCurrent",
     {
@@ -17,17 +15,7 @@ export const loadReportingWindowBounds = (callback = logError) => (
       reporter: loginAccount.address
     },
     (err, result) => {
-      if (err) {
-        if (err.code === -32602 && err.message === "Universe does not exist") {
-          const defaultUniverseId =
-            env.universe ||
-            augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
-          dispatch(setSelectedUniverse(defaultUniverseId));
-          dispatch(loadUniverse(defaultUniverseId));
-          return dispatch(loadReportingWindowBounds(callback));
-        }
-        return callback(err);
-      }
+      if (err) return callback(err);
 
       augur.augurNode.submitRequest(
         "getFeeWindow",
