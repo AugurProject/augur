@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { selectMarketsDataState } from "src/select-state";
+import { selectCategoriesState } from "src/select-state";
 
 import {
   compose,
@@ -31,6 +31,6 @@ const process = compose(
 );
 
 export const selectAllCategories = createSelector(
-  selectMarketsDataState,
+  selectCategoriesState,
   process
 );
