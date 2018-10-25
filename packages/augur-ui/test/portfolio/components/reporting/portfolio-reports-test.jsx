@@ -66,7 +66,7 @@ describe("portfolio-reports", () => {
       });
 
       describe("ETH total", () => {
-        test("Display as '-'", () => {
+        test("Displayed as '-'", () => {
           expect(Cmp.html()).toEqual(
             expect.stringContaining("<span>ETH</span><span>-</span>")
           );
@@ -74,7 +74,7 @@ describe("portfolio-reports", () => {
       });
 
       describe("REP total", () => {
-        it("should display as '-'", () => {
+        test("Displayed as '-'", () => {
           expect(Cmp.html()).toEqual(
             expect.stringContaining("<span>REP</span><span>-</span>")
           );
@@ -82,14 +82,14 @@ describe("portfolio-reports", () => {
       });
 
       describe("claim-reporting-fees-nonforked-markets-button", () => {
-        it("should be disabled", () => {
+        test("Is disabled", () => {
           const button = Cmp.find("button");
           expect(button.html()).toEqual(expect.stringContaining("disabled"));
         });
       });
 
       describe("claim-reporting-fees-forked-market-button", () => {
-        it("should not exist", () => {
+        test("Does not exist", () => {
           expect(Cmp.html()).toEqual(
             expect.not.stringContaining(
               '<button class="market-portfolio-card-styles_MarketCard__action-footer-light">Claim</button>'
