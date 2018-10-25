@@ -8,26 +8,25 @@ import {
   groupBy,
   has,
   mapValues,
-  pluck,
+  map,
   uniq,
-  forEach,
-  keys
+  keys,
+  toUpper
 } from "lodash/fp";
 
 const flattenTags = compose(
   uniq,
   flatten,
-  pluck("tags")
+  map("tags")
 );
 
 const process = compose(
   mapValues(flattenTags),
   groupBy("category"),
-  forEach(value => {
-    value.category = value.category.toUpperCase();
-    value.tags = keys(value.tags);
-    return value;
-  }),
+  map(value => ({
+    category: toUpper(value.category),
+    tags: keys(value.tags)
+  })),
   filter(has("category")),
   Object.values
 );
