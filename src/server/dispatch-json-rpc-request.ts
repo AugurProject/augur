@@ -5,7 +5,6 @@ import Augur from "augur.js";
 import { logger } from "../utils/logger";
 import { JsonRpcRequest } from "../types";
 import { AccountTransferHistoryParams, getAccountTransferHistory } from "./getters/get-account-transfer-history";
-import { CategoriesParams, getCategories } from "./getters/get-categories";
 import { getReportingHistory, ReportingHistoryParams } from "./getters/get-reporting-history";
 import { getReportingSummary, ReportingSummaryParams } from "./getters/get-reporting-summary";
 import { getTradingHistory, TradingHistoryParams } from "./getters/get-trading-history";
@@ -32,6 +31,7 @@ import { getReportingFees, ReportingFeesParams } from "./getters/get-reporting-f
 import { getUniversesInfo, UniverseInfoParams } from "./getters/get-universes-info";
 import { getProfitLoss } from "./getters/get-profit-loss";
 import { getWinningBalance, WinningBalanceParams } from "./getters/get-winning-balance";
+import { getCategories, CategoriesParams } from "./getters/get-categories";
 
 type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
 

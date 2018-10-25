@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import * as Knex from "knex";
 import Augur from "augur.js";
 import { BigNumber } from "bignumber.js";
-import { Address, ReportingState, AsyncCallback, FeeWindowState} from "../../types";
+import { Address, ReportingState, FeeWindowState} from "../../types";
 import { getCurrentTime } from "../process-block";
 import { augurEmitter } from "../../events";
 import { SubscriptionEventNames } from "../../constants";

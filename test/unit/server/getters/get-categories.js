@@ -11,37 +11,42 @@ describe("server/getters/get-categories", () => {
     await db.destroy();
   });
 
-  const runTest = (t) => {
-    test(t.description, async () => {
-      t.method = "getCategories";
-      const categoriesInfo = await dispatchJsonRpcRequest(db, t, null);
-      t.assertions(categoriesInfo);
-    });
-  };
-  runTest({
-    description: "get categories in universe b sorted by popularity",
-    params: {
+  test("get categories in universe b sorted by popularity", async () => {
+    const params = {
       universe: "0x000000000000000000000000000000000000000b",
       sortBy: "popularity",
       isSortDescending: true,
-    },
-    assertions: (categoriesInfo) => {
-      expect(categoriesInfo).toEqual([
-        { category: "FINANCE", popularity: "12345" },
-        { category: "POLITICS", popularity: "5000" },
-        { category: "ETHEREUM", popularity: "1000" },
-        { category: "AUGUR", popularity: "500" },
-        { category: "TEST CATEGORY", popularity: "0" },
-      ]);
-    },
+    };
+    await expect(dispatchJsonRpcRequest(db, {
+      method: "getCategories",
+      params,
+    }, null)).resolves.toEqual([
+      { "category": "FINANCE", "popularity": "12345", "tags": [] },
+      { "category": "POLITICS", "popularity": "5000", "tags": [] },
+      { "category": "ETHEREUM", "popularity": "1000", "tags": [] },
+      { "category": "AUGUR", "popularity": "500", "tags": [] },
+      {
+        "category": "TEST CATEGORY",
+        "popularity": "0",
+        "tags": {
+          "AUGUR": 2,
+          "ETHEREUM": 1,
+          "FINANCE": 2,
+          "POLITICS": 1,
+          "TAGGED IT": 5,
+          "TAGGING IT": 5,
+          "TEST TAG 1": 7,
+          "TEST TAG 2": 7,
+        },
+      }],
+    );
   });
-  runTest({
-    description: "nonexistent universe",
-    params: {
-      universe: "0x1010101010101010101010101010101010101010",
-    },
-    assertions: (categoriesInfo) => {
-      expect(categoriesInfo).toEqual([]);
-    },
+
+  test("get categories in bad universe", async () => {
+    const params = {
+      universe: "0x0000000000000000000000000FFFFFFFFFFEAAAA",
+    };
+    await expect(dispatchJsonRpcRequest(db, { method: "getCategories", params }, null))
+      .rejects.toEqual(new Error("Universe 0x0000000000000000000000000FFFFFFFFFFEAAAA does not exist"));
   });
 });
