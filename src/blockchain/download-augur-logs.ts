@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { AsyncFunction, mapLimit, queue } from "async";
+import { mapLimit, queue } from "async";
 import { each } from "bluebird";
 import { Augur, BlockRange } from "augur.js";
 import { BlockDetail, ErrorCallback, FormattedEventLog } from "../types";

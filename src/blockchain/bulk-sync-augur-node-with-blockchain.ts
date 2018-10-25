@@ -6,7 +6,7 @@ import { augurEmitter } from "../events";
 import { logger } from "../utils/logger";
 import { SubscriptionEventNames } from "../constants";
 
-const BLOCKSTREAM_HANDOFF_BLOCKS = 75;
+const BLOCKSTREAM_HANDOFF_BLOCKS = 5;
 let syncFinished = false;
 
 interface HighestBlockNumberRow {
