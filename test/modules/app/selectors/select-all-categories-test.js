@@ -3,25 +3,24 @@ import { selectAllCategories } from "modules/categories/selectors/select-all-cat
 describe("modules/categories/selectors/select-all-categories.js", () => {
   let result;
   const state = {
-    marketsData: {
-      "0xeac40138d3dcfba355e3e309f08e6c86ee51077a": {
-        category: "category-with-tags",
-        tags: ["unique-tag", "duplicate-tag"]
+    categories: [
+      {
+        category: "category-with-tags-0",
+        tags: { "unique-tag": 1 }
       },
-      "0x0ff6ee01f88145298761a29a0372ed24e16e73b1": {
+      {
         category: "categOry-With-Tags",
-        tags: ["unique-tag-1", "duplicate-tag"]
+        tags: { "unique-tag-1": 1, "duplicate-tag": 2 }
       },
-      "0xbcde24abef27b2e537b8ded8139c7991de308607": {
+      {
         category: "category-with-tags-2",
-        tags: ["unique-tag-1", "duplicate-tag"]
+        tags: { "unique-tag-1": 2, "duplicate-tag": 1, "another-tag": 3 }
       },
-      "0xad462350da60993e6ee0be1cdff608892d2864ab": {
+      {
         category: "category-without-tags",
-        tags: []
-      },
-      "0x4d89f393ec02bf26827ad1bfa03613030fe1028d": {}
-    }
+        tags: {}
+      }
+    ]
   };
 
   beforeEach(() => {
@@ -30,8 +29,9 @@ describe("modules/categories/selectors/select-all-categories.js", () => {
 
   it("should group tags by category", () => {
     const expected = {
-      "CATEGORY-WITH-TAGS": ["unique-tag", "duplicate-tag", "unique-tag-1"],
-      "CATEGORY-WITH-TAGS-2": ["unique-tag-1", "duplicate-tag"],
+      "CATEGORY-WITH-TAGS-0": ["unique-tag"],
+      "CATEGORY-WITH-TAGS": ["unique-tag", "duplicate-tag"],
+      "CATEGORY-WITH-TAGS-2": ["unique-tag-1", "duplicate-tag", "another-tag"],
       "CATEGORY-WITHOUT-TAGS": []
     };
 
