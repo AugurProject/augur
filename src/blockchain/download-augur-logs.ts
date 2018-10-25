@@ -70,9 +70,9 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
     await db.transaction(async (trx: Knex.Transaction) => {
       await processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber]);
       logger.info(`Processing ${dbWritePromises.length} logs`);
-      await each(dbWritePromises, async (dbWritePromise) => {
-        await dbWritePromise(trx);
-      });
+      for (const dbWritePromise of dbWritePromises) {
+        await (await dbWritePromise)(trx);
+      }
     });
   });
 }
