@@ -35,7 +35,7 @@ describe("blockchain/log-processors/tokens-minted", () => {
   };
   test("Tokens minted", async () => {
     return db.transaction(async (trx) => {
-      await processMintLog(trx, augur, log);
+      await(await processMintLog(augur, log))(trx);
 
       await expect(getTokenBalances(trx, log)).resolves.toEqual([{
         owner: "FROM_ADDRESS",
@@ -45,7 +45,7 @@ describe("blockchain/log-processors/tokens-minted", () => {
       }]);
 
 
-      await processMintLogRemoval(trx, augur, log);
+      await(await processMintLogRemoval(augur, log))(trx);
 
 
       await expect(getTokenBalances(trx, log)).resolves.toEqual([{

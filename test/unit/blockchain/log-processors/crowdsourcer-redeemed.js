@@ -23,7 +23,7 @@ describe("blockchain/log-processors/crowdsourcer-redeemed", () => {
   };
   test("Redeemed", async () => {
     return db.transaction(async (trx) => {
-      await processDisputeCrowdsourcerRedeemedLog(trx, {}, log);
+      await(await processDisputeCrowdsourcerRedeemedLog({}, log))(trx);
 
       await expect(getRedeemed(trx)).resolves.toEqual([{
         amountRedeemed: "200",
@@ -32,7 +32,7 @@ describe("blockchain/log-processors/crowdsourcer-redeemed", () => {
         reporter: "REPORTER",
         reportingFeesReceived: "900",
       }]);
-      await processDisputeCrowdsourcerRedeemedLogRemoval(trx, {}, log);
+      await(await processDisputeCrowdsourcerRedeemedLogRemoval({}, log))(trx);
 
       await expect(getRedeemed(trx)).resolves.toEqual([]);
     });

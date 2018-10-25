@@ -6,8 +6,8 @@ import { advanceFeeWindowActive, getCurrentTime } from "../process-block";
 import { SubscriptionEventNames } from "../../constants";
 
 export async function processFeeWindowCreatedLog(augur: Augur, log: FormattedEventLog) {
+  const feeToken: Address = await augur.api.FeeWindow.getFeeToken({ tx: { to: log.feeWindow } });
   return async (db: Knex) => {
-    const feeToken: Address = await augur.api.FeeWindow.getFeeToken({ tx: { to: log.feeWindow } });
     const feeWindowToInsert = {
       feeWindow: log.feeWindow,
       feeWindowId: log.id,

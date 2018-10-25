@@ -39,7 +39,7 @@ describe("blockchain/log-processors/order-created", () => {
   };
   test("OrderCreated log and removal", async () => {
     await db.transaction(async (trx) => {
-      await processOrderCreatedLog(trx, augur, log);
+      await(await processOrderCreatedLog(augur, log))(trx);
       expect(await getState(trx, log)).toEqual([{
         orderId: "ORDER_ID",
         blockNumber: 1400100,
@@ -62,7 +62,7 @@ describe("blockchain/log-processors/order-created", () => {
         tradeGroupId: "TRADE_GROUP_ID",
         orphaned: 0,
       }]);
-      await processOrderCreatedLogRemoval(trx, augur, log);
+      await(await processOrderCreatedLogRemoval(augur, log))(trx);
       expect(await getState(trx, log)).toEqual([]);
     });
   });

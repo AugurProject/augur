@@ -13,8 +13,8 @@ import { augurEmitter } from "../../events";
 import { SubscriptionEventNames } from "../../constants";
 
 export async function processInitialReportSubmittedLog(augur: Augur, log: FormattedEventLog) {
+  const initialReporter: Address = await augur.api.Market.getInitialReporter({ tx: { to: log.market } });
   return async (db: Knex) => {
-    const initialReporter: Address = await augur.api.Market.getInitialReporter({ tx: { to: log.market } });
     const universeRow: { forked: boolean } = await db("universes").first("forked").where({ universe: log.universe });
     if (universeRow == null) throw new Error(`No universe in initial report. Universe: ${log.universe}`);
     const marketState = universeRow.forked ? ReportingState.AWAITING_FORK_MIGRATION : augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW;

@@ -17,8 +17,8 @@ async function uncompleteNonforkingCrowdsourcers(db: Knex, universe: Address, fo
 }
 
 export async function processUniverseForkedLog(augur: Augur, log: FormattedEventLog) {
+  const forkingMarket: Address|undefined = await augur.api.Universe.getForkingMarket({ tx: { to: log.universe } });
   return async (db: Knex) => {
-    const forkingMarket: Address|undefined = await augur.api.Universe.getForkingMarket({ tx: { to: log.universe } });
     if (forkingMarket == null) throw new Error(`Could not retrieve forking market for universe ${log.universe}`);
     await db("markets").update("forking", 1).where("marketId", forkingMarket);
     await updateMarketState(db, forkingMarket, log.blockNumber, ReportingState.FORKING);

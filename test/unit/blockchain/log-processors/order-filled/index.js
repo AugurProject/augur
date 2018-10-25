@@ -76,7 +76,7 @@ describe("blockchain/log-processors/order-filled", () => {
       category: "TEST CATEGORY",
     };
     return db.transaction(async (trx) => {
-      await processOrderFilledLog(trx, augur, log);
+      await(await processOrderFilledLog(augur, log))(trx);
 
       const records = await getState(trx, log, aux);
       expect(records.orders).toEqual([{
@@ -172,7 +172,7 @@ describe("blockchain/log-processors/order-filled", () => {
       expect(records.categories).toEqual({
         popularity: 1,
       });
-      await processOrderFilledLogRemoval(trx, augur, log);
+      await(await processOrderFilledLogRemoval(augur, log))(trx);
 
       const recordsAfterRemoval = await getState(trx, log, aux);
       expect(recordsAfterRemoval.orders).toEqual([{
@@ -269,7 +269,7 @@ describe("blockchain/log-processors/order-filled", () => {
       category: "TEST CATEGORY",
     };
     return db.transaction(async (trx) => {
-      await processOrderFilledLog(trx, augur, log);
+      await(await processOrderFilledLog(augur, log))(trx);
 
       const records = await getState(trx, log, aux);
 
@@ -367,7 +367,7 @@ describe("blockchain/log-processors/order-filled", () => {
         popularity: 0.4,
       });
 
-      await processOrderFilledLogRemoval(trx, augur, log);
+      await(await processOrderFilledLogRemoval(augur, log))(trx);
       const recordsAfterRemoval = await getState(trx, log, aux);
       expect(recordsAfterRemoval.orders).toEqual([{
         orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",

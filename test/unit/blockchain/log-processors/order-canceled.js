@@ -28,7 +28,7 @@ describe("blockchain/log-processors/order-canceled", () => {
   };
   test("OrderCanceled log and removal", async () => {
     return db.transaction(async (trx) => {
-      await processOrderCanceledLog(trx, {}, log);
+      await(await processOrderCanceledLog({}, log))(trx);
       await expect(getState(trx, log)).resolves.toEqual({
         order: {
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
@@ -59,7 +59,7 @@ describe("blockchain/log-processors/order-canceled", () => {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
         },
       });
-      await processOrderCanceledLogRemoval(trx, {}, log);
+      await(await processOrderCanceledLogRemoval({}, log))(trx);
       await expect(getState(trx, log)).resolves.toEqual({
         order: {
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",

@@ -26,12 +26,12 @@ describe("blockchain/log-processors/tokens-transferred", () => {
   const runTest = (t) => {
     test(t.description, async () => {
       return db.transaction(async (trx) => {
-        await processTokensTransferredLog(trx, t.params.augur, t.params.log);
+        await(await processTokensTransferredLog(t.params.augur, t.params.log))(trx);
 
         const records = await getState(trx, t.params.log);
         t.assertions.onAdded(records.transfers);
         t.assertions.onInitialBalances(records.balances);
-        await processTokensTransferredLogRemoval(trx, t.params.augur, t.params.log);
+        await(await processTokensTransferredLogRemoval(t.params.augur, t.params.log))(trx);
 
         const recordsAfterRemoval = await getState(trx, t.params.log);
 

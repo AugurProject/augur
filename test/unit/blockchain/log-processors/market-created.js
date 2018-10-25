@@ -29,13 +29,13 @@ describe("blockchain/log-processors/market-created", () => {
   const runTest = (t) => {
     test(t.description, async () => {
       return db.transaction(async (trx) => {
-        await processMarketCreatedLog(trx, t.params.augur, t.params.log);
+        await(await processMarketCreatedLog(t.params.augur, t.params.log))(trx);
         t.assertions.onAdded(await getState(trx, t.params.log), false);
-        await processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log);
+        await(await processMarketCreatedLogRemoval(t.params.augur, t.params.log))(trx);
         t.assertions.onRemoved(await getState(trx, t.params.log));
-        await processMarketCreatedLog(trx, t.params.augur, t.params.log);
+        await(await processMarketCreatedLog(t.params.augur, t.params.log))(trx);
         t.assertions.onAdded(await getState(trx, t.params.log), true);
-        await processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log);
+        await(await processMarketCreatedLogRemoval(t.params.augur, t.params.log))(trx);
         t.assertions.onRemoved(await getState(trx, t.params.log));
       });
     });

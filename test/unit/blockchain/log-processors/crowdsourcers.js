@@ -46,7 +46,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
 
       await db.transaction(async (trx) => {
         async function verify(processor, getter, checker) {
-          await processor(trx, t.params.augur, t.params.log);
+          await (await processor(t.params.augur, t.params.log))(trx);
           checker(await getter(trx, t.params.log));
         }
 
