@@ -1,48 +1,10 @@
-import { describe, it } from "mocha";
 import mockStore from "test/mockStore";
-import {
-  reInitAugur,
-  __RewireAPI__ as RewireReInitAugur
-} from "modules/app/actions/re-init-augur";
+import { reInitAugur } from "./re-init-augur";
+import * as initAugurModule from "modules/app/actions/init-augur";
+import * as lodash from "lodash";
 
 describe("app/actions/re-init-augur", () => {
-  const mockHistory = { push: arg => assert.deepEqual(arg, "/categories") };
-  const test = t =>
-    it(t.description, done => {
-      let connectAugurCallCount = 0;
-      const store = mockStore.mockStore(t.state);
-      RewireReInitAugur.__Rewire__(
-        "connectAugur",
-        (history, env, isInitialConnection, cb) => {
-          connectAugurCallCount += 1;
-          assert.deepEqual(history, t.params.history);
-          assert.isFalse(isInitialConnection);
-          assert.deepEqual(env, store.getState().env);
-          // fail the first 3 attempts and then finally pass empty cb.
-          if (connectAugurCallCount > 3) {
-            cb();
-          } else {
-            cb({ error: "some error", message: "unable to connect" });
-          }
-          // just to confirm this is actually called.
-          return { type: "CONNECT_AUGUR" };
-        }
-      );
-      RewireReInitAugur.__Rewire__("debounce", (func, wait) => {
-        assert.deepEqual(wait, 3000);
-        assert.isFunction(func);
-        return func;
-      });
-      store.dispatch(reInitAugur(t.params.history));
-      t.assertions(store.getActions());
-      done();
-    });
-  test({
-    description:
-      "it should handle calling connectAugur more than once if there is an error the first time",
-    params: {
-      history: mockHistory
-    },
+  const t1 = {
     state: {
       connection: {
         isConnected: false,
@@ -50,8 +12,16 @@ describe("app/actions/re-init-augur", () => {
         isReconnectionPaused: false
       }
     },
+    params: {
+      history: { push: arg => expect(arg).toEqual(arg, "/categories") }
+    },
+    mockDebounce: (func, wait) => {
+      expect(wait).toBe(3000);
+      expect(typeof func).toStrictEqual("function");
+      return func;
+    },
     assertions: actions =>
-      assert.deepEqual(actions, [
+      expect(actions).toEqual([
         {
           type: "UPDATE_MODAL",
           data: {
@@ -113,5 +83,47 @@ describe("app/actions/re-init-augur", () => {
         { type: "CONNECT_AUGUR" },
         { type: "CONNECT_AUGUR" }
       ])
+  };
+
+  describe.each([t1])("", t => {
+    let store;
+    let connectAugurSpy;
+    let lodashSpy;
+    let connectAugurCallCount;
+
+    beforeEach(() => {
+      store = mockStore.mockStore(t.state);
+      connectAugurCallCount = 0;
+      connectAugurSpy = jest
+        .spyOn(initAugurModule, "connectAugur")
+        .mockImplementation((history, env, isInitialConnection, cb) => {
+          connectAugurCallCount += 1;
+          expect(history).toEqual(t.params.history);
+          expect(isInitialConnection).toBe(false);
+          expect(env).toEqual(store.getState().env);
+          // fail the first 3 attempts and then finally pass empty cb.
+          if (connectAugurCallCount > 3) {
+            cb();
+          } else {
+            cb({ error: "some error", message: "unable to connect" });
+          }
+          // just to confirm this is actually called.
+          return { type: "CONNECT_AUGUR" };
+        });
+      lodashSpy = jest
+        .spyOn(lodash, "debounce")
+        .mockImplementation(t.mockDebounce);
+    });
+
+    afterEach(() => {
+      connectAugurSpy.mockReset();
+      lodashSpy.mockReset();
+    });
+
+    test("Handled calling connectAugur more than once if there is an error the first time", done => {
+      store.dispatch(reInitAugur(t.params.history));
+      t.assertions(store.getActions());
+      done();
+    });
   });
 });
