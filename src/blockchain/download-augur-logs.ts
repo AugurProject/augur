@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { mapLimit, queue } from "async";
+import { AsyncFunction, mapLimit, queue } from "async";
 import { each } from "bluebird";
 import { Augur, BlockRange } from "augur.js";
 import { BlockDetail, ErrorCallback, FormattedEventLog } from "../types";
@@ -55,18 +55,23 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
   await each(blockNumbers, async (blockNumber: number) => {
     const logs = logsByBlock[blockNumber];
     if (logs === undefined || logs.length === 0) return;
+    const dbWritePromises: Array<Promise<(db: Knex) => Promise<void>>> = [];
+    await each(logs, async (log: FormattedEventLog) => {
+      const contractName = log.contractName;
+      const eventName = log.eventName;
+      if (logProcessors[contractName] == null || logProcessors[contractName][eventName] == null) {
+        logger.info("Log processor does not exist:", contractName, eventName);
+        return;
+      } else {
+        dbWritePromises.push(processLog(augur, log, logProcessors[contractName][eventName]));
+      }
+    });
+    await Promise.all(dbWritePromises);
     await db.transaction(async (trx: Knex.Transaction) => {
       await processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber]);
-      logger.info(`Processing ${logs.length} logs`);
-      await each(logs, async (log: FormattedEventLog) => {
-        const contractName = log.contractName;
-        const eventName = log.eventName;
-        if (logProcessors[contractName] == null || logProcessors[contractName][eventName] == null) {
-          logger.info("Log processor does not exist:", contractName, eventName);
-          return;
-        } else {
-          await processLog(trx, augur, log, logProcessors[contractName][eventName]);
-        }
+      logger.info(`Processing ${dbWritePromises.length} logs`);
+      await each(dbWritePromises, async (dbWritePromise) => {
+        await dbWritePromise(trx);
       });
     });
   });

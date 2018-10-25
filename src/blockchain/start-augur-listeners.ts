@@ -8,7 +8,7 @@ import { logProcessors } from "./log-processors";
 
 export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: number, callback: ErrorCallback): void {
   const eventCallbacks = _.mapValues(logProcessors, (contractEvents, contractName) => {
-    return _.mapValues(contractEvents, (eventFunctions, eventName) => makeLogListener(augur, contractName, eventName));
+    return _.mapValues(contractEvents, (eventFunctions, eventName) => makeLogListener(augur, contractName, eventName, callback));
   });
   augur.events.startBlockchainEventListeners(
     eventCallbacks,
