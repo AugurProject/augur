@@ -13,7 +13,7 @@ describe("modules/markets/selectors/build-search-string.js", () => {
 
   it("should return the existing value", () => {
     const actual = buildSearchString(undefined, ["tag1", "tag2"]);
-    const expected = "tag1 OR tag2";
+    const expected = "tags: tag1 OR tags: tag2";
     assert.deepEqual(
       actual,
       expected,
@@ -23,7 +23,7 @@ describe("modules/markets/selectors/build-search-string.js", () => {
 
   it("should return the existing value", () => {
     const actual = buildSearchString(undefined, ["tag1"]);
-    const expected = "tag1";
+    const expected = "tags: tag1";
     assert.deepEqual(
       actual,
       expected,
@@ -53,7 +53,7 @@ describe("modules/markets/selectors/build-search-string.js", () => {
 
   it("add partial keyword and tag", () => {
     const actual = buildSearchString("bobo", ["tag1"]);
-    const expected = "tag1 OR bobo*";
+    const expected = "tags: tag1 OR bobo*";
     assert.deepEqual(
       actual,
       expected,
@@ -63,7 +63,7 @@ describe("modules/markets/selectors/build-search-string.js", () => {
 
   it("add keyword and tag", () => {
     const actual = buildSearchString("bobo ", ["tag1"]);
-    const expected = "tag1 OR bobo";
+    const expected = "tags: tag1 OR bobo";
     assert.deepEqual(
       actual,
       expected,

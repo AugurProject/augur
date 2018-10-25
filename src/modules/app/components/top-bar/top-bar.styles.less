@@ -34,6 +34,10 @@
   margin: 0 1.5rem;
 }
 
+.TopBar__leftBorder {
+  border-left: 0.0625rem solid @color-lightpurple;
+}
+
 .TopBar__performance-stat {
   justify-content: flex-end;
 }
@@ -123,5 +127,19 @@
 
   .TopBar__regular-stats {
     border-left: 0.0625rem solid @color-lightpurple;
+  }
+}
+
+@media @breakpoint-mobile-mid {
+  .TopBar__regular-stats {
+    border: 0;
+  }
+
+  .TopBar__statsContainer {
+    justify-content: flex-end;
+  }
+
+  .TopBar__hideForSmallScreens {
+    display: none !important;
   }
 }

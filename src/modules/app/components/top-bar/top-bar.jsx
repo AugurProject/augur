@@ -37,7 +37,11 @@ const TopBar = props => (
         <div
           className={classNames(
             Styles.TopBar__stats,
-            Styles.TopBar__performance
+            Styles.TopBar__performance,
+            Styles.TopBar__hideForSmallScreens,
+            {
+              [Styles.TopBar__leftBorder]: props.isMobileSmall
+            }
           )}
         >
           <div
@@ -71,8 +75,14 @@ const TopBar = props => (
         </div>
       </div>
     )}
-    {props.isLogged && <GasPriceEdit />}
-    <ConnectAccount />
+    {props.isLogged && (
+      <GasPriceEdit className={Styles.TopBar__hideForSmallScreens} />
+    )}
+    <ConnectAccount
+      className={classNames({
+        [Styles.TopBar__hideForSmallScreens]: props.isLogged
+      })}
+    />
     <div
       className={classNames(Styles.TopBar__notifications, {
         [Styles.TopBar__notificationsDark]: props.notificationsVisible,
@@ -111,7 +121,8 @@ TopBar.propTypes = {
   stats: PropTypes.array.isRequired,
   unseenCount: PropTypes.number.isRequired,
   toggleNotifications: PropTypes.func.isRequired,
-  notificationsVisible: PropTypes.bool.isRequired
+  notificationsVisible: PropTypes.bool.isRequired,
+  isMobileSmall: PropTypes.bool.isRequired
 };
 
 export default TopBar;
