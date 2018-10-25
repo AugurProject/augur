@@ -276,9 +276,7 @@ export class Augur {
     getMarketsInfo: ApiFunction;
     getMarketPriceHistory: ApiFunction;
     getMarkets: ApiFunction;
-    getMarketsInCategory: ApiFunction;
     getMarketsClosingInDateRange: ApiFunction;
-    getMarketsCreatedByUser: ApiFunction;
     getUnclaimedMarketCreatorFees: ApiFunction;
     getCategories: ApiFunction;
   };
