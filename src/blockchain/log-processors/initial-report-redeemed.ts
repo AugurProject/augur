@@ -11,11 +11,9 @@ export async function processInitialReporterRedeemedLog(augur: Augur, log: Forma
   };
 }
 
-
 export async function processInitialReporterRedeemedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("initial_reports").where("marketId", log.market).update({ redeemed: false });
     augurEmitter.emit(SubscriptionEventNames.InitialReporterRedeemed, log);
   };
 }
-

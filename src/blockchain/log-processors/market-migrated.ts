@@ -35,7 +35,6 @@ export async function processMarketMigratedLog(augur: Augur, log: FormattedEvent
   };
 }
 
-
 export async function processMarketMigratedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await rollbackMarketState(db, log.market, ReportingState.AWAITING_NEXT_WINDOW);
@@ -49,4 +48,3 @@ export async function processMarketMigratedLogRemoval(augur: Augur, log: Formatt
     }).into("crowdsourcers").where("marketId", log.market);
   };
 }
-

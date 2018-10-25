@@ -10,11 +10,9 @@ export async function processTimestampSetLog(augur: Augur, log: FormattedEventLo
   };
 }
 
-
 export async function processTimestampSetLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await removeOverrideTimestamp(db, parseInt(log.newTimestamp, 10));
     return advanceFeeWindowActive(db, augur, log.blockNumber, getCurrentTime());
   };
 }
-

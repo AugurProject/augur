@@ -160,7 +160,6 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
   };
 }
 
-
 export async function processMarketCreatedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     const marketId = log.market;
@@ -180,4 +179,3 @@ export async function processMarketCreatedLogRemoval(augur: Augur, log: Formatte
     augurEmitter.emit(SubscriptionEventNames.MarketCreated, log);
   };
 }
-

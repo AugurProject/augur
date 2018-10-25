@@ -22,11 +22,9 @@ export async function processTradingProceedsClaimedLog(augur: Augur, log: Format
   };
 }
 
-
 export async function processTradingProceedsClaimedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("trading_proceeds").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
     augurEmitter.emit(SubscriptionEventNames.TradingProceedsClaimed, log);
   };
 }
-

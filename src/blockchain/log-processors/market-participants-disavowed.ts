@@ -11,7 +11,6 @@ export async function processMarketParticipantsDisavowedLog(augur: Augur, log: F
   };
 }
 
-
 export async function processMarketParticipantsDisavowedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.update({
@@ -20,4 +19,3 @@ export async function processMarketParticipantsDisavowedLogRemoval(augur: Augur,
     return db.from("crowdsourcers").where("marketId", log.market).update({ disavowed: db.raw("disavowed - 1") });
   };
 }
-

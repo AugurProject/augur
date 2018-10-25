@@ -40,7 +40,6 @@ export async function processInitialReportSubmittedLog(augur: Augur, log: Format
   };
 }
 
-
 export async function processInitialReportSubmittedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW);
@@ -51,4 +50,3 @@ export async function processInitialReportSubmittedLogRemoval(augur: Augur, log:
     augurEmitter.emit(SubscriptionEventNames.InitialReportSubmitted, log);
   };
 }
-

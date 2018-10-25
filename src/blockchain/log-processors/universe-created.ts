@@ -26,11 +26,9 @@ export async function processUniverseCreatedLog(augur: Augur, log: FormattedEven
   };
 }
 
-
 export async function processUniverseCreatedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db("universes").where({ universe: log.childUniverse }).del();
     augurEmitter.emit(SubscriptionEventNames.UniverseCreated, log);
   };
 }
-

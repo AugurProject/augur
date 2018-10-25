@@ -13,7 +13,6 @@ const augur = {
   },
 };
 
-
 describe("blockchain/log-processors/universe-created", () => {
   let db;
   beforeEach(async () => {

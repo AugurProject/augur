@@ -75,7 +75,6 @@ export async function processDisputeCrowdsourcerCreatedLog(augur: Augur, log: Fo
   };
 }
 
-
 export async function processDisputeCrowdsourcerCreatedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("crowdsourcers").where("crowdsourcerId", log.disputeCrowdsourcer).del();
@@ -85,7 +84,6 @@ export async function processDisputeCrowdsourcerCreatedLogRemoval(augur: Augur, 
     return db.from("tokens").where({ contractAddress: log.disputeCrowdsourcer }).del();
   };
 }
-
 
 export async function processDisputeCrowdsourcerContributionLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
@@ -108,7 +106,6 @@ export async function processDisputeCrowdsourcerContributionLog(augur: Augur, lo
   };
 }
 
-
 export async function processDisputeCrowdsourcerContributionLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("disputes").where({
@@ -124,7 +121,6 @@ export async function processDisputeCrowdsourcerContributionLogRemoval(augur: Au
   };
 }
 
-
 export async function processDisputeCrowdsourcerCompletedLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db("crowdsourcers").update({ completed: 1 }).where({ crowdsourcerId: log.disputeCrowdsourcer });
@@ -139,7 +135,6 @@ export async function processDisputeCrowdsourcerCompletedLog(augur: Augur, log: 
   };
 }
 
-
 export async function processDisputeCrowdsourcerCompletedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await rollbackCrowdsourcerCompletion(db, log.disputeCrowdsourcer, log.market);
@@ -153,7 +148,6 @@ export async function processDisputeCrowdsourcerCompletedLogRemoval(augur: Augur
       { marketId: log.market }));
   };
 }
-
 
 export async function processDisputeCrowdsourcerRedeemedLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
@@ -172,11 +166,9 @@ export async function processDisputeCrowdsourcerRedeemedLog(augur: Augur, log: F
   };
 }
 
-
 export async function processDisputeCrowdsourcerRedeemedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("crowdsourcer_redeemed").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
     augurEmitter.emit(SubscriptionEventNames.FeeWindowRedeemed, log);
   };
 }
-

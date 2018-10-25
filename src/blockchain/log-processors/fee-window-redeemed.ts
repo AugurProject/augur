@@ -21,11 +21,9 @@ export async function processFeeWindowRedeemedLog(augur: Augur, log: FormattedEv
   };
 }
 
-
 export async function processFeeWindowRedeemedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("participation_token_redeemed").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
     augurEmitter.emit(SubscriptionEventNames.FeeWindowRedeemed, log);
   };
 }
-

@@ -21,7 +21,6 @@ describe("blockchain/log-processors/market-created", () => {
     db = await setupTestDb();
   });
 
-
   afterEach(async () => {
     await db.destroy();
   });

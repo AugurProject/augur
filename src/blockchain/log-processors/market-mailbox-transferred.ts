@@ -9,10 +9,8 @@ export async function processMarketMailboxTransferredLog(augur: Augur, log: Form
   };
 }
 
-
 export async function processMarketMailboxTransferredLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     return db("markets").update("marketCreatorMailboxOwner", log.from).where("marketId", log.market);
   };
 }
-

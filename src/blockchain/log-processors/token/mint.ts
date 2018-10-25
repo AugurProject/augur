@@ -25,7 +25,6 @@ export async function processMintLog(augur: Augur, log: FormattedEventLog) {
   };
 }
 
-
 export async function processMintLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     const value = new BigNumber(log.amount || log.value);
@@ -35,4 +34,3 @@ export async function processMintLogRemoval(augur: Augur, log: FormattedEventLog
     await decreaseTokenBalance(db, augur, token, log.target, value);
   };
 }
-

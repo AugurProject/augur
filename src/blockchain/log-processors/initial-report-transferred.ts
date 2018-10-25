@@ -11,11 +11,9 @@ export async function processInitialReporterTransferredLog(augur: Augur, log: Fo
   };
 }
 
-
 export async function processInitialReporterTransferredLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("initial_reports").where("marketId", log.market).update({ reporter: log.from });
     augurEmitter.emit(SubscriptionEventNames.InitialReporterTransferred, log);
   };
 }
-

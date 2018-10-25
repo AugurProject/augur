@@ -18,7 +18,6 @@ describe("blockchain/log-processors/tokens-transferred", () => {
     db = await setupTestDb();
   });
 
-
   afterEach(async () => {
     await db.destroy();
   });

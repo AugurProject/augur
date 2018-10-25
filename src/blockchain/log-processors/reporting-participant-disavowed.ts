@@ -18,7 +18,6 @@ export async function processReportingParticipantDisavowedLog(augur: Augur, log:
   };
 }
 
-
 export async function processReportingParticipantDisavowedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     const initialReporter = await db("initial_reports").update("disavowed", 0).where({ initialReporter: log.reportingParticipant });
@@ -32,4 +31,3 @@ export async function processReportingParticipantDisavowedLogRemoval(augur: Augu
     }
   };
 }
-

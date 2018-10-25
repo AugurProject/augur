@@ -48,7 +48,6 @@ export async function processUniverseForkedLog(augur: Augur, log: FormattedEvent
   };
 }
 
-
 export async function processUniverseForkedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     const forkingMarket: { marketId: Address } = await db("markets").select("marketId").where({ forking: 1, universe: log.universe }).first();
@@ -63,4 +62,3 @@ export async function processUniverseForkedLogRemoval(augur: Augur, log: Formatt
     await db("universes").update("forked", false).where({ universe: log.universe });
   };
 }
-

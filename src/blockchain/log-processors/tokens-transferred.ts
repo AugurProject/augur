@@ -28,7 +28,6 @@ export async function processTokensTransferredLog(augur: Augur, log: FormattedEv
   };
 }
 
-
 export async function processTokensTransferredLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
@@ -39,4 +38,3 @@ export async function processTokensTransferredLogRemoval(augur: Augur, log: Form
     await decreaseTokenBalance(db, augur, token, log.to, value);
   };
 }
-

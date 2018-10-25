@@ -44,9 +44,7 @@ describe("blockchain/log-processors/tokens-minted", () => {
         supply: new BigNumber("9011", 10),
       }]);
 
-
       await(await processMintLogRemoval(augur, log))(trx);
-
 
       await expect(getTokenBalances(trx, log)).resolves.toEqual([{
         owner: "FROM_ADDRESS",

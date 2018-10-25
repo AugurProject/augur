@@ -30,7 +30,6 @@ export async function processBurnLog(augur: Augur, log: FormattedEventLog) {
   };
 }
 
-
 export async function processBurnLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     const value = new BigNumber(log.amount || log.value);
@@ -42,4 +41,3 @@ export async function processBurnLogRemoval(augur: Augur, log: FormattedEventLog
     await increaseTokenBalance(db, augur, token, log.target, value);
   };
 }
-

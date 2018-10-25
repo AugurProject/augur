@@ -18,7 +18,6 @@ export async function processMarketFinalizedLog(augur: Augur, log: FormattedEven
   };
 }
 
-
 export async function processMarketFinalizedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.FINALIZED);
@@ -27,4 +26,3 @@ export async function processMarketFinalizedLogRemoval(augur: Augur, log: Format
     await refreshMarketMailboxEthBalance(db, augur, log.market);
   };
 }
-

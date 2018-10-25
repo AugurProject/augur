@@ -35,7 +35,6 @@ export async function processFeeWindowCreatedLog(augur: Augur, log: FormattedEve
   };
 }
 
-
 export async function processFeeWindowCreatedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     augurEmitter.emit(SubscriptionEventNames.FeeWindowCreated, log);
@@ -43,4 +42,3 @@ export async function processFeeWindowCreatedLogRemoval(augur: Augur, log: Forma
     return db("tokens").where("contractAddress", log.feeWindow).orWhere("feeWindow", log.feeWindow).del();
   };
 }
-

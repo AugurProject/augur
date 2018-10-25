@@ -27,19 +27,19 @@ describe("blockchain/log-processors/timestamp-set", () => {
   };
   test("set timestamp", async () => {
     return db.transaction(async (trx) => {
-      await (await processTimestampSetLog({}, log1))(trx);
+      await(await processTimestampSetLog({}, log1))(trx);
       expect(getOverrideTimestamp()).toEqual(919191);
       await expect(getTimestampState(trx)).resolves.toEqual({
         overrideTimestamp: 919191,
       });
 
-      await (await processTimestampSetLog({}, log2))(trx);
+      await(await processTimestampSetLog({}, log2))(trx);
       expect(getOverrideTimestamp()).toEqual(828282);
       await expect(getTimestampState(trx)).resolves.toEqual({
         overrideTimestamp: 828282,
       });
 
-      await (await processTimestampSetLogRemoval({}, log2))(trx);
+      await(await processTimestampSetLogRemoval({}, log2))(trx);
       expect(getOverrideTimestamp()).toEqual(919191);
       await expect(getTimestampState(trx)).resolves.toEqual({
         overrideTimestamp: 919191,

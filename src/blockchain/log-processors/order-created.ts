@@ -63,14 +63,12 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
   };
 }
 
-
 export async function processOrderCreatedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("orders").where("orderId", log.orderId).delete();
     augurEmitter.emit(SubscriptionEventNames.OrderCreated, log);
   };
 }
-
 
 async function checkForOrphanedOrders(db: Knex, augur: Augur, orderData: OrdersRow<string>) {
   const queryData = {

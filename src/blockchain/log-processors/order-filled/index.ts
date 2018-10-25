@@ -1,7 +1,7 @@
 import { Augur } from "augur.js";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
-import { Address, FormattedEventLog, TradesRow, TokensRow, MarketsRow, OrdersRow } from "../../../types";
+import { Address, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, TradesRow } from "../../../types";
 import { updateOrder } from "./update-order";
 import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";
@@ -78,7 +78,6 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
   };
 }
 
-
 export async function processOrderFilledLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     const shareToken: Address = log.shareToken;
@@ -127,4 +126,3 @@ export async function processOrderFilledLogRemoval(augur: Augur, log: FormattedE
     }));
   };
 }
-

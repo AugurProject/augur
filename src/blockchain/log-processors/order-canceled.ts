@@ -22,7 +22,6 @@ export async function processOrderCanceledLog(augur: Augur, log: FormattedEventL
   };
 }
 
-
 export async function processOrderCanceledLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     const orderTypeLabel = log.orderType === "0" ? "buy" : "sell";
@@ -33,4 +32,3 @@ export async function processOrderCanceledLogRemoval(augur: Augur, log: Formatte
     augurEmitter.emit(SubscriptionEventNames.OrderCanceled, Object.assign({}, log, ordersRow));
   };
 }
-

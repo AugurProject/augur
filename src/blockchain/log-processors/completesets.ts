@@ -37,7 +37,6 @@ export async function processCompleteSetsPurchasedOrSoldLog(augur: Augur, log: F
   };
 }
 
-
 export async function processCompleteSetsPurchasedOrSoldLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("completeSets").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
@@ -46,4 +45,3 @@ export async function processCompleteSetsPurchasedOrSoldLogRemoval(augur: Augur,
     await updateOpenInterest(db, log.market);
   };
 }
-
