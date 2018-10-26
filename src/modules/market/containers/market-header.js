@@ -28,6 +28,7 @@ const mapStateToProps = (state, ownProps) => {
     isForking: state.universe.isForking,
     isDesignatedReporter:
       market.designatedReporter === state.loginAccount.address,
+    isMobileSmall: state.appStatus.isMobileSmall,
     market
   };
 };

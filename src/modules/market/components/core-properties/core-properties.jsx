@@ -80,7 +80,8 @@ export default class CoreProperties extends Component {
     isLogged: PropTypes.bool.isRequired,
     isDesignatedReporter: PropTypes.bool,
     location: PropTypes.object.isRequired,
-    finalizeMarket: PropTypes.func.isRequired
+    finalizeMarket: PropTypes.func.isRequired,
+    isMobileSmall: PropTypes.bool
   };
 
   static defaultProps = {
@@ -126,7 +127,8 @@ export default class CoreProperties extends Component {
       isLogged,
       isDesignatedReporter,
       location,
-      finalizeMarket
+      finalizeMarket,
+      isMobileSmall
     } = this.props;
 
     const { id, marketType } = market;
@@ -175,7 +177,10 @@ export default class CoreProperties extends Component {
         },
         {
           name: "min",
-          value: isScalar ? getValue(market, "minPrice").toString() : null
+          value:
+            isScalar && !isMobileSmall
+              ? getValue(market, "minPrice").toString()
+              : null
         }
       ],
       [
@@ -195,10 +200,26 @@ export default class CoreProperties extends Component {
         },
         {
           name: "max",
-          value: isScalar ? getValue(market, "maxPrice").toString() : null
+          value:
+            isScalar && !isMobileSmall
+              ? getValue(market, "maxPrice").toString()
+              : null
         }
       ]
     ];
+
+    if (isMobileSmall && isScalar) {
+      propertyRows.push([
+        {
+          name: "min",
+          value: getValue(market, "minPrice").toString()
+        },
+        {
+          name: "max",
+          value: getValue(market, "maxPrice").toString()
+        }
+      ]);
+    }
 
     const renderedProperties = [];
     propertyRows.forEach((propertyRow, numRow) => {
