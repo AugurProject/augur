@@ -3,6 +3,9 @@ import { reInitAugur } from "./re-init-augur";
 import * as initAugurModule from "modules/app/actions/init-augur";
 import * as lodash from "lodash";
 
+jest.mock("modules/app/actions/init-augur");
+jest.mock("lodash");
+
 describe("app/actions/re-init-augur", () => {
   const t1 = {
     state: {
@@ -122,7 +125,8 @@ describe("app/actions/re-init-augur", () => {
 
     test("Handled calling connectAugur more than once if there is an error the first time", done => {
       store.dispatch(reInitAugur(t.params.history));
-      t.assertions(store.getActions());
+      const actual = store.getActions();
+      t.assertions(actual);
       done();
     });
   });
