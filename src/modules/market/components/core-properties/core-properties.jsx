@@ -152,7 +152,7 @@ export default class CoreProperties extends Component {
           value: getValue(market, "volume.full")
         },
         {
-          name: "fee",
+          name: "est. fee",
           value: getValue(market, "settlementFeePercent.full"),
           tooltip: true,
           marketCreatorFee,
