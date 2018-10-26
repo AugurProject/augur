@@ -88,7 +88,7 @@ describe("app/actions/re-init-augur", () => {
       ])
   };
 
-  describe.each([t1])("", t => {
+  describe.each([t1])("Re-init Augur", t => {
     let store;
     let connectAugurSpy;
     let lodashSpy;
