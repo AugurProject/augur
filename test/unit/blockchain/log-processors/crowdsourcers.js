@@ -10,7 +10,6 @@ const {
 const { getMarketsWithReportingState } = require("src/server/getters/database");
 const { setOverrideTimestamp, removeOverrideTimestamp } = require("src/blockchain/process-block");
 
-
 function getCrowdsourcer(db, log) {
   return db("crowdsourcers").first(
     ["crowdSourcerId",
@@ -26,6 +25,7 @@ function getCrowdsourcer(db, log) {
 function getDisputesFromCrowdsourcer(db, log) {
   return db("disputes").where({ crowdsourcerId: log.disputeCrowdsourcer });
 }
+
 async function getCrowdsourcerAndMarket(db, log) {
   const crowdsourcerRow = await getCrowdsourcer(db, log);
   return {
@@ -46,7 +46,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
 
       await db.transaction(async (trx) => {
         async function verify(processor, getter, checker) {
-          await processor(trx, t.params.augur, t.params.log);
+          await(await processor(t.params.augur, t.params.log))(trx);
           checker(await getter(trx, t.params.log));
         }
 

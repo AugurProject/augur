@@ -24,12 +24,12 @@ describe("blockchain/log-processors/initial-report-redeemed", () => {
   };
   test("Initial report redeemed", async () => {
     return db.transaction(async (trx) => {
-      await processInitialReporterRedeemedLog(trx, augur, log);
+      await(await processInitialReporterRedeemedLog(augur, log))(trx);
       await expect(getInitialReport(trx, log)).resolves.toEqual({
         redeemed: 1,
       });
 
-      await processInitialReporterRedeemedLogRemoval(trx, augur, log);
+      await(await processInitialReporterRedeemedLogRemoval(augur, log))(trx);
       await expect(getInitialReport(trx, log)).resolves.toEqual({
         redeemed: 0,
       });

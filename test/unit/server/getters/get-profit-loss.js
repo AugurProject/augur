@@ -198,7 +198,6 @@ describe("tests for test/trading-proceeds-claimed-2.db", () => {
   });
 });
 
-
 describe("tests for test/profitloss.db", () => {
   var connection = null;
   var augur = new Augur();
@@ -378,7 +377,6 @@ describe("server/getters/get-profit-loss", () => {
       );
     },
   );
-
 
   test("buckets datapoints from the first trade the user made", (done) => {
     testWithDatabase(

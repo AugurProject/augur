@@ -47,9 +47,10 @@ export function clearOverrideTimestamp(): void {
 
 async function processBlockDetailsAndLogs(db: Knex, augur: Augur, block: BlockDetail) {
   if (!block || !block.timestamp) throw new Error(JSON.stringify(block));
+  const dbWrites = logQueueProcess(block.hash);
   db.transaction(async (trx: Knex.Transaction) => {
     await processBlockByBlockDetails(trx, augur, block);
-    await logQueueProcess(trx, block.hash);
+    await dbWrites(db);
   });
 }
 
@@ -98,10 +99,11 @@ export async function processBlockByBlockDetails(db: Knex, augur: Augur, block: 
 async function _processBlockRemoval(db: Knex, block: BlockDetail) {
   const blockNumber = parseInt(block.number, 16);
   logger.info("block removed:", `${blockNumber}`);
+  const dbWrites = logQueueProcess(block.hash);
   db.transaction(async (trx: Knex.Transaction) => {
-    await logQueueProcess(trx, block.hash);
     // TODO: un-advance time
     await db("blocks").transacting(trx).where({ blockNumber }).del();
+    await dbWrites(trx);
   });
 }
 

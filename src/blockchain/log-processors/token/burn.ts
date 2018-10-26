@@ -9,31 +9,35 @@ import { decreaseTokenBalance } from "./decrease-token-balance";
 import { decreaseTokenSupply } from "./decrease-token-supply";
 import { SubscriptionEventNames } from "../../../constants";
 
-export async function processBurnLog(db: Knex, augur: Augur, log: FormattedEventLog) {
-  const value = new BigNumber(log.amount || log.value);
-  const token = log.token || log.address;
-  const tokenBurnDataToInsert = {
-    transactionHash: log.transactionHash,
-    logIndex: log.logIndex,
-    sender: log.target,
-    recipient: null,
-    value: value.toString(),
-    blockNumber: log.blockNumber,
-    token,
+export async function processBurnLog(augur: Augur, log: FormattedEventLog) {
+  return async (db: Knex) => {
+    const value = new BigNumber(log.amount || log.value);
+    const token = log.token || log.address;
+    const tokenBurnDataToInsert = {
+      transactionHash: log.transactionHash,
+      logIndex: log.logIndex,
+      sender: log.target,
+      recipient: null,
+      value: value.toString(),
+      blockNumber: log.blockNumber,
+      token,
+    };
+    const eventName = log.eventName as keyof typeof SubscriptionEventNames;
+    augurEmitter.emit(SubscriptionEventNames[eventName], Object.assign({}, log, tokenBurnDataToInsert));
+    await db.insert(tokenBurnDataToInsert).into("transfers");
+    await decreaseTokenSupply(db, augur, token, value);
+    await decreaseTokenBalance(db, augur, token, log.target, value);
   };
-  const eventName = log.eventName as keyof typeof SubscriptionEventNames;
-  augurEmitter.emit(SubscriptionEventNames[eventName], Object.assign({}, log, tokenBurnDataToInsert));
-  await db.insert(tokenBurnDataToInsert).into("transfers");
-  await decreaseTokenSupply(db, augur, token, value);
-  await decreaseTokenBalance(db, augur, token, log.target, value);
 }
 
-export async function processBurnLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog) {
-  const value = new BigNumber(log.amount || log.value);
-  const token = log.token || log.address;
-  const eventName = log.eventName as keyof typeof SubscriptionEventNames;
-  augurEmitter.emit(SubscriptionEventNames[eventName], log);
-  await db.from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
-  await increaseTokenSupply(db, augur, token, value);
-  await increaseTokenBalance(db, augur, token, log.target, value);
+export async function processBurnLogRemoval(augur: Augur, log: FormattedEventLog) {
+  return async (db: Knex) => {
+    const value = new BigNumber(log.amount || log.value);
+    const token = log.token || log.address;
+    const eventName = log.eventName as keyof typeof SubscriptionEventNames;
+    augurEmitter.emit(SubscriptionEventNames[eventName], log);
+    await db.from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
+    await increaseTokenSupply(db, augur, token, value);
+    await increaseTokenBalance(db, augur, token, log.target, value);
+  };
 }

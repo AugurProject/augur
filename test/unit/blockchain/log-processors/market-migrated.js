@@ -46,7 +46,7 @@ describe("blockchain/log-processors/market-migrated", () => {
       }).where("marketId", log.market);
       await updateMarketState(trx, log.market, 999, ReportingState.AWAITING_FORK_MIGRATION);
 
-      await processMarketMigratedLog(trx, augur, log);
+      await(await processMarketMigratedLog(augur, log))(trx);
       await expect(getMarket(trx, log)).resolves.toEqual([
         {
           "marketId": "0x0000000000000000000000000000000000000211",
@@ -58,7 +58,7 @@ describe("blockchain/log-processors/market-migrated", () => {
         },
       ]);
 
-      await processMarketMigratedLogRemoval(trx, augur, log);
+      await(await processMarketMigratedLogRemoval(augur, log))(trx);
       await expect(getMarket(trx, log)).resolves.toEqual([
         {
           "marketId": "0x0000000000000000000000000000000000000211",

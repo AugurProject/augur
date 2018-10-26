@@ -1,5 +1,6 @@
 import * as async from "async";
 import { ErrorCallback } from "../types";
+import { each } from "bluebird";
 import * as Knex from "knex";
 import { logger } from "../utils/logger";
 import * as _ from "lodash";
@@ -8,7 +9,7 @@ interface LogQueue {
   [blockHash: string]: Array<LogProcessCallback>;
 }
 
-export type LogProcessCallback = (db: Knex, errorCallback?: ErrorCallback) => void;
+export type LogProcessCallback = (db: Knex) => Promise<void>;
 
 export const processQueue = async.queue((processFunction: (callback: ErrorCallback) => void, nextFunction: ErrorCallback): void => {
   processFunction(nextFunction);
@@ -34,17 +35,14 @@ export function logQueuePop(blockHash: string): Array<LogProcessCallback> {
   return callbacks;
 }
 
-export async function logQueueProcess(db: Knex, blockHash: string) {
-  return new Promise((resolve, reject) => {
-    const logCallbacks = logQueuePop(blockHash);
-    const remainingCallbacksByBlock = _.mapValues(logQueue, (callbacks) => callbacks.length);
-    if (!_.isEmpty(remainingCallbacksByBlock)) console.log("Future Callbacks", remainingCallbacksByBlock);
-    if (logCallbacks.length > 0) logger.info(`Processing ${logCallbacks.length} logs`);
-    async.eachSeries(logCallbacks,
-      (logCallback: LogProcessCallback, next: ErrorCallback) => logCallback(db, (err) => next(err)),
-      (err) => {
-        if (err) return reject(err);
-        resolve();
-      });
-  });
+export function logQueueProcess(blockHash: string): (db: Knex) => Promise<void>  {
+  const dbWritePromises = logQueuePop(blockHash);
+  const remainingCallbacksByBlock = _.mapValues(logQueue, (callbacks) => callbacks.length);
+  if (!_.isEmpty(remainingCallbacksByBlock)) console.log("Future Callbacks", remainingCallbacksByBlock);
+  if (dbWritePromises.length > 0) logger.info(`Processing ${dbWritePromises.length} logs`);
+  return async (db: Knex) => {
+    for (const dbWritePromise of dbWritePromises) {
+      await (await dbWritePromise)(db);
+    }
+  };
 }

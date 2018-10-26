@@ -64,7 +64,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
       const overrideTimestamp = 1509085473;
       await setOverrideTimestamp(trx, overrideTimestamp);
 
-      await processInitialReportSubmittedLog(trx, augur, log);
+      await(await processInitialReportSubmittedLog(augur, log))(trx);
       await expect(getReportingState(trx, log)).resolves.toEqual({
         initialReportSize: new BigNumber("2829", 10),
         reportingState: "AWAITING_NEXT_WINDOW",
@@ -76,7 +76,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         initialReporter: "0x0000000000000000000000000000000000abe123",
       });
 
-      await processInitialReportSubmittedLogRemoval(trx, augur, log);
+      await(await processInitialReportSubmittedLogRemoval(augur, log))(trx);
       await expect(getReportingState(trx, log)).resolves.toEqual({
         initialReportSize: null,
         reportingState: "DESIGNATED_REPORTING",

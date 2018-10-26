@@ -20,7 +20,7 @@ describe("blockchain/log-processors/market-mailbox-transferred", () => {
   };
   test("Transfer MarketMailbox log and removal", async () => {
     return db.transaction(async (trx) => {
-      await processMarketMailboxTransferredLog(trx, {}, log);
+      await(await processMarketMailboxTransferredLog({}, log))(trx);
 
       await expect(getMarket(trx, log)).resolves.toEqual([
         {
@@ -28,7 +28,7 @@ describe("blockchain/log-processors/market-mailbox-transferred", () => {
           "marketCreatorMailboxOwner": "0x000000000000000000000000000000000000d00d",
         },
       ]);
-      await processMarketMailboxTransferredLogRemoval(trx, {}, log);
+      await(await processMarketMailboxTransferredLogRemoval({}, log))(trx);
 
       await expect(getMarket(trx, log)).resolves.toEqual([
         {

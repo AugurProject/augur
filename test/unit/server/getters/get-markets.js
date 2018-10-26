@@ -2,7 +2,6 @@ const ReportingState = require("src/types").ReportingState;
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
-
 describe("server/getters/get-markets", () => {
   let db;
   beforeEach(async () => {

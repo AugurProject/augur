@@ -7,15 +7,18 @@ import { augurEmitter } from "../events";
 import { logQueueAdd } from "./process-queue";
 import { SubscriptionEventNames } from "../constants";
 
-export function makeLogListener(augur: Augur, contractName: string, eventName: string) {
-  return (log: FormattedEventLog): void => {
-    logQueueAdd(log.blockHash, (db: Knex, callback: ErrorCallback) => {
+export function makeLogListener(augur: Augur, contractName: string, eventName: string, callback: ErrorCallback) {
+  return async (log: FormattedEventLog) => {
+    const dbWritePromise = processLog(augur, log, logProcessors[contractName][eventName]).catch(callback);
+    logQueueAdd(log.blockHash, async (db: Knex) => {
       const logProcessor = logProcessors[contractName][eventName];
       if (!logProcessor.noAutoEmit) {
         const subscriptionEventName = eventName as keyof typeof SubscriptionEventNames;
         augurEmitter.emit(SubscriptionEventNames[subscriptionEventName], log);
       }
-      processLog(db, augur, log, logProcessors[contractName][eventName]).then(() => callback(null)).catch(callback);
+      const dbWrite = await dbWritePromise;
+      if (dbWrite == null) return callback(new Error("Problem with first phase of log processing"));
+      return (dbWrite)(db);
     });
   };
 }

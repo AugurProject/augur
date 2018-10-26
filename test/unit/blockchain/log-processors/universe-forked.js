@@ -31,7 +31,7 @@ describe("blockchain/log-processors/universe-forked", () => {
   };
   test("New universe created", async () => {
     return db.transaction(async (trx) => {
-      await processUniverseForkedLog(trx, augur, log);
+      await(await processUniverseForkedLog(augur, log))(trx);
       const records = await getForkRows(trx, log);
       expect(records.forkingMarket.length).toEqual(2);
       expect(records.forkingMarket[0].universe).toEqual("0x000000000000000000000000000000000000000b");
@@ -44,7 +44,7 @@ describe("blockchain/log-processors/universe-forked", () => {
       expect(records.otherMarket[0].needsDisavowal).toEqual(1);
       expect(records.universe[0].forked).toEqual(1);
 
-      await processUniverseForkedLogRemoval(trx, augur, log);
+      await(await processUniverseForkedLogRemoval(augur, log))(trx);
       const recordsAfterRemoval = await getForkRows(trx, log);
       expect(recordsAfterRemoval.forkingMarket.length).toEqual(1);
       expect(recordsAfterRemoval.forkingMarket[0].universe).toEqual("0x000000000000000000000000000000000000000b");
