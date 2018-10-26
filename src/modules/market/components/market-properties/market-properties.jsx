@@ -95,7 +95,7 @@ const MarketProperties = ({
             />
           </li>
           <li>
-            <span>Fee</span>
+            <span>Est. Fee</span>
             <ValueDenomination valueClassname="fee" {...settlementFeePercent} />
           </li>
           <li>
