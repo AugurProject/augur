@@ -1,13 +1,25 @@
 import configureMockStore from "redux-mock-store";
-import proxyquire from "proxyquire";
 import sinon from "sinon";
 import thunk from "redux-thunk";
 
+jest.mock(
+  "./load-account-data-from-local-storage",
+  () => LoadAccountDataFromLocalStorage
+);
+
+jest.mock("./update-assets", () => UpdateAssets);
+jest.mock("../../orders/actions/orphaned-orders", () => ClearOrphanedOrderData);
+jest.mock("./update-login-account", () => UpdateLoginAccount);
+jest.mock(
+  "../../positions/actions/load-account-trades",
+  () => LoadAccountTrades
+);
+jest.mock("./approve-account", () => approveAccount);
+
 describe(`modules/auth/actions/load-account-data.js`, () => {
-  proxyquire.noPreserveCache();
   const mockStore = configureMockStore([thunk]);
   const test = t => {
-    it(t.description, () => {
+    test(t.description, () => {
       const store = mockStore(t.state);
       const LoadAccountDataFromLocalStorage = {};
       const UpdateAssets = { updateAssets: () => {} };
@@ -16,17 +28,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       const UpdateLoginAccount = { updateLoginAccount: () => {} };
       const approveAccount = { checkAccountAllowance: () => {} };
 
-      const action = proxyquire(
-        "../../../src/modules/auth/actions/load-account-data.js",
-        {
-          "./load-account-data-from-local-storage": LoadAccountDataFromLocalStorage,
-          "./update-assets": UpdateAssets,
-          "../../orders/actions/orphaned-orders": ClearOrphanedOrderData,
-          "./update-login-account": UpdateLoginAccount,
-          "../../positions/actions/load-account-trades": LoadAccountTrades,
-          "./approve-account": approveAccount
-        }
-      );
+      const action = require("../../../src/modules/auth/actions/load-account-data.js");
       LoadAccountDataFromLocalStorage.loadAccountDataFromLocalStorage = sinon
         .stub()
         .returns({ type: "LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE" });
@@ -56,7 +58,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       account: null
     },
     assertions: actions => {
-      assert.deepEqual(actions, []);
+      expect(actions).toEqual([]);
     }
   });
   test({
@@ -65,7 +67,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       account: { name: "jack" }
     },
     assertions: actions => {
-      assert.deepEqual(actions, []);
+      expect(actions).toEqual([]);
     }
   });
   test({
@@ -84,7 +86,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }
     },
     assertions: actions => {
-      assert.deepEqual(actions, [
+      expect(actions).toEqual([
         { type: "LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE" },
         { type: "CLEAR_ORPHANED_ORDER_DATA" },
         { type: "UPDATE_LOGIN_ACCOUNT", data: { address: "0xb0b" } },
@@ -113,7 +115,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }
     },
     assertions: actions => {
-      assert.deepEqual(actions, [
+      expect(actions).toEqual([
         { type: "LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE" },
         { type: "CLEAR_ORPHANED_ORDER_DATA" },
         {

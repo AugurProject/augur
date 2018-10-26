@@ -1,6 +1,6 @@
 import getPrecision from "utils/get-number-precision";
 
-describe("utils/format-number.js", () => {
+describe("utils/get-number-precision.js", () => {
   const values = [
     {
       value: null,
@@ -34,7 +34,7 @@ describe("utils/format-number.js", () => {
       result: 1
     },
     {
-      value: 1.0,
+      value: 1.1,
       defaultValue: 3,
       result: 1
     },
@@ -52,7 +52,7 @@ describe("utils/format-number.js", () => {
 
   values.forEach(t => {
     describe(`test precision: ${t.value}`, () => {
-      test("number should have specific precision", () => {
+      test(`number ${t.value} should have precision ${t.result}`, () => {
         expect(getPrecision(t.value, t.defaultValue)).toEqual(t.result);
       });
     });

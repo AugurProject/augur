@@ -1,4 +1,4 @@
-import marketAssertions from "assertions/market";
+import marketAssertions from "src/assertions/market";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 

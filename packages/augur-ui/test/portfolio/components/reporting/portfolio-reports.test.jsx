@@ -63,33 +63,32 @@ describe("portfolio-reports", () => {
     describe("and the Portfolio: Reporting page is loaded", () => {
       describe("getReportingFees function", () => {
         it("should get called once with args ", () => {
-          assert.isOk(getReportingFees);
+          expect(getReportingFees).toBeOk();
         });
       });
 
       describe("ETH total", () => {
         it("should display as '-'", () => {
-          assert.include(Cmp.html(), "<span>ETH</span><span>-</span>");
+          expect(Cmp.html()).stringContaining("<span>ETH</span><span>-</span>");
         });
       });
 
       describe("REP total", () => {
         it("should display as '-'", () => {
-          assert.include(Cmp.html(), "<span>REP</span><span>-</span>");
+          expect(Cmp.html()).stringContaining("<span>REP</span><span>-</span>");
         });
       });
 
       describe("claim-reporting-fees-nonforked-markets-button", () => {
         it("should be disabled", () => {
           const button = Cmp.find("button");
-          assert.isOk(button.html().includes("disabled"));
+          expect(button.html().includes("disabled")).toBeOk();
         });
       });
 
       describe("claim-reporting-fees-forked-market-button", () => {
         it("should not exist", () => {
-          assert.notInclude(
-            Cmp.html(),
+          expect(Cmp.html()).not.stringContaining(
             '<button class="market-portfolio-card-styles_MarketCard__action-footer-light">Claim</button>'
           );
         });

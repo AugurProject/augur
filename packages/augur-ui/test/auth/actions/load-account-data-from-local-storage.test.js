@@ -5,7 +5,7 @@ import {
 } from "modules/auth/actions/load-account-data-from-local-storage";
 
 describe("modules/auth/actions/load-account-data-from-local-storage.js", () => {
-  it(`should return no action b/c there is nothing in localStorage`, () => {
+  test(`should return no action b/c there is nothing in localStorage`, () => {
     const store = mockStore.mockStore({});
 
     const localStorageRef = {
@@ -30,10 +30,6 @@ describe("modules/auth/actions/load-account-data-from-local-storage.js", () => {
 
     const expected = [];
 
-    assert.deepEqual(
-      store.getActions(),
-      expected,
-      `didn't return the expected object`
-    );
+    expect(store.getActions()).toEqual(expected);
   });
 });
