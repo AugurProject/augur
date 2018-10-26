@@ -21,8 +21,7 @@ const CategoricalOutcome = ({ className, outcome, isMobileSmall }) => (
     <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
       {getValue(outcome, "lastPricePercent.full")}
     </span>
-    <span>&nbsp;&nbsp;</span>
-    <MarketOutcomeTradingIndicator outcome={outcome} location="categorical" />
+    <MarketOutcomeTradingIndicator style={{marginLeft: '10px'}} outcome={outcome} location="categorical" />
   </div>
 );
 
