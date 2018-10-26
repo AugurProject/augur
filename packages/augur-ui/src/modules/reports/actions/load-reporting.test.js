@@ -3,12 +3,14 @@ import configureMockStore from "redux-mock-store";
 
 import thunk from "redux-thunk";
 
-import { constants } from "src/services/augurjs";
+import { constants } from "src/services/constants";
+import { augur } from "services/augurjs";
 
-import {
-  loadReporting,
-  __RewireAPI__ as loadReportingRewire
-} from "modules/reports/actions/load-reporting";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
+import { loadReporting } from "modules/reports/actions/load-reporting";
+
+jest.mock("modules/markets/actions/load-markets-info");
+jest.mock("services/augurjs");
 
 describe("loadReporting action", () => {
   const loginAccountAddress = "22222222";
@@ -23,47 +25,30 @@ describe("loadReporting action", () => {
     }
   };
 
-  let MockAugurJS;
   let mockStore;
   let store;
   let submitRequestStub;
 
-  before(() => {
+  beforeAll(() => {
     mockStore = configureMockStore([thunk]);
   });
 
   beforeEach(() => {
-    MockAugurJS = {
-      augurNode: {
-        submitRequest: () => {}
-      }
-    };
-
-    submitRequestStub = stub(MockAugurJS.augurNode, "submitRequest");
-
-    loadReportingRewire.__Rewire__("augur", MockAugurJS);
-    loadReportingRewire.__Rewire__(
-      "loadMarketsInfoIfNotLoaded",
-      (marketIds, callback) => {
-        callback(null);
-        return {
-          type: "LOAD_MARKETS_INFO_IF_NOT_LOADED",
-          data: {
-            marketIds
-          }
-        };
-      }
-    );
+    augur.augurNode.submitRequest.mockImplementation(() => {});
+    loadMarketsInfoIfNotLoaded.mockImplementation((marketIds, callback) => {
+      callback(null);
+      return {
+        type: "LOAD_MARKETS_INFO_IF_NOT_LOADED",
+        data: {
+          marketIds
+        }
+      };
+    });
 
     store = mockStore(initialStoreState);
   });
 
-  afterEach(() => {
-    loadReportingRewire.__ResetDependency__("augur");
-    loadReportingRewire.__ResetDependency__("loadMarketsInfoIfNotLoaded");
-  });
-
-  it("should load upcoming designated markets for a given user in side the given universe", () => {
+  test("should load upcoming designated markets for a given user in side the given universe", () => {
     store.dispatch(loadReporting());
 
     const checkCall = (
@@ -73,18 +58,23 @@ describe("loadReporting action", () => {
       expectedParams,
       callbackArgs
     ) => {
-      const c = submitRequestStub.getCall(callIndex);
-      assert.ok(
-        c.calledWith(method, {
+      expect(augur.augurNode.submitRequest).toHaveBeenNthCalledWith(
+        callIndex,
+        method,
+        {
           reportingState,
           ...expectedParams
-        })
+        },
+        expect.any(Function)
       );
-      c.args[2](null, callbackArgs);
+      augur.augurNode.submitRequest.mock.calls[callIndex - 1][2](
+        null,
+        callbackArgs
+      );
     };
 
     checkCall(
-      0,
+      1,
       "getMarkets",
       constants.REPORTING_STATE.PRE_REPORTING,
       {
@@ -95,7 +85,7 @@ describe("loadReporting action", () => {
       ["1111"]
     );
     checkCall(
-      1,
+      2,
       "getMarkets",
       constants.REPORTING_STATE.DESIGNATED_REPORTING,
       {
@@ -107,7 +97,7 @@ describe("loadReporting action", () => {
     );
 
     checkCall(
-      2,
+      3,
       "getMarkets",
       constants.REPORTING_STATE.OPEN_REPORTING,
       {
@@ -151,25 +141,24 @@ describe("loadReporting action", () => {
     ];
     const actual = store.getActions();
     // actions include load market info actions
-    assert.lengthOf(actual, 6);
-    assert.deepEqual(actual, expected, "Did not get correct actions");
+    expect(actual.length).toBe(6);
+    expect(actual).toEqual(expected);
   });
 
   describe("upon error", () => {
-    let callback;
-    let error;
+    test("should be passed to callback passed to action", () => {
+      const error = new Error("An Error Occurred");
+      const callback = jest.fn();
 
-    beforeEach(() => {
-      callback = stub();
-      error = new Error("An Error Occurred");
+      augur.augurNode.submitRequest.mockImplementation(
+        (placeholder1, placeholder2, cb) => cb(error)
+      );
 
       store.dispatch(loadReporting(callback));
-    });
 
-    it("should be passed to callback passed to action", () => {
-      submitRequestStub.getCall(0).args[2](error);
+      expect(augur.augurNode.submitRequest).toHaveBeenCalled();
 
-      callback.calledWith(error);
+      expect(callback).toHaveBeenCalledWith(error);
     });
   });
 });

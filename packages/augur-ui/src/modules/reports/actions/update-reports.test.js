@@ -1,5 +1,3 @@
-import { describe, it, beforeEach, afterEach } from "mocha";
-
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import testState from "test/testState";
@@ -20,7 +18,7 @@ describe(`modules/reports/actions/update-reports.js`, () => {
     store.clearActions();
   });
 
-  it(`should load reports given marketdata`, () => {
+  test(`should load reports given marketdata`, () => {
     out = [
       {
         type: "UPDATE_REPORTS",
@@ -52,10 +50,6 @@ describe(`modules/reports/actions/update-reports.js`, () => {
 
     store.dispatch(action.updateReports(test));
 
-    assert.deepEqual(
-      store.getActions(),
-      out,
-      `Didn't dispatch the UPDATE_REPORTS action`
-    );
+    expect(store.getActions()).toEqual(out);
   });
 });

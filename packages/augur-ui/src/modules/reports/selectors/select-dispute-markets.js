@@ -2,11 +2,11 @@ import { createSelector } from "reselect";
 import { createBigNumber } from "utils/create-big-number";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { constants } from "services/constants";
-import { isEmpty, orderBy } from "lodash";
+import { isEmpty, orderBy, some } from "lodash";
 import { selectMarketDisputeOutcomes } from "modules/reports/selectors/select-market-dispute-outcomes";
 import { selectUniverseState } from "src/select-state";
 
-const selectMarketsInDisputeSelector = () =>
+export const selectMarketsInDisputeSelector = () =>
   createSelector(
     selectMarkets,
     selectMarketDisputeOutcomes,
@@ -78,14 +78,8 @@ const selectMarketsInDisputeSelector = () =>
           forkingMarket = market;
           return;
         }
-        const outcomes = disputeOutcomes[market.id] || [];
-        let potentialFork = false;
-        outcomes.forEach((outcome, index) => {
-          if (outcome.potentialFork) {
-            potentialFork = true;
-          }
-        });
-        if (potentialFork) {
+        const { outcomes = [] } = disputeOutcomes[market.id] || {};
+        if (some(outcomes, "potentialFork")) {
           potentialForkingMarkets.push(market);
         } else {
           nonPotentialForkingMarkets.push(market);
