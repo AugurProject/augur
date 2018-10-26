@@ -470,7 +470,7 @@ export function assembleMarket(
           loginAccount
         );
 
-        if (marketAccountTrades) {
+        if (marketAccountTrades || marketAccountPositions) {
           market.myPositionsSummary = generateMarketsPositionsSummary([market]);
           if (market.myPositionsSummary) {
             market.myPositionOutcomes =
