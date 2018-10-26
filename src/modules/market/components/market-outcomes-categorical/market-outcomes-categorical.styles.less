@@ -77,7 +77,8 @@
   }
 
   .MarketOutcomesCategorical__outcome-value {
-    margin-left: 3vw;
+    font-size: 1.3rem;
+    margin-left: 2vw;
   }
 
   .MarketOutcomesCategorical__outcomes {
@@ -86,12 +87,16 @@
 }
 
 @media @breakpoint-mobile-medium {
+  .MarketOutcomesCategorical__outcome-value {
+    font-size: 1rem;
+  }
+
   .MarketOutcomesCategorical__outcome {
     align-items: flex-start;
     flex-direction: column;
 
     > span {
-      margin-left: 0;
+      margin-left: 1vw;
       margin-top: 0.7rem;
       width: 100%;
 
@@ -114,5 +119,10 @@
 
   .MarketOutcomesCategorical__show-more {
     top: 0.75rem;
+  }
+
+  .MarketOutcomesCategorical__outcomes {
+    grid-gap: 0.85rem;
+    grid-template-columns: repeat(2, auto);
   }
 }

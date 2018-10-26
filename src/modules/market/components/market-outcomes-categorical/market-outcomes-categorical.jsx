@@ -16,13 +16,16 @@ const CategoricalOutcome = ({ className, outcome, isMobileSmall }) => (
     }}
   >
     <span className={Styles["MarketOutcomesCategorical__outcome-name"]}>
-      {isMobileSmall ? outcome.name[0] + "... " : outcome.name}
+      {outcome.name}
     </span>
     <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
       {getValue(outcome, "lastPricePercent.full")}
     </span>
-    <span>&nbsp;&nbsp;</span>
-    <MarketOutcomeTradingIndicator outcome={outcome} location="categorical" />
+    <MarketOutcomeTradingIndicator
+      style={{ marginLeft: "10px" }}
+      outcome={outcome}
+      location="categorical"
+    />
   </div>
 );
 
@@ -53,8 +56,7 @@ class MarketOutcomesCategorical extends Component {
     const { outcomes, isMobileSmall } = this.props;
     const totalOutcomes = outcomes.length;
 
-    const numOutcomesToShow = !isMobileSmall ? 3 : 6;
-
+    const numOutcomesToShow = isMobileSmall ? 4 : 3;
     const displayShowMore = totalOutcomes > numOutcomesToShow;
     const showMoreText = this.state.isOpen
       ? `- ${totalOutcomes - numOutcomesToShow} less`
