@@ -21,7 +21,11 @@ const CategoricalOutcome = ({ className, outcome, isMobileSmall }) => (
     <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
       {getValue(outcome, "lastPricePercent.full")}
     </span>
-    <MarketOutcomeTradingIndicator style={{marginLeft: '10px'}} outcome={outcome} location="categorical" />
+    <MarketOutcomeTradingIndicator
+      style={{ marginLeft: "10px" }}
+      outcome={outcome}
+      location="categorical"
+    />
   </div>
 );
 
@@ -53,7 +57,7 @@ class MarketOutcomesCategorical extends Component {
     const totalOutcomes = outcomes.length;
 
     const numOutcomesToShow = isMobileSmall ? 4 : 3;
-    console.log(isMobileSmall)
+    console.log(isMobileSmall);
 
     const displayShowMore = totalOutcomes > numOutcomesToShow;
     const showMoreText = this.state.isOpen
