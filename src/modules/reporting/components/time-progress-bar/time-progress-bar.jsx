@@ -4,7 +4,9 @@ import {
   getDaysRemaining,
   convertUnixToFormattedDate,
   getHoursRemaining,
-  getMinutesRemaining
+  getMinutesRemaining,
+  getHoursMinusDaysRemaining,
+  getMinutesMinusHoursRemaining
 } from "utils/format-date";
 import classNames from "classnames";
 import Styles from "modules/reporting/components/time-progress-bar/time-progress-bar.styles";
@@ -31,9 +33,22 @@ const TimeProgressBar = ({
           width: `${((totalHours - hoursLeft) / totalHours) * 100}%`
         };
 
-  let timeLeft = `${daysLeft} ${daysLeft === 1 ? "day" : "days"} left`;
-  if (daysLeft === 0)
-    timeLeft = `${hoursLeft} ${hoursLeft === 1 ? "hour" : "hours"} left`;
+  const hoursMinusDays = getHoursMinusDaysRemaining(endTime, currentTime);
+  let timeLeft = `${daysLeft} ${
+    daysLeft === 1 ? "day" : "days"
+  }, ${hoursMinusDays} ${hoursMinusDays === 1 ? "hour" : "hours"} left`;
+
+  if (daysLeft === 0) {
+    const minutesMinusHours = getMinutesMinusHoursRemaining(
+      endTime,
+      currentTime
+    );
+    timeLeft = `${hoursLeft} ${
+      hoursLeft === 1 ? "hour" : "hours"
+    }, ${minutesMinusHours} ${
+      minutesMinusHours === 1 ? "minute" : "minutes"
+    } left`;
+  }
   if (hoursLeft === 0) {
     timeLeft = `${minutesLeft} ${
       minutesLeft === 1 ? "minute" : "minutes"
