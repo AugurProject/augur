@@ -66,6 +66,9 @@ export default function OutcomeTradingIndicator({
     ...spacing(loc, indicator)
   });
 
+  if (tradingIndicator === "none") {
+    return null;
+  }
   return (
     <span
       className={classNames(indicatorStyle, { [`${Styles.small}`]: isMobile })}

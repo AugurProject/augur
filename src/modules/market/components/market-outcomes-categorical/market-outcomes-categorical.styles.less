@@ -78,7 +78,7 @@
 
   .MarketOutcomesCategorical__outcome-value {
     font-size: 1.3rem;
-    margin-left: 3vw;
+    margin-left: 2vw;
   }
 
   .MarketOutcomesCategorical__outcomes {
@@ -86,7 +86,11 @@
   }
 }
 
-@media @breakpoint-mobile-small {
+@media @breakpoint-mobile-medium {
+  .MarketOutcomesCategorical__outcome-value {
+    font-size: 1rem;
+  }
+
   .MarketOutcomesCategorical__outcome {
     align-items: flex-start;
     flex-direction: column;
@@ -118,7 +122,7 @@
   }
 
   .MarketOutcomesCategorical__outcomes {
-    grid-gap: 0.75rem;
+    grid-gap: 0.85rem;
     grid-template-columns: repeat(2, auto);
   }
 }
