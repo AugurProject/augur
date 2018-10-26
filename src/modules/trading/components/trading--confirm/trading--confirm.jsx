@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { CreateMarketEdit } from "modules/common/components/icons";
-
 import ValueDenomination from "modules/common/components/value-denomination/value-denomination";
 import classNames from "classnames";
 import { CATEGORICAL } from "modules/markets/constants/market-types";
 import { MARKET, BUY, LIMIT, SELL } from "modules/transactions/constants/types";
-
+import ReactTooltip from "react-tooltip";
+import TooltipStyles from "modules/common/less/tooltip";
+import { CreateMarketEdit, Hint } from "modules/common/components/icons";
 import Styles from "modules/trading/components/trading--confirm/trading--confirm.styles";
 
 const MarketTradingConfirm = ({
@@ -92,7 +92,39 @@ const MarketTradingConfirm = ({
           </li>
         )}
         <li>
-          <span>Fee</span>
+          <span className={Styles.TradingConfirm__FeeLabel}>Est. Fee</span>
+          <span className={Styles.TradingConfirm__TooltipContainer}>
+            <label
+              className={classNames(
+                TooltipStyles.TooltipHint,
+                Styles.TradingConfirm__TooltipHint
+              )}
+              data-tip
+              data-for="tooltip--fee"
+            >
+              {Hint}
+            </label>
+            <ReactTooltip
+              id="tooltip--fee"
+              className={TooltipStyles.Tooltip}
+              effect="solid"
+              place="bottom"
+              type="light"
+            >
+              <p>
+                The reporting fee adjusts every week, which may cause the
+                market‘s total fee to go up or down.
+              </p>
+              <a
+                href="http://docs.augur.net/#reporting-fee"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {" "}
+                Lean more here.
+              </a>
+            </ReactTooltip>
+          </span>
           <span>
             {tradingFees ? tradingFees.formattedValue : "0"} <span>ETH</span>
           </span>
