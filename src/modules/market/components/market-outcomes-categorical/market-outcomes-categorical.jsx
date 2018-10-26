@@ -57,8 +57,6 @@ class MarketOutcomesCategorical extends Component {
     const totalOutcomes = outcomes.length;
 
     const numOutcomesToShow = isMobileSmall ? 4 : 3;
-    console.log(isMobileSmall);
-
     const displayShowMore = totalOutcomes > numOutcomesToShow;
     const showMoreText = this.state.isOpen
       ? `- ${totalOutcomes - numOutcomesToShow} less`
