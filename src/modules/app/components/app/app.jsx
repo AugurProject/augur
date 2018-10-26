@@ -33,7 +33,7 @@ import NavAccountIcon from "modules/common/components/nav-account-icon";
 import NavCreateIcon from "modules/common/components/nav-create-icon";
 import NavMarketsIcon from "modules/common/components/nav-markets-icon";
 import NavPortfolioIcon from "modules/common/components/nav-portfolio-icon";
-import { AlertCircle, NavReportingIcon } from "modules/common/components/icons";
+import { NavReportingIcon } from "modules/common/components/icons";
 
 import parsePath from "modules/routes/helpers/parse-path";
 import makePath from "modules/routes/helpers/make-path";
@@ -463,9 +463,6 @@ export default class AppView extends Component {
         onClick={() => this.mobileMenuButtonClick()}
       >
         {icon}
-        {menuState === mobileMenuStates.CLOSED &&
-          !!unseenCount &&
-          AlertCircle(Styles["SideBar__mobile-bars-unseen"])}
       </button>
     );
   }
@@ -544,8 +541,6 @@ export default class AppView extends Component {
               mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
               menuScalar={subMenu.scalar}
               menuData={this.sideNavMenuData}
-              unseenCount={unseenCount}
-              toggleNotifications={this.toggleNotifications}
               stats={coreStats}
               currentBasePath={this.state.currentBasePath}
             />

@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { selectMarketsDataState } from "src/select-state";
+import { selectCategoriesState } from "src/select-state";
 
 import {
   compose,
@@ -8,29 +8,30 @@ import {
   groupBy,
   has,
   mapValues,
-  pluck,
+  map,
   uniq,
-  forEach
+  keys,
+  toUpper
 } from "lodash/fp";
 
 const flattenTags = compose(
   uniq,
   flatten,
-  pluck("tags")
+  map("tags")
 );
 
 const process = compose(
   mapValues(flattenTags),
   groupBy("category"),
-  forEach(value => {
-    value.category = value.category.toUpperCase();
-    return value;
-  }),
+  map(value => ({
+    category: toUpper(value.category),
+    tags: keys(value.tags)
+  })),
   filter(has("category")),
   Object.values
 );
 
 export const selectAllCategories = createSelector(
-  selectMarketsDataState,
+  selectCategoriesState,
   process
 );
