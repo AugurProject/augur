@@ -37,7 +37,7 @@ export const selectMarketsInDispute = createSelector(
           stakeKey => {
             if (
               !filteredMarkets[marketKey].disputeInfo.stakes[stakeKey]
-                .tentativeWinning
+                .tentativeWinning && filteredMarkets[marketKey].disputeInfo.stakes[stakeKey].bondSizeCurrent
             ) {
               const percentStakedInOutcome = createBigNumber(
                 filteredMarkets[marketKey].disputeInfo.stakes[stakeKey]
