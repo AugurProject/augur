@@ -25,7 +25,7 @@ describe("modules/markets/actions/load-markets-info.js", () => {
 
   const test = t =>
     it(t.description, done => {
-      const store = mockStore();
+      const store = mockStore({ universe: { id: "0xbob" }});
 
       t.assertions(store, done);
     });
@@ -239,7 +239,7 @@ describe("modules/markets/actions/load-markets-info.js", () => {
               cb(
                 false,
                 marketIds.marketIds.reduce(
-                  (p, marketId) => [...p, { id: marketId, test: "value" }],
+                  (p, marketId) => [...p, { id: marketId, test: "value", universe: "0xbob" }],
                   []
                 )
               )
@@ -282,11 +282,13 @@ describe("modules/markets/actions/load-markets-info.js", () => {
               marketsData: {
                 "0xMarket1": {
                   id: "0xMarket1",
-                  test: "value"
+                  test: "value",
+                  universe: "0xbob",
                 },
                 "0xMarket2": {
                   id: "0xMarket2",
-                  test: "value"
+                  test: "value",
+                  universe: "0xbob",
                 }
               }
             }

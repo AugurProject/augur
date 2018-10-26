@@ -2,6 +2,9 @@ import configureMockStore from "redux-mock-store";
 import proxyquire from "proxyquire";
 import sinon from "sinon";
 import thunk from "redux-thunk";
+import { augur } from "services/augurjs";
+
+const { ACCOUNT_TYPES } = augur.rpc.constants;
 
 describe(`modules/auth/actions/load-account-data.js`, () => {
   proxyquire.noPreserveCache();
@@ -15,10 +18,12 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       const LoadAccountTrades = { loadAccountTrades: () => {} };
       const UpdateLoginAccount = { updateLoginAccount: () => {} };
       const approveAccount = { checkAccountAllowance: () => {} };
+      const windowRef = { windowRef: { localStorage: { setItem: () => {} } } };
 
       const action = proxyquire(
         "../../../src/modules/auth/actions/load-account-data.js",
         {
+          "../../../utils/window-ref": windowRef,
           "./load-account-data-from-local-storage": LoadAccountDataFromLocalStorage,
           "./update-assets": UpdateAssets,
           "../../orders/actions/orphaned-orders": ClearOrphanedOrderData,
@@ -53,7 +58,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
   test({
     description: "no account",
     params: {
-      account: null
+      account: null,
+      meta: {},
     },
     assertions: actions => {
       assert.deepEqual(actions, []);
@@ -62,7 +68,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
   test({
     description: "account without address",
     params: {
-      account: { name: "jack" }
+      account: { name: "jack" },
+      meta: { accountType: ACCOUNT_TYPES.META_MASK }
     },
     assertions: actions => {
       assert.deepEqual(actions, []);
@@ -72,12 +79,14 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     description: "account address",
     params: {
       account: {
-        address: "0xb0b"
+        address: "0xb0b",
+        meta: { accountType: ACCOUNT_TYPES.META_MASK }
       }
     },
     state: {
       loginAccount: {
-        address: "0xb0b"
+        address: "0xb0b",
+        meta: { accountType: ACCOUNT_TYPES.META_MASK }
       },
       universe: {
         id: "0xdeadbeef"
@@ -86,8 +95,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     assertions: actions => {
       assert.deepEqual(actions, [
         { type: "LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE" },
+        { type: "UPDATE_LOGIN_ACCOUNT", data: { address: "0xb0b", meta: { accountType: ACCOUNT_TYPES.META_MASK } } },
         { type: "CLEAR_ORPHANED_ORDER_DATA" },
-        { type: "UPDATE_LOGIN_ACCOUNT", data: { address: "0xb0b" } },
         { type: "UPDATE_ACCOUNT_TRADES_DATA" },
         { type: "CHECK_ACCOUNT_ALLOWANCE" },
         { type: "UPDATE_ASSETS" }
@@ -101,12 +110,14 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         address: "0xb0b",
         name: "jack",
         isUnlocked: true,
-        edgeAccount: { username: "jack" }
+        edgeAccount: { username: "jack" },
+        meta: { accountType: "" }
       }
     },
     state: {
       loginAccount: {
-        address: "0xb0b"
+        address: "0xb0b",
+        meta: { accountType: ACCOUNT_TYPES.META_MASK }
       },
       universe: {
         id: "0xdeadbeef"
@@ -115,16 +126,17 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     assertions: actions => {
       assert.deepEqual(actions, [
         { type: "LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE" },
-        { type: "CLEAR_ORPHANED_ORDER_DATA" },
         {
           type: "UPDATE_LOGIN_ACCOUNT",
           data: {
             address: "0xb0b",
             name: "jack",
             isUnlocked: true,
-            edgeAccount: { username: "jack" }
+            edgeAccount: { username: "jack" },
+            meta: { accountType: "" }
           }
         },
+        { type: "CLEAR_ORPHANED_ORDER_DATA" },
         { type: "UPDATE_ACCOUNT_TRADES_DATA" },
         { type: "CHECK_ACCOUNT_ALLOWANCE" },
         { type: "UPDATE_ASSETS" }

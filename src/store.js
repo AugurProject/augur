@@ -7,6 +7,7 @@ import thunk from "redux-thunk";
 
 import { createReducer } from "src/reducers";
 import { windowRef } from "src/utils/window-ref";
+import { augur } from "services/augurjs";
 
 // console log middleware
 const consoleLog = store => next => action => {
@@ -25,18 +26,43 @@ const localStorageMiddleware = store => next => action => {
   if (!state || !state.loginAccount || !state.loginAccount.address) {
     return;
   }
+  const { address } = state.loginAccount;
+  const {
+    pendingLiquidityOrders,
+    scalarMarketsShareDenomination,
+    favorites,
+    reports,
+    accountName,
+    notifications,
+    env,
+    connection
+  } = state;
   if (windowRef.localStorage && windowRef.localStorage.setItem) {
-    windowRef.localStorage.setItem(
-      state.loginAccount.address,
+    const { localStorage } = windowRef;
+    let storedAccountData = JSON.parse(localStorage.getItem(address));
+    if (!storedAccountData || !storedAccountData.selectedUniverse) {
+      const { augurNodeNetworkId } = connection;
+      const networkIdToUse = augurNodeNetworkId || augur.rpc.getNetworkID();
+      const defaultUniverseId =
+        env.universe || augur.contracts.addresses[networkIdToUse].Universe;
+      storedAccountData = {
+        selectedUniverse: { [networkIdToUse]: defaultUniverseId }
+      };
+    }
+    localStorage.setItem(
+      address,
       JSON.stringify({
-        pendingLiquidityOrders: state.pendingLiquidityOrders,
-        scalarMarketsShareDenomination: state.scalarMarketsShareDenomination,
-        favorites: state.favorites,
-        reports: state.reports,
-        accountName: state.accountName,
-        notifications: state.notifications,
+        pendingLiquidityOrders,
+        scalarMarketsShareDenomination,
+        favorites,
+        reports,
+        accountName,
+        notifications,
         gasPriceInfo: {
           userDefinedGasPrice: state.gasPriceInfo.userDefinedGasPrice
+        },
+        selectedUniverse: {
+          ...storedAccountData.selectedUniverse
         }
       })
     );

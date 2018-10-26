@@ -96,7 +96,6 @@ export default class ReportingHeader extends Component {
       isForkingMarketFinalized,
       isLogged
     } = this.props;
-
     const disableParticipate = repBalance === "0";
     const disputeRep =
       formatAttoRep(reportingWindowStats.stake, {

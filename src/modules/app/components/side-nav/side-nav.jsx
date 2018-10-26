@@ -18,7 +18,11 @@ export default class SideNav extends Component {
     menuData: PropTypes.array.isRequired,
     mobileShow: PropTypes.bool.isRequired,
     stats: PropTypes.array.isRequired,
-    currentBasePath: PropTypes.string.isRequired
+    currentBasePath: PropTypes.string
+  };
+
+  static defaultProps = {
+    currentBasePath: null
   };
 
   constructor() {

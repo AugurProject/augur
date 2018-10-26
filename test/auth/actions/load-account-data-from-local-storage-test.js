@@ -6,7 +6,9 @@ import {
 
 describe("modules/auth/actions/load-account-data-from-local-storage.js", () => {
   it(`should return no action b/c there is nothing in localStorage`, () => {
-    const store = mockStore.mockStore({});
+    const store = mockStore.mockStore({
+      connection: { augurNodeNetworkId: 102 }
+    });
 
     const localStorageRef = {
       getItem: () =>

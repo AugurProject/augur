@@ -13,12 +13,21 @@ const mapStateToProps = state => {
   // basically just create the filtered markets based on what IDs we find in the favorites object
   const markets = selectAllMarkets();
   const { favorites } = state;
+  const filteredMarkets = Object.keys(favorites).reduce(
+    (filtered, favoriteId) => {
+      if (markets.find(market => market.id === favoriteId)) {
+        filtered.push(favoriteId);
+      }
+      return filtered;
+    },
+    []
+  );
 
   return {
     isLogged: state.authStatus.isLogged,
     isMobile: state.appStatus.isMobile,
     markets,
-    filteredMarkets: Object.keys(favorites),
+    filteredMarkets,
     transactionsLoading: state.appStatus.transactionsLoading
   };
 };
