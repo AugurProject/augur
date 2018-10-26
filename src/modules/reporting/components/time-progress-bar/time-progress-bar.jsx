@@ -36,7 +36,7 @@ const TimeProgressBar = ({
   const hoursMinusDays = getHoursMinusDaysRemaining(endTime, currentTime);
   let timeLeft = `${daysLeft} ${
     daysLeft === 1 ? "day" : "days"
-  } ${hoursMinusDays} ${hoursMinusDays === 1 ? "hour" : "hours"} left`;
+  }, ${hoursMinusDays} ${hoursMinusDays === 1 ? "hour" : "hours"} left`;
 
   if (daysLeft === 0) {
     const minutesMinusHours = getMinutesMinusHoursRemaining(
@@ -45,7 +45,7 @@ const TimeProgressBar = ({
     );
     timeLeft = `${hoursLeft} ${
       hoursLeft === 1 ? "hour" : "hours"
-    } ${minutesMinusHours} ${
+    }, ${minutesMinusHours} ${
       minutesMinusHours === 1 ? "minute" : "minutes"
     } left`;
   }
