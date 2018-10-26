@@ -3,8 +3,6 @@
  */
 import React from "react";
 
-import { describe, it } from "mocha";
-import sinon from "sinon";
 import { shallow } from "enzyme";
 
 import PortfolioReports from "src/modules/portfolio/components/portfolio-reports/portfolio-reports";
@@ -14,8 +12,8 @@ describe("portfolio-reports", () => {
   let getReportingFees;
 
   describe("When the user has no claimable fees", () => {
-    before(() => {
-      getReportingFees = sinon.spy();
+    beforeAll(() => {
+      getReportingFees = jest.fn();
       const isLogged = true;
       const reportingFees = {
         unclaimedEth: {
@@ -62,35 +60,40 @@ describe("portfolio-reports", () => {
 
     describe("and the Portfolio: Reporting page is loaded", () => {
       describe("getReportingFees function", () => {
-        it("should get called once with args ", () => {
-          assert.isOk(getReportingFees);
+        test("Called once with args ", () => {
+          expect(getReportingFees).toBeTruthy();
         });
       });
 
       describe("ETH total", () => {
-        it("should display as '-'", () => {
-          assert.include(Cmp.html(), "<span>ETH</span><span>-</span>");
+        test("Displayed as '-'", () => {
+          expect(Cmp.html()).toEqual(
+            expect.stringContaining("<span>ETH</span><span>-</span>")
+          );
         });
       });
 
       describe("REP total", () => {
-        it("should display as '-'", () => {
-          assert.include(Cmp.html(), "<span>REP</span><span>-</span>");
+        test("Displayed as '-'", () => {
+          expect(Cmp.html()).toEqual(
+            expect.stringContaining("<span>REP</span><span>-</span>")
+          );
         });
       });
 
       describe("claim-reporting-fees-nonforked-markets-button", () => {
-        it("should be disabled", () => {
+        test("Is disabled", () => {
           const button = Cmp.find("button");
-          assert.isOk(button.html().includes("disabled"));
+          expect(button.html()).toEqual(expect.stringContaining("disabled"));
         });
       });
 
       describe("claim-reporting-fees-forked-market-button", () => {
-        it("should not exist", () => {
-          assert.notInclude(
-            Cmp.html(),
-            '<button class="market-portfolio-card-styles_MarketCard__action-footer-light">Claim</button>'
+        test("Does not exist", () => {
+          expect(Cmp.html()).toEqual(
+            expect.not.stringContaining(
+              '<button class="market-portfolio-card-styles_MarketCard__action-footer-light">Claim</button>'
+            )
           );
         });
       });

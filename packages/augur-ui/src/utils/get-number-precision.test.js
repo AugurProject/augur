@@ -29,14 +29,13 @@ describe("utils/format-number.js", () => {
     },
     {
       value: 0.1,
-
       defaultValue: 3,
       result: 1
     },
     {
       value: 1.0,
       defaultValue: 3,
-      result: 1
+      result: 0
     },
     {
       value: 1,
@@ -53,7 +52,7 @@ describe("utils/format-number.js", () => {
   values.forEach(t => {
     describe(`test precision: ${t.value}`, () => {
       test("number should have specific precision", () => {
-        expect(getPrecision(t.value, t.defaultValue)).toEqual(t.result);
+        expect(getPrecision(t.value, t.defaultValue)).toBe(t.result);
       });
     });
   });
