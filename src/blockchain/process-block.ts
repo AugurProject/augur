@@ -50,7 +50,7 @@ async function processBlockDetailsAndLogs(db: Knex, augur: Augur, block: BlockDe
   const dbWrites = logQueueProcess(block.hash);
   db.transaction(async (trx: Knex.Transaction) => {
     await processBlockByBlockDetails(trx, augur, block);
-    await dbWrites(db);
+    await dbWrites(trx);
   });
 }
 

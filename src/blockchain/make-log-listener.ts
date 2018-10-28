@@ -16,9 +16,9 @@ export function makeLogListener(augur: Augur, contractName: string, eventName: s
         const subscriptionEventName = eventName as keyof typeof SubscriptionEventNames;
         augurEmitter.emit(SubscriptionEventNames[subscriptionEventName], log);
       }
-      const dbWrite = await dbWritePromise;
-      if (dbWrite == null) return callback(new Error("Problem with first phase of log processing"));
-      return (dbWrite)(db);
+      const dbWriteFunction = await dbWritePromise;
+      if (dbWriteFunction == null) return callback(new Error("Problem with first phase of log processing"));
+      await dbWriteFunction(db);
     });
   };
 }

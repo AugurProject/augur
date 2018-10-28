@@ -42,7 +42,7 @@ export function logQueueProcess(blockHash: string): (db: Knex) => Promise<void> 
   if (dbWritePromises.length > 0) logger.info(`Processing ${dbWritePromises.length} logs`);
   return async (db: Knex) => {
     for (const dbWritePromise of dbWritePromises) {
-      await (await dbWritePromise)(db);
+      await dbWritePromise(db);
     }
   };
 }
