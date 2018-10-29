@@ -63,8 +63,12 @@
     color: @color-almostblack;
     font-size: @font-size-small;
     line-height: @font-size-large;
-    margin: 0 0 1.5rem;
+    margin: 0;
     padding: 0 4rem;
+
+    &:last-of-type {
+      margin-bottom: 1.5rem;
+    }
 
     > button {
       text-decoration: underline;
