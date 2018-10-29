@@ -41,10 +41,9 @@ export async function logQueueProcess(blockHash: string): Promise<(db: Knex) => 
   if (!_.isEmpty(remainingCallbacksByBlock)) console.log("Future Callbacks", remainingCallbacksByBlock);
   if (dbWritePromises.length > 0) logger.info(`Processing ${dbWritePromises.length} logs`);
 
-  await Promise.all(dbWritePromises);
+  const dbWriteFunctions = await Promise.all(dbWritePromises);
   return async (db: Knex) => {
-    for (const dbWritePromise of dbWritePromises) {
-      const dbWriteFunction = await dbWritePromise;
+    for (const dbWriteFunction of dbWriteFunctions) {
       await dbWriteFunction(db);
     }
   };

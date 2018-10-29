@@ -66,12 +66,12 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
         dbWritePromises.push(processLog(augur, log, logProcessors[contractName][eventName]));
       }
     });
-    await Promise.all(dbWritePromises);
+    const dbWriteFunctions = await Promise.all(dbWritePromises);
     await db.transaction(async (trx: Knex.Transaction) => {
       await processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber]);
-      logger.info(`Processing ${dbWritePromises.length} logs`);
-      for (const dbWritePromise of dbWritePromises) {
-        await (await dbWritePromise)(trx);
+      logger.info(`Processing ${dbWriteFunctions.length} logs`);
+      for (const dbWriteFunction of dbWriteFunctions) {
+        await dbWriteFunction(trx);
       }
     });
   });
