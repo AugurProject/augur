@@ -93,6 +93,7 @@ class ForkingNotification extends Component {
             forkReputationGoal={forkReputationGoal}
             finalizeMarket={finalizeMarket}
             isForkingMarketFinalized={isForkingMarketFinalized}
+            marginLeft={marginLeft}
           />
         )}
       </section>

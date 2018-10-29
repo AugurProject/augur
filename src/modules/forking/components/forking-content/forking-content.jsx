@@ -18,7 +18,8 @@ const ForkingContent = ({
   doesUserHaveRep,
   forkReputationGoal,
   isForkingMarketFinalized,
-  finalizeMarket
+  finalizeMarket,
+  marginLeft
 }) => {
   const unixFormattedDate = convertUnixToFormattedDate(forkEndTime);
   const forkWindowActive = !dateHasPassed(
@@ -44,6 +45,7 @@ const ForkingContent = ({
           Styles.ForkingContent__container,
           expanded ? Styles.expanded : ""
         )}
+        style={{ paddingLeft: marginLeft }}
       >
         <TimeProgressBar
           endTime={parseInt(forkEndTime, 10)}
@@ -129,7 +131,8 @@ ForkingContent.propTypes = {
   expanded: PropTypes.bool.isRequired,
   doesUserHaveRep: PropTypes.bool.isRequired,
   forkReputationGoal: PropTypes.string.isRequired,
-  isForkingMarketFinalized: PropTypes.bool
+  isForkingMarketFinalized: PropTypes.bool,
+  marginLeft: PropTypes.number.isRequired
 };
 
 ForkingContent.defaultProps = {
