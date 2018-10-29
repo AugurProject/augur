@@ -35,14 +35,16 @@ export function logQueuePop(blockHash: string): Array<LogProcessCallback> {
   return callbacks;
 }
 
-export function logQueueProcess(blockHash: string): (db: Knex) => Promise<void>  {
+export async function logQueueProcess(blockHash: string): Promise<(db: Knex) => Promise<void>> {
   const dbWritePromises = logQueuePop(blockHash);
   const remainingCallbacksByBlock = _.mapValues(logQueue, (callbacks) => callbacks.length);
   if (!_.isEmpty(remainingCallbacksByBlock)) console.log("Future Callbacks", remainingCallbacksByBlock);
   if (dbWritePromises.length > 0) logger.info(`Processing ${dbWritePromises.length} logs`);
+
+  const dbWriteFunctions = await Promise.all(dbWritePromises);
   return async (db: Knex) => {
-    for (const dbWritePromise of dbWritePromises) {
-      await (await dbWritePromise)(db);
+    for (const dbWriteFunction of dbWriteFunctions) {
+      await dbWriteFunction(db);
     }
   };
 }
