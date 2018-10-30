@@ -59,6 +59,7 @@
     "edge-login-ui-web": "0.3.3",
     "ethereumjs-tx": "1.3.3",
     "ethereumjs-util": "^5.2.0",
+    "ethrpc": "5.7.2",
     "express": "4.16.2",
     "helmet": "3.9.0",
     "highcharts": "6.0.3",
