@@ -183,6 +183,7 @@ export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
   dispatch(loadReporting());
   const isStoredTransaction = log.reporter === getState().loginAccount.address;
   if (isStoredTransaction) {
+    handleNotificationUpdate(log, dispatch, getState);
     dispatch(updateAssets());
     dispatch(loadDisputing());
     dispatch(updateLoggedTransactions(log));
