@@ -210,6 +210,10 @@ describe("events/actions/listen-to-updates", () => {
           type: "UPDATE_LOGGED_TRANSACTIONS",
           log
         }));
+        RewireLogHandlers.__Rewire__("handleNotificationUpdate", log => ({
+          type: "HANDLE_NOTIFICATION_UPDATE",
+          log
+        }));
         RewireLogHandlers.__Rewire__("updateAssets", () => ({
           type: "UPDATE_ASSETS"
         }));
@@ -256,7 +260,10 @@ describe("events/actions/listen-to-updates", () => {
         "it should handle calling initial report IS designated reporter",
       state: {
         universe: { id: "UNIVERSE_ADDRESS" },
-        loginAccount: { address: "MY_ADDRESS" }
+        loginAccount: { address: "MY_ADDRESS" },
+        blockchain: {
+          currentAugurTimestamp: 1521665
+        }
       },
       stub: {
         augur: {
@@ -354,7 +361,10 @@ describe("events/actions/listen-to-updates", () => {
         "it should handle calling initial reporter redeemed IS designated reporter",
       state: {
         universe: { id: "UNIVERSE_ADDRESS" },
-        loginAccount: { address: "MY_ADDRESS" }
+        loginAccount: { address: "MY_ADDRESS" },
+        blockchain: {
+          currentAugurTimestamp: 1521665
+        }
       },
       stub: {
         augur: {
