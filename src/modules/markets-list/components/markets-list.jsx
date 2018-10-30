@@ -134,7 +134,7 @@ export default class MarketsList extends Component {
       showDisputingCard,
       outcomes,
       linkType,
-      hideOutstandingReturns,
+      hideOutstandingReturns
     } = this.props;
     const s = this.state;
 
