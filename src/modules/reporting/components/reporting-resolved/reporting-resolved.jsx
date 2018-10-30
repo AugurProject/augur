@@ -35,8 +35,7 @@ export default class ReportingResolved extends Component {
     noShowHeader: PropTypes.bool,
     forkingMarket: PropTypes.object,
     loadReporting: PropTypes.func,
-    isMobile: PropTypes.bool.isRequired,
-    hideOutstandingReturns: PropTypes.bool
+    isMobile: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
@@ -44,8 +43,7 @@ export default class ReportingResolved extends Component {
     isForkingMarketFinalized: false,
     noShowHeader: false,
     forkingMarket: null,
-    loadReporting: null,
-    hideOutstandingReturns: false
+    loadReporting: null
   };
 
   constructor(props) {
@@ -81,8 +79,7 @@ export default class ReportingResolved extends Component {
       noShowHeader,
       nullMessage,
       location,
-      history,
-      hideOutstandingReturns
+      history
     } = this.props;
     const s = this.state;
 
@@ -119,7 +116,6 @@ export default class ReportingResolved extends Component {
           paginationPageParam="reporting-resolved-page"
           nullMessage={nullMessage}
           addNullPadding
-          hideOutstandingReturns={hideOutstandingReturns}
         />
       </section>
     );
