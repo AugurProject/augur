@@ -208,6 +208,7 @@ export default class PortfolioReports extends Component {
             noShowHeader
             toggleFavorite={toggleFavorite}
             nullMessage="Markets you have staked on will be listed here when resolved."
+            hideOutstandingReturns
           />
         </div>
       </div>

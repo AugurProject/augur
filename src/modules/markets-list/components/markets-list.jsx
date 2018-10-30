@@ -30,7 +30,8 @@ export default class MarketsList extends Component {
     addNullPadding: PropTypes.bool,
     style: PropTypes.object,
     showDisputingCard: PropTypes.bool,
-    outcomes: PropTypes.object
+    outcomes: PropTypes.object,
+    hideOutstandingReturns: PropTypes.bool
   };
 
   static defaultProps = {
@@ -42,7 +43,8 @@ export default class MarketsList extends Component {
     addNullPadding: false,
     style: null,
     showDisputingCard: false,
-    outcomes: null
+    outcomes: null,
+    hideOutstandingReturns: false
   };
 
   constructor(props) {
@@ -131,7 +133,8 @@ export default class MarketsList extends Component {
       style,
       showDisputingCard,
       outcomes,
-      linkType
+      linkType,
+      hideOutstandingReturns,
     } = this.props;
     const s = this.state;
 
@@ -171,6 +174,7 @@ export default class MarketsList extends Component {
                   id={market.id}
                   testid={testid}
                   pendingLiquidityOrders={pendingLiquidityOrders}
+                  hideOutstandingReturns={hideOutstandingReturns}
                 />
               );
             }
