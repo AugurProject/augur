@@ -20,7 +20,8 @@ describe("modules/markets/actions/market-creator-fees-management.js", () => {
 
     const ACTIONS = {
       UPDATE_MARKETS_DATA: "UPDATE_MARKETS_DATA",
-      UPDATE_UNCLAIMED_DATA: "UPDATE_UNCLAIMED_DATA"
+      UPDATE_UNCLAIMED_DATA: "UPDATE_UNCLAIMED_DATA",
+      UPDATE_NOTIFICATION: "UPDATE_NOTIFICATION"
     };
     const MailboxAddresses = ["0xmailbox01", "0xmailbox02"];
     const MarketIds = ["0xmyMarket01", "0xmyMarket02"];
@@ -83,7 +84,7 @@ describe("modules/markets/actions/market-creator-fees-management.js", () => {
               p.onFailed,
               `onFailed provided to withdrawEther isn't a function.`
             );
-            p.onSuccess();
+            p.onSuccess({ hash: "0xtest" });
           }
         }
       },
@@ -118,12 +119,23 @@ describe("modules/markets/actions/market-creator-fees-management.js", () => {
         marketId
       }
     }));
+    __RewireAPI__.__Rewire__("updateNotification", hash => ({
+      type: ACTIONS.UPDATE_NOTIFICATION,
+      data: {
+        hash: "0xtest"
+      }
+    }));
+
+
 
     test({
       description: `Should fire a withdrawEther and updateMarketsData if we have ETH to collect from a market.`,
       state: {
         loginAccount: {
           address: "ADDRESS"
+        },
+        blockchain: {
+          currentAugurTimestamp: 1521665
         }
       },
       assertions: store => {
@@ -155,6 +167,12 @@ describe("modules/markets/actions/market-creator-fees-management.js", () => {
             type: ACTIONS.UPDATE_UNCLAIMED_DATA,
             data: {
               marketId: [MarketIds[0]]
+            }
+          },
+          {
+            type: ACTIONS.UPDATE_NOTIFICATION,
+            data: {
+              hash: "0xtest"
             }
           }
         ];

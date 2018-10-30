@@ -34,7 +34,7 @@ export default class MarketPreview extends Component {
     hideReportEndingIndicator: PropTypes.bool,
     linkType: PropTypes.string,
     collectMarketCreatorFees: PropTypes.func.isRequired,
-    hideOutstandingReturns: PropTypes.bool
+    showOutstandingReturns: PropTypes.bool
   };
 
   static defaultProps = {
@@ -50,7 +50,7 @@ export default class MarketPreview extends Component {
     testid: null,
     outcomes: [],
     settlementFeePercent: null,
-    hideOutstandingReturns: false
+    showOutstandingReturns: false
   };
 
   constructor(props) {
@@ -95,7 +95,7 @@ export default class MarketPreview extends Component {
             />
           </div>
           {p.unclaimedCreatorFees.value > 0 &&
-            !p.hideOutstandingReturns && (
+            p.showOutstandingReturns && (
               <div
                 className={classNames(Styles.MarketPreview__returns, {
                   [`${Styles["single-card"]}`]: p.cardStyle === "single-card"

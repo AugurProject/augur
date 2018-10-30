@@ -179,6 +179,7 @@ class MyMarkets extends Component {
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
             pendingLiquidityOrders={pendingLiquidityOrders}
+            showOutstandingReturns
           />
         )}
         {haveMarkets && <MarketsHeaderLabel title="In Reporting" />}
@@ -197,6 +198,7 @@ class MyMarkets extends Component {
             collectMarketCreatorFees={collectMarketCreatorFees}
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
+            showOutstandingReturns
           />
         )}
         {haveMarkets && <MarketsHeaderLabel title="In Dispute" />}
@@ -217,6 +219,7 @@ class MyMarkets extends Component {
             isMobile={isMobile}
             showDisputingCard
             outcomes={outcomes}
+            showOutstandingReturns
           />
         )}
         {haveMarkets && <MarketsHeaderLabel title="Resolved" />}
@@ -236,6 +239,7 @@ class MyMarkets extends Component {
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
             addNullPadding
+            showOutstandingReturns
           />
         )}
         {(myMarkets == null || (myMarkets && myMarkets.length === 0)) && (
