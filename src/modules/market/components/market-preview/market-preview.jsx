@@ -33,7 +33,8 @@ export default class MarketPreview extends Component {
     cardStyle: PropTypes.string,
     hideReportEndingIndicator: PropTypes.bool,
     linkType: PropTypes.string,
-    collectMarketCreatorFees: PropTypes.func.isRequired
+    collectMarketCreatorFees: PropTypes.func.isRequired,
+    hideOutstandingReturns: PropTypes.bool
   };
 
   static defaultProps = {
@@ -48,7 +49,8 @@ export default class MarketPreview extends Component {
     className: null,
     testid: null,
     outcomes: [],
-    settlementFeePercent: null
+    settlementFeePercent: null,
+    hideOutstandingReturns: false
   };
 
   constructor(props) {
@@ -92,19 +94,20 @@ export default class MarketPreview extends Component {
               toggleDetails={this.toggleDetails}
             />
           </div>
-          {p.unclaimedCreatorFees.value > 0 && (
-            <div
-              className={classNames(Styles.MarketPreview__returns, {
-                [`${Styles["single-card"]}`]: p.cardStyle === "single-card"
-              })}
-            >
-              <OutstandingReturns
-                id={p.id}
-                unclaimedCreatorFees={p.unclaimedCreatorFees}
-                collectMarketCreatorFees={p.collectMarketCreatorFees}
-              />
-            </div>
-          )}
+          {p.unclaimedCreatorFees.value > 0 &&
+            !p.hideOutstandingReturns && (
+              <div
+                className={classNames(Styles.MarketPreview__returns, {
+                  [`${Styles["single-card"]}`]: p.cardStyle === "single-card"
+                })}
+              >
+                <OutstandingReturns
+                  id={p.id}
+                  unclaimedCreatorFees={p.unclaimedCreatorFees}
+                  collectMarketCreatorFees={p.collectMarketCreatorFees}
+                />
+              </div>
+            )}
           <MarketLiquidity
             marketId={p.id}
             market={p}
