@@ -98,72 +98,74 @@ export default class SideNav extends Component {
           [`${Styles.mobileShow}`]: mobileShow
         })}
       >
-        <ul className={Styles.SideNav__nav}>
-          {accessFilteredMenu.map((item, index) => {
-            const Icon = item.icon;
-            const selected = !isMobile && this.isCurrentItem(item);
+        <div className={Styles.SideNav__container}>
+          <ul className={Styles.SideNav__nav}>
+            {accessFilteredMenu.map((item, index) => {
+              const Icon = item.icon;
+              const selected = !isMobile && this.isCurrentItem(item);
 
-            const linkClickHandler = () => {
-              if (isMobile) {
-                if (item.mobileClick) {
-                  item.mobileClick();
+              const linkClickHandler = () => {
+                if (isMobile) {
+                  if (item.mobileClick) {
+                    item.mobileClick();
+                  } else {
+                    defaultMobileClick();
+                  }
                 } else {
-                  defaultMobileClick();
+                  this.itemClick(item);
                 }
-              } else {
-                this.itemClick(item);
-              }
-            };
+              };
 
-            return (
-              <li
-                className={classNames(
-                  { [Styles["SideNav__item--selected"]]: selected },
-                  item.disabled ? Styles.disabled : ""
-                )}
-                key={item.title}
-                id="side-nav-items"
-              >
-                <Link
-                  to={item.route ? makePath(item.route) : null}
-                  onClick={linkClickHandler}
-                  disabled={item.disabled}
+              return (
+                <li
+                  className={classNames(
+                    { [Styles["SideNav__item--selected"]]: selected },
+                    item.disabled ? Styles.disabled : ""
+                  )}
+                  key={item.title}
+                  id="side-nav-items"
                 >
-                  <Icon />
-                  <span className={Styles["item-title"]}>{item.title}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-        {isLogged && (
-          <div className={Styles.SideNav__hideForMidScreens}>
-            <GasPriceEdit />
-            <div className={Styles.SideNav__amt}>
-              <div className={Styles.SideNav__nav__separator} />
-              <div className={Styles.SideName__placement}>
-                <div className={Styles["SideNav__stat-label"]}>
-                  {stats[1].totalPLMonth.label}
-                  <span className={Styles["SideNav__stat-value"]}>
-                    {stats[1].totalPLMonth.value.formatted}
-                    <span className={Styles["SideNav__stat-unit"]}>ETH</span>
-                  </span>
-                </div>
-                <div
-                  className={Styles["SideNav__stat-label"]}
-                  style={{ paddingBottom: "0" }}
-                >
-                  {stats[1].totalPLDay.label}
-                  <span className={Styles["SideNav__stat-value"]}>
-                    {stats[1].totalPLDay.value.formatted}
-                    <span className={Styles["SideNav__stat-unit"]}>ETH</span>
-                  </span>
+                  <Link
+                    to={item.route ? makePath(item.route) : null}
+                    onClick={linkClickHandler}
+                    disabled={item.disabled}
+                  >
+                    <Icon />
+                    <span className={Styles["item-title"]}>{item.title}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          {isLogged && (
+            <div className={Styles.SideNav__hideForMidScreens}>
+              <GasPriceEdit />
+              <div className={Styles.SideNav__amt}>
+                <div className={Styles.SideNav__nav__separator} />
+                <div className={Styles.SideName__placement}>
+                  <div className={Styles["SideNav__stat-label"]}>
+                    {stats[1].totalPLMonth.label}
+                    <span className={Styles["SideNav__stat-value"]}>
+                      {stats[1].totalPLMonth.value.formatted}
+                      <span className={Styles["SideNav__stat-unit"]}>ETH</span>
+                    </span>
+                  </div>
+                  <div
+                    className={Styles["SideNav__stat-label"]}
+                    style={{ paddingBottom: "0" }}
+                  >
+                    {stats[1].totalPLDay.label}
+                    <span className={Styles["SideNav__stat-value"]}>
+                      {stats[1].totalPLDay.value.formatted}
+                      <span className={Styles["SideNav__stat-unit"]}>ETH</span>
+                    </span>
+                  </div>
                 </div>
               </div>
+              <ConnectAccount />
             </div>
-            <ConnectAccount />
-          </div>
-        )}
+          )}
+        </div>
       </aside>
     );
   }

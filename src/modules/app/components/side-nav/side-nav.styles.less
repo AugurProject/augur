@@ -99,6 +99,21 @@
   background: @color-lightpurple;
 }
 
+.SideNav__container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: min-content;
+  overflow: auto;
+}
+
+.SideNav__hideForMidScreens {
+  display: none;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
 @media @breakpoint-mobile {
   .SideNav {
     display: flex;
@@ -199,13 +214,6 @@
   }
 }
 
-.SideNav__hideForMidScreens {
-  display: none;
-  flex-direction: column;
-  flex-grow: 1;
-  justify-content: flex-end;
-}
-
 @media @breakpoint-mobile-mid {
   .SideNav__hideForMidScreens {
     display: flex;
@@ -213,5 +221,15 @@
 
   .SideNav__amt {
     display: block;
+  }
+}
+
+@media @breakpoint-mobile-small-height {
+  .SideNav__nav {
+    > li {
+      a {
+        padding: 0.75rem 0;
+      }
+    }
   }
 }
