@@ -1091,10 +1091,10 @@ augur-core@1.1.0:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur.js@5.10.0:
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.10.0.tgz#ff141c5a123c370ae2eb0e6df35d17d39f8fe97f"
-  integrity sha512-s1IGxMray2bYTnebOeS+Nd8mtocuBp07usfQOiGZ67e/7CTiVwNiNIh8JBhlvXo+7ll20f6bu7VBT8yu9ZZpjg==
+augur.js@5.10.2:
+  version "5.10.2"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.10.2.tgz#40a12e5e2f99ade3bda2c54b5d3a1384d044ef55"
+  integrity sha512-kdl1Fg7ssX+9lJ0sPy4vZRH+1ph8j1HYtvC7bz9W7xMVQ8++Jg/QbvTa8yM+6JSZF4Y+UR8ZcwI1cxVx6f2ORw==
   dependencies:
     async "1.5.2"
     augur-core "1.1.0"
@@ -1102,7 +1102,7 @@ augur.js@5.10.0:
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-blockstream "4.0.1"
-    ethrpc "5.6.0"
+    ethrpc "5.7.1"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -5488,10 +5488,10 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@5.6.0:
-  version "5.6.0"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.6.0.tgz#c8428cef8aceb7bf8d3002f3d801432d4f269a6e"
-  integrity sha512-iF/qpmWxglmwdzEjgptTr+eMUEFNU3piVjxTKvuTejwg2N+rh+3iHEqqnC8UYXEotGI+rAHFlCBr5XPQwSdTIw==
+ethrpc@5.7.1:
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.7.1.tgz#f70a082575530467c879e3453c2b79a8e43933c0"
+  integrity sha512-pcgbP4Sl93ae52ZZE5lnd7vzKwhMPjTQEveUZi7j4oXzjosBxLnf+rcJvR8mERpMiOH9HFABkNNtsGBVXmtmbQ==
   dependencies:
     async "2.6.0"
     augur-blockstream "5.0.0"
@@ -6956,6 +6956,18 @@ htmlparser2@3.9.x, htmlparser2@^3.9.1, htmlparser2@^3.9.2:
     entities "^1.1.1"
     inherits "^2.0.1"
     readable-stream "^2.0.2"
+
+htmlparser2@^3.9.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-3.10.0.tgz#5f5e422dcf6119c0d983ed36260ce9ded0bee464"
+  integrity sha512-J1nEUGv+MkXS0weHNWVKJJ+UrLfePxRWpN3C9bEi9fLxL2+ggW94DQvgYVXsaT30PGwYRIZKNZXuyMhp3Di4bQ==
+  dependencies:
+    domelementtype "^1.3.0"
+    domhandler "^2.3.0"
+    domutils "^1.5.1"
+    entities "^1.1.1"
+    inherits "^2.0.1"
+    readable-stream "^3.0.6"
 
 htmlparser2@~3.3.0:
   version "3.3.0"
@@ -11736,6 +11748,13 @@ react-helmet@5.2.0:
     prop-types "^15.5.4"
     react-side-effect "^1.1.0"
 
+react-html-parser@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-html-parser/-/react-html-parser-2.0.2.tgz#6dbe1ddd2cebc1b34ca15215158021db5fc5685e"
+  integrity sha512-XeerLwCVjTs3njZcgCOeDUqLgNIt/t+6Jgi5/qPsO/krUWl76kWKXMeVs2LhY2gwM6X378DkhLjur0zUQdpz0g==
+  dependencies:
+    htmlparser2 "^3.9.0"
+
 react-is@^16.5.2:
   version "16.5.2"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.5.2.tgz#e2a7b7c3f5d48062eb769fcb123505eb928722e3"
@@ -12008,6 +12027,15 @@ readable-stream@^1.0.33, readable-stream@~1.1.9:
     inherits "~2.0.1"
     isarray "0.0.1"
     string_decoder "~0.10.x"
+
+readable-stream@^3.0.6:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.0.6.tgz#351302e4c68b5abd6a2ed55376a7f9a25be3057a"
+  integrity sha512-9E1oLoOWfhSXHGv6QlwXJim7uNzd9EVlWK+21tCU9Ju/kR0/p2AZYPz4qSchgO8PlLIH4FpZYfzwS+rEksZjIg==
+  dependencies:
+    inherits "^2.0.3"
+    string_decoder "^1.1.1"
+    util-deprecate "^1.0.1"
 
 readdirp@^2.0.0:
   version "2.2.1"
@@ -14537,7 +14565,7 @@ utf8@^2.1.1:
   resolved "https://registry.yarnpkg.com/utf8/-/utf8-2.1.2.tgz#1fa0d9270e9be850d9b05027f63519bf46457d96"
   integrity sha1-H6DZJw6b6FDZsFAn9jUZv0ZFfZY=
 
-util-deprecate@~1.0.1:
+util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
