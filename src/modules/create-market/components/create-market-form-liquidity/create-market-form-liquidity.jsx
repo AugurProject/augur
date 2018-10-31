@@ -58,7 +58,7 @@ export default class CreateMarketLiquidity extends Component {
         props.newMarket.outcomes.indexOf(props.liquidityState.selectedOutcome) >
         -1
       ) {
-        [selectedOutcome] = props.liquidityState.selectedOutcome;
+        ({ selectedOutcome } = props.liquidityState);
       }
     }
 
