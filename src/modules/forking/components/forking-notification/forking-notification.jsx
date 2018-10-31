@@ -106,8 +106,12 @@ ForkingNotification.propTypes = {
   universe: PropTypes.object.isRequired,
   currentTime: PropTypes.number.isRequired,
   doesUserHaveRep: PropTypes.bool.isRequired,
-  marginLeft: PropTypes.number.isRequired,
+  marginLeft: PropTypes.number,
   finalizeMarket: PropTypes.func.isRequired
+};
+
+ForkingNotification.defaultProps = {
+  marginLeft: 0
 };
 
 export default ForkingNotification;
