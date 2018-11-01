@@ -62,6 +62,11 @@ export default function(market) {
       );
     });
 
+    it("market.openInterest", () => {
+      assert.isDefined(market.openInterest);
+      assertFormattedNumber(market.openInterest, "market.openInterest");
+    });
+
     it("market.volume", () => {
       assert.isDefined(market.volume);
       assertFormattedNumber(market.volume, "market.volume");

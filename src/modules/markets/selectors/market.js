@@ -256,6 +256,9 @@ export function assembleMarket(
           marketData.settlementFee * 100,
           { positiveSign: false, decimals: 4, decimalsRounded: 4 }
         );
+        market.openInterest = formatEther(marketData.openInterest, {
+          positiveSign: false
+        });
         market.volume = formatEther(marketData.volume, {
           positiveSign: false
         });
