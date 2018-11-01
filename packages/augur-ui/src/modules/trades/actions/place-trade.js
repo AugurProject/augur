@@ -92,6 +92,7 @@ export const placeTrade = ({
   };
 
   const sendTrade = () => {
+    console.log("inSendTrade", augur.trading.placeTrade.toString());
     augur.trading.placeTrade(placeTradeParams);
     dispatch(clearTradeInProgress(marketId));
   };
@@ -117,8 +118,11 @@ export const placeTrade = ({
     bnAllowance.lte(0) ||
     bnAllowance.lte(createBigNumber(tradeInProgress.totalCost))
   ) {
+    console.log("if", bnAllowance.lte(0),
+    bnAllowance.lte(createBigNumber(tradeInProgress.totalCost)));
     dispatch(
       checkAccountAllowance((err, allowance) => {
+        console.log("checkAllowance", err, allowance);
         if (allowance === "0") {
           promptApprovalandSend();
         } else {
@@ -127,6 +131,7 @@ export const placeTrade = ({
       })
     );
   } else {
+    console.log("else");
     sendTrade();
   }
 };
