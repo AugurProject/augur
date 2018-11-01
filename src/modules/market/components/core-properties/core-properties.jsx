@@ -86,7 +86,8 @@ export default class CoreProperties extends Component {
 
   static defaultProps = {
     tentativeWinner: null,
-    isDesignatedReporter: false
+    isDesignatedReporter: false,
+    isMobileSmall: false
   };
 
   determinePhase() {

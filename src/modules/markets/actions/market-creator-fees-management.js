@@ -76,6 +76,8 @@ export const collectMarketCreatorFees = (
             [marketMailboxAddress, "latest"],
             (err, attoEthBalance) => {
               if (err) return callback(err);
+              if (attoEthBalance === null)
+                return callback("No market mailbox balance found");
               const bnAttoEthBalance = speedomatic.bignum(attoEthBalance);
               const combined = speedomatic.unfix(
                 bnAttoEthBalance.plus(bnCashBalance),
