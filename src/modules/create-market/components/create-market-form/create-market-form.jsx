@@ -127,7 +127,7 @@ export default class CreateMarketForm extends Component {
         ] = `Maximum length is ${maxLength}.`;
         break;
       default:
-        updatedMarket.validations[currentStep][fieldName] = true;
+        updatedMarket.validations[currentStep][fieldName] = "";
     }
 
     updatedMarket[fieldName] = value;
@@ -172,7 +172,7 @@ export default class CreateMarketForm extends Component {
         ] += `${humanName} must be between ${min} and ${max}.`.slice(1);
         break;
       default:
-        updatedMarket.validations[currentStep][fieldName] = true;
+        updatedMarket.validations[currentStep][fieldName] = "";
         break;
     }
 
@@ -191,7 +191,7 @@ export default class CreateMarketForm extends Component {
     const { newMarket } = this.props;
     const validations = newMarket.validations[currentStep];
     const validationsArray = Object.keys(validations);
-    return validationsArray.every(key => validations[key] === true);
+    return validationsArray.every(key => validations[key] === "");
   }
 
   updateInitialLiquidityCosts(order, shouldReduce) {

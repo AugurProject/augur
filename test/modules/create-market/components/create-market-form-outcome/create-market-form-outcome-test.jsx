@@ -19,25 +19,25 @@ describe("create-market-form-outcome", () => {
       isValid: false,
       validations: [
         {
-          description: false,
-          category: false,
-          tag1: true,
-          tag2: true
+          description: null,
+          category: null,
+          tag1: "",
+          tag2: ""
         },
         {
-          type: false
+          type: null
         },
         {
-          designatedReporterType: false,
-          designatedReporterAddress: false,
-          expirySourceType: false,
-          endTime: false,
-          hour: false,
-          minute: false,
-          meridiem: false
+          designatedReporterType: null,
+          designatedReporterAddress: null,
+          expirySourceType: null,
+          endTime: null,
+          hour: null,
+          minute: null,
+          meridiem: null
         },
         {
-          settlementFee: true
+          settlementFee: ""
         }
       ],
       currentStep: 0,
@@ -139,9 +139,7 @@ describe("create-market-form-outcome", () => {
         });
 
         it("should set validation message to true", () => {
-          assert.isTrue(
-            newMarketObj.validations[newMarketObj.currentStep].tickSize
-          );
+          assert.equal(newMarketObj.validations[newMarketObj.currentStep].tickSize, "");
         });
       });
 

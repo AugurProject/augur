@@ -52,25 +52,25 @@ describe("modules/markets/reducers/new-market.js", () => {
         initialLiquidityGas: createBigNumber(0),
         validations: [
           {
-            description: false,
-            category: false,
-            tag1: true,
-            tag2: true
+            description: null,
+            category: null,
+            tag1: "",
+            tag2: ""
           },
           {
-            type: false
+            type: null
           },
           {
-            designatedReporterType: false,
-            designatedReporterAddress: false,
-            expirySourceType: false,
-            endTime: false,
-            hour: false,
-            minute: false,
-            meridiem: false
+            designatedReporterType: null,
+            designatedReporterAddress: null,
+            expirySourceType: null,
+            endTime: null,
+            hour: null,
+            minute: null,
+            meridiem: null
           },
           {
-            settlementFee: true
+            settlementFee: ""
           }
         ],
         creationError:
@@ -491,25 +491,25 @@ describe("modules/markets/reducers/new-market.js", () => {
         initialLiquidityGas: createBigNumber(0),
         validations: [
           {
-            description: false,
-            category: false,
-            tag1: true,
-            tag2: true
+            description: null,
+            category: null,
+            tag1: "",
+            tag2: ""
           },
           {
-            type: false
+            type: null
           },
           {
-            designatedReporterType: false,
-            designatedReporterAddress: false,
-            expirySourceType: false,
-            endTime: false,
-            hour: false,
-            minute: false,
-            meridiem: false
+            designatedReporterType: null,
+            designatedReporterAddress: null,
+            expirySourceType: null,
+            endTime: null,
+            hour: null,
+            minute: null,
+            meridiem: null
           },
           {
-            settlementFee: true
+            settlementFee: ""
           }
         ],
         creationError:
