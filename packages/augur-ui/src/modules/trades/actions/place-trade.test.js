@@ -1,23 +1,28 @@
 import * as mocks from "test/mockStore";
 import { tradeTestState } from "test/trades/constants";
 import { augur } from "services/augurjs";
+import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 
-const action = require("modules/trades/actions/place-trade.js");
+const { placeTrade } = require("modules/trades/actions/place-trade.js");
 
 const checkAllownaceActionObject = {
   type: "UPDATE_LOGIN_ACCOUNT",
   allowance: "0"
 };
 jest.mock("services/augurjs");
-jest.mock("modules/auth/actions/approve-account").fn(onSent => {
-  onSent(null, "0");
-  return checkAllownaceActionObject;
-});
+jest.mock("modules/auth/actions/approve-account");
 beforeEach(() => {
+  augur.rpc = jest.fn(() => {});
+  augur.rpc.getNetworkID = jest.fn(() => "4");
   augur.trading = jest.fn(() => {});
   augur.trading.calculateTradeCost = jest.fn();
   augur.trading.calculateTradeCost.mockReturnValue({
     onChainAmount: "1"
+  });
+  augur.trading.placeTrade = jest.fn(() => {});
+  checkAccountAllowance.mockImplementation(onSent => {
+    onSent(null, "0");
+    return checkAllownaceActionObject;
   });
 });
 
@@ -28,7 +33,7 @@ describe(`modules/trades/actions/place-trade.js`, () => {
     testState.loginAccount = { privateKey: Buffer.from("PRIVATE_KEY", "utf8") };
     const store = mockStore(testState);
     store.dispatch(
-      action.placeTrade({ marketId: "testYesNoMarketId", outcomeId: null })
+      placeTrade({ marketId: "testYesNoMarketId", outcomeId: null })
     );
     expect(store.getActions()).toEqual([
       {
@@ -38,7 +43,7 @@ describe(`modules/trades/actions/place-trade.js`, () => {
     ]);
     store.clearActions();
     store.dispatch(
-      action.placeTrade({ marketId: "testYesNoMarketId", outcomeId: undefined })
+      placeTrade({ marketId: "testYesNoMarketId", outcomeId: undefined })
     );
     expect(store.getActions()).toEqual([
       {
@@ -52,10 +57,10 @@ describe(`modules/trades/actions/place-trade.js`, () => {
     const testState = { ...state, ...tradeTestState };
     testState.loginAccount = { privateKey: Buffer.from("PRIVATE_KEY", "utf8") };
     const store = mockStore(testState);
-    store.dispatch(action.placeTrade({ marketId: null, outcomeId: "1" }));
+    store.dispatch(placeTrade({ marketId: null, outcomeId: "1" }));
     expect(store.getActions()).toEqual([]);
     store.clearActions();
-    store.dispatch(action.placeTrade({ marketId: undefined, outcomeId: "1" }));
+    store.dispatch(placeTrade({ marketId: undefined, outcomeId: "1" }));
     expect(store.getActions()).toEqual([]);
   });
   test("should handle a allowance less than totalCost", () => {
@@ -66,12 +71,9 @@ describe(`modules/trades/actions/place-trade.js`, () => {
       allowance: "0"
     };
     const store = mockStore(testState);
-    augur.rpc = jest.fn(() => {});
-    augur.rpc.getNetworkID = jest.fn(() => "4");
-    // checkAccountAllowance
 
     store.dispatch(
-      action.placeTrade({
+      placeTrade({
         marketId: "testYesNoMarketId",
         outcomeId: "1",
         tradeInProgress: {
@@ -85,12 +87,8 @@ describe(`modules/trades/actions/place-trade.js`, () => {
       })
     );
     const storeActions = store.getActions();
-    console.log(storeActions);
-    // note this is backwards... mock needs to be changed.
     const approvalAction = storeActions[0];
     expect(storeActions).toHaveLength(2);
-    // again, it should be first, but for now check 2nd.
-    // expect(storeActions[1]).toEqual(checkAllownaceActionObject);
     expect(typeof approvalAction).toBe("object");
     expect(approvalAction.type).toEqual("UPDATE_MODAL");
     expect(typeof approvalAction.data).toBe("object");
@@ -110,7 +108,7 @@ describe(`modules/trades/actions/place-trade.js`, () => {
     const store = mockStore(testState);
     // const action = require("./place-trade.js");
     store.dispatch(
-      action.placeTrade({
+      placeTrade({
         marketId: "testYesNoMarketId",
         outcomeId: "1",
         tradeInProgress: {
