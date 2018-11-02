@@ -443,6 +443,7 @@ div.ErrorField:focus {
   max-height: 25rem;
   max-width: 35rem;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 0.5rem 2rem;
   text-align: left;
   width: auto;
@@ -516,6 +517,10 @@ div.ErrorField:focus {
 @media @breakpoint-mobile-small {
   .ModalView__content {
     padding: 1rem;
+  }
+
+  .ModalView__content--taller {
+    justify-content: flex-start;
   }
 
   .ModalContainer > p,
