@@ -7,6 +7,8 @@ import { windowRef } from "utils/window-ref";
 export const loginWithMetaMask = (callback = logError) => dispatch => {
   const failure = () => callback("NOT_SIGNED_IN");
   const success = account => {
+    // make sure we actually have an account before succeeding...
+    if (!account) return failure();
     dispatch(useUnlockedAccount(account));
     callback(null, account);
   };
