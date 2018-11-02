@@ -14,8 +14,8 @@ describe("modules/trades/helpers/generate-trade.js", () => {
     state.orderBooks.testMarketId
   );
 
-  it("should generate trade object", () => {
-    assert.deepEqual(trade, {
+  test("should generate trade object", () => {
+    expect(trade).toEqual({
       limitPrice: "0.50",
       numShares: 5000,
       maxNumShares: {
@@ -83,7 +83,7 @@ describe("modules/trades/helpers/generate-trade.js", () => {
       totalSharesUpToOrder: trade.totalSharesUpToOrder,
       updateTradeOrder: trade.updateTradeOrder // self reference for function
     });
-    assert.isFunction(trade.updateTradeOrder);
+    expect(typeof trade.updateTradeOrder).toBe("function");
   });
 
   // FIXME

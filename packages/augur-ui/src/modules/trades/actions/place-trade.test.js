@@ -1,5 +1,5 @@
 import * as mocks from "test/mockStore";
-import { tradeTestState } from "test/trades/constants";
+import { tradeTestState } from "modules/trades/actions/testState";
 import { augur } from "services/augurjs";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 

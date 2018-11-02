@@ -1,4 +1,3 @@
-import reducer from "modules/trades/reducers/trades-in-progress";
 import {
   UPDATE_TRADE_IN_PROGRESS,
   CLEAR_TRADE_IN_PROGRESS
@@ -6,6 +5,7 @@ import {
 import { CLEAR_LOGIN_ACCOUNT } from "modules/auth/actions/update-login-account";
 
 describe(`modules/trades/reducers/trade-in-progress.js`, () => {
+  const reducer = require("modules/trades/reducers/trades-in-progress");
   const testState = {
     MarketId: {
       MarketId: "testStateMarketId",
@@ -21,21 +21,16 @@ describe(`modules/trades/reducers/trade-in-progress.js`, () => {
     }
   };
 
-  it(`should clear the login account `, () => {
+  test(`should clear the login account `, () => {
     const testAction = {
       type: CLEAR_LOGIN_ACCOUNT
     };
-
     const expectedState = {};
 
-    assert.deepEqual(
-      reducer(testState, testAction),
-      expectedState,
-      `reducer doesn't produce the expected state`
-    );
+    expect(reducer.default(testState, testAction)).toEqual(expectedState);
   });
 
-  it(`should be able to update a trade in progress`, () => {
+  test(`should be able to update a trade in progress`, () => {
     const testAction = {
       type: UPDATE_TRADE_IN_PROGRESS,
       data: {
@@ -62,14 +57,10 @@ describe(`modules/trades/reducers/trade-in-progress.js`, () => {
       }
     };
 
-    assert.deepEqual(
-      reducer(testState, testAction),
-      expectedState,
-      `reducer doesn't produce the expected state`
-    );
+    expect(reducer.default(testState, testAction)).toEqual(expectedState);
   });
 
-  it(`should be able to clear a trade in progress`, () => {
+  test(`should be able to clear a trade in progress`, () => {
     const testAction = {
       type: CLEAR_TRADE_IN_PROGRESS,
       data: { marketId: "MarketID2" }
@@ -85,10 +76,6 @@ describe(`modules/trades/reducers/trade-in-progress.js`, () => {
       MarketID2: {}
     };
 
-    assert.deepEqual(
-      reducer(testState, testAction),
-      expectedState,
-      `reducer doesn't produce the expected state`
-    );
+    expect(reducer.default(testState, testAction)).toEqual(expectedState);
   });
 });
