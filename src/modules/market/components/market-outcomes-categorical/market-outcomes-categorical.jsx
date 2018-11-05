@@ -15,17 +15,37 @@ const CategoricalOutcome = ({ className, outcome, isMobileSmall }) => (
       textOverflow: "ellipsis"
     }}
   >
-    <span className={Styles["MarketOutcomesCategorical__outcome-name"]}>
-      {outcome.name}
-    </span>
-    <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
-      {getValue(outcome, "lastPricePercent.full")}
-    </span>
-    <MarketOutcomeTradingIndicator
-      style={{ marginLeft: "10px" }}
-      outcome={outcome}
-      location="categorical"
-    />
+    {isMobileSmall ? (
+      <div className={Styles.MarketOutcomesCategorical__container}>
+        <div>
+          <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
+            {getValue(outcome, "lastPricePercent.full")}
+          </span>
+          <MarketOutcomeTradingIndicator
+            style={{ marginLeft: "10px" }}
+            outcome={outcome}
+            location="categorical"
+          />
+        </div>
+        <span className={Styles["MarketOutcomesCategorical__outcome-name"]}>
+          {outcome.name}
+        </span>
+      </div>
+    ) : (
+      <div className={Styles.MarketOutcomesCategorical__container}>
+        <span className={Styles["MarketOutcomesCategorical__outcome-name"]}>
+          {outcome.name}
+        </span>
+        <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
+          {getValue(outcome, "lastPricePercent.full")}
+        </span>
+        <MarketOutcomeTradingIndicator
+          style={{ marginLeft: "10px" }}
+          outcome={outcome}
+          location="categorical"
+        />
+      </div>
+    )}
   </div>
 );
 
@@ -56,7 +76,7 @@ class MarketOutcomesCategorical extends Component {
     const { outcomes, isMobileSmall } = this.props;
     const totalOutcomes = outcomes.length;
 
-    const numOutcomesToShow = isMobileSmall ? 4 : 3;
+    const numOutcomesToShow = isMobileSmall ? 2 : 3;
     const displayShowMore = totalOutcomes > numOutcomesToShow;
     const showMoreText = this.state.isOpen
       ? `- ${totalOutcomes - numOutcomesToShow} less`
