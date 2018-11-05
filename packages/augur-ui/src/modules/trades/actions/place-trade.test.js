@@ -11,22 +11,21 @@ const checkAllownaceActionObject = {
 };
 jest.mock("services/augurjs");
 jest.mock("modules/auth/actions/approve-account");
-beforeEach(() => {
-  augur.rpc = jest.fn(() => {});
-  augur.rpc.getNetworkID = jest.fn(() => "4");
-  augur.trading = jest.fn(() => {});
-  augur.trading.calculateTradeCost = jest.fn();
-  augur.trading.calculateTradeCost.mockReturnValue({
-    onChainAmount: "1"
-  });
-  augur.trading.placeTrade = jest.fn(() => {});
-  checkAccountAllowance.mockImplementation(onSent => {
-    onSent(null, "0");
-    return checkAllownaceActionObject;
-  });
-});
 
 describe(`modules/trades/actions/place-trade.js`, () => {
+  beforeEach(() => {
+    augur.rpc.getNetworkID.mockImplementation(() => "4");
+    augur.trading.calculateTradeCost.mockImplementation();
+    augur.trading.calculateTradeCost.mockReturnValue({
+      onChainAmount: "1"
+    });
+    augur.trading.placeTrade.mockImplementation(() => {});
+    checkAccountAllowance.mockImplementation(onSent => {
+      onSent(null, "0");
+      return checkAllownaceActionObject;
+    });
+  });
+
   test("should handle a null/undefined outcomeId", () => {
     const { state, mockStore } = mocks.default;
     const testState = { ...state, ...tradeTestState };
