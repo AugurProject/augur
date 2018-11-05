@@ -389,15 +389,22 @@ function determineDrawParams({
 
   const bnMax = createBigNumber(max);
   const bnMin = createBigNumber(min);
-  const buffer = bnMax.minus(bnMin).times(".10");
-
-  const maxPrice = bnMax.plus(buffer).toNumber();
-  const minPrice = bnMin.minus(buffer).toNumber();
+  const priceRange = bnMax.minus(bnMin);
+  const buffer = priceRange.times(".10");
+  const marketPriceRange = marketMax.minus(marketMin).dividedBy(2);
+  const ltHalfRange = marketPriceRange.gt(priceRange);
+  const maxPrice = ltHalfRange
+    ? bnMax.plus(marketPriceRange)
+    : bnMax.plus(buffer);
+  const minPrice = ltHalfRange
+    ? bnMin.minus(marketPriceRange)
+    : bnMin.minus(buffer);
 
   let yDomain = [
-    maxPrice > marketMax ? max : maxPrice,
-    minPrice < marketMin ? min : minPrice
+    (maxPrice.gt(marketMax) ? marketMax : maxPrice).toNumber(),
+    (minPrice.lt(marketMin) ? marketMin : minPrice).toNumber()
   ];
+
   // common case with low volume
   if (yDomain[0] === yDomain[1]) {
     if (yDomain[0] === 0) {
@@ -413,6 +420,7 @@ function determineDrawParams({
       ];
     }
   }
+
   // sigment y into 10 to show prices
   const boundDiff = createBigNumber(yDomain[0])
     .minus(createBigNumber(yDomain[1]))
