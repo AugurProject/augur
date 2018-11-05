@@ -10,7 +10,7 @@ import {
 
 describe("modules/app/actions/update-app-status.js", () => {
   const t1 = {
-    description: "should return the expected object for updating isAnimating",
+    description: "Returns the expected object for updating isAnimating",
     statusKey: IS_ANIMATING,
     value: true,
     assertions: action => {
@@ -25,7 +25,7 @@ describe("modules/app/actions/update-app-status.js", () => {
   };
 
   const t2 = {
-    description: "should return the expected object for updating isMobile",
+    description: "Returns the expected object for updating isMobile",
     statusKey: IS_MOBILE,
     value: true,
     assertions: action => {
@@ -40,7 +40,7 @@ describe("modules/app/actions/update-app-status.js", () => {
   };
 
   const t3 = {
-    description: "should return the expected object for updating isMobileSmall",
+    description: "Returns the expected object for updating isMobileSmall",
     statusKey: IS_MOBILE_SMALL,
     value: true,
     assertions: action => {
@@ -55,8 +55,7 @@ describe("modules/app/actions/update-app-status.js", () => {
   };
 
   const t4 = {
-    description:
-      "should return the expected object for updating hasLoadedMarkets",
+    description: "Returns the expected object for updating hasLoadedMarkets",
     statusKey: HAS_LOADED_MARKETS,
     value: true,
     assertions: action => {
@@ -71,8 +70,7 @@ describe("modules/app/actions/update-app-status.js", () => {
   };
 
   const t5 = {
-    description:
-      "should return the expected object for updating transactionsLoading",
+    description: "Returns the expected object for updating transactionsLoading",
     statusKey: TRANSACTIONS_LOADING,
     value: true,
     assertions: action => {
