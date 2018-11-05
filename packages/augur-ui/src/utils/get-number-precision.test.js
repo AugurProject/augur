@@ -29,7 +29,6 @@ describe("utils/format-number.js", () => {
     },
     {
       value: 0.1,
-
       defaultValue: 3,
       result: 1
     },

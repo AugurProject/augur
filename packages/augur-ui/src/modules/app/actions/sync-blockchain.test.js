@@ -9,20 +9,22 @@ import * as updateAssetsModule from "modules/auth/actions/update-assets";
 import * as loadGadPriceInfoModule from "modules/app/actions/load-gas-price-info";
 
 jest.mock("services/augurjs", () => ({
-  rpc: {
-    getCurrentBlock: () => ({
-      number: 10000,
-      timestamp: 4886718345
-    }),
-    block: {
-      number: 10000,
-      timestamp: "0x123456789"
-    }
-  },
-  api: {
-    Controller: {
-      getTimestamp: callback => {
-        callback(null, 42);
+  augur: {
+    rpc: {
+      getCurrentBlock: () => ({
+        number: 10000,
+        timestamp: 4886718345
+      }),
+      block: {
+        number: 10000,
+        timestamp: "0x123456789"
+      }
+    },
+    api: {
+      Controller: {
+        getTimestamp: callback => {
+          callback(null, 42);
+        }
       }
     }
   }
