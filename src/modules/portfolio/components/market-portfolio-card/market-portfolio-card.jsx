@@ -292,9 +292,10 @@ export default class MarketPortfolioCard extends Component {
             )}
             <div className={PositionStyles.MarketPositionsList__table}>
               {tableOpen.openOrders &&
-                (myPositionOutcomes || []).filter(
+                ((myPositionOutcomes || []).filter(
                   outcome => outcome.userOpenOrders.length > 0
-                ).length > 0 && (
+                ).length > 0 ||
+                  orphanedOrders.length > 0) && (
                   <ul
                     className={classNames(
                       PositionStyles["MarketPositionsList__table-header"],
