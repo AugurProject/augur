@@ -33,11 +33,6 @@ describe("utils/format-number.js", () => {
       result: 1
     },
     {
-      value: 1.0,
-      defaultValue: 3,
-      result: 1
-    },
-    {
       value: 1,
       defaultValue: 3,
       result: 0
