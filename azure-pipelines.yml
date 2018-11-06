@@ -26,7 +26,7 @@ jobs:
         inputs:
           versionSpec: '9.x'
       - bash: |
-          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.BuildId));
+          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
             do
               echo $f | grep -q augur-core && echo "##vso[task.setVariable variable=AUGUR_CORE]true";
             done
