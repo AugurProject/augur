@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */ // needed for mobile safari
+
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
@@ -80,8 +82,6 @@ class InputDropdown extends Component {
         }}
         className={classNames(Styles.InputDropdown, className)}
         onClick={this.toggleList}
-        role="listbox"
-        tabIndex="-1"
         onKeyPress={value => this.onKeyPress(value)}
       >
         <span
