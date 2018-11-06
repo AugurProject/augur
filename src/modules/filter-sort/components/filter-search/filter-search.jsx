@@ -15,11 +15,13 @@ export default class FilterSearch extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    hasLoadedMarkets: PropTypes.bool
+    hasLoadedMarkets: PropTypes.bool,
+    isMobileSmall: PropTypes.bool
   };
 
   static defaultProps = {
-    hasLoadedMarkets: false
+    hasLoadedMarkets: false,
+    isMobileSmall: false
   };
 
   constructor(props) {
@@ -59,7 +61,8 @@ export default class FilterSearch extends Component {
   }
 
   onFocus() {
-    this.setState({ placeholder: "", width: "400px" });
+    const width = this.props.isMobileSmall ? "85vw" : "400px";
+    this.setState({ placeholder: "", width });
   }
 
   onBlur() {
