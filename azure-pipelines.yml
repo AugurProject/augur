@@ -27,8 +27,7 @@ jobs:
           versionSpec: '9.x'
       - bash: |
           set -euxo pipefail
-          git log --name-status HEAD^..HEAD
-          for f in $(git diff-tree --no-commit-id --name-only -r $(git rev-parse HEAD));
+          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
             do
               echo $f | grep augur-core && echo "##vso[task.setVariable variable=AUGUR_CORE]true";
             done
