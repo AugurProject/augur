@@ -158,11 +158,14 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
         augurNetVersionSpy.mockReset();
       });
 
-      store.dispatch(
-        verifyMatchingNetworkIds((err, expectedNetworkId) => {
-          t.assertions(err, expectedNetworkId);
-        })
-      );
+      test(t.description, done => {
+        store.dispatch(
+          verifyMatchingNetworkIds((err, expectedNetworkId) => {
+            t.assertions(err, expectedNetworkId);
+          })
+        );
+        done();
+      });
     }
   );
 });
