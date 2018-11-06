@@ -12,6 +12,7 @@ trigger:
     - master
     - azure-pipelines
     - monorepo-integration
+    - petong/monorepo-conditonal
 
 jobs:
   - job: Build_Core_Docker
