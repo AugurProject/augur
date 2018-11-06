@@ -28,6 +28,8 @@
 
 @step-3: 575px; // Decreased Height
 
+@step-4: 320px; // extra small mobile: iPhone 5/se
+
 //		Rules
 @breakpoint-2: ~"all and (min-width: @{step-1}) and (max-width: @{step-2})";
 @breakpoint-2-0: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-0})";
@@ -60,5 +62,7 @@
 @breakpoint-mobile-medium: ~"all and (max-width: @{step-1})"; // 600
 //	Mobile (up to step-2-2)
 @breakpoint-mobile-small: ~"all and (max-width: @{step-2-3})"; // 450
+// Mobile (up to step-4)
+@breakpoint-mobile-extra-small: ~"all and (max-width: @{step-4})"; // 320
 // Mobile (up-to-step-3)
 @breakpoint-mobile-small-height: ~"all and (max-height: @{step-3})";

@@ -32,6 +32,10 @@
   display: flex;
   letter-spacing: 0.05em;
   margin: 0 1.5rem;
+
+  @media @breakpoint-mobile-extra-small {
+    margin: 0 0.5rem;
+  }
 }
 
 .TopBar__leftBorder {
@@ -42,12 +46,12 @@
   justify-content: flex-end;
 }
 
-.TopBar__notifications {
+div.TopBar__notifications {
   color: @color-white;
   cursor: pointer;
   display: flex;
   justify-content: flex-end;
-  width: unset !important;
+  width: unset;
 
   &:hover {
     background-color: @color-lightpurple;
@@ -74,6 +78,10 @@
   border-left: 0.0625rem solid @color-lightpurple;
   display: flex;
   padding-left: 1.8rem;
+
+  @media @breakpoint-mobile-extra-small {
+    padding-left: 1rem;
+  }
 }
 
 .TopBar__notification-icon {
