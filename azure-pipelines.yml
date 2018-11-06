@@ -24,6 +24,11 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: '9.x'
+      - bash: |
+          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.BuildId));
+            do
+              echo $f | grep -q augur-core && echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+            done
       - script: |
           set -euxo pipefail
           which node
@@ -33,6 +38,7 @@ jobs:
           yarn workspace augur-core docker:build;
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
           docker push $CORE_IMAGE_BUILD
+        condition: eq(variables.AUGUR_CORE, 'true')
 
   - job: Test_Augur_Core
     dependsOn: Build_Core_Docker
@@ -73,6 +79,11 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'
+      - bash: |
+          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.BuildId));
+            do
+              echo $f | grep -q augur-core && echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+            done
       - script: |
           set -euxo pipefail
           which node
@@ -93,6 +104,7 @@ jobs:
           else
             yarn workspace augur-core docker:run:test:unit -- $TESTS;
           fi
+        condition: eq(variables.AUGUR_CORE, 'true')
 
   - job: Test_Augur_UI_and_Node
     displayName: 'Test augur UI and augur-node'
