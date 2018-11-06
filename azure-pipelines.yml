@@ -27,6 +27,7 @@ jobs:
           versionSpec: '9.x'
       - bash: |
           set -euxo pipefail
+          echo "git SHA - $(Build.SourceVersion)"
           for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
             do
               echo $f | grep augur-core && echo "##vso[task.setVariable variable=AUGUR_CORE]true";
@@ -46,6 +47,14 @@ jobs:
     dependsOn: Build_Core_Docker
     pool:
       vmImage: 'Ubuntu 16.04'
+    - bash: |
+        set -euxo pipefail
+        echo "git SHA - $(Build.SourceVersion)"
+        for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
+          do
+            echo $f | grep -q augur-core && echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+          done
+    condition: eq(variables.AUGUR_CORE, 'true')
     strategy:
       maxParallel: 10
       matrix:
@@ -81,11 +90,6 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'
-      - bash: |
-          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.BuildId));
-            do
-              echo $f | grep -q augur-core && echo "##vso[task.setVariable variable=AUGUR_CORE]true";
-            done
       - script: |
           set -euxo pipefail
           which node
