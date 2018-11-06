@@ -25,16 +25,19 @@
 
 .MarketCard__leftstats {
   bottom: 0;
+  display: flex;
   margin-left: 0.5rem;
   position: absolute;
 
   span {
-    vertical-align: bottom;
+    align-items: flex-end;
+    display: flex;
   }
 }
 
 .MarketCard__stat {
-  display: inline-block;
+  display: flex;
+  flex-direction: row;
 }
 
 .MarketCard__statlabel {
@@ -51,19 +54,17 @@
 .MarketCard__statunit {
   color: @color-purple;
   font-size: 0.875rem;
-  margin-right: 4.375rem;
+  margin-right: 3.375rem;
   text-transform: uppercase;
-}
 
-.MarketCard__statunit,
-.MarketCard__statvalue,
-.MarketCard__statlabel {
-  display: inline-block;
+  @media @breakpoint-1-0 {
+    margin-right: 10%;
+  }
 }
 
 .MarketCard__expiration {
   float: right;
-  margin-right: 3.75rem;
+  margin-right: 1%;
   text-align: right;
 }
 
@@ -236,9 +237,15 @@
     justify-content: space-between;
     margin: 0;
     position: relative;
+
+    span {
+      display: unset;
+      vertical-align: bottom;
+    }
   }
 
   .MarketCard__stat {
+    display: inline-block;
     height: 2.375rem;
     min-width: 5rem;
     overflow: hidden;

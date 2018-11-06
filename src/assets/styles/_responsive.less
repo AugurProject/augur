@@ -17,6 +17,7 @@
 //	STEP 2
 // 	Medium layout @ > 600px && <= 1200px
 //		Steps
+@step-1-1: 1319px;
 @step-2: 1200px;
 //		Sub-Steps
 @step-2-0: 1152px;
@@ -31,6 +32,7 @@
 @step-4: 320px; // extra small mobile: iPhone 5/se
 
 //		Rules
+@breakpoint-1-0: ~"all and (min-width: @{step-1}) and (max-width: @{step-1-1})";
 @breakpoint-2: ~"all and (min-width: @{step-1}) and (max-width: @{step-2})";
 @breakpoint-2-0: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-0})";
 @breakpoint-2-1: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-1})";

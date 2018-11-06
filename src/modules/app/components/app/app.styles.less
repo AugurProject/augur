@@ -37,10 +37,12 @@ h6 {
   /* sidebar width */
   grid-template-columns: @top-bar-height auto;
   height: 100%;
+  min-width: @step-2;
 
   @media @breakpoint-mobile {
     /* disable sidebar mobile grid width */
     grid-template-columns: 0 auto;
+    min-width: unset;
   }
 }
 
