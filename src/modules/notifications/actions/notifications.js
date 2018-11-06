@@ -2,6 +2,7 @@ import store from "src/store";
 import { augur } from "services/augurjs";
 import * as notificationLevels from "modules/notifications/constants/notifications";
 import setNotificationText from "modules/notifications/actions/set-notification-text";
+import { createBigNumber } from "utils/create-big-number";
 
 export const ADD_NOTIFICATION = "ADD_NOTIFICATION";
 export const REMOVE_NOTIFICATION = "REMOVE_NOTIFICATION";
@@ -71,6 +72,13 @@ export function updateNotification(id, notification) {
         if (notifications[index].id === notification.id) {
           notification.params = notifications[index].params;
           notification.to = notifications[index].to;
+          if (notification.log.amount) {
+            notification.amount = createBigNumber(
+              notifications[index].amount || 0
+            )
+              .plus(createBigNumber(notification.log.amount))
+              .toFixed();
+          }
         }
       }
     }
