@@ -1,25 +1,31 @@
-import Augur from "augur.js";
+import { Augur, FormattedEventLog } from "augur.js";
 import * as _ from "lodash";
 import * as Knex from "knex";
 import { BlockDetail, ErrorCallback } from "../types";
-import { makeLogListener } from "./make-log-listener";
-import { processBlock, processBlockRemoval } from "./process-block";
 import { logProcessors } from "./log-processors";
+import { BlockAndLogsQueue } from "./block-and-logs-queue";
+import { BlockDirection, processBlockAndLogs } from "./process-block";
 
-export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: number, callback: ErrorCallback): void {
-  const eventCallbacks = _.mapValues(logProcessors, (contractEvents, contractName) => {
-    return _.mapValues(contractEvents, (eventFunctions, eventName) => makeLogListener(augur, contractName, eventName, callback));
+export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: number, callback: ErrorCallback) {
+  const blockAndLogsQueue = new BlockAndLogsQueue(async (direction: BlockDirection, block: BlockDetail, logs: Array<FormattedEventLog>) => {
+    return processBlockAndLogs(db, augur, direction, block, logs);
+  });
+  const eventsToSubscribe = _.mapValues(logProcessors, (contractEvents) => {
+    return _.keys(contractEvents);
   });
   augur.events.startBlockchainEventListeners(
-    eventCallbacks,
+    eventsToSubscribe,
     highestBlockNumber,
+    blockAndLogsQueue.acceptAddLogs,
+    blockAndLogsQueue.acceptRemoveLogs,
     (err: Error) => {
       if (err) return callback(err);
       augur.events.startBlockListeners({
-        onAdded: (block: BlockDetail): void => processBlock(db, augur, block, callback),
-        onRemoved: (block: BlockDetail): void => processBlockRemoval(db, block, callback),
+        onAdded: blockAndLogsQueue.acceptAddBlock,
+        onRemoved: blockAndLogsQueue.acceptRemoveBlock,
       });
       callback(null);
     },
   );
+  return blockAndLogsQueue;
 }
