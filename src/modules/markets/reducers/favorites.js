@@ -7,15 +7,15 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
 
-export default function(favorites = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(favorites = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_FAVORITES:
       return {
         ...favorites,
-        ...action.data.favorites
+        ...data.favorites
       };
     case TOGGLE_FAVORITE: {
-      const { marketId } = action.data;
+      const { marketId } = data;
       const newFavorites = {
         ...favorites
       };

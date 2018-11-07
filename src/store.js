@@ -8,6 +8,7 @@ import thunk from "redux-thunk";
 import { createReducer } from "src/reducers";
 import { windowRef } from "src/utils/window-ref";
 import { augur } from "services/augurjs";
+import { processFavorites } from "src/modules/markets/helpers/favorites-processor";
 
 // console log middleware
 const consoleLog = store => next => action => {
@@ -39,22 +40,28 @@ const localStorageMiddleware = store => next => action => {
   } = state;
   if (windowRef.localStorage && windowRef.localStorage.setItem) {
     const { localStorage } = windowRef;
+    const { augurNodeNetworkId } = connection;
+    const networkIdToUse = augurNodeNetworkId || augur.rpc.getNetworkID();
+    const universeIdToUse =
+      env.universe || augur.contracts.addresses[networkIdToUse].Universe;
     let storedAccountData = JSON.parse(localStorage.getItem(address));
     if (!storedAccountData || !storedAccountData.selectedUniverse) {
-      const { augurNodeNetworkId } = connection;
-      const networkIdToUse = augurNodeNetworkId || augur.rpc.getNetworkID();
-      const defaultUniverseId =
-        env.universe || augur.contracts.addresses[networkIdToUse].Universe;
       storedAccountData = {
-        selectedUniverse: { [networkIdToUse]: defaultUniverseId }
+        selectedUniverse: { [networkIdToUse]: universeIdToUse }
       };
     }
+    const processedFavorites = processFavorites(
+      favorites,
+      storedAccountData.favorites,
+      networkIdToUse,
+      universeIdToUse
+    );
     localStorage.setItem(
       address,
       JSON.stringify({
         pendingLiquidityOrders,
         scalarMarketsShareDenomination,
-        favorites,
+        favorites: processedFavorites,
         reports,
         accountName,
         notifications,
