@@ -1,10 +1,10 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback } from "../../../types";
+import { FormattedEventLog} from "../../../types";
 import { augurEmitter } from "../../../events";
 import { SubscriptionEventNames } from "../../../constants";
 
-export function processApprovalLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+export async function processApprovalLog(db: Knex, augur: Augur, log: FormattedEventLog) {
   // TODO divide value by numTicks for share tokens transfer logs
   const tokenApprovalDataToInsert = {
     transactionHash: log.transactionHash,
@@ -17,11 +17,11 @@ export function processApprovalLog(db: Knex, augur: Augur, log: FormattedEventLo
   };
   const eventName = log.eventName as keyof typeof SubscriptionEventNames;
   augurEmitter.emit(SubscriptionEventNames[eventName], Object.assign({}, log, tokenApprovalDataToInsert));
-  db.insert(tokenApprovalDataToInsert).into("approvals").asCallback(callback);
+  return db.insert(tokenApprovalDataToInsert).into("approvals");
 }
 
-export function processApprovalLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+export async function processApprovalLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog) {
   const eventName = log.eventName as keyof typeof SubscriptionEventNames;
   augurEmitter.emit(SubscriptionEventNames[eventName], log);
-  db.from("approvals").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback(callback);
+  return db.from("approvals").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
 }

@@ -3,7 +3,7 @@ import * as Knex from "knex";
 import { each } from "bluebird";
 import { augurEmitter } from "../events";
 import { BlockDetail, BlocksRow, ErrorCallback, MarketsContractAddressRow, ReportingState, Address, FeeWindowState } from "../types";
-import { updateActiveFeeWindows, updateMarketStatePromise } from "./log-processors/database";
+import { updateActiveFeeWindows, updateMarketState } from "./log-processors/database";
 import { processQueue, logQueueProcess } from "./process-queue";
 import { getMarketsWithReportingState } from "../server/getters/database";
 import { logger } from "../utils/logger";
@@ -21,18 +21,18 @@ export function getCurrentTime(): number {
   return getOverrideTimestamp() || blockHeadTimestamp;
 }
 
-export function setOverrideTimestamp(db: Knex, overrideTimestamp: number, callback: ErrorCallback): void {
+export async function setOverrideTimestamp(db: Knex, overrideTimestamp: number) {
   overrideTimestamps.push(overrideTimestamp);
-  db("network_id").update("overrideTimestamp", overrideTimestamp).asCallback(callback);
+  return db("network_id").update("overrideTimestamp", overrideTimestamp);
 }
 
-export function removeOverrideTimestamp(db: Knex, overrideTimestamp: number, callback: ErrorCallback): void {
+export async function removeOverrideTimestamp(db: Knex, overrideTimestamp: number) {
   const removedTimestamp = overrideTimestamps.pop();
   const priorTimestamp = getOverrideTimestamp();
   if (removedTimestamp !== overrideTimestamp || priorTimestamp == null) {
-    return callback(new Error(`Timestamp removal failed ${removedTimestamp} ${overrideTimestamp}`));
+    throw new Error(`Timestamp removal failed ${removedTimestamp} ${overrideTimestamp}`);
   }
-  db("network_id").update("overrideTimestamp", priorTimestamp).asCallback(callback);
+  return db("network_id").update("overrideTimestamp", priorTimestamp);
 }
 
 export function getOverrideTimestamp(): number|null {
@@ -118,7 +118,7 @@ async function advanceMarketReachingEndTime(db: Knex, augur: Augur, blockNumber:
   designatedDisputeQuery.where("reportingState", augur.constants.REPORTING_STATE.PRE_REPORTING).where("endTime", "<", timestamp);
   const designatedDisputeMarketIds: Array<MarketsContractAddressRow> = await designatedDisputeQuery;
   await each(designatedDisputeMarketIds, async (marketIdRow) => {
-    await updateMarketStatePromise(db, marketIdRow.marketId, blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_REPORTING);
+    await updateMarketState(db, marketIdRow.marketId, blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_REPORTING);
     augurEmitter.emit(SubscriptionEventNames.MarketState, {
       universe,
       marketId: marketIdRow.marketId,
@@ -135,7 +135,7 @@ async function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, bloc
     .where("reportingState", augur.constants.REPORTING_STATE.DESIGNATED_REPORTING);
   const marketAddressRows: Array<MarketsContractAddressRow> = await marketsMissingDesignatedReport;
   await each(marketAddressRows, async (marketIdRow) => {
-    await updateMarketStatePromise(db, marketIdRow.marketId, blockNumber, augur.constants.REPORTING_STATE.OPEN_REPORTING);
+    await updateMarketState(db, marketIdRow.marketId, blockNumber, augur.constants.REPORTING_STATE.OPEN_REPORTING);
     augurEmitter.emit(SubscriptionEventNames.MarketState, {
       universe,
       marketId: marketIdRow.marketId,
@@ -153,7 +153,7 @@ async function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, bloc
     .whereNot("markets.forking", 1);
 
   await each(marketIds, async (marketIdRow) => {
-    await updateMarketStatePromise(db, marketIdRow.marketId, blockNumber, ReportingState.AWAITING_FINALIZATION);
+    await updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.AWAITING_FINALIZATION);
     augurEmitter.emit(SubscriptionEventNames.MarketState, {
       universe: marketIdRow.universe,
       marketId: marketIdRow.marketId,
@@ -187,7 +187,7 @@ async function advanceMarketsToCrowdsourcingDispute(db: Knex, augur: Augur, bloc
       marketId: marketIdRow.marketId,
       reportingState: ReportingState.CROWDSOURCING_DISPUTE,
     });
-    return updateMarketStatePromise(db, marketIdRow.marketId, blockNumber, ReportingState.CROWDSOURCING_DISPUTE);
+    return updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.CROWDSOURCING_DISPUTE);
   });
 }
 

@@ -1,15 +1,14 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { series } from "async";
 import { BigNumber } from "bignumber.js";
-import { FormattedEventLog, ErrorCallback, AsyncCallback } from "../../types";
+import { FormattedEventLog} from "../../types";
 import { augurEmitter } from "../../events";
 import { increaseTokenBalance } from "./token/increase-token-balance";
 import { decreaseTokenBalance } from "./token/decrease-token-balance";
 import { SubscriptionEventNames } from "../../constants";
 import { updateProfitLossRemoveRow } from "./profit-loss/update-profit-loss";
 
-export function processTokensTransferredLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+export async function processTokensTransferredLog(db: Knex, augur: Augur, log: FormattedEventLog) {
   const token = log.token || log.address;
   const value = new BigNumber(log.value || log.amount, 10);
   const tokenTransferDataToInsert = {
@@ -21,26 +20,20 @@ export function processTokensTransferredLog(db: Knex, augur: Augur, log: Formatt
     blockNumber: log.blockNumber,
     token,
   };
-  db.insert(tokenTransferDataToInsert).into("transfers").asCallback((err: Error|null): void => {
-    if (err) return callback(err);
-    augurEmitter.emit(SubscriptionEventNames.TokensTransferred, Object.assign({}, log, tokenTransferDataToInsert));
-    series([
-      (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.to, value, log, next),
-      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.from, value, log, next),
-    ], callback);
-  });
+
+  await db.insert(tokenTransferDataToInsert).into("transfers");
+  augurEmitter.emit(SubscriptionEventNames.TokensTransferred, Object.assign({}, log, tokenTransferDataToInsert));
+
+  await increaseTokenBalance(db, augur, token, log.to, value, log);
+  await decreaseTokenBalance(db, augur, token, log.from, value, log);
 }
 
-export function processTokensTransferredLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  db.from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err: Error|null): void => {
-    if (err) return callback(err);
-    augurEmitter.emit(SubscriptionEventNames.TokensTransferred, log);
-    const token = log.token || log.address;
-    const value = new BigNumber(log.value || log.amount, 10);
-    series([
-      (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.from, value, log, next),
-      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.to, value, log, next),
-      (next: AsyncCallback): void => updateProfitLossRemoveRow(db, log.transactionHash, next),
-    ], callback);
-  });
+export async function processTokensTransferredLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog) {
+  await db.from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
+  augurEmitter.emit(SubscriptionEventNames.TokensTransferred, log);
+  const token = log.token || log.address;
+  const value = new BigNumber(log.value || log.amount, 10);
+  await increaseTokenBalance(db, augur, token, log.from, value, log);
+  await decreaseTokenBalance(db, augur, token, log.to, value, log);
+  await updateProfitLossRemoveRow(db, log.transactionHash)
 }

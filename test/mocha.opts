@@ -1,4 +1,0 @@
---require ts-node/register
---require ./test/unit/test.bootstrap
---recursive
---timeout 5000

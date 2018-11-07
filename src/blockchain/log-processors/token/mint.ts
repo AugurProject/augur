@@ -1,43 +1,34 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
-import { series } from "async";
-import { FormattedEventLog, ErrorCallback, AsyncCallback } from "../../../types";
+import { FormattedEventLog} from "../../../types";
 import { increaseTokenBalance } from "./increase-token-balance";
 import { increaseTokenSupply } from "./increase-token-supply";
 import { decreaseTokenBalance } from "./decrease-token-balance";
 import { decreaseTokenSupply } from "./decrease-token-supply";
 import { updateProfitLossRemoveRow } from "../profit-loss/update-profit-loss";
 
-export function processMintLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+export async function processMintLog(db: Knex, augur: Augur, log: FormattedEventLog) {
   const value = new BigNumber(log.amount || log.value);
   const token = log.token || log.address;
-  db.insert({
+  await db.insert({
     transactionHash: log.transactionHash,
-    logIndex:        log.logIndex,
-    sender:          null,
-    recipient:       log.target,
-    value:           value.toString(),
-    blockNumber:     log.blockNumber,
+    logIndex: log.logIndex,
+    sender: null,
+    recipient: log.target,
+    value: value.toString(),
+    blockNumber: log.blockNumber,
     token,
-  }).into("transfers").asCallback((err: Error|null): void => {
-    if (err) return callback(err);
-    series([
-      (next: AsyncCallback): void => increaseTokenSupply(db, augur, token, value, next),
-      (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.target, value, log, next),
-    ], callback);
-  });
+  }).into("transfers");
+  await increaseTokenSupply(db, augur, token, value);
+  await increaseTokenBalance(db, augur, token, log.target, value, log);
 }
 
-export function processMintLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+export async function processMintLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog) {
   const value = new BigNumber(log.amount || log.value);
   const token = log.token || log.address;
-  db.from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err: Error|null): void => {
-    if (err) return callback(err);
-    series([
-      (next: AsyncCallback): void => decreaseTokenSupply(db, augur, token, value, next),
-      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.target, value, log, next),
-      (next: AsyncCallback): void => updateProfitLossRemoveRow(db, log.transactionHash, next),
-    ], callback);
-  });
+  await db.from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
+  await decreaseTokenSupply(db, augur, token, value);
+  await decreaseTokenBalance(db, augur, token, log.target, value, log);
+  await updateProfitLossRemoveRow(db, log.transactionHash);
 }

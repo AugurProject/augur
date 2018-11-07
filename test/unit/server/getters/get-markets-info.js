@@ -1,24 +1,24 @@
-"use strict";
-
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-markets-info", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        if (err) assert.fail(err);
-        t.method = "getMarketsInfo";
-        dispatchJsonRpcRequest(db, t, null, (err, marketsInfo) => {
-          t.assertions(err, marketsInfo);
-          db.destroy();
-          done();
-        });
-      });
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
+  const runTest = (t) => {
+    test(t.description, async () => {
+      t.method = "getMarketsInfo";
+      const marketsInfo = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(marketsInfo);
     });
   };
-  test({
+  runTest({
     description: "get markets by specifying market IDs",
     params: {
       marketIds: [
@@ -26,9 +26,8 @@ describe("server/getters/get-markets-info", () => {
         "0x0000000000000000000000000000000000000002",
       ],
     },
-    assertions: (err, marketsInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(marketsInfo, [
+    assertions: (marketsInfo) => {
+      expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000001",
           universe: "0x000000000000000000000000000000000000000b",
@@ -166,11 +165,10 @@ describe("server/getters/get-markets-info", () => {
             price: "0.5",
             description: "outcome 1",
           }],
-        }]
-      );
+        }]);
     },
   });
-  test({
+  runTest({
     description: "get markets by specifying market IDs, with missing market",
     params: {
       marketIds: [
@@ -179,9 +177,8 @@ describe("server/getters/get-markets-info", () => {
         "0x0000000000000000000000000000000000000002",
       ],
     },
-    assertions: (err, marketsInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(marketsInfo, [
+    assertions: (marketsInfo) => {
+      expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000001",
           universe: "0x000000000000000000000000000000000000000b",
@@ -320,11 +317,10 @@ describe("server/getters/get-markets-info", () => {
             price: "0.5",
             description: "outcome 1",
           }],
-        }]
-      );
+        }]);
     },
   });
-  test({
+  runTest({
     description: "get markets by specifying market IDs, reversed",
     params: {
       marketIds: [
@@ -332,9 +328,8 @@ describe("server/getters/get-markets-info", () => {
         "0x0000000000000000000000000000000000000001",
       ],
     },
-    assertions: (err, marketsInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(marketsInfo, [
+    assertions: (marketsInfo) => {
+      expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000002",
           universe: "0x000000000000000000000000000000000000000b",
@@ -472,20 +467,18 @@ describe("server/getters/get-markets-info", () => {
             price: "0.125",
             description: "outcome 7",
           }],
-        }]
-      );
+        }]);
     },
   });
-  test({
+  runTest({
     description: "get markets by specifying market IDs with payout",
     params: {
       marketIds: [
         "0x0000000000000000000000000000000000000019",
       ],
     },
-    assertions: (err, marketsInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(marketsInfo, [
+    assertions: (marketsInfo) => {
+      expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000019",
           universe: "0x000000000000000000000000000000000000000b",
@@ -571,39 +564,35 @@ describe("server/getters/get-markets-info", () => {
               price: "0.125",
               description: "outcome 4",
             }],
-        }]
-      );
+        }]);
     },
   });
-  test({
+  runTest({
     description: "An array with a null value",
     params: {
       marketIds: [undefined],
     },
-    assertions: (err, marketInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(marketInfo, [null]);
+    assertions: (marketInfo) => {
+      expect(marketInfo).toEqual([null]);
     },
   });
-  test({
+  runTest({
     description: "market does not exist",
     params: {
       marketIds: ["0x1010101010101010101010101010101010101010"],
     },
-    assertions: (err, marketInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(marketInfo, [null]);
+    assertions: (marketInfo) => {
+      expect(marketInfo).toEqual([null]);
     },
   });
-  test({
+  runTest({
     description: "Too many marketIds",
     params: {
       marketIds: Array.from({ length: 1000 }, () => "0x0000000000000000000000000000000000000001"),
     },
-    assertions: (err, marketInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(marketInfo, Array.from({ length: 1000 }, () => {
-        return         {
+    assertions: (marketInfo) => {
+      expect(marketInfo).toEqual(Array.from({ length: 1000 }, () => {
+        return {
           id: "0x0000000000000000000000000000000000000001",
           universe: "0x000000000000000000000000000000000000000b",
           marketType: "categorical",
@@ -690,14 +679,13 @@ describe("server/getters/get-markets-info", () => {
       }));
     },
   });
-  test({
+  runTest({
     description: "Empty marketIds array",
     params: {
       marketIds: [],
     },
-    assertions: (err, marketInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(marketInfo, []);
+    assertions: (marketInfo) => {
+      expect(marketInfo).toEqual([]);
     },
   });
 });

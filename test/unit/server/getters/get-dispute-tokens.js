@@ -1,33 +1,32 @@
-"use strict";
-
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-dispute-tokens", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        t.method = "getDisputeTokens";
-        dispatchJsonRpcRequest(db,  t, {}, (err, stakeTokens) => {
-          t.assertions(err, stakeTokens);
-          db.destroy();
-          done();
-        });
-      });
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
+  const runTest = (t) => {
+    test(t.description, async () => {
+      t.method = "getDisputeTokens";
+      const stakeTokens = await dispatchJsonRpcRequest(db, t, {});
+      t.assertions(stakeTokens);
     });
   };
-  test({
+  runTest({
     description: "get unfinalized tokens for user that actually exists",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       account: "0x0000000000000000000000000000000000000021",
       stakeTokenState: "UNFINALIZED",
     },
-    assertions: (err, stakeTokens) => {
-      assert.ifError(err);
-      assert.deepEqual(stakeTokens, {
+    assertions: (stakeTokens) => {
+      expect(stakeTokens).toEqual({
         "0x0000000000000000001000000000000000000001": {
           disputeToken: "0x0000000000000000001000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000011",
@@ -49,16 +48,15 @@ describe("server/getters/get-dispute-tokens", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "get unclaimed tokens for user reported correctly",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       account: "0x0000000000000000000000000000000000000021",
       stakeTokenState: "UNCLAIMED",
     },
-    assertions: (err, stakeTokens) => {
-      assert.ifError(err);
-      assert.deepEqual(stakeTokens, {
+    assertions: (stakeTokens) => {
+      expect(stakeTokens).toEqual({
         "0x0000000000000000001000000000000000000003": {
           disputeToken: "0x0000000000000000001000000000000000000003",
           marketId: "0x0000000000000000000000000000000000000019",
@@ -80,39 +78,26 @@ describe("server/getters/get-dispute-tokens", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "get unclaimed tokens for user with no tokens",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       account: "0x0000000000000000000000000000000000000024",
       stakeTokenState: "UNCLAIMED",
     },
-    assertions: (err, stakeTokens) => {
-      assert.ifError(err);
-      assert.deepEqual(stakeTokens, {});
+    assertions: (stakeTokens) => {
+      expect(stakeTokens).toEqual({});
     },
   });
-  test({
-    description: "unknown stakeTokenState",
-    params: {
-      universe: "0x000000000000000000000000000000000000000b",
-      account: "0x0000000000000000000000000000000000000021",
-      stakeTokenState: "FILLER_VALUE",
-    },
-    assertions: (err, stakeTokens) => { // assert stakeTokens
-      assert.isNotNull(err);
-    },
-  });
-  test({
+  runTest({
     description: "all stake tokens for 0x0000000000000000000000000000000000000021",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       account: "0x0000000000000000000000000000000000000021",
       stakeTokenState: "ALL",
     },
-    assertions: (err, stakeTokens) => {
-      assert.ifError(err);
-      assert.deepEqual(stakeTokens, {
+    assertions: (stakeTokens) => {
+      expect(stakeTokens).toEqual({
         "0x0000000000000000001000000000000000000001": {
           disputeToken: "0x0000000000000000001000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000011",
@@ -151,5 +136,19 @@ describe("server/getters/get-dispute-tokens", () => {
         },
       });
     },
+  });
+
+  test("unknown stakeTokenState", async () => {
+    const params = {
+      universe: "0x000000000000000000000000000000000000000b",
+      account: "0x0000000000000000000000000000000000000021",
+      stakeTokenState: "FILLER_VALUE",
+    };
+    try {
+      await dispatchJsonRpcRequest(db, { method: "getDisputeTokens", params }, {}).catch(console.log);
+      throw new Error("Did not fail on unknown");
+    } catch (e) {
+      expect(e.message).toContain("Invalid request object");
+    }
   });
 });

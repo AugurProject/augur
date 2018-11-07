@@ -33,96 +33,58 @@ export interface Dictionary {
   [key: string]: any;
 }
 
-export function queryModifierDB(
+export async function queryModifierDB<T>(
   query: Knex.QueryBuilder,
   defaultSortBy: string,
   defaultSortOrder: string,
-  sortBy: string|null|undefined,
-  isSortDescending: boolean|null|undefined,
-  limit: number|null|undefined,
-  offset: number|null|undefined,
-): Knex.QueryBuilder {
-  query = query.orderBy(sortBy || defaultSortBy, sortDirection(isSortDescending, defaultSortOrder));
-  if (limit != null) query = query.limit(limit);
-  if (offset != null) query = query.offset(offset);
-  return query;
+  sortLimitParams: Partial<SortLimit>): Promise<Array<T>> {
+  query = query.orderBy(sortLimitParams.sortBy || defaultSortBy, sortDirection(sortLimitParams.isSortDescending, defaultSortOrder));
+  if (sortLimitParams.limit != null) query = query.limit(sortLimitParams.limit);
+  if (sortLimitParams.offset != null) query = query.offset(sortLimitParams.offset);
+  return await query;
 }
 
-function queryModifierUserland<T>(
-  db: Knex,
-  query: Knex.QueryBuilder,
-  defaultSortBy: string,
-  defaultSortOrder: string,
-  sortBy: string|null|undefined,
-  isSortDescending: boolean|null|undefined,
-  limit: number|null|undefined,
-  offset: number|null|undefined,
-  callback: GenericCallback<Array<T>>,
-): void {
-  type RowWithSort = T&{ xMySorterFieldx: BigNumber };
-
-  let sortField: string = defaultSortBy;
-  let sortDescending: boolean = defaultSortOrder.toLowerCase() === "desc";
-
-  if (sortBy != null) {
-    sortField = sortBy;
-    if (typeof(isSortDescending) !== "undefined" && isSortDescending !== null) {
-      sortDescending = isSortDescending;
-    }
-  }
-
-  query.select(db.raw(`?? as "xMySorterFieldx"`, [sortField])).asCallback((error: Error|null, rows: Array<RowWithSort>) => {
-    if (error) return callback(error);
-    try {
-      const ascendingSorter = (left: RowWithSort, right: RowWithSort) => safeBigNumberCompare(left.xMySorterFieldx, right.xMySorterFieldx);
-      const descendingSorter = (left: RowWithSort, right: RowWithSort) => safeBigNumberCompare(right.xMySorterFieldx, left.xMySorterFieldx);
-      const results = rows.sort(sortDescending ? descendingSorter : ascendingSorter);
-      if (limit == null && offset == null)
-        return callback(null, results);
-      return callback(null, results.slice(offset || 0, limit || results.length));
-    } catch (e) {
-      callback(e);
-    }
-  });
-}
-
-export function queryModifier<T>(
-  db: Knex,
-  query: Knex.QueryBuilder,
-  defaultSortBy: string,
-  defaultSortOrder: string,
-  sortBy: string|null|undefined,
-  isSortDescending: boolean|null|undefined,
-  limit: number|null|undefined,
-  offset: number|null|undefined,
-  callback: GenericCallback<Array<T>>,
-): void {
-  const sortFieldName = (sortBy || defaultSortBy || "").split(".").pop();
-  if (sortFieldName !== "" && isFieldBigNumber(sortFieldName!)) {
-    queryModifierUserland(db, query, defaultSortBy, defaultSortOrder, sortBy, isSortDescending, limit, offset, callback);
-  } else {
-    queryModifierDB(query, defaultSortBy, defaultSortOrder, sortBy, isSortDescending, limit, offset).asCallback(callback);
-  }
-}
-
-export async function queryModifierParams<T>(
+async function queryModifierUserland<T>(
   db: Knex,
   query: Knex.QueryBuilder,
   defaultSortBy: string,
   defaultSortOrder: string,
   sortLimitParams: Partial<SortLimit>,
 ): Promise<Array<T>> {
-  return new Promise<Array<T>>((resolve, reject) => {
-    queryModifier(db, query, defaultSortBy, defaultSortOrder,
-      sortLimitParams.sortBy,
-      sortLimitParams.isSortDescending,
-      sortLimitParams.limit,
-      sortLimitParams.offset,
-      (err, result: Array<T>) => {
-        if (err) return reject(err);
-        resolve(result);
-      });
-  });
+  type RowWithSort = T&{ xMySorterFieldx: BigNumber };
+
+  let sortField: string = defaultSortBy;
+  let sortDescending: boolean = defaultSortOrder.toLowerCase() === "desc";
+
+  if (sortLimitParams.sortBy != null) {
+    sortField = sortLimitParams.sortBy;
+    if (typeof(sortLimitParams.isSortDescending) !== "undefined" && sortLimitParams.isSortDescending !== null) {
+      sortDescending = sortLimitParams.isSortDescending;
+    }
+  }
+
+  const rows: Array<RowWithSort> = await query.select(db.raw(`?? as "xMySorterFieldx"`, [sortField]));
+  const ascendingSorter = (left: RowWithSort, right: RowWithSort) => safeBigNumberCompare(left.xMySorterFieldx, right.xMySorterFieldx);
+  const descendingSorter = (left: RowWithSort, right: RowWithSort) => safeBigNumberCompare(right.xMySorterFieldx, left.xMySorterFieldx);
+  const results = rows.sort(sortDescending ? descendingSorter : ascendingSorter);
+  if (sortLimitParams.limit == null && sortLimitParams.offset == null)
+    return results;
+  return results.slice(sortLimitParams.offset || 0, sortLimitParams.limit || results.length);
+}
+
+export async function queryModifier<T>(
+  db: Knex,
+  query: Knex.QueryBuilder,
+  defaultSortBy: string,
+  defaultSortOrder: string,
+  sortLimitParams: Partial<SortLimit>,
+): Promise<Array<T>> {
+  const sortFieldName = (sortLimitParams.sortBy || defaultSortBy || "").split(".").pop();
+  if (sortFieldName !== "" && isFieldBigNumber(sortFieldName!)) {
+    return queryModifierUserland<T>(db, query, defaultSortBy, defaultSortOrder, sortLimitParams);
+  } else {
+    return queryModifierDB<T>(query, defaultSortBy, defaultSortOrder, sortLimitParams);
+  }
 }
 
 export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow<BigNumber>): UIOutcomeInfo<BigNumber> {
@@ -308,7 +270,9 @@ export function queryTradingHistory(
   if (latestCreationTime != null) query.where("timestamp", "<=", latestCreationTime);
   if (ignoreSelfTrades) query.where("trades.creator", "!=", db.raw("trades.filler"));
 
-  queryModifier(db, query, "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset, callback);
+  queryModifier<TradingHistoryRow>(db, query, "trades.blockNumber", "desc", {sortBy, isSortDescending, limit, offset})
+    .then((results) => callback(null, results))
+    .catch(callback);
 }
 
 export function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields: Array<string>, sumFields: Array<string>): Array<T> {

@@ -5,8 +5,6 @@ import Augur from "augur.js";
 import { logger } from "../utils/logger";
 import { JsonRpcRequest } from "../types";
 import { AccountTransferHistoryParams, getAccountTransferHistory } from "./getters/get-account-transfer-history";
-import { CategoriesParams, getCategories } from "./getters/get-categories";
-import { getMarketsCreatedByUser } from "./getters/get-markets-created-by-user";
 import { getReportingHistory, ReportingHistoryParams } from "./getters/get-reporting-history";
 import { getReportingSummary, ReportingSummaryParams } from "./getters/get-reporting-summary";
 import { getTradingHistory, TradingHistoryParams } from "./getters/get-trading-history";
@@ -33,20 +31,18 @@ import { getReportingFees, ReportingFeesParams } from "./getters/get-reporting-f
 import { getUniversesInfo, UniverseInfoParams } from "./getters/get-universes-info";
 import { getProfitLoss, GetProfitLossParams } from "./getters/get-profit-loss";
 import { getWinningBalance, WinningBalanceParams } from "./getters/get-winning-balance";
+import { getCategories, CategoriesParams } from "./getters/get-categories";
 
 type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
 
-export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
+export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur): Promise<any> {
   logger.info(JSON.stringify(request));
 
-  function dispatchResponse<T, R>(getterFunction: GetterFunction<T, R>, decodedParams: t.Validation<T>) {
+  function dispatchResponse<T, R>(getterFunction: GetterFunction<T, R>, decodedParams: t.Validation<T>): Promise<any> {
     if (decodedParams.isRight()) {
-      getterFunction(db, augur, decodedParams.value).then((response) => {
-        callback(null, response);
-      }).catch(callback);
-      return;
+      return getterFunction(db, augur, decodedParams.value);
     } else {
-      return callback(new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`));
+      throw new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`);
     }
   }
 
@@ -77,7 +73,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getUserTradingPositions":
       return dispatchResponse(getUserTradingPositions, UserTradingPositionsParams.decode(request.params));
     case "getFeeWindowCurrent":
-      return dispatchResponse(getFeeWindow, FeeWindowParams.decode(Object.assign({feeWindowState: "current" }, request.params)));
+      return dispatchResponse(getFeeWindow, FeeWindowParams.decode(Object.assign({ feeWindowState: "current" }, request.params)));
     case "getFeeWindow":
       return dispatchResponse(getFeeWindow, FeeWindowParams.decode(request.params));
     case "getFeeWindows":
@@ -91,7 +87,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getInitialReporters":
       return dispatchResponse(getInitialReporters, InitialReportersParams.decode(request.params));
     case "getReportingFees":
-      return dispatchResponse(getReportingFees, ReportingFeesParams.decode(request.params) );
+      return dispatchResponse(getReportingFees, ReportingFeesParams.decode(request.params));
     case "getForkMigrationTotals":
       return dispatchResponse(getForkMigrationTotals, ForkMigrationTotalsParams.decode(request.params));
     case "getMarkets":
@@ -105,15 +101,12 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getCompleteSets":
       return dispatchResponse(getCompleteSets, CompleteSetsParams.decode(request.params));
     case "getUniversesInfo":
-      return dispatchResponse(getUniversesInfo,  UniverseInfoParams.decode(request.params));
+      return dispatchResponse(getUniversesInfo, UniverseInfoParams.decode(request.params));
     case "getUserShareBalances":
       return dispatchResponse(getUserShareBalances, UserShareBalancesParams.decode(request.params));
-
     case "getProfitLoss":
       return dispatchResponse(getProfitLoss, GetProfitLossParams.decode(request.params));
-    case "getMarketsCreatedByUser":
-      return getMarketsCreatedByUser(db, request.params.universe, request.params.creator, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     default:
-      callback(new Error("unknown json rpc method"));
+      throw new Error(`unknown json rpc method ${request.method}`);
   }
 }

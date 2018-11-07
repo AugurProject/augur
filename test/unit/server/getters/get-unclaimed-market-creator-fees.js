@@ -1,24 +1,24 @@
-"use strict";
-
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-unclaimed-market-creator-fees", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        if (err) assert.fail(err);
-        t.method = "getUnclaimedMarketCreatorFees";
-        dispatchJsonRpcRequest(db,  t, t.params.augur, (err, marketFees) => {
-          t.assertions(err, marketFees);
-          db.destroy();
-          done();
-        });
-      });
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
+  const runTest = (t) => {
+    test(t.description, async () => {
+      t.method = "getUnclaimedMarketCreatorFees";
+      const marketFees = await dispatchJsonRpcRequest(db, t, t.params.augur);
+      t.assertions(marketFees);
     });
   };
-  test({
+  runTest({
     description: "get fees by specifying unfinalized market IDs",
     params: {
       marketIds: [
@@ -38,9 +38,8 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
         },
       },
     },
-    assertions: (err, marketFees) => {
-      assert.ifError(err);
-      assert.deepEqual(marketFees, [
+    assertions: (marketFees) => {
+      expect(marketFees).toEqual([
         {
           marketId: "0x0000000000000000000000000000000000000001",
           unclaimedFee: "0",
@@ -52,7 +51,7 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "Empty marketIds array",
     params: {
       marketIds: [],
@@ -69,9 +68,8 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
         },
       },
     },
-    assertions: (err, marketFees) => {
-      assert.ifError(err);
-      assert.deepEqual(marketFees, []);
+    assertions: (marketFees) => {
+      expect(marketFees).toEqual([]);
     },
   });
 });

@@ -1,24 +1,24 @@
-"use strict";
-
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-dispute-info", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        if (err) assert.fail(err);
-        t.method = "getDisputeInfo";
-        dispatchJsonRpcRequest(db, t, null, (err, disputeInfo) => {
-          t.assertions(err, disputeInfo);
-          done();
-          db.destroy();
-        });
-      });
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
+  const runTest = (t) => {
+    test(t.description, async () => {
+      t.method = "getDisputeInfo";
+      const disputeInfo = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(disputeInfo);
     });
   };
-  test({
+  runTest({
     description: "get dispute info from 2 markets for user 0xb0b (an initial reporter)",
     params: {
       marketIds: [
@@ -27,9 +27,8 @@ describe("server/getters/get-dispute-info", () => {
       ],
       account: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(disputeInfo, [
+    assertions: (disputeInfo) => {
+      expect(disputeInfo).toEqual([
         {
           marketId: "0x0000000000000000000000000000000000000211",
           stakeCompletedTotal: "102",
@@ -119,7 +118,7 @@ describe("server/getters/get-dispute-info", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "get dispute info from 2 markets for user 0x21",
     params: {
       marketIds: [
@@ -128,9 +127,8 @@ describe("server/getters/get-dispute-info", () => {
       ],
       account: "0x0000000000000000000000000000000000000021",
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(disputeInfo, [
+    assertions: (disputeInfo) => {
+      expect(disputeInfo).toEqual([
         {
           marketId: "0x0000000000000000000000000000000000000211",
           stakeCompletedTotal: "102",
@@ -220,7 +218,7 @@ describe("server/getters/get-dispute-info", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "get dispute info by specifying market IDs, with a missing market",
     params: {
       marketIds: [
@@ -229,9 +227,8 @@ describe("server/getters/get-dispute-info", () => {
         "0x0000000000000000000000077777777777777777",
       ],
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(disputeInfo, [
+    assertions: (disputeInfo) => {
+      expect(disputeInfo).toEqual([
         null,
         {
           marketId: "0x0000000000000000000000000000000000000211",
@@ -288,7 +285,7 @@ describe("server/getters/get-dispute-info", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "get dispute info by specifying market IDs, reversed",
     params: {
       marketIds: [
@@ -296,9 +293,8 @@ describe("server/getters/get-dispute-info", () => {
         "0x0000000000000000000000000000000000000211",
       ],
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(disputeInfo, [
+    assertions: (disputeInfo) => {
+      expect(disputeInfo).toEqual([
         {
           marketId: "0x0000000000000000000000000000000000000011",
           stakeCompletedTotal: "30102",
@@ -388,34 +384,35 @@ describe("server/getters/get-dispute-info", () => {
       ]);
     },
   });
-  test({
+  runTest({
     description: "market does not exist",
     params: {
       marketIds: ["0x1010101010101010101010101010101010101010"],
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(disputeInfo, [null]);
+    assertions: (disputeInfo) => {
+      expect(disputeInfo).toEqual([null]);
     },
   });
-  test({
-    description: "marketIds array with null, expect error",
-    params: {
-      marketIds: [undefined],
-      account: "0x0000000000000000000000000000000000000b0b",
-    },
-    assertions: (err, disputeInfo) => {
-      assert.isNotNull(err);
-    },
-  });
-  test({
+  runTest({
     description: "Empty marketIds array",
     params: {
       marketIds: [],
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(disputeInfo, []);
+    assertions: (disputeInfo) => {
+      expect(disputeInfo).toEqual([]);
     },
+  });
+
+  test("marketIds array with null, expect error", async () => {
+    const params = {
+      marketIds: [undefined],
+      account: "0x0000000000000000000000000000000000000b0b",
+    };
+    try {
+      await expect(dispatchJsonRpcRequest(db, { method: "getDisputeInfo", params }, null));
+      throw new Error("Did not fail");
+    } catch (err) {
+      expect(err.message).toMatch("Invalid request object");
+    }
   });
 });
