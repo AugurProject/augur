@@ -37,7 +37,7 @@ describe("events/start-blockchain-event-listeners", function () {
         "../contracts": t.mock.contracts,
         "../rpc-interface": t.stub.rpcInterface,
       });
-      startBlockchainEventListeners(t.params, undefined, undefined, function (err) {
+      startBlockchainEventListeners(t.params, undefined, undefined, undefined, function (err) {
         t.assertions(err);
         done();
       });
