@@ -9,7 +9,7 @@ describe(`modules/auth/reducers/login-account.js`, () => {
   let action;
   const thisTestState = Object.assign({}, testState);
 
-  it(`should updated the logged in account`, () => {
+  test(`should updated the logged in account`, () => {
     action = {
       type: UPDATE_LOGIN_ACCOUNT,
       data: {
@@ -27,22 +27,14 @@ describe(`modules/auth/reducers/login-account.js`, () => {
       realEther: 25
     });
 
-    assert.deepEqual(
-      reducer(thisTestState.loginAccount, action),
-      expectedOutput,
-      `didn't return the expected loginAccount information`
-    );
+    expect(reducer(thisTestState.loginAccount, action)).toEqual(expectedOutput);
   });
 
-  it(`should clear the logged in account`, () => {
+  test(`should clear the logged in account`, () => {
     action = {
       type: CLEAR_LOGIN_ACCOUNT
     };
     const expectedOutput = {};
-    assert.deepEqual(
-      reducer(thisTestState.loginAccount, action),
-      expectedOutput,
-      `Didn't clear account as expected`
-    );
+    expect(reducer(thisTestState.loginAccount, action)).toEqual(expectedOutput);
   });
 });

@@ -1,16 +1,21 @@
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
-import {
-  loadAccountHistory,
-  __RewireAPI__
-} from "modules/auth/actions/load-account-history";
+import { loadAccountHistory } from "modules/auth/actions/load-account-history";
+import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
+import { loadFundingHistory } from "modules/account/actions/load-funding-history";
+import { loadCreateMarketHistory } from "modules/markets/actions/load-create-market-history";
+import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
+import { loadAccountCompleteSets } from "modules/positions/actions/load-account-complete-sets";
+
+jest.mock("modules/positions/actions/load-account-trades");
+jest.mock("modules/account/actions/load-funding-history");
+jest.mock("modules/markets/actions/load-create-market-history");
+jest.mock("modules/reports/actions/load-reporting-history");
+jest.mock("modules/positions/actions/load-account-complete-sets");
 
 describe(`modules/auth/actions/load-account-history.js`, () => {
-  const store = configureMockStore([thunk])({
-    loginAccount: {
-      address: "0xb0b"
-    }
-  });
+  const mockStore = configureMockStore([thunk]);
+  let store;
   const ACTIONS = {
     LOAD_ACCOUNT_TRADES: "LOAD_ACCOUNT_TRADES",
     LOAD_FUNDING_HISTORY: "LOAD_FUNDING_HISTORY",
@@ -23,33 +28,30 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
   const TRANSACTIONS_LOADING = "transactionsLoading";
 
   beforeEach(() => {
-    __RewireAPI__.__Rewire__("loadAccountTrades", () => ({
+    loadAccountTrades.mockImplementation(() => ({
       type: ACTIONS.LOAD_ACCOUNT_TRADES
     }));
 
-    __RewireAPI__.__Rewire__("loadFundingHistory", () => ({
+    loadFundingHistory.mockImplementation(() => ({
       type: ACTIONS.LOAD_FUNDING_HISTORY
     }));
 
-    __RewireAPI__.__Rewire__("loadCreateMarketHistory", () => ({
+    loadCreateMarketHistory.mockImplementation(() => ({
       type: ACTIONS.LOAD_CREATE_MARKET_HISTORY
     }));
 
-    __RewireAPI__.__Rewire__("loadReportingHistory", () => ({
+    loadReportingHistory.mockImplementation(() => ({
       type: ACTIONS.LOAD_REPORTING_HISTORY
     }));
-    __RewireAPI__.__Rewire__("loadAccountCompleteSets", () => ({
+    loadAccountCompleteSets.mockImplementation(() => ({
       type: ACTIONS.LOAD_COMPLETE_SETS
     }));
-  });
 
-  afterEach(() => {
-    store.clearActions();
-    __RewireAPI__.__ResetDependency__("loadAccountTrades");
-    __RewireAPI__.__ResetDependency__("loadFundingHistory");
-    __RewireAPI__.__ResetDependency__("loadCreateMarketHistory");
-    __RewireAPI__.__ResetDependency__("loadReportingHistory");
-    __RewireAPI__.__ResetDependency__("loadAccountCompleteSets");
+    store = mockStore({
+      loginAccount: {
+        address: "0xb0b"
+      }
+    });
   });
 
   test("get actions for running through", () => {
