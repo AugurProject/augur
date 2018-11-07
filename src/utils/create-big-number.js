@@ -1,10 +1,11 @@
 import logError from "utils/log-error";
 import { BigNumber } from "bignumber.js";
 
-export const createBigNumber = (...args) => {
+export const createBigNumber = (value, ...args) => {
   let newBigNumber;
   try {
-    newBigNumber = new BigNumber(...args);
+    const bn = typeof value === "number" ? value.toString() : value;
+    newBigNumber = new BigNumber(bn, ...args);
   } catch (e) {
     logError("Error instantiating WrappedBigNumber", e);
   }
