@@ -8,7 +8,7 @@ import { isLoading } from "modules/markets/selectors/is-loading";
 
 describe(`modules/markets/selectors/is-loading.js`, () => {
   const t1 = {
-    description: `empty should be false`,
+    description: `Empty is false`,
     assertions: () => {
       const value = {};
       const actual = isLoading(value);
@@ -18,7 +18,7 @@ describe(`modules/markets/selectors/is-loading.js`, () => {
   };
 
   const t2 = {
-    description: `non loading should be false`,
+    description: `Non loading is false`,
     assertions: () => {
       const value = {
         marketId: MARKET_INFO_LOADED,
@@ -32,7 +32,7 @@ describe(`modules/markets/selectors/is-loading.js`, () => {
   };
 
   const t3 = {
-    description: `some loading should be true`,
+    description: `Some loading is true`,
     assertions: () => {
       const value = {
         marketId: MARKET_INFO_LOADED,
@@ -47,7 +47,7 @@ describe(`modules/markets/selectors/is-loading.js`, () => {
   };
 
   const t4 = {
-    description: `all loading should be true`,
+    description: `All loading is true`,
     assertions: () => {
       const value = {
         marketId2: MARKET_FULLY_LOADING,

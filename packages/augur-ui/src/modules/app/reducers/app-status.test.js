@@ -18,44 +18,26 @@ const DEFAULT_STATE = {
 };
 
 describe("modules/app/reducers/update-app-status.js", () => {
-  const test = t => {
-    it(t.describe, () => {
-      t.assertions();
-    });
-  };
-
-  test({
-    describe: "should return the default value",
+  const t1 = {
+    description: "Returns the default value",
     assertions: () => {
       const actual = appStatus(DEFAULT_STATE, { type: undefined });
 
-      const expected = DEFAULT_STATE;
-
-      assert.equal(
-        actual,
-        expected,
-        `Didn't return the expected default value`
-      );
+      expect(actual).toBe(DEFAULT_STATE);
     }
-  });
+  };
 
-  test({
-    describe: "should return the existing value",
+  const t2 = {
+    description: "Returns the existing value",
     assertions: () => {
       const actual = appStatus(DEFAULT_STATE, { type: null });
 
-      const expected = DEFAULT_STATE;
-
-      assert.equal(
-        actual,
-        expected,
-        `Didn't return the expected existing value`
-      );
+      expect(actual).toBe(DEFAULT_STATE);
     }
-  });
+  };
 
-  test({
-    describe: "should return the updated value for has loaded markets",
+  const t3 = {
+    description: "Returns the updated value for has loaded markets",
     assertions: () => {
       const actual = appStatus(DEFAULT_STATE, {
         type: UPDATE_APP_STATUS,
@@ -69,16 +51,12 @@ describe("modules/app/reducers/update-app-status.js", () => {
         ...DEFAULT_STATE,
         [HAS_LOADED_MARKETS]: true
       };
-      assert.deepEqual(
-        actual,
-        expected,
-        `Didn't return the expected updated value`
-      );
+      expect(actual).toEqual(expected);
     }
-  });
+  };
 
-  test({
-    describe: "should return the updated value for is animating",
+  const t4 = {
+    description: "Returns the updated value for is animating",
     assertions: () => {
       const actual = appStatus(DEFAULT_STATE, {
         type: UPDATE_APP_STATUS,
@@ -92,16 +70,12 @@ describe("modules/app/reducers/update-app-status.js", () => {
         ...DEFAULT_STATE,
         [IS_ANIMATING]: true
       };
-      assert.deepEqual(
-        actual,
-        expected,
-        `Didn't return the expected updated value`
-      );
+      expect(actual).toEqual(expected);
     }
-  });
+  };
 
-  test({
-    describe: "should return the updated value for is mobile",
+  const t5 = {
+    description: "Returns the updated value for is mobile",
     assertions: () => {
       const actual = appStatus(DEFAULT_STATE, {
         type: UPDATE_APP_STATUS,
@@ -115,16 +89,12 @@ describe("modules/app/reducers/update-app-status.js", () => {
         ...DEFAULT_STATE,
         [IS_MOBILE]: true
       };
-      assert.deepEqual(
-        actual,
-        expected,
-        `Didn't return the expected updated value`
-      );
+      expect(actual).toEqual(expected);
     }
-  });
+  };
 
-  test({
-    describe: "should return the updated value for is mobile small",
+  const t6 = {
+    description: "Returns the updated value for is mobile small",
     assertions: () => {
       const actual = appStatus(DEFAULT_STATE, {
         type: UPDATE_APP_STATUS,
@@ -138,16 +108,12 @@ describe("modules/app/reducers/update-app-status.js", () => {
         ...DEFAULT_STATE,
         [IS_MOBILE_SMALL]: true
       };
-      assert.deepEqual(
-        actual,
-        expected,
-        `Didn't return the expected updated value`
-      );
+      expect(actual).toEqual(expected);
     }
-  });
+  };
 
-  test({
-    describe: "should return the updated value for transactions loading",
+  const t7 = {
+    description: "Returns the updated value for transactions loading",
     assertions: () => {
       const actual = appStatus(DEFAULT_STATE, {
         type: UPDATE_APP_STATUS,
@@ -161,11 +127,13 @@ describe("modules/app/reducers/update-app-status.js", () => {
         ...DEFAULT_STATE,
         [TRANSACTIONS_LOADING]: true
       };
-      assert.deepEqual(
-        actual,
-        expected,
-        `Didn't return the expected updated value`
-      );
+      expect(actual).toEqual(expected);
     }
+  };
+
+  describe.each([t1, t2, t3, t4 ,t5, t6, t7])("App status test", t => {
+    test(t.description, () => {
+      t.assertions();
+    })
   });
 });
