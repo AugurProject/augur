@@ -285,7 +285,7 @@ export default class AppView extends Component {
 
   changeMenu(nextBasePath) {
     const { isLogged } = this.props;
-    const oldType = this.state.currentInnerNavType;
+    const oldType = navTypes[this.state.currentBasePath];
     const newType = navTypes[nextBasePath];
 
     if ((newType === AccountInnerNav && !isLogged) || oldType === newType) {
