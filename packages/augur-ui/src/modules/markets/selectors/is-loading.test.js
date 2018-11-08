@@ -7,19 +7,17 @@ import {
 import { isLoading } from "modules/markets/selectors/is-loading";
 
 describe(`modules/markets/selectors/is-loading.js`, () => {
-  const test = t => it(t.description, () => t.assertions());
-
-  test({
+  const t1 = {
     description: `empty should be false`,
     assertions: () => {
       const value = {};
       const actual = isLoading(value);
 
-      assert.strictEqual(actual, false, `didn't return expected value`);
+      expect(actual).toBe(false);
     }
-  });
+  };
 
-  test({
+  const t2 = {
     description: `non loading should be false`,
     assertions: () => {
       const value = {
@@ -29,11 +27,11 @@ describe(`modules/markets/selectors/is-loading.js`, () => {
 
       const actual = isLoading(value);
 
-      assert.strictEqual(actual, false, `didn't return expected value`);
+      expect(actual).toBe(false);
     }
-  });
+  };
 
-  test({
+  const t3 = {
     description: `some loading should be true`,
     assertions: () => {
       const value = {
@@ -44,11 +42,11 @@ describe(`modules/markets/selectors/is-loading.js`, () => {
 
       const actual = isLoading(value);
 
-      assert.strictEqual(actual, true, `didn't return expected value`);
+      expect(actual).toBe(true);
     }
-  });
+  };
 
-  test({
+  const t4 = {
     description: `all loading should be true`,
     assertions: () => {
       const value = {
@@ -58,7 +56,14 @@ describe(`modules/markets/selectors/is-loading.js`, () => {
 
       const actual = isLoading(value);
 
-      assert.strictEqual(actual, true, `didn't return expected value`);
+      expect(actual).toBe(true);
     }
+  };
+
+  describe.each([[t1, t2, t3, t4]])("Is loading test", t => {
+    test(t.description, () => {
+      t.assertions();
+    })
   });
+
 });
