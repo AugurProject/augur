@@ -12,6 +12,10 @@ jest.mock("modules/app/actions/get-augur-node-network-id");
 
 describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
   const store = configureMockStore([thunk])({});
+  let isGlobalWeb3Spy;
+  let getAugurNodeNetworkIdSpy;
+  let getNetworkIdSpy;
+  let augurNetVersionSpy;
 
   const t1 = {
     description: "using global web3, network ids all equal to 4",
@@ -19,6 +23,7 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
       isGlobalWeb3: () => true,
       getAugurNodeNetworkId: callback => {
         callback(null, "4");
+        return { type: "TEST" };
       },
       augur: {
         rpc: {
@@ -41,7 +46,10 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
     description: "using global web3, global web3 network id 1, others on 4",
     stub: {
       isGlobalWeb3: () => true,
-      getAugurNodeNetworkId: callback => callback(null, "4"),
+      getAugurNodeNetworkId: callback => {
+        callback(null, "4");
+        return { type: "TEST" };
+      },
       augur: {
         rpc: {
           getNetworkID: () => "4",
@@ -59,7 +67,10 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
     description: "using global web3, middleware network id 1, others on 4",
     stub: {
       isGlobalWeb3: () => true,
-      getAugurNodeNetworkId: callback => callback(null, "4"),
+      getAugurNodeNetworkId: callback => {
+        callback(null, "4");
+        return { type: "TEST" };
+      },
       augur: {
         rpc: {
           getNetworkID: () => "1",
@@ -77,7 +88,10 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
     description: "not using global web3, middleware and augur-node both on 4",
     stub: {
       isGlobalWeb3: () => false,
-      getAugurNodeNetworkId: callback => callback(null, "4"),
+      getAugurNodeNetworkId: callback => {
+        callback(null, "4");
+        return { type: "TEST" };
+      },
       augur: {
         rpc: {
           getNetworkID: () => "4",
@@ -95,7 +109,10 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
     description: "not using global web3, middleware on 4, augur-node on 1",
     stub: {
       isGlobalWeb3: () => false,
-      getAugurNodeNetworkId: callback => callback(null, "1"),
+      getAugurNodeNetworkId: callback => {
+        callback(null, "1");
+        return { type: "TEST" };
+      },
       augur: {
         rpc: {
           getNetworkID: () => "4",
@@ -114,7 +131,10 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
       "not using global web3, middleware network id not found, augur-node on 4",
     stub: {
       isGlobalWeb3: () => false,
-      getAugurNodeNetworkId: callback => callback(null, "4"),
+      getAugurNodeNetworkId: callback => {
+        callback(null, "4");
+        return { type: "TEST" };
+      },
       augur: {
         rpc: {
           getNetworkID: () => null,
@@ -131,11 +151,6 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
   };
 
   describe.each([t1, t2, t3, t4, t5, t6])("Verify matching network tests", t => {
-    let isGlobalWeb3Spy;
-    let getAugurNodeNetworkIdSpy;
-    let getNetworkIdSpy;
-    let augurNetVersionSpy;
-
     beforeEach(() => {
       isGlobalWeb3Spy = jest
         .spyOn(isGlobalWeb3Module, "default")
@@ -159,12 +174,11 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
       augurNetVersionSpy.mockReset();
     });
 
-    test(t.description, done => {
+    test(t.description, () => {
       store.dispatch(
         verifyMatchingNetworkIdsModule.verifyMatchingNetworkIds(
           (err, expectedNetworkId) => {
             t.assertions(err, expectedNetworkId);
-            done();
           }
         )
       );
