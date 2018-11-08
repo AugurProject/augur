@@ -1,4 +1,4 @@
-import { verifyMatchingNetworkIds } from "modules/app/actions/verify-matching-network-ids";
+import * as verifyMatchingNetworkIdsModule from "modules/app/actions/verify-matching-network-ids";
 
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
@@ -7,8 +7,8 @@ import * as getAugurNodeNetworkIdModule from "modules/app/actions/get-augur-node
 import { augur } from "services/augurjs";
 
 jest.mock("modules/auth/helpers/is-global-web3");
-jest.mock("modules/app/actions/get-augur-node-network-id");
 jest.mock("services/augurjs");
+jest.mock("modules/app/actions/get-augur-node-network-id");
 
 describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
   const store = configureMockStore([thunk])({});
@@ -17,11 +17,17 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
     description: "using global web3, network ids all equal to 4",
     stub: {
       isGlobalWeb3: () => true,
-      getAugurNodeNetworkId: callback => callback(null, "4"),
+      getAugurNodeNetworkId: callback => {
+        callback(null, "4");
+      },
       augur: {
         rpc: {
           getNetworkID: () => "4",
-          net: { version: callback => callback(null, "4") }
+          net: {
+            version: callback => {
+              callback(null, "4");
+            }
+          }
         }
       }
     },
@@ -72,7 +78,6 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
     stub: {
       isGlobalWeb3: () => false,
       getAugurNodeNetworkId: callback => callback(null, "4"),
-      getMetaMaskNetworkId: () => {},
       augur: {
         rpc: {
           getNetworkID: () => "4",
@@ -91,7 +96,6 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
     stub: {
       isGlobalWeb3: () => false,
       getAugurNodeNetworkId: callback => callback(null, "1"),
-      getMetaMaskNetworkId: () => {},
       augur: {
         rpc: {
           getNetworkID: () => "4",
@@ -111,7 +115,6 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
     stub: {
       isGlobalWeb3: () => false,
       getAugurNodeNetworkId: callback => callback(null, "4"),
-      getMetaMaskNetworkId: () => {},
       augur: {
         rpc: {
           getNetworkID: () => null,
@@ -127,45 +130,44 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
     }
   };
 
-  describe.each([t1, t2, t3, t4, t5, t6])(
-    "Verify matching network tests",
-    t => {
-      let isGlobalWeb3Spy;
-      let getAugurNodeNetworkIdSpy;
-      let getNetworkIdSpy;
-      let augurNetVersionSpy;
+  describe.each([t1, t2, t3, t4, t5, t6])("Verify matching network tests", t => {
+    let isGlobalWeb3Spy;
+    let getAugurNodeNetworkIdSpy;
+    let getNetworkIdSpy;
+    let augurNetVersionSpy;
 
-      beforeEach(() => {
-        isGlobalWeb3Spy = jest
-          .spyOn(isGlobalWeb3Module, "default")
-          .mockImplementation(t.stub.isGlobalWeb3);
-        getAugurNodeNetworkIdSpy = jest
-          .spyOn(getAugurNodeNetworkIdModule, "getAugurNodeNetworkId")
-          .mockImplementation(t.stub.getAugurNodeNetworkId);
-        getNetworkIdSpy = jest
-          .spyOn(augur.rpc, "getNetworkID")
-          .mockImplementation(t.stub.augur.rpc.getNetworkID);
-        augurNetVersionSpy = jest
-          .spyOn(augur.rpc.net, "version")
-          .mockImplementation(t.stub.augur.rpc.net.version);
-      });
+    beforeEach(() => {
+      isGlobalWeb3Spy = jest
+        .spyOn(isGlobalWeb3Module, "default")
+        .mockImplementationOnce(t.stub.isGlobalWeb3);
+      getAugurNodeNetworkIdSpy = jest
+        .spyOn(getAugurNodeNetworkIdModule, "getAugurNodeNetworkId")
+        .mockImplementationOnce(t.stub.getAugurNodeNetworkId);
+      getNetworkIdSpy = jest
+        .spyOn(augur.rpc, "getNetworkID")
+        .mockImplementationOnce(t.stub.augur.rpc.getNetworkID);
+      augurNetVersionSpy = jest
+        .spyOn(augur.rpc.net, "version")
+        .mockImplementationOnce(t.stub.augur.rpc.net.version);
+    });
 
-      afterEach(() => {
-        store.clearActions();
-        isGlobalWeb3Spy.mockReset();
-        getAugurNodeNetworkIdSpy.mockReset();
-        getNetworkIdSpy.mockReset();
-        augurNetVersionSpy.mockReset();
-      });
+    afterEach(() => {
+      store.clearActions();
+      isGlobalWeb3Spy.mockReset();
+      getAugurNodeNetworkIdSpy.mockReset();
+      getNetworkIdSpy.mockReset();
+      augurNetVersionSpy.mockReset();
+    });
 
-      test(t.description, done => {
-        store.dispatch(
-          verifyMatchingNetworkIds((err, expectedNetworkId) => {
+    test(t.description, done => {
+      store.dispatch(
+        verifyMatchingNetworkIdsModule.verifyMatchingNetworkIds(
+          (err, expectedNetworkId) => {
             t.assertions(err, expectedNetworkId);
-          })
-        );
-        done();
-      });
-    }
-  );
+            done();
+          }
+        )
+      );
+    });
+  });
 });
