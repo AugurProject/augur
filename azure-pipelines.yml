@@ -12,6 +12,7 @@ trigger:
     - master
     - azure-pipelines
     - monorepo-integration
+    - petong/monorepo-conditonal
 
 jobs:
   - job: Build_Core_Docker
@@ -24,6 +25,13 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: '9.x'
+      - bash: |
+          set -euxo pipefail
+          echo "git SHA - $(Build.SourceVersion)"
+          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
+            do
+              echo $f | grep augur-core && echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+            done
       - script: |
           set -euxo pipefail
           which node
@@ -33,6 +41,7 @@ jobs:
           yarn workspace augur-core docker:build;
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
           docker push $CORE_IMAGE_BUILD
+        condition: eq(variables.AUGUR_CORE, 'true')
 
   - job: Test_Augur_Core
     dependsOn: Build_Core_Docker
@@ -73,6 +82,13 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'
+      - bash: |
+          set -euxo pipefail
+          echo "git SHA - $(Build.SourceVersion)"
+          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
+            do
+              echo $f | grep -q augur-core && echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+            done
       - script: |
           set -euxo pipefail
           which node
@@ -93,6 +109,7 @@ jobs:
           else
             yarn workspace augur-core docker:run:test:unit -- $TESTS;
           fi
+        condition: eq(variables.AUGUR_CORE, 'true')
 
   - job: Test_Augur_UI_and_Node
     displayName: 'Test augur UI and augur-node'
@@ -107,21 +124,32 @@ jobs:
         node_10_x:
           node_version: 10.x
     steps:
+      - bash: |
+          set -euxo pipefail
+          echo "git SHA - $(Build.SourceVersion)"
+          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
+            do
+              echo $f | grep augur-ui && echo "##vso[task.setVariable variable=AUGUR]true";
+              echo $f | grep augur-node && echo "##vso[task.setVariable variable=AUGUR]true";
+              echo $f | grep augur.js && echo "##vso[task.setVariable variable=AUGUR]true";
+            done
       - script: |
           set -euxo pipefail
           which node
           node --version
           yarn workspace augur-node add sqlite3 --force --build-from-source
           yarn install --ignore-scripts --frozen-lockfile
+        condition: eq(variables.AUGUR, 'true')
         displayName: 'Install Dependencies'
       - script: |
           yarn test --forceExit
         displayName: 'Run Tests'
+        condition: eq(variables.AUGUR, 'true')
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: 'junit.xml'
-        condition: always()
+        condition: eq(variables.AUGUR, 'true')
 
   - job: Test_Augur_js
     pool:
@@ -135,6 +163,13 @@ jobs:
         node_10_x:
           node_version: 10.x
     steps:
+      - bash: |
+          set -euxo pipefail
+          echo "git SHA - $(Build.SourceVersion)"
+          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
+            do
+              echo $f | grep augur.js && echo "##vso[task.setVariable variable=AUGUR]true";
+            done
       - script: |
           set -euxo pipefail
           which node
@@ -142,6 +177,7 @@ jobs:
           yarn install --ignore-scripts --frozen-lockfile
           npx lerna run test --stream --scope augur.js
         displayName: 'test augur.js'
+        condition: eq(variables.AUGUR, 'true')
 
   - job: Docker_monorepo
     pool:

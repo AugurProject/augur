@@ -4,12 +4,9 @@ import { BUY } from "modules/transactions/constants/types";
 import { updateOrderStatus } from "modules/orders/actions/update-order-status";
 
 describe("modules/orders/actions/update-order-status.js", () => {
-  const store = mocks.mockStore(mocks.state);
-  afterEach(() => {
-    store.clearActions();
-  });
   describe("updateOrderStatus", () => {
     test(`shouldn't dispatch if order cannot be found`, () => {
+      const store = mocks.mockStore(mocks.state);
       store.dispatch(
         updateOrderStatus({
           orderId: "nonExistingOrderId",
@@ -20,6 +17,10 @@ describe("modules/orders/actions/update-order-status.js", () => {
         })
       );
       expect(store.getActions()).toHaveLength(0);
+    });
+
+    test("should dispatch existing market id", () => {
+      const store = mocks.mockStore(mocks.state);
       store.dispatch(
         updateOrderStatus({
           orderId: "orderId",
@@ -31,7 +32,9 @@ describe("modules/orders/actions/update-order-status.js", () => {
       );
       expect(store.getActions()).toHaveLength(0);
     });
+
     test(`should dispatch action`, () => {
+      const store = mocks.mockStore(mocks.state);
       store.dispatch(
         updateOrderStatus({
           orderId:

@@ -11,27 +11,24 @@ describe(`modules/auth/selectors/login-account.js`, () => {
   const test = t => it(t.description, done => t.assertions(done));
 
   describe("default", () => {
-    test({
-      description: `should call 'selectLoginAccount'`,
-      assertions: done => {
-        const stubbedSelectLoginAccount = sinon.stub();
+    test(`should call 'selectLoginAccount'`, done => {
+      const stubbedSelectLoginAccount = sinon.stub();
 
-        loginAccountRewireAPI.__Rewire__(
-          "selectLoginAccount",
-          stubbedSelectLoginAccount
-        );
+      loginAccountRewireAPI.__Rewire__(
+        "selectLoginAccount",
+        stubbedSelectLoginAccount
+      );
 
-        loginAccount();
+      loginAccount();
 
-        loginAccountRewireAPI.__ResetDependency__("selectLoginAccount");
+      loginAccountRewireAPI.__ResetDependency__("selectLoginAccount");
 
-        assert(
-          stubbedSelectLoginAccount.calledOnce,
-          `didn't call 'selectLoginAccount' once as expected`
-        );
+      assert(
+        stubbedSelectLoginAccount.calledOnce,
+        `didn't call 'selectLoginAccount' once as expected`
+      );
 
-        done();
-      }
+      done();
     });
   });
 
