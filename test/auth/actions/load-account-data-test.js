@@ -15,7 +15,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       const LoadAccountDataFromLocalStorage = {};
       const UpdateAssets = { updateAssets: () => {} };
       const ClearOrphanedOrderData = { clearOrphanedOrderData: () => {} };
-      const LoadAccountTrades = { loadAccountTrades: () => {} };
+      const LoadAccountHistory = { loadAccountHistory: () => {} };
       const UpdateLoginAccount = { updateLoginAccount: () => {} };
       const approveAccount = { checkAccountAllowance: () => {} };
       const windowRef = { windowRef: { localStorage: { setItem: () => {} } } };
@@ -28,7 +28,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
           "./update-assets": UpdateAssets,
           "../../orders/actions/orphaned-orders": ClearOrphanedOrderData,
           "./update-login-account": UpdateLoginAccount,
-          "../../positions/actions/load-account-trades": LoadAccountTrades,
+          "./load-account-history": LoadAccountHistory,
           "./approve-account": approveAccount
         }
       );
@@ -45,8 +45,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         .stub(UpdateLoginAccount, "updateLoginAccount")
         .callsFake(data => ({ type: "UPDATE_LOGIN_ACCOUNT", data }));
       sinon
-        .stub(LoadAccountTrades, "loadAccountTrades")
-        .callsFake(data => ({ type: "UPDATE_ACCOUNT_TRADES_DATA" }));
+        .stub(LoadAccountHistory, "loadAccountHistory")
+        .callsFake(() => ({ type: "LOAD_ACCOUNT_HISTORY" }));
       sinon
         .stub(approveAccount, "checkAccountAllowance")
         .callsFake(data => ({ type: "CHECK_ACCOUNT_ALLOWANCE" }));
@@ -97,7 +97,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         { type: "LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE" },
         { type: "UPDATE_LOGIN_ACCOUNT", data: { address: "0xb0b", meta: { accountType: ACCOUNT_TYPES.META_MASK } } },
         { type: "CLEAR_ORPHANED_ORDER_DATA" },
-        { type: "UPDATE_ACCOUNT_TRADES_DATA" },
+        { type: "LOAD_ACCOUNT_HISTORY" },
         { type: "CHECK_ACCOUNT_ALLOWANCE" },
         { type: "UPDATE_ASSETS" }
       ]);
@@ -137,7 +137,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
           }
         },
         { type: "CLEAR_ORPHANED_ORDER_DATA" },
-        { type: "UPDATE_ACCOUNT_TRADES_DATA" },
+        { type: "LOAD_ACCOUNT_HISTORY" },
         { type: "CHECK_ACCOUNT_ALLOWANCE" },
         { type: "UPDATE_ASSETS" }
       ]);

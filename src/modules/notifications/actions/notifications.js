@@ -3,11 +3,79 @@ import { augur } from "services/augurjs";
 import * as notificationLevels from "modules/notifications/constants/notifications";
 import setNotificationText from "modules/notifications/actions/set-notification-text";
 import { createBigNumber } from "utils/create-big-number";
+import makePath from "modules/routes/helpers/make-path";
+import { TRANSACTIONS } from "modules/routes/constants/views";
+import { PENDING, SUCCESS } from "modules/transactions/constants/statuses";
 
 export const ADD_NOTIFICATION = "ADD_NOTIFICATION";
 export const REMOVE_NOTIFICATION = "REMOVE_NOTIFICATION";
 export const UPDATE_NOTIFICATION = "UPDATE_NOTIFICATION";
 export const CLEAR_NOTIFICATIONS = "CLEAR_NOTIFICATIONS";
+
+export function loadNotifications() {
+  return (dispatch, getState) => {
+    const { notifications, transactionsData } = store.getState();
+    for (let i = 0; i < notifications.length; i++) {
+      if (notifications[i].status.toLowerCase() === PENDING) {
+        const regex = new RegExp(notifications[i].id, "g");
+        Object.keys(transactionsData).some(key => {
+          if (
+            key.match(regex) !== null &&
+            transactionsData[key].status.toLowerCase() === SUCCESS
+          ) {
+            const transaction =
+              transactionsData[key].transactions &&
+              transactionsData[key].transactions[0];
+            dispatch(
+              updateNotification(notifications[i].id, {
+                id: notifications[i].id,
+                timestamp: transactionsData[key].timestamp.timestamp,
+                status: "Confirmed",
+                linkPath: makePath(TRANSACTIONS),
+                seen: false,
+                log: {
+                  price: transaction && transaction.price,
+                  outcome: transaction && transaction.outcome,
+                  amount: transaction && transaction.amount,
+                  marketId:
+                    transaction && transaction.market && transaction.market.id,
+                  quantity: transaction && transaction.quantity
+                }
+              })
+            );
+            return true;
+          } else if (transactionsData[key].status.toLowerCase() === SUCCESS) {
+            const groupedTransactions = transactionsData[key].transactions;
+            groupedTransactions.forEach(transaction => {
+              if (
+                transaction.meta &&
+                transaction.meta.txhash === notifications[i].id
+              ) {
+                dispatch(
+                  updateNotification(notifications[i].id, {
+                    id: notifications[i].id,
+                    timestamp: transaction.creationTime,
+                    status: "Confirmed",
+                    linkPath: makePath(TRANSACTIONS),
+                    seen: false,
+                    log: {
+                      price: transaction.price,
+                      outcome: transaction.meta && transaction.meta.outcome,
+                      amount: transaction.amount,
+                      marketId: transaction.marketId
+                    }
+                  })
+                );
+                return true;
+              }
+            });
+          }
+          return false;
+        });
+      }
+    }
+  };
+}
 
 export function addCriticalNotification(notification) {
   return addNotification({

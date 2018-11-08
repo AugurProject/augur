@@ -2,7 +2,7 @@ import { augur } from "services/augurjs";
 import { loadAccountDataFromLocalStorage } from "modules/auth/actions/load-account-data-from-local-storage";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
-import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
+import { loadAccountHistory } from "modules/auth/actions/load-account-history";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { clearOrphanedOrderData } from "modules/orders/actions/orphaned-orders";
@@ -26,7 +26,7 @@ export const loadAccountData = (account, callback = logError) => dispatch => {
   dispatch(loadAccountDataFromLocalStorage(account.address));
   dispatch(updateLoginAccount(account));
   dispatch(clearOrphanedOrderData());
-  dispatch(loadAccountTrades());
+  dispatch(loadAccountHistory());
   dispatch(checkAccountAllowance());
   dispatch(updateAssets());
   dispatch(loadReportingWindowBounds());

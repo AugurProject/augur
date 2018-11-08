@@ -297,7 +297,7 @@ export function addOpenOrderTransactions(openOrders) {
       let sumBuy = 0;
       let sumSell = 0;
       const marketHeader = {
-        status: "Market Outcome Trade",
+        status: SUCCESS,
         marketId,
         sortOrder: getSortOrder(OPEN_ORDER)
       };
