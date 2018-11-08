@@ -1,6 +1,7 @@
 "use strict";
 
 var compact = require("lodash").compact;
+var assign = require("lodash").assign;
 var contracts = require("../contracts");
 var ethrpc = require("../rpc-interface");
 var isFunction = require("../utils/is-function");
@@ -54,6 +55,10 @@ function getEventsDetails(eventsToSubscribe, activeContracts) {
   };
 }
 
+function flagRemoved(logs) {
+  return logs.map((log) => assign({}, log, {removed: true}));
+}
+
 /**
  * Start listening for events emitted by the Ethereum blockchain.
  * @param {Object.<function>=} eventsToSubscribe List of interested contract events. Object of arrays. {ContractName: ["Event1", "Event2"]}
@@ -75,7 +80,7 @@ function startBlockchainEventListeners(eventsToSubscribe, startingBlockNumber, l
   const eventDetails = getEventsDetails(eventsToSubscribe, activeContracts);
   blockStream.addLogFilter(eventDetails.filter);
   blockStream.subscribeToOnLogsAdded((blockHash, logs) => logsAddedListener(blockHash, parseLogs(logs, eventDetails.eventByAddressAndSignature)));
-  blockStream.subscribeToOnLogsRemoved((blockHash, logs) => logsRemovedListener(blockHash, parseLogs(logs, eventDetails.eventByAddressAndSignature)));
+  blockStream.subscribeToOnLogsRemoved((blockHash, logs) => logsRemovedListener(blockHash, parseLogs(flagRemoved(logs), eventDetails.eventByAddressAndSignature)));
 
   onSetupComplete(null);
 }
