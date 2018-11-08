@@ -34,7 +34,7 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur): P
   } else {
     fromBlock = lastSyncBlockNumber == null ? uploadBlockNumber : lastSyncBlockNumber + 1;
   }
-  let handoffBlockNumber = highestBlockNumber - BLOCKSTREAM_HANDOFF_BLOCKS;
+  const handoffBlockNumber = highestBlockNumber - BLOCKSTREAM_HANDOFF_BLOCKS;
   if (handoffBlockNumber < fromBlock) {
     throw new Error(`Not enough blocks to start blockstream reliably, wait at least ${BLOCKSTREAM_HANDOFF_BLOCKS} from ${fromBlock}. Current Block: ${highestBlockNumber}`);
   }
