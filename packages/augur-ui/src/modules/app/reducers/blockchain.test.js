@@ -5,7 +5,7 @@ import reducer from "modules/app/reducers/blockchain";
 describe(`modules/app/reducers/blockchain.js`, () => {
   const thisTestState = Object.assign({}, testState);
 
-  it(`should update the blockchain in state`, () => {
+  test(`Updates the blockchain in state`, () => {
     const action = {
       type: UPDATE_BLOCKCHAIN,
       data: {
@@ -17,10 +17,6 @@ describe(`modules/app/reducers/blockchain.js`, () => {
       thisTestState.blockchain,
       action.data.blockchainData
     );
-    assert.deepEqual(
-      reducer(thisTestState.blockchain, action),
-      expectedOutput,
-      `Didn't update the blockchain information`
-    );
+    expect(reducer(thisTestState.blockchain, action)).toEqual(expectedOutput);
   });
 });
