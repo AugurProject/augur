@@ -154,20 +154,6 @@ class MarketTrading extends Component {
             </div>
           )}
         {isMobile &&
-          hasSelectedOutcome &&
-          initialMessage && (
-            <div className={Styles["Trading__initial-message"]}>
-              <p>{initialMessage}</p>
-              {!hasFunds && (
-                <Link to={makePath(ACCOUNT_DEPOSIT)}>
-                  <span className={Styles["Trading__deposit-button"]}>
-                    Add Funds
-                  </span>
-                </Link>
-              )}
-            </div>
-          )}
-        {isMobile &&
         hasSelectedOutcome &&
         !initialMessage &&
         !s.showForm && ( // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
