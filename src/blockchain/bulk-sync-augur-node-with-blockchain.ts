@@ -6,7 +6,7 @@ import { augurEmitter } from "../events";
 import { logger } from "../utils/logger";
 import { SubscriptionEventNames } from "../constants";
 
-const BLOCKSTREAM_HANDOFF_BLOCKS = 105;
+const BLOCKSTREAM_HANDOFF_BLOCKS = 5;
 let syncFinished = false;
 
 interface HighestBlockNumberRow {
@@ -34,13 +34,9 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur): P
   } else {
     fromBlock = lastSyncBlockNumber == null ? uploadBlockNumber : lastSyncBlockNumber + 1;
   }
-  let handoffBlockNumber = highestBlockNumber - BLOCKSTREAM_HANDOFF_BLOCKS;
+  const handoffBlockNumber = highestBlockNumber - BLOCKSTREAM_HANDOFF_BLOCKS;
   if (handoffBlockNumber < fromBlock) {
-    handoffBlockNumber = fromBlock;
-    if (handoffBlockNumber > highestBlockNumber) {
-      throw new Error(`Not enough blocks to start blockstream reliably, wait at least ${BLOCKSTREAM_HANDOFF_BLOCKS} from ${fromBlock}. Current Block: ${highestBlockNumber}`);
-    }
-    logger.warn(`Not leaving at least ${BLOCKSTREAM_HANDOFF_BLOCKS} between batch download and blockstream hand off during re-org can cause data quality issues`);
+    throw new Error(`Not enough blocks to start blockstream reliably, wait at least ${BLOCKSTREAM_HANDOFF_BLOCKS} from ${fromBlock}. Current Block: ${highestBlockNumber}`);
   }
   await promisify(downloadAugurLogs)(db, augur, fromBlock, handoffBlockNumber);
   setSyncFinished();
