@@ -5,8 +5,16 @@ import { logger } from "./utils/logger";
 
 const networkName = process.argv[2] || "environment";
 const databaseDir = process.env.AUGUR_DATABASE_DIR;
-const maxRetries = process.env.MAX_REQUEST_RETRIES;
-const maxSystemRetries = process.env.MAX_SYSTEM_RETRIES;
+
+// maxRetries is the maximum number of retries for retryable Ethereum
+// RPC requests. maxRetries is passed to augur.js's augur.connect() and
+// then to ethrpc library.connect(), and is used internally by ethrpc
+// for both HTTP and WS transports. When an ethrpc request errors, a
+// subset of errors are statically configured as retryable, in which case
+// ethrpc will opaquely re-insert the RPC request at its internal queue
+// head, such that augur.js (and augur-node) are ignorant of requests
+// that eventually succeed after N retries (where N < maxRetries).
+const maxRetries = process.env.MAX_REQUEST_RETRIES || 3; // default maxRetries to 3, because certain Ethereum RPC servers may frequently return transient errors and require non-zero ethrpc maxRetries to function sanely. Eg.  `geth --syncmode=light` frequently returns result "0x", signifying no data, for requests which should have data. Note that augur-app bypasses this entrypoint and has its own default for MAX_REQUEST_RETRIES.
 const propagationDelayWaitMillis = process.env.DELAY_WAIT_MILLIS;
 const networkConfig = NetworkConfiguration.create(networkName, false);
 
