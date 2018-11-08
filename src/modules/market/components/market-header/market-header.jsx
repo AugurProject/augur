@@ -31,7 +31,7 @@ export default class MarketHeader extends Component {
     location: PropTypes.object.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
-    isForking: PropTypes.bool.isRequired
+    isForking: PropTypes.bool
   };
 
   static defaultProps = {
@@ -41,7 +41,8 @@ export default class MarketHeader extends Component {
     scalarDenomination: null,
     resolutionSource: null,
     selectedOutcome: null,
-    marketType: null
+    marketType: null,
+    isForking: false
   };
 
   constructor(props) {

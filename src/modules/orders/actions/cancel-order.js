@@ -34,6 +34,15 @@ export const cancelOrder = (
     outcomesData[marketId] &&
     outcomesData[marketId][outcome]
   ) {
+    dispatch(
+      updateOrderStatus({
+        orderId,
+        status: CLOSE_DIALOG_PENDING,
+        marketId,
+        outcome,
+        orderTypeLabel
+      })
+    );
     augur.api.CancelOrder.cancelOrder({
       meta: loginAccount.meta,
       _orderId: orderId,
