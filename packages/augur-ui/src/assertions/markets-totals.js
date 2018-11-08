@@ -9,7 +9,7 @@ export default function(marketsTotals) {
   checkDefinedAndNumber(marketsTotals.numUnpaginated, `numUnpaginated`);
 }
 
-function checkDefinedAndNumber(obj, name) {
+function checkDefinedAndNumber(obj) {
   expect(obj).toBeDefined();
   expect(typeof obj).toBe('number');
 }

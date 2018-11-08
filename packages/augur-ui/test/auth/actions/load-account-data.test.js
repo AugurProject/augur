@@ -43,10 +43,10 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         .callsFake(data => ({ type: "UPDATE_LOGIN_ACCOUNT", data }));
       sinon
         .stub(LoadAccountTrades, "loadAccountTrades")
-        .callsFake(data => ({ type: "UPDATE_ACCOUNT_TRADES_DATA" }));
+        .callsFake(() => ({ type: "UPDATE_ACCOUNT_TRADES_DATA" }));
       sinon
         .stub(approveAccount, "checkAccountAllowance")
-        .callsFake(data => ({ type: "CHECK_ACCOUNT_ALLOWANCE" }));
+        .callsFake(() => ({ type: "CHECK_ACCOUNT_ALLOWANCE" }));
       store.dispatch(action.loadAccountData(t.params.account));
       t.assertions(store.getActions());
       store.clearActions();

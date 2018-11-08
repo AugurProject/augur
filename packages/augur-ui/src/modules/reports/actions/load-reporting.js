@@ -32,7 +32,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       }
 
       dispatch(
-        loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
+        loadMarketsInfoIfNotLoaded(marketIds, (err) => {
           if (err) return logError(err);
           dispatch(updateUpcomingDesignatedReportingMarkets(marketIds));
         })
@@ -54,7 +54,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
         return callback(null);
       }
       dispatch(
-        loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
+        loadMarketsInfoIfNotLoaded(marketIds, (err) => {
           if (err) return logError(err);
           dispatch(updateDesignatedReportingMarkets(marketIds));
         })
@@ -77,7 +77,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       }
 
       dispatch(
-        loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
+        loadMarketsInfoIfNotLoaded(marketIds, (err) => {
           if (err) return logError(err);
           dispatch(updateOpenMarkets(marketIds));
         })
@@ -116,7 +116,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
           }
 
           dispatch(
-            loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
+            loadMarketsInfoIfNotLoaded(marketIds, (err) => {
               if (err) return logError(err);
               dispatch(updateResolvedMarkets(marketIds));
             })

@@ -1,4 +1,3 @@
-import sinon from "sinon";
 import testState from "test/testState";
 import configureMockStore from "redux-mock-store";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";

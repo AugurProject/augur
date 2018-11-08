@@ -139,16 +139,16 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
     beforeEach(() => {
       isGlobalWeb3Spy = jest
         .spyOn(isGlobalWeb3Module, "default")
-        .mockImplementationOnce(t.stub.isGlobalWeb3);
+        .mockImplementation(t.stub.isGlobalWeb3);
       getAugurNodeNetworkIdSpy = jest
         .spyOn(getAugurNodeNetworkIdModule, "getAugurNodeNetworkId")
-        .mockImplementationOnce(t.stub.getAugurNodeNetworkId);
+        .mockImplementation(t.stub.getAugurNodeNetworkId);
       getNetworkIdSpy = jest
         .spyOn(augur.rpc, "getNetworkID")
-        .mockImplementationOnce(t.stub.augur.rpc.getNetworkID);
+        .mockImplementation(t.stub.augur.rpc.getNetworkID);
       augurNetVersionSpy = jest
         .spyOn(augur.rpc.net, "version")
-        .mockImplementationOnce(t.stub.augur.rpc.net.version);
+        .mockImplementation(t.stub.augur.rpc.net.version);
     });
 
     afterEach(() => {
