@@ -8,7 +8,10 @@ import { BlockDirection, processBlockAndLogs } from "./process-block";
 
 export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: number, errorCallback: ErrorCallback): BlockAndLogsQueue {
   const blockAndLogsQueue = new BlockAndLogsQueue(async (direction: BlockDirection, block: BlockDetail, logs: Array<FormattedEventLog>) => {
-    return processBlockAndLogs(db, augur, direction, block, logs);
+    return processBlockAndLogs(db, augur, direction, block, logs).catch((err) => {
+      errorCallback(err);
+      throw(err);
+    });
   });
   const eventsToSubscribe = _.mapValues(logProcessors, (contractEvents) => {
     return _.keys(contractEvents);
@@ -18,14 +21,10 @@ export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: 
     highestBlockNumber,
     blockAndLogsQueue.acceptAddLogs,
     blockAndLogsQueue.acceptRemoveLogs,
-    (err: Error) => {
-      if (err) return callback(err);
-      augur.events.startBlockListeners({
-        onAdded: blockAndLogsQueue.acceptAddBlock,
-        onRemoved: blockAndLogsQueue.acceptRemoveBlock,
-      });
-      callback(null);
-    },
   );
+  augur.events.startBlockListeners({
+    onAdded: blockAndLogsQueue.acceptAddBlock,
+    onRemoved: blockAndLogsQueue.acceptRemoveBlock,
+  });
   return blockAndLogsQueue;
 }
