@@ -7,6 +7,7 @@ import getValue from "utils/get-value";
 import CustomPropTypes from "utils/custom-prop-types";
 import { createBigNumber } from "utils/create-big-number";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
+import MarketOutcomeTradingTypeIndicator from "modules/market/containers/market-outcome-trading-type-indicator";
 import Styles from "modules/market/components/market-outcomes-yes-no-scalar/market-outcomes-yes-no-scalar.styles";
 
 const MarketOutcomes = ({
@@ -73,15 +74,17 @@ const MarketOutcomes = ({
         style={currentValuePosition}
       >
         <div style={currentMarketStyles(calculatePosition())}>
-          <span
-            className={Styles["MarketOutcomes__current-value"]}
-            data-testid="midpoint"
-          >
-            {getValue(outcomes[0], "lastPricePercent.formatted")}
-          </span>
-          <span className={Styles["MarketOutcomes__current-denomination"]}>
-            {lastPriceDenomination}
-          </span>
+          <MarketOutcomeTradingTypeIndicator outcome={outcomes[0]}>
+            <span
+              className={Styles["MarketOutcomes__current-value"]}
+              data-testid="midpoint"
+            >
+              {getValue(outcomes[0], "lastPricePercent.formatted")}
+            </span>
+            <span className={Styles["MarketOutcomes__current-denomination"]}>
+              {lastPriceDenomination}
+            </span>
+          </MarketOutcomeTradingTypeIndicator>
           <MarketOutcomeTradingIndicator
             outcome={outcomes[0]}
             location="yes-no-scalar"

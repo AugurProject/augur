@@ -1,22 +1,28 @@
-import {
-  DOWN,
-  UP,
-  NONE,
-  BUY
-} from "modules/trades/constants/types";
+import { DOWN, UP, NONE, BUY } from "modules/trades/constants/types";
 import { createBigNumber } from "utils/create-big-number";
 import { orderBy, first } from "lodash";
 
 export const selectMarketOutcomeTradingIndicator = (
   marketTradingHistory,
-  outcome
+  outcome,
+  getTradeType
 ) => {
   if (!outcome) return NONE;
   const { marketId } = outcome;
-  return getTradeStatus(marketTradingHistory, marketId, outcome.id);
+  return getTradeStatus(
+    marketTradingHistory,
+    marketId,
+    outcome.id,
+    getTradeType
+  );
 };
 
-function getTradeStatus(marketTradingHistory, marketId, outcomeId) {
+function getTradeStatus(
+  marketTradingHistory,
+  marketId,
+  outcomeId,
+  getTradeType
+) {
   const marketHistory = marketTradingHistory[marketId];
   if (!marketHistory || marketHistory.length === 0) return NONE;
 
@@ -31,14 +37,17 @@ function getTradeStatus(marketTradingHistory, marketId, outcomeId) {
   );
 
   const firstTrade = first(sortedTrades);
-  if (trades.length === 1) {
-    return firstTrade.type === BUY ? UP : DOWN;
+  if (!getTradeType) {
+    if (trades.length === 1) {
+      return firstTrade.type === BUY ? UP : DOWN;
+    }
+
+    const secondTrade = sortedTrades[1];
+    const isUp = createBigNumber(firstTrade.price).gt(
+      createBigNumber(secondTrade.price)
+    );
+
+    return isUp ? UP : DOWN;
   }
-
-  const secondTrade = sortedTrades[1];
-  const isUp = createBigNumber(firstTrade.price).gt(
-    createBigNumber(secondTrade.price)
-  );
-
-  return isUp ? UP : DOWN
+  return firstTrade.type;
 }

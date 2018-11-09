@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
+import MarketOutcomeTradingTypeIndicator from "modules/market/containers/market-outcome-trading-type-indicator";
 import getValue from "utils/get-value";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 import Styles from "modules/market/components/market-outcomes-categorical/market-outcomes-categorical.styles";
@@ -19,7 +20,9 @@ const CategoricalOutcome = ({ className, outcome, isMobileSmall }) => (
       <div className={Styles.MarketOutcomesCategorical__container}>
         <div>
           <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
-            {getValue(outcome, "lastPricePercent.full")}
+            <MarketOutcomeTradingTypeIndicator outcome={outcome}>
+              {getValue(outcome, "lastPricePercent.full")}
+            </MarketOutcomeTradingTypeIndicator>
           </span>
           <MarketOutcomeTradingIndicator
             style={{ marginLeft: "10px" }}
@@ -37,7 +40,9 @@ const CategoricalOutcome = ({ className, outcome, isMobileSmall }) => (
           {outcome.name}
         </span>
         <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
-          {getValue(outcome, "lastPricePercent.full")}
+          <MarketOutcomeTradingTypeIndicator outcome={outcome}>
+            {getValue(outcome, "lastPricePercent.full")}
+          </MarketOutcomeTradingTypeIndicator>
         </span>
         <MarketOutcomeTradingIndicator
           style={{ marginLeft: "10px" }}
