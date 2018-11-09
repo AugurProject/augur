@@ -1,8 +1,6 @@
 import {
-  BUY_UP,
-  BUY_DOWN,
-  SELL_UP,
-  SELL_DOWN,
+  DOWN,
+  UP,
   NONE,
   BUY
 } from "modules/trades/constants/types";
@@ -34,22 +32,13 @@ function getTradeStatus(marketTradingHistory, marketId, outcomeId) {
 
   const firstTrade = first(sortedTrades);
   if (trades.length === 1) {
-    return firstTrade.type === BUY ? BUY_UP : SELL_DOWN;
+    return firstTrade.type === BUY ? UP : DOWN;
   }
 
   const secondTrade = sortedTrades[1];
   const isUp = createBigNumber(firstTrade.price).gt(
     createBigNumber(secondTrade.price)
   );
-  if (isUp) {
-    if (firstTrade.type === BUY) {
-      return BUY_UP;
-    }
-    return SELL_UP;
-  }
 
-  if (firstTrade.type === BUY) {
-    return BUY_DOWN;
-  }
-  return SELL_DOWN;
+  return isUp ? UP : DOWN
 }

@@ -2,10 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
-  BUY_UP,
-  BUY_DOWN,
-  SELL_UP,
-  SELL_DOWN,
+  UP,
+  DOWN,
   NONE
 } from "modules/trades/constants/types";
 import Styles from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator.style";
@@ -17,17 +15,15 @@ export default function OutcomeTradingIndicator({
   isMobile
 }) {
   const indicatorArray = {
-    [BUY_UP]: Styles.TradingIndicator_arrow_buy_up,
-    [BUY_DOWN]: Styles.TradingIndicator_arrow_buy_down,
-    [SELL_UP]: Styles.TradingIndicator_arrow_sell_up,
-    [SELL_DOWN]: Styles.TradingIndicator_arrow_sell_down,
+    [UP]: Styles.TradingIndicator_arrow_up,
+    [DOWN]: Styles.TradingIndicator_arrow_down,
     [NONE]: ""
   };
 
   const indicatorStyle = indicatorArray[tradingIndicator];
 
   const direction = indicator => {
-    const i = [BUY_UP, SELL_UP, BUY_DOWN, SELL_DOWN].indexOf(indicator);
+    const i = [UP, DOWN].indexOf(indicator);
     if (i >= 0) {
       return i <= 1 ? "up" : "down";
     }

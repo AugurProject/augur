@@ -1,9 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
-.TradingIndicator_arrow_buy_up,
-.TradingIndicator_arrow_buy_down,
-.TradingIndicator_arrow_sell_up,
-.TradingIndicator_arrow_sell_down,
+.TradingIndicator_arrow_up,
+.TradingIndicator_arrow_down,
 .TradingIndicator_arrow {
   border: solid transparent;
   border-color: rgba(136, 183, 213, 0);
@@ -17,19 +15,10 @@
   }
 }
 
-.TradingIndicator_arrow_buy_up {
-  border-bottom-color: @color-positive;
+.TradingIndicator_arrow_up {
+  border-bottom-color: @color-darkpurple;
 }
 
-.TradingIndicator_arrow_buy_down {
-  border-top-color: @color-positive;
+.TradingIndicator_arrow_down {
+  border-top-color: @color-darkpurple;
 }
-
-.TradingIndicator_arrow_sell_up {
-  border-bottom-color: @color-negative;
-}
-
-.TradingIndicator_arrow_sell_down {
-  border-top-color: @color-negative;
-}
-
