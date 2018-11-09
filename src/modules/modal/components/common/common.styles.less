@@ -419,6 +419,8 @@ div.ErrorField:focus {
   color: @color-almostblack;
   flex-flow: row nowrap;
   max-width: 35rem;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
   padding: 1.5rem 0;
   position: relative;
   text-align: center;
@@ -567,5 +569,11 @@ div.ErrorField:focus {
     > label {
       margin: 0 1.5rem;
     }
+  }
+}
+
+@media @breakpoint-mobile-extra-small {
+  .ModalDisclaimer__TextBox {
+    max-height: 10rem;
   }
 }
