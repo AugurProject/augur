@@ -23,9 +23,10 @@ export default function OutcomeTradingIndicator({
   const indicatorStyle = indicatorArray[tradingIndicator];
 
   const direction = indicator => {
-    const i = [UP, DOWN].indexOf(indicator);
-    if (i >= 0) {
-      return i <= 1 ? "up" : "down";
+    if (indicator === UP || indicator === DOWN) {
+      return indicator
+    } else {
+      return NONE;
     }
     return NONE;
   };
@@ -46,9 +47,9 @@ export default function OutcomeTradingIndicator({
         case "outcomes|down":
           return { top: "1.5rem", position: "absolute" };
         case "positions|up":
-          return { bottom: "0.9rem" };
+          return { position: "absolute", bottom: "1.5rem" };
         case "positions|down":
-          return { top: "0.945rem" };
+          return { position: "absolute", top: "0.945rem" };
         case "modileTradingForm|down":
           return { top: "1rem" };
         case "modileTradingForm|up":
