@@ -100,7 +100,7 @@ export default class MobilePositions extends Component {
                   </span>
                 )}
               </span>
-              {getValue(position, "avgPrice.formatted")} ETH
+              {getValue(position, "purchasePrice.formatted")} ETH
             </li>
             <li>
               <span>Unrealized P/L</span>
