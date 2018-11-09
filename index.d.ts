@@ -268,8 +268,7 @@ export class Augur {
     startBlockchainEventListeners(eventsToSubscribe: ContractEvents,
                                   startingBlockNumber: number,
                                   logsAddedListener: LogsListener,
-                                  logsRemovedListener: LogsListener,
-                                  onSetupComplete?: (err: Error|null) => void): void;
+                                  logsRemovedListener: LogsListener): void;
     stopBlockchainEventListeners(): boolean;
     startAugurNodeEventListeners(eventCallbacks: EventSubscriptionCallbacks, onSetupComplete?: (err: Error|null) => void): void;
     stopAugurNodeEventListeners(callback?: (err: Error|null) => void): void;

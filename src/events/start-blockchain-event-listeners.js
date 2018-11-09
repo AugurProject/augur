@@ -4,9 +4,7 @@ var compact = require("lodash").compact;
 var assign = require("lodash").assign;
 var contracts = require("../contracts");
 var ethrpc = require("../rpc-interface");
-var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
-var noop = require("../utils/noop");
 var parseLogMessage = require("./parse-message/parse-log-message");
 
 function parseLogs(logs, eventByAddressAndSignature) {
@@ -63,26 +61,23 @@ function flagRemoved(logs) {
  * Start listening for events emitted by the Ethereum blockchain.
  * @param {Object.<function>=} eventsToSubscribe List of interested contract events. Object of arrays. {ContractName: ["Event1", "Event2"]}
  * @param {number=} startingBlockNumber Block height to start blockstream at.
- * @param {function=} logsListener Callback which accepts array of logs. Always gets one block worth of logs.
- * @param {function=} onSetupComplete Called when all listeners are successfully set up.
+ * @param {function=} logsAddedListener Callback which accepts array of logs added. Always gets one block worth of logs. Called after block added
+ * @param {function=} logsRemovedListener Callback which accepts array of logs removed. Always gets one block worth of logs. Called before block removed
  */
-function startBlockchainEventListeners(eventsToSubscribe, startingBlockNumber, logsAddedListener, logsRemovedListener, onSetupComplete) {
-  if (!isFunction(onSetupComplete)) onSetupComplete = noop;
+function startBlockchainEventListeners(eventsToSubscribe, startingBlockNumber, logsAddedListener, logsRemovedListener) {
   if (typeof startingBlockNumber !== "undefined") {
     console.log("Starting blockstream at block ", startingBlockNumber);
     ethrpc.startBlockStream(startingBlockNumber);
   }
   const blockStream = ethrpc.getBlockStream();
-  if (!blockStream) return onSetupComplete(new Error("Not connected to Ethereum"));
-  if (!isObject(eventsToSubscribe)) return onSetupComplete(new Error("No event callbacks found"));
+  if (!blockStream) throw new Error("Not connected to Ethereum");
+  if (!isObject(eventsToSubscribe)) throw new Error("No event callbacks found");
   const activeContracts = contracts.addresses[ethrpc.getNetworkID()];
 
   const eventDetails = getEventsDetails(eventsToSubscribe, activeContracts);
   blockStream.addLogFilter(eventDetails.filter);
   blockStream.subscribeToOnLogsAdded((blockHash, logs) => logsAddedListener(blockHash, parseLogs(logs, eventDetails.eventByAddressAndSignature)));
   blockStream.subscribeToOnLogsRemoved((blockHash, logs) => logsRemovedListener(blockHash, parseLogs(flagRemoved(logs), eventDetails.eventByAddressAndSignature)));
-
-  onSetupComplete(null);
 }
 
 module.exports = startBlockchainEventListeners;
