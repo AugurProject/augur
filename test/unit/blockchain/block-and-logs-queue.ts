@@ -19,7 +19,7 @@ describe("blockchain/block-and-logs-queue", () => {
   let mockCallback: jest.Mock<Promise<void>>;
 
   beforeEach( () => {
-    mockCallback = jest.fn(() => Promise.resolve());
+    mockCallback = jest.fn().mockResolvedValue();
     blockAndLogsQueue = new BlockAndLogsQueue(mockCallback);
   });
 
