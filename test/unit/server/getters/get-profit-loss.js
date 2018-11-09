@@ -98,15 +98,11 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
   var connection = null;
   var augur = new Augur();
 
-  beforeEach('Initialize Database', (done) => {
-    setupTestDb((err, db) => {
-      if (err) return done(new Error(err));
-      connection = db;
-      done();
-    });
+  beforeEach(async () => {
+    connection = await setupTestDb();
   });
 
-  afterEach('Destroy DB and Disconnect', async() => {
+  afterEach(async () => {
     if(connection) await connection.destroy();
   });
 
@@ -118,7 +114,7 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
     });
 
     console.log(JSON.stringify(results));
-    expect(results.length).to.equal(3);
+    expect(results.length).toEqual(3);
   });
 });
 

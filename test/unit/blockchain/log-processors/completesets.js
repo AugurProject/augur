@@ -11,6 +11,11 @@ function getState(db, log) {
 }
 
 describe("blockchain/log-processors/completesets", () => {
+  let spy;
+  beforeAll(() => {
+    jest.spyOn(augur.rpc, 'getNetworkID').mockImplementation(() => 1);
+  });
+
   let db;
   beforeEach(async () => {
     db = await setupTestDb();
@@ -50,5 +55,9 @@ describe("blockchain/log-processors/completesets", () => {
 
   afterEach(async () => {
     await db.destroy();
+  });
+
+  afterAll(() => {
+    spy.mockRestore();
   });
 });
