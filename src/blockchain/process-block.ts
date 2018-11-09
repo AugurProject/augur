@@ -61,6 +61,7 @@ export async function processBlockAndLogs(db: Knex, augur: Augur, direction: Blo
       logger.info(`block removed: ${parseInt(block.number, 16)} (${block.hash})`);
       await dbWritesFunction(trx);
       await db("blocks").transacting(trx).where({ blockHash: block.hash }).del();
+      // TODO: un-advance time
     }
   });
 }

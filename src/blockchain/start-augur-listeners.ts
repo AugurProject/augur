@@ -6,7 +6,7 @@ import { logProcessors } from "./log-processors";
 import { BlockAndLogsQueue } from "./block-and-logs-queue";
 import { BlockDirection, processBlockAndLogs } from "./process-block";
 
-export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: number, callback: ErrorCallback) {
+export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: number, errorCallback: ErrorCallback): BlockAndLogsQueue {
   const blockAndLogsQueue = new BlockAndLogsQueue(async (direction: BlockDirection, block: BlockDetail, logs: Array<FormattedEventLog>) => {
     return processBlockAndLogs(db, augur, direction, block, logs);
   });
