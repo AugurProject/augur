@@ -281,7 +281,6 @@ export interface TransactionHashesRow {
   transactionHash: number;
 }
 
-
 export interface DisputeTokensRow<BigNumberType> extends Payout<BigNumberType> {
   disputeToken: Address;
   marketId: Address;

@@ -6,7 +6,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       "blockNumber" integer PRIMARY KEY NOT NULL,
       "blockHash" varchar(66) NOT NULL,
       "timestamp" integer NOT NULL,
-      "bulkSync" bool DEFAULT false  
+      "bulkSync" bool DEFAULT false
     )`);
   });
 };

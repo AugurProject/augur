@@ -27,6 +27,6 @@ export function makeLogListener(augur: Augur, contractName: string, eventName: s
 async function insertTransactionHash(db: Knex, blockNumber: number, transactionHash: string) {
   const txHashRows: Array<TransactionHashesRow> = await db("transactionHashes").where({ transactionHash });
   if (!txHashRows || !txHashRows.length) {
-    await db.insert({ blockNumber, transactionHash }).into("transactionHashes")
+    await db.insert({ blockNumber, transactionHash }).into("transactionHashes");
   }
 }
