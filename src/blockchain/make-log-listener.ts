@@ -1,6 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { ErrorCallback, FormattedEventLog } from "../types";
+import { ErrorCallback, FormattedEventLog, TransactionHashesRow } from "../types";
 import { logProcessors } from "./log-processors";
 import { processLog } from "./process-logs";
 import { augurEmitter } from "../events";
@@ -18,7 +18,15 @@ export function makeLogListener(augur: Augur, contractName: string, eventName: s
       }
       const dbWriteFunction = await dbWritePromise;
       if (dbWriteFunction == null) return callback(new Error("Problem with first phase of log processing"));
+      await insertTransactionHash(db, log.blockNumber, log.transactionHash);
       await dbWriteFunction(db);
     });
   };
+}
+
+async function insertTransactionHash(db: Knex, blockNumber: number, transactionHash: string) {
+  const txHashRows: Array<TransactionHashesRow> = await db("transactionHashes").where({ transactionHash });
+  if (!txHashRows || !txHashRows.length) {
+    await db.insert({ blockNumber, transactionHash }).into("transactionHashes")
+  }
 }

@@ -276,6 +276,12 @@ export interface BlocksRow {
   timestamp: number;
 }
 
+export interface TransactionHashesRow {
+  blockNumber: number;
+  transactionHash: number;
+}
+
+
 export interface DisputeTokensRow<BigNumberType> extends Payout<BigNumberType> {
   disputeToken: Address;
   marketId: Address;
