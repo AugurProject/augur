@@ -51,7 +51,9 @@ export default class ReportingDisputeForm extends Component {
   constructor(props) {
     super(props);
     const { availableRep, stakeInfo, market } = props;
-    const { bondSizeOfNewStake, disputeRound } = market.disputeInfo;
+    const bondSizeOfNewStake =
+      market.disputeInfo && market.disputeInfo.bondSizeOfNewStake;
+    const disputeRound = market.disputeInfo && market.disputeInfo.disputeRound;
 
     this.state = {
       inputStake: stakeInfo.displayValue || "",
@@ -85,7 +87,10 @@ export default class ReportingDisputeForm extends Component {
     const { disputeInfo } = newProps.market;
     const { updateState } = this.props;
     const updatedValidations = { ...this.state.validations };
-    if (disputeInfo.disputeRound !== this.state.currentDisputeRound) {
+    if (
+      disputeInfo &&
+      disputeInfo.disputeRound !== this.state.currentDisputeRound
+    ) {
       updatedValidations.isDisputeActive =
         disputeInfo.disputeRound === this.state.currentDisputeRound;
       this.setState({
@@ -428,7 +433,7 @@ export default class ReportingDisputeForm extends Component {
     const { market, stakeInfo, outcomes } = this.props;
     const s = this.state;
     const winner = (outcomes && outcomes.find(o => o.tentativeWinning)) || {};
-    const { disputeRound } = market.disputeInfo;
+    const disputeRound = market.disputeInfo && market.disputeInfo.disputeRound;
 
     // need to check if selectedOutcome has already been disputed on
     let selectedOutcome =
