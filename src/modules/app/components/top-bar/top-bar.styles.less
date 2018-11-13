@@ -62,11 +62,15 @@ div.TopBar__notifications {
   }
 }
 
-.TopBar__notificationsDisabled {
+div.TopBar__notificationsDisabled {
   cursor: default;
 
   &:hover {
     background-color: @color-purple;
+  }
+
+  @media @breakpoint-mobile-extra-small {
+    display: none;
   }
 }
 
@@ -90,6 +94,10 @@ div.TopBar__notifications {
   justify-content: center;
   margin-right: 2rem;
   width: 1.25rem;
+
+  @media @breakpoint-mobile-extra-small {
+    margin-right: 1rem;
+  }
 }
 
 .TopBar__stat-label {
