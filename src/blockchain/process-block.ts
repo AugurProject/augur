@@ -3,12 +3,13 @@ import * as Knex from "knex";
 import { each } from "bluebird";
 import Augur, { FormattedEventLog } from "augur.js";
 import { augurEmitter } from "../events";
-import { BlockDetail, BlocksRow, MarketsContractAddressRow, ReportingState, Address, FeeWindowState, MarketIdUniverseFeeWindow } from "../types";
+import { BlockDetail, BlocksRow, ErrorCallback, MarketsContractAddressRow, ReportingState, Address, FeeWindowState, MarketIdUniverseFeeWindow, TransactionHashesRow } from "../types";
 import { updateActiveFeeWindows, updateMarketState } from "./log-processors/database";
 import { getMarketsWithReportingState } from "../server/getters/database";
 import { logger } from "../utils/logger";
 import { SubscriptionEventNames } from "../constants";
 import { processLogByName } from "./process-logs";
+import { Transaction } from "ethereumjs-blockstream";
 
 export type BlockDirection = "add"|"remove";
 
@@ -43,7 +44,7 @@ export function clearOverrideTimestamp(): void {
   blockHeadTimestamp = 0;
 }
 
-export async function processBlockAndLogs(db: Knex, augur: Augur, direction: BlockDirection, block: BlockDetail, logs: Array<FormattedEventLog>) {
+export async function processBlockAndLogs(db: Knex, augur: Augur, direction: BlockDirection, block: BlockDetail, bulkSync: boolean, logs: Array<FormattedEventLog>) {
   if (!block || !block.timestamp) throw new Error(JSON.stringify(block));
   const dbWritePromises = _.compact(logs.map((log) => processLogByName(augur, log)));
   const dbWriteFunctions = await Promise.all(dbWritePromises);
@@ -55,38 +56,47 @@ export async function processBlockAndLogs(db: Knex, augur: Augur, direction: Blo
   };
   db.transaction(async (trx: Knex.Transaction) => {
     if (direction === "add") {
-      await processBlockByBlockDetails(trx, augur, block);
+      await processBlockByBlockDetails(trx, augur, block, bulkSync);
       await dbWritesFunction(trx);
     } else {
       logger.info(`block removed: ${parseInt(block.number, 16)} (${block.hash})`);
       await dbWritesFunction(trx);
+      await db("transactionHashes").transacting(trx).where({ blockNumber: block.number }).update({ removed: 1 });
       await db("blocks").transacting(trx).where({ blockHash: block.hash }).del();
       // TODO: un-advance time
     }
   });
 }
 
-async function insertBlockRow(db: Knex, blockNumber: number, blockHash: string, timestamp: number) {
+async function insertBlockRow(db: Knex, blockNumber: number, blockHash: string, bulkSync: boolean, timestamp: number) {
   const blocksRows: Array<BlocksRow> = await db("blocks").where({ blockNumber });
   let query: Knex.QueryBuilder;
   if (!blocksRows || !blocksRows.length) {
-    query = db.insert({ blockNumber, blockHash, timestamp }).into("blocks");
+    query = db.insert({ blockNumber, blockHash, timestamp, bulkSync }).into("blocks");
   } else {
-    query = db("blocks").where({ blockNumber }).update({ blockHash, timestamp });
+    query = db("blocks").where({ blockNumber }).update({ blockHash, timestamp, bulkSync });
   }
   return query;
 }
 
-export async function processBlockByBlockDetails(db: Knex, augur: Augur, block: BlockDetail) {
+export async function processBlockByBlockDetails(db: Knex, augur: Augur, block: BlockDetail, bulkSync: boolean) {
   if (!block || !block.timestamp) throw new Error(JSON.stringify(block));
   const blockNumber = parseInt(block.number, 16);
   const blockHash = block.hash;
   blockHeadTimestamp = parseInt(block.timestamp, 16);
   const timestamp = getOverrideTimestamp() || blockHeadTimestamp;
   logger.info("new block:", `${blockNumber}, ${timestamp} (${(new Date(timestamp * 1000)).toString()})`);
-  await insertBlockRow(db, blockNumber, blockHash, timestamp);
+  await insertBlockRow(db, blockNumber, blockHash, bulkSync, timestamp);
   await advanceTime(db, augur, blockNumber, timestamp);
 }
+
+export async function insertTransactionHash(db: Knex, blockNumber: number, transactionHash: string) {
+  const txHashRows: Array<TransactionHashesRow> = await db("transactionHashes").where({ transactionHash });
+  if (!txHashRows || !txHashRows.length) {
+    await db.insert({ blockNumber, transactionHash }).into("transactionHashes");
+  }
+}
+
 
 async function advanceTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number) {
   await advanceMarketReachingEndTime(db, augur, blockNumber, timestamp);
