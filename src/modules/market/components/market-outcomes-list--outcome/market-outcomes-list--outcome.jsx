@@ -7,7 +7,6 @@ import classNames from "classnames";
 import ValueDenomination from "modules/common/components/value-denomination/value-denomination";
 
 import getValue from "utils/get-value";
-import MarketOutcomeTradingTypeIndicator from "modules/market/containers/market-outcome-trading-type-indicator";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 import Styles from "modules/market/components/market-outcomes-list--outcome/market-outcomes-list--outcome.styles";
 
@@ -48,9 +47,7 @@ const Outcome = ({ outcome, selectedOutcome, updateSelectedOutcome }) => {
         <ValueDenomination formatted={topAskShares} />
       </li>
       <li style={{ position: "relative" }}>
-        <MarketOutcomeTradingTypeIndicator outcome={outcome}>
-          <ValueDenomination formatted={lastPrice} />
-        </MarketOutcomeTradingTypeIndicator>
+        <ValueDenomination formatted={lastPrice} />
         <MarketOutcomeTradingIndicator outcome={outcome} location="outcomes" />
       </li>
     </ul>
