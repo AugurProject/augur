@@ -3,13 +3,12 @@ import * as Knex from "knex";
 import { each } from "bluebird";
 import Augur, { FormattedEventLog } from "augur.js";
 import { augurEmitter } from "../events";
-import { BlockDetail, BlocksRow, ErrorCallback, MarketsContractAddressRow, ReportingState, Address, FeeWindowState, MarketIdUniverseFeeWindow, TransactionHashesRow } from "../types";
+import { BlockDetail, BlocksRow, MarketsContractAddressRow, ReportingState, Address, FeeWindowState, MarketIdUniverseFeeWindow, TransactionHashesRow } from "../types";
 import { updateActiveFeeWindows, updateMarketState } from "./log-processors/database";
 import { getMarketsWithReportingState } from "../server/getters/database";
 import { logger } from "../utils/logger";
 import { SubscriptionEventNames } from "../constants";
 import { processLogByName } from "./process-logs";
-import { Transaction } from "ethereumjs-blockstream";
 
 export type BlockDirection = "add"|"remove";
 
