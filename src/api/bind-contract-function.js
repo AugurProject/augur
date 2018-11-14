@@ -61,15 +61,13 @@ function bindContractFunction(functionAbi) {
         return;
       }
       transact();
-    })
-      .then(function (response) {
-        if (onSuccess) onSuccess(response);
-        return response;
-      })
-      .catch(function (err) {
-        if (onFailed) return onFailed(err);
-        throw err;
-      });
+    }).then(function (response) {
+      if (onSuccess) onSuccess(response);
+      return response;
+    }).catch(function (err) {
+      if (onFailed) return onFailed(err);
+      throw err;
+    });
     return transactSuccessPromise;
   };
 }
