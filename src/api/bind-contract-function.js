@@ -25,16 +25,13 @@ function bindContractFunction(functionAbi) {
             if (response == null) return reject(new Error("Null eth_call response"));
             resolve(response);
           });
+        }).then(function (response) {
+          if (callback) callback(null, response);
+          return response;
         }).catch(function (err) {
           if (callback) return callback(err);
           throw err;
         });
-        if (callback) {
-          callPromise.then(function (response) {
-            console.log("FFFFFFF", response);
-            callback(null, response);
-          });
-        }
         return callPromise;
       }
     }
