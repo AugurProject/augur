@@ -31,6 +31,7 @@ function bindContractFunction(functionAbi) {
         });
         if (callback) {
           callPromise.then(function (response) {
+            console.log("FFFFFFF", response);
             callback(null, response);
           });
         }
@@ -60,11 +61,15 @@ function bindContractFunction(functionAbi) {
         return;
       }
       transact();
-    }).catch(function (err) {
-      if (onFailed) return onFailed(err);
-      throw err;
-    });
-    if (onSuccess) transactSuccessPromise.then(onSuccess);
+    })
+      .then(function (response) {
+        if (onSuccess) onSuccess(response);
+        return response;
+      })
+      .catch(function (err) {
+        if (onFailed) return onFailed(err);
+        throw err;
+      });
     return transactSuccessPromise;
   };
 }
