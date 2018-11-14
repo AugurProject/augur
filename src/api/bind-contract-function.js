@@ -25,15 +25,13 @@ function bindContractFunction(functionAbi) {
             if (response == null) return reject(new Error("Null eth_call response"));
             resolve(response);
           });
+        }).then(function (response) {
+          if (callback) callback(null, response);
+          return response;
         }).catch(function (err) {
           if (callback) return callback(err);
           throw err;
         });
-        if (callback) {
-          callPromise.then(function (response) {
-            callback(null, response);
-          });
-        }
         return callPromise;
       }
     }
@@ -60,11 +58,13 @@ function bindContractFunction(functionAbi) {
         return;
       }
       transact();
+    }).then(function (response) {
+      if (onSuccess) onSuccess(response);
+      return response;
     }).catch(function (err) {
       if (onFailed) return onFailed(err);
       throw err;
     });
-    if (onSuccess) transactSuccessPromise.then(onSuccess);
     return transactSuccessPromise;
   };
 }
