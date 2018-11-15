@@ -14,8 +14,6 @@ describe("server/getters/get-categories", () => {
   test("get categories in universe b sorted by popularity", async () => {
     const params = {
       universe: "0x000000000000000000000000000000000000000b",
-      sortBy: "popularity",
-      isSortDescending: true,
     };
     await expect(dispatchJsonRpcRequest(db, {
       method: "getCategories",

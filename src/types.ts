@@ -179,6 +179,11 @@ export interface MarketsContractAddressRow {
   marketId: Address;
 }
 
+export interface MarketIdUniverseFeeWindow extends MarketsContractAddressRow {
+  universe: Address;
+  feeWindow: Address;
+}
+
 export interface MarketPricing<BigNumberType> {
   minPrice: BigNumberType;
   maxPrice: BigNumberType;
@@ -274,6 +279,11 @@ export interface CategoryRow {
 export interface BlocksRow {
   blockNumber: number;
   timestamp: number;
+}
+
+export interface TransactionHashesRow {
+  blockNumber: number;
+  transactionHash: number;
 }
 
 export interface DisputeTokensRow<BigNumberType> extends Payout<BigNumberType> {
