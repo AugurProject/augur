@@ -106,6 +106,7 @@ export default class MarketsView extends Component {
           filter={s.filter}
           sort={s.sort}
           updateFilter={this.updateFilter}
+          history={history}
         />
         <MarketsList
           testid="markets"

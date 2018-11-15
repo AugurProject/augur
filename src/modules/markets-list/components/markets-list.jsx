@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 import MarketPreview from "modules/market/containers/market-preview";
 import Paginator from "modules/common/components/paginator/paginator";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
@@ -37,7 +38,7 @@ export default class MarketsList extends Component {
   static defaultProps = {
     testid: null,
     linkType: TYPE_TRADE,
-    paginationPageParam: "page",
+    paginationPageParam: PAGINATION_PARAM_NAME,
     nullMessage: "No Markets Available",
     pendingLiquidityOrders: {},
     addNullPadding: false,

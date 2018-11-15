@@ -15,6 +15,9 @@ import {
 } from "modules/filter-sort/constants/market-states";
 import Dropdown from "modules/common/components/dropdown/dropdown";
 import Styles from "modules/filter-sort/components/filter-dropdowns/filter-dropdowns.styles";
+import parseQuery from "modules/routes/helpers/parse-query";
+import makeQuery from "modules/routes/helpers/make-query";
+import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 
 const sortOptions = [
   { value: MARKET_CREATION_TIME, label: "Creation Time" },
@@ -39,18 +42,34 @@ export default class FilterSearch extends Component {
     defaultFilter: PropTypes.string.isRequired,
     defaultSort: PropTypes.string.isRequired,
     updateFilterOption: PropTypes.func.isRequired,
-    updateSortOption: PropTypes.func.isRequired
+    updateSortOption: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
     this.changeSortDropdown = this.changeSortDropdown.bind(this);
     this.changeFilterDropdown = this.changeFilterDropdown.bind(this);
+    this.goToPageOne = this.goToPageOne.bind(this);
+  }
+
+  goToPageOne() {
+    const { history, location } = this.props;
+    let updatedSearch = parseQuery(location.search);
+
+    delete updatedSearch[PAGINATION_PARAM_NAME];
+    updatedSearch = makeQuery(updatedSearch);
+    history.push({
+      ...location,
+      search: updatedSearch
+    });
   }
 
   changeSortDropdown(value) {
     const { filter, updateSortOption, updateFilter } = this.props;
 
+    this.goToPageOne();
     updateSortOption(value);
     updateFilter({ filter, sort: value });
   }
@@ -58,6 +77,7 @@ export default class FilterSearch extends Component {
   changeFilterDropdown(value) {
     const { sort, updateFilterOption, updateFilter } = this.props;
 
+    this.goToPageOne();
     updateFilterOption(value);
     updateFilter({ filter: value, sort });
   }

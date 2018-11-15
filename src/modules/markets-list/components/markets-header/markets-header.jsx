@@ -18,7 +18,8 @@ export default class MarketsHeader extends Component {
     location: PropTypes.object.isRequired,
     filter: PropTypes.string.isRequired,
     sort: PropTypes.string.isRequired,
-    updateFilter: PropTypes.func.isRequired
+    updateFilter: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -74,6 +75,8 @@ export default class MarketsHeader extends Component {
               filter={filter}
               sort={sort}
               updateFilter={updateFilter}
+              history={history}
+              location={location}
             />
           </div>
           <div className={Styles.MarketsHeader__search}>
