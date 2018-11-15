@@ -6,19 +6,6 @@ var initialState = { block: {} };
 
 var subscriptions = assign({}, initialState);
 
-module.exports.onLogAdded = function (log) {
-  if (subscriptions[log.address]) {
-    subscriptions[log.address].callback(log);
-  }
-};
-
-module.exports.onLogRemoved = function (log) {
-  if (subscriptions[log.address]) {
-    log.removed = true;
-    subscriptions[log.address].callback(log);
-  }
-};
-
 module.exports.getSubscriptions = function () {
   return subscriptions;
 };

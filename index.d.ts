@@ -234,6 +234,8 @@ export interface RpcInterface {
 
 export type BlockRange = { fromBlock: number; toBlock: number };
 export type BatchCallback = (logs: Array<FormattedEventLog>, blockRange: BlockRange) => void;
+export type LogsListener = (blockHash: string, logs: Array<FormattedEventLog>) => void;
+export type ContractEvents = { [contractName: string]: Array<string> };
 
 export class Augur {
   public version: string;
@@ -263,7 +265,10 @@ export class Augur {
     getAllAugurLogs: (p: ApiParams, batchCallback: BatchCallback, finalCallback: (err: Error|null) => void) => any;
     startBlockListeners(blockCallbacks: BlockSubscriptionCallbacks): boolean;
     stopBlockListeners(): boolean;
-    startBlockchainEventListeners(eventCallbacks: EventSubscriptionCallbacksKeyedByContract, startingBlockNumber: number, onSetupComplete?: (err: Error|null) => void): void;
+    startBlockchainEventListeners(eventsToSubscribe: ContractEvents,
+                                  startingBlockNumber: number,
+                                  logsAddedListener: LogsListener,
+                                  logsRemovedListener: LogsListener): void;
     stopBlockchainEventListeners(): boolean;
     startAugurNodeEventListeners(eventCallbacks: EventSubscriptionCallbacks, onSetupComplete?: (err: Error|null) => void): void;
     stopAugurNodeEventListeners(callback?: (err: Error|null) => void): void;
