@@ -179,6 +179,11 @@ export interface MarketsContractAddressRow {
   marketId: Address;
 }
 
+export interface MarketIdUniverseFeeWindow extends MarketsContractAddressRow {
+  universe: Address;
+  feeWindow: Address;
+}
+
 export interface MarketPricing<BigNumberType> {
   minPrice: BigNumberType;
   maxPrice: BigNumberType;
