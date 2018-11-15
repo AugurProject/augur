@@ -68,7 +68,7 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
     });
     const dbWriteFunctions = await Promise.all(dbWritePromises);
     await db.transaction(async (trx: Knex.Transaction) => {
-      await processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber]);
+      await processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber], true);
       logger.info(`Processing ${dbWriteFunctions.length} logs`);
       for (const dbWriteFunction of dbWriteFunctions) {
         await dbWriteFunction(trx);
