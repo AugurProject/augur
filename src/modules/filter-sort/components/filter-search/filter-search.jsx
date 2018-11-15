@@ -94,7 +94,6 @@ export default class FilterSearch extends Component {
     }
 
     updatedSearch = makeQuery(updatedSearch);
-    console.log(location);
     history.push({
       ...location,
       search: updatedSearch
