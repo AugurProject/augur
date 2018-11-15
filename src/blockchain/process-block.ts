@@ -96,7 +96,6 @@ export async function insertTransactionHash(db: Knex, blockNumber: number, trans
   }
 }
 
-
 async function advanceTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number) {
   await advanceMarketReachingEndTime(db, augur, blockNumber, timestamp);
   await advanceMarketMissingDesignatedReport(db, augur, blockNumber, timestamp);

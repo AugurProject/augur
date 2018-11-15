@@ -5,7 +5,7 @@ import { each } from "bluebird";
 import { Augur, BlockRange } from "augur.js";
 import { BlockDetail, ErrorCallback, FormattedEventLog } from "../types";
 import { processLogByName } from "./process-logs";
-import { processBlockByBlockDetails } from "./process-block";
+import { insertTransactionHash, processBlockByBlockDetails } from "./process-block";
 import { logger } from "../utils/logger";
 
 const BLOCK_DOWNLOAD_PARALLEL_LIMIT = 15;
@@ -66,6 +66,7 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
     const dbWriteFunctions = await Promise.all(dbWritePromises);
     await db.transaction(async (trx: Knex.Transaction) => {
       await processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber], true);
+      await each(logs, async (log) => await insertTransactionHash(trx, blockNumber, log.transactionHash));
       logger.info(`Processing ${dbWriteFunctions.length} logs`);
       for (const dbWriteFunction of dbWriteFunctions) {
         await dbWriteFunction(trx);
