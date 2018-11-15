@@ -8,6 +8,7 @@ import {
   TAGS_PARAM_NAME,
   FILTER_SEARCH_PARAM
 } from "modules/filter-sort/constants/param-names";
+import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 import { selectCategories } from "modules/categories/selectors/categories";
 import { selectIsMobile } from "src/select-state";
 
@@ -53,6 +54,8 @@ const mapStateToProps = (
     if (!isEmpty(tagArr)) {
       p[TAGS_PARAM_NAME] = tagArr.join(QUERY_VALUE_DELIMITER);
     }
+
+    delete p[PAGINATION_PARAM_NAME];
 
     history.push({
       ...location,
