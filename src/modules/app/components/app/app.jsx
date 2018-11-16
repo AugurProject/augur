@@ -53,7 +53,6 @@ import {
   PORTFOLIO_TRANSACTIONS,
   PORTFOLIO_REPORTS,
   CREATE_MARKET,
-  CATEGORIES,
   REPORTING_DISPUTE_MARKETS,
   REPORTING_REPORT_MARKETS,
   REPORTING_RESOLVED_MARKETS
@@ -133,7 +132,7 @@ export default class AppView extends Component {
       mainMenu: { scalar: 0, open: false, currentTween: null },
       subMenu: { scalar: 0, open: false, currentTween: null },
       mobileMenuState: mobileMenuStates.CLOSED,
-      currentBasePath: CATEGORIES,
+      currentBasePath: MARKETS,
       currentInnerNavType: null,
       isNotificationsVisible: false
     };
@@ -528,9 +527,7 @@ export default class AppView extends Component {
             onClick={e => this.mainSectionClickHandler(e, false)}
             role="presentation"
           >
-            <Link to={makePath(CATEGORIES)}>
-              <Logo isLoading={isLoading} />
-            </Link>
+            <Logo isLoading={isLoading} />
             {this.renderMobileMenuButton(unseenCount)}
             <SideNav
               defaultMobileClick={() =>

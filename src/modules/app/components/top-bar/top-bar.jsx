@@ -8,7 +8,7 @@ import ConnectAccount from "modules/auth/containers/connect-account";
 import GasPriceEdit from "modules/app/containers/gas-price-edit";
 
 import makePath from "modules/routes/helpers/make-path";
-import { CATEGORIES } from "modules/routes/constants/views";
+import { MARKETS } from "modules/routes/constants/views";
 import Styles from "modules/app/components/top-bar/top-bar.styles";
 
 const TopBar = props => (
@@ -111,7 +111,7 @@ const TopBar = props => (
       </div>
     </div>
     <span className={Styles["TopBar__logo-text"]}>
-      <Link to={makePath(CATEGORIES)}>Augur</Link>
+      <Link to={makePath(MARKETS)}>Augur</Link>
     </span>
   </header>
 );

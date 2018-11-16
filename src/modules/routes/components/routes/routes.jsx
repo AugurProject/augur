@@ -13,11 +13,6 @@ import * as COMPONENTS from "modules/routes/constants/components";
 // TODO -- due to side-bar matching constraints, the below does not conform to the above.
 const Routes = p => (
   <Switch>
-    <Route
-      exact
-      path={makePath(VIEWS.DEFAULT_VIEW)}
-      component={COMPONENTS.Categories}
-    />
     <Route path={makePath(VIEWS.MARKETS)} component={COMPONENTS.Markets} />
     <Route path={makePath(VIEWS.MARKET)} component={COMPONENTS.Market} />
     <AuthenticatedRoute
@@ -88,7 +83,7 @@ const Routes = p => (
       path={makePath(VIEWS.REPORTING_RESOLVED_MARKETS)}
       component={COMPONENTS.Reporting}
     />
-    <Redirect to={makePath(VIEWS.CATEGORIES)} />
+    <Redirect to={makePath(VIEWS.MARKETS)} />
   </Switch>
 );
 
