@@ -7,7 +7,7 @@ import { selectAccountPositionsState } from "src/select-state";
 
 // TODO
 export default function() {
-  const markets = selectLoginAccountPositions(store.getState());
+  const markets = selectLoginAccountPositionsMarkets(store.getState());
   const summary = generateMarketsPositionsSummary(markets);
 
   return {
@@ -16,16 +16,13 @@ export default function() {
   };
 }
 
-const selectLoginAccountPositionsSelector = () =>
-  createSelector(
-    selectMarkets,
-    selectAccountPositionsState,
-    (markets, positions) => {
-      if (!markets || !positions || Object.keys(positions).length === 0) {
-        return [];
-      }
-      return markets.filter(market => positions[market.id] != null);
+export const selectLoginAccountPositionsMarkets = createSelector(
+  selectMarkets,
+  selectAccountPositionsState,
+  (markets, positions) => {
+    if (!markets || !positions || Object.keys(positions).length === 0) {
+      return [];
     }
-  );
-
-export const selectLoginAccountPositions = selectLoginAccountPositionsSelector();
+    return markets.filter(market => positions[market.id] != null);
+  }
+);

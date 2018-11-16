@@ -1,5 +1,5 @@
 import { createBigNumber } from "utils/create-big-number";
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
 
 export const isAlmostZero = n =>
   createBigNumber(n, 10)

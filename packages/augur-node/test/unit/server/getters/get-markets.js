@@ -1,30 +1,33 @@
 "use strict";
 
-const ReportingState = require("src/types").ReportingState;
+const ReportingState = require("../../../../src/types").ReportingState;
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 
 describe("server/getters/get-markets", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
-      t.method = "getMarkets";
-      dispatchJsonRpcRequest(db, t, {}, (err, marketsMatched) => {
-        t.assertions(err, marketsMatched);
-        db.destroy();
-        done();
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        if (err) assert.fail(err);
+        t.method = "getMarkets";
+        dispatchJsonRpcRequest(db,  t, {}, (err, marketsMatched) => {
+          t.assertions(err, marketsMatched);
+          db.destroy();
+          done();
+        });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "get markets in universe b",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
     },
     assertions: (err, marketsMatched) => {
-      expect(err).toBeFalsy();
-      expect(marketsMatched).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsMatched, [
         "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000013",
@@ -43,25 +46,25 @@ describe("server/getters/get-markets", () => {
       ]);
     },
   });
-  runTest({
+  test({
     description: "nonexistent universe",
     params: {
       universe: "0x1010101010101010101010101010101010101010",
     },
     assertions: (err, marketsMatched) => {
-      expect(err).toBeFalsy();
-      expect(marketsMatched).toEqual([]);
+      assert.ifError(err);
+      assert.deepEqual(marketsMatched, []);
     },
   });
-  runTest({
+  test({
     description: "user has created 3 markets",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       creator: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, marketsCreatedByUser) => {
-      expect(err).toBeFalsy();
-      expect(marketsCreatedByUser).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsCreatedByUser, [
         "0x0000000000000000000000000000000000000016",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000013",
@@ -79,39 +82,39 @@ describe("server/getters/get-markets", () => {
       ]);
     },
   });
-  runTest({
+  test({
     description: "user has created 1 market",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       creator: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (err, marketsCreatedByUser) => {
-      expect(err).toBeFalsy();
-      expect(marketsCreatedByUser).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsCreatedByUser, [
         "0x0000000000000000000000000000000000000003",
       ]);
     },
   });
-  runTest({
+  test({
     description: "user has not created any markets",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       creator: "0x0000000000000000000000000000000000000bbb",
     },
     assertions: (err, marketsCreatedByUser) => {
-      expect(err).toBeFalsy();
-      expect(marketsCreatedByUser).toEqual([]);
+      assert.ifError(err);
+      assert.deepEqual(marketsCreatedByUser, []);
     },
   });
-  runTest({
+  test({
     description: "category with markets in it",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       category: "TEST CATEGORY",
     },
     assertions: (err, marketsInCategory) => {
-      expect(err).toBeFalsy();
-      expect(marketsInCategory).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsInCategory, [
         "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000013",
@@ -130,7 +133,7 @@ describe("server/getters/get-markets", () => {
       ]);
     },
   });
-  runTest({
+  test({
     description: "category with markets in it, limit 2",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -138,25 +141,25 @@ describe("server/getters/get-markets", () => {
       limit: 2,
     },
     assertions: (err, marketsInCategory) => {
-      expect(err).toBeFalsy();
-      expect(marketsInCategory).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsInCategory, [
         "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
       ]);
     },
   });
-  runTest({
+  test({
     description: "empty category",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       category: "empty category",
     },
     assertions: (err, marketsInCategory) => {
-      expect(err).toBeFalsy();
-      expect(marketsInCategory).toEqual([]);
+      assert.ifError(err);
+      assert.deepEqual(marketsInCategory, []);
     },
   });
-  runTest({
+  test({
     description: "get markets upcoming, unknown designated reporter",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -164,11 +167,11 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (err, marketsUpcomingDesignatedReporting) => {
-      expect(err).toBeFalsy();
-      expect(marketsUpcomingDesignatedReporting).toEqual([]);
+      assert.ifError(err);
+      assert.deepEqual(marketsUpcomingDesignatedReporting, []);
     },
   });
-  runTest({
+  test({
     description: "get all markets upcoming designated reporting, sorted ascending by volume",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -177,13 +180,13 @@ describe("server/getters/get-markets", () => {
       isSortDescending: false,
     },
     assertions: (err, marketsUpcomingDesignatedReporting) => {
-      expect(err).toBeFalsy();
-      expect(marketsUpcomingDesignatedReporting).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsUpcomingDesignatedReporting, [
         "0x0000000000000000000000000000000000000222",
       ]);
     },
   });
-  runTest({
+  test({
     description: "get all markets upcoming designated reporting by b0b",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -191,13 +194,13 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketsInfo).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000222",
       ]);
     },
   });
-  runTest({
+  test({
     description: "get markets awaiting unknown designated reporter",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -205,11 +208,11 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (err, marketsAwaitingDesignatedReporting) => {
-      expect(err).toBeFalsy();
-      expect(marketsAwaitingDesignatedReporting).toEqual([]);
+      assert.ifError(err);
+      assert.deepEqual(marketsAwaitingDesignatedReporting, []);
     },
   });
-  runTest({
+  test({
     description: "get all markets awaiting designated reporting, sorted ascending by volume",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -218,8 +221,8 @@ describe("server/getters/get-markets", () => {
       isSortDescending: false,
     },
     assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketsInfo).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000003",
@@ -231,7 +234,7 @@ describe("server/getters/get-markets", () => {
       ]);
     },
   });
-  runTest({
+  test({
     description: "get all markets awaiting designated reporting, sorted ascending by reportingStateUpdatedOn",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -240,8 +243,8 @@ describe("server/getters/get-markets", () => {
       isSortDescending: true,
     },
     assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketsInfo).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000003",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000014",
@@ -253,7 +256,7 @@ describe("server/getters/get-markets", () => {
       ]);
     },
   });
-  runTest({
+  test({
     description: "get all markets awaiting designated reporting by d00d",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -261,24 +264,24 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketsInfo).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000003",
       ]);
     },
   });
-  runTest({
+  test({
     description: "get markets awaiting unknown designated reporter",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (err, marketsAwaitingDesignatedReporting) => {
-      expect(err).toBeFalsy();
-      expect(marketsAwaitingDesignatedReporting).toEqual([]);
+      assert.ifError(err);
+      assert.deepEqual(marketsAwaitingDesignatedReporting, []);
     },
   });
-  runTest({
+  test({
     description: "get all markets awaiting designated reporting, sorted ascending by volume",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -287,8 +290,8 @@ describe("server/getters/get-markets", () => {
       isSortDescending: false,
     },
     assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketsInfo).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000003",
@@ -300,31 +303,31 @@ describe("server/getters/get-markets", () => {
       ]);
     },
   });
-  runTest({
+  test({
     description: "get all markets awaiting designated reporting by d00d",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       designatedReporter: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketsInfo).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000003",
       ]);
     },
   });
-  runTest({
+  test({
     description: "get markets upcoming, unknown designated reporter",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (err, marketsUpcomingDesignatedReporting) => {
-      expect(err).toBeFalsy();
-      expect(marketsUpcomingDesignatedReporting).toEqual([]);
+      assert.ifError(err);
+      assert.deepEqual(marketsUpcomingDesignatedReporting, []);
     },
   });
-  runTest({
+  test({
     description: "get all markets upcoming designated reporting, sorted ascending by volume",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -333,13 +336,13 @@ describe("server/getters/get-markets", () => {
       isSortDescending: false,
     },
     assertions: (err, marketsUpcomingDesignatedReporting) => {
-      expect(err).toBeFalsy();
-      expect(marketsUpcomingDesignatedReporting).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsUpcomingDesignatedReporting, [
         "0x0000000000000000000000000000000000000222",
       ]);
     },
   });
-  runTest({
+  test({
     description: "get all markets upcoming designated reporting by b0b",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -347,27 +350,27 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
-      expect(marketsInfo).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000222",
       ]);
     },
   });
-  runTest({
+  test({
     description: "fts search for bob",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       search: "bob",
     },
     assertions: (err, marketsMatched) => {
-      expect(err).toBeFalsy();
-      expect(marketsMatched).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsMatched, [
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000015",
       ]);
     },
   });
-  runTest({
+  test({
     description: "fts search for bob with category",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -375,22 +378,22 @@ describe("server/getters/get-markets", () => {
       category: "TEST CATEGORY",
     },
     assertions: (err, marketsMatched) => {
-      expect(err).toBeFalsy();
-      expect(marketsMatched).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsMatched, [
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000015",
       ]);
     },
   });
-  runTest({
+  test({
     description: "search for sue",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       search: "sue",
     },
     assertions: (err, marketsCreatedByUser) => {
-      expect(err).toBeFalsy();
-      expect(marketsCreatedByUser).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketsCreatedByUser, [
         "0x0000000000000000000000000000000000000014",
         "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000016",

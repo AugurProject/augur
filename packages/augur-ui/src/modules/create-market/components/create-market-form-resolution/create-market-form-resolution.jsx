@@ -6,7 +6,7 @@ import classNames from "classnames";
 import moment from "moment";
 
 import "react-dates/initialize";
-
+import "react-dates/lib/css/_datepicker.css";
 import { SingleDatePicker } from "react-dates";
 
 import { formatDate } from "utils/format-date";
@@ -26,7 +26,7 @@ import {
 import Styles from "modules/create-market/components/create-market-form-resolution/create-market-form-resolution.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip.styles";
+import TooltipStyles from "modules/common/less/tooltip";
 
 export const ChevronLeft = () => (
   <svg viewBox="0 0 8 14" xmlns="http://www.w3.org/2000/svg">

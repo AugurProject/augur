@@ -1,7 +1,0 @@
-{
-  "name": "augur-artifacts",
-  "version": "6.0.0-0",
-  "description": "ABI and Contract Address Artifacts",
-  "author": "Augur Team <team@augur.net>",
-  "license": "MIT"
-}

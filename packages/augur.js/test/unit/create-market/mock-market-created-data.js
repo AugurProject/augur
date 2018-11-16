@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-artifacts/abi");
+var abi = require("augur-core").abi;
 var speedomatic = require("speedomatic");
 var encodeTransactionInputs = require("../../../src/api/encode-transaction-inputs");
 var hashEventAbi = require("../../../src/events/hash-event-abi");

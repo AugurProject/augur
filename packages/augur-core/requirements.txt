@@ -27,4 +27,3 @@ rlp==0.5.1                # via ethereum
 scrypt==0.8.0             # via ethereum
 semantic-version==2.6.0   # via py-solc
 six==1.11.0               # via pytest-profiling
-virtualenv==15.2.0

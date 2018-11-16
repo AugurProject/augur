@@ -5,17 +5,17 @@ import ReportingDisputeMarkets from "modules/reporting/components/reporting-disp
 import makePath from "modules/routes/helpers/make-path";
 import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
 import { selectLoginAccount } from "modules/auth/selectors/login-account";
-import { selectMarketsInDispute } from "modules/reports/selectors/select-dispute-markets";
-import { selectMarketsAwaitingDispute } from "modules/reports/selectors/select-awaiting-dispute-markets";
+import disputeMarkets from "modules/reports/selectors/select-dispute-markets";
+import awaitingDisputeMarkets from "modules/reports/selectors/select-awaiting-dispute-markets";
 import { loadDisputing } from "modules/reports/actions/load-disputing";
-import { selectMarketDisputeOutcomes } from "modules/reports/selectors/select-market-dispute-outcomes";
+import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 
 const mapStateToProps = (state, { history }) => {
   const PAGINATION_COUNT = 10;
   const loginAccount = selectLoginAccount(state);
-  const disputeOutcomes = selectMarketDisputeOutcomes(state) || {};
-  const disputableMarkets = selectMarketsInDispute(state) || [];
-  const upcomingDisputableMarkets = selectMarketsAwaitingDispute(state) || [];
+  const disputeOutcomes = marketDisputeOutcomes() || {};
+  const disputableMarkets = disputeMarkets() || [];
+  const upcomingDisputableMarkets = awaitingDisputeMarkets() || [];
 
   return {
     isLogged: state.authStatus.isLogged,

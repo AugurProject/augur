@@ -1,26 +1,29 @@
 "use strict";
 
 const Augur = require("augur.js");
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-user-trading-positions", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      t.method = "getUserTradingPositions";
-      dispatchJsonRpcRequest(db, t, new Augur(), (err, userTradingPositions) => {
-        try {
-          t.assertions(err, userTradingPositions);
-          db.destroy();
-          done();
-        } catch (e) {
-          done(e);
-        }
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        t.method = "getUserTradingPositions";
+        dispatchJsonRpcRequest(db,  t, new Augur(), (err, userTradingPositions) => {
+          try {
+            t.assertions(err, userTradingPositions);
+            db.destroy();
+            done();
+          } catch (e) {
+            done(e);
+          }
+        });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "get user's full position",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -33,8 +36,8 @@ const db = await setupTestDb();
       offset: null,
     },
     assertions: (err, userTradingPositions) => {
-      expect(err).toBeFalsy();
-      expect(userTradingPositions).toEqual([{
+      assert.ifError(err);
+      assert.deepEqual(userTradingPositions, [{
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 0,
         "numShares": "1.8",
@@ -101,7 +104,7 @@ const db = await setupTestDb();
       }]);
     },
   });
-  runTest({
+  test({
     description: "get a user's position in one outcome of a categorical market where the user has no position",
     params: {
       account: "0x000000000000000000000000000000000000d00d",
@@ -113,8 +116,8 @@ const db = await setupTestDb();
       offset: null,
     },
     assertions: (err, userTradingPositions) => {
-      expect(err).toBeFalsy();
-      expect(userTradingPositions).toEqual([{
+      assert.ifError(err);
+      assert.deepEqual(userTradingPositions, [{
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 4,
         "numShares": "0",
@@ -125,7 +128,7 @@ const db = await setupTestDb();
       }]);
     },
   });
-  runTest({
+  test({
     description: "get a user's position in one outcome of a categorical market where the user is long",
     params: {
       account: "0x000000000000000000000000000000000b0bd00d",
@@ -137,8 +140,8 @@ const db = await setupTestDb();
       offset: null,
     },
     assertions: (err, userTradingPositions) => {
-      expect(err).toBeFalsy();
-      expect(userTradingPositions).toEqual([{
+      assert.ifError(err);
+      assert.deepEqual(userTradingPositions, [{
         "marketId": "0x1000000000000000000000000000000000000001",
         "outcome": 0,
         "numShares": "0.2",
@@ -149,7 +152,7 @@ const db = await setupTestDb();
       }]);
     },
   });
-  runTest({
+  test({
     description: "get a user's position in one outcome of a categorical market where the user is short",
     params: {
       account: "0x000000000000000000000000000000000d00db0b",
@@ -161,8 +164,8 @@ const db = await setupTestDb();
       offset: null,
     },
     assertions: (err, userTradingPositions) => {
-      expect(err).toBeFalsy();
-      expect(userTradingPositions).toEqual([{
+      assert.ifError(err);
+      assert.deepEqual(userTradingPositions, [{
         "marketId": "0x1000000000000000000000000000000000000001",
         "outcome": 0,
         "numShares": "0.2",
@@ -173,7 +176,7 @@ const db = await setupTestDb();
       }]);
     },
   });
-  runTest({
+  test({
     description: "get a user's position where they have no position",
     params: {
       account: "0x0000000000000000000000000000000000nobody",
@@ -185,8 +188,8 @@ const db = await setupTestDb();
       offset: null,
     },
     assertions: (err, userTradingPositions) => {
-      expect(err).toBeFalsy();
-      expect(userTradingPositions).toEqual([]);
+      assert.ifError(err);
+      assert.deepEqual(userTradingPositions, []);
     },
   });
 });

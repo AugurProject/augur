@@ -2,14 +2,15 @@
 
 const environments = require("../../knexfile.js");
 const Knex = require("knex");
-const { postProcessDatabaseResults } = require("src/server/post-process-database-results");
+const { postProcessDatabaseResults } = require("../../src/server/post-process-database-results");
 
-module.exports = () => {
+module.exports = (callback) => {
   const env = Object.assign({}, environments.test, {
     postProcessResponse: postProcessDatabaseResults,
   });
   const db = Knex(env);
-  return db.migrate.latest(env.migrations)
+  db.migrate.latest(env.migrations)
     .then(() => db.seed.run(env.seeds))
-    .then(() => db);
+    .then(() => callback(null, db))
+    .catch(callback);
 };

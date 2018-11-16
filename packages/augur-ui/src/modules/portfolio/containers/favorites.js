@@ -7,11 +7,11 @@ import {
   loadMarketsInfo,
   loadMarketsInfoIfNotLoaded
 } from "modules/markets/actions/load-markets-info";
-import { selectMarkets } from "modules/markets/selectors/markets-all";
+import selectAllMarkets from "modules/markets/selectors/markets-all";
 
 const mapStateToProps = state => {
   // basically just create the filtered markets based on what IDs we find in the favorites object
-  const markets = selectMarkets();
+  const markets = selectAllMarkets();
   const { favorites } = state;
 
   return {

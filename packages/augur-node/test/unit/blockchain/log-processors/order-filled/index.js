@@ -1,15 +1,16 @@
 "use strict";
 
+const assert = require("chai").assert;
 const { series } = require("async");
 const { BigNumber } = require("bignumber.js");
 const { fix } = require("speedomatic");
 const setupTestDb = require("../../../test.database");
-const { processOrderFilledLog, processOrderFilledLogRemoval } = require("src/blockchain/log-processors/order-filled");
+const { processOrderFilledLog, processOrderFilledLogRemoval } = require("../../../../../src/blockchain/log-processors/order-filled");
 const Augur = require("augur.js");
 const augur = new Augur();
 
 describe("blockchain/log-processors/order-filled", () => {
-  const runTest = (t) => {
+  const test = (t) => {
     const getState = (db, params, aux, callback) => series({
       orders: next => db("orders").where("orderId", params.log.orderId).asCallback(next),
       trades: next => db("trades").where("orderId", params.log.orderId).asCallback(next),
@@ -17,28 +18,30 @@ describe("blockchain/log-processors/order-filled", () => {
       outcomes: next => db.select("price", "volume", "shareVolume").from("outcomes").where({ marketId: aux.marketId }).asCallback(next),
       categories: next => db.first("popularity").from("categories").where("category", aux.category.toUpperCase()).asCallback(next),
     }, callback);
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      db.transaction((trx) => {
-        t.params.augur.utils = augur.utils;
-        processOrderFilledLog(trx, t.params.augur, t.params.log, (err) => {
-          expect(err).toBeFalsy();
-          getState(trx, t.params, t.aux, (err, records) => {
-            t.assertions.onAdded(err, records);
-            processOrderFilledLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-              expect(err).toBeFalsy();
-              getState(trx, t.params, t.aux, (err, records) => {
-                t.assertions.onRemoved(err, records);
-                db.destroy();
-                done();
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        db.transaction((trx) => {
+          t.params.augur.utils = augur.utils;
+          processOrderFilledLog(trx, t.params.augur, t.params.log, (err) => {
+            assert.ifError(err);
+            getState(trx, t.params, t.aux, (err, records) => {
+              t.assertions.onAdded(err, records);
+              processOrderFilledLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.ifError(err);
+                getState(trx, t.params, t.aux, (err, records) => {
+                  t.assertions.onRemoved(err, records);
+                  db.destroy();
+                  done();
+                });
               });
             });
           });
         });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "OrderFilled full log and removal",
     params: {
       log: {
@@ -61,7 +64,7 @@ const db = await setupTestDb();
         api: {
           Orders: {
             getLastOutcomePrice: (p, callback) => {
-              expect(p._market).toBe("0x0000000000000000000000000000000000000001");
+              assert.strictEqual(p._market, "0x0000000000000000000000000000000000000001");
               if (p._outcome === 0) {
                 callback(null, "7000");
               } else {
@@ -72,7 +75,7 @@ const db = await setupTestDb();
         },
         trading: {
           calculateProfitLoss: (p) => {
-            expect(typeof p).toBe("object");
+            assert.isObject(p);
             return {
               position: "2",
               realized: "0",
@@ -82,7 +85,7 @@ const db = await setupTestDb();
             };
           },
           getPositionInMarket: (p, callback) => {
-            expect(p.market).toBe("0x0000000000000000000000000000000000000001");
+            assert.strictEqual(p.market, "0x0000000000000000000000000000000000000001");
             assert.oneOf(p.address, ["0x0000000000000000000000000000000000000b0b", "FILLER_ADDRESS"]);
             callback(null, ["2", "0", "0", "0", "0", "0", "0", "0"]);
           },
@@ -101,8 +104,8 @@ const db = await setupTestDb();
     },
     assertions: {
       onAdded: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records.orders).toEqual([{
+        assert.ifError(err);
+        assert.deepEqual(records.orders, [{
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
@@ -124,7 +127,7 @@ const db = await setupTestDb();
           tradeGroupId: null,
           orphaned: 0,
         }]);
-        expect(records.trades).toEqual([{
+        assert.deepEqual(records.trades, [{
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400101,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000F00",
@@ -145,60 +148,28 @@ const db = await setupTestDb();
           amount: new BigNumber("1", 10),
           tradeGroupId: "TRADE_GROUP_ID",
         }]);
-        expect(records.markets).toEqual({
+        assert.deepEqual(records.markets, {
           volume: new BigNumber("0.7", 10),
           shareVolume: new BigNumber("1", 10),
           sharesOutstanding: new BigNumber("2", 10),
         });
-        expect(records.outcomes).toEqual([
-          {
-            price: new BigNumber("0.7", 10),
-            volume: new BigNumber("100.7", 10),
-            shareVolume: new BigNumber("13.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
+        assert.deepEqual(records.outcomes, [
+          { price: new BigNumber("0.7", 10), volume: new BigNumber("100.7", 10), shareVolume: new BigNumber("13.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
         ]);
-        expect(records.categories).toEqual({
+        assert.deepEqual(records.categories, {
           popularity: 1,
         });
       },
       onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records.orders).toEqual([{
+        assert.ifError(err);
+        assert.deepEqual(records.orders, [{
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
@@ -220,57 +191,29 @@ const db = await setupTestDb();
           tradeGroupId: null,
           orphaned: 0,
         }]);
-        expect(records.trades).toEqual([]);
-        expect(records.markets).toEqual({
+        assert.deepEqual(records.trades, []);
+        assert.deepEqual(records.markets, {
           volume: new BigNumber("0", 10),
           shareVolume: new BigNumber("0", 10),
           sharesOutstanding: new BigNumber("2", 10),
         });
-        expect(records.outcomes).toEqual([
+        assert.deepEqual(records.outcomes, [
           { price: new BigNumber("0.7", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
         ]);
-        expect(records.categories).toEqual({
+        assert.deepEqual(records.categories, {
           popularity: 0,
         });
       },
     },
   });
-  runTest({
+  test({
     description: "OrderFilled partial log and removal",
     params: {
       log: {
@@ -293,7 +236,7 @@ const db = await setupTestDb();
         api: {
           Orders: {
             getLastOutcomePrice: (p, callback) => {
-              expect(p._market).toBe("0x0000000000000000000000000000000000000001");
+              assert.strictEqual(p._market, "0x0000000000000000000000000000000000000001");
               if (p._outcome === 0) {
                 callback(null, "7000");
               } else {
@@ -304,7 +247,7 @@ const db = await setupTestDb();
         },
         trading: {
           calculateProfitLoss: (p) => {
-            expect(typeof p).toBe("object");
+            assert.isObject(p);
             return {
               position: "2",
               realized: "0",
@@ -314,7 +257,7 @@ const db = await setupTestDb();
             };
           },
           getPositionInMarket: (p, callback) => {
-            expect(p.market).toBe("0x0000000000000000000000000000000000000001");
+            assert.strictEqual(p.market, "0x0000000000000000000000000000000000000001");
             assert.oneOf(p.address, ["0x0000000000000000000000000000000000000b0b", "FILLER_ADDRESS"]);
             callback(null, ["2", "0", "0", "0", "0", "0", "0", "0"]);
           },
@@ -333,8 +276,8 @@ const db = await setupTestDb();
     },
     assertions: {
       onAdded: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records.orders).toEqual([{
+        assert.ifError(err);
+        assert.deepEqual(records.orders, [{
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
@@ -356,7 +299,7 @@ const db = await setupTestDb();
           tradeGroupId: null,
           orphaned: 0,
         }]);
-        expect(records.trades).toEqual([{
+        assert.deepEqual(records.trades, [{
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400101,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000F00",
@@ -377,60 +320,28 @@ const db = await setupTestDb();
           amount: new BigNumber("0.4", 10),
           tradeGroupId: "TRADE_GROUP_ID",
         }]);
-        expect(records.markets).toEqual({
+        assert.deepEqual(records.markets, {
           volume: new BigNumber("0.28", 10),
           shareVolume: new BigNumber("0.4", 10),
           sharesOutstanding: new BigNumber("2", 10),
         });
-        expect(records.outcomes).toEqual([
-          {
-            price: new BigNumber("0.7", 10),
-            volume: new BigNumber("100.28", 10),
-            shareVolume: new BigNumber("12.9", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
+        assert.deepEqual(records.outcomes, [
+          { price: new BigNumber("0.7", 10), volume: new BigNumber("100.28", 10), shareVolume: new BigNumber("12.9", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
         ]);
-        expect(records.categories).toEqual({
+        assert.deepEqual(records.categories, {
           popularity: 0.4,
         });
       },
       onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records.orders).toEqual([{
+        assert.ifError(err);
+        assert.deepEqual(records.orders, [{
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
@@ -452,51 +363,23 @@ const db = await setupTestDb();
           tradeGroupId: null,
           orphaned: 0,
         }]);
-        expect(records.trades).toEqual([]);
-        expect(records.markets).toEqual({
+        assert.deepEqual(records.trades, []);
+        assert.deepEqual(records.markets, {
           volume: new BigNumber("0", 10),
           shareVolume: new BigNumber("0", 10),
           sharesOutstanding: new BigNumber("2", 10),
         });
-        expect(records.outcomes).toEqual([
+        assert.deepEqual(records.outcomes, [
           { price: new BigNumber("0.7", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
-          {
-            price: new BigNumber("0.125", 10),
-            volume: new BigNumber("100", 10),
-            shareVolume: new BigNumber("12.5", 10)
-          },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
+          { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10), shareVolume: new BigNumber("12.5", 10) },
         ]);
-        expect(records.categories).toEqual({
+        assert.deepEqual(records.categories, {
           popularity: 0,
         });
       },

@@ -2,24 +2,26 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../../test.database");
-const { processApprovalLog, processApprovalLogRemoval } = require("src/blockchain/log-processors/token/approval");
+const { processApprovalLog, processApprovalLogRemoval } = require("../../../../../src/blockchain/log-processors/token/approval");
 
 describe("blockchain/log-processors/token/approval", () => {
-  const runTest = (t) => {
+  const test = (t) => {
     const getState = (db, params, callback) => db("approvals").where({ transactionHash: params.log.transactionHash, logIndex: params.log.logIndex }).asCallback(callback);
-    it(t.description, async (done) => {
-      const db = await setupTestDb();
-      db.transaction((trx) => {
-        processApprovalLog(trx, t.params.augur, t.params.log, (err) => {
-          expect(err).toBeFalsy();
-          getState(trx, t.params, (err, records) => {
-            t.assertions.onAdded(err, records);
-            processApprovalLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-              expect(err).toBeFalsy();
-              getState(trx, t.params, (err, records) => {
-                t.assertions.onRemoved(err, records);
-                db.destroy();
-                done();
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        db.transaction((trx) => {
+          processApprovalLog(trx, t.params.augur, t.params.log, (err) => {
+            assert.ifError(err);
+            getState(trx, t.params, (err, records) => {
+              t.assertions.onAdded(err, records);
+              processApprovalLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.ifError(err);
+                getState(trx, t.params, (err, records) => {
+                  t.assertions.onRemoved(err, records);
+                  db.destroy();
+                  done();
+                });
               });
             });
           });
@@ -27,7 +29,7 @@ describe("blockchain/log-processors/token/approval", () => {
       });
     });
   };
-  runTest({
+  test({
     description: "LegacyReputationToken Approval log and removal",
     params: {
       log: {
@@ -43,7 +45,7 @@ describe("blockchain/log-processors/token/approval", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        expect(err).toBeFalsy();
+        assert.ifError(err);
         assert.deepEqual(records, [{
           transactionHash: "TRANSACTION_HASH",
           logIndex: 0,
@@ -55,7 +57,7 @@ describe("blockchain/log-processors/token/approval", () => {
         }]);
       },
       onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
+        assert.ifError(err);
         assert.deepEqual(records, []);
       },
     },

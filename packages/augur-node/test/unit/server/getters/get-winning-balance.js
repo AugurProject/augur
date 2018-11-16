@@ -1,30 +1,33 @@
 "use strict";
 
 const { BigNumber } = require("bignumber.js");
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-winning-balance", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
-      t.method = "getWinningBalance";
-      dispatchJsonRpcRequest(db, t, {}, (err, winningBalance) => {
-        t.assertions(err, winningBalance);
-        db.destroy();
-        done();
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        if (err) assert.fail(err);
+        t.method = "getWinningBalance";
+        dispatchJsonRpcRequest(db,  t, {}, (err, winningBalance) => {
+          t.assertions(err, winningBalance);
+          db.destroy();
+          done();
+        });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "get winning balances that exist",
     params: {
       marketIds: ["0x0000000000000000000000000000000000000019"],
       account: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, winningBalance) => {
-      expect(err).toBeFalsy();
-      expect(winningBalance).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(winningBalance, [
         {
           marketId: "0x0000000000000000000000000000000000000019",
           winnings: new BigNumber("100000000000"),
@@ -32,15 +35,15 @@ describe("server/getters/get-winning-balance", () => {
       ]);
     },
   });
-  runTest({
+  test({
     description: "get winning balances that do not exist",
     params: {
       marketIds: ["0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0"],
       account: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, winningBalance) => {
-      expect(err).toBeFalsy();
-      expect(winningBalance).toEqual([]);
+      assert.ifError(err);
+      assert.deepEqual(winningBalance, []);
     },
   });
 });

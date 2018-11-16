@@ -1,33 +1,36 @@
 "use strict";
 
+const assert = require("chai").assert;
 const { BigNumber } = require("bignumber.js");
 const setupTestDb = require("../../test.database");
-const { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } = require("src/blockchain/log-processors/trading-proceeds-claimed");
+const { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } = require("../../../../src/blockchain/log-processors/trading-proceeds-claimed");
 
 describe("blockchain/log-processors/trading-proceeds-claimed", () => {
-  const runTest = (t) => {
+  const test = (t) => {
     const getTradingProceeds = (db, params, callback) => db.select(["marketId", "shareToken", "account", "numShares", "numPayoutTokens"]).from("trading_proceeds").asCallback(callback);
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      db.transaction((trx) => {
-        processTradingProceedsClaimedLog(trx, t.params.augur, t.params.log, (err) => {
-          expect(err).toBeFalsy();
-          getTradingProceeds(trx, t.params, (err, records) => {
-            t.assertions.onAdded(err, records);
-            processTradingProceedsClaimedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-              expect(err).toBeFalsy();
-              getTradingProceeds(trx, t.params, (err, records) => {
-                t.assertions.onRemoved(err, records);
-                db.destroy();
-                done();
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        db.transaction((trx) => {
+          processTradingProceedsClaimedLog(trx, t.params.augur, t.params.log, (err) => {
+            assert.ifError(err);
+            getTradingProceeds(trx, t.params, (err, records) => {
+              t.assertions.onAdded(err, records);
+              processTradingProceedsClaimedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.ifError(err);
+                getTradingProceeds(trx, t.params, (err, records) => {
+                  t.assertions.onRemoved(err, records);
+                  db.destroy();
+                  done();
+                });
               });
             });
           });
         });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "Claim Trading Proceeds",
     params: {
       augur: {
@@ -66,8 +69,8 @@ const db = await setupTestDb();
     },
     assertions: {
       onAdded: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual([{
+        assert.ifError(err);
+        assert.deepEqual(records, [{
           account: "FROM_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           numShares: new BigNumber("140", 10),
@@ -76,8 +79,8 @@ const db = await setupTestDb();
         }]);
       },
       onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual([]);
+        assert.ifError(err);
+        assert.deepEqual(records, []);
       },
     },
   });

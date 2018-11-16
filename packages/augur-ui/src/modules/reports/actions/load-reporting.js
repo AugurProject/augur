@@ -1,4 +1,4 @@
-import { augur } from "services/augurjs";
+import { augur, constants } from "services/augurjs";
 import logError from "utils/log-error";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 
@@ -8,7 +8,6 @@ import {
   updateOpenMarkets,
   updateResolvedMarkets
 } from "modules/reports/actions/update-markets-in-reporting-state";
-import { constants } from "src/services/constants";
 
 export const loadReporting = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState();
@@ -32,7 +31,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       }
 
       dispatch(
-        loadMarketsInfoIfNotLoaded(marketIds, (err) => {
+        loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
           if (err) return logError(err);
           dispatch(updateUpcomingDesignatedReportingMarkets(marketIds));
         })
@@ -54,7 +53,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
         return callback(null);
       }
       dispatch(
-        loadMarketsInfoIfNotLoaded(marketIds, (err) => {
+        loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
           if (err) return logError(err);
           dispatch(updateDesignatedReportingMarkets(marketIds));
         })
@@ -77,7 +76,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       }
 
       dispatch(
-        loadMarketsInfoIfNotLoaded(marketIds, (err) => {
+        loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
           if (err) return logError(err);
           dispatch(updateOpenMarkets(marketIds));
         })
@@ -116,7 +115,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
           }
 
           dispatch(
-            loadMarketsInfoIfNotLoaded(marketIds, (err) => {
+            loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
               if (err) return logError(err);
               dispatch(updateResolvedMarkets(marketIds));
             })

@@ -1,36 +1,39 @@
 "use strict";
 
+const assert = require("chai").assert;
 const { fix } = require("speedomatic");
 const setupTestDb = require("../../test.database");
 const { BigNumber } = require("bignumber.js");
-const { processOrderCreatedLog, processOrderCreatedLogRemoval } = require("src/blockchain/log-processors/order-created");
+const { processOrderCreatedLog, processOrderCreatedLogRemoval } = require("../../../../src/blockchain/log-processors/order-created");
 const Augur = require("augur.js");
 const augur = new Augur();
 
 describe("blockchain/log-processors/order-created", () => {
-  const runTest = (t) => {
+  const test = (t) => {
     const getState = (db, params, callback) => db("orders").where("orderId", params.log.orderId).asCallback(callback);
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      db.transaction((trx) => {
-        processOrderCreatedLog(trx, t.params.augur, t.params.log, (err) => {
-          expect(err).toBeFalsy();
-          getState(trx, t.params, (err, records) => {
-            t.assertions.onAdded(err, records);
-            processOrderCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-              expect(err).toBeFalsy();
-              getState(trx, t.params, (err, records) => {
-                t.assertions.onRemoved(err, records);
-                db.destroy();
-                done();
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        db.transaction((trx) => {
+          processOrderCreatedLog(trx, t.params.augur, t.params.log, (err) => {
+            assert.ifError(err);
+            getState(trx, t.params, (err, records) => {
+              t.assertions.onAdded(err, records);
+              processOrderCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.ifError(err);
+                getState(trx, t.params, (err, records) => {
+                  t.assertions.onRemoved(err, records);
+                  db.destroy();
+                  done();
+                });
               });
             });
           });
         });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "OrderCreated log and removal",
     params: {
       log: {
@@ -51,7 +54,7 @@ const db = await setupTestDb();
         utils: augur.utils,
         api: {
           OrdersFinder: {
-            getExistingOrders5: function(data, cb) {
+            getExistingOrders5: function (data, cb) {
               return cb(null, ["ORDER_ID"]);
             },
           },
@@ -60,8 +63,8 @@ const db = await setupTestDb();
     },
     assertions: {
       onAdded: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual([{
+        assert.ifError(err);
+        assert.deepEqual(records, [{
           orderId: "ORDER_ID",
           blockNumber: 1400100,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
@@ -85,8 +88,8 @@ const db = await setupTestDb();
         }]);
       },
       onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual([]);
+        assert.ifError(err);
+        assert.deepEqual(records, []);
       },
     },
   });

@@ -9,17 +9,17 @@ describe("modules/account/selectors/core-stats", () => {
   });
 
   describe("selectOutcomeLastPrice", () => {
-    test("returned null when 'marketOutcomeData' is undefined", () => {
+    test("should return null when 'marketOutcomeData' is undefined", () => {
       const actual = coreStats.selectOutcomeLastPrice(undefined, 1);
       expect(actual).toBeNull();
     });
 
-    test("returned null when 'outcomeId' is undefined", () => {
+    test("should return null when 'outcomeId' is undefined", () => {
       const actual = coreStats.selectOutcomeLastPrice({}, undefined);
       expect(actual).toBeNull();
     });
 
-    test("returned the price when data exists", () => {
+    test("should return the price when data exists", () => {
       const actual = coreStats.selectOutcomeLastPrice(
         { 1: { price: "0.1" } },
         1
@@ -27,7 +27,7 @@ describe("modules/account/selectors/core-stats", () => {
       expect(actual).toStrictEqual("0.1");
     });
 
-    test("returned undefined when data does not exist", () => {
+    test("should return undefined when data does not exist", () => {
       const actual = coreStats.selectOutcomeLastPrice(
         { 2: { price: "0.1" } },
         1
@@ -37,19 +37,19 @@ describe("modules/account/selectors/core-stats", () => {
   });
 
   describe("createPeriodPLSelector", () => {
-    test("returned null when 'accountTrades' is undefined", () => {
+    test("should return null when 'accountTrades' is undefined", () => {
       const selector = coreStats.createPeriodPLSelector(1);
       const actual = selector.resultFunc(undefined, {}, undefined);
       expect(actual).toBeNull();
     });
 
-    test("returned null when 'blockchain' is undefined", () => {
+    test("should return null when 'blockchain' is undefined", () => {
       const selector = coreStats.createPeriodPLSelector(1);
       const actual = selector.resultFunc({}, undefined, undefined);
       expect(actual).toBeNull();
     });
 
-    test("returned 0 for a set period with no trades", () => {
+    test("should return 0 for a set period with no trades", () => {
       const accountTrades = {
         "0xMarketID1": {
           1: [
@@ -90,7 +90,7 @@ describe("modules/account/selectors/core-stats", () => {
       expect(actual).toStrictEqual(ZERO);
     });
 
-    test("returned the expected value for a set period with trades", () => {
+    test("should return the expected value for a set period with trades", () => {
       const accountTrades = {
         "0xMarketID1": {
           1: [
@@ -119,21 +119,7 @@ describe("modules/account/selectors/core-stats", () => {
       const outcomesData = {
         "0xMarketID1": {}
       };
-      const realAugur = require.requireActual("../../../services/augurjs.js");
-      jest.doMock("../../../services/augurjs.js", () => ({
-        constants: realAugur.constants,
-        augur: {
-          rpc: {
-            constants: realAugur.augur.rpc.constants
-          },
-          trading: {
-            calculateProfitLoss: () => ({
-              realized: "-1",
-              unrealized: "2"
-            })
-          }
-        }
-      }));
+      jest.doMock("../../../services/augurjs.js");
       const coreStats = require("modules/account/selectors/core-stats");
       const coreStatsMock = Object.assign(coreStats);
       coreStatsMock.selectOutcomeLastPrice = jest.fn(() => "0.2");

@@ -1,21 +1,24 @@
 "use strict";
 
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-market-price-history", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      t.method = "getMarketPriceHistory";
-      dispatchJsonRpcRequest(db, t, null, (err, marketPriceHistory) => {
-        t.assertions(err, marketPriceHistory);
-        db.destroy();
-        done();
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        t.method = "getMarketPriceHistory";
+        dispatchJsonRpcRequest(db, t, null, (err, marketPriceHistory) => {
+          t.assertions(err, marketPriceHistory);
+          db.destroy();
+          done();
+        });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "market has a single price point",
     params: {
       marketId: "0x0000000000000000000000000000000000000001",
@@ -25,8 +28,8 @@ const db = await setupTestDb();
       offset: null,
     },
     assertions: (err, marketPriceHistory) => {
-      expect(err).toBeFalsy();
-      expect(marketPriceHistory).toEqual({
+      assert.ifError(err);
+      assert.deepEqual(marketPriceHistory, {
         0: [{
           price: "5.5",
           amount: "0.2",
@@ -39,7 +42,7 @@ const db = await setupTestDb();
       });
     },
   });
-  runTest({
+  test({
     description: "market has no price history",
     params: {
       marketId: "0x0000000000000000000000000000000000001111",
@@ -49,8 +52,8 @@ const db = await setupTestDb();
       offset: null,
     },
     assertions: (err, marketPriceHistory) => {
-      expect(err).toBeFalsy();
-      expect(marketPriceHistory).toEqual({});
+      assert.ifError(err);
+      assert.deepEqual(marketPriceHistory, {});
     },
   });
 });

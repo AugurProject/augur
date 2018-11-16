@@ -1,8 +1,14 @@
 import { createSelector } from "reselect";
-import { selectMarkets } from "modules/markets/selectors/markets-all";
+import store from "src/store";
+import selectAllMarkets from "modules/markets/selectors/markets-all";
 
-const selectOpenOrdersMarketsSelector = () =>
-  createSelector(selectMarkets, markets => {
+export default function() {
+  return selectOpenOrdersMarkets(store.getState());
+}
+
+export const selectOpenOrdersMarkets = createSelector(
+  selectAllMarkets,
+  markets => {
     const openOrdersMarkets = [];
     if (markets) {
       const numMarkets = markets.length;
@@ -14,7 +20,8 @@ const selectOpenOrdersMarketsSelector = () =>
       }
     }
     return openOrdersMarkets;
-  });
+  }
+);
 
 const hasOpenOrdersInMarket = market => {
   const numOutcomes = market.outcomes.length;
@@ -41,5 +48,3 @@ export function sortOpenOrders(market) {
   );
   return market;
 }
-
-export const selectOpenOrdersMarkets = selectOpenOrdersMarketsSelector();

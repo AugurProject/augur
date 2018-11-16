@@ -19,3 +19,4 @@ export const connect = (env, callback = logError) => {
 };
 
 export const augur = new Augur();
+export const { constants } = augur;

@@ -1,8 +1,9 @@
 "use strict";
 
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
-const { setOverrideTimestamp, removeOverrideTimestamp } = require("src/blockchain/process-block");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
+const { setOverrideTimestamp, removeOverrideTimestamp } = require("../../../../src/blockchain/process-block");
 
 const augurMock = {
   constants: {
@@ -23,24 +24,26 @@ const augurMock = {
 };
 
 describe("server/getters/get-fee-window", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
-      setOverrideTimestamp(db, t.params.overrideTimestamp || 1, (err) => {
-        expect(err).toBeFalsy();
-        t.method = "getFeeWindow";
-        dispatchJsonRpcRequest(db, t, t.params.augur, (err, feeWindow) => {
-          t.assertions(err, feeWindow);
-          removeOverrideTimestamp(db, t.params.overrideTimestamp || 1, (err) => {
-            expect(err).not.toBeNull();
-            db.destroy();
-            done();
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        if (err) assert.fail(err);
+        setOverrideTimestamp(db, t.params.overrideTimestamp || 1, (err) => {
+          assert.ifError(err);
+          t.method = "getFeeWindow";
+          dispatchJsonRpcRequest(db,  t, t.params.augur, (err, feeWindow) => {
+            t.assertions(err, feeWindow);
+            removeOverrideTimestamp(db, t.params.overrideTimestamp || 1, (err) => {
+              assert.isNotNull(err);
+              db.destroy();
+              done();
+            });
           });
         });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "get feeWindow",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -49,8 +52,8 @@ describe("server/getters/get-fee-window", () => {
       feeWindowState: "CuRrENT",
     },
     assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
-      expect(feeWindow).toEqual({
+      assert.ifError(err);
+      assert.deepEqual(feeWindow, {
         endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
         feeToken: "FEE_TOKEN_2",
@@ -64,7 +67,7 @@ describe("server/getters/get-fee-window", () => {
       });
     },
   });
-  runTest({
+  test({
     description: "get specific feeWindow",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -73,8 +76,8 @@ describe("server/getters/get-fee-window", () => {
       feeWindow: "0x2000000000000000000000000000000000000000",
     },
     assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
-      expect(feeWindow).toEqual({
+      assert.ifError(err);
+      assert.deepEqual(feeWindow, {
         endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
         feeToken: "FEE_TOKEN_2",
@@ -88,7 +91,7 @@ describe("server/getters/get-fee-window", () => {
       });
     },
   });
-  runTest({
+  test({
     description: "get feeWindow current with account b0b on fee window 0x2",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -98,8 +101,8 @@ describe("server/getters/get-fee-window", () => {
       augur: augurMock,
     },
     assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
-      expect(feeWindow).toEqual({
+      assert.ifError(err);
+      assert.deepEqual(feeWindow, {
         endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
         feeToken: "FEE_TOKEN_2",
@@ -119,7 +122,7 @@ describe("server/getters/get-fee-window", () => {
       });
     },
   });
-  runTest({
+  test({
     description: "get feeWindow with no account on fee window that does not yet exist",
     params: {
       universe: "CHILD_UNIVERSE",
@@ -128,8 +131,8 @@ describe("server/getters/get-fee-window", () => {
       augur: augurMock,
     },
     assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
-      expect(feeWindow).toEqual({
+      assert.ifError(err);
+      assert.deepEqual(feeWindow, {
         endTime: 1626912000,
         feeWindow: null,
         feeWindowId: 2689,
@@ -138,7 +141,7 @@ describe("server/getters/get-fee-window", () => {
       });
     },
   });
-  runTest({
+  test({
     description: "get feeWindow with no account on a next fee window",
     params: {
       universe: "CHILD_UNIVERSE",
@@ -147,8 +150,8 @@ describe("server/getters/get-fee-window", () => {
       augur: augurMock,
     },
     assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
-      expect(feeWindow).toEqual({
+      assert.ifError(err);
+      assert.deepEqual(feeWindow, {
         endTime: 1511657473,
         feeToken: "FEE_TOKEN_CHILD_UNIVERSE",
         feeWindow: "0x4000000000000000000000000000000000000000",
@@ -162,7 +165,7 @@ describe("server/getters/get-fee-window", () => {
       });
     },
   });
-  runTest({
+  test({
     description: "get feeWindow that exists, but lacks any stake",
     params: {
       universe: "0x000000000000000000000000000000000000000d",
@@ -171,8 +174,8 @@ describe("server/getters/get-fee-window", () => {
       augur: augurMock,
     },
     assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
-      expect(feeWindow).toEqual({
+      assert.ifError(err);
+      assert.deepEqual(feeWindow, {
         endTime: 1527120000,
         feeWindow: null,
         feeWindowId: 2524,
@@ -181,7 +184,7 @@ describe("server/getters/get-fee-window", () => {
       });
     },
   });
-  runTest({
+  test({
     description: "get feeWindow with non-existent account on fee window 0x2",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -191,8 +194,8 @@ describe("server/getters/get-fee-window", () => {
       augur: augurMock,
     },
     assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
-      expect(feeWindow).toEqual({
+      assert.ifError(err);
+      assert.deepEqual(feeWindow, {
         endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
         feeToken: "FEE_TOKEN_2",
@@ -212,7 +215,7 @@ describe("server/getters/get-fee-window", () => {
       });
     },
   });
-  runTest({
+  test({
     description: "nonexistent universe",
     params: {
       universe: "0x1010101010101010101010101010101010101010",
@@ -220,7 +223,7 @@ describe("server/getters/get-fee-window", () => {
       augur: augurMock,
     },
     assertions: (err) => {
-      expect(err).not.toBeNull();
+      assert.isNotNull(err);
     },
   });
 });

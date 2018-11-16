@@ -1,21 +1,24 @@
 "use strict";
 
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-trading-history", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      t.method = "getTradingHistory";
-      dispatchJsonRpcRequest(db, t, null, (err, userTradingHistory) => {
-        t.assertions(err, userTradingHistory);
-        db.destroy();
-        done();
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        t.method = "getTradingHistory";
+        dispatchJsonRpcRequest(db,  t, null, (err, userTradingHistory) => {
+          t.assertions(err, userTradingHistory);
+          db.destroy();
+          done();
+        });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "user was filler in 1 trade in market and outcome",
     params: {
       universe: null,
@@ -29,8 +32,8 @@ const db = await setupTestDb();
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
-      expect(userTradingHistory).toEqual([{
+      assert.ifError(err);
+      assert.deepEqual(userTradingHistory, [{
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
         logIndex: 0,
         orderId: "0x1100000000000000000000000000000000000000000000000000000000000000",
@@ -67,7 +70,7 @@ const db = await setupTestDb();
       }]);
     },
   });
-  runTest({
+  test({
     description: "user was creator in many markets and outcomes",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -81,8 +84,8 @@ const db = await setupTestDb();
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
-      expect(userTradingHistory).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(userTradingHistory, [
         {
           amount: "0.1",
           logIndex: 0,
@@ -282,7 +285,7 @@ const db = await setupTestDb();
       ]);
     },
   });
-  runTest({
+  test({
     description: "user was creator in many markets and outcomes, filter to one market",
     params: {
       universe: null,
@@ -296,8 +299,8 @@ const db = await setupTestDb();
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
-      expect(userTradingHistory).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(userTradingHistory, [
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
           logIndex: 0,
@@ -336,7 +339,7 @@ const db = await setupTestDb();
       ]);
     },
   });
-  runTest({
+  test({
     description: "user was creator in many markets and outcomes, filter by timestamp",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -352,8 +355,8 @@ const db = await setupTestDb();
       latestCreationTime: 1506474516,
     },
     assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
-      expect(userTradingHistory).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(userTradingHistory, [
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
           logIndex: 0,
@@ -393,7 +396,7 @@ const db = await setupTestDb();
       ]);
     },
   });
-  runTest({
+  test({
     description: "lookup trades by market, not account, filter by timestamp",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -409,8 +412,8 @@ const db = await setupTestDb();
       latestCreationTime: 1506474516,
     },
     assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
-      expect(userTradingHistory).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(userTradingHistory, [
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
           logIndex: 0,
@@ -432,7 +435,7 @@ const db = await setupTestDb();
       ]);
     },
   });
-  runTest({
+  test({
     description: "user has not performed any trades",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -446,8 +449,8 @@ const db = await setupTestDb();
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
-      expect(userTradingHistory).toEqual([]);
+      assert.ifError(err);
+      assert.deepEqual(userTradingHistory, []);
     },
   });
 });

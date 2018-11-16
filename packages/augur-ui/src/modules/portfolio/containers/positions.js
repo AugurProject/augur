@@ -4,18 +4,18 @@ import memoize from "memoizee";
 import { selectCurrentTimestamp, selectOrphanOrders } from "src/select-state";
 import Positions from "modules/portfolio/components/positions/positions";
 import getLoginAccountPositions from "modules/positions/selectors/login-account-positions";
-import { selectOpenOrdersMarkets } from "modules/orders/selectors/open-orders";
+import getOpenOrders from "modules/orders/selectors/open-orders";
 import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import { triggerTransactionsExport } from "modules/transactions/actions/trigger-transactions-export";
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
 import { orderBy } from "lodash";
 import { selectMarket } from "modules/markets/selectors/market";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/modal/constants/modal-types";
 
 const mapStateToProps = state => {
-  const positions = getLoginAccountPositions(state);
-  const openOrders = selectOpenOrdersMarkets(state);
+  const positions = getLoginAccountPositions();
+  const openOrders = getOpenOrders();
   const orphanedOrders = selectOrphanOrders(state);
   const orphanedMarkets = [];
   for (let i = 0; i < orphanedOrders.length; i++) {

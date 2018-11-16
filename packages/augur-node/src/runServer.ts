@@ -1,14 +1,26 @@
 import Augur from "augur.js";
+import { NetworkConfiguration } from "augur-core";
 import { AugurNodeController } from "./controller";
-import { ConnectOptions } from "./types";
 import { logger } from "./utils/logger";
 
-export function start(retries: number, config: ConnectOptions, databaseDir?: string) {
+const networkName = process.argv[2] || "environment";
+const databaseDir = process.env.AUGUR_DATABASE_DIR;
+const maxRetries = process.env.MAX_REQUEST_RETRIES;
+const maxSystemRetries = process.env.MAX_SYSTEM_RETRIES;
+const propagationDelayWaitMillis = process.env.DELAY_WAIT_MILLIS;
+const networkConfig = NetworkConfiguration.create(networkName, false);
+
+let config = networkConfig;
+if (maxRetries) config = Object.assign({}, config, { maxRetries });
+if (propagationDelayWaitMillis) config = Object.assign({}, config, { propagationDelayWaitMillis });
+const retries: number = parseInt(maxSystemRetries || "1", 10);
+
+function start(retries: number, config: any, databaseDir: any) {
   const augur = new Augur();
   const augurNodeController = new AugurNodeController(augur, config, databaseDir);
 
   augur.rpc.setDebugOptions({ broadcast: false });
-  augur.events.nodes.ethereum.on("disconnect", (event: any) => {
+  augur.events.nodes.ethereum.on("disconnect", (event) => {
     logger.warn("Disconnected from Ethereum node", (event || {}).reason);
   });
 
@@ -31,10 +43,4 @@ export function start(retries: number, config: ConnectOptions, databaseDir?: str
   augurNodeController.start(errorCatch).catch(errorCatch);
 }
 
-if (require.main == module) {
-  const retries: number = parseInt(process.env.MAX_SYSTEM_RETRIES || "1", 10);
-  const databaseDir = process.env.AUGUR_DATABASE_DIR;
-  const config = ConnectOptions.createFromEnvironment();
-
-  start(retries, config, databaseDir);
-}
+start(retries, config, databaseDir);

@@ -9,10 +9,20 @@ const { ipcMain } = require('electron')
 const appData = require('app-data-folder')
 const KeyGen = require('selfsigned.js')
 const helmet = require('helmet')
-const augurUIMiddleware = require('augur-ui')
-/* global __dirname */
+/* global __dirname, process */
+
 
 const isDevelopment = require('electron-is-dev')
+
+
+function getUIClientBuildPath() {
+  if(isDevelopment) {
+    return path.join(__dirname, '../../node_modules/augur-ui/build')
+  } else {
+    return path.join(process.resourcesPath, 'ui-client')
+  }
+
+}
 
 function AugurUIServer() {
   this.server = null
@@ -75,7 +85,8 @@ AugurUIServer.prototype.startServer = function (event) {
     } else {
       if (this.httpListener) this.httpListener.close()
     }
-    this.app.use(augurUIMiddleware(isDevelopment))
+    const serverBuildPath = getUIClientBuildPath()
+    this.app.use(express.static(serverBuildPath))
 
     this.app.listen = function () {
       const server = isSslEnabled ? https.createServer(options, this) : http.createServer(this)

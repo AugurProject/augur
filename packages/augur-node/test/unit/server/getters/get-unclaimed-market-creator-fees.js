@@ -1,21 +1,24 @@
 "use strict";
 
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-unclaimed-market-creator-fees", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
-      t.method = "getUnclaimedMarketCreatorFees";
-      dispatchJsonRpcRequest(db, t, t.params.augur, (err, marketFees) => {
-        t.assertions(err, marketFees);
-        db.destroy();
-        done();
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        if (err) assert.fail(err);
+        t.method = "getUnclaimedMarketCreatorFees";
+        dispatchJsonRpcRequest(db,  t, t.params.augur, (err, marketFees) => {
+          t.assertions(err, marketFees);
+          db.destroy();
+          done();
+        });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "get fees by specifying unfinalized market IDs",
     params: {
       marketIds: [
@@ -36,8 +39,8 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
       },
     },
     assertions: (err, marketFees) => {
-      expect(err).toBeFalsy();
-      expect(marketFees).toEqual([
+      assert.ifError(err);
+      assert.deepEqual(marketFees, [
         {
           marketId: "0x0000000000000000000000000000000000000001",
           unclaimedFee: "0",
@@ -49,7 +52,7 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
       ]);
     },
   });
-  runTest({
+  test({
     description: "Empty marketIds array",
     params: {
       marketIds: [],
@@ -67,8 +70,8 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
       },
     },
     assertions: (err, marketFees) => {
-      expect(err).toBeFalsy();
-      expect(marketFees).toEqual([]);
+      assert.ifError(err);
+      assert.deepEqual(marketFees, []);
     },
   });
 });

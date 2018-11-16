@@ -1,12 +1,13 @@
 "use strict";
 
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const {BigNumber} = require("bignumber.js");
 const {series} = require("async");
-const {processOrderCanceledLog, processOrderCanceledLogRemoval} = require("src/blockchain/log-processors/order-canceled");
+const {processOrderCanceledLog, processOrderCanceledLogRemoval} = require("../../../../src/blockchain/log-processors/order-canceled");
 
 describe("blockchain/log-processors/order-canceled", () => {
-  const runTest = (t) => {
+  const test = (t) => {
     const getState = (db, params, callback) => {
 
       series({
@@ -15,27 +16,29 @@ describe("blockchain/log-processors/order-canceled", () => {
       }, callback);
 
     };
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      db.transaction((trx) => {
-        processOrderCanceledLog(trx, t.params.augur, t.params.log, (err) => {
-          expect(err).toBeFalsy();
-          getState(trx, t.params, (err, records) => {
-            t.assertions.onAdded(err, records);
-            processOrderCanceledLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-              expect(err).toBeFalsy();
-              getState(trx, t.params, (err, records) => {
-                t.assertions.onRemoved(err, records);
-                db.destroy();
-                done();
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        db.transaction((trx) => {
+          processOrderCanceledLog(trx, t.params.augur, t.params.log, (err) => {
+            assert.ifError(err);
+            getState(trx, t.params, (err, records) => {
+              t.assertions.onAdded(err, records);
+              processOrderCanceledLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.ifError(err);
+                getState(trx, t.params, (err, records) => {
+                  t.assertions.onRemoved(err, records);
+                  db.destroy();
+                  done();
+                });
               });
             });
           });
         });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "OrderCanceled log and removal",
     params: {
       log: {
@@ -53,8 +56,8 @@ const db = await setupTestDb();
     },
     assertions: {
       onAdded: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records.order).toEqual({
+        assert.ifError(err);
+        assert.deepEqual(records.order, {
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
@@ -76,7 +79,7 @@ const db = await setupTestDb();
           tradeGroupId: null,
           orphaned: 0,
         });
-        expect(records.orderCanceled).toEqual({
+        assert.deepEqual(records.orderCanceled, {
           blockNumber: 1400101,
           logIndex: 0,
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
@@ -84,8 +87,8 @@ const db = await setupTestDb();
         });
       },
       onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records.order).toEqual({
+        assert.ifError(err);
+        assert.deepEqual(records.order, {
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
@@ -107,7 +110,7 @@ const db = await setupTestDb();
           tradeGroupId: null,
           orphaned: 0,
         });
-        expect(records.orderCanceled).not.toBeDefined();
+        assert.isUndefined(records.orderCanceled);
       },
     },
   });

@@ -1,32 +1,35 @@
 "use strict";
 
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {processFeeWindowRedeemedLog, processFeeWindowRedeemedLogRemoval} = require("src/blockchain/log-processors/fee-window-redeemed");
+const {processFeeWindowRedeemedLog, processFeeWindowRedeemedLogRemoval} = require("../../../../src/blockchain/log-processors/fee-window-redeemed");
 
 describe("blockchain/log-processors/fee-window-redeemed", () => {
-  const runTest = (t) => {
+  const test = (t) => {
     const getRedeemed = (db, params, callback) => db.select(["reporter", "feeWindow", "amountRedeemed", "reportingFeesReceived"]).from("participation_token_redeemed").asCallback(callback);
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      db.transaction((trx) => {
-        processFeeWindowRedeemedLog(trx, t.params.augur, t.params.log, (err) => {
-          expect(err).toBeFalsy();
-          getRedeemed(trx, t.params, (err, records) => {
-            t.assertions.onAdded(err, records);
-            processFeeWindowRedeemedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-              expect(err).toBeFalsy();
-              getRedeemed(trx, t.params, (err, records) => {
-                t.assertions.onRemoved(err, records);
-                db.destroy();
-                done();
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        db.transaction((trx) => {
+          processFeeWindowRedeemedLog(trx, t.params.augur, t.params.log, (err) => {
+            assert.ifError(err);
+            getRedeemed(trx, t.params, (err, records) => {
+              t.assertions.onAdded(err, records);
+              processFeeWindowRedeemedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.ifError(err);
+                getRedeemed(trx, t.params, (err, records) => {
+                  t.assertions.onRemoved(err, records);
+                  db.destroy();
+                  done();
+                });
               });
             });
           });
         });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "Redeemed",
     params: {
       log: {
@@ -41,8 +44,8 @@ const db = await setupTestDb();
     },
     assertions: {
       onAdded: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual([{
+        assert.ifError(err);
+        assert.deepEqual(records, [{
           amountRedeemed: "200",
           feeWindow: "FEE_WINDOW",
           reporter: "REPORTER",
@@ -50,8 +53,8 @@ const db = await setupTestDb();
         }]);
       },
       onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual([]);
+        assert.ifError(err);
+        assert.deepEqual(records, []);
       },
     },
   });

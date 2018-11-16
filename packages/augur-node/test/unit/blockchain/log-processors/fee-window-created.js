@@ -1,8 +1,9 @@
 "use strict";
 
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const {series} = require("async");
-const {processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval} = require("src/blockchain/log-processors/fee-window-created");
+const {processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval} = require("../../../../src/blockchain/log-processors/fee-window-created");
 
 const getFeeWindow = (db, params, callback) => series({
   fee_windows: next => db("fee_windows").first(["feeWindow", "feeWindowId", "endTime"]).where({feeWindow: params.log.feeWindow}).asCallback(next),
@@ -13,28 +14,30 @@ const getFeeWindow = (db, params, callback) => series({
 }, callback);
 
 describe("blockchain/log-processors/fee-window-created", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      db.transaction((trx) => {
-        processFeeWindowCreatedLog(trx, t.params.augur, t.params.log, (err) => {
-          expect(err).toBeFalsy();
-          getFeeWindow(trx, t.params, (err, records) => {
-            t.assertions.onAdded(err, records);
-            processFeeWindowCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-              expect(err).toBeFalsy();
-              getFeeWindow(trx, t.params, (err, records) => {
-                t.assertions.onRemoved(err, records);
-                db.destroy();
-                done();
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        db.transaction((trx) => {
+          processFeeWindowCreatedLog(trx, t.params.augur, t.params.log, (err) => {
+            assert.ifError(err);
+            getFeeWindow(trx, t.params, (err, records) => {
+              t.assertions.onAdded(err, records);
+              processFeeWindowCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.ifError(err);
+                getFeeWindow(trx, t.params, (err, records) => {
+                  t.assertions.onRemoved(err, records);
+                  db.destroy();
+                  done();
+                });
               });
             });
           });
         });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "reporting window created",
     params: {
       log: {
@@ -57,8 +60,8 @@ const db = await setupTestDb();
     },
     assertions: {
       onAdded: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual({
+        assert.ifError(err);
+        assert.deepEqual(records, {
           fee_windows: {
             endTime: 1512657473,
             feeWindow: "0xf000000000000000000000000000000000000000",
@@ -79,8 +82,8 @@ const db = await setupTestDb();
         });
       },
       onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual({
+        assert.ifError(err);
+        assert.deepEqual(records, {
           fee_windows: undefined,
           tokens: [],
         });

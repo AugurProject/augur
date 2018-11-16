@@ -1,8 +1,9 @@
 import { createSelector } from "reselect";
 import { selectCategoriesState } from "src/select-state";
 
-const selectCategoriesSelector = () =>
-  createSelector(selectCategoriesState, categories => {
+export const selectCategories = createSelector(
+  selectCategoriesState,
+  categories => {
     const selectedCategories = [];
     Object.keys(categories || {}).forEach(category => {
       // if the name of the category is falsey don't include it.
@@ -14,9 +15,8 @@ const selectCategoriesSelector = () =>
       }
     });
     return selectedCategories.sort(popularityDifference);
-  });
+  }
+);
 
 const popularityDifference = (category1, category2) =>
   category2.popularity - category1.popularity;
-
-export const selectCategories = selectCategoriesSelector();

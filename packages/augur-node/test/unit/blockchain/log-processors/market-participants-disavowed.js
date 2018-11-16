@@ -1,32 +1,35 @@
 "use strict";
 
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { processMarketParticipantsDisavowedLog, processMarketParticipantsDisavowedLogRemoval } = require("src/blockchain/log-processors/market-participants-disavowed");
+const { processMarketParticipantsDisavowedLog, processMarketParticipantsDisavowedLogRemoval } = require("../../../../src/blockchain/log-processors/market-participants-disavowed");
 
 describe("blockchain/log-processors/market-participants-disavowed", () => {
-  const runTest = (t) => {
+  const test = (t) => {
     const getMarketCrowdsourcers = (db, params, callback) => db("crowdsourcers").where({ marketId: params.log.market }).asCallback(callback);
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      db.transaction((trx) => {
-        processMarketParticipantsDisavowedLog(trx, t.params.augur, t.params.log, (err) => {
-          expect(err).toBeFalsy();
-          getMarketCrowdsourcers(trx, t.params, (err, records) => {
-            t.assertions.onAdded(err, records);
-            processMarketParticipantsDisavowedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-              expect(err).toBeFalsy();
-              getMarketCrowdsourcers(trx, t.params, (err, records) => {
-                t.assertions.onRemoved(err, records);
-                db.destroy();
-                done();
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        db.transaction((trx) => {
+          processMarketParticipantsDisavowedLog(trx, t.params.augur, t.params.log, (err) => {
+            assert.ifError(err);
+            getMarketCrowdsourcers(trx, t.params, (err, records) => {
+              t.assertions.onAdded(err, records);
+              processMarketParticipantsDisavowedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.ifError(err);
+                getMarketCrowdsourcers(trx, t.params, (err, records) => {
+                  t.assertions.onRemoved(err, records);
+                  db.destroy();
+                  done();
+                });
               });
             });
           });
         });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "Market Participants Disavowed",
     params: {
       log: {
@@ -35,18 +38,18 @@ const db = await setupTestDb();
     },
     assertions: {
       onAdded: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records.length).toEqual(3);
-        expect(records[0].disavowed).toEqual(1);
-        expect(records[1].disavowed).toEqual(1);
-        expect(records[2].disavowed).toEqual(1);
+        assert.ifError(err);
+        assert.equal(records.length, 3);
+        assert.equal(records[0].disavowed, 1);
+        assert.equal(records[1].disavowed, 1);
+        assert.equal(records[2].disavowed, 1);
       },
       onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records.length).toEqual(3);
-        expect(records[0].disavowed).toEqual(0);
-        expect(records[1].disavowed).toEqual(0);
-        expect(records[2].disavowed).toEqual(0);
+        assert.ifError(err);
+        assert.equal(records.length, 3);
+        assert.equal(records[0].disavowed, 0);
+        assert.equal(records[1].disavowed, 0);
+        assert.equal(records[2].disavowed, 0);
       },
     },
   });

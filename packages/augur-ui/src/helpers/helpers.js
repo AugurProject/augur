@@ -15,7 +15,7 @@ import { logout } from "modules/auth/actions/logout";
 import { formatRep, formatEther } from "utils/format-number";
 import getRep from "modules/account/actions/get-rep";
 import { augur } from "services/augurjs";
-import { selectMarketDisputeOutcomes } from "modules/reports/selectors/select-market-dispute-outcomes";
+import getMarketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import {
   getDaysRemaining,
   getHoursRemaining,
@@ -187,7 +187,7 @@ export const helpers = store => {
           })
         )
       ),
-    getMarketDisputeOutcomes: () => selectMarketDisputeOutcomes(),
+    getMarketDisputeOutcomes: () => getMarketDisputeOutcomes(),
     getReportingWindowStats: () => getReportingWindowStats(),
     getDaysRemaining: (endTime, startTime) =>
       new Promise(resolve =>

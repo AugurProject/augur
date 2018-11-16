@@ -7,7 +7,7 @@ import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 
 import toggleHeight from "utils/toggle-height/toggle-height";
 
-import CommonStyles from "modules/portfolio/components/transactions-list/transactions-list.styles";
+import CommonStyles from "modules/portfolio/components/transactions/transactions.styles";
 import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
 
 export default class TransactionSingle extends Component {

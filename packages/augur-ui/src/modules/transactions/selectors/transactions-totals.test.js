@@ -4,30 +4,19 @@ import {
   FAILED,
   INTERRUPTED
 } from "modules/transactions/constants/statuses";
-import * as transactions from "modules/transactions/selectors/transactions";
+import transactionsTotalsAssertions from "assertions/transactions-totals";
+import { selectTransactions } from "modules/transactions/selectors/transactions";
+import { selectTransactionsTotals } from "src/modules/transactions/selectors/transactions-totals";
 
-import { selectTransactionsTotalsCreator } from "src/modules/transactions/selectors/transactions-totals";
+jest.mock("modules/transactions/selectors/transactions");
 
 describe(`modules/transactions/selectors/transactions-totals.js`, () => {
-  let selectTransactionsSpy;
-  let selectTransactionsTotals;
   let actual;
 
-  beforeEach(() => {
-    selectTransactionsSpy = jest.spyOn(transactions, "selectTransactions");
-
-    // Bind values inside createSelector now.
-    selectTransactionsTotals = selectTransactionsTotalsCreator();
-  });
-
-  afterEach(() => {
-    selectTransactionsSpy.mockRestore();
-  });
-
   test("returned the transaction totals for a blank state", () => {
-    selectTransactionsSpy.mockImplementation(() => []);
+    selectTransactions.mockImplementation(() => []);
 
-    actual = selectTransactionsTotals();
+    actual = selectTransactionsTotals({});
     expect(actual).toEqual({
       numWorking: 0,
       numPending: 0,
@@ -41,7 +30,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
   });
 
   test("properly returned total info on transactions", () => {
-    selectTransactionsSpy.mockImplementation(() => [
+    selectTransactions.mockImplementation(() => [
       {
         id: "fake",
         status: PENDING
@@ -59,7 +48,9 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
         status: INTERRUPTED
       }
     ]);
-    const actual = selectTransactionsTotals();
+
+    const actual = selectTransactionsTotals({});
+    transactionsTotalsAssertions(actual);
     expect(actual).toEqual({
       numWorking: 0,
       numPending: 1,

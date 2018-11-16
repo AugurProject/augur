@@ -2,10 +2,11 @@
 
 const Augur = require("augur.js");
 
+const assert = require("chai").assert;
 const {BigNumber} = require("bignumber.js");
 const setupTestDb = require("../../test.database");
-const {processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval} = require("src/blockchain/log-processors/initial-report-submitted");
-const {setOverrideTimestamp, removeOverrideTimestamp} = require("src/blockchain/process-block");
+const {processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval} = require("../../../../src/blockchain/log-processors/initial-report-submitted");
+const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../src/blockchain/process-block");
 
 const getReportingState = (db, params, callback) => {
   db("markets").first(["reportingState", "initialReportSize", "marketCreatorFeesBalance"]).where("markets.marketId", params.log.market).join("market_state", "market_state.marketStateId", "markets.marketStateId").asCallback(callback);
@@ -16,28 +17,30 @@ const getInitialReport = (db, params, callback) => {
 };
 
 describe("blockchain/log-processors/initial-report-submitted", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      db.transaction((trx) => {
-        setOverrideTimestamp(trx, t.params.overrideTimestamp, (err) => {
-          expect(err).toBeFalsy();
-          processInitialReportSubmittedLog(trx, t.params.augur, t.params.log, (err) => {
-            expect(err).toBeFalsy();
-            getReportingState(trx, t.params, (err, records) => {
-              expect(err).toBeFalsy();
-              t.assertions.onAdded(err, records);
-              getInitialReport(trx, t.params, (err, records) => {
-                expect(err).toBeFalsy();
-                t.assertions.onAddedInitialReport(err, records);
-                processInitialReportSubmittedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                  expect(err).toBeFalsy();
-                  getReportingState(trx, t.params, (err, records) => {
-                    t.assertions.onRemoved(err, records);
-                    removeOverrideTimestamp(trx, t.params.overrideTimestamp, (err) => {
-                      expect(err).not.toBeNull();
-                      db.destroy();
-                      done();
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        db.transaction((trx) => {
+          setOverrideTimestamp(trx, t.params.overrideTimestamp, (err) => {
+            assert.ifError(err);
+            processInitialReportSubmittedLog(trx, t.params.augur, t.params.log, (err) => {
+              assert.ifError(err);
+              getReportingState(trx, t.params, (err, records) => {
+                assert.ifError(err);
+                t.assertions.onAdded(err, records);
+                getInitialReport(trx, t.params, (err, records) => {
+                  assert.ifError(err);
+                  t.assertions.onAddedInitialReport(err, records);
+                  processInitialReportSubmittedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                    assert.ifError(err);
+                    getReportingState(trx, t.params, (err, records) => {
+                      t.assertions.onRemoved(err, records);
+                      removeOverrideTimestamp(trx, t.params.overrideTimestamp, (err) => {
+                        assert.isNotNull(err);
+                        db.destroy();
+                        done();
+                      });
                     });
                   });
                 });
@@ -46,9 +49,9 @@ const db = await setupTestDb();
           });
         });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "Initial report submitted",
     params: {
       log: {
@@ -74,13 +77,13 @@ const db = await setupTestDb();
           },
           Universe: {
             getFeeWindowByTimestamp: (p, callback) => {
-              expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
+              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
               const feeWindowByTimestamp = {
                 1509085473: "0x2000000000000000000000000000000000000000",
                 1509690273: "0x2100000000000000000000000000000000000000",
               };
               const feeWindow = feeWindowByTimestamp[p._timestamp];
-              expect(typeof feeWindow).toBe("string");
+              assert.isString(feeWindow, `No window at timestamp: ${p._timestamp}`);
               callback(null, feeWindow);
             },
           },
@@ -88,7 +91,7 @@ const db = await setupTestDb();
         rpc: {
           eth: {
             getBalance: (p, callback) => {
-              expect(p).toEqual(["0xbbb0000000000000000000000000000000000001", "latest"]);
+              assert.deepEqual(p, ["0xbbb0000000000000000000000000000000000001", "latest"]);
               callback(null, "0x22");
             },
           },
@@ -98,24 +101,24 @@ const db = await setupTestDb();
     },
     assertions: {
       onAdded: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual({
+        assert.ifError(err);
+        assert.deepEqual(records, {
           initialReportSize: new BigNumber("2829", 10),
           reportingState: "AWAITING_NEXT_WINDOW",
           marketCreatorFeesBalance: new BigNumber("0x22", 16),
         });
       },
       onAddedInitialReport: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual({
+        assert.ifError(err);
+        assert.deepEqual(records, {
           reporter: "0x0000000000000000000000000000000000000b0b",
           amountStaked: new BigNumber("2829", 10),
           initialReporter: "0x0000000000000000000000000000000000abe123",
         });
       },
       onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual({
+        assert.ifError(err);
+        assert.deepEqual(records, {
           initialReportSize: null,
           reportingState: "DESIGNATED_REPORTING",
           marketCreatorFeesBalance: new BigNumber("0x22", 16),

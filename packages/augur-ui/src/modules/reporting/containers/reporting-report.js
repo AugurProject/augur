@@ -11,7 +11,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
 import { submitInitialReport } from "modules/reports/actions/submit-initial-report";
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 const mapStateToProps = state => ({

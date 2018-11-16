@@ -1,6 +1,7 @@
 "use strict";
 
 const Augur = require("augur.js");
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const {BigNumber} = require("bignumber.js");
 const {
@@ -8,9 +9,9 @@ const {
   processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval,
   processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval,
 }
-  = require("src/blockchain/log-processors/crowdsourcer");
-const {getMarketsWithReportingState} = require("src/server/getters/database");
-const {setOverrideTimestamp, removeOverrideTimestamp} = require("src/blockchain/process-block");
+  = require("../../../../src/blockchain/log-processors/crowdsourcer");
+const {getMarketsWithReportingState} = require("../../../../src/server/getters/database");
+const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../src/blockchain/process-block");
 
 
 const getCrowdsourcer = (db, params, callback) => {
@@ -44,33 +45,35 @@ const getCrowdsourcerAndMarket = (db, params, callback) => {
 
 
 describe("blockchain/log-processors/crowdsourcers", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      setOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
-        expect(err).toBeFalsy();
-        db.transaction((trx) => {
-          function verify (processor, getter, checker, callback) {
-            processor(trx, t.params.augur, t.params.log, (err) => {
-              expect(err).toBeFalsy();
-              getter(trx, t.params, (err, records) => {
-                expect(err).toBeFalsy();
-                checker(err, records);
-                callback();
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        setOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
+          assert.ifError(err);
+          db.transaction((trx) => {
+            function verify(processor, getter, checker, callback) {
+              processor(trx, t.params.augur, t.params.log, (err) => {
+                assert.ifError(err);
+                getter(trx, t.params, (err, records) => {
+                  assert.ifError(err);
+                  checker(err, records);
+                  callback();
+                });
               });
-            });
-          }
+            }
 
-          verify(processDisputeCrowdsourcerCreatedLog, getCrowdsourcer, t.assertions.onCreated, () => {
-            verify(processDisputeCrowdsourcerContributionLog, getDisputesFromCrowdsourcer, t.assertions.onContributed, () => {
-              verify(processDisputeCrowdsourcerCompletedLog, getCrowdsourcerAndMarket, t.assertions.onCompleted, () => {
-                verify(processDisputeCrowdsourcerCompletedLogRemoval, getCrowdsourcerAndMarket, t.assertions.onCompletedRemoved, () => {
-                  verify(processDisputeCrowdsourcerContributionLogRemoval, getDisputesFromCrowdsourcer, t.assertions.onContributedRemoved, () => {
-                    verify(processDisputeCrowdsourcerCreatedLogRemoval, getCrowdsourcer, t.assertions.onCreatedRemoved, () => {
-                      removeOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
-                        expect(err).not.toBeNull();
-                        db.destroy();
-                        done();
+            verify(processDisputeCrowdsourcerCreatedLog, getCrowdsourcer, t.assertions.onCreated, () => {
+              verify(processDisputeCrowdsourcerContributionLog, getDisputesFromCrowdsourcer, t.assertions.onContributed, () => {
+                verify(processDisputeCrowdsourcerCompletedLog, getCrowdsourcerAndMarket, t.assertions.onCompleted, () => {
+                  verify(processDisputeCrowdsourcerCompletedLogRemoval, getCrowdsourcerAndMarket, t.assertions.onCompletedRemoved, () => {
+                    verify(processDisputeCrowdsourcerContributionLogRemoval, getDisputesFromCrowdsourcer, t.assertions.onContributedRemoved, () => {
+                      verify(processDisputeCrowdsourcerCreatedLogRemoval, getCrowdsourcer, t.assertions.onCreatedRemoved, () => {
+                        removeOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
+                          assert.isNotNull(err);
+                          db.destroy();
+                          done();
+                        });
                       });
                     });
                   });
@@ -80,9 +83,9 @@ const db = await setupTestDb();
           });
         });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "report submitted",
     params: {
       log: {
@@ -103,13 +106,13 @@ const db = await setupTestDb();
         api: {
           Universe: {
             getFeeWindowByTimestamp: (p, callback) => {
-              expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
+              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
               const feeWindowByTimestamp = {
                 1509085473: "0x2000000000000000000000000000000000000000",
                 1509690273: "0x2100000000000000000000000000000000000000",
               };
               const feeWindow = feeWindowByTimestamp[p._timestamp];
-              expect(typeof feeWindow).toBe("string");
+              assert.isString(feeWindow);
               callback(null, feeWindow);
             },
           },
@@ -119,8 +122,8 @@ const db = await setupTestDb();
     },
     assertions: {
       onCreated: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual({
+        assert.ifError(err);
+        assert.deepEqual(records, {
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
           feeWindow: "0x2000000000000000000000000000000000000000",
@@ -130,12 +133,12 @@ const db = await setupTestDb();
         });
       },
       onCreatedRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).not.toBeDefined();
+        assert.ifError(err);
+        assert.isUndefined(records);
       },
       onContributed: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual([{
+        assert.ifError(err);
+        assert.deepEqual(records, [{
           blockNumber: 1400100,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
           logIndex: 0,
@@ -146,12 +149,12 @@ const db = await setupTestDb();
         }]);
       },
       onContributedRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual([]);
+        assert.ifError(err);
+        assert.deepEqual(records, []);
       },
       onCompleted: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records.crowdsourcer).toEqual({
+        assert.ifError(err);
+        assert.deepEqual(records.crowdsourcer, {
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
           feeWindow: "0x2000000000000000000000000000000000000000",
@@ -160,7 +163,7 @@ const db = await setupTestDb();
           winning: null,
         });
 
-        expect(records.market).toEqual({
+        assert.deepEqual(records.market, {
           category: "TEST CATEGORY",
           consensusPayoutId: null,
           creationBlockNumber: 1500001,
@@ -209,8 +212,8 @@ const db = await setupTestDb();
         });
       },
       onCompletedRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records.crowdsourcer).toEqual({
+        assert.ifError(err);
+        assert.deepEqual(records.crowdsourcer, {
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
           feeWindow: "0x2000000000000000000000000000000000000000",
@@ -219,7 +222,7 @@ const db = await setupTestDb();
           winning: null,
         });
 
-        expect(records.market).toEqual({
+        assert.deepEqual(records.market, {
           marketId: "0x0000000000000000000000000000000000000211",
           universe: "0x000000000000000000000000000000000000000b",
           marketType: "yesNo",

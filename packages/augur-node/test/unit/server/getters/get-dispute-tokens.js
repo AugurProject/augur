@@ -1,21 +1,24 @@
 "use strict";
 
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-dispute-tokens", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      t.method = "getDisputeTokens";
-      dispatchJsonRpcRequest(db, t, {}, (err, stakeTokens) => {
-        t.assertions(err, stakeTokens);
-        db.destroy();
-        done();
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        t.method = "getDisputeTokens";
+        dispatchJsonRpcRequest(db,  t, {}, (err, stakeTokens) => {
+          t.assertions(err, stakeTokens);
+          db.destroy();
+          done();
+        });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "get unfinalized tokens for user that actually exists",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -23,8 +26,8 @@ const db = await setupTestDb();
       stakeTokenState: "UNFINALIZED",
     },
     assertions: (err, stakeTokens) => {
-      expect(err).toBeFalsy();
-      expect(stakeTokens).toEqual({
+      assert.ifError(err);
+      assert.deepEqual(stakeTokens, {
         "0x0000000000000000001000000000000000000001": {
           disputeToken: "0x0000000000000000001000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000011",
@@ -46,7 +49,7 @@ const db = await setupTestDb();
       });
     },
   });
-  runTest({
+  test({
     description: "get unclaimed tokens for user reported correctly",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -54,8 +57,8 @@ const db = await setupTestDb();
       stakeTokenState: "UNCLAIMED",
     },
     assertions: (err, stakeTokens) => {
-      expect(err).toBeFalsy();
-      expect(stakeTokens).toEqual({
+      assert.ifError(err);
+      assert.deepEqual(stakeTokens, {
         "0x0000000000000000001000000000000000000003": {
           disputeToken: "0x0000000000000000001000000000000000000003",
           marketId: "0x0000000000000000000000000000000000000019",
@@ -77,7 +80,7 @@ const db = await setupTestDb();
       });
     },
   });
-  runTest({
+  test({
     description: "get unclaimed tokens for user with no tokens",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -85,11 +88,11 @@ const db = await setupTestDb();
       stakeTokenState: "UNCLAIMED",
     },
     assertions: (err, stakeTokens) => {
-      expect(err).toBeFalsy();
-      expect(stakeTokens).toEqual({});
+      assert.ifError(err);
+      assert.deepEqual(stakeTokens, {});
     },
   });
-  runTest({
+  test({
     description: "unknown stakeTokenState",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -97,10 +100,10 @@ const db = await setupTestDb();
       stakeTokenState: "FILLER_VALUE",
     },
     assertions: (err, stakeTokens) => { // assert stakeTokens
-      expect(err).not.toBeNull();
+      assert.isNotNull(err);
     },
   });
-  runTest({
+  test({
     description: "all stake tokens for 0x0000000000000000000000000000000000000021",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -108,8 +111,8 @@ const db = await setupTestDb();
       stakeTokenState: "ALL",
     },
     assertions: (err, stakeTokens) => {
-      expect(err).toBeFalsy();
-      expect(stakeTokens).toEqual({
+      assert.ifError(err);
+      assert.deepEqual(stakeTokens, {
         "0x0000000000000000001000000000000000000001": {
           disputeToken: "0x0000000000000000001000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000011",

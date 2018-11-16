@@ -28,7 +28,7 @@ import store from "src/store";
 describe(`store.js`, () => {
   const state = store.getState();
 
-  test("should initialize with the correct default state", () => {
+  it("should initialize with the correct default state", () => {
     assert.isOk(state, "state is not defined");
     assert.isObject(state, "state is not a object");
 

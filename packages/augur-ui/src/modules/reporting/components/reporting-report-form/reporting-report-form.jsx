@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
 
 import {
   YES_NO,

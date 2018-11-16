@@ -1,33 +1,36 @@
 "use strict";
 
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { BigNumber } = require("bignumber.js");
-const { processBurnLog, processBurnLogRemoval } = require("src/blockchain/log-processors/token/burn");
+const { processBurnLog, processBurnLogRemoval } = require("../../../../src/blockchain/log-processors/token/burn");
 
 describe("blockchain/log-processors/tokens-burned", () => {
-  const runTest = (t) => {
+  const test = (t) => {
     const getTokenBalances = (db, params, callback) => db.select(["balances.owner", "balances.token", "balances.balance", "token_supply.supply"]).from("balances").join("token_supply", "balances.token", "token_supply.token").where("balances.token", params.log.token).asCallback(callback);
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      db.transaction((trx) => {
-        processBurnLog(trx, t.params.augur, t.params.log, (err) => {
-          expect(err).toBeFalsy();
-          getTokenBalances(trx, t.params, (err, records) => {
-            t.assertions.onAdded(err, records);
-            processBurnLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-              expect(err).toBeFalsy();
-              getTokenBalances(trx, t.params, (err, records) => {
-                t.assertions.onRemoved(err, records);
-                db.destroy();
-                done();
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        db.transaction((trx) => {
+          processBurnLog(trx, t.params.augur, t.params.log, (err) => {
+            assert.ifError(err);
+            getTokenBalances(trx, t.params, (err, records) => {
+              t.assertions.onAdded(err, records);
+              processBurnLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.ifError(err);
+                getTokenBalances(trx, t.params, (err, records) => {
+                  t.assertions.onRemoved(err, records);
+                  db.destroy();
+                  done();
+                });
               });
             });
           });
         });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "Tokens burned",
     params: {
       log: {
@@ -53,8 +56,8 @@ const db = await setupTestDb();
     },
     assertions: {
       onAdded: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual([{
+        assert.ifError(err);
+        assert.deepEqual(records, [{
           owner: "FROM_ADDRESS",
           token: "TOKEN_ADDRESS",
           balance: new BigNumber("1", 10),
@@ -62,8 +65,8 @@ const db = await setupTestDb();
         }]);
       },
       onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
-        expect(records).toEqual([{
+        assert.ifError(err);
+        assert.deepEqual(records, [{
           owner: "FROM_ADDRESS",
           token: "TOKEN_ADDRESS",
           balance: new BigNumber("9001", 10),

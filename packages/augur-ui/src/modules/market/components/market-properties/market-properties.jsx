@@ -19,7 +19,7 @@ import { dateHasPassed } from "utils/format-date";
 import Styles from "modules/market/components/market-properties/market-properties.styles";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 import { MODAL_MIGRATE_MARKET } from "modules/modal/constants/modal-types";
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
 
 const {
   DESIGNATED_REPORTING,

@@ -1,57 +1,7 @@
 import { YES_NO } from "modules/markets/constants/market-types";
 import { loadUniverseInfo } from "modules/universe/actions/load-universe-info";
 
-jest.mock("services/augurjs", () => ({
-  augur: {
-    api: {
-      Universe: {
-        getParentUniverse: (args, callback) => {
-          expect(args).toEqual({
-            tx: { to: "0xGENESIS" }
-          });
-          return callback(null, "0x0000000000000000000000000000000000000000");
-        },
-        getOpenInterestInAttoEth: (args, callback) => {
-          callback(null, "1000000");
-        }
-      }
-    },
-    augurNode: {
-      submitRequest: (methodName, args, callback) => {
-        expect(methodName).toEqual("getUniversesInfo");
-        expect(args).toEqual({
-          universe: "0xGENESIS",
-          account: "0xACCOUNT"
-        });
-        return callback(null, [
-          {
-            universe: "0xGENESIS",
-            payout: [],
-            isInvalid: false,
-            numMarkets: 15,
-            supply: "1100000000000000000000000",
-            parentUniverse: "0x0000000000000000000000000000000000000000"
-          },
-          {
-            universe: "0xGENESIS_2",
-            payout: [],
-            isInvalid: false,
-            numMarkets: 0,
-            supply: "50000000000000000000000",
-            parentUniverse: "0x0000000000000000000000000000000000000000"
-          },
-          {
-            universe: "0xCHILD_1",
-            payout: [10000, 0],
-            isInvalid: false,
-            numMarkets: 400,
-            parentUniverse: "0xGENESIS"
-          }
-        ]);
-      }
-    }
-  }
-}));
+jest.mock("services/augurjs");
 
 describe("modules/account/actions/load-universe-info.js", () => {
   describe("loadUniverseInfo", () => {

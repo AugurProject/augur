@@ -59,7 +59,7 @@ export const selectPositionsPlusAsks = createBigCacheSelector(10)(
  * @param {Object} asks
  * @return {Object} Total number of shares in positions and open ask orders.
  */
-const selectMarketPositionPlusAsks = (account, position, asks) => {
+export const selectMarketPositionPlusAsks = (account, position, asks) => {
   const positionPlusAsks = {};
   if (asks) {
     const adjustedOutcomes = Object.keys(position);
@@ -82,7 +82,7 @@ const selectMarketPositionPlusAsks = (account, position, asks) => {
  * @param {Object} askOrders
  * @return {BigNumber} Total number of shares in open ask orders.
  */
-function getOpenAskShares(account, outcomeId, askOrders) {
+export function getOpenAskShares(account, outcomeId, askOrders) {
   if (!account || !askOrders) return ZERO;
   let order;
   let askShares = ZERO;

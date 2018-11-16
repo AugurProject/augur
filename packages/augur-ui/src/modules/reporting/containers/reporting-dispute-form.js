@@ -3,11 +3,11 @@ import { withRouter } from "react-router-dom";
 
 import ReportingDisputeForm from "modules/reporting/components/reporting-dispute-form/reporting-dispute-form";
 import { addUpdateAccountDispute } from "modules/reports/actions/update-account-disputes";
-import { selectMarketDisputeOutcomes } from "modules/reports/selectors/select-market-dispute-outcomes";
+import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-info";
 
 const mapStateToProps = (state, ownProps) => {
-  const disputeOutcomes = selectMarketDisputeOutcomes(state) || {};
+  const disputeOutcomes = marketDisputeOutcomes() || {};
 
   return {
     isLogged: state.authStatus.isLogged,

@@ -2,15 +2,9 @@ import { getAugurNodeNetworkId } from "modules/app/actions/get-augur-node-networ
 
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
-import * as augurModule from "services/augurjs";
+import * as augur from "services/augurjs";
 
-jest.mock("services/augurjs.js", () => ({
-  augur: {
-    augurNode: {
-      getSyncData: () => {}
-    }
-  }
-}));
+jest.mock("../../../services/augurjs.js");
 
 describe("modules/app/actions/get-augur-node-network-id.js", () => {
   let store;
@@ -23,7 +17,7 @@ describe("modules/app/actions/get-augur-node-network-id.js", () => {
     store = configureMockStore([thunk])({
       connection: { augurNodeNetworkId: "4" }
     });
-    augurModule.augur.augurNode.mockGetSyncData = expect.toThrowErrorMatchingSnapshot();
+    augur.augurNode.mockGetSyncData = expect.toThrowErrorMatchingSnapshot();
     store.dispatch(
       getAugurNodeNetworkId((err, augurNodeNetworkId) => {
         expect(err).toBeNull();
@@ -37,7 +31,7 @@ describe("modules/app/actions/get-augur-node-network-id.js", () => {
     store = configureMockStore([thunk])({
       connection: { augurNodeNetworkId: null }
     });
-    augurModule.augur.augurNode.getSyncData = callback =>
+    augur.augurNode.mockGetSyncData = callback =>
       callback(null, { net_version: "4" });
     store.dispatch(
       getAugurNodeNetworkId((err, augurNodeNetworkId) => {

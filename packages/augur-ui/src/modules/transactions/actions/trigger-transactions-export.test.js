@@ -1,30 +1,16 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import { triggerTransactionsExport } from "modules/transactions/actions/trigger-transactions-export";
+import * as mockLoadAccountHistory from "modules/auth/actions/load-account-history";
+import { selectTransactions } from "src/modules/transactions/selectors/transactions";
 
-import * as loadAccountHistory from "modules/auth/actions/load-account-history";
-import * as transactions from "modules/transactions/selectors/transactions";
+jest.mock("modules/transactions/selectors/transactions");
+jest.mock("modules/auth/actions/load-account-history");
 
 describe("modules/transactions/actions/trigger-transactions-export.js", () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-  let loadAccountHistorySpy;
-  let selectTransactionsSpy;
-
-  beforeEach(() => {
-    loadAccountHistorySpy = jest.spyOn(
-      loadAccountHistory,
-      "loadAccountHistory"
-    );
-
-    selectTransactionsSpy = jest.spyOn(transactions, "selectTransactions");
-    selectTransactionsSpy.mockImplementation(state => state.transactions);
-  });
-
-  afterEach(() => {
-    loadAccountHistorySpy.mockRestore();
-    selectTransactionsSpy.mockRestore();
-  });
+  selectTransactions.mockImplementation(state => state.transactions);
 
   test("triggered a download if transactionsLoading is false", () => {
     const store = mockStore({
@@ -34,7 +20,7 @@ describe("modules/transactions/actions/trigger-transactions-export.js", () => {
       ],
       appStatus: { transactionsLoading: false }
     });
-    loadAccountHistorySpy.mockImplementation(loadAll => ({
+    mockLoadAccountHistory.setLoadAccountHistory(loadAll => ({
       type: "LOAD_ACCOUNT_HISTORY",
       loadAll
     }));
@@ -66,6 +52,7 @@ describe("modules/transactions/actions/trigger-transactions-export.js", () => {
       }
     };
     store.dispatch(triggerTransactionsExport());
+
     expect(store.getActions()).toHaveLength(0);
   });
 
@@ -78,7 +65,7 @@ describe("modules/transactions/actions/trigger-transactions-export.js", () => {
       appStatus: { transactionsLoading: true }
     });
 
-    loadAccountHistorySpy.mockImplementation((loadAll, cb) => {
+    mockLoadAccountHistory.setLoadAccountHistory((loadAll, cb) => {
       expect(loadAll).toBeTruthy();
       expect({}.toString.call(cb)).toStrictEqual("[object Function]");
       return { type: "LOAD_ACCOUNT_HISTORY", loadAll };

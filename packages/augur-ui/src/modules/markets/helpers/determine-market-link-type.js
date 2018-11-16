@@ -6,7 +6,7 @@ import {
   TYPE_FINALIZE_MARKET,
   TYPE_CLAIM_PROCEEDS
 } from "modules/markets/constants/link-types";
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
 import { isEmpty } from "lodash";
 
 export const determineMarketLinkType = (market, loginAccount) => {

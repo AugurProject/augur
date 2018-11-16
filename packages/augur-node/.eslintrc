@@ -4,10 +4,7 @@
     "mocha": true,
     "es6": true
   },
-  "extends": [
-    "plugin:jest/recommended",
-    "eslint:recommended"
-  ],
+  "extends": "eslint:recommended",
   "rules": {
     "indent": [
       "error",

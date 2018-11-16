@@ -1,29 +1,32 @@
 "use strict";
 
+const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-initial-reporters", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      t.method = "getInitialReporters";
-      dispatchJsonRpcRequest(db, t, t.params.augur, (err, initialReporters) => {
-        t.assertions(err, initialReporters);
-        db.destroy();
-        done();
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
+        assert.ifError(err);
+        t.method = "getInitialReporters";
+        dispatchJsonRpcRequest(db, t, t.params.augur, (err, initialReporters) => {
+          t.assertions(err, initialReporters);
+          db.destroy();
+          done();
+        });
       });
-    })
+    });
   };
-  runTest({
+  test({
     description: "get the initial reporter contracts owned by this reporter",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, initialReporters) => {
-      expect(err).toBeFalsy();
-      expect(initialReporters).toEqual({
+      assert.ifError(err);
+      assert.deepEqual(initialReporters, {
         "0x0000000000000000000000000000000000abe111": {
           amountStaked: "102",
           blockNumber: 1400100,
