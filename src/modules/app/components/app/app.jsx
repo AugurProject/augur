@@ -4,7 +4,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
 import classNames from "classnames";
 
 import shouldComponentUpdatePure from "utils/should-component-update-pure";
@@ -36,7 +35,6 @@ import NavPortfolioIcon from "modules/common/components/nav-portfolio-icon";
 import { NavReportingIcon } from "modules/common/components/icons";
 
 import parsePath from "modules/routes/helpers/parse-path";
-import makePath from "modules/routes/helpers/make-path";
 import parseQuery from "modules/routes/helpers/parse-query";
 
 import getValue from "utils/get-value";
@@ -284,7 +282,7 @@ export default class AppView extends Component {
 
   changeMenu(nextBasePath) {
     const { isLogged } = this.props;
-    const oldType = navTypes[this.state.currentBasePath];
+    const oldType = this.state.currentInnerNavType;
     const newType = navTypes[nextBasePath];
 
     if ((newType === AccountInnerNav && !isLogged) || oldType === newType) {
