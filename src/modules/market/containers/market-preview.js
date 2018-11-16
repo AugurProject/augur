@@ -4,8 +4,9 @@ import { collectMarketCreatorFees } from "modules/markets/actions/market-creator
 import MarketPreview from "modules/market/components/market-preview/market-preview";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 
-const mapStateToProps = state => ({
-  isLogged: state.authStatus.isLogged
+const mapStateToProps = (state, ownProps) => ({
+  isLogged: state.authStatus.isLogged,
+  isFavorite: !!state.favorites[ownProps.id]
 });
 
 const mapDispatchToProps = dispatch => ({
