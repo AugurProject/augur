@@ -5,8 +5,10 @@ import { downloadAugurLogs } from "./download-augur-logs";
 import { augurEmitter } from "../events";
 import { logger } from "../utils/logger";
 import { SubscriptionEventNames } from "../constants";
+import { delay } from "../../node_modules/@types/bluebird";
 
 const BLOCKSTREAM_HANDOFF_BLOCKS = 5;
+const BLOCKSTREAM_HANDOFF_WAIT_TIME_MS = 15000;
 let syncFinished = false;
 
 interface HighestBlockNumberRow {
@@ -35,8 +37,9 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur): P
     fromBlock = lastSyncBlockNumber == null ? uploadBlockNumber : lastSyncBlockNumber + 1;
   }
   const handoffBlockNumber = highestBlockNumber - BLOCKSTREAM_HANDOFF_BLOCKS;
-  if (handoffBlockNumber < fromBlock) {
-    throw new Error(`Not enough blocks to start blockstream reliably, wait at least ${BLOCKSTREAM_HANDOFF_BLOCKS} from ${fromBlock}. Current Block: ${highestBlockNumber}`);
+  while (handoffBlockNumber < fromBlock) {
+    logger.warn(`Not enough blocks to start blockstream reliably, waiting at least ${BLOCKSTREAM_HANDOFF_BLOCKS} from ${fromBlock}. Current Block: ${highestBlockNumber}`);
+    await delay(BLOCKSTREAM_HANDOFF_WAIT_TIME_MS);
   }
   await promisify(downloadAugurLogs)(db, augur, fromBlock, handoffBlockNumber);
   setSyncFinished();
