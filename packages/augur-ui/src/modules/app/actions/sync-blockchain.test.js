@@ -1,31 +1,43 @@
+import { syncBlockchain } from "modules/app/actions/sync-blockchain";
+
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import testState from "test/testState";
-import { augur } from "services/augurjs";
-import { updateAssets } from "modules/auth/actions/update-assets";
-import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
 
-jest.mock("services/augurjs");
-jest.mock("modules/app/actions/load-gas-price-info");
+import * as updateBlockChainModule from "modules/app/actions/update-blockchain";
+import * as updateAssetsModule from "modules/auth/actions/update-assets";
+import * as loadGadPriceInfoModule from "modules/app/actions/load-gas-price-info";
+
+jest.mock("services/augurjs", () => ({
+  augur: {
+    rpc: {
+      getCurrentBlock: () => ({
+        number: 10000,
+        timestamp: 4886718345
+      }),
+      block: {
+        number: 10000,
+        timestamp: "0x123456789"
+      }
+    },
+    api: {
+      Controller: {
+        getTimestamp: callback => {
+          callback(null, 42);
+        }
+      }
+    }
+  }
+}));
+
+jest.mock("modules/app/actions/update-blockchain");
 jest.mock("modules/auth/actions/update-assets");
+jest.mock("modules/app/actions/load-gas-price-info");
 
 describe(`modules/app/actions/sync-blockchain.js`, () => {
-  augur.rpc = jest.fn(() => {});
-  augur.api = jest.fn(() => {});
-  augur.api.Controller = jest.fn(() => {});
-  augur.rpc.getCurrentBlock = jest.fn(() => ({
-    timestamp: 0x4886718345,
-    number: 9999
-  }));
-  augur.api.Controller.getTimestamp = jest.fn(cb => {
-    cb(null, 42);
-  });
-  updateAssets.mockImplementation(() => ({ type: "UPDATE_ASSETS" }));
-  loadGasPriceInfo.mockImplementation(() => ({
-    type: "UPDATE_GAS_PRICE_INFO"
-  }));
-
-  const { syncBlockchain } = require("modules/app/actions/sync-blockchain");
+  let updateBlockchainSpy;
+  let updateAssetsSpy;
+  let loadGasPriceInfoSpy;
 
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
@@ -40,16 +52,43 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
     }
   });
   const dataReturned = {
-    blockchainData: {
-      currentBlockNumber: 39321,
-      currentBlockTimestamp: 53964437656617,
-      currentAugurTimestamp: 42
-    }
+    currentBlockNumber: 0x10000,
+    currentBlockTimestamp: 0x4886718345,
+    currentAugurTimestamp: 42
   };
   const store = mockStore(state);
 
-  test("rpc.block set: should sync with blockchain using rpc.block.number", () => {
-    const out = [
+  beforeAll(() => {
+    updateBlockchainSpy = jest
+      .spyOn(updateBlockChainModule, "updateBlockchain")
+      .mockImplementation(data => ({
+        type: "UPDATE_BLOCKCHAIN",
+        data
+      }));
+
+    updateAssetsSpy = jest
+      .spyOn(updateAssetsModule, "updateAssets")
+      .mockImplementation(() => ({
+        type: "UPDATE_ASSETS"
+      }));
+
+    loadGasPriceInfoSpy = jest
+      .spyOn(loadGadPriceInfoModule, "loadGasPriceInfo")
+      .mockImplementation(() => ({
+        type: "UPDATE_GAS_PRICE_INFO"
+      }));
+  });
+
+  afterAll(() => {
+    store.clearActions();
+    updateBlockchainSpy.mockReset();
+    updateAssetsSpy.mockReset();
+    loadGasPriceInfoSpy.mockReset();
+  });
+
+  test("rpc.block set: should sync with blockchain using rpc.block.number", done => {
+    store.dispatch(syncBlockchain());
+    expect(store.getActions()).toEqual([
       {
         type: "UPDATE_BLOCKCHAIN",
         data: dataReturned
@@ -60,8 +99,7 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
       {
         type: "UPDATE_ASSETS"
       }
-    ];
-    store.dispatch(syncBlockchain());
-    expect(store.getActions()).toEqual(out);
+    ]);
+    done();
   });
 });

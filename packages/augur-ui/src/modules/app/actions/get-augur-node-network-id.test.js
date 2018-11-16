@@ -4,7 +4,7 @@ import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import * as augurModule from "services/augurjs";
 
-jest.mock("../../../services/augurjs.js", () => ({
+jest.mock("services/augurjs.js", () => ({
   augur: {
     augurNode: {
       getSyncData: () => {}

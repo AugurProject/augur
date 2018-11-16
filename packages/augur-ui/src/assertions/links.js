@@ -1,4 +1,4 @@
-import assertLink from "../../test/assertions/common/link";
+import assertLink from "assertions/common/link";
 
 export default function(links) {
   describe("links state", () => {

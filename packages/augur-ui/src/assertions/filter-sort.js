@@ -19,7 +19,7 @@ export default function(fS) {
   expect(fS.types).toBeDefined();
   expect(Array.isArray(fS.types)).toBe(true);
 
-  fS.types.forEach((type, i) => {
+  fS.types.forEach((type) => {
     expect(type.label).toBeDefined();
     expect(typeof type.label).toBe('string');
 
@@ -27,7 +27,7 @@ export default function(fS) {
     expect(typeof type.value).toBe('string');
   });
 
-  fS.sorts.forEach((type, i) => {
+  fS.sorts.forEach((type) => {
     expect(type.label).toBeDefined();
     expect(typeof type.label).toBe('string');
 
