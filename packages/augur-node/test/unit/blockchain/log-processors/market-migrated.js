@@ -1,11 +1,10 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {processMarketMigratedLog, processMarketMigratedLogRemoval} = require("../../../../src/blockchain/log-processors/market-migrated");
-const {getMarketsWithReportingState} = require("../../../../src/server/getters/database");
-const ReportingState = require("../../../../src/types").ReportingState;
-const updateMarketState = require("../../../../src/blockchain/log-processors/database").updateMarketState;
+const {processMarketMigratedLog, processMarketMigratedLogRemoval} = require("src/blockchain/log-processors/market-migrated");
+const {getMarketsWithReportingState} = require("src/server/getters/database");
+const ReportingState = require("src/types").ReportingState;
+const updateMarketState = require("src/blockchain/log-processors/database").updateMarketState;
 
 const getMarket = (db, params, callback) => {
   getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "markets.needsMigration", "markets.needsDisavowal", "feeWindow", "reportingState"])
@@ -13,26 +12,27 @@ const getMarket = (db, params, callback) => {
 };
 
 describe("blockchain/log-processors/market-migrated", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        db.transaction((trx) => {
-          trx("markets").update({needsMigration: 1, needsDisavowal: 1}).where("marketId", t.params.log.market).asCallback((err) => {
-            assert.ifError(err);
-            updateMarketState(trx, t.params.log.market, 999, ReportingState.AWAITING_FORK_MIGRATION, (err) => {
-              assert.ifError(err);
-              processMarketMigratedLog(trx, t.params.augur, t.params.log, (err) => {
-                assert.ifError(err);
-                getMarket(trx, t.params, (err, marketRow) => {
-                  t.assertions.onAdded(err, marketRow);
-                  processMarketMigratedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                    assert.ifError(err);
-                    getMarket(trx, t.params, (err, marketRow) => {
-                      t.assertions.onRemoved(err, marketRow);
-                      db.destroy();
-                      done();
-                    });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      db.transaction((trx) => {
+        trx("markets").update({
+          needsMigration: 1,
+          needsDisavowal: 1
+        }).where("marketId", t.params.log.market).asCallback((err) => {
+          expect(err).toBeFalsy();
+          updateMarketState(trx, t.params.log.market, 999, ReportingState.AWAITING_FORK_MIGRATION, (err) => {
+            expect(err).toBeFalsy();
+            processMarketMigratedLog(trx, t.params.augur, t.params.log, (err) => {
+              expect(err).toBeFalsy();
+              getMarket(trx, t.params, (err, marketRow) => {
+                t.assertions.onAdded(err, marketRow);
+                processMarketMigratedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                  expect(err).toBeFalsy();
+                  getMarket(trx, t.params, (err, marketRow) => {
+                    t.assertions.onRemoved(err, marketRow);
+                    db.destroy();
+                    done();
                   });
                 });
               });
@@ -40,9 +40,9 @@ describe("blockchain/log-processors/market-migrated", () => {
           });
         });
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "yesNo market MarketMigrated log and removal",
     params: {
       log: {
@@ -70,8 +70,8 @@ describe("blockchain/log-processors/market-migrated", () => {
     },
     assertions: {
       onAdded: (err, marketRow) => {
-        assert.ifError(err);
-        assert.deepEqual(marketRow, [
+        expect(err).toBeFalsy();
+        expect(marketRow).toEqual([
           {
             "marketId": "0x0000000000000000000000000000000000000211",
             "universe": "NEW_UNIVERSE",
@@ -83,8 +83,8 @@ describe("blockchain/log-processors/market-migrated", () => {
         ]);
       },
       onRemoved: (err, marketRow) => {
-        assert.ifError(err);
-        assert.deepEqual(marketRow, [
+        expect(err).toBeFalsy();
+        expect(marketRow).toEqual([
           {
             "marketId": "0x0000000000000000000000000000000000000211",
             "universe": "ORIGINAL_UNIVERSE",

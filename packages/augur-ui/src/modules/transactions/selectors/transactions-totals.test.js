@@ -4,19 +4,30 @@ import {
   FAILED,
   INTERRUPTED
 } from "modules/transactions/constants/statuses";
-import transactionsTotalsAssertions from "assertions/transactions-totals";
-import { selectTransactions } from "modules/transactions/selectors/transactions";
-import { selectTransactionsTotals } from "src/modules/transactions/selectors/transactions-totals";
+import * as transactions from "modules/transactions/selectors/transactions";
 
-jest.mock("modules/transactions/selectors/transactions");
+import { selectTransactionsTotalsCreator } from "src/modules/transactions/selectors/transactions-totals";
 
 describe(`modules/transactions/selectors/transactions-totals.js`, () => {
+  let selectTransactionsSpy;
+  let selectTransactionsTotals;
   let actual;
 
-  test("returned the transaction totals for a blank state", () => {
-    selectTransactions.mockImplementation(() => []);
+  beforeEach(() => {
+    selectTransactionsSpy = jest.spyOn(transactions, "selectTransactions");
 
-    actual = selectTransactionsTotals({});
+    // Bind values inside createSelector now.
+    selectTransactionsTotals = selectTransactionsTotalsCreator();
+  });
+
+  afterEach(() => {
+    selectTransactionsSpy.mockRestore();
+  });
+
+  test("returned the transaction totals for a blank state", () => {
+    selectTransactionsSpy.mockImplementation(() => []);
+
+    actual = selectTransactionsTotals();
     expect(actual).toEqual({
       numWorking: 0,
       numPending: 0,
@@ -30,7 +41,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
   });
 
   test("properly returned total info on transactions", () => {
-    selectTransactions.mockImplementation(() => [
+    selectTransactionsSpy.mockImplementation(() => [
       {
         id: "fake",
         status: PENDING
@@ -48,9 +59,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
         status: INTERRUPTED
       }
     ]);
-
-    const actual = selectTransactionsTotals({});
-    transactionsTotalsAssertions(actual);
+    const actual = selectTransactionsTotals();
     expect(actual).toEqual({
       numWorking: 0,
       numPending: 1,

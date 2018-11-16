@@ -1,24 +1,21 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { dispatchJsonRpcRequest } = require("../../../../src/server/dispatch-json-rpc-request");
+const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-dispute-tokens", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        t.method = "getDisputeTokens";
-        dispatchJsonRpcRequest(db,  t, {}, (err, stakeTokens) => {
-          t.assertions(err, stakeTokens);
-          db.destroy();
-          done();
-        });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      t.method = "getDisputeTokens";
+      dispatchJsonRpcRequest(db, t, {}, (err, stakeTokens) => {
+        t.assertions(err, stakeTokens);
+        db.destroy();
+        done();
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "get unfinalized tokens for user that actually exists",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -26,8 +23,8 @@ describe("server/getters/get-dispute-tokens", () => {
       stakeTokenState: "UNFINALIZED",
     },
     assertions: (err, stakeTokens) => {
-      assert.ifError(err);
-      assert.deepEqual(stakeTokens, {
+      expect(err).toBeFalsy();
+      expect(stakeTokens).toEqual({
         "0x0000000000000000001000000000000000000001": {
           disputeToken: "0x0000000000000000001000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000011",
@@ -49,7 +46,7 @@ describe("server/getters/get-dispute-tokens", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "get unclaimed tokens for user reported correctly",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -57,8 +54,8 @@ describe("server/getters/get-dispute-tokens", () => {
       stakeTokenState: "UNCLAIMED",
     },
     assertions: (err, stakeTokens) => {
-      assert.ifError(err);
-      assert.deepEqual(stakeTokens, {
+      expect(err).toBeFalsy();
+      expect(stakeTokens).toEqual({
         "0x0000000000000000001000000000000000000003": {
           disputeToken: "0x0000000000000000001000000000000000000003",
           marketId: "0x0000000000000000000000000000000000000019",
@@ -80,7 +77,7 @@ describe("server/getters/get-dispute-tokens", () => {
       });
     },
   });
-  test({
+  runTest({
     description: "get unclaimed tokens for user with no tokens",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -88,11 +85,11 @@ describe("server/getters/get-dispute-tokens", () => {
       stakeTokenState: "UNCLAIMED",
     },
     assertions: (err, stakeTokens) => {
-      assert.ifError(err);
-      assert.deepEqual(stakeTokens, {});
+      expect(err).toBeFalsy();
+      expect(stakeTokens).toEqual({});
     },
   });
-  test({
+  runTest({
     description: "unknown stakeTokenState",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -100,10 +97,10 @@ describe("server/getters/get-dispute-tokens", () => {
       stakeTokenState: "FILLER_VALUE",
     },
     assertions: (err, stakeTokens) => { // assert stakeTokens
-      assert.isNotNull(err);
+      expect(err).not.toBeNull();
     },
   });
-  test({
+  runTest({
     description: "all stake tokens for 0x0000000000000000000000000000000000000021",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
@@ -111,8 +108,8 @@ describe("server/getters/get-dispute-tokens", () => {
       stakeTokenState: "ALL",
     },
     assertions: (err, stakeTokens) => {
-      assert.ifError(err);
-      assert.deepEqual(stakeTokens, {
+      expect(err).toBeFalsy();
+      expect(stakeTokens).toEqual({
         "0x0000000000000000001000000000000000000001": {
           disputeToken: "0x0000000000000000001000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000011",

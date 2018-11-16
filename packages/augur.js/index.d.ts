@@ -249,6 +249,9 @@ export class Augur {
   public constants: {
     [constantName: string]: any;
   };
+  public static constants: {
+    [constantName: string]: any;
+  };
   public contracts: {
     abi: AbiMap;
     addresses: ContractNameToAddressMap;

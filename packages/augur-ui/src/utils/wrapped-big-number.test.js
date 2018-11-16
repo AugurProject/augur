@@ -1,7 +1,10 @@
 import { BigNumber, createBigNumber } from "src/utils/create-big-number";
 import logError from "utils/log-error";
 
-jest.mock("utils/log-error");
+jest.mock("utils/log-error", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
 
 describe("src/utils/wrapped-big-number.js", () => {
   test("should console an error when a undefined is passed", () => {

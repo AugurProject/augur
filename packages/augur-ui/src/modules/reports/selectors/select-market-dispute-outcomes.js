@@ -1,21 +1,14 @@
 import { createSelector } from "reselect";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
-import { constants } from "services/augurjs";
-import store from "src/store";
+import { constants } from "services/constants";
 import { isEmpty } from "lodash";
 
 import selectDisputeOutcomes from "modules/reports/selectors/select-dispute-outcomes";
 import { selectUniverseState } from "src/select-state";
 import fillDisputeOutcomeProgress from "modules/reports/selectors/fill-dispute-outcome-progress";
 
-export default function() {
-  return selectMarketDisputeOutcomes(store.getState());
-}
-
-export const selectMarketDisputeOutcomes = createSelector(
-  selectMarkets,
-  selectUniverseState,
-  (markets, universe) => {
+export const selectMarketDisputeOutcomesSelector = () =>
+  createSelector(selectMarkets, selectUniverseState, (markets, universe) => {
     if (isEmpty(markets) || !universe.forkThreshold) {
       return {};
     }
@@ -43,5 +36,6 @@ export const selectMarketDisputeOutcomes = createSelector(
     }, disputeOutcomes);
 
     return outcomes;
-  }
-);
+  });
+
+export const selectMarketDisputeOutcomes = selectMarketDisputeOutcomesSelector();

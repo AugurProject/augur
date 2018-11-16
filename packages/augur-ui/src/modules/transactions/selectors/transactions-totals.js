@@ -12,9 +12,8 @@ export default function() {
   return selectTransactionsTotals(store.getState());
 }
 
-export const selectTransactionsTotals = createSelector(
-  selectTransactions,
-  transactions => {
+export const selectTransactionsTotalsCreator = () =>
+  createSelector(selectTransactions, transactions => {
     const o = {
       numWorking: 0,
       numPending: 0,
@@ -48,5 +47,6 @@ export const selectTransactionsTotals = createSelector(
     }
 
     return o;
-  }
-);
+  });
+
+export const selectTransactionsTotals = selectTransactionsTotalsCreator();

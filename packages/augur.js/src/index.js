@@ -10,7 +10,7 @@ var version = require("./version");
 
 BigNumber.config({
   MODULO_MODE: BigNumber.EUCLID,
-  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
 function Augur() {
@@ -18,9 +18,9 @@ function Augur() {
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
-      connect: false,   // connection debug logging in ethrpc and ethereumjs-connect
-      tx: false,        // transaction debug logging in ethrpc
-    },
+      connect: false, // connection debug logging in ethrpc and ethereumjs-connect
+      tx: false // transaction debug logging in ethrpc
+    }
   };
   this.accounts = require("./accounts");
   this.api = require("./api")();
@@ -40,7 +40,13 @@ function Augur() {
   this.utils = require("./utils");
 }
 
-Object.defineProperty(Augur.prototype, "getGasPrice", require("./get-gas-price"));
+Object.defineProperty(
+  Augur.prototype,
+  "getGasPrice",
+  require("./get-gas-price")
+);
+
+Augur.constants = require("./constants");
 
 module.exports = Augur;
 module.exports.version = version;

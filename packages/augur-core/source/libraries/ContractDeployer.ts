@@ -18,8 +18,8 @@ export class ContractDeployer {
     private readonly configuration: DeployerConfiguration;
     private readonly connector: Connector;
     private readonly contracts: Contracts;
-    public controller: Controller;
-    public universe: Universe;
+    public controller: Controller|null = null;
+    public universe: Universe|null = null;
 
     public static deployToNetwork = async (networkConfiguration: NetworkConfiguration, deployerConfiguration: DeployerConfiguration) => {
         const connector = new Connector(networkConfiguration);
@@ -56,7 +56,7 @@ Deploying to: ${networkConfiguration.networkName}
 
         if (this.configuration.isProduction) {
             console.log(`Registering Legacy Rep Contract at ${this.configuration.legacyRepAddress}`);
-            await this.controller.registerContract(stringTo32ByteHex("LegacyReputationToken"), this.configuration.legacyRepAddress);
+            await this.controller!.registerContract(stringTo32ByteHex("LegacyReputationToken"), this.configuration.legacyRepAddress);
             const contract = await this.contracts.get("LegacyReputationToken");
             contract.address = this.configuration.legacyRepAddress;
         }
@@ -90,7 +90,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     private generateCompleteAddressMapping(): { [name: string]: string } {
         const mapping: { [name: string]: string } = {};
-        mapping['Controller'] = this.controller.address;
+        mapping['Controller'] = this.controller!.address;
         if (this.universe) mapping['Universe'] = this.universe.address;
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
         mapping['Augur'] = this.contracts.get('Augur').address!;
@@ -158,8 +158,8 @@ Deploying to: ${networkConfiguration.networkName}
         const address = await this.construct(contract, [], `Uploading ${contract.contractName}`);
         const augur = new Augur(this.connector, this.accountManager, address, this.connector.gasPrice);
         contract.address = address;
-        await augur.setController(this.controller.address);
-        await this.controller.registerContract(stringTo32ByteHex("Augur"), address);
+        await augur.setController(this.controller!.address);
+        await this.controller!.registerContract(stringTo32ByteHex("Augur"), address);
     }
 
     private async uploadAllContracts(): Promise<void> {
@@ -192,14 +192,14 @@ Deploying to: ${networkConfiguration.networkName}
 
     private async uploadAndAddDelegatedToController(contract: Contract): Promise<string> {
         const delegationTargetName = `${contract.contractName}Target`;
-        const delegatorConstructorArgs = [this.controller.address, stringTo32ByteHex(delegationTargetName)];
+        const delegatorConstructorArgs = [this.controller!.address, stringTo32ByteHex(delegationTargetName)];
         await this.uploadAndAddToController(contract, delegationTargetName);
         return await this.uploadAndAddToController(this.contracts.get('Delegator'), contract.contractName, delegatorConstructorArgs);
     }
 
     private async uploadAndAddToController(contract: Contract, registrationContractName: string = contract.contractName, constructorArgs: Array<any> = []): Promise<string> {
         const address = await this.construct(contract, constructorArgs, `Uploading ${contract.contractName}`);
-        await this.controller.registerContract(stringTo32ByteHex(registrationContractName), address);
+        await this.controller!.registerContract(stringTo32ByteHex(registrationContractName), address);
         return address;
     }
 
@@ -223,7 +223,7 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.contractName === 'ShareToken') continue;
             if (contract.address === undefined) throw new Error(`Attempted to whitelist ${contract.contractName} but it has not yet been uploaded.`);
             // Skip if already whitelisted (happens if this contract was previously uploaded)
-            if (await this.controller.whitelist_(contract.address)) {
+            if (await this.controller!.whitelist_(contract.address)) {
                 console.log(`Skipping already whitelisted ${contract.contractName}.`);
                 continue;
             } else {
@@ -235,7 +235,7 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     private async whitelistContract(contractAddress: string): Promise<void> {
-        return await this.controller.addToWhitelist(contractAddress, { sender: this.accountManager.defaultAddress });
+        return await this.controller!.addToWhitelist(contractAddress, { sender: this.accountManager.defaultAddress });
     }
 
     private async initializeAllContracts(): Promise<void> {
@@ -251,12 +251,12 @@ Deploying to: ${networkConfiguration.networkName}
     private async initializeContract(contractName: string): Promise<TransactionReceipt|void> {
         // Check if contract already initialized (happens if this contract was previously uploaded)
         if (contractName === 'Time') contractName = this.configuration.useNormalTime ? contractName: "TimeControlled";
-        if (await this.getContract(contractName).getController_() === this.controller.address) {
+        if (await this.getContract(contractName).getController_() === this.controller!.address) {
             console.log(`Skipping already initialized ${contractName}.`)
             return;
         }
         console.log(`Initializing ${contractName}`);
-        await this.getContract(contractName).setController(this.controller.address);
+        await this.getContract(contractName).setController(this.controller!.address);
     }
 
     public async initializeLegacyRep(): Promise<void> {
@@ -293,7 +293,7 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     private async migrateFromLegacyRep(): Promise<void> {
-        const reputationTokenAddress = await this.universe.getReputationToken_();
+        const reputationTokenAddress = await this.universe!.getReputationToken_();
         const reputationToken = new ReputationToken(this.connector, this.accountManager, reputationTokenAddress, this.connector.gasPrice);
         const legacyReputationToken = new LegacyReputationToken(this.connector, this.accountManager, this.getContract('LegacyReputationToken').address, this.connector.gasPrice);
         const legacyBalance = await legacyReputationToken.balanceOf_(this.accountManager.defaultAddress);
@@ -310,7 +310,7 @@ Deploying to: ${networkConfiguration.networkName}
         type NetworkAddressMapping = { [networkId: string]: ContractAddressMapping };
 
         const mapping: ContractAddressMapping = {};
-        mapping['Controller'] = this.controller.address;
+        mapping['Controller'] = this.controller!.address;
         if (this.universe) mapping['Universe'] = this.universe.address;
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
         mapping['Augur'] = this.contracts.get('Augur').address!;

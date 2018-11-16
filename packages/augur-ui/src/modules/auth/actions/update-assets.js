@@ -10,7 +10,6 @@ export function updateAssets(callback = logError) {
     const { loginAccount, universe } = getState();
     const universeID = universe.id || UNIVERSE_ID;
     const balances = { eth: undefined, rep: undefined };
-
     if (!loginAccount.address) return dispatch(updateLoginAccount(balances));
     augur.api.Universe.getReputationToken(
       { tx: { to: universeID } },

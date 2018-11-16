@@ -7,12 +7,12 @@ import { SCALAR, YES_NO } from "modules/markets/constants/market-types";
 
 import Styles from "modules/market/components/core-properties/core-properties.styles";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip";
+import TooltipStyles from "modules/common/less/tooltip.styles";
 
 import MarketLink from "modules/market/components/market-link/market-link";
 import getValue from "utils/get-value";
 import { dateHasPassed } from "utils/format-date";
-import { constants } from "services/augurjs";
+import { constants } from "services/constants";
 import { Hint } from "modules/common/components/icons";
 import {
   TYPE_REPORT,

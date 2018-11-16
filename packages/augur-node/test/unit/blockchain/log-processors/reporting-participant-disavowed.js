@@ -1,8 +1,7 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {processReportingParticipantDisavowedLog, processReportingParticipantDisavowedLogRemoval} = require("../../../../src/blockchain/log-processors/reporting-participant-disavowed");
+const {processReportingParticipantDisavowedLog, processReportingParticipantDisavowedLogRemoval} = require("src/blockchain/log-processors/reporting-participant-disavowed");
 const {series} = require("async");
 
 const getParticipantState = (db, params, callback) => {
@@ -13,30 +12,28 @@ const getParticipantState = (db, params, callback) => {
 };
 
 describe("blockchain/log-processors/reporting-participant-disavowed", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        db.transaction((trx) => {
-          processReportingParticipantDisavowedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.ifError(err);
-            getParticipantState(trx, t.params, (err, records) => {
-              t.assertions.onAdded(err, records);
-              processReportingParticipantDisavowedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.ifError(err);
-                getParticipantState(trx, t.params, (err, records) => {
-                  t.assertions.onRemoved(err, records);
-                  db.destroy();
-                  done();
-                });
+  const runTest = (t) => {
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      db.transaction((trx) => {
+        processReportingParticipantDisavowedLog(trx, t.params.augur, t.params.log, (err) => {
+          expect(err).toBeFalsy();
+          getParticipantState(trx, t.params, (err, records) => {
+            t.assertions.onAdded(err, records);
+            processReportingParticipantDisavowedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+              expect(err).toBeFalsy();
+              getParticipantState(trx, t.params, (err, records) => {
+                t.assertions.onRemoved(err, records);
+                db.destroy();
+                done();
               });
             });
           });
         });
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "initialReporter",
     params: {
       log: {
@@ -50,22 +47,22 @@ describe("blockchain/log-processors/reporting-participant-disavowed", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records.initialReporter, {
+        expect(err).toBeFalsy();
+        expect(records.initialReporter).toEqual({
           disavowed: 1,
           initialReporter: "0x0000000000000000000000000000000000abe123",
         });
       },
       onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records.initialReporter, {
+        expect(err).toBeFalsy();
+        expect(records.initialReporter).toEqual({
           disavowed: 0,
           initialReporter: "0x0000000000000000000000000000000000abe123",
         });
       },
     },
   });
-  test({
+  runTest({
     description: "crowdsourcer",
     params: {
       log: {
@@ -79,15 +76,15 @@ describe("blockchain/log-processors/reporting-participant-disavowed", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records.crowdsourcer, {
+        expect(err).toBeFalsy();
+        expect(records.crowdsourcer).toEqual({
           disavowed: 1,
           crowdsourcerId: "0x0000000000000000001000000000000000000005",
         });
       },
       onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records.crowdsourcer, {
+        expect(err).toBeFalsy();
+        expect(records.crowdsourcer).toEqual({
           disavowed: 0,
           crowdsourcerId: "0x0000000000000000001000000000000000000005",
         });

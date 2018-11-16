@@ -1,65 +1,64 @@
 import { createBigNumber } from "utils/create-big-number";
 import { createSelector } from "reselect";
 import memoize from "memoizee";
-import store from "src/store";
 import {
   selectLoginAccountAddress,
   selectPriceHistoryState,
   selectMarketCreatorFeesState
 } from "src/select-state";
-import selectAllMarkets from "modules/markets/selectors/markets-all";
+import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { ZERO } from "modules/trades/constants/numbers";
 import { formatNumber, formatEther } from "utils/format-number";
 import { orderBy } from "lodash";
 
-export default function() {
-  return selectLoginAccountMarkets(store.getState());
-}
+const selectAuthorOwnedMarkets = () =>
+  createSelector(
+    selectMarkets,
+    selectLoginAccountAddress,
+    (allMarkets, authorId) => {
+      if (!allMarkets || !authorId) return null;
+      return allMarkets.filter(market => market.author === authorId);
+    }
+  );
 
-export const selectAuthorOwnedMarkets = createSelector(
-  selectAllMarkets,
-  selectLoginAccountAddress,
-  (allMarkets, authorId) => {
-    if (!allMarkets || !authorId) return null;
-    return allMarkets.filter(market => market.author === authorId);
-  }
-);
+const selectMyMarkets = selectAuthorOwnedMarkets();
 
-export const selectLoginAccountMarkets = createSelector(
-  selectAuthorOwnedMarkets,
-  selectPriceHistoryState,
-  selectMarketCreatorFeesState,
-  (authorOwnedMarkets, priceHistory, marketCreatorFees) => {
-    if (!authorOwnedMarkets) return [];
-    const markets = [];
-    authorOwnedMarkets.forEach(market => {
-      const fees = formatEther(marketCreatorFees[market.id] || 0);
-      const numberOfTrades = formatNumber(
-        selectNumberOfTrades(priceHistory[market.id])
-      );
-      const averageTradeSize = formatNumber(
-        selectAverageTradeSize(priceHistory[market.id])
-      );
-      const openVolume = formatNumber(selectOpenVolume(market));
-      markets.push({
-        ...market, // TODO -- cleanup this object
-        id: market.id,
-        description: market.description,
-        endTime: market.endTime,
-        volume: market.volume,
-        repBalance: market.repBalance,
-        fees,
-        numberOfTrades,
-        averageTradeSize,
-        openVolume
+const getUserMarketsSelector = () =>
+  createSelector(
+    selectMyMarkets,
+    selectPriceHistoryState,
+    selectMarketCreatorFeesState,
+    (authorOwnedMarkets, priceHistory, marketCreatorFees) => {
+      if (!authorOwnedMarkets) return [];
+      const markets = [];
+      authorOwnedMarkets.forEach(market => {
+        const fees = formatEther(marketCreatorFees[market.id] || 0);
+        const numberOfTrades = formatNumber(
+          selectNumberOfTrades(priceHistory[market.id])
+        );
+        const averageTradeSize = formatNumber(
+          selectAverageTradeSize(priceHistory[market.id])
+        );
+        const openVolume = formatNumber(selectOpenVolume(market));
+        markets.push({
+          ...market, // TODO -- cleanup this object
+          id: market.id,
+          description: market.description,
+          endTime: market.endTime,
+          volume: market.volume,
+          repBalance: market.repBalance,
+          fees,
+          numberOfTrades,
+          averageTradeSize,
+          openVolume
+        });
       });
-    });
 
-    return orderBy(markets, ["endTime.timestamp"], ["desc"]);
-  }
-);
+      return orderBy(markets, ["endTime.timestamp"], ["desc"]);
+    }
+  );
 
-export const selectNumberOfTrades = memoize(
+const selectNumberOfTrades = memoize(
   trades => {
     if (!trades) return 0;
     return Object.keys(trades).reduce(
@@ -70,7 +69,7 @@ export const selectNumberOfTrades = memoize(
   { max: 1 }
 );
 
-export const selectOpenVolume = market => {
+const selectOpenVolume = market => {
   let openVolume = ZERO;
   market.outcomes.forEach(outcome => {
     Object.keys(outcome.orderBook).forEach(orderType => {
@@ -82,7 +81,7 @@ export const selectOpenVolume = market => {
   return openVolume;
 };
 
-export const selectAverageTradeSize = memoize(
+const selectAverageTradeSize = memoize(
   marketPriceHistory => {
     if (!marketPriceHistory) return 0;
     const initialState = {
@@ -113,3 +112,5 @@ export const selectAverageTradeSize = memoize(
   },
   { max: 1 }
 );
+
+export const getUserMarkets = getUserMarketsSelector();

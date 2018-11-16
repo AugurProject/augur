@@ -1,33 +1,33 @@
 "use strict";
 
-const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { BigNumber } = require("bignumber.js");
-const { processTokensTransferredLog, processTokensTransferredLogRemoval } = require("../../../../src/blockchain/log-processors/tokens-transferred");
+const { processTokensTransferredLog, processTokensTransferredLogRemoval } = require("src/blockchain/log-processors/tokens-transferred");
 
 describe("blockchain/log-processors/tokens-transferred", () => {
-  const test = (t) => {
-    const getState = (db, params, callback) => db("transfers").where({ transactionHash: params.log.transactionHash, logIndex: params.log.logIndex }).asCallback(callback);
+  const runTest = (t) => {
+    const getState = (db, params, callback) => db("transfers").where({
+      transactionHash: params.log.transactionHash,
+      logIndex: params.log.logIndex
+    }).asCallback(callback);
     const getTokenBalances = (db, params, callback) => db("balances").where({ token: params.log.token }).asCallback(callback);
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        db.transaction((trx) => {
-          processTokensTransferredLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.ifError(err);
-            getState(trx, t.params, (err, records) => {
-              t.assertions.onAdded(err, records);
-              getTokenBalances(trx, t.params, (err, balances) => {
-                t.assertions.onInitialBalances(err, balances);
-                processTokensTransferredLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                  assert.ifError(err);
-                  getState(trx, t.params, (err, records) => {
-                    t.assertions.onRemoved(err, records);
-                    getTokenBalances(trx, t.params, (err, balances) => {
-                      t.assertions.onRemovedBalances(err, balances);
-                      db.destroy();
-                      done();
-                    });
+    test(t.description, async (done) => {
+const db = await setupTestDb();
+      db.transaction((trx) => {
+        processTokensTransferredLog(trx, t.params.augur, t.params.log, (err) => {
+          expect(err).toBeFalsy();
+          getState(trx, t.params, (err, records) => {
+            t.assertions.onAdded(err, records);
+            getTokenBalances(trx, t.params, (err, balances) => {
+              t.assertions.onInitialBalances(err, balances);
+              processTokensTransferredLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                expect(err).toBeFalsy();
+                getState(trx, t.params, (err, records) => {
+                  t.assertions.onRemoved(err, records);
+                  getTokenBalances(trx, t.params, (err, balances) => {
+                    t.assertions.onRemovedBalances(err, balances);
+                    db.destroy();
+                    done();
                   });
                 });
               });
@@ -35,9 +35,9 @@ describe("blockchain/log-processors/tokens-transferred", () => {
           });
         });
       });
-    });
+    })
   };
-  test({
+  runTest({
     description: "TokensTransferred log and removal",
     params: {
       log: {
@@ -64,8 +64,8 @@ describe("blockchain/log-processors/tokens-transferred", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, [{
+        expect(err).toBeFalsy();
+        expect(records).toEqual([{
           transactionHash: "TRANSACTION_HASH",
           logIndex: 0,
           sender: "FROM_ADDRESS",
@@ -76,12 +76,12 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         }]);
       },
       onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, []);
+        expect(err).toBeFalsy();
+        expect(records).toEqual([]);
       },
       onInitialBalances: (err, balances) => {
-        assert.ifError(err);
-        assert.deepEqual(balances, [{
+        expect(err).toBeFalsy();
+        expect(balances).toEqual([{
           token: "TOKEN_ADDRESS",
           owner: "FROM_ADDRESS",
           balance: new BigNumber("1", 10),
@@ -92,8 +92,8 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         }]);
       },
       onRemovedBalances: (err, balances) => {
-        assert.ifError(err);
-        assert.deepEqual(balances, [{
+        expect(err).toBeFalsy();
+        expect(balances).toEqual([{
           token: "TOKEN_ADDRESS",
           owner: "FROM_ADDRESS",
           balance: new BigNumber("9001", 10),
@@ -105,7 +105,7 @@ describe("blockchain/log-processors/tokens-transferred", () => {
       },
     },
   });
-  test({
+  runTest({
     description: "TokensTransferred log and removal, LegacyReputationToken",
     params: {
       log: {
@@ -132,8 +132,8 @@ describe("blockchain/log-processors/tokens-transferred", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, [{
+        expect(err).toBeFalsy();
+        expect(records).toEqual([{
           transactionHash: "TRANSACTION_HASH",
           logIndex: 0,
           sender: "FROM_ADDRESS",
@@ -144,20 +144,20 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         }]);
       },
       onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, []);
+        expect(err).toBeFalsy();
+        expect(records).toEqual([]);
       },
       onInitialBalances: (err, balances) => {
-        assert.ifError(err);
-        assert.deepEqual(balances, []);
+        expect(err).toBeFalsy();
+        expect(balances).toEqual([]);
       },
       onRemovedBalances: (err, balances) => {
-        assert.ifError(err);
-        assert.deepEqual(balances, []);
+        expect(err).toBeFalsy();
+        expect(balances).toEqual([]);
       },
     },
   });
-  test({
+  runTest({
     description: "TokensTransferred for ShareToken log and removal",
     params: {
       log: {
@@ -185,7 +185,7 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         api: {
           Orders: {
             getLastOutcomePrice: (p, callback) => {
-              assert.strictEqual(p._market, "0x0000000000000000000000000000000000000002");
+              expect(p._market).toBe("0x0000000000000000000000000000000000000002");
               if (p._outcome === 0) {
                 callback(null, "7000");
               } else {
@@ -196,7 +196,7 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         },
         trading: {
           calculateProfitLoss: (p) => {
-            assert.isObject(p);
+            expect(typeof p).toBe("object");
             return {
               position: "2",
               realized: "0",
@@ -216,8 +216,8 @@ describe("blockchain/log-processors/tokens-transferred", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, [{
+        expect(err).toBeFalsy();
+        expect(records).toEqual([{
           transactionHash: "TRANSACTION_HASH",
           logIndex: 0,
           sender: "FROM_ADDRESS",
@@ -228,12 +228,12 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         }]);
       },
       onRemoved: (err, records) => {
-        assert.ifError(err);
-        assert.deepEqual(records, []);
+        expect(err).toBeFalsy();
+        expect(records).toEqual([]);
       },
       onInitialBalances: (err, balances) => {
-        assert.ifError(err);
-        assert.deepEqual(balances, [
+        expect(err).toBeFalsy();
+        expect(balances).toEqual([
           {
             owner: "FROM_ADDRESS",
             token: "TOKEN_ADDRESS",
@@ -247,7 +247,7 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         ]);
       },
       onRemovedBalances: (err, balances) => {
-        assert.ifError(err);
+        expect(err).toBeFalsy();
       },
     },
   });
