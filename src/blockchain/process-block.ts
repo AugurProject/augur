@@ -90,6 +90,7 @@ export async function processBlockByBlockDetails(db: Knex, augur: Augur, block: 
 }
 
 export async function insertTransactionHash(db: Knex, blockNumber: number, transactionHash: string) {
+  if (transactionHash === null) throw new Error("Received null transactionHash from getLogs request. Your Ethereum node might be in light mode with bug: https://github.com/paritytech/parity-ethereum/issues/9929");
   const txHashRows: Array<TransactionHashesRow> = await db("transactionHashes").where({ transactionHash });
   if (!txHashRows || !txHashRows.length) {
     await db.insert({ blockNumber, transactionHash }).into("transactionHashes");
