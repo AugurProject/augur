@@ -88,7 +88,7 @@
     "coveralls": "3.0.1",
     "eslint": "3.17.1",
     "genversion": "1.1.3",
-    "husky": "^0.14.3",
+    "husky": "0.14.3",
     "istanbul": "0.4.5",
     "keythereum": "1.0.4",
     "mocha": "5.2.0",
