@@ -3122,6 +3122,11 @@ async-mkdirp@1.2.0:
   resolved "https://registry.yarnpkg.com/async-mkdirp/-/async-mkdirp-1.2.0.tgz#bf231d5975a748ce44134b189446d0618f970fc4"
   integrity sha512-ib4xHF0HBKjr0gpJvXE9LrhJSlGs+AAuwj/Lo0v6oMbZ0bITO/NDYgq3WkTRIdFcp2MXIDjxO+oJkGP99/095Q==
 
+async-mkdirp@1.2.7:
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/async-mkdirp/-/async-mkdirp-1.2.7.tgz#df82a496485a99ae9e59bd21344983f63fc33326"
+  integrity sha512-EGL6JR+T9MvhgHCMsE1mB3qMlN55eCHqCocV9la4rgR/0l2ELHc0X+ReVHyqzqFNCWyTTP24UOE+FXHhWSRiFw==
+
 async-parallel@1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/async-parallel/-/async-parallel-1.2.3.tgz#0b90550aeffb7a365d8cee881eb0618f656a3450"
