@@ -58,7 +58,7 @@
     "execa": "0.10.0",
     "lerna": "3.4.0",
     "listr": "0.14.2",
-    "mocha": "5.1.1",
+    "mocha": "5.2.0",
     "rxjs-compat": "6.3.2",
     "typescript": "2.9.2"
   },
