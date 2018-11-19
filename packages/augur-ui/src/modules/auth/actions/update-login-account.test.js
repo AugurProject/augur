@@ -1,30 +1,14 @@
 import configureMockStore from "redux-mock-store";
-import proxyquire from "proxyquire";
-import sinon from "sinon";
 import thunk from "redux-thunk";
 
+import * as updateLoginAccountModule from "modules/auth/actions/update-login-account";
+
+import * as updateContractApiModule from "modules/contracts/actions/update-contract-api";
+
 describe(`modules/auth/actions/update-login-account.js`, () => {
-  proxyquire.noPreserveCache();
   const mockStore = configureMockStore([thunk]);
-  const test = t => {
-    it(t.description, () => {
-      const store = mockStore(t.state);
-      const UpdateFromAddress = { updateFromAddress: () => {} };
-      const action = proxyquire(
-        "../../../src/modules/auth/actions/update-login-account.js",
-        {
-          "../../contracts/actions/update-contract-api": UpdateFromAddress
-        }
-      );
-      sinon
-        .stub(UpdateFromAddress, "updateFromAddress")
-        .callsFake(address => ({ type: "UPDATE_FROM_ADDRESS", address }));
-      store.dispatch(action[t.method](t.param));
-      t.assertions(store.getActions());
-      store.clearActions();
-    });
-  };
-  test({
+
+  const t1 = {
     description: "should fire a UPDATE_LOGIN_ACCOUNT action type with data",
     state: {},
     method: "updateLoginAccount",
@@ -42,10 +26,11 @@ describe(`modules/auth/actions/update-login-account.js`, () => {
           address: "0xb0b"
         }
       ];
-      assert.deepEqual(actions, output, `The action fired incorrectly`);
+      expect(actions).toEqual(output);
     }
-  });
-  test({
+  };
+
+  const t2 = {
     description: "should fire a CLEAR_LOGIN_ACCOUNT action type",
     state: {},
     method: "clearLoginAccount",
@@ -56,7 +41,29 @@ describe(`modules/auth/actions/update-login-account.js`, () => {
           type: "CLEAR_LOGIN_ACCOUNT"
         }
       ];
-      assert.deepEqual(actions, output, `The action fired incorrectly`);
+      expect(actions).toEqual(output);
     }
+  };
+
+  describe.each([t1, t2])("", t => {
+    const store = mockStore(t.state);
+
+    beforeEach(() => {
+      jest
+        .spyOn(updateContractApiModule, "updateFromAddress")
+        .mockImplementation(address => ({
+          type: "UPDATE_FROM_ADDRESS",
+          address
+        }));
+    });
+
+    afterEach(() => {
+      store.clearActions();
+    });
+
+    test(t.description, () => {
+      store.dispatch(updateLoginAccountModule[t.method](t.param));
+      t.assertions(store.getActions());
+    });
   });
 });

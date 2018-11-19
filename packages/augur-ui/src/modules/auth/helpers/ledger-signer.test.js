@@ -73,10 +73,9 @@ describe("modules/auth/helpers/ledger-signer", () => {
       .then(() => {
         expect(false).toBeTruthy();
       })
-      .catch(err => {
+      .catch(() => {
         actual = store.getActions();
+        expect(actual).toEqual(expected);
       });
-
-    expect(actual).toEqual(expected);
   });
 });

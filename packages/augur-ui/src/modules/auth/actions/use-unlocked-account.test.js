@@ -1,76 +1,33 @@
 import configureMockStore from "redux-mock-store";
-import proxyquire from "proxyquire";
-import sinon from "sinon";
 import thunk from "redux-thunk";
+
+import * as useUnlockedAccountModule from "modules/auth/actions/use-unlocked-account";
+
+import * as updateIsLoggedAndLoadAccountDataModule from "modules/auth/actions/update-is-logged-and-load-account-data";
+import * as isGlobalWeb3Module from "modules/auth/helpers/is-global-web3";
+import { augur } from "services/augurjs";
 
 const MOCK_ERROR = { error: 42, message: "fail!" };
 
+jest.mock("services/augurjs", () => ({
+  augur: {
+    rpc: {
+      constants: {
+        ACCOUNT_TYPES: {
+          UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+          META_MASK: "metaMask"
+        }
+      },
+      isUnlocked: () => {}
+    }
+  }
+}));
+jest.mock("modules/auth/actions/update-is-logged-and-load-account-data");
+
 describe(`modules/auth/actions/use-unlocked-account.js`, () => {
-  proxyquire.noPreserveCache();
   const mockStore = configureMockStore([thunk]);
-  const test = t =>
-    it(t.description, done => {
-      const store = mockStore(t.state);
-      const AugurJS = {
-        augur: {
-          rpc: {
-            constants: {
-              ACCOUNT_TYPES: {
-                UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
-                META_MASK: "metaMask"
-              }
-            },
-            isUnlocked: () => {}
-          }
-        }
-      };
-      const UpdateIsLoggedAndLoadAccountData = {
-        updateIsLoggedAndLoadAccountData: () => {}
-      };
-      const IsGlobalWeb3 = { default: () => {} };
-      const action = proxyquire(
-        "../../../src/modules/auth/actions/use-unlocked-account.js",
-        {
-          "../../../services/augurjs": AugurJS,
-          "./update-is-logged-and-load-account-data": UpdateIsLoggedAndLoadAccountData,
-          "../helpers/is-global-web3": IsGlobalWeb3
-        }
-      );
-      sinon
-        .stub(AugurJS.augur.rpc, "isUnlocked")
-        .callsFake((address, callback) => {
-          t.stub.augur.rpc.isUnlocked(address, (err, isUnlocked) => {
-            store.dispatch({
-              type: "AUGURJS_RPC_IS_UNLOCKED",
-              data: { isUnlocked: err || isUnlocked }
-            });
-            if (err) return callback(err);
-            callback(null, isUnlocked);
-          });
-        });
-      sinon
-        .stub(
-          UpdateIsLoggedAndLoadAccountData,
-          "updateIsLoggedAndLoadAccountData"
-        )
-        .callsFake((unlockedAccount, accountType) => ({
-          type: "UPDATE_IS_LOGGED_AND_LOAD_ACCOUNT_DATA",
-          data: { unlockedAccount, accountType }
-        }));
-      sinon.stub(IsGlobalWeb3, "default").callsFake(() => {
-        const isGlobalWeb3 = t.stub.isGlobalWeb3();
-        store.dispatch({ type: "IS_GLOBAL_WEB3", data: { isGlobalWeb3 } });
-        return isGlobalWeb3;
-      });
-      store.dispatch(
-        action.useUnlockedAccount(t.params.unlockedAddress, err => {
-          t.assertions(err, store.getActions());
-          store.clearActions();
-          done();
-        })
-      );
-    });
-  test({
+
+  const t1 = {
     description: "no address",
     params: {
       unlockedAddress: undefined
@@ -82,11 +39,12 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       isGlobalWeb3: () => assert.fail()
     },
     assertions: (err, actions) => {
-      assert.strictEqual(err, "no account address");
-      assert.deepEqual(actions, []);
+      expect(err).toStrictEqual("no account address");
+      expect(actions).toHaveLength(0);
     }
-  });
-  test({
+  };
+
+  const t2 = {
     description: "isUnlocked error",
     params: {
       unlockedAddress: "0xb0b"
@@ -98,8 +56,8 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       isGlobalWeb3: () => false
     },
     assertions: (err, actions) => {
-      assert.deepEqual(err, MOCK_ERROR);
-      assert.deepEqual(actions, [
+      expect(err).toEqual(MOCK_ERROR);
+      expect(actions).toEqual([
         {
           type: "IS_GLOBAL_WEB3",
           data: { isGlobalWeb3: false }
@@ -110,8 +68,9 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
         }
       ]);
     }
-  });
-  test({
+  };
+
+  const t3 = {
     description: "locked address",
     params: {
       unlockedAddress: "0xb0b"
@@ -123,8 +82,8 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       isGlobalWeb3: () => false
     },
     assertions: (err, actions) => {
-      assert.isNull(err);
-      assert.deepEqual(actions, [
+      expect(err).toBeNull();
+      expect(actions).toEqual([
         {
           type: "IS_GLOBAL_WEB3",
           data: { isGlobalWeb3: false }
@@ -135,19 +94,20 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
         }
       ]);
     }
-  });
-  test({
+  };
+
+  const t4 = {
     description: "using metamask-connect",
     params: {
       unlockedAddress: "0xb0b"
     },
     stub: {
-      augur: { rpc: { isUnlocked: (address, callback) => assert.fail() } },
+      augur: { rpc: { isUnlocked: () => assert.fail() } },
       isGlobalWeb3: () => true
     },
     assertions: (err, actions) => {
-      assert.isNull(err);
-      assert.deepEqual(actions, [
+      expect(err).toBeNull();
+      expect(actions).toEqual([
         {
           type: "IS_GLOBAL_WEB3",
           data: { isGlobalWeb3: true }
@@ -161,8 +121,9 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
         }
       ]);
     }
-  });
-  test({
+  };
+
+  const t5 = {
     description: "unlocked local account",
     params: {
       unlockedAddress: "0xb0b"
@@ -174,7 +135,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       isGlobalWeb3: () => false
     },
     assertions: (err, actions) => {
-      assert.deepEqual(actions, [
+      expect(actions).toEqual([
         {
           type: "IS_GLOBAL_WEB3",
           data: { isGlobalWeb3: false }
@@ -192,5 +153,52 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
         }
       ]);
     }
+  };
+
+  describe.each([t1, t2, t3, t4, t5])("Use unlocked account tests", t => {
+    const store = mockStore(t.state);
+
+    beforeEach(() => {
+      jest
+        .spyOn(
+          updateIsLoggedAndLoadAccountDataModule,
+          "updateIsLoggedAndLoadAccountData"
+        )
+        .mockImplementation((unlockedAccount, accountType) => ({
+          type: "UPDATE_IS_LOGGED_AND_LOAD_ACCOUNT_DATA",
+          data: { unlockedAccount, accountType }
+        }));
+      jest.spyOn(isGlobalWeb3Module, "default").mockImplementation(() => {
+        const isGlobalWeb3 = t.stub.isGlobalWeb3();
+        store.dispatch({ type: "IS_GLOBAL_WEB3", data: { isGlobalWeb3 } });
+        return isGlobalWeb3;
+      });
+      jest
+        .spyOn(augur.rpc, "isUnlocked")
+        .mockImplementation((address, callback) => {
+          t.stub.augur.rpc.isUnlocked(address, (err, isUnlocked) => {
+            store.dispatch({
+              type: "AUGURJS_RPC_IS_UNLOCKED",
+              data: { isUnlocked: err || isUnlocked }
+            });
+            if (err) return callback(err);
+            callback(null, isUnlocked);
+          });
+        });
+    });
+
+    test(t.description, done => {
+      store.dispatch(
+        useUnlockedAccountModule.useUnlockedAccount(
+          t.params.unlockedAddress,
+          err => {
+            t.assertions(err, store.getActions());
+            store.clearActions();
+            done();
+          }
+        )
+      );
+      done();
+    });
   });
 });

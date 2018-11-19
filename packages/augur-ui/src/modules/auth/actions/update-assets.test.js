@@ -1,33 +1,30 @@
-import sinon from "sinon";
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
-import {
-  updateAssets,
-  __RewireAPI__ as updateAssetsRewireAPI
-} from "modules/auth/actions/update-assets";
-import { __RewireAPI__ as updateEtherBalanceRewireAPI } from "modules/auth/actions/update-ether-balance";
+import speedomatic from "speedomatic";
+import { updateAssets } from "modules/auth/actions/update-assets";
+
+import * as updateLoginAccountModule from "modules/auth/actions/update-login-account";
+import { augur } from "services/augurjs";
+import * as updateEtherBalanceModule from "modules/auth/actions/update-ether-balance";
 
 const ETH = "eth";
 const REP = "rep";
 
 describe("modules/auth/actions/update-assets.js", () => {
   const mockStore = configureMockStore([thunk]);
-  const stubbedUpdateLoginAccount = sinon.stub().returns({
-    type: "updateLoginAccount"
+  let updateLoginAccountSpy;
+  let ethGetBalanceSpy;
+  let reputationTokenSpy;
+  let balanceOfSpy;
+
+  afterAll(() => {
+    updateLoginAccountSpy.mockReset();
+    ethGetBalanceSpy.mockReset();
+    reputationTokenSpy.mockReset();
+    balanceOfSpy.mockReset();
   });
-  updateAssetsRewireAPI.__Rewire__(
-    "updateLoginAccount",
-    stubbedUpdateLoginAccount
-  );
-  const test = t =>
-    it(t.description, done => {
-      const store = mockStore(t.state || {});
-      t.assertions(store, done);
-    });
-  afterEach(() => {
-    stubbedUpdateLoginAccount.resetHistory();
-  });
-  test({
+
+  const t1 = {
     description: `should dispatch 'updateLoginAccount' if a user is unlogged`,
     state: {
       loginAccount: {},
@@ -37,179 +34,146 @@ describe("modules/auth/actions/update-assets.js", () => {
     },
     assertions: (store, done) => {
       store.dispatch(updateAssets());
-      assert(
-        stubbedUpdateLoginAccount.calledOnce,
-        `didn't call 'updateLoginAccount' once as expected`
+      expect(updateLoginAccountSpy).toHaveBeenCalledTimes(1);
+      done();
+    }
+  };
+
+  describe.each([t1])("update assets tests", t => {
+    const store = mockStore(t.state || {});
+
+    beforeEach(() => {
+      updateLoginAccountSpy = jest
+        .spyOn(updateLoginAccountModule, "updateLoginAccount")
+        .mockImplementation(() => ({
+          type: "updateLoginAccount"
+        }));
+    });
+
+    test(t.description, done => {
+      t.assertions(store, done);
+    });
+  });
+
+  const t2 = {
+    asset: ETH,
+    description: `should call the callback with the expected error`,
+    state: {
+      loginAccount: {
+        address: "0xtest"
+      },
+      universe: {
+        id: "0xuniverse"
+      },
+      address: "0xtest"
+    },
+    assertions: (store, asset, done) => {
+      const ERR = {
+        error: `${asset}-failure`
+      };
+      ethGetBalanceSpy = jest
+        .spyOn(augur.rpc.eth, "getBalance")
+        .mockImplementation((value, callback) => {
+          callback(ERR, "1000");
+        });
+
+      reputationTokenSpy = jest
+        .spyOn(augur.api.Universe, "getReputationToken")
+        .mockImplementation((value, callback) => {
+          callback(ERR, "10000");
+        });
+
+      balanceOfSpy = jest
+        .spyOn(augur.api.ReputationToken, "balanceOf")
+        .mockImplementation((value, callback) => {
+          callback(ERR, "10000");
+        });
+      jest
+        .spyOn(updateEtherBalanceModule, "updateEtherBalance")
+        .mockImplementation(() => ({
+          type: "UPDATE_ASSETS"
+        }));
+      store.dispatch(updateAssets(err => expect(err).toEqual(ERR)));
+      done();
+    }
+  };
+
+  const t3 = {
+    asset: ETH,
+    description: `should dispatch 'updateLoginAccount' if value is present but doesn't equal updated value`,
+    state: {
+      loginAccount: {
+        eth: 11,
+        rep: 11,
+      },
+      universe: {
+        id: "myId"
+      }
+    },
+    assertions: (store, asset, done) => {
+      jest.doMock("services/augurjs", () => {});
+      store.dispatch(updateAssets());
+      expect(updateLoginAccountSpy).toHaveBeenCalledTimes(2);
+      done();
+    }
+  };
+
+  const t4 = {
+    asset: ETH,
+    description: `should call the callback with the balances once all have loaded`,
+    state: {
+      loginAccount: {
+        address: "0xtest",
+        ethTokens: "10",
+        eth: "10",
+        rep: "10"
+      },
+      universe: {
+        id: "0xuniverse"
+      }
+    },
+    assertions: (store, asset, done) => {
+      jest.spyOn(speedomatic, "unfix").mockImplementation(value => value);
+      const testValue = {
+        eth: 10,
+        rep: 20
+      };
+      ethGetBalanceSpy.mockImplementation((value, callback) => {
+        callback(null, testValue.eth);
+      });
+
+      reputationTokenSpy.mockImplementation((value, callback) => {
+        callback(null, "0xtestx0");
+      });
+      balanceOfSpy.mockImplementation((value, callback) => {
+        callback(null, testValue.rep);
+      });
+      store.dispatch(
+        updateAssets((err, balances) => {
+          expect(err).toBeNull();
+          expect(balances).toEqual(testValue);
+        })
       );
       done();
     }
-  });
-  describe("loadAssets callbacks", () => {
+  };
+
+  describe.each([t2, t3, t4])("loadAssets callbacks", t => {
     const callbackTests = asset => {
+      t.asset = asset;
+
       describe(`${asset}`, () => {
-        afterEach(() => {
-          updateAssetsRewireAPI.__ResetDependency__("augur");
-        });
-        test({
-          description: `should call the callback with the expected error`,
-          state: {
-            loginAccount: {
-              address: "0xtest"
-            },
-            universe: {
-              id: "0xuniverse"
-            },
-            address: "0xtest"
-          },
-          assertions: (store, done) => {
-            const ERR = {
-              error: `${asset}-failure`
-            };
-            updateEtherBalanceRewireAPI.__Rewire__("augur", {
-              rpc: {
-                eth: {
-                  getBalance: (value, callback) => {
-                    callback(ERR, "1000");
-                  }
-                }
-              }
-            });
-            updateAssetsRewireAPI.__Rewire__("augur", {
-              api: {
-                Universe: {
-                  getReputationToken: (value, callback) => {
-                    callback(ERR, "10000");
-                  }
-                },
-                ReputationToken: {
-                  balanceOf: (value, callback) => {
-                    callback(ERR, "10000");
-                  }
-                }
-              }
-            });
-            updateAssetsRewireAPI.__Rewire__("updateEtherBalance", () => ({
-              type: "UPDATE_ASSETS"
-            }));
-            const callbackStub = {
-              callback: () => {}
-            };
-            sinon
-              .stub(callbackStub, "callback")
-              .callsFake(err =>
-                assert.deepEqual(
-                  err,
-                  ERR,
-                  `didn't call the callback with the expected error`
-                )
-              );
-            store.dispatch(updateAssets(callbackStub.callback));
-            done();
-          }
-        });
-        test({
-          description: `should dispatch 'updateLoginAccount' if value is not present`,
-          state: {
+        test("should dispatch 'updateLoginAccount' if value is not present", done => {
+          const store = mockStore({
             loginAccount: {},
             universe: {
               id: "myId"
             }
-          },
-          assertions: (store, done) => {
-            updateAssetsRewireAPI.__Rewire__("augur", {});
-            updateEtherBalanceRewireAPI.__Rewire__("augur", {});
-            store.dispatch(updateAssets());
-            assert(
-              stubbedUpdateLoginAccount.calledOnce,
-              `didn't call 'updateLoginAccount' once as expected`
-            );
-            done();
-          }
-        });
-        test({
-          description: `should dispatch 'updateLoginAccount' if value is present but doesn't equal updated value`,
-          state: {
-            loginAccount: {
-              [`${asset}`]: "11"
-            },
-            universe: {
-              id: "myId"
-            }
-          },
-          assertions: (store, done) => {
-            updateAssetsRewireAPI.__Rewire__("augur", {});
-            updateEtherBalanceRewireAPI.__Rewire__("augur", {});
-            store.dispatch(updateAssets());
-            assert(
-              stubbedUpdateLoginAccount.calledOnce,
-              `didn't call 'updateLoginAccount' once as expected`
-            );
-            done();
-          }
-        });
-        test({
-          description: `should call the callback with the balances once all have loaded`,
-          state: {
-            loginAccount: {
-              address: "0xtest",
-              ethTokens: "10",
-              eth: "10",
-              rep: "10"
-            },
-            universe: {
-              id: "0xuniverse"
-            }
-          },
-          assertions: (store, done) => {
-            const speedomatic = {
-              unfix: (value, str) => {}
-            };
-            sinon.stub(speedomatic, "unfix").returnsArg(0);
-            updateAssetsRewireAPI.__Rewire__("speedomatic", speedomatic);
-            const testValue = {
-              eth: 10,
-              rep: 20
-            };
-            updateEtherBalanceRewireAPI.__Rewire__("augur", {
-              rpc: {
-                eth: {
-                  getBalance: (value, callback) => {
-                    callback(null, testValue.eth);
-                  }
-                }
-              }
-            });
-            updateAssetsRewireAPI.__Rewire__("augur", {
-              api: {
-                Universe: {
-                  getReputationToken: (value, callback) => {
-                    callback(null, "0xtestx0");
-                  }
-                },
-                ReputationToken: {
-                  balanceOf: (value, callback) => {
-                    callback(null, testValue.rep);
-                  }
-                }
-              }
-            });
-            const callbackStub = {
-              callback: () => {}
-            };
-            sinon.stub(callbackStub, "callback").callsFake((err, balances) => {
-              assert.isNull(
-                err,
-                `didn't call the callback with the expected error`
-              );
-              assert.deepEqual(
-                balances,
-                testValue,
-                `didn't call the callback with the expected balances`
-              );
-            });
-            store.dispatch(updateAssets(callbackStub.callback));
-            done();
-          }
+          });
+          store.dispatch(updateAssets());
+          expect(updateLoginAccountSpy).toHaveBeenCalledTimes(1);
+          t.assertions(store, asset, done);
+          done();
         });
       });
     };
