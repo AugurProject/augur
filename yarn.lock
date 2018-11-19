@@ -2018,12 +2018,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/mocha@5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.1.0.tgz#591f158012ec30de978b00065239a84fb1ce4380"
-  integrity sha512-FHnScYtV66SQBo8o2bdU83atlSorfCX2ZYluk2VqI4ZaL0bkVEwuMZL5pHLRgJOTZ7vv24x4nH3gljdRD6zsSQ==
-  dependencies:
-    "@types/node" "*"
+"@types/mocha@5.2.5":
+  version "5.2.5"
+  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.5.tgz#8a4accfc403c124a0bafe8a9fc61a05ec1032073"
+  integrity sha512-lAVp+Kj54ui/vLUFxsJTMtWvZraZxum3w3Nwkble2dNuV5VnPA+Mi2oGX9XYJAaIvZi3tn3cbjS/qcJXRb6Bww==
 
 "@types/node@*":
   version "10.9.4"
@@ -14666,23 +14664,6 @@ mocha-lcov-reporter@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/mocha-lcov-reporter/-/mocha-lcov-reporter-0.0.2.tgz#add13ad24158431570cada442c614edc5e4feb95"
   integrity sha1-rdE60kFYQxVwytpELGFO3F5P65U=
-
-mocha@5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.1.1.tgz#b774c75609dac05eb48f4d9ba1d827b97fde8a7b"
-  integrity sha512-kKKs/H1KrMMQIEsWNxGmb4/BGsmj0dkeyotEvbrAuQ01FcWRLssUNXCEUZk6SZtyJBi6EE7SL0zDDtItw1rGhw==
-  dependencies:
-    browser-stdout "1.3.1"
-    commander "2.11.0"
-    debug "3.1.0"
-    diff "3.5.0"
-    escape-string-regexp "1.0.5"
-    glob "7.1.2"
-    growl "1.10.3"
-    he "1.1.1"
-    minimatch "3.0.4"
-    mkdirp "0.5.1"
-    supports-color "4.4.0"
 
 mocha@5.2.0:
   version "5.2.0"
