@@ -7,7 +7,7 @@ import { ContractDeployer } from '../libraries/ContractDeployer';
 import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
 import { DeployerConfiguration } from '../libraries/DeployerConfiguration';
 import { NetworkConfiguration } from '../libraries/NetworkConfiguration';
-import { FeeWindow, ShareToken, ClaimTradingProceeds, CompleteSets, TimeControlled, Cash, Universe, Market, CreateOrder, Orders, Trade, CancelOrder, LegacyReputationToken, DisputeCrowdsourcer, ReputationToken, } from '../libraries/ContractInterfaces';
+import { DisputeWindow, ShareToken, ClaimTradingProceeds, CompleteSets, TimeControlled, Cash, Universe, Market, CreateOrder, Orders, Trade, CancelOrder, LegacyReputationToken, DisputeCrowdsourcer, ReputationToken, } from '../libraries/ContractInterfaces';
 import { stringTo32ByteHex } from '../libraries/HelperFunctions';
 
 export class TestFixture {
@@ -79,15 +79,15 @@ export class TestFixture {
         await cash.approve(authority.address, new BN(2).pow(new BN(256)).sub(new BN(1)));
     }
 
-    public async createMarket(universe: Universe, outcomes: string[], endTime: BN, feePerEthInWei: BN, denominationToken: string, designatedReporter: string): Promise<Market> {
+    public async createMarket(universe: Universe, outcomes: string[], endTime: BN, feePerEthInWei: BN, designatedReporter: string): Promise<Market> {
         const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
 
         console.log("Creating Market");
-        const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, denominationToken, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '', { attachedEth: marketCreationFee });
+        const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '', { attachedEth: marketCreationFee });
         if (!marketAddress || marketAddress == "0x") {
             throw new Error("Unable to get address for new categorical market.");
         }
-        await universe.createCategoricalMarket(endTime, feePerEthInWei, denominationToken, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '', { attachedEth: marketCreationFee });
+        await universe.createCategoricalMarket(endTime, feePerEthInWei, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '', { attachedEth: marketCreationFee });
         const market = new Market(this.connector, this.accountManager, marketAddress, TestFixture.GAS_PRICE);
         if (await market.getTypeName_() !== stringTo32ByteHex("Market")) {
             throw new Error("Unable to create new categorical market");
@@ -96,10 +96,10 @@ export class TestFixture {
         return market;
     }
 
-    public async createReasonableMarket(universe: Universe, denominationToken: string, outcomes: string[]): Promise<Market> {
+    public async createReasonableMarket(universe: Universe, outcomes: string[]): Promise<Market> {
         const endTime = new BN(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
         const fee = (new BN(10)).pow(new BN(16));
-        return await this.createMarket(universe, outcomes, endTime, fee, denominationToken, this.accountManager.defaultAddress);
+        return await this.createMarket(universe, outcomes, endTime, fee, this.accountManager.defaultAddress);
     }
 
     public async placeOrder(market: string, type: BN, numShares: BN, price: BN, outcome: BN, betterOrderID: string, worseOrderID: string, tradeGroupID: string): Promise<void> {
@@ -195,21 +195,21 @@ export class TestFixture {
         return;
     }
 
-    public async contribute(market: Market, payoutNumerators: Array<BN>, invalid: boolean, amount: BN): Promise<void> {
-        await market.contribute(payoutNumerators, invalid, amount, "");
+    public async contribute(market: Market, payoutNumerators: Array<BN>, amount: BN): Promise<void> {
+        await market.contribute(payoutNumerators, amount, "");
         return;
     }
 
-    public async derivePayoutDistributionHash(market: Market, payoutNumerators: Array<BN>, invalid: boolean): Promise<string> {
-        return await market.derivePayoutDistributionHash_(payoutNumerators, invalid);
+    public async derivePayoutDistributionHash(market: Market, payoutNumerators: Array<BN>): Promise<string> {
+        return await market.derivePayoutDistributionHash_(payoutNumerators);
     }
 
     public async isForking(): Promise<boolean> {
         return await this.universe!.isForking_();
     }
 
-    public async migrateOutByPayout(reputationToken: ReputationToken, payoutNumerators: Array<BN>, invalid: boolean, attotokens: BN) {
-        await reputationToken.migrateOutByPayout(payoutNumerators, invalid, attotokens);
+    public async migrateOutByPayout(reputationToken: ReputationToken, payoutNumerators: Array<BN>, attotokens: BN) {
+        await reputationToken.migrateOutByPayout(payoutNumerators, attotokens);
         return;
     }
 
@@ -219,10 +219,10 @@ export class TestFixture {
         return await shareToken.balanceOf_(this.accountManager.defaultAddress);
     }
 
-    public async getFeeWindow(market: Market): Promise<FeeWindow> {
-        const feeWindowAddress = await market.getFeeWindow_();
-        await this.linkDebugSymbolsForContract('FeeWindow', feeWindowAddress);
-        return new FeeWindow(this.connector, this.accountManager, feeWindowAddress, TestFixture.GAS_PRICE);
+    public async getDisputeWindow(market: Market): Promise<DisputeWindow> {
+        const disputeWindowAddress = await market.getDisputeWindow_();
+        await this.linkDebugSymbolsForContract('DisputeWindow', disputeWindowAddress);
+        return new DisputeWindow(this.connector, this.accountManager, disputeWindowAddress, TestFixture.GAS_PRICE);
     }
 
     public async getReportingParticipant(reportingParticipantAddress: string): Promise<DisputeCrowdsourcer> {
@@ -250,8 +250,8 @@ export class TestFixture {
         return this.contractDeployer.controller!.getTimestamp_();
     }
 
-    public async doInitialReport(market: Market, payoutNumerators: Array<BN>, invalid: boolean): Promise<void> {
-        await market.doInitialReport(payoutNumerators, invalid, "");
+    public async doInitialReport(market: Market, payoutNumerators: Array<BN>): Promise<void> {
+        await market.doInitialReport(payoutNumerators, "");
         return;
     }
 

@@ -2,13 +2,12 @@ pragma solidity 0.4.24;
 
 import 'reporting/IReportingParticipant.sol';
 import 'reporting/IMarket.sol';
-import 'reporting/IFeeWindow.sol';
+import 'reporting/IDisputeWindow.sol';
 import 'reporting/IReputationToken.sol';
 import 'Controlled.sol';
 
 
 contract BaseReportingParticipant is Controlled, IReportingParticipant {
-    bool internal invalid;
     IMarket internal market;
     uint256 internal size;
     bytes32 internal payoutDistributionHash;
@@ -25,7 +24,7 @@ contract BaseReportingParticipant is Controlled, IReportingParticipant {
 
     function fork() internal returns (bool) {
         require(market == market.getUniverse().getForkingMarket());
-        IUniverse _newUniverse = market.getUniverse().createChildUniverse(payoutNumerators, invalid);
+        IUniverse _newUniverse = market.getUniverse().createChildUniverse(payoutNumerators);
         IReputationToken _newReputationToken = _newUniverse.getReputationToken();
         uint256 _balance = reputationToken.balanceOf(this);
         reputationToken.migrateOut(_newReputationToken, _balance);
@@ -34,10 +33,6 @@ contract BaseReportingParticipant is Controlled, IReportingParticipant {
         controller.getAugur().logReportingParticipantDisavowed(market.getUniverse(), market);
         market = IMarket(0);
         return true;
-    }
-
-    function isInvalid() public view returns (bool) {
-        return invalid;
     }
 
     function getSize() public view returns (uint256) {
