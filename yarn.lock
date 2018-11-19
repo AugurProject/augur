@@ -1970,10 +1970,10 @@
   resolved "https://registry.yarnpkg.com/@types/get-port/-/get-port-3.2.0.tgz#f9e0a11443cc21336470185eae3dfba4495d29bc"
   integrity sha512-TiNg8R1kjDde5Pub9F9vCwZA/BNW9HeXP5b9j7Qucqncy/McfPZ6xze/EyBdXS5FhMIGN6Fx3vg75l5KHy3V1Q==
 
-"@types/helmet@0.0.40":
-  version "0.0.40"
-  resolved "https://registry.yarnpkg.com/@types/helmet/-/helmet-0.0.40.tgz#133e1e3f0d7142d7244bf0ddaad4678798e9b4cf"
-  integrity sha512-F4brUsS7CU5/QH7AV3DX9YfOj54unVLOgtIhjSNrC6OKQnwtVKOcJtR2loqgq3dRfEiTCmXjzRl8D0plqJACIQ==
+"@types/helmet@0.0.42":
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/@types/helmet/-/helmet-0.0.42.tgz#845954fb171000c9b9caa367febf6769bd589eaa"
+  integrity sha512-xQjlolRfr7LVa55sGnjtJGcV6/Hf7cfD1IuZo1Do+o3UobOoJJSLIbwkhd9tW18F1Kp4uB77T8TsJ2XKUDwp7g==
   dependencies:
     "@types/express" "*"
 
