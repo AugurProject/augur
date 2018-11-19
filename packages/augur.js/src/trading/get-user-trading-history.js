@@ -38,7 +38,7 @@ var augurNode = require("../augur-node");
  * @return {UserTrade[]} Array of the user's trades, keyed by universe/market ID.
 */
 function getUserTradingHistory(p, callback) {
-  augurNode.submitRequest("getUserTradingHistory", p, callback);
+  augurNode.submitRequest("getTradingHistory", p, callback);
 }
 
 module.exports = getUserTradingHistory;

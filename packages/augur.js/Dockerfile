@@ -7,7 +7,6 @@ FROM node:8 AS builder
 WORKDIR /augur.js
 COPY package.json package.json
 COPY package-lock.json package-lock.json
-COPY hooks hooks
 RUN git init && npm install && rm -rf .git
 
 ##
