@@ -1,4 +1,16 @@
 import configureMockStore from "redux-mock-store";
+import thunk from "redux-thunk";
+import * as useUnlockedAccountModule from "modules/auth/actions/use-unlocked-account";
+import * as updateIsLoggedAndLoadAccountDataModule from "modules/auth/actions/update-is-logged-and-load-account-data";
+import * as isGlobalWeb3Module from "modules/auth/helpers/is-global-web3";
+import { augur } from "services/augurjs";
+
+const MOCK_ERROR = { error: 42, message: "fail!" };
+
+describe(`modules/auth/actions/update-login-account.js`, () => {
+  const mockStore = configureMockStore([thunk]);
+
+  const t1 = {
     description: "no address",
     params: {
       unlockedAddress: undefined
