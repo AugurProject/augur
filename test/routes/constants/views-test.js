@@ -6,7 +6,7 @@ describe("modules/app/constants/views", () => {
   test({
     description: `should return the expected value 'DEFAULT_VIEW'`,
     assertions: () => {
-      const expected = "categories";
+      const expected = "markets";
 
       assert.strictEqual(
         views.DEFAULT_VIEW,
@@ -75,19 +75,6 @@ describe("modules/app/constants/views", () => {
 
       assert.strictEqual(
         views.ACCOUNT,
-        expected,
-        `didn't return the expected string`
-      );
-    }
-  });
-
-  test({
-    description: `should return the expected value 'CATEGORIES'`,
-    assertions: () => {
-      const expected = "categories";
-
-      assert.strictEqual(
-        views.CATEGORIES,
         expected,
         `didn't return the expected string`
       );

@@ -63,7 +63,7 @@ export default class MarketsHeader extends Component {
   }
 
   render() {
-    const { filter, sort, updateFilter } = this.props;
+    const { filter, sort, updateFilter, history } = this.props;
     const s = this.state;
 
     return (

@@ -5,13 +5,12 @@ export const CREATE_MARKET = "create-market";
 export const TRANSACTIONS = "transactions";
 export const ACCOUNT = "account";
 export const CONNECT = "connect";
-export const CATEGORIES = "categories";
 export const REPORTING = "reporting";
 export const REPORT = "report";
 export const DISPUTE = "dispute";
 export const MIGRATE_REP = "migrate-rep";
 
-export const DEFAULT_VIEW = CATEGORIES;
+export const DEFAULT_VIEW = MARKETS;
 
 // NOTE -- if the view is conditionally displayed based on a param, it's value should be housed withint the resepective constant file
 // Most of these will be progressively being refactored out
