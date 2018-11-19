@@ -4,82 +4,89 @@ import {
   IS_MOBILE_SMALL,
   HAS_LOADED_MARKETS,
   TRANSACTIONS_LOADING,
-  UPDATE_APP_STATUS
+  UPDATE_APP_STATUS,
+  updateAppStatus
 } from "modules/app/actions/update-app-status";
 
 describe("modules/app/actions/update-app-status.js", () => {
-  const { updateAppStatus } = require("modules/app/actions/update-app-status");
+  const t1 = {
+    description: "Returns the expected object for updating isAnimating",
+    statusKey: IS_ANIMATING,
+    value: true,
+    assertions: action => {
+      expect(action).toEqual({
+        type: UPDATE_APP_STATUS,
+        data: {
+          statusKey: IS_ANIMATING,
+          value: true
+        }
+      });
+    }
+  };
 
-  test("should return the expected object for updating isAnimating", () => {
-    const statusKey = IS_ANIMATING;
-    const value = true;
-    const actual = updateAppStatus(statusKey, value);
-    const expected = {
-      type: UPDATE_APP_STATUS,
-      data: {
-        statusKey: IS_ANIMATING,
-        value: true
-      }
-    };
-    expect(actual).toEqual(expected);
-  });
+  const t2 = {
+    description: "Returns the expected object for updating isMobile",
+    statusKey: IS_MOBILE,
+    value: true,
+    assertions: action => {
+      expect(action).toEqual({
+        type: UPDATE_APP_STATUS,
+        data: {
+          statusKey: IS_MOBILE,
+          value: true
+        }
+      });
+    }
+  };
 
-  test("should return the expected object for updating isMobile", () => {
-    const statusKey = IS_MOBILE;
-    const value = true;
-    const actual = updateAppStatus(statusKey, value);
-    const expected = {
-      type: UPDATE_APP_STATUS,
-      data: {
-        statusKey: IS_MOBILE,
-        value: true
-      }
-    };
-    expect(actual).toEqual(expected);
-  });
+  const t3 = {
+    description: "Returns the expected object for updating isMobileSmall",
+    statusKey: IS_MOBILE_SMALL,
+    value: true,
+    assertions: action => {
+      expect(action).toEqual({
+        type: UPDATE_APP_STATUS,
+        data: {
+          statusKey: IS_MOBILE_SMALL,
+          value: true
+        }
+      });
+    }
+  };
 
-  test("should return the expected object for updating isMobileSmall", () => {
-    const statusKey = IS_MOBILE_SMALL;
-    const value = true;
-    const actual = updateAppStatus(statusKey, value);
-    const expected = {
-      type: UPDATE_APP_STATUS,
-      data: {
-        statusKey: IS_MOBILE_SMALL,
-        value: true
-      }
-    };
+  const t4 = {
+    description: "Returns the expected object for updating hasLoadedMarkets",
+    statusKey: HAS_LOADED_MARKETS,
+    value: true,
+    assertions: action => {
+      expect(action).toEqual({
+        type: UPDATE_APP_STATUS,
+        data: {
+          statusKey: HAS_LOADED_MARKETS,
+          value: true
+        }
+      });
+    }
+  };
 
-    expect(actual).toEqual(expected);
-  });
+  const t5 = {
+    description: "Returns the expected object for updating transactionsLoading",
+    statusKey: TRANSACTIONS_LOADING,
+    value: true,
+    assertions: action => {
+      expect(action).toEqual({
+        type: UPDATE_APP_STATUS,
+        data: {
+          statusKey: TRANSACTIONS_LOADING,
+          value: true
+        }
+      });
+    }
+  };
 
-  test("should return the expected object for updating hasLoadedMarkets", () => {
-    const statusKey = HAS_LOADED_MARKETS;
-    const value = true;
-    const actual = updateAppStatus(statusKey, value);
-    const expected = {
-      type: UPDATE_APP_STATUS,
-      data: {
-        statusKey: HAS_LOADED_MARKETS,
-        value: true
-      }
-    };
-
-    expect(actual).toEqual(expected);
-  });
-
-  test("should return the expected object for updating transactionsLoading", () => {
-    const statusKey = TRANSACTIONS_LOADING;
-    const value = true;
-    const actual = updateAppStatus(statusKey, value);
-    const expected = {
-      type: UPDATE_APP_STATUS,
-      data: {
-        statusKey: TRANSACTIONS_LOADING,
-        value: true
-      }
-    };
-
-    expect(actual).toEqual(expected);
+  describe.each([t1, t2, t3, t4, t5])("Update app status tests", t => {
+    test(t.description, () => {
+      t.assertions(updateAppStatus(t.statusKey, t.value));
+    });
   });
 });

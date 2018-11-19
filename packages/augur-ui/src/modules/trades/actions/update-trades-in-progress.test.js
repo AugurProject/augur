@@ -43,7 +43,7 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
     const mockStore = configureMockStore(middlewares);
     const state = Object.assign({}, testState, tradeTestState);
     const store = mockStore(state);
-    loadUsershareBalances.mockImplementation((options, callback) => dispatch =>
+    loadUsershareBalances.mockImplementation((options, callback) => () =>
       callback(null, [])
     );
 
@@ -346,7 +346,7 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
     const mockStore = configureMockStore(middlewares);
     const state = Object.assign({}, testState, tradeTestState);
     const store = mockStore(state);
-    loadUsershareBalances.mockImplementation((options, callback) => dispatch =>
+    loadUsershareBalances.mockImplementation((options, callback) => () =>
       callback(null, [])
     );
 
@@ -660,7 +660,7 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
     const mockStore = configureMockStore(middlewares);
     const state = Object.assign({}, testState, tradeTestState);
     const store = mockStore(state);
-    loadUsershareBalances.mockImplementation((options, callback) => dispatch =>
+    loadUsershareBalances.mockImplementation((options, callback) => () =>
       callback(null, ["0", "0"])
     );
 

@@ -4,7 +4,7 @@ from pytest import fixture, raises
 from ethereum.tools.tester import TransactionFailed
 
 numTicks = 10 ** 10
-def test_market_creation(localFixture, mockUniverse, mockFeeWindow, mockCash, chain, constants, mockMarket, mockReputationToken, mockShareToken, mockShareTokenFactory):
+def test_market_creation(localFixture, mockUniverse, mockDisputeWindow, mockCash, chain, constants, mockMarket, mockReputationToken, mockShareToken, mockShareTokenFactory):
     fee = 16
     oneEther = 10 ** 18
     endTime = localFixture.contracts["Time"].getTimestamp() + constants.DESIGNATED_REPORTING_DURATION_SECONDS()
@@ -12,57 +12,53 @@ def test_market_creation(localFixture, mockUniverse, mockFeeWindow, mockCash, ch
     market.setController(localFixture.contracts["Controller"].address)
 
     with raises(TransactionFailed, message="outcomes has to be greater than 1"):
-        market.initialize(mockUniverse.address, endTime, fee, mockCash.address, tester.a1, tester.a1, 1, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 1, numTicks)
 
     with raises(TransactionFailed, message="outcomes has to be less than 9"):
-        market.initialize(mockUniverse.address, endTime, fee, mockCash.address, tester.a1, tester.a1, 9, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 9, numTicks)
 
     with raises(TransactionFailed, message="numTicks needs to be divisable by outcomes"):
-        market.initialize(mockUniverse.address, endTime, fee, mockCash.address, tester.a1, tester.a1, 7, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 7, numTicks)
 
     with raises(TransactionFailed, message="fee per eth can not be greater than max fee per eth in attoEth"):
-        market.initialize(mockUniverse.address, endTime, oneEther / 2 + 1, mockCash.address, tester.a1, tester.a1, 5, numTicks)
+        market.initialize(mockUniverse.address, endTime, oneEther / 2 + 1, tester.a1, tester.a1, 5, numTicks)
 
     with raises(TransactionFailed, message="creator address can not be 0"):
-        market.initialize(mockUniverse.address, endTime, fee, mockCash.address, longToHexString(0), tester.a1, 5, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, longToHexString(0), tester.a1, 5, numTicks)
 
     with raises(TransactionFailed, message="designated reporter address can not be 0"):
-        market.initialize(mockUniverse.address, endTime, fee, mockCash.address, tester.a1, longToHexString(0), 5, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, tester.a1, longToHexString(0), 5, numTicks)
 
     mockUniverse.setForkingMarket(mockMarket.address)
     with raises(TransactionFailed, message="forking market address has to be 0"):
-        market.initialize(mockUniverse.address, endTime, fee, mockCash.address, tester.a1, tester.a1, 5, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 5, numTicks)
 
     mockUniverse.setForkingMarket(longToHexString(0))
     mockReputationToken.setBalanceOf(0)
     mockUniverse.setOrCacheDesignatedReportNoShowBond(100)
     with raises(TransactionFailed, message="reporting window reputation token does not have enough balance"):
-        market.initialize(mockUniverse.address, endTime, fee, mockCash.address, tester.a1, tester.a1, 5, numTicks)
-
-    badCash = localFixture.upload('../source/contracts/trading/Cash.sol', 'uncontrolledCash')
-    with raises(TransactionFailed, message="the denomination token must be a valid cash implementation"):
-        market.initialize(mockUniverse.address, endTime, fee, badCash.address, tester.a1, tester.a1, 5, numTicks, value=100)
+        market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 5, numTicks)
 
     mockReputationToken.setBalanceOf(100)
     mockUniverse.setOrCacheTargetReporterGasCosts(15)
     mockUniverse.setOrCacheValidityBond(12)
     with raises(TransactionFailed, message="refund is not over 0"):
-        market.initialize(mockUniverse.address, endTime, fee, mockCash.address, tester.a1, tester.a1, 5, numTicks, value=0)
+        market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 5, numTicks, value=0)
 
     mockShareTokenFactory.resetCreateShareToken()
-    assert market.initialize(mockUniverse.address, endTime, fee, mockCash.address, tester.a1, tester.a1, 5, numTicks, value=100)
+    assert market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 5, numTicks, value=100)
     assert mockShareTokenFactory.getCreateShareTokenMarketValue() == market.address
-    assert mockShareTokenFactory.getCreateShareTokenOutcomeValue() == 5 - 1 # mock logs the last outcome
+    assert mockShareTokenFactory.getCreateShareTokenOutcomeValue() == 5
     assert market.getTypeName() == stringToBytes("Market")
     assert market.getUniverse() == mockUniverse.address
     assert market.getUniverse() == mockUniverse.address
     assert market.getDesignatedReporter() == bytesToHexString(tester.a1)
-    assert market.getNumberOfOutcomes() == 5
+    assert market.getNumberOfOutcomes() == 6
     assert market.getEndTime() == endTime
     assert market.getNumTicks() == numTicks
     assert market.getDenominationToken() == mockCash.address
     assert market.getMarketCreatorSettlementFeeDivisor() == oneEther / 16
-    assert mockShareTokenFactory.getCreateShareTokenCounter() == 5
+    assert mockShareTokenFactory.getCreateShareTokenCounter() == 6
     assert mockShareTokenFactory.getCreateShareToken(0) == market.getShareToken(0)
     assert mockShareTokenFactory.getCreateShareToken(1) == market.getShareToken(1)
     assert mockShareTokenFactory.getCreateShareToken(2) == market.getShareToken(2)
@@ -73,7 +69,7 @@ def test_market_creation(localFixture, mockUniverse, mockFeeWindow, mockCash, ch
 def test_initial_report(localFixture, initializedMarket, mockReputationToken, mockUniverse, mockInitialReporter):
     # We can't do the initial report till the market has ended
     with raises(TransactionFailed, message="initial report allowed before market end time"):
-        initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0], False, "", sender=tester.k1)
+        initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=tester.k1)
 
     localFixture.contracts["Time"].setTimestamp(initializedMarket.getEndTime() + 1)
 
@@ -81,7 +77,7 @@ def test_initial_report(localFixture, initializedMarket, mockReputationToken, mo
     initBond = 10 ** 8
     mockUniverse.setOrCacheDesignatedReportStake(initBond)
     mockReputationToken.setBalanceOf(repBalance)
-    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0], False, "", sender=tester.k1)
+    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=tester.k1)
     # verify creator gets back rep bond
     assert mockReputationToken.getTransferValueFor(tester.a2) == mockUniverse.getOrCacheDesignatedReportNoShowBond()
     # verify init reporter pays init rep bond
@@ -91,49 +87,49 @@ def test_initial_report(localFixture, initializedMarket, mockReputationToken, mo
     assert mockReputationToken.getTrustedTransferDestinationValue() == initialReporter.address
     assert mockInitialReporter.reportWasCalled() == True
 
-def test_contribute(localFixture, initializedMarket, mockNextFeeWindow, mockInitialReporter, mockDisputeCrowdsourcer, mockDisputeCrowdsourcerFactory):
+def test_contribute(localFixture, initializedMarket, mockNextDisputeWindow, mockInitialReporter, mockDisputeCrowdsourcer, mockDisputeCrowdsourcerFactory):
     # We can't contribute until there is an initial report to dispute
     with raises(TransactionFailed, message="can't contribute until there is an initial report to dispute"):
-        initializedMarket.contribute([0, 0, 0, 0, initializedMarket.getNumTicks()], False, 1, "")
+        initializedMarket.contribute([0, 0, 0, 0, 0, initializedMarket.getNumTicks()], 1, "")
 
     localFixture.contracts["Time"].setTimestamp(initializedMarket.getEndTime() + 1)
 
-    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0], False, "", sender=tester.k1)
+    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=tester.k1)
 
-    mockNextFeeWindow.setIsActive(True)
-    winningPayoutHash = initializedMarket.derivePayoutDistributionHash([initializedMarket.getNumTicks(), 0, 0, 0, 0], False)
+    mockNextDisputeWindow.setIsActive(True)
+    winningPayoutHash = initializedMarket.derivePayoutDistributionHash([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0])
     mockInitialReporter.setPayoutDistributionHash(winningPayoutHash)
 
     # We can't contribute to the current winning outcome
     with raises(TransactionFailed, message="can't contribute to current winning outcome"):
-        initializedMarket.contribute([initializedMarket.getNumTicks(), 0, 0, 0, 0], False, 1, "")
+        initializedMarket.contribute([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], 1, "")
 
-    assert initializedMarket.contribute([0, 0, 0, 0, initializedMarket.getNumTicks()], False, 1, "")
+    assert initializedMarket.contribute([0, 0, 0, 0, 0, initializedMarket.getNumTicks()], 1, "")
     assert mockDisputeCrowdsourcer.contributeWasCalled() == True
     assert mockDisputeCrowdsourcer.getContributeParticipant() == bytesToHexString(tester.a0)
     assert mockDisputeCrowdsourcer.getContributeAmount() == 1
 
 
-def test_market_finish_crowdsourcing_dispute_bond_fork(localFixture, initializedMarket, mockDisputeCrowdsourcer, mockNextFeeWindow, mockUniverse):
+def test_market_finish_crowdsourcing_dispute_bond_fork(localFixture, initializedMarket, mockDisputeCrowdsourcer, mockNextDisputeWindow, mockUniverse):
     localFixture.contracts["Time"].setTimestamp(initializedMarket.getEndTime() + 1)
-    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0], False, "", sender=tester.k1)
-    mockNextFeeWindow.setIsActive(True)
+    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=tester.k1)
+    mockNextDisputeWindow.setIsActive(True)
 
     mockUniverse.setDisputeThresholdForFork(200)
     mockDisputeCrowdsourcer.setTotalSupply(1)
     mockDisputeCrowdsourcer.setSize(200)
 
-    assert initializedMarket.contribute([0, 0, 0, 0, initializedMarket.getNumTicks()], False, 1, "")
+    assert initializedMarket.contribute([0, 0, 0, 0, 0, initializedMarket.getNumTicks()], 1, "")
 
     assert mockUniverse.getForkCalled() == False
 
     mockDisputeCrowdsourcer.setTotalSupply(200)
 
-    assert initializedMarket.contribute([0, 0, 0, 0, initializedMarket.getNumTicks()], False, 1, "")
+    assert initializedMarket.contribute([0, 0, 0, 0, 0, initializedMarket.getNumTicks()], 1, "")
 
     assert mockUniverse.getForkCalled() == True
 
-    assert mockUniverse.getOrCreateNextFeeWindowWasCalled() == True
+    assert mockUniverse.getOrCreateNextDisputeWindowWasCalled() == True
 
 def test_market_finalize_fork(localFixture, initializedMarket, mockUniverse):
     with raises(TransactionFailed, message="current market needs to be forking market"):
@@ -148,18 +144,18 @@ def test_market_finalize_fork(localFixture, initializedMarket, mockUniverse):
     assert initializedMarket.getWinningPayoutDistributionHash() == stringToBytes("111")
 
 
-def test_finalize(localFixture, chain, initializedMarket, mockInitialReporter, mockNextFeeWindow, mockUniverse):
+def test_finalize(localFixture, chain, initializedMarket, mockInitialReporter, mockNextDisputeWindow, mockUniverse):
     with raises(TransactionFailed, message="can't finalize without an initial report"):
         initializedMarket.finalize()
 
     localFixture.contracts["Time"].setTimestamp(initializedMarket.getEndTime() + 1)
-    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0], False, "", sender=tester.k1)
+    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=tester.k1)
     mockInitialReporter.setReportTimestamp(1)
 
-    with raises(TransactionFailed, message="can't finalize before the fee window is over"):
+    with raises(TransactionFailed, message="can't finalize before the dispute window is over"):
         initializedMarket.finalize()
 
-    mockNextFeeWindow.setIsOver(True)
+    mockNextDisputeWindow.setIsOver(True)
 
     mockUniverse.setForkingMarket(longToHexString(1))
 
@@ -222,13 +218,13 @@ def localSnapshot(fixture, augurInitializedWithMocksSnapshot):
     mockUniverse = fixture.contracts['MockUniverse']
     mockUniverse.setReputationToken(mockReputationToken.address)
 
-    mockFeeWindow = fixture.contracts['MockFeeWindow']
-    mockFeeWindow.setReputationToken(mockReputationToken.address)
-    mockFeeWindow.setUniverse(mockUniverse.address)
+    mockDisputeWindow = fixture.contracts['MockDisputeWindow']
+    mockDisputeWindow.setReputationToken(mockReputationToken.address)
+    mockDisputeWindow.setUniverse(mockUniverse.address)
 
-    mockNextFeeWindow = fixture.upload('solidity_test_helpers/MockFeeWindow.sol', 'mockNextFeeWindow')
-    mockNextFeeWindow.setReputationToken(mockReputationToken.address)
-    mockNextFeeWindow.setUniverse(mockUniverse.address)
+    mockNextDisputeWindow = fixture.upload('solidity_test_helpers/MockDisputeWindow.sol', 'mockNextDisputeWindow')
+    mockNextDisputeWindow.setReputationToken(mockReputationToken.address)
+    mockNextDisputeWindow.setUniverse(mockUniverse.address)
 
     mockInitialReporterFactory.setInitialReporter(mockInitialReporter.address)
     mockDisputeCrowdsourcerFactory.setDisputeCrowdsourcer(mockDisputeCrowdsourcer.address)
@@ -246,10 +242,10 @@ def localSnapshot(fixture, augurInitializedWithMocksSnapshot):
     mockReputationToken.setBalanceOf(100)
     mockUniverse.setOrCacheTargetReporterGasCosts(15)
     mockUniverse.setOrCacheValidityBond(12)
-    mockUniverse.setNextFeeWindow(mockNextFeeWindow.address)
-    mockFeeWindow.setEndTime(fixture.contracts["Time"].getTimestamp() + constants.DESIGNATED_REPORTING_DURATION_SECONDS())
-    mockNextFeeWindow.setEndTime(mockFeeWindow.getEndTime() + constants.DESIGNATED_REPORTING_DURATION_SECONDS())
-    assert market.initialize(mockUniverse.address, endTime, 16, mockCash.address, tester.a1, tester.a2, 5, numTicks, value=100)
+    mockUniverse.setNextDisputeWindow(mockNextDisputeWindow.address)
+    mockDisputeWindow.setEndTime(fixture.contracts["Time"].getTimestamp() + constants.DESIGNATED_REPORTING_DURATION_SECONDS())
+    mockNextDisputeWindow.setEndTime(mockDisputeWindow.getEndTime() + constants.DESIGNATED_REPORTING_DURATION_SECONDS())
+    assert market.initialize(mockUniverse.address, endTime, 16, tester.a1, tester.a2, 5, numTicks, value=100)
 
     return fixture.createSnapshot()
 
@@ -263,12 +259,12 @@ def mockUniverse(localFixture):
     return localFixture.contracts['MockUniverse']
 
 @fixture
-def mockFeeWindow(localFixture):
-    return localFixture.contracts['MockFeeWindow']
+def mockDisputeWindow(localFixture):
+    return localFixture.contracts['MockDisputeWindow']
 
 @fixture
-def mockNextFeeWindow(localFixture):
-    return localFixture.contracts['mockNextFeeWindow']
+def mockNextDisputeWindow(localFixture):
+    return localFixture.contracts['mockNextDisputeWindow']
 
 @fixture
 def constants(localFixture):

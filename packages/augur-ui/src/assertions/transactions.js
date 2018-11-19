@@ -2,7 +2,7 @@ export default function(transactions) {
   expect(transactions).toBeDefined();
   expect(Array.isArray(transactions)).toBe(true);
 
-  transactions.forEach(transaction => assertTransaction(transactions[0]));
+  transactions.forEach(() => assertTransaction(transactions[0]));
 }
 
 function assertTransaction(transaction) {

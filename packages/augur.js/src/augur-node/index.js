@@ -2,6 +2,7 @@
 
 module.exports = {
   connect: require("./connect"),
+  disconnect: require("./disconnect"),
   getContractAddresses: require("./get-sync-data"),
   getSyncData: require("./get-sync-data"),
   submitRequest: require("./submit-json-rpc-request"),

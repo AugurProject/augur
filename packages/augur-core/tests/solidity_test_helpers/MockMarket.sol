@@ -11,8 +11,8 @@ contract MockMarket is IMarket {
     bool private designatedReportValue;
     bytes32 private derivePayoutDistributionHashValue;
     bytes32 private updateDerivePayoutDistributionHashValue;
-    IFeeWindow private feeWindow;
-    IFeeWindow private setMigrateDueToNoReportsNextStateValue;
+    IDisputeWindow private disputeWindow;
+    IDisputeWindow private setMigrateDueToNoReportsNextStateValue;
     uint256 private numberOfOutcomes;
     uint256 private numTicks;
     ICash private denominationToken;
@@ -40,7 +40,6 @@ contract MockMarket is IMarket {
     uint256 private initializeNumOutcomesValue;
     uint256 private initializeNumTicksValue;
     uint256 private initializeFeePerEthInAttoEthValue;
-    ICash private initializeCashValue;
     address private initializeCreatorValue;
     address private initializeDesignatedReporterAddressValue;
     IMailbox private setMarketCreatorMailbox;
@@ -61,8 +60,8 @@ contract MockMarket is IMarket {
         derivePayoutDistributionHashValue = _derivePayoutDistributionHashValue;
     }
 
-    function setFeeWindow(IFeeWindow _feeWindow) public {
-        feeWindow = _feeWindow;
+    function setDisputeWindow(IDisputeWindow _disputeWindow) public {
+        disputeWindow = _disputeWindow;
     }
 
     function setNumberOfOutcomes(uint256 _numberOfOutcomes) public {
@@ -177,10 +176,6 @@ contract MockMarket is IMarket {
         return initializeFeePerEthInAttoEthValue;
     }
 
-    function getInitializeCashValue() public view returns(ICash) {
-        return initializeCashValue;
-    }
-
     function getInitializeCreatorValue() public returns(address) {
         return initializeCreatorValue;
     }
@@ -193,8 +188,8 @@ contract MockMarket is IMarket {
         return updateDerivePayoutDistributionHashValue;
     }
 
-    function setMigrateDueToNoReportsNextState(IFeeWindow _feeWindow) public {
-        setMigrateDueToNoReportsNextStateValue = _feeWindow;
+    function setMigrateDueToNoReportsNextState(IDisputeWindow _disputeWindow) public {
+        setMigrateDueToNoReportsNextStateValue = _disputeWindow;
     }
 
     function callTrustedMarketTransfer(IReputationToken _reputationToken, address _source, address _destination, uint256 _attotokens) public returns (bool) {
@@ -205,8 +200,8 @@ contract MockMarket is IMarket {
         setMarketCreatorMailbox = _setMarketCreatorMailbox;
     }
 
-    function callOnMarketFinalized(IFeeWindow _feeWindow) public returns(bool) {
-        return _feeWindow.onMarketFinalized();
+    function callOnMarketFinalized(IDisputeWindow _disputeWindow) public returns(bool) {
+        return _disputeWindow.onMarketFinalized();
     }
 
     /*
@@ -224,13 +219,12 @@ contract MockMarket is IMarket {
         return "Market";
     }
 
-    function initialize(IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, ICash _cash, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public payable returns (bool _success) {
+    function initialize(IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public payable returns (bool _success) {
         initializeUniverseValue = _universe;
         initializeEndTime = _endTime;
         initializeNumOutcomesValue = _numOutcomes;
         initializeNumTicksValue = _numTicks;
         initializeFeePerEthInAttoEthValue = _feePerEthInAttoEth;
-        initializeCashValue = _cash;
         initializeCreatorValue = _creator;
         initializeDesignatedReporterAddressValue = _designatedReporterAddress;
         return true;
@@ -241,7 +235,7 @@ contract MockMarket is IMarket {
         return true;
     }
 
-    function derivePayoutDistributionHash(uint256[] _payoutNumerators, bool _invalid) public view returns (bytes32) {
+    function derivePayoutDistributionHash(uint256[] _payoutNumerators) public view returns (bytes32) {
         return derivePayoutDistributionHashValue;
     }
 
@@ -253,8 +247,8 @@ contract MockMarket is IMarket {
         return universe;
     }
 
-    function getFeeWindow() public view returns (IFeeWindow) {
-        return feeWindow;
+    function getDisputeWindow() public view returns (IDisputeWindow) {
+        return disputeWindow;
     }
 
     function getNumberOfOutcomes() public view returns (uint256) {
@@ -331,7 +325,7 @@ contract MockMarket is IMarket {
 
     function migrateDueToNoReports() public returns (bool) {
         // :TODO, some reason this doesn't work. figure out how to move state
-        // setFeeWindow(setMigrateDueToNoReportsNextStateValue);
+        // setDisputeWindow(setMigrateDueToNoReportsNextStateValue);
         return migrateDueToNoRep;
     }
 

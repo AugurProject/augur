@@ -6,7 +6,7 @@ import 'libraries/token/ERC20.sol';
 import 'factories/UniverseFactory.sol';
 import 'reporting/IUniverse.sol';
 import 'reporting/IMarket.sol';
-import 'reporting/IFeeWindow.sol';
+import 'reporting/IDisputeWindow.sol';
 import 'reporting/IReputationToken.sol';
 import 'reporting/IReportingParticipant.sol';
 import 'reporting/IDisputeCrowdsourcer.sol';
@@ -31,8 +31,8 @@ contract Augur is Controlled, IAugur {
     }
 
     event MarketCreated(bytes32 indexed topic, string description, string extraInfo, address indexed universe, address market, address indexed marketCreator, bytes32[] outcomes, uint256 marketCreationFee, int256 minPrice, int256 maxPrice, IMarket.MarketType marketType);
-    event InitialReportSubmitted(address indexed universe, address indexed reporter, address indexed market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, bool invalid, string description);
-    event DisputeCrowdsourcerCreated(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size, bool invalid);
+    event InitialReportSubmitted(address indexed universe, address indexed reporter, address indexed market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description);
+    event DisputeCrowdsourcerCreated(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size);
     event DisputeCrowdsourcerContribution(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountStaked, string description);
     event DisputeCrowdsourcerCompleted(address indexed universe, address indexed market, address disputeCrowdsourcer);
     event InitialReporterRedeemed(address indexed universe, address indexed reporter, address indexed market, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators);
@@ -42,7 +42,7 @@ contract Augur is Controlled, IAugur {
     event MarketFinalized(address indexed universe, address indexed market);
     event MarketMigrated(address indexed market, address indexed originalUniverse, address indexed newUniverse);
     event UniverseForked(address indexed universe);
-    event UniverseCreated(address indexed parentUniverse, address indexed childUniverse, uint256[] payoutNumerators, bool invalid);
+    event UniverseCreated(address indexed parentUniverse, address indexed childUniverse, uint256[] payoutNumerators);
     event OrderCanceled(address indexed universe, address indexed shareToken, address indexed sender, bytes32 orderId, Order.Types orderType, uint256 tokenRefund, uint256 sharesRefund);
     // The ordering here is to match functions higher in the call chain to avoid stack depth issues
     event OrderCreated(Order.Types orderType, uint256 amount, uint256 price, address indexed creator, uint256 moneyEscrowed, uint256 sharesEscrowed, bytes32 tradeGroupId, bytes32 orderId, address indexed universe, address indexed shareToken);
@@ -53,7 +53,7 @@ contract Augur is Controlled, IAugur {
     event TokensTransferred(address indexed universe, address indexed token, address indexed from, address to, uint256 value, TokenType tokenType, address market);
     event TokensMinted(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market);
     event TokensBurned(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market);
-    event FeeWindowCreated(address indexed universe, address feeWindow, uint256 startTime, uint256 endTime, uint256 id);
+    event DisputeWindowCreated(address indexed universe, address disputeWindow, uint256 startTime, uint256 endTime, uint256 id);
     event InitialReporterTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketMailboxTransferred(address indexed universe, address indexed market, address indexed mailbox, address from, address to);
@@ -70,20 +70,20 @@ contract Augur is Controlled, IAugur {
     //
 
     function createGenesisUniverse() public returns (IUniverse) {
-        return createUniverse(IUniverse(0), bytes32(0), new uint256[](0), false);
+        return createUniverse(IUniverse(0), bytes32(0), new uint256[](0));
     }
 
-    function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] _parentPayoutNumerators, bool _parentInvalid) public returns (IUniverse) {
+    function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] _parentPayoutNumerators) public returns (IUniverse) {
         IUniverse _parentUniverse = IUniverse(msg.sender);
         require(isKnownUniverse(_parentUniverse));
-        return createUniverse(_parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators, _parentInvalid);
+        return createUniverse(_parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators);
     }
 
-    function createUniverse(IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] _parentPayoutNumerators, bool _parentInvalid) private returns (IUniverse) {
+    function createUniverse(IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] _parentPayoutNumerators) private returns (IUniverse) {
         UniverseFactory _universeFactory = UniverseFactory(controller.lookup("UniverseFactory"));
         IUniverse _newUniverse = _universeFactory.createUniverse(controller, _parentUniverse, _parentPayoutDistributionHash);
         universes[_newUniverse] = true;
-        emit UniverseCreated(_parentUniverse, _newUniverse, _parentPayoutNumerators, _parentInvalid);
+        emit UniverseCreated(_parentUniverse, _newUniverse, _parentPayoutNumerators);
         return _newUniverse;
     }
 
@@ -99,11 +99,11 @@ contract Augur is Controlled, IAugur {
         return crowdsourcers[_crowdsourcer];
     }
 
-    function disputeCrowdsourcerCreated(IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size, bool _invalid) public returns (bool) {
+    function disputeCrowdsourcerCreated(IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size) public returns (bool) {
         require(isKnownUniverse(_universe));
         require(_universe.isContainerForMarket(IMarket(msg.sender)));
         crowdsourcers[_disputeCrowdsourcer] = true;
-        emit DisputeCrowdsourcerCreated(_universe, _market, _disputeCrowdsourcer, _payoutNumerators, _size, _invalid);
+        emit DisputeCrowdsourcerCreated(_universe, _market, _disputeCrowdsourcer, _payoutNumerators, _size);
         return true;
     }
 
@@ -173,10 +173,10 @@ contract Augur is Controlled, IAugur {
         return true;
     }
 
-    function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, bool _invalid, string _description) public returns (bool) {
+    function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string _description) public returns (bool) {
         require(isKnownUniverse(_universe));
         require(_universe.isContainerForMarket(IMarket(msg.sender)));
-        emit InitialReportSubmitted(_universe, _reporter, _market, _amountStaked, _isDesignatedReporter, _payoutNumerators, _invalid, _description);
+        emit InitialReportSubmitted(_universe, _reporter, _market, _amountStaked, _isDesignatedReporter, _payoutNumerators, _description);
         return true;
     }
 
@@ -337,9 +337,9 @@ contract Augur is Controlled, IAugur {
         return true;
     }
 
-    function logFeeWindowCreated(IFeeWindow _feeWindow, uint256 _id) public returns (bool) {
+    function logDisputeWindowCreated(IDisputeWindow _disputeWindow, uint256 _id) public returns (bool) {
         require(universes[msg.sender]);
-        emit FeeWindowCreated(msg.sender, _feeWindow, _feeWindow.getStartTime(), _feeWindow.getEndTime(), _id);
+        emit DisputeWindowCreated(msg.sender, _disputeWindow, _disputeWindow.getStartTime(), _disputeWindow.getEndTime(), _id);
         return true;
     }
 

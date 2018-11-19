@@ -5,7 +5,7 @@ import 'Controlled.sol';
 import 'libraries/token/ERC20.sol';
 import 'reporting/IUniverse.sol';
 import 'reporting/IMarket.sol';
-import 'reporting/IFeeWindow.sol';
+import 'reporting/IDisputeWindow.sol';
 import 'reporting/IReputationToken.sol';
 import 'trading/IShareToken.sol';
 import 'trading/Order.sol';
@@ -67,7 +67,7 @@ contract MockAugur is Controlled {
         return true;
     }
 
-    function logFeeWindowRedeemed(IUniverse _universe, address _reporter, uint256 _amountRedeemed, uint256 _reportingFeesReceived) public returns (bool) {
+    function logDisputeWindowRedeemed(IUniverse _universe, address _reporter, uint256 _amountRedeemed, uint256 _reportingFeesReceived) public returns (bool) {
         return true;
     }
 
@@ -101,7 +101,7 @@ contract MockAugur is Controlled {
         return true;
     }
 
-    function disputeCrowdsourcerCreated(IUniverse _universe, IMarket _market, IDisputeCrowdsourcer _crowdsourcer, uint256[] _payoutNumerators, uint256 _size, bool _invalid) public returns (bool) {
+    function disputeCrowdsourcerCreated(IUniverse _universe, IMarket _market, IDisputeCrowdsourcer _crowdsourcer, uint256[] _payoutNumerators, uint256 _size) public returns (bool) {
         return true;
     }
 
@@ -141,11 +141,11 @@ contract MockAugur is Controlled {
         return true;
     }
 
-    function logFeeWindowBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
+    function logDisputeWindowBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
         return true;
     }
 
-    function logFeeWindowMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
+    function logDisputeWindowMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
         return true;
     }
 
@@ -162,12 +162,12 @@ contract MockAugur is Controlled {
 
     function logUniverseCreatedCalled() public returns(bool) { return logUniverseCreatedCalledValue;}
 
-    function logUniverseCreated(IUniverse _childUniverse, uint256[] _payoutNumerators, bool _invalid) public returns (bool) {
+    function logUniverseCreated(IUniverse _childUniverse, uint256[] _payoutNumerators) public returns (bool) {
         logUniverseCreatedCalledValue = true;
         return true;
     }
 
-    function logFeeWindowsTransferred(IUniverse _universe, address _from, address _to, uint256 _value) public returns (bool) {
+    function logDisputeWindowsTransferred(IUniverse _universe, address _from, address _to, uint256 _value) public returns (bool) {
         return true;
     }
 
@@ -184,15 +184,15 @@ contract MockAugur is Controlled {
         return true;
     }
 
-    function logFeeWindowCreated(IFeeWindow _feeWindow, uint256 _id) public returns (bool) {
+    function logDisputeWindowCreated(IDisputeWindow _disputeWindow, uint256 _id) public returns (bool) {
         return true;
     }
 
-    function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, bool _invalid, string description) public returns (bool) {
+    function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string description) public returns (bool) {
         return true;
     }
 
-    function logDisputeCrowdsourcerCreated(IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size, bool _invalid) public returns (bool) {
+    function logDisputeCrowdsourcerCreated(IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size) public returns (bool) {
         return true;
     }
 

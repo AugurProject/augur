@@ -1,4 +1,3 @@
-import { stub } from "sinon";
 import configureMockStore from "redux-mock-store";
 
 import thunk from "redux-thunk";
@@ -27,7 +26,6 @@ describe("loadReporting action", () => {
 
   let mockStore;
   let store;
-  let submitRequestStub;
 
   beforeAll(() => {
     mockStore = configureMockStore([thunk]);

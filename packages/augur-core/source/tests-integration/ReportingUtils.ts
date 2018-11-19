@@ -25,17 +25,17 @@ export class ReportingUtils {
             await fixture.setTimestamp(marketDesignatedReportingEndTime.add(new BN(1)));
         }
 
-        const feeWindowAddress = await market.getFeeWindow_();
+        const disputeWindowAddress = await market.getDisputeWindow_();
 
         const numberOfOutcomes = await market.getNumberOfOutcomes_();
         const numTicks = await market.getNumTicks_();
         let payoutNumerators = new Array(numberOfOutcomes.toNumber()).fill(new BN(0));
-        payoutNumerators[0] = numTicks;
+        payoutNumerators[1] = numTicks;
 
         let winningPayoutHash = "";
-        if (feeWindowAddress === ZERO_ADDRESS) {
-            await market.doInitialReport(payoutNumerators, false, "");
-            expect(await market.getFeeWindow_() === ZERO_ADDRESS).to.be.false;
+        if (disputeWindowAddress === ZERO_ADDRESS) {
+            await market.doInitialReport(payoutNumerators, "");
+            expect(await market.getDisputeWindow_() === ZERO_ADDRESS).to.be.false;
             console.log("Submitted initial report");
 
             // Buy and sell complete sets to generate reporting fees
@@ -60,37 +60,37 @@ export class ReportingUtils {
             numOwnedSharesBefore = await fixture.getNumSharesInMarket(market, outcome);
             console.log("numOwnedShares after selling complete set", numOwnedSharesBefore.toString(10));
         } else {
-            const feeWindow = await fixture.getFeeWindow(market);
-            const feeWindowStartTime = await feeWindow.getStartTime_();
-            await fixture.setTimestamp(feeWindowStartTime.add(new BN(1)));
+            const disputeWindow = await fixture.getDisputeWindow(market);
+            const disputeWindowStartTime = await disputeWindow.getStartTime_();
+            await fixture.setTimestamp(disputeWindowStartTime.add(new BN(1)));
             // This will also use the InitialReporter which is not a DisputeCrowdsourcer, but has the called function from abstract inheritance
             const winningReport = await fixture.getWinningReportingParticipant(market);
             winningPayoutHash = await winningReport.getPayoutDistributionHash_();
 
-            let chosenPayoutNumerators = [];
+            let chosenPayoutNumerators = new Array(numberOfOutcomes.toNumber()).fill(new BN(0));
+            chosenPayoutNumerators[1] = numTicks;
             if (randomPayoutNumerators) {
-                chosenPayoutNumerators = new Array(numberOfOutcomes).fill(new BN(0));
-                // Set chosenPayoutNumerators[0] to number >= 0 and <= numTicks
-                chosenPayoutNumerators[0] = new BN(Math.floor(Math.random() * Math.floor(numTicks.toNumber() + 1)));
-                chosenPayoutNumerators[1] = numTicks.sub(chosenPayoutNumerators[0]);
+                // Set chosenPayoutNumerators[1] to number >= 0 and <= numTicks
+                chosenPayoutNumerators[1] = new BN(Math.floor(Math.random() * Math.floor(numTicks.toNumber() + 1)));
+                chosenPayoutNumerators[2] = numTicks.sub(chosenPayoutNumerators[1]);
             } else {
-                const firstReportWinning = await market.derivePayoutDistributionHash_(payoutNumerators, false) === winningPayoutHash;
-                chosenPayoutNumerators = payoutNumerators;
+                const firstReportWinning = await market.derivePayoutDistributionHash_(payoutNumerators) === winningPayoutHash;
                 if (firstReportWinning) {
-                    payoutNumerators.reverse();
+                    chosenPayoutNumerators[1] = new BN(0);
+                    chosenPayoutNumerators[2] = numTicks;
                 }
             }
 
-            const chosenPayoutHash = await market.derivePayoutDistributionHash_(chosenPayoutNumerators, false);
+            console.log("Reporting with payout numerators: ", chosenPayoutNumerators);
+            const chosenPayoutHash = await market.derivePayoutDistributionHash_(chosenPayoutNumerators);
             const participantStake = await market.getParticipantStake_();
             const stakeInOutcome = await market.getStakeInOutcome_(chosenPayoutHash);
             const amount = participantStake.mul(new BN(2)).sub(stakeInOutcome.mul(new BN(3)));
-            await fixture.contribute(market, chosenPayoutNumerators, false, amount);
+            await fixture.contribute(market, chosenPayoutNumerators, amount);
             console.log("Staked", amount.toString(10));
-            console.log("Payout numerators", chosenPayoutNumerators);
             const forkingMarket = await market.getForkingMarket_();
-            const marketFeeWindow = await market.getFeeWindow_();
-            expect(forkingMarket !== ZERO_ADDRESS || marketFeeWindow !== feeWindowAddress).to.be.true;
+            const marketDisputeWindow = await market.getDisputeWindow_();
+            expect(forkingMarket !== ZERO_ADDRESS || marketDisputeWindow !== disputeWindowAddress).to.be.true;
         }
 
         if (doGenerateFees) {
@@ -98,9 +98,9 @@ export class ReportingUtils {
         }
 
         if (moveTimeForward) {
-            let feeWindow = await fixture.getFeeWindow(market);
-            let feeWindowStartTime = await feeWindow.getStartTime_();
-            await fixture.setTimestamp(feeWindowStartTime.add(new BN(1)));
+            let disputeWindow = await fixture.getDisputeWindow(market);
+            let disputeWindowStartTime = await disputeWindow.getStartTime_();
+            await fixture.setTimestamp(disputeWindowStartTime.add(new BN(1)));
         }
     }
 

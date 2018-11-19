@@ -17,43 +17,47 @@ def proceedToNextRound(fixture, market, contributor = tester.k0, doGenerateFees 
     if fixture.contracts["Controller"].getTimestamp() < market.getEndTime():
         fixture.contracts["Time"].setTimestamp(market.getDesignatedReportingEndTime() + 1)
 
-    feeWindow = market.getFeeWindow()
+    disputeWindow = market.getDisputeWindow()
 
     payoutNumerators = [0] * market.getNumberOfOutcomes()
-    payoutNumerators[0] = market.getNumTicks()
+    payoutNumerators[1] = market.getNumTicks()
 
-    if (feeWindow == longToHexString(0)):
-        market.doInitialReport(payoutNumerators, False, "")
-        assert market.getFeeWindow()
+    if (disputeWindow == longToHexString(0)):
+        market.doInitialReport(payoutNumerators, "")
+        assert market.getDisputeWindow()
     else:
-        feeWindow = fixture.applySignature('FeeWindow', market.getFeeWindow())
+        disputeWindow = fixture.applySignature('DisputeWindow', market.getDisputeWindow())
         if market.getDisputePacingOn():
-            fixture.contracts["Time"].setTimestamp(feeWindow.getStartTime() + 1)
+            fixture.contracts["Time"].setTimestamp(disputeWindow.getStartTime() + 1)
         # This will also use the InitialReporter which is not a DisputeCrowdsourcer, but has the called function from abstract inheritance
         winningReport = fixture.applySignature('DisputeCrowdsourcer', market.getWinningReportingParticipant())
         winningPayoutHash = winningReport.getPayoutDistributionHash()
 
-        if (randomPayoutNumerators):
-            chosenPayoutNumerators = [0] * market.getNumberOfOutcomes()
-            chosenPayoutNumerators[0] = randint(0, market.getNumTicks())
-            chosenPayoutNumerators[1] = market.getNumTicks() - chosenPayoutNumerators[0]
-        else:
-            firstReportWinning = market.derivePayoutDistributionHash(payoutNumerators, False) == winningPayoutHash
-            chosenPayoutNumerators = payoutNumerators if not firstReportWinning else payoutNumerators[::-1]
+        chosenPayoutNumerators = [0] * market.getNumberOfOutcomes()
+        chosenPayoutNumerators[1] = market.getNumTicks()
 
-        chosenPayoutHash = market.derivePayoutDistributionHash(chosenPayoutNumerators, False)
+        if (randomPayoutNumerators):
+            chosenPayoutNumerators[1] = randint(0, market.getNumTicks())
+            chosenPayoutNumerators[2] = market.getNumTicks() - chosenPayoutNumerators[1]
+        else:
+            firstReportWinning = market.derivePayoutDistributionHash(payoutNumerators) == winningPayoutHash
+            if firstReportWinning:
+                chosenPayoutNumerators[1] = 0
+                chosenPayoutNumerators[2] = market.getNumTicks()
+
+        chosenPayoutHash = market.derivePayoutDistributionHash(chosenPayoutNumerators)
         amount = 2 * market.getParticipantStake() - 3 * market.getStakeInOutcome(chosenPayoutHash)
         with PrintGasUsed(fixture, "Contribute:", 0):
-            market.contribute(chosenPayoutNumerators, False, amount, description, sender=contributor)
-        assert market.getForkingMarket() or market.getFeeWindow() != feeWindow
+            market.contribute(chosenPayoutNumerators, amount, description, sender=contributor)
+        assert market.getForkingMarket() or market.getDisputeWindow() != disputeWindow
 
     if (doGenerateFees):
         universe = fixture.applySignature("Universe", market.getUniverse())
         generateFees(fixture, universe, market)
 
     if (moveTimeForward):
-        feeWindow = fixture.applySignature('FeeWindow', market.getFeeWindow())
-        fixture.contracts["Time"].setTimestamp(feeWindow.getStartTime() + 1)
+        disputeWindow = fixture.applySignature('DisputeWindow', market.getDisputeWindow())
+        fixture.contracts["Time"].setTimestamp(disputeWindow.getStartTime() + 1)
 
 def proceedToFork(fixture, market, universe):
     while (market.getForkingMarket() == longToHexString(0)):
@@ -68,10 +72,11 @@ def finalizeFork(fixture, market, universe, finalizeByMigration = True):
 
     # The universe forks and there is now a universe where NO and YES are the respective outcomes of each
     noPayoutNumerators = [0] * market.getNumberOfOutcomes()
-    noPayoutNumerators[0] = market.getNumTicks()
-    yesPayoutNumerators = noPayoutNumerators[::-1]
-    noUniverse =  fixture.applySignature('Universe', universe.createChildUniverse(noPayoutNumerators, False))
-    yesUniverse =  fixture.applySignature('Universe', universe.createChildUniverse(yesPayoutNumerators, False))
+    noPayoutNumerators[1] = market.getNumTicks()
+    yesPayoutNumerators = [0] * market.getNumberOfOutcomes()
+    yesPayoutNumerators[2] = market.getNumTicks()
+    noUniverse =  fixture.applySignature('Universe', universe.createChildUniverse(noPayoutNumerators))
+    yesUniverse =  fixture.applySignature('Universe', universe.createChildUniverse(yesPayoutNumerators))
     noUniverseReputationToken = fixture.applySignature('ReputationToken', noUniverse.getReputationToken())
     yesUniverseReputationToken = fixture.applySignature('ReputationToken', yesUniverse.getReputationToken())
     assert noUniverse.address != universe.address
