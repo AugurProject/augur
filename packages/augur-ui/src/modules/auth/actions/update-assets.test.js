@@ -162,6 +162,21 @@ describe("modules/auth/actions/update-assets.js", () => {
     const callbackTests = asset => {
       t.asset = asset;
 
+      beforeEach(() => {
+        updateLoginAccountSpy = jest
+          .spyOn(updateLoginAccountModule, "updateLoginAccount")
+          .mockImplementation(() => ({
+            type: "updateLoginAccount"
+          }));
+      });
+
+      afterEach(() => {
+        ethGetBalanceSpy.mockReset();
+        reputationTokenSpy.mockReset();
+        balanceOfSpy.mockReset();
+        updateLoginAccountSpy.mockReset();
+      });
+
       describe(`${asset}`, () => {
         test("should dispatch 'updateLoginAccount' if value is not present", done => {
           const store = mockStore({
