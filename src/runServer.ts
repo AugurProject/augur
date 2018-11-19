@@ -15,6 +15,8 @@ const databaseDir = process.env.AUGUR_DATABASE_DIR;
 // head, such that augur.js (and augur-node) are ignorant of requests
 // that eventually succeed after N retries (where N < maxRetries).
 const maxRetries = process.env.MAX_REQUEST_RETRIES || 3; // default maxRetries to 3, because certain Ethereum RPC servers may frequently return transient errors and require non-zero ethrpc maxRetries to function sanely. Eg.  `geth --syncmode=light` frequently returns result "0x", signifying no data, for requests which should have data. Note that augur-app bypasses this entrypoint and has its own default for MAX_REQUEST_RETRIES.
+
+const maxSystemRetries = process.env.MAX_SYSTEM_RETRIES || "3";
 const propagationDelayWaitMillis = process.env.DELAY_WAIT_MILLIS;
 const networkConfig = NetworkConfiguration.create(networkName, false);
 
