@@ -1,33 +1,4 @@
 import configureMockStore from "redux-mock-store";
-import thunk from "redux-thunk";
-
-import * as useUnlockedAccountModule from "modules/auth/actions/use-unlocked-account";
-
-import * as updateIsLoggedAndLoadAccountDataModule from "modules/auth/actions/update-is-logged-and-load-account-data";
-import * as isGlobalWeb3Module from "modules/auth/helpers/is-global-web3";
-import { augur } from "services/augurjs";
-
-const MOCK_ERROR = { error: 42, message: "fail!" };
-
-jest.mock("services/augurjs", () => ({
-  augur: {
-    rpc: {
-      constants: {
-        ACCOUNT_TYPES: {
-          UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
-          META_MASK: "metaMask"
-        }
-      },
-      isUnlocked: () => {}
-    }
-  }
-}));
-jest.mock("modules/auth/actions/update-is-logged-and-load-account-data");
-
-describe(`modules/auth/actions/use-unlocked-account.js`, () => {
-  const mockStore = configureMockStore([thunk]);
-
-  const t1 = {
     description: "no address",
     params: {
       unlockedAddress: undefined

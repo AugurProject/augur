@@ -1,8 +1,6 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
-
 import * as updateLoginAccountModule from "modules/auth/actions/update-login-account";
-
 import * as updateContractApiModule from "modules/contracts/actions/update-contract-api";
 
 describe(`modules/auth/actions/update-login-account.js`, () => {

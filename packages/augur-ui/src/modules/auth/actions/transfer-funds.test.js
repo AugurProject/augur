@@ -1,8 +1,6 @@
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
-
 import { transferFunds } from "modules/auth/actions/transfer-funds";
-
 import { ETH, REP } from "modules/account/constants/asset-types";
 import { augur } from "services/augurjs";
 import * as updateAssetsModule from "modules/auth/actions/update-assets";
@@ -24,13 +22,9 @@ describe("modules/auth/actions/transfer-funds.js", () => {
     },
     assertions: (done, store) => {
       const origConErr = console.error;
-
       console.error = jest.fn();
-
       store.dispatch(transferFunds(10, "to-default", "0xtest2"));
-
       expect(console.error).toHaveBeenCalledTimes(1);
-
       console.error = origConErr;
       done();
     }
@@ -70,11 +64,8 @@ describe("modules/auth/actions/transfer-funds.js", () => {
       const sendReputationSpy = jest
         .spyOn(augur.assets, "sendReputation")
         .mockImplementation(() => jest.fn());
-
       store.dispatch(transferFunds(10, REP, "0xtest2"));
-
       expect(sendReputationSpy).toHaveBeenCalledTimes(1);
-
       done();
     }
   };
@@ -109,11 +100,8 @@ describe("modules/auth/actions/transfer-funds.js", () => {
       jest.spyOn(augur.assets, "sendEther").mockImplementation(options => {
         options.onSuccess({ hash: "0xtest" });
       });
-
       store.dispatch(transferFunds(10, ETH, "0xtest2"));
-
       expect(updateNotificationSpy).toHaveBeenCalledTimes(1);
-
       done();
     }
   };
