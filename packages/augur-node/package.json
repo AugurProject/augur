@@ -57,7 +57,7 @@
   },
   "homepage": "https://github.com/AugurProject/augur-node#readme",
   "dependencies": {
-    "@types/async": "2.0.43",
+    "@types/async": "2.0.50",
     "@types/express": "4.11.0",
     "@types/helmet": "0.0.40",
     "@types/lodash": "4.14.105",
@@ -65,7 +65,7 @@
     "@types/sqlite3": "3.1.1",
     "@types/uuid": "3.4.3",
     "@types/ws": "3.0.2",
-    "async": "2.6.0",
+    "async": "2.6.1",
     "augur.js": "6.0.0-0",
     "augur-artifacts": "6.0.0-0",
     "bignumber.js": "6.0.0",
