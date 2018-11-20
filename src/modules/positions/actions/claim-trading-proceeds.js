@@ -23,6 +23,7 @@ const claimTradingProceeds = (marketId, callback = logError) => (
     onSuccess: () => {
       dispatch(getWinningBalance([marketId]));
       dispatch(loadMarketsInfo([marketId]));
+      callback();
     },
     onFailed: err => callback(err)
   });

@@ -45,7 +45,8 @@ export default class MarketPortfolioCard extends Component {
       tableOpen: {
         myPositions: positionsDefault,
         openOrders: orphanedOrders.length > 0 // open if orphaned orders are present
-      }
+      },
+      claimClicked: false
     };
   }
 
@@ -71,7 +72,10 @@ export default class MarketPortfolioCard extends Component {
 
   claimProceeds = () => {
     const { claimTradingProceeds, market } = this.props;
-    claimTradingProceeds(market.id);
+    this.setState({ claimClicked: true });
+    claimTradingProceeds(market.id, () => {
+      this.setState({ claimClicked: false });
+    });
   };
 
   render() {
@@ -83,7 +87,7 @@ export default class MarketPortfolioCard extends Component {
       orphanedOrders,
       cancelOrphanedOrder
     } = this.props;
-    const { tableOpen } = this.state;
+    const { tableOpen, claimClicked } = this.state;
     const myPositionsSummary = getValue(market, "myPositionsSummary");
     const myPositionOutcomes = getValue(market, "outcomes");
 
@@ -397,6 +401,7 @@ export default class MarketPortfolioCard extends Component {
               finalizationTime={market.finalizationTime}
               currentTimestamp={currentTimestamp}
               marketId={market.id}
+              claimClicked={linkType === TYPE_CLAIM_PROCEEDS && claimClicked}
             />
           )}
       </article>
