@@ -7,13 +7,13 @@ ADDRESSES="../augur-artifacts/addresses.json"
 BLOCKS="../augur-artifacts/upload-block-numbers.json"
 
 echo "processing $IMAGE $ADDRESSES"
-docker run --rm --entrypoint cat $IMAGE augur/packages/augur-tools/addresses.json > $TEMP1
-node docker-builder/scripts/merge-json-files -p $ADDRESSES -s $TEMP1 -o $ADD_TEMP2
+docker run --rm --entrypoint cat $IMAGE augur/packages/augur-artifacts/addresses.json > $TEMP1
+node scripts/merge-json-files -p $ADDRESSES -s $TEMP1 -o $ADD_TEMP2
 ADD_RESULT_CODE=$?
 
 echo "processing $IMAGE $BLOCKS"
-docker run --rm --entrypoint cat $IMAGE augur/packages/augur-tools/upload-block-numbers.json > $TEMP1
-node docker-builder/scripts/merge-json-files -p $BLOCKS -s $TEMP1 -o $BLOCK_TEMP2
+docker run --rm --entrypoint cat $IMAGE augur/packages/augur-artifacts/upload-block-numbers.json > $TEMP1
+node scripts/merge-json-files -p $BLOCKS -s $TEMP1 -o $BLOCK_TEMP2
 ADD_BLOCK_CODE=$?
 
 if [ $ADD_RESULT_CODE -eq 1 ]; then

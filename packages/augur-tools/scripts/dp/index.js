@@ -164,7 +164,7 @@ function help() {
 
 function runCannedData(command, networks, callback) {
   var deployerConfiguration = core.DeployerConfiguration.create(
-    path.join(__dirname, "../../../augur-artifacts")
+    path.join(__dirname, "../../../augur-artifacts/")
   );
   var networkConfigurations = networks.map(core.NetworkConfiguration.create);
   // This is done in two steps on purpose, create validates the envs and will throw an error
@@ -255,7 +255,7 @@ function runCannedData(command, networks, callback) {
                 setTimeout(function() {
                   repFaucet(augur, 100000, auth, function(err) {
                     if (err) return callback(err);
-                    // createMarkets(augur, auth, callback);
+                    createMarkets(augur, auth, callback);
                     callback();
                   });
                 }, 4000);

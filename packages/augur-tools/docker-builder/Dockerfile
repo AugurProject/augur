@@ -32,11 +32,11 @@ RUN apk update \
 
 COPY --from=builder /augur augur
 COPY --from=core-builder /app/output augur/packages/augur-core/output
+
+RUN echo {} > /augur/packages/augur-artifacts/addresses.json \
+  && echo {} > /augur/packages/augur-artifacts/upload-block-numbers.json
+
 WORKDIR /augur/packages/augur-tools
-
-RUN echo {} > addresses.json \
-  && echo {} > upload-block-numbers.json
-
 RUN bash docker-builder/run-geth-and-deploy.sh && rm -rf node_modules
 
 EXPOSE 8545 8546 30303 30303/udp 30304/udp

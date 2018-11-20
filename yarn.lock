@@ -3278,29 +3278,6 @@ augur-core@1.2.0-0:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur.js@6.0.0-0:
-  version "6.0.1"
-  dependencies:
-    async "2.6.1"
-    augur-artifacts "6.0.0-0"
-    bignumber.js "6.0.0"
-    clone "2.1.1"
-    columnify "1.5.4"
-    ethereumjs-blockstream "4.0.1"
-    ethrpc "^6.0.0"
-    event-emitter "0.3.5"
-    immutable-delete "1.1.0"
-    keccak "1.2.0"
-    lodash "4.17.10"
-    options-parser "0.4.0"
-    parrotsay-api "0.1.1"
-    rimraf "2.6.2"
-    secp256k1 "3.5.0"
-    secure-random "1.1.1"
-    speedomatic "2.1.5"
-    uuid "3.3.2"
-    uuid-parse "1.0.0"
-
 autoprefixer@7.1.6:
   version "7.1.6"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-7.1.6.tgz#fb933039f74af74a83e71225ce78d9fd58ba84d7"
