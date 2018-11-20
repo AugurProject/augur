@@ -35,7 +35,7 @@ fs.readFile(dockerRunFile, fileType, function(err, content) {
   }
   const existing = JSON.parse(content);
   existing[imageName] = imageId;
-  const result = JSON.stringify(existing);
+  const result = JSON.stringify(existing, null, " ");
   fs.writeFile(dockerRunFile, result, function(err) {
     errorOccurred(err);
     process.exit(0);
