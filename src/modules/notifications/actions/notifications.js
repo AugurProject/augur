@@ -12,6 +12,23 @@ export const REMOVE_NOTIFICATION = "REMOVE_NOTIFICATION";
 export const UPDATE_NOTIFICATION = "UPDATE_NOTIFICATION";
 export const CLEAR_NOTIFICATIONS = "CLEAR_NOTIFICATIONS";
 
+function packageNotificationInfo(notificationId, timestamp, transaction) {
+  return {
+    id: notificationId,
+    timestamp,
+    status: "Confirmed",
+    linkPath: makePath(TRANSACTIONS),
+    seen: false,
+    log: {
+      price: transaction && transaction.price,
+      outcome: transaction && transaction.outcome,
+      amount: transaction && transaction.amount,
+      marketId: transaction && transaction.market && transaction.market.id,
+      quantity: transaction && transaction.quantity
+    }
+  };
+}
+
 export function loadNotifications() {
   return (dispatch, getState) => {
     const { notifications, transactionsData } = store.getState();
@@ -27,23 +44,39 @@ export function loadNotifications() {
               transactionsData[key].transactions &&
               transactionsData[key].transactions[0];
             dispatch(
-              updateNotification(notifications[i].id, {
-                id: notifications[i].id,
-                timestamp: transactionsData[key].timestamp.timestamp,
-                status: "Confirmed",
-                linkPath: makePath(TRANSACTIONS),
-                seen: false,
-                log: {
-                  price: transaction && transaction.price,
-                  outcome: transaction && transaction.outcome,
-                  amount: transaction && transaction.amount,
-                  marketId:
-                    transaction && transaction.market && transaction.market.id,
-                  quantity: transaction && transaction.quantity
-                }
-              })
+              updateNotification(
+                notifications[i].id,
+                packageNotificationInfo(
+                  notifications[i].id,
+                  transactionsData[key].timestamp.timestamp,
+                  transaction
+                )
+              )
             );
             return true;
+          } else if (
+            notifications[i].params.type.toUpperCase() === "CANCELORDER" &&
+            transactionsData[key].status.toLowerCase() === SUCCESS
+          ) {
+            const groupedTransactions = transactionsData[key].transactions;
+            groupedTransactions.forEach(transaction => {
+              if (
+                transaction.meta &&
+                transaction.meta.canceledTransactionHash === notifications[i].id
+              ) {
+                dispatch(
+                  updateNotification(
+                    notifications[i].id,
+                    packageNotificationInfo(
+                      notifications[i].id,
+                      transaction.creationTime,
+                      transaction
+                    )
+                  )
+                );
+                return true;
+              }
+            });
           } else if (transactionsData[key].status.toLowerCase() === SUCCESS) {
             const groupedTransactions = transactionsData[key].transactions;
             groupedTransactions.forEach(transaction => {
@@ -52,19 +85,14 @@ export function loadNotifications() {
                 transaction.meta.txhash === notifications[i].id
               ) {
                 dispatch(
-                  updateNotification(notifications[i].id, {
-                    id: notifications[i].id,
-                    timestamp: transaction.creationTime,
-                    status: "Confirmed",
-                    linkPath: makePath(TRANSACTIONS),
-                    seen: false,
-                    log: {
-                      price: transaction.price,
-                      outcome: transaction.meta && transaction.meta.outcome,
-                      amount: transaction.amount,
-                      marketId: transaction.marketId
-                    }
-                  })
+                  updateNotification(
+                    notifications[i].id,
+                    packageNotificationInfo(
+                      notifications[i].id,
+                      transaction.creationTime,
+                      transaction
+                    )
+                  )
                 );
                 return true;
               }
