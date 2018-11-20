@@ -2,6 +2,7 @@
 // https://jestjs.io/docs/en/configuration.html
 
 module.exports = {
+  displayName: "augur-node",
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -58,7 +59,7 @@ module.exports = {
   // ],
 
   // An array of file extensions your modules use
-  "moduleFileExtensions": ["js", "jsx", "json", "ts", "tsx"],
+  moduleFileExtensions: ["js", "jsx", "json", "ts", "tsx", "node"],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
@@ -81,7 +82,7 @@ module.exports = {
   // projects: null,
 
   // Use this configuration option to add custom reporters to Jest
-  "reporters": ["default", "jest-junit"],
+  reporters: ["default", "jest-junit"],
 
   // Automatically reset mock state between every test
   // resetMocks: false,
@@ -99,9 +100,7 @@ module.exports = {
   // rootDir: "<rootDir>",
 
   // A list of paths to directories that Jest should use to search for files in
-  roots: [
-    "<rootDir>",
-  ],
+  // roots: [],
 
   // Allows you to use a custom runner instead of Jest's default test runner
   // "runner": "jest-runner-mocha",
@@ -127,10 +126,7 @@ module.exports = {
   testMatch: ["<rootDir>/test/unit/**/*.(j|t)s"],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: [
-    "/node_modules/",
-    "<rootDir>/test/unit/test.database.js",
-  ],
+  testPathIgnorePatterns: ["/node_modules/", "<rootDir>/test/unit/test.database.js"],
 
   // The regexp pattern Jest uses to detect test files
   // testRegex: "",
@@ -149,7 +145,7 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    "^.+\\.(ts|tsx)$": "babel-jest",
+    "^.+\\.(j|t)(s|sx)$": "babel-jest",
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
