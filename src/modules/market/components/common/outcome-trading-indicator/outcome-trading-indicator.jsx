@@ -43,7 +43,7 @@ export default function OutcomeTradingIndicator({
         case "positions|up":
           return { position: "absolute", bottom: "1.5rem" };
         case "positions|down":
-          return { position: "absolute", top: "0.945rem" };
+          return { position: "absolute", top: "1.3rem" };
         case "modileTradingForm|down":
           return { top: "1rem" };
         case "modileTradingForm|up":
