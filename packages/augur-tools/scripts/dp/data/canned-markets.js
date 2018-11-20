@@ -27,12 +27,14 @@ var closingBellTomorrow = new Date();
 closingBellTomorrow.setDate(closingBellTomorrow.getDate() + 1);
 closingBellTomorrow.setHours(20, 0, 0, 0);
 var today = new Date();
-var inOneMonths = addMonths(today, today.getMonth() + 1);
-var inTwoMonths = addMonths(today, today.getMonth() + 2);
-var inThreeMonths = addMonths(today, today.getMonth() + 3);
-var inFourMonths = addMonths(today, today.getMonth() + 4);
-var inFiveMonths = addMonths(today, today.getMonth() + 5);
-var inSixMonths = addMonths(today, today.getMonth() + 6);
+// needs to be less than 90 days. todo: update when contracts allow for 6 months
+today.setDate(today.getDate() - 3);
+var inOneMonths = addMonths(today, 1);
+var inTwoMonths = addMonths(today, 2);
+var inThreeMonths = addMonths(today, 3);
+var inFourMonths = addMonths(today, 1);
+var inFiveMonths = addMonths(today, 2);
+var inSixMonths = addMonths(today, 3);
 var thisYear = today.getUTCFullYear();
 
 module.exports = [
@@ -470,8 +472,7 @@ module.exports = [
       "San Francisco",
       "Tokyo",
       "Palo Alto",
-      "Hong Kong",
-      "other"
+      "Hong Kong"
     ],
     _topic: "housing",
     _extraInfo: {

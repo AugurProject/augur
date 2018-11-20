@@ -5,12 +5,10 @@ FROM augurproject/augur-core:latest as core-builder
 WORKDIR /app
 ADD ./ .
 
-# using the node10 image which has python and such
-FROM node:10.13.0 AS builder
-# Copy augur repo into it and get it set up
+# using the augur image grab all repos
+FROM augurproject/augur:latest AS builder
 WORKDIR /augur
 ADD ./ .
-RUN yarn
 
 ##
 # Now with our geth node
