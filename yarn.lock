@@ -3302,7 +3302,7 @@ augur-core@1.2.0-0:
     yargs "11.0.0"
 
 augur.js@6.0.0-0:
-  version "6.0.1"
+  version "6.1.0"
   dependencies:
     async "2.6.1"
     augur-artifacts "6.0.0-0"
@@ -3310,7 +3310,7 @@ augur.js@6.0.0-0:
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-blockstream "4.0.1"
-    ethrpc "^6.0.0"
+    ethrpc "^6.1.0"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -9181,10 +9181,10 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-6.0.0.tgz#3a8a1c2091f20cf71295bf3573bece674455fafb"
-  integrity sha512-TRnfVX6qzJXUPvmWYEro6hmZnHBlZhiEnJnjbHSZmDu5LnVAGuNWACs1MLYT084dGHlQG9lFgtz3tJ5dkRIDVA==
+ethrpc@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-6.1.0.tgz#a694ef71ba85c434d99eeb85e012cda6043f0ee1"
+  integrity sha512-rhpP3vDDxYnbB0vrvh5h6qfLQnLp16OSVL0fUY2Fi1sW8yYg/Qzk7a01XB4g5HeU2gS9RfRbK4H/3cFJDugadg==
   dependencies:
     async "2.6.0"
     bignumber.js "6.0.0"
