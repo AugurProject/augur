@@ -1,12 +1,12 @@
 import * as Knex from "knex";
 
 exports.up = async (knex: Knex): Promise<any> => {
-  return knex.schema.dropTableIfExists("transactionHashes").then((): PromiseLike<any> => {
-    return knex.schema.raw(`CREATE TABLE "transactionHashes" (
-      "transactionHash" varchar(66) PRIMARY KEY NOT NULL,
-      "blockNumber" integer NOT NULL,
-      "removed" bool DEFAULT false
-    )`);
+  return knex.schema.dropTableIfExists("transactionHashes").then(async (): Promise<any> => {
+    knex.schema.createTable("transactionHashes", (table: Knex.CreateTableBuilder): void => {
+      table.string("transactionHash", 66).primary().notNullable();
+      table.integer("blockNumber").notNullable();
+      table.boolean("orphaned").defaultTo(0);
+    });
   });
 };
 
