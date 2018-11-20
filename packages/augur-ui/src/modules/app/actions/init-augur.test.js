@@ -32,7 +32,7 @@ jest.mock("config/network.json", () => ({
   }
 }));
 
-describe("modules/app/actions/init-augur.js", () => {
+describe.skip("modules/app/actions/init-augur.js", () => {
   const ethereumNodeConnectionInfo = {
     http: "http://some.eth.node.com",
     ws: "wss://some.eth.ws.node.com"

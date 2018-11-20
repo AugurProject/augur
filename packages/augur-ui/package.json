@@ -108,7 +108,6 @@
     "autoprefixer": "7.2.6",
     "babel-eslint": "9.0.0",
     "babel-plugin-istanbul": "4.1.6",
-    "babel-plugin-module-resolver": "3.1.1",
     "babel-plugin-transform-react-remove-prop-types": "0.4.20",
     "chai": "4.2.0",
     "chai-subset": "1.6.0",
