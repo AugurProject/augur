@@ -56,7 +56,7 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
     if (logs === undefined || logs.length === 0) return;
     const dbWritePromises: Array<Promise<(db: Knex) => Promise<void>>> = [];
     await each(logs, async (log: FormattedEventLog) => {
-      const dbWritePromise = processLogByName(augur, log);
+      const dbWritePromise = processLogByName(augur, log, false);
       if (dbWritePromise != null) {
         dbWritePromises.push(dbWritePromise);
       } else {
