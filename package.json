@@ -14,11 +14,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "watch": " lerna run watch --parallel",
-    "docker:build": "lerna run --scope augur-tools docker:build"
+    "docker:build": "lerna run --scope augur-core docker:build && lerna run --scope augur-tools docker:build"
   },
   "devDependencies": {
-    "babel-plugin-module-resolver":"3.1.1",
-
+    "babel-plugin-module-resolver": "3.1.1",
     "babel-core": "7.0.0-bridge.0",
     "@babel/core": "7.1.6",
     "@babel/plugin-proposal-class-properties": "7.1.0",
@@ -29,7 +28,6 @@
     "@babel/preset-stage-0": "7.0.0",
     "@babel/register": "7.0.0",
     "@babel/runtime": "7.1.5",
-
     "babel-loader": "8.0.4",
     "babel-jest": "23.6.0",
     "eslint": "4.12.1",
@@ -45,14 +43,12 @@
     "prettier": "1.14.3",
     "jest": "23.6.0",
     "jest-junit": "5.2.0",
-
     "uglifyjs-webpack-plugin": "1.2.2",
     "url-loader": "1.1.1",
     "webpack": "4.19.0",
     "webpack-dev-server": "3.1.9",
     "webpack-dev-middleware": "3.4.0",
     "webpack-hot-middleware": "2.24.3",
-
     "execa": "0.10.0",
     "lerna": "3.4.0",
     "listr": "0.14.2",

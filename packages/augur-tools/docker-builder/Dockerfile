@@ -32,6 +32,7 @@ RUN apk update \
 
 COPY --from=builder /augur augur
 COPY --from=core-builder /app/output augur/packages/augur-core/output
+COPY --from=core-builder /app/output/contracts augur/packages/augur-artifacts
 
 RUN echo {} > /augur/packages/augur-artifacts/addresses.json \
   && echo {} > /augur/packages/augur-artifacts/upload-block-numbers.json

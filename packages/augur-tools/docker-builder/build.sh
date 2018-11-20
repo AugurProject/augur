@@ -11,6 +11,7 @@ docker build --no-cache -f docker-builder/Dockerfile --build-arg normal_time=fal
 scripts/copy-docker-files.sh $IMAGE_NAME
 IMAGE_ID=$(docker images -q $IMAGE_NAME)
 node scripts/update-docker-run-image-file -n $IMAGE_NAME -i $IMAGE_ID
+docker tag $IMAGE_NAME:$IMAGE_ID
 
 # Build and copy to merge with updated address.json/block_numbers.json
 #IMAGE_NAME=augurproject/dev-pop-normtime-geth-v2
