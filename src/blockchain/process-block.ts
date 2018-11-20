@@ -45,7 +45,7 @@ export function clearOverrideTimestamp(): void {
 
 export async function processBlockAndLogs(db: Knex, augur: Augur, direction: BlockDirection, block: BlockDetail, bulkSync: boolean, logs: Array<FormattedEventLog>) {
   if (!block || !block.timestamp) throw new Error(JSON.stringify(block));
-  const dbWritePromises = _.compact(logs.map((log) => processLogByName(augur, log)));
+  const dbWritePromises = _.compact(logs.map((log) => processLogByName(augur, log, true)));
   const dbWriteFunctions = await Promise.all(dbWritePromises);
   const dbWritesFunction = async (db: Knex) => {
     if (dbWriteFunctions.length > 0) logger.info(`Processing ${dbWritePromises.length} logs`);
