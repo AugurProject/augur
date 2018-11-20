@@ -58,7 +58,7 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur): P
 
 async function getHighestBlockNumber(augur: Augur): Promise<number> {
   return new Promise<number>((resolve, reject) => {
-    augur.rpc.eth.blockNumber("latest", (error, blockNumber: string) => {
+    augur.rpc.eth.blockNumber(null, (error, blockNumber: string) => {
       if (error) reject("Couldn't get block number");
       resolve(parseInt(blockNumber.toString(), 16));
     });
