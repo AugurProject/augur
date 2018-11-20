@@ -1,6 +1,6 @@
 {
   "name": "augur-node",
-  "version": "7.0.1",
+  "version": "7.1.0",
   "description": "Augur Node",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -65,7 +65,7 @@
     "@types/uuid": "3.4.3",
     "@types/ws": "3.0.2",
     "async": "2.6.0",
-    "augur.js": "6.0.0",
+    "augur.js": "6.1.0",
     "bignumber.js": "6.0.0",
     "chalk": "2.3.2",
     "ethrpc": "5.7.2",
