@@ -46,8 +46,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   getWinningBalances: marketIds => dispatch(getWinningBalance(marketIds)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
   cancelOrphanedOrder: order => dispatch(cancelOrphanedOrder(order)),
-  claimTradingProceeds: marketId =>
-    dispatch(updateModal({ type: MODAL_CLAIM_TRADING_PROCEEDS, marketId }))
+  claimTradingProceeds: (marketId, cb) =>
+    dispatch(updateModal({ type: MODAL_CLAIM_TRADING_PROCEEDS, marketId, cb }))
 });
 
 const MarketPortfolioCardContainer = withRouter(
