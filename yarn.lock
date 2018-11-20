@@ -12939,6 +12939,11 @@ webpack-cli@^2.0.9:
     yeoman-environment "^2.1.1"
     yeoman-generator "^2.0.5"
 
+webpack-deadcode-plugin@^0.1.9:
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/webpack-deadcode-plugin/-/webpack-deadcode-plugin-0.1.9.tgz#400fd87c8875dbe4bbc3bce9fc75707219f63a18"
+  integrity sha512-yf/4oIowjfkd8+gG4sramz4qAq/FBd1L6MSu8hoGoaYpQpC+jDKStoKHVYeuz6dtXKlWOQp8HYqPiDjUULRO4Q==
+
 webpack-dev-middleware@3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-3.3.0.tgz#8104daf4d4f65defe06ee2eaaeea612a7c541462"

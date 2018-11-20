@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const DeadCodePlugin = require('webpack-deadcode-plugin');
 
 const PATHS = {
   BUILD: path.resolve(__dirname, "../build"),
@@ -103,7 +104,24 @@ module.exports = {
       }
     ]
   },
+  optimization: {
+    // https://webpack.js.org/configuration/optimization/#optimization-usedexports
+    // `unusedExports: true` is required by DeadCodePlugin
+    usedExports: true,
+  },
   plugins: [
+    new DeadCodePlugin({
+      // failOnHint: true, // (default: false), if true will stop the build if unused code/files are found.
+      patterns: [
+        'src/**/*.(js|jsx|css)',
+      ],
+      exclude: [
+        '**/*.(stories|spec).(js|jsx)',
+        '**/*.test.js', // certain test files (executed by `yarn test`) live in the src/ dir and so DeadCodePlugin interprets them as dead even though they're not
+        '**/__mocks__/**', // DeadCodePlugin interprets __mocks__/* files as dead because these files aren't used explicitly, they are part of mocking magic during `yarn test`
+        '**/splash.css', // splash.css is hardcoded into build process and appears dead to DeadCodePlugin
+      ],
+    }),
     new CopyWebpackPlugin([
       {
         from: path.resolve(PATHS.APP, "splash.css"),
