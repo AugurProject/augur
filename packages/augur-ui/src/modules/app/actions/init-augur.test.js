@@ -151,7 +151,7 @@ describe("modules/app/actions/init-augur.js", () => {
   });
 
   describe("initAugur", () => {
-    test.skip("initialized augur successfully with logged in account", () => {
+    test("initialized augur successfully with logged in account", () => {
       mockAugur.augur.contracts = { 4: { Universe: "0xb0b" } };
       mockAugur.augur.rpc.eth = { accounts: cb => cb(null, ["0xa11ce"]) };
       mockAugur.augur.rpc.getNetworkID = jest.fn(() => 4);
@@ -162,9 +162,8 @@ describe("modules/app/actions/init-augur.js", () => {
       augurModule.augur.rpc = store.dispatch(
         initAugur({}, {}, (err, connInfo) => {
           expect(err).toBeUndefined();
-          console.log("test");
           expect(connInfo).toBeUndefined();
-          expect(store.getActions()).deepEqual([
+          expect(store.getActions()).toEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
             { type: "UPDATE_CONTRACT_ADDRESSES" },
@@ -179,12 +178,12 @@ describe("modules/app/actions/init-augur.js", () => {
       );
     });
 
-    test.skip("initialized augur successfully when not logged in", () => {
+    test("initialized augur successfully when not logged in", () => {
       store.dispatch(
         initAugur({}, {}, (err, connInfo) => {
           expect(err).toBeUndefined();
           expect(connInfo).toBeUndefined();
-          expect(store.getActions).deepEqual([
+          expect(store.getActions).toEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
             { type: "UPDATE_CONTRACT_ADDRESSES" },
@@ -200,7 +199,7 @@ describe("modules/app/actions/init-augur.js", () => {
       );
     });
 
-    test.skip("initialized augur successfully when not logged in and unexpectedNetworkId", () => {
+    test("initialized augur successfully when not logged in and unexpectedNetworkId", () => {
       mockAugur.augur.contracts = {
         addresses: {
           4: { Universe: "0xb0b" },
@@ -215,13 +214,11 @@ describe("modules/app/actions/init-augur.js", () => {
         }
       };
 
-      jest.doMock("services/augurjs", () => mockAugur);
-
       store.dispatch(
         initAugur({}, {}, (err, connInfo) => {
           expect(err).toBeUndefined();
           expect(connInfo).toBeUndefined();
-          expect(store.getActions()).deepEqual([
+          expect(store.getActions()).toEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
             { type: "UPDATE_CONTRACT_ADDRESSES" },
@@ -238,12 +235,12 @@ describe("modules/app/actions/init-augur.js", () => {
     });
 
     describe("connectAugur", () => {
-      test.skip("connectAugur was successful as an initial connection, with logged in account", () => {
+      test("connectAugur was successful as an initial connection, with logged in account", () => {
         store.dispatch(
           connectAugur({}, mockEnv, true, (err, connInfo) => {
             expect(err).toBeUndefined();
             expect(connInfo).toBeUndefined();
-            expect(store.getActions()).deepEqual([
+            expect(store.getActions()).toEqual([
               { type: "UPDATE_CONNECTION_STATUS" },
               { type: "UPDATE_CONTRACT_ADDRESSES" },
               { type: "UPDATE_FUNCTIONS_API" },
@@ -258,12 +255,12 @@ describe("modules/app/actions/init-augur.js", () => {
         );
       });
 
-      test.skip("connectAugur successfully reconnects", () => {
+      test("connectAugur successfully reconnects", () => {
         store.dispatch(
           connectAugur({}, mockEnv, false, (err, connInfo) => {
             expect(err).toBeUndefined();
             expect(connInfo).toBeUndefined();
-            expect(store.getActions()).deepEqual([
+            expect(store.getActions()).toEqual([
               { type: "UPDATE_ENV" },
               { type: "UPDATE_CONNECTION_STATUS" },
               { type: "UPDATE_CONTRACT_ADDRESSES" },
@@ -277,11 +274,11 @@ describe("modules/app/actions/init-augur.js", () => {
         );
       });
 
-      test.skip("handled an undefined augurNode from AugurJS.connect", () => {
+      test("handled an undefined augurNode from AugurJS.connect", () => {
         store.dispatch(
           connectAugur({}, mockEnv, false, (err, connInfo) => {
             expect(err).toBeNull();
-            expect(connInfo).deepEqual({
+            expect(connInfo).toEqual({
               ethereumNode: {
                 ...ethereumNodeConnectionInfo,
                 contracts: {},
@@ -292,32 +289,32 @@ describe("modules/app/actions/init-augur.js", () => {
               },
               augurNode: undefined
             });
-            expect(store.getActions()).deepEqual([]);
+            expect(store.getActions()).toEqual([]);
           })
         );
       });
 
-      test.skip("handled an undefined ethereumNode from AugurJS.connect", () => {
+      test("handled an undefined ethereumNode from AugurJS.connect", () => {
         store.dispatch(
           connectAugur({}, mockEnv, false, (err, connInfo) => {
             expect(err).toBeNull();
-            expect(connInfo).deepEqual({
+            expect(connInfo).toEqual({
               ethereumNode: undefined,
               augurNode: augurNodeWS
             });
-            expect(store.getActions()).deepEqual([]);
+            expect(store.getActions()).toEqual([]);
           })
         );
       });
 
-      test.skip("handled an error object back from AugurJS.connect", () => {
+      test("handled an error object back from AugurJS.connect", () => {
         store.dispatch(
           connectAugur({}, mockEnv, false, (err, connInfo) => {
-            expect(err).deepEqual({
+            expect(err).toEqual({
               error: 2000,
               message: "There was a mistake."
             });
-            expect(connInfo).deepEqual({
+            expect(connInfo).toEqual({
               ethereumNode: undefined,
               augurNode: undefined
             });

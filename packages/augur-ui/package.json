@@ -55,7 +55,7 @@
     "augur-artifacts": "6.0.0-0",
     "bignumber.js": "6.0.0",
     "bs58": "^4.0.1",
-    "classnames": "2.2.5",
+    "classnames": "2.2.6",
     "clipboard": "1.7.1",
     "d3": "4.12.0",
     "edge-login-ui-web": "0.3.3",

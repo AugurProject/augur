@@ -1,15 +1,24 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import testState from "test/testState";
+import { augur } from "services/augurjs";
+
+jest.mock("services/augurjs");
+
+import * as logoutModule from "modules/auth/actions/logout";
 
 describe(`modules/auth/actions/logout.js`, () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-  const fakeAugurJS = { augur: { rpc: {} } };
   const store = mockStore(testState);
-  fakeAugurJS.augur.rpc.clear = () => {};
-  const action = proxyquire("../../../src/modules/auth/actions/logout", {
-    "../../../services/augurjs": fakeAugurJS
+  let clearSpy;
+
+  beforeEach(() => {
+    clearSpy = jest.spyOn(augur.rpc, "clear").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    clearSpy.mockReset();
   });
 
   test(`Logout the logged in account`, () => {
@@ -21,7 +30,7 @@ describe(`modules/auth/actions/logout.js`, () => {
         type: "CLEAR_LOGIN_ACCOUNT"
       }
     ];
-    store.dispatch(action.logout());
-    expect(store.getActions).toEqual(expectedOutput);
+    store.dispatch(logoutModule.logout());
+    expect(store.getActions()).toEqual(expectedOutput);
   });
 });
