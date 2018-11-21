@@ -2,9 +2,13 @@
 
 Docker images are created to extract artifacts and build populated ethereum nodes used for development.
 
+## yarn docker:build:all
+
+Builds all the below docker images
+
 ## yarn docker:build:augur-core
 
-(run in root) augur-core docker image compiles the contracts and outputs abi.json and contracts.json. These files are used to deploy contracts on ethereum nodes. Look in augur-artifacts to see these files. These files are needed in for the ethereum populated docker images.
+(run in augur-core, having issues running yarn docker:build:augur-core from root) augur-core docker image compiles the contracts and outputs abi.json and contracts.json. These files are used to deploy contracts on ethereum nodes. Look in augur-artifacts to see these files. These files are needed in for the ethereum populated docker images.
 
 ## yarn docker:build:augur
 

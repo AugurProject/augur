@@ -14,6 +14,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "watch": " lerna run watch --parallel",
+    "docker:build:all": "bash ./scripts/docker-build-all.sh",
     "docker:build:augur-core": "lerna run --scope augur-core docker:build && lerna run --scope augur-core artifacts",
     "docker:build:augur": "docker build -f support/Dockerfile -t augurproject/augur:latest .",
     "docker:build:pops": "lerna run --scope augur-tools docker:build"
