@@ -1,5 +1,6 @@
 yarn docker:build:augur
 cd packages/augur-core
-yarn docker:build:augur-core
+yarn docker:build
+yarn artifacts
 cd ../augur-tools
-yarn docker:build:pops
+yarn docker:build
