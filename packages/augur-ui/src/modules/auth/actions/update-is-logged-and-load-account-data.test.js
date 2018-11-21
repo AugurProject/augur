@@ -1,6 +1,4 @@
 import configureMockStore from "redux-mock-store";
-import proxyquire from "proxyquire";
-import sinon from "sinon";
 import thunk from "redux-thunk";
 
 import { loadAccountData } from "modules/auth/actions/load-account-data";
