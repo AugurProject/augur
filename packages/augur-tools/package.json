@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docker:build": "./docker-builder/build.sh",
-    "docker:push": "./docker-builder/push.sh",
+    "docker:build": "bash ./docker-builder/build.sh",
+    "docker:push": "bash ./docker-builder/push.sh",
     "docker:build-and-push": "yarn docker:build && yarn docker:push",
     "docker:geth": "docker run -e GETH_VERBOSITY=4 -it -p 8545:8545 -p 8546:8546 augurproject/dev-node-geth:latest",
     "docker:geth:pop": "docker-builder/run.sh augurproject/dev-pop-geth-v2",
