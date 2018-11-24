@@ -5940,6 +5940,14 @@ crypto-promise@2.0.0:
     es6-denodeify "^0.1.5"
     stream-concat-promise "^1.0.0"
 
+crypto-promise@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/crypto-promise/-/crypto-promise-2.1.0.tgz#711175d51e0c0f461af29db9bb53276abd96bb3d"
+  integrity sha512-jkfCVhLJKVfFjgCntWzbPL5FOZk2KqlJMMVsdu+tGwgtQCRahX6YbQ6LtDDNcehnlRc6yOyrQBfuQOUro8Oyuw==
+  dependencies:
+    es6-denodeify "^0.1.5"
+    stream-concat-promise "^1.0.0"
+
 crypto-random-string@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-1.0.0.tgz#a230f64f568310e1498009940790ec99545bca7e"
