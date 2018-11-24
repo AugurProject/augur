@@ -86,7 +86,7 @@
     "@velma/ganache-core": "2.1.0-beta.0-velma-1.0.0-rc.2",
     "ethjs-abi": "0.2.1",
     "ethjs-account": "0.1.4",
-    "ethjs-contract": "0.1.9",
+    "ethjs-contract": "0.2.3",
     "ethjs-provider-http": "0.1.6",
     "ethjs-query": "0.3.1",
     "ethjs-rpc": "0.2.0",
