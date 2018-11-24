@@ -7479,15 +7479,15 @@ ejs@^2.5.9, ejs@^2.6.1:
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.6.1.tgz#498ec0d495655abc6f23cd61868d926464071aa0"
   integrity sha512-0xy4A/twfrRCnkhfk8ErDi5DqdAsAqeGxht4xkCUrsvhhbQNs7E+4jV0CN7+NKIY0aHE72+XvqtBIXzD31ZbXQ==
 
-electron-builder-squirrel-windows@20.28.3:
-  version "20.28.3"
-  resolved "https://registry.yarnpkg.com/electron-builder-squirrel-windows/-/electron-builder-squirrel-windows-20.28.3.tgz#1597f2da4ad05cf97ed29774f89e89d34c6746c7"
-  integrity sha512-dQy0Fsgw7ri+/Ua4QmO7+NSJjy5yDiV/Qs3Y9g8dT8+Ry48A5J+3NRBbnsVY2U3xFRyUW0RBt8RYjk1hD6GI6A==
+electron-builder-squirrel-windows@20.36.0:
+  version "20.36.0"
+  resolved "https://registry.yarnpkg.com/electron-builder-squirrel-windows/-/electron-builder-squirrel-windows-20.36.0.tgz#a4af776bef05982a50a8524134fef4f419bc8b34"
+  integrity sha512-nhP2mLO+loBvifFCLoENMcfIiAAlFUqfD/THdLqg7gQ1mlJPN4Yf+qlTKDt+zPhF2LDbAFYjw3A4RM8xvuZKrQ==
   dependencies:
     archiver "^3.0.0"
-    bluebird-lst "^1.0.5"
-    builder-util "~6.1.3"
-    fs-extra-p "^4.6.1"
+    bluebird-lst "^1.0.6"
+    builder-util "~9.3.0"
+    fs-extra-p "^7.0.0"
     sanitize-filename "^1.6.1"
   optionalDependencies:
     "7zip-bin" "~4.0.2"
