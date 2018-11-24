@@ -64,7 +64,7 @@
     "@types/node": "8.10.38",
     "@types/sqlite3": "3.1.1",
     "@types/uuid": "3.4.4",
-    "@types/ws": "3.0.2",
+    "@types/ws": "3.2.1",
     "async": "2.6.1",
     "augur.js": "6.0.0-0",
     "augur-artifacts": "6.0.0-0",
