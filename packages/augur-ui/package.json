@@ -63,7 +63,7 @@
     "ethereumjs-util": "^5.2.0",
     "express": "4.16.4",
     "helmet": "3.9.0",
-    "highcharts": "6.0.3",
+    "highcharts": "6.2.0",
     "history": "4.7.2",
     "immutable-delete": "1.1.0",
     "keythereum": "1.0.2",
