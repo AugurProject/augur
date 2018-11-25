@@ -90,7 +90,7 @@
     "@types/chai": "4.1.7",
     "@types/jest": "23.3.9",
     "@types/knex": "0.14.8",
-    "eslint": "3.17.1",
+    "eslint": "3.19.0",
     "husky": "0.14.3",
     "node-gyp": "3.6.2",
     "node-pre-gyp": "0.10.0",
