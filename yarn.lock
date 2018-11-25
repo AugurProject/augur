@@ -8558,6 +8558,13 @@ ethjs-rpc@0.1.8:
   resolved "https://registry.yarnpkg.com/ethjs-rpc/-/ethjs-rpc-0.1.8.tgz#1676740e41c7228196a71189d33f15c9c85b599d"
   integrity sha1-FnZ0DkHHIoGWpxGJ0z8VychbWZ0=
 
+ethjs-rpc@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/ethjs-rpc/-/ethjs-rpc-0.2.0.tgz#3d0011e32cfff156ed6147818c6fb8f801701b4c"
+  integrity sha512-RINulkNZTKnj4R/cjYYtYMnFFaBcVALzbtEJEONrrka8IeoarNB9Jbzn+2rT00Cv8y/CxAI+GgY1d0/i2iQeOg==
+  dependencies:
+    promise-to-callback "^1.0.0"
+
 ethjs-schema@^0.1.9:
   version "0.1.9"
   resolved "https://registry.yarnpkg.com/ethjs-schema/-/ethjs-schema-0.1.9.tgz#858c2a5da706ae04812b4ce8b1eb4b4921e33092"
