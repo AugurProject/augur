@@ -378,4 +378,14 @@ describe("server/getters/get-markets", () => {
       ]);
     },
   });
+  runTest({
+    description: "set a maximum fee",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      maxFee: 0.03,
+    },
+    assertions: (marketsWithMaxFee) => {
+      expect(marketsWithMaxFee).not.toContain("0x1000000000000000000000000000000000000001");
+    },
+  });
 });

@@ -17,7 +17,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       creationBlockNumber: 1400000,
       creationFee: "10",
       reportingFeeRate: "0.02",
-      marketCreatorFeeRate: "0.01",
+      marketCreatorFeeRate: "0.1",
       category: "TEST CATEGORY",
       tag1: "test tag 1",
       tag2: "test tag 2",

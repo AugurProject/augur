@@ -1,6 +1,6 @@
 import * as t from "io-ts";
 import * as Knex from "knex";
-import { Address, MarketsContractAddressRow, SortLimitParams } from "../../types";
+import { Address, MarketsContractAddressAndFeesRow, SortLimitParams } from "../../types";
 import { getMarketsWithReportingState, queryModifier } from "./database";
 import { createSearchProvider } from "../../database/fts";
 
@@ -12,6 +12,7 @@ export const GetMarketsParamsSpecific = t.type({
   reportingState: t.union([t.string, t.null, t.undefined]),
   feeWindow: t.union([t.string, t.null, t.undefined]),
   designatedReporter: t.union([t.string, t.null, t.undefined]),
+  maxFee: t.union([t.number, t.null, t.undefined]),
 });
 
 export const GetMarketsParams = t.intersection([
@@ -21,7 +22,9 @@ export const GetMarketsParams = t.intersection([
 
 // Returning marketIds should likely be more generalized, since it is a single line change for most getters (awaiting reporting, by user, etc)
 export async function getMarkets(db: Knex, augur: {}, params: t.TypeOf<typeof GetMarketsParams>) {
-  const query = getMarketsWithReportingState(db, ["markets.marketId", "marketStateBlock.timestamp as reportingStateUpdatedOn"]);
+  let columns = ["markets.marketId", "marketStateBlock.timestamp as reportingStateUpdatedOn"];
+  if (params.maxFee != null && params.maxFee !== undefined) columns = columns.concat(["markets.reportingFeeRate", "markets.marketCreatorFeeRate"]);
+  const query = getMarketsWithReportingState(db, columns);
   query.join("blocks as marketStateBlock", "marketStateBlock.blockNumber", "market_state.blockNumber");
   query.leftJoin("blocks as lastTradeBlock", "lastTradeBlock.blockNumber", "markets.lastTradeBlockNumber").select("lastTradeBlock.timestamp as lastTradeTime");
 
@@ -39,6 +42,12 @@ export async function getMarkets(db: Knex, augur: {}, params: t.TypeOf<typeof Ge
     });
   }
 
-  const marketsRows = await queryModifier<MarketsContractAddressRow>(db, query, "volume", "desc", params);
-  return marketsRows.map((marketsRow: MarketsContractAddressRow): Address => marketsRow.marketId);
+  let marketsRows = await queryModifier<MarketsContractAddressAndFeesRow<BigNumber>>(db, query, "volume", "desc", params);
+
+  if (params.maxFee != null && params.maxFee !== undefined) {
+    const maxFee: number = params.maxFee;
+    marketsRows = marketsRows.filter((row: MarketsContractAddressAndFeesRow<BigNumber>) => row.reportingFeeRate.plus(row.marketCreatorFeeRate).lte(maxFee));
+  }
+
+  return marketsRows.map((marketsRow: MarketsContractAddressAndFeesRow<BigNumber>): Address => marketsRow.marketId);
 }
