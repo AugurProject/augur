@@ -93,7 +93,6 @@
     "ethjs-signer": "0.1.1",
     "fs-readfile-promise": "3.0.0",
     "get-port": "3.2.0",
-    "npx": "^10.2.0",
     "path": "0.12.7",
     "recursive-readdir": "2.2.1",
     "replace": "1.0.0",
