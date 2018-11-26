@@ -88,7 +88,7 @@
     "ethjs-account": "0.1.4",
     "ethjs-contract": "0.2.3",
     "ethjs-provider-http": "0.1.6",
-    "ethjs-query": "0.3.1",
+    "ethjs-query": "0.3.8",
     "ethjs-rpc": "0.2.0",
     "ethjs-signer": "0.1.1",
     "fs-readfile-promise": "3.0.0",
