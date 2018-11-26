@@ -140,7 +140,7 @@
     "less": "3.8.1",
     "less-loader": "4.1.0",
     "listr": "0.14.2",
-    "normalize.css": "8.0.0",
+    "normalize.css": "8.0.1",
     "null-loader": "0.1.1",
     "nyc": "13.0.1",
     "onchange": "4.1.0",
