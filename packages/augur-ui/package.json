@@ -142,7 +142,7 @@
     "listr": "0.14.2",
     "normalize.css": "8.0.1",
     "null-loader": "0.1.1",
-    "nyc": "13.0.1",
+    "nyc": "13.1.0",
     "onchange": "4.1.0",
     "postcss-loader": "3.0.0",
     "postcss-sass": "0.3.3",
