@@ -44,7 +44,7 @@
     "electron-is-dev": "1.0.1",
     "electron-log": "2.2.17",
     "electron-progressbar": "1.1.0",
-    "electron-updater": "3.1.2",
+    "electron-updater": "3.2.3",
     "express": "4.16.4",
     "file-loader": "^2.0.0",
     "helmet": "3.13.0",
@@ -73,12 +73,12 @@
     "webpack-cli": "^3.1.0"
   },
   "devDependencies": {
-    "app-builder-lib": "20.36.2",
-    "electron": "3.0.3",
-    "electron-builder": "20.28.4",
-    "electron-builder-squirrel-windows": "20.28.3",
+    "app-builder-lib": "20.37.0",
+    "electron": "3.0.10",
+    "electron-builder": "20.36.2",
+    "electron-builder-squirrel-windows": "20.36.0",
     "electron-publisher-s3": "20.17.2",
-    "electron-webpack": "2.3.1",
+    "electron-webpack": "2.6.1",
 
     "less": "3.8.1",
     "less-loader": "4.1.0",
