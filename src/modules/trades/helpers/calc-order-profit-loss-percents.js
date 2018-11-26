@@ -28,7 +28,9 @@ export default function(
   maxPrice,
   type,
   sharesFilled,
-  tradeTotalCost
+  tradeTotalCost,
+  shareCost,
+  settlementFee
 ) {
   // tradeTotalCost is the "orderbook stays the same when this trade gets processed" value, not the maximum possible cost of the trade.
   if (
@@ -59,17 +61,63 @@ export default function(
 
   const longETH = sharePriceLong.times(numShares).times(marketRange);
   const shortETH = sharePriceShort.times(numShares).times(marketRange);
+  const longSharesEth = sharePriceLong.times(shareCost).times(marketRange);
+  const shortSharesEth = sharePriceShort.times(shareCost).times(marketRange);
+  const bnSettlementFee = createBigNumber(settlementFee, 10);
+  const settlementFeeCostLong = longSharesEth.times(bnSettlementFee);
+  const settlementFeeCostShort = shortSharesEth.times(bnSettlementFee);
 
-  const maxTotalTradeCost = side === BUY ? longETH : shortETH;
+  // const maxTotalTradeCost =
+  //   side === BUY
+  //     ? longETH.plus(settlementFeeCostLong)
+  //     : shortETH.plus(settlementFeeCostShort);
 
-  const longETHPercent = shortETH.dividedBy(maxTotalTradeCost).times(100);
-  const shortETHPercent = longETH.dividedBy(maxTotalTradeCost).times(100);
+  const maxTotalTradeCostNoFee = side === BUY ? longETH : shortETH;
 
-  const potentialEthProfit = side === BUY ? shortETH : longETH;
-  const potentialEthLoss = side === BUY ? longETH : shortETH;
+  // const longETHPercent = shortETH
+  //   .minus(settlementFeeCostShort)
+  //   .dividedBy(maxTotalTradeCost)
+  //   .times(100);
+  // const shortETHPercent = longETH
+  //   .plus(settlementFeeCostLong)
+  //   .dividedBy(maxTotalTradeCost)
+  //   .times(100);
+  const longETHPercentNoFee = shortETH
+    .minus(settlementFeeCostShort)
+    .dividedBy(maxTotalTradeCostNoFee)
+    .times(100);
+  const shortETHPercentNoFee = longETH
+    .plus(settlementFeeCostLong)
+    .dividedBy(maxTotalTradeCostNoFee)
+    .times(100);
+  // console.log(
+  //   "MaxCost, side, Long,Short",
+  //   maxTotalTradeCost.toString(),
+  //   maxTotalTradeCostNoFee.toString(),
+  //   side,
+  //   longETH.toString(),
+  //   shortETH.toString(),
+  //   longETHPercent.toString(),
+  //   shortETHPercent.toString(),
+  //   longETHPercentNoFee.toString(),
+  //   shortETHPercentNoFee.toString()
+  // );
+
+  const potentialEthProfit =
+    side === BUY
+      ? shortETH.minus(settlementFeeCostShort)
+      : longETH.minus(settlementFeeCostLong);
+  const potentialEthLoss =
+    side === BUY
+      ? longETH.plus(settlementFeeCostLong)
+      : shortETH.plus(settlementFeeCostShort);
+  // const potentialProfitPercent =
+  //  side === BUY ? longETHPercent : shortETHPercent;
   const potentialProfitPercent =
-    side === BUY ? longETHPercent : shortETHPercent;
-  const potentialLossPercent = side === BUY ? shortETHPercent : longETHPercent;
+    side === BUY ? longETHPercentNoFee : shortETHPercentNoFee;
+  // const potentialLossPercent = side === BUY ? shortETHPercent : longETHPercent;
+  const potentialLossPercent =
+    side === BUY ? shortETHPercentNoFee : longETHPercentNoFee;
 
   return {
     potentialEthProfit,

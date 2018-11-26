@@ -21,7 +21,7 @@ import store from "src/store";
 export const generateTrade = memoize(
   (market, outcome, outcomeTradeInProgress, orderBooks) => {
     const { loginAccount } = store.getState();
-
+    const { settlementFee } = market;
     const side =
       (outcomeTradeInProgress && outcomeTradeInProgress.side) ||
       TRANSACTIONS_TYPES.BUY;
@@ -72,7 +72,9 @@ export const generateTrade = memoize(
       maxPrice,
       marketType,
       sharesFilled,
-      adjustedTotalCost
+      adjustedTotalCost,
+      shareCost,
+      settlementFee
     );
 
     let maxNumShares;
