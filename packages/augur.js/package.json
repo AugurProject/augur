@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "6.0.0-0",
+  "version": "7.0.0-0",
   "description": "Augur JavaScript API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "async": "2.6.1",
-    "augur-artifacts": "6.0.0-0",
+    "augur-artifacts": "7.0.0-0",
     "bignumber.js": "6.0.0",
     "clone": "2.1.2",
     "columnify": "1.5.4",
