@@ -2439,6 +2439,11 @@ app-builder-bin@2.5.1:
   resolved "https://registry.yarnpkg.com/app-builder-bin/-/app-builder-bin-2.5.1.tgz#a5bcff31e4572d8a179bd88a1335bad8e5d62d81"
   integrity sha512-Hm+eyyfQCs5N5avLAw3w9Cf1S5TX/t6ecAfHusbzCDh/rLKLKYso2vwDWH4OQZ8uWLnuJwaAUDf3PstRcn0H+A==
 
+app-builder-bin@2.5.4:
+  version "2.5.4"
+  resolved "https://registry.yarnpkg.com/app-builder-bin/-/app-builder-bin-2.5.4.tgz#b4f060d9e55f7d5fe7b7ad0557cb1dc0b6ad7625"
+  integrity sha512-/rcJkuCqVmf9RzDyUojW3gwA2CbIIG65Z9NZpjFgEDzXd92KFgZyLKmu/2+ue4EjnseEQDc+BmW3GMeciAGJBQ==
+
 app-builder-lib@20.36.2, app-builder-lib@~20.36.0:
   version "20.36.2"
   resolved "https://registry.yarnpkg.com/app-builder-lib/-/app-builder-lib-20.36.2.tgz#9bc2fb3191eb81afe9af2bc35e9384d3bf7b6f01"
@@ -4404,7 +4409,7 @@ buffer@^5.0.2, buffer@^5.0.5, buffer@^5.1.0:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
 
-builder-util-runtime@8.0.2, builder-util-runtime@^8.0.1:
+builder-util-runtime@8.0.2, builder-util-runtime@^8.0.1, builder-util-runtime@^8.0.2:
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/builder-util-runtime/-/builder-util-runtime-8.0.2.tgz#9d638a266ca3aa25ced1cff4df74c8fd97dd78cf"
   integrity sha512-46AjyMQ1/yBvGnXWmqNGlg8te7jCPCs7TJ0zDC2+4vV/t5iZp2dR1H9UfVpcBxlvBq3dlAOmwb9fz1d9xZN1+Q==
@@ -4471,6 +4476,24 @@ builder-util@^5.13.0:
     source-map-support "^0.5.6"
     stat-mode "^0.2.2"
     temp-file "^3.1.3"
+
+builder-util@~9.4.0:
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/builder-util/-/builder-util-9.4.0.tgz#b63e986854bddd08fd370bf57893097cb0b948f1"
+  integrity sha512-0pLytwGFbKQzjXzr3rBr02EEX1OHXFWYMVGW/bZKZqPnPKsR+ZYMdGHQJilKcx/4UlQqDOTJlJiLOCluOagwAw==
+  dependencies:
+    "7zip-bin" "~4.1.0"
+    app-builder-bin "2.5.4"
+    bluebird-lst "^1.0.6"
+    builder-util-runtime "^8.0.2"
+    chalk "^2.4.1"
+    debug "^4.1.0"
+    fs-extra-p "^7.0.0"
+    is-ci "^1.2.1"
+    js-yaml "^3.12.0"
+    source-map-support "^0.5.9"
+    stat-mode "^0.2.2"
+    temp-file "^3.3.2"
 
 builtin-modules@^1.0.0:
   version "1.1.1"
@@ -7465,14 +7488,14 @@ ejs@^2.5.9, ejs@^2.6.1:
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.6.1.tgz#498ec0d495655abc6f23cd61868d926464071aa0"
   integrity sha512-0xy4A/twfrRCnkhfk8ErDi5DqdAsAqeGxht4xkCUrsvhhbQNs7E+4jV0CN7+NKIY0aHE72+XvqtBIXzD31ZbXQ==
 
-electron-builder-squirrel-windows@20.36.0:
-  version "20.36.0"
-  resolved "https://registry.yarnpkg.com/electron-builder-squirrel-windows/-/electron-builder-squirrel-windows-20.36.0.tgz#a4af776bef05982a50a8524134fef4f419bc8b34"
-  integrity sha512-nhP2mLO+loBvifFCLoENMcfIiAAlFUqfD/THdLqg7gQ1mlJPN4Yf+qlTKDt+zPhF2LDbAFYjw3A4RM8xvuZKrQ==
+electron-builder-squirrel-windows@20.37.0:
+  version "20.37.0"
+  resolved "https://registry.yarnpkg.com/electron-builder-squirrel-windows/-/electron-builder-squirrel-windows-20.37.0.tgz#285d42cbe740dfabe84aa80e3fe747b5a423b6d4"
+  integrity sha512-562IVRVmnXwHQXemgmopce3FtD4R2AKDoSmqKnEHkd4xYr87N+weGYFepq66F6nhhisMo9tx1bgPTVvErQgR2Q==
   dependencies:
     archiver "^3.0.0"
     bluebird-lst "^1.0.6"
-    builder-util "~9.3.0"
+    builder-util "~9.4.0"
     fs-extra-p "^7.0.0"
     sanitize-filename "^1.6.1"
   optionalDependencies:
@@ -20555,7 +20578,7 @@ temp-dir@^1.0.0:
   resolved "https://registry.yarnpkg.com/temp-dir/-/temp-dir-1.0.0.tgz#0a7c0ea26d3a39afa7e0ebea9c1fc0bc4daa011d"
   integrity sha1-CnwOom06Oa+n4OvqnB/AvE2qAR0=
 
-temp-file@^3.1.3, temp-file@^3.2.0:
+temp-file@^3.1.3, temp-file@^3.2.0, temp-file@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/temp-file/-/temp-file-3.3.2.tgz#69b6daf1bbe23231d0a5d03844e3d96f3f531aaa"
   integrity sha512-FGKccAW0Mux9hC/2bdUIe4bJRv4OyVo4RpVcuplFird1V/YoplIFbnPZjfzbJSf/qNvRZIRB9/4n/RkI0GziuQ==
