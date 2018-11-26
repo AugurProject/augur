@@ -17,3 +17,7 @@ Builds all the below docker images
 ## yarn docker:build
 
 (run in augur-tools, having issues running yarn docker:build:pops from root) These development docker images have all contracts uploaded and canned markets created. They use the above docker images. Look in augur-tools package.json to see how to run individual docker images.
+
+## push docker images
+
+To push newly created dockers goto augur-tools and use `yarn docker:push` after docker login to push images to hub.docker.com
