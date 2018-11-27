@@ -9792,6 +9792,13 @@ fs-readfile-promise@3.0.0:
   dependencies:
     graceful-fs "^4.1.2"
 
+fs-readfile-promise@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/fs-readfile-promise/-/fs-readfile-promise-3.0.1.tgz#d0d307b7f6aedfc920c31fa6e5712efaa297c958"
+  integrity sha512-LsSxMeaJdYH27XrW7Dmq0Gx63mioULCRel63B5VeELYLavi1wF5s0XfsIdKDFdCL9hsfQ2qBvXJszQtQJ9h17A==
+  dependencies:
+    graceful-fs "^4.1.11"
+
 fs-write-stream-atomic@^1.0.8:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/fs-write-stream-atomic/-/fs-write-stream-atomic-1.0.10.tgz#b47df53493ef911df75731e70a9ded0189db40c9"
