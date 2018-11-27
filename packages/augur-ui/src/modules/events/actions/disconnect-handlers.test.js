@@ -7,9 +7,9 @@ import * as connectAugurModule from "modules/app/actions/init-augur";
 import * as lodash from "lodash";
 import * as updateConnectionModule from "modules/app/actions/update-connection";
 
-jest.mock("../../app/actions/init-augur");
+jest.mock("modules/app/actions/init-augur");
 jest.mock("lodash");
-jest.mock("../../app/actions/update-connection");
+jest.mock("modules/app/actions/update-connection");
 
 describe("events/actions/disconnect-handlers", () => {
   let store;

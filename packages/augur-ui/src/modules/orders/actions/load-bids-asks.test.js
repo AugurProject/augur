@@ -1,26 +1,30 @@
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 
+import loadBidsAsks from "src/modules/orders/actions/load-bids-asks";
+import loadOneOutcomeBidsAsks from "src/modules/orders/actions/load-one-outcome-bids-asks";
+
+jest.mock("src/modules/orders/actions/load-one-outcome-bids-asks");
+
 const marketsData = { MARKET_0: { numOutcomes: 3 } };
 const params = {
   marketId: "MARKET_0"
 };
 
 describe(`modules/orders/actions/load-bids-asks.js`, () => {
-  jest.doMock("modules/orders/actions/load-one-outcome-bids-asks", () =>
-    jest.fn((marketId, outcome, nextOutcome) => {
-      if (!marketId && nextOutcome) return nextOutcome("ERROR_MESSAGE");
-      if (nextOutcome) nextOutcome(null);
-      return {
-        type: "LOAD_ONE_OUTCOME_BIDS_ASKS",
-        marketId,
-        outcome
-      };
-    })
-  );
-
-  const loadBidsAsks = require("modules/orders/actions/load-bids-asks").default;
-
+  beforeEach(() => {
+    loadOneOutcomeBidsAsks.mockImplementation(() =>
+      jest.fn((marketId, outcome, nextOutcome) => {
+        if (!marketId && nextOutcome) return nextOutcome("ERROR_MESSAGE");
+        if (nextOutcome) nextOutcome(null);
+        return {
+          type: "LOAD_ONE_OUTCOME_BIDS_ASKS",
+          marketId,
+          outcome
+        };
+      })
+    );
+  });
   test("short-circuit if market ID not provided", () => {
     const store = configureMockStore([thunk])({});
     store.dispatch(
