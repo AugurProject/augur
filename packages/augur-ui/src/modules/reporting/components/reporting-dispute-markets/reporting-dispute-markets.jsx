@@ -6,7 +6,7 @@ import ReportingHeader from "modules/reporting/containers/reporting-header";
 import ReportDisputeNoRepState from "src/modules/reporting/components/reporting-dispute-no-rep-state/reporting-dispute-no-rep-state";
 import DisputingMarkets from "modules/reporting/components/common/disputing-markets";
 
-const Styles = require("./reporting-dispute-markets.styles");
+import Styles from "modules/reporting/components/reporting-dispute-markets/reporting-dispute-markets.styles";
 
 export default class ReportingDisputeMarkets extends Component {
   static propTypes = {
