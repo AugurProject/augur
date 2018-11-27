@@ -8826,7 +8826,20 @@ event-emitter@0.3.5, event-emitter@^0.3.5, event-emitter@~0.3.5:
     d "1"
     es5-ext "~0.10.14"
 
-event-stream@^3.3.4, event-stream@~3.3.0:
+event-stream@=3.3.4:
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/event-stream/-/event-stream-3.3.4.tgz#4ab4c9a0f5a54db9338b4c34d86bfce8f4b35571"
+  integrity sha1-SrTJoPWlTbkzi0w02Gv86PSzVXE=
+  dependencies:
+    duplexer "~0.1.1"
+    from "~0"
+    map-stream "~0.1.0"
+    pause-stream "0.0.11"
+    split "0.3"
+    stream-combiner "~0.0.4"
+    through "~2.3.1"
+
+event-stream@^3.3.4:
   version "3.3.6"
   resolved "https://registry.yarnpkg.com/event-stream/-/event-stream-3.3.6.tgz#cac1230890e07e73ec9cacd038f60a5b66173eef"
   integrity sha512-dGXNg4F/FgVzlApjzItL+7naHutA3fDqbV/zAZqDDlXTjiMnQmZKu+prImWKszeBM5UQeGvAl3u1wBiKeDh61g==
@@ -9036,7 +9049,7 @@ expect-ct@0.1.1:
   resolved "https://registry.yarnpkg.com/expect-ct/-/expect-ct-0.1.1.tgz#de84476a2dbcb85000d5903737e9bc8a5ba7b897"
   integrity sha512-ngXzTfoRGG7fYens3/RMb6yYoVLvLMfmsSllP/mZPxNHgFq41TmPSLF/nLY7fwoclI2vElvAmILFWGUYqdjfCg==
 
-expect-puppeteer@^3.3.0:
+expect-puppeteer@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/expect-puppeteer/-/expect-puppeteer-3.5.1.tgz#28a26be1357387390b55b49045ec533895172c5a"
   integrity sha512-SB5JeJCXWSRcUK39fBJlCA6qnVt3BG1/M9vYZ+XYq8gY9jab9Jm4BztsrAwDTWca1L+O/7dRYrG2BPziRtjh+Q==
@@ -9453,7 +9466,7 @@ find-pkg@^0.1.2:
   dependencies:
     find-file-up "^0.1.2"
 
-find-process@^1.2.0:
+find-process@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/find-process/-/find-process-1.2.1.tgz#2e817add52ef3bf5bdd07c9c739b3d4442bfddf4"
   integrity sha512-z4RXYStNAcoi4+smpKbzJXbMT8DdvwqTE7wL7DWZMD0SkTRfQ49z9S7YaK24kuRseKr23YSZlnyL/TaJZtgM1g==
@@ -9677,7 +9690,7 @@ from2@^2.1.0, from2@^2.1.1:
     inherits "^2.0.1"
     readable-stream "^2.0.0"
 
-from@^0.1.7:
+from@^0.1.7, from@~0:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/from/-/from-0.1.7.tgz#83c60afc58b9c56997007ed1a768b3ab303a44fe"
   integrity sha1-g8YK/Fi5xWmXAH7Rp2izqzA6RP4=
@@ -12244,17 +12257,17 @@ jest-config@^23.6.0:
     micromatch "^2.3.11"
     pretty-format "^23.6.0"
 
-jest-dev-server@^3.5.1:
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/jest-dev-server/-/jest-dev-server-3.5.1.tgz#07bfb2c6877af73d324652f3e586cb0e7fe589b5"
-  integrity sha512-XCr1MEAqV62lti0UWjtT0DkIzRJd+dRb43pAy9CH7veKhf2ZDNviCz3365g7j1lma8dFGV3DbWvpS2SnJkgwqA==
+jest-dev-server@^3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/jest-dev-server/-/jest-dev-server-3.5.2.tgz#722af80929c179ddde69ceccecde94ed5d55c508"
+  integrity sha512-NuDjzNsDWVGKQI6XlVIgFvgFWJMAHssIfd9w4xNp6fdSJp6nEU1HgClJ50J41x3umuf+MoafTuaqrvCITMVNEA==
   dependencies:
     chalk "^2.4.1"
     cwd "^0.10.0"
-    find-process "^1.2.0"
+    find-process "^1.2.1"
     inquirer "^6.2.0"
-    spawnd "^3.4.0"
-    terminate "^2.1.0"
+    spawnd "^3.5.2"
+    terminate "^2.1.2"
     wait-port "^0.2.2"
 
 jest-diff@^22.4.0, jest-diff@^22.4.3:
@@ -12331,14 +12344,14 @@ jest-environment-node@^23.4.0:
     jest-mock "^23.2.0"
     jest-util "^23.4.0"
 
-jest-environment-puppeteer@^3.3.1:
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/jest-environment-puppeteer/-/jest-environment-puppeteer-3.5.1.tgz#0d22ae46c9fa8b199ff97d865727640e0246f495"
-  integrity sha512-dq9pbqFcSFwCC6Ns8Lk7Hz/dRzYe+w3DVhGjPErIBrgrKuP6YF8TWNo8T6hGTHaz2OkAOV5Qu7QNO3KgQ0svAg==
+jest-environment-puppeteer@^3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/jest-environment-puppeteer/-/jest-environment-puppeteer-3.5.2.tgz#cd5de41f629df3d7023880eadad062ea29fc2828"
+  integrity sha512-PstkQMqErG018qQITgxjxsi7O6ZYZ/apBB0evLUNVZTBTpVXwQugPVVOw9mIHMZC3LWWtZibOyY8gAnAHoG2zg==
   dependencies:
     chalk "^2.4.1"
     cwd "^0.10.0"
-    jest-dev-server "^3.5.1"
+    jest-dev-server "^3.5.2"
     merge-deep "^3.0.2"
 
 jest-get-type@^22.1.0, jest-get-type@^22.4.3:
@@ -12463,13 +12476,13 @@ jest-mock@^23.2.0:
   resolved "https://registry.yarnpkg.com/jest-mock/-/jest-mock-23.2.0.tgz#ad1c60f29e8719d47c26e1138098b6d18b261134"
   integrity sha1-rRxg8p6HGdR8JuETgJi20YsmETQ=
 
-jest-puppeteer@3.3.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/jest-puppeteer/-/jest-puppeteer-3.3.1.tgz#c400fd6ae055287af7843c9c07871b4059a6ed69"
-  integrity sha512-L10QwDYps4/p+fEUUeayvZDlbSxM3mCdPOsamOQgVYgu9Leyl8SACb2eSqfaBR5YfaPFo64BxktZdQVjOOMo+A==
+jest-puppeteer@3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/jest-puppeteer/-/jest-puppeteer-3.5.2.tgz#07897478e97c2e2c0c88595168f1fbe6e60caa82"
+  integrity sha512-Ed39G3DTC+9nqgdVfZTZEEU45//wz5KmslZ4PrwRUi0sw+SJmd5FZxO0PpriZYfXHyjA0tk0lyQkjgoLMoLZwg==
   dependencies:
-    expect-puppeteer "^3.3.0"
-    jest-environment-puppeteer "^3.3.1"
+    expect-puppeteer "^3.5.1"
+    jest-environment-puppeteer "^3.5.2"
 
 jest-regex-util@^22.1.0, jest-regex-util@^22.4.3:
   version "22.4.3"
@@ -13946,6 +13959,11 @@ map-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/map-stream/-/map-stream-0.0.7.tgz#8a1f07896d82b10926bd3744a2420009f88974a8"
   integrity sha1-ih8HiW2CsQkmvTdEokIACfiJdKg=
+
+map-stream@~0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/map-stream/-/map-stream-0.1.0.tgz#e56aa94c4c8055a16404a0674b78f215f7c8e194"
+  integrity sha1-5WqpTEyAVaFkBKBnS3jyFffI4ZQ=
 
 map-visit@^1.0.0:
   version "1.0.0"
@@ -15974,7 +15992,7 @@ pathval@^1.1.0:
   resolved "https://registry.yarnpkg.com/pathval/-/pathval-1.1.0.tgz#b942e6d4bde653005ef6b71361def8727d0645e0"
   integrity sha1-uULm1L3mUwBe9rcTYd74cn0GReA=
 
-pause-stream@^0.0.11:
+pause-stream@0.0.11, pause-stream@^0.0.11:
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/pause-stream/-/pause-stream-0.0.11.tgz#fe5a34b0cbce12b5aa6a2b403ee2e73b602f1445"
   integrity sha1-/lo0sMvOErWqaitAPuLnO2AvFEU=
@@ -17167,12 +17185,12 @@ prr@~1.0.1:
   resolved "https://registry.yarnpkg.com/prr/-/prr-1.0.1.tgz#d3fc114ba06995a45ec6893f484ceb1d78f5f476"
   integrity sha1-0/wRS6BplaRexok/SEzrHXj19HY=
 
-ps-tree@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/ps-tree/-/ps-tree-1.1.0.tgz#b421b24140d6203f1ed3c76996b4427b08e8c014"
-  integrity sha1-tCGyQUDWID8e08dplrRCewjowBQ=
+ps-tree@^1.1.1:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/ps-tree/-/ps-tree-1.2.0.tgz#5e7425b89508736cdd4f2224d028f7bb3f722ebd"
+  integrity sha512-0VnamPPYHl4uaU/nSFeZZpR21QAWRz+sRv4iW9+v/GS/J5U5iZB5BNN6J0RMoOvdx2gWM2+ZFMIm58q24e4UYA==
   dependencies:
-    event-stream "~3.3.0"
+    event-stream "=3.3.4"
 
 pseudomap@^1.0.1, pseudomap@^1.0.2:
   version "1.0.2"
@@ -19689,14 +19707,14 @@ spawn-wrap@^1.4.2:
     signal-exit "^3.0.2"
     which "^1.3.0"
 
-spawnd@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/spawnd/-/spawnd-3.4.0.tgz#73d71bdf6e9d196ecef9a22ab433e978a7a31bec"
-  integrity sha512-bP+Cc5/jhjXJjMJNt/qX/0xuUkoMFqy5AbXIy0zZNdozzG6RF7F0oSzy7fX4B2ctqT/gNRFrAah0bLsBP7X6QA==
+spawnd@^3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/spawnd/-/spawnd-3.5.2.tgz#a3a546544666e5c8a22e0329fcfecc92cb10d307"
+  integrity sha512-taf6nYLIl8b3b1RNt0YuxnIUUgHqfx+nix8Rdr2FkNG8259+Jt8YJahrPDShOPa9vCMnDPfPsefRAY/oJy+QBg==
   dependencies:
     exit "^0.1.2"
     signal-exit "^3.0.2"
-    terminate "^2.1.0"
+    terminate "^2.1.2"
     wait-port "^0.2.2"
 
 spdx-correct@^3.0.0:
@@ -19796,6 +19814,13 @@ split2@^2.0.0:
   integrity sha512-RAb22TG39LhI31MbreBgIuKiIKhVsawfTgEGqKHTK87aG+ul/PB8Sqoi3I7kVdRWiCfrKxK3uo4/YUkpNvhPbw==
   dependencies:
     through2 "^2.0.2"
+
+split@0.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/split/-/split-0.3.3.tgz#cd0eea5e63a211dfff7eb0f091c4133e2d0dd28f"
+  integrity sha1-zQ7qXmOiEd//frDwkcQTPi0N0o8=
+  dependencies:
+    through "2"
 
 split@^1.0.0, split@^1.0.1:
   version "1.0.1"
@@ -19913,6 +19938,13 @@ stream-combiner@^0.2.1, stream-combiner@^0.2.2:
   dependencies:
     duplexer "~0.1.1"
     through "~2.3.4"
+
+stream-combiner@~0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/stream-combiner/-/stream-combiner-0.0.4.tgz#4d5e433c185261dde623ca3f44c586bcf5c4ad14"
+  integrity sha1-TV5DPBhSYd3mI8o/RMWGvPXErRQ=
+  dependencies:
+    duplexer "~0.1.1"
 
 stream-concat-promise@^1.0.0:
   version "1.0.2"
@@ -20682,12 +20714,12 @@ term-size@^1.2.0:
   dependencies:
     execa "^0.7.0"
 
-terminate@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/terminate/-/terminate-2.1.0.tgz#a87ee424be01a1d28f2f301045043a5bcd679a05"
-  integrity sha1-qH7kJL4BodKPLzAQRQQ6W81nmgU=
+terminate@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/terminate/-/terminate-2.1.2.tgz#3c78b9dc7559cb66af215c622cce906d415e2ef9"
+  integrity sha512-ltKc9MkgcRe7gzD7XSttHCF1feKM1pTkCdb58jFVWk1efPN9JIk/BHSlOaYF+hCcWoubeJQ8C8Phb0++fa6iNQ==
   dependencies:
-    ps-tree "^1.1.0"
+    ps-tree "^1.1.1"
 
 terser-webpack-plugin@^1.1.0:
   version "1.1.0"
@@ -20801,7 +20833,7 @@ through2@~0.2.3:
     readable-stream "~1.1.9"
     xtend "~2.1.1"
 
-through@2, "through@>=2.2.7 <3", through@^2.3.4, through@^2.3.6, through@^2.3.8, through@~2.3, through@~2.3.4, through@~2.3.6, through@~2.3.8:
+through@2, "through@>=2.2.7 <3", through@^2.3.4, through@^2.3.6, through@^2.3.8, through@~2.3, through@~2.3.1, through@~2.3.4, through@~2.3.6, through@~2.3.8:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
