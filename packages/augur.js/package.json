@@ -84,7 +84,7 @@
     "keythereum": "1.0.4",
     "mocha": "5.2.0",
     "mocha-lcov-reporter": "0.0.2",
-    "proxyquire": "1.7.11",
+    "proxyquire": "1.8.0",
     "readline-sync": "1.4.9",
     "sinon": "2.0.0",
     "uglify-js": "2.6.1"
