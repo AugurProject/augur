@@ -57,36 +57,33 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
     done();
   });
 
-  test(
-    "generates a range of 5 buckets, including start and end times every 10 seconds",
-    (done) => {
-      const buckets = bucketRangeByInterval(10000, 10040, 10);
-      expect(buckets).toEqual([
-        {
-          timestamp: 10000,
-          profitLoss: null,
-        },
-        {
-          timestamp: 10010,
-          profitLoss: null,
-        },
-        {
-          timestamp: 10020,
-          profitLoss: null,
-        },
-        {
-          timestamp: 10030,
-          profitLoss: null,
-        },
-        {
-          timestamp: 10040,
-          profitLoss: null,
-        },
-      ]);
+  test("generates a range of 5 buckets, including start and end times every 10 seconds", (done) => {
+    const buckets = bucketRangeByInterval(10000, 10040, 10);
+    expect(buckets).toEqual([
+      {
+        timestamp: 10000,
+        profitLoss: null,
+      },
+      {
+        timestamp: 10010,
+        profitLoss: null,
+      },
+      {
+        timestamp: 10020,
+        profitLoss: null,
+      },
+      {
+        timestamp: 10030,
+        profitLoss: null,
+      },
+      {
+        timestamp: 10040,
+        profitLoss: null,
+      },
+    ]);
 
-      done();
-    },
-  );
+    done();
+  });
 
   test("generates 31 buckets with explicit periodInteval", (done) => {
     const buckets = bucketRangeByInterval(0, 30 * 86400, 86400);
@@ -147,46 +144,46 @@ describe("tests for test/trading-proceeds-claimed-2.db", () => {
       try {
         expect(results.aggregate).toEqual([
           {
-            "lastPrice": "0.5",
-            "profitLoss": {
-              "meanOpenPrice": "0.5",
-              "position": "9.994",
-              "realized": "-0.0000000000000000000000004",
-              "total": "-0.0000000000000000000000004",
-              "unrealized": "0",
+            lastPrice: "0.5",
+            profitLoss: {
+              meanOpenPrice: "0.5",
+              position: "9.994",
+              realized: "-0.0000000000000000000000004",
+              total: "-0.0000000000000000000000004",
+              unrealized: "0",
             },
-            "timestamp": 1551115093.25,
+            timestamp: 1551115093.25,
           },
           {
-            "lastPrice": "0.5",
-            "profitLoss": {
-              "meanOpenPrice": "0.5",
-              "position": "9.994",
-              "realized": "-0.0000000000000000000000004",
-              "total": "-0.0000000000000000000000004",
-              "unrealized": "0",
+            lastPrice: "0.5",
+            profitLoss: {
+              meanOpenPrice: "0.5",
+              position: "9.994",
+              realized: "-0.0000000000000000000000004",
+              total: "-0.0000000000000000000000004",
+              unrealized: "0",
             },
-            "timestamp": 1551352708.5,
+            timestamp: 1551352708.5,
           },
           {
-            "profitLoss": {
-              "meanOpenPrice": "0.5",
-              "position": "9.994",
-              "realized": "0",
-              "total": "4.997",
-              "unrealized": "4.997",
+            profitLoss: {
+              meanOpenPrice: "0.5",
+              position: "9.994",
+              realized: "0",
+              total: "4.997",
+              unrealized: "4.997",
             },
-            "timestamp": 1551590323.75,
+            timestamp: 1551590323.75,
           },
           {
-            "profitLoss": {
-              "meanOpenPrice": "0.99940035978412952229",
-              "position": "-10005999999999999990.006",
-              "realized": "4.997",
-              "total": "4.997",
-              "unrealized": "0",
+            profitLoss: {
+              meanOpenPrice: "0.5",
+              position: "-0.012",
+              realized: "4.997",
+              total: "4.997",
+              unrealized: "0",
             },
-            "timestamp": 1551827939,
+            timestamp: 1551827939,
           },
         ]);
 
@@ -261,18 +258,19 @@ describe("tests for test/profitloss.db", () => {
   test("has a total PL of 4eth for account2", (done) => {
     getProfitLoss(connection, augur, universe, account2, 0, endTime, endTime, (err, results) => {
       try {
-
-        var expected = [{
-          lastPrice: "0.1",
-          profitLoss: {
-            meanOpenPrice: "0",
-            position: "0",
-            realized: "4",
-            total: "4",
-            unrealized: "0",
+        var expected = [
+          {
+            lastPrice: "0.1",
+            profitLoss: {
+              meanOpenPrice: "0",
+              position: "0",
+              realized: "4",
+              total: "4",
+              unrealized: "0",
+            },
+            timestamp: endTime,
           },
-          timestamp: endTime,
-        }];
+        ];
         expect(expected).toEqual(results.aggregate);
 
         expect({
@@ -325,58 +323,55 @@ describe("server/getters/get-profit-loss", () => {
     await connection.destroy();
   });
 
-  test(
-    "generates 3 datapoints for user with trades in one period after start time",
-    (done) => {
-      testWithDatabase(
-        {
-          params: {
-            universe: "0x000000000000000000000000000000000000000b",
-            account: "0x0000000000000000000000000000000000000b0b",
-            startTime: START_TIME,
-            endTime: START_TIME + 3 * HOUR_SECONDS,
-            periodInterval: HOUR_SECONDS,
-          },
-          assertions: (err, profitLoss) => {
-            expect(err).toBeFalsy();
-            expect(profitLoss.aggregate).toEqual([
-              {
-                profitLoss: {
-                  meanOpenPrice: "5.5",
-                  position: "-0.9",
-                  realized: "-0.13",
-                  total: "-0.26",
-                  unrealized: "-0.13",
-                },
-                timestamp: 1506478100,
-              },
-              {
-                profitLoss: {
-                  meanOpenPrice: "5.5",
-                  position: "-0.9",
-                  realized: "-0.13",
-                  total: "-0.26",
-                  unrealized: "-0.13",
-                },
-                timestamp: 1506481700,
-              },
-              {
-                profitLoss: {
-                  meanOpenPrice: "5.5",
-                  position: "-0.9",
-                  realized: "-0.13",
-                  total: "-0.26",
-                  unrealized: "-0.13",
-                },
-                timestamp: 1506485300,
-              },
-            ]);
-          },
+  test("generates 3 datapoints for user with trades in one period after start time", (done) => {
+    testWithDatabase(
+      {
+        params: {
+          universe: "0x000000000000000000000000000000000000000b",
+          account: "0x0000000000000000000000000000000000000b0b",
+          startTime: START_TIME,
+          endTime: START_TIME + 3 * HOUR_SECONDS,
+          periodInterval: HOUR_SECONDS,
         },
-        done,
-      );
-    },
-  );
+        assertions: (err, profitLoss) => {
+          expect(err).toBeFalsy();
+          expect(profitLoss.aggregate).toEqual([
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506478100,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506481700,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506485300,
+            },
+          ]);
+        },
+      },
+      done
+    );
+  });
 
   test("buckets datapoints from the first trade the user made", (done) => {
     testWithDatabase(
@@ -424,146 +419,137 @@ describe("server/getters/get-profit-loss", () => {
           ]);
         },
       },
-      done,
+      done
     );
   });
 
-  test(
-    "buckets datapoints from the first trade the user to now, producing 30 buckets",
-    (done) => {
-      testWithDatabase(
-        {
-          params: {
-            universe: "0x000000000000000000000000000000000000000b",
-            account: "0x0000000000000000000000000000000000000b0b",
-          },
-          assertions: (err, profitLoss) => {
-            expect(err).toBeFalsy();
-            expect(profitLoss.aggregate.length).toEqual(30);
-            expect(profitLoss.aggregate[0].profitLoss).toEqual({
-              meanOpenPrice: "3.37272727272727272727",
-              position: "1.1",
-              realized: "0.13",
-              total: "0",
-              unrealized: "-0.13",
-            });
-
-            // The last bucket end time should be really quite near out current time
-            expect(Date.now() - profitLoss.aggregate[29].timestamp).toBeLessThanOrEqual(250);
-          },
+  test("buckets datapoints from the first trade the user to now, producing 30 buckets", (done) => {
+    testWithDatabase(
+      {
+        params: {
+          universe: "0x000000000000000000000000000000000000000b",
+          account: "0x0000000000000000000000000000000000000b0b",
         },
-        done,
-      );
-    },
-  );
+        assertions: (err, profitLoss) => {
+          expect(err).toBeFalsy();
+          expect(profitLoss.aggregate.length).toEqual(30);
+          expect(profitLoss.aggregate[0].profitLoss).toEqual({
+            meanOpenPrice: "3.37272727272727272727",
+            position: "1.1",
+            realized: "0.13",
+            total: "0",
+            unrealized: "-0.13",
+          });
 
-  test(
-    "makes 30 empty profit-loss buckets spaced from time time of first trade to now",
-    (done) => {
-      testWithDatabase(
-        {
-          params: {
-            universe: "0x000000000000000000000000000000000000000b",
-            account: "0x0badbadbadbadbadbadbadbadbadbadbadbadbad",
-          },
-          assertions: (err, profitLoss) => {
-            expect(err).toBeFalsy();
-            expect(profitLoss.aggregate.length).toEqual(30);
-            profitLoss.aggregate.forEach((bucket) => {
-              expect(bucket.profitLoss).toBeNull();
-            });
-
-            // The last bucket end time should be really quite near out current time
-            expect(Date.now() - profitLoss.aggregate[29].timestamp).toBeLessThanOrEqual(250);
-          },
+          // The last bucket end time should be really quite near out current time
+          expect(Date.now() - profitLoss.aggregate[29].timestamp).toBeLessThanOrEqual(250);
         },
-        done,
-      );
-    },
-  );
+      },
+      done
+    );
+  });
 
-  test(
-    "generates 3 PL datapoints for user with trades in three periods after start time",
-    (done) => {
-      testWithDatabase(
-        {
-          params: {
-            universe: "0x000000000000000000000000000000000000000b",
-            account: "0x0000000000000000000000000000000000000b0b",
-            startTime: START_TIME,
-            endTime: START_TIME + MINUTE_SECONDS,
-            periodInterval: 10,
-          },
-          assertions: (err, profitLoss) => {
-            expect(err).toBeFalsy();
-            expect(profitLoss.aggregate).toEqual([
-              {
-                profitLoss: {
-                  meanOpenPrice: "5.5",
-                  position: "-0.6",
-                  realized: "0",
-                  total: "0",
-                  unrealized: "0",
-                },
-                timestamp: 1506474510,
-              },
-              {
-                profitLoss: {
-                  meanOpenPrice: "5.5",
-                  position: "-0.9",
-                  realized: "-0.13",
-                  total: "-0.26",
-                  unrealized: "-0.13",
-                },
-                timestamp: 1506474520,
-              },
-              {
-                profitLoss: {
-                  meanOpenPrice: "5.5",
-                  position: "-0.9",
-                  realized: "-0.13",
-                  total: "-0.26",
-                  unrealized: "-0.13",
-                },
-                timestamp: 1506474530,
-              },
-              {
-                profitLoss: {
-                  meanOpenPrice: "5.5",
-                  position: "-0.9",
-                  realized: "-0.13",
-                  total: "-0.26",
-                  unrealized: "-0.13",
-                },
-                timestamp: 1506474540,
-              },
-              {
-                profitLoss: {
-                  meanOpenPrice: "5.5",
-                  position: "-0.9",
-                  realized: "-0.13",
-                  total: "-0.26",
-                  unrealized: "-0.13",
-                },
-                timestamp: 1506474550,
-              },
-              {
-                profitLoss: {
-                  meanOpenPrice: "5.5",
-                  position: "-0.9",
-                  realized: "-0.13",
-                  total: "-0.26",
-                  unrealized: "-0.13",
-                },
-                timestamp: 1506474560,
-              },
-            ]);
-          },
+  test("makes 30 empty profit-loss buckets spaced from time time of first trade to now", (done) => {
+    testWithDatabase(
+      {
+        params: {
+          universe: "0x000000000000000000000000000000000000000b",
+          account: "0x0badbadbadbadbadbadbadbadbadbadbadbadbad",
         },
-        done,
-      );
-    },
-  );
+        assertions: (err, profitLoss) => {
+          expect(err).toBeFalsy();
+          expect(profitLoss.aggregate.length).toEqual(30);
+          profitLoss.aggregate.forEach((bucket) => {
+            expect(bucket.profitLoss).toBeNull();
+          });
+
+          // The last bucket end time should be really quite near out current time
+          expect(Date.now() - profitLoss.aggregate[29].timestamp).toBeLessThanOrEqual(250);
+        },
+      },
+      done
+    );
+  });
+
+  test("generates 3 PL datapoints for user with trades in three periods after start time", (done) => {
+    testWithDatabase(
+      {
+        params: {
+          universe: "0x000000000000000000000000000000000000000b",
+          account: "0x0000000000000000000000000000000000000b0b",
+          startTime: START_TIME,
+          endTime: START_TIME + MINUTE_SECONDS,
+          periodInterval: 10,
+        },
+        assertions: (err, profitLoss) => {
+          expect(err).toBeFalsy();
+          expect(profitLoss.aggregate).toEqual([
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.6",
+                realized: "0",
+                total: "0",
+                unrealized: "0",
+              },
+              timestamp: 1506474510,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506474520,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506474530,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506474540,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506474550,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506474560,
+            },
+          ]);
+        },
+      },
+      done
+    );
+  });
 
   test("generates 30 PLs all with null profitLoss", (done) => {
     testWithDatabase(
@@ -582,7 +568,7 @@ describe("server/getters/get-profit-loss", () => {
           expect(profitLoss.all).toEqual({});
         },
       },
-      done,
+      done
     );
   });
 
@@ -650,7 +636,7 @@ describe("server/getters/get-profit-loss", () => {
           ]);
         },
       },
-      done,
+      done
     );
   });
 
@@ -732,65 +718,62 @@ describe("server/getters/get-profit-loss", () => {
           ]);
         },
       },
-      done,
+      done
     );
   });
 
-  test(
-    "calculates pl for 1 period, and 4 periods, and verifies last period PLs are equal",
-    (done) => {
-      var buckets1 = [
-        {
-          timestamp: 10000,
-          lastPrice: null,
-        },
-        {
-          timestamp: 20000,
-          lastPrice: "0.3",
-        },
-      ];
-      var pls1 = calculateEarningsPerTimePeriod(augur, trades1, buckets1);
-      expect(pls1.length).toEqual(1);
+  test("calculates pl for 1 period, and 4 periods, and verifies last period PLs are equal", (done) => {
+    var buckets1 = [
+      {
+        timestamp: 10000,
+        lastPrice: null,
+      },
+      {
+        timestamp: 20000,
+        lastPrice: "0.3",
+      },
+    ];
+    var pls1 = calculateEarningsPerTimePeriod(augur, trades1, buckets1);
+    expect(pls1.length).toEqual(1);
 
-      var buckets2 = [
-        {
-          timestamp: 10000,
-          lastPrice: null,
-        },
-        {
-          timestamp: 10010,
-          lastPrice: "0.1",
-        },
-        {
-          timestamp: 10020,
-          lastPrice: "0.2",
-        },
-        {
-          timestamp: 10030,
-          lastPrice: "0.2",
-        },
-        {
-          timestamp: 10040,
-          lastPrice: "0.3",
-        },
-      ];
-      var pls2 = calculateEarningsPerTimePeriod(augur, trades1, buckets2);
-      expect(pls2.length).toEqual(4);
+    var buckets2 = [
+      {
+        timestamp: 10000,
+        lastPrice: null,
+      },
+      {
+        timestamp: 10010,
+        lastPrice: "0.1",
+      },
+      {
+        timestamp: 10020,
+        lastPrice: "0.2",
+      },
+      {
+        timestamp: 10030,
+        lastPrice: "0.2",
+      },
+      {
+        timestamp: 10040,
+        lastPrice: "0.3",
+      },
+    ];
+    var pls2 = calculateEarningsPerTimePeriod(augur, trades1, buckets2);
+    expect(pls2.length).toEqual(4);
 
-      var result = {
-        meanOpenPrice: "0.166666666666666666667",
-        position: "10",
-        realized: "1.166666666666666666665",
-        total: "2.499999999999999999995",
-        unrealized: "1.33333333333333333333",
-      };
+    var result = {
+      meanOpenPrice: "0.166666666666666666667",
+      position: "10",
+      realized: "1.166666666666666666665",
+      total: "2.499999999999999999995",
+      unrealized: "1.33333333333333333333",
+    };
 
-      expect(pls1[0].profitLoss).toEqual(result);
-      expect(pls2[3].profitLoss).toEqual(result);
+    expect(pls1[0].profitLoss).toEqual(result);
+    expect(pls2[3].profitLoss).toEqual(result);
 
-      done();
-    },
-  );
+    done();
+  });
 
   test("calculates pl for 1 periods and ignores trailing trades", (done) => {
     var trades2 = trades1.slice();
