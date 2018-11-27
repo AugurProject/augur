@@ -16,7 +16,7 @@ py-ecc==1.1.1             # via ethereum
 py-solc==1.4.0
 py==1.4.34                # via pytest
 pycparser==2.18           # via cffi
-pycryptodome==3.4.7
+pycryptodome==3.7.2
 pyethash==0.1.27          # via ethereum
 pysha3==1.0.2             # via ethereum
 pytest-profiling==1.2.11
