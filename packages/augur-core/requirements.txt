@@ -20,7 +20,7 @@ pycryptodome==3.4.7
 pyethash==0.1.27          # via ethereum
 pysha3==1.0.2             # via ethereum
 pytest-profiling==1.2.11
-pytest==3.1.2
+pytest==3.10.1
 pyyaml==3.12              # via ethereum
 repoze.lru==0.6           # via ethereum
 rlp==0.5.1                # via ethereum
