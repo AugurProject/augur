@@ -91,7 +91,7 @@
     "ethjs-query": "0.3.8",
     "ethjs-rpc": "0.2.0",
     "ethjs-signer": "0.1.1",
-    "fs-readfile-promise": "3.0.0",
+    "fs-readfile-promise": "3.0.1",
     "get-port": "3.2.0",
     "path": "0.12.7",
     "recursive-readdir": "2.2.1",
