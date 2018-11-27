@@ -73,7 +73,6 @@ export const generateTrade = memoize(
       marketType,
       sharesFilled,
       adjustedTotalCost,
-      shareCost,
       settlementFee
     );
 
@@ -124,6 +123,9 @@ export const generateTrade = memoize(
         ? formatPercent(preOrderProfitLoss.potentialProfitPercent)
         : null,
 
+      tradingFees: preOrderProfitLoss
+        ? formatEther(preOrderProfitLoss.tradingFees)
+        : null,
       totalFee: formatEther(totalFee, { blankZero: true }),
       totalFeePercent: formatEther(feePercent, { blankZero: true }),
       totalCost: formatEther(totalCost.abs().toFixed(), { blankZero: false }),
