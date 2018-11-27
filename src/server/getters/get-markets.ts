@@ -23,7 +23,7 @@ export const GetMarketsParams = t.intersection([
 // Returning marketIds should likely be more generalized, since it is a single line change for most getters (awaiting reporting, by user, etc)
 export async function getMarkets(db: Knex, augur: {}, params: t.TypeOf<typeof GetMarketsParams>) {
   let columns = ["markets.marketId", "marketStateBlock.timestamp as reportingStateUpdatedOn"];
-  if (params.maxFee != null && params.maxFee !== undefined) columns = columns.concat(["markets.reportingFeeRate", "markets.marketCreatorFeeRate"]);
+  if (params.maxFee) columns = columns.concat(["markets.reportingFeeRate", "markets.marketCreatorFeeRate"]);
   const query = getMarketsWithReportingState(db, columns);
   query.join("blocks as marketStateBlock", "marketStateBlock.blockNumber", "market_state.blockNumber");
   query.leftJoin("blocks as lastTradeBlock", "lastTradeBlock.blockNumber", "markets.lastTradeBlockNumber").select("lastTradeBlock.timestamp as lastTradeTime");
@@ -42,12 +42,11 @@ export async function getMarkets(db: Knex, augur: {}, params: t.TypeOf<typeof Ge
     });
   }
 
-  let marketsRows = await queryModifier<MarketsContractAddressAndFeesRow<BigNumber>>(db, query, "volume", "desc", params);
-
-  if (params.maxFee != null && params.maxFee !== undefined) {
-    const maxFee: number = params.maxFee;
-    marketsRows = marketsRows.filter((row: MarketsContractAddressAndFeesRow<BigNumber>) => row.reportingFeeRate.plus(row.marketCreatorFeeRate).lte(maxFee));
+  if (params.maxFee) {
+    query.whereRaw("(CAST(markets.reportingFeeRate as numeric) + CAST(markets.marketCreatorFeeRate as numeric)) < ?", [params.maxFee]);
   }
+
+  const marketsRows = await queryModifier<MarketsContractAddressAndFeesRow<BigNumber>>(db, query, "volume", "desc", params);
 
   return marketsRows.map((marketsRow: MarketsContractAddressAndFeesRow<BigNumber>): Address => marketsRow.marketId);
 }
