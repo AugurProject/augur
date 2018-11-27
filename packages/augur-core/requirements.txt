@@ -12,7 +12,7 @@ future==0.17.1            # via ethereum
 gprof2dot==2017.9.19      # via pytest-profiling
 numpy==1.13.0
 pbkdf2==1.3               # via ethereum
-py-ecc==1.1.1             # via ethereum
+py-ecc==1.4.3             # via ethereum
 py-solc==1.4.0
 py==1.4.34                # via pytest
 pycparser==2.18           # via cffi
