@@ -1,4 +1,4 @@
-FROM node:8.12.0-alpine
+FROM node:8.13.0-alpine
 ARG SOLC_VERSION=v0.4.24
 ARG SOLC_MD5=dc791cd7db87b7df5e47975d222dc5fe
 
