@@ -51,7 +51,7 @@
     "immutable-delete": "^1.1.0",
     "ip-port-regex": "^2.0.0",
     "knex": "0.15.2",
-    "lodash": "4.17.10",
+    "lodash": "4.17.11",
     "node-pre-gyp": "~0.6.38",
     "postcss-loader": "^3.0.0",
     "react": "^16.4.2",
