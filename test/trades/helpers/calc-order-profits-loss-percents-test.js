@@ -58,16 +58,17 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
   test({
     description: `should return the expected profit and loss values for a BUY in a yes/no market`,
     assertions: () => {
-      // numShares, limitPrice, side, minPrice, maxPrice, type, sharesFilled, tradeTotalCost
-      const actual = calcProfits("10", "0.4", BUY, "0", "1", YES_NO, "10", "4");
+      // numShares, limitPrice, side, minPrice, maxPrice, type, sharesFilled, tradeTotalCost, settlementFee
+      const actual = calcProfits("10", "0.4", BUY, "0", "1", YES_NO, "10", "4", "0.02");
 
       const expected = {
-        potentialEthProfit: createBigNumber("6"),
+        potentialEthProfit: createBigNumber("5.8"),
         potentialEthLoss: createBigNumber("4"),
-        potentialProfitPercent: createBigNumber("150"),
-        potentialLossPercent: createBigNumber("100")
+        potentialProfitPercent: createBigNumber("145"),
+        potentialLossPercent: createBigNumber("100"),
+        tradingFees: createBigNumber("0.2")
       };
-
+      
       assert.deepEqual(
         actual,
         expected,
@@ -87,14 +88,16 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
         "1",
         YES_NO,
         "10",
-        "6"
+        "6",
+        "0.04"
       );
 
       const expected = {
-        potentialEthProfit: createBigNumber("4"),
+        potentialEthProfit: createBigNumber("3.6"),
         potentialEthLoss: createBigNumber("6"),
-        potentialProfitPercent: createBigNumber("66.666666666666666667"),
-        potentialLossPercent: createBigNumber("100")
+        potentialProfitPercent: createBigNumber("60"),
+        potentialLossPercent: createBigNumber("100"),
+        tradingFees: createBigNumber("0.4")
       };
 
       assert.deepEqual(
@@ -116,14 +119,16 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
         "10",
         SCALAR,
         "10",
-        "60"
+        "60",
+        "0.25"
       );
 
       const expected = {
-        potentialEthProfit: createBigNumber("90"),
+        potentialEthProfit: createBigNumber("52.5"),
         potentialEthLoss: createBigNumber("60"),
-        potentialProfitPercent: createBigNumber("150"),
-        potentialLossPercent: createBigNumber("100")
+        potentialProfitPercent: createBigNumber("87.5"),
+        potentialLossPercent: createBigNumber("100"),
+        tradingFees: createBigNumber("37.5")
       };
 
       assert.deepEqual(
@@ -145,14 +150,16 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
         "10",
         SCALAR,
         "10",
-        "90"
+        "90",
+        "0.2"
       );
 
       const expected = {
-        potentialEthProfit: createBigNumber("60"),
+        potentialEthProfit: createBigNumber("30"),
         potentialEthLoss: createBigNumber("90"),
-        potentialProfitPercent: createBigNumber("66.666666666666666667"),
-        potentialLossPercent: createBigNumber("100")
+        potentialProfitPercent: createBigNumber("33.333333333333333333"),
+        potentialLossPercent: createBigNumber("100"),
+        tradingFees: createBigNumber("30")
       };
 
       assert.deepEqual(

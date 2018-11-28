@@ -33,6 +33,7 @@ const MarketTradingConfirm = ({
     totalCost,
     shareCost
   } = trade;
+  const negativeProfit = potentialEthProfit && potentialEthProfit.value <= 0;
   return (
     <section className={Styles.TradingConfirm}>
       <div className={Styles.TradingConfirm__header}>
@@ -162,7 +163,11 @@ const MarketTradingConfirm = ({
       <ul className={Styles.TradingConfirm__potential}>
         <li>
           <span>Potential Profit</span>
-          <span>
+          <span
+            className={classNames({
+              [`${Styles.negative__profit}`]: negativeProfit
+            })}
+          >
             <ValueDenomination
               formatted={
                 potentialEthProfit
@@ -170,7 +175,11 @@ const MarketTradingConfirm = ({
                   : "0"
               }
             />{" "}
-            <span>
+            <span
+              className={classNames({
+                [`${Styles.negative__profit}`]: negativeProfit
+              })}
+            >
               ETH (
               {potentialProfitPercent ? potentialProfitPercent.formatted : "0"}
               %)
