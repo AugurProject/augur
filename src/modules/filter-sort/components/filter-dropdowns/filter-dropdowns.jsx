@@ -21,6 +21,7 @@ import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 import {
   MAX_FEE_02_PERCENT,
   MAX_FEE_05_PERCENT,
+  MAX_FEE_100_PERCENT,
   MAX_FEE_10_PERCENT,
   MAX_FEE_20_PERCENT,
   MAX_FEE_30_PERCENT,
@@ -43,7 +44,7 @@ const filterOptions = [
 ];
 
 const maxFeesOptions = [
-  { label: "All Markets", value: "1" },
+  { label: "All Markets", value: MAX_FEE_100_PERCENT },
   { label: "Markets with Fees < 2%", value: MAX_FEE_02_PERCENT },
   { label: "Markets with Fees < 5%", value: MAX_FEE_05_PERCENT },
   { label: "Markets with Fees < 10%", value: MAX_FEE_10_PERCENT },
