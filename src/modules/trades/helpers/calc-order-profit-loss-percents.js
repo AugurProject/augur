@@ -74,16 +74,9 @@ export default function(
     .dividedBy(maxTotalTradeCostNoFee)
     .times(100);
 
-  const longETHpotentialProfit = totalShareValue
-    .minus(shortETH)
-    .minus(winningSettlementCost);
-  const shortETHpotentialProfit = totalShareValue
-    .minus(longETH)
-    .minus(winningSettlementCost);
-  const totalETHValueWinnable =
-    side === BUY
-      ? totalShareValue.minus(shortETH)
-      : totalShareValue.minus(longETH);
+  const longETHpotentialProfit = longETH.minus(winningSettlementCost);
+  const shortETHpotentialProfit = shortETH.minus(winningSettlementCost);
+  const totalETHValueWinnable = side === BUY ? longETH : shortETH;
   const longETHPercentProfit = longETHpotentialProfit
     .dividedBy(totalETHValueWinnable)
     .times(100);
