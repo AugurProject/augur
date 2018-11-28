@@ -59,7 +59,7 @@
     "event-emitter": "0.3.5",
     "immutable-delete": "1.1.0",
     "keccak": "1.4.0",
-    "lodash": "4.17.10",
+    "lodash": "4.17.11",
     "options-parser": "0.4.0",
     "parrotsay-api": "0.1.1",
     "rimraf": "2.6.2",
