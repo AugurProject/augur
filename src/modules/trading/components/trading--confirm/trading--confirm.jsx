@@ -33,7 +33,7 @@ const MarketTradingConfirm = ({
     totalCost,
     shareCost
   } = trade;
-  const negativeProfit = potentialEthProfit && potentialEthProfit.value < 0;
+  const negativeProfit = potentialEthProfit && potentialEthProfit.value <= 0;
   return (
     <section className={Styles.TradingConfirm}>
       <div className={Styles.TradingConfirm__header}>
