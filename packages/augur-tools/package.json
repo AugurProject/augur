@@ -4,7 +4,16 @@
   "description": "Tools and dev dependencies",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker:build": "bash ./docker-builder/build.sh",
+    "docker:push": "bash ./docker-builder/push.sh",
+    "docker:build-and-push": "yarn docker:build && yarn docker:push",
+    "docker:geth": "docker run -e GETH_VERBOSITY=4 -it -p 8545:8545 -p 8546:8546 augurproject/dev-node-geth:latest",
+    "docker:geth:pop": "docker-builder/run.sh augurproject/dev-pop-geth-v2",
+    "docker:geth:pop-15": "./docker-builder/run.sh augurproject/dev-pop-geth-15-v2",
+    "docker:geth:pop-normal-time": "docker-builder/run.sh augurproject/dev-pop-normtime-geth-v2",
+    "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
+    "docker:geth:files": "./scripts/copy-docker-files.sh augurproject/dev-pop-geth:core-$(node scripts/core-version.js)"
   },
   "repository": {
     "type": "git",

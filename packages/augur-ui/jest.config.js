@@ -2,6 +2,7 @@
 // https://jestjs.io/docs/en/configuration.html
 
 module.exports = {
+  displayName: "augur-ui",
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -67,11 +68,7 @@ module.exports = {
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    "^src/(.*)$": "<rootDir>/src/$1",
-    "^(config|modules|utils|services)/(.*)$": "<rootDir>/src/$1/$2",
-    "^assertions/(.*)$": "<rootDir>/test/assertions/$1",
-    "^test/(.*)$": "<rootDir>/test/$1",
-    "\\.(style|styles)$": "<rootDir>/test/mockStyle.js"
+    "\\.styles?$": "<rootDir>/test/mockStyle.js"
   },
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -92,7 +89,7 @@ module.exports = {
   // reporters: undefined,
 
   // Automatically reset mock state between every test
-  // resetMocks: false,
+  resetMocks: false,
 
   // Reset the module registry before running each individual test
   // resetModules: false,
@@ -104,20 +101,17 @@ module.exports = {
   // restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
-  // rootDir: null,
+  // rootDir: "./",
 
   // A list of paths to directories that Jest should use to search for files in
-  // roots: [
-  //   "<rootDir>"
-  // ],
-
+  modulePaths: ["<rootDir>/src/", "<rootDir>/", "<rootDir>/tests/"],
   // Allows you to use a custom runner instead of Jest's default test runner
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
   setupFiles: ["<rootDir>/test/setup.js"],
   // The path to a module that runs some code to configure or set up the testing framework before each test
-  setupTestFrameworkScriptFile: "<rootDir>/test/setupFramework.js",
+  // setupTestFrameworkScriptFile: "",
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],

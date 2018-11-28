@@ -1,4 +1,4 @@
-FROM node:8.12.0-alpine
+FROM node:8.14.0-alpine
 
 ENV PATH /root/.yarn/bin:$PATH
 ARG ethereum_network=rinkeby

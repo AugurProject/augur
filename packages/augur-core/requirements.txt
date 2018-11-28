@@ -5,10 +5,10 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 asn1crypto==0.24.0        # via coincurve
-cffi==1.11.1              # via coincurve
+cffi==1.11.5              # via coincurve
 coincurve==6.0.0          # via ethereum
-ethereum==2.1.4
-future==0.16.0            # via ethereum
+ethereum==2.3.2
+future==0.17.1            # via ethereum
 gprof2dot==2017.9.19      # via pytest-profiling
 numpy==1.13.0
 pbkdf2==1.3               # via ethereum
