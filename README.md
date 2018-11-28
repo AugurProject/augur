@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/augurproject/augur/_apis/build/status/AugurProject.augur?branchName=master)](https://dev.azure.com/augurproject/augur/_build/latest?definitionId=1)
+
 # Define: Augur Protocol
 Augur is a decentralized oracle and peer to peer protocol for prediction markets. Augur is free, public, open source software, portions of which are licensed under the General Public License (GPL) and portions of which are licensed under the Massachusetts Institute of Technology (MIT) license. Augur is a set of smart contracts written in Solidity that can be deployed to the Ethereum blockchain.
 
