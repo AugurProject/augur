@@ -55,7 +55,7 @@
     "webpack-hot-middleware": "2.24.3",
     "execa": "0.11.0",
     "lerna": "3.5.0",
-    "listr": "0.14.2",
+    "listr": "0.14.3",
     "mocha": "5.2.0",
     "rxjs-compat": "6.3.2",
     "typescript": "2.9.2"
