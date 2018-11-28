@@ -21,6 +21,7 @@ export default class MarketsView extends Component {
     universe: PropTypes.string,
     defaultFilter: PropTypes.string.isRequired,
     defaultSort: PropTypes.string.isRequired,
+    defaultMaxFee: PropTypes.string.isRequired,
     loadDisputing: PropTypes.func.isRequired
   };
 
@@ -36,6 +37,7 @@ export default class MarketsView extends Component {
     this.state = {
       filter: props.defaultFilter,
       sort: props.defaultSort,
+      maxFee: props.defaultMaxFee,
       filterSortedMarkets: []
     };
 
@@ -62,15 +64,15 @@ export default class MarketsView extends Component {
   }
 
   updateFilter(params) {
-    const { filter, sort } = params;
-    this.setState({ filter, sort }, this.updateFilteredMarkets);
+    const { filter, sort, maxFee } = params;
+    this.setState({ filter, sort, maxFee }, this.updateFilteredMarkets);
   }
 
   updateFilteredMarkets() {
     const { search, category, loadMarketsByFilter } = this.props;
-    const { filter, sort } = this.state;
+    const { filter, sort, maxFee } = this.state;
     loadMarketsByFilter(
-      { category, search, filter, sort },
+      { category, search, filter, sort, maxFee },
       (err, filterSortedMarkets) => {
         if (err) return console.log("Error loadMarketsFilter:", err);
         if (this.componentWrapper) this.setState({ filterSortedMarkets });
@@ -88,7 +90,7 @@ export default class MarketsView extends Component {
       markets,
       toggleFavorite
     } = this.props;
-    const s = this.state;
+    const { filter, sort, maxFee, filterSortedMarkets } = this.state;
 
     return (
       <section
@@ -103,8 +105,9 @@ export default class MarketsView extends Component {
           isLogged={isLogged}
           location={location}
           markets={markets}
-          filter={s.filter}
-          sort={s.sort}
+          filter={filter}
+          sort={sort}
+          maxFee={maxFee}
           updateFilter={this.updateFilter}
           history={history}
         />
@@ -112,7 +115,7 @@ export default class MarketsView extends Component {
           testid="markets"
           isLogged={isLogged}
           markets={markets}
-          filteredMarkets={s.filterSortedMarkets}
+          filteredMarkets={filterSortedMarkets}
           location={location}
           history={history}
           toggleFavorite={toggleFavorite}

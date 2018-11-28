@@ -18,6 +18,7 @@ export default class MarketsHeader extends Component {
     location: PropTypes.object.isRequired,
     filter: PropTypes.string.isRequired,
     sort: PropTypes.string.isRequired,
+    maxFee: PropTypes.string.isRequired,
     updateFilter: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired
   };
@@ -63,7 +64,7 @@ export default class MarketsHeader extends Component {
   }
 
   render() {
-    const { filter, sort, updateFilter, history } = this.props;
+    const { filter, sort, maxFee, updateFilter, history } = this.props;
     const s = this.state;
 
     return (
@@ -74,6 +75,7 @@ export default class MarketsHeader extends Component {
             <FilterDropDowns
               filter={filter}
               sort={sort}
+              maxFee={maxFee}
               updateFilter={updateFilter}
               history={history}
               location={location}

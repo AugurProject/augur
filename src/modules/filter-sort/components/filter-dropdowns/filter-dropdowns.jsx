@@ -18,6 +18,14 @@ import Styles from "modules/filter-sort/components/filter-dropdowns/filter-dropd
 import parseQuery from "modules/routes/helpers/parse-query";
 import makeQuery from "modules/routes/helpers/make-query";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
+import {
+  MAX_FEE_02_PERCENT,
+  MAX_FEE_05_PERCENT,
+  MAX_FEE_10_PERCENT,
+  MAX_FEE_20_PERCENT,
+  MAX_FEE_30_PERCENT,
+  MAX_FEE_40_PERCENT
+} from "src/modules/filter-sort/constants/market-max-fees";
 
 const sortOptions = [
   { value: MARKET_CREATION_TIME, label: "Creation Time" },
@@ -34,15 +42,28 @@ const filterOptions = [
   { value: MARKET_CLOSED, label: "Resolved" }
 ];
 
+const maxFeesOptions = [
+  { label: "All Markets", value: 1 },
+  { label: "Markets with Fees < 2%", value: MAX_FEE_02_PERCENT },
+  { label: "Markets with Fees < 5%", value: MAX_FEE_05_PERCENT },
+  { label: "Markets with Fees < 10%", value: MAX_FEE_10_PERCENT },
+  { label: "Markets with Fees < 20%", value: MAX_FEE_20_PERCENT },
+  { label: "Markets with Fees < 30%", value: MAX_FEE_30_PERCENT },
+  { label: "Markets with Fees < 40%", value: MAX_FEE_40_PERCENT }
+];
+
 export default class FilterSearch extends Component {
   static propTypes = {
     filter: PropTypes.string.isRequired,
     sort: PropTypes.string.isRequired,
+    maxFee: PropTypes.string.isRequired,
     updateFilter: PropTypes.func.isRequired,
     defaultFilter: PropTypes.string.isRequired,
     defaultSort: PropTypes.string.isRequired,
+    defaultMaxFee: PropTypes.string.isRequired,
     updateFilterOption: PropTypes.func.isRequired,
     updateSortOption: PropTypes.func.isRequired,
+    updateMaxFee: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired
   };
@@ -51,6 +72,7 @@ export default class FilterSearch extends Component {
     super(props);
     this.changeSortDropdown = this.changeSortDropdown.bind(this);
     this.changeFilterDropdown = this.changeFilterDropdown.bind(this);
+    this.changeMaxFees = this.changeMaxFees.bind(this);
     this.goToPageOne = this.goToPageOne.bind(this);
   }
 
@@ -82,8 +104,16 @@ export default class FilterSearch extends Component {
     updateFilter({ filter: value, sort });
   }
 
+  changeMaxFees(maxFee) {
+    const { sort, filter, updateMaxFee, updateFilter } = this.props;
+
+    this.goToPageOne();
+    updateMaxFee(maxFee);
+    updateFilter({ filter, sort, maxFee });
+  }
+
   render() {
-    const { defaultFilter, defaultSort } = this.props;
+    const { defaultFilter, defaultSort, defaultMaxFee } = this.props;
 
     return (
       <div className={Styles.FilterDropdowns}>
@@ -97,6 +127,11 @@ export default class FilterSearch extends Component {
           default={defaultSort}
           onChange={this.changeSortDropdown}
           options={sortOptions}
+        />
+        <Dropdown
+          default={defaultMaxFee}
+          onChange={this.changeMaxFees}
+          options={maxFeesOptions}
         />
       </div>
     );
