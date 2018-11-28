@@ -43,7 +43,7 @@ const filterOptions = [
 ];
 
 const maxFeesOptions = [
-  { label: "All Markets", value: 1 },
+  { label: "All Markets", value: "1" },
   { label: "Markets with Fees < 2%", value: MAX_FEE_02_PERCENT },
   { label: "Markets with Fees < 5%", value: MAX_FEE_05_PERCENT },
   { label: "Markets with Fees < 10%", value: MAX_FEE_10_PERCENT },
