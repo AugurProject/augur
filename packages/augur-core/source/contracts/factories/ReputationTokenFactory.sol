@@ -1,17 +1,14 @@
 pragma solidity 0.4.24;
 
 
-import 'libraries/Delegator.sol';
 import 'IController.sol';
 import 'reporting/IUniverse.sol';
-import 'reporting/IReputationToken.sol';
+import 'reporting/IV2ReputationToken.sol';
+import 'reporting/ReputationToken.sol';
 
 
 contract ReputationTokenFactory {
-    function createReputationToken(IController _controller, IUniverse _universe) public returns (IReputationToken) {
-        Delegator _delegator = new Delegator(_controller, "ReputationToken");
-        IReputationToken _reputationToken = IReputationToken(_delegator);
-        _reputationToken.initialize(_universe);
-        return _reputationToken;
+    function createReputationToken(IController _controller, IUniverse _universe, IUniverse _parentUniverse) public returns (IV2ReputationToken) {
+        return IV2ReputationToken(new ReputationToken(_controller, _universe, _parentUniverse));
     }
 }
