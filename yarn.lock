@@ -7388,12 +7388,12 @@ electron-builder-squirrel-windows@20.38.0:
   optionalDependencies:
     "7zip-bin" "~4.0.2"
 
-electron-builder@20.38.0:
-  version "20.38.0"
-  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-20.38.0.tgz#ebf3a8dbbd815d75c974ea6e0c992814383c746b"
-  integrity sha512-7Iq/VqgQOCubiRXMjrVvcSLIp17otGZ/L4hjjY8bn5bPY6j/mym3Qr2xjtSLIBs5jxKJjHaT8HwMmDoOGZpNoQ==
+electron-builder@20.38.1:
+  version "20.38.1"
+  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-20.38.1.tgz#fcd01517d5ee06bddd2ab94717bef2df99c9a748"
+  integrity sha512-cxHu0iK9HynQovymCdP4r5O74VWesTnCCQm9iFQHDfT8cnl3XVHjmNVo1PpiKqbnMp6A2abDICogiod62qdiJg==
   dependencies:
-    app-builder-lib "20.38.0"
+    app-builder-lib "20.38.1"
     bluebird-lst "^1.0.6"
     builder-util "9.5.0"
     builder-util-runtime "8.0.2"

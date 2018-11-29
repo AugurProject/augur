@@ -75,7 +75,7 @@
   "devDependencies": {
     "app-builder-lib": "20.38.1",
     "electron": "3.0.10",
-    "electron-builder": "20.38.0",
+    "electron-builder": "20.38.1",
     "electron-builder-squirrel-windows": "20.38.0",
     "electron-publisher-s3": "20.17.2",
     "electron-webpack": "2.6.1",
