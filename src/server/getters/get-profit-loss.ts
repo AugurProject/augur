@@ -7,6 +7,7 @@ import { Augur } from "augur.js";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { getProceedTradeRows } from "./get-proceed-trade-rows";
+import { ZERO } from "../../constants";
 import {
   Address,
   BlocksRow,
@@ -34,27 +35,38 @@ function sub(n1: string, n2: string) {
   return new BigNumber(n1, 10).minus(new BigNumber(n2));
 }
 
-export type ProfitLoss = Record<"position" | "meanOpenPrice" | "realized" | "unrealized" | "total", string>;
-export interface EarningsAtTime {
-  timestamp: number;
-  lastPrice?: string;
-  profitLoss?: ProfitLoss | null;
+export interface Timestamped {
+  timestamp: number
 }
 
-export type TradeRow = TradingHistoryRow & { type: string; maker: boolean } | ProceedTradesRow<BigNumber>;
-export type PayoutBlockAndPricing= Payout<BigNumber> & BlocksRow & MarketPricing<BigNumber>;
-
-export interface ProfitLossResults {
-  aggregate: Array<EarningsAtTime>;
-  all: any;
-}
-
-// For each group, gather the last trade prices for each bucket, and
-// calculate each bucket's profit and loss
-export interface MarketOutcomeEarnings {
+export interface ProfitLossTimeseries extends Timestamped {
+  account: string;
   marketId: string;
   outcome: number;
-  earnings: Array<EarningsAtTime>;
+  transactionHash: string;
+  moneySpent: BigNumber;
+  numEscrowed: BigNumber;
+  profit: BigNumber;
+}
+
+export interface ProfitLossResult extends Timestamped {
+  position: BigNumber;
+  realized: BigNumber;
+  unrealized: BigNumber;
+  total: BigNumber;
+}
+
+export const GetProfitLossParams = t.type({
+  universe: t.string,
+  account: t.string,
+  marketId: t.union([t.string, t.null]),
+  startTime: t.union([t.number, t.null]),
+  endTime: t.union([t.number, t.null]),
+  periodInterval: t.union([t.number, t.null]),
+});
+
+export interface GetOutcomeProfitLossParams extends t.TypeOf<typeof GetProfitLossParams> {
+  outcome: number
 }
 
 export function bucketRangeByInterval(startTime: number, endTime: number, periodInterval: number | null): Array<Timestamped> {
@@ -67,7 +79,7 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
 
   console.log('Start time: ', startTime, 'End Time: ', endTime, 'Interval (minutes)', interval/60);
 
-  const buckets: Array<EarningsAtTime> = [];
+  const buckets: Array<Timestamped> = [];
   for (let bucketEndTime = startTime; bucketEndTime < endTime; bucketEndTime += interval) {
     buckets.push({ timestamp: bucketEndTime });
   }
@@ -108,37 +120,6 @@ function sumProfitLossResults(left: EarningsAtTime, right: EarningsAtTime): Earn
   };
 }
 
-export interface Timestamped {
-  timestamp: number
-}
-
-export interface ProfitLossTimeseries extends Timestamped {
-  account: string;
-  marketId: string;
-  outcome: number;
-  transactionHash: string;
-  moneySpent: BigNumber;
-  numEscrowed: BigNumber;
-  profit: BigNumber;
-}
-
-export interface ProfitLossResult extends Timestamped {
-  profit: BigNumber;
-}
-
-export const GetProfitLossParams = t.type({
-  universe: t.string,
-  account: t.string,
-  marketId: t.union([t.string, t.null]),
-  startTime: t.union([t.number, t.null]),
-  endTime: t.union([t.number, t.null]),
-  periodInterval: t.union([t.number, t.null]),
-});
-
-export interface GetOutcomeProfitLossParams extends t.TypeOf<typeof GetProfitLossParams> {
-  outcome: number
-}
-
 async function queryProfitLossTimeseries(db: Knex, now: number, params: t.TypeOf<typeof GetProfitLossParams>): Promise<Array<ProfitLossTimeseries>> {
   const query = db("profit_loss_timeseries")
     .select("profit_loss_timeseries.*", "markets.universe")
@@ -153,7 +134,7 @@ async function queryProfitLossTimeseries(db: Knex, now: number, params: t.TypeOf
 }
 
 function getProfitAtTimestamps(data: Array<ProfitLossTimeseries>, timestamps: Array<Timestamped>): Array<ProfitLossResult> {
-  const profits = [];
+  const profits: Array<ProfitLossResult> = [];
   let timestampIndex = 0;
   let dataIndex = 0;
   while(timestampIndex < timestamps.length && dataIndex < data.length) {
@@ -164,7 +145,9 @@ function getProfitAtTimestamps(data: Array<ProfitLossTimeseries>, timestamps: Ar
     if (result.timestamp > bucket.timestamp) {
       profits.push({
         timestamp: bucket.timestamp,
-        profit: result.profit
+        realized: result.profit,
+        unrealized: ZERO,
+        position: ZERO
       });
 
       timestampIndex++;
@@ -173,14 +156,16 @@ function getProfitAtTimestamps(data: Array<ProfitLossTimeseries>, timestamps: Ar
   }
 
 
-  const finalBucketProfit = profits[profits.length - 1].profit;
+  const finalBucketProfit = profits[profits.length - 1].realized;
   while(timestampIndex < timestamps.length) {
     const bucket = timestamps[timestampIndex];
     // If we ran out of results before we ran out of buckets
     // use the last result for each bucket moving forward
     profits.push({
       timestamp: bucket.timestamp,
-      profit: finalBucketProfit,
+      realized: finalBucketProfit,
+      unrealized: ZERO,
+      position: ZERO
     });
 
     timestampIndex++;
