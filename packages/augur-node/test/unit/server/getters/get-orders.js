@@ -1,19 +1,22 @@
-"use strict";
-
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-orders", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getOrders";
-      dispatchJsonRpcRequest(db, t, {}, (err, openOrders) => {
-        t.assertions(err, openOrders);
-        db.destroy();
-        done();
-      });
-    })
+      const openOrders = await dispatchJsonRpcRequest(db, t, {});
+      t.assertions(openOrders);
+    });
   };
   runTest({
     description: "get open buy orders for market 1",
@@ -25,8 +28,7 @@ describe("server/getters/get-orders", () => {
       creator: null,
       orderState: "OPEN",
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
+    assertions: (openOrders) => {
       expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           0: {
@@ -123,8 +125,7 @@ describe("server/getters/get-orders", () => {
       creator: null,
       orderState: "OPEN",
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
+    assertions: (openOrders) => {
       expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           1: {
@@ -163,8 +164,7 @@ describe("server/getters/get-orders", () => {
       creator: null,
       orderState: "FILLED",
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
+    assertions: (openOrders) => {
       expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           1: {
@@ -203,8 +203,7 @@ describe("server/getters/get-orders", () => {
       creator: null,
       orderState: "CANCELED",
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
+    assertions: (openOrders) => {
       expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           1: {
@@ -245,8 +244,7 @@ describe("server/getters/get-orders", () => {
       orderType: null,
       creator: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
+    assertions: (openOrders) => {
       expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000001": {
           0: {
@@ -352,8 +350,7 @@ describe("server/getters/get-orders", () => {
       earliestCreationTime: 1506473501,
       latestCreationTime: 1506473515,
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
+    assertions: (openOrders) => {
       expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000011": {
           1: {
@@ -415,8 +412,7 @@ describe("server/getters/get-orders", () => {
       orderType: null,
       creator: null,
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
+    assertions: (openOrders) => {
       expect(openOrders).toEqual({});
     },
   });
@@ -430,8 +426,7 @@ describe("server/getters/get-orders", () => {
       creator: null,
       orphaned: true,
     },
-    assertions: (err, openOrders) => {
-      expect(err).toBeFalsy();
+    assertions: (openOrders) => {
       expect(openOrders).toEqual({
         "0x0000000000000000000000000000000000000003": {
           1: {

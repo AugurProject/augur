@@ -1,19 +1,22 @@
-"use strict";
-
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-fork-migration-totals", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getForkMigrationTotals";
-      dispatchJsonRpcRequest(db, t, t.params.augur, (err, forkMigrationTotals) => {
-        t.assertions(err, forkMigrationTotals);
-        db.destroy();
-        done();
-      });
-    })
+      const forkMigrationTotals = await dispatchJsonRpcRequest(db, t, t.params.augur);
+      t.assertions(forkMigrationTotals);
+    });
   };
   runTest({
     description: "get the fork migration totals",
@@ -21,8 +24,7 @@ const db = await setupTestDb();
       parentUniverse: "0x000000000000000000000000000000000000000b",
       augur: {},
     },
-    assertions: (err, forkMigrationTotals) => {
-      expect(err).toBeFalsy();
+    assertions: (forkMigrationTotals) => {
       expect(forkMigrationTotals).toEqual({
         "CHILD_UNIVERSE": {
           "isInvalid": false,

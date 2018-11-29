@@ -26,8 +26,7 @@
     "watch": "tsc -w",
     "init-git": "if [ -d \".git\" ]; then exit 0; else git init; fi",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; npm run clean",
-    "coverage": "nyc npm test",
-    "coveralls": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "migrate_pg": "knex migrate:latest --env pg",
     "migrate:make": "knex migrate:make -x ts $1",
     "postinstall": "postinstall-build build",
@@ -46,7 +45,7 @@
     "docker:geth:pop": "npm explore augur.js -- npm run docker:geth:pop",
     "docker:build": "scripts/docker/build.sh",
     "docker:release": "bash scripts/release-docker.sh",
-    "prepush": "npm run lint && npm run test -- --reporter min"
+    "prepush": "npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
@@ -97,7 +96,7 @@
     "replace-in-file": "3.0.0",
     "tslint": "5.7.0",
     "tslint-eslint-rules": "4.1.1",
-    "typescript": "2.9.2"
+    "typescript": "3.1.6"
   },
   "buildDependencies": [
     "typescript",

@@ -1,7 +1,7 @@
 import * as t from "io-ts";
 import * as Knex from "knex";
 import { Address, Bytes32, SortLimitParams } from "../../types";
-import { queryModifierParams } from "./database";
+import { queryModifier } from "./database";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 
 export const AccountTransferHistoryParamsSpecific = t.type({
@@ -54,6 +54,6 @@ export async function getAccountTransferHistory(db: Knex, augur: {}, params: t.T
   if (params.token != null) query.andWhere("token", params.token);
   if (params.earliestCreationTime != null) query.where("creationTime", ">=", params.earliestCreationTime);
   if (params.latestCreationTime != null) query.where("creationTime", "<=", params.latestCreationTime);
-  const results = await queryModifierParams<TransferRow<BigNumber>>(db, query, "transfers.blockNumber", "desc", params);
+  const results = await queryModifier<TransferRow<BigNumber>>(db, query, "transfers.blockNumber", "desc", params);
   return results.map((result) => formatBigNumberAsFixed<TransferRow<BigNumber>, TransferRow<string>>(result));
 }

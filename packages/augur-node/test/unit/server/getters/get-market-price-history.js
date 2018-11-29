@@ -1,19 +1,22 @@
-"use strict";
-
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-market-price-history", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getMarketPriceHistory";
-      dispatchJsonRpcRequest(db, t, null, (err, marketPriceHistory) => {
-        t.assertions(err, marketPriceHistory);
-        db.destroy();
-        done();
-      });
-    })
+      const marketPriceHistory = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(marketPriceHistory);
+    });
   };
   runTest({
     description: "market has a single price point",
@@ -24,8 +27,7 @@ const db = await setupTestDb();
       limit: null,
       offset: null,
     },
-    assertions: (err, marketPriceHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (marketPriceHistory) => {
       expect(marketPriceHistory).toEqual({
         0: [{
           price: "5.5",
@@ -48,8 +50,7 @@ const db = await setupTestDb();
       limit: null,
       offset: null,
     },
-    assertions: (err, marketPriceHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (marketPriceHistory) => {
       expect(marketPriceHistory).toEqual({});
     },
   });

@@ -1,51 +1,41 @@
-"use strict";
-
 const Augur = require("augur.js");
-const {series} = require("async");
-const {BigNumber} = require("bignumber.js");
+const { BigNumber } = require("bignumber.js");
 const setupTestDb = require("../../test.database");
-const {processMarketCreatedLog, processMarketCreatedLogRemoval} = require("src/blockchain/log-processors/market-created");
-const {getMarketsWithReportingState} = require("src/server/getters/database");
+const { processMarketCreatedLog, processMarketCreatedLogRemoval } = require("src/blockchain/log-processors/market-created");
+const { getMarketsWithReportingState } = require("src/server/getters/database");
+
+async function getState(db, log) {
+  return {
+    markets: await getMarketsWithReportingState(db).where({ "markets.marketId": log.market }),
+    categories: await db("categories").where({ category: log.topic }),
+    outcomes: await db("outcomes").where({ marketId: log.market }),
+    tokens: await db("tokens").select(["contractAddress", "symbol", "marketId", "outcome"]).where({ marketId: log.market }),
+    search: await db("search_en").where({ marketId: log.market }),
+    transfers: await db("transfers").where({ recipient: log.market }),
+  };
+}
 
 describe("blockchain/log-processors/market-created", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    const getState = (db, params, callback) => series({
-      markets: next => getMarketsWithReportingState(db).where({ "markets.marketId": params.log.market }).asCallback(next),
-      categories: next => db("categories").where({ category: params.log.topic }).asCallback(next),
-      outcomes: next => db("outcomes").where({ marketId: params.log.market }).asCallback(next),
-      tokens: next => db("tokens").select(["contractAddress", "symbol", "marketId", "outcome"]).where({ marketId: params.log.market }).asCallback(next),
-      search: next => db("search_en").where({ marketId: params.log.market }).asCallback(next),
-      transfers: next => db("transfers").where({ recipient: params.log.market }).asCallback(next),
-    }, callback);
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
-      db.transaction((trx) => {
-        processMarketCreatedLog(trx, t.params.augur, t.params.log, (err) => {
-          expect(err).toBeFalsy();
-          getState(trx, t.params, (err, records) => {
-            t.assertions.onAdded(err, records, false);
-            processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-              expect(err).toBeFalsy();
-              getState(trx, t.params, (err, records) => {
-                t.assertions.onRemoved(err, records);
-                processMarketCreatedLog(trx, t.params.augur, t.params.log, (err) => {
-                  expect(err).toBeFalsy();
-                  getState(trx, t.params, (err, records) => {
-                    t.assertions.onAdded(err, records, true);
-                    processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                      expect(err).toBeFalsy();
-                      getState(trx, t.params, (err, records) => {
-                        t.assertions.onRemoved(err, records);
-                        db.destroy();
-                        done();
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
+    test(t.description, async () => {
+      return db.transaction(async (trx) => {
+        await(await processMarketCreatedLog(t.params.augur, t.params.log))(trx);
+        t.assertions.onAdded(await getState(trx, t.params.log), false);
+        await(await processMarketCreatedLogRemoval(t.params.augur, t.params.log))(trx);
+        t.assertions.onRemoved(await getState(trx, t.params.log));
+        await(await processMarketCreatedLog(t.params.augur, t.params.log))(trx);
+        t.assertions.onAdded(await getState(trx, t.params.log), true);
+        await(await processMarketCreatedLogRemoval(t.params.augur, t.params.log))(trx);
+        t.assertions.onRemoved(await getState(trx, t.params.log));
       });
     })
   };
@@ -75,41 +65,41 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getFeeWindow: (p, callback) => {
+            getFeeWindow: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "0x1000000000000000000000000000000000000001");
+              return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
-            getEndTime: (p, callback) => {
+            getEndTime: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "4886718345");
+              return Promise.resolve("4886718345");
             },
-            getDesignatedReporter: (p, callback) => {
+            getDesignatedReporter: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "0x000000000000000000000000000000000000b0b2");
+              return Promise.resolve("0x000000000000000000000000000000000000b0b2");
             },
-            getNumTicks: (p, callback) => {
+            getNumTicks: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "10000");
+              return Promise.resolve("10000");
             },
-            getMarketCreatorSettlementFeeDivisor: (p, callback) => {
+            getMarketCreatorSettlementFeeDivisor: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "100");
+              return Promise.resolve("100");
             },
-            getMarketCreatorMailbox: (p, callback) => {
+            getMarketCreatorMailbox: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "0xbbb1111111111111111111111111111111111111");
+              return Promise.resolve("0xbbb1111111111111111111111111111111111111");
             },
-            getShareToken: (p, callback) => {
-              callback(null, `SHARE_TOKEN_${p._outcome}`);
+            getShareToken: (p) => {
+              return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p, callback) => {
-              callback(null, "800");
+            getValidityBondAttoeth: (p) => {
+              return Promise.resolve("800");
             },
           },
           Universe: {
-            getOrCacheReportingFeeDivisor: (p, callback) => {
+            getOrCacheReportingFeeDivisor: (p) => {
               expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
-              callback(null, "1000");
+              return Promise.resolve("1000");
             },
           },
         },
@@ -117,8 +107,8 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records, isReAdded) => {
-        expect(err).toBeFalsy();
+      onAdded: (records, isReAdded) => {
+
         expect(records).toEqual({
           markets: [{
             marketId: "0x1111111111111111111111111111111111111111",
@@ -218,8 +208,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
         });
       },
-      onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
+      onRemoved: (records) => {
+
         expect(records).toEqual({
           markets: [],
           categories: [{
@@ -261,41 +251,41 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getFeeWindow: (p, callback) => {
+            getFeeWindow: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
-              callback(null, "0x1000000000000000000000000000000000000001");
+              return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
-            getEndTime: (p, callback) => {
+            getEndTime: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
-              callback(null, "4886718345");
+              return Promise.resolve("4886718345");
             },
-            getDesignatedReporter: (p, callback) => {
+            getDesignatedReporter: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
-              callback(null, "0x000000000000000000000000000000000000b0b2");
+              return Promise.resolve("0x000000000000000000000000000000000000b0b2");
             },
-            getNumTicks: (p, callback) => {
+            getNumTicks: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
-              callback(null, "10000");
+              return Promise.resolve("10000");
             },
-            getMarketCreatorSettlementFeeDivisor: (p, callback) => {
+            getMarketCreatorSettlementFeeDivisor: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
-              callback(null, "100");
+              return Promise.resolve("100");
             },
-            getMarketCreatorMailbox: (p, callback) => {
+            getMarketCreatorMailbox: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
-              callback(null, "0xbbb1111111111111111111111111111111111112");
+              return Promise.resolve("0xbbb1111111111111111111111111111111111112");
             },
-            getShareToken: (p, callback) => {
-              callback(null, `SHARE_TOKEN_${p._outcome}`);
+            getShareToken: (p) => {
+              return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p, callback) => {
-              callback(null, "800");
+            getValidityBondAttoeth: (p) => {
+              return Promise.resolve("800");
             },
           },
           Universe: {
-            getOrCacheReportingFeeDivisor: (p, callback) => {
+            getOrCacheReportingFeeDivisor: (p) => {
               expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
-              callback(null, "1000");
+              return Promise.resolve("1000");
             },
           },
         },
@@ -303,8 +293,8 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records, isReAdded) => {
-        expect(err).toBeFalsy();
+      onAdded: (records, isReAdded) => {
+
         expect(records).toEqual({
           markets: [{
             marketId: "0x1111111111111111111111111111111111111112",
@@ -428,8 +418,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
         });
       },
-      onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
+      onRemoved: (records) => {
+
         expect(records).toEqual({
           markets: [],
           categories: [{
@@ -470,41 +460,41 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getFeeWindow: (p, callback) => {
+            getFeeWindow: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
-              callback(null, "0x1000000000000000000000000000000000000001");
+              return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
-            getEndTime: (p, callback) => {
+            getEndTime: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
-              callback(null, "4886718345");
+              return Promise.resolve("4886718345");
             },
-            getDesignatedReporter: (p, callback) => {
+            getDesignatedReporter: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
-              callback(null, "0x000000000000000000000000000000000000b0b2");
+              return Promise.resolve("0x000000000000000000000000000000000000b0b2");
             },
-            getNumTicks: (p, callback) => {
+            getNumTicks: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
-              callback(null, "10000");
+              return Promise.resolve("10000");
             },
-            getMarketCreatorSettlementFeeDivisor: (p, callback) => {
+            getMarketCreatorSettlementFeeDivisor: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
-              callback(null, "100");
+              return Promise.resolve("100");
             },
-            getMarketCreatorMailbox: (p, callback) => {
+            getMarketCreatorMailbox: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
-              callback(null, "0xbbb1111111111111111111111111111111111113");
+              return Promise.resolve("0xbbb1111111111111111111111111111111111113");
             },
-            getShareToken: (p, callback) => {
-              callback(null, `SHARE_TOKEN_${p._outcome}`);
+            getShareToken: (p) => {
+              return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p, callback) => {
-              callback(null, "800");
+            getValidityBondAttoeth: (p) => {
+              return Promise.resolve("800");
             },
           },
           Universe: {
-            getOrCacheReportingFeeDivisor: (p, callback) => {
+            getOrCacheReportingFeeDivisor: (p) => {
               expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
-              callback(null, "1000");
+              return Promise.resolve("1000");
             },
           },
         },
@@ -512,8 +502,8 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records, isReAdded) => {
-        expect(err).toBeFalsy();
+      onAdded: (records, isReAdded) => {
+
         expect(records).toEqual({
           markets: [{
             marketId: "0x1111111111111111111111111111111111111113",
@@ -613,8 +603,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
         });
       },
-      onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
+      onRemoved: (records) => {
+
         expect(records).toEqual({
           markets: [],
           categories: [{
@@ -651,41 +641,41 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getFeeWindow: (p, callback) => {
+            getFeeWindow: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "0x1000000000000000000000000000000000000001");
+              return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
-            getEndTime: (p, callback) => {
+            getEndTime: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "4886718345");
+              return Promise.resolve("4886718345");
             },
-            getDesignatedReporter: (p, callback) => {
+            getDesignatedReporter: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "0x000000000000000000000000000000000000b0b2");
+              return Promise.resolve("0x000000000000000000000000000000000000b0b2");
             },
-            getNumTicks: (p, callback) => {
+            getNumTicks: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "10000");
+              return Promise.resolve("10000");
             },
-            getMarketCreatorSettlementFeeDivisor: (p, callback) => {
+            getMarketCreatorSettlementFeeDivisor: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "100");
+              return Promise.resolve("100");
             },
-            getMarketCreatorMailbox: (p, callback) => {
+            getMarketCreatorMailbox: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "0xbbb1111111111111111111111111111111111111");
+              return Promise.resolve("0xbbb1111111111111111111111111111111111111");
             },
-            getShareToken: (p, callback) => {
-              callback(null, `SHARE_TOKEN_${p._outcome}`);
+            getShareToken: (p) => {
+              return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p, callback) => {
-              callback(null, "800");
+            getValidityBondAttoeth: (p) => {
+              return Promise.resolve("800");
             },
           },
           Universe: {
-            getOrCacheReportingFeeDivisor: (p, callback) => {
+            getOrCacheReportingFeeDivisor: (p) => {
               expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
-              callback(null, "1000");
+              return Promise.resolve("1000");
             },
           },
         },
@@ -693,8 +683,8 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records, isReAdded) => {
-        expect(err).toBeFalsy();
+      onAdded: (records, isReAdded) => {
+
         expect(records).toEqual({
           markets: [{
             marketId: "0x1111111111111111111111111111111111111111",
@@ -794,8 +784,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
         });
       },
-      onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
+      onRemoved: (records) => {
+
         expect(records).toEqual({
           markets: [],
           categories: [{
@@ -836,45 +826,45 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getNumberOfOutcomes: (p, callback) => {
+            getNumberOfOutcomes: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "2");
+              return Promise.resolve("2");
             },
-            getFeeWindow: (p, callback) => {
+            getFeeWindow: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "0x1000000000000000000000000000000000000001");
+              return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
-            getEndTime: (p, callback) => {
+            getEndTime: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "4886718345");
+              return Promise.resolve("4886718345");
             },
-            getDesignatedReporter: (p, callback) => {
+            getDesignatedReporter: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "0x000000000000000000000000000000000000b0b2");
+              return Promise.resolve("0x000000000000000000000000000000000000b0b2");
             },
-            getNumTicks: (p, callback) => {
+            getNumTicks: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "10000");
+              return Promise.resolve("10000");
             },
-            getMarketCreatorSettlementFeeDivisor: (p, callback) => {
+            getMarketCreatorSettlementFeeDivisor: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "100");
+              return Promise.resolve("100");
             },
-            getMarketCreatorMailbox: (p, callback) => {
+            getMarketCreatorMailbox: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
-              callback(null, "0xbbb1111111111111111111111111111111111111");
+              return Promise.resolve("0xbbb1111111111111111111111111111111111111");
             },
-            getShareToken: (p, callback) => {
-              callback(null, `SHARE_TOKEN_${p._outcome}`);
+            getShareToken: (p) => {
+              return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p, callback) => {
-              callback(null, "800");
+            getValidityBondAttoeth: (p) => {
+              return Promise.resolve("800");
             },
           },
           Universe: {
-            getOrCacheReportingFeeDivisor: (p, callback) => {
+            getOrCacheReportingFeeDivisor: (p) => {
               expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
-              callback(null, "1000");
+              return Promise.resolve("1000");
             },
           },
         },
@@ -882,8 +872,8 @@ describe("blockchain/log-processors/market-created", () => {
       },
     },
     assertions: {
-      onAdded: (err, records, isReAdded) => {
-        expect(err).toBeFalsy();
+      onAdded: (records, isReAdded) => {
+
         expect(records).toEqual({
           markets: [{
             marketId: "0x1111111111111111111111111111111111111111",
@@ -983,8 +973,7 @@ describe("blockchain/log-processors/market-created", () => {
           }],
         });
       },
-      onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
+      onRemoved: (records) => {
         expect(records).toEqual({
           markets: [],
           categories: [{

@@ -1,13 +1,12 @@
 {
+  "parser": "babel-eslint",
   "env": {
     "node": true,
-    "mocha": true,
-    "es6": true
+    "es6": true,
+    "jest/globals": true
   },
-  "extends": [
-    "plugin:jest/recommended",
-    "eslint:recommended"
-  ],
+  "plugins": ["jest"],
+  "extends": "eslint:recommended",
   "rules": {
     "indent": [
       "error",

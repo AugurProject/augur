@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-"use strict";
-
 const fs = require("fs");
 var WebSocket = require("ws");
 

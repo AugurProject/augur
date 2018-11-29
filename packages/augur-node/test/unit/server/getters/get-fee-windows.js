@@ -1,24 +1,25 @@
-"use strict";
-
 const { BigNumber } = require("bignumber.js");
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 const { setOverrideTimestamp } = require("src/blockchain/process-block");
 
 describe("server/getters/get-fee-windows", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      setOverrideTimestamp(db, 1509065471, (err) => {
-        expect(err).toBeFalsy();
-        t.method = "getFeeWindows";
-        dispatchJsonRpcRequest(db, t, t.params.augur, (err, feeWindows) => {
-          t.assertions(err, feeWindows);
-          db.destroy();
-          done();
-        });
-      });
-    })
+    test(t.description, async () => {
+      await setOverrideTimestamp(db, 1509065471);
+      t.method = "getFeeWindows";
+      const feeWindows = await dispatchJsonRpcRequest(db, t, t.params.augur);
+      t.assertions(feeWindows);
+    });
   };
   runTest({
     description: "get fee windows for the user",
@@ -41,8 +42,7 @@ const db = await setupTestDb();
         },
       },
     },
-    assertions: (err, feeWindows) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindows) => {
       expect(feeWindows).toEqual({
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
@@ -80,8 +80,7 @@ const db = await setupTestDb();
         },
       },
     },
-    assertions: (err, feeWindows) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindows) => {
       expect(feeWindows).toEqual({
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
@@ -113,8 +112,7 @@ const db = await setupTestDb();
         },
       },
     },
-    assertions: (err, feeWindows) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindows) => {
       expect(feeWindows).toEqual({});
     },
   });

@@ -1,19 +1,22 @@
-"use strict";
-
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-reporting-history", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getReportingHistory";
-      dispatchJsonRpcRequest(db, t, null, (err, reportingHistory) => {
-        t.assertions(err, reportingHistory);
-        db.destroy();
-        done();
-      });
-    })
+      const reportingHistory = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(reportingHistory);
+    });
   };
   runTest({
     description: "get reporter history that actually exists",
@@ -21,8 +24,7 @@ const db = await setupTestDb();
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000021",
     },
-    assertions: (err, reportingHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (reportingHistory) => {
       expect(reportingHistory).toEqual({
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000011": {
@@ -77,8 +79,7 @@ const db = await setupTestDb();
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, reportingHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (reportingHistory) => {
       expect(reportingHistory).toEqual({
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000011": {
@@ -181,8 +182,7 @@ const db = await setupTestDb();
       earliestCreationTime: 1506474501,
       latestCreationTime: 1506474515,
     },
-    assertions: (err, reportingHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (reportingHistory) => {
       expect(reportingHistory).toEqual({
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000019": {
@@ -214,8 +214,7 @@ const db = await setupTestDb();
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x2100000000000000000000000000000000000021",
     },
-    assertions: (err, reportingHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (reportingHistory) => {
       expect(reportingHistory).toEqual({});
     },
   });

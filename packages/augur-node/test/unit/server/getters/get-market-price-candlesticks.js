@@ -1,27 +1,25 @@
-"use strict";
-
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-market-price-candlesticks", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getMarketPriceCandlesticks";
-      dispatchJsonRpcRequest(db, t, null, (err, marketPriceHistory) => {
-        t.assertions(err, marketPriceHistory);
-        db.destroy();
-        done();
-      });
-    })
+      const marketPriceHistory = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(marketPriceHistory);
+    });
   };
   runTest({
     description: "market has a one candlestick",
     params: {
       marketId: "0x0000000000000000000000000000000000000015",
     },
-    assertions: (err, marketPriceHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (marketPriceHistory) => {
       expect(marketPriceHistory).toEqual({
         0: [{
           end: "4.2",
@@ -41,8 +39,7 @@ const db = await setupTestDb();
       period: 20,
       start: 1506474473,
     },
-    assertions: (err, marketPriceHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (marketPriceHistory) => {
       expect(marketPriceHistory).toEqual({
         0: [{
           end: "5.5",
@@ -70,8 +67,7 @@ const db = await setupTestDb();
       period: 20,
       start: 1506474478,
     },
-    assertions: (err, marketPriceHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (marketPriceHistory) => {
       expect(marketPriceHistory).toEqual({
         0: [{
           end: "4.2",
@@ -89,17 +85,22 @@ const db = await setupTestDb();
     params: {
       marketId: "0x0000000000000000000000000000000000001111",
     },
-    assertions: (err, marketPriceHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (marketPriceHistory) => {
       expect(marketPriceHistory).toEqual({});
     },
   });
-  runTest({
-    description: "Not passing in marketId",
-    params: {},
-    assertions: (err, marketPriceHistory) => {
-      expect(err).not.toBeNull();
-      expect(marketPriceHistory).not.toBeDefined();
-    },
+
+  test("Not passing in marketId", async () => {
+    const params = {};
+    try {
+      await dispatchJsonRpcRequest(db, { method: "getMarketPriceCandlesticks", params }, null);
+      throw new Error("Did not fail");
+    } catch (err) {
+      expect(err.message).toContain("Invalid request object");
+    }
+  });
+
+  afterEach(async () => {
+    await db.destroy();
   });
 });
