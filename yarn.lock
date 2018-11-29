@@ -18074,14 +18074,14 @@ replace-ext@1.0.0, replace-ext@^1.0.0:
   resolved "https://registry.yarnpkg.com/replace-ext/-/replace-ext-1.0.0.tgz#de63128373fcbf7c3ccfa4de5a480c45a67958eb"
   integrity sha1-3mMSg3P8v3w8z6TeWkgMRaZ5WOs=
 
-replace-in-file@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/replace-in-file/-/replace-in-file-3.0.0.tgz#6dca4429a9086cc2b5d96440923bd78006b0a58a"
-  integrity sha512-/0oRts4OCzjA3AkUB/jy4RiH8AeWVkvjh75PIRaNFRl2I+OLl4GCxH07TYhZG7gjffTy44kRJftuiIRCxBeQQw==
+replace-in-file@3.4.2:
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/replace-in-file/-/replace-in-file-3.4.2.tgz#6d40f076ac86948e28efeb6fab73fbad5c0bfa2a"
+  integrity sha512-wb2EU5MBBqUty+b1xSIqa0IKs5M2/a+4Ldw8KM5Gpe1btv16K0eii6nMxyNhAmRZhCEPrge0ss5Ij9f7vJEYcw==
   dependencies:
-    chalk "^2.3.0"
+    chalk "^2.4.1"
     glob "^7.1.2"
-    yargs "^10.0.3"
+    yargs "^12.0.1"
 
 replace@1.0.0:
   version "1.0.0"
