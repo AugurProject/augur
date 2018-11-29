@@ -76,7 +76,7 @@
     "knex": "0.15.2",
     "lodash": "4.17.11",
     "pg": "7.7.1",
-    "postinstall-build": "5.0.1",
+    "postinstall-build": "5.0.3",
     "speedomatic": "2.1.5",
     "sqlite3": "4.0.2",
     "ts-node": "^6.1.1",
