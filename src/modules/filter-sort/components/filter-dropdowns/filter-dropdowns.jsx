@@ -44,13 +44,13 @@ const filterOptions = [
 ];
 
 const maxFeesOptions = [
-  { label: "All Markets", value: MAX_FEE_100_PERCENT },
-  { label: "Markets with Fees < 2%", value: MAX_FEE_02_PERCENT },
-  { label: "Markets with Fees < 5%", value: MAX_FEE_05_PERCENT },
-  { label: "Markets with Fees < 10%", value: MAX_FEE_10_PERCENT },
-  { label: "Markets with Fees < 20%", value: MAX_FEE_20_PERCENT },
-  { label: "Markets with Fees < 30%", value: MAX_FEE_30_PERCENT },
-  { label: "Markets with Fees < 40%", value: MAX_FEE_40_PERCENT }
+  { label: "All Fees", value: MAX_FEE_100_PERCENT },
+  { label: "Fees < 2%", value: MAX_FEE_02_PERCENT },
+  { label: "Fees < 5%", value: MAX_FEE_05_PERCENT },
+  { label: "Fees < 10%", value: MAX_FEE_10_PERCENT },
+  { label: "Fees < 20%", value: MAX_FEE_20_PERCENT },
+  { label: "Fees < 30%", value: MAX_FEE_30_PERCENT },
+  { label: "Fees < 40%", value: MAX_FEE_40_PERCENT }
 ];
 
 export default class FilterSearch extends Component {
