@@ -106,15 +106,15 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
     if(connection) await connection.destroy();
   });
 
-  it("generates a 3-value timeseries P/L", async () => {
+  it("generates a 31-value timeseries P/L", async () => {
     const results = await getProfitLoss(connection, augur, {
       universe: "0x000000000000000000000000000000000000000b",
 			account:  "0xffff000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000ff1"
     });
 
-    console.log(JSON.stringify(results));
-    expect(results.length).toEqual(3);
+    //console.log(JSON.stringify(results, null, 2));
+    expect(results.length).toEqual(31);
   });
 });
 
