@@ -65,7 +65,8 @@
       "packages/*"
     ],
     "nohoist": [
-      "augur-ui/@types/jest",
+      "*/@types/mocha",
+      "*/@types/jest",
       "augur-ui/@types/expect-puppeteer",
       "augur.js/uuid-parse"
     ]
