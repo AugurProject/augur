@@ -25,7 +25,7 @@ function simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     var orderDisplayPrice = new BigNumber(matchingAsk.fullPrecisionPrice, 10);
     var sharePriceShort = maxPrice.minus(orderDisplayPrice);
     var sharePriceLong = orderDisplayPrice.minus(minPrice);
-    var takerSharesAvailable = calculateNearlyCompleteSets(outcome, takerDesiredShares, shareBalances);
+    var takerSharesAvailable = calculateNearlyCompleteSets(outcome, takerDesiredShares, shareBalances, takerSharesDepleted);
     sharesToCover = sharesToCover.minus(takerDesiredShares);
     sharesFilled = sharesFilled.plus(takerDesiredShares);
 

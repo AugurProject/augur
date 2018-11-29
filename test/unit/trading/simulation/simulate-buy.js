@@ -126,4 +126,53 @@ describe("trading/simulation/simulate-buy", function () {
       });
     },
   });
+  test({
+    description: "two matching asks orders, complete fill",
+    params: {
+      outcomeId: 0,
+      sharesToCover: new BigNumber("0.006", 10),
+      shareBalances: [ZERO, new BigNumber("0.003", 10)],
+      tokenBalance: ZERO,
+      minPrice: ZERO,
+      maxPrice: new BigNumber("1", 10),
+      price: new BigNumber("0.7", 10),
+      marketCreatorFeeRate: ZERO,
+      reportingFeeRate: new BigNumber("0.01", 10),
+      shouldCollectReportingFees: 1,
+      sellOrderBook: {
+        ORDER_0: {
+          amount: "0.003",
+          fullPrecisionPrice: new BigNumber("0.4", 10),
+          sharesEscrowed: "0.003",
+          outcome: 0,
+          owner: "OWNER_ADDRESS",
+        },
+        ORDER_1: {
+          amount: "0.002",
+          fullPrecisionPrice: new BigNumber("0.35", 10),
+          sharesEscrowed: "0.002",
+          outcome: 0,
+          owner: "OWNER_ADDRESS",
+        },
+        ORDER_2: {
+          amount: "0.001",
+          fullPrecisionPrice: new BigNumber("0.31", 10),
+          sharesEscrowed: "0.001",
+          outcome: 0,
+          owner: "OWNER_ADDRESS",
+        },
+      },
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        sharesFilled: new BigNumber("0.006", 10),
+        settlementFees: new BigNumber("0.0000199", 10),
+        worstCaseFees: new BigNumber("0.0000199", 10),
+        otherSharesDepleted: new BigNumber("0.003", 10),
+        sharesDepleted: ZERO,
+        tokensDepleted: new BigNumber("0.0012", 10),
+        shareBalances: [new BigNumber("0.003", 10), ZERO],
+      });
+    },
+  });
 });
