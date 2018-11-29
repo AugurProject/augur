@@ -3844,6 +3844,25 @@
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_amountToBurn",
+					"type": "uint256"
+				}
+			],
+			"name": "burnForMarket",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_source",
 					"type": "address"
 				},
@@ -3876,39 +3895,6 @@
 				}
 			],
 			"name": "mintForAuction",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
 			"outputs": [
 				{
 					"name": "",
@@ -4013,20 +3999,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -4081,7 +4053,20 @@
 			"type": "function"
 		},
 		{
-			"inputs": [],
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				},
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_parentUniverse",
+					"type": "address"
+				}
+			],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "constructor"
@@ -4379,6 +4364,10 @@
 				{
 					"name": "_universe",
 					"type": "address"
+				},
+				{
+					"name": "_reputationToken",
+					"type": "address"
 				}
 			],
 			"name": "createAuction",
@@ -4635,6 +4624,10 @@
 				{
 					"name": "_universe",
 					"type": "address"
+				},
+				{
+					"name": "_parentUniverse",
+					"type": "address"
 				}
 			],
 			"name": "createReputationToken",
@@ -4678,6 +4671,35 @@
 			"type": "function"
 		}
 	],
+	"TestNetReputationTokenFactory": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				},
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_parentUniverse",
+					"type": "address"
+				}
+			],
+			"name": "createReputationToken",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
 	"UniverseFactory": [
 		{
 			"constant": false,
@@ -4707,7 +4729,7 @@
 			"type": "function"
 		}
 	],
-	"Delegator": [
+	"DelegationTarget": [
 		{
 			"constant": true,
 			"inputs": [],
@@ -4754,26 +4776,6 @@
 			"payable": false,
 			"stateMutability": "view",
 			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"name": "_controller",
-					"type": "address"
-				},
-				{
-					"name": "_controllerLookupName",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "constructor"
-		},
-		{
-			"payable": true,
-			"stateMutability": "payable",
-			"type": "fallback"
 		}
 	],
 	"Map": [
@@ -4950,20 +4952,6 @@
 				{
 					"name": "",
 					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
 				}
 			],
 			"payable": false,
@@ -5265,6 +5253,29 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_reputationToken",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -5584,20 +5595,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "getRoundType",
 			"outputs": [
 				{
@@ -5607,25 +5604,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -6060,20 +6038,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -6550,20 +6514,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -6926,20 +6876,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "getStartTime",
 			"outputs": [
 				{
@@ -7249,20 +7185,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [
 				{
 					"name": "_outcome",
@@ -7536,20 +7458,6 @@
 			],
 			"payable": true,
 			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -8154,20 +8062,6 @@
 				{
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
 				}
 			],
 			"payable": false,
@@ -8872,6 +8766,25 @@
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_amountToBurn",
+					"type": "uint256"
+				}
+			],
+			"name": "burnForMarket",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_source",
 					"type": "address"
 				},
@@ -8904,39 +8817,6 @@
 				}
 			],
 			"name": "mintForAuction",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
 			"outputs": [
 				{
 					"name": "",
@@ -9041,20 +8921,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -9107,6 +8973,25 @@
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				},
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_parentUniverse",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
 		},
 		{
 			"anonymous": false,
@@ -9926,29 +9811,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_parentUniverse",
-					"type": "address"
-				},
-				{
-					"name": "_parentPayoutDistributionHash",
-					"type": "bytes32"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "isForking",
@@ -9956,20 +9818,6 @@
 				{
 					"name": "",
 					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
 				}
 			],
 			"payable": false,
@@ -10097,20 +9945,6 @@
 				{
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -10261,6 +10095,25 @@
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				},
+				{
+					"name": "_parentUniverse",
+					"type": "address"
+				},
+				{
+					"name": "_parentPayoutDistributionHash",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
 		}
 	],
 	"CancelOrder": [
@@ -10609,20 +10462,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -11922,20 +11761,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [
 				{
 					"name": "_orderId",
@@ -12532,20 +12357,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
