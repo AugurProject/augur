@@ -21,3 +21,11 @@ Builds all the below docker images
 ## push docker images
 
 To push newly created dockers goto augur-tools and use `yarn docker:push` after docker login to push images to hub.docker.com
+
+## how to run populated docker images
+
+Currently need to change to packages/augur-tools directory. Here are the commands:
+
+- yarn docker:geth:pop -- to run `must push time` 1 second blocks populated docker image
+- yarn docker:geth:pop-15 -- to run `mush push time` 15 second blocks populated docker image
+- yarn docker:geth:pop-normal-time -- to run normal time populated docker image
