@@ -94,7 +94,7 @@
     "redux-whenever": "2.0.8",
     "reselect": "3.0.1",
     "scroll-snap": "1.0.6",
-    "shelljs": "0.8.2",
+    "shelljs": "0.8.3",
     "shifty": "2.1.0",
     "speedomatic": "2.1.4",
     "trezor-connect": "5.0.31"
