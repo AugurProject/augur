@@ -144,7 +144,7 @@
     "nyc": "13.1.0",
     "onchange": "4.1.0",
     "postcss-loader": "3.0.0",
-    "postcss-sass": "0.3.3",
+    "postcss-sass": "0.3.5",
     "prettier": "1.15.2",
     "proxyquire": "1.8.0",
     "puppeteer": "1.10.0",
