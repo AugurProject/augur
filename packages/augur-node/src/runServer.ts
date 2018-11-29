@@ -31,7 +31,7 @@ export function start(retries: number, config: ConnectOptions, databaseDir?: str
   augurNodeController.start(errorCatch).catch(errorCatch);
 }
 
-if (require.main == module) {
+if (require.main === module) {
   const retries: number = parseInt(process.env.MAX_SYSTEM_RETRIES || "1", 10);
   const databaseDir = process.env.AUGUR_DATABASE_DIR;
   const config = ConnectOptions.createFromEnvironment();

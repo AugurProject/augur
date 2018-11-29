@@ -45,16 +45,11 @@ describe("server/getters/get-reporting-fees", () => {
     };
     await expect(await dispatchJsonRpcRequest(db, { method: "getReportingFees", params }, augur)).toEqual({
       total: {
-        "unclaimedEth": "1200",
         "unclaimedRepEarned": "0",
         "unclaimedRepStaked": "391",
-        "unclaimedForkEth": "0",
         "unclaimedForkRepStaked": "331",
         "lostRep": "0",
       },
-      disputeWindows: [
-        "0x1000000000000000000000000000000000000000",
-      ],
       forkedMarket: {
         crowdsourcers: [
           {
@@ -96,13 +91,6 @@ describe("server/getters/get-reporting-fees", () => {
             FINALIZED: "FINALIZED",
           },
         },
-        contracts: {
-          addresses: {
-            974: {
-              Cash: "CASH",
-            },
-          },
-        },
         rpc: {
           getNetworkID: () => 974,
         },
@@ -111,14 +99,11 @@ describe("server/getters/get-reporting-fees", () => {
     assertions: (marketsMatched) => {
       expect(marketsMatched).toEqual({
         total: {
-          "unclaimedEth": "0",
           "unclaimedRepStaked": "0",
           "unclaimedRepEarned": "0",
-          "unclaimedForkEth": "0",
           "unclaimedForkRepStaked": "0",
           "lostRep": "0",
         },
-        disputeWindows: [],
         forkedMarket: undefined,
         "nonforkedMarkets": [],
       });
@@ -136,13 +121,6 @@ describe("server/getters/get-reporting-fees", () => {
             FINALIZED: "FINALIZED",
           },
         },
-        contracts: {
-          addresses: {
-            974: {
-              Cash: "CASH",
-            },
-          },
-        },
         rpc: {
           getNetworkID: () => 974,
         },
@@ -151,14 +129,11 @@ describe("server/getters/get-reporting-fees", () => {
     assertions: (marketsMatched) => {
       expect(marketsMatched).toEqual({
         total: {
-          "unclaimedEth": "0",
           "unclaimedRepStaked": "0",
           "unclaimedRepEarned": "0",
-          "unclaimedForkEth": "0",
           "unclaimedForkRepStaked": "0",
           "lostRep": "0",
         },
-        disputeWindows: [],
         forkedMarket: {
           "isFinalized": 1,
           "crowdsourcers": [],

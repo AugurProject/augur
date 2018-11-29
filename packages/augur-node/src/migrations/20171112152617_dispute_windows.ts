@@ -10,7 +10,6 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("endTime", "integer NOT NULL CONSTRAINT nonnegativeEndTime CHECK (\"endTime\" >= 0)");
       table.string("state").notNullable();
       table.string("fees", 255).defaultTo("0");
-      table.string("feeToken").notNullable();
 
       table.index(["universe", "state"]);
     });

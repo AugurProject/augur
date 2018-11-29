@@ -96,7 +96,6 @@ const whitelist: TableWhitelist = {
   },
   token_supply: {
     supply: true,
-    participationTokenStake: true,
   },
   trading_proceeds: {
     numShares: true,

@@ -383,24 +383,6 @@ export interface UIStakeInfo<BigNumberType> {
   stakes: Array<StakeDetails<BigNumberType>>;
 }
 
-export interface UIDisputeWindowCurrent<BigNumberType> {
-  endTime: number;
-  disputeWindow: Address|null;
-  disputeWindowId: number;
-  startTime: number;
-  universe: Address;
-  totalStake?: BigNumberType;
-  disputeWindowEthFees?: BigNumberType;
-  disputeWindowRepStaked?: BigNumberType;
-  disputeWindowFeeTokens?: BigNumberType;
-  disputeWindowParticipationTokens?: BigNumberType;
-  participantContributions?: BigNumberType;
-  participantContributionsCrowdsourcer?: BigNumberType;
-  participantContributionsInitialReport?: BigNumberType;
-  participantParticipationTokens?: BigNumberType;
-  participationTokens?: BigNumberType;
-}
-
 export interface UIMarketCreatorFee {
   marketId: Address;
   unclaimedFee: string;
@@ -636,7 +618,6 @@ export interface UIReport<BigNumberType> {
 
 export interface DisputeWindowRow {
   disputeWindow: Address;
-  feeToken: Address;
   disputeWindowId: number;
   universe: Address;
   startTime: number;
@@ -653,27 +634,6 @@ export interface InitialReportersRow<BigNumberType> {
   redeemed: boolean;
   isDesignatedReporter: boolean;
   repBalance: BigNumberType;
-}
-
-export interface UnclaimedDisputeWindowsRow<BigNumberType> {
-  disputeWindow: Address;
-  startTime: number;
-  endTime: number;
-  balance: BigNumberType;
-  participationTokenStake: BigNumberType;
-  feeTokenStake: BigNumberType;
-  totalFees: BigNumberType;
-}
-
-export interface UnclaimedDisputeWindowInfo<BigNumberType> {
-  startTime: number;
-  endTime: number;
-  balance: BigNumberType;
-  expectedFees: BigNumberType;
-}
-
-export interface UnclaimedDisputeWindows<BigNumberType> {
-  [disputeWindow: string]: UnclaimedDisputeWindowInfo<BigNumberType>;
 }
 
 export interface UIInitialReporters<BigNumberType> {

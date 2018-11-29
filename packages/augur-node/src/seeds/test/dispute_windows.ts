@@ -13,7 +13,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       endTime: 1506473515,
       state: DisputeWindowState.PAST,
       fees: 0,
-      feeToken: "FEE_TOKEN_1",
     }, {
       disputeWindow: "0x3000000000000000000000000000000000000000",
       disputeWindowId: 457,
@@ -22,7 +21,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       endTime: 1506480000,
       state: DisputeWindowState.PAST,
       fees: 0,
-      feeToken: "FEE_TOKEN_3",
     }, {
       disputeWindow: "0x2000000000000000000000000000000000000000",
       disputeWindowId: 457,
@@ -31,7 +29,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       endTime: 1509065473 + 604800,
       state: DisputeWindowState.CURRENT,
       fees: 0,
-      feeToken: "FEE_TOKEN_2",
     }, {
       disputeWindow: "0x2100000000000000000000000000000000000000",
       disputeWindowId: 1,
@@ -40,7 +37,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       endTime: 1509670273 + 604800,
       state: DisputeWindowState.FUTURE,
       fees: 0,
-      feeToken: "NEXT_FEE_TOKEN",
     }, {
       disputeWindow: "0x5000000000000000000000000000000000000000",
       disputeWindowId: 458,
@@ -49,7 +45,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       endTime: 1509065473,
       state: DisputeWindowState.CURRENT,
       fees: 0,
-      feeToken: "FEE_TOKEN_CHILD_UNIVERSE_CURRENT",
     }, {
       disputeWindow: "0x4000000000000000000000000000000000000000",
       disputeWindowId: 459,
@@ -58,7 +53,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       endTime: 1511657473,
       state: DisputeWindowState.FUTURE,
       fees: 0,
-      feeToken: "FEE_TOKEN_CHILD_UNIVERSE",
     }];
     return knex.batchInsert("dispute_windows", seedData, seedData.length);
   });

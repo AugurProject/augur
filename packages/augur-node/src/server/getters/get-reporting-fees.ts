@@ -5,7 +5,6 @@ import Augur from "augur.js";
 import { BigNumber } from "bignumber.js";
 import { Address, DisputeWindowState, ReportingState } from "../../types";
 import { ZERO } from "../../constants";
-import { getCashAddress } from "./database";
 
 export const ReportingFeesParams = t.type({
   universe: t.string,
@@ -42,14 +41,11 @@ export interface NonforkedMarket {
 
 export interface FeeDetails {
   total: {
-    unclaimedEth: string;
     unclaimedRepStaked: string;
     unclaimedRepEarned: string;
-    unclaimedForkEth: string;
     unclaimedForkRepStaked: string;
     lostRep: string;
   };
-  disputeWindows: Array<Address>;
   forkedMarket: ForkedMarket|null;
   nonforkedMarkets: Array<NonforkedMarket>;
 }
@@ -57,27 +53,6 @@ export interface FeeDetails {
 interface FormattedMarketInfo {
   forkedMarket: ForkedMarket|null;
   nonforkedMarkets: Array<NonforkedMarket>;
-}
-
-interface EthFeeRow {
-  disputeWindow: Address;
-  feeTokenSupply: string;
-  participationTokenSupply: string;
-  cashDisputeWindow: string;
-}
-
-interface ParticipationTokensEthFeeRow extends EthFeeRow {
-  participationTokens: string;
-}
-
-interface ParticipantEthFeeRow extends EthFeeRow {
-  participantAddress: string;
-  participationTokens: string;
-  feeTokenBalance: string;
-  cashParticipant: string;
-  reporterBalance: string;
-  participantSupply: string;
-  forking: boolean;
 }
 
 interface DisputeWindowCompletionStakeRow {
@@ -124,19 +99,6 @@ interface UnclaimedCrowdsourcerRow {
   forking: boolean;
   needsMigration: boolean;
   amountStaked: BigNumber;
-}
-
-interface ParticipantEthFee {
-  disputeWindow: string|null;
-  participantAddress: string;
-  fork: boolean;
-  ethFees: BigNumber;
-}
-
-interface ParticipationTokenEthFee {
-  disputeWindow: string;
-  ethFees: BigNumber;
-  participationTokens: BigNumber;
 }
 
 interface AddressMap {
@@ -306,136 +268,18 @@ async function getStakedRepResults(db: Knex, reporter: Address, universe: Addres
   return { fees };
 }
 
-async function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address): Promise<Array<ParticipationTokenEthFee>> {
-  const participationTokenQuery = db.select([
-    "dispute_windows.disputeWindow",
-    "participationToken.balance AS participationTokens",
-    db.raw("IFNULL(feeTokenSupply.supply,0) as feeTokenSupply"),
-    db.raw("IFNULL(participationTokenSupply.supply,0) as participationTokenSupply"),
-    db.raw("IFNULL(cashDisputeWindow.balance,0) as cashDisputeWindow"),
-  ]).from("dispute_windows");
-  participationTokenQuery.join("balances AS participationToken", function () {
-    this
-      .on("participationToken.token", db.raw("dispute_windows.disputeWindow"))
-      .andOn("participationToken.owner", db.raw("?", [reporter]));
-  });
-  participationTokenQuery.leftJoin("balances AS cashDisputeWindow", function () {
-    this
-      .on("cashDisputeWindow.owner", db.raw("dispute_windows.disputeWindow"))
-      .on("cashDisputeWindow.token", db.raw("?", getCashAddress(augur)));
-  });
-  participationTokenQuery.leftJoin("token_supply as feeTokenSupply", "feeTokenSupply.token", "dispute_windows.feeToken")
-    .leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "dispute_windows.disputeWindow")
-    .whereNot("participationTokens", "0")
-    .where("dispute_windows.state", DisputeWindowState.PAST)
-    .where("dispute_windows.universe", universe);
-  const participationTokens: Array<ParticipationTokensEthFeeRow> = await participationTokenQuery;
-  const participationTokenEthFees = _.map(participationTokens, (participationToken) => {
-    const totalFeeTokensInDisputeWindow = new BigNumber(participationToken.feeTokenSupply).plus(new BigNumber(participationToken.participationTokenSupply));
-    const cashInDisputeWindow = new BigNumber(participationToken.cashDisputeWindow);
-    const participationTokens = new BigNumber(participationToken.participationTokens);
-    const reporterShareOfDisputeWindow = totalFeeTokensInDisputeWindow.isZero() ? ZERO : participationTokens.dividedBy(totalFeeTokensInDisputeWindow);
-    const ethFees = reporterShareOfDisputeWindow.times(cashInDisputeWindow);
-    return {
-      disputeWindow: participationToken.disputeWindow,
-      ethFees,
-      participationTokens,
-    };
-  });
-  return participationTokenEthFees;
-}
-
-async function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address): Promise<Array<ParticipantEthFee>> {
-  const participantQuery = db.select([
-    "participantAddress",
-    "feeToken.disputeWindow",
-    "feeToken.token as feeToken",
-    "reporterBalance",
-    "participantSupply",
-    "forking",
-    "reputationToken",
-    "reputationTokenBalance",
-    db.raw("IFNULL(feeToken.balance,0) as feeTokenBalance"),
-    db.raw("IFNULL(feeToken.supply,0) as feeTokenSupply"),
-    db.raw("IFNULL(cashDisputeWindow.balance,0) as cashDisputeWindow"),
-    db.raw("IFNULL(cashParticipant.balance,0) as cashParticipant"),
-    db.raw("IFNULL(participationTokenSupply.supply,0) as participationTokenSupply"),
-    "disavowed"]).from("all_participants");
-  participantQuery.join("dispute_windows", "all_participants.disputeWindow", "dispute_windows.disputeWindow");
-  participantQuery.leftJoin("balances_detail as feeToken", function () {
-    this
-      .on("feeToken.owner", db.raw("all_participants.participantAddress"))
-      .andOn("feeToken.symbol", db.raw("?", "FeeToken"));
-  });
-  participantQuery.leftJoin("balances AS cashDisputeWindow", function () {
-    this
-      .on("cashDisputeWindow.owner", db.raw("feeToken.disputeWindow"))
-      .on("cashDisputeWindow.token", db.raw("?", getCashAddress(augur)));
-  });
-  participantQuery.leftJoin("balances AS cashParticipant", function () {
-    this
-      .on("cashParticipant.owner", db.raw("participantAddress"))
-      .andOn("cashParticipant.token", db.raw("?", getCashAddress(augur)));
-  });
-  participantQuery.leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "feeToken.disputeWindow");
-  participantQuery.where("all_participants.universe", universe);
-  participantQuery.where("all_participants.reporter", reporter);
-  participantQuery.whereNot("all_participants.participantSupply", "0");
-  participantQuery.whereNot("all_participants.reporterBalance", "0");
-  participantQuery.whereRaw("(reportingState IN (?, ?) OR ((disavowed != 0 or all_participants.needsDisavowal) AND (dispute_windows.state = ? OR reportingState = ?)))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, DisputeWindowState.PAST, ReportingState.AWAITING_FORK_MIGRATION]);
-  const participantEthFeeRows: Array<ParticipantEthFeeRow> = await participantQuery;
-  const participantEthFeesOnWindow = _.map(participantEthFeeRows, (ethFeeRows): ParticipantEthFee => {
-    const totalFeeTokensInDisputeWindow = new BigNumber(ethFeeRows.feeTokenSupply).plus(new BigNumber(ethFeeRows.participationTokenSupply));
-    const participantShareOfDisputeWindow = totalFeeTokensInDisputeWindow.isZero() ? ZERO : new BigNumber(ethFeeRows.feeTokenBalance).dividedBy(totalFeeTokensInDisputeWindow);
-    const cashInDisputeWindow = new BigNumber(ethFeeRows.cashDisputeWindow);
-    const participantEthFees = participantShareOfDisputeWindow.times(cashInDisputeWindow);
-    const reporterShareOfParticipant = new BigNumber(ethFeeRows.reporterBalance).dividedBy(ethFeeRows.participantSupply);
-    const ethFees = reporterShareOfParticipant.times(participantEthFees);
-    return {
-      participantAddress: ethFeeRows.participantAddress,
-      disputeWindow: ethFeeRows.disputeWindow,
-      ethFees,
-      fork: ethFeeRows.forking,
-    };
-  });
-  // keyBy/valuesIn reduces down to a single object per participantAddress
-  const cashBalanceByParticipant: Array<ParticipantEthFeeRow> = _.valuesIn(_.keyBy(participantEthFeeRows, "participantAddress"));
-  const participantEthFeesOnParticipant: Array<ParticipantEthFee> = _.map(cashBalanceByParticipant, (ethFeeRows) => {
-    const reporterShareOfParticipant = new BigNumber(ethFeeRows.reporterBalance).dividedBy(ethFeeRows.participantSupply);
-    const participantEthFees = new BigNumber(ethFeeRows.cashParticipant);
-    const ethFees = reporterShareOfParticipant.times(participantEthFees);
-    return {
-      participantAddress: ethFeeRows.participantAddress,
-      disputeWindow: null,
-      ethFees,
-      fork: ethFeeRows.forking,
-    };
-  });
-  return participantEthFeesOnWindow.concat(participantEthFeesOnParticipant);
-}
-
 export async function getReportingFees(db: Knex, augur: Augur, params: t.TypeOf<typeof ReportingFeesParams>): Promise<FeeDetails> {
   const currentUniverse = await getUniverse(db, params.universe);
-  const participantEthFees: Array<ParticipantEthFee> = await getParticipantEthFees(db, augur, params.reporter, params.universe);
-  const participationTokenEthFees: Array<ParticipationTokenEthFee> = await getParticipationTokenEthFees(db, augur, params.reporter, params.universe);
   const repStakeResults = await getStakedRepResults(db, params.reporter, params.universe);
   const result: FormattedMarketInfo = await getMarketsReportingParticipants(db, params.reporter, currentUniverse);
-  const unclaimedParticipantEthFees = _.reduce(participantEthFees, (acc, cur) => acc.plus(cur.fork ? 0 : cur.ethFees), ZERO);
-  const unclaimedForkEthFees = _.reduce(participantEthFees, (acc, cur) => acc.plus(cur.fork ? cur.ethFees : 0), ZERO);
-  const unclaimedParticipationTokenEthFees = _.reduce(participationTokenEthFees, (acc, cur) => acc.plus(cur.ethFees), ZERO);
-  const redeemableDisputeWindows = _.map(participationTokenEthFees, "disputeWindow");
-  const participationTokenRepStaked = _.reduce(participationTokenEthFees, (acc, cur) => acc.plus(cur.participationTokens), ZERO);
-  const unclaimedRepStaked = repStakeResults.fees.unclaimedRepStaked.plus(participationTokenRepStaked);
+  const unclaimedRepStaked = repStakeResults.fees.unclaimedRepStaked;
   const response = {
     total: {
-      unclaimedEth: unclaimedParticipantEthFees.plus(unclaimedParticipationTokenEthFees).toFixed(0, BigNumber.ROUND_DOWN),
       unclaimedRepStaked: unclaimedRepStaked.toFixed(0, BigNumber.ROUND_DOWN),
       unclaimedRepEarned: repStakeResults.fees.unclaimedRepEarned.toFixed(0, BigNumber.ROUND_DOWN),
       lostRep: repStakeResults.fees.lostRep.toFixed(0, BigNumber.ROUND_DOWN),
-      unclaimedForkEth: unclaimedForkEthFees.toFixed(0, BigNumber.ROUND_DOWN),
       unclaimedForkRepStaked: repStakeResults.fees.unclaimedForkRepStaked.toFixed(0, BigNumber.ROUND_DOWN),
     },
-    disputeWindows: redeemableDisputeWindows.sort(),
     forkedMarket: result.forkedMarket,
     nonforkedMarkets: result.nonforkedMarkets,
   };
