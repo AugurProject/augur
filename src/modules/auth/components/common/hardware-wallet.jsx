@@ -11,11 +11,12 @@ import DerivationPathEditor from "modules/auth/components/common/derivation-path
 import toggleHeight from "utils/toggle-height/toggle-height";
 import { ERROR_TYPES } from "modules/auth/constants/connect-nav";
 import { errorIcon } from "modules/common/components/icons";
-import { each } from "lodash";
+import { each, orderBy } from "lodash";
 import Styles from "modules/auth/components/common/hardware-wallet.styles";
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
 import StylesError from "modules/auth/components/common/error-container.styles";
 import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
+import getEtherBalance from "modules/auth/actions/get-ether-balance";
 
 export default class HardwareWallet extends Component {
   static propTypes = {
@@ -140,14 +141,30 @@ export default class HardwareWallet extends Component {
     });
 
     if (result.success) {
-      const walletAddresses = [];
-      each(result.addresses, (item, index) => {
-        walletAddresses.push({ address: item, index });
+      const addrs = [];
+      each(result.addresses, (address, index) => {
+        addrs.push({
+          address,
+          index,
+          derivationPath
+        });
+        const local = this;
+        getEtherBalance(address, (err, balance, address) => {
+          if (!err) {
+            const value = addrs.find(addr => addr.address === address);
+            if (value) {
+              value.balance = balance;
+              local.setState({
+                walletAddresses
+              });
+            }
+          }
+        });
       });
 
+      const walletAddresses = orderBy(addrs, ["balance"], ["desc"]);
       this.setState({
-        baseDerivationPath: derivationPath,
-        walletAddresses: result.addresses,
+        walletAddresses,
         addressPageNumber: pageNumber
       });
     } else {
@@ -160,10 +177,14 @@ export default class HardwareWallet extends Component {
     this.setState({ displayInstructions });
   }
 
-  async connectWallet(pathIndex) {
+  async connectWallet(addressObject) {
     const { loginWithWallet } = this.props;
-    const derivationPath = this.buildDerivationPath(pathIndex);
-
+    const derivationPath = DerivationPath.buildString(
+      DerivationPath.increment(
+        DerivationPath.parse(addressObject.derivationPath),
+        addressObject.index
+      )
+    );
     return loginWithWallet(derivationPath);
   }
 

@@ -4,7 +4,6 @@ import classNames from "classnames";
 
 import formatAddress from "modules/auth/helpers/format-address";
 import { prevIcon, nextIcon } from "modules/common/components/icons";
-import getEtherBalance from "modules/auth/actions/get-ether-balance";
 import { formatEther } from "utils/format-number";
 
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
@@ -25,15 +24,11 @@ export default class AddressPickerContent extends Component {
 
     this.LedgerEthereum = null;
 
-    this.state = {
-      addressBalances: {}
-    };
-
     this.clickPrevious = this.clickPrevious.bind(this);
 
-    props.addresses.map(address => this.updateAccountBalance(address));
+    // props.addresses.map(address => this.updateAccountBalance(address));
   }
-
+  /*
   componentWillUpdate(nextProps, nextState) {
     if (this.props.addresses !== nextProps.addresses) {
       nextProps.addresses.map(address => this.updateAccountBalance(address));
@@ -56,7 +51,7 @@ export default class AddressPickerContent extends Component {
       });
     }
   }
-
+*/
   clickPrevious() {
     if (!this.props.disablePrevious) {
       this.props.clickPrevious();
@@ -71,7 +66,6 @@ export default class AddressPickerContent extends Component {
       clickNext,
       disablePrevious
     } = this.props;
-    const { addressBalances } = this.state;
 
     return (
       <div
@@ -91,23 +85,25 @@ export default class AddressPickerContent extends Component {
             Balance
           </div>
         </div>
-        {indexArray.map(i => (
+        {indexArray.map(index => (
           <div
-            key={i}
+            key={index}
             className={classNames(StylesDropdown.ConnectDropdown__row, {
-              [StylesDropdown.FadeInAndOut]: !addresses[i],
+              [StylesDropdown.FadeInAndOut]: !(addresses[index] || {}).address,
               [StylesDropdown.ConnectDropdown__rowTransition]: true
             })}
           >
             <button
               className={StylesDropdown.ConnectDropdown__addressColumn}
-              onClick={() => clickAction(i)}
+              onClick={() => clickAction(addresses[index])}
             >
-              {(addresses[i] && formatAddress(addresses[i])) || `—`}
+              {((addresses[index] || {}).address &&
+                formatAddress((addresses[index] || {}).address)) ||
+                `—`}
             </button>
             <div className={StylesDropdown.ConnectDropdown__balanceColumn}>
-              {addressBalances[addresses[i]]
-                ? formatEther(addressBalances[addresses[i]]).formatted
+              {(addresses[index] || {}).balance
+                ? formatEther((addresses[index] || {}).balance).formatted
                 : `—`}
             </div>
           </div>
