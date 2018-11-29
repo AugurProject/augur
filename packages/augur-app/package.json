@@ -80,7 +80,7 @@
     "electron-publisher-s3": "20.17.2",
     "electron-webpack": "2.6.1",
 
-    "less": "3.8.1",
+    "less": "3.9.0",
     "less-loader": "4.1.0",
     "mocha": "5.2.0",
     "webpack-dev-middleware": "3.4.0",
