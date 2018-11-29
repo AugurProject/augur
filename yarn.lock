@@ -17330,10 +17330,10 @@ react-emotion@^9.1.1:
     babel-plugin-emotion "^9.2.11"
     create-emotion-styled "^9.2.8"
 
-react-faux-dom@4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/react-faux-dom/-/react-faux-dom-4.1.0.tgz#2c2a7f7565ad455b4c081ab37474335fc54be3f0"
-  integrity sha512-SsQKNeVAbuOtfj7mrbAPO007E40DtKjrWI/ycHoQodTjxteVN31Y6zfDMp4BP6QwtCtDCUKhwWplFZBuaCpKmg==
+react-faux-dom@4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/react-faux-dom/-/react-faux-dom-4.2.0.tgz#89af23fe083687a067e33d86a330a5c577924d97"
+  integrity sha512-wjxkKUw+ZVkeR9FBDwTPnu1eD3oYXa7thiNXTIxgarhnrNOr4VaBwbz9dmR7Q66y4LEXpfXCZQ4hkarYHTyXMg==
   dependencies:
     create-react-class "^15.5.3"
     query-selector "^1.0.9"
