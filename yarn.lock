@@ -2366,6 +2366,11 @@ app-builder-bin@2.5.5:
   resolved "https://registry.yarnpkg.com/app-builder-bin/-/app-builder-bin-2.5.5.tgz#5721a37b1c89d24df058e6308b5d30fc62a63bab"
   integrity sha512-ZemMZqFJGf05J7qSvZeKIs3vSYl8sG8DWsyBLzxtfoIIoLD/dI/dtNwSOZwyoY54w/g8b7IbG5L6egnqfyX7oA==
 
+app-builder-bin@2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/app-builder-bin/-/app-builder-bin-2.6.0.tgz#b4e5d5ee5bcf264818ab9830b95338f9f419de5d"
+  integrity sha512-7HphDMS2U9MwAA6R7lSU6MASFR/D+VJDb5hQ4Fn2coOMyaRn71QDWPdG0TPnDr88F2I7bsTuHYud28S/yN2lZw==
+
 app-builder-lib@20.38.1:
   version "20.38.1"
   resolved "https://registry.yarnpkg.com/app-builder-lib/-/app-builder-lib-20.38.1.tgz#23208ac8e026f1e3bcd7721527644942f3c13329"
@@ -4400,6 +4405,24 @@ builder-util@^5.13.0:
     source-map-support "^0.5.6"
     stat-mode "^0.2.2"
     temp-file "^3.1.3"
+
+builder-util@~9.6.0:
+  version "9.6.0"
+  resolved "https://registry.yarnpkg.com/builder-util/-/builder-util-9.6.0.tgz#ffcc0f713d0f4dfa6bcda2aee83b8fcb1f16f5b6"
+  integrity sha512-6T4E3aNVndTZ2oCt+22S0wxt47d094MxrADi6S012QumXlDNfSsyu1ffbGN9w0HG+4aubpLzf9apKgMP1yl4Kw==
+  dependencies:
+    "7zip-bin" "~4.1.0"
+    app-builder-bin "2.6.0"
+    bluebird-lst "^1.0.6"
+    builder-util-runtime "^8.0.2"
+    chalk "^2.4.1"
+    debug "^4.1.0"
+    fs-extra-p "^7.0.0"
+    is-ci "^1.2.1"
+    js-yaml "^3.12.0"
+    source-map-support "^0.5.9"
+    stat-mode "^0.2.2"
+    temp-file "^3.3.2"
 
 builtin-modules@^1.0.0:
   version "1.1.1"
@@ -7375,14 +7398,14 @@ ejs@^2.5.9, ejs@^2.6.1:
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.6.1.tgz#498ec0d495655abc6f23cd61868d926464071aa0"
   integrity sha512-0xy4A/twfrRCnkhfk8ErDi5DqdAsAqeGxht4xkCUrsvhhbQNs7E+4jV0CN7+NKIY0aHE72+XvqtBIXzD31ZbXQ==
 
-electron-builder-squirrel-windows@20.38.0:
-  version "20.38.0"
-  resolved "https://registry.yarnpkg.com/electron-builder-squirrel-windows/-/electron-builder-squirrel-windows-20.38.0.tgz#3403bf588274c15d76695eb89160130cf20b7458"
-  integrity sha512-vg3IOe37WAPV7USNiIUf5NnTM+opcRlttLlCBwy7c87SbETm04C95hchu5fXvwwLoGace6KNkfaN4ssRw0WhzA==
+electron-builder-squirrel-windows@20.38.2:
+  version "20.38.2"
+  resolved "https://registry.yarnpkg.com/electron-builder-squirrel-windows/-/electron-builder-squirrel-windows-20.38.2.tgz#b06af7e0330705069227d4fa6782c3ee52a7c515"
+  integrity sha512-/QmZuueYOdUsWsMx5j0vik5kxeJLir10gF5tnmI67UOVFpmeYMDsi8Ln7WxOe10ZElfMTDtnRIJU0zAltda/TA==
   dependencies:
     archiver "^3.0.0"
     bluebird-lst "^1.0.6"
-    builder-util "~9.5.0"
+    builder-util "~9.6.0"
     fs-extra-p "^7.0.0"
     sanitize-filename "^1.6.1"
   optionalDependencies:
@@ -8669,7 +8692,7 @@ ethjs-util@^0.1.3, ethjs-util@^0.1.6:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@^6.0.0:
+ethrpc@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-6.1.0.tgz#a694ef71ba85c434d99eeb85e012cda6043f0ee1"
   integrity sha512-rhpP3vDDxYnbB0vrvh5h6qfLQnLp16OSVL0fUY2Fi1sW8yYg/Qzk7a01XB4g5HeU2gS9RfRbK4H/3cFJDugadg==
@@ -20765,6 +20788,11 @@ typescript@2.9.2:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
   integrity sha512-Gr4p6nFNaoufRIY4NMdpQRNmgxVIGMs4Fcu/ujdYk3nAZqk7supzBE9idmvfZIlH/Cuj//dvi+019qEue9lV0w==
 
+typescript@3.1.6:
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.1.6.tgz#b6543a83cfc8c2befb3f4c8fba6896f5b0c9be68"
+  integrity sha512-tDMYfVtvpb96msS1lDX9MEdHrW4yOuZ4Kdc4Him9oU796XldPYF/t2+uKoX0BBa0hXXwDlqYQbXY5Rzjzc5hBA==
+
 typewise-core@^1.2, typewise-core@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/typewise-core/-/typewise-core-1.2.0.tgz#97eb91805c7f55d2f941748fa50d315d991ef195"
@@ -22089,10 +22117,9 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
   integrity sha512-nqHUnMXmBzT0w570r2JpJxfiSD1IzoI+HGVdd3aZ0yNi3ngvQ4jv1dtHt5VGxfI2yj5yqImPhOK4vmIh2xMbGg==
 
-websocket@1.0.26:
+websocket@1.0.26, "websocket@git://github.com/frozeman/WebSocket-Node.git#browserifyCompatible":
   version "1.0.26"
-  resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.26.tgz#a03a01299849c35268c83044aa919c6374be8194"
-  integrity sha512-fjcrYDPIQxpTnqFQ9JjxUQcdvR89MFAOjPBlF+vjOt49w/XW4fJknUoMz/mDIn2eK1AdslVojcaOxOqyZZV8rw==
+  resolved "git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2"
   dependencies:
     debug "^2.2.0"
     nan "^2.3.3"
@@ -22107,15 +22134,6 @@ websocket@^1.0.24:
     debug "^2.2.0"
     nan "^2.11.0"
     typedarray-to-buffer "^3.1.5"
-    yaeti "^0.0.6"
-
-"websocket@git://github.com/frozeman/WebSocket-Node.git#browserifyCompatible":
-  version "1.0.26"
-  resolved "git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2"
-  dependencies:
-    debug "^2.2.0"
-    nan "^2.3.3"
-    typedarray-to-buffer "^3.1.2"
     yaeti "^0.0.6"
 
 whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3:
