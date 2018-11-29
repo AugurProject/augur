@@ -73,7 +73,7 @@
     "moment": "2.22.2",
     "number-to-words": "^1.2.4",
     "prop-types": "15.6.2",
-    "qrcode.react": "0.7.2",
+    "qrcode.react": "0.8.0",
     "query-string": "^6.1.0",
     "react": "16.2.0",
     "react-addons-shallow-compare": "15.6.2",
