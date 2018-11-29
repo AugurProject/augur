@@ -4454,24 +4454,6 @@ builder-util@^5.13.0:
     stat-mode "^0.2.2"
     temp-file "^3.1.3"
 
-builder-util@~9.6.0:
-  version "9.6.0"
-  resolved "https://registry.yarnpkg.com/builder-util/-/builder-util-9.6.0.tgz#ffcc0f713d0f4dfa6bcda2aee83b8fcb1f16f5b6"
-  integrity sha512-6T4E3aNVndTZ2oCt+22S0wxt47d094MxrADi6S012QumXlDNfSsyu1ffbGN9w0HG+4aubpLzf9apKgMP1yl4Kw==
-  dependencies:
-    "7zip-bin" "~4.1.0"
-    app-builder-bin "2.6.0"
-    bluebird-lst "^1.0.6"
-    builder-util-runtime "^8.0.2"
-    chalk "^2.4.1"
-    debug "^4.1.0"
-    fs-extra-p "^7.0.0"
-    is-ci "^1.2.1"
-    js-yaml "^3.12.0"
-    source-map-support "^0.5.9"
-    stat-mode "^0.2.2"
-    temp-file "^3.3.2"
-
 builtin-modules@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-1.1.1.tgz#270f076c5a72c02f5b65a47df94c5fe3a278892f"
@@ -17036,12 +17018,12 @@ qr.js@0.0.0:
   resolved "https://registry.yarnpkg.com/qr.js/-/qr.js-0.0.0.tgz#cace86386f59a0db8050fa90d9b6b0e88a1e364f"
   integrity sha1-ys6GOG9ZoNuAUPqQ2baw6IoeNk8=
 
-qrcode.react@0.7.2:
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/qrcode.react/-/qrcode.react-0.7.2.tgz#72a5718fd56baafe15c2c153fe436628d83aa286"
-  integrity sha512-s1x+E3bsp0ojI8cHQ+czr+aG3huLZegH+tqAuRsXh6oXvzNfC+9L2PeFRBBu8eRBiejMRrRzSH7iwi5LDyWfRg==
+qrcode.react@0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/qrcode.react/-/qrcode.react-0.8.0.tgz#413b31cc3b62910e39513f7bead945e01c4c34fb"
+  integrity sha512-16wKpuFvLwciIq2YAsfmPUCnSR8GrYPsXRK5KVdcIuX0+W/MKZbBkFhl44ttRx4TWZHqRjfztoWOxdPF0Hb9JA==
   dependencies:
-    prop-types "^15.5.8"
+    prop-types "^15.6.0"
     qr.js "0.0.0"
 
 qs@6.5.2, qs@~6.5.1, qs@~6.5.2:
