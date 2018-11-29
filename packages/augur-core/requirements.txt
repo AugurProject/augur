@@ -23,7 +23,7 @@ pytest-profiling==1.2.11
 pytest==3.1.2
 pyyaml==3.12              # via ethereum
 repoze.lru==0.6           # via ethereum
-rlp==0.5.1                # via ethereum
+rlp==0.6.0                # via ethereum
 scrypt==0.8.0             # via ethereum
 semantic-version==2.6.0   # via py-solc
 six==1.11.0               # via pytest-profiling
