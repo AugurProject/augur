@@ -46,7 +46,7 @@ describe("server/getters/get-reporting-fees", () => {
     await expect(await dispatchJsonRpcRequest(db, { method: "getReportingFees", params }, augur)).toEqual({
       total: {
         "unclaimedRepEarned": "0",
-        "unclaimedRepStaked": "391",
+        "unclaimedRepStaked": "331",
         "unclaimedForkRepStaked": "331",
         "lostRep": "0",
       },

@@ -18,15 +18,15 @@ const augur = {
       getInitialReporter: () => Promise.resolve("0x0000000000000000000000000000000000abe123"),
     },
     Universe: {
-      getFeeWindowByTimestamp: (p) => {
+      getDisputeWindowByTimestamp: (p) => {
         expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
-        const feeWindowByTimestamp = {
+        const disputeWindowByTimestamp = {
           1509085473: "0x2000000000000000000000000000000000000000",
           1509690273: "0x2100000000000000000000000000000000000000",
         };
-        const feeWindow = feeWindowByTimestamp[p._timestamp];
-        expect(typeof feeWindow).toBe("string");
-        return Promise.resolve(feeWindow);
+        const disputeWindow = disputeWindowByTimestamp[p._timestamp];
+        expect(typeof disputeWindow).toBe("string");
+        return Promise.resolve(disputeWindow);
       },
     },
   },

@@ -37,7 +37,7 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         t.assertions.onRemoved(recordsAfterRemoval.transfers);
         t.assertions.onRemovedBalances(recordsAfterRemoval.balances);
       });
-    })
+    });
   };
   runTest({
     description: "TokensTransferred log and removal",

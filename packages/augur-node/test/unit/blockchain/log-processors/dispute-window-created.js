@@ -23,15 +23,15 @@ describe("blockchain/log-processors/dispute-window-created", () => {
         id: 40304,
         blockNumber: 160101,
       };
-      await(await processDisputeWindowCreatedLog(augur, log))(trx);
+      await(await processDisputeWindowCreatedLog(null, log))(trx);
       expect(await getDisputeWindow(trx, log)).toEqual({
         dispute_windows: {
           endTime: 1512657473,
           disputeWindow: "0xf000000000000000000000000000000000000000",
           disputeWindowId: 40304,
-        }
+        },
       });
-      await(await processDisputeWindowCreatedLogRemoval(augur, log))(trx);
+      await(await processDisputeWindowCreatedLogRemoval(null, log))(trx);
       expect(await getDisputeWindow(trx, log)).toEqual({
         dispute_windows: undefined,
       });

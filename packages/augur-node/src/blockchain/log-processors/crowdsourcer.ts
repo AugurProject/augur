@@ -44,24 +44,24 @@ function rollbackCrowdsourcerCompletion(db: Knex, crowdsourcerId: Address, marke
   // Set all crowdsourcers to completed: null, so long as they match the rollback's dispute crowdsourcer's fee window and market
   return db("crowdsourcers").update({ completed: null }).where({ marketId }).whereIn("disputeWindow",
     (queryBuilder: QueryBuilder) => {
-      queryBuilder.select("feeWindow").from("crowdsourcers").where({ crowdsourcerId });
+      queryBuilder.select("disputeWindow").from("crowdsourcers").where({ crowdsourcerId });
     });
 }
 
 export async function processDisputeCrowdsourcerCreatedLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
-    const payoutId: number = await insertPayout(db, log.market, log.payoutNumerators, log.invalid, false);
-    const feeWindowRow: { feeWindow: string }|null = await db("fee_windows").select(["feeWindow"]).first()
+    const payoutId: number = await insertPayout(db, log.market, log.payoutNumerators, false);
+    const disputeWindowRow: { disputeWindow: string }|null = await db("dispute_windows").select(["disputeWindow"]).first()
       .where("state", DisputeWindowState.CURRENT)
       .where({ universe: log.universe });
-    if (feeWindowRow == null) throw new Error(`could not retrieve feeWindow for crowdsourcer: ${log.disputeCrowdsourcer}`);
+    if (disputeWindowRow == null) throw new Error(`could not retrieve disputeWindow for crowdsourcer: ${log.disputeCrowdsourcer}`);
     const crowdsourcerToInsert = {
       blockNumber: log.blockNumber,
       transactionHash: log.transactionHash,
       logIndex: log.logIndex,
       crowdsourcerId: log.disputeCrowdsourcer,
       marketId: log.market,
-      feeWindow: feeWindowRow.feeWindow,
+      disputeWindow: disputeWindowRow.disputeWindow,
       size: log.size,
       payoutId,
       completed: null,

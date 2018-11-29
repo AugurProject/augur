@@ -32,7 +32,7 @@ export enum TokenType {
   ReputationToken,
   ShareToken,
   DisputeCrowdsourcer,
-  FeeWindow,
+  DisputeWindow,
   FeeToken,
 }
 

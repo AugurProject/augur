@@ -42,7 +42,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
   const marketPayload: {} = { tx: { to: log.market } };
   const universePayload: {} = { tx: { to: log.universe, send: false } };
   const callPromises = {
-    disputeWindow: augur.api.Market.getFeeWindow(marketPayload),
+    disputeWindow: augur.api.Market.getDisputeWindow(marketPayload),
     endTime: augur.api.Market.getEndTime(marketPayload),
     designatedReporter: augur.api.Market.getDesignatedReporter(marketPayload),
     marketCreatorMailbox: augur.api.Market.getMarketCreatorMailbox(marketPayload),

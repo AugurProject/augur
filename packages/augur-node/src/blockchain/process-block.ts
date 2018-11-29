@@ -4,7 +4,7 @@ import { each } from "bluebird";
 import Augur, { FormattedEventLog } from "augur.js";
 import { augurEmitter } from "../events";
 import { BlockDetail, BlocksRow, MarketsContractAddressRow, ReportingState, Address, DisputeWindowState, MarketIdUniverseDisputeWindow, TransactionHashesRow } from "../types";
-import { updateActiveFeeWindows, updateMarketState } from "./log-processors/database";
+import { updateActiveDisputeWindows, updateMarketState } from "./log-processors/database";
 import { getMarketsWithReportingState } from "../server/getters/database";
 import { logger } from "../utils/logger";
 import { SubscriptionEventNames } from "../constants";
@@ -155,11 +155,11 @@ async function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, bloc
 }
 
 export async function advanceDisputeWindowActive(db: Knex, augur: Augur, blockNumber: number, timestamp: number) {
-  const feeWindowModifications = await updateActiveFeeWindows(db, blockNumber, timestamp);
-  if (feeWindowModifications != null && feeWindowModifications.expiredFeeWindows.length === 0 && feeWindowModifications.newActiveFeeWindows.length === 0) return;
-  await advanceIncompleteCrowdsourcers(db, blockNumber, feeWindowModifications!.expiredFeeWindows || []);
-  await advanceMarketsToAwaitingFinalization(db, augur, blockNumber, feeWindowModifications!.expiredFeeWindows || []);
-  await advanceMarketsToCrowdsourcingDispute(db, augur, blockNumber, feeWindowModifications!.newActiveFeeWindows || []);
+  const disputeWindowModifications = await updateActiveDisputeWindows(db, blockNumber, timestamp);
+  if (disputeWindowModifications != null && disputeWindowModifications.expiredDisputeWindows.length === 0 && disputeWindowModifications.newActiveDisputeWindows.length === 0) return;
+  await advanceIncompleteCrowdsourcers(db, blockNumber, disputeWindowModifications!.expiredDisputeWindows || []);
+  await advanceMarketsToAwaitingFinalization(db, augur, blockNumber, disputeWindowModifications!.expiredDisputeWindows || []);
+  await advanceMarketsToCrowdsourcingDispute(db, augur, blockNumber, disputeWindowModifications!.newActiveDisputeWindows || []);
 }
 
 async function advanceMarketsToCrowdsourcingDispute(db: Knex, augur: Augur, blockNumber: number, newActiveDisputeWindows: Array<Address>) {
@@ -183,7 +183,7 @@ async function advanceMarketsToCrowdsourcingDispute(db: Knex, augur: Augur, bloc
 }
 
 async function advanceIncompleteCrowdsourcers(db: Knex, blockNumber: number, expiredDisputeWindows: Array<Address>) {
-  // Finds crowdsourcers rows that we don't know the completion of, but are attached to feeWindows that have ended
+  // Finds crowdsourcers rows that we don't know the completion of, but are attached to disputeWindows that have ended
   // They did not reach their goal, so set completed to 0.
   return db("crowdsourcers").update("completed", 0)
     .whereNull("completed")

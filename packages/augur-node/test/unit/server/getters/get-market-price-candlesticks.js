@@ -49,14 +49,14 @@ describe("server/getters/get-market-price-candlesticks", () => {
           startTimestamp: 1506474493,
           volume: "0.2",
         },
-          {
-            end: "4.2",
-            max: "4.2",
-            min: "4.2",
-            start: "4.2",
-            startTimestamp: 1506474513,
-            volume: "0.1",
-          }],
+        {
+          end: "4.2",
+          max: "4.2",
+          min: "4.2",
+          start: "4.2",
+          startTimestamp: 1506474513,
+          volume: "0.1",
+        }],
       });
     },
   });

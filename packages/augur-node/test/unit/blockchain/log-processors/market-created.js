@@ -37,7 +37,7 @@ describe("blockchain/log-processors/market-created", () => {
         await(await processMarketCreatedLogRemoval(t.params.augur, t.params.log))(trx);
         t.assertions.onRemoved(await getState(trx, t.params.log));
       });
-    })
+    });
   };
   const constants = new Augur().constants;
   runTest({
