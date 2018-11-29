@@ -22,6 +22,6 @@
     "types": [ ]
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "test/unit/blockchain/log-processors/dispute-window-created.js", "test/unit/server/getters/get-dispute-windows.js", "test/unit/server/getters/get-dispute-window.js"
   ]
 }

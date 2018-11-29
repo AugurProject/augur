@@ -46,16 +46,16 @@ export enum ControlMessageType {
 }
 
 export enum SubscriptionEventNames {
-  FeeWindowOpened = "FeeWindowOpened",
+  DisputeWindowOpened = "DisputeWindowOpened",
   CompleteSetsPurchased = "CompleteSetsPurchased",
   CompleteSetsSold = "CompleteSetsSold",
   DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
   DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution",
   DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated",
   DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog",
-  FeeWindowClosed = "FeeWindowClosed",
-  FeeWindowCreated = "FeeWindowCreated",
-  FeeWindowRedeemed = "FeeWindowRedeemed",
+  DisputeWindowClosed = "DisputeWindowClosed",
+  DisputeWindowCreated = "DisputeWindowCreated",
+  DisputeWindowRedeemed = "DisputeWindowRedeemed",
   InitialReportSubmitted = "InitialReportSubmitted",
   InitialReporterRedeemed = "InitialReporterRedeemed",
   InitialReporterTransferred = "InitialReporterTransferred",

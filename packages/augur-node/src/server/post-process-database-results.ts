@@ -91,7 +91,7 @@ const whitelist: TableWhitelist = {
   initial_reports: {
     amountStaked: true,
   },
-  fee_windows: {
+  dispute_windows: {
     fees: true,
   },
   token_supply: {

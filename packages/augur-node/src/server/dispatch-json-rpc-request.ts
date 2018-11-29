@@ -12,8 +12,8 @@ import { getMarketPriceHistory, MarketPriceHistoryParams } from "./getters/get-m
 import { getMarketPriceCandlesticks, MarketPriceCandlesticksParams } from "./getters/get-market-price-candlesticks";
 import { getUserTradingPositions, UserTradingPositionsParams } from "./getters/get-user-trading-positions";
 import { getUserShareBalances, UserShareBalancesParams } from "./getters/get-user-share-balances";
-import { FeeWindowsParams, getFeeWindows } from "./getters/get-fee-windows";
-import { FeeWindowParams, getFeeWindow } from "./getters/get-fee-window";
+import { DisputeWindowsParams, getDisputeWindows } from "./getters/get-dispute-windows";
+import { DisputeWindowParams, getDisputeWindow } from "./getters/get-dispute-window";
 import { getUnclaimedMarketCreatorFees, UnclaimedMarketCreatorFeesParams } from "./getters/get-unclaimed-market-creator-fees";
 import { DisputeTokensParams, getDisputeTokens } from "./getters/get-dispute-tokens";
 import { getMarkets, GetMarketsParams } from "./getters/get-markets";
@@ -72,12 +72,12 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getMarketPriceCandlesticks, MarketPriceCandlesticksParams.decode(request.params));
     case "getUserTradingPositions":
       return dispatchResponse(getUserTradingPositions, UserTradingPositionsParams.decode(request.params));
-    case "getFeeWindowCurrent":
-      return dispatchResponse(getFeeWindow, FeeWindowParams.decode(Object.assign({ feeWindowState: "current" }, request.params)));
-    case "getFeeWindow":
-      return dispatchResponse(getFeeWindow, FeeWindowParams.decode(request.params));
-    case "getFeeWindows":
-      return dispatchResponse(getFeeWindows, FeeWindowsParams.decode(request.params));
+    case "getDisputeWindowCurrent":
+      return dispatchResponse(getDisputeWindow, DisputeWindowParams.decode(Object.assign({disputeWindowState: "current" }, request.params)));
+    case "getDisputeWindow":
+      return dispatchResponse(getDisputeWindow, DisputeWindowParams.decode(request.params));
+    case "getDisputeWindows":
+      return dispatchResponse(getDisputeWindows, DisputeWindowsParams.decode(request.params));
     case "getUnclaimedMarketCreatorFees":
       return dispatchResponse(getUnclaimedMarketCreatorFees, UnclaimedMarketCreatorFeesParams.decode(request.params));
     case "getWinningBalance":

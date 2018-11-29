@@ -30,7 +30,7 @@ export enum ReportingState {
   AWAITING_FORK_MIGRATION = "AWAITING_FORK_MIGRATION",
 }
 
-export enum FeeWindowState {
+export enum DisputeWindowState {
   PAST = "PAST",
   CURRENT = "CURRENT",
   FUTURE = "FUTURE",
@@ -119,7 +119,7 @@ export interface MarketCreatedLogExtraInfo {
 
 export interface MarketCreatedOnContractInfo {
   marketCreatorFeeRate: string;
-  feeWindow: Address;
+  disputeWindow: Address;
   endTime: string;
   designatedReporter: Address;
   designatedReportStake: string;
@@ -207,9 +207,9 @@ export interface MarketsContractAddressRow {
   marketId: Address;
 }
 
-export interface MarketIdUniverseFeeWindow extends MarketsContractAddressRow {
+export interface MarketIdUniverseDisputeWindow extends MarketsContractAddressRow {
   universe: Address;
-  feeWindow: Address;
+  disputeWindow: Address;
 }
 
 export interface MarketPricing<BigNumberType> {
@@ -242,7 +242,7 @@ export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> 
   openInterest: BigNumberType;
   sharesOutstanding: BigNumberType;
   marketStateId: number;
-  feeWindow: Address;
+  disputeWindow: Address;
   endTime: number;
   finalizationBlockNumber?: number|null;
   lastTradeBlockNumber?: number|null;
@@ -383,17 +383,17 @@ export interface UIStakeInfo<BigNumberType> {
   stakes: Array<StakeDetails<BigNumberType>>;
 }
 
-export interface UIFeeWindowCurrent<BigNumberType> {
+export interface UIDisputeWindowCurrent<BigNumberType> {
   endTime: number;
-  feeWindow: Address|null;
-  feeWindowId: number;
+  disputeWindow: Address|null;
+  disputeWindowId: number;
   startTime: number;
   universe: Address;
   totalStake?: BigNumberType;
-  feeWindowEthFees?: BigNumberType;
-  feeWindowRepStaked?: BigNumberType;
-  feeWindowFeeTokens?: BigNumberType;
-  feeWindowParticipationTokens?: BigNumberType;
+  disputeWindowEthFees?: BigNumberType;
+  disputeWindowRepStaked?: BigNumberType;
+  disputeWindowFeeTokens?: BigNumberType;
+  disputeWindowParticipationTokens?: BigNumberType;
   participantContributions?: BigNumberType;
   participantContributionsCrowdsourcer?: BigNumberType;
   participantContributionsInitialReport?: BigNumberType;
@@ -442,7 +442,7 @@ export interface UIMarketInfo<BigNumberType> {
   volume: BigNumberType;
   openInterest: BigNumberType;
   outstandingShares: BigNumberType;
-  feeWindow: Address;
+  disputeWindow: Address;
   endTime: number;
   finalizationBlockNumber?: number|null;
   finalizationTime?: number|null;
@@ -608,7 +608,7 @@ export interface JoinedReportsMarketsRow<BigNumberType> extends Payout<BigNumber
   blockHash: Bytes32;
   marketId: Address;
   universe: Address;
-  feeWindow: Address;
+  disputeWindow: Address;
   crowdsourcerId?: Address;
   initialReporter?: Address;
   marketType: string;
@@ -624,7 +624,7 @@ export interface UIReport<BigNumberType> {
   transactionHash: Bytes32;
   blockHash: Bytes32;
   marketId: Address;
-  feeWindow: Address;
+  disputeWindow: Address;
   payoutNumerators: Array<BigNumberType|null>;
   amountStaked: BigNumberType;
   crowdsourcerId: Address;
@@ -634,13 +634,13 @@ export interface UIReport<BigNumberType> {
   isSubmitted: boolean;
 }
 
-export interface FeeWindowRow {
-  feeWindow: Address;
+export interface DisputeWindowRow {
+  disputeWindow: Address;
   feeToken: Address;
-  feeWindowId: number;
+  disputeWindowId: number;
   universe: Address;
   startTime: number;
-  state: FeeWindowState;
+  state: DisputeWindowState;
   endTime: number;
   fees: number|string;
 }
@@ -655,8 +655,8 @@ export interface InitialReportersRow<BigNumberType> {
   repBalance: BigNumberType;
 }
 
-export interface UnclaimedFeeWindowsRow<BigNumberType> {
-  feeWindow: Address;
+export interface UnclaimedDisputeWindowsRow<BigNumberType> {
+  disputeWindow: Address;
   startTime: number;
   endTime: number;
   balance: BigNumberType;
@@ -665,15 +665,15 @@ export interface UnclaimedFeeWindowsRow<BigNumberType> {
   totalFees: BigNumberType;
 }
 
-export interface UnclaimedFeeWindowInfo<BigNumberType> {
+export interface UnclaimedDisputeWindowInfo<BigNumberType> {
   startTime: number;
   endTime: number;
   balance: BigNumberType;
   expectedFees: BigNumberType;
 }
 
-export interface UnclaimedFeeWindows<BigNumberType> {
-  [feeWindow: string]: UnclaimedFeeWindowInfo<BigNumberType>;
+export interface UnclaimedDisputeWindows<BigNumberType> {
+  [disputeWindow: string]: UnclaimedDisputeWindowInfo<BigNumberType>;
 }
 
 export interface UIInitialReporters<BigNumberType> {

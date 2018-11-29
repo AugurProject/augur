@@ -2,14 +2,14 @@ import * as _ from "lodash";
 import * as Knex from "knex";
 import Augur from "augur.js";
 import { BigNumber } from "bignumber.js";
-import { Address, ReportingState, FeeWindowState} from "../../types";
+import { Address, ReportingState, DisputeWindowState} from "../../types";
 import { getCurrentTime } from "../process-block";
 import { augurEmitter } from "../../events";
 import { SubscriptionEventNames } from "../../constants";
 
-export interface FeeWindowModifications {
-  expiredFeeWindows: Array<Address>;
-  newActiveFeeWindows: Array<Address>;
+export interface DisputeWindowModifications {
+  expiredDisputeWindows: Array<Address>;
+  newActiveDisputeWindows: Array<Address>;
 }
 
 function queryCurrentMarketStateId(db: Knex, marketId: Address) {
@@ -23,17 +23,17 @@ async function setMarketStateToLatest(db: Knex, marketId: Address) {
 }
 
 // We fallback to the on-chain lookup if we have no row, because there is a possibility due to transaction log ordering
-// that we have not yet seen a FeeWindowCreated event. Only happens in test, where a "next" isn't created ahead of time
-async function getFeeWindow(db: Knex, augur: Augur, universe: Address, next: boolean): Promise<Address> {
-  const feeWindowAtTime = getCurrentTime() + (next ? augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS : 0);
-  const feeWindowRow = await db("fee_windows").first("feeWindow").where({ universe }).where("startTime", "<", feeWindowAtTime).where("endTime", ">", feeWindowAtTime);
-  if (feeWindowRow !== undefined) return feeWindowRow.feeWindow;
-  return augur.api.Universe.getFeeWindowByTimestamp({ _timestamp: feeWindowAtTime, tx: { to: universe } });
+// that we have not yet seen a DisputeWindowCreated event. Only happens in test, where a "next" isn't created ahead of time
+async function getDisputeWindow(db: Knex, augur: Augur, universe: Address, next: boolean): Promise<Address> {
+  const disputeWindowAtTime = getCurrentTime() + (next ? augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS : 0);
+  const disputeWindowRow = await db("dispute_windows").first("disputeWindow").where({ universe }).where("startTime", "<", disputeWindowAtTime).where("endTime", ">", disputeWindowAtTime);
+  if (disputeWindowRow !== undefined) return disputeWindowRow.disputeWindow;
+  return augur.api.Universe.getDisputeWindowByTimestamp({ _timestamp: disputeWindowAtTime, tx: { to: universe } });
 }
 
-export async function updateMarketFeeWindow(db: Knex, augur: Augur, universe: Address, marketId: Address, next: boolean) {
-  const feeWindow = await getFeeWindow(db, augur, universe, next);
-  return db("markets").update({ feeWindow }).where({ marketId });
+export async function updateMarketDisputeWindow(db: Knex, augur: Augur, universe: Address, marketId: Address, next: boolean) {
+  const disputeWindow = await getDisputeWindow(db, augur, universe, next);
+  return db("markets").update({ disputeWindow }).where({ marketId });
 }
 
 export async function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState) {
@@ -47,39 +47,39 @@ export async function updateMarketState(db: Knex, marketId: Address, blockNumber
   return setMarketStateToLatest(db, marketId);
 }
 
-export async function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp: number): Promise<FeeWindowModifications> {
-  const expiredFeeWindowRows: Array<{ feeWindow: Address; universe: Address }> = await db("fee_windows").select("feeWindow", "universe")
-    .whereNot("state", FeeWindowState.PAST)
+export async function updateActiveDisputeWindows(db: Knex, blockNumber: number, timestamp: number): Promise<DisputeWindowModifications> {
+  const expiredDisputeWindowRows: Array<{ disputeWindow: Address; universe: Address }> = await db("dispute_windows").select("disputeWindow", "universe")
+    .whereNot("state", DisputeWindowState.PAST)
     .where("endTime", "<", timestamp);
-  await db("fee_windows").update("state", FeeWindowState.PAST).whereIn("feeWindow", _.map(expiredFeeWindowRows, (result) => result.feeWindow));
+  await db("dispute_windows").update("state", DisputeWindowState.PAST).whereIn("disputeWindow", _.map(expiredDisputeWindowRows, (result) => result.disputeWindow));
 
-  const newActiveFeeWindowRows: Array<{ feeWindow: Address; universe: Address }> = await db("fee_windows").select("feeWindow", "universe")
-    .whereNot("state", FeeWindowState.CURRENT)
+  const newActiveDisputeWindowRows: Array<{ disputeWindow: Address; universe: Address }> = await db("dispute_windows").select("disputeWindow", "universe")
+    .whereNot("state", DisputeWindowState.CURRENT)
     .where("endTime", ">", timestamp)
     .where("startTime", "<", timestamp);
-  await db("fee_windows").update("state", FeeWindowState.CURRENT).whereIn("feeWindow", _.map(newActiveFeeWindowRows, (row) => row.feeWindow));
+  await db("dispute_windows").update("state", DisputeWindowState.CURRENT).whereIn("disputeWindow", _.map(newActiveDisputeWindowRows, (row) => row.disputeWindow));
 
-  if (expiredFeeWindowRows != null) {
-    expiredFeeWindowRows.forEach((expiredFeeWindowRow) => {
-      augurEmitter.emit(SubscriptionEventNames.FeeWindowClosed, Object.assign({
+  if (expiredDisputeWindowRows != null) {
+    expiredDisputeWindowRows.forEach((expiredDisputeWindowRow) => {
+      augurEmitter.emit(SubscriptionEventNames.DisputeWindowClosed, Object.assign({
           blockNumber,
           timestamp,
         },
-        expiredFeeWindowRow));
+        expiredDisputeWindowRow));
     });
   }
-  if (newActiveFeeWindowRows != null) {
-    newActiveFeeWindowRows.forEach((newActiveFeeWindowRow) => {
-      augurEmitter.emit(SubscriptionEventNames.FeeWindowOpened, Object.assign({
+  if (newActiveDisputeWindowRows != null) {
+    newActiveDisputeWindowRows.forEach((newActiveDisputeWindowRow) => {
+      augurEmitter.emit(SubscriptionEventNames.DisputeWindowOpened, Object.assign({
           blockNumber,
           timestamp,
         },
-        newActiveFeeWindowRow));
+        newActiveDisputeWindowRow));
     });
   }
   return {
-    newActiveFeeWindows: _.map(newActiveFeeWindowRows, (row) => row.feeWindow),
-    expiredFeeWindows: _.map(expiredFeeWindowRows, (row) => row.feeWindow),
+    newActiveDisputeWindows: _.map(newActiveDisputeWindowRows, (row) => row.disputeWindow),
+    expiredDisputeWindows: _.map(expiredDisputeWindowRows, (row) => row.disputeWindow),
   };
 }
 
@@ -92,14 +92,16 @@ export async function rollbackMarketState(db: Knex, marketId: Address, expectedS
   return setMarketStateToLatest(db, marketId);
 }
 
-export async function insertPayout(db: Knex, marketId: Address, payoutNumerators: Array<string|number|null>, invalid: boolean, tentativeWinning: boolean): Promise<number> {
+export async function insertPayout(db: Knex, marketId: Address, payoutNumerators: Array<string|number|null>, tentativeWinning: boolean): Promise<number> {
   const payoutRow: { [index: string]: string|number|boolean|null } = {
     marketId,
-    isInvalid: invalid,
+    isInvalid: false,
   };
   payoutNumerators.forEach((value, i): void => {
     if (value == null) return;
-    payoutRow["payout" + i] = new BigNumber(value, 10).toString();
+    const numerator = new BigNumber(value, 10);
+    payoutRow["payout" + i] = numerator.toString();
+    if (i === 0 && numerator.gt(0)) payoutRow.isInvalid = true;
   });
   const payoutIdRow: { payoutId: number }|null = await db.select("payoutId").from("payouts").where(payoutRow).first();
   if (payoutIdRow != null) {

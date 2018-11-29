@@ -15,7 +15,7 @@ function getCrowdsourcer(db, log) {
     ["crowdSourcerId",
       "crowdsourcers.marketId",
       "completed",
-      "feeWindow",
+      "disputeWindow",
       "payouts.winning",
       "payouts.tentativeWinning"])
     .join("payouts", "payouts.payoutId", "crowdsourcers.payoutId")
@@ -81,15 +81,15 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         constants: new Augur().constants,
         api: {
           Universe: {
-            getFeeWindowByTimestamp: (p, callback) => {
+            getDisputeWindowByTimestamp: (p, callback) => {
               expect(p.tx.to).toBe("0x000000000000000000000000000000000000000b");
-              const feeWindowByTimestamp = {
+              const disputeWindowByTimestamp = {
                 1509085473: "0x2000000000000000000000000000000000000000",
                 1509690273: "0x2100000000000000000000000000000000000000",
               };
-              const feeWindow = feeWindowByTimestamp[p._timestamp];
-              expect(typeof feeWindow).toBe("string");
-              callback(null, feeWindow);
+              const disputeWindow = disputeWindowByTimestamp[p._timestamp];
+              expect(typeof disputeWindow).toBe("string");
+              callback(null, disputeWindow);
             },
           },
         },
@@ -102,7 +102,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         expect(records).toEqual({
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
-          feeWindow: "0x2000000000000000000000000000000000000000",
+          disputeWindow: "0x2000000000000000000000000000000000000000",
           completed: null,
           tentativeWinning: 0,
           winning: null,
@@ -133,7 +133,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         expect(records.crowdsourcer).toEqual({
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
-          feeWindow: "0x2000000000000000000000000000000000000000",
+          disputeWindow: "0x2000000000000000000000000000000000000000",
           completed: 1,
           tentativeWinning: 1,
           winning: null,
@@ -150,7 +150,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           designatedReportStake: new BigNumber("10", 10),
           designatedReporter: "0x0000000000000000000000000000000000000b0b",
           endTime: 1507573470,
-          feeWindow: "0x2100000000000000000000000000000000000000",
+          disputeWindow: "0x2100000000000000000000000000000000000000",
           finalizationBlockNumber: null,
           lastTradeBlockNumber: null,
           forking: 0,
@@ -192,7 +192,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         expect(records.crowdsourcer).toEqual({
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
-          feeWindow: "0x2000000000000000000000000000000000000000",
+          disputeWindow: "0x2000000000000000000000000000000000000000",
           completed: null,
           tentativeWinning: 0,
           winning: null,
@@ -223,7 +223,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           volume: new BigNumber("0"),
           shareVolume: new BigNumber("0", 10),
           sharesOutstanding: new BigNumber("0"),
-          feeWindow: "0x2000000000000000000000000000000000000000",
+          disputeWindow: "0x2000000000000000000000000000000000000000",
           endTime: 1507573470,
           finalizationBlockNumber: null,
           lastTradeBlockNumber: null,

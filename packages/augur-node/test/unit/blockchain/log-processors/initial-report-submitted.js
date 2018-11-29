@@ -53,7 +53,6 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
     reporter: "0x0000000000000000000000000000000000000b0b",
     isDesignatedReporter: true,
     payoutNumerators: [0, 1],
-    invalid: false,
     blockNumber: 1500001,
     amountStaked: "2829",
     transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",

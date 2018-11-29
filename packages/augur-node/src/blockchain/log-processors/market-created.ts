@@ -42,7 +42,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
   const marketPayload: {} = { tx: { to: log.market } };
   const universePayload: {} = { tx: { to: log.universe, send: false } };
   const callPromises = {
-    feeWindow: augur.api.Market.getFeeWindow(marketPayload),
+    disputeWindow: augur.api.Market.getFeeWindow(marketPayload),
     endTime: augur.api.Market.getEndTime(marketPayload),
     designatedReporter: augur.api.Market.getDesignatedReporter(marketPayload),
     marketCreatorMailbox: augur.api.Market.getMarketCreatorMailbox(marketPayload),
@@ -91,7 +91,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
       universe: log.universe,
       numOutcomes: calls.getOutcomes.numOutcomes,
       marketStateId,
-      feeWindow: calls.feeWindow,
+      disputeWindow: calls.disputeWindow,
       endTime: parseInt(calls.endTime, 10),
       designatedReporter: calls.designatedReporter,
       designatedReportStake: convertFixedPointToDecimal(designatedReportStakeRow.balance, WEI_PER_ETHER),

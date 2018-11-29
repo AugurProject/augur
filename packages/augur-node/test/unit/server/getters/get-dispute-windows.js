@@ -3,7 +3,7 @@ const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 const { setOverrideTimestamp } = require("src/blockchain/process-block");
 
-describe("server/getters/get-fee-windows", () => {
+describe("server/getters/get-dispute-windows", () => {
   let db;
   beforeEach(async () => {
     db = await setupTestDb();
@@ -16,13 +16,13 @@ describe("server/getters/get-fee-windows", () => {
   const runTest = (t) => {
     test(t.description, async () => {
       await setOverrideTimestamp(db, 1509065471);
-      t.method = "getFeeWindows";
-      const feeWindows = await dispatchJsonRpcRequest(db, t, t.params.augur);
-      t.assertions(feeWindows);
+      t.method = "getDisputeWindows";
+      const disputeWindows = await dispatchJsonRpcRequest(db, t, t.params.augur);
+      t.assertions(disputeWindows);
     });
   };
   runTest({
-    description: "get fee windows for the user",
+    description: "get dispute windows for the user",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       account: "0x0000000000000000000000000000000000000021",
@@ -42,8 +42,8 @@ describe("server/getters/get-fee-windows", () => {
         },
       },
     },
-    assertions: (feeWindows) => {
-      expect(feeWindows).toEqual({
+    assertions: (disputeWindows) => {
+      expect(disputeWindows).toEqual({
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
           endTime: 1506473515,
@@ -60,7 +60,7 @@ describe("server/getters/get-fee-windows", () => {
     },
   });
   runTest({
-    description: "get fee windows for the user except current one",
+    description: "get dispute windows for the user except current one",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       account: "0x0000000000000000000000000000000000000021",
@@ -80,8 +80,8 @@ describe("server/getters/get-fee-windows", () => {
         },
       },
     },
-    assertions: (feeWindows) => {
-      expect(feeWindows).toEqual({
+    assertions: (disputeWindows) => {
+      expect(disputeWindows).toEqual({
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
           endTime: 1506473515,
@@ -92,7 +92,7 @@ describe("server/getters/get-fee-windows", () => {
     },
   });
   runTest({
-    description: "get fee windows for user with no participation token balance",
+    description: "get dispute windows for user with no participation token balance",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       account: "0x00000000000000000000000000000000000000b0b",
@@ -112,8 +112,8 @@ describe("server/getters/get-fee-windows", () => {
         },
       },
     },
-    assertions: (feeWindows) => {
-      expect(feeWindows).toEqual({});
+    assertions: (disputeWindows) => {
+      expect(disputeWindows).toEqual({});
     },
   });
 });

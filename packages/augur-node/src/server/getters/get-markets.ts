@@ -10,7 +10,7 @@ export const GetMarketsParamsSpecific = t.type({
   category: t.union([t.string, t.null, t.undefined]),
   search: t.union([t.string, t.null, t.undefined]),
   reportingState: t.union([t.string, t.null, t.undefined]),
-  feeWindow: t.union([t.string, t.null, t.undefined]),
+  disputeWindow: t.union([t.string, t.null, t.undefined]),
   designatedReporter: t.union([t.string, t.null, t.undefined]),
   maxFee: t.union([t.number, t.null, t.undefined]),
 });
@@ -31,7 +31,7 @@ export async function getMarkets(db: Knex, augur: {}, params: t.TypeOf<typeof Ge
   if (params.creator != null) query.where({ marketCreator: params.creator });
   if (params.category != null) query.whereRaw("LOWER(markets.category) = ?", [params.category.toLowerCase()]);
   if (params.reportingState != null) query.where("reportingState", params.reportingState);
-  if (params.feeWindow != null) query.where("feeWindow", params.feeWindow);
+  if (params.disputeWindow != null) query.where("disputeWindow", params.disputeWindow);
   if (params.designatedReporter != null) query.where("designatedReporter", params.designatedReporter);
 
   const searchProvider = createSearchProvider(db);

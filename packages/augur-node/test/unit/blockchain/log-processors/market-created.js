@@ -65,7 +65,7 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getFeeWindow: (p) => {
+            getDisputeWindow: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
               return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
@@ -139,7 +139,7 @@ describe("blockchain/log-processors/market-created", () => {
             sharesOutstanding: new BigNumber("0", 10),
             openInterest: new BigNumber("0", 10),
             reportingState: "PRE_REPORTING",
-            feeWindow: "0x1000000000000000000000000000000000000001",
+            disputeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
             finalizationBlockNumber: null,
             lastTradeBlockNumber: null,
@@ -251,7 +251,7 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getFeeWindow: (p) => {
+            getDisputeWindow: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111112");
               return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
@@ -325,7 +325,7 @@ describe("blockchain/log-processors/market-created", () => {
             sharesOutstanding: new BigNumber("0", 10),
             openInterest: new BigNumber("0", 10),
             reportingState: "PRE_REPORTING",
-            feeWindow: "0x1000000000000000000000000000000000000001",
+            disputeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
             finalizationBlockNumber: null,
             lastTradeBlockNumber: null,
@@ -460,7 +460,7 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getFeeWindow: (p) => {
+            getDisputeWindow: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111113");
               return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
@@ -534,7 +534,7 @@ describe("blockchain/log-processors/market-created", () => {
             sharesOutstanding: new BigNumber("0", 10),
             openInterest: new BigNumber("0", 10),
             reportingState: "PRE_REPORTING",
-            feeWindow: "0x1000000000000000000000000000000000000001",
+            disputeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
             finalizationBlockNumber: null,
             lastTradeBlockNumber: null,
@@ -641,7 +641,7 @@ describe("blockchain/log-processors/market-created", () => {
       augur: {
         api: {
           Market: {
-            getFeeWindow: (p) => {
+            getDisputeWindow: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
               return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
@@ -715,7 +715,7 @@ describe("blockchain/log-processors/market-created", () => {
             sharesOutstanding: new BigNumber("0", 10),
             openInterest: new BigNumber("0", 10),
             reportingState: "PRE_REPORTING",
-            feeWindow: "0x1000000000000000000000000000000000000001",
+            disputeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
             finalizationBlockNumber: null,
             lastTradeBlockNumber: null,
@@ -830,7 +830,7 @@ describe("blockchain/log-processors/market-created", () => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
               return Promise.resolve("2");
             },
-            getFeeWindow: (p) => {
+            getDisputeWindow: (p) => {
               expect(p.tx.to).toBe("0x1111111111111111111111111111111111111111");
               return Promise.resolve("0x1000000000000000000000000000000000000001");
             },
@@ -904,7 +904,7 @@ describe("blockchain/log-processors/market-created", () => {
             shareVolume: new BigNumber("0", 10),
             sharesOutstanding: new BigNumber("0", 10),
             reportingState: "PRE_REPORTING",
-            feeWindow: "0x1000000000000000000000000000000000000001",
+            disputeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
             finalizationBlockNumber: null,
             lastTradeBlockNumber: null,

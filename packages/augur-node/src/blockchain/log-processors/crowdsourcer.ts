@@ -1,10 +1,10 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
-import { FormattedEventLog, Address, FeeWindowState } from "../../types";
+import { FormattedEventLog, Address, DisputeWindowState } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
-import { rollbackMarketState, insertPayout, updateDisputeRound, updateMarketFeeWindow, updateMarketState } from "./database";
+import { rollbackMarketState, insertPayout, updateDisputeRound, updateMarketDisputeWindow, updateMarketState } from "./database";
 import { groupByAndSum } from "../../server/getters/database";
 import { QueryBuilder } from "knex";
 import { SubscriptionEventNames } from "../../constants";
@@ -42,7 +42,7 @@ function rollbackIncompleteCrowdsourcers(db: Knex, marketId: Address) {
 
 function rollbackCrowdsourcerCompletion(db: Knex, crowdsourcerId: Address, marketId: Address) {
   // Set all crowdsourcers to completed: null, so long as they match the rollback's dispute crowdsourcer's fee window and market
-  return db("crowdsourcers").update({ completed: null }).where({ marketId }).whereIn("feeWindow",
+  return db("crowdsourcers").update({ completed: null }).where({ marketId }).whereIn("disputeWindow",
     (queryBuilder: QueryBuilder) => {
       queryBuilder.select("feeWindow").from("crowdsourcers").where({ crowdsourcerId });
     });
@@ -52,7 +52,7 @@ export async function processDisputeCrowdsourcerCreatedLog(augur: Augur, log: Fo
   return async (db: Knex) => {
     const payoutId: number = await insertPayout(db, log.market, log.payoutNumerators, log.invalid, false);
     const feeWindowRow: { feeWindow: string }|null = await db("fee_windows").select(["feeWindow"]).first()
-      .where("state", FeeWindowState.CURRENT)
+      .where("state", DisputeWindowState.CURRENT)
       .where({ universe: log.universe });
     if (feeWindowRow == null) throw new Error(`could not retrieve feeWindow for crowdsourcer: ${log.disputeCrowdsourcer}`);
     const crowdsourcerToInsert = {
@@ -126,7 +126,7 @@ export async function processDisputeCrowdsourcerCompletedLog(augur: Augur, log: 
     await db("crowdsourcers").update({ completed: 1 }).where({ crowdsourcerId: log.disputeCrowdsourcer });
     await updateMarketState(db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW);
     await updateDisputeRound(db, log.market);
-    await updateMarketFeeWindow(db, augur, log.universe, log.market, true);
+    await updateMarketDisputeWindow(db, augur, log.universe, log.market, true);
     await updateIncompleteCrowdsourcers(db, log.market);
     await updateTentativeWinningPayout(db, log.market);
     augurEmitter.emit(SubscriptionEventNames.DisputeCrowdsourcerCompleted, Object.assign({},
@@ -140,7 +140,7 @@ export async function processDisputeCrowdsourcerCompletedLogRemoval(augur: Augur
     await rollbackCrowdsourcerCompletion(db, log.disputeCrowdsourcer, log.market);
     await rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW);
     await updateDisputeRound(db, log.market);
-    await updateMarketFeeWindow(db, augur, log.universe, log.market, false);
+    await updateMarketDisputeWindow(db, augur, log.universe, log.market, false);
     await rollbackIncompleteCrowdsourcers(db, log.market);
     await updateTentativeWinningPayout(db, log.market);
     augurEmitter.emit(SubscriptionEventNames.DisputeCrowdsourcerCompleted, Object.assign({},
@@ -169,6 +169,6 @@ export async function processDisputeCrowdsourcerRedeemedLog(augur: Augur, log: F
 export async function processDisputeCrowdsourcerRedeemedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("crowdsourcer_redeemed").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
-    augurEmitter.emit(SubscriptionEventNames.FeeWindowRedeemed, log);
+    augurEmitter.emit(SubscriptionEventNames.DisputeWindowRedeemed, log);
   };
 }

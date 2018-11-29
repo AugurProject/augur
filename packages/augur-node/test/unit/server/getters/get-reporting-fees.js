@@ -52,7 +52,7 @@ describe("server/getters/get-reporting-fees", () => {
         "unclaimedForkRepStaked": "331",
         "lostRep": "0",
       },
-      feeWindows: [
+      disputeWindows: [
         "0x1000000000000000000000000000000000000000",
       ],
       forkedMarket: {
@@ -118,7 +118,7 @@ describe("server/getters/get-reporting-fees", () => {
           "unclaimedForkRepStaked": "0",
           "lostRep": "0",
         },
-        feeWindows: [],
+        disputeWindows: [],
         forkedMarket: undefined,
         "nonforkedMarkets": [],
       });
@@ -158,7 +158,7 @@ describe("server/getters/get-reporting-fees", () => {
           "unclaimedForkRepStaked": "0",
           "lostRep": "0",
         },
-        feeWindows: [],
+        disputeWindows: [],
         forkedMarket: {
           "isFinalized": 1,
           "crowdsourcers": [],

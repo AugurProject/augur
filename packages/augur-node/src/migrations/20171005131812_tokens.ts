@@ -7,7 +7,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("symbol", 255).notNullable();
       table.string("marketId", 66).nullable();
       table.integer("outcome").nullable();
-      table.string("feeWindow", 66).nullable();
+      table.string("disputeWindow", 66).nullable();
 
       table.unique(["marketId", "symbol", "outcome"]);
     });
