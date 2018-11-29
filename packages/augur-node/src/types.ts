@@ -125,7 +125,7 @@ export type GenericCallback<ResultType> = (err: Error|null, result?: ResultType)
 
 export type AsyncCallback = (err: Error|null, result?: any) => void;
 
-export type LogProcessor = (db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback) => void;
+export type LogProcessor = (augur: Augur, log: FormattedEventLog) => Promise<(db: Knex) => Promise<void>>;
 
 export interface EventLogProcessor {
   add: LogProcessor;
@@ -198,6 +198,11 @@ export interface GetAccountTransferHistoryRequest {
 
 export interface MarketsContractAddressRow {
   marketId: Address;
+}
+
+export interface MarketIdUniverseFeeWindow extends MarketsContractAddressRow {
+  universe: Address;
+  feeWindow: Address;
 }
 
 export interface MarketPricing<BigNumberType> {
@@ -295,6 +300,11 @@ export interface CategoryRow {
 export interface BlocksRow {
   blockNumber: number;
   timestamp: number;
+}
+
+export interface TransactionHashesRow {
+  blockNumber: number;
+  transactionHash: number;
 }
 
 export interface DisputeTokensRow<BigNumberType> extends Payout<BigNumberType> {

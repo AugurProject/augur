@@ -1,39 +1,41 @@
-"use strict";
-
 const setupTestDb = require("../../test.database");
 const { BigNumber } = require("bignumber.js");
 const { processTokensTransferredLog, processTokensTransferredLogRemoval } = require("src/blockchain/log-processors/tokens-transferred");
 
+async function getState(db, log) {
+  return {
+    transfers: await db("transfers").where({
+      transactionHash: log.transactionHash,
+      logIndex: log.logIndex,
+    }),
+    balances: await db("balances").where({ token: log.token }),
+  };
+}
+
 describe("blockchain/log-processors/tokens-transferred", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    const getState = (db, params, callback) => db("transfers").where({
-      transactionHash: params.log.transactionHash,
-      logIndex: params.log.logIndex
-    }).asCallback(callback);
-    const getTokenBalances = (db, params, callback) => db("balances").where({ token: params.log.token }).asCallback(callback);
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      db.transaction((trx) => {
-        processTokensTransferredLog(trx, t.params.augur, t.params.log, (err) => {
-          expect(err).toBeFalsy();
-          getState(trx, t.params, (err, records) => {
-            t.assertions.onAdded(err, records);
-            getTokenBalances(trx, t.params, (err, balances) => {
-              t.assertions.onInitialBalances(err, balances);
-              processTokensTransferredLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                expect(err).toBeFalsy();
-                getState(trx, t.params, (err, records) => {
-                  t.assertions.onRemoved(err, records);
-                  getTokenBalances(trx, t.params, (err, balances) => {
-                    t.assertions.onRemovedBalances(err, balances);
-                    db.destroy();
-                    done();
-                  });
-                });
-              });
-            });
-          });
-        });
+    test(t.description, async () => {
+      return db.transaction(async (trx) => {
+        await(await processTokensTransferredLog(t.params.augur, t.params.log))(trx);
+
+        const records = await getState(trx, t.params.log);
+        t.assertions.onAdded(records.transfers);
+        t.assertions.onInitialBalances(records.balances);
+        await(await processTokensTransferredLogRemoval(t.params.augur, t.params.log))(trx);
+
+        const recordsAfterRemoval = await getState(trx, t.params.log);
+
+        t.assertions.onRemoved(recordsAfterRemoval.transfers);
+        t.assertions.onRemovedBalances(recordsAfterRemoval.balances);
       });
     })
   };
@@ -63,8 +65,8 @@ const db = await setupTestDb();
       },
     },
     assertions: {
-      onAdded: (err, records) => {
-        expect(err).toBeFalsy();
+      onAdded: (records) => {
+
         expect(records).toEqual([{
           transactionHash: "TRANSACTION_HASH",
           logIndex: 0,
@@ -75,12 +77,12 @@ const db = await setupTestDb();
           blockNumber: 1400101,
         }]);
       },
-      onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
+      onRemoved: (records) => {
+
         expect(records).toEqual([]);
       },
-      onInitialBalances: (err, balances) => {
-        expect(err).toBeFalsy();
+      onInitialBalances: (balances) => {
+
         expect(balances).toEqual([{
           token: "TOKEN_ADDRESS",
           owner: "FROM_ADDRESS",
@@ -91,8 +93,8 @@ const db = await setupTestDb();
           balance: new BigNumber("9000", 10),
         }]);
       },
-      onRemovedBalances: (err, balances) => {
-        expect(err).toBeFalsy();
+      onRemovedBalances: (balances) => {
+
         expect(balances).toEqual([{
           token: "TOKEN_ADDRESS",
           owner: "FROM_ADDRESS",
@@ -131,8 +133,8 @@ const db = await setupTestDb();
       },
     },
     assertions: {
-      onAdded: (err, records) => {
-        expect(err).toBeFalsy();
+      onAdded: (records) => {
+
         expect(records).toEqual([{
           transactionHash: "TRANSACTION_HASH",
           logIndex: 0,
@@ -143,16 +145,16 @@ const db = await setupTestDb();
           blockNumber: 1400101,
         }]);
       },
-      onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
+      onRemoved: (records) => {
+
         expect(records).toEqual([]);
       },
-      onInitialBalances: (err, balances) => {
-        expect(err).toBeFalsy();
+      onInitialBalances: (balances) => {
+
         expect(balances).toEqual([]);
       },
-      onRemovedBalances: (err, balances) => {
-        expect(err).toBeFalsy();
+      onRemovedBalances: (balances) => {
+
         expect(balances).toEqual([]);
       },
     },
@@ -182,18 +184,6 @@ const db = await setupTestDb();
         rpc: {
           getNetworkID: () => 974,
         },
-        api: {
-          Orders: {
-            getLastOutcomePrice: (p, callback) => {
-              expect(p._market).toBe("0x0000000000000000000000000000000000000002");
-              if (p._outcome === 0) {
-                callback(null, "7000");
-              } else {
-                callback(null, "1250");
-              }
-            },
-          },
-        },
         trading: {
           calculateProfitLoss: (p) => {
             expect(typeof p).toBe("object");
@@ -215,8 +205,8 @@ const db = await setupTestDb();
       },
     },
     assertions: {
-      onAdded: (err, records) => {
-        expect(err).toBeFalsy();
+      onAdded: (records) => {
+
         expect(records).toEqual([{
           transactionHash: "TRANSACTION_HASH",
           logIndex: 0,
@@ -227,12 +217,12 @@ const db = await setupTestDb();
           blockNumber: 1400101,
         }]);
       },
-      onRemoved: (err, records) => {
-        expect(err).toBeFalsy();
+      onRemoved: (records) => {
+
         expect(records).toEqual([]);
       },
-      onInitialBalances: (err, balances) => {
-        expect(err).toBeFalsy();
+      onInitialBalances: (balances) => {
+
         expect(balances).toEqual([
           {
             owner: "FROM_ADDRESS",
@@ -246,8 +236,8 @@ const db = await setupTestDb();
           },
         ]);
       },
-      onRemovedBalances: (err, balances) => {
-        expect(err).toBeFalsy();
+      onRemovedBalances: (balances) => {
+
       },
     },
   });

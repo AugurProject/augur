@@ -1,19 +1,22 @@
-"use strict";
-
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-dispute-tokens", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getDisputeTokens";
-      dispatchJsonRpcRequest(db, t, {}, (err, stakeTokens) => {
-        t.assertions(err, stakeTokens);
-        db.destroy();
-        done();
-      });
-    })
+      const stakeTokens = await dispatchJsonRpcRequest(db, t, {});
+      t.assertions(stakeTokens);
+    });
   };
   runTest({
     description: "get unfinalized tokens for user that actually exists",
@@ -22,8 +25,7 @@ const db = await setupTestDb();
       account: "0x0000000000000000000000000000000000000021",
       stakeTokenState: "UNFINALIZED",
     },
-    assertions: (err, stakeTokens) => {
-      expect(err).toBeFalsy();
+    assertions: (stakeTokens) => {
       expect(stakeTokens).toEqual({
         "0x0000000000000000001000000000000000000001": {
           disputeToken: "0x0000000000000000001000000000000000000001",
@@ -53,8 +55,7 @@ const db = await setupTestDb();
       account: "0x0000000000000000000000000000000000000021",
       stakeTokenState: "UNCLAIMED",
     },
-    assertions: (err, stakeTokens) => {
-      expect(err).toBeFalsy();
+    assertions: (stakeTokens) => {
       expect(stakeTokens).toEqual({
         "0x0000000000000000001000000000000000000003": {
           disputeToken: "0x0000000000000000001000000000000000000003",
@@ -84,20 +85,8 @@ const db = await setupTestDb();
       account: "0x0000000000000000000000000000000000000024",
       stakeTokenState: "UNCLAIMED",
     },
-    assertions: (err, stakeTokens) => {
-      expect(err).toBeFalsy();
+    assertions: (stakeTokens) => {
       expect(stakeTokens).toEqual({});
-    },
-  });
-  runTest({
-    description: "unknown stakeTokenState",
-    params: {
-      universe: "0x000000000000000000000000000000000000000b",
-      account: "0x0000000000000000000000000000000000000021",
-      stakeTokenState: "FILLER_VALUE",
-    },
-    assertions: (err, stakeTokens) => { // assert stakeTokens
-      expect(err).not.toBeNull();
     },
   });
   runTest({
@@ -107,8 +96,7 @@ const db = await setupTestDb();
       account: "0x0000000000000000000000000000000000000021",
       stakeTokenState: "ALL",
     },
-    assertions: (err, stakeTokens) => {
-      expect(err).toBeFalsy();
+    assertions: (stakeTokens) => {
       expect(stakeTokens).toEqual({
         "0x0000000000000000001000000000000000000001": {
           disputeToken: "0x0000000000000000001000000000000000000001",
@@ -148,5 +136,19 @@ const db = await setupTestDb();
         },
       });
     },
+  });
+
+  test("unknown stakeTokenState", async () => {
+    const params = {
+      universe: "0x000000000000000000000000000000000000000b",
+      account: "0x0000000000000000000000000000000000000021",
+      stakeTokenState: "FILLER_VALUE",
+    };
+    try {
+      await dispatchJsonRpcRequest(db, { method: "getDisputeTokens", params }, {}).catch(console.log);
+      throw new Error("Did not fail on unknown");
+    } catch (e) {
+      expect(e.message).toContain("Invalid request object");
+    }
   });
 });

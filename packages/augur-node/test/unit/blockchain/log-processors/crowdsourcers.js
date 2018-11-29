@@ -1,20 +1,17 @@
-"use strict";
-
 const Augur = require("augur.js");
 const setupTestDb = require("../../test.database");
-const {BigNumber} = require("bignumber.js");
+const { BigNumber } = require("bignumber.js");
 const {
   processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedLogRemoval,
   processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval,
   processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval,
 }
   = require("src/blockchain/log-processors/crowdsourcer");
-const {getMarketsWithReportingState} = require("src/server/getters/database");
-const {setOverrideTimestamp, removeOverrideTimestamp} = require("src/blockchain/process-block");
+const { getMarketsWithReportingState } = require("src/server/getters/database");
+const { setOverrideTimestamp, removeOverrideTimestamp } = require("src/blockchain/process-block");
 
-
-const getCrowdsourcer = (db, params, callback) => {
-  db("crowdsourcers").first(
+function getCrowdsourcer(db, log) {
+  return db("crowdsourcers").first(
     ["crowdSourcerId",
       "crowdsourcers.marketId",
       "completed",
@@ -22,65 +19,47 @@ const getCrowdsourcer = (db, params, callback) => {
       "payouts.winning",
       "payouts.tentativeWinning"])
     .join("payouts", "payouts.payoutId", "crowdsourcers.payoutId")
-    .where({crowdsourcerId: params.log.disputeCrowdsourcer}).asCallback(callback);
-};
+    .where({ crowdsourcerId: log.disputeCrowdsourcer });
+}
 
-const getDisputesFromCrowdsourcer = (db, params, callback) => {
-  db("disputes").where({crowdsourcerId: params.log.disputeCrowdsourcer}).asCallback(callback);
-};
+function getDisputesFromCrowdsourcer(db, log) {
+  return db("disputes").where({ crowdsourcerId: log.disputeCrowdsourcer });
+}
 
-const getCrowdsourcerAndMarket = (db, params, callback) => {
-  getCrowdsourcer(db, params, (err, crowdsourcer) => {
-    if (err) return callback(err);
-
-    getMarketsWithReportingState(db).first().where({"markets.marketId": crowdsourcer.marketId})
-      .asCallback((err, market) => {
-        if (err) return callback(err);
-
-        callback(null, {market, crowdsourcer});
-      });
-  });
-};
-
+async function getCrowdsourcerAndMarket(db, log) {
+  const crowdsourcerRow = await getCrowdsourcer(db, log);
+  return {
+    crowdsourcer: crowdsourcerRow,
+    market: await getMarketsWithReportingState(db).first().where({ "markets.marketId": crowdsourcerRow.marketId }),
+  };
+}
 
 describe("blockchain/log-processors/crowdsourcers", () => {
-  const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
-      setOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
-        expect(err).toBeFalsy();
-        db.transaction((trx) => {
-          function verify (processor, getter, checker, callback) {
-            processor(trx, t.params.augur, t.params.log, (err) => {
-              expect(err).toBeFalsy();
-              getter(trx, t.params, (err, records) => {
-                expect(err).toBeFalsy();
-                checker(err, records);
-                callback();
-              });
-            });
-          }
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
 
-          verify(processDisputeCrowdsourcerCreatedLog, getCrowdsourcer, t.assertions.onCreated, () => {
-            verify(processDisputeCrowdsourcerContributionLog, getDisputesFromCrowdsourcer, t.assertions.onContributed, () => {
-              verify(processDisputeCrowdsourcerCompletedLog, getCrowdsourcerAndMarket, t.assertions.onCompleted, () => {
-                verify(processDisputeCrowdsourcerCompletedLogRemoval, getCrowdsourcerAndMarket, t.assertions.onCompletedRemoved, () => {
-                  verify(processDisputeCrowdsourcerContributionLogRemoval, getDisputesFromCrowdsourcer, t.assertions.onContributedRemoved, () => {
-                    verify(processDisputeCrowdsourcerCreatedLogRemoval, getCrowdsourcer, t.assertions.onCreatedRemoved, () => {
-                      removeOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
-                        expect(err).not.toBeNull();
-                        db.destroy();
-                        done();
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
+  const runTest = (t) => {
+    test(t.description, async () => {
+      setOverrideTimestamp(db, t.params.overrideTimestamp);
+
+      await db.transaction(async (trx) => {
+        async function verify(processor, getter, checker) {
+          await(await processor(t.params.augur, t.params.log))(trx);
+          checker(await getter(trx, t.params.log));
+        }
+
+        await verify(processDisputeCrowdsourcerCreatedLog, getCrowdsourcer, t.assertions.onCreated);
+        await verify(processDisputeCrowdsourcerContributionLog, getDisputesFromCrowdsourcer, t.assertions.onContributed);
+        await verify(processDisputeCrowdsourcerCompletedLog, getCrowdsourcerAndMarket, t.assertions.onCompleted);
+        await verify(processDisputeCrowdsourcerCompletedLogRemoval, getCrowdsourcerAndMarket, t.assertions.onCompletedRemoved);
+        await verify(processDisputeCrowdsourcerContributionLogRemoval, getDisputesFromCrowdsourcer, t.assertions.onContributedRemoved);
+        await verify(processDisputeCrowdsourcerCreatedLogRemoval, getCrowdsourcer, t.assertions.onCreatedRemoved);
+        await expect(removeOverrideTimestamp(db, t.params.overrideTimestamp)).rejects.toEqual(new Error("Timestamp removal failed 1509085473 1509085473"));
       });
-    })
+      await db.destroy();
+    });
   };
   runTest({
     description: "report submitted",
@@ -118,8 +97,8 @@ const db = await setupTestDb();
       overrideTimestamp: 1509085473,
     },
     assertions: {
-      onCreated: (err, records) => {
-        expect(err).toBeFalsy();
+      onCreated: (records) => {
+
         expect(records).toEqual({
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
@@ -129,12 +108,12 @@ const db = await setupTestDb();
           winning: null,
         });
       },
-      onCreatedRemoved: (err, records) => {
-        expect(err).toBeFalsy();
+      onCreatedRemoved: (records) => {
+
         expect(records).not.toBeDefined();
       },
-      onContributed: (err, records) => {
-        expect(err).toBeFalsy();
+      onContributed: (records) => {
+
         expect(records).toEqual([{
           blockNumber: 1400100,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
@@ -145,12 +124,12 @@ const db = await setupTestDb();
           amountStaked: new BigNumber("19381", 10),
         }]);
       },
-      onContributedRemoved: (err, records) => {
-        expect(err).toBeFalsy();
+      onContributedRemoved: (records) => {
+
         expect(records).toEqual([]);
       },
-      onCompleted: (err, records) => {
-        expect(err).toBeFalsy();
+      onCompleted: (records) => {
+
         expect(records.crowdsourcer).toEqual({
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
@@ -208,8 +187,8 @@ const db = await setupTestDb();
           shareVolume: new BigNumber("0", 10),
         });
       },
-      onCompletedRemoved: (err, records) => {
-        expect(err).toBeFalsy();
+      onCompletedRemoved: (records) => {
+
         expect(records.crowdsourcer).toEqual({
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
@@ -268,5 +247,9 @@ const db = await setupTestDb();
         });
       },
     },
+  });
+
+  afterEach(async () => {
+    await db.destroy();
   });
 });

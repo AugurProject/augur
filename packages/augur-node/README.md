@@ -23,7 +23,7 @@ By default, Augur Node is configured to connect to a locally-running Ethereum no
     
 Also, by default Augur Node will use a local sqlite database to store its processed data. For some use-cases you may want to use a shared database instance -- for this purpose we currently support PostgreSQL in addition to SQLite. To start Augur Node connected to a sqlite database export the `DATABASE_URL` environment variable, with a full connection string for your PostgreSQL instance.
 
-For a quick-start with SQLite, a development docker image is provided and can be controlled with:
+For a quick-start with PostgreSQL, a development docker image is provided and can be controlled with:
 - `npm run docker:pg:start`
 - `npm run docker:pg:stop`
 - `npm run docker:pg:restart`
@@ -33,7 +33,7 @@ These commands will manipulate a docker container named `augur-postgres` which d
 The connection string for the instance of PostgreSQL started with the above scripts can be placed in your environment with:
 
 ```
-export DATABASE_URL='postgresql://augur:augur@localhost:5432/augur"
+export DATABASE_URL='postgresql://augur:augur@localhost:5432/augur'
 ```
 
 ### Starting

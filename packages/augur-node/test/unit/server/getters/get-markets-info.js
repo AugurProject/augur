@@ -1,19 +1,22 @@
-"use strict";
-
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-markets-info", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getMarketsInfo";
-      dispatchJsonRpcRequest(db, t, null, (err, marketsInfo) => {
-        t.assertions(err, marketsInfo);
-        db.destroy();
-        done();
-      });
-    })
+      const marketsInfo = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(marketsInfo);
+    });
   };
   runTest({
     description: "get markets by specifying market IDs",
@@ -23,8 +26,7 @@ describe("server/getters/get-markets-info", () => {
         "0x0000000000000000000000000000000000000002",
       ],
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInfo) => {
       expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000001",
@@ -38,9 +40,9 @@ describe("server/getters/get-markets-info", () => {
           creationTime: 1506473474,
           creationBlock: 1400000,
           creationFee: "10",
-          settlementFee: "0.03",
+          settlementFee: "0.04",
           reportingFeeRate: "0.02",
-          marketCreatorFeeRate: "0.01",
+          marketCreatorFeeRate: "0.02",
           marketCreatorFeesBalance: "0",
           marketCreatorMailbox: "0xbbb0000000000000000000000000000000000001",
           marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
@@ -175,8 +177,7 @@ describe("server/getters/get-markets-info", () => {
         "0x0000000000000000000000000000000000000002",
       ],
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInfo) => {
       expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000001",
@@ -190,9 +191,9 @@ describe("server/getters/get-markets-info", () => {
           creationTime: 1506473474,
           creationBlock: 1400000,
           creationFee: "10",
-          settlementFee: "0.03",
+          settlementFee: "0.04",
           reportingFeeRate: "0.02",
-          marketCreatorFeeRate: "0.01",
+          marketCreatorFeeRate: "0.02",
           marketCreatorFeesBalance: "0",
           marketCreatorMailbox: "0xbbb0000000000000000000000000000000000001",
           marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
@@ -327,8 +328,7 @@ describe("server/getters/get-markets-info", () => {
         "0x0000000000000000000000000000000000000001",
       ],
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInfo) => {
       expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000002",
@@ -396,9 +396,9 @@ describe("server/getters/get-markets-info", () => {
           creationTime: 1506473474,
           creationBlock: 1400000,
           creationFee: "10",
-          settlementFee: "0.03",
+          settlementFee: "0.04",
           reportingFeeRate: "0.02",
-          marketCreatorFeeRate: "0.01",
+          marketCreatorFeeRate: "0.02",
           marketCreatorFeesBalance: "0",
           marketCreatorMailbox: "0xbbb0000000000000000000000000000000000001",
           marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
@@ -477,8 +477,7 @@ describe("server/getters/get-markets-info", () => {
         "0x0000000000000000000000000000000000000019",
       ],
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInfo) => {
       expect(marketsInfo).toEqual([
         {
           id: "0x0000000000000000000000000000000000000019",
@@ -573,8 +572,7 @@ describe("server/getters/get-markets-info", () => {
     params: {
       marketIds: [undefined],
     },
-    assertions: (err, marketInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketInfo) => {
       expect(marketInfo).toEqual([null]);
     },
   });
@@ -583,8 +581,7 @@ describe("server/getters/get-markets-info", () => {
     params: {
       marketIds: ["0x1010101010101010101010101010101010101010"],
     },
-    assertions: (err, marketInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketInfo) => {
       expect(marketInfo).toEqual([null]);
     },
   });
@@ -593,8 +590,7 @@ describe("server/getters/get-markets-info", () => {
     params: {
       marketIds: Array.from({ length: 1000 }, () => "0x0000000000000000000000000000000000000001"),
     },
-    assertions: (err, marketInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketInfo) => {
       expect(marketInfo).toEqual(Array.from({ length: 1000 }, () => {
         return {
           id: "0x0000000000000000000000000000000000000001",
@@ -608,9 +604,9 @@ describe("server/getters/get-markets-info", () => {
           creationTime: 1506473474,
           creationBlock: 1400000,
           creationFee: "10",
-          settlementFee: "0.03",
+          settlementFee: "0.04",
           reportingFeeRate: "0.02",
-          marketCreatorFeeRate: "0.01",
+          marketCreatorFeeRate: "0.02",
           marketCreatorFeesBalance: "0",
           marketCreatorMailbox: "0xbbb0000000000000000000000000000000000001",
           marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
@@ -688,8 +684,7 @@ describe("server/getters/get-markets-info", () => {
     params: {
       marketIds: [],
     },
-    assertions: (err, marketInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketInfo) => {
       expect(marketInfo).toEqual([]);
     },
   });

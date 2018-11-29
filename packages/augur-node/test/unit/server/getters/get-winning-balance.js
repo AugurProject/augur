@@ -1,20 +1,19 @@
-"use strict";
-
 const { BigNumber } = require("bignumber.js");
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-winning-balance", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getWinningBalance";
-      dispatchJsonRpcRequest(db, t, {}, (err, winningBalance) => {
-        t.assertions(err, winningBalance);
-        db.destroy();
-        done();
-      });
-    })
+      const winningBalance = await dispatchJsonRpcRequest(db, t, {});
+      t.assertions(winningBalance);
+    });
   };
   runTest({
     description: "get winning balances that exist",
@@ -22,8 +21,7 @@ describe("server/getters/get-winning-balance", () => {
       marketIds: ["0x0000000000000000000000000000000000000019"],
       account: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, winningBalance) => {
-      expect(err).toBeFalsy();
+    assertions: (winningBalance) => {
       expect(winningBalance).toEqual([
         {
           marketId: "0x0000000000000000000000000000000000000019",
@@ -38,9 +36,12 @@ describe("server/getters/get-winning-balance", () => {
       marketIds: ["0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0"],
       account: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, winningBalance) => {
-      expect(err).toBeFalsy();
+    assertions: (winningBalance) => {
       expect(winningBalance).toEqual([]);
     },
+  });
+
+  afterEach(async () => {
+    await db.destroy();
   });
 });

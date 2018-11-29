@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 import Augur from "augur.js";
-import { ErrorCallback, EventLogProcessor, FormattedEventLog, LogProcessors } from "../../types";
+import { EventLogProcessor, FormattedEventLog, LogProcessors } from "../../types";
 import { processMarketCreatedLog, processMarketCreatedLogRemoval } from "./market-created";
 import { processTokensTransferredLog, processTokensTransferredLogRemoval } from "./tokens-transferred";
 import { processOrderCanceledLog, processOrderCanceledLogRemoval } from "./order-canceled";
@@ -29,8 +29,9 @@ import { processReportingParticipantDisavowedLog, processReportingParticipantDis
 import { processMarketMailboxTransferredLog, processMarketMailboxTransferredLogRemoval } from "./market-mailbox-transferred";
 import { processMarketParticipantsDisavowedLog, processMarketParticipantsDisavowedLogRemoval } from "./market-participants-disavowed";
 
-function noop(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback) {
-  callback(null);
+async function noop(augur: Augur, log: FormattedEventLog) {
+  return async(db: Knex) => {
+  };
 }
 
 const passThroughLog: EventLogProcessor = {

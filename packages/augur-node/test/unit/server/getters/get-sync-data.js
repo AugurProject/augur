@@ -1,19 +1,22 @@
-"use strict";
-
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-sync-data", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getSyncData";
-      dispatchJsonRpcRequest(db, t, t.params.augur, (err, contractAddresses) => {
-        t.assertions(err, contractAddresses);
-        db.destroy();
-        done();
-      });
-    })
+      const contractAddresses = await dispatchJsonRpcRequest(db, t, t.params.augur);
+      t.assertions(contractAddresses);
+    });
   };
   runTest({
     description: "get contract addresses",
@@ -40,8 +43,7 @@ describe("server/getters/get-sync-data", () => {
         },
       },
     },
-    assertions: (err, contractAddresses) => {
-      expect(err).toBeFalsy();
+    assertions: (contractAddresses) => {
       expect(contractAddresses).toEqual({
         version: "the-version-string",
         net_version: 974,

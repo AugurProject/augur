@@ -1,16 +1,17 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
+import { EventEmitter } from "events";
+import { NetworkConfiguration } from "augur-core";
 import { runServer, RunServerResult, shutdownServers } from "./server/run-server";
 import { bulkSyncAugurNodeWithBlockchain } from "./blockchain/bulk-sync-augur-node-with-blockchain";
 import { startAugurListeners } from "./blockchain/start-augur-listeners";
 import { createDbAndConnect, renameBulkSyncDatabaseFile } from "./setup/check-and-initialize-augur-db";
 import { clearOverrideTimestamp } from "./blockchain/process-block";
-import { processQueue } from "./blockchain/process-queue";
 import { ConnectOptions, ErrorCallback } from "./types";
-import { EventEmitter } from "events";
 import { ControlMessageType } from "./constants";
 import { logger } from "./utils/logger";
 import { LoggerInterface } from "./utils/logger/logger";
+import { BlockAndLogsQueue } from "./blockchain/block-and-logs-queue";
 
 export interface SyncedBlockInfo {
   lastSyncBlockNumber: number;
@@ -28,6 +29,7 @@ export class AugurNodeController {
   private serverResult: RunServerResult | undefined;
   private errorCallback: ErrorCallback | undefined;
   private logger = logger;
+  private blockAndLogsQueue: BlockAndLogsQueue | undefined;
 
   constructor(augur: Augur, networkConfig: ConnectOptions, databaseDir?: string) {
     this.augur = augur;
@@ -47,9 +49,7 @@ export class AugurNodeController {
       const handoffBlockNumber = await bulkSyncAugurNodeWithBlockchain(this.db, this.augur);
       this.controlEmitter.emit(ControlMessageType.BulkSyncFinished);
       this.logger.info("Bulk sync with blockchain complete.");
-      processQueue.kill();
-      startAugurListeners(this.db, this.augur, handoffBlockNumber + 1, this._shutdownCallback.bind(this));
-      processQueue.resume();
+      this.blockAndLogsQueue = startAugurListeners(this.db, this.augur, handoffBlockNumber + 1, this._shutdownCallback.bind(this));
     } catch (err) {
       if (this.errorCallback) this.errorCallback(err);
     }
@@ -113,7 +113,10 @@ export class AugurNodeController {
     if (!this.running) return;
     this.running = false;
     this.logger.info("Stopping Augur Node Server");
-    processQueue.pause();
+    if (this.blockAndLogsQueue !== undefined) {
+      this.blockAndLogsQueue.stop();
+      this.blockAndLogsQueue = undefined;
+    }
     if (this.serverResult !== undefined) {
       const servers = this.serverResult.servers;
       shutdownServers(servers);
@@ -127,5 +130,4 @@ export class AugurNodeController {
     this.augur.disconnect();
     this.logger.clear();
   }
-
 }

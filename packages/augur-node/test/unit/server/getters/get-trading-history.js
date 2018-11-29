@@ -1,19 +1,22 @@
-"use strict";
-
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-trading-history", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getTradingHistory";
-      dispatchJsonRpcRequest(db, t, null, (err, userTradingHistory) => {
-        t.assertions(err, userTradingHistory);
-        db.destroy();
-        done();
-      });
-    })
+      const userTradingHistory = await dispatchJsonRpcRequest(db, t, null);
+      t.assertions(userTradingHistory);
+    });
   };
   runTest({
     description: "user was filler in 1 trade in market and outcome",
@@ -28,8 +31,7 @@ const db = await setupTestDb();
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (userTradingHistory) => {
       expect(userTradingHistory).toEqual([{
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
         logIndex: 0,
@@ -80,8 +82,7 @@ const db = await setupTestDb();
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (userTradingHistory) => {
       expect(userTradingHistory).toEqual([
         {
           amount: "0.1",
@@ -295,8 +296,7 @@ const db = await setupTestDb();
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (userTradingHistory) => {
       expect(userTradingHistory).toEqual([
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
@@ -351,8 +351,7 @@ const db = await setupTestDb();
       earliestCreationTime: 1506474514,
       latestCreationTime: 1506474516,
     },
-    assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (userTradingHistory) => {
       expect(userTradingHistory).toEqual([
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
@@ -408,8 +407,7 @@ const db = await setupTestDb();
       earliestCreationTime: 1506474514,
       latestCreationTime: 1506474516,
     },
-    assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (userTradingHistory) => {
       expect(userTradingHistory).toEqual([
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
@@ -445,8 +443,7 @@ const db = await setupTestDb();
       limit: null,
       offset: null,
     },
-    assertions: (err, userTradingHistory) => {
-      expect(err).toBeFalsy();
+    assertions: (userTradingHistory) => {
       expect(userTradingHistory).toEqual([]);
     },
   });

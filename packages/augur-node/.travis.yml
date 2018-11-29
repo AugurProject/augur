@@ -15,7 +15,7 @@ branches:
   - petong/travis-ci
   - "/^v\\d+\\.\\d+\\.\\d+(-\\d+)?$/"
 node_js:
-- '8'
+- '10.12.0'
 jobs:
   include:
   - stage: test travis-ci
@@ -33,7 +33,7 @@ jobs:
     if: branch = master
     script:
     - npm run lint
-    - npm run coveralls
+    - npm run test
     deploy:
       provider: script
       script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- dev

@@ -1,19 +1,22 @@
-"use strict";
-
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-initial-reporters", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getInitialReporters";
-      dispatchJsonRpcRequest(db, t, t.params.augur, (err, initialReporters) => {
-        t.assertions(err, initialReporters);
-        db.destroy();
-        done();
-      });
-    })
+      const initialReporters = await dispatchJsonRpcRequest(db, t, t.params.augur);
+      t.assertions(initialReporters);
+    });
   };
   runTest({
     description: "get the initial reporter contracts owned by this reporter",
@@ -21,8 +24,7 @@ const db = await setupTestDb();
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, initialReporters) => {
-      expect(err).toBeFalsy();
+    assertions: (initialReporters) => {
       expect(initialReporters).toEqual({
         "0x0000000000000000000000000000000000abe111": {
           amountStaked: "102",

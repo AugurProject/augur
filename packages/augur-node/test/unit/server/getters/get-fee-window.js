@@ -1,10 +1,8 @@
-"use strict";
-
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 const { setOverrideTimestamp, removeOverrideTimestamp } = require("src/blockchain/process-block");
 
-const augurMock = {
+const augur = {
   constants: {
     CONTRACT_INTERVAL: {
       DISPUTE_ROUND_DURATION_SECONDS: 7 * 24 * 3600,
@@ -23,33 +21,29 @@ const augurMock = {
 };
 
 describe("server/getters/get-fee-window", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
-      setOverrideTimestamp(db, t.params.overrideTimestamp || 1, (err) => {
-        expect(err).toBeFalsy();
-        t.method = "getFeeWindow";
-        dispatchJsonRpcRequest(db, t, t.params.augur, (err, feeWindow) => {
-          t.assertions(err, feeWindow);
-          removeOverrideTimestamp(db, t.params.overrideTimestamp || 1, (err) => {
-            expect(err).not.toBeNull();
-            db.destroy();
-            done();
-          });
-        });
-      });
-    })
+    test(t.description, async () => {
+      const timestamp = t.params.overrideTimestamp || 1;
+      await setOverrideTimestamp(db, timestamp);
+      t.method = "getFeeWindow";
+      const feeWindow = await dispatchJsonRpcRequest(db, t, augur);
+      t.assertions(feeWindow);
+      expect(removeOverrideTimestamp(db, timestamp)).rejects.toEqual(new Error(`Timestamp removal failed ${timestamp} ${timestamp}`));
+    });
   };
   runTest({
     description: "get feeWindow",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
-      augur: augurMock,
       overrideTimestamp: 1509065475,
       feeWindowState: "CuRrENT",
     },
-    assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindow) => {
       expect(feeWindow).toEqual({
         endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
@@ -68,12 +62,10 @@ describe("server/getters/get-fee-window", () => {
     description: "get specific feeWindow",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
-      augur: augurMock,
       overrideTimestamp: 2,
       feeWindow: "0x2000000000000000000000000000000000000000",
     },
-    assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindow) => {
       expect(feeWindow).toEqual({
         endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
@@ -95,10 +87,8 @@ describe("server/getters/get-fee-window", () => {
       reporter: "0x0000000000000000000000000000000000000b0b",
       feeWindowState: "current",
       overrideTimestamp: 1509065473,
-      augur: augurMock,
     },
-    assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindow) => {
       expect(feeWindow).toEqual({
         endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
@@ -125,10 +115,8 @@ describe("server/getters/get-fee-window", () => {
       universe: "CHILD_UNIVERSE",
       overrideTimestamp: 1626620468,
       feeWindowState: "current",
-      augur: augurMock,
     },
-    assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindow) => {
       expect(feeWindow).toEqual({
         endTime: 1626912000,
         feeWindow: null,
@@ -144,10 +132,8 @@ describe("server/getters/get-fee-window", () => {
       universe: "CHILD_UNIVERSE",
       overrideTimestamp: 1508565473,
       feeWindowState: "next",
-      augur: augurMock,
     },
-    assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindow) => {
       expect(feeWindow).toEqual({
         endTime: 1511657473,
         feeToken: "FEE_TOKEN_CHILD_UNIVERSE",
@@ -168,10 +154,8 @@ describe("server/getters/get-fee-window", () => {
       universe: "0x000000000000000000000000000000000000000d",
       overrideTimestamp: 1526620468,
       feeWindowState: "current",
-      augur: augurMock,
     },
-    assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindow) => {
       expect(feeWindow).toEqual({
         endTime: 1527120000,
         feeWindow: null,
@@ -188,10 +172,8 @@ describe("server/getters/get-fee-window", () => {
       reporter: "0x0000000000000000000000000000000000n0n0n0",
       overrideTimestamp: 1509065474,
       feeWindowState: "current",
-      augur: augurMock,
     },
-    assertions: (err, feeWindow) => {
-      expect(err).toBeFalsy();
+    assertions: (feeWindow) => {
       expect(feeWindow).toEqual({
         endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
@@ -212,15 +194,18 @@ describe("server/getters/get-fee-window", () => {
       });
     },
   });
-  runTest({
-    description: "nonexistent universe",
-    params: {
+  test("nonexistent universe", async () => {
+    const params = {
       universe: "0x1010101010101010101010101010101010101010",
       feeWindowState: "current",
-      augur: augurMock,
-    },
-    assertions: (err) => {
-      expect(err).not.toBeNull();
-    },
+    };
+    await expect(dispatchJsonRpcRequest(db, {
+      method: "getFeeWindow",
+      params,
+    }, augur)).rejects.toEqual(new Error("Universe does not exist"));
+  });
+
+  afterEach(async () => {
+    await db.destroy();
   });
 });

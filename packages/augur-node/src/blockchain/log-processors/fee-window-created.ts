@@ -1,13 +1,13 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback, Address, FeeWindowState } from "../../types";
+import { FormattedEventLog, Address, FeeWindowState } from "../../types";
 import { augurEmitter } from "../../events";
 import { advanceFeeWindowActive, getCurrentTime } from "../process-block";
 import { SubscriptionEventNames } from "../../constants";
 
-export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  augur.api.FeeWindow.getFeeToken({ tx: { to: log.feeWindow } }, (err: Error|null, feeToken?: Address): void => {
-    if (err) return callback(err);
+export async function processFeeWindowCreatedLog(augur: Augur, log: FormattedEventLog) {
+  const feeToken: Address = await augur.api.FeeWindow.getFeeToken({ tx: { to: log.feeWindow } });
+  return async (db: Knex) => {
     const feeWindowToInsert = {
       feeWindow: log.feeWindow,
       feeWindowId: log.id,
@@ -19,29 +19,26 @@ export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: Formatte
       feeToken,
     };
     augurEmitter.emit(SubscriptionEventNames.FeeWindowCreated, Object.assign({}, log, feeWindowToInsert));
-    db.from("fee_windows").insert(feeWindowToInsert).asCallback((err) => {
-      if (err) return callback(err);
-      const feeWindowTokens = [{
-        contractAddress: log.feeWindow,
-        symbol: "ParticipationToken",
-      }, {
-        contractAddress: feeToken,
-        symbol: `FeeToken`,
-        feeWindow: log.feeWindow,
-      }];
-      db("tokens").insert(feeWindowTokens).asCallback((err) => {
-        if (err) return callback(err);
-        // Re-running this is important for if the FeeWindow was created on the same block it started (not pre-created as part of getOrCreateNext)
-        advanceFeeWindowActive(db, augur, log.blockNumber, getCurrentTime(), callback);
-      });
-    });
-  });
+    await db.from("fee_windows").insert(feeWindowToInsert);
+    const feeWindowTokens = [{
+      contractAddress: log.feeWindow,
+      symbol: "ParticipationToken",
+    }, {
+      contractAddress: feeToken,
+      symbol: `FeeToken`,
+      feeWindow: log.feeWindow,
+    }];
+    await db("tokens").insert(feeWindowTokens);
+    // Re-running this is important for if the FeeWindow was created on the same block it started (not pre-created as part of getOrCreateNext)
+    await advanceFeeWindowActive(db, augur, log.blockNumber, getCurrentTime());
+    // throw new Error("HI");
+  };
 }
 
-export function processFeeWindowCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  augurEmitter.emit(SubscriptionEventNames.FeeWindowCreated, log);
-  db.from("fee_windows").where({ feeWindow: log.feeWindow }).del().asCallback((err) => {
-    if (err) return callback(err);
-    db("tokens").where("contractAddress", log.feeWindow).orWhere("feeWindow", log.feeWindow).del().asCallback(callback);
-  });
+export async function processFeeWindowCreatedLogRemoval(augur: Augur, log: FormattedEventLog) {
+  return async (db: Knex) => {
+    augurEmitter.emit(SubscriptionEventNames.FeeWindowCreated, log);
+    await db.from("fee_windows").where({ feeWindow: log.feeWindow }).del();
+    return db("tokens").where("contractAddress", log.feeWindow).orWhere("feeWindow", log.feeWindow).del();
+  };
 }

@@ -1,29 +1,30 @@
-"use strict";
-
 const ReportingState = require("src/types").ReportingState;
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
-
 describe("server/getters/get-markets", () => {
+  let db;
+  beforeEach(async () => {
+    db = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    await db.destroy();
+  });
+
   const runTest = (t) => {
-    test(t.description, async (done) => {
-      const db = await setupTestDb();
+    test(t.description, async () => {
       t.method = "getMarkets";
-      dispatchJsonRpcRequest(db, t, {}, (err, marketsMatched) => {
-        t.assertions(err, marketsMatched);
-        db.destroy();
-        done();
-      });
-    })
+      const marketsMatched = await dispatchJsonRpcRequest(db, t, {});
+      t.assertions(marketsMatched);
+    });
   };
   runTest({
     description: "get markets in universe b",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
     },
-    assertions: (err, marketsMatched) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsMatched) => {
       expect(marketsMatched).toEqual([
         "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
@@ -48,8 +49,7 @@ describe("server/getters/get-markets", () => {
     params: {
       universe: "0x1010101010101010101010101010101010101010",
     },
-    assertions: (err, marketsMatched) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsMatched) => {
       expect(marketsMatched).toEqual([]);
     },
   });
@@ -59,8 +59,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x000000000000000000000000000000000000000b",
       creator: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, marketsCreatedByUser) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsCreatedByUser) => {
       expect(marketsCreatedByUser).toEqual([
         "0x0000000000000000000000000000000000000016",
         "0x0000000000000000000000000000000000000012",
@@ -85,8 +84,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x000000000000000000000000000000000000000b",
       creator: "0x000000000000000000000000000000000000d00d",
     },
-    assertions: (err, marketsCreatedByUser) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsCreatedByUser) => {
       expect(marketsCreatedByUser).toEqual([
         "0x0000000000000000000000000000000000000003",
       ]);
@@ -98,8 +96,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x000000000000000000000000000000000000000b",
       creator: "0x0000000000000000000000000000000000000bbb",
     },
-    assertions: (err, marketsCreatedByUser) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsCreatedByUser) => {
       expect(marketsCreatedByUser).toEqual([]);
     },
   });
@@ -109,8 +106,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x000000000000000000000000000000000000000b",
       category: "TEST CATEGORY",
     },
-    assertions: (err, marketsInCategory) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInCategory) => {
       expect(marketsInCategory).toEqual([
         "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
@@ -137,8 +133,7 @@ describe("server/getters/get-markets", () => {
       category: "TEST CATEGORY",
       limit: 2,
     },
-    assertions: (err, marketsInCategory) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInCategory) => {
       expect(marketsInCategory).toEqual([
         "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
@@ -151,8 +146,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x000000000000000000000000000000000000000b",
       category: "empty category",
     },
-    assertions: (err, marketsInCategory) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInCategory) => {
       expect(marketsInCategory).toEqual([]);
     },
   });
@@ -163,8 +157,7 @@ describe("server/getters/get-markets", () => {
       reportingState: ReportingState.PRE_REPORTING,
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
-    assertions: (err, marketsUpcomingDesignatedReporting) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsUpcomingDesignatedReporting) => {
       expect(marketsUpcomingDesignatedReporting).toEqual([]);
     },
   });
@@ -176,8 +169,7 @@ describe("server/getters/get-markets", () => {
       sortBy: "volume",
       isSortDescending: false,
     },
-    assertions: (err, marketsUpcomingDesignatedReporting) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsUpcomingDesignatedReporting) => {
       expect(marketsUpcomingDesignatedReporting).toEqual([
         "0x0000000000000000000000000000000000000222",
       ]);
@@ -190,8 +182,7 @@ describe("server/getters/get-markets", () => {
       reportingState: ReportingState.PRE_REPORTING,
       designatedReporter: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInfo) => {
       expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000222",
       ]);
@@ -204,8 +195,7 @@ describe("server/getters/get-markets", () => {
       reportingState: ReportingState.DESIGNATED_REPORTING,
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
-    assertions: (err, marketsAwaitingDesignatedReporting) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsAwaitingDesignatedReporting) => {
       expect(marketsAwaitingDesignatedReporting).toEqual([]);
     },
   });
@@ -217,8 +207,7 @@ describe("server/getters/get-markets", () => {
       sortBy: "volume",
       isSortDescending: false,
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInfo) => {
       expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
@@ -239,8 +228,7 @@ describe("server/getters/get-markets", () => {
       sortBy: "reportingStateUpdatedOn",
       isSortDescending: true,
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInfo) => {
       expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000003",
         "0x0000000000000000000000000000000000000012",
@@ -260,8 +248,7 @@ describe("server/getters/get-markets", () => {
       reportingState: ReportingState.DESIGNATED_REPORTING,
       designatedReporter: "0x000000000000000000000000000000000000d00d",
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInfo) => {
       expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000003",
       ]);
@@ -273,8 +260,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x000000000000000000000000000000000000000b",
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
-    assertions: (err, marketsAwaitingDesignatedReporting) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsAwaitingDesignatedReporting) => {
       expect(marketsAwaitingDesignatedReporting).toEqual([]);
     },
   });
@@ -286,8 +272,7 @@ describe("server/getters/get-markets", () => {
       sortBy: "volume",
       isSortDescending: false,
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInfo) => {
       expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
@@ -306,8 +291,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x000000000000000000000000000000000000000b",
       designatedReporter: "0x000000000000000000000000000000000000d00d",
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInfo) => {
       expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000003",
       ]);
@@ -319,8 +303,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x000000000000000000000000000000000000000b",
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
-    assertions: (err, marketsUpcomingDesignatedReporting) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsUpcomingDesignatedReporting) => {
       expect(marketsUpcomingDesignatedReporting).toEqual([]);
     },
   });
@@ -332,8 +315,7 @@ describe("server/getters/get-markets", () => {
       sortBy: "volume",
       isSortDescending: false,
     },
-    assertions: (err, marketsUpcomingDesignatedReporting) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsUpcomingDesignatedReporting) => {
       expect(marketsUpcomingDesignatedReporting).toEqual([
         "0x0000000000000000000000000000000000000222",
       ]);
@@ -346,8 +328,7 @@ describe("server/getters/get-markets", () => {
       reportingState: ReportingState.PRE_REPORTING,
       designatedReporter: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, marketsInfo) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsInfo) => {
       expect(marketsInfo).toEqual([
         "0x0000000000000000000000000000000000000222",
       ]);
@@ -359,8 +340,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x000000000000000000000000000000000000000b",
       search: "bob",
     },
-    assertions: (err, marketsMatched) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsMatched) => {
       expect(marketsMatched).toEqual([
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000015",
@@ -374,8 +354,7 @@ describe("server/getters/get-markets", () => {
       search: "bob",
       category: "TEST CATEGORY",
     },
-    assertions: (err, marketsMatched) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsMatched) => {
       expect(marketsMatched).toEqual([
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000015",
@@ -388,8 +367,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x000000000000000000000000000000000000000b",
       search: "sue",
     },
-    assertions: (err, marketsCreatedByUser) => {
-      expect(err).toBeFalsy();
+    assertions: (marketsCreatedByUser) => {
       expect(marketsCreatedByUser).toEqual([
         "0x0000000000000000000000000000000000000014",
         "0x0000000000000000000000000000000000000015",
@@ -398,6 +376,26 @@ describe("server/getters/get-markets", () => {
         "0x0000000000000000000000000000000000000018",
         "0x0000000000000000000000000000000000000019",
       ]);
+    },
+  });
+  runTest({
+    description: "set a maximum fee",
+    params: {
+      universe: "0x100000000000000000000000000000000000000b",
+      maxFee: .11,
+    },
+    assertions: (marketsWithMaxFee) => {
+      expect(marketsWithMaxFee).not.toContain("0x1000000000000000000000000000000000000001"); // .12 combined fee
+    },
+  });
+  runTest({
+    description: "set a maximum fee 2",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      maxFee: .03,
+    },
+    assertions: (marketsWithMaxFee) => {
+      expect(marketsWithMaxFee).not.toContain("0x0000000000000000000000000000000000000001"); // .04 combined fee
     },
   });
 });
