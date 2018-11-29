@@ -26,14 +26,6 @@ import {
 
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
-// Make the math tolerable until we have a chance to fix the BN->Stringness in augur.js
-function add(n1: string, n2: string) {
-  return new BigNumber(n1, 10).plus(new BigNumber(n2));
-}
-
-function sub(n1: string, n2: string) {
-  return new BigNumber(n1, 10).minus(new BigNumber(n2));
-}
 
 export interface Timestamped {
   timestamp: number
@@ -86,38 +78,6 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
   buckets.push({ timestamp: endTime });
 
   return buckets;
-}
-
-function sumProfitLossResults(left: EarningsAtTime, right: EarningsAtTime): EarningsAtTime {
-  if (left == null) return right;
-  if (left.profitLoss == null) return right;
-  if (right.profitLoss == null) return left;
-
-  const leftAveragePrice = new BigNumber(left.profitLoss.meanOpenPrice, 10);
-  const leftPosition = new BigNumber(left.profitLoss.position, 10);
-
-  const rightAveragePrice = new BigNumber(right.profitLoss.meanOpenPrice, 10);
-  const rightPosition = new BigNumber(right.profitLoss.position, 10);
-
-  const position = leftPosition.plus(rightPosition);
-  const meanOpenPrice = leftAveragePrice
-    .times(leftPosition)
-    .plus(rightAveragePrice.times(rightPosition))
-    .dividedBy(position);
-  const realized = add(left.profitLoss.realized, right.profitLoss.realized);
-  const unrealized = add(left.profitLoss.unrealized, right.profitLoss.unrealized);
-  const total = realized.plus(unrealized);
-
-  return {
-    timestamp: left.timestamp,
-    profitLoss: formatBigNumberAsFixed({
-      meanOpenPrice,
-      position,
-      realized,
-      unrealized,
-      total,
-    }),
-  };
 }
 
 async function queryProfitLossTimeseries(db: Knex, now: number, params: t.TypeOf<typeof GetProfitLossParams>): Promise<Array<ProfitLossTimeseries>> {
