@@ -21,7 +21,7 @@ pyethash==0.1.27          # via ethereum
 pysha3==1.0.2             # via ethereum
 pytest-profiling==1.2.11
 pytest==3.10.1
-pyyaml==3.12              # via ethereum
+pyyaml==3.13              # via ethereum
 repoze.lru==0.6           # via ethereum
 rlp==0.6.0                # via ethereum
 scrypt==0.8.0             # via ethereum
