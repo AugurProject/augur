@@ -73,7 +73,7 @@
     "webpack-cli": "^3.1.0"
   },
   "devDependencies": {
-    "app-builder-lib": "20.38.0",
+    "app-builder-lib": "20.38.1",
     "electron": "3.0.10",
     "electron-builder": "20.38.0",
     "electron-builder-squirrel-windows": "20.38.0",
