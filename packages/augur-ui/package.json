@@ -97,7 +97,7 @@
     "shelljs": "0.8.3",
     "shifty": "2.6.1",
     "speedomatic": "2.1.4",
-    "trezor-connect": "5.0.31"
+    "trezor-connect": "5.0.34"
   },
   "devDependencies": {
     "@types/expect-puppeteer": "2.2.4",
