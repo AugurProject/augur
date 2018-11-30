@@ -79,7 +79,7 @@
     "pg": "7.7.1",
     "postinstall-build": "5.0.3",
     "speedomatic": "2.1.5",
-    "sqlite3": "4.0.2",
+    "sqlite3": "4.0.4",
     "ts-node": "^6.1.1",
     "uuid": "3.3.2",
     "webpack": "4.26.1",
