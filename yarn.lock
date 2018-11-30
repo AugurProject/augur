@@ -16498,11 +16498,9 @@ shellwords@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
 
-shifty@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/shifty/-/shifty-2.1.0.tgz#571c5be8bf3c2c38fb959bdd7d3149406bd303f2"
-  dependencies:
-    object-assign "^4.1.1"
+shifty@2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/shifty/-/shifty-2.6.1.tgz#53fd6fb33ed6dc248996aa670c46cd967d3cc5f4"
 
 sigmund@~1.0.0:
   version "1.0.1"
