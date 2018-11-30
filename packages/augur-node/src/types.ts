@@ -328,6 +328,7 @@ export interface DisputeTokensRowWithTokenState<BigNumberType> extends DisputeTo
 }
 
 export interface PayoutRow<BigNumberType> extends Payout<BigNumberType> {
+  marketId: string;
   payoutId: number;
   tentativeWinning: number;
 }
