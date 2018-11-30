@@ -155,7 +155,7 @@
     "sinon": "2.4.1",
     "sinon-stub-promise": "4.0.0",
     "style-loader": "0.23.0",
-    "stylelint": "8.3.1",
+    "stylelint": "8.4.0",
     "stylelint-config-standard": "18.2.0",
     "stylelint-no-browser-hacks": "1.0.2",
     "stylelint-order": "0.4.3",
