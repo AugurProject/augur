@@ -63,7 +63,7 @@
     "options-parser": "0.4.0",
     "parrotsay-api": "0.1.1",
     "rimraf": "2.6.2",
-    "secp256k1": "3.5.0",
+    "secp256k1": "3.5.2",
     "secure-random": "1.1.1",
     "speedomatic": "2.1.5",
     "uuid": "3.3.2",
