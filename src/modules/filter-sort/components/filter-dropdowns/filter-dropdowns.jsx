@@ -90,19 +90,19 @@ export default class FilterSearch extends Component {
   }
 
   changeSortDropdown(value) {
-    const { filter, updateSortOption, updateFilter } = this.props;
+    const { filter, updateSortOption, updateFilter, maxFee } = this.props;
 
     this.goToPageOne();
     updateSortOption(value);
-    updateFilter({ filter, sort: value });
+    updateFilter({ filter, sort: value, maxFee });
   }
 
   changeFilterDropdown(value) {
-    const { sort, updateFilterOption, updateFilter } = this.props;
+    const { sort, updateFilterOption, updateFilter, maxFee } = this.props;
 
     this.goToPageOne();
     updateFilterOption(value);
-    updateFilter({ filter: value, sort });
+    updateFilter({ filter: value, sort, maxFee });
   }
 
   changeMaxFees(maxFee) {
