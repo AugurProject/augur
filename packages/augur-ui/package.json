@@ -157,7 +157,7 @@
     "style-loader": "0.23.1",
     "stylelint": "8.4.0",
     "stylelint-config-standard": "18.2.0",
-    "stylelint-no-browser-hacks": "1.0.2",
+    "stylelint-no-browser-hacks": "1.2.1",
     "stylelint-order": "0.4.3",
     "ts-jest": "22.4.6",
     "typescript": "2.9.2",
