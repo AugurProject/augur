@@ -97,7 +97,7 @@
     "recursive-readdir": "2.2.2",
     "replace": "1.0.0",
     "rimraf": "2.6.2",
-    "solidity-coverage": "0.5.4",
+    "solidity-coverage": "0.5.11",
     "yargs": "11.1.0"
   },
   "devDependencies": {
