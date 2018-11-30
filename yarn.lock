@@ -16540,9 +16540,9 @@ sinon-stub-promise@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/sinon-stub-promise/-/sinon-stub-promise-4.0.0.tgz#6d498ba1198557cd01e3466af92dc7df725192c2"
 
-sinon@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/sinon/-/sinon-2.0.0.tgz#48337fa489069e530ad7e2f44f07b0ae93d37b24"
+sinon@2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/sinon/-/sinon-2.4.1.tgz#021fd64b54cb77d9d2fb0d43cdedfae7629c3a36"
   dependencies:
     diff "^3.1.0"
     formatio "1.2.0"
