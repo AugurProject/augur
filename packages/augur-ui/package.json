@@ -78,7 +78,7 @@
     "react": "16.2.0",
     "react-addons-shallow-compare": "15.6.2",
     "react-dates": "15.5.3",
-    "react-datetime": "2.11.0",
+    "react-datetime": "2.16.2",
     "react-dom": "16.2.0",
     "react-faux-dom": "4.1.0",
     "react-helmet": "5.2.0",
