@@ -1,5 +1,5 @@
 # This file starts with an official Python3, and just jams in the Dockerbuild from a Python2.
-FROM python:3.6.6-stretch
+FROM python:3.7.0b1-stretch
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 10.0.1
