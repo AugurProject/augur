@@ -8712,7 +8712,32 @@ ethjs-util@^0.1.3, ethjs-util@^0.1.6:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@6.1.0, ethrpc@^6.1.0:
+ethrpc@6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-6.1.1.tgz#4b3b0a9a2bdbdb5bc83d934a588592b7ec747b3b"
+  integrity sha512-MaEJraqayh8pzp+KXKa/t3z+ffvb03g3KMGTfKSIRf7VDoWCgd6Tc6ah09HlThyGLqs5L5d7kyOYfL0wLNxZww==
+  dependencies:
+    async "2.6.0"
+    bignumber.js "6.0.0"
+    browser-request "0.3.3"
+    clone "2.1.1"
+    es6-promise "4.2.4"
+    ethereumjs-blockstream "7.0.0"
+    ethereumjs-tx "1.3.1"
+    immutable-delete "1.0.1"
+    keccak "1.2.0"
+    lodash "4.17.10"
+    oboe "2.1.3"
+    postinstall-build "5.0.1"
+    redux "3.6.0"
+    redux-thunk-subscribe "1.0.3"
+    speedomatic "2.1.5"
+    uuid "3.0.1"
+  optionalDependencies:
+    request "2.85.0"
+    websocket "1.0.26"
+
+ethrpc@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-6.1.0.tgz#a694ef71ba85c434d99eeb85e012cda6043f0ee1"
   integrity sha512-rhpP3vDDxYnbB0vrvh5h6qfLQnLp16OSVL0fUY2Fi1sW8yYg/Qzk7a01XB4g5HeU2gS9RfRbK4H/3cFJDugadg==
