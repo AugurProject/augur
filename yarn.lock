@@ -20727,10 +20727,10 @@ tree-kill@^1.2.0, tree-kill@~1.2.0:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.1.tgz#5398f374e2f292b9dcc7b2e71e30a5c3bb6c743a"
   integrity sha512-4hjqbObwlh2dLyW4tcz0Ymw0ggoaVDMveUB9w8kFSQScdRLo0gxO9J7WFcUBo+W3C1TLdFIEwNOWebgZZ0RH9Q==
 
-trezor-connect@5.0.31:
-  version "5.0.31"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-5.0.31.tgz#7ecf5e26e154962b638ddc35e68a52d57f4cc107"
-  integrity sha512-EkS90Fsn5Egt7gsLF4/QPgdTgeP+ZrEh3t21cpX7KhlNrF+VOLj3/HJxXpqaEnrEzHS827b80NcjUFOjRB6qRA==
+trezor-connect@5.0.34:
+  version "5.0.34"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-5.0.34.tgz#ea44d2a07c389a192bd1a2d1c6fa1ab063ed5220"
+  integrity sha512-NjD/7RzLEq4acAhrrXtnb5eZzh11u+1lqelxvbD+cJK5UsuPZE1JclHX6orMRvtzAR85i39AOyJaBUrffmikqQ==
   dependencies:
     babel-runtime "^6.26.0"
     events "^1.1.1"
