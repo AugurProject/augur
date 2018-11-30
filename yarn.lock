@@ -17325,17 +17325,7 @@ react-side-effect@^1.1.0:
     exenv "^1.2.1"
     shallowequal "^1.0.1"
 
-react-spinners@^0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/react-spinners/-/react-spinners-0.3.3.tgz#8b59d6343b46ca303b0cf4c1b663afb4106e89d6"
-  integrity sha512-i17rV9Z3PGcriOqMpBkv0v86UPZr1WAGMpBmRG+zNJLgn8bAOfxik/MDIZ1YF6V3fmcIhuk64QYdqtGnEzbfkg==
-  dependencies:
-    emotion "^9.1.1"
-    prop-types "^15.5.10"
-    react-emotion "^9.1.1"
-    recompose "0.26.0"
-
-react-spinners@^0.4.4:
+react-spinners@^0.4.0, react-spinners@^0.4.4:
   version "0.4.7"
   resolved "https://registry.yarnpkg.com/react-spinners/-/react-spinners-0.4.7.tgz#c3cef1be0ac09e7224922e85827ed87032387312"
   integrity sha512-+XPY9HkcNshu8+zZ5VomK+dWSkGTycEWH41OJnqItm7ooopLCXngJIh80OTBYZReLQ9gFwLjVsjfZz2sV+14Tg==
@@ -17695,16 +17685,6 @@ rechoir@^0.6.2:
   integrity sha1-hSBLVNuoLVdC4oyWdW70OvUOM4Q=
   dependencies:
     resolve "^1.1.6"
-
-recompose@0.26.0:
-  version "0.26.0"
-  resolved "https://registry.yarnpkg.com/recompose/-/recompose-0.26.0.tgz#9babff039cb72ba5bd17366d55d7232fbdfb2d30"
-  integrity sha512-KwOu6ztO0mN5vy3+zDcc45lgnaUoaQse/a5yLVqtzTK13czSWnFGmXbQVmnoMgDkI5POd1EwIKSbjU1V7xdZog==
-  dependencies:
-    change-emitter "^0.1.2"
-    fbjs "^0.8.1"
-    hoist-non-react-statics "^2.3.1"
-    symbol-observable "^1.0.4"
 
 recompose@0.27.1:
   version "0.27.1"
