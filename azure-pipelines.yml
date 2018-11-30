@@ -124,33 +124,19 @@ jobs:
         node_10_x:
           node_version: 10.x
     steps:
-      - bash: |
-          set -euxo pipefail
-          echo "git SHA - $(Build.SourceVersion)"
-          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
-            do
-              echo $f | grep augur-ui && echo "##vso[task.setVariable variable=AUGUR]true";
-              echo $f | grep augur-node && echo "##vso[task.setVariable variable=AUGUR]true";
-              echo $f | grep augur.js && echo "##vso[task.setVariable variable=AUGUR]true";
-            done
       - script: |
           set -euxo pipefail
           which node
           node --version
-          yarn workspace augur-node add sqlite3 --force --build-from-source
           yarn install --ignore-scripts --frozen-lockfile
-        condition: eq(variables.AUGUR, 'true')
         displayName: 'Install Dependencies'
       - script: |
           yarn test --forceExit
         displayName: 'Run Tests'
-        condition: eq(variables.AUGUR, 'true')
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: 'junit.xml'
-        condition: eq(variables.AUGUR, 'true')
-
   - job: Test_Augur_js
     pool:
       vmImage: 'Ubuntu 16.04'
