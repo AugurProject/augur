@@ -8431,6 +8431,13 @@ ethereumjs-testrpc-sc@6.1.2:
     source-map-support "^0.5.3"
     webpack-cli "^2.0.9"
 
+ethereumjs-testrpc-sc@6.1.6:
+  version "6.1.6"
+  resolved "https://registry.yarnpkg.com/ethereumjs-testrpc-sc/-/ethereumjs-testrpc-sc-6.1.6.tgz#290595380b5182814564d4aa38f35b7788aab070"
+  integrity sha512-iv2qiGBFgk9mn5Nq2enX8dG5WQ7Lk+FCqpnxfPfH4Ns8KLPwttmNOy264nh3SXDJJvcQwz/XnlLteDQVILotbg==
+  dependencies:
+    source-map-support "^0.5.3"
+
 ethereumjs-testrpc@6.0.3:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/ethereumjs-testrpc/-/ethereumjs-testrpc-6.0.3.tgz#7a0b87bf3670f92f607f98fa6a78801d9741b124"
@@ -19163,6 +19170,22 @@ solc@^0.4.2:
     semver "^5.3.0"
     yargs "^4.7.1"
 
+solidity-coverage@0.5.11:
+  version "0.5.11"
+  resolved "https://registry.yarnpkg.com/solidity-coverage/-/solidity-coverage-0.5.11.tgz#1ee45f6d98b75a615aadb8f9aa7db4a2b32258e7"
+  integrity sha512-qikdsSi6+9XbfvwA0aI7HUVpF9fIFNqRWTw23M89GMDY+b6Gj0wWU9IngJS0fimoZIAdEp3bfChxvpfVcrUesg==
+  dependencies:
+    death "^1.1.0"
+    ethereumjs-testrpc-sc "6.1.6"
+    istanbul "^0.4.5"
+    keccakjs "^0.2.1"
+    req-cwd "^1.0.1"
+    shelljs "^0.7.4"
+    sol-explore "^1.6.2"
+    solidity-parser-sc "0.4.11"
+    tree-kill "^1.2.0"
+    web3 "^0.18.4"
+
 solidity-coverage@0.5.4:
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/solidity-coverage/-/solidity-coverage-0.5.4.tgz#f61d8de310fc17102ffd8bac38d660b7017c10c3"
@@ -19183,6 +19206,15 @@ solidity-parser-sc@0.4.10:
   version "0.4.10"
   resolved "https://registry.yarnpkg.com/solidity-parser-sc/-/solidity-parser-sc-0.4.10.tgz#5a594cd5e0d6ce1a72add781a7770663bab65d3d"
   integrity sha512-oGgFpeX4OzvOfku/Bnw3/yrOmcVJTgXa994HjZwWXA/kHVZ4L1ml9BcbWHRAziJYm3ObHCXlKumfMCBXBt9K8Q==
+  dependencies:
+    mocha "^4.1.0"
+    pegjs "^0.10.0"
+    yargs "^4.6.0"
+
+solidity-parser-sc@0.4.11:
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/solidity-parser-sc/-/solidity-parser-sc-0.4.11.tgz#86734c9205537007f4d6201b57176e41696ee607"
+  integrity sha512-1kV5iC7m3CtMDfmHaVNwz2saSGQVIuF16rIxU417Al38MVCWHMQQ5vT6cmLsNwDe60S74auobWij9vNawSeOyw==
   dependencies:
     mocha "^4.1.0"
     pegjs "^0.10.0"
