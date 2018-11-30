@@ -86,7 +86,7 @@
     "mocha-lcov-reporter": "0.0.2",
     "proxyquire": "1.8.0",
     "readline-sync": "1.4.9",
-    "sinon": "2.0.0",
+    "sinon": "2.4.1",
     "uglify-js": "2.6.1"
   },
   "engines": {
