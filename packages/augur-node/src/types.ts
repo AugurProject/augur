@@ -44,10 +44,16 @@ export enum OrderState {
 }
 
 export class ConnectOptions {
-  http?: string = "http://localhost:8545";
-  ws?: string = "ws://localhost:8546";
-  ipc?: string;
-  propagationDelayWaitMillis?: number;
+  public static createFromEnvironment(): ConnectOptions {
+    const options = new ConnectOptions();
+    options.readFromEnvironment();
+    return options;
+  }
+
+  public http?: string = "http://localhost:8545";
+  public ws?: string = "ws://localhost:8546";
+  public ipc?: string;
+  public propagationDelayWaitMillis?: number;
 // maxRetries is the maximum number of retries for retryable Ethereum
 // RPC requests. maxRetries is passed to augur.js's augur.connect() and
 // then to ethrpc library.connect(), and is used internally by ethrpc
@@ -56,12 +62,12 @@ export class ConnectOptions {
 // ethrpc will opaquely re-insert the RPC request at its internal queue
 // head, such that augur.js (and augur-node) are ignorant of requests
 // that eventually succeed after N retries (where N < maxRetries).
-  maxRetries?: number = 3;
+  public maxRetries?: number = 3;
 
   private readFromEnvironment() {
     const env = process.env;
-    if(env.MAX_REQUEST_RETRIES) this.maxRetries = parseInt(env.MAX_REQUEST_RETRIES);
-    if(env.DELAY_WAIT_MILLIS) this.propagationDelayWaitMillis = parseInt(env.DELAY_WAIT_MILLIS);
+    if (env.MAX_REQUEST_RETRIES) this.maxRetries = parseInt(env.MAX_REQUEST_RETRIES, 10);
+    if (env.DELAY_WAIT_MILLIS) this.propagationDelayWaitMillis = parseInt(env.DELAY_WAIT_MILLIS, 10);
 
     if (env.ETHEREUM_HTTP || env.ETHEREUM_WS || env.ETHEREUM_IPC) {
       this.http = env.ETHEREUM_HTTP;
@@ -69,13 +75,6 @@ export class ConnectOptions {
       this.ipc = env.ETHEREUM_IPC;
     }
   }
-
-  static createFromEnvironment(): ConnectOptions {
-    const options = new ConnectOptions();
-    options.readFromEnvironment();
-    return options;
-  }
-
 }
 
 export interface BaseTransactionRow {
