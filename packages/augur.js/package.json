@@ -87,7 +87,7 @@
     "proxyquire": "1.8.0",
     "readline-sync": "1.4.9",
     "sinon": "2.4.1",
-    "uglify-js": "2.6.1"
+    "uglify-js": "2.8.29"
   },
   "engines": {
     "node": ">= 8.0.0"
