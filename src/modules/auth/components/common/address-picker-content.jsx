@@ -16,7 +16,8 @@ export default class AddressPickerContent extends Component {
     clickAction: PropTypes.func.isRequired,
     clickPrevious: PropTypes.func.isRequired,
     clickNext: PropTypes.func.isRequired,
-    disablePrevious: PropTypes.bool.isRequired
+    disablePrevious: PropTypes.bool.isRequired,
+    disableNext: PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -25,36 +26,18 @@ export default class AddressPickerContent extends Component {
     this.LedgerEthereum = null;
 
     this.clickPrevious = this.clickPrevious.bind(this);
-
-    // props.addresses.map(address => this.updateAccountBalance(address));
-  }
-  /*
-  componentWillUpdate(nextProps, nextState) {
-    if (this.props.addresses !== nextProps.addresses) {
-      nextProps.addresses.map(address => this.updateAccountBalance(address));
-    }
+    this.clickNext = this.clickNext.bind(this);
   }
 
-  updateAccountBalance(address) {
-    if (!this.state.addressBalances[address] && address) {
-      getEtherBalance(address, (err, balance) => {
-        if (!err) {
-          const balances = {
-            ...this.state.addressBalances
-          };
-          balances[address] = balance || 0;
-
-          this.setState({
-            addressBalances: balances
-          });
-        }
-      });
-    }
-  }
-*/
   clickPrevious() {
     if (!this.props.disablePrevious) {
       this.props.clickPrevious();
+    }
+  }
+
+  clickNext() {
+    if (!this.props.disableNext) {
+      this.props.clickNext();
     }
   }
 
@@ -63,8 +46,8 @@ export default class AddressPickerContent extends Component {
       indexArray,
       addresses,
       clickAction,
-      clickNext,
-      disablePrevious
+      disablePrevious,
+      disableNext
     } = this.props;
 
     return (
@@ -129,8 +112,10 @@ export default class AddressPickerContent extends Component {
             Previous
           </button>
           <button
-            className={Styles.AddressPickerContent__direction}
-            onClick={clickNext}
+            className={classNames(Styles.AddressPickerContent__direction, {
+              [Styles.AddressPickerContent__directionDisabled]: disableNext
+            })}
+            onClick={this.clickNext}
             style={{ marginLeft: "24px" }}
           >
             Next

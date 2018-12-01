@@ -12,7 +12,7 @@ import DerivationPathEditor from "modules/auth/components/common/derivation-path
 import toggleHeight from "utils/toggle-height/toggle-height";
 import { ERROR_TYPES } from "modules/auth/constants/connect-nav";
 import { errorIcon } from "modules/common/components/icons";
-import { filter, each, orderBy } from "lodash";
+import { filter, orderBy } from "lodash";
 import Styles from "modules/auth/components/common/hardware-wallet.styles";
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
 import StylesError from "modules/auth/components/common/error-container.styles";
@@ -43,11 +43,11 @@ export default class HardwareWallet extends Component {
       baseDerivationPath: DEFAULT_DERIVATION_PATH,
       walletAddresses: new Array(NUM_DERIVATION_PATHS_TO_DISPLAY).fill(null),
       addressPageNumber: 1,
-      showWallet: false
+      showWallet: false,
+      scannedBalances: false
     };
 
     this.updateDisplayInstructions = this.updateDisplayInstructions.bind(this);
-    this.buildDerivationPath = this.buildDerivationPath.bind(this);
     this.next = this.next.bind(this);
     this.previous = this.previous.bind(this);
     this.validatePath = this.validatePath.bind(this);
@@ -104,14 +104,17 @@ export default class HardwareWallet extends Component {
     }
 
     if (this.state.addressPageNumber !== nextState.addressPageNumber) {
-      this.getWalletAddresses(
-        this.state.baseDerivationPath,
-        nextState.addressPageNumber
-      );
+      if (!this.state.scannedBalances) {
+        this.getWalletAddresses(
+          this.state.baseDerivationPath,
+          nextState.addressPageNumber
+        );
+      }
     }
 
     if (showAdvanced !== nextProps.showAdvanced) {
       this.showAdvanced(showAdvanced);
+      this.getWalletAddresses(DEFAULT_DERIVATION_PATH, 1, true);
     }
 
     if (this.state.displayInstructions !== nextState.displayInstructions) {
@@ -120,7 +123,7 @@ export default class HardwareWallet extends Component {
   }
 
   async getWalletAddresses(derivationPath, pageNumber, clearAddresses) {
-    const { validation, setIsLoading, onDerivationPathChange } = this.props;
+    const { validation, setIsLoading } = this.props;
     if (!validation()) {
       this.updateDisplayInstructions(true);
       setIsLoading(false);
@@ -137,44 +140,17 @@ export default class HardwareWallet extends Component {
       });
     }
 
-    const result = await onDerivationPathChange(
-      derivationPath,
-      pageNumber
-    ).catch(() => {
-      this.updateDisplayInstructions(true);
-      setIsLoading(false);
+    const walletAddresses = await this.getBulkWalletAddressesWithBalances(
+      [derivationPath],
+      false
+    );
+
+    this.setState({
+      walletAddresses,
+      addressPageNumber: pageNumber,
+      scannedBalances: false
     });
 
-    if (result.success) {
-      const addrs = [];
-      each(result.addresses, (address, index) => {
-        addrs.push({
-          address,
-          index,
-          derivationPath
-        });
-        const local = this;
-        getEtherBalance(address, (err, balance, address) => {
-          if (!err) {
-            const value = addrs.find(addr => addr.address === address);
-            if (value) {
-              value.balance = balance;
-              local.setState({
-                walletAddresses
-              });
-            }
-          }
-        });
-      });
-
-      const walletAddresses = orderBy(addrs, ["balance"], ["desc"]);
-      this.setState({
-        walletAddresses,
-        addressPageNumber: pageNumber
-      });
-    } else {
-      this.updateDisplayInstructions(true);
-    }
     setIsLoading(false);
   }
 
@@ -190,61 +166,77 @@ export default class HardwareWallet extends Component {
 
     this.updateDisplayInstructions(false);
 
-    const addresses = await this.getBulkWalletAddresses();
-    const promises = [];
-    addresses.forEach(addr => {
-      const getPromise = new Promise((resolve, reject) => {
-        getEtherBalance(addr.address, (err, balance, address) => {
-          if (err) return reject();
-          resolve({ balance, address });
-        });
-      });
-      promises.push(getPromise);
-    });
+    const walletAddresses = await this.getBulkWalletAddressesWithBalances(
+      DERIVATION_PATHS
+    );
 
-    Promise.all(promises).then(results => {
-      results.forEach(result => {
-        if (result && result.address) {
-          const value = addresses.find(addr => addr.address === result.address);
-          if (value) {
-            value.balance = result.balance;
-          }
-        }
-      });
-
-      const walletAddresses = orderBy(
-        filter(addresses, item => item.balance !== "0"),
-        ["balance"],
-        ["desc"]
-      );
-
+    if (walletAddresses.length > 0) {
       this.setState({
         walletAddresses,
-        addressPageNumber: 1
+        addressPageNumber: 1,
+        scannedBalances: true
       });
       setIsLoading(false);
-    });
+    } else {
+      // no addresses found on scan use default path
+      this.getWalletAddresses(this.state.baseDerivationPath, 1, true);
+    }
   }
 
-  async getBulkWalletAddresses() {
+  async getBulkWalletAddressesWithBalances(paths, filterBalances = true) {
     const { setIsLoading, onDerivationPathChange } = this.props;
     let walletAddresses = [];
-    const promises = [];
-    DERIVATION_PATHS.forEach(async derivationPath => {
-      const promise = onDerivationPathChange(derivationPath, 2).catch(() => {
-        this.updateDisplayInstructions(true);
-        setIsLoading(false);
+    const pathPromises = [];
+    return new Promise((resolve, reject) => {
+      paths.forEach(async derivationPath => {
+        const promise = onDerivationPathChange(derivationPath, 2).catch(() => {
+          this.updateDisplayInstructions(true);
+          setIsLoading(false);
+        });
+        pathPromises.push(promise);
       });
-      promises.push(promise);
-    });
 
-    return Promise.all(promises).then(results => {
-      results.forEach(result => {
-        if (result && result.success) {
-          walletAddresses = [...walletAddresses, ...result.addresses];
-        }
+      Promise.all(pathPromises).then(pathResults => {
+        const promises = [];
+        pathResults.forEach(pathResult => {
+          if (pathResult && pathResult.success) {
+            walletAddresses = [...walletAddresses, ...pathResult.addresses];
+          }
+        });
+
+        walletAddresses.forEach(addr => {
+          const getPromise = new Promise((resolve, reject) => {
+            getEtherBalance(addr.address, (err, balance, address) => {
+              if (err) return reject();
+              resolve({ balance, address });
+            });
+          });
+          promises.push(getPromise);
+        });
+
+        Promise.all(promises).then(results => {
+          results.forEach(result => {
+            if (result && result.address) {
+              const value = walletAddresses.find(
+                addr => addr.address === result.address
+              );
+              if (value) {
+                value.balance = result.balance;
+              }
+            }
+          });
+
+          const walletAddressesWithBalances = orderBy(
+            filterBalances
+              ? filter(walletAddresses, item => item.balance !== "0")
+              : walletAddresses,
+            ["balance"],
+            ["desc"]
+          );
+
+          resolve(walletAddressesWithBalances);
+        });
       });
-      return walletAddresses;
     });
   }
 
@@ -255,15 +247,6 @@ export default class HardwareWallet extends Component {
   async connectWallet(addressObject) {
     const { loginWithWallet } = this.props;
     return loginWithWallet(addressObject.derivationPath);
-  }
-
-  buildDerivationPath(pathIndex) {
-    return DerivationPath.buildString(
-      DerivationPath.increment(
-        DerivationPath.parse(this.state.baseDerivationPath),
-        pathIndex
-      )
-    );
   }
 
   validatePath(value) {
@@ -314,19 +297,22 @@ export default class HardwareWallet extends Component {
     } = this.props;
     const s = this.state;
 
-    let indexes = [
+    const lessThanOnePageAddresses =
+      s.walletAddresses.length <
+      NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber;
+
+    const indexes = [
       ...Array(NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber)
     ]
       .map((_, i) => i)
       .slice(
         NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber -
           NUM_DERIVATION_PATHS_TO_DISPLAY,
-        NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber
+        NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber >
+        s.walletAddresses.length
+          ? s.walletAddresses.length
+          : NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber
       );
-
-    if (s.walletAddresses.length < NUM_DERIVATION_PATHS_TO_DISPLAY) {
-      indexes = [...Array(s.walletAddresses.length)].map((_, i) => i);
-    }
 
     let hideContent = false;
     if (isLoading && s.walletAddresses.every(element => !element)) {
@@ -369,6 +355,7 @@ export default class HardwareWallet extends Component {
                 clickPrevious={this.previous}
                 clickNext={this.next}
                 disablePrevious={s.addressPageNumber === 1}
+                disableNext={lessThanOnePageAddresses}
               />
             )}
 
@@ -417,7 +404,6 @@ export default class HardwareWallet extends Component {
                         e.stopPropagation();
                         e.preventDefault();
 
-                        //this.getWalletAddresses(s.baseDerivationPath, 1, true);
                         this.getWalletAddressesWithBalance();
                       }}
                     >
