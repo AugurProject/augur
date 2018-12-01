@@ -84,7 +84,7 @@
     "less-loader": "4.1.0",
     "mocha": "5.2.0",
     "webpack-dev-middleware": "3.4.0",
-    "webpack-dev-server": "3.1.9"
+    "webpack-dev-server": "3.1.10"
   },
   "electronWebpack": {
     "electronVersion": "3.0.3",
