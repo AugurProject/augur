@@ -29,14 +29,20 @@ export default class AddressPickerContent extends Component {
     this.clickNext = this.clickNext.bind(this);
   }
 
-  clickPrevious() {
+  clickPrevious(e) {
     if (!this.props.disablePrevious) {
+      e.stopPropagation();
+      e.preventDefault();
+
       this.props.clickPrevious();
     }
   }
 
-  clickNext() {
+  clickNext(e) {
     if (!this.props.disableNext) {
+      e.stopPropagation();
+      e.preventDefault();
+
       this.props.clickNext();
     }
   }
