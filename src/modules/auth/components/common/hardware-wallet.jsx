@@ -180,10 +180,10 @@ export default class HardwareWallet extends Component {
     let walletAddresses = [];
     return new Promise((resolve, reject) => {
       onDerivationPathChange(paths, pageNumber) // only get 1 pages worth of addresses
-        .catch(() => {
+        .catch(e => {
           this.updateDisplayInstructions(true);
           setIsLoading(false);
-          reject();
+          reject(new Error(e));
         })
         .then(result => {
           if (result && result.success) {
@@ -191,13 +191,13 @@ export default class HardwareWallet extends Component {
           } else {
             this.updateDisplayInstructions(true);
             setIsLoading(false);
-            reject(); // no addresses found
+            reject(new Error("no addresses found")); // no addresses found
           }
           const promises = [];
           walletAddresses.forEach(addr => {
             const getPromise = new Promise((resolve, reject) => {
               getEtherBalance(addr.address, (err, balance, address) => {
-                if (err) return reject();
+                if (err) return reject(new Error(err));
                 resolve({ balance, address });
               });
             });
