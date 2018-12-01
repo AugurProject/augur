@@ -41,24 +41,21 @@ export default class Ledger extends Component {
     // ledger can only take one request at a time, can't stack up promises
     /* eslint-disable */
     for (const index of indexes) {
+      const derivationPath = DerivationPath.buildString(
+        DerivationPath.increment(components, index)
+      );
       const result = await ledgerEthereum
-        .getAddress(
-          DerivationPath.buildString(
-            DerivationPath.increment(components, index)
-          ),
-          false,
-          true
-        )
+        .getAddress(derivationPath, false, true)
         .catch(err => {
           console.log("Error:", err);
           return { success: false };
         });
-      addresses.push(result && result.address);
+      addresses.push(result && { address: result.address, derivationPath });
     }
     /* eslint-enable */
 
     if (addresses && addresses.length > 0) {
-      if (!addresses.every(element => !element)) {
+      if (!addresses.every(element => !element.address)) {
         return { success: true, addresses };
       }
     }

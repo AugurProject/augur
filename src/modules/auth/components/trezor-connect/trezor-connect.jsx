@@ -46,9 +46,11 @@ export default class TrezorConnect extends Component {
 
     if (response.success) {
       // parse up the bundle results
-      response.payload.every(item => addresses.push(item.address));
+      response.payload.every(item =>
+        addresses.push({ address: item.address, derivationPath: item.path })
+      );
       if (addresses && addresses.length > 0) {
-        if (!addresses.every(element => !element)) {
+        if (!addresses.every(element => !element.address)) {
           return { success: true, addresses };
         }
       }
