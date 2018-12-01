@@ -10,7 +10,7 @@ import { augur } from "services/augurjs";
 jest.mock("modules/auth/selectors/get-gas-price");
 jest.mock("services/augurjs");
 
-describe("purchase participation tokens tests", () => {
+describe.skip("purchase participation tokens tests", () => {
   const { store } = mockStore;
 
   const ACTIONS = {
