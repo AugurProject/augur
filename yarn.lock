@@ -1327,9 +1327,9 @@
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-1.2.0.tgz#81a6731ce4df43619e5c8c945383b3e62a89ea86"
 
-"@types/expect-puppeteer@2.2.4":
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/@types/expect-puppeteer/-/expect-puppeteer-2.2.4.tgz#e46364cfccf83a9be62b18a731edadf0575a668a"
+"@types/expect-puppeteer@3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@types/expect-puppeteer/-/expect-puppeteer-3.3.0.tgz#ef9ceb39d0c05a1265af7fd57638691ecf77c74b"
   dependencies:
     "@types/jest" "*"
     "@types/puppeteer" "*"
