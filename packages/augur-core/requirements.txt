@@ -6,7 +6,7 @@
 #
 asn1crypto==0.24.0        # via coincurve
 cffi==1.11.5              # via coincurve
-coincurve==6.0.0          # via ethereum
+coincurve==10.0.0          # via ethereum
 ethereum==2.3.2
 future==0.17.1            # via ethereum
 gprof2dot==2017.9.19      # via pytest-profiling
