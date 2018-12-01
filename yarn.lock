@@ -7897,7 +7897,7 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "^2.0.0"
 
-fbjs@^0.8.1, fbjs@^0.8.16, fbjs@^0.8.4, fbjs@^0.8.9:
+fbjs@^0.8.1, fbjs@^0.8.4, fbjs@^0.8.9:
   version "0.8.17"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
   dependencies:
@@ -14859,16 +14859,7 @@ react-datetime@2.16.2:
     prop-types "^15.5.7"
     react-onclickoutside "^6.5.0"
 
-react-dom@16.2.0:
-  version "16.2.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.2.0.tgz#69003178601c0ca19b709b33a83369fe6124c044"
-  dependencies:
-    fbjs "^0.8.16"
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.0"
-
-react-dom@^16.4.2:
+react-dom@16.6.3, react-dom@^16.4.2:
   version "16.6.3"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.6.3.tgz#8fa7ba6883c85211b8da2d0efeffc9d3825cccc0"
   dependencies:
@@ -15047,16 +15038,7 @@ react-with-styles@=2.2.0:
     hoist-non-react-statics "^2.3.1"
     prop-types "^15.6.0"
 
-react@16.2.0:
-  version "16.2.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.2.0.tgz#a31bd2dab89bff65d42134fa187f24d054c273ba"
-  dependencies:
-    fbjs "^0.8.16"
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.0"
-
-react@^16.4.2:
+react@16.6.3, react@^16.4.2:
   version "16.6.3"
   resolved "https://registry.yarnpkg.com/react/-/react-16.6.3.tgz#25d77c91911d6bbdd23db41e70fb094cc1e0871c"
   dependencies:
