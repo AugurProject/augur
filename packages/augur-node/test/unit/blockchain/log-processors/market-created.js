@@ -92,7 +92,7 @@ describe("blockchain/log-processors/market-created", () => {
             getShareToken: (p) => {
               return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p) => {
+            getValidityBondAttoEth: (p) => {
               return Promise.resolve("800");
             },
           },
@@ -114,7 +114,7 @@ describe("blockchain/log-processors/market-created", () => {
             marketId: "0x1111111111111111111111111111111111111111",
             universe: "0x000000000000000000000000000000000000000b",
             marketType: "yesNo",
-            numOutcomes: 2,
+            numOutcomes: 3,
             minPrice: new BigNumber("0", 10),
             maxPrice: new BigNumber("1", 10),
             marketCreator: "0x0000000000000000000000000000000000000b0b",
@@ -165,14 +165,21 @@ describe("blockchain/log-processors/market-created", () => {
           outcomes: [{
             marketId: "0x1111111111111111111111111111111111111111",
             outcome: 0,
-            price: new BigNumber("0.5", 10),
+            price: new BigNumber("0.33333333333333333333", 10),
+            volume: new BigNumber("0", 10),
+            shareVolume: new BigNumber("0", 10),
+            description: "Invalid",
+          }, {
+            marketId: "0x1111111111111111111111111111111111111111",
+            outcome: 1,
+            price: new BigNumber("0.33333333333333333333", 10),
             volume: new BigNumber("0", 10),
             shareVolume: new BigNumber("0", 10),
             description: null,
           }, {
             marketId: "0x1111111111111111111111111111111111111111",
-            outcome: 1,
-            price: new BigNumber("0.5", 10),
+            outcome: 2,
+            price: new BigNumber("0.33333333333333333333", 10),
             volume: new BigNumber("0", 10),
             shareVolume: new BigNumber("0", 10),
             description: null,
@@ -196,6 +203,11 @@ describe("blockchain/log-processors/market-created", () => {
             symbol: "shares",
             marketId: "0x1111111111111111111111111111111111111111",
             outcome: 1,
+          }, {
+            contractAddress: "SHARE_TOKEN_2",
+            symbol: "shares",
+            marketId: "0x1111111111111111111111111111111111111111",
+            outcome: 2,
           }],
           transfers: [{
             blockNumber: 7,
@@ -278,7 +290,7 @@ describe("blockchain/log-processors/market-created", () => {
             getShareToken: (p) => {
               return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p) => {
+            getValidityBondAttoEth: (p) => {
               return Promise.resolve("800");
             },
           },
@@ -300,7 +312,7 @@ describe("blockchain/log-processors/market-created", () => {
             marketId: "0x1111111111111111111111111111111111111112",
             universe: "0x000000000000000000000000000000000000000b",
             marketType: "categorical",
-            numOutcomes: 4,
+            numOutcomes: 5,
             minPrice: new BigNumber("0", 10),
             maxPrice: new BigNumber("1", 10),
             marketCreator: "0x0000000000000000000000000000000000000b0b",
@@ -351,28 +363,35 @@ describe("blockchain/log-processors/market-created", () => {
           outcomes: [{
             marketId: "0x1111111111111111111111111111111111111112",
             outcome: 0,
-            price: new BigNumber("0.25", 10),
+            price: new BigNumber("0.2", 10),
+            volume: new BigNumber("0", 10),
+            shareVolume: new BigNumber("0", 10),
+            description: "Invalid",
+          }, {
+            marketId: "0x1111111111111111111111111111111111111112",
+            outcome: 1,
+            price: new BigNumber("0.2", 10),
             volume: new BigNumber("0", 10),
             shareVolume: new BigNumber("0", 10),
             description: "test outcome 0",
           }, {
             marketId: "0x1111111111111111111111111111111111111112",
-            outcome: 1,
-            price: new BigNumber("0.25", 10),
+            outcome: 2,
+            price: new BigNumber("0.2", 10),
             volume: new BigNumber("0", 10),
             shareVolume: new BigNumber("0", 10),
             description: "test outcome 1",
           }, {
             marketId: "0x1111111111111111111111111111111111111112",
-            outcome: 2,
-            price: new BigNumber("0.25", 10),
+            outcome: 3,
+            price: new BigNumber("0.2", 10),
             volume: new BigNumber("0", 10),
             shareVolume: new BigNumber("0", 10),
             description: "test outcome 2",
           }, {
             marketId: "0x1111111111111111111111111111111111111112",
-            outcome: 3,
-            price: new BigNumber("0.25", 10),
+            outcome: 4,
+            price: new BigNumber("0.2", 10),
             volume: new BigNumber("0", 10),
             shareVolume: new BigNumber("0", 10),
             description: "test outcome 3",
@@ -406,6 +425,11 @@ describe("blockchain/log-processors/market-created", () => {
             symbol: "shares",
             marketId: "0x1111111111111111111111111111111111111112",
             outcome: 3,
+          }, {
+            contractAddress: "SHARE_TOKEN_4",
+            symbol: "shares",
+            marketId: "0x1111111111111111111111111111111111111112",
+            outcome: 4,
           }],
           transfers: [{
             blockNumber: 7,
@@ -487,7 +511,7 @@ describe("blockchain/log-processors/market-created", () => {
             getShareToken: (p) => {
               return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p) => {
+            getValidityBondAttoEth: (p) => {
               return Promise.resolve("800");
             },
           },
@@ -509,7 +533,7 @@ describe("blockchain/log-processors/market-created", () => {
             marketId: "0x1111111111111111111111111111111111111113",
             universe: "0x000000000000000000000000000000000000000b",
             marketType: "scalar",
-            numOutcomes: 2,
+            numOutcomes: 3,
             minPrice: new BigNumber("-3", 10),
             maxPrice: new BigNumber("15.2", 10),
             marketCreator: "0x0000000000000000000000000000000000000b0b",
@@ -560,14 +584,21 @@ describe("blockchain/log-processors/market-created", () => {
           outcomes: [{
             marketId: "0x1111111111111111111111111111111111111113",
             outcome: 0,
-            price: new BigNumber("6.1", 10),
+            price: new BigNumber("4.06666666666666666667", 10),
+            volume: new BigNumber("0", 10),
+            shareVolume: new BigNumber("0", 10),
+            description: "Invalid",
+          }, {
+            marketId: "0x1111111111111111111111111111111111111113",
+            outcome: 1,
+            price: new BigNumber("4.06666666666666666667", 10),
             volume: new BigNumber("0", 10),
             shareVolume: new BigNumber("0", 10),
             description: null,
           }, {
             marketId: "0x1111111111111111111111111111111111111113",
-            outcome: 1,
-            price: new BigNumber("6.1", 10),
+            outcome: 2,
+            price: new BigNumber("4.06666666666666666667", 10),
             volume: new BigNumber("0", 10),
             shareVolume: new BigNumber("0", 10),
             description: null,
@@ -591,6 +622,11 @@ describe("blockchain/log-processors/market-created", () => {
             symbol: "shares",
             marketId: "0x1111111111111111111111111111111111111113",
             outcome: 1,
+          }, {
+            contractAddress: "SHARE_TOKEN_2",
+            symbol: "shares",
+            marketId: "0x1111111111111111111111111111111111111113",
+            outcome: 2,
           }],
           transfers: [{
             blockNumber: 7,
@@ -668,7 +704,7 @@ describe("blockchain/log-processors/market-created", () => {
             getShareToken: (p) => {
               return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p) => {
+            getValidityBondAttoEth: (p) => {
               return Promise.resolve("800");
             },
           },
@@ -690,7 +726,7 @@ describe("blockchain/log-processors/market-created", () => {
             marketId: "0x1111111111111111111111111111111111111111",
             universe: "0x000000000000000000000000000000000000000b",
             marketType: "yesNo",
-            numOutcomes: 2,
+            numOutcomes: 3,
             minPrice: new BigNumber("0", 10),
             maxPrice: new BigNumber("1", 10),
             marketCreator: "0x0000000000000000000000000000000000000b0b",
@@ -741,14 +777,21 @@ describe("blockchain/log-processors/market-created", () => {
           outcomes: [{
             marketId: "0x1111111111111111111111111111111111111111",
             outcome: 0,
-            price: new BigNumber("0.5", 10),
+            price: new BigNumber("0.33333333333333333333", 10),
+            volume: new BigNumber("0", 10),
+            shareVolume: new BigNumber("0", 10),
+            description: "Invalid",
+          }, {
+            marketId: "0x1111111111111111111111111111111111111111",
+            outcome: 1,
+            price: new BigNumber("0.33333333333333333333", 10),
             volume: new BigNumber("0", 10),
             shareVolume: new BigNumber("0", 10),
             description: null,
           }, {
             marketId: "0x1111111111111111111111111111111111111111",
-            outcome: 1,
-            price: new BigNumber("0.5", 10),
+            outcome: 2,
+            price: new BigNumber("0.33333333333333333333", 10),
             volume: new BigNumber("0", 10),
             shareVolume: new BigNumber("0", 10),
             description: null,
@@ -772,6 +815,11 @@ describe("blockchain/log-processors/market-created", () => {
             symbol: "shares",
             marketId: "0x1111111111111111111111111111111111111111",
             outcome: 1,
+          }, {
+            contractAddress: "SHARE_TOKEN_2",
+            symbol: "shares",
+            marketId: "0x1111111111111111111111111111111111111111",
+            outcome: 2,
           }],
           transfers: [{
             blockNumber: 7,
@@ -857,7 +905,7 @@ describe("blockchain/log-processors/market-created", () => {
             getShareToken: (p) => {
               return Promise.resolve(`SHARE_TOKEN_${p._outcome}`);
             },
-            getValidityBondAttoeth: (p) => {
+            getValidityBondAttoEth: (p) => {
               return Promise.resolve("800");
             },
           },
@@ -879,7 +927,7 @@ describe("blockchain/log-processors/market-created", () => {
             marketId: "0x1111111111111111111111111111111111111111",
             universe: "0x000000000000000000000000000000000000000b",
             marketType: "yesNo",
-            numOutcomes: 2,
+            numOutcomes: 3,
             minPrice: new BigNumber("0", 10),
             maxPrice: new BigNumber("1", 10),
             marketCreator: "0x0000000000000000000000000000000000000b0b",
@@ -930,14 +978,21 @@ describe("blockchain/log-processors/market-created", () => {
           outcomes: [{
             marketId: "0x1111111111111111111111111111111111111111",
             outcome: 0,
-            price: new BigNumber("0.5", 10),
+            price: new BigNumber("0.33333333333333333333", 10),
+            volume: new BigNumber("0", 10),
+            shareVolume: new BigNumber("0", 10),
+            description: "Invalid",
+          }, {
+            marketId: "0x1111111111111111111111111111111111111111",
+            outcome: 1,
+            price: new BigNumber("0.33333333333333333333", 10),
             volume: new BigNumber("0", 10),
             shareVolume: new BigNumber("0", 10),
             description: null,
           }, {
             marketId: "0x1111111111111111111111111111111111111111",
-            outcome: 1,
-            price: new BigNumber("0.5", 10),
+            outcome: 2,
+            price: new BigNumber("0.33333333333333333333", 10),
             volume: new BigNumber("0", 10),
             shareVolume: new BigNumber("0", 10),
             description: null,
@@ -961,6 +1016,11 @@ describe("blockchain/log-processors/market-created", () => {
             symbol: "shares",
             marketId: "0x1111111111111111111111111111111111111111",
             outcome: 1,
+          }, {
+            contractAddress: "SHARE_TOKEN_2",
+            symbol: "shares",
+            marketId: "0x1111111111111111111111111111111111111111",
+            outcome: 2,
           }],
           transfers: [{
             blockNumber: 7,

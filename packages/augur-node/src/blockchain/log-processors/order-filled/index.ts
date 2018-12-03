@@ -23,7 +23,7 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
     const filler: Address = log.filler;
     const tokensRow: TokensRow|undefined = await db.first("marketId", "outcome").from("tokens").where({ contractAddress: shareToken });
 
-    if (!tokensRow) throw new Error(`market and outcome not found for shareToken: ${shareToken} (${log.transactionHash})`);
+    if (!tokensRow) throw new Error(`ORDER FILLED: market and outcome not found for shareToken: ${shareToken} (${log.transactionHash})`);
     const marketId = tokensRow.marketId;
     const outcome = tokensRow.outcome!;
     const marketsRow: MarketsRow<BigNumber>|undefined = await db.first("minPrice", "maxPrice", "numTicks", "category").from("markets").where({ marketId });

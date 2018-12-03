@@ -18,10 +18,10 @@ function getOutcomes(augur: Augur, log: FormattedEventLog) {
   return new Promise((resolve, reject) => {
 
     const marketPayload: {} = { tx: { to: log.market } };
-    const numOutcomes = parseInt(log.marketType, 10) === MarketType.categorical ? log.outcomes.length : 2;
+    const numOutcomes = parseInt(log.marketType, 10) === MarketType.categorical ? (log.outcomes.length + 1) : 3;
 
     const shareTokens = new Array(numOutcomes);
-    const outcomeNames: Array<string|number|null> = (log.marketType === "1" && log.outcomes) ? log.outcomes : new Array(numOutcomes).fill(null);
+    const outcomeNames: Array<string|number|null> = (log.marketType === "1" && log.outcomes) ? log.outcomes : new Array(numOutcomes - 1).fill(null);
 
     forEachOf(shareTokens, async (_: null, outcome: number, nextOutcome: ErrorCallback) => {
       const shareToken = await augur.api.Market.getShareToken(Object.assign({ _outcome: outcome }, marketPayload)).catch(nextOutcome);
@@ -49,7 +49,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
     numTicks: augur.api.Market.getNumTicks(marketPayload),
     marketCreatorSettlementFeeDivisor: augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload),
     reportingFeeDivisor: augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload),
-    validityBondAttoeth: augur.api.Market.getValidityBondAttoeth(marketPayload),
+    validityBondAttoeth: augur.api.Market.getValidityBondAttoEth(marketPayload),
     getOutcomes: getOutcomes(augur, log),
   };
   const calls = _.zipObject(_.keys(callPromises), await Promise.all(_.values(callPromises)));
@@ -128,7 +128,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
     }
     await db.batchInsert("outcomes", calls.getOutcomes.shareTokens.map((_: Address, outcome: number): Partial<OutcomesRow<string>> => Object.assign({
       outcome,
-      description: calls.getOutcomes.outcomeNames[outcome],
+      description: outcome === 0 ? "Invalid" : calls.getOutcomes.outcomeNames[outcome - 1],
     }, outcomesDataToInsert)), calls.getOutcomes.numOutcomes);
     await db.batchInsert("tokens", calls.getOutcomes.shareTokens.map((contractAddress: Address, outcome: number): Partial<TokensRow> => Object.assign({
       contractAddress,

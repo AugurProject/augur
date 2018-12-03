@@ -10,11 +10,6 @@ function getState(db, log) {
 
 const augur = {
   utils: new Augur().utils,
-  api: {
-    OrdersFinder: {
-      getExistingOrders5: () => Promise.resolve(["ORDER_ID"]),
-    },
-  },
 };
 
 describe("blockchain/log-processors/order-created", () => {

@@ -172,8 +172,6 @@ export const logProcessors: LogProcessors = {
     Approval: passThroughLog,
     Mint: passThroughLog,
     FundedAccount: passThroughLog,
-    Pause: passThroughLog,
-    Unpause: passThroughLog,
   },
   Cash: {
     Transfer: {
