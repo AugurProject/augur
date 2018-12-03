@@ -4,9 +4,8 @@ import "./runServer";
 
 const replServer = repl.start();
 
-Object.defineProperty(replServer.context, 'augurEmitter', {
+Object.defineProperty(replServer.context, "augurEmitter", {
   configurable: false,
   enumerable: true,
-  value: augurEmitter
+  value: augurEmitter,
 });
-
