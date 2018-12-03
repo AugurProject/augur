@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
+import { createBigNumber } from "utils/create-big-number";
 import DerivationPath, {
   DEFAULT_DERIVATION_PATH,
   DERIVATION_PATHS,
@@ -12,7 +12,7 @@ import DerivationPathEditor from "modules/auth/components/common/derivation-path
 import toggleHeight from "utils/toggle-height/toggle-height";
 import { ERROR_TYPES } from "modules/auth/constants/connect-nav";
 import { errorIcon } from "modules/common/components/icons";
-import { filter, orderBy } from "lodash";
+import { filter } from "lodash";
 import Styles from "modules/auth/components/common/hardware-wallet.styles";
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
 import StylesError from "modules/auth/components/common/error-container.styles";
@@ -34,6 +34,12 @@ export default class HardwareWallet extends Component {
     onDerivationPathChange: PropTypes.func.isRequired,
     validation: PropTypes.func.isRequired
   };
+
+  static sortBalanceDesc(obj1, obj2) {
+    return createBigNumber(obj2.balance)
+      .minus(createBigNumber(obj1.balance))
+      .toFixed();
+  }
 
   constructor(props) {
     super(props);
@@ -217,10 +223,8 @@ export default class HardwareWallet extends Component {
             });
 
             const walletAddressesWithBalances = sortAndfilterBalances
-              ? orderBy(
-                  filter(walletAddresses, item => item.balance !== "0"),
-                  ["balance"],
-                  ["desc"]
+              ? filter(walletAddresses, item => item.balance !== "0").sort(
+                  HardwareWallet.sortBalanceDesc
                 )
               : walletAddresses;
 
