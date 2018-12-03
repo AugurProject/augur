@@ -128,6 +128,7 @@ jobs:
           set -euxo pipefail
           which node
           node --version
+          yarn workspace augur-node add sqlite3 --force --build-from-source
           yarn install --ignore-scripts --frozen-lockfile
         displayName: 'Install Dependencies'
       - script: |
