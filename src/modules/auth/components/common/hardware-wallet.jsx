@@ -49,7 +49,8 @@ export default class HardwareWallet extends Component {
       baseDerivationPath: DEFAULT_DERIVATION_PATH,
       walletAddresses: new Array(NUM_DERIVATION_PATHS_TO_DISPLAY).fill(null),
       addressPageNumber: 1,
-      showWallet: false
+      showWallet: false,
+      cachedAddresses: false
     };
 
     this.updateDisplayInstructions = this.updateDisplayInstructions.bind(this);
@@ -142,7 +143,8 @@ export default class HardwareWallet extends Component {
 
     this.setState({
       walletAddresses,
-      addressPageNumber: pageNumber
+      addressPageNumber: pageNumber,
+      cachedAddresses: false
     });
 
     setIsLoading(false);
@@ -168,7 +170,8 @@ export default class HardwareWallet extends Component {
     if (walletAddresses.length > 0) {
       this.setState({
         walletAddresses,
-        addressPageNumber: 1
+        addressPageNumber: 1,
+        cachedAddresses: true
       });
       setIsLoading(false);
     } else {
@@ -272,12 +275,17 @@ export default class HardwareWallet extends Component {
   }
 
   next() {
-    const { addressPageNumber } = this.state;
-    this.getWalletAddresses(
-      this.state.baseDerivationPath,
-      addressPageNumber + 1,
-      false
-    );
+    const { cachedAddresses, addressPageNumber } = this.state;
+    if (!cachedAddresses) {
+      this.getWalletAddresses(
+        this.state.baseDerivationPath,
+        addressPageNumber + 1,
+        false
+      );
+    }
+    this.setState({
+      addressPageNumber: addressPageNumber + 1
+    });
   }
 
   previous() {
@@ -298,8 +306,10 @@ export default class HardwareWallet extends Component {
     const s = this.state;
 
     const lessThanOnePageAddresses =
-      s.walletAddresses.length <
-      NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber;
+      s.walletAddresses.length -
+        (NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber -
+          NUM_DERIVATION_PATHS_TO_DISPLAY) <
+      0;
 
     const indexes = [
       ...Array(NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber)
@@ -355,7 +365,7 @@ export default class HardwareWallet extends Component {
                 clickPrevious={this.previous}
                 clickNext={this.next}
                 disablePrevious={s.addressPageNumber === 1}
-                disableNext={lessThanOnePageAddresses}
+                disableNext={lessThanOnePageAddresses && s.cachedAddresses}
               />
             )}
 
