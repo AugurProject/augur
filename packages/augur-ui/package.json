@@ -159,8 +159,7 @@
     "stylelint-config-standard": "18.2.0",
     "stylelint-no-browser-hacks": "1.2.1",
     "stylelint-order": "0.8.1",
-    "ts-jest": "22.4.6",
-    "typescript": "2.9.2",
+    "ts-jest": "23.10.5",
     "watchify": "3.11.0",
     "webpack-merge": "4.1.4"
   }
