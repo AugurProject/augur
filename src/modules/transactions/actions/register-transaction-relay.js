@@ -16,8 +16,9 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
       // const gasPrice = augur.rpc.gasPrice || augur.constants.DEFAULT_GASPRICE
       // const gasFees = tx.response.gasFees || augur.trading.simulation.getTxGasEth({ ...tx.data }, gasPrice).toFixed()
       const gasFees = tx.response.gasFees || 0;
+      const isBlacklisted = blacklist.includes(type);
       if (hash) {
-        if (transactionsData[hash] && !blacklist.includes(type)) {
+        if (transactionsData[hash] && !isBlacklisted) {
           dispatch(constructRelayTransaction(tx));
           dispatch(
             updateTransactionsData({
@@ -33,7 +34,7 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
           transactionsData[hash].status !== SUCCESS
         ) {
           const relayTransaction = dispatch(constructRelayTransaction(tx));
-          if (relayTransaction && !blacklist.includes(type)) {
+          if (relayTransaction && !isBlacklisted) {
             dispatch(updateTransactionsData(relayTransaction));
           }
         }
