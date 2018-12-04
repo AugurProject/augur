@@ -105,7 +105,7 @@
     "@types/jest-environment-puppeteer": "2.2.1",
     "@types/puppeteer": "1.10.1",
     "augur-tools": "6.0.0",
-    "autoprefixer": "7.2.6",
+    "autoprefixer": "9.4.2",
     "babel-eslint": "9.0.0",
     "babel-plugin-istanbul": "4.1.6",
     "babel-plugin-transform-react-remove-prop-types": "0.4.20",
