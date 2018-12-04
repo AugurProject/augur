@@ -1,0 +1,131 @@
+@import (reference) "~assets/styles/shared";
+
+.BlockInfoData {
+  align-items: center;
+  border-left: 0.0625rem solid @color-lightpurple;
+  color: white;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 162px;
+  width: unset !important;
+
+  &:hover {
+    background-color: @color-lightpurple;
+  }
+}
+
+.BlockInfoData__container {
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 18px 24px;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+  }
+
+  @media @breakpoint-mobile {
+    padding-bottom: 10px;
+    padding-top: 8px;
+  }
+}
+
+.BlockInfoData__title {
+  color: @color-lightergray;
+  font-size: @font-size-extra-small;
+  line-height: 2;
+}
+
+.BlockInfoData__selected {
+  background-color: @color-lightpurple;
+}
+
+.BlockInfoData__info {
+  align-items: flex-end;
+  display: flex;
+}
+
+.BlockInfoData__connectDropdown {
+  background-color: @color-lightpurple;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
+  height: 0;
+  position: absolute;
+  right: 265px;
+  text-align: left;
+  top: @top-bar-height;
+  width: 308px;
+  z-index: @above-all-content;
+
+  @media @breakpoint-mobile {
+    top: 3.1rem;
+  }
+
+  @media @breakpoint-mobile-extra-small {
+    right: 0;
+  }
+}
+
+.BlockInfoData__connectDropdownLogged {
+  right: 393px;
+}
+
+.BlockInfoData__dropdownContainer {
+  padding: 24px;
+}
+
+.BlockInfoData__dropdownTitle {
+  color: @color-lightergray;
+  font-size: @font-size-medium;
+}
+
+.BlockInfoData__percent {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  color: @color-white;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  font-size: @font-size-rather-large;
+  font-weight: bold;
+  margin-bottom: 16px;
+  margin-top: 8px;
+  padding-bottom: 16px;
+}
+
+.BlockInfoData__blocksBehind {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: -3px;
+  margin-left: 6px;
+}
+
+.BlockInfoData__processed {
+  color: @color-white;
+  font-size: @font-size-large;
+  font-weight: bold;
+  margin-top: 13px;
+}
+
+.BlockInfoData__slash {
+  font-size: @font-size-rather-large;
+  font-weight: normal;
+  margin-left: 6px;
+  margin-right: 2px;
+}
+
+.BlockInfoData__bottom {
+  color: @color-lightergray
+}
+
+@media @breakpoint-mobile-mid {
+  .BlockInfoData {
+    max-width: unset;
+  }
+
+  .BlockInfoData__container {
+    padding: 8px 24px;
+  }
+}
