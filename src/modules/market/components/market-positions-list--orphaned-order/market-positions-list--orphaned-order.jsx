@@ -30,11 +30,18 @@ export default class OrphanedOrder extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      disableCancel: false,
+    };
+
     this.cancelOrder = this.cancelOrder.bind(this);
   }
 
   cancelOrder() {
-    this.props.cancelOrphanedOrder(this.props.order);
+    this.setState({disableCancel: true})
+    this.props.cancelOrphanedOrder(this.props.order, () => {
+      this.setState({disableCancel: false})
+    });
   }
 
   render() {
@@ -82,7 +89,7 @@ export default class OrphanedOrder extends Component {
         {!isMobile && <li />}
         {isExtendedDisplay && <li />}
         <li>
-          {pending ? (
+          {(pending || this.state.disableCancel) ? (
             <span className={Styles.NotActive}>Cancel</span>
           ) : (
             <button
