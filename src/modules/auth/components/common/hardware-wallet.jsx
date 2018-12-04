@@ -309,7 +309,7 @@ export default class HardwareWallet extends Component {
       s.walletAddresses.length -
         (NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber -
           NUM_DERIVATION_PATHS_TO_DISPLAY) <
-      (NUM_DERIVATION_PATHS_TO_DISPLAY + 1);
+      NUM_DERIVATION_PATHS_TO_DISPLAY + 1;
 
     const indexes = [
       ...Array(NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber)
