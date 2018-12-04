@@ -47,6 +47,8 @@
     "version": "npm run build:mainnet"
   },
   "dependencies": {
+    "@0xproject/order-utils": "^1.0.7",
+    "@0xproject/utils": "2.0.2",
     "@ledgerhq/hw-app-eth": "4.21.0",
     "@ledgerhq/hw-transport-u2f": "^4.21.0",
     "async": "^2.6.1",
