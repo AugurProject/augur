@@ -209,8 +209,6 @@ class PerformanceGraph extends Component {
       .attr("width", width)
       .attr("height", height)
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
-    // this.margin = { top: 10, right: 10, bottom: 20, left: 60 };
-    console.log("cwh/wh:", chartWidth, chartHeight, width, height);
     const x = d3.scaleTime().rangeRound([0, width]);
     const y = d3
       .scaleLinear()
