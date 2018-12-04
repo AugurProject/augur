@@ -44,7 +44,7 @@ export default class MarketOutcomesChart extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    const { outcomes } = this.props;
+    const { outcomes, pricePrecision } = this.props;
 
     if (!isEqual(outcomes, nextProps.outcomes)) this.drawChart(nextProps);
 
@@ -54,7 +54,8 @@ export default class MarketOutcomesChart extends Component {
     ) {
       updateHoveredLocationCrosshair({
         hoveredLocation: nextState.hoveredLocation,
-        drawParams: nextState.drawParams
+        drawParams: nextState.drawParams,
+        pricePrecision
       });
     }
   }
