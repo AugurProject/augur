@@ -103,7 +103,12 @@ export default class BlockInfoData extends Component {
           <div className={Styles.BlockInfoData__info}>
             {blocksBehind}
             <span className={Styles.BlockInfoData__blocksBehind}>
-              <ChevronFlip pointDown={s.dropdownOpen} stroke="#fff" quick />
+              <ChevronFlip
+                filledInIcon
+                pointDown={s.dropdownOpen}
+                stroke="#fff"
+                quick
+              />
             </span>
           </div>
         </div>

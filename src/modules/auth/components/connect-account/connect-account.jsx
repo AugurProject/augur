@@ -108,19 +108,19 @@ export default class ConnectAccount extends Component {
             </div>
             <div className={Styles.ConnectAccount__title}>
               {isLogged ? formatAddress(address) : "Connect A Wallet"}
+              <span
+                className={classNames(Styles.ConnectAccount__arrow, {
+                  [Styles.ConnectAccount__arrowHide]: isLogged
+                })}
+              >
+                <ChevronFlip
+                  pointDown={s.dropdownOpen}
+                  stroke="#fff"
+                  filledInIcon
+                  quick
+                />
+              </span>
             </div>
-          </div>
-          <div
-            className={classNames(Styles.ConnectAccount__arrow, {
-              [Styles.ConnectAccount__arrowHide]: isLogged
-            })}
-          >
-            <ChevronFlip
-              pointDown={s.dropdownOpen}
-              stroke="#fff"
-              filledInIcon
-              quick
-            />
           </div>
         </div>
         <div
