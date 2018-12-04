@@ -20,22 +20,27 @@ export default class TrezorConnect extends Component {
     isLoading: PropTypes.bool.isRequired
   };
 
-  static async onDerivationPathChange(derivationPath, pageNumber = 1) {
-    const components = DerivationPath.parse(derivationPath);
-    const numberOfAddresses = NUM_DERIVATION_PATHS_TO_DISPLAY * pageNumber;
-    const indexes = Array.from(Array(numberOfAddresses).keys());
+  static async onDerivationPathChange(derivationPaths, pageNumber = 1) {
+    const paths = [];
+
+    derivationPaths.forEach(derivationPath => {
+      const components = DerivationPath.parse(derivationPath);
+      const numberOfAddresses = NUM_DERIVATION_PATHS_TO_DISPLAY * pageNumber;
+      const indexes = Array.from(Array(numberOfAddresses).keys());
+      indexes.forEach(index => {
+        const derivationPath = DerivationPath.buildString(
+          DerivationPath.increment(components, index)
+        );
+        paths.push(derivationPath);
+      });
+    });
+
     const addresses = [];
 
-    const bundle = indexes.map(index => {
-      const showOnTrezor = false;
-      const path = DerivationPath.buildString(
-        DerivationPath.increment(components, index)
-      );
-      return {
-        path,
-        showOnTrezor
-      };
-    });
+    const bundle = paths.map(path => ({
+      path,
+      showOnTrezor: false
+    }));
 
     const response = await TrezorConnectImport.ethereumGetAddress({
       bundle
@@ -46,9 +51,15 @@ export default class TrezorConnect extends Component {
 
     if (response.success) {
       // parse up the bundle results
-      response.payload.every(item => addresses.push(item.address));
+      response.payload.every(item =>
+        addresses.push({
+          address: item.address,
+          derivationPath: item.path,
+          serializedPath: item.serializedPath
+        })
+      );
       if (addresses && addresses.length > 0) {
-        if (!addresses.every(element => !element)) {
+        if (!addresses.every(element => !element.address)) {
           return { success: true, addresses };
         }
       }
@@ -90,6 +101,8 @@ export default class TrezorConnect extends Component {
           derivationPath
         );
       }
+    } else {
+      console.error("Could not connect to Trezor");
     }
   }
 

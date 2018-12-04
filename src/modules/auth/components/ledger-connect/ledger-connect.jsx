@@ -29,36 +29,34 @@ export default class Ledger extends Component {
     return true;
   }
 
-  static async onDerivationPathChange(derivationPath, pageNumber = 1) {
+  static async onDerivationPathChange(derivationPaths, pageNumber = 1) {
     const transport = await TransportU2F.create();
     const ledgerEthereum = new Eth(transport);
-
-    const components = DerivationPath.parse(derivationPath);
-    const numberOfAddresses = NUM_DERIVATION_PATHS_TO_DISPLAY * pageNumber;
-    const indexes = Array.from(Array(numberOfAddresses).keys());
     const addresses = [];
 
-    // ledger can only take one request at a time, can't stack up promises
     /* eslint-disable */
-    for (const index of indexes) {
-      const result = await ledgerEthereum
-        .getAddress(
-          DerivationPath.buildString(
-            DerivationPath.increment(components, index)
-          ),
-          false,
-          true
-        )
-        .catch(err => {
-          console.log("Error:", err);
-          return { success: false };
-        });
-      addresses.push(result && result.address);
+    for (const derivationPath of derivationPaths) {
+      const components = DerivationPath.parse(derivationPath);
+      const numberOfAddresses = NUM_DERIVATION_PATHS_TO_DISPLAY * pageNumber;
+      const indexes = Array.from(Array(numberOfAddresses).keys());
+      for (const index of indexes) {
+        const derivationPath = DerivationPath.buildString(
+          DerivationPath.increment(components, index)
+        );
+        // ledger can only take one request at a time, can't stack up promises
+        const result = await ledgerEthereum
+          .getAddress(derivationPath, false, true)
+          .catch(err => {
+            console.log("Error:", err);
+            return { success: false };
+          });
+        addresses.push(result && { address: result.address, derivationPath });
+      }
     }
     /* eslint-enable */
 
     if (addresses && addresses.length > 0) {
-      if (!addresses.every(element => !element)) {
+      if (!addresses.every(element => !element.address)) {
         return { success: true, addresses };
       }
     }

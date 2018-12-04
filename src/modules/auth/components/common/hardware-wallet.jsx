@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
+import { createBigNumber } from "utils/create-big-number";
 import DerivationPath, {
   DEFAULT_DERIVATION_PATH,
+  DERIVATION_PATHS,
   NUM_DERIVATION_PATHS_TO_DISPLAY
 } from "modules/auth/helpers/derivation-path";
 import classNames from "classnames";
@@ -11,11 +12,12 @@ import DerivationPathEditor from "modules/auth/components/common/derivation-path
 import toggleHeight from "utils/toggle-height/toggle-height";
 import { ERROR_TYPES } from "modules/auth/constants/connect-nav";
 import { errorIcon } from "modules/common/components/icons";
-
+import { filter } from "lodash";
 import Styles from "modules/auth/components/common/hardware-wallet.styles";
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
 import StylesError from "modules/auth/components/common/error-container.styles";
 import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
+import getEtherBalance from "modules/auth/actions/get-ether-balance";
 
 export default class HardwareWallet extends Component {
   static propTypes = {
@@ -33,6 +35,12 @@ export default class HardwareWallet extends Component {
     validation: PropTypes.func.isRequired
   };
 
+  static sortBalanceDesc(obj1, obj2) {
+    return createBigNumber(obj2.balance)
+      .minus(createBigNumber(obj1.balance))
+      .toFixed();
+  }
+
   constructor(props) {
     super(props);
 
@@ -41,11 +49,11 @@ export default class HardwareWallet extends Component {
       baseDerivationPath: DEFAULT_DERIVATION_PATH,
       walletAddresses: new Array(NUM_DERIVATION_PATHS_TO_DISPLAY).fill(null),
       addressPageNumber: 1,
-      showWallet: false
+      showWallet: false,
+      cachedAddresses: false
     };
 
     this.updateDisplayInstructions = this.updateDisplayInstructions.bind(this);
-    this.buildDerivationPath = this.buildDerivationPath.bind(this);
     this.next = this.next.bind(this);
     this.previous = this.previous.bind(this);
     this.validatePath = this.validatePath.bind(this);
@@ -53,6 +61,9 @@ export default class HardwareWallet extends Component {
     this.connectWallet = this.connectWallet.bind(this);
     this.hideHardwareWallet = this.hideHardwareWallet.bind(this);
     this.showHardwareWallet = this.showHardwareWallet.bind(this);
+    this.getWalletAddressesWithBalance = this.getWalletAddressesWithBalance.bind(
+      this
+    );
   }
 
   componentDidMount() {
@@ -94,18 +105,12 @@ export default class HardwareWallet extends Component {
 
     if (isClicked !== nextProps.isClicked && nextProps.isClicked) {
       // this is if the button was clicked, need to reupdate on click
-      this.getWalletAddresses(DEFAULT_DERIVATION_PATH, 1);
-    }
-
-    if (this.state.addressPageNumber !== nextState.addressPageNumber) {
-      this.getWalletAddresses(
-        this.state.baseDerivationPath,
-        nextState.addressPageNumber
-      );
+      this.getWalletAddressesWithBalance();
     }
 
     if (showAdvanced !== nextProps.showAdvanced) {
       this.showAdvanced(showAdvanced);
+      this.getWalletAddresses(DEFAULT_DERIVATION_PATH, 1);
     }
 
     if (this.state.displayInstructions !== nextState.displayInstructions) {
@@ -113,8 +118,8 @@ export default class HardwareWallet extends Component {
     }
   }
 
-  async getWalletAddresses(derivationPath, pageNumber, clearAddresses) {
-    const { validation, setIsLoading, onDerivationPathChange } = this.props;
+  async getWalletAddresses(derivationPath, pageNumber, clearAddresses = true) {
+    const { validation, setIsLoading } = this.props;
     if (!validation()) {
       this.updateDisplayInstructions(true);
       setIsLoading(false);
@@ -130,45 +135,115 @@ export default class HardwareWallet extends Component {
         walletAddresses: []
       });
     }
+    const walletAddresses = await this.getBulkWalletAddressesWithBalances(
+      [derivationPath],
+      pageNumber,
+      false
+    );
 
-    const result = await onDerivationPathChange(
-      derivationPath,
-      pageNumber
-    ).catch(() => {
-      this.updateDisplayInstructions(true);
-      setIsLoading(false);
+    this.setState({
+      walletAddresses,
+      addressPageNumber: pageNumber,
+      cachedAddresses: false
     });
 
-    if (result.success) {
-      this.setState({
-        baseDerivationPath: derivationPath,
-        walletAddresses: result.addresses,
-        addressPageNumber: pageNumber
-      });
-    } else {
-      this.updateDisplayInstructions(true);
-    }
     setIsLoading(false);
+  }
+
+  async getWalletAddressesWithBalance() {
+    const { validation, setIsLoading } = this.props;
+    if (!validation()) {
+      this.updateDisplayInstructions(true);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+
+    this.updateDisplayInstructions(false);
+
+    const walletAddresses = await this.getBulkWalletAddressesWithBalances(
+      DERIVATION_PATHS,
+      1
+    );
+
+    if (walletAddresses.length > 0) {
+      this.setState({
+        walletAddresses,
+        addressPageNumber: 1,
+        cachedAddresses: true
+      });
+      setIsLoading(false);
+    } else {
+      // no addresses found on scan use default path
+      this.getWalletAddresses(this.state.baseDerivationPath, 1);
+    }
+  }
+
+  async getBulkWalletAddressesWithBalances(
+    paths,
+    pageNumber,
+    sortAndfilterBalances = true
+  ) {
+    const { setIsLoading, onDerivationPathChange } = this.props;
+    let walletAddresses = [];
+    return new Promise((resolve, reject) => {
+      onDerivationPathChange(paths, pageNumber) // only get 1 pages worth of addresses
+        .catch(e => {
+          this.updateDisplayInstructions(true);
+          setIsLoading(false);
+          reject(new Error(e));
+        })
+        .then(result => {
+          if (result && result.success) {
+            walletAddresses = result.addresses;
+          } else {
+            this.updateDisplayInstructions(true);
+            setIsLoading(false);
+            reject(new Error("no addresses found")); // no addresses found
+          }
+          const promises = [];
+          walletAddresses.forEach(addr => {
+            const getPromise = new Promise((resolve, reject) => {
+              getEtherBalance(addr.address, (err, balance, address) => {
+                if (err) return reject(new Error(err));
+                resolve({ balance, address });
+              });
+            });
+            promises.push(getPromise);
+          });
+
+          Promise.all(promises).then(results => {
+            results.forEach(result => {
+              if (result && result.address) {
+                const value = walletAddresses.find(
+                  addr => addr.address === result.address
+                );
+                if (value) {
+                  value.balance = result.balance;
+                }
+              }
+            });
+
+            const walletAddressesWithBalances = sortAndfilterBalances
+              ? filter(walletAddresses, item => item.balance !== "0").sort(
+                  HardwareWallet.sortBalanceDesc
+                )
+              : walletAddresses;
+
+            resolve(walletAddressesWithBalances);
+          });
+        });
+    });
   }
 
   updateDisplayInstructions(displayInstructions) {
     this.setState({ displayInstructions });
   }
 
-  async connectWallet(pathIndex) {
+  async connectWallet(addressObject) {
     const { loginWithWallet } = this.props;
-    const derivationPath = this.buildDerivationPath(pathIndex);
-
-    return loginWithWallet(derivationPath);
-  }
-
-  buildDerivationPath(pathIndex) {
-    return DerivationPath.buildString(
-      DerivationPath.increment(
-        DerivationPath.parse(this.state.baseDerivationPath),
-        pathIndex
-      )
-    );
+    return loginWithWallet(addressObject.derivationPath);
   }
 
   validatePath(value) {
@@ -200,13 +275,24 @@ export default class HardwareWallet extends Component {
   }
 
   next() {
-    const { addressPageNumber } = this.state;
-    this.setState({ addressPageNumber: addressPageNumber + 1 });
+    const { cachedAddresses, addressPageNumber } = this.state;
+    if (!cachedAddresses) {
+      this.getWalletAddresses(
+        this.state.baseDerivationPath,
+        addressPageNumber + 1,
+        false
+      );
+    }
+    this.setState({
+      addressPageNumber: addressPageNumber + 1
+    });
   }
 
   previous() {
     const { addressPageNumber } = this.state;
-    this.setState({ addressPageNumber: addressPageNumber - 1 });
+    this.setState({
+      addressPageNumber: addressPageNumber - 1
+    });
   }
 
   render() {
@@ -219,15 +305,30 @@ export default class HardwareWallet extends Component {
     } = this.props;
     const s = this.state;
 
-    const indexes = [
+    const lessThanPageAddresses =
+      s.walletAddresses.length <=
+      NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber;
+
+    let indexes = [
       ...Array(NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber)
-    ]
-      .map((_, i) => i)
-      .slice(
+    ].map((_, i) => i);
+
+    if (s.cachedAddresses) {
+      indexes = indexes.slice(
+        NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber -
+          NUM_DERIVATION_PATHS_TO_DISPLAY,
+        NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber >
+        s.walletAddresses.length
+          ? s.walletAddresses.length
+          : NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber
+      );
+    } else {
+      indexes = indexes.slice(
         NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber -
           NUM_DERIVATION_PATHS_TO_DISPLAY,
         NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber
       );
+    }
 
     let hideContent = false;
     if (isLoading && s.walletAddresses.every(element => !element)) {
@@ -270,6 +371,7 @@ export default class HardwareWallet extends Component {
                 clickPrevious={this.previous}
                 clickNext={this.next}
                 disablePrevious={s.addressPageNumber === 1}
+                disableNext={lessThanPageAddresses && s.cachedAddresses}
               />
             )}
 
@@ -318,7 +420,7 @@ export default class HardwareWallet extends Component {
                         e.stopPropagation();
                         e.preventDefault();
 
-                        this.getWalletAddresses(s.baseDerivationPath, 1, true);
+                        this.getWalletAddressesWithBalance();
                       }}
                     >
                       Retry

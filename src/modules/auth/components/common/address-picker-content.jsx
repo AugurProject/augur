@@ -4,7 +4,6 @@ import classNames from "classnames";
 
 import formatAddress from "modules/auth/helpers/format-address";
 import { prevIcon, nextIcon } from "modules/common/components/icons";
-import getEtherBalance from "modules/auth/actions/get-ether-balance";
 import { formatEther } from "utils/format-number";
 
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
@@ -17,7 +16,8 @@ export default class AddressPickerContent extends Component {
     clickAction: PropTypes.func.isRequired,
     clickPrevious: PropTypes.func.isRequired,
     clickNext: PropTypes.func.isRequired,
-    disablePrevious: PropTypes.bool.isRequired
+    disablePrevious: PropTypes.bool.isRequired,
+    disableNext: PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -25,41 +25,25 @@ export default class AddressPickerContent extends Component {
 
     this.LedgerEthereum = null;
 
-    this.state = {
-      addressBalances: {}
-    };
-
     this.clickPrevious = this.clickPrevious.bind(this);
-
-    props.addresses.map(address => this.updateAccountBalance(address));
+    this.clickNext = this.clickNext.bind(this);
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.props.addresses !== nextProps.addresses) {
-      nextProps.addresses.map(address => this.updateAccountBalance(address));
-    }
-  }
-
-  updateAccountBalance(address) {
-    if (!this.state.addressBalances[address] && address) {
-      getEtherBalance(address, (err, balance) => {
-        if (!err) {
-          const balances = {
-            ...this.state.addressBalances
-          };
-          balances[address] = balance || 0;
-
-          this.setState({
-            addressBalances: balances
-          });
-        }
-      });
-    }
-  }
-
-  clickPrevious() {
+  clickPrevious(e) {
     if (!this.props.disablePrevious) {
+      e.stopPropagation();
+      e.preventDefault();
+
       this.props.clickPrevious();
+    }
+  }
+
+  clickNext(e) {
+    if (!this.props.disableNext) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      this.props.clickNext();
     }
   }
 
@@ -68,10 +52,9 @@ export default class AddressPickerContent extends Component {
       indexArray,
       addresses,
       clickAction,
-      clickNext,
-      disablePrevious
+      disablePrevious,
+      disableNext
     } = this.props;
-    const { addressBalances } = this.state;
 
     return (
       <div
@@ -91,23 +74,25 @@ export default class AddressPickerContent extends Component {
             Balance
           </div>
         </div>
-        {indexArray.map(i => (
+        {indexArray.map(index => (
           <div
-            key={i}
+            key={index}
             className={classNames(StylesDropdown.ConnectDropdown__row, {
-              [StylesDropdown.FadeInAndOut]: !addresses[i],
+              [StylesDropdown.FadeInAndOut]: !(addresses[index] || {}).address,
               [StylesDropdown.ConnectDropdown__rowTransition]: true
             })}
           >
             <button
               className={StylesDropdown.ConnectDropdown__addressColumn}
-              onClick={() => clickAction(i)}
+              onClick={() => clickAction(addresses[index])}
             >
-              {(addresses[i] && formatAddress(addresses[i])) || `—`}
+              {((addresses[index] || {}).address &&
+                formatAddress((addresses[index] || {}).address)) ||
+                `—`}
             </button>
             <div className={StylesDropdown.ConnectDropdown__balanceColumn}>
-              {addressBalances[addresses[i]]
-                ? formatEther(addressBalances[addresses[i]]).formatted
+              {(addresses[index] || {}).balance
+                ? formatEther((addresses[index] || {}).balance).formatted
                 : `—`}
             </div>
           </div>
@@ -133,8 +118,10 @@ export default class AddressPickerContent extends Component {
             Previous
           </button>
           <button
-            className={Styles.AddressPickerContent__direction}
-            onClick={clickNext}
+            className={classNames(Styles.AddressPickerContent__direction, {
+              [Styles.AddressPickerContent__directionDisabled]: disableNext
+            })}
+            onClick={this.clickNext}
             style={{ marginLeft: "24px" }}
           >
             Next
