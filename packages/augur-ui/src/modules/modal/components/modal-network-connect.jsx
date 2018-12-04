@@ -15,15 +15,10 @@ export default class ModalNetworkConnect extends Component {
   static propTypes = {
     modal: PropTypes.shape({
       isInitialConnection: PropTypes.bool
-    }),
-    env: PropTypes.object,
-    connection: PropTypes.object,
+    }).isRequired,
+    env: PropTypes.object.isRequired,
     submitForm: PropTypes.func.isRequired,
-    closeModal: PropTypes.func.isRequired,
-    updateEnv: PropTypes.func.isRequired,
-    connectAugur: PropTypes.func.isRequired,
-    isAugurJSVersionsEqual: PropTypes.func.isRequired,
-    isConnectedThroughWeb3: PropTypes.bool
+    isConnectedThroughWeb3: PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -89,21 +84,22 @@ export default class ModalNetworkConnect extends Component {
   }
 
   submitForm(e) {
-    const p = this.props;
+    const { submitForm, env } = this.props;
+    const { ethereumNode, augurNode } = this.state;
     let ethNode = {};
-    const protocol = this.calcProtocol(this.state.ethereumNode);
+    const protocol = this.calcProtocol(ethereumNode);
     if (protocol) {
       ethNode = {
-        [`${protocol}`]: this.state.ethereumNode
+        [`${protocol}`]: ethereumNode
       };
     }
 
     // because we prioritize, lets wipe out all previous connection options but not remove things like timeout.
     const updatedEnv = {
-      ...this.props.env,
-      "augur-node": this.state.augurNode,
+      ...env,
+      "augur-node": augurNode,
       "ethereum-node": {
-        ...this.props.env["ethereum-node"],
+        ...env["ethereum-node"],
         ipc: "",
         http: "",
         ws: "",
@@ -119,16 +115,16 @@ export default class ModalNetworkConnect extends Component {
     // reloads window
     editEndpointParams(windowRef, endpoints);
 
-    // p.submitForm used as a hook for disconnection modal, normally just preventsDefault
-    p.submitForm(e);
+    // this.props.submitForm used as a hook for disconnection modal, normally just preventsDefault
+    submitForm(e);
   }
 
   render() {
     const { isConnectedThroughWeb3, modal } = this.props;
-    const s = this.state;
-    const AugurNodeInValid = s.formErrors.augurNode.length > 0;
-    const ethereumNodeInValid = s.formErrors.ethereumNode.length > 0;
-    const hasConnectionErrors = s.connectErrors.length > 0;
+    const { formErrors, connectErrors, augurNode, ethereumNode } = this.state;
+    const AugurNodeInValid = formErrors.augurNode.length > 0;
+    const ethereumNodeInValid = formErrors.ethereumNode.length > 0;
+    const hasConnectionErrors = connectErrors.length > 0;
     const formInvalid = this.isFormInvalid();
 
     return (
@@ -145,13 +141,13 @@ export default class ModalNetworkConnect extends Component {
           className={classNames({
             [`${Styles.ErrorField}`]: AugurNodeInValid
           })}
-          value={s.augurNode}
+          value={augurNode}
           placeholder="Enter the augurNode address you would like to connect to."
           onChange={value => this.validateField("augurNode", value)}
           required
         />
         {AugurNodeInValid &&
-          s.formErrors.augurNode.map(error => (
+          formErrors.augurNode.map(error => (
             <p key={error} className={Styles.Error}>
               {InputErrorIcon} {error}
             </p>
@@ -170,7 +166,7 @@ export default class ModalNetworkConnect extends Component {
             className={classNames({
               [`${Styles.ErrorField}`]: ethereumNodeInValid
             })}
-            value={s.ethereumNode}
+            value={ethereumNode}
             placeholder="Enter the Ethereum Node address you would like to connect to."
             onChange={value => this.validateField("ethereumNode", value)}
             required
@@ -178,13 +174,13 @@ export default class ModalNetworkConnect extends Component {
         )}
         {!isConnectedThroughWeb3 &&
           ethereumNodeInValid &&
-          s.formErrors.ethereumNode.map(error => (
+          formErrors.ethereumNode.map(error => (
             <p key={error} className={Styles.Error}>
               {InputErrorIcon} {error}
             </p>
           ))}
         {hasConnectionErrors &&
-          s.connectErrors.map(error => (
+          connectErrors.map(error => (
             <p key={error} className={Styles.Error}>
               {InputErrorIcon} {error}
             </p>

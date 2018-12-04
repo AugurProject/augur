@@ -72,7 +72,7 @@ export default class AccountDeposit extends Component {
     clearTimeout(this.copyTimeout);
     this.setState({ animateCopy: true });
     this.copyTimeout = setTimeout(() => {
-      this.setState({ animateCopy: false });
+      if (this.componentWrapper) this.setState({ animateCopy: false });
     }, 1000);
   }
 
@@ -129,7 +129,12 @@ export default class AccountDeposit extends Component {
     }
 
     return (
-      <section className={Styles.AccountDeposit}>
+      <section
+        className={Styles.AccountDeposit}
+        ref={componentWrapper => {
+          this.componentWrapper = componentWrapper;
+        }}
+      >
         <div className={Styles.AccountDeposit__heading}>
           <h1>Account: Deposit</h1>
           {DepositIcon}

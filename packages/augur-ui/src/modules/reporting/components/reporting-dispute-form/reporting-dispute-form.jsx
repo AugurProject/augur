@@ -13,6 +13,7 @@ import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles";
 import ReportingDisputeProgress from "modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress";
 import { MALFORMED_OUTCOME } from "utils/constants";
+import Input from "modules/common/components/input/input";
 
 const { ETHER } = augur.rpc.constants;
 export default class ReportingDisputeForm extends Component {
@@ -26,6 +27,11 @@ export default class ReportingDisputeForm extends Component {
     accountDisputeData: PropTypes.object,
     availableRep: PropTypes.string.isRequired,
     outcomes: PropTypes.array
+  };
+
+  static defaultProps = {
+    accountDisputeData: null,
+    outcomes: []
   };
 
   static constructRepObject(raw) {
@@ -44,16 +50,19 @@ export default class ReportingDisputeForm extends Component {
 
   constructor(props) {
     super(props);
-    const { bondSizeOfNewStake, disputeRound } = props.market.disputeInfo;
+    const { availableRep, stakeInfo, market } = props;
+    const bondSizeOfNewStake =
+      market.disputeInfo && market.disputeInfo.bondSizeOfNewStake;
+    const disputeRound = market.disputeInfo && market.disputeInfo.disputeRound;
 
     this.state = {
-      inputStake: this.props.stakeInfo.displayValue || "",
+      inputStake: stakeInfo.displayValue || "",
       inputSelectedOutcome: "",
       selectedOutcome: "",
       selectedOutcomeName: "",
       currentDisputeRound: disputeRound,
       disputeBondValue: bondSizeOfNewStake,
-      bnAvailableRep: createBigNumber(this.props.availableRep, 10),
+      bnAvailableRep: createBigNumber(availableRep, 10),
       isMarketInValid: false,
       validations: {
         stake: false,
@@ -67,22 +76,27 @@ export default class ReportingDisputeForm extends Component {
   }
 
   componentWillMount() {
+    const { accountDisputeData } = this.props;
     this.updateDisptueInfoState();
-    if (this.props.accountDisputeData) {
-      this.setAccountDisputeData(this.props.accountDisputeData);
+    if (accountDisputeData) {
+      this.setAccountDisputeData(accountDisputeData);
     }
   }
 
   componentWillReceiveProps(newProps) {
     const { disputeInfo } = newProps.market;
+    const { updateState } = this.props;
     const updatedValidations = { ...this.state.validations };
-    if (disputeInfo.disputeRound !== this.state.currentDisputeRound) {
+    if (
+      disputeInfo &&
+      disputeInfo.disputeRound !== this.state.currentDisputeRound
+    ) {
       updatedValidations.isDisputeActive =
         disputeInfo.disputeRound === this.state.currentDisputeRound;
       this.setState({
         validations: updatedValidations
       });
-      this.props.updateState({
+      updateState({
         validations: updatedValidations
       });
     }
@@ -90,13 +104,19 @@ export default class ReportingDisputeForm extends Component {
 
   componentWillUnmount() {
     const { addUpdateAccountDispute, market } = this.props;
-    if (this.state.selectedOutcome !== "" || this.state.isMarketInValid) {
+    const {
+      selectedOutcome,
+      selectedOutcomeName,
+      isMarketInValid,
+      validations
+    } = this.state;
+    if (selectedOutcome !== "" || isMarketInValid) {
       addUpdateAccountDispute({
         marketId: market.id,
-        selectedOutcome: this.state.selectedOutcome,
-        selectedOutcomeName: this.state.selectedOutcomeName,
-        isMarketInValid: this.state.isMarketInValid,
-        validations: this.state.validations
+        selectedOutcome,
+        selectedOutcomeName,
+        isMarketInValid,
+        validations
       });
     }
   }
@@ -121,11 +141,17 @@ export default class ReportingDisputeForm extends Component {
         validations: accountDisputeData.validations
       },
       () => {
+        const {
+          isMarketInValid,
+          selectedOutcome,
+          selectedOutcomeName,
+          validations
+        } = this.state;
         updateState({
-          isMarketInValid: this.state.isMarketInValid,
-          selectedOutcome: this.state.selectedOutcome,
-          selectedOutcomeName: this.state.selectedOutcomeName,
-          validations: this.state.validations
+          isMarketInValid,
+          selectedOutcome,
+          selectedOutcomeName,
+          validations
         });
       }
     );
@@ -191,23 +217,29 @@ export default class ReportingDisputeForm extends Component {
 
   validateSavedValues() {
     const { market, outcomes } = this.props;
+    const {
+      validations,
+      selectedOutcome,
+      selectedOutcomeName,
+      isMarketInValid
+    } = this.state;
     if (market.marketType === SCALAR) {
-      if (!outcomes.find(o => o.id === this.state.selectedOutcome)) {
+      if (!outcomes.find(o => o.id === selectedOutcome)) {
         this.validateScalar(
-          this.state.selectedOutcome,
+          selectedOutcome,
           "outcome",
           market.minPrice,
           market.maxPrice,
           market.tickSize,
-          this.state.isMarketInValid
+          isMarketInValid
         );
       }
     } else {
       this.validateOutcome(
-        this.state.validations,
-        this.state.selectedOutcome,
-        this.state.selectedOutcomeName,
-        this.state.isMarketInValid
+        validations,
+        selectedOutcome,
+        selectedOutcomeName,
+        isMarketInValid
       );
     }
   }
@@ -401,7 +433,7 @@ export default class ReportingDisputeForm extends Component {
     const { market, stakeInfo, outcomes } = this.props;
     const s = this.state;
     const winner = (outcomes && outcomes.find(o => o.tentativeWinning)) || {};
-    const { disputeRound } = market.disputeInfo;
+    const disputeRound = market.disputeInfo && market.disputeInfo.disputeRound;
 
     // need to check if selectedOutcome has already been disputed on
     let selectedOutcome =
@@ -587,36 +619,25 @@ export default class ReportingDisputeForm extends Component {
           </label>
           <ul className={FormStyles["Form__radio-buttons--per-line-inline"]}>
             <li>
-              <input
+              <Input
                 id="sr__input--stake"
                 type="number"
-                min="0"
-                placeholder="0.0000 REP"
-                value={s.inputStake}
-                className={classNames(FormStyles.Form__input, {
+                className={classNames({
                   [`${FormStyles["Form__error--field"]}`]:
                     s.validations.hasOwnProperty("stake") &&
                     s.validations.selectedOutcome
                 })}
-                style={{ boxShadow: "none" }}
-                onChange={e => this.validateStake({ raw: e.target.value })}
-              />
-              {s.selectedOutcomeName &&
-                s.selectedOutcomeName.length > 0 && (
-                  <div className={Styles.ReportingDisputeForm__container}>
-                    <button
-                      className={classNames(
-                        Styles.ReportingDisputeForm__button,
-                        FormStyles["button--inline"]
-                      )}
-                      onClick={() => {
-                        this.setMAXStake();
-                      }}
-                    >
-                      MAX
-                    </button>
-                  </div>
+                min="0"
+                value={s.inputStake}
+                placeholder="0.0000 REP"
+                onChange={value => this.validateStake({ raw: value })}
+                autoComplete="off"
+                maxButton={Boolean(
+                  s.selectedOutcomeName && s.selectedOutcomeName.length > 0
                 )}
+                onMaxButtonClick={() => this.setMAXStake()}
+                darkMaxBtn
+              />
             </li>
             <li>
               {s.validations.hasOwnProperty("stake") &&

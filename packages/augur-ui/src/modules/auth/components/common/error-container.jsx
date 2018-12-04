@@ -14,8 +14,11 @@ export default class ErrorContainer extends Component {
   static propTypes = {
     error: PropTypes.object,
     connect: PropTypes.func.isRequired,
-    param: PropTypes.string.isRequired,
-    isSelected: PropTypes.bool
+    isSelected: PropTypes.bool.isRequired
+  };
+
+  static defaultProps = {
+    error: null
   };
 
   constructor(props) {

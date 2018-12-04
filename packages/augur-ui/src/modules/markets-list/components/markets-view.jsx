@@ -14,14 +14,21 @@ export default class MarketsView extends Component {
     history: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool.isRequired,
     loadMarketsByFilter: PropTypes.func.isRequired,
     search: PropTypes.string,
     category: PropTypes.string,
     universe: PropTypes.string,
     defaultFilter: PropTypes.string.isRequired,
     defaultSort: PropTypes.string.isRequired,
+    defaultMaxFee: PropTypes.string.isRequired,
     loadDisputing: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    search: null,
+    category: null,
+    universe: null
   };
 
   constructor(props) {
@@ -30,6 +37,7 @@ export default class MarketsView extends Component {
     this.state = {
       filter: props.defaultFilter,
       sort: props.defaultSort,
+      maxFee: props.defaultMaxFee,
       filterSortedMarkets: []
     };
 
@@ -38,9 +46,10 @@ export default class MarketsView extends Component {
   }
 
   componentDidMount() {
-    if (this.props.universe) {
+    const { universe, loadDisputing } = this.props;
+    if (universe) {
       this.updateFilteredMarkets();
-      this.props.loadDisputing();
+      loadDisputing();
     }
   }
 
@@ -55,15 +64,15 @@ export default class MarketsView extends Component {
   }
 
   updateFilter(params) {
-    const { filter, sort } = params;
-    this.setState({ filter, sort }, this.updateFilteredMarkets);
+    const { filter, sort, maxFee } = params;
+    this.setState({ filter, sort, maxFee }, this.updateFilteredMarkets);
   }
 
   updateFilteredMarkets() {
-    const { search, category } = this.props;
-    const { filter, sort } = this.state;
-    this.props.loadMarketsByFilter(
-      { category, search, filter, sort },
+    const { search, category, loadMarketsByFilter } = this.props;
+    const { filter, sort, maxFee } = this.state;
+    loadMarketsByFilter(
+      { category, search, filter, sort, maxFee },
       (err, filterSortedMarkets) => {
         if (err) return console.log("Error loadMarketsFilter:", err);
         if (this.componentWrapper) this.setState({ filterSortedMarkets });
@@ -81,7 +90,7 @@ export default class MarketsView extends Component {
       markets,
       toggleFavorite
     } = this.props;
-    const s = this.state;
+    const { filter, sort, maxFee, filterSortedMarkets } = this.state;
 
     return (
       <section
@@ -96,15 +105,17 @@ export default class MarketsView extends Component {
           isLogged={isLogged}
           location={location}
           markets={markets}
-          filter={s.filter}
-          sort={s.sort}
+          filter={filter}
+          sort={sort}
+          maxFee={maxFee}
           updateFilter={this.updateFilter}
+          history={history}
         />
         <MarketsList
           testid="markets"
           isLogged={isLogged}
           markets={markets}
-          filteredMarkets={s.filterSortedMarkets}
+          filteredMarkets={filterSortedMarkets}
           location={location}
           history={history}
           toggleFavorite={toggleFavorite}

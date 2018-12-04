@@ -12,18 +12,24 @@ export default class ModalGasPrice extends Component {
   static propTypes = {
     closeModal: PropTypes.func.isRequired,
     saveModal: PropTypes.func.isRequired,
-    safeLow: PropTypes.number,
-    average: PropTypes.number,
-    fast: PropTypes.number,
+    safeLow: PropTypes.number.isRequired,
+    average: PropTypes.number.isRequired,
+    fast: PropTypes.number.isRequired,
     userDefinedGasPrice: PropTypes.number
+  };
+
+  static defaultProps = {
+    userDefinedGasPrice: null
   };
 
   constructor(props) {
     super(props);
 
+    const { userDefinedGasPrice, average, safeLow } = props;
+
     this.state = {
-      amount: props.userDefinedGasPrice || props.average,
-      showLowAlert: (props.userDefinedGasPrice || props.average) < props.safeLow
+      amount: userDefinedGasPrice || average,
+      showLowAlert: (userDefinedGasPrice || average) < safeLow
     };
   }
 
@@ -34,21 +40,20 @@ export default class ModalGasPrice extends Component {
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const { closeModal, saveModal, safeLow, average, fast } = this.props;
+    const { amount, showLowAlert } = this.state;
 
-    const disableButton = !s.amount || s.amount < 0;
+    const disableButton = !amount || amount < 0;
 
     const buttons = [
       {
         label: "cancel",
-        action: p.closeModal,
+        action: closeModal,
         type: "gray"
       },
       {
         label: "Save",
-        action: () => p.saveModal(s.amount),
-        type: "purple",
+        action: () => saveModal(amount),
         isDisabled: disableButton
       }
     ];
@@ -60,18 +65,18 @@ export default class ModalGasPrice extends Component {
         rowNumber: 0
       },
       {
-        columnLabels: ["Slow (<30m)", p.safeLow],
-        rowAction: () => this.updateAmount(p.safeLow),
+        columnLabels: ["Slow (<30m)", safeLow],
+        rowAction: () => this.updateAmount(safeLow),
         rowNumber: 1
       },
       {
-        columnLabels: ["Standard (<5m)", p.average],
-        rowAction: () => this.updateAmount(p.average),
+        columnLabels: ["Standard (<5m)", average],
+        rowAction: () => this.updateAmount(average),
         rowNumber: 2
       },
       {
-        columnLabels: ["Fast (<2m)", p.fast],
-        rowAction: () => this.updateAmount(p.fast),
+        columnLabels: ["Fast (<2m)", fast],
+        rowAction: () => this.updateAmount(fast),
         rowNumber: 3
       }
     ];
@@ -79,7 +84,7 @@ export default class ModalGasPrice extends Component {
     return (
       <section className={Styles.TightModalContainer}>
         <h1>Gas Price (gwei)</h1>
-        {s.showLowAlert &&
+        {showLowAlert &&
           !disableButton && (
             <p className={Styles.Warning}>
               {yellowAlertIcon} Transactions are unlikely to be processed at
@@ -93,9 +98,9 @@ export default class ModalGasPrice extends Component {
           type="number"
           isIncrementable
           incrementAmount={1}
-          value={s.amount}
-          onChange={amount => this.updateAmount(amount)}
-          updateValue={amount => this.updateAmount(amount)}
+          value={amount}
+          onChange={value => this.updateAmount(value)}
+          updateValue={value => this.updateAmount(value)}
           lightBorder
         />
         <h2>Recommended Gas Price</h2>

@@ -14,11 +14,11 @@ export default class Input extends Component {
   // TODO -- Prop Validations
   static propTypes = {
     type: PropTypes.string,
-    // className: PropTypes.string,
-    value: PropTypes.any,
+    className: PropTypes.string,
+    value: PropTypes.any.isRequired,
     max: PropTypes.any,
     min: PropTypes.any,
-    // isMultiline: PropTypes.bool,
+    isMultiline: PropTypes.bool,
     isClearable: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     updateValue: PropTypes.func,
@@ -35,14 +35,40 @@ export default class Input extends Component {
     noFocus: PropTypes.bool,
     isLoading: PropTypes.bool,
     onFocus: PropTypes.func,
-    lightBorder: PropTypes.bool
+    lightBorder: PropTypes.bool,
+    darkMaxBtn: PropTypes.bool
+  };
+
+  static defaultProps = {
+    type: "text",
+    className: null,
+    min: null,
+    max: null,
+    isMultiline: false,
+    isClearable: false,
+    isIncrementable: false,
+    canToggleVisibility: false,
+    shouldMatchValue: false,
+    isSearch: false,
+    maxButton: false,
+    noFocus: false,
+    isLoading: false,
+    lightBorder: false,
+    updateValue: null,
+    onBlur: null,
+    onMaxButtonClick: null,
+    onFocus: null,
+    incrementAmount: null,
+    comparisonValue: null,
+    placeholder: null,
+    darkMaxBtn: false
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      value: this.props.value || "",
+      value: props.value,
       isHiddenContentVisible: false,
       focused: false
     };
@@ -147,20 +173,26 @@ export default class Input extends Component {
       noFocus,
       isLoading,
       lightBorder,
+      className,
+      placeholder,
+      isMultiline,
+      type,
+      darkMaxBtn,
       ...p
     } = this.props; // eslint-disable-line no-unused-vars
-    const s = this.state;
+    const { focused, isHiddenContentVisible, value } = this.state;
 
     return (
       <div
         className={classNames(
           isIncrementable ? Styles.Input__Incremental : Styles.Input,
-          p.className,
+          className,
           {
             "can-toggle-visibility": canToggleVisibility,
-            [Styles.focusBorder]: s.focused && !noFocus && !lightBorder,
+            [Styles.focusBorder]: focused && !noFocus && !lightBorder,
             [`${Styles.noFocus}`]: noFocus,
-            [`${Styles.lightBorder}`]: lightBorder
+            [`${Styles.lightBorder}`]: lightBorder,
+            [Styles.setWidth]: darkMaxBtn
           }
         )}
         ref={inputHandler => {
@@ -170,30 +202,26 @@ export default class Input extends Component {
         onBlur={this.onBlurThing}
       >
         {isSearch && IconSearch}
-        {!p.isMultiline && (
+        {!isMultiline && (
           <input
             {...p}
-            className={classNames("box", p.className, {
-              "search-input": p.isSearch
+            className={classNames("box", className, {
+              "search-input": isSearch
             })}
-            type={
-              p.type === "password" && s.isHiddenContentVisible
-                ? "text"
-                : p.type
-            }
-            value={s.value}
+            type={type === "password" && isHiddenContentVisible ? "text" : type}
+            value={value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
-            placeholder={p.placeholder}
+            placeholder={placeholder}
             onFocus={this.handleOnFocus}
           />
         )}
 
-        {p.isMultiline && (
+        {isMultiline && (
           <textarea
             {...p}
             className="box"
-            value={s.value}
+            value={value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
             onFocus={this.handleOnFocus}
@@ -212,8 +240,8 @@ export default class Input extends Component {
         )}
 
         {isClearable &&
-          !p.isMultiline &&
-          !!s.value && (
+          !isMultiline &&
+          !!value && (
             <button
               type="button"
               className={Styles.close}
@@ -224,14 +252,14 @@ export default class Input extends Component {
           )}
 
         {canToggleVisibility &&
-          s.value && (
+          value && (
             <button
               type="button"
               className="button--text-only"
               onClick={this.handleToggleVisibility}
               tabIndex="-1"
             >
-              {s.isHiddenContentVisible ? (
+              {isHiddenContentVisible ? (
                 <i className="fa fa-eye-slash" />
               ) : (
                 <i className="fa fa-eye" />
@@ -242,7 +270,9 @@ export default class Input extends Component {
         {maxButton && (
           <button
             type="button"
-            className={Styles.Input__max}
+            className={classNames(Styles.Input__max, {
+              [Styles.Input__maxDark]: darkMaxBtn
+            })}
             onClick={onMaxButtonClick}
           >
             max
@@ -250,9 +280,9 @@ export default class Input extends Component {
         )}
 
         {shouldMatchValue &&
-          s.value && (
+          value && (
             <div className="input-value-comparison">
-              {s.value === comparisonValue ? (
+              {value === comparisonValue ? (
                 <i className="fa fa-check-circle input-does-match" />
               ) : (
                 <i className="fa fa-times-circle input-does-not-match" />
@@ -269,14 +299,11 @@ export default class Input extends Component {
               onClick={e => {
                 e.currentTarget.blur();
 
-                if (
-                  (!isNaN(parseFloat(s.value)) && isFinite(s.value)) ||
-                  !s.value
-                ) {
+                if ((!isNaN(parseFloat(value)) && isFinite(value)) || !value) {
                   const bnMax = sanitizeBound(max);
                   const bnMin = sanitizeBound(min);
 
-                  let newValue = createBigNumber(s.value || 0);
+                  let newValue = createBigNumber(value || 0);
 
                   if (bnMax !== null && newValue.greaterThan(bnMax)) {
                     newValue = bnMax;
@@ -302,14 +329,11 @@ export default class Input extends Component {
               onClick={e => {
                 e.currentTarget.blur();
 
-                if (
-                  (!isNaN(parseFloat(s.value)) && isFinite(s.value)) ||
-                  !s.value
-                ) {
+                if ((!isNaN(parseFloat(value)) && isFinite(value)) || !value) {
                   const bnMax = sanitizeBound(max);
                   const bnMin = sanitizeBound(min);
 
-                  let newValue = createBigNumber(s.value || 0);
+                  let newValue = createBigNumber(value || 0);
 
                   if (bnMax !== null && newValue.greaterThan(bnMax)) {
                     newValue = bnMax.minus(createBigNumber(incrementAmount));

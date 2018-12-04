@@ -11,7 +11,6 @@ import TimeProgressBar from "modules/reporting/components/time-progress-bar/time
 export default class ReportingHeader extends Component {
   static propTypes = {
     heading: PropTypes.string.isRequired,
-    isMobile: PropTypes.bool.isRequired,
     loadReportingWindowBounds: PropTypes.func.isRequired,
     reportingWindowStats: PropTypes.object.isRequired,
     repBalance: PropTypes.string.isRequired,
@@ -24,8 +23,18 @@ export default class ReportingHeader extends Component {
     forkEndTime: PropTypes.string,
     forkReputationGoal: PropTypes.string,
     isForkingMarketFinalized: PropTypes.bool,
-    isLogged: PropTypes.bool,
+    isLogged: PropTypes.bool.isRequired,
     universe: PropTypes.string
+  };
+
+  static defaultProps = {
+    isForking: false,
+    isForkingMarketFinalized: false,
+    universe: null,
+    forkingMarket: null,
+    forkEndTime: null,
+    forkReputationGoal: null,
+    currentTime: Date.now()
   };
 
   constructor(props) {
@@ -87,7 +96,6 @@ export default class ReportingHeader extends Component {
       isForkingMarketFinalized,
       isLogged
     } = this.props;
-
     const disableParticipate = repBalance === "0";
     const disputeRep =
       formatAttoRep(reportingWindowStats.stake, {

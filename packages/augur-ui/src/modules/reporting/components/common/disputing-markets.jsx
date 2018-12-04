@@ -14,29 +14,37 @@ export default class DisputingMarkets extends Component {
     markets: PropTypes.array.isRequired,
     upcomingMarkets: PropTypes.array.isRequired,
     upcomingMarketsCount: PropTypes.number.isRequired,
-    isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool.isRequired,
     isConnected: PropTypes.bool.isRequired,
     outcomes: PropTypes.object.isRequired,
     isForking: PropTypes.bool.isRequired,
     forkingMarketId: PropTypes.string,
     paginationCount: PropTypes.number.isRequired,
-    disputableMarketsLength: PropTypes.number,
-    showPagination: PropTypes.bool,
-    showUpcomingPagination: PropTypes.bool,
-    loadMarkets: PropTypes.func,
+    disputableMarketsLength: PropTypes.number.isRequired,
+    showPagination: PropTypes.bool.isRequired,
+    showUpcomingPagination: PropTypes.bool.isRequired,
+    loadMarkets: PropTypes.func.isRequired,
     nullDisputeMessage: PropTypes.string,
     nullUpcomingMessage: PropTypes.string,
     addNullPadding: PropTypes.bool
   };
 
+  static defaultProps = {
+    nullDisputeMessage: "There are currently no markets available for dispute.",
+    nullUpcomingMessage:
+      "There are currently no markets slated for the upcoming dispute window.",
+    addNullPadding: false,
+    forkingMarketId: null
+  };
+
   constructor(props) {
     super(props);
-
+    const { paginationCount } = props;
     this.state = {
       lowerBound: 1,
-      boundedLength: this.props.paginationCount,
+      boundedLength: paginationCount,
       lowerBoundUpcoming: 1,
-      boundedLengthUpcoming: this.props.paginationCount,
+      boundedLengthUpcoming: paginationCount,
       loadedMarkets: [],
       filteredMarkets: [],
       loadedUpcomingMarkets: [],
@@ -148,17 +156,18 @@ export default class DisputingMarkets extends Component {
 
     return (
       <section>
-        {isForking && (
-          <DisputeMarketCard
-            key={forkingMarketId}
-            market={forkingMarket}
-            isMobile={isMobile}
-            location={location}
-            history={history}
-            outcomes={outcomes}
-            isForkingMarket
-          />
-        )}
+        {isForking &&
+          forkingMarket && (
+            <DisputeMarketCard
+              key={forkingMarketId}
+              market={forkingMarket}
+              isMobile={isMobile}
+              location={location}
+              history={history}
+              outcomes={outcomes}
+              isForkingMarket
+            />
+          )}
         {nonForkingMarketsCount > 0 &&
           !isForking &&
           nonForkingMarkets.map(market => (
@@ -169,7 +178,6 @@ export default class DisputingMarkets extends Component {
               location={location}
               history={history}
               outcomes={outcomes}
-              isForkingMarket={false}
             />
           ))}
         {nonForkingMarketsCount > 0 &&
@@ -181,17 +189,12 @@ export default class DisputingMarkets extends Component {
               location={location}
               history={history}
               setSegment={this.setSegment}
-              pageParam={"disputing" || null}
+              pageParam="disputing"
             />
           )}
         {nonForkingMarketsCount === 0 &&
-          !isForking && (
-            <NullStateMessage
-              message={
-                nullDisputeMessage ||
-                "There are currently no markets available for dispute."
-              }
-            />
+          (!isForking || (isForking && !forkingMarket)) && (
+            <NullStateMessage message={nullDisputeMessage} />
           )}
         <MarketsHeaderLabel
           title={isForking ? "Dispute Paused" : "Upcoming Dispute Window"}
@@ -206,7 +209,6 @@ export default class DisputingMarkets extends Component {
               location={location}
               history={history}
               outcomes={outcomes}
-              isForkingMarket={false}
             />
           ))}
         {upcomingMarketsCount > 0 &&
@@ -228,7 +230,7 @@ export default class DisputingMarkets extends Component {
               location={location}
               history={history}
               setSegment={this.setSegmentUpcoming}
-              pageParam={"upcoming" || null}
+              pageParam="upcoming"
             />
           )}
         {(upcomingMarketsCount === 0 ||
@@ -237,10 +239,7 @@ export default class DisputingMarkets extends Component {
             isForking)) && (
           <NullStateMessage
             addNullPadding={addNullPadding}
-            message={
-              nullUpcomingMessage ||
-              "There are currently no markets slated for the upcoming dispute window."
-            }
+            message={nullUpcomingMessage}
           />
         )}
       </section>

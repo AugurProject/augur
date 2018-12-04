@@ -14,7 +14,7 @@ import Styles from "modules/trading/components/trading/trading.styles";
 class MarketTrading extends Component {
   static propTypes = {
     availableFunds: PropTypes.instanceOf(BigNumber).isRequired,
-    clearTradeInProgress: PropTypes.func,
+    clearTradeInProgress: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
     market: PropTypes.object.isRequired,
@@ -22,6 +22,10 @@ class MarketTrading extends Component {
     selectedOutcome: PropTypes.string,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
     gasPrice: PropTypes.number.isRequired
+  };
+
+  static defaultProps = {
+    selectedOutcome: null
   };
 
   constructor(props) {
@@ -147,20 +151,6 @@ class MarketTrading extends Component {
                     </span>
                   </Link>
                 )}
-            </div>
-          )}
-        {isMobile &&
-          hasSelectedOutcome &&
-          initialMessage && (
-            <div className={Styles["Trading__initial-message"]}>
-              <p>{initialMessage}</p>
-              {!hasFunds && (
-                <Link to={makePath(ACCOUNT_DEPOSIT)}>
-                  <span className={Styles["Trading__deposit-button"]}>
-                    Add Funds
-                  </span>
-                </Link>
-              )}
             </div>
           )}
         {isMobile &&

@@ -24,17 +24,28 @@ function getMarketIds(markets) {
 
 export default class ReportingResolved extends Component {
   static propTypes = {
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
     nullMessage: PropTypes.string,
-    history: PropTypes.object,
-    isLogged: PropTypes.bool,
-    loadMarketsInfoIfNotLoaded: PropTypes.func,
-    location: PropTypes.object,
-    toggleFavorite: PropTypes.func,
+    isLogged: PropTypes.bool.isRequired,
+    loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
+    toggleFavorite: PropTypes.func.isRequired,
     isForkingMarketFinalized: PropTypes.bool,
     noShowHeader: PropTypes.bool,
     forkingMarket: PropTypes.object,
-    loadReporting: PropTypes.func
+    loadReporting: PropTypes.func,
+    isMobile: PropTypes.bool.isRequired,
+    showOutstandingReturns: PropTypes.bool
+  };
+
+  static defaultProps = {
+    nullMessage: null,
+    isForkingMarketFinalized: false,
+    noShowHeader: false,
+    forkingMarket: null,
+    loadReporting: null,
+    showOutstandingReturns: false
   };
 
   constructor(props) {
@@ -60,16 +71,18 @@ export default class ReportingResolved extends Component {
 
   render() {
     const {
-      history,
       isLogged,
+      isMobile,
       loadMarketsInfoIfNotLoaded,
-      location,
       markets,
       toggleFavorite,
       isForkingMarketFinalized,
       forkingMarket,
       noShowHeader,
-      nullMessage
+      nullMessage,
+      location,
+      history,
+      showOutstandingReturns
     } = this.props;
     const s = this.state;
 
@@ -95,6 +108,7 @@ export default class ReportingResolved extends Component {
         <MarketsHeaderLabel title="Resolved" />
         <MarketsList
           isLogged={isLogged}
+          isMobile={isMobile}
           markets={markets}
           filteredMarkets={s.filteredMarkets}
           location={location}
@@ -105,6 +119,7 @@ export default class ReportingResolved extends Component {
           paginationPageParam="reporting-resolved-page"
           nullMessage={nullMessage}
           addNullPadding
+          showOutstandingReturns={showOutstandingReturns}
         />
       </section>
     );

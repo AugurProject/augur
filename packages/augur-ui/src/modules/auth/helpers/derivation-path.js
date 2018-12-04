@@ -1,6 +1,6 @@
 export const DEFAULT_DERIVATION_PATH = "m/44'/60'/0'/0/0";
 export const NUM_DERIVATION_PATHS_TO_DISPLAY = 5;
-
+export const DERIVATION_PATHS = ["m/44'/60'/0'/0/0", "m/44'/60'/0'/0"];
 export default class DerivationPath {
   static validate(derivationPath) {
     return /^m\/(44)'\/(60)'\/(\d+)'(?:\/|\/(\d+))?(?:\/|\/(\d+))?$/.test(

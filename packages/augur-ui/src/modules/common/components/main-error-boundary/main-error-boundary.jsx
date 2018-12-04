@@ -8,7 +8,7 @@ import Styles from "modules/common/components/main-error-boundary/main-error-bou
 
 export default class MainErrorBoundary extends Component {
   static propTypes = {
-    children: PropTypes.element
+    children: PropTypes.element.isRequired
   };
 
   constructor(props) {

@@ -4,13 +4,20 @@ import {
   getDaysRemaining,
   convertUnixToFormattedDate,
   getHoursRemaining,
-  getMinutesRemaining
+  getMinutesRemaining,
+  getHoursMinusDaysRemaining,
+  getMinutesMinusHoursRemaining
 } from "utils/format-date";
 import classNames from "classnames";
 import Styles from "modules/reporting/components/time-progress-bar/time-progress-bar.styles";
 
-const TimeProgressBar = p => {
-  const { currentTime, startTime, endTime } = p;
+const TimeProgressBar = ({
+  endTime,
+  currentTime,
+  startTime,
+  timePeriodLabel,
+  forking
+}) => {
   const totalHours = (startTime && getHoursRemaining(endTime, startTime)) || 0;
   const hoursLeft =
     (currentTime && getHoursRemaining(endTime, currentTime)) || 0;
@@ -26,9 +33,22 @@ const TimeProgressBar = p => {
           width: `${((totalHours - hoursLeft) / totalHours) * 100}%`
         };
 
-  let timeLeft = `${daysLeft} ${daysLeft === 1 ? "day" : "days"} left`;
-  if (daysLeft === 0)
-    timeLeft = `${hoursLeft} ${hoursLeft === 1 ? "hour" : "hours"} left`;
+  const hoursMinusDays = getHoursMinusDaysRemaining(endTime, currentTime);
+  let timeLeft = `${daysLeft} ${
+    daysLeft === 1 ? "day" : "days"
+  }, ${hoursMinusDays} ${hoursMinusDays === 1 ? "hour" : "hours"} left`;
+
+  if (daysLeft === 0) {
+    const minutesMinusHours = getMinutesMinusHoursRemaining(
+      endTime,
+      currentTime
+    );
+    timeLeft = `${hoursLeft} ${
+      hoursLeft === 1 ? "hour" : "hours"
+    }, ${minutesMinusHours} ${
+      minutesMinusHours === 1 ? "minute" : "minutes"
+    } left`;
+  }
   if (hoursLeft === 0) {
     timeLeft = `${minutesLeft} ${
       minutesLeft === 1 ? "minute" : "minutes"
@@ -60,7 +80,7 @@ const TimeProgressBar = p => {
         )}
       >
         <span data-testid="endTime" className={Styles.TimeProgressBar__endTime}>
-          {p.timePeriodLabel} ends{" "}
+          {timePeriodLabel} ends{" "}
           <span className={Styles.TimeProgressBar__endTimeValue}>
             {" "}
             {formattedDate.formattedSimpleData}{" "}
@@ -68,7 +88,12 @@ const TimeProgressBar = p => {
         </span>
       </div>
       <div className={Styles["TimeProgressBar__dispute-graph"]}>
-        <div className={Styles.TimeProgressBar__graph}>
+        <div
+          className={classNames({
+            [Styles.TimeProgressBar__graph]: !forking,
+            [Styles.TimeProgressBar__graph__forking]: forking
+          })}
+        >
           <div className={Styles["TimeProgressBar__graph-current"]}>
             <div style={currentPeriodStyle} />
           </div>
@@ -85,7 +110,15 @@ TimeProgressBar.propTypes = {
   endTime: PropTypes.number,
   currentTime: PropTypes.number,
   startTime: PropTypes.number,
+  forking: PropTypes.bool,
   timePeriodLabel: PropTypes.string.isRequired
+};
+
+TimeProgressBar.defaultProps = {
+  endTime: null,
+  currentTime: null,
+  startTime: null,
+  forking: false
 };
 
 export default TimeProgressBar;

@@ -28,7 +28,8 @@ export default function(
   maxPrice,
   type,
   sharesFilled,
-  tradeTotalCost
+  tradeTotalCost,
+  settlementFee
 ) {
   // tradeTotalCost is the "orderbook stays the same when this trade gets processed" value, not the maximum possible cost of the trade.
   if (
@@ -60,21 +61,47 @@ export default function(
   const longETH = sharePriceLong.times(numShares).times(marketRange);
   const shortETH = sharePriceShort.times(numShares).times(marketRange);
 
-  const maxTotalTradeCost = side === BUY ? longETH : shortETH;
+  const bnSettlementFee = createBigNumber(settlementFee, 10);
+  const totalShareValue = longETH.plus(shortETH);
+  const winningSettlementCost = totalShareValue.times(bnSettlementFee);
 
-  const longETHPercent = shortETH.dividedBy(maxTotalTradeCost).times(100);
-  const shortETHPercent = longETH.dividedBy(maxTotalTradeCost).times(100);
+  const maxTotalTradeCostNoFee = side === BUY ? longETH : shortETH;
 
-  const potentialEthProfit = side === BUY ? shortETH : longETH;
+  const longETHPercentNoFee = shortETH
+    .dividedBy(maxTotalTradeCostNoFee)
+    .times(100);
+  const shortETHPercentNoFee = longETH
+    .dividedBy(maxTotalTradeCostNoFee)
+    .times(100);
+
+  const longETHpotentialProfit = longETH.minus(winningSettlementCost);
+  const shortETHpotentialProfit = shortETH.minus(winningSettlementCost);
+  const totalETHValueWinnable = side === BUY ? longETH : shortETH;
+  const longETHPercentProfit = longETHpotentialProfit
+    .dividedBy(totalETHValueWinnable)
+    .times(100);
+  const shortETHPercentProfit = shortETHpotentialProfit
+    .dividedBy(totalETHValueWinnable)
+    .times(100);
+
+  const potentialEthProfit =
+    side === BUY ? shortETHpotentialProfit : longETHpotentialProfit;
+
   const potentialEthLoss = side === BUY ? longETH : shortETH;
+
   const potentialProfitPercent =
-    side === BUY ? longETHPercent : shortETHPercent;
-  const potentialLossPercent = side === BUY ? shortETHPercent : longETHPercent;
+    side === BUY ? shortETHPercentProfit : longETHPercentProfit;
+
+  const potentialLossPercent =
+    side === BUY ? shortETHPercentNoFee : longETHPercentNoFee;
+
+  const tradingFees = winningSettlementCost;
 
   return {
     potentialEthProfit,
     potentialEthLoss,
     potentialProfitPercent,
-    potentialLossPercent
+    potentialLossPercent,
+    tradingFees
   };
 }

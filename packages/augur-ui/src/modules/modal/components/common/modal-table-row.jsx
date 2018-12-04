@@ -5,16 +5,16 @@ import noop from "utils/noop";
 
 import Styles from "modules/modal/components/common/common.styles";
 
-const ModalTableRow = p => (
+const ModalTableRow = ({ rowAction, rowNumber, columnLabels, isHeading }) => (
   <button
     className={classNames(Styles.ModalTableRow, {
-      [`${Styles.ModalTableRow__header}`]: p.isHeading
+      [`${Styles.ModalTableRow__header}`]: isHeading
     })}
-    onClick={p.rowAction}
+    onClick={rowAction}
   >
-    {p.columnLabels.map(columnLabel => (
+    {columnLabels.map(columnLabel => (
       <div
-        key={`${columnLabel}${p.rowNumber}`}
+        key={`${columnLabel}${rowNumber}`}
         className={Styles.ModalTableColumn}
       >
         {columnLabel}

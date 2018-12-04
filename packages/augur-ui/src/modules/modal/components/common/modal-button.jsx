@@ -4,9 +4,9 @@ import classNames from "classnames";
 
 import Styles from "modules/modal/components/common/common.styles";
 
-const ModalButton = button => {
+const ModalButton = ({ type, label, action, isDisabled, continueDefault }) => {
   let styleType = `${Styles["ActionButtons__button-purple"]}`;
-  switch (button.type) {
+  switch (type) {
     case "gray":
     case "grey":
       styleType = `${Styles["ActionButtons__button-gray"]}`;
@@ -22,13 +22,13 @@ const ModalButton = button => {
       className={classNames(Styles.ActionButtons__button, {
         [`${styleType}`]: true
       })}
-      disabled={!!button.isDisabled}
+      disabled={!!isDisabled}
       onClick={e => {
-        if (!button.continueDefault) e.preventDefault();
-        button.action();
+        if (!continueDefault) e.preventDefault();
+        action();
       }}
     >
-      {button.label}
+      {label}
     </button>
   );
 };

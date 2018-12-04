@@ -63,8 +63,12 @@
     color: @color-almostblack;
     font-size: @font-size-small;
     line-height: @font-size-large;
-    margin: 0 0 1.5rem;
+    margin: 0;
     padding: 0 4rem;
+
+    &:last-of-type {
+      margin-bottom: 1.5rem;
+    }
 
     > button {
       text-decoration: underline;
@@ -413,8 +417,10 @@ div.ErrorField:focus {
   background-color: @color-white;
   border-radius: 0.32rem;
   color: @color-almostblack;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   max-width: 35rem;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
   padding: 1.5rem 0;
   position: relative;
   text-align: center;
@@ -439,6 +445,7 @@ div.ErrorField:focus {
   max-height: 25rem;
   max-width: 35rem;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 0.5rem 2rem;
   text-align: left;
   width: auto;
@@ -514,6 +521,10 @@ div.ErrorField:focus {
     padding: 1rem;
   }
 
+  .ModalView__content--taller {
+    justify-content: flex-start;
+  }
+
   .ModalContainer > p,
   form.ModalTightForm > p {
     padding: 0 1.5rem;
@@ -558,5 +569,11 @@ div.ErrorField:focus {
     > label {
       margin: 0 1.5rem;
     }
+  }
+}
+
+@media @breakpoint-mobile-extra-small {
+  .ModalDisclaimer__TextBox {
+    max-height: 10rem;
   }
 }

@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 
+import Input from "modules/common/components/input/input";
 import FormStyles from "modules/common/less/form";
 import { SCALAR } from "modules/markets/constants/market-types";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
@@ -21,8 +22,6 @@ export default class MigrateRepForm extends Component {
       .isRequired,
     selectedOutcomeName: PropTypes.string.isRequired,
     accountREP: PropTypes.string.isRequired,
-    forkMigrationTotals: PropTypes.object,
-    isMarketInValid: PropTypes.bool,
     currentBlockNumber: PropTypes.number.isRequired
   };
 
@@ -31,8 +30,7 @@ export default class MigrateRepForm extends Component {
 
     this.state = {
       inputRepAmount: "",
-      inputSelectedOutcome: "",
-      scalarInputChoosen: false
+      inputSelectedOutcome: ""
     };
 
     this.focusTextInput = this.focusTextInput.bind(this);
@@ -99,7 +97,6 @@ export default class MigrateRepForm extends Component {
 
     // outcome with id of 0.5 means invalid
     if (selectedOutcome === "0.5") isInvalid = true;
-    this.state.scalarInputChoosen = false;
 
     this.checkRepAmount(this.state.inputRepAmount, updatedValidations);
 
@@ -122,7 +119,7 @@ export default class MigrateRepForm extends Component {
   validateScalar(value, humanName, min, max, tickSize, isInvalid) {
     const { updateState, validations } = this.props;
     const updatedValidations = { ...validations };
-    this.state.scalarInputChoosen = true;
+    const { inputRepAmount } = this.state;
 
     if (value === "") {
       this.focusTextInput();
@@ -157,7 +154,7 @@ export default class MigrateRepForm extends Component {
       }
     }
 
-    this.checkRepAmount(this.state.inputRepAmount, updatedValidations);
+    this.checkRepAmount(inputRepAmount, updatedValidations);
 
     this.setState({
       inputSelectedOutcome: value
@@ -178,9 +175,16 @@ export default class MigrateRepForm extends Component {
       selectedOutcome,
       selectedOutcomeName,
       validations,
-      getForkMigrationTotals
+      getForkMigrationTotals,
+      currentBlockNumber
     } = this.props;
-
+    const {
+      marketType,
+      minPrice,
+      maxPrice,
+      tickSize,
+      scalarDenomination
+    } = market;
     const { inputSelectedOutcome, inputRepAmount } = this.state;
 
     return (
@@ -207,10 +211,10 @@ export default class MigrateRepForm extends Component {
               validateOutcome={this.validateOutcome}
               market={market}
               getForkMigrationTotals={getForkMigrationTotals}
-              currentBlockNumber={this.props.currentBlockNumber}
+              currentBlockNumber={currentBlockNumber}
               selectedOutcome={selectedOutcome}
             />
-            {market.marketType === SCALAR && (
+            {marketType === SCALAR && (
               <ul className={FormStyles["Form__radio-buttons--per-line-long"]}>
                 <li>
                   <button
@@ -221,9 +225,9 @@ export default class MigrateRepForm extends Component {
                       this.validateScalar(
                         "",
                         "selected outcome",
-                        market.minPrice,
-                        market.maxPrice,
-                        market.tickSize,
+                        minPrice,
+                        maxPrice,
+                        tickSize,
                         false
                       );
                     }}
@@ -234,10 +238,10 @@ export default class MigrateRepForm extends Component {
                     ref={input => {
                       this.textInput = input;
                     }}
-                    min={market.minPrice}
-                    max={market.maxPrice}
-                    step={market.tickSize}
-                    placeholder={market.scalarDenomination}
+                    min={minPrice}
+                    max={maxPrice}
+                    step={tickSize}
+                    placeholder={scalarDenomination}
                     value={inputSelectedOutcome}
                     className={classNames(FormStyles.Form__input, {
                       [`${FormStyles["Form__error--field"]}`]:
@@ -248,9 +252,9 @@ export default class MigrateRepForm extends Component {
                       this.validateScalar(
                         e.target.value,
                         "outcome",
-                        market.minPrice,
-                        market.maxPrice,
-                        market.tickSize,
+                        minPrice,
+                        maxPrice,
+                        tickSize,
                         false
                       );
                     }}
@@ -274,37 +278,27 @@ export default class MigrateRepForm extends Component {
           </label>
           <ul className={FormStyles["Form__radio-buttons--per-line-inline"]}>
             <li>
-              <input
+              <Input
                 id="sr__input--repAmount"
                 type="number"
                 min="0"
-                placeholder="0.0000 REP"
-                value={inputRepAmount}
-                className={classNames(FormStyles.Form__input, {
+                className={classNames({
                   [`${FormStyles["Form__error--field"]}`]:
                     validations.hasOwnProperty("repAmount") &&
                     validations.selectedOutcome
                 })}
-                onChange={e => {
-                  this.validateRepAmount(e.target.value);
-                }}
-              />
-              {selectedOutcomeName &&
-                selectedOutcomeName.length > 0 && (
-                  <div className={Styles.MigrateRepForm__container}>
-                    <button
-                      className={classNames(
-                        FormStyles["button--inline"],
-                        Styles.MigrateRepForm__button
-                      )}
-                      onClick={() => {
-                        this.validateRepAmount(accountREP, true);
-                      }}
-                    >
-                      MAX
-                    </button>
-                  </div>
+                value={inputRepAmount}
+                placeholder="0.0000 REP"
+                onChange={value => this.validateRepAmount(value)}
+                autoComplete="off"
+                maxButton={Boolean(
+                  selectedOutcomeName && selectedOutcomeName.length > 0
                 )}
+                onMaxButtonClick={() =>
+                  this.validateRepAmount(accountREP, true)
+                }
+                darkMaxBtn
+              />
             </li>
             <li>
               {validations.hasOwnProperty("repAmount") &&

@@ -19,7 +19,7 @@ export const loadMarketTradingHistory = (options, callback = logError) => (
 ) => {
   if (options === null || !options.marketId) return callback(null);
   const allOptions = Object.assign(
-    { limit: 10, sortBy: "timestamp", isSortDescending: true },
+    { sortBy: "timestamp", isSortDescending: true },
     options
   );
   augur.augurNode.submitRequest(

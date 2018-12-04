@@ -19,12 +19,10 @@ import toggleCategory from "modules/routes/helpers/toggle-category";
 const PortfolioReportsForkedMarketCard = ({
   buttonAction,
   currentTimestamp,
-  forkedMarketReportingFeesInfo,
   linkType,
   market,
   unclaimedForkEth,
-  unclaimedForkRepStaked,
-  updateModal
+  unclaimedForkRepStaked
 }) => {
   const process = (...arr) =>
     compact(arr).map(label => ({
@@ -95,12 +93,10 @@ const PortfolioReportsForkedMarketCard = ({
 PortfolioReportsForkedMarketCard.propTypes = {
   buttonAction: PropTypes.func.isRequired,
   currentTimestamp: PropTypes.number.isRequired,
-  forkedMarketReportingFeesInfo: PropTypes.object,
-  linkType: PropTypes.string,
+  linkType: PropTypes.string.isRequired,
   market: PropTypes.object.isRequired,
-  unclaimedForkEth: PropTypes.object,
-  unclaimedForkRepStaked: PropTypes.object,
-  updateModal: PropTypes.func
+  unclaimedForkEth: PropTypes.object.isRequired,
+  unclaimedForkRepStaked: PropTypes.object.isRequired
 };
 
 export default PortfolioReportsForkedMarketCard;

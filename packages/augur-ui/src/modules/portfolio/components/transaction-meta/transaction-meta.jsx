@@ -5,9 +5,7 @@ import EtherscanLink from "modules/common/containers/etherscan-link";
 
 import { convertUnixToFormattedDate } from "utils/format-date";
 
-const TransactionMeta = p => {
-  const { meta } = p;
-
+const TransactionMeta = ({ meta }) => {
   if (typeof meta.timestamp === "number") {
     meta.timestamp = convertUnixToFormattedDate(meta.timestamp).full;
   }
@@ -112,9 +110,7 @@ const TransactionMeta = p => {
 };
 
 TransactionMeta.propTypes = {
-  meta: PropTypes.object.isRequired,
-  networkId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-    .isRequired
+  meta: PropTypes.object.isRequired
 };
 
 export default TransactionMeta;

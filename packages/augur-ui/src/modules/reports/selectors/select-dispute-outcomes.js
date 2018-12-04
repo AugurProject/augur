@@ -3,6 +3,7 @@ import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-va
 import { isEmpty } from "lodash";
 import { createBigNumber } from "utils/create-big-number";
 import { MALFORMED_OUTCOME } from "utils/constants";
+import { ZERO } from "modules/trades/constants/numbers";
 
 export default function(
   market,
@@ -62,6 +63,7 @@ export default function(
 
   invalidOutcome.potentialFork =
     !invalidOutcome.tentativeWinning &&
+    createBigNumber(forkThreshold).gt(ZERO) &&
     createBigNumber(
       invalidOutcome.bondSizeCurrent || newOutcomeDisputeBond,
       10
@@ -127,6 +129,7 @@ const populateFromOutcome = (
 
   const potentialFork =
     !stake.tentativeWinning &&
+    createBigNumber(forkThreshold).gt(ZERO) &&
     createBigNumber(stake.bondSizeCurrent || newOutcomeDisputeBond, 10).gt(
       forkThreshold
     );

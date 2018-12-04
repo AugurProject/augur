@@ -50,7 +50,7 @@ class ForkingNotification extends Component {
     return (
       <section className={Styles.ForkingNotification__Container}>
         <header className={Styles.ForkingNotification} style={{ marginLeft }}>
-          <section className={Styles.ForkingNotification__SubContainer}>
+          <section>
             <img
               className={Styles.ForkingNotification__AlertIcon}
               alt="Alert"
@@ -93,6 +93,7 @@ class ForkingNotification extends Component {
             forkReputationGoal={forkReputationGoal}
             finalizeMarket={finalizeMarket}
             isForkingMarketFinalized={isForkingMarketFinalized}
+            marginLeft={marginLeft}
           />
         )}
       </section>
@@ -105,8 +106,12 @@ ForkingNotification.propTypes = {
   universe: PropTypes.object.isRequired,
   currentTime: PropTypes.number.isRequired,
   doesUserHaveRep: PropTypes.bool.isRequired,
-  marginLeft: PropTypes.number.isRequired,
+  marginLeft: PropTypes.number,
   finalizeMarket: PropTypes.func.isRequired
+};
+
+ForkingNotification.defaultProps = {
+  marginLeft: 0
 };
 
 export default ForkingNotification;

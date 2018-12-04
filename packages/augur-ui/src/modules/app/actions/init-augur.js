@@ -4,6 +4,7 @@ import {
   updateConnectionStatus,
   updateAugurNodeConnectionStatus
 } from "modules/app/actions/update-connection";
+import { getAugurNodeNetworkId } from "modules/app/actions/get-augur-node-network-id";
 import { updateContractAddresses } from "modules/contracts/actions/update-contract-addresses";
 import {
   updateFunctionsAPI,
@@ -28,8 +29,9 @@ import {
   MODAL_DISCLAIMER,
   MODAL_NETWORK_DISABLED
 } from "modules/modal/constants/modal-types";
-import { DISCLAIMER_SEEN } from "src/modules/modal/constants/local-storage-keys";
-import { windowRef } from "src/utils/window-ref";
+import { DISCLAIMER_SEEN } from "modules/modal/constants/local-storage-keys";
+import { windowRef } from "utils/window-ref";
+import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
 
 const { ACCOUNT_TYPES } = AugurJS.augur.rpc.constants;
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
@@ -170,7 +172,7 @@ export function connectAugur(
   callback = logError
 ) {
   return (dispatch, getState) => {
-    const { modal } = getState();
+    const { modal, loginAccount } = getState();
     AugurJS.connect(
       env,
       (err, ConnectionInfo) => {
@@ -183,17 +185,24 @@ export function connectAugur(
         dispatch(updateFunctionsAPI(ethereumNodeConnectionInfo.abi.functions));
         dispatch(updateEventsAPI(ethereumNodeConnectionInfo.abi.events));
         dispatch(updateAugurNodeConnectionStatus(true));
+        dispatch(getAugurNodeNetworkId());
         dispatch(registerTransactionRelay());
         let universeId =
           env.universe ||
           AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()]
             .Universe;
-        if (windowRef.localStorage && windowRef.localStorage.getItem) {
-          const storedUniverseId = windowRef.localStorage.getItem(
-            "selectedUniverse"
-          );
-          universeId =
-            storedUniverseId === null ? universeId : storedUniverseId;
+        if (
+          windowRef.localStorage &&
+          windowRef.localStorage.getItem &&
+          loginAccount.address
+        ) {
+          const storedUniverseId = JSON.parse(
+            windowRef.localStorage.getItem(loginAccount.address)
+          ).selectedUniverse[
+            getState().connection.augurNodeNetworkId ||
+              AugurJS.augur.rpc.getNetworkID()
+          ];
+          universeId = !storedUniverseId ? universeId : storedUniverseId;
         }
 
         const doIt = () => {
@@ -213,12 +222,8 @@ export function connectAugur(
               _universe: universeId
             },
             (err, data) => {
-              if (
-                data === false &&
-                windowRef.localStorage &&
-                windowRef.localStorage.removeItem
-              ) {
-                windowRef.localStorage.removeItem("selectedUniverse");
+              if (data === false) {
+                dispatch(setSelectedUniverse());
                 location.reload();
               }
 

@@ -9,17 +9,17 @@ import { MODAL_REVIEW } from "modules/modal/constants/modal-types";
 
 import Styles from "modules/modal/components/common/common.styles";
 // if this is a review modal, then apply the overall wrapper css, otherwise it should be wrapped already.
-const ModalReview = p => (
+const ModalReview = ({ title, items, buttons, description, type }) => (
   <section
     className={classNames({
-      [`${Styles.ModalContainer}`]: p.type === MODAL_REVIEW
+      [`${Styles.ModalContainer}`]: type === MODAL_REVIEW
     })}
   >
-    <h1>{p.title}</h1>
-    <ModalReceipt items={p.items} />
-    {p.description.length > 0 &&
-      p.description.map(text => <ModalDescription text={text} key={text} />)}
-    <ModalActions buttons={p.buttons} />
+    <h1>{title}</h1>
+    <ModalReceipt items={items} />
+    {description.length > 0 &&
+      description.map(text => <ModalDescription text={text} key={text} />)}
+    <ModalActions buttons={buttons} />
   </section>
 );
 

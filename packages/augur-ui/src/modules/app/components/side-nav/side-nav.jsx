@@ -4,8 +4,9 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 
 import makePath from "modules/routes/helpers/make-path";
+import ConnectAccount from "modules/auth/containers/connect-account";
+import GasPriceEdit from "modules/app/containers/gas-price-edit";
 
-import { Notifications } from "modules/common/components/icons";
 import { MARKETS } from "modules/routes/constants/views";
 import Styles from "modules/app/components/side-nav/side-nav.styles";
 
@@ -13,13 +14,15 @@ export default class SideNav extends Component {
   static propTypes = {
     defaultMobileClick: PropTypes.func.isRequired,
     isMobile: PropTypes.bool.isRequired,
-    isLogged: PropTypes.bool,
+    isLogged: PropTypes.bool.isRequired,
     menuData: PropTypes.array.isRequired,
     mobileShow: PropTypes.bool.isRequired,
-    toggleNotifications: PropTypes.func.isRequired,
-    unseenCount: PropTypes.number.isRequired,
     stats: PropTypes.array.isRequired,
     currentBasePath: PropTypes.string
+  };
+
+  static defaultProps = {
+    currentBasePath: null
   };
 
   constructor() {
@@ -78,8 +81,6 @@ export default class SideNav extends Component {
     const {
       isMobile,
       isLogged,
-      toggleNotifications,
-      unseenCount,
       defaultMobileClick,
       menuData,
       mobileShow,
@@ -87,7 +88,8 @@ export default class SideNav extends Component {
     } = this.props;
 
     const accessFilteredMenu = menuData.filter(
-      item => !(item.requireLogin && !isLogged)
+      item =>
+        !(item.requireLogin && !isLogged) && !(item.onlyForMobile && !isMobile)
     );
 
     return (
@@ -96,79 +98,74 @@ export default class SideNav extends Component {
           [`${Styles.mobileShow}`]: mobileShow
         })}
       >
-        <ul className={Styles.SideNav__nav}>
-          {accessFilteredMenu.map((item, index) => {
-            const Icon = item.icon;
-            const selected = !isMobile && this.isCurrentItem(item);
+        <div className={Styles.SideNav__container}>
+          <ul className={Styles.SideNav__nav}>
+            {accessFilteredMenu.map((item, index) => {
+              const Icon = item.icon;
+              const selected = !isMobile && this.isCurrentItem(item);
 
-            const linkClickHandler = () => {
-              if (isMobile) {
-                if (item.mobileClick) {
-                  item.mobileClick();
+              const linkClickHandler = () => {
+                if (isMobile) {
+                  if (item.mobileClick) {
+                    item.mobileClick();
+                  } else {
+                    defaultMobileClick();
+                  }
                 } else {
-                  defaultMobileClick();
+                  this.itemClick(item);
                 }
-              } else {
-                this.itemClick(item);
-              }
-            };
+              };
 
-            return (
-              <li
-                className={classNames(
-                  { [Styles["SideNav__item--selected"]]: selected },
-                  item.disabled ? Styles.disabled : ""
-                )}
-                key={item.title}
-                id="side-nav-items"
-              >
-                <Link
-                  to={item.route ? makePath(item.route) : null}
-                  onClick={linkClickHandler}
-                  disabled={item.disabled}
+              return (
+                <li
+                  className={classNames(
+                    { [Styles["SideNav__item--selected"]]: selected },
+                    item.disabled ? Styles.disabled : ""
+                  )}
+                  key={item.title}
+                  id="side-nav-items"
                 >
-                  <Icon />
-                  <span className={Styles["item-title"]}>{item.title}</span>
-                </Link>
-              </li>
-            );
-          })}
-          {isLogged &&
-            isMobile && (
-              <li key="notifications">
-                <button
-                  onClick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleNotifications();
-                  }}
-                >
-                  {Notifications(unseenCount)}
-                  <span className="item-title">Notifications</span>
-                </button>
-              </li>
-            )}
-        </ul>
-        {isLogged &&
-          isMobile && (
-            <div className={Styles.SideNav__amt}>
-              <div className={Styles.SideNav__nav__separator} />
-              <div className={Styles.SideName__placement}>
-                <div className={Styles["SideNav__stat-label"]}>
-                  ETH
-                  <span className={Styles["SideNav__stat-value"]}>
-                    {stats[0].totalRealEth.value.formatted}
-                  </span>
-                </div>
-                <div className={Styles["SideNav__stat-label"]}>
-                  REP
-                  <span className={Styles["SideNav__stat-value"]}>
-                    {stats[0].totalRep.value.formatted}
-                  </span>
+                  <Link
+                    to={item.route ? makePath(item.route) : null}
+                    onClick={linkClickHandler}
+                    disabled={item.disabled}
+                  >
+                    <Icon />
+                    <span className={Styles["item-title"]}>{item.title}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          {isLogged && (
+            <div className={Styles.SideNav__hideForMidScreens}>
+              <GasPriceEdit />
+              <div className={Styles.SideNav__amt}>
+                <div className={Styles.SideNav__nav__separator} />
+                <div className={Styles.SideName__placement}>
+                  <div className={Styles["SideNav__stat-label"]}>
+                    {stats[1].totalPLMonth.label}
+                    <span className={Styles["SideNav__stat-value"]}>
+                      {stats[1].totalPLMonth.value.formatted}
+                      <span className={Styles["SideNav__stat-unit"]}>ETH</span>
+                    </span>
+                  </div>
+                  <div
+                    className={Styles["SideNav__stat-label"]}
+                    style={{ paddingBottom: "0" }}
+                  >
+                    {stats[1].totalPLDay.label}
+                    <span className={Styles["SideNav__stat-value"]}>
+                      {stats[1].totalPLDay.value.formatted}
+                      <span className={Styles["SideNav__stat-unit"]}>ETH</span>
+                    </span>
+                  </div>
                 </div>
               </div>
+              <ConnectAccount />
             </div>
           )}
+        </div>
       </aside>
     );
   }

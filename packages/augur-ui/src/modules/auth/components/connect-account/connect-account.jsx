@@ -12,8 +12,14 @@ import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
 
 export default class ConnectAccount extends Component {
   static propTypes = {
-    isLogged: PropTypes.bool,
-    address: PropTypes.string
+    isLogged: PropTypes.bool.isRequired,
+    address: PropTypes.string,
+    className: PropTypes.string
+  };
+
+  static defaultProps = {
+    address: "",
+    className: undefined
   };
 
   constructor(props) {
@@ -67,20 +73,23 @@ export default class ConnectAccount extends Component {
   }
 
   render() {
-    const { isLogged, address } = this.props;
+    const { isLogged, address, className } = this.props;
     const s = this.state;
 
     return (
       <div
-        className={classNames(Styles.ConnectAccount, {
-          [Styles.ConnectAccount__selected]: s.dropdownOpen
+        className={classNames(Styles.ConnectAccount, className, {
+          [Styles.ConnectAccount__selected]: s.dropdownOpen,
+          [Styles.ConnectAccountLoggedIn]: isLogged
         })}
         ref={connectAccount => {
           this.connectAccount = connectAccount;
         }}
       >
         <div
-          className={Styles.ConnectAccount__container}
+          className={classNames(Styles.ConnectAccount__container, {
+            [Styles.ConnectAccount__containerLoggedIn]: isLogged
+          })}
           onClick={this.toggleDropdown}
           role="button"
           tabIndex="-1"
@@ -98,10 +107,14 @@ export default class ConnectAccount extends Component {
               {isLogged ? "Connected" : "Disconnected"}
             </div>
             <div className={Styles.ConnectAccount__title}>
-              {isLogged ? formatAddress(address || "") : "Connect A Wallet"}
+              {isLogged ? formatAddress(address) : "Connect A Wallet"}
             </div>
           </div>
-          <div className={Styles.ConnectAccount__arrow}>
+          <div
+            className={classNames(Styles.ConnectAccount__arrow, {
+              [Styles.ConnectAccount__arrowHide]: isLogged
+            })}
+          >
             <ChevronFlip
               pointDown={s.dropdownOpen}
               stroke="#fff"

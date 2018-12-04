@@ -8,7 +8,7 @@ import ConnectAccount from "modules/auth/containers/connect-account";
 import GasPriceEdit from "modules/app/containers/gas-price-edit";
 
 import makePath from "modules/routes/helpers/make-path";
-import { CATEGORIES } from "modules/routes/constants/views";
+import { MARKETS } from "modules/routes/constants/views";
 import Styles from "modules/app/components/top-bar/top-bar.styles";
 
 const TopBar = props => (
@@ -37,7 +37,11 @@ const TopBar = props => (
         <div
           className={classNames(
             Styles.TopBar__stats,
-            Styles.TopBar__performance
+            Styles.TopBar__performance,
+            Styles.TopBar__hideForSmallScreens,
+            {
+              [Styles.TopBar__leftBorder]: props.isMobileSmall
+            }
           )}
         >
           <div
@@ -71,8 +75,14 @@ const TopBar = props => (
         </div>
       </div>
     )}
-    {props.isLogged && <GasPriceEdit />}
-    <ConnectAccount />
+    {props.isLogged && (
+      <GasPriceEdit className={Styles.TopBar__hideForSmallScreens} />
+    )}
+    <ConnectAccount
+      className={classNames({
+        [Styles.TopBar__hideForSmallScreens]: props.isLogged
+      })}
+    />
     <div
       className={classNames(Styles.TopBar__notifications, {
         [Styles.TopBar__notificationsDark]: props.notificationsVisible,
@@ -101,7 +111,7 @@ const TopBar = props => (
       </div>
     </div>
     <span className={Styles["TopBar__logo-text"]}>
-      <Link to={makePath(CATEGORIES)}>Augur</Link>
+      <Link to={makePath(MARKETS)}>Augur</Link>
     </span>
   </header>
 );
@@ -111,7 +121,8 @@ TopBar.propTypes = {
   stats: PropTypes.array.isRequired,
   unseenCount: PropTypes.number.isRequired,
   toggleNotifications: PropTypes.func.isRequired,
-  notificationsVisible: PropTypes.bool.isRequired
+  notificationsVisible: PropTypes.bool.isRequired,
+  isMobileSmall: PropTypes.bool.isRequired
 };
 
 export default TopBar;

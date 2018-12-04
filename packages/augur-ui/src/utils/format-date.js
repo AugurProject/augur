@@ -156,3 +156,21 @@ export function getMinutesRemaining(endUnixTimestamp, startUnixTimestamp) {
       MINUTES_IN_A_HOUR
   );
 }
+
+export function getHoursMinusDaysRemaining(
+  endUnixTimestamp,
+  startUnixTimestamp
+) {
+  const getDays = getDaysRemaining(endUnixTimestamp, startUnixTimestamp);
+  const hours = getDays * 24;
+  return getHoursRemaining(endUnixTimestamp, startUnixTimestamp) - hours;
+}
+
+export function getMinutesMinusHoursRemaining(
+  endUnixTimestamp,
+  startUnixTimestamp
+) {
+  const getHours = getHoursRemaining(endUnixTimestamp, startUnixTimestamp);
+  const hours = getHours * 60;
+  return getMinutesRemaining(endUnixTimestamp, startUnixTimestamp) - hours;
+}

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import MarketPreview from "modules/market/components/market-preview/market-preview";
+import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
+import MarketPreview from "modules/market/containers/market-preview";
 import Paginator from "modules/common/components/paginator/paginator";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import { TYPE_TRADE } from "modules/markets/constants/link-types";
@@ -21,17 +22,30 @@ export default class MarketsList extends Component {
     filteredMarkets: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
-    loadMarketsInfoIfNotLoaded: PropTypes.func,
+    loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
     paginationPageParam: PropTypes.string,
     linkType: PropTypes.string,
-    collectMarketCreatorFees: PropTypes.func,
-    isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool.isRequired,
     pendingLiquidityOrders: PropTypes.object,
     nullMessage: PropTypes.string,
     addNullPadding: PropTypes.bool,
     style: PropTypes.object,
     showDisputingCard: PropTypes.bool,
-    outcomes: PropTypes.object
+    outcomes: PropTypes.object,
+    showOutstandingReturns: PropTypes.bool
+  };
+
+  static defaultProps = {
+    testid: null,
+    linkType: TYPE_TRADE,
+    paginationPageParam: PAGINATION_PARAM_NAME,
+    nullMessage: "No Markets Available",
+    pendingLiquidityOrders: {},
+    addNullPadding: false,
+    style: null,
+    showDisputingCard: false,
+    outcomes: null,
+    showOutstandingReturns: false
   };
 
   constructor(props) {
@@ -60,9 +74,10 @@ export default class MarketsList extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     const { filteredMarkets, loadMarketsInfoIfNotLoaded } = this.props;
+    const { lowerBound, boundedLength, marketIdsMissingInfo } = this.state;
     if (
-      this.state.lowerBound !== nextState.lowerBound ||
-      this.state.boundedLength !== nextState.boundedLength ||
+      lowerBound !== nextState.lowerBound ||
+      boundedLength !== nextState.boundedLength ||
       !isEqual(filteredMarkets, nextProps.filteredMarkets)
     ) {
       this.setMarketIDsMissingInfo(
@@ -72,9 +87,7 @@ export default class MarketsList extends Component {
       );
     }
 
-    if (
-      !isEqual(this.state.marketIdsMissingInfo, nextState.marketIdsMissingInfo)
-    ) {
+    if (!isEqual(marketIdsMissingInfo, nextState.marketIdsMissingInfo)) {
       if (loadMarketsInfoIfNotLoaded) {
         this.loadMarketsInfoIfNotLoaded(nextState.marketIdsMissingInfo);
       }
@@ -106,7 +119,6 @@ export default class MarketsList extends Component {
   // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
   render() {
     const {
-      collectMarketCreatorFees,
       filteredMarkets,
       history,
       isLogged,
@@ -122,7 +134,8 @@ export default class MarketsList extends Component {
       style,
       showDisputingCard,
       outcomes,
-      linkType
+      linkType,
+      showOutstandingReturns
     } = this.props;
     const s = this.state;
 
@@ -157,12 +170,12 @@ export default class MarketsList extends Component {
                   toggleFavorite={toggleFavorite}
                   location={location}
                   history={history}
-                  collectMarketCreatorFees={collectMarketCreatorFees}
                   isMobile={isMobile}
-                  linkType={linkType || TYPE_TRADE}
+                  linkType={linkType}
                   id={market.id}
                   testid={testid}
                   pendingLiquidityOrders={pendingLiquidityOrders}
+                  showOutstandingReturns={showOutstandingReturns}
                 />
               );
             }
@@ -172,7 +185,7 @@ export default class MarketsList extends Component {
         ) : (
           <NullStateMessage
             addNullPadding={addNullPadding}
-            message={nullMessage || "No Markets Available"}
+            message={nullMessage}
           />
         )}
         {!!marketsLength &&
@@ -183,7 +196,7 @@ export default class MarketsList extends Component {
               location={location}
               history={history}
               setSegment={this.setSegment}
-              pageParam={paginationPageParam || "page"}
+              pageParam={paginationPageParam}
             />
           )}
       </article>

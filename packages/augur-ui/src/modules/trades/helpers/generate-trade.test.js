@@ -28,10 +28,11 @@ describe("modules/trades/helpers/generate-trade.js", () => {
         roundedValue: 0,
         value: 0
       },
-      potentialEthProfit: formatEther(7500),
+      potentialEthProfit: formatEther("7499.49999999403477"),
       potentialEthLoss: formatEther(-2500),
-      potentialProfitPercent: formatPercent(-300),
+      potentialProfitPercent: formatPercent("-299.9799999997613908"),
       potentialLossPercent: formatPercent(100),
+      tradingFees: formatEther("0.50000000596523"),
       side: "buy",
       shareCost: formatEther(0),
       sharesFilled: 5000,

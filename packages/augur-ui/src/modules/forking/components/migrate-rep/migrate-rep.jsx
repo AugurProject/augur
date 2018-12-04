@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet";
 
 import speedomatic from "speedomatic";
 import { formatGasCostToEther } from "utils/format-number";
-import MarketPreview from "modules/market/components/market-preview/market-preview";
+import MarketPreview from "modules/market/containers/market-preview";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import MigrateRepForm from "modules/forking/components/migrate-rep-form/migrate-rep-form";
 import MigrateRepConfirm from "modules/forking/components/migrate-rep-confirm/migrate-rep-confirm";
@@ -20,10 +20,10 @@ export default class MigrateRep extends Component {
     getForkMigrationTotals: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     isConnected: PropTypes.bool.isRequired,
-    isLogged: PropTypes.bool,
+    isLogged: PropTypes.bool.isRequired,
     isMarketLoaded: PropTypes.bool.isRequired,
     loadFullMarket: PropTypes.func.isRequired,
-    location: PropTypes.object,
+    location: PropTypes.object.isRequired,
     market: PropTypes.object.isRequired,
     marketId: PropTypes.string.isRequired,
     submitMigrateREP: PropTypes.func.isRequired,
@@ -153,8 +153,6 @@ export default class MigrateRep extends Component {
             )}
             {s.currentStep === 1 && (
               <MigrateRepConfirm
-                market={market}
-                isMarketInValid={s.isMarketInValid}
                 selectedOutcomeName={s.selectedOutcomeName}
                 repAmount={s.repAmount}
                 gasEstimate={s.gasEstimate}

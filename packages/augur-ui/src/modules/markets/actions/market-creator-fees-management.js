@@ -5,6 +5,8 @@ import speedomatic from "speedomatic";
 import { augur } from "services/augurjs";
 import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
+import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { updateNotification } from "modules/notifications/actions/notifications";
 
 export const UPDATE_MARKET_CREATOR_FEES = "UPDATE_MARKET_CREATOR_FEES";
 
@@ -74,6 +76,8 @@ export const collectMarketCreatorFees = (
             [marketMailboxAddress, "latest"],
             (err, attoEthBalance) => {
               if (err) return callback(err);
+              if (attoEthBalance === null)
+                return callback("No market mailbox balance found");
               const bnAttoEthBalance = speedomatic.bignum(attoEthBalance);
               const combined = speedomatic.unfix(
                 bnAttoEthBalance.plus(bnCashBalance),
@@ -92,6 +96,13 @@ export const collectMarketCreatorFees = (
                     dispatch(loadMarketsInfo([marketId]));
                     dispatch(loadUnclaimedFees([marketId]));
                     callback(null, combined);
+                    dispatch(
+                      updateNotification(res.hash, {
+                        id: res.hash,
+                        status: "Confirmed",
+                        timestamp: selectCurrentTimestampInSeconds(getState())
+                      })
+                    );
                   },
                   onFailed: err => callback(err)
                 });

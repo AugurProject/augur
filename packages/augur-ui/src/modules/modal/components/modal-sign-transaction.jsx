@@ -5,13 +5,13 @@ import ModalActions from "modules/modal/components/common/modal-actions";
 
 import Styles from "modules/modal/components/common/common.styles";
 
-const ModalSignTransaction = p => (
+const ModalSignTransaction = ({ title, description, buttons }) => (
   <section className={Styles.ModalContainer}>
-    <h1>{p.title}</h1>
-    {p.description.map(text => (
+    <h1>{title}</h1>
+    {description.map(text => (
       <ModalDescription text={text} key={text} />
     ))}
-    {p.buttons && p.buttons.length && <ModalActions buttons={p.buttons} />}
+    {buttons.length && <ModalActions buttons={buttons} />}
   </section>
 );
 

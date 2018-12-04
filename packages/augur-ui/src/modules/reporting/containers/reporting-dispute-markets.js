@@ -13,13 +13,20 @@ import { selectMarketDisputeOutcomes } from "modules/reports/selectors/select-ma
 const mapStateToProps = (state, { history }) => {
   const PAGINATION_COUNT = 10;
   const loginAccount = selectLoginAccount(state);
+<<<<<<< HEAD
   const disputeOutcomes = selectMarketDisputeOutcomes(state) || {};
   const disputableMarkets = selectMarketsInDispute(state) || [];
   const upcomingDisputableMarkets = selectMarketsAwaitingDispute(state) || [];
 
+=======
+  const disputeOutcomes = marketDisputeOutcomes() || {};
+  const disputableMarkets = disputeMarkets() || [];
+  const upcomingDisputableMarkets = awaitingDisputeMarkets() || [];
+  const { isForking, forkEndTime, forkingMarket, id } = state.universe;
+>>>>>>> 8d5e9bad026ab4c888953d898a80e161928a1298
   return {
     isLogged: state.authStatus.isLogged,
-    isConnected: state.connection.isConnected && state.universe.id != null,
+    isConnected: state.connection.isConnected && id != null,
     doesUserHaveRep: loginAccount.rep.value > 0 || !state.authStatus.isLogged,
     markets: disputableMarkets,
     showPagination: disputableMarkets.length > PAGINATION_COUNT,
@@ -32,9 +39,9 @@ const mapStateToProps = (state, { history }) => {
     navigateToAccountDepositHandler: () =>
       history.push(makePath(ACCOUNT_DEPOSIT)),
     outcomes: disputeOutcomes,
-    isForking: state.universe.isForking || false,
-    forkEndTime: state.universe.forkEndTime,
-    forkingMarketId: state.universe.forkingMarket
+    isForking,
+    forkEndTime,
+    forkingMarketId: forkingMarket
   };
 };
 

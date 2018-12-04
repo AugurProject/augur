@@ -25,6 +25,11 @@ export default class MarketPositionsList extends Component {
     cancelOrphanedOrder: PropTypes.func.isRequired
   };
 
+  static defaultProps = {
+    openOrders: [],
+    numCompleteSets: null
+  };
+
   constructor(props) {
     super(props);
 
@@ -45,7 +50,7 @@ export default class MarketPositionsList extends Component {
     } = this.props;
     const s = this.state;
 
-    const hasOrders = openOrders.length > 0;
+    const hasOrders = openOrders.length > 0 || orphanedOrders.length > 0;
 
     return (
       <section className={Styles.MarketPositionsList}>

@@ -8,9 +8,12 @@ import {
   clearNotifications
 } from "modules/notifications/actions/notifications";
 
-const mapStateToProps = state => ({
-  notifications: selectInfoNotificationsAndSeenCount(state)
-});
+const mapStateToProps = state => {
+  const { notifications } = selectInfoNotificationsAndSeenCount(state);
+  return {
+    notifications
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   updateNotification: (id, notification) =>

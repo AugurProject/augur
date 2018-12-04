@@ -10,7 +10,7 @@ import {
   formatGasCostToEther,
   formatRep
 } from "utils/format-number";
-import MarketPreview from "modules/market/components/market-preview/market-preview";
+import MarketPreview from "modules/market/containers/market-preview";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import ReportingReportForm from "modules/reporting/components/reporting-report-form/reporting-report-form";
 import ReportingReportConfirm from "modules/reporting/components/reporting-report-confirm/reporting-report-confirm";
@@ -23,12 +23,12 @@ export default class ReportingReport extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     isConnected: PropTypes.bool.isRequired,
-    isLogged: PropTypes.bool,
+    isLogged: PropTypes.bool.isRequired,
     isMarketLoaded: PropTypes.bool.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
     isDesignatedReporter: PropTypes.bool.isRequired,
     loadFullMarket: PropTypes.func.isRequired,
-    location: PropTypes.object,
+    location: PropTypes.object.isRequired,
     market: PropTypes.object.isRequired,
     marketId: PropTypes.string.isRequired,
     submitInitialReport: PropTypes.func.isRequired,

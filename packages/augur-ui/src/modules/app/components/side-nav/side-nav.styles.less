@@ -86,11 +86,32 @@
     svg.nav-portfolio-icon {
       transform: translateY(0.5rem) scale(0.95);
     }
+
+    svg.nav-logout-icon {
+      height: 1.2rem;
+      margin-left: 0.2rem;
+      width: 1.2rem;
+    }
   }
 }
 
 .SideNav__item--selected {
   background: @color-lightpurple;
+}
+
+.SideNav__container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: min-content;
+  overflow: auto;
+}
+
+.SideNav__hideForMidScreens {
+  display: none;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: flex-end;
 }
 
 @media @breakpoint-mobile {
@@ -113,13 +134,14 @@
   .SideNav__nav__separator {
     background: @color-grayish-purple;
     height: 1px;
-    margin: 1rem 0 0.5rem;
-    width: 12.125rem;
   }
 
   .SideNav__stat-label {
-    color: @color-white;
-    font-weight: 500;
+    color: @color-lightergray;
+    display: flex;
+    flex-direction: row;
+    font-size: @font-size-extra-small;
+    font-weight: 400;
     max-width: 100%;
     overflow: hidden;
     padding-bottom: 0.5rem;
@@ -128,24 +150,36 @@
 
   .SideNav__stat-value {
     color: @color-white;
-    font-weight: 400;
-    padding-left: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    font-size: @font-size-medium;
+    font-weight: 700;
+    justify-content: flex-end;
   }
 
   .SideName__placement {
-    padding: 1.5rem;
+    padding: 16px 24px;
+  }
+
+  .SideNav__stat-unit {
+    align-items: flex-end;
+    display: flex;
+    font-size: @font-size-extra-small;
+    margin-bottom: 2px;
+    margin-left: 0.25rem;
   }
 
   .SideNav__amt {
     align-self: flex-end;
+    border-bottom: 0.0625rem solid @color-lightpurple;
+    display: none;
     font-size: 0.925rem;
-    margin-top: auto;
     width: 100%;
   }
 
   .SideNav__nav {
     border: none;
-    padding-left: 1rem;
     padding-top: 10px;
 
     > li {
@@ -158,7 +192,7 @@
         flex-wrap: nowrap;
         font-size: 0.75rem;
         justify-content: flex-start;
-        padding: 1rem 0;
+        padding: 1rem;
 
         &:hover { background: none; }
 
@@ -174,6 +208,26 @@
           text-align: left;
           width: auto;
         }
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-mid {
+  .SideNav__hideForMidScreens {
+    display: flex;
+  }
+
+  .SideNav__amt {
+    display: block;
+  }
+}
+
+@media @breakpoint-mobile-small-height {
+  .SideNav__nav {
+    > li {
+      a {
+        padding: 0.75rem 0;
       }
     }
   }

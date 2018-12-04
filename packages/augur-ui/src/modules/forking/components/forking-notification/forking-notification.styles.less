@@ -9,15 +9,11 @@
 .ForkingNotification {
   background: @color-pink;
   height: 100%;
-  padding-left: 14rem;
+  padding-left: 13.6rem;
 
   section {
     display: flex;
   }
-}
-
-.ForkingNotification__SubContainer {
-  padding-left: 5em;
 }
 
 .ForkingNotification__message {
@@ -57,7 +53,7 @@
 
 @media @breakpoint-mobile {
   .ForkingNotification {
-    padding: 1.5em 1em;
+    padding: 2rem 1.5em 0.5em;
   }
 
   .ForkingNotification__SubContainer {
@@ -78,5 +74,12 @@
     margin-right: 0.5em;
     margin-top: auto;
     text-transform: uppercase;
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .ForkingNotification__message {
+    margin: 0 0.5em;
+    padding: 0.05em;
   }
 }

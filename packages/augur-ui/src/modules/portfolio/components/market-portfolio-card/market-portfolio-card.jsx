@@ -21,10 +21,9 @@ import MarketPortfolioCardFooter from "modules/portfolio/components/market-portf
 
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
-    buttonText: PropTypes.string,
-    claimTradingProceeds: PropTypes.func,
+    claimTradingProceeds: PropTypes.func.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
-    isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool.isRequired,
     linkType: PropTypes.string,
     market: PropTypes.object.isRequired,
     positionsDefault: PropTypes.bool,
@@ -35,16 +34,19 @@ export default class MarketPortfolioCard extends Component {
   };
 
   static defaultProps = {
-    positionsDefault: true
+    positionsDefault: true,
+    linkType: null
   };
 
   constructor(props) {
     super(props);
+    const { positionsDefault, orphanedOrders } = props;
     this.state = {
       tableOpen: {
-        myPositions: this.props.positionsDefault,
-        openOrders: props.orphanedOrders.length > 0 // open if orphaned orders are present
-      }
+        myPositions: positionsDefault,
+        openOrders: orphanedOrders.length > 0 // open if orphaned orders are present
+      },
+      claimClicked: false
     };
   }
 
@@ -54,20 +56,26 @@ export default class MarketPortfolioCard extends Component {
   }
 
   toggleTable(tableKey) {
+    const { tableOpen } = this.state;
     this.setState({
       tableOpen: {
-        ...this.state.tableOpen,
-        [tableKey]: !this.state.tableOpen[tableKey]
+        ...tableOpen,
+        [tableKey]: !tableOpen[tableKey]
       }
     });
   }
 
   finalizeMarket = () => {
-    this.props.finalizeMarket(this.props.market.id);
+    const { finalizeMarket, market } = this.props;
+    finalizeMarket(market.id);
   };
 
   claimProceeds = () => {
-    this.props.claimTradingProceeds(this.props.market.id);
+    const { claimTradingProceeds, market } = this.props;
+    this.setState({ claimClicked: true });
+    claimTradingProceeds(market.id, () => {
+      this.setState({ claimClicked: false });
+    });
   };
 
   render() {
@@ -79,6 +87,7 @@ export default class MarketPortfolioCard extends Component {
       orphanedOrders,
       cancelOrphanedOrder
     } = this.props;
+    const { tableOpen, claimClicked } = this.state;
     const myPositionsSummary = getValue(market, "myPositionsSummary");
     const myPositionOutcomes = getValue(market, "outcomes");
 
@@ -172,12 +181,12 @@ export default class MarketPortfolioCard extends Component {
             >
               <h1 className={Styles.MarketCard__tableheading}>My Positions</h1>
               <div className={Styles.MarketCard__tabletoggle}>
-                <ChevronFlip pointDown={!this.state.tableOpen.myPositions} />
+                <ChevronFlip pointDown={!tableOpen.myPositions} />
               </div>
             </button>
           )}
           <div className={PositionStyles.MarketPositionsList__table}>
-            {this.state.tableOpen.myPositions &&
+            {tableOpen.myPositions &&
               (myPositionOutcomes || []).filter(outcome => outcome.position)
                 .length > 0 && (
                 <ul
@@ -244,12 +253,12 @@ export default class MarketPortfolioCard extends Component {
                 </ul>
               )}
             <div className={PositionStyles["MarketPositionsList__table-body"]}>
-              {this.state.tableOpen.myPositions &&
+              {tableOpen.myPositions &&
                 (myPositionOutcomes || [])
                   .filter(outcome => outcome.position)
                   .map(outcome => (
                     <MarketPositionsListPosition
-                      key={outcome.id + outcome.marketId}
+                      key={`${outcome.id}${outcome.marketId}`}
                       outcomeName={outcome.outcome || outcome.name}
                       position={outcome.position}
                       openOrders={
@@ -281,15 +290,16 @@ export default class MarketPortfolioCard extends Component {
               >
                 <h1 className={Styles.MarketCard__tableheading}>Open Orders</h1>
                 <div className={Styles.MarketCard__tabletoggle}>
-                  <ChevronFlip pointDown={!this.state.tableOpen.openOrders} />
+                  <ChevronFlip pointDown={!tableOpen.openOrders} />
                 </div>
               </button>
             )}
             <div className={PositionStyles.MarketPositionsList__table}>
-              {this.state.tableOpen.openOrders &&
-                (myPositionOutcomes || []).filter(
+              {tableOpen.openOrders &&
+                ((myPositionOutcomes || []).filter(
                   outcome => outcome.userOpenOrders.length > 0
-                ).length > 0 && (
+                ).length > 0 ||
+                  orphanedOrders.length > 0) && (
                   <ul
                     className={classNames(
                       PositionStyles["MarketPositionsList__table-header"],
@@ -345,7 +355,7 @@ export default class MarketPortfolioCard extends Component {
               <div
                 className={PositionStyles["MarketPositionsList__table-body"]}
               >
-                {this.state.tableOpen.openOrders &&
+                {tableOpen.openOrders &&
                   (myPositionOutcomes || [])
                     .filter(outcome => outcome.userOpenOrders)
                     .map(outcome =>
@@ -361,7 +371,7 @@ export default class MarketPortfolioCard extends Component {
                         />
                       ))
                     )}
-                {this.state.tableOpen.openOrders &&
+                {tableOpen.openOrders &&
                   (orphanedOrders || []).map(order => (
                     <MarketPositionsListOrphanedOrder
                       key={order.orderId}
@@ -391,6 +401,7 @@ export default class MarketPortfolioCard extends Component {
               finalizationTime={market.finalizationTime}
               currentTimestamp={currentTimestamp}
               marketId={market.id}
+              claimClicked={linkType === TYPE_CLAIM_PROCEEDS && claimClicked}
             />
           )}
       </article>

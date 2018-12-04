@@ -27,3 +27,7 @@ SingleSlicePieGraph.propTypes = {
   percentage: PropTypes.number.isRequired,
   backgroundColor: PropTypes.string
 };
+
+SingleSlicePieGraph.defaultProps = {
+  backgroundColor: "white"
+};

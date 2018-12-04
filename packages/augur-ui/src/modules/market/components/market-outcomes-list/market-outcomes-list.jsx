@@ -14,8 +14,13 @@ export default class MarketOutcomesList extends Component {
     marketId: PropTypes.string.isRequired,
     outcomes: PropTypes.array.isRequired,
     updateSelectedOutcome: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool,
     selectedOutcome: PropTypes.any
+  };
+
+  static defaultProps = {
+    selectedOutcome: null,
+    isMobile: false
   };
 
   constructor(props) {

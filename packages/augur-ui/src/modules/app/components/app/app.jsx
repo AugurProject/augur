@@ -4,7 +4,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
 import classNames from "classnames";
 
 import shouldComponentUpdatePure from "utils/should-component-update-pure";
@@ -28,14 +27,14 @@ import MobileNavHamburgerIcon from "modules/common/components/mobile-nav-hamburg
 import MobileNavCloseIcon from "modules/common/components/mobile-nav-close-icon";
 import MobileNavBackIcon from "modules/common/components/mobile-nav-back-icon";
 
+import NavLogoutIcon from "modules/common/components/nav-logout-icon";
 import NavAccountIcon from "modules/common/components/nav-account-icon";
 import NavCreateIcon from "modules/common/components/nav-create-icon";
 import NavMarketsIcon from "modules/common/components/nav-markets-icon";
 import NavPortfolioIcon from "modules/common/components/nav-portfolio-icon";
-import { AlertCircle, NavReportingIcon } from "modules/common/components/icons";
+import { NavReportingIcon } from "modules/common/components/icons";
 
 import parsePath from "modules/routes/helpers/parse-path";
-import makePath from "modules/routes/helpers/make-path";
 import parseQuery from "modules/routes/helpers/parse-query";
 
 import getValue from "utils/get-value";
@@ -52,7 +51,6 @@ import {
   PORTFOLIO_TRANSACTIONS,
   PORTFOLIO_REPORTS,
   CREATE_MARKET,
-  CATEGORIES,
   REPORTING_DISPUTE_MARKETS,
   REPORTING_REPORT_MARKETS,
   REPORTING_RESOLVED_MARKETS
@@ -93,8 +91,6 @@ const navTypes = {
 export default class AppView extends Component {
   static propTypes = {
     blockchain: PropTypes.object.isRequired,
-    categories: PropTypes.any,
-    connection: PropTypes.object.isRequired,
     coreStats: PropTypes.array.isRequired,
     env: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
@@ -106,19 +102,25 @@ export default class AppView extends Component {
     loginAccount: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
     modal: PropTypes.object.isRequired,
-    selectedCategory: PropTypes.string,
     universe: PropTypes.object.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
     updateIsMobileSmall: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
     updateIsAnimating: PropTypes.func.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
-    url: PropTypes.string,
-    isLoading: PropTypes.bool,
+    isLoading: PropTypes.bool.isRequired,
     augurNode: PropTypes.string,
     ethereumNodeHttp: PropTypes.string,
     ethereumNodeWs: PropTypes.string,
-    useWeb3Transport: PropTypes.bool
+    useWeb3Transport: PropTypes.bool,
+    logout: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    augurNode: null,
+    ethereumNodeHttp: null,
+    ethereumNodeWs: null,
+    useWeb3Transport: false
   };
 
   constructor(props) {
@@ -128,7 +130,7 @@ export default class AppView extends Component {
       mainMenu: { scalar: 0, open: false, currentTween: null },
       subMenu: { scalar: 0, open: false, currentTween: null },
       mobileMenuState: mobileMenuStates.CLOSED,
-      currentBasePath: null,
+      currentBasePath: MARKETS,
       currentInnerNavType: null,
       isNotificationsVisible: false
     };
@@ -174,6 +176,15 @@ export default class AppView extends Component {
           this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
         route: ACCOUNT_DEPOSIT,
         requireLogin: true
+      },
+      {
+        title: "Logout",
+        iconName: "nav-logout-icon",
+        icon: NavLogoutIcon,
+        mobileClick: () => props.logout(),
+        route: ACCOUNT_DEPOSIT,
+        requireLogin: true,
+        onlyForMobile: true
       }
     ];
 
@@ -271,7 +282,9 @@ export default class AppView extends Component {
 
   changeMenu(nextBasePath) {
     const { isLogged } = this.props;
-    const oldType = this.state.currentInnerNavType;
+    const oldType = this.state.currentInnerNavType
+      ? navTypes[this.state.currentBasePath]
+      : this.state.currentInnerNavType;
     const newType = navTypes[nextBasePath];
 
     if ((newType === AccountInnerNav && !isLogged) || oldType === newType) {
@@ -362,13 +375,13 @@ export default class AppView extends Component {
         }
       });
     };
-
+    const { updateIsAnimating } = this.props;
     const alreadyDone =
       (!nowOpen && this.state[menuKey].scalar === 0) ||
       (nowOpen && this.state[menuKey].scalar === 1);
     if (alreadyDone) {
       if (cb && typeof cb === "function") cb();
-      this.props.updateIsAnimating(false);
+      updateIsAnimating(false);
     } else {
       const baseMenuState = { open: nowOpen };
       const currentTween = tween({
@@ -382,11 +395,11 @@ export default class AppView extends Component {
           );
         }
       }).then(() => {
-        this.props.updateIsAnimating(false);
+        updateIsAnimating(false);
         if (cb && typeof cb === "function") cb();
         setMenuState({ locked: false, currentTween: null });
       });
-      this.props.updateIsAnimating(true);
+      updateIsAnimating(true);
       setMenuState({ currentTween });
     }
   }
@@ -449,9 +462,6 @@ export default class AppView extends Component {
         onClick={() => this.mobileMenuButtonClick()}
       >
         {icon}
-        {menuState === mobileMenuStates.CLOSED &&
-          !!unseenCount &&
-          AlertCircle(Styles["SideBar__mobile-bars-unseen"])}
       </button>
     );
   }
@@ -469,7 +479,8 @@ export default class AppView extends Component {
       modal,
       universe,
       isLoading,
-      finalizeMarket
+      finalizeMarket,
+      isMobileSmall
     } = this.props;
     const s = this.state;
 
@@ -516,9 +527,7 @@ export default class AppView extends Component {
             onClick={e => this.mainSectionClickHandler(e, false)}
             role="presentation"
           >
-            <Link to={makePath(CATEGORIES)}>
-              <Logo isLoading={isLoading} />
-            </Link>
+            <Logo isLoading={isLoading} />
             {this.renderMobileMenuButton(unseenCount)}
             <SideNav
               defaultMobileClick={() =>
@@ -529,20 +538,18 @@ export default class AppView extends Component {
               mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
               menuScalar={subMenu.scalar}
               menuData={this.sideNavMenuData}
-              unseenCount={unseenCount}
-              toggleNotifications={this.toggleNotifications}
               stats={coreStats}
               currentBasePath={this.state.currentBasePath}
             />
           </section>
           <section className={Styles.Main}>
             <section
-              className={Styles.TopBar}
+              className={classNames(Styles.TopBar, Styles.TopBar__floatAbove)}
               onClick={this.mainSectionClickHandler}
               role="presentation"
             >
               <TopBar
-                isMobile={isMobile}
+                isMobileSmall={isMobileSmall}
                 isLogged={isLogged}
                 stats={coreStats}
                 unseenCount={unseenCount}
@@ -585,7 +592,6 @@ export default class AppView extends Component {
                   subMenuScalar={subMenu.scalar}
                   markets={markets}
                   openSubMenu={this.openSubMenu}
-                  privateKey={loginAccount.privateKey}
                 />
               )}
               {!InnerNav && <div className="no-nav-placehold" />}

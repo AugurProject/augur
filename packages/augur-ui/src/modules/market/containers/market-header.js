@@ -25,8 +25,10 @@ const mapStateToProps = (state, ownProps) => {
       disputeOutcomes[ownProps.marketId] &&
       disputeOutcomes[ownProps.marketId].find(o => o.tentativeWinning),
     isLogged: state.authStatus.isLogged,
+    isForking: state.universe.isForking,
     isDesignatedReporter:
       market.designatedReporter === state.loginAccount.address,
+    isMobileSmall: state.appStatus.isMobileSmall,
     market
   };
 };

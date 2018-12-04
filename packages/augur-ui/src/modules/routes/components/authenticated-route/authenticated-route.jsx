@@ -21,7 +21,7 @@ const AuthenticatedRoute = ({ component: Component, isLogged, ...rest }) => (
 );
 
 AuthenticatedRoute.propTypes = {
-  component: PropTypes.any, // TODO
+  component: PropTypes.any.isRequired, // TODO
   isLogged: PropTypes.bool.isRequired
 };
 

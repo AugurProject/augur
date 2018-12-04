@@ -21,6 +21,10 @@ export default class ModalClaimReportingFeesNonforkedMarkets extends Component {
     gasPrice: PropTypes.number.isRequired
   };
 
+  static defaultProps = {
+    forkedMarket: null
+  };
+
   constructor(props) {
     super(props);
 
@@ -34,10 +38,16 @@ export default class ModalClaimReportingFeesNonforkedMarkets extends Component {
   }
 
   componentWillMount() {
+    const {
+      feeWindows,
+      forkedMarket,
+      nonforkedMarkets,
+      claimReportingFeesNonforkedMarkets
+    } = this.props;
     const ClaimReportingFeesNonforkedMarketsOptions = {
-      feeWindows: this.props.feeWindows,
-      forkedMarket: this.props.forkedMarket,
-      nonforkedMarkets: this.props.nonforkedMarkets,
+      feeWindows,
+      forkedMarket,
+      nonforkedMarkets,
       estimateGas: true,
       onSent: () => {},
       onSuccess: result => {
@@ -62,27 +72,33 @@ export default class ModalClaimReportingFeesNonforkedMarkets extends Component {
         });
       }
     };
-    this.props.claimReportingFeesNonforkedMarkets(
+    claimReportingFeesNonforkedMarkets(
       ClaimReportingFeesNonforkedMarketsOptions
     );
   }
 
   handleClaimReportingFeesNonforkedMarkets(e) {
+    const {
+      feeWindows,
+      forkedMarket,
+      nonforkedMarkets,
+      claimReportingFeesNonforkedMarkets,
+      modalCallback,
+      closeModal
+    } = this.props;
     const ClaimReportingFeesNonforkedMarketsOptions = {
-      feeWindows: this.props.feeWindows,
-      forkedMarket: this.props.forkedMarket,
-      nonforkedMarkets: this.props.nonforkedMarkets,
+      feeWindows,
+      forkedMarket,
+      nonforkedMarkets,
       estimateGas: false,
       onSent: () => {},
       onSuccess: result => {
-        this.props.modalCallback(result);
-        this.props.closeModal();
+        modalCallback(result);
+        closeModal();
       },
-      onFailed: err => {
-        this.props.closeModal();
-      }
+      onFailed: closeModal
     };
-    this.props.claimReportingFeesNonforkedMarkets(
+    claimReportingFeesNonforkedMarkets(
       ClaimReportingFeesNonforkedMarketsOptions
     );
   }

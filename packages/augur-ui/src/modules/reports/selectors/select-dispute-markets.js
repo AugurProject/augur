@@ -6,6 +6,7 @@ import { isEmpty, orderBy, some } from "lodash";
 import { selectMarketDisputeOutcomes } from "modules/reports/selectors/select-market-dispute-outcomes";
 import { selectUniverseState } from "src/select-state";
 
+<<<<<<< HEAD
 export const selectMarketsInDisputeSelector = () =>
   createSelector(
     selectMarkets,
@@ -31,6 +32,51 @@ export const selectMarketsInDisputeSelector = () =>
           ].disputeInfo.highestPercentStaked = createBigNumber(0);
           Object.keys(filteredMarkets[marketKey].disputeInfo.stakes).forEach(
             stakeKey => {
+=======
+export default function() {
+  return selectMarketsInDispute(store.getState());
+}
+
+export const selectMarketsInDispute = createSelector(
+  selectMarkets,
+  selectDisputeOutcomes,
+  selectUniverseState,
+  (markets, disputeOutcomes, universe) => {
+    if (isEmpty(markets)) {
+      return [];
+    }
+    let filteredMarkets = markets.filter(
+      market =>
+        market.reportingState ===
+          constants.REPORTING_STATE.AWAITING_FORK_MIGRATION ||
+        market.reportingState ===
+          constants.REPORTING_STATE.CROWDSOURCING_DISPUTE ||
+        market.id === universe.forkingMarket
+    );
+    // Sort disputed markets by: 1) dispute round, and 2) highest percent staked in non-tentative-winning outcome
+    Object.keys(filteredMarkets).forEach(marketKey => {
+      if (filteredMarkets[marketKey].disputeInfo) {
+        filteredMarkets[
+          marketKey
+        ].disputeInfo.highestPercentStaked = createBigNumber(0);
+        Object.keys(filteredMarkets[marketKey].disputeInfo.stakes).forEach(
+          stakeKey => {
+            if (
+              !filteredMarkets[marketKey].disputeInfo.stakes[stakeKey]
+                .tentativeWinning &&
+              filteredMarkets[marketKey].disputeInfo.stakes[stakeKey]
+                .bondSizeCurrent
+            ) {
+              const percentStakedInOutcome = createBigNumber(
+                filteredMarkets[marketKey].disputeInfo.stakes[stakeKey]
+                  .stakeCurrent
+              ).div(
+                createBigNumber(
+                  filteredMarkets[marketKey].disputeInfo.stakes[stakeKey]
+                    .bondSizeCurrent
+                )
+              );
+>>>>>>> 8d5e9bad026ab4c888953d898a80e161928a1298
               if (
                 !filteredMarkets[marketKey].disputeInfo.stakes[stakeKey]
                   .tentativeWinning

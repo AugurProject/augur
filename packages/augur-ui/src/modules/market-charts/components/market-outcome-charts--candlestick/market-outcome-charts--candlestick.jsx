@@ -21,18 +21,21 @@ class MarketOutcomeCandlestick extends React.Component {
     currentTimeInSeconds: PropTypes.number,
     fixedPrecision: PropTypes.number.isRequired,
     isMobile: PropTypes.bool.isRequired,
-    marketMax: CustomPropTypes.bigNumber,
-    marketMin: CustomPropTypes.bigNumber,
+    marketMax: CustomPropTypes.bigNumber.isRequired,
+    marketMin: CustomPropTypes.bigNumber.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
-    outcomeName: PropTypes.string,
+    outcomeName: PropTypes.string.isRequired,
     priceTimeSeries: PropTypes.array.isRequired,
     selectedPeriod: PropTypes.number.isRequired,
     selectedRange: PropTypes.number.isRequired,
-    sharedChartMargins: PropTypes.object.isRequired,
     updateSelectedPeriod: PropTypes.func.isRequired,
     updateSelectedRange: PropTypes.func.isRequired,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
     pricePrecision: PropTypes.number.isRequired
+  };
+
+  static defaultProps = {
+    currentTimeInSeconds: null
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -44,8 +47,7 @@ class MarketOutcomeCandlestick extends React.Component {
       orderBookKeys,
       priceTimeSeries,
       selectedPeriod,
-      selectedRange,
-      sharedChartMargins
+      selectedRange
     } = nextProps;
 
     const { candleDim, containerHeight, containerWidth } = prevState;
@@ -67,8 +69,7 @@ class MarketOutcomeCandlestick extends React.Component {
       outcomeBounds,
       priceTimeSeries,
       selectedPeriod,
-      selectedRange,
-      sharedChartMargins
+      selectedRange
     });
 
     return {
@@ -166,6 +167,8 @@ class MarketOutcomeCandlestick extends React.Component {
       fixedPrecision,
       pricePrecision,
       isMobile,
+      marketMax,
+      marketMin,
       orderBookKeys,
       outcomeName,
       priceTimeSeries,
@@ -183,8 +186,6 @@ class MarketOutcomeCandlestick extends React.Component {
       containerHeight,
       containerWidth,
       drawableWidth,
-      marketMax,
-      marketMin,
       xScale,
       yDomain,
       yScale,
@@ -357,12 +358,12 @@ function determineDrawParams({
   marketMax,
   marketMin,
   priceTimeSeries,
-  selectedRange,
-  sharedChartMargins
+  selectedRange
 }) {
   // Dimensions/Positioning
   const chartDim = {
-    ...sharedChartMargins,
+    top: 0,
+    bottom: 30,
     right: 0,
     left: 50,
     stick: 5,
@@ -388,15 +389,22 @@ function determineDrawParams({
 
   const bnMax = createBigNumber(max);
   const bnMin = createBigNumber(min);
-  const buffer = bnMax.minus(bnMin).times(".10");
-
-  const maxPrice = bnMax.plus(buffer).toNumber();
-  const minPrice = bnMin.minus(buffer).toNumber();
+  const priceRange = bnMax.minus(bnMin);
+  const buffer = priceRange.times(".10");
+  const marketPriceRange = marketMax.minus(marketMin).dividedBy(2);
+  const ltHalfRange = marketPriceRange.gt(priceRange);
+  const maxPrice = ltHalfRange
+    ? bnMax.plus(marketPriceRange)
+    : bnMax.plus(buffer);
+  const minPrice = ltHalfRange
+    ? bnMin.minus(marketPriceRange)
+    : bnMin.minus(buffer);
 
   let yDomain = [
-    maxPrice > marketMax ? max : maxPrice,
-    minPrice < marketMin ? min : minPrice
+    (maxPrice.gt(marketMax) ? marketMax : maxPrice).toNumber(),
+    (minPrice.lt(marketMin) ? marketMin : minPrice).toNumber()
   ];
+
   // common case with low volume
   if (yDomain[0] === yDomain[1]) {
     if (yDomain[0] === 0) {
@@ -412,6 +420,7 @@ function determineDrawParams({
       ];
     }
   }
+
   // sigment y into 10 to show prices
   const boundDiff = createBigNumber(yDomain[0])
     .minus(createBigNumber(yDomain[1]))

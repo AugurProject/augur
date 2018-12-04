@@ -11,6 +11,6 @@ export default function getEtherBalance(address, callback) {
   augur.rpc.eth.getBalance([address, "latest"], (err, attoEtherBalance) => {
     if (err) return callback(err);
     const etherBalance = speedomatic.unfix(attoEtherBalance, "string");
-    callback(null, etherBalance);
+    callback(null, etherBalance, address);
   });
 }

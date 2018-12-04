@@ -17,6 +17,7 @@ const mapStateToProps = state => {
     marketsNumber = marketIds.length;
   }
   return {
+    isMobileSmall: state.appStatus.isMobileSmall,
     notifications,
     market,
     marketsNumber

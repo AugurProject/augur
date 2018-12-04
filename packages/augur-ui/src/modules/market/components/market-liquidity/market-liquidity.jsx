@@ -15,14 +15,16 @@ export default class MarketLiquidity extends Component {
     marketId: PropTypes.string.isRequired,
     market: PropTypes.object.isRequired,
     pendingLiquidityOrders: PropTypes.object,
-    isMobileSmall: PropTypes.bool.isRequired,
-    availableEth: PropTypes.string.isRequired,
     removeLiquidityOrder: PropTypes.func.isRequired,
     submitLiquidityOrders: PropTypes.func.isRequired,
     clearMarketLiquidityOrders: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired,
     gasPrice: PropTypes.number.isRequired
+  };
+
+  static defaultProps = {
+    pendingLiquidityOrders: null
   };
 
   constructor(props) {

@@ -197,6 +197,12 @@
   margin-bottom: 0.625rem;
 }
 
+@media @breakpoint-mobile {
+  .Transaction__data {
+    padding: 0 1rem;
+  }
+}
+
 @media @breakpoint-mobile-medium {
   .Transaction__body {
     padding: 1.5rem 1rem;
@@ -208,5 +214,11 @@
 
   .Transactions__header {
     padding: 0 1rem 1rem;
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .Transaction__data {
+    display: inline-block;
   }
 }

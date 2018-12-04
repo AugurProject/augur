@@ -6,22 +6,30 @@ import ModalActions from "modules/modal/components/common/modal-actions";
 
 import Styles from "modules/modal/components/common/common.styles";
 
-const ModalConfirm = p => (
+const ModalConfirm = ({
+  closeModal,
+  description,
+  title,
+  submitAction,
+  cancelButtonText,
+  submitButtonText,
+  cancelAction
+}) => (
   <section className={Styles.ModalContainer}>
-    <h1>{p.title}</h1>
-    {p.description.map(text => (
+    <h1>{title}</h1>
+    {description.map(text => (
       <ModalDescription text={text} key={text} />
     ))}
     <ModalActions
       buttons={[
         {
-          label: p.cancelButtonText,
-          action: p.cancelAction || p.closeModal,
+          label: cancelButtonText,
+          action: cancelAction || closeModal,
           type: "gray"
         },
         {
-          label: p.submitButtonText,
-          action: p.submitAction,
+          label: submitButtonText,
+          action: submitAction,
           type: "purple"
         }
       ]}
@@ -34,14 +42,12 @@ ModalConfirm.propTypes = {
   description: PropTypes.arrayOf(PropTypes.string).isRequired,
   title: PropTypes.string.isRequired,
   submitAction: PropTypes.func.isRequired,
-  continueDefault: PropTypes.bool,
   cancelButtonText: PropTypes.string,
   submitButtonText: PropTypes.string,
   cancelAction: PropTypes.func
 };
 
 ModalConfirm.defaultProps = {
-  continueDefault: false,
   cancelButtonText: "cancel",
   submitButtonText: "submit",
   cancelAction: undefined

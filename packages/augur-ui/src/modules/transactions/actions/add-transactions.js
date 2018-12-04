@@ -27,21 +27,18 @@ import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-va
 
 import { groupBy } from "lodash/fp";
 
-function formatTransactionMessage(sumBuy, sumSell, txType, isFill) {
+function formatTransactionMessage(sumBuy, sumSell, txType) {
   const buys = sumBuy !== 0 ? `${sumBuy} ${BUY}` : "";
   const sells = sumSell !== 0 ? `${sumSell} ${SELL}` : "";
-  if (isFill) {
-    return `${sumBuy + sumSell} ${txType}${
-      sumBuy + sumSell > 1 ? "s" : ""
-    } Filled`;
-  }
-  return (
-    buys +
-    (sumBuy !== 0 && sumSell !== 0 ? " & " : " ") +
-    sells +
-    " " +
-    (sumBuy + sumSell > 1 ? txType + "s" : txType)
-  );
+  return `${buys}${
+    sumBuy !== 0 && sumSell !== 0 ? " & " : " "
+  }${sells} ${txType}${sumBuy + sumSell > 1 ? "s" : ""}`;
+}
+
+function formatTransactionFillMessage(txType, amount, price, numTxs, outcome) {
+  return `${txType === BUY ? "bought" : "sold"} ${amount} Share${
+    amount === 1 ? "" : "s"
+  } of ${outcome} at ${numTxs > 1 ? "an average price of " : ""}${price}`;
 }
 
 export function addTradeTransactions(trades) {
@@ -67,15 +64,16 @@ export function addTradeTransactions(trades) {
 
 function buildTradeTransactionGroup(group, marketsData) {
   let header = {};
-  let sumBuy = 0;
-  let sumSell = 0;
+  let sumAmount = createBigNumber(0);
+  let sumPrice = createBigNumber(0);
+  let numTxs = 0;
+
   each(group, trade => {
-    if (trade.type === BUY) {
-      sumBuy += 1;
-    }
-    if (trade.type === SELL) {
-      sumSell += 1;
-    }
+    sumAmount = sumAmount.plus(createBigNumber(trade.amount));
+    sumPrice = sumPrice.plus(
+      createBigNumber(trade.price).times(createBigNumber(trade.amount))
+    );
+    numTxs += 1;
     const localHeader = buildTradeTransaction(trade, marketsData);
     if (Object.keys(header).length === 0) {
       header = localHeader;
@@ -83,16 +81,14 @@ function buildTradeTransactionGroup(group, marketsData) {
       header.transactions.push(localHeader.transactions[0]);
     }
   });
-  if (
-    header.transactions &&
-    header.transactions.length === 1 &&
-    header.transactions[0].maker
-  ) {
-    // own order filled
-    header.message = formatTransactionMessage(sumBuy, sumSell, "Order", true);
-  } else {
-    header.message = formatTransactionMessage(sumBuy, sumSell, "Trade");
-  }
+
+  header.message = formatTransactionFillMessage(
+    header.transactions[0].type,
+    formatShares(sumAmount.toNumber()).formatted,
+    formatEther(sumPrice.dividedBy(sumAmount).toNumber()).full,
+    numTxs,
+    header.transactions[0].meta && header.transactions[0].meta.outcome
+  );
   return header;
 }
 
@@ -103,7 +99,7 @@ function buildTradeTransaction(trade, marketsData) {
   transaction.id = `${transaction.transactionHash}-${transaction.orderId}`;
   const header = buildHeader(transaction, TRADE, SUCCESS);
   const meta = {};
-  meta.type = TRADE;
+  meta.type = TRADE + (transaction.maker ? " Filled" : " Placed");
   const outcomeName = getOutcome(market, transaction.outcome);
   if (outcomeName) meta.outcome = outcomeName;
   const formattedShares = formatShares(transaction.amount);
@@ -280,7 +276,7 @@ export function addCompleteSetsSoldLogs(completeSetsSoldLogs) {
         {
           message: "Complete Sets Sold",
           description: `${transaction.meta.amount} sold on Market: ${
-            market.description
+            (market || {}).description
           }`,
           transactions: [transaction]
         }
@@ -293,7 +289,7 @@ export function addCompleteSetsSoldLogs(completeSetsSoldLogs) {
 
 export function addOpenOrderTransactions(openOrders) {
   return (dispatch, getState) => {
-    const { marketsData } = getState();
+    const { marketsData, transactionsData } = getState();
     // flatten open orders
     const transactions = {};
     eachOf(openOrders, (value, marketId) => {
@@ -301,7 +297,7 @@ export function addOpenOrderTransactions(openOrders) {
       let sumBuy = 0;
       let sumSell = 0;
       const marketHeader = {
-        status: "Market Outcome Trade",
+        status: SUCCESS,
         marketId,
         sortOrder: getSortOrder(OPEN_ORDER)
       };
@@ -361,11 +357,17 @@ export function addOpenOrderTransactions(openOrders) {
         });
       });
       // TODO: last order creation time will be in header, earliest activite
+      const currentTransactionsKeys = Object.keys(transactionsData);
+      const leadOrder = marketTradeTransactions.find(marketTransaction =>
+        currentTransactionsKeys.includes(marketTransaction.orderId)
+      );
       marketHeader.timestamp = creationTime;
       marketHeader.message = formatTransactionMessage(sumBuy, sumSell, "Order");
       marketHeader.type = OPEN_ORDER;
       marketHeader.transactions = marketTradeTransactions;
-      marketHeader.hash = `${marketTradeTransactions[0].orderId}`;
+      marketHeader.hash = leadOrder
+        ? leadOrder.orderId
+        : `${marketTradeTransactions[0].orderId}`;
       transactions[marketHeader.hash] = marketHeader;
     });
     dispatch(updateTransactionsData(transactions));

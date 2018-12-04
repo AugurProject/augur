@@ -27,14 +27,13 @@ class MyMarkets extends Component {
     loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
-    isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool.isRequired,
     loadMarkets: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired,
     myMarkets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
-    pendingLiquidityOrders: PropTypes.object,
+    pendingLiquidityOrders: PropTypes.object.isRequired,
     outcomes: PropTypes.object.isRequired,
     loadDisputingMarkets: PropTypes.func.isRequired
   };
@@ -180,6 +179,7 @@ class MyMarkets extends Component {
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
             pendingLiquidityOrders={pendingLiquidityOrders}
+            showOutstandingReturns
           />
         )}
         {haveMarkets && <MarketsHeaderLabel title="In Reporting" />}
@@ -198,6 +198,7 @@ class MyMarkets extends Component {
             collectMarketCreatorFees={collectMarketCreatorFees}
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
+            showOutstandingReturns
           />
         )}
         {haveMarkets && <MarketsHeaderLabel title="In Dispute" />}
@@ -218,6 +219,7 @@ class MyMarkets extends Component {
             isMobile={isMobile}
             showDisputingCard
             outcomes={outcomes}
+            showOutstandingReturns
           />
         )}
         {haveMarkets && <MarketsHeaderLabel title="Resolved" />}
@@ -237,6 +239,7 @@ class MyMarkets extends Component {
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
             addNullPadding
+            showOutstandingReturns
           />
         )}
         {(myMarkets == null || (myMarkets && myMarkets.length === 0)) && (

@@ -12,7 +12,12 @@ import Styles from "modules/market/components/market-positions-list--mobile-orde
 
 export default class MobileOrders extends Component {
   static propTypes = {
-    order: PropTypes.object.isRequired
+    order: PropTypes.shape({
+      pending: PropTypes.bool,
+      unmatchedShares: PropTypes.object,
+      avgPrice: PropTypes.object,
+      cancelOrder: PropTypes.func.isRequired
+    }).isRequired
   };
 
   constructor(props) {

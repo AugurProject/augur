@@ -10,37 +10,49 @@ import MarketLink from "modules/market/components/market-link/market-link";
 import { createBigNumber } from "utils/create-big-number";
 import Styles from "modules/forking/components/forking-content/forking-content.styles";
 
-const ForkingContent = p => {
-  const unixFormattedDate = convertUnixToFormattedDate(p.forkEndTime);
+const ForkingContent = ({
+  forkingMarket,
+  forkEndTime,
+  currentTime,
+  expanded,
+  doesUserHaveRep,
+  forkReputationGoal,
+  isForkingMarketFinalized,
+  finalizeMarket,
+  marginLeft
+}) => {
+  const unixFormattedDate = convertUnixToFormattedDate(forkEndTime);
   const forkWindowActive = !dateHasPassed(
-    p.currentTime * 1000,
-    Number(p.forkEndTime)
+    currentTime * 1000,
+    Number(forkEndTime)
   );
-  const startTime = createBigNumber(p.forkEndTime)
+  const startTime = createBigNumber(forkEndTime)
     .minus(
       createBigNumber(augur.constants.CONTRACT_INTERVAL.FORK_DURATION_SECONDS)
     )
     .toNumber();
-  const threshold = formatAttoRep(p.forkReputationGoal);
+  const threshold = formatAttoRep(forkReputationGoal);
 
   return (
     <section
       className={classNames(
         Styles.ForkingContent,
-        p.expanded ? Styles.expanded : ""
+        expanded ? Styles.expanded : ""
       )}
     >
       <div
         className={classNames(
           Styles.ForkingContent__container,
-          p.expanded ? Styles.expanded : ""
+          expanded ? Styles.expanded : ""
         )}
+        style={{ paddingLeft: marginLeft }}
       >
         <TimeProgressBar
-          endTime={parseInt(p.forkEndTime, 10)}
-          currentTime={p.currentTime}
+          endTime={parseInt(forkEndTime, 10)}
+          currentTime={currentTime}
           startTime={startTime}
           timePeriodLabel="Fork Window"
+          forking
         />
         {forkWindowActive && (
           <p>
@@ -55,6 +67,7 @@ const ForkingContent = p => {
               href="http://docs.augur.net/#fork-state"
               target="_blank"
               rel="noopener noreferrer"
+              style={{ textDecoration: "underline" }}
             >
               here
             </a>
@@ -71,6 +84,7 @@ const ForkingContent = p => {
               href="http://docs.augur.net/#fork-state"
               target="_blank"
               rel="noopener noreferrer"
+              style={{ textDecoration: "underline" }}
             >
               here
             </a>
@@ -78,7 +92,7 @@ const ForkingContent = p => {
           </p>
         )}
         <div className={Styles.ForkingContent__buttonBar}>
-          {!p.doesUserHaveRep && (
+          {!doesUserHaveRep && (
             <button
               disabled
               className={Styles.ForkingContent__no_rep_migrate_button}
@@ -86,10 +100,10 @@ const ForkingContent = p => {
               Migrate REP
             </button>
           )}
-          {p.doesUserHaveRep && (
+          {doesUserHaveRep && (
             <MarketLink
               className={Styles.ForkingContent__migrate_rep_button}
-              id={p.forkingMarket}
+              id={forkingMarket}
               formattedDescription="Migrate REP"
               linkType={TYPE_MIGRATE_REP}
             >
@@ -97,10 +111,10 @@ const ForkingContent = p => {
             </MarketLink>
           )}
           {!forkWindowActive &&
-            !p.isForkingMarketFinalized && (
+            !isForkingMarketFinalized && (
               <button
                 className={Styles.ForkingContent__migrate_rep_button}
-                onClick={() => p.finalizeMarket(p.forkingMarket)}
+                onClick={() => finalizeMarket(forkingMarket)}
               >
                 Finalize
               </button>
@@ -112,13 +126,19 @@ const ForkingContent = p => {
 };
 
 ForkingContent.propTypes = {
+  finalizeMarket: PropTypes.func.isRequired,
   forkingMarket: PropTypes.string.isRequired,
   forkEndTime: PropTypes.string.isRequired,
   currentTime: PropTypes.number.isRequired,
   expanded: PropTypes.bool.isRequired,
   doesUserHaveRep: PropTypes.bool.isRequired,
   forkReputationGoal: PropTypes.string.isRequired,
-  isForkingMarketFinalized: PropTypes.bool
+  isForkingMarketFinalized: PropTypes.bool,
+  marginLeft: PropTypes.number.isRequired
+};
+
+ForkingContent.defaultProps = {
+  isForkingMarketFinalized: false
 };
 
 export default ForkingContent;

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import Styles from "modules/account/components/account-rep-faucet/account-rep-faucet.styles";
 
-const AccountRepFaucet = p => (
+const AccountRepFaucet = ({ repFaucet }) => (
   <section className={Styles.AccountRepFaucet}>
     <div className={Styles.AccountRepFaucet__heading}>
       <h1>Account: REP Faucet</h1>
@@ -15,7 +15,7 @@ const AccountRepFaucet = p => (
             On Test Nets you may get REP by making a TX with the button below.
           </p>
           <button
-            onClick={p.repFaucet}
+            onClick={repFaucet}
             className={Styles.AccountRepFaucet__button}
           >
             Get REP

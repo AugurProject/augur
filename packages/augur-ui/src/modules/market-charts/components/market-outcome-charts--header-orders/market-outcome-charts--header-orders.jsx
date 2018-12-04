@@ -5,22 +5,26 @@ import classNames from "classnames";
 import Styles from "modules/market-charts/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders.styles";
 import StylesHeader from "modules/market-charts/components/market-outcome-charts--header/market-outcome-charts--header.styles";
 
-const MarketOutcomeChartsHeaderOrders = p => (
+const MarketOutcomeChartsHeaderOrders = ({
+  updatePrecision,
+  isMobile,
+  headerHeight
+}) => (
   <section
     className={Styles.MarketOutcomeChartsHeader__orders}
-    style={{ minHeight: p.isMobile && p.headerHeight }}
+    style={{ minHeight: isMobile && headerHeight }}
   >
-    {p.isMobile || (
+    {isMobile || (
       <div className={StylesHeader.MarketOutcomeChartsHeader__Header}>
         <span>Order Book</span>
-        {p.updatePrecision && (
+        {updatePrecision && (
           <div
             className={
               StylesHeader["MarketOutcomeChartsHeader__precision-selector"]
             }
           >
-            <button onClick={() => p.updatePrecision(false)}>-</button>
-            <button onClick={() => p.updatePrecision(true)}>+</button>
+            <button onClick={() => updatePrecision(false)}>-</button>
+            <button onClick={() => updatePrecision(true)}>+</button>
           </div>
         )}
       </div>
@@ -53,7 +57,7 @@ const MarketOutcomeChartsHeaderOrders = p => (
 export default MarketOutcomeChartsHeaderOrders;
 
 MarketOutcomeChartsHeaderOrders.propTypes = {
-  updatePrecision: PropTypes.func,
+  updatePrecision: PropTypes.func.isRequired,
   isMobile: PropTypes.bool.isRequired,
   headerHeight: PropTypes.number.isRequired
 };

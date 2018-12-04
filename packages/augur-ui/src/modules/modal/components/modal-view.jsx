@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 
 import ModalSignTransaction from "modules/modal/containers/modal-sign-transaction";
 import ModalConfirm from "modules/modal/components/modal-confirm";
@@ -38,7 +39,12 @@ export default class ModalView extends Component {
 
     return (
       <section className={Styles.ModalView}>
-        <div className={Styles.ModalView__content}>
+        <div
+          className={classNames(Styles.ModalView__content, {
+            [`${Styles["ModalView__content--taller"]}`]:
+              modal.type === TYPES.MODAL_DISCLAIMER
+          })}
+        >
           {modal.type === TYPES.MODAL_CLAIM_TRADING_PROCEEDS && (
             <ModalClaimTradingProceeds {...this.props} />
           )}

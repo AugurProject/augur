@@ -20,27 +20,30 @@ export default class PortfolioReports extends Component {
     markets: PropTypes.array.isRequired,
     upcomingMarkets: PropTypes.array.isRequired,
     upcomingMarketsCount: PropTypes.number.isRequired,
-    isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool.isRequired,
     isConnected: PropTypes.bool.isRequired,
     outcomes: PropTypes.object.isRequired,
     isForking: PropTypes.bool.isRequired,
     forkingMarketId: PropTypes.string.isRequired,
     paginationCount: PropTypes.number.isRequired,
     disputableMarketsLength: PropTypes.number,
-    showPagination: PropTypes.bool,
-    showUpcomingPagination: PropTypes.bool,
+    showPagination: PropTypes.bool.isRequired,
+    showUpcomingPagination: PropTypes.bool.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
     getReportingFees: PropTypes.func.isRequired,
-    isLogged: PropTypes.bool.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
     forkedMarket: PropTypes.object,
-    getWinningBalances: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
     reportingFees: PropTypes.object.isRequired,
     resolvedMarkets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
-    loadMarketsInfoIfNotLoaded: PropTypes.func,
-    loadMarkets: PropTypes.func
+    loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
+    loadMarkets: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    forkedMarket: null,
+    disputableMarketsLength: 0
   };
 
   constructor(props) {
@@ -165,12 +168,10 @@ export default class PortfolioReports extends Component {
               buttonAction={this.handleClaimReportingFeesForkedMarket}
               currentTimestamp={currentTimestamp}
               finalizeMarket={finalizeMarket}
-              forkedMarketReportingFeesInfo={reportingFees.forkedMarket}
               linkType={TYPE_CLAIM_PROCEEDS}
               market={forkedMarket}
               unclaimedForkEth={reportingFees.unclaimedForkEth}
               unclaimedForkRepStaked={reportingFees.unclaimedForkRepStaked}
-              updateModal={this.handleClaimReportingFeesNonforkedMarkets}
             />
           </section>
         )}
@@ -201,6 +202,7 @@ export default class PortfolioReports extends Component {
             location={location}
             history={history}
             isLogged={isConnected}
+            isMobile={isMobile}
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             markets={resolvedMarkets}
             noShowHeader

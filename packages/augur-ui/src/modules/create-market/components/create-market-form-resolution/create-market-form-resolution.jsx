@@ -72,14 +72,14 @@ export const ChevronRight = () => (
 
 export default class CreateMarketResolution extends Component {
   static propTypes = {
-    currentTimestamp: PropTypes.number.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
-    isValid: PropTypes.func.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
     newMarket: PropTypes.object.isRequired,
+    isValid: PropTypes.func.isRequired,
+    keyPressed: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
     validateField: PropTypes.func.isRequired,
-    validateNumber: PropTypes.func.isRequired,
-    keyPressed: PropTypes.func.isRequired
+    validateNumber: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -113,12 +113,12 @@ export default class CreateMarketResolution extends Component {
       ].designatedReporterAddress = updatedMarket.validations[currentStep]
         .designatedReporterAddress
         ? updatedMarket.validations[currentStep].designatedReporterAddress
-        : false;
+        : null;
     } else {
       delete updatedMarket.validations[currentStep].designatedReporterAddress;
     }
 
-    updatedMarket.validations[currentStep].designatedReporterType = true;
+    updatedMarket.validations[currentStep].designatedReporterType = "";
     updatedMarket.designatedReporterType = value;
     updatedMarket.isValid = isValid(currentStep);
 
@@ -134,7 +134,7 @@ export default class CreateMarketResolution extends Component {
       updatedMarket.validations[currentStep].designatedReporterAddress =
         "Invalid Ethereum address.";
     } else {
-      updatedMarket.validations[currentStep].designatedReporterAddress = true;
+      updatedMarket.validations[currentStep].designatedReporterAddress = "";
     }
 
     updatedMarket.designatedReporterAddress = value;
@@ -152,12 +152,12 @@ export default class CreateMarketResolution extends Component {
       updatedMarket.validations[currentStep].expirySource = updatedMarket
         .validations[currentStep].expirySource
         ? updatedMarket.validations[currentStep].expirySource
-        : false;
+        : null;
     } else {
       delete updatedMarket.validations[currentStep].expirySource;
     }
 
-    updatedMarket.validations[newMarket.currentStep].expirySourceType = true;
+    updatedMarket.validations[newMarket.currentStep].expirySourceType = "";
     updatedMarket.expirySourceType = value;
     updatedMarket.isValid = isValid(newMarket.currentStep);
 
@@ -179,8 +179,7 @@ export default class CreateMarketResolution extends Component {
 
     const designatedReporterError =
       newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC &&
-      validations.designatedReporterAddress &&
-      !!validations.designatedReporterAddress.length;
+      validations.designatedReporterAddress;
 
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
@@ -229,8 +228,8 @@ export default class CreateMarketResolution extends Component {
                     }
                     onKeyPress={e => keyPressed(e)}
                   />
-                  {typeof newMarket.validations[newMarket.currentStep]
-                    .expirySource === "string" && (
+                  {newMarket.validations[newMarket.currentStep]
+                    .expirySource && (
                     <span
                       className={StylesForm["CreateMarketForm__error--bottom"]}
                     >
@@ -365,13 +364,13 @@ export default class CreateMarketResolution extends Component {
               validateField("endTime", formatDate(date.toDate()));
             }}
             isOutsideRange={day =>
-              day.isAfter(moment(this.props.currentTimestamp).add(6, "M")) ||
-              day.isBefore(moment(this.props.currentTimestamp))
+              day.isAfter(moment(currentTimestamp).add(6, "M")) ||
+              day.isBefore(moment(currentTimestamp))
             }
             focused={this.state.focused}
             onFocusChange={({ focused }) => {
               if (this.state.date == null) {
-                const date = moment(this.props.currentTimestamp);
+                const date = moment(currentTimestamp);
                 this.setState({
                   date
                 });
@@ -388,13 +387,13 @@ export default class CreateMarketResolution extends Component {
         <li>
           <label htmlFor="cm__input--time">
             <span>Expiration Time (UTC {utcLocalOffset})</span>
-            {newMarket.validations[newMarket.currentStep].hour.length && (
+            {newMarket.validations[newMarket.currentStep].hour && (
               <span className={StylesForm.CreateMarketForm__error}>
                 {InputErrorIcon}
                 {newMarket.validations[newMarket.currentStep].hour}
               </span>
             )}
-            {newMarket.validations[newMarket.currentStep].minute.length && (
+            {newMarket.validations[newMarket.currentStep].minute && (
               <span className={StylesForm.CreateMarketForm__error}>
                 {InputErrorIcon}
                 {newMarket.validations[newMarket.currentStep].minute}

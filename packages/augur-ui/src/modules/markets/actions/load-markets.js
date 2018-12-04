@@ -54,7 +54,7 @@ export const loadUserMarkets = (callback = logError) => (
 ) => {
   const { universe, loginAccount } = getState();
 
-  augur.markets.getMarketsCreatedByUser(
+  augur.markets.getMarkets(
     { universe: universe.id, creator: loginAccount.address },
     (err, marketsArray) => {
       if (err || !marketsArray) return callback(err);
@@ -123,6 +123,7 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (
     universe: universe.id,
     category: filterOptions.category,
     search: filterOptions.search,
+    maxFee: parseFloat(filterOptions.maxFee),
     ...sort
   };
   switch (filterOptions.filter) {

@@ -26,7 +26,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mergeProps = (sP, dP, oP) => {
-  const { marketId } = sP.modal;
+  const { marketId, cb } = sP.modal;
   const market = selectMarket(marketId);
   const { description, outstandingReturns } = market;
   const { gasCost } = sP;
@@ -36,14 +36,17 @@ const mergeProps = (sP, dP, oP) => {
     buttons: [
       {
         label: "cancel",
-        action: closeModal,
+        action: () => {
+          cb();
+          closeModal();
+        },
         type: "gray"
       },
       {
         label: "confirm",
         action: () => {
           closeModal();
-          claimTradingProceeds(marketId);
+          claimTradingProceeds(marketId, cb);
         }
       }
     ],

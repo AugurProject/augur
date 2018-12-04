@@ -18,9 +18,8 @@ export default class Positions extends Component {
     closedMarkets: PropTypes.array.isRequired,
     loadAccountTrades: PropTypes.func.isRequired,
     marketsCount: PropTypes.number.isRequired,
-    registerBlockNumber: PropTypes.number,
     claimTradingProceeds: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool
+    isMobile: PropTypes.bool.isRequired
   };
 
   componentWillMount() {
