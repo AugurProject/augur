@@ -50,7 +50,7 @@ function bindContractFunction(functionAbi) {
       var transact = function () {
         ethrpc.transact(payload, signer, accountType, onSent, resolve, reject);
       };
-      if (params[0].gasPrice == null && getGasPrice.get()) {
+      if (params != null && isObject(params[0]) && params[0].gasPrice == null && getGasPrice.get()) {
         getGasPrice.get()(function (gasPrice) {
           payload.gasPrice = gasPrice;
           transact();
