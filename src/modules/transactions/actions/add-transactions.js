@@ -276,7 +276,7 @@ export function addCompleteSetsSoldLogs(completeSetsSoldLogs) {
         {
           message: "Complete Sets Sold",
           description: `${transaction.meta.amount} sold on Market: ${
-            market.description
+            (market || {}).description
           }`,
           transactions: [transaction]
         }
