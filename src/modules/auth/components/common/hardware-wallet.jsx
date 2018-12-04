@@ -309,11 +309,12 @@ export default class HardwareWallet extends Component {
       s.walletAddresses.length <=
       NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber;
 
-    const indexes = [
+    let indexes = [
       ...Array(NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber)
-    ]
-      .map((_, i) => i)
-      .slice(
+    ].map((_, i) => i);
+
+    if (s.cachedAddresses) {
+      indexes = indexes.slice(
         NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber -
           NUM_DERIVATION_PATHS_TO_DISPLAY,
         NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber >
@@ -321,6 +322,13 @@ export default class HardwareWallet extends Component {
           ? s.walletAddresses.length
           : NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber
       );
+    } else {
+      indexes = indexes.slice(
+        NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber -
+          NUM_DERIVATION_PATHS_TO_DISPLAY,
+        NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber
+      );
+    }
 
     let hideContent = false;
     if (isLoading && s.walletAddresses.every(element => !element)) {
