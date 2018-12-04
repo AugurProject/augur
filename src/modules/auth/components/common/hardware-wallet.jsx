@@ -305,11 +305,9 @@ export default class HardwareWallet extends Component {
     } = this.props;
     const s = this.state;
 
-    const lessThanOnePageAddresses =
-      s.walletAddresses.length -
-        (NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber -
-          NUM_DERIVATION_PATHS_TO_DISPLAY) <
-      0;
+    const lessThanPageAddresses =
+      s.walletAddresses.length <=
+      NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber;
 
     const indexes = [
       ...Array(NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber)
@@ -365,7 +363,7 @@ export default class HardwareWallet extends Component {
                 clickPrevious={this.previous}
                 clickNext={this.next}
                 disablePrevious={s.addressPageNumber === 1}
-                disableNext={lessThanOnePageAddresses && s.cachedAddresses}
+                disableNext={lessThanPageAddresses && s.cachedAddresses}
               />
             )}
 
