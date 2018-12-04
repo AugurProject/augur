@@ -289,7 +289,7 @@ export function addCompleteSetsSoldLogs(completeSetsSoldLogs) {
 
 export function addOpenOrderTransactions(openOrders) {
   return (dispatch, getState) => {
-    const { marketsData } = getState();
+    const { marketsData, transactionsData } = getState();
     // flatten open orders
     const transactions = {};
     eachOf(openOrders, (value, marketId) => {
@@ -357,11 +357,17 @@ export function addOpenOrderTransactions(openOrders) {
         });
       });
       // TODO: last order creation time will be in header, earliest activite
+      const currentTransactionsKeys = Object.keys(transactionsData);
+      const leadOrder = marketTradeTransactions.find(marketTransaction =>
+        currentTransactionsKeys.includes(marketTransaction.orderId)
+      );
       marketHeader.timestamp = creationTime;
       marketHeader.message = formatTransactionMessage(sumBuy, sumSell, "Order");
       marketHeader.type = OPEN_ORDER;
       marketHeader.transactions = marketTradeTransactions;
-      marketHeader.hash = `${marketTradeTransactions[0].orderId}`;
+      marketHeader.hash = leadOrder
+        ? leadOrder.orderId
+        : `${marketTradeTransactions[0].orderId}`;
       transactions[marketHeader.hash] = marketHeader;
     });
     dispatch(updateTransactionsData(transactions));
