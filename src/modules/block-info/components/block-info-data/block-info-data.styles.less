@@ -7,6 +7,7 @@
   flex-direction: column;
   justify-content: center;
   max-width: 162px;
+  position: relative;
   width: unset !important;
 
   &:hover {
@@ -36,6 +37,10 @@
   color: @color-lightergray;
   font-size: @font-size-extra-small;
   line-height: 2;
+
+  @media @breakpoint-mobile {
+    line-height: unset;
+  }
 }
 
 .BlockInfoData__selected {
@@ -54,7 +59,7 @@
   box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
   height: 0;
   position: absolute;
-  right: 265px;
+  right: -1px;
   text-align: left;
   top: @top-bar-height;
   width: 308px;
@@ -63,14 +68,6 @@
   @media @breakpoint-mobile {
     top: 3.1rem;
   }
-
-  @media @breakpoint-mobile-extra-small {
-    right: 0;
-  }
-}
-
-.BlockInfoData__connectDropdownLogged {
-  right: 393px;
 }
 
 .BlockInfoData__dropdownContainer {
@@ -113,7 +110,7 @@
   font-size: @font-size-rather-large;
   font-weight: normal;
   margin-left: 6px;
-  margin-right: 2px;
+  margin-right: 4px;
 }
 
 .BlockInfoData__bottom {
@@ -126,6 +123,7 @@
   }
 
   .BlockInfoData__container {
+    justify-content: center;
     padding: 8px 24px;
   }
 }
