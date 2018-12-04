@@ -9,7 +9,7 @@ var calculateNearlyCompleteSets = require("../../../../src/trading/simulation/ca
 describe("trading/simulation/calculate-nearly-complete-sets", function () {
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(calculateNearlyCompleteSets(t.params.outcome, t.params.desiredShares, t.params.shareBalances));
+      t.assertions(calculateNearlyCompleteSets(t.params.outcome, t.params.desiredShares, t.params.shareBalances, t.params.takerSharesDepleted));
     });
   };
   test({
@@ -18,6 +18,7 @@ describe("trading/simulation/calculate-nearly-complete-sets", function () {
       outcome: 1,
       desiredShares: new BigNumber("1", 10),
       shareBalances: [new BigNumber("3", 10), new BigNumber("3", 10)],
+      takerSharesDepleted: new BigNumber("0", 10),
     },
     assertions: function (output) {
       assert.deepEqual(output, new BigNumber("1", 10));
@@ -29,6 +30,7 @@ describe("trading/simulation/calculate-nearly-complete-sets", function () {
       outcome: 1,
       desiredShares: new BigNumber("10", 10),
       shareBalances: [new BigNumber("4", 10), new BigNumber("3", 10)],
+      takerSharesDepleted: new BigNumber("0", 10),
     },
     assertions: function (output) {
       assert.deepEqual(output, new BigNumber("4", 10));
@@ -46,9 +48,40 @@ describe("trading/simulation/calculate-nearly-complete-sets", function () {
         new BigNumber("2", 10),
         new BigNumber("13.37", 10),
       ],
+      takerSharesDepleted: new BigNumber("0", 10),
     },
     assertions: function (output) {
       assert.deepEqual(output, new BigNumber("2", 10));
+    },
+  });
+  test({
+    description: "2 outcomes, 1 desired shares, exclude outcome 0",
+    params: {
+      outcome: 0,
+      desiredShares: new BigNumber("6", 10),
+      shareBalances: [
+        new BigNumber("0", 10),
+        new BigNumber("1", 10),
+      ],
+      takerSharesDepleted: new BigNumber("0", 10),
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, new BigNumber("1", 10));
+    },
+  });
+  test({
+    description: "2 outcomes, 1 desired shares, 1 share depleted",
+    params: {
+      outcome: 0,
+      desiredShares: new BigNumber("6", 10),
+      shareBalances: [
+        new BigNumber("0", 10),
+        new BigNumber("1", 10),
+      ],
+      takerSharesDepleted: new BigNumber("1", 10),
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, new BigNumber("0", 10));
     },
   });
 });
