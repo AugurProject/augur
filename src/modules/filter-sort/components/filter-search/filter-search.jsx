@@ -107,7 +107,7 @@ export default class FilterSearch extends Component {
     const { width, placeholder, search } = this.state;
 
     return (
-      <article 
+      <article
         className={Styles.FilterSearch}
         ref={parent => {
           this.parent = parent;
