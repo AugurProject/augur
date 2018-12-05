@@ -94,12 +94,6 @@
   padding-bottom: 16px;
 }
 
-.BlockInfoData__blocksBehind {
-  display: flex;
-  flex-direction: column;
-  margin-left: 8px;
-}
-
 .BlockInfoData__processed {
   color: @color-white;
   font-size: @font-size-large;
@@ -115,6 +109,17 @@
 
 .BlockInfoData__bottom {
   color: @color-white;
+}
+
+.BlockInfoData__blocksBehind {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  font-size: @font-size-extra-small;
+  font-weight: normal;
+  margin-left: auto;
+  padding-left: 8px;
+  text-decoration: underline;
 }
 
 @media @breakpoint-mobile-mid {

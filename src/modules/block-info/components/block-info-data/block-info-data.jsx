@@ -5,7 +5,6 @@ import classNames from "classnames";
 import toggleHeight from "utils/toggle-height/toggle-height";
 import { createBigNumber } from "utils/create-big-number";
 import { formatNumber, formatPercent } from "utils/format-number";
-import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 import { ZERO } from "modules/trades/constants/numbers";
 
 import Styles from "modules/block-info/components/block-info-data/block-info-data.styles";
@@ -109,14 +108,7 @@ export default class BlockInfoData extends Component {
           <div className={Styles.BlockInfoData__title}>Blocks Behind</div>
           <div className={Styles.BlockInfoData__info}>
             {blocksBehind}
-            <span className={Styles.BlockInfoData__blocksBehind}>
-              <ChevronFlip
-                filledInIcon
-                pointDown={s.dropdownOpen}
-                stroke="#fff"
-                quick
-              />
-            </span>
+            <span className={Styles.BlockInfoData__blocksBehind}>Details</span>
           </div>
         </div>
         <div
