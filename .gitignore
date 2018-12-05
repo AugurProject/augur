@@ -1,12 +1,10 @@
 node_modules
 *.log
-<<<<<<< HEAD
-=======
+
 coverage/
 build/
 definitions/
 augur.db
 tags
->>>>>>> augur-node/master
 
 junit.xml
