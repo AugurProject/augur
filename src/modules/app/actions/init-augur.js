@@ -20,6 +20,8 @@ import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
 import logError from "utils/log-error";
 import networkConfig from "config/network";
+import { version } from "src/../package";
+import { updateVersions } from "modules/app/actions/update-versions";
 
 import { defaultTo, isEmpty } from "lodash";
 
@@ -187,6 +189,17 @@ export function connectAugur(
         dispatch(updateAugurNodeConnectionStatus(true));
         dispatch(getAugurNodeNetworkId());
         dispatch(registerTransactionRelay());
+        AugurJS.augur.augurNode.getSyncData((err, res) => {
+          if (!err && res) {
+            dispatch(
+              updateVersions({
+                augurjs: res.version,
+                augurNode: res.augurNodeVersion,
+                augurui: version
+              })
+            );
+          }
+        });
         let universeId =
           env.universe ||
           AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()]
