@@ -8,7 +8,7 @@ var contractsForAllNetworks = require("../contracts");
 var api = require("../api");
 var events = require("../events");
 var rpcInterface = require("../rpc-interface");
-var augurNode = require("../augur-node");
+// var augurNode = require("../augur-node");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 var noop = require("../utils/noop");
@@ -63,24 +63,6 @@ function connect(connectOptions, callback) {
     }
   }
   async.parallel({
-    augurNode: function (next) {
-      console.log("connecting to augur-node:", connectOptions.augurNode);
-      if (!connectOptions.augurNode) return next(null);
-      augurNode.connect(connectOptions.augurNode, function (err, transport) {
-        if (err) {
-          console.warn("could not connect to augur-node at", connectOptions.augurNode, err);
-          return next(null);
-        }
-        transport.addReconnectListener(function () {
-          events.nodes.augur.emit("reconnect");
-        });
-        transport.addDisconnectListener(function (event) {
-          events.nodes.augur.emit("disconnect", event);
-        });
-        console.log("connected to augur");
-        next(null, connectOptions.augurNode);
-      });
-    },
     ethereumNode: function (next) {
       console.log("connecting to ethereum-node:", JSON.stringify(connectOptions.ethereumNode));
       if (!connectOptions.ethereumNode) return next(null);

@@ -10,6 +10,7 @@ var getGasPrice = require("../get-gas-price");
 function bindContractFunction(functionAbi) {
   return function () {
     var payload = assign({}, functionAbi);
+
     if (arguments && arguments.length) {
       var params = Array.prototype.slice.call(arguments);
       if (payload.constant || (params[0] != null && params[0].tx != null && params[0].tx.send === false)) {
@@ -20,7 +21,9 @@ function bindContractFunction(functionAbi) {
         }
         var callback = isFunction(params[params.length - 1]) ? params.pop() : undefined;
         var callPromise = new Promise(function (resolve, reject) {
+          console.log("payload", payload);
           return ethrpc.callContractFunction(payload, function (err, response) {
+            console.log("err and response", JSON.stringify(err), response);
             if (err) return reject(err);
             if (response == null) return reject(new Error("Null eth_call response"));
             resolve(response);
