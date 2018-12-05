@@ -133,15 +133,11 @@ describe("create-market-form-outcome", () => {
           expect(newMarketObj.tickSize).toBe(1000);
         });
 
-<<<<<<< HEAD:packages/augur-ui/src/modules/create-market/components/create-market-form-outcome/create-market-form-outcome.test.jsx
+
         test("should set validation message to true", () => {
           expect(
             newMarketObj.validations[newMarketObj.currentStep].tickSize
-          ).toBeTruthy();
-=======
-        it("should set validation message to true", () => {
-          assert.equal(newMarketObj.validations[newMarketObj.currentStep].tickSize, "");
->>>>>>> 8d5e9bad026ab4c888953d898a80e161928a1298:packages/augur-ui/test/modules/create-market/components/create-market-form-outcome/create-market-form-outcome-test.jsx
+          ).toBe("");
         });
       });
 

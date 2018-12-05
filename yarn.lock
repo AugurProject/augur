@@ -1549,9 +1549,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/puppeteer@1.10.1":
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/@types/puppeteer/-/puppeteer-1.10.1.tgz#03b3fa9f4591ccdda70970bf13767681429de99a"
+"@types/puppeteer@1.11.1":
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/@types/puppeteer/-/puppeteer-1.11.1.tgz#f2fe2e08917af2b4dc4b03bd2b838c05cb9d8410"
   dependencies:
     "@types/node" "*"
 
@@ -3649,7 +3649,6 @@ browserify-sign@^4.0.0:
 browserify-zlib@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/browserify-zlib/-/browserify-zlib-0.1.4.tgz#bb35f8a519f600e0fa6b8485241c979d0141fb2d"
-  integrity sha1-uzX4pRn2AOD6a4SFJByXnQFB+y0=
   dependencies:
     pako "~0.2.0"
 
@@ -3744,7 +3743,6 @@ browserslist@^4.0.0, browserslist@^4.1.0, browserslist@^4.3.3:
 bs-logger@0.x:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/bs-logger/-/bs-logger-0.2.6.tgz#eb7d365307a72cf974cc6cda76b68354ad336bd8"
-  integrity sha512-pd8DCoxmbgc7hyPKOvxtqNcjYoOsABPQdcCUjGp3d42VR2CX1ORhk2A87oqqu5R1kk+76nsxZupkmyd+MVtCog==
   dependencies:
     fast-json-stable-stringify "2.x"
 
@@ -6919,7 +6917,7 @@ eslint-config-airbnb@16.1.0:
   dependencies:
     eslint-config-airbnb-base "^12.1.0"
 
-eslint-config-prettier@3.3.0, eslint-config-prettier@^3.0.1:
+eslint-config-prettier@3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-3.3.0.tgz#41afc8d3b852e757f06274ed6c44ca16f939a57d"
   dependencies:
@@ -6928,7 +6926,6 @@ eslint-config-prettier@3.3.0, eslint-config-prettier@^3.0.1:
 eslint-import-resolver-babel-module@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/eslint-import-resolver-babel-module/-/eslint-import-resolver-babel-module-3.0.0.tgz#5cadaca5fa0ae2fe2fcb3566ed9db8ab15db39c0"
-  integrity sha1-XK2spfoK4v4vyzVm7Z24qxXbOcA=
   dependencies:
     pkg-up "^1.0.0"
     resolve "^1.2.0"
@@ -6965,7 +6962,6 @@ eslint-import-resolver-webpack@0.10.1:
 eslint-import-resolver-webpack@0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/eslint-import-resolver-webpack/-/eslint-import-resolver-webpack-0.8.3.tgz#ad61e28df378a474459d953f246fd43f92675385"
-  integrity sha512-xLSNz4KbWvb8KrkDqWSmgmztq8uXq7R/rviOw1DYrh3Luxc8vpMnwO4hOt9Eot45VBiyjt1PxidrvJbZIWlItA==
   dependencies:
     array-find "^1.0.0"
     debug "^2.6.8"
@@ -7004,7 +7000,6 @@ eslint-plugin-import@2.14.0:
 eslint-plugin-import@2.8.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.8.0.tgz#fa1b6ef31fcb3c501c09859c1b86f1fc5b986894"
-  integrity sha512-Rf7dfKJxZ16QuTgVv1OYNxkZcsu/hULFnC+e+w0Gzi6jMC3guQoWQgxYxc54IDRinlb6/0v5z/PxxIKmVctN+g==
   dependencies:
     builtin-modules "^1.1.1"
     contains-path "^0.1.0"
@@ -7017,14 +7012,13 @@ eslint-plugin-import@2.8.0:
     minimatch "^3.0.3"
     read-pkg-up "^2.0.0"
 
-eslint-plugin-jest@21.27.2, eslint-plugin-jest@^21.22.0:
+eslint-plugin-jest@21.27.2:
   version "21.27.2"
   resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-21.27.2.tgz#2a795b7c3b5e707df48a953d651042bd01d7b0a8"
 
 eslint-plugin-jsx-a11y@6.1.1:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-jsx-a11y/-/eslint-plugin-jsx-a11y-6.1.1.tgz#7bf56dbe7d47d811d14dbb3ddff644aa656ce8e1"
-  integrity sha512-JsxNKqa3TwmPypeXNnI75FntkUktGzI1wSa1LgNZdSOMI+B4sxnr1lSF8m8lPiz4mKiC+14ysZQM4scewUrP7A==
   dependencies:
     aria-query "^3.0.0"
     array-includes "^3.0.3"
@@ -7048,7 +7042,7 @@ eslint-plugin-jsx-a11y@6.1.2:
     has "^1.0.3"
     jsx-ast-utils "^2.0.1"
 
-eslint-plugin-prettier@2.7.0, eslint-plugin-prettier@^2.6.2:
+eslint-plugin-prettier@2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-2.7.0.tgz#b4312dcf2c1d965379d7f9d5b5f8aaadc6a45904"
   dependencies:
@@ -7068,7 +7062,6 @@ eslint-plugin-react@7.11.1:
 eslint-plugin-react@7.5.1:
   version "7.5.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.5.1.tgz#52e56e8d80c810de158859ef07b880d2f56ee30b"
-  integrity sha512-YGSjB9Qu6QbVTroUZi66pYky3DfoIPLdHQ/wmrBGyBRnwxQsBXAov9j2rpXt/55i8nyMv6IRWJv2s4d4YnduzQ==
   dependencies:
     doctrine "^2.0.0"
     has "^1.0.1"
@@ -7151,7 +7144,6 @@ eslint@3.19.0:
 eslint@4.12.1:
   version "4.12.1"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.12.1.tgz#5ec1973822b4a066b353770c3c6d69a2a188e880"
-  integrity sha512-28hOYej+NZ/R5H1yMvyKa1+bPlu+fnsIAQffK6hxXgvmXnImos2bA5XfCn5dYv2k2mrKj+/U/Z4L5ICWxC7TQw==
   dependencies:
     ajv "^5.3.0"
     babel-code-frame "^6.22.0"
@@ -8322,7 +8314,6 @@ find-process@^1.2.1:
 find-root@^0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/find-root/-/find-root-0.1.2.tgz#98d2267cff1916ccaf2743b3a0eea81d79d7dcd1"
-  integrity sha1-mNImfP8ZFsyvJ0OzoO6oHXnX3NE=
 
 find-root@^1.1.0:
   version "1.1.0"
@@ -9542,7 +9533,6 @@ http@0.0.0:
 https-browserify@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-0.0.1.tgz#3f91365cabe60b77ed0ebba24b454e3e09d95a82"
-  integrity sha1-P5E2XKvmC3ftDruiS0VOPgnZWoI=
 
 https-browserify@^1.0.0:
   version "1.0.0"
@@ -9960,7 +9950,6 @@ is-absolute-url@^2.0.0:
 is-absolute@^0.2.3:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/is-absolute/-/is-absolute-0.2.6.tgz#20de69f3db942ef2d87b9c2da36f172235b1b5eb"
-  integrity sha1-IN5p89uULvLYe5wto28XIjWxtes=
   dependencies:
     is-relative "^0.2.1"
     is-windows "^0.2.0"
@@ -10292,7 +10281,6 @@ is-regexp@^1.0.0:
 is-relative@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/is-relative/-/is-relative-0.2.1.tgz#d27f4c7d516d175fb610db84bbeef23c3bc97aa5"
-  integrity sha1-0n9MfVFtF1+2ENuEu+7yPDvJeqU=
   dependencies:
     is-unc-path "^0.1.1"
 
@@ -10367,7 +10355,6 @@ is-typedarray@^1.0.0, is-typedarray@~1.0.0:
 is-unc-path@^0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/is-unc-path/-/is-unc-path-0.1.2.tgz#6ab053a72573c10250ff416a3814c35178af39b9"
-  integrity sha1-arBTpyVzwQJQ/0FqOBTDUXivObk=
   dependencies:
     unc-path-regex "^0.1.0"
 
@@ -11675,7 +11662,6 @@ lodash._basecreate@^3.0.0:
 lodash._baseget@^3.0.0:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/lodash._baseget/-/lodash._baseget-3.7.2.tgz#1b6ae1d5facf3c25532350a13c1197cb8bb674f4"
-  integrity sha1-G2rh1frPPCVTI1ChPBGXy4u2dPQ=
 
 lodash._getnative@^3.0.0:
   version "3.9.1"
@@ -11692,7 +11678,6 @@ lodash._reinterpolate@~3.0.0:
 lodash._topath@^3.0.0:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/lodash._topath/-/lodash._topath-3.8.1.tgz#3ec5e2606014f4cb97f755fe6914edd8bfc00eac"
-  integrity sha1-PsXiYGAU9MuX91X+aRTt2L/ADqw=
   dependencies:
     lodash.isarray "^3.0.0"
 
@@ -11703,7 +11688,6 @@ lodash.assign@^4.0.3, lodash.assign@^4.0.6, lodash.assign@^4.2.0:
 lodash.cond@^4.3.0:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/lodash.cond/-/lodash.cond-4.5.2.tgz#f471a1da486be60f6ab955d17115523dd1d255d5"
-  integrity sha1-9HGh2khr5g9quVXRcRVSPdHSVdU=
 
 lodash.create@3.1.1:
   version "3.1.1"
@@ -11740,7 +11724,6 @@ lodash.flattendeep@^4.4.0:
 lodash.get@^3.7.0:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-3.7.0.tgz#3ce68ae2c91683b281cc5394128303cbf75e691f"
-  integrity sha1-POaK4skWg7KBzFOUEoMDy/deaR8=
   dependencies:
     lodash._baseget "^3.0.0"
     lodash._topath "^3.0.0"
@@ -12758,7 +12741,6 @@ node-int64@^0.4.0:
 node-libs-browser@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/node-libs-browser/-/node-libs-browser-1.1.1.tgz#2a38243abedd7dffcd07a97c9aca5668975a6fea"
-  integrity sha1-KjgkOr7dff/NB6l8mspWaJdab+o=
   dependencies:
     assert "^1.1.1"
     browserify-zlib "^0.1.4"
@@ -13314,7 +13296,6 @@ original@^1.0.0:
 os-browserify@^0.2.0:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/os-browserify/-/os-browserify-0.2.1.tgz#63fc4ccee5d2d7763d26bbf8601078e6c2e0044f"
-  integrity sha1-Y/xMzuXS13Y9Jrv4YBB45sLgBE8=
 
 os-browserify@^0.3.0, os-browserify@~0.3.0:
   version "0.3.0"
@@ -13533,8 +13514,7 @@ pako@^1.0.6, pako@~1.0.5:
 
 pako@~0.2.0:
   version "0.2.9"
-  resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
-  integrity sha1-8/dSL073gjSNqBYbrZ7P1Rv4OnU=
+  resolved "http://registry.npmjs.org/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
 
 parallel-transform@^1.1.0:
   version "1.1.0"
@@ -13871,7 +13851,6 @@ pkg-dir@^3.0.0:
 pkg-up@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/pkg-up/-/pkg-up-1.0.0.tgz#3e08fb461525c4421624a33b9f7e6d0af5b05a26"
-  integrity sha1-Pgj7RhUlxEIWJKM7n35tCvWwWiY=
   dependencies:
     find-up "^1.0.0"
 
@@ -18153,7 +18132,6 @@ truncate-utf8-bytes@^1.0.0:
 ts-jest@23.10.5:
   version "23.10.5"
   resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-23.10.5.tgz#cdb550df4466a30489bf70ba867615799f388dd5"
-  integrity sha512-MRCs9qnGoyKgFc8adDEntAOP64fWK1vZKnOYU1o2HxaqjdJvGqmkLCPCnVq1/If4zkUmEjKPnCiUisTrlX2p2A==
   dependencies:
     bs-logger "0.x"
     buffer-from "1.x"
@@ -18168,7 +18146,6 @@ ts-jest@23.10.5:
 ts-node@7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-7.0.1.tgz#9562dc2d1e6d248d24bc55f773e3f614337d9baf"
-  integrity sha512-BVwVbPJRspzNh2yfslyT1PSbl5uIk03EZlb493RKHN4qej/D06n1cEhjlOJG69oFsE7OT8XjpTUcYf6pKTLMhw==
   dependencies:
     arrify "^1.0.0"
     buffer-from "^1.1.0"
@@ -18287,7 +18264,6 @@ typedarray@^0.0.6:
 typescript@3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.2.1.tgz#0b7a04b8cf3868188de914d9568bd030f0c56192"
-  integrity sha512-jw7P2z/h6aPT4AENXDGjcfHTu5CSqzsbZc6YlUIebTyBAq8XaKp78x7VcSh30xwSCcsu5irZkYZUSFP1MrAMbg==
 
 typewise-core@^1.2, typewise-core@^1.2.0:
   version "1.2.0"

@@ -43,22 +43,9 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       id: 1,
       marketId: "marketId1_buy"
     });
-<<<<<<< HEAD:packages/augur-ui/src/modules/markets/selectors/select-market-outcome-trading-indicator.test.js
-    const expected = BUY_UP;
-    expect(actual).toEqual(expected);
-=======
     const expected = UP;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
-  });
+    expect(actual).toEqual(expected);
 
-  it(`one buy trades in market`, () => {
-    const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
-      id: 1,
-      marketId: "marketId1_buy"
-    }, true);
-    const expected = BUY;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
->>>>>>> 8d5e9bad026ab4c888953d898a80e161928a1298:packages/augur-ui/test/markets/selectors/select-market-outcome-trading-indicator-test.js
   });
 
   test(`one sell trades in market`, () => {
@@ -66,36 +53,19 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       id: 1,
       marketId: "marketId1_sell"
     });
-<<<<<<< HEAD:packages/augur-ui/src/modules/markets/selectors/select-market-outcome-trading-indicator.test.js
-    const expected = SELL_DOWN;
-    expect(actual).toEqual(expected);
-=======
-    const expected = DOWN;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
-  });
 
-   it(`one sell trades in market`, () => {
-    const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
-      id: 1,
-      marketId: "marketId1_sell"
-    }, true);
-    const expected = SELL;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
->>>>>>> 8d5e9bad026ab4c888953d898a80e161928a1298:packages/augur-ui/test/markets/selectors/select-market-outcome-trading-indicator-test.js
-  });
+    const expected = DOWN;
+    expect(actual).toEqual(expected);
+});
 
   test(`multiple buy down trades in market`, () => {
     const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
       id: 1,
       marketId: "marketId2_buy"
     });
-<<<<<<< HEAD:packages/augur-ui/src/modules/markets/selectors/select-market-outcome-trading-indicator.test.js
-    const expected = BUY_DOWN;
-    expect(actual).toEqual(expected);
-=======
+
     const expected = DOWN;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
->>>>>>> 8d5e9bad026ab4c888953d898a80e161928a1298:packages/augur-ui/test/markets/selectors/select-market-outcome-trading-indicator-test.js
+    expect(actual).toEqual(expected);
   });
 
   test(`multiple buy up trades in market`, () => {
@@ -103,13 +73,9 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       id: 2,
       marketId: "marketId2_buy"
     });
-<<<<<<< HEAD:packages/augur-ui/src/modules/markets/selectors/select-market-outcome-trading-indicator.test.js
-    const expected = BUY_UP;
-    expect(actual).toEqual(expected);
-=======
+
     const expected = UP;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
->>>>>>> 8d5e9bad026ab4c888953d898a80e161928a1298:packages/augur-ui/test/markets/selectors/select-market-outcome-trading-indicator-test.js
+    expect(actual).toEqual(expected);
   });
 
   test(`multiple sell down trades in market`, () => {
@@ -117,48 +83,18 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       id: 1,
       marketId: "marketId2_sell"
     });
-<<<<<<< HEAD:packages/augur-ui/src/modules/markets/selectors/select-market-outcome-trading-indicator.test.js
-    const expected = SELL_DOWN;
+
+    const expected = DOWN;
     expect(actual).toEqual(expected);
   });
 
   test(`multiple sell up trades in market`, () => {
-=======
-    const expected = DOWN;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
-  });
-
-  it(`multiple sell down trades in market`, () => {
-    const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
-      id: 1,
-      marketId: "marketId2_sell"
-    }, true);
-    const expected = SELL;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
-  });
-
-
-  it(`multiple sell up trades in market`, () => {
->>>>>>> 8d5e9bad026ab4c888953d898a80e161928a1298:packages/augur-ui/test/markets/selectors/select-market-outcome-trading-indicator-test.js
     const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
       id: 2,
       marketId: "marketId2_sell"
     });
-<<<<<<< HEAD:packages/augur-ui/src/modules/markets/selectors/select-market-outcome-trading-indicator.test.js
-    const expected = SELL_UP;
-    expect(actual).toEqual(expected);
-=======
-    const expected = UP;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
-  });
 
-  it(`multiple sell up trades in market`, () => {
-    const actual = selectMarketOutcomeTradingIndicator(marketTradingHistory, {
-      id: 2,
-      marketId: "marketId2_sell"
-    }, true);
-    const expected = SELL;
-    assert.deepEqual(actual, expected, `Didn't call the expected method`);
->>>>>>> 8d5e9bad026ab4c888953d898a80e161928a1298:packages/augur-ui/test/markets/selectors/select-market-outcome-trading-indicator-test.js
+    const expected = UP;
+    expect(actual).toEqual(expected);
   });
 });
