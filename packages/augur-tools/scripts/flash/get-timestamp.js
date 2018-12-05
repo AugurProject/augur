@@ -3,14 +3,12 @@
 "use strict";
 
 var chalk = require("chalk");
-var Web3 = require("web3");
 
 function getTime(augur, auth, callback) {
-  var web3 = new Web3();
   var controller =
     augur.contracts.addresses[augur.rpc.getNetworkID()].Controller;
-  var _key = web3.fromAscii("Time");
-  console.log(_key);
+  var _key = "0x54696d6500000000000000000000000000000000000000000000000000000000"; // "Time"
+  console.log(_key, controller);
   augur.api.Controller.lookup(
     {
       meta: auth,
@@ -22,6 +20,9 @@ function getTime(augur, auth, callback) {
       if (err) {
         console.log(chalk.red(err));
         return callback(err);
+      }
+      if (timeAddress === "0x0000000000000000000000000000000000000000") {
+        return callback("time contract address not found");
       }
       augur.api.Controller.getTimestamp(function(err, timestamp) {
         if (err) {

@@ -9,12 +9,14 @@ var getTime = require("./get-timestamp");
 function setTimestamp(augur, newTimestamp, address, auth, callback) {
   displayTime("setting time to", newTimestamp);
   getTime(augur, auth, function (err, timeResult) {
-    console.log("timeResult", JSON.stringify(timeResult));
+    if (err) {
+      console.log(chalk.red("Error "), chalk.red(err));
+      return callback(err);
+    }
     if (parseInt(timeResult.timestamp, 10) === parseInt(newTimestamp, 10)) {
       console.log(chalk.yellow.dim("Time already set"));
       return callback(null);
     }
-
     augur.api.TimeControlled.setTimestamp({
       meta: auth,
       tx: { to: address },
