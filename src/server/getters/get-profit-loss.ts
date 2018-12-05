@@ -120,7 +120,8 @@ async function queryProfitLossTimeseries(db: Knex, now: number, params: IGetProf
   const query = db("profit_loss_timeseries")
     .select("profit_loss_timeseries.*", "markets.universe")
     .join("markets", "profit_loss_timeseries.marketId", "markets.marketId")
-    .where({ account: params.account, universe: params.universe });
+    .where({ account: params.account, universe: params.universe })
+    .orderBy("timestamp");
 
   if (params.marketId !== null) query.where("profit_loss_timeseries.marketId", params.marketId);
   if (params.startTime) query.where("timestamp", ">=", params.startTime);
@@ -133,7 +134,8 @@ async function queryProfitLossTimeseries(db: Knex, now: number, params: IGetProf
 async function queryOutcomeValueTimeseries(db: Knex, now: number, params: IGetProfitLossParams): Promise<Array<OutcomeValueTimeseries>> {
   const query = db("outcome_value_timeseries")
     .select("outcome_value_timeseries.*", "markets.universe")
-    .join("markets", "outcome_value_timeseries.marketId", "markets.marketId");
+    .join("markets", "outcome_value_timeseries.marketId", "markets.marketId")
+    .orderBy("timestamp");
 
   if (params.marketId !== null) query.where("outcome_value_timeseries.marketId", params.marketId);
   if (params.startTime) query.where("timestamp", ">=", params.startTime);
@@ -146,6 +148,8 @@ async function queryOutcomeValueTimeseries(db: Knex, now: number, params: IGetPr
 function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: Array<OutcomeValueTimeseries>, timestamps: Array<Timestamped>): Array<ProfitLossResult> {
   let remainingPls = pl;
   let plResult: ProfitLossTimeseries|undefined;
+  console.log(timestamps);
+  console.log(pl);
   return timestamps.map((bucket: Timestamped) => {
     const plsBeforeBucket = _.takeWhile(remainingPls, (pl) => pl.timestamp < bucket.timestamp)
     if(plsBeforeBucket.length > 0) {
@@ -153,9 +157,19 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
       plResult = _.last(plsBeforeBucket);
     }
 
-    if (!plResult) throw new Error("Inconsistent data when attempting to generate Profit And Loss");
+    if (!plResult) {
+      return {
+        timestamp: bucket.timestamp,
+        position: ZERO,
+        realized: ZERO,
+        unrealized: ZERO,
+        total: ZERO,
+      }
+    }
 
-    const ovResultIndex = _.sortedLastIndexBy(outcomeValues, bucket, "timestamp");
+    console.log(outcomeValues);
+    const ovResultIndex = Math.max(0, _.sortedLastIndexBy(outcomeValues, bucket, "timestamp") - 1);
+    console.log(outcomeValues[ovResultIndex]);
     const ovResult = outcomeValues[ovResultIndex];
 
     const position = plResult!.numOwned;
@@ -184,11 +198,12 @@ async function getProfitLossData(db: Knex, params: IGetProfitLossParams): Promis
   const now = Date.now();
 
   // Realized Profits + Timeseries data about the state of positions
-  const profits = _.groupBy(await queryProfitLossTimeseries(db, now, params), ["marketId", "outcome"]);
+  const profits = _.groupBy(await queryProfitLossTimeseries(db, now, params), (r) => [r.marketId, r.outcome].join(","));
   if(_.isEmpty(profits)) return { profits: {}, outcomeValues: {}, buckets: [] };
 
   // The value of an outcome over time, for computing unrealized profit and loss at a time
-  const outcomeValues = _.groupBy(await queryOutcomeValueTimeseries(db, now, params), ["maketId", "outcome"]);
+  const outcomeValues = _.groupBy(await queryOutcomeValueTimeseries(db, now, params), (r) => [r.marketId, r.outcome].join(","));
+  console.log(outcomeValues);
 
   // The timestamps at which we need to return results
   const buckets = bucketRangeByInterval(params.startTime || 0, params.endTime || now, params.periodInterval);
@@ -203,7 +218,7 @@ export async function getAllOutcomesProfitLoss(db: Knex, augur: Augur, params: I
 
 export async function getOutcomeProfitLoss(db: Knex, augur: Augur, params: IGetOutcomeProfitLossParams): Promise<Array<ProfitLossResult>> {
   const allOutcomesProfitLoss = await getAllOutcomesProfitLoss(db, augur, params);
-  return allOutcomesProfitLoss[`${params.marketId}${params.outcome}`];
+  return allOutcomesProfitLoss[`${params.marketId},${params.outcome}`];
 }
 
 export async function getProfitLoss(db: Knex, augur: Augur, params: IGetProfitLossParams): Promise<Array<ProfitLossResult>> {

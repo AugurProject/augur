@@ -105,6 +105,7 @@ const whitelist: TableWhitelist = {
   profit_loss_timeseries: {
     moneySpent: true,
     numEscrowed: true,
+    numOwned: true,
     profit: true
   }
 };
