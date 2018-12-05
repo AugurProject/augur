@@ -58,9 +58,9 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  sellCompleteSets: (marketId, numCompleteSets) =>
-    dispatch(sellCompleteSets(marketId, numCompleteSets)),
-  cancelOrphanedOrder: order => dispatch(cancelOrphanedOrder(order))
+  sellCompleteSets: (marketId, numCompleteSets, cb) =>
+    dispatch(sellCompleteSets(marketId, numCompleteSets, cb)),
+  cancelOrphanedOrder: (order, cb) => dispatch(cancelOrphanedOrder(order, cb))
 });
 
 const MarketOutcomesAndPositionsContainer = withRouter(

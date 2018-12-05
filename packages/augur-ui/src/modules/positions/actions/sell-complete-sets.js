@@ -2,7 +2,7 @@ import { augur } from "services/augurjs";
 import { createBigNumber } from "utils/create-big-number";
 import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import logError from "utils/log-error";
-import noop from "utils/noop";
+// import noop from "utils/noop";
 
 export function sellCompleteSets(
   marketId,
@@ -23,9 +23,10 @@ export function sellCompleteSets(
       meta: loginAccount.meta,
       _market: marketId,
       _amount: numCompleteSetsOnChain,
-      onSent: noop,
+      onSent: res => callback(null, res),
       onSuccess: res => {
         dispatch(loadAccountTrades({ marketId }));
+        callback(null, res);
       },
       onFailed: err => callback(err)
     };

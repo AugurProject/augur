@@ -37,7 +37,7 @@ const ledgerSigner = async (rawTxArgs, ledgerLib, derivationPath, dispatch) => {
       dispatch(
         updateModal({
           type: MODAL_LEDGER,
-          error: `Failed to Sign with "${err}"`
+          error: `Failed to Sign with "${err}" On Leger device, Make sure Contract data is Enabled`
         })
       );
     });

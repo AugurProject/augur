@@ -25,7 +25,7 @@ const ModalButton = ({ type, label, action, isDisabled, continueDefault }) => {
       disabled={!!isDisabled}
       onClick={e => {
         if (!continueDefault) e.preventDefault();
-        action();
+        action(e);
       }}
     >
       {label}
