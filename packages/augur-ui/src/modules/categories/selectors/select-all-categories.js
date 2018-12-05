@@ -31,14 +31,10 @@ const process = compose(
   Object.values
 );
 
-<<<<<<< HEAD
 const selectAllCategoriesSelector = () =>
-  createSelector(selectMarketsDataState, process);
+  createSelector(
+    selectCategoriesState,
+    process
+  );
 
 export const selectAllCategories = selectAllCategoriesSelector();
-=======
-export const selectAllCategories = createSelector(
-  selectCategoriesState,
-  process
-);
->>>>>>> 8d5e9bad026ab4c888953d898a80e161928a1298
