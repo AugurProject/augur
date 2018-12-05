@@ -70,6 +70,18 @@
     top: 3.1rem;
     width: 250px;
   }
+
+  @media @breakpoint-mobile-small {
+    left: -1px;
+    right: unset;
+  }
+}
+
+.BlockInfoData__connectDropdownLogged {
+  @media @breakpoint-mobile-small {
+    left: unset;
+    right: -1px;
+  }
 }
 
 .BlockInfoData__dropdownContainer {
@@ -132,3 +144,10 @@
     padding: 5px 24px;
   }
 }
+
+@media @breakpoint-mobile-small {
+  .BlockInfoData__container {
+    padding: 5px 10px;
+  }
+}
+
