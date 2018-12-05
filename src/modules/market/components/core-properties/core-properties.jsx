@@ -304,8 +304,8 @@ export default class CoreProperties extends Component {
         </div>
       ];
     } else if (
-      isLogged &&
-      reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE
+      reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE ||
+      reportingState === constants.REPORTING_STATE.AWAITING_NEXT_WINDOW
     ) {
       headerContent = [
         <div key="dispute">
@@ -321,14 +321,18 @@ export default class CoreProperties extends Component {
               {tentativeWinner &&
                 (tentativeWinner.isInvalid ? "Invalid" : tentativeWinner.name)}
             </div>
-            <MarketLink
-              className={Styles[`CoreProperties__property-button`]}
-              id={id}
-              linkType={TYPE_DISPUTE}
-              location={location}
-            >
-              DISPUTE
-            </MarketLink>
+            {isLogged &&
+              reportingState ===
+                constants.REPORTING_STATE.CROWDSOURCING_DISPUTE && (
+                <MarketLink
+                  className={Styles[`CoreProperties__property-button`]}
+                  id={id}
+                  linkType={TYPE_DISPUTE}
+                  location={location}
+                >
+                  DISPUTE
+                </MarketLink>
+              )}
           </span>
         </div>
       ];
