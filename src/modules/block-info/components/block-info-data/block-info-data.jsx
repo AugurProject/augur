@@ -6,6 +6,7 @@ import toggleHeight from "utils/toggle-height/toggle-height";
 import { createBigNumber } from "utils/create-big-number";
 import { formatNumber, formatPercent } from "utils/format-number";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
+import { ZERO } from "modules/trades/constants/numbers";
 
 import Styles from "modules/block-info/components/block-info-data/block-info-data.styles";
 import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
@@ -69,20 +70,26 @@ export default class BlockInfoData extends Component {
   render() {
     const { highestBlock, lastProcessedBlock, isLogged } = this.props;
     const s = this.state;
-
     const highestBlockBn = createBigNumber(highestBlock);
     const lastProcessedBlockBn = createBigNumber(lastProcessedBlock);
 
-    const blocksBehind = formatNumber(
-      highestBlockBn.minus(lastProcessedBlockBn).toString()
-    ).roundedValue;
-    const percent = formatPercent(
+    const diff = highestBlockBn.minus(lastProcessedBlockBn);
+    let blocksBehind = formatNumber(diff.toString()).rounded;
+
+    blocksBehind = blocksBehind === "-" ? 0 : blocksBehind;
+
+    const fullPercent = formatPercent(
       lastProcessedBlockBn
         .dividedBy(highestBlockBn)
         .times(createBigNumber(100))
         .toString(),
-      { decimals: 4, decimalsRounded: 4 }
-    ).formattedValue;
+      { decimals: 2, decimalsRounded: 2 }
+    );
+    let percent = fullPercent.formattedValue;
+
+    if (percent === 100 && diff.gt(ZERO)) {
+      percent = "99.99";
+    }
 
     return (
       <div
