@@ -75,7 +75,7 @@ export default class BlockInfoData extends Component {
 
     const blocksBehind = formatNumber(
       highestBlockBn.minus(lastProcessedBlockBn).toString()
-    ).rounded;
+    ).roundedValue;
     const percent = formatPercent(
       lastProcessedBlockBn
         .dividedBy(highestBlockBn)
