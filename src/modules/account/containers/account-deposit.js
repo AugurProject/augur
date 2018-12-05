@@ -56,7 +56,7 @@ const mapDispatchToProps = () => ({
           availableAssetDatas: [],
           defaultSelectedAssetData: assetData,
           orderSource: "https://api.radarrelay.com/0x/v2",
-          netowrkId: 1
+          networkId: 1
         }
       ];
 
