@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-require('source-map-support').install();
+require("source-map-support").install();
 import { ContractCompiler } from "../libraries/ContractCompiler";
-import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
-import { ContractInterfaceGenerator } from '../libraries/ContractInterfacesGenerator';
+import { CompilerConfiguration } from "../libraries/CompilerConfiguration";
+import { ContractInterfaceGenerator } from "../libraries/ContractInterfacesGenerator";
 
 async function doWork(): Promise<void> {
     const configuration = await CompilerConfiguration.create();

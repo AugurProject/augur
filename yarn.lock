@@ -12297,6 +12297,11 @@ js-sha3@0.5.7, js-sha3@^0.5.7:
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.5.7.tgz#0d4ffd8002d5333aabaf4a23eed2f6374c9f28e7"
   integrity sha1-DU/9gALVMzqrr0oj7tL2N0yfKOc=
 
+js-sha3@0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.8.0.tgz#b9b7a5da73afad7dedd0f8c463954cbde6818840"
+  integrity sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q==
+
 js-sha3@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.3.1.tgz#86122802142f0828502a0d1dee1d95e253bb0243"
@@ -19130,6 +19135,13 @@ solidity-parser-sc@0.4.11:
     mocha "^4.1.0"
     pegjs "^0.10.0"
     yargs "^4.6.0"
+
+solidity-typescript-generator@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/solidity-typescript-generator/-/solidity-typescript-generator-1.1.0.tgz#9c1743bb46692e7eb64dc0772d5eb502c4e2e001"
+  integrity sha512-mg+S/t1JeK6Z9PTC+3ArSKnh5+Tpc0ziFzYrcXA/1GjsU7Cqal87w1m1zIAL0ZDha7gAan57hqNAQxrLhTBcdQ==
+  dependencies:
+    js-sha3 "0.8.0"
 
 solium-plugin-security@0.1.1:
   version "0.1.1"
