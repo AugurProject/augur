@@ -8,7 +8,7 @@ import AccountDeposit from "modules/account/containers/account-deposit";
 import AccountWithdraw from "modules/account/containers/account-withdraw";
 import AccountRepFaucet from "modules/account/containers/account-rep-faucet";
 import AccountUniverses from "modules/account/containers/account-universes";
-import TermsAndConditions from "modules/app/components/terms-and-conditions/terms-and-conditions";
+import TermsAndConditions from "modules/app/containers/terms-and-conditions";
 
 import { augur } from "services/augurjs";
 

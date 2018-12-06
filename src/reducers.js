@@ -40,6 +40,7 @@ import selectedMarketId from "modules/markets/reducers/selected-market-id";
 import tradesInProgress from "modules/trades/reducers/trades-in-progress";
 import transactionsData from "modules/transactions/reducers/transactions-data";
 import universe from "modules/universe/reducers/universe";
+import versions from "modules/app/reducers/versions";
 
 export function createReducer() {
   return {
@@ -84,6 +85,7 @@ export function createReducer() {
     selectedMarketId,
     tradesInProgress,
     transactionsData,
-    universe
+    universe,
+    versions
   };
 }

@@ -2,28 +2,56 @@
 
 .TermsAndConditions {
   color: @color-text-light;
+  display: flex;
   flex: 0 0 auto;
   font-size: @font-size-normal;
+  justify-content: space-between;
   margin: 1em 0;
   text-align: center;
   white-space: nowrap;
 
-  a {
-    flex: none;
-  }
+  .TermsAndConditions__grouping {
+    flex: 0 0 auto;
+    padding: 0 2rem;
 
-  a::after {
-    content: "|";
-    padding: 0 0.5em;
+    a,
+    span {
+      flex: none;
+    }
 
-    @media @breakpoint-mobile-medium {
+    a {
+      align-self: flex-start;
+    }
+
+    span {
+      align-self: flex-end;
+      font-weight: bold;
+    }
+
+    a::after,
+    span::after {
+      content: "|";
+      padding: 0 0.5em;
+
+      @media @breakpoint-mobile-medium {
+        content: "";
+        padding: 0;
+      }
+    }
+
+    a:last-child::after,
+    span:last-child::after {
+      content: "";
+    }
+
+    span > span {
+      font-weight: normal;
+    }
+
+    span > span::after {
       content: "";
       padding: 0;
     }
-  }
-
-  a:last-child::after {
-    content: "";
   }
 
   @media @breakpoint-mobile-medium {
@@ -33,10 +61,17 @@
       flex-grow: 0;
     }
 
-    a {
-      flex-basis: 100%;
-      font-size: @font-size-normal;
-      padding: 0.5em 0;
+    .TermsAndConditions__grouping {
+      display: flex;
+      flex-flow: column wrap;
+
+      a,
+      span {
+        align-self: flex-start;
+        flex-basis: 100%;
+        font-size: @font-size-normal;
+        padding: 0.5em 0;
+      }
     }
   }
 }
