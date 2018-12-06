@@ -46,7 +46,8 @@ export default class MarketPortfolioCard extends Component {
         myPositions: positionsDefault,
         openOrders: orphanedOrders.length > 0 // open if orphaned orders are present
       },
-      claimClicked: false
+      claimClicked: false,
+      disableFinalize: false
     };
   }
 
@@ -67,14 +68,17 @@ export default class MarketPortfolioCard extends Component {
 
   finalizeMarket = () => {
     const { finalizeMarket, market } = this.props;
-    finalizeMarket(market.id);
+    this.setState({ disableFinalize: true });
+    finalizeMarket(market.id, err => {
+      if (err) this.setState({ disableFinalize: false });
+    });
   };
 
   claimProceeds = () => {
     const { claimTradingProceeds, market } = this.props;
     this.setState({ claimClicked: true });
-    claimTradingProceeds(market.id, () => {
-      this.setState({ claimClicked: false });
+    claimTradingProceeds(market.id, err => {
+      if (err) this.setState({ claimClicked: false });
     });
   };
 
@@ -87,20 +91,23 @@ export default class MarketPortfolioCard extends Component {
       orphanedOrders,
       cancelOrphanedOrder
     } = this.props;
-    const { tableOpen, claimClicked } = this.state;
+    const { tableOpen, claimClicked, disableFinalize } = this.state;
     const myPositionsSummary = getValue(market, "myPositionsSummary");
     const myPositionOutcomes = getValue(market, "outcomes");
 
     let localButtonText;
     let buttonAction;
+    let disabled = false;
     switch (linkType) {
       case TYPE_CLAIM_PROCEEDS:
         localButtonText = "Claim Proceeds";
         buttonAction = this.claimProceeds;
+        disabled = claimClicked;
         break;
       case TYPE_FINALIZE_MARKET:
         localButtonText = "Finalize Market";
         buttonAction = this.finalizeMarket;
+        disabled = disableFinalize;
         break;
       default:
         localButtonText = "View";
@@ -402,6 +409,7 @@ export default class MarketPortfolioCard extends Component {
               currentTimestamp={currentTimestamp}
               marketId={market.id}
               claimClicked={linkType === TYPE_CLAIM_PROCEEDS && claimClicked}
+              disabled={disabled}
             />
           )}
       </article>

@@ -34,7 +34,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId))
+  finalizeMarket: (marketId, cb) => dispatch(sendFinalizeMarket(marketId, cb))
 });
 
 const MarketHeaderContainer = withRouter(

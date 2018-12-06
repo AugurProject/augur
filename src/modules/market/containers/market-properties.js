@@ -24,7 +24,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
   updateModal: modal => dispatch(updateModal(modal)),
-  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId))
+  finalizeMarket: (marketId, cb) => dispatch(sendFinalizeMarket(marketId, cb))
 });
 
 const MarketPropertiesContainer = withRouter(
