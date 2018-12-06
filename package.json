@@ -16,7 +16,7 @@
     "nuke": "yarn clean; rimraf yarn.lock; rimraf package-lock.json",
     "dev": "genversion --es6 --semi src/version.js && node scripts/dev.js",
     "build": "genversion --es6 --semi src/version.js && node scripts/build.js",
-    "build:mainnet": "genversion --es6 --semi src/version.js &&ETHEREUM_NETWORK=mainnet node scripts/build.js",
+    "build:mainnet": "genversion --es6 --semi src/version.js && ETHEREUM_NETWORK=mainnet node scripts/build.js",
     "start": "node server.js",
     "__": "",
     "integration:headless": "AUGUR_URL='http://localhost:8080/' jest --runInBand --detectOpenHandles --forceExit",
