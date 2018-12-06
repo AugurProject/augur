@@ -90,6 +90,14 @@ export default class CoreProperties extends Component {
     isMobileSmall: false
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      disableFinalize: false
+    };
+  }
+
   determinePhase() {
     const { reportingState } = this.props.market;
     switch (reportingState) {
@@ -294,7 +302,15 @@ export default class CoreProperties extends Component {
                   </ReactTooltip>
                   <button
                     className={Styles[`CoreProperties__property-button`]}
-                    onClick={() => finalizeMarket(id)}
+                    onClick={() => {
+                      this.setState({ disableFinalize: true });
+                      finalizeMarket(id, err => {
+                        if (err) {
+                          this.setState({ disableFinalize: false });
+                        }
+                      });
+                    }}
+                    disabled={this.state.disableFinalize}
                   >
                     FINALIZE
                   </button>

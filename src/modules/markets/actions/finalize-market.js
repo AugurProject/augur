@@ -13,7 +13,9 @@ export const sendFinalizeMarket = (marketId, callback = logError) => (
     tx: { to: marketId },
     meta: loginAccount.meta,
     onSent: noop,
-    onSuccess: noop,
+    onSuccess: () => {
+      callback(null);
+    },
     onFailed: err => callback(err)
   });
 };

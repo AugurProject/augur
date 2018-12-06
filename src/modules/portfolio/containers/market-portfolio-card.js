@@ -44,7 +44,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   getWinningBalances: marketIds => dispatch(getWinningBalance(marketIds)),
-  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
+  finalizeMarket: (marketId, cb) => dispatch(sendFinalizeMarket(marketId, cb)),
   cancelOrphanedOrder: (order, cb) => dispatch(cancelOrphanedOrder(order, cb)),
   claimTradingProceeds: (marketId, cb) =>
     dispatch(updateModal({ type: MODAL_CLAIM_TRADING_PROCEEDS, marketId, cb }))
