@@ -16,7 +16,6 @@ jest.mock("modules/app/actions/register-user-defined-gasPrice-function");
 describe("modules/auth/actions/load-account-data-from-local-storage.js", () => {
   test(`should return no action b/c there is nothing in localStorage`, () => {
     const store = mockStore.mockStore({});
-
     localStorage.getItem.mockImplementation(
       () =>
         '{"scalarMarketsShareDenomination":{},"favorites":{},"reports":{},"notifications":{}}'

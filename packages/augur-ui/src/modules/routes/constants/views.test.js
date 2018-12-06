@@ -25,10 +25,6 @@ describe("modules/app/constants/views", () => {
     expect(views.ACCOUNT).toStrictEqual("account");
   });
 
-  test("Returned the expected value 'CATEGORIES'", () => {
-    expect(views.CATEGORIES).toStrictEqual("categories");
-  });
-
   test("Returned the expected value 'MY_POSITIONS'", () => {
     expect(views.MY_POSITIONS).toStrictEqual("my-positions");
   });
