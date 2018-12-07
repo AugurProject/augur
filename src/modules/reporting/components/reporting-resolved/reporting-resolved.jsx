@@ -40,7 +40,7 @@ export default class ReportingResolved extends Component {
   };
 
   static defaultProps = {
-    nullMessage: null,
+    nullMessage: "No Markets Available",
     isForkingMarketFinalized: false,
     noShowHeader: false,
     forkingMarket: null,
