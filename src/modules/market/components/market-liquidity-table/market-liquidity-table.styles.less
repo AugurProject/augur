@@ -67,16 +67,16 @@
 }
 
 .MarketLiquidityTable__OrderIndicator {
-  width: 0.5rem;
-  position: absolute;
-  top:0;
-  left:0;
-  bottom:0;
   background-color: @color-positive;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 0.5rem;
 }
 
 .MarketLiquidityTable__OrderIndicator_negative {
-    background-color: @color-negative;
+  background-color: @color-negative;
 }
 
 .MarketLiquidityTable__firstColumn {
@@ -100,10 +100,6 @@
   }
 
   .MarketLiquidityTable__Order {
-    &.active,
-    &:hover {
-      background-color: @color-darkpurple;
-    }
 
     > li {
       color: inherit;
