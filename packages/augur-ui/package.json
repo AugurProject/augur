@@ -13,8 +13,8 @@
     "url": "https://github.com/AugurProject/augur-ui"
   },
   "scripts": {
-    "clean": "rimraf build; rimraf node_modules",
-    "nuke": "yarn clean; rimraf yarn.lock; rimraf package-lock.json",
+    "clean": "rm -rf build; rm -rf node_modules",
+    "nuke": "yarn clean; rm yarn.lock; rm package-lock.json",
     "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
     "build:mainnet": "ETHEREUM_NETWORK=mainnet node scripts/build.js",
