@@ -3,7 +3,7 @@ const sqlite3 = require("sqlite3");
 const path = require("path");
 const Knex = require("knex");
 const setupTestDb = require("../../test.database");
-const { calculateEarningsPerTimePeriod, getProfitLoss, bucketRangeByInterval } = require("src/server/getters/get-profit-loss");
+const { calculateEarningsPerTimePeriod, getProfitLoss, getProfitLossSummary, bucketRangeByInterval } = require("src/server/getters/get-profit-loss");
 const { postProcessDatabaseResults } = require("src/server/post-process-database-results");
 
 const START_TIME = 1506474500;
@@ -113,8 +113,57 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
       marketId: "0x0000000000000000000000000000000000000ff1"
     });
 
-    //console.log(JSON.stringify(results, null, 2));
+    console.log(results);
     expect(results.length).toEqual(31);
   });
 });
 
+
+describe("server/getters/get-profit-loss#getProfitLoss", () => {
+  var connection = null;
+  var augur = new Augur();
+
+  beforeEach(async () => {
+    connection = await setupTestDb();
+  });
+
+  afterEach(async () => {
+    if(connection) await connection.destroy();
+  });
+
+  it("returns 0-value 1-day and 30-day PLs", async() => {
+    const results = await getProfitLossSummary(connection, augur, {
+      universe: "0x000000000000000000000000000000000000000b",
+			account:  "0xffff000000000000000000000000000000000000",
+      marketId: "0x0000000000000000000000000000000000000ff1",
+    });
+
+    const deserialized = JSON.parse(JSON.stringify(results));
+
+    expect(deserialized).toHaveProperty("1.timestamp");
+    expect(deserialized).toHaveProperty("1.realized", "0");
+    expect(deserialized).toHaveProperty("1.unrealized", "0");
+    expect(deserialized).toHaveProperty("1.total", "0");
+    expect(deserialized).toHaveProperty("1.position", "0");
+
+    expect(deserialized).toHaveProperty("30.timestamp");
+    expect(deserialized).toHaveProperty("30.realized", "0");
+    expect(deserialized).toHaveProperty("30.unrealized", "0");
+    expect(deserialized).toHaveProperty("30.total", "0");
+    expect(deserialized).toHaveProperty("30.position", "0");
+
+
+    expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(['1', '30']));
+  });
+
+  it("returns 1-day and 30-day PLs", async() => {
+    const results = await getProfitLossSummary(connection, augur, {
+      universe: "0x000000000000000000000000000000000000000b",
+			account:  "0xffff000000000000000000000000000000000000",
+      marketId: "0x0000000000000000000000000000000000000ff1",
+      endTime: 1534435013,
+    });
+
+    console.log(results);
+  });
+});

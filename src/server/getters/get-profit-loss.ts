@@ -78,6 +78,15 @@ const MarketIdAndOutcomeParams = t.type({
 export const GetOutcomeProfitLossParams = t.intersection([GetProfitLossSharedParams, MarketIdAndOutcomeParams]);
 export interface IGetOutcomeProfitLossParams extends t.TypeOf<typeof GetOutcomeProfitLossParams> {};
 
+export const GetProfitLossSummaryParams = t.intersection([t.type({
+  universe: t.string,
+  account: t.string,
+  marketId: t.union([t.string, t.null]),
+}), t.partial({
+  endTime: t.number
+})]);
+export interface IGetProfitLossSummaryParams extends t.TypeOf<typeof GetProfitLossSummaryParams> {};
+
 export function bucketRangeByInterval(startTime: number, endTime: number, periodInterval: number | null): Array<Timestamped> {
   if (startTime < 0) throw new Error("startTime must be a valid unix timestamp, greater than 0");
   if (endTime < 0) throw new Error("endTime must be a valid unix timestamp, greater than 0");
@@ -167,9 +176,7 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
       }
     }
 
-    console.log(outcomeValues);
     const ovResultIndex = Math.max(0, _.sortedLastIndexBy(outcomeValues, bucket, "timestamp") - 1);
-    console.log(outcomeValues[ovResultIndex]);
     const ovResult = outcomeValues[ovResultIndex];
 
     const position = plResult!.numOwned;
@@ -195,34 +202,41 @@ interface ProfitLossData {
 }
 
 async function getProfitLossData(db: Knex, params: IGetProfitLossParams): Promise<ProfitLossData> {
-  const now = Date.now();
+  const now = Math.floor(Date.now()/1000);
 
   // Realized Profits + Timeseries data about the state of positions
-  const profits = _.groupBy(await queryProfitLossTimeseries(db, now, params), (r) => [r.marketId, r.outcome].join(","));
-  if(_.isEmpty(profits)) return { profits: {}, outcomeValues: {}, buckets: [] };
+  const profitsOverTime = await queryProfitLossTimeseries(db, now, params);
+  const profits = _.groupBy(profitsOverTime, (r) => [r.marketId, r.outcome].join(","));
+
+  // If there are no trades in this window then we'll
+  if(_.isEmpty(profits))  {
+    const buckets = bucketRangeByInterval(params.startTime || 0, params.endTime || now, params.periodInterval);
+    return {profits: {}, outcomeValues: {}, buckets};
+  }
 
   // The value of an outcome over time, for computing unrealized profit and loss at a time
   const outcomeValues = _.groupBy(await queryOutcomeValueTimeseries(db, now, params), (r) => [r.marketId, r.outcome].join(","));
   console.log(outcomeValues);
 
   // The timestamps at which we need to return results
-  const buckets = bucketRangeByInterval(params.startTime || 0, params.endTime || now, params.periodInterval);
+  const buckets = bucketRangeByInterval(params.startTime || profitsOverTime[0].timestamp, Math.max(_.last(profitsOverTime)!.timestamp, now), params.periodInterval || null);
   return {profits, outcomeValues, buckets};
 }
 
-type AllOutcomesProfitLoss = Dictionary<Array<ProfitLossResult>>;
-export async function getAllOutcomesProfitLoss(db: Knex, augur: Augur, params: IGetProfitLossParams): Promise<AllOutcomesProfitLoss> {
+interface AllOutcomesProfitLoss {
+  profit: Dictionary<Array<ProfitLossResult>>;
+  buckets: Array<Timestamped>;
+};
+async function getAllOutcomesProfitLoss(db: Knex, augur: Augur, params: IGetProfitLossParams): Promise<AllOutcomesProfitLoss> {
   const { profits, outcomeValues, buckets } = await getProfitLossData(db, params);
-  return _.mapValues(profits, (pls, key) => getProfitAtTimestamps(pls, outcomeValues[key], buckets));
-}
-
-export async function getOutcomeProfitLoss(db: Knex, augur: Augur, params: IGetOutcomeProfitLossParams): Promise<Array<ProfitLossResult>> {
-  const allOutcomesProfitLoss = await getAllOutcomesProfitLoss(db, augur, params);
-  return allOutcomesProfitLoss[`${params.marketId},${params.outcome}`];
+  return { 
+    profit: _.mapValues(profits, (pls, key) => getProfitAtTimestamps(pls, outcomeValues[key], buckets)),
+    buckets
+  };
 }
 
 export async function getProfitLoss(db: Knex, augur: Augur, params: IGetProfitLossParams): Promise<Array<ProfitLossResult>> {
-  const outcomesProfitLoss = await getAllOutcomesProfitLoss(db, augur, params);
+  const {profit: outcomesProfitLoss, buckets }  = await getAllOutcomesProfitLoss(db, augur, params);
   // List takes us from:
   //  <marketId1><outcome0>: [{timestamp: N,... }, {timestamp: M, ...}, ...]
   //  <marketId1><outcome1>: [{timestamp: N,... }, {timestamp: M, ...}, ...]
@@ -235,7 +249,52 @@ export async function getProfitLoss(db: Knex, augur: Augur, params: IGetProfitLo
   //  
   //
   // This makes it easy to sum across the groups of timestamps
+  if (_.isEmpty(outcomesProfitLoss)) {
+    return buckets.map((bucket) => ({
+      timestamp: bucket.timestamp,
+      position: ZERO,
+      realized: ZERO,
+      unrealized: ZERO,
+      total: ZERO,
+    }));
+  }
+
   const bucketsProftLoss = _.zip(..._.values(outcomesProfitLoss));
   return bucketsProftLoss.map((bucketProftLoss: Array<ProfitLossResult>): ProfitLossResult => _.reduce(bucketProftLoss, sumProfitLossResults)!);
+}
+
+export async function getProfitLossSummary(db: Knex, augur: Augur, params: IGetProfitLossSummaryParams): Promise<NumericDictionary<ProfitLossResult>> {
+  const endTime = params.endTime || Math.floor(Date.now()/1000);
+
+  const result: NumericDictionary<ProfitLossResult> = {};
+  for(const days of [1, 30]) {
+    const periodInterval = days*60*60*24;
+    const startTime = endTime - periodInterval;
+
+    const plParams: IGetProfitLossParams = {
+      universe: params.universe,
+      account: params.account,
+      marketId: params.marketId,
+      startTime,
+      endTime,
+      periodInterval
+    };
+
+    const [startProfit, endProfit, ...rest] = await getProfitLoss(db, augur, plParams);
+
+    if(rest.length != 0) throw new Error("PL calculation in summary returning more thant two bucket");
+
+    const negativeStartProfit: ProfitLossResult = {
+      timestamp: startProfit.timestamp,
+      position: startProfit.position.negated(),
+      realized: startProfit.realized.negated(),
+      unrealized: startProfit.unrealized.negated(),
+      total: startProfit.total.negated(),
+    };
+
+    result[days] = sumProfitLossResults(endProfit, negativeStartProfit);
+  }
+
+  return result;
 }
 
