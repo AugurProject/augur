@@ -33,6 +33,12 @@ export default class Ledger extends Component {
   static async onDerivationPathChange(derivationPaths, pageNumber = 1) {
     const transport = await TransportU2F.create();
     const ledgerEthereum = new Eth(transport);
+    const appConfiguration = await ledgerEthereum.getAppConfiguration();
+    if (!appConfiguration.arbitraryDataEnabled) {
+      // value is 0 if contract data is turned off, 1 if contract data is turned
+      console.log("Ledger does not have contract data enabled");
+      return { success: false };
+    }
     const addresses = [];
 
     /* eslint-disable */
