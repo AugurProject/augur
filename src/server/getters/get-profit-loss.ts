@@ -135,6 +135,7 @@ async function queryProfitLossTimeseries(db: Knex, now: number, params: IGetProf
   if (params.marketId !== null) query.where("profit_loss_timeseries.marketId", params.marketId);
   if (params.startTime) query.where("timestamp", ">=", params.startTime);
   
+  console.log(params.endTime);
   query.where("timestamp", "<=", params.endTime || now);
 
   return await query;
@@ -176,14 +177,22 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
       }
     }
 
-    const ovResultIndex = Math.max(0, _.sortedLastIndexBy(outcomeValues, bucket, "timestamp") - 1);
-    const ovResult = outcomeValues[ovResultIndex];
+    console.log(outcomeValues);
 
     const position = plResult!.numOwned;
     const realized = plResult!.profit;
-    const lastPrice = ovResult.value;
     const averagePrice = plResult!.moneySpent.dividedBy(position);
-    const unrealized = lastPrice.minus(averagePrice).times(position);
+
+    let lastPrice = ZERO;
+    let unrealized = ZERO;
+
+    if (typeof outcomeValues !== "undefined") {
+      const ovResultIndex = Math.max(0, _.sortedLastIndexBy(outcomeValues, bucket, "timestamp") - 1);
+      const ovResult = outcomeValues[ovResultIndex];
+      lastPrice = ovResult.value;
+      unrealized = lastPrice.minus(averagePrice).times(position);
+    }
+
     const total = realized.plus(unrealized);
     return {
       timestamp: bucket.timestamp,
@@ -206,11 +215,13 @@ async function getProfitLossData(db: Knex, params: IGetProfitLossParams): Promis
 
   // Realized Profits + Timeseries data about the state of positions
   const profitsOverTime = await queryProfitLossTimeseries(db, now, params);
+  console.log(profitsOverTime);
   const profits = _.groupBy(profitsOverTime, (r) => [r.marketId, r.outcome].join(","));
 
   // If there are no trades in this window then we'll
   if(_.isEmpty(profits))  {
     const buckets = bucketRangeByInterval(params.startTime || 0, params.endTime || now, params.periodInterval);
+    console.log(buckets);
     return {profits: {}, outcomeValues: {}, buckets};
   }
 
@@ -219,7 +230,10 @@ async function getProfitLossData(db: Knex, params: IGetProfitLossParams): Promis
   console.log(outcomeValues);
 
   // The timestamps at which we need to return results
-  const buckets = bucketRangeByInterval(params.startTime || profitsOverTime[0].timestamp, Math.max(_.last(profitsOverTime)!.timestamp, now), params.periodInterval || null);
+  const buckets = bucketRangeByInterval(params.startTime || profitsOverTime[0].timestamp, Math.min(_.last(profitsOverTime)!.timestamp, now), params.periodInterval || null);
+  console.log(Math.max(_.last(profitsOverTime)!.timestamp, now));
+  console.log(params);
+  console.log(buckets);
   return {profits, outcomeValues, buckets};
 }
 
@@ -230,7 +244,10 @@ interface AllOutcomesProfitLoss {
 async function getAllOutcomesProfitLoss(db: Knex, augur: Augur, params: IGetProfitLossParams): Promise<AllOutcomesProfitLoss> {
   const { profits, outcomeValues, buckets } = await getProfitLossData(db, params);
   return { 
-    profit: _.mapValues(profits, (pls, key) => getProfitAtTimestamps(pls, outcomeValues[key], buckets)),
+    profit: _.mapValues(profits, (pls, key) => {
+      console.log(key + ": "  + (typeof outcomeValues[key] !== "undefined"));
+      return getProfitAtTimestamps(pls, outcomeValues[key], buckets)
+    }),
     buckets
   };
 }
@@ -271,16 +288,15 @@ export async function getProfitLossSummary(db: Knex, augur: Augur, params: IGetP
     const periodInterval = days*60*60*24;
     const startTime = endTime - periodInterval;
 
-    const plParams: IGetProfitLossParams = {
+    const [startProfit, endProfit, ...rest] = await getProfitLoss(db, augur, {
       universe: params.universe,
       account: params.account,
       marketId: params.marketId,
       startTime,
       endTime,
       periodInterval
-    };
-
-    const [startProfit, endProfit, ...rest] = await getProfitLoss(db, augur, plParams);
+    });
+    console.log(rest);
 
     if(rest.length != 0) throw new Error("PL calculation in summary returning more thant two bucket");
 
