@@ -12,18 +12,6 @@
   display: table-row;
   transition: background-color 0.15s ease;
 
-  &:first-child > li {
-    border-top-width: 0;
-  }
-
-  &.positive > li:first-child {
-    border-left: 0.5rem solid @color-positive;
-  }
-
-  &.negative > li:first-child {
-    border-left: 0.5rem solid @color-negative;
-  }
-
   > li {
     border-top: 1px solid @color-lightest-gray;
     display: table-cell;
@@ -78,6 +66,23 @@
   }
 }
 
+.MarketLiquidityTable__OrderIndicator {
+  background-color: @color-positive;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 0.5rem;
+}
+
+.MarketLiquidityTable__OrderIndicator_negative {
+  background-color: @color-negative;
+}
+
+.MarketLiquidityTable__firstColumn {
+  padding-left: 0.5rem;
+}
+
 @media @breakpoint-mobile {
   .MarketLiquidityTable__table-body {
     background-color: @color-input-background;
@@ -86,20 +91,15 @@
     line-height: @font-size-small;
   }
 
+  .MarketLiquidityTable__OrderIndicator {
+    width: 0.35rem;
+  }
+
+  .MarketLiquidityTable__firstColumn {
+    padding-left: 0.25rem;
+  }
+
   .MarketLiquidityTable__Order {
-    &.active,
-    &:hover {
-      background-color: @color-darkpurple;
-    }
-
-    &.positive > li:first-child {
-      border-left: 0.35rem solid @color-positive;
-    }
-
-    &.negative > li:first-child {
-      border-left: 0.35rem solid @color-negative;
-    }
-
     > li {
       color: inherit;
       min-width: 7.5rem;
