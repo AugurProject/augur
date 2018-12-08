@@ -1,21 +1,10 @@
 {
     "compilerOptions": {
-        "baseUrl": ".",
         "target": "es2017",
         "module": "commonjs",
         "sourceMap": true,
         "outDir": "output",
         "rootDir": "source",
-        "typeRoots": [
-          "node_modules/@types",
-          "../../node_modules/@types",
-          "typings"
-        ],
-        "paths": {
-            "*": [
-                "./typings/*"
-            ]
-        },
         "watch": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -35,5 +24,10 @@
         "strict": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true
-    }
+    },
+    "include": [
+        "src/**/*.ts",
+        "node_modules/@types",
+        "node_modules/augur-types"
+    ],
 }

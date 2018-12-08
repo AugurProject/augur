@@ -74,7 +74,7 @@
   "dependencies": {
     "@types/get-port": "3.2.0",
     "@types/mkdirp": "0.5.2",
-    "@types/node": "9.6.40",
+    "@types/node": "10.12.12",
     "@types/yargs": "11.1.2",
     "@velma/ganache-core": "2.1.0-beta.0-velma-1.0.0-rc.2",
     "async-file": "2.0.2",
@@ -102,9 +102,11 @@
     "typescript": "3.2.1"
   },
   "devDependencies": {
+    "@types/bn.js": "^4.11.3",
     "@types/chai": "4.1.7",
     "@types/chai-as-promised": "7.1.0",
     "@types/mocha": "5.2.5",
+    "@types/recursive-readdir": "^2.2.0",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
     "cross-env": "5.2.0",

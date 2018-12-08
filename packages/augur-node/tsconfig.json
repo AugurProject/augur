@@ -13,15 +13,10 @@
     "noImplicitThis": true,
     "outDir": "build",
     "rootDir": "src",
-    "baseUrl": "./",
-    "typeRoots": [
-      "../../node_modules/@types",
-      "../augur-core/typings",
-      "./node_modules/@types"
-    ],
-    "types": [ ]
   },
   "include": [
-    "src/**/*"
-  ]
+    "src/**/*",
+    "node_modules/@types",
+    "node_modules/augur-types"
+  ],
 }
