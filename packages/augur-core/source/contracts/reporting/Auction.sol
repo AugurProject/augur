@@ -1,6 +1,5 @@
 pragma solidity 0.4.24;
 
-import 'Controlled.sol';
 import 'reporting/IAuction.sol';
 import 'reporting/IUniverse.sol';
 import 'libraries/Initializable.sol';
@@ -13,7 +12,7 @@ import 'reporting/IAuctionToken.sol';
 import 'factories/AuctionTokenFactory.sol';
 
 
-contract Auction is Controlled, Initializable, IAuction {
+contract Auction is Initializable, IAuction {
     using SafeMathUint256 for uint256;
 
     enum RoundType {
@@ -26,12 +25,14 @@ contract Auction is Controlled, Initializable, IAuction {
         RECORDED
     }
 
+    IAugur public augur;
     IUniverse private universe;
     IV2ReputationToken private reputationToken;
     ICash public cash;
     AuctionTokenFactory public auctionTokenFactory;
-    uint256 public manualRepPriceInAttoEth;
-    mapping(address => bool) private authorizedPriceFeeders; // The addresses which may alter the manual price feed. They may only enter a new price feed value. They may not add or remove authorized addresses or turn manual mode on or off.
+    uint256 public initialRepPriceInAttoEth;
+    address public completeSets;
+    address public claimTradingProceeds;
 
     bool public bootstrapMode; // Indicates the auction is currently bootstrapping by selling off minted REP to get ETH for the ETH auction
     bool public bootstrapped; // Records that a bootstrap initialization occured. We can turn bootstrapping off if this has happened before.
@@ -47,22 +48,19 @@ contract Auction is Controlled, Initializable, IAuction {
     uint256 public lastRepPrice; // The last auction's Rep price in attoETH, regardless of wether the result is used in determining reporting fees
     uint256 public repPrice; // The Rep price in attoETH that should be used to determine reporting fees during and immediately after an ignored auction.
 
-    modifier onlyAuthorizedPriceFeeder {
-        require(authorizedPriceFeeders[msg.sender]);
-        _;
-    }
-
-    function initialize(IUniverse _universe, IReputationToken _reputationToken) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IUniverse _universe, IReputationToken _reputationToken) public beforeInitialized returns (bool) {
         endInitialization();
+        augur = _augur;
         universe = _universe;
         reputationToken = IV2ReputationToken(_reputationToken);
-        cash = ICash(controller.lookup("Cash"));
-        auctionTokenFactory = AuctionTokenFactory(controller.lookup("AuctionTokenFactory"));
-        initializationTime = controller.getTimestamp();
-        authorizedPriceFeeders[controller.owner()] = true;
-        manualRepPriceInAttoEth = Reporting.getAuctionInitialRepPrice();
-        lastRepPrice = manualRepPriceInAttoEth;
-        repPrice = manualRepPriceInAttoEth;
+        cash = ICash(augur.lookup("Cash"));
+        auctionTokenFactory = AuctionTokenFactory(augur.lookup("AuctionTokenFactory"));
+        completeSets = augur.lookup("CompleteSets");
+        claimTradingProceeds = augur.lookup("ClaimTradingProceeds");
+        initializationTime = augur.getTimestamp();
+        initialRepPriceInAttoEth = Reporting.getAuctionInitialRepPrice();
+        lastRepPrice = initialRepPriceInAttoEth;
+        repPrice = initialRepPriceInAttoEth;
         bootstrapMode = true;
         return true;
     }
@@ -107,11 +105,11 @@ contract Auction is Controlled, Initializable, IAuction {
         initialEthSalePrice = Reporting.getAuctionInitialPriceMultiplier().mul(10**36).div(lastRepPrice);
 
         // Create and fund Tokens
-        repAuctionToken = auctionTokenFactory.createAuctionToken(controller, this, reputationToken, currentAuctionIndex);
+        repAuctionToken = auctionTokenFactory.createAuctionToken(augur, this, reputationToken, currentAuctionIndex);
         if (!bootstrapMode) {
-            ethAuctionToken = auctionTokenFactory.createAuctionToken(controller, this, cash, currentAuctionIndex);
+            ethAuctionToken = auctionTokenFactory.createAuctionToken(augur, this, cash, currentAuctionIndex);
         }
-        controller.getAugur().recordAuctionTokens(universe);
+        augur.recordAuctionTokens(universe);
 
         reputationToken.transfer(repAuctionToken, initialAttoRepBalance);
         cash.transfer(ethAuctionToken, initialAttoEthBalance);
@@ -164,14 +162,14 @@ contract Auction is Controlled, Initializable, IAuction {
     }
 
     function recordFees(uint256 _feeAmount) public returns (bool) {
-        require(msg.sender == controller.lookup("CompleteSets") || msg.sender == controller.lookup("ClaimTradingProceeds"));
+        require(msg.sender == completeSets || msg.sender == claimTradingProceeds);
         feeBalance = feeBalance.add(_feeAmount);
         return true;
     }
 
     function getRepSalePriceInAttoEth() public returns (uint256) {
         initializeNewAuctionIfNeeded();
-        uint256 _timePassed = controller.getTimestamp().sub(initializationTime).sub(currentAuctionIndex * 1 days);
+        uint256 _timePassed = augur.getTimestamp().sub(initializationTime).sub(currentAuctionIndex * 1 days);
         uint256 _priceDecrease = initialRepSalePrice.mul(_timePassed) / Reporting.getAuctionDuration();
         return initialRepSalePrice.sub(_priceDecrease);
     }
@@ -179,7 +177,7 @@ contract Auction is Controlled, Initializable, IAuction {
     function getEthSalePriceInAttoRep() public returns (uint256) {
         initializeNewAuctionIfNeeded();
         require(!bootstrapMode);
-        uint256 _timePassed = controller.getTimestamp().sub(initializationTime).sub(currentAuctionIndex * 1 days);
+        uint256 _timePassed = augur.getTimestamp().sub(initializationTime).sub(currentAuctionIndex * 1 days);
         uint256 _priceDecrease = initialEthSalePrice.mul(_timePassed) / Reporting.getAuctionDuration();
         return initialEthSalePrice.sub(_priceDecrease);
     }
@@ -219,11 +217,6 @@ contract Auction is Controlled, Initializable, IAuction {
     }
 
     function getRepPriceInAttoEth() public view returns (uint256) {
-        // Use the manually provided REP price if the Auction system is not used for setting fees yet
-        if (!controller.useAuction()) {
-            return manualRepPriceInAttoEth;
-        }
-
         // If this auction is over and it is a recorded auction use the price it found
         if (getAuctionIndexForCurrentTime() != currentAuctionIndex && currentRoundType == RoundType.RECORDED) {
             return getDerivedRepPriceInAttoEth();
@@ -233,7 +226,7 @@ contract Auction is Controlled, Initializable, IAuction {
     }
 
     function getAuctionIndexForCurrentTime() public view returns (uint256) {
-        return controller.getTimestamp().sub(initializationTime) / Reporting.getAuctionDuration();
+        return augur.getTimestamp().sub(initializationTime) / Reporting.getAuctionDuration();
     }
 
     function isActive() public view returns (bool) {
@@ -269,20 +262,5 @@ contract Auction is Controlled, Initializable, IAuction {
 
     function getReputationToken() public view returns (IReputationToken) {
         return IReputationToken(reputationToken);
-    }
-
-    function setRepPriceInAttoEth(uint256 _repPriceInAttoEth) external onlyAuthorizedPriceFeeder returns (bool) {
-        manualRepPriceInAttoEth = _repPriceInAttoEth;
-        return true;
-    }
-
-    function addAuthorizedPriceFeeder(address _priceFeeder) public onlyKeyHolder returns (bool) {
-        authorizedPriceFeeders[_priceFeeder] = true;
-        return true;
-    }
-
-    function removeAuthorizedPriceFeeder(address _priceFeeder) public onlyKeyHolder returns (bool) {
-        authorizedPriceFeeders[_priceFeeder] = false;
-        return true;
     }
 }

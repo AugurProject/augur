@@ -21,7 +21,7 @@ def testerContractsFixture(sessionFixture, testerSnapshot):
     (1, 2, 2)
 ])
 def test_mul(a, b, expectedResult, testerContractsFixture):
-    testerContractsFixture.uploadAndAddToController("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
+    testerContractsFixture.uploadAndAddToAugur("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
     safeMathUint256Tester = testerContractsFixture.contracts['SafeMathUint256Tester']
     if (expectedResult == "TransactionFailed"):
         with raises(TransactionFailed):
@@ -35,7 +35,7 @@ def test_mul(a, b, expectedResult, testerContractsFixture):
     (1, 1, 1)
 ])
 def test_div(a, b, expectedResult, testerContractsFixture):
-    testerContractsFixture.uploadAndAddToController("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
+    testerContractsFixture.uploadAndAddToAugur("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
     safeMathUint256Tester = testerContractsFixture.contracts['SafeMathUint256Tester']
     if (expectedResult == "TransactionFailed"):
         with raises(TransactionFailed):
@@ -49,7 +49,7 @@ def test_div(a, b, expectedResult, testerContractsFixture):
     (1, 1, 0)
 ])
 def test_sub(a, b, expectedResult, testerContractsFixture):
-    testerContractsFixture.uploadAndAddToController("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
+    testerContractsFixture.uploadAndAddToAugur("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
     safeMathUint256Tester = testerContractsFixture.contracts['SafeMathUint256Tester']
     if (expectedResult == "TransactionFailed"):
         with raises(TransactionFailed):
@@ -63,7 +63,7 @@ def test_sub(a, b, expectedResult, testerContractsFixture):
     (1, 1, 2)
 ])
 def test_add(a, b, expectedResult, testerContractsFixture):
-    testerContractsFixture.uploadAndAddToController("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
+    testerContractsFixture.uploadAndAddToAugur("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
     safeMathUint256Tester = testerContractsFixture.contracts['SafeMathUint256Tester']
     if (expectedResult == "TransactionFailed"):
         with raises(TransactionFailed):
@@ -80,7 +80,7 @@ def test_add(a, b, expectedResult, testerContractsFixture):
     (2, 1, 1),
 ])
 def test_min(a, b, expectedResult, testerContractsFixture):
-    testerContractsFixture.uploadAndAddToController("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
+    testerContractsFixture.uploadAndAddToAugur("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
     safeMathUint256Tester = testerContractsFixture.contracts['SafeMathUint256Tester']
     assert safeMathUint256Tester.min(a, b) == expectedResult
 
@@ -93,7 +93,7 @@ def test_min(a, b, expectedResult, testerContractsFixture):
     (2, 1, 2),
 ])
 def test_max(a, b, expectedResult, testerContractsFixture):
-    testerContractsFixture.uploadAndAddToController("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
+    testerContractsFixture.uploadAndAddToAugur("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
     safeMathUint256Tester = testerContractsFixture.contracts['SafeMathUint256Tester']
     assert safeMathUint256Tester.max(a, b) == expectedResult
 
@@ -112,7 +112,7 @@ def test_getUint256Max(testerContractsFixture):
     (10**18, 2, 10**18, 2)
 ])
 def test_fxpMul(a, b, base, expectedResult, testerContractsFixture):
-    testerContractsFixture.uploadAndAddToController("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
+    testerContractsFixture.uploadAndAddToAugur("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
     safeMathUint256Tester = testerContractsFixture.contracts['SafeMathUint256Tester']
     if (expectedResult == "TransactionFailed"):
         with raises(TransactionFailed):
@@ -126,7 +126,7 @@ def test_fxpMul(a, b, base, expectedResult, testerContractsFixture):
     (1, 1, 10**18, 10**18)
 ])
 def test_fxpDiv(a, b, base, expectedResult, testerContractsFixture):
-    testerContractsFixture.uploadAndAddToController("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
+    testerContractsFixture.uploadAndAddToAugur("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
     safeMathUint256Tester = testerContractsFixture.contracts['SafeMathUint256Tester']
     if (expectedResult == "TransactionFailed"):
         with raises(TransactionFailed):
@@ -146,7 +146,7 @@ def test_fxpDiv(a, b, base, expectedResult, testerContractsFixture):
     (1, 0, "TransactionFailed")
 ])
 def test_isMultipleOf(a, b, expectedResult, testerContractsFixture):
-    testerContractsFixture.uploadAndAddToController("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
+    testerContractsFixture.uploadAndAddToAugur("../tests/solidity_test_helpers/SafeMathUint256Tester.sol")
     safeMathUint256Tester = testerContractsFixture.contracts['SafeMathUint256Tester']
     if (expectedResult == "TransactionFailed"):
         with raises(TransactionFailed):

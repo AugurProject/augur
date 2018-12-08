@@ -2,24 +2,31 @@ pragma solidity 0.4.24;
 
 
 import 'trading/IClaimTradingProceeds.sol';
-import 'Controlled.sol';
 import 'libraries/ReentrancyGuard.sol';
 import 'libraries/CashAutoConverter.sol';
-import 'libraries/MarketValidator.sol';
 import 'reporting/IMarket.sol';
 import 'trading/ICash.sol';
 import 'libraries/math/SafeMathUint256.sol';
 import 'reporting/Reporting.sol';
+import 'IAugur.sol';
+import 'libraries/Initializable.sol';
 
 
 /**
  * @title ClaimTradingProceeds
  * @dev This allows users to claim their money from a market by exchanging their shares
  */
-contract ClaimTradingProceeds is CashAutoConverter, ReentrancyGuard, MarketValidator, IClaimTradingProceeds {
+contract ClaimTradingProceeds is CashAutoConverter, Initializable, ReentrancyGuard, IClaimTradingProceeds {
     using SafeMathUint256 for uint256;
 
-    function claimTradingProceeds(IMarket _market, address _shareHolder) external marketIsLegit(_market) nonReentrant returns(bool) {
+    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+        endInitialization();
+        augur = _augur;
+        return true;
+    }
+
+    function claimTradingProceeds(IMarket _market, address _shareHolder) external afterInitialized nonReentrant returns(bool) {
+        require(augur.isValidMarket(_market));
         require(_market.isFinalized());
 
         for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
@@ -63,7 +70,7 @@ contract ClaimTradingProceeds is CashAutoConverter, ReentrancyGuard, MarketValid
     }
 
     function logTradingProceedsClaimed(IMarket _market, address _shareToken, address _sender, uint256 _numShares, uint256 _numPayoutTokens) private returns (bool) {
-        controller.getAugur().logTradingProceedsClaimed(_market.getUniverse(), _shareToken, _sender, _market, _numShares, _numPayoutTokens, _sender.balance.add(_numPayoutTokens));
+        augur.logTradingProceedsClaimed(_market.getUniverse(), _shareToken, _sender, _market, _numShares, _numPayoutTokens, _sender.balance.add(_numPayoutTokens));
         return true;
     }
 

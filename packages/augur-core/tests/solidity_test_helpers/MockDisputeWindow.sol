@@ -3,7 +3,6 @@ pragma solidity ^0.4.24;
 import 'reporting/IMarket.sol';
 import 'reporting/IUniverse.sol';
 import 'reporting/IDisputeWindow.sol';
-import 'IController.sol';
 import 'libraries/ITyped.sol';
 import 'reporting/IReputationToken.sol';
 import 'libraries/Initializable.sol';
@@ -339,11 +338,7 @@ contract MockDisputeWindow is Initializable, MockVariableSupplyToken, IDisputeWi
         return true;
     }
 
-    function getController() public view returns (IController) {
-        return IController(0);
-    }
-
-    function setController(IController _controller) public returns(bool) {
+    function setController(IAugur _augur) public returns(bool) {
         return true;
     }
 

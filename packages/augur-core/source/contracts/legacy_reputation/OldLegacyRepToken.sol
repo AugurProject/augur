@@ -81,7 +81,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
         mint(_reporter, _attotokens);
         totalMigrated += _attotokens;
         // Award a bonus if migration is done before the fork period is over, even if it has finalized
-        if (controller.getTimestamp() < _parentUniverse.getForkEndTime()) {
+        if (getTimestamp() < _parentUniverse.getForkEndTime()) {
             uint256 _bonus = _attotokens.div(20);
             mint(_reporter, _bonus);
             totalTheoreticalSupply += _bonus;
@@ -152,7 +152,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
     }
 
     function getLegacyRepToken() public view returns (ERC20) {
-        return ERC20(controller.lookup("LegacyReputationToken"));
+        return ERC20(address(0xe94327d07fc17907b4db788e5adf2ed424addff6));
     }
 
     function updateSiblingMigrationTotal(IReputationToken _token) public whenNotMigratingFromLegacy returns (bool) {
@@ -179,21 +179,6 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
 
     function getTotalTheoreticalSupply() public view returns (uint256) {
         return totalTheoreticalSupply;
-    }
-
-    function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
-        controller.getAugur().logReputationTokensTransferred(universe, _from, _to, _value);
-        return true;
-    }
-
-    function onMint(address _target, uint256 _amount) internal returns (bool) {
-        controller.getAugur().logReputationTokenMinted(universe, _target, _amount);
-        return true;
-    }
-
-    function onBurn(address _target, uint256 _amount) internal returns (bool) {
-        controller.getAugur().logReputationTokenBurned(universe, _target, _amount);
-        return true;
     }
 
         /**
@@ -255,5 +240,9 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
 
     function getTargetSupply() public view returns (uint256) {
         return targetSupply;
+    }
+
+    function getTimestamp() public view returns (uint256) {
+        return block.timestamp;
     }
 }

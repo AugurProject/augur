@@ -2,14 +2,13 @@ pragma solidity ^0.4.24;
 
 import 'libraries/collections/Map.sol';
 import 'factories/MapFactory.sol';
-import 'IController.sol';
 
 
 contract MapHelper {
     Map private map;
 
-    function init(IController _controller) public returns (bool) {
-        map = MapFactory(_controller.lookup("MapFactory")).createMap(_controller, this);
+    function init(IAugur _augur) public returns (bool) {
+        map = MapFactory(_augur.lookup("MapFactory")).createMap(_augur, this);
     }
 
     function add(bytes32 _key, bytes32 _value) public returns (bool) {

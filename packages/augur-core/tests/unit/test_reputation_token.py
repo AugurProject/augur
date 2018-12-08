@@ -1,11 +1,13 @@
 from ethereum.tools import tester
 from datetime import timedelta
 from utils import longToHexString, stringToBytes, bytesToHexString, twentyZeros, thirtyTwoZeros
-from pytest import fixture, raises
+from pytest import fixture, raises, mark
 from ethereum.tools.tester import ABIContract, TransactionFailed
 
+pytestmark = mark.skip(reason="Mock Tests off")
+
 def test_reputation_token_creation(localFixture, mockUniverse):
-    reputationToken = localFixture.upload('../source/contracts/reporting/ReputationToken.sol', 'reputationToken', constructorArgs=[localFixture.contracts['Controller'].address, mockUniverse.address, mockUniverse.address])
+    reputationToken = localFixture.upload('../source/contracts/reporting/ReputationToken.sol', 'reputationToken', constructorArgs=[localFixture.contracts['Augur'].address, mockUniverse.address, mockUniverse.address])
 
     assert reputationToken.getTypeName() == stringToBytes('ReputationToken')
     assert reputationToken.getUniverse() == mockUniverse.address
@@ -71,9 +73,9 @@ def test_reputation_token_trusted_transfer(localFixture, mockUniverse, initializ
 @fixture(scope="session")
 def localSnapshot(fixture, augurInitializedWithMocksSnapshot):
     fixture.resetToSnapshot(augurInitializedWithMocksSnapshot)
-    controller = fixture.contracts['Controller']
+    augur = fixture.contracts['Augur']
     mockLegacyReputationToken = fixture.contracts['MockLegacyReputationToken']
-    controller.registerContract(stringToBytes('LegacyReputationToken'), mockLegacyReputationToken.address)
+    augur.registerContract(stringToBytes('LegacyReputationToken'), mockLegacyReputationToken.address)
     mockLegacyReputationToken.setTotalSupply(100)
     mockLegacyReputationToken.setBalanceOfValueFor(tester.a0, 100)
     return fixture.createSnapshot()
@@ -116,7 +118,7 @@ def mockAugur(localFixture):
 
 @fixture
 def initializedReputationToken(localFixture, mockUniverse, mockLegacyReputationToken):
-    reputationToken = localFixture.upload('../source/contracts/reporting/ReputationToken.sol', 'reputationToken', constructorArgs=[localFixture.contracts['Controller'].address, mockUniverse.address, mockUniverse.address])
+    reputationToken = localFixture.upload('../source/contracts/reporting/ReputationToken.sol', 'reputationToken', constructorArgs=[localFixture.contracts['Augur'].address, mockUniverse.address, mockUniverse.address])
     totalSupply = 11 * 10**6 * 10**18
     assert mockLegacyReputationToken.faucet(totalSupply)
     assert mockLegacyReputationToken.approve(reputationToken.address, totalSupply)

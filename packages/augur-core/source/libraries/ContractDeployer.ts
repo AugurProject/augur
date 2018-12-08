@@ -7,7 +7,7 @@ import { CompilerOutput } from "solc";
 import { Abi, AbiFunction } from 'ethereum';
 import { DeployerConfiguration } from './DeployerConfiguration';
 import { Connector } from './Connector';
-import { Augur, ContractFactory, Controller, Controlled, Universe, ReputationToken, LegacyReputationToken, TimeControlled } from './ContractInterfaces';
+import { Augur, ContractFactory, Universe, ReputationToken, LegacyReputationToken, TimeControlled } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { AccountManager } from './AccountManager';
 import { Contracts, Contract } from './Contracts';
@@ -18,7 +18,7 @@ export class ContractDeployer {
     private readonly configuration: DeployerConfiguration;
     private readonly connector: Connector;
     private readonly contracts: Contracts;
-    public controller: Controller|null = null;
+    public augur: Augur|null = null;
     public universe: Universe|null = null;
 
     public static deployToNetwork = async (networkConfiguration: NetworkConfiguration, deployerConfiguration: DeployerConfiguration) => {
@@ -90,7 +90,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     private generateCompleteAddressMapping(): { [name: string]: string } {
         const mapping: { [name: string]: string } = {};
-        mapping['Controller'] = this.controller!.address;
+        mapping['Augur'] = this.augur!.address;
         if (this.universe) mapping['Universe'] = this.universe.address;
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
         mapping['Augur'] = this.contracts.get('Augur').address!;
@@ -132,36 +132,26 @@ Deploying to: ${networkConfiguration.networkName}
         return Buffer.concat([bytecode, encodedConstructorParameters]);
     }
 
-    private async uploadController(): Promise<Controller> {
-        console.log('Uploading controller...');
-        const contract = await this.contracts.get("Controller");
-        const address = (this.configuration.controllerAddress !== undefined)
-            ? this.configuration.controllerAddress
-            : await this.construct(this.contracts.get('Controller'), [], `Uploading Controller.sol`);
-        const controller = new Controller(this.connector, this.accountManager, address, this.connector.gasPrice);
-        const ownerAddress = await controller.owner_();
+    private async uploadAugur(): Promise<Augur> {
+        console.log('Uploading augur...');
+        const contract = await this.contracts.get("Augur");
+        const address = (this.configuration.augurAddress !== undefined)
+            ? this.configuration.augurAddress
+            : await this.construct(this.contracts.get('Augur'), [], `Uploading Augur.sol`);
+        const augur = new Augur(this.connector, this.accountManager, address, this.connector.gasPrice);
+        const ownerAddress = await augur.uploader_();
         contract.address = address;
         if (ownerAddress.toLowerCase() !== this.accountManager.defaultAddress.toLowerCase()) {
-            throw new Error("Controller owner does not equal from address");
+            throw new Error("Augur owner does not equal from address");
         }
-        console.log(`Controller address: ${controller.address}`);
-        return controller;
+        console.log(`Augur address: ${augur.address}`);
+        return augur;
     }
 
     public async uploadLegacyRep(): Promise<string> {
         const contract = await this.contracts.get("LegacyReputationToken");
         contract.address = await this.construct(contract, [], `Uploading LegacyReputationToken`);
         return contract.address;
-    }
-
-    private async uploadAugur(): Promise<void> {
-        // We have to upload and initialize Augur first so it can log the registration and whitelisting of other contracts
-        const contract = await this.contracts.get("Augur");
-        const address = await this.construct(contract, [], `Uploading ${contract.contractName}`);
-        const augur = new Augur(this.connector, this.accountManager, address, this.connector.gasPrice);
-        contract.address = address;
-        await augur.setController(this.controller!.address);
-        await this.controller!.registerContract(stringTo32ByteHex("Augur"), address);
     }
 
     private async uploadAllContracts(): Promise<void> {
@@ -175,7 +165,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     private async upload(contract: Contract): Promise<void> {
         const contractName = contract.contractName
-        if (contractName === 'Controller') return;
+        if (contractName === 'Augur') return;
         if (contractName === 'Delegator') return;
         if (contractName === 'TimeControlled') return;
         if (contractName === 'TestNetReputationTokenFactory') return;
@@ -189,10 +179,10 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.configuration.isProduction && contractName === 'LegacyReputationToken') return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
         console.log(`Uploading new version of contract for ${contractName}`);
-        contract.address = await this.uploadAndAddToController(contract, contractName);
+        contract.address = await this.uploadAndAddToAugur(contract, contractName);
     }
 
-    private async uploadAndAddToController(contract: Contract, registrationContractName: string = contract.contractName, constructorArgs: Array<any> = []): Promise<string> {
+    private async uploadAndAddToAugur(contract: Contract, registrationContractName: string = contract.contractName, constructorArgs: Array<any> = []): Promise<string> {
         const address = await this.construct(contract, constructorArgs, `Uploading ${contract.contractName}`);
         await this.controller!.registerContract(stringTo32ByteHex(registrationContractName), address);
         return address;
@@ -305,7 +295,7 @@ Deploying to: ${networkConfiguration.networkName}
         type NetworkAddressMapping = { [networkId: string]: ContractAddressMapping };
 
         const mapping: ContractAddressMapping = {};
-        mapping['Controller'] = this.controller!.address;
+        mapping['Augur'] = this.augur!.address;
         if (this.universe) mapping['Universe'] = this.universe.address;
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
         mapping['Augur'] = this.contracts.get('Augur').address!;

@@ -1,20 +1,21 @@
 pragma solidity 0.4.24;
 
 import 'libraries/Initializable.sol';
-import 'Controlled.sol';
 import 'reporting/IInitialReporter.sol';
 import 'reporting/IMarket.sol';
 import 'reporting/BaseReportingParticipant.sol';
 import 'libraries/Ownable.sol';
+import 'IAugur.sol';
 
 
-contract InitialReporter is Controlled, Ownable, BaseReportingParticipant, Initializable, IInitialReporter {
+contract InitialReporter is Ownable, BaseReportingParticipant, Initializable, IInitialReporter {
     address private designatedReporter;
     address private actualReporter;
     uint256 private reportTimestamp;
 
-    function initialize(IMarket _market, address _designatedReporter) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IMarket _market, address _designatedReporter) public beforeInitialized returns (bool) {
         endInitialization();
+        augur = _augur;
         market = _market;
         reputationToken = market.getUniverse().getReputationToken();
         designatedReporter = _designatedReporter;
@@ -29,7 +30,7 @@ contract InitialReporter is Controlled, Ownable, BaseReportingParticipant, Initi
         uint256 _repBalance = reputationToken.balanceOf(this);
         require(reputationToken.transfer(owner, _repBalance));
         if (!_isDisavowed) {
-            controller.getAugur().logInitialReporterRedeemed(market.getUniverse(), owner, market, size, _repBalance, payoutNumerators);
+            augur.logInitialReporterRedeemed(market.getUniverse(), owner, market, size, _repBalance, payoutNumerators);
         }
         return true;
     }
@@ -37,7 +38,7 @@ contract InitialReporter is Controlled, Ownable, BaseReportingParticipant, Initi
     function report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _initialReportStake) public returns (bool) {
         require(IMarket(msg.sender) == market);
         require(reportTimestamp == 0);
-        uint256 _timestamp = controller.getTimestamp();
+        uint256 _timestamp = augur.getTimestamp();
         bool _isDesignatedReporter = _reporter == getDesignatedReporter();
         bool _designatedReportingExpired = _timestamp > market.getDesignatedReportingEndTime();
         require(_designatedReportingExpired || _isDesignatedReporter);
@@ -66,7 +67,7 @@ contract InitialReporter is Controlled, Ownable, BaseReportingParticipant, Initi
 
     function forkAndRedeem() public returns (bool) {
         if (!isDisavowed()) {
-            controller.getAugur().logInitialReporterRedeemed(market.getUniverse(), owner, market, size, reputationToken.balanceOf(this), payoutNumerators);
+            augur.logInitialReporterRedeemed(market.getUniverse(), owner, market, size, reputationToken.balanceOf(this), payoutNumerators);
         }
         fork();
         redeem(msg.sender);
@@ -98,7 +99,7 @@ contract InitialReporter is Controlled, Ownable, BaseReportingParticipant, Initi
     }
 
     function onTransferOwnership(address _owner, address _newOwner) internal returns (bool) {
-        controller.getAugur().logInitialReporterTransferred(market.getUniverse(), market, _owner, _newOwner);
+        augur.logInitialReporterTransferred(market.getUniverse(), market, _owner, _newOwner);
         return true;
     }
 }

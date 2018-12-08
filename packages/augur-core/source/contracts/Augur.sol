@@ -1,6 +1,5 @@
 pragma solidity 0.4.24;
 
-import 'Controlled.sol';
 import 'IAugur.sol';
 import 'libraries/token/ERC20.sol';
 import 'factories/IUniverseFactory.sol';
@@ -16,10 +15,11 @@ import 'trading/IShareToken.sol';
 import 'trading/Order.sol';
 import 'reporting/IAuction.sol';
 import 'reporting/IAuctionToken.sol';
+import 'ITime.sol';
 
 
 // Centralized approval authority and event emissions
-contract Augur is Controlled, IAugur {
+contract Augur is IAugur {
 
     enum TokenType{
         ReputationToken,
@@ -60,10 +60,48 @@ contract Augur is Controlled, IAugur {
     event EscapeHatchChanged(bool isOn);
     event TimestampSet(uint256 newTimestamp);
 
+    mapping(address => bool) private markets;
     mapping(address => bool) private universes;
     mapping(address => bool) private crowdsourcers;
     mapping(address => bool) private shareTokens;
     mapping(address => bool) private auctionTokens;
+    mapping(address => bool) private trustedSender;
+
+    address public uploader;
+    mapping(bytes32 => address) public registry;
+
+    ITime public time;
+
+    constructor() {
+        uploader = msg.sender;
+    }
+
+    //
+    // Registry
+    //
+
+    function registerContract(bytes32 _key, address _address) public returns (bool) {
+        require(msg.sender == uploader);
+        require(registry[_key] == address(0));
+        registry[_key] = _address;
+        if (_key == "CompleteSets" || _key == "Orders" || _key == "CreateOrder" || _key == "CancelOrder" || _key == "FillOrder" || _key == "Trade" || _key == "ClaimTradingProceeds") {
+            trustedSender[_address] = true;
+        }
+        if (_key == "Time") {
+
+            time = ITime(_address);
+        }
+        return true;
+    }
+
+    function lookup(bytes32 _key) public view returns (address) {
+        return registry[_key];
+    }
+
+    function finishDeployment() public returns (bool) {
+        uploader = address(1);
+        return true;
+    }
 
     //
     // Universe
@@ -80,8 +118,8 @@ contract Augur is Controlled, IAugur {
     }
 
     function createUniverse(IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] _parentPayoutNumerators) private returns (IUniverse) {
-        IUniverseFactory _universeFactory = IUniverseFactory(controller.lookup("UniverseFactory"));
-        IUniverse _newUniverse = _universeFactory.createUniverse(controller, _parentUniverse, _parentPayoutDistributionHash);
+        IUniverseFactory _universeFactory = IUniverseFactory(registry["UniverseFactory"]);
+        IUniverse _newUniverse = _universeFactory.createUniverse(this, _parentUniverse, _parentPayoutDistributionHash);
         universes[_newUniverse] = true;
         emit UniverseCreated(_parentUniverse, _newUniverse, _parentPayoutNumerators);
         return _newUniverse;
@@ -145,10 +183,26 @@ contract Augur is Controlled, IAugur {
     // Transfer
     //
 
-    function trustedTransfer(ERC20 _token, address _from, address _to, uint256 _amount) public onlyWhitelistedCallers returns (bool) {
-        require(_amount > 0);
+    function trustedTransfer(ERC20 _token, address _from, address _to, uint256 _amount) public returns (bool) {
+        require(trustedSender[msg.sender]);
         require(_token.transferFrom(_from, _to, _amount));
         return true;
+    }
+
+    //
+    // Time
+    //
+
+    function getTimestamp() public view returns (uint256) {
+        return time.getTimestamp();
+    }
+
+    //
+    // Markets
+    //
+
+    function isValidMarket(IMarket _market) public view returns (bool) {
+        return markets[_market];
     }
 
     //
@@ -160,6 +214,7 @@ contract Augur is Controlled, IAugur {
         require(isKnownUniverse(_universe));
         require(_universe == IUniverse(msg.sender));
         recordMarketShareTokens(_market);
+        markets[_market] = true;
         emit MarketCreated(_topic, _description, _extraInfo, _universe, _market, _marketCreator, _outcomes, _universe.getOrCacheMarketCreationCost(), _minPrice, _maxPrice, _marketType);
         return true;
     }
@@ -169,6 +224,7 @@ contract Augur is Controlled, IAugur {
         require(isKnownUniverse(_universe));
         require(_universe == IUniverse(msg.sender));
         recordMarketShareTokens(_market);
+        markets[_market] = true;
         emit MarketCreated(_topic, _description, _extraInfo, _universe, _market, _marketCreator, new bytes32[](0), _universe.getOrCacheMarketCreationCost(), _minPrice, _maxPrice, _marketType);
         return true;
     }
@@ -238,32 +294,38 @@ contract Augur is Controlled, IAugur {
         return true;
     }
 
-    function logOrderCanceled(IUniverse _universe, address _shareToken, address _sender, bytes32 _orderId, Order.Types _orderType, uint256 _tokenRefund, uint256 _sharesRefund) public onlyWhitelistedCallers returns (bool) {
+    function logOrderCanceled(IUniverse _universe, address _shareToken, address _sender, bytes32 _orderId, Order.Types _orderType, uint256 _tokenRefund, uint256 _sharesRefund) public returns (bool) {
+        require(msg.sender == registry["CancelOrder"]);
         emit OrderCanceled(_universe, _shareToken, _sender, _orderId, _orderType, _tokenRefund, _sharesRefund);
         return true;
     }
 
-    function logOrderCreated(Order.Types _orderType, uint256 _amount, uint256 _price, address _creator, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _tradeGroupId, bytes32 _orderId, IUniverse _universe, address _shareToken) public onlyWhitelistedCallers returns (bool) {
+    function logOrderCreated(Order.Types _orderType, uint256 _amount, uint256 _price, address _creator, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _tradeGroupId, bytes32 _orderId, IUniverse _universe, address _shareToken) public returns (bool) {
+        require(msg.sender == registry["Orders"]);
         emit OrderCreated(_orderType, _amount, _price, _creator, _moneyEscrowed, _sharesEscrowed, _tradeGroupId, _orderId, _universe, _shareToken);
         return true;
     }
 
-    function logOrderFilled(IUniverse _universe, address _shareToken, address _filler, bytes32 _orderId, uint256 _numCreatorShares, uint256 _numCreatorTokens, uint256 _numFillerShares, uint256 _numFillerTokens, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, bytes32 _tradeGroupId) public onlyWhitelistedCallers returns (bool) {
+    function logOrderFilled(IUniverse _universe, address _shareToken, address _filler, bytes32 _orderId, uint256 _numCreatorShares, uint256 _numCreatorTokens, uint256 _numFillerShares, uint256 _numFillerTokens, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, bytes32 _tradeGroupId) public returns (bool) {
+        require(msg.sender == registry["FillOrder"]);
         emit OrderFilled(_universe, _shareToken, _filler, _orderId, _numCreatorShares, _numCreatorTokens, _numFillerShares, _numFillerTokens, _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
         return true;
     }
 
-    function logCompleteSetsPurchased(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) public onlyWhitelistedCallers returns (bool) {
+    function logCompleteSetsPurchased(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) public returns (bool) {
+        require(msg.sender == registry["CompleteSets"]);
         emit CompleteSetsPurchased(_universe, _market, _account, _numCompleteSets);
         return true;
     }
 
-    function logCompleteSetsSold(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) public onlyWhitelistedCallers returns (bool) {
+    function logCompleteSetsSold(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) public returns (bool) {
+        require(msg.sender == registry["CompleteSets"]);
         emit CompleteSetsSold(_universe, _market, _account, _numCompleteSets);
         return true;
     }
 
-    function logTradingProceedsClaimed(IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _numShares, uint256 _numPayoutTokens, uint256 _finalTokenBalance) public onlyWhitelistedCallers returns (bool) {
+    function logTradingProceedsClaimed(IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _numShares, uint256 _numPayoutTokens, uint256 _finalTokenBalance) public returns (bool) {
+        require(msg.sender == registry["ClaimTradingProceeds"]);
         emit TradingProceedsClaimed(_universe, _shareToken, _sender, _market, _numShares, _numPayoutTokens, _finalTokenBalance);
         return true;
     }
@@ -344,7 +406,7 @@ contract Augur is Controlled, IAugur {
     }
 
     function logTimestampSet(uint256 _newTimestamp) public returns (bool) {
-        require(msg.sender == controller.lookup("Time"));
+        require(msg.sender == registry["Time"]);
         emit TimestampSet(_newTimestamp);
         return true;
     }

@@ -11,6 +11,7 @@ import 'libraries/Initializable.sol';
 import 'libraries/math/SafeMathUint256.sol';
 import 'factories/MarketFactory.sol';
 import 'Controller.sol';
+import 'IAugur.sol';
 
 
 contract MockUniverse is Initializable, IUniverse {
@@ -54,7 +55,7 @@ contract MockUniverse is Initializable, IUniverse {
     bytes32 private initializeParentPayoutDistributionHashValue;
     uint256 private setForkReputationGoalValue;
     MarketFactory private marketFactory;
-    Controller private controller;
+    IAugur private augur;
     bool private setIsContainerForReportingParticipantValue;
     bool private setIsForkingValue;
     bool private getOrCacheValidityBondWallCalledValue;
@@ -435,7 +436,7 @@ contract MockUniverse is Initializable, IUniverse {
 
     function createMarketInternal(uint256 _endTime, uint256 _feePerEthInWei, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) private returns (IMarket _newMarket) {
         getReputationToken().trustedUniverseTransfer(_sender, marketFactory, getOrCacheDesignatedReportNoShowBond());
-        _newMarket = marketFactory.createMarket.value(msg.value)(controller, this, _endTime, _feePerEthInWei, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
+        _newMarket = marketFactory.createMarket.value(msg.value)(augur, this, _endTime, _feePerEthInWei, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
         return _newMarket;
     }
 
