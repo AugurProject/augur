@@ -52,7 +52,7 @@
     "@ledgerhq/hw-app-eth": "4.21.0",
     "@ledgerhq/hw-transport-u2f": "^4.21.0",
     "async": "^2.6.1",
-    "augur.js": "^6.1.2",
+    "augur.js": "^6.1.4",
     "babel-polyfill": "^6.26.0",
     "bignumber.js": "6.0.0",
     "bs58": "^4.0.1",
