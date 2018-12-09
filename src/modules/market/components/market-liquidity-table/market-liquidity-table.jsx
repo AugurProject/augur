@@ -42,7 +42,9 @@ const MarketLiquidityTable = ({
                 }
               )}
             />
-            <span className={Styles.MarketLiquidityTable__firstColumn}>{order.type}</span>
+            <span className={Styles.MarketLiquidityTable__firstColumn}>
+              {order.type}
+            </span>
           </li>
           <li>{outcomeLabel}</li>
           <li>
