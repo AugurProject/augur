@@ -116,6 +116,23 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
     console.log(results);
     expect(results.length).toEqual(31);
   });
+
+  it("generates a 5-value timeseries P/L", async () => {
+    const startTime = 1534320908;
+    const endTime = 1534417613;
+    const periodInterval = (endTime - startTime)/4;
+    const results = await getProfitLoss(connection, augur, {
+      universe: "0x000000000000000000000000000000000000000b",
+			account:  "0xffff000000000000000000000000000000000000",
+      marketId: "0x0000000000000000000000000000000000000ff1",
+      startTime,
+      endTime,
+      periodInterval
+    });
+
+    console.log(results);
+    expect(results.length).toEqual(4);
+  });
 });
 
 describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
@@ -139,7 +156,6 @@ describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
 
     const deserialized = JSON.parse(JSON.stringify(results));
 
-
     expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(['1', '30']));
     expect(deserialized["1"]).toMatchObject({
       realized: "0",
@@ -155,7 +171,7 @@ describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
     });
   });
 
-  it("returns 1-day and 30-day PLs", async() => {
+  it("returns 1-day and 30-day PLs at endtime", async() => {
     const results = await getProfitLossSummary(connection, augur, {
       universe: "0x000000000000000000000000000000000000000b",
 			account:  "0xffff000000000000000000000000000000000000",
@@ -177,6 +193,52 @@ describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
       unrealized: "0",
       total: "54999999999.58212297261370994338",
       position: "0.0004",
+    });
+  });
+
+  it("returns returns zero-value PLs for nonexistent account", async() => {
+    const results = await getProfitLossSummary(connection, augur, {
+      universe: "0x000000000000000000000000000000000000000b",
+			account:  "0xbadf000000000000000000000000000000000000",
+      marketId: "0x0000000000000000000000000000000000000ff1",
+    });
+    const deserialized = JSON.parse(JSON.stringify(results));
+
+    expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(['1', '30']));
+    expect(deserialized["1"]).toMatchObject({
+      realized: "0",
+      unrealized: "0",
+      total: "0",
+      position: "0",
+    });
+    expect(deserialized["30"]).toMatchObject({
+      realized: "0",
+      unrealized: "0",
+      total: "0",
+      position: "0",
+    });
+  });
+
+  it("returns returns zero-value PLs for nonexistent market", async() => {
+    const results = await getProfitLossSummary(connection, augur, {
+      universe: "0x000000000000000000000000000000000000000b",
+			account:  "0xffff000000000000000000000000000000000000",
+      marketId: "0xbad0000000000000000000000000000000000ff1",
+    });
+    const deserialized = JSON.parse(JSON.stringify(results));
+
+    expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(['1', '30']));
+    expect(deserialized["1"]).toMatchObject({
+      realized: "0",
+      unrealized: "0",
+      total: "0",
+      position: "0",
+    });
+    expect(deserialized["30"]).toMatchObject({
+      realized: "0",
+      unrealized: "0",
+      total: "0",
+      position: "0",
     });
   });
 });
