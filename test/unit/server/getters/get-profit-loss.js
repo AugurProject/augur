@@ -118,8 +118,7 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
   });
 });
 
-
-describe("server/getters/get-profit-loss#getProfitLoss", () => {
+describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
   var connection = null;
   var augur = new Augur();
 
@@ -140,20 +139,20 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
 
     const deserialized = JSON.parse(JSON.stringify(results));
 
-    expect(deserialized).toHaveProperty("1.timestamp");
-    expect(deserialized).toHaveProperty("1.realized", "0");
-    expect(deserialized).toHaveProperty("1.unrealized", "0");
-    expect(deserialized).toHaveProperty("1.total", "0");
-    expect(deserialized).toHaveProperty("1.position", "0");
-
-    expect(deserialized).toHaveProperty("30.timestamp");
-    expect(deserialized).toHaveProperty("30.realized", "0");
-    expect(deserialized).toHaveProperty("30.unrealized", "0");
-    expect(deserialized).toHaveProperty("30.total", "0");
-    expect(deserialized).toHaveProperty("30.position", "0");
-
 
     expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(['1', '30']));
+    expect(deserialized["1"]).toMatchObject({
+      realized: "0",
+      unrealized: "0",
+      total: "0",
+      position: "0",
+    });
+    expect(deserialized["30"]).toMatchObject({
+      realized: "0",
+      unrealized: "0",
+      total: "0",
+      position: "0",
+    });
   });
 
   it("returns 1-day and 30-day PLs", async() => {
@@ -164,6 +163,20 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
       endTime: 1534435013,
     });
 
-    console.log(results);
+    const deserialized = JSON.parse(JSON.stringify(results));
+
+    expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(['1', '30']));
+    expect(deserialized["1"]).toMatchObject({
+      realized: "54999999999.58212297261370994338",
+      unrealized: "0",
+      total: "54999999999.58212297261370994338",
+      position: "0.0004",
+    });
+    expect(deserialized["30"]).toMatchObject({
+      realized: "54999999999.58212297261370994338",
+      unrealized: "0",
+      total: "54999999999.58212297261370994338",
+      position: "0.0004",
+    });
   });
 });

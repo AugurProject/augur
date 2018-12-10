@@ -25,7 +25,6 @@ import {
   normalizePayouts,
 } from "./database";
 
-
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 
 export interface Timestamped {
