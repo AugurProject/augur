@@ -23,11 +23,10 @@
         "noUnusedParameters": true,
         "strict": true,
         "strictFunctionTypes": true,
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "typeRoots": ["../../node_modules/augur-types/types", "../../node_modules/@types", "node_modules/@types"],
     },
     "include": [
-        "src/**/*.ts",
-        "node_modules/@types",
-        "node_modules/augur-types"
+        "source/**/*.ts"
     ],
 }

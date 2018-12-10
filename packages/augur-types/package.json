@@ -3,5 +3,8 @@
   "version": "7.0.0-0",
   "description": "Homespun types for packages we use",
   "author": "The Augur Developers <team@augur.net>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "*"
+  }
 }
