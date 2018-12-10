@@ -5,6 +5,8 @@ import realStore from "src/store";
 import { initAugur, connectAugur } from "modules/app/actions/init-augur";
 import * as AugurJS from "src/services/augurjs";
 
+const AugurJSActual = require.requireActual("src/services/augurjs");
+
 jest.mock("modules/app/actions/update-env", () => ({
   updateEnv: () => ({
     type: "UPDATE_ENV"
@@ -60,6 +62,10 @@ jest.mock("modules/modal/actions/update-modal", () => ({
 }));
 
 jest.mock("services/augurjs", () => ({
+  set mockConstants(cons) {
+    this.constants = cons;
+  },
+  constants: {},
   connect: jest.fn(),
   augur: {
     augurNode: {
@@ -116,6 +122,7 @@ describe("modules/app/actions/init-augur.js", () => {
   let accountsSpy;
   let networkIdSpy;
   let stoppedSpy;
+  AugurJS.mockConstants = AugurJSActual.constants;
 
   const augurNodeWS = "wss://some.web.socket.com";
   const ethereumNodeConnectionInfo = {
@@ -340,19 +347,17 @@ describe("modules/app/actions/init-augur.js", () => {
       connectSpy = jest
         .spyOn(AugurJS, "connect")
         .mockImplementation((env, cb) => {
-          {
-            cb(null, {
-              ethereumNode: {
-                ...ethereumNodeConnectionInfo,
-                contracts: {},
-                abi: {
-                  functions: {},
-                  events: {}
-                }
-              },
-              augurNode: augurNodeWS
-            });
-          }
+          cb(null, {
+            ethereumNode: {
+              ...ethereumNodeConnectionInfo,
+              contracts: {},
+              abi: {
+                functions: {},
+                events: {}
+              }
+            },
+            augurNode: augurNodeWS
+          });
         });
       networkIdSpy = jest
         .spyOn(AugurJS.augur.rpc, "getNetworkID")
@@ -412,7 +417,9 @@ describe("modules/app/actions/init-augur.js", () => {
       networkIdSpy = jest
         .spyOn(AugurJS.augur.rpc, "getNetworkID")
         .mockReturnValue(4);
-      stoppedSpy = jest.spyOn(AugurJS.augur.api.Controller, "stopped").mockImplementation(() => {});
+      stoppedSpy = jest
+        .spyOn(AugurJS.augur.api.Controller, "stopped")
+        .mockImplementation(() => {});
 
       store.dispatch(
         connectAugur({}, mockEnv, false, (err, connInfo) => {
