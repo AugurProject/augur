@@ -45,7 +45,7 @@ export function clearOverrideTimestamp(): void {
 
 export async function processBlockAndLogs(db: Knex, augur: Augur, direction: BlockDirection, block: BlockDetail, bulkSync: boolean, logs: Array<FormattedEventLog>) {
   if (!block || !block.timestamp) throw new Error(JSON.stringify(block));
-  const dbWritePromises = _.compact(logs.map((log) => processLogByName(augur, log)));
+  const dbWritePromises = _.compact(logs.map((log) => processLogByName(augur, log, true)));
   const dbWriteFunctions = await Promise.all(dbWritePromises);
   const dbWritesFunction = async (db: Knex) => {
     if (dbWriteFunctions.length > 0) logger.info(`Processing ${dbWritePromises.length} logs`);
@@ -90,6 +90,7 @@ export async function processBlockByBlockDetails(db: Knex, augur: Augur, block: 
 }
 
 export async function insertTransactionHash(db: Knex, blockNumber: number, transactionHash: string) {
+  if (transactionHash === null) throw new Error("Received null transactionHash from getLogs request. Your Ethereum node might be in light mode with bug: https://github.com/paritytech/parity-ethereum/issues/9929");
   const txHashRows: Array<TransactionHashesRow> = await db("transactionHashes").where({ transactionHash });
   if (!txHashRows || !txHashRows.length) {
     await db.insert({ blockNumber, transactionHash }).into("transactionHashes");
