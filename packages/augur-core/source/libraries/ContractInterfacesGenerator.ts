@@ -52,7 +52,7 @@ export class ContractInterfaceGenerator {
         public readonly address: string;
         protected readonly defaultGasPrice: BN;
 
-        protected constructor(connector: Connector, accountManager: AccountManager, address: string, defaultGasPrice: BN) {
+        public constructor(connector: Connector, accountManager: AccountManager, address: string, defaultGasPrice: BN) {
             this.connector = connector;
             this.accountManager = accountManager;
             this.address = address;
@@ -85,8 +85,8 @@ export class ContractInterfaceGenerator {
     }
 
     ${contractInterfaces.join("\n")}
-    export function ContractFactory(connector: Connector, accountManager: AccountManager, address: string, defaultGasPrice: BN): Controlled {
-        return new Controlled(connector, accountManager, address, defaultGasPrice);
+    export function ContractFactory(connector: Connector, accountManager: AccountManager, address: string, defaultGasPrice: BN): Contract {
+        return new Contract(connector, accountManager, address, defaultGasPrice);
     }
     `;
     }
@@ -111,7 +111,7 @@ export class ContractInterfaceGenerator {
         }
 
         return `
-    export class ${contractName} extends "Contract"} {
+    export class ${contractName} extends Contract {
         public constructor(connector: Connector, accountManager: AccountManager, address: string, defaultGasPrice: BN) {
             super(connector, accountManager, address, defaultGasPrice);
         }

@@ -72,7 +72,7 @@ contract Augur is IAugur {
 
     ITime public time;
 
-    constructor() {
+    constructor() public {
         uploader = msg.sender;
     }
 

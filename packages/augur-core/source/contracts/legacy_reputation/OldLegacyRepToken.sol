@@ -151,8 +151,8 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
         return totalMigrated;
     }
 
-    function getLegacyRepToken() public view returns (ERC20) {
-        return ERC20(address(0xe94327d07fc17907b4db788e5adf2ed424addff6));
+    function getLegacyRepToken() public pure returns (ERC20) {
+        return ERC20(address(0xE94327D07Fc17907b4DB788E5aDf2ed424adDff6));
     }
 
     function updateSiblingMigrationTotal(IReputationToken _token) public whenNotMigratingFromLegacy returns (bool) {

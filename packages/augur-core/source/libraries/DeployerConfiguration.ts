@@ -8,15 +8,15 @@ export class DeployerConfiguration {
     public readonly contractInputPath: string;
     public readonly contractAddressesOutputPath: string;
     public readonly uploadBlockNumbersOutputPath: string;
-    public readonly controllerAddress: string|undefined;
+    public readonly augurAddress: string|undefined;
     public readonly createGenesisUniverse: boolean;
     public readonly useNormalTime: boolean;
     public readonly isProduction: boolean;
     public readonly legacyRepAddress: string;
 
-    public constructor(contractInputRoot: string, artifactOutputRoot: string, controllerAddress: string|undefined, createGenesisUniverse: boolean=true, isProduction: boolean=false, useNormalTime: boolean=true, legacyRepAddress: string=PRODUCTION_LEGACY_REP_CONTRACT_ADDRESS) {
+    public constructor(contractInputRoot: string, artifactOutputRoot: string, augurAddress: string|undefined, createGenesisUniverse: boolean=true, isProduction: boolean=false, useNormalTime: boolean=true, legacyRepAddress: string=PRODUCTION_LEGACY_REP_CONTRACT_ADDRESS) {
         this.isProduction = isProduction;
-        this.controllerAddress = controllerAddress;
+        this.augurAddress = augurAddress;
         this.createGenesisUniverse = createGenesisUniverse;
         this.useNormalTime = isProduction || useNormalTime;
         this.legacyRepAddress = legacyRepAddress;

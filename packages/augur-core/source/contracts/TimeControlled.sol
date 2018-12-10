@@ -43,8 +43,4 @@ contract TimeControlled is ITime {
     function getTypeName() public view returns (bytes32) {
         return "TimeControlled";
     }
-
-    function onTransferOwnership(address, address) internal returns (bool) {
-        return true;
-    }
 }

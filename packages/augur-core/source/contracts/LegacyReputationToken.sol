@@ -8,7 +8,7 @@ contract LegacyReputationToken is OldLegacyReputationToken {
     using ContractExists for address;
     event FundedAccount(address indexed _universe, address indexed _sender, uint256 _repBalance, uint256 _timestamp);
 
-    address private constant FOUNDATION_REP_ADDRESS = address(0x1985365e9f78359a9B6AD760e32412f4a445E862);
+    address private constant FOUNDATION_REP_ADDRESS = address(0xE94327D07Fc17907b4DB788E5aDf2ed424adDff6);
 
     string public constant name = "Reputation";
     string public constant symbol = "REP";
