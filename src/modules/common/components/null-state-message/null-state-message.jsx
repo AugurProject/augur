@@ -1,6 +1,8 @@
 import React from "react";
 import classNames from "classnames";
 
+import isPopulated from "utils/is-populated";
+
 import Styles from "modules/common/components/null-state-message/null-state-message.styles";
 
 const NullStateMessage = p => (
@@ -9,7 +11,11 @@ const NullStateMessage = p => (
       [`${Styles.NullState__padding}`]: p.addNullPadding
     })}
   >
-    {!p.message ? <span>No Data Available</span> : <span>{p.message}</span>}
+    {!isPopulated(p.message) ? (
+      <span>No Data Available</span>
+    ) : (
+      <span>{p.message}</span>
+    )}
   </article>
 );
 

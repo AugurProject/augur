@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import isPopulated from "utils/is-populated";
 import MarketOutcomesList from "modules/market/components/market-outcomes-list/market-outcomes-list";
 import MarketPositionsList from "modules/market/components/market-positions-list/market-positions-list";
 import MarketPositionsListMobile from "modules/market/components/market-positions-list--mobile/market-positions-list--mobile";
@@ -41,7 +42,7 @@ const MarketOutcomesAndPositions = ({
     )}
     {isMobile &&
       selectedOutcome &&
-      outcomes.length > 0 && (
+      isPopulated(outcomes) && (
         <MarketPositionsListMobile
           outcome={
             outcomes.filter(outcome => outcome.id === selectedOutcome)[0]
