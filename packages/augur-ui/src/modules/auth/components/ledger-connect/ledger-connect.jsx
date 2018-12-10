@@ -1,3 +1,4 @@
+import "babel-polyfill";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import TransportU2F from "@ledgerhq/hw-transport-u2f";

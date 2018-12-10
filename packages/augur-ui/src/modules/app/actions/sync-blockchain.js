@@ -31,5 +31,16 @@ export const syncBlockchain = () => (dispatch, getState) => {
       dispatch(loadGasPriceInfo());
     }
   });
+
+  augur.augurNode.getSyncData((err, res) => {
+    if (!err && res) {
+      dispatch(
+        updateBlockchain({
+          highestBlock: res.highestBlock.number,
+          lastProcessedBlock: res.lastProcessedBlock.number
+        })
+      );
+    }
+  });
   dispatch(updateAssets());
 };

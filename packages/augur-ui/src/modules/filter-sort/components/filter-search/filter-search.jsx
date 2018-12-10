@@ -74,7 +74,9 @@ export default class FilterSearch extends Component {
     clearTimeout(this.timeout);
 
     this.timeout = setTimeout(() => {
-      this.setState({ search });
+      if (this.parent) {
+        this.setState({ search });
+      }
     }, 500);
   }
 
@@ -105,7 +107,12 @@ export default class FilterSearch extends Component {
     const { width, placeholder, search } = this.state;
 
     return (
-      <article className={Styles.FilterSearch}>
+      <article
+        className={Styles.FilterSearch}
+        ref={parent => {
+          this.parent = parent;
+        }}
+      >
         <label
           className={classNames(
             TooltipStyles.TooltipHint,

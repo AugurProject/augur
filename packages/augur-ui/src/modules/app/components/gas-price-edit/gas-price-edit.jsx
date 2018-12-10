@@ -43,7 +43,7 @@ export default class GasPriceEdit extends Component {
           tabIndex="-1"
         >
           <div className={Styles.GasPriceEdit__title}>
-            GAS PRICE <span className={Styles.GasPriceEdit__unit}>(GWEI)</span>
+            Gas Price <span className={Styles.GasPriceEdit__unit}>(GWEI)</span>
           </div>
           <div className={Styles.GasPriceEdit__info}>
             <div className={Styles.GasPriceEdit__price}>

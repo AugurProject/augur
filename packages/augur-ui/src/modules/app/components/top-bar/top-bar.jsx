@@ -6,6 +6,7 @@ import classNames from "classnames";
 import { Notifications } from "modules/common/components/icons";
 import ConnectAccount from "modules/auth/containers/connect-account";
 import GasPriceEdit from "modules/app/containers/gas-price-edit";
+import BlockInfoData from "modules/block-info/containers/block-info-data";
 
 import makePath from "modules/routes/helpers/make-path";
 import { MARKETS } from "modules/routes/constants/views";
@@ -75,6 +76,7 @@ const TopBar = props => (
         </div>
       </div>
     )}
+    <BlockInfoData />
     {props.isLogged && (
       <GasPriceEdit className={Styles.TopBar__hideForSmallScreens} />
     )}
