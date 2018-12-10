@@ -5,6 +5,8 @@ import Styles from "modules/forking/components/fork-migration-totals/fork-migrat
 import selectMigrateTotals from "modules/reports/selectors/select-migrated-totals";
 import { createBigNumber } from "utils/create-big-number";
 
+const forkTotalHeight = "30px";
+
 const ForkMigrationTotal = ({ className, forkMigrationTotal }) => {
   const currentMigrated = forkMigrationTotal.rep.full
     ? forkMigrationTotal.rep.full
@@ -52,7 +54,7 @@ class ForkMigrationTotals extends Component {
     super(props);
 
     this.state = {
-      forkMigrationTotalWrapperHeight: 0,
+      forkMigrationTotalWrapperHeight: forkTotalHeight,
       isOpen: false,
       forkMigrationTotalsMap: {},
       blockNumber: props.currentBlockNumber
@@ -98,7 +100,7 @@ class ForkMigrationTotals extends Component {
 
   showMore() {
     const forkMigrationTotalWrapperHeight = this.state.isOpen
-      ? 0
+      ? forkTotalHeight
       : `${this.forkMigrationTotalTable.clientHeight}px`;
 
     this.setState({
