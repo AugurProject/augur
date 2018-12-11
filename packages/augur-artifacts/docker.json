@@ -1,1 +1,5 @@
-{}
+{
+ "augurproject/dev-pop-geth-v2": "e96c4048327a",
+ "augurproject/dev-pop-normtime-geth-v2": "06e7dd971010",
+ "augurproject/dev-pop-geth-15-v2": "ff36279f89e7"
+}
