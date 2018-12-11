@@ -118,7 +118,7 @@ export default class BlockInfoData extends Component {
           }}
           className={classNames(
             Styles.BlockInfoData__connectDropdown,
-            ([Styles.BlockInfoData__connectDropdownLogged]: isLogged),
+            {[Styles.BlockInfoData__connectDropdownLogged]: isLogged},
             ToggleHeightStyles["toggle-height-target"],
             ToggleHeightStyles["toggle-height-target-quick"]
           )}
