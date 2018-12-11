@@ -17,7 +17,10 @@
     "docker:build:all": "bash ./scripts/docker-build-all.sh",
     "docker:build:augur-core": "lerna run --scope augur-core docker:build && lerna run --scope augur-core artifacts",
     "docker:build:augur": "docker build -f support/Dockerfile -t augurproject/augur:latest .",
-    "docker:build:pops": "lerna run --scope augur-tools docker:build"
+    "docker:build:pops": "lerna run --scope augur-tools docker:build",
+    "docker:geth:pop": "yarn workspace augur-tools docker:geth:pop",
+    "docker:geth:pop-15": "yarn workspace augur-tools docker:geth:pop-15",
+    "docker:geth:pop-normal-time": "yarn workspace augur-tools docker:geth:pop-normal-time"
   },
   "devDependencies": {
     "babel-core": "7.0.0-bridge.0",
