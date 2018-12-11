@@ -1,6 +1,7 @@
-import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+
+import React, { Component } from "react";
 
 import toggleHeight from "utils/toggle-height/toggle-height";
 import { createBigNumber } from "utils/create-big-number";
