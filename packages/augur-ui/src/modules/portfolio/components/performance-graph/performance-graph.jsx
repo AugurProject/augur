@@ -43,10 +43,30 @@ class PerformanceGraph extends Component {
       graphTypeDefault: "total",
       graphPeriod: "DAY",
       graphPeriodOptions: [
-        { label: "Past 24hrs", value: "DAY", format: "%a %d %I:%M %p" },
-        { label: "Past Week", value: "WEEK", format: "%a %d %I:%M %p" },
-        { label: "Past Month", value: "MONTH", format: "%m/%d %I:%M %p" },
-        { label: "All", value: "ALL", format: "%x %I:%M %p" }
+        {
+          label: "Past 24hrs",
+          value: "DAY",
+          tickFormat: "%a %I:%M %p",
+          labelFormat: "%a %d %I:%M %p"
+        },
+        {
+          label: "Past Week",
+          value: "WEEK",
+          tickFormat: "%a %d %I %p",
+          labelFormat: "%a %d %I:%M %p"
+        },
+        {
+          label: "Past Month",
+          value: "MONTH",
+          tickFormat: "%m/%d",
+          labelFormat: "%m/%d %I:%M %p"
+        },
+        {
+          label: "All",
+          value: "ALL",
+          tickFormat: "%x",
+          labelFormat: "%x %I:%M %p"
+        }
       ],
       graphPeriodDefault: "DAY",
       startTime: this.timeFrames.DAY,
@@ -55,7 +75,7 @@ class PerformanceGraph extends Component {
       performanceData: []
     };
     this.textWidth = 3.75;
-    this.margin = { top: 10, right: 10, bottom: 20, left: 60 };
+    this.margin = { top: 10, right: 0, bottom: 20, left: 60 };
 
     this.changeDropdown = this.changeDropdown.bind(this);
     this.updateChart = this.updateChart.bind(this);
@@ -183,9 +203,14 @@ class PerformanceGraph extends Component {
   updateChart() {
     const { selectedSeriesData, graphPeriod, graphPeriodOptions } = this.state;
     const { margin } = this;
-    const timeFormat = graphPeriodOptions.reduce((a, e) => {
+    const timeTickFormat = graphPeriodOptions.reduce((a, e) => {
       let newFormat = a;
-      if (e.value === graphPeriod) newFormat = e.format;
+      if (e.value === graphPeriod) newFormat = e.tickFormat;
+      return newFormat;
+    }, "");
+    const timeLabelFormat = graphPeriodOptions.reduce((a, e) => {
+      let newFormat = a;
+      if (e.value === graphPeriod) newFormat = e.labelFormat;
       return newFormat;
     }, "");
     // first remove all drawn lines in SVG to switch the chart info
@@ -200,8 +225,8 @@ class PerformanceGraph extends Component {
     const width = chartWidth - margin.left - margin.right;
     const height = chartHeight - margin.top - margin.bottom;
 
-    const dateFormat = d3.timeFormat(timeFormat);
-
+    const dateTickFormat = d3.timeFormat(timeTickFormat);
+    const dateLabelFormat = d3.timeFormat(timeLabelFormat);
     const chart = d3
       .select("#performance_chart")
       .append("g")
@@ -209,7 +234,10 @@ class PerformanceGraph extends Component {
       .attr("width", width)
       .attr("height", height)
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
-    const x = d3.scaleTime().rangeRound([0, width]);
+    const x = d3
+      .scaleTime()
+      .clamp(true)
+      .range([0, width]);
     const y = d3
       .scaleLinear()
       .clamp(true)
@@ -245,13 +273,32 @@ class PerformanceGraph extends Component {
       .concat([[0, yDomainBounds.calcedHigh]]);
     x.domain(d3.extent(selectedSeriesData[0].data, d => d[0]));
     y.domain(d3.extent(yDomainData, d => d[1]));
+    let tickCount = 10;
+    switch (graphPeriod) {
+      case "DAY":
+        tickCount = 12;
+        break;
+      case "WEEK":
+        tickCount = 7;
+        break;
+      case "MONTH":
+        tickCount = 15;
+        break;
+      default:
+        break;
+    }
     // x axis
     chart
       .append("g")
       .attr("fill", "#fff")
       .attr("stroke", "#fff")
       .attr("transform", `translate(0, ${height})`)
-      .call(d3.axisBottom(x).tickFormat(dateFormat))
+      .call(
+        d3
+          .axisBottom(x)
+          .tickFormat(dateTickFormat)
+          .ticks(tickCount)
+      )
       .attr("stroke", "#fff")
       .select(".domain")
       .attr("stroke", "#fff");
@@ -317,9 +364,9 @@ class PerformanceGraph extends Component {
       let i = biSect(data, v2, 0);
       if (i === data.length) i -= 1;
       const actualWidth = d3.select("#performance_chart").node().clientWidth;
-      const widthThreshold = actualWidth * 0.9;
+      const widthThreshold = actualWidth * 0.85;
       const actualHeight = d3.select("#performance_chart").node().clientHeight;
-      const heightThreshold = (actualHeight - margin.top) * 0.8;
+      const heightThreshold = (actualHeight - margin.top) * 0.7;
 
       const tests = [
         x(data[i][0]) + margin.left > widthThreshold,
@@ -333,7 +380,7 @@ class PerformanceGraph extends Component {
       d3.select("#crosshair_text_eth").text(
         `${formatEther(data[i][1]).formatted} ETH`
       );
-      d3.select("#crosshair_text_date").text(`${dateFormat(v2)}`);
+      d3.select("#crosshair_text_date").text(`${dateLabelFormat(v2)}`);
       let ethWidth = d3.select("#crosshair_text_eth").node().clientWidth;
       let dateWidth = d3.select("#crosshair_text_date").node().clientWidth;
       if (ethWidth === 0 && tests[0]) {
@@ -343,8 +390,8 @@ class PerformanceGraph extends Component {
         dateWidth = d3.select("#crosshair_text_date").node().clientWidth;
         focus.style("display", null);
       }
-      const ethTextDY = tests[1] ? "-0.5rem" : "1.2rem";
-      const dateTextDY = tests[1] ? "-1.5rem" : "2.5rem";
+      const ethTextDY = tests[1] ? "-1.5rem" : "1.2rem";
+      const dateTextDY = tests[1] ? "-0.5rem" : "2.5rem";
 
       if (!tests[0]) {
         focus.selectAll("text").attr("x", "1rem");

@@ -7,3 +7,4 @@ server.js
 postcss.config.js
 scripts/*
 test/*
+src/version.js

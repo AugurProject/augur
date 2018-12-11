@@ -31,8 +31,18 @@ const MarketOutcomes = ({
       .times(createBigNumber(100))}`;
   };
 
+  const outcomeVerticalLinePosition = () => {
+    let pos = calculatePosition();
+    if (pos > 99.0) {
+      pos = 99.0;
+    } else if (pos < 1.0) {
+      pos = 1.0;
+    }
+    return pos;
+  };
+
   const currentValuePosition = {
-    left: calculatePosition() + "%"
+    left: outcomeVerticalLinePosition() + "%"
   };
 
   const minValue =

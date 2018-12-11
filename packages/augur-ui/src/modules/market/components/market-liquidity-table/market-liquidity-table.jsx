@@ -32,7 +32,20 @@ const MarketLiquidityTable = ({
             [`${Styles.negative}`]: order.type === ASK
           })}
         >
-          <li>{order.type}</li>
+          <li style={{ position: "relative" }}>
+            <div
+              className={classNames(
+                Styles.MarketLiquidityTable__OrderIndicator,
+                {
+                  [`${Styles.MarketLiquidityTable__OrderIndicator_negative}`]:
+                    order.type === ASK
+                }
+              )}
+            />
+            <span className={Styles.MarketLiquidityTable__firstColumn}>
+              {order.type}
+            </span>
+          </li>
           <li>{outcomeLabel}</li>
           <li>
             {`${direction}${quantity.formatted}`}

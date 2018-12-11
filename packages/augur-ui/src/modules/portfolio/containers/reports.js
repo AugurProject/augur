@@ -37,7 +37,9 @@ const mapStateToProps = state => {
         disputableMarkets.push(market);
         break;
       case constants.REPORTING_STATE.AWAITING_NEXT_WINDOW:
-        upcomingDisputableMarkets.push(market);
+        if (!market.forking) {
+          upcomingDisputableMarkets.push(market);
+        }
         break;
       case constants.REPORTING_STATE.AWAITING_FINALIZATION:
       case constants.REPORTING_STATE.FINALIZED:

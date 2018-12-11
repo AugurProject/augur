@@ -68,6 +68,19 @@
 
   @media @breakpoint-mobile {
     top: 3.1rem;
+    width: 250px;
+  }
+
+  @media @breakpoint-mobile-small {
+    left: -1px;
+    right: unset;
+  }
+}
+
+.BlockInfoData__connectDropdownLogged {
+  @media @breakpoint-mobile-small {
+    left: unset;
+    right: -1px;
   }
 }
 
@@ -93,12 +106,6 @@
   padding-bottom: 16px;
 }
 
-.BlockInfoData__blocksBehind {
-  display: flex;
-  flex-direction: column;
-  margin-left: 8px;
-}
-
 .BlockInfoData__processed {
   color: @color-white;
   font-size: @font-size-large;
@@ -116,6 +123,17 @@
   color: @color-white;
 }
 
+.BlockInfoData__blocksBehind {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  font-size: @font-size-extra-small;
+  font-weight: normal;
+  margin-left: auto;
+  padding-left: 8px;
+  text-decoration: underline;
+}
+
 @media @breakpoint-mobile-mid {
   .BlockInfoData {
     max-width: unset;
@@ -123,6 +141,13 @@
 
   .BlockInfoData__container {
     justify-content: center;
-    padding: 8px 24px;
+    padding: 5px 24px;
   }
 }
+
+@media @breakpoint-mobile-small {
+  .BlockInfoData__container {
+    padding: 5px 10px;
+  }
+}
+

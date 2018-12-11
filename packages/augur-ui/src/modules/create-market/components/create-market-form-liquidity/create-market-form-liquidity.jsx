@@ -15,6 +15,7 @@ import { BID, ASK } from "modules/transactions/constants/types";
 import { CATEGORICAL, SCALAR } from "modules/markets/constants/market-types";
 import { ONE, ZERO } from "modules/trades/constants/numbers";
 import getValue from "utils/get-value";
+import isPopulated from "utils/is-populated";
 
 import Styles from "modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
@@ -113,7 +114,7 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   componentDidMount() {
-    if (Object.keys(this.props.liquidityState).length > 0) {
+    if (isPopulated(this.props.liquidityState)) {
       this.validateForm();
     }
   }
