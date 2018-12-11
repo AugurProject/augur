@@ -1,6 +1,4 @@
 yarn docker:build:augur
-cd packages/augur-core
-yarn docker:build
-yarn artifacts
-cd ../augur-tools
-yarn docker:build
+yarn workspace augur-core docker:build
+yarn workspace augur-core artifacts
+yarn workspace augur-tools docker:build

@@ -31,7 +31,8 @@ var imageId = args.opt.imageId;
 fs.readFile(dockerRunFile, fileType, function(err, content) {
   errorOccurred(err);
   if (!content || content.length === 0) {
-    errorOccurred("docker.json file has no content");
+    console.log("docker.json file has no content, adding default");
+    content = "{}";
   }
   const existing = JSON.parse(content);
   existing[imageName] = imageId;
