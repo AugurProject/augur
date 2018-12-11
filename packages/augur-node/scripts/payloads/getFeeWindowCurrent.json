@@ -1,7 +1,7 @@
 {
   "id": 4,
   "jsonrpc": "2.0",
-  "method": "getFeeWindowCurrent",
+  "method": "getDisputeWindowCurrent",
   "params": {
     "universe": "0x000000000000000000000000000000000000000b"
   }

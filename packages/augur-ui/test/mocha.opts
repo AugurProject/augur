@@ -1,5 +1,0 @@
---require babel-register
---require test/setup.js
---require chai/register-assert
---compilers js:babel-register
---recursive

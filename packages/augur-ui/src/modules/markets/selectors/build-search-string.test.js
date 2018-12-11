@@ -9,13 +9,13 @@ describe("modules/markets/selectors/build-search-string.js", () => {
 
   test("should return the existing value", () => {
     const actual = buildSearchString(undefined, ["tag1", "tag2"]);
-    const expected = "tag1 OR tag2";
+    const expected = "tags: tag1 OR tags: tag2";
     expect(actual).toEqual(expected);
   });
 
   test("should return the existing value please", () => {
     const actual = buildSearchString(undefined, ["tag1"]);
-    const expected = "tag1";
+    const expected = "tags: tag1";
     expect(actual).toEqual(expected);
   });
 
@@ -33,13 +33,13 @@ describe("modules/markets/selectors/build-search-string.js", () => {
 
   test("add partial keyword and tag", () => {
     const actual = buildSearchString("bobo", ["tag1"]);
-    const expected = "tag1 OR bobo*";
+    const expected = "tags: tag1 OR bobo*";
     expect(actual).toEqual(expected);
   });
 
   test("add keyword and tag", () => {
     const actual = buildSearchString("bobo ", ["tag1"]);
-    const expected = "tag1 OR bobo";
+    const expected = "tags: tag1 OR bobo";
     expect(actual).toEqual(expected);
   });
 

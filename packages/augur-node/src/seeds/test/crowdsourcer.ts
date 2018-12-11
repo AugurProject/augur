@@ -7,7 +7,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     const seedData = [{
       crowdsourcerId: "0x0000000000000000001000000000000000000001",
       marketId: "0x0000000000000000000000000000000000000011",
-      feeWindow: "0x1000000000000000000000000000000000000000",
+      disputeWindow: "0x1000000000000000000000000000000000000000",
       payoutId: 1,
       size: "10000",
       amountStaked: "10000",
@@ -19,7 +19,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     }, {
       crowdsourcerId: "0x0000000000000000001000000000000000000002",
       marketId: "0x0000000000000000000000000000000000000011",
-      feeWindow: "0x2000000000000000000000000000000000000000",
+      disputeWindow: "0x2000000000000000000000000000000000000000",
       payoutId: 2,
       size: "20000",
       amountStaked: "20000",
@@ -31,7 +31,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     }, {
       crowdsourcerId: "0x0000000000000000001000000000000000000005",
       marketId: "0x0000000000000000000000000000000000000011",
-      feeWindow: "0x3000000000000000000000000000000000000000",
+      disputeWindow: "0x3000000000000000000000000000000000000000",
       payoutId: 1,
       size: "30000",
       amountStaked: "30000",
@@ -42,7 +42,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     }, {
       crowdsourcerId: "0x0000000000000000001000000000000000000003",
       marketId: "0x0000000000000000000000000000000000000019",
-      feeWindow: "0x1000000000000000000000000000000000000000",
+      disputeWindow: "0x1000000000000000000000000000000000000000",
       payoutId: 3,
       amountStaked: "9000",
       size: "20000",
@@ -53,7 +53,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     },  {
       crowdsourcerId: "0x0000000000000000001000000000000000000004",
       marketId: "0x0000000000000000000000000000000000000211",
-      feeWindow: "0x1000000000000000000000000000000000000000",
+      disputeWindow: "0x1000000000000000000000000000000000000000",
       payoutId: 6,
       amountStaked: "20",
       size: "204",
@@ -64,7 +64,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     },  {
       crowdsourcerId: "0x0000000000000000001000000000000000000006",
       marketId: "0x00000000000000000000000000000000000000f1",
-      feeWindow: "0x2000000000000000000000000000000000000000",
+      disputeWindow: "0x2000000000000000000000000000000000000000",
       payoutId: 6,
       amountStaked: "20",
       size: "204",
@@ -75,7 +75,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     },  {
       crowdsourcerId: "0x0000000000000000001000000000000000000007",
       marketId: "0x00000000000000000000000000000000000000f1",
-      feeWindow: "0x3000000000000000000000000000000000000000",
+      disputeWindow: "0x3000000000000000000000000000000000000000",
       payoutId: 6,
       amountStaked: "20",
       disavowed: 1,

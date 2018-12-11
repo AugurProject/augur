@@ -6,7 +6,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       SELECT
         markets.universe,
         markets."marketId",
-        markets."feeWindow",
+        markets."disputeWindow",
         'initial_report' as type,
         "initialReporter" as participantAddress,
         initial_reports.reporter,
@@ -33,7 +33,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       SELECT
         markets.universe,
         crowdsourcers."marketId",
-        markets."feeWindow",
+        markets."disputeWindow",
         'crowdsourcer' as type,
         crowdsourcers."crowdsourcerId" as participantAddress,
         accountBalances.owner as reporter,

@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { CATEGORICAL } from "modules/markets/constants/market-types";
 import { MARKET, BUY, LIMIT, SELL } from "modules/transactions/constants/types";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip";
+import TooltipStyles from "modules/common/less/tooltip.styles";
 import { CreateMarketEdit, Hint } from "modules/common/components/icons";
 import Styles from "modules/trading/components/trading--confirm/trading--confirm.styles";
 

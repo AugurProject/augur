@@ -34,7 +34,8 @@ export default class MarketPositionsList extends Component {
     super(props);
 
     this.state = {
-      isOpen: true
+      isOpen: true,
+      completeSetsSalePending: false
     };
   }
 
@@ -184,7 +185,15 @@ export default class MarketPositionsList extends Component {
                   numCompleteSets.full
                 } of all outcomes.`}</span>
                 <button
-                  onClick={e => sellCompleteSets(marketId, numCompleteSets)}
+                  onClick={e => {
+                    this.setState({ completeSetsSalePending: true });
+                    sellCompleteSets(marketId, numCompleteSets, (err, res) => {
+                      if (err) {
+                        this.setState({ completeSetsSalePending: false });
+                      }
+                    });
+                  }}
+                  disabled={s.completeSetsSalePending}
                 >
                   Sell Complete Sets
                 </button>

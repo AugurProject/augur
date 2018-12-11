@@ -23,7 +23,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       tag2 varchar(255),
       volume varchar(255) NOT NULL CONSTRAINT nonnegativeVolume CHECK (ltrim(volume, '-') = volume),
       "sharesOutstanding" varchar(255) NOT NULL CONSTRAINT nonnegativeSharesOutstanding CHECK (ltrim("sharesOutstanding", '-') = "sharesOutstanding"),
-      "feeWindow" varchar(66),
+      "disputeWindow" varchar(66),
       "endTime" bigint NOT NULL CONSTRAINT positiveEndTime CHECK ("endTime" > 0),
       "finalizationBlockNumber" integer,
       "forking" boolean DEFAULT false,

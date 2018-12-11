@@ -83,7 +83,7 @@ async function initializeNetworkInfo(db: Knex, augur: Augur): Promise<void> {
     if (networkId === lastNetworkId) {
       await db("network_id").update({ lastLaunched: db.fn.now() });
       if (networkRow.overrideTimestamp == null) return;
-      await promisify(setOverrideTimestamp)(db, networkRow.overrideTimestamp);
+      return setOverrideTimestamp(db, networkRow.overrideTimestamp);
     } else {
       throw new Error(`NetworkId mismatch: current: ${networkId}, expected ${lastNetworkId}`);
     }
@@ -98,7 +98,7 @@ async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string
     const oldUploadBlockNumber = Number(await promisify(readFile)(oldUploadBlockNumberFile));
     if (currentUploadBlockNumber !== oldUploadBlockNumber) {
       console.log(`Deleting existing DB for this configuration as the upload block number is not equal: OLD: ${oldUploadBlockNumber} NEW: ${currentUploadBlockNumber}`);
-      renameDatabaseFile(networkId, dbPath);
+      await renameDatabaseFile(networkId, dbPath);
     }
   }
   await promisify(writeFile)(oldUploadBlockNumberFile, currentUploadBlockNumber);

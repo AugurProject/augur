@@ -1,10 +1,6 @@
 import * as views from "modules/routes/constants/views";
 
 describe("modules/app/constants/views", () => {
-  test("Returned the expected value 'DEFAULT_VIEW'", () => {
-    expect(views.DEFAULT_VIEW).toStrictEqual("categories");
-  });
-
   test("Returned the expected value 'M'", () => {
     expect(views.MARKET).toStrictEqual("market");
   });
@@ -23,10 +19,6 @@ describe("modules/app/constants/views", () => {
 
   test("Returned return the expected value 'ACCOUNT'", () => {
     expect(views.ACCOUNT).toStrictEqual("account");
-  });
-
-  test("Returned the expected value 'CATEGORIES'", () => {
-    expect(views.CATEGORIES).toStrictEqual("categories");
   });
 
   test("Returned the expected value 'MY_POSITIONS'", () => {

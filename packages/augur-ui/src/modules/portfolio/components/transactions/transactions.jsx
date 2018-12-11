@@ -24,10 +24,10 @@ import {
 
 import { getBeginDate } from "src/utils/format-date";
 import { isEqual, orderBy } from "lodash";
-import Styles from "modules/portfolio/components/transactions-list/transactions-list.styles";
+import Styles from "modules/portfolio/components/transactions/transactions.styles";
 import PortfolioStyles from "modules/portfolio/components/portfolio-view/portfolio-view.styles";
 
-export default class TransactionsList extends Component {
+export default class Transactions extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,

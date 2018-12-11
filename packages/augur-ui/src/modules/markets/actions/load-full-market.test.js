@@ -44,6 +44,10 @@ describe("loadFullMarket no market data in state", () => {
         value: { marketId: "0xMARKETID" }
       },
       {
+        type: "LOAD_DISPUTE_MARKETS_INFO",
+        value: ["0xMARKETID"]
+      },
+      {
         type: "LOAD_PRICE_HISTORY",
         value: { marketId: "0xMARKETID" }
       },
@@ -98,6 +102,10 @@ describe("loadFullMarket no market data in state", () => {
       {
         type: "LOAD_MARKET_TRADING_HISTORY",
         value: { marketId: "0xMARKETID" }
+      },
+      {
+        type: "LOAD_DISPUTE_MARKETS_INFO",
+        value: ["0xMARKETID"]
       },
       {
         type: "LOAD_PRICE_HISTORY",

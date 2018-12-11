@@ -49,7 +49,7 @@ describe("modules/markets/actions/market-creator-fees-management.js", () => {
     augur.api.Mailbox = jest.fn(() => {});
     augur.api.Mailbox.withdrawEther = jest.fn(() => {});
     augur.api.Mailbox.withdrawEther.mockImplementation(params => {
-      params.onSuccess();
+      params.onSuccess({ hash: "hashValue" });
     });
 
     test(`Shouldn't fire a withdrawEther or updateMarketsData if we have 0 ETH to collect from a market.`, () => {
@@ -81,6 +81,9 @@ describe("modules/markets/actions/market-creator-fees-management.js", () => {
       const state = {
         loginAccount: {
           address: "ADDRESS"
+        },
+        blockchain: {
+          currentAugurTimestamp: 1521665
         }
       };
       const store = mockStore(state);
@@ -120,6 +123,17 @@ describe("modules/markets/actions/market-creator-fees-management.js", () => {
                 id: "0xmyMarket01",
                 unclaimedCreatorFees: "30.5"
               }
+            }
+          }
+        },
+        {
+          type: "UPDATE_NOTIFICATION",
+          data: {
+            id: "hashValue",
+            notification: {
+              id: "hashValue",
+              status: "Confirmed",
+              timestamp: 1521665
             }
           }
         }

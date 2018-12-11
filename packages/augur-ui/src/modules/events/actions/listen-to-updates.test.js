@@ -9,6 +9,8 @@ import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 
 jest.mock("services/augurjs");
+jest.mock("src/select-state");
+jest.mock("modules/notifications/actions/notifications");
 
 describe("events/actions/listen-to-updates", () => {
   const middleware = [thunk];
@@ -203,6 +205,7 @@ describe("events/actions/listen-to-updates", () => {
 
     afterEach(() => {
       store.clearActions();
+      loadMarketsInfoSpy.mockReset();
       loadReportingSpy.mockReset();
       loadUnclaimedFeesSpy.mockReset();
       updateLoggedTransactionsSpy.mockReset();
@@ -296,11 +299,12 @@ describe("events/actions/listen-to-updates", () => {
             universe: "UNIVERSE_ADDRESS"
           })
         );
-      store.dispatch(listenToUpdates({}));
+      store.dispatch(listenToUpdates({ id: "logId" }));
       expect(store.getActions()).toEqual([
         { type: "LOAD_MARKETS_INFO", marketIds: ["MARKET_ADDRESS"] },
         { type: "UPDATE_UNCLAIMED_DATA", marketIds: ["MARKET_ADDRESS"] },
         { type: "LOAD_REPORTING" },
+        { type: "UPDATE_NOTIFICATION" },
         { type: "UPDATE_ASSETS" },
         {
           type: "UPDATE_LOGGED_TRANSACTIONS",
@@ -316,6 +320,7 @@ describe("events/actions/listen-to-updates", () => {
   });
   describe("InitialReporterRedeemed", () => {
     let loadMarketsInfoSpy;
+    let loadMarketsDisputeInfoSpy;
     let loadUnclaimedFeesSpy;
     let updateLoggedTransactionsSpy;
     let updateAssetsSpy;
@@ -328,6 +333,7 @@ describe("events/actions/listen-to-updates", () => {
 
     afterEach(() => {
       loadMarketsInfoSpy.mockReset();
+      loadMarketsDisputeInfoSpy.mockReset();
       loadUnclaimedFeesSpy.mockReset();
       updateLoggedTransactionsSpy.mockReset();
       updateAssetsSpy.mockReset();
@@ -344,6 +350,12 @@ describe("events/actions/listen-to-updates", () => {
         .spyOn(loadMarketsInfoModule, "loadMarketsInfo")
         .mockImplementation(marketIds => ({
           type: "LOAD_MARKETS_INFO",
+          marketIds
+        }));
+      loadMarketsDisputeInfoSpy = jest
+        .spyOn(loadMarketsInfoModule, "loadMarketsDisputeInfo")
+        .mockImplementation(marketIds => ({
+          type: "LOAD_DISPUTE_MARKETS_INFO",
           marketIds
         }));
       loadUnclaimedFeesSpy = jest

@@ -8,7 +8,7 @@ import { SubscriptionEventNames } from "../../constants";
 export async function processUniverseCreatedLog(augur: Augur, log: FormattedEventLog) {
   const reputationToken: Address = await augur.api.Universe.getReputationToken({ tx: { to: log.childUniverse } });
   return async (db: Knex) => {
-    const payoutId: number = await insertPayout(db, log.childUniverse, log.payoutNumerators, log.invalid, true);
+    const payoutId: number = await insertPayout(db, log.childUniverse, log.payoutNumerators, true);
     const universeToInsert = {
       universe: log.childUniverse,
       parentUniverse: log.parentUniverse,

@@ -1,7 +1,7 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import testState from "test/testState";
-import { BUY, SELL, tradeTestState } from "modules/trades/actions/testState";
+import { BUY, SELL, tradeTestState } from "test/tradeTestState";
 import { loadUsershareBalances } from "modules/positions/actions/load-user-share-balances";
 
 function updateTradesInProgressActionShapeAssertion(

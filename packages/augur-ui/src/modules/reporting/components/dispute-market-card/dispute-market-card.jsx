@@ -6,7 +6,7 @@ import CommonStyles from "modules/market/components/common/market-common.styles"
 import MarketProperties from "modules/market/containers/market-properties";
 import ForkMigrationTotals from "modules/forking/containers/fork-migration-totals";
 import MarketReportingPayouts from "modules/reporting/containers/reporting-payouts";
-import Styles from "modules/reporting/components/dispute-market-card/dispute-market-card.styles";
+import Styles from "modules/reporting/components/dispute-market-card/dispute-market-card.style";
 
 import { MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
