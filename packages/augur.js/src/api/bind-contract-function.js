@@ -10,7 +10,6 @@ var getGasPrice = require("../get-gas-price");
 function bindContractFunction(functionAbi) {
   return function () {
     var payload = assign({}, functionAbi);
-
     if (arguments && arguments.length) {
       var params = Array.prototype.slice.call(arguments);
       if (payload.constant || (params[0] != null && params[0].tx != null && params[0].tx.send === false)) {
