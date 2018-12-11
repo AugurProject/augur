@@ -68,7 +68,7 @@
     "async": "2.6.1",
     "augur-artifacts": "7.0.0-0",
     "augur.js": "7.0.0-0",
-    "bignumber.js": "6.0.0",
+    "bignumber.js": "8.0.1",
     "chalk": "2.3.2",
     "ethrpc": "6.1.1",
     "express": "4.16.4",

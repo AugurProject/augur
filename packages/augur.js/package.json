@@ -51,7 +51,7 @@
   "dependencies": {
     "async": "2.6.1",
     "augur-artifacts": "7.0.0-0",
-    "bignumber.js": "6.0.0",
+    "bignumber.js": "8.0.1",
     "clone": "2.1.2",
     "columnify": "1.5.4",
     "ethereumjs-blockstream": "4.0.1",
