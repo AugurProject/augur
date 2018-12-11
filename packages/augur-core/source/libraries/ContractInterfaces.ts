@@ -2133,10 +2133,17 @@
             super(connector, accountManager, address, defaultGasPrice);
         }
 
-        public createUniverse_ = async(arg0: string, arg1: string, arg2: string, options?: { sender?: string }): Promise<string> => {
+        public createUniverse = async(augur: string, parentUniverse: string, parentPayoutDistributionHash: string, options?: { sender?: string, gasPrice?: BN }): Promise<void> => {
             options = options || {};
-            const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"","type":"bytes32"}],"name":"createUniverse","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"};
-            const result = await this.localCall(abi, [arg0, arg1, arg2], options.sender);
+            const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_parentUniverse","type":"address"},{"name":"_parentPayoutDistributionHash","type":"bytes32"}],"name":"createUniverse","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"};
+            await this.remoteCall(abi, [augur, parentUniverse, parentPayoutDistributionHash], "createUniverse", options.sender, options.gasPrice);
+            return;
+        }
+
+        public createUniverse_ = async(augur: string, parentUniverse: string, parentPayoutDistributionHash: string, options?: { sender?: string }): Promise<string> => {
+            options = options || {};
+            const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_parentUniverse","type":"address"},{"name":"_parentPayoutDistributionHash","type":"bytes32"}],"name":"createUniverse","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"};
+            const result = await this.localCall(abi, [augur, parentUniverse, parentPayoutDistributionHash], options.sender);
             return <string>result[0];
         }
     }

@@ -235,7 +235,7 @@ Deploying to: ${networkConfiguration.networkName}
             promises.push(time.initialize(this.augur!.address));
         }
 
-        resolveAll(promises);
+        await resolveAll(promises);
     }
 
     public async initializeLegacyRep(): Promise<void> {
