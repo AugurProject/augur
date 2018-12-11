@@ -15,8 +15,7 @@ import { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemov
 import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./market-finalized";
 import { processUniverseCreatedLog, processUniverseCreatedLogRemoval } from "./universe-created";
 import { processUniverseForkedLog, processUniverseForkedLogRemoval } from "./universe-forked";
-import { processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval } from "./fee-window-created";
-import { processFeeWindowRedeemedLog, processFeeWindowRedeemedLogRemoval } from "./fee-window-redeemed";
+import { processDisputeWindowCreatedLog, processDisputeWindowCreatedLogRemoval } from "./dispute-window-created";
 import { processApprovalLog, processApprovalLogRemoval } from "./token/approval";
 import { processMintLog, processMintLogRemoval } from "./token/mint";
 import { processBurnLog, processBurnLogRemoval } from "./token/burn";
@@ -42,10 +41,10 @@ const passThroughLog: EventLogProcessor = {
 
 export const logProcessors: LogProcessors = {
   Augur: {
-    FeeWindowCreated: {
+    DisputeWindowCreated: {
       noAutoEmit: true,
-      add: processFeeWindowCreatedLog,
-      remove: processFeeWindowCreatedLogRemoval,
+      add: processDisputeWindowCreatedLog,
+      remove: processDisputeWindowCreatedLogRemoval,
     },
     InitialReportSubmitted: {
       noAutoEmit: true,
@@ -144,11 +143,6 @@ export const logProcessors: LogProcessors = {
       add: processUniverseForkedLog,
       remove: processUniverseForkedLogRemoval,
     },
-    FeeWindowRedeemed: {
-      noAutoEmit: true,
-      add: processFeeWindowRedeemedLog,
-      remove: processFeeWindowRedeemedLogRemoval,
-    },
     DisputeCrowdsourcerRedeemed: {
       noAutoEmit: true,
       add: processDisputeCrowdsourcerRedeemedLog,
@@ -178,8 +172,6 @@ export const logProcessors: LogProcessors = {
     Approval: passThroughLog,
     Mint: passThroughLog,
     FundedAccount: passThroughLog,
-    Pause: passThroughLog,
-    Unpause: passThroughLog,
   },
   Cash: {
     Transfer: {

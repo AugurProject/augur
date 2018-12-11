@@ -382,7 +382,7 @@ describe("server/getters/get-markets", () => {
     description: "set a maximum fee",
     params: {
       universe: "0x100000000000000000000000000000000000000b",
-      maxFee: .11,
+      maxFee: 0.11,
     },
     assertions: (marketsWithMaxFee) => {
       expect(marketsWithMaxFee).not.toContain("0x1000000000000000000000000000000000000001"); // .12 combined fee
@@ -392,7 +392,7 @@ describe("server/getters/get-markets", () => {
     description: "set a maximum fee 2",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
-      maxFee: .03,
+      maxFee: 0.03,
     },
     assertions: (marketsWithMaxFee) => {
       expect(marketsWithMaxFee).not.toContain("0x0000000000000000000000000000000000000001"); // .04 combined fee

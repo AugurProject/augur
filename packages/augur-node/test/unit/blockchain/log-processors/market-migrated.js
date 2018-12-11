@@ -5,7 +5,7 @@ const ReportingState = require("src/types").ReportingState;
 const updateMarketState = require("src/blockchain/log-processors/database").updateMarketState;
 
 function getMarket(db, log) {
-  return getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "markets.needsMigration", "markets.needsDisavowal", "feeWindow", "reportingState"])
+  return getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "markets.needsMigration", "markets.needsDisavowal", "disputeWindow", "reportingState"])
     .from("markets").where({ "markets.marketId": log.market });
 }
 
@@ -17,7 +17,7 @@ const augur = {
   },
   api: {
     Universe: {
-      getFeeWindowByTimestamp: () =>
+      getDisputeWindowByTimestamp: () =>
         Promise.resolve("0x0000000000000000000000000000000000FEE000"),
     },
   },
@@ -53,7 +53,7 @@ describe("blockchain/log-processors/market-migrated", () => {
           "universe": "NEW_UNIVERSE",
           "needsMigration": 0,
           "needsDisavowal": 0,
-          "feeWindow": "0x0000000000000000000000000000000000FEE000",
+          "disputeWindow": "0x0000000000000000000000000000000000FEE000",
           "reportingState": ReportingState.AWAITING_NEXT_WINDOW,
         },
       ]);
@@ -65,7 +65,7 @@ describe("blockchain/log-processors/market-migrated", () => {
           "universe": "ORIGINAL_UNIVERSE",
           "needsMigration": 1,
           "needsDisavowal": 1,
-          "feeWindow": "0x0000000000000000000000000000000000FEE000",
+          "disputeWindow": "0x0000000000000000000000000000000000FEE000",
           "reportingState": ReportingState.AWAITING_FORK_MIGRATION,
         },
       ]);

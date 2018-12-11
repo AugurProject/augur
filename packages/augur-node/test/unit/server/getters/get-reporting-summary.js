@@ -21,7 +21,7 @@ describe("server/getters/get-reporting-summary", () => {
   runTest({
     description: "get valid reporting window",
     params: {
-      feeWindow: "0x1000000000000000000000000000000000000000",
+      disputeWindow: "0x1000000000000000000000000000000000000000",
     },
     assertions: (reportingSummary) => {
       expect(reportingSummary).toEqual({
@@ -36,7 +36,7 @@ describe("server/getters/get-reporting-summary", () => {
   runTest({
     description: "non-existent reporting window",
     params: {
-      feeWindow: "0xfffffffffffff000000000000000000000000000",
+      disputeWindow: "0xfffffffffffff000000000000000000000000000",
     },
     assertions: (reportingSummary) => {
       expect(reportingSummary).toEqual({});

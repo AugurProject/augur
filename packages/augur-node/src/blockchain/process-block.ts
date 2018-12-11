@@ -3,8 +3,8 @@ import * as Knex from "knex";
 import { each } from "bluebird";
 import Augur, { FormattedEventLog } from "augur.js";
 import { augurEmitter } from "../events";
-import { BlockDetail, BlocksRow, MarketsContractAddressRow, ReportingState, Address, FeeWindowState, MarketIdUniverseFeeWindow, TransactionHashesRow } from "../types";
-import { updateActiveFeeWindows, updateMarketState } from "./log-processors/database";
+import { BlockDetail, BlocksRow, MarketsContractAddressRow, ReportingState, Address, DisputeWindowState, MarketIdUniverseDisputeWindow, TransactionHashesRow } from "../types";
+import { updateActiveDisputeWindows, updateMarketState } from "./log-processors/database";
 import { getMarketsWithReportingState } from "../server/getters/database";
 import { logger } from "../utils/logger";
 import { SubscriptionEventNames } from "../constants";
@@ -99,7 +99,7 @@ export async function insertTransactionHash(db: Knex, blockNumber: number, trans
 async function advanceTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number) {
   await advanceMarketReachingEndTime(db, augur, blockNumber, timestamp);
   await advanceMarketMissingDesignatedReport(db, augur, blockNumber, timestamp);
-  await advanceFeeWindowActive(db, augur, blockNumber, timestamp);
+  await advanceDisputeWindowActive(db, augur, blockNumber, timestamp);
 }
 
 async function advanceMarketReachingEndTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number) {
@@ -135,11 +135,11 @@ async function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, bloc
   });
 }
 
-async function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, blockNumber: number, expiredFeeWindows: Array<Address>) {
+async function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, blockNumber: number, expiredDisputeWindows: Array<Address>) {
   const marketIds: Array<{ marketId: Address; universe: Address; }> = await getMarketsWithReportingState(db, ["markets.marketId", "markets.universe"])
     .join("universes", "markets.universe", "universes.universe")
     .where("universes.forked", 0)
-    .whereIn("markets.feeWindow", expiredFeeWindows)
+    .whereIn("markets.disputeWindow", expiredDisputeWindows)
     .whereNot("markets.needsMigration", 1)
     .whereNot("markets.forking", 1);
 
@@ -154,27 +154,27 @@ async function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, bloc
   });
 }
 
-export async function advanceFeeWindowActive(db: Knex, augur: Augur, blockNumber: number, timestamp: number) {
-  const feeWindowModifications = await updateActiveFeeWindows(db, blockNumber, timestamp);
-  if (feeWindowModifications != null && feeWindowModifications.expiredFeeWindows.length === 0 && feeWindowModifications.newActiveFeeWindows.length === 0) return;
-  await advanceIncompleteCrowdsourcers(db, blockNumber, feeWindowModifications!.expiredFeeWindows || []);
-  await advanceMarketsToAwaitingFinalization(db, augur, blockNumber, feeWindowModifications!.expiredFeeWindows || []);
-  await advanceMarketsToCrowdsourcingDispute(db, augur, blockNumber, feeWindowModifications!.newActiveFeeWindows || []);
+export async function advanceDisputeWindowActive(db: Knex, augur: Augur, blockNumber: number, timestamp: number) {
+  const disputeWindowModifications = await updateActiveDisputeWindows(db, blockNumber, timestamp);
+  if (disputeWindowModifications != null && disputeWindowModifications.expiredDisputeWindows.length === 0 && disputeWindowModifications.newActiveDisputeWindows.length === 0) return;
+  await advanceIncompleteCrowdsourcers(db, blockNumber, disputeWindowModifications!.expiredDisputeWindows || []);
+  await advanceMarketsToAwaitingFinalization(db, augur, blockNumber, disputeWindowModifications!.expiredDisputeWindows || []);
+  await advanceMarketsToCrowdsourcingDispute(db, augur, blockNumber, disputeWindowModifications!.newActiveDisputeWindows || []);
 }
 
-async function advanceMarketsToCrowdsourcingDispute(db: Knex, augur: Augur, blockNumber: number, newActiveFeeWindows: Array<Address>) {
-  const marketIds: Array<MarketIdUniverseFeeWindow> = await getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "activeFeeWindow.feeWindow"])
+async function advanceMarketsToCrowdsourcingDispute(db: Knex, augur: Augur, blockNumber: number, newActiveDisputeWindows: Array<Address>) {
+  const marketIds: Array<MarketIdUniverseDisputeWindow> = await getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "activeDisputeWindow.disputeWindow"])
     .join("universes", "markets.universe", "universes.universe")
-    .join("fee_windows as activeFeeWindow", "activeFeeWindow.universe", "markets.universe")
-    .whereIn("markets.feeWindow", newActiveFeeWindows)
-    .where("activeFeeWindow.state", FeeWindowState.CURRENT)
+    .join("dispute_windows as activeDisputeWindow", "activeDisputeWindow.universe", "markets.universe")
+    .whereIn("markets.disputeWindow", newActiveDisputeWindows)
+    .where("activeDisputeWindow.state", DisputeWindowState.CURRENT)
     .where("reportingState", ReportingState.AWAITING_NEXT_WINDOW)
     .where("universes.forked", 0);
 
   await each(marketIds, async (marketIdRow) => {
     augurEmitter.emit(SubscriptionEventNames.MarketState, {
       universe: marketIdRow.universe,
-      feeWindow: marketIdRow.feeWindow,
+      disputeWindow: marketIdRow.disputeWindow,
       marketId: marketIdRow.marketId,
       reportingState: ReportingState.CROWDSOURCING_DISPUTE,
     });
@@ -182,10 +182,10 @@ async function advanceMarketsToCrowdsourcingDispute(db: Knex, augur: Augur, bloc
   });
 }
 
-async function advanceIncompleteCrowdsourcers(db: Knex, blockNumber: number, expiredFeeWindows: Array<Address>) {
-  // Finds crowdsourcers rows that we don't know the completion of, but are attached to feeWindows that have ended
+async function advanceIncompleteCrowdsourcers(db: Knex, blockNumber: number, expiredDisputeWindows: Array<Address>) {
+  // Finds crowdsourcers rows that we don't know the completion of, but are attached to disputeWindows that have ended
   // They did not reach their goal, so set completed to 0.
   return db("crowdsourcers").update("completed", 0)
     .whereNull("completed")
-    .whereIn("feeWindow", expiredFeeWindows);
+    .whereIn("disputeWindow", expiredDisputeWindows);
 }

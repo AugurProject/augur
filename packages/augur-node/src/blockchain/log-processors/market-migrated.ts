@@ -1,14 +1,14 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, CategoriesRow, CategoryRow, ReportingState, Address } from "../../types";
-import { rollbackMarketState, updateMarketFeeWindow, updateMarketState } from "./database";
+import { rollbackMarketState, updateMarketDisputeWindow, updateMarketState } from "./database";
 import { getMarketsWithReportingState } from "../../server/getters/database";
 
 async function advanceToAwaitingNextWindow(db: Knex, marketId: Address, blockNumber: number) {
-  const reportingStateRow: { reportingState: ReportingState, feeWindow: Address } = await getMarketsWithReportingState(db, ["reportingState", "feeWindow"]).first().where("markets.marketId", marketId);
+  const reportingStateRow: { reportingState: ReportingState, disputeWindow: Address } = await getMarketsWithReportingState(db, ["reportingState", "disputeWindow"]).first().where("markets.marketId", marketId);
   if (reportingStateRow == null) throw new Error("Could not fetch prior reportingState");
   if (reportingStateRow.reportingState === ReportingState.AWAITING_FORK_MIGRATION) {
-    const initialReportMade = reportingStateRow.feeWindow !== "0x0000000000000000000000000000000000000000";
+    const initialReportMade = reportingStateRow.disputeWindow !== "0x0000000000000000000000000000000000000000";
     const reportingState = initialReportMade ? ReportingState.AWAITING_NEXT_WINDOW : ReportingState.OPEN_REPORTING;
     return updateMarketState(db, marketId, blockNumber, reportingState);
   }
@@ -17,7 +17,7 @@ async function advanceToAwaitingNextWindow(db: Knex, marketId: Address, blockNum
 export async function processMarketMigratedLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await advanceToAwaitingNextWindow(db, log.market, log.blockNumber);
-    await updateMarketFeeWindow(db, augur, log.newUniverse, log.market, true);
+    await updateMarketDisputeWindow(db, augur, log.newUniverse, log.market, true);
     await db.update({
       universe: log.newUniverse,
       needsMigration: db.raw("needsMigration - 1"),

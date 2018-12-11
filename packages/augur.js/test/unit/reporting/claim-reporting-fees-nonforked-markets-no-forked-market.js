@@ -16,18 +16,18 @@ var sinon = require("sinon");
 describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", function () {
   var claimReportingFeesNonforkedMarkets;
   var disputeCrowdsourcerRedeemStub;
-  var feeWindowRedeemStub;
+  var disputeWindowRedeemStub;
   var initialReporterRedeemStub;
   var marketDisavowCrowdsourcersStub;
   var DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE = "0x5418";
-  var FEE_WINDOW_REDEEM_GAS_ESTIMATE = "0x5418";
+  var DISPUTE_WINDOW_REDEEM_GAS_ESTIMATE = "0x5418";
   var INITIAL_REPORTER_REDEEM_GAS_ESTIMATE = "0x5418";
   var MARKET_DISAVOW_CROWDSOURCERS_GAS_ESTIMATE = "0x5318";
   var NONFORKED_MARKET_UNIVERSE_ADDRESS = "0x0fAdd00000000000000000000000000000000000";
   var REDEEMER_ADDRESS = "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
   var params = {
     redeemer: REDEEMER_ADDRESS,
-    feeWindows: [
+    disputeWindows: [
       "0xfeeAdd0000000000000000000000000000000001",
     ],
     forkedMarket: null,
@@ -137,8 +137,8 @@ describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", fu
       DisputeCrowdsourcer: {
         redeem: disputeCrowdsourcerRedeemStub,
       },
-      FeeWindow: {
-        redeem: feeWindowRedeemStub,
+      DisputeWindow: {
+        redeem: disputeWindowRedeemStub,
       },
       InitialReporter: {
         redeem: initialReporterRedeemStub,
@@ -153,7 +153,7 @@ describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", fu
     describe("and estimateGas is true", function () {
       before(function () {
         disputeCrowdsourcerRedeemStub = sinon.stub(api().DisputeCrowdsourcer, "redeem").callsFake(function (p) { p.onSuccess(DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE); });
-        feeWindowRedeemStub = sinon.stub(api().FeeWindow, "redeem").callsFake(function (p) { p.onSuccess(FEE_WINDOW_REDEEM_GAS_ESTIMATE); });
+        disputeWindowRedeemStub = sinon.stub(api().DisputeWindow, "redeem").callsFake(function (p) { p.onSuccess(DISPUTE_WINDOW_REDEEM_GAS_ESTIMATE); });
         initialReporterRedeemStub = sinon.stub(api().InitialReporter, "redeem").callsFake(function (p) { p.onSuccess(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE); });
         marketDisavowCrowdsourcersStub = sinon.stub(api().Market, "disavowCrowdsourcers").callsFake(function (p) { p.onSuccess(MARKET_DISAVOW_CROWDSOURCERS_GAS_ESTIMATE); });
         claimReportingFeesNonforkedMarkets = proxyquire("../../../src/reporting/claim-reporting-fees-nonforked-markets", {
@@ -170,7 +170,7 @@ describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", fu
 
       after(function () {
         disputeCrowdsourcerRedeemStub = null;
-        feeWindowRedeemStub = null;
+        disputeWindowRedeemStub = null;
         initialReporterRedeemStub = null;
         marketDisavowCrowdsourcersStub = null;
       });
@@ -213,11 +213,11 @@ describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", fu
         });
       });
 
-      describe("FeeWindow.redeem", function () {
+      describe("DisputeWindow.redeem", function () {
         it("should be called 1 time", function () {
-          sinon.assert.callCount(feeWindowRedeemStub, 1);
+          sinon.assert.callCount(disputeWindowRedeemStub, 1);
         });
-        it("should receive the expected input parameters for each call to FeeWindow.redeem", function () {
+        it("should receive the expected input parameters for each call to DisputeWindow.redeem", function () {
           var expectedInput = {
             _sender: REDEEMER_ADDRESS,
             tx: {
@@ -225,7 +225,7 @@ describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", fu
               estimateGas: true,
             },
           };
-          var actualInput = feeWindowRedeemStub.args[0][0];
+          var actualInput = disputeWindowRedeemStub.args[0][0];
           assert.deepEqual(expectedInput._sender, actualInput._sender);
           assert.deepEqual(expectedInput.tx, actualInput.tx);
         });
@@ -270,14 +270,14 @@ describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", fu
       describe("returned object", function () {
         it("should contain the expected gas estimates", function () {
           var disavowCrowdsourcersTotal = new BigNumber(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE, 16).multipliedBy(marketDisavowCrowdsourcersStub.callCount);
-          var feeWindowRedeemTotal = new BigNumber(FEE_WINDOW_REDEEM_GAS_ESTIMATE, 16).multipliedBy(feeWindowRedeemStub.callCount);
+          var disputeWindowRedeemTotal = new BigNumber(DISPUTE_WINDOW_REDEEM_GAS_ESTIMATE, 16).multipliedBy(disputeWindowRedeemStub.callCount);
           var crowdsourcerRedeemTotal = new BigNumber(DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE, 16).multipliedBy(disputeCrowdsourcerRedeemStub.callCount);
           var initialReporterRedeemTotal = new BigNumber(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE, 16).multipliedBy(initialReporterRedeemStub.callCount);
           var expectedResult = {
             gasEstimates: {
               disavowCrowdsourcers: [],
-              feeWindowRedeem: [
-                { address: "0xfeeAdd0000000000000000000000000000000001", estimate: new BigNumber(FEE_WINDOW_REDEEM_GAS_ESTIMATE, 16) },
+              disputeWindowRedeem: [
+                { address: "0xfeeAdd0000000000000000000000000000000001", estimate: new BigNumber(DISPUTE_WINDOW_REDEEM_GAS_ESTIMATE, 16) },
               ],
               crowdsourcerRedeem: [
                 { address: "0x0fcAdd0000000000000000000000000000000001", estimate: new BigNumber(DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE, 16) },
@@ -309,11 +309,11 @@ describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", fu
               ],
               totals: {
                 disavowCrowdsourcers: disavowCrowdsourcersTotal.toString(),
-                feeWindowRedeem: feeWindowRedeemTotal.toString(),
+                disputeWindowRedeem: disputeWindowRedeemTotal.toString(),
                 crowdsourcerRedeem: crowdsourcerRedeemTotal.toString(),
                 initialReporterRedeem: initialReporterRedeemTotal.toString(),
                 all: disavowCrowdsourcersTotal
-                    .plus(feeWindowRedeemTotal)
+                    .plus(disputeWindowRedeemTotal)
                     .plus(crowdsourcerRedeemTotal)
                     .plus(initialReporterRedeemTotal).toString(),
               },
@@ -328,7 +328,7 @@ describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", fu
       before(function () {
         params.estimateGas = false;
         disputeCrowdsourcerRedeemStub = sinon.stub(api().DisputeCrowdsourcer, "redeem").callsFake(function (p) { p.onSent(); p.onSuccess(DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE); });
-        feeWindowRedeemStub = sinon.stub(api().FeeWindow, "redeem").callsFake(function (p) { p.onSent(); p.onSuccess(FEE_WINDOW_REDEEM_GAS_ESTIMATE); });
+        disputeWindowRedeemStub = sinon.stub(api().DisputeWindow, "redeem").callsFake(function (p) { p.onSent(); p.onSuccess(DISPUTE_WINDOW_REDEEM_GAS_ESTIMATE); });
         initialReporterRedeemStub = sinon.stub(api().InitialReporter, "redeem").callsFake(function (p) { p.onSent(); p.onSuccess(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE); });
         marketDisavowCrowdsourcersStub = sinon.stub(api().Market, "disavowCrowdsourcers").callsFake(function (p) { p.onSent(); p.onSuccess(MARKET_DISAVOW_CROWDSOURCERS_GAS_ESTIMATE); });
         claimReportingFeesNonforkedMarkets = proxyquire("../../../src/reporting/claim-reporting-fees-nonforked-markets", {
@@ -381,11 +381,11 @@ describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", fu
         });
       });
 
-      describe("FeeWindow.redeem", function () {
+      describe("DisputeWindow.redeem", function () {
         it("should be called 1 time", function () {
-          sinon.assert.callCount(feeWindowRedeemStub, 1);
+          sinon.assert.callCount(disputeWindowRedeemStub, 1);
         });
-        it("should receive the expected input parameters for each call to FeeWindow.redeem", function () {
+        it("should receive the expected input parameters for each call to DisputeWindow.redeem", function () {
           var expectedInput = {
             _sender: REDEEMER_ADDRESS,
             tx: {
@@ -393,7 +393,7 @@ describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", fu
               estimateGas: false,
             },
           };
-          var actualInput = feeWindowRedeemStub.args[0][0];
+          var actualInput = disputeWindowRedeemStub.args[0][0];
           assert.deepEqual(expectedInput._sender, actualInput._sender);
           assert.deepEqual(expectedInput.tx, actualInput.tx);
         });
@@ -440,7 +440,7 @@ describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", fu
           var expectedResult = {
             successfulTransactions: {
               disavowCrowdsourcers: [],
-              feeWindowRedeem: ["0xfeeAdd0000000000000000000000000000000001"],
+              disputeWindowRedeem: ["0xfeeAdd0000000000000000000000000000000001"],
               crowdsourcerRedeem: [
                 "0x0fcAdd0000000000000000000000000000000016",
                 "0x0fcAdd0000000000000000000000000000000015",
