@@ -66,7 +66,7 @@ describe.skip("modules/app/actions/init-augur.js", () => {
     },
     augur: {
       api: {
-        Controller: {
+        Augur: {
           stopped: () => {}
         }
       },

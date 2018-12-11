@@ -10,7 +10,6 @@ import 'reporting/IAuction.sol';
 import 'libraries/Initializable.sol';
 import 'libraries/math/SafeMathUint256.sol';
 import 'factories/MarketFactory.sol';
-import 'Controller.sol';
 import 'IAugur.sol';
 
 

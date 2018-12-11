@@ -28,21 +28,21 @@ export class DeployerConfiguration {
 
     public static create(artifactOutputRoot: string=ARTIFACT_OUTPUT_ROOT, isProduction: boolean=false, legacyRepAddress: string=PRODUCTION_LEGACY_REP_CONTRACT_ADDRESS): DeployerConfiguration {
         const contractInputRoot = (typeof process.env.CONTRACT_INPUT_ROOT === 'undefined') ? path.join(__dirname, '../../output/contracts') : path.normalize(<string> process.env.CONTRACT_INPUT_ROOT);
-        const controllerAddress = process.env.AUGUR_CONTROLLER_ADDRESS;
+        const augurAddress = process.env.AUGUR_ADDRESS;
         const createGenesisUniverse = (typeof process.env.CREATE_GENESIS_UNIVERSE === 'undefined') ? true : process.env.CREATE_GENESIS_UNIVERSE === 'true';
         const useNormalTime = (typeof process.env.USE_NORMAL_TIME === 'string') ? process.env.USE_NORMAL_TIME === 'true' : true;
         isProduction = (typeof process.env.IS_PRODUCTION === 'string') ? process.env.IS_PRODUCTION === 'true' : isProduction;
 
-        return new DeployerConfiguration(contractInputRoot, artifactOutputRoot, controllerAddress, createGenesisUniverse, isProduction, useNormalTime, legacyRepAddress);
+        return new DeployerConfiguration(contractInputRoot, artifactOutputRoot, augurAddress, createGenesisUniverse, isProduction, useNormalTime, legacyRepAddress);
     }
 
     public static createWithControlledTime(legacyRepAddress: string=PRODUCTION_LEGACY_REP_CONTRACT_ADDRESS, isProduction: boolean=false, artifactOutputRoot: string=ARTIFACT_OUTPUT_ROOT): DeployerConfiguration {
         const contractInputRoot = (typeof process.env.CONTRACT_INPUT_ROOT === 'undefined') ? path.join(__dirname, '../../output/contracts') : path.normalize(<string> process.env.CONTRACT_INPUT_ROOT);
-        const controllerAddress = process.env.AUGUR_CONTROLLER_ADDRESS;
+        const augurAddress = process.env.AUGUR_ADDRESS;
         const createGenesisUniverse = (typeof process.env.CREATE_GENESIS_UNIVERSE === 'undefined') ? true : process.env.CREATE_GENESIS_UNIVERSE === 'true';
         const useNormalTime = false;
         isProduction = (typeof process.env.IS_PRODUCTION === 'string') ? process.env.IS_PRODUCTION === 'true' : isProduction;
 
-        return new DeployerConfiguration(contractInputRoot, artifactOutputRoot, controllerAddress, createGenesisUniverse, isProduction, useNormalTime, legacyRepAddress);
+        return new DeployerConfiguration(contractInputRoot, artifactOutputRoot, augurAddress, createGenesisUniverse, isProduction, useNormalTime, legacyRepAddress);
     }
 }

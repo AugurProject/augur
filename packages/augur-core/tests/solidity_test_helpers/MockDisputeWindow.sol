@@ -338,10 +338,6 @@ contract MockDisputeWindow is Initializable, MockVariableSupplyToken, IDisputeWi
         return true;
     }
 
-    function setController(IAugur _augur) public returns(bool) {
-        return true;
-    }
-
     function trustedUniverseBuy(address _buyer, uint256 _attotokens) public returns (bool) {
         return true;
     }

@@ -1,6 +1,5 @@
 pragma solidity 0.4.24;
 
-import 'Controller.sol';
 import 'reporting/IMarket.sol';
 
 

@@ -27,7 +27,7 @@ describe("server/getters/get-sync-data", () => {
           addresses: {
             974: {
               universe: "the-universe-address",
-              controller: "the-controller-address",
+              augur: "the-augur-address",
             },
           },
         },
@@ -51,7 +51,7 @@ describe("server/getters/get-sync-data", () => {
         isSyncFinished: false,
         addresses: {
           universe: "the-universe-address",
-          controller: "the-controller-address",
+          augur: "the-augur-address",
         },
         highestBlock: {
           hash: "0x1500002",

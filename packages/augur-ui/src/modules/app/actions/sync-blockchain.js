@@ -9,7 +9,7 @@ const GET_GAS_BLOCK_LIMIT = 100;
 export const syncBlockchain = () => (dispatch, getState) => {
   const { gasPriceInfo } = getState();
   const blockNumber = parseInt(augur.rpc.getCurrentBlock().number, 16);
-  augur.api.Controller.getTimestamp((err, augurTimestamp) => {
+  augur.api.Augur.getTimestamp((err, augurTimestamp) => {
     if (err) console.error(err);
     dispatch(
       updateBlockchain({
