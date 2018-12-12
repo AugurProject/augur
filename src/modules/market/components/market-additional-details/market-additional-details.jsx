@@ -18,7 +18,7 @@ const MarketAdditonalDetails = ({
       <div className={Styles[`MarketAdditionalDetails__details-wrapper`]}>
         <div className={Styles[`MarketAdditionalDetails__details-container`]}>
           <h4>Resolution Source:</h4>
-          <span>{resolutionSource || "General knowledge"}</span>
+          <span>{resolutionSource}</span>
           {details && (
             <label
               className={

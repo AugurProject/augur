@@ -192,7 +192,7 @@ export default class MarketProperties extends Component {
                     }
                   )}
                 >
-                  {resolutionSource || "General knowledge"}
+                  {resolutionSource}
                 </span>
               </li>
             )}

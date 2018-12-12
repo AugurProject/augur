@@ -39,7 +39,7 @@ export default class MarketHeader extends Component {
     isDesignatedReporter: false,
     tentativeWinner: null,
     scalarDenomination: null,
-    resolutionSource: null,
+    resolutionSource: "General knowledge",
     selectedOutcome: null,
     marketType: null,
     isForking: false
@@ -122,7 +122,7 @@ export default class MarketHeader extends Component {
             <div className={Styles.MarketHeader__descriptionContainer}>
               <div className={Styles.MarketHeader__details}>
                 <h4>Resolution Source</h4>
-                <span>{resolutionSource || "General knowledge"}</span>
+                <span>{resolutionSource}</span>
               </div>
               {details.length > 0 && (
                 <div

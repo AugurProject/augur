@@ -263,6 +263,10 @@ export function assembleMarket(
           positiveSign: false
         });
 
+        market.resolutionSource = market.resolutionSource
+          ? market.resolutionSource
+          : undefined;
+
         market.isRequiredToReportByAccount = !!marketReport;
         market.isPendingReport =
           market.isRequiredToReportByAccount && !marketReport.reportedOutcomeId; // account is required to report on this market
