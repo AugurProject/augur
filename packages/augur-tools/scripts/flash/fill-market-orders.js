@@ -56,65 +56,65 @@ function fillMarketOrder(augur, args, auth, callback) {
         chalk.green.dim("FullPrecisionPrice:"),
         chalk.green.dim("FullPrecisionAmount")
       );
-      augur.trading.getOrders({ marketId, outcome, orderType }, function(
-        err,
-        orderBook
-      ) {
-        if (err) {
-          console.error(JSON.stringify(err));
-          return callback(err);
-        }
-        if (!orderBook[marketId]) {
-          return callback("No Market Orders Found");
-        }
-        var orders = orderBook[marketId][outcome][orderType];
-        // Right now orders are in a random order
-        // sort by price ascending
-        var sortedOrders = Object.values(orders).sort(function(a, b) {
-          return new BigNumber(a.price).comparedTo(new BigNumber(b.price));
-        });
-        async.eachSeries(
-          sortedOrders,
-          function(order, nextOrder) {
-            console.log(
-              chalk.yellow(order.fullPrecisionPrice),
-              chalk.yellow(order.fullPrecisionAmount)
-            );
-            var tradePayload = {
-              meta: auth,
-              amount: order.fullPrecisionAmount,
-              limitPrice: order.fullPrecisionPrice,
-              numTicks: market.numTicks,
-              minPrice: market.minPrice,
-              maxPrice: market.maxPrice,
-              sharesProvided: "0",
-              _direction: direction,
-              _market: marketId,
-              _outcome: parseInt(outcome, 10),
-              _tradeGroupId: augur.trading.generateTradeGroupId(),
-              doNotCreateOrders: true,
-              onSent: () => {},
-              onSuccess: function(tradeAmountRemaining) {
-                console.log(
-                  chalk.cyan("Trade completed,"),
-                  chalk.red.bold(orderType),
-                  chalk.green(tradeAmountRemaining),
-                  chalk.cyan.dim("shares remaining")
-                );
-                nextOrder(null);
-              },
-              onFailed: function(err) {
-                console.log(chalk.red(JSON.stringify(err)));
-                nextOrder(err);
-              }
-            };
-            augur.trading.placeTrade(tradePayload);
-          },
-          function(err) {
-            callback(err);
+      augur.trading.getOrders(
+        { marketId, outcome, orderType },
+        function(err, orderBook) {
+          if (err) {
+            console.error(JSON.stringify(err));
+            return callback(err);
           }
-        );
-      });
+          if (!orderBook[marketId]) {
+            return callback("No Market Orders Found");
+          }
+          var orders = orderBook[marketId][outcome][orderType];
+          // Right now orders are in a random order
+          // sort by price ascending
+          var sortedOrders = Object.values(orders).sort(function(a, b) {
+            return new BigNumber(a.price).comparedTo(new BigNumber(b.price));
+          });
+          async.eachSeries(
+            sortedOrders,
+            function(order, nextOrder) {
+              console.log(
+                chalk.yellow(order.fullPrecisionPrice),
+                chalk.yellow(order.fullPrecisionAmount)
+              );
+
+              augur.trading.placeTrade({
+                meta: auth,
+                amount: order.fullPrecisionAmount,
+                limitPrice: order.fullPrecisionPrice,
+                numTicks: market.numTicks,
+                minPrice: market.minPrice,
+                maxPrice: market.maxPrice,
+                sharesProvided: "0",
+                _direction: direction,
+                _market: marketId,
+                _outcome: parseInt(outcome, 10),
+                _tradeGroupId: augur.trading.generateTradeGroupId(),
+                doNotCreateOrders: true,
+                onSent: () => {},
+                onSuccess: function(tradeAmountRemaining) {
+                  console.log(
+                    chalk.cyan("Trade completed,"),
+                    chalk.red.bold(orderType),
+                    chalk.green(tradeAmountRemaining),
+                    chalk.cyan.dim("shares remaining")
+                  );
+                  nextOrder(null);
+                },
+                onFailed: function(err) {
+                  console.log(chalk.red(JSON.stringify(err)));
+                  nextOrder(err);
+                }
+              });
+            },
+            function(err) {
+              callback(err);
+            }
+          );
+        }
+      );
     });
   });
 }
