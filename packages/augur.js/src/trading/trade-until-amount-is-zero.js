@@ -70,7 +70,7 @@ function tradeUntilAmountIsZero(p) {
       gas: convertBigNumberToHexString(gasLimit),
     }, p.tx),
     _loopLimit: convertBigNumberToHexString(numTradesPerTx),
-    _fxpAmount: convertBigNumberToHexString(onChainAmount),
+    _amount: convertBigNumberToHexString(onChainAmount),
     _price: convertBigNumberToHexString(onChainPrice),
     onSuccess: function (res) {
       var tickSize = calculateTickSize(p.numTicks, p.minPrice, p.maxPrice);
@@ -90,7 +90,7 @@ function tradeUntilAmountIsZero(p) {
         var newSharesProvided = newAmount.minus(new BigNumber(displayAmount, 10).minus(new BigNumber(p.sharesProvided, 10)));
         newSharesProvided = newSharesProvided.lt(0) ? "0" : newSharesProvided.toFixed();
         tradeUntilAmountIsZero(assign({}, p, {
-          _fxpAmount: newAmount.toFixed(),
+          _amount: newAmount.toFixed(),
           sharesProvided: newSharesProvided,
           onSent: noop, // so that p.onSent only fires when the first transaction is sent
         }));
@@ -98,9 +98,9 @@ function tradeUntilAmountIsZero(p) {
     },
   });
   if (p.doNotCreateOrders) {
-    api().Trade.publicFillBestOrderWithLimit(tradePayload);
+    api().Trade.publicFillBestOrder(tradePayload);
   } else {
-    api().Trade.publicTradeWithLimit(tradePayload);
+    api().Trade.publicTrade(tradePayload);
   }
 }
 
