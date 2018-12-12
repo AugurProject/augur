@@ -2,10 +2,9 @@ import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import testState from "test/testState";
 import { augur } from "services/augurjs";
+import * as logoutModule from "modules/auth/actions/logout";
 
 jest.mock("services/augurjs");
-
-import * as logoutModule from "modules/auth/actions/logout";
 
 describe(`modules/auth/actions/logout.js`, () => {
   const middlewares = [thunk];

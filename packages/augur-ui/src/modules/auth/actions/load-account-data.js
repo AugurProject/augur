@@ -1,4 +1,4 @@
-import { augur } from "services/augurjs";
+import { constants } from "services/constants";
 import { loadAccountDataFromLocalStorage } from "modules/auth/actions/load-account-data-from-local-storage";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
@@ -10,7 +10,7 @@ import { windowRef } from "src/utils/window-ref";
 import getValue from "utils/get-value";
 import logError from "utils/log-error";
 
-const { ACCOUNT_TYPES } = augur.rpc.constants;
+const { ACCOUNT_TYPES } = constants;
 
 export const loadAccountData = (account, callback = logError) => dispatch => {
   const address = getValue(account, "address");

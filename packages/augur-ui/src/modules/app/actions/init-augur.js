@@ -1,4 +1,5 @@
 import * as AugurJS from "services/augurjs";
+import { constants } from "services/constants";
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
@@ -24,7 +25,7 @@ import { version } from "src/version";
 import { updateVersions } from "modules/app/actions/update-versions";
 
 import { defaultTo, isEmpty } from "lodash";
-
+import { NETWORK_NAMES } from "modules/app/constants/network";
 import {
   MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,
@@ -35,15 +36,9 @@ import { DISCLAIMER_SEEN } from "modules/modal/constants/local-storage-keys";
 import { windowRef } from "utils/window-ref";
 import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
 
-const { ACCOUNT_TYPES } = AugurJS.augur.rpc.constants;
+const { ACCOUNT_TYPES } = constants;
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
-
-const NETWORK_NAMES = {
-  1: "Mainnet",
-  4: "Rinkeby",
-  12346: "Private"
-};
 
 function pollForAccount(dispatch, getState, callback) {
   const { loginAccount } = getState();

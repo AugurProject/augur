@@ -1,6 +1,6 @@
-import assertFormattedNumber from "assertions/common/formatted-number";
-import assertFormattedDate from "assertions/common/formatted-date";
-import assertReportableOutcomes from "assertions/reportable-outcomes";
+import assertFormattedNumber from "src/assertions/common/formatted-number";
+import assertFormattedDate from "src/assertions/common/formatted-date";
+import assertReportableOutcomes from "src/assertions/reportable-outcomes";
 
 export default function(market) {
   // market can be undefined
