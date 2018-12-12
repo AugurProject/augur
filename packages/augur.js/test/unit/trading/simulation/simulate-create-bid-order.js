@@ -222,7 +222,7 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)],
     },
     assertions: function (output) {
-      assert.deepEqual(output, new Error("Invalid outcome ID"));
+      assert.deepEqual(output, new Error("outcome ID not found -1"));
     },
   });
   test({
@@ -239,7 +239,7 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)],
     },
     assertions: function (output) {
-      assert.deepEqual(output, new Error("Invalid outcome ID"));
+      assert.deepEqual(output, new Error("outcome ID not found 2"));
     },
   });
 });

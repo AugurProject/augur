@@ -10,7 +10,7 @@ function createBigNumber(n) {
   return result;
 }
 
-function getPayoutNumerators(market, selectedOutcome, invalid) {
+function getPayoutNumerators(market, selectedOutcome) {
   if (selectedOutcome.toString().indexOf(",") !== -1) {
     var values = selectedOutcome.split(",").map(function (x) { return new BigNumber(x); });
     if (values.length !== market.numOutcomes) throw new Error("numTicks array needs " + market.numOutcomes + " values, you provided " + values.length);
@@ -24,11 +24,7 @@ function getPayoutNumerators(market, selectedOutcome, invalid) {
   var payoutNumerators = Array(numOutcomes).fill(new BigNumber(0));
   var isScalar = market.marketType === "scalar";
 
-  if (invalid) {
-    var equalValue = createBigNumber(numTicks).dividedBy(market.numOutcomes).dp(0, BigNumber.ROUND_DOWN);
-    return Array(market.numOutcomes).fill(equalValue);
-
-  } else if (isScalar) {
+  if (isScalar) {
 		// selectedOutcome must be a BN as string
     var priceRange = maxPrice.minus(minPrice);
     selectedOutcome = selectedOutcome.replace(/\"/g, "");

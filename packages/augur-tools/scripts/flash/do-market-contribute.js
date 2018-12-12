@@ -9,7 +9,6 @@ function doMarketContribute(
   marketId,
   attoREP,
   payoutNumerators,
-  invalid,
   auth,
   callback
 ) {
@@ -17,7 +16,6 @@ function doMarketContribute(
     meta: auth,
     tx: { to: marketId, gas: augur.constants.DEFAULT_MAX_GAS },
     _payoutNumerators: payoutNumerators,
-    _invalid: invalid,
     _amount: attoREP,
     onSent: function(result) {
       console.log(

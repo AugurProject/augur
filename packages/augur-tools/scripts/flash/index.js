@@ -115,13 +115,9 @@ var methods = {
         required: true,
         short: "o",
         help:
-          'Outcome, sets outcome to use, can be overridden by invalid flag, negative outcome use \\"-10\\"'
+          'Outcome, sets outcome to use, negative outcome use \\"-10\\"'
       },
-      invalid: {
-        flag: true,
-        short: "i",
-        help: "Overrides outcome to pass invalid"
-      },
+      description: { default: "", short: "d", help: "Add description" },
       noPush: {
         short: "n",
         flag: true,
@@ -143,13 +139,9 @@ var methods = {
         required: true,
         short: "o",
         help:
-          'Outcome, sets outcome to use, can be overridden by invalid flag, negative outcome use \\"-10\\"'
+          'Outcome, sets outcome to use, negative outcome use \\"-10\\"'
       },
-      invalid: {
-        flag: true,
-        short: "i",
-        help: "Overrides outcome to pass invalid"
-      },
+      description: { default: "", short: "d", help: "Add description" },
       noPush: {
         short: "n",
         flag: true,
@@ -171,14 +163,10 @@ var methods = {
         required: true,
         short: "o",
         help:
-          'Outcome, sets outcome to use, can be overridden by invalid flag, negative outcome use \\"-10\\"'
+          'Outcome, sets outcome to use, negative outcome use \\"-10\\"'
       },
       amount: { short: "a", help: "Optional: amount of REP to dispute with" },
-      invalid: {
-        flag: true,
-        short: "i",
-        help: "Overrides outcome to pass invalid"
-      },
+      description: { default: "", short: "d", help: "Add description" },
       noPush: {
         short: "n",
         flag: true,

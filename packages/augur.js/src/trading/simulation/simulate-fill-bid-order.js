@@ -9,7 +9,7 @@ var ZERO = constants.ZERO;
 
 function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedBids, outcome, shareBalances) {
   var numOutcomes = shareBalances.length;
-  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
+  if (outcome < 0 || outcome >= numOutcomes) throw new Error("outcome ID not found " + outcome);
   if (sharesToCover.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   var settlementFees = ZERO;
   var makerSharesDepleted = ZERO;

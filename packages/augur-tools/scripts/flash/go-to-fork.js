@@ -54,7 +54,7 @@ function goToFork(augur, marketId, payoutNumerators, timeAddress, stopsBefore, a
             });
           });
         } else {
-          doInitialReport(augur, marketId, payoutNumerators, false, auth, function (err) {
+          doInitialReport(augur, marketId, payoutNumerators, "Initial report", auth, function (err) {
             if (err) {
               console.log(chalk.red(err));
               return callback(err);

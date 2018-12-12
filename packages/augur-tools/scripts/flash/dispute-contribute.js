@@ -30,7 +30,6 @@ function disputeContribute(augur, args, auth, callback) {
   var amount = args.opt.amount;
   var marketId = args.opt.marketId;
   var outcome = args.opt.outcome;
-  var invalid = args.opt.invalid;
   var noPush = args.opt.noPush;
   getRepTokens(augur, amount || 10000, auth, function (err) {
     if (err) {
@@ -38,7 +37,6 @@ function disputeContribute(augur, args, auth, callback) {
       return callback(err);
     }
     if (err) return console.error(err);
-    invalid = !invalid ? false : true;
     augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
       if (err) {
         console.log(chalk.red(err));
@@ -46,7 +44,7 @@ function disputeContribute(augur, args, auth, callback) {
       }
 
       var market = marketsInfo[0];
-      var payoutNumerators = getPayoutNumerators(market, outcome, invalid);
+      var payoutNumerators = getPayoutNumerators(market, outcome);
       var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
       getBalance(augur, universe, auth.address, function (err, balances) {
         if (err) {
@@ -61,7 +59,7 @@ function disputeContribute(augur, args, auth, callback) {
           console.log(chalk.cyan("Balances:"));
           console.log("Ether: " + chalk.green(balances.ether));
           console.log("Rep:   " + chalk.green(balances.reputation));
-          doMarketContribute(augur, marketId, attoREP, payoutNumerators, invalid, auth, function (err) {
+          doMarketContribute(augur, marketId, attoREP, payoutNumerators, auth, function (err) {
             if (err) {
               return callback("Market contribute Failed");
             }
@@ -115,7 +113,7 @@ function disputeContribute(augur, args, auth, callback) {
 
                     console.log(chalk.green.dim("Few Window is active"), chalk.green(result));
                     if (result) {
-                      doMarketContribute(augur, marketId, attoREP, payoutNumerators, invalid, auth, function (err) {
+                      doMarketContribute(augur, marketId, attoREP, payoutNumerators, auth, function (err) {
                         if (err) {
                           return callback("Market contribute Failed");
                         }

@@ -12,7 +12,6 @@
  * @property {number|null} payout5 Payout numerator 5 of the Dispute Token’s payout set. (Set to null for yesNo and Scalar Markets.)
  * @property {number|null} payout6 Payout numerator 6 of the Dispute Token’s payout set. (Set to null for yesNo and Scalar Markets.)
  * @property {number|null} payout7 Payout numerator 7 of the Dispute Token’s payout set. (Set to null for yesNo and Scalar Markets.)
- * @property {boolean|number} isInvalid Whether the Market was determined to be invalid.
  * @property {number} balance Dispute Token balance the owner has staked, in ETH.
  * @property {boolean|null} winningToken Index of the Payout Numerator that was determined to be the Market's Final Outcome.
  * @property {boolean} tentativeWinning Index of the Payout Numerator that is tentatively the winning Outcome.
