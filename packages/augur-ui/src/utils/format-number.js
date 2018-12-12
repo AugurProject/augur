@@ -45,6 +45,7 @@ The options object that is passed into `formatNumber` that enables all of this l
     denomination: the string denomination of the number (ex. Eth, Rep, %), can be blank
     positiveSign: boolean whether to include a plus sign at the beginning of positive numbers
     zeroStyled: boolean, if true, when the value is 0, it formates it as a dash (-) instead
+    formatZero: boolean, if true, then when the value is zero or null, still return a formatted value
   }
 
 TIP
@@ -194,7 +195,7 @@ export function formatGasCostToEther(num, opts, gasPrice) {
 }
 
 export function formatAttoRep(num, opts) {
-  if (!num || num === 0 || isNaN(num)) return 0;
+  if (!num || num === 0 || isNaN(num)) return opts.formatZero ? formatNumber(ZERO, opts) : 0
   const { ETHER } = augur.rpc.constants;
   return formatNumber(
     createBigNumber(num.toString())
@@ -206,7 +207,7 @@ export function formatAttoRep(num, opts) {
 
 // At some point potentially refactor all this to be more generic (e.g formatAttoAmount)
 export function formatAttoEth(num, opts) {
-  if (!num || num === 0 || isNaN(num)) return 0;
+  if (!num || num === 0 || isNaN(num)) return opts.formatZero ? formatNumber(ZERO, opts) : 0
   const { ETHER } = augur.rpc.constants;
   return formatNumber(
     createBigNumber(num.toString())
