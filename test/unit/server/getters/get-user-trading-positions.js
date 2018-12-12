@@ -3,7 +3,7 @@ const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 const augur = new Augur();
 
-describe.skip("server/getters/get-user-trading-positions", () => {
+describe("server/getters/get-user-trading-positions", () => {
   let db;
   beforeEach(async () => {
     db = await setupTestDb();
@@ -24,8 +24,8 @@ describe.skip("server/getters/get-user-trading-positions", () => {
     description: "get user's full position",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
-      account: "0x000000000000000000000000000000000000d00d",
-      marketId: "0x0000000000000000000000000000000000000001",
+      account: "0xffff000000000000000000000000000000000000",
+      marketId: "0x0000000000000000000000000000000000000ff1",
       outcome: null,
       sortBy: null,
       isSortDescending: null,

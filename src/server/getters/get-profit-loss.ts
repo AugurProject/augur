@@ -220,31 +220,25 @@ async function getProfitLossData(db: Knex, params: IGetProfitLossParams): Promis
   // If there are no trades in this window then we'll
   if(_.isEmpty(profits))  {
     const buckets = bucketRangeByInterval(params.startTime || 0, params.endTime || now, params.periodInterval);
-    console.log(buckets);
     return {profits: {}, outcomeValues: {}, buckets};
   }
 
   // The value of an outcome over time, for computing unrealized profit and loss at a time
   const outcomeValues = _.groupBy(await queryOutcomeValueTimeseries(db, now, params), (r) => [r.marketId, r.outcome].join(","));
-  console.log(outcomeValues);
 
   // The timestamps at which we need to return results
   const buckets = bucketRangeByInterval(params.startTime || profitsOverTime[0].timestamp, Math.min(_.last(profitsOverTime)!.timestamp, now), params.periodInterval || null);
-  console.log(Math.max(_.last(profitsOverTime)!.timestamp, now));
-  console.log(params);
-  console.log(buckets);
   return {profits, outcomeValues, buckets};
 }
 
-interface AllOutcomesProfitLoss {
+export interface AllOutcomesProfitLoss {
   profit: Dictionary<Array<ProfitLossResult>>;
   buckets: Array<Timestamped>;
 };
-async function getAllOutcomesProfitLoss(db: Knex, augur: Augur, params: IGetProfitLossParams): Promise<AllOutcomesProfitLoss> {
+export async function getAllOutcomesProfitLoss(db: Knex, augur: Augur, params: IGetProfitLossParams): Promise<AllOutcomesProfitLoss> {
   const { profits, outcomeValues, buckets } = await getProfitLossData(db, params);
   return { 
     profit: _.mapValues(profits, (pls, key) => {
-      console.log(key + ": "  + (typeof outcomeValues[key] !== "undefined"));
       return getProfitAtTimestamps(pls, outcomeValues[key], buckets)
     }),
     buckets
