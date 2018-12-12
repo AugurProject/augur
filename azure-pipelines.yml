@@ -30,8 +30,7 @@ jobs:
           echo "git SHA - $(Build.SourceVersion)"
           echo "git branch - $(Build.SourceBranch)"
           echo "git target branch - $(System.PullRequest.TargetBranch)"
-          git diff --name-only $(git merge-base master $(System.PullRequest.TargetBranch)) $(System.PullRequest.TargetBranch)
-          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
+          for f in $(git --no-pager diff --name-only FETCH_HEAD...$(System.PullRequest.TargetBranch);
             do
               echo "$f"
               if [[ $f =~ .*augur-core.* ]]
