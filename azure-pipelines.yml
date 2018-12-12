@@ -30,6 +30,7 @@ jobs:
           echo "git SHA - $(Build.SourceVersion)"
           for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
             do
+              echo "$f"
               if [[ $f =~ .*augur-core.* ]]
               then
                 echo "##vso[task.setVariable variable=AUGUR_CORE]true";
