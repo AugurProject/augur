@@ -19,9 +19,6 @@ var augurNode = require("../augur-node");
  * @return {BetterWorseOrders} Object containing the better/worse order IDs, as hexidecimal strings.
  */
 function getBetterWorseOrders(p, callback) {
-
-  console.log(JSON.stringify(p));
-
   augurNode.submitRequest("getBetterWorseOrders", p, callback);
 }
 
