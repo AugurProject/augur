@@ -109,6 +109,7 @@ contract Augur is IAugur {
     //
 
     function createGenesisUniverse() public returns (IUniverse) {
+        require(msg.sender == uploader);
         return createUniverse(IUniverse(0), bytes32(0), new uint256[](0));
     }
 
