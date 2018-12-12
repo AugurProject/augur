@@ -2,10 +2,6 @@
 dist: trusty
 sudo: required
 language: node_js
-cache:
-  yarn: true
-  directories:
-    - node_modules
 services:
   - docker
 branches:
@@ -29,7 +25,6 @@ addons:
       - libusb-1.0-0-dev
 script:
   - yarn lint && yarn test;
-  - NODE_ENV='test' node ./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/_mocha --timeout 10000 --require babel-register && node ./node_modules/nyc/bin/nyc.js report --require babel-register --reporter=lcov && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
   # This is here to confirm the build works.
   # Nothing is done with the resulting artifacts.
   - yarn build --dev

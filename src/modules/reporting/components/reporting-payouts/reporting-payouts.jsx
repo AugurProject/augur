@@ -4,7 +4,7 @@ import classNames from "classnames";
 import ReactTooltip from "react-tooltip";
 import { formatAttoRep } from "utils/format-number";
 import Styles from "modules/reporting/components/reporting-payouts/reporting-payouts.styles";
-import TooltipStyles from "modules/common/less/tooltip";
+import TooltipStyles from "modules/common/less/tooltip.styles";
 import { ExclamationCircle } from "modules/common/components/icons";
 import { MALFORMED_OUTCOME } from "utils/constants";
 

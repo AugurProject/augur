@@ -13,7 +13,7 @@ import {
 } from "modules/markets/constants/market-types";
 import { isEqual } from "lodash";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip";
+import TooltipStyles from "modules/common/less/tooltip.styles";
 import {
   Hint,
   ExclamationCircle as InputErrorIcon

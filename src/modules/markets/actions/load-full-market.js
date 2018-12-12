@@ -38,7 +38,12 @@ export const loadFullMarket = (marketId, callback = logError) => (
 
 // load price history, and other non-basic market details here, dispatching
 // the necessary actions to save each part in relevant state
-export const loadMarketDetails = (marketId, callback = logError) => dispatch =>
+export const loadMarketDetails = (
+  marketId,
+  callback = logError
+) => dispatch => {
+  console.log("loadBidsAsks", loadBidsAsks());
+
   dispatch(
     loadBidsAsks(marketId, err => {
       if (err) return loadingError(dispatch, callback, err, marketId);
@@ -60,6 +65,7 @@ export const loadMarketDetails = (marketId, callback = logError) => dispatch =>
       );
     })
   );
+};
 
 function loadingError(dispatch, callback, error, marketId) {
   dispatch(removeMarketLoading(marketId));

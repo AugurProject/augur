@@ -1,4 +1,5 @@
-import { augur, constants } from "services/augurjs";
+import { augur } from "services/augurjs";
+import { constants } from "services/constants";
 import logError from "utils/log-error";
 import { parallel } from "async";
 import {

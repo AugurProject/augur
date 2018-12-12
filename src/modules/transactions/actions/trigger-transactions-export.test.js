@@ -1,11 +1,14 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import { triggerTransactionsExport } from "modules/transactions/actions/trigger-transactions-export";
-import * as mockLoadAccountHistory from "modules/auth/actions/load-account-history";
 import { selectTransactions } from "src/modules/transactions/selectors/transactions";
 
 jest.mock("modules/transactions/selectors/transactions");
-jest.mock("modules/auth/actions/load-account-history");
+jest.mock("modules/auth/actions/load-account-history", () => ({
+  loadAccountHistory: () => ({
+    type: "LOAD_ACCOUNT_HISTORY"
+  })
+}));
 
 describe("modules/transactions/actions/trigger-transactions-export.js", () => {
   const middlewares = [thunk];
@@ -20,10 +23,6 @@ describe("modules/transactions/actions/trigger-transactions-export.js", () => {
       ],
       appStatus: { transactionsLoading: false }
     });
-    mockLoadAccountHistory.setLoadAccountHistory(loadAll => ({
-      type: "LOAD_ACCOUNT_HISTORY",
-      loadAll
-    }));
 
     global.document = {
       createElement: type => {
@@ -65,16 +64,10 @@ describe("modules/transactions/actions/trigger-transactions-export.js", () => {
       appStatus: { transactionsLoading: true }
     });
 
-    mockLoadAccountHistory.setLoadAccountHistory((loadAll, cb) => {
-      expect(loadAll).toBeTruthy();
-      expect({}.toString.call(cb)).toStrictEqual("[object Function]");
-      return { type: "LOAD_ACCOUNT_HISTORY", loadAll };
-    });
-
     store.dispatch(triggerTransactionsExport());
-
-    expect(store.getActions()).toEqual([
-      { type: "LOAD_ACCOUNT_HISTORY", loadAll: true }
-    ]);
+    const actual = store.getActions();
+    const expected = [{ type: "LOAD_ACCOUNT_HISTORY" }];
+    expect(store.getActions()).toHaveLength(expected.length);
+    expect(actual).toEqual(expected);
   });
 });

@@ -1,9 +1,9 @@
-import { augur } from "services/augurjs";
-import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
 import logError from "utils/log-error";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { removeAccountDispute } from "modules/reports/actions/update-account-disputes";
+import { augur } from "services/augurjs";
+import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
 
 export const submitMarketContribute = ({
   estimateGas,

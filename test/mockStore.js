@@ -1,6 +1,5 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
-import sinon from "sinon";
 import testState from "test/testState";
 
 const middlewares = [thunk];
@@ -14,9 +13,9 @@ const store = mockStore(state);
  * @return {Function}
  */
 function actionCreator() {
-  return sinon.stub().returns({
+  return jest.fn(() => ({
     type: "MOCK_ACTION"
-  });
+  }));
 }
 
 export default {

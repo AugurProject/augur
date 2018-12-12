@@ -4,7 +4,8 @@ import {
   encodeNumberAsJSNumber,
   unfix
 } from "speedomatic";
-import { augur, constants } from "services/augurjs";
+import { augur } from "services/augurjs";
+import { constants } from "services/constants";
 import { ZERO, TEN } from "modules/trades/constants/numbers";
 import addCommas from "utils/add-commas-to-number";
 

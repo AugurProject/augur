@@ -2,8 +2,6 @@ const shell = require("shelljs");
 const Listr = require("listr");
 
 const lintTasks = require("./lint.js");
-const testTasks = require("./test.js");
-
 const PROTECTED_BRANCHES = ["master"];
 
 const shouldPushProtectedBranches =
@@ -47,10 +45,6 @@ const tasks = () =>
       {
         title: "Run lint",
         task: () => lintTasks
-      },
-      {
-        title: "Run Tests",
-        task: () => testTasks
       }
     ],
     {

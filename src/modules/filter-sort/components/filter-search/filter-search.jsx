@@ -10,7 +10,7 @@ import { FILTER_SEARCH_PARAM } from "modules/filter-sort/constants/param-names";
 import { Hint } from "modules/common/components/icons";
 import Styles from "modules/filter-sort/components/filter-search/filter-search.styles";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip";
+import TooltipStyles from "modules/common/less/tooltip.styles";
 
 export default class FilterSearch extends Component {
   static propTypes = {

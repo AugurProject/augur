@@ -5,7 +5,7 @@ import ReportingDisputeMarkets from "modules/reporting/components/reporting-disp
 import makePath from "modules/routes/helpers/make-path";
 import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
 import { selectLoginAccount } from "modules/auth/selectors/login-account";
-import disputeMarkets from "modules/reports/selectors/select-dispute-markets";
+import { selectMarketsInDispute } from "modules/reports/selectors/select-dispute-markets";
 import awaitingDisputeMarkets from "modules/reports/selectors/select-awaiting-dispute-markets";
 import { loadDisputing } from "modules/reports/actions/load-disputing";
 import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
@@ -14,7 +14,7 @@ const mapStateToProps = (state, { history }) => {
   const PAGINATION_COUNT = 10;
   const loginAccount = selectLoginAccount(state);
   const disputeOutcomes = marketDisputeOutcomes() || {};
-  const disputableMarkets = disputeMarkets() || [];
+  const disputableMarkets = selectMarketsInDispute(state) || [];
   const upcomingDisputableMarkets = awaitingDisputeMarkets() || [];
   const { isForking, forkEndTime, forkingMarket, id } = state.universe;
   return {
