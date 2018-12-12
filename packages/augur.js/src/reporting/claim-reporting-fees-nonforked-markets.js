@@ -23,12 +23,6 @@ var CROWDSOURCER_REDEEM_ESTIMATE = new BigNumber(500000, 10);
 function redeemContractFees(p, payload, successfulTransactions, failedTransactions, gasEstimates) {
   var redeemableContracts = [];
   var i;
-  for (i = 0; i < p.disputeWindows.length; i++) {
-    redeemableContracts.push({
-      address: p.disputeWindows[i],
-      type: contractTypes.DISPUTE_WINDOW,
-    });
-  }
   for (i = 0; i < p.nonforkedMarkets.length; i++) {
     for (var j = 0; j < p.nonforkedMarkets[i].crowdsourcers.length; j++) {
       var crowdsourcerAddress = p.nonforkedMarkets[i].crowdsourcers[j];
