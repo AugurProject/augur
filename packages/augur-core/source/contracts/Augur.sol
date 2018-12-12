@@ -99,6 +99,7 @@ contract Augur is IAugur {
     }
 
     function finishDeployment() public returns (bool) {
+        require(msg.sender == uploader);
         uploader = address(1);
         return true;
     }
