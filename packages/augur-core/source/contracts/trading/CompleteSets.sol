@@ -3,47 +3,55 @@ pragma solidity 0.4.24;
 
 import 'trading/ICompleteSets.sol';
 import 'IAugur.sol';
-import 'Controlled.sol';
 import 'libraries/ReentrancyGuard.sol';
 import 'libraries/math/SafeMathUint256.sol';
-import 'libraries/MarketValidator.sol';
 import 'trading/ICash.sol';
 import 'reporting/IMarket.sol';
 import 'reporting/IDisputeWindow.sol';
 import 'reporting/IAuction.sol';
 import 'trading/IOrders.sol';
 import 'libraries/CashAutoConverter.sol';
+import 'libraries/Initializable.sol';
 
 
-contract CompleteSets is Controlled, CashAutoConverter, ReentrancyGuard, MarketValidator, ICompleteSets {
+contract CompleteSets is CashAutoConverter, Initializable, ReentrancyGuard, ICompleteSets {
     using SafeMathUint256 for uint256;
+
+    address public fillOrder;
+
+    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+        endInitialization();
+        augur = _augur;
+        fillOrder = augur.lookup("FillOrder");
+    }
 
     /**
      * Buys `_amount` shares of every outcome in the specified market.
     **/
-    function publicBuyCompleteSets(IMarket _market, uint256 _amount) external marketIsLegit(_market) payable convertToAndFromCash returns (bool) {
+    function publicBuyCompleteSets(IMarket _market, uint256 _amount) external payable afterInitialized convertToAndFromCash returns (bool) {
         this.buyCompleteSets(msg.sender, _market, _amount);
-        controller.getAugur().logCompleteSetsPurchased(_market.getUniverse(), _market, msg.sender, _amount);
+        augur.logCompleteSetsPurchased(_market.getUniverse(), _market, msg.sender, _amount);
         _market.assertBalances();
         return true;
     }
 
-    function publicBuyCompleteSetsWithCash(IMarket _market, uint256 _amount) external marketIsLegit(_market) returns (bool) {
+    function publicBuyCompleteSetsWithCash(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
         this.buyCompleteSets(msg.sender, _market, _amount);
-        controller.getAugur().logCompleteSetsPurchased(_market.getUniverse(), _market, msg.sender, _amount);
+        augur.logCompleteSetsPurchased(_market.getUniverse(), _market, msg.sender, _amount);
         _market.assertBalances();
         return true;
     }
 
-    function buyCompleteSets(address _sender, IMarket _market, uint256 _amount) external onlyWhitelistedCallers nonReentrant returns (bool) {
+    function buyCompleteSets(address _sender, IMarket _market, uint256 _amount) external nonReentrant returns (bool) {
+        require(augur.isValidMarket(_market));
+        require(msg.sender == fillOrder || msg.sender == address(this));
         require(_sender != address(0));
 
         uint256 _numOutcomes = _market.getNumberOfOutcomes();
         ICash _denominationToken = _market.getDenominationToken();
-        IAugur _augur = controller.getAugur();
 
         uint256 _cost = _amount.mul(_market.getNumTicks());
-        require(_augur.trustedTransfer(_denominationToken, _sender, _market, _cost));
+        require(augur.trustedTransfer(_denominationToken, _sender, _market, _cost));
         for (uint256 _outcome = 0; _outcome < _numOutcomes; ++_outcome) {
             _market.getShareToken(_outcome).createShares(_sender, _amount);
         }
@@ -55,21 +63,23 @@ contract CompleteSets is Controlled, CashAutoConverter, ReentrancyGuard, MarketV
         return true;
     }
 
-    function publicSellCompleteSets(IMarket _market, uint256 _amount) external marketIsLegit(_market) convertToAndFromCash returns (bool) {
+    function publicSellCompleteSets(IMarket _market, uint256 _amount) external afterInitialized convertToAndFromCash returns (bool) {
         this.sellCompleteSets(msg.sender, _market, _amount);
-        controller.getAugur().logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount);
+        augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount);
         _market.assertBalances();
         return true;
     }
 
-    function publicSellCompleteSetsWithCash(IMarket _market, uint256 _amount) external marketIsLegit(_market) returns (bool) {
+    function publicSellCompleteSetsWithCash(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
         this.sellCompleteSets(msg.sender, _market, _amount);
-        controller.getAugur().logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount);
+        augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount);
         _market.assertBalances();
         return true;
     }
 
-    function sellCompleteSets(address _sender, IMarket _market, uint256 _amount) external onlyWhitelistedCallers nonReentrant returns (uint256 _creatorFee, uint256 _reportingFee) {
+    function sellCompleteSets(address _sender, IMarket _market, uint256 _amount) external afterInitialized nonReentrant returns (uint256 _creatorFee, uint256 _reportingFee) {
+        require(augur.isValidMarket(_market));
+        require(msg.sender == fillOrder || msg.sender == address(this));
         require(_sender != address(0));
 
         uint256 _numOutcomes = _market.getNumberOfOutcomes();

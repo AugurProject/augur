@@ -1,9 +1,6 @@
 pragma solidity 0.4.24;
 
-
-import 'Controller.sol';
 import 'reporting/IMarket.sol';
-import 'IController.sol';
 
 
 contract MockShareTokenFactory {
@@ -36,7 +33,7 @@ contract MockShareTokenFactory {
         return createShareTokenOutcomeValue;
     }
 
-    function createShareToken(IController _controller, IMarket _market, uint256 _outcome) public returns (IShareToken) {
+    function createShareToken(IAugur _augur, IMarket _market, uint256 _outcome) public returns (IShareToken) {
         createShareTokenMarketValue = _market;
         createShareTokenOutcomeValue = _outcome;
         createShareTokenCounter += 1;

@@ -1,9 +1,9 @@
 pragma solidity 0.4.24;
 
-import 'IController.sol';
 import 'reporting/IUniverse.sol';
+import 'IAugur.sol';
 
 
 contract IUniverseFactory {
-    function createUniverse(IController _controller, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash) public returns (IUniverse);
+    function createUniverse(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash) public returns (IUniverse);
 }

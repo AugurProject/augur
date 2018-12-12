@@ -24,14 +24,10 @@ export class ContractInterfaceGenerator {
     private contractInterfacesTemplate(contracts: CompilerOutputContracts) {
         const contractInterfaces: Array<string> = [];
 
-        // We add Controlled first to let other contracts inherit from it
-        contractInterfaces.push(this.contractInterfaceTemplate("Controlled", contracts["Controlled.sol"]["Controlled"].abi));
-
         for (let globalName in contracts) {
             for (let contractName in contracts[globalName]) {
                 const contractAbi: Abi = contracts[globalName][contractName].abi;
                 if (contractAbi.length == 0) continue;
-                if (contractName == "Controlled") continue;
                 contractInterfaces.push(this.contractInterfaceTemplate(contractName, contractAbi));
             }
         }
@@ -56,7 +52,7 @@ export class ContractInterfaceGenerator {
         public readonly address: string;
         protected readonly defaultGasPrice: BN;
 
-        protected constructor(connector: Connector, accountManager: AccountManager, address: string, defaultGasPrice: BN) {
+        public constructor(connector: Connector, accountManager: AccountManager, address: string, defaultGasPrice: BN) {
             this.connector = connector;
             this.accountManager = accountManager;
             this.address = address;
@@ -89,8 +85,8 @@ export class ContractInterfaceGenerator {
     }
 
     ${contractInterfaces.join("\n")}
-    export function ContractFactory(connector: Connector, accountManager: AccountManager, address: string, defaultGasPrice: BN): Controlled {
-        return new Controlled(connector, accountManager, address, defaultGasPrice);
+    export function ContractFactory(connector: Connector, accountManager: AccountManager, address: string, defaultGasPrice: BN): Contract {
+        return new Contract(connector, accountManager, address, defaultGasPrice);
     }
     `;
     }
@@ -114,10 +110,8 @@ export class ContractInterfaceGenerator {
             seen.add(abiFunction.name);
         }
 
-        const extendsControlled: boolean = seen.has("getController") && contractName != "Controlled";
-
         return `
-    export class ${contractName} extends ${extendsControlled ? "Controlled" : "Contract"} {
+    export class ${contractName} extends Contract {
         public constructor(connector: Connector, accountManager: AccountManager, address: string, defaultGasPrice: BN) {
             super(connector, accountManager, address, defaultGasPrice);
         }

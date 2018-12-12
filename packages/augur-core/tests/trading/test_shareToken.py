@@ -14,36 +14,10 @@ def test_init(contractsFixture, market):
 
     assert shareToken.getTypeName() == stringToBytes("ShareToken")
 
-def test_createShares(contractsFixture, market):
-    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken())
-    initialTotalSupply = shareToken.totalSupply()
-    initialBalance = shareToken.balanceOf(tester.a1)
-
-    with raises(TransactionFailed):
-        shareToken.createShares(tester.a1, 7, sender=tester.k1)
-
-    # NOTE: only works because controller is in dev mode and k0 is whitelisted
-    assert shareToken.createShares(tester.a1, 7, sender=tester.k0) == 1, "Create share tokens for address 1"
-    assert shareToken.totalSupply() - initialTotalSupply == 7, "Total supply increase should equal the number of tokens created"
-    assert shareToken.balanceOf(tester.a1) - initialBalance == 7, "Address 1 token balance increase should equal the number of tokens created"
-
-def test_destroyShares(contractsFixture, market):
-    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken())
-    shareToken.createShares(tester.a1, 7, sender=tester.k0)
-    initialTotalSupply = shareToken.totalSupply()
-    initialBalance = shareToken.balanceOf(tester.a1)
-
-    with raises(TransactionFailed):
-        shareToken.destroyShares(tester.a0, 7, sender=tester.k1)
-
-    # NOTE: only works because controller is in dev mode and k0 is whitelisted
-    assert shareToken.destroyShares(tester.a1, 7, sender=tester.k0) == 1, "Destroy share tokens owned by address 1"
-    assert initialTotalSupply - shareToken.totalSupply() == 7, "Total supply decrease should equal the number of tokens destroyed"
-    assert initialBalance - shareToken.balanceOf(tester.a1) == 7, "Address 1 token balance decrease should equal the number of tokens destroyed"
-
 def test_transfer(contractsFixture, market):
     shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken())
-    shareToken.createShares(tester.a0, 7, sender=tester.k0)
+    completeSets = contractsFixture.contracts['CompleteSets']
+    completeSets.publicBuyCompleteSets(market.address, 7, value=7 * market.getNumTicks())
     initialTotalSupply = shareToken.totalSupply()
     initialBalance0 = shareToken.balanceOf(tester.a0)
     initialBalance1 = shareToken.balanceOf(tester.a1)
@@ -84,7 +58,8 @@ def test_transfer(contractsFixture, market):
 
 def test_approve(contractsFixture, market):
     shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken())
-    shareToken.createShares(tester.a0, 7, sender=tester.k0)
+    completeSets = contractsFixture.contracts['CompleteSets']
+    completeSets.publicBuyCompleteSets(market.address, 7, value=7 * market.getNumTicks())
 
     assert(shareToken.allowance(tester.a0, tester.a1) == 0), "initial allowance is 0"
 
@@ -120,7 +95,8 @@ def test_approve(contractsFixture, market):
 
 def test_transferFrom(contractsFixture, market):
     shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken())
-    shareToken.createShares(tester.a1, 7, sender=tester.k0)
+    completeSets = contractsFixture.contracts['CompleteSets']
+    completeSets.publicBuyCompleteSets(market.address, 7, value=7 * market.getNumTicks())
 
     with raises(TransactionFailed):
         shareToken.transferFrom(tester.a0, tester.a1, 7, sender=tester.k1)

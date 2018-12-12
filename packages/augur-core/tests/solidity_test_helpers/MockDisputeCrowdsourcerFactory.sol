@@ -1,7 +1,6 @@
 pragma solidity 0.4.24;
 
 import 'reporting/IMarket.sol';
-import 'IController.sol';
 import 'reporting/IDisputeCrowdsourcer.sol';
 import 'TEST/MockDisputeCrowdsourcer.sol';
 
@@ -27,7 +26,7 @@ contract MockDisputeCrowdsourcerFactory {
         return createdPayoutNumeratorsValue;
     }
 
-    function createDisputeCrowdsourcer(IController _controller, IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators) public returns (IDisputeCrowdsourcer) {
+    function createDisputeCrowdsourcer(IAugur _augur, IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators) public returns (IDisputeCrowdsourcer) {
         createdPayoutDistributionHashValue = _payoutDistributionHash;
         createdPayoutNumeratorsValue = _payoutNumerators;
         // set for later testing use

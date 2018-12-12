@@ -92,12 +92,12 @@ def test_delegationInputsAndOutputs(localFixture):
     assert clone.returnFixed() == [1L, 0L, 0L, 0L, 0L]
 
 @fixture(scope="session")
-def localSnapshot(fixture, controllerSnapshot):
-    fixture.resetToSnapshot(controllerSnapshot)
+def localSnapshot(fixture, baseSnapshot):
+    fixture.resetToSnapshot(baseSnapshot)
     fixture.uploadAugur()
-    fixture.uploadAndAddToController("solidity_test_helpers/DelegatorHelper.sol")
-    delegatorHelperFactory = fixture.uploadAndAddToController("solidity_test_helpers/DelegatorHelperFactory.sol")
-    delegatorHelperAddress = delegatorHelperFactory.createDelegatorHelper(fixture.contracts['Controller'].address)
+    fixture.uploadAndAddToAugur("solidity_test_helpers/DelegatorHelper.sol")
+    delegatorHelperFactory = fixture.uploadAndAddToAugur("solidity_test_helpers/DelegatorHelperFactory.sol")
+    delegatorHelperAddress = delegatorHelperFactory.createDelegatorHelper(fixture.contracts['Augur'].address)
     fixture.contracts["Clone"] = fixture.applySignature("DelegatorHelper", delegatorHelperAddress)
     return fixture.createSnapshot()
 

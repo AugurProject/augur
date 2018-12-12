@@ -113,7 +113,7 @@ def test_address_casting(testerContractsFixture):
 @fixture(scope='session')
 def testerSnapshot(sessionFixture):
     mapTester = sessionFixture.upload('solidity_test_helpers/MapHelper.sol')
-    mapTester.init(sessionFixture.contracts["Controller"].address)
+    mapTester.init(sessionFixture.contracts["Augur"].address)
     return sessionFixture.createSnapshot()
 
 @fixture

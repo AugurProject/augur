@@ -1,4 +1,3 @@
-source/contracts/Controller.sol
 source/contracts/trading/ShareToken.sol
 source/contracts/trading/TradingEscapeHatch.sol
 source/contracts/trading/Orders.sol
