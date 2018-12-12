@@ -21,8 +21,16 @@ function getPayoutNumerators(market, selectedOutcome) {
   var numTicks = createBigNumber(market.numTicks);
   var numOutcomes = market.numOutcomes;
 
+  console.log("numOutcomes", numOutcomes);
+  console.log("numTicks", numTicks);
+  console.log("selectedOutcome", selectedOutcome);
+  console.log("maxPrice", maxPrice.toFixed());
+  console.log("minPrice", minPrice.toFixed());
+
   var payoutNumerators = Array(numOutcomes).fill(new BigNumber(0));
   var isScalar = market.marketType === "scalar";
+
+  console.log("scalar", isScalar);
 
   if (isScalar) {
 		// selectedOutcome must be a BN as string
@@ -31,8 +39,8 @@ function getPayoutNumerators(market, selectedOutcome) {
     var reportNormalizedToZero = createBigNumber(selectedOutcome).minus(minPrice);
     var longPayout = reportNormalizedToZero.times(numTicks).dividedBy(priceRange);
     var shortPayout = numTicks.minus(longPayout);
-    payoutNumerators[0] = shortPayout;
-    payoutNumerators[1] = longPayout;
+    payoutNumerators[1] = shortPayout;
+    payoutNumerators[2] = longPayout;
   } else {
 		// for yesNo and categorical the selected outcome is outcome.id
 		// and must be a number

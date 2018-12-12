@@ -33,6 +33,7 @@ var forceFinalize = require("./force-finalize");
 var escapeHatch = require("./escape-hatch");
 var transferAssets = require("./transfer-assets");
 var tradeCompleteSets = require("./trade-complete-sets");
+var getTimestamp = require("./get-time")
 
 var NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
 var methods = {
@@ -202,6 +203,17 @@ var methods = {
         short: "h",
         help:
           "This help, push-time has been dep. use push-timestamp or set-timestamp"
+      }
+    }
+  },
+  "get-timestamp": {
+    method: getTimestamp,
+    opts: {
+      help: {
+        flag: true,
+        short: "h",
+        help:
+          "This help, returns timestamp"
       }
     }
   },

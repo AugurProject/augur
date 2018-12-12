@@ -16,10 +16,9 @@ var day = 108000; // day
 
 function help() {
   console.log(chalk.red("This command is meant to dispute one round"));
-  console.log(chalk.red("Time is pushed into the next fee windows so that the market can be disputed"));
-  console.log(chalk.red("If there isn't a next fee window then the market will needed to be reporterd on, which creates a next fee window"));
-  console.log(chalk.red("user will be give REP if balance is 0"));
-  console.log(chalk.red("Use noPush to just dispute contribute and not worry about time moving"));
+  console.log(chalk.red("Time is pushed into the next dispute windows if not in initial multiple dispute window"));
+  console.log(chalk.red("user will be given REP if balance is 0"));
+  console.log(chalk.red("Use noPush to just dispute contribute and not worry about moving time"));
 }
 
 function disputeContribute(augur, args, auth, callback) {
@@ -30,6 +29,7 @@ function disputeContribute(augur, args, auth, callback) {
   var amount = args.opt.amount;
   var marketId = args.opt.marketId;
   var outcome = args.opt.outcome;
+  var description = args.opt.description;
   var noPush = args.opt.noPush;
   getRepTokens(augur, amount || 10000, auth, function (err) {
     if (err) {
@@ -59,7 +59,7 @@ function disputeContribute(augur, args, auth, callback) {
           console.log(chalk.cyan("Balances:"));
           console.log("Ether: " + chalk.green(balances.ether));
           console.log("Rep:   " + chalk.green(balances.reputation));
-          doMarketContribute(augur, marketId, attoREP, payoutNumerators, auth, function (err) {
+          doMarketContribute(augur, marketId, attoREP, payoutNumerators, description, auth, function (err) {
             if (err) {
               return callback("Market contribute Failed");
             }
@@ -70,22 +70,22 @@ function disputeContribute(augur, args, auth, callback) {
         } else {
 
           var marketPayload = { tx: { to: marketId } };
-          augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowId) {
+          augur.api.Market.getDisputeWindow(marketPayload, function (err, disputeWindowId) {
             if (err) {
               console.log(chalk.red(err));
-              return callback("Could not get Fee Window");
+              return callback("Could not get Dispute Window");
             }
 
-            if (feeWindowId === "0x0000000000000000000000000000000000000000") {
-              console.log(chalk.red("feeWindowId has not been created"));
-              return callback("Market doesn't have fee window, need to report");
+            if (disputeWindowId === "0x0000000000000000000000000000000000000000") {
+              console.log(chalk.red("disputeWindowId has not been created"));
+              return callback("Market doesn't have dispute window, need to report");
             }
-            console.log(chalk.yellow("Market Fee Window"), chalk.yellow(feeWindowId));
-            var feeWindowPayload = { tx: { to: feeWindowId } };
-            augur.api.FeeWindow.getStartTime(feeWindowPayload, function (err, feeWindowStartTime) {
+            console.log(chalk.yellow("Market Dispute Window"), chalk.yellow(disputeWindowId));
+            var disputeWindowPayload = { tx: { to: disputeWindowId } };
+            augur.api.DisputeWindow.getStartTime(disputeWindowPayload, function (err, disputeWindowStartTime) {
               if (err) {
                 console.log(chalk.red(err));
-                return callback("Could not get Fee Window");
+                return callback("Could not get Dispute Window");
               }
 
               getTime(augur, auth, function (err, timeResult) {
@@ -94,9 +94,9 @@ function disputeContribute(augur, args, auth, callback) {
                   return callback(err);
                 }
 
-                var setTime = parseInt(feeWindowStartTime, 10) + day;
+                var setTime = parseInt(disputeWindowStartTime, 10) + day;
                 displayTime("Current timestamp", timeResult.timestamp);
-                displayTime("Fee Window end time", feeWindowStartTime);
+                displayTime("dispute Window end time", disputeWindowStartTime);
                 displayTime("Set Time to", setTime);
                 setTimestamp(augur, setTime, timeResult.timeAddress, auth, function (err) {
                   if (err) {
@@ -105,15 +105,15 @@ function disputeContribute(augur, args, auth, callback) {
                   }
 
                   console.log(chalk.yellow("sending amount REP"), chalk.yellow(attoREP), chalk.yellow(disputeAmount));
-                  augur.api.FeeWindow.isActive(feeWindowPayload, function (err, result) {
+                  augur.api.DisputeWindow.isActive(disputeWindowPayload, function (err, result) {
                     if (err) {
                       console.log(chalk.red(err));
                       return callback(err);
                     }
 
-                    console.log(chalk.green.dim("Few Window is active"), chalk.green(result));
+                    console.log(chalk.green.dim("Dispute Window is active"), chalk.green(result));
                     if (result) {
-                      doMarketContribute(augur, marketId, attoREP, payoutNumerators, auth, function (err) {
+                      doMarketContribute(augur, marketId, attoREP, payoutNumerators, description, auth, function (err) {
                         if (err) {
                           return callback("Market contribute Failed");
                         }
@@ -122,8 +122,8 @@ function disputeContribute(augur, args, auth, callback) {
                         return callback(null);
                       });
                     } else {
-                      console.log(chalk.red("Fee Window isn't active"));
-                      return callback("Fee Window isn't active");
+                      console.log(chalk.red("Dispute Window isn't active"));
+                      return callback("Dispute Window isn't active");
                     }
                   });
                 });

@@ -36,7 +36,7 @@ function dispute(augur, marketId, payoutNumerators, auth, timeAddress, currentRo
           console.log(chalk.red(err));
           return callback(err);
         }
-        doMarketContribute(augur, marketId, ALL_THE_REP, payoutNumerators, false, auth, function (err) {
+        doMarketContribute(augur, marketId, ALL_THE_REP, payoutNumerators, "force dispute", auth, function (err) {
           if (err) {
             console.log(chalk.red(err));
             return callback(err);

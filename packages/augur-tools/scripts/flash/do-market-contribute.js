@@ -9,6 +9,7 @@ function doMarketContribute(
   marketId,
   attoREP,
   payoutNumerators,
+  description,
   auth,
   callback
 ) {
@@ -17,6 +18,7 @@ function doMarketContribute(
     tx: { to: marketId, gas: augur.constants.DEFAULT_MAX_GAS },
     _payoutNumerators: payoutNumerators,
     _amount: attoREP,
+    _description: description,
     onSent: function(result) {
       console.log(
         chalk.yellow.dim("Sent Dispute:"),
