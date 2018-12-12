@@ -28,7 +28,8 @@ jobs:
       - bash: |
           set -euxo pipefail
           echo "git SHA - $(Build.SourceVersion)"
-          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
+          echo "git branch - $(Build.SourceBranch)"
+          for f in $(git diff --name-only $(git merge-base $(Build.SourceBranch)) $(Build.SourceBranch));
             do
               echo "$f"
               if [[ $f =~ .*augur-core.* ]]
