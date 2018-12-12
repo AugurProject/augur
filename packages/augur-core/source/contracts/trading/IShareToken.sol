@@ -4,10 +4,11 @@ pragma solidity 0.4.24;
 import 'libraries/ITyped.sol';
 import 'libraries/token/ERC20.sol';
 import 'reporting/IMarket.sol';
+import 'IAugur.sol';
 
 
 contract IShareToken is ITyped, ERC20 {
-    function initialize(IMarket _market, uint256 _outcome) external returns (bool);
+    function initialize(IAugur _augur, IMarket _market, uint256 _outcome) external returns (bool);
     function createShares(address _owner, uint256 _amount) external returns (bool);
     function destroyShares(address, uint256 balance) external returns (bool);
     function getMarket() external view returns (IMarket);

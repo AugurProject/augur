@@ -6,7 +6,7 @@ from pytest import fixture, mark, raises
 
 @fixture(scope='session')
 def testerSnapshot(sessionFixture):
-    sessionFixture.uploadAndAddToController('solidity_test_helpers/ReentrancyGuardHelper.sol')
+    sessionFixture.uploadAndAddToAugur('solidity_test_helpers/ReentrancyGuardHelper.sol')
     ReentrancyGuardHelper = sessionFixture.contracts['ReentrancyGuardHelper']
     return sessionFixture.createSnapshot()
 

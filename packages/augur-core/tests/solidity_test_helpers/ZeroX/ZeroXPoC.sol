@@ -8,7 +8,7 @@ import 'libraries/math/SafeMathUint256.sol';
 import 'libraries/ReentrancyGuard.sol';
 import 'trading/CompleteSets.sol';
 import 'Augur.sol';
-import 'IController.sol';
+
 
 contract ZeroXPoC is ReentrancyGuard {
     using SafeMathUint256 for uint256;
@@ -32,7 +32,6 @@ contract ZeroXPoC is ReentrancyGuard {
 
     Augur public augur;
     CompleteSets public completeSets;
-    IController public controller;
     ICash public cash;
 
     event Fill(
@@ -78,9 +77,8 @@ contract ZeroXPoC is ReentrancyGuard {
 
     function ZeroXPoC(Augur _augur) public {
         augur = _augur;
-        controller = _augur.getController();
-        completeSets = CompleteSets(controller.lookup("CompleteSets"));
-        cash = ICash(controller.lookup("Cash"));
+        completeSets = CompleteSets(augur.lookup("CompleteSets"));
+        cash = ICash(augur.lookup("Cash"));
         cash.approve(augur, 2 ** 256 - 1);
     }
 
@@ -152,7 +150,7 @@ contract ZeroXPoC is ReentrancyGuard {
             s
         ));
 
-        if (controller.getTimestamp() >= order.expirationTimestampInSec) {
+        if (augur.getTimestamp() >= order.expirationTimestampInSec) {
             Error(uint8(Errors.ORDER_EXPIRED), order.orderHash);
             return false;
         }
@@ -322,7 +320,7 @@ contract ZeroXPoC is ReentrancyGuard {
         require(order.maker == msg.sender);
         require(order.amount > 0 && cancelAmount > 0);
 
-        if (controller.getTimestamp() >= order.expirationTimestampInSec) {
+        if (augur.getTimestamp() >= order.expirationTimestampInSec) {
             Error(uint8(Errors.ORDER_EXPIRED), order.orderHash);
             return false;
         }

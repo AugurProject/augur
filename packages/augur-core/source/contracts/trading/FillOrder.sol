@@ -2,7 +2,6 @@ pragma solidity 0.4.24;
 
 
 import 'trading/IFillOrder.sol';
-import 'Controlled.sol';
 import 'libraries/ReentrancyGuard.sol';
 import 'libraries/math/SafeMathUint256.sol';
 import 'reporting/IMarket.sol';
@@ -12,6 +11,7 @@ import 'trading/IOrders.sol';
 import 'trading/IShareToken.sol';
 import 'trading/Order.sol';
 import 'libraries/CashAutoConverter.sol';
+import 'libraries/Initializable.sol';
 
 
 // CONSIDER: At some point it would probably be a good idea to shift much of the logic from trading contracts into extensions. In particular this means sorting for making and WCL calculcations + order walking for taking.
@@ -61,8 +61,8 @@ library Trade {
     // Constructor
     //
 
-    function create(IController _controller, bytes32 _orderId, address _fillerAddress, uint256 _fillerSize, bool _ignoreShares) internal view returns (Data) {
-        Contracts memory _contracts = getContracts(_controller, _orderId);
+    function create(IAugur _augur, bytes32 _orderId, address _fillerAddress, uint256 _fillerSize, bool _ignoreShares) internal view returns (Data) {
+        Contracts memory _contracts = getContracts(_augur, _orderId);
         FilledOrder memory _order = getOrder(_contracts, _orderId);
         Order.Types _orderOrderType = _contracts.orders.getOrderType(_orderId);
         Participant memory _creator = getMaker(_contracts, _order, _orderOrderType);
@@ -259,18 +259,18 @@ library Trade {
     // Construction helpers
     //
 
-    function getContracts(IController _controller, bytes32 _orderId) private view returns (Contracts memory) {
-        IOrders _orders = IOrders(_controller.lookup("Orders"));
+    function getContracts(IAugur _augur, bytes32 _orderId) private view returns (Contracts memory) {
+        IOrders _orders = IOrders(_augur.lookup("Orders"));
         IMarket _market = _orders.getMarket(_orderId);
         uint256 _outcome = _orders.getOutcome(_orderId);
         return Contracts({
             orders: _orders,
             market: _market,
-            completeSets: ICompleteSets(_controller.lookup("CompleteSets")),
+            completeSets: ICompleteSets(_augur.lookup("CompleteSets")),
             denominationToken: _market.getDenominationToken(),
             longShareToken: _market.getShareToken(_outcome),
             shortShareTokens: getShortShareTokens(_market, _outcome),
-            augur: _controller.getAugur()
+            augur: _augur
         });
     }
 
@@ -356,20 +356,32 @@ library Trade {
 }
 
 
-contract FillOrder is CashAutoConverter, ReentrancyGuard, IFillOrder {
+contract FillOrder is CashAutoConverter, Initializable, ReentrancyGuard, IFillOrder {
     using SafeMathUint256 for uint256;
     using Trade for Trade.Data;
 
+    IOrders public orders;
+    address public trade;
+
+    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+        endInitialization();
+        augur = _augur;
+        orders = IOrders(augur.lookup("Orders"));
+        trade = augur.lookup("Trade");
+        return true;
+    }
+
     // CONSIDER: Do we want the API to be in terms of shares as it is now, or would the desired amount of ETH to place be preferable? Would both be useful?
-    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares) external payable convertToAndFromCash returns (uint256) {
+    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares) external payable afterInitialized convertToAndFromCash returns (uint256) {
         uint256 _result = this.fillOrder(msg.sender, _orderId, _amountFillerWants, _tradeGroupId, _ignoreShares);
-        IMarket _market = IOrders(controller.lookup("Orders")).getMarket(_orderId);
+        IMarket _market = orders.getMarket(_orderId);
         _market.assertBalances();
         return _result;
     }
 
-    function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares) external onlyWhitelistedCallers nonReentrant returns (uint256) {
-        Trade.Data memory _tradeData = Trade.create(controller, _orderId, _filler, _amountFillerWants, _ignoreShares);
+    function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares) external afterInitialized nonReentrant returns (uint256) {
+        require(msg.sender == trade || msg.sender == address(this));
+        Trade.Data memory _tradeData = Trade.create(augur, _orderId, _filler, _amountFillerWants, _ignoreShares);
         uint256 _marketCreatorFees;
         uint256 _reporterFees;
         if (!_ignoreShares) {

@@ -2,11 +2,10 @@ pragma solidity 0.4.24;
 
 
 import 'reporting/IUniverse.sol';
-import 'Controlled.sol';
 import 'libraries/ITyped.sol';
 import 'factories/IReputationTokenFactory.sol';
-import 'factories/DisputeWindowFactory.sol';
-import 'factories/MarketFactory.sol';
+import 'factories/IDisputeWindowFactory.sol';
+import 'factories/IMarketFactory.sol';
 import 'factories/IAuctionFactory.sol';
 import 'reporting/IMarket.sol';
 import 'reporting/IV2ReputationToken.sol';
@@ -18,9 +17,10 @@ import 'libraries/math/SafeMathUint256.sol';
 import 'IAugur.sol';
 
 
-contract Universe is Controlled, ITyped, IUniverse {
+contract Universe is ITyped, IUniverse {
     using SafeMathUint256 for uint256;
 
+    IAugur public augur;
     IUniverse private parentUniverse;
     bytes32 private parentPayoutDistributionHash;
     IV2ReputationToken private reputationToken;
@@ -36,6 +36,8 @@ contract Universe is Controlled, ITyped, IUniverse {
     mapping(address => bool) private markets;
     mapping(bytes32 => IUniverse) private childUniverses;
     uint256 private openInterestInAttoEth;
+    IMarketFactory public marketFactory;
+    IDisputeWindowFactory public disputeWindowFactory;
 
     mapping (address => uint256) private validityBondInAttoEth;
     mapping (address => uint256) private targetReporterGasCosts;
@@ -43,12 +45,17 @@ contract Universe is Controlled, ITyped, IUniverse {
     mapping (address => uint256) private designatedReportNoShowBondInAttoRep;
     mapping (address => uint256) private shareSettlementFeeDivisor;
 
-    constructor(IController _controller, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash) public {
-        controller = _controller;
+    address public completeSets;
+
+    constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash) public {
+        augur = _augur;
         parentUniverse = _parentUniverse;
         parentPayoutDistributionHash = _parentPayoutDistributionHash;
-        reputationToken = IV2ReputationToken(IReputationTokenFactory(controller.lookup("ReputationTokenFactory")).createReputationToken(controller, this, parentUniverse));
-        auction = IAuctionFactory(controller.lookup("AuctionFactory")).createAuction(controller, this, reputationToken);
+        reputationToken = IV2ReputationToken(IReputationTokenFactory(augur.lookup("ReputationTokenFactory")).createReputationToken(augur, this, parentUniverse));
+        auction = IAuctionFactory(augur.lookup("AuctionFactory")).createAuction(augur, this, reputationToken);
+        marketFactory = IMarketFactory(augur.lookup("MarketFactory"));
+        disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
+        completeSets = augur.lookup("CompleteSets");
         updateForkValues();
         require(reputationToken != address(0));
     }
@@ -57,8 +64,8 @@ contract Universe is Controlled, ITyped, IUniverse {
         require(!isForking());
         require(isContainerForMarket(IMarket(msg.sender)));
         forkingMarket = IMarket(msg.sender);
-        forkEndTime = controller.getTimestamp().add(Reporting.getForkDurationSeconds());
-        controller.getAugur().logUniverseForked();
+        forkEndTime = augur.getTimestamp().add(Reporting.getForkDurationSeconds());
+        augur.logUniverseForked();
         return true;
     }
 
@@ -138,9 +145,9 @@ contract Universe is Controlled, ITyped, IUniverse {
     function getOrCreateDisputeWindowByTimestamp(uint256 _timestamp) public returns (IDisputeWindow) {
         uint256 _windowId = getDisputeWindowId(_timestamp);
         if (disputeWindows[_windowId] == address(0)) {
-            IDisputeWindow _disputeWindow = DisputeWindowFactory(controller.lookup("DisputeWindowFactory")).createDisputeWindow(controller, this, _windowId);
+            IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, this, _windowId);
             disputeWindows[_windowId] = _disputeWindow;
-            controller.getAugur().logDisputeWindowCreated(_disputeWindow, _windowId);
+            augur.logDisputeWindowCreated(_disputeWindow, _windowId);
         }
         return disputeWindows[_windowId];
     }
@@ -151,31 +158,31 @@ contract Universe is Controlled, ITyped, IUniverse {
     }
 
     function getOrCreatePreviousPreviousDisputeWindow() public returns (IDisputeWindow) {
-        return getOrCreateDisputeWindowByTimestamp(controller.getTimestamp().sub(getDisputeRoundDurationInSeconds().mul(2)));
+        return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp().sub(getDisputeRoundDurationInSeconds().mul(2)));
     }
 
     function getOrCreatePreviousDisputeWindow() public returns (IDisputeWindow) {
-        return getOrCreateDisputeWindowByTimestamp(controller.getTimestamp().sub(getDisputeRoundDurationInSeconds()));
+        return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp().sub(getDisputeRoundDurationInSeconds()));
     }
 
     function getPreviousDisputeWindow() public view returns (IDisputeWindow) {
-        return getDisputeWindowByTimestamp(controller.getTimestamp().sub(getDisputeRoundDurationInSeconds()));
+        return getDisputeWindowByTimestamp(augur.getTimestamp().sub(getDisputeRoundDurationInSeconds()));
     }
 
     function getOrCreateCurrentDisputeWindow() public returns (IDisputeWindow) {
-        return getOrCreateDisputeWindowByTimestamp(controller.getTimestamp());
+        return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp());
     }
 
     function getCurrentDisputeWindow() public view returns (IDisputeWindow) {
-        return getDisputeWindowByTimestamp(controller.getTimestamp());
+        return getDisputeWindowByTimestamp(augur.getTimestamp());
     }
 
     function getOrCreateNextDisputeWindow() public returns (IDisputeWindow) {
-        return getOrCreateDisputeWindowByTimestamp(controller.getTimestamp().add(getDisputeRoundDurationInSeconds()));
+        return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp().add(getDisputeRoundDurationInSeconds()));
     }
 
     function getNextDisputeWindow() public view returns (IDisputeWindow) {
-        return getDisputeWindowByTimestamp(controller.getTimestamp().add(getDisputeRoundDurationInSeconds()));
+        return getDisputeWindowByTimestamp(augur.getTimestamp().add(getDisputeRoundDurationInSeconds()));
     }
 
     function getOrCreateDisputeWindowBefore(IDisputeWindow _disputeWindow) public returns (IDisputeWindow) {
@@ -185,9 +192,8 @@ contract Universe is Controlled, ITyped, IUniverse {
     function createChildUniverse(uint256[] _parentPayoutNumerators) public returns (IUniverse) {
         bytes32 _parentPayoutDistributionHash = forkingMarket.derivePayoutDistributionHash(_parentPayoutNumerators);
         IUniverse _childUniverse = getChildUniverse(_parentPayoutDistributionHash);
-        IAugur _augur = controller.getAugur();
         if (_childUniverse == IUniverse(0)) {
-            _childUniverse = _augur.createChildUniverse(_parentPayoutDistributionHash, _parentPayoutNumerators);
+            _childUniverse = augur.createChildUniverse(_parentPayoutDistributionHash, _parentPayoutNumerators);
             childUniverses[_parentPayoutDistributionHash] = _childUniverse;
         }
         return _childUniverse;
@@ -215,7 +221,7 @@ contract Universe is Controlled, ITyped, IUniverse {
         require(tentativeWinningChildUniversePayoutDistributionHash != bytes32(0));
         IUniverse _tentativeWinningUniverse = getChildUniverse(tentativeWinningChildUniversePayoutDistributionHash);
         uint256 _winningAmount = _tentativeWinningUniverse.getReputationToken().getTotalMigrated();
-        require(_winningAmount >= forkReputationGoal || controller.getTimestamp() > forkEndTime);
+        require(_winningAmount >= forkReputationGoal || augur.getTimestamp() > forkEndTime);
         return _tentativeWinningUniverse;
     }
 
@@ -236,7 +242,7 @@ contract Universe is Controlled, ITyped, IUniverse {
     function addMarketTo() public returns (bool) {
         require(parentUniverse.isContainerForMarket(IMarket(msg.sender)));
         markets[msg.sender] = true;
-        controller.getAugur().logMarketMigrated(IMarket(msg.sender), parentUniverse);
+        augur.logMarketMigrated(IMarket(msg.sender), parentUniverse);
         return true;
     }
 
@@ -275,7 +281,8 @@ contract Universe is Controlled, ITyped, IUniverse {
         return getChildUniverse(_parentPayoutDistributionHash) == _shadyChild;
     }
 
-    function decrementOpenInterest(uint256 _amount) public onlyWhitelistedCallers returns (bool) {
+    function decrementOpenInterest(uint256 _amount) public returns (bool) {
+        require(msg.sender == completeSets);
         openInterestInAttoEth = openInterestInAttoEth.sub(_amount);
         return true;
     }
@@ -286,7 +293,8 @@ contract Universe is Controlled, ITyped, IUniverse {
         return true;
     }
 
-    function incrementOpenInterest(uint256 _amount) public onlyWhitelistedCallers returns (bool) {
+    function incrementOpenInterest(uint256 _amount) public returns (bool) {
+        require(msg.sender == completeSets);
         openInterestInAttoEth = openInterestInAttoEth.add(_amount);
         return true;
     }
@@ -428,14 +436,14 @@ contract Universe is Controlled, ITyped, IUniverse {
     function createYesNoMarket(uint256 _endTime, uint256 _feePerEthInWei, address _designatedReporterAddress, bytes32 _topic, string _description, string _extraInfo) public payable returns (IMarket _newMarket) {
         require(bytes(_description).length > 0);
         _newMarket = createMarketInternal(_endTime, _feePerEthInWei, _designatedReporterAddress, msg.sender, 2, 10000);
-        controller.getAugur().logMarketCreated(_topic, _description, _extraInfo, this, _newMarket, msg.sender, 0, 1 ether, IMarket.MarketType.YES_NO);
+        augur.logMarketCreated(_topic, _description, _extraInfo, this, _newMarket, msg.sender, 0, 1 ether, IMarket.MarketType.YES_NO);
         return _newMarket;
     }
 
     function createCategoricalMarket(uint256 _endTime, uint256 _feePerEthInWei, address _designatedReporterAddress, bytes32[] _outcomes, bytes32 _topic, string _description, string _extraInfo) public payable returns (IMarket _newMarket) {
         require(bytes(_description).length > 0);
         _newMarket = createMarketInternal(_endTime, _feePerEthInWei, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 10000);
-        controller.getAugur().logMarketCreated(_topic, _description, _extraInfo, this, _newMarket, msg.sender, _outcomes, 0, 1 ether, IMarket.MarketType.CATEGORICAL);
+        augur.logMarketCreated(_topic, _description, _extraInfo, this, _newMarket, msg.sender, _outcomes, 0, 1 ether, IMarket.MarketType.CATEGORICAL);
         return _newMarket;
     }
 
@@ -444,14 +452,13 @@ contract Universe is Controlled, ITyped, IUniverse {
         require(_minPrice < _maxPrice);
         require(_numTicks.isMultipleOf(2));
         _newMarket = createMarketInternal(_endTime, _feePerEthInWei, _designatedReporterAddress, msg.sender, 2, _numTicks);
-        controller.getAugur().logMarketCreated(_topic, _description, _extraInfo, this, _newMarket, msg.sender, _minPrice, _maxPrice, IMarket.MarketType.SCALAR);
+        augur.logMarketCreated(_topic, _description, _extraInfo, this, _newMarket, msg.sender, _minPrice, _maxPrice, IMarket.MarketType.SCALAR);
         return _newMarket;
     }
 
     function createMarketInternal(uint256 _endTime, uint256 _feePerEthInWei, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) private returns (IMarket _newMarket) {
-        MarketFactory _marketFactory = MarketFactory(controller.lookup("MarketFactory"));
-        getReputationToken().trustedUniverseTransfer(_sender, _marketFactory, getOrCacheDesignatedReportNoShowBond());
-        _newMarket = _marketFactory.createMarket.value(msg.value)(controller, this, _endTime, _feePerEthInWei, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
+        getReputationToken().trustedUniverseTransfer(_sender, marketFactory, getOrCacheDesignatedReportNoShowBond());
+        _newMarket = marketFactory.createMarket.value(msg.value)(augur, this, _endTime, _feePerEthInWei, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
         markets[address(_newMarket)] = true;
         return _newMarket;
     }

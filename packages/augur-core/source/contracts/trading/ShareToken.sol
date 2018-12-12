@@ -2,14 +2,14 @@ pragma solidity 0.4.24;
 
 
 import 'trading/IShareToken.sol';
-import 'Controlled.sol';
 import 'libraries/token/VariableSupplyToken.sol';
 import 'libraries/ITyped.sol';
 import 'libraries/Initializable.sol';
 import 'reporting/IMarket.sol';
+import 'IAugur.sol';
 
 
-contract ShareToken is Controlled, ITyped, Initializable, VariableSupplyToken, IShareToken {
+contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
 
     string constant public name = "Shares";
     uint8 constant public decimals = 0;
@@ -18,33 +18,50 @@ contract ShareToken is Controlled, ITyped, Initializable, VariableSupplyToken, I
     IMarket private market;
     uint256 private outcome;
 
-    function initialize(IMarket _market, uint256 _outcome) external beforeInitialized returns(bool) {
+    IAugur public augur;
+    address public createOrder;
+    address public fillOrder;
+    address public cancelOrder;
+    address public completeSets;
+    address public claimTradingProceeds;
+
+    function initialize(IAugur _augur, IMarket _market, uint256 _outcome) external beforeInitialized returns(bool) {
         endInitialization();
         market = _market;
         outcome = _outcome;
+        augur = _augur;
+        createOrder = _augur.lookup("CreateOrder");
+        fillOrder = _augur.lookup("FillOrder");
+        cancelOrder = _augur.lookup("CancelOrder");
+        completeSets = _augur.lookup("CompleteSets");
+        claimTradingProceeds = _augur.lookup("ClaimTradingProceeds");
         return true;
     }
 
-    function createShares(address _owner, uint256 _fxpValue) external onlyWhitelistedCallers returns(bool) {
+    function createShares(address _owner, uint256 _fxpValue) external afterInitialized returns(bool) {
+        require(msg.sender == completeSets);
         mint(_owner, _fxpValue);
         return true;
     }
 
-    function destroyShares(address _owner, uint256 _fxpValue) external onlyWhitelistedCallers returns(bool) {
+    function destroyShares(address _owner, uint256 _fxpValue) external afterInitialized returns(bool) {
+        require(msg.sender == completeSets || msg.sender == claimTradingProceeds);
         burn(_owner, _fxpValue);
         return true;
     }
 
-    function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public onlyCaller("CreateOrder") afterInitialized returns (bool) {
+    function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public afterInitialized returns (bool) {
+        require(msg.sender == createOrder);
         return internalTransfer(_source, _destination, _attotokens);
     }
 
-    function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public onlyCaller("FillOrder") afterInitialized returns (bool) {
+    function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public afterInitialized returns (bool) {
+        require(msg.sender == fillOrder);
         return internalTransfer(_source, _destination, _attotokens);
     }
 
-    // Allowed to run in bad time so orders can be canceled
-    function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public onlyCaller("CancelOrder") afterInitialized returns (bool) {
+    function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public afterInitialized returns (bool) {
+        require(msg.sender == cancelOrder);
         return internalTransfer(_source, _destination, _attotokens);
     }
 
@@ -61,17 +78,17 @@ contract ShareToken is Controlled, ITyped, Initializable, VariableSupplyToken, I
     }
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
-        controller.getAugur().logShareTokensTransferred(market.getUniverse(), _from, _to, _value);
+        augur.logShareTokensTransferred(market.getUniverse(), _from, _to, _value);
         return true;
     }
 
     function onMint(address _target, uint256 _amount) internal returns (bool) {
-        controller.getAugur().logShareTokenMinted(market.getUniverse(), _target, _amount);
+        augur.logShareTokenMinted(market.getUniverse(), _target, _amount);
         return true;
     }
 
     function onBurn(address _target, uint256 _amount) internal returns (bool) {
-        controller.getAugur().logShareTokenBurned(market.getUniverse(), _target, _amount);
+        augur.logShareTokenBurned(market.getUniverse(), _target, _amount);
         return true;
     }
 }

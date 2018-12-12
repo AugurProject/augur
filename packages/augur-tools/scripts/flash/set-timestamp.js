@@ -26,7 +26,7 @@ function setTimestamp(augur, newTimestamp, address, auth, callback) {
         console.log(chalk.yellow.dim("Waiting for reply ...."));
       },
       onSuccess: function (result) {
-        augur.api.Controller.getTimestamp(function (err, timestamp) {
+        augur.api.Augur.getTimestamp(function (err, timestamp) {
           if (err) {
             console.log(chalk.red("Error "), chalk.red(err));
             return callback(err);

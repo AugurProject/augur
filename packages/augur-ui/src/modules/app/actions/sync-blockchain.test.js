@@ -21,7 +21,7 @@ jest.mock("services/augurjs", () => ({
       }
     },
     api: {
-      Controller: {
+      Augur: {
         getTimestamp: callback => {
           callback(null, 42);
         }

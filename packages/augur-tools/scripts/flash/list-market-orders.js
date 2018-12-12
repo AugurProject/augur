@@ -16,7 +16,7 @@ function getMarketOrders(augur, args, auth, callback) {
     return callback(null);
   }
   var marketId = args.opt.marketId;
-  augur.api.Controller.getTimestamp(function (err, timestamp) {
+  augur.api.Augur.getTimestamp(function (err, timestamp) {
     if (err) {
       return callback(err);
     }

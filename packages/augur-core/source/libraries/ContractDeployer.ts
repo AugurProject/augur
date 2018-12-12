@@ -1,16 +1,15 @@
 import BN = require('bn.js');
 import { exists, readFile, writeFile } from "async-file";
 import { encodeParams } from 'ethjs-abi';
-import { TransactionReceipt } from 'ethjs-shared';
 import { stringTo32ByteHex, resolveAll } from "./HelperFunctions";
 import { CompilerOutput } from "solc";
 import { Abi, AbiFunction } from 'ethereum';
 import { DeployerConfiguration } from './DeployerConfiguration';
 import { Connector } from './Connector';
-import { Augur, ContractFactory, Controller, Controlled, Universe, ReputationToken, LegacyReputationToken, TimeControlled } from './ContractInterfaces';
+import { Augur, ContractFactory, Universe, ReputationToken, LegacyReputationToken, TimeControlled, Contract, CompleteSets, Trade, CreateOrder, CancelOrder, FillOrder, Orders, ClaimTradingProceeds } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { AccountManager } from './AccountManager';
-import { Contracts, Contract } from './Contracts';
+import { Contracts, ContractData } from './Contracts';
 
 
 export class ContractDeployer {
@@ -18,7 +17,7 @@ export class ContractDeployer {
     private readonly configuration: DeployerConfiguration;
     private readonly connector: Connector;
     private readonly contracts: Contracts;
-    public controller: Controller|null = null;
+    public augur: Augur|null = null;
     public universe: Universe|null = null;
 
     public static deployToNetwork = async (networkConfiguration: NetworkConfiguration, deployerConfiguration: DeployerConfiguration) => {
@@ -50,19 +49,17 @@ Deploying to: ${networkConfiguration.networkName}
 
     public async deploy(): Promise<{ [name: string]: string }> {
         const blockNumber = await this.getBlockNumber();
-        this.controller = await this.uploadController();
-        await this.uploadAugur();
+        this.augur = await this.uploadAugur();
         await this.uploadAllContracts();
 
         if (this.configuration.isProduction) {
             console.log(`Registering Legacy Rep Contract at ${this.configuration.legacyRepAddress}`);
-            await this.controller!.registerContract(stringTo32ByteHex("LegacyReputationToken"), this.configuration.legacyRepAddress);
+            await this.augur!.registerContract(stringTo32ByteHex("LegacyReputationToken"), this.configuration.legacyRepAddress);
             const contract = await this.contracts.get("LegacyReputationToken");
             contract.address = this.configuration.legacyRepAddress;
         }
 
         await this.initializeAllContracts();
-        await this.whitelistTradingContracts();
 
         if (!this.configuration.useNormalTime) {
             await this.resetTimeControlled();
@@ -90,7 +87,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     private generateCompleteAddressMapping(): { [name: string]: string } {
         const mapping: { [name: string]: string } = {};
-        mapping['Controller'] = this.controller!.address;
+        mapping['Augur'] = this.augur!.address;
         if (this.universe) mapping['Universe'] = this.universe.address;
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
         mapping['Augur'] = this.contracts.get('Augur').address!;
@@ -112,12 +109,12 @@ Deploying to: ${networkConfiguration.networkName}
         return mapping;
     }
 
-    public getContract = (contractName: string): Controlled => {
+    public getContract = (contractName: string): Contract => {
         if (!this.contracts.has(contractName)) throw new Error(`Contract named ${contractName} does not exist.`);
         const contract = this.contracts.get(contractName);
         if (contract.address === undefined) throw new Error(`Contract name ${contractName} has not yet been uploaded.`);
-        const controlled = ContractFactory(this.connector, this.accountManager, contract.address, this.connector.gasPrice);
-        return controlled;
+        const contractObj = ContractFactory(this.connector, this.accountManager, contract.address, this.connector.gasPrice);
+        return contractObj;
     }
 
     private static getEncodedConstructData(abi: Abi, bytecode: Buffer, constructorArgs: Array<string>): Buffer {
@@ -132,36 +129,26 @@ Deploying to: ${networkConfiguration.networkName}
         return Buffer.concat([bytecode, encodedConstructorParameters]);
     }
 
-    private async uploadController(): Promise<Controller> {
-        console.log('Uploading controller...');
-        const contract = await this.contracts.get("Controller");
-        const address = (this.configuration.controllerAddress !== undefined)
-            ? this.configuration.controllerAddress
-            : await this.construct(this.contracts.get('Controller'), [], `Uploading Controller.sol`);
-        const controller = new Controller(this.connector, this.accountManager, address, this.connector.gasPrice);
-        const ownerAddress = await controller.owner_();
+    private async uploadAugur(): Promise<Augur> {
+        console.log('Uploading augur...');
+        const contract = await this.contracts.get("Augur");
+        const address = (this.configuration.augurAddress !== undefined)
+            ? this.configuration.augurAddress
+            : await this.construct(this.contracts.get('Augur'), [], `Uploading Augur.sol`);
+        const augur = new Augur(this.connector, this.accountManager, address, this.connector.gasPrice);
+        const ownerAddress = await augur.uploader_();
         contract.address = address;
         if (ownerAddress.toLowerCase() !== this.accountManager.defaultAddress.toLowerCase()) {
-            throw new Error("Controller owner does not equal from address");
+            throw new Error("Augur owner does not equal from address");
         }
-        console.log(`Controller address: ${controller.address}`);
-        return controller;
+        console.log(`Augur address: ${augur.address}`);
+        return augur;
     }
 
     public async uploadLegacyRep(): Promise<string> {
         const contract = await this.contracts.get("LegacyReputationToken");
         contract.address = await this.construct(contract, [], `Uploading LegacyReputationToken`);
         return contract.address;
-    }
-
-    private async uploadAugur(): Promise<void> {
-        // We have to upload and initialize Augur first so it can log the registration and whitelisting of other contracts
-        const contract = await this.contracts.get("Augur");
-        const address = await this.construct(contract, [], `Uploading ${contract.contractName}`);
-        const augur = new Augur(this.connector, this.accountManager, address, this.connector.gasPrice);
-        contract.address = address;
-        await augur.setController(this.controller!.address);
-        await this.controller!.registerContract(stringTo32ByteHex("Augur"), address);
     }
 
     private async uploadAllContracts(): Promise<void> {
@@ -173,9 +160,9 @@ Deploying to: ${networkConfiguration.networkName}
         await resolveAll(promises);
     }
 
-    private async upload(contract: Contract): Promise<void> {
+    private async upload(contract: ContractData): Promise<void> {
         const contractName = contract.contractName
-        if (contractName === 'Controller') return;
+        if (contractName === 'Augur') return;
         if (contractName === 'Delegator') return;
         if (contractName === 'TimeControlled') return;
         if (contractName === 'TestNetReputationTokenFactory') return;
@@ -189,16 +176,16 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.configuration.isProduction && contractName === 'LegacyReputationToken') return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
         console.log(`Uploading new version of contract for ${contractName}`);
-        contract.address = await this.uploadAndAddToController(contract, contractName);
+        contract.address = await this.uploadAndAddToAugur(contract, contractName);
     }
 
-    private async uploadAndAddToController(contract: Contract, registrationContractName: string = contract.contractName, constructorArgs: Array<any> = []): Promise<string> {
+    private async uploadAndAddToAugur(contract: ContractData, registrationContractName: string = contract.contractName, constructorArgs: Array<any> = []): Promise<string> {
         const address = await this.construct(contract, constructorArgs, `Uploading ${contract.contractName}`);
-        await this.controller!.registerContract(stringTo32ByteHex(registrationContractName), address);
+        await this.augur!.registerContract(stringTo32ByteHex(registrationContractName), address);
         return address;
     }
 
-    private async construct(contract: Contract, constructorArgs: Array<string>, failureDetails: string): Promise<string> {
+    private async construct(contract: ContractData, constructorArgs: Array<string>, failureDetails: string): Promise<string> {
         const data = `0x${ContractDeployer.getEncodedConstructData(contract.abi, contract.bytecode, constructorArgs).toString('hex')}`;
         const gasEstimate = await this.connector.ethjsQuery.estimateGas({ from: this.accountManager.defaultAddress, data: data });
         const nonce = await this.accountManager.nonces.get(this.accountManager.defaultAddress);
@@ -210,48 +197,45 @@ Deploying to: ${networkConfiguration.networkName}
         return receipt.contractAddress;
     }
 
-    private async whitelistTradingContracts(): Promise<void> {
-        console.log('Whitelisting contracts...');
-        const promises: Array<Promise<any>> = [];
-        for (let contract of this.contracts) {
-            if (!contract.relativeFilePath.startsWith("trading/")) continue;
-            if (contract.contractName === 'ShareToken') continue;
-            if (contract.address === undefined) throw new Error(`Attempted to whitelist ${contract.contractName} but it has not yet been uploaded.`);
-            // Skip if already whitelisted (happens if this contract was previously uploaded)
-            if (await this.controller!.whitelist_(contract.address)) {
-                console.log(`Skipping already whitelisted ${contract.contractName}.`);
-                continue;
-            } else {
-                console.log(`Whitelisting ${contract.contractName}`);
-                promises.push(this.whitelistContract(contract.address));
-            }
-        }
-        await resolveAll(promises);
-    }
-
-    private async whitelistContract(contractAddress: string): Promise<void> {
-        return await this.controller!.addToWhitelist(contractAddress, { sender: this.accountManager.defaultAddress });
-    }
-
     private async initializeAllContracts(): Promise<void> {
         console.log('Initializing contracts...');
-        const contractsToInitialize = ["CompleteSets","CreateOrder","FillOrder","CancelOrder","Trade","ClaimTradingProceeds","OrdersFetcher","Time","Cash","Orders"];
         const promises: Array<Promise<any>> = [];
-        for (let contractName of contractsToInitialize) {
-            promises.push(this.initializeContract(contractName));
-        }
-        resolveAll(promises);
-    }
 
-    private async initializeContract(contractName: string): Promise<TransactionReceipt|void> {
-        // Check if contract already initialized (happens if this contract was previously uploaded)
-        if (contractName === 'Time') contractName = this.configuration.useNormalTime ? contractName: "TimeControlled";
-        if (await this.getContract(contractName).getController_() === this.controller!.address) {
-            console.log(`Skipping already initialized ${contractName}.`)
-            return;
+        const completeSetsContract = await this.getContract("CompleteSets");
+        const completeSets = new CompleteSets(this.connector, this.accountManager, completeSetsContract.address, this.connector.gasPrice);
+        promises.push(completeSets.initialize(this.augur!.address));
+
+        const createOrderContract = await this.getContract("CreateOrder");
+        const createOrder = new CreateOrder(this.connector, this.accountManager, createOrderContract.address, this.connector.gasPrice);
+        promises.push(createOrder.initialize(this.augur!.address));
+
+        const fillOrderContract = await this.getContract("FillOrder");
+        const fillOrder = new FillOrder(this.connector, this.accountManager, fillOrderContract.address, this.connector.gasPrice);
+        promises.push(fillOrder.initialize(this.augur!.address));
+
+        const cancelOrderContract = await this.getContract("CancelOrder");
+        const cancelOrder = new CancelOrder(this.connector, this.accountManager, cancelOrderContract.address, this.connector.gasPrice);
+        promises.push(cancelOrder.initialize(this.augur!.address));
+
+        const tradeContract = await this.getContract("Trade");
+        const trade = new Trade(this.connector, this.accountManager, tradeContract.address, this.connector.gasPrice);
+        promises.push(trade.initialize(this.augur!.address));
+
+        const claimTradingProceedsContract = await this.getContract("ClaimTradingProceeds");
+        const claimTradingProceeds = new ClaimTradingProceeds(this.connector, this.accountManager, claimTradingProceedsContract.address, this.connector.gasPrice);
+        promises.push(claimTradingProceeds.initialize(this.augur!.address));
+
+        const ordersContract = await this.getContract("Orders");
+        const orders = new Orders(this.connector, this.accountManager, ordersContract.address, this.connector.gasPrice);
+        promises.push(orders.initialize(this.augur!.address));
+
+        if (!this.configuration.useNormalTime) {
+            const timeContract = await this.getContract("TimeControlled");
+            const time = new TimeControlled(this.connector, this.accountManager, timeContract.address, this.connector.gasPrice);
+            promises.push(time.initialize(this.augur!.address));
         }
-        console.log(`Initializing ${contractName}`);
-        await this.getContract(contractName).setController(this.controller!.address);
+
+        await resolveAll(promises);
     }
 
     public async initializeLegacyRep(): Promise<void> {
@@ -305,7 +289,7 @@ Deploying to: ${networkConfiguration.networkName}
         type NetworkAddressMapping = { [networkId: string]: ContractAddressMapping };
 
         const mapping: ContractAddressMapping = {};
-        mapping['Controller'] = this.controller!.address;
+        mapping['Augur'] = this.augur!.address;
         if (this.universe) mapping['Universe'] = this.universe.address;
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
         mapping['Augur'] = this.contracts.get('Augur').address!;

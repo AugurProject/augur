@@ -7,8 +7,8 @@ from datetime import timedelta
 from ethereum.utils import ecsign, sha3, normalize_key, int_to_32bytearray, bytearray_to_bytestr, zpad
 
 
-def test_fill_order_with_tokens(localFixture, zeroX, market, cash, controller):
-    expirationTimestampInSec = controller.getTimestamp() + 1
+def test_fill_order_with_tokens(localFixture, zeroX, market, cash, augur):
+    expirationTimestampInSec = augur.getTimestamp() + 1
     orderAddresses = [tester.a0, market.address]
     orderValues = [YES, BID, 10, 1000, expirationTimestampInSec, 42]
 
@@ -54,8 +54,8 @@ def test_fill_order_with_tokens(localFixture, zeroX, market, cash, controller):
     assert zeroX.getTokenBalance(noShareAddress, tester.a1) == fillAmount
     assert zeroX.getUnavailableAmount(orderHash) == fillAmount
 
-def test_fill_order_with_shares(localFixture, zeroX, market, cash, controller):
-    expirationTimestampInSec = controller.getTimestamp() + 1
+def test_fill_order_with_shares(localFixture, zeroX, market, cash, augur):
+    expirationTimestampInSec = augur.getTimestamp() + 1
     orderAddresses = [tester.a0, market.address]
     orderValues = [YES, ASK, 10, 1000, expirationTimestampInSec, 42]
 
@@ -112,8 +112,8 @@ def test_fill_order_with_shares(localFixture, zeroX, market, cash, controller):
     assert zeroX.getTokenBalance(noShareAddress, tester.a1) == 5
     assert zeroX.getUnavailableAmount(orderHash) == fillAmount
 
-def test_maker_sell_shares_for_tokens(localFixture, zeroX, market, cash, controller):
-    expirationTimestampInSec = controller.getTimestamp() + 1
+def test_maker_sell_shares_for_tokens(localFixture, zeroX, market, cash, augur):
+    expirationTimestampInSec = augur.getTimestamp() + 1
     orderAddresses = [tester.a0, market.address]
     orderValues = [YES, ASK, 10, 1000, expirationTimestampInSec, 42]
 
@@ -163,12 +163,12 @@ def test_maker_sell_shares_for_tokens(localFixture, zeroX, market, cash, control
     assert zeroX.getTokenBalance(yesShareAddress, tester.a1) == 5
     assert zeroX.getUnavailableAmount(orderHash) == fillAmount
 
-def test_maker_buy_shares_for_tokens(localFixture, zeroX, market, cash, controller):
+def test_maker_buy_shares_for_tokens(localFixture, zeroX, market, cash, augur):
     # TODO
     pass
 
-def test_cancel_order(localFixture, zeroX, market, cash, controller):
-    expirationTimestampInSec = controller.getTimestamp() + 1
+def test_cancel_order(localFixture, zeroX, market, cash, augur):
+    expirationTimestampInSec = augur.getTimestamp() + 1
     orderAddresses = [tester.a0, market.address]
     orderValues = [YES, BID, 10, 1000, expirationTimestampInSec, 42]
 
@@ -226,8 +226,8 @@ def cash(localFixture, kitchenSinkSnapshot):
     return ABIContract(localFixture.chain, kitchenSinkSnapshot['cash'].translator, kitchenSinkSnapshot['cash'].address)
 
 @fixture
-def controller(localFixture, kitchenSinkSnapshot):
-    return localFixture.contracts['Controller']
+def augur(localFixture, kitchenSinkSnapshot):
+    return localFixture.contracts['Augur']
 
 def createOrder(orderHash, key=tester.k0):
     key = normalize_key(key)

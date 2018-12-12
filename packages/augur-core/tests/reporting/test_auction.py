@@ -120,7 +120,7 @@ def test_reporting_fee_from_auction(localFixture, universe, auction, reputationT
     assert time.setTimestamp(startTime)
 
     # Initially the REP price of the auction will simply be what was provided as the constant initialized value
-    assert auction.getRepPriceInAttoEth() == auction.manualRepPriceInAttoEth()
+    assert auction.getRepPriceInAttoEth() == auction.initialRepPriceInAttoEth()
     repSalePrice = auction.getRepSalePriceInAttoEth()
     repAuctionToken = localFixture.applySignature("AuctionToken", auction.repAuctionToken())
     ethAuctionToken = localFixture.applySignature("AuctionToken", auction.ethAuctionToken())
@@ -156,7 +156,6 @@ def test_reporting_fee_from_auction(localFixture, universe, auction, reputationT
     assert auction.getDerivedRepPriceInAttoEth() == derivedRepPrice
 
     # Lets turn on auction price reporting and move time so that this auction is considered over
-    assert localFixture.contracts["Controller"].toggleFeedSource(True)
     assert time.setTimestamp(auction.getAuctionEndTime() + 1)
 
     # We can see now that the auction will use the derived rep price when we request the price of rep for reporting fee purposes

@@ -4,7 +4,6 @@ pragma solidity 0.4.24;
 
 
 import 'reporting/IDisputeWindow.sol';
-import 'Controlled.sol';
 import 'libraries/Initializable.sol';
 import 'reporting/IUniverse.sol';
 import 'reporting/IReputationToken.sol';
@@ -14,11 +13,13 @@ import 'factories/MarketFactory.sol';
 import 'reporting/Reporting.sol';
 import 'libraries/math/SafeMathUint256.sol';
 import 'reporting/IDisputeWindow.sol';
+import 'IAugur.sol';
 
 
-contract DisputeWindow is Controlled, Initializable, IDisputeWindow {
+contract DisputeWindow is Initializable, IDisputeWindow {
     using SafeMathUint256 for uint256;
 
+    IAugur public augur;
     IUniverse private universe;
     uint256 private startTime;
     uint256 private numMarkets;
@@ -26,8 +27,9 @@ contract DisputeWindow is Controlled, Initializable, IDisputeWindow {
     uint256 private incorrectDesignatedReportMarketCount;
     uint256 private designatedReportNoShows;
 
-    function initialize(IUniverse _universe, uint256 _disputeWindowId) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId) public beforeInitialized returns (bool) {
         endInitialization();
+        augur = _augur;
         universe = _universe;
         startTime = _disputeWindowId.mul(universe.getDisputeRoundDurationInSeconds());
         return true;
@@ -86,16 +88,16 @@ contract DisputeWindow is Controlled, Initializable, IDisputeWindow {
     }
 
     function isActive() public afterInitialized view returns (bool) {
-        if (controller.getTimestamp() <= getStartTime()) {
+        if (augur.getTimestamp() <= getStartTime()) {
             return false;
         }
-        if (controller.getTimestamp() >= getEndTime()) {
+        if (augur.getTimestamp() >= getEndTime()) {
             return false;
         }
         return true;
     }
 
     function isOver() public afterInitialized view returns (bool) {
-        return controller.getTimestamp() >= getEndTime();
+        return augur.getTimestamp() >= getEndTime();
     }
 }

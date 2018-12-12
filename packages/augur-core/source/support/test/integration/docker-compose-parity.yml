@@ -21,6 +21,5 @@ services:
       - ETHEREUM_HTTP=http://parity-dev-node:8545
       - ETHEREUM_GAS_PRICE_IN_NANOETH=1
       - ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a
-      # - AUGUR_CONTROLLER_ADDRESS=0x65d8b74efe5ff13ea6254864814269320d2db8fd
     links:
       - parity-dev-node

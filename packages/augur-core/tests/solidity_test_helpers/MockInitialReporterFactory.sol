@@ -2,7 +2,6 @@ pragma solidity 0.4.24;
 
 import 'reporting/IInitialReporter.sol';
 import 'reporting/IMarket.sol';
-import 'IController.sol';
 
 
 contract MockInitialReporterFactory {
@@ -12,7 +11,7 @@ contract MockInitialReporterFactory {
         initialReporter = _initialReporter;
     }
 
-    function createInitialReporter(IController _controller, IMarket _market, address _designatedReporter) public returns (IInitialReporter) {
+    function createInitialReporter(IAugur _augur, IMarket _market, address _designatedReporter) public returns (IInitialReporter) {
         initialReporter.initialize(_market, _designatedReporter);
         return initialReporter;
     }

@@ -1,7 +1,6 @@
 pragma solidity 0.4.24;
 
 import 'reporting/IV2ReputationToken.sol';
-import 'Controlled.sol';
 import 'libraries/ITyped.sol';
 import 'libraries/token/VariableSupplyToken.sol';
 import 'libraries/token/ERC20.sol';
@@ -12,7 +11,7 @@ import 'reporting/IDisputeCrowdsourcer.sol';
 import 'libraries/math/SafeMathUint256.sol';
 
 
-contract ReputationToken is Controlled, ITyped, VariableSupplyToken, IV2ReputationToken {
+contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     using SafeMathUint256 for uint256;
 
     string constant public name = "Reputation";
@@ -22,12 +21,15 @@ contract ReputationToken is Controlled, ITyped, VariableSupplyToken, IV2Reputati
     IUniverse internal parentUniverse;
     uint256 internal totalMigrated;
     uint256 internal totalTheoreticalSupply;
+    ERC20 public legacyRepToken;
+    IAugur public augur;
 
-    constructor(IController _controller, IUniverse _universe, IUniverse _parentUniverse) public {
+    constructor(IAugur _augur, IUniverse _universe, IUniverse _parentUniverse) public {
         require(_universe != address(0));
-        controller = _controller;
+        augur = _augur;
         universe = _universe;
         parentUniverse = _parentUniverse;
+        legacyRepToken = ERC20(augur.lookup("LegacyReputationToken"));
         updateTotalTheoreticalSupply();
     }
 
@@ -51,7 +53,7 @@ contract ReputationToken is Controlled, ITyped, VariableSupplyToken, IV2Reputati
     function migrateIn(address _reporter, uint256 _attotokens) public returns (bool) {
         IUniverse _parentUniverse = universe.getParentUniverse();
         require(ReputationToken(msg.sender) == _parentUniverse.getReputationToken());
-        require(controller.getTimestamp() < _parentUniverse.getForkEndTime());
+        require(augur.getTimestamp() < _parentUniverse.getForkEndTime());
         mint(_reporter, _attotokens);
         totalMigrated += _attotokens;
         // Update the fork tenative winner and finalize if we can
@@ -142,13 +144,13 @@ contract ReputationToken is Controlled, ITyped, VariableSupplyToken, IV2Reputati
     }
 
     function getLegacyRepToken() public view returns (ERC20) {
-        return ERC20(controller.lookup("LegacyReputationToken"));
+        return legacyRepToken;
     }
 
     function updateTotalTheoreticalSupply() public returns (bool) {
         if (parentUniverse == IUniverse(0)) {
             totalTheoreticalSupply = Reporting.getInitialREPSupply();
-        } else if (controller.getTimestamp() >= parentUniverse.getForkEndTime()) {
+        } else if (augur.getTimestamp() >= parentUniverse.getForkEndTime()) {
             totalTheoreticalSupply = totalSupply();
         } else {
             totalTheoreticalSupply = totalSupply() + parentUniverse.getReputationToken().totalSupply();
@@ -161,24 +163,23 @@ contract ReputationToken is Controlled, ITyped, VariableSupplyToken, IV2Reputati
     }
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
-        controller.getAugur().logReputationTokensTransferred(universe, _from, _to, _value);
+        augur.logReputationTokensTransferred(universe, _from, _to, _value);
         return true;
     }
 
     function onMint(address _target, uint256 _amount) internal returns (bool) {
-        controller.getAugur().logReputationTokenMinted(universe, _target, _amount);
+        augur.logReputationTokenMinted(universe, _target, _amount);
         return true;
     }
 
     function onBurn(address _target, uint256 _amount) internal returns (bool) {
-        controller.getAugur().logReputationTokenBurned(universe, _target, _amount);
+        augur.logReputationTokenBurned(universe, _target, _amount);
         return true;
     }
 
     function migrateFromLegacyReputationToken() public returns (bool) {
-        ERC20 _legacyRepToken = ERC20(controller.lookup("LegacyReputationToken"));
-        uint256 _legacyBalance = _legacyRepToken.balanceOf(msg.sender);
-        require(_legacyRepToken.transferFrom(msg.sender, address(0), _legacyBalance));
+        uint256 _legacyBalance = legacyRepToken.balanceOf(msg.sender);
+        require(legacyRepToken.transferFrom(msg.sender, address(0), _legacyBalance));
         mint(msg.sender, _legacyBalance);
         return true;
     }

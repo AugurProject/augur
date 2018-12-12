@@ -29,7 +29,7 @@ Note: on macOS, you need to use [virtualenv](https://python-guide-pt-br.readthed
 
 ## Deployment
 
-Solidity contract deployment is handled by `ContractDeployer.ts` and the wrapper programs located in `source/deployment`.  This deployment framework allows for incremental deploys of contracts to a given controller (specified via a configuration option).  This allows us to deploy new contracts without touching the controller, effectively upgrading the deployed system in-place.
+Solidity contract deployment is handled by `ContractDeployer.ts` and the wrapper programs located in `source/deployment`.
 
 - Main Code
   - source/libraries/ContractCompiler.ts - All logic for compiling contracts, generating ABI
@@ -54,9 +54,8 @@ The tests directory (augur-core/tests) contain tests and test fixtures to test t
 - reporting -- contains tests for reporting purposes.
 - trading -- contains tests for trading purposes.
 - solidity_test_helpers -- small contracts to help run tests.
-- test_controller.py -- tests controller functionalities.
 - test_mutex.py -- tests mutex functionalities.
-- test_helpers.py -- tests the controller, safeMath, and assertNoValue macros.
+- test_helpers.py -- tests safeMath and assertNoValue macros.
 - test_legacyRep.py -- tests for legacyRepToken's functionalities.
 - utils.py -- contains useful functions for testing, such as conversion between different data types.
 - wcl-in-python.py -- contains functions for making and taking various types of bids.
@@ -117,8 +116,6 @@ For quicker iteration on integration tests follow the instructions here to run t
 
 https://github.com/AugurProject/augur-core/blob/7272124d985a4c38a2b4f6f599cc16014615cec9/.vscode/launch.json#L28-L35
 
-If the contracts aren't changing, after the first run you can add "AUGUR_CONTROLLER_ADDRESS": "..." to the env and it will even skip re-uploading the contracts with each run of the integration tests.
-
 ## Running Oyente ##
 
 Install Oyente locally. This can be done by following the instructions on their GitHub: https://github.com/melonproject/oyente
@@ -161,15 +158,3 @@ There are no floating-point numbers in the EVM, only integers.  Therefore, Ether
 ### Worst-case-loss escrow for trades
 
 - [Some notes on worst-case-loss/value-at-risk](https://github.com/AugurProject/augur-core/blob/master/tests/wcl.txt)
-
-### Verifying the REP contract on the main Ethereum network
-
-On Augur, each [Universe](https://etherscan.io/address/0xe991247b78f937d7b69cfc00f1a487a293557677) has a [Reputation Token Contract](https://etherscan.io/address/0x1985365e9f78359a9b6ad760e32412f4a445e862) that is created by the Universe, which is uniquely associated with that Universe.  The Reputation token contract is technically a ["Delegator" Contract](https://github.com/AugurProject/augur-core/blob/master/source/contracts/libraries/Delegator.sol), which simply calls through to its delegation target contract, the [Verified Reputation Token Contract](https://etherscan.io/address/0x6c114b96b7a0e679c2594e3884f11526797e43d1).
-
-You can verify that the REP token contract is a `Delegator` by verifying the `ReputationTokenFactory` is what created the contract.
-
-To do this, go to the new REP contract [0x1985365e9f78359a9b6ad760e32412f4a445e862](https://etherscan.io/address/0x1985365e9f78359a9b6ad760e32412f4a445e862). Then go to its creator [0x8fee0da3a35f612f88fb58d7028d14c7d99a3643](https://etherscan.io/address/0x8fee0da3a35f612f88fb58d7028d14c7d99a3643). Then click on internal transactions and you'll see this [0x44c09f8eeff886723b79890e14743192a8c8d8a8eac158ed17600c94e502cce8](https://etherscan.io/tx/0x44c09f8eeff886723b79890e14743192a8c8d8a8eac158ed17600c94e502cce8) transaction which creates the initial universe.
-
-Then click on internal on that page and [you'll see here](https://etherscan.io/tx/0x44c09f8eeff886723b79890e14743192a8c8d8a8eac158ed17600c94e502cce8#internal) that that contract created the REP token contract.
-
-You can verify that the REP Token contract is delegating to the verified REP token contract target by calling lookup on the [Controller](https://etherscan.io/address/0xb3337164e91b9f05c87c7662c7ac684e8e0ff3e7#readContract) with the string `ReputationToken`.
