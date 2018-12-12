@@ -2,6 +2,7 @@ import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import Augur from "augur.js";
+import { ZERO  } from "../../constants";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { Address, OutcomeParam, SortLimitParams } from "../../types";
 import { getAllOutcomesProfitLoss, ProfitLossResult } from "./get-profit-loss";
@@ -51,9 +52,10 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
       const [marketId, outcome] = key.split(",");
       return Object.assign({
         marketId,
-        outcome: parseInt(outcome)
+        outcome: parseInt(outcome),
+        netPosition: ZERO
       }, _.last(profits));
     })
-    .flatten()
+    .values()
     .value();
 }
