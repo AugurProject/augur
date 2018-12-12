@@ -4,13 +4,11 @@ import { ErrorCallback } from "../types";
 const POLLING_FREQUENCY_IN_MS = 5000;
 
 async function checkEthereumNodeHealth(augur: Augur, universe: string, controller: string) {
-  try {
-    const universeController = await augur.api.Universe.getController({ tx: { to: universe } });
-    if (universeController !== controller) {
-      throw new Error(`Controller mismatch. Configured: ${controller} Found: ${universeController}`);
-    }
-  } catch (err) {
+  const universeController = await augur.api.Universe.getController({ tx: { to: universe } }).catch((err) => {
     throw (new Error(`Controller Match Lookup Error. Check if universe "${universe}" exists. ${err.message}`));
+  });
+  if (universeController !== controller) {
+    throw new Error(`Controller mismatch. Configured: ${controller} Found: ${universeController}`);
   }
 }
 
