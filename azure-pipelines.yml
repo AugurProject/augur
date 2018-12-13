@@ -29,6 +29,7 @@ jobs:
           set -euxo pipefail
           #git --no-pager diff --name-only FETCH_HEAD...master
           find .git/refs
+          git fetch origin master
           for f in $(git diff --name-only ...origin/master);
             do
               echo "$f"
@@ -37,7 +38,6 @@ jobs:
                 echo "##vso[task.setVariable variable=AUGUR_CORE]true";
               fi
             done
-            git checkout -
       - script: |
           set -euxo pipefail
           which node
