@@ -16,14 +16,14 @@ describe("blockchain/log-processors/market-participants-disavowed", () => {
   };
   test("Market Participants Disavowed", async () => {
     return db.transaction(async (trx) => {
-      await processMarketParticipantsDisavowedLog(trx, {}, log);
+      await(await processMarketParticipantsDisavowedLog({}, log))(trx);
 
       const records = await getMarketCrowdsourcers(trx, log);
       expect(records.length).toEqual(3);
       expect(records[0].disavowed).toEqual(1);
       expect(records[1].disavowed).toEqual(1);
       expect(records[2].disavowed).toEqual(1);
-      await processMarketParticipantsDisavowedLogRemoval(trx, {}, log);
+      await(await processMarketParticipantsDisavowedLogRemoval({}, log))(trx);
 
       const recordsAfterRemoval = await getMarketCrowdsourcers(trx, log);
       expect(recordsAfterRemoval.length).toEqual(3);

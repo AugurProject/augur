@@ -1,5 +1,6 @@
 const setupTestDb = require("../../test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
+const { version } = require("src/version");
 
 describe("server/getters/get-sync-data", () => {
   let db;
@@ -46,6 +47,7 @@ describe("server/getters/get-sync-data", () => {
     assertions: (contractAddresses) => {
       expect(contractAddresses).toEqual({
         version: "the-version-string",
+        augurNodeVersion: version,
         net_version: 974,
         netId: 974,
         isSyncFinished: false,

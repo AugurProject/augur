@@ -33,7 +33,7 @@ describe("blockchain/log-processors/fee-window-created", () => {
         id: 40304,
         blockNumber: 160101,
       };
-      await processFeeWindowCreatedLog(trx, augur, log);
+      await(await processFeeWindowCreatedLog(augur, log))(trx);
       expect(await getFeeWindow(trx, log)).toEqual({
         fee_windows: {
           endTime: 1512657473,
@@ -53,7 +53,7 @@ describe("blockchain/log-processors/fee-window-created", () => {
           },
         ],
       });
-      await processFeeWindowCreatedLogRemoval(trx, augur, log);
+      await(await processFeeWindowCreatedLogRemoval(augur, log))(trx);
       expect(await getFeeWindow(trx, log)).toEqual({
         fee_windows: undefined,
         tokens: [],

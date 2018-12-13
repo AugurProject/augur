@@ -22,14 +22,14 @@ describe("blockchain/log-processors/fee-window-redeemed", () => {
   };
   test("Redeemed", async () => {
     return db.transaction(async (trx) => {
-      await processFeeWindowRedeemedLog(trx, {}, log);
+      await(await processFeeWindowRedeemedLog({}, log))(trx);
       await expect(getRedeemed(trx)).resolves.toEqual([{
         amountRedeemed: "200",
         feeWindow: "FEE_WINDOW",
         reporter: "REPORTER",
         reportingFeesReceived: "900",
       }]);
-      await processFeeWindowRedeemedLogRemoval(trx, {}, log);
+      await(await processFeeWindowRedeemedLogRemoval({}, log))(trx);
       await expect(getRedeemed(trx)).resolves.toEqual([]);
     });
   });

@@ -38,7 +38,7 @@ describe("blockchain/log-processors/market-finalized", () => {
 
   test("yesNo market MarketFinalized log and removal", async () => {
     return db.transaction(async (trx) => {
-      await processMarketFinalizedLog(trx, augur, log);
+      await(await processMarketFinalizedLog(augur, log))(trx);
       await expect(getMarketState(trx, log)).resolves.toEqual({
         market: {
           marketId: "0x0000000000000000000000000000000000000013",
@@ -62,7 +62,7 @@ describe("blockchain/log-processors/market-finalized", () => {
         },
       });
 
-      await processMarketFinalizedLogRemoval(trx, augur, log);
+      await(await processMarketFinalizedLogRemoval(augur, log))(trx);
       await expect(getMarketState(trx, log)).resolves.toEqual({
         market: {
           marketId: "0x0000000000000000000000000000000000000013",

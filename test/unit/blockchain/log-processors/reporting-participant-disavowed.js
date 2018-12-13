@@ -23,7 +23,7 @@ describe("blockchain/log-processors/reporting-participant-disavowed", () => {
       logIndex: 0,
     };
     return db.transaction(async (trx) => {
-      await processReportingParticipantDisavowedLog(trx, {}, log);
+      await(await processReportingParticipantDisavowedLog({}, log))(trx);
       await expect(getParticipantState(trx, log)).resolves.toEqual({
         crowdsourcer: undefined,
         initialReporter: {
@@ -32,7 +32,7 @@ describe("blockchain/log-processors/reporting-participant-disavowed", () => {
         },
       });
 
-      await processReportingParticipantDisavowedLogRemoval(trx, {}, log);
+      await(await processReportingParticipantDisavowedLogRemoval({}, log))(trx);
       await expect(getParticipantState(trx, log)).resolves.toEqual({
         crowdsourcer: undefined,
         initialReporter: {
@@ -53,7 +53,7 @@ describe("blockchain/log-processors/reporting-participant-disavowed", () => {
       logIndex: 0,
     };
     return db.transaction(async (trx) => {
-      await processReportingParticipantDisavowedLog(trx, {}, log);
+      await(await processReportingParticipantDisavowedLog({}, log))(trx);
       await expect(getParticipantState(trx, log)).resolves.toEqual({
         crowdsourcer: {
           disavowed: 1,
@@ -61,7 +61,7 @@ describe("blockchain/log-processors/reporting-participant-disavowed", () => {
         },
         initialReporter: undefined,
       });
-      await processReportingParticipantDisavowedLogRemoval(trx, {}, log);
+      await(await processReportingParticipantDisavowedLogRemoval({}, log))(trx);
       await expect(getParticipantState(trx, log)).resolves.toEqual({
         crowdsourcer: {
           disavowed: 0,

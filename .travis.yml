@@ -15,7 +15,7 @@ branches:
   - petong/travis-ci
   - "/^v\\d+\\.\\d+\\.\\d+(-\\d+)?$/"
 node_js:
-- '8'
+- '10.12.0'
 jobs:
   include:
   - stage: test travis-ci

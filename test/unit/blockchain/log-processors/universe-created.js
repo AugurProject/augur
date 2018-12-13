@@ -13,7 +13,6 @@ const augur = {
   },
 };
 
-
 describe("blockchain/log-processors/universe-created", () => {
   let db;
   beforeEach(async () => {
@@ -29,7 +28,7 @@ describe("blockchain/log-processors/universe-created", () => {
 
   test("New universe created", async () => {
     return db.transaction(async (trx) => {
-      await processUniverseCreatedLog(trx, augur, log);
+      await(await processUniverseCreatedLog(augur, log))(trx);
 
       const records = await getUniverse(trx, log);
       expect(records.universe).toEqual("0x000000000000000000000000000000000000000c");
@@ -38,7 +37,7 @@ describe("blockchain/log-processors/universe-created", () => {
       expect(records.forked).toEqual(0);
       expect(typeof records.payoutId).toBe("number");
 
-      await processUniverseCreatedLogRemoval(trx, augur, log);
+      await(await processUniverseCreatedLogRemoval(augur, log))(trx);
 
       await expect(getUniverse(trx, log)).resolves.toBeUndefined();
 

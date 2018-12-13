@@ -39,19 +39,19 @@ describe("order-orphaned", () => {
     await db.del().from("orders");
 
     return db.transaction(async (trx) => {
-      await processOrderCreatedLog(trx, augur, Object.assign({}, log, {
+      await(await processOrderCreatedLog(augur, Object.assign({}, log, {
         logIndex: 0,
         orderId: "ORDER_ID_1",
-      }));
+      })))(trx);
 
-      await processOrderCreatedLog(trx, augur, Object.assign({}, log, {
+      await(await processOrderCreatedLog(augur, Object.assign({}, log, {
         logIndex: 1,
         orderId: "ORDER_ID_2",
-      }));
-      await processOrderCreatedLog(trx, augur, Object.assign({}, log, {
+      })))(trx);
+      await(await processOrderCreatedLog(augur, Object.assign({}, log, {
         logIndex: 2,
         orderId: "ORDER_ID_3",
-      }));
+      })))(trx);
       expect((await getState(trx, "ORDER_ID_2"))).toEqual({ orphaned: 1 });
     });
   });

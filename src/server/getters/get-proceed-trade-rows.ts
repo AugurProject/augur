@@ -70,11 +70,8 @@ export async function getProceedTradeRows (db: Knex, augur: Augur, marketIds: Ar
     .map(winningPayoutRows, (row: WinningPayoutRow): ProceedTradesRow<BigNumber> => {
       const payoutKey = `payout${row.outcome}` as keyof PayoutRow<BigNumber>;
       const payout = row[payoutKey] as BigNumber;
-      // this is the same as augur.utils.convertOnChainPriceToDisplayPrice
-      // I hate having to get it off an `augur` instance when its unrelated
-      // to a connection
       const tickSize = numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice);
-      const amount = row.balance.div(tickSize);
+      const amount = augur.utils.convertOnChainAmountToDisplayAmount(row.balance, tickSize);
       const price = payout.times(tickSize).plus(row.minPrice);
       return {
         blockNumber: row.blockNumber,

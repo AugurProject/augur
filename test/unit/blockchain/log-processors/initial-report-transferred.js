@@ -23,12 +23,12 @@ describe("blockchain/log-processors/initial-report-transferred", () => {
   };
   test("Initial report transferred", async () => {
     return db.transaction(async (trx) => {
-      await processInitialReporterTransferredLog(trx, augur, log);
+      await(await processInitialReporterTransferredLog(augur, log))(trx);
       await expect(getInitialReport(trx, log)).resolves.toEqual({
         reporter: "0x0000000000000000000000000000000000000d0d",
       });
 
-      await processInitialReporterTransferredLogRemoval(trx, augur, log);
+      await(await processInitialReporterTransferredLogRemoval(augur, log))(trx);
       await expect(getInitialReport(trx, log)).resolves.toEqual({
         reporter: "0x0000000000000000000000000000000000000b0b",
       });

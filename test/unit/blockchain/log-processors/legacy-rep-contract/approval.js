@@ -22,7 +22,7 @@ describe("blockchain/log-processors/token/approval", () => {
   };
   it("LegacyReputationToken Approval log and removal", async () => {
     return db.transaction(async (trx) => {
-      await processApprovalLog(trx, {}, log);
+      await(await processApprovalLog({}, log))(trx);
       await expect(getState(trx, log)).resolves.toEqual([{
         transactionHash: "TRANSACTION_HASH",
         logIndex: 0,
@@ -33,7 +33,7 @@ describe("blockchain/log-processors/token/approval", () => {
         blockNumber: 1400101,
       }]);
 
-      await processApprovalLogRemoval(trx, {}, log);
+      await(await processApprovalLogRemoval({}, log))(trx);
       await expect(getState(trx, log)).resolves.toEqual([]);
     });
   });

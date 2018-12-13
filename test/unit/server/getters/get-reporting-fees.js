@@ -26,7 +26,6 @@ describe("server/getters/get-reporting-fees", () => {
     db = await setupTestDb();
   });
 
-
   afterEach(async () => {
     await db.destroy();
   });

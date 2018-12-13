@@ -19,34 +19,39 @@ interface MarketData {
   minPrice: BigNumber;
 }
 
-export async function processTradingProceedsClaimedLog(db: Knex, augur: Augur, log: FormattedEventLog) {
-  const tradingProceedsToInsert = formatBigNumberAsFixed({
-    marketId: log.market,
-    shareToken: log.shareToken,
-    account: log.sender,
-    numShares: log.numShares,
-    numPayoutTokens: log.numPayoutTokens,
-    blockNumber: log.blockNumber,
-    transactionHash: log.transactionHash,
-    logIndex: log.logIndex,
-  });
+export async function processTradingProceedsClaimedLog(augur: Augur, log: FormattedEventLog) {
+  return async (db: Knex) => {
+    const tradingProceedsToInsert = formatBigNumberAsFixed({
+      marketId: log.market,
+      shareToken: log.shareToken,
+      account: log.sender,
+      numShares: log.numShares,
+      numPayoutTokens: log.numPayoutTokens,
+      blockNumber: log.blockNumber,
+      transactionHash: log.transactionHash,
+      logIndex: log.logIndex,
+    });
 
-  await db("trading_proceeds").insert(tradingProceedsToInsert);
-  const shareTokenOutcome: ShareTokenOutcome = await db("tokens").first("outcome").where({ contractAddress: log.shareToken});
-  const marketData: MarketData = await db.first(["numTicks", "minPrice", "maxPrice"]).from("markets").where({ marketId: log.market });
+    await db("trading_proceeds").insert(tradingProceedsToInsert);
+    const shareTokenOutcome: ShareTokenOutcome = await db("tokens").first("outcome").where({ contractAddress: log.shareToken});
+    const marketData: MarketData = await db.first(["numTicks", "minPrice", "maxPrice"]).from("markets").where({ marketId: log.market });
 
-  const minPrice = marketData.minPrice;
-  const maxPrice = marketData.maxPrice;
-  const numTicks = marketData.numTicks;
-  const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-  const numShares = new BigNumber(log.numShares, 10).dividedBy(tickSize).dividedBy(10**18);
-  const payoutTokens = new BigNumber(log.numPayoutTokens).dividedBy(10**18);
+    const minPrice = marketData.minPrice;
+    const maxPrice = marketData.maxPrice;
+    const numTicks = marketData.numTicks;
+    const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+    const numShares = new BigNumber(log.numShares, 10).dividedBy(tickSize).dividedBy(10**18);
+    const payoutTokens = new BigNumber(log.numPayoutTokens).dividedBy(10**18);
 
-  await updateProfitLossSellShares(db, log.market, numShares, log.sender, [shareTokenOutcome.outcome], payoutTokens, log.transactionHash);
-  augurEmitter.emit(SubscriptionEventNames.TradingProceedsClaimed, log);
+    await updateProfitLossSellShares(db, log.market, numShares, log.sender, [shareTokenOutcome.outcome], payoutTokens, log.transactionHash);
+    augurEmitter.emit(SubscriptionEventNames.TradingProceedsClaimed, log);
+  };
 }
 
-export async function processTradingProceedsClaimedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog) {
-  await db.from("trading_proceeds").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
-  augurEmitter.emit(SubscriptionEventNames.TradingProceedsClaimed, log);
+export async function processTradingProceedsClaimedLogRemoval(augur: Augur, log: FormattedEventLog) {
+  return async (db: Knex) => {
+    await db.from("trading_proceeds").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
+    await db.from("profit_loss_timeseries").where({ transactionHash: log.transactionHash }).del();
+    augurEmitter.emit(SubscriptionEventNames.TradingProceedsClaimed, log);
+  };
 }

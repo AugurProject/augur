@@ -38,7 +38,7 @@ describe("blockchain/log-processors/tokens-burned", () => {
   };
   test("Tokens burned", async () => {
     return db.transaction(async (trx) => {
-      await processBurnLog(trx, augur, log);
+      await(await processBurnLog(augur, log))(trx);
 
       await expect(getTokenBalances(trx, log)).resolves.toEqual([{
         owner: "FROM_ADDRESS",
@@ -46,7 +46,7 @@ describe("blockchain/log-processors/tokens-burned", () => {
         balance: new BigNumber("1", 10),
         supply: new BigNumber("1", 10),
       }]);
-      await processBurnLogRemoval(trx, augur, log);
+      await(await processBurnLogRemoval(augur, log))(trx);
 
       await expect(getTokenBalances(trx, log)).resolves.toEqual([{
         owner: "FROM_ADDRESS",

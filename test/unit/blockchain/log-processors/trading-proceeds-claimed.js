@@ -38,7 +38,7 @@ describe("blockchain/log-processors/trading-proceeds-claimed", () => {
 
   test("Claim Trading Proceeds", async () => {
     return db.transaction(async (trx) => {
-      await processTradingProceedsClaimedLog(trx, augur, log);
+      await(await processTradingProceedsClaimedLog(augur, log))(trx);
       await expect(getTradingProceeds(trx)).resolves.toEqual([{
         account: "FROM_ADDRESS",
         marketId: "0x0000000000000000000000000000000000000001",
@@ -46,7 +46,7 @@ describe("blockchain/log-processors/trading-proceeds-claimed", () => {
         numPayoutTokens: new BigNumber("9000", 10),
         shareToken: "SHARE_TOKEN_ADDRESS",
       }]);
-      await processTradingProceedsClaimedLogRemoval(trx, augur, log);
+      await(await processTradingProceedsClaimedLogRemoval(augur, log))(trx);
       await expect(getTradingProceeds(trx)).resolves.toEqual([]);
     });
   });
