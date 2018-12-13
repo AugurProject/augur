@@ -27,9 +27,9 @@ jobs:
           versionSpec: '9.x'
       - bash: |
           set -euxo pipefail
-          git checkout -b ci-diff
           #git --no-pager diff --name-only FETCH_HEAD...master
-          for f in $(git diff --name-only ...origin/master);
+          find .git/refs
+          for f in $(git whatchanged --name-only --pretty="" origin..HEAD);
             do
               echo "$f"
               if [[ $f =~ .*augur-core.* ]]
