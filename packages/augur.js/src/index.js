@@ -10,7 +10,7 @@ var version = require("./version");
 
 BigNumber.config({
   MODULO_MODE: BigNumber.EUCLID,
-  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
 });
 
 function Augur() {
@@ -19,8 +19,8 @@ function Augur() {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
       connect: false, // connection debug logging in ethrpc and ethereumjs-connect
-      tx: false // transaction debug logging in ethrpc
-    }
+      tx: false, // transaction debug logging in ethrpc
+    },
   };
   this.accounts = require("./accounts");
   this.api = require("./api")();
