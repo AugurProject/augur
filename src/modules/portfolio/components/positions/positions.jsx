@@ -13,6 +13,7 @@ export default class Positions extends Component {
     currentTimestamp: PropTypes.number.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
+    transactionsStatus: PropTypes.object.isRequired,
     openPositionMarkets: PropTypes.array.isRequired,
     reportingMarkets: PropTypes.array.isRequired,
     closedMarkets: PropTypes.array.isRequired,
@@ -37,7 +38,8 @@ export default class Positions extends Component {
       location,
       marketsCount,
       openPositionMarkets,
-      reportingMarkets
+      reportingMarkets,
+      transactionsStatus
     } = this.props;
     return (
       <section>
@@ -51,6 +53,7 @@ export default class Positions extends Component {
               markets={openPositionMarkets}
               location={location}
               history={history}
+              transactionsStatus={transactionsStatus}
               currentTimestamp={currentTimestamp}
               isMobile={isMobile}
               paginationName="open"
@@ -61,6 +64,7 @@ export default class Positions extends Component {
               markets={reportingMarkets}
               location={location}
               history={history}
+              transactionsStatus={transactionsStatus}
               positionsDefault={false}
               currentTimestamp={currentTimestamp}
               isMobile={isMobile}
@@ -71,6 +75,7 @@ export default class Positions extends Component {
               markets={closedMarkets}
               location={location}
               history={history}
+              transactionsStatus={transactionsStatus}
               positionsDefault={false}
               currentTimestamp={currentTimestamp}
               claimTradingProceeds={claimTradingProceeds}

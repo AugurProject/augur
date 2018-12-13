@@ -1,3 +1,4 @@
+export const AWAITING_SIGNATURE = "awaiting signature";
 export const PENDING = "pending";
 export const SUCCESS = "success";
 export const FAILED = "failed";

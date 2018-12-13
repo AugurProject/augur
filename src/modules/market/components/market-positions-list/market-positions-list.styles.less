@@ -5,10 +5,11 @@
 }
 
 .MarketPositionsList__completeSets {
+  align-items: center;
+  background-color: @color-lightgray-2;
   display: flex;
   justify-content: space-between;
-  margin: 1rem 0;
-  padding: 1rem 2rem;
+  padding: 0.5rem 2rem;
   width: 100%;
 
   > span {
@@ -16,13 +17,14 @@
   }
 
   > button {
-    &:extend(.caps--medium);
+    .button--transparent();
 
-    font-weight: 500;
-
-    &:disabled {
-      color: @color-lightergray;
+    &:disabled,
+    &:disabled:hover {
+      border-color: @color-gray;
+      color: @color-gray;
       cursor: not-allowed;
+      text-decoration: none;
     }
   }
 }
@@ -52,6 +54,12 @@
   width: 100%;
 }
 
+.MarketOpenOrdersList__table {
+  display: table;
+  position: relative;
+  width: 100%;
+}
+
 .MarketPositionsList__table-header {
   &:extend(.caps--small);
 
@@ -59,7 +67,7 @@
   display: table-header-group;
 
   &:first-child > li {
-    padding-top: 0;
+    padding-top: 1rem;
   }
 
   > li {
@@ -68,6 +76,8 @@
     text-align: right;
 
     &:first-child {
+      color: @color-darkpurple;
+      font-weight: bold;
       padding-left: 2rem;
       text-align: left;
     }

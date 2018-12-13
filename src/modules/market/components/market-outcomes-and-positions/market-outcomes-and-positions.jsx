@@ -11,6 +11,7 @@ const MarketOutcomesAndPositions = ({
   marketId,
   outcomes,
   numCompleteSets,
+  transactionsStatus,
   positions,
   orphanedOrders,
   openOrders,
@@ -34,6 +35,7 @@ const MarketOutcomesAndPositions = ({
         positions={positions}
         openOrders={openOrders}
         numCompleteSets={numCompleteSets}
+        transactionsStatus={transactionsStatus}
         marketId={marketId}
         sellCompleteSets={sellCompleteSets}
         orphanedOrders={orphanedOrders}
@@ -64,6 +66,7 @@ MarketOutcomesAndPositions.propTypes = {
   marketId: PropTypes.string.isRequired,
   outcomes: PropTypes.array,
   numCompleteSets: PropTypes.object,
+  transactionsStatus: PropTypes.object.isRequired,
   positions: PropTypes.array,
   orphanedOrders: PropTypes.array,
   openOrders: PropTypes.array,

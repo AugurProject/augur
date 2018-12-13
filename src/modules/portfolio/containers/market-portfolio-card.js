@@ -9,6 +9,7 @@ import { determineMarketLinkType } from "modules/markets/helpers/determine-marke
 import MarketPortfolioCard from "modules/portfolio/components/market-portfolio-card/market-portfolio-card";
 import { selectMarket } from "modules/markets/selectors/market";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
+import { sellCompleteSets } from "modules/positions/actions/sell-complete-sets";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { cancelOrphanedOrder } from "modules/orders/actions/orphaned-orders";
 import { CATEGORICAL } from "modules/markets/constants/market-types";
@@ -43,6 +44,8 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+  sellCompleteSets: (marketId, numCompleteSets, cb) =>
+    dispatch(sellCompleteSets(marketId, numCompleteSets, cb)),
   getWinningBalances: marketIds => dispatch(getWinningBalance(marketIds)),
   finalizeMarket: (marketId, cb) => dispatch(sendFinalizeMarket(marketId, cb)),
   cancelOrphanedOrder: (order, cb) => dispatch(cancelOrphanedOrder(order, cb)),

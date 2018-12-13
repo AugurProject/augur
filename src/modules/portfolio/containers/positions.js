@@ -51,6 +51,7 @@ const mapStateToProps = state => {
   return {
     currentTimestamp: selectCurrentTimestamp(state),
     marketsCount,
+    transactionsStatus: state.transactionsStatus,
     openPositionMarkets,
     reportingMarkets,
     closedMarkets: orderdClosedMarkets,

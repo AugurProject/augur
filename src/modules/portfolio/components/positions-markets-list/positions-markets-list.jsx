@@ -12,6 +12,7 @@ export default class PositionsMarketsList extends Component {
     markets: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
+    transactionsStatus: PropTypes.object.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
     paginationName: PropTypes.string.isRequired,
     positionsDefault: PropTypes.bool,
@@ -88,7 +89,8 @@ export default class PositionsMarketsList extends Component {
       title,
       paginationName,
       noTopPadding,
-      addNullPadding
+      addNullPadding,
+      transactionsStatus
     } = this.props;
     const { paginationCount, filteredMarkets } = this.state;
 
@@ -101,6 +103,7 @@ export default class PositionsMarketsList extends Component {
             <MarketPortfolioCard
               key={market.id}
               market={market}
+              transactionsStatus={transactionsStatus}
               location={location}
               history={history}
               positionsDefault={positionsDefault}

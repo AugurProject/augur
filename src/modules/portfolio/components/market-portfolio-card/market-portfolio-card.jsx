@@ -18,6 +18,10 @@ import CommonStyles from "modules/market/components/common/market-common.styles"
 import PositionStyles from "modules/market/components/market-positions-list/market-positions-list.styles";
 import Styles from "modules/portfolio/components/market-portfolio-card/market-portfolio-card.styles";
 import MarketPortfolioCardFooter from "modules/portfolio/components/market-portfolio-card/market-portfolio-card-footer";
+import {
+  AWAITING_SIGNATURE,
+  PENDING
+} from "modules/transactions/constants/statuses";
 
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
@@ -30,7 +34,9 @@ export default class MarketPortfolioCard extends Component {
     finalizeMarket: PropTypes.func.isRequired,
     getWinningBalances: PropTypes.func.isRequired,
     orphanedOrders: PropTypes.array.isRequired,
-    cancelOrphanedOrder: PropTypes.func.isRequired
+    transactionsStatus: PropTypes.object.isRequired,
+    cancelOrphanedOrder: PropTypes.func.isRequired,
+    sellCompleteSets: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -89,12 +95,14 @@ export default class MarketPortfolioCard extends Component {
       linkType,
       market,
       orphanedOrders,
-      cancelOrphanedOrder
+      cancelOrphanedOrder,
+      sellCompleteSets,
+      transactionsStatus
     } = this.props;
     const { tableOpen, claimClicked, disableFinalize } = this.state;
     const myPositionsSummary = getValue(market, "myPositionsSummary");
     const myPositionOutcomes = getValue(market, "outcomes");
-
+    const numCompleteSets = getValue(myPositionsSummary, "numCompleteSets");
     let localButtonText;
     let buttonAction;
     let disabled = false;
@@ -111,6 +119,22 @@ export default class MarketPortfolioCard extends Component {
         break;
       default:
         localButtonText = "View";
+    }
+    const pendingCompleteSetsHash = `pending-${market.id}-${numCompleteSets &&
+      numCompleteSets.fullPrecision}`;
+    const pendingCompleteSetsInfo = transactionsStatus[pendingCompleteSetsHash];
+    const status = pendingCompleteSetsInfo && pendingCompleteSetsInfo.status;
+    let completeSetButtonText = "Sell Complete Sets";
+    switch (status) {
+      case AWAITING_SIGNATURE:
+        completeSetButtonText = "Awaiting Signature...";
+        break;
+      case PENDING:
+        completeSetButtonText = "Pending transaction...";
+        break;
+      default:
+        completeSetButtonText = "Sell Complete Sets";
+        break;
     }
     return (
       <article className={CommonStyles.MarketCommon__container}>
@@ -284,6 +308,26 @@ export default class MarketPortfolioCard extends Component {
                   ))}
             </div>
           </div>
+          {tableOpen.myPositions &&
+            numCompleteSets &&
+            numCompleteSets.value > 0 && (
+              <div
+                className={PositionStyles.MarketPositionsList__completeSets}
+                style={{ paddingLeft: "0.5rem" }}
+              >
+                <span>{`You currently have ${
+                  numCompleteSets.full
+                } of all outcomes.`}</span>
+                <button
+                  onClick={e => {
+                    sellCompleteSets(market.id, numCompleteSets, () => {});
+                  }}
+                  disabled={!!pendingCompleteSetsInfo}
+                >
+                  {completeSetButtonText}
+                </button>
+              </div>
+            )}
         </section>
         <section className={Styles.MarketCard__tablesection}>
           <div className={PositionStyles.MarketPositionsList__table}>
