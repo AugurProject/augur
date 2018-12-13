@@ -124,7 +124,7 @@
     "derequire": "2.0.6",
     "enzyme": "3.7.0",
     "enzyme-adapter-react-16": "1.7.0",
-    "eslint": "4.12.1",
+    "eslint": "5.10.0",
     "eslint-config-airbnb": "16.1.0",
     "eslint-config-prettier": "3.3.0",
     "eslint-import-resolver-babel-module": "3.0.0",
