@@ -21,12 +21,12 @@ function help() {
 function dispute(augur, marketId, payoutNumerators, auth, timeAddress, currentRound, totalRounds, callback) {
   console.log(chalk.yellow("Dispute Round:", currentRound));
   var ALL_THE_REP = 6000000000000000000000000;
-  augur.api.Market.getFeeWindow({tx: { to: marketId}}, function (err, feeWindow) {
+  augur.api.Market.getDisputeWindow({tx: { to: marketId}}, function (err, disputeWindow) {
     if (err) {
       console.log(chalk.red(err));
       return callback(err);
     }
-    augur.api.FeeWindow.getStartTime({ tx: { to: feeWindow } }, function (err, feeWindowStartTime) {
+    augur.api.FeeWindow.getStartTime({ tx: { to: disputeWindow } }, function (err, feeWindowStartTime) {
       if (err) {
         console.log(chalk.red(err));
         callback("Could not get Fee Window");
@@ -54,12 +54,12 @@ function doReporting(augur, market, timeResult, auth, rounds, callback) {
   var priceOrOutcome = market.marketType === "scalar" ? market.minPrice : 0;
   var payoutNumerators = getPayoutNumerators(market, priceOrOutcome, false);
 
-  augur.api.Market.getFeeWindow({tx: { to: marketId}}, function (err, feeWindow) {
+  augur.api.Market.getDisputeWindow({tx: { to: marketId}}, function (err, disputeWindow) {
     if (err) {
       console.log(chalk.red(err));
       return callback(err);
     }
-    if (feeWindow !== "0x0000000000000000000000000000000000000000") {
+    if (disputeWindow !== "0x0000000000000000000000000000000000000000") {
       dispute(augur, marketId, payoutNumerators.reverse(), auth, timeResult.timeAddress, 0, rounds, callback);
     } else {
       doInitialReport(augur, marketId, payoutNumerators, false, auth, function (err) {

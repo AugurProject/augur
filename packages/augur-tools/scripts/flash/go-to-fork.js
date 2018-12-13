@@ -11,6 +11,7 @@ var ALL_THE_REP = 6000000000000000000000000;
 
 function goToFork(augur, marketId, payoutNumerators, timeAddress, stopsBefore, auth, callback) {
   augur.api.Market.getForkingMarket({tx: { to: marketId }}, function (err, forkingMarket) {
+    console.log("get forking market", forkingMarket);
     if (err) {
       console.log(chalk.red(err));
       return callback(err);
@@ -20,6 +21,7 @@ function goToFork(augur, marketId, payoutNumerators, timeAddress, stopsBefore, a
       return callback(null);
     }
     augur.api.Market.getNumParticipants({tx: { to: marketId}}, function (err, numParticipants) {
+      console.log("get number of participants", numParticipants);
       if (err) {
         console.log(chalk.red(err));
         return callback(err);
@@ -28,18 +30,19 @@ function goToFork(augur, marketId, payoutNumerators, timeAddress, stopsBefore, a
         console.log(chalk.green("Successfully got to pre-forking state"));
         return callback(null);
       }
-      augur.api.Market.getFeeWindow({tx: { to: marketId}}, function (err, feeWindow) {
+      augur.api.Market.getDisputeWindow({tx: { to: marketId}}, function (err, disputeWindow) {
+        console.log("get dispute Window", disputeWindow);
         if (err) {
           console.log(chalk.red(err));
           return callback(err);
         }
-        if (feeWindow !== "0x0000000000000000000000000000000000000000") {
-          augur.api.FeeWindow.getStartTime({ tx: { to: feeWindow } }, function (err, feeWindowStartTime) {
+        if (disputeWindow !== "0x0000000000000000000000000000000000000000") {
+          augur.api.DisputeWindow.getStartTime({ tx: { to: disputeWindow } }, function (err, disputeWindowStartTime) {
             if (err) {
               console.log(chalk.red(err));
               callback("Could not get Fee Window");
             }
-            setTimestamp(augur, parseInt(feeWindowStartTime, 10) + 1, timeAddress, auth, function (err) {
+            setTimestamp(augur, parseInt(disputeWindowStartTime, 10) + 1, timeAddress, auth, function (err) {
               if (err) {
                 console.log(chalk.red(err));
                 return callback(err);
@@ -54,7 +57,7 @@ function goToFork(augur, marketId, payoutNumerators, timeAddress, stopsBefore, a
             });
           });
         } else {
-          doInitialReport(augur, marketId, payoutNumerators, false, auth, function (err) {
+          doInitialReport(augur, marketId, payoutNumerators, "Initial report for forking", auth, function (err) {
             if (err) {
               console.log(chalk.red(err));
               return callback(err);

@@ -20,7 +20,6 @@ function getPayoutNumerators(market, selectedOutcome, invalid) {
   var minPrice = createBigNumber(market.minPrice);
   var numTicks = createBigNumber(market.numTicks);
   var numOutcomes = market.numOutcomes;
-
   var payoutNumerators = Array(numOutcomes).fill(new BigNumber(0));
   var isScalar = market.marketType === "scalar";
 

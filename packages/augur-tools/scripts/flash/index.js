@@ -121,6 +121,7 @@ var methods = {
         short: "i",
         help: "Overrides outcome to pass invalid"
       },
+      description: { default: "designate report", short: "d", help: "Add description" },
       noPush: {
         short: "n",
         flag: true,
@@ -149,6 +150,7 @@ var methods = {
         short: "i",
         help: "Overrides outcome to pass invalid"
       },
+      description: { default: "initial report", short: "d", help: "Add description" },
       noPush: {
         short: "n",
         flag: true,
@@ -173,11 +175,7 @@ var methods = {
           'Outcome, sets outcome to use, can be overridden by invalid flag, negative outcome use \\"-10\\"'
       },
       amount: { short: "a", help: "Optional: amount of REP to dispute with" },
-      invalid: {
-        flag: true,
-        short: "i",
-        help: "Overrides outcome to pass invalid"
-      },
+      description: { default: "dispute contribute", short: "d", help: "Add description" },
       noPush: {
         short: "n",
         flag: true,
