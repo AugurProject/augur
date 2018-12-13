@@ -23,12 +23,6 @@ var CROWDSOURCER_REDEEM_ESTIMATE = new BigNumber(500000, 10);
 function redeemContractFees(p, payload, successfulTransactions, failedTransactions, gasEstimates) {
   var redeemableContracts = [];
   var i;
-  for (i = 0; i < p.disputeWindows.length; i++) {
-    redeemableContracts.push({
-      address: p.disputeWindows[i],
-      type: contractTypes.DISPUTE_WINDOW,
-    });
-  }
   for (i = 0; i < p.nonforkedMarkets.length; i++) {
     for (var j = 0; j < p.nonforkedMarkets[i].crowdsourcers.length; j++) {
       var crowdsourcerAddress = p.nonforkedMarkets[i].crowdsourcers[j];
@@ -61,35 +55,6 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
   var limit = p.estimateGas ? PARALLEL_LIMIT : 1;
   async.eachLimit(redeemableContracts, limit, function (contract, nextContract) {
     switch (contract.type) {
-      case contractTypes.DISPUTE_WINDOW:
-        api().DisputeWindow.redeem(assign({}, payload, {
-          _sender: p.redeemer,
-          tx: {
-            to: contract.address,
-            estimateGas: p.estimateGas,
-          },
-          onSent: function () {
-            if (!p.estimateGas) {
-              nextContract();
-            }
-          },
-          onSuccess: function (result) {
-            if (p.estimateGas) {
-              result = new BigNumber(result, 16);
-              gasEstimates.disputeWindowRedeem.push({address: contract.address, estimate: result});
-              gasEstimates.totals.disputeWindowRedeem = gasEstimates.totals.disputeWindowRedeem.plus(result);
-            } else {
-              successfulTransactions.disputeWindowRedeem.push(contract.address);
-            }
-            if (p.estimateGas) nextContract();
-            // console.log("Redeemed disputeWindow", contract.address);
-          },
-          onFailed: function () {
-            failedTransactions.disputeWindowRedeem.push(contract.address);
-            // console.log("Failed to redeem disputeWindow", contract.address);
-          },
-        }));
-        break;
       case contractTypes.DISPUTE_CROWDSOURCER:
         api().DisputeCrowdsourcer.redeem(assign({}, payload, {
           _redeemer: p.redeemer,
@@ -158,12 +123,10 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
     };
     if (p.estimateGas) {
       gasEstimates.totals.all = gasEstimates.totals.disavowCrowdsourcers
-                                .plus(gasEstimates.totals.disputeWindowRedeem)
                                 .plus(gasEstimates.totals.crowdsourcerRedeem)
                                 .plus(gasEstimates.totals.initialReporterRedeem);
 
       gasEstimates.totals.disavowCrowdsourcers = gasEstimates.totals.disavowCrowdsourcers.toString();
-      gasEstimates.totals.disputeWindowRedeem = gasEstimates.totals.disputeWindowRedeem.toString();
       gasEstimates.totals.crowdsourcerRedeem = gasEstimates.totals.crowdsourcerRedeem.toString();
       gasEstimates.totals.initialReporterRedeem = gasEstimates.totals.initialReporterRedeem.toString();
       gasEstimates.totals.all =  gasEstimates.totals.all.toString();
@@ -173,7 +136,6 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
       };
     }
     if (failedTransactions.disavowCrowdsourcers.length > 0 ||
-        failedTransactions.disputeWindowRedeem.length > 0 ||
         failedTransactions.crowdsourcerRedeem > 0 ||
         failedTransactions.initialReporterRedeem > 0) {
       result.failedTransactions = failedTransactions;
@@ -191,7 +153,6 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
  *     Call `Market.disavowCrowdsourcers`
  *
  * Once the above has been completed:
- *   Call `DisputeWindow.redeem` on all fee windows in the current universe where the user has unclaimed participation tokens
  *   For reporting participants of non-forked markets:
  *     Call `DisputeCrowdsourcer.redeem`
  *     For initial reporters belonging to non-forked markets:
@@ -215,24 +176,20 @@ function claimReportingFeesNonforkedMarkets(p) {
   var payload = immutableDelete(p, ["redeemer", "disputeWindows", "forkedMarket", "nonforkedMarkets", "estimateGas", "onSent", "onSuccess", "onFailed"]);
   var successfulTransactions = {
     disavowCrowdsourcers: [],
-    disputeWindowRedeem: [],
     crowdsourcerRedeem: [],
     initialReporterRedeem: [],
   };
   var failedTransactions = {
     disavowCrowdsourcers: [],
-    disputeWindowRedeem: [],
     crowdsourcerRedeem: [],
     initialReporterRedeem: [],
   };
   var gasEstimates = {
     disavowCrowdsourcers: [],
-    disputeWindowRedeem: [],
     crowdsourcerRedeem: [],
     initialReporterRedeem: [],
     totals: {
       disavowCrowdsourcers: new BigNumber(0),
-      disputeWindowRedeem: new BigNumber(0),
       crowdsourcerRedeem: new BigNumber(0),
       initialReporterRedeem: new BigNumber(0),
       all: new BigNumber(0),

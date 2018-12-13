@@ -145,7 +145,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       shareBalances: [new BigNumber("1", 10), ZERO],
     },
     assertions: function (output) {
-      assert.deepEqual(output, new Error("Number of shares is too small"));
+      assert.deepEqual(output.message, new Error("Number of shares is too small").message);
     },
   });
   test({
@@ -162,7 +162,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       shareBalances: [new BigNumber("1", 10), ZERO],
     },
     assertions: function (output) {
-      assert.deepEqual(output, new Error("Price is above the maximum price"));
+      assert.deepEqual(output.message, new Error("Price is above the maximum price").message);
     },
   });
   test({
@@ -175,7 +175,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)],
     },
     assertions: function (output) {
-      assert.deepEqual(output, new Error("Invalid outcome ID"));
+      assert.deepEqual(output.message, new Error("outcome ID not found -1").message);
     },
   });
   test({
@@ -188,7 +188,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)],
     },
     assertions: function (output) {
-      assert.deepEqual(output, new Error("Invalid outcome ID"));
+      assert.deepEqual(output.message, new Error("outcome ID not found 2").message);
     },
   });
 });

@@ -8,7 +8,7 @@ function doInitialReport(
   augur,
   marketId,
   payoutNumerators,
-  invalid,
+  description,
   auth,
   callback
 ) {
@@ -16,7 +16,7 @@ function doInitialReport(
     meta: auth,
     tx: { to: marketId, gas: augur.constants.DEFAULT_MAX_GAS },
     _payoutNumerators: payoutNumerators,
-    _invalid: invalid,
+    _description: description,
     onSent: function(result) {
       console.log(
         chalk.yellow.dim("Sent:"),
