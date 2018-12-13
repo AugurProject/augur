@@ -6,7 +6,8 @@ import { assetDataUtils } from "@0xproject/order-utils";
 import { BigNumber } from "@0xproject/utils";
 
 const mapStateToProps = state => ({
-  address: state.loginAccount.displayAddress
+  address: state.loginAccount.displayAddress,
+  augurNodeNetworkId: state.connection.augurNodeNetworkId
 });
 
 // This is an outstanding order

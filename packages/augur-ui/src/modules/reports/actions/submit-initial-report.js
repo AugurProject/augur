@@ -1,8 +1,8 @@
-import { augur } from "services/augurjs";
 import { REPORTING_REPORT_MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
 import logError from "utils/log-error";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
+import { augur } from "services/augurjs";
 
 export const submitInitialReport = ({
   estimateGas,

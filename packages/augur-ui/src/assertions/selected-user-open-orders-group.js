@@ -10,13 +10,17 @@ export default function(selectedUserOpenOrdersGroup) {
 
     describe("selectedUserOpenOrdersGroupId", () => {
       test("should exist", () => {
-        expect(selectedUserOpenOrdersGroup.selectedUserOpenOrdersGroupId).toBeDefined();
+        expect(
+          selectedUserOpenOrdersGroup.selectedUserOpenOrdersGroupId
+        ).toBeDefined();
       });
     });
 
     describe("updateSelectedUserOpenOrdersGroup", () => {
       test("should be function", () => {
-        expect(typeof selectedUserOpenOrdersGroup.updateSelectedUserOpenOrdersGroup).toBe("function");
+        expect(
+          typeof selectedUserOpenOrdersGroup.updateSelectedUserOpenOrdersGroup
+        ).toBe("function");
       });
     });
   });

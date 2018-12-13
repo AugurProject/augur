@@ -1,5 +1,5 @@
-import assertFormattedNumber from "assertions/common/formatted-number";
-import assertFormattedDate from "assertions/common/formatted-date";
+import assertFormattedNumber from "src/assertions/common/formatted-number";
+import assertFormattedDate from "src/assertions/common/formatted-date";
 
 export default function(reports) {
   describe(`loginAccountReports.reports' shape`, () => {

@@ -1,4 +1,4 @@
-import assertLink from "assertions/common/link";
+import assertLink from "src/assertions/common/link";
 
 export default function(navItem, label = "Nav Item") {
   describe(`${label}' Shape`, () => {
