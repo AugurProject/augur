@@ -10,10 +10,10 @@ import { updateProfitLossNumEscrowed, updateProfitLossRemoveRow } from "./profit
 interface MarketIDAndOutcomeAndPrice {
   marketId: Bytes32;
   outcome: number;
-  price: BigNumber,
+  price: BigNumber;
   orderType: string|number;
   orderCreator: string;
-  sharesEscrowed: BigNumber
+  sharesEscrowed: BigNumber;
 }
 
 interface MarketNumOutcomes {
@@ -32,7 +32,7 @@ export async function processOrderCanceledLog(augur: Augur, log: FormattedEventL
 
     const marketNumOutcomes: MarketNumOutcomes = await db.first("numOutcomes").from("markets").where({ marketId: ordersRow.marketId });
     const numOutcomes = marketNumOutcomes.numOutcomes;
-    const otherOutcomes = Array.from(Array(numOutcomes).keys())
+    const otherOutcomes = Array.from(Array(numOutcomes).keys());
     otherOutcomes.splice(ordersRow.outcome, 1);
     const outcomes = orderTypeLabel == "buy" ? otherOutcomes : [ordersRow.outcome];
     await updateProfitLossNumEscrowed(db, ordersRow.marketId, ordersRow.sharesEscrowed.negated(), ordersRow.orderCreator, outcomes, log.transactionHash);
@@ -55,4 +55,3 @@ export async function processOrderCanceledLogRemoval(augur: Augur, log: Formatte
     augurEmitter.emit(SubscriptionEventNames.OrderCanceled, Object.assign({}, log, ordersRow));
   };
 }
-

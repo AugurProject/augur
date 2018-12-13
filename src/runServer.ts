@@ -40,7 +40,7 @@ function start(retries: number, config: any, databaseDir: any) {
 
   function errorCatch(err: Error) {
     if (retries > 0) {
-      logger.warn(err.message);
+      logger.warn(err.stack!);
       retries--;
       augurNodeController.shutdown();
       setTimeout(() => start(retries, config, databaseDir), 1000);

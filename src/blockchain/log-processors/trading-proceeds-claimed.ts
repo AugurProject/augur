@@ -8,9 +8,8 @@ import { SubscriptionEventNames } from "../../constants";
 import { updateProfitLossSellShares } from "./profit-loss/update-profit-loss";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
-
 interface ShareTokenOutcome {
-  outcome: number,
+  outcome: number;
 }
 
 interface MarketData {
@@ -40,8 +39,8 @@ export async function processTradingProceedsClaimedLog(augur: Augur, log: Format
     const maxPrice = marketData.maxPrice;
     const numTicks = marketData.numTicks;
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-    const numShares = new BigNumber(log.numShares, 10).dividedBy(tickSize).dividedBy(10**18);
-    const payoutTokens = new BigNumber(log.numPayoutTokens).dividedBy(10**18);
+    const numShares = new BigNumber(log.numShares, 10).dividedBy(tickSize).dividedBy(10 ** 18);
+    const payoutTokens = new BigNumber(log.numPayoutTokens).dividedBy(10 ** 18);
 
     await updateProfitLossSellShares(db, log.market, numShares, log.sender, [shareTokenOutcome.outcome], payoutTokens, log.transactionHash);
     augurEmitter.emit(SubscriptionEventNames.TradingProceedsClaimed, log);

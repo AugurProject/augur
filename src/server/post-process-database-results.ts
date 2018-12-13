@@ -106,8 +106,8 @@ const whitelist: TableWhitelist = {
     moneySpent: true,
     numEscrowed: true,
     numOwned: true,
-    profit: true
-  }
+    profit: true,
+  },
 };
 
 const FIELD_NAMES: FieldWhitelist = (() => {

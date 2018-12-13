@@ -37,6 +37,6 @@ export async function processTokensTransferredLogRemoval(augur: Augur, log: Form
     const value = new BigNumber(log.value || log.amount, 10);
     await increaseTokenBalance(db, augur, token, log.from, value, log);
     await decreaseTokenBalance(db, augur, token, log.to, value, log);
-    await updateProfitLossRemoveRow(db, log.transactionHash)
+    await updateProfitLossRemoveRow(db, log.transactionHash);
   };
 }

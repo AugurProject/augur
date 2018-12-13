@@ -8,7 +8,7 @@ import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixe
 
 interface OrderFilledRow {
   fullPrecisionAmount: BigNumber;
-  sharesEscrowed: BigNumber,
+  sharesEscrowed: BigNumber;
   outcome: number;
   price: BigNumber;
 }

@@ -7,7 +7,7 @@ import { numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decima
 import { getCurrentTime } from "../../process-block";
 
 interface MarketState {
-  reportingState: String;
+  reportingState: string;
 }
 
 interface PriceRow {
@@ -20,7 +20,7 @@ interface PayoutAndMarket<BigNumberType> extends PayoutNumerators<BigNumberType>
   numTicks: BigNumber;
 }
 
-export async function updateOutcomeValueFromOrders(db: Knex, marketId: Address, outcome: number, transactionHash: String): Promise<void> {
+export async function updateOutcomeValueFromOrders(db: Knex, marketId: Address, outcome: number, transactionHash: string): Promise<void> {
   const marketState: MarketState = await db
     .first("reportingState")
     .from("market_state")
@@ -51,7 +51,7 @@ export async function updateOutcomeValueFromOrders(db: Knex, marketId: Address, 
     .into("outcome_value_timeseries");
 }
 
-export async function updateOutcomeValuesFromFinalization(db: Knex, augur: Augur, marketId: Address, transactionHash: String): Promise<void> {
+export async function updateOutcomeValuesFromFinalization(db: Knex, augur: Augur, marketId: Address, transactionHash: string): Promise<void> {
   const payouts: PayoutAndMarket<BigNumber> = await db
     .first(["payouts.payout0", "payouts.payout1", "payouts.payout2", "payouts.payout3", "payouts.payout4", "payouts.payout5", "payouts.payout6", "payouts.payout7", "markets.minPrice", "markets.maxPrice", "markets.numTicks"])
     .from("payouts")
@@ -82,7 +82,7 @@ export async function updateOutcomeValuesFromFinalization(db: Knex, augur: Augur
   await db.insert(insertValues).into("outcome_value_timeseries");
 }
 
-export async function removeOutcomeValue(db: Knex, transactionHash: String): Promise<void> {
+export async function removeOutcomeValue(db: Knex, transactionHash: string): Promise<void> {
   await db("outcome_value_timeseries")
     .delete()
     .where({ transactionHash });

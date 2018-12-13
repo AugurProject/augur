@@ -65,10 +65,10 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
     await checkForOrphanedOrders(db, augur, orderData);
     await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash);
 
-    const otherOutcomes = Array.from(Array(numOutcomes).keys())
+    const otherOutcomes = Array.from(Array(numOutcomes).keys());
     otherOutcomes.splice(outcome, 1);
     const outcomes = orderTypeLabel == "buy" ? otherOutcomes : [outcome];
-    
+
     await updateProfitLossNumEscrowed(db, marketId, displaySharesEscrowed, log.creator, outcomes, log.transactionHash);
     augurEmitter.emit(SubscriptionEventNames.OrderCreated, Object.assign({}, log, orderData));
   };

@@ -53,7 +53,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
       return Object.assign({
         marketId,
         outcome: parseInt(outcome),
-        netPosition: ZERO
+        netPosition: ZERO,
       }, _.last(profits));
     })
     .values()
