@@ -9,7 +9,7 @@ import { BigNumber } from "bignumber.js";
 import Styles from "modules/market/components/market-header/market-header.styles";
 import CoreProperties from "modules/market/components/core-properties/core-properties";
 
-const OVERFLOW_DETAILS_LENGTH = 560;
+const OVERFLOW_DETAILS_LENGTH = 89; // in px, matches additional details label max-height
 
 export default class MarketHeader extends Component {
   static propTypes = {
@@ -48,10 +48,20 @@ export default class MarketHeader extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showReadMore: false
+      showReadMore: false,
+      detailsHeight: 0
     };
 
     this.toggleReadMore = this.toggleReadMore.bind(this);
+    this.updateDetailsHeight = this.updateDetailsHeight.bind(this);
+  }
+
+  componentDidMount() {
+    this.updateDetailsHeight();
+  }
+
+  updateDetailsHeight() {
+    this.setState({ detailsHeight: this.details.scrollHeight });
   }
 
   toggleReadMore() {
@@ -81,7 +91,7 @@ export default class MarketHeader extends Component {
     } = this.props;
 
     let { details } = this.props;
-    const detailsTooLong = details.length > OVERFLOW_DETAILS_LENGTH;
+    const detailsTooLong = this.state.detailsHeight > OVERFLOW_DETAILS_LENGTH;
 
     if (marketType === SCALAR) {
       const denomination = scalarDenomination ? ` ${scalarDenomination}` : "";
@@ -131,6 +141,9 @@ export default class MarketHeader extends Component {
                 >
                   <h4>Additional Details</h4>
                   <label
+                    ref={details => {
+                      this.details = details;
+                    }}
                     className={classNames(
                       Styles["MarketHeader__AdditionalDetails-text"],
                       {
