@@ -13,7 +13,7 @@ function getState(db, log) {
 describe("blockchain/log-processors/completesets", () => {
   let spy;
   beforeAll(() => {
-    jest.spyOn(augur.rpc, 'getNetworkID').mockImplementation(() => 1);
+    jest.spyOn(augur.rpc, "getNetworkID").mockImplementation(() => 1);
   });
 
   let db;

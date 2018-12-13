@@ -1,14 +1,6 @@
 const Augur = require("augur.js");
-const sqlite3 = require("sqlite3");
-const path = require("path");
-const Knex = require("knex");
 const setupTestDb = require("../../test.database");
-const { calculateEarningsPerTimePeriod, getProfitLoss, getProfitLossSummary, bucketRangeByInterval } = require("src/server/getters/get-profit-loss");
-const { postProcessDatabaseResults } = require("src/server/post-process-database-results");
-
-const START_TIME = 1506474500;
-const MINUTE_SECONDS = 60;
-const HOUR_SECONDS = MINUTE_SECONDS * 60;
+const { getProfitLoss, getProfitLossSummary, bucketRangeByInterval } = require("src/server/getters/get-profit-loss");
 
 describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
   test("throws when startTime is negative", (done) => {
@@ -103,14 +95,14 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
   });
 
   afterEach(async () => {
-    if(connection) await connection.destroy();
+    if (connection) await connection.destroy();
   });
 
   it("generates a 31-value timeseries P/L", async () => {
     const results = await getProfitLoss(connection, augur, {
       universe: "0x000000000000000000000000000000000000000b",
-			account:  "0xffff000000000000000000000000000000000000",
-      marketId: "0x0000000000000000000000000000000000000ff1"
+      account:  "0xffff000000000000000000000000000000000000",
+      marketId: "0x0000000000000000000000000000000000000ff1",
     });
 
     console.log(results);
@@ -123,11 +115,11 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
     const periodInterval = (endTime - startTime)/4;
     const results = await getProfitLoss(connection, augur, {
       universe: "0x000000000000000000000000000000000000000b",
-			account:  "0xffff000000000000000000000000000000000000",
+      account:  "0xffff000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000ff1",
       startTime,
       endTime,
-      periodInterval
+      periodInterval,
     });
 
     console.log(results);
@@ -144,19 +136,19 @@ describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
   });
 
   afterEach(async () => {
-    if(connection) await connection.destroy();
+    if (connection) await connection.destroy();
   });
 
   it("returns 0-value 1-day and 30-day PLs", async() => {
     const results = await getProfitLossSummary(connection, augur, {
       universe: "0x000000000000000000000000000000000000000b",
-			account:  "0xffff000000000000000000000000000000000000",
+      account:  "0xffff000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000ff1",
     });
 
     const deserialized = JSON.parse(JSON.stringify(results));
 
-    expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(['1', '30']));
+    expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(["1", "30"]));
     expect(deserialized["1"]).toMatchObject({
       realized: "0",
       unrealized: "0",
@@ -174,14 +166,14 @@ describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
   it("returns 1-day and 30-day PLs at endtime", async() => {
     const results = await getProfitLossSummary(connection, augur, {
       universe: "0x000000000000000000000000000000000000000b",
-			account:  "0xffff000000000000000000000000000000000000",
+      account:  "0xffff000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000ff1",
       endTime: 1534435013,
     });
 
     const deserialized = JSON.parse(JSON.stringify(results));
 
-    expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(['1', '30']));
+    expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(["1", "30"]));
     expect(deserialized["1"]).toMatchObject({
       realized: "54999999999.58212297261370994338",
       unrealized: "0",
@@ -199,12 +191,12 @@ describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
   it("returns returns zero-value PLs for nonexistent account", async() => {
     const results = await getProfitLossSummary(connection, augur, {
       universe: "0x000000000000000000000000000000000000000b",
-			account:  "0xbadf000000000000000000000000000000000000",
+      account:  "0xbadf000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000ff1",
     });
     const deserialized = JSON.parse(JSON.stringify(results));
 
-    expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(['1', '30']));
+    expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(["1", "30"]));
     expect(deserialized["1"]).toMatchObject({
       realized: "0",
       unrealized: "0",
@@ -222,12 +214,12 @@ describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
   it("returns returns zero-value PLs for nonexistent market", async() => {
     const results = await getProfitLossSummary(connection, augur, {
       universe: "0x000000000000000000000000000000000000000b",
-			account:  "0xffff000000000000000000000000000000000000",
+      account:  "0xffff000000000000000000000000000000000000",
       marketId: "0xbad0000000000000000000000000000000000ff1",
     });
     const deserialized = JSON.parse(JSON.stringify(results));
 
-    expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(['1', '30']));
+    expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(["1", "30"]));
     expect(deserialized["1"]).toMatchObject({
       realized: "0",
       unrealized: "0",

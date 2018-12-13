@@ -34,7 +34,7 @@ export async function processOrderCanceledLog(augur: Augur, log: FormattedEventL
     const numOutcomes = marketNumOutcomes.numOutcomes;
     const otherOutcomes = Array.from(Array(numOutcomes).keys());
     otherOutcomes.splice(ordersRow.outcome, 1);
-    const outcomes = orderTypeLabel == "buy" ? otherOutcomes : [ordersRow.outcome];
+    const outcomes = orderTypeLabel === "buy" ? otherOutcomes : [ordersRow.outcome];
     await updateProfitLossNumEscrowed(db, ordersRow.marketId, ordersRow.sharesEscrowed.negated(), ordersRow.orderCreator, outcomes, log.transactionHash);
 
     ordersRow.orderType = orderTypeLabel;

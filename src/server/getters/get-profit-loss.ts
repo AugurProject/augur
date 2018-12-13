@@ -68,14 +68,14 @@ const MarketIdParams = t.type({
   marketId: t.union([t.string, t.null]),
 });
 export const GetProfitLossParams = t.intersection([GetProfitLossSharedParams, MarketIdParams]);
-export interface IGetProfitLossParams extends t.TypeOf<typeof GetProfitLossParams> {}
+export type GetProfitLossParamsType = t.TypeOf<typeof GetProfitLossParams>;
 
 const MarketIdAndOutcomeParams = t.type({
   marketId: t.string,
   outcome: t.number,
 });
 export const GetOutcomeProfitLossParams = t.intersection([GetProfitLossSharedParams, MarketIdAndOutcomeParams]);
-export interface IGetOutcomeProfitLossParams extends t.TypeOf<typeof GetOutcomeProfitLossParams> {}
+export type GetOutcomeProfitLossParamsType = t.TypeOf<typeof GetOutcomeProfitLossParams>;
 
 export const GetProfitLossSummaryParams = t.intersection([t.type({
   universe: t.string,
@@ -84,7 +84,7 @@ export const GetProfitLossSummaryParams = t.intersection([t.type({
 }), t.partial({
   endTime: t.number,
 })]);
-export interface IGetProfitLossSummaryParams extends t.TypeOf<typeof GetProfitLossSummaryParams> {}
+export type GetProfitLossSummaryParamsType = t.TypeOf<typeof GetProfitLossSummaryParams>;
 
 export function bucketRangeByInterval(startTime: number, endTime: number, periodInterval: number | null): Array<Timestamped> {
   if (startTime < 0) throw new Error("startTime must be a valid unix timestamp, greater than 0");
@@ -124,7 +124,7 @@ function sumProfitLossResults(left: ProfitLossResult, right: ProfitLossResult): 
   };
 }
 
-async function queryProfitLossTimeseries(db: Knex, now: number, params: IGetProfitLossParams): Promise<Array<ProfitLossTimeseries>> {
+async function queryProfitLossTimeseries(db: Knex, now: number, params: GetProfitLossParamsType): Promise<Array<ProfitLossTimeseries>> {
   const query = db("profit_loss_timeseries")
     .select("profit_loss_timeseries.*", "markets.universe")
     .join("markets", "profit_loss_timeseries.marketId", "markets.marketId")
@@ -140,7 +140,7 @@ async function queryProfitLossTimeseries(db: Knex, now: number, params: IGetProf
   return await query;
 }
 
-async function queryOutcomeValueTimeseries(db: Knex, now: number, params: IGetProfitLossParams): Promise<Array<OutcomeValueTimeseries>> {
+async function queryOutcomeValueTimeseries(db: Knex, now: number, params: GetProfitLossParamsType): Promise<Array<OutcomeValueTimeseries>> {
   const query = db("outcome_value_timeseries")
     .select("outcome_value_timeseries.*", "markets.universe")
     .join("markets", "outcome_value_timeseries.marketId", "markets.marketId")
@@ -209,7 +209,7 @@ interface ProfitLossData {
   buckets: Array<Timestamped>;
 }
 
-async function getProfitLossData(db: Knex, params: IGetProfitLossParams): Promise<ProfitLossData> {
+async function getProfitLossData(db: Knex, params: GetProfitLossParamsType): Promise<ProfitLossData> {
   const now = Math.floor(Date.now() / 1000);
 
   // Realized Profits + Timeseries data about the state of positions
@@ -217,7 +217,7 @@ async function getProfitLossData(db: Knex, params: IGetProfitLossParams): Promis
   console.log(profitsOverTime);
   const profits = _.groupBy(profitsOverTime, (r) => [r.marketId, r.outcome].join(","));
 
-  // If there are no trades in this window then we'll
+  // fType there are no trades in this window then we'll
   if (_.isEmpty(profits))  {
     const buckets = bucketRangeByInterval(params.startTime || 0, params.endTime || now, params.periodInterval);
     return {profits: {}, outcomeValues: {}, buckets};
@@ -235,7 +235,7 @@ export interface AllOutcomesProfitLoss {
   profit: Dictionary<Array<ProfitLossResult>>;
   buckets: Array<Timestamped>;
 }
-export async function getAllOutcomesProfitLoss(db: Knex, augur: Augur, params: IGetProfitLossParams): Promise<AllOutcomesProfitLoss> {
+export async function getAllOutcomesProfitLoss(db: Knex, augur: Augur, params: GetProfitLossParamsType): Promise<AllOutcomesProfitLoss> {
   const { profits, outcomeValues, buckets } = await getProfitLossData(db, params);
   return {
     profit: _.mapValues(profits, (pls, key) => {
@@ -245,7 +245,7 @@ export async function getAllOutcomesProfitLoss(db: Knex, augur: Augur, params: I
   };
 }
 
-export async function getProfitLoss(db: Knex, augur: Augur, params: IGetProfitLossParams): Promise<Array<ProfitLossResult>> {
+export async function getProfitLoss(db: Knex, augur: Augur, params: GetProfitLossParamsType): Promise<Array<ProfitLossResult>> {
   const {profit: outcomesProfitLoss, buckets }  = await getAllOutcomesProfitLoss(db, augur, params);
   // List takes us from:
   //  <marketId1><outcome0>: [{timestamp: N,... }, {timestamp: M, ...}, ...]
@@ -273,7 +273,7 @@ export async function getProfitLoss(db: Knex, augur: Augur, params: IGetProfitLo
   return bucketsProftLoss.map((bucketProftLoss: Array<ProfitLossResult>): ProfitLossResult => _.reduce(bucketProftLoss, sumProfitLossResults)!);
 }
 
-export async function getProfitLossSummary(db: Knex, augur: Augur, params: IGetProfitLossSummaryParams): Promise<NumericDictionary<ProfitLossResult>> {
+export async function getProfitLossSummary(db: Knex, augur: Augur, params: GetProfitLossSummaryParamsType): Promise<NumericDictionary<ProfitLossResult>> {
   const endTime = params.endTime || Math.floor(Date.now() / 1000);
 
   const result: NumericDictionary<ProfitLossResult> = {};
@@ -291,7 +291,7 @@ export async function getProfitLossSummary(db: Knex, augur: Augur, params: IGetP
     });
     console.log(rest);
 
-    if (rest.length != 0) throw new Error("PL calculation in summary returning more thant two bucket");
+    if (rest.length !== 0) throw new Error("PL calculation in summary returning more thant two bucket");
 
     const negativeStartProfit: ProfitLossResult = {
       timestamp: startProfit.timestamp,

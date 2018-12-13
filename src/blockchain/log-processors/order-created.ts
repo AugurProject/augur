@@ -67,7 +67,7 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
 
     const otherOutcomes = Array.from(Array(numOutcomes).keys());
     otherOutcomes.splice(outcome, 1);
-    const outcomes = orderTypeLabel == "buy" ? otherOutcomes : [outcome];
+    const outcomes = orderTypeLabel === "buy" ? otherOutcomes : [outcome];
 
     await updateProfitLossNumEscrowed(db, marketId, displaySharesEscrowed, log.creator, outcomes, log.transactionHash);
     augurEmitter.emit(SubscriptionEventNames.OrderCreated, Object.assign({}, log, orderData));
