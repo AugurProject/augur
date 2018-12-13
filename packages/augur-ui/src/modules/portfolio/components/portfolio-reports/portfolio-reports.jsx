@@ -119,7 +119,7 @@ export default class PortfolioReports extends Component {
       (isNaN(reportingFees.unclaimedEth.value) ||
         reportingFees.unclaimedEth.formatted === "-" ||
         reportingFees.unclaimedEth.formatted === "") &&
-      (isNaN(reportingFees.unclaimedRep.value) ||
+      (isNaN(reportingFees.unclaimedEth.value) ||
         reportingFees.unclaimedRep.formatted === "-" ||
         reportingFees.unclaimedRep.formatted === "")
     ) {

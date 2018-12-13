@@ -248,7 +248,7 @@ async function getStakedRepResults(db: Knex, reporter: Address, universe: Addres
     const lostRep = disputeWindowCompletionStake.completed && (disputeWindowCompletionStake.winning === 0);
     return {
       unclaimedRepStaked: acc.unclaimedRepStaked.plus(disputeWindowCompletionStake.forking ? ZERO : (!getsRep ? ZERO : (disputeWindowCompletionStake.amountStaked || ZERO))),
-      unclaimedRepEarned: acc.unclaimedRepEarned.plus(disputeWindowCompletionStake.forking ? ZERO : (!earnsRep ? ZERO : (disputeWindowCompletionStake.amountStaked || ZERO)).times(2).div(5)),
+      unclaimedRepEarned: acc.unclaimedRepEarned.plus(disputeWindowCompletionStake.forking ? ZERO : (!earnsRep ? ZERO : (disputeWindowCompletionStake.amountStaked || ZERO)).div(2)),
       lostRep: acc.lostRep.plus(lostRep ? (disputeWindowCompletionStake.amountStaked || ZERO) : ZERO),
       unclaimedForkRepStaked: acc.unclaimedForkRepStaked.plus(disputeWindowCompletionStake.forking ? (disputeWindowCompletionStake.amountStaked || ZERO) : ZERO),
     };
@@ -256,7 +256,7 @@ async function getStakedRepResults(db: Knex, reporter: Address, universe: Addres
   fees = _.reduce(initialReporters, (acc: RepStakeResults, initialReporterStake: InitialReporterStakeRow) => {
     let unclaimedRepEarned = acc.unclaimedRepEarned;
     if (marketDisputed[initialReporterStake.marketId] && !initialReporterStake.forking && initialReporterStake.winning) {
-      unclaimedRepEarned = unclaimedRepEarned.plus((initialReporterStake.amountStaked || ZERO).times(2).div(5));
+      unclaimedRepEarned = unclaimedRepEarned.plus((initialReporterStake.amountStaked || ZERO).div(2));
     }
     return {
       unclaimedRepStaked: acc.unclaimedRepStaked.plus(initialReporterStake.forking ? ZERO : (initialReporterStake.winning === 0 ? ZERO : (initialReporterStake.amountStaked || ZERO))),
