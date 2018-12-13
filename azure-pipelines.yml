@@ -27,6 +27,7 @@ jobs:
           versionSpec: '9.x'
       - bash: |
           set -euxo pipefail
+          git checkout -b ci-diff
           echo "git SHA - $(Build.SourceVersion)"
           echo "git branch - $(Build.SourceBranch)"
           echo "git target branch - $(System.PullRequest.TargetBranch)"
@@ -34,8 +35,9 @@ jobs:
           git describe --all
           echo 'refs'
           find .git/refs
-          git checkout -b ci-diff
           #for f in $(git --no-pager diff --name-only FETCH_HEAD...$(System.PullRequest.TargetBranch));
+          echo "git diff"
+          git diff --name-only ...origin/master
           for f in $(git diff --name-only ...origin/master);
             do
               echo "$f"
