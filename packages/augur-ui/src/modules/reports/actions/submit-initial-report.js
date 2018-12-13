@@ -29,7 +29,7 @@ export const submitInitialReport = ({
   augur.api.Market.doInitialReport({
     meta: loginAccount.meta,
     tx: { to: marketId, estimateGas },
-    _description: "description",
+    _invalid: invalid,
     _payoutNumerators: payoutNumerators,
     onSent: res => {
       if (!estimateGas) {
