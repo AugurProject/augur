@@ -133,7 +133,6 @@ export async function updateProfitLossChangeShareBalance(db: Knex, augur: Augur,
     .first(["marketId", "outcome"])
     .from("tokens")
     .where({ contractAddress: token });
-  console.log(shareData);
   const marketId = shareData.marketId;
   const outcome = shareData.outcome;
   // Don't record market transfers
