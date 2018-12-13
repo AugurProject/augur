@@ -1,16 +1,24 @@
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 import realStore from "src/store";
-
-import * as updateEnvModule from "modules/app/actions/update-env";
-import * as updateConnectionModule from "modules/app/actions/update-connection";
-import * as updateContractAddressesModule from "modules/contracts/actions/update-contract-addresses";
-import * as updateContractApiModule from "modules/contracts/actions/update-contract-api";
-import * as registerTransactionRelayModule from "modules/transactions/actions/register-transaction-relay";
-import * as loadUniverseModule from "modules/app/actions/load-universe";
-import * as verifyMatchingNetworkIdsModule from "modules/app/actions/verify-matching-network-ids";
+import * as augur from "services/augurjs";
 
 import { initAugur, connectAugur } from "modules/app/actions/init-augur";
+
+jest.mock("services/augurjs");
+
+jest.mock("modules/app/actions/update-env", () => ({
+  updateEnv: () => ({
+    type: "UPDATE_ENV"
+  })
+}));
+jest.mock("modules/app/actions/update-connection");
+jest.mock("modules/contracts/actions/update-contract-addresses");
+jest.mock("modules/contracts/actions/update-contract-api");
+jest.mock("modules/transactions/actions/register-transaction-relay");
+jest.mock("modules/app/actions/load-universe");
+jest.mock("modules/app/actions/verify-matching-network-ids");
+jest.mock("modules/auth/actions/use-unlocked-account", () => {});
 
 jest.mock("config/network.json", () => ({
   test: {
@@ -18,7 +26,7 @@ jest.mock("config/network.json", () => ({
     "ethereum-node": {
       http: "http://127.0.0.1:8545",
       ws: "ws://127.0.0.1:8546",
-      pollingIntervalMilliseconds: 5000,
+      pollingIntervalMilliseconds: 500,
       blockRetention: 100,
       connectionTimeout: 60000
     },
@@ -32,7 +40,15 @@ jest.mock("config/network.json", () => ({
   }
 }));
 
-describe.skip("modules/app/actions/init-augur.js", () => {
+jest.mock("services/augurjs", () => ({
+  rpc: {
+    eth: { accounts: cb => cb(null, ["0xa11ce"]) }
+  },
+  contracts: { addresses: { 4: { Universe: "0xb0b" } } },
+  connect: jest.fn(() => {})
+}));
+
+describe("modules/app/actions/init-augur.js", () => {
   const ethereumNodeConnectionInfo = {
     http: "http://some.eth.node.com",
     ws: "wss://some.eth.ws.node.com"
@@ -49,86 +65,6 @@ describe.skip("modules/app/actions/init-augur.js", () => {
     ...realStore.getState(),
     env: mockEnv
   });
-  let mockAugur = {
-    connect: (env, cb) => {
-      cb(null, {
-        ethereumNode: {
-          http: "http://some.eth.node.com",
-          ws: "wss://some.eth.ws.node.com",
-          contracts: {},
-          abi: {
-            functions: {},
-            events: {}
-          }
-        },
-        augurNode: "wss://some.web.socket.com"
-      });
-    },
-    augur: {
-      api: {
-        Augur: {
-          stopped: () => {}
-        }
-      },
-      rpc: {
-        eth: {
-          accounts: () => {}
-        },
-        constants: []
-      },
-      contracts: {
-        addresses: {}
-      }
-    },
-    constants: {
-      ACCOUNT_TYPES: {
-        UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
-        META_MASK: "metaMask"
-      }
-    }
-  };
-  let augurModule;
-
-  const ACTIONS = {
-    UPDATE_ENV: { type: "UPDATE_ENV" },
-    UPDATE_CONNECTION_STATUS: { type: "UPDATE_CONNECTION_STATUS" },
-    UPDATE_AUGUR_NODE_CONNECTION_STATUS: {
-      type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS"
-    },
-    UPDATE_CONTRACT_ADDRESSES: { type: "UPDATE_CONTRACT_ADDRESSES" },
-    UPDATE_FUNCTIONS_API: { type: "UPDATE_FUNCTIONS_API" },
-    UPDATE_EVENTS_API: { type: "UPDATE_EVENTS_API" },
-    LOAD_UNIVERSE: { type: "LOAD_UNIVERSE" },
-    REGISTER_TRANSACTION_RELAY: { type: "REGISTER_TRANSACTION_RELAY" }
-  };
-
-  jest
-    .spyOn(updateEnvModule, "updateEnv")
-    .mockImplementation(() => ACTIONS.UPDATE_ENV);
-  jest
-    .spyOn(updateConnectionModule, "updateConnectionStatus")
-    .mockImplementation(() => ACTIONS.UPDATE_CONNECTION_STATUS);
-  jest
-    .spyOn(updateContractAddressesModule, "updateContractAddresses")
-    .mockImplementation(() => ACTIONS.UPDATE_CONTRACT_ADDRESSES);
-  jest
-    .spyOn(updateContractApiModule, "updateFunctionsAPI")
-    .mockImplementation(() => ACTIONS.UPDATE_FUNCTIONS_API);
-  jest
-    .spyOn(updateContractApiModule, "updateEventsAPI")
-    .mockImplementation(() => ACTIONS.UPDATE_EVENTS_API);
-  jest
-    .spyOn(updateConnectionModule, "updateAugurNodeConnectionStatus")
-    .mockImplementation(() => ACTIONS.UPDATE_AUGUR_NODE_CONNECTION_STATUS);
-  jest
-    .spyOn(registerTransactionRelayModule, "registerTransactionRelay")
-    .mockImplementation(() => ACTIONS.REGISTER_TRANSACTION_RELAY);
-  jest
-    .spyOn(loadUniverseModule, "loadUniverse")
-    .mockImplementation(() => ACTIONS.LOAD_UNIVERSE);
-  jest
-    .spyOn(verifyMatchingNetworkIdsModule, "verifyMatchingNetworkIds")
-    .mockImplementation(callback => () => callback(null, true));
 
   beforeAll(() => {
     process.env.ETHEREUM_NETWORK = "test";
@@ -138,6 +74,7 @@ describe.skip("modules/app/actions/init-augur.js", () => {
     global.setInterval = f => {
       f();
     };
+
     store.clearActions();
   });
 
@@ -148,22 +85,30 @@ describe.skip("modules/app/actions/init-augur.js", () => {
 
   afterAll(() => {
     delete process.env.ETHEREUM_NETWORK;
+    augur.resetConstants();
   });
 
   describe("initAugur", () => {
-    test("initialized augur successfully with logged in account", () => {
-      mockAugur.augur.contracts = { 4: { Universe: "0xb0b" } };
-      mockAugur.augur.rpc.eth = { accounts: cb => cb(null, ["0xa11ce"]) };
-      mockAugur.augur.rpc.getNetworkID = jest.fn(() => 4);
+    augur.connect = (env, cb) => {
+      cb(null, {
+        ethereumNode: {
+          ...ethereumNodeConnectionInfo,
+          contracts: {},
+          abi: {
+            functions: {},
+            events: {}
+          }
+        },
+        augurNode: augurNodeWS
+      });
+    };
 
-      jest.doMock("services/augurjs", () => mockAugur);
-      augurModule = require("services/augurjs");
-
-      augurModule.augur.rpc = store.dispatch(
+    test("if initializes augur successfully with logged in account", () => {
+      store.dispatch(
         initAugur({}, {}, (err, connInfo) => {
           expect(err).toBeUndefined();
           expect(connInfo).toBeUndefined();
-          expect(store.getActions()).toEqual([
+          expect(store.getActions()).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
             { type: "UPDATE_CONTRACT_ADDRESSES" },
@@ -178,12 +123,31 @@ describe.skip("modules/app/actions/init-augur.js", () => {
       );
     });
 
-    test("initialized augur successfully when not logged in", () => {
+    test("if initializes augur successfully when not logged in", () => {
+      augur.connect = (env, cb) => {
+        cb(null, {
+          ethereumNode: {
+            ...ethereumNodeConnectionInfo,
+            contracts: {},
+            abi: {
+              functions: {},
+              events: {}
+            }
+          },
+          augurNode: augurNodeWS
+        });
+      };
+      augur.api = jest.fn(() => {});
+      augur.rpc = jest.fn(() => {});
+      augur.contracts = { addresses: { 4: { Universe: "0xb0b" } } };
+      augur.rpc.eth = { accounts: cb => cb(null, []) };
+      augur.api.Controller = { stopped: () => {} };
+
       store.dispatch(
         initAugur({}, {}, (err, connInfo) => {
           expect(err).toBeUndefined();
           expect(connInfo).toBeUndefined();
-          expect(store.getActions).toEqual([
+          expect(store.getActions).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
             { type: "UPDATE_CONTRACT_ADDRESSES" },
@@ -199,26 +163,44 @@ describe.skip("modules/app/actions/init-augur.js", () => {
       );
     });
 
-    test("initialized augur successfully when not logged in and unexpectedNetworkId", () => {
-      mockAugur.augur.contracts = {
+    test("if initializes augur successfully when not logged in and unexpectedNetworkId", () => {
+      augur.connect = (env, cb) => {
+        cb(null, {
+          ethereumNode: {
+            ...ethereumNodeConnectionInfo,
+            contracts: {},
+            abi: {
+              functions: {},
+              events: {}
+            }
+          },
+          augurNode: augurNodeWS
+        });
+      };
+      augur.api = jest.fn(() => {});
+      augur.rpc = jest.fn(() => {});
+      augur.Contracts = {
         addresses: {
           4: { Universe: "0xb0b" },
           3: { Universe: "0xc41231e2" }
         }
       };
 
-      mockAugur.constants = {
+      augur.rpc.constants = {
         ACCOUNT_TYPES: {
           UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
           META_MASK: "metaMask"
         }
       };
 
+      augur.rpc.eth = { accounts: cb => cb(null, []) };
+      augur.api.Controller = { stopped: () => {} };
+
       store.dispatch(
         initAugur({}, {}, (err, connInfo) => {
           expect(err).toBeUndefined();
           expect(connInfo).toBeUndefined();
-          expect(store.getActions()).toEqual([
+          expect(store.getActions()).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
             { type: "UPDATE_CONTRACT_ADDRESSES" },
@@ -235,12 +217,31 @@ describe.skip("modules/app/actions/init-augur.js", () => {
     });
 
     describe("connectAugur", () => {
-      test("connectAugur was successful as an initial connection, with logged in account", () => {
+      test("connectAugur as an initial connection, with logged in account", () => {
+        augur.connect = (env, cb) => {
+          cb(null, {
+            ethereumNode: {
+              ...ethereumNodeConnectionInfo,
+              contracts: {},
+              abi: {
+                functions: {},
+                events: {}
+              }
+            },
+            augurNode: augurNodeWS
+          });
+        };
+        augur.api = jest.fn(() => {});
+        augur.rpc = jest.fn(() => {});
+        augur.Contracts = { addresses: { 4: { Universe: "0xb0b" } } };
+        augur.rpc.eth = { accounts: cb => cb(null, ["0xa11ce"]) };
+        augur.api.Controller = { stopped: () => {} };
+
         store.dispatch(
           connectAugur({}, mockEnv, true, (err, connInfo) => {
             expect(err).toBeUndefined();
             expect(connInfo).toBeUndefined();
-            expect(store.getActions()).toEqual([
+            expect(store.getActions()).deepEqual([
               { type: "UPDATE_CONNECTION_STATUS" },
               { type: "UPDATE_CONTRACT_ADDRESSES" },
               { type: "UPDATE_FUNCTIONS_API" },
@@ -255,30 +256,72 @@ describe.skip("modules/app/actions/init-augur.js", () => {
         );
       });
 
-      test("connectAugur successfully reconnects", () => {
-        store.dispatch(
-          connectAugur({}, mockEnv, false, (err, connInfo) => {
-            expect(err).toBeUndefined();
-            expect(connInfo).toBeUndefined();
-            expect(store.getActions()).toEqual([
-              { type: "UPDATE_ENV" },
-              { type: "UPDATE_CONNECTION_STATUS" },
-              { type: "UPDATE_CONTRACT_ADDRESSES" },
-              { type: "UPDATE_FUNCTIONS_API" },
-              { type: "UPDATE_EVENTS_API" },
-              { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
-              { type: "REGISTER_TRANSACTION_RELAY" },
-              { type: "LOAD_UNIVERSE" }
-            ]);
-          })
-        );
+      test("if connectAugur successfully reconnects", () => {
+        augur.connect = (env, cb) => {
+          cb(null, {
+            ethereumNode: {
+              ...ethereumNodeConnectionInfo,
+              contracts: {},
+              abi: {
+                functions: {},
+                events: {}
+              }
+            },
+            augurNode: augurNodeWS
+          });
+        };
+        augur.api = jest.fn(() => {});
+        augur.rpc = jest.fn(() => {});
+        augur.Contracts = { addresses: { 4: { Universe: "0xb0b" } } };
+        augur.rpc.eth = { accounts: cb => cb(null, []) };
+        augur.api.Controller = { stopped: () => {} };
       });
 
-      test("handled an undefined augurNode from AugurJS.connect", () => {
+      store.dispatch(
+        connectAugur({}, mockEnv, false, (err, connInfo) => {
+          expect(err).toBeUndefined();
+          expect(connInfo).toBeUndefined();
+          expect(store.getActions()).deepEqual([
+            { type: "UPDATE_ENV" },
+            { type: "UPDATE_CONNECTION_STATUS" },
+            { type: "UPDATE_CONTRACT_ADDRESSES" },
+            { type: "UPDATE_FUNCTIONS_API" },
+            { type: "UPDATE_EVENTS_API" },
+            { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
+            { type: "REGISTER_TRANSACTION_RELAY" },
+            { type: "LOAD_UNIVERSE" }
+          ]);
+        })
+      );
+
+      test("if handles an undefined augurNode from AugurJS.connect", () => {
+        augur.connect = (env, cb) => {
+          cb(null, {
+            ethereumNode: {
+              ...ethereumNodeConnectionInfo,
+              contracts: {},
+              abi: {
+                functions: {},
+                events: {}
+              }
+            },
+            augurNode: undefined
+          });
+        };
+
+        augur.Contracts = {
+          addresses: {
+            4: { Universe: "0xb0b" },
+            3: { Universe: "0xc41231e2" }
+          }
+        };
+
+        augur.rpc.eth = { accounts: cb => cb(null, []) };
+
         store.dispatch(
           connectAugur({}, mockEnv, false, (err, connInfo) => {
             expect(err).toBeNull();
-            expect(connInfo).toEqual({
+            expect(connInfo).deepEqual({
               ethereumNode: {
                 ...ethereumNodeConnectionInfo,
                 contracts: {},
@@ -289,32 +332,76 @@ describe.skip("modules/app/actions/init-augur.js", () => {
               },
               augurNode: undefined
             });
-            expect(store.getActions()).toEqual([]);
+            expect(store.getActions()).deepEqual([]);
           })
         );
       });
 
-      test("handled an undefined ethereumNode from AugurJS.connect", () => {
+      test("if handles an undefined ethereumNode from AugurJS.connect", () => {
+        augur.mockConnect = (env, cb) => {
+          cb(null, {
+            ethereumNode: undefined,
+            augurNode: augurNodeWS
+          });
+        };
+
+        augur.Contracts = {
+          addresses: {
+            4: { Universe: "0xb0b" },
+            3: { Universe: "0xc41231e2" }
+          }
+        };
+        augur.api = jest.fn(() => {});
+        augur.rpc = jest.fn(() => {});
+        augur.rpc.Constants = {
+          ACCOUNT_TYPES: {
+            UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+            META_MASK: "metaMask"
+          }
+        };
+
+        augur.rpc.eth = { accounts: cb => cb(null, []) };
+
         store.dispatch(
           connectAugur({}, mockEnv, false, (err, connInfo) => {
             expect(err).toBeNull();
-            expect(connInfo).toEqual({
+            expect(connInfo).deepEqual({
               ethereumNode: undefined,
               augurNode: augurNodeWS
             });
-            expect(store.getActions()).toEqual([]);
+            expect(store.getActions()).deepEqual([]);
           })
         );
       });
 
-      test("handled an error object back from AugurJS.connect", () => {
+      test("if handles an error object back from AugurJS.connect", () => {
+        augur.connect = (env, cb) => {
+          cb(
+            { error: 2000, message: "There was a mistake." },
+            {
+              ethereumNode: undefined,
+              augurNode: undefined
+            }
+          );
+        };
+        augur.api = jest.fn(() => {});
+        augur.rpc = jest.fn(() => {});
+        augur.Contracts = {
+          addresses: {
+            4: { Universe: "0xb0b" },
+            3: { Universe: "0xc41231e2" }
+          }
+        };
+
+        augur.rpc.eth = { accounts: cb => cb(null, []) };
+
         store.dispatch(
           connectAugur({}, mockEnv, false, (err, connInfo) => {
-            expect(err).toEqual({
+            expect(err).deepEqual({
               error: 2000,
               message: "There was a mistake."
             });
-            expect(connInfo).toEqual({
+            expect(connInfo).deepEqual({
               ethereumNode: undefined,
               augurNode: undefined
             });

@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import { selectCurrentTimestamp } from "src/select-state";
 import { loadAccountHistory } from "modules/auth/actions/load-account-history";
 import { selectTransactions } from "modules/transactions/selectors/transactions";
-import TransactionsList from "modules/portfolio/components/transactions-list/transactions-list";
+import TransactionsList from "modules/portfolio/components/transactions/transactions";
 import {
   updateFilterSortOptions,
   TRANSACTION_PERIOD

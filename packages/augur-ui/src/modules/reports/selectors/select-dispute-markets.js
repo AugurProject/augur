@@ -2,14 +2,14 @@ import { createSelector } from "reselect";
 import { createBigNumber } from "utils/create-big-number";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { constants } from "services/constants";
-import { isEmpty, orderBy, some } from "lodash";
-import { selectMarketDisputeOutcomes } from "modules/reports/selectors/select-market-dispute-outcomes";
+import { isEmpty, orderBy } from "lodash";
+import selectDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { selectUniverseState } from "src/select-state";
 
 export const selectMarketsInDisputeSelector = () =>
   createSelector(
     selectMarkets,
-    selectMarketDisputeOutcomes,
+    selectDisputeOutcomes,
     selectUniverseState,
     (markets, disputeOutcomes, universe) => {
       if (isEmpty(markets)) {
@@ -33,7 +33,9 @@ export const selectMarketsInDisputeSelector = () =>
             stakeKey => {
               if (
                 !filteredMarkets[marketKey].disputeInfo.stakes[stakeKey]
-                  .tentativeWinning
+                  .tentativeWinning &&
+                filteredMarkets[marketKey].disputeInfo.stakes[stakeKey]
+                  .bondSizeCurrent
               ) {
                 const percentStakedInOutcome = createBigNumber(
                   filteredMarkets[marketKey].disputeInfo.stakes[stakeKey]
@@ -78,8 +80,14 @@ export const selectMarketsInDisputeSelector = () =>
           forkingMarket = market;
           return;
         }
-        const { outcomes = [] } = disputeOutcomes[market.id] || {};
-        if (some(outcomes, "potentialFork")) {
+        const outcomes = disputeOutcomes[market.id] || [];
+        let potentialFork = false;
+        outcomes.forEach((outcome, index) => {
+          if (outcome.potentialFork) {
+            potentialFork = true;
+          }
+        });
+        if (potentialFork) {
           potentialForkingMarkets.push(market);
         } else {
           nonPotentialForkingMarkets.push(market);

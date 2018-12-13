@@ -1,13 +1,11 @@
+import thunk from "redux-thunk";
 import testState from "test/testState";
 import configureMockStore from "redux-mock-store";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
-import thunk from "redux-thunk";
-
-import { submitMarketContribute } from "modules/reports/actions/submit-market-contribute";
 import { removeAccountDispute } from "modules/reports/actions/update-account-disputes";
-
 import { augur } from "services/augurjs";
 import { getPayoutNumerators } from "src/modules/reports/selectors/get-payout-numerators";
+import { submitMarketContribute } from "modules/reports/actions/submit-market-contribute";
 
 jest.mock("services/augurjs");
 jest.mock("modules/reports/selectors/get-payout-numerators");

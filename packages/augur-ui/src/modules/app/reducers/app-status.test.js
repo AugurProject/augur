@@ -131,9 +131,9 @@ describe("modules/app/reducers/update-app-status.js", () => {
     }
   };
 
-  describe.each([t1, t2, t3, t4 ,t5, t6, t7])("App status test", t => {
+  describe.each([t1, t2, t3, t4, t5, t6, t7])("App status test", t => {
     test(t.description, () => {
       t.assertions();
-    })
+    });
   });
 });

@@ -9,11 +9,15 @@ export default function(orderCancellation) {
     });
 
     test("orderCancellation.abortCancelOrderConfirmation", () => {
-      expect(typeof orderCancellation.abortCancelOrderConfirmation).toBe("function");
+      expect(typeof orderCancellation.abortCancelOrderConfirmation).toBe(
+        "function"
+      );
     });
 
     test("orderCancellation.showCancelOrderConfirmation", () => {
-      expect(typeof orderCancellation.showCancelOrderConfirmation).toBe("function");
+      expect(typeof orderCancellation.showCancelOrderConfirmation).toBe(
+        "function"
+      );
     });
 
     test("orderCancellation.cancellationStatuses", () => {

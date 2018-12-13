@@ -1,7 +1,7 @@
 import mockStore from "test/mockStore";
-import { reInitAugur } from "./re-init-augur";
 import * as initAugurModule from "modules/app/actions/init-augur";
 import * as lodash from "lodash";
+import { reInitAugur } from "./re-init-augur";
 
 jest.mock("modules/app/actions/init-augur");
 jest.mock("lodash");

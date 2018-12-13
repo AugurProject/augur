@@ -63,7 +63,7 @@ describe(`modules/markets/selectors/is-loading.js`, () => {
   describe.each([[t1, t2, t3, t4]])("Is loading test", t => {
     test(t.description, () => {
       t.assertions();
-    })
+    });
   });
 
 });

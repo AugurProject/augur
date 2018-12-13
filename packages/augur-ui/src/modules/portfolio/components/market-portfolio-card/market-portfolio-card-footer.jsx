@@ -22,7 +22,8 @@ const MarketPortfolioCardFooter = ({
   marketId,
   buttonAction,
   localButtonText,
-  claimClicked
+  claimClicked,
+  disabled
 }) => {
   const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph);
   let canClaim = false;
@@ -112,7 +113,8 @@ const MarketPortfolioCardFooter = ({
                 (linkType === TYPE_CLAIM_PROCEEDS &&
                   !canClaim &&
                   !userHasClaimableForkFees) ||
-                claimClicked
+                claimClicked ||
+                disabled
               }
             >
               {localButtonText}
@@ -134,14 +136,16 @@ MarketPortfolioCardFooter.propTypes = {
   unclaimedForkEth: PropTypes.object,
   marketId: PropTypes.string.isRequired,
   unclaimedForkRepStaked: PropTypes.object,
-  claimClicked: PropTypes.bool
+  claimClicked: PropTypes.bool,
+  disabled: PropTypes.bool
 };
 
 MarketPortfolioCardFooter.defaultProps = {
   unclaimedForkEth: null,
   unclaimedForkRepStaked: null,
   finalizationTime: null,
-  claimClicked: false
+  claimClicked: false,
+  disabled: false
 };
 
 export default MarketPortfolioCardFooter;

@@ -15,9 +15,9 @@
   "scripts": {
     "clean": "rm -rf build; rm -rf node_modules",
     "nuke": "yarn clean; rm yarn.lock; rm package-lock.json",
-    "dev": "node scripts/dev.js",
-    "build": "node scripts/build.js",
-    "build:mainnet": "ETHEREUM_NETWORK=mainnet node scripts/build.js",
+    "dev": "genversion --es6 --semi src/version.js && node scripts/dev.js",
+    "build": "genversion --es6 --semi src/version.js && node scripts/build.js",
+    "build:mainnet": "genversion --es6 --semi src/version.js && ETHEREUM_NETWORK=mainnet node scripts/build.js",
     "start": "node server.js",
     "__": "",
     "integration:headless": "AUGUR_URL='http://localhost:8080/' jest --runInBand --detectOpenHandles --forceExit",
@@ -44,7 +44,7 @@
     "docker:pull": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose pull",
     "docker:spin-down": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose down",
     "git:push:protected": "PUSH_PROTECTED_BRANCHES=true git push",
-    "prepush": "node scripts/pre-push.js",
+    "prepush": "yarn test && node scripts/pre-push.js",
     "version": "npm run build:mainnet"
   },
   "dependencies": {
@@ -136,6 +136,7 @@
     "eslint-plugin-react": "7.5.1",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
     "file-loader": "2.0.0",
+    "genversion": "^2.1.0",
     "git-revision-webpack-plugin": "3.0.3",
     "html-loader": "0.5.5",
     "html-webpack-plugin": "3.2.0",

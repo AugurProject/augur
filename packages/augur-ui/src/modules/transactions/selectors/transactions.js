@@ -15,39 +15,43 @@ import getValue from "utils/get-value";
 import { formatShares, formatEther, formatRep } from "utils/format-number";
 
 export const selectTransactionsSelector = () =>
-  createSelector(selectTransactionsDataState, transactionsData => {
-    const tradeGroups = [];
-    return Object.keys(transactionsData || {})
-      .reduce((p, id) => {
-        const { tradeGroupId } = transactionsData[id];
-        if (tradeGroupId) {
-          if (tradeGroups.indexOf(tradeGroupId) === -1) {
-            tradeGroups.push(tradeGroupId);
-            const filteredTransactions = Object.keys(transactionsData)
-              .filter(id => transactionsData[id].tradeGroupId === tradeGroupId)
-              .map(id => transactionsData[id]);
+  createSelector(
+    selectTransactionsDataState,
+    transactionsData => {
+      const tradeGroups = [];
+      return Object.keys(transactionsData || {})
+        .reduce((p, id) => {
+          const { tradeGroupId } = transactionsData[id];
+          if (tradeGroupId) {
+            if (tradeGroups.indexOf(tradeGroupId) === -1) {
+              tradeGroups.push(tradeGroupId);
+              const filteredTransactions = Object.keys(transactionsData)
+                .filter(
+                  id => transactionsData[id].tradeGroupId === tradeGroupId
+                )
+                .map(id => transactionsData[id]);
 
-            if (filteredTransactions.length === 1) {
-              p.push(formatTransaction(filteredTransactions[0]));
-            } else {
-              p.push(formatGroupedTransactions(filteredTransactions));
+              if (filteredTransactions.length === 1) {
+                p.push(formatTransaction(filteredTransactions[0]));
+              } else {
+                p.push(formatGroupedTransactions(filteredTransactions));
+              }
             }
+
+            return p;
           }
 
+          p.push(formatTransaction(transactionsData[id]));
           return p;
-        }
-
-        p.push(formatTransaction(transactionsData[id]));
-        return p;
-      }, [])
-      .sort(
-        (a, b) =>
+        }, [])
+        .sort((a, b) =>
           a.sortOrder === b.sortOrder
             ? getValue(b, "timestamp.timestamp") -
               getValue(a, "timestamp.timestamp")
             : a.sortOrder - b.sortOrder
-      );
-  });
+        );
+    }
+  );
 
 function formatTransaction(transaction) {
   return {

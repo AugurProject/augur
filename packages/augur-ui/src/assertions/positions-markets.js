@@ -1,4 +1,4 @@
-import assertFormattedNumber from "assertions/common/formatted-number";
+import assertFormattedNumber from "src/assertions/common/formatted-number";
 
 export default function(positionsMarkets) {
   expect(positionsMarkets).toBeDefined();

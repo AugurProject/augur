@@ -150,38 +150,41 @@ describe("modules/app/actions/verify-matching-network-ids.test.js", () => {
     }
   };
 
-  describe.each([t1, t2, t3, t4, t5, t6])("Verify matching network tests", t => {
-    beforeEach(() => {
-      isGlobalWeb3Spy = jest
-        .spyOn(isGlobalWeb3Module, "default")
-        .mockImplementation(t.stub.isGlobalWeb3);
-      getAugurNodeNetworkIdSpy = jest
-        .spyOn(getAugurNodeNetworkIdModule, "getAugurNodeNetworkId")
-        .mockImplementation(t.stub.getAugurNodeNetworkId);
-      getNetworkIdSpy = jest
-        .spyOn(augur.rpc, "getNetworkID")
-        .mockImplementation(t.stub.augur.rpc.getNetworkID);
-      augurNetVersionSpy = jest
-        .spyOn(augur.rpc.net, "version")
-        .mockImplementation(t.stub.augur.rpc.net.version);
-    });
+  describe.each([t1, t2, t3, t4, t5, t6])(
+    "Verify matching network tests",
+    t => {
+      beforeEach(() => {
+        isGlobalWeb3Spy = jest
+          .spyOn(isGlobalWeb3Module, "default")
+          .mockImplementation(t.stub.isGlobalWeb3);
+        getAugurNodeNetworkIdSpy = jest
+          .spyOn(getAugurNodeNetworkIdModule, "getAugurNodeNetworkId")
+          .mockImplementation(t.stub.getAugurNodeNetworkId);
+        getNetworkIdSpy = jest
+          .spyOn(augur.rpc, "getNetworkID")
+          .mockImplementation(t.stub.augur.rpc.getNetworkID);
+        augurNetVersionSpy = jest
+          .spyOn(augur.rpc.net, "version")
+          .mockImplementation(t.stub.augur.rpc.net.version);
+      });
 
-    afterEach(() => {
-      store.clearActions();
-      isGlobalWeb3Spy.mockReset();
-      getAugurNodeNetworkIdSpy.mockReset();
-      getNetworkIdSpy.mockReset();
-      augurNetVersionSpy.mockReset();
-    });
+      afterEach(() => {
+        store.clearActions();
+        isGlobalWeb3Spy.mockReset();
+        getAugurNodeNetworkIdSpy.mockReset();
+        getNetworkIdSpy.mockReset();
+        augurNetVersionSpy.mockReset();
+      });
 
-    test(t.description, () => {
-      store.dispatch(
-        verifyMatchingNetworkIdsModule.verifyMatchingNetworkIds(
-          (err, expectedNetworkId) => {
-            t.assertions(err, expectedNetworkId);
-          }
-        )
-      );
-    });
-  });
+      test(t.description, () => {
+        store.dispatch(
+          verifyMatchingNetworkIdsModule.verifyMatchingNetworkIds(
+            (err, expectedNetworkId) => {
+              t.assertions(err, expectedNetworkId);
+            }
+          )
+        );
+      });
+    }
+  );
 });

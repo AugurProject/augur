@@ -487,13 +487,12 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
 
     function derivePayoutDistributionHash(uint256[] _payoutNumerators) public view returns (bytes32) {
         uint256 _sum = 0;
-        uint256 _previousValue = _payoutNumerators[0];
+        // This is to force an Invalid report to be entirely payed out to Invalid
         require(_payoutNumerators[0] == 0 || _payoutNumerators[0] == numTicks);
         require(_payoutNumerators.length == numOutcomes);
         for (uint256 i = 0; i < _payoutNumerators.length; i++) {
             uint256 _value = _payoutNumerators[i];
             _sum = _sum.add(_value);
-            _previousValue = _value;
         }
         require(_sum == numTicks);
         return keccak256(abi.encodePacked(_payoutNumerators));
