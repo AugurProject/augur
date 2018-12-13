@@ -46,40 +46,6 @@ function getBalance(augur, args, auth, callback) {
         console.log(chalk.red(err));
         return callback(JSON.stringify(err));
       }
-      var universePayload = { tx: { to: universe } };
-      augur.api.Universe.getCurrentFeeWindow(universePayload, function (err, feeWindow) {
-        if (err) {
-          console.log(chalk.red(err));
-          return callback(JSON.stringify(err));
-        }
-        var feeWindowPayload = { tx: { to: feeWindow } };
-        augur.api.FeeWindow.getStartTime(feeWindowPayload, function (err, startTime) {
-          if (err) {
-            console.log(chalk.red(err));
-            return callback(JSON.stringify(err));
-          }
-          augur.api.FeeWindow.getEndTime(feeWindowPayload, function (err, endTime) {
-            if (err) {
-              console.log(chalk.red(err));
-              return callback(JSON.stringify(err));
-            }
-            feeWindowPayload = { tx: { to: feeWindow }, _owner: address };
-            augur.api.FeeWindow.balanceOf(feeWindowPayload, function (err, balance) {
-              if (err) {
-                console.log(chalk.red(err));
-                return callback(JSON.stringify(err));
-              }
-              console.log(chalk.cyan("Current Fee Window:"));
-              console.log(chalk.green.dim("fee window:"), chalk.green(feeWindow));
-              displayTime("Start Time", startTime);
-              displayTime("End Time", endTime);
-              console.log("Participation Tokens: " + chalk.green(speedomatic.unfix(balance, "string")));
-
-              callback(null);
-            });
-          });
-        });
-      });
     });
   });
 

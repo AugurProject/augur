@@ -26,12 +26,12 @@ function dispute(augur, marketId, payoutNumerators, auth, timeAddress, currentRo
       console.log(chalk.red(err));
       return callback(err);
     }
-    augur.api.FeeWindow.getStartTime({ tx: { to: disputeWindow } }, function (err, feeWindowStartTime) {
+    augur.api.DisputeWindow.getStartTime({ tx: { to: disputeWindow } }, function (err, disputeWindowStartTime) {
       if (err) {
         console.log(chalk.red(err));
         callback("Could not get Fee Window");
       }
-      setTimestamp(augur, parseInt(feeWindowStartTime, 10) + 1, timeAddress, auth, function (err) {
+      setTimestamp(augur, parseInt(disputeWindowStartTime, 10) + 1, timeAddress, auth, function (err) {
         if (err) {
           console.log(chalk.red(err));
           return callback(err);
@@ -52,7 +52,7 @@ function dispute(augur, marketId, payoutNumerators, auth, timeAddress, currentRo
 function doReporting(augur, market, timeResult, auth, rounds, callback) {
   var marketId = market.id;
   var priceOrOutcome = market.marketType === "scalar" ? market.minPrice : 0;
-  var payoutNumerators = getPayoutNumerators(market, priceOrOutcome, false);
+  var payoutNumerators = getPayoutNumerators(market, priceOrOutcome);
 
   augur.api.Market.getDisputeWindow({tx: { to: marketId}}, function (err, disputeWindow) {
     if (err) {

@@ -109,25 +109,6 @@ function getMarketBalance(augur, args, auth, callback) {
     );
     async.series(
       {
-        feeWindowBalance: function(next) {
-          if (
-            market.feeWindow !== "0x0000000000000000000000000000000000000000"
-          ) {
-            showBalances(
-              augur,
-              market.feeWindow,
-              "Fee window address",
-              function(err) {
-                if (err) {
-                  console.log(chalk.red(err));
-                }
-                next(null);
-              }
-            );
-          } else {
-            next(null);
-          }
-        },
         mailboxBalance: function(next) {
           showBalances(augur, marketMailboxAddress, "Mailbox address", function(
             err
