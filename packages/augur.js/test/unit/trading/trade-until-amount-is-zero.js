@@ -38,7 +38,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
+      _amount: "10",
       sharesProvided: "0",
       _price: "0.5",
       numTicks: "10000",
@@ -74,10 +74,10 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
-            publicTradeWithLimit: function (p) {
+            publicTrade: function (p) {
               if (p.tx.estimateGas) {
                 return p.onSuccess("0x42");
               }
@@ -86,7 +86,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 0);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
+              assert.strictEqual(p._amount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.isFunction(p.onSent);
@@ -108,7 +108,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
+      _amount: "10",
       sharesProvided: "0",
       _price: "0.5",
       numTicks: "10000",
@@ -144,10 +144,10 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
-            publicTradeWithLimit: function (p) {
+            publicTrade: function (p) {
               if (p.tx.estimateGas) {
                 return p.onSuccess("0x42");
               }
@@ -156,7 +156,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 0);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
+              assert.strictEqual(p._amount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.strictEqual(p.tx.gas, "0x349d73");
@@ -178,7 +178,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
+      _amount: "10",
       sharesProvided: "0",
       _price: "0.5",
       numTicks: "10000",
@@ -214,10 +214,10 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
-            publicTradeWithLimit: function (p) {
+            publicTrade: function (p) {
               if (p.tx.estimateGas) {
                 return p.onSuccess("0x42");
               }
@@ -226,7 +226,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 0);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
+              assert.strictEqual(p._amount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.strictEqual(p.tx.gas, "0x349d73");
@@ -248,7 +248,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
+      _amount: "10",
       sharesProvided: "0",
       _price: "0.5",
       numTicks: "10000",
@@ -284,10 +284,10 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
-            publicTradeWithLimit: function (p) {
+            publicTrade: function (p) {
               if (p.tx.estimateGas) {
                 return p.onSuccess("0x42");
               }
@@ -296,7 +296,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 0);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
+              assert.strictEqual(p._amount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.isFunction(p.onSent);
@@ -317,7 +317,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
+      _amount: "10",
       sharesProvided: "0",
       _price: "0.5",
       numTicks: "10000",
@@ -353,10 +353,10 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
-            publicTradeWithLimit: function (p) {
+            publicTrade: function (p) {
               if (p.tx.estimateGas) {
                 return p.onSuccess("0x42");
               }
@@ -365,7 +365,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 0);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
+              assert.strictEqual(p._amount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.isFunction(p.onSent);
@@ -386,7 +386,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
+      _amount: "10",
       sharesProvided: "0",
       _price: "0.5",
       numTicks: "10000",
@@ -430,7 +430,7 @@ describe("trading/trade-until-amount-is-zero", function () {
             publicFillBestOrder: function () {
               assert.fail();
             },
-            publicTradeWithLimit: function (p) {
+            publicTrade: function (p) {
               if (p.tx.estimateGas) {
                 return p.onSuccess("0x42");
               }
@@ -439,13 +439,13 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 0);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.oneOf(p._fxpAmount, ["0x38d7ea4c68000", "0x110d9316ec000"]);
+              assert.oneOf(p._amount, ["0x38d7ea4c68000", "0x110d9316ec000"]);
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
-              if (p._fxpAmount === "0x38d7ea4c68000") {
+              if (p._amount === "0x38d7ea4c68000") {
                 assert.strictEqual(counter, 0);
                 counter++;
                 p.onSent({ hash: "TRANSACTION_HASH_1" });
@@ -469,7 +469,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 1,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
+      _amount: "10",
       sharesProvided: "0",
       _price: "0.5",
       numTicks: "10000",
@@ -505,10 +505,10 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
-            publicTradeWithLimit: function (p) {
+            publicTrade: function (p) {
               if (p.tx.estimateGas) {
                 return p.onSuccess("0x42");
               }
@@ -517,7 +517,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 1);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
+              assert.strictEqual(p._amount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.isFunction(p.onSent);
@@ -538,7 +538,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 1,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
+      _amount: "10",
       sharesProvided: "0",
       _price: "0.5",
       numTicks: "10000",
@@ -574,10 +574,10 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
-            publicTradeWithLimit: function (p) {
+            publicTrade: function (p) {
               if (p.tx.estimateGas) {
                 return p.onSuccess("0x42");
               }
@@ -586,7 +586,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 1);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
+              assert.strictEqual(p._amount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.isFunction(p.onSent);
@@ -607,7 +607,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 1,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
+      _amount: "10",
       sharesProvided: "0",
       _price: "0.5",
       numTicks: "10000",
@@ -643,7 +643,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function (p) {
+            publicFillBestOrder: function (p) {
               if (p.tx.estimateGas) {
                 return p.onSuccess("0x42");
               }
@@ -652,7 +652,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 1);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
+              assert.strictEqual(p._amount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.isFunction(p.onSent);
@@ -676,7 +676,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 1,
-      _fxpAmount: "10",
+      _amount: "10",
       sharesProvided: "5",
       _price: "0.5",
       numTicks: "10000",
@@ -712,10 +712,10 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
-            publicTradeWithLimit: function (p) {
+            publicTrade: function (p) {
               if (p.tx.estimateGas) {
                 return p.onSuccess("0x42");
               }
@@ -724,7 +724,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 0);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 1);
-              assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
+              assert.strictEqual(p._amount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.strictEqual(p.tx.gas, "0x36dcff");

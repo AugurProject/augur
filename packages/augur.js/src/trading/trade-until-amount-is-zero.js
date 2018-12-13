@@ -34,7 +34,7 @@ var constants = require("../constants");
  */
 function tradeUntilAmountIsZero(p) {
   console.log("tradeUntilAmountIsZero:", immutableDelete(p, ["meta", "onSent", "onSuccess", "onFailed"]));
-  var displayAmount = p._fxpAmount;
+  var displayAmount = p._amount;
   var displayPrice = p._price;
   var orderType = p._direction;
   var tradeCost = calculateTradeCost({
