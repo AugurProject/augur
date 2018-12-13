@@ -30,6 +30,8 @@ jobs:
           echo "git SHA - $(Build.SourceVersion)"
           echo "git branch - $(Build.SourceBranch)"
           echo "git target branch - $(System.PullRequest.TargetBranch)"
+          echo 'git describe'
+          git describe --all
           echo 'refs'
           find .git/refs
           #for f in $(git --no-pager diff --name-only FETCH_HEAD...$(System.PullRequest.TargetBranch));
