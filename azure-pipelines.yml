@@ -36,8 +36,10 @@ jobs:
           echo 'refs'
           find .git/refs
           #for f in $(git --no-pager diff --name-only FETCH_HEAD...$(System.PullRequest.TargetBranch));
-          echo "git diff"
+          echo "git diff ...origin/master"
           git diff --name-only ...origin/master
+          echo "git diff $(git merge-base master $(Build.SourceVersion))"
+          git diff --name-only $(git merge-base master $(Build.SourceVersion)) $(Build.SourceVersion)
           for f in $(git diff --name-only ...origin/master);
             do
               echo "$f"
