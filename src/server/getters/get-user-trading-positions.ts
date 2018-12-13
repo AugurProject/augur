@@ -47,7 +47,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
 
   if (_.isEmpty(profitsPerMarket)) return [];
 
-  return _.chain(profitsPerMarket)
+  const positions = _.chain(profitsPerMarket)
     .mapValues((profits: Array<ProfitLossResult>, key: string) => {
       const [marketId, outcome] = key.split(",");
       return Object.assign({
@@ -58,4 +58,8 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
     })
     .values()
     .value();
+
+  if (params.outcome === null || typeof params.outcome === "undefined") return positions;
+
+  return _.filter(positions, { outcome: params.outcome });
 }
