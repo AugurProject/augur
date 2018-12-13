@@ -28,23 +28,7 @@ jobs:
       - bash: |
           set -euxo pipefail
           git checkout -b ci-diff
-          echo "git SHA - $(Build.SourceVersion)"
-          echo "git branch - $(Build.SourceBranch)"
-          echo "git target branch - $(System.PullRequest.TargetBranch)"
-          echo 'git describe'
-          git describe --all
-          echo 'refs'
-          find .git/refs
-          #for f in $(git --no-pager diff --name-only FETCH_HEAD...$(System.PullRequest.TargetBranch));
-          echo "git diff ...origin/master"
-          git diff --name-only ...origin/master
-          echo "git diff $(git merge-base origin/master $(Build.SourceVersion))"
-          git diff --name-only $(git merge-base master $(Build.SourceVersion)) $(Build.SourceVersion)
-          echo "git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master)"
-          git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD origin/master)
-          echo "git --no-pager diff --name-only FETCH_HEAD...master"
-
-          git --no-pager diff --name-only FETCH_HEAD...master
+          #git --no-pager diff --name-only FETCH_HEAD...master
           for f in $(git diff --name-only ...origin/master);
             do
               echo "$f"
