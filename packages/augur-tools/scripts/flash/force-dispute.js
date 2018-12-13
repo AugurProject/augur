@@ -29,7 +29,7 @@ function dispute(augur, marketId, payoutNumerators, auth, timeAddress, currentRo
     augur.api.DisputeWindow.getStartTime({ tx: { to: disputeWindow } }, function (err, disputeWindowStartTime) {
       if (err) {
         console.log(chalk.red(err));
-        callback("Could not get Fee Window");
+        callback("Could not get dispute Window start time");
       }
       setTimestamp(augur, parseInt(disputeWindowStartTime, 10) + 1, timeAddress, auth, function (err) {
         if (err) {
@@ -51,7 +51,7 @@ function dispute(augur, marketId, payoutNumerators, auth, timeAddress, currentRo
 
 function doReporting(augur, market, timeResult, auth, rounds, callback) {
   var marketId = market.id;
-  var priceOrOutcome = market.marketType === "scalar" ? market.minPrice : 0;
+  var priceOrOutcome = market.marketType === "scalar" ? market.maxPrice : 0;
   var payoutNumerators = getPayoutNumerators(market, priceOrOutcome);
 
   augur.api.Market.getDisputeWindow({tx: { to: marketId}}, function (err, disputeWindow) {
