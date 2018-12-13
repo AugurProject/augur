@@ -34,6 +34,7 @@ jobs:
           git describe --all
           echo 'refs'
           find .git/refs
+          git checkout -b ci-diff
           #for f in $(git --no-pager diff --name-only FETCH_HEAD...$(System.PullRequest.TargetBranch));
           for f in $(git diff --name-only ...origin/master);
             do
@@ -43,6 +44,7 @@ jobs:
                 echo "##vso[task.setVariable variable=AUGUR_CORE]true";
               fi
             done
+            git checkout -
       - script: |
           set -euxo pipefail
           which node
