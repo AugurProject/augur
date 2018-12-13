@@ -247,7 +247,7 @@ export class TestFixture {
     }
 
     public async getTimestamp(): Promise<BN> {
-        return this.contractDeployer.controller!.getTimestamp_();
+        return this.contractDeployer.augur!.getTimestamp_();
     }
 
     public async doInitialReport(market: Market, payoutNumerators: Array<BN>): Promise<void> {

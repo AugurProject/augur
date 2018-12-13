@@ -48,4 +48,7 @@ contract IAugur {
     function logAuctionTokenBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool);
     function logAuctionTokenMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool);
     function recordAuctionTokens(IUniverse _universe) public returns (bool);
+    function lookup(bytes32 _key) public view returns (address);
+    function getTimestamp() public view returns (uint256);
+    function isValidMarket(IMarket _market) public view returns (bool);
 }

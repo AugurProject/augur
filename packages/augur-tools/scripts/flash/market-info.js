@@ -19,7 +19,7 @@ function marketInfo(augur, args, auth, callback) {
     return callback(null);
   }
   var marketId = args.opt.marketId;
-  augur.api.Controller.getTimestamp(function (err, timestamp) {
+  augur.api.Augur.getTimestamp(function (err, timestamp) {
     displayTime("Current Time", timestamp);
     augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketInfos) {
       if (err) {

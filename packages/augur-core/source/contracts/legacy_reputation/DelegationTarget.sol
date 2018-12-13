@@ -1,9 +1,6 @@
 pragma solidity 0.4.24;
 
 
-import 'Controlled.sol';
-
-
-contract DelegationTarget is Controlled {
+contract DelegationTarget {
     bytes32 public controllerLookupName;
 }

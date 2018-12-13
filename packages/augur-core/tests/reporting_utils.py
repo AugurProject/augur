@@ -14,7 +14,7 @@ def proceedToInitialReporting(fixture, market):
     fixture.contracts["Time"].setTimestamp(market.getDesignatedReportingEndTime() + 1)
 
 def proceedToNextRound(fixture, market, contributor = tester.k0, doGenerateFees = False, moveTimeForward = True, randomPayoutNumerators = False, description = ""):
-    if fixture.contracts["Controller"].getTimestamp() < market.getEndTime():
+    if fixture.contracts["Augur"].getTimestamp() < market.getEndTime():
         fixture.contracts["Time"].setTimestamp(market.getDesignatedReportingEndTime() + 1)
 
     disputeWindow = market.getDisputeWindow()

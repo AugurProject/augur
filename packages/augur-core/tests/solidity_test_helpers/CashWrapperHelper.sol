@@ -5,6 +5,11 @@ import 'trading/ICash.sol';
 
 
 contract CashWrapperHelper is CashAutoConverter {
+
+    function setAugur(IAugur _augur) public returns (bool) {
+        augur = _augur;
+    }
+
     function toEthFunction() public convertToAndFromCash returns (bool) {
         return true;
     }

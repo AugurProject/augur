@@ -1,7 +1,6 @@
 pragma solidity 0.4.24;
 
 
-import 'IController.sol';
 import 'reporting/IUniverse.sol';
 import 'reporting/IDisputeWindow.sol';
 
@@ -27,7 +26,7 @@ contract MockDisputeWindowFactory {
         createDisputeWindowValue = _disputeWindowValue;
     }
 
-    function createDisputeWindow(IController _controller, IUniverse _universe, uint256 _disputeWindowId) public returns (IDisputeWindow) {
+    function createDisputeWindow(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId) public returns (IDisputeWindow) {
         createDisputeWindowUniverseValue = _universe;
         createdisputeWindowIdValue = _disputeWindowId;
         return createDisputeWindowValue;

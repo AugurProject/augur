@@ -9,7 +9,6 @@ pragma solidity 0.4.24;
 
 
 import 'IAugur.sol';
-import 'IController.sol';
 import 'libraries/math/SafeMathUint256.sol';
 import 'reporting/IMarket.sol';
 import 'trading/IOrders.sol';
@@ -47,18 +46,13 @@ library Order {
         bool ignoreShares;
     }
 
-    //
-    // Constructor
-    //
-
     // No validation is needed here as it is simply a librarty function for organizing data
-    function create(IController _controller, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares) internal view returns (Data) {
+    function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares) internal view returns (Data) {
         require(_outcome < _market.getNumberOfOutcomes());
         require(_price < _market.getNumTicks());
         require(_attoshares > 0);
 
-        IOrders _orders = IOrders(_controller.lookup("Orders"));
-        IAugur _augur = _controller.getAugur();
+        IOrders _orders = IOrders(_augur.lookup("Orders"));
 
         return Data({
             orders: _orders,

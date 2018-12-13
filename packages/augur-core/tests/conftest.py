@@ -242,11 +242,11 @@ class ContractsFixture:
             testers[i] = getattr(tester, ch + "%d" % i)
         return testers
 
-    def uploadAndAddToController(self, relativeFilePath, lookupKey = None, signatureKey = None, constructorArgs=[]):
+    def uploadAndAddToAugur(self, relativeFilePath, lookupKey = None, signatureKey = None, constructorArgs=[]):
         lookupKey = lookupKey if lookupKey else path.splitext(path.basename(relativeFilePath))[0]
         contract = self.upload(relativeFilePath, lookupKey, signatureKey, constructorArgs)
         if not contract: return None
-        self.contracts['Controller'].registerContract(lookupKey.ljust(32, '\x00'), contract.address)
+        self.contracts['Augur'].registerContract(lookupKey.ljust(32, '\x00'), contract.address)
         return(contract)
 
     def generateAndStoreSignature(self, relativePath):
@@ -324,19 +324,22 @@ class ContractsFixture:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]
                 if extension != '.sol': continue
-                if name == 'controller': continue
+                if name == 'augur': continue
                 if name == 'Augur': continue
+                if name == 'Orders': continue # In testing we use the TestOrders version which lets us call protected methods
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
-                if name == 'ReputationTokenFactory': continue # In testing adn development we use the TestNetReputationTokenFactory which lets us faucet
+                if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
                 onlySignatures = ["ReputationToken", "TestNetReputationToken", "Universe"]
                 if name in onlySignatures:
                     self.generateAndStoreSignature(path.join(directory, filename))
                 elif name == "TimeControlled":
-                    self.uploadAndAddToController(path.join(directory, filename), lookupKey = "Time", signatureKey = "TimeControlled")
+                    self.uploadAndAddToAugur(path.join(directory, filename), lookupKey = "Time", signatureKey = "TimeControlled")
                 elif name == "TestNetReputationTokenFactory":
-                    self.uploadAndAddToController(path.join(directory, filename), lookupKey = "ReputationTokenFactory", signatureKey = "TestNetReputationTokenFactory")
+                    self.uploadAndAddToAugur(path.join(directory, filename), lookupKey = "ReputationTokenFactory", signatureKey = "TestNetReputationTokenFactory")
+                elif name == "TestOrders":
+                    self.uploadAndAddToAugur(path.join(directory, filename), lookupKey = "Orders", signatureKey = "TestOrders")
                 else:
-                    self.uploadAndAddToController(path.join(directory, filename))
+                    self.uploadAndAddToAugur(path.join(directory, filename))
 
     def uploadAllMockContracts(self):
         for directory, _, filenames in walk(resolveRelativePath(self.relativeTestContractsPath)):
@@ -348,7 +351,7 @@ class ContractsFixture:
                 if 'Factory' in name:
                     self.upload(path.join(directory, filename))
                 else:
-                    self.uploadAndAddToController(path.join(directory, filename))
+                    self.uploadAndAddToAugur(path.join(directory, filename))
 
     def uploadExternalContracts(self):
         for directory, _, filenames in walk(resolveRelativePath(self.externalContractsPath)):
@@ -359,24 +362,13 @@ class ContractsFixture:
                 constructorArgs = []
                 self.upload(path.join(directory, filename), constructorArgs=constructorArgs)
 
-    def whitelistTradingContracts(self):
-        for filename in listdir(resolveRelativePath('../source/contracts/trading')):
-            name = path.splitext(filename)[0]
-            extension = path.splitext(filename)[1]
-            if extension != '.sol': continue
-            if name == "ShareToken": continue
-            if not name in self.contracts: continue
-            self.contracts['Controller'].addToWhitelist(self.contracts[name].address)
-
     def initializeAllContracts(self):
-        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','OrdersFetcher', 'Time','Cash','Orders']
+        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time']
         for contractName in contractsToInitialize:
-            if getattr(self.contracts[contractName], "setController", None):
-                self.contracts[contractName].setController(self.contracts['Controller'].address)
-            elif getattr(self.contracts[contractName], "initialize", None):
-                self.contracts[contractName].initialize(self.contracts['Controller'].address)
+            if getattr(self.contracts[contractName], "initialize", None):
+                self.contracts[contractName].initialize(self.contracts['Augur'].address)
             else:
-                raise "contract has neither 'initialize' nor 'setController' method on it."
+                raise "contract has no 'initialize' method on it."
 
     ####
     #### Helpers
@@ -396,17 +388,16 @@ class ContractsFixture:
                 self.contracts[contractName].approve(authority.address, 2**254, sender=testerKey)
 
     def uploadAugur(self):
-        # We have to upload Augur first so it can log when contracts are added to the registry
+        # We have to upload Augur first
         augur = self.upload("../source/contracts/Augur.sol")
-        self.contracts["Augur"].setController(self.contracts['Controller'].address)
-        self.contracts['Controller'].registerContract("Augur".ljust(32, '\x00'), augur.address)
+        self.contracts['Augur'].registerContract("Augur".ljust(32, '\x00'), augur.address)
         return augur
 
-    def uploadShareToken(self, controllerAddress = None):
-        controllerAddress = controllerAddress if controllerAddress else self.contracts['Controller'].address
+    def uploadShareToken(self, augurAddress = None):
+        augurAddress = augurAddress if augurAddress else self.contracts['Augur'].address
         self.ensureShareTokenDependencies()
         shareTokenFactory = self.contracts['ShareTokenFactory']
-        shareToken = shareTokenFactory.createShareToken(controllerAddress)
+        shareToken = shareTokenFactory.createShareToken(augurAddress)
         return self.applySignature('shareToken', shareToken)
 
     def createUniverse(self):
@@ -491,30 +482,19 @@ def baseSnapshot(fixture):
     return fixture.createSnapshot()
 
 @pytest.fixture(scope="session")
-def controllerSnapshot(fixture, baseSnapshot):
+def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.resetToSnapshot(baseSnapshot)
-    controller = fixture.upload('solidity_test_helpers/TestController.sol', lookupKey="Controller")
-    assert fixture.contracts['Controller'].owner() == bytesToHexString(tester.a0)
-    return fixture.createSnapshot()
-
-@pytest.fixture(scope="session")
-def augurInitializedSnapshot(fixture, controllerSnapshot):
-    fixture.resetToSnapshot(controllerSnapshot)
     fixture.uploadAugur()
     fixture.uploadAllContracts()
     fixture.initializeAllContracts()
-    fixture.whitelistTradingContracts()
     fixture.approveCentralAuthority()
     fixture.uploadExternalContracts()
     return fixture.createSnapshot()
 
 @pytest.fixture(scope="session")
 def augurInitializedWithMocksSnapshot(fixture, augurInitializedSnapshot):
-    fixture.uploadAndAddToController("solidity_test_helpers/Constants.sol")
+    fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
     fixture.uploadAllMockContracts()
-    controller = fixture.contracts['Controller']
-    mockAugur = fixture.contracts['MockAugur']
-    controller.registerContract(stringToBytes('Augur'), mockAugur.address)
     return fixture.createSnapshot()
 
 @pytest.fixture(scope="session")
@@ -542,7 +522,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     categoricalMarket = fixture.createReasonableCategoricalMarket(universe, 3)
     print 'Gas Used: %s' % (fixture.chain.head_state.gas_used - startingGas)
     scalarMarket = fixture.createReasonableScalarMarket(universe, 30, -10, 400000)
-    fixture.uploadAndAddToController("solidity_test_helpers/Constants.sol")
+    fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
     snapshot = fixture.createSnapshot()
     snapshot['universe'] = universe
     snapshot['cash'] = cash

@@ -1,8 +1,6 @@
 pragma solidity 0.4.24;
 
-
 import 'Controller.sol';
-import 'IController.sol';
 import 'reporting/IUniverse.sol';
 
 
@@ -23,7 +21,7 @@ contract MockUniverseFactory {
         return createUniverseParentPayoutDistributionHashValue;
     }
 
-    function createUniverse(IController _controller, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash) public returns (IUniverse) {
+    function createUniverse(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash) public returns (IUniverse) {
         createUniverseParentUniverseValue = _parentUniverse;
         createUniverseParentPayoutDistributionHashValue = _parentPayoutDistributionHash;
         return createUniverseUniverseValue;

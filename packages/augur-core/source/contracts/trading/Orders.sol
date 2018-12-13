@@ -2,19 +2,19 @@ pragma solidity 0.4.24;
 
 
 import 'trading/IOrders.sol';
-import 'Controlled.sol';
 import 'libraries/math/SafeMathUint256.sol';
 import 'libraries/math/SafeMathInt256.sol';
 import 'trading/Order.sol';
 import 'reporting/IMarket.sol';
 import 'trading/IOrdersFetcher.sol';
+import 'libraries/Initializable.sol';
 
 
 /**
  * @title Orders
  * @dev Storage of all data associated with orders
  */
-contract Orders is Controlled, IOrders {
+contract Orders is IOrders, Initializable {
     using Order for Order.Data;
     using SafeMathUint256 for uint256;
 
@@ -27,6 +27,22 @@ contract Orders is Controlled, IOrders {
     mapping(address => MarketOrders) private marketOrderData;
     mapping(bytes32 => bytes32) private bestOrder;
     mapping(bytes32 => bytes32) private worstOrder;
+
+    IAugur public augur;
+    address public trade;
+    address public fillOrder;
+    address public cancelOrder;
+    address public createOrder;
+
+    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+        endInitialization();
+        augur = _augur;
+        createOrder = augur.lookup("CreateOrder");
+        fillOrder = augur.lookup("FillOrder");
+        cancelOrder = augur.lookup("CancelOrder");
+        trade = augur.lookup("Trade");
+        return true;
+    }
 
     // Getters
     function getMarket(bytes32 _orderId) public view returns (IMarket) {
@@ -118,8 +134,7 @@ contract Orders is Controlled, IOrders {
     function insertOrderIntoList(Order.Data storage _order, bytes32 _betterOrderId, bytes32 _worseOrderId) private returns (bool) {
         bytes32 _bestOrderId = bestOrder[getBestOrderWorstOrderHash(_order.market, _order.outcome, _order.orderType)];
         bytes32 _worstOrderId = worstOrder[getBestOrderWorstOrderHash(_order.market, _order.outcome, _order.orderType)];
-        IOrdersFetcher _ordersFetcher = IOrdersFetcher(controller.lookup("OrdersFetcher"));
-        (_betterOrderId, _worseOrderId) = _ordersFetcher.findBoundingOrders(_order.orderType, _order.price, _bestOrderId, _worstOrderId, _betterOrderId, _worseOrderId);
+        (_betterOrderId, _worseOrderId) = findBoundingOrders(_order.orderType, _order.price, _bestOrderId, _worstOrderId, _betterOrderId, _worseOrderId);
         if (_order.orderType == Order.Types.Bid) {
             _bestOrderId = updateBestBidOrder(_order.id, _order.market, _order.price, _order.outcome);
             _worstOrderId = updateWorstBidOrder(_order.id, _order.market, _order.price, _order.outcome);
@@ -144,7 +159,8 @@ contract Orders is Controlled, IOrders {
         return true;
     }
 
-    function saveOrder(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId) public onlyWhitelistedCallers returns (bytes32 _orderId) {
+    function saveOrder(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId) external returns (bytes32 _orderId) {
+        require(msg.sender == createOrder || msg.sender == address(this));
         require(_outcome < _market.getNumberOfOutcomes());
         _orderId = getOrderId(_type, _market, _amount, _price, _sender, block.number, _outcome, _moneyEscrowed, _sharesEscrowed);
         Order.Data storage _order = orders[_orderId];
@@ -157,20 +173,24 @@ contract Orders is Controlled, IOrders {
         _order.amount = _amount;
         _order.creator = _sender;
         _order.moneyEscrowed = _moneyEscrowed;
-        _order.orders.incrementTotalEscrowed(_market, _moneyEscrowed);
+        marketOrderData[_market].totalEscrowed += _moneyEscrowed;
         _order.sharesEscrowed = _sharesEscrowed;
         insertOrderIntoList(_order, _betterOrderId, _worseOrderId);
-        controller.getAugur().logOrderCreated(_type, _amount, _price, _sender, _moneyEscrowed, _sharesEscrowed, _tradeGroupId, _orderId, _order.market.getUniverse(), _order.market.getShareToken(_order.outcome));
+        augur.logOrderCreated(_type, _amount, _price, _sender, _moneyEscrowed, _sharesEscrowed, _tradeGroupId, _orderId, _order.market.getUniverse(), _order.market.getShareToken(_order.outcome));
         return _orderId;
     }
 
-    function removeOrder(bytes32 _orderId) public onlyWhitelistedCallers returns (bool) {
+    function removeOrder(bytes32 _orderId) external afterInitialized returns (bool) {
+        require(msg.sender == cancelOrder || msg.sender == address(this));
         removeOrderFromList(_orderId);
+        Order.Data storage _order = orders[_orderId];
+        marketOrderData[_order.market].totalEscrowed -= _order.moneyEscrowed;
         delete orders[_orderId];
         return true;
     }
 
-    function recordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled) public onlyWhitelistedCallers returns (bool) {
+    function recordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled) external afterInitialized returns (bool) {
+        require(msg.sender == fillOrder || msg.sender == address(this));
         Order.Data storage _order = orders[_orderId];
         require(_order.outcome < _order.market.getNumberOfOutcomes());
         require(_orderId != bytes32(0));
@@ -187,7 +207,7 @@ contract Orders is Controlled, IOrders {
         require(_fill <= _order.amount);
         _order.amount -= _fill;
         _order.moneyEscrowed -= _tokensFilled;
-        _order.orders.decrementTotalEscrowed(_order.market, _tokensFilled);
+        marketOrderData[_order.market].totalEscrowed -= _tokensFilled;
         _order.sharesEscrowed -= _sharesFilled;
         if (_order.amount == 0) {
             require(_order.moneyEscrowed == 0);
@@ -201,18 +221,9 @@ contract Orders is Controlled, IOrders {
         return true;
     }
 
-    function setPrice(IMarket _market, uint256 _outcome, uint256 _price) external onlyWhitelistedCallers returns (bool) {
+    function setPrice(IMarket _market, uint256 _outcome, uint256 _price) external afterInitialized returns (bool) {
+        require(msg.sender == trade);
         marketOrderData[_market].prices[_outcome] = _price;
-        return true;
-    }
-
-    function incrementTotalEscrowed(IMarket _market, uint256 _amount) external onlyWhitelistedCallers returns (bool) {
-        marketOrderData[_market].totalEscrowed += _amount;
-        return true;
-    }
-
-    function decrementTotalEscrowed(IMarket _market, uint256 _amount) external onlyWhitelistedCallers returns (bool) {
-        marketOrderData[_market].totalEscrowed -= _amount;
         return true;
     }
 
@@ -285,5 +296,91 @@ contract Orders is Controlled, IOrders {
 
     function getBestOrderWorstOrderHash(IMarket _market, uint256 _outcome, Order.Types _type) private pure returns (bytes32) {
         return sha256(abi.encodePacked(_market, _outcome, _type));
+    }
+
+    function ascendOrderList(Order.Types _type, uint256 _price, bytes32 _lowestOrderId) public view returns (bytes32 _betterOrderId, bytes32 _worseOrderId) {
+        _worseOrderId = _lowestOrderId;
+        bool _isWorstPrice;
+        if (_type == Order.Types.Bid) {
+            _isWorstPrice = _price <= getPrice(_worseOrderId);
+        } else if (_type == Order.Types.Ask) {
+            _isWorstPrice = _price >= getPrice(_worseOrderId);
+        }
+        if (_isWorstPrice) {
+            return (_worseOrderId, getWorseOrderId(_worseOrderId));
+        }
+        bool _isBetterPrice = isBetterPrice(_type, _price, _worseOrderId);
+        while (_isBetterPrice && getBetterOrderId(_worseOrderId) != 0 && _price != getPrice(getBetterOrderId(_worseOrderId))) {
+            _betterOrderId = getBetterOrderId(_worseOrderId);
+            _isBetterPrice = isBetterPrice(_type, _price, _betterOrderId);
+            if (_isBetterPrice) {
+                _worseOrderId = getBetterOrderId(_worseOrderId);
+            }
+        }
+        _betterOrderId = getBetterOrderId(_worseOrderId);
+        return (_betterOrderId, _worseOrderId);
+    }
+
+    function descendOrderList(Order.Types _type, uint256 _price, bytes32 _highestOrderId) public view returns (bytes32 _betterOrderId, bytes32 _worseOrderId) {
+        _betterOrderId = _highestOrderId;
+        bool _isBestPrice;
+        if (_type == Order.Types.Bid) {
+            _isBestPrice = _price > getPrice(_betterOrderId);
+        } else if (_type == Order.Types.Ask) {
+            _isBestPrice = _price < getPrice(_betterOrderId);
+        }
+        if (_isBestPrice) {
+            return (0, _betterOrderId);
+        }
+        bool _isWorsePrice = isWorsePrice(_type, _price, _betterOrderId);
+        while (_isWorsePrice && getWorseOrderId(_betterOrderId) != 0) {
+            _worseOrderId = getWorseOrderId(_betterOrderId);
+            _isWorsePrice = isWorsePrice(_type, _price, _worseOrderId);
+            if (_isWorsePrice || _price == getPrice(getWorseOrderId(_betterOrderId))) {
+                _betterOrderId = getWorseOrderId(_betterOrderId);
+            }
+        }
+        _worseOrderId = getWorseOrderId(_betterOrderId);
+        return (_betterOrderId, _worseOrderId);
+    }
+
+    function findBoundingOrders(Order.Types _type, uint256 _price, bytes32 _bestOrderId, bytes32 _worstOrderId, bytes32 _betterOrderId, bytes32 _worseOrderId) public returns (bytes32, bytes32) {
+        if (_bestOrderId == _worstOrderId) {
+            if (_bestOrderId == bytes32(0)) {
+                return (bytes32(0), bytes32(0));
+            } else if (isBetterPrice(_type, _price, _bestOrderId)) {
+                return (bytes32(0), _bestOrderId);
+            } else {
+                return (_bestOrderId, bytes32(0));
+            }
+        }
+        if (_betterOrderId != bytes32(0)) {
+            if (getPrice(_betterOrderId) == 0) {
+                _betterOrderId = bytes32(0);
+            } else {
+                assertIsNotBetterPrice(_type, _price, _betterOrderId);
+            }
+        }
+        if (_worseOrderId != bytes32(0)) {
+            if (getPrice(_worseOrderId) == 0) {
+                _worseOrderId = bytes32(0);
+            } else {
+                assertIsNotWorsePrice(_type, _price, _worseOrderId);
+            }
+        }
+        if (_betterOrderId == bytes32(0) && _worseOrderId == bytes32(0)) {
+            return (descendOrderList(_type, _price, _bestOrderId));
+        } else if (_betterOrderId == bytes32(0)) {
+            return (ascendOrderList(_type, _price, _worseOrderId));
+        } else if (_worseOrderId == bytes32(0)) {
+            return (descendOrderList(_type, _price, _betterOrderId));
+        }
+        if (getWorseOrderId(_betterOrderId) != _worseOrderId) {
+            return (descendOrderList(_type, _price, _betterOrderId));
+        } else if (getBetterOrderId(_worseOrderId) != _betterOrderId) {
+            // Coverage: This condition is likely unreachable or at least seems to be. Rather than remove it I'm keeping it for now just to be paranoid
+            return (ascendOrderList(_type, _price, _worseOrderId));
+        }
+        return (_betterOrderId, _worseOrderId);
     }
 }
