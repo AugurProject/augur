@@ -90,6 +90,10 @@ function forceDispute(augur, args, auth, callback) {
       var market = marketsInfo[0];
       var marketPayload = { tx: { to: marketId } };
       augur.api.Market.getEndTime(marketPayload, function (err, endTime) {
+        if (err) {
+          console.log(chalk.red(err));
+          return callback(err);
+        }
         displayTime("Market End Time", endTime);
         getTime(augur, auth, function (err, timeResult) {
           if (err) {
