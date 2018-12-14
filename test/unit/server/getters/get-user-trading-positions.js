@@ -69,4 +69,29 @@ describe("server/getters/get-user-trading-positions", () => {
 
     expect(userTradingPositions).toEqual([]);
   });
+
+  it("gets a users position when there's only one entry in the p_l_timeseries table", async () => {
+    const userTradingPositions = await getUserTradingPositions({
+      account: "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb",
+      marketId: "0xfd9d2cab985b4e1052502c197d989fdf9e7d4b1e",
+      outcome: 1,
+      sortBy: null,
+      isSortDescending: null,
+      limit: null,
+      offset: null,
+    });
+
+    expect(userTradingPositions).toEqual([
+      {
+        marketId: "0xfd9d2cab985b4e1052502c197d989fdf9e7d4b1e",
+        netPosition: "0",
+        outcome: 1,
+        position: "30",
+        realized: "0",
+        timestamp: 1544804660,
+        total: "-25.89",
+        unrealized: "-25.89",
+      },
+    ]);
+  });
 });

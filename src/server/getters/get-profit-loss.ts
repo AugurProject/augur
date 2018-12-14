@@ -134,7 +134,6 @@ async function queryProfitLossTimeseries(db: Knex, now: number, params: GetProfi
   if (params.marketId !== null) query.where("profit_loss_timeseries.marketId", params.marketId);
   if (params.startTime) query.where("timestamp", ">=", params.startTime);
 
-  console.log(params.endTime);
   query.where("timestamp", "<=", params.endTime || now);
 
   return await query;
@@ -157,10 +156,8 @@ async function queryOutcomeValueTimeseries(db: Knex, now: number, params: GetPro
 function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: Array<OutcomeValueTimeseries>, timestamps: Array<Timestamped>): Array<ProfitLossResult> {
   let remainingPls = pl;
   let plResult: ProfitLossTimeseries|undefined;
-  console.log(timestamps);
-  console.log(pl);
   return timestamps.map((bucket: Timestamped) => {
-    const plsBeforeBucket = _.takeWhile(remainingPls, (pl) => pl.timestamp < bucket.timestamp);
+    const plsBeforeBucket = _.takeWhile(remainingPls, (pl) => pl.timestamp <= bucket.timestamp);
     if (plsBeforeBucket.length > 0) {
       remainingPls = _.drop(remainingPls, plsBeforeBucket.length);
       plResult = _.last(plsBeforeBucket);
@@ -175,8 +172,6 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
         total: ZERO,
       };
     }
-
-    console.log(outcomeValues);
 
     const position = plResult!.numOwned;
     const realized = plResult!.profit;
@@ -214,7 +209,6 @@ async function getProfitLossData(db: Knex, params: GetProfitLossParamsType): Pro
 
   // Realized Profits + Timeseries data about the state of positions
   const profitsOverTime = await queryProfitLossTimeseries(db, now, params);
-  console.log(profitsOverTime);
   const profits = _.groupBy(profitsOverTime, (r) => [r.marketId, r.outcome].join(","));
 
   // fType there are no trades in this window then we'll
@@ -289,7 +283,6 @@ export async function getProfitLossSummary(db: Knex, augur: Augur, params: GetPr
       endTime,
       periodInterval,
     });
-    console.log(rest);
 
     if (rest.length !== 0) throw new Error("PL calculation in summary returning more thant two bucket");
 

@@ -357,6 +357,13 @@ exports.seed = async (knex: Knex): Promise<any> => {
         value: "300",
         timestamp: 1536267674,
       },
+      {
+        marketId: "0xfd9d2cab985b4e1052502c197d989fdf9e7d4b1e",
+        outcome: "1",
+        transactionHash: "0xaa32ebbbe9f5503f2bde1a25cb3c7ed3dece3a870742fd2012e41006c928ee31",
+        value: "0.1",
+        timestamp: 1544804660,
+      }
     ]);
   });
 };

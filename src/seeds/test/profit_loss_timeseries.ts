@@ -172,6 +172,17 @@ exports.seed = async (knex: Knex): Promise<any> => {
           transactionHash: "0x23973e19a905feed4c0720eba957b4e0c24eb28a7e283822cc039d07eacbea71",
           timestamp: 1534435013,
         },
+        {
+          account: "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb",
+          marketId: "0xfd9d2cab985b4e1052502c197d989fdf9e7d4b1e",
+          outcome: "1",
+          transactionHash: "0xaa32ebbbe9f5503f2bde1a25cb3c7ed3dece3a870742fd2012e41006c928ee31",
+          moneySpent: "28.89",
+          numOwned: "30",
+          numEscrowed: "0",
+          profit: "0",
+          timestamp: 1544804660,
+        }
       ]);
     });
 };
