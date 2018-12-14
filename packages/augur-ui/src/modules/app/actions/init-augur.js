@@ -1,5 +1,4 @@
 import * as AugurJS from "services/augurjs";
-import { constants } from "services/constants";
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
@@ -36,7 +35,7 @@ import { DISCLAIMER_SEEN } from "modules/modal/constants/local-storage-keys";
 import { windowRef } from "utils/window-ref";
 import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
 
-const { ACCOUNT_TYPES } = constants;
+const { ACCOUNT_TYPES } = AugurJS.augur.rpc.constants;
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
