@@ -38,7 +38,7 @@ function disputeContribute(augur, args, auth, callback) {
       return callback(err);
     }
     if (err) return console.error(err);
-    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function(err, marketsInfo) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
       if (err) {
         console.log(chalk.red(err));
         return callback("Could not get market info");
