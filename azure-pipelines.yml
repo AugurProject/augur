@@ -30,7 +30,7 @@ jobs:
           #git --no-pager diff --name-only FETCH_HEAD...master
           find .git/refs
           git fetch origin master
-          for f in $(git whatchanged --name-only --pretty="" origin..HEAD);
+          for f in $(git whatchanged --name-only --pretty="" master..HEAD);
             do
               echo "$f"
               if [[ $f =~ .*augur-core.* ]]
