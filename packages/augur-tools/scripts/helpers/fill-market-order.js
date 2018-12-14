@@ -118,7 +118,7 @@ getPrivateKey(null, function(err, auth) {
                     tickSize: marketInfo.tickSize,
                     _direction: orderType === "sell" ? 0 : 1,
                     _market: marketInfo.id,
-                    _outcome: outcomeToFill,
+                    _outcome: parseInt(outcomeToFill, 10),
                     _tradeGroupId: 42,
                     doNotCreateOrders: true,
                     onSent: function() {},

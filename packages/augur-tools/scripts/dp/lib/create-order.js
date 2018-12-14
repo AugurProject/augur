@@ -67,7 +67,7 @@ function createOrder(
             tradeCost.onChainPrice
           ),
           _market: marketId,
-          _outcome: outcome,
+          _outcome: parseInt(outcome, 10),
           _betterOrderId: (betterWorseOrders || {}).betterOrderId || "0x0",
           _worseOrderId: (betterWorseOrders || {}).worseOrderId || "0x0",
           _tradeGroupId: tradeGroupId,
@@ -122,7 +122,7 @@ function createOrder(
       numTicks: numTicks,
       _direction: orderTypeCode,
       _market: marketId,
-      _outcome: outcome,
+      _outcome: parseInt(outcome, 10),
       _tradeGroupId: tradeGroupId,
       doNotCreateOrders: false,
       onSent: function(res) {

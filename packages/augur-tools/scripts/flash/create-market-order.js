@@ -69,7 +69,7 @@ function createMarketOrder(augur, args, auth, callback) {
         sharesProvided: useShares ? amount : "0",
         _direction: direction,
         _market: marketId,
-        _outcome: outcome,
+        _outcome: parseInt(outcome, 10),
         _tradeGroupId: augur.trading.generateTradeGroupId(),
         doNotCreateOrders: false,
         onSent: () => {},
@@ -83,7 +83,7 @@ function createMarketOrder(augur, args, auth, callback) {
           callback(null);
         },
         onFailed: function(err) {
-          console.log(chalk.red(err));
+          console.log(chalk.red(JSON.stringify(err)));
           callback(err);
         }
       });

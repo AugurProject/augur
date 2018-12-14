@@ -141,7 +141,7 @@ function getMarketBalance(augur, args, auth, callback) {
               outcomes,
               function(outcomeId, nextOutcome) {
                 augur.api.Market.getShareToken(
-                  { tx: { to: marketId }, _outcome: outcomeId },
+                  { tx: { to: marketId }, _outcome: parseInt(outcomeId, 10) },
                   function(err, shareToken) {
                     if (err) {
                       console.log(chalk.red(err));
