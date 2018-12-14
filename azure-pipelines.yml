@@ -27,6 +27,7 @@ jobs:
           versionSpec: '9.x'
       - bash: |
           set -euxo pipefail
+          echo "Build SourceBranch: $(Build.SourceBranch)"
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
