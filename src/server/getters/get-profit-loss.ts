@@ -51,6 +51,8 @@ export interface OutcomeValueTimeseries extends Timestamped {
 
 export interface ProfitLossResult extends Timestamped {
   position: BigNumber;
+  averagePrice: BigNumber;
+  cost: BigNumber;
   realized: BigNumber;
   unrealized: BigNumber;
   total: BigNumber;
@@ -114,6 +116,8 @@ function sumProfitLossResults(left: ProfitLossResult, right: ProfitLossResult): 
   const realized = left.realized.plus(right.realized);
   const unrealized = left.unrealized.plus(right.unrealized);
   const total = realized.plus(unrealized);
+  const cost = left.cost.plus(right.cost);
+  const averagePrice = cost.dividedBy(position);
 
   return {
     timestamp: left.timestamp,
@@ -121,6 +125,8 @@ function sumProfitLossResults(left: ProfitLossResult, right: ProfitLossResult): 
     realized,
     unrealized,
     total,
+    cost,
+    averagePrice
   };
 }
 
@@ -170,12 +176,15 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
         realized: ZERO,
         unrealized: ZERO,
         total: ZERO,
+        cost: ZERO,
+        averagePrice: ZERO
       };
     }
 
     const position = plResult!.numOwned;
     const realized = plResult!.profit;
-    const averagePrice = plResult!.moneySpent.dividedBy(position);
+    const cost = plResult!.moneySpent;
+    const averagePrice = cost.dividedBy(position);
 
     let lastPrice = ZERO;
     let unrealized = ZERO;
@@ -194,6 +203,8 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
       realized,
       unrealized,
       total,
+      averagePrice,
+      cost
     };
   });
 }
@@ -260,6 +271,8 @@ export async function getProfitLoss(db: Knex, augur: Augur, params: GetProfitLos
       realized: ZERO,
       unrealized: ZERO,
       total: ZERO,
+      cost: ZERO,
+      averagePrice: ZERO
     }));
   }
 
@@ -292,6 +305,8 @@ export async function getProfitLossSummary(db: Knex, augur: Augur, params: GetPr
       realized: startProfit.realized.negated(),
       unrealized: startProfit.unrealized.negated(),
       total: startProfit.total.negated(),
+      cost: startProfit.cost.negated(),
+      averagePrice: startProfit.averagePrice
     };
 
     result[days] = sumProfitLossResults(endProfit, negativeStartProfit);
