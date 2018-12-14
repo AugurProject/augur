@@ -84,7 +84,7 @@ class MarketOutcomeCandlestick extends React.Component {
     this.state = MarketOutcomeCandlestick.getDerivedStateFromProps(props, {
       chartDim: {
         right: 0,
-        left: 50,
+        left: 20,
         stick: 5,
         tickOffset: 10
       },
@@ -365,7 +365,7 @@ function determineDrawParams({
     top: 0,
     bottom: 30,
     right: 0,
-    left: 50,
+    left: 20,
     stick: 5,
     tickOffset: 10
   };
