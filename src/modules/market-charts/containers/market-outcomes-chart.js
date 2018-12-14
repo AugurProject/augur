@@ -34,6 +34,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   return {
+    isMobileSmall: state.appStatus.isMobileSmall,
     creationTime: creationTimestamp,
     currentTimestamp,
     estimatedInitialPrice,

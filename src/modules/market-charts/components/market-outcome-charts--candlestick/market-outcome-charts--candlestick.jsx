@@ -21,6 +21,7 @@ class MarketOutcomeCandlestick extends React.Component {
     currentTimeInSeconds: PropTypes.number,
     fixedPrecision: PropTypes.number.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
     marketMax: CustomPropTypes.bigNumber.isRequired,
     marketMin: CustomPropTypes.bigNumber.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
@@ -47,7 +48,8 @@ class MarketOutcomeCandlestick extends React.Component {
       orderBookKeys,
       priceTimeSeries,
       selectedPeriod,
-      selectedRange
+      selectedRange,
+      isMobileSmall
     } = nextProps;
 
     const { candleDim, containerHeight, containerWidth } = prevState;
@@ -69,7 +71,8 @@ class MarketOutcomeCandlestick extends React.Component {
       outcomeBounds,
       priceTimeSeries,
       selectedPeriod,
-      selectedRange
+      selectedRange,
+      isMobileSmall
     });
 
     return {
@@ -84,7 +87,7 @@ class MarketOutcomeCandlestick extends React.Component {
     this.state = MarketOutcomeCandlestick.getDerivedStateFromProps(props, {
       chartDim: {
         right: 0,
-        left: 20,
+        left: props.isMobileSmall ? 20 : 50,
         stick: 5,
         tickOffset: 10
       },
@@ -358,14 +361,15 @@ function determineDrawParams({
   marketMax,
   marketMin,
   priceTimeSeries,
-  selectedRange
+  selectedRange,
+  isMobileSmall
 }) {
   // Dimensions/Positioning
   const chartDim = {
     top: 0,
     bottom: 30,
     right: 0,
-    left: 20,
+    left: isMobileSmall ? 20 : 50,
     stick: 5,
     tickOffset: 10
   };

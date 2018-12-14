@@ -20,7 +20,8 @@ export default class MarketOutcomesChart extends Component {
     fixedPrecision: PropTypes.number.isRequired,
     hasPriceHistory: PropTypes.bool.isRequired,
     bucketedPriceTimeSeries: PropTypes.object.isRequired,
-    pricePrecision: PropTypes.number.isRequired
+    pricePrecision: PropTypes.number.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -74,7 +75,8 @@ export default class MarketOutcomesChart extends Component {
       minPrice,
       outcomes,
       hasPriceHistory,
-      bucketedPriceTimeSeries
+      bucketedPriceTimeSeries,
+      isMobileSmall
     } = this.props;
     // this is stupid but done for prop-type validation.
     this.drawChart({
@@ -86,7 +88,8 @@ export default class MarketOutcomesChart extends Component {
       minPrice,
       outcomes,
       hasPriceHistory,
-      bucketedPriceTimeSeries
+      bucketedPriceTimeSeries,
+      isMobileSmall
     });
   }
 
@@ -99,7 +102,8 @@ export default class MarketOutcomesChart extends Component {
     outcomes,
     hasPriceHistory,
     bucketedPriceTimeSeries,
-    pricePrecision
+    pricePrecision,
+    isMobileSmall
   }) {
     if (this.outcomesChart) {
       const drawParams = determineDrawParams({
@@ -111,7 +115,8 @@ export default class MarketOutcomesChart extends Component {
         minPrice,
         outcomes,
         hasPriceHistory,
-        bucketedPriceTimeSeries
+        bucketedPriceTimeSeries,
+        isMobileSmall
       });
       const fauxDiv = new ReactFauxDOM.Element("div");
       const chart = d3
@@ -216,14 +221,15 @@ function determineDrawParams(options) {
     drawContainer,
     maxPrice,
     minPrice,
-    bucketedPriceTimeSeries
+    bucketedPriceTimeSeries,
+    isMobileSmall
   } = options;
 
   const chartDim = {
     top: 20,
     right: 0,
     bottom: 30,
-    left: 50,
+    left: isMobileSmall ? 10 : 50,
     tickOffset: 10
   };
 

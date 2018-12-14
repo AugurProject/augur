@@ -23,6 +23,7 @@ export default class MarketOutcomeCharts extends Component {
     excludeCandlestick: PropTypes.bool,
     hasOrders: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
     marketDepth: PropTypes.object.isRequired,
     maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
     minPrice: PropTypes.instanceOf(BigNumber).isRequired,
@@ -233,6 +234,7 @@ export default class MarketOutcomeCharts extends Component {
       updateSelectedOrderProperties,
       excludeCandlestick,
       isMobile,
+      isMobileSmall,
       fixedPrecision,
       pricePrecision,
       updatePrecision
@@ -262,6 +264,7 @@ export default class MarketOutcomeCharts extends Component {
                 currentTimeInSeconds={currentTimeInSeconds}
                 outcomeName={outcomeName}
                 isMobile={isMobile}
+                isMobileSmall={isMobileSmall}
                 sharedChartMargins={this.sharedChartMargins}
                 priceTimeSeries={s.priceTimeSeriesCandleStick}
                 selectedPeriod={s.selectedPeriod}
