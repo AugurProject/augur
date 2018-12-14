@@ -16,13 +16,13 @@ export async function increaseTokenBalance(db: Knex, augur: Augur, token: Addres
   const oldBalance: BalanceResult = await db.first("balance").from("balances").where({ token, owner });
   let balance = amount;
   if (oldBalance == null) {
-    await db.insert({ owner, token, balance: amount.toString() }).into("balances");
+    await db.insert({ owner, token, balance: balance.toString() }).into("balances");
   } else {
     balance = oldBalance.balance.plus(amount);
     await db.update({ balance: balance.toString() }).into("balances").where({ token, owner });
   }
 
-  if (log.tokenType === TokenType.ShareToken) {
+  if (parseInt(log.tokenType, 10) === TokenType.ShareToken) {
     await updateProfitLossChangeShareBalance(db, augur, token, balance, owner, log.transactionHash);
   }
 }

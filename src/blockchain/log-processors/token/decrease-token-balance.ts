@@ -18,7 +18,7 @@ export async function decreaseTokenBalance(db: Knex, augur: Augur, token: Addres
   const balance = oldBalance.balance.minus(amount);
   await db.update({ balance: balance.toString() }).into("balances").where({ token, owner });
 
-  if (log.tokenType === TokenType.ShareToken) {
+  if (parseInt(log.tokenType, 10) === TokenType.ShareToken) {
     await updateProfitLossChangeShareBalance(db, augur, token, balance, owner, log.transactionHash);
   }
 }
