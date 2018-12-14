@@ -117,7 +117,7 @@ var methods = {
         help:
           'Outcome, sets outcome to use, negative outcome use \\"-10\\"'
       },
-      description: { default: "", short: "d", help: "Add description" },
+      description: { default: "designate report", short: "d", help: "Add description" },
       noPush: {
         short: "n",
         flag: true,
@@ -141,7 +141,7 @@ var methods = {
         help:
           'Outcome, sets outcome to use, negative outcome use \\"-10\\"'
       },
-      description: { default: "", short: "d", help: "Add description" },
+      description: { default: "initial report", short: "d", help: "Add description" },
       noPush: {
         short: "n",
         flag: true,
@@ -166,7 +166,7 @@ var methods = {
           'Outcome, sets outcome to use, negative outcome use \\"-10\\"'
       },
       amount: { short: "a", help: "Optional: amount of REP to dispute with" },
-      description: { default: "", short: "d", help: "Add description" },
+      description: { default: "dispute contribute", short: "d", help: "Add description" },
       noPush: {
         short: "n",
         flag: true,

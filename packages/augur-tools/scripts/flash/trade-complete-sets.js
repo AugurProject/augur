@@ -128,28 +128,15 @@ function tradeCompleteSets(augur, args, auth, callback) {
           return callback(err);
         }
         if (!result) return callback("Complete Sets Sell failed");
-        augur.api.Universe.getNextFeeWindow({ tx: { to: universe } }, function (err, nextFeeWindow) {
+        getOpenInterest(augur, universe, function (err, openInterest) {
           if (err) {
             console.log(chalk.red(err));
             return callback(err);
           }
-          console.log(chalk.yellow.dim("Next Fee Window:"), chalk.yellow(nextFeeWindow));
-          showCashBalance(augur, nextFeeWindow, function (err) {
-            if (err) {
-              console.log(chalk.red(err));
-              return callback(err);
-            }
-            getOpenInterest(augur, universe, function (err, openInterest) {
-              if (err) {
-                console.log(chalk.red(err));
-                return callback(err);
-              }
-              var openInterestEther = speedomatic.bignum(openInterest);
-              var endingOI = speedomatic.unfix(openInterestEther, "string");
-              console.log(chalk.cyan.dim("Open Interest:"), chalk.green(endingOI));
-              return callback(null);
-            });
-          });
+          var openInterestEther = speedomatic.bignum(openInterest);
+          var endingOI = speedomatic.unfix(openInterestEther, "string");
+          console.log(chalk.cyan.dim("Open Interest:"), chalk.green(endingOI));
+          return callback(null);
         });
       });
     });

@@ -26,6 +26,7 @@ function callFinalize(augur, marketId, auth, callback) {
     },
     onFailed: function (err) {
       console.log(chalk.red.dim("Failed:"), chalk.red(JSON.stringify(err)));
+      console.error("Failed to finalize market");
       callback(err);
     },
   });
@@ -38,21 +39,21 @@ function finalizeMarket(augur, args, auth, callback) {
   }
   var marketId = args.opt.marketId;
   var noPush = args.opt.noPush;
-  if (noPush) return callFinalize(augur, marketId, callback);
+  if (noPush) return callFinalize(augur, marketId, auth, callback);
 
   var marketPayload = { tx: { to: marketId } };
-  augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowAddress) {
+  augur.api.Market.getDisputeWindow(marketPayload, function (err, disputeWindowAddress) {
     if (err) {
       console.error(err);
       return callback(err);
     }
-    if (feeWindowAddress === "0x0000000000000000000000000000000000000000") {
+    if (disputeWindowAddress === "0x0000000000000000000000000000000000000000") {
       console.log(chalk.red("Market has not be reported on, need initial-report before finalization"));
       return callback(null);
     }
-    var feeWindowPayload = { tx: { to: feeWindowAddress } };
-    augur.api.FeeWindow.getEndTime(feeWindowPayload, function (err, endTime) {
-      endTime = parseInt(endTime, 10) + 10000; // past fee window end time
+    var disputeWindowPayload = { tx: { to: disputeWindowAddress } };
+    augur.api.DisputeWindow.getEndTime(disputeWindowPayload, function (err, endTime) {
+      endTime = parseInt(endTime, 10) + 10000; // past dispute window end time
       getTime(augur, auth, function (err, timeResult) {
         if (err) {
           console.log(chalk.red(err));
