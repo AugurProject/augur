@@ -26,10 +26,11 @@ function initialReport(augur, args, auth, callback) {
   var outcome = args.opt.outcome;
   var description = args.opt.description;
   var noPush = args.opt.noPush;
+  var asPrice = args.opt.asPrice;
   augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
     var market = marketsInfo[0];
     var marketPayload = { tx: { to: marketId } };
-    var payoutNumerators = getPayoutNumerators(market, outcome);
+    var payoutNumerators = getPayoutNumerators(market, outcome, asPrice);
     if (noPush) {
       doInitialReport(augur, marketId, payoutNumerators, description, auth, function (err) {
         if (err) {

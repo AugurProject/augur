@@ -58,10 +58,10 @@ function dispute(augur, marketId, payoutNumerators, auth, timeAddress, currentRo
   });
 }
 
-function doReporting(augur, market, timeResult, auth, rounds, callback) {
+function doReporting(augur, market, timeResult, auth, rounds, asPrice, callback) {
   var marketId = market.id;
   var priceOrOutcome = market.marketType === "scalar" ? market.maxPrice : 0;
-  var payoutNumerators = getPayoutNumerators(market, priceOrOutcome);
+  var payoutNumerators = getPayoutNumerators(market, priceOrOutcome, asPrice);
 
   augur.api.Market.getDisputeWindow({ tx: { to: marketId } }, function(err, disputeWindow) {
     if (err) {
@@ -89,6 +89,8 @@ function forceDispute(augur, args, auth, callback) {
   }
   var marketId = args.opt.marketId;
   var rounds = parseInt(args.opt.rounds, 10);
+  var asPrice = args.opt.asPrice;
+
   repFaucet(augur, 10000000, auth, function(err) {
     if (err) return callback(err);
     augur.markets.getMarketsInfo({ marketIds: [marketId] }, function(err, marketsInfo) {
@@ -117,7 +119,7 @@ function forceDispute(augur, args, auth, callback) {
               console.log(chalk.red(err));
               return callback(err);
             }
-            doReporting(augur, market, timeResult, auth, rounds, callback);
+            doReporting(augur, market, timeResult, auth, rounds, asPrice, callback);
           });
         });
       });

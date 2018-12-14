@@ -24,6 +24,7 @@ function fork(augur, args, auth, callback) {
     return callback(null);
   }
   var marketId = args.opt.marketId;
+  var asPrice = args.opt.asPrice;
   repFaucet(augur, 10000000, auth, function (err) {
     if (err) return callback(err);
     augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
@@ -45,7 +46,8 @@ function fork(augur, args, auth, callback) {
               return callback(err);
             }
             var priceOrOutcome = market.marketType === "scalar" ? market.maxPrice : 0;
-            var payoutNumerators = getPayoutNumerators(market, priceOrOutcome);
+            var payoutNumerators = getPayoutNumerators(market, priceOrOutcome, asPrice);
+
             goToFork(augur, marketId, payoutNumerators, timeResult.timeAddress, args.opt.stopsBefore, auth, function (err) {
               if (err) {
                 console.log(chalk.red(err));
