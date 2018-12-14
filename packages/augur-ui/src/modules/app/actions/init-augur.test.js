@@ -41,10 +41,19 @@ jest.mock("config/network.json", () => ({
 }));
 
 jest.mock("services/augurjs", () => ({
-  rpc: {
-    eth: { accounts: cb => cb(null, ["0xa11ce"]) }
+  augur: {
+    rpc: {
+      eth: { accounts: cb => cb(null, ["0xa11ce"]) },
+      constants: {
+        ACCOUNT_TYPES: {
+          UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+          META_MASK: "metaMask"
+        }
+      }
+    },
+    contracts: { addresses: { 4: { Universe: "0xb0b" } } },
+    connect: jest.fn(() => {})
   },
-  contracts: { addresses: { 4: { Universe: "0xb0b" } } },
   connect: jest.fn(() => {})
 }));
 
