@@ -1,0 +1,7 @@
+version: "3.2"
+services:
+  geth:
+    image: "augurproject/dev-pop-geth-v2:${TAG}"
+    ports:
+      - "8545:8545"
+      - "8546:8546"

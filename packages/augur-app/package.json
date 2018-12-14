@@ -7,7 +7,7 @@
   "main": "./dist/main/main.js",
   "scripts": {
     "dev": "electron-webpack dev",
-    "watch": "electron-webpack dev",
+    "watch": "node -e \"console.log('Nothing to do')\"",
     "compile": "electron-webpack",
     "publish": "npm run compile && electron-builder  --publish always",
     "make": "npm run compile && electron-builder --publish always",

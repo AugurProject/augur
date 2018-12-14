@@ -3,5 +3,8 @@
   "version": "7.0.0-0",
   "description": "ABI and Contract Address Artifacts",
   "author": "Augur Team <team@augur.net>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "watch": "node -e \"console.log('Nothing to do')\""
+  }
 }

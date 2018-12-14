@@ -69,7 +69,8 @@
     "docker:deploy:rinkeby": "npm run docker:deploy:net -- rinkeby",
     "docker:deploy:ropsten": "npm run docker:deploy:net -- ropsten",
     "docker:deploy:foundation": "npm run docker:deploy:net -- foundation",
-    "docker:deploy": "npm run docker:deploy:net -- aura clique rinkeby"
+    "docker:deploy": "npm run docker:deploy:net -- aura clique rinkeby",
+    "watch": "node -e \"console.log('Nothing to do')\""
   },
   "dependencies": {
     "@types/get-port": "3.2.0",

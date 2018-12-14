@@ -2,7 +2,7 @@
 const options = require("options-parser");
 const fs = require("fs");
 const fileType = "utf8";
-const dockerRunFile = "../augur-artifacts/docker.json";
+const dockerRunFile = require("augur-artifacts/docker.json");
 
 function errorOccurred(err, opts) {
   if (err) {
@@ -21,17 +21,10 @@ var args = options.parse(opts, process.argv, function(error) {
 });
 
 const imageName = args.opt.imageName;
+const result = dockerRunFile[imageName];
 
-fs.readFile(dockerRunFile, fileType, function(err, content) {
-  errorOccurred(err);
-  if (!content || content.length === 0) {
-    errorOccurred("docker.json file has no content");
-  }
-  const existing = JSON.parse(content);
-  const result = existing[imageName];
+if (!result || result.length == 0) {
+  errorOccurred(`docker.json file doesn't contain ${imageName}`);
+}
 
-  if (!result || result.length == 0) {
-    errorOccurred(`docker.json file doesn't contain ${imageName}`);
-  }
-  console.log(result);
-});
+console.log(result);

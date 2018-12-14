@@ -45,7 +45,8 @@
     "docker:spin-down": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose down",
     "git:push:protected": "PUSH_PROTECTED_BRANCHES=true git push",
     "prepush": "node scripts/pre-push.js",
-    "version": "npm run build:mainnet"
+    "version": "npm run build:mainnet",
+    "watch": "node scripts/dev.js"
   },
   "dependencies": {
     "@0xproject/order-utils": "^1.0.7",
