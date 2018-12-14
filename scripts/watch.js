@@ -3,21 +3,21 @@ const shell = require("shelljs");
 const Listr = require("listr");
 
 const runTemplate = workspaceName => () =>
-  new Promise((resolve, reject) => {
-    shell.exec(
-      `yarn workspace ${workspaceName} watch`,
-      {},
-      (code, stdout, stderr) => {
-        if (code !== 0) {
-          console.error(stdout, stderr);
-          reject(new Error());
-          shell.exit(code);
-        }
+  setTimeout(
+    () =>
+      new Promise((resolve, reject) => {
+        shell.exec(`yarn workspace ${workspaceName} watch`, {}, (code, stdout, stderr) => {
+          if (code !== 0) {
+            console.error(stdout, stderr);
+            reject(new Error());
+            shell.exit(code);
+          }
 
-        resolve();
-      }
-    );
-  });
+          resolve();
+        });
+      }),
+    1000
+  );
 
 const workspaces = ["augur-ui", "augur-node", "augur-tools"];
 const tasks = new Listr(

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IMAGE=$1
-TAG=$(node ./scripts/get-image-id.js -n $IMAGE)
+TAG=$(node ./scripts/get-image-id.js -n $IMAGE | head -n 1)
 
 echo "Running Geth with contracts deployed from ${IMAGE}:${TAG}"
 docker pull $IMAGE:$TAG
