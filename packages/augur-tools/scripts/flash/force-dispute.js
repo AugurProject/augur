@@ -21,28 +21,37 @@ function help() {
 function dispute(augur, marketId, payoutNumerators, auth, timeAddress, currentRound, totalRounds, callback) {
   console.log(chalk.yellow("Dispute Round:", currentRound));
   var ALL_THE_REP = 6000000000000000000000000;
-  augur.api.Market.getDisputeWindow({tx: { to: marketId}}, function (err, disputeWindow) {
+  augur.api.Market.getDisputeWindow({ tx: { to: marketId } }, function(err, disputeWindow) {
     if (err) {
       console.log(chalk.red(err));
       return callback(err);
     }
-    augur.api.DisputeWindow.getStartTime({ tx: { to: disputeWindow } }, function (err, disputeWindowStartTime) {
+    augur.api.DisputeWindow.getStartTime({ tx: { to: disputeWindow } }, function(err, disputeWindowStartTime) {
       if (err) {
         console.log(chalk.red(err));
         callback("Could not get dispute Window start time");
       }
-      setTimestamp(augur, parseInt(disputeWindowStartTime, 10) + 1, timeAddress, auth, function (err) {
+      setTimestamp(augur, parseInt(disputeWindowStartTime, 10) + 1, timeAddress, auth, function(err) {
         if (err) {
           console.log(chalk.red(err));
           return callback(err);
         }
-        doMarketContribute(augur, marketId, ALL_THE_REP, payoutNumerators, "force dispute", auth, function (err) {
+        doMarketContribute(augur, marketId, ALL_THE_REP, payoutNumerators, "force dispute", auth, function(err) {
           if (err) {
             console.log(chalk.red(err));
             return callback(err);
           }
           if (currentRound === totalRounds - 1) return callback(null);
-          dispute(augur, marketId, payoutNumerators.reverse(), auth, timeAddress, ++currentRound, totalRounds, callback);
+          dispute(
+            augur,
+            marketId,
+            payoutNumerators.reverse(),
+            auth,
+            timeAddress,
+            ++currentRound,
+            totalRounds,
+            callback
+          );
         });
       });
     });
@@ -54,7 +63,7 @@ function doReporting(augur, market, timeResult, auth, rounds, callback) {
   var priceOrOutcome = market.marketType === "scalar" ? market.maxPrice : 0;
   var payoutNumerators = getPayoutNumerators(market, priceOrOutcome);
 
-  augur.api.Market.getDisputeWindow({tx: { to: marketId}}, function (err, disputeWindow) {
+  augur.api.Market.getDisputeWindow({ tx: { to: marketId } }, function(err, disputeWindow) {
     if (err) {
       console.log(chalk.red(err));
       return callback(err);
@@ -62,7 +71,7 @@ function doReporting(augur, market, timeResult, auth, rounds, callback) {
     if (disputeWindow !== "0x0000000000000000000000000000000000000000") {
       dispute(augur, marketId, payoutNumerators.reverse(), auth, timeResult.timeAddress, 0, rounds, callback);
     } else {
-      doInitialReport(augur, marketId, payoutNumerators, "Initial report", auth, function (err) {
+      doInitialReport(augur, marketId, payoutNumerators, "Initial report", auth, function(err) {
         if (err) {
           console.log(chalk.red(err));
           return callback(err);
@@ -80,30 +89,30 @@ function forceDispute(augur, args, auth, callback) {
   }
   var marketId = args.opt.marketId;
   var rounds = parseInt(args.opt.rounds, 10);
-  repFaucet(augur, 10000000, auth, function (err) {
+  repFaucet(augur, 10000000, auth, function(err) {
     if (err) return callback(err);
-    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function(err, marketsInfo) {
       if (err) {
         console.log(chalk.red(err));
         return callback(err);
       }
       var market = marketsInfo[0];
       var marketPayload = { tx: { to: marketId } };
-      augur.api.Market.getEndTime(marketPayload, function (err, endTime) {
+      augur.api.Market.getEndTime(marketPayload, function(err, endTime) {
         if (err) {
           console.log(chalk.red(err));
           return callback(err);
         }
         displayTime("Market End Time", endTime);
-        getTime(augur, auth, function (err, timeResult) {
+        getTime(augur, auth, function(err, timeResult) {
           if (err) {
             console.log(chalk.red(err));
             return callback(err);
           }
           var day = 108000; // day
-          endTime = parseInt(endTime, 10) + (day * 3); // push time after designated reporter time
+          endTime = parseInt(endTime, 10) + day * 3; // push time after designated reporter time
           displayTime("Move time to ", endTime);
-          setTimestamp(augur, endTime, timeResult.timeAddress, auth, function (err) {
+          setTimestamp(augur, endTime, timeResult.timeAddress, auth, function(err) {
             if (err) {
               console.log(chalk.red(err));
               return callback(err);

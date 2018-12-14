@@ -17,17 +17,9 @@ var day = 108000; // day
 
 function help() {
   console.log(chalk.red("This command is meant to dispute one round"));
-  console.log(
-    chalk.red(
-      "Time is pushed into the next dispute windows if not in initial multiple dispute window"
-    )
-  );
+  console.log(chalk.red("Time is pushed into the next dispute windows if not in initial multiple dispute window"));
   console.log(chalk.red("user will be given REP if balance is 0"));
-  console.log(
-    chalk.red(
-      "Use noPush to just dispute contribute and not worry about moving time"
-    )
-  );
+  console.log(chalk.red("Use noPush to just dispute contribute and not worry about moving time"));
 }
 
 function disputeContribute(augur, args, auth, callback) {
@@ -46,10 +38,7 @@ function disputeContribute(augur, args, auth, callback) {
       return callback(err);
     }
     if (err) return console.error(err);
-    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function(
-      err,
-      marketsInfo
-    ) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function(err, marketsInfo) {
       if (err) {
         console.log(chalk.red(err));
         return callback("Could not get market info");
@@ -57,8 +46,7 @@ function disputeContribute(augur, args, auth, callback) {
 
       var market = marketsInfo[0];
       var payoutNumerators = getPayoutNumerators(market, outcome);
-      var universe =
-        augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
+      var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
       getBalance(augur, universe, auth.address, function(err, balances) {
         if (err) {
           console.log(chalk.red(err));
@@ -72,222 +60,137 @@ function disputeContribute(augur, args, auth, callback) {
         console.log("Ether: " + chalk.green(balances.ether));
         console.log("Rep:   " + chalk.green(balances.reputation));
         var universePayload = { tx: { to: universe } };
-        augur.api.Universe.getDisputeThresholdForDisputePacing(
-          universePayload,
-          (err, threshold) => {
-            if (err) {
-              return callback(err);
-            }
-            var attoThreshold = new BigNumber(threshold).toFixed();
-            console.log(
-              chalk.cyan("Dispute Threshold:"),
-              chalk.green(attoThreshold)
-            );
+        augur.api.Universe.getDisputeThresholdForDisputePacing(universePayload, (err, threshold) => {
+          if (err) {
+            return callback(err);
+          }
+          var attoThreshold = new BigNumber(threshold).toFixed();
+          console.log(chalk.cyan("Dispute Threshold:"), chalk.green(attoThreshold));
 
-            var marketPayload = { tx: { to: marketId } };
-            augur.api.Market.derivePayoutDistributionHash(
-              Object.assign(marketPayload, {
-                _payoutNumerators: payoutNumerators
-              }),
-              (err, disputeHash) => {
+          var marketPayload = { tx: { to: marketId } };
+          augur.api.Market.derivePayoutDistributionHash(
+            Object.assign(marketPayload, {
+              _payoutNumerators: payoutNumerators
+            }),
+            (err, disputeHash) => {
+              if (err) {
+                console.log(chalk.red(err));
+                return callback(err);
+              }
+              augur.api.Market.getWinningReportingParticipant(marketPayload, (err, winningDisputeCrowdsourcer) => {
                 if (err) {
                   console.log(chalk.red(err));
                   return callback(err);
                 }
-                augur.api.Market.getWinningReportingParticipant(
-                  marketPayload,
-                  (err, winningDisputeCrowdsourcer) => {
+                const disputerPayload = {
+                  tx: { to: winningDisputeCrowdsourcer }
+                };
+                augur.api.DisputeCrowdsourcer.getPayoutDistributionHash(disputerPayload, (err, winningHash) => {
+                  if (err) {
+                    console.log(chalk.red(err));
+                    return callback(err);
+                  }
+                  if (winningHash === disputeHash) {
+                    return callback("This outcome is already winning");
+                  }
+                  augur.api.DisputeCrowdsourcer.getSize(disputerPayload, (err, disputeSize) => {
                     if (err) {
-                      console.log(chalk.red(err));
-                      return callback(err);
+                      console.error("Could not get dispute crowedsourcer current bond size");
+                    } else {
+                      console.log(
+                        chalk.cyan("Winning DisputeCrowdsourcer Size:"),
+                        chalk.green(new BigNumber(disputeSize).toFixed())
+                      );
                     }
-                    const disputerPayload = {
-                      tx: { to: winningDisputeCrowdsourcer }
-                    };
-                    augur.api.DisputeCrowdsourcer.getPayoutDistributionHash(
-                      disputerPayload,
-                      (err, winningHash) => {
+                    if (noPush) {
+                      doMarketContribute(augur, marketId, attoREP, payoutNumerators, description, auth, function(err) {
+                        if (err) {
+                          return callback("Market contribute Failed");
+                        }
+                        console.log(chalk.green("Market contribute Done"));
+                        return callback(null);
+                      });
+                    } else {
+                      augur.api.Market.getDisputeWindow(marketPayload, function(err, disputeWindowId) {
                         if (err) {
                           console.log(chalk.red(err));
-                          return callback(err);
+                          return callback("Could not get Dispute Window");
                         }
-                        if (winningHash === disputeHash) {
-                          return callback("This outcome is already winning");
+
+                        if (disputeWindowId === "0x0000000000000000000000000000000000000000") {
+                          console.log(chalk.red("disputeWindowId has not been created"));
+                          return callback("Market doesn't have dispute window, need to report");
                         }
-                        augur.api.DisputeCrowdsourcer.getSize(
-                          disputerPayload,
-                          (err, disputeSize) => {
+                        var disputeWindowPayload = {
+                          tx: { to: disputeWindowId }
+                        };
+                        augur.api.DisputeWindow.getStartTime(disputeWindowPayload, function(
+                          err,
+                          disputeWindowStartTime
+                        ) {
+                          if (err) {
+                            console.log(chalk.red(err));
+                            return callback("Could not get Dispute Window");
+                          }
+
+                          getTime(augur, auth, function(err, timeResult) {
                             if (err) {
-                              console.error(
-                                "Could not get dispute crowedsourcer current bond size"
-                              );
-                            } else {
-                              console.log(
-                                chalk.cyan("Winning DisputeCrowdsourcer Size:"),
-                                chalk.green(new BigNumber(disputeSize).toFixed())
-                              );
+                              console.log(chalk.red(err));
+                              return callback(err);
                             }
-                            if (noPush) {
-                              doMarketContribute(
-                                augur,
-                                marketId,
-                                attoREP,
-                                payoutNumerators,
-                                description,
-                                auth,
-                                function(err) {
-                                  if (err) {
-                                    return callback("Market contribute Failed");
-                                  }
-                                  console.log(
-                                    chalk.green("Market contribute Done")
-                                  );
-                                  return callback(null);
-                                }
+
+                            var setTime = parseInt(disputeWindowStartTime, 10) + day;
+                            displayTime("Current timestamp", timeResult.timestamp);
+                            displayTime("dispute Window end time", disputeWindowStartTime);
+                            displayTime("Set Time to", setTime);
+                            setTimestamp(augur, setTime, timeResult.timeAddress, auth, function(err) {
+                              if (err) {
+                                console.log(chalk.red(err));
+                                return callback(err);
+                              }
+                              console.log(
+                                chalk.yellow("sending amount REP"),
+                                chalk.yellow(attoREP),
+                                chalk.yellow(disputeAmount)
                               );
-                            } else {
-                              augur.api.Market.getDisputeWindow(
-                                marketPayload,
-                                function(err, disputeWindowId) {
-                                  if (err) {
-                                    console.log(chalk.red(err));
-                                    return callback(
-                                      "Could not get Dispute Window"
-                                    );
-                                  }
-
-                                  if (
-                                    disputeWindowId ===
-                                    "0x0000000000000000000000000000000000000000"
-                                  ) {
-                                    console.log(
-                                      chalk.red(
-                                        "disputeWindowId has not been created"
-                                      )
-                                    );
-                                    return callback(
-                                      "Market doesn't have dispute window, need to report"
-                                    );
-                                  }
-                                  var disputeWindowPayload = {
-                                    tx: { to: disputeWindowId }
-                                  };
-                                  augur.api.DisputeWindow.getStartTime(
-                                    disputeWindowPayload,
-                                    function(err, disputeWindowStartTime) {
+                              augur.api.DisputeWindow.isActive(disputeWindowPayload, function(err, result) {
+                                if (err) {
+                                  console.log(chalk.red(err));
+                                  return callback(err);
+                                }
+                                console.log(chalk.green.dim("Dispute Window is active"), chalk.green(result));
+                                if (result) {
+                                  doMarketContribute(
+                                    augur,
+                                    marketId,
+                                    attoREP,
+                                    payoutNumerators,
+                                    description,
+                                    auth,
+                                    function(err) {
                                       if (err) {
-                                        console.log(chalk.red(err));
-                                        return callback(
-                                          "Could not get Dispute Window"
-                                        );
+                                        return callback("Market contribute Failed");
                                       }
-
-                                      getTime(augur, auth, function(
-                                        err,
-                                        timeResult
-                                      ) {
-                                        if (err) {
-                                          console.log(chalk.red(err));
-                                          return callback(err);
-                                        }
-
-                                        var setTime =
-                                          parseInt(disputeWindowStartTime, 10) +
-                                          day;
-                                        displayTime(
-                                          "Current timestamp",
-                                          timeResult.timestamp
-                                        );
-                                        displayTime(
-                                          "dispute Window end time",
-                                          disputeWindowStartTime
-                                        );
-                                        displayTime("Set Time to", setTime);
-                                        setTimestamp(
-                                          augur,
-                                          setTime,
-                                          timeResult.timeAddress,
-                                          auth,
-                                          function(err) {
-                                            if (err) {
-                                              console.log(chalk.red(err));
-                                              return callback(err);
-                                            }
-
-                                            console.log(
-                                              chalk.yellow(
-                                                "sending amount REP"
-                                              ),
-                                              chalk.yellow(attoREP),
-                                              chalk.yellow(disputeAmount)
-                                            );
-                                            augur.api.DisputeWindow.isActive(
-                                              disputeWindowPayload,
-                                              function(err, result) {
-                                                if (err) {
-                                                  console.log(chalk.red(err));
-                                                  return callback(err);
-                                                }
-
-                                                console.log(
-                                                  chalk.green.dim(
-                                                    "Dispute Window is active"
-                                                  ),
-                                                  chalk.green(result)
-                                                );
-                                                if (result) {
-                                                  doMarketContribute(
-                                                    augur,
-                                                    marketId,
-                                                    attoREP,
-                                                    payoutNumerators,
-                                                    description,
-                                                    auth,
-                                                    function(err) {
-                                                      if (err) {
-                                                        return callback(
-                                                          "Market contribute Failed"
-                                                        );
-                                                      }
-
-                                                      console.log(
-                                                        chalk.green(
-                                                          "Market contribute Done"
-                                                        )
-                                                      );
-                                                      return callback(null);
-                                                    }
-                                                  );
-                                                } else {
-                                                  console.log(
-                                                    chalk.red(
-                                                      "Dispute Window isn't active"
-                                                    )
-                                                  );
-                                                  return callback(
-                                                    "Dispute Window isn't active"
-                                                  );
-                                                }
-                                              }
-                                            );
-                                          }
-                                        );
-                                      });
+                                      console.log(chalk.green("Market contribute Done"));
+                                      return callback(null);
                                     }
                                   );
+                                } else {
+                                  console.log(chalk.red("Dispute Window isn't active"));
+                                  return callback("Dispute Window isn't active");
                                 }
-                              );
-                            }
-                          }
-                        );
-                      }
-                    );
-                  }
-                );
-              }
-            );
-          }
-        );
+                              });
+                            });
+                          });
+                        });
+                      });
+                    }
+                  });
+                });
+              });
+            }
+          );
+        });
       });
     });
   });
