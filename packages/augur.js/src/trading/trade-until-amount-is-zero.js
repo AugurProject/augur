@@ -16,7 +16,7 @@ var constants = require("../constants");
 /**
  * @param {Object} p Parameters object.
  * @param {string} p._price Normalized limit price for this trade, as a base-10 string.
- * @param {string} p._fxpAmount Number of shares to trade, as a base-10 string.
+ * @param {string} p._amount Number of shares to trade, as a base-10 string.
  * @param {string} p.sharesProvided Number of shares already owned and provided for this trade, as a base-10 string.
  * @param {string} p.numTicks The number of ticks for this market.
  * @param {number} p._direction Order type (0 for "buy", 1 for "sell").

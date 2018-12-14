@@ -71,7 +71,7 @@ describe("trading/place-trade", function () {
         assert.strictEqual(p._direction, 0);
         assert.strictEqual(p._market, "MARKET_ADDRESS");
         assert.strictEqual(p._outcome, 2);
-        assert.strictEqual(p._fxpAmount, "10");
+        assert.strictEqual(p._amount, "10");
         assert.strictEqual(p._price, "2");
         assert.strictEqual(p._tradeGroupId, "0x1");
         assert.strictEqual(p._betterOrderId, "0x0");
@@ -134,7 +134,7 @@ describe("trading/place-trade", function () {
         assert.strictEqual(p._direction, 0);
         assert.strictEqual(p._market, "MARKET_ADDRESS");
         assert.strictEqual(p._outcome, 2);
-        assert.strictEqual(p._fxpAmount, "10");
+        assert.strictEqual(p._amount, "10");
         assert.strictEqual(p._price, "2");
         assert.strictEqual(p._tradeGroupId, "0x1");
         assert.strictEqual(p._betterOrderId, "BETTER_ORDER_ID");

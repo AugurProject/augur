@@ -38,7 +38,7 @@ function placeTrade(p) {
       if (err) return p.onFailed(err);
       tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount"]), {
         _price: p.limitPrice,
-        _fxpAmount: p.amount,
+        _amount: p.amount,
         numOutcomes: new BigNumber(numOutcomes, 16),
         _betterOrderId: (betterWorseOrders || {}).betterOrderId || "0x0",
         _worseOrderId: (betterWorseOrders || {}).worseOrderId || "0x0",
