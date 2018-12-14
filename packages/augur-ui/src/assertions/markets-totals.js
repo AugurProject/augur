@@ -1,6 +1,6 @@
 export default function(marketsTotals) {
   expect(marketsTotals).toBeDefined();
-  expect(typeof marketsTotals).toBe('object');
+  expect(typeof marketsTotals).toBe("object");
 
   checkDefinedAndNumber(marketsTotals.numAll, `numAll`);
   checkDefinedAndNumber(marketsTotals.numFavorites, `numFavorites`);
@@ -11,5 +11,5 @@ export default function(marketsTotals) {
 
 function checkDefinedAndNumber(obj) {
   expect(obj).toBeDefined();
-  expect(typeof obj).toBe('number');
+  expect(typeof obj).toBe("number");
 }

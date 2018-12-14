@@ -2,7 +2,6 @@ pragma solidity 0.4.24;
 
 import 'reporting/IUniverse.sol';
 import 'reporting/IAuctionToken.sol';
-import 'Controlled.sol';
 import 'libraries/token/VariableSupplyToken.sol';
 import 'libraries/ITyped.sol';
 import 'trading/ICash.sol';
@@ -10,23 +9,25 @@ import 'libraries/Initializable.sol';
 import 'reporting/IAuction.sol';
 
 
-contract AuctionToken is Controlled, ITyped, Initializable, VariableSupplyToken, IAuctionToken {
+contract AuctionToken is ITyped, Initializable, VariableSupplyToken, IAuctionToken {
 
     string constant public name = "Auction Token";
     uint8 constant public decimals = 18;
     string constant public symbol = "AUC";
 
+    IAugur public augur;
     IAuction public auction;
     IUniverse public universe;
     ICash public cash;
     ERC20 public redemptionToken; // The token being auctioned off and recieved at redemption
     uint256 public auctionIndex;
 
-    function initialize(IAuction _auction, ERC20 _redemptionToken, uint256 _auctionIndex) public beforeInitialized returns(bool) {
+    function initialize(IAugur _augur, IAuction _auction, ERC20 _redemptionToken, uint256 _auctionIndex) public beforeInitialized returns(bool) {
         endInitialization();
+        augur = _augur;
         auction = _auction;
         universe = auction.getUniverse();
-        cash = ICash(controller.lookup("Cash"));
+        cash = ICash(augur.lookup("Cash"));
         redemptionToken = _redemptionToken;
         auctionIndex = _auctionIndex;
         return true;
@@ -66,18 +67,18 @@ contract AuctionToken is Controlled, ITyped, Initializable, VariableSupplyToken,
     }
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
-        controller.getAugur().logAuctionTokensTransferred(universe, _from, _to, _value);
+        augur.logAuctionTokensTransferred(universe, _from, _to, _value);
         return true;
     }
 
     function onMint(address _target, uint256 _amount) internal returns (bool) {
         maxSupply = maxSupply.max(totalSupply());
-        controller.getAugur().logAuctionTokenMinted(universe, _target, _amount);
+        augur.logAuctionTokenMinted(universe, _target, _amount);
         return true;
     }
 
     function onBurn(address _target, uint256 _amount) internal returns (bool) {
-        controller.getAugur().logAuctionTokenBurned(universe, _target, _amount);
+        augur.logAuctionTokenBurned(universe, _target, _amount);
         return true;
     }
 }

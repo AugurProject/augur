@@ -1,7 +1,7 @@
 import { Abi } from 'ethereum';
 import { CompilerOutput } from 'solc';
 
-export class Contract {
+export class ContractData {
     public readonly relativeFilePath: string;
     public readonly contractName: string;
     public readonly abi: Abi;
@@ -16,15 +16,15 @@ export class Contract {
     }
 }
 
-export class Contracts implements Iterable<Contract> {
-    private readonly contracts = new Map<string, Contract>();
+export class Contracts implements Iterable<ContractData> {
+    private readonly contracts = new Map<string, ContractData>();
 
     public constructor(compilerOutput: CompilerOutput) {
         console.log(`Processing ${compilerOutput.contracts.length}`)
         for (let relativeFilePath in compilerOutput.contracts) {
             for (let contractName in compilerOutput.contracts[relativeFilePath]) {
                 const bytecode = Buffer.from(compilerOutput.contracts[relativeFilePath][contractName].evm.bytecode.object, 'hex');
-                const compiledContract = new Contract(relativeFilePath, contractName, compilerOutput.contracts[relativeFilePath][contractName].abi, bytecode);
+                const compiledContract = new ContractData(relativeFilePath, contractName, compilerOutput.contracts[relativeFilePath][contractName].abi, bytecode);
                 this.contracts.set(contractName, compiledContract);
             }
         }
@@ -34,12 +34,12 @@ export class Contracts implements Iterable<Contract> {
         return this.contracts.has(contractName);
     }
 
-    public get = (contractName: string): Contract => {
+    public get = (contractName: string): ContractData => {
         if (!this.contracts.has(contractName)) throw new Error(`${contractName} does not exist.`);
         return this.contracts.get(contractName)!;
     }
 
-    [Symbol.iterator](): Iterator<Contract> {
+    [Symbol.iterator](): Iterator<ContractData> {
         const contracts = this.contracts.values();
         return { next: contracts.next.bind(contracts) }
     }

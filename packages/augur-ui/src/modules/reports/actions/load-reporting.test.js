@@ -139,7 +139,7 @@ describe("loadReporting action", () => {
     ];
     const actual = store.getActions();
     // actions include load market info actions
-    expect(actual.length).toBe(6);
+    expect(actual).toHaveLength(6);
     expect(actual).toEqual(expected);
   });
 

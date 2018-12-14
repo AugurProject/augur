@@ -4,7 +4,12 @@ import configureMockStore from "redux-mock-store";
 import { BUY, SELL } from "modules/transactions/constants/types";
 import { buildCreateMarket } from "modules/markets/helpers/build-create-market";
 
-jest.mock("modules/transactions/actions/add-transactions");
+jest.mock("modules/transactions/actions/add-transactions", () => ({
+  addNewMarketCreationTransactions: jest.fn(() => ({
+    type: "ADD_NEW_MARKET_CREATION_TRANSACTIONS"
+  }))
+}));
+
 jest.mock("modules/markets/helpers/build-create-market");
 
 describe("modules/markets/actions/submit-new-market", () => {

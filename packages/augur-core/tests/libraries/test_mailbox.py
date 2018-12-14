@@ -61,22 +61,21 @@ def test_mailbox_cash_happy_path(localFixture, mailbox, cash):
         assert mailbox.withdrawEther()
 
 @fixture(scope="session")
-def localSnapshot(fixture, controllerSnapshot):
-    fixture.resetToSnapshot(controllerSnapshot)
+def localSnapshot(fixture, baseSnapshot):
+    fixture.resetToSnapshot(baseSnapshot)
 
     fixture.uploadAugur()
 
     # Upload a token
-    fixture.uploadAndAddToController("solidity_test_helpers/StandardTokenHelper.sol")
+    fixture.uploadAndAddToAugur("solidity_test_helpers/StandardTokenHelper.sol")
 
     # Upload Cash
-    cash = fixture.uploadAndAddToController("../source/contracts/trading/Cash.sol")
-    cash.setController(fixture.contracts['Controller'].address)
+    cash = fixture.uploadAndAddToAugur("../source/contracts/trading/Cash.sol")
 
     # Upload the mailbox
-    fixture.uploadAndAddToController("../source/contracts/reporting/Mailbox.sol")
-    mailboxFactory = fixture.uploadAndAddToController("../source/contracts/factories/MailboxFactory.sol")
-    mailboxAddress = mailboxFactory.createMailbox(fixture.contracts["Controller"].address, tester.a0, 0)
+    fixture.uploadAndAddToAugur("../source/contracts/reporting/Mailbox.sol")
+    mailboxFactory = fixture.uploadAndAddToAugur("../source/contracts/factories/MailboxFactory.sol")
+    mailboxAddress = mailboxFactory.createMailbox(fixture.contracts["Augur"].address, tester.a0, 0)
     fixture.contracts["Mailbox"] = fixture.applySignature("Mailbox", mailboxAddress)
     return fixture.createSnapshot()
 

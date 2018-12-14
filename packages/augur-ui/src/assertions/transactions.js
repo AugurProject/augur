@@ -6,10 +6,10 @@ export default function(transactions) {
 }
 
 function assertTransaction(transaction) {
-  expect(typeof transaction.id).toBe('string');
-  expect(typeof transaction.type).toBe('string');
-  expect(typeof transaction.status).toBe('string');
+  expect(typeof transaction.id).toBe("string");
+  expect(typeof transaction.type).toBe("string");
+  expect(typeof transaction.status).toBe("string");
   if (transaction.data) {
-    expect(typeof transaction).toBe('object');
+    expect(typeof transaction).toBe("object");
   }
 }

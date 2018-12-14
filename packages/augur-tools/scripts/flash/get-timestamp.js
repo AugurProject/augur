@@ -5,14 +5,14 @@
 var chalk = require("chalk");
 
 function getTime(augur, auth, callback) {
-  var controller =
-    augur.contracts.addresses[augur.rpc.getNetworkID()].Controller;
+  var augurContract =
+    augur.contracts.addresses[augur.rpc.getNetworkID()].Augur;
   var _key = "0x54696d6500000000000000000000000000000000000000000000000000000000"; // "Time"
-  console.log(_key, controller);
-  augur.api.Controller.lookup(
+  console.log(_key, augurContract);
+  augur.api.Augur.lookup(
     {
       meta: auth,
-      tx: { to: controller },
+      tx: { to: augurContract },
       _key
     },
     function(err, timeAddress) {
@@ -24,7 +24,7 @@ function getTime(augur, auth, callback) {
       if (timeAddress === "0x0000000000000000000000000000000000000000") {
         return callback("time contract address not found");
       }
-      augur.api.Controller.getTimestamp(function(err, timestamp) {
+      augur.api.Augur.getTimestamp(function(err, timestamp) {
         if (err) {
           console.log(chalk.red("issue getting timestamp"));
           return callback(err);

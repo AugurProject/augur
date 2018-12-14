@@ -1,4 +1,4 @@
-import assertNavItem from "assertions/common/nav-item";
+import assertNavItem from "src/assertions/common/nav-item";
 
 export default function(portfolioNavItems) {
   describe(`portfolio's navItems state`, () => {

@@ -30,7 +30,6 @@ var pushTimestamp = require("./push-timestamp");
 var setTimestamp = require("./set-timestamp-cmd");
 var forceDispute = require("./force-dispute");
 var forceFinalize = require("./force-finalize");
-var escapeHatch = require("./escape-hatch");
 var transferAssets = require("./transfer-assets");
 var tradeCompleteSets = require("./trade-complete-sets");
 var getTimestamp = require("./get-time")
@@ -367,16 +366,6 @@ var methods = {
     opts: {
       help: { flag: true, short: "h", help: "This help" },
       marketId: { required: true, short: "m", help: "Required market id" }
-    }
-  },
-  "escape-hatch": {
-    method: escapeHatch,
-    opts: {
-      help: {
-        flag: true,
-        short: "h",
-        help: "This help, turn the escape hatch on"
-      }
     }
   }
 };

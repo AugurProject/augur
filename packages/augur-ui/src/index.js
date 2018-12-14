@@ -5,7 +5,7 @@ const express = require("express");
 
 const compiler = webpack(config);
 
-module.exports = function(isDev = true) {
+module.exports = (isDev = true) => {
   if (isDev) {
     return devMiddleware(compiler, {
       publicPath: config.output.publicPath,

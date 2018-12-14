@@ -1,12 +1,16 @@
 import { createBigNumber } from "utils/create-big-number";
 import { ZERO } from "modules/trades/constants/numbers";
+import { augur } from "services/augurjs";
 
-const coreStats = require("modules/account/selectors/core-stats");
+jest.mock("modules/auth/actions/use-unlocked-account", () => {});
+jest.mock("services/augurjs");
 
 describe("modules/account/selectors/core-stats", () => {
-  beforeEach(() => {
+  afterAll(() => {
     jest.resetModules();
   });
+
+  const coreStats = require("modules/account/selectors/core-stats");
 
   describe("selectOutcomeLastPrice", () => {
     test("returned null when 'marketOutcomeData' is undefined", () => {
@@ -37,19 +41,22 @@ describe("modules/account/selectors/core-stats", () => {
   });
 
   describe("createPeriodPLSelector", () => {
-    test("returned null when 'accountTrades' is undefined", () => {
-      const selector = coreStats.createPeriodPLSelector(1);
+    const selector = coreStats.createPeriodPLSelector(1);
+    test("should return null when 'accountTrades' is undefined", () => {
       const actual = selector.resultFunc(undefined, {}, undefined);
       expect(actual).toBeNull();
     });
 
-    test("returned null when 'blockchain' is undefined", () => {
-      const selector = coreStats.createPeriodPLSelector(1);
+    test("should return null when 'blockchain' is undefined", () => {
       const actual = selector.resultFunc({}, undefined, undefined);
       expect(actual).toBeNull();
     });
 
-    test("returned 0 for a set period with no trades", () => {
+    test("should return 0 for a set period with no trades", () => {
+      augur.trading.calculateProfitLoss.mockImplementation(() => ({
+        realized: "0",
+        unrealized: "0"
+      }));
       const accountTrades = {
         "0xMarketID1": {
           1: [
@@ -78,8 +85,6 @@ describe("modules/account/selectors/core-stats", () => {
       const outcomesData = {
         "0xMarketID1": {}
       };
-
-      const selector = coreStats.createPeriodPLSelector(1);
 
       const actual = selector.resultFunc(
         accountTrades,
@@ -119,22 +124,10 @@ describe("modules/account/selectors/core-stats", () => {
       const outcomesData = {
         "0xMarketID1": {}
       };
-      const realAugur = require.requireActual("../../../services/augurjs.js");
-      jest.doMock("../../../services/augurjs.js", () => ({
-        constants: realAugur.constants,
-        augur: {
-          rpc: {
-            constants: realAugur.augur.rpc.constants
-          },
-          trading: {
-            calculateProfitLoss: () => ({
-              realized: "-1",
-              unrealized: "2"
-            })
-          }
-        }
+      augur.trading.calculateProfitLoss.mockImplementation(() => ({
+        realized: "3",
+        unrealized: "4"
       }));
-      const coreStats = require("modules/account/selectors/core-stats");
       const coreStatsMock = Object.assign(coreStats);
       coreStatsMock.selectOutcomeLastPrice = jest.fn(() => "0.2");
       const selector = coreStatsMock.createPeriodPLSelector(1);
@@ -145,7 +138,7 @@ describe("modules/account/selectors/core-stats", () => {
         outcomesData
       );
 
-      const expected = createBigNumber("2");
+      const expected = createBigNumber("14");
 
       expect(actual).toStrictEqual(expected);
     });

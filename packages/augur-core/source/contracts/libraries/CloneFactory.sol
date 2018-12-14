@@ -2,6 +2,7 @@ pragma solidity 0.4.24;
 
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1167.md
 
+
 contract CloneFactory {
     function createClone(address target) internal returns (address result) {
         bytes20 targetBytes = bytes20(target);

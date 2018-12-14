@@ -4,15 +4,15 @@ import 'reporting/IReportingParticipant.sol';
 import 'reporting/IMarket.sol';
 import 'reporting/IDisputeWindow.sol';
 import 'reporting/IReputationToken.sol';
-import 'Controlled.sol';
 
 
-contract BaseReportingParticipant is Controlled, IReportingParticipant {
+contract BaseReportingParticipant is IReportingParticipant {
     IMarket internal market;
     uint256 internal size;
     bytes32 internal payoutDistributionHash;
     uint256[] internal payoutNumerators;
     IReputationToken internal reputationToken;
+    IAugur public augur;
 
     function liquidateLosing() public returns (bool) {
         require(IMarket(msg.sender) == market);
@@ -30,7 +30,7 @@ contract BaseReportingParticipant is Controlled, IReportingParticipant {
         reputationToken.migrateOut(_newReputationToken, _balance);
         _newReputationToken.mintForReportingParticipant(size);
         reputationToken = _newReputationToken;
-        controller.getAugur().logReportingParticipantDisavowed(market.getUniverse(), market);
+        augur.logReportingParticipantDisavowed(market.getUniverse(), market);
         market = IMarket(0);
         return true;
     }

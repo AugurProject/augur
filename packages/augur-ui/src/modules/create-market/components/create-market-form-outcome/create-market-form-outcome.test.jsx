@@ -133,7 +133,6 @@ describe("create-market-form-outcome", () => {
           expect(newMarketObj.tickSize).toBe(1000);
         });
 
-
         test("should set validation message to true", () => {
           expect(
             newMarketObj.validations[newMarketObj.currentStep].tickSize

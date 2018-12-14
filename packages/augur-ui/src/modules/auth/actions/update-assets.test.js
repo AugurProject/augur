@@ -103,7 +103,7 @@ describe("modules/auth/actions/update-assets.js", () => {
     state: {
       loginAccount: {
         eth: 11,
-        rep: 11,
+        rep: 11
       },
       universe: {
         id: "myId"

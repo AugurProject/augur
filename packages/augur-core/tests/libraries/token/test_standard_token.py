@@ -6,7 +6,7 @@ from pytest import fixture, mark, raises
 
 @fixture(scope='session')
 def testerSnapshot(sessionFixture):
-    sessionFixture.uploadAndAddToController("solidity_test_helpers/StandardTokenHelper.sol")
+    sessionFixture.uploadAndAddToAugur("solidity_test_helpers/StandardTokenHelper.sol")
     standardToken = sessionFixture.contracts['StandardTokenHelper']
     return sessionFixture.createSnapshot()
 
@@ -145,4 +145,3 @@ def test_approval_increments(testStandardTokenFixture):
     assert standardToken.allowance(tester.a1, tester.a0) == 99
     assert standardToken.decreaseApproval(tester.a0, 1000, sender=tester.k1)
     assert standardToken.allowance(tester.a1, tester.a0) == 0
-

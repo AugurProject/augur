@@ -2,14 +2,13 @@ pragma solidity 0.4.24;
 
 
 import 'trading/IShareToken.sol';
-import 'Controlled.sol';
 import 'libraries/ITyped.sol';
 import 'libraries/Initializable.sol';
 import 'reporting/IMarket.sol';
 import 'TEST/MockVariableSupplyToken.sol';
 
 
-contract MockShareToken is Controlled, ITyped, Initializable, MockVariableSupplyToken, IShareToken {
+contract MockShareToken is ITyped, Initializable, MockVariableSupplyToken, IShareToken {
 
     string constant public name = "Shares";
     uint256 constant public decimals = 0;
@@ -64,13 +63,13 @@ contract MockShareToken is Controlled, ITyped, Initializable, MockVariableSupply
         return true;
     }
 
-    function createShares(address _owner, uint256 _fxpValue) external onlyWhitelistedCallers returns(bool) {
+    function createShares(address _owner, uint256 _fxpValue) external returns(bool) {
         createSharesOwnerValue = _owner;
         createSharesFxpValue = _fxpValue;
         return true;
     }
 
-    function destroyShares(address _owner, uint256 _fxpValue) external onlyWhitelistedCallers returns(bool) {
+    function destroyShares(address _owner, uint256 _fxpValue) external returns(bool) {
         destroySharesOwnerValue = _owner;
         destroySharesFxpValueValue = _fxpValue;
         return true;
@@ -96,7 +95,7 @@ contract MockShareToken is Controlled, ITyped, Initializable, MockVariableSupply
         return true;
     }
 
-    function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public onlyCaller("CancelOrder") afterInitialized returns (bool) {
+    function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         return true;
     }
 }

@@ -48,6 +48,7 @@ export const createPeriodPLSelector = period =>
               outcomesData[marketId],
               outcomeId
             );
+
             const { realized, unrealized } = augur.trading.calculateProfitLoss({
               trades: periodTrades,
               lastPrice

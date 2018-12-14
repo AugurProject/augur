@@ -1,21 +1,25 @@
 pragma solidity 0.4.24;
 
-import 'Controlled.sol';
 import 'libraries/Ownable.sol';
 import 'libraries/token/ERC20Basic.sol';
 import 'libraries/Initializable.sol';
 import 'reporting/IMailbox.sol';
 import 'reporting/IMarket.sol';
 import 'trading/ICash.sol';
+import 'IAugur.sol';
 
 
-contract Mailbox is Controlled, Ownable, Initializable, IMailbox {
+contract Mailbox is Ownable, Initializable, IMailbox {
     IMarket private market;
+    ICash public cash;
+    IAugur public augur;
 
-    function initialize(address _owner, IMarket _market) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, address _owner, IMarket _market) public beforeInitialized returns (bool) {
         endInitialization();
         owner = _owner;
         market = _market;
+        augur = _augur;
+        cash = ICash(augur.lookup("Cash"));
         return true;
     }
 
@@ -26,10 +30,9 @@ contract Mailbox is Controlled, Ownable, Initializable, IMailbox {
 
     function withdrawEther() public onlyOwner returns (bool) {
         // Withdraw any Cash balance
-        ICash _cash = ICash(controller.lookup("Cash"));
-        uint256 _tokenBalance = _cash.balanceOf(this);
+        uint256 _tokenBalance = cash.balanceOf(this);
         if (_tokenBalance > 0) {
-            _cash.withdrawEtherTo(owner, _tokenBalance);
+            cash.withdrawEtherTo(owner, _tokenBalance);
         }
         // Withdraw any ETH balance
         if (address(this).balance > 0) {
@@ -45,7 +48,7 @@ contract Mailbox is Controlled, Ownable, Initializable, IMailbox {
     }
 
     function onTransferOwnership(address _owner, address _newOwner) internal returns (bool) {
-        controller.getAugur().logMarketMailboxTransferred(market.getUniverse(), market, _owner, _newOwner);
+        augur.logMarketMailboxTransferred(market.getUniverse(), market, _owner, _newOwner);
         return true;
     }
 }

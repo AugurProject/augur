@@ -1,7 +1,6 @@
 pragma solidity 0.4.24;
 
 import 'reporting/IMarket.sol';
-import 'Controlled.sol';
 import 'libraries/ITyped.sol';
 import 'libraries/Initializable.sol';
 import 'libraries/Ownable.sol';
@@ -25,7 +24,7 @@ import 'reporting/Reporting.sol';
 import 'reporting/IInitialReporter.sol';
 
 
-contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
+contract Market is ITyped, Initializable, Ownable, IMarket {
     using SafeMathUint256 for uint256;
     using SafeMathInt256 for int256;
 
@@ -59,20 +58,23 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
     Map public crowdsourcers;
     IShareToken[] private shareTokens;
 
-    function initialize(IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public payable beforeInitialized returns (bool _success) {
+    IAugur public augur;
+
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public payable beforeInitialized returns (bool _success) {
         endInitialization();
+        augur = _augur;
         _numOutcomes += 1; // The INVALID outcome is always first
         require(MIN_OUTCOMES <= _numOutcomes && _numOutcomes <= MAX_OUTCOMES);
         require(_designatedReporterAddress != NULL_ADDRESS);
         require((_numTicks >= _numOutcomes));
         require(_feePerEthInAttoEth <= MAX_FEE_PER_ETH_IN_ATTOETH);
         require(_creator != NULL_ADDRESS);
-        uint256 _timestamp = controller.getTimestamp();
+        uint256 _timestamp = augur.getTimestamp();
         require(_timestamp < _endTime);
         require(_endTime < _timestamp + Reporting.getMaximumMarketDuration());
         universe = _universe;
         require(!universe.isForking());
-        cash = ICash(controller.lookup("Cash"));
+        cash = ICash(augur.lookup("Cash"));
         owner = _creator;
         noShowBondOwner = owner;
         assessFees();
@@ -80,10 +82,10 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
         numOutcomes = _numOutcomes;
         numTicks = _numTicks;
         feeDivisor = _feePerEthInAttoEth == 0 ? 0 : 1 ether / _feePerEthInAttoEth;
-        InitialReporterFactory _initialReporterFactory = InitialReporterFactory(controller.lookup("InitialReporterFactory"));
-        participants.push(_initialReporterFactory.createInitialReporter(controller, this, _designatedReporterAddress));
-        marketCreatorMailbox = MailboxFactory(controller.lookup("MailboxFactory")).createMailbox(controller, owner, this);
-        crowdsourcers = MapFactory(controller.lookup("MapFactory")).createMap(controller, this);
+        InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
+        participants.push(_initialReporterFactory.createInitialReporter(augur, this, _designatedReporterAddress));
+        marketCreatorMailbox = MailboxFactory(augur.lookup("MailboxFactory")).createMailbox(augur, owner, this);
+        crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, this);
         for (uint256 _outcome = 0; _outcome < numOutcomes; _outcome++) {
             shareTokens.push(createShareToken(_outcome));
         }
@@ -100,17 +102,17 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
     }
 
     function createShareToken(uint256 _outcome) private returns (IShareToken) {
-        return ShareTokenFactory(controller.lookup("ShareTokenFactory")).createShareToken(controller, this, _outcome);
+        return ShareTokenFactory(augur.lookup("ShareTokenFactory")).createShareToken(augur, this, _outcome);
     }
 
     // This will need to be called manually for each open market if a spender contract is updated
     function approveSpenders() public returns (bool) {
         bytes32[4] memory _names = [bytes32("CancelOrder"), bytes32("CompleteSets"), bytes32("FillOrder"), bytes32("ClaimTradingProceeds")];
         for (uint256 i = 0; i < _names.length; i++) {
-            require(cash.approve(controller.lookup(_names[i]), APPROVAL_AMOUNT));
+            require(cash.approve(augur.lookup(_names[i]), APPROVAL_AMOUNT));
         }
         for (uint256 j = 0; j < numOutcomes; j++) {
-            require(shareTokens[j].approve(controller.lookup("FillOrder"), APPROVAL_AMOUNT));
+            require(shareTokens[j].approve(augur.lookup("FillOrder"), APPROVAL_AMOUNT));
         }
         return true;
     }
@@ -123,14 +125,14 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
     function doInitialReportInternal(address _reporter, uint256[] _payoutNumerators, string _description) private returns (bool) {
         require(!universe.isForking());
         IInitialReporter _initialReporter = getInitialReporter();
-        uint256 _timestamp = controller.getTimestamp();
+        uint256 _timestamp = augur.getTimestamp();
         require(_timestamp > endTime);
         uint256 _initialReportStake = distributeInitialReportingRep(_reporter, _initialReporter);
         // The derive call will validate that an Invalid report is entirely paid out on the Invalid outcome
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
         disputeWindow = universe.getOrCreateNextDisputeWindow();
         _initialReporter.report(_reporter, _payoutDistributionHash, _payoutNumerators, _initialReportStake);
-        controller.getAugur().logInitialReportSubmitted(universe, _reporter, this, _initialReportStake, _initialReporter.designatedReporterShowed(), _payoutNumerators, _description);
+        augur.logInitialReportSubmitted(universe, _reporter, this, _initialReportStake, _initialReporter.designatedReporterShowed(), _payoutNumerators, _description);
         return true;
     }
 
@@ -162,7 +164,7 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
         require(_payoutDistributionHash != getWinningReportingParticipant().getPayoutDistributionHash());
         IDisputeCrowdsourcer _crowdsourcer = getOrCreateDisputeCrowdsourcer(_payoutDistributionHash, _payoutNumerators);
         uint256 _actualAmount = _crowdsourcer.contribute(msg.sender, _amount);
-        controller.getAugur().logDisputeCrowdsourcerContribution(universe, msg.sender, this, _crowdsourcer, _actualAmount, _description);
+        augur.logDisputeCrowdsourcerContribution(universe, msg.sender, this, _crowdsourcer, _actualAmount, _description);
         if (_crowdsourcer.totalSupply() == _crowdsourcer.getSize()) {
             finishedCrowdsourcingDisputeBond(_crowdsourcer);
         }
@@ -171,7 +173,7 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
 
     function finishedCrowdsourcingDisputeBond(IReportingParticipant _reportingParticipant) private returns (bool) {
         participants.push(_reportingParticipant);
-        crowdsourcers = MapFactory(controller.lookup("MapFactory")).createMap(controller, this); // disavow other crowdsourcers
+        crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, this); // disavow other crowdsourcers
         uint256 _crowdsourcerSize = IDisputeCrowdsourcer(_reportingParticipant).getSize();
         if (_crowdsourcerSize >= universe.getDisputeThresholdForFork()) {
             universe.fork();
@@ -181,7 +183,7 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
             }
             disputeWindow = universe.getOrCreateNextDisputeWindow();
         }
-        controller.getAugur().logDisputeCrowdsourcerCompleted(universe, this, _reportingParticipant);
+        augur.logDisputeCrowdsourcerCompleted(universe, this, _reportingParticipant);
         return true;
     }
 
@@ -200,8 +202,8 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
         universe.decrementOpenInterestFromMarket(shareTokens[0].totalSupply().mul(numTicks));
         redistributeLosingReputation();
         distributeValidityBond();
-        finalizationTime = controller.getTimestamp();
-        controller.getAugur().logMarketFinalized(universe);
+        finalizationTime = augur.getTimestamp();
+        augur.logMarketFinalized(universe);
         return true;
     }
 
@@ -210,8 +212,8 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
         require(winningPayoutDistributionHash == bytes32(0));
         IUniverse _winningUniverse = universe.getWinningChildUniverse();
         winningPayoutDistributionHash = _winningUniverse.getParentPayoutDistributionHash();
-        finalizationTime = controller.getTimestamp();
-        controller.getAugur().logMarketFinalized(universe);
+        finalizationTime = augur.getTimestamp();
+        augur.logMarketFinalized(universe);
         return true;
     }
 
@@ -271,10 +273,10 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
         IDisputeCrowdsourcer _crowdsourcer = IDisputeCrowdsourcer(crowdsourcers.getAsAddressOrZero(_payoutDistributionHash));
         if (_crowdsourcer == IDisputeCrowdsourcer(0)) {
             uint256 _size = getParticipantStake().mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
-            DisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = DisputeCrowdsourcerFactory(controller.lookup("DisputeCrowdsourcerFactory"));
-            _crowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(controller, this, _size, _payoutDistributionHash, _payoutNumerators);
+            DisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = DisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
+            _crowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, this, _size, _payoutDistributionHash, _payoutNumerators);
             crowdsourcers.add(_payoutDistributionHash, address(_crowdsourcer));
-            controller.getAugur().disputeCrowdsourcerCreated(universe, this, _crowdsourcer, _payoutNumerators, _size);
+            augur.disputeCrowdsourcerCreated(universe, this, _crowdsourcer, _payoutNumerators, _size);
         }
         return _crowdsourcer;
     }
@@ -315,7 +317,7 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
         _initialReporter.migrateToNewUniverse(msg.sender);
 
         // If the market is past expiration use the reporting data to make an initial report
-        uint256 _timestamp = controller.getTimestamp();
+        uint256 _timestamp = augur.getTimestamp();
         if (_timestamp > endTime) {
             doInitialReportInternal(msg.sender, _payoutNumerators, _description);
         }
@@ -343,8 +345,8 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
         } else {
             _initialParticipant.returnRepFromDisavow();
         }
-        crowdsourcers = MapFactory(controller.lookup("MapFactory")).createMap(controller, this);
-        controller.getAugur().logMarketParticipantsDisavowed(universe);
+        crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, this);
+        augur.logMarketParticipantsDisavowed(universe);
         return true;
     }
 
@@ -514,13 +516,13 @@ contract Market is Controlled, ITyped, Initializable, Ownable, IMarket {
     }
 
     function onTransferOwnership(address _owner, address _newOwner) internal returns (bool) {
-        controller.getAugur().logMarketTransferred(getUniverse(), _owner, _newOwner);
+        augur.logMarketTransferred(getUniverse(), _owner, _newOwner);
         return true;
     }
 
     function assertBalances() public view returns (bool) {
         // Escrowed funds for open orders
-        uint256 _expectedBalance = IOrders(controller.lookup("Orders")).getTotalEscrowed(this);
+        uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(this);
         // Market Open Interest. If we're finalized we need actually calculate the value
         if (isFinalized()) {
             IReportingParticipant _winningReportingPartcipant = getWinningReportingParticipant();
