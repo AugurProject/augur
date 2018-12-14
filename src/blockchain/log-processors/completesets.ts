@@ -18,7 +18,7 @@ export async function processCompleteSetsPurchasedOrSoldLog(augur: Augur, log: F
     const numTicks = marketsRow.numTicks!;
     const numOutcomes = marketsRow.numOutcomes!;
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-    const numCompleteSets = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numCompleteSets, 10), tickSize).toString();
+    const numCompleteSets = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numCompleteSets, 10), tickSize);
     const completeSetPurchasedData: CompleteSetsRow<string> = {
       marketId,
       account: log.account,
