@@ -9927,16 +9927,6 @@ genfun@^5.0.0:
   resolved "https://registry.yarnpkg.com/genfun/-/genfun-5.0.0.tgz#9dd9710a06900a5c4a5bf57aca5da4e52fe76537"
   integrity sha512-KGDOARWVga7+rnB3z9Sd2Letx515owfk0hSxHGuqjANb1M+x2bGZGqHLiozPsYMdM2OubeMni/Hpwmjq6qIUhA==
 
-genversion@1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/genversion/-/genversion-1.1.3.tgz#6acac6f3c794e44936565932568c10faf8238b73"
-  integrity sha1-asrG88eU5Ek2VlkyVowQ+vgji3M=
-  dependencies:
-    commander "^2.11.0"
-    find-package "^1.0.0"
-    firstline "^1.2.1"
-    mkdirp "^0.5.1"
-
 genversion@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/genversion/-/genversion-2.1.0.tgz#6bbaa6c7398659b738ab03adce69cc4619969375"
