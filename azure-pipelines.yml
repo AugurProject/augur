@@ -27,10 +27,7 @@ jobs:
           versionSpec: '9.x'
       - bash: |
           set -euxo pipefail
-          #git --no-pager diff --name-only FETCH_HEAD...master
-          find .git/refs
-          git fetch origin master
-          for f in $(git whatchanged --name-only --pretty="" master..HEAD);
+          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
               if [[ $f =~ .*augur-core.* ]]
@@ -91,9 +88,7 @@ jobs:
       - bash: |
           set -euxo pipefail
           echo "git SHA - $(Build.SourceVersion)"
-          #git checkout -b ci-diff
-          #git --no-pager diff --name-only FETCH_HEAD...master
-          for f in $(git diff --name-only ...origin/master);
+          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
               if [[ $f =~ .*augur-core.* ]]
@@ -101,7 +96,6 @@ jobs:
                 echo "##vso[task.setVariable variable=AUGUR_CORE]true";
               fi
             done
-            #git checkout -
       - script: |
           set -euxo pipefail
           which node
@@ -166,8 +160,7 @@ jobs:
       - bash: |
           set -euxo pipefail
           git checkout -b ci-diff
-          #git --no-pager diff --name-only FETCH_HEAD...master
-          for f in $(git diff --name-only ...origin/master);
+          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
               if [[ $f =~ .*augur\.js.* ]]
