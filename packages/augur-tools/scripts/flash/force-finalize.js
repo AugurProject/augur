@@ -23,6 +23,7 @@ function forceFinalize(augur, args, auth, callback) {
     return callback(null);
   }
   var marketId = args.opt.marketId;
+  var description = args.opt.description;
   repFaucet(augur, 10000000, auth, function (err) {
     if (err) return callback(err);
     augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
@@ -45,7 +46,7 @@ function forceFinalize(augur, args, auth, callback) {
           var priceOrOutcome = market.marketType === "scalar" ? market.minPrice : 0;
           var payoutNumerators = getPayoutNumerators(market, priceOrOutcome, false);
           if (parseInt(timeResult.timestamp, 10) > endTime) {
-            doInitialReport(augur, marketId, payoutNumerators, false, auth, function (err) {
+            doInitialReport(augur, marketId, payoutNumerators, description, auth, function (err) {
               if (err) {
                 console.log(chalk.red(err));
                 return callback(err);
@@ -59,7 +60,7 @@ function forceFinalize(augur, args, auth, callback) {
                 console.log(chalk.red(err));
                 return callback(err);
               }
-              doInitialReport(augur, marketId, payoutNumerators, false, auth, function (err) {
+              doInitialReport(augur, marketId, payoutNumerators, description, auth, function (err) {
                 if (err) {
                   console.log(chalk.red(err));
                   return callback(err);

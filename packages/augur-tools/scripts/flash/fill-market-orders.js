@@ -57,10 +57,10 @@ function fillMarketOrder(augur, args, auth, callback) {
         chalk.green.dim("FullPrecisionAmount")
       );
       augur.trading.getOrders(
-        { marketId: marketId, outcome: outcome, orderType: orderType },
+        { marketId, outcome, orderType },
         function(err, orderBook) {
           if (err) {
-            console.error(err);
+            console.error(JSON.stringify(err));
             return callback(err);
           }
           if (!orderBook[marketId]) {
@@ -90,7 +90,7 @@ function fillMarketOrder(augur, args, auth, callback) {
                 sharesProvided: "0",
                 _direction: direction,
                 _market: marketId,
-                _outcome: outcome,
+                _outcome: parseInt(outcome, 10),
                 _tradeGroupId: augur.trading.generateTradeGroupId(),
                 doNotCreateOrders: true,
                 onSent: () => {},
@@ -104,7 +104,7 @@ function fillMarketOrder(augur, args, auth, callback) {
                   nextOrder(null);
                 },
                 onFailed: function(err) {
-                  console.log(chalk.red(err));
+                  console.log(chalk.red(JSON.stringify(err)));
                   nextOrder(err);
                 }
               });

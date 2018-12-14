@@ -36,7 +36,7 @@ function dispute(augur, marketId, payoutNumerators, auth, timeAddress, currentRo
           console.log(chalk.red(err));
           return callback(err);
         }
-        doMarketContribute(augur, marketId, ALL_THE_REP, payoutNumerators, false, auth, function (err) {
+        doMarketContribute(augur, marketId, ALL_THE_REP, payoutNumerators, "force dispute", auth, function (err) {
           if (err) {
             console.log(chalk.red(err));
             return callback(err);
@@ -62,7 +62,7 @@ function doReporting(augur, market, timeResult, auth, rounds, callback) {
     if (feeWindow !== "0x0000000000000000000000000000000000000000") {
       dispute(augur, marketId, payoutNumerators.reverse(), auth, timeResult.timeAddress, 0, rounds, callback);
     } else {
-      doInitialReport(augur, marketId, payoutNumerators, false, auth, function (err) {
+      doInitialReport(augur, marketId, payoutNumerators, "Initial report", auth, function (err) {
         if (err) {
           console.log(chalk.red(err));
           return callback(err);
