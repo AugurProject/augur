@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import { ChevronLeft } from "modules/common/components/icons";
+import MarkdownRenderer from "modules/common/components/markdown-renderer/markdown-renderer";
 
 import { CATEGORICAL, SCALAR } from "modules/markets/constants/market-types";
 import { BigNumber } from "bignumber.js";
@@ -65,7 +66,8 @@ export default class MarketHeader extends Component {
   }
 
   updateDetailsHeight() {
-    if (this.detailsContainer) this.setState({ detailsHeight: this.detailsContainer.scrollHeight });
+    if (this.detailsContainer)
+      this.setState({ detailsHeight: this.detailsContainer.scrollHeight });
   }
 
   toggleReadMore() {
@@ -134,15 +136,15 @@ export default class MarketHeader extends Component {
           <div className={Styles.MarketHeader__descContainer}>
             <h1 className={Styles.MarketHeader__description}>{description}</h1>
             <div className={Styles.MarketHeader__descriptionContainer}>
-              <div className={Styles.MarketHeader__details}>
+              <div
+                className={Styles.MarketHeader__details}
+                style={{ paddingBottom: "1rem" }}
+              >
                 <h4>Resolution Source</h4>
                 <span>{resolutionSource}</span>
               </div>
               {details.length > 0 && (
-                <div
-                  className={Styles.MarketHeader__details}
-                  style={{ marginTop: "20px" }}
-                >
+                <div className={Styles.MarketHeader__details}>
                   <h4>Additional Details</h4>
                   <label
                     ref={detailsContainer => {
@@ -156,8 +158,9 @@ export default class MarketHeader extends Component {
                       }
                     )}
                   >
-                    {details}
+                    <MarkdownRenderer text={details} hideLabel />
                   </label>
+
                   {detailsTooLong && (
                     <button
                       className={Styles.MarketHeader__readMoreButton}

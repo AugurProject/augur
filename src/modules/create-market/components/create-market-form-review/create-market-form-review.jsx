@@ -5,6 +5,7 @@ import { createBigNumber } from "utils/create-big-number";
 import getValue from "src/utils/get-value";
 import insufficientFunds from "modules/markets/helpers/insufficient-funds";
 
+import MarkdownRenderer from "modules/common/components/markdown-renderer/markdown-renderer";
 import { formatEtherEstimate, formatGasCostToEther } from "utils/format-number";
 import {
   EXPIRY_SOURCE_GENERIC,
@@ -204,11 +205,6 @@ export default class CreateMarketReview extends Component {
     const { newMarket } = this.props;
     const s = this.state;
 
-    if (this.additionalDetails && this.additionalDetails.scrollHeight) {
-      this.additionalDetails.style.height = `${
-        this.additionalDetails.scrollHeight
-      }px`;
-    }
     return (
       <article className={StylesForm.CreateMarketForm__fields}>
         <div className={Styles.CreateMarketReview}>
@@ -291,14 +287,9 @@ export default class CreateMarketReview extends Component {
             <h4 className={Styles.CreateMarketReview__smallheading}>
               Additional Details
             </h4>
-            <textarea
-              ref={additionalDetails => {
-                this.additionalDetails = additionalDetails;
-              }}
+            <MarkdownRenderer
+              text={newMarket.detailsText || "None"}
               className={Styles["CreateMarketReview__AdditionalDetails-text"]}
-              disabled
-              readOnly
-              value={newMarket.detailsText || "None"}
             />
           </div>
         </div>

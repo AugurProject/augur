@@ -19,6 +19,7 @@ import {
   CATEGORICAL_OUTCOMES_MAX_NUM,
   CATEGORICAL_OUTCOME_MAX_LENGTH
 } from "modules/markets/constants/new-market-constraints";
+import MarkdownRenderer from "modules/common/components/markdown-renderer/markdown-renderer";
 
 import {
   ExclamationCircle as InputErrorIcon,
@@ -371,6 +372,7 @@ export default class CreateMarketOutcome extends Component {
     );
 
     const validation = newMarket.validations[newMarket.currentStep];
+
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li>
@@ -623,7 +625,12 @@ export default class CreateMarketOutcome extends Component {
           </li>
         )}
         {newMarket.type && (
-          <li>
+          <li
+            className={classNames(
+              StylesForm["field--50"],
+              Styles.CreateMarketFormOutcome__details
+            )}
+          >
             <label htmlFor="cm__input--details">
               <span>Additional Details</span>
             </label>
@@ -634,6 +641,23 @@ export default class CreateMarketOutcome extends Component {
               onChange={e => {
                 updateNewMarket({ detailsText: e.target.value });
               }}
+              className={Styles.CreateMarketForm__textArea}
+            />
+          </li>
+        )}
+        {newMarket.type && (
+          <li
+            className={classNames(
+              StylesForm["field--50"],
+              Styles.CreateMarketFormOutcome__detailsPreview
+            )}
+          >
+            <label htmlFor="cm__input--details">
+              <span>Additional Details Preview</span>
+            </label>
+            <MarkdownRenderer
+              text={newMarket.detailsText}
+              className={StylesForm.CreateMarketForm__additionalDetailsRendered}
             />
           </li>
         )}
