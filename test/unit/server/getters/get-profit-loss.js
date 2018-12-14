@@ -122,8 +122,7 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
       periodInterval,
     });
 
-    console.log(results);
-    expect(results.length).toEqual(4);
+    expect(results.length).toEqual(5);
   });
 });
 
