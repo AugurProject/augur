@@ -87,7 +87,6 @@ jobs:
           versionSpec: '10.x'
       - bash: |
           set -euxo pipefail
-          echo "git SHA - $(Build.SourceVersion)"
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
@@ -159,7 +158,6 @@ jobs:
     steps:
       - bash: |
           set -euxo pipefail
-          git checkout -b ci-diff
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
@@ -168,7 +166,6 @@ jobs:
                 echo "##vso[task.setVariable variable=AUGUR_CORE]true";
               fi
             done
-            git checkout -
       - script: |
           set -euxo pipefail
           which node
