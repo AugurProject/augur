@@ -71,6 +71,9 @@ export default class MarketHeader extends Component {
   }
 
   toggleReadMore() {
+     if (this.state.showReadMore && this.detailsContainer) {
+      this.detailsContainer.scrollTop = 0;
+    }
     this.setState({ showReadMore: !this.state.showReadMore });
   }
 
