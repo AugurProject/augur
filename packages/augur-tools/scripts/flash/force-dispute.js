@@ -90,6 +90,7 @@ function forceDispute(augur, args, auth, callback) {
   var marketId = args.opt.marketId;
   var rounds = parseInt(args.opt.rounds, 10);
   var asPrice = args.opt.asPrice;
+
   repFaucet(augur, 10000000, auth, function(err) {
     if (err) return callback(err);
     augur.markets.getMarketsInfo({ marketIds: [marketId] }, function(err, marketsInfo) {
