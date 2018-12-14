@@ -111,6 +111,7 @@ var methods = {
         help: "This help, REP is given to user if needed"
       },
       marketId: { required: true, short: "m", help: "Required market id" },
+      asPrice: { flag: true, short: "p", help: "add flag to pass in price instead of outcome index, used for scalars"},
       outcome: {
         required: true,
         short: "o",
@@ -135,6 +136,7 @@ var methods = {
         help: "This help, used for Open Reporting"
       },
       marketId: { required: true, short: "m", help: "Required market id" },
+      asPrice: { flag: true, short: "p", help: "add flag to pass in price instead of outcome index, used for scalars"},
       outcome: {
         required: true,
         short: "o",
@@ -159,6 +161,7 @@ var methods = {
         help: "This help, push time and dispute this market"
       },
       marketId: { required: true, short: "m", help: "Required market id" },
+      asPrice: { flag: true, short: "p", help: "add flag to pass in price instead of outcome index, used for scalars"},
       outcome: {
         required: true,
         short: "o",
@@ -354,6 +357,7 @@ var methods = {
     opts: {
       help: { flag: true, short: "h", help: "This help" },
       marketId: { required: true, short: "m", help: "Required market id" },
+      asPrice: { flag: true, short: "p", help: "add flag to pass in price instead of outcome index, used for scalars"},
       rounds: {
         default: 10,
         short: "r",

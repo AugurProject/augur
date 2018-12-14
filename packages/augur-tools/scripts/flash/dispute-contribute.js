@@ -31,6 +31,7 @@ function disputeContribute(augur, args, auth, callback) {
   var marketId = args.opt.marketId;
   var outcome = args.opt.outcome;
   var description = args.opt.description;
+  var asPrice = args.opt.asPrice;  
   var noPush = args.opt.noPush;
   getRepTokens(augur, amount || 10000, auth, function(err) {
     if (err) {
@@ -45,7 +46,7 @@ function disputeContribute(augur, args, auth, callback) {
       }
 
       var market = marketsInfo[0];
-      var payoutNumerators = getPayoutNumerators(market, outcome);
+      var payoutNumerators = getPayoutNumerators(market, outcome, asPrice);
       var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
       getBalance(augur, universe, auth.address, function(err, balances) {
         if (err) {
