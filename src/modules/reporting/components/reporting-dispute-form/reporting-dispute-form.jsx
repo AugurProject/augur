@@ -202,7 +202,8 @@ export default class ReportingDisputeForm extends Component {
     } else if (
       createBigNumber(availableRepFormatted.formatted.formattedValue).lt(
         bnStake
-      ) {
+      )
+    ) {
       updatedValidations.stake = `Desposit Stake is greater then your available amount`;
     } else {
       delete updatedValidations.stake;
