@@ -86,7 +86,7 @@
     "ws": "5.2.2"
   },
   "devDependencies": {
-    "@babel/plugin-transform-typescript": "7.1.0",
+    "@babel/plugin-transform-typescript": "7.2.0",
     "@babel/preset-typescript": "7.1.0",
     "@types/chai": "4.1.7",
     "@types/jest": "23.3.10",
