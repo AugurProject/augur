@@ -11,7 +11,33 @@ import {
   Copy as CopyIcon
 } from "modules/common/components/icons";
 
+import { augur } from "services/augurjs";
 import Styles from "modules/account/components/account-deposit/account-deposit.styles";
+
+function airSwapOnClick(e) {
+  const env =
+    parseInt(augur.rpc.getNetworkID(), 10) === 1 ? "production" : "sandbox";
+  e.preventDefault();
+  // The widget will offer swaps for REP <-> ETH on mainnet
+  // It can still be tested on rinkeby, but only AST <-> ETH is offered
+  window.AirSwap.Trader.render(
+    {
+      env,
+      mode: "buy",
+      token:
+        env === "production"
+          ? "0x1985365e9f78359a9b6ad760e32412f4a445e862"
+          : "0xcc1cbd4f67cceb7c001bd4adf98451237a193ff8",
+      onCancel() {
+        console.info("AirSwap trade cancelled");
+      },
+      onComplete(txid) {
+        console.info("AirSwap trade complete", txid);
+      }
+    },
+    document.getElementById("app")
+  );
+}
 
 export default class AccountDeposit extends Component {
   static propTypes = {
@@ -52,6 +78,7 @@ export default class AccountDeposit extends Component {
     const show0xInstant = [NETWORK_IDS.Mainnet, NETWORK_IDS.Kovan].includes(
       augurNodeNetworkId
     );
+    const showAirSwap = NETWORK_IDS.Mainnet === augurNodeNetworkId;
     return (
       <section
         className={Styles.AccountDeposit}
@@ -77,6 +104,16 @@ export default class AccountDeposit extends Component {
                 Deposits via 0x Instant are only available on the Ethereum main
                 network and Kovan test network.
               </div>
+            )}
+            {showAirSwap && (
+              <>
+                <br />
+                <div className={Styles.AccountDeposit__0xInstantButton}>
+                  <button onClick={airSwapOnClick}>
+                    Buy REP using AirSwap.
+                  </button>
+                </div>
+              </>
             )}
           </div>
           <div className={Styles.AccountDeposit__address}>
