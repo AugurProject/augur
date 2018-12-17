@@ -72,7 +72,7 @@
     "docker:deploy": "npm run docker:deploy:net -- aura clique rinkeby"
   },
   "dependencies": {
-    "@types/get-port": "3.2.0",
+    "@types/get-port": "4.0.1",
     "@types/mkdirp": "0.5.2",
     "@types/node": "9.6.40",
     "@types/yargs": "11.1.2",
@@ -92,7 +92,7 @@
     "ethjs-rpc": "0.2.0",
     "ethjs-signer": "0.1.1",
     "fs-readfile-promise": "3.0.1",
-    "get-port": "3.2.0",
+    "get-port": "4.0.0",
     "path": "0.12.7",
     "recursive-readdir": "2.2.2",
     "replace": "1.0.0",
