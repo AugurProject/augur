@@ -207,7 +207,7 @@ export function connectAugur(
             windowRef.localStorage.getItem(loginAccount.address)
           ).selectedUniverse[
             getState().connection.augurNodeNetworkId ||
-              AugurJS.augur.rpc.getNetworkID()
+              AugurJS.augur.rpc.getNetworkID().toString()
           ];
           universeId = !storedUniverseId ? universeId : storedUniverseId;
         }
