@@ -30,17 +30,20 @@ describe("server/getters/get-user-trading-positions", () => {
 
     expect(userTradingPositions).toEqual([
       {
+        averagePrice: "26.99662542182234436667",
+        cost: "0.00809898762654670331",
         marketId: "0x0000000000000000000000000000000000000ff1",
         netPosition: "0",
         outcome: 0,
-        position: "0.0004",
-        realized: "54999999999.58212297261370994338",
+        position: "0.0003",
+        realized: "54999999999.56442531007152770894",
         timestamp: 1534435013,
-        total: "54999999999.68322533481843430233",
-        unrealized: "0.10110236220472435895",
+        total: "54999999999.646326322444981005629999",
+        unrealized: "0.081901012373453296689999",
       },
     ]);
   });
+
   it("get a user's position in one outcome of a market where the user has no position", async () => {
     const userTradingPositions = await getUserTradingPositions({
       universe: "0x000000000000000000000000000000000000000b",
