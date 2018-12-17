@@ -8,3 +8,5 @@ augur.db
 tags
 
 junit.xml
+
+*.swp
