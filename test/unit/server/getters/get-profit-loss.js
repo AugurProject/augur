@@ -105,7 +105,6 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
       marketId: "0x0000000000000000000000000000000000000ff1",
     });
 
-    console.log(results);
     expect(results.length).toEqual(31);
   });
 

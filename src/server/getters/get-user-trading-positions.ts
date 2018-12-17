@@ -36,7 +36,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
   if (params.account == null) throw new Error("Missing required parameter: account");
 
   const universeId = params.universe || (await queryUniverse(db, params.marketId!));
-  const { profit: profitsPerMarket } = await getAllOutcomesProfitLoss(db, augur, {
+  const { profit: profitsPerMarket, marketOutcomes: numOutcomesByMarket } = await getAllOutcomesProfitLoss(db, augur, {
     universe: universeId,
     account: params.account,
     marketId: params.marketId || null,
@@ -47,7 +47,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
 
   if (_.isEmpty(profitsPerMarket)) return [];
 
-  const positions = _.chain(profitsPerMarket)
+  let positions = _.chain(profitsPerMarket)
     .mapValues((profits: Array<ProfitLossResult>, key: string) => {
       const [marketId, outcome] = key.split(",");
       return Object.assign({
@@ -59,7 +59,55 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
     .values()
     .value();
 
+  const byMarket = _.groupBy(positions, "marketId");
+  // netPositions
+  // Outcomes that do not exist in the grouped array are ones for which the user holds no position
+  // If there is only ONE missing outcome, then the user is short that outcome, in which case we want
+  // to calculate its netPositions
+  positions = _.chain(byMarket)
+    .mapKeys(byMarket, (outcomes: Array<TradingPosition>, marketId: string) => {
+      const numOutcomes = numOutcomesByMarket[marketId];
+      if (outcomes.length !== numOutcomes - 1) return outcomes;
+      
+      const shortPosition = _.minBy(outcomes, "position")!.position;
+      const sortedOutcomes = _.sortBy(outcomes, "outcome")!;
+
+      let previousOutcome = -1;
+      let zeroOrMissingOutcomePl = null;
+      let minimumOutcomePl = null;
+      for(const outcomePl of sortedOutcomes) {
+        if (outcomePl.outcome !== previousOutcome + 1 || outcomePl.position.eq(ZERO)) {
+          if (zeroOrMissingOutcomePl !== null) {
+            zeroOrMissingOutcomePl = null;
+            break;
+          }
+          zeroOrMissingOutcomePl = outcomePl;
+        } else if (minimumOutcomePl === null || outcomePl.position.lt(minimumOutcomePl.position)) {
+          minimumOutcomePl = outcomePl;
+        }
+      }
+
+      if (zeroOrMissingOutcomePl !== null) {
+        // This means we have one outcome which is missing or zero
+        // which means we need to change the netPosition for this item
+        // to be negative
+        return _.map(sortedOutcomes, (pl: TradingPosition) => {
+          if (pl.position.gt(ZERO)) {
+            return Object.assign({}, pl, {
+              netPosition: pl.position.negated()
+            });
+          } 
+          return pl;
+        });
+      }
+
+      return outcomes;
+  })
+  .values()
+  .flatten()
+  .value();
+
   if (params.outcome === null || typeof params.outcome === "undefined") return positions;
 
   return _.filter(positions, { outcome: params.outcome });
-}
+ }
