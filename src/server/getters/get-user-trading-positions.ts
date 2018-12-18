@@ -68,14 +68,14 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
     .mapValues((outcomes: Array<TradingPosition>, marketId: string) => {
       const numOutcomes = numOutcomesByMarket[marketId];
       if (outcomes.length !== numOutcomes - 1) return outcomes;
-      
+
       const shortPosition = _.minBy(outcomes, "position")!.position;
       const sortedOutcomes = _.sortBy(outcomes, "outcome")!;
 
-      let previousOutcome = -1;
+      const previousOutcome = -1;
       let zeroOrMissingOutcomePl = null;
       let minimumOutcomePl = null;
-      for(const outcomePl of sortedOutcomes) {
+      for (const outcomePl of sortedOutcomes) {
         if (outcomePl.outcome !== previousOutcome + 1 || outcomePl.position.eq(ZERO)) {
           if (zeroOrMissingOutcomePl !== null) {
             zeroOrMissingOutcomePl = null;
@@ -94,9 +94,9 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
         return _.map(sortedOutcomes, (pl: TradingPosition) => {
           if (pl.position.gt(ZERO)) {
             return Object.assign({}, pl, {
-              netPosition: pl.position.negated()
+              netPosition: pl.position.negated(),
             });
-          } 
+          }
           return pl;
         });
       }

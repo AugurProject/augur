@@ -127,7 +127,7 @@ function sumProfitLossResults(left: ProfitLossResult, right: ProfitLossResult): 
     unrealized,
     total,
     cost,
-    averagePrice
+    averagePrice,
   };
 }
 
@@ -178,7 +178,7 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
         unrealized: ZERO,
         total: ZERO,
         cost: ZERO,
-        averagePrice: ZERO
+        averagePrice: ZERO,
       };
     }
 
@@ -205,7 +205,7 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
       unrealized,
       total,
       averagePrice,
-      cost
+      cost,
     };
   });
 }
@@ -265,7 +265,7 @@ export async function getProfitLoss(db: Knex, augur: Augur, params: GetProfitLos
       unrealized: ZERO,
       total: ZERO,
       cost: ZERO,
-      averagePrice: ZERO
+      averagePrice: ZERO,
     }));
   }
 
@@ -311,7 +311,7 @@ export async function getProfitLossSummary(db: Knex, augur: Augur, params: GetPr
       unrealized: startProfit.unrealized.negated(),
       total: startProfit.total.negated(),
       cost: startProfit.cost.negated(),
-      averagePrice: startProfit.averagePrice
+      averagePrice: startProfit.averagePrice,
     };
 
     result[days] = sumProfitLossResults(endProfit, negativeStartProfit);

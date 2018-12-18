@@ -646,6 +646,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
           },
         ];
         return knex.batchInsert("markets", seedData, seedData.length);
-      }
+      },
     );
 };

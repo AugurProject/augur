@@ -363,7 +363,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
         transactionHash: "0xaa32ebbbe9f5503f2bde1a25cb3c7ed3dece3a870742fd2012e41006c928ee31",
         value: "0.1",
         timestamp: 1544804660,
-      }
+      },
     ]);
   });
 };

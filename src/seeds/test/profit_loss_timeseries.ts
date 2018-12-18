@@ -182,7 +182,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
           numEscrowed: "0",
           profit: "0",
           timestamp: 1544804660,
-        }
+        },
       ]);
     });
 };
