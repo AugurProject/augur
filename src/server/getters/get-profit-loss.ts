@@ -118,7 +118,7 @@ function sumProfitLossResults(left: ProfitLossResult, right: ProfitLossResult): 
   const unrealized = left.unrealized.plus(right.unrealized);
   const total = realized.plus(unrealized);
   const cost = left.cost.plus(right.cost);
-  const averagePrice = cost.dividedBy(position);
+  const averagePrice = position.gt(ZERO) ? cost.dividedBy(position) : ZERO;
 
   return {
     timestamp: left.timestamp,
@@ -185,7 +185,7 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
     const position = plResult!.numOwned;
     const realized = plResult!.profit;
     const cost = plResult!.moneySpent;
-    const averagePrice = cost.gt(ZERO) ? cost.dividedBy(position) : ZERO;
+    const averagePrice = position.gt(ZERO) ? cost.dividedBy(position) : ZERO;
 
     let lastPrice = ZERO;
     let unrealized = ZERO;
