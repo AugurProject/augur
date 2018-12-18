@@ -115,7 +115,7 @@
     "babel-plugin-transform-react-remove-prop-types": "0.4.20",
     "chai": "4.2.0",
     "chai-subset": "1.6.0",
-    "chalk": "2.3.0",
+    "chalk": "2.4.1",
     "clean-css": "4.2.1",
     "copy-webpack-plugin": "4.6.0",
     "coveralls": "3.0.2",
