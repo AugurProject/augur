@@ -185,7 +185,7 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
     const position = plResult!.numOwned;
     const realized = plResult!.profit;
     const cost = plResult!.moneySpent;
-    const averagePrice = cost.dividedBy(position);
+    const averagePrice = cost.gt(ZERO) ? cost.dividedBy(position) : ZERO;
 
     let lastPrice = ZERO;
     let unrealized = ZERO;
