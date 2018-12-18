@@ -65,7 +65,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
   // If there is only ONE missing outcome, then the user is short that outcome, in which case we want
   // to calculate its netPositions
   positions = _.chain(byMarket)
-    .mapKeys(byMarket, (outcomes: Array<TradingPosition>, marketId: string) => {
+    .mapValues((outcomes: Array<TradingPosition>, marketId: string) => {
       const numOutcomes = numOutcomesByMarket[marketId];
       if (outcomes.length !== numOutcomes - 1) return outcomes;
       
@@ -102,10 +102,10 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
       }
 
       return outcomes;
-  })
-  .values()
-  .flatten()
-  .value();
+    })
+    .values()
+    .flatten()
+    .value();
 
   if (params.outcome === null || typeof params.outcome === "undefined") return positions;
 
