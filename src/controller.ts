@@ -50,7 +50,7 @@ export class AugurNodeController {
       this.controlEmitter.emit(ControlMessageType.BulkSyncFinished);
       this.logger.info("Bulk sync with blockchain complete.");
       // We received a shutdown so just return.
-      if (!this.running || this.db == null) return;
+      if (!this.isRunning()) return;
       this.blockAndLogsQueue = startAugurListeners(this.db, this.augur, handoffBlockNumber + 1, this._shutdownCallback.bind(this));
     } catch (err) {
       if (this.errorCallback) this.errorCallback(err);
