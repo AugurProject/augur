@@ -27,9 +27,10 @@ jobs:
           versionSpec: '9.x'
       - bash: |
           set -euxo pipefail
-          echo "git SHA - $(Build.SourceVersion)"
-          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
+          echo "Build SourceBranch: $(Build.SourceBranch)"
+          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
+              echo "$f"
               if [[ $f =~ .*augur-core.* ]]
               then
                 echo "##vso[task.setVariable variable=AUGUR_CORE]true";
@@ -87,10 +88,13 @@ jobs:
           versionSpec: '10.x'
       - bash: |
           set -euxo pipefail
-          echo "git SHA - $(Build.SourceVersion)"
-          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
+          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
-              echo $f | grep -q augur-core && echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+              echo "$f"
+              if [[ $f =~ .*augur-core.* ]]
+              then
+                echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+              fi
             done
       - script: |
           set -euxo pipefail
@@ -155,10 +159,13 @@ jobs:
     steps:
       - bash: |
           set -euxo pipefail
-          echo "git SHA - $(Build.SourceVersion)"
-          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
+          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
-              echo $f | grep augur.js && echo "##vso[task.setVariable variable=AUGUR]true";
+              echo "$f"
+              if [[ $f =~ .*augur\.js.* ]]
+              then
+                echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+              fi
             done
       - script: |
           set -euxo pipefail

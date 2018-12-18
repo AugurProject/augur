@@ -25,8 +25,9 @@ function designateReport(augur, args, auth, callback) {
   }
   var amount = 10000;
   var marketId = args.opt.marketId;
+  var description = args.opt.description;
   var outcome = args.opt.outcome;
-  var invalid = args.opt.invalid;
+  var asPrice = args.opt.asPrice;
   var noPush = args.opt.noPush;
   getRepTokens(augur, amount, auth, function (err) {
     if (err) {
@@ -44,9 +45,9 @@ function designateReport(augur, args, auth, callback) {
         console.log(chalk.red("Scalar price is below min price"));
         callback("Error");
       }
-      var payoutNumerators = getPayoutNumerators(market, outcome, invalid);
+      var payoutNumerators = getPayoutNumerators(market, outcome, asPrice);
       if (noPush) {
-        doInitialReport(augur, marketId, payoutNumerators, invalid, auth, function (err) {
+        doInitialReport(augur, marketId, payoutNumerators, description, auth, function (err) {
           if (err) {
             return callback("Initial Report Failed");
           }
@@ -68,7 +69,7 @@ function designateReport(augur, args, auth, callback) {
                 console.log(chalk.red(err));
                 return callback(err);
               }
-              doInitialReport(augur, marketId, payoutNumerators, invalid, auth, function (err) {
+              doInitialReport(augur, marketId, payoutNumerators, description, auth, function (err) {
                 if (err) {
                   return callback("Initial Report Failed");
                 }

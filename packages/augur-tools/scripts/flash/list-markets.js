@@ -16,6 +16,7 @@ function listMarkets(augur, args, auth, callback) {
     return callback(null);
   }
   var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
+  console.log(chalk.green("Universe"), universe);
   augur.api.Augur.getTimestamp(function (err, timestamp) {
     augur.markets.getMarkets({ universe: universe, sortBy: "endTime", isSortDescending: true }, function (err, marketIds) {
       if (!marketIds || marketIds.length === 0) {

@@ -24,14 +24,15 @@ function initialReport(augur, args, auth, callback) {
   }
   var marketId = args.opt.marketId;
   var outcome = args.opt.outcome;
-  var invalid = args.opt.invalid;
+  var description = args.opt.description;
   var noPush = args.opt.noPush;
+  var asPrice = args.opt.asPrice;
   augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
     var market = marketsInfo[0];
     var marketPayload = { tx: { to: marketId } };
-    var payoutNumerators = getPayoutNumerators(market, outcome, invalid);
+    var payoutNumerators = getPayoutNumerators(market, outcome, asPrice);
     if (noPush) {
-      doInitialReport(augur, marketId, payoutNumerators, invalid, auth, function (err) {
+      doInitialReport(augur, marketId, payoutNumerators, description, auth, function (err) {
         if (err) {
           console.log(chalk.red(err));
           return callback(err);
@@ -56,7 +57,7 @@ function initialReport(augur, args, auth, callback) {
               return callback(err);
             }
 
-            doInitialReport(augur, marketId, payoutNumerators, invalid, auth, function (err) {
+            doInitialReport(augur, marketId, payoutNumerators, description, auth, function (err) {
               if (err) {
                 console.log(chalk.red(err));
                 return callback(err);

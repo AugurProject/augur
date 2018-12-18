@@ -8,7 +8,6 @@ function getTime(augur, auth, callback) {
   var augurContract =
     augur.contracts.addresses[augur.rpc.getNetworkID()].Augur;
   var _key = "0x54696d6500000000000000000000000000000000000000000000000000000000"; // "Time"
-  console.log(_key, augurContract);
   augur.api.Augur.lookup(
     {
       meta: auth,
@@ -16,7 +15,6 @@ function getTime(augur, auth, callback) {
       _key
     },
     function(err, timeAddress) {
-      console.log("get time address", err, timeAddress);
       if (err) {
         console.log(chalk.red(err));
         return callback(err);
