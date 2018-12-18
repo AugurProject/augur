@@ -171,18 +171,25 @@ describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
 
     const deserialized = JSON.parse(JSON.stringify(results));
 
+    
     expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(["1", "30"]));
     expect(deserialized["1"]).toMatchObject({
-      realized: "54999999999.58212297261370994338",
+      averagePrice: "26.99662542182234436667",
+      cost: "0.00809898762654670331",
+      position: "0.0003",
+      realized: "54999999999.56442531007152770894",
+      timestamp: 1534435013,
+      total: "54999999999.56442531007152770894",
       unrealized: "0",
-      total: "54999999999.58212297261370994338",
-      position: "0.0004",
     });
     expect(deserialized["30"]).toMatchObject({
-      realized: "54999999999.58212297261370994338",
+      averagePrice: "26.99662542182234436667",
+      cost: "0.00809898762654670331",
+      position: "0.0003",
+      realized: "54999999999.56442531007152770894",
+      timestamp: 1534435013,
+      total: "54999999999.56442531007152770894",
       unrealized: "0",
-      total: "54999999999.58212297261370994338",
-      position: "0.0004",
     });
   });
 
