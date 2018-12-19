@@ -10,3 +10,4 @@ tags
 junit.xml
 
 *.swp
+.DS_Store
