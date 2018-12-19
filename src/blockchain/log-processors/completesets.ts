@@ -11,7 +11,7 @@ import { updateProfitLossBuyShares, updateProfitLossSellShares } from "./profit-
 export async function processCompleteSetsPurchasedOrSoldLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     const marketId = log.market;
-    const marketsRow: MarketsRow<BigNumber>|undefined = await db.first("minPrice", "maxPrice", "numTicks").from("markets").where({ marketId });
+    const marketsRow: MarketsRow<BigNumber>|undefined = await db.first("minPrice", "maxPrice", "numTicks", "numOutcomes").from("markets").where({ marketId });
     if (!marketsRow) throw new Error("market min price, max price, category, and/or num ticks not found");
     const minPrice = marketsRow.minPrice!;
     const maxPrice = marketsRow.maxPrice!;
