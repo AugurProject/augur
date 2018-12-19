@@ -194,7 +194,7 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
       const ovResultIndex = Math.max(0, _.sortedLastIndexBy(outcomeValues, bucket, "timestamp") - 1);
       const ovResult = outcomeValues[ovResultIndex];
       lastPrice = ovResult.value;
-      unrealized = lastPrice.minus(averagePrice).times(position);
+      unrealized = lastPrice.times(position).minus(cost);
     }
 
     const total = realized.plus(unrealized);

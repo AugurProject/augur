@@ -26,6 +26,7 @@ describe("server/getters/get-user-trading-positions", () => {
       isSortDescending: null,
       limit: null,
       offset: null,
+      endTime: 1534435013,
     });
 
     expect(userTradingPositions).toEqual([
@@ -33,13 +34,13 @@ describe("server/getters/get-user-trading-positions", () => {
         averagePrice: "26.99662542182234436667",
         cost: "0.00809898762654670331",
         marketId: "0x0000000000000000000000000000000000000ff1",
-        netPosition: "0",
+        netPosition: "0.0003",
         outcome: 0,
         position: "0.0003",
         realized: "54999999999.56442531007152770894",
         timestamp: 1534435013,
-        total: "54999999999.646326322444981005629999",
-        unrealized: "0.081901012373453296689999",
+        total: "54999999999.56442531007152770894",
+        unrealized: "0",
       },
     ]);
   });
@@ -54,6 +55,7 @@ describe("server/getters/get-user-trading-positions", () => {
       isSortDescending: null,
       limit: null,
       offset: null,
+      endTime: 1544804660,
     });
 
     expect(userTradingPositions).toEqual([]);
@@ -68,6 +70,7 @@ describe("server/getters/get-user-trading-positions", () => {
       isSortDescending: null,
       limit: null,
       offset: null,
+      endTime: 1544804660,
     });
 
     expect(userTradingPositions).toEqual([]);
@@ -82,11 +85,12 @@ describe("server/getters/get-user-trading-positions", () => {
       isSortDescending: null,
       limit: null,
       offset: null,
+      endTime: 1544804660,
     });
 
     expect(userTradingPositions).toEqual([{
       marketId: "0xfd9d2cab985b4e1052502c197d989fdf9e7d4b1e",
-      netPosition: "0",
+      netPosition: "30",
       outcome: 1,
       position: "30",
       averagePrice: "0.963",
