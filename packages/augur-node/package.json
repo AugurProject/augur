@@ -69,7 +69,7 @@
     "augur-artifacts": "7.0.0-0",
     "augur.js": "7.0.0-0",
     "chalk": "2.4.1",
-    "bignumber.js": "8.0.1",
+    "bignumber.js": "6.0.0",
     "ethrpc": "6.1.1",
     "express": "4.16.4",
     "helmet": "3.15.0",
