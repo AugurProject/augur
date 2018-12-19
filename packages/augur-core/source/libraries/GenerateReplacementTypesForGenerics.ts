@@ -1,4 +1,5 @@
 import * as ts from "typescript";
+import * as path from "path";
 
 const printer = ts.createPrinter();
 
@@ -28,10 +29,10 @@ export class GenerateReplacementTypesForGenerics {
         }
     }
 
-    buildAliases() {
+    buildAliases(genericFilePath:string) {
         const statements:ts.Statement[] = [];
         const outFile = ts.createSourceFile(
-            "ContractInterfaces.ts",
+            "",
             "",
             ts.ScriptTarget.Latest
         );
@@ -45,7 +46,10 @@ export class GenerateReplacementTypesForGenerics {
         statements.push(ts.createImportEqualsDeclaration(undefined, undefined, bigNumberIdentifier, externalModuleReference));
 
         // GenericContractInterface file import.
-        const sourceFileName = ts.createStringLiteral('./ContractInterfaces');
+        const genericFileName = path.parse(genericFilePath).name;
+
+        // Assuming it is relative to wherever the output of this function is written.
+        const sourceFileName = ts.createStringLiteral(`./${genericFileName}`);
 
         const sourceFileNamespaceIdentifier = ts.createIdentifier("c");
         const sourceFileNamespaceImport = ts.createNamespaceImport(sourceFileNamespaceIdentifier);
@@ -55,7 +59,6 @@ export class GenerateReplacementTypesForGenerics {
 
         // re-export everything from the GenericContractInterfaces. Will override below.
         statements.push(ts.createExportDeclaration(undefined, undefined, undefined, sourceFileName));
-
         this.nodesToAlias.forEach((t) => {
             if(t.name) {
                 const r = ts.createPropertyAccess(sourceFileNamespaceIdentifier, t.name);

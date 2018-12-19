@@ -24,7 +24,7 @@ export class ContractInterfaceGenerator {
 
         const g = new GenerateReplacementTypesForGenerics();
         g.parse(genericFileContents);
-        const fileContents = g.buildAliases();
+        const fileContents = g.buildAliases(this.configuration.genericContractInterfacesOutputPath);
 
         await fs.writeFile(this.configuration.genericContractInterfacesOutputPath, genericFileContents);
         await fs.writeFile(this.configuration.contractInterfacesOutputPath, fileContents);
