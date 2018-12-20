@@ -48,9 +48,9 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
     universe: universeId,
     account: params.account,
     marketId: params.marketId || null,
-    startTime: endTime - 1,
-    endTime: endTime,
-    periodInterval: 1,
+    startTime: 0,
+    endTime,
+    periodInterval: endTime,
   });
 
   if (_.isEmpty(profitsPerMarket)) return [];
