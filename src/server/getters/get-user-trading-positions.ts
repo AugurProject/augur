@@ -96,7 +96,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
 
       if (isMissingOneOutcome) {
         const outcomeNumbers = _.range(numOutcomes);
-        const missingOutcome = _.findIndex(_.zip(sortedOutcomes, outcomeNumbers), ([outcomePl, outcomeNumber]) => outcomePl!.outcome != outcomeNumber!);
+        const missingOutcome = _.findIndex(_.zip(sortedOutcomes, outcomeNumbers), ([outcomePl, outcomeNumber]) => (!outcomePl || outcomePl.outcome != outcomeNumber!));
         outcomesWithZeroPosition.push({
           marketId,
           outcome: missingOutcome,
