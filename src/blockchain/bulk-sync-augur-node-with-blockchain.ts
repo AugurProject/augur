@@ -24,7 +24,7 @@ function setSyncFinished() {
   augurEmitter.emit(SubscriptionEventNames.SyncFinished);
 }
 
-export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur): Promise<number> {
+export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur, blocksPerChunk: number|undefined): Promise<number> {
   const row: HighestBlockNumberRow|null = await db("blocks").max("blockNumber as highestBlockNumber").first();
   const lastSyncBlockNumber: number|null|undefined = row!.highestBlockNumber;
   const uploadBlockNumber: number = augur.contracts.uploadBlockNumbers[augur.rpc.getNetworkID()] || 0;
@@ -49,7 +49,7 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur): P
     logger.info(`Skipping batch load`);
     return fromBlock;
   }
-  await promisify(downloadAugurLogs)(db, augur, fromBlock, handoffBlockNumber);
+  await promisify(downloadAugurLogs)(db, augur, fromBlock, handoffBlockNumber, blocksPerChunk);
   setSyncFinished();
   await db.insert({ highestBlockNumber }).into("blockchain_sync_history");
   logger.info(`Finished batch load from ${fromBlock} to ${handoffBlockNumber}`);

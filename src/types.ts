@@ -47,6 +47,7 @@ export enum OrderState {
 export interface ConnectOptions extends NetworkConfiguration {
   propagationDelayWaitMillis?: number;
   maxRetries?: number;
+  blocksPerChunk?: number,
 }
 
 export interface BaseTransactionRow {
@@ -692,4 +693,10 @@ export interface AllOrdersRow<BigNumberType> {
   tokensEscrowed: BigNumberType;
   sharesEscrowed: BigNumberType;
   marketId: Address;
+}
+
+export interface PendingOrphanedOrderData {
+  marketId: Address;
+  outcome: number;
+  orderType: string;
 }

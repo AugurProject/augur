@@ -1,7 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { EventEmitter } from "events";
-import { NetworkConfiguration } from "augur-core";
 import { runServer, RunServerResult, shutdownServers } from "./server/run-server";
 import { bulkSyncAugurNodeWithBlockchain } from "./blockchain/bulk-sync-augur-node-with-blockchain";
 import { startAugurListeners } from "./blockchain/start-augur-listeners";
@@ -12,6 +11,7 @@ import { ControlMessageType } from "./constants";
 import { logger } from "./utils/logger";
 import { LoggerInterface } from "./utils/logger/logger";
 import { BlockAndLogsQueue } from "./blockchain/block-and-logs-queue";
+import { checkOrphanedOrders } from "./blockchain/check-orphaned-orders";
 
 export interface SyncedBlockInfo {
   lastSyncBlockNumber: number;
@@ -21,7 +21,7 @@ export interface SyncedBlockInfo {
 
 export class AugurNodeController {
   private augur: Augur;
-  private networkConfig: NetworkConfiguration;
+  private networkConfig: ConnectOptions;
   private databaseDir: string | undefined;
   private running: boolean;
   private controlEmitter: EventEmitter;
@@ -46,9 +46,15 @@ export class AugurNodeController {
       this.db = await createDbAndConnect(errorCallback, this.augur, this.networkConfig, this.databaseDir);
       this.controlEmitter.emit(ControlMessageType.BulkSyncStarted);
       this.serverResult = runServer(this.db, this.augur, this.controlEmitter);
-      const handoffBlockNumber = await bulkSyncAugurNodeWithBlockchain(this.db, this.augur);
+      const handoffBlockNumber = await bulkSyncAugurNodeWithBlockchain(this.db, this.augur, this.networkConfig.blocksPerChunk);
       this.controlEmitter.emit(ControlMessageType.BulkSyncFinished);
       this.logger.info("Bulk sync with blockchain complete.");
+      // We received a shutdown so just return.
+      if (!this.isRunning()) return;
+      this.controlEmitter.emit(ControlMessageType.BulkOrphansCheckStarted);
+      await checkOrphanedOrders(this.db, this.augur);
+      this.controlEmitter.emit(ControlMessageType.BulkOrphansCheckFinished);
+      this.logger.info("Bulk orphaned orders check with blockchain complete.");
       // We received a shutdown so just return.
       if (!this.isRunning()) return;
       this.blockAndLogsQueue = startAugurListeners(this.db, this.augur, handoffBlockNumber + 1, this._shutdownCallback.bind(this));
