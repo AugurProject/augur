@@ -106,11 +106,8 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
   return buckets;
 }
 
-export function sumProfitLossResults(left: ProfitLossResult, right: ProfitLossResult): ProfitLossResult {
-  if (left == null) return right;
-
+export function sumProfitLossResults<T extends ProfitLossResult>(left: T, right: T): T {
   const leftPosition = new BigNumber(left.position, 10);
-
   const rightPosition = new BigNumber(right.position, 10);
 
   const position = leftPosition.plus(rightPosition);
@@ -120,7 +117,7 @@ export function sumProfitLossResults(left: ProfitLossResult, right: ProfitLossRe
   const cost = left.cost.plus(right.cost);
   const averagePrice = position.gt(ZERO) ? cost.dividedBy(position) : ZERO;
 
-  return Object.assign({}, left, {
+  return Object.assign(_.clone(left), {
     position,
     realized,
     unrealized,
@@ -281,8 +278,8 @@ export async function getProfitLoss(db: Knex, augur: Augur, params: GetProfitLos
   //
   //
   // This makes it easy to sum across the groups of timestamps
-  const bucketsProftLoss = _.zip(..._.values(outcomesProfitLoss));
-  return bucketsProftLoss.map((bucketProftLoss: Array<ProfitLossResult>): ProfitLossResult => _.reduce(bucketProftLoss, sumProfitLossResults)!);
+  const bucketsProfitLoss = _.zip(..._.values(outcomesProfitLoss));
+  return bucketsProfitLoss.map((bucketProfitLoss: Array<ProfitLossResult>): ProfitLossResult => _.reduce(bucketProfitLoss, (left: ProfitLossResult, right: ProfitLossResult) => sumProfitLossResults(left, right))!)
 }
 
 export async function getProfitLossSummary(db: Knex, augur: Augur, params: GetProfitLossSummaryParamsType): Promise<NumericDictionary<ProfitLossResult>> {
