@@ -34,7 +34,7 @@ async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): 
         if (err) return nextBlockNumber(new Error("Could not get block"));
         if (block == null) return nextBlockNumber(new Error(`Block ${blockNumber} returned null response. This is usually an issue with a partially sync'd parity warp node. See: https://github.com/paritytech/parity-ethereum/issues/7411`));
         fetchedBlockCount++;
-        if (fetchedBlockCount % 10 == 0) console.log(`Fetched ${fetchedBlockCount} / ${blockNumbers.length} block details (current: ${highestBlockFetched})`)
+        if (fetchedBlockCount % 10 === 0) console.log(`Fetched ${fetchedBlockCount} / ${blockNumbers.length} block details (current: ${highestBlockFetched})`);
         if (blockNumber > highestBlockFetched) highestBlockFetched = blockNumber;
         nextBlockNumber(undefined, [blockNumber, block]);
       });

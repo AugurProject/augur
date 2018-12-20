@@ -21,7 +21,7 @@ async function checkOrphanedOrdersForOrderBookSide(db: Knex, augur: Augur, pendi
   try {
     orderIds = await getOrphanedOrderIds(db, augur, pendingOrderData);
   } catch { // In the case of some broken order books this will never succeed
-    logger.warn(`Orphaned Orders check for market: ${pendingOrderData.marketId} failed.`)
+    logger.warn(`Orphaned Orders check for market: ${pendingOrderData.marketId} failed.`);
   }
   await db.transaction(async (trx: Knex.Transaction) => {
     if (orderIds.length > 0) await trx.from("orders").whereNotIn("orderId", orderIds).where(pendingOrderData).update({ orphaned: true });

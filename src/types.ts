@@ -47,7 +47,7 @@ export enum OrderState {
 export interface ConnectOptions extends NetworkConfiguration {
   propagationDelayWaitMillis?: number;
   maxRetries?: number;
-  blocksPerChunk?: number,
+  blocksPerChunk?: number;
 }
 
 export interface BaseTransactionRow {
