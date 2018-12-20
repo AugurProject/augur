@@ -90,7 +90,7 @@ describe("server/getters/get-user-trading-positions", () => {
     expect(userTradingPositions).toEqual([
       {
         marketId: "0xfd9d2cab985b4e1052502c197d989fdf9e7d4b1e",
-        netPosition: "0",
+        netPosition: "30",
         outcome: 1,
         position: "30",
         averagePrice: "0.963",
@@ -99,19 +99,7 @@ describe("server/getters/get-user-trading-positions", () => {
         total: "-25.89",
         unrealized: "-25.89",
         cost: "28.89",
-      },
-      {
-        averagePrice: "0",
-        cost: "0",
-        marketId: "0xfd9d2cab985b4e1052502c197d989fdf9e7d4b1e",
-        netPosition: "-30",
-        outcome: 0,
-        position: "0",
-        realized: "0",
-        timestamp: 1544804660,
-        total: "0",
-        unrealized: "0",
-      },
+      }
     ]);
   });
 });

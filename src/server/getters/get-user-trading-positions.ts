@@ -120,9 +120,9 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
       const adjustedOutcomePls = _.map(nonZeroPositionOutcomePls, (outcomePl) => Object.assign({}, outcomePl, { netPosition: outcomePl.netPosition.minus(minimumPosition) }));
       const shortOutcome = Object.assign({}, _.first(outcomesWithZeroPosition)!, { netPosition: minimumPosition.negated() });
 
-      if (marketType === 'categorical') return _.concat(adjustedOutcomePls, shortOutcome);
-
-      return sumProfitLossResults(shortOutcome, _.first(adjustedOutcomePls)!);
+      if (marketType === 'categorical') return _.concat(adjustedOutcomePls, shortOutcome)
+      if (shortOutcome.outcome == 1) return sumProfitLossResults(shortOutcome, _.first(adjustedOutcomePls)!);
+      return nonZeroPositionOutcomePls;
     })
     .values()
     .flatten()

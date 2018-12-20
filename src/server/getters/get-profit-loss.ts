@@ -106,7 +106,7 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
   return buckets;
 }
 
-function sumProfitLossResults(left: ProfitLossResult, right: ProfitLossResult): ProfitLossResult {
+export function sumProfitLossResults(left: ProfitLossResult, right: ProfitLossResult): ProfitLossResult {
   if (left == null) return right;
 
   const leftPosition = new BigNumber(left.position, 10);
@@ -120,15 +120,14 @@ function sumProfitLossResults(left: ProfitLossResult, right: ProfitLossResult): 
   const cost = left.cost.plus(right.cost);
   const averagePrice = position.gt(ZERO) ? cost.dividedBy(position) : ZERO;
 
-  return {
-    timestamp: left.timestamp,
+  return Object.assign({}, left, {
     position,
     realized,
     unrealized,
     total,
     cost,
     averagePrice,
-  };
+  });
 }
 
 async function queryProfitLossTimeseries(db: Knex, now: number, params: GetProfitLossParamsType): Promise<Array<ProfitLossTimeseries>> {
