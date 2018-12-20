@@ -42,7 +42,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
   if (params.universe == null && params.marketId == null) throw new Error("Must provide reference to universe, specify universe or marketId");
   if (params.account == null) throw new Error("Missing required parameter: account");
 
-  const endTime = params.endTime || Date.now();
+  const endTime = params.endTime || Date.now() / 1000;
   const universeId = params.universe || (await queryUniverse(db, params.marketId!));
   const { profit: profitsPerMarket, marketOutcomes: numOutcomesByMarket } = await getAllOutcomesProfitLoss(db, augur, {
     universe: universeId,
