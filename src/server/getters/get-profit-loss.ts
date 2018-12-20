@@ -248,9 +248,10 @@ export async function getAllOutcomesProfitLoss(db: Knex, augur: Augur, params: G
     profit: _.mapValues(profits, (pls, key) => {
       return getProfitAtTimestamps(pls, outcomeValues[key], buckets);
     }),
-    marketOutcomes: _.mapValues(profits, (pls, marketId) => {
-      return _.first(pls)!.numOutcomes;
-    }),
+    marketOutcomes: _.fromPairs(_.values(_.mapValues(profits, (pls) => {
+      const  first = _.first(pls)!
+      return [first.marketId, first.numOutcomes];
+    }))),
     buckets,
   };
 }

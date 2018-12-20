@@ -80,7 +80,6 @@ describe("server/getters/get-user-trading-positions", () => {
     const userTradingPositions = await getUserTradingPositions({
       account: "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb",
       marketId: "0xfd9d2cab985b4e1052502c197d989fdf9e7d4b1e",
-      outcome: 1,
       sortBy: null,
       isSortDescending: null,
       limit: null,
@@ -88,17 +87,31 @@ describe("server/getters/get-user-trading-positions", () => {
       endTime: 1544804660,
     });
 
-    expect(userTradingPositions).toEqual([{
-      marketId: "0xfd9d2cab985b4e1052502c197d989fdf9e7d4b1e",
-      netPosition: "30",
-      outcome: 1,
-      position: "30",
-      averagePrice: "0.963",
-      realized: "0",
-      timestamp: 1544804660,
-      total: "-25.89",
-      unrealized: "-25.89",
-      cost: "28.89"
-    }]);
+    expect(userTradingPositions).toEqual([
+      {
+        marketId: "0xfd9d2cab985b4e1052502c197d989fdf9e7d4b1e",
+        netPosition: "0",
+        outcome: 1,
+        position: "30",
+        averagePrice: "0.963",
+        realized: "0",
+        timestamp: 1544804660,
+        total: "-25.89",
+        unrealized: "-25.89",
+        cost: "28.89",
+      },
+      {
+        averagePrice: "0",
+        cost: "0",
+        marketId: "0xfd9d2cab985b4e1052502c197d989fdf9e7d4b1e",
+        netPosition: "-30",
+        outcome: 0,
+        position: "0",
+        realized: "0",
+        timestamp: 1544804660,
+        total: "0",
+        unrealized: "0",
+      },
+    ]);
   });
 });

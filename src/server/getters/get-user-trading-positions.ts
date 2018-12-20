@@ -1,8 +1,9 @@
 import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
+import { BigNumber } from "bignumber.js"
 import Augur from "augur.js";
-import { ZERO  } from "../../constants";
+import { ZERO } from "../../constants";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { Address, OutcomeParam, SortLimitParams } from "../../types";
 import { getAllOutcomesProfitLoss, ProfitLossResult } from "./get-profit-loss";
@@ -14,13 +15,12 @@ export const UserTradingPositionsParamsSpecific = t.type({
   outcome: t.union([OutcomeParam, t.number, t.null, t.undefined]),
 });
 
-
 export const UserTradingPositionsParams = t.intersection([
   UserTradingPositionsParamsSpecific,
   SortLimitParams,
   t.partial({
-    endTime: t.number
-  })
+    endTime: t.number,
+  }),
 ]);
 
 interface TradingPosition extends ProfitLossResult {
@@ -30,7 +30,10 @@ interface TradingPosition extends ProfitLossResult {
 }
 
 async function queryUniverse(db: Knex, marketId: Address): Promise<Address> {
-  const market = await db.first("universe").from("markets").where({ marketId });
+  const market = await db
+    .first("universe")
+    .from("markets")
+    .where({ marketId });
   if (!market || market.universe == null) throw new Error("If universe isn't provided, you must provide a valid marketId");
   return market.universe;
 }
@@ -56,11 +59,14 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
     .mapValues((profits: Array<ProfitLossResult>, key: string) => {
       const [marketId, outcome] = key.split(",");
       const lastProfit = _.last(profits)!;
-      return Object.assign({
-        marketId,
-        outcome: parseInt(outcome, 10),
-        netPosition: lastProfit.position,
-      }, lastProfit);
+      return Object.assign(
+        {
+          marketId,
+          outcome: parseInt(outcome, 10),
+          netPosition: lastProfit.position,
+        },
+        lastProfit
+      );
     })
     .values()
     .value();
@@ -73,43 +79,44 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
   positions = _.chain(byMarket)
     .mapValues((outcomes: Array<TradingPosition>, marketId: string) => {
       const numOutcomes = numOutcomesByMarket[marketId];
-      if (outcomes.length !== numOutcomes - 1) return outcomes;
 
-      const shortPosition = _.minBy(outcomes, "position")!.position;
       const sortedOutcomes = _.sortBy(outcomes, "outcome")!;
+      const outcomesWithZeroPosition = _.filter(outcomes, (outcome) => outcome.position.eq(ZERO));
 
-      const previousOutcome = -1;
-      let zeroOrMissingOutcomePl = null;
-      let minimumOutcomePl: TradingPosition|null = null;
-      for (const outcomePl of sortedOutcomes) {
-        if (outcomePl.outcome !== previousOutcome + 1 || outcomePl.position.eq(ZERO)) {
-          if (zeroOrMissingOutcomePl !== null) {
-            zeroOrMissingOutcomePl = null;
-            break;
-          }
-          zeroOrMissingOutcomePl = outcomePl;
-        } else if (minimumOutcomePl === null || outcomePl.position.lt(minimumOutcomePl.position)) {
-          minimumOutcomePl = outcomePl;
-        }
+      const isMissingOneOutcome = numOutcomes === sortedOutcomes.length + 1;
+      const hasOneZeroPosition = outcomesWithZeroPosition.length === 1;
+
+      // We either must be missing one value, or have exactly one outcome with a zero position
+      // to do anything special for netPosition, need to the do logical XNOR here to determine
+      // if that's the case
+      if ((isMissingOneOutcome && hasOneZeroPosition) || (!isMissingOneOutcome && !hasOneZeroPosition)) {
+        console.log("LEAVING EARLY", isMissingOneOutcome, hasOneZeroPosition, numOutcomes);
+        return sortedOutcomes;
       }
 
-      if (zeroOrMissingOutcomePl !== null && minimumOutcomePl !== null) {
-        // This means we have one outcome which is missing or zero
-        // which means we need to change the netPosition for this item
-        // to be negative
-        return _.map(sortedOutcomes, (pl: TradingPosition) => {
-          if (pl.position.gt(ZERO)) {
-          return Object.assign({}, pl, {
-            netPosition: pl.position.minus(minimumOutcomePl!.position),
-          });
-          }
-          return Object.assign({}, pl, {
-            netPosition: pl.position.minus(minimumOutcomePl!.position),
-          });
+      if (isMissingOneOutcome) {
+        const outcomeNumbers = _.range(numOutcomes);
+        const missingOutcome = _.findIndex(_.zip(sortedOutcomes, outcomeNumbers), ([outcomePl, outcomeNumber]) => outcomePl!.outcome != outcomeNumber!);
+        outcomesWithZeroPosition.push({
+          marketId,
+          outcome: missingOutcome,
+          netPosition: ZERO,
+          position: ZERO,
+          realized: ZERO,
+          unrealized: ZERO,
+          total: ZERO,
+          cost: ZERO,
+          averagePrice: ZERO,
+          timestamp: _.first(sortedOutcomes)!.timestamp
         });
       }
 
-      return outcomes;
+      const nonZeroPositionOutcomePls = _.filter(sortedOutcomes, (outcome) => !outcome.position.eq(ZERO));
+      const minimumPosition = BigNumber.minimum(..._.map(nonZeroPositionOutcomePls, "position"));
+      const adjustedOutcomePls = _.map(nonZeroPositionOutcomePls, (outcomePl) => Object.assign({}, outcomePl, { netPosition: outcomePl.netPosition.minus(minimumPosition) }));
+      const shortOutcome = Object.assign({}, _.first(outcomesWithZeroPosition)!, { netPosition: minimumPosition.negated() });
+
+      return _.concat(adjustedOutcomePls, shortOutcome);
     })
     .values()
     .flatten()
@@ -118,4 +125,4 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
   if (params.outcome === null || typeof params.outcome === "undefined") return positions;
 
   return _.filter(positions, { outcome: params.outcome });
- }
+}
