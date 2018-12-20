@@ -74,7 +74,6 @@
   "dependencies": {
     "@types/get-port": "3.2.0",
     "@types/mkdirp": "0.5.2",
-    "@types/yargs": "11.1.2",
     "@velma/ganache-core": "2.1.0-beta.0-velma-1.0.0-rc.2",
     "async-file": "2.0.2",
     "async-mkdirp": "1.2.7",
@@ -92,7 +91,6 @@
     "replace": "1.0.0",
     "rimraf": "2.6.2",
     "solidity-coverage": "0.5.11",
-    "yargs": "11.1.0",
     "typescript": "3.2.1"
   },
   "devDependencies": {
