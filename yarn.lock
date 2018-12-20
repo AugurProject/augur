@@ -8558,6 +8558,22 @@ ethers@4.0.0-beta.14:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
+ethers@4.0.20:
+  version "4.0.20"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.20.tgz#2b072b283bb19f4870daf42cf5593e5375697504"
+  integrity sha512-1XEejqGYWlcXoVCPFPRfJmf1QQGHW7TNfprtdT1Up66nSuqWE/lYSLgvTNvH/nbSTMRFZqM6ANAbv/1+eUDb7g==
+  dependencies:
+    "@types/node" "^10.3.2"
+    aes-js "3.0.0"
+    bn.js "^4.4.0"
+    elliptic "6.3.3"
+    hash.js "1.1.3"
+    js-sha3 "0.5.7"
+    scrypt-js "2.0.4"
+    setimmediate "1.0.4"
+    uuid "2.0.1"
+    xmlhttprequest "1.8.0"
+
 ethjs-abi@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/ethjs-abi/-/ethjs-abi-0.2.0.tgz#d3e2c221011520fc499b71682036c14fcc2f5b25"
@@ -8596,26 +8612,10 @@ ethjs-contract@0.1.9:
     ethjs-util "0.1.3"
     js-sha3 "0.5.5"
 
-ethjs-contract@0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/ethjs-contract/-/ethjs-contract-0.2.3.tgz#f113ced8ed1c9c635b0b7ec71901340b64e8cded"
-  integrity sha512-fKsHm57wxwHrZhVlD8AHU2lC2G3c1fmvoEz15BpqIkuGWiTbjuvrQo2Avc+3EQpSsTFWNdyxC0h1WKRcn5kkyQ==
-  dependencies:
-    babel-runtime "^6.26.0"
-    ethjs-abi "0.2.0"
-    ethjs-filter "0.1.8"
-    ethjs-util "0.1.3"
-    js-sha3 "0.5.5"
-
 ethjs-filter@0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/ethjs-filter/-/ethjs-filter-0.1.5.tgz#0112af6017c24677e32b8fdeb20e6196019b7598"
   integrity sha1-ARKvYBfCRnfjK4/esg5hlgGbdZg=
-
-ethjs-filter@0.1.8:
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/ethjs-filter/-/ethjs-filter-0.1.8.tgz#2b02726b820ed4dd3860614d185c0c0f7ed1747f"
-  integrity sha512-qTDPskDL2UadHwjvM8A+WG9HwM4/FoSY3p3rMJORkHltYcAuiQZd2otzOYKcL5w2Q3sbAkW/E3yt/FPFL/AVXA==
 
 ethjs-format@0.2.4:
   version "0.2.4"
@@ -8624,18 +8624,6 @@ ethjs-format@0.2.4:
   dependencies:
     bn.js "4.11.6"
     ethjs-schema "^0.1.9"
-    ethjs-util "0.1.3"
-    is-hex-prefixed "1.0.0"
-    number-to-bn "1.7.0"
-    strip-hex-prefix "1.0.0"
-
-ethjs-format@0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/ethjs-format/-/ethjs-format-0.2.7.tgz#20c92f31c259a381588d069830d838b489774b86"
-  integrity sha512-uNYAi+r3/mvR3xYu2AfSXx5teP4ovy9z2FrRsblU+h2logsaIKZPi9V3bn3V7wuRcnG0HZ3QydgZuVaRo06C4Q==
-  dependencies:
-    bn.js "4.11.6"
-    ethjs-schema "0.2.1"
     ethjs-util "0.1.3"
     is-hex-prefixed "1.0.0"
     number-to-bn "1.7.0"
@@ -8656,16 +8644,6 @@ ethjs-query@0.3.1:
     ethjs-format "0.2.4"
     ethjs-rpc "0.1.5"
 
-ethjs-query@0.3.8:
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/ethjs-query/-/ethjs-query-0.3.8.tgz#aa5af02887bdd5f3c78b3256d0f22ffd5d357490"
-  integrity sha512-/J5JydqrOzU8O7VBOwZKUWXxHDGr46VqNjBCJgBVNNda+tv7Xc8Y2uJc6aMHHVbeN3YOQ7YRElgIc0q1CI02lQ==
-  dependencies:
-    babel-runtime "^6.26.0"
-    ethjs-format "0.2.7"
-    ethjs-rpc "0.2.0"
-    promise-to-callback "^1.0.0"
-
 ethjs-rpc@0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/ethjs-rpc/-/ethjs-rpc-0.1.5.tgz#099e22f27dc4c18b6978a485fc36b1b0f7969080"
@@ -8675,18 +8653,6 @@ ethjs-rpc@0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/ethjs-rpc/-/ethjs-rpc-0.1.8.tgz#1676740e41c7228196a71189d33f15c9c85b599d"
   integrity sha1-FnZ0DkHHIoGWpxGJ0z8VychbWZ0=
-
-ethjs-rpc@0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/ethjs-rpc/-/ethjs-rpc-0.2.0.tgz#3d0011e32cfff156ed6147818c6fb8f801701b4c"
-  integrity sha512-RINulkNZTKnj4R/cjYYtYMnFFaBcVALzbtEJEONrrka8IeoarNB9Jbzn+2rT00Cv8y/CxAI+GgY1d0/i2iQeOg==
-  dependencies:
-    promise-to-callback "^1.0.0"
-
-ethjs-schema@0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/ethjs-schema/-/ethjs-schema-0.2.1.tgz#47e138920421453617069034684642e26bb310f4"
-  integrity sha512-DXd8lwNrhT9sjsh/Vd2Z+4pfyGxhc0POVnLBUfwk5udtdoBzADyq+sK39dcb48+ZU+2VgtwHxtGWnLnCfmfW5g==
 
 ethjs-schema@^0.1.9:
   version "0.1.9"
@@ -12381,7 +12347,7 @@ js-sha3@0.5.7, js-sha3@^0.5.7:
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.5.7.tgz#0d4ffd8002d5333aabaf4a23eed2f6374c9f28e7"
   integrity sha1-DU/9gALVMzqrr0oj7tL2N0yfKOc=
 
-js-sha3@0.8.0:
+js-sha3@0.8.0, js-sha3@^0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.8.0.tgz#b9b7a5da73afad7dedd0f8c463954cbde6818840"
   integrity sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q==
@@ -18614,7 +18580,7 @@ scrypt-js@2.0.3:
   resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-2.0.3.tgz#bb0040be03043da9a012a2cea9fc9f852cfc87d4"
   integrity sha1-uwBAvgMEPamgEqLOqfyfhSz8h9Q=
 
-scrypt-js@^2.0.3:
+scrypt-js@2.0.4, scrypt-js@^2.0.3:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-2.0.4.tgz#32f8c5149f0797672e551c07e230f834b6af5f16"
   integrity sha512-4KsaGcPnuhtCZQCxFxN3GVYIhKFPTdLd8PLC552XwbMndtD0cjRFAhDuuydXQ0h08ZfPgzqe6EKHozpuH74iDw==
