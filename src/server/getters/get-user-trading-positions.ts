@@ -6,7 +6,7 @@ import Augur from "augur.js";
 import { ZERO } from "../../constants";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { Address, OutcomeParam, SortLimitParams } from "../../types";
-import { getAllOutcomesProfitLoss, ProfitLossResult } from "./get-profit-loss";
+import { getAllOutcomesProfitLoss, ProfitLossResult, sumProfitLossResults } from "./get-profit-loss";
 
 export const UserTradingPositionsParamsSpecific = t.type({
   universe: t.union([t.string, t.null, t.undefined]),
@@ -53,6 +53,9 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
     periodInterval: endTime,
   });
 
+  const marketTypes: Array<{marketId: string, marketType: string}> = await db("markets").select("marketId", "marketType").whereIn("marketId", _.keys(numOutcomesByMarket));
+  const marketTypesByMarket = _.fromPairs(marketTypes.map((marketType) => [marketType.marketId, marketType.marketType]));
+
   if (_.isEmpty(profitsPerMarket)) return [];
 
   let positions = _.chain(profitsPerMarket)
@@ -79,6 +82,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
   positions = _.chain(byMarket)
     .mapValues((outcomes: Array<TradingPosition>, marketId: string) => {
       const numOutcomes = numOutcomesByMarket[marketId];
+      const marketType = marketTypesByMarket[marketId];
 
       const sortedOutcomes = _.sortBy(outcomes, "outcome")!;
       const outcomesWithZeroPosition = _.filter(outcomes, (outcome) => outcome.position.eq(ZERO));
@@ -116,7 +120,9 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
       const adjustedOutcomePls = _.map(nonZeroPositionOutcomePls, (outcomePl) => Object.assign({}, outcomePl, { netPosition: outcomePl.netPosition.minus(minimumPosition) }));
       const shortOutcome = Object.assign({}, _.first(outcomesWithZeroPosition)!, { netPosition: minimumPosition.negated() });
 
-      return _.concat(adjustedOutcomePls, shortOutcome);
+      if (marketType === 'categorical') return _.concat(adjustedOutcomePls, shortOutcome);
+
+      return sumProfitLossResults(shortOutcome, _.first(adjustedOutcomePls)!);
     })
     .values()
     .flatten()
