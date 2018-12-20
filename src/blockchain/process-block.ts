@@ -9,6 +9,7 @@ import { getMarketsWithReportingState } from "../server/getters/database";
 import { logger } from "../utils/logger";
 import { SubscriptionEventNames } from "../constants";
 import { processLogByName } from "./process-logs";
+import { checkOrphanedOrders } from "./check-orphaned-orders";
 
 export type BlockDirection = "add"|"remove";
 
@@ -65,6 +66,7 @@ export async function processBlockAndLogs(db: Knex, augur: Augur, direction: Blo
       // TODO: un-advance time
     }
   });
+  await checkOrphanedOrders(db, augur);
 }
 
 async function insertBlockRow(db: Knex, blockNumber: number, blockHash: string, bulkSync: boolean, timestamp: number) {
