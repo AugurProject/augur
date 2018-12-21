@@ -25,22 +25,6 @@ const MarketPortfolioCardFooter = ({
   claimClicked,
   disabled
 }) => {
-  const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph);
-  let canClaim = false;
-  let startTime = null;
-  let finalTime = null;
-  let endTimestamp = null;
-  if (finalizationTime) {
-    startTime = new Date(finalizationTime * 1000);
-    finalTime = moment(startTime)
-      .add(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME, "seconds")
-      .toDate();
-    endTimestamp = createBigNumber(finalizationTime).plus(
-      createBigNumber(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME)
-    );
-    const timeHasPassed = createBigNumber(currentTimestamp).minus(endTimestamp);
-    canClaim = linkType === TYPE_CLAIM_PROCEEDS && timeHasPassed.toNumber() > 0;
-  }
   const userHasClaimableForkFees =
     (unclaimedForkEth && unclaimedForkEth.value > 0) ||
     (unclaimedForkRepStaked && unclaimedForkRepStaked.value > 0);
@@ -82,36 +66,12 @@ const MarketPortfolioCardFooter = ({
               </span>
             )}
           <div className={Styles["MarketCard__action-container"]}>
-            {linkType === TYPE_CLAIM_PROCEEDS &&
-              finalizationTime &&
-              !canClaim && (
-                <div className={Styles["MarketCard__proceeds-container"]}>
-                  <span className={Styles["MarketCard__proceeds-text"]}>
-                    Proceeds Available
-                  </span>
-                  <span className={Styles["MarketCard__proceeds-text-small"]}>
-                    {
-                      convertUnixToFormattedDate(endTimestamp.toNumber())
-                        .formattedLocal
-                    }
-                  </span>
-                  <span className={Styles["MarketCard__proceeds-clock"]}>
-                    <WrappedGraph
-                      startDate={startTime}
-                      endTime={finalTime}
-                      currentTimestamp={currentTimestamp * 1000}
-                      backgroundColor="#ceccd8"
-                    />
-                  </span>
-                </div>
-              )}
             <button
               data-testid={"claimButton-" + marketId}
               className={classNames(Styles["MarketCard__action-footer-light"])}
               onClick={buttonAction}
               disabled={
                 (linkType === TYPE_CLAIM_PROCEEDS &&
-                  !canClaim &&
                   !userHasClaimableForkFees) ||
                 claimClicked ||
                 disabled
