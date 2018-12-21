@@ -25,7 +25,7 @@ function packageNotificationInfo(notificationId, timestamp, transaction) {
       amount: transaction && transaction.amount,
       marketId: transaction && transaction.market && transaction.market.id,
       quantity: transaction && transaction.quantity,
-      value:  transaction && transaction.value,
+      value: transaction && transaction.value
     }
   };
 }
