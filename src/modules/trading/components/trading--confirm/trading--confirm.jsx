@@ -122,7 +122,7 @@ const MarketTradingConfirm = ({
                 target="_blank"
               >
                 {" "}
-                Lean more here.
+                Learn more here.
               </a>
             </ReactTooltip>
           </span>
