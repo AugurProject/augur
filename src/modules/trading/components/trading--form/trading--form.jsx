@@ -297,7 +297,7 @@ class MarketTradingForm extends Component {
         errors = {
           ...errors,
           [this.TRADE_MAX_COST]: [
-            `Est. gas cost ${gasCost} ETH, higer than order cost`
+            `Est. gas cost ${gasCost} ETH, higher than order cost`
           ]
         };
         errorCount += 1;
