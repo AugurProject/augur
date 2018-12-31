@@ -41,6 +41,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -76,6 +77,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -111,6 +113,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -146,6 +149,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -181,6 +185,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -216,6 +221,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -251,6 +257,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -286,6 +293,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -321,6 +329,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -356,6 +365,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -391,6 +401,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -426,6 +437,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -462,6 +474,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -498,6 +511,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -533,6 +547,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -568,6 +583,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
@@ -603,6 +619,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
             needsDisavowal: 0,
             openInterest: "0",
             shareVolume: "0",
+            validityBondSize: "0",
             logIndex: 0,
           },
           {
