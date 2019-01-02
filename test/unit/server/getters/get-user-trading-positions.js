@@ -34,9 +34,9 @@ describe("server/getters/get-user-trading-positions", () => {
         averagePrice: "26.99662542182234436667",
         cost: "0.00809898762654670331",
         marketId: "0x0000000000000000000000000000000000000ff1",
-        netPosition: "0.0003",
-        outcome: 0,
-        position: "0.0003",
+        netPosition: "-0.0003",
+        outcome: 1,
+        position: "0",
         realized: "54999999999.56442531007152770894",
         timestamp: 1534435013,
         total: "54999999999.56442531007152770894",
@@ -45,7 +45,7 @@ describe("server/getters/get-user-trading-positions", () => {
     ]);
   });
 
-  it("get a user's position in one outcome of a market where the user has no position", async () => {
+  it("get a user's position in one outcome of a market where the user has a synthetic short position", async () => {
     const userTradingPositions = await getUserTradingPositions({
       universe: "0x000000000000000000000000000000000000000b",
       account: "0xffff000000000000000000000000000000000000",
@@ -58,7 +58,18 @@ describe("server/getters/get-user-trading-positions", () => {
       endTime: 1544804660,
     });
 
-    expect(userTradingPositions).toEqual([]);
+    expect(userTradingPositions).toEqual([{
+      "averagePrice": "26.99662542182234436667",
+      "cost": "0.00809898762654670331",
+      "marketId": "0x0000000000000000000000000000000000000ff1",
+      "netPosition": "-0.0003",
+      "outcome": 1,
+      "position": "0",
+      "realized": "54999999999.56442531007152770894",
+      "timestamp": 1534435013,
+      "total": "54999999999.55662632244498100563",
+      "unrealized": "-0.00779898762654670331",
+    }]);
   });
 
   it("get the positions for an account which has no trades", async () => {
