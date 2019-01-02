@@ -62,7 +62,7 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
       upsertOrder = db.from("orders").where(orderId).update(orderData);
     }
     await upsertOrder;
-    await checkForOrphanedOrders(db, augur, orderData);
+    await marketPendingOrphanCheck(db, orderData);
     await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash);
 
     const otherOutcomes = Array.from(Array(numOutcomes).keys());
@@ -83,46 +83,13 @@ export async function processOrderCreatedLogRemoval(augur: Augur, log: Formatted
   };
 }
 
-async function checkForOrphanedOrders(db: Knex, augur: Augur, orderData: OrdersRow<string>) {
-  const queryData = {
+async function marketPendingOrphanCheck(db: Knex, orderData: OrdersRow<string>) {
+  const pendingOrderData = {
     marketId: orderData.marketId,
     outcome: orderData.outcome,
     orderType: orderData.orderType,
-    orderState: OrderState.OPEN,
-    orphaned: 0,
   };
-  const results: { numOrders: number } = await db.first(db.raw("count(*) as numOrders")).from("orders").where(queryData);
-
-  const requestData = {
-    _type: orderData.orderType === "buy" ? 0 : 1,
-    _market: orderData.marketId,
-    _outcome: orderData.outcome,
-  };
-  // Use the function that will return the least amount of data assuming we're close to the right number of orders currently. Failure is expected when syncing and will correct later
-  let getExistingOrders: ApiFunction;
-  if (results.numOrders >= 500) {
-    getExistingOrders = augur.api.OrdersFinder.getExistingOrders1000;
-  } else if (results.numOrders >= 200) {
-    getExistingOrders = augur.api.OrdersFinder.getExistingOrders500;
-  } else if (results.numOrders >= 100) {
-    getExistingOrders = augur.api.OrdersFinder.getExistingOrders200;
-  } else if (results.numOrders >= 50) {
-    getExistingOrders = augur.api.OrdersFinder.getExistingOrders100;
-  } else if (results.numOrders >= 20) {
-    getExistingOrders = augur.api.OrdersFinder.getExistingOrders50;
-  } else if (results.numOrders >= 10) {
-    getExistingOrders = augur.api.OrdersFinder.getExistingOrders20;
-  } else if (results.numOrders >= 5) {
-    getExistingOrders = augur.api.OrdersFinder.getExistingOrders10;
-  } else {
-    getExistingOrders = augur.api.OrdersFinder.getExistingOrders5;
-  }
-  try {
-    const orderIds: Array<string> = await getExistingOrders(requestData);
-
-    // Erroring here is expected in the case where we have more orders than are supported by the call used. We correct at some future order creation which must occur for there to be more orders now
-    return db.from("orders").whereNotIn("orderId", orderIds).where(queryData).update({ orphaned: true });
-  } catch (err) {
-    console.warn(`Failed to mark orphaned orders for ${orderData.marketId}`);
-  }
+  const result: { count: number } = await db.first(db.raw("count(*) as count")).from("pending_orphan_checks").where(pendingOrderData);
+  if (result.count > 0) return;
+  return await db.insert(pendingOrderData).into("pending_orphan_checks");
 }

@@ -1221,14 +1221,6 @@ atob@^2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
 
-augur-blockstream@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/augur-blockstream/-/augur-blockstream-5.0.0.tgz#c27606fdcac5540b0cc26705fccd7ecc6ed28a29"
-  dependencies:
-    immutable "3.8.2"
-    source-map-support "0.5.6"
-    uuid "3.2.1"
-
 augur-core@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.1.0.tgz#957aba6f9ad42c50e86736b1f2a79962fe2952b4"
@@ -3566,16 +3558,16 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@5.7.2:
-  version "5.7.2"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.7.2.tgz#79ef8d37f83f2f33fac1119d1d556f00f61edd87"
+ethrpc@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-6.1.1.tgz#4b3b0a9a2bdbdb5bc83d934a588592b7ec747b3b"
   dependencies:
     async "2.6.0"
-    augur-blockstream "5.0.0"
     bignumber.js "6.0.0"
     browser-request "0.3.3"
     clone "2.1.1"
     es6-promise "4.2.4"
+    ethereumjs-blockstream "7.0.0"
     ethereumjs-tx "1.3.1"
     immutable-delete "1.0.1"
     keccak "1.2.0"
@@ -3590,9 +3582,9 @@ ethrpc@5.7.2:
     request "2.85.0"
     websocket "1.0.26"
 
-ethrpc@^6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-6.1.1.tgz#4b3b0a9a2bdbdb5bc83d934a588592b7ec747b3b"
+ethrpc@^6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-6.1.2.tgz#9d38985d58bc9694afc4900802f2c4c15be62197"
   dependencies:
     async "2.6.0"
     bignumber.js "6.0.0"
