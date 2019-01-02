@@ -458,7 +458,7 @@ div.ErrorField:focus {
   }
 }
 
-.ModalDisclaimer__checkbox {
+.ModalDisclaimer__helperText {
   display: flex;
   flex-flow: row nowrap;
   margin-bottom: 1rem;
@@ -470,14 +470,31 @@ div.ErrorField:focus {
     font-size: @font-size-medium;
     font-weight: normal;
     line-height: @font-size-normal;
-    margin: 0 2rem;
+    margin: 0 5rem 0 4rem;
+    text-align: left;
+    text-transform: none;
+    width: 100%;
+  }
+}
+
+.ModalDisclaimer__checkbox {
+  display: flex;
+  flex-flow: row nowrap;
+  margin-bottom: 1rem;
+
+  > label {
+    align-items: center;
+    color: @color-almostblack;
+    display: flex;
+    font-size: @font-size-medium;
+    font-weight: bold;
+    line-height: @font-size-normal;
+    margin: 0 4rem;
     text-transform: none;
     width: 100%;
 
-    > input {
-      height: 1rem;
-      margin-left: 1rem;
-      width: 1rem;
+    > div {
+      margin-right: 2rem;
     }
   }
 }
