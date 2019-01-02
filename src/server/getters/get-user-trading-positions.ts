@@ -1,7 +1,7 @@
 import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { BigNumber } from "bignumber.js"
+import { BigNumber } from "bignumber.js";
 import Augur from "augur.js";
 import { ZERO } from "../../constants";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
@@ -68,7 +68,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
           outcome: parseInt(outcome, 10),
           netPosition: lastProfit.position,
         },
-        lastProfit
+        lastProfit,
       );
     })
     .values()
@@ -100,7 +100,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
 
       if (isMissingOneOutcome) {
         const outcomeNumbers = _.range(numOutcomes);
-        const missingOutcome = _.findIndex(_.zip(sortedOutcomes, outcomeNumbers), ([outcomePl, outcomeNumber]) => (!outcomePl || outcomePl.outcome != outcomeNumber!));
+        const missingOutcome = _.findIndex(_.zip(sortedOutcomes, outcomeNumbers), ([outcomePl, outcomeNumber]) => (!outcomePl || outcomePl.outcome !== outcomeNumber!));
         outcomesWithZeroPosition.push({
           marketId,
           outcome: missingOutcome,
@@ -111,7 +111,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
           total: ZERO,
           cost: ZERO,
           averagePrice: ZERO,
-          timestamp: _.first(sortedOutcomes)!.timestamp
+          timestamp: _.first(sortedOutcomes)!.timestamp,
         });
       }
 
@@ -120,9 +120,9 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
       const adjustedOutcomePls = _.map(nonZeroPositionOutcomePls, (outcomePl) => Object.assign({}, outcomePl, { netPosition: outcomePl.netPosition.minus(minimumPosition) }));
       const shortOutcome = Object.assign({}, _.first(outcomesWithZeroPosition)!, { netPosition: minimumPosition.negated() });
 
-      if (marketType === 'categorical') return _.concat(adjustedOutcomePls, shortOutcome)
-      if (shortOutcome.outcome == 1) {
-        const result = sumProfitLossResults(shortOutcome, _.first(adjustedOutcomePls)!)
+      if (marketType === "categorical") return _.concat(adjustedOutcomePls, shortOutcome);
+      if (shortOutcome.outcome === 1) {
+        const result = sumProfitLossResults(shortOutcome, _.first(adjustedOutcomePls)!);
         result.position = shortOutcome.position;
         return [result];
       }
