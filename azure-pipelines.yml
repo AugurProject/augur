@@ -42,7 +42,7 @@ jobs:
           node --version
           echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
           docker pull $CORE_IMAGE_LATEST;
-          yarn workspace augur-core docker:test:unit:all;
+          yarn workspace augur-core docker:build;
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
           docker push $CORE_IMAGE_BUILD
         condition: eq(variables.AUGUR_CORE, 'true')
@@ -87,7 +87,7 @@ jobs:
         inputs:
           versionSpec: '10.x'
       - bash: |
-          set -euxo pipefail
+          set -euo pipefail
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
