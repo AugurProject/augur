@@ -4,7 +4,6 @@ import { PendingOrphanedOrderData, OrderState } from "../types";
 import { logger } from "../utils/logger";
 
 export async function checkOrphanedOrders(db: Knex, augur: Augur) {
-  logger.info("Checking orphaned orders");
   const pendingOrders: Array<PendingOrphanedOrderData> = await db.select().from("pending_orphan_checks");
   let orderBooksToCheck = pendingOrders.length;
   if (orderBooksToCheck < 1) return;
