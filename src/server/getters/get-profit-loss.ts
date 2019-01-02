@@ -245,7 +245,7 @@ export async function getAllOutcomesProfitLoss(db: Knex, augur: Augur, params: G
       return getProfitAtTimestamps(pls, outcomeValues[key], buckets);
     }),
     marketOutcomes: _.fromPairs(_.values(_.mapValues(profits, (pls) => {
-      const  first = _.first(pls)!
+      const  first = _.first(pls)!;
       return [first.marketId, first.numOutcomes];
     }))),
     buckets,
@@ -279,7 +279,7 @@ export async function getProfitLoss(db: Knex, augur: Augur, params: GetProfitLos
   //
   // This makes it easy to sum across the groups of timestamps
   const bucketsProfitLoss = _.zip(..._.values(outcomesProfitLoss));
-  return bucketsProfitLoss.map((bucketProfitLoss: Array<ProfitLossResult>): ProfitLossResult => _.reduce(bucketProfitLoss, (left: ProfitLossResult, right: ProfitLossResult) => sumProfitLossResults(left, right))!)
+  return bucketsProfitLoss.map((bucketProfitLoss: Array<ProfitLossResult>): ProfitLossResult => _.reduce(bucketProfitLoss, (left: ProfitLossResult, right: ProfitLossResult) => sumProfitLossResults(left, right))!);
 }
 
 export async function getProfitLossSummary(db: Knex, augur: Augur, params: GetProfitLossSummaryParamsType): Promise<NumericDictionary<ProfitLossResult>> {

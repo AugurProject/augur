@@ -110,7 +110,7 @@ describe("server/getters/get-user-trading-positions", () => {
         total: "-25.89",
         unrealized: "-25.89",
         cost: "28.89",
-      }
+      },
     ]);
   });
 });

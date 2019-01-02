@@ -464,6 +464,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
             timestamp: 1544804660,
           },
         ]);
-      }
+      },
     );
 };

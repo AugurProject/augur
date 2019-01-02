@@ -171,7 +171,7 @@ describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
 
     const deserialized = JSON.parse(JSON.stringify(results));
 
-    
+
     expect(Object.keys(deserialized)).toEqual(expect.arrayContaining(["1", "30"]));
     expect(deserialized["1"]).toMatchObject({
       averagePrice: "26.99662542182234436667",
