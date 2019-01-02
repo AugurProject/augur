@@ -12,9 +12,9 @@ ONE = 10 ** 18
     (1, 1, 5 * ONE, 5 * ONE),
 
     # Maximum Decrease
-    (0, 1, 2 * ONE, ONE),
-    (0, 50, 2 * ONE, ONE),
-    (0, 1, 10 * ONE, 5 * ONE),
+    (0, 1, ONE, .9 * ONE),
+    (0, 50, ONE, .9 * ONE),
+    (0, 1, 10 * ONE, 9 * ONE),
 
     # Maximum Increase
     (100, 1, ONE, 2 * ONE),
@@ -22,11 +22,11 @@ ONE = 10 ** 18
     (100, 1, 10 * ONE, 20 * ONE),
 
     # Decrease
-    (1, 10, 10 * ONE, 5.5 * ONE),
-    (2, 10, 10 * ONE, 6 * ONE),
-    (4, 10, 10 * ONE, 7 * ONE),
-    (8, 10, 10 * ONE, 9 * ONE),
-    (9, 10, 10 * ONE, 9.5 * ONE),
+    (1, 10, 10 * ONE, 9.1 * ONE),
+    (2, 10, 10 * ONE, 9200000000000000000L), # Python rounding requires this be directly specified
+    (4, 10, 10 * ONE, 9.4 * ONE),
+    (8, 10, 10 * ONE, 9.8 * ONE),
+    (9, 10, 10 * ONE, 9.9 * ONE),
 
     # Increase
     (51, 50, 10 * ONE, 10.2 * ONE),
