@@ -12,10 +12,10 @@ export async function processCompleteSetsPurchasedOrSoldLog(augur: Augur, log: F
     const marketId = log.market;
     const marketsRow: MarketsRow<BigNumber>|undefined = await db.first("minPrice", "maxPrice", "numTicks").from("markets").where({ marketId });
 
-    if (!marketsRow) throw new Error("market min price, max price, category, and/or num ticks not found");
-    const minPrice = marketsRow.minPrice!;
-    const maxPrice = marketsRow.maxPrice!;
-    const numTicks = marketsRow.numTicks!;
+    if (!marketsRow) throw new Error(`market not found: ${marketId}`);
+    const minPrice = marketsRow.minPrice;
+    const maxPrice = marketsRow.maxPrice;
+    const numTicks = marketsRow.numTicks;
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
     const numCompleteSets = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numCompleteSets, 10), tickSize).toString();
     const completeSetPurchasedData: CompleteSetsRow<string> = {

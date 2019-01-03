@@ -197,7 +197,7 @@ export async function getOutcomesProfitLoss(db: Knex, augur: Augur, nowTimestamp
   const claimHistory: Array<ProceedTradesRow<BigNumber>> = await getProceedTradeRows(db, augur, marketIds, account, endTime);
   const trades: Array<TradeRow> = tradeHistory.map((trade: TradingHistoryRow): TradeRow => {
     return Object.assign({}, trade, {
-      type: trade.orderType! === "buy" ? "sell" : "buy",
+      type: trade.orderType === "buy" ? "sell" : "buy",
       maker: account === trade.creator!,
     });
   }).concat(claimHistory).sort((a, b) => {
