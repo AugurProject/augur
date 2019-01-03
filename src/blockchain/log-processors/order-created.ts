@@ -22,7 +22,7 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
     if (!tokensRow) throw new Error(`market and outcome not found for shareToken ${shareToken} (${log.transactionHash}`);
     const marketId = tokensRow.marketId;
     const outcome = tokensRow.outcome!;
-    const marketsRow: MarketsRow<BigNumber> = await db.first("minPrice", "maxPrice", "numTicks").from("markets").where({ marketId });
+    const marketsRow: MarketsRow<BigNumber> = await db.first("minPrice", "maxPrice", "numTicks", "numOutcomes").from("markets").where({ marketId });
     if (!marketsRow) throw new Error(`market min price, max price, and/or num ticks not found for market: ${marketId} (${log.transactionHash}`);
     const minPrice = marketsRow.minPrice!;
     const maxPrice = marketsRow.maxPrice!;

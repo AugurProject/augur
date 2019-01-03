@@ -29,7 +29,7 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
     if (!tokensRow) throw new Error(`market and outcome not found for shareToken: ${shareToken} (${log.transactionHash})`);
     const marketId = tokensRow.marketId;
     const outcome = tokensRow.outcome!;
-    const marketsRow: MarketsRow<BigNumber>|undefined = await db.first("minPrice", "maxPrice", "numTicks", "category").from("markets").where({ marketId });
+    const marketsRow: MarketsRow<BigNumber>|undefined = await db.first("minPrice", "maxPrice", "numTicks", "category", "numOutcomes").from("markets").where({ marketId });
 
     if (!marketsRow) throw new Error("market min price, max price, category, and/or num ticks not found");
     const minPrice = marketsRow.minPrice;
@@ -85,7 +85,6 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
     const otherOutcomes = Array.from(Array(numOutcomes).keys());
     otherOutcomes.splice(outcome, 1);
     const displayRange = augur.utils.convertOnChainPriceToDisplayPrice(maxPrice.minus(minPrice), minPrice, tickSize);
-    const profitLossUpdates = [];
     if (numCreatorTokens.gt(0)) {
       await updateProfitLossBuyShares(db, marketId, orderCreator, numCreatorTokens, orderType === "buy" ? orderOutcome : otherOutcomes, log.transactionHash);
     }
