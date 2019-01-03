@@ -37,7 +37,7 @@ const mergeProps = (sP, dP, oP) => {
       {
         label: "cancel",
         action: () => {
-          cb();
+          cb("modal closed");
           closeModal();
         },
         type: "gray"
