@@ -390,6 +390,10 @@ contract FillOrder is CashAutoConverter, Initializable, ReentrancyGuard, IFillOr
         }
         _tradeData.tradeMakerSharesForFillerTokens();
         _tradeData.tradeMakerTokensForFillerTokens();
+
+        // Sell any complete sets the maker or filler may have ended up holding
+        sellCompleteSets(_tradeData);
+
         // Turn any remaining Cash balance the creator has into ETH. This is done for the filler though the use of a CashAutoConverter modifier. If someone is taking their own order we skip this step since the modifier will do it and they may need the ETH in the tx to make an order later in the context of publicTrade
         uint256 _creatorCashBalance = _tradeData.contracts.denominationToken.balanceOf(_tradeData.creator.participantAddress);
         bool _isOwnOrder = _tradeData.creator.participantAddress == _tradeData.filler.participantAddress;
@@ -403,6 +407,31 @@ contract FillOrder is CashAutoConverter, Initializable, ReentrancyGuard, IFillOr
         logOrderFilled(_tradeData, _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
         _tradeData.contracts.orders.recordFillOrder(_orderId, _tradeData.getMakerSharesDepleted(), _tradeData.getMakerTokensDepleted());
         return _amountRemainingFillerWants;
+    }
+
+    function sellCompleteSets(Trade.Data _tradeData) internal returns (bool) {
+        address _filler = _tradeData.filler.participantAddress;
+        address _creator = _tradeData.creator.participantAddress;
+        IMarket _market = _tradeData.contracts.market;
+
+        uint256 _fillerCompleteSets = _market.getShareToken(0).balanceOf(_filler);
+        uint256 _creatorCompleteSets = _market.getShareToken(0).balanceOf(_creator);
+
+        for (uint256 _outcome = 1; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
+            IShareToken _shareToken = _market.getShareToken(_outcome);
+            _creatorCompleteSets = _creatorCompleteSets.min(_shareToken.balanceOf(_creator));
+            _fillerCompleteSets = _fillerCompleteSets.min(_shareToken.balanceOf(_filler));
+        }
+
+        if (_fillerCompleteSets > 0) {
+            _tradeData.contracts.completeSets.sellCompleteSets(_filler, _market, _fillerCompleteSets);
+        }
+
+        if (_creatorCompleteSets > 0) {
+            _tradeData.contracts.completeSets.sellCompleteSets(_creator, _market, _creatorCompleteSets);
+        }
+
+        return true;
     }
 
     function logOrderFilled(Trade.Data _tradeData, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, bytes32 _tradeGroupId) private returns (bool) {

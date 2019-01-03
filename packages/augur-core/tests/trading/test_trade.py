@@ -804,8 +804,9 @@ def test_take_best_order_with_shares_escrowed_buy_with_cash_by_ignoring_shares(u
     assert firstShareToken.balanceOf(tester.a1) == 0
     assert secondShareToken.balanceOf(tester.a1) == fix(1)
 
-    assert firstShareToken.balanceOf(tester.a2) == fix(2)
-    assert secondShareToken.balanceOf(tester.a2) == fix(1)
+    # The second user sold the complete set they ended up holding from this transaction
+    assert firstShareToken.balanceOf(tester.a2) == fix(1)
+    assert secondShareToken.balanceOf(tester.a2) == fix(0)
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
