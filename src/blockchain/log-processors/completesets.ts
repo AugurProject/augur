@@ -12,7 +12,7 @@ export async function processCompleteSetsPurchasedOrSoldLog(augur: Augur, log: F
   return async (db: Knex) => {
     const marketId = log.market;
     const marketsRow: MarketsRow<BigNumber>|undefined = await db.first("minPrice", "maxPrice", "numTicks", "numOutcomes").from("markets").where({ marketId });
-    if (!marketsRow) throw new Error("market min price, max price, category, and/or num ticks not found");
+    if (!marketsRow) throw new Error(`market not found: ${marketId}`);
     const minPrice = marketsRow.minPrice!;
     const maxPrice = marketsRow.maxPrice!;
     const numTicks = marketsRow.numTicks!;
