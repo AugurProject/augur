@@ -9,16 +9,11 @@ import { postProcessDatabaseResults } from "../server/post-process-database-resu
 import { monitorEthereumNodeHealth } from "../blockchain/monitor-ethereum-node-health";
 import { logger } from "../utils/logger";
 import { ConnectOptions, ErrorCallback } from "../types";
-
+import { DB_VERSION, DB_FILE } from "../constants";
 interface NetworkIdRow {
   networkId: string;
   overrideTimestamp: number|null;
 }
-
-// WARNING: Update this only if this release requires destroying all existing Augur Node Databases
-const DB_VERSION = 3;
-
-const DB_FILE = "augur-%s-%s.db";
 
 function getDatabasePathFromNetworkId(networkId: string, filenameTemplate: string = DB_FILE, databaseDir: string|undefined) {
   return path.join(databaseDir || path.join(__dirname, "../../"), format(filenameTemplate, networkId, DB_VERSION));
