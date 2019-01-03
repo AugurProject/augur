@@ -26,7 +26,7 @@ jobs:
         inputs:
           versionSpec: '9.x'
       - bash: |
-          set -euxo pipefail
+          set -euo pipefail
           echo "Build SourceBranch: $(Build.SourceBranch)"
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
@@ -37,7 +37,7 @@ jobs:
               fi
             done
       - script: |
-          set -euxo pipefail
+          set -euo pipefail
           which node
           node --version
           echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
@@ -97,7 +97,7 @@ jobs:
               fi
             done
       - script: |
-          set -euxo pipefail
+          set -euo pipefail
           which node
           node --version
           if [[ "$TESTS" == "integration:geth" ]]; then
@@ -132,7 +132,7 @@ jobs:
           node_version: 10.x
     steps:
       - script: |
-          set -euxo pipefail
+          set -euo pipefail
           which node
           node --version
           yarn workspace augur-node add sqlite3 --force --build-from-source
@@ -158,7 +158,7 @@ jobs:
           node_version: 10.x
     steps:
       - bash: |
-          set -euxo pipefail
+          set -euo pipefail
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
@@ -168,7 +168,7 @@ jobs:
               fi
             done
       - script: |
-          set -euxo pipefail
+          set -euo pipefail
           which node
           node --version
           yarn install --ignore-scripts --frozen-lockfile
@@ -181,7 +181,7 @@ jobs:
       vmImage: 'Ubuntu 16.04'
     steps:
     - script: |
-        set -euxo pipefail
+        set -euo pipefail
         echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
         yarn docker:build:all
         yarn workspace augur-tools docker:push
