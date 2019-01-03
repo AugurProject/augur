@@ -20,7 +20,8 @@ const MarketTradingConfirm = ({
   selectedOutcome,
   doNotCreateOrders,
   showOrderPlaced,
-  marketQuantity
+  marketQuantity,
+  handleFilledOnly
 }) => {
   const {
     numShares,
@@ -226,6 +227,8 @@ const MarketTradingConfirm = ({
                 }
               },
               res => {
+                if (doNotCreateOrders && res.res !== res.sharesToFill)
+                  handleFilledOnly(res.tradeInProgress);
                 // onComplete CB
               },
               doNotCreateOrders
@@ -260,7 +263,8 @@ MarketTradingConfirm.propTypes = {
     shareCost: PropTypes.object
   }).isRequired,
   isMobile: PropTypes.bool.isRequired,
-  showOrderPlaced: PropTypes.func.isRequired
+  showOrderPlaced: PropTypes.func.isRequired,
+  handleFilledOnly: PropTypes.func.isRequired
 };
 
 export default MarketTradingConfirm;

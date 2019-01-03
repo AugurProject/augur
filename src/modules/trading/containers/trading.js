@@ -7,6 +7,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import MarketTrading from "modules/trading/components/trading/trading";
 import { clearTradeInProgress } from "modules/trades/actions/update-trades-in-progress";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
+import { handleFilledOnly } from "modules/notifications/actions/notifications";
 
 const mapStateToProps = state => ({
   availableFunds: createBigNumber(state.loginAccount.eth || 0),
@@ -16,7 +17,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  clearTradeInProgress: marketId => dispatch(clearTradeInProgress(marketId))
+  clearTradeInProgress: marketId => dispatch(clearTradeInProgress(marketId)),
+  handleFilledOnly: trade => dispatch(handleFilledOnly(trade))
 });
 
 const mergeProps = (sP, dP, oP) => {

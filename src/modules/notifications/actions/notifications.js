@@ -6,6 +6,9 @@ import { createBigNumber } from "utils/create-big-number";
 import makePath from "modules/routes/helpers/make-path";
 import { TRANSACTIONS } from "modules/routes/constants/views";
 import { PENDING, SUCCESS } from "modules/transactions/constants/statuses";
+import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { updateNotification as updateNotificationAction } from "modules/notifications/actions/notifications";
+import { BUY, SELL } from "modules/trades/constants/types";
 
 export const ADD_NOTIFICATION = "ADD_NOTIFICATION";
 export const REMOVE_NOTIFICATION = "REMOVE_NOTIFICATION";
@@ -30,13 +33,108 @@ function packageNotificationInfo(notificationId, timestamp, transaction) {
   };
 }
 
+export function handleFilledOnly(tradeInProgress = null) {
+  return (dispatch, getState) => {
+    const { notifications, transactionsData } = store.getState();
+    for (let i = 0; i < notifications.length; i++) {
+      if (notifications[i].status.toLowerCase() === PENDING) {
+        const tradeGroupId = notifications[i].params._tradeGroupId;
+        if (
+          tradeInProgress &&
+          tradeInProgress.tradeGroupId === tradeGroupId &&
+          notifications[i].params.type.toUpperCase() ===
+            "PUBLICFILLBESTORDERWITHLIMIT" &&
+          notifications[i].description === ""
+        ) {
+          const difference = createBigNumber(tradeInProgress.numShares).minus(
+            tradeInProgress.sharesFilled
+          );
+          // handle fill only orders notifications updates.
+          dispatch(
+            updateNotificationAction(notifications[i].id, {
+              id: notifications[i].id,
+              status: "Confirmed",
+              timestamp:
+                selectCurrentTimestampInSeconds(getState()) || Date.now(),
+              seen: false,
+              log: {
+                noFill: true,
+                orderType:
+                  notifications[i].params._direction === "0x1" ? BUY : SELL,
+                difference: difference.toFixed()
+              }
+            })
+          );
+        } else {
+          Object.keys(transactionsData).some(key => {
+            if (
+              transactionsData[key].transactions[0].tradeGroupId ===
+                tradeGroupId &&
+              transactionsData[key].status.toLowerCase() === SUCCESS &&
+              notifications[i].params.type.toUpperCase() ===
+                "PUBLICFILLBESTORDERWITHLIMIT" &&
+              notifications[i].description === ""
+            ) {
+              // handle fill only orders notifications updates.
+              dispatch(
+                updateNotificationAction(notifications[i].id, {
+                  id: notifications[i].id,
+                  status: "Confirmed",
+                  timestamp:
+                    selectCurrentTimestampInSeconds(getState()) ||
+                    transactionsData[key].timestamp.timestamp,
+                  seen: false,
+                  log: {
+                    noFill: true,
+                    orderType:
+                      notifications[i].params._direction === "0x1" ? BUY : SELL
+                  }
+                })
+              );
+              return true;
+            }
+            return false;
+          });
+        }
+      }
+    }
+  };
+}
+
 export function loadNotifications() {
   return (dispatch, getState) => {
     const { notifications, transactionsData } = store.getState();
     for (let i = 0; i < notifications.length; i++) {
       if (notifications[i].status.toLowerCase() === PENDING) {
         const regex = new RegExp(notifications[i].id, "g");
+        const tradeGroupId = notifications[i].params._tradeGroupId;
         Object.keys(transactionsData).some(key => {
+          if (
+            transactionsData[key].transactions[0].tradeGroupId ===
+              tradeGroupId &&
+            transactionsData[key].status.toLowerCase() === SUCCESS &&
+            notifications[i].params.type.toUpperCase() ===
+              "PUBLICFILLBESTORDERWITHLIMIT" &&
+            notifications[i].description === ""
+          ) {
+            // handle fill only orders notifications updates.
+            dispatch(
+              updateNotificationAction(notifications[i].id, {
+                id: notifications[i].id,
+                status: "Confirmed",
+                timestamp:
+                  selectCurrentTimestampInSeconds(getState()) ||
+                  transactionsData[key].timestamp.timestamp,
+                seen: false,
+                log: {
+                  noFill: true,
+                  orderType:
+                    notifications[i].params._direction === "0x1" ? BUY : SELL
+                }
+              })
+            );
+            return true;
+          }
           if (
             key.match(regex) !== null &&
             transactionsData[key].status.toLowerCase() === SUCCESS

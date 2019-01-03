@@ -170,8 +170,10 @@ export default function setNotificationText(notification, callback) {
 
               if (notification.log.noFill) {
                 notification.description = `Unable to ${
-                  notification.log.orderType === BUY ? "Sell" : "Buy"
-                } shares of "${outcomeDescription}" at ${augur.utils.convertOnChainPriceToDisplayPrice(
+                  notification.log.orderType === BUY ? "sell" : "buy"
+                } ${notification.log.difference || ""} ${
+                  formatShares(notification.log.difference || 10).denomination
+                } of "${outcomeDescription}" at ${augur.utils.convertOnChainPriceToDisplayPrice(
                   createBigNumber(notification.params._price),
                   createBigNumber(marketInfo.minPrice),
                   marketInfo.tickSize
