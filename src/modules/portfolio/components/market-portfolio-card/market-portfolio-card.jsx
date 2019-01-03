@@ -441,9 +441,8 @@ export default class MarketPortfolioCard extends Component {
           </div>
         </section>
         {linkType &&
-          (linkType === TYPE_CLAIM_PROCEEDS ||
-            linkType === TYPE_FINALIZE_MARKET) &&
-          market.outstandingReturns && (
+          ((linkType === TYPE_CLAIM_PROCEEDS && market.outstandingReturns) ||
+            linkType === TYPE_FINALIZE_MARKET) && (
             <MarketPortfolioCardFooter
               linkType={linkType}
               localButtonText={localButtonText}
