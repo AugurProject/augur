@@ -246,3 +246,35 @@ def test_malicious_order_creator(contractsFixture, cash, market, universe):
 
     # The malicious contract may have just been a smart contract that has expensive and dumb fallback behavior. We do the right thing and still award them Cash in this case.
     assert cash.balanceOf(maliciousTrader.address) == fix(1, 4000)
+
+def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
+    createOrder = contractsFixture.contracts['CreateOrder']
+    fillOrder = contractsFixture.contracts['FillOrder']
+    orders = contractsFixture.contracts['Orders']
+    tradeGroupID = "42"
+    firstShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
+    secondShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(1))
+    thirdShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(2))
+
+    initialMakerETH = contractsFixture.chain.head_state.get_balance(tester.a1)
+
+    # create non matching orders
+    orderID1 = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=fix('2', '6000'))
+    orderID2 = createOrder.publicCreateOrder(ASK, fix(2), 7000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=fix('2', '3000'))
+
+    # Have other users fill them
+    assert fillOrder.publicFillOrder(orderID1, fix(2), tradeGroupID, sender = tester.k2, value=fix('2', '4000')) == 0
+    assert fillOrder.publicFillOrder(orderID2, fix(2), tradeGroupID, sender = tester.k3, value=fix('2', '7000')) == 0
+
+    # The first user would have ended up with 2 complete sets at the end of the second fill and we expect those to be automatically sold
+    assert firstShareToken.balanceOf(tester.a1) == 0
+    assert secondShareToken.balanceOf(tester.a1) == 0
+    assert thirdShareToken.balanceOf(tester.a1) == 0
+
+    totalPaid = fix('2', '6000') + fix('2', '3000')
+    totalPayout = fix(2) * market.getNumTicks()
+    fees = totalPayout / universe.getOrCacheReportingFeeDivisor()
+    fees += market.deriveMarketCreatorFeeAmount(totalPayout)
+    totalPayout -= fees
+
+    assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH + totalPayout - totalPaid
