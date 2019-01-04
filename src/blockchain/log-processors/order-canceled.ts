@@ -49,7 +49,7 @@ export async function processOrderCanceledLogRemoval(augur: Augur, log: Formatte
     await db.from("orders").where("orderId", log.orderId).update({ orderState: OrderState.OPEN });
     await db.from("orders_canceled").where("orderId", log.orderId).delete();
     const ordersRow: MarketIDAndOutcomeAndPrice = await db.first("marketId", "outcome", "price").from("orders").where("orderId", log.orderId);
-    removeOutcomeValue(db, log.transactionHash);
+    await removeOutcomeValue(db, log.transactionHash);
     if (ordersRow) ordersRow.orderType = orderTypeLabel;
     await updateProfitLossRemoveRow(db, log.transactionHash);
     augurEmitter.emit(SubscriptionEventNames.OrderCanceled, Object.assign({}, log, ordersRow));
