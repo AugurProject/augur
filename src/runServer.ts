@@ -42,7 +42,7 @@ function start(retries: number, config: ConnectOptions, databaseDir: string, isW
 
   function errorCatch(err: Error) {
     if (retries > 0) {
-      logger.warn(err.stack!);
+      logger.warn(err.message);
       retries--;
       augurNodeController.shutdown();
       setTimeout(() => start(retries, config, databaseDir, isWarpSync), 1000);
