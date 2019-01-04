@@ -10,9 +10,9 @@ interface SupplyResult {
 export async function increaseTokenSupply(db: Knex, augur: Augur, token: Address, amount: BigNumber) {
   const oldSupply: SupplyResult = await db.first("supply").from("token_supply").where({ token });
   if (oldSupply == null) {
-    return db.insert({ token, supply: amount.toString() }).into("token_supply");
+    await db.insert({ token, supply: amount.toString() }).into("token_supply");
   } else {
     const supply = oldSupply.supply.plus(amount);
-    return db.update({ supply: supply.toString() }).into("token_supply").where({ token });
+    await db.update({ supply: supply.toString() }).into("token_supply").where({ token });
   }
 }

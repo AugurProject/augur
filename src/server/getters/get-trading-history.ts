@@ -1,5 +1,6 @@
 import * as t from "io-ts";
 import * as Knex from "knex";
+import * as _ from "lodash";
 import Augur from "augur.js";
 import { BigNumber } from "bignumber.js";
 import { TradingHistoryRow, UITrade, SortLimitParams, OutcomeParam } from "../../types";
@@ -25,24 +26,26 @@ export const TradingHistoryParams = t.intersection([
 export async function getTradingHistory(db: Knex, augur: Augur, params: t.TypeOf<typeof TradingHistoryParams>): Promise<Array<UITrade>> {
   const userTradingHistory: Array<TradingHistoryRow> = await queryTradingHistoryParams(db, params);
   return userTradingHistory.map((trade: TradingHistoryRow): UITrade => {
-    const tradeData = {
-      transactionHash: trade.transactionHash,
-      logIndex: trade.logIndex,
-      orderId: trade.orderId,
-      type: trade.orderType! === "buy" ? "sell" : "buy",
-      price: trade.price!.toString(),
-      amount: trade.amount!.toString(),
-      maker: params.account == null ? null : params.account === trade.creator!,
+    return Object.assign(_.pick(trade, [
+      "transactionHash",
+      "logIndex",
+      "orderId",
+      "filler",
+      "creator",
+      "marketId",
+      "outcome",
+      "shareToken",
+      "timestamp",
+      "tradeGroupId",
+    ]), {
+      type: trade.orderType === "buy" ? "sell" : "buy",
+      price: trade.price.toString(),
+      amount: trade.amount.toString(),
+      maker: params.account == null ? null : params.account === trade.creator,
       selfFilled: trade.creator === trade.filler,
-      marketCreatorFees: trade.marketCreatorFees!.toString(),
-      reporterFees: trade.reporterFees!.toString(),
-      settlementFees: new BigNumber(trade.reporterFees!, 10).plus(new BigNumber(trade.marketCreatorFees!, 10)).toString(),
-      marketId: trade.marketId!,
-      outcome: trade.outcome!,
-      shareToken: trade.shareToken!,
-      timestamp: trade.timestamp!,
-      tradeGroupId: trade.tradeGroupId!,
-    };
-    return tradeData;
+      marketCreatorFees: trade.marketCreatorFees.toString(),
+      reporterFees: trade.reporterFees.toString(),
+      settlementFees: new BigNumber(trade.reporterFees, 10).plus(new BigNumber(trade.marketCreatorFees, 10)).toString(),
+    });
   });
 }
