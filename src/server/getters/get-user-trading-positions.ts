@@ -1,10 +1,12 @@
 import * as t from "io-ts";
 import * as Knex from "knex";
 import * as _ from "lodash";
+import { BigNumber } from "bignumber.js";
 import Augur from "augur.js";
+import { ZERO } from "../../constants";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { Address, OutcomeParam, SortLimitParams } from "../../types";
-import { getOutcomesProfitLoss, EarningsAtTime, ProfitLoss, formatProfitLossResults } from "./get-profit-loss";
+import { getAllOutcomesProfitLoss, ProfitLossResult, sumProfitLossResults } from "./get-profit-loss";
 
 export const UserTradingPositionsParamsSpecific = t.type({
   universe: t.union([t.string, t.null, t.undefined]),
@@ -16,20 +18,22 @@ export const UserTradingPositionsParamsSpecific = t.type({
 export const UserTradingPositionsParams = t.intersection([
   UserTradingPositionsParamsSpecific,
   SortLimitParams,
+  t.partial({
+    endTime: t.number,
+  }),
 ]);
 
-interface TradingPosition {
+interface TradingPosition extends ProfitLossResult {
   marketId: string;
   outcome: number;
-  numShares: string;
-  realizedProfitLoss: string;
-  unrealizedProfitLoss: string;
-  numSharesAdjustedForUserIntention: string;
-  averagePrice: string;
+  netPosition: BigNumber;
 }
 
 async function queryUniverse(db: Knex, marketId: Address): Promise<Address> {
-  const market = await db.first("universe").from("markets").where({ marketId });
+  const market = await db
+    .first("universe")
+    .from("markets")
+    .where({ marketId });
   if (!market || market.universe == null) throw new Error("If universe isn't provided, you must provide a valid marketId");
   return market.universe;
 }
@@ -38,51 +42,97 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
   if (params.universe == null && params.marketId == null) throw new Error("Must provide reference to universe, specify universe or marketId");
   if (params.account == null) throw new Error("Missing required parameter: account");
 
-  const universeId = params.universe || await queryUniverse(db, params.marketId!);
-  const results = await getOutcomesProfitLoss(db, augur, Date.now(), universeId as Address, params.account, params.marketId || null, null, null, null);
-
-  if (results === null) return [];
-
-  const { all: earningsPerMarket } = await formatProfitLossResults(db, results);
-
-  const allTimeEarningsPerMarket = _.mapValues(earningsPerMarket, (outcomes: Array<Array<EarningsAtTime>>, marketId: Address) => {
-    return outcomes.map((earnings: Array<EarningsAtTime>) => earnings === null ? null : earnings[earnings.length - 1].profitLoss);
+  const endTime = params.endTime || Date.now() / 1000;
+  const universeId = params.universe || (await queryUniverse(db, params.marketId!));
+  const { profit: profitsPerMarket, marketOutcomes: numOutcomesByMarket } = await getAllOutcomesProfitLoss(db, augur, {
+    universe: universeId,
+    account: params.account,
+    marketId: params.marketId || null,
+    startTime: 0,
+    endTime,
+    periodInterval: endTime,
   });
 
-  const marketBalances = await db.select("marketId", "outcome", "balance").from("balances_detail").whereIn("marketId", _.keys(allTimeEarningsPerMarket)).where({ owner: params.account });
-  const marketDetails = await db.select("marketId", "numTicks", "maxPrice", "minPrice").from("markets").whereIn("marketId", _.keys(allTimeEarningsPerMarket));
+  const marketTypes: Array<{marketId: string, marketType: string}> = await db("markets").select("marketId", "marketType").whereIn("marketId", _.keys(numOutcomesByMarket));
+  const marketTypesByMarket = _.fromPairs(marketTypes.map((marketType) => [marketType.marketId, marketType.marketType]));
 
-  const balancesByMarketOutcome = _.keyBy(marketBalances, (balance) => `${balance.marketId}_${balance.outcome}`);
-  const detailsByMarket = _.keyBy(marketDetails, "marketId");
+  if (_.isEmpty(profitsPerMarket)) return [];
 
-  const positionsRows = _.flatMap(allTimeEarningsPerMarket, (earnings: Array<ProfitLoss|null>, marketId: Address) => {
-    const byOutcomes = earnings.map((profitLossResult: ProfitLoss|null, outcome: number) => {
-      const profitLoss = profitLossResult || { realized: "0", unrealized: "0", meanOpenPrice: "0", position: "0" };
+  let positions = _.chain(profitsPerMarket)
+    .mapValues((profits: Array<ProfitLossResult>, key: string) => {
+      const [marketId, outcome] = key.split(",");
+      const lastProfit = _.last(profits)!;
+      return Object.assign(
+        {
+          marketId,
+          outcome: parseInt(outcome, 10),
+          netPosition: lastProfit.position,
+        },
+        lastProfit,
+      );
+    })
+    .values()
+    .value();
 
-      const marketDetailsRow  = detailsByMarket[marketId];
-      if (!marketDetailsRow) throw new Error(`Data integrity error: Market ${marketId} not found while processing getUserTradingPositions`);
+  const byMarket = _.groupBy(positions, "marketId");
+  // netPositions
+  // Outcomes that do not exist in the grouped array are ones for which the user holds no position
+  // If there is only ONE missing outcome, then the user is short that outcome, in which case we want
+  // to calculate its netPositions
+  positions = _.chain(byMarket)
+    .mapValues((outcomes: Array<TradingPosition>, marketId: string) => {
+      const numOutcomes = numOutcomesByMarket[marketId];
+      const marketType = marketTypesByMarket[marketId];
 
-      let numShares = "0";
-      const marketBalancesRow = balancesByMarketOutcome[`${marketId}_${outcome}`];
-      if (marketBalancesRow) {
-        const tickSize = numTicksToTickSize(marketDetailsRow.numTicks, marketDetailsRow.minPrice, marketDetailsRow.maxPrice);
-        numShares = augur.utils.convertOnChainAmountToDisplayAmount(marketBalancesRow.balance, tickSize).toString();
+      const sortedOutcomes = _.sortBy(outcomes, "outcome")!;
+      const outcomesWithZeroPosition = _.filter(outcomes, (outcome) => outcome.position.eq(ZERO));
+
+      const isMissingOneOutcome = numOutcomes === sortedOutcomes.length + 1;
+      const hasOneZeroPosition = outcomesWithZeroPosition.length === 1;
+
+      // We either must be missing one value, or have exactly one outcome with a zero position
+      // to do anything special for netPosition, need to the do logical XNOR here to determine
+      // if that's the case
+      if ((isMissingOneOutcome && hasOneZeroPosition) || (!isMissingOneOutcome && !hasOneZeroPosition)) {
+        console.log("LEAVING EARLY", isMissingOneOutcome, hasOneZeroPosition, numOutcomes);
+        return sortedOutcomes;
       }
 
-      return {
-        marketId,
-        outcome,
-        numShares,
-        realizedProfitLoss: profitLoss.realized,
-        unrealizedProfitLoss: profitLoss.unrealized,
-        numSharesAdjustedForUserIntention: profitLoss.position,
-        averagePrice: profitLoss.meanOpenPrice,
-      };
-    });
+      if (isMissingOneOutcome) {
+        const outcomeNumbers = _.range(numOutcomes);
+        const missingOutcome = _.findIndex(_.zip(sortedOutcomes, outcomeNumbers), ([outcomePl, outcomeNumber]) => (!outcomePl || outcomePl.outcome !== outcomeNumber!));
+        outcomesWithZeroPosition.push({
+          marketId,
+          outcome: missingOutcome,
+          netPosition: ZERO,
+          position: ZERO,
+          realized: ZERO,
+          unrealized: ZERO,
+          total: ZERO,
+          cost: ZERO,
+          averagePrice: ZERO,
+          timestamp: _.first(sortedOutcomes)!.timestamp,
+        });
+      }
 
-    if (params.outcome != null && byOutcomes[params.outcome]) return [byOutcomes[params.outcome]];
-    return byOutcomes;
-  });
+      const nonZeroPositionOutcomePls = _.filter(sortedOutcomes, (outcome) => !outcome.position.eq(ZERO));
+      const minimumPosition = BigNumber.minimum(..._.map(nonZeroPositionOutcomePls, "position"));
+      const adjustedOutcomePls = _.map(nonZeroPositionOutcomePls, (outcomePl) => Object.assign({}, outcomePl, { netPosition: outcomePl.netPosition.minus(minimumPosition) }));
+      const shortOutcome = Object.assign({}, _.first(outcomesWithZeroPosition)!, { netPosition: minimumPosition.negated() });
 
-  return positionsRows;
+      if (marketType === "categorical") return _.concat(adjustedOutcomePls, shortOutcome);
+      if (shortOutcome.outcome === 1) {
+        const result = sumProfitLossResults(shortOutcome, _.first(adjustedOutcomePls)!);
+        result.position = shortOutcome.position;
+        return [result];
+      }
+      return nonZeroPositionOutcomePls;
+    })
+    .values()
+    .flatten()
+    .value();
+
+  if (params.outcome === null || typeof params.outcome === "undefined") return positions;
+
+  return _.filter(positions, { outcome: params.outcome });
 }

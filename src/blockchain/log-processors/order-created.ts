@@ -7,9 +7,11 @@ import { fixedPointToDecimal, numTicksToTickSize } from "../../utils/convert-fix
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
 import { BN_WEI_PER_ETHER, SubscriptionEventNames } from "../../constants";
 import { QueryBuilder } from "knex";
+import { updateOutcomeValueFromOrders, removeOutcomeValue } from "./profit-loss/update-outcome-value";
+import { updateProfitLossNumEscrowed, updateProfitLossRemoveRow } from "./profit-loss/update-profit-loss";
 
 export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLog) {
-  return async (db: Knex) => {
+  return async(db: Knex) => {
     const amount: BigNumber = new BigNumber(log.amount, 10);
     const price: BigNumber = new BigNumber(log.price, 10);
     const orderType: string = log.orderType;
@@ -20,15 +22,17 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
     if (!tokensRow) throw new Error(`market and outcome not found for shareToken ${shareToken} (${log.transactionHash}`);
     const marketId = tokensRow.marketId;
     const outcome = tokensRow.outcome!;
-    const marketsRow: MarketsRow<BigNumber> = await db.first("minPrice", "maxPrice", "numTicks").from("markets").where({ marketId });
+    const marketsRow: MarketsRow<BigNumber> = await db.first("minPrice", "maxPrice", "numTicks", "numOutcomes").from("markets").where({ marketId });
     if (!marketsRow) throw new Error(`market min price, max price, and/or num ticks not found for market: ${marketId} (${log.transactionHash}`);
     const minPrice = marketsRow.minPrice!;
     const maxPrice = marketsRow.maxPrice!;
     const numTicks = marketsRow.numTicks!;
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+    const numOutcomes = marketsRow.numOutcomes!;
     const fullPrecisionAmount = augur.utils.convertOnChainAmountToDisplayAmount(amount, tickSize);
     const fullPrecisionPrice = augur.utils.convertOnChainPriceToDisplayPrice(price, minPrice, tickSize);
     const orderTypeLabel = orderType === "0" ? "buy" : "sell";
+    const displaySharesEscrowed = augur.utils.convertOnChainAmountToDisplayAmount(sharesEscrowed, tickSize).toString();
     const orderData: OrdersRow<string> = {
       marketId,
       blockNumber: log.blockNumber,
@@ -47,7 +51,7 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
       fullPrecisionAmount: fullPrecisionAmount.toString(),
       originalFullPrecisionAmount: fullPrecisionAmount.toString(),
       tokensEscrowed: fixedPointToDecimal(moneyEscrowed, BN_WEI_PER_ETHER).toString(),
-      sharesEscrowed: augur.utils.convertOnChainAmountToDisplayAmount(sharesEscrowed, tickSize).toString(),
+      sharesEscrowed: displaySharesEscrowed,
     };
     const orderId = { orderId: log.orderId };
     const ordersRows: Array<Partial<OrdersRow<BigNumber>>> = await db.select("marketId").from("orders").where(orderId);
@@ -59,6 +63,13 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
     }
     await upsertOrder;
     await marketPendingOrphanCheck(db, orderData);
+    await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash);
+
+    const otherOutcomes = Array.from(Array(numOutcomes).keys());
+    otherOutcomes.splice(outcome, 1);
+    const outcomes = orderTypeLabel === "buy" ? otherOutcomes : [outcome];
+
+    await updateProfitLossNumEscrowed(db, marketId, displaySharesEscrowed, log.creator, outcomes, log.transactionHash);
     augurEmitter.emit(SubscriptionEventNames.OrderCreated, Object.assign({}, log, orderData));
   };
 }
@@ -66,6 +77,8 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
 export async function processOrderCreatedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("orders").where("orderId", log.orderId).delete();
+    await removeOutcomeValue(db, log.transactionHash);
+    await updateProfitLossRemoveRow(db, log.transactionHash);
     augurEmitter.emit(SubscriptionEventNames.OrderCreated, log);
   };
 }

@@ -20,7 +20,7 @@ export const PRECISION: Precision = {
 };
 
 // WARNING: Update this only if this release requires destroying all existing Augur Node Databases
-export const DB_VERSION = 2;
+export const DB_VERSION = 3;
 export const DB_FILE = "augur-%s-%s.db";
 export const DB_WARP_SYNC_FILE = "%s-%s-%s.warp";
 export const DB_WARP_SYNC_FILE_ENDING = "-%s-%s.warp";
