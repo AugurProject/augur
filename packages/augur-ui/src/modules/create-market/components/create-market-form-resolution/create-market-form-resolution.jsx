@@ -351,7 +351,7 @@ export default class CreateMarketResolution extends Component {
                   }
                 </p>
                 <br />
-                <label> The market expiration date needs to be a date and time sufficiently *after* the event is over, not before or during. </label>
+                <label> The market expiration date needs to be a date and time sufficiently *after* the event is over where people can publicly view the result at that time, not before or during. If an event happens on 01/01 and is reported on 01/02, the expiration date should be after the time it's reported on 01/02. </label>
                 <br />
               </ReactTooltip>
             </div>
