@@ -350,6 +350,9 @@ export default class CreateMarketResolution extends Component {
                     "Augur is still experimental software, creating markets past six months has been disabled to discourage long running markets."
                   }
                 </p>
+                <br />
+                <label> The market expiration date needs to be a date and time sufficiently *after* the event is over, not before or during. </label>
+                <br />
               </ReactTooltip>
             </div>
           </label>
