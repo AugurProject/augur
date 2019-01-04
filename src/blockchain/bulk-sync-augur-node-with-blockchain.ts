@@ -47,7 +47,8 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur, bl
   }
   if (skipBulkDownload) {
     logger.info(`Skipping batch load`);
-    return fromBlock;
+    setSyncFinished();
+    return fromBlock - 1;
   }
   await promisify(downloadAugurLogs)(db, augur, fromBlock, handoffBlockNumber, blocksPerChunk);
   setSyncFinished();
