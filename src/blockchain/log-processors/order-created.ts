@@ -1,4 +1,4 @@
-import Augur  from "augur.js";
+import Augur from "augur.js";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
 import { Address, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState } from "../../types";
