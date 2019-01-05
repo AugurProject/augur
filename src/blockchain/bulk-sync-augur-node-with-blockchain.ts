@@ -40,7 +40,10 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur, bl
   let skipBulkDownload = false;
   while (handoffBlockNumber < fromBlock) {
     skipBulkDownload = true;
-    logger.warn(`Not enough blocks to start blockstream reliably, waiting at least ${BLOCKSTREAM_HANDOFF_BLOCKS} from ${fromBlock}. Current Block: ${highestBlockNumber}`);
+    logger.warn(`The Ethereum node has not processed enough blocks (${BLOCKSTREAM_HANDOFF_BLOCKS}) since last sync
+    Current Block: ${highestBlockNumber}
+    Last Sync Block: ${fromBlock}
+    Blocks to wait: ${BLOCKSTREAM_HANDOFF_BLOCKS - (highestBlockNumber - fromBlock)}`);
     await delay(BLOCKSTREAM_HANDOFF_WAIT_TIME_MS);
     highestBlockNumber = await getHighestBlockNumber(augur);
     handoffBlockNumber = highestBlockNumber - BLOCKSTREAM_HANDOFF_BLOCKS;
