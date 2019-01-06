@@ -173,6 +173,7 @@ ${contractMethods.join("\n\n")}
             case 'address[]': {
                 return 'Array<string>'
             }
+            case 'uint8[]':
             case 'uint256[]': {
                 return 'Array<BN>';
             }
