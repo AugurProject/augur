@@ -10,7 +10,6 @@ import { fixedPointToDecimal, numTicksToTickSize } from "../../../utils/convert-
 import { BN_WEI_PER_ETHER, SubscriptionEventNames } from "../../../constants";
 import { updateOutcomeValueFromOrders, removeOutcomeValue } from "../profit-loss/update-outcome-value";
 import { updateProfitLossBuyShares, updateProfitLossSellShares, updateProfitLossSellEscrowedShares } from "../profit-loss/update-profit-loss";
-import { series } from "async";
 
 interface TokensRowWithNumTicksAndCategory extends TokensRow {
   category: string;
@@ -31,11 +30,11 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
     const outcome = tokensRow.outcome!;
     const marketsRow: MarketsRow<BigNumber>|undefined = await db.first("minPrice", "maxPrice", "numTicks", "category", "numOutcomes").from("markets").where({ marketId });
 
-    if (!marketsRow) throw new Error("market min price, max price, category, and/or num ticks not found");
+    if (!marketsRow) throw new Error(`market not found: ${marketId}`);
     const minPrice = marketsRow.minPrice;
     const maxPrice = marketsRow.maxPrice;
     const numTicks = marketsRow.numTicks;
-    const numOutcomes = marketsRow.numOutcomes!;
+    const numOutcomes = marketsRow.numOutcomes;
     const category = marketsRow.category;
     const orderId = log.orderId;
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
