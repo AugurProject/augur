@@ -454,6 +454,14 @@ export default class ReportingDisputeForm extends Component {
         )}
       >
         <li>
+          <div className={Styles.ReportingDisputeForm__outcome_selection_msg}>
+            Please choose an outcome below based on the resolution source at the
+            time the market ended. The market should be considered invalid if it
+            is opinion-based, unclear, has more than one valid outcome, or the
+            outcome wasn&#39;t known when the market ended.
+          </div>
+        </li>
+        <li>
           <label>
             <span>Tentative Winning Outcome</span>
           </label>
