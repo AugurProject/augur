@@ -3,7 +3,6 @@ import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
 import { Address, FormattedEventLog } from "../../../types";
 import { isLegacyReputationToken } from "./is-legacy-reputation-token";
-import { QueryBuilder } from "knex";
 import { updateProfitLossChangeShareBalance } from "../profit-loss/update-profit-loss";
 import { TokenType } from "../../../constants";
 

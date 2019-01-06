@@ -1,4 +1,4 @@
-import Augur, { ApiFunction } from "augur.js";
+import Augur from "augur.js";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
 import { Address, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState } from "../../types";
@@ -23,12 +23,12 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
     const marketId = tokensRow.marketId;
     const outcome = tokensRow.outcome!;
     const marketsRow: MarketsRow<BigNumber> = await db.first("minPrice", "maxPrice", "numTicks", "numOutcomes").from("markets").where({ marketId });
-    if (!marketsRow) throw new Error(`market min price, max price, and/or num ticks not found for market: ${marketId} (${log.transactionHash}`);
-    const minPrice = marketsRow.minPrice!;
-    const maxPrice = marketsRow.maxPrice!;
-    const numTicks = marketsRow.numTicks!;
+    if (!marketsRow) throw new Error(`market not found: ${marketId}`);
+    const minPrice = marketsRow.minPrice;
+    const maxPrice = marketsRow.maxPrice;
+    const numTicks = marketsRow.numTicks;
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-    const numOutcomes = marketsRow.numOutcomes!;
+    const numOutcomes = marketsRow.numOutcomes;
     const fullPrecisionAmount = augur.utils.convertOnChainAmountToDisplayAmount(amount, tickSize);
     const fullPrecisionPrice = augur.utils.convertOnChainPriceToDisplayPrice(price, minPrice, tickSize);
     const orderTypeLabel = orderType === "0" ? "buy" : "sell";

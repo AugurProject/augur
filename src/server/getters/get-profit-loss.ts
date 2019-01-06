@@ -3,27 +3,11 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import { Dictionary, NumericDictionary } from "lodash";
 import BigNumber from "bignumber.js";
-import { promisify } from "util";
 import { Augur } from "augur.js";
-import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
-import { getProceedTradeRows } from "./get-proceed-trade-rows";
 import { ZERO } from "../../constants";
 import {
   Address,
-  BlocksRow,
-  Payout,
-  MarketPricing,
-  NormalizedPayout,
-  TradingHistoryRow,
-  ProceedTradesRow,
-  GenericCallback,
-} from "../../types";
-
-import {
-  queryTradingHistory as queryTradingHistoryCallback,
-  normalizePayouts,
-} from "./database";
+  } from "../../types";
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 

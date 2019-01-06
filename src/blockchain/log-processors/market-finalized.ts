@@ -2,7 +2,6 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, Address } from "../../types";
 import { refreshMarketMailboxEthBalance, rollbackMarketState, updateMarketState } from "./database";
-import { series } from "async";
 import { updateOutcomeValuesFromFinalization, removeOutcomeValue } from "./profit-loss/update-outcome-value";
 
 async function flagMarketsNeedingMigration(db: Knex, finalizedMarketId: Address, universe: Address) {

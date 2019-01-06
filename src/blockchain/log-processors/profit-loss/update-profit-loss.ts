@@ -1,13 +1,11 @@
 import * as Knex from "knex";
 import Augur from "augur.js";
-import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
-import { Address, ErrorCallback, FormattedEventLog, AsyncCallback } from "../../../types";
+import { Address} from "../../../types";
 import { numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
 import { QueryBuilder } from "knex";
 import { getCurrentTime } from "../../process-block";
 import { ZERO } from "../../../constants";
-import { series } from "async";
 
 interface UpdateData {
   account: Address;
@@ -102,7 +100,6 @@ export async function updateProfitLossSellEscrowedShares(db: Knex, marketId: Add
 
 export async function updateProfitLossSellShares(db: Knex, marketId: Address, numShares: BigNumber, account: Address, outcomes: Array<number>, tokensReceived: BigNumber, transactionHash: string): Promise<void> {
   const tokensReceivedPerOutcome = tokensReceived.dividedBy(outcomes.length);
-  const timestamp = getCurrentTime();
   const updateDataRows: Array<UpdateData> = await db
     .select(["account", "numOwned", "moneySpent", "profit", "transactionHash", "outcome", "numEscrowed"])
     .from("profit_loss_timeseries")
