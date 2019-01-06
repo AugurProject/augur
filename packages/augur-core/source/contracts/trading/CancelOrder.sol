@@ -35,6 +35,17 @@ contract CancelOrder is CashAutoConverter, Initializable, ReentrancyGuard, ICanc
      * @return true if successful; throw on failure
      */
     function cancelOrder(bytes32 _orderId) external afterInitialized nonReentrant convertToAndFromCash returns (bool) {
+        return cancelOrderInternal(msg.sender, _orderId);
+    }
+
+    function cancelOrders(bytes32[] _orderIds) external afterInitialized nonReentrant convertToAndFromCash returns (bool) {
+        for (uint256 i = 0; i < _orderIds.length; i++) {
+            cancelOrderInternal(msg.sender, _orderIds[i]);
+        }
+        return true;
+    }
+
+    function cancelOrderInternal(address _sender, bytes32 _orderId) internal returns (bool) {
         require(_orderId != bytes32(0));
 
         // Look up the order the sender wants to cancel
@@ -45,15 +56,15 @@ contract CancelOrder is CashAutoConverter, Initializable, ReentrancyGuard, ICanc
         uint256 _outcome = orders.getOutcome(_orderId);
 
         // Check that the order ID is correct and that the sender owns the order
-        require(msg.sender == orders.getOrderCreator(_orderId));
+        require(_sender == orders.getOrderCreator(_orderId));
 
         // Clear the order first
         orders.removeOrder(_orderId);
 
-        refundOrder(msg.sender, _type, _sharesEscrowed, _moneyEscrowed, _market, _outcome);
+        refundOrder(_sender, _type, _sharesEscrowed, _moneyEscrowed, _market, _outcome);
         _market.assertBalances();
 
-        augur.logOrderCanceled(_market.getUniverse(), _market.getShareToken(_outcome), msg.sender, _orderId, _type, _moneyEscrowed, _sharesEscrowed);
+        augur.logOrderCanceled(_market.getUniverse(), _market.getShareToken(_outcome), _sender, _orderId, _type, _moneyEscrowed, _sharesEscrowed);
 
         return true;
     }
