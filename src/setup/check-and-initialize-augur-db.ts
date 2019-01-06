@@ -70,8 +70,9 @@ async function isDatabaseDamaged(db: Knex): Promise<boolean> {
 
 async function initializeNetworkInfo(db: Knex, augur: Augur): Promise<void> {
   const networkId: string = augur.rpc.getNetworkID();
+  if (networkId == null) throw new Error("Got null from augur.rpc.getNetworkID()");
   const networkRow: NetworkIdRow = await db.first(["networkId", "overrideTimestamp"]).from("network_id");
-  if (networkRow == null) {
+  if (networkRow == null || networkRow.networkId == null) {
     await db.insert({ networkId }).into("network_id");
   } else {
     const lastNetworkId: string = networkRow.networkId;
