@@ -51,7 +51,7 @@ const mapStateToProps = (state, ownProps) => {
       undefined,
     transactionsStatus: state.transactionsStatus,
     isMobile: state.appStatus.isMobile,
-    outcomes: market.outcomes || [],
+    outcomes: market.outcomes,
     positions,
     openOrders,
     orphanedOrders: filteredOrphanOrders

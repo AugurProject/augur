@@ -124,13 +124,13 @@ class PerformanceGraph extends Component {
   changeDropdown(value) {
     let { graphType, graphPeriod, startTime } = this.state;
 
-    this.state.graphTypeOptions.forEach((type, ind) => {
+    this.state.graphTypeOptions.forEach(type => {
       if (type.value === value) {
         graphType = value;
       }
     });
 
-    this.state.graphPeriodOptions.forEach((period, ind) => {
+    this.state.graphPeriodOptions.forEach(period => {
       if (period.value === value) {
         graphPeriod = value;
       }
@@ -153,10 +153,9 @@ class PerformanceGraph extends Component {
       }
     ];
     const seriesData = [];
-    performanceData.forEach((object, index) => {
+    performanceData.forEach(profitLoss => {
       const plotPoint = [];
-      const { profitLoss } = object;
-      plotPoint.push(object.timestamp * 1000);
+      plotPoint.push(profitLoss.timestamp * 1000);
       if (profitLoss && profitLoss[graphType]) {
         plotPoint.push(formatEther(profitLoss[graphType]).formattedValue);
       } else {
@@ -180,18 +179,9 @@ class PerformanceGraph extends Component {
       startTime,
       endTime,
       null,
-      (err, rawPerformanceData) => {
+      null,
+      (err, performanceData) => {
         if (err) return console.error(err);
-        // make the first entry into the data a 0 value to make sure we start from 0 PL
-        const { aggregate } = rawPerformanceData;
-        const interval = aggregate[1].timestamp - aggregate[0].timestamp;
-        let performanceData = [
-          {
-            timestamp: aggregate[0].timestamp - interval,
-            profitLoss: { unrealized: "0", realized: "0", total: "0" }
-          }
-        ];
-        performanceData = performanceData.concat(aggregate);
         if (this.componentWrapper)
           this.setState({ performanceData }, () => {
             if (this.componentWrapper) this.parsePerformanceData();

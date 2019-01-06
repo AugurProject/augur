@@ -42,8 +42,6 @@ export const loadMarketDetails = (
   marketId,
   callback = logError
 ) => dispatch => {
-  console.log("loadBidsAsks", loadBidsAsks());
-
   dispatch(
     loadBidsAsks(marketId, err => {
       if (err) return loadingError(dispatch, callback, err, marketId);

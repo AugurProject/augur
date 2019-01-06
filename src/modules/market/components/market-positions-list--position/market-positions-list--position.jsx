@@ -13,7 +13,7 @@ export default class MarketPositionsListPosition extends Component {
     outcomeName: PropTypes.string.isRequired,
     position: PropTypes.shape({
       netPosition: PropTypes.object,
-      qtyShares: PropTypes.object,
+      position: PropTypes.object,
       purchasePrice: PropTypes.object,
       unrealizedNet: PropTypes.object,
       realizedNet: PropTypes.object,
@@ -32,7 +32,7 @@ export default class MarketPositionsListPosition extends Component {
 
   static calcAvgDiff(position, order) {
     const positionAvg = getValue(position, "avgPrice.formattedValue") || 0;
-    const positionShares = getValue(position, "qtyShares.formattedValue") || 0;
+    const positionShares = getValue(position, "position.formattedValue") || 0;
 
     const orderPrice = getValue(order, "purchasePrice.formattedValue") || 0;
     const orderShares = getValue(order, "qtyShares.formattedValue") || 0;
@@ -56,8 +56,8 @@ export default class MarketPositionsListPosition extends Component {
     } = this.props;
 
     const netPositionShares = getValue(position, "netPosition.formatted");
-    const positionShares = getValue(position, "qtyShares.formatted");
-
+    const positionShares = getValue(position, "position.formatted");
+    // console.log(position);
     return (
       <ul
         ref={position => {
@@ -71,7 +71,7 @@ export default class MarketPositionsListPosition extends Component {
             : Styles.PortMobile
         }
       >
-        <li>{outcomeName || getValue(position, "purchasePrice.formatted")}</li>
+        <li>{outcomeName}</li>
         {hasOrders && <li />}
         <li>{netPositionShares}</li>
         <li>{positionShares}</li>

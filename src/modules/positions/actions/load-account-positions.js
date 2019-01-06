@@ -44,7 +44,7 @@ export const loadAccountPositions = (options = {}, callback = logError) => (
                 position =>
                   position.marketId === marketId &&
                   position.outcome === outcomeId
-              );
+              )[0];
             });
             dispatch(updateAccountPositionsData(marketPositionData, marketId));
           });
