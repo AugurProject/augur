@@ -85,6 +85,10 @@
 
   <!-- AirSwap Widget -->
   <script src="//cdn.airswap.io/gallery/airswap-trader.js"></script>
+  <% if(htmlWebpackPlugin.options.environment === 'development') { %>
+    <meta name="google-site-verification" content="0yoO8otlMdNBBDxuvq_KxlJyoSzIhBc8eK_7FzJ1_qg" />
+  <% } %>
+
 </head>
 <body>
 <div id="app"> <!-- attachment point for the app -->
@@ -94,7 +98,7 @@
 </div>
 
 <% if(htmlWebpackPlugin.options.environment === 'development') { %>
-
+  
   <!-- Hotjar Analytics -->
   <script type="text/javascript">
     (function(h, o, t, j, a, r) {
