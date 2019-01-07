@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js";
-import { string } from "io-ts";
 
 export interface Precision {
   decimals: number;

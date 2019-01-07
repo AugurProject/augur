@@ -4,7 +4,6 @@ import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import Augur from "augur.js";
 import { ZERO } from "../../constants";
-import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { Address, OutcomeParam, SortLimitParams } from "../../types";
 import { getAllOutcomesProfitLoss, ProfitLossResult, sumProfitLossResults } from "./get-profit-loss";
 
