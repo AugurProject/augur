@@ -93,7 +93,7 @@ describe("server/getters/get-profit-loss#getprofitloss", () => {
 
   beforeEach(async () => {
     connection = await setupTestDb();
-    setOverrideTimestamp(connection, Date.now()/1000);
+    await setOverrideTimestamp(connection, Date.now()/1000);
   });
 
   afterEach(async () => {
@@ -134,7 +134,7 @@ describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
 
   beforeEach(async () => {
     connection = await setupTestDb();
-    setOverrideTimestamp(connection, Date.now()/1000);
+    await setOverrideTimestamp(connection, Date.now()/1000);
   });
 
   afterEach(async () => {
