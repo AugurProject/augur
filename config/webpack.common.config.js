@@ -146,6 +146,10 @@ module.exports = {
       {
         from: path.resolve(PATHS.APP, "sitemap.xml"),
         to: PATHS.BUILD
+      },
+      {
+        from: path.resolve(PATHS.APP, "robots.txt"),
+        to: PATHS.BUILD
       }
     ]),
     new HtmlWebpackPlugin({
