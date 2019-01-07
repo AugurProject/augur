@@ -1,6 +1,6 @@
 const { BigNumber } = require("bignumber.js");
 const { fix } = require("speedomatic");
-const setupTestDb = require("../../../test.database");
+const setupTestDb = require("test.database");
 const { processOrderFilledLog, processOrderFilledLogRemoval } = require("src/blockchain/log-processors/order-filled");
 const Augur = require("augur.js");
 

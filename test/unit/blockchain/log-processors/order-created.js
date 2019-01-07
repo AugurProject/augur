@@ -1,5 +1,5 @@
 const { fix } = require("speedomatic");
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { BigNumber } = require("bignumber.js");
 const { processOrderCreatedLog, processOrderCreatedLogRemoval } = require("src/blockchain/log-processors/order-created");
 const Augur = require("augur.js");

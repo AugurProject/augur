@@ -1,4 +1,4 @@
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { BigNumber } = require("bignumber.js");
 const { processMintLog, processMintLogRemoval } = require("src/blockchain/log-processors/token/mint");
 
