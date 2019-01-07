@@ -201,9 +201,9 @@ export default class ReportingDisputeForm extends Component {
       updatedValidations.stake = "The stake field must be a positive value.";
     } else if (
       bnStake.gt(createBigNumber(maxRepObject.formatted.formattedValue, 10))
-    ) {
-      updatedValidations.stake = `Max value is ${maxRepObject.formatted.full}`;
-    } else if (
+      ) {
+        updatedValidations.stake = `Max value is ${maxRepObject.formatted.full}`;
+      } else if (
       createBigNumber(availableRepFormatted.formatted.formattedValue).lt(
         bnStake
       )
@@ -457,6 +457,14 @@ export default class ReportingDisputeForm extends Component {
           FormStyles.Form__fields
         )}
       >
+        <li>
+          <div className={Styles.ReportingDisputeForm__outcome_selection_msg}>
+            Please choose an outcome below based on the resolution source at the
+            time the market ended. The market should be considered invalid if it
+            is opinion-based, unclear, has more than one valid outcome, or the
+            outcome wasn&#39;t known when the market ended.
+          </div>
+        </li>
         <li>
           <label>
             <span>Tentative Winning Outcome</span>
