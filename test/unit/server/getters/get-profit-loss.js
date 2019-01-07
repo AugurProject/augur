@@ -87,7 +87,7 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
 });
 
 
-describe("server/getters/get-profit-loss#getprofitloss", () => {
+describe("server/getters/get-profit-loss#getProfitLoss", () => {
   var connection = null;
   var augur = new Augur();
 
