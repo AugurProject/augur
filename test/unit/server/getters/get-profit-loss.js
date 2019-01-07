@@ -1,7 +1,9 @@
 const Augur = require("augur.js");
 const setupTestDb = require("../../test.database");
 const { getProfitLoss, getProfitLossSummary, bucketRangeByInterval } = require("src/server/getters/get-profit-loss");
-const { setOverrideTimestamp, clearOverrideTimestamp } = require("src/blockchain/process-block");
+
+jest.mock("src/blockchain/process-block")
+const processBlock = require("src/blockchain/process-block");
 
 describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
   test("throws when startTime is negative", (done) => {
@@ -93,12 +95,11 @@ describe("server/getters/get-profit-loss#getProfitLoss", () => {
 
   beforeEach(async () => {
     connection = await setupTestDb();
-    await setOverrideTimestamp(connection, Date.now()/1000);
+    processBlock.getCurrentTime.mockReturnValue(Date.now()/1000);
   });
 
   afterEach(async () => {
     if (connection) await connection.destroy();
-    clearOverrideTimestamp();
   });
 
   it("generates a 31-value timeseries P/L", async () => {
@@ -134,12 +135,11 @@ describe("server/getters/get-profit-loss#getProfitLossSummary", () => {
 
   beforeEach(async () => {
     connection = await setupTestDb();
-    await setOverrideTimestamp(connection, Date.now()/1000);
+    processBlock.getCurrentTime.mockReturnValue(Date.now()/1000);
   });
 
   afterEach(async () => {
     if (connection) await connection.destroy();
-    clearOverrideTimestamp();
   });
 
   it("returns 0-value 1-day and 30-day PLs", async() => {
