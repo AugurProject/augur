@@ -13,6 +13,7 @@ import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispu
 import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
+import { loadDisputingDetails } from "modules/reports/actions/load-disputing-details";
 
 const mapStateToProps = state => {
   const PAGINATION_COUNT = 10;
@@ -50,7 +51,17 @@ const mapStateToProps = state => {
     }
   });
 
-  orderBy(resolvedMarkets, ["endTime.timestamp"], ["desc"]);
+  const userResolvedMarkets = orderBy(
+    resolvedMarkets,
+    ["endTime.timestamp"],
+    ["desc"]
+  );
+
+  const disputableMarketIds = disputableMarkets.map(item => item.id) || [];
+  const resolvedMarketIds = userResolvedMarkets.map(item => item.id) || [];
+  const upcomingDisputableMarketIds = upcomingDisputableMarkets.map(
+    item => item.id
+  );
 
   return {
     currentTimestamp: selectCurrentTimestamp(state),
@@ -61,16 +72,19 @@ const mapStateToProps = state => {
     reportingFees: state.reportingWindowStats.reportingFees,
     markets: disputableMarkets,
     showPagination: disputableMarkets.length > PAGINATION_COUNT,
-    disputableMarketsLength: disputableMarkets.length,
+    disputableMarketsLength: disputableMarketIds.length,
     upcomingMarkets: upcomingDisputableMarkets,
-    upcomingMarketsCount: upcomingDisputableMarkets.length,
+    upcomingMarketsCount: upcomingDisputableMarketIds.length,
     showUpcomingPagination: upcomingDisputableMarkets.length > PAGINATION_COUNT,
     paginationCount: PAGINATION_COUNT,
     outcomes: disputeOutcomes,
-    resolvedMarkets,
+    resolvedMarkets: userResolvedMarkets,
+    resolvedMarketIds,
     isForking: state.universe.isForking,
     forkEndTime: state.universe.forkEndTime,
-    forkingMarketId: state.universe.forkingMarket
+    forkingMarketId: state.universe.forkingMarket,
+    disputableMarketIds,
+    upcomingDisputableMarketIds
   };
 };
 
@@ -82,7 +96,9 @@ const mapDispatchToProps = dispatch => ({
   loadMarkets: () => dispatch(loadReportingHistory()),
   loadMarketsInfoIfNotLoaded: marketIds =>
     dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
-  toggleFavorite: marketId => dispatch(toggleFavorite(marketId))
+  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
+  loadDisputingDetails: (marketIds, cb) =>
+    dispatch(loadDisputingDetails(marketIds, cb))
 });
 
 export default withRouter(

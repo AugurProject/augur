@@ -5,8 +5,7 @@ import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets
 import {
   updateDesignatedReportingMarkets,
   updateUpcomingDesignatedReportingMarkets,
-  updateOpenMarkets,
-  updateResolvedMarkets
+  updateOpenMarkets
 } from "modules/reports/actions/update-markets-in-reporting-state";
 
 export const loadReporting = (callback = logError) => (dispatch, getState) => {
@@ -80,47 +79,6 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
           if (err) return logError(err);
           dispatch(updateOpenMarkets(marketIds));
         })
-      );
-    }
-  );
-
-  augur.augurNode.submitRequest(
-    "getMarkets",
-    {
-      reportingState: constants.REPORTING_STATE.FINALIZED,
-      sortBy: "finalizationBlockNumber",
-      isSortDescending: true,
-      universe: universe.id
-    },
-    (err, finalizedMarketIds) => {
-      if (err) return callback(err);
-
-      augur.augurNode.submitRequest(
-        "getMarkets",
-        {
-          reportingState: constants.REPORTING_STATE.AWAITING_FINALIZATION,
-          sortBy: "endTime",
-          isSortDescending: true,
-          universe: universe.id
-        },
-        (err, awaitingFinalizationMarketIds) => {
-          if (err) return callback(err);
-
-          const marketIds = awaitingFinalizationMarketIds.concat(
-            finalizedMarketIds
-          );
-          if (!marketIds || marketIds.length === 0) {
-            dispatch(updateResolvedMarkets([]));
-            return callback(null);
-          }
-
-          dispatch(
-            loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
-              if (err) return logError(err);
-              dispatch(updateResolvedMarkets(marketIds));
-            })
-          );
-        }
       );
     }
   );

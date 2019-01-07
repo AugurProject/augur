@@ -27,7 +27,10 @@ export default class ReportingDisputeMarkets extends Component {
     disputableMarketsLength: PropTypes.number.isRequired,
     forkEndTime: PropTypes.string,
     showPagination: PropTypes.bool.isRequired,
-    showUpcomingPagination: PropTypes.bool.isRequired
+    showUpcomingPagination: PropTypes.bool.isRequired,
+    disputableMarketIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    upcomingDisputableMarketIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    loadDisputingDetails: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -60,7 +63,10 @@ export default class ReportingDisputeMarkets extends Component {
       paginationCount,
       disputableMarketsLength,
       showPagination,
-      showUpcomingPagination
+      showUpcomingPagination,
+      disputableMarketIds,
+      upcomingDisputableMarketIds,
+      loadDisputingDetails
     } = this.props;
 
     return (
@@ -89,6 +95,9 @@ export default class ReportingDisputeMarkets extends Component {
           markets={markets}
           upcomingMarkets={upcomingMarkets}
           upcomingMarketsCount={upcomingMarketsCount}
+          disputableMarketIds={disputableMarketIds}
+          upcomingDisputableMarketIds={upcomingDisputableMarketIds}
+          loadDisputingDetails={loadDisputingDetails}
           isMobile={isMobile}
           isConnected={isConnected}
           loadMarkets={loadMarkets}

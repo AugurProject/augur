@@ -55,7 +55,8 @@ export default class MarketsList extends Component {
       lowerBound: 1,
       boundedLength: 10,
       marketIdsMissingInfo: [], // This is ONLY the currently displayed markets that are missing info
-      showPagination: props.filteredMarkets.length > PAGINATION_COUNT
+      showPagination:
+        props.filteredMarkets && props.filteredMarkets.length > PAGINATION_COUNT
     };
 
     this.setSegment = this.setSegment.bind(this);
@@ -139,7 +140,7 @@ export default class MarketsList extends Component {
     } = this.props;
     const s = this.state;
 
-    const marketsLength = filteredMarkets.length;
+    const marketsLength = (filteredMarkets || []).length;
 
     return (
       <article className="markets-list" data-testid={testid} style={style}>
