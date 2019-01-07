@@ -1,8 +1,7 @@
+jest.mock("src/blockchain/process-block")
 const Augur = require("augur.js");
 const setupTestDb = require("../../test.database");
 const { getProfitLoss, getProfitLossSummary, bucketRangeByInterval } = require("src/server/getters/get-profit-loss");
-
-jest.mock("src/blockchain/process-block")
 const processBlock = require("src/blockchain/process-block");
 
 describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
