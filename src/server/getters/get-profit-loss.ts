@@ -5,6 +5,7 @@ import { Dictionary, NumericDictionary } from "lodash";
 import BigNumber from "bignumber.js";
 import { promisify } from "util";
 import { Augur } from "augur.js";
+import { getCurrentTime } from "../../blockchain/process-block";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { getProceedTradeRows } from "./get-proceed-trade-rows";
@@ -213,7 +214,8 @@ interface ProfitLossData {
 }
 
 async function getProfitLossData(db: Knex, params: GetProfitLossParamsType): Promise<ProfitLossData> {
-  const now = Math.floor(Date.now() / 1000);
+  const now = getCurrentTime();
+  if (now === null) throw new Error("Now is null");
 
   // Realized Profits + Timeseries data about the state of positions
   const profitsOverTime = await queryProfitLossTimeseries(db, now, params);
@@ -283,7 +285,7 @@ export async function getProfitLoss(db: Knex, augur: Augur, params: GetProfitLos
 }
 
 export async function getProfitLossSummary(db: Knex, augur: Augur, params: GetProfitLossSummaryParamsType): Promise<NumericDictionary<ProfitLossResult>> {
-  const endTime = params.endTime || Math.floor(Date.now() / 1000);
+  const endTime = params.endTime || getCurrentTime();
 
   const result: NumericDictionary<ProfitLossResult> = {};
   for (const days of [1, 30]) {
