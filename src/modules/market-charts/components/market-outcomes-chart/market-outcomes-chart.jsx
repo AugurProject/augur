@@ -21,7 +21,11 @@ export default class MarketOutcomesChart extends Component {
     hasPriceHistory: PropTypes.bool.isRequired,
     bucketedPriceTimeSeries: PropTypes.object.isRequired,
     pricePrecision: PropTypes.number.isRequired,
-    isMobileSmall: PropTypes.bool.isRequired
+    isMobileSmall: PropTypes.bool
+  };
+
+  static defaultProps = {
+    isMobileSmall: false
   };
 
   constructor(props) {

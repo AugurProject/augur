@@ -13,9 +13,13 @@ export default class MarketOutcomeDepthHeader extends Component {
     hoveredDepth: PropTypes.array.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
     pricePrecision: PropTypes.number.isRequired,
-    isMobile: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool,
     headerHeight: PropTypes.number.isRequired,
     updateChartHeaderHeight: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    isMobile: false
   };
 
   componentDidMount() {

@@ -20,8 +20,8 @@ class MarketOutcomeCandlestick extends React.Component {
   static propTypes = {
     currentTimeInSeconds: PropTypes.number,
     fixedPrecision: PropTypes.number.isRequired,
-    isMobile: PropTypes.bool.isRequired,
-    isMobileSmall: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool,
+    isMobileSmall: PropTypes.bool,
     marketMax: CustomPropTypes.bigNumber.isRequired,
     marketMin: CustomPropTypes.bigNumber.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
@@ -36,7 +36,9 @@ class MarketOutcomeCandlestick extends React.Component {
   };
 
   static defaultProps = {
-    currentTimeInSeconds: null
+    currentTimeInSeconds: null,
+    isMobile: false,
+    isMobileSmall: false
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {

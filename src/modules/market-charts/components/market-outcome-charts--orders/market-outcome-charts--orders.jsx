@@ -29,10 +29,14 @@ export default class MarketOutcomeChartsOrders extends Component {
     updateHoveredPrice: PropTypes.func.isRequired,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
     updatePrecision: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool,
     headerHeight: PropTypes.number.isRequired,
     hasOrders: PropTypes.bool.isRequired,
     orderBookKeys: PropTypes.object.isRequired
+  };
+
+  static defaultProps = {
+    isMobile: false
   };
 
   constructor(props) {
