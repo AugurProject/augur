@@ -200,7 +200,6 @@ interface ProfitLossData {
 
 async function getProfitLossData(db: Knex, params: GetProfitLossParamsType): Promise<ProfitLossData> {
   const now = getCurrentTime();
-  if (now === null) throw new Error("Now is null");
 
   // Realized Profits + Timeseries data about the state of positions
   const profitsOverTime = await queryProfitLossTimeseries(db, now, params);
