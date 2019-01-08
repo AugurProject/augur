@@ -4,7 +4,6 @@ import { BigNumber } from "bignumber.js";
 import { Bytes32, FormattedEventLog, OrderState } from "../../types";
 import { augurEmitter } from "../../events";
 import { SubscriptionEventNames } from "../../constants";
-import { updateOutcomeValueFromOrders, removeOutcomeValue } from "./profit-loss/update-outcome-value";
 import { updateProfitLossNumEscrowed, updateProfitLossRemoveRow } from "./profit-loss/update-profit-loss";
 
 interface MarketIDAndOutcomeAndPrice {
@@ -26,7 +25,6 @@ export async function processOrderCanceledLog(augur: Augur, log: FormattedEventL
     await db.from("orders").where("orderId", log.orderId).update({ orderState: OrderState.CANCELED });
     await  db.into("orders_canceled").insert({ orderId: log.orderId, transactionHash: log.transactionHash, logIndex: log.logIndex, blockNumber: log.blockNumber });
     const ordersRow: MarketIDAndOutcomeAndPrice = await  db.first("marketId", "outcome", "price", "sharesEscrowed", "orderCreator").from("orders").where("orderId", log.orderId);
-    await updateOutcomeValueFromOrders(db, ordersRow.marketId, ordersRow.outcome, log.transactionHash);
 
     if (ordersRow.sharesEscrowed.eq(0)) return;
 
@@ -49,7 +47,6 @@ export async function processOrderCanceledLogRemoval(augur: Augur, log: Formatte
     await db.from("orders").where("orderId", log.orderId).update({ orderState: OrderState.OPEN });
     await db.from("orders_canceled").where("orderId", log.orderId).delete();
     const ordersRow: MarketIDAndOutcomeAndPrice = await db.first("marketId", "outcome", "price").from("orders").where("orderId", log.orderId);
-    await removeOutcomeValue(db, log.transactionHash);
     if (ordersRow) ordersRow.orderType = orderTypeLabel;
     await updateProfitLossRemoveRow(db, log.transactionHash);
     augurEmitter.emit(SubscriptionEventNames.OrderCanceled, Object.assign({}, log, ordersRow));

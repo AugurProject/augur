@@ -79,7 +79,7 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
 
     await updateOrder(db, augur, marketId, orderId, amount, orderCreator, filler, tickSize, minPrice);
 
-    await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash);
+    await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash, price);
     const orderOutcome = [outcome];
     const otherOutcomes = Array.from(Array(numOutcomes).keys());
     otherOutcomes.splice(outcome, 1);

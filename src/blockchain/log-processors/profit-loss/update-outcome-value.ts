@@ -20,32 +20,13 @@ interface PayoutAndMarket<BigNumberType> extends PayoutNumerators<BigNumberType>
   numTicks: BigNumber;
 }
 
-export async function updateOutcomeValueFromOrders(db: Knex, marketId: Address, outcome: number, transactionHash: string): Promise<void> {
-  const marketState: MarketState = await db
-    .first("reportingState")
-    .from("market_state")
-    .where({ marketId });
-  if (marketState.reportingState === "FINALIZED") return;
-  const priceRows: Array<PriceRow> = await db
-    .select(["fullPrecisionPrice"])
-    .from("orders")
-    .where({ marketId, orderState: "OPEN", orphaned: false, outcome });
-  let value = new BigNumber(0);
-  if (priceRows.length > 0) {
-    const prices = _.map(priceRows, (priceRow: PriceRow) => {
-      return priceRow.fullPrecisionPrice;
-    });
-    const middle = (prices.length + 1) / 2;
-    const sortedPrices = _.sortBy(prices, _.identity);
-    value = sortedPrices.length % 2 ? sortedPrices[middle - 1] : sortedPrices[middle - 1.5].plus(sortedPrices[middle - 0.5]).dividedBy(2);
-  }
-
+export async function updateOutcomeValueFromOrders(db: Knex, marketId: Address, outcome: number, transactionHash: string, value: BigNumber): Promise<void> {
   await db
     .insert({
       marketId,
       transactionHash,
       outcome,
-      value: value.toString(),
+      value,
       timestamp: getCurrentTime(),
     })
     .into("outcome_value_timeseries");
