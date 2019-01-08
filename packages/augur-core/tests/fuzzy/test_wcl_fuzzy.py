@@ -34,7 +34,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
         for otherOutcome in range(0, market.getNumberOfOutcomes()):
             if otherOutcome == outcome: continue
             otherShareToken = fixture.applySignature('ShareToken', market.getShareToken(otherOutcome))
-            assert otherShareToken.transfer(0, amount, sender = sender)
+            assert otherShareToken.transfer(1, amount, sender = sender)
 
     def acquireShortShareSet(outcome, amount, approvalAddress, sender):
         if amount == 0: return
@@ -46,7 +46,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
 
         ethRequired = amount * numTicks
         assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender, value = ethRequired)
-        assert shareToken.transfer(0, amount, sender = sender)
+        assert shareToken.transfer(1, amount, sender = sender)
         for otherOutcome in range(0, market.getNumberOfOutcomes()):
             if otherOutcome == outcome: continue
             otherShareToken = fixture.applySignature('ShareToken', market.getShareToken(otherOutcome))

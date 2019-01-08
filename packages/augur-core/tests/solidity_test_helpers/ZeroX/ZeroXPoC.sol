@@ -404,7 +404,7 @@ contract ZeroXPoC is ReentrancyGuard {
         return filled[orderHash].add(cancelled[orderHash]);
     }
 
-    function getTokenBalance(ERC20Tokentoken, address owner)
+    function getTokenBalance(ERC20Token token, address owner)
         public
         view
         returns (uint)
@@ -420,7 +420,7 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param token Address of token.
     /// @param owner Address of owner.
     /// @return Token balance of owner.
-    function getBalance(ERC20Tokentoken, address owner)
+    function getBalance(ERC20Token token, address owner)
         internal
         constant  // The called token contract may attempt to change state, but will not be able to due to an added gas limit.
         returns (uint)
@@ -432,7 +432,7 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param token Address of token.
     /// @param owner Address of owner.
     /// @return Allowance of token given to this contract by owner.
-    function getAllowance(ERC20Tokentoken, address owner)
+    function getAllowance(ERC20Token token, address owner)
         internal
         constant  // The called token contract may attempt to change state, but will not be able to due to an added gas limit.
         returns (uint)

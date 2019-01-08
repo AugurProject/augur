@@ -7,7 +7,7 @@ import 'libraries/token/VariableSupplyToken.sol';
 
 /**
  * @title Cash
- * @dev ETH wrapper contract to make it look like an ERC20Tokentoken.
+ * @dev ETH wrapper contract to make it look like an ERC20Token token.
  */
 contract Cash is ITyped, VariableSupplyToken, ICash {
 

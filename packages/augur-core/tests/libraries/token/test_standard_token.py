@@ -3,6 +3,7 @@
 from ethereum.tools import tester
 from ethereum.tools.tester import TransactionFailed
 from pytest import fixture, mark, raises
+from utils import AssertLog
 
 @fixture(scope='session')
 def testerSnapshot(sessionFixture):
@@ -14,6 +15,34 @@ def testerSnapshot(sessionFixture):
 def testStandardTokenFixture(sessionFixture, testerSnapshot):
     sessionFixture.resetToSnapshot(testerSnapshot)
     return sessionFixture
+
+def test_basic_token_transfer(testStandardTokenFixture):
+    standardToken = testStandardTokenFixture.contracts['StandardTokenHelper']
+    assert standardToken.faucet(100, sender = tester.k1)
+    assert standardToken.balanceOf(tester.a1) == 100
+    assert standardToken.balanceOf(tester.a2) == 0
+
+    with raises(TransactionFailed, message="can not cause negative balance"):
+        standardToken.transfer(tester.a2, 150, sender=tester.k1)
+
+    assert standardToken.transfer(tester.a2, 100, sender=tester.k1)
+    assert standardToken.balanceOf(tester.a1) == 0
+    assert standardToken.balanceOf(tester.a2) == 100
+
+    value =  2**256-1
+    with raises(TransactionFailed, message="can not cause supply to overflow balance"):
+        assert standardToken.faucet(value, sender = tester.k1)
+
+def test_basic_token_emit(testStandardTokenFixture):
+    standardToken = testStandardTokenFixture.contracts['StandardTokenHelper']
+    assert standardToken.faucet(101, sender = tester.k1)
+    transferLog = {
+        'value': 101L
+    }
+    with AssertLog(testStandardTokenFixture, "Transfer", transferLog, contract=standardToken):
+        assert standardToken.transfer(tester.a2, 101, sender=tester.k1)
+
+    assert standardToken.balanceOf(tester.a2) == 101
 
 def test_eternal_approval_magic(testStandardTokenFixture):
     standardToken = testStandardTokenFixture.contracts['StandardTokenHelper']

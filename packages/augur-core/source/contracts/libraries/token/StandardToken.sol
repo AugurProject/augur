@@ -6,6 +6,9 @@ import 'libraries/token/ERC777BaseToken.sol';
 
 
 contract StandardToken is ERC20Token, ERC777BaseToken {
+    // Approvals of this amount are simply considered an everlasting approval which is not decremented when transfers occur
+    uint256 public constant ETERNAL_APPROVAL_VALUE = 2 ** 256 - 1;
+
     mapping(address => mapping(address => uint256)) internal allowed;
 
     constructor() internal ERC777BaseToken() {
@@ -19,10 +22,13 @@ contract StandardToken is ERC20Token, ERC777BaseToken {
     }
 
     function transferFrom(address _from, address _to, uint256 _amount) public returns (bool) {
-        require(_amount <= allowed[_from][msg.sender], "Not enough funds allowed");
+        uint256 _allowance = allowed[_from][msg.sender];
+        require(_amount <= _allowance, "Not enough funds allowed");
 
-        // Cannot be after doSend because of tokensReceived re-entry
-        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_amount);
+        if (_allowance != ETERNAL_APPROVAL_VALUE) {
+            allowed[_from][msg.sender] = _allowance.sub(_amount);
+        }
+
         internalTransfer(_from, _to, _amount);
         return true;
     }
@@ -34,6 +40,21 @@ contract StandardToken is ERC20Token, ERC777BaseToken {
 
     function approve(address _spender, uint256 _amount) public returns (bool) {
         approveInternal(msg.sender, _spender, _amount);
+        return true;
+    }
+
+    function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
+        approveInternal(msg.sender, _spender, allowed[msg.sender][_spender].add(_addedValue));
+        return true;
+    }
+
+    function decreaseApproval(address _spender, uint _subtractedValue) public returns (bool) {
+        uint oldValue = allowed[msg.sender][_spender];
+        if (_subtractedValue > oldValue) {
+            approveInternal(msg.sender, _spender, 0);
+        } else {
+            approveInternal(msg.sender, _spender, oldValue.sub(_subtractedValue));
+        }
         return true;
     }
 
