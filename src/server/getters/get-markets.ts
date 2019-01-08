@@ -13,6 +13,7 @@ export const GetMarketsParamsSpecific = t.type({
   feeWindow: t.union([t.string, t.null, t.undefined]),
   designatedReporter: t.union([t.string, t.null, t.undefined]),
   maxFee: t.union([t.number, t.null, t.undefined]),
+  hasOrders: t.union([t.boolean, t.null, t.undefined]),
 });
 
 export const GetMarketsParams = t.intersection([
@@ -33,6 +34,10 @@ export async function getMarkets(db: Knex, augur: {}, params: t.TypeOf<typeof Ge
   if (params.reportingState != null) query.where("reportingState", params.reportingState);
   if (params.feeWindow != null) query.where("feeWindow", params.feeWindow);
   if (params.designatedReporter != null) query.where("designatedReporter", params.designatedReporter);
+  if (params.hasOrders != null && params.hasOrders) {
+    const ordersQuery = db("orders").select("orders.marketId").where("orderstate", "OPEN");
+    query.whereIn("markets.marketId", ordersQuery);
+  }
 
   const searchProvider = createSearchProvider(db);
   if (params.search != null && searchProvider !== null) {
