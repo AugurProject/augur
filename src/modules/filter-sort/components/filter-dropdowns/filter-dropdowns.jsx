@@ -13,6 +13,7 @@ import {
   MARKET_REPORTING,
   MARKET_CLOSED
 } from "modules/filter-sort/constants/market-states";
+import Checkbox from "src/modules/common/components/checkbox/checkbox";
 import Dropdown from "modules/common/components/dropdown/dropdown";
 import Styles from "modules/filter-sort/components/filter-dropdowns/filter-dropdowns.styles";
 import parseQuery from "modules/routes/helpers/parse-query";
@@ -128,14 +129,12 @@ export default class FilterSearch extends Component {
   }
 
   changeHasOrders(event) {
-    const { filter, sort, maxFee, updateFilter } = this.props;
-    const { target } = event;
-    const value = target.type === "checkbox" ? target.checked : target.value;
+    const { filter, sort, maxFee, updateFilter, hasOrders } = this.props;
     updateFilter({
       filter,
       sort,
       maxFee,
-      hasOrders: !!value
+      hasOrders: !hasOrders
     });
   }
 
@@ -161,13 +160,15 @@ export default class FilterSearch extends Component {
           options={maxFeesOptions}
         />
         <div className={Styles.FilterDropdowns__hasOrders}>
-          <input
-            name="hasOrders"
+          <Checkbox
+            id="has-orders"
             type="checkbox"
-            checked={hasOrders}
-            onChange={this.changeHasOrders}
+            name="hasOrders"
+            isChecked={hasOrders}
+            value={hasOrders}
+            onClick={this.changeHasOrders}
           />{" "}
-          has open orders
+          <label htmlFor="has-orders">has open orders</label>
         </div>
       </div>
     );
