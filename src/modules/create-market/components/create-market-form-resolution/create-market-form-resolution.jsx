@@ -354,8 +354,8 @@ export default class CreateMarketResolution extends Component {
             </div>
           </label>
           <p>
-            This should be a date and time sufficiently <b>after</b>
-            the event, when the result can be viewed publicly.
+            This should be a date and time sufficiently <b>after</b> the event,
+            when the result can be viewed publicly.
           </p>
           <p style={{ marginBottom: "1rem" }}>
             If an event happens on 01/01 and is reported on 01/02, the
