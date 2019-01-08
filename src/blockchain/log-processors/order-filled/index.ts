@@ -7,7 +7,7 @@ import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";
 import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
 import { fixedPointToDecimal, numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
-import { BN_WEI_PER_ETHER, SubscriptionEventNames } from "../../../constants";
+import { BN_WEI_PER_ETHER, MarketType, SubscriptionEventNames } from "../../../constants";
 import { updateOutcomeValueFromOrders, removeOutcomeValue } from "../profit-loss/update-outcome-value";
 import { updateProfitLossBuyShares, updateProfitLossSellShares, updateProfitLossSellEscrowedShares } from "../profit-loss/update-profit-loss";
 
@@ -28,12 +28,13 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
     if (!tokensRow) throw new Error(`market and outcome not found for shareToken: ${shareToken} (${log.transactionHash})`);
     const marketId = tokensRow.marketId;
     const outcome = tokensRow.outcome!;
-    const marketsRow: MarketsRow<BigNumber>|undefined = await db.first("minPrice", "maxPrice", "numTicks", "category", "numOutcomes").from("markets").where({ marketId });
+    const marketsRow: MarketsRow<BigNumber>|undefined = await db.first("minPrice", "maxPrice", "numTicks", "category", "numOutcomes", "marketType").from("markets").where({ marketId });
 
     if (!marketsRow) throw new Error(`market not found: ${marketId}`);
     const minPrice = marketsRow.minPrice;
     const maxPrice = marketsRow.maxPrice;
     const numTicks = marketsRow.numTicks;
+    const marketType = marketsRow.marketType;
     const numOutcomes = marketsRow.numOutcomes;
     const category = marketsRow.category;
     const orderId = log.orderId;
@@ -79,7 +80,11 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
 
     await updateOrder(db, augur, marketId, orderId, amount, orderCreator, filler, tickSize, minPrice);
 
-    await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash, price);
+    await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash, orderType === "buy" ? price : maxPrice.minus(price));
+    if (marketType === "yesNo" || marketType === "scalar") {
+      const otherOutcome = outcome === 0 ? 1 : 0;
+      await updateOutcomeValueFromOrders(db, marketId, otherOutcome, log.transactionHash, orderType === "sell" ? price : maxPrice.minus(price));
+    }
     const orderOutcome = [outcome];
     const otherOutcomes = Array.from(Array(numOutcomes).keys());
     otherOutcomes.splice(outcome, 1);
