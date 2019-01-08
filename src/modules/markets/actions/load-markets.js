@@ -124,6 +124,7 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (
     category: filterOptions.category,
     search: filterOptions.search,
     maxFee: parseFloat(filterOptions.maxFee),
+    hasOrders: filterOptions.hasOrders,
     ...sort
   };
   switch (filterOptions.filter) {
