@@ -1,6 +1,6 @@
 const Augur = require("augur.js");
 
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { processInitialReporterTransferredLog, processInitialReporterTransferredLogRemoval } = require("src/blockchain/log-processors/initial-report-transferred");
 
 function getInitialReport(db, log) {

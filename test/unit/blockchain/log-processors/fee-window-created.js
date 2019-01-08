@@ -1,4 +1,4 @@
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval } = require("src/blockchain/log-processors/fee-window-created");
 
 async function getFeeWindow(db, log) {
