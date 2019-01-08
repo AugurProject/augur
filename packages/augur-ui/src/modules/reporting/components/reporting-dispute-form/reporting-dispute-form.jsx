@@ -671,7 +671,7 @@ export default class ReportingDisputeForm extends Component {
                     {InputErrorIcon}
                     {`Dispute round has ended, wait for next round to dispute`}
                   </span>
-                  </label>
+                </label>
               )}
           </ul>
         </li>
