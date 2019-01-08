@@ -1,4 +1,4 @@
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { processFeeWindowRedeemedLog, processFeeWindowRedeemedLogRemoval } = require("src/blockchain/log-processors/fee-window-redeemed");
 
 function getRedeemed(db) {

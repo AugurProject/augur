@@ -1,4 +1,4 @@
-const environments = require("../../knexfile.js");
+const environments = require("knexfile.js");
 const Knex = require("knex");
 const { postProcessDatabaseResults } = require("src/server/post-process-database-results");
 

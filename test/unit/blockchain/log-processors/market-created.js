@@ -1,6 +1,6 @@
 const Augur = require("augur.js");
 const { BigNumber } = require("bignumber.js");
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { processMarketCreatedLog, processMarketCreatedLogRemoval } = require("src/blockchain/log-processors/market-created");
 const { getMarketsWithReportingState } = require("src/server/getters/database");
 
