@@ -27,7 +27,7 @@ def acquireLongShares(kitchenSinkFixture, cash, market, outcome, amount, approva
     for otherOutcome in range(0, market.getNumberOfOutcomes()):
         if otherOutcome == outcome: continue
         otherShareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(otherOutcome))
-        assert otherShareToken.transfer(0, amount, sender = sender)
+        assert otherShareToken.transfer(1, amount, sender = sender)
 
 def acquireShortShareSet(kitchenSinkFixture, cash, market, outcome, amount, approvalAddress, sender):
     if amount == 0: return
@@ -39,7 +39,7 @@ def acquireShortShareSet(kitchenSinkFixture, cash, market, outcome, amount, appr
     fillOrder = kitchenSinkFixture.contracts['FillOrder']
 
     assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender, value = cost)
-    assert shareToken.transfer(0, amount, sender = sender)
+    assert shareToken.transfer(1, amount, sender = sender)
     for otherOutcome in range(0, market.getNumberOfOutcomes()):
         if otherOutcome == outcome: continue
         otherShareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(otherOutcome))

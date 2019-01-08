@@ -7,13 +7,12 @@ import 'libraries/token/VariableSupplyToken.sol';
 
 /**
  * @title Cash
- * @dev ETH wrapper contract to make it look like an ERC20 token.
+ * @dev ETH wrapper contract to make it look like an ERC20Tokentoken.
  */
 contract Cash is ITyped, VariableSupplyToken, ICash {
 
     string constant public name = "Cash";
     string constant public symbol = "CASH";
-    uint8 constant public decimals = 18;
 
     function depositEther() external payable returns(bool) {
         mint(msg.sender, msg.value);

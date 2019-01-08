@@ -1,7 +1,7 @@
 pragma solidity 0.4.24;
 
 import 'libraries/Ownable.sol';
-import 'libraries/token/ERC20Basic.sol';
+import 'libraries/token/ERC20Token.sol';
 import 'libraries/Initializable.sol';
 import 'reporting/IMailbox.sol';
 import 'reporting/IMarket.sol';
@@ -41,7 +41,7 @@ contract Mailbox is Ownable, Initializable, IMailbox {
         return true;
     }
 
-    function withdrawTokens(ERC20Basic _token) public onlyOwner returns (bool) {
+    function withdrawTokens(ERC20Token _token) public onlyOwner returns (bool) {
         uint256 _balance = _token.balanceOf(this);
         require(_token.transfer(owner, _balance));
         return true;

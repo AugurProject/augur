@@ -108,11 +108,11 @@ contract Auction is Initializable, IAuction {
         repAuctionToken = auctionTokenFactory.createAuctionToken(augur, this, reputationToken, currentAuctionIndex);
         if (!bootstrapMode) {
             ethAuctionToken = auctionTokenFactory.createAuctionToken(augur, this, cash, currentAuctionIndex);
+            cash.transfer(ethAuctionToken, initialAttoEthBalance);
         }
         augur.recordAuctionTokens(universe);
 
         reputationToken.transfer(repAuctionToken, initialAttoRepBalance);
-        cash.transfer(ethAuctionToken, initialAttoEthBalance);
         return true;
     }
 

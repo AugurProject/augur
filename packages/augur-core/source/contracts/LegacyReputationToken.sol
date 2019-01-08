@@ -14,7 +14,7 @@ contract LegacyReputationToken is OldLegacyReputationToken {
     string public constant symbol = "REP";
     uint256 public constant decimals = 18;
 
-    constructor() public {
+    constructor() public OldLegacyReputationToken() {
         // This is to confirm we are not on foundation network
         require(!FOUNDATION_REP_ADDRESS.exists());
     }

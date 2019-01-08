@@ -12,7 +12,6 @@ import 'IAugur.sol';
 contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
 
     string constant public name = "Shares";
-    uint8 constant public decimals = 0;
     string constant public symbol = "SHARE";
 
     IMarket private market;

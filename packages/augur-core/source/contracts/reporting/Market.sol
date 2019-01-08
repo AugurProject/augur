@@ -15,7 +15,6 @@ import 'trading/IShareToken.sol';
 import 'factories/ShareTokenFactory.sol';
 import 'factories/InitialReporterFactory.sol';
 import 'factories/MapFactory.sol';
-import 'libraries/token/ERC20Basic.sol';
 import 'libraries/math/SafeMathUint256.sol';
 import 'libraries/math/SafeMathInt256.sol';
 import 'factories/MailboxFactory.sol';

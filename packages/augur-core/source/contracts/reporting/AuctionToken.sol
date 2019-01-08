@@ -12,17 +12,16 @@ import 'reporting/IAuction.sol';
 contract AuctionToken is ITyped, Initializable, VariableSupplyToken, IAuctionToken {
 
     string constant public name = "Auction Token";
-    uint8 constant public decimals = 18;
     string constant public symbol = "AUC";
 
     IAugur public augur;
     IAuction public auction;
     IUniverse public universe;
     ICash public cash;
-    ERC20 public redemptionToken; // The token being auctioned off and recieved at redemption
+    ERC20Token public redemptionToken; // The token being auctioned off and recieved at redemption
     uint256 public auctionIndex;
 
-    function initialize(IAugur _augur, IAuction _auction, ERC20 _redemptionToken, uint256 _auctionIndex) public beforeInitialized returns(bool) {
+    function initialize(IAugur _augur, IAuction _auction, ERC20Token _redemptionToken, uint256 _auctionIndex) public beforeInitialized returns(bool) {
         endInitialization();
         augur = _augur;
         auction = _auction;
@@ -45,7 +44,7 @@ contract AuctionToken is ITyped, Initializable, VariableSupplyToken, IAuctionTok
         uint256 _tokenBalance = redemptionToken.balanceOf(this);
         uint256 _redemptionAmount = _ownerBalance.mul(_tokenBalance).div(totalSupply());
         burn(msg.sender, _ownerBalance);
-        if (redemptionToken == ERC20(cash)) {
+        if (redemptionToken == ERC20Token(cash)) {
             cash.withdrawEtherTo(msg.sender, _redemptionAmount);
         } else {
             redemptionToken.transfer(msg.sender, _redemptionAmount);

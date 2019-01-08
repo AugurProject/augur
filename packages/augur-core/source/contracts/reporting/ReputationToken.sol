@@ -3,7 +3,7 @@ pragma solidity 0.4.24;
 import 'reporting/IV2ReputationToken.sol';
 import 'libraries/ITyped.sol';
 import 'libraries/token/VariableSupplyToken.sol';
-import 'libraries/token/ERC20.sol';
+import 'libraries/token/ERC20Token.sol';
 import 'reporting/IUniverse.sol';
 import 'reporting/IMarket.sol';
 import 'reporting/Reporting.sol';
@@ -16,12 +16,11 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
 
     string constant public name = "Reputation";
     string constant public symbol = "REP";
-    uint8 constant public decimals = 18;
     IUniverse internal universe;
     IUniverse internal parentUniverse;
     uint256 internal totalMigrated;
     uint256 internal totalTheoreticalSupply;
-    ERC20 public legacyRepToken;
+    ERC20Token public legacyRepToken;
     IAugur public augur;
 
     constructor(IAugur _augur, IUniverse _universe, IUniverse _parentUniverse) public {
@@ -29,7 +28,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         augur = _augur;
         universe = _universe;
         parentUniverse = _parentUniverse;
-        legacyRepToken = ERC20(augur.lookup("LegacyReputationToken"));
+        legacyRepToken = ERC20Token(augur.lookup("LegacyReputationToken"));
         updateTotalTheoreticalSupply();
     }
 
@@ -143,7 +142,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         return totalMigrated;
     }
 
-    function getLegacyRepToken() public view returns (ERC20) {
+    function getLegacyRepToken() public view returns (ERC20Token) {
         return legacyRepToken;
     }
 
