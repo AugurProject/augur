@@ -7,7 +7,8 @@ import {
   MARKET_FILTER,
   MARKET_SORT,
   MARKET_MAX_FEES,
-  TRANSACTION_PERIOD
+  TRANSACTION_PERIOD,
+  HAS_OPEN_ORDERS
 } from "modules/filter-sort/actions/update-filter-sort-options";
 import { MAX_FEE_05_PERCENT } from "src/modules/filter-sort/constants/market-max-fees";
 
@@ -15,7 +16,8 @@ const DEFAULT_STATE = {
   [MARKET_FILTER]: MARKET_OPEN,
   [MARKET_SORT]: MARKET_OPEN_INTEREST,
   [MARKET_MAX_FEES]: MAX_FEE_05_PERCENT,
-  [TRANSACTION_PERIOD]: DAY
+  [TRANSACTION_PERIOD]: DAY,
+  [HAS_OPEN_ORDERS]: true
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);

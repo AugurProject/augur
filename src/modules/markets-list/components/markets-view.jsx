@@ -22,6 +22,7 @@ export default class MarketsView extends Component {
     defaultFilter: PropTypes.string.isRequired,
     defaultSort: PropTypes.string.isRequired,
     defaultMaxFee: PropTypes.string.isRequired,
+    defaultHasOrders: PropTypes.bool.isRequired,
     loadDisputing: PropTypes.func.isRequired
   };
 
@@ -38,6 +39,7 @@ export default class MarketsView extends Component {
       filter: props.defaultFilter,
       sort: props.defaultSort,
       maxFee: props.defaultMaxFee,
+      hasOrders: props.defaultHasOrders,
       filterSortedMarkets: []
     };
 
@@ -64,15 +66,18 @@ export default class MarketsView extends Component {
   }
 
   updateFilter(params) {
-    const { filter, sort, maxFee } = params;
-    this.setState({ filter, sort, maxFee }, this.updateFilteredMarkets);
+    const { filter, sort, maxFee, hasOrders } = params;
+    this.setState(
+      { filter, sort, maxFee, hasOrders },
+      this.updateFilteredMarkets
+    );
   }
 
   updateFilteredMarkets() {
     const { search, category, loadMarketsByFilter } = this.props;
-    const { filter, sort, maxFee } = this.state;
+    const { filter, sort, maxFee, hasOrders } = this.state;
     loadMarketsByFilter(
-      { category, search, filter, sort, maxFee },
+      { category, search, filter, sort, maxFee, hasOrders },
       (err, filterSortedMarkets) => {
         if (err) return console.log("Error loadMarketsFilter:", err);
         if (this.componentWrapper) this.setState({ filterSortedMarkets });
@@ -90,7 +95,7 @@ export default class MarketsView extends Component {
       markets,
       toggleFavorite
     } = this.props;
-    const { filter, sort, maxFee, filterSortedMarkets } = this.state;
+    const { filter, sort, maxFee, hasOrders, filterSortedMarkets } = this.state;
 
     return (
       <section
@@ -108,6 +113,7 @@ export default class MarketsView extends Component {
           filter={filter}
           sort={sort}
           maxFee={maxFee}
+          hasOrders={hasOrders}
           updateFilter={this.updateFilter}
           history={history}
         />

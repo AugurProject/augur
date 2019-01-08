@@ -19,6 +19,7 @@ export default class MarketsHeader extends Component {
     filter: PropTypes.string.isRequired,
     sort: PropTypes.string.isRequired,
     maxFee: PropTypes.string.isRequired,
+    hasOrders: PropTypes.bool.isRequired,
     updateFilter: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired
   };
@@ -64,7 +65,14 @@ export default class MarketsHeader extends Component {
   }
 
   render() {
-    const { filter, sort, maxFee, updateFilter, history } = this.props;
+    const {
+      filter,
+      sort,
+      maxFee,
+      hasOrders,
+      updateFilter,
+      history
+    } = this.props;
     const s = this.state;
 
     return (
@@ -76,6 +84,7 @@ export default class MarketsHeader extends Component {
               filter={filter}
               sort={sort}
               maxFee={maxFee}
+              hasOrders={hasOrders}
               updateFilter={updateFilter}
               history={history}
               location={location}
