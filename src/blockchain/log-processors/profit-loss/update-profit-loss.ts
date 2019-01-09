@@ -81,7 +81,7 @@ export async function updateProfitLossSellEscrowedShares(db: Knex, marketId: Add
       outcome: updateData.outcome,
       transactionHash,
       timestamp,
-      numOwned,
+      numOwned: numOwned.toString(),
       numEscrowed: newNumEscrowed,
       moneySpent,
       profit,
