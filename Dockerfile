@@ -50,7 +50,7 @@ RUN rm -f /augur/yarn.lock
 RUN set -ex; \
     if [ "$BUILD_ENVIRONMENT" = "dev" ]; then \
         ETHEREUM_NETWORK=$ethereum_network yarn build --dev --augur-hosted --disableMainnet; \
-    elif [ "$BUILD_ENVIRONMENT" = "dev-optimized"; then \
+    elif [ "$BUILD_ENVIRONMENT" = "dev-optimized" ]; then \
         ETHEREUM_NETWORK=$ethereum_network yarn build --production --augur-hosted --disableMainnet; \
     fi;
 
