@@ -7,7 +7,6 @@ import { fixedPointToDecimal, numTicksToTickSize } from "../../utils/convert-fix
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
 import { BN_WEI_PER_ETHER, SubscriptionEventNames } from "../../constants";
 import { QueryBuilder } from "knex";
-import { updateOutcomeValueFromOrders, removeOutcomeValue } from "./profit-loss/update-outcome-value";
 import { updateProfitLossNumEscrowed, updateProfitLossRemoveRow } from "./profit-loss/update-profit-loss";
 
 export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLog) {
@@ -63,7 +62,6 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
     }
     await upsertOrder;
     await marketPendingOrphanCheck(db, orderData);
-    await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash);
 
     const otherOutcomes = Array.from(Array(numOutcomes).keys());
     otherOutcomes.splice(outcome, 1);
@@ -77,7 +75,6 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
 export async function processOrderCreatedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db.from("orders").where("orderId", log.orderId).delete();
-    await removeOutcomeValue(db, log.transactionHash);
     await updateProfitLossRemoveRow(db, log.transactionHash);
     augurEmitter.emit(SubscriptionEventNames.OrderCreated, log);
   };
