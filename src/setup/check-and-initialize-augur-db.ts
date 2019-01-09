@@ -53,7 +53,7 @@ async function renameDatabaseFile(networkId: string, dbPath: string) {
 }
 
 async function getFreshDatabase(db: Knex|null, networkId: string, dbPath: string): Promise<Knex> {
-  if (db != null) db.destroy();
+  if (db != null) await db.destroy();
   await renameDatabaseFile(networkId, dbPath);
   return createKnex(networkId, dbPath);
 }

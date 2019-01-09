@@ -1,8 +1,9 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, CategoriesRow, CategoryRow, ReportingState, Address } from "../../types";
+import { FormattedEventLog, ReportingState, Address } from "../../types";
 import { rollbackMarketState, updateMarketFeeWindow, updateMarketState } from "./database";
 import { getMarketsWithReportingState } from "../../server/getters/database";
+import { createCategoryIfNotExists } from "./market-created";
 
 async function advanceToAwaitingNextWindow(db: Knex, marketId: Address, blockNumber: number) {
   const reportingStateRow: { reportingState: ReportingState, feeWindow: Address } = await getMarketsWithReportingState(db, ["reportingState", "feeWindow"]).first().where("markets.marketId", marketId);
@@ -26,12 +27,9 @@ export async function processMarketMigratedLog(augur: Augur, log: FormattedEvent
     await db.update({
       disavowed: db.raw("disavowed + 1"),
     }).into("crowdsourcers").where("marketId", log.market);
-    const categoryRows: CategoryRow = await db.first("category").from("markets").where({ marketId: log.market });
+    const categoryRows: { category: string } = await db.first("category").from("markets").where({ marketId: log.market });
     if (!categoryRows || categoryRows.category == null) return;
-    const category = categoryRows.category.toUpperCase();
-    const categoriesRows: CategoriesRow = await db.first("popularity").from("categories").where({ category, universe: log.newUniverse });
-    if (categoriesRows) return;
-    return db.insert({ category, universe: log.newUniverse }).into("categories");
+    await createCategoryIfNotExists(db, log.newUniverse, categoryRows.category); // NB `categoryName = categoryRows.category` is expected to already be canonicalized when the market was first ingested into augur-node, see canonicalizeCategoryName().
   };
 }
 

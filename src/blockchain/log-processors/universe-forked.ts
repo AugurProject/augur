@@ -32,7 +32,7 @@ export async function processUniverseForkedLog(augur: Augur, log: FormattedEvent
     const marketsToRevert: Array<MarketsContractAddressRow> = await getMarketsWithReportingState(db).from("markets").select("markets.marketId")
       .where({ universe: log.universe })
       .whereIn("reportingState", [ReportingState.AWAITING_FINALIZATION, ReportingState.CROWDSOURCING_DISPUTE, ReportingState.AWAITING_NEXT_WINDOW]);
-    each(marketsToRevert, async (marketIdRow: MarketsContractAddressRow) => {
+    await each(marketsToRevert, async (marketIdRow: MarketsContractAddressRow) => {
       await updateMarketState(db, marketIdRow.marketId, log.blockNumber, ReportingState.AWAITING_FORK_MIGRATION);
       augurEmitter.emit(SubscriptionEventNames.MarketState, {
         universe: log.universe,

@@ -52,4 +52,14 @@ module.exports = {
       directory: "./src/migrations",
     },
   },
+  "prod-test": {
+    client: "sqlite3",
+    connection: {
+      filename: "./augur-1-2.db",
+    },
+    migrations: {
+      directory: "./src/migrations",
+    },
+    useNullAsDefault: true,
+  },
 };

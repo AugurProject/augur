@@ -52,7 +52,7 @@ export function runServer(db: Knex, augur: Augur, controlEmitter: EventEmitter =
         } else {
           res.send({ status: ServerStatus.UP, universe });
         }
-      });
+      }).catch((e) => { throw e; });
     } catch (e) {
       res.status(503).send({ status: ServerStatus.DOWN, reason: e.message });
     }

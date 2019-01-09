@@ -159,7 +159,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
@@ -214,7 +215,8 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
@@ -345,7 +347,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
@@ -424,7 +427,8 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
@@ -554,7 +558,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
@@ -609,7 +614,8 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
@@ -735,7 +741,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
@@ -790,7 +797,8 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
@@ -924,7 +932,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
@@ -978,7 +987,8 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],

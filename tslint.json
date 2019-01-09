@@ -7,6 +7,9 @@
     "tslint:recommended"
   ],
   "rules": {
+    "no-floating-promises": [true, "Bluebird"],
+    "await-promise": [true, "Bluebird"],
+    "no-unused-expression": true,
     "indent": [
       "error",
       2, {

@@ -19,25 +19,22 @@ describe("server/getters/get-categories", () => {
       method: "getCategories",
       params,
     }, null)).resolves.toEqual([
-      { "category": "FINANCE", "popularity": "12345", "tags": [] },
-      { "category": "POLITICS", "popularity": "5000", "tags": [] },
-      { "category": "ETHEREUM", "popularity": "1000", "tags": [] },
-      { "category": "AUGUR", "popularity": "500", "tags": [] },
-      {
-        "category": "TEST CATEGORY",
-        "popularity": "0",
-        "tags": {
-          "AUGUR": 2,
-          "ETHEREUM": 1,
-          "FINANCE": 2,
-          "POLITICS": 1,
-          "TAGGED IT": 5,
-          "TAGGING IT": 5,
-          "TEST TAG 1": 7,
-          "TEST TAG 2": 7,
-        },
-      }],
-    );
+      {"categoryName": "AUGUR", "nonFinalizedOpenInterest": "0", "openInterest": "3", "tags": []},
+      {"categoryName": "ETHEREUM", "nonFinalizedOpenInterest": "4.5", "openInterest": "4.5", "tags": []},
+      {"categoryName": "FINANCE", "nonFinalizedOpenInterest": "2.5", "openInterest": "2.6", "tags": []},
+      {"categoryName": "POLITICS", "nonFinalizedOpenInterest": "3", "openInterest": "12", "tags": []},
+      {"categoryName": "TEST CATEGORY", "nonFinalizedOpenInterest": "0", "openInterest": "0", "tags": [
+        {"nonFinalizedOpenInterest": "0", "numberOfMarketsWithThisTag": 6, "openInterest": "0", "tagName": "test tag 1"},
+        {"nonFinalizedOpenInterest": "0", "numberOfMarketsWithThisTag": 6, "openInterest": "0", "tagName": "test tag 2"},
+        {"nonFinalizedOpenInterest": "0", "numberOfMarketsWithThisTag": 2, "openInterest": "0", "tagName": "Finance"},
+        {"nonFinalizedOpenInterest": "0", "numberOfMarketsWithThisTag": 2, "openInterest": "0", "tagName": "Augur"},
+        {"nonFinalizedOpenInterest": "0", "numberOfMarketsWithThisTag": 1, "openInterest": "0", "tagName": "politics"},
+        {"nonFinalizedOpenInterest": "0", "numberOfMarketsWithThisTag": 1, "openInterest": "0", "tagName": "ethereum"},
+        {"nonFinalizedOpenInterest": "0", "numberOfMarketsWithThisTag": 5, "openInterest": "0", "tagName": "tagging it"},
+        {"nonFinalizedOpenInterest": "0", "numberOfMarketsWithThisTag": 5, "openInterest": "0", "tagName": "tagged it"},
+      ]},
+      {"categoryName": "ethereum", "nonFinalizedOpenInterest": "0", "openInterest": "0", "tags": []},
+    ]);
   });
 
   test("get categories in bad universe", async () => {
