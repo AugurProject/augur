@@ -202,19 +202,31 @@ export default class ReportingReportForm extends Component {
       >
         <li>
           <div className={Styles.ReportingReport__outcome_selection_msg}>
-            Please choose an outcome below based on the resolution source when the
-            market ends.
+            Please choose an outcome below based on the resolution source when
+            the market ends.
           </div>
           <div className={Styles.ReportingReport__outcome_selection_msg}>
-              The market should be considered INVALID if any of the following are true:
+            The market should be considered INVALID if any of the following are
+            true:
           </div>
           <ul className={Styles.ReportingReport__outcome_selection_msg}>
             <li>The question is subjective in nature.</li>
             <li>The outcome was not known at market end time.</li>
-            <li>The title, details, end time, resolution source, and outcomes are in direct conflict with each other.</li>
-            <li>There are strong arguments for the market resolving as multiple outcomes.</li>
-            <li>The resolution source does not provide a readily available answer.</li>
-            <li>The resolution source provides different answers to different viewers.</li>
+            <li>
+              The title, details, end time, resolution source, and outcomes are
+              in direct conflict with each other.
+            </li>
+            <li>
+              There are strong arguments for the market resolving as multiple
+              outcomes.
+            </li>
+            <li>
+              The resolution source does not provide a readily available answer.
+            </li>
+            <li>
+              The resolution source provides different answers to different
+              viewers.
+            </li>
           </ul>
         </li>
         <li>
