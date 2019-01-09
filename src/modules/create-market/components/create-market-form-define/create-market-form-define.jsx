@@ -46,7 +46,7 @@ export default class CreateMarketDefine extends Component {
     const { categories } = this.props;
     const userString = category.toLowerCase();
     return categories.filter(
-      cat => cat.category.toLowerCase().indexOf(userString) === 0
+      cat => cat.categoryName.toLowerCase().indexOf(userString) === 0
     );
   }
 
@@ -210,16 +210,16 @@ export default class CreateMarketDefine extends Component {
                   <li key={i}>
                     <button
                       onClick={() => {
-                        this.updateFilteredCategories(cat.category, true);
-                        this.catInput.value = cat.category;
+                        this.updateFilteredCategories(cat.categoryName, true);
+                        this.catInput.value = cat.categoryName;
                         this.validateTag(
                           "category",
-                          cat.category,
+                          cat.categoryName,
                           TAGS_MAX_LENGTH
                         );
                       }}
                     >
-                      {cat.category}
+                      {cat.categoryName}
                     </button>
                   </li>
                 ))}

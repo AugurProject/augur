@@ -15,11 +15,13 @@ import { loadDisputing } from "modules/reports/actions/load-disputing";
 
 const mapStateToProps = (state, { location }) => {
   const markets = selectMarkets(state);
-  const { category, keywords, tags } = getSelectedTagsAndCategoriesFromLocation(
-    location
-  );
+  const {
+    selectedCategoryName,
+    keywords,
+    selectedTagNames
+  } = getSelectedTagsAndCategoriesFromLocation(location);
 
-  const searchPhrase = buildSearchString(keywords, tags);
+  const searchPhrase = buildSearchString(keywords, selectedTagNames);
 
   return {
     isLogged: state.authStatus.isLogged,
@@ -28,7 +30,7 @@ const mapStateToProps = (state, { location }) => {
     search: searchPhrase,
     isMobile: state.appStatus.isMobile,
     markets,
-    category,
+    category: selectedCategoryName,
     defaultFilter: state.filterSortOptions.marketFilter,
     defaultSort: state.filterSortOptions.marketSort,
     defaultMaxFee: state.filterSortOptions.maxFee,

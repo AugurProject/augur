@@ -10,20 +10,20 @@ import { QUERY_VALUE_DELIMITER } from "src/modules/routes/constants/query-value-
 export const getSelectedTagsAndCategoriesFromLocation = location => {
   // This is black magic.
   const {
-    [CATEGORY_PARAM_NAME]: selectedCategory,
+    [CATEGORY_PARAM_NAME]: selectedCategoryName,
     [FILTER_SEARCH_PARAM]: keywords = undefined,
     [TAGS_PARAM_NAME]: tagsString,
     ...balanceOfSearchParams
   } = parseQuery(location.search);
 
-  const selectedTags = parseStringToArray(
+  const selectedTagNames = parseStringToArray(
     decodeURIComponent(tagsString || ""),
     QUERY_VALUE_DELIMITER
   );
   return {
-    category: selectedCategory,
+    selectedCategoryName,
     keywords,
-    tags: selectedTags,
+    selectedTagNames,
     balanceOfSearchParams
   };
 };

@@ -49,7 +49,6 @@ export const selectSelectedMarketsHeaderState = state =>
 export const selectSelectedMarketsSubsetState = state =>
   state.selectedMarketsSubset;
 export const selectSmallestPositionsState = state => state.smallestPositions;
-export const selectTagsState = state => state.tags;
 export const selectTradesInProgressState = state => state.tradesInProgress;
 export const selectTransactionsDataState = state => state.transactionsData;
 export const selectUniverseState = state => state.universe;

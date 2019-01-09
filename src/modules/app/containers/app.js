@@ -8,7 +8,6 @@ import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { selectInfoNotificationsAndSeenCount } from "modules/notifications/selectors/notifications";
 import { selectMarketsHeader } from "modules/markets/selectors/markets-header";
 import { selectCoreStats } from "modules/account/selectors/core-stats";
-import { selectCategories } from "modules/categories/selectors/categories";
 import portfolio from "modules/positions/selectors/portfolio";
 import {
   IS_ANIMATING,
@@ -22,6 +21,7 @@ import { updateModal } from "modules/modal/actions/update-modal";
 import { isLoading } from "modules/markets/selectors/is-loading";
 import {
   selectBlockchainState,
+  selectCategoriesState,
   selectConnectionState,
   selectEnvState,
   selectIsLogged,
@@ -40,7 +40,7 @@ import { logout } from "modules/auth/actions/logout";
 
 const mapStateToProps = state => ({
   blockchain: selectBlockchainState(state),
-  categories: selectCategories(state),
+  categories: selectCategoriesState(state),
   connection: selectConnectionState(state),
   coreStats: selectCoreStats(state),
   isLoading: isLoading(state.marketLoading),

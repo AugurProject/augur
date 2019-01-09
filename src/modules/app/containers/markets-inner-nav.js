@@ -9,16 +9,14 @@ import {
   FILTER_SEARCH_PARAM
 } from "modules/filter-sort/constants/param-names";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
-import { selectCategories } from "modules/categories/selectors/categories";
-import { selectIsMobile } from "src/select-state";
+import { selectIsMobile, selectCategoriesState } from "src/select-state";
 
-import { isEmpty, map, getOr } from "lodash/fp";
+import { isEmpty } from "lodash/fp";
 import { curriedToggleMemberOfArray } from "utils/toggle-member-of-array";
 import makeQuery from "modules/routes/helpers/make-query";
 import makePath from "modules/routes/helpers/make-path";
 import { MARKETS } from "modules/routes/constants/views";
 import BaseInnerNavPure from "modules/app/components/inner-nav/base-inner-nav-pure";
-import { selectAllCategories } from "modules/categories/selectors/select-all-categories";
 import { getSelectedTagsAndCategoriesFromLocation } from "modules/markets/helpers/get-selected-tags-and-categories-from-location";
 import noop from "src/utils/noop";
 
@@ -27,23 +25,21 @@ const mapStateToProps = (
   { history, location = {}, openSubMenu = noop }
 ) => {
   const {
-    category,
-    tags,
+    selectedCategoryName,
+    selectedTagNames,
     balanceOfSearchParams,
     keywords
   } = getSelectedTagsAndCategoriesFromLocation(location);
 
   const isMobile = selectIsMobile(state);
-  const categories = selectCategories(state);
-  const allCategories = selectAllCategories(state);
+  const categories = selectCategoriesState(state);
 
-  const toggleTagFn = curriedToggleMemberOfArray(tags);
-  const categoryU = category && category.toUpperCase();
+  const toggleTagFn = curriedToggleMemberOfArray(selectedTagNames);
 
   const onClick = ((location, history, toggleTagFn) => tag => () => {
     const p = {
       ...balanceOfSearchParams,
-      [CATEGORY_PARAM_NAME]: categoryU
+      [CATEGORY_PARAM_NAME]: selectedCategoryName
     };
 
     if (keywords) {
@@ -63,22 +59,14 @@ const mapStateToProps = (
     });
   })(location, history, toggleTagFn);
 
-  // Works bottom to top.
-  const submenuItems = compose(
-    map(tag => ({
-      label: tag,
-      isSelected: tags.includes(tag),
-      onClick: onClick(tag),
-      visible: true
-    })),
-    getOr([], categoryU)
-  )(allCategories);
-
   const makeCategoryLink = categoryClicked => {
     const link = {
       pathname: makePath(MARKETS)
     };
-    if (categoryClicked !== category || !isEmpty(tags)) {
+    if (
+      categoryClicked !== selectedCategoryName ||
+      !isEmpty(selectedTagNames)
+    ) {
       const query = {
         [CATEGORY_PARAM_NAME]: categoryClicked
       };
@@ -90,20 +78,35 @@ const mapStateToProps = (
     return link;
   };
 
-  const menuItems = categories.map(item => ({
-    label: item.category,
-    isSelected: item.category === category,
+  const selectedCategoryMenuItems = categories.map(c => ({
+    label: c.categoryName,
+    isSelected: c.categoryName === selectedCategoryName,
     visible: true,
     onClick: () => {
       if (isMobile) openSubMenu();
     },
-    link: makeCategoryLink(item.category)
+    link: makeCategoryLink(c.categoryName)
   }));
+
+  const selectedCategoryTagMenuItems = (() => {
+    const selectedCategory = categories.find(
+      c => c.categoryName === selectedCategoryName
+    );
+    if (!selectedCategory) {
+      return [];
+    }
+    return selectedCategory.tags.map(tagAggregation => ({
+      label: tagAggregation.tagName,
+      isSelected: selectedTagNames.includes(tagAggregation.tagName),
+      onClick: onClick(tagAggregation.tagName),
+      visible: true
+    }));
+  })();
 
   return {
     isMobile,
-    menuItems,
-    submenuItems
+    menuItems: selectedCategoryMenuItems,
+    submenuItems: selectedCategoryTagMenuItems
   };
 };
 
