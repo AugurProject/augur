@@ -374,16 +374,16 @@ contract Universe is ITyped, IUniverse {
             _previousValue = _defaultValue;
         }
 
-        // Modify the amount based on the previous amount and the number of markets fitting the failure criteria. We want the amount to be somewhere in the range of 0.5 to 2 times its previous value where ALL markets with the condition results in 2x and 0 results in 0.5x.
+        // Modify the amount based on the previous amount and the number of markets fitting the failure criteria. We want the amount to be somewhere in the range of 0.9 to 2 times its previous value where ALL markets with the condition results in 2x and 0 results in 0.9x.
         // Safe math div is redundant so we avoid here as we're at the stack limit.
         if (_badMarkets <= _totalMarkets / _targetDivisor) {
-            // FXP formula: previous_amount * actual_percent / (2 * target_percent) + 0.5;
+            // FXP formula: previous_amount * actual_percent / (10 * target_percent) + 0.9;
             _newValue = _badMarkets
                 .mul(_previousValue)
                 .mul(_targetDivisor);
             _newValue = _newValue / _totalMarkets;
-            _newValue = _newValue / 2;
-            _newValue = _newValue.add(_previousValue / 2);
+            _newValue = _newValue / 10;
+            _newValue = _newValue.add(_previousValue * 9 / 10);
         } else {
             // FXP formula: previous_amount * (1/(1 - target_percent)) * (actual_percent - target_percent) + 1;
             _newValue = _targetDivisor
