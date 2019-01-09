@@ -3,6 +3,8 @@ FROM node:8.11.2-alpine
 ENV PATH /root/.yarn/bin:$PATH
 ARG ethereum_network=rinkeby
 ENV ETHEREUM_NETWORK=$ethereum_network
+ARG build_environment=dev
+ENV BUILD_ENVIRONMENT=$build_environment
 
 RUN apk --update add python nginx git curl g++ make binutils bash libusb-dev yarn linux-headers eudev-dev \
   #&& touch ~/.bashrc \
@@ -45,7 +47,12 @@ COPY support/local-run.sh /augur/local-run.sh
 # workaround a bug when running inside an alpine docker image
 RUN rm -f /augur/yarn.lock
 
-RUN ETHEREUM_NETWORK=$ethereum_network yarn build --dev --augur-hosted --disableMainnet
+RUN set -ex; \
+    if [ "$BUILD_ENVIRONMENT" = "dev" ]; then \
+        ETHEREUM_NETWORK=$ethereum_network yarn build --dev --augur-hosted --disableMainnet; \
+    elif [ "$BUILD_ENVIRONMENT" = "dev-optimized"; then \
+        ETHEREUM_NETWORK=$ethereum_network yarn build --production --augur-hosted --disableMainnet; \
+    fi;
 
 # need arg to pass in for augur-ui (production) and augur-dev (dev)
 RUN git rev-parse HEAD > /augur/build/git-hash.txt \
