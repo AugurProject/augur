@@ -7,7 +7,7 @@ import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";
 import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
 import { fixedPointToDecimal, numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
-import { BN_WEI_PER_ETHER, SubscriptionEventNames } from "../../../constants";
+import { BN_WEI_PER_ETHER, MarketType, SubscriptionEventNames } from "../../../constants";
 import { updateOutcomeValueFromOrders, removeOutcomeValue } from "../profit-loss/update-outcome-value";
 import { updateProfitLossBuyShares, updateProfitLossSellShares, updateProfitLossSellEscrowedShares } from "../profit-loss/update-profit-loss";
 
@@ -79,7 +79,11 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
 
     await updateOrder(db, augur, marketId, orderId, amount, orderCreator, filler, tickSize, minPrice);
 
-    await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash);
+    await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash, orderType === "buy" ? price : maxPrice.minus(price));
+    if (numOutcomes === 2) {
+      const otherOutcome = outcome === 0 ? 1 : 0;
+      await updateOutcomeValueFromOrders(db, marketId, otherOutcome, log.transactionHash, orderType === "sell" ? price : maxPrice.minus(price));
+    }
     const orderOutcome = [outcome];
     const otherOutcomes = Array.from(Array(numOutcomes).keys());
     otherOutcomes.splice(outcome, 1);
