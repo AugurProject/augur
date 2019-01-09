@@ -81,7 +81,7 @@ export async function updateProfitLossSellEscrowedShares(db: Knex, marketId: Add
       outcome: updateData.outcome,
       transactionHash,
       timestamp,
-      numOwned,
+      numOwned: numOwned.toString(),
       numEscrowed: newNumEscrowed,
       moneySpent,
       profit,
@@ -148,7 +148,7 @@ export async function updateProfitLossChangeShareBalance(db: Knex, augur: Augur,
   const maxPrice = marketData.maxPrice;
   const numTicks = marketData.numTicks;
   const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-  const numOwned = numShares
+  const numOwned = (numShares || ZERO)
     .dividedBy(tickSize)
     .dividedBy(10 ** 18)
     .toString();
