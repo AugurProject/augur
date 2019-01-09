@@ -148,7 +148,7 @@ export async function updateProfitLossChangeShareBalance(db: Knex, augur: Augur,
   const maxPrice = marketData.maxPrice;
   const numTicks = marketData.numTicks;
   const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-  const numOwned = (numShares || ZERO)
+  const numOwned = numShares
     .dividedBy(tickSize)
     .dividedBy(10 ** 18)
     .toString();
