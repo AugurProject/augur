@@ -92,11 +92,12 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
     }
     const creatorShares = new BigNumber(numCreatorShares, 10);
     const fillerShares = new BigNumber(numFillerShares, 10);
+    const actualPrice = price.minus(minPrice);
     if (creatorShares.gt(0)) {
-      await updateProfitLossSellEscrowedShares(db, marketId, creatorShares, orderCreator, orderType === "buy" ? otherOutcomes : orderOutcome, creatorShares.multipliedBy(orderType === "buy" ? displayRange.minus(price) : price), log.transactionHash);
+      await updateProfitLossSellEscrowedShares(db, marketId, creatorShares, orderCreator, orderType === "buy" ? otherOutcomes : orderOutcome, creatorShares.multipliedBy(orderType === "buy" ? displayRange.minus(actualPrice) : actualPrice), log.transactionHash);
     }
     if (fillerShares.gt(0)) {
-      await updateProfitLossSellShares(db, marketId, fillerShares, filler, orderType === "sell" ? otherOutcomes : orderOutcome, fillerShares.multipliedBy(orderType === "sell" ? displayRange.minus(price) : price), log.transactionHash);
+      await updateProfitLossSellShares(db, marketId, fillerShares, filler, orderType === "sell" ? otherOutcomes : orderOutcome, fillerShares.multipliedBy(orderType === "sell" ? displayRange.minus(actualPrice) : actualPrice), log.transactionHash);
     }
   };
 }
