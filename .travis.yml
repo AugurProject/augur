@@ -58,6 +58,15 @@ jobs:
       skip_cleanup: true
       on:
         all_branches: true
+  - stage: Deploy optimized build
+    if: (branch = master) AND (NOT (type IN (pull_request)))
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- dev-optimized
+      skip_cleanup: true
+      on:
+        all_branches: true
 env:
   global:
     - DOCKER_USERNAME=augurintegration
