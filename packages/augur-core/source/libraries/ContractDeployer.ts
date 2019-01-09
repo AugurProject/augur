@@ -6,7 +6,7 @@ import { CompilerOutput } from "solc";
 import { Abi, AbiFunction } from 'ethereum';
 import { DeployerConfiguration } from './DeployerConfiguration';
 import { Connector } from './Connector';
-import { Augur, ContractFactory, Universe, ReputationToken, LegacyReputationToken, TimeControlled, Contract, CompleteSets, Trade, CreateOrder, CancelOrder, FillOrder, Orders, ClaimTradingProceeds } from './ContractInterfaces';
+import { Augur, ContractFactory, Universe, ReputationToken, LegacyReputationToken, TimeControlled, Contract, CompleteSets, Trade, CreateOrder, CancelOrder, FillOrder, Orders, ClaimTradingProceeds, Cash } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { AccountManager } from './AccountManager';
 import { Contracts, ContractData } from './Contracts';
@@ -229,6 +229,10 @@ Deploying to: ${networkConfiguration.networkName}
         const orders = new Orders(this.connector, this.accountManager, ordersContract.address, this.connector.gasPrice);
         promises.push(orders.initialize(this.augur!.address));
 
+        const cashContract = await this.getContract("Cash");
+        const cash = new Cash(this.connector, this.accountManager, cashContract.address, this.connector.gasPrice);
+        promises.push(cash.initialize(this.augur!.address));
+
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContract("TimeControlled");
             const time = new TimeControlled(this.connector, this.accountManager, timeContract.address, this.connector.gasPrice);
@@ -240,6 +244,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     public async initializeLegacyRep(): Promise<void> {
         const legacyReputationToken = new LegacyReputationToken(this.connector, this.accountManager, this.getContract('LegacyReputationToken').address, this.connector.gasPrice);
+        await legacyReputationToken.initializeERC820(this.augur!.address);
         await legacyReputationToken.faucet(new BN(10).pow(new BN(18)).mul(new BN(11000000)));
         const legacyBalance = await legacyReputationToken.balanceOf_(this.accountManager.defaultAddress);
         if (!legacyBalance || legacyBalance == new BN(0)) {

@@ -12,7 +12,7 @@ contract ERC820Implementer {
         return true;
     }
 
-    function interfaceAddr(address _address, string _ifaceLabel) internal view returns(address) {
+    function interfaceAddr(address _address, string _ifaceLabel) internal returns(address) {
         bytes32 _ifaceHash = keccak256(abi.encodePacked(_ifaceLabel));
         return erc820Registry.getInterfaceImplementer(_address, _ifaceHash);
     }

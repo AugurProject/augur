@@ -161,6 +161,8 @@ ${contractMethods.join("\n\n")}
             }
             case 'string':
             case 'address':
+            case 'bytes2':
+            case 'bytes4':
             case 'bytes12':
             case 'bytes20':
             case 'bytes32':

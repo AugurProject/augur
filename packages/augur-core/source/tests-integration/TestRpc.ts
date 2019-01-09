@@ -10,7 +10,7 @@ import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
 
 export class TestRpc {
     private readonly DEFAULT_TEST_ACCOUNT_BALANCE = 10**20;
-    private readonly BLOCK_GAS_LIMIT = 6500000;
+    private readonly BLOCK_GAS_LIMIT = 8000000;
     private readonly BLOCK_GAS_LIMIT_SDB = 20000000;
     private readonly networkConfiguration: NetworkConfiguration;
     private readonly compilerConfiguration: CompilerConfiguration;

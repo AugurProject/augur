@@ -1,7 +1,7 @@
 pragma solidity 0.4.24;
 
 
-interface ERC777Token {
+contract ERC777Token {
     function totalSupply() public view returns (uint256);
     function balanceOf(address _owner) public view returns (uint256);
 

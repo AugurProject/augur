@@ -1,7 +1,7 @@
 pragma solidity 0.4.24;
 
 
-interface ERC20Token {
+contract ERC20Token {
     function totalSupply() public view returns (uint256);
     function balanceOf(address owner) public view returns (uint256);
     function transfer(address to, uint256 amount) public returns (bool);

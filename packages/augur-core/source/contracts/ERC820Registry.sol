@@ -10,7 +10,7 @@ interface ERC820ImplementerInterface {
     /// @param interfaceHash keccak256 of the name of the interface
     /// @return ERC820_ACCEPT_MAGIC if the contract can implement the interface represented by
     ///  `ìnterfaceHash` in behalf of `addr`
-    function canImplementInterfaceForAddress(address addr, bytes32 interfaceHash) view public returns(bytes32);
+    function canImplementInterfaceForAddress(address addr, bytes32 interfaceHash) view external returns(bytes32);
 }
 
 contract ERC820Registry is IERC820Registry {
@@ -42,7 +42,7 @@ contract ERC820Registry is IERC820Registry {
     /// @notice Query the hash of an interface given a name
     /// @param interfaceName Name of the interfce
     function interfaceHash(string interfaceName) public pure returns(bytes32) {
-        return keccak256(interfaceName);
+        return keccak256(abi.encodePacked(interfaceName));
     }
 
     /// @notice GetManager
@@ -62,7 +62,7 @@ contract ERC820Registry is IERC820Registry {
     ///  the old one.  Set to 0x0 if you want to remove the manager.
     function setManager(address addr, address newManager) public canManage(addr) {
         managers[addr] = newManager == addr ? 0 : newManager;
-        ManagerChanged(addr, newManager);
+        emit ManagerChanged(addr, newManager);
     }
 
     /// @notice Query if an address implements an interface and thru which contract
@@ -71,7 +71,7 @@ contract ERC820Registry is IERC820Registry {
     ///  Example `web3.utils.sha3('ERC777Token`')`
     /// @return The address of the contract that implements a specific interface
     ///  or 0x0 if `addr` does not implement this interface
-    function getInterfaceImplementer(address addr, bytes32 iHash) view public returns (address) {
+    function getInterfaceImplementer(address addr, bytes32 iHash) public returns (address) {
         if (isERC165Interface(iHash)) {
             bytes4 i165Hash = bytes4(iHash);
             return erc165InterfaceSupported(addr, i165Hash) ? addr : 0;
@@ -91,7 +91,7 @@ contract ERC820Registry is IERC820Registry {
                         == ERC820_ACCEPT_MAGIC);
         }
         interfaces[addr][iHash] = implementer;
-        InterfaceImplementerSet(addr, iHash, implementer);
+        emit InterfaceImplementerSet(addr, iHash, implementer);
     }
 
 
@@ -101,7 +101,7 @@ contract ERC820Registry is IERC820Registry {
         return iHash & 0x00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF == 0;
     }
 
-    function erc165InterfaceSupported(address _contract, bytes4 _interfaceId) view public returns (bool) {
+    function erc165InterfaceSupported(address _contract, bytes4 _interfaceId) public returns (bool) {
         if (!erc165Cache[_contract][_interfaceId]) {
             erc165UpdateCache(_contract, _interfaceId);
         }
