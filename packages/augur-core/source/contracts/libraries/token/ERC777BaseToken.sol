@@ -23,8 +23,9 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
     mapping(address => mapping(address => bool)) internal revokedDefaultOperator;
     mapping(address => mapping(address => bool)) internal authorizedOperators;
 
-    constructor() internal {
+    function initialize820InterfaceImplementations() internal returns (bool) {
         setInterfaceImplementation("ERC777Token", this);
+        return true;
     }
 
     function totalSupply() public view returns (uint256) {
@@ -39,11 +40,12 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
         return initialDefaultOperators;
     }
 
-    function send(address _to, uint256 _amount, bytes32 _data) public {
+    function send(address _to, uint256 _amount, bytes32 _data) public returns (bool) {
         doSend(msg.sender, msg.sender, _to, _amount, _data, "", true);
+        return true;
     }
 
-    function authorizeOperator(address _operator) public {
+    function authorizeOperator(address _operator) public returns (bool) {
         require(_operator != msg.sender, "Cannot authorize yourself as an operator");
 
         if (isDefaultOperator[_operator]) {
@@ -52,9 +54,10 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
             authorizedOperators[_operator][msg.sender] = true;
         }
         emit AuthorizedOperator(_operator, msg.sender);
+        return true;
     }
 
-    function revokeOperator(address _operator) public {
+    function revokeOperator(address _operator) public returns (bool) {
         require(_operator != msg.sender, "Cannot revoke yourself as an operator");
 
         if (isDefaultOperator[_operator]) {
@@ -64,6 +67,7 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
         }
 
         emit RevokedOperator(_operator, msg.sender);
+        return true;
     }
 
     function isOperatorFor(address _operator, address _tokenHolder) public view returns (bool) {
@@ -72,12 +76,13 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
             || (isDefaultOperator[_operator] && !revokedDefaultOperator[_operator][_tokenHolder]));
     }
 
-    function operatorSend(address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData) public {
+    function operatorSend(address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData) public returns (bool) {
         require(isOperatorFor(msg.sender, _from), "Not an operator");
         doSend(msg.sender, _from, _to, _amount, _data, _operatorData, true);
+        return true;
     }
 
-    function doSend(address _operator, address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData, bool _preventLocking) internal {
+    function doSend(address _operator, address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData, bool _preventLocking) internal returns (bool) {
         callSender(_operator, _from, _to, _amount, _data, _operatorData);
 
         require(_to != address(0), "Cannot send to 0x0");
@@ -89,9 +94,10 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
         callRecipient(_operator, _from, _to, _amount, _data, _operatorData, _preventLocking);
 
         emit Sent(_operator, _from, _to, _amount, _data, _operatorData);
+        return true;
     }
 
-    function doBurn(address _operator, address _tokenHolder, uint256 _amount, bytes32 _data, bytes32 _operatorData) internal {
+    function doBurn(address _operator, address _tokenHolder, uint256 _amount, bytes32 _data, bytes32 _operatorData) internal returns (bool) {
         callSender(_operator, _tokenHolder, 0x0, _amount, _data, _operatorData);
 
         require(balanceOf(_tokenHolder) >= _amount, "Not enough funds");
@@ -100,22 +106,25 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
         supply = supply.sub(_amount);
 
         emit Burned(_operator, _tokenHolder, _amount, _data, _operatorData);
+        return true;
     }
 
-    function callRecipient(address _operator, address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData, bool _preventLocking) internal {
+    function callRecipient(address _operator, address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData, bool _preventLocking) internal returns (bool) {
         address recipientImplementation = interfaceAddr(_to, "ERC777TokensRecipient");
         if (recipientImplementation != 0) {
             ERC777TokensRecipient(recipientImplementation).tokensReceived(_operator, _from, _to, _amount, _data, _operatorData);
         } else if (_preventLocking) {
             require(!_to.exists(), "Cannot send to contract without ERC777TokensRecipient");
         }
+        return true;
     }
 
-    function callSender(address _operator, address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData) internal {
+    function callSender(address _operator, address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData) internal returns (bool) {
         address senderImplementation = interfaceAddr(_from, "ERC777TokensSender");
         if (senderImplementation == 0) {
             return;
         }
         ERC777TokensSender(senderImplementation).tokensToSend(_operator, _from, _to, _amount, _data, _operatorData);
+        return true;
     }
 }

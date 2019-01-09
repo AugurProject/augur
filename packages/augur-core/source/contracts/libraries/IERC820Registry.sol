@@ -1,7 +1,7 @@
 pragma solidity 0.4.24;
 
 
-contract ERC820Registry {
+contract IERC820Registry {
     function getManager(address _address) public view returns(address);
     function setManager(address _address, address _newManager) public;
     function getInterfaceImplementer(address _address, bytes32 _iHash) public view returns (address);

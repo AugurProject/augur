@@ -1,5 +1,6 @@
 pragma solidity 0.4.24;
 
+import 'libraries/IERC820Registry.sol';
 import 'libraries/ContractExists.sol';
 import 'legacy_reputation/OldLegacyRepToken.sol';
 
@@ -17,6 +18,12 @@ contract LegacyReputationToken is OldLegacyReputationToken {
     constructor() public OldLegacyReputationToken() {
         // This is to confirm we are not on foundation network
         require(!FOUNDATION_REP_ADDRESS.exists());
+    }
+
+    function initializeERC820(IAugur _augur) public returns (bool) {
+        erc820Registry = IERC820Registry(_augur.lookup("ERC820Registry"));
+        initialize820InterfaceImplementations();
+        return true;
     }
 
     function faucet(uint256 _amount) public returns (bool) {

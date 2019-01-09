@@ -1,5 +1,6 @@
 pragma solidity 0.4.24;
 
+import 'IAugur.sol';
 import 'trading/ICash.sol';
 import 'libraries/ITyped.sol';
 import 'libraries/token/VariableSupplyToken.sol';
@@ -13,6 +14,12 @@ contract Cash is ITyped, VariableSupplyToken, ICash {
 
     string constant public name = "Cash";
     string constant public symbol = "CASH";
+
+    function initialize(IAugur _augur) public returns (bool) {
+        erc820Registry = IERC820Registry(_augur.lookup("ERC820Registry"));
+        initialize820InterfaceImplementations();
+        return true;
+    }
 
     function depositEther() external payable returns(bool) {
         mint(msg.sender, msg.value);

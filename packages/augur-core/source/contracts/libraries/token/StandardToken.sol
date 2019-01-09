@@ -11,8 +11,10 @@ contract StandardToken is ERC20Token, ERC777BaseToken {
 
     mapping(address => mapping(address => uint256)) internal allowed;
 
-    constructor() internal ERC777BaseToken() {
+    function initialize820InterfaceImplementations() internal returns (bool) {
+        super.initialize820InterfaceImplementations();
         setInterfaceImplementation("ERC20Token", this);
+        return true;
     }
 
     function transfer(address _to, uint256 _amount) public returns (bool) {
@@ -68,15 +70,17 @@ contract StandardToken is ERC20Token, ERC777BaseToken {
         return allowed[_owner][_spender];
     }
 
-    function doSend(address _operator, address _from, address _to, uint256 _amount, bytes32  _data, bytes32  _operatorData, bool _preventLocking) internal {
+    function doSend(address _operator, address _from, address _to, uint256 _amount, bytes32  _data, bytes32  _operatorData, bool _preventLocking) internal returns (bool) {
         super.doSend(_operator, _from, _to, _amount, _data, _operatorData, _preventLocking);
         emit Transfer(_from, _to, _amount);
         onTokenTransfer(_from, _to, _amount);
+        return true;
     }
 
-    function doBurn(address _operator, address _tokenHolder, uint256 _amount, bytes32  _data, bytes32  _operatorData) internal {
+    function doBurn(address _operator, address _tokenHolder, uint256 _amount, bytes32  _data, bytes32  _operatorData) internal returns (bool) {
         super.doBurn(_operator, _tokenHolder, _amount, _data, _operatorData);
         emit Transfer(_tokenHolder, 0x0, _amount);
+        return true;
     }
 
     // Subclasses of this token generally want to send additional logs through the centralized Augur log emitter contract

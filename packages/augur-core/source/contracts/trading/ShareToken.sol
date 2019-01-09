@@ -1,6 +1,6 @@
 pragma solidity 0.4.24;
 
-
+import 'libraries/IERC820Registry.sol';
 import 'trading/IShareToken.sol';
 import 'libraries/token/VariableSupplyToken.sol';
 import 'libraries/ITyped.sol';
@@ -24,7 +24,7 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
     address public completeSets;
     address public claimTradingProceeds;
 
-    function initialize(IAugur _augur, IMarket _market, uint256 _outcome) external beforeInitialized returns(bool) {
+    function initialize(IAugur _augur, IMarket _market, uint256 _outcome, address _erc820RegistryAddress) external beforeInitialized returns(bool) {
         endInitialization();
         market = _market;
         outcome = _outcome;
@@ -34,6 +34,8 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         cancelOrder = _augur.lookup("CancelOrder");
         completeSets = _augur.lookup("CompleteSets");
         claimTradingProceeds = _augur.lookup("ClaimTradingProceeds");
+        erc820Registry = IERC820Registry(_erc820RegistryAddress);
+        initialize820InterfaceImplementations();
         return true;
     }
 

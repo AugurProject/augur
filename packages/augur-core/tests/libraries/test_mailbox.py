@@ -66,11 +66,16 @@ def localSnapshot(fixture, baseSnapshot):
 
     fixture.uploadAugur()
 
+    # Upload ERC820 Registry
+    fixture.uploadAndAddToAugur("../source/contracts/ERC820Registry.sol")
+
     # Upload a token
-    fixture.uploadAndAddToAugur("solidity_test_helpers/StandardTokenHelper.sol")
+    standardToken = fixture.uploadAndAddToAugur("solidity_test_helpers/StandardTokenHelper.sol")
+    standardToken.initialize(fixture.contracts["Augur"].address)
 
     # Upload Cash
     cash = fixture.uploadAndAddToAugur("../source/contracts/trading/Cash.sol")
+    cash.initialize(fixture.contracts["Augur"].address)
 
     # Upload the mailbox
     fixture.uploadAndAddToAugur("../source/contracts/reporting/Mailbox.sol")

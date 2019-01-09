@@ -1,5 +1,6 @@
 pragma solidity 0.4.24;
 
+import 'libraries/IERC820Registry.sol';
 import 'reporting/IV2ReputationToken.sol';
 import 'libraries/ITyped.sol';
 import 'libraries/token/VariableSupplyToken.sol';
@@ -23,13 +24,15 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     ERC20Token public legacyRepToken;
     IAugur public augur;
 
-    constructor(IAugur _augur, IUniverse _universe, IUniverse _parentUniverse) public {
+    constructor(IAugur _augur, IUniverse _universe, IUniverse _parentUniverse, address _erc820RegistryAddress) public {
         require(_universe != address(0));
         augur = _augur;
         universe = _universe;
         parentUniverse = _parentUniverse;
         legacyRepToken = ERC20Token(augur.lookup("LegacyReputationToken"));
         updateTotalTheoreticalSupply();
+        erc820Registry = IERC820Registry(_erc820RegistryAddress);
+        initialize820InterfaceImplementations();
     }
 
     function migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens) public returns (bool) {

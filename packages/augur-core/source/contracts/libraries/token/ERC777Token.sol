@@ -7,11 +7,11 @@ interface ERC777Token {
 
     function defaultOperators() public view returns (address[] memory);
     function isOperatorFor(address _operator, address _tokenHolder) public view returns (bool);
-    function authorizeOperator(address _operator) public;
-    function revokeOperator(address _operator) public;
+    function authorizeOperator(address _operator) public returns (bool);
+    function revokeOperator(address _operator) public returns (bool);
 
-    function send(address _to, uint256 _amount, bytes32 _data) public;
-    function operatorSend(address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData) public;
+    function send(address _to, uint256 _amount, bytes32 _data) public returns (bool);
+    function operatorSend(address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData) public returns (bool);
 
     // Note: We choose to disallow manual burning since according to spec this would alter the total supply as well and that does not play cleanly with some of our token tracking and dependencies. ERC777 states we MAY dissallow burning in this way.
     //function burn(uint256 _amount, bytes32 _data) public returns (bool);
