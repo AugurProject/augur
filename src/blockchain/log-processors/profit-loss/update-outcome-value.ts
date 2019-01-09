@@ -26,7 +26,7 @@ export async function updateOutcomeValueFromOrders(db: Knex, marketId: Address, 
       marketId,
       transactionHash,
       outcome,
-      value,
+      value: value.toString(),
       timestamp: getCurrentTime(),
     })
     .into("outcome_value_timeseries");
