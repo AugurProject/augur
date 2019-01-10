@@ -1,5 +1,6 @@
 /*
-TODO it appears that market.openInterest isn't correctly rolled back on processOrderFilledLogRemoval(), and then category.openInterest/nonFinalizedOpenInterest is also not rolled back. TODO check if this is a bug I introduced by adding openInterest to expect() in master.
+It appears that market.openInterest isn't correctly rolled back on processOrderFilledLogRemoval(), and then category.openInterest/nonFinalizedOpenInterest is also not rolled back.
+Check if this is a bug I introduced by adding openInterest to expect() in master.
 */
 
 const { BigNumber } = require("bignumber.js");
