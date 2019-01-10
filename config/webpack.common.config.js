@@ -16,6 +16,7 @@ module.exports = {
   entry: {
     // 'assets/styles/styles': `${PATHS.APP}/styles`,
     "assets/scripts/vendor": [
+      `${PATHS.APP}/web-workers-exit`,
       "react",
       "react-dom",
       "redux",
@@ -157,6 +158,7 @@ module.exports = {
       environment: process.env.NODE_ENV,
       chunksSortMode: (a, b) => {
         const order = [
+          "web-workers-exit",
           "common",
           "assets/scripts/vendor",
           "assets/styles/styles",

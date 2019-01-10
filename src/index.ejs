@@ -75,29 +75,11 @@
   <link rel="preload" crossorigin href="fonts/Roboto-Mono-Regular.woff2" as="font">
   <link rel="stylesheet" type="text/css" href="assets/styles/splash.css">
 
-  <script type="application/javascript">
-    document.documentElement.className += (("ontouchstart" in document.documentElement) ? " touch-enabled" : " touch-disabled");
-    if (window.navigator && navigator.serviceWorker) {
-      navigator.serviceWorker.getRegistrations()
-        .then(function(registrations) {
-          if (registrations.length === 0) return;
-          var p = registrations.map(function(registration) {
-            return registration.unregister();
-          });
-
-          return Promise.all(p).then(function() {
-            // We must reload to prevent unregistered service workers from running.
-            window.location.reload();
-          });
-        });
-    }
-  </script>
-
   <!-- 0x widget -->
-  <script src="https://instant.0xproject.com/instant.js"></script>
+  <script src="https://instant.0xproject.com/instant.js" async defer></script>
 
   <!-- AirSwap Widget -->
-  <script src="//cdn.airswap.io/gallery/airswap-trader.js"></script>
+  <script src="//cdn.airswap.io/gallery/airswap-trader.js" async defer></script>
   <% if(htmlWebpackPlugin.options.environment === 'development') { %>
     <meta name="google-site-verification" content="0yoO8otlMdNBBDxuvq_KxlJyoSzIhBc8eK_7FzJ1_qg" />
   <% } %>
