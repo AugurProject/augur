@@ -269,12 +269,11 @@ export interface TokensRow {
   outcome?: number;
 }
 
-export interface CategoriesRow {
-  popularity: string|number;
-}
-
-export interface CategoryRow {
+export interface CategoriesRow<BigNumberType> {
   category: string;
+  nonFinalizedOpenInterest: BigNumberType;
+  openInterest: BigNumberType;
+  universe: Address;
 }
 
 export interface BlocksRow {
@@ -436,6 +435,25 @@ export interface UIMarketInfo<BigNumberType> {
 }
 
 export type UIMarketsInfo<BigNumberType> = Array<UIMarketInfo<BigNumberType>|null>;
+
+// OpenInterestAggregation is an aggregation of various types of open interest
+// for markets within some particular context. Eg. all markets within a category.
+export interface OpenInterestAggregation<BigNumberType> {
+  nonFinalizedOpenInterest: BigNumberType; // sum of open interest for non-finalized markets in this aggregation (ie. markets with ReportingState != FINALIZED)
+  openInterest: BigNumberType; // sum of open interest for all markets in this aggregation
+}
+
+// TagAggregation is an aggregation of tag statistics/data for a set of
+// markets within some particular context, eg. all markets in a category.
+export interface TagAggregation<BigNumberType> extends OpenInterestAggregation<BigNumberType> {
+  tagName: string;
+  numberOfMarketsWithThisTag: number;
+}
+
+export interface UICategory<BigNumberType> extends OpenInterestAggregation<BigNumberType> {
+  categoryName: string;
+  tags: Array<TagAggregation<BigNumberType>>;
+}
 
 // Does not extend BaseTransaction since UI is expecting "creationBlockNumber"
 export interface UIOrder<BigNumberType> {

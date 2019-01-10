@@ -83,7 +83,7 @@ export class AugurNodeController {
       if (baseName.startsWith(fileHash)) {
         await renameBulkSyncDatabaseFile(fileNetworkId, this.databaseDir);
         infoCallback(null, format("importing file %s for network %s", baseName, networkName));
-        BackupRestore.import(DB_FILE, fileNetworkId, DB_VERSION, filename, this.databaseDir);
+        await BackupRestore.import(DB_FILE, fileNetworkId, DB_VERSION, filename, this.databaseDir);
         infoCallback(null, format("Finished importing warp sync file for network %s", networkName));
       } else if (errorCallback) {
         this.logger.error("Error, import warp sync file hash mismatch");

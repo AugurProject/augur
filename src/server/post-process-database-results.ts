@@ -9,6 +9,10 @@ interface TableWhitelist {
 }
 
 const whitelist: TableWhitelist = {
+  categories: {
+    nonFinalizedOpenInterest: true,
+    openInterest: true,
+  },
   crowdsourcers: {
     size: true,
     amountStaked: true,
@@ -126,7 +130,7 @@ export function isFieldBigNumber(fieldName: string): boolean {
   return FIELD_NAMES[fieldName];
 }
 
-// We're converting these values in place isntead of cloning the whole object
+// We're converting these values in place instead of cloning the whole object
 function convertToBigNumber(row: any) {
   if (row === null || typeof row !== "object") return row;
 
