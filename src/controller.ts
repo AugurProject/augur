@@ -56,7 +56,6 @@ export class AugurNodeController {
       const handoffBlockNumber = await bulkSyncAugurNodeWithBlockchain(this.db, this.augur, this.networkConfig.blocksPerChunk);
       this.controlEmitter.emit(ControlMessageType.BulkSyncFinished);
       this.logger.info("Bulk sync with blockchain complete.");
-      this.blockAndLogsQueue = startAugurListeners(this.db, this.augur, handoffBlockNumber + 1, this.databaseDir, this.isWarpSync, this._shutdownCallback.bind(this));
       // We received a shutdown so just return.
       if (!this.isRunning()) return;
       this.controlEmitter.emit(ControlMessageType.BulkOrphansCheckStarted);
