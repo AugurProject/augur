@@ -17,7 +17,7 @@ RUN npm pack
 
 COPY knexfile.js knexfile.js
 
-FROM node:8
+FROM node:10.12
 EXPOSE 9001
 WORKDIR /app/
 COPY --from=builder /app/node_modules node_modules
