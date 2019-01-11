@@ -76,7 +76,7 @@ module.exports = {
               "@babel/preset-env",
               {
                 modules: "cjs",
-                "targets": "chrome >= 41"
+                "targets": "> 0.5%, not dead, chrome >= 41, not ie <=11"
               }
             ],
             "@babel/preset-react"
@@ -89,7 +89,7 @@ module.exports = {
         exclude: function(modulePath) {
           return (
             /node_modules/.test(modulePath) &&
-            /node_modules\/(core-js|lodash|react|websocket|autolinker|remarkable|moment|regenrator-runtime)/.test(modulePath)
+            /node_modules\/(core-js|lodash|react|websocket|autolinker|remarkable|moment|regenerator-runtime)/.test(modulePath)
           );
         }
       },
