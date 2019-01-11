@@ -746,6 +746,14 @@
     "@babel/helper-regex" "^7.0.0"
     regexpu-core "^4.1.3"
 
+"@babel/polyfill@^7.2.5":
+  version "7.2.5"
+  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.2.5.tgz#6c54b964f71ad27edddc567d065e57e87ed7fa7d"
+  integrity sha512-8Y/t3MWThtMLYr0YNC/Q76tqN1w30+b0uQMeFUYauG2UGTR19zyUtFrAzT23zNtBxPp+LbE5E/nwV/q/r3y6ug==
+  dependencies:
+    core-js "^2.5.7"
+    regenerator-runtime "^0.12.0"
+
 "@babel/preset-env@7.2.0":
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.2.0.tgz#a5030e7e4306af5a295dd5d7c78dc5464af3fee2"
@@ -822,7 +830,7 @@
     pirates "^4.0.0"
     source-map-support "^0.5.9"
 
-"@babel/runtime@7.2.0", "@babel/runtime@^7.0.0":
+"@babel/runtime@^7.0.0":
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.2.0.tgz#b03e42eeddf5898e00646e4c840fa07ba8dcad7f"
   integrity sha512-oouEibCbHMVdZSDlJBO6bZmID/zA/G/Qx3H1d3rSNPTD+L8UNKvCat7aKWSJ74zYbm5zWGh0GQN0hKj8zYFTCg==
@@ -1857,10 +1865,10 @@ augur-core@1.1.0:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur.js@^6.1.4:
-  version "6.1.4"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-6.1.4.tgz#17eaae5b30a0c6465245f165ca3667d24e9ef096"
-  integrity sha512-cAs+oEtdFzPHxbn26N5HcYfa5jybEfZLkXrs1vgUF+eTvObumNeo8vEJiCmmS97fWj7vT16JI4ty1sZwnHEPFg==
+augur.js@6.5.1:
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-6.5.1.tgz#1dc0a80056cf1fb3bd19c445f7558f9cbadba351"
+  integrity sha512-x6ncEfm2XMytLXlzU5VHw81Sh92fckSY9+f1I5PF1SxT8be4v2b7eb2zBxuliiD31nTmZuVEYwUtyVInOYbMLw==
   dependencies:
     async "1.5.2"
     augur-core "1.1.0"
@@ -1868,7 +1876,7 @@ augur.js@^6.1.4:
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-blockstream "4.0.1"
-    ethrpc "^6.1.1"
+    ethrpc "6.1.3"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -2554,15 +2562,6 @@ babel-plugin-transform-strict-mode@^6.24.1:
   dependencies:
     babel-runtime "^6.22.0"
     babel-types "^6.24.1"
-
-babel-polyfill@^6.26.0:
-  version "6.26.0"
-  resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.26.0.tgz#379937abc67d7895970adc621f284cd966cf2153"
-  integrity sha1-N5k3q8Z9eJWXCtxiHyhM2WbPIVM=
-  dependencies:
-    babel-runtime "^6.26.0"
-    core-js "^2.5.0"
-    regenerator-runtime "^0.10.5"
 
 babel-preset-es2015@^6.9.0:
   version "6.24.1"
@@ -6237,10 +6236,10 @@ ethrpc@5.7.2:
     request "2.85.0"
     websocket "1.0.26"
 
-ethrpc@^6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-6.1.1.tgz#4b3b0a9a2bdbdb5bc83d934a588592b7ec747b3b"
-  integrity sha512-MaEJraqayh8pzp+KXKa/t3z+ffvb03g3KMGTfKSIRf7VDoWCgd6Tc6ah09HlThyGLqs5L5d7kyOYfL0wLNxZww==
+ethrpc@6.1.3:
+  version "6.1.3"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-6.1.3.tgz#97d746bd3ead410e7dec4553d7bffe84f625aa56"
+  integrity sha512-XJ/CPe+pJ9kYL4+9/XtnHJOjWthLMyru9J83H225aBM0nVQ1W7r5Z1akRtkg47F5oersRkIzp+aj8knpJCPolw==
   dependencies:
     async "2.6.0"
     bignumber.js "6.0.0"
@@ -12875,11 +12874,6 @@ regenerator-runtime@0.12.1, regenerator-runtime@^0.12.0:
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
   integrity sha512-odxIc1/vDlo4iZcfXqRYFj0vpXFNoGdKMAUieAlFYO6m/nl5e9KR/beGf41z4a1FI+aQgtjhuaSlDxQ0hmkrHg==
-
-regenerator-runtime@^0.10.5:
-  version "0.10.5"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.10.5.tgz#336c3efc1220adcedda2c9fab67b5a7955a33658"
-  integrity sha1-M2w+/BIgrc7dosn6tntaeVWjNlg=
 
 regenerator-runtime@^0.11.0:
   version "0.11.1"

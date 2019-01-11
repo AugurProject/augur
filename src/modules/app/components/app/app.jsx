@@ -338,15 +338,17 @@ export default class AppView extends Component {
     // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
     // CSS breakpoint sets the value when a user is mobile
     const isMobile =
-      window
-        .getComputedStyle(document.body)
-        .getPropertyValue("--is-mobile")
-        .indexOf("true") !== -1;
+      (
+        window
+          .getComputedStyle(document.body)
+          .getPropertyValue("--is-mobile") || ""
+      ).indexOf("true") !== -1;
     const isMobileSmall =
-      window
-        .getComputedStyle(document.body)
-        .getPropertyValue("--is-mobile-small")
-        .indexOf("true") !== -1;
+      (
+        window
+          .getComputedStyle(document.body)
+          .getPropertyValue("--is-mobile-small") || ""
+      ).indexOf("true") !== -1;
 
     updateIsMobile(isMobile);
     updateIsMobileSmall(isMobileSmall);
