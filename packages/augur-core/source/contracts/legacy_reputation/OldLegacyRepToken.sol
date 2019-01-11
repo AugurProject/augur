@@ -118,22 +118,22 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
 
     function trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens) public whenNotMigratingFromLegacy afterInitialized returns (bool) {
         require(IUniverse(msg.sender) == universe);
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function trustedMarketTransfer(address _source, address _destination, uint256 _attotokens) public whenNotMigratingFromLegacy afterInitialized returns (bool) {
         require(universe.isContainerForMarket(IMarket(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens) public whenNotMigratingFromLegacy afterInitialized returns (bool) {
         require(universe.isContainerForReportingParticipant(IReportingParticipant(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens) public whenNotMigratingFromLegacy afterInitialized returns (bool) {
         require(universe.isContainerForDisputeWindow(IDisputeWindow(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view returns (bool) {

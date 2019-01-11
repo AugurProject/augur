@@ -51,6 +51,7 @@ library Order {
         require(_outcome < _market.getNumberOfOutcomes());
         require(_price < _market.getNumTicks());
         require(_attoshares > 0);
+        require(_creator != address(0));
 
         IOrders _orders = IOrders(_augur.lookup("Orders"));
 

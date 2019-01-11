@@ -56,7 +56,7 @@ contract Cash is ITyped, VariableSupplyToken, ICash {
         if (_to.send(_amount)) {
             burn(msg.sender, _amount);
         } else {
-            internalTransfer(msg.sender, _to, _amount);
+            internalTransfer(msg.sender, _to, _amount, true);
         }
         assert(address(this).balance >= totalSupply());
         return true;

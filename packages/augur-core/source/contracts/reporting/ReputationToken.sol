@@ -102,27 +102,22 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
 
     function trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(IUniverse(msg.sender) == universe);
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function trustedMarketTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.isContainerForMarket(IMarket(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.isContainerForReportingParticipant(IReportingParticipant(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens);
-    }
-
-    function trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
-        require(universe.isContainerForDisputeWindow(IDisputeWindow(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function trustedAuctionTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.getAuction() == (IAuction(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view returns (bool) {

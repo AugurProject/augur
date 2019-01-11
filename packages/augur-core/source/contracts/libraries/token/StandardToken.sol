@@ -19,7 +19,7 @@ contract StandardToken is ERC20Token, ERC777BaseToken {
 
     function transfer(address _to, uint256 _amount) public returns (bool) {
         require(_to != address(0), "Cannot send to 0x0");
-        internalTransfer(msg.sender, _to, _amount);
+        internalTransfer(msg.sender, _to, _amount, true);
         return true;
     }
 
@@ -31,12 +31,12 @@ contract StandardToken is ERC20Token, ERC777BaseToken {
             allowed[_from][msg.sender] = _allowance.sub(_amount);
         }
 
-        internalTransfer(_from, _to, _amount);
+        internalTransfer(_from, _to, _amount, true);
         return true;
     }
 
-    function internalTransfer(address _from, address _to, uint256 _amount) internal returns (bool) {
-        doSend(msg.sender, _from, _to, _amount, "", "", false);
+    function internalTransfer(address _from, address _to, uint256 _amount, bool _callHooks) internal returns (bool) {
+        doSend(msg.sender, _from, _to, _amount, "", "", false, _callHooks);
         return true;
     }
 
@@ -70,8 +70,8 @@ contract StandardToken is ERC20Token, ERC777BaseToken {
         return allowed[_owner][_spender];
     }
 
-    function doSend(address _operator, address _from, address _to, uint256 _amount, bytes32  _data, bytes32  _operatorData, bool _preventLocking) internal returns (bool) {
-        super.doSend(_operator, _from, _to, _amount, _data, _operatorData, _preventLocking);
+    function doSend(address _operator, address _from, address _to, uint256 _amount, bytes32  _data, bytes32  _operatorData, bool _preventLocking, bool _callHooks) internal returns (bool) {
+        super.doSend(_operator, _from, _to, _amount, _data, _operatorData, _preventLocking, _callHooks);
         emit Transfer(_from, _to, _amount);
         onTokenTransfer(_from, _to, _amount);
         return true;

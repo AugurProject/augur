@@ -41,7 +41,13 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
     }
 
     function send(address _to, uint256 _amount, bytes32 _data) public returns (bool) {
-        doSend(msg.sender, msg.sender, _to, _amount, _data, "", true);
+        doSend(msg.sender, msg.sender, _to, _amount, _data, "", true, true);
+        return true;
+    }
+
+    // In order to support use cases like our own where we sometimes send tokens to a user without their explicit withdrawl (using a pull pattern) we provide this additional method that will bypass the 820 interface hooks. These must be skipped for direct send pattern use cases since otherwise a malicious user could register a recipient interface that simply fails, thereby blocking whatever tx would cause them to receive their tokens
+    function sendNoHooks(address _to, uint256 _amount, bytes32 _data) public returns (bool) {
+        doSend(msg.sender, msg.sender, _to, _amount, _data, "", true, false);
         return true;
     }
 
@@ -78,12 +84,14 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
 
     function operatorSend(address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData) public returns (bool) {
         require(isOperatorFor(msg.sender, _from), "Not an operator");
-        doSend(msg.sender, _from, _to, _amount, _data, _operatorData, true);
+        doSend(msg.sender, _from, _to, _amount, _data, _operatorData, true, true);
         return true;
     }
 
-    function doSend(address _operator, address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData, bool _preventLocking) internal returns (bool) {
-        callSender(_operator, _from, _to, _amount, _data, _operatorData);
+    function doSend(address _operator, address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData, bool _preventLocking, bool _callHooks) internal returns (bool) {
+        if (_callHooks) {
+            callSender(_operator, _from, _to, _amount, _data, _operatorData);
+        }
 
         require(_to != address(0), "Cannot send to 0x0");
         require(balances[_from] >= _amount, "Not enough funds");
@@ -91,7 +99,9 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
         balances[_from] = balances[_from].sub(_amount);
         balances[_to] = balances[_to].add(_amount);
 
-        callRecipient(_operator, _from, _to, _amount, _data, _operatorData, _preventLocking);
+        if (_callHooks) {
+            callRecipient(_operator, _from, _to, _amount, _data, _operatorData, _preventLocking);
+        }
 
         emit Sent(_operator, _from, _to, _amount, _data, _operatorData);
         return true;

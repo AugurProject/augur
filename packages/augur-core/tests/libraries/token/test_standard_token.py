@@ -245,3 +245,8 @@ def test_820_interface_support(testStandardTokenFixture):
     assert standardToken.send(tester.a1, 1, "Test")
     assert tokensRegistry.getNumReceives(tester.a1) == 2
     assert tokensRegistry.getLastReceiveData(tester.a1) == stringToBytes("Test")
+
+    # We have an additional method that bypasses the 820 interface hooks normally called
+    assert standardToken.sendNoHooks(tester.a1, 1, "NEW VALUE")
+    assert tokensRegistry.getNumReceives(tester.a1) == 2
+    assert tokensRegistry.getLastReceiveData(tester.a1) == stringToBytes("Test")
