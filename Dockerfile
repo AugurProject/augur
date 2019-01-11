@@ -12,7 +12,7 @@ RUN git init && npm install && rm -rf .git
 
 COPY src src
 COPY test test
-RUN npm run build
+RUN npm run build:ts
 RUN npm pack
 
 COPY knexfile.js knexfile.js
