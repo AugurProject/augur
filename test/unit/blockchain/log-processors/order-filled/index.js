@@ -81,7 +81,6 @@ describe("blockchain/log-processors/order-filled", () => {
       category: "TEST CATEGORY",
     };
     return db.transaction(async (trx) => {
-      console.log("processOrderFilledLog");
       await(await processOrderFilledLog(augur, log))(trx);
 
       const records = await getState(trx, log, aux);
@@ -130,14 +129,14 @@ describe("blockchain/log-processors/order-filled", () => {
       }]);
       expect(records.markets).toEqual({
         openInterest: new BigNumber("2", 10),
-        volume: new BigNumber("0.7", 10),
+        volume: new BigNumber("1", 10),
         shareVolume: new BigNumber("1", 10),
         sharesOutstanding: new BigNumber("2", 10),
       });
       expect(records.outcomes).toEqual([
         {
           price: new BigNumber("0.7", 10),
-          volume: new BigNumber("100.7", 10),
+          volume: new BigNumber("101", 10),
           shareVolume: new BigNumber("13.5", 10),
         },
         {
@@ -182,7 +181,6 @@ describe("blockchain/log-processors/order-filled", () => {
         openInterest: new BigNumber("2", 10),
         universe: "0x000000000000000000000000000000000000000b",
       });
-      console.log("processOrderFilledLogRemoval");
       await(await processOrderFilledLogRemoval(augur, log))(trx);
 
       const recordsAfterRemoval = await getState(trx, log, aux);
