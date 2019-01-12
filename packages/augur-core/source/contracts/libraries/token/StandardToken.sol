@@ -60,7 +60,7 @@ contract StandardToken is ERC20Token, ERC777BaseToken {
         return true;
     }
 
-    function approveInternal(address _owner, address _spender, uint256 _allowance) public returns (bool) {
+    function approveInternal(address _owner, address _spender, uint256 _allowance) internal returns (bool) {
         allowed[_owner][_spender] = _allowance;
         emit Approval(_owner, _spender, _allowance);
         return true;
