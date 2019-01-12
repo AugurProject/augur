@@ -34,28 +34,28 @@ COPY source/libraries/ContractCompiler.ts /app/source/libraries/ContractCompiler
 COPY source/tools/installSolidityFlattener /app/source/tools/installSolidityFlattener
 COPY package.json /app/package.json
 
-RUN npm install
+RUN yarn
 
 # Lint
-RUN npm run lint
+RUN yarn lint
 
 # Build first chunk
-RUN npm run build:source
-RUN npm run build:flattener
-RUN npm run build:contracts
+RUN yarn build:source
+RUN yarn build:flattener
+RUN yarn build:contracts
 
 COPY source/libraries/ContractInterfacesGenerator.ts /app/source/libraries/ContractInterfacesGenerator.ts
 COPY source/tools/generateContractInterfaces.ts /app/source/tools/generateContractInterfaces.ts
 
 # Build contract interfaces
-RUN npm run build:source
-RUN npm run build:interfaces
+RUN yarn build:source
+RUN yarn build:interfaces
 
 # Copy source
 COPY source/ /app/source/
 COPY tests/ /app/tests/
 
 # Copy the git info so ContractDeployer can read the hash on deploy
-RUN npm run build:source
+RUN yarn build:source
 
-ENTRYPOINT ["npm"]
+ENTRYPOINT ["yarn"]
