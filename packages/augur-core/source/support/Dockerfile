@@ -25,7 +25,6 @@ RUN /usr/local/bin/pip2 install --upgrade pip setuptools \
 COPY .soliumrc.json /app/.soliumrc.json
 COPY .soliumignore /app/.soliumignore
 COPY tsconfig.json /app/tsconfig.json
-COPY typings/ /app/typings/
 COPY source/contracts/ /app/source/contracts/
 COPY source/deployment/compileContracts.ts /app/source/deployment/compileContracts.ts
 COPY source/libraries/CompilerConfiguration.ts /app/source/libraries/CompilerConfiguration.ts
