@@ -76,12 +76,23 @@
   <link rel="stylesheet" type="text/css" href="assets/styles/splash.css">
 
   <!-- 0x widget -->
-  <script src="https://instant.0xproject.com/instant.js" async defer></script>
+  <script src="https://instant.0xproject.com/instant.js" defer></script>
 
   <!-- AirSwap Widget -->
   <script src="https://cdn.airswap.io/gallery/airswap-trader.js" async defer></script>
   <% if(htmlWebpackPlugin.options.environment === 'development') { %>
     <meta name="google-site-verification" content="0yoO8otlMdNBBDxuvq_KxlJyoSzIhBc8eK_7FzJ1_qg" />
+      <!-- Google Translate -->
+    <script type="text/javascript">
+      function googleTranslateElementInit () {
+        new google.translate.TranslateElement({
+          pageLanguage: "",
+          layout: google.translate.TranslateElement.FloatPosition.TOP_LEFT,
+          multilanguagePage: true
+        }, "google_translate_element");
+      }</script>
+    <script type="text/javascript"
+      src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
   <% } %>
 
 </head>
@@ -94,20 +105,7 @@
 
 <% if(htmlWebpackPlugin.options.environment === 'development') { %>
 
-  <!-- Google Translate -->
-  <script type="text/javascript">
-    function googleTranslateElementInit () {
-      new google.translate.TranslateElement({
-        pageLanguage: "",
-        layout: google.translate.TranslateElement.FloatPosition.TOP_LEFT,
-        multilanguagePage: true
-      }, "google_translate_element");
-    }</script>
-  <script type="text/javascript"
-          src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-  <!-- Google Analytics -->
-  <script src="https://www.google-analytics.com/analytics.js" defer=""></script>
 
 <% } %>
 
