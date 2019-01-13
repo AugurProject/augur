@@ -9,6 +9,7 @@ import { ContractDependenciesEthers } from '../libraries/ContractDependenciesEth
 import { DisputeWindow, ShareToken, ClaimTradingProceeds, CompleteSets, TimeControlled, Cash, Universe, Market, CreateOrder, Orders, Trade, CancelOrder, LegacyReputationToken, DisputeCrowdsourcer, ReputationToken,  } from '../libraries/ContractInterfaces';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { stringTo32ByteHex } from '../libraries/HelperFunctions';
+import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 
 export class TestFixture {
     // FIXME: extract out the bits of contract deployer that we need access to, like the contracts/abis, so we can have a more targeted dependency
@@ -38,7 +39,7 @@ export class TestFixture {
         const compiledContracts = await new ContractCompiler(compilerConfiguration).compileContracts();
 
         const provider = new ethers.providers.JsonRpcProvider(networkConfiguration.http);
-        const signer = new ethers.Wallet(<string>networkConfiguration.privateKey, provider);
+        const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
         const dependencies = new ContractDependenciesEthers(provider, signer, networkConfiguration.gasPrice.toNumber());
 
         const deployerConfiguration = DeployerConfiguration.createWithControlledTime();

@@ -24,7 +24,7 @@
         "strict": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
-        "typeRoots": ["../../node_modules/augur-types/types", "../../node_modules/@types", "node_modules/@types"],
+        "typeRoots": ["../augur-types/types", "../../node_modules/@types", "node_modules/@types"],
     },
     "include": [
         "source/**/*.ts"

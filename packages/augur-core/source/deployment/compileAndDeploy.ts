@@ -5,6 +5,7 @@ import { ContractCompiler } from '../libraries/ContractCompiler';
 import { ContractDeployer } from '../libraries/ContractDeployer';
 import { DeployerConfiguration } from '../libraries/DeployerConfiguration';
 import { NetworkConfiguration } from '../libraries/NetworkConfiguration';
+import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 require('source-map-support').install();
 
 async function doWork(): Promise<void> {
@@ -15,7 +16,7 @@ async function doWork(): Promise<void> {
     const networkConfiguration = NetworkConfiguration.create();
 
     const provider = new ethers.providers.JsonRpcProvider(networkConfiguration.http);
-    const signer = new ethers.Wallet(<string>networkConfiguration.privateKey, provider);
+    const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
     const dependencies = new ContractDependenciesEthers(provider, signer, networkConfiguration.gasPrice.toNumber());
 
     const deployerConfiguration = DeployerConfiguration.create();

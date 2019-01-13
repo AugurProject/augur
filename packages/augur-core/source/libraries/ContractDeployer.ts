@@ -115,13 +115,11 @@ Deploying to: ${networkConfiguration.networkName}
     private async uploadAugur(): Promise<Augur> {
         console.log('Uploading augur...');
         const contract = await this.contracts.get("Augur");
-        const address = (this.configuration.augurAddress !== undefined)
-            ? this.configuration.augurAddress
-            : await this.construct(this.contracts.get('Augur'), []);
+        const address = await this.construct(this.contracts.get('Augur'), []);
         const augur = new Augur(this.dependencies, address);
         const ownerAddress = await augur.uploader_();
         contract.address = address;
-        if (ownerAddress.toLowerCase() !== (await this.dependencies.getDefaultAddress()).toLowerCase()) {
+        if (ownerAddress.toLowerCase() !== (await this.signer.getAddress()).toLowerCase()) {
             throw new Error("Augur owner does not equal from address");
         }
         console.log(`Augur address: ${augur.address}`);
@@ -159,7 +157,7 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.configuration.isProduction && contractName === 'LegacyReputationToken') return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
         console.log(`Uploading new version of contract for ${contractName}`);
-        contract.address = await this.uploadAndAddToAugur(contract, contractName);
+        contract.address = await this.uploadAndAddToAugur(contract, contractName, []);
     }
 
     private async uploadAndAddToAugur(contract: ContractData, registrationContractName: string = contract.contractName, constructorArgs: Array<any> = []): Promise<string> {
@@ -221,7 +219,7 @@ Deploying to: ${networkConfiguration.networkName}
     public async initializeLegacyRep(): Promise<void> {
         const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
         await legacyReputationToken.faucet(new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(18)).mul(new ethers.utils.BigNumber(11000000)));
-        const defaultAddress = await this.dependencies.getDefaultAddress();
+        const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await legacyReputationToken.balanceOf_(defaultAddress);
         if (!legacyBalance || legacyBalance == new ethers.utils.BigNumber(0)) {
             throw new Error("Faucet call to Legacy REP failed");
@@ -256,7 +254,7 @@ Deploying to: ${networkConfiguration.networkName}
         const reputationTokenAddress = await this.universe!.getReputationToken_();
         const reputationToken = new ReputationToken(this.dependencies, reputationTokenAddress);
         const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
-        const defaultAddress = await this.dependencies.getDefaultAddress();
+        const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await legacyReputationToken.balanceOf_(defaultAddress);
         await legacyReputationToken.approve(reputationTokenAddress, legacyBalance);
         await reputationToken.migrateFromLegacyReputationToken();
