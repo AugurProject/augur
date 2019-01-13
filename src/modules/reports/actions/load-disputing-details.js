@@ -8,8 +8,13 @@ export const loadDisputingDetails = (
   marketIds,
   callback = logError
 ) => dispatch => {
-  dispatch(loadMarketsInfoIfNotLoaded(marketIds));
-  dispatch(loadMarketsDisputeInfo(marketIds), () => {
-    callback(null);
-  });
+  dispatch(
+    loadMarketsInfoIfNotLoaded(marketIds, () => {
+      dispatch(
+        loadMarketsDisputeInfo(marketIds, () => {
+          callback(null);
+        })
+      );
+    })
+  );
 };

@@ -10,12 +10,14 @@ function filterForkedMarket(market) {
   );
 }
 
-export const selectMarketsToReport = marketsData => {
+export const selectMarketsToReport = (marketsData, loginAddress) => {
   const markets = {};
   markets.designated = marketsData
     .filter(
       market =>
-        market.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING
+        market.reportingState ===
+          constants.REPORTING_STATE.DESIGNATED_REPORTING &&
+        market.designatedReporter === loginAddress
     )
     .sort((a, b) => (a.endTime || {}).timestamp - (b.endTime || {}).timestamp);
   markets.open = marketsData
