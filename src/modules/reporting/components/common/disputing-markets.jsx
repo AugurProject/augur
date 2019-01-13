@@ -73,7 +73,6 @@ export default class DisputingMarkets extends Component {
         this.props.disputableMarketIds,
         nextState.lowerBound,
         nextState.boundedLength,
-        nextProps.markets,
         false
       );
     }
@@ -85,28 +84,29 @@ export default class DisputingMarkets extends Component {
         this.props.upcomingDisputableMarketIds,
         nextState.lowerBoundUpcoming,
         nextState.boundedLengthUpcoming,
-        nextProps.upcomingMarkets,
         true
       );
     }
-    if (this.props.disputableMarketIds !== nextProps.disputableMarketIds) {
+    if (
+      this.props.disputableMarketIds !== nextProps.disputableMarketIds ||
+      this.props.markets.length !== nextProps.markets.length
+    ) {
       this.loadDisputingMarkets(
         nextProps.disputableMarketIds,
         nextState.lowerBound,
         nextState.boundedLength,
-        nextProps.markets,
         false
       );
     }
     if (
       this.props.upcomingDisputableMarketIds !==
-      nextProps.upcomingDisputableMarketIds
+        nextProps.upcomingDisputableMarketIds ||
+      this.props.upcomingMarkets.length !== nextProps.upcomingMarkets.length
     ) {
       this.loadDisputingMarkets(
         nextProps.upcomingDisputableMarketIds,
         nextState.lowerBoundUpcoming,
         nextState.boundedLengthUpcoming,
-        nextProps.upcomingMarkets,
         true
       );
     }
@@ -120,18 +120,14 @@ export default class DisputingMarkets extends Component {
     this.setState({ lowerBoundUpcoming, boundedLengthUpcoming });
   }
 
-  loadDisputingMarkets(
-    marketIds,
-    lowerBound,
-    boundedLength,
-    markets,
-    isUpcoming
-  ) {
+  loadDisputingMarkets(marketIds, lowerBound, boundedLength, isUpcoming) {
     const { loadDisputingDetails } = this.props;
     const marketIdLength = boundedLength + (lowerBound - 1);
     const newMarketIdArray = marketIds.slice(lowerBound - 1, marketIdLength);
     loadDisputingDetails([...newMarketIdArray], () => {
-      const filtered = markets.filter(
+      const { upcomingMarkets, markets } = this.props;
+      const marketCollection = isUpcoming ? upcomingMarkets : markets;
+      const filtered = marketCollection.filter(
         m => newMarketIdArray.indexOf(m.id) !== -1
       );
       if (isUpcoming) {
