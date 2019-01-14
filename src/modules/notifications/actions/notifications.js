@@ -68,6 +68,8 @@ export function handleFilledOnly(tradeInProgress = null) {
         } else {
           Object.keys(transactionsData).some(key => {
             if (
+              transactionsData[key].transactions &&
+              transactionsData[key].transactions.length &&
               transactionsData[key].transactions[0].tradeGroupId ===
                 tradeGroupId &&
               transactionsData[key].status.toLowerCase() === SUCCESS &&
@@ -110,6 +112,8 @@ export function loadNotifications() {
         const tradeGroupId = notifications[i].params._tradeGroupId;
         Object.keys(transactionsData).some(key => {
           if (
+            transactionsData[key].transactions &&
+            transactionsData[key].transactions.length &&
             transactionsData[key].transactions[0].tradeGroupId ===
               tradeGroupId &&
             transactionsData[key].status.toLowerCase() === SUCCESS &&
