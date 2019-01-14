@@ -8,8 +8,8 @@ services:
       - "47623:8546"
   parity-integration-tests:
     build:
-      context: ../../../../
-      dockerfile: source/support/Dockerfile
+      context: ../../../../../
+      dockerfile: augur-core/source/support/Dockerfile
       cache_from:
         - augurproject/augur-core:latest
     entrypoint: [ "npm", "run", "test:integration:docker" ]

@@ -3,16 +3,22 @@ import * as path from 'path';
 export class CompilerConfiguration {
     public readonly contractSourceRoot: string;
     public readonly outputRoot: string;
+    public readonly genericContractInterfacesOutputPath: string;
     public readonly contractInterfacesOutputPath: string;
-    public readonly abiOutputPath: string
-    public readonly contractOutputPath: string
+    public readonly abiOutputPath: string;
+    public readonly contractOutputPath: string;
     public readonly enableSdb: boolean;
     public readonly useFlattener: boolean;
 
     public constructor(contractSourceRoot: string, outputRoot: string, enableSdb: boolean = false, useFlattener: boolean = false) {
+        const contractInterfacesFileName = 'ContractInterfaces.ts';
+
         this.contractSourceRoot = contractSourceRoot;
         this.outputRoot = outputRoot;
-        this.contractInterfacesOutputPath = path.join(contractSourceRoot, '../libraries', 'ContractInterfaces.ts');
+
+        this.genericContractInterfacesOutputPath = path.join(contractSourceRoot, '../libraries', `Generic${contractInterfacesFileName}`);
+        this.contractInterfacesOutputPath = path.join(contractSourceRoot, '../libraries', contractInterfacesFileName);
+
         this.abiOutputPath = path.join(outputRoot, 'abi.json');
         this.contractOutputPath = path.join(outputRoot, 'contracts.json');
         this.enableSdb = enableSdb;
