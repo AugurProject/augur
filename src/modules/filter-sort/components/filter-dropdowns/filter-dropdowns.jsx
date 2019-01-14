@@ -67,6 +67,7 @@ export default class FilterSearch extends Component {
     updateFilterOption: PropTypes.func.isRequired,
     updateSortOption: PropTypes.func.isRequired,
     updateMaxFee: PropTypes.func.isRequired,
+    updateHasOpenOrders: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired
   };
@@ -129,12 +130,21 @@ export default class FilterSearch extends Component {
   }
 
   changeHasOrders(event) {
-    const { filter, sort, maxFee, updateFilter, hasOrders } = this.props;
+    const {
+      filter,
+      sort,
+      maxFee,
+      updateFilter,
+      hasOrders,
+      updateHasOpenOrders
+    } = this.props;
+    const hasOpenOrders = !hasOrders;
+    updateHasOpenOrders(hasOpenOrders);
     updateFilter({
       filter,
       sort,
       maxFee,
-      hasOrders: !hasOrders
+      hasOrders: hasOpenOrders
     });
   }
 
