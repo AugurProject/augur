@@ -16,16 +16,18 @@ export class TestFixture {
     public readonly contractDeployer: ContractDeployer;
     public readonly dependencies: Dependencies<ethers.utils.BigNumber>;
     public readonly provider: ethers.providers.JsonRpcProvider;
+    public readonly account: string;
     public readonly testRpc: TestRpc | null;
     public readonly sdbEnabled: boolean;
 
     public get universe() { return this.contractDeployer.universe!; }
     public get cash() { return new Cash(this.dependencies, this.contractDeployer.getContractAddress('Cash')); }
 
-    public constructor(dependencies: Dependencies<ethers.utils.BigNumber>, provider: ethers.providers.JsonRpcProvider, contractDeployer: ContractDeployer, testRpc: TestRpc | null, sdbEnabled: boolean) {
+    public constructor(dependencies: Dependencies<ethers.utils.BigNumber>, provider: ethers.providers.JsonRpcProvider, contractDeployer: ContractDeployer, testRpc: TestRpc | null, sdbEnabled: boolean, account: string) {
         this.contractDeployer = contractDeployer;
         this.dependencies = dependencies;
         this.provider = provider;
+        this.account = account;
         this.testRpc = testRpc;
         this.sdbEnabled = sdbEnabled;
     }
@@ -59,7 +61,7 @@ export class TestFixture {
             await testRpc.linkDebugSymbols(compiledContracts, addressMapping);
         }
 
-        const testFixture = new TestFixture(dependencies, provider, contractDeployer, testRpc, compilerConfiguration.enableSdb);
+        const testFixture = new TestFixture(dependencies, provider, contractDeployer, testRpc, compilerConfiguration.enableSdb, signer.address);
         await testFixture.linkDebugSymbolsForContract('Universe', testFixture.universe.address);
 
         return testFixture;
@@ -97,7 +99,7 @@ export class TestFixture {
     public async createReasonableMarket(universe: Universe, outcomes: string[]): Promise<Market> {
         const endTime = new ethers.utils.BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
         const fee = (new ethers.utils.BigNumber(10)).pow(new ethers.utils.BigNumber(16));
-        return await this.createMarket(universe, outcomes, endTime, fee, await this.dependencies.getDefaultAddress());
+        return await this.createMarket(universe, outcomes, endTime, fee, this.account);
     }
 
     public async placeOrder(market: string, type: ethers.utils.BigNumber, numShares: ethers.utils.BigNumber, price: ethers.utils.BigNumber, outcome: ethers.utils.BigNumber, betterOrderID: string, worseOrderID: string, tradeGroupID: string): Promise<void> {
@@ -214,7 +216,7 @@ export class TestFixture {
     public async getNumSharesInMarket(market: Market, outcome: ethers.utils.BigNumber): Promise<ethers.utils.BigNumber> {
         const shareTokenAddress = await market.getShareToken_(outcome);
         const shareToken = new ShareToken(this.dependencies, shareTokenAddress);
-        return await shareToken.balanceOf_(await this.dependencies.getDefaultAddress());
+        return await shareToken.balanceOf_(this.account);
     }
 
     public async getDisputeWindow(market: Market): Promise<DisputeWindow> {
@@ -298,7 +300,7 @@ export class TestFixture {
 
     // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
     public async getEthBalance(): Promise<ethers.utils.BigNumber> {
-        return await this.provider.getBalance(await this.dependencies.getDefaultAddress());
+        return await this.provider.getBalance(this.account);
     }
 
     public async getRepBalance(owner: string): Promise<ethers.utils.BigNumber> {
