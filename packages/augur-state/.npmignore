@@ -1,0 +1,10 @@
+src/
+scripts/
+node_modules/
+.git/
+test/
+coverage/
+.gitignore
+.travis.yml
+tsconfig.json
+*.db*
