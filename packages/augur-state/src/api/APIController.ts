@@ -1,17 +1,18 @@
 import { ethers } from "ethers";
-import { EthersAugurInterfaces } from "augur-core";
+import { EthersAugurInterfaces, NetworkConfiguration } from "augur-core";
 
 export class APIController {
   private readonly data: number;
-  private readonly test: EthersAugurInterfaces;
+  private readonly test: EthersAugurInterfaces.Trade;
 
-  public constructor (data: number, test: EthersAugurInterfaces) {
+  public constructor (data: number, test: EthersAugurInterfaces.Trade, conf: NetworkConfiguration) {
     this.data = data;
     this.test = test;
+    console.log(conf.http);
   }
 
-  public static async factory(data: number, test: EthersAugurInterfaces): Promise<APIController> {
-    const apiController = new APIController(data, test);
+  public static async factory(data: number, test: EthersAugurInterfaces.Trade, conf: NetworkConfiguration): Promise<APIController> {
+    const apiController = new APIController(data, test, conf);
     return apiController;
   }
 
