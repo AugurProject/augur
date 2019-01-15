@@ -27,7 +27,7 @@ import { getInitialReporters, InitialReportersParams } from "./getters/get-initi
 import { ForkMigrationTotalsParams, getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 import { getReportingFees, ReportingFeesParams } from "./getters/get-reporting-fees";
 import { getUniversesInfo, UniverseInfoParams } from "./getters/get-universes-info";
-import { getProfitLoss } from "./getters/get-profit-loss";
+import { getProfitLoss, GetProfitLossParams, getProfitLossSummary, GetProfitLossSummaryParams } from "./getters/get-profit-loss";
 import { getWinningBalance, WinningBalanceParams } from "./getters/get-winning-balance";
 import { getCategories, CategoriesParams } from "./getters/get-categories";
 
@@ -96,14 +96,10 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return dispatchResponse(getUniversesInfo, UniverseInfoParams.decode(request.params));
     case "getUserShareBalances":
       return dispatchResponse(getUserShareBalances, UserShareBalancesParams.decode(request.params));
-
     case "getProfitLoss":
-      return new Promise((resolve, reject) => {
-        getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, (err, result) => {
-          if (err) return reject(err);
-          resolve(result);
-        });
-      });
+      return dispatchResponse(getProfitLoss, GetProfitLossParams.decode(request.params));
+    case "getProfitLossSummary":
+      return dispatchResponse(getProfitLossSummary, GetProfitLossSummaryParams.decode(request.params));
     default:
       throw new Error(`unknown json rpc method ${request.method}`);
   }

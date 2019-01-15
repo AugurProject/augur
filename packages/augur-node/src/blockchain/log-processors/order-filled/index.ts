@@ -7,7 +7,9 @@ import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";
 import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
 import { fixedPointToDecimal, numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
-import { BN_WEI_PER_ETHER, SubscriptionEventNames } from "../../../constants";
+import { BN_WEI_PER_ETHER, MarketType, SubscriptionEventNames } from "../../../constants";
+import { updateOutcomeValueFromOrders, removeOutcomeValue } from "../profit-loss/update-outcome-value";
+import { updateProfitLossBuyShares, updateProfitLossSellShares, updateProfitLossSellEscrowedShares } from "../profit-loss/update-profit-loss";
 
 interface TokensRowWithNumTicksAndCategory extends TokensRow {
   category: string;
@@ -26,12 +28,13 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
     if (!tokensRow) throw new Error(`ORDER FILLED: market and outcome not found for shareToken: ${shareToken} (${log.transactionHash})`);
     const marketId = tokensRow.marketId;
     const outcome = tokensRow.outcome!;
-    const marketsRow: MarketsRow<BigNumber>|undefined = await db.first("minPrice", "maxPrice", "numTicks", "category").from("markets").where({ marketId });
+    const marketsRow: MarketsRow<BigNumber>|undefined = await db.first("minPrice", "maxPrice", "numTicks", "category", "numOutcomes").from("markets").where({ marketId });
 
-    if (!marketsRow) throw new Error("market min price, max price, category, and/or num ticks not found");
+    if (!marketsRow) throw new Error(`market not found: ${marketId}`);
     const minPrice = marketsRow.minPrice;
     const maxPrice = marketsRow.maxPrice;
     const numTicks = marketsRow.numTicks;
+    const numOutcomes = marketsRow.numOutcomes;
     const category = marketsRow.category;
     const orderId = log.orderId;
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
@@ -74,7 +77,32 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
 
     await updateVolumetrics(db, augur, category, marketId, outcome, blockNumber, orderId, orderCreator, tickSize, minPrice, maxPrice, true);
 
-    return updateOrder(db, augur, marketId, orderId, amount, orderCreator, filler, tickSize, minPrice);
+    await updateOrder(db, augur, marketId, orderId, amount, orderCreator, filler, tickSize, minPrice);
+
+    await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash, orderType === "buy" ? price : maxPrice.minus(price));
+    if (numOutcomes === 2) {
+      const otherOutcome = outcome === 0 ? 1 : 0;
+      await updateOutcomeValueFromOrders(db, marketId, otherOutcome, log.transactionHash, orderType === "sell" ? price : maxPrice.minus(price));
+    }
+    const orderOutcome = [outcome];
+    const otherOutcomes = Array.from(Array(numOutcomes).keys());
+    otherOutcomes.splice(outcome, 1);
+    const displayRange = augur.utils.convertOnChainPriceToDisplayPrice(maxPrice.minus(minPrice), minPrice, tickSize);
+    if (numCreatorTokens.gt(0)) {
+      await updateProfitLossBuyShares(db, marketId, orderCreator, numCreatorTokens, orderType === "buy" ? orderOutcome : otherOutcomes, log.transactionHash);
+    }
+    if (numFillerTokens.gt(0)) {
+      await updateProfitLossBuyShares(db, marketId, filler, numFillerTokens, orderType === "sell" ? orderOutcome : otherOutcomes, log.transactionHash);
+    }
+    const creatorShares = new BigNumber(numCreatorShares, 10);
+    const fillerShares = new BigNumber(numFillerShares, 10);
+    const actualPrice = price.minus(minPrice);
+    if (creatorShares.gt(0)) {
+      await updateProfitLossSellEscrowedShares(db, marketId, creatorShares, orderCreator, orderType === "buy" ? otherOutcomes : orderOutcome, creatorShares.multipliedBy(orderType === "buy" ? displayRange.minus(actualPrice) : actualPrice), log.transactionHash);
+    }
+    if (fillerShares.gt(0)) {
+      await updateProfitLossSellShares(db, marketId, fillerShares, filler, orderType === "sell" ? otherOutcomes : orderOutcome, fillerShares.multipliedBy(orderType === "sell" ? displayRange.minus(actualPrice) : actualPrice), log.transactionHash);
+    }
   };
 }
 
@@ -124,5 +152,6 @@ export async function processOrderFilledLogRemoval(augur: Augur, log: FormattedE
       marketCreatorFees,
       reporterFees,
     }));
+    await removeOutcomeValue(db, log.transactionHash);
   };
 }

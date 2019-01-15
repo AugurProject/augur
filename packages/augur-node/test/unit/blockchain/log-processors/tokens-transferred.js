@@ -1,4 +1,4 @@
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { BigNumber } = require("bignumber.js");
 const { processTokensTransferredLog, processTokensTransferredLogRemoval } = require("src/blockchain/log-processors/tokens-transferred");
 

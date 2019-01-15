@@ -1,4 +1,4 @@
-const setupTestDb = require("../../../test.database");
+const setupTestDb = require("test.database");
 const { processApprovalLog, processApprovalLogRemoval } = require("src/blockchain/log-processors/token/approval");
 
 function getState(db, log) {

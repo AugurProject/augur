@@ -1,4 +1,4 @@
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { processMarketParticipantsDisavowedLog, processMarketParticipantsDisavowedLogRemoval } = require("src/blockchain/log-processors/market-participants-disavowed");
 
 function getMarketCrowdsourcers(db, log) {

@@ -6,6 +6,7 @@ import { increaseTokenBalance } from "./increase-token-balance";
 import { increaseTokenSupply } from "./increase-token-supply";
 import { decreaseTokenBalance } from "./decrease-token-balance";
 import { decreaseTokenSupply } from "./decrease-token-supply";
+import { updateProfitLossRemoveRow } from "../profit-loss/update-profit-loss";
 
 export async function processMintLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
@@ -21,7 +22,7 @@ export async function processMintLog(augur: Augur, log: FormattedEventLog) {
       token,
     }).into("transfers");
     await increaseTokenSupply(db, augur, token, value);
-    await increaseTokenBalance(db, augur, token, log.target, value);
+    await increaseTokenBalance(db, augur, token, log.target, value, log);
   };
 }
 
@@ -31,6 +32,7 @@ export async function processMintLogRemoval(augur: Augur, log: FormattedEventLog
     const token = log.token || log.address;
     await db.from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del();
     await decreaseTokenSupply(db, augur, token, value);
-    await decreaseTokenBalance(db, augur, token, log.target, value);
+    await decreaseTokenBalance(db, augur, token, log.target, value, log);
+    await updateProfitLossRemoveRow(db, log.transactionHash);
   };
 }

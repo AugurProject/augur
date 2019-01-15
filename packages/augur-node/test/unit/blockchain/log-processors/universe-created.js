@@ -1,4 +1,4 @@
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { processUniverseCreatedLog, processUniverseCreatedLogRemoval } = require("src/blockchain/log-processors/universe-created");
 
 function getUniverse(db, log) {
