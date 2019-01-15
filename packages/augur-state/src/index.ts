@@ -1,4 +1,4 @@
-export { AugurStateSyncController } from "./sync/AugurStateSyncController";
-export { AugurStateAPIController } from "./api/AugurStateAPIController";
-export { AugurStateServerController } from "./server/AugurStateServerController";
-export { AugurStateController } from "AugurStateController";
+export { SyncController } from "./sync/SyncController";
+export { APIController } from "./api/APIController";
+export { ServerController } from "./server/ServerController";
+export { Controller } from "./Controller";

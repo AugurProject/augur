@@ -16,8 +16,8 @@
     "baseUrl": "./",
     "typeRoots": [
       "../../node_modules/@types",
-      "../augur-core/typings",
-      "./node_modules/@types"
+      "../augur-types/types",
+      "node_modules/@types"
     ],
     "types": [ ]
   },
