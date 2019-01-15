@@ -65,6 +65,7 @@
     "ws": "5.2.2",
     "pouchdb": "7.0.0",
     "ethers": "4.0.20",
+    "typescript": "3.2.1",
     "augur-core": "2.0.0-0"
   },
   "devDependencies": {
