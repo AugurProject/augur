@@ -1,22 +1,6 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
-    "sourceMap": true,
-    "watch": false,
-    "declaration": true,
-    "declarationDir": "definitions",
-    "strictNullChecks": true,
-    "alwaysStrict": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "outDir": "build",
-    "rootDir": "src",
-  },
-  "include": [
-    "src/**/*",
-    "node_modules/@types",
-    "node_modules/augur-types"
-  ],
+    "rootDir": "src"
+  }
 }

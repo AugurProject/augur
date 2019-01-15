@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es6",
+    "target": "es2017",
     "sourceMap": true,
     "watch": false,
     "declaration": true,
@@ -12,7 +12,6 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "outDir": "build",
-    "rootDir": ".",
     "baseUrl": ".",
     "paths": {
       "@augurproject/core": [
@@ -34,6 +33,10 @@
         "packages/augur.js"
       ]
     }
-  }
+  },
+  "include": [
+    "node_modules/@types",
+    "node_modules/augur-types"
+  ]
 }
 
