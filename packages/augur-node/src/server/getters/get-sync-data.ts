@@ -2,12 +2,14 @@ import * as t from "io-ts";
 import * as Knex from "knex";
 import Augur from "augur.js";
 import { isSyncFinished } from "../../blockchain/bulk-sync-augur-node-with-blockchain";
+import { version } from "../../version";
 
 export const NoParams = t.type({
 });
 
 export interface UISyncData {
   version: string;
+  augurNodeVersion: string;
   net_version: string;
   netId: string;
   isSyncFinished: boolean;
@@ -26,6 +28,7 @@ export async function getSyncData(db: Knex, augur: Augur, params: t.TypeOf<typeo
   const lastProcessedBlock = await db("blocks").first(["blockNumber as number", "blockHash as hash", "timestamp"]).orderBy("blockNumber", "DESC");
   return {
     version: augur.version,
+    augurNodeVersion: version,
     net_version: augur.rpc.getNetworkID(),
     netId: augur.rpc.getNetworkID(),
     isSyncFinished: isSyncFinished(),

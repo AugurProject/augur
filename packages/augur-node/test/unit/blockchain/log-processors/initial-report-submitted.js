@@ -1,7 +1,7 @@
 const Augur = require("augur.js");
 
 const { BigNumber } = require("bignumber.js");
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } = require("src/blockchain/log-processors/initial-report-submitted");
 const { setOverrideTimestamp, removeOverrideTimestamp } = require("src/blockchain/process-block");
 

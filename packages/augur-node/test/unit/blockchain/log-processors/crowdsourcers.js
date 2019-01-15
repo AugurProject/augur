@@ -1,5 +1,5 @@
 const Augur = require("augur.js");
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { BigNumber } = require("bignumber.js");
 const {
   processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedLogRemoval,

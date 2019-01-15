@@ -10,7 +10,7 @@ database setup that supports sqlite as well as postgresql. We use knex to
 manage the local migrations and schema changes.
 
 ## Building
-This project uses typescript and can be safely built via: `npm run build` or directly with `tsc`. Augur Node requires Node 8.
+This project uses typescript and can be safely built via: `npm run build` or directly with `tsc`. Augur Node requires Node 10.
 
 ## Running
 

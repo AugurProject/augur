@@ -1,6 +1,6 @@
 const Augur = require("augur.js");
 const { BigNumber } = require("bignumber.js");
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { processMarketCreatedLog, processMarketCreatedLogRemoval } = require("src/blockchain/log-processors/market-created");
 const { getMarketsWithReportingState } = require("src/server/getters/database");
 
@@ -159,7 +159,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
@@ -226,7 +227,8 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
@@ -357,7 +359,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
@@ -448,7 +451,8 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
@@ -578,7 +582,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
@@ -645,7 +650,8 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
@@ -771,7 +777,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
@@ -838,7 +845,8 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
@@ -972,7 +980,8 @@ describe("blockchain/log-processors/market-created", () => {
           }],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
@@ -1038,7 +1047,8 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [],
           categories: [{
             category: "TEST_CATEGORY",
-            popularity: 0,
+            nonFinalizedOpenInterest: new BigNumber("0", 10),
+            openInterest: new BigNumber("0", 10),
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],

@@ -1,4 +1,4 @@
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { processMarketMailboxTransferredLog, processMarketMailboxTransferredLogRemoval } = require("src/blockchain/log-processors/market-mailbox-transferred");
 
 function getMarket(db, log) {
