@@ -35,8 +35,8 @@
     }
   },
   "include": [
-    "node_modules/@types",
-    "node_modules/augur-types"
+    "./node_modules/@types",
+    "./node_modules/augur-types"
   ]
 }
 
