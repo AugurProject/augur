@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { EthersAugurInterfaces, NetworkConfiguration } from "augur-core";
+import { EthersAugurInterfaces, NetworkConfiguration } from "@augurproject/core";
 
 export class APIController {
   private readonly data: number;

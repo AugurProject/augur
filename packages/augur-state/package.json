@@ -71,9 +71,6 @@
   "devDependencies": {
     "@babel/plugin-transform-typescript": "7.2.0",
     "@babel/preset-typescript": "7.1.0",
-    "@types/chai": "4.1.7",
-    "@types/jest": "23.3.10",
-    "@types/knex": "0.15.1",
     "eslint": "5.10.0",
     "husky": "0.14.3",
     "replace-in-file": "3.4.2",
