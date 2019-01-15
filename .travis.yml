@@ -1,4 +1,3 @@
-
 dist: xenial
 sudo: required
 language: node_js
@@ -14,7 +13,7 @@ branches:
     - "/^v\\d+\\.\\d+\\.\\d+(-\\d+)?$/"
 node_js:
   - '9'
-  - '8'
+  - '10.15.0'
 addons:
   apt:
     sources:
@@ -35,7 +34,6 @@ jobs:
   include:
   - stage: Deploy to stable
     if: (branch = stable) AND (NOT (type IN (pull_request)))
-    node_js: '8'
     script: skip
     deploy:
       provider: script
@@ -45,7 +43,6 @@ jobs:
         all_branches: true
   - stage: Deploy to sneakpeak
     if: (branch = sneakpeak) AND (NOT (type IN (pull_request)))
-    node_js: '10'
     script: skip
     deploy:
       provider: script
