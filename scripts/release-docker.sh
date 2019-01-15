@@ -9,6 +9,7 @@ build_environment="dev"
 aws_preconfigure () {
     # we need aws cli tools to deploy
     if [[ ${TRAVIS} = true ]]; then
+        python --version
         sudo apt-get install libssl-dev python-pyasn1 python3-pyasn1
         sudo pip install awscli
     fi
@@ -39,6 +40,11 @@ case ${augur_env} in
         cluster="try-augur-net"
         augur_service="try-augur-ui"
         build_environment="dev-optimized"
+        ;;
+    sneakpeak)
+        network="rinkeby"
+        cluster="sneakpeak-augur-net"
+        augur_service="sneakpeak-ui"
         ;;
     *)
         network=${augur_env}

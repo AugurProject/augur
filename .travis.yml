@@ -1,5 +1,5 @@
 
-dist: trusty
+dist: xenial
 sudo: required
 language: node_js
 services:
@@ -8,6 +8,7 @@ branches:
   only:
     - master
     - stable
+    - sneakpeak
     - mvp
     - petong/travis-ci
     - "/^v\\d+\\.\\d+\\.\\d+(-\\d+)?$/"
@@ -23,6 +24,8 @@ addons:
       - g++-4.8
       - build-essential
       - libusb-1.0-0-dev
+before_install:
+    - pyenv versions
 script:
   - yarn lint && yarn test;
   # This is here to confirm the build works.
@@ -37,6 +40,16 @@ jobs:
     deploy:
       provider: script
       script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- stable
+      skip_cleanup: true
+      on:
+        all_branches: true
+  - stage: Deploy to sneakpeak
+    if: (branch = sneakpeak) AND (NOT (type IN (pull_request)))
+    node_js: '10'
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- sneakpeak
       skip_cleanup: true
       on:
         all_branches: true
