@@ -3,17 +3,17 @@
 [![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur-ui/badge.svg?branch=master)](https://coveralls.io/github/AugurProject/augur-ui?branch=master)
 [![Language Grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/AugurProject/augur-ui.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/AugurProject/augur-ui/context:javascript)
 
-Augur is a decentralized prediction market platform built on Ethereum.  
+Augur is a decentralized prediction market platform built on Ethereum.
 It runs locally in your browser and communicates directly with the ethereum network, without going through intermediate servers.
 
 There are several configurations to run it on testnet:
 
-* Easiest: **visit [dev.augur.net](http://dev.augur.net)**  
+* Easiest: **visit [dev.augur.net](http://dev.augur.net)**
 * Partial Local: [run ethereum client locally](#partial-local-)
 * Full Local: [run everything locally](#run-everything-locally-)
 * Development Environment Setups: [various configurations](https://github.com/AugurProject/augur-ui/blob/master/docs/dev-local-node.md)
 
-Production: 
+Production:
 
 There is an electron app that contains augur-node and augur UI. This app allows the user to point to testnets and mainnet. [Augur App](https://github.com/AugurProject/augur-app). It is a faster way to interact with mainnet because augur-node is local. Enjoy!
 ***
@@ -54,9 +54,9 @@ We'll run the UI locally and use the rinkeby augur-node. We will build and host 
 * [Node](https://nodejs.org/)
 * [Docker](https://www.docker.com/)
 
-*A Note to Windows 10 Users:*  
-Turn on `Developer Mode` and also enable `Windows Subsystem For Linux` so that you have access to bash.  
-Run all subsequent commands within the bash command prompt.  
+*A Note to Windows 10 Users:*
+Turn on `Developer Mode` and also enable `Windows Subsystem For Linux` so that you have access to bash.
+Run all subsequent commands within the bash command prompt.
 It's also recommend that you use a Debian based workflow for the installation of packages (makes things much easier).
 
 * Here are the versions we used for development.
@@ -65,7 +65,7 @@ It's also recommend that you use a Debian based workflow for the installation of
     npm: 5.6.0
     yarn: 1.7.0
     docker: Docker version 18.06.0-ce
-```    
+```
 ## Build From Source
 
 ```
@@ -105,9 +105,9 @@ Full instructions are here [dev-local-node](https://github.com/AugurProject/augu
 
 
 
-# Additional resources:  
-[JSON RPC API Documentation](https://github.com/ethereum/wiki/wiki/JSON-RPC)  
-[Javascript Console](https://github.com/ethereum/go-ethereum/wiki/JavaScript-Console#web3)  
+# Additional resources:
+[JSON RPC API Documentation](https://github.com/ethereum/wiki/wiki/JSON-RPC)
+[Javascript Console](https://github.com/ethereum/go-ethereum/wiki/JavaScript-Console#web3)
 
 
 ## Documentation
