@@ -1,6 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import * as path from "path";
+import * as PouchDB from "pouchdb";
 import * as sqlite3 from "sqlite3";
 import { promisify, format } from "util";
 import { rename, existsSync, readFile, writeFile } from "fs";
@@ -9,7 +10,7 @@ import { postProcessDatabaseResults } from "../server/post-process-database-resu
 import { monitorEthereumNodeHealth } from "../blockchain/monitor-ethereum-node-health";
 import { logger } from "../utils/logger";
 import { ConnectOptions, ErrorCallback } from "../types";
-import { DB_VERSION, DB_FILE } from "../constants";
+import { DB_VERSION, DB_FILE, POUCH_DB_DIR } from "../constants";
 interface NetworkIdRow {
   networkId: string;
   overrideTimestamp: number|null;
@@ -105,8 +106,13 @@ export async function renameBulkSyncDatabaseFile(networkId: string, databaseDir?
   if (existsSync(dbPath)) return renameDatabaseFile(networkId, dbPath);
 }
 
-export async function createDbAndConnect(errorCallback: ErrorCallback|undefined, augur: Augur, network: ConnectOptions, databaseDir?: string): Promise<Knex> {
-  return new Promise<Knex>((resolve, reject) => {
+interface KnexAndPouch {
+  knex: Knex;
+  pouch: PouchDB.Database;
+}
+
+export async function createDbAndConnect(errorCallback: ErrorCallback|undefined, augur: Augur, network: ConnectOptions, databaseDir?: string) {
+  return new Promise<KnexAndPouch>((resolve, reject) => {
     const connectOptions = Object.assign(
       { ethereumNode: { http: network.http, ws: network.ws }, startBlockStreamOnConnect: false },
       network.propagationDelayWaitMillis != null ? { propagationDelayWaitMillis: network.propagationDelayWaitMillis } : {},
@@ -119,8 +125,7 @@ export async function createDbAndConnect(errorCallback: ErrorCallback|undefined,
       try {
         await monitorEthereumNodeHealth(augur, errorCallback);
         await checkAndUpdateContractUploadBlock(augur, networkId, databaseDir);
-        const db = await checkAndInitializeAugurDb(augur, networkId, databaseDir);
-        resolve(db);
+        resolve(checkAndInitializeAugurDb(augur, networkId, databaseDir));
       } catch (err) {
         reject(err);
       }
@@ -128,15 +133,19 @@ export async function createDbAndConnect(errorCallback: ErrorCallback|undefined,
   });
 }
 
-export async function checkAndInitializeAugurDb(augur: Augur, networkId: string, databaseDir?: string): Promise<Knex> {
-  const databasePathBulkSync = getDatabasePathFromNetworkId(networkId, DB_FILE, databaseDir);
-  if (existsSync(databasePathBulkSync)) {
-    logger.info(`Found prior database: ${databasePathBulkSync}`);
+export async function checkAndInitializeAugurDb(augur: Augur, networkId: string, databaseDir?: string): Promise<KnexAndPouch> {
+  const knexDatabasePath = getDatabasePathFromNetworkId(networkId, DB_FILE, databaseDir);
+  const pouchDatabasePath = getDatabasePathFromNetworkId(networkId, POUCH_DB_DIR, databaseDir);
+  if (existsSync(knexDatabasePath)) {
+    logger.info(`Found prior database: ${knexDatabasePath}`);
   }
-  let db: Knex = createKnex(networkId, databasePathBulkSync);
+  let db: Knex = createKnex(networkId, knexDatabasePath);
   const databaseDamaged = await isDatabaseDamaged(db);
-  if (databaseDamaged) db = await getFreshDatabase(db, networkId, databasePathBulkSync);
+  if (databaseDamaged) db = await getFreshDatabase(db, networkId, knexDatabasePath);
   await db.migrate.latest({ directory: path.join(__dirname, "../migrations") });
   await initializeNetworkInfo(db, augur);
-  return db;
+  return {
+    knex: db,
+    pouch: new PouchDB(pouchDatabasePath),
+  };
 }
