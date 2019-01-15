@@ -2,8 +2,12 @@ document.documentElement.className +=
   "ontouchstart" in document.documentElement
     ? " touch-enabled"
     : " touch-disabled";
-if (window.navigator && navigator.serviceWorker) {
-  navigator.serviceWorker.getRegistrations().then(registrations => {
+if (
+  window.navigator &&
+  window.navigator.serviceWorker &&
+  window.navigator.serviceWorker.getRegistrations
+) {
+  window.navigator.serviceWorker.getRegistrations().then(registrations => {
     if (registrations.length === 0) return;
     const p = registrations.map(registration => registration.unregister());
 
