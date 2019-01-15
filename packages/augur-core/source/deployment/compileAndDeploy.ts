@@ -1,10 +1,11 @@
-import { AccountManager } from '../libraries/AccountManager';
+import { ethers } from 'ethers';
+import { ContractDependenciesEthers } from '../libraries/ContractDependenciesEthers';
 import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
 import { ContractCompiler } from '../libraries/ContractCompiler';
 import { ContractDeployer } from '../libraries/ContractDeployer';
-import { Connector } from '../libraries/Connector';
 import { DeployerConfiguration } from '../libraries/DeployerConfiguration';
 import { NetworkConfiguration } from '../libraries/NetworkConfiguration';
+import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 require('source-map-support').install();
 
 async function doWork(): Promise<void> {
@@ -13,11 +14,13 @@ async function doWork(): Promise<void> {
     const compiledContracts = await contractCompiler.compileContracts();
 
     const networkConfiguration = NetworkConfiguration.create();
-    const connector = new Connector(networkConfiguration);
-    const accountManager = new AccountManager(connector, networkConfiguration.privateKey);
+
+    const provider = new ethers.providers.JsonRpcProvider(networkConfiguration.http);
+    const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
+    const dependencies = new ContractDependenciesEthers(provider, signer, networkConfiguration.gasPrice.toNumber());
 
     const deployerConfiguration = DeployerConfiguration.create();
-    const contractDeployer = new ContractDeployer(deployerConfiguration, connector, accountManager, compiledContracts);
+    const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider, signer, compiledContracts);
     await contractDeployer.deploy();
 }
 

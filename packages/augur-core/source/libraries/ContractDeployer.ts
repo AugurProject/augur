@@ -1,31 +1,26 @@
-import BN = require('bn.js');
+import { ethers } from "ethers";
 import { exists, readFile, writeFile } from "async-file";
-import { encodeParams } from 'ethjs-abi';
 import { stringTo32ByteHex, resolveAll } from "./HelperFunctions";
 import { CompilerOutput } from "solc";
-import { Abi, AbiFunction } from 'ethereum';
 import { DeployerConfiguration } from './DeployerConfiguration';
-import { Connector } from './Connector';
-import { Augur, ContractFactory, Universe, ReputationToken, LegacyReputationToken, TimeControlled, Contract, CompleteSets, Trade, CreateOrder, CancelOrder, FillOrder, Orders, ClaimTradingProceeds } from './ContractInterfaces';
+import { Augur, Universe, ReputationToken, LegacyReputationToken, TimeControlled, CompleteSets, Trade, CreateOrder, CancelOrder, FillOrder, Orders, ClaimTradingProceeds } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
-import { AccountManager } from './AccountManager';
 import { Contracts, ContractData } from './Contracts';
+import { Dependencies } from '../libraries/GenericContractInterfaces';
 
 
 export class ContractDeployer {
-    private readonly accountManager: AccountManager;
     private readonly configuration: DeployerConfiguration;
-    private readonly connector: Connector;
     private readonly contracts: Contracts;
+    private readonly dependencies: Dependencies<ethers.utils.BigNumber>
+    private readonly provider: ethers.providers.JsonRpcProvider;
+    private readonly signer: ethers.Signer;
     public augur: Augur|null = null;
     public universe: Universe|null = null;
 
-    public static deployToNetwork = async (networkConfiguration: NetworkConfiguration, deployerConfiguration: DeployerConfiguration) => {
-        const connector = new Connector(networkConfiguration);
-        const accountManager = new AccountManager(connector, networkConfiguration.privateKey);
-
+    public static deployToNetwork = async (networkConfiguration: NetworkConfiguration, dependencies: Dependencies<ethers.utils.BigNumber>, provider: ethers.providers.JsonRpcProvider,signer: ethers.Signer, deployerConfiguration: DeployerConfiguration) => {
         const compilerOutput = JSON.parse(await readFile(deployerConfiguration.contractInputPath, "utf8"));
-        const contractDeployer = new ContractDeployer(deployerConfiguration, connector, accountManager, compilerOutput);
+        const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider, signer, compilerOutput);
 
         console.log(`\n\n-----------------
 Deploying to: ${networkConfiguration.networkName}
@@ -36,15 +31,16 @@ Deploying to: ${networkConfiguration.networkName}
         await contractDeployer.deploy();
     }
 
-    public constructor(configuration: DeployerConfiguration, connector: Connector, accountManager: AccountManager, compilerOutput: CompilerOutput) {
+    public constructor(configuration: DeployerConfiguration, dependencies: Dependencies<ethers.utils.BigNumber>, provider: ethers.providers.JsonRpcProvider, signer: ethers.Signer, compilerOutput: CompilerOutput) {
         this.configuration = configuration;
-        this.connector = connector;
-        this.accountManager = accountManager;
+        this.dependencies = dependencies;
+        this.provider = provider;
+        this.signer = signer;
         this.contracts = new Contracts(compilerOutput);
     }
 
     public async getBlockNumber(): Promise<number> {
-        return this.connector.ethjsQuery.getBlockByNumber('latest', false).then( (block) => block.number.toNumber());
+        return this.provider.getBlock('latest', false).then( (block) => block.number);
     }
 
     public async deploy(): Promise<{ [name: string]: string }> {
@@ -109,36 +105,21 @@ Deploying to: ${networkConfiguration.networkName}
         return mapping;
     }
 
-    public getContract = (contractName: string): Contract => {
+    public getContractAddress = (contractName: string): string => {
         if (!this.contracts.has(contractName)) throw new Error(`Contract named ${contractName} does not exist.`);
         const contract = this.contracts.get(contractName);
         if (contract.address === undefined) throw new Error(`Contract name ${contractName} has not yet been uploaded.`);
-        const contractObj = ContractFactory(this.connector, this.accountManager, contract.address, this.connector.gasPrice);
-        return contractObj;
-    }
-
-    private static getEncodedConstructData(abi: Abi, bytecode: Buffer, constructorArgs: Array<string>): Buffer {
-        if (constructorArgs.length === 0) {
-            return bytecode;
-        }
-        // TODO: submit a TypeScript bug that it can't deduce the type is AbiFunction|undefined here
-        const constructorSignature = <AbiFunction|undefined>abi.find(signature => signature.type === 'constructor');
-        if (typeof constructorSignature === 'undefined') throw new Error(`ABI did not contain a constructor.`);
-        const constructorInputTypes = constructorSignature.inputs.map(x => x.type);
-        const encodedConstructorParameters = Buffer.from(encodeParams(constructorInputTypes, constructorArgs).substring(2), 'hex');
-        return Buffer.concat([bytecode, encodedConstructorParameters]);
+        return contract.address;
     }
 
     private async uploadAugur(): Promise<Augur> {
         console.log('Uploading augur...');
         const contract = await this.contracts.get("Augur");
-        const address = (this.configuration.augurAddress !== undefined)
-            ? this.configuration.augurAddress
-            : await this.construct(this.contracts.get('Augur'), [], `Uploading Augur.sol`);
-        const augur = new Augur(this.connector, this.accountManager, address, this.connector.gasPrice);
+        const address = await this.construct(this.contracts.get('Augur'), []);
+        const augur = new Augur(this.dependencies, address);
         const ownerAddress = await augur.uploader_();
         contract.address = address;
-        if (ownerAddress.toLowerCase() !== this.accountManager.defaultAddress.toLowerCase()) {
+        if (ownerAddress.toLowerCase() !== (await this.signer.getAddress()).toLowerCase()) {
             throw new Error("Augur owner does not equal from address");
         }
         console.log(`Augur address: ${augur.address}`);
@@ -147,7 +128,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     public async uploadLegacyRep(): Promise<string> {
         const contract = await this.contracts.get("LegacyReputationToken");
-        contract.address = await this.construct(contract, [], `Uploading LegacyReputationToken`);
+        contract.address = await this.construct(contract, []);
         return contract.address;
     }
 
@@ -176,62 +157,59 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.configuration.isProduction && contractName === 'LegacyReputationToken') return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
         console.log(`Uploading new version of contract for ${contractName}`);
-        contract.address = await this.uploadAndAddToAugur(contract, contractName);
+        contract.address = await this.uploadAndAddToAugur(contract, contractName, []);
     }
 
     private async uploadAndAddToAugur(contract: ContractData, registrationContractName: string = contract.contractName, constructorArgs: Array<any> = []): Promise<string> {
-        const address = await this.construct(contract, constructorArgs, `Uploading ${contract.contractName}`);
+        const address = await this.construct(contract, constructorArgs);
         await this.augur!.registerContract(stringTo32ByteHex(registrationContractName), address);
         return address;
     }
 
-    private async construct(contract: ContractData, constructorArgs: Array<string>, failureDetails: string): Promise<string> {
-        const data = `0x${ContractDeployer.getEncodedConstructData(contract.abi, contract.bytecode, constructorArgs).toString('hex')}`;
-        const gasEstimate = await this.connector.ethjsQuery.estimateGas({ from: this.accountManager.defaultAddress, data: data });
-        const nonce = await this.accountManager.nonces.get(this.accountManager.defaultAddress);
-        const signedTransaction = await this.accountManager.signTransaction({ gas: gasEstimate, gasPrice: this.connector.gasPrice, data: data});
-        console.log(`Upload contract: ${contract.contractName} nonce: ${nonce}, gas: ${gasEstimate}, gasPrice: ${this.connector.gasPrice}`);
-        const transactionHash = await this.connector.ethjsQuery.sendRawTransaction(signedTransaction);
-        const receipt = await this.connector.waitForTransactionReceipt(transactionHash, failureDetails);
-        console.log(`Uploaded contract: ${contract.contractName}: \"${receipt.contractAddress}\"`);
-        return receipt.contractAddress;
+    private async construct(contract: ContractData, constructorArgs: Array<string>): Promise<string> {
+        console.log(`Upload contract: ${contract.contractName}`);
+        const factory = new ethers.ContractFactory(contract.abi, contract.bytecode, this.signer);
+        const contractObj = await factory.deploy(...constructorArgs);
+        await contractObj.deployed();
+        console.log(`Uploaded contract: ${contract.contractName}: \"${contractObj.address}\"`);
+        return contractObj.address;
     }
 
     private async initializeAllContracts(): Promise<void> {
         console.log('Initializing contracts...');
         const promises: Array<Promise<any>> = [];
 
-        const completeSetsContract = await this.getContract("CompleteSets");
-        const completeSets = new CompleteSets(this.connector, this.accountManager, completeSetsContract.address, this.connector.gasPrice);
+        const completeSetsContract = await this.getContractAddress("CompleteSets");
+        const completeSets = new CompleteSets(this.dependencies, completeSetsContract);
         promises.push(completeSets.initialize(this.augur!.address));
 
-        const createOrderContract = await this.getContract("CreateOrder");
-        const createOrder = new CreateOrder(this.connector, this.accountManager, createOrderContract.address, this.connector.gasPrice);
+        const createOrderContract = await this.getContractAddress("CreateOrder");
+        const createOrder = new CreateOrder(this.dependencies, createOrderContract);
         promises.push(createOrder.initialize(this.augur!.address));
 
-        const fillOrderContract = await this.getContract("FillOrder");
-        const fillOrder = new FillOrder(this.connector, this.accountManager, fillOrderContract.address, this.connector.gasPrice);
+        const fillOrderContract = await this.getContractAddress("FillOrder");
+        const fillOrder = new FillOrder(this.dependencies, fillOrderContract);
         promises.push(fillOrder.initialize(this.augur!.address));
 
-        const cancelOrderContract = await this.getContract("CancelOrder");
-        const cancelOrder = new CancelOrder(this.connector, this.accountManager, cancelOrderContract.address, this.connector.gasPrice);
+        const cancelOrderContract = await this.getContractAddress("CancelOrder");
+        const cancelOrder = new CancelOrder(this.dependencies, cancelOrderContract);
         promises.push(cancelOrder.initialize(this.augur!.address));
 
-        const tradeContract = await this.getContract("Trade");
-        const trade = new Trade(this.connector, this.accountManager, tradeContract.address, this.connector.gasPrice);
+        const tradeContract = await this.getContractAddress("Trade");
+        const trade = new Trade(this.dependencies, tradeContract);
         promises.push(trade.initialize(this.augur!.address));
 
-        const claimTradingProceedsContract = await this.getContract("ClaimTradingProceeds");
-        const claimTradingProceeds = new ClaimTradingProceeds(this.connector, this.accountManager, claimTradingProceedsContract.address, this.connector.gasPrice);
+        const claimTradingProceedsContract = await this.getContractAddress("ClaimTradingProceeds");
+        const claimTradingProceeds = new ClaimTradingProceeds(this.dependencies, claimTradingProceedsContract);
         promises.push(claimTradingProceeds.initialize(this.augur!.address));
 
-        const ordersContract = await this.getContract("Orders");
-        const orders = new Orders(this.connector, this.accountManager, ordersContract.address, this.connector.gasPrice);
+        const ordersContract = await this.getContractAddress("Orders");
+        const orders = new Orders(this.dependencies, ordersContract);
         promises.push(orders.initialize(this.augur!.address));
 
         if (!this.configuration.useNormalTime) {
-            const timeContract = await this.getContract("TimeControlled");
-            const time = new TimeControlled(this.connector, this.accountManager, timeContract.address, this.connector.gasPrice);
+            const timeContract = await this.getContractAddress("TimeControlled");
+            const time = new TimeControlled(this.dependencies, timeContract);
             promises.push(time.initialize(this.augur!.address));
         }
 
@@ -239,30 +217,31 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     public async initializeLegacyRep(): Promise<void> {
-        const legacyReputationToken = new LegacyReputationToken(this.connector, this.accountManager, this.getContract('LegacyReputationToken').address, this.connector.gasPrice);
-        await legacyReputationToken.faucet(new BN(10).pow(new BN(18)).mul(new BN(11000000)));
-        const legacyBalance = await legacyReputationToken.balanceOf_(this.accountManager.defaultAddress);
-        if (!legacyBalance || legacyBalance == new BN(0)) {
+        const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
+        await legacyReputationToken.faucet(new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(18)).mul(new ethers.utils.BigNumber(11000000)));
+        const defaultAddress = await this.signer.getAddress();
+        const legacyBalance = await legacyReputationToken.balanceOf_(defaultAddress);
+        if (!legacyBalance || legacyBalance == new ethers.utils.BigNumber(0)) {
             throw new Error("Faucet call to Legacy REP failed");
         }
     }
 
     private async resetTimeControlled(): Promise<void> {
       console.log('Resetting Timestamp for false time...');
-      const time = new TimeControlled(this.connector, this.accountManager, this.getContract("TimeControlled").address, this.connector.gasPrice);
+      const time = new TimeControlled(this.dependencies, this.getContractAddress("TimeControlled"));
       const currentTimestamp = await time.getTimestamp_();
-      return time.setTimestamp(currentTimestamp);
+      time.setTimestamp(currentTimestamp);
     }
 
     private async createGenesisUniverse(): Promise<Universe> {
         console.log('Creating genesis universe...');
-        const augur = new Augur(this.connector, this.accountManager, this.getContract("Augur").address, this.connector.gasPrice);
+        const augur = new Augur(this.dependencies, this.getContractAddress("Augur"));
         const universeAddress = await augur.createGenesisUniverse_();
         if (!universeAddress || universeAddress == "0x") {
             throw new Error("Unable to create genesis universe. eth_call failed");
         }
         await augur.createGenesisUniverse();
-        const universe = new Universe(this.connector, this.accountManager, universeAddress, this.connector.gasPrice);
+        const universe = new Universe(this.dependencies, universeAddress);
         console.log(`Genesis universe address: ${universe.address}`);
         if (await universe.getTypeName_() !== stringTo32ByteHex("Universe")) {
             throw new Error("Unable to create genesis universe. Get type name failed");
@@ -273,13 +252,14 @@ Deploying to: ${networkConfiguration.networkName}
 
     private async migrateFromLegacyRep(): Promise<void> {
         const reputationTokenAddress = await this.universe!.getReputationToken_();
-        const reputationToken = new ReputationToken(this.connector, this.accountManager, reputationTokenAddress, this.connector.gasPrice);
-        const legacyReputationToken = new LegacyReputationToken(this.connector, this.accountManager, this.getContract('LegacyReputationToken').address, this.connector.gasPrice);
-        const legacyBalance = await legacyReputationToken.balanceOf_(this.accountManager.defaultAddress);
+        const reputationToken = new ReputationToken(this.dependencies, reputationTokenAddress);
+        const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
+        const defaultAddress = await this.signer.getAddress();
+        const legacyBalance = await legacyReputationToken.balanceOf_(defaultAddress);
         await legacyReputationToken.approve(reputationTokenAddress, legacyBalance);
         await reputationToken.migrateFromLegacyReputationToken();
-        const balance = await reputationToken.balanceOf_(this.accountManager.defaultAddress);
-        if (!balance || balance == new BN(0)) {
+        const balance = await reputationToken.balanceOf_(defaultAddress);
+        if (!balance || balance == new ethers.utils.BigNumber(0)) {
             throw new Error("Migration from Legacy REP failed");
         }
     }
@@ -301,7 +281,7 @@ Deploying to: ${networkConfiguration.networkName}
             mapping[contract.contractName] = contract.address;
         }
 
-        const networkId = await this.connector.ethjsQuery.net_version();
+        const networkId = (await this.provider.getNetwork()).chainId;
         let addressMapping: NetworkAddressMapping  = {};
         if (await exists(this.configuration.contractAddressesOutputPath)) {
             let existingAddressFileData: string = await readFile(this.configuration.contractAddressesOutputPath, 'utf8');
@@ -319,7 +299,7 @@ Deploying to: ${networkConfiguration.networkName}
     private async generateUploadBlockNumberMapping(blockNumber: number): Promise<string> {
         type UploadBlockNumberMapping = { [networkId: string]: number };
 
-        const networkId = await this.connector.ethjsQuery.net_version();
+        const networkId = (await this.provider.getNetwork()).chainId;
         let blockNumberMapping: UploadBlockNumberMapping  = {};
         if (await exists(this.configuration.uploadBlockNumbersOutputPath)) {
             let existingBlockNumberData: string = await readFile(this.configuration.uploadBlockNumbersOutputPath, 'utf8');

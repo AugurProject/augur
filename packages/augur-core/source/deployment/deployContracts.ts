@@ -1,14 +1,23 @@
 #!/usr/bin/env node
 
+import { ethers } from 'ethers';
+import { ContractDependenciesEthers } from '../libraries/ContractDependenciesEthers';
 import { ContractDeployer } from "../libraries/ContractDeployer";
 import { DeployerConfiguration } from '../libraries/DeployerConfiguration';
 import { NetworkConfiguration } from '../libraries/NetworkConfiguration';
+import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 
 // the rest of the code in this file is for running this as a standalone script, rather than as a library
 export async function deployContracts() {
     require('source-map-support').install();
 
-    await ContractDeployer.deployToNetwork(NetworkConfiguration.create(), DeployerConfiguration.create());
+    const networkConfiguration = NetworkConfiguration.create();
+
+    const provider = new ethers.providers.JsonRpcProvider(networkConfiguration.http);
+    const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
+    const dependencies = new ContractDependenciesEthers(provider, signer, networkConfiguration.gasPrice.toNumber());
+
+    await ContractDeployer.deployToNetwork(networkConfiguration, dependencies, provider, signer, DeployerConfiguration.create());
 }
 
 deployContracts().then(() => {

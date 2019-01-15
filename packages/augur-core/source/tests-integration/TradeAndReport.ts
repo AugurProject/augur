@@ -2,7 +2,7 @@
 
 // TODO: Add checks to ensure ETH redeemed for shares/reporting fees is correct, since fixture.getEthBalance returns the same amount every time it's called.
 
-import BN = require('bn.js');
+import { ethers } from "ethers";
 import { expect } from "chai";
 import { stringTo32ByteHex } from "../libraries/HelperFunctions";
 import { TestFixture } from './TestFixture';
@@ -17,7 +17,7 @@ describe("TradeAndReport", () => {
         await fixture.approveCentralAuthority();
 
         let ethBalance = await fixture.getEthBalance();
-        console.log("Starting ETH balance", ethBalance.toString(10));
+        console.log("Starting ETH balance", ethBalance.toString());
 
         // Create a market
         const market = await fixture.createReasonableMarket(fixture.universe!, [stringTo32ByteHex(" "), stringTo32ByteHex(" ")]);
@@ -26,10 +26,10 @@ describe("TradeAndReport", () => {
         expect(actualTypeName).to.equal(expectedTypeName);
 
         // Place an order
-        let type = new BN(0); // BID
-        let outcome = new BN(0);
-        let numShares = new BN(10000000000000);
-        let price = new BN(2150);
+        let type = new ethers.utils.BigNumber(0); // BID
+        let outcome = new ethers.utils.BigNumber(0);
+        let numShares = new ethers.utils.BigNumber(10000000000000);
+        let price = new ethers.utils.BigNumber(2150);
 
         await fixture.placeOrder(market.address, type, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 
@@ -39,7 +39,7 @@ describe("TradeAndReport", () => {
         expect(orderPrice.toNumber()).to.equal(price.toNumber());
 
         ethBalance = await fixture.getEthBalance();
-        console.log("ethBalance before buying complete set", ethBalance.toString(10));
+        console.log("ethBalance before buying complete set", ethBalance.toString());
 
         // Buy complete sets
         await fixture.buyCompleteSets(market, numShares);
@@ -47,7 +47,7 @@ describe("TradeAndReport", () => {
         expect(numOwnedShares.toNumber()).to.equal(numShares.toNumber());
 
         ethBalance = await fixture.getEthBalance();
-        console.log("ethBalance after buying complete set", ethBalance.toString(10));
+        console.log("ethBalance after buying complete set", ethBalance.toString());
 
         // Cancel the original rest of order
         await fixture.cancelOrder(orderID);
@@ -63,14 +63,14 @@ describe("TradeAndReport", () => {
 
         const numTicks = await market.getNumTicks_();
         const reputationToken = await fixture.getReputationToken();
-        const payoutDistributionHash = await fixture.derivePayoutDistributionHash(market, [new BN(0), numTicks, new BN(0)]);
+        const payoutDistributionHash = await fixture.derivePayoutDistributionHash(market, [new ethers.utils.BigNumber(0), numTicks, new ethers.utils.BigNumber(0)]);
         const childUniverseReputationToken = await fixture.getChildUniverseReputationToken(payoutDistributionHash);
         const initialRepTotalMigrated = await childUniverseReputationToken.getTotalMigrated_();
-        expect(initialRepTotalMigrated === new BN("366666666666666667016192")); // TODO: calculate this value instead of hard-coding it
-        const repAmountToMigrate = new BN(9000000).mul(new BN(10).pow(new BN(18)));
-        await fixture.migrateOutByPayout(reputationToken, [new BN(0), numTicks, new BN(0)], repAmountToMigrate);
+        expect(initialRepTotalMigrated === new ethers.utils.BigNumber("366666666666666667016192")); // TODO: calculate this value instead of hard-coding it
+        const repAmountToMigrate = new ethers.utils.BigNumber(9000000).mul(new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(18)));
+        await fixture.migrateOutByPayout(reputationToken, [new ethers.utils.BigNumber(0), numTicks, new ethers.utils.BigNumber(0)], repAmountToMigrate);
         const finalRepTotalMigrated = await childUniverseReputationToken.getTotalMigrated_();
-        expect(finalRepTotalMigrated.sub(initialRepTotalMigrated).toString(10)).to.equal(repAmountToMigrate.toString(10));
+        expect(finalRepTotalMigrated.sub(initialRepTotalMigrated).toString()).to.equal(repAmountToMigrate.toString());
 
         let isFinalized = await market.isFinalized_();
         expect(isFinalized).to.be.true;

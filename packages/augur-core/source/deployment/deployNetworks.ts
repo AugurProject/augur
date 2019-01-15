@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
+import { ethers } from 'ethers';
+import { ContractDependenciesEthers } from '../libraries/ContractDependenciesEthers';
 import { ContractDeployer } from "../libraries/ContractDeployer";
 import { NetworkConfiguration } from "../libraries/NetworkConfiguration";
 import { DeployerConfiguration } from "../libraries/DeployerConfiguration";
+import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 
 export async function deployToNetworks(networks: Array<string>) {
     // Create all network configs up front so that an error in any of them
@@ -11,7 +14,10 @@ export async function deployToNetworks(networks: Array<string>) {
     const deployerConfiguration = DeployerConfiguration.create();
     for(let network of networkConfigurations) {
         // Deploy sequentially
-        await ContractDeployer.deployToNetwork(network, deployerConfiguration);
+        const provider = new ethers.providers.JsonRpcProvider(network.http);
+        const signer = await EthersFastSubmitWallet.create(<string>network.privateKey, provider);
+        const dependencies = new ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
+        await ContractDeployer.deployToNetwork(network, dependencies, provider, signer, deployerConfiguration);
     }
 }
 

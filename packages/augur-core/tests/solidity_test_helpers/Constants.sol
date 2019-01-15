@@ -8,7 +8,6 @@ import 'trading/Order.sol';
 contract Constants {
     uint256 public constant DESIGNATED_REPORTING_DURATION_SECONDS = Reporting.getDesignatedReportingDurationSeconds();
     uint256 public constant DISPUTE_ROUND_DURATION_SECONDS = Reporting.getDisputeRoundDurationSeconds();
-    uint256 public constant CLAIM_PROCEEDS_WAIT_TIME = Reporting.getClaimTradingProceedsWaitTime();
     uint256 public constant FORK_DURATION_SECONDS = Reporting.getForkDurationSeconds();
     uint256 public constant MAXIMUM_MARKET_DURATION = Reporting.getMaximumMarketDuration();
 
