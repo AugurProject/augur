@@ -104,8 +104,7 @@ module.exports = {
   modulePaths: [
     "<rootDir>",
     "<rootDir>/src/",
-    "<rootDir>/test/unit",
-    "<rootDir>/test/integration",
+    "<rootDir>/test/unit"
   ],
 
   // Allows you to use a custom runner instead of Jest's default test runner
