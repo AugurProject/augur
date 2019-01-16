@@ -36,7 +36,11 @@
   },
   "include": [
     "./node_modules/@types",
-    "./node_modules/augur-types"
+    "./packages/augur-core",
+    "./packages/augur-node",
+    "./packages/augur-contract-sdk",
+    "./packages/augur-tools",
+    "./packages/typings-example",
+    "./packages/augur-types"
   ]
 }
-

@@ -38,10 +38,10 @@ export class GenerateReplacementTypesForGenerics {
         );
 
         // Import 'bn.js'
-        const bigNumberIdentifier = ts.createIdentifier("BN");
+        const bigNumberIdentifier = ts.createIdentifier("ethers.utils.BigNumber");
 
         const bigNumberTypeReferenceNode = ts.createTypeReferenceNode(bigNumberIdentifier, undefined);
-        const moduleReferenceExpression = ts.createStringLiteral("bn.js");
+        const moduleReferenceExpression = ts.createStringLiteral("ethers");
         const externalModuleReference = ts.createExternalModuleReference(moduleReferenceExpression);
         statements.push(ts.createImportEqualsDeclaration(undefined, undefined, bigNumberIdentifier, externalModuleReference));
 
@@ -76,4 +76,3 @@ export class GenerateReplacementTypesForGenerics {
         return printer.printFile(n);
     }
 }
-

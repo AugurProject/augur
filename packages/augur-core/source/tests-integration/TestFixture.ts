@@ -1,5 +1,4 @@
 import {ethers} from 'ethers'
-import { TestRpc } from './TestRpc';
 import { ContractCompiler } from '../libraries/ContractCompiler';
 import { ContractDeployer } from '../libraries/ContractDeployer';
 import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
@@ -17,26 +16,20 @@ export class TestFixture {
     public readonly dependencies: Dependencies<ethers.utils.BigNumber>;
     public readonly provider: ethers.providers.JsonRpcProvider;
     public readonly account: string;
-    public readonly testRpc: TestRpc | null;
-    public readonly sdbEnabled: boolean;
 
     public get universe() { return this.contractDeployer.universe!; }
     public get cash() { return new Cash(this.dependencies, this.contractDeployer.getContractAddress('Cash')); }
 
-    public constructor(dependencies: Dependencies<ethers.utils.BigNumber>, provider: ethers.providers.JsonRpcProvider, contractDeployer: ContractDeployer, testRpc: TestRpc | null, sdbEnabled: boolean, account: string) {
+    public constructor(dependencies: Dependencies<ethers.utils.BigNumber>, provider: ethers.providers.JsonRpcProvider, contractDeployer: ContractDeployer, account: string) {
         this.contractDeployer = contractDeployer;
         this.dependencies = dependencies;
         this.provider = provider;
         this.account = account;
-        this.testRpc = testRpc;
-        this.sdbEnabled = sdbEnabled;
     }
 
     public static create = async (pretendToBeProduction: boolean = false): Promise<TestFixture> => {
         const networkConfiguration = NetworkConfiguration.create();
         const compilerConfiguration = CompilerConfiguration.create()
-
-        const testRpc = await TestRpc.startTestRpcIfNecessary(networkConfiguration, compilerConfiguration);
 
         const compiledContracts = await new ContractCompiler(compilerConfiguration).compileContracts();
 
@@ -55,22 +48,11 @@ export class TestFixture {
             contractDeployer = new ContractDeployer(fakeProdDeployerConfiguration, dependencies, provider, signer, compiledContracts);
         }
 
-        const addressMapping = await contractDeployer.deploy();
+        await contractDeployer.deploy();
 
-         if (testRpc !== null && compilerConfiguration.enableSdb) {
-            await testRpc.linkDebugSymbols(compiledContracts, addressMapping);
-        }
-
-        const testFixture = new TestFixture(dependencies, provider, contractDeployer, testRpc, compilerConfiguration.enableSdb, signer.address);
-        await testFixture.linkDebugSymbolsForContract('Universe', testFixture.universe.address);
+        const testFixture = new TestFixture(dependencies, provider, contractDeployer, signer.address);
 
         return testFixture;
-    }
-
-    public async linkDebugSymbolsForContract(contractName: string, contractAddress: string): Promise<void> {
-        if (this.sdbEnabled && this.testRpc !== null) {
-            await this.testRpc.linkContractAddress(contractName, contractAddress);
-        }
     }
 
     public async approveCentralAuthority(): Promise<void> {
@@ -92,7 +74,6 @@ export class TestFixture {
         if (await market.getTypeName_() !== stringTo32ByteHex("Market")) {
             throw new Error("Unable to create new categorical market");
         }
-        await this.linkDebugSymbolsForContract('Market', market.address);
         return market;
     }
 
@@ -221,7 +202,6 @@ export class TestFixture {
 
     public async getDisputeWindow(market: Market): Promise<DisputeWindow> {
         const disputeWindowAddress = await market.getDisputeWindow_();
-        await this.linkDebugSymbolsForContract('DisputeWindow', disputeWindowAddress);
         return new DisputeWindow(this.dependencies, disputeWindowAddress);
     }
 

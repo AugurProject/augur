@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2017",
+    "sourceMap": true,
+    "watch": false,
+    "declaration": true,
+    "declarationDir": "definitions",
+    "strictNullChecks": true,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "outDir": "build",
+    "rootDir": "source",
+    "baseUrl": ".",
+    "typeRoots": ["../augur-types/types", "../../node_modules/@types", "node_modules/@types"]
+  }
+}

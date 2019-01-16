@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import "mocha";
+import "jest";
 import { augur, augurNodeRequest } from "./utils";
 
 describe("getSyncData", () => {
   let result: any;
-  before( async () => {
+  beforeAll( async () => {
     result = await augurNodeRequest("getSyncData", {});
   });
   it("isSyncFinished", () => {
