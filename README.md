@@ -19,7 +19,7 @@ You can view, edit, and contribute to Augur via the 100% open source repositorie
 - [Augur.js](packages/augur.js) - Javascript library for Node.js and the browser to help you communicate with the Augur smart contracts, and Augur Node.
 - [Augur Node](packages/augur-node) - Helper application to aggregrate the activity of the Augur community on the Ethereum Network. Allows you to quickly build responsive and performant user interfaces.
 - [Augur UI](packages/augur-ui/) - A reference client UI which uses Augur Node and a connection to the Ethereum Network to interact with the Augur community.
-- [Augur App](packages/augur-app/) - Augur App is a lightweight Electron app that bundles the [Augur UI](https://github.com/AugurProject/augur/packages/augur) and [Augur Node](https://github.com/AugurProject/augur/packages/augur-node).
+- [Augur App](packages/augur-app/) - Augur App is a lightweight Electron app that bundles the [Augur UI](https://github.com/AugurProject/augur/tree/master/packages/augur-ui) and [Augur Node](https://github.com/AugurProject/augur/tree/master/packages/augur-node).
 
 ## Documentation and Whitepaper
 
