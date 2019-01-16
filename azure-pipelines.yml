@@ -131,6 +131,9 @@ jobs:
         node_10_x:
           node_version: 10.x
     steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
       - script: |
           set -euo pipefail
           which node
@@ -157,6 +160,9 @@ jobs:
         node_10_x:
           node_version: 10.x
     steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
       - bash: |
           set -euo pipefail
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
