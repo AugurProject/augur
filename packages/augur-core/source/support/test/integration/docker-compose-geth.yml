@@ -7,11 +7,11 @@ services:
       - "47625:8546"
   geth-integration-tests:
     build:
-      context: ../../../../../
-      dockerfile: augur-core/source/support/Dockerfile
+      context: ../../../../../../
+      dockerfile: packages/augur-core/source/support/Dockerfile
       cache_from:
         - augurproject/augur-core:latest
-    entrypoint: [ "npm", "run", "test:integration:docker" ]
+    entrypoint: [ "yarn", "test:integration" ]
     # uncomment the following 3 lines to enable debugging the tests
     # command: [ "--", "--debug=0.0.0.0:9229", "--inspect-brk" ]
     # ports:

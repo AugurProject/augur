@@ -4,13 +4,15 @@
 
 import { ethers } from "ethers";
 import { expect } from "chai";
+import "jest";
 import { stringTo32ByteHex } from "../libraries/HelperFunctions";
 import { TestFixture } from './TestFixture';
 import { ReportingUtils } from './ReportingUtils';
 
 describe("TradeAndReport", () => {
     let fixture: TestFixture;
-    before(async () => {
+    jest.setTimeout(1000000);
+    beforeAll(async () => {
         fixture = await TestFixture.create();
     });
     it("#tradeAndReport", async () => {

@@ -3,9 +3,9 @@ services:
   clique-deploy:
     image: augurproject/augur-core:latest
     build:
-      context: ../../../../../
-      dockerfile: augur-core/source/support/Dockerfile
-    entrypoint: [ "npx", "mocha", "output/tests-integration/**/*.js", "--no-timeouts", "--require", "source-map-support/register"]
+      context: ../../../../../../
+      dockerfile: packages/augur-core/source/support/Dockerfile
+    entrypoint: ["yarn", "test:integration"]
     environment:
       - ETHEREUM_HOST=clique.ethereum.nodes.augur.net
       - ETHEREUM_PORT=80
@@ -15,9 +15,9 @@ services:
   aura-deploy:
     image: augurproject/augur-core:latest
     build:
-      context: ../../../../../
-      dockerfile: augur-core/source/support/Dockerfile
-    entrypoint: [ "npx", "mocha", "output/tests-integration/**/*.js", "--no-timeouts", "--require", "source-map-support/register"]
+      context: ../../../../../../
+      dockerfile: packages/augur-core/source/support/Dockerfile
+    entrypoint: ["yarn", "test:integration"]
     environment:
       - ETHEREUM_HOST=aura.ethereum.nodes.augur.net
       - ETHEREUM_PORT=80
@@ -27,9 +27,9 @@ services:
   instantseal-deploy:
     image: augurproject/augur-core:latest
     build:
-      context: ../../../../../
-      dockerfile: augur-core/source/support/Dockerfile
-    entrypoint: [ "npx", "mocha", "output/tests-integration/**/*.js", "--no-timeouts", "--require", "source-map-support/register"]
+      context: ../../../../../../
+      dockerfile: packages/augur-core/source/support/Dockerfile
+    entrypoint: ["yarn", "test:integration"]
     environment:
       - ETHEREUM_HOST=instantseal.ethereum.nodes.augur.net
       - ETHEREUM_PORT=80

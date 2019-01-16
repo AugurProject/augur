@@ -16,22 +16,24 @@ RUN wget --quiet --output-document /usr/local/bin/solc https://github.com/ethere
 
 WORKDIR /app
 
-COPY augur-core/requirements.txt /app/requirements.txt
+COPY packages/augur-core/requirements.txt /app/requirements.txt
 
 RUN /usr/local/bin/pip2 install --upgrade pip setuptools \
 	&& /usr/local/bin/pip2 install --upgrade pip-tools \
 	&& /usr/local/bin/pip2 install -r requirements.txt
 
 # Install basics of the application
-COPY augur-core/.soliumrc.json /app/.soliumrc.json
-COPY augur-core/.soliumignore /app/.soliumignore
-COPY augur-core/tsconfig.json /app/tsconfig.json
-COPY augur-core/source/contracts/ /app/source/contracts/
-COPY augur-types/ /augur-types
-COPY augur-core/source/deployment/compileContracts.ts /app/source/deployment/compileContracts.ts
-COPY augur-core/source/libraries/ /app/source/libraries/
-COPY augur-core/source/tools/ /app/source/tools/
-COPY augur-core/package.json /app/package.json
+COPY packages/augur-core/.soliumrc.json /app/.soliumrc.json
+COPY packages/augur-core/.soliumignore /app/.soliumignore
+COPY packages/augur-core/docker.tsconfig.json /app/tsconfig.json
+COPY packages/augur-core/source/contracts/ /app/source/contracts/
+COPY packages/augur-types/ /augur-types
+COPY packages/augur-core/source/deployment/compileContracts.ts /app/source/deployment/compileContracts.ts
+COPY packages/augur-core/source/libraries/ /app/source/libraries/
+COPY packages/augur-core/source/tools/ /app/source/tools/
+COPY packages/augur-core/package.json /app/package.json
+COPY packages/augur-core/.babelrc.js /app/.babelrc.js
+COPY packages/augur-core/jest.config.js /app/jest.config.js
 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
@@ -51,8 +53,8 @@ RUN yarn build:contracts
 RUN yarn build:interfaces
 
 # Copy source
-COPY augur-core/source/ /app/source/
-COPY augur-core/tests/ /app/tests/
+COPY packages/augur-core/source/ /app/source/
+COPY packages/augur-core/tests/ /app/tests/
 
 # Copy the git info so ContractDeployer can read the hash on deploy
 RUN yarn build:source

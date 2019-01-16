@@ -1,8 +1,6 @@
 import * as fs from "async-file";
-import readFile = require('fs-readfile-promise');
 import * as path from "path";
-import * as recursiveReadDir from "recursive-readdir";
-import asyncMkdirp = require('async-mkdirp');
+import { recursiveReadDir } from "./HelperFunctions";
 import { CompilerInput, CompilerOutput, CompilerOutputEvmBytecode } from "solc";
 import { Abi } from "ethereum";
 import { ChildProcess, exec, spawn } from "child_process";
@@ -17,7 +15,6 @@ export class ContractCompiler {
     private readonly configuration: CompilerConfiguration;
     private readonly flattenerBin = "solidity_flattener";
     private readonly flattenerCommand: string;
-
 
     public constructor(configuration: CompilerConfiguration) {
         this.configuration = configuration;
@@ -60,7 +57,7 @@ export class ContractCompiler {
                 const ignoreCachedFile = function (file: string, stats: fs.Stats): boolean {
                     return (stats.isFile() && path.extname(file) !== ".sol") || (stats.isFile() && path.extname(file) === ".sol" && stats.mtime < lastCompiledTimestamp);
                 }
-                const uncachedFiles = await recursiveReadDir(this.configuration.contractSourceRoot, [ignoreCachedFile]);
+                const uncachedFiles = await recursiveReadDir(this.configuration.contractSourceRoot, ignoreCachedFile);
                 if (uncachedFiles.length === 0) {
                     return JSON.parse(await fs.readFile(this.configuration.contractOutputPath, "utf8"));
                 }
@@ -90,7 +87,7 @@ export class ContractCompiler {
         }
 
         // Create output directory (if it doesn't exist)
-        await asyncMkdirp(path.dirname(this.configuration.contractOutputPath));
+        await fs.mkdirp(path.dirname(this.configuration.contractOutputPath));
 
         // Output contract data to single file
         const filteredCompilerOutput = this.filterCompilerOutput(compilerOutput);
@@ -117,12 +114,12 @@ export class ContractCompiler {
         const ignoreFile = function(file: string, stats: fs.Stats): boolean {
             return stats.isFile() && path.extname(file) !== ".sol";
         }
-        const filePaths = await recursiveReadDir(this.configuration.contractSourceRoot, [ignoreFile]);
+        const filePaths:string[] = await recursiveReadDir(this.configuration.contractSourceRoot, ignoreFile);
         let filesPromises;
         if (this.configuration.useFlattener) {
             filesPromises = filePaths.map(async filePath => (await this.generateFlattenedSolidity(filePath)));
         } else {
-            filesPromises = filePaths.map(async filePath => (await readFile(filePath)).toString('utf8'));
+            filesPromises = filePaths.map(async filePath => (await fs.readFile(filePath)).toString('utf8'));
         }
         const files = await Promise.all(filesPromises);
 

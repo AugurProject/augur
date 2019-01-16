@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import "mocha";
+import "jest";
 import { augurNodeRequest, getContractAddresses } from "./utils";
 
 describe("getMarkets and getMarketsInfo", () => {
   let marketIds: Array<{}>;
   let marketDetails: Array<{}>;
-  before( async () => {
+  beforeAll( async () => {
     const universe = (await getContractAddresses()).Universe;
     marketIds = await augurNodeRequest("getMarkets", {universe });
     marketDetails = await augurNodeRequest("getMarketsInfo", {marketIds });
