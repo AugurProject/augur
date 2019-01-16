@@ -36,8 +36,7 @@
       "webpack": "4.27.1",
       "ws": "5.2.2",
       "augur-core": "2.0.0-0",
-      "augur-node": "10.0.0-0",
-      "@augurproject/node": "10.0.0-0"
+      "augur-node": "10.0.0-0"
     },
     "devDependencies": {
       "eslint": "5.10.0",
