@@ -142,7 +142,7 @@ jobs:
           yarn install --ignore-scripts --frozen-lockfile
         displayName: 'Install Dependencies'
       - script: |
-          yarn test --forceExit
+          yarn test --forceExit --detectOpenHandles
         displayName: 'Run Tests'
       - task: PublishTestResults@2
         inputs:
