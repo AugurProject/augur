@@ -14,19 +14,19 @@
     "outDir": "build",
     "baseUrl": ".",
     "paths": {
-      "@augurproject/core": [
+      "augur-core": [
         "packages/augur-core/source/index.ts"
       ],
-      "@augurproject/node": [
+      "augur-node": [
         "packages/augur-node/src/index.ts"
       ],
-      "@augurproject/contract-sdk": [
+      "augur-contract-sdk": [
         "packages/augur-contract-sdk"
       ],
-      "@augurproject/tools": [
+      "augur-tools": [
         "packages/augur-tools"
       ],
-      "@augurproject/types": [
+      "augur-types": [
         "packages/augur-types"
       ],
       "augur.js": [
