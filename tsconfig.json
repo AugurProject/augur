@@ -36,6 +36,7 @@
   },
   "include": [
     "./node_modules/@types",
+    "./packages",
     "./packages/augur-core",
     "./packages/augur-node",
     "./packages/augur-contract-sdk",
