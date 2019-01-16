@@ -104,10 +104,6 @@
     "trezor-connect": "5.0.34"
   },
   "devDependencies": {
-    "@types/expect-puppeteer": "2.2.4",
-    "@types/jest": "23.3.10",
-    "@types/jest-environment-puppeteer": "2.2.1",
-    "@types/puppeteer": "1.11.1",
     "augur-tools": "6.0.0",
     "autoprefixer": "7.2.6",
     "babel-eslint": "9.0.0",
@@ -174,7 +170,6 @@
     "stylelint-config-standard": "18.2.0",
     "stylelint-no-browser-hacks": "1.2.1",
     "stylelint-order": "0.8.1",
-    "ts-jest": "23.10.5",
     "watchify": "3.11.0",
     "webpack-deadcode-plugin": "^0.1.9",
     "webpack-merge": "4.1.4"
