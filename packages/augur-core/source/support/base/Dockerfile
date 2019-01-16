@@ -12,9 +12,9 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
 RUN wget --quiet --output-document /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/v0.4.24/solc-static-linux \
 	&& chmod a+x /usr/local/bin/solc
 
-COPY augur-core/requirements.txt /app/requirements.txt
-COPY augur-core/package.json /app/package.json
-COPY augur-core/package-lock.json /app/package-lock.json
+COPY packages/augur-core/requirements.txt /app/requirements.txt
+COPY packages/augur-core/package.json /app/package.json
+COPY packages/augur-core/package-lock.json /app/package-lock.json
 
 WORKDIR /app
 RUN npm install

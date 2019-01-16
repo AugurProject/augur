@@ -1,4 +1,4 @@
-import { Logger, LoggerInterface } from "src/utils/logger/logger";
+import { Logger, LoggerInterface } from "../../../src/utils/logger/logger";
 
 describe("utils/logger", () => {
   class ExampleLogger implements LoggerInterface {
@@ -17,7 +17,7 @@ describe("utils/logger", () => {
 
   ["error", "info", "warn", "debug"].map((method: keyof LoggerInterface) => {
     const exampleLogger = new ExampleLogger();
-    const spy = jest.spyOn<LoggerInterface>(exampleLogger, method);
+    const spy = jest.spyOn<LoggerInterface, keyof LoggerInterface>(exampleLogger, method);
 
     const exampleMsg = "Some example message";
 

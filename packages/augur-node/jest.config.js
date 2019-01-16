@@ -104,7 +104,7 @@ module.exports = {
   modulePaths: [
     "<rootDir>",
     "<rootDir>/src/",
-    "<rootDir>/test/unit",
+    "<rootDir>/test/unit"
   ],
 
   // Allows you to use a custom runner instead of Jest's default test runner
@@ -128,7 +128,7 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ["<rootDir>/test/unit/**/*.(j|t)s"],
+  testMatch: ["<rootDir>/test/(unit|integration)/**/*.(j|t)s"],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
