@@ -280,8 +280,6 @@ class PerformanceGraph extends Component {
     // x axis
     chart
       .append("g")
-      .attr("fill", "#fff")
-      .attr("stroke", "#fff")
       .attr("transform", `translate(0, ${height})`)
       .call(
         d3
@@ -289,21 +287,15 @@ class PerformanceGraph extends Component {
           .tickFormat(dateTickFormat)
           .ticks(tickCount)
       )
-      .attr("stroke", "#fff")
-      .select(".domain")
-      .attr("stroke", "#fff");
+      .select(".domain");
     // y axis
     chart
       .append("g")
-      .attr("stroke", "#fff")
       .call(
         d3.axisLeft(y).tickFormat(v => `${formatEther(v).formattedValue} ETH`)
       )
-      .attr("stroke", "#fff")
       .select(".domain")
-      .attr("stroke", "#fff")
       .append("text")
-      .attr("fill", "#fff")
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
       .attr("dy", "0.71em")
@@ -313,27 +305,27 @@ class PerformanceGraph extends Component {
     chart
       .append("path")
       .datum(selectedSeriesData[0].data)
-      .attr("fill", "none")
       .attr("stroke", `${selectedSeriesData[0].color}`)
       .attr("stroke-linejoin", "round")
       .attr("stroke-linecap", "round")
       .attr("stroke-width", 2)
       .attr("d", line);
-    chart
-      .selectAll("g")
-      .selectAll(".tick line")
-      .attr("stroke", "#fff");
+    chart.selectAll("g").selectAll(".tick line");
 
-    const focus = this.chart
-      .append("g")
-      .attr("stroke", "#fff")
-      .attr("color", "#fff")
-      .attr("fill", "#fff")
-      .style("display", "none");
+    const focus = this.chart.append("g").style("display", "none");
 
-    focus.append("circle").attr("r", 4.5);
-    focus.append("text").attr("id", "crosshair_text_eth");
-    focus.append("text").attr("id", "crosshair_text_date");
+    focus
+      .append("circle")
+      .attr("r", 4.5)
+      .attr("fill", "white");
+    focus
+      .append("text")
+      .attr("id", "crosshair_text_eth")
+      .attr("fill", "white");
+    focus
+      .append("text")
+      .attr("id", "crosshair_text_date")
+      .attr("fill", "white");
 
     this.chart
       .append("rect")
