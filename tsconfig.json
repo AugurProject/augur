@@ -41,7 +41,6 @@
     "./packages/augur-node",
     "./packages/augur-contract-sdk",
     "./packages/augur-tools",
-    "./packages/typings-example",
     "./packages/augur-types"
   ]
 }
