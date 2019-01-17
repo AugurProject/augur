@@ -37,10 +37,10 @@ export class GenerateReplacementTypesForGenerics {
             ts.ScriptTarget.Latest
         );
 
-        // Import 'bn.js'
-        const bigNumberIdentifier = ts.createIdentifier("ethers.utils.BigNumber");
+        // Import 'ethers'
+        const bigNumberIdentifier = ts.createIdentifier("ethers");
 
-        const bigNumberTypeReferenceNode = ts.createTypeReferenceNode(bigNumberIdentifier, undefined);
+        const bigNumberTypeReferenceNode = ts.createTypeReferenceNode("ethers.utils.BigNumber", undefined);
         const moduleReferenceExpression = ts.createStringLiteral("ethers");
         const externalModuleReference = ts.createExternalModuleReference(moduleReferenceExpression);
         statements.push(ts.createImportEqualsDeclaration(undefined, undefined, bigNumberIdentifier, externalModuleReference));
