@@ -29,6 +29,7 @@ jobs:
       - bash: |
           set -euo pipefail
           echo "Build SourceBranch: $(Build.SourceBranch)"
+          echo "##vso[task.setVariable variable=AUGUR_CORE]true";
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
