@@ -90,6 +90,7 @@ jobs:
           versionSpec: '10.x'
       - bash: |
           set -euo pipefail
+          echo "##vso[task.setVariable variable=AUGUR_CORE]true";
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
