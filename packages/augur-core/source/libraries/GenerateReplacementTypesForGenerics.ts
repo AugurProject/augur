@@ -38,12 +38,13 @@ export class GenerateReplacementTypesForGenerics {
         );
 
         // Import 'ethers'
-        const bigNumberIdentifier = ts.createIdentifier("ethers");
+        const ethersIdentifier = ts.createIdentifier("ethers");
+        const ethersNamedImports = ts.createNamedImports([ts.createImportSpecifier(undefined, ethersIdentifier)]);
+        const ethersModuleName = ts.createStringLiteral("ethers");
+        const ethersImportClause = ts.createImportClause(undefined, ethersNamedImports);
+        statements.push(ts.createImportDeclaration(undefined, undefined, ethersImportClause, ethersModuleName));
 
-        const bigNumberTypeReferenceNode = ts.createTypeReferenceNode("ethers.utils.BigNumber", undefined);
-        const moduleReferenceExpression = ts.createStringLiteral("ethers");
-        const externalModuleReference = ts.createExternalModuleReference(moduleReferenceExpression);
-        statements.push(ts.createImportEqualsDeclaration(undefined, undefined, bigNumberIdentifier, externalModuleReference));
+        const ethersBigNumberTypeNode = ts.createTypeReferenceNode("ethers.utils.BigNumber", undefined);
 
         // GenericContractInterface file import.
         const genericFileName = path.parse(genericFilePath).name;
@@ -62,7 +63,7 @@ export class GenerateReplacementTypesForGenerics {
         this.nodesToAlias.forEach((t) => {
             if(t.name) {
                 const r = ts.createPropertyAccess(sourceFileNamespaceIdentifier, t.name);
-                const i = ts.createExpressionWithTypeArguments([bigNumberTypeReferenceNode], r);
+                const i = ts.createExpressionWithTypeArguments([ethersBigNumberTypeNode], r);
                 const h = ts.createHeritageClause(ts.SyntaxKind.ExtendsKeyword, [i]);
                 const e = ts.createClassDeclaration(undefined, [
                     ts.createToken(ts.SyntaxKind.ExportKeyword)
