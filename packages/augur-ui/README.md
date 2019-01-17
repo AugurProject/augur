@@ -15,7 +15,6 @@ There are several configurations to run it on testnet:
 
 Production: 
 
-There is an electron app that contains augur-node and augur UI. This app allows the user to point to testnets and mainnet. [Augur App](https://github.com/AugurProject/augur-app). It is a faster way to interact with mainnet because augur-node is local. Enjoy!
 ***
 
 ## Rinkeby Ethereum Account

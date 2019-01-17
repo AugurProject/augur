@@ -104,7 +104,7 @@ module.exports = {
   modulePaths: [
     "<rootDir>",
     "<rootDir>/src/",
-    "<rootDir>/test/unit",
+    "<rootDir>/test/unit"
   ],
 
   // Allows you to use a custom runner instead of Jest's default test runner
@@ -113,7 +113,7 @@ module.exports = {
   // The paths to modules that run some code to configure or set up the testing environment before each test
   // setupFiles: ["<rootDir>/test/setup.js"],
   // The path to a module that runs some code to configure or set up the testing framework before each test
-  // setupTestFrameworkScriptFile: null,
+  setupTestFrameworkScriptFile: "<rootDir>/test/setup.js",
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
@@ -128,12 +128,13 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ["<rootDir>/test/unit/**/*.(j|t)s"],
+  testMatch: ["<rootDir>/test/(unit|integration)/**/*.(j|t)s"],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
     "/node_modules/",
     "<rootDir>/test/unit/test.database.js",
+    "<rootDir>/test/setup.js",
   ],
 
   // The regexp pattern Jest uses to detect test files
