@@ -31,6 +31,9 @@
       ],
       "augur.js": [
         "packages/augur.js"
+      ],
+      "augur-state": [
+        "packages/augur-state"
       ]
     }
   },
@@ -41,6 +44,7 @@
     "./packages/augur-node",
     "./packages/augur-contract-sdk",
     "./packages/augur-tools",
-    "./packages/augur-types"
+    "./packages/augur-types",
+    "./packages/augur-state"
   ]
 }

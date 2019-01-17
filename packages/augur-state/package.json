@@ -4,83 +4,49 @@
   "description": "Augur State",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
-  "main": "build/index.js",
-  "typings": "definitions/index",
-  "typescript": {
-    "definition": "definitions/index"
-  },
   "directories": {
     "src": "src"
   },
   "scripts": {
-    "version": "npm run rebuild",
-    "go": "scripts/go.sh",
-    "start": "ts-node ./src/runServer",
-    "debug": "node --inspect-brk ./build/runServer",
+    "version": "yarn rebuild",
+    "start": "ts-node ./src/run",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
     "build": "tsc",
     "watch": "tsc -w",
-    "init-git": "if [ -d \".git\" ]; then exit 0; else git init; fi",
-    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; npm run clean",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
     "prepare": "tsc",
-    "clean": "rm -rf augur*.db build definitions",
-    "rebuild": "npm run clean && npm run build",
-    "clean-start": "npm run rebuild && npm start",
-    "clean-start-local": "npm run rebuild && ETHEREUM_HTTP=http://127.0.0.1:8545 ETHEREUM_WS=ws://127.0.0.1:8546 npm start",
-    "rinkeby-start": "ETHEREUM_HTTP=https://rinkeby.augur.net/ethereum-http ETHEREUM_WS=wss://rinkeby.augur.net/ethereum-ws npm start",
-    "prepush": "npm run lint"
+    "clean": "echo delete database",
+    "rebuild": "yarn clean && yarn build",
+    "clean-start": "yarn rebuild && yarn start",
+    "clean-start-local": "yarn rebuild && ETHEREUM_HTTP=http://127.0.0.1:8545 ETHEREUM_WS=ws://127.0.0.1:8546 yarn start",
+    "prepush": "yarn lint"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AugurProject/augur-node.git"
+    "url": "git+https://github.com/AugurProject/augur.git"
   },
   "bugs": {
-    "url": "https://github.com/AugurProject/augur-node/issues"
+    "url": "https://github.com/AugurProject/augur/issues"
   },
-  "homepage": "https://github.com/AugurProject/augur-node#readme",
+  "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "@types/async": "2.0.50",
-    "@types/express": "4.16.0",
-    "@types/helmet": "0.0.42",
-    "@types/jest": "23.3.10",
-    "@types/lodash": "4.14.118",
-    "@types/node": "8.10.38",
-    "@types/uuid": "3.4.4",
-    "@types/ws": "3.2.1",
     "async": "2.6.1",
-    "augur-artifacts": "7.0.0-0",
-    "bignumber.js": "6.0.0",
+    "augur-artifacts": "10.0.0-0",
     "chalk": "2.4.1",
-    "ethrpc": "6.1.1",
     "express": "4.16.4",
-    "helmet": "3.15.0",
     "io-ts": "1.4.2",
-    "knex": "0.15.2",
     "lodash": "4.17.11",
     "pg": "7.7.1",
     "postinstall-build": "5.0.3",
-    "ts-node": "^6.1.1",
-    "uuid": "3.3.2",
-    "webpack": "4.27.1",
-    "ws": "5.2.2",
     "pouchdb": "7.0.0",
     "ethers": "4.0.20",
     "typescript": "3.2.1",
     "augur-core": "2.0.0-0"
   },
   "devDependencies": {
-    "@babel/plugin-transform-typescript": "7.2.0",
-    "@babel/preset-typescript": "7.1.0",
-    "eslint": "5.10.0",
-    "husky": "0.14.3",
-    "replace-in-file": "3.4.2",
-    "tslint": "5.11.0",
-    "tslint-eslint-rules": "4.1.1",
     "ts-node": "7.0.1"
   },
   "buildDependencies": [
-    "typescript",
-    "tslint",
-    "tslint-eslint-rules"
+    "typescript"
   ]
 }

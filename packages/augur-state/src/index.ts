@@ -1,4 +1,4 @@
 export { SyncController } from "./sync/SyncController";
-export { APIController } from "./api/APIController";
+export { API } from "./api/API";
 export { ServerController } from "./server/ServerController";
 export { Controller } from "./Controller";

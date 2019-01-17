@@ -7,16 +7,12 @@ export class SyncController {
     this.data = data;
   }
 
-  public static async factory(data: number): Promise<SyncController> {
-    const syncController = new SyncController(data);
-    return syncController;
-  }
-
-  public async doThing(data: number): Promise<number> {
-    return await this.doThingInternal(data);
-  }
-
-  private async doThingInternal(data: number): Promise<number> {
-    return data;
+  public async beginSync(data: number): Promise<number> {
+    // TODO connect to / initialize DB
+    // TODO connect to ethereum node
+    // TODO get desired block range
+    // TODO pull and process logs in chunks
+    // TODO start blockstream to pull and process logs as they come in
+    return 1;
   }
 }

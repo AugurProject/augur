@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { sleep } from "./utils/utils";
 
 export class Controller {
   private readonly data: number;
@@ -7,16 +7,12 @@ export class Controller {
     this.data = data;
   }
 
-  public static async factory(data: number): Promise<Controller> {
-    const controller = new Controller(data);
-    return controller;
-  }
-
-  public async doThing(data: number): Promise<number> {
-    return await this.doThingInternal(data);
-  }
-
-  private async doThingInternal(data: number): Promise<number> {
-    return data;
+  public async run(data: number): Promise<number> {
+    // TODO begin sync process
+    // TODO begin server process
+    while (1) {
+      await sleep(1000);
+    }
+    return 1;
   }
 }
