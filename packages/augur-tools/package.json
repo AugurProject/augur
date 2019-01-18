@@ -39,4 +39,7 @@
   },
   "homepage": "https://github.com/augurproject/augur#readme",
   "dependencies": {}
+  "devDependencies": {
+    "options-parser": "0.4.0"
+  }
 }
