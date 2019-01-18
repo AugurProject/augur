@@ -80,7 +80,7 @@
     "ws": "5.2.2"
   },
   "devDependencies": {
-    "eslint": "5.10.0",
+    "eslint": "5.12.1",
     "husky": "0.14.3",
     "node-gyp": "3.8.0",
     "node-pre-gyp": "0.12.0",
