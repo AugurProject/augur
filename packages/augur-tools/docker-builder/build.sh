@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -Eeuxo pipefail
 
 # Make sure you're up to date
 docker pull augurproject/dev-node-geth:latest
