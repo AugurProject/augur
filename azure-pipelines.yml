@@ -47,8 +47,6 @@ jobs:
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
           docker push $CORE_IMAGE_BUILD
         condition: eq(variables.AUGUR_CORE, 'true')
-      - script: "echo ##vso[task.setvariable variable=skipsubsequent;isOutput=true]false"
-        name: printvar
 
   - job: Test_Augur_Core
     dependsOn: Build_Core_Docker
@@ -122,8 +120,6 @@ jobs:
             yarn workspace augur-core docker:run:test:unit -- $TESTS;
           fi
         condition: eq(variables.AUGUR_CORE, 'true')
-      - script: "echo ##vso[task.setvariable variable=skipsubsequent;isOutput=true]false"
-        name: printvar
 
   - job: Test_Augur_UI_and_Node
     displayName: 'Test augur UI and augur-node'
@@ -152,9 +148,6 @@ jobs:
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: 'junit.xml'
-      - script: "echo ##vso[task.setvariable variable=skipsubsequent;isOutput=true]false"
-        name: printvar
-
   - job: Test_Augur_js
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -185,8 +178,6 @@ jobs:
           npx lerna run test --stream --scope augur.js
         displayName: 'test augur.js'
         condition: eq(variables.AUGUR, 'true')
-      - script: "echo ##vso[task.setvariable variable=skipsubsequent;isOutput=true]false"
-        name: printvar
 
   - job: Docker_monorepo
     pool:
@@ -198,5 +189,5 @@ jobs:
         yarn docker:build:all
         yarn workspace augur-tools docker:push
       #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-      condition: and(succeeded(), ne(dependencies.A.outputs['printvar.skipsubsequent'], 'true'))
+      condition: succeeded()
       displayName: 'build and push docker image'
