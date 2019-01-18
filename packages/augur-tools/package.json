@@ -37,5 +37,8 @@
   "bugs": {
     "url": "https://github.com/augurproject/augur/issues"
   },
-  "homepage": "https://github.com/augurproject/augur#readme"
+  "homepage": "https://github.com/augurproject/augur#readme",
+  "devDependencies": {
+    "options-parser": "0.4.0"
+  }
 }
