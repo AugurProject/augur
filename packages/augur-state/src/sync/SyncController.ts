@@ -1,18 +1,20 @@
-import { ethers } from "ethers";
+import { DBController } from '../db/DBController';
+import { Augur } from 'augur-api';
 
-export class SyncController {
-  private readonly data: number;
+export class SyncController<TBigNumber> {
+  private readonly dbController: DBController;
+  private readonly augur: Augur<TBigNumber>;
 
-  public constructor (data: number) {
-    this.data = data;
+  public constructor (dbController: DBController, augur: Augur<TBigNumber>) {
+    this.dbController = dbController;
+    this.augur = augur;
   }
 
-  public async beginSync(data: number): Promise<number> {
-    // TODO connect to / initialize DB
-    // TODO connect to ethereum node
+  public async beginSync(): Promise<void> {
+    const logs = await this.augur.events.getAugurLogs(2687175, 2700000);
+    console.log(`GOT ${logs.length} logs`);
     // TODO get desired block range
     // TODO pull and process logs in chunks
     // TODO start blockstream to pull and process logs as they come in
-    return 1;
   }
 }
