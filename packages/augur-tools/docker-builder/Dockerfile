@@ -36,7 +36,7 @@ RUN echo {} > /augur/packages/augur-artifacts/addresses.json \
   && echo {} > /augur/packages/augur-artifacts/upload-block-numbers.json
 
 WORKDIR /augur/packages/augur-tools
-RUN bash docker-builder/run-geth-and-deploy.sh && rm -rf node_modules
+RUN bash docker-builder/run-geth-and-deploy.sh
 
 EXPOSE 8545 8546 30303 30303/udp 30304/udp
 
