@@ -199,5 +199,4 @@ jobs:
         yarn workspace augur-tools docker:push
       #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       condition: and(succeeded(), ne(dependencies.A.outputs['printvar.skipsubsequent'], 'true'))
-      condition: succeeded()
       displayName: 'build and push docker image'
