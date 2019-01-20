@@ -93,42 +93,9 @@ export default class AccountDeposit extends Component {
         </div>
         <div className={Styles.AccountDeposit__main}>
           <div className={Styles.AccountDeposit__description}>
-            <p>1. Click on your address on the right to copy it</p>
-            <p>
-              2. Go to Coinbase or Wyre (below) and buy Ether/ETH, and paste in
-              your address to send it. <br/><span className={Styles.AccountDeposit__note}>*Note if you want immediate access use a
-              debit card, otherwise you&apos;ll have to wait a few days.</span>
-            </p>
-            <p>3. Check back here to see your updated balance.</p>
-
-          </div>
-          <div className={Styles.AccountDeposit__address}>
-            <h3 className={Styles.AccountDeposit__addressLabel}>
-              Public Account Address
-            </h3>
-            <TextFit mode="single" max={18}>
-              <button
-                id="copy_address"
-                className={Styles.AccountDeposit__copyButtonElement}
-                data-clipboard-text={address}
-                onClick={this.copyClicked}
-              >
-                <span className={Styles.AccountDeposit__addressString}>
-                  {address}
-                </span>
-                <span className={Styles.AccountDeposit__copyButtonContent}>
-                  {this.state.animateCopy ? (
-                    "Copied!"
-                  ) : (
-                    <span className={Styles.AccountDeposit__copyButtonSvg}>
-                      {CopyIcon}
-                    </span>
-                  )}
-                </span>
-              </button>
-              <br/>
-            <QRCode value={address} style={styleQR} />
-            </TextFit>
+            <p>1. Click on your public address to copy it</p>
+            <p>2. Purchase ETH / REP and deposit into your public address</p>
+            <p>3. Check back here to see your updated balances</p>
           </div>
           <div>
           <h3 className={Styles.AccountDeposit__addressLabel}>ETH is used for Trading</h3>
@@ -166,6 +133,33 @@ export default class AccountDeposit extends Component {
               </button>
             </div>
           )}
+          </div>
+          <div className={Styles.AccountDeposit__address}>
+            <h3 className={Styles.AccountDeposit__addressLabel}>
+              My Public Address
+            </h3>
+            <TextFit mode="single" max={18}>
+              <button
+                id="copy_address"
+                className={Styles.AccountDeposit__copyButtonElement}
+                data-clipboard-text={address}
+                onClick={this.copyClicked}
+              >
+                <span className={Styles.AccountDeposit__addressString}>
+                  {address}
+                </span>
+                <span className={Styles.AccountDeposit__copyButtonContent}>
+                  {this.state.animateCopy ? (
+                    "Copied!"
+                  ) : (
+                    <span className={Styles.AccountDeposit__copyButtonSvg}>
+                      {CopyIcon}
+                    </span>
+                  )}
+                </span>
+              </button>
+            <QRCode value={address} style={styleQR} />
+            </TextFit>
           </div>
         </div>
       </section>
