@@ -67,8 +67,8 @@ export class ConnectOptions {
   public blocksPerChunk?: number;
   private readFromEnvironment() {
     const env = process.env;
-    if (env.MAX_REQUEST_RETRIES) this.maxRetries = parseInt(env.MAX_REQUEST_RETRIES, 10);
-    if (env.DELAY_WAIT_MILLIS) this.propagationDelayWaitMillis = parseInt(env.DELAY_WAIT_MILLIS, 10);
+    if (!isNaN(env.MAX_REQUEST_RETRIES)) this.maxRetries = parseInt(env.MAX_REQUEST_RETRIES, 10);
+    if (!isNaN(env.DELAY_WAIT_MILLIS)) this.propagationDelayWaitMillis = parseInt(env.DELAY_WAIT_MILLIS, 10);
 
     if (env.ETHEREUM_HTTP || env.ETHEREUM_WS || env.ETHEREUM_IPC) {
       this.http = env.ETHEREUM_HTTP;
