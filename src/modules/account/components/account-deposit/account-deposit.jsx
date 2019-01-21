@@ -93,50 +93,50 @@ export default class AccountDeposit extends Component {
         </div>
         <div className={Styles.AccountDeposit__main}>
           <div className={Styles.AccountDeposit__description}>
-            <p>1. Click on your address on the right to copy it</p>
-            <p>
-              2. Go to Coinbase or Wyre (below) and buy Ether/ETH, and paste in
-              your address to send it. Note if you want immediate access use a
-              debit card, otherwise you&apos;ll have to wait a few days.
-            </p>
-            <p>3. Come back here after and resume whatever you were doing!</p>
+            <p>1. Click on your public address to copy it</p>
+            <p>2. Purchase ETH / REP and deposit into your public address</p>
+            <p>3. Check back here to see your updated balances</p>
+          </div>
+          <div>
+          <h3 className={Styles.AccountDeposit__addressLabel}>ETH is used for Trading</h3>
+          <div className={Styles.AccountDeposit__0xInstantButton}>
+            <button onClick={() => window.open("http://www.sendwyre.com/")}>
+              Buy ETH using Wyre
+            </button>
+          </div>
+          <div className={Styles.AccountDeposit__0xInstantButton}>
+            <button
+              onClick={() => window.open("https://www.coinbase.com/buy/ETH")}
+            >
+              Buy ETH on Coinbase
+            </button>
+          </div>
+          <br />
+              <h3 className={Styles.AccountDeposit__addressLabel}>REP is used for Reporting</h3>
+          {show0xInstant && (
             <div className={Styles.AccountDeposit__0xInstantButton}>
-              <button onClick={() => window.open("http://www.sendwyre.com/")}>
-                Buy ETH (for trading) using Wyre
+              <button onClick={openZeroExInstant}>
+                Buy REP using 0x instant
               </button>
             </div>
+          )}
+          {!show0xInstant && (
             <div className={Styles.AccountDeposit__0xInstantButton}>
-              <button
-                onClick={() => window.open("https://www.coinbase.com/buy/ETH")}
-              >
-                Buy ETH (for trading) using Coinbase
+              Deposits via 0x Instant are only available on the Ethereum main
+              network and Kovan test network.
+            </div>
+          )}
+          {showAirSwap && (
+            <div className={Styles.AccountDeposit__0xInstantButton}>
+              <button onClick={airSwapOnClick}>
+                Buy REP using AirSwap
               </button>
             </div>
-            <br />
-            {show0xInstant && (
-              <div className={Styles.AccountDeposit__0xInstantButton}>
-                <button onClick={openZeroExInstant}>
-                  Buy REP (for reporting) using 0x instant
-                </button>
-              </div>
-            )}
-            {!show0xInstant && (
-              <div className={Styles.AccountDeposit__0xInstantButton}>
-                Deposits via 0x Instant are only available on the Ethereum main
-                network and Kovan test network.
-              </div>
-            )}
-            {showAirSwap && (
-              <div className={Styles.AccountDeposit__0xInstantButton}>
-                <button onClick={airSwapOnClick}>
-                  Buy REP (for reporting) using AirSwap
-                </button>
-              </div>
-            )}
+          )}
           </div>
           <div className={Styles.AccountDeposit__address}>
             <h3 className={Styles.AccountDeposit__addressLabel}>
-              Public Account Address
+              My Public Address
             </h3>
             <TextFit mode="single" max={18}>
               <button
@@ -158,10 +158,8 @@ export default class AccountDeposit extends Component {
                   )}
                 </span>
               </button>
-            </TextFit>
-          </div>
-          <div>
             <QRCode value={address} style={styleQR} />
+            </TextFit>
           </div>
         </div>
       </section>
