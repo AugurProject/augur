@@ -5,7 +5,7 @@ import { each } from "bluebird";
 import { Augur, BlockRange } from "augur.js";
 import { BlockDetail, ErrorCallback, FormattedEventLog } from "../types";
 import { processLogByName } from "./process-logs";
-import { insertTransactionHash, processBlockByBlockDetails } from "./process-block";
+import { insertTransactionHash, pouchUpsertBlockRow, processBlockByBlockDetails } from "./process-block";
 import { logger } from "../utils/logger";
 
 const BLOCK_DOWNLOAD_PARALLEL_LIMIT = 15;
@@ -46,11 +46,13 @@ async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): 
   });
 }
 
-async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<FormattedEventLog>, blockNumbers: Array<number>, blockDetailsByBlockPromise: Promise<BlockDetailsByBlock>) {
+async function processBatchOfLogs(db: Knex, pouchDB: PouchDB.Database, augur: Augur, allAugurLogs: Array<FormattedEventLog>, blockNumbers: Array<number>, blockDetailsByBlockPromise: Promise<BlockDetailsByBlock>) {
   const blockDetailsByBlock = await blockDetailsByBlockPromise;
   const logsByBlock: { [blockNumber: number]: Array<FormattedEventLog> } = _.groupBy(allAugurLogs, (log) => log.blockNumber);
   await each(blockNumbers, async (blockNumber: number) => {
+    const blockDetail = blockDetailsByBlock[blockNumber];
     const logs = logsByBlock[blockNumber];
+    await pouchUpsertBlockRow(pouchDB, blockDetail, logs || [], true);
     if (logs === undefined || logs.length === 0) return;
     const dbWritePromises: Array<Promise<(db: Knex) => Promise<void>>> = [];
     await each(logs, async (log: FormattedEventLog) => {
@@ -63,7 +65,7 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
     });
     const dbWriteFunctions = await Promise.all(dbWritePromises);
     await db.transaction(async (trx: Knex.Transaction) => {
-      await processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber], true);
+      await processBlockByBlockDetails(trx, augur, blockDetail, true);
       await each(logs, async (log) => await insertTransactionHash(trx, blockNumber, log.transactionHash));
       logger.info(`Processing ${dbWriteFunctions.length} logs`);
       for (const dbWriteFunction of dbWriteFunctions) {
@@ -73,7 +75,7 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
   });
 }
 
-export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toBlock: number, blocksPerChunk: number|undefined, callback: ErrorCallback): void {
+export function downloadAugurLogs(db: Knex, pouchDB: PouchDB.Database, augur: Augur, fromBlock: number, toBlock: number, blocksPerChunk: number|undefined, callback: ErrorCallback): void {
   const batchLogProcessQueue = queue((processFunction: (callback: ErrorCallback) => void, nextFunction: ErrorCallback): void => {
     processFunction(nextFunction);
   }, 1);
@@ -87,7 +89,7 @@ export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toB
       lastBlockDetails = blockDetailPromise;
       batchLogProcessQueue.push(async (nextBatch) => {
         try {
-          await processBatchOfLogs(db, augur, batchOfAugurLogs, blockNumbers, blockDetailPromise);
+          await processBatchOfLogs(db, pouchDB, augur, batchOfAugurLogs, blockNumbers, blockDetailPromise);
           nextBatch(null);
         } catch (err) {
           batchLogProcessQueue.kill();
