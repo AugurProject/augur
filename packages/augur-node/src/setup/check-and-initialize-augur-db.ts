@@ -8,8 +8,9 @@ import { setOverrideTimestamp } from "../blockchain/process-block";
 import { postProcessDatabaseResults } from "../server/post-process-database-results";
 import { monitorEthereumNodeHealth } from "../blockchain/monitor-ethereum-node-health";
 import { logger } from "../utils/logger";
-import { ConnectOptions, ErrorCallback } from "../types";
+import { ErrorCallback } from "../types";
 import { DB_VERSION, DB_FILE } from "../constants";
+import { ConnectOptions } from "./connectOptions";
 interface NetworkIdRow {
   networkId: string;
   overrideTimestamp: number|null;
