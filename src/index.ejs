@@ -80,7 +80,7 @@
 
   <!-- AirSwap Widget -->
   <script src="https://cdn.airswap.io/gallery/airswap-trader.js" async defer></script>
-  <% if(htmlWebpackPlugin.options.environment === 'development') { %>
+  <% if(htmlWebpackPlugin.options.environment === 'production') { %>
     <meta name="google-site-verification" content="0yoO8otlMdNBBDxuvq_KxlJyoSzIhBc8eK_7FzJ1_qg" />
       <!-- Google Translate -->
     <script type="text/javascript">
@@ -102,13 +102,6 @@
     <span id="splash-text"></span>
   </div>
 </div>
-
-<% if(htmlWebpackPlugin.options.environment === 'development') { %>
-
-
-
-<% } %>
-
 <!-- NOTE: all relevant entry scripts are automatically appended here during build -->
 </body>
 </html>
