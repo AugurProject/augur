@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import { AugurNodeController } from "./controller";
-import { ConnectOptions } from "./types";
 import { logger } from "./utils/logger";
+import { ConnectOptions } from "./setup/connectOptions";
 
 export function start(retries: number, config: ConnectOptions, databaseDir: string, isWarpSync: boolean) {
   const augur = new Augur();
