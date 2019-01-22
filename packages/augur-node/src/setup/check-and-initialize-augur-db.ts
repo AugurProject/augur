@@ -29,6 +29,7 @@ function getUploadBlockPathFromNetworkId(networkId: string, databaseDir: string|
 function createKnex(networkId: string, dbPath: string): Knex {
   logger.info(dbPath);
   if (process.env.DATABASE_URL) {
+
     // Be careful about non-serializable transactions. We expect database writes to be processed from the blockchain, serially, in block order.
     return Knex({
       client: "pg",
@@ -146,12 +147,8 @@ export async function checkAndInitializeAugurDb(augur: Augur, networkId: string,
   if (databaseDamaged) db = await getFreshDatabase(db, networkId, knexDatabasePath);
   await db.migrate.latest({ directory: path.join(__dirname, "../migrations") });
   await initializeNetworkInfo(db, augur);
-<<<<<<< HEAD
   return {
     knex: db,
     pouch: new PouchDB(pouchDatabasePath),
   };
-=======
-  return db;
->>>>>>> origin/master
 }
