@@ -578,19 +578,86 @@ div.ErrorField:focus {
   }
 
   .ModalDisclaimer__TextBox {
-    margin: 0 1rem 1.5rem;
+    margin: 0 1rem 1rem;
+    max-height: 20rem;
     padding: 0.5rem 1rem;
   }
 
+  .ModalDisclaimer__helperText,
   .ModalDisclaimer__checkbox {
     > label {
+      font-size: @font-size-small;
+      line-height: @font-size-small;
       margin: 0 1.5rem;
+    }
+  }
+
+  .ModalDisclaimer {
+    > h1 {
+      margin: 0 0 1rem;
     }
   }
 }
 
 @media @breakpoint-mobile-extra-small {
   .ModalDisclaimer__TextBox {
+    margin: 0 1rem 1rem;
     max-height: 10rem;
+  }
+
+  .ModalDisclaimer {
+    padding: 1rem 0;
+
+    > h1 {
+      margin: 0 0 1rem;
+    }
+
+    .ModalDisclaimer__helperText,
+    .ModalDisclaimer__checkbox {
+      > label {
+        margin: 0 1rem;
+      }
+    }
+
+    .ActionButtons {
+      padding: 1rem 0 0;
+    }
+  }
+}
+
+@media @breakpoint-mobile-smaller-height,
+  @breakpoint-mobile-extra-small-height {
+  .ModalDisclaimer {
+    max-height: 75vh;
+    max-width: 90vw;
+    padding: 0.5rem 0;
+
+    > h1 {
+      margin: 0 0 0.5rem;
+    }
+
+    .ActionButtons {
+      margin: 0;
+      max-width: 90vw;
+      padding: 0.5rem 0 0;
+    }
+  }
+
+  .ModalDisclaimer__TextBox {
+    margin: 0 0.5rem 0.5rem;
+    max-height: 6rem;
+    max-width: none;
+    padding: 0 0.5rem;
+  }
+
+  .ModalDisclaimer__helperText,
+  .ModalDisclaimer__checkbox {
+    margin-bottom: 0.5rem;
+
+    > label {
+      font-size: @font-size-small;
+      line-height: @font-size-small;
+      margin: 0 1rem;
+    }
   }
 }

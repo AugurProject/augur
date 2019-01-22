@@ -28,7 +28,7 @@
 @step-2-3: 450px;
 
 @step-3: 575px; // Decreased Height
-
+@step-3-4: 375px; // iphone X landscape height
 @step-4: 320px; // extra small mobile: iPhone 5/se
 
 //		Rules
@@ -68,3 +68,7 @@
 @breakpoint-mobile-extra-small: ~"all and (max-width: @{step-4})"; // 320
 // Mobile (up-to-step-3)
 @breakpoint-mobile-small-height: ~"all and (max-height: @{step-3})";
+// Mobile (between step 3 and 4) iphoneX landscape
+@breakpoint-mobile-smaller-height: ~"all and (max-height: @{step-3-4})";
+// Mobile (up-to-step-4)
+@breakpoint-mobile-extra-small-height: ~"all and (max-height: @{step-4})";
