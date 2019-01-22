@@ -7,7 +7,7 @@ import { bulkSyncAugurNodeWithBlockchain } from "./blockchain/bulk-sync-augur-no
 import { startAugurListeners } from "./blockchain/start-augur-listeners";
 import { createDbAndConnect, renameBulkSyncDatabaseFile } from "./setup/check-and-initialize-augur-db";
 import { clearOverrideTimestamp } from "./blockchain/process-block";
-import { ConnectOptions, ErrorCallback, GenericCallback } from "./types";
+import { ErrorCallback, GenericCallback } from "./types";
 import { ControlMessageType, DB_VERSION, DB_FILE, NETWORK_NAMES } from "./constants";
 import { logger } from "./utils/logger";
 import { LoggerInterface } from "./utils/logger/logger";
@@ -16,6 +16,7 @@ import { format } from "util";
 import { getFileHash } from "./sync/file-operations";
 import { BackupRestore } from "./sync/backup-restore";
 import { checkOrphanedOrders } from "./blockchain/check-orphaned-orders";
+import { ConnectOptions } from "./setup/connectOptions";
 
 export interface SyncedBlockInfo {
   lastSyncBlockNumber: number;

@@ -9,8 +9,10 @@ import { setOverrideTimestamp } from "../blockchain/process-block";
 import { postProcessDatabaseResults } from "../server/post-process-database-results";
 import { monitorEthereumNodeHealth } from "../blockchain/monitor-ethereum-node-health";
 import { logger } from "../utils/logger";
-import { ConnectOptions, ErrorCallback } from "../types";
+import { ErrorCallback } from "../types";
 import { DB_VERSION, DB_FILE, POUCH_DB_DIR } from "../constants";
+import { ConnectOptions } from "./connectOptions";
+
 interface NetworkIdRow {
   networkId: string;
   overrideTimestamp: number|null;
@@ -144,8 +146,12 @@ export async function checkAndInitializeAugurDb(augur: Augur, networkId: string,
   if (databaseDamaged) db = await getFreshDatabase(db, networkId, knexDatabasePath);
   await db.migrate.latest({ directory: path.join(__dirname, "../migrations") });
   await initializeNetworkInfo(db, augur);
+<<<<<<< HEAD
   return {
     knex: db,
     pouch: new PouchDB(pouchDatabasePath),
   };
+=======
+  return db;
+>>>>>>> origin/master
 }
