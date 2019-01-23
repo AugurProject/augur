@@ -18,10 +18,9 @@ import 'factories/MapFactory.sol';
 import 'libraries/token/ERC20Basic.sol';
 import 'libraries/math/SafeMathUint256.sol';
 import 'libraries/math/SafeMathInt256.sol';
-import 'factories/MailboxFactory.sol';
-import 'reporting/IMailbox.sol';
 import 'reporting/Reporting.sol';
 import 'reporting/IInitialReporter.sol';
+import 'reporting/IAuction.sol';
 
 
 contract Market is ITyped, Initializable, Ownable, IMarket {
@@ -47,7 +46,6 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     uint256 private numOutcomes;
     bytes32 private winningPayoutDistributionHash;
     uint256 private validityBondAttoEth;
-    IMailbox private marketCreatorMailbox;
     uint256 private finalizationTime;
     uint256 private noShowBond;
     bool private disputePacingOn;
@@ -57,10 +55,11 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     IReportingParticipant[] public participants;
     Map public crowdsourcers;
     IShareToken[] private shareTokens;
+    uint256 public marketCreatorFeesAttoEth;
 
     IAugur public augur;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public payable beforeInitialized returns (bool _success) {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized returns (bool _success) {
         endInitialization();
         augur = _augur;
         _numOutcomes += 1; // The INVALID outcome is always first
@@ -84,7 +83,6 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         feeDivisor = _feePerEthInAttoEth == 0 ? 0 : 1 ether / _feePerEthInAttoEth;
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
         participants.push(_initialReporterFactory.createInitialReporter(augur, this, _designatedReporterAddress));
-        marketCreatorMailbox = MailboxFactory(augur.lookup("MailboxFactory")).createMailbox(augur, owner, this);
         crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, this);
         for (uint256 _outcome = 0; _outcome < numOutcomes; _outcome++) {
             shareTokens.push(createShareToken(_outcome));
@@ -96,8 +94,8 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     function assessFees() private returns (bool) {
         noShowBond = universe.getOrCacheDesignatedReportNoShowBond();
         require(getReputationToken().balanceOf(this) >= noShowBond);
-        require(msg.value >= universe.getOrCacheValidityBond());
-        validityBondAttoEth = msg.value;
+        validityBondAttoEth = cash.balanceOf(this);
+        require(validityBondAttoEth >= universe.getOrCacheValidityBond());
         return true;
     }
 
@@ -201,7 +199,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         disputeWindow.onMarketFinalized();
         universe.decrementOpenInterestFromMarket(shareTokens[0].totalSupply().mul(numTicks));
         redistributeLosingReputation();
-        distributeValidityBond();
+        distributeValidityBondAndMarketCreatorFees();
         finalizationTime = augur.getTimestamp();
         augur.logMarketFinalized(universe);
         return true;
@@ -218,7 +216,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     }
 
     function redistributeLosingReputation() private returns (bool) {
-        // If no disputes occured early exit
+        // If no disputes occurred early exit
         if (participants.length == 1) {
             return true;
         }
@@ -259,12 +257,20 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         return _amount / feeDivisor;
     }
 
-    function distributeValidityBond() private returns (bool) {
-        // If the market resolved to invalid the bond gets sent to the auction. Otherwise it gets returned to the market creator mailbox.
+    function recordMarketCreatorFees(uint256 _marketCreatorFees) public returns (bool) {
+        require(augur.isKnownFeeSender(msg.sender));
+        marketCreatorFeesAttoEth = marketCreatorFeesAttoEth.add(_marketCreatorFees);
+    }
+
+    function distributeValidityBondAndMarketCreatorFees() private returns (bool) {
+        // If the market resolved to invalid the bond gets sent to the auction. Otherwise it gets returned to the market creator.
+        uint256 _bondAndFees = validityBondAttoEth.add(marketCreatorFeesAttoEth);
         if (!isInvalid()) {
-            marketCreatorMailbox.depositEther.value(validityBondAttoEth)();
+            cash.transfer(owner, _bondAndFees);
         } else {
-            cash.depositEtherFor.value(validityBondAttoEth)(universe.getAuction());
+            IAuction _auction = universe.getAuction();
+            cash.transfer(universe.getAuction(), _bondAndFees);
+            _auction.recordFees(_bondAndFees);
         }
         return true;
     }
@@ -401,10 +407,6 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
 
     function getEndTime() public view returns (uint256) {
         return endTime;
-    }
-
-    function getMarketCreatorMailbox() public view returns (IMailbox) {
-        return marketCreatorMailbox;
     }
 
     function isInvalid() public view returns (bool) {

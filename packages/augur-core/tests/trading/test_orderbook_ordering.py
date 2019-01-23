@@ -1,25 +1,28 @@
 #!/usr/bin/env python
 
 from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
-from utils import longTo32Bytes, longToHexString, bytesToHexString, fix, AssertLog, stringToBytes, EtherDelta, PrintGasUsed
+from utils import longTo32Bytes, longToHexString, bytesToHexString, fix, AssertLog, stringToBytes, EtherDelta, PrintGasUsed, BuyWithCash
 from constants import ASK, BID, YES, NO
-from pytest import raises, fixture, mark
-from pprint import pprint
 
-def test_correct_order_for_same_price(contractsFixture, cash, market, universe):
+def test_correct_order_for_same_price(contractsFixture, cash, market):
     createOrder = contractsFixture.contracts['CreateOrder']
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = "42"
     nullAddress = longTo32Bytes(0)
 
     assert orders.getBestOrderId(BID, market.address, 1) == nullAddress
-    orderID1 = createOrder.publicCreateOrder(BID, fix(1), 3001, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=fix('1', '3001'))
-    orderID2 = createOrder.publicCreateOrder(BID, fix(1), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=fix('1', '3000'))
-    orderID3 = createOrder.publicCreateOrder(BID, fix(2), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=fix('2', '3000'))
-    orderID4 = createOrder.publicCreateOrder(BID, fix(3), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=fix('3', '3000'))
-    orderID5 = createOrder.publicCreateOrder(BID, fix(1), 2999, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=fix('1', '2999'))
-    orderID6 = createOrder.publicCreateOrder(BID, fix(4), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=fix('4', '3000'))
+    with BuyWithCash(cash, fix('1', '3001'), tester.k1, "create order 1"):
+        orderID1 = createOrder.publicCreateOrder(BID, fix(1), 3001, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1)
+    with BuyWithCash(cash, fix('1', '3000'), tester.k1, "create order 2"):
+        orderID2 = createOrder.publicCreateOrder(BID, fix(1), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1)
+    with BuyWithCash(cash, fix('2', '3000'), tester.k1, "create order 3"):
+        orderID3 = createOrder.publicCreateOrder(BID, fix(2), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1)
+    with BuyWithCash(cash, fix('3', '3000'), tester.k1, "create order 4"):
+        orderID4 = createOrder.publicCreateOrder(BID, fix(3), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1)
+    with BuyWithCash(cash, fix('1', '2999'), tester.k1, "create order 5"):
+        orderID5 = createOrder.publicCreateOrder(BID, fix(1), 2999, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1)
+    with BuyWithCash(cash, fix('4', '3000'), tester.k1, "create order 6"):
+        orderID6 = createOrder.publicCreateOrder(BID, fix(4), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1)
     assert orders.getWorseOrderId(orderID1) == orderID2
     assert orders.getWorseOrderId(orderID2) == orderID3
     assert orders.getWorseOrderId(orderID3) == orderID4
@@ -41,10 +44,14 @@ def test_no_orphans_when_same_price(contractsFixture, cash, market, universe):
 
     # create orders
     assert orders.getBestOrderId(BID, market.address, 1) == nullAddress
-    orderID1 = createOrder.publicCreateOrder(BID, fix(1), 3001, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=fix('1', '3001'))
-    orderID2 = createOrder.publicCreateOrder(BID, fix(1), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=fix('1', '3000'))
-    orderID3 = createOrder.publicCreateOrder(BID, fix(2), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=fix('2', '3000'))
-    orderID4 = createOrder.publicCreateOrder(BID, fix(3), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=fix('3', '3000'))
+    with BuyWithCash(cash, fix('1', '3001'), tester.k1, "create order 1"):
+        orderID1 = createOrder.publicCreateOrder(BID, fix(1), 3001, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1)
+    with BuyWithCash(cash, fix('1', '3000'), tester.k1, "create order 2"):
+        orderID2 = createOrder.publicCreateOrder(BID, fix(1), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1)
+    with BuyWithCash(cash, fix('2', '3000'), tester.k1, "create order 3"):
+        orderID3 = createOrder.publicCreateOrder(BID, fix(2), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1)
+    with BuyWithCash(cash, fix('3', '3000'), tester.k1, "create order 4"):
+        orderID4 = createOrder.publicCreateOrder(BID, fix(3), 3000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1)
     assert orders.getWorseOrderId(orderID1) == orderID2
     assert orders.getWorseOrderId(orderID2) == orderID3
     assert orders.getWorseOrderId(orderID3) == orderID4

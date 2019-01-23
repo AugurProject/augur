@@ -3,7 +3,7 @@
 from ethereum.tools import tester
 from ethereum.tools.tester import TransactionFailed
 from pytest import raises, mark
-from utils import longTo32Bytes, longToHexString, fix, AssertLog, bytesToHexString
+from utils import longTo32Bytes, longToHexString, fix, AssertLog, bytesToHexString, BuyWithCash
 from constants import BID, ASK, YES, NO
 
 tester.STARTGAS = long(6.7 * 10**6)
@@ -25,7 +25,8 @@ def test_cancelBid(contractsFixture, cash, market, universe):
     marketInitialCash = cash.balanceOf(market.address)
     marketInitialYesShares = yesShareToken.totalSupply()
     marketInitialNoShares = noShareToken.totalSupply()
-    orderID = createOrder.publicCreateOrder(orderType, amount, fxpPrice, market.address, outcomeID, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender=tester.k1, value = fix('10000'))
+    with BuyWithCash(cash, fix(fxpPrice), tester.k1, "The sender didn't get cost deducted for create order"):
+        orderID = createOrder.publicCreateOrder(orderType, amount, fxpPrice, market.address, outcomeID, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender=tester.k1)
 
     assert orderID, "Order ID should be non-zero"
     assert orders.getOrderCreator(orderID), "Order should have an owner"
@@ -50,7 +51,8 @@ def test_cancelBid(contractsFixture, cash, market, universe):
     assert orders.getOrderSharesEscrowed(orderID) == 0
     assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
-    assert(creatorInitialETH == contractsFixture.chain.head_state.get_balance(tester.a1)), "Maker's ETH should be the same as before the order was placed"
+    assert(contractsFixture.chain.head_state.get_balance(tester.a1) == creatorInitialETH - fix('6000')), "Maker's ETH should be the deducted order cost"
+    assert(cash.balanceOf(tester.a1) == fix('6000')), "Maker's cash balance should be order size"
     assert(marketInitialCash == cash.balanceOf(market.address)), "Market's cash balance should be the same as before the order was placed"
     assert(creatorInitialShares == yesShareToken.balanceOf(tester.a1)), "Maker's shares should be unchanged"
     assert(marketInitialYesShares == yesShareToken.totalSupply()), "Market's yes shares should be unchanged"
@@ -73,7 +75,8 @@ def test_cancelAsk(contractsFixture, cash, market):
     marketInitialCash = cash.balanceOf(market.address)
     marketInitialYesShares = yesShareToken.totalSupply()
     marketInitialNoShares = noShareToken.totalSupply()
-    orderID = createOrder.publicCreateOrder(orderType, amount, fxpPrice, market.address, outcomeID, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender=tester.k1, value = fix('10000'))
+    with BuyWithCash(cash, fix(10000 - fxpPrice), tester.k1, "create order"):
+        orderID = createOrder.publicCreateOrder(orderType, amount, fxpPrice, market.address, outcomeID, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender=tester.k1)
     assert(orderID != bytearray(32)), "Order ID should be non-zero"
     assert orders.getOrderCreator(orderID), "Order should have an owner"
 
@@ -88,7 +91,7 @@ def test_cancelAsk(contractsFixture, cash, market):
     assert orders.getOrderSharesEscrowed(orderID) == 0
     assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
-    assert(creatorInitialETH == contractsFixture.chain.head_state.get_balance(tester.a1)), "Maker's ETH should be the same as before the order was placed"
+    assert(contractsFixture.chain.head_state.get_balance(tester.a1) == creatorInitialETH - fix(10000 - fxpPrice)), "Maker's ETH should be the same as before the order was placed"
     assert(marketInitialCash == cash.balanceOf(market.address)), "Market's cash balance should be the same as before the order was placed"
     assert(creatorInitialShares == yesShareToken.balanceOf(tester.a1)), "Maker's shares should be unchanged"
     assert(marketInitialYesShares == yesShareToken.totalSupply()), "Market's yes shares should be unchanged"
@@ -108,7 +111,8 @@ def test_cancelWithSharesInEscrow(contractsFixture, cash, market, universe):
     completeSetFees = marketCreatorFee + reporterFee
 
     # buy complete sets
-    assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = tester.k1, value=fix('12', market.getNumTicks()))
+    with BuyWithCash(cash, fix('12', market.getNumTicks()), tester.k1, "buy complete set"):
+        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = tester.k1)
     assert cash.balanceOf(tester.a1) == fix('0')
     assert yesShareToken.balanceOf(tester.a1) == fix(12)
     assert noShareToken.balanceOf(tester.a1) == fix(12)
@@ -157,7 +161,8 @@ def test_cancelWithSharesInEscrowAsk(contractsFixture, cash, market, universe):
     completeSetFees = marketCreatorFee + reporterFee
 
     # buy complete sets
-    assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = tester.k1, value=fix('12', market.getNumTicks()))
+    with BuyWithCash(cash, fix('12', market.getNumTicks()), tester.k1, "buy complete set"):
+        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = tester.k1)
     assert cash.balanceOf(tester.a1) == fix('0')
     assert yesShareToken.balanceOf(tester.a1) == fix(12)
     assert noShareToken.balanceOf(tester.a1) == fix(12)
@@ -201,8 +206,8 @@ def test_exceptions(contractsFixture, cash, market):
     fxpPrice = 6000
     outcomeID = YES
     tradeGroupID = "42"
-    marketInitialCash = cash.balanceOf(market.address)
-    orderID = createOrder.publicCreateOrder(orderType, amount, fxpPrice, market.address, outcomeID, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender=tester.k1, value = fix('10000'))
+    with BuyWithCash(cash, fix(fxpPrice), tester.k1, "create order"):
+        orderID = createOrder.publicCreateOrder(orderType, amount, fxpPrice, market.address, outcomeID, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender=tester.k1)
     assert(orderID != bytearray(32)), "Order ID should be non-zero"
 
     # cancelOrder exceptions
@@ -228,7 +233,8 @@ def test_cancelOrders(contractsFixture, cash, market, universe):
     tradeGroupID = "42"
     orderIDs = []
     for i in range(10):
-        orderIDs.append(createOrder.publicCreateOrder(orderType, amount, fxpPrice + i, market.address, outcomeID, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, value = fix('10000')))
+        with BuyWithCash(cash, fix(fxpPrice + i), tester.k0, "create order"):
+            orderIDs.append(createOrder.publicCreateOrder(orderType, amount, fxpPrice + i, market.address, outcomeID, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID))
 
     for i in range(10):
         assert orders.getAmount(orderIDs[i]) == amount

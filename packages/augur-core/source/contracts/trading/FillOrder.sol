@@ -10,7 +10,6 @@ import 'trading/ICompleteSets.sol';
 import 'trading/IOrders.sol';
 import 'trading/IShareToken.sol';
 import 'trading/Order.sol';
-import 'libraries/CashAutoConverter.sol';
 import 'libraries/Initializable.sol';
 
 
@@ -356,10 +355,11 @@ library Trade {
 }
 
 
-contract FillOrder is CashAutoConverter, Initializable, ReentrancyGuard, IFillOrder {
+contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     using SafeMathUint256 for uint256;
     using Trade for Trade.Data;
 
+    IAugur public augur;
     IOrders public orders;
     address public trade;
 
@@ -372,7 +372,7 @@ contract FillOrder is CashAutoConverter, Initializable, ReentrancyGuard, IFillOr
     }
 
     // CONSIDER: Do we want the API to be in terms of shares as it is now, or would the desired amount of ETH to place be preferable? Would both be useful?
-    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares) external payable afterInitialized convertToAndFromCash returns (uint256) {
+    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares) external afterInitialized returns (uint256) {
         uint256 _result = this.fillOrder(msg.sender, _orderId, _amountFillerWants, _tradeGroupId, _ignoreShares);
         IMarket _market = orders.getMarket(_orderId);
         _market.assertBalances();
@@ -392,14 +392,8 @@ contract FillOrder is CashAutoConverter, Initializable, ReentrancyGuard, IFillOr
         _tradeData.tradeMakerTokensForFillerTokens();
 
         // Sell any complete sets the maker or filler may have ended up holding
-        sellCompleteSets(_tradeData);
-
-        // Turn any remaining Cash balance the creator has into ETH. This is done for the filler though the use of a CashAutoConverter modifier. If someone is taking their own order we skip this step since the modifier will do it and they may need the ETH in the tx to make an order later in the context of publicTrade
-        uint256 _creatorCashBalance = _tradeData.contracts.denominationToken.balanceOf(_tradeData.creator.participantAddress);
-        bool _isOwnOrder = _tradeData.creator.participantAddress == _tradeData.filler.participantAddress;
-        if (_creatorCashBalance > 0 && !_isOwnOrder) {
-            _tradeData.contracts.augur.trustedTransfer(_tradeData.contracts.denominationToken, _tradeData.creator.participantAddress, this, _creatorCashBalance);
-            _tradeData.contracts.denominationToken.withdrawEtherToIfPossible(_tradeData.creator.participantAddress, _creatorCashBalance);
+        if (!_ignoreShares) {
+            sellCompleteSets(_tradeData);
         }
 
         uint256 _amountRemainingFillerWants = _tradeData.filler.sharesToSell.add(_tradeData.filler.sharesToBuy);

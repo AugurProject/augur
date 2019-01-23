@@ -3,21 +3,23 @@ pragma solidity 0.4.24;
 
 import 'trading/IClaimTradingProceeds.sol';
 import 'libraries/ReentrancyGuard.sol';
-import 'libraries/CashAutoConverter.sol';
 import 'reporting/IMarket.sol';
 import 'trading/ICash.sol';
 import 'libraries/math/SafeMathUint256.sol';
 import 'reporting/Reporting.sol';
 import 'IAugur.sol';
 import 'libraries/Initializable.sol';
+import 'IAugur.sol';
 
 
 /**
  * @title ClaimTradingProceeds
  * @dev This allows users to claim their money from a market by exchanging their shares
  */
-contract ClaimTradingProceeds is CashAutoConverter, Initializable, ReentrancyGuard, IClaimTradingProceeds {
+contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingProceeds {
     using SafeMathUint256 for uint256;
+
+    IAugur public augur;
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
@@ -56,11 +58,10 @@ contract ClaimTradingProceeds is CashAutoConverter, Initializable, ReentrancyGua
         IAuction _auction = IAuction(_market.getUniverse().getAuction());
 
         if (_shareHolderShare > 0) {
-            require(_denominationToken.transferFrom(_market, this, _shareHolderShare));
-            _denominationToken.withdrawEtherTo(_shareHolder, _shareHolderShare);
+            require(_denominationToken.transferFrom(_market, _shareHolder, _shareHolderShare));
         }
         if (_creatorShare > 0) {
-            require(_denominationToken.transferFrom(_market, _market.getMarketCreatorMailbox(), _creatorShare));
+            _market.recordMarketCreatorFees(_creatorShare);
         }
         if (_reporterShare > 0) {
             require(_denominationToken.transferFrom(_market, _auction, _reporterShare));

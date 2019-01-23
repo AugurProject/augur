@@ -10,7 +10,6 @@ import 'reporting/IDisputeWindow.sol';
 import 'trading/IShareToken.sol';
 import 'reporting/IReportingParticipant.sol';
 import 'reporting/IV2ReputationToken.sol';
-import 'reporting/IMailbox.sol';
 import 'IAugur.sol';
 
 
@@ -21,7 +20,7 @@ contract IMarket is ITyped, IOwnable {
         SCALAR
     }
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public payable returns (bool _success);
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public returns (bool _success);
     function derivePayoutDistributionHash(uint256[] _payoutNumerators) public view returns (bytes32);
     function getUniverse() public view returns (IUniverse);
     function getDisputeWindow() public view returns (IDisputeWindow);
@@ -32,7 +31,6 @@ contract IMarket is ITyped, IOwnable {
     function getMarketCreatorSettlementFeeDivisor() public view returns (uint256);
     function getForkingMarket() public view returns (IMarket _market);
     function getEndTime() public view returns (uint256);
-    function getMarketCreatorMailbox() public view returns (IMailbox);
     function getWinningPayoutDistributionHash() public view returns (bytes32);
     function getWinningPayoutNumerator(uint256 _outcome) public view returns (uint256);
     function getReputationToken() public view returns (IV2ReputationToken);
@@ -40,6 +38,7 @@ contract IMarket is ITyped, IOwnable {
     function getInitialReporterAddress() public view returns (address);
     function getDesignatedReportingEndTime() public view returns (uint256);
     function deriveMarketCreatorFeeAmount(uint256 _amount) public view returns (uint256);
+    function recordMarketCreatorFees(uint256 _marketCreatorFees) public returns (bool);
     function isContainerForShareToken(IShareToken _shadyTarget) public view returns (bool);
     function isContainerForReportingParticipant(IReportingParticipant _reportingParticipant) public view returns (bool);
     function isInvalid() public view returns (bool);

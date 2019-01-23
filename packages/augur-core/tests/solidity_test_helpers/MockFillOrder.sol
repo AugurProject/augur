@@ -15,7 +15,7 @@ contract MockFillOrder is IFillOrder {
     uint256 private fillOrderAmountFillerWantsValue;
     bytes32 private fillOrderTradeGroupIdValue;
 
-    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares) external payable returns (uint256) {
+    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares) external returns (uint256) {
         publicFillOrderOrderIdValue = _orderId;
         publicFillOrderAmountFillerWantsValue = _amountFillerWants;
         publicFillOrderTradeGroupIdValue = _tradeGroupId;

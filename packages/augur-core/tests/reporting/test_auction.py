@@ -1,7 +1,7 @@
 from ethereum.tools import tester
 from ethereum.tools.tester import TransactionFailed, ABIContract
 from pytest import fixture, raises
-from utils import TokenDelta, EtherDelta, AssertLog
+from utils import TokenDelta, EtherDelta, AssertLog, BuyWithCash
 from reporting_utils import generateFees
 
 def test_bootstrap(localFixture, universe, reputationToken, auction, time, cash):
@@ -38,20 +38,24 @@ def test_bootstrap(localFixture, universe, reputationToken, auction, time, cash)
     # We can purchase some of the REP now. We'll send some extra ETH to confirm it just gets returned too
     repAmount = 10 ** 18
     cost = repAmount * repSalePrice / 10 ** 18
-    with TokenDelta(cash, cost, auction.address, "ETH was not transfered to auction correctly"):
-        with TokenDelta(repAuctionToken, cost, tester.a0, "REP auction token was not transferred to the user correctly"):
-            assert auction.tradeEthForRep(repAmount, value=cost + 20)
+    with BuyWithCash(cash, cost, tester.k0, "trade eth for rep"):
+        with TokenDelta(cash, cost, auction.address, "ETH was not transfered to auction correctly"):
+            with TokenDelta(repAuctionToken, cost, tester.a0, "REP auction token was not transferred to the user correctly"):
+                auction.tradeEthForRep(repAmount)
 
     # Lets purchase the remaining REP in the auction
     repAmount = auction.getCurrentAttoRepBalance()
     cost = repAmount * repSalePrice / 10 ** 18
-    with TokenDelta(cash, cost, auction.address, "ETH was not transfered to auction correctly"):
-        with TokenDelta(repAuctionToken, cost, tester.a0, "REP auction token was not transferred to the user correctly"):
-            assert auction.tradeEthForRep(repAmount, value=cost)
+    with BuyWithCash(cash, cost, tester.k0, "trade eth for rep"):
+        with TokenDelta(cash, cost, auction.address, "ETH was not transfered to auction correctly"):
+            with TokenDelta(repAuctionToken, cost, tester.a0, "REP auction token was not transferred to the user correctly"):
+                assert auction.tradeEthForRep(repAmount)
 
     # If we try to purchase any more the transaction will fail
+    cash.depositEther(value=cost)
     with raises(TransactionFailed):
-        auction.tradeEthForRep(repAmount, value=cost)
+        auction.tradeEthForRep(repAmount)
+    cash.withdrawEther(cost)
 
     # Lets end this auction then move time to the next auction
     endTime = auction.getAuctionEndTime()
@@ -90,7 +94,7 @@ def test_bootstrap(localFixture, universe, reputationToken, auction, time, cash)
     assert time.setTimestamp(endTime + 1)
 
     # We can redeem the eth auction tokens for ETH. Since the auction ended with no other bids we get all the ETH
-    with EtherDelta(cash.balanceOf(ethAuctionToken.address), tester.a0, localFixture.chain, "ETH redemption from eth auction token did not work correctly"):
+    with TokenDelta(cash, cash.balanceOf(ethAuctionToken.address), tester.a0, "Cash redemption from eth auction token did not work correctly"):
         assert ethAuctionToken.redeem()
 
 def test_reporting_fee_from_auction(localFixture, universe, auction, reputationToken, time, cash):
@@ -103,9 +107,10 @@ def test_reporting_fee_from_auction(localFixture, universe, auction, reputationT
     repAuctionToken = localFixture.applySignature("AuctionToken", auction.repAuctionToken())
     repAmount = 5000 * 10 ** 18
     cost = repAmount * repSalePrice / 10 ** 18
-    with TokenDelta(cash, cost, auction.address, "ETH was not transfered to auction correctly"):
-        with TokenDelta(repAuctionToken, cost, tester.a0, "REP was not transferred to the user correctly"):
-            assert auction.tradeEthForRep(repAmount, value=cost)
+    with BuyWithCash(cash, cost, tester.k0, "trade eth for rep"):
+        with TokenDelta(cash, cost, auction.address, "ETH was not transferred to auction correctly"):
+            with TokenDelta(repAuctionToken, cost, tester.a0, "REP was not transferred to the user correctly"):
+                assert auction.tradeEthForRep(repAmount)
 
     # Now we'll go to the first real auction, which will be a reported auction, meaning the result affects the reported REP price
     endTime = auction.getAuctionEndTime()
@@ -128,7 +133,8 @@ def test_reporting_fee_from_auction(localFixture, universe, auction, reputationT
     # Purchasing REP or ETH will update the current auctions derived price, though until the auction ends it will be very innacurate so we dont bother checking here. We'll purchase 1/4 of the available supply of each at the initial price
     repAmount = auction.getCurrentAttoRepBalance() / 4
     cost = repAmount * repSalePrice / 10 ** 18
-    assert auction.tradeEthForRep(repAmount, value=cost)
+    with BuyWithCash(cash, cost, tester.k0, "trade eth for rep"):
+        assert auction.tradeEthForRep(repAmount)
 
     ethSalePrice = auction.getEthSalePriceInAttoRep()
     ethAmount = auction.getCurrentAttoEthBalance() / 4
@@ -141,7 +147,8 @@ def test_reporting_fee_from_auction(localFixture, universe, auction, reputationT
     newRepSalePrice = auction.getRepSalePriceInAttoEth()
     repAmount = auction.getCurrentAttoRepBalance()
     cost = repAmount * newRepSalePrice / 10 ** 18
-    assert auction.tradeEthForRep(repAmount, value=cost)
+    with BuyWithCash(cash, cost, tester.k0, "trade eth for rep"):
+        assert auction.tradeEthForRep(repAmount)
 
     # Now we'll purchase 2 ETH
     newEthSalePrice = auction.getEthSalePriceInAttoRep()
@@ -173,7 +180,8 @@ def test_reporting_fee_from_auction(localFixture, universe, auction, reputationT
 
     repAmount = auction.getCurrentAttoRepBalance()
     cost = repAmount * repSalePrice / 10 ** 18
-    assert auction.tradeEthForRep(repAmount, value=cost)
+    with BuyWithCash(cash, cost, tester.k0, "trade eth for rep"):
+        assert auction.tradeEthForRep(repAmount)
 
     # Now we'll purchase 1 ETH
     ethSalePrice = auction.getEthSalePriceInAttoRep()
@@ -214,7 +222,8 @@ def test_buyback_from_reporting_fees(localFixture, universe, auction, reputation
     repSalePrice = auction.getRepSalePriceInAttoEth()
     repAmount = 5000 * 10 ** 18
     cost = repAmount * repSalePrice / 10 ** 18
-    assert auction.tradeEthForRep(repAmount, value=cost)
+    with BuyWithCash(cash, cost, tester.k0, "trade eth for rep"):
+        assert auction.tradeEthForRep(repAmount)
 
     # Now we'll go to the first real auction
     endTime = auction.getAuctionEndTime()

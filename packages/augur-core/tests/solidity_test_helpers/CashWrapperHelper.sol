@@ -10,7 +10,7 @@ contract CashWrapperHelper is CashAutoConverter {
         augur = _augur;
     }
 
-    function toEthFunction() public convertToAndFromCash returns (bool) {
+    function toEthFunction() public returns (bool) {
         return true;
     }
 }
