@@ -1,16 +1,19 @@
-import { EthersAugurInterfaces, NetworkConfiguration } from "augur-core";
+import { Augur } from "augur-api";
+import { DB } from "../db/DB";
+import { Markets } from "./Markets"
+import { Users } from "./Users"
 
-export class API {
-  private readonly data: number;
-  private readonly test: EthersAugurInterfaces.Trade;
+export class API<TBigNumber> {
+  private readonly augurAPI: Augur<TBigNumber>;
+  private readonly db: DB;
 
-  public constructor (data: number, test: EthersAugurInterfaces.Trade, conf: NetworkConfiguration) {
-    // TODO connection to DB
-    // 
-  }
+  public readonly markets: Markets;
+  public readonly users: Users;
 
-  public static async factory(data: number, test: EthersAugurInterfaces.Trade, conf: NetworkConfiguration): Promise<API> {
-    const apiController = new API(data, test, conf);
-    return apiController;
+  public constructor (augurAPI: Augur<TBigNumber>, db: DB) {
+    this.augurAPI = augurAPI;
+    this.db = db;
+    this.markets = new Markets();
+    this.users = new Users();
   }
 }

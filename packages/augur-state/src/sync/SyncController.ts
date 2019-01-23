@@ -1,12 +1,12 @@
-import { DBController } from '../db/DBController';
+import { DB } from '../db/DB';
 import { Augur } from 'augur-api';
 
 export class SyncController<TBigNumber> {
-  private readonly dbController: DBController;
+  private readonly db: DB;
   private readonly augur: Augur<TBigNumber>;
 
-  public constructor (dbController: DBController, augur: Augur<TBigNumber>) {
-    this.dbController = dbController;
+  public constructor (db: DB, augur: Augur<TBigNumber>) {
+    this.db = db;
     this.augur = augur;
   }
 

@@ -13,4 +13,9 @@ export class Events {
   public async getAugurLogs(fromBlock: number, toBlock: number): Promise<Log[]> {
     return await this.provider.getLogs({fromBlock, toBlock, address: this.augurAddress});
   }
+
+  public async getMarketCreatedLogs(fromBlock: number, toBlock: number): Promise<Log[]> {
+    const topics: Array<string> = [XXX];
+    return await this.provider.getLogs({fromBlock, toBlock, topics, address: this.augurAddress});
+  }
 }
