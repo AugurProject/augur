@@ -26,7 +26,9 @@ ENV PERIOD_TIME=$period_time
 # Install Node
 RUN apk update \
   && apk upgrade \
-  && apk add nodejs nodejs-npm
+  && apk add curl
+  #&& apk add nodejs nodejs-npm
+
 
 COPY --from=builder /augur augur
 COPY --from=core-builder /app/output augur/packages/augur-core/output
@@ -35,8 +37,25 @@ COPY --from=core-builder /app/output/contracts augur/packages/augur-artifacts
 RUN echo {} > /augur/packages/augur-artifacts/addresses.json \
   && echo {} > /augur/packages/augur-artifacts/upload-block-numbers.json
 
+ENV NVM_DIR /usr/local/nvm
+ENV NODE_VERSION 10.15.0
+
+# Replace shell with bash so we can source files
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# Install nvm with node and npm
 WORKDIR /augur/packages/augur-tools
-RUN bash docker-builder/run-geth-and-deploy.sh
+RUN mkdir $NVM_DIR && \
+    curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash \
+    && source $NVM_DIR/nvm.sh \
+    && nvm install $NODE_VERSION \
+    nvm use --delete-prefix $NODE_VERSION \
+    nvm alias default node \
+    bash docker-builder/run-geth-and-deploy.sh
+
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+
 
 EXPOSE 8545 8546 30303 30303/udp 30304/udp
 
