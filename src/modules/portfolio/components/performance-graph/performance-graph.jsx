@@ -286,8 +286,7 @@ class PerformanceGraph extends Component {
           .axisBottom(x)
           .tickFormat(dateTickFormat)
           .ticks(tickCount)
-      )
-      .select(".domain");
+      );
     // y axis
     chart
       .append("g")
@@ -310,7 +309,6 @@ class PerformanceGraph extends Component {
       .attr("stroke-linecap", "round")
       .attr("stroke-width", 2)
       .attr("d", line);
-    chart.selectAll("g").selectAll(".tick line");
 
     const focus = this.chart.append("g").style("display", "none");
 
