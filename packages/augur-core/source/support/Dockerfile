@@ -40,7 +40,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && apt update \
     && apt install -y yarn
 
-RUN yarn
+RUN npm config set scripts-prepend-node-path true; yarn
 
 # Lint
 RUN yarn lint
