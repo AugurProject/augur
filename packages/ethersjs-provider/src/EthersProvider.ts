@@ -42,7 +42,17 @@ export class EthersProvider extends ethers.providers.JsonRpcProvider implements 
         if (!contractInterface) {
             throw new Error(`Contract name ${contractName} not found in EthersJSProvider. Call 'storeAbiData' first with this name and the contract abi`);
         }
-        return contractInterface.parseLog(log);
+        const parsedLog = contractInterface.parseLog(log);
+        let omittedValues = _.map(_.range(parsedLog.values.length), (n) => n.toString());
+        omittedValues.push('length');
+        let logValues = _.omit(parsedLog.values, omittedValues);
+        logValues = _.mapValues(logValues, (val) => {
+            if (val._hex) {
+            return val._hex;
+            }
+            return val;
+        })
+        return logValues;
     }
 
     public async getLogs(filter: Filter): Promise<Array<Log>> {

@@ -60,7 +60,7 @@ export abstract class AbstractDB {
     })
     try {
       const results = await this.db.bulkDocs(mergedRevisionDocuments);
-      return !_.some(results, (response) => !(<PouchDB.Core.Response>response).ok )
+      return _.every(results, (response) => (<PouchDB.Core.Response>response).ok )
     } catch (err) {
       console.error(`ERROR in bulk sync: ${JSON.stringify(err)}`);
       return false;

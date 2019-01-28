@@ -3,7 +3,7 @@ export class ServerController {
   private readonly data: number;
 
   public constructor (data: number) {
-    // TODO iinitialize with a provided API object or create a new one if given configuration
+    // TODO initialize with a provided API object or create a new one if given configuration
     this.data = data;
   }
 

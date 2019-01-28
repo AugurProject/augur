@@ -1,22 +1,20 @@
 import { DB } from './db/DB';
-import { SyncController } from './sync/SyncController';
 import { Augur } from 'augur-api';
 
+// TODO get from augur API
+const UPLOAD_BLOCK_NUMBER = 2687175;
+
 export class Controller<TBigNumber> {
-  private readonly dbName: string;
   private dbController: DB<TBigNumber>;
-  private syncController: SyncController<TBigNumber>;
   private augur: Augur<TBigNumber>;
 
-  public constructor (dbName: string, augur: Augur<TBigNumber>) {
-    this.dbName = dbName;
+  public constructor (augur: Augur<TBigNumber>) {
     this.augur = augur;
   }
 
   public async run(): Promise<void> {
     this.dbController = await DB.createAndInitializeDB();
-    this.syncController = new SyncController<TBigNumber>(this.dbController, this.augur);
-    await this.syncController.beginSync(10000, 5);
+    await this.dbController.sync(this.augur, 100000, 5, UPLOAD_BLOCK_NUMBER);
     // TODO begin server process
   }
 }

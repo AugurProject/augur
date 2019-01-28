@@ -6,13 +6,12 @@ import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 
 const TEST_RINKEBY_URL = "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM";
 const TEST_ACCOUNT = "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
-const TEST_DB_NAME = "test";
 
 export async function start() {
   const provider = new EthersProvider(TEST_RINKEBY_URL);
   const contractDependencies = new ContractDependenciesEthers(provider, undefined, TEST_ACCOUNT);
   const augur = await Augur.create(provider, contractDependencies);
-  const controller = new Controller<ethers.utils.BigNumber>(TEST_DB_NAME, augur);
+  const controller = new Controller<ethers.utils.BigNumber>(augur);
   controller.run();
 }
 

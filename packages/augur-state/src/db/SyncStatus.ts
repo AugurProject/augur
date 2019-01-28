@@ -14,9 +14,9 @@ export class SyncStatus extends AbstractDB {
         return await this.upsertDocument(dbName, document);
     }
 
-    public async getHighestSyncBlock(dbName: string): Promise<number> {
+    public async getHighestSyncBlock(dbName: string, uploadBlockNumber: number): Promise<number> {
         const document = await this.getDocument<SyncDocument>(dbName);
         if (document) return document.blockNumber;
-        return 2687175;//0;
+        return uploadBlockNumber;
     }
 }
