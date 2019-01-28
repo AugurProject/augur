@@ -12,10 +12,7 @@ RUN apk add --no-cache --virtual .build-deps \
 RUN set -ex; \
     \
     wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py'; \
-    \
     python2 get-pip.py ; \
-    pip --version; \
-    \
     find /usr/local -depth \
         \( \
             \( -type d -a \( -name test -o -name tests \) \) \
