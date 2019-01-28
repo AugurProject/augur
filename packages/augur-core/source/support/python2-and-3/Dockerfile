@@ -1,5 +1,7 @@
 # This file starts with an official Python3, and just jams in the Dockerbuild from a Python2.
-FROM python:3.7-stretch
+FROM python:3.7.2-alpine
+
+RUN apk add --no-cache python2
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 19.0
