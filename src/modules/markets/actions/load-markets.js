@@ -130,10 +130,12 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (
   switch (filterOptions.filter) {
     case MARKET_REPORTING: {
       // reporting markets only:
-      filter.push(REPORTING_STATE.DESIGNATED_REPORTING);
-      filter.push(REPORTING_STATE.OPEN_REPORTING);
-      filter.push(REPORTING_STATE.CROWDSOURCING_DISPUTE);
-      filter.push(REPORTING_STATE.AWAITING_NEXT_WINDOW);
+      filter.push([
+        REPORTING_STATE.DESIGNATED_REPORTING,
+        REPORTING_STATE.OPEN_REPORTING,
+        REPORTING_STATE.CROWDSOURCING_DISPUTE,
+        REPORTING_STATE.AWAITING_NEXT_WINDOW
+      ]);
       filter.forEach(filterType => {
         parallelParams[filterType] = next =>
           augur.markets.getMarkets(
@@ -145,8 +147,10 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (
     }
     case MARKET_CLOSED: {
       // resolved markets only:
-      filter.push(REPORTING_STATE.AWAITING_FINALIZATION);
-      filter.push(REPORTING_STATE.FINALIZED);
+      filter.push([
+        REPORTING_STATE.AWAITING_FINALIZATION,
+        REPORTING_STATE.FINALIZED
+      ]);
       filter.forEach(filterType => {
         parallelParams[filterType] = next =>
           augur.markets.getMarkets(
