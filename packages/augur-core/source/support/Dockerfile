@@ -4,12 +4,26 @@
 # The build process is structured this way to encourage fail fast behavior so
 # that this image's build will fail earlier for compiling contracts than
 # for other pieces
-FROM augurproject/python2-and-3:latest
-#FROM python:3.6.6-stretch
+FROM augurproject/augur:latest as augur
+
+
+FROM augurproject/python2-and-3:latest as builder
 ARG SOLC_VERSION=v0.4.24
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
-	&& apt-get install -y nodejs
+COPY --from=augur /usr/local/ /usr/local
+COPY --from=augur /opt/ /opt/
+
+RUN apk add --no-cache --virtual .build-deps \
+        bash \
+        gcc \
+        g++ \
+        git \
+        libffi-dev \
+        linux-headers \
+        make \
+        musl-dev \
+        openssl-dev \
+        python2-dev
 
 RUN wget --quiet --output-document /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux \
 	&& chmod a+x /usr/local/bin/solc
@@ -18,9 +32,11 @@ WORKDIR /app
 
 COPY packages/augur-core/requirements.txt /app/requirements.txt
 
-RUN /usr/local/bin/pip2 install --upgrade pip setuptools \
-	&& /usr/local/bin/pip2 install --upgrade pip-tools \
-	&& /usr/local/bin/pip2 install -r requirements.txt
+RUN python2 -m pip install --upgrade pip setuptools \
+    && python2 -m pip install --upgrade pip-tools \
+    && python2 -m pip install -r requirements.txt
+    #&& apk del .build-deps
+
 
 # Install basics of the application
 COPY packages/augur-core/.soliumrc.json /app/.soliumrc.json
@@ -35,28 +51,41 @@ COPY packages/augur-core/package.json /app/package.json
 COPY packages/augur-core/.babelrc.js /app/.babelrc.js
 COPY packages/augur-core/jest.config.js /app/jest.config.js
 
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-    && apt update \
-    && apt install -y yarn
-
-RUN npm config set scripts-prepend-node-path true; yarn
-
-# Lint
-RUN yarn lint
-
-# Build first chunk
-RUN yarn build:source
-RUN yarn build:contracts
-
-# Build contract interfaces
-RUN yarn build:interfaces
-
 # Copy source
 COPY packages/augur-core/source/ /app/source/
 COPY packages/augur-core/tests/ /app/tests/
 
+
+RUN yarn && yarn lint
+
+# cleanup
+
+
+# Lint
+# RUN yarn lint
+
+# Build first chunk
+RUN yarn build:source
+RUN find .
+RUN pwd && ls -l source/tools/ && yarn build:contracts
+
+# Build contract interfaces
+RUN yarn build:interfaces
+
+
 # Copy the git info so ContractDeployer can read the hash on deploy
 RUN yarn build:source
+
+RUN apk del .build-deps
+
+FROM alpine:3.8
+
+RUN apk add --no-cache \
+    libstdc++
+
+COPY --from=builder /usr/local/ /usr/local
+COPY --from=builder /opt/ /opt/
+COPY --from=builder /app/ /app/
+
 
 ENTRYPOINT ["yarn"]
