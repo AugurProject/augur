@@ -6,7 +6,8 @@ RUN apk add --no-cache python2
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 19.0
 
-RUN apt-get update && apt-get install -y --no-install-recommends python-dev
+RUN apk add --no-cache --virtual .build-deps \
+        python2-dev
 
 RUN set -ex; \
     \
@@ -21,7 +22,8 @@ RUN set -ex; \
             -o \
             \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
         \) -exec rm -rf '{}' +; \
-    rm -f get-pip.py
+    rm -f get-pip.py \
+    && apk del .build-deps
 
 # install "virtualenv", since the vast majority of users of this image will want it
 #RUN pip2 install --no-cache-dir virtualenv
