@@ -1,7 +1,7 @@
 
+// TODO
 export class Users {
-    constructor() {
-    }
+    constructor() { }
 
     public async getUserShareBalances(): Promise<void> {
         

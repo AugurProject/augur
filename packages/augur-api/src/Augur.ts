@@ -7,7 +7,7 @@ import { NetworkId, NetworkContractAddresses, ContractAddresses } from 'augur-ar
 import * as addressesJson from '../../augur-artifacts/addresses.json';
 
 export class Augur<TBigNumber> {
-  private readonly provider: Provider;
+  public readonly provider: Provider;
   private readonly dependencies?:  GenericAugurInterfaces.Dependencies<TBigNumber>;
 
   public readonly networkId: NetworkId;

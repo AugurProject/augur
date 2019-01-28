@@ -4,7 +4,7 @@ import { Augur } from 'augur-api';
 
 export class Controller<TBigNumber> {
   private readonly dbName: string;
-  private dbController: DB;
+  private dbController: DB<TBigNumber>;
   private syncController: SyncController<TBigNumber>;
   private augur: Augur<TBigNumber>;
 
@@ -16,7 +16,7 @@ export class Controller<TBigNumber> {
   public async run(): Promise<void> {
     this.dbController = await DB.createAndInitializeDB();
     this.syncController = new SyncController<TBigNumber>(this.dbController, this.augur);
-    await this.syncController.beginSync();
+    await this.syncController.beginSync(10000, 5);
     // TODO begin server process
   }
 }

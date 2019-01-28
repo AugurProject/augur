@@ -1,6 +1,22 @@
 import { AbstractDB } from './AbstractDB';
 
+interface SyncDocument {
+    blockNumber: number;
+}
+
 export class SyncStatus extends AbstractDB {
-    // Keeps document for each DB
-    // Holds last block for which a sync finished
+    constructor() {
+        super("SyncStatus");
+    }
+
+    public async setHighestSyncBlock(dbName: string, blockNumber: number): Promise<PouchDB.Core.Response> {
+        const document: SyncDocument = { blockNumber };
+        return await this.upsertDocument(dbName, document);
+    }
+
+    public async getHighestSyncBlock(dbName: string): Promise<number> {
+        const document = await this.getDocument<SyncDocument>(dbName);
+        if (document) return document.blockNumber;
+        return 2687175;//0;
+    }
 }
