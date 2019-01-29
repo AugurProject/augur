@@ -44,6 +44,8 @@ WORKDIR /
 COPY --from=geth /common_start.sh /common_start.sh
 COPY --from=geth /start.sh /start.sh
 COPY --from=geth /geth /geth
+COPY --from=augur /opt /opt
+COPY --from=augur /usr/local /usr/local
 
 
 EXPOSE 8545 8546 30303 30303/udp 30304/udp
