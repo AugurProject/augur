@@ -66,7 +66,6 @@ RUN yarn && yarn lint
 
 # Build first chunk
 RUN yarn build:source
-RUN find .
 RUN yarn build:contracts
 
 # Build contract interfaces
@@ -75,8 +74,6 @@ RUN yarn build:interfaces
 
 # Copy the git info so ContractDeployer can read the hash on deploy
 RUN yarn build:source
-
-RUN apk del .build-deps
 
 FROM alpine:3.8
 

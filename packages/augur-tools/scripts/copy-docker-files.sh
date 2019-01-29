@@ -1,3 +1,4 @@
+set -x
 # copy files so augur.js is consistant with docker image passed as $1
 IMAGE=$1
 TEMP1="./temp.file"
@@ -7,12 +8,12 @@ ADDRESSES="../augur-artifacts/addresses.json"
 BLOCKS="../augur-artifacts/upload-block-numbers.json"
 
 echo "processing $IMAGE $ADDRESSES"
-docker run --rm --entrypoint cat $IMAGE augur/packages/augur-artifacts/addresses.json > $TEMP1
+docker run --rm --entrypoint cat $IMAGE /augur/packages/augur-artifacts/addresses.json > $TEMP1
 node scripts/merge-json-files -p $ADDRESSES -s $TEMP1 -o $ADD_TEMP2
 ADD_RESULT_CODE=$?
 
 echo "processing $IMAGE $BLOCKS"
-docker run --rm --entrypoint cat $IMAGE augur/packages/augur-artifacts/upload-block-numbers.json > $TEMP1
+docker run --rm --entrypoint cat $IMAGE /augur/packages/augur-artifacts/upload-block-numbers.json > $TEMP1
 node scripts/merge-json-files -p $BLOCKS -s $TEMP1 -o $BLOCK_TEMP2
 ADD_BLOCK_CODE=$?
 
