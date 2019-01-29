@@ -67,7 +67,7 @@ RUN yarn && yarn lint
 # Build first chunk
 RUN yarn build:source
 RUN find .
-RUN pwd && ls -l source/tools/ && yarn build:contracts
+RUN yarn build:contracts
 
 # Build contract interfaces
 RUN yarn build:interfaces
