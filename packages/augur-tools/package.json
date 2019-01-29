@@ -46,5 +46,7 @@
     "ethjs-provider-http": "^0.1.6",
     "ethjs-query": "^0.3.8",
     "ethjs-signer": "^0.1.1"
+  "devDependencies": {
+    "options-parser": "0.4.0"
   }
 }
