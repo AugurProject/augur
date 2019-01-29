@@ -105,7 +105,7 @@
     "@babel/preset-typescript": "7.1.0",
     "@babel/plugin-proposal-export-namespace-from": "7.2.0",
     "@types/chai": "4.1.7",
-    "@types/jest": "23.3.12",
+    "@types/jest": "23.3.13",
     "babel-loader": "8.0.4",
     "babel-jest": "23.6.0",
     "jest": "23.6.0",
