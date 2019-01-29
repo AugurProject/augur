@@ -1,9 +1,9 @@
 variables:
     SOLC_VERSION: v0.4.24
     SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
-    CORE_IMAGE_BUILD: augurproject/augur-core:monorepobuild.$(Build.BuildID)
+    AUGUR_CORE_TAG: monorepo.$(Build.BuildID)
+    CORE_IMAGE_BUILD: augurproject/augur-core:$(AUGUR_CORE_TAG)
     CORE_IMAGE_LATEST: augurproject/augur-core:latest
-
 
 trigger:
   batch: false
@@ -100,6 +100,8 @@ jobs:
           set -euo pipefail
           which node
           node --version
+          docker pull $CORE_IMAGE_BUILD
+          docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST
           if [[ "$TESTS" == "integration:geth" ]]; then
             yarn workspace augur-core docker:run:test:integration:geth;
           elif [[ "$TESTS" == "integration:parity" ]]; then
@@ -131,6 +133,9 @@ jobs:
         node_10_x:
           node_version: 10.x
     steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
       - script: |
           set -euo pipefail
           which node
@@ -139,7 +144,7 @@ jobs:
           yarn install --ignore-scripts --frozen-lockfile
         displayName: 'Install Dependencies'
       - script: |
-          yarn test --forceExit
+          yarn test --forceExit --detectOpenHandles
         displayName: 'Run Tests'
       - task: PublishTestResults@2
         inputs:
@@ -157,6 +162,9 @@ jobs:
         node_10_x:
           node_version: 10.x
     steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
       - bash: |
           set -euo pipefail
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
