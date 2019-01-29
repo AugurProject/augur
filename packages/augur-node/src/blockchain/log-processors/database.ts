@@ -139,3 +139,15 @@ export async function refreshMarketMailboxEthBalance(db: Knex, augur: Augur, mar
     });
   });
 }
+
+export async function getPouchRevFromId(pouch: PouchDB.Database, id: string): Promise<string|undefined> {
+  try {
+    const previousBlockRev = await pouch.get(id);
+    return previousBlockRev._rev;
+  } catch (err) {
+    if (err.status === 404) {
+      return undefined;
+    }
+    throw err;
+  }
+}

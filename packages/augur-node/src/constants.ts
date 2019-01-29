@@ -23,6 +23,7 @@ export const DB_VERSION = 3;
 export const DB_FILE = "augur-%s-%s.db";
 export const DB_WARP_SYNC_FILE = "%s-%s-%s.warp";
 export const DB_WARP_SYNC_FILE_ENDING = "-%s-%s.warp";
+export const POUCH_DB_DIR = "augur-pouch-%s-%s";
 export const DUMP_EVERY_BLOCKS = 100;
 
 export const ETHER = "ether";
