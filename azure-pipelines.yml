@@ -5,7 +5,6 @@ variables:
     CORE_IMAGE_BUILD: augurproject/augur-core:$(AUGUR_CORE_TAG)
     CORE_IMAGE_LATEST: augurproject/augur-core:latest
 
-
 trigger:
   batch: false
   branches:
