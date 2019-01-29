@@ -2,10 +2,11 @@
 
 # comment out the commands below since the geth docker image
 # already is running
-#cd /
-#./start.sh &
+cd /
+./start.sh &
 
 which node
+node --version
 
 echo "Resting for a bit"
 sleep 10s

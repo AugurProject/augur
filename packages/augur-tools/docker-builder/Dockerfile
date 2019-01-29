@@ -21,7 +21,7 @@ RUN apk add --no-cache \
     curl \
     libstdc++
 
-COPY --from=augur /augur augur
+COPY --from=augur /augur /augur
 COPY --from=augur /opt /opt
 COPY --from=augur /usr/local /usr/local
 COPY --from=core-builder /app/output augur/packages/augur-core/output
@@ -44,6 +44,7 @@ WORKDIR /
 COPY --from=geth /common_start.sh /common_start.sh
 COPY --from=geth /start.sh /start.sh
 COPY --from=geth /geth /geth
+COPY --from=augur /augur/packages/augur-artifacts /augur/packages/augur-artifacts
 COPY --from=augur /opt /opt
 COPY --from=augur /usr/local /usr/local
 
