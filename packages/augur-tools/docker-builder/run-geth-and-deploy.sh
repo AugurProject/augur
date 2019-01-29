@@ -5,12 +5,6 @@
 #cd /
 #./start.sh &
 
-export NVM_DIR="/usr/local/nvm"
-if [[ -d $NVM_DIR ]]; then
-    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-    nvm use --delete-prefix $NODE_VERSION
-fi
-
 which node
 
 echo "Resting for a bit"
