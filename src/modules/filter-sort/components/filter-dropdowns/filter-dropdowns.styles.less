@@ -1,5 +1,14 @@
 @import (reference) "~assets/styles/shared";
 
+.FilterDropdowns__container {
+  display: flex;
+  flex-direction: row;
+
+  @media @breakpoint-mobile-small {
+    flex-direction: column;
+  }
+}
+
 .FilterDropdowns {
   display: flex;
   flex-flow: row nowrap;
@@ -9,6 +18,7 @@
 
     color: @color-white;
     font-size: @font-size-medium;
+    white-space: nowrap;
   }
 }
 
@@ -22,5 +32,11 @@
   > label {
     margin-bottom: 0;
     padding: 0.4rem 2rem;
+    white-space: nowrap;
+  }
+
+  @media @breakpoint-mobile-small {
+    padding-bottom: 0.8rem;
+    padding-left: 0;
   }
 }

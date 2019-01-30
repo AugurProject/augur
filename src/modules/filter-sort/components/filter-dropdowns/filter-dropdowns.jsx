@@ -152,23 +152,25 @@ export default class FilterSearch extends Component {
     const { defaultFilter, defaultSort, defaultMaxFee, hasOrders } = this.props;
 
     return (
-      <div className={Styles.FilterDropdowns}>
-        <Dropdown
-          default={defaultFilter}
-          onChange={this.changeFilterDropdown}
-          options={filterOptions}
-          alignLeft
-        />
-        <Dropdown
-          default={defaultSort}
-          onChange={this.changeSortDropdown}
-          options={sortOptions}
-        />
-        <Dropdown
-          default={defaultMaxFee}
-          onChange={this.changeMaxFees}
-          options={maxFeesOptions}
-        />
+      <div className={Styles.FilterDropdowns__container}>
+        <div className={Styles.FilterDropdowns}>
+          <Dropdown
+            default={defaultFilter}
+            onChange={this.changeFilterDropdown}
+            options={filterOptions}
+            alignLeft
+          />
+          <Dropdown
+            default={defaultSort}
+            onChange={this.changeSortDropdown}
+            options={sortOptions}
+          />
+          <Dropdown
+            default={defaultMaxFee}
+            onChange={this.changeMaxFees}
+            options={maxFeesOptions}
+          />
+        </div>
         <div className={Styles.FilterDropdowns__hasOrders}>
           <Checkbox
             id="has-orders"
