@@ -128,7 +128,7 @@
     "eslint-plugin-import": "2.8.0",
     "eslint-plugin-jest": "22.2.1",
     "eslint-plugin-jsx-a11y": "6.1.1",
-    "eslint-plugin-prettier": "3.0.0",
+    "eslint-plugin-prettier": "3.0.1",
     "eslint-plugin-react": "7.5.1",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
     "file-loader": "2.0.0",
