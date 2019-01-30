@@ -5,11 +5,10 @@ import { each } from "bluebird";
 import { Augur, BlockRange } from "augur.js";
 import { BlockDetail, ErrorCallback, FormattedEventLog } from "../types";
 import { processLogByName } from "./process-logs";
-import { insertTransactionHash, processBlockByBlockDetails } from "./process-block";
+import { insertTransactionHash, pouchUpsertBlockRow, processBlockByBlockDetails } from "./process-block";
 import { logger } from "../utils/logger";
 
 const BLOCK_DOWNLOAD_PARALLEL_LIMIT = 15;
-const BLOCK_DETAIL_PROGRESS_INTERVAL_MS = 5000;
 
 interface BlockDetailsByBlock {
   [blockNumber: number]: BlockDetail;
@@ -30,17 +29,16 @@ async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): 
     console.log(`Fetching blocks details from ${blockNumbers[0]} to ${blockNumbers[blockNumbers.length - 1]}`);
     let fetchedBlockCount = 0;
     let highestBlockFetched = 0;
-    const progressInterval = setInterval(() => console.log(`Fetched ${fetchedBlockCount} / ${blockNumbers.length} block details (current: ${highestBlockFetched})`), BLOCK_DETAIL_PROGRESS_INTERVAL_MS);
     mapLimit(blockNumbers, BLOCK_DOWNLOAD_PARALLEL_LIMIT, (blockNumber, nextBlockNumber) => {
       augur.rpc.eth.getBlockByNumber([blockNumber, false], (err: Error|null, block: BlockDetail): void => {
         if (err) return nextBlockNumber(new Error("Could not get block"));
         if (block == null) return nextBlockNumber(new Error(`Block ${blockNumber} returned null response. This is usually an issue with a partially sync'd parity warp node. See: https://github.com/paritytech/parity-ethereum/issues/7411`));
         fetchedBlockCount++;
+        if (fetchedBlockCount % 10 === 0) console.log(`Fetched ${fetchedBlockCount} / ${blockNumbers.length} block details (current: ${highestBlockFetched})`);
         if (blockNumber > highestBlockFetched) highestBlockFetched = blockNumber;
         nextBlockNumber(undefined, [blockNumber, block]);
       });
     }, (err: Error|undefined, blockDetails: Array<[number, BlockDetail]>) => {
-      clearInterval(progressInterval);
       if (err) return reject(err);
       const blockDetailsByBlock = _.fromPairs(blockDetails);
       resolve(blockDetailsByBlock);
@@ -48,11 +46,13 @@ async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): 
   });
 }
 
-async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<FormattedEventLog>, blockNumbers: Array<number>, blockDetailsByBlockPromise: Promise<BlockDetailsByBlock>) {
+async function processBatchOfLogs(db: Knex, pouchDB: PouchDB.Database, augur: Augur, allAugurLogs: Array<FormattedEventLog>, blockNumbers: Array<number>, blockDetailsByBlockPromise: Promise<BlockDetailsByBlock>) {
   const blockDetailsByBlock = await blockDetailsByBlockPromise;
   const logsByBlock: { [blockNumber: number]: Array<FormattedEventLog> } = _.groupBy(allAugurLogs, (log) => log.blockNumber);
   await each(blockNumbers, async (blockNumber: number) => {
+    const blockDetail = blockDetailsByBlock[blockNumber];
     const logs = logsByBlock[blockNumber];
+    await pouchUpsertBlockRow(pouchDB, blockDetail, logs || [], true);
     if (logs === undefined || logs.length === 0) return;
     const dbWritePromises: Array<Promise<(db: Knex) => Promise<void>>> = [];
     await each(logs, async (log: FormattedEventLog) => {
@@ -65,7 +65,7 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
     });
     const dbWriteFunctions = await Promise.all(dbWritePromises);
     await db.transaction(async (trx: Knex.Transaction) => {
-      await processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber], true);
+      await processBlockByBlockDetails(trx, augur, blockDetail, true);
       await each(logs, async (log) => await insertTransactionHash(trx, blockNumber, log.transactionHash));
       logger.info(`Processing ${dbWriteFunctions.length} logs`);
       for (const dbWriteFunction of dbWriteFunctions) {
@@ -75,21 +75,21 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
   });
 }
 
-export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toBlock: number, callback: ErrorCallback): void {
+export function downloadAugurLogs(db: Knex, pouchDB: PouchDB.Database, augur: Augur, fromBlock: number, toBlock: number, blocksPerChunk: number|undefined, callback: ErrorCallback): void {
   const batchLogProcessQueue = queue((processFunction: (callback: ErrorCallback) => void, nextFunction: ErrorCallback): void => {
     processFunction(nextFunction);
   }, 1);
 
   logger.info(`Getting Augur logs from block ${fromBlock} to block ${toBlock}`);
   let lastBlockDetails = new Promise<BlockDetailsByBlock>((resolve) => resolve([]));
-  augur.events.getAllAugurLogs({ fromBlock, toBlock }, (batchOfAugurLogs: Array<FormattedEventLog>, blockRange: BlockRange): void => {
+  augur.events.getAllAugurLogs({ fromBlock, toBlock, blocksPerChunk }, (batchOfAugurLogs: Array<FormattedEventLog>, blockRange: BlockRange): void => {
       if (!batchOfAugurLogs || batchLogProcessQueue.paused) return;
       const blockNumbers = batchOfAugurLogs.length > 0 ? extractBlockNumbers(batchOfAugurLogs) : getBlockNumbersInRange(blockRange);
       const blockDetailPromise = lastBlockDetails.then(() => fetchAllBlockDetails(augur, blockNumbers));
       lastBlockDetails = blockDetailPromise;
       batchLogProcessQueue.push(async (nextBatch) => {
         try {
-          await processBatchOfLogs(db, augur, batchOfAugurLogs, blockNumbers, blockDetailPromise);
+          await processBatchOfLogs(db, pouchDB, augur, batchOfAugurLogs, blockNumbers, blockDetailPromise);
           nextBatch(null);
         } catch (err) {
           batchLogProcessQueue.kill();

@@ -48,7 +48,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       if (!tradeRowsByMarket.hasOwnProperty(marketId)) continue;
       const marketTrades = tradeRowsByMarket[marketId];
       const marketRow: MarketRow = await knex("markets").first("minPrice", "maxPrice", "numTicks").where({ marketId });
-      const minPrice = new BigNumber(marketRow.minPrice!);
+      const minPrice = new BigNumber(marketRow.minPrice);
       const marketVolumes = getVolumesFromTrades(marketTrades, minPrice);
       await knex("markets").update(marketVolumes).where({marketId});
       const outcomeTradesByOutcome = _.groupBy(marketTrades, "outcome");

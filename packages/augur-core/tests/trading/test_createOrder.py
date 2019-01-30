@@ -122,7 +122,7 @@ def test_createOrder_failure(contractsFixture, universe, cash, market):
     completeSets = contractsFixture.contracts['CompleteSets']
     yesShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(YES))
     noShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(NO))
-    bleh = '''
+
     with raises(TransactionFailed):
         createOrder.createOrder(tester.a1, ASK, fix(1), 4000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), "42", sender=tester.k1)
 
@@ -143,15 +143,15 @@ def test_createOrder_failure(contractsFixture, universe, cash, market):
 
     with raises(TransactionFailed):
         createOrder.publicCreateOrder(ASK, fix(1), 4000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), "42", sender=tester.k1)
-'''
+
     assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender=tester.k1, value=fix('12', market.getNumTicks()))
-    bleh = '''
+
     with raises(TransactionFailed):
         createOrder.publicCreateOrder(ASK, fix(1), 12000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), "42", sender=tester.k1)
 
     with raises(TransactionFailed):
         createOrder.publicCreateOrder(ASK, fix(1), 4000, tester.a1, YES, longTo32Bytes(0), longTo32Bytes(0), "42", sender=tester.k1)
-'''
+
     assert createOrder.publicCreateOrder(ASK, fix(1), 4000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), "42", sender=tester.k1) != 0, "Order ID should be non-zero"
 
     # createOrder exceptions (post-escrowFunds)
@@ -243,3 +243,22 @@ def test_ask_withSharesIgnored(contractsFixture, universe, cash, market):
     assert orders.getOrderCreator(orderID) == bytesToHexString(tester.a1)
     assert orders.getOrderMoneyEscrowed(orderID) == fix('5000')
     assert orders.getOrderSharesEscrowed(orderID) == 0
+
+def test_publicCreateOrders(contractsFixture, cash, market):
+    orders = contractsFixture.contracts['Orders']
+    createOrder = contractsFixture.contracts['CreateOrder']
+
+    types = [BID,BID,BID,ASK,ASK,ASK]
+    outcomes = [0, 1, 2, 0, 1, 2]
+    attoshareAmounts = [100, 200, 300, 100, 200, 300]
+    prices = [4000, 4100, 4200, 7000, 7100, 7200]
+    value = 4000 * 100 + 4100 * 200 + 4200 * 300 + 3000 * 100 + 2900 * 200 + 2800 * 300
+    orderIDs = createOrder.publicCreateOrders(outcomes, types, attoshareAmounts, prices, market.address, False, "42", value = value)
+    assert orderIDs
+
+    for i in range(len(types)):
+        assert orders.getAmount(orderIDs[i]) == attoshareAmounts[i]
+        assert orders.getPrice(orderIDs[i]) == prices[i]
+        assert orders.getOrderCreator(orderIDs[i]) == bytesToHexString(tester.a0)
+        assert orders.getOrderMoneyEscrowed(orderIDs[i]) == attoshareAmounts[i] * prices[i] if type == BID else attoshareAmounts[i] * (10000 - prices[i])
+        assert orders.getOrderSharesEscrowed(orderIDs[i]) == 0

@@ -22,11 +22,7 @@ const tasks = new Listr([
 	{
 		title: 'Augur Node',
 		task: async (ctx, task) => await refreshPackage(task, 'augur-node')
-  },
-	{
-		title: 'Augur App',
-		task: async (ctx, task) => await refreshPackage(task, 'augur-app')
-  },
+  }
 ]);
 
 tasks.run().catch((err) => {

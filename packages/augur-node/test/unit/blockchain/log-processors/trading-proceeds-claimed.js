@@ -1,5 +1,5 @@
 const { BigNumber } = require("bignumber.js");
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } = require("src/blockchain/log-processors/trading-proceeds-claimed");
 
 function getTradingProceeds(db) {

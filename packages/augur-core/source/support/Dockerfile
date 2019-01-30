@@ -14,49 +14,49 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
 RUN wget --quiet --output-document /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux \
 	&& chmod a+x /usr/local/bin/solc
 
-COPY requirements.txt /app/requirements.txt
-
 WORKDIR /app
+
+COPY packages/augur-core/requirements.txt /app/requirements.txt
+
 RUN /usr/local/bin/pip2 install --upgrade pip setuptools \
 	&& /usr/local/bin/pip2 install --upgrade pip-tools \
 	&& /usr/local/bin/pip2 install -r requirements.txt
 
 # Install basics of the application
-COPY .soliumrc.json /app/.soliumrc.json
-COPY .soliumignore /app/.soliumignore
-COPY tsconfig.json /app/tsconfig.json
-COPY typings/ /app/typings/
-COPY source/contracts/ /app/source/contracts/
-COPY source/deployment/compileContracts.ts /app/source/deployment/compileContracts.ts
-COPY source/libraries/CompilerConfiguration.ts /app/source/libraries/CompilerConfiguration.ts
-COPY source/libraries/DeployerConfiguration.ts /app/source/libraries/DeployerConfiguration.ts
-COPY source/libraries/NetworkConfiguration.ts /app/source/libraries/NetworkConfiguration.ts
-COPY source/libraries/ContractCompiler.ts /app/source/libraries/ContractCompiler.ts
-COPY source/tools/installSolidityFlattener /app/source/tools/installSolidityFlattener
-COPY package.json /app/package.json
+COPY packages/augur-core/.soliumrc.json /app/.soliumrc.json
+COPY packages/augur-core/.soliumignore /app/.soliumignore
+COPY packages/augur-core/docker.tsconfig.json /app/tsconfig.json
+COPY packages/augur-core/source/contracts/ /app/source/contracts/
+COPY packages/augur-types/ /augur-types
+COPY packages/augur-core/source/deployment/compileContracts.ts /app/source/deployment/compileContracts.ts
+COPY packages/augur-core/source/libraries/ /app/source/libraries/
+COPY packages/augur-core/source/tools/ /app/source/tools/
+COPY packages/augur-core/package.json /app/package.json
+COPY packages/augur-core/.babelrc.js /app/.babelrc.js
+COPY packages/augur-core/jest.config.js /app/jest.config.js
 
-RUN npm install
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+    && apt update \
+    && apt install -y yarn
+
+RUN yarn
 
 # Lint
-RUN npm run lint
+RUN yarn lint
 
 # Build first chunk
-RUN npm run build:source
-RUN npm run build:flattener
-RUN npm run build:contracts
-
-COPY source/libraries/ContractInterfacesGenerator.ts /app/source/libraries/ContractInterfacesGenerator.ts
-COPY source/tools/generateContractInterfaces.ts /app/source/tools/generateContractInterfaces.ts
+RUN yarn build:source
+RUN yarn build:contracts
 
 # Build contract interfaces
-RUN npm run build:source
-RUN npm run build:interfaces
+RUN yarn build:interfaces
 
 # Copy source
-COPY source/ /app/source/
-COPY tests/ /app/tests/
+COPY packages/augur-core/source/ /app/source/
+COPY packages/augur-core/tests/ /app/tests/
 
 # Copy the git info so ContractDeployer can read the hash on deploy
-RUN npm run build:source
+RUN yarn build:source
 
-ENTRYPOINT ["npm"]
+ENTRYPOINT ["yarn"]

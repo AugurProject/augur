@@ -18,8 +18,15 @@ export const PRECISION: Precision = {
   multiple: multiple.toString(),
 };
 
-export const ETHER = "ether";
+// WARNING: Update this only if this release requires destroying all existing Augur Node Databases
+export const DB_VERSION = 3;
+export const DB_FILE = "augur-%s-%s.db";
+export const DB_WARP_SYNC_FILE = "%s-%s-%s.warp";
+export const DB_WARP_SYNC_FILE_ENDING = "-%s-%s.warp";
+export const POUCH_DB_DIR = "augur-pouch-%s-%s";
+export const DUMP_EVERY_BLOCKS = 100;
 
+export const ETHER = "ether";
 export const MINIMUM_TRADE_SIZE = "0.000001";
 
 export const BN_WEI_PER_ETHER: BigNumber = new BigNumber(10, 10).exponentiatedBy(18);
@@ -43,6 +50,8 @@ export enum ControlMessageType {
   WebsocketClose = "WebsocketClose",
   BulkSyncStarted = "BulkSyncStarted",
   BulkSyncFinished = "BulkSyncFinished",
+  BulkOrphansCheckStarted = "BulkOrphansCheckStarted",
+  BulkOrphansCheckFinished = "BulkOrphansCheckFinished",
 }
 
 export enum SubscriptionEventNames {
@@ -60,7 +69,7 @@ export enum SubscriptionEventNames {
   InitialReporterRedeemed = "InitialReporterRedeemed",
   InitialReporterTransferred = "InitialReporterTransferred",
   MarketCreated = "MarketCreated",
-  MarketFinalized  = "MarketFinalized",
+  MarketFinalized = "MarketFinalized",
   MarketMigrated = "MarketMigrated",
   MarketState = "MarketState",
   OrderCanceled = "OrderCanceled",
@@ -81,3 +90,14 @@ export enum MarketType {
   categorical,
   scalar,
 }
+
+export interface NetworkNames {
+  [key: number]: string;
+}
+
+export const NETWORK_NAMES: NetworkNames = {
+  1: "Mainnet",
+  3: "Ropsten",
+  4: "Rinkeby",
+  42: "Kovan",
+};

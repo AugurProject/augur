@@ -344,7 +344,7 @@ contract Orders is IOrders, Initializable {
         return (_betterOrderId, _worseOrderId);
     }
 
-    function findBoundingOrders(Order.Types _type, uint256 _price, bytes32 _bestOrderId, bytes32 _worstOrderId, bytes32 _betterOrderId, bytes32 _worseOrderId) public returns (bytes32, bytes32) {
+    function findBoundingOrders(Order.Types _type, uint256 _price, bytes32 _bestOrderId, bytes32 _worstOrderId, bytes32 _betterOrderId, bytes32 _worseOrderId) public returns (bytes32 betterOrderId, bytes32 worseOrderId) {
         if (_bestOrderId == _worstOrderId) {
             if (_bestOrderId == bytes32(0)) {
                 return (bytes32(0), bytes32(0));

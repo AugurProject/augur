@@ -6,6 +6,7 @@ import { augurEmitter } from "../../events";
 import { increaseTokenBalance } from "./token/increase-token-balance";
 import { decreaseTokenBalance } from "./token/decrease-token-balance";
 import { SubscriptionEventNames } from "../../constants";
+import { updateProfitLossRemoveRow } from "./profit-loss/update-profit-loss";
 
 export async function processTokensTransferredLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
@@ -23,8 +24,8 @@ export async function processTokensTransferredLog(augur: Augur, log: FormattedEv
     await db.insert(tokenTransferDataToInsert).into("transfers");
     augurEmitter.emit(SubscriptionEventNames.TokensTransferred, Object.assign({}, log, tokenTransferDataToInsert));
 
-    await increaseTokenBalance(db, augur, token, log.to, value);
-    await decreaseTokenBalance(db, augur, token, log.from, value);
+    await increaseTokenBalance(db, augur, token, log.to, value, log);
+    await decreaseTokenBalance(db, augur, token, log.from, value, log);
   };
 }
 
@@ -34,7 +35,8 @@ export async function processTokensTransferredLogRemoval(augur: Augur, log: Form
     augurEmitter.emit(SubscriptionEventNames.TokensTransferred, log);
     const token = log.token || log.address;
     const value = new BigNumber(log.value || log.amount, 10);
-    await increaseTokenBalance(db, augur, token, log.from, value);
-    await decreaseTokenBalance(db, augur, token, log.to, value);
+    await increaseTokenBalance(db, augur, token, log.from, value, log);
+    await decreaseTokenBalance(db, augur, token, log.to, value, log);
+    await updateProfitLossRemoveRow(db, log.transactionHash);
   };
 }

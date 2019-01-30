@@ -36,4 +36,18 @@ contract CreateOrder is CashAutoConverter, Initializable, ReentrancyGuard {
         require(_orderData.orders.getAmount(_orderData.getOrderId()) == 0);
         return Order.saveOrder(_orderData, _tradeGroupId);
     }
+
+    function publicCreateOrders(uint256[] _outcomes, Order.Types[] _types, uint256[] _attoshareAmounts, uint256[] _prices, IMarket _market, bool _ignoreShares, bytes32 _tradeGroupId) public afterInitialized nonReentrant convertToAndFromCash payable returns (bytes32[] memory _orders) {
+        require(augur.isValidMarket(_market));
+        _orders = new bytes32[]( _types.length);
+
+        for (uint256 i = 0; i <  _types.length; i++) {
+            Order.Data memory _orderData = Order.create(augur, msg.sender, _outcomes[i], _types[i], _attoshareAmounts[i], _prices[i], _market, bytes32(0), bytes32(0), _ignoreShares);
+            Order.escrowFunds(_orderData);
+            require(_orderData.orders.getAmount(_orderData.getOrderId()) == 0);
+            _orders[i] = Order.saveOrder(_orderData, _tradeGroupId);
+        }
+
+        return _orders;
+    }
 }

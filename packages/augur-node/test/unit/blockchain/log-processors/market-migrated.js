@@ -1,4 +1,4 @@
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { processMarketMigratedLog, processMarketMigratedLogRemoval } = require("src/blockchain/log-processors/market-migrated");
 const { getMarketsWithReportingState } = require("src/server/getters/database");
 const ReportingState = require("src/types").ReportingState;

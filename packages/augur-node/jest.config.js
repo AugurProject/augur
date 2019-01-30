@@ -61,9 +61,7 @@ module.exports = {
   "moduleFileExtensions": ["js", "jsx", "json", "ts", "tsx"],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
-  moduleNameMapper: {
-    "^src/(.*)$": "<rootDir>/src/$1",
-  },
+  // moduleNameMapper: {},
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -103,13 +101,19 @@ module.exports = {
     "<rootDir>",
   ],
 
+  modulePaths: [
+    "<rootDir>",
+    "<rootDir>/src/",
+    "<rootDir>/test/unit"
+  ],
+
   // Allows you to use a custom runner instead of Jest's default test runner
   // "runner": "jest-runner-mocha",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
   // setupFiles: ["<rootDir>/test/setup.js"],
   // The path to a module that runs some code to configure or set up the testing framework before each test
-  // setupTestFrameworkScriptFile: null,
+  setupTestFrameworkScriptFile: "<rootDir>/test/setup.js",
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
@@ -124,12 +128,13 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ["<rootDir>/test/unit/**/*.(j|t)s"],
+  testMatch: ["<rootDir>/test/(unit|integration)/**/*.(j|t)s"],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
     "/node_modules/",
     "<rootDir>/test/unit/test.database.js",
+    "<rootDir>/test/setup.js",
   ],
 
   // The regexp pattern Jest uses to detect test files
@@ -149,7 +154,7 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    "^.+\\.(ts|tsx)$": "babel-jest",
+    "^.+\\.(j|t)sx?$": "babel-jest",
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation

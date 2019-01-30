@@ -1,4 +1,4 @@
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-universes-info", () => {
@@ -31,7 +31,7 @@ describe("server/getters/get-universes-info", () => {
           parentUniverse: null,
           balance: "20",
           supply: "10000",
-          numMarkets: 15,
+          numMarkets: 17,
           payout: [],
           isInvalid: false,
         },
@@ -63,7 +63,7 @@ describe("server/getters/get-universes-info", () => {
           parentUniverse: null,
           balance: "20",
           supply: "10000",
-          numMarkets: 15,
+          numMarkets: 17,
           payout: [],
           isInvalid: false,
         },

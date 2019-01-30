@@ -215,3 +215,25 @@ def test_exceptions(contractsFixture, cash, market):
     assert(cancelOrder.cancelOrder(orderID, sender=tester.k1) == 1), "cancelOrder should succeed"
     with raises(TransactionFailed):
         cancelOrder.cancelOrder(orderID, sender=tester.k1)
+
+def test_cancelOrders(contractsFixture, cash, market, universe):
+    createOrder = contractsFixture.contracts['CreateOrder']
+    cancelOrder = contractsFixture.contracts['CancelOrder']
+    orders = contractsFixture.contracts['Orders']
+
+    orderType = BID
+    amount = fix(1)
+    fxpPrice = 6000
+    outcomeID = YES
+    tradeGroupID = "42"
+    orderIDs = []
+    for i in range(10):
+        orderIDs.append(createOrder.publicCreateOrder(orderType, amount, fxpPrice + i, market.address, outcomeID, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, value = fix('10000')))
+
+    for i in range(10):
+        assert orders.getAmount(orderIDs[i]) == amount
+
+    assert cancelOrder.cancelOrders(orderIDs)
+
+    for i in range(10):
+        assert orders.getAmount(orderIDs[i]) == 0

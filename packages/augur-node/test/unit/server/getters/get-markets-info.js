@@ -1,4 +1,4 @@
-const setupTestDb = require("../../test.database");
+const setupTestDb = require("test.database");
 const { dispatchJsonRpcRequest } = require("src/server/dispatch-json-rpc-request");
 
 describe("server/getters/get-markets-info", () => {
@@ -10,7 +10,6 @@ describe("server/getters/get-markets-info", () => {
   afterEach(async () => {
     await db.destroy();
   });
-
   const runTest = (t) => {
     test(t.description, async () => {
       t.method = "getMarketsInfo";

@@ -24,7 +24,7 @@ function setSyncFinished() {
   augurEmitter.emit(SubscriptionEventNames.SyncFinished);
 }
 
-export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur): Promise<number> {
+export async function bulkSyncAugurNodeWithBlockchain(db: Knex, pouch: PouchDB.Database, augur: Augur, blocksPerChunk: number|undefined): Promise<number> {
   const row: HighestBlockNumberRow|null = await db("blocks").max("blockNumber as highestBlockNumber").first();
   const lastSyncBlockNumber: number|null|undefined = row!.highestBlockNumber;
   const uploadBlockNumber: number = augur.contracts.uploadBlockNumbers[augur.rpc.getNetworkID()] || 0;
@@ -40,16 +40,20 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur): P
   let skipBulkDownload = false;
   while (handoffBlockNumber < fromBlock) {
     skipBulkDownload = true;
-    logger.warn(`Not enough blocks to start blockstream reliably, waiting at least ${BLOCKSTREAM_HANDOFF_BLOCKS} from ${fromBlock}. Current Block: ${highestBlockNumber}`);
+    logger.warn(`The Ethereum node has not processed enough blocks (${BLOCKSTREAM_HANDOFF_BLOCKS}) since last sync
+    Current Block: ${highestBlockNumber}
+    Last Sync Block: ${fromBlock}
+    Blocks to wait: ${BLOCKSTREAM_HANDOFF_BLOCKS - (highestBlockNumber - fromBlock)}`);
     await delay(BLOCKSTREAM_HANDOFF_WAIT_TIME_MS);
     highestBlockNumber = await getHighestBlockNumber(augur);
     handoffBlockNumber = highestBlockNumber - BLOCKSTREAM_HANDOFF_BLOCKS;
   }
   if (skipBulkDownload) {
     logger.info(`Skipping batch load`);
-    return fromBlock;
+    setSyncFinished();
+    return fromBlock - 1;
   }
-  await promisify(downloadAugurLogs)(db, augur, fromBlock, handoffBlockNumber);
+  await promisify(downloadAugurLogs)(db, pouch, augur, fromBlock, handoffBlockNumber, blocksPerChunk);
   setSyncFinished();
   await db.insert({ highestBlockNumber }).into("blockchain_sync_history");
   logger.info(`Finished batch load from ${fromBlock} to ${handoffBlockNumber}`);

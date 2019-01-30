@@ -1,4 +1,4 @@
-FROM node:8 as builder
+FROM node:10.15 as builder
 
 WORKDIR /app/
 
@@ -12,12 +12,12 @@ RUN git init && npm install && rm -rf .git
 
 COPY src src
 COPY test test
-RUN npm run build
+RUN npm run build:ts
 RUN npm pack
 
 COPY knexfile.js knexfile.js
 
-FROM node:8
+FROM node:10.15
 EXPOSE 9001
 WORKDIR /app/
 COPY --from=builder /app/node_modules node_modules
