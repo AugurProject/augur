@@ -7,5 +7,9 @@
     "automerge": false
   },
   "prHourlyLimit": 2,
+  "schedule": [
+    "after 6am",
+    "before 1pm"
+  ],
   "timezone": "UTC"
 }
