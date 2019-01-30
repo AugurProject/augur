@@ -30,5 +30,5 @@ export interface Filter {
   fromBlock: number|string;
   toBlock: number|string;
   address?: string;
-  topics?: Array<string|null>;
+  topics?: Array<string | Array<string>>;
 }

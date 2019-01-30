@@ -38,11 +38,5 @@
     "url": "https://github.com/augurproject/augur/issues"
   },
   "homepage": "https://github.com/augurproject/augur#readme",
-  "dependencies": {
-    "ethjs-abi": "^0.2.1",
-    "ethjs-account": "^0.1.4",
-    "ethjs-provider-http": "^0.1.6",
-    "ethjs-query": "^0.3.8",
-    "ethjs-signer": "^0.1.1"
-  }
+  "dependencies": {}
 }
