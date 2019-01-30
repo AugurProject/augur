@@ -206,6 +206,13 @@ export default class ReportingReportForm extends Component {
             the market ends.
           </div>
           <div className={Styles.ReportingReport__outcome_selection_msg}>
+            If a timezone isn&apos;t provided, use&nbsp;
+            <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">
+              UTC
+            </a>
+            &nbsp;time to determine the date/time.
+          </div>
+          <div className={Styles.ReportingReport__outcome_selection_msg}>
             The market should be considered INVALID if any of the following are
             true:
           </div>
