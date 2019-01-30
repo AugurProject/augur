@@ -18,7 +18,8 @@ const MarketOutcomesAndPositions = ({
   selectedOutcome,
   cancelOrphanedOrder,
   sellCompleteSets,
-  updateSelectedOutcome
+  updateSelectedOutcome,
+  updateSelectedOrderProperties
 }) => (
   <section>
     {(!isMobile || !selectedOutcome) && (
@@ -40,6 +41,7 @@ const MarketOutcomesAndPositions = ({
         sellCompleteSets={sellCompleteSets}
         orphanedOrders={orphanedOrders}
         cancelOrphanedOrder={cancelOrphanedOrder}
+        updateSelectedOrderProperties={updateSelectedOrderProperties}
       />
     )}
     {isMobile &&
@@ -73,7 +75,8 @@ MarketOutcomesAndPositions.propTypes = {
   selectedOutcome: PropTypes.string,
   cancelOrphanedOrder: PropTypes.func.isRequired,
   sellCompleteSets: PropTypes.func.isRequired,
-  updateSelectedOutcome: PropTypes.func.isRequired
+  updateSelectedOutcome: PropTypes.func.isRequired,
+  updateSelectedOrderProperties: PropTypes.func
 };
 
 MarketOutcomesAndPositions.defaultProps = {
@@ -82,7 +85,8 @@ MarketOutcomesAndPositions.defaultProps = {
   positions: [],
   orphanedOrders: [],
   openOrders: [],
-  selectedOutcome: null
+  selectedOutcome: null,
+  updateSelectedOrderProperties: null
 };
 
 export default MarketOutcomesAndPositions;

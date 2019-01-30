@@ -7,6 +7,9 @@ import classNames from "classnames";
 import getValue from "utils/get-value";
 import Styles from "modules/market/components/market-positions-list--position/market-positions-list--position.styles";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
+import { BUY, SELL } from "modules/transactions/constants/types";
+import { LONG } from "modules/positions/constants/position-types";
+import { createBigNumber } from "utils/create-big-number";
 
 export default class MarketPositionsListPosition extends Component {
   static propTypes = {
@@ -22,12 +25,14 @@ export default class MarketPositionsListPosition extends Component {
     isExtendedDisplay: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
     outcome: PropTypes.object,
-    hasOrders: PropTypes.bool
+    hasOrders: PropTypes.bool,
+    updateSelectedOrderProperties: PropTypes.func
   };
 
   static defaultProps = {
     hasOrders: false,
-    outcome: null
+    outcome: null,
+    updateSelectedOrderProperties: null
   };
 
   static calcAvgDiff(position, order) {
@@ -52,46 +57,68 @@ export default class MarketPositionsListPosition extends Component {
       outcomeName,
       position,
       outcome,
-      hasOrders
+      hasOrders,
+      updateSelectedOrderProperties
     } = this.props;
 
     const netPositionShares = getValue(position, "netPosition.formatted");
     const positionShares = getValue(position, "position.formatted");
-    // console.log(position);
+
     return (
-      <ul
-        ref={position => {
-          this.position = position;
+      <button
+        className={classNames(Styles.Position_action_button, {
+          [Styles[
+            "Position_action_button-active"
+          ]]: updateSelectedOrderProperties
+        })}
+        title="Click to fill order form with position"
+        onClick={e => {
+          e.preventDefault();
+          updateSelectedOrderProperties &&
+            updateSelectedOrderProperties({
+              orderQuantity: createBigNumber(position.netPosition.fullPrecision)
+                .abs()
+                .toString(),
+              selectedNav: position.type === LONG ? SELL : BUY
+            });
         }}
-        className={
-          !isMobile
-            ? classNames(Styles.Position, {
-                [Styles["Position-not_extended"]]: isExtendedDisplay
-              })
-            : Styles.PortMobile
-        }
       >
-        <li>{outcomeName}</li>
-        {hasOrders && <li />}
-        <li>{netPositionShares}</li>
-        <li>{positionShares}</li>
-        <li>{getValue(position, "purchasePrice.formatted")}</li>
-        {!isMobile &&
-          isExtendedDisplay && (
-            <li>
-              {getValue(outcome, "lastPrice.formatted")}
-              <MarketOutcomeTradingIndicator
-                outcome={outcome}
-                location="positions"
-              />
-            </li>
+        <ul
+          ref={position => {
+            this.position = position;
+          }}
+          className={
+            !isMobile
+              ? classNames(Styles.Position, {
+                  [Styles["Position-not_extended"]]: isExtendedDisplay
+                })
+              : Styles.PortMobile
+          }
+        >
+          <li>{outcomeName}</li>
+          {hasOrders && <li />}
+          <li>{netPositionShares}</li>
+          <li>{positionShares}</li>
+          <li>{getValue(position, "purchasePrice.formatted")}</li>
+          {!isMobile &&
+            isExtendedDisplay && (
+              <li>
+                {getValue(outcome, "lastPrice.formatted")}
+                <MarketOutcomeTradingIndicator
+                  outcome={outcome}
+                  location="positions"
+                />
+              </li>
+            )}
+          {!isMobile && (
+            <li>{getValue(position, "unrealizedNet.formatted")}</li>
           )}
-        {!isMobile && <li>{getValue(position, "unrealizedNet.formatted")} </li>}
-        {!isMobile && <li>{getValue(position, "realizedNet.formatted")} </li>}
-        {isExtendedDisplay && (
-          <li>{getValue(position, "totalNet.formatted")}</li>
-        )}
-      </ul>
+          {!isMobile && <li>{getValue(position, "realizedNet.formatted")} </li>}
+          {isExtendedDisplay && (
+            <li>{getValue(position, "totalNet.formatted")}</li>
+          )}
+        </ul>
+      </button>
     );
   }
 }

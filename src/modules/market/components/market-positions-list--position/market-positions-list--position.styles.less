@@ -1,5 +1,21 @@
 @import (reference) '~assets/styles/shared';
 
+.Position_action_button {
+  cursor: default;
+  display: contents;
+}
+
+.Position_action_button-active {
+  cursor: pointer;
+
+  &:hover {
+    ul > {
+      background-color: @color-purple;
+      color: @color-white;
+    }
+  }
+}
+
 .Position {
   display: table-row;
   transition: background-color 0.15s ease;
