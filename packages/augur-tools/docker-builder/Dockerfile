@@ -44,7 +44,7 @@ WORKDIR /
 COPY --from=geth /common_start.sh /common_start.sh
 COPY --from=geth /start.sh /start.sh
 COPY --from=geth /geth /geth
-COPY --from=augur /augur/packages/augur-artifacts /augur/packages/augur-artifacts
+COPY --from=geth /augur/packages/augur-artifacts /augur/packages/augur-artifacts
 COPY --from=augur /opt /opt
 COPY --from=augur /usr/local /usr/local
 
