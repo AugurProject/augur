@@ -6,5 +6,6 @@
   "major": {
     "automerge": false
   },
-  "prHourlyLimit": 2
+  "prHourlyLimit": 2,
+  "timezone": "UTC"
 }
