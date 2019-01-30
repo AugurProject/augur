@@ -10,7 +10,6 @@ import 'reporting/IReputationToken.sol';
 import 'reporting/IReportingParticipant.sol';
 import 'reporting/IDisputeCrowdsourcer.sol';
 import 'reporting/IInitialReporter.sol';
-import 'reporting/IMailbox.sol';
 import 'trading/IShareToken.sol';
 import 'trading/Order.sol';
 import 'reporting/IAuction.sol';
@@ -56,7 +55,6 @@ contract Augur is IAugur {
     event DisputeWindowCreated(address indexed universe, address disputeWindow, uint256 startTime, uint256 endTime, uint256 id);
     event InitialReporterTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketTransferred(address indexed universe, address indexed market, address from, address to);
-    event MarketMailboxTransferred(address indexed universe, address indexed market, address indexed mailbox, address from, address to);
     event EscapeHatchChanged(bool isOn);
     event TimestampSet(uint256 newTimestamp);
 
@@ -84,11 +82,10 @@ contract Augur is IAugur {
         require(msg.sender == uploader);
         require(registry[_key] == address(0));
         registry[_key] = _address;
-        if (_key == "CompleteSets" || _key == "Orders" || _key == "CreateOrder" || _key == "CancelOrder" || _key == "FillOrder" || _key == "Trade" || _key == "ClaimTradingProceeds") {
+        if (_key == "CompleteSets" || _key == "Orders" || _key == "CreateOrder" || _key == "CancelOrder" || _key == "FillOrder" || _key == "Trade" || _key == "ClaimTradingProceeds" || _key == "MarketFactory") {
             trustedSender[_address] = true;
         }
         if (_key == "Time") {
-
             time = ITime(_address);
         }
         return true;
@@ -123,6 +120,7 @@ contract Augur is IAugur {
         IUniverseFactory _universeFactory = IUniverseFactory(registry["UniverseFactory"]);
         IUniverse _newUniverse = _universeFactory.createUniverse(this, _parentUniverse, _parentPayoutDistributionHash);
         universes[_newUniverse] = true;
+        trustedSender[_newUniverse.getAuction()] = true;
         emit UniverseCreated(_parentUniverse, _newUniverse, _parentPayoutNumerators);
         return _newUniverse;
     }
@@ -159,6 +157,10 @@ contract Augur is IAugur {
 
     function isKnownShareToken(IShareToken _token) public view returns (bool) {
         return shareTokens[_token];
+    }
+
+    function isKnownFeeSender(address _feeSender) public view returns (bool) {
+        return _feeSender == registry["CompleteSets"] || _feeSender == registry["ClaimTradingProceeds"] || markets[_feeSender];
     }
 
     //
@@ -426,14 +428,6 @@ contract Augur is IAugur {
         IMarket _market = IMarket(msg.sender);
         require(_universe.isContainerForMarket(_market));
         emit MarketTransferred(_universe, _market, _from, _to);
-        return true;
-    }
-
-    function logMarketMailboxTransferred(IUniverse _universe, IMarket _market, address _from, address _to) public returns (bool) {
-        require(isKnownUniverse(_universe));
-        require(_universe.isContainerForMarket(_market));
-        require(IMailbox(msg.sender) == _market.getMarketCreatorMailbox());
-        emit MarketMailboxTransferred(_universe, _market, msg.sender, _from, _to);
         return true;
     }
 

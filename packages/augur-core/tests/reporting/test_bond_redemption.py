@@ -17,7 +17,6 @@ def test_initial_report(localFixture, universe, market, categoricalMarket, scala
 
     marketInitialReport = localFixture.applySignature('InitialReporter', market.getInitialReporter())
     categoricalInitialReport = localFixture.applySignature('InitialReporter', categoricalMarket.getInitialReporter())
-    scalarInitialReport = localFixture.applySignature('InitialReporter', scalarMarket.getInitialReporter())
 
     marketStake = marketInitialReport.getStake()
     initialReporterRedeemedLog = {

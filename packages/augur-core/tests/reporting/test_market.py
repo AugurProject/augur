@@ -78,17 +78,6 @@ def test_transfering_ownership(contractsFixture, universe, market):
     with AssertLog(contractsFixture, "MarketTransferred", transferLog):
         assert market.transferOwnership(tester.a1)
 
-    mailbox = contractsFixture.applySignature('Mailbox', market.getMarketCreatorMailbox())
-
-    transferLog = {
-        "universe": universe.address,
-        "market": market.address,
-        "from": bytesToHexString(tester.a0),
-        "to": bytesToHexString(tester.a1),
-    }
-    with AssertLog(contractsFixture, "MarketMailboxTransferred", transferLog):
-        assert mailbox.transferOwnership(tester.a1)
-
 @mark.parametrize('invalid', [
     True,
     False
@@ -100,10 +89,9 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     with raises(TransactionFailed):
        contractsFixture.createReasonableYesNoMarket(universe, validityBond=minimumValidityBond-1)
 
-    # But we can make one with a greater bond
-    higherValidityBond = minimumValidityBond+1
-    market = contractsFixture.createReasonableYesNoMarket(universe, validityBond=higherValidityBond)
-    assert market.getValidityBondAttoEth() == higherValidityBond
+    # No longer testing a higher validity bond, token transfers are token precisely, no ability to send more than required
+    market = contractsFixture.createReasonableYesNoMarket(universe, validityBond=minimumValidityBond)
+    assert market.getValidityBondAttoEth() == minimumValidityBond
 
     # If we resolve the market the bond in it's entirety will go to the fee pool or to the market creator if the resolution was not invalid
     proceedToDesignatedReporting(contractsFixture, market)
@@ -118,8 +106,8 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     assert contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
 
     if invalid:
-        with TokenDelta(cash, higherValidityBond, universe.getAuction(), "Validity bond did not go to the auction"):
+        with TokenDelta(cash, minimumValidityBond, universe.getAuction(), "Validity bond did not go to the auction"):
             market.finalize()
     else:
-        with EtherDelta(higherValidityBond, market.getMarketCreatorMailbox(), contractsFixture.chain, "Validity bond did not go to the market creator"):
+        with TokenDelta(cash, minimumValidityBond, market.getOwner(), "Validity bond did not go to the market creator"):
             market.finalize()

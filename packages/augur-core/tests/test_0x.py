@@ -82,7 +82,9 @@ def test_fill_order_with_shares(localFixture, zeroX, market, cash, augur):
     noShareToken = localFixture.applySignature('ShareToken', noShareAddress)
     invalidShareToken = localFixture.applySignature('ShareToken', invalidShareAddress)
     completeSets = localFixture.contracts['CompleteSets']
-    assert completeSets.publicBuyCompleteSets(market.address, fix(20), value=fix('20', market.getNumTicks()))
+
+    cash.depositEther(value=fix('20', market.getNumTicks()))
+    assert completeSets.publicBuyCompleteSets(market.address, fix(20))
     assert noShareToken.transfer(tester.a1, 10)
     assert invalidShareToken.transfer(tester.a1, 10)
 
@@ -137,7 +139,9 @@ def test_maker_sell_shares_for_tokens(localFixture, zeroX, market, cash, augur):
     noShareAddress = market.getShareToken(NO)
     yesShareToken = localFixture.applySignature('ShareToken', yesShareAddress)
     completeSets = localFixture.contracts['CompleteSets']
-    assert completeSets.publicBuyCompleteSets(market.address, fix(20), value=fix('20', market.getNumTicks()))
+
+    assert cash.depositEther(value=fix('20', market.getNumTicks()))
+    assert completeSets.publicBuyCompleteSets(market.address, fix(20))
 
     assert yesShareToken.approve(zeroX.address, 10)
     assert zeroX.deposit(yesShareAddress, 10)

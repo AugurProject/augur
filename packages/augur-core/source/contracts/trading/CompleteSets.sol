@@ -10,13 +10,14 @@ import 'reporting/IMarket.sol';
 import 'reporting/IDisputeWindow.sol';
 import 'reporting/IAuction.sol';
 import 'trading/IOrders.sol';
-import 'libraries/CashAutoConverter.sol';
 import 'libraries/Initializable.sol';
+import 'IAugur.sol';
 
 
-contract CompleteSets is CashAutoConverter, Initializable, ReentrancyGuard, ICompleteSets {
+contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     using SafeMathUint256 for uint256;
 
+    IAugur public augur;
     address public fillOrder;
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
@@ -28,7 +29,7 @@ contract CompleteSets is CashAutoConverter, Initializable, ReentrancyGuard, ICom
     /**
      * Buys `_amount` shares of every outcome in the specified market.
     **/
-    function publicBuyCompleteSets(IMarket _market, uint256 _amount) external payable afterInitialized convertToAndFromCash returns (bool) {
+    function publicBuyCompleteSets(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
         this.buyCompleteSets(msg.sender, _market, _amount);
         augur.logCompleteSetsPurchased(_market.getUniverse(), _market, msg.sender, _amount);
         _market.assertBalances();
@@ -63,7 +64,7 @@ contract CompleteSets is CashAutoConverter, Initializable, ReentrancyGuard, ICom
         return true;
     }
 
-    function publicSellCompleteSets(IMarket _market, uint256 _amount) external afterInitialized convertToAndFromCash returns (bool) {
+    function publicSellCompleteSets(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
         this.sellCompleteSets(msg.sender, _market, _amount);
         augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount);
         _market.assertBalances();
@@ -99,7 +100,7 @@ contract CompleteSets is CashAutoConverter, Initializable, ReentrancyGuard, ICom
         }
 
         if (_creatorFee != 0) {
-            require(_denominationToken.transferFrom(_market, _market.getMarketCreatorMailbox(), _creatorFee));
+            _market.recordMarketCreatorFees(_creatorFee);
         }
         if (_reportingFee != 0) {
             IAuction _auction = IAuction(_market.getUniverse().getAuction());

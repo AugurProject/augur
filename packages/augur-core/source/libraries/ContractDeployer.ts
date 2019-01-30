@@ -134,7 +134,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     private async uploadAllContracts(): Promise<void> {
         console.log('Uploading contracts...');
-        const promises: Array<Promise<any>> = [];
+        const promises: Array<Promise<void>> = [];
         for (let contract of this.contracts) {
             promises.push(this.upload(contract));
         }
