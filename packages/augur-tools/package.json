@@ -41,6 +41,7 @@
   "dependencies": {}
   "devDependencies": {
     "options-parser": "0.4.0"
+  },
   "dependencies": {
     "ethjs-abi": "^0.2.1",
     "ethjs-account": "^0.1.4",
