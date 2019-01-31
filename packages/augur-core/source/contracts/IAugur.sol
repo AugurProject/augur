@@ -43,11 +43,11 @@ contract IAugur {
     function logTimestampSet(uint256 _newTimestamp) public returns (bool);
     function logInitialReporterTransferred(IUniverse _universe, IMarket _market, address _from, address _to) public returns (bool);
     function logMarketTransferred(IUniverse _universe, address _from, address _to) public returns (bool);
-    function logMarketMailboxTransferred(IUniverse _universe, IMarket _market, address _from, address _to) public returns (bool);
     function logAuctionTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value) public returns (bool);
     function logAuctionTokenBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool);
     function logAuctionTokenMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool);
     function recordAuctionTokens(IUniverse _universe) public returns (bool);
+    function isKnownFeeSender(address _feeSender) public view returns (bool);
     function lookup(bytes32 _key) public view returns (address);
     function getTimestamp() public view returns (uint256);
     function isValidMarket(IMarket _market) public view returns (bool);

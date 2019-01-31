@@ -47,11 +47,7 @@ contract AuctionToken is ITyped, Initializable, VariableSupplyToken, IAuctionTok
         uint256 _tokenBalance = redemptionToken.balanceOf(this);
         uint256 _redemptionAmount = _ownerBalance.mul(_tokenBalance).div(totalSupply());
         burn(msg.sender, _ownerBalance);
-        if (redemptionToken == ERC20Token(cash)) {
-            cash.withdrawEtherTo(msg.sender, _redemptionAmount);
-        } else {
-            redemptionToken.transfer(msg.sender, _redemptionAmount);
-        }
+        redemptionToken.transfer(msg.sender, _redemptionAmount);
         return true;
     }
 

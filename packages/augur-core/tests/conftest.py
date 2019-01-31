@@ -1,23 +1,18 @@
-from binascii import hexlify
 from datetime import timedelta
-from ethereum.state import State
 from ethereum.tools import tester
 from ethereum.tools.tester import Chain
 from ethereum.abi import ContractTranslator
 from ethereum.tools.tester import ABIContract
 from ethereum.config import config_metropolis, Env
-from ethereum import utils
-from ethereum import vm
 import ethereum
 from io import open as io_open
 from json import dump as json_dump, load as json_load, dumps as json_dumps
-from os import path, walk, makedirs, listdir, remove as remove_file
+from os import path, walk, makedirs, remove as remove_file
 import pytest
 from re import findall
 from solc import compile_standard
-from utils import bytesToHexString, bytesToLong, longToHexString, stringToBytes, twentyZeros, thirtyTwoZeros
-from copy import deepcopy
-from reporting_utils import proceedToFork, finalizeFork
+from utils import bytesToHexString, longToHexString, stringToBytes, BuyWithCash
+from reporting_utils import proceedToFork
 
 # Make TXs free.
 ethereum.opcodes.GCONTRACTBYTE = 0
@@ -423,7 +418,8 @@ class ContractsFixture:
 
     def createYesNoMarket(self, universe, endTime, feePerEthInWei, designatedReporterAddress, sender=tester.k0, topic="", description="description", extraInfo="", validityBond=0):
         marketCreationFee = validityBond or universe.getOrCacheMarketCreationCost()
-        marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, designatedReporterAddress, topic, description, extraInfo, value = marketCreationFee, sender=sender)
+        with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
+            marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, designatedReporterAddress, topic, description, extraInfo, sender=sender)
         assert marketAddress
         market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
         return market
@@ -431,14 +427,16 @@ class ContractsFixture:
     def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerEthInWei, designatedReporterAddress, sender=tester.k0, topic="", description="description", extraInfo=""):
         marketCreationFee = universe.getOrCacheMarketCreationCost()
         outcomes = [" "] * numOutcomes
-        marketAddress = universe.createCategoricalMarket(endTime, feePerEthInWei, designatedReporterAddress, outcomes, topic, description, extraInfo, value = marketCreationFee, sender=sender)
+        with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
+            marketAddress = universe.createCategoricalMarket(endTime, feePerEthInWei, designatedReporterAddress, outcomes, topic, description, extraInfo, sender=sender)
         assert marketAddress
         market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
         return market
 
     def createScalarMarket(self, universe, endTime, feePerEthInWei, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=tester.k0, description="description", extraInfo=""):
         marketCreationFee = universe.getOrCacheMarketCreationCost()
-        marketAddress = universe.createScalarMarket(endTime, feePerEthInWei, designatedReporterAddress, minPrice, maxPrice, numTicks, "", description, extraInfo, value = marketCreationFee, sender=sender)
+        with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
+            marketAddress = universe.createScalarMarket(endTime, feePerEthInWei, designatedReporterAddress, minPrice, maxPrice, numTicks, "", description, extraInfo, sender=sender)
         assert marketAddress
         market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
         return market

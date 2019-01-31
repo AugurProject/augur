@@ -6,5 +6,10 @@
   "major": {
     "automerge": false
   },
-  "prHourlyLimit": 2
+  "prHourlyLimit": 4,
+  "schedule": [
+    "after 6am",
+    "before 1pm"
+  ],
+  "timezone": "UTC"
 }

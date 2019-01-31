@@ -27,8 +27,6 @@ export class DisputeWindowFactory extends c.DisputeWindowFactory<ethers.utils.Bi
 }
 export class InitialReporterFactory extends c.InitialReporterFactory<ethers.utils.BigNumber> {
 }
-export class MailboxFactory extends c.MailboxFactory<ethers.utils.BigNumber> {
-}
 export class MapFactory extends c.MapFactory<ethers.utils.BigNumber> {
 }
 export class MarketFactory extends c.MarketFactory<ethers.utils.BigNumber> {
@@ -54,8 +52,6 @@ export class DisputeCrowdsourcer extends c.DisputeCrowdsourcer<ethers.utils.BigN
 export class DisputeWindow extends c.DisputeWindow<ethers.utils.BigNumber> {
 }
 export class InitialReporter extends c.InitialReporter<ethers.utils.BigNumber> {
-}
-export class Mailbox extends c.Mailbox<ethers.utils.BigNumber> {
 }
 export class Market extends c.Market<ethers.utils.BigNumber> {
 }

@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
-from datetime import timedelta
 from ethereum.tools import tester
 from ethereum.tools.tester import TransactionFailed
 from pytest import raises, fixture, mark
-from utils import fix, AssertLog, bytesToHexString, EtherDelta, TokenDelta
+from utils import fix, AssertLog, bytesToHexString, EtherDelta, TokenDelta, BuyWithCash
 from constants import YES, NO
 
 
@@ -18,11 +17,9 @@ def acquireLongShares(kitchenSinkFixture, cash, market, outcome, amount, approva
 
     shareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(outcome))
     completeSets = kitchenSinkFixture.contracts['CompleteSets']
-    createOrder = kitchenSinkFixture.contracts['CreateOrder']
-    fillOrder = kitchenSinkFixture.contracts['FillOrder']
     cost = amount * market.getNumTicks()
-
-    assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender, value = cost)
+    with BuyWithCash(cash, cost, sender, "complete set buy"):
+        assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
     assert shareToken.approve(approvalAddress, amount, sender = sender)
     for otherOutcome in range(0, market.getNumberOfOutcomes()):
         if otherOutcome == outcome: continue
@@ -35,10 +32,8 @@ def acquireShortShareSet(kitchenSinkFixture, cash, market, outcome, amount, appr
 
     shareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(outcome))
     completeSets = kitchenSinkFixture.contracts['CompleteSets']
-    createOrder = kitchenSinkFixture.contracts['CreateOrder']
-    fillOrder = kitchenSinkFixture.contracts['FillOrder']
-
-    assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender, value = cost)
+    with BuyWithCash(cash, cost, sender, "complete set buy"):
+        assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
     assert shareToken.transfer(1, amount, sender = sender)
     for otherOutcome in range(0, market.getNumberOfOutcomes()):
         if otherOutcome == outcome: continue
@@ -103,16 +98,17 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
         'finalTokenBalance': initialLongHolderETH + expectedPayout,
     }
 
-    with TokenDelta(cash, expectedMarketCreatorFees, market.getMarketCreatorMailbox(), "Market creator fees not paid"):
-        with TokenDelta(cash, expectedReporterFees, universe.getAuction(), "Reporter fees not paid"):
-            # redeem shares with a1
-            with AssertLog(kitchenSinkFixture, "TradingProceedsClaimed", tradingProceedsClaimedLog):
-                claimTradingProceeds.claimTradingProceeds(market.address, tester.a1)
-            # redeem shares with a2
-            claimTradingProceeds.claimTradingProceeds(market.address, tester.a2)
+    with TokenDelta(cash, expectedReporterFees, universe.getAuction(), "Reporter fees not paid"):
+        # redeem shares with a1
+        with AssertLog(kitchenSinkFixture, "TradingProceedsClaimed", tradingProceedsClaimedLog):
+            claimTradingProceeds.claimTradingProceeds(market.address, tester.a1)
+        # redeem shares with a2
+        claimTradingProceeds.claimTradingProceeds(market.address, tester.a2)
 
     # assert a1 ends up with cash (minus fees) and a2 does not
-    assert kitchenSinkFixture.chain.head_state.get_balance(tester.a1) == initialLongHolderETH + expectedPayout
+    assert market.marketCreatorFeesAttoEth() == expectedMarketCreatorFees
+    assert kitchenSinkFixture.chain.head_state.get_balance(tester.a1) == initialLongHolderETH
+    assert cash.balanceOf(tester.a1) == expectedPayout
     assert kitchenSinkFixture.chain.head_state.get_balance(tester.a2) == initialShortHolderETH
     assert yesShareToken.balanceOf(tester.a1) == 0
     assert yesShareToken.balanceOf(tester.a2) == 0
@@ -151,9 +147,12 @@ def test_redeem_shares_in_categorical_market(kitchenSinkFixture, universe, cash,
     claimTradingProceeds.claimTradingProceeds(market.address, tester.a2)
 
     # assert both accounts are paid (or not paid) accordingly
-    assert kitchenSinkFixture.chain.head_state.get_balance(tester.a1) == initialLongHolderETH + expectedPayout
+    assert kitchenSinkFixture.chain.head_state.get_balance(tester.a1) == initialLongHolderETH
+    assert cash.balanceOf(tester.a1) == expectedPayout
     shortHolderPayout = 0
     assert kitchenSinkFixture.chain.head_state.get_balance(tester.a2) == initialShortHolderETH + shortHolderPayout
+    assert cash.balanceOf(tester.a2) == shortHolderPayout
+
     assert shareToken2.balanceOf(tester.a1) == 0
     assert shareToken2.balanceOf(tester.a2) == 0
     assert shareToken1.balanceOf(tester.a1) == 0
@@ -188,8 +187,12 @@ def test_redeem_shares_in_scalar_market(kitchenSinkFixture, universe, cash, scal
     claimTradingProceeds.claimTradingProceeds(market.address, tester.a2)
 
     # assert a1 ends up with cash (minus fees) and a2 does not
-    assert kitchenSinkFixture.chain.head_state.get_balance(tester.a1) == initialLongHolderETH + expectedPayout * 3 / 4
-    assert kitchenSinkFixture.chain.head_state.get_balance(tester.a2) == initialShortHolderETH + expectedPayout * 1 / 4
+    assert kitchenSinkFixture.chain.head_state.get_balance(tester.a1) == initialLongHolderETH
+    assert cash.balanceOf(tester.a1) == expectedPayout * 3 / 4
+
+    assert kitchenSinkFixture.chain.head_state.get_balance(tester.a2) == initialShortHolderETH
+    assert cash.balanceOf(tester.a2) == expectedPayout * 1 / 4
+
     assert yesShareToken.balanceOf(tester.a1) == 0
     assert yesShareToken.balanceOf(tester.a2) == 0
     assert noShareToken.balanceOf(tester.a1) == 0

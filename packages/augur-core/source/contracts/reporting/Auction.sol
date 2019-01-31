@@ -31,11 +31,9 @@ contract Auction is Initializable, IAuction {
     ICash public cash;
     AuctionTokenFactory public auctionTokenFactory;
     uint256 public initialRepPriceInAttoEth;
-    address public completeSets;
-    address public claimTradingProceeds;
 
     bool public bootstrapMode; // Indicates the auction is currently bootstrapping by selling off minted REP to get ETH for the ETH auction
-    bool public bootstrapped; // Records that a bootstrap initialization occured. We can turn bootstrapping off if this has happened before.
+    bool public bootstrapped; // Records that a bootstrap initialization occurred. We can turn bootstrapping off if this has happened before.
     uint256 public initializationTime; // The time this contract was uploaded and initialized. The auction cadence is relative to this time
 
     uint256 public feeBalance; // The ETH this contract has received in fees.
@@ -45,7 +43,7 @@ contract Auction is Initializable, IAuction {
     uint256 public initialAttoEthBalance; // The initial ETH balance in attoETH considered for the current auction
     uint256 public initialRepSalePrice; // The initial price of REP in attoETH for the current auction
     uint256 public initialEthSalePrice; // The initial price of ETH in attoREP for the current auction
-    uint256 public lastRepPrice; // The last auction's Rep price in attoETH, regardless of wether the result is used in determining reporting fees
+    uint256 public lastRepPrice; // The last auction's Rep price in attoETH, regardless of whether the result is used in determining reporting fees
     uint256 public repPrice; // The Rep price in attoETH that should be used to determine reporting fees during and immediately after an ignored auction.
 
     function initialize(IAugur _augur, IUniverse _universe, IReputationToken _reputationToken) public beforeInitialized returns (bool) {
@@ -55,8 +53,6 @@ contract Auction is Initializable, IAuction {
         reputationToken = IV2ReputationToken(_reputationToken);
         cash = ICash(augur.lookup("Cash"));
         auctionTokenFactory = AuctionTokenFactory(augur.lookup("AuctionTokenFactory"));
-        completeSets = augur.lookup("CompleteSets");
-        claimTradingProceeds = augur.lookup("ClaimTradingProceeds");
         initializationTime = augur.getTimestamp();
         initialRepPriceInAttoEth = Reporting.getAuctionInitialRepPrice();
         lastRepPrice = initialRepPriceInAttoEth;
@@ -155,14 +151,13 @@ contract Auction is Initializable, IAuction {
         uint256 _repPriceInAttoEth = getRepSalePriceInAttoEth();
         uint256 _attoEthCost = _attoRepAmount.mul(_repPriceInAttoEth) / 10**18;
         // This will raise an exception if insufficient ETH was sent
-        msg.sender.transfer(msg.value.sub(_attoEthCost));
-        cash.depositEther.value(_attoEthCost)();
+        augur.trustedTransfer(cash, msg.sender, this, _attoEthCost);
         repAuctionToken.mintForPurchaser(msg.sender, _attoEthCost);
         return true;
     }
 
     function recordFees(uint256 _feeAmount) public returns (bool) {
-        require(msg.sender == completeSets || msg.sender == claimTradingProceeds);
+        require(augur.isKnownFeeSender(msg.sender));
         feeBalance = feeBalance.add(_feeAmount);
         return true;
     }
