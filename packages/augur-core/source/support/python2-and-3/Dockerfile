@@ -19,8 +19,7 @@ RUN set -ex; \
             -o \
             \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
         \) -exec rm -rf '{}' +; \
-    rm -f get-pip.py \
-    && apk del .build-deps
+    rm -f get-pip.py
 
 # install "virtualenv", since the vast majority of users of this image will want it
 #RUN pip2 install --no-cache-dir virtualenv
