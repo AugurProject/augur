@@ -219,7 +219,7 @@ contract MockMarket is IMarket {
         return "Market";
     }
 
-    function initialize(IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public payable returns (bool _success) {
+    function initialize(IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public returns (bool _success) {
         initializeUniverseValue = _universe;
         initializeEndTime = _endTime;
         initializeNumOutcomesValue = _numOutcomes;

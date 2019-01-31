@@ -2,7 +2,7 @@ from datetime import timedelta
 from ethereum.tools import tester
 from ethereum.tools.tester import ABIContract, TransactionFailed
 from pytest import fixture, mark, raises
-from utils import longTo32Bytes, bytesToHexString, TokenDelta, AssertLog, EtherDelta, longToHexString
+from utils import longTo32Bytes, bytesToHexString, TokenDelta, AssertLog, EtherDelta, longToHexString, BuyWithCash
 from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToNextRound, proceedToFork, finalizeFork
 
 tester.STARTGAS = long(6.7 * 10**6)
@@ -179,7 +179,7 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
     #(True, False),
     (False, False),
 ])
-def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, categoricalMarket, scalarMarket):
+def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, cash, categoricalMarket, scalarMarket):
     # Let's go into the one dispute round for the categorical market
     proceedToNextRound(localFixture, categoricalMarket)
     proceedToNextRound(localFixture, categoricalMarket)
@@ -248,7 +248,8 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     completeSets = localFixture.contracts['CompleteSets']
     numSets = 10
     cost = categoricalMarket.getNumTicks() * numSets
-    assert completeSets.publicBuyCompleteSets(categoricalMarket.address, 10, sender=tester.k1, value=cost)
+    with BuyWithCash(cash, cost, tester.k1, "buy complete set"):
+        assert completeSets.publicBuyCompleteSets(categoricalMarket.address, 10, sender=tester.k1)
     assert universe.getOpenInterestInAttoEth() == cost
 
     marketMigratedLog = {

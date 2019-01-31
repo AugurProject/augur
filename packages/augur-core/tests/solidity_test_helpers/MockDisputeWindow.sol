@@ -197,7 +197,7 @@ contract MockDisputeWindow is Initializable, MockVariableSupplyToken, IDisputeWi
         return true;
     }
 
-    function createMarket(uint256 _endTime, uint256 _feePerEthInWei, ICash _denominationToken, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) public payable returns (IMarket _newMarket) {
+    function createMarket(uint256 _endTime, uint256 _feePerEthInWei, ICash _denominationToken, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) public returns (IMarket _newMarket) {
         return market;
     }
 

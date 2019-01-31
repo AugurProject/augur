@@ -3,9 +3,8 @@
 from random import randint
 from ethereum.tools import tester
 from ethereum.tools.tester import TransactionFailed
-from pytest import fixture, mark, raises
-from datetime import timedelta
-from utils import bytesToHexString, longToHexString, PrintGasUsed, TokenDelta, EtherDelta
+from pytest import raises
+from utils import longToHexString, PrintGasUsed, TokenDelta, BuyWithCash
 
 def proceedToDesignatedReporting(fixture, market):
     fixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
@@ -124,17 +123,16 @@ def finalizeFork(fixture, market, universe, finalizeByMigration = True):
 def generateFees(fixture, universe, market):
     completeSets = fixture.contracts['CompleteSets']
     cash = fixture.contracts['Cash']
-    mailbox = fixture.applySignature('Mailbox', market.getMarketCreatorMailbox())
-    assert mailbox.withdrawEther()
     oldFeesBalance = cash.balanceOf(universe.getAuction())
 
     cost = 1000 * market.getNumTicks()
     marketCreatorFees = cost / market.getMarketCreatorSettlementFeeDivisor()
-    completeSets.publicBuyCompleteSets(market.address, 1000, sender = tester.k1, value = cost)
-    with TokenDelta(cash, marketCreatorFees, mailbox.address, "The market creator mailbox didn't get their share of fees from complete set sale"):
-        completeSets.publicSellCompleteSets(market.address, 1000, sender=tester.k1)
-    with EtherDelta(marketCreatorFees, market.getOwner(), fixture.chain, "The market creator did not get their fees when withdrawing ETH from the mailbox"):
-        assert mailbox.withdrawEther()
+
+    with BuyWithCash(cash, cost, tester.k1, "buy complete set"):
+        completeSets.publicBuyCompleteSets(market.address, 1000, sender=tester.k1)
+    initialMarketCreatorFees = market.marketCreatorFeesAttoEth()
+    completeSets.publicSellCompleteSets(market.address, 1000, sender=tester.k1)
+    assert marketCreatorFees == market.marketCreatorFeesAttoEth() - initialMarketCreatorFees, "The market creator didn't get correct share of fees from complete set sale"
     newFeesBalance = cash.balanceOf(universe.getAuction())
     reporterFees = cost / universe.getOrCacheReportingFeeDivisor()
     feesGenerated = newFeesBalance - oldFeesBalance

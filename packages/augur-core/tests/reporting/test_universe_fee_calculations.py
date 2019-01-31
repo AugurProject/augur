@@ -2,6 +2,7 @@ from ethereum.tools import tester
 from ethereum.tools.tester import ABIContract
 from pytest import fixture, mark
 from reporting_utils import proceedToInitialReporting, proceedToNextRound
+from utils import BuyWithCash
 
 ONE = 10 ** 18
 
@@ -43,7 +44,7 @@ def test_floating_amount_calculation(numWithCondition, targetWithConditionPerHun
     newAmount = universe.calculateFloatingValue(numWithCondition, 100, targetDivisor, previousAmount, contractsFixture.contracts['Constants'].DEFAULT_VALIDITY_BOND(), ONE / 100)
     assert newAmount == expectedValue
 
-def test_reporter_fees(contractsFixture, universe, market):
+def test_reporter_fees(contractsFixture, universe, market, cash):
     defaultValue = 100
     completeSets = contractsFixture.contracts['CompleteSets']
 
@@ -52,7 +53,8 @@ def test_reporter_fees(contractsFixture, universe, market):
     # Generate OI
     assert universe.getOpenInterestInAttoEth() == 0
     cost = 10 * market.getNumTicks()
-    completeSets.publicBuyCompleteSets(market.address, 10, sender = tester.k1, value = cost)
+    with BuyWithCash(cash, cost, tester.k1, "buy complete set"):
+        completeSets.publicBuyCompleteSets(market.address, 10, sender = tester.k1)
     assert universe.getOpenInterestInAttoEth() > 0
 
     # Move dispute window forward
