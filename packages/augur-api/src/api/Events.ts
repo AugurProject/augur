@@ -14,8 +14,8 @@ export class Events {
     this.provider.storeAbiData(<Abi>abiJson["Augur"], "Augur");
   }
 
-  public async getLogs(eventName: string, fromBlock: number, toBlock: number, additionalTopics?: Array<string|null>): Promise<Array<ParsedLog>> {
-    let topics: Array<string|null> = [this.provider.getEventTopic("Augur", eventName)];
+  public async getLogs(eventName: string, fromBlock: number, toBlock: number, additionalTopics?: Array<string | Array<string>>): Promise<Array<ParsedLog>> {
+    let topics: Array<string | Array<string>> = [this.provider.getEventTopic("Augur", eventName)];
     if (additionalTopics) {
       topics = topics.concat(additionalTopics);
     }
