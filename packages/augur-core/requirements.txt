@@ -19,7 +19,7 @@ pycparser==2.19           # via cffi
 pycryptodome==3.4.7
 pyethash==0.1.27          # via ethereum
 pysha3==1.0.2             # via ethereum
-pytest-profiling==1.2.11
+pytest-profiling==1.4.0
 pytest==3.1.2
 pyyaml==3.13              # via ethereum
 repoze.lru==0.7           # via ethereum
