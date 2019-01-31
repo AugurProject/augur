@@ -38,7 +38,7 @@
     "lodash": "4.17.11",
     "postinstall-build": "5.0.3",
     "pouchdb": "7.0.0",
-    "ethers": "4.0.21",
+    "ethers": "4.0.23",
     "typescript": "3.2.1",
     "augur-core": "2.0.0-0",
     "augur-api": "1.0.0-0",
