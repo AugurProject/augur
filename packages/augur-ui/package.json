@@ -116,7 +116,7 @@
     "copy-webpack-plugin": "4.6.0",
     "coveralls": "3.0.2",
     "css-loader": "1.0.1",
-    "cssnano": "4.1.7",
+    "cssnano": "4.1.8",
     "derequire": "2.0.6",
     "enzyme": "3.7.0",
     "enzyme-adapter-react-16": "1.7.0",
