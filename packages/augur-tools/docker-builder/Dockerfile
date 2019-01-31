@@ -1,7 +1,7 @@
 FROM augurproject/augur-core:latest as core-builder
 
 # using the augur image grab all repos
-FROM augurproject/augur:latest AS augur
+FROM augurproject/augur-build:latest AS augur-build
 
 ##
 # Now with our geth node
@@ -21,9 +21,9 @@ RUN apk add --no-cache \
     curl \
     libstdc++
 
-COPY --from=augur /augur /augur
-COPY --from=augur /opt /opt
-COPY --from=augur /usr/local /usr/local
+COPY --from=augur-build /augur /augur
+COPY --from=augur-build /opt /opt
+COPY --from=augur-build /usr/local /usr/local
 COPY --from=core-builder /app/output augur/packages/augur-core/output
 COPY --from=core-builder /app/output/contracts augur/packages/augur-artifacts
 
@@ -45,8 +45,8 @@ COPY --from=geth /common_start.sh /common_start.sh
 COPY --from=geth /start.sh /start.sh
 COPY --from=geth /geth /geth
 COPY --from=geth /augur/packages/augur-artifacts /augur/packages/augur-artifacts
-COPY --from=augur /opt /opt
-COPY --from=augur /usr/local /usr/local
+COPY --from=augur-build /opt /opt
+COPY --from=augur-build /usr/local /usr/local
 
 
 EXPOSE 8545 8546 30303 30303/udp 30304/udp

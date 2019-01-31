@@ -4,14 +4,14 @@
 # The build process is structured this way to encourage fail fast behavior so
 # that this image's build will fail earlier for compiling contracts than
 # for other pieces
-FROM augurproject/augur:latest as augur
+FROM augurproject/augur-build:latest as augur-build
 
 
 FROM augurproject/python2-and-3:latest as builder
 ARG SOLC_VERSION=v0.4.24
 
-COPY --from=augur /usr/local/ /usr/local
-COPY --from=augur /opt/ /opt/
+COPY --from=augur-build /usr/local/ /usr/local
+COPY --from=augur-build /opt/ /opt/
 
 RUN apk add --no-cache --virtual .build-deps \
         bash \
