@@ -1,0 +1,41 @@
+{
+  "name": "ethers-provider",
+  "version": "1.0.0-0",
+  "description": "Ethers.JS Provider Implementation for Augur API",
+  "author": "The Augur Developers <team@augur.net>",
+  "license": "MIT",
+  "directories": {
+    "src": "src"
+  },
+  "scripts": {
+    "version": "yarn rebuild",
+    "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
+    "prepare": "tsc",
+    "prepush": "yarn lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AugurProject/augur.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AugurProject/augur/issues"
+  },
+  "homepage": "https://github.com/AugurProject/augur#readme",
+  "dependencies": {
+    "ethers": "4.0.23",
+    "typescript": "3.2.1",
+    "augur-artifacts": "10.0.0-0",
+    "augur-api": "1.0.0-0",
+    "contract-dependencies": "1.0.0-0",
+    "contract-dependencies-ethers": "1.0.0-0"
+  },
+  "devDependencies": {
+    "ts-node": "7.0.1"
+  },
+  "buildDependencies": [
+    "typescript"
+  ]
+}
