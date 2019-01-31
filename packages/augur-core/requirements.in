@@ -1,7 +1,7 @@
 ethereum==2.3.1
-pycryptodome==3.4.7
+pycryptodome==3.7.3
 numpy==1.13.0
 pytest==3.1.2
-pytest-profiling==1.2.11
+pytest-profiling==1.4.0
 py-solc==1.4.0
 virtualenv==15.2.0
