@@ -1,0 +1,43 @@
+{
+  "name": "augur-api",
+  "version": "1.0.0-0",
+  "description": "Augur API",
+  "author": "The Augur Developers <team@augur.net>",
+  "license": "MIT",
+  "directories": {
+    "src": "src"
+  },
+  "scripts": {
+    "version": "yarn rebuild",
+    "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
+    "prepare": "tsc",
+    "prepush": "yarn lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AugurProject/augur.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AugurProject/augur/issues"
+  },
+  "homepage": "https://github.com/AugurProject/augur#readme",
+  "dependencies": {
+    "async": "2.6.1",
+    "express": "4.16.4",
+    "io-ts": "1.4.2",
+    "lodash": "4.17.11",
+    "postinstall-build": "5.0.3",
+    "typescript": "3.2.1",
+    "augur-core": "2.0.0-0",
+    "augur-artifacts": "10.0.0-0"
+  },
+  "devDependencies": {
+    "ts-node": "7.0.1"
+  },
+  "buildDependencies": [
+    "typescript"
+  ]
+}

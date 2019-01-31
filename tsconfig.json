@@ -11,6 +11,7 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
+    "resolveJsonModule": true,
     "outDir": "build",
     "baseUrl": ".",
     "paths": {
@@ -29,8 +30,23 @@
       "augur-types": [
         "packages/augur-types"
       ],
-      "augur.js": [
-        "packages/augur.js"
+      "augur-artifacts": [
+        "packages/augur-artifacts/index.ts"
+      ],
+      "augur-api": [
+        "packages/augur-api/src/index.ts"
+      ],
+      "augur-state": [
+        "packages/augur-state/src/index.ts"
+      ],
+      "contract-dependencies": [
+        "packages/contract-dependencies/src/index.ts"
+      ],
+      "contract-dependencies-ethers": [
+        "packages/contract-dependencies-ethers/src/index.ts"
+      ],
+      "ethers-provider": [
+        "packages/ethersjs-provider/src/index.ts"
       ]
     }
   },
@@ -41,6 +57,12 @@
     "./packages/augur-node",
     "./packages/augur-contract-sdk",
     "./packages/augur-tools",
-    "./packages/augur-types"
+    "./packages/augur-types",
+    "./packages/augur-artifacts",
+    "./packages/augur-api",
+    "./packages/augur-state",
+    "./packages/contract-dependencies",
+    "./packages/contract-dependencies-ethers",
+    "./packages/ethersjs-provider"
   ]
 }

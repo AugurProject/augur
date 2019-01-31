@@ -1,0 +1,54 @@
+{
+  "name": "augur-state",
+  "version": "1.0.0-0",
+  "description": "Augur State",
+  "author": "The Augur Developers <team@augur.net>",
+  "license": "MIT",
+  "directories": {
+    "src": "src"
+  },
+  "scripts": {
+    "version": "yarn rebuild",
+    "start": "ts-node -r tsconfig-paths/register ./src/run",
+    "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
+    "prepare": "tsc",
+    "clean": "echo delete database",
+    "rebuild": "yarn clean && yarn build",
+    "clean-start": "yarn rebuild && yarn start",
+    "clean-start-local": "yarn rebuild && ETHEREUM_HTTP=http://127.0.0.1:8545 ETHEREUM_WS=ws://127.0.0.1:8546 yarn start",
+    "prepush": "yarn lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AugurProject/augur.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AugurProject/augur/issues"
+  },
+  "homepage": "https://github.com/AugurProject/augur#readme",
+  "dependencies": {
+    "async": "2.6.1",
+    "augur-artifacts": "10.0.0-0",
+    "ethereumjs-blockstream": "7.0.0",
+    "express": "4.16.4",
+    "io-ts": "1.4.2",
+    "lodash": "4.17.11",
+    "postinstall-build": "5.0.3",
+    "pouchdb": "7.0.0",
+    "ethers": "4.0.23",
+    "typescript": "3.2.1",
+    "augur-core": "2.0.0-0",
+    "augur-api": "1.0.0-0",
+    "ethers-provider": "1.0.0-0"
+  },
+  "devDependencies": {
+    "ts-node": "7.0.1",
+    "tsconfig-paths": "3.7.0"
+  },
+  "buildDependencies": [
+    "typescript"
+  ]
+}
