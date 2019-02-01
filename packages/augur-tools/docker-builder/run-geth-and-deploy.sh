@@ -1,7 +1,6 @@
 #!/bin/bash
+set -euxo pipefail
 
-# comment out the commands below since the geth docker image
-# already is running
 cd /
 ./start.sh &
 
