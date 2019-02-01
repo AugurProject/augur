@@ -77,6 +77,8 @@ RUN yarn build:source
 
 FROM alpine:3.8
 
+WORKDIR /app
+
 RUN apk add --no-cache \
     libstdc++
 
