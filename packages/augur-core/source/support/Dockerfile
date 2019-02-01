@@ -7,7 +7,7 @@
 FROM augurproject/augur-build:latest as augur-build
 
 
-FROM augurproject/python2-and-3:latest as builder
+FROM augurproject/python2-and-3:monorepo as builder
 ARG SOLC_VERSION=v0.4.24
 
 COPY --from=augur-build /usr/local/ /usr/local
