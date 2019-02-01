@@ -35,7 +35,6 @@ COPY packages/augur-core/requirements.txt /app/requirements.txt
 RUN python2 -m pip install --upgrade pip setuptools \
     && python2 -m pip install --upgrade pip-tools \
     && python2 -m pip install -r requirements.txt
-    #&& apk del .build-deps
 
 
 # Install basics of the application
@@ -75,16 +74,10 @@ RUN yarn build:interfaces
 # Copy the git info so ContractDeployer can read the hash on deploy
 RUN yarn build:source
 
-FROM alpine:3.8
-
-WORKDIR /app
 
 RUN apk add --no-cache \
     libstdc++
 
-COPY --from=builder /usr/local/ /usr/local
-COPY --from=builder /opt/ /opt/
-COPY --from=builder /app/ /app/
-
+#RUN apk del .build-deps
 
 ENTRYPOINT ["yarn"]
