@@ -64,15 +64,15 @@ RUN yarn && yarn lint
 # RUN yarn lint
 
 # Build first chunk
-RUN yarn build:source
-RUN yarn build:contracts
+RUN yarn --scripts-prepend-node-path build:source
+RUN yarn --scripts-prepend-node-path build:contracts
 
 # Build contract interfaces
-RUN yarn build:interfaces
+RUN yarn --scripts-prepend-node-path build:interfaces
 
 
 # Copy the git info so ContractDeployer can read the hash on deploy
-RUN yarn build:source
+RUN yarn --scripts-prepend-node-path build:source
 
 
 RUN apk add --no-cache \
