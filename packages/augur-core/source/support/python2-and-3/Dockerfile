@@ -22,6 +22,6 @@ RUN set -ex; \
     rm -f get-pip.py
 
 # install "virtualenv", since the vast majority of users of this image will want it
-#RUN pip2 install --no-cache-dir virtualenv
+RUN /usr/bin/pip install --no-cache-dir virtualenv
 
 # docker build . -t augurproject/python2-and-3
