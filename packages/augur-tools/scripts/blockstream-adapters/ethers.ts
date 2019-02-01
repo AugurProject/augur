@@ -19,17 +19,21 @@ function convertEthersLogToBlockstreamLog(log: ethers.providers.Log): Log {
   }
 }
 
-async function getBlockByHashOrTag(provider: ethers.providers.Provider, hash: string): Promise<Block> {
-  const block = await provider.getBlock(hash, false);
+async function getBlockByHashOrTag(provider: ethers.providers.Provider, hashOrTag: string): Promise<Block> {
+  console.error("Querying block: " + hashOrTag)
+  const block = await provider.getBlock(hashOrTag, false);
+  console.error("Finished querying block: " + hashOrTag)
   return convertEthersBlockToBlockstreamBlock(block);
 }
 
 async function getLogs(provider: ethers.providers.Provider, filterOptions: FilterOptions): Promise<Log[]> {
-  const topics = _.compact(filterOptions.topics);
+  console.error("Querying logs " + JSON.stringify(filterOptions));
   const logs = await provider.getLogs({
     ...filterOptions,
-    topics: topics,
+    topics: _.compact(filterOptions.topics),
   });
+  console.error(`Finished querying logs ${JSON.stringify(filterOptions)} (${logs.length})`);
+
   return _.map(logs, convertEthersLogToBlockstreamLog);
 }
 

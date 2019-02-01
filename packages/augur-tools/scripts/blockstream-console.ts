@@ -26,13 +26,14 @@ function describeBlock(block: Block) {
 }
 
 function setupLogging(blockstream: BlockAndLogStreamer<Block, Log>) {
+  blockstream.addLogFilter(LOG_FILTER)
+
   blockstream.subscribeToOnBlockAdded((block: Block) => {
     console.log("BLOCK Added " + describeBlock(block))
   });
   blockstream.subscribeToOnBlockRemoved((block: Block) => {
     console.log("BLOCK Removed " + describeBlock(block))
   });
-  blockstream.addLogFilter(LOG_FILTER)
   blockstream.subscribeToOnLogsAdded((blockHash, logs) => {
     if (logs.length > 0) {
       console.log(" ┗ Added LOGS " + describeLogs(blockHash, logs) + "\n");
@@ -71,6 +72,3 @@ if (isSupportedAdapter(ADAPTER_TYPE)) {
 } else {
   console.error("Use supported ADAPTER_TYPE: " + SUPPORTED_ADAPTER)
 }
-
-
-
