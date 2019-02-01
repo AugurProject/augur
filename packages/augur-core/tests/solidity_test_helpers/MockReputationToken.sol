@@ -3,7 +3,7 @@ pragma solidity ^0.4.24;
 import 'reporting/IReputationToken.sol';
 import 'libraries/ITyped.sol';
 import 'libraries/Initializable.sol';
-import 'libraries/token/ERC20.sol';
+import 'libraries/token/ERC20Token.sol';
 import 'reporting/IUniverse.sol';
 import 'reporting/IMarket.sol';
 import 'reporting/Reporting.sol';

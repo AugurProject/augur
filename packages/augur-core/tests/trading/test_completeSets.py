@@ -58,7 +58,6 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
     orders = contractsFixture.contracts['Orders']
     yesShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(YES))
     noShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(NO))
-    cash.transfer(0, cash.balanceOf(tester.a9), sender = tester.k9)
 
     assert not cash.balanceOf(tester.a0)
     assert not cash.balanceOf(tester.a1)

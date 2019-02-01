@@ -3,7 +3,21 @@ import { exists, readFile, writeFile } from "async-file";
 import { stringTo32ByteHex, resolveAll } from "./HelperFunctions";
 import { CompilerOutput } from "solc";
 import { DeployerConfiguration } from './DeployerConfiguration';
-import { Augur, Universe, ReputationToken, LegacyReputationToken, TimeControlled, CompleteSets, Trade, CreateOrder, CancelOrder, FillOrder, Orders, ClaimTradingProceeds } from './ContractInterfaces';
+import {
+    Augur,
+    Universe,
+    ReputationToken,
+    LegacyReputationToken,
+    TimeControlled,
+    CompleteSets,
+    Trade,
+    CreateOrder,
+    CancelOrder,
+    FillOrder,
+    Orders,
+    ClaimTradingProceeds,
+    Cash
+} from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
@@ -207,6 +221,10 @@ Deploying to: ${networkConfiguration.networkName}
         const orders = new Orders(this.dependencies, ordersContract);
         promises.push(orders.initialize(this.augur!.address));
 
+        const cashContract = await this.getContractAddress("Cash");
+        const cash = new Cash(this.dependencies, cashContract);
+        promises.push(cash.initialize(this.augur!.address));
+
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");
             const time = new TimeControlled(this.dependencies, timeContract);
@@ -218,6 +236,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     public async initializeLegacyRep(): Promise<void> {
         const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
+        await legacyReputationToken.initializeERC820(this.augur!.address);
         await legacyReputationToken.faucet(new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(18)).mul(new ethers.utils.BigNumber(11000000)));
         const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await legacyReputationToken.balanceOf_(defaultAddress);

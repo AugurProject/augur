@@ -9,7 +9,7 @@ def test_init(contractsFixture, market):
     shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken())
 
     assert shareToken.name() == "Shares", "currency name"
-    assert shareToken.decimals() == 0, "number of decimals"
+    assert shareToken.decimals() == 18, "number of decimals"
     assert shareToken.symbol() == "SHARE", "currency symbol"
 
     assert shareToken.getTypeName() == stringToBytes("ShareToken")

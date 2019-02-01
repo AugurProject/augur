@@ -1,5 +1,6 @@
 pragma solidity 0.4.24;
 
+import 'libraries/IERC820Registry.sol';
 import 'reporting/IDisputeCrowdsourcer.sol';
 import 'libraries/token/VariableSupplyToken.sol';
 import 'reporting/BaseReportingParticipant.sol';
@@ -11,7 +12,7 @@ import 'IAugur.sol';
 contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, IDisputeCrowdsourcer, Initializable {
     IUniverse internal universe;
 
-    function initialize(IAugur _augur, IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, address _erc820RegistryAddress) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         market = _market;
@@ -20,6 +21,8 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
         size = _size;
         payoutNumerators = _payoutNumerators;
         payoutDistributionHash = _payoutDistributionHash;
+        erc820Registry = IERC820Registry(_erc820RegistryAddress);
+        initialize820InterfaceImplementations();
         return true;
     }
 

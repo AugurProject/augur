@@ -1,5 +1,6 @@
 pragma solidity 0.4.24;
 
+import 'libraries/IERC820Registry.sol';
 import 'libraries/Initializable.sol';
 import 'reporting/IInitialReporter.sol';
 import 'reporting/IMarket.sol';

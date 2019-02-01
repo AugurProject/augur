@@ -358,9 +358,11 @@ class ContractsFixture:
                 self.upload(path.join(directory, filename), constructorArgs=constructorArgs)
 
     def initializeAllContracts(self):
-        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time']
+        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','Cash','LegacyReputationToken']
         for contractName in contractsToInitialize:
-            if getattr(self.contracts[contractName], "initialize", None):
+            if getattr(self.contracts[contractName], "initializeERC820", None):
+                self.contracts[contractName].initializeERC820(self.contracts['Augur'].address)
+            elif getattr(self.contracts[contractName], "initialize", None):
                 self.contracts[contractName].initialize(self.contracts['Augur'].address)
             else:
                 raise "contract has no 'initialize' method on it."

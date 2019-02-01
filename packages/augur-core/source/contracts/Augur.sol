@@ -1,7 +1,7 @@
 pragma solidity 0.4.24;
 
 import 'IAugur.sol';
-import 'libraries/token/ERC20.sol';
+import 'libraries/token/ERC20Token.sol';
 import 'factories/IUniverseFactory.sol';
 import 'reporting/IUniverse.sol';
 import 'reporting/IMarket.sol';
@@ -187,7 +187,7 @@ contract Augur is IAugur {
     // Transfer
     //
 
-    function trustedTransfer(ERC20 _token, address _from, address _to, uint256 _amount) public returns (bool) {
+    function trustedTransfer(ERC20Token _token, address _from, address _to, uint256 _amount) public returns (bool) {
         require(trustedSender[msg.sender]);
         require(_token.transferFrom(_from, _to, _amount));
         return true;

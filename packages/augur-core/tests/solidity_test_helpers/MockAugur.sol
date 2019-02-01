@@ -1,7 +1,7 @@
 pragma solidity 0.4.24;
 
 
-import 'libraries/token/ERC20.sol';
+import 'libraries/token/ERC20Token.sol';
 import 'reporting/IUniverse.sol';
 import 'reporting/IMarket.sol';
 import 'reporting/IDisputeWindow.sol';
@@ -21,7 +21,7 @@ contract MockAugur {
         logMarketFinalizedCalledValue = false;
     }
 
-    function trustedTransfer(ERC20 _token, address _from, address _to, uint256 _amount) public returns (bool) {
+    function trustedTransfer(ERC20Token _token, address _from, address _to, uint256 _amount) public returns (bool) {
         return true;
     }
 

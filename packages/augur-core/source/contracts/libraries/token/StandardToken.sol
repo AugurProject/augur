@@ -1,80 +1,55 @@
 pragma solidity 0.4.24;
 
 
-import 'libraries/token/BasicToken.sol';
-import 'libraries/token/ERC20.sol';
+import 'libraries/token/ERC20Token.sol';
+import 'libraries/token/ERC777BaseToken.sol';
 
 
-/**
- * @title Standard ERC20 token
- *
- * @dev Implementation of the basic standard token.
- * @dev https://github.com/ethereum/EIPs/issues/20
- * @dev Based on code by FirstBlood: https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol
- */
-contract StandardToken is ERC20, BasicToken {
-    using SafeMathUint256 for uint256;
-
+contract StandardToken is ERC20Token, ERC777BaseToken {
     // Approvals of this amount are simply considered an everlasting approval which is not decremented when transfers occur
     uint256 public constant ETERNAL_APPROVAL_VALUE = 2 ** 256 - 1;
 
-    mapping (address => mapping (address => uint256)) internal allowed;
+    mapping(address => mapping(address => uint256)) internal allowed;
 
-    /**
-    * @dev Transfer tokens from one address to another
-    * @param _from address The address which you want to send tokens from
-    * @param _to address The address which you want to transfer to
-    * @param _value uint256 the amout of tokens to be transfered
-    */
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
+    function initialize820InterfaceImplementations() internal returns (bool) {
+        super.initialize820InterfaceImplementations();
+        setInterfaceImplementation("ERC20Token", this);
+        return true;
+    }
+
+    function transfer(address _to, uint256 _amount) public returns (bool) {
+        require(_to != address(0), "Cannot send to 0x0");
+        internalTransfer(msg.sender, _to, _amount, true);
+        return true;
+    }
+
+    function transferFrom(address _from, address _to, uint256 _amount) public returns (bool) {
         uint256 _allowance = allowed[_from][msg.sender];
+        require(_amount <= _allowance, "Not enough funds allowed");
 
         if (_allowance != ETERNAL_APPROVAL_VALUE) {
-            allowed[_from][msg.sender] = _allowance.sub(_value);
+            allowed[_from][msg.sender] = _allowance.sub(_amount);
         }
-        internalTransfer(_from, _to, _value);
+
+        internalTransfer(_from, _to, _amount, true);
         return true;
     }
 
-    /**
-    * @dev Aprove the passed address to spend the specified amount of tokens on behalf of msg.sender.
-    * @param _spender The address which will spend the funds.
-    * @param _value The amount of tokens to be spent.
-    */
-    function approve(address _spender, uint256 _value) public returns (bool) {
-        approveInternal(msg.sender, _spender, _value);
+    function internalTransfer(address _from, address _to, uint256 _amount, bool _callHooks) internal returns (bool) {
+        doSend(msg.sender, _from, _to, _amount, "", "", false, _callHooks);
         return true;
     }
 
-    /**
-    * @dev Function to check the amount of tokens that an owner allowed to a spender.
-    * @param _owner address The address which owns the funds.
-    * @param _spender address The address which will spend the funds.
-    * @return A uint256 specifing the amount of tokens still avaible for the spender.
-    */
-    function allowance(address _owner, address _spender) public view returns (uint256 remaining) {
-        return allowed[_owner][_spender];
+    function approve(address _spender, uint256 _amount) public returns (bool) {
+        approveInternal(msg.sender, _spender, _amount);
+        return true;
     }
 
-   /**
-   * @dev Increase the amount of tokens that an owner allowed to a spender.
-   *
-   * Approve should be called when allowed[_spender] == 0. To increment allowed value is better to use this function to avoid 2 calls (and wait until the first transaction is mined)
-   * @param _spender The address which will spend the funds.
-   * @param _addedValue The amount of tokens to increase the allowance by.
-   */
     function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
         approveInternal(msg.sender, _spender, allowed[msg.sender][_spender].add(_addedValue));
         return true;
     }
 
-  /**
-   * @dev Decrease the amount of tokens that an owner allowed to a spender.
-   *
-   * approve should be called when allowed[_spender] == 0. To decrement allowed value is better to use this function to avoid 2 calls (and wait until the first transaction is mined)
-   * @param _spender The address which will spend the funds.
-   * @param _subtractedValue The amount of tokens to decrease the allowance by.
-   */
     function decreaseApproval(address _spender, uint _subtractedValue) public returns (bool) {
         uint oldValue = allowed[msg.sender][_spender];
         if (_subtractedValue > oldValue) {
@@ -85,9 +60,29 @@ contract StandardToken is ERC20, BasicToken {
         return true;
     }
 
-    function approveInternal(address _owner, address _spender, uint256 _value) internal returns (bool) {
-        allowed[_owner][_spender] = _value;
-        emit Approval(_owner, _spender, _value);
+    function approveInternal(address _owner, address _spender, uint256 _allowance) internal returns (bool) {
+        allowed[_owner][_spender] = _allowance;
+        emit Approval(_owner, _spender, _allowance);
         return true;
     }
+
+    function allowance(address _owner, address _spender) public view returns (uint256) {
+        return allowed[_owner][_spender];
+    }
+
+    function doSend(address _operator, address _from, address _to, uint256 _amount, bytes32  _data, bytes32  _operatorData, bool _preventLocking, bool _callHooks) internal returns (bool) {
+        super.doSend(_operator, _from, _to, _amount, _data, _operatorData, _preventLocking, _callHooks);
+        emit Transfer(_from, _to, _amount);
+        onTokenTransfer(_from, _to, _amount);
+        return true;
+    }
+
+    function doBurn(address _operator, address _tokenHolder, uint256 _amount, bytes32  _data, bytes32  _operatorData) internal returns (bool) {
+        super.doBurn(_operator, _tokenHolder, _amount, _data, _operatorData);
+        emit Transfer(_tokenHolder, 0x0, _amount);
+        return true;
+    }
+
+    // Subclasses of this token generally want to send additional logs through the centralized Augur log emitter contract
+    function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool);
 }

@@ -5,6 +5,8 @@ export class Contract extends c.Contract<ethers.utils.BigNumber> {
 }
 export class Augur extends c.Augur<ethers.utils.BigNumber> {
 }
+export class ERC820Registry extends c.ERC820Registry<ethers.utils.BigNumber> {
+}
 export class LegacyReputationToken extends c.LegacyReputationToken<ethers.utils.BigNumber> {
 }
 export class TestNetReputationToken extends c.TestNetReputationToken<ethers.utils.BigNumber> {

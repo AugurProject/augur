@@ -6,7 +6,7 @@ import 'legacy_reputation/DelegationTarget.sol';
 import 'libraries/ITyped.sol';
 import 'libraries/Initializable.sol';
 import 'libraries/token/VariableSupplyToken.sol';
-import 'libraries/token/ERC20.sol';
+import 'libraries/token/ERC20Token.sol';
 import 'reporting/IUniverse.sol';
 import 'reporting/IMarket.sol';
 import 'reporting/Reporting.sol';
@@ -51,7 +51,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
         require(_universe != address(0));
         universe = _universe;
         updateParentTotalTheoreticalSupply();
-        ERC20 _legacyRepToken = getLegacyRepToken();
+        ERC20Token _legacyRepToken = getLegacyRepToken();
         // Initialize migration related state. If this is Genesis universe REP the balances from the Legacy contract must be migrated before we enable usage
         isMigratingFromLegacy = _universe.getParentUniverse() == IUniverse(0);
         targetSupply = _legacyRepToken.totalSupply();
@@ -108,27 +108,32 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
     }
 
     function transferFrom(address _from, address _to, uint _value) public whenNotMigratingFromLegacy returns (bool) {
-        return super.transferFrom(_from, _to, _value);
+        require(_value <= allowed[_from][msg.sender], "Not enough funds allowed");
+        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+        balances[_from] = balances[_from].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+        emit Transfer(_from, _to, _value);
+        return true;
     }
 
     function trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens) public whenNotMigratingFromLegacy afterInitialized returns (bool) {
         require(IUniverse(msg.sender) == universe);
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function trustedMarketTransfer(address _source, address _destination, uint256 _attotokens) public whenNotMigratingFromLegacy afterInitialized returns (bool) {
         require(universe.isContainerForMarket(IMarket(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens) public whenNotMigratingFromLegacy afterInitialized returns (bool) {
         require(universe.isContainerForReportingParticipant(IReportingParticipant(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens) public whenNotMigratingFromLegacy afterInitialized returns (bool) {
         require(universe.isContainerForDisputeWindow(IDisputeWindow(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view returns (bool) {
@@ -151,8 +156,8 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
         return totalMigrated;
     }
 
-    function getLegacyRepToken() public pure returns (ERC20) {
-        return ERC20(address(0xE94327D07Fc17907b4DB788E5aDf2ed424adDff6));
+    function getLegacyRepToken() public pure returns (ERC20Token) {
+        return ERC20Token(address(0xE94327D07Fc17907b4DB788E5aDf2ed424adDff6));
     }
 
     function updateSiblingMigrationTotal(IReputationToken _token) public whenNotMigratingFromLegacy returns (bool) {
@@ -187,7 +192,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
      * @return True if operation was completed
      */
     function migrateBalancesFromLegacyRep(address[] _holders) public whenMigratingFromLegacy afterInitialized returns (bool) {
-        ERC20 _legacyRepToken = getLegacyRepToken();
+        ERC20Token _legacyRepToken = getLegacyRepToken();
         for (uint256 i = 0; i < _holders.length; i++) {
             migrateBalanceFromLegacyRep(_holders[i], _legacyRepToken);
         }
@@ -199,7 +204,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
      * @param _holder Address to migrate balance
      * @return True if balance was copied, false if was already copied or address had no balance
      */
-    function migrateBalanceFromLegacyRep(address _holder, ERC20 _legacyRepToken) private whenMigratingFromLegacy afterInitialized returns (bool) {
+    function migrateBalanceFromLegacyRep(address _holder, ERC20Token _legacyRepToken) private whenMigratingFromLegacy afterInitialized returns (bool) {
         if (balances[_holder] > 0) {
             return false; // Already copied, move on
         }
@@ -224,7 +229,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
      * @return True if operation was completed
      */
     function migrateAllowancesFromLegacyRep(address[] _owners, address[] _spenders) public whenMigratingFromLegacy afterInitialized returns (bool) {
-        ERC20 _legacyRepToken = getLegacyRepToken();
+        ERC20Token _legacyRepToken = getLegacyRepToken();
         for (uint256 i = 0; i < _owners.length; i++) {
             address _owner = _owners[i];
             address _spender = _spenders[i];

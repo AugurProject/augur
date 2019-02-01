@@ -1,6 +1,6 @@
 pragma solidity 0.4.24;
 
-
+import 'libraries/IERC820Registry.sol';
 import 'trading/IShareToken.sol';
 import 'libraries/token/VariableSupplyToken.sol';
 import 'libraries/ITyped.sol';
@@ -12,7 +12,6 @@ import 'IAugur.sol';
 contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
 
     string constant public name = "Shares";
-    uint8 constant public decimals = 0;
     string constant public symbol = "SHARE";
 
     IMarket private market;
@@ -25,7 +24,7 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
     address public completeSets;
     address public claimTradingProceeds;
 
-    function initialize(IAugur _augur, IMarket _market, uint256 _outcome) external beforeInitialized returns(bool) {
+    function initialize(IAugur _augur, IMarket _market, uint256 _outcome, address _erc820RegistryAddress) external beforeInitialized returns(bool) {
         endInitialization();
         market = _market;
         outcome = _outcome;
@@ -35,6 +34,8 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         cancelOrder = _augur.lookup("CancelOrder");
         completeSets = _augur.lookup("CompleteSets");
         claimTradingProceeds = _augur.lookup("ClaimTradingProceeds");
+        erc820Registry = IERC820Registry(_erc820RegistryAddress);
+        initialize820InterfaceImplementations();
         return true;
     }
 
@@ -52,17 +53,18 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
 
     function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public afterInitialized returns (bool) {
         require(msg.sender == createOrder);
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public afterInitialized returns (bool) {
         require(msg.sender == fillOrder);
-        return internalTransfer(_source, _destination, _attotokens);
+        // We do not call ERC777 hooks here as it would allow a malicious order creator to halt trading
+        return internalTransfer(_source, _destination, _attotokens, false);
     }
 
     function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public afterInitialized returns (bool) {
         require(msg.sender == cancelOrder);
-        return internalTransfer(_source, _destination, _attotokens);
+        return internalTransfer(_source, _destination, _attotokens, true);
     }
 
     function getTypeName() public view returns(bytes32) {

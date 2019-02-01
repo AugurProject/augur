@@ -1,5 +1,6 @@
 pragma solidity 0.4.24;
 
+import 'IAugur.sol';
 import 'trading/ICash.sol';
 import 'libraries/ITyped.sol';
 import 'libraries/token/VariableSupplyToken.sol';
@@ -7,13 +8,18 @@ import 'libraries/token/VariableSupplyToken.sol';
 
 /**
  * @title Cash
- * @dev ETH wrapper contract to make it look like an ERC20 token.
+ * @dev ETH wrapper contract to make it look like an ERC20Token token.
  */
 contract Cash is ITyped, VariableSupplyToken, ICash {
 
     string constant public name = "Cash";
     string constant public symbol = "CASH";
-    uint8 constant public decimals = 18;
+
+    function initialize(IAugur _augur) public returns (bool) {
+        erc820Registry = IERC820Registry(_augur.lookup("ERC820Registry"));
+        initialize820InterfaceImplementations();
+        return true;
+    }
 
     function depositEther() external payable returns(bool) {
         mint(msg.sender, msg.value);
@@ -50,7 +56,7 @@ contract Cash is ITyped, VariableSupplyToken, ICash {
         if (_to.send(_amount)) {
             burn(msg.sender, _amount);
         } else {
-            internalTransfer(msg.sender, _to, _amount);
+            internalTransfer(msg.sender, _to, _amount, true);
         }
         assert(address(this).balance >= totalSupply());
         return true;

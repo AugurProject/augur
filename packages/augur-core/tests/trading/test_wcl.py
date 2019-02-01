@@ -396,9 +396,9 @@ def test_parametrized(type, outcome, displayPrice, orderSize, creatorYesShares, 
             assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
         if outcome == YES:
             assert yesShareToken.approve(approvalAddress, amount, sender = sender)
-            assert noShareToken.transfer(0, amount, sender = sender)
+            assert noShareToken.transfer(1, amount, sender = sender)
         if outcome == NO:
-            assert yesShareToken.transfer(0, amount, sender = sender)
+            assert yesShareToken.transfer(1, amount, sender = sender)
             assert noShareToken.approve(approvalAddress, amount, sender = sender)
 
     # create order

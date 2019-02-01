@@ -3,7 +3,7 @@ pragma solidity 0.4.24;
 import 'reporting/IMarket.sol';
 import 'trading/IShareToken.sol';
 import 'trading/ICash.sol';
-import 'libraries/token/ERC20.sol';
+import 'libraries/token/ERC20Token.sol';
 import 'libraries/math/SafeMathUint256.sol';
 import 'libraries/ReentrancyGuard.sol';
 import 'trading/CompleteSets.sol';
@@ -86,16 +86,16 @@ contract ZeroXPoC is ReentrancyGuard {
     / Market Share management
     */
 
-    function deposit(ERC20 _token, uint256 _amount) public nonReentrant returns (bool) {
-        require(_token != ERC20(0));
+    function deposit(ERC20Token _token, uint256 _amount) public nonReentrant returns (bool) {
+        require(_token != ERC20Token(0));
         tokenBalances[_token][msg.sender] = tokenBalances[_token][msg.sender].add(_amount);
         require(_token.transferFrom(msg.sender, this, _amount));
         Deposit(msg.sender, _token, _amount, tokenBalances[_token][msg.sender]);
         return true;
     }
 
-    function withdraw(ERC20 _token, uint256 _amount) public nonReentrant returns (bool) {
-        require(_token != ERC20(0));
+    function withdraw(ERC20Token _token, uint256 _amount) public nonReentrant returns (bool) {
+        require(_token != ERC20Token(0));
         uint256 _heldAmount = tokenBalances[_token][msg.sender];
         tokenBalances[_token][msg.sender] = _heldAmount.sub(_amount);
         require(_heldAmount >= _amount);
@@ -404,7 +404,7 @@ contract ZeroXPoC is ReentrancyGuard {
         return filled[orderHash].add(cancelled[orderHash]);
     }
 
-    function getTokenBalance(ERC20 token, address owner)
+    function getTokenBalance(ERC20Token token, address owner)
         public
         view
         returns (uint)
@@ -420,7 +420,7 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param token Address of token.
     /// @param owner Address of owner.
     /// @return Token balance of owner.
-    function getBalance(ERC20 token, address owner)
+    function getBalance(ERC20Token token, address owner)
         internal
         constant  // The called token contract may attempt to change state, but will not be able to due to an added gas limit.
         returns (uint)
@@ -432,7 +432,7 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param token Address of token.
     /// @param owner Address of owner.
     /// @return Allowance of token given to this contract by owner.
-    function getAllowance(ERC20 token, address owner)
+    function getAllowance(ERC20Token token, address owner)
         internal
         constant  // The called token contract may attempt to change state, but will not be able to due to an added gas limit.
         returns (uint)
