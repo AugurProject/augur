@@ -7,7 +7,7 @@
 FROM augurproject/augur-build:latest as augur-build
 
 
-FROM augurproject/python2-and-3:monorepo as builder
+FROM augurproject/python2-and-3:monorepo
 ARG SOLC_VERSION=v0.4.24
 
 COPY --from=augur-build /usr/local/ /usr/local
@@ -64,15 +64,15 @@ RUN yarn && yarn lint
 # RUN yarn lint
 
 # Build first chunk
-RUN yarn --scripts-prepend-node-path build:source
-RUN yarn --scripts-prepend-node-path build:contracts
+RUN yarn build:source
+RUN yarn build:contracts
 
 # Build contract interfaces
-RUN yarn --scripts-prepend-node-path build:interfaces
+RUN yarn build:interfaces
 
 
 # Copy the git info so ContractDeployer can read the hash on deploy
-RUN yarn --scripts-prepend-node-path build:source
+RUN yarn build:source
 
 
 RUN apk add --no-cache \
