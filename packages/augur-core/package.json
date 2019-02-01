@@ -36,7 +36,7 @@
     "deploy": "npm run deploy:net -- aura clique rinkeby",
     "artifacts": "bash source/support/artifacts/run.sh",
     "docker:build": "npm run docker:build:python2-and-3 && docker build --cache-from augurproject/augur-core:latest --tag augurproject/augur-core:latest -f ./source/support/Dockerfile ./../..",
-    "docker:build:python2-and-3": "docker build --tag augurproject/python2-and-3:latest -f ./source/support/python2-and-3/Dockerfile ./../..",
+    "docker:build:python2-and-3": "docker build --tag augurproject/python2-and-3:monorepo -f ./source/support/python2-and-3/Dockerfile ./../..",
     "docker:push": "docker push augurproject/augur-core:latest",
     "docker:run:npm": "docker run --rm augurproject/augur-core:latest",
     "docker:run:shell": "docker run --rm -it --entrypoint=bash augurproject/augur-core:latest",
