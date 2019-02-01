@@ -13,8 +13,10 @@ function getBlockByHash(hash: string): Promise<Block> {
 
 function getBlockByNumber(number: string): Promise<Block> {
   return new Promise<Block>(function (resolve, reject) {
+    console.error("Querying block: " + number)
     ethrpc.getBlockByNumber(number, false, function (err: Error | null, block: Block | undefined) {
       if (err) return reject(err);
+      console.error("Finished querying block: " + number);
       resolve(block);
     });
   });
@@ -22,9 +24,12 @@ function getBlockByNumber(number: string): Promise<Block> {
 
 function getLogs(filterOptions: FilterOptions): Promise<Log[]> {
   return new Promise((resolve, reject) => {
+    console.error("Querying logs: " + JSON.stringify(filterOptions));
     ethrpc.getLogs(filterOptions, (err: Error|null, logs: Log[]|undefined) => {
         if (err) return reject(err);
-        resolve(logs);
+        if (logs === undefined) return reject(new Error("Logs undefined for filter " + JSON.stringify(filterOptions)));
+      console.error(`Finished querying logs ${JSON.stringify(filterOptions)} (${logs.length})`);
+      resolve(logs);
       });
   });
 }
