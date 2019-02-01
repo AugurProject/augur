@@ -18,7 +18,7 @@
     "docker:build:augur-core": "lerna run --scope augur-core docker:build && lerna run --scope augur-core artifacts",
     "docker:build:augur": "docker build -f support/Dockerfile -t augurproject/augur-build:latest .",
     "docker:build:pops": "lerna run --scope augur-tools docker:build",
-    "docker:build:clean": "docker rmi $(docker images | awk '/^<none>/ {print $3}')",
+    "docker:build:clean": "docker system prune",
     "docker:geth:pop": "yarn workspace augur-tools docker:geth:pop",
     "docker:pull": "yarn workspace augur-tools docker:pull",
     "docker:geth:pop-15": "yarn workspace augur-tools docker:geth:pop-15",
