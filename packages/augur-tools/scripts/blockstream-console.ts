@@ -2,6 +2,7 @@ import { Block, BlockAndLogStreamer, FilterOptions, Log } from "ethereumjs-block
 import * as adapters from "./blockstream-adapters";
 import { GetBlockByString, isSupportedAdapter, SUPPORTED_ADAPTER } from "./blockstream-adapters";
 
+const POLLING_FREQUENCY = parseInt(process.env.POLLING_FREQUENCY || "3000");;
 const STARTUP_BLOCKS = parseInt(process.env.STARTUP_BLOCKS || "5");
 const ETHEREUM_HTTP = process.env.ETHEREUM_HTTP || "http://127.0.0.1:8545";
 const ADAPTER_TYPE = process.env.ADAPTER_TYPE || "ethrpc";
@@ -9,12 +10,13 @@ const LOG_FILTER = {
   address: process.env.FILTER_ADDRESS || "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
 };
 
+
 function startPollingForBlocks(blockstream: BlockAndLogStreamer<Block, Log>, getBlockByNumber: GetBlockByString) {
   setInterval(async function () {
     let block = await getBlockByNumber("latest");
     if (block === null) return console.warn("bad block");
     blockstream.reconcileNewBlock(block);
-  }, 1000);
+  }, POLLING_FREQUENCY);
 }
 
 function describeLogs(blockHash: string, logs: Log[]) {
