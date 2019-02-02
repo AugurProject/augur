@@ -12,7 +12,7 @@ Builds all the below docker images
 
 ## yarn docker:build:augur
 
-(run in root) The monorepo has a dockerfile that will create a docker images with linked repos. augurProject/augur:latest can be imported into dockerfiles and needed files copied. This is needed for the ethereum populated docker images.
+(run in root) The monorepo has a dockerfile that will create a docker images with linked repos. augurproject/augur-build:latest can be imported into dockerfiles and needed files copied. This is needed for the ethereum populated docker images.
 
 ## yarn docker:build
 

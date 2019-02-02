@@ -1,7 +1,11 @@
 #!/bin/bash
+set -euxo pipefail
 
 cd /
 ./start.sh &
+
+which node
+node --version
 
 echo "Resting for a bit"
 sleep 10s
