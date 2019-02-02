@@ -6,7 +6,6 @@ FROM node:8 AS builder
 # Copy augur.js repo into it and get it set up
 WORKDIR /augur.js
 COPY package.json package.json
-COPY package-lock.json package-lock.json
 RUN git init && npm install && rm -rf .git
 
 ##
