@@ -6,7 +6,7 @@ Blockstream console is a simple utility which spins up blockstream, configures i
 Event callbacks are emitted via stdout, debug logs via stderr.
 ### Usage:
 ```angular2
-$ npx ts-node scripts/blockstream-console.ts 
+yarn blockstream-console 
 Querying block: latest
 [ethrpc] eth_subscribe request failed, fall back to polling for blocks: Method not found
 Finished querying block: latest
@@ -24,7 +24,7 @@ Querying logs: {"blockHash":"0x9fd2165541af79ee3ed201aabbf3b8f552d84ac47c80803e5
 ```
 or without debug info
 ```
-$ npx ts-node scripts/blockstream-console.ts  2> /dev/null
+yarn blockstream-console  2> /dev/null
 [ethrpc] eth_subscribe request failed, fall back to polling for blocks: Method not found
 BLOCK Added 7161001 0xb623dbadef00bdf42eb680498b3f8fd5be2ac01e5db3fee2127e5159b302625b
 BLOCK Added 7161002 0xbaf1d0dfb5e87f1f3f15a79dbc3fa706ff305c3d13b6e6225272b786e1fda157
@@ -37,7 +37,7 @@ BLOCK Added 7161004 0x539f771644f07b9ce89518bf07277be6fdc62b7c20fc054f6405ba83a3
 
 or against ethers instead of ethrpc (default):
 ```
-$ ADAPTER_TYPE=ethers npx ts-node scripts/blockstream-console.ts  2> /dev/null
+$ ADAPTER_TYPE=ethers yarn blockstream-console  2> /dev/null
 BLOCK Added 7161001 0xb623dbadef00bdf42eb680498b3f8fd5be2ac01e5db3fee2127e5159b302625b
 BLOCK Added 7161002 0xbaf1d0dfb5e87f1f3f15a79dbc3fa706ff305c3d13b6e6225272b786e1fda157
 BLOCK Added 7161003 0x71b6995194f41aa2d62af227c5bb7113c3159a924755ba0fbb12890d27163630
