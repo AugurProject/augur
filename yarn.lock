@@ -976,12 +976,12 @@
   resolved "https://registry.yarnpkg.com/@gerhobbelt/xregexp/-/xregexp-3.2.0-22.tgz#66e6640eb6a5bba78ad9ea8187f6910b53b6c0ea"
   integrity sha512-TRu38Z67VxFSMrBP3z/ORiJVQqp56ulidZirbobtmJnVGBWLdo4GbHtihgIJFGieIZuk+LxmPkK45SY+SQsR3A==
 
-"@ledgerhq/hw-app-eth@4.24.0":
-  version "4.24.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-app-eth/-/hw-app-eth-4.24.0.tgz#b62514e0d18672d6d35d76dfbeaf93b67d2e5324"
-  integrity sha512-x8qFHN+JUsLgtm4GI3E1OxwL/7LVIaUfGkKs53a2Zr89h5YFp2GZvFcHdwbEypQAWS8cs+4vEqaEYFwQ9bSwlQ==
+"@ledgerhq/hw-app-eth@4.35.0":
+  version "4.35.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-app-eth/-/hw-app-eth-4.35.0.tgz#3a8c1b0db87224a24ff5441a0e819122e5585f2d"
+  integrity sha512-MSDr8+CaoXhtm64ELuI/8wpcfmrMUjzGJgASY6bnjc82vAW+6sHNZlTU0zWRTZxqQUuZ8WpuJP159cf92MWq3g==
   dependencies:
-    "@ledgerhq/hw-transport" "^4.24.0"
+    "@ledgerhq/hw-transport" "^4.35.0"
 
 "@ledgerhq/hw-transport-u2f@^4.21.0":
   version "4.32.0"
@@ -991,10 +991,17 @@
     "@ledgerhq/hw-transport" "^4.32.0"
     u2f-api "0.2.7"
 
-"@ledgerhq/hw-transport@^4.24.0", "@ledgerhq/hw-transport@^4.32.0":
+"@ledgerhq/hw-transport@^4.32.0":
   version "4.32.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-4.32.0.tgz#592b9dc51459cb1cd31ce9444cf943f627bc4beb"
   integrity sha512-Wgsk9UHC4RShqYoDeIEeKgHZOvNCtB0WWIG0xqlVPzS+IcKDkIxtXQw7hTA7GQSuDuGeauVtlbTQ5yat6+2/BA==
+  dependencies:
+    events "^3.0.0"
+
+"@ledgerhq/hw-transport@^4.35.0":
+  version "4.35.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-4.35.0.tgz#aa7b851111ed759cd7489fa07a7b34c1773e8314"
+  integrity sha512-o8ekdoCkHMvOByIKDmAMNDjm8Q5cu+sbqmebPtGrHAPbgIZBUbNA5UupY/Om+xypdxXYnuBw+MF8FyIVOjnIsg==
   dependencies:
     events "^3.0.0"
 
