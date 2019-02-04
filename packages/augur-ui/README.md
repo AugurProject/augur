@@ -93,7 +93,7 @@ After git cloning UI source let docker build UI and create a docker image. Then 
 [dockerized augur-ui client](./docs/deploy-production.md)
 
 ### [Prettier](https://prettier.io/)
-We are using prettier to maintain formatting standards.Please [install](https://prettier.io/docs/en/editors.html) the relevant editor extension for your editor.
+We are using prettier to maintain formatting standards. Please [install](https://prettier.io/docs/en/editors.html) the relevant editor extension for your editor.
 
 ***
 
@@ -116,7 +116,7 @@ Full instructions are here [dev-local-node](https://github.com/AugurProject/augu
 
 ## Contributing
 
-We use Clubhouse.io for our issue tracker. If you would like to contribute, please join us on Discord (https://discordapp.com/invite/JwEtX9P) and provide us with your email address so we can grant you access to our Clubhouse.
+We use Clubhouse.io for our issue tracker. If you would like to contribute, please join us on [Discord](https://discordapp.com/invite/JwEtX9P) and provide us with your email address so we can grant you access to our Clubhouse.
 
 
 ## Development Tips
