@@ -8,12 +8,44 @@ import {
   updateOpenMarkets
 } from "modules/reports/actions/update-markets-in-reporting-state";
 
-export const loadReporting = (callback = logError) => (dispatch, getState) => {
+export const loadReporting = (marketIdsParam, callback = logError) => (
+  dispatch,
+  getState
+) => {
   const { universe, loginAccount } = getState();
   const designatedReportingParams = {
     universe: universe.id,
     designatedReporter: loginAccount.address
   };
+
+  if (marketIdsParam) {
+    dispatch(
+      loadMarketsInfoIfNotLoaded(marketIdsParam, (err, marketData) => {
+        if (err) return logError(err);
+        const preReporting = [];
+        const designatedReporting = [];
+        const openReporting = [];
+        if (marketData) {
+          Object.keys(marketData).forEach(marketId => {
+            const state = marketData[marketId].reportingState;
+            if (state === constants.REPORTING_STATE.PRE_REPORTING) {
+              preReporting.push(marketId);
+            }
+            if (state === constants.REPORTING_STATE.DESIGNATED_REPORTING) {
+              designatedReporting.push(marketId);
+            }
+            if (state === constants.REPORTING_STATE.OPEN_REPORTING) {
+              openReporting.push(marketId);
+            }
+          });
+          dispatch(updateUpcomingDesignatedReportingMarkets(preReporting));
+          dispatch(updateDesignatedReportingMarkets(designatedReporting));
+          dispatch(updateOpenMarkets(openReporting));
+        }
+      })
+    );
+    return;
+  }
 
   augur.augurNode.submitRequest(
     "getMarkets",
@@ -51,6 +83,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
         dispatch(updateDesignatedReportingMarkets([]));
         return callback(null);
       }
+
       dispatch(
         loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
           if (err) return logError(err);

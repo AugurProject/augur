@@ -51,7 +51,7 @@ const handleNotificationUpdate = (log, dispatch, getState) => {
 export const handleMarketStateLog = log => dispatch => {
   dispatch(
     loadMarketsInfo([log.marketId], () => {
-      dispatch(loadReporting());
+      dispatch(loadReporting([log.marketId]));
     })
   );
 };
@@ -193,7 +193,7 @@ export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
   dispatch(loadMarketsInfo([log.market]));
   dispatch(loadMarketsDisputeInfo([log.market]));
   dispatch(loadUnclaimedFees([log.market]));
-  dispatch(loadReporting());
+  dispatch(loadReporting([log.market]));
   const isStoredTransaction = log.reporter === getState().loginAccount.address;
   if (isStoredTransaction) {
     handleNotificationUpdate(log, dispatch, getState);
@@ -209,7 +209,7 @@ export const handleInitialReporterRedeemedLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.reporter === getState().loginAccount.address;
   if (isStoredTransaction) {
     dispatch(updateAssets());
-    dispatch(loadReporting());
+    dispatch(loadReporting([log.market]));
     dispatch(loadDisputing());
     dispatch(updateLoggedTransactions(log));
   }
@@ -221,7 +221,7 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
     loadMarketsInfo([log.market], err => {
       if (err) return console.error(err);
       const { author } = getState().marketsData[log.market];
-      dispatch(loadReporting());
+      dispatch(loadReporting([log.market]));
       dispatch(getWinningBalance([log.market]));
       const isOwnMarket = getState().loginAccount.address === author;
       if (isOwnMarket) {

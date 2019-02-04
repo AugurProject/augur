@@ -151,7 +151,7 @@ describe("loadReporting action", () => {
         (placeholder1, placeholder2, cb) => cb(error)
       );
 
-      store.dispatch(loadReporting(callback));
+      store.dispatch(loadReporting(null, callback));
 
       expect(augur.augurNode.submitRequest).toHaveBeenCalled();
 

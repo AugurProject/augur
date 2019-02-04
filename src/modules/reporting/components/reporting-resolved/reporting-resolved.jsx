@@ -42,12 +42,12 @@ export default class ReportingResolved extends Component {
 
   componentWillMount() {
     const { loadReporting, isConnected } = this.props;
-    if (loadReporting && isConnected) loadReporting();
+    if (loadReporting && isConnected) loadReporting(null);
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (this.props.isConnected !== nextProps.isConnected) {
-      this.props.loadReporting();
+      this.props.loadReporting(null);
     }
   }
 
