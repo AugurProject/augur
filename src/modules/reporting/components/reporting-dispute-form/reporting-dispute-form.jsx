@@ -352,6 +352,7 @@ export default class ReportingDisputeForm extends Component {
       updatedValidations.selectedOutcome = true;
     } else {
       const minValue = parseFloat(min);
+      const bnMinPrice = createBigNumber(min);
       const maxValue = parseFloat(max);
       const valueValue = parseFloat(value);
       const bnValue = createBigNumber(value || 0);
@@ -371,7 +372,10 @@ export default class ReportingDisputeForm extends Component {
         case value === winner.id:
           updatedValidations.err = `Current tentative winning outcome.`;
           break;
-        case bnValue.mod(bnTickSize).gt("0"):
+        case bnValue
+          .minus(bnMinPrice)
+          .mod(bnTickSize)
+          .gt("0"):
           updatedValidations.err = `The ${humanName} field must be a multiple of ${tickSize}.`;
           break;
         default:

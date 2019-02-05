@@ -381,9 +381,16 @@ export default class CreateMarketLiquidity extends Component {
         newMarket.orderBookSorted[this.state.selectedOutcome],
         `${ASK}`
       );
-
-      if (orderPrice.mod(tickSize).gt("0")) {
-        errors.price.push(`Price must be a multiple of ${tickSize}`);
+      if (newMarket.minPrice) {
+        const bnMinPrice = createBigNumber(newMarket.minPrice);
+        if (
+          orderPrice
+            .minus(bnMinPrice)
+            .mod(tickSize)
+            .gt("0")
+        ) {
+          errors.price.push(`Price must be a multiple of ${tickSize}`);
+        }
       }
       if (newMarket.type !== SCALAR) {
         if (
@@ -568,7 +575,9 @@ export default class CreateMarketLiquidity extends Component {
             <ul
               className={classNames(
                 Styles["CreateMarketLiquidity__order-form-header"],
-                { [`${Styles.headerPositive}`]: s.selectedNav === BID }
+                {
+                  [`${Styles.headerPositive}`]: s.selectedNav === BID
+                }
               )}
             >
               <li

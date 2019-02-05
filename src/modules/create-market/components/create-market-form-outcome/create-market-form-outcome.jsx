@@ -602,14 +602,13 @@ export default class CreateMarketOutcome extends Component {
                 <input
                   id="cm__input--ticksize"
                   type="number"
-                  step="0.0001"
+                  step="0.000001"
                   value={newMarket.tickSize}
                   placeholder="Tick Size"
                   onChange={e =>
                     this.validateScalarNum(
                       e.target.value,
-                      s.scalarType.TICK_SIZE,
-                      true
+                      s.scalarType.TICK_SIZE
                     )
                   }
                   onKeyPress={e => keyPressed(e)}
