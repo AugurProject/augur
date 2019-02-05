@@ -44,7 +44,12 @@
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.23",
     "ethrpc": "6.1.3",
-    "lodash": "4.17.11"
+    "lodash": "4.17.11",
+    "ethjs-abi": "0.2.1",
+    "ethjs-account": "0.1.4",
+    "ethjs-provider-http": "0.1.6",
+    "ethjs-query": "0.3.8",
+    "ethjs-signer": "0.1.1"
   },
   "devDependencies": {
     "options-parser": "0.4.0",
