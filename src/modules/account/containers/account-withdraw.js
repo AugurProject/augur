@@ -6,13 +6,15 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { MODAL_REVIEW } from "modules/modal/constants/modal-types";
 import { transferFunds } from "modules/auth/actions/transfer-funds";
 import { selectLoginAccount } from "modules/auth/selectors/login-account";
+import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 const mapStateToProps = state => {
   const loginAccount = selectLoginAccount(state);
   return {
     eth: loginAccount.eth,
     rep: loginAccount.rep,
-    isMobileSmall: state.appStatus.isMobileSmall
+    isMobileSmall: state.appStatus.isMobileSmall,
+    gasPrice: getGasPrice(state)
   };
 };
 

@@ -12,11 +12,18 @@ import {
   ExclamationCircle as InputErrorIcon,
   Withdraw
 } from "modules/common/components/icons";
-import { formatEther, formatRep } from "utils/format-number";
+import {
+  formatEther,
+  formatRep,
+  formatGasCostToEther,
+  formatEtherEstimate
+} from "utils/format-number";
 import isAddress from "modules/auth/helpers/is-address";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/account/components/account-withdraw/account-withdraw.styles";
 
+const TRANSFER_ETH_GAS_COST = 21000;
+const TRANSFER_REP_GAS_COST = 80000;
 export default class AccountWithdraw extends Component {
   static propTypes = {
     isMobileSmall: PropTypes.bool.isRequired,
@@ -24,7 +31,8 @@ export default class AccountWithdraw extends Component {
     rep: PropTypes.object.isRequired,
     transferFunds: PropTypes.func.isRequired,
     withdrawReviewModal: PropTypes.func.isRequired,
-    closeModal: PropTypes.func.isRequired
+    closeModal: PropTypes.func.isRequired,
+    gasPrice: PropTypes.number.isRequired
   };
 
   static validateAddress(address, callback) {
@@ -45,12 +53,30 @@ export default class AccountWithdraw extends Component {
   constructor(props) {
     super(props);
 
+    const etherGasCost = formatEtherEstimate(
+      formatGasCostToEther(
+        TRANSFER_ETH_GAS_COST,
+        { decimalsRounded: 4 },
+        props.gasPrice
+      )
+    );
+
+    const repGasCost = formatEtherEstimate(
+      formatGasCostToEther(
+        TRANSFER_REP_GAS_COST,
+        { decimalsRounded: 4 },
+        props.gasPrice
+      )
+    );
+
     this.DEFAULT_STATE = {
       upperBound: props.eth.fullPrecision,
       selectedAsset: ETH,
       amount: "",
       address: "",
-      isValid: null
+      isValid: null,
+      etherGasCost,
+      repGasCost
     };
 
     this.state = Object.assign(this.DEFAULT_STATE, { errors: {} });
@@ -59,10 +85,35 @@ export default class AccountWithdraw extends Component {
     this.withdrawReview = this.withdrawReview.bind(this);
   }
 
+  setMAXValue() {
+    const { upperBound, etherGasCost, selectedAsset, address } = this.state;
+    let amount = upperBound;
+    const gasValue = etherGasCost.value;
+    if (selectedAsset === ETH) {
+      amount = createBigNumber(upperBound)
+        .minus(gasValue)
+        .toFixed();
+      this.setState({
+        amount
+      });
+    }
+    // get gas fee and subtract from available balance
+    this.validateForm(amount, address);
+  }
+
   validateAmount(amount, callback) {
+    const { eth } = this.props;
+    const { selectedAsset, repGasCost, upperBound, etherGasCost } = this.state;
+    let gasValue = etherGasCost.value;
+    if (selectedAsset !== ETH) {
+      gasValue = repGasCost.value;
+    }
     const sanitizedAmount = sanitizeArg(amount);
     const BNsanitizedAmount = createBigNumber(sanitizedAmount || 0);
-    const BNupperlimit = createBigNumber(this.state.upperBound);
+    const BNupperlimit = createBigNumber(upperBound);
+    const ethAmountMinusGas = createBigNumber(eth.fullPrecision).minus(
+      createBigNumber(gasValue)
+    );
     const updatedErrors = {};
 
     if (amount === "") {
@@ -83,6 +134,10 @@ export default class AccountWithdraw extends Component {
 
     if (amount && BNsanitizedAmount.lte(ZERO)) {
       updatedErrors.amount = `Quantity must be greater than zero.`;
+    }
+
+    if (amount && ethAmountMinusGas.lt(ZERO)) {
+      updatedErrors.amount = `Not enough ETH available to pay gas cost.`;
     }
 
     callback(updatedErrors, sanitizedAmount);
@@ -124,6 +179,14 @@ export default class AccountWithdraw extends Component {
                 ? formatEther(s.amount).fullPrecision
                 : formatRep(s.amount).fullPrecision,
             denomination: s.selectedAsset
+          },
+          {
+            label: "Gas Cost",
+            value:
+              s.selectedAsset === ETH
+                ? s.etherGasCost.fullPrecision
+                : s.repGasCost.fullPrecision,
+            denomination: "ETH"
           }
         ],
         buttons: [
@@ -176,6 +239,10 @@ export default class AccountWithdraw extends Component {
               Withdraw Ethereum or Reputation from your Trading Account into
               another account.
             </p>
+            <p>
+              Use Max button to transfer all ETH or REP. Gas fee will be
+              subtracted from quantity input, if transferring ETH.
+            </p>
           </div>
 
           <div className={Styles.AccountWithdraw__form}>
@@ -190,20 +257,17 @@ export default class AccountWithdraw extends Component {
                   options={["ETH", "REP"]}
                   default="ETH"
                   type="text"
+                  value={s.totalValue}
                   isMobileSmall={isMobileSmall}
                   onChange={type => {
                     const selectedAsset = type === "ETH" ? ETH : REP;
                     const upperBound =
                       type === "ETH" ? eth.fullPrecision : rep.fullPrecision;
-                    this.setState(
-                      {
-                        selectedAsset,
-                        upperBound
-                      },
-                      () => {
-                        this.validateForm(s.amount, s.address);
-                      }
-                    );
+                    this.setState({
+                      selectedAsset,
+                      upperBound,
+                      amount: ""
+                    });
                   }}
                 />
               </div>
@@ -214,13 +278,16 @@ export default class AccountWithdraw extends Component {
                   name="quantity"
                   label="Quantity"
                   type="number"
-                  isIncrementable
                   incrementAmount={1}
                   max={s.upperBound}
                   min={0.1}
                   value={s.amount}
                   updateValue={amount => this.validateForm(amount, s.address)}
                   onChange={amount => this.validateForm(amount, s.address)}
+                  autoComplete="off"
+                  maxButton={Boolean(true)}
+                  onMaxButtonClick={() => this.setMAXValue()}
+                  darkMaxBtn
                 />
                 {s.errors.hasOwnProperty("amount") &&
                   s.errors.amount.length && (
