@@ -12,7 +12,7 @@ export function checkAccountAllowance(callback = logError) {
     } else {
       augur.api.Cash.allowance(
         {
-          _owner: loginAccount.address,
+          _tokenHolder: loginAccount.address,
           _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].Augur
         },
         (err, allowance) => {

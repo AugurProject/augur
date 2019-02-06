@@ -66,7 +66,7 @@ export const collectMarketCreatorFees = (
           `no market mailbox address found for market ${marketId}`
         );
       augur.api.Cash.balanceOf(
-        { _owner: marketMailboxAddress },
+        { _tokenHolder: marketMailboxAddress },
         (err, cashBalance) => {
           if (err) return callback(err);
           if (cashBalance == null)

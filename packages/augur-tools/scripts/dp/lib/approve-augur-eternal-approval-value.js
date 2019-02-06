@@ -4,7 +4,7 @@ var BigNumber = require("bignumber.js");
 
 function approveAugurEternalApprovalValue(augur, address, auth, callback) {
   var augurContract = augur.contracts.addresses[augur.rpc.getNetworkID()].Augur;
-  augur.api.Cash.allowance({ _owner: address, _spender: augurContract }, function (err, allowance) {
+  augur.api.Cash.allowance({ _tokenHolder: address, _spender: augurContract }, function (err, allowance) {
     if (err) return callback(err);
     if (new BigNumber(allowance, 10).eq(new BigNumber(augur.constants.ETERNAL_APPROVAL_VALUE, 16))) {
       console.log("Already Approved");
