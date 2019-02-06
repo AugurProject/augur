@@ -66,4 +66,14 @@ export abstract class AbstractDB {
       return false;
     }
   }
+
+  public async getUpdateSeq(): Promise<string | undefined> {
+    try {
+      const info = await this.db.info();
+      return info.update_seq.toString();
+    } catch (err) {
+      console.error(`ERROR in getUpdateSeq: ${JSON.stringify(err)}`);
+      return undefined;
+    }
+  }
 }

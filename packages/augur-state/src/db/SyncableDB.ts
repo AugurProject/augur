@@ -4,15 +4,17 @@ import { DB } from './DB';
 import { SyncStatus } from './SyncStatus';
 import * as _ from "lodash";
 
+// Stores generic events
 export class SyncableDB<TBigNumber> extends AbstractDB {
     private syncStatus: SyncStatus;
     protected eventName: string;
+    protected contractName: string;
 
-    constructor(dbController: DB<TBigNumber>, eventName: string, dbName?: string) {
-        super(dbName ? dbName : eventName);
+    constructor(dbController: DB<TBigNumber>, networkId: number, eventName: string, dbName?: string) {
+        super(dbName ? dbName : `${networkId}-${eventName}`);
         this.eventName = eventName;
         this.syncStatus = dbController.syncStatus;
-        dbController.notifySyncableDBAdded(this);
+        dbController.notifySyncableDBAdded(networkId, eventName, this);
     }
 
     public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, uploadBlockNumber: number): Promise<void> {
