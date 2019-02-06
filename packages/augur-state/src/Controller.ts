@@ -1,6 +1,5 @@
 import { DB } from './db/DB';
 import { Augur } from 'augur-api';
-const uploadBlockNumbers = require('../../augur-artifacts/upload-block-numbers.json');
 
 export class Controller<TBigNumber> {
   private dbController: DB<TBigNumber>;

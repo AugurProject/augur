@@ -104,79 +104,116 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
 
 export class DB<TBigNumber> {
   private networkId: number;
+  private trackedUsers: TrackedUsers;
   private syncableDatabases: { [eventName: string]: SyncableDB<TBigNumber> } = {};
   private userSyncableDatabases: { [userEventName: string]: UserSyncableDB<TBigNumber> } = {};
   private metaDatabase: MetaDB<TBigNumber>;
   public syncStatus: SyncStatus;
-  public trackedUsers: TrackedUsers;
 
   public constructor () {}
 
+  /**
+   * Creates and returns a new dbController
+   * 
+   * @param networkId Network on which to sync events
+   * @param trackedUsers Array of user addresses for which to sync user-specific events
+   */
   public static async createAndInitializeDB<TBigNumber>(networkId: number, trackedUsers: Array<string>): Promise<DB<TBigNumber>> {
     const dbController = new DB<TBigNumber>();
     await dbController.initializeDB(networkId, trackedUsers);
     return dbController;
   }
 
+  /**
+   * 
+   * 
+   * @param networkId Network on which to sync events
+   * @param trackedUsers Array of user addresses for which to sync user-specific events
+   */
   public async initializeDB(networkId: number, trackedUsers: Array<string>): Promise<void> {
+    this.networkId = networkId;
     this.syncStatus = new SyncStatus();
     this.trackedUsers = new TrackedUsers();
 
+    // Create SyncableDBs for generic event types
+    for (let eventName of genericEventNames) {
+      new SyncableDB<TBigNumber>(this, networkId, eventName);
+    }
+
+    // Create UserSyncableDBs for user-specific event types
+    // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
+    // Also update topics/indexes for user-specific events once these changes are made to the contracts.
+    for (let trackedUser of trackedUsers) {
+      await this.trackedUsers.setUserTracked(trackedUser);
+      for (let eventIndex in userSpecificEvents) {
+        new UserSyncableDB<TBigNumber>(this, networkId, userSpecificEvents[eventIndex].name, trackedUser, userSpecificEvents[eventIndex].numAdditionalTopics, userSpecificEvents[eventIndex].userTopicIndex);
+      }
+    }
+
+    this.metaDatabase = new MetaDB("BlockNumberEvents");
+  }
+
+  /**
+   * Called from SyncableDB constructor once SyncableDB is successfully created.
+   * 
+   * @param networkId Network to which the SyncableDB connects
+   * @param eventName Generic event type on which the SyncableDB syncs
+   * @param db dbController that utilizes the SyncableDB
+   */
+  public notifySyncableDBAdded(networkId: number, eventName: string, db: SyncableDB<TBigNumber>): void {
+    this.syncableDatabases[`${networkId}-${eventName}`] = db;
+  }
+
+  /**
+   * Called from UserSyncableDB constructor once UserSyncableDB is successfully created.
+   * 
+   * @param networkId Network to which the UserSyncableDB connects
+   * @param userSpecificEventName User-specific event type on which the UserSyncableDB syncs
+   * @param trackedUser User address for which to sync the user-specific event type
+   * @param db dbController that utilizes the UserSyncableDB
+   */
+  public notifyUserSyncableDBAdded(networkId: number, userSpecificEventName: string, trackedUser: string, db: UserSyncableDB<TBigNumber>): void {
+    this.userSyncableDatabases[`${networkId}-${userSpecificEventName}-${trackedUser}`] = db;
+  }
+
+  /**
+   * 
+   * @param augur Augur object with which to sync
+   * @param chunkSize Number of blocks to retrieve at a time when syncing logs
+   * @param blockstreamDelay Number of blocks by which blockstream is behind the blockchain
+   * @param uploadBlockNumber Block number at which Augur contracts were originally uploaded to the blockchain
+   */
+  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number, uploadBlockNumber: number): Promise<void> {
     let sequenceIds: { [eventName: string]: string } = {};
 
     // Sync generic event types
     for (let eventName of genericEventNames) {
-      this.notifySyncableDBAdded(networkId, eventName, new SyncableDB<TBigNumber>(this, networkId, eventName));
-      let updateSeq = await this.syncableDatabases[`${networkId}-${eventName}`].getUpdateSeq();
+      this.syncableDatabases[`${this.networkId}-${eventName}`].sync(augur, chunkSize, blockstreamDelay, uploadBlockNumber);
+      let updateSeq = await this.syncableDatabases[`${this.networkId}-${eventName}`].getUpdateSeq();
       if (typeof updateSeq !== "undefined") {
-        sequenceIds[eventName + ""] = updateSeq;
+        sequenceIds[eventName] = updateSeq;
       }
     }
 
     // Sync user-specific event types
     // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
     // Also update topics/indexes for user-specific events once these changes are made to the contracts.
-    for (let trackedUser of trackedUsers) {
-      await this.trackedUsers.setUserTracked(trackedUser);
-      for (let i in userSpecificEvents) {
-        this.notifyUserSyncableDBAdded(networkId, userSpecificEvents[i].name, trackedUser, new UserSyncableDB<TBigNumber>(this, networkId, userSpecificEvents[i].name, trackedUser, userSpecificEvents[i].numAdditionalTopics, userSpecificEvents[i].userTopicIndex));
-        let updateSeq = await this.userSyncableDatabases[`${networkId}-${userSpecificEvents[i].name}-${trackedUser}`].getUpdateSeq();
+    for (let trackedUser of await this.trackedUsers.getUsers()) {
+      for (let eventIndex in userSpecificEvents) {
+        this.userSyncableDatabases[`${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`].sync(augur, chunkSize, blockstreamDelay, uploadBlockNumber);
+        let updateSeq = await this.userSyncableDatabases[`${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`].getUpdateSeq();
         if (typeof updateSeq !== "undefined") {
-          sequenceIds[`${networkId}-${userSpecificEvents[i].name}-${trackedUser}`] = updateSeq;
+          sequenceIds[`${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`] = updateSeq;
         }
       }
     }
 
-    // Initialize MetaDB
-    this.metaDatabase = new MetaDB("BlockNumberEvents");
-    let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(`${networkId}-${genericEventNames[0]}`, uploadBlockNumbers[networkId]);
+    // Initialize MetaDB to associate block numbers with SyncableDB/UserSyncableDB update_seqs
+    let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${genericEventNames[0]}`, uploadBlockNumbers[this.networkId]);
     const document = {
       _id: highestSyncedBlockNumber + "-" + Math.round(+new Date()/1000),
       update_seqs: JSON.stringify(sequenceIds),
     };
     this.metaDatabase.addBlock(highestSyncedBlockNumber, document);
-  }
-
-  public notifySyncableDBAdded(networkId: number, eventName: string, db: SyncableDB<TBigNumber>): void {
-    this.syncableDatabases[`${networkId}-${eventName}`] = db;
-  }
-
-  public notifyUserSyncableDBAdded(networkId: number, userSpecificEventName: string, trackedUser: string, db: UserSyncableDB<TBigNumber>): void {
-    this.userSyncableDatabases[`${networkId}-${userSpecificEventName}-${trackedUser}`] = db;
-  }
-
-  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number, uploadBlockNumber: number): Promise<void> {
-    for (let eventName in this.syncableDatabases) {
-      this.syncableDatabases[eventName].sync(augur, chunkSize, blockstreamDelay, uploadBlockNumber);
-    }
-    // TODO Update blockNumberEvents tables
-  }
-
-  public addNewBlock(blockNumber: number) {
-    // TODO
-  }
-
-  public rollback(blockNumber: number) {
-    // TODO
   }
 }
