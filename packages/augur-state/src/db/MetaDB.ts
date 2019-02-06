@@ -3,6 +3,7 @@ import { Augur, Log, ParsedLog } from 'augur-api';
 import { DB } from './DB';
 import * as _ from "lodash";
 
+// Links block numbers with event DB update_seqs
 export class MetaDB<TBigNumber> extends AbstractDB {
     public addBlock(blockNumber: number, document: Object) {
         this.upsertDocument(blockNumber.toString(), document);

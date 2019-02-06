@@ -113,7 +113,7 @@ export class DB<TBigNumber> {
   public constructor () {}
 
   /**
-   * Creates and returns a new dbController
+   * Creates and returns a new dbController.
    * 
    * @param networkId Network on which to sync events
    * @param trackedUsers Array of user addresses for which to sync user-specific events
@@ -125,7 +125,7 @@ export class DB<TBigNumber> {
   }
 
   /**
-   * 
+   * Creates databases to be used for syncing.
    * 
    * @param networkId Network on which to sync events
    * @param trackedUsers Array of user addresses for which to sync user-specific events
@@ -177,6 +177,7 @@ export class DB<TBigNumber> {
   }
 
   /**
+   * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
    * 
    * @param augur Augur object with which to sync
    * @param chunkSize Number of blocks to retrieve at a time when syncing logs
