@@ -1,10 +1,10 @@
 # Augur Issues Workflow
 
-The goal of this document is to provide a high-level understanding of the workflow the team uses to triage new issues and coordinate projects. This should give individuals conttributors as well as people looking at the project as a whole a way to understand what they're responsible for in the project.
+The goal of this document is to provide a high-level understanding of the workflow the team uses to triage new issues and coordinate projects. This should give individual contributors as well as people looking at the project as a whole a way to understand what they're responsible for in the project.
 
 ## New Issues Workflow
 
-GOAL: We want to give the engineers working on specific projects the ability to triage, organize, and prioritize the work within their respective propjects and epics. We also want to free up time so that one person isn't consistently responsible for sorting through all issue and tracking people down to understand how they should be organized. To facilitate this, the DIP (designated interruptible person) will be responsible for newly created external issues during their time as DIP, and the internal reporter is responsible for organizing the issue if it is internally created.
+GOAL: We want to give the engineers working on specific projects the ability to triage, organize, and prioritize the work within their respective projects and epics. We also want to free up time so that one person isn't consistently responsible for sorting through all issue and tracking people down to understand how they should be organized. To facilitate this, the DIP (designated interruptible person) will be responsible for newly created external issues during their time as DIP, and the internal reporter is responsible for organizing the issue if it is internally created.
 
 ### Issues created by the team
 
