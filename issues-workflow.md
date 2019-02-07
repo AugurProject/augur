@@ -17,8 +17,9 @@ GOAL: We want to give the engineers working on specific projects the ability to 
   - Else, assign to the Bugs Epic
   - If the issue requires immediate attention, assign to the person who will work on it, and move it to In Progress
   - Else, add the issue to Backlog
-- If issue is considered Critical, mark as Product: Critical. If you're unsure, send to @pgebheim or @joeykrug and get it discussed.
+- If issue is considered Critical (or if the epic it belongs to is Product Critical), mark as Product: Critical. If you're unsure, send to @pgebheim or @joeykrug and get it discussed.
 - If issue is relevant to V2 in any way, add it to the V2 Release (You need the Zenhub plugin to do this within GH interface), basically all issues which would be marked as Product Critical should go to V2, as well as bugs related to V2 code. Issues only related to V1 code, or issues which are future feature requests do not need the V2 release.
+
 ### Issues created externally (for the DIP)
 
 - The monthly DIP (Designated Intrerruptible Person) is responsible for first level triage of issues submitted by the community.
@@ -32,7 +33,9 @@ GOAL: We want to give the engineers working on specific projects the ability to 
   - THEN complete first level evaluation of the bug
   - If the bug needs immediate attention, move to In Progress and handle it, or assign to the person who will handle it.
   - Else, Add to Backlog pipeline and assign to the appropriate person after all your investigation. Ask @pgebheim if you need help!
+- If issue is considered Critical (or if the epic it belongs to is Product Critical), mark as Product: Critical. If you're unsure, send to @pgebheim or @joeykrug and get it discussed.
 - If issue is relevant to V2 in any way, add it to the V2 Release (You need the Zenhub plugin to do this within GH interface), basically all issues which would be marked as Product Critical should go to V2, as well as bugs related to V2 code. Issues only related to V1 code, or issues which are future feature requests do not need the V2 release.
+
 ## Other Considerations
 
 It's not always obvious how tasks fit into the overall priorities. Once your team has decided what it thinks the appropriate internal priorities are, the issues can be looked at by @pgebheim, @joeykrug, and other stakeholders to see if this will meet any overall goals. This will begin with the Monday Morning - Critical Issue Roundup, but we'll add more (light) process where necessary.
