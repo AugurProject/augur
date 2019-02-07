@@ -51,4 +51,11 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
             log
         );
     }
+
+    public async simulateAddingNewBlock(uploadBlockNumber: number, logs: Array<ParsedLog>) {
+        let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName, uploadBlockNumber);
+        logs[0].blockNumber = highestSyncedBlockNumber;
+        const documents = _.sortBy(_.map(logs, this.processLog), "_id");
+        const success = await this.bulkUpsertDocuments(documents[0]._id, documents);
+    }
 }

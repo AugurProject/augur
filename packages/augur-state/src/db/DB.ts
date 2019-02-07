@@ -212,9 +212,57 @@ export class DB<TBigNumber> {
     // Initialize MetaDB to associate block numbers with SyncableDB/UserSyncableDB update_seqs
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${genericEventNames[0]}`, uploadBlockNumbers[this.networkId]);
     const document = {
-      _id: highestSyncedBlockNumber + "-" + Math.round(+new Date()/1000),
+      _id: highestSyncedBlockNumber + "-" +Math.floor(Date.now() / 1000),
       update_seqs: JSON.stringify(sequenceIds),
     };
-    this.metaDatabase.addBlock(highestSyncedBlockNumber, document);
+    await this.metaDatabase.addBlock(highestSyncedBlockNumber, document);
+
+    // Simulate adding new block
+    const newBlockNumber = highestSyncedBlockNumber + 1;
+    const logs = [
+      {
+        topic:
+          '0x73706f7274730000000000000000000000000000000000000000000000000000',
+        description:
+          'Will KAA Gent win the match with Royal Mouscron on February 10, 2019 UTC?',
+        extraInfo:
+          '{"resolutionSource":"Test contract, will not be reported!","tags":["TEST","soccer","soccer-belgium-jupiler"],"longDescription":"This is a test market and will not be reported.\\n\\nBlitzPredict Market Metadata: f9cb5b8249457dc407c553766248eb9ff09abfa225f53a07e0019d4ceaa6273f","outcomeNames":["KAA Gent","Royal Mouscron","Draw"]}',
+        universe: '0x02149d40d255fCeaC54A3ee3899807B0539bad60',
+        market: '0x61F7503a36baaF242e3431E2F77C81742d309c0f',
+        marketCreator: '0xf8aE9941B21a446E7d654c8D84168Cc8443a7Fc3',
+        outcomes:
+          [ '0x4b41412047656e74000000000000000000000000000000000000000000000000',
+            '0x526f79616c204d6f757363726f6e000000000000000000000000000000000000',
+            '0x4472617700000000000000000000000000000000000000000000000000000000' ],
+        marketCreationFee: '0x470de4df820000',
+        minPrice: '0x00',
+        maxPrice: '0x0de0b6b3a7640000',
+        marketType: 1,
+        // constructor: [Function: Result],
+        // blockNumber: 3813404,
+        blockHash:
+          '0x923c89062b9fc256120013c02e4686ebc9ffea357150f40ed5e1a46871d0fd9d',
+        transactionIndex: 5,
+        removed: false,
+        transactionLogIndex: undefined,
+        transactionHash:
+          '0x2e3ae3a691e7ed9ede3ffc8c718a215a51c68bcffd473087fde6e6e0e9feaf29',
+        logIndex: 1313131313131313
+      },
+    ];
+    this.syncableDatabases[this.networkId + "-MarketCreated"].simulateAddingNewBlock(newBlockNumber, logs);
+    let newSequenceIds = sequenceIds;
+    const newSequenceId = await this.syncableDatabases[this.networkId + "-MarketCreated"].getUpdateSeq();
+    if (typeof newSequenceId !== "undefined") {
+      newSequenceIds[this.networkId + "-MarketCreated"] = newSequenceId;
+    }
+    
+    // Update MetaDB
+    const newTimestamp = Math.floor(Date.now() / 1000) + 1;
+    const newDocument = {
+      _id: newBlockNumber + "-" + Math.round(newTimestamp/1000),
+      update_seqs: JSON.stringify(sequenceIds),
+    };
+    this.metaDatabase.addBlock(newBlockNumber, newDocument);
   }
 }
