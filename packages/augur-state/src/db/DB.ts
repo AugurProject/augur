@@ -150,7 +150,7 @@ export class DB<TBigNumber> {
       }
     }
 
-    this.metaDatabase = new MetaDB("BlockNumberEvents");
+    this.metaDatabase = new MetaDB(networkId + "-BlockNumberEvents");
   }
 
   /**
