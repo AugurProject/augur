@@ -36,3 +36,23 @@ GOAL: We want to give the engineers working on specific projects the ability to 
 ## Other Considerations
 
 It's not always obvious how tasks fit into the overall priorities. Once your team has decided what it thinks the appropriate internal priorities are, the issues can be looked at by @pgebheim, @joeykrug, and other stakeholders to see if this will meet any overall goals. This will begin with the Monday Morning - Critical Issue Roundup, but we'll add more (light) process where necessary.
+
+
+## Pipelines
+
+This set of pipelines is meant to make it easy to see the status of issues across the project on one screen. We've simplified so there's very few extra steps needed to work an issue. Most should move from Backlog to In Progress to Closed.
+
+Pipelines:
+- New Issues
+  - Where new external issues show up
+  - DIP will monitor this pipeline
+- Backlog
+  - This should be an ordered list of tasks per epic / release.
+- Blocked / Needs Information
+  - New issues that need exploration, or issues that were in progress but are now blocked by another task should go here. Feel free to move items in and out of this as need be!
+- In Progress
+  - Things which you are actively working on. If an item becomes blocked try to move it back to the Blocked / Needs Info pipeline. If you stop working on it, it goes back into the Backlog.
+- QA
+  - For integration work that needs approval from Product. Put the issue here and assign to the stakeholder that needs to check it out.
+- Closed
+  - Things that have been closed.
