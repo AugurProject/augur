@@ -192,7 +192,7 @@ export class DB<TBigNumber> {
       this.syncableDatabases[`${this.networkId}-${eventName}`].sync(augur, chunkSize, blockstreamDelay, uploadBlockNumber);
       let updateSeq = await this.syncableDatabases[`${this.networkId}-${eventName}`].getUpdateSeq();
       if (typeof updateSeq !== "undefined") {
-        sequenceIds[eventName] = updateSeq;
+        sequenceIds[`${this.networkId}-${eventName}`] = updateSeq;
       }
     }
 
@@ -263,6 +263,6 @@ export class DB<TBigNumber> {
       _id: newBlockNumber + "-" + Math.round(newTimestamp/1000),
       update_seqs: JSON.stringify(sequenceIds),
     };
-    this.metaDatabase.addBlock(newBlockNumber, newDocument);
+    await this.metaDatabase.addBlock(newBlockNumber, newDocument);
   }
 }
