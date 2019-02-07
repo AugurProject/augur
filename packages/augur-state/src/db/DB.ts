@@ -215,6 +215,6 @@ export class DB<TBigNumber> {
       _id: highestSyncedBlockNumber + "-" + Math.round(+new Date()/1000),
       update_seqs: JSON.stringify(sequenceIds),
     };
-    this.metaDatabase.addBlock(highestSyncedBlockNumber, document);
+    await this.metaDatabase.addBlock(highestSyncedBlockNumber, document);
   }
 }
