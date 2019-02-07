@@ -4,7 +4,7 @@ The goal of this document is to provide a high-level understanding of the workfl
 
 ## New Issues Workflow
 
-GOAL: We want to give the engineers working on specific projects the ability to triage, organize, and prioritize the work within their respective propjects and epics.
+GOAL: We want to give the engineers working on specific projects the ability to triage, organize, and prioritize the work within their respective propjects and epics. We also want to free up time so that one person isn't consistently responsible for sorting through all issue and tracking people down to understand how they should be organized. To facilitate this, the DIP (designated interruptible person) will be responsible for newly created external issues during their time as DIP, and the internal reporter is responsible for organizing the issue if it is internally created.
 
 ### Issues created by the team
 
@@ -34,3 +34,6 @@ GOAL: We want to give the engineers working on specific projects the ability to 
   - If the bug needs immediate attention, move to In Progress and handle it, or assign to the person who will handle it.
   - Else, Add to Backlog pipeline and assign to the appropriate person after all your investigation. Ask @pgebheim if you need help!
   
+## Other Considerations
+
+It's not always obvious how tasks fit into the overall priorities. Once your team has decided what it thinks the appropriate internal priorities are, the issues can be looked at by @pgebheim, @joeykrug, and other stakeholders to see if this will meet any overall goals. This will begin with the Monday Morning - Critical Issue Roundup, but we'll add more (light) process where necessary.
