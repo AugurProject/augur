@@ -212,7 +212,7 @@ export class DB<TBigNumber> {
     // Initialize MetaDB to associate block numbers with SyncableDB/UserSyncableDB update_seqs
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${genericEventNames[0]}`, uploadBlockNumbers[this.networkId]);
     const document = {
-      _id: highestSyncedBlockNumber + "-" + Math.round(+new Date()/1000),
+      _id: highestSyncedBlockNumber + "-" + Math.floor(Date.now() / 1000),
       update_seqs: JSON.stringify(sequenceIds),
     };
     await this.metaDatabase.addBlock(highestSyncedBlockNumber, document);
