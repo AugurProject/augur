@@ -14,7 +14,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         super(dbName ? dbName : `${networkId}-${eventName}`);
         this.eventName = eventName;
         this.syncStatus = dbController.syncStatus;
-        dbController.notifySyncableDBAdded(networkId, eventName, this);
+        dbController.notifySyncableDBAdded(eventName, this);
     }
 
     public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, uploadBlockNumber: number): Promise<void> {
@@ -52,10 +52,14 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         );
     }
 
-    public async simulateAddingNewBlock(uploadBlockNumber: number, logs: Array<ParsedLog>) {
+    public async simulateAddingNewBlock(uploadBlockNumber: number, logs: Array<ParsedLog>): Promise<boolean> {
         let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName, uploadBlockNumber);
         logs[0].blockNumber = highestSyncedBlockNumber;
         const documents = _.sortBy(_.map(logs, this.processLog), "_id");
-        const success = await this.bulkUpsertDocuments(documents[0]._id, documents);
+        return await this.bulkUpsertDocuments(documents[0]._id, documents);
+    }
+
+    public rollback(blockNumber: number) {
+
     }
 }

@@ -1,9 +1,7 @@
-import { AbstractDB, BaseDocument } from './AbstractDB';
-import { Augur, Log, ParsedLog } from 'augur-api';
-import { DB } from './DB';
+import { AbstractDB } from './AbstractDB';
 import * as _ from "lodash";
 
-// Links block numbers with event DB update_seqs
+// Associates block numbers with event DB update_seqs
 export class MetaDB<TBigNumber> extends AbstractDB {
     public async addBlock(blockNumber: number, document: Object) {
         await this.upsertDocument(blockNumber.toString(), document);

@@ -12,6 +12,7 @@ interface UserSpecificEvent {
   userTopicIndex: number;
 }
 
+// TODO Remove any events from this list that are unneeded
 const genericEventNames: Array<string> = [
   "DisputeCrowdsourcerCompleted",
   "DisputeCrowdsourcerCreated",
@@ -156,24 +157,22 @@ export class DB<TBigNumber> {
   /**
    * Called from SyncableDB constructor once SyncableDB is successfully created.
    * 
-   * @param networkId Network to which the SyncableDB connects
    * @param eventName Generic event type on which the SyncableDB syncs
    * @param db dbController that utilizes the SyncableDB
    */
-  public notifySyncableDBAdded(networkId: number, eventName: string, db: SyncableDB<TBigNumber>): void {
-    this.syncableDatabases[`${networkId}-${eventName}`] = db;
+  public notifySyncableDBAdded(eventName: string, db: SyncableDB<TBigNumber>): void {
+    this.syncableDatabases[`${this.networkId}-${eventName}`] = db;
   }
 
   /**
    * Called from UserSyncableDB constructor once UserSyncableDB is successfully created.
    * 
-   * @param networkId Network to which the UserSyncableDB connects
    * @param userSpecificEventName User-specific event type on which the UserSyncableDB syncs
    * @param trackedUser User address for which to sync the user-specific event type
    * @param db dbController that utilizes the UserSyncableDB
    */
-  public notifyUserSyncableDBAdded(networkId: number, userSpecificEventName: string, trackedUser: string, db: UserSyncableDB<TBigNumber>): void {
-    this.userSyncableDatabases[`${networkId}-${userSpecificEventName}-${trackedUser}`] = db;
+  public notifyUserSyncableDBAdded(userSpecificEventName: string, trackedUser: string, db: UserSyncableDB<TBigNumber>): void {
+    this.userSyncableDatabases[`${this.networkId}-${userSpecificEventName}-${trackedUser}`] = db;
   }
 
   /**
@@ -207,18 +206,25 @@ export class DB<TBigNumber> {
           sequenceIds[`${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`] = updateSeq;
         }
       }
-    }
 
     // Initialize MetaDB to associate block numbers with SyncableDB/UserSyncableDB update_seqs
-    let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${genericEventNames[0]}`, uploadBlockNumbers[this.networkId]);
+    const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${genericEventNames[0]}`, uploadBlockNumbers[this.networkId]);
     const document = {
-      _id: highestSyncedBlockNumber + "-" +Math.floor(Date.now() / 1000),
+      _id: highestSyncedBlockNumber + "-" + Math.floor(Date.now() / 1000),
       update_seqs: JSON.stringify(sequenceIds),
     };
     await this.metaDatabase.addBlock(highestSyncedBlockNumber, document);
 
-    // Simulate adding new block
+    this.syncableDatabases[this.networkId + "-MarketCreated"].find("0x02149d40d255fCeaC54A3ee3899807B0539bad60");
+
+    // TODO Remove testing rollback
     const newBlockNumber = highestSyncedBlockNumber + 1;
+    this.simulateAddingBlock(highestSyncedBlockNumber, sequenceIds);
+    // this.rollback(highestSyncedBlockNumber - 1);
+  }
+
+  // TODO Remove once rollback unit tests are done
+  public async simulateAddingBlock(newBlockNumber: number, sequenceIds: { [eventName: string]: string }): void {
     const logs = [
       {
         topic:
@@ -250,19 +256,28 @@ export class DB<TBigNumber> {
         logIndex: 1313131313131313
       },
     ];
-    this.syncableDatabases[this.networkId + "-MarketCreated"].simulateAddingNewBlock(newBlockNumber, logs);
-    let newSequenceIds = sequenceIds;
-    const newSequenceId = await this.syncableDatabases[this.networkId + "-MarketCreated"].getUpdateSeq();
-    if (typeof newSequenceId !== "undefined") {
-      newSequenceIds[this.networkId + "-MarketCreated"] = newSequenceId;
+    if (this.syncableDatabases[this.networkId + "-MarketCreated"].simulateAddingNewBlock(newBlockNumber, logs)) {
+      let newSequenceIds = sequenceIds;
+      const newSequenceId = await this.syncableDatabases[this.networkId + "-MarketCreated"].getUpdateSeq();
+      if (typeof newSequenceId !== "undefined") {
+        newSequenceIds[this.networkId + "-MarketCreated"] = newSequenceId;
+      }
+      
+      // Update MetaDB
+      const newTimestamp = Math.floor(Date.now() / 1000) + 1;
+      const newDocument = {
+        _id: newBlockNumber + "-" + Math.round(newTimestamp/1000),
+        update_seqs: JSON.stringify(sequenceIds),
+      };
+      await this.metaDatabase.addBlock(newBlockNumber, newDocument);
     }
-    
+  }
+
+  public rollback (blockNumber: number) {
+    // Perform rollback on SyncableDBs & UserSyncableDBs
+
+    // TODO Perform rollback on full-text DB
+
     // Update MetaDB
-    const newTimestamp = Math.floor(Date.now() / 1000) + 1;
-    const newDocument = {
-      _id: newBlockNumber + "-" + Math.round(newTimestamp/1000),
-      update_seqs: JSON.stringify(sequenceIds),
-    };
-    await this.metaDatabase.addBlock(newBlockNumber, newDocument);
   }
 }

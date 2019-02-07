@@ -76,4 +76,17 @@ export abstract class AbstractDB {
       return undefined;
     }
   }
+
+  public async find(queryObject: any) {
+    const queryObj = {
+      selector: {universe: '0x02149d40d255fCeaC54A3ee3899807B0539bad60'},
+      fields: ['_id', 'universe'],
+      sort: ['id']
+    };
+    try {
+      return await this.db.find(queryObj);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }
