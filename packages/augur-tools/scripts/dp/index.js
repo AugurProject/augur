@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 
 var ethers = require("ethers");
-// var EthersFastSubmitWallet = "augur-core/source/libraries/EthersFastSubmitWallet";
-// import {ContractDependenciesEthers} from "augur-core/source/libraries/ContractDependenciesEthers";
-// import {ContractDeployer} from "augur-core/source";
-
 var path = require("path");
 var assign = require("lodash").assign;
 var Augur = require("augur.js");
