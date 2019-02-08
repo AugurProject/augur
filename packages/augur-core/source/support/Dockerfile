@@ -45,6 +45,7 @@ COPY packages/augur-core/source/contracts/ /app/source/contracts/
 COPY packages/augur-types/ /augur-types
 COPY packages/augur-core/source/deployment/compileContracts.ts /app/source/deployment/compileContracts.ts
 COPY packages/augur-core/source/libraries/ /app/source/libraries/
+COPY packages/augur-core/source/index.ts /app/source/index.ts
 COPY packages/augur-core/source/tools/ /app/source/tools/
 COPY packages/augur-core/package.json /app/package.json
 COPY packages/augur-core/.babelrc.js /app/.babelrc.js

@@ -1,14 +1,13 @@
-import { Provider } from '../ethereum/Provider';
-import { ParsedLog } from '../ethereum/types';
-import * as _ from "lodash";
-import * as abiJson from '../../../augur-artifacts/abi.json';
+import { ParsedLog, Provider } from "../";
+import * as abiJson from "augur-artifacts/abi.json";
 import { Abi } from "ethereum";
+import { Address } from "augur-core";
 
 export class Events {
   private readonly provider: Provider;
-  private readonly augurAddress: string;
+  private readonly augurAddress: Address;
 
-  public constructor (provider: Provider, augurAddress: string) {
+  public constructor(provider: Provider, augurAddress: Address) {
     this.provider = provider;
     this.augurAddress = augurAddress;
     this.provider.storeAbiData(<Abi>abiJson["Augur"], "Augur");
@@ -19,8 +18,8 @@ export class Events {
     if (additionalTopics) {
       topics = topics.concat(additionalTopics);
     }
-    const logs = await this.provider.getLogs({fromBlock, toBlock, topics, address: this.augurAddress});
-    const parsedLogs = _.map(logs, (log) => {
+    const logs = await this.provider.getLogs({ fromBlock, toBlock, topics, address: this.augurAddress.to0xString() });
+    return logs.map((log) => {
       const logValues = this.provider.parseLogValues("Augur", log);
       return Object.assign(
         logValues,
@@ -35,6 +34,5 @@ export class Events {
         }
       )
     });
-    return parsedLogs;
   }
 }

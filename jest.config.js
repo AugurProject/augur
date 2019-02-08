@@ -1,4 +1,8 @@
 module.exports = {
   reporters: ["default", "jest-junit"],
-  projects: ["<rootDir>/packages/augur-node", "<rootDir>/packages/augur-ui"]
+  projects: [
+    "<rootDir>/packages/augur-node",
+    "<rootDir>/packages/augur-ui",
+    "<rootDir>/packages/augur-core"
+  ]
 };

@@ -1,7 +1,7 @@
-import { AbstractDB, BaseDocument } from './AbstractDB';
-import { Augur, Log, ParsedLog } from 'augur-api';
-import { DB } from './DB';
-import { SyncStatus } from './SyncStatus';
+import { AbstractDB, BaseDocument } from "./AbstractDB";
+import { Augur, Log, ParsedLog } from "augur-api";
+import { DB } from "./DB";
+import { SyncStatus } from "./SyncStatus";
 import * as _ from "lodash";
 
 export class SyncableDB<TBigNumber> extends AbstractDB {
@@ -34,7 +34,8 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
             }
         }
         console.log(`SYNCING SUCCESS ${this.dbName} up to ${goalBlock}`);
-        // TODO start blockstream
+
+
     }
 
     protected async getLogs(augur: Augur<TBigNumber>, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {

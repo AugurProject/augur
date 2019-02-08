@@ -1,5 +1,20 @@
-export function stringTo32ByteHex(stringToEncode: string): string {
-    return `0x${Buffer.from(stringToEncode, 'utf8').toString('hex').padEnd(64, '0')}`;
+import { Bytes32 } from "../";
+import { promisify, TextEncoder } from "util";
+import * as fs from "fs";
+import { join } from "path";
+
+
+export function stringTo32ByteHex(stringToEncode: string): Bytes32 {
+// encode the string as a UTF-8 byte array
+    const encoded = (new TextEncoder()).encode(stringToEncode);
+// create a Bytes32 to put it in
+    const padded = new Bytes32();
+// make sure the string isn't too long after encoding
+    if (encoded.length > 32) throw new Error(`${stringToEncode} is too long once encoded as UTF-8`);
+// put the encoded bytes at the _beginning_ of the Bytes32 (BigEndian)
+    padded.set(encoded, 0);
+
+    return padded;
 }
 
 export async function sleep(milliseconds: number): Promise<void> {
@@ -17,10 +32,6 @@ export async function resolveAll(promises: Iterable<Promise<any>>) {
     }
     if (firstError !== null) throw firstError;
 }
-
-import * as fs from "fs"
-import { promisify } from "util";
-import { join } from "path";
 
 const readdirP = promisify(fs.readdir)
 const statP = promisify(fs.stat)

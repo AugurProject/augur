@@ -1,8 +1,8 @@
-import { SyncableDB } from './SyncableDB';
-import { Augur } from 'augur-api';
-import { SyncStatus } from './SyncStatus';
-import { TrackedUsers } from './TrackedUsers';
-import { UserSyncableDB } from './UserSyncableDB';
+import { SyncableDB } from "./SyncableDB";
+import { Augur } from "augur-api";
+import { SyncStatus } from "./SyncStatus";
+import { TrackedUsers } from "./TrackedUsers";
+import { UserSyncableDB } from "./UserSyncableDB";
 
 export class DB<TBigNumber> {
   private syncableDatabases: Array<SyncableDB<TBigNumber>> = [];
@@ -27,7 +27,7 @@ export class DB<TBigNumber> {
     this.trackedUsers = new TrackedUsers();
 
     // TODO:Remove. Here for testing
-    this.trackedUsers.setUserTracked("0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb");
+    await this.trackedUsers.setUserTracked("0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb");
 
     this.marketCreated = new SyncableDB<TBigNumber>(this, "MarketCreated");
     this.marketFinalized = new SyncableDB<TBigNumber>(this, "MarketFinalized");

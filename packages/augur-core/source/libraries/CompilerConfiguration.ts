@@ -1,4 +1,4 @@
-import * as path from 'path';
+import * as path from "path";
 
 export class CompilerConfiguration {
     public readonly contractSourceRoot: string;

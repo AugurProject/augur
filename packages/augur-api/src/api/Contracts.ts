@@ -1,12 +1,12 @@
-import { GenericAugurInterfaces } from 'augur-core';
+import { Augur, Dependencies, Universe } from 'augur-core';
 import { ContractAddresses } from 'augur-artifacts';
 
 export class Contracts<TBigNumber> {
-  public augur: GenericAugurInterfaces.Augur<TBigNumber>;
-  public universe: GenericAugurInterfaces.Universe<TBigNumber>;
+  public augur: Augur<TBigNumber>;
+  public universe: Universe<TBigNumber>;
 
-  public constructor (addresses: ContractAddresses, dependencies: GenericAugurInterfaces.Dependencies<TBigNumber>) {
-    this.augur = new GenericAugurInterfaces.Augur<TBigNumber>(dependencies, addresses.Augur);
-    this.universe = new GenericAugurInterfaces.Universe<TBigNumber>(dependencies, addresses.Universe);
+  public constructor (addresses: ContractAddresses, dependencies: Dependencies<TBigNumber>) {
+    this.augur = new Augur<TBigNumber>(dependencies, addresses.Augur);
+    this.universe = new Universe<TBigNumber>(dependencies, addresses.Universe);
   }
 }
