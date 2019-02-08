@@ -46,9 +46,9 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     bytes32 private winningPayoutDistributionHash;
     uint256 private validityBondAttoEth;
     uint256 private finalizationTime;
-    uint256 private noShowBond;
+    uint256 private repBond;
     bool private disputePacingOn;
-    address private noShowBondOwner;
+    address private repBondOwner;
 
     // Collections
     IReportingParticipant[] public participants;
@@ -74,7 +74,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         require(!universe.isForking());
         cash = ICash(augur.lookup("Cash"));
         owner = _creator;
-        noShowBondOwner = owner;
+        repBondOwner = owner;
         assessFees();
         endTime = _endTime;
         numOutcomes = _numOutcomes;
@@ -91,10 +91,16 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     }
 
     function assessFees() private returns (bool) {
-        noShowBond = universe.getOrCacheDesignatedReportNoShowBond();
-        require(getReputationToken().balanceOf(this) >= noShowBond);
+        repBond = universe.getOrCacheMarketRepBond();
+        require(getReputationToken().balanceOf(this) >= repBond);
         validityBondAttoEth = cash.balanceOf(this);
         require(validityBondAttoEth >= universe.getOrCacheValidityBond());
+        return true;
+    }
+
+    function increaseValidityBond(uint256 _attoETH) public returns (bool) {
+        cash.transferFrom(msg.sender, this, _attoETH);
+        validityBondAttoEth = validityBondAttoEth.add(_attoETH);
         return true;
     }
 
@@ -135,16 +141,15 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
 
     function distributeInitialReportingRep(address _reporter, IInitialReporter _initialReporter) private returns (uint256) {
         IV2ReputationToken _reputationToken = getReputationToken();
-        uint256 _initialReportStake = noShowBond;
-        // If the designated reporter showed up return the no show bond to the bond owner. Otherwise it will be used as stake in the first report.
-        if (_reporter == _initialReporter.getDesignatedReporter()) {
-            require(_reputationToken.transfer(noShowBondOwner, _initialReportStake));
-            _initialReportStake = universe.getOrCacheDesignatedReportStake();
+        uint256 _initialReportStake = repBond;
+        // If the designated reporter showed up and is not also the rep bond owner return the rep bond to the bond owner. Otherwise it will be used as stake in the first report.
+        if (_reporter == _initialReporter.getDesignatedReporter() && _reporter != repBondOwner) {
+            require(_reputationToken.transfer(repBondOwner, _initialReportStake));
             _reputationToken.trustedMarketTransfer(_reporter, _initialReporter, _initialReportStake);
         } else {
             require(_reputationToken.transfer(_initialReporter, _initialReportStake));
         }
-        noShowBond = 0;
+        repBond = 0;
         return _initialReportStake;
     }
 
@@ -312,10 +317,10 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
 
         universe.incrementOpenInterestFromMarket(_marketOI);
 
-        // Pay the No Show REP bond
-        noShowBond = universe.getOrCacheDesignatedReportStake();
-        noShowBondOwner = msg.sender;
-        getReputationToken().trustedMarketTransfer(noShowBondOwner, this, noShowBond);
+        // Pay the REP bond.
+        repBond = universe.getOrCacheMarketRepBond();
+        repBondOwner = msg.sender;
+        getReputationToken().trustedMarketTransfer(repBondOwner, this, repBond);
 
         // Update the Initial Reporter
         IInitialReporter _initialReporter = getInitialReporter();
@@ -342,11 +347,11 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         }
         delete participants;
         participants.push(_initialParticipant);
-        // Send REP from the no show bond back to the address that placed it. If a report has been made tell the InitialReporter to return that REP and reset
-        if (noShowBond > 0) {
+        // Send REP from the rep bond back to the address that placed it. If a report has been made tell the InitialReporter to return that REP and reset
+        if (repBond > 0) {
             IV2ReputationToken _reputationToken = getReputationToken();
-            require(_reputationToken.transfer(noShowBondOwner, noShowBond));
-            noShowBond = 0;
+            require(_reputationToken.transfer(repBondOwner, repBond));
+            repBond = 0;
         } else {
             _initialParticipant.returnRepFromDisavow();
         }

@@ -74,7 +74,7 @@ contract Universe is ITyped, IUniverse {
         forkReputationGoal = _totalRepSupply.div(2); // 50% of REP migrating results in a victory in a fork
         disputeThresholdForFork = _totalRepSupply.div(40); // 2.5% of the total rep supply
         initialReportMinValue = disputeThresholdForFork.div(3).div(2**18).add(1); // This value will result in a maximum 20 round dispute sequence
-        disputeThresholdForDisputePacing = disputeThresholdForFork.div(2**5); // Disputes begin normal pacing once there are 4 rounds remaining in the fastest case to fork. The "last" round is the one that causes a fork and requires no time so the exponent here is 5 to provide for that many rounds actually occuring.
+        disputeThresholdForDisputePacing = disputeThresholdForFork.div(2**9); // Disputes begin normal pacing once there are 8 rounds remaining in the fastest case to fork. The "last" round is the one that causes a fork and requires no time so the exponent here is 9 to provide for that many rounds actually occuring.
         return true;
     }
 
@@ -364,6 +364,10 @@ contract Universe is ITyped, IUniverse {
         _currentDesignatedReportNoShowBondInAttoRep = calculateFloatingValue(_designatedReportNoShowsInPreviousWindow, _totalMarketsInPreviousWindow, Reporting.getTargetDesignatedReportNoShowsDivisor(), _previousDesignatedReportNoShowBondInAttoRep, initialReportMinValue, initialReportMinValue);
         designatedReportNoShowBondInAttoRep[_disputeWindow] = _currentDesignatedReportNoShowBondInAttoRep;
         return _currentDesignatedReportNoShowBondInAttoRep;
+    }
+
+    function getOrCacheMarketRepBond() public returns (uint256) {
+        return getOrCacheDesignatedReportNoShowBond().max(getOrCacheDesignatedReportStake());
     }
 
     function calculateFloatingValue(uint256 _badMarkets, uint256 _totalMarkets, uint256 _targetDivisor, uint256 _previousValue, uint256 _defaultValue, uint256 _floor) public pure returns (uint256 _newValue) {

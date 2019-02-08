@@ -32,6 +32,7 @@ contract IUniverse is ITyped {
     function getOrCacheValidityBond() public returns (uint256);
     function getOrCacheDesignatedReportStake() public returns (uint256);
     function getOrCacheDesignatedReportNoShowBond() public returns (uint256);
+    function getOrCacheMarketRepBond() public returns (uint256);
     function getOrCacheReportingFeeDivisor() public returns (uint256);
     function getDisputeThresholdForFork() public view returns (uint256);
     function getDisputeThresholdForDisputePacing() public view returns (uint256);
