@@ -13,7 +13,7 @@ function approveAugurEternalApprovalValue(augur, address, auth, callback) {
     augur.api.Cash.approve({
       meta: auth,
       _spender: augurContract,
-      _value: augur.constants.ETERNAL_APPROVAL_VALUE,
+      _amount: augur.constants.ETERNAL_APPROVAL_VALUE,
       onSent: function () {},
       onSuccess: function (res) {
         console.log("Augur.approve success:", address, res.callReturn, res.hash);

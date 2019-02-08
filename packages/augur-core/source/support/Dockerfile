@@ -54,7 +54,6 @@ COPY packages/augur-core/jest.config.js /app/jest.config.js
 COPY packages/augur-core/source/ /app/source/
 COPY packages/augur-core/tests/ /app/tests/
 
-
 RUN yarn && yarn lint
 
 # cleanup
