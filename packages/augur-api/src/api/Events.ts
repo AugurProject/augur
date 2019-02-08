@@ -1,7 +1,7 @@
 import { Provider } from '../ethereum/Provider';
 import { ParsedLog } from '../ethereum/types';
 import * as _ from "lodash";
-import * as abiJson from '../../../augur-artifacts/abi.json';
+import * as abiJson from 'augur-artifacts/abi.json';
 import { Abi } from "ethereum";
 
 export class Events {

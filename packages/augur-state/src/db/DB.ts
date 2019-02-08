@@ -4,7 +4,7 @@ import { SyncStatus } from './SyncStatus';
 import { TrackedUsers } from './TrackedUsers';
 import { MetaDB } from './MetaDB';
 import { UserSyncableDB } from './UserSyncableDB';
-const uploadBlockNumbers = require('../../../augur-artifacts/upload-block-numbers.json');
+const uploadBlockNumbers = require('augur-artifacts/upload-block-numbers.json');
 
 interface UserSpecificEvent {
   name: string;
@@ -12,7 +12,7 @@ interface UserSpecificEvent {
   userTopicIndex: number;
 }
 
-// TODO Remove any events from this list that are unneeded
+// TODO Get these from GenericContractInterfaces
 const genericEventNames: Array<string> = [
   "DisputeCrowdsourcerCompleted",
   "DisputeCrowdsourcerCreated",
