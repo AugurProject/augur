@@ -1,4 +1,4 @@
-FROM augurproject/augur-core:latest as core-builder
+FROM augurproject/augur-core:monorepo as core-builder
 
 # using the augur image grab all repos
 FROM augurproject/augur-build:latest AS augur-build
