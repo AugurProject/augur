@@ -27,7 +27,10 @@ function createMarkets(augur, auth, callback) {
     }
     var cash = augur.contracts.addresses[networkId].Cash;
     augur.api.Cash.depositEther({
-      meta: auth, tx: {to: cash, attachedEth: speedomatic.fix(9999)},
+      meta: auth, tx: {
+        to: cash,
+        value: speedomatic.fix(9999)
+      },
       onSent: function() {},
       onFailed: function (err) {
         console.error("Augur.approve failed:", err);
