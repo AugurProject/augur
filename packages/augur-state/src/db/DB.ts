@@ -12,6 +12,7 @@ interface UserSpecificEvent {
   userTopicIndex: number;
 }
 
+// TODO Get these from GenericContractInterfaces
 const genericEventNames: Array<string> = [
   "DisputeCrowdsourcerCompleted",
   "DisputeCrowdsourcerCreated",
