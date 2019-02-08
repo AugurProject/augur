@@ -1,7 +1,7 @@
 import { NetworkId } from 'augur-artifacts';
 import { Provider, Log, Filter, LogValues } from 'augur-api';
 import { Transaction } from 'contract-dependencies';
-import { EthersProvider as EProvider, EthersSigner} from 'contract-dependencies-ethers';
+import { EthersProvider as EProvider } from 'contract-dependencies-ethers';
 import { ethers } from 'ethers'
 import { Abi } from 'ethereum';
 import * as _ from "lodash";
