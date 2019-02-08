@@ -166,9 +166,12 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         require(_payoutDistributionHash != getWinningReportingParticipant().getPayoutDistributionHash());
         IDisputeCrowdsourcer _crowdsourcer = getOrCreateDisputeCrowdsourcer(_payoutDistributionHash, _payoutNumerators);
         uint256 _actualAmount = _crowdsourcer.contribute(msg.sender, _amount);
+        uint256 _amountRemainingToFill = _crowdsourcer.getSize().sub(_crowdsourcer.totalSupply());
         augur.logDisputeCrowdsourcerContribution(universe, msg.sender, this, _crowdsourcer, _actualAmount, _description);
-        if (_crowdsourcer.totalSupply() == _crowdsourcer.getSize()) {
+        if (_amountRemainingToFill == 0) {
             finishedCrowdsourcingDisputeBond(_crowdsourcer);
+        } else {
+            require(_amountRemainingToFill >= getInitialReporter().getSize());
         }
         return true;
     }

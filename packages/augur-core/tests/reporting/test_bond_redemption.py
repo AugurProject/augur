@@ -46,16 +46,17 @@ def test_failed_crowdsourcer(finalize, localFixture, universe, market, cash, rep
     localFixture.contracts["Time"].setTimestamp(disputeWindow.getStartTime() + 1)
 
     # We'll have testers contribute to a dispute but not reach the target
-    amount = market.getParticipantStake()
+    bondSize = market.getParticipantStake() * 2
+    partialFill = bondSize / 6
 
     # confirm we can contribute 0
     assert market.contribute([0, 1, market.getNumTicks()-1], 0, "", sender=tester.k1)
 
-    with TokenDelta(reputationToken, -amount + 1, tester.a1, "Disputing did not reduce REP balance correctly"):
-        assert market.contribute([0, 1, market.getNumTicks()-1], amount - 1, "", sender=tester.k1)
+    with TokenDelta(reputationToken, -partialFill, tester.a1, "Disputing did not reduce REP balance correctly"):
+        assert market.contribute([0, 1, market.getNumTicks()-1], partialFill, "", sender=tester.k1)
 
-    with TokenDelta(reputationToken, -amount + 1, tester.a2, "Disputing did not reduce REP balance correctly"):
-        assert market.contribute([0, 1, market.getNumTicks()-1], amount - 1, "", sender=tester.k2)
+    with TokenDelta(reputationToken, -partialFill, tester.a2, "Disputing did not reduce REP balance correctly"):
+        assert market.contribute([0, 1, market.getNumTicks()-1], partialFill, "", sender=tester.k2)
 
     assert market.getDisputeWindow() == disputeWindow.address
 
@@ -71,14 +72,14 @@ def test_failed_crowdsourcer(finalize, localFixture, universe, market, cash, rep
         localFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     else:
         # Continue to the next round which will disavow failed crowdsourcers and let us redeem once the window is over
-        market.contribute([0, 0, market.getNumTicks()], amount * 2, "")
+        market.contribute([0, 0, market.getNumTicks()], bondSize, "")
         assert market.getDisputeWindow() != disputeWindow.address
         localFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
 
-    with TokenDelta(reputationToken, amount - 1, tester.a1, "Redeeming did not refund REP"):
+    with TokenDelta(reputationToken, partialFill, tester.a1, "Redeeming did not refund REP"):
         assert failedCrowdsourcer.redeem(tester.a1)
 
-    with TokenDelta(reputationToken, amount - 1, tester.a2, "Redeeming did not refund REP"):
+    with TokenDelta(reputationToken, partialFill, tester.a2, "Redeeming did not refund REP"):
         assert failedCrowdsourcer.redeem(tester.a2)
 
 def test_one_round_crowdsourcer(localFixture, universe, market, cash, reputationToken):

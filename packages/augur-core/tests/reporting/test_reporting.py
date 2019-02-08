@@ -174,9 +174,9 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
         assert disputeWindow == universe.getCurrentDisputeWindow()
 
 @mark.parametrize('finalizeByMigration, manuallyDisavow', [
-    #(True, True),
+    (True, True),
     (False, True),
-    #(True, False),
+    (True, False),
     (False, False),
 ])
 def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, cash, categoricalMarket, scalarMarket):
@@ -529,6 +529,29 @@ def test_dispute_pacing_threshold(localFixture, universe, market):
     disputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
     assert localFixture.contracts["Time"].setTimestamp(disputeWindow.getStartTime() + 1)
     assert market.contribute([0, market.getNumTicks(), 0], 1, "")
+
+def test_crowdsourcer_minimum_remaining(localFixture, universe, market):
+    proceedToNextRound(localFixture, market, moveTimeForward = False)
+
+    payoutNumerators = [0, 0, market.getNumTicks()]
+    initialReporter = localFixture.applySignature('InitialReporter', market.getInitialReporter())
+    initialReportSize = initialReporter.getSize()
+    totalBondSize = initialReportSize * 2
+
+    # We cannot leave only 1 attoREP remaining to fill
+    with raises(TransactionFailed):
+        market.contribute(payoutNumerators, totalBondSize - 1, "")
+
+    # We cannot leave anything less than the initial report size left to fill in fact
+    with raises(TransactionFailed):
+        market.contribute(payoutNumerators, totalBondSize - initialReportSize + 1, "")
+
+    # Lets fill up to the initial report size
+    assert market.contribute(payoutNumerators, totalBondSize - initialReportSize, "")
+
+    # Now we'll completely fill the bond
+    assert market.contribute(payoutNumerators, initialReportSize, "")
+
 
 @fixture(scope="session")
 def localSnapshot(fixture, kitchenSinkSnapshot):
