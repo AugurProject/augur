@@ -15,16 +15,18 @@ export class MetaDB<TBigNumber> extends AbstractDB {
         return await this.db.find(queryObj);
     }
 
-    public async rollback(blockNumber: number) {
+    public async rollback(blockNumber: number): Promise<void> {
         // Remove each change since blockNumber
         try {
             const blocksToRemove = await this.db.find({
-                selector: {blockNumber: blockNumber},
+                selector: { blockNumber: { $gte: blockNumber } },
                 fields: ['blockNumber', '_id', '_rev'],
             });
-            // console.log("Blocks to remove from " + this.dbName);
-            // console.log(blocksToRemove);
-            await this.db.remove(blocksToRemove.docs[0]._id, blocksToRemove.docs[0]._rev);
+            console.log("Blocks to remove from " + this.dbName);
+            console.log(blocksToRemove);
+            for (let doc of blocksToRemove.docs) {
+                await this.db.remove(doc._id, doc._rev);
+            }
         } catch (err) {
             console.log(err);
         }

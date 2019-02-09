@@ -67,9 +67,9 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
             // console.log(changes);
             for (let result of changes.results) {
                 const id = result.id;
-                // Delete the oldest change in the list, which automatically deletes subsequent changes
-                const change = result.changes[0];
-                await this.db.remove(id, change.rev);
+                for (let change of result.changes) {
+                    await this.db.remove(id, change.rev);
+                }
             }
         } catch (err) {
             console.log(err);
