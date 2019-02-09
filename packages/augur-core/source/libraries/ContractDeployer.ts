@@ -108,6 +108,7 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.contractName === 'Universe') continue;
             if (contract.contractName === 'ReputationToken') continue;
             if (contract.contractName === 'TestNetReputationToken') continue;
+            if (contract.contractName === 'TestNetReputationTokenFactory') continue;
             if (contract.contractName === 'Time') contract = this.configuration.useNormalTime ? contract: this.contracts.get('TimeControlled');
             if (contract.contractName === 'ReputationTokenFactory') contract = this.configuration.useNormalTime ? contract: this.contracts.get('TestNetReputationTokenFactory');
             if (contract.relativeFilePath.startsWith('legacy_reputation/')) continue;
@@ -167,7 +168,6 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'TestNetReputationToken') return;
         if (contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
         if (contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract : this.contracts.get('TestNetReputationTokenFactory');
-        if (contract.contractName === (this.configuration.useNormalTime ? 'TestNetReputationTokenFactory' : 'ReputationTokenFactory')) return;
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
         if (this.configuration.isProduction && contractName === 'LegacyReputationToken') return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
