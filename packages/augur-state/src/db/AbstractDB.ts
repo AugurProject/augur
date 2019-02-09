@@ -1,4 +1,5 @@
 import * as PouchDB from "pouchdb";
+PouchDB.plugin(require('pouchdb-find'));
 import * as _ from "lodash";
 
 interface DocumentIDToRev {
@@ -67,6 +68,10 @@ export abstract class AbstractDB {
     }
   }
 
+  public async getInfo(): Promise<PouchDB.Core.DatabaseInfo> {
+    return await this.db.info();
+  }
+
   public async getUpdateSeq(): Promise<string | undefined> {
     try {
       const info = await this.db.info();
@@ -77,16 +82,12 @@ export abstract class AbstractDB {
     }
   }
 
-  public async find(queryObject: any) {
-    const queryObj = {
-      selector: {universe: '0x02149d40d255fCeaC54A3ee3899807B0539bad60'},
-      fields: ['_id', 'universe'],
-      sort: ['id']
-    };
+  public async find(queryObj: any): Promise<PouchDB.Find.FindResponse<{}> | undefined> {
     try {
       return await this.db.find(queryObj);
     } catch (err) {
-      console.log(err);
+      console.log(`Error while querying: ${JSON.stringify(err)}`);
+      return undefined;
     }
   }
 }

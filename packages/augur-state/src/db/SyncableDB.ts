@@ -53,13 +53,26 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     }
 
     public async simulateAddingNewBlock(uploadBlockNumber: number, logs: Array<ParsedLog>): Promise<boolean> {
-        let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName, uploadBlockNumber);
-        logs[0].blockNumber = highestSyncedBlockNumber;
         const documents = _.sortBy(_.map(logs, this.processLog), "_id");
         return await this.bulkUpsertDocuments(documents[0]._id, documents);
     }
 
-    public rollback(blockNumber: number) {
-
+    public async rollback(sequenceId: number) {
+        // Remove each change since sequenceId
+        try {
+            const changes = await this.db.changes({
+                since: sequenceId,
+            });
+            // console.log("Deleting changes seqId " + sequenceId + " and onward in " + this.dbName)
+            // console.log(changes);
+            for (let result of changes.results) {
+                const id = result.id;
+                // Delete the oldest change in the list, which automatically deletes subsequent changes
+                const change = result.changes[0];
+                await this.db.remove(id, change.rev);
+            }
+        } catch (err) {
+            console.log(err);
+        }
     }
 }

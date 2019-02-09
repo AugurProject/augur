@@ -12,7 +12,11 @@ interface UserSpecificEvent {
   userTopicIndex: number;
 }
 
-// TODO Get these from GenericContractInterfaces
+interface SequenceIds { 
+  [eventName: string]: string 
+}
+
+// TODO Get these from GenericContractInterfaces (and do not include any that are unneeded)
 const genericEventNames: Array<string> = [
   "DisputeCrowdsourcerCompleted",
   "DisputeCrowdsourcerCreated",
@@ -151,6 +155,8 @@ export class DB<TBigNumber> {
       }
     }
 
+    // TODO Initialize full-text DB
+
     this.metaDatabase = new MetaDB(networkId + "-BlockNumberEvents");
   }
 
@@ -184,100 +190,171 @@ export class DB<TBigNumber> {
    * @param uploadBlockNumber Block number at which Augur contracts were originally uploaded to the blockchain
    */
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number, uploadBlockNumber: number): Promise<void> {
-    let sequenceIds: { [eventName: string]: string } = {};
+    // Update MetaDB to associate block numbers with SyncableDB/UserSyncableDB update_seqs
+    let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${genericEventNames[0]}`, uploadBlockNumbers[this.networkId]);
+    let newDocument;
+    let sequenceIds = await this.getAllSequenceIds();
+    // TODO Check if sequenceIds matches the sequence IDs in MetaDB and update MetaDB accordingly, since MetaDB could be behind or ahead
 
-    // Sync generic event types
+    // Sync generic event types & user-specific event types
+    let dbSyncPromises = [];
     for (let eventName of genericEventNames) {
-      this.syncableDatabases[`${this.networkId}-${eventName}`].sync(augur, chunkSize, blockstreamDelay, uploadBlockNumber);
+      dbSyncPromises.push(this.syncableDatabases[`${this.networkId}-${eventName}`].sync(augur, chunkSize, blockstreamDelay, uploadBlockNumber));
+      // TODO Set indexes
+    }
+    // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
+    // Also update topics/indexes for user-specific events once these changes are made to the contracts.
+    for (let trackedUser of await this.trackedUsers.getUsers()) {
+      for (let eventIndex in userSpecificEvents) {
+        dbSyncPromises.push(this.userSyncableDatabases[`${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`].sync(augur, chunkSize, blockstreamDelay, uploadBlockNumber));
+        // TODO Set indexes
+      }
+    }
+    await Promise.all(dbSyncPromises);
+
+    // Get new sequence IDs
+    sequenceIds = {};
+    for (let eventName of genericEventNames) {
       let updateSeq = await this.syncableDatabases[`${this.networkId}-${eventName}`].getUpdateSeq();
       if (typeof updateSeq !== "undefined") {
         sequenceIds[`${this.networkId}-${eventName}`] = updateSeq;
       }
     }
-
-    // Sync user-specific event types
-    // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
-    // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let eventIndex in userSpecificEvents) {
-        this.userSyncableDatabases[`${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`].sync(augur, chunkSize, blockstreamDelay, uploadBlockNumber);
         let updateSeq = await this.userSyncableDatabases[`${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`].getUpdateSeq();
         if (typeof updateSeq !== "undefined") {
           sequenceIds[`${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`] = updateSeq;
         }
       }
+    }
 
-    // Initialize MetaDB to associate block numbers with SyncableDB/UserSyncableDB update_seqs
-    const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${genericEventNames[0]}`, uploadBlockNumbers[this.networkId]);
-    const document = {
+    // Update MetaDB to associate block numbers with SyncableDB/UserSyncableDB update_seqs
+    highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${genericEventNames[0]}`, uploadBlockNumbers[this.networkId]);
+    newDocument = {
       _id: highestSyncedBlockNumber + "-" + Math.floor(Date.now() / 1000),
-      update_seqs: JSON.stringify(sequenceIds),
+      blockNumber: highestSyncedBlockNumber,
+      sequenceIds: JSON.stringify(sequenceIds),
     };
-    await this.metaDatabase.addBlock(highestSyncedBlockNumber, document);
+    await this.metaDatabase.addBlock(highestSyncedBlockNumber, newDocument);
 
-    this.syncableDatabases[this.networkId + "-MarketCreated"].find("0x02149d40d255fCeaC54A3ee3899807B0539bad60");
 
-    // TODO Remove testing rollback
-    const newBlockNumber = highestSyncedBlockNumber + 1;
-    this.simulateAddingBlock(highestSyncedBlockNumber, sequenceIds);
-    // this.rollback(highestSyncedBlockNumber - 1);
+    
+    // TODO Move these lines for testing rollback to a unit test
+    // Add new block to DisputeCrowdsourcerCompleted
+    // console.log("SEQUENCE IDS: ", sequenceIds);
+    console.log("\n\nHighest synced block number: ", highestSyncedBlockNumber);
+    let newBlockNumber = highestSyncedBlockNumber + 1;
+    console.log("Adding new block number: ", newBlockNumber);
+    await this.simulateAddingBlock(newBlockNumber, sequenceIds);
+    newBlockNumber++;
+    console.log("Adding new block number: " + newBlockNumber + "\n\n");
+    await this.simulateAddingBlock(newBlockNumber, sequenceIds);
+
+    // Find new block
+    let queryObj = {
+      selector: {universe: '0x11149d40d255fCeaC54A3ee3899807B0539bad60'},
+      fields: ['_id', 'universe'],
+      sort: ['_id']
+    };
+    let result = await this.syncableDatabases[this.networkId + "-DisputeCrowdsourcerCompleted"].find(queryObj);
+    console.log("Before rollback RESULT: ", result);
+
+    await this.rollback(highestSyncedBlockNumber + 1);
+
+    // New block should be gone
+    result = await this.syncableDatabases[this.networkId + "-DisputeCrowdsourcerCompleted"].find(queryObj);
+    console.log("After rollback RESULT: ", result);
+  }
+
+  public async getAllSequenceIds(): Promise<SequenceIds> {
+    let sequenceIds: { [eventName: string]: string } = {};
+    for (let eventName of genericEventNames) {
+      let updateSeq = await this.syncableDatabases[`${this.networkId}-${eventName}`].getUpdateSeq();
+      if (typeof updateSeq !== "undefined") {
+        sequenceIds[`${this.networkId}-${eventName}`] = updateSeq;
+      } else {
+        console.log(`ERROR: Unabled to get sequence ID for ${this.networkId}-${eventName}`);
+      }
+    }
+
+    for (let trackedUser of await this.trackedUsers.getUsers()) {
+      for (let eventIndex in userSpecificEvents) {
+        let updateSeq = await this.userSyncableDatabases[`${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`].getUpdateSeq();
+        // TODO Set indexes
+        if (typeof updateSeq !== "undefined") {
+          sequenceIds[`${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`] = updateSeq;
+        }
+      }
+    }
+
+    return sequenceIds;
   }
 
   // TODO Remove once rollback unit tests are done
-  public async simulateAddingBlock(newBlockNumber: number, sequenceIds: { [eventName: string]: string }): void {
+  public async simulateAddingBlock(newBlockNumber: number, sequenceIds: { [eventName: string]: string }): Promise<void> {
     const logs = [
       {
-        topic:
-          '0x73706f7274730000000000000000000000000000000000000000000000000000',
-        description:
-          'Will KAA Gent win the match with Royal Mouscron on February 10, 2019 UTC?',
-        extraInfo:
-          '{"resolutionSource":"Test contract, will not be reported!","tags":["TEST","soccer","soccer-belgium-jupiler"],"longDescription":"This is a test market and will not be reported.\\n\\nBlitzPredict Market Metadata: f9cb5b8249457dc407c553766248eb9ff09abfa225f53a07e0019d4ceaa6273f","outcomeNames":["KAA Gent","Royal Mouscron","Draw"]}',
-        universe: '0x02149d40d255fCeaC54A3ee3899807B0539bad60',
-        market: '0x61F7503a36baaF242e3431E2F77C81742d309c0f',
-        marketCreator: '0xf8aE9941B21a446E7d654c8D84168Cc8443a7Fc3',
-        outcomes:
-          [ '0x4b41412047656e74000000000000000000000000000000000000000000000000',
-            '0x526f79616c204d6f757363726f6e000000000000000000000000000000000000',
-            '0x4472617700000000000000000000000000000000000000000000000000000000' ],
-        marketCreationFee: '0x470de4df820000',
-        minPrice: '0x00',
-        maxPrice: '0x0de0b6b3a7640000',
-        marketType: 1,
-        // constructor: [Function: Result],
-        // blockNumber: 3813404,
-        blockHash:
-          '0x923c89062b9fc256120013c02e4686ebc9ffea357150f40ed5e1a46871d0fd9d',
-        transactionIndex: 5,
-        removed: false,
-        transactionLogIndex: undefined,
-        transactionHash:
-          '0x2e3ae3a691e7ed9ede3ffc8c718a215a51c68bcffd473087fde6e6e0e9feaf29',
-        logIndex: 1313131313131313
+        "universe":"0x02149d40d255fCeaC54A3ee3899807B0539bad60",
+        "market":"0xC0ffe3F654d442589BAb472937F094970339d214",
+        "disputeCrowdsourcer":"0x65d4f86927D1f10eFa2Fb884e4DEe0aB86137caD",
+        "blockNumber":newBlockNumber,
+        "blockHash":"0x8132a0cdb4226b3bbb5bcf8429ec0883859255751be2c321c58b488395188040",
+        "transactionIndex":8,
+        "removed":false,
+        "transactionHash":"0xf750ebb0d039c623385f8227f7a6cbe49f5efbc5485ac0e38b5a7b0e389726d8",
+        "logIndex":1,
       },
     ];
-    if (this.syncableDatabases[this.networkId + "-MarketCreated"].simulateAddingNewBlock(newBlockNumber, logs)) {
+    if (await this.syncableDatabases[this.networkId + "-DisputeCrowdsourcerCompleted"].simulateAddingNewBlock(newBlockNumber, logs)) {
       let newSequenceIds = sequenceIds;
-      const newSequenceId = await this.syncableDatabases[this.networkId + "-MarketCreated"].getUpdateSeq();
+      const newSequenceId = await this.syncableDatabases[this.networkId + "-DisputeCrowdsourcerCompleted"].getUpdateSeq();
       if (typeof newSequenceId !== "undefined") {
-        newSequenceIds[this.networkId + "-MarketCreated"] = newSequenceId;
+        newSequenceIds[this.networkId + "-DisputeCrowdsourcerCompleted"] = newSequenceId;
       }
       
       // Update MetaDB
       const newTimestamp = Math.floor(Date.now() / 1000) + 1;
       const newDocument = {
         _id: newBlockNumber + "-" + Math.round(newTimestamp/1000),
-        update_seqs: JSON.stringify(sequenceIds),
+        blockNumber: newBlockNumber,
+        sequenceIds: JSON.stringify(sequenceIds),
       };
       await this.metaDatabase.addBlock(newBlockNumber, newDocument);
     }
   }
 
-  public rollback (blockNumber: number) {
+  // TODO Add check to see if any rollbacks failed
+  public async rollback (blockNumber: number) {
+    console.log("Rolling back block number " + blockNumber + "\n\n");
+
+    let previousBlockSequenceIds = await this.metaDatabase.getBlockSequenceIds(blockNumber);
+
+    let dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
+    for (let eventName of genericEventNames) {
+      let dbName = `${this.networkId}-${eventName}`;
+      let previousSequenceId = JSON.parse(previousBlockSequenceIds.docs[0].sequenceIds)[dbName];
+      let dbInfo = await this.syncableDatabases[dbName].getInfo();
+      if (dbInfo.update_seq > previousSequenceId) {
+        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(previousSequenceId));
+      }
+    }
+    for (let trackedUser of await this.trackedUsers.getUsers()) {
+      for (let eventIndex in userSpecificEvents) {
+        let dbName = `${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`;
+        let previousSequenceId = JSON.parse(previousBlockSequenceIds.docs[0].sequenceIds)[dbName];
+        let dbInfo = await this.userSyncableDatabases[dbName].getInfo();
+        if (dbInfo.update_seq > previousSequenceId) {
+          dbRollbackPromises.push(this.userSyncableDatabases[dbName].rollback(previousSequenceId));
+        }
+      }
+    }
+    await Promise.all(dbRollbackPromises);
 
     // TODO Perform rollback on full-text DB
 
     // Update MetaDB
+    this.metaDatabase.rollback(blockNumber);
   }
 }
