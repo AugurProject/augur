@@ -61,7 +61,7 @@ export abstract class AbstractDB {
     })
     try {
       const results = await this.db.bulkDocs(mergedRevisionDocuments);
-      return _.every(results, (response) => (<PouchDB.Core.Response>response).ok )
+      return _.every(results, (response) => (<PouchDB.Core.Response>response).ok );
     } catch (err) {
       console.error(`ERROR in bulk sync: ${JSON.stringify(err)}`);
       return false;
@@ -72,22 +72,7 @@ export abstract class AbstractDB {
     return await this.db.info();
   }
 
-  public async getUpdateSeq(): Promise<string | undefined> {
-    try {
-      const info = await this.db.info();
-      return info.update_seq.toString();
-    } catch (err) {
-      console.error(`ERROR in getUpdateSeq: ${JSON.stringify(err)}`);
-      return undefined;
-    }
-  }
-
-  public async find(queryObj: any): Promise<PouchDB.Find.FindResponse<{}> | undefined> {
-    try {
-      return await this.db.find(queryObj);
-    } catch (err) {
-      console.log(`Error while querying: ${JSON.stringify(err)}`);
-      return undefined;
-    }
+  public async find(request: PouchDB.Find.FindRequest<{}> | undefined): Promise<PouchDB.Find.FindResponse<{}>> {
+    return await this.db.find(request);
   }
 }

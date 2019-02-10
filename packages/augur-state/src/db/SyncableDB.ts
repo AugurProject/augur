@@ -14,7 +14,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         super(dbName ? dbName : `${networkId}-${eventName}`);
         this.eventName = eventName;
         this.syncStatus = dbController.syncStatus;
-        dbController.notifySyncableDBAdded(eventName, this);
+        dbController.notifySyncableDBAdded(this);
     }
 
     public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, uploadBlockNumber: number): Promise<void> {
@@ -52,27 +52,54 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         );
     }
 
-    public async simulateAddingNewBlock(uploadBlockNumber: number, logs: Array<ParsedLog>): Promise<boolean> {
+    public async addNewBlock(uploadBlockNumber: number, logs: Array<ParsedLog>): Promise<void> {
+        const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName, uploadBlockNumber);
         const documents = _.sortBy(_.map(logs, this.processLog), "_id");
-        return await this.bulkUpsertDocuments(documents[0]._id, documents);
+        if (await this.bulkUpsertDocuments(documents[0]._id, documents)) {
+            await this.syncStatus.setHighestSyncBlock(this.dbName, highestSyncedBlockNumber + 1);
+        } else {
+            throw new Error(`Unable to add new block`);
+        }
     }
-
-    public async rollback(sequenceId: number) {
+/*
+    public async rollback(sequenceId: number): Promise<boolean> {
         // Remove each change since sequenceId
         try {
             const changes = await this.db.changes({
                 since: sequenceId,
             });
-            // console.log("Deleting changes seqId " + sequenceId + " and onward in " + this.dbName)
-            // console.log(changes);
+            console.log("Deleting changes seqId " + sequenceId + " and onward in " + this.dbName)
+            console.log(changes);
             for (let result of changes.results) {
                 const id = result.id;
                 for (let change of result.changes) {
                     await this.db.remove(id, change.rev);
                 }
             }
+            return true;
         } catch (err) {
-            console.log(err);
+            console.error(`ERROR in bulk sync: ${JSON.stringify(err)}`);
+            return false;
+        }
+    }
+*/
+    public async rollback(blockNumber: number): Promise<boolean> {
+        // Remove all blocks from blockNumber onward
+        const docsToRemove = await this.db.find({
+            selector: { blockNumber: { $gte: blockNumber } },
+            fields: ['blockNumber', '_id', '_rev'],
+        });
+        console.log("Deleting docs from " + this.dbName);
+        console.log(docsToRemove);
+        let results = [];
+        try {
+            for (let doc of docsToRemove.docs) {
+                results.push(await this.db.remove(doc._id, doc._rev));
+            }
+            return _.every(results, (response) => (<PouchDB.Core.Response>response).ok);
+        } catch (err) {
+            console.error(`ERROR in rollback: ${JSON.stringify(err)}`);
+            return false;
         }
     }
 }

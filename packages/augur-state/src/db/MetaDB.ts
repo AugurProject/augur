@@ -3,32 +3,36 @@ import * as _ from "lodash";
 
 // Associates block numbers with event DB sequence IDs
 export class MetaDB<TBigNumber> extends AbstractDB {
-    public async addBlock(blockNumber: number, document: Object) {
-        await this.upsertDocument(blockNumber.toString(), document);
+    public async addNewBlock(dbName: string, document: Object) {
+        await this.upsertDocument(dbName, document);
     }
 
+    // TODO Replace any
     public async getBlockSequenceIds(blockNumber: number): Promise<any/*PouchDB.Find.FindResponse<{}>*/> {
-        let queryObj = {
-            selector: { blockNumber: blockNumber },
-            fields: ['blockNumber', 'sequenceIds'],
-        };
-        return await this.db.find(queryObj);
+        return await this.db.find({
+            selector: { blockNumber: { $gte: blockNumber } },
+            fields: ['_id', 'blockNumber', 'sequenceId'],
+        });
     }
 
-    public async rollback(blockNumber: number): Promise<void> {
+    public async rollback(blockNumber: number): Promise<boolean> {
         // Remove each change since blockNumber
+        const blocksToRemove = await this.db.find({
+            selector: { blockNumber: { $gte: blockNumber } },
+            fields: ['blockNumber', '_id', '_rev'],
+        });
+        console.log("Oldest block number to remove: ", blockNumber);
+        console.log("Blocks to remove from " + this.dbName);
+        console.log(blocksToRemove);
+        let results = [];
         try {
-            const blocksToRemove = await this.db.find({
-                selector: { blockNumber: { $gte: blockNumber } },
-                fields: ['blockNumber', '_id', '_rev'],
-            });
-            console.log("Blocks to remove from " + this.dbName);
-            console.log(blocksToRemove);
             for (let doc of blocksToRemove.docs) {
-                await this.db.remove(doc._id, doc._rev);
+                results.push(await this.db.remove(doc._id, doc._rev));
             }
+            return _.every(results, (response) => (<PouchDB.Core.Response>response).ok);
         } catch (err) {
-            console.log(err);
+            console.error(`ERROR in rollback: ${JSON.stringify(err)}`);
+            return false;
         }
     }
 }

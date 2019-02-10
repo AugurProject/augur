@@ -15,7 +15,7 @@ export class UserSyncableDB<TBigNumber> extends SyncableDB<TBigNumber> {
         this.additionalTopics = [];
         this.additionalTopics.fill("", numAdditionalTopics);
         this.additionalTopics[userTopicIndex] = bytes32User;
-        dbController.notifyUserSyncableDBAdded(eventName, user, this);
+        dbController.notifyUserSyncableDBAdded(this);
         console.log(JSON.stringify(this.additionalTopics));
     }
 
