@@ -71,7 +71,7 @@ export default function(
   const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b));
 
   sortedOutcomes.map((outcome, index) => {
-    if (index < TopOutcomeCount - 1 || outcome.id === invalidMarketId) {
+    if (index <= TopOutcomeCount - 1 || outcome.id === invalidMarketId) {
       outcome.display = true;
     }
     if (outcome.id === MALFORMED_OUTCOME) {

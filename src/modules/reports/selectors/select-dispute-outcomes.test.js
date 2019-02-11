@@ -204,6 +204,7 @@ describe(`modules/reports/selectors/select-dispute-outcomes.js`, () => {
         tentativeWinning: false,
         stakeCurrent: "30",
         stakeRemaining: "70",
+        display: true,
         id: "30",
         name: "30"
       },
