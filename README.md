@@ -1,7 +1,15 @@
+
 <p align="center"><img src="https://raw.githubusercontent.com/AugurProject/branding/master/name-horizontal/Augur-Mark-Inline.png" width="500"></p>
 
-<p align="center"><a href="https://github.com/AugurProject/augur-app/releases/latest"><img src="https://img.shields.io/github/downloads/AugurProject/augur-app/total.svg"></a>
-<a href="https://github.com/AugurProject/augur-app/graphs/contributors"><img src="https://img.shields.io/github/contributors/AugurProject/augur-app.svg"></a>
+# <p align="center">Augur Monorepo<a name="install" ></a></p>
+
+<p align="center"><a href="https://github.com/AugurProject/augur/issues"><img src="https://img.shields.io/github/issues-raw/AugurProject/augur.svg"></a> <a href="https://github.com/AugurProject/augur/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aclosed+"><img src="https://img.shields.io/github/issues-closed-raw/AugurProject/augur.svg"></a>
+<br>
+<a href="https://github.com/AugurProject/augur/pulls"><img src="https://img.shields.io/github/issues-pr-raw/AugurProject/augur.svg"></a>
+<a href="https://github.com/AugurProject/augur/pulls?utf8=%E2%9C%93&q=is%3Apr+is%3Aclosed"><img src="https://img.shields.io/github/issues-pr-closed-raw/AugurProject/augur.svg"></a>
+<br> 
+<a href="https://github.com/AugurProject/augur-app/releases/latest"><img src="https://img.shields.io/github/downloads/AugurProject/augur/total.svg"></a>
+<a href="https://github.com/AugurProject/augur-app/graphs/contributors"><img src="https://img.shields.io/github/contributors/AugurProject/augur.svg"></a>
 <a href="https://github.com/AugurProject/augur-app/blob/master/LICENSE.md"><img src="https://img.shields.io/github/license/AugurProject/augur-app.svg"></a>
 <br>
 <a href="https://invite.augur.net"><img src="https://img.shields.io/discord/378030344374583298.svg"></a>
@@ -15,12 +23,7 @@
 
 <p align="center">For more information about the Augur protocol, <a href="https://www.augur.net/faq/">check out the FAQ.</a></p>
 
-# <p align="center">Augur Monorepo<a name="install" ></a></p>
-
-<p align="center"><a href="https://github.com/AugurProject/augur/issues"><img src="https://img.shields.io/github/issues-raw/AugurProject/augur.svg"></a> <a href="https://github.com/AugurProject/augur/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aclosed+"><img src="https://img.shields.io/github/issues-closed-raw/AugurProject/augur.svg"></a>
-<br>
-<a href="https://github.com/AugurProject/augur/pulls"><img src="https://img.shields.io/github/issues-pr-raw/AugurProject/augur.svg"></a>
-<a href="https://github.com/AugurProject/augur/pulls?utf8=%E2%9C%93&q=is%3Apr+is%3Aclosed"><img src="https://img.shields.io/github/issues-pr-closed-raw/AugurProject/augur.svg"></a>
+### <p align="center">Augur Monorepo<a name="install" ></a></p>
 
 <p align="center">This repository will soon become Augur's monorepo. For the time being, this repository is being used for global issues, pull requests, and project milestones. Click on the issues board below to browse active projects, development pipeline, weekly sprints and more.  </p>
 
@@ -29,9 +32,6 @@
 <h4><p align="center">Looking for Augur App? Click Below: <h4></p>
 
 <p align="center"><a href="https://github.com/AugurProject/augur-app/releases/latest"> <img width="200" src="https://augur.net/dist/images/meta_logo.png"> </a></p>
-
-
-
 
 ## 100% Open Source
 
