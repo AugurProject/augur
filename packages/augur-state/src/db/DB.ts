@@ -157,7 +157,7 @@ export class DB<TBigNumber> {
 
     // TODO Initialize full-text DB
 
-    this.metaDatabase = new MetaDB(networkId, networkId + "-BlockNumberEvents");
+    this.metaDatabase = new MetaDB(this, networkId);
   }
 
   /**
@@ -241,16 +241,33 @@ export class DB<TBigNumber> {
    * @param {number} blockNumber Oldest block number to delete
    */
   public async rollback(blockNumber: number): Promise<void> {
+    // TODO Fix typedef for previousBlockSequenceIds
+    const previousBlockSequenceIds: any = await this.metaDatabase.find(
+      {
+          selector: { blockNumber: { $gte: blockNumber } },
+          fields: ['_id', 'networkId', 'blockNumber', 'sequenceIds'],
+      }
+    );
+    const parseBlockSequenceIds = JSON.parse(previousBlockSequenceIds.docs[0].sequenceIds);
+
     let dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
     for (let eventName of genericEventNames) {
       let dbName = `${this.networkId}-${eventName}`;
-      dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+      let previousSequenceId = parseBlockSequenceIds[dbName];
+      let dbInfo = await this.syncableDatabases[dbName].getInfo();
+      if (dbInfo.update_seq > previousSequenceId) {
+        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber, previousSequenceId));
+      }
     }
     for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let userSpecificEvent of userSpecificEvents) {
-        let dbName = `${this.networkId}-${userSpecificEvent.name}-${trackedUser}`;
-        dbRollbackPromises.push(this.userSyncableDatabases[dbName].rollback(blockNumber));
+      for (let eventIndex in userSpecificEvents) {
+        let dbName = `${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`;
+        let previousSequenceId = parseBlockSequenceIds[dbName];
+        let dbInfo = await this.userSyncableDatabases[dbName].getInfo();
+        if (dbInfo.update_seq > previousSequenceId) {
+          dbRollbackPromises.push(this.userSyncableDatabases[dbName].rollback(blockNumber, previousSequenceId));
+        }
       }
     }
     await Promise.all(dbRollbackPromises);
@@ -295,5 +312,15 @@ export class DB<TBigNumber> {
    */
   public async findInSyncableDB(dbName: string, request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
     return await this.syncableDatabases[dbName].find(request);
+  }
+
+  /**
+   * Queries the MetaDB.
+   * 
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object 
+   * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse 
+   */
+  public async findInMetaDB(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
+    return await this.metaDatabase.find(request);
   }
 }

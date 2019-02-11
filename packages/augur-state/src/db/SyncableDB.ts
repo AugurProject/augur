@@ -64,21 +64,25 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         }
     }
 
-    public async rollback(blockNumber: number): Promise<void> {
-        // Remove all blocks from blockNumber onward
-        // TODO Implement better way to update highest block number. (Probably need to remove blocks in reverse order & call setHighestSyncBlock after each removal.)
-        const docsToRemove = await this.db.find({
-            selector: { blockNumber: { $gte: blockNumber } },
-            fields: ['blockNumber', '_id', '_rev'],
-        });
-        if (docsToRemove.docs.length > 0) {
-            console.log("\n\nDeleting docs from " + this.dbName);
-            console.log(docsToRemove);
-            let results = [];
-            for (let doc of docsToRemove.docs) {
-                results.push(await this.db.remove(doc._id, doc._rev));
+    public async rollback(blockNumber: number, sequenceId: number): Promise<void> {
+        // Remove each change from sequenceId onward
+        try {
+            let changes = await this.db.changes({
+                since: sequenceId,
+            });
+            // Reverse ordering of changes so that newest changes are first
+            changes.results = changes.results.reverse();
+            console.log("\n\nDeleting the following changes from " + this.dbName)
+            console.log(changes);
+            for (let result of changes.results) {
+                const id = result.id;
+                const change = result.changes[0];
+                await this.db.remove(id, change.rev);
             }
+            // Set highest sync block to block before blockNumber
+            await this.syncStatus.setHighestSyncBlock(this.dbName, blockNumber - 1);
+        } catch (err) {
+            console.log(err);
         }
-        await this.syncStatus.setHighestSyncBlock(this.dbName, blockNumber - 1);
     }
 }

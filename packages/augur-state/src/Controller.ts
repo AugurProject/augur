@@ -27,6 +27,8 @@ export class Controller<TBigNumber> {
   /**
    * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.
    * Queries before & after rollback to ensure blocks are removed successfully.
+   * Also checks MetaDB to make sure blocks/sequence IDs were removed correctly 
+   * and checks DBs to make sure highest sync block is correct.
    */
   public async testRollback() {
     const dbName = this.networkId + "-DisputeCrowdsourcerCompleted";
@@ -60,17 +62,29 @@ export class Controller<TBigNumber> {
     highestSyncedBlockNumber = await this.dbController.syncStatus.getHighestSyncBlock(dbName, uploadBlockNumbers[this.networkId]);
     // console.log("Highest synced block number: ", highestSyncedBlockNumber);
 
-    let queryObj = {
-      selector: {universe: '0x11149d40d255fCeaC54A3ee3899807B0539bad60'},
+    let queryObj: any = {
+      selector: { universe: '0x11149d40d255fCeaC54A3ee3899807B0539bad60' },
       fields: ['_id', 'universe'],
       sort: ['_id']
     };
     let result = await this.dbController.findInSyncableDB(dbName, queryObj);
-    console.log("\n\nBefore rollback: ", result);
+    console.log("\n\nEvent logs before rollback:", result);
 
     await this.dbController.rollback(highestSyncedBlockNumber - 1);
 
     result = await this.dbController.findInSyncableDB(dbName, queryObj);
-    console.log("\n\nAfter rollback: ", result);
+    console.log("\n\nEvent logs after rollback:", result);
+
+    queryObj = {
+      selector: { blockNumber: { $gte: (highestSyncedBlockNumber - 1) } },
+      fields: ['_id', 'blockNumber'],
+      sort: ['_id']
+    };
+    result = await this.dbController.findInMetaDB(queryObj);
+    console.log("\n\nBlock Numbers greater than " + (highestSyncedBlockNumber - 2) + " after rollback:", result);
+
+    console.log("Highest sync block for " + this.networkId + "-DisputeCrowdsourcerCreated:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-DisputeCrowdsourcerCreated", uploadBlockNumbers[this.networkId]));
+    console.log("Highest sync block for " + this.networkId + "-DisputeCrowdsourcerCompleted:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-DisputeCrowdsourcerCompleted", uploadBlockNumbers[this.networkId]));
+    console.log("Highest sync block for MetaDB:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-BlockNumberEvents", uploadBlockNumbers[this.networkId]));
   }
 }
