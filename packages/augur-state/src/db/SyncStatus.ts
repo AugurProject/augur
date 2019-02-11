@@ -1,12 +1,12 @@
 import { AbstractDB } from './AbstractDB';
 
 interface SyncDocument {
-    blockNumber: number;
+  blockNumber: number;
 }
 
 export class SyncStatus extends AbstractDB {
-    constructor() {
-        super("SyncStatus");
+    constructor(networkId: number) {
+        super(networkId, networkId + "-SyncStatus");
     }
 
     public async setHighestSyncBlock(dbName: string, blockNumber: number): Promise<PouchDB.Core.Response> {

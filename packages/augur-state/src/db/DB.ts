@@ -2,8 +2,9 @@ import { SyncableDB } from './SyncableDB';
 import { Augur } from 'augur-api';
 import { SyncStatus } from './SyncStatus';
 import { TrackedUsers } from './TrackedUsers';
-import { MetaDB } from './MetaDB';
+import { MetaDB, SequenceIds } from './MetaDB';
 import { UserSyncableDB } from './UserSyncableDB';
+import { getAllJSDocTagsOfKind } from 'typescript';
 const uploadBlockNumbers = require('augur-artifacts/upload-block-numbers.json');
 
 interface UserSpecificEvent {
@@ -12,12 +13,9 @@ interface UserSpecificEvent {
   userTopicIndex: number;
 }
 
-interface SequenceIds { 
-  [dbName: string]: string 
-}
-
 // TODO Get these from GenericContractInterfaces (and do not include any that are unneeded)
 const genericEventNames: Array<string> = [
+
   "DisputeCrowdsourcerCompleted",
   "DisputeCrowdsourcerCreated",
   "DisputeWindowCreated",
@@ -120,8 +118,9 @@ export class DB<TBigNumber> {
   /**
    * Creates and returns a new dbController.
    * 
-   * @param networkId Network on which to sync events
-   * @param trackedUsers Array of user addresses for which to sync user-specific events
+   * @param {number} networkId Network on which to sync events
+   * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
+   * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
    */
   public static async createAndInitializeDB<TBigNumber>(networkId: number, trackedUsers: Array<string>): Promise<DB<TBigNumber>> {
     const dbController = new DB<TBigNumber>();
@@ -132,13 +131,15 @@ export class DB<TBigNumber> {
   /**
    * Creates databases to be used for syncing.
    * 
-   * @param networkId Network on which to sync events
-   * @param trackedUsers Array of user addresses for which to sync user-specific events
+   * @param {number} networkId Network on which to sync events
+   * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
    */
   public async initializeDB(networkId: number, trackedUsers: Array<string>): Promise<void> {
     this.networkId = networkId;
-    this.syncStatus = new SyncStatus();
-    this.trackedUsers = new TrackedUsers();
+    this.syncStatus = new SyncStatus(networkId);
+    this.trackedUsers = new TrackedUsers(networkId);
+
+    // TODO Call function to clean up DBs if process is being restarted in a bad state
 
     // Create SyncableDBs for generic event types
     for (let eventName of genericEventNames) {
@@ -150,28 +151,20 @@ export class DB<TBigNumber> {
     // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     for (let trackedUser of trackedUsers) {
       await this.trackedUsers.setUserTracked(trackedUser);
-      for (let eventIndex in userSpecificEvents) {
-        new UserSyncableDB<TBigNumber>(this, networkId, userSpecificEvents[eventIndex].name, trackedUser, userSpecificEvents[eventIndex].numAdditionalTopics, userSpecificEvents[eventIndex].userTopicIndex);
+      for (let userSpecificEvent of userSpecificEvents) {
+        new UserSyncableDB<TBigNumber>(this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndex);
       }
     }
 
     // TODO Initialize full-text DB
 
-    this.metaDatabase = new MetaDB(networkId + "-BlockNumberEvents");
-/*
-    // Update MetaDB to associate block numbers with SyncableDB/UserSyncableDB update_seqs
-    let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${genericEventNames[0]}`, uploadBlockNumbers[this.networkId]);
-    let newDocument;
-    let sequenceIds = await this.getAllSequenceIds();
-    // TODO Check if sequenceIds matches the sequence IDs in MetaDB and update MetaDB accordingly, since MetaDB could be behind or ahead
-*/
+    this.metaDatabase = new MetaDB(networkId, networkId + "-BlockNumberEvents");
   }
 
   /**
    * Called from SyncableDB constructor once SyncableDB is successfully created.
    * 
-   * @param eventName Generic event type on which the SyncableDB syncs
-   * @param db dbController that utilizes the SyncableDB
+   * @param {SyncableDB<TBigNumber>} db dbController that utilizes the SyncableDB
    */
   public notifySyncableDBAdded(db: SyncableDB<TBigNumber>): void {
     this.syncableDatabases[db.dbName] = db;
@@ -180,9 +173,7 @@ export class DB<TBigNumber> {
   /**
    * Called from UserSyncableDB constructor once UserSyncableDB is successfully created.
    * 
-   * @param userSpecificEventName User-specific event type on which the UserSyncableDB syncs
-   * @param trackedUser User address for which to sync the user-specific event type
-   * @param db dbController that utilizes the UserSyncableDB
+   * @param {UserSyncableDB<TBigNumber>} db dbController that utilizes the UserSyncableDB
    */
   public notifyUserSyncableDBAdded(db: UserSyncableDB<TBigNumber>): void {
     this.userSyncableDatabases[db.dbName] = db;
@@ -191,10 +182,10 @@ export class DB<TBigNumber> {
   /**
    * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
    * 
-   * @param augur Augur object with which to sync
-   * @param chunkSize Number of blocks to retrieve at a time when syncing logs
-   * @param blockstreamDelay Number of blocks by which blockstream is behind the blockchain
-   * @param uploadBlockNumber Block number at which Augur contracts were originally uploaded to the blockchain
+   * @param {Augur<TBigNumber>} augur Augur object with which to sync
+   * @param {number} chunkSize Number of blocks to retrieve at a time when syncing logs
+   * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
+   * @param {number} uploadBlockNumber Block number at which Augur contracts were originally uploaded to the blockchain
    */
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number, uploadBlockNumber: number): Promise<void> {
     // Sync generic event types & user-specific event types
@@ -207,111 +198,50 @@ export class DB<TBigNumber> {
     // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
     // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let eventIndex in userSpecificEvents) {
-        let dbName = `${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`;
+      for (let userSpecificEvent of userSpecificEvents) {
+        let dbName = `${this.networkId}-${userSpecificEvent.name}-${trackedUser}`;
         dbSyncPromises.push(this.userSyncableDatabases[dbName].sync(augur, chunkSize, blockstreamDelay, uploadBlockNumber));
         // TODO Set indexes
       }
     }
     await Promise.all(dbSyncPromises);
 
-    // await this.updateMetaDB();
-
-
-
-    // TODO Move this code to unit test
-    // Add 2 new blocks to DisputeCrowdsourcerCompleted
-    const dbName = this.networkId + "-DisputeCrowdsourcerCompleted";
-    await this.addNewBlocks(dbName);
-
-    // Find new blocks
-    let queryObj = {
-      selector: {universe: '0x11149d40d255fCeaC54A3ee3899807B0539bad60'},
-      fields: ['_id', 'universe'],
-      sort: ['_id']
-    };
-    let result = await this.syncableDatabases[dbName].find(queryObj);
-    console.log("\n\nBefore rollback: ", result);
-    console.log("\n\n");
-
-    const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(dbName, uploadBlockNumbers[this.networkId]);
-    await this.rollback(highestSyncedBlockNumber - 1);
-
-    // New blocks should be gone
-    result = await this.syncableDatabases[dbName].find(queryObj);
-    console.log("\n\nAfter rollback: ", result);
+    // TODO Create way to get highest sync block across all DBs
+    const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${genericEventNames[0]}`, uploadBlockNumbers[this.networkId]);
+    const sequenceIds = await this.getAllSequenceIds();
+    await this.metaDatabase.addNewBlock(highestSyncBlock, sequenceIds);
   }
 
+  /**
+   * Returns the current update_seqs from all SyncableDBs/UserSyncableDBs. 
+   * 
+   * @returns {Promise<SequenceIds>} Promise to a SequenceIds object
+   */
   public async getAllSequenceIds(): Promise<SequenceIds> {
-    let sequenceIds: { [dbName: string]: string } = {};
+    let sequenceIds: SequenceIds = {};
     for (let eventName of genericEventNames) {
       let dbName = `${this.networkId}-${eventName}`;
       let dbInfo = await this.syncableDatabases[dbName].getInfo();
       sequenceIds[dbName] = dbInfo.update_seq.toString();
     }
     for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let eventIndex in userSpecificEvents) {
-        let dbName = `${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`;
+      for (let userSpecificEvent of userSpecificEvents) {
+        let dbName = `${this.networkId}-${userSpecificEvent.name}-${trackedUser}`;
         let dbInfo = await this.userSyncableDatabases[dbName].getInfo();
         sequenceIds[dbName] = dbInfo.update_seq.toString();
       }
     }
-    // console.log("SEQUENCE IDS: ", sequenceIds);
     return sequenceIds;
   }
-/*
-  public async updateMetaDB() {
-    const sequenceIds = await this.getAllSequenceIds();
 
-    // Update MetaDB to track highest synced block numbers & sequenceIds for each SyncableDB/UserSyncableDB
-    for (let eventName of genericEventNames) {
-      let dbName = `${this.networkId}-${eventName}`;
-      let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(dbName, uploadBlockNumbers[this.networkId]);
-      const newDocument = {
-        _id: dbName,
-        blockNumber: highestSyncedBlockNumber,
-        sequenceId: sequenceIds[dbName],
-      };
-      await this.metaDatabase.addNewBlock(dbName, newDocument);
-    }
-    for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let eventIndex in userSpecificEvents) {
-        let dbName = `${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`;
-        let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(dbName, uploadBlockNumbers[this.networkId]);
-        const newDocument = {
-          _id: dbName,
-          blockNumber: highestSyncedBlockNumber,
-          sequenceId: sequenceIds[dbName],
-        };
-        await this.metaDatabase.addNewBlock(dbName, newDocument);
-      }
-    }
-  }
-*/
-  // TODO Add check to see if any rollbacks failed
-  public async rollback (blockNumber: number): Promise<void> {
-/*
-    console.log("Rolling back block numbers from " + blockNumber + " onward\n");
-
-    let previousBlockSequenceIds = await this.metaDatabase.getBlockSequenceIds(blockNumber);
-    console.log("previousBlockSequenceIds: ", previousBlockSequenceIds);
-
-    let dbRollbackPromises = [];
-    // Perform rollback on SyncableDBs & UserSyncableDBs
-    for (let previousBlockSequenceId of previousBlockSequenceIds.docs) {
-      let dbInfo = await this.syncableDatabases[previousBlockSequenceId["_id"]].getInfo();
-      while (dbInfo.update_seq > previousBlockSequenceId["sequenceId"]) {
-        console.log("dbInfo: ", dbInfo);
-        dbRollbackPromises.push(this.syncableDatabases[previousBlockSequenceId["_id"]].rollback(previousBlockSequenceId["sequenceId"]));
-      }
-    }
-    await Promise.all(dbRollbackPromises);
-
-    // TODO Perform rollback on full-text DB
-
-    // Update MetaDB
-    await this.metaDatabase.rollback(blockNumber);
-*/
+  /**
+   * Rolls back all blocks from blockNumber onward.
+   * 
+   * TODO Add check to see if any rollbacks failed
+   * 
+   * @param {number} blockNumber Oldest block number to delete
+   */
+  public async rollback(blockNumber: number): Promise<void> {
     let dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
     for (let eventName of genericEventNames) {
@@ -319,61 +249,52 @@ export class DB<TBigNumber> {
       dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
     }
     for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let eventIndex in userSpecificEvents) {
-        let dbName = `${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`;
-        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+      for (let userSpecificEvent of userSpecificEvents) {
+        let dbName = `${this.networkId}-${userSpecificEvent.name}-${trackedUser}`;
+        dbRollbackPromises.push(this.userSyncableDatabases[dbName].rollback(blockNumber));
       }
     }
     await Promise.all(dbRollbackPromises);
+
+    await this.metaDatabase.rollback(blockNumber);
   }
 
-
-
-  // TODO Move to unit test
-  public async addNewBlocks(dbName: string): Promise<void> {
-    let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(dbName, uploadBlockNumbers[this.networkId]);
-    // console.log("\n\nHighest synced block number: ", highestSyncedBlockNumber);
-
-    let newBlockNumber = highestSyncedBlockNumber + 1;
-    // console.log("Adding new block number: ", newBlockNumber);
-    await this.addNewBlock(dbName, newBlockNumber);
-    highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(dbName, uploadBlockNumbers[this.networkId]);
-    // console.log("Highest synced block number: ", highestSyncedBlockNumber);
-
-    newBlockNumber = highestSyncedBlockNumber + 1;
-    // console.log("Adding new block number: " + newBlockNumber);
-    await this.addNewBlock(dbName, newBlockNumber);
-    highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(dbName, uploadBlockNumbers[this.networkId]);
-    // console.log("Highest synced block number: ", highestSyncedBlockNumber);
-  }
-
-  // TODO Move to unit test
-  public async addNewBlock(dbName: string, newBlockNumber: number): Promise<void> {
-    const logs = [
-      {
-        "universe":"0x11149d40d255fCeaC54A3ee3899807B0539bad60",
-        "market":"0xC0ffe3F654d442589BAb472937F094970339d214",
-        "disputeCrowdsourcer":"0x65d4f86927D1f10eFa2Fb884e4DEe0aB86137caD",
-        "blockNumber":newBlockNumber,
-        "blockHash":"0x8132a0cdb4226b3bbb5bcf8429ec0883859255751be2c321c58b488395188040",
-        "transactionIndex":8,
-        "removed":false,
-        "transactionHash":"0xf750ebb0d039c623385f8227f7a6cbe49f5efbc5485ac0e38b5a7b0e389726d8",
-        "logIndex":1,
-      },
-    ];
+ /**
+  * Adds a new block to a SyncableDB/UserSyncableDB and updates MetaDB.
+  * 
+  * TODO Define blockLogs interface
+  * 
+  * @param {string} dbName Name of the database to which the block should be added
+  * @param {any} blockLogs Logs from a new block
+  */ 
+  public async addNewBlock(dbName: string, blockLogs: any): Promise<void> {
+    let db = this.syncableDatabases[dbName] ? this.syncableDatabases[dbName] : this.userSyncableDatabases[dbName];
+    if (!db) {
+      throw new Error("Unknown DB name: " + dbName);
+    }
     try {
-      await this.syncableDatabases[dbName].addNewBlock(newBlockNumber, logs);
+      await db.addNewBlock(uploadBlockNumbers[this.networkId], blockLogs);
+      
+      const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(dbName, uploadBlockNumbers[this.networkId]);
+      if (highestSyncBlock !== blockLogs[0].blockNumber) {
+        throw new Error("Highest sync block is " + highestSyncBlock + "; newest block number is " + blockLogs[0].blockNumber);
+      }
+
+      const sequenceIds = await this.getAllSequenceIds();
+      await this.metaDatabase.addNewBlock(highestSyncBlock, sequenceIds);
     } catch (err) {
-      console.error("ERROR Unable to add block: ", err);
+      throw err;
     }
-    const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(dbName, uploadBlockNumbers[this.networkId])
-    if (highestSyncBlock !== newBlockNumber) {
-      console.error("ERROR Highest sync block is " + highestSyncBlock + "; newest block number is " + newBlockNumber);
-    }
-    let newSequenceIds = await this.getAllSequenceIds();
-    
-    // Update MetaDB
-    // await this.updateMetaDB();
+  }
+
+  /**
+   * Queries a SyncableDB.
+   * 
+   * @param {string} dbName Name of the SyncableDB to query
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object 
+   * @returns Promise<PouchDB.Find.FindResponse<{}>> Promise to a FindResponse 
+   */
+  public async findInSyncableDB(dbName: string, request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
+    return await this.syncableDatabases[dbName].find(request);
   }
 }

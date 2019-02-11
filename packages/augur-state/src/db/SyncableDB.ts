@@ -4,14 +4,16 @@ import { DB } from './DB';
 import { SyncStatus } from './SyncStatus';
 import * as _ from "lodash";
 
-// Stores generic events
+/**
+ * Stores event logs for non-user-specific events.
+ */
 export class SyncableDB<TBigNumber> extends AbstractDB {
     private syncStatus: SyncStatus;
     protected eventName: string;
-    protected contractName: string;
+    protected contractName: string; // TODO Remove if unused
 
     constructor(dbController: DB<TBigNumber>, networkId: number, eventName: string, dbName?: string) {
-        super(dbName ? dbName : `${networkId}-${eventName}`);
+        super(networkId, dbName ? dbName : `${networkId}-${eventName}`);
         this.eventName = eventName;
         this.syncStatus = dbController.syncStatus;
         dbController.notifySyncableDBAdded(this);
@@ -61,45 +63,22 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
             throw new Error(`Unable to add new block`);
         }
     }
-/*
-    public async rollback(sequenceId: number): Promise<boolean> {
-        // Remove each change since sequenceId
-        try {
-            const changes = await this.db.changes({
-                since: sequenceId,
-            });
-            console.log("Deleting changes seqId " + sequenceId + " and onward in " + this.dbName)
-            console.log(changes);
-            for (let result of changes.results) {
-                const id = result.id;
-                for (let change of result.changes) {
-                    await this.db.remove(id, change.rev);
-                }
-            }
-            return true;
-        } catch (err) {
-            console.error(`ERROR in bulk sync: ${JSON.stringify(err)}`);
-            return false;
-        }
-    }
-*/
-    public async rollback(blockNumber: number): Promise<boolean> {
+
+    public async rollback(blockNumber: number): Promise<void> {
         // Remove all blocks from blockNumber onward
+        // TODO Implement better way to update highest block number. (Probably need to remove blocks in reverse order & call setHighestSyncBlock after each removal.)
         const docsToRemove = await this.db.find({
             selector: { blockNumber: { $gte: blockNumber } },
             fields: ['blockNumber', '_id', '_rev'],
         });
-        console.log("Deleting docs from " + this.dbName);
-        console.log(docsToRemove);
-        let results = [];
-        try {
+        if (docsToRemove.docs.length > 0) {
+            console.log("\n\nDeleting docs from " + this.dbName);
+            console.log(docsToRemove);
+            let results = [];
             for (let doc of docsToRemove.docs) {
                 results.push(await this.db.remove(doc._id, doc._rev));
             }
-            return _.every(results, (response) => (<PouchDB.Core.Response>response).ok);
-        } catch (err) {
-            console.error(`ERROR in rollback: ${JSON.stringify(err)}`);
-            return false;
+            await this.syncStatus.setHighestSyncBlock(this.dbName, blockNumber - 1);
         }
     }
 }

@@ -1,27 +1,47 @@
 import { AbstractDB } from './AbstractDB';
+import { DB } from './DB';
 import * as _ from "lodash";
 
-// Associates block numbers with event DB sequence IDs
+export interface SequenceIds {
+    [dbName: string]: string 
+}
+
+/**
+ * Associates block numbers with event DB sequence IDs
+ */
 export class MetaDB<TBigNumber> extends AbstractDB {
-    public async addNewBlock(dbName: string, document: Object) {
-        await this.upsertDocument(dbName, document);
+    public async addNewBlock(blockNumber: number, sequenceIds: SequenceIds) {
+        await this.upsertDocument(
+            this.networkId + "-" + blockNumber, 
+            {
+                networkId: this.networkId,
+                blockNumber,
+                sequenceIds: JSON.stringify(sequenceIds),
+            }
+        );
     }
 
-    // TODO Replace any
-    public async getBlockSequenceIds(blockNumber: number): Promise<any/*PouchDB.Find.FindResponse<{}>*/> {
-        return await this.db.find({
-            selector: { blockNumber: { $gte: blockNumber } },
-            fields: ['_id', 'blockNumber', 'sequenceId'],
-        });
+    public async getBlockSequenceIds(networkId: number, blockNumber: number): Promise<PouchDB.Find.FindResponse<{}>> {
+        return await this.db.find(
+            {
+                selector: { 
+                    networkId,
+                    blockNumber: { $gte: blockNumber } 
+                },
+                fields: ['_id', 'networkId', 'blockNumber', 'sequenceIds'],
+            }
+        );
     }
 
     public async rollback(blockNumber: number): Promise<boolean> {
         // Remove each change since blockNumber
         const blocksToRemove = await this.db.find({
-            selector: { blockNumber: { $gte: blockNumber } },
+            selector: { 
+                networkId: this.networkId,
+                blockNumber: { $gte: blockNumber } },
             fields: ['blockNumber', '_id', '_rev'],
         });
-        console.log("Oldest block number to remove: ", blockNumber);
+        console.log("\n\nOldest block number to remove: ", blockNumber);
         console.log("Blocks to remove from " + this.dbName);
         console.log(blocksToRemove);
         let results = [];

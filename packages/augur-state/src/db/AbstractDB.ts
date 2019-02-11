@@ -13,9 +13,11 @@ export interface BaseDocument {
 
 export abstract class AbstractDB {
   protected db: PouchDB.Database;
+  protected networkId: number;
   public readonly dbName: string;
 
-  constructor (dbName: string) {
+  constructor (networkId: number, dbName: string) {
+    this.networkId = networkId;
     this.dbName = dbName;
     this.db = new PouchDB(`db/${dbName}`);
   }
@@ -72,7 +74,7 @@ export abstract class AbstractDB {
     return await this.db.info();
   }
 
-  public async find(request: PouchDB.Find.FindRequest<{}> | undefined): Promise<PouchDB.Find.FindResponse<{}>> {
+  public async find(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
     return await this.db.find(request);
   }
 }

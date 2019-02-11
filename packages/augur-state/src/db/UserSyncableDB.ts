@@ -2,9 +2,11 @@ import { SyncableDB } from "./SyncableDB";
 import { Augur, ParsedLog } from 'augur-api';
 import { DB } from './DB';
 
-// Stores user-specific events
+/**
+ * Stores event logs for user-specific events.
+ */
 export class UserSyncableDB<TBigNumber> extends SyncableDB<TBigNumber> {
-    public user: string;
+    public readonly user: string;
     private additionalTopics: Array<string | Array<string>>;
 
     constructor(dbController: DB<TBigNumber>, networkId: number, eventName: string, user: string, numAdditionalTopics: number, userTopicIndex: number) {
