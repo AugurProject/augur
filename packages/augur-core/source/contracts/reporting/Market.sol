@@ -133,7 +133,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         uint256 _initialReportStake = distributeInitialReportingRep(_reporter, _initialReporter);
         // The derive call will validate that an Invalid report is entirely paid out on the Invalid outcome
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
-        disputeWindow = universe.getOrCreateNextDisputeWindow();
+        disputeWindow = universe.getOrCreateNextDisputeWindow(true);
         _initialReporter.report(_reporter, _payoutDistributionHash, _payoutNumerators, _initialReportStake);
         augur.logInitialReportSubmitted(universe, _reporter, this, _initialReportStake, _initialReporter.designatedReporterShowed(), _payoutNumerators, _description);
         return true;
@@ -186,7 +186,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
             if (_crowdsourcerSize >= universe.getDisputeThresholdForDisputePacing()) {
                 disputePacingOn = true;
             }
-            disputeWindow = universe.getOrCreateNextDisputeWindow();
+            disputeWindow = universe.getOrCreateNextDisputeWindow(false);
         }
         augur.logDisputeCrowdsourcerCompleted(universe, this, _reportingParticipant);
         return true;
@@ -203,6 +203,8 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         require(disputeWindow.isOver());
         require(!universe.isForking());
         winningPayoutDistributionHash = participants[participants.length-1].getPayoutDistributionHash();
+        // Make sure the dispute window for which we record finalization is the standard cadence window and not an initial dispute window
+        disputeWindow = universe.getOrCreatePreviousDisputeWindow(false);
         disputeWindow.onMarketFinalized();
         universe.decrementOpenInterestFromMarket(shareTokens[0].totalSupply().mul(numTicks));
         redistributeLosingReputation();
@@ -312,7 +314,8 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
 
         // follow the forking market to its universe
         if (disputeWindow != IDisputeWindow(0)) {
-            disputeWindow = _destinationUniverse.getOrCreateNextDisputeWindow();
+            // Markets go into the standard resolution period during fork migration even if they were in the initial dispute window. We want to give some time for REP to migrate.
+            disputeWindow = _destinationUniverse.getOrCreateNextDisputeWindow(false);
         }
         _destinationUniverse.addMarketTo();
         _currentUniverse.removeMarketFrom();

@@ -69,6 +69,9 @@ def test_initialReportHappyPath(reportByDesignatedReporter, localFixture, univer
     assert newDisputeWindowAddress
     disputeWindow = localFixture.applySignature('DisputeWindow', newDisputeWindowAddress)
 
+    # Confirm that with the designated report we initially have a different time period than normal to dispute
+    assert disputeWindow.duration() == localFixture.contracts["Constants"].INITIAL_DISPUTE_ROUND_DURATION_SECONDS()
+
     # time marches on and the market can be finalized
     localFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     assert market.finalize()
@@ -140,6 +143,9 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
     # Do the initial report
     proceedToNextRound(localFixture, market, moveTimeForward = False)
 
+    initialDisputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+    assert initialDisputeWindow.duration() == localFixture.contracts["Constants"].INITIAL_DISPUTE_ROUND_DURATION_SECONDS()
+
     # Do the first round outside of the loop and test logging
     crowdsourcerCreatedLog = {
         "universe": universe.address,
@@ -165,6 +171,9 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
         with AssertLog(localFixture, "DisputeCrowdsourcerContribution", crowdsourcerContributionLog):
             with AssertLog(localFixture, "DisputeCrowdsourcerCompleted", crowdsourcerCompletedLog):
                 proceedToNextRound(localFixture, market, description="Clearly incorrect")
+
+    newDisputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+    assert newDisputeWindow.duration() == localFixture.contracts["Constants"].DISPUTE_ROUND_DURATION_SECONDS()
 
     # proceed through several rounds of disputing
     for i in range(rounds - 2):

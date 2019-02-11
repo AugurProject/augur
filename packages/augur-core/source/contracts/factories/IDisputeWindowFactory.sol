@@ -6,5 +6,5 @@ import 'reporting/IDisputeWindow.sol';
 
 
 contract IDisputeWindowFactory {
-    function createDisputeWindow(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId) public returns (IDisputeWindow);
+    function createDisputeWindow(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, bool _initial) public returns (IDisputeWindow);
 }

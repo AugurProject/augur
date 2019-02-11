@@ -47,6 +47,8 @@ contract Universe is ITyped, IUniverse {
 
     address public completeSets;
 
+    uint256 constant public INITIAL_WINDOW_ID_BUFFER = 365 days * 10 ** 8;
+
     constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash) public {
         augur = _augur;
         parentUniverse = _parentUniverse;
@@ -134,59 +136,59 @@ contract Universe is ITyped, IUniverse {
         return childUniverses[_parentPayoutDistributionHash];
     }
 
-    function getDisputeWindowId(uint256 _timestamp) public view returns (uint256) {
-        return _timestamp.div(getDisputeRoundDurationInSeconds());
+    function getDisputeWindowId(uint256 _timestamp, bool _initial) public view returns (uint256) {
+        uint256 _windowId = _timestamp.div(getDisputeRoundDurationInSeconds(_initial));
+        if (_initial) {
+            _windowId += INITIAL_WINDOW_ID_BUFFER;
+        }
+        return _windowId;
     }
 
-    function getDisputeRoundDurationInSeconds() public view returns (uint256) {
-        return Reporting.getDisputeRoundDurationSeconds();
+    function getDisputeRoundDurationInSeconds(bool _initial) public view returns (uint256) {
+        return _initial ? Reporting.getInitialDisputeRoundDurationSeconds() : Reporting.getDisputeRoundDurationSeconds();
     }
 
-    function getOrCreateDisputeWindowByTimestamp(uint256 _timestamp) public returns (IDisputeWindow) {
-        uint256 _windowId = getDisputeWindowId(_timestamp);
+    function getOrCreateDisputeWindowByTimestamp(uint256 _timestamp, bool _initial) public returns (IDisputeWindow) {
+        uint256 _windowId = getDisputeWindowId(_timestamp, _initial);
         if (disputeWindows[_windowId] == address(0)) {
-            IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, this, _windowId);
+            IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, this, _windowId, _initial);
             disputeWindows[_windowId] = _disputeWindow;
-            augur.logDisputeWindowCreated(_disputeWindow, _windowId);
+            augur.logDisputeWindowCreated(_disputeWindow, _windowId, _initial);
         }
         return disputeWindows[_windowId];
     }
 
-    function getDisputeWindowByTimestamp(uint256 _timestamp) public view returns (IDisputeWindow) {
-        uint256 _windowId = getDisputeWindowId(_timestamp);
+    function getDisputeWindowByTimestamp(uint256 _timestamp, bool _initial) public view returns (IDisputeWindow) {
+        uint256 _windowId = getDisputeWindowId(_timestamp, _initial);
         return disputeWindows[_windowId];
     }
 
-    function getOrCreatePreviousPreviousDisputeWindow() public returns (IDisputeWindow) {
-        return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp().sub(getDisputeRoundDurationInSeconds().mul(2)));
+    function getOrCreatePreviousPreviousDisputeWindow(bool _initial) public returns (IDisputeWindow) {
+        return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp().sub(getDisputeRoundDurationInSeconds(_initial).mul(2)), _initial);
     }
 
-    function getOrCreatePreviousDisputeWindow() public returns (IDisputeWindow) {
-        return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp().sub(getDisputeRoundDurationInSeconds()));
+    function getOrCreatePreviousDisputeWindow(bool _initial) public returns (IDisputeWindow) {
+        return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp().sub(getDisputeRoundDurationInSeconds(_initial)), _initial);
     }
 
-    function getPreviousDisputeWindow() public view returns (IDisputeWindow) {
-        return getDisputeWindowByTimestamp(augur.getTimestamp().sub(getDisputeRoundDurationInSeconds()));
+    function getPreviousDisputeWindow(bool _initial) public view returns (IDisputeWindow) {
+        return getDisputeWindowByTimestamp(augur.getTimestamp().sub(getDisputeRoundDurationInSeconds(_initial)), _initial);
     }
 
-    function getOrCreateCurrentDisputeWindow() public returns (IDisputeWindow) {
-        return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp());
+    function getOrCreateCurrentDisputeWindow(bool _initial) public returns (IDisputeWindow) {
+        return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp(), _initial);
     }
 
-    function getCurrentDisputeWindow() public view returns (IDisputeWindow) {
-        return getDisputeWindowByTimestamp(augur.getTimestamp());
+    function getCurrentDisputeWindow(bool _initial) public view returns (IDisputeWindow) {
+        return getDisputeWindowByTimestamp(augur.getTimestamp(), _initial);
     }
 
-    function getOrCreateNextDisputeWindow() public returns (IDisputeWindow) {
-        return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp().add(getDisputeRoundDurationInSeconds()));
+    function getOrCreateNextDisputeWindow(bool _initial) public returns (IDisputeWindow) {
+        return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp().add(getDisputeRoundDurationInSeconds(_initial)), _initial);
     }
 
-    function getNextDisputeWindow() public view returns (IDisputeWindow) {
-        return getDisputeWindowByTimestamp(augur.getTimestamp().add(getDisputeRoundDurationInSeconds()));
-    }
-
-    function getOrCreateDisputeWindowBefore(IDisputeWindow _disputeWindow) public returns (IDisputeWindow) {
-        return getOrCreateDisputeWindowByTimestamp(_disputeWindow.getStartTime().sub(2));
+    function getNextDisputeWindow(bool _initial) public view returns (IDisputeWindow) {
+        return getDisputeWindowByTimestamp(augur.getTimestamp().add(getDisputeRoundDurationInSeconds(_initial)), _initial);
     }
 
     function createChildUniverse(uint256[] _parentPayoutNumerators) public returns (IUniverse) {
@@ -226,11 +228,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     function isContainerForDisputeWindow(IDisputeWindow _shadyDisputeWindow) public view returns (bool) {
-        uint256 _startTime = _shadyDisputeWindow.getStartTime();
-        if (_startTime == 0) {
-            return false;
-        }
-        uint256 _disputeWindowId = getDisputeWindowId(_startTime);
+        uint256 _disputeWindowId = _shadyDisputeWindow.getWindowId();
         IDisputeWindow _legitDisputeWindow = disputeWindows[_disputeWindowId];
         return _shadyDisputeWindow == _legitDisputeWindow;
     }
@@ -320,8 +318,8 @@ contract Universe is ITyped, IUniverse {
     }
 
     function getOrCacheValidityBond() public returns (uint256) {
-        IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow();
-        IDisputeWindow  _previousDisputeWindow = getOrCreatePreviousPreviousDisputeWindow();
+        IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow(false);
+        IDisputeWindow  _previousDisputeWindow = getOrCreatePreviousPreviousDisputeWindow(false);
         uint256 _currentValidityBondInAttoEth = validityBondInAttoEth[_disputeWindow];
         if (_currentValidityBondInAttoEth != 0) {
             return _currentValidityBondInAttoEth;
@@ -335,8 +333,8 @@ contract Universe is ITyped, IUniverse {
     }
 
     function getOrCacheDesignatedReportStake() public returns (uint256) {
-        IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow();
-        IDisputeWindow _previousDisputeWindow = getOrCreatePreviousPreviousDisputeWindow();
+        IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow(false);
+        IDisputeWindow _previousDisputeWindow = getOrCreatePreviousPreviousDisputeWindow(false);
         uint256 _currentDesignatedReportStakeInAttoRep = designatedReportStakeInAttoRep[_disputeWindow];
         if (_currentDesignatedReportStakeInAttoRep != 0) {
             return _currentDesignatedReportStakeInAttoRep;
@@ -351,8 +349,8 @@ contract Universe is ITyped, IUniverse {
     }
 
     function getOrCacheDesignatedReportNoShowBond() public returns (uint256) {
-        IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow();
-        IDisputeWindow _previousDisputeWindow = getOrCreatePreviousPreviousDisputeWindow();
+        IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow(false);
+        IDisputeWindow _previousDisputeWindow = getOrCreatePreviousPreviousDisputeWindow(false);
         uint256 _currentDesignatedReportNoShowBondInAttoRep = designatedReportNoShowBondInAttoRep[_disputeWindow];
         if (_currentDesignatedReportNoShowBondInAttoRep != 0) {
             return _currentDesignatedReportNoShowBondInAttoRep;
@@ -404,8 +402,8 @@ contract Universe is ITyped, IUniverse {
     }
 
     function getOrCacheReportingFeeDivisor() public returns (uint256) {
-        IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow();
-        IDisputeWindow _previousDisputeWindow = getOrCreatePreviousDisputeWindow();
+        IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow(false);
+        IDisputeWindow _previousDisputeWindow = getOrCreatePreviousDisputeWindow(false);
         uint256 _currentFeeDivisor = shareSettlementFeeDivisor[_disputeWindow];
         if (_currentFeeDivisor != 0) {
             return _currentFeeDivisor;
