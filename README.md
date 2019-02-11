@@ -3,15 +3,13 @@
 
 # <p align="center">Augur Monorepo<a name="install" ></a></p>
 
-<p align="center"><a href="https://github.com/AugurProject/augur/issues"><img src="https://img.shields.io/github/issues-raw/AugurProject/augur.svg"></a> <a href="https://github.com/AugurProject/augur/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aclosed+"><img src="https://img.shields.io/github/issues-closed-raw/AugurProject/augur.svg"></a>
+<p align="center"><a href="https://github.com/AugurProject/augur-app/graphs/contributors"><img src="https://img.shields.io/github/contributors/AugurProject/augur.svg"></a>
+<br>
+<a href="https://github.com/AugurProject/augur/issues"><img src="https://img.shields.io/github/issues-raw/AugurProject/augur.svg"></a> <a href="https://github.com/AugurProject/augur/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aclosed+"><img src="https://img.shields.io/github/issues-closed-raw/AugurProject/augur.svg"></a>
 <br>
 <a href="https://github.com/AugurProject/augur/pulls"><img src="https://img.shields.io/github/issues-pr-raw/AugurProject/augur.svg"></a>
 <a href="https://github.com/AugurProject/augur/pulls?utf8=%E2%9C%93&q=is%3Apr+is%3Aclosed"><img src="https://img.shields.io/github/issues-pr-closed-raw/AugurProject/augur.svg"></a>
 <br> 
-<a href="https://github.com/AugurProject/augur-app/releases/latest"><img src="https://img.shields.io/github/downloads/AugurProject/augur/total.svg"></a>
-<a href="https://github.com/AugurProject/augur-app/graphs/contributors"><img src="https://img.shields.io/github/contributors/AugurProject/augur.svg"></a>
-<a href="https://github.com/AugurProject/augur-app/blob/master/LICENSE.md"><img src="https://img.shields.io/github/license/AugurProject/augur-app.svg"></a>
-<br>
 <a href="https://invite.augur.net"><img src="https://img.shields.io/discord/378030344374583298.svg"></a>
 <a href="https://github.com/AugurProject/augur/issues"><img src="https://img.shields.io/badge/contributions-welcome-orange.svg"></a>
 <a href="https://github.com/AugurProject/augur/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg"></a>
