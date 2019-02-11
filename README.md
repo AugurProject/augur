@@ -21,8 +21,6 @@
 <br>
 <a href="https://github.com/AugurProject/augur/pulls"><img src="https://img.shields.io/github/issues-pr-raw/AugurProject/augur.svg"></a>
 <a href="https://github.com/AugurProject/augur/pulls?utf8=%E2%9C%93&q=is%3Apr+is%3Aclosed"><img src="https://img.shields.io/github/issues-pr-closed-raw/AugurProject/augur.svg"></a>
-<br> 
-[![Build Status](https://dev.azure.com/augurproject/augur/_apis/build/status/AugurProject.augur?branchName=master)](https://dev.azure.com/augurproject/augur/_build/latest?definitionId=1)</p>
 
 <p align="center">This repository will soon become Augur's monorepo. For the time being, this repository is being used for global issues, pull requests, and project milestones. Click on the issues board below to browse active projects, development pipeline, weekly sprints and more.  </p>
 
