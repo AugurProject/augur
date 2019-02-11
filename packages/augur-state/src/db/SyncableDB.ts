@@ -78,7 +78,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
             for (let doc of docsToRemove.docs) {
                 results.push(await this.db.remove(doc._id, doc._rev));
             }
-            await this.syncStatus.setHighestSyncBlock(this.dbName, blockNumber - 1);
         }
+        await this.syncStatus.setHighestSyncBlock(this.dbName, blockNumber - 1);
     }
 }

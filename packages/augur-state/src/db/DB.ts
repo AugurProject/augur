@@ -4,7 +4,6 @@ import { SyncStatus } from './SyncStatus';
 import { TrackedUsers } from './TrackedUsers';
 import { MetaDB, SequenceIds } from './MetaDB';
 import { UserSyncableDB } from './UserSyncableDB';
-import { getAllJSDocTagsOfKind } from 'typescript';
 const uploadBlockNumbers = require('augur-artifacts/upload-block-numbers.json');
 
 interface UserSpecificEvent {
@@ -139,7 +138,7 @@ export class DB<TBigNumber> {
     this.syncStatus = new SyncStatus(networkId);
     this.trackedUsers = new TrackedUsers(networkId);
 
-    // TODO Call function to clean up DBs if process is being restarted in a bad state
+    // TODO Create a new function to clean up DBs if restarting from a bad state
 
     // Create SyncableDBs for generic event types
     for (let eventName of genericEventNames) {
@@ -292,7 +291,7 @@ export class DB<TBigNumber> {
    * 
    * @param {string} dbName Name of the SyncableDB to query
    * @param {PouchDB.Find.FindRequest<{}>} request Query object 
-   * @returns Promise<PouchDB.Find.FindResponse<{}>> Promise to a FindResponse 
+   * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse 
    */
   public async findInSyncableDB(dbName: string, request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
     return await this.syncableDatabases[dbName].find(request);
