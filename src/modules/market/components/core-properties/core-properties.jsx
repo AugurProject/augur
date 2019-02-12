@@ -175,7 +175,12 @@ export default class CoreProperties extends Component {
       [
         {
           name: "created",
-          value: getValue(market, "creationTime.formattedLocal")
+          value: getValue(
+            market,
+            isMobileSmall
+              ? "creationTime.formattedLocalShortTime"
+              : "creationTime.formattedLocal"
+          )
         },
         {
           name: "type",
@@ -200,7 +205,12 @@ export default class CoreProperties extends Component {
           )
             ? "expired"
             : "expires",
-          value: getValue(market, "endTime.formattedLocal")
+          value: getValue(
+            market,
+            isMobileSmall
+              ? "endTime.formattedLocalShortTime"
+              : "endTime.formattedLocal"
+          )
         },
         {
           name: "denominated in",
@@ -213,6 +223,12 @@ export default class CoreProperties extends Component {
             isScalar && !isMobileSmall
               ? getValue(market, "maxPrice").toString()
               : null
+        }
+      ],
+      [
+        {
+          name: "Market Author",
+          value: getValue(market, "author")
         }
       ]
     ];
