@@ -77,6 +77,15 @@ jobs:
       skip_cleanup: true
       on:
         all_branches: true
+  - stage: Build docker release
+    if: tag = true
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- release
+      skip_cleanup: true
+      on:
+        all_branches: true
 env:
   global:
     - DOCKER_USERNAME=augurintegration
