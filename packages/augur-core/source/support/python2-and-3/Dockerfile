@@ -7,7 +7,13 @@ RUN apk add --no-cache python2
 ENV PYTHON_PIP_VERSION 19.0
 
 RUN apk add --no-cache --virtual .build-deps \
-        python2-dev
+        python2-dev \
+        gcc \
+        g++ \
+        make \
+        libffi-dev \
+        openssl-dev \
+        git
 
 RUN set -ex; \
     \

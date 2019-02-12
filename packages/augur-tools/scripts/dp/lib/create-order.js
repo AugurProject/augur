@@ -56,9 +56,6 @@ function createOrder(
           betterWorseOrders = { betterOrderId: "0x0", worseOrderId: "0x0" };
         augur.api.CreateOrder.publicCreateOrder({
           meta: auth,
-          tx: {
-            value: augur.utils.convertBigNumberToHexString(tradeCost.cost)
-          },
           _type: orderTypeCode,
           _attoshares: augur.utils.convertBigNumberToHexString(
             tradeCost.onChainAmount
