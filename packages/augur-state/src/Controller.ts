@@ -16,13 +16,17 @@ export class Controller<TBigNumber> {
   }
 
   public async run(): Promise<void> {
-    this.dbController = await DB.createAndInitializeDB(this.networkId, this.defaultStartSyncBlockNumber, this.trackedUsers);
-    await this.dbController.sync(this.augur, 100000, 5);
+    try {
+      this.dbController = await DB.createAndInitializeDB(this.networkId, this.defaultStartSyncBlockNumber, this.trackedUsers);
+      await this.dbController.sync(this.augur, 100000, 5);
 
-    // TODO Move this function into separate test
-    await this.testRollback();
+      // TODO Move this function into separate test
+      await this.testRollback();
 
-    // TODO begin server process
+      // TODO begin server process
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   /**

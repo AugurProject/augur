@@ -202,7 +202,10 @@ export class DB<TBigNumber> {
         // TODO Set indexes
       }
     }
-    await Promise.all(dbSyncPromises);
+    await Promise.all(dbSyncPromises)
+    .catch(error => { 
+      throw error;
+    });
 
     // TODO Create way to get highest sync block across all DBs
     const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(genericEventNames[0]));
