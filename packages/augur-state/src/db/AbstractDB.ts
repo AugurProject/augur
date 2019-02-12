@@ -14,9 +14,13 @@ export abstract class AbstractDB {
   protected db: PouchDB.Database;
   public readonly dbName: string;
 
-  constructor (dbName: string) {
+  protected constructor (dbName: string) {
     this.dbName = dbName;
-    this.db = new PouchDB(`db/${dbName}`);
+    this.db = this.makeDb();
+  }
+
+  protected makeDb(): PouchDB.Database {
+    return new PouchDB(`db/${this.dbName}`);
   }
 
   private async getPouchRevFromId(id: string): Promise<string|undefined> {
@@ -57,7 +61,7 @@ export abstract class AbstractDB {
         previousRev ? { _rev: previousRev } : {},
         doc,
       );
-    })
+    });
     try {
       const results = await this.db.bulkDocs(mergedRevisionDocuments);
       return _.every(results, (response) => (<PouchDB.Core.Response>response).ok )
@@ -65,5 +69,9 @@ export abstract class AbstractDB {
       console.error(`ERROR in bulk sync: ${JSON.stringify(err)}`);
       return false;
     }
+  }
+
+  protected destroy(): Promise<void> {
+    return this.db.destroy();
   }
 }
