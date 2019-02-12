@@ -30,6 +30,7 @@ export const selectMarketsToReport = (marketsData, loginAddress) => {
     .filter(
       market =>
         market.reportingState === constants.REPORTING_STATE.PRE_REPORTING &&
+        market.designatedReporter === loginAddress &&
         filterForkedMarket(market)
     )
     .sort((a, b) => (a.endTime || {}).timestamp - (b.endTime || {}).timestamp);

@@ -110,52 +110,17 @@ describe("loadReporting action", () => {
         type: "UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS"
       },
       {
-        data: {
-          marketIds: ["1111"]
-        },
-        type: "LOAD_MARKETS_INFO_IF_NOT_LOADED"
-      },
-      {
         data: { marketIds: ["2222", "3333"] },
         type: "UPDATE_DESIGNATED_REPORTING_MARKETS"
       },
       {
-        data: {
-          marketIds: ["2222", "3333"]
-        },
-        type: "LOAD_MARKETS_INFO_IF_NOT_LOADED"
-      },
-      {
         data: { marketIds: ["4444"] },
         type: "UPDATE_OPEN_REPORTING_MARKETS"
-      },
-      {
-        data: {
-          marketIds: ["4444"]
-        },
-        type: "LOAD_MARKETS_INFO_IF_NOT_LOADED"
       }
     ];
     const actual = store.getActions();
     // actions include load market info actions
-    expect(actual).toHaveLength(6);
+    expect(actual).toHaveLength(3);
     expect(actual).toEqual(expected);
-  });
-
-  describe("upon error", () => {
-    test("should be passed to callback passed to action", () => {
-      const error = new Error("An Error Occurred");
-      const callback = jest.fn();
-
-      augur.augurNode.submitRequest.mockImplementation(
-        (placeholder1, placeholder2, cb) => cb(error)
-      );
-
-      store.dispatch(loadReporting(null, callback));
-
-      expect(augur.augurNode.submitRequest).toHaveBeenCalled();
-
-      expect(callback).toHaveBeenCalledWith(error);
-    });
   });
 });

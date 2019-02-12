@@ -43,7 +43,6 @@ export const ACCOUNT_UNIVERSES = "universes";
 // Reporting
 export const REPORTING_DISPUTE_MARKETS = "reporting-dispute-markets";
 export const REPORTING_REPORT_MARKETS = "reporting-report-markets";
-export const REPORTING_REPORT = "reporting-report"; // NOTE -- Not currently used...but will be shortly
 export const REPORTING_RESOLVED_MARKETS = "reporting-resolved-markets";
 
 // Dev only

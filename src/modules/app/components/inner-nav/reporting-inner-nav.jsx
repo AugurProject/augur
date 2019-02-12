@@ -10,19 +10,19 @@ export default class ReportingInnerNav extends BaseInnerNav {
     const { currentBasePath } = this.props;
     return [
       {
-        label: "Reporting",
-        visible: true,
-        isSelected: currentBasePath === REPORTING_REPORT_MARKETS,
-        link: {
-          pathname: REPORTING_REPORT_MARKETS
-        }
-      },
-      {
         label: "Dispute",
         visible: true,
         isSelected: currentBasePath === REPORTING_DISPUTE_MARKETS,
         link: {
           pathname: REPORTING_DISPUTE_MARKETS
+        }
+      },
+      {
+        label: "Reporting",
+        visible: true,
+        isSelected: currentBasePath === REPORTING_REPORT_MARKETS,
+        link: {
+          pathname: REPORTING_REPORT_MARKETS
         }
       },
       {
