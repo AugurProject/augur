@@ -3,6 +3,7 @@ import { Augur, Log, ParsedLog } from 'augur-api';
 import { DB } from './DB';
 import { SyncStatus } from './SyncStatus';
 import * as _ from "lodash";
+const uploadBlockNumbers = require('augur-artifacts/upload-block-numbers.json');
 
 /**
  * Stores event logs for non-user-specific events.
@@ -38,6 +39,9 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
             }
         }
         console.log(`SYNCING SUCCESS ${this.dbName} up to ${goalBlock}`);
+
+        // TODO Make any external calls as needed (such as pushing user's balance to UI)
+
         // TODO start blockstream
     }
 
@@ -67,20 +71,22 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     public async rollback(blockNumber: number, sequenceId: number): Promise<void> {
         // Remove each change from sequenceId onward
         try {
+            let highestSyncBlock = await this.syncStatus.getHighestSyncBlock(this.dbName, uploadBlockNumbers[this.networkId]);
             let changes = await this.db.changes({
                 since: sequenceId,
             });
-            // Reverse ordering of changes so that newest changes are first
+            // Reverse ordering of changes so that newest changes are rolled back first
             changes.results = changes.results.reverse();
             console.log("\n\nDeleting the following changes from " + this.dbName)
             console.log(changes);
             for (let result of changes.results) {
                 const id = result.id;
                 const change = result.changes[0];
+                // Remove block number from event DB
                 await this.db.remove(id, change.rev);
+                // Update highest sync block with decremented block number
+                await this.syncStatus.setHighestSyncBlock(this.dbName, --highestSyncBlock);
             }
-            // Set highest sync block to block before blockNumber
-            await this.syncStatus.setHighestSyncBlock(this.dbName, blockNumber - 1);
         } catch (err) {
             console.log(err);
         }

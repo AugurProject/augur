@@ -6,6 +6,7 @@ import { MetaDB, SequenceIds } from './MetaDB';
 import { UserSyncableDB } from './UserSyncableDB';
 const uploadBlockNumbers = require('augur-artifacts/upload-block-numbers.json');
 
+const BLOCKSTREAM_DELAY = 10;
 interface UserSpecificEvent {
   name: string;
   numAdditionalTopics: number;
@@ -138,7 +139,12 @@ export class DB<TBigNumber> {
     this.syncStatus = new SyncStatus(networkId);
     this.trackedUsers = new TrackedUsers(networkId);
 
-    // TODO Create a new function to clean up DBs if restarting from a bad state
+    // Always start syncing from 10 blocks behind the lowest last-synced block
+    // (in case of restarting after a crash)
+    const syncStartingBlock = await this.getSyncStartingBlock();
+    if (syncStartingBlock > uploadBlockNumbers[this.networkId]) {
+      await this.rollback(syncStartingBlock);
+    }
 
     // Create SyncableDBs for generic event types
     for (let eventName of genericEventNames) {
@@ -209,6 +215,26 @@ export class DB<TBigNumber> {
     const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${genericEventNames[0]}`, uploadBlockNumbers[this.networkId]);
     const sequenceIds = await this.getAllSequenceIds();
     await this.metaDatabase.addNewBlock(highestSyncBlock, sequenceIds);
+  }
+
+  /**
+   * Gets the block number at which to begin syncing. (That is, the lowest last-synced
+   * block across all event log databases or the upload block number for this network.)
+   * 
+   * @returns {Promise<number>} Promise to the block number at which to begin syncing.
+   */
+  public async getSyncStartingBlock(): Promise<number> {
+    let highestSyncBlocks = [];
+    for (let eventName of genericEventNames) {
+      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${eventName}`, uploadBlockNumbers[this.networkId]));
+    }
+    for (let trackedUser of await this.trackedUsers.getUsers()) {
+      for (let eventName of userSpecificEvents) {
+        highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${eventName}-${trackedUser}`, uploadBlockNumbers[this.networkId]));
+      }
+    }
+    const lowestLastSyncBlock = Math.min.apply(null, highestSyncBlocks);
+    return Math.max.apply(null, [lowestLastSyncBlock - BLOCKSTREAM_DELAY, uploadBlockNumbers[this.networkId]]);
   }
 
   /**

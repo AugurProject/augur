@@ -14,7 +14,7 @@ export class MetaDB<TBigNumber> extends AbstractDB {
     private syncStatus: SyncStatus;
 
     constructor(dbController: DB<TBigNumber>, networkId: number) {
-        super(networkId, networkId + "-BlockNumberEvents");
+        super(networkId, networkId + "-BlockNumbersSequenceIds");
         this.syncStatus = dbController.syncStatus;
     }
 

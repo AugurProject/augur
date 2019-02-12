@@ -85,6 +85,6 @@ export class Controller<TBigNumber> {
 
     console.log("Highest sync block for " + this.networkId + "-DisputeCrowdsourcerCreated:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-DisputeCrowdsourcerCreated", uploadBlockNumbers[this.networkId]));
     console.log("Highest sync block for " + this.networkId + "-DisputeCrowdsourcerCompleted:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-DisputeCrowdsourcerCompleted", uploadBlockNumbers[this.networkId]));
-    console.log("Highest sync block for MetaDB:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-BlockNumberEvents", uploadBlockNumbers[this.networkId]));
+    console.log("Highest sync block for MetaDB:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-BlockNumbersSequenceIds", uploadBlockNumbers[this.networkId]));
   }
 }
