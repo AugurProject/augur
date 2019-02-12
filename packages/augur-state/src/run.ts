@@ -3,6 +3,7 @@ import { Augur } from 'augur-api';
 import { ethers } from 'ethers';
 import { EthersProvider } from 'ethers-provider';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
+const uploadBlockNumbers = require('augur-artifacts/upload-block-numbers.json');
 
 const TEST_RINKEBY_URL = "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM";
 const TEST_NETWORK_ID = 4;
@@ -12,7 +13,7 @@ export async function start() {
   const provider = new EthersProvider(TEST_RINKEBY_URL);
   const contractDependencies = new ContractDependenciesEthers(provider, undefined, TEST_ACCOUNT);
   const augur = await Augur.create(provider, contractDependencies);
-  const controller = new Controller<ethers.utils.BigNumber>(augur, TEST_NETWORK_ID, [TEST_ACCOUNT]);
+  const controller = new Controller<ethers.utils.BigNumber>(augur, TEST_NETWORK_ID, uploadBlockNumbers[TEST_NETWORK_ID], [TEST_ACCOUNT]);
   controller.run();
 }
 

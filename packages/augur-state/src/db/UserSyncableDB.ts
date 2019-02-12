@@ -10,7 +10,7 @@ export class UserSyncableDB<TBigNumber> extends SyncableDB<TBigNumber> {
     private additionalTopics: Array<string | Array<string>>;
 
     constructor(dbController: DB<TBigNumber>, networkId: number, eventName: string, user: string, numAdditionalTopics: number, userTopicIndex: number) {
-        const dbName = `${networkId}-${eventName}-${user}`;
+        const dbName = dbController.getDatabaseName(eventName, user);
         super(dbController, networkId, eventName, dbName);
         this.user = user;
         const bytes32User = `0x000000000000000000000000${this.user.substr(2)}`;

@@ -5,8 +5,11 @@ interface SyncDocument {
 }
 
 export class SyncStatus extends AbstractDB {
-    constructor(networkId: number) {
+    private defaultStartSyncBlockNumber: number;
+
+    constructor(networkId: number, defaultStartSyncBlockNumber: number) {
         super(networkId, networkId + "-SyncStatus");
+        this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
     }
 
     public async setHighestSyncBlock(dbName: string, blockNumber: number): Promise<PouchDB.Core.Response> {
@@ -14,9 +17,9 @@ export class SyncStatus extends AbstractDB {
         return await this.upsertDocument(dbName, document);
     }
 
-    public async getHighestSyncBlock(dbName: string, uploadBlockNumber: number): Promise<number> {
+    public async getHighestSyncBlock(dbName: string): Promise<number> {
         const document = await this.getDocument<SyncDocument>(dbName);
         if (document) return document.blockNumber;
-        return uploadBlockNumber;
+        return this.defaultStartSyncBlockNumber;
     }
 }
