@@ -10,7 +10,7 @@ branches:
     - sneakpeak
     - mvp
     - petong/travis-ci
-    - "/^v\\d+\\.\\d+\\.\\d+(-\\d+)?$/"
+    - "/^v\\d+\\.\\d+\\.\\d$/"
 node_js:
   - '9'
   - '10.15.0'
