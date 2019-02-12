@@ -1,12 +1,15 @@
 from ethereum.tools import tester
 from ethereum.tools.tester import TransactionFailed
-from utils import longToHexString, stringToBytes, twentyZeros, thirtyTwoZeros, bytesToHexString
+from utils import longToHexString, stringToBytes
 from pytest import fixture, raises, mark
 
-pytestmark = mark.skip(reason="Mock Tests off")
+# from ethereum.slogging import set_level
+# set_level('eth.vm.exit', 'TRACE')
 
+
+@mark.skip
 def test_universe_creation(localFixture, mockReputationToken, mockReputationTokenFactory, mockUniverse, mockUniverseFactory, mockAugur):
-    mockReputationTokenFactory.setCreateReputationTokenValue(mockReputationToken.address)
+    mockReputationTokenFactory.set_mock_createReputationToken_0_address_address_address(mockReputationToken.address)
 
     universe = localFixture.upload('../source/contracts/reporting/Universe.sol', 'newUniverse', constructorArgs=[localFixture.contracts['Augur'].address, mockUniverse.address, stringToBytes("5")])
 
@@ -19,14 +22,15 @@ def test_universe_creation(localFixture, mockReputationToken, mockReputationToke
     assert universe.getForkEndTime() == 0
     assert universe.getChildUniverse("5") == longToHexString(0)
 
+@mark.skip
 def test_universe_fork_market(localFixture, populatedUniverse, mockUniverse, mockDisputeWindow, mockUniverseFactory, mockDisputeWindowFactory, mockMarket, chain, mockMarketFactory, mockAugur):
     with raises(TransactionFailed, message="must be called from market"):
         populatedUniverse.fork()
 
     timestamp = localFixture.contracts["Time"].getTimestamp()
 
-    mockDisputeWindowFactory.setCreateDisputeWindowValue(mockDisputeWindow.address)
-    mockMarketFactory.setMarket(mockMarket.address)
+    mockDisputeWindowFactory.set_mock_createDisputeWindow_0_address_address_uint256 (mockDisputeWindow.address)
+    mockMarketFactory.set_mock_createMarket__market_address_address_uint256_uint256_address_address_uint256_uint256(mockMarket.address)
     endTime = localFixture.contracts["Time"].getTimestamp() + 30 * 24 * 60 * 60 # 30 days
 
     with raises(TransactionFailed, message="forking market has to be in universe"):
@@ -44,6 +48,7 @@ def test_universe_fork_market(localFixture, populatedUniverse, mockUniverse, moc
     assert populatedUniverse.getForkingMarket() == mockMarket.address
     assert populatedUniverse.getForkEndTime() == timestamp + localFixture.contracts['Constants'].FORK_DURATION_SECONDS()
 
+@mark.skip
 def test_get_reporting_window(localFixture, populatedUniverse, chain):
     constants = localFixture.contracts['Constants']
     timestamp = localFixture.contracts["Time"].getTimestamp()
@@ -68,6 +73,7 @@ def test_get_reporting_window(localFixture, populatedUniverse, chain):
     assert populatedUniverse.getOrCreateCurrentDisputeWindow(False) == populatedUniverse.getOrCreateDisputeWindowByTimestamp(chain.head_state.timestamp)
     assert populatedUniverse.getOrCreateNextDisputeWindow() == populatedUniverse.getOrCreateDisputeWindowByTimestamp(chain.head_state.timestamp + duration)
 
+@mark.skip
 def test_universe_contains(localFixture, populatedUniverse, mockMarket, chain, mockMarketFactory, mockDisputeWindow, mockShareToken, mockDisputeWindowFactory):
     mockDisputeWindow.setStartTime(0)
     assert populatedUniverse.isContainerForDisputeWindow(mockDisputeWindow.address) == False
@@ -98,6 +104,7 @@ def test_universe_contains(localFixture, populatedUniverse, mockMarket, chain, m
     assert populatedUniverse.isContainerForMarket(mockMarket.address) == True
     assert populatedUniverse.isContainerForShareToken(mockShareToken.address) == True
 
+@mark.skip
 def test_open_interest(localFixture, populatedUniverse):
     multiplier = localFixture.contracts['Constants'].TARGET_REP_MARKET_CAP_MULTIPLIER() / float(localFixture.contracts['Constants'].TARGET_REP_MARKET_CAP_DIVISOR())
     assert populatedUniverse.getTargetRepMarketCapInAttoEth() == 0
@@ -106,6 +113,7 @@ def test_open_interest(localFixture, populatedUniverse):
     assert populatedUniverse.getTargetRepMarketCapInAttoEth() == 20 * multiplier
     assert populatedUniverse.getOpenInterestInAttoEth() == 20
 
+@mark.skip
 def test_universe_calculate_bonds_stakes(localFixture, chain, populatedUniverse, mockDisputeWindow, mockDisputeWindowFactory):
     timestamp = localFixture.contracts["Time"].getTimestamp()
     constants = localFixture.contracts['Constants']
@@ -168,11 +176,13 @@ def test_universe_calculate_bonds_stakes(localFixture, chain, populatedUniverse,
 
     assert populatedUniverse.getOrCacheMarketCreationCost() == newValidityBondValue
 
+@mark.skip
 def test_universe_calculate_floating_value_defaults(populatedUniverse):
     defaultValue = 12
     totalMarkets = 0
     assert populatedUniverse.calculateFloatingValue(11, totalMarkets, 4, 22, defaultValue, 6) == defaultValue
 
+@mark.skip
 def test_universe_create_market(localFixture, chain, populatedUniverse, mockMarket, mockMarketFactory, mockReputationToken, mockAugur, mockDisputeWindowFactory, mockDisputeWindow):
     timestamp = localFixture.contracts["Time"].getTimestamp()
     endTimeValue = timestamp + 10
@@ -203,6 +213,8 @@ def test_universe_create_market(localFixture, chain, populatedUniverse, mockMark
 def localSnapshot(fixture, augurInitializedWithMocksSnapshot):
     fixture.resetToSnapshot(augurInitializedWithMocksSnapshot)
     augur = fixture.contracts['Augur']
+    # TODO registering these mock contracts fails because the real contracts are already registered
+    #      but *not* registering the real contracts causes all other tests to fail
     mockReputationTokenFactory = fixture.contracts['MockReputationTokenFactory']
     mockDisputeWindowFactory = fixture.contracts['MockDisputeWindowFactory']
     mockMarketFactory = fixture.contracts['MockMarketFactory']
@@ -214,7 +226,7 @@ def localSnapshot(fixture, augurInitializedWithMocksSnapshot):
 
     mockReputationToken = fixture.contracts['MockReputationToken']
     mockUniverse = fixture.contracts['MockUniverse']
-    mockReputationTokenFactory.setCreateReputationTokenValue(mockReputationToken.address)
+    mockReputationTokenFactory.set_mock_createReputationToken_0_address_address_address(mockReputationToken.address)
 
     universe = fixture.upload('../source/contracts/reporting/Universe.sol', 'universe', constructorArgs=[fixture.contracts['Augur'].address, mockUniverse.address, stringToBytes("5")])
     fixture.contracts['populatedUniverse'] = universe
