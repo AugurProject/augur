@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 import { exists, readFile, writeFile } from "async-file";
-import { resolveAll, stringTo32ByteHex } from "./HelperFunctions";
 import { CompilerOutput } from "solc";
 import { DeployerConfiguration } from "./DeployerConfiguration";
 import {
@@ -24,6 +23,7 @@ import {
 } from "./ContractInterfaces";
 import { NetworkConfiguration } from "./NetworkConfiguration";
 import { ContractData, Contracts } from "./Contracts";
+import { stringTo32ByteHex } from "./OtherHelperFunctions";
 
 type ContractAddressMapping = { [name: string]: Address };
 type NetworkAddressMapping = { [networkId: string]: ContractAddressMapping };
@@ -251,7 +251,7 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     private async resetTimeControlled(): Promise<void> {
-      console.log('Resetting Timestamp for false time...')
+        console.log("Resetting Timestamp for false time...");
       const time = new TimeControlled(this.dependencies, this.getContractAddress("TimeControlled"));
       const currentTimestamp = await time.getTimestamp_();
       time.setTimestamp(currentTimestamp);

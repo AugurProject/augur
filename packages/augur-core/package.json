@@ -17,7 +17,7 @@
     "lint": "echo lint",
     "build:source": "tsc",
     "build:contracts": "npm run build:flattener && . venv/bin/activate && node -r ts-node/register source/deployment/compileContracts.ts",
-    "build:interfaces": "npm run build:flattener && . venv/bin/activate && node -r ts-node/register source/tools/generateContractInterfaces.ts",
+    "build:interfaces": "node -r ts-node/register source/tools/generateContractInterfaces.ts",
     "build:flattener": "source/tools/installSolidityFlattener",
     "build": "npm run build:source && npm run lint && npm run build:contracts && npm run build:interfaces && npm run build:source",
     "build:debug": "npm run build:source && npm run lint && cross-env ENABLE_SOLIDITY_DEBUG=true npm run build:interfaces && npm run build:source",
