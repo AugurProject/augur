@@ -1,5 +1,4 @@
 import { TrackedUsers } from "./TrackedUsers";
-import { AbstractDB } from "./AbstractDB";
 
 const TEST_NETWORK_ID = 4;
 
