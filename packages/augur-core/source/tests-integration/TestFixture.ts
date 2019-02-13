@@ -62,7 +62,7 @@ export class TestFixture {
 
         const compiledContracts = await new ContractCompiler(compilerConfiguration).compileContracts();
 
-        const provider = new DebugProvider(networkConfiguration.http);
+        const provider = new ethers.providers.JsonRpcProvider(networkConfiguration.http);
         const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
         const dependencies = new ContractDependenciesEthers(provider, signer, networkConfiguration.gasPrice.toNumber());
 

@@ -82,10 +82,7 @@ export class ContractDependenciesEthers implements Dependencies<ethers.utils.Big
             data: transaction.data.to0xString(),
             value: transaction.value
         };
-        // https://github.com/ethers-io/ethers.js/issues/321
-        const gasEstimate = (await this.provider.estimateGas(ethersTransaction)).toNumber();
-        // TODO: figure out a way to propagate a warning up to the user when we truncate the gas estimate, we don't currently have a mechanism for error propagation, so will require infrastructure work
-        ethersTransaction.gasLimit = Math.min(Math.max(Math.round(gasEstimate * 1.3), 250000), 7500000);
+
         if (this.gasPrice) {
             ethersTransaction.gasPrice = ethers.utils.bigNumberify(this.gasPrice);
         }

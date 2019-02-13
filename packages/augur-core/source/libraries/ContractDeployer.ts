@@ -188,12 +188,6 @@ Deploying to: ${networkConfiguration.networkName}
     private async construct(contract: ContractData, constructorArgs: Array<string>): Promise<Address> {
         console.log(`Upload contract: ${contract.contractName}`);
         const factory = new ethers.ContractFactory(contract.abi, contract.bytecode, this.signer);
-
-        const tx = factory.getDeployTransaction(...constructorArgs);
-        const estimate = await this.provider.estimateGas(tx);
-
-        const block = await this.provider.getBlock('latest');
-
         const contractObj = await factory.deploy(...constructorArgs);
         await contractObj.deployed();
         console.log(`Uploaded contract: ${contract.contractName}: \"${contractObj.address}\"`);
@@ -203,6 +197,10 @@ Deploying to: ${networkConfiguration.networkName}
     private async initializeAllContracts(): Promise<void> {
         console.log('Initializing contracts...');
         const promises: Array<Promise<any>> = [];
+
+        const cashContract = await this.getContractAddress("Cash");
+        const cash = new Cash(this.dependencies, cashContract);
+        await cash.initialize(this.augur!.address);
 
         const completeSetsContract = await this.getContractAddress("CompleteSets");
         const completeSets = new CompleteSets(this.dependencies, completeSetsContract);
@@ -228,13 +226,10 @@ Deploying to: ${networkConfiguration.networkName}
         const claimTradingProceeds = new ClaimTradingProceeds(this.dependencies, claimTradingProceedsContract);
         await claimTradingProceeds.initialize(this.augur!.address);
 
+
         const ordersContract = await this.getContractAddress("Orders");
         const orders = new Orders(this.dependencies, ordersContract);
         await orders.initialize(this.augur!.address);
-
-        const cashContract = await this.getContractAddress("Cash");
-        const cash = new Cash(this.dependencies, cashContract);
-        await cash.initialize(this.augur!.address);
 
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");
@@ -256,7 +251,7 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     private async resetTimeControlled(): Promise<void> {
-      console.log('Resetting Timestamp for false time...');
+      console.log('Resetting Timestamp for false time...')
       const time = new TimeControlled(this.dependencies, this.getContractAddress("TimeControlled"));
       const currentTimestamp = await time.getTimestamp_();
       time.setTimestamp(currentTimestamp);
