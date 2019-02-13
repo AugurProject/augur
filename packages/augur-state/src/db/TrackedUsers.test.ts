@@ -1,17 +1,20 @@
 import { TrackedUsers } from "./TrackedUsers";
+import { AbstractDB } from "./AbstractDB";
 
 
-class WrappedTrackedUsers extends TrackedUsers {
-    async wipe() {
-        await this.destroy();
-        this.db = this.makeDb();
-    }
+async function wipeDb(DbClass: new () => AbstractDB) {
+    const dbInstance = new DbClass();
+    await dbInstance["db"].destroy();
 }
 
 
+beforeEach(async () => {
+    await wipeDb(TrackedUsers);
+});
+
+
 test("track a user", async () => {
-    const trackedUsers = new WrappedTrackedUsers();
-    await trackedUsers.wipe();
+    const trackedUsers = new TrackedUsers();
 
     expect(await trackedUsers.setUserTracked("mock")).toMatchObject({
         ok: true,
