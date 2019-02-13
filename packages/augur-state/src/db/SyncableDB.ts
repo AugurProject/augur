@@ -3,7 +3,6 @@ import { Augur, Log, ParsedLog } from 'augur-api';
 import { DB } from './DB';
 import { SyncStatus } from './SyncStatus';
 import * as _ from "lodash";
-const uploadBlockNumbers = require('augur-artifacts/upload-block-numbers.json');
 
 /**
  * Stores event logs for non-user-specific events.
@@ -17,7 +16,9 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         super(networkId, dbName ? dbName : dbController.getDatabaseName(eventName));
         this.eventName = eventName;
         this.syncStatus = dbController.syncStatus;
-        dbController.notifySyncableDBAdded(this);
+        if (!dbName) {
+            dbController.notifySyncableDBAdded(this);
+        }
     }
 
     public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, defaultStartSyncBlockNumber: number): Promise<void> {

@@ -5,8 +5,6 @@ import { TrackedUsers } from './TrackedUsers';
 import { MetaDB, SequenceIds } from './MetaDB';
 import { UserSyncableDB } from './UserSyncableDB';
 
-const BLOCKSTREAM_DELAY = 10;
-
 export interface UserSpecificEvent {
   name: string;
   numAdditionalTopics: number;
@@ -15,7 +13,7 @@ export interface UserSpecificEvent {
 
 export class DB<TBigNumber> {
   private networkId: number;
-  private defaultStartSyncBlockNumber: number;
+  private blockstreamDelay: number;
   private trackedUsers: TrackedUsers;
   private genericEventNames: Array<string>;
   private userSpecificEvents: Array<UserSpecificEvent>;
@@ -30,15 +28,16 @@ export class DB<TBigNumber> {
    * Creates and returns a new dbController.
    * 
    * @param {number} networkId Network on which to sync events
+   * @param {number} blockstreamDelay Number of blocks by which to delay blockstream
    * @param {number} defaultStartSyncBlockNumber Block number at which to start sycing (if no higher block number has been synced)
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
    * @param {Array<string>} genericEventNames Array of names for generic event types
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<DB<TBigNumber>> {
+  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<DB<TBigNumber>> {
     const dbController = new DB<TBigNumber>();
-    await dbController.initializeDB(networkId, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents);
+    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents);
     return dbController;
   }
 
@@ -46,12 +45,13 @@ export class DB<TBigNumber> {
    * Creates databases to be used for syncing.
    * 
    * @param {number} networkId Network on which to sync events
+   * @param {number} blockstreamDelay Number of blocks by which to delay blockstream
    * @param {number} defaultStartSyncBlockNumber Block number at which to start sycing (if no higher block number has been synced)
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
    * @param {Array<string>} genericEventNames Array of names for generic event types
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    */
-  public async initializeDB(networkId: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<void> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<void> {
     this.networkId = networkId;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber);
     this.trackedUsers = new TrackedUsers(networkId);
@@ -110,12 +110,19 @@ export class DB<TBigNumber> {
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
    */
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
-    // Sync generic event types & user-specific event types
+    // Sync generic event types
     let dbSyncPromises = [];
     for (let dbIndex in this.syncableDatabases) {
       dbSyncPromises.push(this.syncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
       // TODO Set indexes
     }
+    // TODO Figure out a way to handle concurrent request limit of 40
+    await Promise.all(dbSyncPromises)
+    .catch(error => { 
+      throw error;
+    });
+
+    // Sync user-specific event types
     // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
     // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     for (let trackedUser of await this.trackedUsers.getUsers()) {
@@ -124,6 +131,7 @@ export class DB<TBigNumber> {
         // TODO Set indexes
       }
     }
+    // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbSyncPromises)
     .catch(error => { 
       throw error;
@@ -152,7 +160,7 @@ export class DB<TBigNumber> {
       }
     }
     const lowestLastSyncBlock = Math.min.apply(null, highestSyncBlocks);
-    return Math.max.apply(null, [lowestLastSyncBlock - BLOCKSTREAM_DELAY, this.syncStatus.defaultStartSyncBlockNumber]);
+    return Math.max.apply(null, [lowestLastSyncBlock - this.blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber]);
   }
 
   /**
@@ -217,6 +225,13 @@ export class DB<TBigNumber> {
         dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber, previousSequenceId));
       }
     }
+    // TODO Figure out a way to handle concurrent request limit of 40
+    await Promise.all(dbRollbackPromises)
+    .catch(error => { 
+      throw error;
+    });
+
+    // Perform rollback on UserSyncableDBs
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let userSpecificEvent of this.userSpecificEvents) {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
@@ -227,6 +242,7 @@ export class DB<TBigNumber> {
         }
       }
     }
+    // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbRollbackPromises)
     .catch(error => { 
       throw error;

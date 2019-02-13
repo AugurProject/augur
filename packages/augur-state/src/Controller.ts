@@ -98,10 +98,11 @@ export class Controller<TBigNumber> {
   private dbController: DB<TBigNumber>;
   private augur: Augur<TBigNumber>;
   private networkId: number;
+  private blockstreamDelay: number;
   private defaultStartSyncBlockNumber: number;
   private trackedUsers: Array<string>;
 
-  public constructor (augur: Augur<TBigNumber>, networkId: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>) {
+  public constructor (augur: Augur<TBigNumber>, networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>) {
     this.augur = augur;
     this.networkId = networkId;
     this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
@@ -110,7 +111,7 @@ export class Controller<TBigNumber> {
 
   public async run(): Promise<void> {
     try {
-      this.dbController = await DB.createAndInitializeDB(this.networkId, this.defaultStartSyncBlockNumber, this.trackedUsers, genericEventNames, userSpecificEvents);
+      this.dbController = await DB.createAndInitializeDB(this.networkId, this.blockstreamDelay, this.defaultStartSyncBlockNumber, this.trackedUsers, genericEventNames, userSpecificEvents);
       await this.dbController.sync(this.augur, 100000, 5);
 
       // TODO Move this function into separate test
@@ -184,7 +185,7 @@ export class Controller<TBigNumber> {
 
       console.log("Highest sync block for " + this.networkId + "-DisputeCrowdsourcerCreated:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-DisputeCrowdsourcerCreated"));
       console.log("Highest sync block for " + this.networkId + "-DisputeCrowdsourcerCompleted:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-DisputeCrowdsourcerCompleted"));
-      console.log("Highest sync block for " + this.networkId + "-BlockNumbersSequenceIds:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-BlockNumberEvents"));
+      console.log("Highest sync block for " + this.networkId + "-BlockNumbersSequenceIds:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-BlockNumbersSequenceIds"));
     } catch (err) {
       console.log(err);
     }
