@@ -60,17 +60,16 @@ export class DB<TBigNumber> {
 
     // Always start syncing from 10 blocks behind the lowest 
     // last-synced block (in case of restarting after a crash)
-    const syncStartingBlock = await this.getSyncStartingBlock();
-    if (syncStartingBlock > this.defaultStartSyncBlockNumber) {
-      await this.rollback(syncStartingBlock);
+    const startSyncBlockNumber = await this.getSyncStartingBlock();
+    if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
+      console.log("Performing rollback")
+      await this.rollback(startSyncBlockNumber);
     }
 
-    // Create SyncableDBs for generic event types
+    // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (let eventName of genericEventNames) {
       new SyncableDB<TBigNumber>(this, networkId, eventName);
     }
-
-    // Create UserSyncableDBs for user-specific event types
     // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
     // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     for (let trackedUser of trackedUsers) {
@@ -114,14 +113,14 @@ export class DB<TBigNumber> {
     // Sync generic event types & user-specific event types
     let dbSyncPromises = [];
     for (let dbIndex in this.syncableDatabases) {
-      dbSyncPromises.push(this.syncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.defaultStartSyncBlockNumber));
+      dbSyncPromises.push(this.syncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
       // TODO Set indexes
     }
     // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
     // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let dbIndex in this.userSyncableDatabases) {
-        dbSyncPromises.push(this.userSyncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.defaultStartSyncBlockNumber));
+        dbSyncPromises.push(this.userSyncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
         // TODO Set indexes
       }
     }
@@ -153,7 +152,7 @@ export class DB<TBigNumber> {
       }
     }
     const lowestLastSyncBlock = Math.min.apply(null, highestSyncBlocks);
-    return Math.max.apply(null, [lowestLastSyncBlock - BLOCKSTREAM_DELAY, this.defaultStartSyncBlockNumber]);
+    return Math.max.apply(null, [lowestLastSyncBlock - BLOCKSTREAM_DELAY, this.syncStatus.defaultStartSyncBlockNumber]);
   }
 
   /**

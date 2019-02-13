@@ -104,7 +104,7 @@ export class Controller<TBigNumber> {
   public constructor (augur: Augur<TBigNumber>, networkId: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>) {
     this.augur = augur;
     this.networkId = networkId;
-    this.defaultStartSyncBlockNumber;
+    this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
     this.trackedUsers = trackedUsers;
   }
 
@@ -184,7 +184,7 @@ export class Controller<TBigNumber> {
 
       console.log("Highest sync block for " + this.networkId + "-DisputeCrowdsourcerCreated:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-DisputeCrowdsourcerCreated"));
       console.log("Highest sync block for " + this.networkId + "-DisputeCrowdsourcerCompleted:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-DisputeCrowdsourcerCompleted"));
-      console.log("Highest sync block for MetaDB:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-BlockNumberEvents"));
+      console.log("Highest sync block for " + this.networkId + "-BlockNumbersSequenceIds:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-BlockNumberEvents"));
     } catch (err) {
       console.log(err);
     }
