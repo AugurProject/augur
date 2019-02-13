@@ -19,7 +19,8 @@
     "rebuild": "yarn clean && yarn build",
     "clean-start": "yarn rebuild && yarn start",
     "clean-start-local": "yarn rebuild && ETHEREUM_HTTP=http://127.0.0.1:8545 ETHEREUM_WS=ws://127.0.0.1:8546 yarn start",
-    "prepush": "yarn lint"
+    "prepush": "yarn lint",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -46,6 +47,9 @@
     "typescript": "3.2.1"
   },
   "devDependencies": {
+    "@types/jest": "^24.0.3",
+    "jest": "^22.4.4",
+    "ts-jest": "^23.10.5",
     "ts-node": "7.0.1",
     "tsconfig-paths": "3.7.0"
   },
