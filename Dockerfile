@@ -1,34 +1,21 @@
-FROM node:10.15.0-alpine
+FROM node:10.15.0-alpine as builder
 
 ENV PATH /root/.yarn/bin:$PATH
 ARG ethereum_network=rinkeby
 ENV ETHEREUM_NETWORK=$ethereum_network
 ARG build_environment=dev
 ENV BUILD_ENVIRONMENT=$build_environment
+RUN apk --no-cache add \
+    bash \
+    binutils \
+    eudev-dev \
+    g++ \
+    git \
+    libusb-dev \
+    linux-headers \
+    make \
+    python
 
-RUN apk --update add python nginx git curl g++ make binutils bash libusb-dev yarn linux-headers eudev-dev \
-  #&& touch ~/.bashrc \
-  #&& curl -o- -L https://yarnpkg.com/install.sh | bash \
-  && echo "daemon off;" >> /etc/nginx/nginx.conf
-
-# begin install yarn
-# libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
-#RUN curl -s https://nginx.org/keys/nginx_signing.key | apt-key add - \
-#  && echo 'deb http://nginx.org/packages/debian/ stretch nginx' > /etc/apt/sources.list.d/nginx.list \
-#  && apt-get -y update \
-#  && apt-get -y upgrade \
-#  && apt-get -y install git python make g++ bash curl binutils tar libusb-1.0-0-dev cron nginx \
-#  && /bin/bash \
-#  && touch ~/.bashrc \
-#  && curl -o- -L https://yarnpkg.com/install.sh | bash \
-#  && echo "daemon off;" >> /etc/nginx/nginx.conf
-# end install yarn
-
-# Vhost to serve files
-COPY support/nginx-default.conf /etc/nginx/conf.d/default.conf
-
-# nginx logs
-RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/nginx/error.log
 
 # begin create caching layer
 COPY package.json /augur/package.json
@@ -61,6 +48,26 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && git log -1 > /augur/build/git-commit.txt \
   && chmod 755 /augur/local-run.sh \
   && cd /augur
+
+RUN rm -rf node_modules && yarn install --production
+
+FROM node:10.15.0-alpine
+
+RUN apk --no-cache add \
+    bash \
+    binutils \
+    nginx \
+    && echo "daemon off;" >> /etc/nginx/nginx.conf
+
+# nginx logs
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/nginx/error.log
+
+WORKDIR /augur
+
+COPY --from=builder /augur /augur
+
+# Vhost to serve files
+COPY support/nginx-default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
