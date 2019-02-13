@@ -286,7 +286,7 @@ export default class CreateMarketOutcome extends Component {
     }
 
     switch (true) {
-      case denomination === "":
+      case denomination.trim() === "":
         updatedMarket.validations[currentStep].scalarDenomination =
           "Denomination is required.";
         break;
