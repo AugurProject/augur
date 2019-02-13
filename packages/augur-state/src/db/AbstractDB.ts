@@ -70,8 +70,4 @@ export abstract class AbstractDB {
       return false;
     }
   }
-
-  protected destroy(): Promise<void> {
-    return this.db.destroy();
-  }
 }
