@@ -4,110 +4,21 @@ import { SyncStatus } from './SyncStatus';
 import { TrackedUsers } from './TrackedUsers';
 import { MetaDB, SequenceIds } from './MetaDB';
 import { UserSyncableDB } from './UserSyncableDB';
-const uploadBlockNumbers = require('augur-artifacts/upload-block-numbers.json');
 
 const BLOCKSTREAM_DELAY = 10;
-interface UserSpecificEvent {
+
+export interface UserSpecificEvent {
   name: string;
   numAdditionalTopics: number;
   userTopicIndex: number;
 }
 
-// TODO Get these from GenericContractInterfaces (and do not include any that are unneeded)
-const genericEventNames: Array<string> = [
-
-  "DisputeCrowdsourcerCompleted",
-  "DisputeCrowdsourcerCreated",
-  "DisputeWindowCreated",
-  "MarketCreated",
-  "MarketFinalized",
-  "MarketMigrated",
-  "MarketParticipantsDisavowed",
-  "ReportingParticipantDisavowed",
-  "TimestampSet",
-  "TokensBurned",
-  "TokensMinted",
-  "UniverseCreated",
-  "UniverseForked",
-];
-
-// TODO Update numAdditionalTopics/userTopicIndexes once contract events are updated
-const userSpecificEvents: Array<UserSpecificEvent> = [
-  {
-    "name": "CompleteSetsPurchased",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "CompleteSetsSold",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "DisputeCrowdsourcerContribution",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "DisputeCrowdsourcerRedeemed",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "InitialReporterRedeemed",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "InitialReportSubmitted",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "InitialReporterTransferred", 
-    "numAdditionalTopics": 2,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "MarketMailboxTransferred",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "MarketTransferred",
-    "numAdditionalTopics": 2,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "OrderCanceled",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "OrderCreated",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 0,
-  },
-  {
-    "name": "OrderFilled",
-    "numAdditionalTopics": 2,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "TokensTransferred",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "TradingProceedsClaimed",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-];
-
 export class DB<TBigNumber> {
   private networkId: number;
+  private defaultStartSyncBlockNumber: number;
   private trackedUsers: TrackedUsers;
+  private genericEventNames: Array<string>;
+  private userSpecificEvents: Array<UserSpecificEvent>;
   private syncableDatabases: { [eventName: string]: SyncableDB<TBigNumber> } = {};
   private userSyncableDatabases: { [userEventName: string]: UserSyncableDB<TBigNumber> } = {};
   private metaDatabase: MetaDB<TBigNumber>;
@@ -119,12 +30,15 @@ export class DB<TBigNumber> {
    * Creates and returns a new dbController.
    * 
    * @param {number} networkId Network on which to sync events
+   * @param {number} defaultStartSyncBlockNumber Block number at which to start sycing (if no higher block number has been synced)
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
+   * @param {Array<string>} genericEventNames Array of names for generic event types
+   * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, trackedUsers: Array<string>): Promise<DB<TBigNumber>> {
+  public static async createAndInitializeDB<TBigNumber>(networkId: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<DB<TBigNumber>> {
     const dbController = new DB<TBigNumber>();
-    await dbController.initializeDB(networkId, trackedUsers);
+    await dbController.initializeDB(networkId, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents);
     return dbController;
   }
 
@@ -132,17 +46,22 @@ export class DB<TBigNumber> {
    * Creates databases to be used for syncing.
    * 
    * @param {number} networkId Network on which to sync events
+   * @param {number} defaultStartSyncBlockNumber Block number at which to start sycing (if no higher block number has been synced)
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
+   * @param {Array<string>} genericEventNames Array of names for generic event types
+   * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    */
-  public async initializeDB(networkId: number, trackedUsers: Array<string>): Promise<void> {
+  public async initializeDB(networkId: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<void> {
     this.networkId = networkId;
-    this.syncStatus = new SyncStatus(networkId);
+    this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber);
     this.trackedUsers = new TrackedUsers(networkId);
+    this.genericEventNames = genericEventNames;
+    this.userSpecificEvents = userSpecificEvents;
 
-    // Always start syncing from 10 blocks behind the lowest last-synced block
-    // (in case of restarting after a crash)
+    // Always start syncing from 10 blocks behind the lowest 
+    // last-synced block (in case of restarting after a crash)
     const syncStartingBlock = await this.getSyncStartingBlock();
-    if (syncStartingBlock > uploadBlockNumbers[this.networkId]) {
+    if (syncStartingBlock > this.defaultStartSyncBlockNumber) {
       await this.rollback(syncStartingBlock);
     }
 
@@ -190,29 +109,29 @@ export class DB<TBigNumber> {
    * @param {Augur<TBigNumber>} augur Augur object with which to sync
    * @param {number} chunkSize Number of blocks to retrieve at a time when syncing logs
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
-   * @param {number} uploadBlockNumber Block number at which Augur contracts were originally uploaded to the blockchain
    */
-  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number, uploadBlockNumber: number): Promise<void> {
+  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
     // Sync generic event types & user-specific event types
     let dbSyncPromises = [];
-    for (let eventName of genericEventNames) {
-      let dbName = `${this.networkId}-${eventName}`;
-      dbSyncPromises.push(this.syncableDatabases[dbName].sync(augur, chunkSize, blockstreamDelay, uploadBlockNumber));
+    for (let dbIndex in this.syncableDatabases) {
+      dbSyncPromises.push(this.syncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.defaultStartSyncBlockNumber));
       // TODO Set indexes
     }
     // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
     // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let userSpecificEvent of userSpecificEvents) {
-        let dbName = `${this.networkId}-${userSpecificEvent.name}-${trackedUser}`;
-        dbSyncPromises.push(this.userSyncableDatabases[dbName].sync(augur, chunkSize, blockstreamDelay, uploadBlockNumber));
+      for (let dbIndex in this.userSyncableDatabases) {
+        dbSyncPromises.push(this.userSyncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.defaultStartSyncBlockNumber));
         // TODO Set indexes
       }
     }
-    await Promise.all(dbSyncPromises);
+    await Promise.all(dbSyncPromises)
+    .catch(error => { 
+      throw error;
+    });
 
     // TODO Create way to get highest sync block across all DBs
-    const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${genericEventNames[0]}`, uploadBlockNumbers[this.networkId]);
+    const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(this.genericEventNames[0]));
     const sequenceIds = await this.getAllSequenceIds();
     await this.metaDatabase.addNewBlock(highestSyncBlock, sequenceIds);
   }
@@ -225,16 +144,29 @@ export class DB<TBigNumber> {
    */
   public async getSyncStartingBlock(): Promise<number> {
     let highestSyncBlocks = [];
-    for (let eventName of genericEventNames) {
-      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${eventName}`, uploadBlockNumbers[this.networkId]));
+    for (let eventName of this.genericEventNames) {
+      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${eventName}`));
     }
     for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let eventName of userSpecificEvents) {
-        highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${eventName}-${trackedUser}`, uploadBlockNumbers[this.networkId]));
+      for (let eventName of this.userSpecificEvents) {
+        highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${eventName}-${trackedUser}`));
       }
     }
     const lowestLastSyncBlock = Math.min.apply(null, highestSyncBlocks);
-    return Math.max.apply(null, [lowestLastSyncBlock - BLOCKSTREAM_DELAY, uploadBlockNumbers[this.networkId]]);
+    return Math.max.apply(null, [lowestLastSyncBlock - BLOCKSTREAM_DELAY, this.defaultStartSyncBlockNumber]);
+  }
+
+  /**
+   * Creates a name for a SyncableDB/UserSyncableDB based on `eventName` & `trackableUserAddress`.
+   * 
+   * @param {string} eventName Event log name
+   * @param {string=} trackableUserAddress User address to append to DB name
+   */
+  public getDatabaseName(eventName: string, trackableUserAddress?: string) {
+    if (trackableUserAddress) {
+      return this.networkId + "-" + eventName + "-" + trackableUserAddress;
+    }
+    return this.networkId + "-" + eventName;
   }
 
   /**
@@ -244,14 +176,14 @@ export class DB<TBigNumber> {
    */
   public async getAllSequenceIds(): Promise<SequenceIds> {
     let sequenceIds: SequenceIds = {};
-    for (let eventName of genericEventNames) {
-      let dbName = `${this.networkId}-${eventName}`;
+    for (let eventName of this.genericEventNames) {
+      let dbName = this.getDatabaseName(eventName);
       let dbInfo = await this.syncableDatabases[dbName].getInfo();
       sequenceIds[dbName] = dbInfo.update_seq.toString();
     }
     for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let userSpecificEvent of userSpecificEvents) {
-        let dbName = `${this.networkId}-${userSpecificEvent.name}-${trackedUser}`;
+      for (let userSpecificEvent of this.userSpecificEvents) {
+        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
         let dbInfo = await this.userSyncableDatabases[dbName].getInfo();
         sequenceIds[dbName] = dbInfo.update_seq.toString();
       }
@@ -278,8 +210,8 @@ export class DB<TBigNumber> {
 
     let dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
-    for (let eventName of genericEventNames) {
-      let dbName = `${this.networkId}-${eventName}`;
+    for (let eventName of this.genericEventNames) {
+      let dbName = this.getDatabaseName(eventName);
       let previousSequenceId = parseBlockSequenceIds[dbName];
       let dbInfo = await this.syncableDatabases[dbName].getInfo();
       if (dbInfo.update_seq > previousSequenceId) {
@@ -287,8 +219,8 @@ export class DB<TBigNumber> {
       }
     }
     for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let eventIndex in userSpecificEvents) {
-        let dbName = `${this.networkId}-${userSpecificEvents[eventIndex].name}-${trackedUser}`;
+      for (let userSpecificEvent of this.userSpecificEvents) {
+        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
         let previousSequenceId = parseBlockSequenceIds[dbName];
         let dbInfo = await this.userSyncableDatabases[dbName].getInfo();
         if (dbInfo.update_seq > previousSequenceId) {
@@ -296,7 +228,10 @@ export class DB<TBigNumber> {
         }
       }
     }
-    await Promise.all(dbRollbackPromises);
+    await Promise.all(dbRollbackPromises)
+    .catch(error => { 
+      throw error;
+    });
 
     await this.metaDatabase.rollback(blockNumber);
   }
@@ -315,9 +250,9 @@ export class DB<TBigNumber> {
       throw new Error("Unknown DB name: " + dbName);
     }
     try {
-      await db.addNewBlock(uploadBlockNumbers[this.networkId], blockLogs);
+      await db.addNewBlock(blockLogs);
       
-      const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(dbName, uploadBlockNumbers[this.networkId]);
+      const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(dbName);
       if (highestSyncBlock !== blockLogs[0].blockNumber) {
         throw new Error("Highest sync block is " + highestSyncBlock + "; newest block number is " + blockLogs[0].blockNumber);
       }
