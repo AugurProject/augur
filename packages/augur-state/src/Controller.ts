@@ -169,12 +169,12 @@ export class Controller<TBigNumber> {
         sort: ['_id']
       };
       let result = await this.dbController.findInSyncableDB(dbName, queryObj);
-      console.log("\n\nEvent logs before rollback:", result);
+      console.log("\n\n" + this.networkId + "-DisputeCrowdsourcerCompleted event logs before rollback:", result);
 
       await this.dbController.rollback(highestSyncedBlockNumber - 1);
 
       result = await this.dbController.findInSyncableDB(dbName, queryObj);
-      console.log("\n\nEvent logs after rollback:", result);
+      console.log("\n\n" + this.networkId + "-DisputeCrowdsourcerCompleted event logs after rollback:", result);
 
       queryObj = {
         selector: { blockNumber: { $gte: (highestSyncedBlockNumber - 1) } },
@@ -182,7 +182,7 @@ export class Controller<TBigNumber> {
         sort: ['_id']
       };
       result = await this.dbController.findInMetaDB(queryObj);
-      console.log("\n\nBlock Numbers greater than " + (highestSyncedBlockNumber - 2) + " after rollback:", result);
+      console.log("\n\nMetaDB block numbers greater than " + (highestSyncedBlockNumber - 2) + " after rollback:", result);
 
       console.log("Highest sync block for " + this.networkId + "-DisputeCrowdsourcerCreated:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-DisputeCrowdsourcerCreated"));
       console.log("Highest sync block for " + this.networkId + "-DisputeCrowdsourcerCompleted:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-DisputeCrowdsourcerCompleted"));

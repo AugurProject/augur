@@ -22,9 +22,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
               fields: ['blockNumber']
             }
         });
-        if (!dbName) {
-            dbController.notifySyncableDBAdded(this);
-        }
+        dbController.notifySyncableDBAdded(this);
     }
 
     public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, defaultStartSyncBlockNumber: number): Promise<void> {
@@ -79,17 +77,16 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         // Remove each change from blockNumber onward
         try {
             let highestSyncBlock = await this.syncStatus.getHighestSyncBlock(this.dbName);
-            let result = await this.db.find({
+            // Sort blocks so newest blocks are removed first
+            let blocksToRemove = await this.db.find({
                 selector: { blockNumber: { $gte: blockNumber } },
                 fields: ['_id', 'blockNumber', '_rev'],
-                sort: ['blockNumber']
+                sort: [{blockNumber: 'desc'}],
             });
-            // Reverse ordering of blocks so that newest blocks are rolled back first
-            result.docs = result.docs.reverse();
-            if (result.docs.length > 0) {
-                console.log("\n\nDeleting the following changes from " + this.dbName)
-                console.log(result.docs);
-                for (let doc of result.docs) {
+            if (blocksToRemove.docs.length > 0) {
+                console.log("\n\nDeleting the following blocks from " + this.dbName)
+                console.log(blocksToRemove.docs);
+                for (let doc of blocksToRemove.docs) {
                     // Remove block number from event DB
                     await this.db.remove(doc._id, doc._rev);
                     // Update highest sync block with decremented block number
@@ -97,7 +94,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
                 }
             }
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 }

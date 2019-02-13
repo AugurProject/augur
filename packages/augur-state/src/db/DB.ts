@@ -18,8 +18,7 @@ export class DB<TBigNumber> {
   private genericEventNames: Array<string>;
   private userSpecificEvents: Array<UserSpecificEvent>;
   private syncableDatabases: { [eventName: string]: SyncableDB<TBigNumber> } = {};
-  private userSyncableDatabases: { [userEventName: string]: UserSyncableDB<TBigNumber> } = {};
-  private metaDatabase: MetaDB<TBigNumber>;
+  private metaDatabase: MetaDB<TBigNumber>; // TODO Remove this if derived DBs are not used.
   public syncStatus: SyncStatus;
 
   public constructor () {}
@@ -94,15 +93,6 @@ export class DB<TBigNumber> {
   }
 
   /**
-   * Called from UserSyncableDB constructor once UserSyncableDB is successfully created.
-   * 
-   * @param {UserSyncableDB<TBigNumber>} db dbController that utilizes the UserSyncableDB
-   */
-  public notifyUserSyncableDBAdded(db: UserSyncableDB<TBigNumber>): void {
-    this.userSyncableDatabases[db.dbName] = db;
-  }
-
-  /**
    * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
    * 
    * @param {Augur<TBigNumber>} augur Augur object with which to sync
@@ -125,8 +115,9 @@ export class DB<TBigNumber> {
     // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
     // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let dbIndex in this.userSyncableDatabases) {
-        dbSyncPromises.push(this.userSyncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
+      for (let userSpecificEvent of this.userSpecificEvents) {
+        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
+        dbSyncPromises.push(this.syncableDatabases[dbName].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
       }
     }
     // TODO Figure out a way to handle concurrent request limit of 40
@@ -135,10 +126,7 @@ export class DB<TBigNumber> {
       throw error;
     });
 
-    // TODO Create way to get highest sync block across all DBs
-    const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(this.genericEventNames[0]));
-    const sequenceIds = await this.getAllSequenceIds();
-    await this.metaDatabase.addNewBlock(highestSyncBlock, sequenceIds);
+    // TODO Call `this.metaDatabase.addNewBlock` here if derived DBs end up getting used
   }
 
   /**
@@ -177,6 +165,8 @@ export class DB<TBigNumber> {
   /**
    * Returns the current update_seqs from all SyncableDBs/UserSyncableDBs. 
    * 
+   * TODO Remove this function if derived DBs are not used.
+   * 
    * @returns {Promise<SequenceIds>} Promise to a SequenceIds object
    */
   public async getAllSequenceIds(): Promise<SequenceIds> {
@@ -189,7 +179,7 @@ export class DB<TBigNumber> {
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let userSpecificEvent of this.userSpecificEvents) {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        let dbInfo = await this.userSyncableDatabases[dbName].getInfo();
+        let dbInfo = await this.syncableDatabases[dbName].getInfo();
         sequenceIds[dbName] = dbInfo.update_seq.toString();
       }
     }
@@ -218,7 +208,7 @@ export class DB<TBigNumber> {
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let userSpecificEvent of this.userSpecificEvents) {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        dbRollbackPromises.push(this.userSyncableDatabases[dbName].rollback(blockNumber));
+        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
       }
     }
     // TODO Figure out a way to handle concurrent request limit of 40
@@ -227,10 +217,9 @@ export class DB<TBigNumber> {
       throw error;
     });
 
-    // TODO If we end up using derived DBs, call `this.metaDatabase.find` to get
-    // sequenceIds for blocks >= blockNumber & remove those documents from derived DBs
-    
-    await this.metaDatabase.rollback(blockNumber);
+    // TODO If derived DBs end up getting used, call `this.metaDatabase.find` 
+    // here to get sequenceIds for blocks >= blockNumber. Then call 
+    // `this.metaDatabase.rollback` to remove those documents from derived DBs.
   }
 
  /**
@@ -242,7 +231,7 @@ export class DB<TBigNumber> {
   * @param {any} blockLogs Logs from a new block
   */ 
   public async addNewBlock(dbName: string, blockLogs: any): Promise<void> {
-    let db = this.syncableDatabases[dbName] ? this.syncableDatabases[dbName] : this.userSyncableDatabases[dbName];
+    let db = this.syncableDatabases[dbName];
     if (!db) {
       throw new Error("Unknown DB name: " + dbName);
     }
@@ -253,9 +242,9 @@ export class DB<TBigNumber> {
       if (highestSyncBlock !== blockLogs[0].blockNumber) {
         throw new Error("Highest sync block is " + highestSyncBlock + "; newest block number is " + blockLogs[0].blockNumber);
       }
-
-      const sequenceIds = await this.getAllSequenceIds();
-      await this.metaDatabase.addNewBlock(highestSyncBlock, sequenceIds);
+      
+      // TODO If derived DBs end up getting used, call `this.getAllSequenceIds` here 
+      // and pass the returned sequenceIds into `this.metaDatabase.addNewBlock`.
     } catch (err) {
       throw err;
     }
