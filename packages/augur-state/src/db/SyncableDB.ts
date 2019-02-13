@@ -71,7 +71,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     public async rollback(blockNumber: number, sequenceId: number): Promise<void> {
         // Remove each change from sequenceId onward
         try {
-            let highestSyncBlock = await this.syncStatus.getHighestSyncBlock(this.dbName, uploadBlockNumbers[this.networkId]);
+            let highestSyncBlock = await this.syncStatus.getHighestSyncBlock(this.dbName);
             let changes = await this.db.changes({
                 since: sequenceId,
             });
