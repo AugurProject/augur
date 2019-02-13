@@ -16,6 +16,12 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         super(networkId, dbName ? dbName : dbController.getDatabaseName(eventName));
         this.eventName = eventName;
         this.syncStatus = dbController.syncStatus;
+        // TODO Set other indexes as need be
+        this.db.createIndex({
+            index: {
+              fields: ['blockNumber']
+            }
+        });
         if (!dbName) {
             dbController.notifySyncableDBAdded(this);
         }
@@ -69,24 +75,26 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         }
     }
 
-    public async rollback(blockNumber: number, sequenceId: number): Promise<void> {
-        // Remove each change from sequenceId onward
+    public async rollback(blockNumber: number): Promise<void> {
+        // Remove each change from blockNumber onward
         try {
             let highestSyncBlock = await this.syncStatus.getHighestSyncBlock(this.dbName);
-            let changes = await this.db.changes({
-                since: sequenceId,
+            let result = await this.db.find({
+                selector: { blockNumber: { $gte: blockNumber } },
+                fields: ['_id', 'blockNumber', '_rev'],
+                sort: ['blockNumber']
             });
-            // Reverse ordering of changes so that newest changes are rolled back first
-            changes.results = changes.results.reverse();
-            console.log("\n\nDeleting the following changes from " + this.dbName)
-            console.log(changes);
-            for (let result of changes.results) {
-                const id = result.id;
-                const change = result.changes[0];
-                // Remove block number from event DB
-                await this.db.remove(id, change.rev);
-                // Update highest sync block with decremented block number
-                await this.syncStatus.setHighestSyncBlock(this.dbName, --highestSyncBlock);
+            // Reverse ordering of blocks so that newest blocks are rolled back first
+            result.docs = result.docs.reverse();
+            if (result.docs.length > 0) {
+                console.log("\n\nDeleting the following changes from " + this.dbName)
+                console.log(result.docs);
+                for (let doc of result.docs) {
+                    // Remove block number from event DB
+                    await this.db.remove(doc._id, doc._rev);
+                    // Update highest sync block with decremented block number
+                    await this.syncStatus.setHighestSyncBlock(this.dbName, --highestSyncBlock);
+                }
             }
         } catch (err) {
             console.log(err);

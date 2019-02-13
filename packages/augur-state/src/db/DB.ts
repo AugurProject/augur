@@ -53,18 +53,12 @@ export class DB<TBigNumber> {
    */
   public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<void> {
     this.networkId = networkId;
+    this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber);
     this.trackedUsers = new TrackedUsers(networkId);
+    this.metaDatabase = new MetaDB(this, networkId);
     this.genericEventNames = genericEventNames;
     this.userSpecificEvents = userSpecificEvents;
-
-    // Always start syncing from 10 blocks behind the lowest 
-    // last-synced block (in case of restarting after a crash)
-    const startSyncBlockNumber = await this.getSyncStartingBlock();
-    if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
-      console.log("Performing rollback")
-      await this.rollback(startSyncBlockNumber);
-    }
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (let eventName of genericEventNames) {
@@ -81,7 +75,13 @@ export class DB<TBigNumber> {
 
     // TODO Initialize full-text DB
 
-    this.metaDatabase = new MetaDB(this, networkId);
+    // Always start syncing from 10 blocks behind the lowest 
+    // last-synced block (in case of restarting after a crash)
+    const startSyncBlockNumber = await this.getSyncStartingBlock();
+    if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
+      console.log("Performing rollback of block " + startSyncBlockNumber + " onward")
+      await this.rollback(startSyncBlockNumber);
+    }
   }
 
   /**
@@ -114,7 +114,6 @@ export class DB<TBigNumber> {
     let dbSyncPromises = [];
     for (let dbIndex in this.syncableDatabases) {
       dbSyncPromises.push(this.syncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
-      // TODO Set indexes
     }
     // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbSyncPromises)
@@ -128,7 +127,6 @@ export class DB<TBigNumber> {
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let dbIndex in this.userSyncableDatabases) {
         dbSyncPromises.push(this.userSyncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
-        // TODO Set indexes
       }
     }
     // TODO Figure out a way to handle concurrent request limit of 40
@@ -152,11 +150,11 @@ export class DB<TBigNumber> {
   public async getSyncStartingBlock(): Promise<number> {
     let highestSyncBlocks = [];
     for (let eventName of this.genericEventNames) {
-      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${eventName}`));
+      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(eventName)));
     }
     for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let eventName of this.userSpecificEvents) {
-        highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(`${this.networkId}-${eventName}-${trackedUser}`));
+      for (let userSpecificEvent of this.userSpecificEvents) {
+        highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(userSpecificEvent.name, trackedUser)));
       }
     }
     const lowestLastSyncBlock = Math.min.apply(null, highestSyncBlocks);
@@ -201,29 +199,14 @@ export class DB<TBigNumber> {
   /**
    * Rolls back all blocks from blockNumber onward.
    * 
-   * TODO Add check to see if any rollbacks failed
-   * 
    * @param {number} blockNumber Oldest block number to delete
    */
   public async rollback(blockNumber: number): Promise<void> {
-    // TODO Fix typedef for previousBlockSequenceIds
-    const previousBlockSequenceIds: any = await this.metaDatabase.find(
-      {
-          selector: { blockNumber: { $gte: blockNumber } },
-          fields: ['_id', 'networkId', 'blockNumber', 'sequenceIds'],
-      }
-    );
-    const parseBlockSequenceIds = JSON.parse(previousBlockSequenceIds.docs[0].sequenceIds);
-
     let dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
     for (let eventName of this.genericEventNames) {
       let dbName = this.getDatabaseName(eventName);
-      let previousSequenceId = parseBlockSequenceIds[dbName];
-      let dbInfo = await this.syncableDatabases[dbName].getInfo();
-      if (dbInfo.update_seq > previousSequenceId) {
-        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber, previousSequenceId));
-      }
+      dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
     }
     // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbRollbackPromises)
@@ -235,11 +218,7 @@ export class DB<TBigNumber> {
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let userSpecificEvent of this.userSpecificEvents) {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        let previousSequenceId = parseBlockSequenceIds[dbName];
-        let dbInfo = await this.userSyncableDatabases[dbName].getInfo();
-        if (dbInfo.update_seq > previousSequenceId) {
-          dbRollbackPromises.push(this.userSyncableDatabases[dbName].rollback(blockNumber, previousSequenceId));
-        }
+        dbRollbackPromises.push(this.userSyncableDatabases[dbName].rollback(blockNumber));
       }
     }
     // TODO Figure out a way to handle concurrent request limit of 40
@@ -248,6 +227,9 @@ export class DB<TBigNumber> {
       throw error;
     });
 
+    // TODO If we end up using derived DBs, call `this.metaDatabase.find` to get
+    // sequenceIds for blocks >= blockNumber & remove those documents from derived DBs
+    
     await this.metaDatabase.rollback(blockNumber);
   }
 

@@ -105,6 +105,7 @@ export class Controller<TBigNumber> {
   public constructor (augur: Augur<TBigNumber>, networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>) {
     this.augur = augur;
     this.networkId = networkId;
+    this.blockstreamDelay = blockstreamDelay;
     this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
     this.trackedUsers = trackedUsers;
   }

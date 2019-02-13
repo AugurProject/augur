@@ -8,7 +8,8 @@ export interface SequenceIds {
 }
 
 /**
- * Associates block numbers with event DB sequence IDs
+ * Associates block numbers with event DB sequence IDs.
+ * Used for doing syncing/rolling back of derived DBs.
  */
 export class MetaDB<TBigNumber> extends AbstractDB {
     private syncStatus: SyncStatus;
@@ -16,6 +17,11 @@ export class MetaDB<TBigNumber> extends AbstractDB {
     constructor(dbController: DB<TBigNumber>, networkId: number) {
         super(networkId, networkId + "-BlockNumbersSequenceIds");
         this.syncStatus = dbController.syncStatus;
+        this.db.createIndex({
+            index: {
+              fields: ['blockNumber']
+            }
+        });
     }
 
     public async addNewBlock(blockNumber: number, sequenceIds: SequenceIds) {
