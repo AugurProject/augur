@@ -81,6 +81,8 @@ export class DB<TBigNumber> {
       console.log("Performing rollback of block " + startSyncBlockNumber + " onward")
       await this.rollback(startSyncBlockNumber);
     }
+
+    // TODO If derived DBs are used, `this.metaDatabase.rollback` should also be called here
   }
 
   /**
@@ -132,6 +134,9 @@ export class DB<TBigNumber> {
   /**
    * Gets the block number at which to begin syncing. (That is, the lowest last-synced
    * block across all event log databases or the upload block number for this network.)
+   * 
+   * TODO If derived DBs are used, the last-synced block in `this.metaDatabase` 
+   * should also be taken into account here.
    * 
    * @returns {Promise<number>} Promise to the block number at which to begin syncing.
    */
