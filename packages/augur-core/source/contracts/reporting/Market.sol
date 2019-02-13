@@ -37,6 +37,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     IUniverse private universe;
     IDisputeWindow private disputeWindow;
     ICash private cash;
+    IAugur public augur;
 
     // Attributes
     uint256 private numTicks;
@@ -49,14 +50,13 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     uint256 private repBond;
     bool private disputePacingOn;
     address private repBondOwner;
+    uint256 public marketCreatorFeesAttoEth;
+    IDisputeCrowdsourcer public preemptiveDisputeCrowdsourcer;
 
     // Collections
     IReportingParticipant[] public participants;
     Map public crowdsourcers;
     IShareToken[] private shareTokens;
-    uint256 public marketCreatorFeesAttoEth;
-
-    IAugur public augur;
 
     function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized returns (bool _success) {
         endInitialization();
@@ -153,6 +153,25 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         return _initialReportStake;
     }
 
+    function contributeToTentative(uint256[] _payoutNumerators, uint256 _amount, string _description) public returns (bool) {
+        require(!disputePacingOn);
+        bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
+        require(_payoutDistributionHash == getWinningReportingParticipant().getPayoutDistributionHash());
+        require(!disputeWindow.isOver());
+        require(!universe.isForking());
+        if (preemptiveDisputeCrowdsourcer == IDisputeCrowdsourcer(0)) {
+            uint256 _totalParticipantStake = getParticipantStake();
+            uint256 _lowestTheoreticalParticipantStake = _totalParticipantStake.add(_totalParticipantStake.mul(2).sub(getHighestNonTentativeParticipantStake().mul(3)));
+            uint256 _size = _lowestTheoreticalParticipantStake.mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
+            DisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = DisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
+            preemptiveDisputeCrowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, this, _size, _payoutDistributionHash, _payoutNumerators);
+            augur.disputeCrowdsourcerCreated(universe, this, preemptiveDisputeCrowdsourcer, _payoutNumerators, _size);
+        }
+        uint256 _actualAmount = preemptiveDisputeCrowdsourcer.contribute(msg.sender, _amount, true);
+        augur.logDisputeCrowdsourcerContribution(universe, msg.sender, this, preemptiveDisputeCrowdsourcer, _actualAmount, _description);
+        return true;
+    }
+
     function contribute(uint256[] _payoutNumerators, uint256 _amount, string _description) public returns (bool) {
         require(getInitialReporter().getReportTimestamp() != 0);
         if (disputePacingOn) {
@@ -165,8 +184,8 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
         require(_payoutDistributionHash != getWinningReportingParticipant().getPayoutDistributionHash());
         IDisputeCrowdsourcer _crowdsourcer = getOrCreateDisputeCrowdsourcer(_payoutDistributionHash, _payoutNumerators);
-        uint256 _actualAmount = _crowdsourcer.contribute(msg.sender, _amount);
-        uint256 _amountRemainingToFill = _crowdsourcer.getSize().sub(_crowdsourcer.totalSupply());
+        uint256 _actualAmount = _crowdsourcer.contribute(msg.sender, _amount, false);
+        uint256 _amountRemainingToFill = _crowdsourcer.getRemainingToFill();
         augur.logDisputeCrowdsourcerContribution(universe, msg.sender, this, _crowdsourcer, _actualAmount, _description);
         if (_amountRemainingToFill == 0) {
             finishedCrowdsourcingDisputeBond(_crowdsourcer);
@@ -189,6 +208,17 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
             disputeWindow = universe.getOrCreateNextDisputeWindow(false);
         }
         augur.logDisputeCrowdsourcerCompleted(universe, this, _reportingParticipant);
+        if (preemptiveDisputeCrowdsourcer != IDisputeCrowdsourcer(0)) {
+            bytes32 _payoutDistributionHash = preemptiveDisputeCrowdsourcer.getPayoutDistributionHash();
+            uint256 _correctSize = getParticipantStake().mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
+            preemptiveDisputeCrowdsourcer.setSize(_correctSize);
+            if (preemptiveDisputeCrowdsourcer.getStake() >= _correctSize) {
+                finishedCrowdsourcingDisputeBond(preemptiveDisputeCrowdsourcer);
+            } else {
+                crowdsourcers.add(_payoutDistributionHash, address(preemptiveDisputeCrowdsourcer));
+            }
+            preemptiveDisputeCrowdsourcer = IDisputeCrowdsourcer(0);
+        }
         return true;
     }
 
@@ -364,6 +394,14 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, this);
         augur.logMarketParticipantsDisavowed(universe);
         return true;
+    }
+
+    function getHighestNonTentativeParticipantStake() public view returns (uint256) {
+        if (participants.length < 2) {
+            return 0;
+        }
+        bytes32 _payoutDistributionHash = participants[participants.length - 2].getPayoutDistributionHash();
+        return getStakeInOutcome(_payoutDistributionHash);
     }
 
     function getParticipantStake() public view returns (uint256) {

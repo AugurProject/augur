@@ -208,7 +208,7 @@ def test_multiple_contributors_crowdsourcer(localFixture, universe, market, cash
     with TokenDelta(reputationToken, expectedRep, tester.a1, "Redeeming didn't refund REP"):
         assert marketDisputeCrowdsourcer.redeem(tester.a1)
 
-    with TokenDelta(reputationToken, expectedRep + 1, tester.a2, "Redeeming didn't refund REP"):
+    with TokenDelta(reputationToken, expectedRep, tester.a2, "Redeeming didn't refund REP"):
         assert marketDisputeCrowdsourcer.redeem(tester.a2)
 
 def test_forkAndRedeem(localFixture, universe, market, categoricalMarket, cash, reputationToken):
