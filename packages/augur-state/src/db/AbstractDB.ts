@@ -1,4 +1,5 @@
 import * as PouchDB from "pouchdb";
+PouchDB.plugin(require('pouchdb-find'));
 import * as _ from "lodash";
 
 interface DocumentIDToRev {
@@ -12,9 +13,11 @@ export interface BaseDocument {
 
 export abstract class AbstractDB {
   protected db: PouchDB.Database;
+  protected networkId: number;
   public readonly dbName: string;
 
-  constructor (dbName: string) {
+  constructor (networkId: number, dbName: string) {
+    this.networkId = networkId;
     this.dbName = dbName;
     this.db = new PouchDB(`db/${dbName}`);
   }
@@ -60,20 +63,18 @@ export abstract class AbstractDB {
     })
     try {
       const results = await this.db.bulkDocs(mergedRevisionDocuments);
-      return _.every(results, (response) => (<PouchDB.Core.Response>response).ok )
+      return _.every(results, (response) => (<PouchDB.Core.Response>response).ok );
     } catch (err) {
       console.error(`ERROR in bulk sync: ${JSON.stringify(err)}`);
       return false;
     }
   }
 
-  public async getUpdateSeq(): Promise<string | undefined> {
-    try {
-      const info = await this.db.info();
-      return info.update_seq.toString();
-    } catch (err) {
-      console.error(`ERROR in getUpdateSeq: ${JSON.stringify(err)}`);
-      return undefined;
-    }
+  public async getInfo(): Promise<PouchDB.Core.DatabaseInfo> {
+    return await this.db.info();
+  }
+
+  public async find(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
+    return await this.db.find(request);
   }
 }

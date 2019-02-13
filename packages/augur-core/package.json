@@ -82,7 +82,7 @@
     "crypto-promise": "2.1.0",
     "get-port": "3.2.0",
     "js-sha3": "^0.8.0",
-    "ethers": "4.0.23",
+    "ethers": "4.0.24",
     "path": "0.12.7",
     "recursive-readdir": "2.2.2",
     "replace": "1.0.0",

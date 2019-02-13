@@ -4,21 +4,23 @@ import { DB } from './DB';
 import { SyncStatus } from './SyncStatus';
 import * as _ from "lodash";
 
-// Stores generic events
+/**
+ * Stores event logs for non-user-specific events.
+ */
 export class SyncableDB<TBigNumber> extends AbstractDB {
     private syncStatus: SyncStatus;
     protected eventName: string;
-    protected contractName: string;
+    protected contractName: string; // TODO Remove if unused
 
     constructor(dbController: DB<TBigNumber>, networkId: number, eventName: string, dbName?: string) {
-        super(dbName ? dbName : `${networkId}-${eventName}`);
+        super(networkId, dbName ? dbName : dbController.getDatabaseName(eventName));
         this.eventName = eventName;
         this.syncStatus = dbController.syncStatus;
-        dbController.notifySyncableDBAdded(networkId, eventName, this);
+        dbController.notifySyncableDBAdded(this);
     }
 
-    public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, uploadBlockNumber: number): Promise<void> {
-        let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName, uploadBlockNumber);
+    public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, defaultStartSyncBlockNumber: number): Promise<void> {
+        let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
         const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
         const goalBlock = highestAvailableBlockNumber - blockStreamDelay;
         console.log(`SYNCING ${this.dbName} from ${highestSyncedBlockNumber} to ${goalBlock}`);
@@ -50,5 +52,37 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
             { _id },
             log
         );
+    }
+
+    public async addNewBlock(logs: Array<ParsedLog>): Promise<void> {
+        const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
+        const documents = _.sortBy(_.map(logs, this.processLog), "_id");
+        if (await this.bulkUpsertDocuments(documents[0]._id, documents)) {
+            await this.syncStatus.setHighestSyncBlock(this.dbName, highestSyncedBlockNumber + 1);
+        } else {
+            throw new Error(`Unable to add new block`);
+        }
+    }
+
+    public async rollback(blockNumber: number, sequenceId: number): Promise<void> {
+        // Remove each change from sequenceId onward
+        try {
+            let changes = await this.db.changes({
+                since: sequenceId,
+            });
+            // Reverse ordering of changes so that newest changes are first
+            changes.results = changes.results.reverse();
+            console.log("\n\nDeleting the following changes from " + this.dbName)
+            console.log(changes);
+            for (let result of changes.results) {
+                const id = result.id;
+                const change = result.changes[0];
+                await this.db.remove(id, change.rev);
+            }
+            // Set highest sync block to block before blockNumber
+            await this.syncStatus.setHighestSyncBlock(this.dbName, blockNumber - 1);
+        } catch (err) {
+            console.log(err);
+        }
     }
 }
