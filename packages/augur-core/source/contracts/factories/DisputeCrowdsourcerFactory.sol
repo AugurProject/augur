@@ -12,7 +12,7 @@ contract DisputeCrowdsourcerFactory is CloneFactory {
         IDisputeOverloadToken _disputeOverloadToken = IDisputeOverloadToken(createClone(_augur.lookup("DisputeOverloadToken")));
         IDisputeCrowdsourcer _disputeCrowdsourcer = IDisputeCrowdsourcer(createClone(_augur.lookup("DisputeCrowdsourcer")));
         _disputeCrowdsourcer.initialize(_augur, _market, _size, _payoutDistributionHash, _payoutNumerators, _disputeOverloadToken, _augur.lookup("ERC820Registry"));
-        _disputeOverloadToken.initialize(_disputeCrowdsourcer, _augur.lookup("ERC820Registry"));
+        _disputeOverloadToken.initialize(_augur, _disputeCrowdsourcer, _augur.lookup("ERC820Registry"));
         return _disputeCrowdsourcer;
     }
 }

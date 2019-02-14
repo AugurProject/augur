@@ -12,4 +12,5 @@ contract IDisputeCrowdsourcer is IReportingParticipant, ERC20Token {
     function contribute(address _participant, uint256 _amount, bool _overload) public returns (uint256);
     function setSize(uint256 _size) public returns (bool);
     function getRemainingToFill() public view returns (uint256);
+    function getDisputeOverloadToken() public returns (IDisputeOverloadToken);
 }

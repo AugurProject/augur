@@ -113,6 +113,10 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
         return true;
     }
 
+    function getDisputeOverloadToken() public returns (IDisputeOverloadToken) {
+        return disputeOverloadToken;
+    }
+
     function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
         augur.logDisputeCrowdsourcerTokensTransferred(universe, _from, _to, _value);
         return true;
