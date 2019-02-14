@@ -10,8 +10,9 @@ interface ERC820ImplementerInterface {
     /// @param interfaceHash keccak256 of the name of the interface
     /// @return ERC820_ACCEPT_MAGIC if the contract can implement the interface represented by
     ///  `ìnterfaceHash` in behalf of `addr`
-    function canImplementInterfaceForAddress(address addr, bytes32 interfaceHash) view external returns(bytes32);
+    function canImplementInterfaceForAddress(address addr, bytes32 interfaceHash) external view returns(bytes32);
 }
+
 
 contract ERC820Registry is IERC820Registry {
     using ContractExists for address;
@@ -84,16 +85,14 @@ contract ERC820Registry is IERC820Registry {
     /// @param addr Address that you want to define the interface for
     /// @param iHash SHA3 of the name of the interface as a string
     ///  For example `web3.utils.sha3('Ierc777')` for the Ierc777
-    function setInterfaceImplementer(address addr, bytes32 iHash, address implementer) public canManage(addr)  {
+    function setInterfaceImplementer(address addr, bytes32 iHash, address implementer) public canManage(addr) {
         require(!isERC165Interface(iHash));
         if ((implementer != 0) && (implementer!=msg.sender)) {
-            require(ERC820ImplementerInterface(implementer).canImplementInterfaceForAddress(addr, iHash)
-                        == ERC820_ACCEPT_MAGIC);
+            require(ERC820ImplementerInterface(implementer).canImplementInterfaceForAddress(addr, iHash) == ERC820_ACCEPT_MAGIC);
         }
         interfaces[addr][iHash] = implementer;
         emit InterfaceImplementerSet(addr, iHash, implementer);
     }
-
 
     /// ERC165 Specific
 
@@ -135,7 +134,7 @@ contract ERC820Registry is IERC820Registry {
         return false;
     }
 
-    function noThrowCall(address _contract, bytes4 _interfaceId) view internal returns (uint256 success, uint256 result) {
+    function noThrowCall(address _contract, bytes4 _interfaceId) internal view returns (uint256 success, uint256 result) {
         bytes4 erc165ID = ERC165ID;
 
         assembly {
