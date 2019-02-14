@@ -13,7 +13,6 @@ describe("TradeAndReport", () => {
         fixture = await TestFixture.create();
     });
     it("#tradeAndReport", async () => {
-        expect(true).to.be("true");
-
+        expect(true).equals(true);
     });
 });

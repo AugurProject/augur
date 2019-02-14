@@ -10104,13 +10104,13 @@ function decodeSmallInteger(data: Bytes32): number {
 }
 
 function padLeftTo32Bytes(input: Uint8Array): Bytes {
-	const result = new Bytes(input.length + 32 - input.length % 32)
+	const result = new Bytes(32)
 	result.set(input, result.length - input.length)
 	return result
 }
 
 function padRightTo32Bytes(input: Uint8Array): Bytes {
-	const result = new Bytes(input.length + 32 - input.length % 32)
+	const result = new Bytes(32)
 	result.set(input, 0)
 	return result
 }

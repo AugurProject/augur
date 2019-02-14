@@ -24,6 +24,7 @@ import {
 import { NetworkConfiguration } from "./NetworkConfiguration";
 import { ContractData, Contracts } from "./Contracts";
 import { stringTo32ByteHex } from "./OtherHelperFunctions";
+import { resolveAll } from "./HelperFunctions";
 
 type ContractAddressMapping = { [name: string]: Address };
 type NetworkAddressMapping = { [networkId: string]: ContractAddressMapping };
@@ -69,7 +70,7 @@ Deploying to: ${networkConfiguration.networkName}
 
         if (this.configuration.isProduction) {
             console.log(`Registering Legacy Rep Contract at ${this.configuration.legacyRepAddress}`);
-            await this.augur!.registerContract((new Bytes32()).from("LegacyReputationToken"), this.configuration.legacyRepAddress);
+            await this.augur!.registerContract(stringTo32ByteHex("LegacyReputationToken"), this.configuration.legacyRepAddress);
             const contract = await this.contracts.get("LegacyReputationToken");
             contract.address = (new Address()).from(this.configuration.legacyRepAddress);
         }
@@ -156,8 +157,9 @@ Deploying to: ${networkConfiguration.networkName}
         console.log('Uploading contracts...');
         const promises: Array<Promise<void>> = [];
         for (let contract of this.contracts) {
-            await this.upload(contract);
+            promises.push(this.upload(contract));
         }
+        await resolveAll(promises);
     }
 
     private async upload(contract: ContractData): Promise<void> {
@@ -181,7 +183,12 @@ Deploying to: ${networkConfiguration.networkName}
 
     private async uploadAndAddToAugur(contract: ContractData, registrationContractName: string = contract.contractName, constructorArgs: Array<any> = []): Promise<Address> {
         const address = await this.construct(contract, constructorArgs);
-        await this.augur!.registerContract(stringTo32ByteHex(registrationContractName), address);
+        const key = stringTo32ByteHex(registrationContractName);
+        await this.augur!.registerContract(key, address);
+        const confirmedAddress = await this.augur!.lookup_(key);
+        if (!confirmedAddress.equals(address)) {
+            throw new Error(`${registrationContractName} could not be registered at key ${key} ${address} ${confirmedAddress}`);
+        }
         return address;
     }
 
@@ -200,42 +207,43 @@ Deploying to: ${networkConfiguration.networkName}
 
         const cashContract = await this.getContractAddress("Cash");
         const cash = new Cash(this.dependencies, cashContract);
-        await cash.initialize(this.augur!.address);
+        promises.push(cash.initialize(this.augur!.address));
 
         const completeSetsContract = await this.getContractAddress("CompleteSets");
         const completeSets = new CompleteSets(this.dependencies, completeSetsContract);
-        await completeSets.initialize(this.augur!.address);
+        promises.push(completeSets.initialize(this.augur!.address));
 
         const createOrderContract = await this.getContractAddress("CreateOrder");
         const createOrder = new CreateOrder(this.dependencies, createOrderContract);
-        await createOrder.initialize(this.augur!.address);
+        promises.push(createOrder.initialize(this.augur!.address));
 
         const fillOrderContract = await this.getContractAddress("FillOrder");
         const fillOrder = new FillOrder(this.dependencies, fillOrderContract);
-        await fillOrder.initialize(this.augur!.address);
+        promises.push(fillOrder.initialize(this.augur!.address));
 
         const cancelOrderContract = await this.getContractAddress("CancelOrder");
         const cancelOrder = new CancelOrder(this.dependencies, cancelOrderContract);
-        await cancelOrder.initialize(this.augur!.address);
+        promises.push(cancelOrder.initialize(this.augur!.address));
 
         const tradeContract = await this.getContractAddress("Trade");
         const trade = new Trade(this.dependencies, tradeContract);
-        await trade.initialize(this.augur!.address);
+        promises.push(trade.initialize(this.augur!.address));
 
         const claimTradingProceedsContract = await this.getContractAddress("ClaimTradingProceeds");
         const claimTradingProceeds = new ClaimTradingProceeds(this.dependencies, claimTradingProceedsContract);
-        await claimTradingProceeds.initialize(this.augur!.address);
-
+        promises.push(claimTradingProceeds.initialize(this.augur!.address));
 
         const ordersContract = await this.getContractAddress("Orders");
         const orders = new Orders(this.dependencies, ordersContract);
-        await orders.initialize(this.augur!.address);
+        promises.push(orders.initialize(this.augur!.address));
 
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");
             const time = new TimeControlled(this.dependencies, timeContract);
-            await time.initialize(this.augur!.address);
+            promises.push(time.initialize(this.augur!.address));
         }
+
+        await resolveAll(promises);
     }
 
     public async initializeLegacyRep(): Promise<void> {
@@ -267,8 +275,9 @@ Deploying to: ${networkConfiguration.networkName}
         await augur.createGenesisUniverse();
         const universe = new Universe(this.dependencies, universeAddress);
         console.log(`Genesis universe address: ${universe.address}`);
-        if (await universe.getTypeName_().toString() !== "Universe") {
-            throw new Error("Unable to create genesis universe. Get type name failed");
+        const typeName = await universe.getTypeName_();
+        if (typeName.toString() !== stringTo32ByteHex("Universe").toString()) {
+            throw new Error(`Unable to create genesis universe. Get type name failed: ${typeName}. expected: ${stringTo32ByteHex("Universe").toString()}`);
         }
 
         return universe;
