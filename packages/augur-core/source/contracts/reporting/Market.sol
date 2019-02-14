@@ -196,6 +196,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     }
 
     function finishedCrowdsourcingDisputeBond(IReportingParticipant _reportingParticipant) private returns (bool) {
+        correctLastParticipantSize();
         participants.push(_reportingParticipant);
         crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, this); // disavow other crowdsourcers
         uint256 _crowdsourcerSize = IDisputeCrowdsourcer(_reportingParticipant).getSize();
@@ -209,15 +210,24 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         }
         augur.logDisputeCrowdsourcerCompleted(universe, this, _reportingParticipant);
         if (preemptiveDisputeCrowdsourcer != IDisputeCrowdsourcer(0)) {
-            bytes32 _payoutDistributionHash = preemptiveDisputeCrowdsourcer.getPayoutDistributionHash();
-            uint256 _correctSize = getParticipantStake().mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
-            preemptiveDisputeCrowdsourcer.setSize(_correctSize);
-            if (preemptiveDisputeCrowdsourcer.getStake() >= _correctSize) {
-                finishedCrowdsourcingDisputeBond(preemptiveDisputeCrowdsourcer);
-            } else {
-                crowdsourcers.add(_payoutDistributionHash, address(preemptiveDisputeCrowdsourcer));
-            }
+            IDisputeCrowdsourcer _newCrowdsourcer = preemptiveDisputeCrowdsourcer;
             preemptiveDisputeCrowdsourcer = IDisputeCrowdsourcer(0);
+            bytes32 _payoutDistributionHash = _newCrowdsourcer.getPayoutDistributionHash();
+            uint256 _correctSize = getParticipantStake().mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
+            _newCrowdsourcer.setSize(_correctSize);
+            if (_newCrowdsourcer.getStake() >= _correctSize) {
+                finishedCrowdsourcingDisputeBond(_newCrowdsourcer);
+            } else {
+                crowdsourcers.add(_payoutDistributionHash, address(_newCrowdsourcer));
+            }
+        }
+        return true;
+    }
+
+    function correctLastParticipantSize() private returns (bool) {
+        IDisputeCrowdsourcer _disputeCrowdsourcer = IDisputeCrowdsourcer(getWinningReportingParticipant());
+        if (_disputeCrowdsourcer.getSize() != _disputeCrowdsourcer.getStake()) {
+            _disputeCrowdsourcer.setSize(_disputeCrowdsourcer.getStake());
         }
         return true;
     }
@@ -553,6 +563,10 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     }
 
     function isContainerForReportingParticipant(IReportingParticipant _shadyReportingParticipant) public view returns (bool) {
+        require(_shadyReportingParticipant != IReportingParticipant(0));
+        if (address(preemptiveDisputeCrowdsourcer) == address(_shadyReportingParticipant)) {
+            return true;
+        }
         if (crowdsourcers.getAsAddressOrZero(_shadyReportingParticipant.getPayoutDistributionHash()) == address(_shadyReportingParticipant)) {
             return true;
         }

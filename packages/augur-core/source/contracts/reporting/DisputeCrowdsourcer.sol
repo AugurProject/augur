@@ -90,7 +90,7 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
             mint(_participant, _baseAmount);
         }
         assert(reputationToken.balanceOf(this) >= getStake());
-        return _amount;
+        return _totalAmount;
     }
 
     function forkAndRedeem() public returns (bool) {

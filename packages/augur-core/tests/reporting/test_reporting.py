@@ -561,7 +561,6 @@ def test_crowdsourcer_minimum_remaining(localFixture, universe, market):
     # Now we'll completely fill the bond
     assert market.contribute(payoutNumerators, initialReportSize, "")
 
-
 @fixture(scope="session")
 def localSnapshot(fixture, kitchenSinkSnapshot):
     fixture.resetToSnapshot(kitchenSinkSnapshot)
