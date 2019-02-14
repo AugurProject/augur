@@ -1628,7 +1628,7 @@
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.25.tgz#59188b871208092e37767e4b3d80c3b3eaae43bd"
   integrity sha512-yfhIBix+AIFTmYGtkC0Bi+XGjSkOINykqKvO/Wqdz/DuXlAKK7HmhLAXdPIGsV4xzKcL3ev/zYc4yLNo+OvGaw==
 
-"@types/bn.js@^4.11.0", "@types/bn.js@^4.11.3":
+"@types/bn.js@4.11.4", "@types/bn.js@^4.11.0":
   version "4.11.4"
   resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-4.11.4.tgz#a7bed5bdef9f16b25c92ba27745ab261374787d7"
   integrity sha512-AO8WW+aRcKWKQAYTfKLzwnpL6U+TfPqS+haRrhCy5ff04Da8WZud3ZgVjspQXaEXJDcTlsjUEVvL39wegDek5w==
@@ -1721,7 +1721,7 @@
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.13.tgz#c81484b6f4ca007bb09887ed15ecb3286d58f928"
   integrity sha512-ePl4l+7dLLmCucIwgQHAgjiepY++qcI6nb8eAwGNkB6OxmTe3Z9rQU3rSpomqu42PCCnlThZbOoxsf+qylJsLA==
 
-"@types/jest@^24.0.3":
+"@types/jest@24.0.4":
   version "24.0.4"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.0.4.tgz#9e91eeebd464536a2f57043fb50da29a91d1271d"
   integrity sha512-7PbnoOkfxpvmPehi8hf/JapEc3nwQi2hOs3cB5SsiBiPcniT0ejrbjjEIY4bPsXlEYFuS/RiN/jpA6hrcbOokA==
@@ -7752,7 +7752,7 @@ genversion@1.1.3:
     firstline "^1.2.1"
     mkdirp "^0.5.1"
 
-genversion@^2.1.0:
+genversion@2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/genversion/-/genversion-2.1.1.tgz#ab2e782148893e258273a01579ed3ac443012ce0"
   integrity sha512-/ui/svWs0oDae9o/396/1dK2yYFmNn+bt62iqN0IHoOlhgVFt3RwF+gtCxExLDlWVSPqvXAGEOOeuOabExuUvg==
@@ -10236,6 +10236,14 @@ jest-worker@^23.2.0:
   dependencies:
     merge-stream "^1.0.1"
 
+jest@22.4.4:
+  version "22.4.4"
+  resolved "https://registry.yarnpkg.com/jest/-/jest-22.4.4.tgz#ffb36c9654b339a13e10b3d4b338eb3e9d49f6eb"
+  integrity sha512-eBhhW8OS/UuX3HxgzNBSVEVhSuRDh39Z1kdYkQVWna+scpgsrD7vSeBI7tmEvsguPDMnfJodW28YBnhv/BzSew==
+  dependencies:
+    import-local "^1.0.0"
+    jest-cli "^22.4.4"
+
 jest@23.6.0:
   version "23.6.0"
   resolved "https://registry.yarnpkg.com/jest/-/jest-23.6.0.tgz#ad5835e923ebf6e19e7a1d7529a432edfee7813d"
@@ -10243,14 +10251,6 @@ jest@23.6.0:
   dependencies:
     import-local "^1.0.0"
     jest-cli "^23.6.0"
-
-jest@^22.4.4:
-  version "22.4.4"
-  resolved "https://registry.yarnpkg.com/jest/-/jest-22.4.4.tgz#ffb36c9654b339a13e10b3d4b338eb3e9d49f6eb"
-  integrity sha512-eBhhW8OS/UuX3HxgzNBSVEVhSuRDh39Z1kdYkQVWna+scpgsrD7vSeBI7tmEvsguPDMnfJodW28YBnhv/BzSew==
-  dependencies:
-    import-local "^1.0.0"
-    jest-cli "^22.4.4"
 
 jison-gho@^0.6.1-215:
   version "0.6.1-215"
@@ -17264,7 +17264,7 @@ trough@^1.0.0:
   resolved "https://registry.yarnpkg.com/trough/-/trough-1.0.3.tgz#e29bd1614c6458d44869fc28b255ab7857ef7c24"
   integrity sha512-fwkLWH+DimvA4YCy+/nvJd61nWQQ2liO/nF/RjkTpiOGi+zxZzVkhb1mvbHIIW4b/8nDsYI8uTmAlc0nNkRMOw==
 
-ts-jest@^23.10.5:
+ts-jest@23.10.5:
   version "23.10.5"
   resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-23.10.5.tgz#cdb550df4466a30489bf70ba867615799f388dd5"
   integrity sha512-MRCs9qnGoyKgFc8adDEntAOP64fWK1vZKnOYU1o2HxaqjdJvGqmkLCPCnVq1/If4zkUmEjKPnCiUisTrlX2p2A==
@@ -17997,7 +17997,7 @@ webidl-conversions@^4.0.2:
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.2.tgz#a855980b1f0b6b359ba1d5d9fb39ae941faa63ad"
   integrity sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==
 
-webpack-deadcode-plugin@^0.1.9:
+webpack-deadcode-plugin@0.1.9:
   version "0.1.9"
   resolved "https://registry.yarnpkg.com/webpack-deadcode-plugin/-/webpack-deadcode-plugin-0.1.9.tgz#400fd87c8875dbe4bbc3bce9fc75707219f63a18"
   integrity sha512-yf/4oIowjfkd8+gG4sramz4qAq/FBd1L6MSu8hoGoaYpQpC+jDKStoKHVYeuz6dtXKlWOQp8HYqPiDjUULRO4Q==
