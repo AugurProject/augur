@@ -5,7 +5,7 @@ interface SyncDocument {
 }
 
 export class SyncStatus extends AbstractDB {
-    private defaultStartSyncBlockNumber: number;
+    public readonly defaultStartSyncBlockNumber: number;
 
     constructor(networkId: number, defaultStartSyncBlockNumber: number) {
         super(networkId, networkId + "-SyncStatus");

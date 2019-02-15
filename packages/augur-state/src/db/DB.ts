@@ -13,13 +13,12 @@ export interface UserSpecificEvent {
 
 export class DB<TBigNumber> {
   private networkId: number;
-  private defaultStartSyncBlockNumber: number;
+  private blockstreamDelay: number;
   private trackedUsers: TrackedUsers;
   private genericEventNames: Array<string>;
   private userSpecificEvents: Array<UserSpecificEvent>;
   private syncableDatabases: { [eventName: string]: SyncableDB<TBigNumber> } = {};
-  private userSyncableDatabases: { [userEventName: string]: UserSyncableDB<TBigNumber> } = {};
-  private metaDatabase: MetaDB<TBigNumber>;
+  private metaDatabase: MetaDB<TBigNumber>; // TODO Remove this if derived DBs are not used.
   public syncStatus: SyncStatus;
 
   public constructor () {}
@@ -28,15 +27,16 @@ export class DB<TBigNumber> {
    * Creates and returns a new dbController.
    * 
    * @param {number} networkId Network on which to sync events
+   * @param {number} blockstreamDelay Number of blocks by which to delay blockstream
    * @param {number} defaultStartSyncBlockNumber Block number at which to start sycing (if no higher block number has been synced)
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
    * @param {Array<string>} genericEventNames Array of names for generic event types
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<DB<TBigNumber>> {
+  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<DB<TBigNumber>> {
     const dbController = new DB<TBigNumber>();
-    await dbController.initializeDB(networkId, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents);
+    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents);
     return dbController;
   }
 
@@ -44,26 +44,25 @@ export class DB<TBigNumber> {
    * Creates databases to be used for syncing.
    * 
    * @param {number} networkId Network on which to sync events
+   * @param {number} blockstreamDelay Number of blocks by which to delay blockstream
    * @param {number} defaultStartSyncBlockNumber Block number at which to start sycing (if no higher block number has been synced)
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
    * @param {Array<string>} genericEventNames Array of names for generic event types
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    */
-  public async initializeDB(networkId: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<void> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<void> {
     this.networkId = networkId;
+    this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber);
     this.trackedUsers = new TrackedUsers(networkId);
+    this.metaDatabase = new MetaDB(this, networkId);
     this.genericEventNames = genericEventNames;
     this.userSpecificEvents = userSpecificEvents;
 
-    // TODO Create a new function to clean up DBs if restarting from a bad state
-
-    // Create SyncableDBs for generic event types
+    // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (let eventName of genericEventNames) {
       new SyncableDB<TBigNumber>(this, networkId, eventName);
     }
-
-    // Create UserSyncableDBs for user-specific event types
     // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
     // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     for (let trackedUser of trackedUsers) {
@@ -75,7 +74,15 @@ export class DB<TBigNumber> {
 
     // TODO Initialize full-text DB
 
-    this.metaDatabase = new MetaDB(this, networkId);
+    // Always start syncing from 10 blocks behind the lowest 
+    // last-synced block (in case of restarting after a crash)
+    const startSyncBlockNumber = await this.getSyncStartingBlock();
+    if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
+      console.log("Performing rollback of block " + startSyncBlockNumber + " onward")
+      await this.rollback(startSyncBlockNumber);
+    }
+
+    // TODO If derived DBs are used, `this.metaDatabase.rollback` should also be called here
   }
 
   /**
@@ -88,15 +95,6 @@ export class DB<TBigNumber> {
   }
 
   /**
-   * Called from UserSyncableDB constructor once UserSyncableDB is successfully created.
-   * 
-   * @param {UserSyncableDB<TBigNumber>} db dbController that utilizes the UserSyncableDB
-   */
-  public notifyUserSyncableDBAdded(db: UserSyncableDB<TBigNumber>): void {
-    this.userSyncableDatabases[db.dbName] = db;
-  }
-
-  /**
    * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
    * 
    * @param {Augur<TBigNumber>} augur Augur object with which to sync
@@ -104,29 +102,56 @@ export class DB<TBigNumber> {
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
    */
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
-    // Sync generic event types & user-specific event types
+    // Sync generic event types
     let dbSyncPromises = [];
     for (let dbIndex in this.syncableDatabases) {
-      dbSyncPromises.push(this.syncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.defaultStartSyncBlockNumber));
-      // TODO Set indexes
+      dbSyncPromises.push(this.syncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
     }
-    // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
-    // Also update topics/indexes for user-specific events once these changes are made to the contracts.
-    for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let dbIndex in this.userSyncableDatabases) {
-        dbSyncPromises.push(this.userSyncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.defaultStartSyncBlockNumber));
-        // TODO Set indexes
-      }
-    }
+    // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbSyncPromises)
     .catch(error => { 
       throw error;
     });
 
-    // TODO Create way to get highest sync block across all DBs
-    const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(this.genericEventNames[0]));
-    const sequenceIds = await this.getAllSequenceIds();
-    await this.metaDatabase.addNewBlock(highestSyncBlock, sequenceIds);
+    // Sync user-specific event types
+    // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
+    // Also update topics/indexes for user-specific events once these changes are made to the contracts.
+    for (let trackedUser of await this.trackedUsers.getUsers()) {
+      for (let userSpecificEvent of this.userSpecificEvents) {
+        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
+        dbSyncPromises.push(this.syncableDatabases[dbName].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
+      }
+    }
+    // TODO Figure out a way to handle concurrent request limit of 40
+    await Promise.all(dbSyncPromises)
+    .catch(error => { 
+      throw error;
+    });
+
+    // TODO Call `this.metaDatabase.addNewBlock` here if derived DBs end up getting used
+  }
+
+  /**
+   * Gets the block number at which to begin syncing. (That is, the lowest last-synced
+   * block across all event log databases or the upload block number for this network.)
+   * 
+   * TODO If derived DBs are used, the last-synced block in `this.metaDatabase` 
+   * should also be taken into account here.
+   * 
+   * @returns {Promise<number>} Promise to the block number at which to begin syncing.
+   */
+  public async getSyncStartingBlock(): Promise<number> {
+    let highestSyncBlocks = [];
+    for (let eventName of this.genericEventNames) {
+      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(eventName)));
+    }
+    for (let trackedUser of await this.trackedUsers.getUsers()) {
+      for (let userSpecificEvent of this.userSpecificEvents) {
+        highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(userSpecificEvent.name, trackedUser)));
+      }
+    }
+    const lowestLastSyncBlock = Math.min.apply(null, highestSyncBlocks);
+    return Math.max.apply(null, [lowestLastSyncBlock - this.blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber]);
   }
 
   /**
@@ -145,6 +170,8 @@ export class DB<TBigNumber> {
   /**
    * Returns the current update_seqs from all SyncableDBs/UserSyncableDBs. 
    * 
+   * TODO Remove this function if derived DBs are not used.
+   * 
    * @returns {Promise<SequenceIds>} Promise to a SequenceIds object
    */
   public async getAllSequenceIds(): Promise<SequenceIds> {
@@ -157,7 +184,7 @@ export class DB<TBigNumber> {
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let userSpecificEvent of this.userSpecificEvents) {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        let dbInfo = await this.userSyncableDatabases[dbName].getInfo();
+        let dbInfo = await this.syncableDatabases[dbName].getInfo();
         sequenceIds[dbName] = dbInfo.update_seq.toString();
       }
     }
@@ -167,46 +194,37 @@ export class DB<TBigNumber> {
   /**
    * Rolls back all blocks from blockNumber onward.
    * 
-   * TODO Add check to see if any rollbacks failed
-   * 
    * @param {number} blockNumber Oldest block number to delete
    */
   public async rollback(blockNumber: number): Promise<void> {
-    // TODO Fix typedef for previousBlockSequenceIds
-    const previousBlockSequenceIds: any = await this.metaDatabase.find(
-      {
-          selector: { blockNumber: { $gte: blockNumber } },
-          fields: ['_id', 'networkId', 'blockNumber', 'sequenceIds'],
-      }
-    );
-    const parseBlockSequenceIds = JSON.parse(previousBlockSequenceIds.docs[0].sequenceIds);
-
     let dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
     for (let eventName of this.genericEventNames) {
       let dbName = this.getDatabaseName(eventName);
-      let previousSequenceId = parseBlockSequenceIds[dbName];
-      let dbInfo = await this.syncableDatabases[dbName].getInfo();
-      if (dbInfo.update_seq > previousSequenceId) {
-        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber, previousSequenceId));
-      }
+      dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
     }
-    for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let userSpecificEvent of this.userSpecificEvents) {
-        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        let previousSequenceId = parseBlockSequenceIds[dbName];
-        let dbInfo = await this.userSyncableDatabases[dbName].getInfo();
-        if (dbInfo.update_seq > previousSequenceId) {
-          dbRollbackPromises.push(this.userSyncableDatabases[dbName].rollback(blockNumber, previousSequenceId));
-        }
-      }
-    }
+    // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbRollbackPromises)
     .catch(error => { 
       throw error;
     });
 
-    await this.metaDatabase.rollback(blockNumber);
+    // Perform rollback on UserSyncableDBs
+    for (let trackedUser of await this.trackedUsers.getUsers()) {
+      for (let userSpecificEvent of this.userSpecificEvents) {
+        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
+        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+      }
+    }
+    // TODO Figure out a way to handle concurrent request limit of 40
+    await Promise.all(dbRollbackPromises)
+    .catch(error => { 
+      throw error;
+    });
+
+    // TODO If derived DBs end up getting used, call `this.metaDatabase.find` 
+    // here to get sequenceIds for blocks >= blockNumber. Then call 
+    // `this.metaDatabase.rollback` to remove those documents from derived DBs.
   }
 
  /**
@@ -218,7 +236,7 @@ export class DB<TBigNumber> {
   * @param {any} blockLogs Logs from a new block
   */ 
   public async addNewBlock(dbName: string, blockLogs: any): Promise<void> {
-    let db = this.syncableDatabases[dbName] ? this.syncableDatabases[dbName] : this.userSyncableDatabases[dbName];
+    let db = this.syncableDatabases[dbName];
     if (!db) {
       throw new Error("Unknown DB name: " + dbName);
     }
@@ -229,9 +247,9 @@ export class DB<TBigNumber> {
       if (highestSyncBlock !== blockLogs[0].blockNumber) {
         throw new Error("Highest sync block is " + highestSyncBlock + "; newest block number is " + blockLogs[0].blockNumber);
       }
-
-      const sequenceIds = await this.getAllSequenceIds();
-      await this.metaDatabase.addNewBlock(highestSyncBlock, sequenceIds);
+      
+      // TODO If derived DBs end up getting used, call `this.getAllSequenceIds` here 
+      // and pass the returned sequenceIds into `this.metaDatabase.addNewBlock`.
     } catch (err) {
       throw err;
     }

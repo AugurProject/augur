@@ -12,8 +12,6 @@ const genericEventNames: Array<string> = [
   "MarketParticipantsDisavowed",
   "ReportingParticipantDisavowed",
   "TimestampSet",
-  "TokensBurned",
-  "TokensMinted",
   "UniverseCreated",
   "UniverseForked",
 ];
@@ -98,19 +96,21 @@ export class Controller<TBigNumber> {
   private dbController: DB<TBigNumber>;
   private augur: Augur<TBigNumber>;
   private networkId: number;
+  private blockstreamDelay: number;
   private defaultStartSyncBlockNumber: number;
   private trackedUsers: Array<string>;
 
-  public constructor (augur: Augur<TBigNumber>, networkId: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>) {
+  public constructor (augur: Augur<TBigNumber>, networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>) {
     this.augur = augur;
     this.networkId = networkId;
+    this.blockstreamDelay = blockstreamDelay;
     this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
     this.trackedUsers = trackedUsers;
   }
 
   public async run(): Promise<void> {
     try {
-      this.dbController = await DB.createAndInitializeDB(this.networkId, this.defaultStartSyncBlockNumber, this.trackedUsers, genericEventNames, userSpecificEvents);
+      this.dbController = await DB.createAndInitializeDB(this.networkId, this.blockstreamDelay, this.defaultStartSyncBlockNumber, this.trackedUsers, genericEventNames, userSpecificEvents);
       await this.dbController.sync(this.augur, 100000, 5);
 
       // TODO Move this function into separate test
@@ -167,12 +167,12 @@ export class Controller<TBigNumber> {
         sort: ['_id']
       };
       let result = await this.dbController.findInSyncableDB(dbName, queryObj);
-      console.log("\n\nEvent logs before rollback:", result);
+      console.log("\n\n" + this.networkId + "-DisputeCrowdsourcerCompleted event logs before rollback:", result);
 
       await this.dbController.rollback(highestSyncedBlockNumber - 1);
 
       result = await this.dbController.findInSyncableDB(dbName, queryObj);
-      console.log("\n\nEvent logs after rollback:", result);
+      console.log("\n\n" + this.networkId + "-DisputeCrowdsourcerCompleted event logs after rollback:", result);
 
       queryObj = {
         selector: { blockNumber: { $gte: (highestSyncedBlockNumber - 1) } },
@@ -180,11 +180,11 @@ export class Controller<TBigNumber> {
         sort: ['_id']
       };
       result = await this.dbController.findInMetaDB(queryObj);
-      console.log("\n\nBlock Numbers greater than " + (highestSyncedBlockNumber - 2) + " after rollback:", result);
+      console.log("\n\nMetaDB block numbers greater than " + (highestSyncedBlockNumber - 2) + " after rollback:", result);
 
       console.log("Highest sync block for " + this.networkId + "-DisputeCrowdsourcerCreated:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-DisputeCrowdsourcerCreated"));
       console.log("Highest sync block for " + this.networkId + "-DisputeCrowdsourcerCompleted:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-DisputeCrowdsourcerCompleted"));
-      console.log("Highest sync block for MetaDB:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-BlockNumberEvents"));
+      console.log("Highest sync block for " + this.networkId + "-BlockNumbersSequenceIds:", await this.dbController.syncStatus.getHighestSyncBlock(this.networkId + "-BlockNumbersSequenceIds"));
     } catch (err) {
       console.log(err);
     }

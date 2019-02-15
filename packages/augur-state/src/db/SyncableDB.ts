@@ -16,6 +16,12 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         super(networkId, dbName ? dbName : dbController.getDatabaseName(eventName));
         this.eventName = eventName;
         this.syncStatus = dbController.syncStatus;
+        // TODO Set other indexes as need be
+        this.db.createIndex({
+            index: {
+              fields: ['blockNumber']
+            }
+        });
         dbController.notifySyncableDBAdded(this);
     }
 
@@ -38,6 +44,9 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
             }
         }
         console.log(`SYNCING SUCCESS ${this.dbName} up to ${goalBlock}`);
+
+        // TODO Make any external calls as needed (such as pushing user's balance to UI)
+
         // TODO start blockstream
     }
 
@@ -64,25 +73,28 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         }
     }
 
-    public async rollback(blockNumber: number, sequenceId: number): Promise<void> {
-        // Remove each change from sequenceId onward
+    public async rollback(blockNumber: number): Promise<void> {
+        // Remove each change from blockNumber onward
         try {
-            let changes = await this.db.changes({
-                since: sequenceId,
+            let highestSyncBlock = await this.syncStatus.getHighestSyncBlock(this.dbName);
+            // Sort blocks so newest blocks are removed first
+            let blocksToRemove = await this.db.find({
+                selector: { blockNumber: { $gte: blockNumber } },
+                fields: ['_id', 'blockNumber', '_rev'],
+                sort: [{blockNumber: 'desc'}],
             });
-            // Reverse ordering of changes so that newest changes are first
-            changes.results = changes.results.reverse();
-            console.log("\n\nDeleting the following changes from " + this.dbName)
-            console.log(changes);
-            for (let result of changes.results) {
-                const id = result.id;
-                const change = result.changes[0];
-                await this.db.remove(id, change.rev);
+            if (blocksToRemove.docs.length > 0) {
+                console.log("\n\nDeleting the following blocks from " + this.dbName)
+                console.log(blocksToRemove.docs);
+                for (let doc of blocksToRemove.docs) {
+                    // Remove block number from event DB
+                    await this.db.remove(doc._id, doc._rev);
+                    // Update highest sync block with decremented block number
+                    await this.syncStatus.setHighestSyncBlock(this.dbName, --highestSyncBlock);
+                }
             }
-            // Set highest sync block to block before blockNumber
-            await this.syncStatus.setHighestSyncBlock(this.dbName, blockNumber - 1);
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 }

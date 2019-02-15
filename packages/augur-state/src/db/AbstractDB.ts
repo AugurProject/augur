@@ -16,10 +16,14 @@ export abstract class AbstractDB {
   protected networkId: number;
   public readonly dbName: string;
 
-  constructor (networkId: number, dbName: string) {
+  protected constructor (networkId: number, dbName: string) {
     this.networkId = networkId;
     this.dbName = dbName;
-    this.db = new PouchDB(`db/${dbName}`);
+    this.db = this.makeDb();
+  }
+
+  protected makeDb(): PouchDB.Database {
+    return new PouchDB(`db/${this.dbName}`);
   }
 
   private async getPouchRevFromId(id: string): Promise<string|undefined> {
@@ -60,7 +64,7 @@ export abstract class AbstractDB {
         previousRev ? { _rev: previousRev } : {},
         doc,
       );
-    })
+    });
     try {
       const results = await this.db.bulkDocs(mergedRevisionDocuments);
       return _.every(results, (response) => (<PouchDB.Core.Response>response).ok );
