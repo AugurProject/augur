@@ -6,7 +6,6 @@
     {"path": "packages/augur-core"},
     {"path": "packages/augur-types"},
     {"path": "packages/augur-api"},
-    {"path": "packages/augur-node"},
     {"path": "packages/augur-artifacts"},
     {"path": "packages/contract-dependencies"},
     {"path": "packages/augur-state"},

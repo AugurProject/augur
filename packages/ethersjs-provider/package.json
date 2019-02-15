@@ -4,6 +4,7 @@
   "description": "Ethers.JS Provider Implementation for Augur API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
+  "main": "build",
   "directories": {
     "src": "src"
   },

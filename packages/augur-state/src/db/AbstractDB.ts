@@ -1,4 +1,4 @@
-import * as PouchDB from "pouchdb";
+import PouchDB from "pouchdb";
 import * as _ from "lodash";
 
 interface DocumentIDToRev {

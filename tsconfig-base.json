@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es2017",
+    "rootDir": ".",
+    "target": "es5",
+    "lib": [
+      "es2017"
+    ],
+    "downlevelIteration": true,
     "sourceMap": true,
     "watch": false,
     "strictNullChecks": true,
@@ -11,9 +15,10 @@
     "noImplicitThis": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "typeRoots": [
       "node_modules/augur-types/types",
-      "node_modules/@types",
+      "node_modules/@types"
     ]
   }
 }
