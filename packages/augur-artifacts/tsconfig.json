@@ -1,3 +1,13 @@
 {
-    "extends": "../../tsconfig.json"
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./build"
+    },
+    "include": ["./src/**/*"],
+    "files": [
+        "./src/abi.json",
+        "./src/addresses.json"
+    ],
+    "references": []
 }

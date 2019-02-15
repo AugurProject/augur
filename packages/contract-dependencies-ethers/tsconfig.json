@@ -1,3 +1,10 @@
 {
-  "extends": "../../tsconfig.json"
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./build",
+  },
+  "references": [
+    {"path": "../contract-dependencies"}
+  ]
 }

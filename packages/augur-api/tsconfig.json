@@ -1,3 +1,17 @@
 {
-  "extends": "../../tsconfig.json"
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./build",
+    "baseUrl": "../",
+    "typeRoots": [
+      "node_modules/augur-types/types",
+      "node_modules/@types",
+    ]
+  },
+  "include": ["./src/**/*"],
+  "references": [
+    {"path": "../augur-artifacts"},
+    {"path": "../augur-core"}
+  ]
 }

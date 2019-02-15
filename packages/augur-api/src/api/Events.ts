@@ -1,7 +1,7 @@
 import { Provider } from '../ethereum/Provider';
 import { ParsedLog } from '../ethereum/types';
 import * as _ from "lodash";
-import * as abiJson from '../../../augur-artifacts/abi.json';
+import { abi } from 'augur-artifacts';
 import { Abi } from "ethereum";
 
 export class Events {
@@ -11,7 +11,7 @@ export class Events {
   public constructor (provider: Provider, augurAddress: string) {
     this.provider = provider;
     this.augurAddress = augurAddress;
-    this.provider.storeAbiData(<Abi>abiJson["Augur"], "Augur");
+    this.provider.storeAbiData(<Abi>abi["Augur"], "Augur");
   }
 
   public async getLogs(eventName: string, fromBlock: number, toBlock: number, additionalTopics?: Array<string | Array<string>>): Promise<Array<ParsedLog>> {
