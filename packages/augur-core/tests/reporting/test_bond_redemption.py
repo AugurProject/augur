@@ -2,7 +2,7 @@ from ethereum.tools import tester
 from ethereum.tools.tester import TransactionFailed, ABIContract
 from pytest import fixture, mark, raises
 from utils import longTo32Bytes, bytesToHexString, TokenDelta, EtherDelta, longToHexString, PrintGasUsed, AssertLog
-from reporting_utils import proceedToNextRound, finalizeFork, proceedToDesignatedReporting
+from reporting_utils import proceedToNextRound, finalize, proceedToDesignatedReporting
 
 def test_initial_report(localFixture, universe, market, categoricalMarket, scalarMarket, cash, reputationToken):
     disputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
@@ -228,7 +228,7 @@ def test_forkAndRedeem(localFixture, universe, market, categoricalMarket, cash, 
         reportingParticipant = localFixture.applySignature("DisputeCrowdsourcer", market.getReportingParticipant(i))
 
     # Finalize the fork
-    finalizeFork(localFixture, market, universe)
+    finalize(localFixture, market, universe)
 
     categoricalDisputeCrowdsourcer = localFixture.applySignature("DisputeCrowdsourcer", categoricalMarket.getReportingParticipant(1))
 

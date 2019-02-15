@@ -213,7 +213,7 @@ contract Universe is ITyped, IUniverse {
             tentativeWinningChildUniversePayoutDistributionHash = _parentPayoutDistributionHash;
         }
         if (_updatedUniverseRepMigrated >= forkReputationGoal) {
-            forkingMarket.finalizeFork();
+            forkingMarket.finalize();
         }
         return true;
     }

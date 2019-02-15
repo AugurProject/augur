@@ -66,7 +66,7 @@ def proceedToFork(fixture, market, universe):
         reportingParticipant = fixture.applySignature("DisputeCrowdsourcer", market.getReportingParticipant(i))
         reportingParticipant.forkAndRedeem()
 
-def finalizeFork(fixture, market, universe, finalizeByMigration = True):
+def finalize(fixture, market, universe, finalizeByMigration = True):
     reputationToken = fixture.applySignature('ReputationToken', universe.getReputationToken())
 
     # The universe forks and there is now a universe where NO and YES are the respective outcomes of each
@@ -85,7 +85,7 @@ def finalizeFork(fixture, market, universe, finalizeByMigration = True):
 
     # Attempting to finalize the fork now will not succeed as no REP has been migrated and not enough time has passed
     with raises(TransactionFailed):
-        market.finalizeFork()
+        market.finalize()
 
     # A Tester moves some of their REP to the YES universe
     amount = 10 ** 6 * 10 ** 18
@@ -98,7 +98,7 @@ def finalizeFork(fixture, market, universe, finalizeByMigration = True):
 
     # Attempting to finalize the fork now will not succeed as a majority or REP has not yet migrated and fork end time has not been reached
     with raises(TransactionFailed):
-        market.finalizeFork()
+        market.finalize()
 
     if (finalizeByMigration):
         # Tester 0 moves more than 50% of REP
@@ -118,7 +118,7 @@ def finalizeFork(fixture, market, universe, finalizeByMigration = True):
 
     # Finalize fork cannot be called again
     with raises(TransactionFailed):
-        market.finalizeFork()
+        market.finalize()
 
 def generateFees(fixture, universe, market):
     completeSets = fixture.contracts['CompleteSets']

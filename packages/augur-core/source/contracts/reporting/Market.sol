@@ -55,7 +55,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
 
     // Collections
     IReportingParticipant[] public participants;
-    Map public crowdsourcers;
+    IMap public crowdsourcers;
     IShareToken[] private shareTokens;
 
     function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized returns (bool _success) {
@@ -82,7 +82,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         feeDivisor = _feePerEthInAttoEth == 0 ? 0 : 1 ether / _feePerEthInAttoEth;
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
         participants.push(_initialReporterFactory.createInitialReporter(augur, this, _designatedReporterAddress));
-        crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, this);
+        crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, this); // XXX Turn Map into IMap
         for (uint256 _outcome = 0; _outcome < numOutcomes; _outcome++) {
             shareTokens.push(createShareToken(_outcome));
         }
@@ -155,43 +155,39 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
 
     function contributeToTentative(uint256[] _payoutNumerators, uint256 _amount, string _description) public returns (bool) {
         require(!disputePacingOn);
+        // The derive call will validate that an Invalid report is entirely paid out on the Invalid outcome
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
         require(_payoutDistributionHash == getWinningReportingParticipant().getPayoutDistributionHash());
-        require(!disputeWindow.isOver());
-        require(!universe.isForking());
-        if (preemptiveDisputeCrowdsourcer == IDisputeCrowdsourcer(0)) {
-            uint256 _totalParticipantStake = getParticipantStake();
-            uint256 _lowestTheoreticalParticipantStake = _totalParticipantStake.add(_totalParticipantStake.mul(2).sub(getHighestNonTentativeParticipantStake().mul(3)));
-            uint256 _size = _lowestTheoreticalParticipantStake.mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
-            DisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = DisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
-            preemptiveDisputeCrowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, this, _size, _payoutDistributionHash, _payoutNumerators);
-            augur.disputeCrowdsourcerCreated(universe, this, preemptiveDisputeCrowdsourcer, _payoutNumerators, _size);
-        }
-        uint256 _actualAmount = preemptiveDisputeCrowdsourcer.contribute(msg.sender, _amount, true);
-        augur.logDisputeCrowdsourcerContribution(universe, msg.sender, this, preemptiveDisputeCrowdsourcer, _actualAmount, _description);
+        internalContribute(msg.sender, _payoutDistributionHash, _payoutNumerators, _amount, true, _description);
         return true;
     }
 
     function contribute(uint256[] _payoutNumerators, uint256 _amount, string _description) public returns (bool) {
-        require(getInitialReporter().getReportTimestamp() != 0);
+        // The derive call will validate that an Invalid report is entirely paid out on the Invalid outcome
+        bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
+        require(_payoutDistributionHash != getWinningReportingParticipant().getPayoutDistributionHash());
+        internalContribute(msg.sender, _payoutDistributionHash, _payoutNumerators, _amount, false, _description);
+        return true;
+    }
+
+    function internalContribute(address _contributor, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _amount, bool _overload, string _description) internal returns (bool) {
         if (disputePacingOn) {
             require(disputeWindow.isActive());
         } else {
             require(!disputeWindow.isOver());
         }
         require(!universe.isForking());
-        // The derive call will validate that an Invalid report is entirely paid out on the Invalid outcome
-        bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
-        require(_payoutDistributionHash != getWinningReportingParticipant().getPayoutDistributionHash());
-        IDisputeCrowdsourcer _crowdsourcer = getOrCreateDisputeCrowdsourcer(_payoutDistributionHash, _payoutNumerators);
-        uint256 _actualAmount = _crowdsourcer.contribute(msg.sender, _amount, false);
-        uint256 _amountRemainingToFill = _crowdsourcer.getRemainingToFill();
-        augur.logDisputeCrowdsourcerContribution(universe, msg.sender, this, _crowdsourcer, _actualAmount, _description);
-        if (_amountRemainingToFill == 0) {
-            finishedCrowdsourcingDisputeBond(_crowdsourcer);
-        } else {
-            require(_amountRemainingToFill >= getInitialReporter().getSize());
+        IDisputeCrowdsourcer _crowdsourcer = getOrCreateDisputeCrowdsourcer(_payoutDistributionHash, _payoutNumerators, _overload);
+        uint256 _actualAmount = _crowdsourcer.contribute(_contributor, _amount, _overload);
+        if (!_overload) {
+            uint256 _amountRemainingToFill = _crowdsourcer.getRemainingToFill();
+            if (_amountRemainingToFill == 0) {
+                finishedCrowdsourcingDisputeBond(_crowdsourcer);
+            } else {
+                require(_amountRemainingToFill >= getInitialReporter().getSize());
+            }
         }
+        augur.logDisputeCrowdsourcerContribution(universe, _contributor, this, _crowdsourcer, _actualAmount, _description);
         return true;
     }
 
@@ -226,39 +222,29 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
 
     function correctLastParticipantSize() private returns (bool) {
         IDisputeCrowdsourcer _disputeCrowdsourcer = IDisputeCrowdsourcer(getWinningReportingParticipant());
-        if (_disputeCrowdsourcer.getSize() != _disputeCrowdsourcer.getStake()) {
-            _disputeCrowdsourcer.setSize(_disputeCrowdsourcer.getStake());
+        uint256 _stake = _disputeCrowdsourcer.getStake();
+        if (_disputeCrowdsourcer.getSize() != _stake) {
+            _disputeCrowdsourcer.setSize(_stake);
         }
         return true;
     }
 
     function finalize() public returns (bool) {
+        require(winningPayoutDistributionHash == bytes32(0));
         if (universe.getForkingMarket() == this) {
-            return finalizeFork();
+            IUniverse _winningUniverse = universe.getWinningChildUniverse();
+            winningPayoutDistributionHash = _winningUniverse.getParentPayoutDistributionHash();
+        } else {
+            require(disputeWindow.isOver());
+            require(!universe.isForking());
+            winningPayoutDistributionHash = participants[participants.length-1].getPayoutDistributionHash();
+            // Make sure the dispute window for which we record finalization is the standard cadence window and not an initial dispute window
+            disputeWindow = universe.getOrCreatePreviousDisputeWindow(false);
+            disputeWindow.onMarketFinalized();
+            universe.decrementOpenInterestFromMarket(shareTokens[0].totalSupply().mul(numTicks));
+            redistributeLosingReputation();
+            distributeValidityBondAndMarketCreatorFees();
         }
-
-        require(winningPayoutDistributionHash == bytes32(0));
-
-        require(getInitialReporter().getReportTimestamp() != 0);
-        require(disputeWindow.isOver());
-        require(!universe.isForking());
-        winningPayoutDistributionHash = participants[participants.length-1].getPayoutDistributionHash();
-        // Make sure the dispute window for which we record finalization is the standard cadence window and not an initial dispute window
-        disputeWindow = universe.getOrCreatePreviousDisputeWindow(false);
-        disputeWindow.onMarketFinalized();
-        universe.decrementOpenInterestFromMarket(shareTokens[0].totalSupply().mul(numTicks));
-        redistributeLosingReputation();
-        distributeValidityBondAndMarketCreatorFees();
-        finalizationTime = augur.getTimestamp();
-        augur.logMarketFinalized(universe);
-        return true;
-    }
-
-    function finalizeFork() public returns (bool) {
-        require(universe.getForkingMarket() == this);
-        require(winningPayoutDistributionHash == bytes32(0));
-        IUniverse _winningUniverse = universe.getWinningChildUniverse();
-        winningPayoutDistributionHash = _winningUniverse.getParentPayoutDistributionHash();
         finalizationTime = augur.getTimestamp();
         augur.logMarketFinalized(universe);
         return true;
@@ -324,13 +310,24 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         return true;
     }
 
-    function getOrCreateDisputeCrowdsourcer(bytes32 _payoutDistributionHash, uint256[] _payoutNumerators) private returns (IDisputeCrowdsourcer) {
-        IDisputeCrowdsourcer _crowdsourcer = IDisputeCrowdsourcer(crowdsourcers.getAsAddressOrZero(_payoutDistributionHash));
+    function getOrCreateDisputeCrowdsourcer(bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, bool _overload) private returns (IDisputeCrowdsourcer) {
+        IDisputeCrowdsourcer _crowdsourcer = _overload ? preemptiveDisputeCrowdsourcer : IDisputeCrowdsourcer(crowdsourcers.getAsAddressOrZero(_payoutDistributionHash));
         if (_crowdsourcer == IDisputeCrowdsourcer(0)) {
-            uint256 _size = getParticipantStake().mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
             DisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = DisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
+            uint256 _size = 0;
+            if (_overload) {
+                uint256 _totalParticipantStake = getParticipantStake();
+                uint256 _lowestTheoreticalParticipantStake = _totalParticipantStake.add(_totalParticipantStake.mul(2).sub(getHighestNonTentativeParticipantStake().mul(3)));
+                _size = _lowestTheoreticalParticipantStake.mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
+            } else {
+                _size = getParticipantStake().mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
+            }
             _crowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, this, _size, _payoutDistributionHash, _payoutNumerators);
-            crowdsourcers.add(_payoutDistributionHash, address(_crowdsourcer));
+            if (!_overload) {
+                crowdsourcers.add(_payoutDistributionHash, address(_crowdsourcer));
+            } else {
+                preemptiveDisputeCrowdsourcer = _crowdsourcer;
+            }
             augur.disputeCrowdsourcerCreated(universe, this, _crowdsourcer, _payoutNumerators, _size);
         }
         return _crowdsourcer;

@@ -6706,22 +6706,6 @@ ethers@4.0.23:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-ethers@4.0.24:
-  version "4.0.24"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.24.tgz#f65fecd47b07a6ddd97a807acf3afb48857d2b79"
-  integrity sha512-LwljiA2ozAM4aHyemJr3uMHeRdM2y34RtFpmMdunLkCqWriptIzSR8JI6S/oNe+Y/aISlPmihUCGaZygLLrYfA==
-  dependencies:
-    "@types/node" "^10.3.2"
-    aes-js "3.0.0"
-    bn.js "^4.4.0"
-    elliptic "6.3.3"
-    hash.js "1.1.3"
-    js-sha3 "0.5.7"
-    scrypt-js "2.0.4"
-    setimmediate "1.0.4"
-    uuid "2.0.1"
-    xmlhttprequest "1.8.0"
-
 ethjs-abi@0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/ethjs-abi/-/ethjs-abi-0.2.1.tgz#e0a7a93a7e81163a94477bad56ede524ab6de533"

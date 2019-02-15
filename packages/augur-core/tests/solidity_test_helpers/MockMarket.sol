@@ -381,7 +381,7 @@ contract MockMarket is IMarket {
         return true;
     }
 
-    function finalizeFork() public returns (bool) {
+    function finalize() public returns (bool) {
         return true;
     }
 

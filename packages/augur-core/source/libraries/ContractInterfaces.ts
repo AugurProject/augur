@@ -49,6 +49,8 @@ export class AuctionToken extends c.AuctionToken<ethers.utils.BigNumber> {
 }
 export class DisputeCrowdsourcer extends c.DisputeCrowdsourcer<ethers.utils.BigNumber> {
 }
+export class DisputeOverloadToken extends c.DisputeOverloadToken<ethers.utils.BigNumber> {
+}
 export class DisputeWindow extends c.DisputeWindow<ethers.utils.BigNumber> {
 }
 export class InitialReporter extends c.InitialReporter<ethers.utils.BigNumber> {

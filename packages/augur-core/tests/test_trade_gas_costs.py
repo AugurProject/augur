@@ -5,7 +5,7 @@ from utils import longTo32Bytes, PrintGasUsed, fix
 from constants import BID, ASK, YES, NO
 from datetime import timedelta
 from trading.test_claimTradingProceeds import acquireLongShares, finalizeMarket
-from reporting_utils import proceedToNextRound, proceedToFork, finalizeFork, proceedToDesignatedReporting
+from reporting_utils import proceedToNextRound, proceedToFork, finalize, proceedToDesignatedReporting
 
 pytestmark = mark.skip(reason="Just for testing gas cost")
 

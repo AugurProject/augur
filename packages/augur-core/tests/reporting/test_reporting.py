@@ -3,7 +3,7 @@ from ethereum.tools import tester
 from ethereum.tools.tester import ABIContract, TransactionFailed
 from pytest import fixture, mark, raises
 from utils import longTo32Bytes, bytesToHexString, TokenDelta, AssertLog, EtherDelta, longToHexString, BuyWithCash
-from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToNextRound, proceedToFork, finalizeFork
+from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToNextRound, proceedToFork, finalize
 
 tester.STARTGAS = long(6.7 * 10**6)
 
@@ -245,7 +245,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
         "market": market.address,
     }
     with AssertLog(localFixture, "MarketFinalized", marketFinalizedLog):
-        finalizeFork(localFixture, market, universe, finalizeByMigration)
+        finalize(localFixture, market, universe, finalizeByMigration)
 
     # We cannot contribute to a crowdsourcer in a forked universe
     with raises(TransactionFailed):
@@ -326,7 +326,7 @@ def test_finalized_fork_migration(localFixture, universe, market, categoricalMar
 
     # Proceed to Forking for the yesNo market and finalize it
     proceedToFork(localFixture, market, universe)
-    finalizeFork(localFixture, market, universe)
+    finalize(localFixture, market, universe)
 
     # The categorical market is finalized and cannot be migrated to the new universe
     with raises(TransactionFailed):
@@ -356,7 +356,7 @@ def test_fork_migration_no_report(localFixture, universe, market):
     proceedToFork(localFixture, market, universe)
 
     # Now finalize the fork so migration can occur
-    finalizeFork(localFixture, market, universe)
+    finalize(localFixture, market, universe)
 
     # Now when we migrate the market through the fork we'll place a new bond in the winning universe's REP
     oldReputationToken = localFixture.applySignature("ReputationToken", universe.getReputationToken())
@@ -377,7 +377,7 @@ def test_forking_values(localFixture, universe, market):
     proceedToFork(localFixture, market, universe)
 
     # finalize the fork
-    finalizeFork(localFixture, market, universe)
+    finalize(localFixture, market, universe)
 
     # We can see that the theoretical total REP supply in the winning child universe is equal to the parent supply
     winningPayoutHash = market.getWinningPayoutDistributionHash()
@@ -425,7 +425,7 @@ def test_forking_values(localFixture, universe, market):
     assert newMarket.getNumParticipants() == 21
 
     # finalize the fork
-    finalizeFork(localFixture, newMarket, childUniverse)
+    finalize(localFixture, newMarket, childUniverse)
 
     # The total theoretical supply is again the same as the parents during the fork
     childWinningPayoutHash = newMarket.getWinningPayoutDistributionHash()
