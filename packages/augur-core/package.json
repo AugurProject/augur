@@ -4,10 +4,9 @@
   "description": "Core augur contracts and deployment process",
   "author": "The Augur Developers <team@augur.net>",
   "repository": "http://github.com/AugurProject/augur-core",
-  "main": "output/index.js",
-  "types": "output/index.d.ts",
-  "module": "output/index.js",
-  "browser": "output/browser.js",
+  "main": "build",
+  "module": "build/index.js",
+  "browser": "build/browser.js",
   "license": "GPL-3.0",
   "directories": {
     "src": "source",

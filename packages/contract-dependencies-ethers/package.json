@@ -4,6 +4,7 @@
   "description": "Contract Dependencies For EthersJS",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
+  "main": "build",
   "directories": {
     "src": "src"
   },
