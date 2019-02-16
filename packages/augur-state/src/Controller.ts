@@ -12,8 +12,6 @@ const genericEventNames: Array<string> = [
   "MarketParticipantsDisavowed",
   "ReportingParticipantDisavowed",
   "TimestampSet",
-  "TokensBurned",
-  "TokensMinted",
   "UniverseCreated",
   "UniverseForked",
 ];
