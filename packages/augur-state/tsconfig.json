@@ -10,9 +10,13 @@
   "include": [
     "./src/**/*"
   ],
+  "files": [
+    "./src/abi.json",
+    "./src/addresses.json"
+  ],
   "references": [
     {
-      "path": "../ethersjs-provider"
+      "path": "../ethersjs-provider",
     },
     {
       "path": "../augur-core"
