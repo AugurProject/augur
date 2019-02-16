@@ -54,7 +54,7 @@
     "bignumber.js": "6.0.0",
     "clone": "2.1.2",
     "columnify": "1.5.4",
-    "ethereumjs-blockstream": "4.0.1",
+    "ethereumjs-blockstream": "7.0.0",
     "ethrpc": "^6.1.1",
     "event-emitter": "0.3.5",
     "immutable-delete": "1.1.0",
