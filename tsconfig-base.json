@@ -5,6 +5,7 @@
     "lib": [
       "es2017"
     ],
+    "declarationMap": true,
     "downlevelIteration": true,
     "sourceMap": true,
     "watch": false,
