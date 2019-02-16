@@ -2,7 +2,7 @@ import { DB, UserSpecificEvent } from '../db/DB';
 import { Augur } from 'augur-api';
 import { EthersProvider } from 'ethers-provider';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
-const uploadBlockNumbers = require('../../upload-block-numbers.json');
+const uploadBlockNumbers = require('../upload-block-numbers.json');
 
 const BLOCKSTREAM_DELAY = 10;
 const TEST_RINKEBY_URL = "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM";
