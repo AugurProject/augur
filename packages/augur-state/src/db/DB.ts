@@ -33,6 +33,7 @@ export class DB<TBigNumber> {
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
    * @param {Array<string>} genericEventNames Array of names for generic event types
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
+   * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
    * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
    */
   public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType): Promise<DB<TBigNumber>> {
@@ -50,6 +51,7 @@ export class DB<TBigNumber> {
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
    * @param {Array<string>} genericEventNames Array of names for generic event types
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
+   * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
    */
   public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType): Promise<void> {
     this.networkId = networkId;
