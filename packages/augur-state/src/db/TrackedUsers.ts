@@ -1,9 +1,9 @@
-import { AbstractDB } from './AbstractDB';
+import { AbstractDB, PouchDBFactoryType } from './AbstractDB';
 import * as _ from "lodash";
 
 export class TrackedUsers extends AbstractDB {
-    constructor(networkId: number) {
-        super(networkId, networkId + "-TrackedUsers");
+    constructor(networkId: number, dbFactory: PouchDBFactoryType) {
+        super(networkId, networkId + "-TrackedUsers", dbFactory);
     }
 
     public async setUserTracked(user: string): Promise<PouchDB.Core.Response> {

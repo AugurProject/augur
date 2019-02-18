@@ -1,10 +1,10 @@
 import { Controller } from "./Controller";
 import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
-
-import { ethers } from "ethers";
-import { EthersProvider } from "ethers-provider";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { ethers } from 'ethers';
+import { EthersProvider } from 'ethers-provider';
+import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
+import { PouchDBFactory } from "./db/AbstractDB";
 
 const BLOCKSTREAM_DELAY = 10;
 const TEST_RINKEBY_URL = "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM";
@@ -15,7 +15,8 @@ export async function start() {
   const provider = new EthersProvider(TEST_RINKEBY_URL);
   const contractDependencies = new ContractDependenciesEthers(provider, undefined, TEST_ACCOUNT);
   const augur = await Augur.create(provider, contractDependencies);
-  const controller = new Controller<ethers.utils.BigNumber>(augur, TEST_NETWORK_ID, BLOCKSTREAM_DELAY, uploadBlockNumbers[TEST_NETWORK_ID], [TEST_ACCOUNT]);
+  const pouchDBFactory = PouchDBFactory({});
+  const controller = new Controller<ethers.utils.BigNumber>(augur, TEST_NETWORK_ID, BLOCKSTREAM_DELAY, uploadBlockNumbers[TEST_NETWORK_ID], [TEST_ACCOUNT], pouchDBFactory);
   controller.run();
 }
 
