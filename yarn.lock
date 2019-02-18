@@ -2170,6 +2170,13 @@ abortcontroller-polyfill@^1.1.9:
   resolved "https://registry.yarnpkg.com/abortcontroller-polyfill/-/abortcontroller-polyfill-1.2.1.tgz#4e88847513a4ed691d5e4899d8b3a3af6f7d90ee"
   integrity sha512-9jN7+BijYKWO8fxfcG7QZh7js6V+g3OjkxMRHfKWNjjs85048VY4cd27Uoe6yk55P66L/z7Dflu5+YEApgMzkA==
 
+abstract-leveldown@2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/abstract-leveldown/-/abstract-leveldown-2.4.1.tgz#b3bfedb884eb693a12775f0c55e9f0a420ccee64"
+  integrity sha1-s7/tuITraToSd18MVenwpCDM7mQ=
+  dependencies:
+    xtend "~4.0.0"
+
 abstract-leveldown@^4.0.0, abstract-leveldown@~4.0.0:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/abstract-leveldown/-/abstract-leveldown-4.0.3.tgz#cb636f4965fbe117f5c8b76a7d51dd42aaed0580"
@@ -8674,6 +8681,11 @@ immediate@3.0.6:
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
   integrity sha1-nbHb0Pr43m++D13V5Wu2BigN5ps=
 
+immediate@^3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.2.3.tgz#d140fa8f614659bd6541233097ddaac25cdd991c"
+  integrity sha1-0UD6j2FGWb1lQSMwl92qwlzdmRw=
+
 immutable-delete@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/immutable-delete/-/immutable-delete-1.0.1.tgz#c8956079343b787435d9b5a08d50f654da002c9f"
@@ -11247,6 +11259,11 @@ ltgt@2.2.1:
   resolved "https://registry.yarnpkg.com/ltgt/-/ltgt-2.2.1.tgz#f35ca91c493f7b73da0e07495304f17b31f87ee5"
   integrity sha1-81ypHEk/e3PaDgdJUwTxezH4fuU=
 
+ltgt@~2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/ltgt/-/ltgt-2.1.3.tgz#10851a06d9964b971178441c23c9e52698eece34"
+  integrity sha1-EIUaBtmWS5cReEQcI8nlJpjuzjQ=
+
 make-dir@^1.0.0, make-dir@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-1.3.0.tgz#79c1033b80515bd6d24ec9933e860ca75ee27f0c"
@@ -11407,6 +11424,17 @@ mem@^4.0.0:
     map-age-cleaner "^0.1.1"
     mimic-fn "^1.0.0"
     p-is-promise "^1.1.0"
+
+memdown@1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/memdown/-/memdown-1.2.4.tgz#cd9a34aaf074d53445a271108eb4b8dd4ec0f27f"
+  integrity sha1-zZo0qvB01TRFonEQjrS43U7A8n8=
+  dependencies:
+    abstract-leveldown "2.4.1"
+    functional-red-black-tree "^1.0.1"
+    immediate "^3.2.3"
+    inherits "~2.0.1"
+    ltgt "~2.1.3"
 
 memoizee@0.4.14:
   version "0.4.14"
@@ -13820,6 +13848,47 @@ pouchdb-abstract-mapreduce@7.0.0:
     pouchdb-md5 "7.0.0"
     pouchdb-utils "7.0.0"
 
+pouchdb-adapter-leveldb-core@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/pouchdb-adapter-leveldb-core/-/pouchdb-adapter-leveldb-core-7.0.0.tgz#340667628cc12a325e99ad5f3a0abba084511063"
+  integrity sha512-LL5bjUXJSMW33F58MAZ0MbihWeHCEjx0uoZjIGRBnpq74bsUQwJVtFSP0TqR/cXCuimCt1ATNBStRc9pr5Avrg==
+  dependencies:
+    argsarray "0.0.1"
+    buffer-from "1.1.0"
+    double-ended-queue "2.1.0-0"
+    levelup "3.0.1"
+    pouchdb-adapter-utils "7.0.0"
+    pouchdb-binary-utils "7.0.0"
+    pouchdb-collections "7.0.0"
+    pouchdb-errors "7.0.0"
+    pouchdb-json "7.0.0"
+    pouchdb-md5 "7.0.0"
+    pouchdb-merge "7.0.0"
+    pouchdb-utils "7.0.0"
+    sublevel-pouchdb "7.0.0"
+    through2 "2.0.3"
+
+pouchdb-adapter-memory@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/pouchdb-adapter-memory/-/pouchdb-adapter-memory-7.0.0.tgz#ba7a9719f2679b3f857a474e7c6be899640b3ca8"
+  integrity sha512-ZBg3SRtyEjgNOriB2k6PGqjCE/v2dertiN/L/tk84tWqi2J4UScWzIOiIbuhY7eUrHQK1Lj1Eq2vpYilYCG8eQ==
+  dependencies:
+    memdown "1.2.4"
+    pouchdb-adapter-leveldb-core "7.0.0"
+    pouchdb-utils "7.0.0"
+
+pouchdb-adapter-utils@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/pouchdb-adapter-utils/-/pouchdb-adapter-utils-7.0.0.tgz#1ac8d34481911e0e9a9bf51024610a2e7351dc80"
+  integrity sha512-UWKPC6jkz6mHUzZefrU7P5X8ZGvBC8LSNZ7BIp0hWvJE6c20cnpDwedTVDpZORcCbVJpDmFOHBYnOqEIblPtbA==
+  dependencies:
+    pouchdb-binary-utils "7.0.0"
+    pouchdb-collections "7.0.0"
+    pouchdb-errors "7.0.0"
+    pouchdb-md5 "7.0.0"
+    pouchdb-merge "7.0.0"
+    pouchdb-utils "7.0.0"
+
 pouchdb-binary-utils@7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/pouchdb-binary-utils/-/pouchdb-binary-utils-7.0.0.tgz#cb71a288b09572a231f6bab1b4aed201c4d219a7"
@@ -13865,6 +13934,13 @@ pouchdb-find@^7.0.0:
     pouchdb-selector-core "7.0.0"
     pouchdb-utils "7.0.0"
 
+pouchdb-json@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/pouchdb-json/-/pouchdb-json-7.0.0.tgz#d9860f66f27a359ac6e4b24da4f89b6909f37530"
+  integrity sha512-w0bNRu/7VmmCrFWMYAm62n30wvJJUT2SokyzeTyj3hRohj4GFwTRg1mSZ+iAmxgRKOFE8nzZstLG/WAB4Ymjew==
+  dependencies:
+    vuvuzela "1.0.3"
+
 pouchdb-mapreduce-utils@7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/pouchdb-mapreduce-utils/-/pouchdb-mapreduce-utils-7.0.0.tgz#ff342e9d515d4c9cf0b19ad85c78f10f2568493b"
@@ -13882,6 +13958,11 @@ pouchdb-md5@7.0.0:
   dependencies:
     pouchdb-binary-utils "7.0.0"
     spark-md5 "3.0.0"
+
+pouchdb-merge@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/pouchdb-merge/-/pouchdb-merge-7.0.0.tgz#9f476ce7e32aae56904ad770ae8a1dfe14b57547"
+  integrity sha512-tci5u6NpznQhGcPv4ho1h0miky9rs+ds/T9zQ9meQeDZbUojXNaX1Jxsb0uYEQQ+HMqdcQs3Akdl0/u0mgwPGg==
 
 pouchdb-selector-core@7.0.0:
   version "7.0.0"
@@ -16840,6 +16921,16 @@ subarg@^1.0.0:
   integrity sha1-9izxdYHplrSPyWVpn1TAauJouNI=
   dependencies:
     minimist "^1.1.0"
+
+sublevel-pouchdb@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/sublevel-pouchdb/-/sublevel-pouchdb-7.0.0.tgz#4bbcd778737928580539be7d3106a20e038ae2f6"
+  integrity sha512-yRLCq7tM2MzbJaNAbHnReS3rCXk9bwo3Noy6GugR6c2IukAix9XcrnJstMdvlrVmv1/3wpAOt6jsHH/OxSNGJQ==
+  dependencies:
+    inherits "2.0.3"
+    level-codec "7.0.1"
+    ltgt "2.2.1"
+    readable-stream "1.0.33"
 
 sugarss@^1.0.0:
   version "1.0.1"

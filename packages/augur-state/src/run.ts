@@ -3,6 +3,7 @@ import { Augur } from 'augur-api';
 import { ethers } from 'ethers';
 import { EthersProvider } from 'ethers-provider';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
+import { PouchDBFactory } from "./db/AbstractDB";
 const uploadBlockNumbers = require('augur-artifacts/upload-block-numbers.json');
 
 const BLOCKSTREAM_DELAY = 10;
@@ -14,7 +15,8 @@ export async function start() {
   const provider = new EthersProvider(TEST_RINKEBY_URL);
   const contractDependencies = new ContractDependenciesEthers(provider, undefined, TEST_ACCOUNT);
   const augur = await Augur.create(provider, contractDependencies);
-  const controller = new Controller<ethers.utils.BigNumber>(augur, TEST_NETWORK_ID, BLOCKSTREAM_DELAY, uploadBlockNumbers[TEST_NETWORK_ID], [TEST_ACCOUNT]);
+  const pouchDBFactory = PouchDBFactory({});
+  const controller = new Controller<ethers.utils.BigNumber>(augur, TEST_NETWORK_ID, BLOCKSTREAM_DELAY, uploadBlockNumbers[TEST_NETWORK_ID], [TEST_ACCOUNT], pouchDBFactory);
   controller.run();
 }
 

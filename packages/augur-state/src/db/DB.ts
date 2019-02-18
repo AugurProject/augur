@@ -1,6 +1,7 @@
 import { SyncableDB } from './SyncableDB';
 import { Augur } from 'augur-api';
 import { SyncStatus } from './SyncStatus';
+import { PouchDBFactoryType } from "./AbstractDB";
 import { TrackedUsers } from './TrackedUsers';
 import { MetaDB, SequenceIds } from './MetaDB';
 import { UserSyncableDB } from './UserSyncableDB';
@@ -20,12 +21,13 @@ export class DB<TBigNumber> {
   private syncableDatabases: { [eventName: string]: SyncableDB<TBigNumber> } = {};
   private metaDatabase: MetaDB<TBigNumber>; // TODO Remove this if derived DBs are not used.
   public syncStatus: SyncStatus;
+  private pouchDBFactory: PouchDBFactoryType;
 
   public constructor () {}
 
   /**
    * Creates and returns a new dbController.
-   * 
+   *
    * @param {number} networkId Network on which to sync events
    * @param {number} blockstreamDelay Number of blocks by which to delay blockstream
    * @param {number} defaultStartSyncBlockNumber Block number at which to start sycing (if no higher block number has been synced)
@@ -34,15 +36,15 @@ export class DB<TBigNumber> {
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<DB<TBigNumber>> {
+  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType): Promise<DB<TBigNumber>> {
     const dbController = new DB<TBigNumber>();
-    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents);
+    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents, pouchDBFactory);
     return dbController;
   }
 
   /**
    * Creates databases to be used for syncing.
-   * 
+   *
    * @param {number} networkId Network on which to sync events
    * @param {number} blockstreamDelay Number of blocks by which to delay blockstream
    * @param {number} defaultStartSyncBlockNumber Block number at which to start sycing (if no higher block number has been synced)
@@ -50,11 +52,11 @@ export class DB<TBigNumber> {
    * @param {Array<string>} genericEventNames Array of names for generic event types
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<void> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType): Promise<void> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber);
-    this.trackedUsers = new TrackedUsers(networkId);
+    this.trackedUsers = new TrackedUsers(networkId, pouchDBFactory);
     this.metaDatabase = new MetaDB(this, networkId);
     this.genericEventNames = genericEventNames;
     this.userSpecificEvents = userSpecificEvents;
@@ -74,7 +76,7 @@ export class DB<TBigNumber> {
 
     // TODO Initialize full-text DB
 
-    // Always start syncing from 10 blocks behind the lowest 
+    // Always start syncing from 10 blocks behind the lowest
     // last-synced block (in case of restarting after a crash)
     const startSyncBlockNumber = await this.getSyncStartingBlock();
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
@@ -87,7 +89,7 @@ export class DB<TBigNumber> {
 
   /**
    * Called from SyncableDB constructor once SyncableDB is successfully created.
-   * 
+   *
    * @param {SyncableDB<TBigNumber>} db dbController that utilizes the SyncableDB
    */
   public notifySyncableDBAdded(db: SyncableDB<TBigNumber>): void {
@@ -96,7 +98,7 @@ export class DB<TBigNumber> {
 
   /**
    * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
-   * 
+   *
    * @param {Augur<TBigNumber>} augur Augur object with which to sync
    * @param {number} chunkSize Number of blocks to retrieve at a time when syncing logs
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
@@ -109,7 +111,7 @@ export class DB<TBigNumber> {
     }
     // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbSyncPromises)
-    .catch(error => { 
+    .catch(error => {
       throw error;
     });
 
@@ -124,7 +126,7 @@ export class DB<TBigNumber> {
     }
     // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbSyncPromises)
-    .catch(error => { 
+    .catch(error => {
       throw error;
     });
 
@@ -134,10 +136,10 @@ export class DB<TBigNumber> {
   /**
    * Gets the block number at which to begin syncing. (That is, the lowest last-synced
    * block across all event log databases or the upload block number for this network.)
-   * 
-   * TODO If derived DBs are used, the last-synced block in `this.metaDatabase` 
+   *
+   * TODO If derived DBs are used, the last-synced block in `this.metaDatabase`
    * should also be taken into account here.
-   * 
+   *
    * @returns {Promise<number>} Promise to the block number at which to begin syncing.
    */
   public async getSyncStartingBlock(): Promise<number> {
@@ -156,7 +158,7 @@ export class DB<TBigNumber> {
 
   /**
    * Creates a name for a SyncableDB/UserSyncableDB based on `eventName` & `trackableUserAddress`.
-   * 
+   *
    * @param {string} eventName Event log name
    * @param {string=} trackableUserAddress User address to append to DB name
    */
@@ -168,10 +170,10 @@ export class DB<TBigNumber> {
   }
 
   /**
-   * Returns the current update_seqs from all SyncableDBs/UserSyncableDBs. 
-   * 
+   * Returns the current update_seqs from all SyncableDBs/UserSyncableDBs.
+   *
    * TODO Remove this function if derived DBs are not used.
-   * 
+   *
    * @returns {Promise<SequenceIds>} Promise to a SequenceIds object
    */
   public async getAllSequenceIds(): Promise<SequenceIds> {
@@ -193,7 +195,7 @@ export class DB<TBigNumber> {
 
   /**
    * Rolls back all blocks from blockNumber onward.
-   * 
+   *
    * @param {number} blockNumber Oldest block number to delete
    */
   public async rollback(blockNumber: number): Promise<void> {
@@ -205,7 +207,7 @@ export class DB<TBigNumber> {
     }
     // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbRollbackPromises)
-    .catch(error => { 
+    .catch(error => {
       throw error;
     });
 
@@ -218,23 +220,23 @@ export class DB<TBigNumber> {
     }
     // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbRollbackPromises)
-    .catch(error => { 
+    .catch(error => {
       throw error;
     });
 
-    // TODO If derived DBs end up getting used, call `this.metaDatabase.find` 
-    // here to get sequenceIds for blocks >= blockNumber. Then call 
+    // TODO If derived DBs end up getting used, call `this.metaDatabase.find`
+    // here to get sequenceIds for blocks >= blockNumber. Then call
     // `this.metaDatabase.rollback` to remove those documents from derived DBs.
   }
 
  /**
   * Adds a new block to a SyncableDB/UserSyncableDB and updates MetaDB.
-  * 
+  *
   * TODO Define blockLogs interface
-  * 
+  *
   * @param {string} dbName Name of the database to which the block should be added
   * @param {any} blockLogs Logs from a new block
-  */ 
+  */
   public async addNewBlock(dbName: string, blockLogs: any): Promise<void> {
     let db = this.syncableDatabases[dbName];
     if (!db) {
@@ -242,13 +244,13 @@ export class DB<TBigNumber> {
     }
     try {
       await db.addNewBlock(blockLogs);
-      
+
       const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(dbName);
       if (highestSyncBlock !== blockLogs[0].blockNumber) {
         throw new Error("Highest sync block is " + highestSyncBlock + "; newest block number is " + blockLogs[0].blockNumber);
       }
-      
-      // TODO If derived DBs end up getting used, call `this.getAllSequenceIds` here 
+
+      // TODO If derived DBs end up getting used, call `this.getAllSequenceIds` here
       // and pass the returned sequenceIds into `this.metaDatabase.addNewBlock`.
     } catch (err) {
       throw err;
@@ -257,10 +259,10 @@ export class DB<TBigNumber> {
 
   /**
    * Queries a SyncableDB.
-   * 
+   *
    * @param {string} dbName Name of the SyncableDB to query
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object 
-   * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse 
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse
    */
   public async findInSyncableDB(dbName: string, request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
     return await this.syncableDatabases[dbName].find(request);
@@ -268,9 +270,9 @@ export class DB<TBigNumber> {
 
   /**
    * Queries the MetaDB.
-   * 
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object 
-   * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse 
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse
    */
   public async findInMetaDB(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
     return await this.metaDatabase.find(request);

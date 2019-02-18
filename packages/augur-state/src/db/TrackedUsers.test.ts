@@ -1,21 +1,13 @@
 import { TrackedUsers } from "./TrackedUsers";
+import { PouchDBFactory } from "./AbstractDB";
+
 
 const TEST_NETWORK_ID = 4;
-
-
-async function wipeDb(DbClass: new (networkId: number) => TrackedUsers, networkId: number) {
-    const dbInstance = new DbClass(networkId);
-    await dbInstance["db"].destroy();
-}
-
-
-beforeEach(async () => {
-    await wipeDb(TrackedUsers, TEST_NETWORK_ID);
-});
+const DB_FACTORY = PouchDBFactory({ adapter: "memory" });
 
 
 test("track a user", async () => {
-    const trackedUsers = new TrackedUsers(TEST_NETWORK_ID);
+    const trackedUsers = new TrackedUsers(TEST_NETWORK_ID, DB_FACTORY);
 
     expect(await trackedUsers.setUserTracked("mock")).toMatchObject({
         ok: true,
