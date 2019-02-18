@@ -21,7 +21,6 @@ export class DB<TBigNumber> {
   private syncableDatabases: { [eventName: string]: SyncableDB<TBigNumber> } = {};
   private metaDatabase: MetaDB<TBigNumber>; // TODO Remove this if derived DBs are not used.
   public syncStatus: SyncStatus;
-  private pouchDBFactory: PouchDBFactoryType;
 
   public constructor () {}
 
