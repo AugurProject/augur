@@ -8,6 +8,10 @@ import classNames from "classnames";
 
 import shouldComponentUpdatePure from "utils/should-component-update-pure";
 import debounce from "utils/debounce";
+import {
+  HOSTED_AUGUR_NODE,
+  HOSTED_ETHEREUM_NODE
+} from "modules/app/constants/endpoint-url-params";
 
 import { tween } from "shifty";
 import { isEqual } from "lodash";
@@ -220,11 +224,35 @@ export default class AppView extends Component {
         useWeb3Transport
       },
       (err, res) => {
-        if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
-          updateModal({
-            type: MODAL_NETWORK_CONNECT,
-            isInitialConnection: true
-          });
+        const useHostedAugurNode = err || (res && !res.augurNode);
+        const useHostedEthereumNode = err || (res && !res.ethereumNode);
+        // If issue connecting to a augur or ethereum node fallback on hosted nodes
+        if (useHostedAugurNode || useHostedEthereumNode) {
+          initAugur(
+            history,
+            {
+              ...env,
+              augurNode: useHostedAugurNode ? HOSTED_AUGUR_NODE : "",
+              ethereumNodeHttp: useHostedEthereumNode
+                ? HOSTED_ETHEREUM_NODE
+                : "",
+              ethereumNodeWs: useHostedEthereumNode ? "" : ethereumNodeWs,
+              useWeb3Transport
+            },
+            (err, res) => {
+              // If issue with hosted nodes, allow user to provide custom endpoints
+              if (
+                err ||
+                (res && !res.ethereumNode) ||
+                (res && !res.augurNode)
+              ) {
+                updateModal({
+                  type: MODAL_NETWORK_CONNECT,
+                  isInitialConnection: true
+                });
+              }
+            }
+          );
         }
       }
     );
