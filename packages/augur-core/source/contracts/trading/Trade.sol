@@ -26,6 +26,7 @@ contract Trade is Initializable, ReentrancyGuard {
         bytes32 tradeGroupId;
         uint256 loopLimit;
         bool ignoreShares;
+        address affiliateAddress;
         address sender;
     }
 
@@ -43,7 +44,7 @@ contract Trade is Initializable, ReentrancyGuard {
         return true;
     }
 
-    function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _sender) internal pure returns (Data) {
+    function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender) internal pure returns (Data) {
         require(_amount > 0);
 
         return Data({
@@ -57,25 +58,26 @@ contract Trade is Initializable, ReentrancyGuard {
             tradeGroupId: _tradeGroupId,
             loopLimit: _loopLimit,
             ignoreShares: _ignoreShares,
+            affiliateAddress: _affiliateAddress,
             sender: _sender
         });
     }
 
-    function createWithTotalCost(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _sender) internal pure returns (Data) {
-        return create(_direction, _market, _outcome, _totalCost / _price, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _sender);
+    function createWithTotalCost(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender) internal pure returns (Data) {
+        return create(_direction, _market, _outcome, _totalCost / _price, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, _sender);
     }
 
-    function publicTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares) external afterInitialized returns (bytes32) {
+    function publicTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress) external afterInitialized returns (bytes32) {
         require(augur.isValidMarket(_market));
-        Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, msg.sender);
+        Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender);
         bytes32 _result = trade(_tradeData);
         _market.assertBalances();
         return _result;
     }
 
-    function publicFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares) external afterInitialized returns (uint256) {
+    function publicFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress) external afterInitialized returns (uint256) {
         require(augur.isValidMarket(_market));
-        Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), _tradeGroupId, _loopLimit, _ignoreShares, msg.sender);
+        Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender);
         uint256 _result = fillBestOrder(_tradeData);
         _market.assertBalances();
         return _result;
@@ -99,7 +101,7 @@ contract Trade is Initializable, ReentrancyGuard {
         while (_orderId != 0 && _bestAmount > 0 && _tradeData.loopLimit > 0 && isMatch(_orderId, _type, _orderPrice, _tradeData.price)) {
             bytes32 _nextOrderId = orders.getWorseOrderId(_orderId);
             orders.setPrice(_tradeData.market, _tradeData.outcome, _orderPrice);
-            _bestAmount = fillOrder.fillOrder(_tradeData.sender, _orderId, _bestAmount, _tradeData.tradeGroupId, _tradeData.ignoreShares);
+            _bestAmount = fillOrder.fillOrder(_tradeData.sender, _orderId, _bestAmount, _tradeData.tradeGroupId, _tradeData.ignoreShares, _tradeData.affiliateAddress);
             _orderId = _nextOrderId;
             _orderPrice = orders.getPrice(_orderId);
             _tradeData.loopLimit -= 1;
@@ -117,17 +119,17 @@ contract Trade is Initializable, ReentrancyGuard {
         return _type == Order.Types.Bid ? _orderPrice >= _price : _orderPrice <= _price;
     }
 
-    function publicTradeWithTotalCost(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares) external afterInitialized returns (bytes32) {
+    function publicTradeWithTotalCost(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress) external afterInitialized returns (bytes32) {
         require(augur.isValidMarket(_market));
-        Data memory _tradeData = createWithTotalCost(_direction, _market, _outcome, _totalCost, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, msg.sender);
+        Data memory _tradeData = createWithTotalCost(_direction, _market, _outcome, _totalCost, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender);
         bytes32 _result = trade(_tradeData);
         _market.assertBalances();
         return _result;
     }
 
-    function publicFillBestOrderWithTotalCost(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares) external afterInitialized returns (uint256) {
+    function publicFillBestOrderWithTotalCost(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress) external afterInitialized returns (uint256) {
         require(augur.isValidMarket(_market));
-        Data memory _tradeData = createWithTotalCost(_direction, _market, _outcome, _totalCost, _price, bytes32(0), bytes32(0), _tradeGroupId, _loopLimit, _ignoreShares, msg.sender);
+        Data memory _tradeData = createWithTotalCost(_direction, _market, _outcome, _totalCost, _price, bytes32(0), bytes32(0), _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender);
         uint256 _result = fillBestOrder(_tradeData);
         _market.assertBalances();
         return _result;

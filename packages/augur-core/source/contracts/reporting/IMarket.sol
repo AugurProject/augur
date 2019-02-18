@@ -38,7 +38,7 @@ contract IMarket is ITyped, IOwnable {
     function getInitialReporterAddress() public view returns (address);
     function getDesignatedReportingEndTime() public view returns (uint256);
     function deriveMarketCreatorFeeAmount(uint256 _amount) public view returns (uint256);
-    function recordMarketCreatorFees(uint256 _marketCreatorFees) public returns (bool);
+    function recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress) public returns (bool);
     function isContainerForShareToken(IShareToken _shadyTarget) public view returns (bool);
     function isContainerForReportingParticipant(IReportingParticipant _reportingParticipant) public view returns (bool);
     function isInvalid() public view returns (bool);

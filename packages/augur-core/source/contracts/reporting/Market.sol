@@ -56,6 +56,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     Map public crowdsourcers;
     IShareToken[] private shareTokens;
     uint256 public marketCreatorFeesAttoEth;
+    mapping (address => uint256) public affiliateFeesAttoEth;
 
     IAugur public augur;
 
@@ -258,21 +259,47 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         return _amount / feeDivisor;
     }
 
-    function recordMarketCreatorFees(uint256 _marketCreatorFees) public returns (bool) {
+    function recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress) public returns (bool) {
         require(augur.isKnownFeeSender(msg.sender));
+        if (_affiliateAddress != NULL_ADDRESS && affiliateFeeDivisor != 0) {
+            uint256 _affiliateFees = _marketCreatorFees / affiliateFeeDivisor;
+            affiliateFeesAttoEth[_affiliateAddress] = _affiliateFees;
+            _marketCreatorFees = _marketCreatorFees.sub(_affiliateFees);
+        }
         marketCreatorFeesAttoEth = marketCreatorFeesAttoEth.add(_marketCreatorFees);
+        if (isFinalized()) {
+            distributeMarketCreatorFees(_affiliateAddress);
+        }
     }
 
     function distributeValidityBondAndMarketCreatorFees() private returns (bool) {
         // If the market resolved to invalid the bond gets sent to the auction. Otherwise it gets returned to the market creator.
-        uint256 _bondAndFees = validityBondAttoEth.add(marketCreatorFeesAttoEth);
+        marketCreatorFeesAttoEth = validityBondAttoEth.add(marketCreatorFeesAttoEth);
+        return distributeMarketCreatorFees(NULL_ADDRESS);
+    }
+
+    function distributeMarketCreatorFees(address _affiliateAddress) private returns (bool) {
         if (!isInvalid()) {
-            cash.transfer(owner, _bondAndFees);
+            cash.transfer(owner, marketCreatorFeesAttoEth);
+            if (_affiliateAddress != NULL_ADDRESS) {
+                withdrawAffiliateFees(_affiliateAddress);
+            }
         } else {
             IAuction _auction = universe.getAuction();
-            cash.transfer(universe.getAuction(), _bondAndFees);
-            _auction.recordFees(_bondAndFees);
+            cash.transfer(universe.getAuction(), marketCreatorFeesAttoEth);
+            _auction.recordFees(marketCreatorFeesAttoEth);
         }
+        marketCreatorFeesAttoEth = 0;
+        return true;
+    }
+
+    function withdrawAffiliateFees(address _affiliate) public returns (bool) {
+        uint256 _affiliateBalance = affiliateFeesAttoEth[_affiliate];
+        if (_affiliateBalance == 0) {
+            return true;
+        }
+        affiliateFeesAttoEth[_affiliate] = 0;
+        cash.transfer(_affiliate, _affiliateBalance);
         return true;
     }
 
