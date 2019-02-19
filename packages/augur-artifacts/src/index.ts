@@ -1,5 +1,8 @@
 export const abi = require("./abi.json");
 export const addresses = require("./addresses.json");
+export const contracts = require("./contracts.json");
+export const uploadBlockNumbers = require("./upload-block-numbers.json");
+
 export type NetworkId =
     '1'
     | '3'

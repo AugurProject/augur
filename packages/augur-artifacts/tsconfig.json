@@ -9,7 +9,9 @@
   ],
   "files": [
     "./src/abi.json",
-    "./src/addresses.json"
+    "./src/addresses.json",
+    "./src/contracts.json",
+    "./src/upload-block-numbers.json"
   ],
   "references": []
 }
