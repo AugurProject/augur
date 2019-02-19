@@ -446,7 +446,7 @@ class ContractsFixture:
             universe = universe,
             endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerEthInWei = 10**16,
-            affliateFeeDivisor = 0,
+            affliateFeeDivisor = 4,
             designatedReporterAddress = tester.a0,
             sender = sender,
             topic= topic,
