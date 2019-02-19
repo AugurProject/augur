@@ -1,4 +1,4 @@
-import { Augur } from "@augur/api";
+import { Augur } from "@augurproject/api";
 import { DB } from "../db/DB";
 import { Markets } from "./Markets";
 import { Users } from "./Users";
