@@ -1,9 +1,10 @@
 import { Controller } from "./Controller";
-import { Augur } from '@augur/api';
-import { ethers } from 'ethers';
-import { EthersProvider } from 'ethers-provider';
-import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
-const uploadBlockNumbers = require('augur-artifacts/upload-block-numbers.json');
+import { Augur } from "@augurproject/api";
+import { uploadBlockNumbers } from "@augurproject/artifacts";
+
+import { ethers } from "ethers";
+import { EthersProvider } from "ethers-provider";
+import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 
 const BLOCKSTREAM_DELAY = 10;
 const TEST_RINKEBY_URL = "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM";
