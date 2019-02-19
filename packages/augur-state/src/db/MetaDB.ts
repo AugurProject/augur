@@ -1,23 +1,23 @@
-import { AbstractDB } from './AbstractDB';
+import { AbstractDB, PouchDBFactoryType } from "./AbstractDB";
 import { DB } from './DB';
 import { SyncStatus } from './SyncStatus';
 import * as _ from "lodash";
 
 export interface SequenceIds {
-    [dbName: string]: string 
+    [dbName: string]: string
 }
 
 /**
  * Associates block numbers with event DB sequence IDs.
  * Used for doing syncing/rolling back of derived DBs.
- * 
+ *
  * TODO Remove this class if derived DBs are not used.
  */
 export class MetaDB<TBigNumber> extends AbstractDB {
     private syncStatus: SyncStatus;
 
-    constructor(dbController: DB<TBigNumber>, networkId: number) {
-        super(networkId, networkId + "-BlockNumbersSequenceIds");
+    constructor(dbController: DB<TBigNumber>, networkId: number, dbFactory: PouchDBFactoryType) {
+        super(networkId, networkId + "-BlockNumbersSequenceIds", dbFactory);
         this.syncStatus = dbController.syncStatus;
         this.db.createIndex({
             index: {
@@ -28,7 +28,7 @@ export class MetaDB<TBigNumber> extends AbstractDB {
 
     public async addNewBlock(blockNumber: number, sequenceIds: SequenceIds) {
         await this.upsertDocument(
-            this.networkId + "-" + blockNumber, 
+            this.networkId + "-" + blockNumber,
             {
                 blockNumber,
                 sequenceIds: JSON.stringify(sequenceIds),

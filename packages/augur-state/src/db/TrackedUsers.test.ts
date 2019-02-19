@@ -14,5 +14,6 @@ test("track a user", async () => {
         id: "mock",
         rev: expect.any(String)
     });
+    await trackedUsers.getUsers();
     expect(await trackedUsers.getUsers()).toEqual(["mock"]);
 });

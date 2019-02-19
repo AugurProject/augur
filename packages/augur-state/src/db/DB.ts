@@ -20,9 +20,12 @@ export class DB<TBigNumber> {
   private userSpecificEvents: Array<UserSpecificEvent>;
   private syncableDatabases: { [eventName: string]: SyncableDB<TBigNumber> } = {};
   private metaDatabase: MetaDB<TBigNumber>; // TODO Remove this if derived DBs are not used.
+  public readonly pouchDBFactory: PouchDBFactoryType;
   public syncStatus: SyncStatus;
 
-  public constructor () {}
+  public constructor (pouchDBFactory: PouchDBFactoryType) {
+    this.pouchDBFactory = pouchDBFactory;
+  }
 
   /**
    * Creates and returns a new dbController.
@@ -37,8 +40,8 @@ export class DB<TBigNumber> {
    * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
    */
   public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType): Promise<DB<TBigNumber>> {
-    const dbController = new DB<TBigNumber>();
-    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents, pouchDBFactory);
+    const dbController = new DB<TBigNumber>(pouchDBFactory);
+    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents);
     return dbController;
   }
 
@@ -53,12 +56,12 @@ export class DB<TBigNumber> {
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType): Promise<void> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<void> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
-    this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber);
-    this.trackedUsers = new TrackedUsers(networkId, pouchDBFactory);
-    this.metaDatabase = new MetaDB(this, networkId);
+    this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
+    this.trackedUsers = new TrackedUsers(networkId, this.pouchDBFactory);
+    this.metaDatabase = new MetaDB(this, networkId, this.pouchDBFactory);
     this.genericEventNames = genericEventNames;
     this.userSpecificEvents = userSpecificEvents;
 
