@@ -49,6 +49,7 @@ contract IAugur {
     function logAuctionTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value) public returns (bool);
     function logAuctionTokenBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool);
     function logAuctionTokenMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool);
+    function logOrderPriceChanged(IUniverse _universe, bytes32 _orderId, uint256 _price) public returns (bool);
     function recordAuctionTokens(IUniverse _universe) public returns (bool);
     function isKnownFeeSender(address _feeSender) public view returns (bool);
     function lookup(bytes32 _key) public view returns (address);
