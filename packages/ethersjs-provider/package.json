@@ -28,8 +28,8 @@
   "dependencies": {
     "ethers": "4.0.24",
     "typescript": "3.2.1",
-    "augur-artifacts": "10.0.0-0",
-    "augur-api": "1.0.0-0",
+    "@augur/artifacts": "10.0.0-0",
+    "@augur/api": "1.0.0-0",
     "contract-dependencies": "1.0.0-0",
     "contract-dependencies-ethers": "1.0.0-0"
   },

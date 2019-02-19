@@ -1,5 +1,5 @@
 import { Controller } from "./Controller";
-import { Augur } from 'augur-api';
+import { Augur } from '@augur/api';
 import { ethers } from 'ethers';
 import { EthersProvider } from 'ethers-provider';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';

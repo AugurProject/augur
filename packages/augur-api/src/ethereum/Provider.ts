@@ -1,4 +1,4 @@
-import { NetworkId } from 'augur-artifacts';
+import { NetworkId } from '@augur/artifacts';
 import { Abi } from "ethereum";
 import {
   Log,

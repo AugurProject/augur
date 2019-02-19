@@ -1,5 +1,5 @@
 import { DB, UserSpecificEvent } from './db/DB';
-import { Augur } from 'augur-api';
+import { Augur } from '@augur/api';
 
 // TODO Get these from GenericContractInterfaces (and do not include any that are unneeded)
 const genericEventNames: Array<string> = [

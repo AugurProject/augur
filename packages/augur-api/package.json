@@ -1,5 +1,5 @@
 {
-  "name": "augur-api",
+  "name": "@augur/api",
   "version": "1.0.0-0",
   "description": "Augur API",
   "author": "The Augur Developers <team@augur.net>",
@@ -32,10 +32,11 @@
     "lodash": "4.17.11",
     "postinstall-build": "5.0.3",
     "typescript": "3.2.1",
-    "augur-core": "2.0.0-0",
-    "augur-artifacts": "10.0.0-0"
+    "@augur/core": "2.0.0-0",
+    "@augur/artifacts": "10.0.0-0"
   },
   "devDependencies": {
+    "@augur/types": "10.0.0-0",
     "ts-node": "7.0.1"
   },
   "buildDependencies": [

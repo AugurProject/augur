@@ -1,5 +1,5 @@
 {
-  "name": "augur-tools",
+  "name": "@augur/tools",
   "version": "6.0.0",
   "description": "Tools and dev dependencies",
   "main": "index.js",
