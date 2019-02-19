@@ -5,7 +5,7 @@ import 'factories/MapFactory.sol';
 
 
 contract MapHelper {
-    Map private map;
+    IMap private map;
 
     function init(IAugur _augur) public returns (bool) {
         map = MapFactory(_augur.lookup("MapFactory")).createMap(_augur, this);
