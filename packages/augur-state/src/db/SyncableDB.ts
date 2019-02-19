@@ -1,7 +1,7 @@
-import { AbstractDB, BaseDocument } from './AbstractDB';
-import { Augur, Log, ParsedLog } from 'augur-api';
-import { DB } from './DB';
-import { SyncStatus } from './SyncStatus';
+import { AbstractDB, BaseDocument } from "./AbstractDB";
+import { Augur, Log, ParsedLog } from "@augurproject/api";
+import { DB } from "./DB";
+import { SyncStatus } from "./SyncStatus";
 import * as _ from "lodash";
 
 /**
@@ -84,7 +84,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
                 sort: [{blockNumber: 'desc'}],
             });
             if (blocksToRemove.docs.length > 0) {
-                console.log("\n\nDeleting the following blocks from " + this.dbName)
+              console.log("\n\nDeleting the following blocks from " + this.dbName);
                 console.log(blocksToRemove.docs);
                 for (let doc of blocksToRemove.docs) {
                     // Remove block number from event DB

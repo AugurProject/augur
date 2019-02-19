@@ -1,7 +1,7 @@
-import { Provider } from '../ethereum/Provider';
-import { ParsedLog } from '../ethereum/types';
+import { Provider } from "../ethereum/Provider";
+import { ParsedLog } from "../ethereum/types";
 import * as _ from "lodash";
-import { abi } from 'augur-artifacts';
+import { abi } from "@augurproject/artifacts";
 import { Abi } from "ethereum";
 
 export class Events {

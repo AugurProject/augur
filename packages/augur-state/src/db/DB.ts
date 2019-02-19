@@ -1,9 +1,9 @@
-import { SyncableDB } from './SyncableDB';
-import { Augur } from 'augur-api';
-import { SyncStatus } from './SyncStatus';
-import { TrackedUsers } from './TrackedUsers';
-import { MetaDB, SequenceIds } from './MetaDB';
-import { UserSyncableDB } from './UserSyncableDB';
+import { SyncableDB } from "./SyncableDB";
+import { Augur } from "@augurproject/api";
+import { SyncStatus } from "./SyncStatus";
+import { TrackedUsers } from "./TrackedUsers";
+import { MetaDB, SequenceIds } from "./MetaDB";
+import { UserSyncableDB } from "./UserSyncableDB";
 
 export interface UserSpecificEvent {
   name: string;
@@ -78,7 +78,7 @@ export class DB<TBigNumber> {
     // last-synced block (in case of restarting after a crash)
     const startSyncBlockNumber = await this.getSyncStartingBlock();
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
-      console.log("Performing rollback of block " + startSyncBlockNumber + " onward")
+      console.log("Performing rollback of block " + startSyncBlockNumber + " onward");
       await this.rollback(startSyncBlockNumber);
     }
 

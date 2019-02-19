@@ -1,5 +1,5 @@
 {
-  "name": "augur-node",
+  "name": "@augurproject/node",
   "version": "10.0.0-0",
   "description": "Augur Node",
   "author": "The Augur Developers <team@augur.net>",
@@ -59,7 +59,7 @@
   "homepage": "https://github.com/AugurProject/augur-node#readme",
   "dependencies": {
     "async": "2.6.1",
-    "augur-artifacts": "10.0.0-0",
+    "@augurproject/artifacts": "10.0.0-0",
     "augur.js": "10.0.0-0",
     "bignumber.js": "6.0.0",
     "chalk": "2.4.2",
