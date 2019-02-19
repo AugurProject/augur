@@ -3,28 +3,28 @@
   "include": [],
   "references": [
     {
-      "path": "packages/ethersjs-provider"
+      "path": "./packages/ethersjs-provider"
     },
     {
-      "path": "packages/augur-core"
+      "path": "./packages/augur-core"
     },
     {
-      "path": "packages/augur-types"
+      "path": "./packages/augur-types"
     },
     {
-      "path": "packages/augur-api"
+      "path": "./packages/augur-api"
     },
     {
-      "path": "packages/augur-artifacts"
+      "path": "./packages/augur-artifacts"
     },
     {
-      "path": "packages/contract-dependencies"
+      "path": "./packages/contract-dependencies"
     },
     {
-      "path": "packages/augur-state"
+      "path": "./packages/augur-state"
     },
     {
-      "path": "packages/contract-dependencies-ethers"
+      "path": "./packages/contract-dependencies-ethers"
     }
   ]
 }

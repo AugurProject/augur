@@ -1,5 +1,5 @@
-import { GenericAugurInterfaces } from 'augur-core';
-import { ContractAddresses } from 'augur-artifacts';
+import { GenericAugurInterfaces } from '@augur/core';
+import { ContractAddresses } from '@augur/artifacts';
 
 export class Contracts<TBigNumber> {
   public augur: GenericAugurInterfaces.Augur<TBigNumber>;

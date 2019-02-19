@@ -1,5 +1,5 @@
-import { NetworkId } from 'augur-artifacts';
-import { Provider, Log, Filter, LogValues } from 'augur-api';
+import { NetworkId } from '@augur/artifacts';
+import { Provider, Log, Filter, LogValues } from '@augur/api';
 import { Transaction } from 'contract-dependencies';
 import { EthersProvider as EProvider } from 'contract-dependencies-ethers';
 import { ethers } from 'ethers'

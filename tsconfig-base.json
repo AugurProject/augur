@@ -18,7 +18,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "typeRoots": [
-      "node_modules/augur-types/types",
+      "node_modules/@augur/types/types",
       "node_modules/@types"
     ]
   }

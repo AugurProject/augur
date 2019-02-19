@@ -1,5 +1,5 @@
 import { SyncableDB } from "./SyncableDB";
-import { Augur, ParsedLog } from 'augur-api';
+import { Augur, ParsedLog } from '@augur/api';
 import { DB } from './DB';
 
 /**

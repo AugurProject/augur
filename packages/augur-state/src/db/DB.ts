@@ -1,5 +1,5 @@
 import { SyncableDB } from './SyncableDB';
-import { Augur } from 'augur-api';
+import { Augur } from '@augur/api';
 import { SyncStatus } from './SyncStatus';
 import { TrackedUsers } from './TrackedUsers';
 import { MetaDB, SequenceIds } from './MetaDB';

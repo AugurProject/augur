@@ -2,9 +2,9 @@ import { Provider } from './ethereum/Provider';
 import { Events } from './api/Events';
 import { Contracts } from './api/Contracts';
 import { Trade } from './api/Trade';
-import { GenericAugurInterfaces } from 'augur-core';
-import { NetworkId, NetworkContractAddresses, ContractAddresses } from 'augur-artifacts';
-import { addresses } from 'augur-artifacts';
+import { GenericAugurInterfaces } from '@augur/core';
+import { NetworkId, NetworkContractAddresses, ContractAddresses } from '@augur/artifacts';
+import { addresses } from '@augur/artifacts';
 
 export class Augur<TBigNumber> {
   public readonly provider: Provider;
