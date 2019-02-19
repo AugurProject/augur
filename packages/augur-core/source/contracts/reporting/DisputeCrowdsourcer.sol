@@ -14,7 +14,7 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
     IUniverse internal universe;
     IDisputeOverloadToken disputeOverloadToken;
 
-    string constant public name = "Dispute Token";
+    string constant public name = "Dispute Crowdsourcer Token";
     string constant public symbol = "DISP";
 
     function initialize(IAugur _augur, IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, IDisputeOverloadToken _disputeOverloadToken, address _erc820RegistryAddress) public beforeInitialized returns (bool) {
