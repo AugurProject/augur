@@ -300,6 +300,29 @@ def test_no_show_bond_down(contractsFixture, universe, market, cash):
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     assert universe.getOrCacheDesignatedReportNoShowBond() == noShowBond
 
+def test_market_rep_bond(contractsFixture, universe, market, cash):
+    noShowBond = universe.getOrCacheDesignatedReportNoShowBond()
+    designatedReportStake = universe.getOrCacheDesignatedReportStake()
+
+    assert universe.getOrCacheMarketRepBond() == max(noShowBond, designatedReportStake)
+
+    # Increase the no show bond:
+    numTicks = market.getNumTicks()
+    payoutNumerators = [0, numTicks, 0]
+    proceedToInitialReporting(contractsFixture, market)
+    assert market.doInitialReport(payoutNumerators, "", sender=tester.k1)
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    assert market.finalize()
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    newNoShowBond = universe.getOrCacheDesignatedReportNoShowBond()
+    assert newNoShowBond == noShowBond * 2
+
+    # The market REP bond is now equal to this higher bond:
+    assert universe.getOrCacheMarketRepBond() == newNoShowBond
+
+
 @fixture(scope="session")
 def reportingSnapshot(fixture, kitchenSinkSnapshot):
     fixture.resetToSnapshot(kitchenSinkSnapshot)

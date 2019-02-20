@@ -9,6 +9,7 @@ import 'reporting/IDisputeWindow.sol';
 import 'reporting/IReputationToken.sol';
 import 'reporting/IReportingParticipant.sol';
 import 'reporting/IDisputeCrowdsourcer.sol';
+import 'reporting/IDisputeOverloadToken.sol';
 import 'reporting/IInitialReporter.sol';
 import 'trading/IShareToken.sol';
 import 'trading/Order.sol';
@@ -26,7 +27,8 @@ contract Augur is IAugur {
         DisputeCrowdsourcer,
         FeeWindow, // No longer a valid type but here for backward compat with Augur Node processing
         FeeToken, // No longer a valid type but here for backward compat with Augur Node processing
-        AuctionToken
+        AuctionToken,
+        DisputeOverloadToken
     }
 
     event MarketCreated(bytes32 indexed topic, string description, string extraInfo, address indexed universe, address market, address indexed marketCreator, bytes32[] outcomes, uint256 marketCreationFee, int256 minPrice, int256 maxPrice, IMarket.MarketType marketType);
@@ -52,7 +54,7 @@ contract Augur is IAugur {
     event TokensTransferred(address indexed universe, address indexed token, address indexed from, address to, uint256 value, TokenType tokenType, address market);
     event TokensMinted(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market);
     event TokensBurned(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market);
-    event DisputeWindowCreated(address indexed universe, address disputeWindow, uint256 startTime, uint256 endTime, uint256 id);
+    event DisputeWindowCreated(address indexed universe, address disputeWindow, uint256 startTime, uint256 endTime, uint256 id, bool initial);
     event InitialReporterTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketTransferred(address indexed universe, address indexed market, address from, address to);
     event EscapeHatchChanged(bool isOn);
@@ -61,6 +63,7 @@ contract Augur is IAugur {
     mapping(address => bool) private markets;
     mapping(address => bool) private universes;
     mapping(address => bool) private crowdsourcers;
+    mapping(address => bool) private overloadTokens;
     mapping(address => bool) private shareTokens;
     mapping(address => bool) private auctionTokens;
     mapping(address => bool) private trustedSender;
@@ -141,8 +144,13 @@ contract Augur is IAugur {
         require(isKnownUniverse(_universe));
         require(_universe.isContainerForMarket(IMarket(msg.sender)));
         crowdsourcers[_disputeCrowdsourcer] = true;
+        overloadTokens[IDisputeCrowdsourcer(_disputeCrowdsourcer).getDisputeOverloadToken()] = true;
         emit DisputeCrowdsourcerCreated(_universe, _market, _disputeCrowdsourcer, _payoutNumerators, _size);
         return true;
+    }
+
+    function isKnownOverloadToken(IDisputeOverloadToken _disputeOverloadToken) public view returns (bool) {
+        return overloadTokens[_disputeOverloadToken];
     }
 
     //
@@ -354,6 +362,13 @@ contract Augur is IAugur {
         return true;
     }
 
+    function logDisputeOverloadTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value) public returns (bool) {
+        IDisputeOverloadToken _disputeOverloadToken = IDisputeOverloadToken(msg.sender);
+        require(isKnownOverloadToken(_disputeOverloadToken));
+        emit TokensTransferred(_universe, msg.sender, _from, _to, _value, TokenType.DisputeOverloadToken, _disputeOverloadToken.getMarket());
+        return true;
+    }
+
     function logShareTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value) public returns (bool) {
         IShareToken _shareToken = IShareToken(msg.sender);
         require(isKnownShareToken(_shareToken));
@@ -403,9 +418,23 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logDisputeWindowCreated(IDisputeWindow _disputeWindow, uint256 _id) public returns (bool) {
+    function logDisputeOverloadTokensBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
+        IDisputeOverloadToken _disputeOverloadToken = IDisputeOverloadToken(msg.sender);
+        require(isKnownOverloadToken(_disputeOverloadToken));
+        emit TokensBurned(_universe, msg.sender, _target, _amount, TokenType.DisputeOverloadToken, _disputeOverloadToken.getMarket());
+        return true;
+    }
+
+    function logDisputeOverloadTokensMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
+        IDisputeOverloadToken _disputeOverloadToken = IDisputeOverloadToken(msg.sender);
+        require(isKnownOverloadToken(_disputeOverloadToken));
+        emit TokensMinted(_universe, msg.sender, _target, _amount, TokenType.DisputeOverloadToken, _disputeOverloadToken.getMarket());
+        return true;
+    }
+
+    function logDisputeWindowCreated(IDisputeWindow _disputeWindow, uint256 _id, bool _initial) public returns (bool) {
         require(universes[msg.sender]);
-        emit DisputeWindowCreated(msg.sender, _disputeWindow, _disputeWindow.getStartTime(), _disputeWindow.getEndTime(), _id);
+        emit DisputeWindowCreated(msg.sender, _disputeWindow, _disputeWindow.getStartTime(), _disputeWindow.getEndTime(), _id, _initial);
         return true;
     }
 

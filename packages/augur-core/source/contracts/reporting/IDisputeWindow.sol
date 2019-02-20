@@ -10,7 +10,7 @@ import 'IAugur.sol';
 
 
 contract IDisputeWindow is ITyped {
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId) public returns (bool);
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration) public returns (bool);
     function getUniverse() public view returns (IUniverse);
     function getReputationToken() public view returns (IReputationToken);
     function getStartTime() public view returns (uint256);
@@ -19,6 +19,7 @@ contract IDisputeWindow is ITyped {
     function getNumInvalidMarkets() public view returns (uint256);
     function getNumIncorrectDesignatedReportMarkets() public view returns (uint256);
     function getNumDesignatedReportNoShows() public view returns (uint256);
+    function getWindowId() public view returns (uint256);
     function isActive() public view returns (bool);
     function isOver() public view returns (bool);
     function onMarketFinalized() public returns (bool);
