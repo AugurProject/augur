@@ -1,6 +1,7 @@
-import { DB, UserSpecificEvent } from "./db/DB";
 import { Augur } from "@augurproject/api";
+import settings from "@augurproject/state/src/settings.json";
 import { PouchDBFactoryType } from "./db/AbstractDB";
+import { DB, UserSpecificEvent } from "./db/DB";
 
 // TODO Get these from GenericContractInterfaces (and do not include any that are unneeded)
 const genericEventNames: Array<string> = [
@@ -102,7 +103,14 @@ export class Controller<TBigNumber> {
   private trackedUsers: Array<string>;
   private pouchDBFactory: PouchDBFactoryType;
 
-  public constructor (augur: Augur<TBigNumber>, networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, pouchDBFactory: PouchDBFactoryType) {
+  public constructor (
+    augur: Augur<TBigNumber>, 
+    networkId: number, 
+    blockstreamDelay: number, 
+    defaultStartSyncBlockNumber: number, 
+    trackedUsers: Array<string>, 
+    pouchDBFactory: PouchDBFactoryType
+  ) {
     this.augur = augur;
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
@@ -113,8 +121,20 @@ export class Controller<TBigNumber> {
 
   public async run(): Promise<void> {
     try {
-      this.dbController = await DB.createAndInitializeDB(this.networkId, this.blockstreamDelay, this.defaultStartSyncBlockNumber, this.trackedUsers, genericEventNames, userSpecificEvents, this.pouchDBFactory);
-      await this.dbController.sync(this.augur, 100000, 5);
+      this.dbController = await DB.createAndInitializeDB(
+        this.networkId, 
+        this.blockstreamDelay, 
+        this.defaultStartSyncBlockNumber, 
+        this.trackedUsers, 
+        genericEventNames, 
+        userSpecificEvents, 
+        this.pouchDBFactory
+      );
+      await this.dbController.sync(
+        this.augur, 
+        settings.chunkSize, 
+        settings.blockstreamDelay
+      );
 
       // TODO begin server process
     } catch (err) {
