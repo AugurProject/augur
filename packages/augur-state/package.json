@@ -1,5 +1,5 @@
 {
-  "name": "augur-state",
+  "name": "@augurproject/state",
   "version": "1.0.0-0",
   "description": "Augur State",
   "author": "The Augur Developers <team@augur.net>",
@@ -11,10 +11,10 @@
     "version": "yarn rebuild",
     "start": "ts-node -r tsconfig-paths/register ./src/run",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
-    "build": "tsc",
+    "build": "tsc -b",
     "watch": "tsc -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
-    "prepare": "tsc",
+    "prepare": "tsc -b",
     "clean": "echo delete database",
     "rebuild": "yarn clean && yarn build",
     "clean-start": "yarn rebuild && yarn start",
@@ -32,9 +32,9 @@
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
     "async": "2.6.1",
-    "augur-api": "1.0.0-0",
-    "augur-artifacts": "10.0.0-0",
-    "augur-core": "2.0.0-0",
+    "@augurproject/api": "1.0.0-0",
+    "@augurproject/artifacts": "10.0.0-0",
+    "@augurproject/core": "2.0.0-0",
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.24",
     "ethers-provider": "1.0.0-0",
@@ -43,8 +43,7 @@
     "lodash": "4.17.11",
     "postinstall-build": "5.0.3",
     "pouchdb": "7.0.0",
-    "pouchdb-find": "^7.0.0",
-    "typescript": "3.2.1"
+    "pouchdb-find": "^7.0.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.3",
@@ -53,8 +52,5 @@
     "ts-jest": "^23.10.5",
     "ts-node": "7.0.1",
     "tsconfig-paths": "3.7.0"
-  },
-  "buildDependencies": [
-    "typescript"
-  ]
+  }
 }

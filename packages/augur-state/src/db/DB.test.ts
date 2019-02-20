@@ -1,11 +1,11 @@
 import { TrackedUsers } from "./TrackedUsers";
-import * as PouchDB from "pouchdb";
+import PouchDB from "pouchdb";
 import { PouchDBFactoryType } from "./AbstractDB";
 import { DB, UserSpecificEvent } from "./DB";
 import { EthersProvider } from "ethers-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { Augur } from "augur-api";
-const uploadBlockNumbers = require('augur-artifacts/upload-block-numbers.json');
+import { Augur } from "@augurproject/api";
+import { uploadBlockNumbers } from "@augurproject/artifacts";
 
 
 export function makeMock() {
@@ -45,7 +45,7 @@ const TEST_NETWORK_ID = 4;
 const TEST_ACCOUNT = "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
 
 
-test("sync failure", async () => {
+test("database failure during trackedUsers.getUsers() call", async () => {
     const mock = makeMock();
 
     const defaultStartSyncBlockNumber = uploadBlockNumbers[TEST_NETWORK_ID];
@@ -139,13 +139,6 @@ test("sync failure", async () => {
     const contractDependencies = new ContractDependenciesEthers(provider, undefined, TEST_ACCOUNT);
     const augur = await Augur.create(provider, contractDependencies);
 
-    // this.networkId,
-    // this.blockstreamDelay,
-    // this.defaultStartSyncBlockNumber,
-    // this.trackedUsers,
-    // genericEventNames,
-    // userSpecificEvents,
-    // this.pouchDBFactory
     const db = await DB.createAndInitializeDB(
       TEST_NETWORK_ID,
       BLOCKSTREAM_DELAY,
@@ -165,7 +158,6 @@ test("sync failure", async () => {
         id: "mock",
         rev: expect.any(String)
     });
-    // mock.failNext();
-    await trackedUsers.getUsers();
-    expect(await trackedUsers.getUsers()).toEqual(["mock"]);
-});
+    mock.failNext();
+    expect(trackedUsers.getUsers()).rejects.toThrow();
+}, 60000);

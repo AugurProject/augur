@@ -9,6 +9,7 @@
     "yarn": ">=1.6.0"
   },
   "scripts": {
+    "build": "tsc -b",
     "build:ci-docker": "docker build . -t augurproject/gitlab-ci-base-node:latest",
     "clean": "lerna clean -y",
     "test": "jest",
@@ -39,6 +40,7 @@
     "@types/bn.js": "^4.11.3",
     "@types/chai": "4.1.7",
     "@types/chai-as-promised": "7.1.0",
+    "@types/node": "11.9.4",
     "@babel/plugin-transform-typescript": "7.2.0",
     "@babel/preset-typescript": "7.1.0",
     "@babel/plugin-proposal-export-namespace-from": "7.2.0",
@@ -78,7 +80,7 @@
     "listr": "0.14.3",
     "rxjs-compat": "6.3.3",
     "ts-node": "7.0.1",
-    "typescript": "3.2.1",
+    "typescript": "3.3.3",
     "npm-run-all": "4.1.5"
   },
   "workspaces": {

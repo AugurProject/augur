@@ -1,5 +1,5 @@
 import { SyncableDB } from './SyncableDB';
-import { Augur } from 'augur-api';
+import { Augur } from "@augurproject/api";
 import { SyncStatus } from './SyncStatus';
 import { PouchDBFactoryType } from "./AbstractDB";
 import { TrackedUsers } from './TrackedUsers';
@@ -84,7 +84,7 @@ export class DB<TBigNumber> {
     // last-synced block (in case of restarting after a crash)
     const startSyncBlockNumber = await this.getSyncStartingBlock();
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
-      console.log("Performing rollback of block " + startSyncBlockNumber + " onward")
+      console.log("Performing rollback of block " + startSyncBlockNumber + " onward");
       await this.rollback(startSyncBlockNumber);
     }
 

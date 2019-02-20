@@ -4,6 +4,7 @@
   "description": "Contract Dependencies Interfaces",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
+  "main": "build",
   "directories": {
     "src": "src"
   },
@@ -24,13 +25,7 @@
     "url": "https://github.com/AugurProject/augur/issues"
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
-  "dependencies": {
-    "typescript": "3.2.1"
-  },
   "devDependencies": {
     "ts-node": "7.0.1"
-  },
-  "buildDependencies": [
-    "typescript"
-  ]
+  }
 }

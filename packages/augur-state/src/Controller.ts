@@ -1,5 +1,5 @@
 import { DB, UserSpecificEvent } from './db/DB';
-import { Augur } from 'augur-api';
+import { Augur } from "@augurproject/api";
 import { PouchDBFactoryType } from "./db/AbstractDB";
 
 // TODO Get these from GenericContractInterfaces (and do not include any that are unneeded)

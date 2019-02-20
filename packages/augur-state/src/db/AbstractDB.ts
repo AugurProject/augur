@@ -1,4 +1,4 @@
-import * as PouchDB from "pouchdb";
+import PouchDB from "pouchdb";
 PouchDB.plugin(require('pouchdb-find'));
 PouchDB.plugin(require('pouchdb-adapter-memory'));
 import * as _ from "lodash";

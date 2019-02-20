@@ -1,7 +1,8 @@
 {
-  "name": "augur-artifacts",
+  "name": "@augurproject/artifacts",
   "version": "10.0.0-0",
   "description": "ABI and Contract Address Artifacts",
   "author": "Augur Team <team@augur.net>",
-  "license": "MIT"
+  "license": "MIT",
+  "main": "build"
 }
