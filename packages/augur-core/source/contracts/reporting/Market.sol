@@ -58,10 +58,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     IReportingParticipant[] public participants;
     IMap public crowdsourcers;
     IShareToken[] private shareTokens;
-    uint256 public marketCreatorFeesAttoEth;
     mapping (address => uint256) public affiliateFeesAttoEth;
-
-    IAugur public augur;
 
     function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized returns (bool _success) {
         endInitialization();
