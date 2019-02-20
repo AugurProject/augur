@@ -1,4 +1,4 @@
-import { AbstractDB } from './AbstractDB';
+import { AbstractDB, PouchDBFactoryType } from "./AbstractDB";
 
 interface SyncDocument {
   blockNumber: number;
@@ -7,8 +7,8 @@ interface SyncDocument {
 export class SyncStatus extends AbstractDB {
     public readonly defaultStartSyncBlockNumber: number;
 
-    constructor(networkId: number, defaultStartSyncBlockNumber: number) {
-        super(networkId, networkId + "-SyncStatus");
+    constructor(networkId: number, defaultStartSyncBlockNumber: number, dbFactory: PouchDBFactoryType) {
+        super(networkId, networkId + "-SyncStatus", dbFactory);
         this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
     }
 

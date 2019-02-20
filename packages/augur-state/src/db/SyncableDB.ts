@@ -1,4 +1,4 @@
-import { AbstractDB, BaseDocument } from "./AbstractDB";
+import { AbstractDB, BaseDocument, PouchDBFactoryType } from "./AbstractDB";
 import { Augur, Log, ParsedLog } from "@augurproject/api";
 import { DB } from "./DB";
 import { SyncStatus } from "./SyncStatus";
@@ -13,7 +13,8 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     protected contractName: string; // TODO Remove if unused
 
     constructor(dbController: DB<TBigNumber>, networkId: number, eventName: string, dbName?: string) {
-        super(networkId, dbName ? dbName : dbController.getDatabaseName(eventName));
+        dbName = dbName || dbController.getDatabaseName(eventName);
+        super(networkId, dbName, dbController.pouchDBFactory);
         this.eventName = eventName;
         this.syncStatus = dbController.syncStatus;
         // TODO Set other indexes as need be
