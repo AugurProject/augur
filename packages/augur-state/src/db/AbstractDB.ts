@@ -1,5 +1,6 @@
 import PouchDB from "pouchdb";
 PouchDB.plugin(require('pouchdb-find'));
+PouchDB.plugin(require('pouchdb-adapter-memory'));
 import * as _ from "lodash";
 
 interface DocumentIDToRev {
@@ -16,14 +17,10 @@ export abstract class AbstractDB {
   protected networkId: number;
   public readonly dbName: string;
 
-  protected constructor (networkId: number, dbName: string) {
+  protected constructor (networkId: number, dbName: string, dbFactory: PouchDBFactoryType) {
     this.networkId = networkId;
     this.dbName = dbName;
-    this.db = this.makeDb();
-  }
-
-  protected makeDb(): PouchDB.Database {
-    return new PouchDB(`db/${this.dbName}`);
+    this.db = dbFactory(dbName);
   }
 
   private async getPouchRevFromId(id: string): Promise<string|undefined> {
@@ -81,4 +78,9 @@ export abstract class AbstractDB {
   public async find(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
     return await this.db.find(request);
   }
+}
+
+export type PouchDBFactoryType = (dbName: string) => PouchDB.Database;
+export function PouchDBFactory(dbArgs : object) {
+  return (dbName: string) => new PouchDB(`db/${dbName}`, dbArgs);
 }

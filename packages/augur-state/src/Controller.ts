@@ -1,5 +1,6 @@
 import { DB, UserSpecificEvent } from "./db/DB";
 import { Augur } from "@augurproject/api";
+import { PouchDBFactoryType } from "./db/AbstractDB";
 
 // TODO Get these from GenericContractInterfaces (and do not include any that are unneeded)
 const genericEventNames: Array<string> = [
@@ -49,7 +50,7 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
     "userTopicIndex": 1,
   },
   {
-    "name": "InitialReporterTransferred", 
+    "name": "InitialReporterTransferred",
     "numAdditionalTopics": 2,
     "userTopicIndex": 2,
   },
@@ -99,18 +100,20 @@ export class Controller<TBigNumber> {
   private blockstreamDelay: number;
   private defaultStartSyncBlockNumber: number;
   private trackedUsers: Array<string>;
+  private pouchDBFactory: PouchDBFactoryType;
 
-  public constructor (augur: Augur<TBigNumber>, networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>) {
+  public constructor (augur: Augur<TBigNumber>, networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, pouchDBFactory: PouchDBFactoryType) {
     this.augur = augur;
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
     this.trackedUsers = trackedUsers;
+    this.pouchDBFactory = pouchDBFactory;
   }
 
   public async run(): Promise<void> {
     try {
-      this.dbController = await DB.createAndInitializeDB(this.networkId, this.blockstreamDelay, this.defaultStartSyncBlockNumber, this.trackedUsers, genericEventNames, userSpecificEvents);
+      this.dbController = await DB.createAndInitializeDB(this.networkId, this.blockstreamDelay, this.defaultStartSyncBlockNumber, this.trackedUsers, genericEventNames, userSpecificEvents, this.pouchDBFactory);
       await this.dbController.sync(this.augur, 100000, 5);
 
       // TODO Move this function into separate test
@@ -125,7 +128,7 @@ export class Controller<TBigNumber> {
   /**
    * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.
    * Queries before & after rollback to ensure blocks are removed successfully.
-   * Also checks MetaDB to make sure blocks/sequence IDs were removed correctly 
+   * Also checks MetaDB to make sure blocks/sequence IDs were removed correctly
    * and checks DBs to make sure highest sync block is correct.
    */
   public async testRollback() {
