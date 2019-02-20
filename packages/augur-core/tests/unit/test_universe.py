@@ -177,7 +177,7 @@ def test_universe_create_market(localFixture, chain, populatedUniverse, mockMark
     timestamp = localFixture.contracts["Time"].getTimestamp()
     endTimeValue = timestamp + 10
     feePerEthInWeiValue = 10 ** 18
-    affliateFeeDivisor = 100
+    affiliateFeeDivisor = 100
     designatedReporterAddressValue = tester.a2
     mockDisputeWindow.setCreateMarket(mockMarket.address)
 
@@ -192,7 +192,7 @@ def test_universe_create_market(localFixture, chain, populatedUniverse, mockMark
     assert mockAugur.logMarketCreatedCalled() == False
     mockMarketFactory.setMarket(mockMarket.address)
 
-    newMarket = populatedUniverse.createYesNoMarket(endTimeValue, feePerEthInWeiValue, affliateFeeDivisor, designatedReporterAddressValue, "topic", "description", "info")
+    newMarket = populatedUniverse.createYesNoMarket(endTimeValue, feePerEthInWeiValue, affiliateFeeDivisor, designatedReporterAddressValue, "topic", "description", "info")
 
     assert mockMarketFactory.getCreateMarketUniverseValue() == populatedUniverse.address
     assert populatedUniverse.isContainerForMarket(mockMarket.address)

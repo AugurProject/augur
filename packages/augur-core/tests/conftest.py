@@ -416,27 +416,27 @@ class ContractsFixture:
         childUniverse = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Universe']), childUniverseAddress)
         return childUniverse
 
-    def createYesNoMarket(self, universe, endTime, feePerEthInWei, affliateFeeDivisor, designatedReporterAddress, sender=tester.k0, topic="", description="description", extraInfo="", validityBond=0):
+    def createYesNoMarket(self, universe, endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, sender=tester.k0, topic="", description="description", extraInfo="", validityBond=0):
         marketCreationFee = validityBond or universe.getOrCacheMarketCreationCost()
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, affliateFeeDivisor, designatedReporterAddress, topic, description, extraInfo, sender=sender)
+            marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, topic, description, extraInfo, sender=sender)
         assert marketAddress
         market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
         return market
 
-    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerEthInWei, affliateFeeDivisor, designatedReporterAddress, sender=tester.k0, topic="", description="description", extraInfo=""):
+    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, sender=tester.k0, topic="", description="description", extraInfo=""):
         marketCreationFee = universe.getOrCacheMarketCreationCost()
         outcomes = [" "] * numOutcomes
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            marketAddress = universe.createCategoricalMarket(endTime, feePerEthInWei, affliateFeeDivisor, designatedReporterAddress, outcomes, topic, description, extraInfo, sender=sender)
+            marketAddress = universe.createCategoricalMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, outcomes, topic, description, extraInfo, sender=sender)
         assert marketAddress
         market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
         return market
 
-    def createScalarMarket(self, universe, endTime, feePerEthInWei, affliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=tester.k0, description="description", extraInfo=""):
+    def createScalarMarket(self, universe, endTime, feePerEthInWei, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=tester.k0, description="description", extraInfo=""):
         marketCreationFee = universe.getOrCacheMarketCreationCost()
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            marketAddress = universe.createScalarMarket(endTime, feePerEthInWei, affliateFeeDivisor, designatedReporterAddress, minPrice, maxPrice, numTicks, "", description, extraInfo, sender=sender)
+            marketAddress = universe.createScalarMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, minPrice, maxPrice, numTicks, "", description, extraInfo, sender=sender)
         assert marketAddress
         market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
         return market
@@ -446,7 +446,7 @@ class ContractsFixture:
             universe = universe,
             endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerEthInWei = 10**16,
-            affliateFeeDivisor = 4,
+            affiliateFeeDivisor = 4,
             designatedReporterAddress = tester.a0,
             sender = sender,
             topic= topic,
@@ -460,7 +460,7 @@ class ContractsFixture:
             numOutcomes = numOutcomes,
             endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerEthInWei = 10**16,
-            affliateFeeDivisor = 0,
+            affiliateFeeDivisor = 0,
             designatedReporterAddress = tester.a0,
             sender = sender)
 
@@ -469,7 +469,7 @@ class ContractsFixture:
             universe = universe,
             endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerEthInWei = 10**16,
-            affliateFeeDivisor = 0,
+            affiliateFeeDivisor = 0,
             maxPrice= maxPrice,
             minPrice= minPrice,
             numTicks= numTicks,

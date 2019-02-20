@@ -60,12 +60,12 @@ export class TestFixture {
         await this.cash.approve(authority, new ethers.utils.BigNumber(2).pow(new ethers.utils.BigNumber(256)).sub(new ethers.utils.BigNumber(1)));
     }
 
-    public async createMarket(universe: Universe, outcomes: string[], endTime: ethers.utils.BigNumber, feePerEthInWei: ethers.utils.BigNumber, affliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string): Promise<Market> {
+    public async createMarket(universe: Universe, outcomes: string[], endTime: ethers.utils.BigNumber, feePerEthInWei: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string): Promise<Market> {
         const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
 
         console.log("Creating Market");
         await this.cash.depositEther({attachedEth: marketCreationFee});
-        const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, affliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '');
+        const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '');
         if (!marketAddress || marketAddress == "0x") {
             throw new Error("Unable to get address for new categorical market.");
         }
