@@ -8,6 +8,8 @@ import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
 
+const TEST_NETWORK_ID = 4;
+
 export function makeMock() {
     const mockState = {
         willFailNext: false
@@ -37,13 +39,6 @@ export function makeMock() {
         failNext: () => mockState.willFailNext = true
     }
 }
-
-const BLOCKSTREAM_DELAY = 10;
-const CHUNK_SIZE = 100000;
-const TEST_RINKEBY_URL = "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM";
-const TEST_NETWORK_ID = 4;
-const TEST_ACCOUNT = "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
-
 
 test("database failure during trackedUsers.getUsers() call", async () => {
     const mock = makeMock();
@@ -135,21 +130,21 @@ test("database failure during trackedUsers.getUsers() call", async () => {
         },
     ];
 
-    const provider = new EthersProvider(TEST_RINKEBY_URL);
-    const contractDependencies = new ContractDependenciesEthers(provider, undefined, TEST_ACCOUNT);
+    const provider = new EthersProvider(settings.ethNodeURLs[TEST_NETWORK_ID]);
+    const contractDependencies = new ContractDependenciesEthers(provider, undefined, settings.testAccounts[0]);
     const augur = await Augur.create(provider, contractDependencies);
 
     const db = await DB.createAndInitializeDB(
       TEST_NETWORK_ID,
       settings.blockstreamDelay,
       defaultStartSyncBlockNumber,
-      [TEST_ACCOUNT],
+      [settings.testAccounts[0]],
       genericEventNames,
       userSpecificEvents,
       mock.makeFactory()
     );
 
-    await db.sync(augur, CHUNK_SIZE, BLOCKSTREAM_DELAY);
+    await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
 
     const trackedUsers = new TrackedUsers(TEST_NETWORK_ID, mock.makeFactory());
 
