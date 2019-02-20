@@ -8,7 +8,8 @@
     "./src/**/*.test.ts"
   ],
   "include": [
-    "./src/**/*"
+    "./src/**/*",
+    "./src/**/*.json"
   ],
   "files": [
     "./src/abi.json",
