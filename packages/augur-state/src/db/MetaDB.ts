@@ -1,6 +1,6 @@
 import { AbstractDB, PouchDBFactoryType } from "./AbstractDB";
-import { DB } from './DB';
-import { SyncStatus } from './SyncStatus';
+import { DB } from "./DB";
+import { SyncStatus } from "./SyncStatus";
 import * as _ from "lodash";
 
 export interface SequenceIds {

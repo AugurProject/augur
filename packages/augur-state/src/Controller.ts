@@ -1,4 +1,4 @@
-import { DB, UserSpecificEvent } from './db/DB';
+import { DB, UserSpecificEvent } from "./db/DB";
 import { Augur } from "@augurproject/api";
 import { PouchDBFactoryType } from "./db/AbstractDB";
 

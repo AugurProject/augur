@@ -1,10 +1,10 @@
-import { SyncableDB } from './SyncableDB';
+import { SyncableDB } from "./SyncableDB";
 import { Augur } from "@augurproject/api";
-import { SyncStatus } from './SyncStatus';
+import { SyncStatus } from "./SyncStatus";
 import { PouchDBFactoryType } from "./AbstractDB";
-import { TrackedUsers } from './TrackedUsers';
-import { MetaDB, SequenceIds } from './MetaDB';
-import { UserSyncableDB } from './UserSyncableDB';
+import { TrackedUsers } from "./TrackedUsers";
+import { MetaDB, SequenceIds } from "./MetaDB";
+import { UserSyncableDB } from "./UserSyncableDB";
 
 export interface UserSpecificEvent {
   name: string;

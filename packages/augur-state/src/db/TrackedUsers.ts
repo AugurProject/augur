@@ -1,4 +1,4 @@
-import { AbstractDB, PouchDBFactoryType } from './AbstractDB';
+import { AbstractDB, PouchDBFactoryType } from "./AbstractDB";
 import * as _ from "lodash";
 
 export class TrackedUsers extends AbstractDB {

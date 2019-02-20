@@ -1,9 +1,9 @@
 import { Controller } from "./Controller";
 import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
-import { ethers } from 'ethers';
-import { EthersProvider } from 'ethers-provider';
-import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
+import { ethers } from "ethers";
+import { EthersProvider } from "ethers-provider";
+import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { PouchDBFactory } from "./db/AbstractDB";
 
 const BLOCKSTREAM_DELAY = 10;

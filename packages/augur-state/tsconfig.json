@@ -1,8 +1,10 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
+    "esModuleInterop": true,
     "outDir": "build",
-    "rootDir": "src"
+    "resolveJsonModule": true,
+    "rootDir": "src",
   },
   "exclude": [
     "./src/**/*.test.ts"

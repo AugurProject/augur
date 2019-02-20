@@ -6,7 +6,7 @@ import { EthersProvider } from "ethers-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
-
+import settings from "@augurproject/state/src/settings.json";
 
 export function makeMock() {
     const mockState = {
@@ -141,7 +141,7 @@ test("database failure during trackedUsers.getUsers() call", async () => {
 
     const db = await DB.createAndInitializeDB(
       TEST_NETWORK_ID,
-      BLOCKSTREAM_DELAY,
+      settings.blockstreamDelay,
       defaultStartSyncBlockNumber,
       [TEST_ACCOUNT],
       genericEventNames,
