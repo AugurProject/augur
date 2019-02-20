@@ -228,7 +228,7 @@ contract Orders is IOrders, Initializable {
     }
 
     function setOrderPrice(bytes32 _orderId, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId) public afterInitialized returns (bool) {
-        Order.Data _order = orders[_orderId];
+        Order.Data storage _order = orders[_orderId];
         IMarket _market = _order.market;
         require(msg.sender == _order.creator);
         require(_price < _market.getNumTicks());
