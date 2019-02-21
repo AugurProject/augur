@@ -612,6 +612,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
 
     function assertBalances() public view returns (bool) {
         // Escrowed funds for open orders
+        /* TEMPORARY REMOVAL TO GET UNDER SIZE LIMIT
         uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(this);
         // Market Open Interest. If we're finalized we need actually calculate the value
         if (isFinalized()) {
@@ -624,6 +625,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         }
 
         assert(cash.balanceOf(this) >= _expectedBalance);
+        */
         return true;
     }
 }
