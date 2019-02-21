@@ -41,7 +41,7 @@ export class ContractCompiler {
         })
     }
 
-    // TODO: Use solcjs compileStandardWrapper when it works, 0.4.24 giving error: "Runtime.functionPointers[index] is not a function"
+    // TODO: Use solcjs compileStandardWrapper when it works, 0.5.4 giving error: "Runtime.functionPointers[index] is not a function"
     private async compileCustomWrapper(compilerInputJson: CompilerInput): Promise<CompilerOutput> {
         const childProcess = spawn("solc", ["--standard-json"]);
         const compilerOutputJson = await this.getCommandOutputFromInput(childProcess, JSON.stringify(compilerInputJson));

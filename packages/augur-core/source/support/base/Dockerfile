@@ -9,7 +9,7 @@ FROM augurproject/python2-and-3:latest
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
 	&& apt-get install -y nodejs
 
-RUN wget --quiet --output-document /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/v0.4.24/solc-static-linux \
+RUN wget --quiet --output-document /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/v0.5.4/solc-static-linux \
 	&& chmod a+x /usr/local/bin/solc
 
 COPY packages/augur-core/requirements.txt /app/requirements.txt

@@ -1,4 +1,4 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 import 'libraries/ERC820Implementer.sol';
 import 'libraries/token/ERC777Token.sol';
