@@ -65,7 +65,7 @@ def test_get_reporting_window(localFixture, populatedUniverse, chain):
 
     # Test getting same calculated end dispute window
     assert populatedUniverse.getOrCreatePreviousDisputeWindow() == populatedUniverse.getOrCreateDisputeWindowByTimestamp(chain.head_state.timestamp - duration)
-    assert populatedUniverse.getOrCreateCurrentDisputeWindow() == populatedUniverse.getOrCreateDisputeWindowByTimestamp(chain.head_state.timestamp)
+    assert populatedUniverse.getOrCreateCurrentDisputeWindow(False) == populatedUniverse.getOrCreateDisputeWindowByTimestamp(chain.head_state.timestamp)
     assert populatedUniverse.getOrCreateNextDisputeWindow() == populatedUniverse.getOrCreateDisputeWindowByTimestamp(chain.head_state.timestamp + duration)
 
 def test_universe_contains(localFixture, populatedUniverse, mockMarket, chain, mockMarketFactory, mockDisputeWindow, mockShareToken, mockDisputeWindowFactory):
@@ -114,7 +114,7 @@ def test_universe_calculate_bonds_stakes(localFixture, chain, populatedUniverse,
     newCurrentDisputeWindow = localFixture.upload('solidity_test_helpers/MockDisputeWindow.sol', 'newCurrentDisputeWindow')
     # set current dispute window
     mockDisputeWindowFactory.setCreateDisputeWindowValue(mockDisputeWindow.address)
-    assert populatedUniverse.getOrCreateCurrentDisputeWindow() == mockDisputeWindow.address
+    assert populatedUniverse.getOrCreateCurrentDisputeWindow(False) == mockDisputeWindow.address
 
     # set next dispute window
     mockDisputeWindowFactory.setCreateDisputeWindowValue(nextDisputeWindow.address)
@@ -183,7 +183,7 @@ def test_universe_create_market(localFixture, chain, populatedUniverse, mockMark
 
     # set current dispute window
     mockDisputeWindowFactory.setCreateDisputeWindowValue(mockDisputeWindow.address)
-    assert populatedUniverse.getOrCreateCurrentDisputeWindow() == mockDisputeWindow.address
+    assert populatedUniverse.getOrCreateCurrentDisputeWindow(False) == mockDisputeWindow.address
 
     # set previous dispute window
     mockDisputeWindowFactory.setCreateDisputeWindowValue(mockDisputeWindow.address)

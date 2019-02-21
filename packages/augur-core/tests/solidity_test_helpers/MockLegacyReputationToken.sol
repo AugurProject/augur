@@ -1,7 +1,7 @@
 pragma solidity 0.5.4;
 
 import 'ROOT/libraries/ContractExists.sol';
-import 'ROOT/TEST/MockVariableSupplyToken.sol';
+import 'TEST/MockVariableSupplyToken.sol';
 
 
 contract MockLegacyReputationToken is MockVariableSupplyToken {

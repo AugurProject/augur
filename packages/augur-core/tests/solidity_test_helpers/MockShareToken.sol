@@ -5,7 +5,7 @@ import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/reporting/IMarket.sol';
-import 'ROOT/TEST/MockVariableSupplyToken.sol';
+import 'TEST/MockVariableSupplyToken.sol';
 
 
 contract MockShareToken is ITyped, Initializable, MockVariableSupplyToken, IShareToken {

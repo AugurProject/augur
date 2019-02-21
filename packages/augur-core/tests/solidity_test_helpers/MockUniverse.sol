@@ -289,7 +289,7 @@ contract MockUniverse is Initializable, IUniverse {
         return setDisputeWindowByMarketEndTimeValue;
     }
 
-    function getOrCreateCurrentDisputeWindow() public returns (IDisputeWindow) {
+    function getOrCreateCurrentDisputeWindow(False) public returns (IDisputeWindow) {
         return setCurrentDisputeWindowValue;
     }
 

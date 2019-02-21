@@ -38,12 +38,12 @@ contract Cash is ITyped, VariableSupplyToken, ICash {
         return true;
     }
 
-    function withdrawEtherTo(address _to, uint256 _amount) external returns(bool) {
+    function withdrawEtherTo(address payable _to, uint256 _amount) external returns(bool) {
         withdrawEtherInternal(msg.sender, _to, _amount);
         return true;
     }
 
-    function withdrawEtherInternal(address _from, address _to, uint256 _amount) private returns(bool) {
+    function withdrawEtherInternal(address _from, address payable _to, uint256 _amount) private returns(bool) {
         require(_amount > 0 && _amount <= balances[_from]);
         burn(_from, _amount);
         _to.transfer(_amount);
@@ -51,7 +51,7 @@ contract Cash is ITyped, VariableSupplyToken, ICash {
         return true;
     }
 
-    function withdrawEtherToIfPossible(address _to, uint256 _amount) external returns (bool) {
+    function withdrawEtherToIfPossible(address payable _to, uint256 _amount) external returns (bool) {
         require(_amount > 0 && _amount <= balances[msg.sender]);
         if (_to.send(_amount)) {
             burn(msg.sender, _amount);

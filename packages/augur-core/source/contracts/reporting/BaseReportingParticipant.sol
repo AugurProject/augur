@@ -18,7 +18,7 @@ contract BaseReportingParticipant is IReportingParticipant {
         require(IMarket(msg.sender) == market);
         require(market.getWinningPayoutDistributionHash() != getPayoutDistributionHash() && market.getWinningPayoutDistributionHash() != bytes32(0));
         IReputationToken _reputationToken = market.getReputationToken();
-        require(_reputationToken.transfer(market, _reputationToken.balanceOf(this)));
+        require(_reputationToken.transfer(address(market), _reputationToken.balanceOf(address(this))));
         return true;
     }
 
@@ -26,7 +26,7 @@ contract BaseReportingParticipant is IReportingParticipant {
         require(market == market.getUniverse().getForkingMarket());
         IUniverse _newUniverse = market.getUniverse().createChildUniverse(payoutNumerators);
         IReputationToken _newReputationToken = _newUniverse.getReputationToken();
-        uint256 _balance = reputationToken.balanceOf(this);
+        uint256 _balance = reputationToken.balanceOf(address(this));
         reputationToken.migrateOut(_newReputationToken, _balance);
         _newReputationToken.mintForReportingParticipant(size);
         reputationToken = _newReputationToken;

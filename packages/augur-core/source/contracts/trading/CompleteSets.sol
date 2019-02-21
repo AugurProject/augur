@@ -52,7 +52,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         ICash _denominationToken = _market.getDenominationToken();
 
         uint256 _cost = _amount.mul(_market.getNumTicks());
-        require(augur.trustedTransfer(_denominationToken, _sender, _market, _cost));
+        require(augur.trustedTransfer(_denominationToken, _sender, address(_market), _cost));
         for (uint256 _outcome = 0; _outcome < _numOutcomes; ++_outcome) {
             _market.getShareToken(_outcome).createShares(_sender, _amount);
         }
@@ -104,10 +104,10 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         }
         if (_reportingFee != 0) {
             IAuction _auction = IAuction(_market.getUniverse().getAuction());
-            require(_denominationToken.transferFrom(_market, _auction, _reportingFee));
+            require(_denominationToken.transferFrom(address(_market), address(_auction), _reportingFee));
             _auction.recordFees(_reportingFee);
         }
-        require(_denominationToken.transferFrom(_market, _sender, _payout));
+        require(_denominationToken.transferFrom(address(_market), _sender, _payout));
 
         return (_creatorFee, _reportingFee);
     }

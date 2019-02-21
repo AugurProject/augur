@@ -158,7 +158,7 @@ def test_order_filling_take_shares(numOutcomes, localFixture, markets):
     createOrder = localFixture.contracts['CreateOrder']
     completeSets = localFixture.contracts['CompleteSets']
     fillOrder = localFixture.contracts['FillOrder']
-    tradeGroupID = "42"
+    tradeGroupID = longTo32Bytes(42)
     marketIndex = numOutcomes - 2
     market = markets[marketIndex]
 
@@ -179,7 +179,7 @@ def test_order_filling_both_eth(numOutcomes, localFixture, markets):
     createOrder = localFixture.contracts['CreateOrder']
     completeSets = localFixture.contracts['CompleteSets']
     fillOrder = localFixture.contracts['FillOrder']
-    tradeGroupID = "42"
+    tradeGroupID = longTo32Bytes(42)
     marketIndex = numOutcomes - 2
     market = markets[marketIndex]
 
@@ -199,7 +199,7 @@ def test_order_filling_maker_reverse(numOutcomes, localFixture, markets):
     createOrder = localFixture.contracts['CreateOrder']
     completeSets = localFixture.contracts['CompleteSets']
     fillOrder = localFixture.contracts['FillOrder']
-    tradeGroupID = "42"
+    tradeGroupID = longTo32Bytes(42)
     marketIndex = numOutcomes - 2
     market = markets[marketIndex]
 
@@ -222,7 +222,7 @@ def test_order_filling_taker_reverse(numOutcomes, localFixture, markets):
     createOrder = localFixture.contracts['CreateOrder']
     completeSets = localFixture.contracts['CompleteSets']
     fillOrder = localFixture.contracts['FillOrder']
-    tradeGroupID = "42"
+    tradeGroupID = longTo32Bytes(42)
     marketIndex = numOutcomes - 2
     market = markets[marketIndex]
 
@@ -245,7 +245,7 @@ def test_order_filling_double_reverse(numOutcomes, localFixture, markets):
     createOrder = localFixture.contracts['CreateOrder']
     completeSets = localFixture.contracts['CompleteSets']
     fillOrder = localFixture.contracts['FillOrder']
-    tradeGroupID = "42"
+    tradeGroupID = longTo32Bytes(42)
     marketIndex = numOutcomes - 2
     market = markets[marketIndex]
 

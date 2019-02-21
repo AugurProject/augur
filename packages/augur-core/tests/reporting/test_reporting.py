@@ -138,7 +138,7 @@ def test_initialReport_methods(localFixture, universe, market, constants):
     16
 ])
 def test_roundsOfReporting(rounds, localFixture, market, universe):
-    disputeWindow = universe.getOrCreateCurrentDisputeWindow()
+    disputeWindow = universe.getOrCreateCurrentDisputeWindow(False)
 
     # Do the initial report
     proceedToNextRound(localFixture, market, moveTimeForward = False)
@@ -180,7 +180,7 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
         proceedToNextRound(localFixture, market)
         assert disputeWindow != market.getDisputeWindow()
         disputeWindow = market.getDisputeWindow()
-        assert disputeWindow == universe.getCurrentDisputeWindow()
+        assert disputeWindow == universe.getCurrentDisputeWindow(False)
 
 @mark.parametrize('finalizeByMigration, manuallyDisavow', [
     (True, True),
@@ -236,7 +236,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
         categoricalMarket.contribute([0,2,2,categoricalMarket.getNumTicks()-4], 1, "")
 
     # We cannot purchase new Participation Tokens during a fork
-    disputeWindowAddress = universe.getCurrentDisputeWindow()
+    disputeWindowAddress = universe.getCurrentDisputeWindow(False)
     disputeWindow = localFixture.applySignature("DisputeWindow", disputeWindowAddress)
 
     # finalize the fork
@@ -442,7 +442,7 @@ def test_forking_values(localFixture, universe, market):
 
 
 def test_fee_window_record_keeping(localFixture, universe, market, categoricalMarket, scalarMarket):
-    disputeWindow = localFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = localFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
 
     # First we'll confirm we get the expected default values for the window record keeping
     assert disputeWindow.getNumMarkets() == 0

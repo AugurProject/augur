@@ -8,7 +8,7 @@ import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
-import 'ROOT/TEST/MockVariableSupplyToken.sol';
+import 'TEST/MockVariableSupplyToken.sol';
 
 
 contract MockReputationToken is ITyped, Initializable, MockVariableSupplyToken, IReputationToken {

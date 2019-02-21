@@ -10,7 +10,7 @@ contract MaliciousMarket {
     IMarket private victimMarket;
     uint256 public getNumTicks = 1;
 
-    function MaliciousMarket(IMarket _market) public {
+    constructor(IMarket _market) public {
         victimMarket = _market;
     }
 

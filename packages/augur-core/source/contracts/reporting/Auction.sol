@@ -46,7 +46,7 @@ contract Auction is Initializable, IAuction {
     uint256 public lastRepPrice; // The last auction's Rep price in attoETH, regardless of whether the result is used in determining reporting fees
     uint256 public repPrice; // The Rep price in attoETH that should be used to determine reporting fees during and immediately after an ignored auction.
 
-    function initialize(IAugur _augur, IUniverse _universe, IReputationToken _reputationToken) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IUniverse _universe, IV2ReputationToken _reputationToken) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         universe = _universe;
@@ -86,14 +86,14 @@ contract Auction is Initializable, IAuction {
         }
 
         uint256 _auctionRepBalanceTarget = reputationToken.totalSupply() / Reporting.getAuctionTargetSupplyDivisor();
-        uint256 _repBalance = reputationToken.balanceOf(this);
+        uint256 _repBalance = reputationToken.balanceOf(address(this));
 
         if (_repBalance < _auctionRepBalanceTarget) {
             reputationToken.mintForAuction(_auctionRepBalanceTarget.sub(_repBalance));
         }
 
-        initialAttoRepBalance = reputationToken.balanceOf(this);
-        initialAttoEthBalance = cash.balanceOf(this);
+        initialAttoRepBalance = reputationToken.balanceOf(address(this));
+        initialAttoEthBalance = cash.balanceOf(address(this));
 
         currentAuctionIndex = _currentAuctionIndex;
 
@@ -104,11 +104,11 @@ contract Auction is Initializable, IAuction {
         repAuctionToken = auctionTokenFactory.createAuctionToken(augur, this, reputationToken, currentAuctionIndex);
         if (!bootstrapMode) {
             ethAuctionToken = auctionTokenFactory.createAuctionToken(augur, this, cash, currentAuctionIndex);
-            cash.transfer(ethAuctionToken, initialAttoEthBalance);
+            cash.transfer(address(ethAuctionToken), initialAttoEthBalance);
         }
         augur.recordAuctionTokens(universe);
 
-        reputationToken.transfer(repAuctionToken, initialAttoRepBalance);
+        reputationToken.transfer(address(repAuctionToken), initialAttoRepBalance);
         return true;
     }
 
@@ -128,7 +128,7 @@ contract Auction is Initializable, IAuction {
         _attoEthAmount = _attoEthAmount.min(_currentAttoEthBalance);
         uint256 _ethPriceInAttoRep = getEthSalePriceInAttoRep();
         uint256 _attoRepCost = _attoEthAmount.mul(_ethPriceInAttoRep) / 10**18;
-        reputationToken.trustedAuctionTransfer(msg.sender, this, _attoRepCost);
+        reputationToken.trustedAuctionTransfer(msg.sender, address(this), _attoRepCost);
         ethAuctionToken.mintForPurchaser(msg.sender, _attoRepCost);
 
         // Burn any REP purchased using fee income
@@ -151,7 +151,7 @@ contract Auction is Initializable, IAuction {
         uint256 _repPriceInAttoEth = getRepSalePriceInAttoEth();
         uint256 _attoEthCost = _attoRepAmount.mul(_repPriceInAttoEth) / 10**18;
         // This will raise an exception if insufficient ETH was sent
-        augur.trustedTransfer(cash, msg.sender, this, _attoEthCost);
+        augur.trustedTransfer(cash, msg.sender, address(this), _attoEthCost);
         repAuctionToken.mintForPurchaser(msg.sender, _attoEthCost);
         return true;
     }

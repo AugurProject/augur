@@ -43,7 +43,7 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
             // always destroy shares as it gives a minor gas refund and is good for the network
             if (_numberOfShares > 0) {
                 _shareToken.destroyShares(_shareHolder, _numberOfShares);
-                logTradingProceedsClaimed(_market, _shareToken, _shareHolder, _numberOfShares, _shareHolderShare);
+                logTradingProceedsClaimed(_market, address(_shareToken), _shareHolder, _numberOfShares, _shareHolderShare);
             }
             distributeProceeds(_market, _shareHolder, _shareHolderShare, _creatorShare, _reporterShare);
         }
@@ -58,20 +58,20 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
         IAuction _auction = IAuction(_market.getUniverse().getAuction());
 
         if (_shareHolderShare > 0) {
-            require(_denominationToken.transferFrom(_market, _shareHolder, _shareHolderShare));
+            require(_denominationToken.transferFrom(address(_market), _shareHolder, _shareHolderShare));
         }
         if (_creatorShare > 0) {
             _market.recordMarketCreatorFees(_creatorShare, address(0));
         }
         if (_reporterShare > 0) {
-            require(_denominationToken.transferFrom(_market, _auction, _reporterShare));
+            require(_denominationToken.transferFrom(address(_market), address(_auction), _reporterShare));
             _auction.recordFees(_reporterShare);
         }
         return true;
     }
 
     function logTradingProceedsClaimed(IMarket _market, address _shareToken, address _sender, uint256 _numShares, uint256 _numPayoutTokens) private returns (bool) {
-        augur.logTradingProceedsClaimed(_market.getUniverse(), _shareToken, _sender, _market, _numShares, _numPayoutTokens, _sender.balance.add(_numPayoutTokens));
+        augur.logTradingProceedsClaimed(_market.getUniverse(), _shareToken, _sender, address(_market), _numShares, _numPayoutTokens, _sender.balance.add(_numPayoutTokens));
         return true;
     }
 

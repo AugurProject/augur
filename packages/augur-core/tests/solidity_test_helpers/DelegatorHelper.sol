@@ -18,7 +18,7 @@ contract DelegatorHelper is ITyped {
         return "DelegatorHelper";
     }
 
-    function setStringMember(string _value) public returns (bool) {
+    function setStringMember(string memory _value) public returns (bool) {
         stringMember = _value;
         return true;
     }
@@ -58,11 +58,11 @@ contract DelegatorHelper is ITyped {
         return true;
     }
 
-    function getStringMember() public view returns (string) {
+    function getStringMember() public view returns (string memory) {
         return stringMember;
     }
 
-    function getStringConstant() public view returns (string) {
+    function getStringConstant() public view returns (string memory) {
         return stringConstant;
     }
 
@@ -114,13 +114,13 @@ contract DelegatorHelper is ITyped {
         return;
     }
 
-    function returnDynamic() public returns (uint256[]) {
+    function returnDynamic() public returns (uint256[] memory) {
         uint256[] memory _retval = new uint256[](5);
         _retval[0] = 1;
         return _retval;
     }
 
-    function returnFixed() public returns (uint256[5] _retval) {
+    function returnFixed() public returns (uint256[5] memory _retval) {
         _retval[0] = 1;
         return _retval;
     }

@@ -17,7 +17,7 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
     string constant public name = "Dispute Crowdsourcer Token";
     string constant public symbol = "DISP";
 
-    function initialize(IAugur _augur, IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, IDisputeOverloadToken _disputeOverloadToken, address _erc820RegistryAddress) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, IDisputeOverloadToken _disputeOverloadToken, address _erc820RegistryAddress) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         market = _market;
@@ -47,7 +47,7 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
 
         uint256 _reputationShare = _totalAmount;
 
-        uint256 _totalRep = reputationToken.balanceOf(this);
+        uint256 _totalRep = reputationToken.balanceOf(address(this));
 
         if (_totalRep == 0) {
             return true;
@@ -68,7 +68,7 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
 
         require(reputationToken.transfer(_redeemer, _reputationShare));
 
-        augur.logDisputeCrowdsourcerRedeemed(universe, _redeemer, market, _totalAmount, _reputationShare, payoutNumerators);
+        augur.logDisputeCrowdsourcerRedeemed(universe, _redeemer, address(market), _totalAmount, _reputationShare, payoutNumerators);
         return true;
     }
 
@@ -85,11 +85,11 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
         if (_totalAmount == 0) {
             return 0;
         }
-        reputationToken.trustedReportingParticipantTransfer(_participant, this, _totalAmount);
+        reputationToken.trustedReportingParticipantTransfer(_participant, address(this), _totalAmount);
         if (_baseAmount > 0) {
             mint(_participant, _baseAmount);
         }
-        assert(reputationToken.balanceOf(this) >= getStake());
+        assert(reputationToken.balanceOf(address(this)) >= getStake());
         return _totalAmount;
     }
 

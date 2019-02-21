@@ -44,7 +44,7 @@ contract AuctionToken is ITyped, Initializable, VariableSupplyToken, IAuctionTok
     function redeem() public returns (bool) {
         require(auction.getAuctionIndexForCurrentTime() > auctionIndex);
         uint256 _ownerBalance = balances[msg.sender];
-        uint256 _tokenBalance = redemptionToken.balanceOf(this);
+        uint256 _tokenBalance = redemptionToken.balanceOf(address(this));
         uint256 _redemptionAmount = _ownerBalance.mul(_tokenBalance).div(totalSupply());
         burn(msg.sender, _ownerBalance);
         redemptionToken.transfer(msg.sender, _redemptionAmount);
@@ -55,7 +55,7 @@ contract AuctionToken is ITyped, Initializable, VariableSupplyToken, IAuctionTok
         require(msg.sender == address(auction));
         // If no participants have claim to any funds remaining we send them back to the auction
         if (totalSupply() == 0) {
-            redemptionToken.transfer(msg.sender, redemptionToken.balanceOf(this));
+            redemptionToken.transfer(msg.sender, redemptionToken.balanceOf(address(this)));
         }
         return true;
     }

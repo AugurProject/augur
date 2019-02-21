@@ -1,6 +1,6 @@
 pragma solidity ^0.5.4;
 
-import 'ROOT/TEST/MockStandardToken.sol';
+import 'TEST/MockStandardToken.sol';
 
 
 contract MockVariableSupplyToken is MockStandardToken {

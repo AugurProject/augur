@@ -2,7 +2,7 @@ pragma solidity 0.5.4;
 
 
 import 'ROOT/libraries/CloneFactory.sol';
-import 'ROOT/TEST/DelegatorHelper.sol';
+import 'TEST/DelegatorHelper.sol';
 import 'ROOT/IAugur.sol';
 
 

@@ -39,7 +39,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         return cancelOrderInternal(msg.sender, _orderId);
     }
 
-    function cancelOrders(bytes32[] _orderIds) external afterInitialized nonReentrant returns (bool) {
+    function cancelOrders(bytes32[] calldata _orderIds) external afterInitialized nonReentrant returns (bool) {
         for (uint256 i = 0; i < _orderIds.length; i++) {
             cancelOrderInternal(msg.sender, _orderIds[i]);
         }
@@ -65,7 +65,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         refundOrder(_sender, _type, _sharesEscrowed, _moneyEscrowed, _market, _outcome);
         _market.assertBalances();
 
-        augur.logOrderCanceled(_market.getUniverse(), _market.getShareToken(_outcome), _sender, _orderId, _type, _moneyEscrowed, _sharesEscrowed);
+        augur.logOrderCanceled(_market.getUniverse(), address(_market.getShareToken(_outcome)), _sender, _orderId, _type, _moneyEscrowed, _sharesEscrowed);
 
         return true;
     }
@@ -79,19 +79,19 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
             if (_type == Order.Types.Bid) {
                 for (uint256 _i = 0; _i < _market.getNumberOfOutcomes(); ++_i) {
                     if (_i != _outcome) {
-                        _market.getShareToken(_i).trustedCancelOrderTransfer(_market, _sender, _sharesEscrowed);
+                        _market.getShareToken(_i).trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
                     }
                 }
             // Shares refund if has shares escrowed for this outcome
             } else {
-                _market.getShareToken(_outcome).trustedCancelOrderTransfer(_market, _sender, _sharesEscrowed);
+                _market.getShareToken(_outcome).trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
             }
         }
 
         // Return to user moneyEscrowed that wasn't filled yet
         if (_moneyEscrowed > 0) {
             ICash _denominationToken = _market.getDenominationToken();
-            require(_denominationToken.transferFrom(_market, _sender, _moneyEscrowed));
+            require(_denominationToken.transferFrom(address(_market), _sender, _moneyEscrowed));
         }
 
         return true;

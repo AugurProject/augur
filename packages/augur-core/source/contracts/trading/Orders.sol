@@ -78,11 +78,11 @@ contract Orders is IOrders, Initializable {
     }
 
     function getTotalEscrowed(IMarket _market) public view returns (uint256) {
-        return marketOrderData[_market].totalEscrowed;
+        return marketOrderData[address(_market)].totalEscrowed;
     }
 
     function getLastOutcomePrice(IMarket _market, uint256 _outcome) public view returns (uint256) {
-        return marketOrderData[_market].prices[_outcome];
+        return marketOrderData[address(_market)].prices[_outcome];
     }
 
     function getBetterOrderId(bytes32 _orderId) public view returns (bytes32) {
@@ -173,10 +173,10 @@ contract Orders is IOrders, Initializable {
         _order.amount = _amount;
         _order.creator = _sender;
         _order.moneyEscrowed = _moneyEscrowed;
-        marketOrderData[_market].totalEscrowed += _moneyEscrowed;
+        marketOrderData[address(_market)].totalEscrowed += _moneyEscrowed;
         _order.sharesEscrowed = _sharesEscrowed;
         insertOrderIntoList(_order, _betterOrderId, _worseOrderId);
-        augur.logOrderCreated(_type, _amount, _price, _sender, _moneyEscrowed, _sharesEscrowed, _tradeGroupId, _orderId, _order.market.getUniverse(), _order.market.getShareToken(_order.outcome));
+        augur.logOrderCreated(_type, _amount, _price, _sender, _moneyEscrowed, _sharesEscrowed, _tradeGroupId, _orderId, _order.market.getUniverse(), address(_order.market.getShareToken(_order.outcome)));
         return _orderId;
     }
 
@@ -184,7 +184,7 @@ contract Orders is IOrders, Initializable {
         require(msg.sender == cancelOrder || msg.sender == address(this));
         removeOrderFromList(_orderId);
         Order.Data storage _order = orders[_orderId];
-        marketOrderData[_order.market].totalEscrowed -= _order.moneyEscrowed;
+        marketOrderData[address(_order.market)].totalEscrowed -= _order.moneyEscrowed;
         delete orders[_orderId];
         return true;
     }
@@ -207,7 +207,7 @@ contract Orders is IOrders, Initializable {
         require(_fill <= _order.amount);
         _order.amount -= _fill;
         _order.moneyEscrowed -= _tokensFilled;
-        marketOrderData[_order.market].totalEscrowed -= _tokensFilled;
+        marketOrderData[address(_order.market)].totalEscrowed -= _tokensFilled;
         _order.sharesEscrowed -= _sharesFilled;
         if (_order.amount == 0) {
             require(_order.moneyEscrowed == 0);
@@ -223,7 +223,7 @@ contract Orders is IOrders, Initializable {
 
     function setPrice(IMarket _market, uint256 _outcome, uint256 _price) external afterInitialized returns (bool) {
         require(msg.sender == trade);
-        marketOrderData[_market].prices[_outcome] = _price;
+        marketOrderData[address(_market)].prices[_outcome] = _price;
         return true;
     }
 

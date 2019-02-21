@@ -6,7 +6,7 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/libraries/Initializable.sol';
-import 'ROOT/TEST/MockVariableSupplyToken.sol';
+import 'TEST/MockVariableSupplyToken.sol';
 
 
 contract MockDisputeWindow is Initializable, MockVariableSupplyToken, IDisputeWindow {

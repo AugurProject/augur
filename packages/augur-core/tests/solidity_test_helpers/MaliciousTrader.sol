@@ -22,7 +22,7 @@ contract MaliciousTrader {
         evil = _evil;
     }
 
-    function () payable {
+    function () external payable {
         if (evil) {
             revert();
         }

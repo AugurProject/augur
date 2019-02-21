@@ -28,15 +28,15 @@ contract InitialReporter is Ownable, BaseReportingParticipant, Initializable, II
         if (!_isDisavowed && !market.isFinalized()) {
             market.finalize();
         }
-        uint256 _repBalance = reputationToken.balanceOf(this);
+        uint256 _repBalance = reputationToken.balanceOf(address(this));
         require(reputationToken.transfer(owner, _repBalance));
         if (!_isDisavowed) {
-            augur.logInitialReporterRedeemed(market.getUniverse(), owner, market, size, _repBalance, payoutNumerators);
+            augur.logInitialReporterRedeemed(market.getUniverse(), owner, address(market), size, _repBalance, payoutNumerators);
         }
         return true;
     }
 
-    function report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _initialReportStake) public returns (bool) {
+    function report(address _reporter, bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, uint256 _initialReportStake) public returns (bool) {
         require(IMarket(msg.sender) == market);
         require(reportTimestamp == 0);
         uint256 _timestamp = augur.getTimestamp();
@@ -54,7 +54,7 @@ contract InitialReporter is Ownable, BaseReportingParticipant, Initializable, II
 
     function returnRepFromDisavow() public returns (bool) {
         require(IMarket(msg.sender) == market);
-        require(reputationToken.transfer(owner, reputationToken.balanceOf(this)));
+        require(reputationToken.transfer(owner, reputationToken.balanceOf(address(this))));
         reportTimestamp = 0;
         return true;
     }
@@ -68,7 +68,7 @@ contract InitialReporter is Ownable, BaseReportingParticipant, Initializable, II
 
     function forkAndRedeem() public returns (bool) {
         if (!isDisavowed()) {
-            augur.logInitialReporterRedeemed(market.getUniverse(), owner, market, size, reputationToken.balanceOf(this), payoutNumerators);
+            augur.logInitialReporterRedeemed(market.getUniverse(), owner, address(market), size, reputationToken.balanceOf(address(this)), payoutNumerators);
         }
         fork();
         redeem(msg.sender);

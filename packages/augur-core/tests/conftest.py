@@ -145,7 +145,7 @@ class ContractsFixture:
             },
             'settings': {
                 # TODO: Remove 'remappings' line below and update 'sources' line above
-                'remappings': [ 'ROOT=%s/' % resolveRelativePath(self.relativeContractsPath), 'ROOT/TEST=%s/' % resolveRelativePath(self.relativeTestContractsPath) ],
+                'remappings': [ 'ROOT=%s/' % resolveRelativePath(self.relativeContractsPath), 'TEST=%s/' % resolveRelativePath(self.relativeTestContractsPath) ],
                 'optimizer': {
                     'enabled': True,
                     'runs': 200
@@ -324,6 +324,7 @@ class ContractsFixture:
                 if name == 'Orders': continue # In testing we use the TestOrders version which lets us call protected methods
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
+                if name in ['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeOverloadToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order']: continue # Don't compile interfaces or libraries
                 onlySignatures = ["ReputationToken", "TestNetReputationToken", "Universe"]
                 if name in onlySignatures:
                     self.generateAndStoreSignature(path.join(directory, filename))

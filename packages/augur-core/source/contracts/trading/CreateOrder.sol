@@ -23,6 +23,10 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         return true;
     }
 
+    function publicCreateOrderTEST(Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, uint256 _outcome, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId) external returns (bool) {
+        return true;
+    }
+
     function publicCreateOrder(Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, uint256 _outcome, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, bool _ignoreShares) external afterInitialized returns (bytes32) {
         bytes32 _result = this.createOrder(msg.sender, _type, _attoshares, _price, _market, _outcome, _betterOrderId, _worseOrderId, _tradeGroupId, _ignoreShares);
         _market.assertBalances();
@@ -38,7 +42,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         return Order.saveOrder(_orderData, _tradeGroupId);
     }
 
-    function publicCreateOrders(uint256[] _outcomes, Order.Types[] _types, uint256[] _attoshareAmounts, uint256[] _prices, IMarket _market, bool _ignoreShares, bytes32 _tradeGroupId) public afterInitialized nonReentrant returns (bytes32[] memory _orders) {
+    function publicCreateOrders(uint256[] memory _outcomes, Order.Types[] memory _types, uint256[] memory _attoshareAmounts, uint256[] memory _prices, IMarket _market, bool _ignoreShares, bytes32 _tradeGroupId) public afterInitialized nonReentrant returns (bytes32[] memory _orders) {
         require(augur.isValidMarket(_market));
         _orders = new bytes32[]( _types.length);
 

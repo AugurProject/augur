@@ -33,7 +33,7 @@ describe("TradeAndReport", () => {
         let numShares = new ethers.utils.BigNumber(10000000000000);
         let price = new ethers.utils.BigNumber(2150);
 
-        await fixture.placeOrder(market.address, type, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+        await fixture.placeOrder(market.address, type, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex(longTo32Bytes(42)));
 
         const orderID = await fixture.getBestOrderId(type, market.address, outcome)
 

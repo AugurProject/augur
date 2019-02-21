@@ -2,7 +2,7 @@ pragma solidity 0.5.4;
 
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/reporting/IMarket.sol';
-import 'ROOT/TEST/MockVariableSupplyToken.sol';
+import 'TEST/MockVariableSupplyToken.sol';
 
 
 contract MockDisputeCrowdsourcer is IDisputeCrowdsourcer, MockVariableSupplyToken {

@@ -25,7 +25,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     IAugur public augur;
 
     constructor(IAugur _augur, IUniverse _universe, IUniverse _parentUniverse, address _erc820RegistryAddress) public {
-        require(_universe != address(0));
+        require(_universe != IUniverse(0));
         augur = _augur;
         universe = _universe;
         parentUniverse = _parentUniverse;
@@ -35,7 +35,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         initialize820InterfaceImplementations();
     }
 
-    function migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens) public returns (bool) {
+    function migrateOutByPayout(uint256[] memory _payoutNumerators, uint256 _attotokens) public returns (bool) {
         require(_attotokens > 0);
         IUniverse _destinationUniverse = universe.createChildUniverse(_payoutNumerators);
         IReputationToken _destination = _destinationUniverse.getReputationToken();
@@ -70,7 +70,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         IReportingParticipant _reportingParticipant = IReportingParticipant(msg.sender);
         require(_parentUniverse.isContainerForReportingParticipant(_reportingParticipant));
         uint256 _bonus = _amountMigrated.mul(2) / 5;
-        mint(_reportingParticipant, _bonus);
+        mint(address(_reportingParticipant), _bonus);
         return true;
     }
 
