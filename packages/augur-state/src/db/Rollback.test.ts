@@ -2,9 +2,9 @@ import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
 import { DB, UserSpecificEvent } from "../db/DB";
-import { EthersProvider } from "ethers-provider";
+import { makeMock } from "../utils/MakeMock";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { makeMock } from "@augurproject/state/src/db/DB.test";
+import { EthersProvider } from "ethers-provider";
 
 const TEST_NETWORK_ID = 4;
 
@@ -101,10 +101,6 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
 
 
 
-beforeEach(async () => {
-    // TODO Import wipeDb function and wipe all DBs
-});
-
 /**
  * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.
  * Queries before & after rollback to ensure blocks are removed successfully.
@@ -129,11 +125,13 @@ test("sync databases", async () => {
     );
     await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
 
-    const dbName = TEST_NETWORK_ID + "-DisputeCrowdsourcerCompleted";
+    const syncableDBName = TEST_NETWORK_ID + "-DisputeCrowdsourcerCompleted";
+    const metaDBName = TEST_NETWORK_ID + "-BlockNumbersSequenceIds";
     const universe = "0x11149d40d255fCeaC54A3ee3899807B0539bad60";
 
-    let highestSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock(dbName);
-    // console.log("\n\nHighest synced block number: ", highestSyncedBlockNumber);
+    let originalHighestSyncedBlockNumbers: any = {};
+    originalHighestSyncedBlockNumbers[syncableDBName] = await db.syncStatus.getHighestSyncBlock(syncableDBName);
+    originalHighestSyncedBlockNumbers[metaDBName] = await db.syncStatus.getHighestSyncBlock(metaDBName);
 
     let blockLogs = [
         {
@@ -141,7 +139,7 @@ test("sync databases", async () => {
           "market": "0xC0ffe3F654d442589BAb472937F094970339d214",
           "disputeCrowdsourcer": "0x65d4f86927D1f10eFa2Fb884e4DEe0aB86137caD",
           "blockHash": "0x8132a0cdb4226b3bbb5bcf8429ec0883859255751be2c321c58b488395188040",
-          "blockNumber": highestSyncedBlockNumber + 1,
+          "blockNumber": originalHighestSyncedBlockNumbers[syncableDBName] + 1,
           "transactionIndex": 8,
           "removed": false,
           "transactionHash": "0xf750ebb0d039c623385f8227f7a6cbe49f5efbc5485ac0e38b5a7b0e389726d8",
@@ -149,41 +147,51 @@ test("sync databases", async () => {
         },
     ];
 
-    // console.log("Adding new block: ", blockLogs);
-    await db.addNewBlock(dbName, blockLogs);
-    highestSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock(dbName);
-    // console.log("Highest synced block number: ", highestSyncedBlockNumber);
+    await db.addNewBlock(syncableDBName, blockLogs);
+    let highestSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock(syncableDBName);
+    expect(highestSyncedBlockNumber).toBe(originalHighestSyncedBlockNumbers[syncableDBName] + 1);
 
     blockLogs[0].blockNumber = highestSyncedBlockNumber + 1;
-    // console.log("Adding new block: " + newBlockNumber);
-    await db.addNewBlock(dbName, blockLogs);
-    highestSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock(dbName);
-    // console.log("Highest synced block number: ", highestSyncedBlockNumber);
 
+    await db.addNewBlock(syncableDBName, blockLogs);
+    highestSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock(syncableDBName);
+    expect(highestSyncedBlockNumber).toBe(originalHighestSyncedBlockNumbers[syncableDBName] + 2);
+
+    // Verify that 2 new blocks were added to SyncableDB
     let queryObj: any = {
-    selector: { universe: '0x11149d40d255fCeaC54A3ee3899807B0539bad60' },
-    fields: ['_id', 'universe'],
-    sort: ['_id']
+      selector: { universe },
+      fields: ['_id', 'universe'],
+      sort: ['_id']
     };
-    let result = await db.findInSyncableDB(dbName, queryObj);
-    console.log("\n\n" + TEST_NETWORK_ID + "-DisputeCrowdsourcerCompleted event logs before rollback:", result);
+    let result = await db.findInSyncableDB(syncableDBName, queryObj);
+    expect(result).toEqual(expect.objectContaining(
+      { 
+        docs:
+        [ { _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 1) + '.000000000000001',
+            universe: universe },
+          { _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 2) + '.000000000000001',
+            universe: universe } ],
+        warning:
+          'no matching index found, create an index to optimize query time'
+      }
+    ));
+
+    // TODO If derived DBs are used, verify MetaDB contents before & after rollback
 
     await db.rollback(highestSyncedBlockNumber - 1);
 
-    result = await db.findInSyncableDB(dbName, queryObj);
-    console.log("\n\n" + TEST_NETWORK_ID + "-DisputeCrowdsourcerCompleted event logs after rollback:", result);
+    // Verify that newest 2 blocks were removed from SyncableDB
+    result = await db.findInSyncableDB(syncableDBName, queryObj);
+    expect(result).toEqual(expect.objectContaining(
+      { docs: [],
+        warning:
+         'no matching index found, create an index to optimize query time'
+      }
+    ));
 
-    queryObj = {
-    selector: { blockNumber: { $gte: (highestSyncedBlockNumber - 1) } },
-    fields: ['_id', 'blockNumber'],
-    sort: ['_id']
-    };
-    result = await db.findInMetaDB(queryObj);
-    console.log("\n\nMetaDB block numbers greater than " + (highestSyncedBlockNumber - 2) + " after rollback:", result);
-
-    console.log("Highest sync block for " + TEST_NETWORK_ID + "-DisputeCrowdsourcerCreated:", await db.syncStatus.getHighestSyncBlock(TEST_NETWORK_ID + "-DisputeCrowdsourcerCreated"));
-    console.log("Highest sync block for " + TEST_NETWORK_ID + "-DisputeCrowdsourcerCompleted:", await db.syncStatus.getHighestSyncBlock(TEST_NETWORK_ID + "-DisputeCrowdsourcerCompleted"));
-    console.log("Highest sync block for " + TEST_NETWORK_ID + "-BlockNumbersSequenceIds:", await db.syncStatus.getHighestSyncBlock(TEST_NETWORK_ID + "-BlockNumbersSequenceIds"));
+    expect( await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
+    expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
+    expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);
   }, 
-  1000000000
+  30000
 );

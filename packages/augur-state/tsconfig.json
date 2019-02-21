@@ -11,10 +11,6 @@
     "./src/**/*",
     "./src/**/*.json"
   ],
-  "files": [
-    "./src/abi.json",
-    "./src/addresses.json"
-  ],
   "references": [
     {
       "path": "../ethersjs-provider",
