@@ -365,6 +365,8 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     IOrders public orders;
     address public trade;
 
+    mapping (address => uint256) public marketVolume;
+
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
@@ -400,6 +402,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _amountRemainingFillerWants = _tradeData.filler.sharesToSell.add(_tradeData.filler.sharesToBuy);
         uint256 _amountFilled = _amountFillerWants.sub(_amountRemainingFillerWants);
         logOrderFilled(_tradeData, _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
+        logAndUpdateVolume(_tradeData);
         _tradeData.contracts.orders.recordFillOrder(_orderId, _tradeData.getMakerSharesDepleted(), _tradeData.getMakerTokensDepleted());
         return _amountRemainingFillerWants;
     }
@@ -432,5 +435,18 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     function logOrderFilled(Trade.Data memory _tradeData, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, bytes32 _tradeGroupId) private returns (bool) {
         _tradeData.contracts.augur.logOrderFilled(_tradeData.contracts.market.getUniverse(), address(_tradeData.contracts.longShareToken), _tradeData.filler.participantAddress, _tradeData.order.orderId, _tradeData.getMakerSharesDepleted(), _tradeData.getMakerTokensDepleted(), _tradeData.getFillerSharesDepleted(), _tradeData.getFillerTokensDepleted(), _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
         return true;
+    }
+
+    function logAndUpdateVolume(Trade.Data _tradeData) private returns (uint256) {
+        IMarket _market = _tradeData.contracts.market;
+        uint256 _volume = marketVolume[_market];
+        uint256 _makerSharesDepleted = _tradeData.getMakerSharesDepleted();
+        uint256 _fillerSharesDepleted = _tradeData.getFillerSharesDepleted();
+        uint256 _makerTokensDepleted = _tradeData.getMakerTokensDepleted();
+        uint256 _fillerTokensDepleted = _tradeData.getFillerTokensDepleted();
+        uint256 _completeSetTokens = _makerSharesDepleted.min(_fillerSharesDepleted).mul(_market.getNumTicks());
+        _volume = _volume.add(_makerTokensDepleted).add(_fillerTokensDepleted).add(_completeSetTokens);
+        marketVolume[_market] = _volume;
+        return _volume;
     }
 }
