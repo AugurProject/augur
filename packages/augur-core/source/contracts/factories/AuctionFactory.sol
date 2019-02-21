@@ -1,10 +1,10 @@
 pragma solidity 0.5.4;
 
-import 'libraries/CloneFactory.sol';
-import 'IAugur.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/Auction.sol';
-import 'reporting/IReputationToken.sol';
+import 'ROOT/libraries/CloneFactory.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/Auction.sol';
+import 'ROOT/reporting/IReputationToken.sol';
 
 
 contract AuctionFactory is CloneFactory {

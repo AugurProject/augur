@@ -1,6 +1,6 @@
 pragma solidity ^0.5.4;
 
-import 'libraries/ContractExists.sol';
+import 'ROOT/libraries/ContractExists.sol';
 
 
 contract ContractExistsHelper {

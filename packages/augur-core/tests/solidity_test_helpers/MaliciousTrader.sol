@@ -1,8 +1,8 @@
 pragma solidity 0.5.4;
 
-import 'trading/ICash.sol';
-import 'trading/Order.sol';
-import 'trading/ICreateOrder.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/trading/Order.sol';
+import 'ROOT/trading/ICreateOrder.sol';
 
 
 contract MaliciousTrader {

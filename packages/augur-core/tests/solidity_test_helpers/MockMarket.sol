@@ -1,9 +1,9 @@
 pragma solidity ^0.5.4;
 
-import 'reporting/IMarket.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IMailbox.sol';
-import 'libraries/ITyped.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IMailbox.sol';
+import 'ROOT/libraries/ITyped.sol';
 
 
 contract MockMarket is IMarket {

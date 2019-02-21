@@ -1,15 +1,15 @@
 pragma solidity 0.5.4;
 
 
-import 'trading/IClaimTradingProceeds.sol';
-import 'libraries/ReentrancyGuard.sol';
-import 'reporting/IMarket.sol';
-import 'trading/ICash.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'reporting/Reporting.sol';
-import 'IAugur.sol';
-import 'libraries/Initializable.sol';
-import 'IAugur.sol';
+import 'ROOT/trading/IClaimTradingProceeds.sol';
+import 'ROOT/libraries/ReentrancyGuard.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/IAugur.sol';
 
 
 /**

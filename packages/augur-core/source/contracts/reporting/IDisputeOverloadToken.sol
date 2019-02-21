@@ -1,9 +1,9 @@
 pragma solidity 0.5.4;
 
-import 'libraries/token/ERC20Token.sol';
-import 'reporting/IDisputeCrowdsourcer.sol';
-import 'reporting/IMarket.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract IDisputeOverloadToken is ERC20Token {

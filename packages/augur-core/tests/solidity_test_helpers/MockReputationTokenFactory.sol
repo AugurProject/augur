@@ -1,7 +1,7 @@
 pragma solidity 0.5.4;
 
-import 'reporting/IUniverse.sol';
-import 'reporting/IReputationToken.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IReputationToken.sol';
 
 
 contract MockReputationTokenFactory {

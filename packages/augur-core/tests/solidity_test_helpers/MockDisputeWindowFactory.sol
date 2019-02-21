@@ -1,8 +1,8 @@
 pragma solidity 0.5.4;
 
 
-import 'reporting/IUniverse.sol';
-import 'reporting/IDisputeWindow.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
 
 
 contract MockDisputeWindowFactory {

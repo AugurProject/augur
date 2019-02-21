@@ -1,13 +1,13 @@
 pragma solidity 0.5.4;
 
-import 'reporting/IMarket.sol';
-import 'trading/IShareToken.sol';
-import 'trading/ICash.sol';
-import 'libraries/token/ERC20Token.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'libraries/ReentrancyGuard.sol';
-import 'trading/CompleteSets.sol';
-import 'Augur.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/ReentrancyGuard.sol';
+import 'ROOT/trading/CompleteSets.sol';
+import 'ROOT/Augur.sol';
 
 
 contract ZeroXPoC is ReentrancyGuard {

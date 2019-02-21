@@ -145,7 +145,7 @@ class ContractsFixture:
             },
             'settings': {
                 # TODO: Remove 'remappings' line below and update 'sources' line above
-                'remappings': [ '=%s/' % resolveRelativePath(self.relativeContractsPath), 'TEST=%s/' % resolveRelativePath(self.relativeTestContractsPath) ],
+                'remappings': [ 'ROOT=%s/' % resolveRelativePath(self.relativeContractsPath), 'ROOT/TEST=%s/' % resolveRelativePath(self.relativeTestContractsPath) ],
                 'optimizer': {
                     'enabled': True,
                     'runs': 200
@@ -176,7 +176,7 @@ class ContractsFixture:
                 self.getAllDependencies(dependencyPath, knownDependencies)
         matches = findall("import ['\"](.*?)['\"]", fileContents)
         for match in matches:
-            dependencyPath = path.join(BASE_PATH, self.relativeContractsPath, match)
+            dependencyPath = path.join(BASE_PATH, self.relativeContractsPath, match).replace("ROOT/", "")
             if "TEST" in dependencyPath:
                 dependencyPath = path.join(BASE_PATH, self.relativeTestContractsPath, match).replace("TEST/", "")
             if not path.isfile(dependencyPath):

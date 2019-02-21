@@ -1,15 +1,15 @@
 pragma solidity 0.5.4;
 
-import 'libraries/IERC820Registry.sol';
-import 'reporting/IV2ReputationToken.sol';
-import 'libraries/ITyped.sol';
-import 'libraries/token/VariableSupplyToken.sol';
-import 'libraries/token/ERC20Token.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IMarket.sol';
-import 'reporting/Reporting.sol';
-import 'reporting/IDisputeCrowdsourcer.sol';
-import 'libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/reporting/IV2ReputationToken.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/libraries/token/VariableSupplyToken.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
 contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {

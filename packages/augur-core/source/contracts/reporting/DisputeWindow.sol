@@ -3,16 +3,16 @@
 pragma solidity 0.5.4;
 
 
-import 'reporting/IDisputeWindow.sol';
-import 'libraries/Initializable.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IReputationToken.sol';
-import 'reporting/IMarket.sol';
-import 'trading/ICash.sol';
-import 'factories/MarketFactory.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'reporting/IDisputeWindow.sol';
-import 'IAugur.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IReputationToken.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/factories/MarketFactory.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract DisputeWindow is Initializable, IDisputeWindow {

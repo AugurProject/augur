@@ -1,10 +1,10 @@
 pragma solidity 0.5.4;
 
-import 'libraries/IERC820Registry.sol';
-import 'reporting/IDisputeCrowdsourcer.sol';
-import 'reporting/IDisputeOverloadToken.sol';
-import 'libraries/token/VariableSupplyToken.sol';
-import 'libraries/Initializable.sol';
+import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/reporting/IDisputeOverloadToken.sol';
+import 'ROOT/libraries/token/VariableSupplyToken.sol';
+import 'ROOT/libraries/Initializable.sol';
 
 
 contract DisputeOverloadToken is VariableSupplyToken, IDisputeOverloadToken, Initializable {

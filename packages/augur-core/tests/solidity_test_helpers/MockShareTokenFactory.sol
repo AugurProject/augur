@@ -1,6 +1,6 @@
 pragma solidity 0.5.4;
 
-import 'reporting/IMarket.sol';
+import 'ROOT/reporting/IMarket.sol';
 
 
 contract MockShareTokenFactory {

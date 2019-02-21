@@ -1,17 +1,17 @@
 pragma solidity 0.5.4;
 
 
-import 'trading/ICompleteSets.sol';
-import 'IAugur.sol';
-import 'libraries/ReentrancyGuard.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'trading/ICash.sol';
-import 'reporting/IMarket.sol';
-import 'reporting/IDisputeWindow.sol';
-import 'reporting/IAuction.sol';
-import 'trading/IOrders.sol';
-import 'libraries/Initializable.sol';
-import 'IAugur.sol';
+import 'ROOT/trading/ICompleteSets.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/libraries/ReentrancyGuard.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/reporting/IAuction.sol';
+import 'ROOT/trading/IOrders.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {

@@ -1,6 +1,6 @@
 pragma solidity 0.5.4;
 
-import 'libraries/IERC820Registry.sol';
+import 'ROOT/libraries/IERC820Registry.sol';
 
 
 contract ERC820Implementer {

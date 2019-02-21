@@ -1,25 +1,25 @@
 pragma solidity 0.5.4;
 
-import 'reporting/IMarket.sol';
-import 'libraries/ITyped.sol';
-import 'libraries/Initializable.sol';
-import 'libraries/Ownable.sol';
-import 'libraries/collections/Map.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IReportingParticipant.sol';
-import 'reporting/IDisputeCrowdsourcer.sol';
-import 'reporting/IV2ReputationToken.sol';
-import 'factories/DisputeCrowdsourcerFactory.sol';
-import 'trading/ICash.sol';
-import 'trading/IShareToken.sol';
-import 'factories/ShareTokenFactory.sol';
-import 'factories/InitialReporterFactory.sol';
-import 'factories/MapFactory.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'libraries/math/SafeMathInt256.sol';
-import 'reporting/Reporting.sol';
-import 'reporting/IInitialReporter.sol';
-import 'reporting/IAuction.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/libraries/Ownable.sol';
+import 'ROOT/libraries/collections/Map.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IReportingParticipant.sol';
+import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/reporting/IV2ReputationToken.sol';
+import 'ROOT/factories/DisputeCrowdsourcerFactory.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/factories/ShareTokenFactory.sol';
+import 'ROOT/factories/InitialReporterFactory.sol';
+import 'ROOT/factories/MapFactory.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/math/SafeMathInt256.sol';
+import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/reporting/IInitialReporter.sol';
+import 'ROOT/reporting/IAuction.sol';
 
 
 contract Market is ITyped, Initializable, Ownable, IMarket {

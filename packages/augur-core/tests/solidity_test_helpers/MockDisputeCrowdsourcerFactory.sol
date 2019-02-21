@@ -1,8 +1,8 @@
 pragma solidity 0.5.4;
 
-import 'reporting/IMarket.sol';
-import 'reporting/IDisputeCrowdsourcer.sol';
-import 'TEST/MockDisputeCrowdsourcer.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/TEST/MockDisputeCrowdsourcer.sol';
 
 
 contract MockDisputeCrowdsourcerFactory {

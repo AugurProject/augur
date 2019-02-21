@@ -1,7 +1,7 @@
 pragma solidity 0.5.4;
 
-import 'reporting/IMarket.sol';
-import 'reporting/IDisputeWindow.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
 
 
 contract IReportingParticipant {

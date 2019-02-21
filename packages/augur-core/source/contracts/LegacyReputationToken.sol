@@ -1,8 +1,8 @@
 pragma solidity 0.5.4;
 
-import 'libraries/IERC820Registry.sol';
-import 'libraries/ContractExists.sol';
-import 'legacy_reputation/OldLegacyRepToken.sol';
+import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/libraries/ContractExists.sol';
+import 'ROOT/legacy_reputation/OldLegacyRepToken.sol';
 
 
 contract LegacyReputationToken is OldLegacyReputationToken {

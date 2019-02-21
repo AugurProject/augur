@@ -1,13 +1,13 @@
 pragma solidity 0.5.4;
 
 
-import 'libraries/token/ERC20Token.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IMarket.sol';
-import 'reporting/IDisputeWindow.sol';
-import 'reporting/IReputationToken.sol';
-import 'trading/IShareToken.sol';
-import 'trading/Order.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/reporting/IReputationToken.sol';
+import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/trading/Order.sol';
 
 
 // AUDIT/CONSIDER: Is it better that this contract provide generic functions that are limited to whitelisted callers or for it to have many specific functions which have more limited and specific validation?

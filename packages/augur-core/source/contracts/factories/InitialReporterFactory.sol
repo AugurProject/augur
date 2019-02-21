@@ -1,9 +1,9 @@
 pragma solidity 0.5.4;
 
-import 'libraries/CloneFactory.sol';
-import 'reporting/IInitialReporter.sol';
-import 'reporting/IMarket.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/CloneFactory.sol';
+import 'ROOT/reporting/IInitialReporter.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract InitialReporterFactory is CloneFactory {

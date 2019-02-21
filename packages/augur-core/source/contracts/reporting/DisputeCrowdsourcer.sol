@@ -1,13 +1,13 @@
 pragma solidity 0.5.4;
 
-import 'libraries/IERC820Registry.sol';
-import 'reporting/IDisputeCrowdsourcer.sol';
-import 'reporting/IDisputeOverloadToken.sol';
-import 'libraries/token/VariableSupplyToken.sol';
-import 'reporting/BaseReportingParticipant.sol';
-import 'libraries/Initializable.sol';
-import 'reporting/IUniverse.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/reporting/IDisputeOverloadToken.sol';
+import 'ROOT/libraries/token/VariableSupplyToken.sol';
+import 'ROOT/reporting/BaseReportingParticipant.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, IDisputeCrowdsourcer, Initializable {

@@ -3,11 +3,11 @@
 pragma solidity 0.5.4;
 
 
-import 'libraries/ReentrancyGuard.sol';
-import 'trading/Order.sol';
-import 'trading/ICreateOrder.sol';
-import 'libraries/Initializable.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/ReentrancyGuard.sol';
+import 'ROOT/trading/Order.sol';
+import 'ROOT/trading/ICreateOrder.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract CreateOrder is Initializable, ReentrancyGuard {

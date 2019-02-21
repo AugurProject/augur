@@ -1,10 +1,10 @@
 pragma solidity 0.5.4;
 
 
-import 'libraries/ITyped.sol';
-import 'libraries/token/ERC20Token.sol';
-import 'reporting/IMarket.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract IShareToken is ITyped, ERC20Token {

@@ -1,16 +1,16 @@
 pragma solidity 0.5.4;
 
 
-import 'libraries/ITyped.sol';
-import 'libraries/IOwnable.sol';
-import 'trading/ICash.sol';
-import 'trading/IShareToken.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IDisputeWindow.sol';
-import 'trading/IShareToken.sol';
-import 'reporting/IReportingParticipant.sol';
-import 'reporting/IV2ReputationToken.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/libraries/IOwnable.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IReportingParticipant.sol';
+import 'ROOT/reporting/IV2ReputationToken.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract IMarket is ITyped, IOwnable {
@@ -21,7 +21,7 @@ contract IMarket is ITyped, IOwnable {
     }
 
     function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public returns (bool _success);
-    function derivePayoutDistributionHash(uint256[] _payoutNumerators) public view returns (bytes32);
+    function derivePayoutDistributionHash(uint256[] memory _payoutNumerators) public view returns (bytes32);
     function getUniverse() public view returns (IUniverse);
     function getDisputeWindow() public view returns (IDisputeWindow);
     function getNumberOfOutcomes() public view returns (uint256);

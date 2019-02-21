@@ -8,10 +8,10 @@
 pragma solidity 0.5.4;
 
 
-import 'IAugur.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'reporting/IMarket.sol';
-import 'trading/IOrders.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/trading/IOrders.sol';
 
 
 // CONSIDER: Is `price` the most appropriate name for the value being used? It does correspond 1:1 with the attoETH per share, but the range might be considered unusual?
@@ -47,7 +47,7 @@ library Order {
     }
 
     // No validation is needed here as it is simply a librarty function for organizing data
-    function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares) internal view returns (Data) {
+    function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares) internal view returns (Data memory) {
         require(_outcome < _market.getNumberOfOutcomes());
         require(_price < _market.getNumTicks());
         require(_attoshares > 0);
@@ -77,7 +77,7 @@ library Order {
     // "public" functions
     //
 
-    function getOrderId(Order.Data _orderData) internal view returns (bytes32) {
+    function getOrderId(Order.Data memory _orderData) internal view returns (bytes32) {
         if (_orderData.id == bytes32(0)) {
             bytes32 _orderId = _orderData.orders.getOrderId(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, block.number, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed);
             require(_orderData.orders.getAmount(_orderId) == 0);
@@ -94,7 +94,7 @@ library Order {
         return (_fillerDirection == Order.TradeDirections.Long) ? Order.Types.Ask : Order.Types.Bid;
     }
 
-    function escrowFunds(Order.Data _orderData) internal returns (bool) {
+    function escrowFunds(Order.Data memory _orderData) internal returns (bool) {
         if (_orderData.orderType == Order.Types.Ask) {
             return escrowFundsForAsk(_orderData);
         } else if (_orderData.orderType == Order.Types.Bid) {
@@ -102,7 +102,7 @@ library Order {
         }
     }
 
-    function saveOrder(Order.Data _orderData, bytes32 _tradeGroupId) internal returns (bytes32) {
+    function saveOrder(Order.Data memory _orderData, bytes32 _tradeGroupId) internal returns (bytes32) {
         return _orderData.orders.saveOrder(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed, _orderData.betterOrderId, _orderData.worseOrderId, _tradeGroupId);
     }
 
@@ -110,7 +110,7 @@ library Order {
     // Private functions
     //
 
-    function escrowFundsForBid(Order.Data _orderData) private returns (bool) {
+    function escrowFundsForBid(Order.Data memory _orderData) private returns (bool) {
         require(_orderData.moneyEscrowed == 0);
         require(_orderData.sharesEscrowed == 0);
         uint256 _attosharesToCover = _orderData.amount;
@@ -130,9 +130,9 @@ library Order {
             if (_attosharesHeld > 0) {
                 _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
                 _attosharesToCover -= _orderData.sharesEscrowed;
-                for (_i = 0; _i < _numberOfOutcomes; _i++) {
+                for (uint256 _i = 0; _i < _numberOfOutcomes; _i++) {
                     if (_i != _orderData.outcome) {
-                        _orderData.market.getShareToken(_i).trustedOrderTransfer(_orderData.creator, _orderData.market, _orderData.sharesEscrowed);
+                        _orderData.market.getShareToken(_i).trustedOrderTransfer(_orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
                     }
                 }
             }
@@ -141,13 +141,13 @@ library Order {
         // If not able to cover entire order with shares alone, then cover remaining with tokens
         if (_attosharesToCover > 0) {
             _orderData.moneyEscrowed = _attosharesToCover.mul(_orderData.price);
-            require(_orderData.augur.trustedTransfer(_orderData.market.getDenominationToken(), _orderData.creator, _orderData.market, _orderData.moneyEscrowed));
+            require(_orderData.augur.trustedTransfer(_orderData.market.getDenominationToken(), _orderData.creator, address(_orderData.market), _orderData.moneyEscrowed));
         }
 
         return true;
     }
 
-    function escrowFundsForAsk(Order.Data _orderData) private returns (bool) {
+    function escrowFundsForAsk(Order.Data memory _orderData) private returns (bool) {
         require(_orderData.moneyEscrowed == 0);
         require(_orderData.sharesEscrowed == 0);
         IShareToken _shareToken = _orderData.market.getShareToken(_orderData.outcome);
@@ -161,14 +161,14 @@ library Order {
             if (_attosharesHeld > 0) {
                 _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
                 _attosharesToCover -= _orderData.sharesEscrowed;
-                _shareToken.trustedOrderTransfer(_orderData.creator, _orderData.market, _orderData.sharesEscrowed);
+                _shareToken.trustedOrderTransfer(_orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
             }
         }
 
         // If not able to cover entire order with shares alone, then cover remaining with tokens
         if (_attosharesToCover > 0) {
             _orderData.moneyEscrowed = _orderData.market.getNumTicks().sub(_orderData.price).mul(_attosharesToCover);
-            require(_orderData.augur.trustedTransfer(_orderData.market.getDenominationToken(), _orderData.creator, _orderData.market, _orderData.moneyEscrowed));
+            require(_orderData.augur.trustedTransfer(_orderData.market.getDenominationToken(), _orderData.creator, address(_orderData.market), _orderData.moneyEscrowed));
         }
 
         return true;

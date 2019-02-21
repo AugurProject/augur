@@ -1,24 +1,24 @@
 pragma solidity 0.5.4;
 
-import 'reporting/IUniverse.sol';
-import 'libraries/token/ERC20Token.sol';
-import 'reporting/IMarket.sol';
-import 'reporting/IDisputeCrowdsourcer.sol';
-import 'trading/Order.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/trading/Order.sol';
 
 
 contract IAugur {
-    function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] _parentPayoutNumerators) public returns (IUniverse);
+    function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] memory _parentPayoutNumerators) public returns (IUniverse);
     function isKnownUniverse(IUniverse _universe) public view returns (bool);
     function trustedTransfer(ERC20Token _token, address _from, address _to, uint256 _amount) public returns (bool);
-    function logMarketCreated(bytes32 _topic, string _description, string _extraInfo, IUniverse _universe, IMarket _market, address _marketCreator, bytes32[] _outcomes, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool);
-    function logMarketCreated(bytes32 _topic, string _description, string _extraInfo, IUniverse _universe, IMarket _market, address _marketCreator, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool);
-    function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string description) public returns (bool);
-    function disputeCrowdsourcerCreated(IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size) public returns (bool);
-    function logDisputeCrowdsourcerContribution(IUniverse _universe, address _reporter, address _market, address _disputeCrowdsourcer, uint256 _amountStaked, string description) public returns (bool);
+    function logMarketCreated(bytes32 _topic, string memory _description, string memory _extraInfo, IUniverse _universe, IMarket _market, address _marketCreator, bytes32[] memory _outcomes, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool);
+    function logMarketCreated(bytes32 _topic, string memory _description, string memory _extraInfo, IUniverse _universe, IMarket _market, address _marketCreator, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool);
+    function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] memory _payoutNumerators, string memory description) public returns (bool);
+    function disputeCrowdsourcerCreated(IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] memory _payoutNumerators, uint256 _size) public returns (bool);
+    function logDisputeCrowdsourcerContribution(IUniverse _universe, address _reporter, address _market, address _disputeCrowdsourcer, uint256 _amountStaked, string memory description) public returns (bool);
     function logDisputeCrowdsourcerCompleted(IUniverse _universe, address _market, address _disputeCrowdsourcer) public returns (bool);
-    function logInitialReporterRedeemed(IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] _payoutNumerators) public returns (bool);
-    function logDisputeCrowdsourcerRedeemed(IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] _payoutNumerators) public returns (bool);
+    function logInitialReporterRedeemed(IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] memory _payoutNumerators) public returns (bool);
+    function logDisputeCrowdsourcerRedeemed(IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] memory _payoutNumerators) public returns (bool);
     function logMarketFinalized(IUniverse _universe) public returns (bool);
     function logMarketMigrated(IMarket _market, IUniverse _originalUniverse) public returns (bool);
     function logReportingParticipantDisavowed(IUniverse _universe, IMarket _market) public returns (bool);

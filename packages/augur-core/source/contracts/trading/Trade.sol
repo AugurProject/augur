@@ -3,14 +3,14 @@
 pragma solidity 0.5.4;
 
 
-import 'IAugur.sol';
-import 'libraries/ReentrancyGuard.sol';
-import 'trading/Order.sol';
-import 'reporting/IMarket.sol';
-import 'trading/ICreateOrder.sol';
-import 'trading/IOrders.sol';
-import 'trading/IFillOrder.sol';
-import 'libraries/Initializable.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/libraries/ReentrancyGuard.sol';
+import 'ROOT/trading/Order.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/trading/ICreateOrder.sol';
+import 'ROOT/trading/IOrders.sol';
+import 'ROOT/trading/IFillOrder.sol';
+import 'ROOT/libraries/Initializable.sol';
 
 
 contract Trade is Initializable, ReentrancyGuard {

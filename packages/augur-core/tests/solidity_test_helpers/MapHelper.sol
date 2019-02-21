@@ -1,7 +1,7 @@
 pragma solidity ^0.5.4;
 
-import 'libraries/collections/Map.sol';
-import 'factories/MapFactory.sol';
+import 'ROOT/libraries/collections/Map.sol';
+import 'ROOT/factories/MapFactory.sol';
 
 
 contract MapHelper {

@@ -1,15 +1,15 @@
 pragma solidity 0.5.4;
 
-import 'reporting/IAuction.sol';
-import 'reporting/IUniverse.sol';
-import 'libraries/Initializable.sol';
-import 'reporting/IV2ReputationToken.sol';
-import 'reporting/IReputationToken.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'reporting/Reporting.sol';
-import 'trading/ICash.sol';
-import 'reporting/IAuctionToken.sol';
-import 'factories/AuctionTokenFactory.sol';
+import 'ROOT/reporting/IAuction.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/reporting/IV2ReputationToken.sol';
+import 'ROOT/reporting/IReputationToken.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/reporting/IAuctionToken.sol';
+import 'ROOT/factories/AuctionTokenFactory.sol';
 
 
 contract Auction is Initializable, IAuction {

@@ -1,12 +1,12 @@
 pragma solidity 0.5.4;
 
 
-import 'libraries/ITyped.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IMarket.sol';
-import 'reporting/IReputationToken.sol';
-import 'trading/ICash.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/IReputationToken.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract IDisputeWindow is ITyped {

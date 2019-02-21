@@ -1,6 +1,6 @@
 pragma solidity 0.5.4;
 
-import 'reporting/IReputationToken.sol';
+import 'ROOT/reporting/IReputationToken.sol';
 
 
 contract IV2ReputationToken is IReputationToken {

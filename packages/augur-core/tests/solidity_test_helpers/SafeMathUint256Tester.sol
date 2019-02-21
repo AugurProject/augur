@@ -1,6 +1,6 @@
 pragma solidity ^0.5.4;
 
-import 'libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
 contract SafeMathUint256Tester {

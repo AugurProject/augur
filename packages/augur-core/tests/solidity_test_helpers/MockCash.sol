@@ -1,9 +1,9 @@
 pragma solidity 0.5.4;
 
 
-import 'trading/ICash.sol';
-import 'libraries/ITyped.sol';
-import 'TEST/MockVariableSupplyToken.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/TEST/MockVariableSupplyToken.sol';
 
 
 contract MockCash is ITyped, MockVariableSupplyToken, ICash {

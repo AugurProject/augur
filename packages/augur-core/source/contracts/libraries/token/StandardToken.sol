@@ -1,8 +1,8 @@
 pragma solidity 0.5.4;
 
 
-import 'libraries/token/ERC20Token.sol';
-import 'libraries/token/ERC777BaseToken.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/ERC777BaseToken.sol';
 
 
 contract StandardToken is ERC20Token, ERC777BaseToken {

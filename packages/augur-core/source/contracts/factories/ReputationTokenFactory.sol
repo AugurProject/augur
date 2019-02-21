@@ -1,10 +1,10 @@
 pragma solidity 0.5.4;
 
 
-import 'IAugur.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IV2ReputationToken.sol';
-import 'reporting/ReputationToken.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IV2ReputationToken.sol';
+import 'ROOT/reporting/ReputationToken.sol';
 
 
 contract ReputationTokenFactory {

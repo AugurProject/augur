@@ -1,20 +1,20 @@
 pragma solidity 0.5.4;
 
 
-import 'libraries/ITyped.sol';
-import 'reporting/IV2ReputationToken.sol';
-import 'reporting/IDisputeWindow.sol';
-import 'reporting/IMarket.sol';
-import 'reporting/IDisputeWindow.sol';
-import 'reporting/IReportingParticipant.sol';
-import 'reporting/IAuction.sol';
-import 'trading/IShareToken.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/reporting/IV2ReputationToken.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/reporting/IReportingParticipant.sol';
+import 'ROOT/reporting/IAuction.sol';
+import 'ROOT/trading/IShareToken.sol';
 
 
 contract IUniverse is ITyped {
     function fork() public returns (bool);
     function getParentUniverse() public view returns (IUniverse);
-    function createChildUniverse(uint256[] _parentPayoutNumerators) public returns (IUniverse);
+    function createChildUniverse(uint256[] memory _parentPayoutNumerators) public returns (IUniverse);
     function getChildUniverse(bytes32 _parentPayoutDistributionHash) public view returns (IUniverse);
     function getReputationToken() public view returns (IV2ReputationToken);
     function getAuction() public view returns (IAuction);

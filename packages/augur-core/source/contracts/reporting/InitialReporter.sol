@@ -1,12 +1,12 @@
 pragma solidity 0.5.4;
 
-import 'libraries/IERC820Registry.sol';
-import 'libraries/Initializable.sol';
-import 'reporting/IInitialReporter.sol';
-import 'reporting/IMarket.sol';
-import 'reporting/BaseReportingParticipant.sol';
-import 'libraries/Ownable.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/reporting/IInitialReporter.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/BaseReportingParticipant.sol';
+import 'ROOT/libraries/Ownable.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract InitialReporter is Ownable, BaseReportingParticipant, Initializable, IInitialReporter {

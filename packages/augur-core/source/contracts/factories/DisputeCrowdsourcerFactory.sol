@@ -1,10 +1,10 @@
 pragma solidity 0.5.4;
 
-import 'libraries/CloneFactory.sol';
-import 'reporting/IDisputeCrowdsourcer.sol';
-import 'reporting/IDisputeOverloadToken.sol';
-import 'reporting/IMarket.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/CloneFactory.sol';
+import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/reporting/IDisputeOverloadToken.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract DisputeCrowdsourcerFactory is CloneFactory {

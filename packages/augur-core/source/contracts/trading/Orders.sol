@@ -1,13 +1,13 @@
 pragma solidity 0.5.4;
 
 
-import 'trading/IOrders.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'libraries/math/SafeMathInt256.sol';
-import 'trading/Order.sol';
-import 'reporting/IMarket.sol';
-import 'trading/IOrdersFetcher.sol';
-import 'libraries/Initializable.sol';
+import 'ROOT/trading/IOrders.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/math/SafeMathInt256.sol';
+import 'ROOT/trading/Order.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/trading/IOrdersFetcher.sol';
+import 'ROOT/libraries/Initializable.sol';
 
 
 /**

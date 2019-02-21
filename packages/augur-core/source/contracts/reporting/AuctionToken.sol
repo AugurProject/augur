@@ -1,13 +1,13 @@
 pragma solidity 0.5.4;
 
-import 'libraries/IERC820Registry.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IAuctionToken.sol';
-import 'libraries/token/VariableSupplyToken.sol';
-import 'libraries/ITyped.sol';
-import 'trading/ICash.sol';
-import 'libraries/Initializable.sol';
-import 'reporting/IAuction.sol';
+import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IAuctionToken.sol';
+import 'ROOT/libraries/token/VariableSupplyToken.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/reporting/IAuction.sol';
 
 
 contract AuctionToken is ITyped, Initializable, VariableSupplyToken, IAuctionToken {

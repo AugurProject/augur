@@ -1,12 +1,12 @@
 pragma solidity ^0.5.4;
 
-import 'reporting/IMarket.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IDisputeWindow.sol';
-import 'libraries/ITyped.sol';
-import 'reporting/IReputationToken.sol';
-import 'libraries/Initializable.sol';
-import 'TEST/MockVariableSupplyToken.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/reporting/IReputationToken.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/TEST/MockVariableSupplyToken.sol';
 
 
 contract MockDisputeWindow is Initializable, MockVariableSupplyToken, IDisputeWindow {

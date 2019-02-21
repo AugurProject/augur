@@ -1,9 +1,9 @@
 pragma solidity 0.5.4;
 
-import 'IAugur.sol';
-import 'trading/ICash.sol';
-import 'libraries/ITyped.sol';
-import 'libraries/token/VariableSupplyToken.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/libraries/token/VariableSupplyToken.sol';
 
 
 /**

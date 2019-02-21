@@ -1,11 +1,11 @@
 pragma solidity 0.5.4;
 
-import 'libraries/ERC820Implementer.sol';
-import 'libraries/token/ERC777Token.sol';
-import 'libraries/token/ERC777TokensSender.sol';
-import 'libraries/token/ERC777TokensRecipient.sol';
-import 'libraries/ContractExists.sol';
-import 'libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/ERC820Implementer.sol';
+import 'ROOT/libraries/token/ERC777Token.sol';
+import 'ROOT/libraries/token/ERC777TokensSender.sol';
+import 'ROOT/libraries/token/ERC777TokensRecipient.sol';
+import 'ROOT/libraries/ContractExists.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
 contract ERC777BaseToken is ERC777Token, ERC820Implementer {

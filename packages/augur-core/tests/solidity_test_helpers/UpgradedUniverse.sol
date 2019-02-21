@@ -1,6 +1,6 @@
 pragma solidity 0.5.4;
 
-import 'reporting/Universe.sol';
+import 'ROOT/reporting/Universe.sol';
 
 
 contract UpgradedUniverse is Universe {
