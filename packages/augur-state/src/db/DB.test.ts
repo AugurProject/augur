@@ -7,17 +7,24 @@ import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
+import * as _ from "lodash";
 
 
 export function makeMock() {
     const mockState = {
-        failCountdown: -1  // default state never fails
+        dbNames: [] as string[],
+        failCountdown: -1,  // default state never fails
+        alwaysFail: false,
     };
+
+    function fail() {
+        mockState.failCountdown--;
+        return mockState.alwaysFail || mockState.failCountdown === 0;
+    }
 
     class MockPouchDB extends PouchDB {
         allDocs<Model>(options?: any): Promise<any> {
-            mockState.failCountdown--;
-            if (mockState.failCountdown === 0) {
+            if (fail()) {
                 throw Error("This was an intentional, mocked failure of allDocs");
             }
             if (options) {
@@ -28,8 +35,7 @@ export function makeMock() {
         }
 
         get<Model>(docId: any, options?: any): Promise<any> {
-            mockState.failCountdown--;
-            if (mockState.failCountdown === 0) {
+            if (fail()) {
                 throw Error("This was an intentional, mocked failure of get");
             }
             if (options) {
@@ -40,8 +46,7 @@ export function makeMock() {
         }
 
         put<Model>(doc: any, options?: any): Promise<any> {
-            mockState.failCountdown--;
-            if (mockState.failCountdown === 0) {
+            if (fail()) {
                 throw Error("This was an intentional, mocked failure of put");
             }
             if (options) {
@@ -53,12 +58,20 @@ export function makeMock() {
     }
 
     function makeFactory (): PouchDBFactoryType {
-        return (dbName: string) => new MockPouchDB(`db/${dbName}`, { adapter: "memory" })
+        return (dbName: string) => {
+            const fullDbName = `db/${dbName}`;
+            mockState.dbNames.push(fullDbName);
+            return new MockPouchDB(fullDbName, { adapter: "memory" })
+        }
     }
 
-    async function wipeDB(DbClass: new (networkId: number, dbArgs: object) => TrackedUsers) {
-        const dbInstance = new DbClass(TEST_NETWORK_ID, makeFactory());
-        await dbInstance["db"].destroy();
+    async function wipeDB(): Promise<void> {
+        await Promise.all(_.map(mockState.dbNames, dbName => {
+            const db = new PouchDB(dbName, { adapter: "memory" });
+            return db.destroy();
+        }));
+
+        mockState.dbNames = [];
     }
 
     return {
@@ -66,7 +79,11 @@ export function makeMock() {
         wipeDB,
         failNext: () => mockState.failCountdown = 1,
         failInN: (n: number) => mockState.failCountdown = n,
-        cancelFail: () => mockState.failCountdown = -1
+        failForever: () => mockState.alwaysFail = true,
+        cancelFail: () => {
+            mockState.failCountdown = -1;
+            mockState.alwaysFail = false;
+        },
     }
 }
 
@@ -163,7 +180,8 @@ const contractDependencies = new ContractDependenciesEthers(provider, undefined,
 
 
 beforeEach(async () => {
-    await mock.wipeDB(TrackedUsers)
+    mock.cancelFail();
+    await mock.wipeDB()
 });
 
 let augur: Augur<any>;
@@ -193,11 +211,11 @@ test("database failure during trackedUsers.getUsers() call", async () => {
         rev: expect.any(String)
     });
     mock.failNext();
-    expect(trackedUsers.getUsers()).rejects.toThrow();
+    await expect(trackedUsers.getUsers()).rejects.toThrow();
 }, 60000);
 
 
-test.only("database failure during sync, followed by another sync", async () => {
+test("database failure during sync, followed by another sync", async () => {
     const db = await DB.createAndInitializeDB(
       TEST_NETWORK_ID,
       settings.blockstreamDelay,
@@ -209,16 +227,16 @@ test.only("database failure during sync, followed by another sync", async () => 
     );
 
     console.log("Sync with a database failure.");
-    mock.failInN(1);  // for some reason, 748 is how many mock-wrapped db calls sync makes
-    expect(db.sync(augur, settings.chunkSize, settings.blockstreamDelay)).rejects.toThrow();
-    mock.cancelFail(); // should be unnecessary
+    mock.failForever();
+    await expect(db.sync(augur, settings.chunkSize, settings.blockstreamDelay)).rejects.toThrow();
+    mock.cancelFail();
 
     console.log("Sync successfully.");
     await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
 }, 60000);
 
 
-test("syncing: succeed then fail then succeed again", async () => {
+test.skip("syncing: succeed then fail then succeed again", async () => {
     const db = await DB.createAndInitializeDB(
       TEST_NETWORK_ID,
       settings.blockstreamDelay,
@@ -233,19 +251,10 @@ test("syncing: succeed then fail then succeed again", async () => {
     await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
 
     console.log("Sync with a database failure.");
-    mock.failInN(1);  // for some reason, 748 is how many mock-wrapped db calls sync makes
-    expect(db.sync(augur, settings.chunkSize, settings.blockstreamDelay)).rejects.toThrow();
-    mock.cancelFail(); // should be unnecessary
+    mock.failForever();
+    await expect(db.sync(augur, settings.chunkSize, settings.blockstreamDelay)).rejects.toThrow();
+    mock.cancelFail();
 
     console.log("Sync successfully.");
     await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
 }, 60000);
-
-
-// TODO remove
-// FSS = FFF
-// FS = FF
-// SFS = SFS
-// SSFS = SSFS
-// SS = SS
-// SFS = SFS
