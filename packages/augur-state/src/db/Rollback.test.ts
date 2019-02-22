@@ -164,6 +164,7 @@ test("sync databases", async () => {
       sort: ['_id']
     };
     let result = await db.findInSyncableDB(syncableDBName, queryObj);
+    // TODO Remove warning property from expected result once indexes are being used on SyncableDBs
     expect(result).toEqual(expect.objectContaining(
       { 
         docs:
