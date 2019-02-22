@@ -1,7 +1,6 @@
 import { TrackedUsers } from "./TrackedUsers";
-import PouchDB from "pouchdb";
-import { PouchDBFactoryType } from "./AbstractDB";
 import { DB, UserSpecificEvent } from "./DB";
+import { makeMock } from "../utils/MakeMock";
 import { EthersProvider } from "ethers-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { Augur } from "@augurproject/api";
@@ -9,36 +8,6 @@ import { uploadBlockNumbers } from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
 
 const TEST_NETWORK_ID = 4;
-
-export function makeMock() {
-    const mockState = {
-        willFailNext: false
-    };
-
-    class MockPouchDB extends PouchDB {
-        allDocs<Model>(options?: any): Promise<any> {
-            if (mockState.willFailNext) {
-                mockState.willFailNext = false;
-                throw Error("This was a failure")
-            }
-            if (options) {
-                return super.allDocs(options);
-            } else {
-                return super.allDocs();
-            }
-
-        }
-    }
-
-    function makeFactory (): PouchDBFactoryType {
-        return (dbName: string) => new MockPouchDB(`db/${dbName}`, { adapter: "memory" })
-    }
-
-    return {
-        makeFactory,
-        failNext: () => mockState.willFailNext = true
-    }
-}
 
 test("database failure during trackedUsers.getUsers() call", async () => {
     const mock = makeMock();

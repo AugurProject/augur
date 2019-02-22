@@ -13,7 +13,7 @@
   ],
   "references": [
     {
-      "path": "../ethersjs-provider"
+      "path": "../ethersjs-provider",
     },
     {
       "path": "../augur-core"
