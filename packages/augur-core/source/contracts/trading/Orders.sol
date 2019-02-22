@@ -227,6 +227,35 @@ contract Orders is IOrders, Initializable {
         return true;
     }
 
+    function setOrderPrice(bytes32 _orderId, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId) public afterInitialized returns (bool) {
+        Order.Data storage _order = orders[_orderId];
+        IMarket _market = _order.market;
+        require(msg.sender == _order.creator);
+        require(_price < _market.getNumTicks());
+        require(_price != _order.price);
+        removeOrderFromList(_orderId);
+        if (_order.moneyEscrowed != 0) {
+            bool _isRefund = _order.orderType == Order.Types.Bid ? _price < _order.price : _price > _order.price;
+            uint256 _priceDelta = _price < _order.price ? _order.price.sub(_price) : _price.sub(_order.price);
+            uint256 _attoSharesToCoverByTokens = _order.amount.sub(_order.sharesEscrowed);
+            uint256 _amount = _attoSharesToCoverByTokens.mul(_priceDelta);
+            if (_isRefund) {
+                require(_market.getDenominationToken().transferFrom(_market, msg.sender, _amount));
+                marketOrderData[_market].totalEscrowed -= _amount;
+                _order.moneyEscrowed -= _amount;
+            } else {
+                require(augur.trustedTransfer(_market.getDenominationToken(), msg.sender, _market, _amount));
+                marketOrderData[_market].totalEscrowed += _amount;
+                _order.moneyEscrowed += _amount;
+            }
+        }
+        _order.price = _price;
+        insertOrderIntoList(_order, _betterOrderId, _worseOrderId);
+        _market.assertBalances();
+        augur.logOrderPriceChanged(_market.getUniverse(), _orderId, _price);
+        return true;
+    }
+
     function removeOrderFromList(bytes32 _orderId) private returns (bool) {
         Order.Types _type = orders[_orderId].orderType;
         IMarket _market = orders[_orderId].market;

@@ -45,6 +45,7 @@ contract Augur is IAugur {
     event UniverseForked(address indexed universe);
     event UniverseCreated(address indexed parentUniverse, address indexed childUniverse, uint256[] payoutNumerators);
     event OrderCanceled(address indexed universe, address indexed shareToken, address indexed sender, bytes32 orderId, Order.Types orderType, uint256 tokenRefund, uint256 sharesRefund);
+    event OrderPriceChanged(address indexed universe, bytes32 orderId, uint256 price);
     // The ordering here is to match functions higher in the call chain to avoid stack depth issues
     event OrderCreated(Order.Types orderType, uint256 amount, uint256 price, address indexed creator, uint256 moneyEscrowed, uint256 sharesEscrowed, bytes32 tradeGroupId, bytes32 orderId, address indexed universe, address indexed shareToken);
     event OrderFilled(address indexed universe, address indexed shareToken, address filler, bytes32 orderId, uint256 numCreatorShares, uint256 numCreatorTokens, uint256 numFillerShares, uint256 numFillerTokens, uint256 marketCreatorFees, uint256 reporterFees, uint256 amountFilled, bytes32 tradeGroupId);
@@ -475,6 +476,12 @@ contract Augur is IAugur {
     function logAuctionTokenMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
         require(isKnownAuctionToken(IAuctionToken(msg.sender)));
         emit TokensMinted(_universe, msg.sender, _target, _amount, TokenType.AuctionToken, 0);
+        return true;
+    }
+
+    function logOrderPriceChanged(IUniverse _universe, bytes32 _orderId, uint256 _price) public returns (bool) {
+        require(msg.sender == registry["Orders"]);
+        emit OrderPriceChanged(_universe, _orderId, _price);
         return true;
     }
 }
