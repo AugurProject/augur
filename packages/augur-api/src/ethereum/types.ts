@@ -27,8 +27,8 @@ export interface ParsedLog {
 }
 
 export interface Filter {
-  fromBlock: number|string;
-  toBlock: number|string;
+    fromBlock?: number | string;
+    toBlock?: number | string;
   address?: string;
   topics?: Array<string | Array<string>>;
 }
