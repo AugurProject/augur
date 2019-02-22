@@ -481,7 +481,7 @@ contract Augur is IAugur {
 
     function logOrderPriceChanged(IUniverse _universe, bytes32 _orderId, uint256 _price) public returns (bool) {
         require(msg.sender == registry["Orders"]);
-        emit OrderPriceChanged(_universe, _orderId, _price);
+        emit OrderPriceChanged(address(_universe), _orderId, _price);
         return true;
     }
 }
