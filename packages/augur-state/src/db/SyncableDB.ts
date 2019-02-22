@@ -41,7 +41,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
             }
             if (success) {
                 highestSyncedBlockNumber = endBlockNumber;
-                this.syncStatus.setHighestSyncBlock(this.dbName, highestSyncedBlockNumber);
+                await this.syncStatus.setHighestSyncBlock(this.dbName, highestSyncedBlockNumber);
             }
         }
         console.log(`SYNCING SUCCESS ${this.dbName} up to ${goalBlock}`);
