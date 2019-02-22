@@ -42,7 +42,7 @@ export abstract class AbstractDB {
 
   protected async upsertDocument(id: string, document: object): Promise<PouchDB.Core.Response> {
     const previousBlockRev = await this.getPouchRevFromId(id);
-    return this.db.put(Object.assign(
+    return await this.db.put(Object.assign(
       previousBlockRev ? { _rev: previousBlockRev } : {},
       { _id: id },
       document,
