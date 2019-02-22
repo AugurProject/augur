@@ -204,7 +204,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
 
     with raises(TransactionFailed, message="We cannot create markets during a fork"):
         time = localFixture.contracts["Time"].getTimestamp()
-        localFixture.createYesNoMarket(universe, time + 1000, 1, tester.a0)
+        localFixture.createYesNoMarket(universe, time + 1000, 1, 0, tester.a0)
 
     # confirm that we can manually create a child universe from an outcome no one asserted was true during dispute
     numTicks = market.getNumTicks()
@@ -350,7 +350,7 @@ def test_fork_migration_no_report(localFixture, universe, market):
 
     # Create a market before the fork occurs which has an end date past the forking window
     endTime = long(localFixture.contracts["Time"].getTimestamp() + timedelta(days=90).total_seconds())
-    longMarket = localFixture.createYesNoMarket(universe, endTime, 1, tester.a0)
+    longMarket = localFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
 
     # Go to the forking period
     proceedToFork(localFixture, market, universe)

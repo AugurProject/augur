@@ -5,6 +5,7 @@ from ethereum.tools.tester import TransactionFailed
 from utils import longTo32Bytes, longToHexString, bytesToHexString, fix, AssertLog, stringToBytes, EtherDelta, PrintGasUsed, BuyWithCash, TokenDelta
 from constants import ASK, BID, YES, NO, LONG, SHORT
 from pytest import raises, mark
+from reporting_utils import proceedToNextRound
 
 @mark.parametrize('withSelf', [
     True,
@@ -862,7 +863,7 @@ def test_take_best_order_with_shares_escrowed_buy_with_cash_by_ignoring_shares(u
     assert firstShareToken.balanceOf(tester.a1) == 0
     assert secondShareToken.balanceOf(tester.a1) == fix(1)
 
-    # The second user sold the complete set they ended up holding from this transaction
+    # The second user did not sell the complete set they ended up holding from this transaction because we specified to ignore shares
     assert firstShareToken.balanceOf(tester.a2) == fix(2)
     assert secondShareToken.balanceOf(tester.a2) == fix(1)
 
@@ -873,3 +874,62 @@ def test_take_best_order_with_shares_escrowed_buy_with_cash_by_ignoring_shares(u
     assert orders.getOrderSharesEscrowed(orderID) == 0
     assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
+
+@mark.parametrize('finalized', [
+    True,
+    False
+])
+def test_fees_from_trades(finalized, contractsFixture, cash, market):
+    createOrder = contractsFixture.contracts['CreateOrder']
+    trade = contractsFixture.contracts['Trade']
+    orders = contractsFixture.contracts['Orders']
+    completeSets = contractsFixture.contracts['CompleteSets']
+    firstShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
+    secondShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(1))
+
+    if finalized:
+        proceedToNextRound(contractsFixture, market)
+        disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+        contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+        assert market.finalize()
+
+    # buy complete sets for both users
+    numTicks = market.getNumTicks()
+    with BuyWithCash(cash, fix('1', numTicks), tester.k1, "buy complete set"):
+        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=tester.k1)
+    with BuyWithCash(cash, fix('1', numTicks), tester.k2, "buy complete set"):
+        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=tester.k2)
+    assert firstShareToken.balanceOf(tester.a1) == firstShareToken.balanceOf(tester.a2) == fix(1)
+    assert secondShareToken.balanceOf(tester.a1) == secondShareToken.balanceOf(tester.a2) == fix(1)
+
+    # create order with shares
+    orderID = createOrder.publicCreateOrder(ASK, fix(1), 6000, market.address, 0, longTo32Bytes(0), longTo32Bytes(0), "42", sender=tester.k1)
+    assert orderID
+
+    expectedAffiliateFees = fix(10000) * 0.01 * .25
+    cash.depositEther(value=fix(6000), sender=tester.k2)
+    # Trade and specify an affiliate address.
+    if finalized:
+        with TokenDelta(cash, expectedAffiliateFees, tester.a3, "Affiliate did not recieve the correct fees"):
+            assert trade.publicFillBestOrder(BID, market.address, 0, fix(1), 6000, "43", 6, False, tester.a3, sender=tester.k2) == 0
+    else:
+        assert trade.publicFillBestOrder(BID, market.address, 0, fix(1), 6000, "43", 6, False, tester.a3, sender=tester.k2) == 0
+
+    assert firstShareToken.balanceOf(tester.a1) == 0
+    assert secondShareToken.balanceOf(tester.a1) == fix(1)
+
+    # The second user sold the complete set they ended up holding from this transaction, which extracts fees
+    assert firstShareToken.balanceOf(tester.a2) == fix(1)
+    assert secondShareToken.balanceOf(tester.a2) == fix(0)
+
+    if not finalized:
+        # We can confirm that the 3rd test account has an affiliate fee balance of 25% of the market creator fee 1% taken from the 1 ETH order
+        assert market.affiliateFeesAttoEth(tester.a3) == expectedAffiliateFees
+
+        # The affiliate can withdraw their fees
+        with TokenDelta(cash, expectedAffiliateFees, tester.a3, "Affiliate did not recieve the correct fees"):
+            market.withdrawAffiliateFees(tester.a3)
+
+    # No more fees can be withdrawn
+    with TokenDelta(cash, 0, tester.a3, "Affiliate double received fees"):
+        market.withdrawAffiliateFees(tester.a3)

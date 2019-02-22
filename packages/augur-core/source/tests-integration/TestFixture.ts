@@ -60,16 +60,16 @@ export class TestFixture {
         await this.cash.approve(authority, new ethers.utils.BigNumber(2).pow(new ethers.utils.BigNumber(256)).sub(new ethers.utils.BigNumber(1)));
     }
 
-    public async createMarket(universe: Universe, outcomes: string[], endTime: ethers.utils.BigNumber, feePerEthInWei: ethers.utils.BigNumber, designatedReporter: string): Promise<Market> {
+    public async createMarket(universe: Universe, outcomes: string[], endTime: ethers.utils.BigNumber, feePerEthInWei: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string): Promise<Market> {
         const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
 
         console.log("Creating Market");
         await this.cash.depositEther({attachedEth: marketCreationFee});
-        const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '');
+        const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '');
         if (!marketAddress || marketAddress == "0x") {
             throw new Error("Unable to get address for new categorical market.");
         }
-        await universe.createCategoricalMarket(endTime, feePerEthInWei, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '');
+        await universe.createCategoricalMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '');
         const market = new Market(this.dependencies, marketAddress);
         if (await market.getTypeName_() !== stringTo32ByteHex("Market")) {
             throw new Error("Unable to create new categorical market");
@@ -80,7 +80,8 @@ export class TestFixture {
     public async createReasonableMarket(universe: Universe, outcomes: string[]): Promise<Market> {
         const endTime = new ethers.utils.BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
         const fee = (new ethers.utils.BigNumber(10)).pow(new ethers.utils.BigNumber(16));
-        return await this.createMarket(universe, outcomes, endTime, fee, this.account);
+        const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
+        return await this.createMarket(universe, outcomes, endTime, fee, affiliateFeeDivisor, this.account);
     }
 
     public async placeOrder(market: string, type: ethers.utils.BigNumber, numShares: ethers.utils.BigNumber, price: ethers.utils.BigNumber, outcome: ethers.utils.BigNumber, betterOrderID: string, worseOrderID: string, tradeGroupID: string): Promise<void> {
@@ -108,12 +109,12 @@ export class TestFixture {
 
         await this.cash.depositEther({ attachedEth: ethValue });
 
-        const bestPriceAmount = await trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false);
+        const bestPriceAmount = await trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, "0x0000000000000000000000000000000000000000");
         if (bestPriceAmount == new ethers.utils.BigNumber(0)) {
             throw new Error("Could not take best Order");
         }
 
-        await trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false);
+        await trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, "0x0000000000000000000000000000000000000000");
         return;
     }
 

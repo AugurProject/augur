@@ -61,7 +61,7 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
             require(_denominationToken.transferFrom(_market, _shareHolder, _shareHolderShare));
         }
         if (_creatorShare > 0) {
-            _market.recordMarketCreatorFees(_creatorShare);
+            _market.recordMarketCreatorFees(_creatorShare, address(0));
         }
         if (_reporterShare > 0) {
             require(_denominationToken.transferFrom(_market, _auction, _reporterShare));

@@ -42,6 +42,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     // Attributes
     uint256 private numTicks;
     uint256 private feeDivisor;
+    uint256 public affiliateFeeDivisor;
     uint256 private endTime;
     uint256 private numOutcomes;
     bytes32 private winningPayoutDistributionHash;
@@ -57,8 +58,9 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     IReportingParticipant[] public participants;
     IMap public crowdsourcers;
     IShareToken[] private shareTokens;
+    mapping (address => uint256) public affiliateFeesAttoEth;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized returns (bool _success) {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized returns (bool _success) {
         endInitialization();
         augur = _augur;
         _numOutcomes += 1; // The INVALID outcome is always first
@@ -80,6 +82,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         numOutcomes = _numOutcomes;
         numTicks = _numTicks;
         feeDivisor = _feePerEthInAttoEth == 0 ? 0 : 1 ether / _feePerEthInAttoEth;
+        affiliateFeeDivisor = _affiliateFeeDivisor;
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
         participants.push(_initialReporterFactory.createInitialReporter(augur, this, _designatedReporterAddress));
         crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, this);
@@ -292,21 +295,47 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         return _amount / feeDivisor;
     }
 
-    function recordMarketCreatorFees(uint256 _marketCreatorFees) public returns (bool) {
+    function recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress) public returns (bool) {
         require(augur.isKnownFeeSender(msg.sender));
+        if (_affiliateAddress != NULL_ADDRESS && affiliateFeeDivisor != 0) {
+            uint256 _affiliateFees = _marketCreatorFees / affiliateFeeDivisor;
+            affiliateFeesAttoEth[_affiliateAddress] = _affiliateFees;
+            _marketCreatorFees = _marketCreatorFees.sub(_affiliateFees);
+        }
         marketCreatorFeesAttoEth = marketCreatorFeesAttoEth.add(_marketCreatorFees);
+        if (isFinalized()) {
+            distributeMarketCreatorFees(_affiliateAddress);
+        }
     }
 
     function distributeValidityBondAndMarketCreatorFees() private returns (bool) {
         // If the market resolved to invalid the bond gets sent to the auction. Otherwise it gets returned to the market creator.
-        uint256 _bondAndFees = validityBondAttoEth.add(marketCreatorFeesAttoEth);
+        marketCreatorFeesAttoEth = validityBondAttoEth.add(marketCreatorFeesAttoEth);
+        return distributeMarketCreatorFees(NULL_ADDRESS);
+    }
+
+    function distributeMarketCreatorFees(address _affiliateAddress) private returns (bool) {
         if (!isInvalid()) {
-            cash.transfer(owner, _bondAndFees);
+            cash.transfer(owner, marketCreatorFeesAttoEth);
+            if (_affiliateAddress != NULL_ADDRESS) {
+                withdrawAffiliateFees(_affiliateAddress);
+            }
         } else {
             IAuction _auction = universe.getAuction();
-            cash.transfer(universe.getAuction(), _bondAndFees);
-            _auction.recordFees(_bondAndFees);
+            cash.transfer(universe.getAuction(), marketCreatorFeesAttoEth);
+            _auction.recordFees(marketCreatorFeesAttoEth);
         }
+        marketCreatorFeesAttoEth = 0;
+        return true;
+    }
+
+    function withdrawAffiliateFees(address _affiliate) public returns (bool) {
+        uint256 _affiliateBalance = affiliateFeesAttoEth[_affiliate];
+        if (_affiliateBalance == 0) {
+            return true;
+        }
+        affiliateFeesAttoEth[_affiliate] = 0;
+        cash.transfer(_affiliate, _affiliateBalance);
         return true;
     }
 
@@ -583,6 +612,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
 
     function assertBalances() public view returns (bool) {
         // Escrowed funds for open orders
+        /* TEMPORARY REMOVAL TO GET UNDER SIZE LIMIT
         uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(this);
         // Market Open Interest. If we're finalized we need actually calculate the value
         if (isFinalized()) {
@@ -595,6 +625,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         }
 
         assert(cash.balanceOf(this) >= _expectedBalance);
+        */
         return true;
     }
 }

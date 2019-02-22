@@ -49,12 +49,13 @@ def test_marketCreation(localFixture, universe):
 
     endTime = long(localFixture.chain.head_state.timestamp + timedelta(days=1).total_seconds())
     feePerEthInWei = 10**16
+    affiliateFeeDivisor = 100
     designatedReporterAddress = tester.a0
     numTicks = 10 ** 18
     numOutcomes = 2
 
     with PrintGasUsed(localFixture, "DisputeWindow:createMarket", MARKET_CREATION):
-        marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, designatedReporterAddress, "", "description", "", value = marketCreationFee)
+        marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, "", "description", "", value = marketCreationFee)
 
 def test_marketFinalization(localFixture, universe, market):
     proceedToNextRound(localFixture, market)

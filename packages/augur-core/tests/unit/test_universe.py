@@ -32,7 +32,7 @@ def test_universe_fork_market(localFixture, populatedUniverse, mockUniverse, moc
     with raises(TransactionFailed, message="forking market has to be in universe"):
         mockMarket.callForkOnUniverse(populatedUniverse.address)
 
-    assert populatedUniverse.createYesNoMarket(endTime, 1000, tester.a0, "topic", "description", "info")
+    assert populatedUniverse.createYesNoMarket(endTime, 1000, 0, tester.a0, "topic", "description", "info")
     assert mockMarketFactory.getCreateMarketUniverseValue() == populatedUniverse.address
 
     assert populatedUniverse.isContainerForMarket(mockMarket.address)
@@ -91,7 +91,7 @@ def test_universe_contains(localFixture, populatedUniverse, mockMarket, chain, m
     mockMarketFactory.setMarket(mockMarket.address)
     endTime = localFixture.contracts["Time"].getTimestamp() + 30 * 24 * 60 * 60 # 30 days
 
-    assert populatedUniverse.createYesNoMarket(endTime, 1000, tester.a0, "topic", "description", "info")
+    assert populatedUniverse.createYesNoMarket(endTime, 1000, 0, tester.a0, "topic", "description", "info")
     assert mockMarketFactory.getCreateMarketUniverseValue() == populatedUniverse.address
 
     assert populatedUniverse.isContainerForDisputeWindow(mockDisputeWindow.address) == True
@@ -177,6 +177,7 @@ def test_universe_create_market(localFixture, chain, populatedUniverse, mockMark
     timestamp = localFixture.contracts["Time"].getTimestamp()
     endTimeValue = timestamp + 10
     feePerEthInWeiValue = 10 ** 18
+    affiliateFeeDivisor = 100
     designatedReporterAddressValue = tester.a2
     mockDisputeWindow.setCreateMarket(mockMarket.address)
 
@@ -191,7 +192,7 @@ def test_universe_create_market(localFixture, chain, populatedUniverse, mockMark
     assert mockAugur.logMarketCreatedCalled() == False
     mockMarketFactory.setMarket(mockMarket.address)
 
-    newMarket = populatedUniverse.createYesNoMarket(endTimeValue, feePerEthInWeiValue, designatedReporterAddressValue, "topic", "description", "info")
+    newMarket = populatedUniverse.createYesNoMarket(endTimeValue, feePerEthInWeiValue, affiliateFeeDivisor, designatedReporterAddressValue, "topic", "description", "info")
 
     assert mockMarketFactory.getCreateMarketUniverseValue() == populatedUniverse.address
     assert populatedUniverse.isContainerForMarket(mockMarket.address)

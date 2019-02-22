@@ -65,20 +65,20 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     }
 
     function publicSellCompleteSets(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
-        this.sellCompleteSets(msg.sender, _market, _amount);
+        this.sellCompleteSets(msg.sender, _market, _amount, address(0));
         augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount);
         _market.assertBalances();
         return true;
     }
 
     function publicSellCompleteSetsWithCash(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
-        this.sellCompleteSets(msg.sender, _market, _amount);
+        this.sellCompleteSets(msg.sender, _market, _amount, address(0));
         augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount);
         _market.assertBalances();
         return true;
     }
 
-    function sellCompleteSets(address _sender, IMarket _market, uint256 _amount) external afterInitialized nonReentrant returns (uint256 _creatorFee, uint256 _reportingFee) {
+    function sellCompleteSets(address _sender, IMarket _market, uint256 _amount, address _affiliateAddress) external afterInitialized nonReentrant returns (uint256 _creatorFee, uint256 _reportingFee) {
         require(augur.isValidMarket(_market));
         require(msg.sender == fillOrder || msg.sender == address(this));
         require(_sender != address(0));
@@ -100,7 +100,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         }
 
         if (_creatorFee != 0) {
-            _market.recordMarketCreatorFees(_creatorFee);
+            _market.recordMarketCreatorFees(_creatorFee, _affiliateAddress);
         }
         if (_reportingFee != 0) {
             IAuction _auction = IAuction(_market.getUniverse().getAuction());
