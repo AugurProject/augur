@@ -35,7 +35,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
     }
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
         with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
-            fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, sender = tester.k2)
+            fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
             assert fillOrderID == 0
 
     assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH - creatorCost
@@ -65,7 +65,7 @@ def test_publicFillOrder_ask(contractsFixture, cash, market, universe):
 
     # fill best order
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
-        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, sender = tester.k2)
+        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
 
     assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH - creatorCost
     assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH - fillerCost
@@ -97,7 +97,7 @@ def test_publicFillOrder_bid_scalar(contractsFixture, cash, scalarMarket, univer
 
     # fill best order
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
-        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, sender=tester.k2)
+        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender=tester.k2)
 
     assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH - creatorCost
     assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH - fillerCost
@@ -131,7 +131,7 @@ def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash
     assert orderID
 
     # fill order with shares
-    assert fillOrder.publicFillOrder(orderID, fix(1), "43", False, sender=tester.k2) == 0
+    assert fillOrder.publicFillOrder(orderID, fix(1), "43", False, "0x0000000000000000000000000000000000000000", sender=tester.k2) == 0
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -167,7 +167,7 @@ def test_fill_order_with_shares_escrowed_sell_with_shares_categorical(contractsF
     assert orderID
 
     # fill order with shares
-    assert fillOrder.publicFillOrder(orderID, fix(1), "43", False, sender=tester.k2) == 0
+    assert fillOrder.publicFillOrder(orderID, fix(1), "43", False, "0x0000000000000000000000000000000000000000", sender=tester.k2) == 0
 
     # The second users corresponding shares were used to fulfil this order
     assert firstShareToken.balanceOf(tester.a2) == fix(1)
@@ -200,7 +200,7 @@ def test_fill_buy_order_with_buy_categorical(contractsFixture, cash, categorical
 
     # fill order with cash
     with BuyWithCash(cash, fix(1, numTicks - price), tester.k2, "fill order"):
-        assert fillOrder.publicFillOrder(orderID, fix(1), "43", False, sender=tester.k2) == 0
+        assert fillOrder.publicFillOrder(orderID, fix(1), "43", False, "0x0000000000000000000000000000000000000000", sender=tester.k2) == 0
 
     # A complete set was purchased with the provided cash and the shares were provided to each user
     assert firstShareToken.balanceOf(tester.a1) == fix(1)
@@ -248,7 +248,7 @@ def test_malicious_order_creator(contractsFixture, cash, market, universe):
 
     # fill order with cash
     with BuyWithCash(cash, fix(1, numTicks - price), tester.k2, "fill order"):
-        assert fillOrder.publicFillOrder(orderID, fix(1), "43", False, sender=tester.k2) == 0
+        assert fillOrder.publicFillOrder(orderID, fix(1), "43", False, "0x0000000000000000000000000000000000000000", sender=tester.k2) == 0
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -280,9 +280,9 @@ def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
 
     # Have other users fill them
     with BuyWithCash(cash, fix('2', '4000'), tester.k2, "fill order 1"):
-        assert fillOrder.publicFillOrder(orderID1, fix(2), tradeGroupID, False, sender = tester.k2) == 0
+        assert fillOrder.publicFillOrder(orderID1, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2) == 0
     with BuyWithCash(cash, fix('2', '7000'), tester.k3, "fill order 1"):
-        assert fillOrder.publicFillOrder(orderID2, fix(2), tradeGroupID, False, sender = tester.k3) == 0
+        assert fillOrder.publicFillOrder(orderID2, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k3) == 0
 
     # The first user would have ended up with 2 complete sets at the end of the second fill and we expect those to be automatically sold
     assert firstShareToken.balanceOf(tester.a1) == 0

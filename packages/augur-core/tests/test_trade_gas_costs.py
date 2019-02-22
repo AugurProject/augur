@@ -169,7 +169,7 @@ def test_order_filling_take_shares(numOutcomes, localFixture, markets):
     orderID = createOrder.publicCreateOrder(ASK, 100, 5000, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", value = cost)
 
     startGas = localFixture.chain.head_state.gas_used
-    fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, sender = tester.k1, value=cost)
+    fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1, value=cost)
     maxGas = localFixture.chain.head_state.gas_used - startGas
 
     assert maxGas == FILL_ORDER_TAKE_SHARES[marketIndex]
@@ -189,7 +189,7 @@ def test_order_filling_both_eth(numOutcomes, localFixture, markets):
     orderID = createOrder.publicCreateOrder(BID, fix(1), 5000, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", value = fix(1, 5000))
 
     startGas = localFixture.chain.head_state.gas_used
-    fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, sender = tester.k1, value=cost)
+    fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1, value=cost)
     maxGas = localFixture.chain.head_state.gas_used - startGas
 
     assert maxGas == FILL_ORDER_BOTH_ETH[marketIndex]
@@ -212,7 +212,7 @@ def test_order_filling_maker_reverse(numOutcomes, localFixture, markets):
     orderID = createOrder.publicCreateOrder(BID, fix(1), 5000, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", value = fix(1, 5000))
 
     startGas = localFixture.chain.head_state.gas_used
-    fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, sender = tester.k1, value=cost)
+    fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1, value=cost)
     maxGas = localFixture.chain.head_state.gas_used - startGas
 
     assert maxGas == FILL_ORDER_MAKER_REVERSE_POSITION[marketIndex]
@@ -235,7 +235,7 @@ def test_order_filling_taker_reverse(numOutcomes, localFixture, markets):
     orderID = createOrder.publicCreateOrder(BID, fix(1), 5000, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", value = fix(1, 5000))
 
     startGas = localFixture.chain.head_state.gas_used
-    fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, sender = tester.k1, value=cost)
+    fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1, value=cost)
     maxGas = localFixture.chain.head_state.gas_used - startGas
 
     assert maxGas == FILL_ORDER_TAKER_REVERSE_POSITION[marketIndex]
@@ -258,7 +258,7 @@ def test_order_filling_double_reverse(numOutcomes, localFixture, markets):
     orderID = createOrder.publicCreateOrder(BID, fix(1), 5000, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", value = fix(1, 5000))
 
     startGas = localFixture.chain.head_state.gas_used
-    fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, sender = tester.k1, value=cost)
+    fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1, value=cost)
     maxGas = localFixture.chain.head_state.gas_used - startGas
 
     assert maxGas == FILL_ORDER_DOUBLE_REVERSE_POSITION[marketIndex]

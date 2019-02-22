@@ -112,7 +112,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
 
     # Fill order
     fixture.contracts['Cash'].depositEther(sender=fillerKey, value = fillerTokens)
-    remaining = fillOrder.publicFillOrder(orderId, orderSize, longTo32Bytes(42), False, sender = fillerKey)
+    remaining = fillOrder.publicFillOrder(orderId, orderSize, longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = fillerKey)
     assert not remaining
 
     # Assert final state
