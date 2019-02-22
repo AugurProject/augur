@@ -1,6 +1,4 @@
 import { TrackedUsers } from "./TrackedUsers";
-import PouchDB from "pouchdb";
-import { PouchDBFactoryType } from "./AbstractDB";
 import { DB, UserSpecificEvent } from "./DB";
 import { EthersProvider } from "ethers-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
@@ -177,7 +175,6 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
 ];
 const provider = new EthersProvider(settings.ethNodeURLs[TEST_NETWORK_ID]);
 const contractDependencies = new ContractDependenciesEthers(provider, undefined, settings.testAccounts[0]);
-
 
 beforeEach(async () => {
     mock.cancelFail();
