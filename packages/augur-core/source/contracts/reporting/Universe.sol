@@ -459,7 +459,7 @@ contract Universe is ITyped, IUniverse {
 
     function createMarketInternal(uint256 _endTime, uint256 _feePerEthInWei, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) private returns (IMarket _newMarket) {
         getReputationToken().trustedUniverseTransfer(_sender, address(marketFactory), getOrCacheDesignatedReportNoShowBond());
-        _newMarket = marketFactory.createMarket(augur, this, _endTime, _feePerEthInWei, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
+        _newMarket = marketFactory.createMarket(augur, this, _endTime, _feePerEthInWei, _affiliateFeeDivisor, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
         markets[address(_newMarket)] = true;
         return _newMarket;
     }

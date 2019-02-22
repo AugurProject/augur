@@ -289,10 +289,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     }
 
     function deriveMarketCreatorFeeAmount(uint256 _amount) public view returns (uint256) {
-        if (feeDivisor == 0) {
-            return 0;
-        }
-        return _amount / feeDivisor;
+        return feeDivisor == 0 ? 0 : _amount / feeDivisor;
     }
 
     function recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress) public returns (bool) {
@@ -453,10 +450,11 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         uint256 _sum;
         // Participants is implicitly bounded by the floor of the initial report REP cost to be no more than 21
         for (uint256 i = 0; i < participants.length; ++i) {
-            if (participants[i].getPayoutDistributionHash() != _payoutDistributionHash) {
+            IReportingParticipant _reportingParticipant = participants[i];
+            if (_reportingParticipant.getPayoutDistributionHash() != _payoutDistributionHash) {
                 continue;
             }
-            _sum += participants[i].getStake();
+            _sum += _reportingParticipant.getStake();
         }
         return _sum;
     }
@@ -494,7 +492,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     }
 
     function isInvalid() public view returns (bool) {
-        require(isFinalized());
+        // require(isFinalized());
         return getWinningReportingParticipant().getPayoutNumerator(0) > 0;
     }
 
@@ -519,7 +517,7 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
     }
 
     function getWinningPayoutNumerator(uint256 _outcome) public view returns (uint256) {
-        require(isFinalized());
+        // require(isFinalized());
         return getWinningReportingParticipant().getPayoutNumerator(_outcome);
     }
 
