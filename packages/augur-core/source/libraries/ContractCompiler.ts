@@ -18,7 +18,7 @@ export class ContractCompiler {
 
     public constructor(configuration: CompilerConfiguration) {
         this.configuration = configuration;
-        this.flattenerCommand = `${this.flattenerBin} --allow-path . %s`;
+        this.flattenerCommand = `${this.flattenerBin} --solc-paths="ROOT=%s/" --allow-path . %s`;
     }
 
     private async getCommandOutputFromInput(childProcess: ChildProcess, stdin: string): Promise<string> {
@@ -103,7 +103,7 @@ export class ContractCompiler {
     public async generateFlattenedSolidity(filePath: string): Promise<string> {
         const relativeFilePath = filePath.replace(this.configuration.contractSourceRoot, "").replace(/\\/g, "/");
 
-        const childProcess = exec(format(this.flattenerCommand, relativeFilePath), {
+        const childProcess = exec(format(this.flattenerCommand, this.configuration.contractSourceRoot, relativeFilePath), {
             encoding: "buffer",
             cwd: this.configuration.contractSourceRoot
         });
@@ -112,6 +112,7 @@ export class ContractCompiler {
 
     public async generateCompilerInput(): Promise<CompilerInput> {
         const ignoreFile = function(file: string, stats: fs.Stats): boolean {
+            if (['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeOverloadToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken'].includes(path.parse(file).base.replace(".sol", ""))) return true;
             return stats.isFile() && path.extname(file) !== ".sol";
         }
         const filePaths:string[] = await recursiveReadDir(this.configuration.contractSourceRoot, ignoreFile);
@@ -126,6 +127,7 @@ export class ContractCompiler {
         let inputJson: CompilerInput = {
             language: "Solidity",
             settings: {
+                remappings: [ `ROOT=${this.configuration.contractSourceRoot}/`],
                 optimizer: {
                     enabled: true,
                     runs: 500

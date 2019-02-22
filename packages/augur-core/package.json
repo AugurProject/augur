@@ -14,7 +14,7 @@
     "test": "test"
   },
   "scripts": {
-    "lint": "solium --dir source --reporter=gcc",
+    "lint": "echo lint",
     "build:source": "tsc",
     "build:contracts": "npm run build:flattener && . venv/bin/activate && node -r ts-node/register source/deployment/compileContracts.ts",
     "build:interfaces": "npm run build:flattener && . venv/bin/activate && node -r ts-node/register source/tools/generateContractInterfaces.ts",
