@@ -69,7 +69,7 @@ class ContractDescription(object):
 
     @staticmethod
     def make_constructor(inputs):
-        params = ', '.join('{} {}'.format(i['type'], i['name']) for i in inputs)
+        params = ', '.join('{} {}'.format(ContractDescription.get_type_with_storage(i['type']), i['name']) for i in inputs)
         return "constructor({params}) public {{ }}".format(
             params=params
         )
@@ -88,8 +88,8 @@ class ContractDescription(object):
 
         functions = {}
 
-        params = ', '.join('{} {}'.format(i['type'], i['name']) for i in inputs)
-        returns_header = ', '.join('{} {}'.format(o['type'], o['name']) for o in outputs)
+        params = ', '.join('{} {}'.format(ContractDescription.get_type_with_storage(i['type']), i['name']) for i in inputs)
+        returns_header = ', '.join('{} {}'.format(ContractDescription.get_type_with_storage(o['type']), o['name']) for o in outputs)
         returns = ','.join(v['name'] for v in var_descriptions)
         mutability = "" if state_mutability == "nonpayable" else state_mutability
         mutability = "" if mutability == "pure" else mutability  # TODO handle pure fns
@@ -119,6 +119,12 @@ class ContractDescription(object):
 
         return variables, functions
 
+    @staticmethod
+    def get_type_with_storage(type_string):
+        if type_string in ['string', 'uint256[]', 'bytes32[]']:
+            return type_string + ' memory'
+        return type_string
+
     def write(self, test_dir):
         with open('{}/{}.sol'.format(test_dir, self.name), 'w') as f:
             f.write(self.render())
@@ -126,7 +132,7 @@ class ContractDescription(object):
     def render(self):
         source = self.make_version(self.version)
         source += '\n\n'
-        source += '\n'.join("import '{}';".format(imp) for imp in self.imports)
+        source += '\n'.join("import 'ROOT/{}';".format(imp) for imp in self.imports)
         source += '\n'
         source += "contract {name} {{\n".format(name=self.name)
         source += '\n'

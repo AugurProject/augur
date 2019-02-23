@@ -208,8 +208,8 @@ class ContractsFixture:
         if path.isfile('./allFiredEvents'):
             remove_file('./allFiredEvents')
         self.relativeContractsPath = '../source/contracts'
-        # self.relativeTestContractsPath = 'solidity_test_helpers'
-        self.relativeTestContractsPath = 'mock_templates/contracts'
+        self.relativeTestContractsPath = 'solidity_test_helpers'
+        # self.relativeTestContractsPath = 'mock_templates/contracts'
         self.externalContractsPath = '../source/contracts/external'
         self.coverageMode = pytest.config.option.cover
         self.subFork = pytest.config.option.subFork
@@ -349,7 +349,7 @@ class ContractsFixture:
             abi = json_load(f)
         if not path.exists(testContractsPath):
             makedirs(testContractsPath)
-        mock_sources = generate_mock_contracts("0.4.24", abi)
+        mock_sources = generate_mock_contracts("0.5.4", abi)
         for source in mock_sources.values():
             source.write(testContractsPath)
 
