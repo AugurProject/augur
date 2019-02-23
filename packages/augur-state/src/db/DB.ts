@@ -134,6 +134,9 @@ export class DB<TBigNumber> {
       );
     }
 
+    // Sync user-specific event types
+    // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
+    // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     q = queue(function(task: any, callback: any) {
       task.dbController.syncableDatabases[task.dbName].sync(task.augur, task.chunkSize, task.blockstreamDelay, task.dbController.syncStatus.defaultStartSyncBlockNumber);
       callback();
