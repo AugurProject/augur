@@ -1,8 +1,8 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'libraries/CloneFactory.sol';
-import 'IAugur.sol';
-import 'libraries/collections/IMap.sol';
+import 'ROOT/libraries/CloneFactory.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/libraries/collections/IMap.sol';
 
 
 contract MapFactory is CloneFactory {

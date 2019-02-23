@@ -1,8 +1,8 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'libraries/token/ERC20Token.sol';
-import 'libraries/token/ERC777BaseToken.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/ERC777BaseToken.sol';
 
 
 contract StandardToken is ERC20Token, ERC777BaseToken {
@@ -13,7 +13,7 @@ contract StandardToken is ERC20Token, ERC777BaseToken {
 
     function initialize820InterfaceImplementations() internal returns (bool) {
         super.initialize820InterfaceImplementations();
-        setInterfaceImplementation("ERC20Token", this);
+        setInterfaceImplementation("ERC20Token", address(this));
         return true;
     }
 
@@ -79,7 +79,7 @@ contract StandardToken is ERC20Token, ERC777BaseToken {
 
     function doBurn(address _operator, address _tokenHolder, uint256 _amount, bytes32  _data, bytes32  _operatorData) internal returns (bool) {
         super.doBurn(_operator, _tokenHolder, _amount, _data, _operatorData);
-        emit Transfer(_tokenHolder, 0x0, _amount);
+        emit Transfer(_tokenHolder, address(0x0), _amount);
         return true;
     }
 

@@ -1,16 +1,16 @@
 // Copyright (C) 2015 Forecast Foundation OU, full GPL notice in LICENSE
 
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'IAugur.sol';
-import 'libraries/ReentrancyGuard.sol';
-import 'trading/Order.sol';
-import 'reporting/IMarket.sol';
-import 'trading/ICreateOrder.sol';
-import 'trading/IOrders.sol';
-import 'trading/IFillOrder.sol';
-import 'libraries/Initializable.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/libraries/ReentrancyGuard.sol';
+import 'ROOT/trading/Order.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/trading/ICreateOrder.sol';
+import 'ROOT/trading/IOrders.sol';
+import 'ROOT/trading/IFillOrder.sol';
+import 'ROOT/libraries/Initializable.sol';
 
 
 contract Trade is Initializable, ReentrancyGuard {
@@ -44,7 +44,7 @@ contract Trade is Initializable, ReentrancyGuard {
         return true;
     }
 
-    function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender) internal pure returns (Data) {
+    function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender) internal pure returns (Data memory) {
         require(_amount > 0);
 
         return Data({
@@ -63,7 +63,7 @@ contract Trade is Initializable, ReentrancyGuard {
         });
     }
 
-    function createWithTotalCost(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender) internal pure returns (Data) {
+    function createWithTotalCost(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender) internal pure returns (Data memory) {
         return create(_direction, _market, _outcome, _totalCost / _price, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, _sender);
     }
 
@@ -83,15 +83,15 @@ contract Trade is Initializable, ReentrancyGuard {
         return _result;
     }
 
-    function trade(Data _tradeData) internal returns (bytes32) {
+    function trade(Data memory _tradeData) internal returns (bytes32) {
         uint256 _bestAmount = fillBestOrder(_tradeData);
         if (_bestAmount == 0) {
-            return bytes32(1);
+            return bytes32(uint256(1));
         }
         return createOrder.createOrder(_tradeData.sender, Order.getOrderTradingTypeFromMakerDirection(_tradeData.direction), _bestAmount, _tradeData.price, _tradeData.market, _tradeData.outcome, _tradeData.betterOrderId, _tradeData.worseOrderId, _tradeData.tradeGroupId, _tradeData.ignoreShares);
     }
 
-    function fillBestOrder(Data _tradeData) internal nonReentrant returns (uint256 _bestAmount) {
+    function fillBestOrder(Data memory _tradeData) internal nonReentrant returns (uint256 _bestAmount) {
         // we need to fill a BID if we want to SELL and we need to fill an ASK if we want to BUY
         Order.Types _type = Order.getOrderTradingTypeFromFillerDirection(_tradeData.direction);
         bytes32 _orderId = orders.getBestOrderId(_type, _tradeData.market, _tradeData.outcome);

@@ -85,7 +85,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
 
     # Create order
     fixture.contracts['Cash'].depositEther(sender=creatorKey, value = creatorTokens)
-    orderId = createOrder.publicCreateOrder(orderType, orderSize, orderPrice, market.address, orderOutcome, longTo32Bytes(0), longTo32Bytes(0), "42", sender = creatorKey)
+    orderId = createOrder.publicCreateOrder(orderType, orderSize, orderPrice, market.address, orderOutcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, sender = creatorKey)
     assert fixture.chain.head_state.get_balance(creatorAddress) == creatorBalance - creatorTokens
     assert fixture.chain.head_state.get_balance(fillerAddress) == fillerBalance
 
@@ -112,7 +112,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
 
     # Fill order
     fixture.contracts['Cash'].depositEther(sender=fillerKey, value = fillerTokens)
-    remaining = fillOrder.publicFillOrder(orderId, orderSize, "42", sender = fillerKey)
+    remaining = fillOrder.publicFillOrder(orderId, orderSize, longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = fillerKey)
     assert not remaining
 
     # Assert final state

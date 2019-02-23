@@ -1,17 +1,17 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'trading/ICompleteSets.sol';
-import 'IAugur.sol';
-import 'libraries/ReentrancyGuard.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'trading/ICash.sol';
-import 'reporting/IMarket.sol';
-import 'reporting/IDisputeWindow.sol';
-import 'reporting/IAuction.sol';
-import 'trading/IOrders.sol';
-import 'libraries/Initializable.sol';
-import 'IAugur.sol';
+import 'ROOT/trading/ICompleteSets.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/libraries/ReentrancyGuard.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/reporting/IAuction.sol';
+import 'ROOT/trading/IOrders.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
@@ -52,7 +52,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         ICash _denominationToken = _market.getDenominationToken();
 
         uint256 _cost = _amount.mul(_market.getNumTicks());
-        require(augur.trustedTransfer(_denominationToken, _sender, _market, _cost));
+        require(augur.trustedTransfer(_denominationToken, _sender, address(_market), _cost));
         for (uint256 _outcome = 0; _outcome < _numOutcomes; ++_outcome) {
             _market.getShareToken(_outcome).createShares(_sender, _amount);
         }
@@ -104,10 +104,10 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         }
         if (_reportingFee != 0) {
             IAuction _auction = IAuction(_market.getUniverse().getAuction());
-            require(_denominationToken.transferFrom(_market, _auction, _reportingFee));
+            require(_denominationToken.transferFrom(address(_market), address(_auction), _reportingFee));
             _auction.recordFees(_reportingFee);
         }
-        require(_denominationToken.transferFrom(_market, _sender, _payout));
+        require(_denominationToken.transferFrom(address(_market), _sender, _payout));
 
         return (_creatorFee, _reportingFee);
     }

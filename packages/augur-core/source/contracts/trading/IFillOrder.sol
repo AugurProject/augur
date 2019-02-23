@@ -1,7 +1,7 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'trading/Order.sol';
+import 'ROOT/trading/Order.sol';
 
 
 contract IFillOrder {

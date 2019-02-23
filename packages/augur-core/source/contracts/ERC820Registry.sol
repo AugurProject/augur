@@ -1,7 +1,7 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'libraries/ContractExists.sol';
-import 'libraries/IERC820Registry.sol';
+import 'ROOT/libraries/ContractExists.sol';
+import 'ROOT/libraries/IERC820Registry.sol';
 
 
 interface ERC820ImplementerInterface {
@@ -42,14 +42,14 @@ contract ERC820Registry is IERC820Registry {
 
     /// @notice Query the hash of an interface given a name
     /// @param interfaceName Name of the interfce
-    function interfaceHash(string interfaceName) public pure returns(bytes32) {
+    function interfaceHash(string memory interfaceName) public pure returns(bytes32) {
         return keccak256(abi.encodePacked(interfaceName));
     }
 
     /// @notice GetManager
     function getManager(address addr) public view returns(address) {
         // By default the manager of an address is the same address
-        if (managers[addr] == 0) {
+        if (managers[addr] == address(0)) {
             return addr;
         } else {
             return managers[addr];
@@ -62,7 +62,7 @@ contract ERC820Registry is IERC820Registry {
     /// @param newManager The address of the manager for the `addr` that will replace
     ///  the old one.  Set to 0x0 if you want to remove the manager.
     function setManager(address addr, address newManager) public canManage(addr) {
-        managers[addr] = newManager == addr ? 0 : newManager;
+        managers[addr] = newManager == addr ? address(0) : newManager;
         emit ManagerChanged(addr, newManager);
     }
 
@@ -75,7 +75,7 @@ contract ERC820Registry is IERC820Registry {
     function getInterfaceImplementer(address addr, bytes32 iHash) public returns (address) {
         if (isERC165Interface(iHash)) {
             bytes4 i165Hash = bytes4(iHash);
-            return erc165InterfaceSupported(addr, i165Hash) ? addr : 0;
+            return erc165InterfaceSupported(addr, i165Hash) ? addr : address(0);
         }
         return interfaces[addr][iHash];
     }
@@ -87,7 +87,7 @@ contract ERC820Registry is IERC820Registry {
     ///  For example `web3.utils.sha3('Ierc777')` for the Ierc777
     function setInterfaceImplementer(address addr, bytes32 iHash, address implementer) public canManage(addr) {
         require(!isERC165Interface(iHash));
-        if ((implementer != 0) && (implementer!=msg.sender)) {
+        if ((implementer != address(0)) && (implementer!=msg.sender)) {
             require(ERC820ImplementerInterface(implementer).canImplementInterfaceForAddress(addr, iHash) == ERC820_ACCEPT_MAGIC);
         }
         interfaces[addr][iHash] = implementer;
@@ -104,12 +104,12 @@ contract ERC820Registry is IERC820Registry {
         if (!erc165Cache[_contract][_interfaceId]) {
             erc165UpdateCache(_contract, _interfaceId);
         }
-        return interfaces[_contract][_interfaceId] != 0;
+        return interfaces[_contract][_interfaceId] != address(0);
     }
 
     function erc165UpdateCache(address _contract, bytes4 _interfaceId) public {
         interfaces[_contract][_interfaceId] =
-            erc165InterfaceSupported_NoCache(_contract, _interfaceId) ? _contract : 0;
+            erc165InterfaceSupported_NoCache(_contract, _interfaceId) ? _contract : address(0);
         erc165Cache[_contract][_interfaceId] = true;
     }
 

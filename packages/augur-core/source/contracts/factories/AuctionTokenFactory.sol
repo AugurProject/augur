@@ -1,9 +1,9 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'libraries/CloneFactory.sol';
-import 'reporting/IAuction.sol';
-import 'reporting/IAuctionToken.sol';
-import 'libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/CloneFactory.sol';
+import 'ROOT/reporting/IAuction.sol';
+import 'ROOT/reporting/IAuctionToken.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
 
 
 contract AuctionTokenFactory is CloneFactory {

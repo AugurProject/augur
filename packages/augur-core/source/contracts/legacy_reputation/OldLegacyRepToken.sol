@@ -1,17 +1,17 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'reporting/IReputationToken.sol';
-import 'legacy_reputation/DelegationTarget.sol';
-import 'libraries/ITyped.sol';
-import 'libraries/Initializable.sol';
-import 'libraries/token/VariableSupplyToken.sol';
-import 'libraries/token/ERC20Token.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IMarket.sol';
-import 'reporting/Reporting.sol';
-import 'reporting/IDisputeCrowdsourcer.sol';
-import 'libraries/math/SafeMathUint256.sol';
+import 'ROOT/reporting/IReputationToken.sol';
+import 'ROOT/legacy_reputation/DelegationTarget.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/libraries/token/VariableSupplyToken.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
 contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, VariableSupplyToken, IReputationToken {
@@ -48,7 +48,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
 
     function initialize(IUniverse _universe) public beforeInitialized returns (bool) {
         endInitialization();
-        require(_universe != address(0));
+        require(_universe != IUniverse(0));
         universe = _universe;
         updateParentTotalTheoreticalSupply();
         ERC20Token _legacyRepToken = getLegacyRepToken();
@@ -58,7 +58,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
         return true;
     }
 
-    function migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens) public whenNotMigratingFromLegacy afterInitialized returns (bool) {
+    function migrateOutByPayout(uint256[] memory _payoutNumerators, uint256 _attotokens) public whenNotMigratingFromLegacy afterInitialized returns (bool) {
         require(_attotokens > 0);
         IUniverse _destinationUniverse = universe.createChildUniverse(_payoutNumerators);
         IReputationToken _destination = _destinationUniverse.getReputationToken();
@@ -98,7 +98,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
         IReportingParticipant _reportingParticipant = IReportingParticipant(msg.sender);
         require(_parentUniverse.isContainerForReportingParticipant(_reportingParticipant));
         uint256 _bonus = _amountMigrated.div(2);
-        mint(_reportingParticipant, _bonus);
+        mint(address(_reportingParticipant), _bonus);
         totalTheoreticalSupply += _bonus;
         return true;
     }
@@ -164,9 +164,9 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
         require(_token != this);
         IUniverse _shadyUniverse = _token.getUniverse();
         require(_token == universe.getParentUniverse().getChildUniverse(_shadyUniverse.getParentPayoutDistributionHash()).getReputationToken());
-        totalTheoreticalSupply += migratedToSibling[_token];
-        migratedToSibling[_token] = _token.getTotalMigrated();
-        totalTheoreticalSupply -= migratedToSibling[_token];
+        totalTheoreticalSupply += migratedToSibling[address(_token)];
+        migratedToSibling[address(_token)] = _token.getTotalMigrated();
+        totalTheoreticalSupply -= migratedToSibling[address(_token)];
         return true;
     }
 
@@ -191,7 +191,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
      * @param _holders Array of addresses to migrate balance
      * @return True if operation was completed
      */
-    function migrateBalancesFromLegacyRep(address[] _holders) public whenMigratingFromLegacy afterInitialized returns (bool) {
+    function migrateBalancesFromLegacyRep(address[] memory _holders) public whenMigratingFromLegacy afterInitialized returns (bool) {
         ERC20Token _legacyRepToken = getLegacyRepToken();
         for (uint256 i = 0; i < _holders.length; i++) {
             migrateBalanceFromLegacyRep(_holders[i], _legacyRepToken);
@@ -228,7 +228,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
      * @param _spenders Array of spender addresses to migrate allowances
      * @return True if operation was completed
      */
-    function migrateAllowancesFromLegacyRep(address[] _owners, address[] _spenders) public whenMigratingFromLegacy afterInitialized returns (bool) {
+    function migrateAllowancesFromLegacyRep(address[] memory _owners, address[] memory _spenders) public whenMigratingFromLegacy afterInitialized returns (bool) {
         ERC20Token _legacyRepToken = getLegacyRepToken();
         for (uint256 i = 0; i < _owners.length; i++) {
             address _owner = _owners[i];

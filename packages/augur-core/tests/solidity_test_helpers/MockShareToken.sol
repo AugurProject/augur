@@ -1,10 +1,10 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'trading/IShareToken.sol';
-import 'libraries/ITyped.sol';
-import 'libraries/Initializable.sol';
-import 'reporting/IMarket.sol';
+import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/reporting/IMarket.sol';
 import 'TEST/MockVariableSupplyToken.sol';
 
 

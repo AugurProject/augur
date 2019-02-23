@@ -1,7 +1,7 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'trading/IFillOrder.sol';
+import 'ROOT/trading/IFillOrder.sol';
 
 
 contract MockFillOrder is IFillOrder {

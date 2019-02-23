@@ -1,12 +1,12 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'libraries/IERC820Registry.sol';
-import 'trading/IShareToken.sol';
-import 'libraries/token/VariableSupplyToken.sol';
-import 'libraries/ITyped.sol';
-import 'libraries/Initializable.sol';
-import 'reporting/IMarket.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/libraries/token/VariableSupplyToken.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {

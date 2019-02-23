@@ -1,11 +1,11 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'libraries/CloneFactory.sol';
-import 'IAugur.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IDisputeWindow.sol';
-import 'factories/IDisputeWindowFactory.sol';
-import 'reporting/Reporting.sol';
+import 'ROOT/libraries/CloneFactory.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/factories/IDisputeWindowFactory.sol';
+import 'ROOT/reporting/Reporting.sol';
 
 
 contract DisputeWindowFactory is CloneFactory, IDisputeWindowFactory {

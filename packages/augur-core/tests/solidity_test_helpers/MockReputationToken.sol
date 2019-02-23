@@ -1,13 +1,13 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.4;
 
-import 'reporting/IReputationToken.sol';
-import 'libraries/ITyped.sol';
-import 'libraries/Initializable.sol';
-import 'libraries/token/ERC20Token.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IMarket.sol';
-import 'reporting/Reporting.sol';
-import 'libraries/math/SafeMathUint256.sol';
+import 'ROOT/reporting/IReputationToken.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'TEST/MockVariableSupplyToken.sol';
 
 

@@ -71,9 +71,6 @@ export class TestFixture {
         }
         await universe.createCategoricalMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '');
         const market = new Market(this.dependencies, marketAddress);
-        if (await market.getTypeName_() !== stringTo32ByteHex("Market")) {
-            throw new Error("Unable to create new categorical market");
-        }
         return market;
     }
 
