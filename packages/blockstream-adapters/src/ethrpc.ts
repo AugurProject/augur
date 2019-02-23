@@ -1,5 +1,5 @@
 import { Block, Log, FilterOptions } from "ethereumjs-blockstream";
-import { Dependencies } from "./index";
+import { Dependencies } from ".";
 const ethrpc = require("ethrpc");
 
 function getBlockByHash(hash: string): Promise<Block> {

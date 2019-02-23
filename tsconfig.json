@@ -25,6 +25,9 @@
     },
     {
       "path": "./packages/contract-dependencies-ethers"
+    },
+    {
+      "path": "./packages/blockstream-adapters"
     }
   ]
 }
