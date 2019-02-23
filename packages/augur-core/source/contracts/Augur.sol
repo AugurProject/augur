@@ -448,7 +448,7 @@ contract Augur is IAugur {
     function logInitialReporterTransferred(IUniverse _universe, IMarket _market, address _from, address _to) public returns (bool) {
         require(isKnownUniverse(_universe));
         require(_universe.isContainerForMarket(_market));
-        require(msg.sender == _market.getInitialReporterAddress());
+        require(msg.sender == address(_market.getInitialReporter()));
         emit InitialReporterTransferred(address(_universe), address(_market), _from, _to);
         return true;
     }

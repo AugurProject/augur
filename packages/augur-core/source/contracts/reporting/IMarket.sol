@@ -1,7 +1,6 @@
 pragma solidity 0.5.4;
 
 
-import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/IOwnable.sol';
 import 'ROOT/trading/ICash.sol';
 import 'ROOT/trading/IShareToken.sol';
@@ -10,10 +9,11 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
+import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/IAugur.sol';
 
 
-contract IMarket is ITyped, IOwnable {
+contract IMarket is IOwnable {
     enum MarketType {
         YES_NO,
         CATEGORICAL,
@@ -35,7 +35,7 @@ contract IMarket is ITyped, IOwnable {
     function getWinningPayoutNumerator(uint256 _outcome) public view returns (uint256);
     function getReputationToken() public view returns (IV2ReputationToken);
     function getFinalizationTime() public view returns (uint256);
-    function getInitialReporterAddress() public view returns (address);
+    function getInitialReporter() public view returns (IInitialReporter);
     function getDesignatedReportingEndTime() public view returns (uint256);
     function deriveMarketCreatorFeeAmount(uint256 _amount) public view returns (uint256);
     function recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress) public returns (bool);

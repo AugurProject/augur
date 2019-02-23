@@ -1,7 +1,6 @@
 pragma solidity 0.5.4;
 
 import 'ROOT/reporting/IMarket.sol';
-import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/Ownable.sol';
 import 'ROOT/libraries/collections/Map.sol';
@@ -22,7 +21,7 @@ import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/reporting/IAuction.sol';
 
 
-contract Market is ITyped, Initializable, Ownable, IMarket {
+contract Market is Initializable, Ownable, IMarket {
     using SafeMathUint256 for uint256;
     using SafeMathInt256 for int256;
 
@@ -459,10 +458,6 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
         return _sum;
     }
 
-    function getTypeName() public view returns (bytes32) {
-        return "Market";
-    }
-
     function getForkingMarket() public view returns (IMarket) {
         return universe.getForkingMarket();
     }
@@ -498,10 +493,6 @@ contract Market is ITyped, Initializable, Ownable, IMarket {
 
     function getInitialReporter() public view returns (IInitialReporter) {
         return IInitialReporter(address(participants[0]));
-    }
-
-    function getInitialReporterAddress() public view returns (address) {
-        return address(participants[0]);
     }
 
     function getReportingParticipant(uint256 _index) public view returns (IReportingParticipant) {
