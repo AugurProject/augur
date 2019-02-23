@@ -1,4 +1,3 @@
-import { PouchDBFactoryType } from "./AbstractDB";
 import { TrackedUsers } from "./TrackedUsers";
 import { DB, UserSpecificEvent } from "./DB";
 import { EthersProvider } from "ethers-provider";
