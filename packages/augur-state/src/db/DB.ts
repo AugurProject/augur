@@ -1,10 +1,11 @@
-import { SyncableDB } from "./SyncableDB";
 import { Augur } from "@augurproject/api";
-import { SyncStatus } from "./SyncStatus";
 import { PouchDBFactoryType } from "./AbstractDB";
-import { TrackedUsers } from "./TrackedUsers";
 import { MetaDB, SequenceIds } from "./MetaDB";
+import { SyncableDB } from "./SyncableDB";
+import { SyncStatus } from "./SyncStatus";
+import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
+const queue = require("async/queue");
 
 export interface UserSpecificEvent {
   name: string;
@@ -109,32 +110,57 @@ export class DB<TBigNumber> {
    */
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
     // Sync generic event types
-    let dbSyncPromises = [];
+    const maxConcurrency = 20;
+    let q = queue(function(task: any, callback: any) {
+      task.dbController.syncableDatabases[task.dbIndex].sync(task.augur, task.chunkSize, task.blockstreamDelay, task.dbController.syncStatus.defaultStartSyncBlockNumber);
+      callback();
+    }, maxConcurrency);
     for (let dbIndex in this.syncableDatabases) {
-      dbSyncPromises.push(this.syncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
+      q.push(
+        {
+          dbController: this, 
+          dbIndex,
+          augur, 
+          chunkSize,
+          blockstreamDelay,
+        },
+        function(err: Error) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Finished syncing SyncableDB " + dbIndex);
+          }
+        }
+      );
     }
-    // TODO Figure out a way to handle concurrent request limit of 40
-    await Promise.all(dbSyncPromises)
-    .catch(error => {
-      throw error;
-    });
 
-    // Sync user-specific event types
-    // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
-    // Also update topics/indexes for user-specific events once these changes are made to the contracts.
+    q = queue(function(task: any, callback: any) {
+      task.dbController.syncableDatabases[task.dbName].sync(task.augur, task.chunkSize, task.blockstreamDelay, task.dbController.syncStatus.defaultStartSyncBlockNumber);
+      callback();
+    }, maxConcurrency);
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let userSpecificEvent of this.userSpecificEvents) {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        dbSyncPromises.push(this.syncableDatabases[dbName].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
+        q.push(
+          {
+            dbController: this, 
+            dbName,
+            augur, 
+            chunkSize,
+            blockstreamDelay,
+          },
+          function(err: Error) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Finished syncing SyncableDB " + dbName);
+            }
+          }
+        );
       }
     }
-    // TODO Figure out a way to handle concurrent request limit of 40
-    await Promise.all(dbSyncPromises)
-    .catch(error => {
-      throw error;
-    });
 
-    // TODO Call `this.metaDatabase.addNewBlock` here if derived DBs end up getting used
+    // TODO Call `this.metaDatabase.addNewBlock` here & reduce `maxConcurrency` if derived DBs end up getting used
   }
 
   /**
