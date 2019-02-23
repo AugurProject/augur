@@ -1,6 +1,6 @@
-pragma solidity 0.5.4;
+pragma solidity ^0.4.24;
 
-import 'ROOT/libraries/ITyped.sol';
+import 'libraries/ITyped.sol';
 
 
 contract DelegatorHelper is ITyped {
@@ -18,7 +18,7 @@ contract DelegatorHelper is ITyped {
         return "DelegatorHelper";
     }
 
-    function setStringMember(string memory _value) public returns (bool) {
+    function setStringMember(string _value) public returns (bool) {
         stringMember = _value;
         return true;
     }
@@ -58,11 +58,11 @@ contract DelegatorHelper is ITyped {
         return true;
     }
 
-    function getStringMember() public view returns (string memory) {
+    function getStringMember() public view returns (string) {
         return stringMember;
     }
 
-    function getStringConstant() public view returns (string memory) {
+    function getStringConstant() public view returns (string) {
         return stringConstant;
     }
 
@@ -114,13 +114,13 @@ contract DelegatorHelper is ITyped {
         return;
     }
 
-    function returnDynamic() public returns (uint256[] memory) {
+    function returnDynamic() public returns (uint256[]) {
         uint256[] memory _retval = new uint256[](5);
         _retval[0] = 1;
         return _retval;
     }
 
-    function returnFixed() public returns (uint256[5] memory _retval) {
+    function returnFixed() public returns (uint256[5] _retval) {
         _retval[0] = 1;
         return _retval;
     }
