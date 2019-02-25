@@ -28,6 +28,7 @@ GOAL: We want to give the engineers working on specific projects the ability to 
   - If you have any specific information or feedback on the issue, add as needed.
 - IF the submitted issue is a Live Bug
   - Assign to yourself
+  - Assign the current Milestone.
   - IF there is a currently open related Epic, assign to that Epic
   - ELSE, assign to the Bugs epic
   - THEN complete first level evaluation of the bug
