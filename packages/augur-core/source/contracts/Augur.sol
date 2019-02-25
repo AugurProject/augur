@@ -60,6 +60,7 @@ contract Augur is IAugur {
     event DisputeWindowCreated(address indexed universe, address disputeWindow, uint256 startTime, uint256 endTime, uint256 id, bool initial);
     event InitialReporterTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketTransferred(address indexed universe, address indexed market, address from, address to);
+    event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume);
     event EscapeHatchChanged(bool isOn);
     event TimestampSet(uint256 newTimestamp);
 
@@ -491,6 +492,12 @@ contract Augur is IAugur {
     function logOrderPriceChanged(IUniverse _universe, bytes32 _orderId, uint256 _price) public returns (bool) {
         require(msg.sender == registry["Orders"]);
         emit OrderPriceChanged(address(_universe), _orderId, _price);
+        return true;
+    }
+
+    function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume) public returns (bool) {
+        require(msg.sender == registry["FillOrder"]);
+        emit MarketVolumeChanged(address(_universe), _market, _volume);
         return true;
     }
 }

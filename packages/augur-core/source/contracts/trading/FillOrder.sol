@@ -433,7 +433,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     }
 
     function logOrderFilled(Trade.Data memory _tradeData, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, bytes32 _tradeGroupId) private returns (bool) {
-        _tradeData.contracts.augur.logOrderFilled(_tradeData.contracts.market.getUniverse(), address(_tradeData.contracts.longShareToken), _tradeData.filler.participantAddress, _tradeData.order.orderId, _tradeData.getMakerSharesDepleted(), _tradeData.getMakerTokensDepleted(), _tradeData.getFillerSharesDepleted(), _tradeData.getFillerTokensDepleted(), _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
+        augur.logOrderFilled(_tradeData.contracts.market.getUniverse(), address(_tradeData.contracts.longShareToken), _tradeData.filler.participantAddress, _tradeData.order.orderId, _tradeData.getMakerSharesDepleted(), _tradeData.getMakerTokensDepleted(), _tradeData.getFillerSharesDepleted(), _tradeData.getFillerTokensDepleted(), _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
         return true;
     }
 
@@ -447,6 +447,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _completeSetTokens = _makerSharesDepleted.min(_fillerSharesDepleted).mul(_market.getNumTicks());
         _volume = _volume.add(_makerTokensDepleted).add(_fillerTokensDepleted).add(_completeSetTokens);
         marketVolume[address(_market)] = _volume;
+        augur.logMarketVolumeChanged(_tradeData.contracts.market.getUniverse(), address(_market), _volume);
         return _volume;
     }
 }
