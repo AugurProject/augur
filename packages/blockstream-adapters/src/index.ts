@@ -5,10 +5,20 @@ import { Block, FilterOptions, Log } from "ethereumjs-blockstream";
 
 export type GetBlockByString = (hash: string) => Promise<Block | null>
 
-export interface Dependencies {
+export interface ExtendedLog extends Log {
+  transactionIndex?: number;
+  removed?: boolean;
+  transactionLogIndex?: number;
+  address: string;
+  data: string;
+  topics: Array<string>;
+  transactionHash?: string;
+}
+
+export interface Dependencies<T extends Log> {
   getBlockByNumber: GetBlockByString,
   getBlockByHash: GetBlockByString,
-  getLogs: (filterOptions: FilterOptions) => Promise<Log[]>,
+  getLogs: (filterOptions: FilterOptions) => Promise<T[]>,
 }
 
 export type SUPPORTED_ADAPTER = "ethrpc" | "ethers";

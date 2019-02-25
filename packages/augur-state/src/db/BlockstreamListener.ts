@@ -1,4 +1,4 @@
-import {ExtendedLog} from "../api/types";
+import {ExtendedLog} from "blockstream-adapters";
 import {Augur, Log, ParsedLog, Provider} from "@augurproject/api";
 import {Block, BlockAndLogStreamer, FilterOptions} from "ethereumjs-blockstream";
 import * as _ from "lodash";

@@ -13,7 +13,10 @@
   ],
   "references": [
     {
-      "path": "../ethersjs-provider",
+      "path": "../blockstream-adapters"
+    },
+    {
+      "path": "../ethersjs-provider"
     },
     {
       "path": "../augur-core"
