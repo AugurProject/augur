@@ -1,7 +1,8 @@
-import {Augur} from "@augurproject/api";
+import { Augur } from "@augurproject/api";
 import settings from "@augurproject/state/src/settings.json";
-import {PouchDBFactoryType} from "./db/AbstractDB";
-import {DB} from "./db/DB";
+import { PouchDBFactoryType } from "./db/AbstractDB";
+import { DB } from "./db/DB";
+import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
 
 // because flexsearch is a UMD type lib
 import FlexSearch = require("flexsearch");
@@ -15,28 +16,17 @@ interface SyncableMarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Co
 
 export class Controller<TBigNumber> {
   private dbController: DB<TBigNumber>;
-  private augur: Augur<TBigNumber>;
-  private networkId: number;
-  private blockstreamDelay: number;
-  private defaultStartSyncBlockNumber: number;
-  private trackedUsers: Array<string>;
-  private pouchDBFactory: PouchDBFactoryType;
   private FTS: FlexSearch;
 
   public constructor(
-    augur: Augur<TBigNumber>,
-    networkId: number,
-    blockstreamDelay: number,
-    defaultStartSyncBlockNumber: number,
-    trackedUsers: Array<string>,
-    pouchDBFactory: PouchDBFactoryType
+    private augur: Augur<TBigNumber>,
+    private networkId: number,
+    private blockstreamDelay: number,
+    private defaultStartSyncBlockNumber: number,
+    private trackedUsers: Array<string>,
+    private pouchDBFactory: PouchDBFactoryType,
+    private blockAndLogStreamerListener: BlockAndLogStreamerListener
   ) {
-    this.augur = augur;
-    this.networkId = networkId;
-    this.blockstreamDelay = blockstreamDelay;
-    this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
-    this.trackedUsers = trackedUsers;
-    this.pouchDBFactory = pouchDBFactory;
     this.FTS = FlexSearch.create({
       doc: {
         id: "id",
@@ -60,7 +50,8 @@ export class Controller<TBigNumber> {
         this.trackedUsers,
         this.augur.genericEventNames,
         this.augur.userSpecificEvents,
-        this.pouchDBFactory
+        this.pouchDBFactory,
+        this.blockAndLogStreamerListener
       );
       await this.dbController.sync(
         this.augur,
@@ -68,8 +59,12 @@ export class Controller<TBigNumber> {
         settings.blockstreamDelay
       );
 
+      this.blockAndLogStreamerListener.listenForBlockRemoved(this.dbController.rollback.bind(this.dbController));
+      this.blockAndLogStreamerListener.startBlockStreamListener();
+
       const marketCreatedDB = await this.dbController.getSyncableDatabase(this.dbController.getDatabaseName("MarketCreated"));
       const previousDocumentEntries = await marketCreatedDB.allDocs();
+
       for (let row of previousDocumentEntries.rows) {
         if (row === undefined) {
           continue;

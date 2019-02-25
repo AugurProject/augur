@@ -1,20 +1,21 @@
-import ethrpc from "./ethrpc";
-import ethers from "./ethers";
-export { ethrpc, ethers };
+export { createAdapter, EthersProviderBlockStreamAdapter } from "./ethers";
 import { Block, FilterOptions, Log } from "ethereumjs-blockstream";
 
 export type GetBlockByString = (hash: string) => Promise<Block | null>
 
-export interface Dependencies {
-  getBlockByNumber: GetBlockByString,
-  getBlockByHash: GetBlockByString,
-  getLogs: (filterOptions: FilterOptions) => Promise<Log[]>,
+export interface ExtendedLog extends Log {
+  transactionIndex?: number;
+  removed?: boolean;
+  transactionLogIndex?: number;
+  address: string;
+  data: string;
+  topics: Array<string>;
+  transactionHash?: string;
 }
 
-export type SUPPORTED_ADAPTER = "ethrpc" | "ethers";
-export const SUPPORTED_ADAPTER = ["ethrpc", "ethers"];
-
-export function isSupportedAdapter(adapterName: string): adapterName is SUPPORTED_ADAPTER {
-  if (SUPPORTED_ADAPTER.includes(adapterName)) return true;
-  return false;
+export interface BlockAndLogStreamerDependencies<T extends Log, B extends Block> {
+  getBlockByNumber: GetBlockByString,
+  getBlockByHash: GetBlockByString,
+  getLogs: (filterOptions: FilterOptions) => Promise<T[]>,
+  startPollingForBlocks: (reconcileNewBlock:(block: B) => Promise<void>) => void;
 }
