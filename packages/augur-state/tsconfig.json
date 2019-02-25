@@ -13,6 +13,9 @@
   ],
   "references": [
     {
+      "path": "../blockstream-adapters"
+    },
+    {
       "path": "../ethersjs-provider"
     },
     {

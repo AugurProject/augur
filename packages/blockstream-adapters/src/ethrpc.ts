@@ -34,8 +34,8 @@ function getLogs(filterOptions: FilterOptions): Promise<Log[]> {
   });
 }
 
-export default function connect(httpAddress: string): Promise<Dependencies> {
-  return new Promise<Dependencies>((resolve, reject) => {
+export default function connect(httpAddress: string): Promise<Dependencies<Log>> {
+  return new Promise<Dependencies<Log>>((resolve, reject) => {
     const configuration = {
       httpAddresses: [httpAddress],
       wsAddresses: [],

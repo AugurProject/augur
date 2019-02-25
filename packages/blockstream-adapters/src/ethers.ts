@@ -37,7 +37,7 @@ async function getLogs(provider: ethers.providers.Provider, filterOptions: Filte
   return _.map(logs, convertEthersLogToBlockstreamLog);
 }
 
-export default async function connect(httpAddress: string): Promise<Dependencies> {
+export default async function connect(httpAddress: string): Promise<Dependencies<Log>> {
   const provider = new ethers.providers.JsonRpcProvider(httpAddress)
   return {
     getBlockByNumber: _.partial(getBlockByHashOrTag, provider),
