@@ -437,16 +437,16 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         return true;
     }
 
-    function logAndUpdateVolume(Trade.Data _tradeData) private returns (uint256) {
+    function logAndUpdateVolume(Trade.Data memory _tradeData) private returns (uint256) {
         IMarket _market = _tradeData.contracts.market;
-        uint256 _volume = marketVolume[_market];
+        uint256 _volume = marketVolume[address(_market)];
         uint256 _makerSharesDepleted = _tradeData.getMakerSharesDepleted();
         uint256 _fillerSharesDepleted = _tradeData.getFillerSharesDepleted();
         uint256 _makerTokensDepleted = _tradeData.getMakerTokensDepleted();
         uint256 _fillerTokensDepleted = _tradeData.getFillerTokensDepleted();
         uint256 _completeSetTokens = _makerSharesDepleted.min(_fillerSharesDepleted).mul(_market.getNumTicks());
         _volume = _volume.add(_makerTokensDepleted).add(_fillerTokensDepleted).add(_completeSetTokens);
-        marketVolume[_market] = _volume;
+        marketVolume[address(_market)] = _volume;
         return _volume;
     }
 }
