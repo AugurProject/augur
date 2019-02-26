@@ -202,6 +202,6 @@ jobs:
         and
         (
             succeeded(),
-            eq(variables.AUGUR_CORE, 'true'),
+            eq(variables.AUGUR_CORE, 'true')
         )
       displayName: 'build and push docker image'
