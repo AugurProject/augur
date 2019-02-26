@@ -120,9 +120,17 @@ export class DB<TBigNumber> {
       );
       callback();
     }, maxConcurrency);
-    q.drain = function() {
-      console.log("Finished syncing all events");
-    }  
+    const asyncQueuePromise = new Promise(
+      (resolve, reject) => { 
+        q.drain = () => {
+          if (resolve) {
+            resolve("All syncing successfully finished");
+          } else {
+            reject("Unable to finish syncing");
+          } 
+        }
+      }
+    );
     for (let dbIndex in this.syncableDatabases) {
       q.push(
         {
@@ -166,6 +174,8 @@ export class DB<TBigNumber> {
         );
       }
     }
+
+    await asyncQueuePromise;
 
     // TODO Call `this.metaDatabase.addNewBlock` here & reduce `maxConcurrency` if derived DBs end up getting used
   }
