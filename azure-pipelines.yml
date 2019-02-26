@@ -200,6 +200,7 @@ jobs:
         and
         (
             succeeded(),
+            eq(variables.AUGUR_CORE, 'true'),
             eq(variables['Build.SourceBranch'], 'refs/heads/master')
         )
       displayName: 'build and push docker image'
