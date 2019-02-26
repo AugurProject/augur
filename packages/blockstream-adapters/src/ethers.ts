@@ -1,7 +1,7 @@
 import { Block, Log, FilterOptions } from "ethereumjs-blockstream";
 import * as _ from "lodash";
 import { ethers } from "ethers";
-import { Dependencies } from "./index";
+import { Dependencies } from ".";
 
 function convertEthersBlockToBlockstreamBlock(block: ethers.providers.Block): Block {
   return {
