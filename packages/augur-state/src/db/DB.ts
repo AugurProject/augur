@@ -111,15 +111,23 @@ export class DB<TBigNumber> {
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
     // Sync generic event types
     const maxConcurrency = 20;
-    let q = queue(function(task: any, callback: any) {
-      task.dbController.syncableDatabases[task.dbIndex].sync(task.augur, task.chunkSize, task.blockstreamDelay, task.dbController.syncStatus.defaultStartSyncBlockNumber);
+    let q = queue(async function(task: any, callback: any) {
+      await task.dbController.syncableDatabases[task.dbKey].sync(
+        task.augur, 
+        task.chunkSize, 
+        task.blockstreamDelay, 
+        task.dbController.syncStatus.defaultStartSyncBlockNumber
+      );
       callback();
     }, maxConcurrency);
+    q.drain = function() {
+      console.log("Finished syncing all events");
+    }  
     for (let dbIndex in this.syncableDatabases) {
       q.push(
         {
           dbController: this, 
-          dbIndex,
+          dbKey: dbIndex,
           augur, 
           chunkSize,
           blockstreamDelay,
@@ -137,17 +145,13 @@ export class DB<TBigNumber> {
     // Sync user-specific event types
     // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
     // Also update topics/indexes for user-specific events once these changes are made to the contracts.
-    q = queue(function(task: any, callback: any) {
-      task.dbController.syncableDatabases[task.dbName].sync(task.augur, task.chunkSize, task.blockstreamDelay, task.dbController.syncStatus.defaultStartSyncBlockNumber);
-      callback();
-    }, maxConcurrency);
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let userSpecificEvent of this.userSpecificEvents) {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
         q.push(
           {
             dbController: this, 
-            dbName,
+            dbKey: dbName,
             augur, 
             chunkSize,
             blockstreamDelay,
@@ -156,7 +160,7 @@ export class DB<TBigNumber> {
             if (err) {
               console.log(err);
             } else {
-              console.log("Finished syncing SyncableDB " + dbName);
+              console.log("Finished syncing UserSyncableDB " + dbName);
             }
           }
         );
