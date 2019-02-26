@@ -5,7 +5,7 @@ import { SyncableDB } from "./SyncableDB";
 import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
-const queue = require("async/queue");
+import { queue } from "async";
 
 export interface UserSpecificEvent {
   name: string;
