@@ -184,7 +184,7 @@ jobs:
         displayName: 'test augur.js'
         condition: eq(variables.AUGUR, 'true')
 
-  - job: Docker_publish_populated_geth_images
+  - job: Docker_populated_geth_images
     dependsOn:
     - Build_Core_Docker
     - Test_Augur_Core
@@ -195,12 +195,13 @@ jobs:
         set -euo pipefail
         echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
         yarn docker:build:all
-        yarn workspace augur-tools docker:push
+        if [[ "$(Build.SourceBranchName)" == "master" ]]; then
+            yarn workspace augur-tools docker:push
+        fi
       condition: |
         and
         (
             succeeded(),
             eq(variables.AUGUR_CORE, 'true'),
-            eq(variables['Build.SourceBranch'], 'refs/heads/master')
         )
       displayName: 'build and push docker image'
