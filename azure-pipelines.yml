@@ -196,7 +196,7 @@ jobs:
         for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
           do
             echo "$f"
-            if [[ $f =~ .*augur\.js.* ]]
+            if [[ $f =~ .*augur-core.* ]]
             then
               echo "##vso[task.setVariable variable=AUGUR_CORE]true";
             fi
