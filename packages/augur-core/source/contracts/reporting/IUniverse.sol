@@ -55,4 +55,5 @@ contract IUniverse is ITyped {
     function incrementOpenInterestFromMarket(IMarket _market) public returns (bool);
     function getWinningChildUniverse() public view returns (IUniverse);
     function isForking() public view returns (bool);
+    function assertMarketBalance() public view returns (bool);
 }

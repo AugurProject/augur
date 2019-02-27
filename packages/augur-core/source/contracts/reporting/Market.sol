@@ -460,7 +460,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function isInvalid() public view returns (bool) {
-        // require(isFinalized());
+        require(isFinalized());
         return getWinningReportingParticipant().getPayoutNumerator(0) > 0;
     }
 
@@ -481,7 +481,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function getWinningPayoutNumerator(uint256 _outcome) public view returns (uint256) {
-        // require(isFinalized());
+        require(isFinalized());
         return getWinningReportingParticipant().getPayoutNumerator(_outcome);
     }
 
@@ -573,21 +573,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function assertBalances() public view returns (bool) {
-        // Escrowed funds for open orders
-        /* TEMPORARY REMOVAL TO GET UNDER SIZE LIMIT
-        uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(this);
-        // Market Open Interest. If we're finalized we need actually calculate the value
-        if (isFinalized()) {
-            IReportingParticipant _winningReportingPartcipant = getWinningReportingParticipant();
-            for (uint256 i = 0; i < numOutcomes; i++) {
-                _expectedBalance = _expectedBalance.add(shareTokens[i].totalSupply().mul(_winningReportingPartcipant.getPayoutNumerator(i)));
-            }
-        } else {
-            _expectedBalance = _expectedBalance.add(shareTokens[0].totalSupply().mul(numTicks));
-        }
-
-        assert(cash.balanceOf(address(this)) >= _expectedBalance);
-        */
+        universe.assertMarketBalance();
         return true;
     }
 }
