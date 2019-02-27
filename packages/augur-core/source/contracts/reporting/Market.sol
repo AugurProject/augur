@@ -239,7 +239,7 @@ contract Market is Initializable, Ownable, IMarket {
             // Make sure the dispute window for which we record finalization is the standard cadence window and not an initial dispute window
             disputeWindow = universe.getOrCreatePreviousDisputeWindow(false);
             disputeWindow.onMarketFinalized();
-            universe.decrementOpenInterestFromMarket(shareTokens[0].totalSupply().mul(numTicks));
+            universe.decrementOpenInterestFromMarket(this);
             redistributeLosingReputation();
         }
         distributeValidityBondAndMarketCreatorFees();
@@ -327,7 +327,7 @@ contract Market is Initializable, Ownable, IMarket {
             return true;
         }
         affiliateFeesAttoEth[_affiliate] = 0;
-        cash.transfer(_affiliate, _affiliateBalance);
+        cash.transfer(_affiliate, affiliateFeesAttoEth[_affiliate]);
         return true;
     }
 
@@ -363,9 +363,7 @@ contract Market is Initializable, Ownable, IMarket {
         bytes32 _winningForkPayoutDistributionHash = _forkingMarket.getWinningPayoutDistributionHash();
         IUniverse _destinationUniverse = _currentUniverse.getChildUniverse(_winningForkPayoutDistributionHash);
 
-        uint256 _marketOI = shareTokens[0].totalSupply().mul(numTicks);
-
-        universe.decrementOpenInterestFromMarket(_marketOI);
+        universe.decrementOpenInterestFromMarket(this);
 
         // follow the forking market to its universe
         if (disputeWindow != IDisputeWindow(0)) {
@@ -376,7 +374,7 @@ contract Market is Initializable, Ownable, IMarket {
         _currentUniverse.removeMarketFrom();
         universe = _destinationUniverse;
 
-        universe.incrementOpenInterestFromMarket(_marketOI);
+        universe.incrementOpenInterestFromMarket(this);
 
         // Pay the REP bond.
         repBond = universe.getOrCacheMarketRepBond();

@@ -284,8 +284,9 @@ contract Universe is ITyped, IUniverse {
         return true;
     }
 
-    function decrementOpenInterestFromMarket(uint256 _amount) public returns (bool) {
+    function decrementOpenInterestFromMarket(IMarket _market) public returns (bool) {
         require(isContainerForMarket(IMarket(msg.sender)));
+        uint256 _amount = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
         openInterestInAttoEth = openInterestInAttoEth.sub(_amount);
         return true;
     }
@@ -296,8 +297,9 @@ contract Universe is ITyped, IUniverse {
         return true;
     }
 
-    function incrementOpenInterestFromMarket(uint256 _amount) public returns (bool) {
+    function incrementOpenInterestFromMarket(IMarket _market) public returns (bool) {
         require(isContainerForMarket(IMarket(msg.sender)));
+        uint256 _amount = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
         openInterestInAttoEth = openInterestInAttoEth.add(_amount);
         return true;
     }
