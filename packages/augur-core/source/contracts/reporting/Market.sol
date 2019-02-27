@@ -223,11 +223,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function correctLastParticipantSize() private returns (bool) {
-        IDisputeCrowdsourcer _disputeCrowdsourcer = IDisputeCrowdsourcer(address(getWinningReportingParticipant()));
-        uint256 _stake = _disputeCrowdsourcer.getStake();
-        if (_disputeCrowdsourcer.getSize() != _stake) {
-            _disputeCrowdsourcer.setSize(_stake);
-        }
+        IDisputeCrowdsourcer(address(getWinningReportingParticipant())).correctSize();
         return true;
     }
 
@@ -245,8 +241,8 @@ contract Market is Initializable, Ownable, IMarket {
             disputeWindow.onMarketFinalized();
             universe.decrementOpenInterestFromMarket(shareTokens[0].totalSupply().mul(numTicks));
             redistributeLosingReputation();
-            distributeValidityBondAndMarketCreatorFees();
         }
+        distributeValidityBondAndMarketCreatorFees();
         finalizationTime = augur.getTimestamp();
         augur.logMarketFinalized(universe);
         return true;
@@ -339,14 +335,11 @@ contract Market is Initializable, Ownable, IMarket {
         IDisputeCrowdsourcer _crowdsourcer = _overload ? preemptiveDisputeCrowdsourcer : IDisputeCrowdsourcer(crowdsourcers.getAsAddressOrZero(_payoutDistributionHash));
         if (_crowdsourcer == IDisputeCrowdsourcer(0)) {
             DisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = DisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
-            uint256 _size = 0;
+            uint256 _participantStake = getParticipantStake();
             if (_overload) {
-                uint256 _totalParticipantStake = getParticipantStake();
-                uint256 _lowestTheoreticalParticipantStake = _totalParticipantStake.add(_totalParticipantStake.mul(2).sub(getHighestNonTentativeParticipantStake().mul(3)));
-                _size = _lowestTheoreticalParticipantStake.mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
-            } else {
-                _size = getParticipantStake().mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
+                _participantStake = _participantStake.add(_participantStake.mul(2).sub(getHighestNonTentativeParticipantStake().mul(3)));
             }
+            uint256 _size = _participantStake.mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
             _crowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, this, _size, _payoutDistributionHash, _payoutNumerators);
             if (!_overload) {
                 crowdsourcers.add(_payoutDistributionHash, address(_crowdsourcer));
