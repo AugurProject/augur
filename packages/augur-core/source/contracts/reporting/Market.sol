@@ -37,6 +37,7 @@ contract Market is Initializable, Ownable, IMarket {
     IDisputeWindow private disputeWindow;
     ICash private cash;
     IAugur public augur;
+    MapFactory public mapFactory;
 
     // Attributes
     uint256 private numTicks;
@@ -86,7 +87,8 @@ contract Market is Initializable, Ownable, IMarket {
         affiliateFeeDivisor = _affiliateFeeDivisor;
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
         participants.push(_initialReporterFactory.createInitialReporter(augur, this, _designatedReporterAddress));
-        crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, address(this));
+        mapFactory = MapFactory(augur.lookup("MapFactory"));
+        clearCrowdsourcers();
         for (uint256 _outcome = 0; _outcome < numOutcomes; _outcome++) {
             shareTokens.push(createShareToken(_outcome));
         }
@@ -198,7 +200,7 @@ contract Market is Initializable, Ownable, IMarket {
     function finishedCrowdsourcingDisputeBond(IDisputeCrowdsourcer _crowdsourcer) private returns (bool) {
         correctLastParticipantSize();
         participants.push(_crowdsourcer);
-        crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, address(this)); // disavow other crowdsourcers
+        clearCrowdsourcers(); // disavow other crowdsourcers
         uint256 _crowdsourcerSize = IDisputeCrowdsourcer(_crowdsourcer).getSize();
         totalStake = totalStake.add(_crowdsourcerSize);
         totalOutcomeStake[_crowdsourcer.getPayoutDistributionHash()] = totalOutcomeStake[_crowdsourcer.getPayoutDistributionHash()].add(_crowdsourcerSize);
@@ -418,8 +420,13 @@ contract Market is Initializable, Ownable, IMarket {
         } else {
             _initialParticipant.returnRepFromDisavow();
         }
-        crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, address(this));
+        clearCrowdsourcers();
         augur.logMarketParticipantsDisavowed(universe);
+        return true;
+    }
+
+    function clearCrowdsourcers() public returns (bool) {
+        crowdsourcers = mapFactory.createMap(augur, address(this));
         return true;
     }
 
