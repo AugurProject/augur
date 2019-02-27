@@ -341,7 +341,7 @@ contract Augur is IAugur {
         return true;
     }
 
-    function getMarketOpenInterest(IMarket _market) public returns (uint256) {
+    function getMarketOpenInterest(IMarket _market) public view returns (uint256) {
         if (_market.isFinalized()) {
             return 0;
         }
