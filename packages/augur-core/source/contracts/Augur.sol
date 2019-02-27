@@ -61,6 +61,7 @@ contract Augur is IAugur {
     event InitialReporterTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume);
+    event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds);
     event EscapeHatchChanged(bool isOn);
     event TimestampSet(uint256 newTimestamp);
 
@@ -498,6 +499,12 @@ contract Augur is IAugur {
     function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume) public returns (bool) {
         require(msg.sender == registry["FillOrder"]);
         emit MarketVolumeChanged(address(_universe), _market, _volume);
+        return true;
+    }
+
+    function logProfitLossChanged(IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds) public returns (bool) {
+        require(msg.sender == registry["ProfitLoss"]);
+        emit ProfitLossChanged(address(_market.getUniverse()), address(_market), _account, _outcome, _netPosition, _avgPrice, _realizedProfit, _frozenFunds);
         return true;
     }
 }

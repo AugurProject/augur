@@ -9,6 +9,7 @@ import 'ROOT/trading/ICash.sol';
 import 'ROOT/trading/ICompleteSets.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/trading/Order.sol';
 import 'ROOT/libraries/Initializable.sol';
 
@@ -363,6 +364,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
     IAugur public augur;
     IOrders public orders;
+    IProfitLoss public profitLoss;
     address public trade;
 
     mapping (address => uint256) public marketVolume;
@@ -372,6 +374,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         augur = _augur;
         orders = IOrders(augur.lookup("Orders"));
         trade = augur.lookup("Trade");
+        profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
         return true;
     }
 
@@ -403,6 +406,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _amountFilled = _amountFillerWants.sub(_amountRemainingFillerWants);
         logOrderFilled(_tradeData, _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
         logAndUpdateVolume(_tradeData);
+        updateProfitLoss(_tradeData, _amountFilled);
         _tradeData.contracts.orders.recordFillOrder(_orderId, _tradeData.getMakerSharesDepleted(), _tradeData.getMakerTokensDepleted());
         return _amountRemainingFillerWants;
     }
@@ -449,5 +453,14 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         marketVolume[address(_market)] = _volume;
         augur.logMarketVolumeChanged(_tradeData.contracts.market.getUniverse(), address(_market), _volume);
         return _volume;
+    }
+
+    function updateProfitLoss(Trade.Data memory _tradeData, uint256 _amountFilled) private returns (bool) {
+        uint256 _numLongTokens = _tradeData.creator.direction == Trade.Direction.Long ? _tradeData.getMakerTokensDepleted() : _tradeData.getFillerTokensDepleted();
+        uint256 _numShortTokens = _tradeData.creator.direction == Trade.Direction.Short ? _tradeData.getMakerTokensDepleted() : _tradeData.getFillerTokensDepleted();
+        uint256 _numLongShares = _tradeData.creator.direction == Trade.Direction.Long ? _tradeData.getMakerSharesDepleted() : _tradeData.getFillerSharesDepleted();
+        uint256 _numShortShares = _tradeData.creator.direction == Trade.Direction.Short ? _tradeData.getMakerSharesDepleted() : _tradeData.getFillerSharesDepleted();
+        profitLoss.recordTrade(_tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, int256(_amountFilled), int256(_tradeData.order.sharePriceLong), _numLongTokens, _numShortTokens, _numLongShares, _numShortShares);
+        return true;
     }
 }

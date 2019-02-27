@@ -5,11 +5,11 @@ import 'ROOT/trading/IClaimTradingProceeds.sol';
 import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/trading/ICash.sol';
+import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/Initializable.sol';
-import 'ROOT/IAugur.sol';
 
 
 /**
@@ -20,10 +20,12 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
     using SafeMathUint256 for uint256;
 
     IAugur public augur;
+    IProfitLoss public profitLoss;
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
+        profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
         return true;
     }
 
@@ -47,6 +49,8 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
             }
             distributeProceeds(_market, _shareHolder, _shareHolderShare, _creatorShare, _reporterShare);
         }
+
+        profitLoss.recordClaim(_market, _shareHolder);
 
         _market.assertBalances();
 
