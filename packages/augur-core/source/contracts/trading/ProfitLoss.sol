@@ -58,11 +58,12 @@ contract ProfitLoss is Initializable {
             _outcomeData.frozenFunds = _outcomeData.frozenFunds + _profit;
         }
 
+        _outcomeData.frozenFunds += _frozenTokenDelta;
+
         if (_newNetPosition == 0) {
             _outcomeData.avgPrice = 0;
-            _outcomeData.frozenFunds = 0;
             _outcomeData.netPosition = 0;
-            augur.logProfitLossChanged(_market, _address, _outcome, 0, 0, _outcomeData.realizedProfit, 0);
+            augur.logProfitLossChanged(_market, _address, _outcome, 0, 0, _outcomeData.realizedProfit, _outcomeData.frozenFunds);
             return true;
         }
 
@@ -75,7 +76,6 @@ contract ProfitLoss is Initializable {
         }
 
         _outcomeData.netPosition = _newNetPosition;
-        _outcomeData.frozenFunds += _frozenTokenDelta;
         augur.logProfitLossChanged(_market, _address, _outcome, _outcomeData.netPosition, uint256(_outcomeData.avgPrice), _outcomeData.realizedProfit, _outcomeData.frozenFunds);
         return true;
     }

@@ -225,7 +225,7 @@ def test_cat3_3(contractsFixture, cash, categoricalMarket, universe):
             "position": 0,
             "avgPrice": 0,
             "realizedPL": -.5,
-            "frozenFunds": 0
+            "frozenFunds": 2
         }
     ]
 

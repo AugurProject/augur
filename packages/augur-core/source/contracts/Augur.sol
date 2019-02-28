@@ -62,7 +62,6 @@ contract Augur is IAugur {
     event MarketTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume);
     event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds);
-    event EscapeHatchChanged(bool isOn);
     event TimestampSet(uint256 newTimestamp);
 
     mapping(address => bool) private markets;
