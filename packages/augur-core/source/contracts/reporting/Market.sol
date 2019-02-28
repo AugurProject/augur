@@ -53,14 +53,12 @@ contract Market is Initializable, Ownable, IMarket {
     address private repBondOwner;
     uint256 public marketCreatorFeesAttoEth;
     IDisputeCrowdsourcer public preemptiveDisputeCrowdsourcer;
-    uint256 public totalStake;
 
     // Collections
     IReportingParticipant[] public participants;
     IMap public crowdsourcers;
     IShareToken[] private shareTokens;
     mapping (address => uint256) public affiliateFeesAttoEth;
-    mapping (bytes32 => uint256) public totalOutcomeStake;
 
     function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized returns (bool _success) {
         endInitialization();
@@ -202,8 +200,6 @@ contract Market is Initializable, Ownable, IMarket {
         participants.push(_crowdsourcer);
         clearCrowdsourcers(); // disavow other crowdsourcers
         uint256 _crowdsourcerSize = IDisputeCrowdsourcer(_crowdsourcer).getSize();
-        totalStake = totalStake.add(_crowdsourcerSize);
-        totalOutcomeStake[_crowdsourcer.getPayoutDistributionHash()] = totalOutcomeStake[_crowdsourcer.getPayoutDistributionHash()].add(_crowdsourcerSize);
         if (_crowdsourcerSize >= universe.getDisputeThresholdForFork()) {
             universe.fork();
         } else {
@@ -217,7 +213,7 @@ contract Market is Initializable, Ownable, IMarket {
             IDisputeCrowdsourcer _newCrowdsourcer = preemptiveDisputeCrowdsourcer;
             preemptiveDisputeCrowdsourcer = IDisputeCrowdsourcer(0);
             bytes32 _payoutDistributionHash = _newCrowdsourcer.getPayoutDistributionHash();
-            uint256 _correctSize = totalStake.mul(2).sub(totalOutcomeStake[_payoutDistributionHash].mul(3));
+            uint256 _correctSize = getParticipantStake().mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
             _newCrowdsourcer.setSize(_correctSize);
             if (_newCrowdsourcer.getStake() >= _correctSize) {
                 finishedCrowdsourcingDisputeBond(_newCrowdsourcer);
@@ -229,6 +225,9 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function correctLastParticipantSize() private returns (bool) {
+        if (participants.length < 2) {
+            return true;
+        }
         IDisputeCrowdsourcer(address(getWinningReportingParticipant())).correctSize();
         return true;
     }
@@ -333,7 +332,7 @@ contract Market is Initializable, Ownable, IMarket {
             return true;
         }
         affiliateFeesAttoEth[_affiliate] = 0;
-        cash.transfer(_affiliate, affiliateFeesAttoEth[_affiliate]);
+        cash.transfer(_affiliate, _affiliateBalance);
         return true;
     }
 
@@ -341,11 +340,11 @@ contract Market is Initializable, Ownable, IMarket {
         IDisputeCrowdsourcer _crowdsourcer = _overload ? preemptiveDisputeCrowdsourcer : IDisputeCrowdsourcer(crowdsourcers.getAsAddressOrZero(_payoutDistributionHash));
         if (_crowdsourcer == IDisputeCrowdsourcer(0)) {
             DisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = DisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
-            uint256 _participantStake = totalStake;
+            uint256 _participantStake = getParticipantStake();
             if (_overload) {
                 _participantStake = _participantStake.add(_participantStake.mul(2).sub(getHighestNonTentativeParticipantStake().mul(3)));
             }
-            uint256 _size = _participantStake.mul(2).sub(totalOutcomeStake[_payoutDistributionHash].mul(3));
+            uint256 _size = _participantStake.mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
             _crowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, this, _size, _payoutDistributionHash, _payoutNumerators);
             if (!_overload) {
                 crowdsourcers.add(_payoutDistributionHash, address(_crowdsourcer));
@@ -435,7 +434,29 @@ contract Market is Initializable, Ownable, IMarket {
             return 0;
         }
         bytes32 _payoutDistributionHash = participants[participants.length - 2].getPayoutDistributionHash();
-        return totalOutcomeStake[_payoutDistributionHash];
+        return getStakeInOutcome(_payoutDistributionHash);
+    }
+
+    function getParticipantStake() public view returns (uint256) {
+        uint256 _sum;
+        // Participants is implicitly bounded by the floor of the initial report REP cost to be no more than 21
+        for (uint256 i = 0; i < participants.length; ++i) {
+            _sum += participants[i].getStake();
+        }
+        return _sum;
+    }
+
+    function getStakeInOutcome(bytes32 _payoutDistributionHash) public view returns (uint256) {
+        uint256 _sum;
+        // Participants is implicitly bounded by the floor of the initial report REP cost to be no more than 21
+        for (uint256 i = 0; i < participants.length; ++i) {
+            IReportingParticipant _reportingParticipant = participants[i];
+            if (_reportingParticipant.getPayoutDistributionHash() != _payoutDistributionHash) {
+                continue;
+            }
+            _sum += _reportingParticipant.getStake();
+        }
+        return _sum;
     }
 
     function getForkingMarket() public view returns (IMarket) {
