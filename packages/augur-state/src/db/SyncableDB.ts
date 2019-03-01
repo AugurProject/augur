@@ -33,7 +33,11 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         console.log(`SYNCING ${this.dbName} from ${highestSyncedBlockNumber} to ${goalBlock}`);
         while (highestSyncedBlockNumber < goalBlock) {
             const endBlockNumber = Math.min(highestSyncedBlockNumber + chunkSize, highestAvailableBlockNumber);
-            const logs = await this.getLogs(augur, highestSyncedBlockNumber, endBlockNumber);
+            // try {
+                const logs = await this.getLogs(augur, highestSyncedBlockNumber, endBlockNumber);
+            // } catch (err) {
+            //     console.log("!!!!!!", err);
+            // }
             let success = true;
             if (logs.length > 1) {
                 const documents = _.sortBy(_.map(logs, this.processLog), "_id");

@@ -109,74 +109,38 @@ export class DB<TBigNumber> {
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
    */
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
-    // Sync generic event types
-    const maxConcurrency = 20;
-    let q = queue(async function(task: any, callback: any) {
-      await task.dbController.syncableDatabases[task.dbKey].sync(
-        task.augur, 
-        task.chunkSize, 
-        task.blockstreamDelay, 
-        task.dbController.syncStatus.defaultStartSyncBlockNumber
-      );
-      callback();
-    }, maxConcurrency);
-    const asyncQueuePromise = new Promise(
-      (resolve, reject) => { 
-        q.drain = () => {
-          if (resolve) {
-            resolve("All syncing successfully finished");
-          } else {
-            reject("Unable to finish syncing");
-          } 
-        }
-      }
-    );
+    let dbSyncPromises = [];
     for (let dbIndex in this.syncableDatabases) {
-      q.push(
-        {
-          dbController: this, 
-          dbKey: dbIndex,
+      dbSyncPromises.push(
+        this.syncableDatabases[dbIndex].sync(
           augur, 
-          chunkSize,
-          blockstreamDelay,
-        },
-        function(err: Error) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log("Finished syncing SyncableDB " + dbIndex);
-          }
-        }
+          chunkSize, 
+          blockstreamDelay, 
+          this.syncStatus.defaultStartSyncBlockNumber
+        )
       );
     }
 
-    // Sync user-specific event types
-    // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
-    // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let userSpecificEvent of this.userSpecificEvents) {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        q.push(
-          {
-            dbController: this, 
-            dbKey: dbName,
+        dbSyncPromises.push(
+          this.syncableDatabases[dbName].sync(
             augur, 
-            chunkSize,
-            blockstreamDelay,
-          },
-          function(err: Error) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("Finished syncing UserSyncableDB " + dbName);
-            }
-          }
+            chunkSize, 
+            blockstreamDelay, 
+            this.syncStatus.defaultStartSyncBlockNumber
+          )
         );
       }
     }
 
-    await asyncQueuePromise;
-
+    await Promise.all(dbSyncPromises).catch(
+      error => {
+        throw error;
+      }
+    );
+    
     // TODO Call `this.metaDatabase.addNewBlock` here & reduce `maxConcurrency` if derived DBs end up getting used
   }
 
