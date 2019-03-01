@@ -2,7 +2,9 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "src"
+    "rootDir": "src",
+    "baseUrl": "types",
+    "typeRoots": ["types"]
   },
   "exclude": [
     "./src/**/*.test.ts"
@@ -13,7 +15,7 @@
   ],
   "references": [
     {
-      "path": "../ethersjs-provider",
+      "path": "../ethersjs-provider"
     },
     {
       "path": "../augur-core"

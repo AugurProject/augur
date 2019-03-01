@@ -174,6 +174,15 @@ export class DB<TBigNumber> {
   }
 
   /**
+   * Gets a syncable database based upon the name
+   *
+   * @param {string} dbName The name of the database
+   */
+  public getSyncableDatabase(dbName: string) : SyncableDB<TBigNumber> {
+    return this.syncableDatabases[dbName];
+  }
+
+  /**
    * Returns the current update_seqs from all SyncableDBs/UserSyncableDBs.
    *
    * TODO Remove this function if derived DBs are not used.

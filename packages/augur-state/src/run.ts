@@ -7,6 +7,9 @@ import { EthersProvider } from "ethers-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { PouchDBFactory } from "./db/AbstractDB";
 
+// because flexsearch us a UMD type lib
+import FlexSearch = require("flexsearch");
+
 const TEST_NETWORK_ID = 4;
 
 export async function start() {
