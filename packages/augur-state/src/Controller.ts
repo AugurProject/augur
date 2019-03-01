@@ -174,7 +174,7 @@ export class Controller<TBigNumber> {
                 id: row.id,
                 Title: description,
                 description: info.longDescription,
-                tags: info.tags,
+                tags: info.tags.toString(), // convert to comma separated so it is searchable
                 start: new Date(),
                 end: new Date()
               });
