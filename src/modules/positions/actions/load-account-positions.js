@@ -16,9 +16,23 @@ export const loadAccountPositions = (options = {}, callback = logError) => (
     (err, positions) => {
       if (err) return callback(err);
       if (positions == null) return callback(null);
+
+      // will figure out what to do with frozen funs on sub branch
+      let userPositions = positions;
+      if (positions.tradingPositions) {
+        // todo when augur-node returns frozen stuff remove adding dummy data.
+        userPositions = positions.tradingPositions.map(position => ({
+          frozenFunds: 0,
+          ...position
+        }));
+      }
+
       const marketIds = Array.from(
         new Set([
-          ...positions.reduce((p, position) => [...p, position.marketId], [])
+          ...userPositions.reduce(
+            (p, position) => [...p, position.marketId],
+            []
+          )
         ])
       );
       if (marketIds.length === 0) return callback(null);
@@ -27,7 +41,7 @@ export const loadAccountPositions = (options = {}, callback = logError) => (
           if (err) return callback(err);
           marketIds.forEach(marketId => {
             const marketPositionData = {};
-            const marketPositions = positions.filter(
+            const marketPositions = userPositions.filter(
               position => position.marketId === marketId
             );
             marketPositionData[marketId] = {};
@@ -40,7 +54,7 @@ export const loadAccountPositions = (options = {}, callback = logError) => (
               ])
             );
             outcomeIds.forEach(outcomeId => {
-              marketPositionData[marketId][outcomeId] = positions.filter(
+              marketPositionData[marketId][outcomeId] = userPositions.filter(
                 position =>
                   position.marketId === marketId &&
                   position.outcome === outcomeId
@@ -49,7 +63,7 @@ export const loadAccountPositions = (options = {}, callback = logError) => (
             dispatch(updateAccountPositionsData(marketPositionData, marketId));
           });
           dispatch(updateTopBarPL());
-          callback(null, positions);
+          callback(null, userPositions);
         })
       );
     }
