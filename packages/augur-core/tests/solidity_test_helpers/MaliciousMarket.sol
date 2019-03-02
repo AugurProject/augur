@@ -1,16 +1,16 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'reporting/IMarket.sol';
-import 'reporting/IUniverse.sol';
-import 'trading/IShareToken.sol';
-import 'trading/ICash.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/trading/ICash.sol';
 
 
 contract MaliciousMarket {
     IMarket private victimMarket;
     uint256 public getNumTicks = 1;
 
-    function MaliciousMarket(IMarket _market) public {
+    constructor(IMarket _market) public {
         victimMarket = _market;
     }
 

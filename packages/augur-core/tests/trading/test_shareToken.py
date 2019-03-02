@@ -6,7 +6,7 @@ from pytest import raises
 from utils import AssertLog, bytesToHexString, stringToBytes, BuyWithCash
 
 def test_init(contractsFixture, market):
-    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken())
+    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
 
     assert shareToken.name() == "Shares", "currency name"
     assert shareToken.decimals() == 18, "number of decimals"
@@ -15,7 +15,7 @@ def test_init(contractsFixture, market):
     assert shareToken.getTypeName() == stringToBytes("ShareToken")
 
 def test_transfer(contractsFixture, market, cash):
-    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken())
+    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
     completeSets = contractsFixture.contracts['CompleteSets']
 
     with BuyWithCash(cash, 7 * market.getNumTicks(), tester.k0, "complete set buy"):
@@ -59,7 +59,7 @@ def test_transfer(contractsFixture, market, cash):
     assert(shareToken.totalSupply() == initialTotalSupply), "Total supply should be unchanged"
 
 def test_approve(contractsFixture, market, cash):
-    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken())
+    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
     completeSets = contractsFixture.contracts['CompleteSets']
 
     with BuyWithCash(cash, 7 * market.getNumTicks(), tester.k0, "complete set buy"):
@@ -98,7 +98,7 @@ def test_approve(contractsFixture, market, cash):
             assert shareToken.transferFrom(tester.a0, tester.a1, 7, sender=tester.k1)
 
 def test_transferFrom(contractsFixture, market, cash):
-    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken())
+    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
     completeSets = contractsFixture.contracts['CompleteSets']
     with BuyWithCash(cash, 7 * market.getNumTicks(), tester.k0, "complete set buy"):
         completeSets.publicBuyCompleteSets(market.address, 7)

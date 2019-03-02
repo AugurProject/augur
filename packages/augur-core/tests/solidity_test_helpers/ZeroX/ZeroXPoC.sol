@@ -1,13 +1,13 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'reporting/IMarket.sol';
-import 'trading/IShareToken.sol';
-import 'trading/ICash.sol';
-import 'libraries/token/ERC20Token.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'libraries/ReentrancyGuard.sol';
-import 'trading/CompleteSets.sol';
-import 'Augur.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/ReentrancyGuard.sol';
+import 'ROOT/trading/CompleteSets.sol';
+import 'ROOT/Augur.sol';
 
 
 contract ZeroXPoC is ReentrancyGuard {
@@ -75,11 +75,11 @@ contract ZeroXPoC is ReentrancyGuard {
         uint256 amountHeld
     );
 
-    function ZeroXPoC(Augur _augur) public {
+    constructor(Augur _augur) public {
         augur = _augur;
         completeSets = CompleteSets(augur.lookup("CompleteSets"));
         cash = ICash(augur.lookup("Cash"));
-        cash.approve(augur, 2 ** 256 - 1);
+        cash.approve(address(augur), 2 ** 256 - 1);
     }
 
     /*
@@ -88,19 +88,19 @@ contract ZeroXPoC is ReentrancyGuard {
 
     function deposit(ERC20Token _token, uint256 _amount) public nonReentrant returns (bool) {
         require(_token != ERC20Token(0));
-        tokenBalances[_token][msg.sender] = tokenBalances[_token][msg.sender].add(_amount);
-        require(_token.transferFrom(msg.sender, this, _amount));
-        Deposit(msg.sender, _token, _amount, tokenBalances[_token][msg.sender]);
+        tokenBalances[address(_token)][msg.sender] = tokenBalances[address(_token)][msg.sender].add(_amount);
+        require(_token.transferFrom(msg.sender, address(this), _amount));
+        emit Deposit(msg.sender, address(_token), _amount, tokenBalances[address(_token)][msg.sender]);
         return true;
     }
 
     function withdraw(ERC20Token _token, uint256 _amount) public nonReentrant returns (bool) {
         require(_token != ERC20Token(0));
-        uint256 _heldAmount = tokenBalances[_token][msg.sender];
-        tokenBalances[_token][msg.sender] = _heldAmount.sub(_amount);
+        uint256 _heldAmount = tokenBalances[address(_token)][msg.sender];
+        tokenBalances[address(_token)][msg.sender] = _heldAmount.sub(_amount);
         require(_heldAmount >= _amount);
         require(_token.transfer(msg.sender, _amount));
-        Withdraw(msg.sender, _token, _amount, tokenBalances[_token][msg.sender]);
+        emit Withdraw(msg.sender, address(_token), _amount, tokenBalances[address(_token)][msg.sender]);
         return true;
     }
 
@@ -119,8 +119,8 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param s ECDSA signature parameters s.
     /// @return success.
     function fillOrder(
-          address[2] orderAddresses,
-          uint[6] orderValues,
+          address[2] memory orderAddresses,
+          uint[6] memory orderValues,
           uint fillAmount,
           uint8 v,
           bytes32 r,
@@ -151,20 +151,20 @@ contract ZeroXPoC is ReentrancyGuard {
         ));
 
         if (augur.getTimestamp() >= order.expirationTimestampInSec) {
-            Error(uint8(Errors.ORDER_EXPIRED), order.orderHash);
+            emit Error(uint8(Errors.ORDER_EXPIRED), order.orderHash);
             return false;
         }
 
         uint _remainingAmount = order.amount.sub(getUnavailableAmount(order.orderHash));
         uint _toFillAmount = fillAmount.min(_remainingAmount);
         if (_toFillAmount == 0) {
-            Error(uint8(Errors.ORDER_FULLY_FILLED_OR_CANCELLED), order.orderHash);
+            emit Error(uint8(Errors.ORDER_FULLY_FILLED_OR_CANCELLED), order.orderHash);
             return false;
         }
 
         filled[order.orderHash] = filled[order.orderHash].add(_toFillAmount);
 
-        Fill(
+        emit Fill(
             msg.sender,
             _toFillAmount,
             order.orderHash
@@ -178,7 +178,7 @@ contract ZeroXPoC is ReentrancyGuard {
         return true;
     }
 
-    function tradeMakerSharesForFillerShares(Order order, uint _toFillAmount) private returns (uint256) {
+    function tradeMakerSharesForFillerShares(Order memory order, uint _toFillAmount) private returns (uint256) {
         if (_toFillAmount == 0) {
             return _toFillAmount;
         }
@@ -189,10 +189,10 @@ contract ZeroXPoC is ReentrancyGuard {
         address _shortParticipant = order.orderType == 0 ? msg.sender : order.maker;
         address _longParticipant = order.orderType == 0 ? order.maker : msg.sender;
 
-        uint256 longSharesHeldByShortParticipant = tokenBalances[_longShareToken][_shortParticipant];
+        uint256 longSharesHeldByShortParticipant = tokenBalances[address(_longShareToken)][_shortParticipant];
         uint256 shortSharesHeldByLongParticipant = 0;
         for (uint256 _i = 0; _i < _shortShareTokens.length; ++_i) {
-            shortSharesHeldByLongParticipant = shortSharesHeldByLongParticipant.add(tokenBalances[_shortShareTokens[_i]][_longParticipant]);
+            shortSharesHeldByLongParticipant = shortSharesHeldByLongParticipant.add(tokenBalances[address(_shortShareTokens[_i])][_longParticipant]);
         }
 
         uint256 numCompleteSets = longSharesHeldByShortParticipant.min(shortSharesHeldByLongParticipant).min(_toFillAmount);
@@ -204,26 +204,26 @@ contract ZeroXPoC is ReentrancyGuard {
         return _toFillAmount;
     }
 
-    function sellCompleteSets(Order order, uint256 _numCompleteSets, address _shortParticipant, address _longParticipant, IShareToken _longShareToken, IShareToken[] _shortShareTokens) private returns (bool) {
-        uint256 _startingBalance = cash.balanceOf(this);
+    function sellCompleteSets(Order memory order, uint256 _numCompleteSets, address _shortParticipant, address _longParticipant, IShareToken _longShareToken, IShareToken[] memory _shortShareTokens) private returns (bool) {
+        uint256 _startingBalance = cash.balanceOf(address(this));
         completeSets.publicSellCompleteSetsWithCash(order.market, _numCompleteSets);
 
-        uint256 _payout = cash.balanceOf(this).sub(_startingBalance);
+        uint256 _payout = cash.balanceOf(address(this)).sub(_startingBalance);
 
-        tokenBalances[_longShareToken][_shortParticipant] = tokenBalances[_longShareToken][_shortParticipant].sub(_numCompleteSets);
+        tokenBalances[address(_longShareToken)][_shortParticipant] = tokenBalances[address(_longShareToken)][_shortParticipant].sub(_numCompleteSets);
         for (uint256 _i = 0; _i < _shortShareTokens.length; ++_i) {
-            tokenBalances[_shortShareTokens[_i]][_longParticipant] = tokenBalances[_shortShareTokens[_i]][_longParticipant].sub(_numCompleteSets);
+            tokenBalances[address(_shortShareTokens[_i])][_longParticipant] = tokenBalances[address(_shortShareTokens[_i])][_longParticipant].sub(_numCompleteSets);
         }
 
         uint256 _longShare = _payout.mul(order.price).div(order.market.getNumTicks());
 
-        tokenBalances[cash][_shortParticipant] = tokenBalances[cash][_shortParticipant].add(_longShare);
-        tokenBalances[cash][_longParticipant] = tokenBalances[cash][_longParticipant].add(_payout.sub(_longShare));
+        tokenBalances[address(cash)][_shortParticipant] = tokenBalances[address(cash)][_shortParticipant].add(_longShare);
+        tokenBalances[address(cash)][_longParticipant] = tokenBalances[address(cash)][_longParticipant].add(_payout.sub(_longShare));
 
         return true;
     }
 
-    function tradeMakerSharesForFillerTokens(Order order, uint _toFillAmount) private returns (uint256) {
+    function tradeMakerSharesForFillerTokens(Order memory order, uint _toFillAmount) private returns (uint256) {
         if (_toFillAmount == 0) {
             return _toFillAmount;
         }
@@ -234,7 +234,7 @@ contract ZeroXPoC is ReentrancyGuard {
         address _shortParticipant = order.orderType == 0 ? msg.sender : order.maker;
         address _longParticipant = order.orderType == 0 ? order.maker : msg.sender;
 
-        uint256 longSharesHeldByShortParticipant = tokenBalances[_longShareToken][_shortParticipant];
+        uint256 longSharesHeldByShortParticipant = tokenBalances[address(_longShareToken)][_shortParticipant];
 
         if (longSharesHeldByShortParticipant == 0) {
             return _toFillAmount;
@@ -243,22 +243,22 @@ contract ZeroXPoC is ReentrancyGuard {
         uint256 _amountToTrade = _toFillAmount.min(longSharesHeldByShortParticipant);
         uint256 _cost = _amountToTrade.mul(order.price);
 
-        tokenBalances[_longShareToken][_shortParticipant] = tokenBalances[_longShareToken][_shortParticipant].sub(_amountToTrade);
-        tokenBalances[_longShareToken][_longParticipant] = tokenBalances[_longShareToken][_longParticipant].add(_amountToTrade);
-        tokenBalances[cash][_shortParticipant] = tokenBalances[cash][_shortParticipant].add(_cost);
-        tokenBalances[cash][_longParticipant] = tokenBalances[cash][_longParticipant].sub(_cost);
+        tokenBalances[address(_longShareToken)][_shortParticipant] = tokenBalances[address(_longShareToken)][_shortParticipant].sub(_amountToTrade);
+        tokenBalances[address(_longShareToken)][_longParticipant] = tokenBalances[address(_longShareToken)][_longParticipant].add(_amountToTrade);
+        tokenBalances[address(cash)][_shortParticipant] = tokenBalances[address(cash)][_shortParticipant].add(_cost);
+        tokenBalances[address(cash)][_longParticipant] = tokenBalances[address(cash)][_longParticipant].sub(_cost);
 
         return _toFillAmount.sub(_amountToTrade);
     }
 
-    function tradeMakerTokensForFillerShares(Order order, uint _toFillAmount) private returns (uint256) {
+    function tradeMakerTokensForFillerShares(Order memory order, uint _toFillAmount) private returns (uint256) {
         // TODO
         return _toFillAmount;
     }
 
-    function tradeMakerTokensForFillerTokens(Order order, uint256 _toFillAmount) private returns (bool) {
+    function tradeMakerTokensForFillerTokens(Order memory order, uint256 _toFillAmount) private returns (bool) {
         if (_toFillAmount == 0) {
-            return;
+            return true;
         }
         IShareToken _longShareToken = order.market.getShareToken(order.outcome);
         IShareToken[] memory _shortShareTokens = getShortShareTokens(order.market, order.outcome);
@@ -270,13 +270,13 @@ contract ZeroXPoC is ReentrancyGuard {
         uint256 _longPrice = order.orderType == 0 ? order.price : order.market.getNumTicks().sub(order.price);
 
         completeSets.publicBuyCompleteSetsWithCash(order.market, _toFillAmount);
-        tokenBalances[_longShareToken][_longParticipant] = tokenBalances[_longShareToken][_longParticipant].add(_toFillAmount);
+        tokenBalances[address(_longShareToken)][_longParticipant] = tokenBalances[address(_longShareToken)][_longParticipant].add(_toFillAmount);
         for (uint256 _i = 0; _i < _shortShareTokens.length; ++_i) {
-            tokenBalances[_shortShareTokens[_i]][_shortParticipant] = tokenBalances[_shortShareTokens[_i]][_shortParticipant].add(_toFillAmount);
+            tokenBalances[address(_shortShareTokens[_i])][_shortParticipant] = tokenBalances[address(_shortShareTokens[_i])][_shortParticipant].add(_toFillAmount);
         }
 
-        tokenBalances[cash][_longParticipant] = tokenBalances[cash][_longParticipant].sub(_toFillAmount.mul(_longPrice));
-        tokenBalances[cash][_shortParticipant] = tokenBalances[cash][_shortParticipant].sub(_toFillAmount.mul(_shortPrice));
+        tokenBalances[address(cash)][_longParticipant] = tokenBalances[address(cash)][_longParticipant].sub(_toFillAmount.mul(_longPrice));
+        tokenBalances[address(cash)][_shortParticipant] = tokenBalances[address(cash)][_shortParticipant].sub(_toFillAmount.mul(_shortPrice));
 
         return true;
     }
@@ -299,8 +299,8 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param cancelAmount Desired amount to cancel in order.
     /// @return success.
     function cancelOrder(
-        address[2] orderAddresses,
-        uint[6] orderValues,
+        address[2] memory orderAddresses,
+        uint[6] memory orderValues,
         uint cancelAmount)
         public
         nonReentrant
@@ -321,20 +321,20 @@ contract ZeroXPoC is ReentrancyGuard {
         require(order.amount > 0 && cancelAmount > 0);
 
         if (augur.getTimestamp() >= order.expirationTimestampInSec) {
-            Error(uint8(Errors.ORDER_EXPIRED), order.orderHash);
+            emit Error(uint8(Errors.ORDER_EXPIRED), order.orderHash);
             return false;
         }
 
         uint remainingAmount = order.amount.sub(getUnavailableAmount(order.orderHash));
         uint cancelledAmount = cancelAmount.min(remainingAmount);
         if (cancelledAmount == 0) {
-            Error(uint8(Errors.ORDER_FULLY_FILLED_OR_CANCELLED), order.orderHash);
+            emit Error(uint8(Errors.ORDER_FULLY_FILLED_OR_CANCELLED), order.orderHash);
             return false;
         }
 
         cancelled[order.orderHash] = cancelled[order.orderHash].add(cancelledAmount);
 
-        Cancel(
+        emit Cancel(
             order.orderHash,
             cancelledAmount
         );
@@ -350,12 +350,12 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param orderAddresses Array of order's maker and market.
     /// @param orderValues Array of order's outcome, orderType, amount, price, expirationTimestampInSec, and salt.
     /// @return Keccak-256 hash of order.
-    function getOrderHash(address[2] orderAddresses, uint[6] orderValues)
+    function getOrderHash(address[2] memory orderAddresses, uint[6] memory orderValues)
         public
-        constant
+        view
         returns (bytes32)
     {
-        return keccak256(
+        return keccak256(abi.encodePacked(
             address(this),
             orderAddresses[0], // maker
             orderAddresses[1], // market
@@ -365,7 +365,7 @@ contract ZeroXPoC is ReentrancyGuard {
             orderValues[3],    // price
             orderValues[4],    // expirationTimestampInSec
             orderValues[5]     // salt
-        );
+        ));
     }
 
     /// @dev Verifies that an order signature is valid.
@@ -382,11 +382,11 @@ contract ZeroXPoC is ReentrancyGuard {
         bytes32 r,
         bytes32 s)
         public
-        constant
+        pure
         returns (bool)
     {
         return signer == ecrecover(
-            keccak256("\x19Ethereum Signed Message:\n32", hash),
+            keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)),
             v,
             r,
             s
@@ -398,7 +398,7 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @return Sum of values already filled and cancelled.
     function getUnavailableAmount(bytes32 orderHash)
         public
-        constant
+        view
         returns (uint)
     {
         return filled[orderHash].add(cancelled[orderHash]);
@@ -409,7 +409,7 @@ contract ZeroXPoC is ReentrancyGuard {
         view
         returns (uint)
     {
-        return tokenBalances[token][owner];
+        return tokenBalances[address(token)][owner];
     }
 
     /*
@@ -422,7 +422,6 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @return Token balance of owner.
     function getBalance(ERC20Token token, address owner)
         internal
-        constant  // The called token contract may attempt to change state, but will not be able to due to an added gas limit.
         returns (uint)
     {
         return token.balanceOf.gas(EXTERNAL_QUERY_GAS_LIMIT)(owner); // Limit gas to prevent reentrancy
@@ -434,9 +433,8 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @return Allowance of token given to this contract by owner.
     function getAllowance(ERC20Token token, address owner)
         internal
-        constant  // The called token contract may attempt to change state, but will not be able to due to an added gas limit.
         returns (uint)
     {
-        return token.allowance.gas(EXTERNAL_QUERY_GAS_LIMIT)(owner, this); // Limit gas to prevent reentrancy
+        return token.allowance.gas(EXTERNAL_QUERY_GAS_LIMIT)(owner, address(this)); // Limit gas to prevent reentrancy
     }
 }

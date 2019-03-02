@@ -1,13 +1,13 @@
 // Copyright (C) 2015 Forecast Foundation OU, full GPL notice in LICENSE
 
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'libraries/ReentrancyGuard.sol';
-import 'trading/Order.sol';
-import 'trading/ICreateOrder.sol';
-import 'libraries/Initializable.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/ReentrancyGuard.sol';
+import 'ROOT/trading/Order.sol';
+import 'ROOT/trading/ICreateOrder.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract CreateOrder is Initializable, ReentrancyGuard {
@@ -38,7 +38,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         return Order.saveOrder(_orderData, _tradeGroupId);
     }
 
-    function publicCreateOrders(uint256[] _outcomes, Order.Types[] _types, uint256[] _attoshareAmounts, uint256[] _prices, IMarket _market, bool _ignoreShares, bytes32 _tradeGroupId) public afterInitialized nonReentrant returns (bytes32[] memory _orders) {
+    function publicCreateOrders(uint256[] memory _outcomes, Order.Types[] memory _types, uint256[] memory _attoshareAmounts, uint256[] memory _prices, IMarket _market, bool _ignoreShares, bytes32 _tradeGroupId) public afterInitialized nonReentrant returns (bytes32[] memory _orders) {
         require(augur.isValidMarket(_market));
         _orders = new bytes32[]( _types.length);
 

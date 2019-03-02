@@ -22,7 +22,7 @@ function getOpenInterest(augur, universe, callback) {
 }
 
 function showCashBalance(augur, address, callback) {
-  augur.api.Cash.balanceOf({ _owner: address }, function (err, cashBalance) {
+  augur.api.Cash.balanceOf({ _tokenHolder: address }, function (err, cashBalance) {
     if (err) {
       console.log(chalk.red(err));
       return callback(err);

@@ -3,7 +3,7 @@ variables:
     SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
     AUGUR_CORE_TAG: monorepo.$(Build.BuildID)
     CORE_IMAGE_BUILD: augurproject/augur-core:$(AUGUR_CORE_TAG)
-    CORE_IMAGE_LATEST: augurproject/augur-core:latest
+    CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
 
 trigger:
   batch: false
@@ -184,22 +184,35 @@ jobs:
         displayName: 'test augur.js'
         condition: eq(variables.AUGUR, 'true')
 
-  - job: Docker_publish_populated_geth_images
+  - job: Docker_populated_geth_images
     dependsOn:
     - Build_Core_Docker
     - Test_Augur_Core
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
+    - bash: |
+        set -euo pipefail
+        for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
+          do
+            echo "$f"
+            if [[ $f =~ .*augur-core.* ]]
+            then
+              echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+            fi
+          done
     - script: |
         set -euo pipefail
         echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
         yarn docker:build:all
-        yarn workspace @augurproject/tools docker:push
+
+        if [[ "$(Build.SourceBranchName)" == "master" ]]; then
+            yarn workspace @augurproject/tools docker:push
+        fi
       condition: |
         and
         (
             succeeded(),
-            eq(variables['Build.SourceBranch'], 'refs/heads/master')
+            eq(variables.AUGUR_CORE, 'true')
         )
-      displayName: 'build and push docker image'
+      displayName: 'build and (maybe) push docker image'

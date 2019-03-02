@@ -1,19 +1,18 @@
 // Copyright (C) 2015 Forecast Foundation OU, full GPL notice in LICENSE
 
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'reporting/IDisputeWindow.sol';
-import 'libraries/Initializable.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IReputationToken.sol';
-import 'reporting/IMarket.sol';
-import 'trading/ICash.sol';
-import 'factories/MarketFactory.sol';
-import 'reporting/Reporting.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'reporting/IDisputeWindow.sol';
-import 'IAugur.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IReputationToken.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/factories/MarketFactory.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract DisputeWindow is Initializable, IDisputeWindow {
@@ -26,12 +25,16 @@ contract DisputeWindow is Initializable, IDisputeWindow {
     uint256 private invalidMarketsCount;
     uint256 private incorrectDesignatedReportMarketCount;
     uint256 private designatedReportNoShows;
+    uint256 public windowId;
+    uint256 public duration;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         universe = _universe;
-        startTime = _disputeWindowId.mul(universe.getDisputeRoundDurationInSeconds());
+        duration = _duration;
+        windowId = _disputeWindowId;
+        startTime = _disputeWindowId.mul(duration);
         return true;
     }
 
@@ -72,7 +75,7 @@ contract DisputeWindow is Initializable, IDisputeWindow {
     }
 
     function getEndTime() public afterInitialized view returns (uint256) {
-        return getStartTime().add(Reporting.getDisputeRoundDurationSeconds());
+        return getStartTime().add(duration);
     }
 
     function getNumInvalidMarkets() public afterInitialized view returns (uint256) {
@@ -85,6 +88,10 @@ contract DisputeWindow is Initializable, IDisputeWindow {
 
     function getNumDesignatedReportNoShows() public view returns (uint256) {
         return designatedReportNoShows;
+    }
+
+    function getWindowId() public view returns (uint256) {
+        return windowId;
     }
 
     function isActive() public afterInitialized view returns (bool) {

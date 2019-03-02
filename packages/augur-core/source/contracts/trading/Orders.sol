@@ -1,13 +1,13 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'trading/IOrders.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'libraries/math/SafeMathInt256.sol';
-import 'trading/Order.sol';
-import 'reporting/IMarket.sol';
-import 'trading/IOrdersFetcher.sol';
-import 'libraries/Initializable.sol';
+import 'ROOT/trading/IOrders.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/math/SafeMathInt256.sol';
+import 'ROOT/trading/Order.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/trading/IOrdersFetcher.sol';
+import 'ROOT/libraries/Initializable.sol';
 
 
 /**
@@ -78,11 +78,11 @@ contract Orders is IOrders, Initializable {
     }
 
     function getTotalEscrowed(IMarket _market) public view returns (uint256) {
-        return marketOrderData[_market].totalEscrowed;
+        return marketOrderData[address(_market)].totalEscrowed;
     }
 
     function getLastOutcomePrice(IMarket _market, uint256 _outcome) public view returns (uint256) {
-        return marketOrderData[_market].prices[_outcome];
+        return marketOrderData[address(_market)].prices[_outcome];
     }
 
     function getBetterOrderId(bytes32 _orderId) public view returns (bytes32) {
@@ -173,10 +173,10 @@ contract Orders is IOrders, Initializable {
         _order.amount = _amount;
         _order.creator = _sender;
         _order.moneyEscrowed = _moneyEscrowed;
-        marketOrderData[_market].totalEscrowed += _moneyEscrowed;
+        marketOrderData[address(_market)].totalEscrowed += _moneyEscrowed;
         _order.sharesEscrowed = _sharesEscrowed;
         insertOrderIntoList(_order, _betterOrderId, _worseOrderId);
-        augur.logOrderCreated(_type, _amount, _price, _sender, _moneyEscrowed, _sharesEscrowed, _tradeGroupId, _orderId, _order.market.getUniverse(), _order.market.getShareToken(_order.outcome));
+        augur.logOrderCreated(_type, _amount, _price, _sender, _moneyEscrowed, _sharesEscrowed, _tradeGroupId, _orderId, _order.market.getUniverse(), address(_order.market.getShareToken(_order.outcome)));
         return _orderId;
     }
 
@@ -184,7 +184,7 @@ contract Orders is IOrders, Initializable {
         require(msg.sender == cancelOrder || msg.sender == address(this));
         removeOrderFromList(_orderId);
         Order.Data storage _order = orders[_orderId];
-        marketOrderData[_order.market].totalEscrowed -= _order.moneyEscrowed;
+        marketOrderData[address(_order.market)].totalEscrowed -= _order.moneyEscrowed;
         delete orders[_orderId];
         return true;
     }
@@ -207,7 +207,7 @@ contract Orders is IOrders, Initializable {
         require(_fill <= _order.amount);
         _order.amount -= _fill;
         _order.moneyEscrowed -= _tokensFilled;
-        marketOrderData[_order.market].totalEscrowed -= _tokensFilled;
+        marketOrderData[address(_order.market)].totalEscrowed -= _tokensFilled;
         _order.sharesEscrowed -= _sharesFilled;
         if (_order.amount == 0) {
             require(_order.moneyEscrowed == 0);
@@ -223,7 +223,36 @@ contract Orders is IOrders, Initializable {
 
     function setPrice(IMarket _market, uint256 _outcome, uint256 _price) external afterInitialized returns (bool) {
         require(msg.sender == trade);
-        marketOrderData[_market].prices[_outcome] = _price;
+        marketOrderData[address(_market)].prices[_outcome] = _price;
+        return true;
+    }
+
+    function setOrderPrice(bytes32 _orderId, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId) public afterInitialized returns (bool) {
+        Order.Data storage _order = orders[_orderId];
+        IMarket _market = _order.market;
+        require(msg.sender == _order.creator);
+        require(_price < _market.getNumTicks());
+        require(_price != _order.price);
+        removeOrderFromList(_orderId);
+        if (_order.moneyEscrowed != 0) {
+            bool _isRefund = _order.orderType == Order.Types.Bid ? _price < _order.price : _price > _order.price;
+            uint256 _priceDelta = _price < _order.price ? _order.price.sub(_price) : _price.sub(_order.price);
+            uint256 _attoSharesToCoverByTokens = _order.amount.sub(_order.sharesEscrowed);
+            uint256 _amount = _attoSharesToCoverByTokens.mul(_priceDelta);
+            if (_isRefund) {
+                require(_market.getDenominationToken().transferFrom(address(_market), msg.sender, _amount));
+                marketOrderData[address(_market)].totalEscrowed -= _amount;
+                _order.moneyEscrowed -= _amount;
+            } else {
+                require(augur.trustedTransfer(_market.getDenominationToken(), msg.sender, address(_market), _amount));
+                marketOrderData[address(_market)].totalEscrowed += _amount;
+                _order.moneyEscrowed += _amount;
+            }
+        }
+        _order.price = _price;
+        insertOrderIntoList(_order, _betterOrderId, _worseOrderId);
+        _market.assertBalances();
+        augur.logOrderPriceChanged(_market.getUniverse(), _orderId, _price);
         return true;
     }
 

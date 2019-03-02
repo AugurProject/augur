@@ -10,7 +10,7 @@ services:
       context: ../../../../../../
       dockerfile: packages/augur-core/source/support/Dockerfile
       cache_from:
-        - augurproject/augur-core:latest
+        - augurproject/augur-core:monorepo
     entrypoint: [ "yarn", "test:integration" ]
     # uncomment the following 3 lines to enable debugging the tests
     # command: [ "--", "--debug=0.0.0.0:9229", "--inspect-brk" ]

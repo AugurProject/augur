@@ -21,7 +21,7 @@ function getPositionInMarket(p, callback) {
     async.forEachOf(positionInMarket, function (_, outcome, nextOutcome) {
       api().Market.getShareToken(assign({ _outcome: outcome }, marketPayload), function (err, shareToken) {
         if (err) return nextOutcome(err);
-        api().ShareToken.balanceOf({ _owner: p.address, tx: { to: shareToken } }, function (err, shareTokenBalance) {
+        api().ShareToken.balanceOf({ _tokenHolder: p.address, tx: { to: shareToken } }, function (err, shareTokenBalance) {
           if (err) return nextOutcome(err);
           positionInMarket[outcome] = convertFixedPointToDecimal(shareTokenBalance, speedomatic.fix(p.tickSize, "string"));
           nextOutcome();

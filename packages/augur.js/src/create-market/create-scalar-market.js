@@ -4,7 +4,6 @@ var assign = require("lodash").assign;
 var immutableDelete = require("immutable-delete");
 var speedomatic = require("speedomatic");
 var calculateNumTicks = require("./calculate-num-ticks");
-var getMarketCreationCost = require("./get-market-creation-cost");
 var getMarketFromCreateMarketReceipt = require("./get-market-from-create-market-receipt");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
@@ -29,29 +28,25 @@ var constants = require("../constants");
  * @param {function} p.onFailed Called if/when the createScalarMarket transaction fails.
  */
 function createScalarMarket(p) {
-  getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
-    if (err) return p.onFailed(err);
-    var numTicks = calculateNumTicks(p.tickSize || constants.DEFAULT_SCALAR_TICK_SIZE, p._minPrice, p._maxPrice);
-    var createScalarMarketParams = assign({}, immutableDelete(p, ["universe", "tickSize"]), {
-      tx: assign({
-        to: p.universe,
-        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-      }, p.tx),
-      _numTicks: speedomatic.hex(numTicks),
-      _minPrice: speedomatic.fix(p._minPrice, "hex"),
-      _maxPrice: speedomatic.fix(p._maxPrice, "hex"),
-      _topic: encodeTag(p._topic),
-      _extraInfo: JSON.stringify(p._extraInfo || {}),
-      onSuccess: function (res) {
-        if (p.tx !== undefined && p.tx.estimateGas) return p.onSuccess(res);
-        getMarketFromCreateMarketReceipt(res.hash, function (err, marketId) {
-          if (err) return p.onFailed(err);
-          p.onSuccess(assign({}, res, { callReturn: marketId }));
-        });
-      },
-    });
-    api().Universe.createScalarMarket(createScalarMarketParams);
+  var numTicks = calculateNumTicks(p.tickSize || constants.DEFAULT_SCALAR_TICK_SIZE, p._minPrice, p._maxPrice);
+  var createScalarMarketParams = assign({}, immutableDelete(p, ["universe", "tickSize"]), {
+    tx: assign({
+      to: p.universe,
+    }, p.tx),
+    _numTicks: speedomatic.hex(numTicks),
+    _minPrice: speedomatic.fix(p._minPrice, "hex"),
+    _maxPrice: speedomatic.fix(p._maxPrice, "hex"),
+    _topic: encodeTag(p._topic),
+    _extraInfo: JSON.stringify(p._extraInfo || {}),
+    onSuccess: function (res) {
+      if (p.tx !== undefined && p.tx.estimateGas) return p.onSuccess(res);
+      getMarketFromCreateMarketReceipt(res.hash, function (err, marketId) {
+        if (err) return p.onFailed(err);
+        p.onSuccess(assign({}, res, { callReturn: marketId }));
+      });
+    },
   });
+  api().Universe.createScalarMarket(createScalarMarketParams);
 }
 
 module.exports = createScalarMarket;

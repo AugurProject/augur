@@ -1,11 +1,11 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'libraries/ERC820Implementer.sol';
-import 'libraries/token/ERC777Token.sol';
-import 'libraries/token/ERC777TokensSender.sol';
-import 'libraries/token/ERC777TokensRecipient.sol';
-import 'libraries/ContractExists.sol';
-import 'libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/ERC820Implementer.sol';
+import 'ROOT/libraries/token/ERC777Token.sol';
+import 'ROOT/libraries/token/ERC777TokensSender.sol';
+import 'ROOT/libraries/token/ERC777TokensRecipient.sol';
+import 'ROOT/libraries/ContractExists.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
 contract ERC777BaseToken is ERC777Token, ERC820Implementer {
@@ -24,7 +24,7 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
     mapping(address => mapping(address => bool)) internal authorizedOperators;
 
     function initialize820InterfaceImplementations() internal returns (bool) {
-        setInterfaceImplementation("ERC777Token", this);
+        setInterfaceImplementation("ERC777Token", address(this));
         return true;
     }
 
@@ -108,7 +108,7 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
     }
 
     function doBurn(address _operator, address _tokenHolder, uint256 _amount, bytes32 _data, bytes32 _operatorData) internal returns (bool) {
-        callSender(_operator, _tokenHolder, 0x0, _amount, _data, _operatorData);
+        callSender(_operator, _tokenHolder, address(0x0), _amount, _data, _operatorData);
 
         require(balanceOf(_tokenHolder) >= _amount, "Not enough funds");
 
@@ -121,7 +121,7 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
 
     function callRecipient(address _operator, address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData, bool _preventLocking) internal returns (bool) {
         address recipientImplementation = interfaceAddr(_to, "ERC777TokensRecipient");
-        if (recipientImplementation != 0) {
+        if (recipientImplementation != address(0)) {
             ERC777TokensRecipient(recipientImplementation).tokensReceived(_operator, _from, _to, _amount, _data, _operatorData);
         } else if (_preventLocking) {
             require(!_to.exists(), "Cannot send to contract without ERC777TokensRecipient");
@@ -131,8 +131,8 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
 
     function callSender(address _operator, address _from, address _to, uint256 _amount, bytes32 _data, bytes32 _operatorData) internal returns (bool) {
         address senderImplementation = interfaceAddr(_from, "ERC777TokensSender");
-        if (senderImplementation == 0) {
-            return;
+        if (senderImplementation == address(0)) {
+            return true;
         }
         ERC777TokensSender(senderImplementation).tokensToSend(_operator, _from, _to, _amount, _data, _operatorData);
         return true;

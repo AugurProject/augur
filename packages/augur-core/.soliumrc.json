@@ -47,7 +47,7 @@
     "security/one-break-per-loop": "error",
     "security/max-statements-in-func": "off",
     "security/no-abstract-func": "off",
-    "security/no-bit-operations": "error",
+    "security/no-bit-operations": "off",
     "security/no-continue": "off",
     "security/no-inheritance": "off",
     "security/no-multiple-inheritance": "off",

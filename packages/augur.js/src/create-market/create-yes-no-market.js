@@ -24,25 +24,21 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {function} p.onFailed Called if/when the createYesNoMarket transaction fails.
  */
 function createYesNoMarket(p) {
-  getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
-    if (err) return p.onFailed(err);
-    var createYesNoMarketParams = assign({}, immutableDelete(p, "universe"), {
-      tx: assign({
-        to: p.universe,
-        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-      }, p.tx),
-      _topic: encodeTag(p._topic),
-      _extraInfo: JSON.stringify(p._extraInfo || {}),
-      onSuccess: function (res) {
-        if (p.tx !== undefined && p.tx.estimateGas) return p.onSuccess(res);
-        getMarketFromCreateMarketReceipt(res.hash, function (err, marketId) {
-          if (err) return p.onFailed(err);
-          p.onSuccess(assign({}, res, { callReturn: marketId }));
-        });
-      },
-    });
-    api().Universe.createYesNoMarket(createYesNoMarketParams);
+  var createYesNoMarketParams = assign({}, immutableDelete(p, "universe"), {
+    tx: assign({
+      to: p.universe,
+    }, p.tx),
+    _topic: encodeTag(p._topic),
+    _extraInfo: JSON.stringify(p._extraInfo || {}),
+    onSuccess: function (res) {
+      if (p.tx !== undefined && p.tx.estimateGas) return p.onSuccess(res);
+      getMarketFromCreateMarketReceipt(res.hash, function (err, marketId) {
+        if (err) return p.onFailed(err);
+        p.onSuccess(assign({}, res, { callReturn: marketId }));
+      });
+    },
   });
+  api().Universe.createYesNoMarket(createYesNoMarketParams);
 }
 
 module.exports = createYesNoMarket;
