@@ -40,9 +40,12 @@ contract Universe is ITyped, IUniverse {
     IDisputeWindowFactory public disputeWindowFactory;
 
     mapping (address => uint256) private validityBondInAttoEth;
-    mapping (address => uint256) private targetReporterGasCosts;
     mapping (address => uint256) private designatedReportStakeInAttoRep;
     mapping (address => uint256) private designatedReportNoShowBondInAttoRep;
+    uint256 public previousValidityBondInAttoEth;
+    uint256 public previousDesignatedReportStakeInAttoRep;
+    uint256 public previousDesignatedReportNoShowBondInAttoRep;
+
     mapping (address => uint256) private shareSettlementFeeDivisor;
 
     address public completeSets;
@@ -59,6 +62,9 @@ contract Universe is ITyped, IUniverse {
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         completeSets = augur.lookup("CompleteSets");
         updateForkValues();
+        previousValidityBondInAttoEth = Reporting.getDefaultValidityBond();
+        previousDesignatedReportStakeInAttoRep = initialReportMinValue;
+        previousDesignatedReportNoShowBondInAttoRep = initialReportMinValue;
     }
 
     function fork() public returns (bool) {
@@ -327,9 +333,9 @@ contract Universe is ITyped, IUniverse {
         }
         uint256 _totalMarketsInPreviousWindow = _previousDisputeWindow.getNumMarkets();
         uint256 _invalidMarketsInPreviousWindow = _previousDisputeWindow.getNumInvalidMarkets();
-        uint256 _previousValidityBondInAttoEth = validityBondInAttoEth[address(_previousDisputeWindow)];
-        _currentValidityBondInAttoEth = calculateFloatingValue(_invalidMarketsInPreviousWindow, _totalMarketsInPreviousWindow, Reporting.getTargetInvalidMarketsDivisor(), _previousValidityBondInAttoEth, Reporting.getDefaultValidityBond(), Reporting.getValidityBondFloor());
+        _currentValidityBondInAttoEth = calculateFloatingValue(_invalidMarketsInPreviousWindow, _totalMarketsInPreviousWindow, Reporting.getTargetInvalidMarketsDivisor(), previousValidityBondInAttoEth, Reporting.getDefaultValidityBond(), Reporting.getValidityBondFloor());
         validityBondInAttoEth[address(_disputeWindow)] = _currentValidityBondInAttoEth;
+        previousValidityBondInAttoEth = _currentValidityBondInAttoEth;
         return _currentValidityBondInAttoEth;
     }
 
@@ -342,10 +348,10 @@ contract Universe is ITyped, IUniverse {
         }
         uint256 _totalMarketsInPreviousWindow = _previousDisputeWindow.getNumMarkets();
         uint256 _incorrectDesignatedReportMarketsInPreviousWindow = _previousDisputeWindow.getNumIncorrectDesignatedReportMarkets();
-        uint256 _previousDesignatedReportStakeInAttoRep = designatedReportStakeInAttoRep[address(_previousDisputeWindow)];
 
-        _currentDesignatedReportStakeInAttoRep = calculateFloatingValue(_incorrectDesignatedReportMarketsInPreviousWindow, _totalMarketsInPreviousWindow, Reporting.getTargetIncorrectDesignatedReportMarketsDivisor(), _previousDesignatedReportStakeInAttoRep, initialReportMinValue, initialReportMinValue);
+        _currentDesignatedReportStakeInAttoRep = calculateFloatingValue(_incorrectDesignatedReportMarketsInPreviousWindow, _totalMarketsInPreviousWindow, Reporting.getTargetIncorrectDesignatedReportMarketsDivisor(), previousDesignatedReportStakeInAttoRep, initialReportMinValue, initialReportMinValue);
         designatedReportStakeInAttoRep[address(_disputeWindow)] = _currentDesignatedReportStakeInAttoRep;
+        previousDesignatedReportStakeInAttoRep = _currentDesignatedReportStakeInAttoRep;
         return _currentDesignatedReportStakeInAttoRep;
     }
 
@@ -358,10 +364,10 @@ contract Universe is ITyped, IUniverse {
         }
         uint256 _totalMarketsInPreviousWindow = _previousDisputeWindow.getNumMarkets();
         uint256 _designatedReportNoShowsInPreviousWindow = _previousDisputeWindow.getNumDesignatedReportNoShows();
-        uint256 _previousDesignatedReportNoShowBondInAttoRep = designatedReportNoShowBondInAttoRep[address(_previousDisputeWindow)];
 
-        _currentDesignatedReportNoShowBondInAttoRep = calculateFloatingValue(_designatedReportNoShowsInPreviousWindow, _totalMarketsInPreviousWindow, Reporting.getTargetDesignatedReportNoShowsDivisor(), _previousDesignatedReportNoShowBondInAttoRep, initialReportMinValue, initialReportMinValue);
+        _currentDesignatedReportNoShowBondInAttoRep = calculateFloatingValue(_designatedReportNoShowsInPreviousWindow, _totalMarketsInPreviousWindow, Reporting.getTargetDesignatedReportNoShowsDivisor(), previousDesignatedReportNoShowBondInAttoRep, initialReportMinValue, initialReportMinValue);
         designatedReportNoShowBondInAttoRep[address(_disputeWindow)] = _currentDesignatedReportNoShowBondInAttoRep;
+        previousDesignatedReportNoShowBondInAttoRep = _currentDesignatedReportNoShowBondInAttoRep;
         return _currentDesignatedReportNoShowBondInAttoRep;
     }
 
@@ -371,10 +377,7 @@ contract Universe is ITyped, IUniverse {
 
     function calculateFloatingValue(uint256 _badMarkets, uint256 _totalMarkets, uint256 _targetDivisor, uint256 _previousValue, uint256 _defaultValue, uint256 _floor) public pure returns (uint256 _newValue) {
         if (_totalMarkets == 0) {
-            return _defaultValue;
-        }
-        if (_previousValue == 0) {
-            _previousValue = _defaultValue;
+            return _previousValue;
         }
 
         // Modify the amount based on the previous amount and the number of markets fitting the failure criteria. We want the amount to be somewhere in the range of 0.9 to 2 times its previous value where ALL markets with the condition results in 2x and 0 results in 0.9x.

@@ -1,7 +1,7 @@
 from ethereum.tools import tester
 from ethereum.tools.tester import ABIContract
 from pytest import fixture, mark
-from reporting_utils import proceedToInitialReporting, proceedToNextRound
+from reporting_utils import proceedToInitialReporting, proceedToNextRound, proceedToDesignatedReporting
 from utils import BuyWithCash
 
 ONE = 10 ** 18
@@ -136,11 +136,11 @@ def test_validity_bond_down(contractsFixture, universe, market, scalarMarket, ca
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     assert scalarMarket.finalize()
 
-    # Confirm that the validity bond is now halved
+    # The validity bond only decreases by 10%
     disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     finalValidityBond = universe.getOrCacheValidityBond()
-    assert finalValidityBond == newValidityBond / 2
+    assert finalValidityBond == newValidityBond * 9 / 10
 
 def test_dr_report_stake_up(contractsFixture, universe, market):
     designatedReportStake = universe.getOrCacheDesignatedReportStake()
@@ -194,7 +194,7 @@ def test_dr_report_stake_min(contractsFixture, universe, market):
     newDesignatedReportStake = universe.getOrCacheDesignatedReportStake()
     assert newDesignatedReportStake == designatedReportStake
 
-def test_dr_report_stake_down(contractsFixture, universe, market, cash):
+def test_dr_report_stake_down(contractsFixture, universe, market, categoricalMarket, cash):
     designatedReportStake = universe.getOrCacheDesignatedReportStake()
 
     # We'll have the markets go to initial reporting
@@ -224,10 +224,28 @@ def test_dr_report_stake_down(contractsFixture, universe, market, cash):
     newDesignatedReportStake = universe.getOrCacheDesignatedReportStake()
     assert newDesignatedReportStake == designatedReportStake * 2
 
-    # Now we'll allow a window to pass with no markets and see the bond decrease
+    # Now we'll allow a window to pass with no markets and see the bond stay the same
     disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
-    assert universe.getOrCacheDesignatedReportStake() == designatedReportStake
+    assert universe.getOrCacheDesignatedReportStake() == newDesignatedReportStake
+
+    # Now if there is another window with all correct we see the bond decrease
+    # The DR will report
+    numTicks = categoricalMarket.getNumTicks()
+    payoutNumerators = [0, numTicks, 0, 0]
+    assert categoricalMarket.doInitialReport(payoutNumerators, "", sender=tester.k0)
+
+    # Move time forward to finalize the market
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', categoricalMarket.getDisputeWindow())
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    assert categoricalMarket.finalize()
+
+    expectedBond = newDesignatedReportStake * 9 / 10
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', categoricalMarket.getDisputeWindow())
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    assert universe.getOrCacheDesignatedReportStake() == expectedBond
 
 def test_no_show_bond_up(contractsFixture, universe, market):
     noShowBond = universe.getOrCacheDesignatedReportNoShowBond()
@@ -273,7 +291,7 @@ def test_no_show_bond_min(contractsFixture, universe, market):
     newNoShowBond = universe.getOrCacheDesignatedReportNoShowBond()
     assert newNoShowBond == noShowBond
 
-def test_no_show_bond_down(contractsFixture, universe, market, cash):
+def test_no_show_bond_down(contractsFixture, universe, market, categoricalMarket, cash):
     noShowBond = universe.getOrCacheDesignatedReportNoShowBond()
 
     # We'll have the markets go to initial reporting
@@ -295,10 +313,28 @@ def test_no_show_bond_down(contractsFixture, universe, market, cash):
     newNoShowBond = universe.getOrCacheDesignatedReportNoShowBond()
     assert newNoShowBond == noShowBond * 2
 
-    # Wait for a dispute window with no markets to se the bond decrease
+    # If there is a dispute window with no markets we'll just see the bond remain the same
     disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
-    assert universe.getOrCacheDesignatedReportNoShowBond() == noShowBond
+    assert universe.getOrCacheDesignatedReportNoShowBond() == newNoShowBond
+
+    # Now if there is another window with all shows we see the bond decrease
+    # The DR will report
+    numTicks = categoricalMarket.getNumTicks()
+    payoutNumerators = [0, numTicks, 0, 0]
+    assert categoricalMarket.doInitialReport(payoutNumerators, "", sender=tester.k0)
+
+    # Move time forward to finalize the market
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', categoricalMarket.getDisputeWindow())
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    assert categoricalMarket.finalize()
+
+    expectedBond = newNoShowBond * 9 / 10
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', categoricalMarket.getDisputeWindow())
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    assert universe.getOrCacheDesignatedReportNoShowBond() == expectedBond
 
 def test_market_rep_bond(contractsFixture, universe, market, cash):
     noShowBond = universe.getOrCacheDesignatedReportNoShowBond()
