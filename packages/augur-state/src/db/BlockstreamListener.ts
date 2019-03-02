@@ -2,7 +2,7 @@ import {ExtendedLog} from "../api/types";
 import {Augur, Log, ParsedLog, Provider} from "@augurproject/api";
 import {Block, BlockAndLogStreamer, FilterOptions} from "ethereumjs-blockstream";
 import * as _ from "lodash";
-import {EthersProvider} from "ethers-provider";
+import { EthersJsonRpcProvider as EthersProvider } from "@augurproject/ethers-provider";
 
 interface BlockstreamListenerDeps {
   blockAndLogStreamer:BlockAndLogStreamer<Block, ExtendedLog>;
