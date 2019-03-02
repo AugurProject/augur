@@ -1,7 +1,7 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'trading/Orders.sol';
-import 'libraries/ContractExists.sol';
+import 'ROOT/trading/Orders.sol';
+import 'ROOT/libraries/ContractExists.sol';
 
 
 contract TestOrders is Orders {

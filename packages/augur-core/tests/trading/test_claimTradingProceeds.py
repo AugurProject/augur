@@ -98,15 +98,15 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
         'finalTokenBalance': initialLongHolderETH + expectedPayout,
     }
 
-    with TokenDelta(cash, expectedReporterFees, universe.getAuction(), "Reporter fees not paid"):
-        # redeem shares with a1
-        with AssertLog(kitchenSinkFixture, "TradingProceedsClaimed", tradingProceedsClaimedLog):
-            claimTradingProceeds.claimTradingProceeds(market.address, tester.a1)
-        # redeem shares with a2
-        claimTradingProceeds.claimTradingProceeds(market.address, tester.a2)
+    with TokenDelta(cash, expectedMarketCreatorFees, market.getOwner(), "market creator fees not paid"):
+        with TokenDelta(cash, expectedReporterFees, universe.getAuction(), "Reporter fees not paid"):
+            # redeem shares with a1
+            with AssertLog(kitchenSinkFixture, "TradingProceedsClaimed", tradingProceedsClaimedLog):
+                claimTradingProceeds.claimTradingProceeds(market.address, tester.a1)
+            # redeem shares with a2
+            claimTradingProceeds.claimTradingProceeds(market.address, tester.a2)
 
     # assert a1 ends up with cash (minus fees) and a2 does not
-    assert market.marketCreatorFeesAttoEth() == expectedMarketCreatorFees
     assert kitchenSinkFixture.chain.head_state.get_balance(tester.a1) == initialLongHolderETH
     assert cash.balanceOf(tester.a1) == expectedPayout
     assert kitchenSinkFixture.chain.head_state.get_balance(tester.a2) == initialShortHolderETH

@@ -53,7 +53,7 @@ augur.connect(
       if (err) return console.error(err);
       augur.api.LegacyReputationToken.balanceOf(
         {
-          _owner: auth.address,
+          _tokenHolder: auth.address,
           tx: { to: legacyReputationToken[networkId].contractAddress }
         },
         function(err, legacyReputationTokenBalance) {

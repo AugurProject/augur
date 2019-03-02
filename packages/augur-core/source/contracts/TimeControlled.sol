@@ -1,8 +1,8 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'ITime.sol';
-import 'libraries/ContractExists.sol';
-import 'IAugur.sol';
+import 'ROOT/ITime.sol';
+import 'ROOT/libraries/ContractExists.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract TimeControlled is ITime {

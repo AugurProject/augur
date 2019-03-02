@@ -58,7 +58,7 @@ def test_reporter_fees(contractsFixture, universe, market, cash):
     assert universe.getOpenInterestInAttoEth() > 0
 
     # Move dispute window forward
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
 
     assert universe.getOrCacheReportingFeeDivisor() != defaultValue
@@ -79,7 +79,7 @@ def test_validity_bond_up(contractsFixture, universe, market):
     assert market.finalize()
 
     # Confirm that the validity bond is now doubled in the next dispute window
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     newValidityBond = universe.getOrCacheValidityBond()
     assert newValidityBond == initialValidityBond * 2
@@ -100,7 +100,7 @@ def test_validity_bond_min(contractsFixture, universe, market):
     assert market.finalize()
 
     # Confirm that the validity bond stayed the same since it is at the minimum value
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     newValidityBond = universe.getOrCacheValidityBond()
     assert newValidityBond == initialValidityBond
@@ -126,7 +126,7 @@ def test_validity_bond_down(contractsFixture, universe, market, scalarMarket, ca
     assert market.finalize()
 
     # Confirm that the validity bond is now doubled
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     newValidityBond = universe.getOrCacheValidityBond()
     assert newValidityBond == initialValidityBond * 2
@@ -137,7 +137,7 @@ def test_validity_bond_down(contractsFixture, universe, market, scalarMarket, ca
     assert scalarMarket.finalize()
 
     # Confirm that the validity bond is now halved
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     finalValidityBond = universe.getOrCacheValidityBond()
     assert finalValidityBond == newValidityBond / 2
@@ -167,7 +167,7 @@ def test_dr_report_stake_up(contractsFixture, universe, market):
     assert market.finalize()
 
     # Confirm that the report stake bond is now doubled in the next dispute window
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     newDesignatedReportStake = universe.getOrCacheDesignatedReportStake()
     assert newDesignatedReportStake == designatedReportStake * 2
@@ -189,7 +189,7 @@ def test_dr_report_stake_min(contractsFixture, universe, market):
     assert market.finalize()
 
     # Confirm that the report stake bond doesn't change since it is at the minimum value
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     newDesignatedReportStake = universe.getOrCacheDesignatedReportStake()
     assert newDesignatedReportStake == designatedReportStake
@@ -219,13 +219,13 @@ def test_dr_report_stake_down(contractsFixture, universe, market, cash):
     assert market.finalize()
 
     # Confirm that the report stake bond is now doubled in the next dispute window
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     newDesignatedReportStake = universe.getOrCacheDesignatedReportStake()
     assert newDesignatedReportStake == designatedReportStake * 2
 
     # Now we'll allow a window to pass with no markets and see the bond decrease
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     assert universe.getOrCacheDesignatedReportStake() == designatedReportStake
 
@@ -246,7 +246,7 @@ def test_no_show_bond_up(contractsFixture, universe, market):
     assert market.finalize()
 
     # Confirm that the report stake bond is now doubled in the next dispute window
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     newNoShowBond = universe.getOrCacheDesignatedReportNoShowBond()
     assert newNoShowBond == noShowBond * 2
@@ -268,7 +268,7 @@ def test_no_show_bond_min(contractsFixture, universe, market):
     assert market.finalize()
 
     # Confirm that the report stake bond does not reduce below the original value
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     newNoShowBond = universe.getOrCacheDesignatedReportNoShowBond()
     assert newNoShowBond == noShowBond
@@ -290,15 +290,38 @@ def test_no_show_bond_down(contractsFixture, universe, market, cash):
     assert market.finalize()
 
     # Confirm that the report stake bond is now doubled in the next dispute window
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     newNoShowBond = universe.getOrCacheDesignatedReportNoShowBond()
     assert newNoShowBond == noShowBond * 2
 
     # Wait for a dispute window with no markets to se the bond decrease
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     assert universe.getOrCacheDesignatedReportNoShowBond() == noShowBond
+
+def test_market_rep_bond(contractsFixture, universe, market, cash):
+    noShowBond = universe.getOrCacheDesignatedReportNoShowBond()
+    designatedReportStake = universe.getOrCacheDesignatedReportStake()
+
+    assert universe.getOrCacheMarketRepBond() == max(noShowBond, designatedReportStake)
+
+    # Increase the no show bond:
+    numTicks = market.getNumTicks()
+    payoutNumerators = [0, numTicks, 0]
+    proceedToInitialReporting(contractsFixture, market)
+    assert market.doInitialReport(payoutNumerators, "", sender=tester.k1)
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    assert market.finalize()
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    newNoShowBond = universe.getOrCacheDesignatedReportNoShowBond()
+    assert newNoShowBond == noShowBond * 2
+
+    # The market REP bond is now equal to this higher bond:
+    assert universe.getOrCacheMarketRepBond() == newNoShowBond
+
 
 @fixture(scope="session")
 def reportingSnapshot(fixture, kitchenSinkSnapshot):

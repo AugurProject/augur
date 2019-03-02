@@ -29,38 +29,38 @@ def test_market_creation(contractsFixture, universe, market):
 
     endTime = 0
     with raises(TransactionFailed, message="Cannot create a market with an end date in the past"):
-        contractsFixture.createYesNoMarket(universe, endTime, 1, tester.a0)
+        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
 
     endTime = contractsFixture.contracts["Time"].getTimestamp() + contractsFixture.contracts["Constants"].MAXIMUM_MARKET_DURATION() + 1
     with raises(TransactionFailed, message="Cannot create a market with an end date past the maximum duration"):
-        contractsFixture.createYesNoMarket(universe, endTime, 1, tester.a0)
+        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
 
 def test_description_requirement(contractsFixture, universe):
     endTime = contractsFixture.contracts["Time"].getTimestamp() + 1
 
     with raises(TransactionFailed):
-        contractsFixture.createYesNoMarket(universe, endTime, 1, tester.a0, description="")
+        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0, description="")
 
     with raises(TransactionFailed):
-        contractsFixture.createCategoricalMarket(universe, 2, endTime, 1, tester.a0, description="")
+        contractsFixture.createCategoricalMarket(universe, 2, endTime, 1, 0, tester.a0, description="")
 
     with raises(TransactionFailed):
-        contractsFixture.createScalarMarket(universe, endTime, 1, 0, 1, 10000, tester.a0, description="")
+        contractsFixture.createScalarMarket(universe, endTime, 1, 0, 10, 0, 10000, tester.a0, description="")
 
 def test_categorical_market_creation(contractsFixture, universe):
     endTime = contractsFixture.contracts["Time"].getTimestamp() + 1
 
     with raises(TransactionFailed):
-        contractsFixture.createCategoricalMarket(universe, 1, endTime, 1, tester.a0)
+        contractsFixture.createCategoricalMarket(universe, 1, 0, endTime, 1, tester.a0)
 
-    assert contractsFixture.createCategoricalMarket(universe, 3, endTime, 1, tester.a0)
-    assert contractsFixture.createCategoricalMarket(universe, 4, endTime, 1, tester.a0)
-    assert contractsFixture.createCategoricalMarket(universe, 5, endTime, 1, tester.a0)
-    assert contractsFixture.createCategoricalMarket(universe, 6, endTime, 1, tester.a0)
-    assert contractsFixture.createCategoricalMarket(universe, 7, endTime, 1, tester.a0)
+    assert contractsFixture.createCategoricalMarket(universe, 3, endTime, 1, 0, tester.a0)
+    assert contractsFixture.createCategoricalMarket(universe, 4, endTime, 1, 0, tester.a0)
+    assert contractsFixture.createCategoricalMarket(universe, 5, endTime, 1, 0, tester.a0)
+    assert contractsFixture.createCategoricalMarket(universe, 6, endTime, 1, 0, tester.a0)
+    assert contractsFixture.createCategoricalMarket(universe, 7, endTime, 1, 0, tester.a0)
 
     with raises(TransactionFailed):
-        contractsFixture.createCategoricalMarket(universe, 8, endTime, 1, tester.a0)
+        contractsFixture.createCategoricalMarket(universe, 8, endTime, 1, 0, tester.a0)
 
 def test_num_ticks_validation(contractsFixture, universe):
     # Require numTicks != 0

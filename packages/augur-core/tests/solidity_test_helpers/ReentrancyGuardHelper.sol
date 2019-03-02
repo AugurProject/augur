@@ -1,6 +1,6 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.4;
 
-import 'libraries/ReentrancyGuard.sol';
+import 'ROOT/libraries/ReentrancyGuard.sol';
 
 
 contract ReentrancyGuardHelper is ReentrancyGuard {

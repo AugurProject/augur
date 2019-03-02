@@ -10,7 +10,7 @@ WORKDIR /augur
 ADD ./ .
 RUN yarn
 
-FROM alpine:3.8
+FROM alpine:3.9
 RUN apk update \
   && apk upgrade \
   && apk add  --no-cache libstdc++

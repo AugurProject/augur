@@ -1,7 +1,7 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'libraries/token/StandardToken.sol';
+import 'ROOT/libraries/token/StandardToken.sol';
 
 
 contract VariableSupplyToken is StandardToken {
@@ -20,7 +20,7 @@ contract VariableSupplyToken is StandardToken {
     }
 
     function burn(address _target, uint256 _amount) internal returns (bool) {
-        doBurn(this, _target, _amount, "", "");
+        doBurn(address(this), _target, _amount, "", "");
         onBurn(_target, _amount);
         return true;
     }
