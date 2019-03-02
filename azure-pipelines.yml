@@ -103,20 +103,20 @@ jobs:
           docker pull $CORE_IMAGE_BUILD
           docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST
           if [[ "$TESTS" == "integration:geth" ]]; then
-            yarn workspace augur-core docker:run:test:integration:geth;
+            yarn workspace @augurproject/core docker:run:test:integration:geth;
           elif [[ "$TESTS" == "integration:parity" ]]; then
-            yarn workspace augur-core docker:run:test:integration:parity;
+            yarn workspace @augurproject/core docker:run:test:integration:parity;
           elif [[ "$TESTS" == "security:mythril" ]]; then
-            yarn workspace augur-core docker:run:test:security:mythril;
+            yarn workspace @augurproject/core docker:run:test:security:mythril;
             cat $(find . -name test-results.log)
           elif [[ "$TESTS" == "security:maian" ]]; then
-            yarn workspace augur-core docker:run:test:security:maian;
+            yarn workspace @augurproject/core docker:run:test:security:maian;
           elif [[ "$TESTS" == "security:smt" ]]; then
-            yarn workspace augur-core docker:run:test:security:smt;
+            yarn workspace @augurproject/core docker:run:test:security:smt;
           elif [[ "$TESTS" == "security:oyente" ]]; then
-            yarn workspace augur-core docker:run:test:security:oyente;
+            yarn workspace @augurproject/core docker:run:test:security:oyente;
           else
-            yarn workspace augur-core docker:run:test:unit -- $TESTS;
+            yarn workspace @augurproject/core docker:run:test:unit -- $TESTS;
           fi
         condition: eq(variables.AUGUR_CORE, 'true')
 
@@ -140,7 +140,7 @@ jobs:
           set -euo pipefail
           which node
           node --version
-          yarn workspace augur-node add sqlite3 --force --build-from-source
+          yarn workspace @augurproject/node add sqlite3 --force --build-from-source
           yarn install --ignore-scripts --frozen-lockfile
         displayName: 'Install Dependencies'
       - script: |
@@ -195,7 +195,7 @@ jobs:
         set -euo pipefail
         echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
         yarn docker:build:all
-        yarn workspace augur-tools docker:push
+        yarn workspace @augurproject/tools docker:push
       condition: |
         and
         (

@@ -10,7 +10,7 @@
     "flash": "./scripts/flash/index.js"
   },
   "scripts": {
-    "prepare": "yarn workspace augur-core build",
+    "prepare": "yarn workspace @augurproject/core build",
     "nuke": "rimraf package-lock.json; rimraf yarn.lock; rimraf node_modules; rimraf build && npm run clean",
     "clean": "rimraf build; rimraf node_modules",
     "test": "mocha test/unit",
