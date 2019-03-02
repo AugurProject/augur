@@ -1,7 +1,7 @@
 set -euxo pipefail
 # build main augur image so we can use to build all the others
 echo "docker:build:augur - build base augur image"
-docker pull augurproject/augur-build:latest
+# docker pull augurproject/augur-build:latest
 yarn docker:build:augur
 
 # build augur core
