@@ -24,7 +24,7 @@ jobs:
           versionSpec: '3.6.5'
       - task: NodeTool@0
         inputs:
-          versionSpec: '9.x'
+          versionSpec: '10.x'
       - bash: |
           set -euo pipefail
           echo "Build SourceBranch: $(Build.SourceBranch)"
