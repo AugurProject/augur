@@ -41,7 +41,7 @@ jobs:
           which node
           node --version
           echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
-          docker pull $CORE_IMAGE_LATEST;
+          # docker pull $CORE_IMAGE_LATEST;
           yarn workspace augur-core docker:build;
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
           docker push $CORE_IMAGE_BUILD
