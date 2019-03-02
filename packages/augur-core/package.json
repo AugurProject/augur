@@ -15,7 +15,7 @@
   },
   "scripts": {
     "lint": "solium --dir source --reporter=gcc",
-    "build:source": "tsc",
+    "build:source": "tsc --version; tsc",
     "build:contracts": "npm run build:flattener && . venv/bin/activate && node -r ts-node/register source/deployment/compileContracts.ts",
     "build:interfaces": "npm run build:flattener && . venv/bin/activate && node -r ts-node/register source/tools/generateContractInterfaces.ts",
     "build:flattener": "source/tools/installSolidityFlattener",
