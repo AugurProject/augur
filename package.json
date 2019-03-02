@@ -20,11 +20,11 @@
     "docker:build:augur": "docker build -f support/Dockerfile -t augurproject/augur-build:latest .",
     "docker:build:pops": "lerna run --scope augur-tools docker:build",
     "docker:build:clean": "docker system prune",
-    "docker:geth:pop": "yarn workspace augur-tools docker:geth:pop",
-    "docker:pull": "yarn workspace augur-tools docker:pull",
-    "docker:geth:pop-15": "yarn workspace augur-tools docker:geth:pop-15",
-    "docker:geth:pop-normal-time": "yarn workspace augur-tools docker:geth:pop-normal-time",
-    "flash": "yarn workspace augur-tools flash"
+    "docker:geth:pop": "yarn workspace @augurproject/tools docker:geth:pop",
+    "docker:pull": "yarn workspace @augurproject/tools docker:pull",
+    "docker:geth:pop-15": "yarn workspace @augurproject/tools docker:geth:pop-15",
+    "docker:geth:pop-normal-time": "yarn workspace @augurproject/tools docker:geth:pop-normal-time",
+    "flash": "yarn workspace @augurproject/tools flash"
   },
   "devDependencies": {
     "babel-core": "7.0.0-bridge.0",
