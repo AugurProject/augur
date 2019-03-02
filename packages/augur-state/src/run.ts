@@ -3,7 +3,7 @@ import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
 import { ethers } from "ethers";
-import { EthersProvider } from "ethers-provider";
+import { EthersJsonRpcProvider as EthersProvider } from "@augurproject/ethers-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { PouchDBFactory } from "./db/AbstractDB";
 

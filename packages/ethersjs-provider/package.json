@@ -1,5 +1,5 @@
 {
-  "name": "ethers-provider",
+  "name": "@augurproject/ethers-provider",
   "version": "1.0.0-0",
   "description": "Ethers.JS Provider Implementation for Augur API",
   "author": "The Augur Developers <team@augur.net>",
