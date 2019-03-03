@@ -105,8 +105,8 @@
     "@types/chai": "4.1.7",
     "@types/jest": "23.3.14",
     "babel-core": "7.0.0-bridge.0",
-    "babel-loader": "8.0.5",
     "babel-jest": "23.6.0",
+    "babel-loader": "8.0.5",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
     "cross-env": "5.2.0",
@@ -116,6 +116,7 @@
     "solidity-typescript-generator": "1.1.2",
     "solium": "1.2.3",
     "source-map-support": "0.5.9",
-    "ts-node": "7.0.1"
+    "ts-node": "7.0.1",
+    "typescript": "^3.3.3333"
   }
 }
