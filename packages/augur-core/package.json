@@ -4,15 +4,9 @@
   "description": "Core augur contracts and deployment process",
   "author": "The Augur Developers <team@augur.net>",
   "repository": "http://github.com/AugurProject/augur-core",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "module": "build/index.js",
+  "main": "build",
   "browser": "build/browser.js",
   "license": "GPL-3.0",
-  "directories": {
-    "src": "source",
-    "test": "test"
-  },
   "scripts": {
     "lint": "solium --dir source --reporter=gcc",
     "build:source": "tsc --version; tsc",
