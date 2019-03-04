@@ -41,7 +41,7 @@ ONE = 10 ** 18
 ])
 def test_floating_amount_calculation(numWithCondition, targetWithConditionPerHundred, previousAmount, expectedValue, contractsFixture, universe):
     targetDivisor = 100 / targetWithConditionPerHundred
-    newAmount = universe.calculateFloatingValue(numWithCondition, 100, targetDivisor, previousAmount, contractsFixture.contracts['Constants'].DEFAULT_VALIDITY_BOND(), ONE / 100)
+    newAmount = universe.calculateFloatingValue(numWithCondition, 100, targetDivisor, previousAmount, ONE / 100)
     assert newAmount == expectedValue
 
 def test_reporter_fees(contractsFixture, universe, market, cash):

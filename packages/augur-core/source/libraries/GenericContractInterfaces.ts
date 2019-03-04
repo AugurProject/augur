@@ -5287,6 +5287,13 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		super(dependencies, address)
 	}
 
+	public calculateFloatingValue_ = async (badMarkets: TBigNumber, totalMarkets: TBigNumber, targetDivisor: TBigNumber, previousValue: TBigNumber, floor: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_badMarkets","type":"uint256"},{"name":"_totalMarkets","type":"uint256"},{"name":"_targetDivisor","type":"uint256"},{"name":"_previousValue","type":"uint256"},{"name":"_floor","type":"uint256"}],"name":"calculateFloatingValue","outputs":[{"name":"_newValue","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [badMarkets, totalMarkets, targetDivisor, previousValue, floor], options.sender)
+		return <TBigNumber>result[0]
+	}
+
 	public isContainerForDisputeWindow_ = async (shadyDisputeWindow: string, options?: { sender?: string }): Promise<boolean> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_shadyDisputeWindow","type":"address"}],"name":"isContainerForDisputeWindow","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -5306,6 +5313,13 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"marketFactory","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
+	}
+
+	public previousDesignatedReportNoShowBondInAttoRep_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"previousDesignatedReportNoShowBondInAttoRep","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
 	}
 
 	public getTargetRepMarketCapInAttoEth_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
@@ -5399,13 +5413,6 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_endTime","type":"uint256"},{"name":"_feePerEthInWei","type":"uint256"},{"name":"_affiliateFeeDivisor","type":"uint256"},{"name":"_designatedReporterAddress","type":"address"},{"name":"_topic","type":"bytes32"},{"name":"_description","type":"string"},{"name":"_extraInfo","type":"string"}],"name":"createYesNoMarket","outputs":[{"name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, topic, description, extraInfo], options.sender)
 		return <string>result[0]
-	}
-
-	public calculateFloatingValue_ = async (badMarkets: TBigNumber, totalMarkets: TBigNumber, targetDivisor: TBigNumber, previousValue: TBigNumber, defaultValue: TBigNumber, floor: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_badMarkets","type":"uint256"},{"name":"_totalMarkets","type":"uint256"},{"name":"_targetDivisor","type":"uint256"},{"name":"_previousValue","type":"uint256"},{"name":"_defaultValue","type":"uint256"},{"name":"_floor","type":"uint256"}],"name":"calculateFloatingValue","outputs":[{"name":"_newValue","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [badMarkets, totalMarkets, targetDivisor, previousValue, defaultValue, floor], options.sender)
-		return <TBigNumber>result[0]
 	}
 
 	public getInitialReportMinValue_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
@@ -5551,6 +5558,13 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
+	public previousValidityBondInAttoEth_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"previousValidityBondInAttoEth","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
 	public getOrCreateNextDisputeWindow = async (initial: boolean, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_initial","type":"bool"}],"name":"getOrCreateNextDisputeWindow","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -5662,6 +5676,13 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_endTime","type":"uint256"},{"name":"_feePerEthInWei","type":"uint256"},{"name":"_affiliateFeeDivisor","type":"uint256"},{"name":"_designatedReporterAddress","type":"address"},{"name":"_minPrice","type":"int256"},{"name":"_maxPrice","type":"int256"},{"name":"_numTicks","type":"uint256"},{"name":"_topic","type":"bytes32"},{"name":"_description","type":"string"},{"name":"_extraInfo","type":"string"}],"name":"createScalarMarket","outputs":[{"name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, minPrice, maxPrice, numTicks, topic, description, extraInfo], options.sender)
 		return <string>result[0]
+	}
+
+	public previousDesignatedReportStakeInAttoRep_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"previousDesignatedReportStakeInAttoRep","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
 	}
 
 	public decrementOpenInterest = async (amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
