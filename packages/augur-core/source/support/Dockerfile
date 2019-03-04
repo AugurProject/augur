@@ -54,26 +54,17 @@ COPY packages/augur-core/jest.config.js /app/jest.config.js
 COPY packages/augur-core/source/ /app/source/
 COPY packages/augur-core/tests/ /app/tests/
 
+# Yarn and Lint
 RUN yarn && yarn lint
-
-# cleanup
-
-
-# Lint
-# RUN yarn lint
 
 # Build first chunk
 RUN yarn build:source
-RUN yarn build:contracts
 
-# Build contract interfaces
+# Build contracts and interfaces
 RUN yarn build:interfaces
 
-
-# Copy the git info so ContractDeployer can read the hash on deploy
+# Final build
 RUN yarn build:source
-
-
 RUN apk add --no-cache \
     libstdc++
 

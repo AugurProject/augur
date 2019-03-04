@@ -284,8 +284,9 @@ contract Universe is ITyped, IUniverse {
         return true;
     }
 
-    function decrementOpenInterestFromMarket(uint256 _amount) public returns (bool) {
+    function decrementOpenInterestFromMarket(IMarket _market) public returns (bool) {
         require(isContainerForMarket(IMarket(msg.sender)));
+        uint256 _amount = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
         openInterestInAttoEth = openInterestInAttoEth.sub(_amount);
         return true;
     }
@@ -296,8 +297,9 @@ contract Universe is ITyped, IUniverse {
         return true;
     }
 
-    function incrementOpenInterestFromMarket(uint256 _amount) public returns (bool) {
+    function incrementOpenInterestFromMarket(IMarket _market) public returns (bool) {
         require(isContainerForMarket(IMarket(msg.sender)));
+        uint256 _amount = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
         openInterestInAttoEth = openInterestInAttoEth.add(_amount);
         return true;
     }
@@ -468,6 +470,24 @@ contract Universe is ITyped, IUniverse {
         for (uint256 i=0; i < _reportingParticipants.length; i++) {
             _reportingParticipants[i].redeem(msg.sender);
         }
+        return true;
+    }
+
+    function assertMarketBalance() public view returns (bool) {
+        IMarket _market = IMarket(msg.sender);
+        // Escrowed funds for open orders
+        uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(_market);
+        // Market Open Interest. If we're finalized we need actually calculate the value
+        if (_market.isFinalized()) {
+            IReportingParticipant _winningReportingPartcipant = _market.getWinningReportingParticipant();
+            for (uint256 i = 0; i < _market.getNumberOfOutcomes(); i++) {
+                _expectedBalance = _expectedBalance.add(_market.getShareToken(i).totalSupply().mul(_winningReportingPartcipant.getPayoutNumerator(i)));
+            }
+        } else {
+            _expectedBalance = _expectedBalance.add(_market.getShareToken(0).totalSupply().mul(_market.getNumTicks()));
+        }
+
+        assert(_market.getDenominationToken().balanceOf(address(_market)) >= _expectedBalance);
         return true;
     }
 }
