@@ -120,36 +120,37 @@ jobs:
           fi
         condition: eq(variables.AUGUR_CORE, 'true')
 
-  - job: Test_Augur_UI_and_Node
-    displayName: 'Test augur UI and augur-node'
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    strategy:
-      matrix:
-        node_8_x:
-          node_version: 8.x
-        node_9_x:
-          node_version: 9.x
-        node_10_x:
-          node_version: 10.x
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(node_version)
-      - script: |
-          set -euo pipefail
-          which node
-          node --version
-          yarn workspace augur-node add sqlite3 --force --build-from-source
-          yarn install --ignore-scripts --frozen-lockfile
-        displayName: 'Install Dependencies'
-      - script: |
-          yarn test --forceExit --detectOpenHandles
-        displayName: 'Run Tests'
-      - task: PublishTestResults@2
-        inputs:
-          testResultsFormat: 'JUnit'
-          testResultsFiles: 'junit.xml'
+  # - job: Test_Augur_UI_and_Node
+  #   displayName: 'Test augur UI and augur-node'
+  #   pool:
+  #     vmImage: 'Ubuntu 16.04'
+  #   strategy:
+  #     matrix:
+  #       node_8_x:
+  #         node_version: 8.x
+  #       node_9_x:
+  #         node_version: 9.x
+  #       node_10_x:
+  #         node_version: 10.x
+  #   steps:
+  #     - task: NodeTool@0
+  #       inputs:
+  #         versionSpec: $(node_version)
+  #     - script: |
+  #         set -euo pipefail
+  #         which node
+  #         node --version
+  #         yarn workspace augur-node add sqlite3 --force --build-from-source
+  #         yarn install --ignore-scripts --frozen-lockfile
+  #       displayName: 'Install Dependencies'
+  #     - script: |
+  #         yarn test --forceExit --detectOpenHandles
+  #       displayName: 'Run Tests'
+  #     - task: PublishTestResults@2
+  #       inputs:
+  #         testResultsFormat: 'JUnit'
+  #         testResultsFiles: 'junit.xml'
+
   - job: Test_Augur_js
     pool:
       vmImage: 'Ubuntu 16.04'
