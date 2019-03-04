@@ -33,10 +33,28 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
         "amountFilled": fix(2),
     }
+
+    marketVolumeChangedLog = {
+        "market": market.address,
+        "volume": creatorCost + fillerCost
+    }
+
+    profitLossChangedLog = {
+        "market": market.address,
+        "account": bytesToHexString(tester.a2),
+        "outcome": YES,
+        "netPosition": -fix(2),
+        "avgPrice": 6000,
+        "realizedProfit": 0,
+        "frozenFunds": fillerCost,
+    }
+
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
-        with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
-            fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
-            assert fillOrderID == 0
+        with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog):
+            with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
+                with AssertLog(contractsFixture, "MarketVolumeChanged", marketVolumeChangedLog):
+                    fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
+                    assert fillOrderID == 0
 
     assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH - creatorCost
     assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH - fillerCost

@@ -1,7 +1,7 @@
 from ethereum.tools import tester
 from ethereum.tools.tester import ABIContract, TransactionFailed
 from pytest import fixture, mark, raises
-from utils import longTo32Bytes, PrintGasUsed, fix
+from utils import longTo32Bytes, PrintGasUsed, fix, BuyWithCash
 from constants import BID, ASK, YES, NO
 from datetime import timedelta
 from trading.test_claimTradingProceeds import acquireLongShares, finalizeMarket
@@ -48,7 +48,6 @@ FILL_ORDER_TAKE_SHARES   =   [
     455391,
     469964,
     484537,
-    499109,
 ]
 
 FILL_ORDER_BOTH_ETH    =   [
@@ -153,26 +152,28 @@ def test_orderCancelationMax(numOutcomes, localFixture, markets):
 
     assert maxGas == CANCEL_ORDER_MAXES[marketIndex]
 
-@mark.parametrize('numOutcomes', range(2,9))
+@mark.parametrize('numOutcomes', range(2,8))
 def test_order_filling_take_shares(numOutcomes, localFixture, markets):
     createOrder = localFixture.contracts['CreateOrder']
     completeSets = localFixture.contracts['CompleteSets']
     fillOrder = localFixture.contracts['FillOrder']
+    cash = localFixture.contracts['Cash']
     tradeGroupID = longTo32Bytes(42)
     marketIndex = numOutcomes - 2
     market = markets[marketIndex]
 
-    cost = 500000
-
-    assert completeSets.publicBuyCompleteSets(market.address, 100, value=1000000)
+    cost = 100 * market.getNumTicks()
+    with BuyWithCash(cash, cost, tester.k0, "buy complete set"):
+        assert completeSets.publicBuyCompleteSets(market.address, 100)
     outcome = 0
-    orderID = createOrder.publicCreateOrder(ASK, 100, 5000, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", value = cost)
+    orderID = createOrder.publicCreateOrder(ASK, 100, 5000, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(7), False)
 
-    startGas = localFixture.chain.head_state.gas_used
-    fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1, value=cost)
-    maxGas = localFixture.chain.head_state.gas_used - startGas
-
-    assert maxGas == FILL_ORDER_TAKE_SHARES[marketIndex]
+    cost = 500000
+    with BuyWithCash(cash, cost, tester.k1, "fill order"):
+        startGas = localFixture.chain.head_state.gas_used
+        fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1)
+        maxGas = localFixture.chain.head_state.gas_used - startGas
+        assert maxGas == FILL_ORDER_TAKE_SHARES[marketIndex]
 
 @mark.parametrize('numOutcomes', range(2,9))
 def test_order_filling_both_eth(numOutcomes, localFixture, markets):
@@ -275,7 +276,6 @@ def localSnapshot(fixture, kitchenSinkSnapshot):
         fixture.createReasonableCategoricalMarket(universe, 5),
         fixture.createReasonableCategoricalMarket(universe, 6),
         fixture.createReasonableCategoricalMarket(universe, 7),
-        fixture.createReasonableCategoricalMarket(universe, 8)
     ]
 
     return fixture.createSnapshot()

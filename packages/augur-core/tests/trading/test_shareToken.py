@@ -44,7 +44,9 @@ def test_transfer(contractsFixture, market, cash):
         "universe": market.getUniverse(),
         "tokenType": 1,
         "market": market.address,
-        "value": 5
+        "value": 5,
+        "fromBalance": 2,
+        "toBalance": 5
     }
 
     with AssertLog(contractsFixture, "Transfer", transferLog, contract=shareToken):
