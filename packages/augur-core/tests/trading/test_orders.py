@@ -295,51 +295,6 @@ def test_saveOrder(contractsFixture, market):
     assert(orders.testRemoveOrder(orderId1) == 1), "Remove order 1"
     assert(orders.testRemoveOrder(orderId2) == 1), "Remove order 2"
 
-def test_recordFillOrder(contractsFixture, market):
-    orders = contractsFixture.contracts['Orders']
-
-    orderId1 = orders.testSaveOrder(BID, market.address, fix(10), 5000, tester.a1, NO, 0, fix(10), longTo32Bytes(0), longTo32Bytes(0), "1")
-    assert(orderId1 != bytearray(32)), "saveOrder wasn't executed successfully"
-    orderId2 = orders.testSaveOrder(BID, market.address, fix(10), 5000, tester.a2, NO, fix('10', '5000'), 0, longTo32Bytes(0), longTo32Bytes(0), "1")
-    assert(orderId2 != bytearray(32)), "saveOrder wasn't executed successfully"
-
-    # orderID, fill, money, shares
-    with raises(TransactionFailed):
-        orders.testRecordFillOrder(orderId1, fix(11), "0")
-    with raises(TransactionFailed):
-        orders.testRecordFillOrder(orderId1, 0, fix('1'))
-    with raises(TransactionFailed):
-        orders.testRecordFillOrder(orderId1, fix(10), fix('1'))
-    # fully fill
-    assert(orders.testRecordFillOrder(orderId1, fix(10), 0) == 1), "fillOrder wasn't executed successfully"
-    # prove all
-    assert orders.getAmount(orderId1) == 0
-    assert orders.getPrice(orderId1) == 0
-    assert orders.getOrderCreator(orderId1) == longToHexString(0)
-    assert orders.getOrderMoneyEscrowed(orderId1) == 0
-    assert orders.getOrderSharesEscrowed(orderId1) == 0
-    assert orders.getBetterOrderId(orderId1) == longTo32Bytes(0)
-    assert orders.getWorseOrderId(orderId1) == longTo32Bytes(0)
-    # test partial fill
-    assert(orders.testRecordFillOrder(orderId2, 0, fix('3', '5000')) == 1), "fillOrder wasn't executed successfully"
-    # confirm partial fill
-    assert orders.getAmount(orderId2) == fix('7')
-    assert orders.getPrice(orderId2) == 5000
-    assert orders.getOrderCreator(orderId2) == bytesToHexString(tester.a2)
-    assert orders.getOrderMoneyEscrowed(orderId2) == fix('7', '5000')
-    assert orders.getOrderSharesEscrowed(orderId2) == 0
-    assert orders.getBetterOrderId(orderId2) == longTo32Bytes(0)
-    assert orders.getWorseOrderId(orderId2) == longTo32Bytes(0)
-    # fill rest of order2
-    assert(orders.testRecordFillOrder(orderId2, 0, fix('7', '5000')) == 1), "fillOrder wasn't executed successfully"
-    assert orders.getAmount(orderId2) == 0
-    assert orders.getPrice(orderId2) == 0
-    assert orders.getOrderCreator(orderId2) == longToHexString(0)
-    assert orders.getOrderMoneyEscrowed(orderId2) == 0
-    assert orders.getOrderSharesEscrowed(orderId2) == 0
-    assert orders.getBetterOrderId(orderId2) == longTo32Bytes(0)
-    assert orders.getWorseOrderId(orderId2) == longTo32Bytes(0)
-
 def test_removeOrder(contractsFixture, market):
     orders = contractsFixture.contracts['Orders']
 
