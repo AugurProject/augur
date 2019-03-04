@@ -33,6 +33,7 @@ contract IMarket is IOwnable {
     function getEndTime() public view returns (uint256);
     function getWinningPayoutDistributionHash() public view returns (bytes32);
     function getWinningPayoutNumerator(uint256 _outcome) public view returns (uint256);
+    function getWinningReportingParticipant() public view returns (IReportingParticipant);
     function getReputationToken() public view returns (IV2ReputationToken);
     function getFinalizationTime() public view returns (uint256);
     function getInitialReporter() public view returns (IInitialReporter);

@@ -37,6 +37,7 @@ contract Market is Initializable, Ownable, IMarket {
     IDisputeWindow private disputeWindow;
     ICash private cash;
     IAugur public augur;
+    MapFactory public mapFactory;
 
     // Attributes
     uint256 private numTicks;
@@ -84,7 +85,8 @@ contract Market is Initializable, Ownable, IMarket {
         affiliateFeeDivisor = _affiliateFeeDivisor;
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
         participants.push(_initialReporterFactory.createInitialReporter(augur, this, _designatedReporterAddress));
-        crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, address(this));
+        mapFactory = MapFactory(augur.lookup("MapFactory"));
+        clearCrowdsourcers();
         for (uint256 _outcome = 0; _outcome < numOutcomes; _outcome++) {
             shareTokens.push(createShareToken(_outcome));
         }
@@ -196,7 +198,7 @@ contract Market is Initializable, Ownable, IMarket {
     function finishedCrowdsourcingDisputeBond(IDisputeCrowdsourcer _crowdsourcer) private returns (bool) {
         correctLastParticipantSize();
         participants.push(_crowdsourcer);
-        crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, address(this)); // disavow other crowdsourcers
+        clearCrowdsourcers(); // disavow other crowdsourcers
         uint256 _crowdsourcerSize = IDisputeCrowdsourcer(_crowdsourcer).getSize();
         if (_crowdsourcerSize >= universe.getDisputeThresholdForFork()) {
             universe.fork();
@@ -223,11 +225,10 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function correctLastParticipantSize() private returns (bool) {
-        IDisputeCrowdsourcer _disputeCrowdsourcer = IDisputeCrowdsourcer(address(getWinningReportingParticipant()));
-        uint256 _stake = _disputeCrowdsourcer.getStake();
-        if (_disputeCrowdsourcer.getSize() != _stake) {
-            _disputeCrowdsourcer.setSize(_stake);
+        if (participants.length < 2) {
+            return true;
         }
+        IDisputeCrowdsourcer(address(getWinningReportingParticipant())).correctSize();
         return true;
     }
 
@@ -243,10 +244,10 @@ contract Market is Initializable, Ownable, IMarket {
             // Make sure the dispute window for which we record finalization is the standard cadence window and not an initial dispute window
             disputeWindow = universe.getOrCreatePreviousDisputeWindow(false);
             disputeWindow.onMarketFinalized();
-            universe.decrementOpenInterestFromMarket(shareTokens[0].totalSupply().mul(numTicks));
+            universe.decrementOpenInterestFromMarket(this);
             redistributeLosingReputation();
-            distributeValidityBondAndMarketCreatorFees();
         }
+        distributeValidityBondAndMarketCreatorFees();
         finalizationTime = augur.getTimestamp();
         augur.logMarketFinalized(universe);
         return true;
@@ -339,14 +340,11 @@ contract Market is Initializable, Ownable, IMarket {
         IDisputeCrowdsourcer _crowdsourcer = _overload ? preemptiveDisputeCrowdsourcer : IDisputeCrowdsourcer(crowdsourcers.getAsAddressOrZero(_payoutDistributionHash));
         if (_crowdsourcer == IDisputeCrowdsourcer(0)) {
             DisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = DisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
-            uint256 _size = 0;
+            uint256 _participantStake = getParticipantStake();
             if (_overload) {
-                uint256 _totalParticipantStake = getParticipantStake();
-                uint256 _lowestTheoreticalParticipantStake = _totalParticipantStake.add(_totalParticipantStake.mul(2).sub(getHighestNonTentativeParticipantStake().mul(3)));
-                _size = _lowestTheoreticalParticipantStake.mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
-            } else {
-                _size = getParticipantStake().mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
+                _participantStake = _participantStake.add(_participantStake.mul(2).sub(getHighestNonTentativeParticipantStake().mul(3)));
             }
+            uint256 _size = _participantStake.mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
             _crowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, this, _size, _payoutDistributionHash, _payoutNumerators);
             if (!_overload) {
                 crowdsourcers.add(_payoutDistributionHash, address(_crowdsourcer));
@@ -370,9 +368,7 @@ contract Market is Initializable, Ownable, IMarket {
         bytes32 _winningForkPayoutDistributionHash = _forkingMarket.getWinningPayoutDistributionHash();
         IUniverse _destinationUniverse = _currentUniverse.getChildUniverse(_winningForkPayoutDistributionHash);
 
-        uint256 _marketOI = shareTokens[0].totalSupply().mul(numTicks);
-
-        universe.decrementOpenInterestFromMarket(_marketOI);
+        universe.decrementOpenInterestFromMarket(this);
 
         // follow the forking market to its universe
         if (disputeWindow != IDisputeWindow(0)) {
@@ -383,7 +379,7 @@ contract Market is Initializable, Ownable, IMarket {
         _currentUniverse.removeMarketFrom();
         universe = _destinationUniverse;
 
-        universe.incrementOpenInterestFromMarket(_marketOI);
+        universe.incrementOpenInterestFromMarket(this);
 
         // Pay the REP bond.
         repBond = universe.getOrCacheMarketRepBond();
@@ -423,8 +419,13 @@ contract Market is Initializable, Ownable, IMarket {
         } else {
             _initialParticipant.returnRepFromDisavow();
         }
-        crowdsourcers = MapFactory(augur.lookup("MapFactory")).createMap(augur, address(this));
+        clearCrowdsourcers();
         augur.logMarketParticipantsDisavowed(universe);
+        return true;
+    }
+
+    function clearCrowdsourcers() public returns (bool) {
+        crowdsourcers = mapFactory.createMap(augur, address(this));
         return true;
     }
 
@@ -487,7 +488,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function isInvalid() public view returns (bool) {
-        // require(isFinalized());
+        require(isFinalized());
         return getWinningReportingParticipant().getPayoutNumerator(0) > 0;
     }
 
@@ -508,7 +509,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function getWinningPayoutNumerator(uint256 _outcome) public view returns (uint256) {
-        // require(isFinalized());
+        require(isFinalized());
         return getWinningReportingParticipant().getPayoutNumerator(_outcome);
     }
 
@@ -600,21 +601,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function assertBalances() public view returns (bool) {
-        // Escrowed funds for open orders
-        /* TEMPORARY REMOVAL TO GET UNDER SIZE LIMIT
-        uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(this);
-        // Market Open Interest. If we're finalized we need actually calculate the value
-        if (isFinalized()) {
-            IReportingParticipant _winningReportingPartcipant = getWinningReportingParticipant();
-            for (uint256 i = 0; i < numOutcomes; i++) {
-                _expectedBalance = _expectedBalance.add(shareTokens[i].totalSupply().mul(_winningReportingPartcipant.getPayoutNumerator(i)));
-            }
-        } else {
-            _expectedBalance = _expectedBalance.add(shareTokens[0].totalSupply().mul(numTicks));
-        }
-
-        assert(cash.balanceOf(address(this)) >= _expectedBalance);
-        */
+        universe.assertMarketBalance();
         return true;
     }
 }

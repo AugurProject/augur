@@ -135,4 +135,10 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
     function getReputationToken() public view returns (IReputationToken) {
         return reputationToken;
     }
+
+    function correctSize() public returns (bool) {
+        require(IMarket(msg.sender) == market);
+        size = getStake();
+        return true;
+    }
 }
