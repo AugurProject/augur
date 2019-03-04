@@ -6,7 +6,7 @@ var assign = require("lodash").assign;
 var Augur = require("augur.js");
 var debugOptions = require("../debug-options");
 var connectionEndpoints = require("../connection-endpoints");
-var core = require("augur-core");
+var core = require("@augurproject/core");
 var getPrivateKeyFromString = require("./lib/get-private-key")
   .getPrivateKeyFromString;
 var parrotSay = require("parrotsay-api");
