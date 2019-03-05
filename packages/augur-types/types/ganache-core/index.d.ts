@@ -24,6 +24,7 @@ declare module "ganache-core" {
         vmErrorsOnRPCResponse?: boolean;
         db_path?: string;
         accounts?: Account[];
+        allowUnlimitedContractSize?: boolean;
     }
     export function provider(opts?: GanacheOpts): Provider;
 
