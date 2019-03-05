@@ -140,7 +140,7 @@ function makeDeployerConfiguration() {
     const contractInputRoot = path.join(augurCorePath, "output/contracts");
     const artifactOutputRoot  = path.join(augurCorePath, "output/contracts");
     const createGenesisUniverse = true;
-    const useNormalTime = true;
+    const useNormalTime = false;
     const isProduction = false;
     const augurAddress = "0xabc";
     const legacyRepAddress = "0x1985365e9f78359a9B6AD760e32412f4a445E862";
@@ -148,7 +148,13 @@ function makeDeployerConfiguration() {
 }
 
 test("xxx-robert", async () => {
-    const provider = new EthersWeb3Provider(ganache.provider({ accounts: ACCOUNTS, gasLimit: 0x999999999999 }));
+    const provider = new EthersWeb3Provider(ganache.provider({
+        accounts: ACCOUNTS,
+        // TODO: For some reason, our contracts here are too large even though production ones aren't. Flattening maybe?
+        allowUnlimitedContractSize: true,
+        gasLimit: 75000000000,
+        // vmErrorsOnRPCResponse: true,
+    }));
     const signer = await EthersFastSubmitWallet.create(ACCOUNTS[0].secretKey, provider);
     const dependencies = new ContractDependenciesEthers(provider, signer, ACCOUNTS[0].publicKey);
 
@@ -156,15 +162,13 @@ test("xxx-robert", async () => {
     const contractCompiler = new ContractCompiler(compilerConfiguration);
     const compiledContracts = await contractCompiler.compileContracts();
 
-    console.log("PPP");
-
     const deployerConfiguration = makeDeployerConfiguration();
     const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider, signer, compiledContracts);
     await contractDeployer.deploy();
 
-    // const a = await Augur.create(provider, contractDependencies);
-    // console.log(a);
-});
+    const a = await Augur.create(provider, dependencies);
+    console.log(a);
+}, 60000);
 
 
 test("database failure during trackedUsers.getUsers() call", async () => {

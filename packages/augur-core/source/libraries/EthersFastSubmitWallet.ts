@@ -24,10 +24,8 @@ export class EthersFastSubmitWallet extends ethers.Wallet {
             // https://github.com/ethers-io/ethers.js/issues/321
             delete transaction.from;
             // Add 10% gas to account for improper estimations and limit to block gas limit
-            // transaction.gasLimit = gasEstimate.add(gasEstimate.div(10));
-            // if (transaction.gasLimit.gt(0x999999999999)) transaction.gasLimit = new ethers.utils.BigNumber(0x999999999999);
-
-            transaction.gasLimit = new ethers.utils.BigNumber(0x999999999998);
+            transaction.gasLimit = gasEstimate.add(gasEstimate.div(10));
+            if (transaction.gasLimit.gt(65000000)) transaction.gasLimit = new ethers.utils.BigNumber(65000000);
 
             return ethers.utils.populateTransaction(transaction, this.provider, this.address).then((tx) => {
                 return this.sign(tx).then((signedTransaction) => {
