@@ -1,5 +1,5 @@
 import { Augur } from "@augurproject/api";
-import settings from "@augurproject/state/src/settings.json";
+import settings from "./settings.json";
 import { PouchDBFactoryType } from "./db/AbstractDB";
 import { DB, UserSpecificEvent } from "./db/DB";
 

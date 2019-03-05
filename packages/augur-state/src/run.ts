@@ -1,7 +1,7 @@
 import { Controller } from "./Controller";
 import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
-import settings from "@augurproject/state/src/settings.json";
+const settings = require("../settings.json");
 import { ethers } from "ethers";
 import { EthersProvider } from "ethers-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";

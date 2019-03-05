@@ -1,6 +1,6 @@
 import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
-import settings from "@augurproject/state/src/settings.json";
+const settings = require("../settings.json");
 import { DB, UserSpecificEvent } from "../db/DB";
 import { makeMock } from "../utils/MakeMock";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
