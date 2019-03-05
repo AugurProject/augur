@@ -3,11 +3,9 @@ import { Filter, Log, LogValues, Provider } from "@augurproject/api";
 import { Transaction } from "contract-dependencies";
 import { EthersProvider as EProvider } from "contract-dependencies-ethers";
 import { ethers } from "ethers";
-import { AsyncSendable } from "ethers/providers";
-import { Networkish } from 'ethers/utils/networks';
 import { Abi } from "ethereum";
 import * as _ from "lodash";
-import { Web3Proxy } from "@augurproject/state/src/Web3Proxy";
+import { Web3AsyncSendable } from "./Web3AsyncSendable";
 
 interface ContractMapping {
     [contractName: string]: ethers.utils.Interface;
@@ -16,7 +14,7 @@ interface ContractMapping {
 export class EthersProvider extends ethers.providers.Web3Provider implements Provider, EProvider {
     private contractMapping: ContractMapping = {};
 
-    constructor(asyncSendable: AsyncSendable) { super(asyncSendable); }
+    constructor(web3AsyncSendable: Web3AsyncSendable) { super(web3AsyncSendable); }
     
     public async call(transaction: Transaction<ethers.utils.BigNumber>): Promise<string> {
         return await super.call(transaction);
