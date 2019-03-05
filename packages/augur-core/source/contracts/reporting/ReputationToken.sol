@@ -8,6 +8,7 @@ import 'ROOT/libraries/token/ERC20Token.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 
@@ -117,6 +118,11 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
 
     function trustedAuctionTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.getAuction() == (IAuction(msg.sender)));
+        return internalTransfer(_source, _destination, _attotokens, true);
+    }
+
+    function trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
+        require(universe.isContainerForDisputeWindow(IDisputeWindow(msg.sender)));
         return internalTransfer(_source, _destination, _attotokens, true);
     }
 

@@ -99,7 +99,7 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
     }
 
     with TokenDelta(cash, expectedMarketCreatorFees, market.getOwner(), "market creator fees not paid"):
-        with TokenDelta(cash, expectedReporterFees, universe.getAuction(), "Reporter fees not paid"):
+        with TokenDelta(cash, expectedReporterFees, universe.getOrCreateNextDisputeWindow(False), "Reporter fees not paid"):
             # redeem shares with a1
             with AssertLog(kitchenSinkFixture, "TradingProceedsClaimed", tradingProceedsClaimedLog):
                 claimTradingProceeds.claimTradingProceeds(market.address, tester.a1)

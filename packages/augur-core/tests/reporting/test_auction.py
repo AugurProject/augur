@@ -213,48 +213,6 @@ def test_reporting_fee_from_auction(localFixture, universe, auction, reputationT
     assert auction.initialRepSalePrice() == 4 * newDerivedRepPrice
     assert auction.initialEthSalePrice() == 4 * 10**36 / newDerivedRepPrice
 
-def test_buyback_from_reporting_fees(localFixture, universe, auction, reputationToken, time, market, cash):
-    # We'll quickly do the bootstrap auction and seed it with some ETH
-    startTime = auction.getAuctionStartTime()
-    assert time.setTimestamp(startTime)
-
-    # Buy 5000 REP
-    repSalePrice = auction.getRepSalePriceInAttoEth()
-    repAmount = 5000 * 10 ** 18
-    cost = repAmount * repSalePrice / 10 ** 18
-    with BuyWithCash(cash, cost, tester.k0, "trade eth for rep"):
-        assert auction.tradeEthForRep(repAmount)
-
-    # Now we'll go to the first real auction
-    endTime = auction.getAuctionEndTime()
-    assert time.setTimestamp(endTime + 1)
-
-    startTime = auction.getAuctionStartTime()
-    assert time.setTimestamp(startTime)
-
-    # Generate some fees
-    generateFees(localFixture, universe, market)
-    feesGenerated = auction.feeBalance()
-
-    # Now we'll sell some REP and we can see that the fees that were collected were used and that the REP provided was burned
-    ethSalePrice = auction.getEthSalePriceInAttoRep()
-    ethAmount = feesGenerated / 2
-    cost = ethAmount * ethSalePrice / 10 ** 18
-    totalRepSupply = reputationToken.totalSupply()
-    assert auction.tradeRepForEth(ethAmount)
-
-    assert totalRepSupply - reputationToken.totalSupply() == cost
-    assert auction.feeBalance() == feesGenerated / 2
-
-    # If we now sell some REP again but do so by selling more than could be covered by remaining fees only a proportional amount of REP is actually burned
-    ethAmount = feesGenerated
-    cost = ethAmount * ethSalePrice / 10 ** 18
-    totalRepSupply = reputationToken.totalSupply()
-    assert auction.tradeRepForEth(ethAmount)
-
-    assert totalRepSupply - reputationToken.totalSupply() == cost / 2
-    assert auction.feeBalance() == 0
-
 @fixture(scope="session")
 def localSnapshot(fixture, kitchenSinkSnapshot):
     fixture.resetToSnapshot(kitchenSinkSnapshot)
