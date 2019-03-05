@@ -1,10 +1,20 @@
 import {EthersProviderBlockStreamAdapter, ExtendedLog} from "blockstream-adapters";
 import {Augur, Log, ParsedLog, Provider} from "@augurproject/api";
-import {Block, BlockAndLogStreamer} from "ethereumjs-blockstream";
+import {Block, Log as BlockStreamLog,  BlockAndLogStreamer, FilterOptions} from "ethereumjs-blockstream";
 import {EthersProvider} from "ethers-provider";
+import {Filter} from "ethereumjs-blockstream/output/source/models/filters";
 
-interface BlockAndLogStreamerListenerDependencies {
-    blockAndLogStreamer: BlockAndLogStreamer<Block, ExtendedLog>;
+export interface BlockAndLogStreamerInterface<TBlock extends Block, TLog extends BlockStreamLog> {
+    reconcileNewBlock: (block: TBlock) => Promise<void>;
+    addLogFilter: (filter: Filter) => string;
+    subscribeToOnBlockAdded: (onBlockAdded: (block: TBlock) => void) => string;
+    subscribeToOnBlockRemoved: (onBlockRemoved: (block: TBlock) => void) => string;
+    subscribeToOnLogsAdded: (onLogsAdded: (blockHash: string, logs: TLog[]) => void) => string;
+    subscribeToOnLogsRemoved: (onLogsRemoved: (blockHash: string, logs: TLog[]) => void) => string;
+}
+
+export interface BlockAndLogStreamerListenerDependencies {
+    blockAndLogStreamer: BlockAndLogStreamerInterface<Block, ExtendedLog>;
     // TODO Use an emitter?
     listenForNewBlocks: (callback: (block: Block) => Promise<void>) => void;
 
@@ -61,7 +71,7 @@ export class BlockAndLogStreamerListener {
     };
 
     onLogsAdded = async (blockHash: string, extendedLogs: ExtendedLog[]) => {
-        const logs: Log[] = extendedLogs.map((log) => ({
+        const logs:Log[] = extendedLogs.map((log) => ({
             ...log,
             logIndex: parseInt(log.logIndex, 10),
             blockNumber: parseInt(log.blockNumber, 10)
