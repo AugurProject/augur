@@ -7,9 +7,11 @@
   "exclude": [
     "./src/**/*.test.ts"
   ],
+  "files": [
+    "./src/settings.json"
+  ],
   "include": [
-    "./src/**/*",
-    "./src/**/*.json"
+    "./src/**/*"
   ],
   "references": [
     {
