@@ -44,6 +44,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
                 await this.syncStatus.setHighestSyncBlock(this.dbName, highestSyncedBlockNumber);
             }
         }
+        console.log(`SYNCING SUCCESS ${this.dbName} up to ${goalBlock}`);
 
         // TODO Make any external calls as needed (such as pushing user's balance to UI)
 
