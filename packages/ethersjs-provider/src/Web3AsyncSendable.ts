@@ -23,15 +23,14 @@ export class Web3AsyncSendable implements AsyncSendable {
         this.asyncQueue = queue(retryable({ times, interval }, send), concurrency);
     }
 
-    public async send(request: any, callback: (error: any, response: any) => void): Promise<void> {
-        await this.asyncQueue.push(
+    public send(request: any, callback: (error: any, response: any) => void): void {
+        this.asyncQueue.push(
             { request, callback },
             function(err: Error, response: any) {
                 if (err) {
-                    Promise.reject("Send failed: " + err);
-                } else {
-                    Promise.resolve(response);
+                    callback(err, null);
                 }
+                callback(null, response);
             }
         );
     }

@@ -11,7 +11,7 @@ import { Controller } from "./Controller";
 // TODO Add Ethereum node URL as param
 export async function start() {
   const httpProvider = new Web3.providers.HttpProvider(settings.ethNodeURLs[4]);
-  const web3AsyncSendable = new Web3AsyncSendable(httpProvider, 5, 100, 20);
+  const web3AsyncSendable = new Web3AsyncSendable(httpProvider, 5, 0, 40);
   const ethersProvider = new EthersProvider(web3AsyncSendable);
   const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
   const augur = await Augur.create(ethersProvider, contractDependencies);
