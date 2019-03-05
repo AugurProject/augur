@@ -21,6 +21,7 @@ import {
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
+import { ContractAddresses } from "@augurproject/artifacts";
 
 
 export class ContractDeployer {
@@ -57,7 +58,7 @@ Deploying to: ${networkConfiguration.networkName}
         return this.provider.getBlock('latest', false).then( (block) => block.number);
     }
 
-    public async deploy(): Promise<{ [name: string]: string }> {
+    public async deploy(): Promise<ContractAddresses> {
         const blockNumber = await this.getBlockNumber();
         this.augur = await this.uploadAugur();
         await this.uploadAllContracts();
@@ -95,8 +96,10 @@ Deploying to: ${networkConfiguration.networkName}
         return this.generateCompleteAddressMapping();
     }
 
-    private generateCompleteAddressMapping(): { [name: string]: string } {
-        const mapping: { [name: string]: string } = {};
+    private generateCompleteAddressMapping(): ContractAddresses {
+        // This type assertion means that `mapping` can possibly NOT adhere to the ContractAddresses interface.
+        const mapping = {} as ContractAddresses;
+
         mapping['Augur'] = this.augur!.address;
         if (this.universe) mapping['Universe'] = this.universe.address;
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
@@ -114,6 +117,7 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.relativeFilePath.startsWith('external/')) continue;
             if (contract.contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) continue;
             if (contract.address === undefined) throw new Error(`${contract.contractName} not uploaded.`);
+            // @ts-ignore
             mapping[contract.contractName] = contract.address;
         }
         return mapping;
