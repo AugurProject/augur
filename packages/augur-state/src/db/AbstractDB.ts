@@ -78,6 +78,10 @@ export abstract class AbstractDB {
   public async find(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
     return await this.db.find(request);
   }
+
+  public async allDocs(): Promise<PouchDB.Core.AllDocsResponse<{}>> {
+    return await this.db.allDocs({ include_docs: true });
+  }
 }
 
 export type PouchDBFactoryType = (dbName: string) => PouchDB.Database;
