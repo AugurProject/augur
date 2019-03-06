@@ -6,6 +6,7 @@ import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
 const settings = require("../settings.json");
 import { makeMock } from "../utils/MakeMock";
+import {IBlockAndLogStreamerListener} from "./BlockAndLogStreamerListener";
 
 const mock = makeMock();
 const TEST_NETWORK_ID = 4;
@@ -98,7 +99,14 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
 const provider = new EthersProvider(settings.ethNodeURLs[TEST_NETWORK_ID]);
 const contractDependencies = new ContractDependenciesEthers(provider, undefined, settings.testAccounts[0]);
 
+
+let blockAndLogStreamerListener:IBlockAndLogStreamerListener;
 beforeEach(async () => {
+    blockAndLogStreamerListener = {
+        listenForEvent: jest.fn(),
+        startBlockStreamListener: jest.fn()
+    };
+
     mock.cancelFail();
     await mock.wipeDB()
 });
@@ -108,8 +116,8 @@ beforeAll(async () => {
     augur = await Augur.create(provider, contractDependencies);
 });
 
-
 test("database failure during trackedUsers.getUsers() call", async () => {
+
     const db = await DB.createAndInitializeDB(
       TEST_NETWORK_ID,
       settings.blockstreamDelay,
@@ -117,7 +125,8 @@ test("database failure during trackedUsers.getUsers() call", async () => {
       [settings.testAccounts[0]],
       genericEventNames,
       userSpecificEvents,
-      mock.makeFactory()
+      mock.makeFactory(),
+      blockAndLogStreamerListener
     );
 
     await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
@@ -142,7 +151,8 @@ test("database failure during sync, followed by another sync", async () => {
       [settings.testAccounts[0]],
       genericEventNames,
       userSpecificEvents,
-      mock.makeFactory()
+      mock.makeFactory(),
+      blockAndLogStreamerListener
     );
 
     console.log("Sync with a database failure.");
@@ -163,7 +173,8 @@ test("syncing: succeed then fail then succeed again", async () => {
       [settings.testAccounts[0]],
       genericEventNames,
       userSpecificEvents,
-      mock.makeFactory()
+      mock.makeFactory(),
+      blockAndLogStreamerListener
     );
 
     console.log("Sync successfully.");
