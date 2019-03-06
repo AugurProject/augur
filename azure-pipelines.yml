@@ -3,7 +3,7 @@ variables:
     SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
     AUGUR_CORE_TAG: monorepo.$(Build.BuildID)
     CORE_IMAGE_BUILD: augurproject/augur-core:$(AUGUR_CORE_TAG)
-    CORE_IMAGE_LATEST: augurproject/augur-core:latest
+    CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
 
 trigger:
   batch: false
@@ -24,7 +24,7 @@ jobs:
           versionSpec: '3.6.5'
       - task: NodeTool@0
         inputs:
-          versionSpec: '9.x'
+          versionSpec: '10.x'
       - bash: |
           set -euo pipefail
           echo "Build SourceBranch: $(Build.SourceBranch)"
@@ -42,7 +42,7 @@ jobs:
           node --version
           echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
           docker pull $CORE_IMAGE_LATEST;
-          yarn workspace augur-core docker:build;
+          yarn workspace @augurproject/core docker:build;
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
           docker push $CORE_IMAGE_BUILD
         condition: eq(variables.AUGUR_CORE, 'true')
@@ -103,53 +103,54 @@ jobs:
           docker pull $CORE_IMAGE_BUILD
           docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST
           if [[ "$TESTS" == "integration:geth" ]]; then
-            yarn workspace augur-core docker:run:test:integration:geth;
+            yarn workspace @augurproject/core docker:run:test:integration:geth;
           elif [[ "$TESTS" == "integration:parity" ]]; then
-            yarn workspace augur-core docker:run:test:integration:parity;
+            yarn workspace @augurproject/core docker:run:test:integration:parity;
           elif [[ "$TESTS" == "security:mythril" ]]; then
-            yarn workspace augur-core docker:run:test:security:mythril;
+            yarn workspace @augurproject/core docker:run:test:security:mythril;
             cat $(find . -name test-results.log)
           elif [[ "$TESTS" == "security:maian" ]]; then
-            yarn workspace augur-core docker:run:test:security:maian;
+            yarn workspace @augurproject/core docker:run:test:security:maian;
           elif [[ "$TESTS" == "security:smt" ]]; then
-            yarn workspace augur-core docker:run:test:security:smt;
+            yarn workspace @augurproject/core docker:run:test:security:smt;
           elif [[ "$TESTS" == "security:oyente" ]]; then
-            yarn workspace augur-core docker:run:test:security:oyente;
+            yarn workspace @augurproject/core docker:run:test:security:oyente;
           else
-            yarn workspace augur-core docker:run:test:unit -- $TESTS;
+            yarn workspace @augurproject/core docker:run:test:unit -- $TESTS;
           fi
         condition: eq(variables.AUGUR_CORE, 'true')
 
-  - job: Test_Augur_UI_and_Node
-    displayName: 'Test augur UI and augur-node'
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    strategy:
-      matrix:
-        node_8_x:
-          node_version: 8.x
-        node_9_x:
-          node_version: 9.x
-        node_10_x:
-          node_version: 10.x
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(node_version)
-      - script: |
-          set -euo pipefail
-          which node
-          node --version
-          yarn workspace augur-node add sqlite3 --force --build-from-source
-          yarn install --ignore-scripts --frozen-lockfile
-        displayName: 'Install Dependencies'
-      - script: |
-          yarn test --forceExit --detectOpenHandles
-        displayName: 'Run Tests'
-      - task: PublishTestResults@2
-        inputs:
-          testResultsFormat: 'JUnit'
-          testResultsFiles: 'junit.xml'
+  # - job: Test_Augur_UI_and_Node
+  #   displayName: 'Test augur UI and augur-node'
+  #   pool:
+  #     vmImage: 'Ubuntu 16.04'
+  #   strategy:
+  #     matrix:
+  #       node_8_x:
+  #         node_version: 8.x
+  #       node_9_x:
+  #         node_version: 9.x
+  #       node_10_x:
+  #         node_version: 10.x
+  #   steps:
+  #     - task: NodeTool@0
+  #       inputs:
+  #         versionSpec: $(node_version)
+  #     - script: |
+  #         set -euo pipefail
+  #         which node
+  #         node --version
+  #         yarn workspace @augurproject/node add sqlite3 --force --build-from-source
+  #         yarn install --ignore-scripts --frozen-lockfile
+  #       displayName: 'Install Dependencies'
+  #     - script: |
+  #         yarn test --forceExit --detectOpenHandles
+  #       displayName: 'Run Tests'
+  #     - task: PublishTestResults@2
+  #       inputs:
+  #         testResultsFormat: 'JUnit'
+  #         testResultsFiles: 'junit.xml'
+
   - job: Test_Augur_js
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -184,22 +185,35 @@ jobs:
         displayName: 'test augur.js'
         condition: eq(variables.AUGUR, 'true')
 
-  - job: Docker_publish_populated_geth_images
+  - job: Docker_populated_geth_images
     dependsOn:
     - Build_Core_Docker
     - Test_Augur_Core
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
+    - bash: |
+        set -euo pipefail
+        for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
+          do
+            echo "$f"
+            if [[ $f =~ .*augur-core.* ]]
+            then
+              echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+            fi
+          done
     - script: |
         set -euo pipefail
         echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
         yarn docker:build:all
-        yarn workspace augur-tools docker:push
+
+        if [[ "$(Build.SourceBranchName)" == "master" ]]; then
+            yarn workspace @augurproject/tools docker:push
+        fi
       condition: |
         and
         (
             succeeded(),
-            eq(variables['Build.SourceBranch'], 'refs/heads/master')
+            eq(variables.AUGUR_CORE, 'true')
         )
-      displayName: 'build and push docker image'
+      displayName: 'build and (maybe) push docker image'

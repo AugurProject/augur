@@ -1,9 +1,9 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'IAugur.sol';
-import 'reporting/IUniverse.sol';
-import 'TestNetReputationToken.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/TestNetReputationToken.sol';
 
 
 contract TestNetReputationTokenFactory {

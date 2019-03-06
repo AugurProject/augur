@@ -8,7 +8,7 @@ FROM augurproject/augur-build:latest as augur-build
 
 
 FROM augurproject/python2-and-3:monorepo
-ARG SOLC_VERSION=v0.4.24
+ARG SOLC_VERSION=v0.5.4
 
 COPY --from=augur-build /usr/local/ /usr/local
 COPY --from=augur-build /opt/ /opt/
@@ -54,27 +54,17 @@ COPY packages/augur-core/jest.config.js /app/jest.config.js
 COPY packages/augur-core/source/ /app/source/
 COPY packages/augur-core/tests/ /app/tests/
 
-
+# Yarn and Lint
 RUN yarn && yarn lint
-
-# cleanup
-
-
-# Lint
-# RUN yarn lint
 
 # Build first chunk
 RUN yarn build:source
-RUN yarn build:contracts
 
-# Build contract interfaces
+# Build contracts and interfaces
 RUN yarn build:interfaces
 
-
-# Copy the git info so ContractDeployer can read the hash on deploy
+# Final build
 RUN yarn build:source
-
-
 RUN apk add --no-cache \
     libstdc++
 

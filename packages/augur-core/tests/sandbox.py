@@ -126,8 +126,8 @@ library uint256Math {
 """
 
 solCode = """
-import 'int256.sol';
-import 'uint256.sol';
+import 'ROOT/int256.sol';
+import 'ROOT/uint256.sol';
 contract Foo {
     using int256Math for int256;
     using uint256Math for uint256;

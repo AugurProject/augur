@@ -1,17 +1,17 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.4;
 
-import 'libraries/collections/Map.sol';
-import 'factories/MapFactory.sol';
+import 'ROOT/libraries/collections/Map.sol';
+import 'ROOT/factories/MapFactory.sol';
 
 
 contract MapHelper {
-    Map private map;
+    IMap private map;
 
     function init(IAugur _augur) public returns (bool) {
-        map = MapFactory(_augur.lookup("MapFactory")).createMap(_augur, this);
+        map = MapFactory(_augur.lookup("MapFactory")).createMap(_augur, address(this));
     }
 
-    function add(bytes32 _key, bytes32 _value) public returns (bool) {
+    function add(bytes32 _key, address _value) public returns (bool) {
         return map.add(_key, _value);
     }
 
@@ -19,11 +19,11 @@ contract MapHelper {
         return map.remove(_key);
     }
 
-    function getValueOrZero(bytes32 _key) public view returns (bytes32) {
-        return map.getValueOrZero(_key);
+    function getAddressOrZero(bytes32 _key) public view returns (address) {
+        return map.getAsAddressOrZero(_key);
     }
 
-    function get(bytes32 _key) public view returns (bytes32) {
+    function get(bytes32 _key) public view returns (address) {
         return map.get(_key);
     }
 
@@ -33,19 +33,5 @@ contract MapHelper {
 
     function getCount() public view returns (uint256) {
         return map.getCount();
-    }
-
-    // Address casting
-
-    function addAsAddress(bytes32 _key, address _value) public returns (bool) {
-        return map.add(_key, _value);
-    }
-
-    function getAsAddressOrZero(bytes32 _key) public view returns (address) {
-        return map.getAsAddressOrZero(_key);
-    }
-
-    function getAsAddress(bytes32 _key) public view returns (address) {
-        return map.getAsAddress(_key);
     }
 }

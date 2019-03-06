@@ -1,16 +1,16 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.4;
 
-import 'reporting/IMarket.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IDisputeWindow.sol';
-import 'reporting/Reporting.sol';
-import 'libraries/ITyped.sol';
-import 'reporting/IV2ReputationToken.sol';
-import 'reporting/IAuction.sol';
-import 'libraries/Initializable.sol';
-import 'libraries/math/SafeMathUint256.sol';
-import 'factories/MarketFactory.sol';
-import 'IAugur.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/reporting/IV2ReputationToken.sol';
+import 'ROOT/reporting/IAuction.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/factories/MarketFactory.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract MockUniverse is Initializable, IUniverse {
@@ -289,7 +289,7 @@ contract MockUniverse is Initializable, IUniverse {
         return setDisputeWindowByMarketEndTimeValue;
     }
 
-    function getOrCreateCurrentDisputeWindow() public returns (IDisputeWindow) {
+    function getOrCreateCurrentDisputeWindow(False) public returns (IDisputeWindow) {
         return setCurrentDisputeWindowValue;
     }
 

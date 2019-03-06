@@ -3,7 +3,7 @@ from ethereum.tools import tester
 from ethereum.tools.tester import ABIContract, TransactionFailed
 from pytest import fixture, mark, raises
 from utils import longTo32Bytes, bytesToHexString, TokenDelta, AssertLog, EtherDelta, longToHexString, BuyWithCash
-from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToNextRound, proceedToFork, finalizeFork
+from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToNextRound, proceedToFork, finalize
 
 tester.STARTGAS = long(6.7 * 10**6)
 
@@ -68,6 +68,9 @@ def test_initialReportHappyPath(reportByDesignatedReporter, localFixture, univer
     newDisputeWindowAddress = market.getDisputeWindow()
     assert newDisputeWindowAddress
     disputeWindow = localFixture.applySignature('DisputeWindow', newDisputeWindowAddress)
+
+    # Confirm that with the designated report we initially have a different time period than normal to dispute
+    assert disputeWindow.duration() == localFixture.contracts["Constants"].INITIAL_DISPUTE_ROUND_DURATION_SECONDS()
 
     # time marches on and the market can be finalized
     localFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
@@ -135,10 +138,13 @@ def test_initialReport_methods(localFixture, universe, market, constants):
     16
 ])
 def test_roundsOfReporting(rounds, localFixture, market, universe):
-    disputeWindow = universe.getOrCreateCurrentDisputeWindow()
+    disputeWindow = universe.getOrCreateCurrentDisputeWindow(False)
 
     # Do the initial report
     proceedToNextRound(localFixture, market, moveTimeForward = False)
+
+    initialDisputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+    assert initialDisputeWindow.duration() == localFixture.contracts["Constants"].INITIAL_DISPUTE_ROUND_DURATION_SECONDS()
 
     # Do the first round outside of the loop and test logging
     crowdsourcerCreatedLog = {
@@ -166,17 +172,20 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
             with AssertLog(localFixture, "DisputeCrowdsourcerCompleted", crowdsourcerCompletedLog):
                 proceedToNextRound(localFixture, market, description="Clearly incorrect")
 
+    newDisputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+    assert newDisputeWindow.duration() == localFixture.contracts["Constants"].DISPUTE_ROUND_DURATION_SECONDS()
+
     # proceed through several rounds of disputing
     for i in range(rounds - 2):
         proceedToNextRound(localFixture, market)
         assert disputeWindow != market.getDisputeWindow()
         disputeWindow = market.getDisputeWindow()
-        assert disputeWindow == universe.getCurrentDisputeWindow()
+        assert disputeWindow == universe.getCurrentDisputeWindow(False)
 
 @mark.parametrize('finalizeByMigration, manuallyDisavow', [
-    #(True, True),
+    (True, True),
     (False, True),
-    #(True, False),
+    (True, False),
     (False, False),
 ])
 def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, cash, categoricalMarket, scalarMarket):
@@ -195,7 +204,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
 
     with raises(TransactionFailed, message="We cannot create markets during a fork"):
         time = localFixture.contracts["Time"].getTimestamp()
-        localFixture.createYesNoMarket(universe, time + 1000, 1, tester.a0)
+        localFixture.createYesNoMarket(universe, time + 1000, 1, 0, tester.a0)
 
     # confirm that we can manually create a child universe from an outcome no one asserted was true during dispute
     numTicks = market.getNumTicks()
@@ -227,7 +236,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
         categoricalMarket.contribute([0,2,2,categoricalMarket.getNumTicks()-4], 1, "")
 
     # We cannot purchase new Participation Tokens during a fork
-    disputeWindowAddress = universe.getCurrentDisputeWindow()
+    disputeWindowAddress = universe.getCurrentDisputeWindow(False)
     disputeWindow = localFixture.applySignature("DisputeWindow", disputeWindowAddress)
 
     # finalize the fork
@@ -236,7 +245,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
         "market": market.address,
     }
     with AssertLog(localFixture, "MarketFinalized", marketFinalizedLog):
-        finalizeFork(localFixture, market, universe, finalizeByMigration)
+        finalize(localFixture, market, universe, finalizeByMigration)
 
     # We cannot contribute to a crowdsourcer in a forked universe
     with raises(TransactionFailed):
@@ -317,7 +326,7 @@ def test_finalized_fork_migration(localFixture, universe, market, categoricalMar
 
     # Proceed to Forking for the yesNo market and finalize it
     proceedToFork(localFixture, market, universe)
-    finalizeFork(localFixture, market, universe)
+    finalize(localFixture, market, universe)
 
     # The categorical market is finalized and cannot be migrated to the new universe
     with raises(TransactionFailed):
@@ -341,13 +350,13 @@ def test_fork_migration_no_report(localFixture, universe, market):
 
     # Create a market before the fork occurs which has an end date past the forking window
     endTime = long(localFixture.contracts["Time"].getTimestamp() + timedelta(days=90).total_seconds())
-    longMarket = localFixture.createYesNoMarket(universe, endTime, 1, tester.a0)
+    longMarket = localFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
 
     # Go to the forking period
     proceedToFork(localFixture, market, universe)
 
     # Now finalize the fork so migration can occur
-    finalizeFork(localFixture, market, universe)
+    finalize(localFixture, market, universe)
 
     # Now when we migrate the market through the fork we'll place a new bond in the winning universe's REP
     oldReputationToken = localFixture.applySignature("ReputationToken", universe.getReputationToken())
@@ -368,7 +377,7 @@ def test_forking_values(localFixture, universe, market):
     proceedToFork(localFixture, market, universe)
 
     # finalize the fork
-    finalizeFork(localFixture, market, universe)
+    finalize(localFixture, market, universe)
 
     # We can see that the theoretical total REP supply in the winning child universe is equal to the parent supply
     winningPayoutHash = market.getWinningPayoutDistributionHash()
@@ -416,7 +425,7 @@ def test_forking_values(localFixture, universe, market):
     assert newMarket.getNumParticipants() == 21
 
     # finalize the fork
-    finalizeFork(localFixture, newMarket, childUniverse)
+    finalize(localFixture, newMarket, childUniverse)
 
     # The total theoretical supply is again the same as the parents during the fork
     childWinningPayoutHash = newMarket.getWinningPayoutDistributionHash()
@@ -433,7 +442,7 @@ def test_forking_values(localFixture, universe, market):
 
 
 def test_fee_window_record_keeping(localFixture, universe, market, categoricalMarket, scalarMarket):
-    disputeWindow = localFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow())
+    disputeWindow = localFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
 
     # First we'll confirm we get the expected default values for the window record keeping
     assert disputeWindow.getNumMarkets() == 0
@@ -529,6 +538,28 @@ def test_dispute_pacing_threshold(localFixture, universe, market):
     disputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
     assert localFixture.contracts["Time"].setTimestamp(disputeWindow.getStartTime() + 1)
     assert market.contribute([0, market.getNumTicks(), 0], 1, "")
+
+def test_crowdsourcer_minimum_remaining(localFixture, universe, market):
+    proceedToNextRound(localFixture, market, moveTimeForward = False)
+
+    payoutNumerators = [0, 0, market.getNumTicks()]
+    initialReporter = localFixture.applySignature('InitialReporter', market.getInitialReporter())
+    initialReportSize = initialReporter.getSize()
+    totalBondSize = initialReportSize * 2
+
+    # We cannot leave only 1 attoREP remaining to fill
+    with raises(TransactionFailed):
+        market.contribute(payoutNumerators, totalBondSize - 1, "")
+
+    # We cannot leave anything less than the initial report size left to fill in fact
+    with raises(TransactionFailed):
+        market.contribute(payoutNumerators, totalBondSize - initialReportSize + 1, "")
+
+    # Lets fill up to the initial report size
+    assert market.contribute(payoutNumerators, totalBondSize - initialReportSize, "")
+
+    # Now we'll completely fill the bond
+    assert market.contribute(payoutNumerators, initialReportSize, "")
 
 @fixture(scope="session")
 def localSnapshot(fixture, kitchenSinkSnapshot):

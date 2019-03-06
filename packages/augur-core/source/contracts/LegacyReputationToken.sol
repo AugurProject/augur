@@ -1,8 +1,8 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'libraries/IERC820Registry.sol';
-import 'libraries/ContractExists.sol';
-import 'legacy_reputation/OldLegacyRepToken.sol';
+import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/libraries/ContractExists.sol';
+import 'ROOT/legacy_reputation/OldLegacyRepToken.sol';
 
 
 contract LegacyReputationToken is OldLegacyReputationToken {
@@ -29,7 +29,7 @@ contract LegacyReputationToken is OldLegacyReputationToken {
     function faucet(uint256 _amount) public returns (bool) {
         require(_amount < 2 ** 128);
         mint(msg.sender, _amount);
-        emit FundedAccount(this, msg.sender, _amount, block.timestamp);
+        emit FundedAccount(address(this), msg.sender, _amount, block.timestamp);
         return true;
     }
 

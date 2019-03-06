@@ -1,7 +1,7 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.4;
 
-import 'IAugur.sol';
-import 'libraries/token/StandardToken.sol';
+import 'ROOT/IAugur.sol';
+import 'ROOT/libraries/token/StandardToken.sol';
 
 
 contract StandardTokenHelper is StandardToken {

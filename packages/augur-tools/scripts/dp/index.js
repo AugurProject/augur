@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
+var ethers = require("ethers");
 var path = require("path");
 var assign = require("lodash").assign;
 var Augur = require("augur.js");
 var debugOptions = require("../debug-options");
 var connectionEndpoints = require("../connection-endpoints");
-var core = require("augur-core");
+var core = require("@augurproject/core");
 var getPrivateKeyFromString = require("./lib/get-private-key")
   .getPrivateKeyFromString;
 var parrotSay = require("parrotsay-api");
@@ -179,11 +180,12 @@ function runCannedData(command, networks, callback) {
     });
     switch (command) {
       case "upload": {
-        core.ContractDeployer.deployToNetwork(
-          network,
-          deployerConfiguration
-        ).then(function() {
-          callback(null);
+        var provider = new ethers.providers.JsonRpcProvider(network.http);
+        core.EthersFastSubmitWallet.create(network.privateKey, provider).then(function (signer) {
+          var dependencies = new core.ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
+          core.ContractDeployer.deployToNetwork(network, dependencies, provider, signer, deployerConfiguration).then(function() {
+            callback(null);
+          });
         });
         break;
       }
@@ -241,26 +243,27 @@ function runCannedData(command, networks, callback) {
       }
 
       case "deploy": {
-        core.ContractDeployer.deployToNetwork(
-          network,
-          deployerConfiguration
-        ).then(function() {
-          augur.contracts.reloadAddresses(function(err) {
-            if (err) return callback(err);
-            augur.connect(
-              { ethereumNode: ethereumNode },
-              function(err) {
-                if (err) return callback(err);
-                // geth bug related to contract availability for estimating gas requires timeout
-                setTimeout(function() {
-                  repFaucet(augur, 100000, auth, function(err) {
+        var provider = new ethers.providers.JsonRpcProvider(network.http);
+        core.EthersFastSubmitWallet.create(network.privateKey, provider).then(function (signer) {
+          var dependencies = new core.ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
+          core.ContractDeployer.deployToNetwork(network, dependencies, provider, signer, deployerConfiguration).then(function() {
+            augur.contracts.reloadAddresses(function (err) {
+              if (err) return callback(err);
+              augur.connect(
+                  {ethereumNode: ethereumNode},
+                  function (err) {
                     if (err) return callback(err);
-                    createMarkets(augur, auth, callback);
-                    callback();
-                  });
-                }, 4000);
-              }
-            );
+                    // geth bug related to contract availability for estimating gas requires timeout
+                    setTimeout(function () {
+                      repFaucet(augur, 100000, auth, function (err) {
+                        if (err) return callback(err);
+                        createMarkets(augur, auth, callback);
+                        callback();
+                      });
+                    }, 4000);
+                  }
+              );
+            });
           });
         });
         break;

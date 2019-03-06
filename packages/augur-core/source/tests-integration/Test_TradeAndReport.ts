@@ -23,9 +23,6 @@ describe("TradeAndReport", () => {
 
         // Create a market
         const market = await fixture.createReasonableMarket(fixture.universe!, [stringTo32ByteHex(" "), stringTo32ByteHex(" ")]);
-        const actualTypeName = await market.getTypeName_();
-        const expectedTypeName = stringTo32ByteHex("Market");
-        expect(actualTypeName).to.equal(expectedTypeName);
 
         // Place an order
         let type = new ethers.utils.BigNumber(0); // BID

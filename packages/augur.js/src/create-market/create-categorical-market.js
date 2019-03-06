@@ -26,26 +26,22 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {function} p.onFailed Called if/when the createCategoricalMarket transaction fails.
  */
 function createCategoricalMarket(p) {
-  getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
-    if (err) return p.onFailed(err);
-    var createCategoricalMarketParams = assign({}, immutableDelete(p, "universe"), {
-      tx: assign({
-        to: p.universe,
-        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-      }, p.tx),
-      _outcomes: p._outcomes.map(function (outcome) { return encodeTag(outcome); }),
-      _topic: encodeTag(p._topic),
-      _extraInfo: JSON.stringify(p._extraInfo || {}),
-      onSuccess: function (res) {
-        if (p.tx !== undefined && p.tx.estimateGas) return p.onSuccess(res);
-        getMarketFromCreateMarketReceipt(res.hash, function (err, marketId) {
-          if (err) return p.onFailed(err);
-          p.onSuccess(assign({}, res, { callReturn: marketId }));
-        });
-      },
-    });
-    api().Universe.createCategoricalMarket(createCategoricalMarketParams);
+  var createCategoricalMarketParams = assign({}, immutableDelete(p, "universe"), {
+    tx: assign({
+      to: p.universe,
+    }, p.tx),
+    _outcomes: p._outcomes.map(function (outcome) { return encodeTag(outcome); }),
+    _topic: encodeTag(p._topic),
+    _extraInfo: JSON.stringify(p._extraInfo || {}),
+    onSuccess: function (res) {
+      if (p.tx !== undefined && p.tx.estimateGas) return p.onSuccess(res);
+      getMarketFromCreateMarketReceipt(res.hash, function (err, marketId) {
+        if (err) return p.onFailed(err);
+        p.onSuccess(assign({}, res, { callReturn: marketId }));
+      });
+    },
   });
+  api().Universe.createCategoricalMarket(createCategoricalMarketParams);
 }
 
 module.exports = createCategoricalMarket;
