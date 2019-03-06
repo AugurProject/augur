@@ -7,18 +7,18 @@ export class Web3AsyncSendable implements AsyncSendable {
 
     constructor(
         private ethNodeUrl: string,
-        times: number, 
-        interval: number, 
+        times: number,
+        interval: number,
         concurrency: number
-    ) 
+    )
     {
-        const send: any = function(task: any, callback: any) {
+        const send: any = function(task: any, callback: (error: any, response: any) => void) {
             try {
                 const httpProvider = new Web3.providers.HttpProvider(ethNodeUrl);
                 const response = httpProvider.send(task.request, task.callback);
                 callback(null, response);
             } catch (err) {
-                callback(err);
+                callback(err, null);
             }
         }
         this.asyncQueue = queue(retryable({ times, interval }, send), concurrency);

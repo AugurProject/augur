@@ -14,8 +14,6 @@ interface ContractMapping {
 export class EthersProvider extends ethers.providers.Web3Provider implements Provider, EProvider {
     private contractMapping: ContractMapping = {};
 
-    constructor(web3AsyncSendable: Web3AsyncSendable) { super(web3AsyncSendable); }
-    
     public async call(transaction: Transaction<ethers.utils.BigNumber>): Promise<string> {
         return await super.call(transaction);
     }

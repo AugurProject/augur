@@ -91,5 +91,5 @@ export function PouchDBFactory(dbArgs : object) {
   if (!fs.existsSync(dbDir)){
     fs.mkdirSync(dbDir);
   }
-  return (dbName: string) => new PouchDB(dbDir + `/${dbName}`, dbArgs);
+  return (dbName: string) => new PouchDB(`${dbDir}/${dbName}`, dbArgs);
 }
