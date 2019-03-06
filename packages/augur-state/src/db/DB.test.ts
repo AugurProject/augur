@@ -153,7 +153,7 @@ test("database failure during trackedUsers.getUsers() call", async () => {
 
         console.log("Sync successfully.");
         await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
-    }, 
+    },
     120000
 );
 
@@ -179,6 +179,6 @@ test("syncing: succeed then fail then succeed again", async () => {
 
         console.log("Sync successfully.");
         await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
-    }, 
+    },
     120000
 );

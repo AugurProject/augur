@@ -160,17 +160,17 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     }
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
-        augur.logReputationTokensTransferred(universe, _from, _to, _value);
+        augur.logReputationTokensTransferred(universe, _from, _to, _value, balances[_from], balances[_to]);
         return true;
     }
 
     function onMint(address _target, uint256 _amount) internal returns (bool) {
-        augur.logReputationTokenMinted(universe, _target, _amount);
+        augur.logReputationTokenMinted(universe, _target, _amount, totalSupply());
         return true;
     }
 
     function onBurn(address _target, uint256 _amount) internal returns (bool) {
-        augur.logReputationTokenBurned(universe, _target, _amount);
+        augur.logReputationTokenBurned(universe, _target, _amount, totalSupply());
         return true;
     }
 

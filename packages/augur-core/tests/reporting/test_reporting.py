@@ -556,7 +556,14 @@ def test_crowdsourcer_minimum_remaining(localFixture, universe, market):
         market.contribute(payoutNumerators, totalBondSize - initialReportSize + 1, "")
 
     # Lets fill up to the initial report size
-    assert market.contribute(payoutNumerators, totalBondSize - initialReportSize, "")
+    mintLog = {
+        "target": bytesToHexString(tester.a0),
+        "market": market.address,
+        "amount": totalBondSize - initialReportSize,
+        "totalSupply": totalBondSize - initialReportSize
+    }
+    with AssertLog(localFixture, "TokensMinted", mintLog):
+        assert market.contribute(payoutNumerators, totalBondSize - initialReportSize, "")
 
     # Now we'll completely fill the bond
     assert market.contribute(payoutNumerators, initialReportSize, "")

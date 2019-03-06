@@ -374,7 +374,7 @@ class ContractsFixture:
                 self.upload(path.join(directory, filename), constructorArgs=constructorArgs)
 
     def initializeAllContracts(self):
-        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','Cash','LegacyReputationToken']
+        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','Cash','LegacyReputationToken', 'ProfitLoss']
         for contractName in contractsToInitialize:
             if getattr(self.contracts[contractName], "initializeERC820", None):
                 self.contracts[contractName].initializeERC820(self.contracts['Augur'].address)

@@ -1,6 +1,6 @@
 import { Augur } from "@augurproject/api";
-import { PouchDBFactoryType } from "./AbstractDB";
 import { MetaDB, SequenceIds } from "./MetaDB";
+import { PouchDBFactoryType } from "./AbstractDB";
 import { SyncableDB } from "./SyncableDB";
 import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
@@ -107,15 +107,15 @@ export class DB<TBigNumber> {
    * @param {number} chunkSize Number of blocks to retrieve at a time when syncing logs
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
    */
-  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> { 
+  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
     let dbSyncPromises = [];
     const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
     for (let dbIndex in this.syncableDatabases) {
       dbSyncPromises.push(
         this.syncableDatabases[dbIndex].sync(
-          augur, 
-          chunkSize, 
-          blockstreamDelay, 
+          augur,
+          chunkSize,
+          blockstreamDelay,
           highestAvailableBlockNumber
         )
       );
@@ -126,9 +126,9 @@ export class DB<TBigNumber> {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
         dbSyncPromises.push(
           this.syncableDatabases[dbName].sync(
-            augur, 
-            chunkSize, 
-            blockstreamDelay, 
+            augur,
+            chunkSize,
+            blockstreamDelay,
             highestAvailableBlockNumber
           )
         );

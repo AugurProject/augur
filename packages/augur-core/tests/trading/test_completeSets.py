@@ -25,7 +25,8 @@ def test_publicBuyCompleteSets(contractsFixture, universe, cash, market):
         "universe": universe.address,
         "market": market.address,
         "account": bytesToHexString(tester.a1),
-        "numCompleteSets": 10
+        "numCompleteSets": 10,
+        "marketOI": cost
     }
     with AssertLog(contractsFixture, "CompleteSetsPurchased", completeSetsPurchasedLog):
         assert completeSets.publicBuyCompleteSets(market.address, 10, sender=tester.k1)
@@ -77,7 +78,8 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
         "universe": universe.address,
         "market": market.address,
         "account": bytesToHexString(tester.a1),
-        "numCompleteSets": 9
+        "numCompleteSets": 9,
+        "marketOI": market.getNumTicks()
     }
     with AssertLog(contractsFixture, "CompleteSetsSold", completeSetsSoldLog):
         result = completeSets.publicSellCompleteSets(market.address, 9, sender=tester.k1)

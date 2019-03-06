@@ -189,7 +189,7 @@ contract Orders is IOrders, Initializable {
         return true;
     }
 
-    function recordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled) external afterInitialized returns (bool) {
+    function recordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled, uint256 _fill) external afterInitialized returns (bool) {
         require(msg.sender == fillOrder || msg.sender == address(this));
         Order.Data storage _order = orders[_orderId];
         require(_order.outcome < _order.market.getNumberOfOutcomes());
@@ -197,13 +197,6 @@ contract Orders is IOrders, Initializable {
         require(_sharesFilled <= _order.sharesEscrowed);
         require(_tokensFilled <= _order.moneyEscrowed);
         require(_order.price <= _order.market.getNumTicks());
-        uint256 _fill = 0;
-        if (_order.orderType == Order.Types.Bid) {
-            _fill = _sharesFilled.add(_tokensFilled.div(_order.price));
-        } else if (_order.orderType == Order.Types.Ask) {
-            uint256 _fillPrice = _order.market.getNumTicks().sub(_order.price);
-            _fill = _sharesFilled.add(_tokensFilled.div(_fillPrice));
-        }
         require(_fill <= _order.amount);
         _order.amount -= _fill;
         _order.moneyEscrowed -= _tokensFilled;

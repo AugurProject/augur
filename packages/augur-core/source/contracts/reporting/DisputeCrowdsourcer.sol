@@ -118,17 +118,17 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
     }
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
-        augur.logDisputeCrowdsourcerTokensTransferred(universe, _from, _to, _value);
+        augur.logDisputeCrowdsourcerTokensTransferred(universe, _from, _to, _value, balances[_from], balances[_to]);
         return true;
     }
 
     function onMint(address _target, uint256 _amount) internal returns (bool) {
-        augur.logDisputeCrowdsourcerTokensMinted(universe, _target, _amount);
+        augur.logDisputeCrowdsourcerTokensMinted(universe, _target, _amount, totalSupply());
         return true;
     }
 
     function onBurn(address _target, uint256 _amount) internal returns (bool) {
-        augur.logDisputeCrowdsourcerTokensBurned(universe, _target, _amount);
+        augur.logDisputeCrowdsourcerTokensBurned(universe, _target, _amount, totalSupply());
         return true;
     }
 
