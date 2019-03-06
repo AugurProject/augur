@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from ethereum.tools import tester
-from utils import fix, bytesToHexString, AssertLog, longTo32Bytes, longToHexString, stringToBytes, BuyWithCash
+from utils import fix, bytesToHexString, AssertLog, longTo32Bytes, longToHexString, stringToBytes, BuyWithCash, nullAddress
 from constants import BID, ASK, YES, NO
 
 
@@ -18,7 +18,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
 
     # create order
     with BuyWithCash(cash, creatorCost, tester.k1, "complete set buy"):
-        orderID = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, sender = tester.k1)
+        orderID = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     # fill best order
     orderFilledLog = {
@@ -79,7 +79,7 @@ def test_publicFillOrder_ask(contractsFixture, cash, market, universe):
 
     # create order
     with BuyWithCash(cash, creatorCost, tester.k1, "creating order"):
-        orderID = createOrder.publicCreateOrder(ASK, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, sender = tester.k1)
+        orderID = createOrder.publicCreateOrder(ASK, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     # fill best order
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
@@ -111,7 +111,7 @@ def test_publicFillOrder_bid_scalar(contractsFixture, cash, scalarMarket, univer
 
     # create order
     with BuyWithCash(cash, creatorCost, tester.k1, "creating order"):
-        orderID = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, sender=tester.k1)
+        orderID = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender=tester.k1)
 
     # fill best order
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
@@ -145,7 +145,7 @@ def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash
     assert noShareToken.balanceOf(tester.a2) == fix(1)
 
     # create order with shares
-    orderID = createOrder.publicCreateOrder(ASK, fix(1), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, sender=tester.k1)
+    orderID = createOrder.publicCreateOrder(ASK, fix(1), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender=tester.k1)
     assert orderID
 
     # fill order with shares
@@ -181,7 +181,7 @@ def test_fill_order_with_shares_escrowed_sell_with_shares_categorical(contractsF
 
     # create order with shares
     price = 6000
-    orderID = createOrder.publicCreateOrder(ASK, fix(1), price, market.address, 0, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, sender=tester.k1)
+    orderID = createOrder.publicCreateOrder(ASK, fix(1), price, market.address, 0, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender=tester.k1)
     assert orderID
 
     # fill order with shares
@@ -213,7 +213,7 @@ def test_fill_buy_order_with_buy_categorical(contractsFixture, cash, categorical
     price = 6000
     numTicks = market.getNumTicks()
     with BuyWithCash(cash, fix(1, price), tester.k1, "create order"):
-        orderID = createOrder.publicCreateOrder(BID, fix(1), price, market.address, 0, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, sender=tester.k1)
+        orderID = createOrder.publicCreateOrder(BID, fix(1), price, market.address, 0, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender=tester.k1)
     assert orderID
 
     # fill order with cash
@@ -292,9 +292,9 @@ def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
 
     # create non matching orders
     with BuyWithCash(cash, fix('2', '6000'), tester.k1, "create order 1"):
-        orderID1 = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, sender = tester.k1)
+        orderID1 = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
     with BuyWithCash(cash, fix('2', '3000'), tester.k1, "create order 2"):
-        orderID2 = createOrder.publicCreateOrder(ASK, fix(2), 7000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, sender = tester.k1)
+        orderID2 = createOrder.publicCreateOrder(ASK, fix(2), 7000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     # Have other users fill them
     with BuyWithCash(cash, fix('2', '4000'), tester.k2, "fill order 1"):

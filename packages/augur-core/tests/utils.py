@@ -5,6 +5,7 @@ from struct import pack
 
 from ethereum.utils import privtoaddr
 
+nullAddress = "0x0000000000000000000000000000000000000000"
 garbageAddress = '0xdefec8eddefec8eddefec8eddefec8eddefec8ed'
 twentyZeros = str(pack(">l", 0).rjust(20, '\x00'))
 thirtyTwoZeros = str(pack(">l", 0).rjust(32, '\x00'))

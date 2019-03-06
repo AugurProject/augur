@@ -4,7 +4,7 @@ from decimal import Decimal, ROUND_UP, ROUND_DOWN
 from ethereum.tools import tester
 from pytest import fixture, mark
 from random import randint, random as randfloat
-from utils import bytesToLong, longTo32Bytes, bytesToHexString, fix
+from utils import bytesToLong, longTo32Bytes, bytesToHexString, fix, nullAddress
 from constants import BID, ASK, YES, NO
 
 # order fields
@@ -85,7 +85,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
 
     # Create order
     fixture.contracts['Cash'].depositEther(sender=creatorKey, value = creatorTokens)
-    orderId = createOrder.publicCreateOrder(orderType, orderSize, orderPrice, market.address, orderOutcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, sender = creatorKey)
+    orderId = createOrder.publicCreateOrder(orderType, orderSize, orderPrice, market.address, orderOutcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = creatorKey)
     assert fixture.chain.head_state.get_balance(creatorAddress) == creatorBalance - creatorTokens
     assert fixture.chain.head_state.get_balance(fillerAddress) == fillerBalance
 

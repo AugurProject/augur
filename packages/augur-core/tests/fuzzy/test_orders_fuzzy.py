@@ -2,7 +2,7 @@ from ethereum.tools import tester
 import numpy as np
 from os import getenv
 from pytest import fixture, mark
-from utils import fix, longTo32Bytes
+from utils import fix, longTo32Bytes, nullAddress
 from constants import BID, ASK
 
 ATTOSHARES = 0
@@ -103,13 +103,13 @@ def test_randomSorting(market, orderType, numOrders, withBoundingOrders, deadOrd
                 assert((orderId == worstOrderId and worseOrderId == 0) or fxpPrices[i] < fxpPrices[worseOrderId - 1]), "Input price is < worse order price, or this is the worst order so worse order Id is zero"
             if deadOrders[i, 0]: betterOrderId = numOrders + 1
             if deadOrders[i, 1]: worseOrderId = numOrders + 1
-        actualOrderId = orders.testSaveOrder(orderType, market.address, 1, fxpPrices[i], tester.a1, outcomeId, 0, 0, longTo32Bytes(betterOrderId), longTo32Bytes(worseOrderId), "0")
+        actualOrderId = orders.testSaveOrder(orderType, market.address, 1, fxpPrices[i], tester.a1, outcomeId, 0, 0, longTo32Bytes(betterOrderId), longTo32Bytes(worseOrderId), "0", nullAddress)
         assert(actualOrderId != bytearray(32)), "Insert order into list"
         orderIdsToPriceMapping[orderId] = fxpPrices[i]
         orderIdsToBytesMapping[orderId] = actualOrderId
         bytesToOrderIdsMapping[actualOrderId] =  orderId
-    assert(orderIdsToBytesMapping[bestOrderId] == orders.getBestOrderId(orderType, market.address, outcomeId)), "Verify best order Id"
-    assert(orderIdsToBytesMapping[worstOrderId] == orders.getWorstOrderId(orderType, market.address, outcomeId)), "Verify worst order Id"
+    assert(orderIdsToBytesMapping[bestOrderId] == orders.getBestOrderId(orderType, market.address, outcomeId, nullAddress)), "Verify best order Id"
+    assert(orderIdsToBytesMapping[worstOrderId] == orders.getWorstOrderId(orderType, market.address, outcomeId, nullAddress)), "Verify worst order Id"
     for orderId in orderIds:
         orderPrice = orderIdsToPriceMapping[orderId]
         betterOrderIdAsBytes = orders.getBetterOrderId(orderIdsToBytesMapping[orderId])
