@@ -2,6 +2,7 @@ import { Augur } from "@augurproject/api";
 import settings from "./settings.json";
 import { PouchDBFactoryType } from "./db/AbstractDB";
 import { DB, UserSpecificEvent } from "./db/DB";
+import {BlockAndLogStreamerListener} from "./db/BlockAndLogStreamerListener";
 
 // TODO Get these from GenericContractInterfaces (and do not include any that are unneeded)
 const genericEventNames: Array<string> = [
@@ -96,27 +97,16 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
 
 export class Controller<TBigNumber> {
   private dbController: DB<TBigNumber>;
-  private augur: Augur<TBigNumber>;
-  private networkId: number;
-  private blockstreamDelay: number;
-  private defaultStartSyncBlockNumber: number;
-  private trackedUsers: Array<string>;
-  private pouchDBFactory: PouchDBFactoryType;
 
   public constructor (
-    augur: Augur<TBigNumber>, 
-    networkId: number, 
-    blockstreamDelay: number, 
-    defaultStartSyncBlockNumber: number, 
-    trackedUsers: Array<string>, 
-    pouchDBFactory: PouchDBFactoryType
+    private augur: Augur<TBigNumber>,
+    private networkId: number,
+    private blockstreamDelay: number,
+    private defaultStartSyncBlockNumber: number,
+    private trackedUsers: Array<string>,
+    private pouchDBFactory: PouchDBFactoryType,
+    private blockAndLogStreamerListener: BlockAndLogStreamerListener
   ) {
-    this.augur = augur;
-    this.networkId = networkId;
-    this.blockstreamDelay = blockstreamDelay;
-    this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
-    this.trackedUsers = trackedUsers;
-    this.pouchDBFactory = pouchDBFactory;
   }
 
   public async run(): Promise<void> {
@@ -128,7 +118,8 @@ export class Controller<TBigNumber> {
         this.trackedUsers, 
         genericEventNames, 
         userSpecificEvents, 
-        this.pouchDBFactory
+        this.pouchDBFactory,
+        this.blockAndLogStreamerListener
       );
       await this.dbController.sync(
         this.augur, 

@@ -1,6 +1,6 @@
 import {EthersProviderBlockStreamAdapter, ExtendedLog} from "blockstream-adapters";
 import {Augur, Log, ParsedLog, Provider} from "@augurproject/api";
-import {Block, Log as BlockStreamLog,  BlockAndLogStreamer, FilterOptions} from "ethereumjs-blockstream";
+import {Block, BlockAndLogStreamer, Log as BlockStreamLog} from "ethereumjs-blockstream";
 import {EthersProvider} from "ethers-provider";
 import {Filter} from "ethereumjs-blockstream/output/source/models/filters";
 
@@ -23,7 +23,12 @@ export interface BlockAndLogStreamerListenerDependencies {
 
 type LogCallbackType<T> = (blockHash: string, logs: T[]) => void;
 
-export class BlockAndLogStreamerListener {
+export interface IBlockAndLogStreamerListener {
+    listenForEvent(eventName: string, address: string, topic: string, onLogsAdded: LogCallbackType<ParsedLog>): void;
+    startBlockStreamListener(): void;
+}
+
+export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener {
     private logCallBacks: LogCallbackType<Log>[] = [];
 
     constructor(private deps: BlockAndLogStreamerListenerDependencies) {
@@ -32,7 +37,6 @@ export class BlockAndLogStreamerListener {
 
     public static create(provider: EthersProvider, parseLogs: (logs: Log[]) => ParsedLog[]) {
         const dependencies = new EthersProviderBlockStreamAdapter(provider);
-
         const blockAndLogStreamer = new BlockAndLogStreamer<Block, ExtendedLog>(dependencies.getBlockByHash, dependencies.getLogs, (error: Error) => {
             console.error(error);
         });
@@ -44,7 +48,7 @@ export class BlockAndLogStreamerListener {
         });
     }
 
-    public listenForEvent(eventName: string, address: string, topic: string, onLogsAdded: LogCallbackType<ParsedLog>) {
+    listenForEvent(eventName: string, address: string, topic: string, onLogsAdded: LogCallbackType<ParsedLog>) {
         this.deps.blockAndLogStreamer.addLogFilter({
             address,
             topics: [
@@ -62,6 +66,10 @@ export class BlockAndLogStreamerListener {
 
             callback(blockHash, parsedLogs);
         }
+    }
+
+    startBlockStreamListener(): void {
+        this.deps.listenForNewBlocks(this.onNewBlock);
     }
 
     onNewBlock = async (block: Block) => {

@@ -5,6 +5,7 @@ import { DB, UserSpecificEvent } from "../db/DB";
 import { makeMock } from "../utils/MakeMock";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { EthersProvider } from "ethers-provider";
+import {IBlockAndLogStreamerListener} from "./BlockAndLogStreamerListener";
 
 const TEST_NETWORK_ID = 4;
 
@@ -113,6 +114,10 @@ test("sync databases", async () => {
     const augur = await Augur.create(provider, contractDependencies);
     const trackedUsers = [settings.testAccounts[0]];
     const mock = makeMock();
+    const blockAndLogStreamerListener:IBlockAndLogStreamerListener = {
+        listenForEvent: jest.fn(),
+        startBlockStreamListener: jest.fn()
+    };
 
     const db = await DB.createAndInitializeDB(
       TEST_NETWORK_ID, 
@@ -121,7 +126,8 @@ test("sync databases", async () => {
       trackedUsers, 
       genericEventNames, 
       userSpecificEvents,
-      mock.makeFactory()
+      mock.makeFactory(),
+      blockAndLogStreamerListener
     );
     await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
 
