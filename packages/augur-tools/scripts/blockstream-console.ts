@@ -1,6 +1,6 @@
 import { Block, BlockAndLogStreamer, FilterOptions, Log } from "ethereumjs-blockstream";
-import * as adapters from "./blockstream-adapters";
-import { GetBlockByString, isSupportedAdapter, SUPPORTED_ADAPTER } from "./blockstream-adapters";
+import * as adapters from "blockstream-adapters";
+import { GetBlockByString, isSupportedAdapter, SUPPORTED_ADAPTER } from "blockstream-adapters";
 
 const POLLING_FREQUENCY = parseInt(process.env.POLLING_FREQUENCY || "3000");;
 const STARTUP_BLOCKS = parseInt(process.env.STARTUP_BLOCKS || "5");

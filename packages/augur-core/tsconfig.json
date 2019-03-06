@@ -1,6 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "typeRoots": ["../augur-types/types", "../../node_modules/@types", "node_modules/@types"]
-  }
+    "outDir": "build",
+    "rootDir": "source"
+  },
+  "include": [
+    "./source/**/*"
+  ],
+  "references": []
 }

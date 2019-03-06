@@ -1,4 +1,6 @@
-import * as PouchDB from "pouchdb";
+import PouchDB from "pouchdb";
+PouchDB.plugin(require('pouchdb-find'));
+PouchDB.plugin(require('pouchdb-adapter-memory'));
 import * as _ from "lodash";
 
 interface DocumentIDToRev {
@@ -12,15 +14,13 @@ export interface BaseDocument {
 
 export abstract class AbstractDB {
   protected db: PouchDB.Database;
+  protected networkId: number;
   public readonly dbName: string;
 
-  protected constructor (dbName: string) {
+  protected constructor (networkId: number, dbName: string, dbFactory: PouchDBFactoryType) {
+    this.networkId = networkId;
     this.dbName = dbName;
-    this.db = this.makeDb();
-  }
-
-  protected makeDb(): PouchDB.Database {
-    return new PouchDB(`db/${this.dbName}`);
+    this.db = dbFactory(dbName);
   }
 
   private async getPouchRevFromId(id: string): Promise<string|undefined> {
@@ -42,7 +42,7 @@ export abstract class AbstractDB {
 
   protected async upsertDocument(id: string, document: object): Promise<PouchDB.Core.Response> {
     const previousBlockRev = await this.getPouchRevFromId(id);
-    return this.db.put(Object.assign(
+    return await this.db.put(Object.assign(
       previousBlockRev ? { _rev: previousBlockRev } : {},
       { _id: id },
       document,
@@ -64,10 +64,27 @@ export abstract class AbstractDB {
     });
     try {
       const results = await this.db.bulkDocs(mergedRevisionDocuments);
-      return _.every(results, (response) => (<PouchDB.Core.Response>response).ok )
+      return _.every(results, (response) => (<PouchDB.Core.Response>response).ok );
     } catch (err) {
       console.error(`ERROR in bulk sync: ${JSON.stringify(err)}`);
       return false;
     }
   }
+
+  public async getInfo(): Promise<PouchDB.Core.DatabaseInfo> {
+    return await this.db.info();
+  }
+
+  public async find(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
+    return await this.db.find(request);
+  }
+
+  public async allDocs(): Promise<PouchDB.Core.AllDocsResponse<{}>> {
+    return await this.db.allDocs({ include_docs: true });
+  }
+}
+
+export type PouchDBFactoryType = (dbName: string) => PouchDB.Database;
+export function PouchDBFactory(dbArgs : object) {
+  return (dbName: string) => new PouchDB(`db/${dbName}`, dbArgs);
 }

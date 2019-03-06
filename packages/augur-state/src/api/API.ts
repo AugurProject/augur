@@ -1,7 +1,7 @@
-import { Augur } from "augur-api";
+import { Augur } from "@augurproject/api";
 import { DB } from "../db/DB";
-import { Markets } from "./Markets"
-import { Users } from "./Users"
+import { Markets } from "./Markets";
+import { Users } from "./Users";
 
 export class API<TBigNumber> {
   private readonly augurAPI: Augur<TBigNumber>;

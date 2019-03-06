@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "target": "es5",
+    "lib": [
+      "es2017"
+    ],
+    "declarationMap": true,
+    "downlevelIteration": true,
+    "sourceMap": true,
+    "watch": false,
+    "strictNullChecks": true,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "typeRoots": [
+      "node_modules/@augurproject/types/types",
+      "node_modules/@types"
+    ]
+  }
+}

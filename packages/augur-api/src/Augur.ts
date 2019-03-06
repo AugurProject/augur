@@ -1,10 +1,9 @@
-import { Provider } from './ethereum/Provider';
-import { Events } from './api/Events';
-import { Contracts } from './api/Contracts';
-import { Trade } from './api/Trade';
-import { GenericAugurInterfaces } from 'augur-core';
-import { NetworkId, NetworkContractAddresses, ContractAddresses } from 'augur-artifacts';
-import * as addressesJson from '../../augur-artifacts/addresses.json';
+import { Provider } from "./ethereum/Provider";
+import { Events } from "./api/Events";
+import { Contracts } from "./api/Contracts";
+import { Trade } from "./api/Trade";
+import { GenericAugurInterfaces } from "@augurproject/core";
+import { addresses, ContractAddresses, NetworkContractAddresses, NetworkId } from "@augurproject/artifacts";
 
 export class Augur<TBigNumber> {
   public readonly provider: Provider;
@@ -23,7 +22,7 @@ export class Augur<TBigNumber> {
     this.networkId = networkId;
 
     // API
-    this.networkAddresses = <NetworkContractAddresses>addressesJson;
+    this.networkAddresses = <NetworkContractAddresses>addresses;
     this.addresses = this.networkAddresses[this.networkId];
     this.contracts = new Contracts(this.addresses, this.dependencies);
     this.events = new Events(this.provider, this.addresses.Augur);

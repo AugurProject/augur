@@ -2,7 +2,7 @@
 var options = require("options-parser");
 var fs = require("fs");
 var fileType = "utf8";
-const dockerRunFile = "../augur-artifacts/docker.json";
+const dockerRunFile = "../augur-artifacts/src/docker.json";
 
 var opts = {
   imageName: { required: true, short: "n", help: "Docker image name with tag" },

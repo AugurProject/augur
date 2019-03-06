@@ -9,6 +9,7 @@
     "yarn": ">=1.6.0"
   },
   "scripts": {
+    "build": "tsc -b",
     "build:ci-docker": "docker build . -t augurproject/gitlab-ci-base-node:latest",
     "clean": "lerna clean -y",
     "test": "jest",
@@ -19,11 +20,11 @@
     "docker:build:augur": "docker build -f support/Dockerfile -t augurproject/augur-build:latest .",
     "docker:build:pops": "lerna run --scope augur-tools docker:build",
     "docker:build:clean": "docker system prune",
-    "docker:geth:pop": "yarn workspace augur-tools docker:geth:pop",
-    "docker:pull": "yarn workspace augur-tools docker:pull",
-    "docker:geth:pop-15": "yarn workspace augur-tools docker:geth:pop-15",
-    "docker:geth:pop-normal-time": "yarn workspace augur-tools docker:geth:pop-normal-time",
-    "flash": "yarn workspace augur-tools flash"
+    "docker:geth:pop": "yarn workspace @augurproject/tools docker:geth:pop",
+    "docker:pull": "yarn workspace @augurproject/tools docker:pull",
+    "docker:geth:pop-15": "yarn workspace @augurproject/tools docker:geth:pop-15",
+    "docker:geth:pop-normal-time": "yarn workspace @augurproject/tools docker:geth:pop-normal-time",
+    "flash": "yarn workspace @augurproject/tools flash"
   },
   "devDependencies": {
     "babel-core": "7.0.0-bridge.0",
@@ -79,7 +80,7 @@
     "listr": "0.14.3",
     "rxjs-compat": "6.3.3",
     "ts-node": "7.0.1",
-    "typescript": "3.2.1",
+    "typescript": "3.3.3",
     "npm-run-all": "4.1.5"
   },
   "workspaces": {

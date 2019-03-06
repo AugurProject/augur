@@ -11959,11 +11959,11 @@
 			"name": "findBoundingOrders",
 			"outputs": [
 				{
-					"name": "betterOrderId",
+					"name": "",
 					"type": "bytes32"
 				},
 				{
-					"name": "worseOrderId",
+					"name": "",
 					"type": "bytes32"
 				}
 			],

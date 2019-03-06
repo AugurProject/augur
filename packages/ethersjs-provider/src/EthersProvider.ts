@@ -1,9 +1,9 @@
-import { NetworkId } from 'augur-artifacts';
-import { Provider, Log, Filter, LogValues } from 'augur-api';
-import { Transaction } from 'contract-dependencies';
-import { EthersProvider as EProvider, EthersSigner} from 'contract-dependencies-ethers';
-import { ethers } from 'ethers'
-import { Abi } from 'ethereum';
+import { NetworkId } from "@augurproject/artifacts";
+import { Filter, Log, LogValues, Provider } from "@augurproject/api";
+import { Transaction } from "contract-dependencies";
+import { EthersProvider as EProvider } from "contract-dependencies-ethers";
+import { ethers } from "ethers";
+import { Abi } from "ethereum";
 import * as _ from "lodash";
 
 interface ContractMapping {
@@ -51,7 +51,7 @@ export class EthersProvider extends ethers.providers.JsonRpcProvider implements 
             return val._hex;
             }
             return val;
-        })
+        });
         return logValues;
     }
 
