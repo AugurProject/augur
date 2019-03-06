@@ -2,6 +2,7 @@ import { Block, Log, FilterOptions } from "ethereumjs-blockstream";
 import * as _ from "lodash";
 import { EthersProvider } from "ethers-provider";
 import {BlockAndLogStreamerDependencies, ExtendedLog} from ".";
+import HttpProvider = require('ethjs-provider-http');
 
 
 export class EthersProviderBlockStreamAdapter implements BlockAndLogStreamerDependencies<ExtendedLog, Block> {

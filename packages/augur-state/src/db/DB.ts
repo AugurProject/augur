@@ -1,17 +1,11 @@
 import { SyncableDB } from "./SyncableDB";
-import { Augur } from "@augurproject/api";
+import { Augur, UserSpecificEvent } from "@augurproject/api";
 import { SyncStatus } from "./SyncStatus";
 import { PouchDBFactoryType } from "./AbstractDB";
 import { TrackedUsers } from "./TrackedUsers";
 import { MetaDB, SequenceIds } from "./MetaDB";
 import { UserSyncableDB } from "./UserSyncableDB";
 import {BlockAndLogStreamerListener, IBlockAndLogStreamerListener} from "./BlockAndLogStreamerListener";
-
-export interface UserSpecificEvent {
-  name: string;
-  numAdditionalTopics: number;
-  userTopicIndex: number;
-}
 
 export class DB<TBigNumber> {
   private networkId: number;

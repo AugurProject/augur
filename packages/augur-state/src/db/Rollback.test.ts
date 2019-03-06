@@ -1,7 +1,7 @@
 import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
 const settings = require("../settings.json");
-import { DB, UserSpecificEvent } from "../db/DB";
+import { DB } from "../db/DB";
 import { makeMock } from "../utils/MakeMock";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { EthersProvider } from "ethers-provider";
@@ -9,103 +9,10 @@ import {IBlockAndLogStreamerListener} from "./BlockAndLogStreamerListener";
 
 const TEST_NETWORK_ID = 4;
 
-// TODO Get these from GenericContractInterfaces (and do not include any that are unneeded)
-const genericEventNames: Array<string> = [
-    "DisputeCrowdsourcerCompleted",
-    "DisputeCrowdsourcerCreated",
-    "DisputeWindowCreated",
-    "MarketCreated",
-    "MarketFinalized",
-    "MarketMigrated",
-    "MarketParticipantsDisavowed",
-    "ReportingParticipantDisavowed",
-    "TimestampSet",
-    "TokensBurned",
-    "TokensMinted",
-    "UniverseCreated",
-    "UniverseForked",
-];
-  
-// TODO Update numAdditionalTopics/userTopicIndexes once contract events are updated
-const userSpecificEvents: Array<UserSpecificEvent> = [
-  {
-    "name": "CompleteSetsPurchased",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "CompleteSetsSold",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "DisputeCrowdsourcerContribution",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "DisputeCrowdsourcerRedeemed",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "InitialReporterRedeemed",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "InitialReportSubmitted",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "InitialReporterTransferred", 
-    "numAdditionalTopics": 2,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "MarketMailboxTransferred",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "MarketTransferred",
-    "numAdditionalTopics": 2,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "OrderCanceled",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "OrderCreated",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 0,
-  },
-  {
-    "name": "OrderFilled",
-    "numAdditionalTopics": 2,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "TokensTransferred",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "TradingProceedsClaimed",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-];
-
-
-
 /**
  * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.
  * Queries before & after rollback to ensure blocks are removed successfully.
- * Also checks MetaDB to make sure blocks/sequence IDs were removed correctly 
+ * Also checks MetaDB to make sure blocks/sequence IDs were removed correctly
  * and checks DBs to make sure highest sync block is correct.
  */
 test("sync databases", async () => {
@@ -120,12 +27,12 @@ test("sync databases", async () => {
     };
 
     const db = await DB.createAndInitializeDB(
-      TEST_NETWORK_ID, 
-      settings.blockstreamDelay, 
-      uploadBlockNumbers[TEST_NETWORK_ID], 
-      trackedUsers, 
-      genericEventNames, 
-      userSpecificEvents,
+      TEST_NETWORK_ID,
+      settings.blockstreamDelay,
+      uploadBlockNumbers[TEST_NETWORK_ID],
+      trackedUsers,
+      augur.genericEventNames,
+      augur.userSpecificEvents,
       mock.makeFactory(),
       blockAndLogStreamerListener
     );
@@ -172,7 +79,7 @@ test("sync databases", async () => {
     let result = await db.findInSyncableDB(syncableDBName, queryObj);
     // TODO Remove warning property from expected result once indexes are being used on SyncableDBs
     expect(result).toEqual(expect.objectContaining(
-      { 
+      {
         docs:
         [ { _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 1) + '.000000000000001',
             universe: universe },
@@ -199,6 +106,6 @@ test("sync databases", async () => {
     expect( await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
     expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
     expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);
-  }, 
+  },
   30000
 );
