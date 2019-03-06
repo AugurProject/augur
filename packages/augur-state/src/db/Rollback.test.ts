@@ -4,7 +4,7 @@ import settings from "@augurproject/state/src/settings.json";
 import { DB, UserSpecificEvent } from "../db/DB";
 import { makeMock } from "../utils/MakeMock";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { EthersProvider } from "ethers-provider";
+import { EthersProvider, Web3AsyncSendable } from "ethers-provider";
 
 const TEST_NETWORK_ID = 4;
 
@@ -108,9 +108,10 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
  * and checks DBs to make sure highest sync block is correct.
  */
 test("sync databases", async () => {
-    const provider = new EthersProvider(settings.ethNodeURLs[TEST_NETWORK_ID]);
-    const contractDependencies = new ContractDependenciesEthers(provider, undefined, settings.testAccounts[0]);
-    const augur = await Augur.create(provider, contractDependencies);
+    const web3AsyncSendable = new Web3AsyncSendable(settings.ethNodeURLs[4], 5, 0, 40);
+    const ethersProvider = new EthersProvider(web3AsyncSendable);
+    const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
+    const augur = await Augur.create(ethersProvider, contractDependencies);
     const trackedUsers = [settings.testAccounts[0]];
     const mock = makeMock();
 
@@ -194,5 +195,5 @@ test("sync databases", async () => {
     expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
     expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);
   }, 
-  30000
+  120000
 );

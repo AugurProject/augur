@@ -1,20 +1,21 @@
 import { queue, retryable } from "async";
 import { AsyncSendable } from "ethers/providers/web3-provider";
-import { HttpProvider } from "web3/providers";
+import Web3 from "web3";
 
 export class Web3AsyncSendable implements AsyncSendable {
     private asyncQueue: any;
 
     constructor(
-        httpProvider: HttpProvider,
+        private ethNodeUrl: string,
         times: number, 
         interval: number, 
         concurrency: number
     ) 
     {
-        const send: any = async function(task: any, callback: any) {
+        const send: any = function(task: any, callback: any) {
             try {
-                const response = await httpProvider.send(task.request, task.callback);
+                const httpProvider = new Web3.providers.HttpProvider(ethNodeUrl);
+                const response = httpProvider.send(task.request, task.callback);
                 callback(null, response);
             } catch (err) {
                 callback(err);
