@@ -34,23 +34,25 @@
     "@augurproject/api": "1.0.0-0",
     "@augurproject/artifacts": "10.0.0-0",
     "@augurproject/core": "2.0.0-0",
-    "async": "2.6.1",
+    "@types/async": "2.4.1",
+    "@types/web3": "1.0.18",
+    "async": "2.6.2",
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.24",
     "ethers-provider": "1.0.0-0",
     "express": "4.16.4",
-    "flexsearch": "^0.6.2",
+    "flexsearch": "0.6.2",
     "io-ts": "1.4.2",
     "lodash": "4.17.11",
     "postinstall-build": "5.0.3",
     "pouchdb": "7.0.0",
-    "pouchdb-find": "^7.0.0"
+    "pouchdb-find": "7.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.3",
-    "jest": "^22.4.4",
-    "pouchdb-adapter-memory": "^7.0.0",
-    "ts-jest": "^23.10.5",
+    "@types/jest": "24.0.3",
+    "jest": "22.4.4",
+    "pouchdb-adapter-memory": "7.0.0",
+    "ts-jest": "23.10.5",
     "ts-node": "7.0.1",
     "tsconfig-paths": "3.7.0"
   }

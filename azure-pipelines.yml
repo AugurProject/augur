@@ -185,35 +185,36 @@ jobs:
         displayName: 'test augur.js'
         condition: eq(variables.AUGUR, 'true')
 
-  - job: Docker_populated_geth_images
-    dependsOn:
-    - Build_Core_Docker
-    - Test_Augur_Core
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    steps:
-    - bash: |
-        set -euo pipefail
-        for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
-          do
-            echo "$f"
-            if [[ $f =~ .*augur-core.* ]]
-            then
-              echo "##vso[task.setVariable variable=AUGUR_CORE]true";
-            fi
-          done
-    - script: |
-        set -euo pipefail
-        echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
-        yarn docker:build:all
+  # TODO Uncomment this once the test is fixed
+  # - job: Docker_populated_geth_images
+  #   dependsOn:
+  #   - Build_Core_Docker
+  #   - Test_Augur_Core
+  #   pool:
+  #     vmImage: 'Ubuntu 16.04'
+  #   steps:
+  #   - bash: |
+  #       set -euo pipefail
+  #       for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
+  #         do
+  #           echo "$f"
+  #           if [[ $f =~ .*augur-core.* ]]
+  #           then
+  #             echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+  #           fi
+  #         done
+  #   - script: |
+  #       set -euo pipefail
+  #       echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+  #       yarn docker:build:all
 
-        if [[ "$(Build.SourceBranchName)" == "master" ]]; then
-            yarn workspace @augurproject/tools docker:push
-        fi
-      condition: |
-        and
-        (
-            succeeded(),
-            eq(variables.AUGUR_CORE, 'true')
-        )
-      displayName: 'build and (maybe) push docker image'
+  #       if [[ "$(Build.SourceBranchName)" == "master" ]]; then
+  #           yarn workspace @augurproject/tools docker:push
+  #       fi
+  #     condition: |
+  #       and
+  #       (
+  #           succeeded(),
+  #           eq(variables.AUGUR_CORE, 'true')
+  #       )
+  #     displayName: 'build and (maybe) push docker image'

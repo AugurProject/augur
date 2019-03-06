@@ -1,9 +1,9 @@
-import { SyncableDB } from "./SyncableDB";
 import { Augur } from "@augurproject/api";
-import { SyncStatus } from "./SyncStatus";
-import { PouchDBFactoryType } from "./AbstractDB";
-import { TrackedUsers } from "./TrackedUsers";
 import { MetaDB, SequenceIds } from "./MetaDB";
+import { PouchDBFactoryType } from "./AbstractDB";
+import { SyncableDB } from "./SyncableDB";
+import { SyncStatus } from "./SyncStatus";
+import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
 
 export interface UserSpecificEvent {
@@ -108,31 +108,38 @@ export class DB<TBigNumber> {
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
    */
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
-    // Sync generic event types
     let dbSyncPromises = [];
+    const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
     for (let dbIndex in this.syncableDatabases) {
-      dbSyncPromises.push(this.syncableDatabases[dbIndex].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
+      dbSyncPromises.push(
+        this.syncableDatabases[dbIndex].sync(
+          augur,
+          chunkSize,
+          blockstreamDelay,
+          highestAvailableBlockNumber
+        )
+      );
     }
-    // TODO Figure out a way to handle concurrent request limit of 40
-    await Promise.all(dbSyncPromises)
-    .catch(error => {
-      throw error;
-    });
 
-    // Sync user-specific event types
-    // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
-    // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let userSpecificEvent of this.userSpecificEvents) {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        dbSyncPromises.push(this.syncableDatabases[dbName].sync(augur, chunkSize, blockstreamDelay, this.syncStatus.defaultStartSyncBlockNumber));
+        dbSyncPromises.push(
+          this.syncableDatabases[dbName].sync(
+            augur,
+            chunkSize,
+            blockstreamDelay,
+            highestAvailableBlockNumber
+          )
+        );
       }
     }
-    // TODO Figure out a way to handle concurrent request limit of 40
-    await Promise.all(dbSyncPromises)
-    .catch(error => {
-      throw error;
-    });
+
+    await Promise.all(dbSyncPromises).catch(
+      error => {
+        throw error;
+      }
+    );
 
     // TODO Call `this.metaDatabase.addNewBlock` here if derived DBs end up getting used
   }

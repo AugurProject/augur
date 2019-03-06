@@ -4,7 +4,7 @@ import settings from "@augurproject/state/src/settings.json";
 import { DB, UserSpecificEvent } from "../db/DB";
 import { makeMock } from "../utils/MakeMock";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { EthersProvider } from "ethers-provider";
+import { EthersProvider, Web3AsyncSendable } from "ethers-provider";
 
 const TEST_NETWORK_ID = 4;
 
@@ -24,7 +24,7 @@ const genericEventNames: Array<string> = [
     "UniverseCreated",
     "UniverseForked",
 ];
-  
+
 // TODO Update numAdditionalTopics/userTopicIndexes once contract events are updated
 const userSpecificEvents: Array<UserSpecificEvent> = [
   {
@@ -58,7 +58,7 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
     "userTopicIndex": 1,
   },
   {
-    "name": "InitialReporterTransferred", 
+    "name": "InitialReporterTransferred",
     "numAdditionalTopics": 2,
     "userTopicIndex": 2,
   },
@@ -104,22 +104,23 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
 /**
  * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.
  * Queries before & after rollback to ensure blocks are removed successfully.
- * Also checks MetaDB to make sure blocks/sequence IDs were removed correctly 
+ * Also checks MetaDB to make sure blocks/sequence IDs were removed correctly
  * and checks DBs to make sure highest sync block is correct.
  */
 test("sync databases", async () => {
-    const provider = new EthersProvider(settings.ethNodeURLs[TEST_NETWORK_ID]);
-    const contractDependencies = new ContractDependenciesEthers(provider, undefined, settings.testAccounts[0]);
-    const augur = await Augur.create(provider, contractDependencies);
+    const web3AsyncSendable = new Web3AsyncSendable(settings.ethNodeURLs[4], 5, 0, 40);
+    const ethersProvider = new EthersProvider(web3AsyncSendable);
+    const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
+    const augur = await Augur.create(ethersProvider, contractDependencies);
     const trackedUsers = [settings.testAccounts[0]];
     const mock = makeMock();
 
     const db = await DB.createAndInitializeDB(
-      TEST_NETWORK_ID, 
-      settings.blockstreamDelay, 
-      uploadBlockNumbers[TEST_NETWORK_ID], 
-      trackedUsers, 
-      genericEventNames, 
+      TEST_NETWORK_ID,
+      settings.blockstreamDelay,
+      uploadBlockNumbers[TEST_NETWORK_ID],
+      trackedUsers,
+      genericEventNames,
       userSpecificEvents,
       mock.makeFactory()
     );
@@ -166,7 +167,7 @@ test("sync databases", async () => {
     let result = await db.findInSyncableDB(syncableDBName, queryObj);
     // TODO Remove warning property from expected result once indexes are being used on SyncableDBs
     expect(result).toEqual(expect.objectContaining(
-      { 
+      {
         docs:
         [ { _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 1) + '.000000000000001',
             universe: universe },
@@ -193,6 +194,6 @@ test("sync databases", async () => {
     expect( await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
     expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
     expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);
-  }, 
-  30000
+  },
+  120000
 );
