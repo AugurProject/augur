@@ -96,7 +96,7 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
 ];
 
 
-// Need this interace to access these items on the documents in a SyncableDB
+// Need this interface to access these items on the documents in a SyncableDB
 interface SyncableMarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
   extraInfo: string
   description: string
