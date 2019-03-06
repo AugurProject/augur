@@ -3,7 +3,7 @@ import settings from "@augurproject/state/src/settings.json";
 import { PouchDBFactoryType } from "./db/AbstractDB";
 import { DB, UserSpecificEvent } from "./db/DB";
 
-// because flexsearch us a UMD type lib
+// because flexsearch is a UMD type lib
 import FlexSearch = require("flexsearch");
 
 // TODO Get these from GenericContractInterfaces (and do not include any that are unneeded)
