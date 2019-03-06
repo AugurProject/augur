@@ -134,14 +134,14 @@ def test_market_finish_crowdsourcing_dispute_bond_fork(localFixture, initialized
 
 def test_market_finalize_fork(localFixture, initializedMarket, mockUniverse):
     with raises(TransactionFailed, message="current market needs to be forking market"):
-        initializedMarket.finalizeFork()
+        initializedMarket.finalize()
 
     mockUniverse.setForkingMarket(initializedMarket.address)
     winningUniverse = localFixture.upload('solidity_test_helpers/MockUniverse.sol', 'winningUniverse')
     mockUniverse.setWinningChildUniverse(winningUniverse.address)
     winningUniverse.setParentPayoutDistributionHash(stringToBytes("111"))
 
-    assert initializedMarket.finalizeFork() == True
+    assert initializedMarket.finalize() == True
     assert initializedMarket.getWinningPayoutDistributionHash() == stringToBytes("111")
 
 

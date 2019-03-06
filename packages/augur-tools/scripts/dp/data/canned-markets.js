@@ -45,6 +45,7 @@ module.exports = [
       thisYear +
       "?",
     _endTime: parseInt(inOneMonths.getTime() / 1000, 10),
+    _affiliateFeeDivisor: 4,
     _topic: "space",
     _extraInfo: {
       resolutionSource: "http://www.spacex.com",
@@ -59,6 +60,7 @@ module.exports = [
       inOneMonths.toDateString() +
       "?",
     _endTime: parseInt(inOneMonths.getTime() / 1000, 10),
+    _affiliateFeeDivisor: 4,
     _topic: "space",
     _extraInfo: {
       resolutionSource: "http://www.spacex.com",
@@ -73,6 +75,7 @@ module.exports = [
       inTwoMonths.toDateString() +
       "?",
     _endTime: parseInt(inTwoMonths.getTime() / 1000, 10),
+    _affiliateFeeDivisor: 4,
     _topic: "space",
     _extraInfo: {
       resolutionSource: "http://www.spacex.com",
@@ -88,6 +91,7 @@ module.exports = [
       inTwoMonths.toDateString() +
       "?",
     _endTime: parseInt(inTwoMonths.getTime() / 1000, 10),
+    _affiliateFeeDivisor: 4,
     _topic: "politics",
     _extraInfo: {
       resolutionSource: "",
@@ -104,6 +108,7 @@ module.exports = [
       closingBellTomorrow.toDateString() +
       " than it closed at the previous day?",
     _endTime: parseInt(closingBellTomorrow.getTime() / 1000, 10),
+    _affiliateFeeDivisor: 4,
     _topic: "finance",
     _extraInfo: {
       resolutionSource: "https://www.google.com/finance?q=INDEXDJX:.DJI",
@@ -120,6 +125,7 @@ module.exports = [
       inThreeMonths.toDateString() +
       "?",
     _endTime: parseInt(inThreeMonths.getTime() / 1000, 10),
+    _affiliateFeeDivisor: 4,
     _topic: "Augur",
     _extraInfo: {
       resolutionSource: "https://augur.net",
@@ -135,6 +141,7 @@ module.exports = [
       inThreeMonths.toDateString() +
       "?",
     _endTime: parseInt(inThreeMonths.getTime() / 1000, 10),
+    _affiliateFeeDivisor: 4,
     _topic: "politics",
     _extraInfo: {
       resolutionSource: "",
@@ -150,6 +157,7 @@ module.exports = [
       inFourMonths.toDateString() +
       "?",
     _endTime: parseInt(inFourMonths.getTime() / 1000, 10),
+    _affiliateFeeDivisor: 4,
     _topic: "crypto",
     _extraInfo: {
       resolutionSource: "https://api.coinmarketcap.com/v1/ticker/ethereum",
@@ -165,6 +173,7 @@ module.exports = [
       inFourMonths.toDateString() +
       "?",
     _endTime: parseInt(inFourMonths.getTime() / 1000, 10),
+    _affiliateFeeDivisor: 4,
     _topic: "climate",
     _extraInfo: {
       resolutionSource: "",
@@ -179,6 +188,7 @@ module.exports = [
       inFiveMonths.toDateString() +
       "?",
     _endTime: parseInt(inFiveMonths.getTime() / 1000, 10),
+    _affiliateFeeDivisor: 4,
     _topic: "sports",
     _extraInfo: {
       resolutionSource: "ESPN",
@@ -194,6 +204,7 @@ module.exports = [
       inFiveMonths.toDateString() +
       "?",
     _endTime: parseInt(inFiveMonths.getTime() / 1000, 10),
+    _affiliateFeeDivisor: 4,
     _topic: "agriculture",
     _extraInfo: {
       tags: ["antibiotics", "China"],
@@ -212,6 +223,7 @@ module.exports = [
     _minPrice: "-10",
     _maxPrice: "120",
     tickSize: "0.1",
+    _affiliateFeeDivisor: 4,
     _topic: "temperature",
     _extraInfo: {
       resolutionSource:
@@ -252,6 +264,7 @@ module.exports = [
     _minPrice: "600",
     _maxPrice: "5000",
     tickSize: ".01",
+    _affiliateFeeDivisor: 4,
     _topic: "science",
     _extraInfo: {
       resolutionSource: "https://www.esrl.noaa.gov/gmd/ccgg/trends_ch4",
@@ -269,6 +282,7 @@ module.exports = [
     _minPrice: "0",
     _maxPrice: "30",
     tickSize: "1",
+    _affiliateFeeDivisor: 4,
     _topic: "medicine",
     _extraInfo: {
       resolutionSource:
@@ -305,6 +319,7 @@ module.exports = [
     _minPrice: "0",
     _maxPrice: "10000",
     tickSize: "1",
+    _affiliateFeeDivisor: 4,
     _topic: "crypto",
     _extraInfo: {
       resolutionSource:
@@ -339,6 +354,7 @@ module.exports = [
       "?",
     _endTime: parseInt(midnightTomorrow.getTime() / 1000, 10),
     _outcomes: ["Georgia", "Florida"],
+    _affiliateFeeDivisor: 4,
     _topic: "sports",
     _extraInfo: {
       resolutionSource: "http://www.mcubed.net/ncaaf/series/fla/ga.shtml",
@@ -369,6 +385,7 @@ module.exports = [
       "Existing, but changed from 2016",
       "Formally abolished"
     ],
+    _affiliateFeeDivisor: 4,
     _topic: "politics",
     _extraInfo: {
       resolutionSource: "",
@@ -392,6 +409,7 @@ module.exports = [
       "lava",
       "other"
     ],
+    _affiliateFeeDivisor: 4,
     _topic: "science",
     _extraInfo: {
       resolutionSource: "https://www.cdc.gov/nchs/nvss/deaths.htm",
@@ -432,6 +450,7 @@ module.exports = [
       "Palo Alto",
       "Hong Kong"
     ],
+    _affiliateFeeDivisor: 4,
     _topic: "housing",
     _extraInfo: {
       resolutionSource: "http://www.demographia.com",
@@ -474,6 +493,7 @@ module.exports = [
       "Palo Alto",
       "Hong Kong"
     ],
+    _affiliateFeeDivisor: 4,
     _topic: "housing",
     _extraInfo: {
       resolutionSource: "http://www.demographia.com",

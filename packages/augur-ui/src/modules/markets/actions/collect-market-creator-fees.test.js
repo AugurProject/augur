@@ -31,7 +31,7 @@ describe("modules/markets/actions/market-creator-fees-management.js", () => {
     augur.api.Cash = jest.fn(() => {});
     augur.api.Cash.balanceOf = jest.fn(() => {});
     augur.api.Cash.balanceOf.mockImplementation((params, cb) => {
-      if (params._owner === MailboxAddresses[0]) {
+      if (params._tokenHolder === MailboxAddresses[0]) {
         cb(null, speedomatic.fix(20, "string"));
       } else {
         cb(null, 0);

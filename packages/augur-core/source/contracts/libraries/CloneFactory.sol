@@ -1,4 +1,4 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1167.md
 

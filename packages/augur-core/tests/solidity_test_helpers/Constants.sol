@@ -1,32 +1,33 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.4;
 
-import 'reporting/IMarket.sol';
-import 'reporting/Reporting.sol';
-import 'trading/Order.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/trading/Order.sol';
 
 
 contract Constants {
-    uint256 public constant DESIGNATED_REPORTING_DURATION_SECONDS = Reporting.getDesignatedReportingDurationSeconds();
-    uint256 public constant DISPUTE_ROUND_DURATION_SECONDS = Reporting.getDisputeRoundDurationSeconds();
-    uint256 public constant FORK_DURATION_SECONDS = Reporting.getForkDurationSeconds();
-    uint256 public constant MAXIMUM_MARKET_DURATION = Reporting.getMaximumMarketDuration();
+    function DESIGNATED_REPORTING_DURATION_SECONDS() public returns (uint256) { return Reporting.getDesignatedReportingDurationSeconds(); }
+    function DISPUTE_ROUND_DURATION_SECONDS() public returns (uint256) { return Reporting.getDisputeRoundDurationSeconds(); }
+    function INITIAL_DISPUTE_ROUND_DURATION_SECONDS() public returns (uint256) { return Reporting.getInitialDisputeRoundDurationSeconds(); }
+    function FORK_DURATION_SECONDS() public returns (uint256) { return Reporting.getForkDurationSeconds(); }
+    function MAXIMUM_MARKET_DURATION() public returns (uint256) { return Reporting.getMaximumMarketDuration(); }
 
-    uint256 public constant DEFAULT_VALIDITY_BOND = Reporting.getDefaultValidityBond();
-    uint256 public constant VALIDITY_BOND_FLOOR = Reporting.getValidityBondFloor();
-    uint256 public constant DEFAULT_REPORTING_FEE_DIVISOR = Reporting.getDefaultReportingFeeDivisor();
-    uint256 public constant MAXIMUM_REPORTING_FEE_DIVISOR = Reporting.getMaximumReportingFeeDivisor();
-    uint256 public constant MINIMUM_REPORTING_FEE_DIVISOR = Reporting.getMinimumReportingFeeDivisor();
+    function DEFAULT_VALIDITY_BOND() public returns (uint256) { return Reporting.getDefaultValidityBond(); }
+    function VALIDITY_BOND_FLOOR() public returns (uint256) { return Reporting.getValidityBondFloor(); }
+    function DEFAULT_REPORTING_FEE_DIVISOR() public returns (uint256) { return Reporting.getDefaultReportingFeeDivisor(); }
+    function MAXIMUM_REPORTING_FEE_DIVISOR() public returns (uint256) { return Reporting.getMaximumReportingFeeDivisor(); }
+    function MINIMUM_REPORTING_FEE_DIVISOR() public returns (uint256) { return Reporting.getMinimumReportingFeeDivisor(); }
 
-    uint256 public constant TARGET_INVALID_MARKETS_DIVISOR = Reporting.getTargetInvalidMarketsDivisor();
-    uint256 public constant TARGET_INCORRECT_DESIGNATED_REPORT_MARKETS_DIVISOR = Reporting.getTargetIncorrectDesignatedReportMarketsDivisor();
-    uint256 public constant TARGET_DESIGNATED_REPORT_NO_SHOWS_DIVISOR = Reporting.getTargetDesignatedReportNoShowsDivisor();
-    uint256 public constant TARGET_REP_MARKET_CAP_MULTIPLIER = Reporting.getTargetRepMarketCapMultiplier();
-    uint256 public constant TARGET_REP_MARKET_CAP_DIVISOR = Reporting.getTargetRepMarketCapDivisor();
+    function TARGET_INVALID_MARKETS_DIVISOR() public returns (uint256) { return Reporting.getTargetInvalidMarketsDivisor(); }
+    function TARGET_INCORRECT_DESIGNATED_REPORT_MARKETS_DIVISOR() public returns (uint256) { return Reporting.getTargetIncorrectDesignatedReportMarketsDivisor(); }
+    function TARGET_DESIGNATED_REPORT_NO_SHOWS_DIVISOR() public returns (uint256) { return Reporting.getTargetDesignatedReportNoShowsDivisor(); }
+    function TARGET_REP_MARKET_CAP_MULTIPLIER() public returns (uint256) { return Reporting.getTargetRepMarketCapMultiplier(); }
+    function TARGET_REP_MARKET_CAP_DIVISOR() public returns (uint256) { return Reporting.getTargetRepMarketCapDivisor(); }
 
-    uint256 public constant INITIAL_REP_SUPPLY = Reporting.getInitialREPSupply();
+    function INITIAL_REP_SUPPLY() public returns (uint256) { return Reporting.getInitialREPSupply(); }
 
-    uint256 public constant BID = uint256(Order.Types.Bid);
-    uint256 public constant ASK = uint256(Order.Types.Ask);
-    uint256 public constant LONG = uint256(Order.TradeDirections.Long);
-    uint256 public constant SHORT = uint256(Order.TradeDirections.Short);
+    function BID() public returns (uint256) { return uint256(Order.Types.Bid); }
+    function ASK() public returns (uint256) { return uint256(Order.Types.Ask); }
+    function LONG() public returns (uint256) { return uint256(Order.TradeDirections.Long); }
+    function SHORT() public returns (uint256) { return uint256(Order.TradeDirections.Short); }
 }

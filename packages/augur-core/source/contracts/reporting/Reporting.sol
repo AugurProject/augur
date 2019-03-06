@@ -1,9 +1,10 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
 library Reporting {
     uint256 private constant DESIGNATED_REPORTING_DURATION_SECONDS = 1 days;
     uint256 private constant DISPUTE_ROUND_DURATION_SECONDS = 7 days;
+    uint256 private constant INITIAL_DISPUTE_ROUND_DURATION_SECONDS = 1 days;
     uint256 private constant FORK_DURATION_SECONDS = 60 days;
     uint256 private constant MAXIMUM_MARKET_DURATION = 91 days;
 
@@ -27,6 +28,7 @@ library Reporting {
     uint256 private constant AUCTION_DURATION = 1 days; // Each auction lasts one day
 
     function getDesignatedReportingDurationSeconds() internal pure returns (uint256) { return DESIGNATED_REPORTING_DURATION_SECONDS; }
+    function getInitialDisputeRoundDurationSeconds() internal pure returns (uint256) { return INITIAL_DISPUTE_ROUND_DURATION_SECONDS; }
     function getDisputeRoundDurationSeconds() internal pure returns (uint256) { return DISPUTE_ROUND_DURATION_SECONDS; }
     function getForkDurationSeconds() internal pure returns (uint256) { return FORK_DURATION_SECONDS; }
     function getMaximumMarketDuration() internal pure returns (uint256) { return MAXIMUM_MARKET_DURATION; }

@@ -1,27 +1,27 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
 
-import 'libraries/ITyped.sol';
-import 'libraries/IOwnable.sol';
-import 'trading/ICash.sol';
-import 'trading/IShareToken.sol';
-import 'reporting/IUniverse.sol';
-import 'reporting/IDisputeWindow.sol';
-import 'trading/IShareToken.sol';
-import 'reporting/IReportingParticipant.sol';
-import 'reporting/IV2ReputationToken.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/IOwnable.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IUniverse.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
+import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IReportingParticipant.sol';
+import 'ROOT/reporting/IV2ReputationToken.sol';
+import 'ROOT/reporting/IInitialReporter.sol';
+import 'ROOT/IAugur.sol';
 
 
-contract IMarket is ITyped, IOwnable {
+contract IMarket is IOwnable {
     enum MarketType {
         YES_NO,
         CATEGORICAL,
         SCALAR
     }
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public returns (bool _success);
-    function derivePayoutDistributionHash(uint256[] _payoutNumerators) public view returns (bytes32);
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public returns (bool _success);
+    function derivePayoutDistributionHash(uint256[] memory _payoutNumerators) public view returns (bytes32);
     function getUniverse() public view returns (IUniverse);
     function getDisputeWindow() public view returns (IDisputeWindow);
     function getNumberOfOutcomes() public view returns (uint256);
@@ -33,12 +33,13 @@ contract IMarket is ITyped, IOwnable {
     function getEndTime() public view returns (uint256);
     function getWinningPayoutDistributionHash() public view returns (bytes32);
     function getWinningPayoutNumerator(uint256 _outcome) public view returns (uint256);
+    function getWinningReportingParticipant() public view returns (IReportingParticipant);
     function getReputationToken() public view returns (IV2ReputationToken);
     function getFinalizationTime() public view returns (uint256);
-    function getInitialReporterAddress() public view returns (address);
+    function getInitialReporter() public view returns (IInitialReporter);
     function getDesignatedReportingEndTime() public view returns (uint256);
     function deriveMarketCreatorFeeAmount(uint256 _amount) public view returns (uint256);
-    function recordMarketCreatorFees(uint256 _marketCreatorFees) public returns (bool);
+    function recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress) public returns (bool);
     function isContainerForShareToken(IShareToken _shadyTarget) public view returns (bool);
     function isContainerForReportingParticipant(IReportingParticipant _reportingParticipant) public view returns (bool);
     function isInvalid() public view returns (bool);
@@ -46,6 +47,5 @@ contract IMarket is ITyped, IOwnable {
     function designatedReporterWasCorrect() public view returns (bool);
     function designatedReporterShowed() public view returns (bool);
     function isFinalized() public view returns (bool);
-    function finalizeFork() public returns (bool);
     function assertBalances() public view returns (bool);
 }

@@ -11,8 +11,9 @@ from os import path, walk, makedirs, remove as remove_file
 import pytest
 from re import findall
 from solc import compile_standard
-from utils import bytesToHexString, longToHexString, stringToBytes, BuyWithCash
 from reporting_utils import proceedToFork
+from mock_templates import generate_mock_contracts
+from utils import bytesToHexString, longToHexString, stringToBytes, BuyWithCash
 
 # Make TXs free.
 ethereum.opcodes.GCONTRACTBYTE = 0
@@ -135,7 +136,6 @@ class ContractsFixture:
         absoluteFilePath = resolveRelativePath(relativeFilePath)
         filename = path.basename(relativeFilePath)
         contractName = path.splitext(filename)[0]
-        print absoluteFilePath
         compilerParameter = {
             'language': 'Solidity',
             'sources': {
@@ -145,7 +145,7 @@ class ContractsFixture:
             },
             'settings': {
                 # TODO: Remove 'remappings' line below and update 'sources' line above
-                'remappings': [ '=%s/' % resolveRelativePath(self.relativeContractsPath), 'TEST=%s/' % resolveRelativePath(self.relativeTestContractsPath) ],
+                'remappings': [ 'ROOT=%s/' % resolveRelativePath(self.relativeContractsPath), 'TEST=%s/' % resolveRelativePath(self.relativeTestContractsPath) ],
                 'optimizer': {
                     'enabled': True,
                     'runs': 200
@@ -176,7 +176,7 @@ class ContractsFixture:
                 self.getAllDependencies(dependencyPath, knownDependencies)
         matches = findall("import ['\"](.*?)['\"]", fileContents)
         for match in matches:
-            dependencyPath = path.join(BASE_PATH, self.relativeContractsPath, match)
+            dependencyPath = path.join(BASE_PATH, self.relativeContractsPath, match).replace("ROOT/", "")
             if "TEST" in dependencyPath:
                 dependencyPath = path.join(BASE_PATH, self.relativeTestContractsPath, match).replace("TEST/", "")
             if not path.isfile(dependencyPath):
@@ -209,6 +209,7 @@ class ContractsFixture:
             remove_file('./allFiredEvents')
         self.relativeContractsPath = '../source/contracts'
         self.relativeTestContractsPath = 'solidity_test_helpers'
+        # self.relativeTestContractsPath = 'mock_templates/contracts'
         self.externalContractsPath = '../source/contracts/external'
         self.coverageMode = pytest.config.option.cover
         self.subFork = pytest.config.option.subFork
@@ -217,7 +218,6 @@ class ContractsFixture:
             self.relativeContractsPath = '../coverageEnv/contracts'
             self.relativeTestContractsPath = '../coverageEnv/solidity_test_helpers'
             self.externalContractsPath = '../coverageEnv/contracts/external'
-
 
     def writeLogToFile(self, message):
         with open('./allFiredEvents', 'a') as logsFile:
@@ -324,11 +324,18 @@ class ContractsFixture:
                 if name == 'Orders': continue # In testing we use the TestOrders version which lets us call protected methods
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
+                if name in ['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeOverloadToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
+                # TODO these four are necessary for test_universe but break everything else
+                # if name == 'MarketFactory': continue # tests use mock
+                # if name == 'ReputationTokenFactory': continue # tests use mock
+                # if name == 'DisputeWindowFactory': continue # tests use mock
+                # if name == 'UniverseFactory': continue # tests use mock
                 onlySignatures = ["ReputationToken", "TestNetReputationToken", "Universe"]
                 if name in onlySignatures:
                     self.generateAndStoreSignature(path.join(directory, filename))
                 elif name == "TimeControlled":
                     self.uploadAndAddToAugur(path.join(directory, filename), lookupKey = "Time", signatureKey = "TimeControlled")
+                # TODO this breaks test_universe tests but is necessary for other tests
                 elif name == "TestNetReputationTokenFactory":
                     self.uploadAndAddToAugur(path.join(directory, filename), lookupKey = "ReputationTokenFactory", signatureKey = "TestNetReputationTokenFactory")
                 elif name == "TestOrders":
@@ -336,11 +343,20 @@ class ContractsFixture:
                 else:
                     self.uploadAndAddToAugur(path.join(directory, filename))
 
+    def buildMockContracts(self):
+        testContractsPath = resolveRelativePath(self.relativeTestContractsPath)
+        with open("./output/contracts/abi.json") as f:
+            abi = json_load(f)
+        if not path.exists(testContractsPath):
+            makedirs(testContractsPath)
+        mock_sources = generate_mock_contracts("0.5.4", abi)
+        for source in mock_sources.values():
+            source.write(testContractsPath)
+
     def uploadAllMockContracts(self):
         for directory, _, filenames in walk(resolveRelativePath(self.relativeTestContractsPath)):
             for filename in filenames:
-                name = path.splitext(filename)[0]
-                extension = path.splitext(filename)[1]
+                name, extension = path.splitext(filename)
                 if extension != '.sol': continue
                 if not name.startswith('Mock'): continue
                 if 'Factory' in name:
@@ -386,9 +402,7 @@ class ContractsFixture:
 
     def uploadAugur(self):
         # We have to upload Augur first
-        augur = self.upload("../source/contracts/Augur.sol")
-        self.contracts['Augur'].registerContract("Augur".ljust(32, '\x00'), augur.address)
-        return augur
+        return self.upload("../source/contracts/Augur.sol")
 
     def uploadShareToken(self, augurAddress = None):
         augurAddress = augurAddress if augurAddress else self.contracts['Augur'].address
@@ -416,27 +430,27 @@ class ContractsFixture:
         childUniverse = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Universe']), childUniverseAddress)
         return childUniverse
 
-    def createYesNoMarket(self, universe, endTime, feePerEthInWei, designatedReporterAddress, sender=tester.k0, topic="", description="description", extraInfo="", validityBond=0):
+    def createYesNoMarket(self, universe, endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, sender=tester.k0, topic="", description="description", extraInfo="", validityBond=0):
         marketCreationFee = validityBond or universe.getOrCacheMarketCreationCost()
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, designatedReporterAddress, topic, description, extraInfo, sender=sender)
+            marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, topic, description, extraInfo, sender=sender)
         assert marketAddress
         market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
         return market
 
-    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerEthInWei, designatedReporterAddress, sender=tester.k0, topic="", description="description", extraInfo=""):
+    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, sender=tester.k0, topic="", description="description", extraInfo=""):
         marketCreationFee = universe.getOrCacheMarketCreationCost()
         outcomes = [" "] * numOutcomes
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            marketAddress = universe.createCategoricalMarket(endTime, feePerEthInWei, designatedReporterAddress, outcomes, topic, description, extraInfo, sender=sender)
+            marketAddress = universe.createCategoricalMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, outcomes, topic, description, extraInfo, sender=sender)
         assert marketAddress
         market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
         return market
 
-    def createScalarMarket(self, universe, endTime, feePerEthInWei, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=tester.k0, description="description", extraInfo=""):
+    def createScalarMarket(self, universe, endTime, feePerEthInWei, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=tester.k0, description="description", extraInfo=""):
         marketCreationFee = universe.getOrCacheMarketCreationCost()
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            marketAddress = universe.createScalarMarket(endTime, feePerEthInWei, designatedReporterAddress, minPrice, maxPrice, numTicks, "", description, extraInfo, sender=sender)
+            marketAddress = universe.createScalarMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, minPrice, maxPrice, numTicks, "", description, extraInfo, sender=sender)
         assert marketAddress
         market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
         return market
@@ -446,6 +460,7 @@ class ContractsFixture:
             universe = universe,
             endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerEthInWei = 10**16,
+            affiliateFeeDivisor = 4,
             designatedReporterAddress = tester.a0,
             sender = sender,
             topic= topic,
@@ -459,6 +474,7 @@ class ContractsFixture:
             numOutcomes = numOutcomes,
             endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerEthInWei = 10**16,
+            affiliateFeeDivisor = 0,
             designatedReporterAddress = tester.a0,
             sender = sender)
 
@@ -467,6 +483,7 @@ class ContractsFixture:
             universe = universe,
             endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerEthInWei = 10**16,
+            affiliateFeeDivisor = 0,
             maxPrice= maxPrice,
             minPrice= minPrice,
             numTicks= numTicks,
@@ -493,7 +510,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
 
 @pytest.fixture(scope="session")
 def augurInitializedWithMocksSnapshot(fixture, augurInitializedSnapshot):
-    fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
+    fixture.buildMockContracts()
     fixture.uploadAllMockContracts()
     return fixture.createSnapshot()
 

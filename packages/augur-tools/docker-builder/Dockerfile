@@ -1,4 +1,4 @@
-FROM augurproject/augur-core:latest as core-builder
+FROM augurproject/augur-core:monorepo as core-builder
 
 # using the augur image grab all repos
 FROM augurproject/augur-build:latest AS augur-build
@@ -25,10 +25,14 @@ COPY --from=augur-build /augur /augur
 COPY --from=augur-build /opt /opt
 COPY --from=augur-build /usr/local /usr/local
 COPY --from=core-builder /app/output augur/packages/augur-core/output
+COPY --from=core-builder /app augur/packages/augur-core
 COPY --from=core-builder /app/output/contracts augur/packages/augur-artifacts
 
 RUN echo {} > /augur/packages/augur-artifacts/addresses.json \
   && echo {} > /augur/packages/augur-artifacts/upload-block-numbers.json
+
+# TODO: a better way to do this using lerna natively?
+RUN yarn link --cwd /augur/packages/augur-core && cd /augur/packages/augur-tools && yarn link @augurproject/core
 
 RUN bash /augur/packages/augur-tools/docker-builder/run-geth-and-deploy.sh
 

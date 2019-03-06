@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   clique-deploy:
-    image: augurproject/augur-core:latest
+    image: augurproject/augur-core:monorepo
     build:
       context: ../../../../../../
       dockerfile: packages/augur-core/source/support/Dockerfile
@@ -13,7 +13,7 @@ services:
       - ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a
 
   aura-deploy:
-    image: augurproject/augur-core:latest
+    image: augurproject/augur-core:monorepo
     build:
       context: ../../../../../../
       dockerfile: packages/augur-core/source/support/Dockerfile
@@ -25,7 +25,7 @@ services:
       - ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a
 
   instantseal-deploy:
-    image: augurproject/augur-core:latest
+    image: augurproject/augur-core:monorepo
     build:
       context: ../../../../../../
       dockerfile: packages/augur-core/source/support/Dockerfile

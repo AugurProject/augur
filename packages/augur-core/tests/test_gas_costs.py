@@ -5,7 +5,7 @@ from utils import longTo32Bytes, PrintGasUsed, fix
 from constants import BID, ASK, YES, NO
 from datetime import timedelta
 from trading.test_claimTradingProceeds import acquireLongShares, finalizeMarket
-from reporting_utils import proceedToNextRound, proceedToFork, finalizeFork, proceedToDesignatedReporting
+from reporting_utils import proceedToNextRound, proceedToFork, finalize, proceedToDesignatedReporting
 
 # Market Methods
 MARKET_CREATION =               1657851
@@ -49,12 +49,13 @@ def test_marketCreation(localFixture, universe):
 
     endTime = long(localFixture.chain.head_state.timestamp + timedelta(days=1).total_seconds())
     feePerEthInWei = 10**16
+    affiliateFeeDivisor = 100
     designatedReporterAddress = tester.a0
     numTicks = 10 ** 18
     numOutcomes = 2
 
     with PrintGasUsed(localFixture, "DisputeWindow:createMarket", MARKET_CREATION):
-        marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, designatedReporterAddress, "", "description", "", value = marketCreationFee)
+        marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, "", "description", "", value = marketCreationFee)
 
 def test_marketFinalization(localFixture, universe, market):
     proceedToNextRound(localFixture, market)
@@ -91,7 +92,7 @@ def test_orderCreation(hints, localFixture, categoricalMarket):
 def test_orderFilling(localFixture, market):
     createOrder = localFixture.contracts['CreateOrder']
     fillOrder = localFixture.contracts['FillOrder']
-    tradeGroupID = "42"
+    tradeGroupID = longTo32Bytes(42)
 
     creatorCost = fix('2', '4000')
     fillerCost = fix('2', '6000')
@@ -100,7 +101,7 @@ def test_orderFilling(localFixture, market):
     orderID = createOrder.publicCreateOrder(ASK, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=creatorCost)
 
     with PrintGasUsed(localFixture, "FillOrder:publicFillOrder", FILL_ORDER):
-        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, sender = tester.k2, value=fillerCost)
+        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2, value=fillerCost)
 
 def test_winningShareRedmption(localFixture, cash, market):
     claimTradingProceeds = localFixture.contracts['ClaimTradingProceeds']

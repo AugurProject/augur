@@ -138,20 +138,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "time",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -195,20 +181,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getTimestamp",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -274,6 +246,20 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -465,25 +451,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				}
-			],
-			"name": "isValidMarket",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -569,43 +536,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_key",
-					"type": "bytes32"
-				},
-				{
-					"name": "_address",
-					"type": "address"
-				}
-			],
-			"name": "registerContract",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "uploader",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_universe",
 					"type": "address"
 				},
@@ -670,25 +600,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"name": "registry",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -860,6 +771,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -1311,20 +1241,6 @@
 		},
 		{
 			"constant": false,
-			"inputs": [],
-			"name": "finishDeployment",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
 			"inputs": [
 				{
 					"name": "_token",
@@ -1442,31 +1358,6 @@
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_key",
-					"type": "bytes32"
-				}
-			],
-			"name": "lookup",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "constructor"
 		},
 		{
 			"anonymous": false,
@@ -2375,6 +2266,318 @@
 			"type": "event"
 		}
 	],
+	"Controlled": [
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		}
+	],
+	"Controller": [
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getTimestamp",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				}
+			],
+			"name": "assertIsWhitelisted",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_useAuction",
+					"type": "bool"
+				}
+			],
+			"name": "toggleFeedSource",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getAugur",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_key",
+					"type": "bytes32"
+				},
+				{
+					"name": "_address",
+					"type": "address"
+				}
+			],
+			"name": "registerContract",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"name": "registry",
+			"outputs": [
+				{
+					"name": "name",
+					"type": "bytes32"
+				},
+				{
+					"name": "contractAddress",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "useAuction",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				}
+			],
+			"name": "removeFromWhitelist",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "owner",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "whitelist",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "turnOffDeploymentMode",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "deploymentMode",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				}
+			],
+			"name": "addToWhitelist",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_newOwner",
+					"type": "address"
+				}
+			],
+			"name": "transferOwnership",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_key",
+					"type": "bytes32"
+				}
+			],
+			"name": "lookup",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		}
+	],
 	"LegacyReputationToken": [
 		{
 			"constant": true,
@@ -2430,20 +2633,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "getTimestamp",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "getTotalTheoreticalSupply",
 			"outputs": [
 				{
@@ -2480,6 +2669,20 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -2655,7 +2858,7 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "pure",
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -2717,6 +2920,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -3264,6 +3486,20 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "decimals",
 			"outputs": [
 				{
@@ -3473,20 +3709,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "getUniverse",
 			"outputs": [
 				{
@@ -3510,6 +3732,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -3665,20 +3906,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "legacyRepToken",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -3828,7 +4055,7 @@
 		{
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -3923,904 +4150,6 @@
 			"type": "event"
 		}
 	],
-	"TestOrders": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_sharesFilled",
-					"type": "uint256"
-				},
-				{
-					"name": "_tokensFilled",
-					"type": "uint256"
-				}
-			],
-			"name": "testRecordFillOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getAmount",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_highestOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "descendOrderList",
-			"outputs": [
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_blockNumber",
-					"type": "uint256"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_moneyEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_sharesEscrowed",
-					"type": "uint256"
-				}
-			],
-			"name": "getOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "assertIsNotBetterPrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "trade",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_sharesFilled",
-					"type": "uint256"
-				},
-				{
-					"name": "_tokensFilled",
-					"type": "uint256"
-				}
-			],
-			"name": "recordFillOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				}
-			],
-			"name": "setPrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getPrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				}
-			],
-			"name": "getTotalEscrowed",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_bestOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worstOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "findBoundingOrders",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				},
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "assertIsNotWorsePrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getOrderMoneyEscrowed",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "fillOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "isBetterPrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getOutcome",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "createOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "cancelOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "testRemoveOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_moneyEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_sharesEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				}
-			],
-			"name": "saveOrder",
-			"outputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				}
-			],
-			"name": "getBestOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				}
-			],
-			"name": "getLastOutcomePrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getWorseOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				}
-			],
-			"name": "getWorstOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getBetterOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_moneyEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_sharesEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				}
-			],
-			"name": "testSaveOrder",
-			"outputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getMarket",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getOrderType",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint8"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "isWorsePrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getOrderCreator",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getOrderSharesEscrowed",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_lowestOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "ascendOrderList",
-			"outputs": [
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "removeOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "constructor"
-		}
-	],
 	"Time": [
 		{
 			"constant": true,
@@ -4834,6 +4163,39 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -4869,7 +4231,7 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "augur",
+			"name": "getController",
 			"outputs": [
 				{
 					"name": "",
@@ -4878,6 +4240,39 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getOwner",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -4919,25 +4314,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getTypeName",
@@ -4952,6 +4328,25 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_newOwner",
+					"type": "address"
+				}
+			],
+			"name": "transferOwnership",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"inputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
@@ -4963,7 +4358,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -4992,7 +4387,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -5025,7 +4420,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -5062,7 +4457,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -5091,7 +4486,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -5120,7 +4515,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -5149,7 +4544,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -5174,7 +4569,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -5223,7 +4618,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -5252,7 +4647,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -5281,7 +4676,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -5310,7 +4705,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -5335,6 +4730,39 @@
 		}
 	],
 	"DelegationTarget": [
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
 		{
 			"constant": true,
 			"inputs": [],
@@ -5364,6 +4792,20 @@
 				{
 					"name": "",
 					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -5462,6 +4904,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -5711,6 +5172,20 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [],
 			"name": "initializeNewAuction",
@@ -5732,20 +5207,6 @@
 				{
 					"name": "",
 					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "claimTradingProceeds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -5792,6 +5253,29 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_reputationToken",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -5872,39 +5356,11 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "initialRepPriceInAttoEth",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "getAuctionEndTime",
 			"outputs": [
 				{
 					"name": "",
 					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -5954,6 +5410,25 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "bootstrapMode",
@@ -5984,11 +5459,11 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "completeSets",
+			"name": "manualRepPriceInAttoEth",
 			"outputs": [
 				{
 					"name": "",
-					"type": "address"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -6038,6 +5513,25 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_repPriceInAttoEth",
+					"type": "uint256"
+				}
+			],
+			"name": "setRepPriceInAttoEth",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getAuctionStartTime",
@@ -6083,19 +5577,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_reputationToken",
+					"name": "_priceFeeder",
 					"type": "address"
 				}
 			],
-			"name": "initialize",
+			"name": "removeAuthorizedPriceFeeder",
 			"outputs": [
 				{
 					"name": "",
@@ -6151,6 +5637,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_priceFeeder",
+					"type": "address"
+				}
+			],
+			"name": "addAuthorizedPriceFeeder",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -6230,6 +5735,33 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_auction",
+					"type": "address"
+				},
+				{
+					"name": "_redemptionToken",
+					"type": "address"
+				},
+				{
+					"name": "_auctionIndex",
+					"type": "uint256"
+				}
+			],
+			"name": "initialize",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "totalSupply",
@@ -6282,6 +5814,20 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -6385,20 +5931,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "auctionIndex",
 			"outputs": [
 				{
@@ -6422,6 +5954,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -6479,37 +6030,6 @@
 			"constant": false,
 			"inputs": [],
 			"name": "redeem",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_auction",
-					"type": "address"
-				},
-				{
-					"name": "_redemptionToken",
-					"type": "address"
-				},
-				{
-					"name": "_auctionIndex",
-					"type": "uint256"
-				}
-			],
-			"name": "initialize",
 			"outputs": [
 				{
 					"name": "",
@@ -6712,41 +6232,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_size",
-					"type": "uint256"
-				},
-				{
-					"name": "_payoutDistributionHash",
-					"type": "bytes32"
-				},
-				{
-					"name": "_payoutNumerators",
-					"type": "uint256[]"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "totalSupply",
@@ -6805,6 +6290,51 @@
 				}
 			],
 			"name": "transferFrom",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_size",
+					"type": "uint256"
+				},
+				{
+					"name": "_payoutDistributionHash",
+					"type": "bytes32"
+				},
+				{
+					"name": "_payoutNumerators",
+					"type": "uint256[]"
+				}
+			],
+			"name": "initialize",
 			"outputs": [
 				{
 					"name": "",
@@ -6886,20 +6416,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -6916,6 +6432,25 @@
 				{
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -7194,33 +6729,6 @@
 	],
 	"DisputeWindow": [
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_disputeWindowId",
-					"type": "uint256"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "isActive",
@@ -7251,11 +6759,11 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "getEndTime",
+			"name": "getController",
 			"outputs": [
 				{
 					"name": "",
-					"type": "uint256"
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -7265,11 +6773,11 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "augur",
+			"name": "getEndTime",
 			"outputs": [
 				{
 					"name": "",
-					"type": "address"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -7294,6 +6802,25 @@
 			"constant": false,
 			"inputs": [],
 			"name": "onMarketFinalized",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
 			"outputs": [
 				{
 					"name": "",
@@ -7358,6 +6885,29 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_disputeWindowId",
+					"type": "uint256"
+				}
+			],
+			"name": "initialize",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -7449,6 +6999,20 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "designatedReporterShowed",
 			"outputs": [
 				{
@@ -7458,6 +7022,29 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_designatedReporter",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -7482,20 +7069,6 @@
 				{
 					"name": "",
 					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -7545,6 +7118,25 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getReportTimestamp",
@@ -7589,33 +7181,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_designatedReporter",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -7779,6 +7344,43 @@
 	],
 	"Mailbox": [
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -7814,20 +7416,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "getOwner",
 			"outputs": [
 				{
@@ -7840,17 +7428,22 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "cash",
-			"outputs": [
+			"constant": false,
+			"inputs": [
 				{
-					"name": "",
+					"name": "_controller",
 					"type": "address"
 				}
 			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -7865,33 +7458,6 @@
 			],
 			"payable": true,
 			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_owner",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -7941,6 +7507,49 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_endTime",
+					"type": "uint256"
+				},
+				{
+					"name": "_feePerEthInAttoEth",
+					"type": "uint256"
+				},
+				{
+					"name": "_designatedReporterAddress",
+					"type": "address"
+				},
+				{
+					"name": "_creator",
+					"type": "address"
+				},
+				{
+					"name": "_numOutcomes",
+					"type": "uint256"
+				},
+				{
+					"name": "_numTicks",
+					"type": "uint256"
+				}
+			],
+			"name": "initialize",
+			"outputs": [
+				{
+					"name": "_success",
+					"type": "bool"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
 			"type": "function"
 		},
 		{
@@ -8026,6 +7635,20 @@
 				{
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -8174,53 +7797,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_endTime",
-					"type": "uint256"
-				},
-				{
-					"name": "_feePerEthInAttoEth",
-					"type": "uint256"
-				},
-				{
-					"name": "_designatedReporterAddress",
-					"type": "address"
-				},
-				{
-					"name": "_creator",
-					"type": "address"
-				},
-				{
-					"name": "_numOutcomes",
-					"type": "uint256"
-				},
-				{
-					"name": "_numTicks",
-					"type": "uint256"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "_success",
-					"type": "bool"
-				}
-			],
-			"payable": true,
-			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -8276,20 +7852,6 @@
 			"constant": true,
 			"inputs": [],
 			"name": "getWinningReportingParticipant",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
 			"outputs": [
 				{
 					"name": "",
@@ -8382,6 +7944,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -8846,6 +8427,20 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "decimals",
 			"outputs": [
 				{
@@ -9036,20 +8631,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "getUniverse",
 			"outputs": [
 				{
@@ -9073,6 +8654,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -9228,20 +8828,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "legacyRepToken",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -9391,7 +8977,7 @@
 		{
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -9593,20 +9179,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "marketFactory",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -9670,6 +9242,20 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -9939,20 +9525,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "getForkReputationGoal",
 			"outputs": [
 				{
@@ -9998,6 +9570,25 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -10010,20 +9601,6 @@
 				{
 					"name": "",
 					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "completeSets",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -10100,20 +9677,6 @@
 				}
 			],
 			"name": "getDisputeWindowByTimestamp",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "disputeWindowFactory",
 			"outputs": [
 				{
 					"name": "",
@@ -10536,7 +10099,7 @@
 		{
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				},
 				{
@@ -10557,7 +10120,7 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "orders",
+			"name": "getController",
 			"outputs": [
 				{
 					"name": "",
@@ -10588,28 +10151,14 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				}
 			],
-			"name": "initialize",
+			"name": "setController",
 			"outputs": [
 				{
 					"name": "",
@@ -10618,20 +10167,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		}
 	],
@@ -10740,6 +10275,20 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "decimals",
 			"outputs": [
 				{
@@ -10843,6 +10392,25 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -11085,7 +10653,7 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "augur",
+			"name": "getController",
 			"outputs": [
 				{
 					"name": "",
@@ -11113,6 +10681,25 @@
 				{
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -11179,39 +10766,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -11300,21 +10854,7 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "fillOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
+			"name": "getController",
 			"outputs": [
 				{
 					"name": "",
@@ -11338,6 +10878,25 @@
 				}
 			],
 			"name": "publicSellCompleteSetsWithCash",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
 			"outputs": [
 				{
 					"name": "",
@@ -11420,46 +10979,13 @@
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
 		}
 	],
 	"CreateOrder": [
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "trade",
+			"name": "getController",
 			"outputs": [
 				{
 					"name": "",
@@ -11577,9 +11103,30 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"FillOrder": [
+		{
 			"constant": true,
 			"inputs": [],
-			"name": "augur",
+			"name": "getController",
 			"outputs": [
 				{
 					"name": "",
@@ -11594,11 +11141,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
+					"name": "_controller",
 					"type": "address"
 				}
 			],
-			"name": "initialize",
+			"name": "setController",
 			"outputs": [
 				{
 					"name": "",
@@ -11607,64 +11154,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}
-	],
-	"FillOrder": [
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "trade",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "orders",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -11702,25 +11191,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_filler",
 					"type": "address"
 				},
@@ -11751,20 +11221,6 @@
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
 		}
 	],
 	"Order": [],
@@ -11782,37 +11238,6 @@
 				{
 					"name": "",
 					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_highestOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "descendOrderList",
-			"outputs": [
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
 				}
 			],
 			"payable": false,
@@ -11898,17 +11323,26 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "trade",
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "incrementTotalEscrowed",
 			"outputs": [
 				{
 					"name": "",
-					"type": "address"
+					"type": "bool"
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -11967,6 +11401,20 @@
 		},
 		{
 			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [
 				{
 					"name": "_orderId",
@@ -12001,49 +11449,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_bestOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worstOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "findBoundingOrders",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				},
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -12094,20 +11499,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "fillOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [
 				{
 					"name": "_type",
@@ -12146,34 +11537,6 @@
 				{
 					"name": "",
 					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "createOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "cancelOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -12237,20 +11600,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -12350,6 +11699,25 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -12369,6 +11737,29 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "decrementTotalEscrowed",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -12385,25 +11776,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -12491,9 +11863,14 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_orderId",
+					"type": "bytes32"
+				}
+			],
+			"name": "removeOrder",
 			"outputs": [
 				{
 					"name": "",
@@ -12501,7 +11878,116 @@
 				}
 			],
 			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"OrdersFetcher": [
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_highestOrderId",
+					"type": "bytes32"
+				}
+			],
+			"name": "descendOrderList",
+			"outputs": [
+				{
+					"name": "_betterOrderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_worseOrderId",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_bestOrderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_worstOrderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_betterOrderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_worseOrderId",
+					"type": "bytes32"
+				}
+			],
+			"name": "findBoundingOrders",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				},
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -12533,25 +12019,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "removeOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	],
@@ -12617,33 +12084,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "totalSupply",
@@ -12682,6 +12122,20 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -12728,53 +12182,11 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "claimTradingProceeds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "fillOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "ETERNAL_APPROVAL_VALUE",
 			"outputs": [
 				{
 					"name": "",
 					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "createOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -12802,20 +12214,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "cancelOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -12865,20 +12263,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -12920,6 +12304,25 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "symbol",
@@ -12927,20 +12330,6 @@
 				{
 					"name": "",
 					"type": "string"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "completeSets",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -12960,6 +12349,29 @@
 				}
 			],
 			"name": "transfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "initialize",
 			"outputs": [
 				{
 					"name": "",
@@ -13164,7 +12576,7 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "orders",
+			"name": "getController",
 			"outputs": [
 				{
 					"name": "",
@@ -13176,45 +12588,22 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "fillOrder",
-			"outputs": [
+			"constant": false,
+			"inputs": [
 				{
-					"name": "",
+					"name": "_controller",
 					"type": "address"
 				}
 			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "createOrder",
+			"name": "setController",
 			"outputs": [
 				{
 					"name": "",
-					"type": "address"
+					"type": "bool"
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -13262,25 +12651,6 @@
 			],
 			"payable": true,
 			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -13336,20 +12706,6 @@
 			],
 			"payable": true,
 			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{

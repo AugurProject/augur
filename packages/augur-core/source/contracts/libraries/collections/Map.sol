@@ -1,12 +1,13 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'libraries/Ownable.sol';
-import 'libraries/Initializable.sol';
+import 'ROOT/libraries/Ownable.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/libraries/collections/IMap.sol';
 
 
 // Provides a mapping that has a count and more control over the behavior of Key errors. Additionally allows for a clean way to clear an existing map by simply creating a new one on owning contracts.
-contract Map is Ownable, Initializable {
-    mapping(bytes32 => bytes32) private items;
+contract Map is Ownable, Initializable, IMap {
+    mapping(bytes32 => address) private items;
     uint256 private count;
 
     function initialize(address _owner) public beforeInitialized returns (bool) {
@@ -15,18 +16,14 @@ contract Map is Ownable, Initializable {
         return true;
     }
 
-    function add(bytes32 _key, bytes32 _value) public onlyOwner returns (bool) {
-        require(_value != bytes32(0));
+    function add(bytes32 _key, address _value) public onlyOwner returns (bool) {
+        require(_value != address(0));
         if (contains(_key)) {
             return false;
         }
         items[_key] = _value;
         count += 1;
         return true;
-    }
-
-    function add(bytes32 _key, address _value) public onlyOwner returns (bool) {
-        return add(_key, bytes32(_value));
     }
 
     function remove(bytes32 _key) public onlyOwner returns (bool) {
@@ -38,26 +35,18 @@ contract Map is Ownable, Initializable {
         return true;
     }
 
-    function getValueOrZero(bytes32 _key) public view returns (bytes32) {
-        return items[_key];
-    }
-
-    function get(bytes32 _key) public view returns (bytes32) {
-        bytes32 _value = items[_key];
-        require(_value != bytes32(0));
+    function get(bytes32 _key) public view returns (address) {
+        address _value = items[_key];
+        require(_value != address(0));
         return _value;
     }
 
     function getAsAddressOrZero(bytes32 _key) public view returns (address) {
-        return address(getValueOrZero(_key));
-    }
-
-    function getAsAddress(bytes32 _key) public view returns (address) {
-        return address(get(_key));
+        return items[_key];
     }
 
     function contains(bytes32 _key) public view returns (bool) {
-        return items[_key] != bytes32(0);
+        return items[_key] != address(0);
     }
 
     function getCount() public view returns (uint256) {

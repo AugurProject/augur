@@ -10,7 +10,7 @@ var chalk = require("chalk");
 var columnify = require("columnify");
 var options = require("options-parser");
 
-var NetworkConfiguration = require("augur-core").NetworkConfiguration;
+var NetworkConfiguration = require("@augurproject/core").NetworkConfiguration;
 var getBalance = require("./get-balance");
 var getMarketBalance = require("./get-market-balance");
 var listMarkets = require("./list-markets");

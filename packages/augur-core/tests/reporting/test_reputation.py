@@ -6,7 +6,7 @@ from utils import AssertLog, bytesToHexString
 def test_init(contractsFixture, universe):
     reputationTokenFactory = contractsFixture.contracts['ReputationTokenFactory']
     assert reputationTokenFactory
-    reputationTokenAddress = reputationTokenFactory.createReputationToken(contractsFixture.contracts['Augur'].address, universe.address)
+    reputationTokenAddress = reputationTokenFactory.createReputationToken(contractsFixture.contracts['Augur'].address, universe.address, "0x0000000000000000000000000000000000000000")
     reputationToken = contractsFixture.applySignature('ReputationToken', reputationTokenAddress)
 
     assert reputationToken.name() == "Reputation"

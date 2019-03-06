@@ -1,7 +1,7 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'reporting/IDisputeCrowdsourcer.sol';
-import 'reporting/IMarket.sol';
+import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/reporting/IMarket.sol';
 import 'TEST/MockVariableSupplyToken.sol';
 
 

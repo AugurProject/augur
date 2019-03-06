@@ -32,6 +32,7 @@ function createMarket(
       meta: auth,
       universe: augur.contracts.addresses[augur.rpc.getNetworkID()].Universe,
       _feePerEthInWei: speedomatic.fix(0.01, "hex"),
+      _affiliateFeeDivisor: market._affiliateFeeDivisor,
       _designatedReporterAddress: designatedReporterAddress,
       onSent: function(res) {
         if (debugOptions.cannedMarkets)

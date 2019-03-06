@@ -1,9 +1,9 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'libraries/ITyped.sol';
-import 'libraries/token/ERC20Token.sol';
-import 'reporting/IAuction.sol';
-import 'IAugur.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/reporting/IAuction.sol';
+import 'ROOT/IAugur.sol';
 
 
 contract IAuctionToken is ITyped, ERC20Token {

@@ -1,7 +1,7 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.4;
 
-import 'reporting/IInitialReporter.sol';
-import 'reporting/IMarket.sol';
+import 'ROOT/reporting/IInitialReporter.sol';
+import 'ROOT/reporting/IMarket.sol';
 
 
 contract MockInitialReporter is IInitialReporter {
