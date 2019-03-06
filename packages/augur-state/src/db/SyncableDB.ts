@@ -26,9 +26,8 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         dbController.notifySyncableDBAdded(this);
     }
 
-    public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, defaultStartSyncBlockNumber: number): Promise<void> {
+    public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
         let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
-        const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
         const goalBlock = highestAvailableBlockNumber - blockStreamDelay;
         console.log(`SYNCING ${this.dbName} from ${highestSyncedBlockNumber} to ${goalBlock}`);
         while (highestSyncedBlockNumber < goalBlock) {

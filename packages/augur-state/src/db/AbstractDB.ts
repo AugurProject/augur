@@ -1,3 +1,4 @@
+import fs from "fs";
 import PouchDB from "pouchdb";
 PouchDB.plugin(require('pouchdb-find'));
 PouchDB.plugin(require('pouchdb-adapter-memory'));
@@ -86,5 +87,9 @@ export abstract class AbstractDB {
 
 export type PouchDBFactoryType = (dbName: string) => PouchDB.Database;
 export function PouchDBFactory(dbArgs : object) {
-  return (dbName: string) => new PouchDB(`db/${dbName}`, dbArgs);
+  const dbDir = "db";
+  if (!fs.existsSync(dbDir)){
+    fs.mkdirSync(dbDir);
+  }
+  return (dbName: string) => new PouchDB(`${dbDir}/${dbName}`, dbArgs);
 }

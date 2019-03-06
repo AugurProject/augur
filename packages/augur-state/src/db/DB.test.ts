@@ -1,6 +1,6 @@
 import { TrackedUsers } from "./TrackedUsers";
 import { DB } from "./DB";
-import { EthersProvider } from "ethers-provider";
+import { EthersProvider, Web3AsyncSendable } from "ethers-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
@@ -11,9 +11,9 @@ import {IBlockAndLogStreamerListener} from "./BlockAndLogStreamerListener";
 const mock = makeMock();
 const TEST_NETWORK_ID = 4;
 const defaultStartSyncBlockNumber = uploadBlockNumbers[TEST_NETWORK_ID];
-const provider = new EthersProvider(settings.ethNodeURLs[TEST_NETWORK_ID]);
-const contractDependencies = new ContractDependenciesEthers(provider, undefined, settings.testAccounts[0]);
-
+const web3AsyncSendable = new Web3AsyncSendable(settings.ethNodeURLs[4], 5, 0, 40);
+const ethersProvider = new EthersProvider(web3AsyncSendable);
+const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
 
 let blockAndLogStreamerListener:IBlockAndLogStreamerListener;
 beforeEach(async () => {
@@ -28,11 +28,10 @@ beforeEach(async () => {
 
 let augur: Augur<any>;
 beforeAll(async () => {
-    augur = await Augur.create(provider, contractDependencies);
+    augur = await Augur.create(ethersProvider, contractDependencies);
 });
 
 test("database failure during trackedUsers.getUsers() call", async () => {
-
     const db = await DB.createAndInitializeDB(
       TEST_NETWORK_ID,
       settings.blockstreamDelay,
