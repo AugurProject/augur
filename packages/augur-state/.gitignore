@@ -7,3 +7,4 @@ definitions/
 upload-block*
 tags
 db/*
+tsconfig-local.json
