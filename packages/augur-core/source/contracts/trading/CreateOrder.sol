@@ -32,6 +32,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
 
     function createOrder(address _creator, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, uint256 _outcome, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, bool _ignoreShares, ERC20Token _kycToken) external afterInitialized nonReentrant returns (bytes32) {
         require(augur.isValidMarket(_market));
+        require(_kycToken == ERC20Token(0) || _kycToken.balanceOf(_creator) > 0);
         require(msg.sender == trade || msg.sender == address(this));
         Order.Data memory _orderData = Order.create(augur, _creator, _outcome, _type, _attoshares, _price, _market, _betterOrderId, _worseOrderId, _ignoreShares, _kycToken);
         Order.escrowFunds(_orderData);
@@ -41,6 +42,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
 
     function publicCreateOrders(uint256[] memory _outcomes, Order.Types[] memory _types, uint256[] memory _attoshareAmounts, uint256[] memory _prices, IMarket _market, bool _ignoreShares, bytes32 _tradeGroupId, ERC20Token _kycToken) public afterInitialized nonReentrant returns (bytes32[] memory _orders) {
         require(augur.isValidMarket(_market));
+        require(_kycToken == ERC20Token(0) || _kycToken.balanceOf(msg.sender) > 0);
         _orders = new bytes32[]( _types.length);
 
         for (uint256 i = 0; i <  _types.length; i++) {

@@ -273,3 +273,23 @@ def test_publicCreateOrders(contractsFixture, cash, market):
         assert orders.getOrderCreator(orderIDs[i]) == bytesToHexString(tester.a0)
         assert orders.getOrderMoneyEscrowed(orderIDs[i]) == attoshareAmounts[i] * prices[i] if type == BID else attoshareAmounts[i] * (10000 - prices[i])
         assert orders.getOrderSharesEscrowed(orderIDs[i]) == 0
+
+def test_publicCreateOrder_kycToken(contractsFixture, cash, market, reputationToken):
+    orders = contractsFixture.contracts['Orders']
+    createOrder = contractsFixture.contracts['CreateOrder']
+
+    with raises(TransactionFailed):
+        createOrder.publicCreateOrder(BID, fix(1), 4000, market.address, 1, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(7), False, reputationToken.address, sender=tester.k1)
+
+    with BuyWithCash(cash, fix(1, 4000), tester.k0, "create order"):
+        orderID = createOrder.publicCreateOrder(BID, fix(1), 4000, market.address, 1, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(7), False, reputationToken.address)
+        assert orderID
+
+    assert orders.getAmount(orderID) == fix(1)
+    assert orders.getPrice(orderID) == 4000
+    assert orders.getKYCToken(orderID) == reputationToken.address
+    assert orders.getOrderCreator(orderID) == bytesToHexString(tester.a0)
+    assert orders.getOrderMoneyEscrowed(orderID) == fix(1, 4000)
+    assert orders.getOrderSharesEscrowed(orderID) == 0
+    assert orders.getBetterOrderId(orderID) == bytearray(32)
+    assert orders.getWorseOrderId(orderID) == bytearray(32)

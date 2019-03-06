@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 from ethereum.tools import tester
+from ethereum.tools.tester import TransactionFailed
+from pytest import raises
 from utils import fix, bytesToHexString, AssertLog, longTo32Bytes, longToHexString, stringToBytes, BuyWithCash, nullAddress
 from constants import BID, ASK, YES, NO
 
@@ -329,7 +331,7 @@ def test_publicFillOrder_ask_price_zero(contractsFixture, cash, market, universe
 
     # create order
     with BuyWithCash(cash, creatorCost, tester.k1, "creating order"):
-        orderID = createOrder.publicCreateOrder(ASK, fix(2), 0, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, sender = tester.k1)
+        orderID = createOrder.publicCreateOrder(ASK, fix(2), 0, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     # fill best order
     fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
@@ -357,7 +359,45 @@ def test_publicFillOrder_bid_price_zero(contractsFixture, cash, market, universe
     fillerCost = fix(2, 10000)
 
     # create order
-    orderID = createOrder.publicCreateOrder(BID, fix(2), 0, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, sender = tester.k1)
+    orderID = createOrder.publicCreateOrder(BID, fix(2), 0, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
+
+    with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
+        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
+
+    assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH - creatorCost
+    assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH - fillerCost
+    assert orders.getAmount(orderID) == 0
+    assert orders.getPrice(orderID) == 0
+    assert orders.getOrderCreator(orderID) == longToHexString(0)
+    assert orders.getOrderMoneyEscrowed(orderID) == 0
+    assert orders.getOrderSharesEscrowed(orderID) == 0
+    assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
+    assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
+    assert fillOrderID == 0
+
+def test_publicFillOrder_kyc(contractsFixture, cash, market, universe, reputationToken):
+    createOrder = contractsFixture.contracts['CreateOrder']
+    fillOrder = contractsFixture.contracts['FillOrder']
+    orders = contractsFixture.contracts['Orders']
+    tradeGroupID = longTo32Bytes(42)
+
+    initialMakerETH = contractsFixture.chain.head_state.get_balance(tester.a1)
+    initialFillerETH = contractsFixture.chain.head_state.get_balance(tester.a2)
+
+    creatorCost = fix('2', '4000')
+    fillerCost = fix('2', '6000')
+
+    # Using the reputation token as "KYC"
+    reputationToken.transfer(tester.a1, 1)
+
+    # create order
+    with BuyWithCash(cash, creatorCost, tester.k1, "creating order"):
+        orderID = createOrder.publicCreateOrder(ASK, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, reputationToken.address, sender = tester.k1)
+
+    with raises(TransactionFailed):
+        fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
+
+    reputationToken.transfer(tester.a2, 1)
 
     # fill best order
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):

@@ -177,11 +177,12 @@ contract Orders is IOrders, Initializable {
         _order.price = _price;
         _order.amount = _amount;
         _order.creator = _sender;
+        _order.kycToken = _kycToken;
         _order.moneyEscrowed = _moneyEscrowed;
         marketOrderData[address(_market)].totalEscrowed += _moneyEscrowed;
         _order.sharesEscrowed = _sharesEscrowed;
         insertOrderIntoList(_order, _betterOrderId, _worseOrderId);
-        augur.logOrderCreated(_type, _amount, _price, _sender, _moneyEscrowed, _sharesEscrowed, _tradeGroupId, _orderId, _order.market.getUniverse(), address(_order.market.getShareToken(_order.outcome)));
+        augur.logOrderCreated(_type, _amount, _price, _sender, _moneyEscrowed, _sharesEscrowed, _tradeGroupId, _orderId, _order.market.getUniverse(), address(_order.market.getShareToken(_order.outcome)), _kycToken);
         return _orderId;
     }
 

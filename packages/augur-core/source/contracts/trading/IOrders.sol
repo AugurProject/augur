@@ -19,6 +19,7 @@ contract IOrders {
     function getOrderMoneyEscrowed(bytes32 _orderId) public view returns (uint256);
     function getBetterOrderId(bytes32 _orderId) public view returns (bytes32);
     function getWorseOrderId(bytes32 _orderId) public view returns (bytes32);
+    function getKYCToken(bytes32 _orderId) public view returns (ERC20Token);
     function getBestOrderId(Order.Types _type, IMarket _market, uint256 _outcome, ERC20Token _kycToken) public view returns (bytes32);
     function getWorstOrderId(Order.Types _type, IMarket _market, uint256 _outcome, ERC20Token _kycToken) public view returns (bytes32);
     function getLastOutcomePrice(IMarket _market, uint256 _outcome) public view returns (uint256);
