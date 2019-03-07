@@ -2,7 +2,7 @@
 const options = require("options-parser");
 const fs = require("fs");
 const fileType = "utf8";
-const dockerRunFile = "../augur-artifacts/docker.json";
+const dockerRunFile = "../augur-artifacts/src/docker.json";
 
 function errorOccurred(err, opts) {
   if (err) {

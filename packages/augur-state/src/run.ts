@@ -1,17 +1,21 @@
+import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { EthersProvider, Web3AsyncSendable } from "ethers-provider";
+import { BigNumber as EthersBigNumber } from "ethers/utils";
+import { Augur } from "@augurproject/api";
+import { uploadBlockNumbers } from "@augurproject/artifacts";
+import settings from "@augurproject/state/src/settings.json";
+import { PouchDBFactory } from "./db/AbstractDB";
 import { Controller } from "./Controller";
-import { Augur } from 'augur-api';
-import { ethers } from 'ethers';
-import { EthersProvider } from 'ethers-provider';
-import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 
-const TEST_RINKEBY_URL = "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM";
-const TEST_ACCOUNT = "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
-
+// TODO Add Ethereum node URL as param
 export async function start() {
-  const provider = new EthersProvider(TEST_RINKEBY_URL);
-  const contractDependencies = new ContractDependenciesEthers(provider, undefined, TEST_ACCOUNT);
-  const augur = await Augur.create(provider, contractDependencies);
-  const controller = new Controller<ethers.utils.BigNumber>(augur);
+  const web3AsyncSendable = new Web3AsyncSendable(settings.ethNodeURLs[4], 5, 0, 40);
+  const ethersProvider = new EthersProvider(web3AsyncSendable);
+  const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
+  const augur = await Augur.create(ethersProvider, contractDependencies);
+  const pouchDBFactory = PouchDBFactory({});
+  const networkId = Number(augur.networkId);
+  const controller = new Controller<EthersBigNumber>(augur, networkId, settings.blockstreamDelay, uploadBlockNumbers[networkId], [settings.testAccounts[0]], pouchDBFactory);
   controller.run();
 }
 

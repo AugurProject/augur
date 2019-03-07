@@ -1,11 +1,11 @@
-set -x
+set -Eeuxo pipefail
 # copy files so augur.js is consistant with docker image passed as $1
 IMAGE=$1
 TEMP1="./temp.file"
 ADD_TEMP2="./temp2.file"
 BLOCK_TEMP2=".temp3.file"
-ADDRESSES="../augur-artifacts/addresses.json"
-BLOCKS="../augur-artifacts/upload-block-numbers.json"
+ADDRESSES="../augur-artifacts/src/addresses.json"
+BLOCKS="../augur-artifacts/src/upload-block-numbers.json"
 
 echo "processing $IMAGE $ADDRESSES"
 docker run --rm --entrypoint cat $IMAGE /augur/packages/augur-artifacts/addresses.json > $TEMP1

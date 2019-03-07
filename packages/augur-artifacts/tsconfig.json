@@ -1,3 +1,17 @@
 {
-    "extends": "../../tsconfig.json"
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": "src"
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "files": [
+    "./src/abi.json",
+    "./src/addresses.json",
+    "./src/contracts.json",
+    "./src/upload-block-numbers.json"
+  ],
+  "references": []
 }

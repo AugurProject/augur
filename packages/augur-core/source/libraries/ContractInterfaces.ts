@@ -75,6 +75,8 @@ export class FillOrder extends c.FillOrder<ethers.utils.BigNumber> {
 }
 export class Orders extends c.Orders<ethers.utils.BigNumber> {
 }
+export class ProfitLoss extends c.ProfitLoss<ethers.utils.BigNumber> {
+}
 export class ShareToken extends c.ShareToken<ethers.utils.BigNumber> {
 }
 export class Trade extends c.Trade<ethers.utils.BigNumber> {

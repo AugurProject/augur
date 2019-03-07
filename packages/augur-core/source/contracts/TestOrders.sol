@@ -22,7 +22,7 @@ contract TestOrders is Orders {
         return this.removeOrder(_orderId);
     }
 
-    function testRecordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled) public returns (bool) {
-        return this.recordFillOrder(_orderId, _sharesFilled, _tokensFilled);
+    function testRecordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled, uint256 _fill) public returns (bool) {
+        return this.recordFillOrder(_orderId, _sharesFilled, _tokensFilled, _fill);
     }
 }

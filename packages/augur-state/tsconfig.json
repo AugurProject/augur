@@ -1,6 +1,31 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "typeRoots": ["../augur-types/types"]
-  }
+    "outDir": "build",
+    "rootDir": "src"
+  },
+  "exclude": [
+    "./src/**/*.test.ts"
+  ],
+  "include": [
+    "./src/**/*",
+    "./src/**/*.json"
+  ],
+  "references": [
+    {
+      "path": "../ethersjs-provider"
+    },
+    {
+      "path": "../augur-core"
+    },
+    {
+      "path": "../augur-types"
+    },
+    {
+      "path": "../augur-api"
+    },
+    {
+      "path": "../augur-artifacts"
+    }
+  ]
 }

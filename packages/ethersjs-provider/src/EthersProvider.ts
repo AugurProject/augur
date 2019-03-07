@@ -1,16 +1,17 @@
-import { NetworkId } from 'augur-artifacts';
-import { Provider, Log, Filter, LogValues } from 'augur-api';
-import { Transaction } from 'contract-dependencies';
-import { EthersProvider as EProvider, EthersSigner} from 'contract-dependencies-ethers';
-import { ethers } from 'ethers'
-import { Abi } from 'ethereum';
+import { NetworkId } from "@augurproject/artifacts";
+import { Filter, Log, LogValues, Provider } from "@augurproject/api";
+import { Transaction } from "contract-dependencies";
+import { EthersProvider as EProvider } from "contract-dependencies-ethers";
+import { ethers } from "ethers";
+import { Abi } from "ethereum";
 import * as _ from "lodash";
+import { Web3AsyncSendable } from "./Web3AsyncSendable";
 
 interface ContractMapping {
     [contractName: string]: ethers.utils.Interface;
 }
 
-export class EthersProvider extends ethers.providers.JsonRpcProvider implements Provider, EProvider {
+export class EthersProvider extends ethers.providers.Web3Provider implements Provider, EProvider {
     private contractMapping: ContractMapping = {};
 
     public async call(transaction: Transaction<ethers.utils.BigNumber>): Promise<string> {
@@ -51,7 +52,7 @@ export class EthersProvider extends ethers.providers.JsonRpcProvider implements 
             return val._hex;
             }
             return val;
-        })
+        });
         return logValues;
     }
 

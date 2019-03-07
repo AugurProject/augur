@@ -42,7 +42,7 @@ jobs:
           node --version
           echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
           docker pull $CORE_IMAGE_LATEST;
-          yarn workspace augur-core docker:build;
+          yarn workspace @augurproject/core docker:build;
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
           docker push $CORE_IMAGE_BUILD
         condition: eq(variables.AUGUR_CORE, 'true')
@@ -103,20 +103,20 @@ jobs:
           docker pull $CORE_IMAGE_BUILD
           docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST
           if [[ "$TESTS" == "integration:geth" ]]; then
-            yarn workspace augur-core docker:run:test:integration:geth;
+            yarn workspace @augurproject/core docker:run:test:integration:geth;
           elif [[ "$TESTS" == "integration:parity" ]]; then
-            yarn workspace augur-core docker:run:test:integration:parity;
+            yarn workspace @augurproject/core docker:run:test:integration:parity;
           elif [[ "$TESTS" == "security:mythril" ]]; then
-            yarn workspace augur-core docker:run:test:security:mythril;
+            yarn workspace @augurproject/core docker:run:test:security:mythril;
             cat $(find . -name test-results.log)
           elif [[ "$TESTS" == "security:maian" ]]; then
-            yarn workspace augur-core docker:run:test:security:maian;
+            yarn workspace @augurproject/core docker:run:test:security:maian;
           elif [[ "$TESTS" == "security:smt" ]]; then
-            yarn workspace augur-core docker:run:test:security:smt;
+            yarn workspace @augurproject/core docker:run:test:security:smt;
           elif [[ "$TESTS" == "security:oyente" ]]; then
-            yarn workspace augur-core docker:run:test:security:oyente;
+            yarn workspace @augurproject/core docker:run:test:security:oyente;
           else
-            yarn workspace augur-core docker:run:test:unit -- $TESTS;
+            yarn workspace @augurproject/core docker:run:test:unit -- $TESTS;
           fi
         condition: eq(variables.AUGUR_CORE, 'true')
 
@@ -140,7 +140,7 @@ jobs:
   #         set -euo pipefail
   #         which node
   #         node --version
-  #         yarn workspace augur-node add sqlite3 --force --build-from-source
+  #         yarn workspace @augurproject/node add sqlite3 --force --build-from-source
   #         yarn install --ignore-scripts --frozen-lockfile
   #       displayName: 'Install Dependencies'
   #     - script: |
@@ -185,35 +185,36 @@ jobs:
         displayName: 'test augur.js'
         condition: eq(variables.AUGUR, 'true')
 
-# comment out pop geth creation until deploy tools work again
-# - job: Docker_populated_geth_images
-#   dependsOn:
-#   - Build_Core_Docker
-#   - Test_Augur_Core
-#   pool:
-#     vmImage: 'Ubuntu 16.04'
-#   steps:
-#   - bash: |
-#       set -euo pipefail
-#       for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
-#         do
-#           echo "$f"
-#           if [[ $f =~ .*augur-core.* ]]
-#           then
-#             echo "##vso[task.setVariable variable=AUGUR_CORE]true";
-#           fi
-#         done
-#   - script: |
-#       set -euo pipefail
-#       echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
-#       yarn docker:build:all
-#       if [[ "$(Build.SourceBranchName)" == "master" ]]; then
-#           yarn workspace augur-tools docker:push
-#       fi
-#     condition: |
-#       and
-#       (
-#           succeeded(),
-#           eq(variables.AUGUR_CORE, 'true')
-#       )
-#     displayName: 'build and (maybe) push docker image'
+  # TODO Uncomment this once the test is fixed
+  # - job: Docker_populated_geth_images
+  #   dependsOn:
+  #   - Build_Core_Docker
+  #   - Test_Augur_Core
+  #   pool:
+  #     vmImage: 'Ubuntu 16.04'
+  #   steps:
+  #   - bash: |
+  #       set -euo pipefail
+  #       for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
+  #         do
+  #           echo "$f"
+  #           if [[ $f =~ .*augur-core.* ]]
+  #           then
+  #             echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+  #           fi
+  #         done
+  #   - script: |
+  #       set -euo pipefail
+  #       echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+  #       yarn docker:build:all
+
+  #       if [[ "$(Build.SourceBranchName)" == "master" ]]; then
+  #           yarn workspace @augurproject/tools docker:push
+  #       fi
+  #     condition: |
+  #       and
+  #       (
+  #           succeeded(),
+  #           eq(variables.AUGUR_CORE, 'true')
+  #       )
+  #     displayName: 'build and (maybe) push docker image'

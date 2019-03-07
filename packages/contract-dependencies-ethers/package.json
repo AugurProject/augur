@@ -4,6 +4,7 @@
   "description": "Contract Dependencies For EthersJS",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
+  "main": "build",
   "directories": {
     "src": "src"
   },
@@ -25,8 +26,7 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "ethers": "4.0.23",
-    "typescript": "3.2.1",
+    "ethers": "4.0.24",
     "contract-dependencies": "1.0.0-0"
   },
   "devDependencies": {
