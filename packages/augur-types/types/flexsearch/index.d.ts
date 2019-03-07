@@ -1,6 +1,6 @@
 // Type definitions for flexsearch 0.6
 // Project: https://github.com/nextapps-de/flexsearch/
-// Definitions by: Brian Woodsf <https://github.com/brianosaurus>
+// Definitions by: Brian Woods <https://github.com/brianosaurus>
 
 /*~ Note that ES6 modules cannot directly export class objects.
  *~ This file should be imported using the CommonJS-style:
