@@ -1,8 +1,7 @@
 import { Block, Log, FilterOptions } from "ethereumjs-blockstream";
 import * as _ from "lodash";
-import { EthersProvider } from "ethers-provider";
+import { EthersProvider, Web3AsyncSendable } from "ethers-provider";
 import {BlockAndLogStreamerDependencies, ExtendedLog} from ".";
-import HttpProvider = require('ethjs-provider-http');
 
 
 export class EthersProviderBlockStreamAdapter implements BlockAndLogStreamerDependencies<ExtendedLog, Block> {
@@ -55,6 +54,7 @@ export class EthersProviderBlockStreamAdapter implements BlockAndLogStreamerDepe
 }
 
 export async function createAdapter(httpAddress: string): Promise<BlockAndLogStreamerDependencies<Log,Block>> {
-  const provider = new EthersProvider(httpAddress);
+  const web3AsyncSendable = new Web3AsyncSendable(httpAddress, 5, 0, 40);
+  const provider = new EthersProvider(web3AsyncSendable);
   return new EthersProviderBlockStreamAdapter(provider);
 }
