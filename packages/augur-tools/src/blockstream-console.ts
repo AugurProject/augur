@@ -8,6 +8,9 @@ const ADAPTER_TYPE = process.env.ADAPTER_TYPE || "ethrpc";
 const LOG_FILTER = {
   address: process.env.FILTER_ADDRESS || "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
 };
+const ASYNCSENDABLE_TIMES = 5;
+const ASYNCSENDABLE_INTERVAL = 0;
+const ASYNCSENDABLE_CONCURRENCY = 40;
 
 function startPollingForBlocks(blockstream: BlockAndLogStreamer<Block, Log>, getBlockByNumber: GetBlockByString) {
   setInterval(async function () {
@@ -51,7 +54,7 @@ function getBlockBehind(blockNumber: string, howManyBlocks: number) {
 }
 
 async function doStuff() {
-  const dependencies = await createAdapter(ETHEREUM_HTTP);
+  const dependencies = await createAdapter(ETHEREUM_HTTP, ASYNCSENDABLE_TIMES, ASYNCSENDABLE_INTERVAL, ASYNCSENDABLE_TIMES_CONCURRENCY);
   const blockstream = new BlockAndLogStreamer(dependencies.getBlockByHash, dependencies.getLogs, console.warn);
 
   const block = await dependencies.getBlockByNumber("latest");

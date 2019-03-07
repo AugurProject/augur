@@ -53,8 +53,8 @@ export class EthersProviderBlockStreamAdapter implements BlockAndLogStreamerDepe
   }
 }
 
-export async function createAdapter(httpAddress: string): Promise<BlockAndLogStreamerDependencies<Log,Block>> {
-  const web3AsyncSendable = new Web3AsyncSendable(httpAddress, 5, 0, 40);
+export async function createAdapter(httpAddress: string, times: number, interval: number, concurrency: number): Promise<BlockAndLogStreamerDependencies<Log,Block>> {
+  const web3AsyncSendable = new Web3AsyncSendable(httpAddress, times, interval, concurrency);
   const provider = new EthersProvider(web3AsyncSendable);
   return new EthersProviderBlockStreamAdapter(provider);
 }
