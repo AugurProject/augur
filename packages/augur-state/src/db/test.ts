@@ -133,8 +133,8 @@ function makeCompilerConfiguration() {
     const augurCorePath = path.join(__dirname, "../../../augur-core/");
     const contractSourceRoot = path.join(augurCorePath, "source/contracts/");
     const outputRoot = path.join(augurCorePath, "output/contracts/");
-    const useFlattener = false;
-    const enableSdb = true;
+    const useFlattener = false;  // TODO make flattener bin specifiable so this can be true
+    const enableSdb = false;  // causes solc errors if true
     return new CompilerConfiguration(contractSourceRoot, outputRoot, enableSdb, useFlattener);
 }
 
