@@ -23,6 +23,11 @@ export class Events {
         return this.parseLogs(logs);
     }
 
+    public async getBulkLogs(topics: Array<Array<string>>, fromBlock: number, toBlock: number): Promise<Array<ParsedLog>> {
+      const logs = await this.provider.getLogs({fromBlock, toBlock, topics, address: this.augurAddress});
+      return this.parseLogs(logs);
+    }
+
     public parseLogs(logs: Log[]): ParsedLog[] {
         return _.map(logs, (log) => {
             const logValues = this.provider.parseLogValues("Augur", log);

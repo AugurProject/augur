@@ -16,7 +16,7 @@ const TEST_NETWORK_ID = 4;
  * and checks DBs to make sure highest sync block is correct.
  */
 test("sync databases", async () => {
-    const web3AsyncSendable = new Web3AsyncSendable(settings.ethNodeURLs[4], 5, 0, 40);
+    const web3AsyncSendable = new Web3AsyncSendable(settings.ethNodeURLs[TEST_NETWORK_ID], 5, 0, 40);
     const ethersProvider = new EthersProvider(web3AsyncSendable);
     const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
     const augur = await Augur.create(ethersProvider, contractDependencies);

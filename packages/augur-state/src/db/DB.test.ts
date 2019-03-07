@@ -11,7 +11,7 @@ import {IBlockAndLogStreamerListener} from "./BlockAndLogStreamerListener";
 const mock = makeMock();
 const TEST_NETWORK_ID = 4;
 const defaultStartSyncBlockNumber = uploadBlockNumbers[TEST_NETWORK_ID];
-const web3AsyncSendable = new Web3AsyncSendable(settings.ethNodeURLs[4], 5, 0, 40);
+const web3AsyncSendable = new Web3AsyncSendable(settings.ethNodeURLs[TEST_NETWORK_ID], 5, 0, 40);
 const ethersProvider = new EthersProvider(web3AsyncSendable);
 const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
 
