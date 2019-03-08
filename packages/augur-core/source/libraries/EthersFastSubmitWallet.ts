@@ -25,7 +25,6 @@ export class EthersFastSubmitWallet extends ethers.Wallet {
             delete transaction.from;
             // Add 10% gas to account for improper estimations and limit to block gas limit
             transaction.gasLimit = gasEstimate.add(gasEstimate.div(10));
-            // TODO tests use ganache but ganache inflates contract sizes beyond this sensible limit
             if (transaction.gasLimit.gt(7500000)) transaction.gasLimit = new ethers.utils.BigNumber(7500000);
             return ethers.utils.populateTransaction(transaction, this.provider, this.address).then((tx) => {
                 return this.sign(tx).then((signedTransaction) => {
