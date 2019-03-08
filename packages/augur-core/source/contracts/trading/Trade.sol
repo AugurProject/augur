@@ -203,19 +203,7 @@ contract Trade is Initializable, ReentrancyGuard {
         view
         returns (bytes32)
     {
-        return keccak256(abi.encodePacked(
-            address(this),
-            _direction,
-            _market,
-            _outcome,
-            _amount,
-            _price,
-            _sender,
-            _fillOnly,
-            _expirationTimestampInSec,
-            _salt,
-            _payment
-        ));
+        return keccak256(abi.encodePacked(address(this), _direction, _market, _outcome, _amount, _price, _sender, _fillOnly, _expirationTimestampInSec, _salt, _payment));
     }
 
     function isValidSignature(
