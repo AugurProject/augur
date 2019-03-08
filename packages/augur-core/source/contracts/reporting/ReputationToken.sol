@@ -8,6 +8,7 @@ import 'ROOT/libraries/token/ERC20Token.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 
@@ -120,6 +121,11 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         return internalTransfer(_source, _destination, _attotokens, true);
     }
 
+    function trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
+        require(universe.isContainerForDisputeWindow(IDisputeWindow(msg.sender)));
+        return internalTransfer(_source, _destination, _attotokens, true);
+    }
+
     function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view returns (bool) {
         IUniverse _shadyUniverse = _shadyReputationToken.getUniverse();
         require(universe.isParentOf(_shadyUniverse));
@@ -165,12 +171,12 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     }
 
     function onMint(address _target, uint256 _amount) internal returns (bool) {
-        augur.logReputationTokenMinted(universe, _target, _amount, totalSupply());
+        augur.logReputationTokensMinted(universe, _target, _amount, totalSupply());
         return true;
     }
 
     function onBurn(address _target, uint256 _amount) internal returns (bool) {
-        augur.logReputationTokenBurned(universe, _target, _amount, totalSupply());
+        augur.logReputationTokensBurned(universe, _target, _amount, totalSupply());
         return true;
     }
 
