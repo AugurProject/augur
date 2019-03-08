@@ -35,6 +35,9 @@ contract Trade is Initializable, ReentrancyGuard {
     IFillOrder public fillOrder;
     IOrders public orders;
 
+    address private constant NULL_ADDRESS = address(0);
+    uint256 private constant DEFAULT_LOOP_LIMIT = 3;
+
     // Trade Signing support
     mapping (bytes32 => bool) public executed;
     mapping (bytes32 => bool) public cancelled;
@@ -147,8 +150,8 @@ contract Trade is Initializable, ReentrancyGuard {
         return _result;
     }
 
-    function executeSignedTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _affiliateAddress, address _sender, bool _fillOnly, uint256 _expirationTimestampInSec, uint256 _salt, uint8 v, bytes32 r, bytes32 s) public returns (bool) {
-        bytes32 _tradeHash = getTradeHash(_direction, _market, _outcome, _amount, _price, _affiliateAddress, _sender, _fillOnly, _expirationTimestampInSec, _salt);
+    function executeSignedTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, bool _fillOnly, uint256 _expirationTimestampInSec, uint256 _salt, uint256 _payment, uint8 v, bytes32 r, bytes32 s) public returns (bool) {
+        bytes32 _tradeHash = getTradeHash(_direction, _market, _outcome, _amount, _price, _sender, _fillOnly, _expirationTimestampInSec, _salt, _payment);
 
         require(isValidSignature(_sender, _tradeHash, v, r, s));
 
@@ -159,32 +162,34 @@ contract Trade is Initializable, ReentrancyGuard {
         require(!cancelled[_tradeHash]);
 
         if (_fillOnly) {
-            internalExecuteSignedFillBestOrder(_direction, _market, _outcome, _amount, _price, _affiliateAddress, _sender);
+            internalExecuteSignedFillBestOrder(_direction, _market, _outcome, _amount, _price, _sender);
         } else {
-            internalExecuteSignedTrade(_direction, _market, _outcome, _amount, _price, _affiliateAddress, _sender);
+            internalExecuteSignedTrade(_direction, _market, _outcome, _amount, _price, _sender);
         }
 
         executed[_tradeHash] = true;
 
+        augur.trustedTransfer(_market.getDenominationToken(), _sender, msg.sender, _payment);
+
         return true;
     }
 
-    function internalExecuteSignedFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _affiliateAddress, address _sender) internal returns (bool) {
-        internalFillBestOrder(_direction, _market, _outcome, _amount, _price, bytes32(0), 3, false, _affiliateAddress, _sender);
+    function internalExecuteSignedFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender) internal returns (bool) {
+        internalFillBestOrder(_direction, _market, _outcome, _amount, _price, bytes32(0), DEFAULT_LOOP_LIMIT, false, NULL_ADDRESS, _sender);
         return true;
     }
 
-    function internalExecuteSignedTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _affiliateAddress, address _sender) internal returns (bool) {
-        internalTrade(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), bytes32(0), 3, false, _affiliateAddress, _sender);
+    function internalExecuteSignedTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender) internal returns (bool) {
+        internalTrade(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), bytes32(0), DEFAULT_LOOP_LIMIT, false, NULL_ADDRESS, _sender);
         return true;
     }
 
-    function cancelTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _affiliateAddress, address _sender, bool _fillOnly, uint256 _expirationTimestampInSec, uint256 _salt)
+    function cancelTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, bool _fillOnly, uint256 _expirationTimestampInSec, uint256 _salt, uint256 _payment)
         public
         nonReentrant
         returns (bool)
     {
-        bytes32 _tradeHash = getTradeHash(_direction, _market, _outcome, _amount, _price, _affiliateAddress, _sender, _fillOnly, _expirationTimestampInSec, _salt);
+        bytes32 _tradeHash = getTradeHash(_direction, _market, _outcome, _amount, _price, _sender, _fillOnly, _expirationTimestampInSec, _salt, _payment);
 
         require(_sender == msg.sender);
 
@@ -193,7 +198,7 @@ contract Trade is Initializable, ReentrancyGuard {
         return true;
     }
 
-    function getTradeHash(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _affiliateAddress, address _sender, bool _fillOnly, uint256 _expirationTimestampInSec, uint256 _salt)
+    function getTradeHash(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, bool _fillOnly, uint256 _expirationTimestampInSec, uint256 _salt, uint256 _payment)
         public
         view
         returns (bytes32)
@@ -205,11 +210,11 @@ contract Trade is Initializable, ReentrancyGuard {
             _outcome,
             _amount,
             _price,
-            _affiliateAddress,
             _sender,
             _fillOnly,
             _expirationTimestampInSec,
-            _salt
+            _salt,
+            _payment
         ));
     }
 
