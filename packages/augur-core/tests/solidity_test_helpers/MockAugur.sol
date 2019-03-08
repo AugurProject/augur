@@ -124,19 +124,19 @@ contract MockAugur {
         return true;
     }
 
-    function logReputationTokenBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
+    function logReputationTokensBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
         return true;
     }
 
-    function logReputationTokenMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
+    function logReputationTokensMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
         return true;
     }
 
-    function logShareTokenBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
+    function logShareTokensBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
         return true;
     }
 
-    function logShareTokenMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
+    function logShareTokensMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
         return true;
     }
 
@@ -219,11 +219,11 @@ contract MockAugur {
         return true;
     }
 
-    function logAuctionTokenBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
+    function logAuctionTokensBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
         return true;
     }
 
-    function logAuctionTokenMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
+    function logAuctionTokensMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
         return true;
     }
 
