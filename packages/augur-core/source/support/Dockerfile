@@ -43,6 +43,7 @@ COPY packages/augur-core/.soliumignore /app/.soliumignore
 COPY packages/augur-core/docker.tsconfig.json /app/tsconfig.json
 COPY packages/augur-core/source/contracts/ /app/source/contracts/
 COPY packages/augur-types/ /augur-types
+COPY packages/augur-artifacts/ /augur-artifacts
 COPY packages/augur-core/source/deployment/compileContracts.ts /app/source/deployment/compileContracts.ts
 COPY packages/augur-core/source/libraries/ /app/source/libraries/
 COPY packages/augur-core/source/tools/ /app/source/tools/
