@@ -19,6 +19,6 @@ export class UserSyncableDB<TBigNumber> extends SyncableDB<TBigNumber> {
     }
 
     protected async getLogs(augur: Augur<TBigNumber>, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {
-        return await augur.events.getLogs(this.eventName, startBlock, endBlock, this.additionalTopics);
+        return await augur.events.getLogs([this.eventName], startBlock, endBlock, this.additionalTopics);
     }
 }

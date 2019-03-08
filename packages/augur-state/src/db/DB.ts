@@ -1,6 +1,7 @@
-import { Augur, UserSpecificEvent } from "@augurproject/api";
+import * as _ from "lodash";
+import { Augur, Log, ParsedLog, UserSpecificEvent } from "@augurproject/api";
+import { BaseDocument, PouchDBFactoryType } from "./AbstractDB";
 import { MetaDB, SequenceIds } from "./MetaDB";
-import { PouchDBFactoryType } from "./AbstractDB";
 import { SyncableDB } from "./SyncableDB";
 import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
@@ -97,6 +98,47 @@ export class DB<TBigNumber> {
     this.syncableDatabases[db.dbName] = db;
   }
 
+  protected processLog(log: Log): BaseDocument {
+    if (!log.blockNumber) throw new Error(`Corrupt log: ${JSON.stringify(log)}`);
+    const _id = `${log.blockNumber.toPrecision(21)}${log.logIndex}`;
+    return Object.assign(
+      { _id },
+      log
+    );
+  }
+
+  public async getGenericEventLogs(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {//Promise<Array<ParsedLog>> {
+    const startSyncBlockNumber = await this.getSyncStartingBlock();
+    const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
+    let highestSyncedBlockNumber = startSyncBlockNumber;
+    const goalBlock = highestAvailableBlockNumber - blockstreamDelay;
+    console.log(`SYNCING generic events from ${startSyncBlockNumber} to ${goalBlock}`);
+    while (highestSyncedBlockNumber < goalBlock) {
+      const endBlockNumber = Math.min(highestSyncedBlockNumber + chunkSize, highestAvailableBlockNumber);
+      // for (let genericEventName of augur.genericEventNames) {
+        const extendedLogs = await augur.events.getLogs(["MarketCreated"], highestSyncedBlockNumber, endBlockNumber);
+        console.log("extendedLogs");
+        console.log(extendedLogs);
+        for (let extendedLog in extendedLogs) {
+          // await this.blockAndLogStreamerListener.onLogsAdded(extendedLog.blockHash, extendedLog);
+        }
+        let success = true;
+        // if (logs.length > 1) {
+        //   const documents = _.sortBy(_.map(logs, this.processLog), "_id");
+        //   success = await this.bulkUpsertDocuments(documents[0]._id, documents);
+        // }
+        if (success) {
+          highestSyncedBlockNumber = endBlockNumber;
+          // await this.syncStatus.setHighestSyncBlock(this.dbName, highestSyncedBlockNumber);
+        }
+      // }
+    }
+  }
+
+  public async getUserSpecificEventLogs() {
+
+  }
+
   /**
    * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
    *
@@ -105,38 +147,64 @@ export class DB<TBigNumber> {
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
    */
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
-    let dbSyncPromises = [];
-    const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
-    for (let dbIndex in this.syncableDatabases) {
-      dbSyncPromises.push(
-        this.syncableDatabases[dbIndex].sync(
-          augur,
-          chunkSize,
-          blockstreamDelay,
-          highestAvailableBlockNumber
-        )
-      );
-    }
+    this.getGenericEventLogs(augur, chunkSize, blockstreamDelay);
 
-    for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let userSpecificEvent of this.userSpecificEvents) {
-        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        dbSyncPromises.push(
-          this.syncableDatabases[dbName].sync(
-            augur,
-            chunkSize,
-            blockstreamDelay,
-            highestAvailableBlockNumber
-          )
-        );
-      }
-    }
+    // for (let trackedUser of await this.trackedUsers.getUsers()) {
+    //   for (let userSpecificEvent of this.userSpecificEvents) {
+    //     // console.log(userSpecificEvent.name);
+    //     const bytes32User = `0x000000000000000000000000${trackedUser.substr(2)}`;
+    //     let topics: string | Array<string> = [augur.provider.getEventTopic("Augur", userSpecificEvent.name)];
+    //     // console.log(topics);
+    //     let additionalTopics: string | Array<string> = [];
+    //     additionalTopics.fill("", userSpecificEvent.numAdditionalTopics);
+    //     additionalTopics[userSpecificEvent.userTopicIndex] = bytes32User;
+    //     topics = topics.concat(additionalTopics);
+    //     // const logs = await this.provider.getLogs({fromBlock, toBlock, topics, address: this.augurAddress});
+    //     eventList.push(topics);
+    //   }
+    // }
+    // console.log(eventList);
 
-    await Promise.all(dbSyncPromises).catch(
-      error => {
-        throw error;
-      }
-    );
+    // let temp: any = [];
+    // temp.fill("", 3)
+    // temp[0] = "0x000000000000000000000000913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
+
+    // const bulkLogs = await augur.events.getBulkLogs(eventList, this.syncStatus.defaultStartSyncBlockNumber, highestAvailableBlockNumber);
+    // console.log(bulkLogs.length);
+
+
+    // let dbSyncPromises = [];
+    // const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
+    // for (let dbIndex in this.syncableDatabases) {
+    //   dbSyncPromises.push(
+    //     this.syncableDatabases[dbIndex].sync(
+    //       augur,
+    //       chunkSize,
+    //       blockstreamDelay,
+    //       highestAvailableBlockNumber
+    //     )
+    //   );
+    // }
+
+    // for (let trackedUser of await this.trackedUsers.getUsers()) {
+    //   for (let userSpecificEvent of this.userSpecificEvents) {
+    //     let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
+    //     dbSyncPromises.push(
+    //       this.syncableDatabases[dbName].sync(
+    //         augur,
+    //         chunkSize,
+    //         blockstreamDelay,
+    //         highestAvailableBlockNumber
+    //       )
+    //     );
+    //   }
+    // }
+
+    // await Promise.all(dbSyncPromises).catch(
+    //   error => {
+    //     throw error;
+    //   }
+    // );
 
     // TODO Call `this.metaDatabase.addNewBlock` here if derived DBs end up getting used
   }
