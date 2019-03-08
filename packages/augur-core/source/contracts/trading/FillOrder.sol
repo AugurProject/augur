@@ -380,8 +380,8 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
     function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external afterInitialized returns (uint256) {
         uint256 _result = this.fillOrder(msg.sender, _orderId, _amountFillerWants, _tradeGroupId, _ignoreShares, _affiliateAddress);
-        //IMarket _market = orders.getMarket(_orderId);
-        //_market.assertBalances();
+        IMarket _market = orders.getMarket(_orderId);
+        _market.assertBalances();
         return _result;
     }
 
