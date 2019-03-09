@@ -70,8 +70,8 @@
   "rinkeby": {
     "augur-node": "wss://dev.augur.net/augur-node",
     "ethereum-node": {
-      "http": "https://rinkeby.augur.net/ethereum-http",
-      "ws": "wss://rinkeby.augur.net/ethereum-ws",
+      "http": "https://eth-rinkeby.alchemyapi.io/jsonrpc/xWkVwAbM7Qr-p8j-Zu_PPwldZJKmaKjx",
+      "ws": "",
       "pollingIntervalMilliseconds": 10000,
       "blockRetention": 100,
       "connectionTimeout": 60000
