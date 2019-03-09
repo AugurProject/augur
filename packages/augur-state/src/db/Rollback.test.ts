@@ -1,105 +1,12 @@
 import { Augur } from "@augurproject/api";
 import { uploadBlockNumbers } from "@augurproject/artifacts";
-import settings from "@augurproject/state/src/settings.json";
-import { DB, UserSpecificEvent } from "../db/DB";
+const settings = require("../settings.json");
+import { DB } from "../db/DB";
 import { makeMock } from "../utils/MakeMock";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { EthersProvider, Web3AsyncSendable } from "ethers-provider";
 
 const TEST_NETWORK_ID = 4;
-
-// TODO Get these from GenericContractInterfaces (and do not include any that are unneeded)
-const genericEventNames: Array<string> = [
-    "DisputeCrowdsourcerCompleted",
-    "DisputeCrowdsourcerCreated",
-    "DisputeWindowCreated",
-    "MarketCreated",
-    "MarketFinalized",
-    "MarketMigrated",
-    "MarketParticipantsDisavowed",
-    "ReportingParticipantDisavowed",
-    "TimestampSet",
-    "TokensBurned",
-    "TokensMinted",
-    "UniverseCreated",
-    "UniverseForked",
-];
-
-// TODO Update numAdditionalTopics/userTopicIndexes once contract events are updated
-const userSpecificEvents: Array<UserSpecificEvent> = [
-  {
-    "name": "CompleteSetsPurchased",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "CompleteSetsSold",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "DisputeCrowdsourcerContribution",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "DisputeCrowdsourcerRedeemed",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "InitialReporterRedeemed",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "InitialReportSubmitted",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "InitialReporterTransferred",
-    "numAdditionalTopics": 2,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "MarketMailboxTransferred",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "MarketTransferred",
-    "numAdditionalTopics": 2,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "OrderCanceled",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "OrderCreated",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 0,
-  },
-  {
-    "name": "OrderFilled",
-    "numAdditionalTopics": 2,
-    "userTopicIndex": 1,
-  },
-  {
-    "name": "TokensTransferred",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-  {
-    "name": "TradingProceedsClaimed",
-    "numAdditionalTopics": 3,
-    "userTopicIndex": 2,
-  },
-];
-
-
 
 /**
  * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.
@@ -108,7 +15,7 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
  * and checks DBs to make sure highest sync block is correct.
  */
 test("sync databases", async () => {
-    const web3AsyncSendable = new Web3AsyncSendable(settings.ethNodeURLs[4], 5, 0, 40);
+    const web3AsyncSendable = new Web3AsyncSendable(settings.ethNodeURLs[TEST_NETWORK_ID], 5, 0, 40);
     const ethersProvider = new EthersProvider(web3AsyncSendable);
     const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
     const augur = await Augur.create(ethersProvider, contractDependencies);
@@ -120,11 +27,11 @@ test("sync databases", async () => {
       settings.blockstreamDelay,
       uploadBlockNumbers[TEST_NETWORK_ID],
       trackedUsers,
-      genericEventNames,
-      userSpecificEvents,
+      augur.genericEventNames,
+      augur.userSpecificEvents,
       mock.makeFactory()
     );
-    await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
+    await db.sync(augur.provider, augur.events, settings.chunkSize);
 
     const syncableDBName = TEST_NETWORK_ID + "-DisputeCrowdsourcerCompleted";
     const metaDBName = TEST_NETWORK_ID + "-BlockNumbersSequenceIds";
@@ -195,5 +102,5 @@ test("sync databases", async () => {
     expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
     expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);
   },
-  120000
+  500000
 );

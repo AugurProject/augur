@@ -1,16 +1,12 @@
-import { Augur } from "@augurproject/api";
+import * as _ from "lodash";
+import { Events, Log, ParsedLog, Provider, UserSpecificEvent } from "@augurproject/api";
+import { BaseDocument, PouchDBFactoryType } from "./AbstractDB";
 import { MetaDB, SequenceIds } from "./MetaDB";
-import { PouchDBFactoryType } from "./AbstractDB";
 import { SyncableDB } from "./SyncableDB";
 import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
 
-export interface UserSpecificEvent {
-  name: string;
-  numAdditionalTopics: number;
-  userTopicIndex: number;
-}
 
 export class DB<TBigNumber> {
   private networkId: number;
@@ -39,9 +35,23 @@ export class DB<TBigNumber> {
    * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
    * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType): Promise<DB<TBigNumber>> {
+  public static async createAndInitializeDB<TBigNumber>(
+    networkId: number,
+    blockstreamDelay: number,
+    defaultStartSyncBlockNumber: number,
+    trackedUsers: Array<string>,
+    genericEventNames: Array<string>,
+    userSpecificEvents: Array<UserSpecificEvent>,
+    pouchDBFactory: PouchDBFactoryType
+  ): Promise<DB<TBigNumber>> {
     const dbController = new DB<TBigNumber>(pouchDBFactory);
-    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents);
+    await dbController.initializeDB(
+      networkId,
+      blockstreamDelay,
+      defaultStartSyncBlockNumber,
+      trackedUsers, genericEventNames,
+      userSpecificEvents
+    );
     return dbController;
   }
 
@@ -56,7 +66,14 @@ export class DB<TBigNumber> {
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<void> {
+  public async initializeDB(
+    networkId: number,
+    blockstreamDelay: number,
+    defaultStartSyncBlockNumber: number,
+    trackedUsers: Array<string>,
+    genericEventNames: Array<string>,
+    userSpecificEvents: Array<UserSpecificEvent>
+  ): Promise<void> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
@@ -74,7 +91,7 @@ export class DB<TBigNumber> {
     for (let trackedUser of trackedUsers) {
       await this.trackedUsers.setUserTracked(trackedUser);
       for (let userSpecificEvent of userSpecificEvents) {
-        new UserSyncableDB<TBigNumber>(this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndex);
+        new UserSyncableDB<TBigNumber>(this, networkId, userSpecificEvent.name, trackedUser);
       }
     }
 
@@ -103,43 +120,51 @@ export class DB<TBigNumber> {
   /**
    * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
    *
-   * @param {Augur<TBigNumber>} augur Augur object with which to sync
+   * TODO Make use of EventLogDBRouter
+   *
+   * @param {Provider} ethereumProvider Ethereum provider to use for syncing
+   * @param {Events} events Object used for getting and parsing logs from the blockchain
    * @param {number} chunkSize Number of blocks to retrieve at a time when syncing logs
-   * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
    */
-  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
-    let dbSyncPromises = [];
-    const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
-    for (let dbIndex in this.syncableDatabases) {
-      dbSyncPromises.push(
-        this.syncableDatabases[dbIndex].sync(
-          augur,
-          chunkSize,
-          blockstreamDelay,
-          highestAvailableBlockNumber
-        )
-      );
-    }
+  public async sync(ethereumProvider: Provider, events: Events, chunkSize: number): Promise<void> {
+    const startSyncBlockNumber = await this.getSyncStartingBlock();
+    const endSyncBlockNumber = await ethereumProvider.getBlockNumber() - this.blockstreamDelay;
+    let firstBlockNumberInChunk = startSyncBlockNumber;
 
-    for (let trackedUser of await this.trackedUsers.getUsers()) {
+    while (firstBlockNumberInChunk < endSyncBlockNumber) {
+      const lastBlockNumberInChunk = Math.min(firstBlockNumberInChunk + chunkSize, endSyncBlockNumber);
+      const rawLogsPromises:Array<Promise<Array<Log>>> = [];
+
+      // Get all generic event logs in chunk
+      console.log(`SYNCING all generic events from blocks ${firstBlockNumberInChunk} to ${lastBlockNumberInChunk}`);
+      rawLogsPromises.push(events.getLogs(this.genericEventNames, firstBlockNumberInChunk, lastBlockNumberInChunk));
+
+      // Get all user-specific event logs in chunk
       for (let userSpecificEvent of this.userSpecificEvents) {
-        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        dbSyncPromises.push(
-          this.syncableDatabases[dbName].sync(
-            augur,
-            chunkSize,
-            blockstreamDelay,
-            highestAvailableBlockNumber
-          )
-        );
-      }
-    }
+        const additionalTopics: Array<string | Array<string>> = [];
+        additionalTopics.fill("", userSpecificEvent.numAdditionalTopics);
+        const trackedUsers = await this.trackedUsers.getUsers();
+        additionalTopics[userSpecificEvent.userTopicIndex] = trackedUsers.map(trackedUser => `0x000000000000000000000000${trackedUser.substr(2)}`);
 
-    await Promise.all(dbSyncPromises).catch(
-      error => {
-        throw error;
+        console.log(`SYNCING ${userSpecificEvent.name} events from blocks ${firstBlockNumberInChunk} to ${lastBlockNumberInChunk}`);
+        rawLogsPromises.push(events.getLogs([userSpecificEvent.name], firstBlockNumberInChunk, lastBlockNumberInChunk, additionalTopics));
       }
-    );
+
+      // Save event logs to their respective DBs
+      await Promise.all(rawLogsPromises)
+      .then(
+        async rawLogs => {
+          const flattenedRawLogs = _.flatten(rawLogs);
+          await this.saveLogsToDBs(ethereumProvider, events, flattenedRawLogs, lastBlockNumberInChunk);
+        }
+      )
+      .catch(
+        error => {
+          throw error;
+        }
+      );
+      firstBlockNumberInChunk = lastBlockNumberInChunk + 1;
+    }
 
     // TODO Call `this.metaDatabase.addNewBlock` here if derived DBs end up getting used
   }
@@ -181,36 +206,13 @@ export class DB<TBigNumber> {
   }
 
   /**
-   * Gets a syncable database based upon the name
+   * Gets a syncable database based on `eventName` & `trackableUserAddress`.
    *
-   * @param {string} dbName The name of the database
+   * @param {string} eventName Event log name
+   * @param {string=} trackableUserAddress User address to append to DB name
    */
-  public getSyncableDatabase(dbName: string) : SyncableDB<TBigNumber> {
-    return this.syncableDatabases[dbName];
-  }
-
-  /**
-   * Returns the current update_seqs from all SyncableDBs/UserSyncableDBs.
-   *
-   * TODO Remove this function if derived DBs are not used.
-   *
-   * @returns {Promise<SequenceIds>} Promise to a SequenceIds object
-   */
-  public async getAllSequenceIds(): Promise<SequenceIds> {
-    let sequenceIds: SequenceIds = {};
-    for (let eventName of this.genericEventNames) {
-      let dbName = this.getDatabaseName(eventName);
-      let dbInfo = await this.syncableDatabases[dbName].getInfo();
-      sequenceIds[dbName] = dbInfo.update_seq.toString();
-    }
-    for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let userSpecificEvent of this.userSpecificEvents) {
-        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        let dbInfo = await this.syncableDatabases[dbName].getInfo();
-        sequenceIds[dbName] = dbInfo.update_seq.toString();
-      }
-    }
-    return sequenceIds;
+  public getSyncableDatabase(eventName: string, trackableUserAddress?: string) : SyncableDB<TBigNumber> {
+    return this.syncableDatabases[this.getDatabaseName(eventName, trackableUserAddress)];
   }
 
   /**
@@ -225,11 +227,13 @@ export class DB<TBigNumber> {
       let dbName = this.getDatabaseName(eventName);
       dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
     }
-    // TODO Figure out a way to handle concurrent request limit of 40
+
     await Promise.all(dbRollbackPromises)
-    .catch(error => {
-      throw error;
-    });
+    .catch(
+      error => {
+        throw error;
+      }
+    );
 
     // Perform rollback on UserSyncableDBs
     for (let trackedUser of await this.trackedUsers.getUsers()) {
@@ -238,11 +242,13 @@ export class DB<TBigNumber> {
         dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
       }
     }
-    // TODO Figure out a way to handle concurrent request limit of 40
+
     await Promise.all(dbRollbackPromises)
-    .catch(error => {
-      throw error;
-    });
+    .catch(
+      error => {
+        throw error;
+      }
+    );
 
     // TODO If derived DBs end up getting used, call `this.metaDatabase.find`
     // here to get sequenceIds for blocks >= blockNumber. Then call
@@ -272,8 +278,8 @@ export class DB<TBigNumber> {
 
       // TODO If derived DBs end up getting used, call `this.getAllSequenceIds` here
       // and pass the returned sequenceIds into `this.metaDatabase.addNewBlock`.
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -289,12 +295,78 @@ export class DB<TBigNumber> {
   }
 
   /**
+   * Returns the current update_seqs from all SyncableDBs/UserSyncableDBs.
+   *
+   * TODO Remove this function if derived DBs are not used.
+   *
+   * @returns {Promise<SequenceIds>} Promise to a SequenceIds object
+   */
+  public async getAllSequenceIds(): Promise<SequenceIds> {
+    let sequenceIds: SequenceIds = {};
+    for (let eventName of this.genericEventNames) {
+      let dbName = this.getDatabaseName(eventName);
+      let dbInfo = await this.syncableDatabases[dbName].getInfo();
+      sequenceIds[dbName] = dbInfo.update_seq.toString();
+    }
+    for (let trackedUser of await this.trackedUsers.getUsers()) {
+      for (let userSpecificEvent of this.userSpecificEvents) {
+        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
+        let dbInfo = await this.syncableDatabases[dbName].getInfo();
+        sequenceIds[dbName] = dbInfo.update_seq.toString();
+      }
+    }
+    return sequenceIds;
+  }
+
+  /**
    * Queries the MetaDB.
+   *
+   * TODO Remove this function if derived DBs are not used.
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
    * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse
    */
   public async findInMetaDB(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
     return await this.metaDatabase.find(request);
+  }
+
+  /**
+   * Saves raw logs from the blockchain to DBs, based on the event type for each log.
+   *
+   * @param {Provider} ethereumProvider
+   * @param {Events} events
+   * @param {Array<Log>} rawLogs
+   * @param {number} lastBlockNumberInChunk
+   */
+  private async saveLogsToDBs(ethereumProvider: Provider, events: Events, rawLogs: Array<Log>, lastBlockNumberInChunk: number): Promise<void> {
+    const saveLogsPromises = [];
+
+    // Save generic events to their respective DBs
+    for (let genericEventName of this.genericEventNames) {
+      const filteredLogs = rawLogs.filter((log) => log.topics.includes(ethereumProvider.getEventTopic("Augur", genericEventName)));
+      const parsedFilteredLogs = events.parseLogs(filteredLogs);
+      saveLogsPromises.push(this.getSyncableDatabase(genericEventName).saveLogs(parsedFilteredLogs, lastBlockNumberInChunk));
+      console.log(`Saved ${filteredLogs.length} ${genericEventName} log(s)`);
+    }
+
+    // Save user-specific events to their respective DBs
+    const trackedUsers = await this.trackedUsers.getUsers();
+    const encodedTrackedUsers = trackedUsers.map(trackedUser => `0x000000000000000000000000${trackedUser.substr(2)}`)
+    for (let userSpecificEvent of this.userSpecificEvents) {
+      const eventFilteredLogs = rawLogs.filter((log) => log.topics.includes(ethereumProvider.getEventTopic("Augur", userSpecificEvent.name)));
+        for (let trackedUserIndex = 0; trackedUserIndex < trackedUsers.length; trackedUserIndex++) {
+          const userFilteredLogs = eventFilteredLogs.filter((log) => log.topics.includes(encodedTrackedUsers[trackedUserIndex]));
+          const parsedUserFilteredLogs = events.parseLogs(userFilteredLogs);
+          saveLogsPromises.push(this.getSyncableDatabase(userSpecificEvent.name, trackedUsers[trackedUserIndex]).saveLogs(parsedUserFilteredLogs, lastBlockNumberInChunk));
+          console.log(`Saved ${userFilteredLogs.length} ${userSpecificEvent.name} log(s) for ${trackedUsers[trackedUserIndex]}`);
+        }
+    }
+
+    await Promise.all(saveLogsPromises)
+    .catch(
+      error => {
+        throw error;
+      }
+    );
   }
 }
