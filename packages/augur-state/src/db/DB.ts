@@ -1,12 +1,14 @@
 import * as _ from "lodash";
-import { Augur, Log, ParsedLog, UserSpecificEvent } from "@augurproject/api";
+import { Events, Log, ParsedLog, Provider, UserSpecificEvent } from "@augurproject/api";
 import { BaseDocument, PouchDBFactoryType } from "./AbstractDB";
+import { BlockAndLogStreamerListener, IBlockAndLogStreamerListener } from "./BlockAndLogStreamerListener";
+import { EventLogDBRouter } from "./EventLogDBRouter";
 import { MetaDB, SequenceIds } from "./MetaDB";
 import { SyncableDB } from "./SyncableDB";
 import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
-import {BlockAndLogStreamerListener, IBlockAndLogStreamerListener} from "./BlockAndLogStreamerListener";
+
 
 export class DB<TBigNumber> {
   private networkId: number;
@@ -14,6 +16,7 @@ export class DB<TBigNumber> {
   private trackedUsers: TrackedUsers;
   private genericEventNames: Array<string>;
   private userSpecificEvents: Array<UserSpecificEvent>;
+  private eventLogDBRouter: EventLogDBRouter;
   private syncableDatabases: { [eventName: string]: SyncableDB<TBigNumber> } = {};
   private metaDatabase: MetaDB<TBigNumber>; // TODO Remove this if derived DBs are not used.
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
@@ -36,9 +39,23 @@ export class DB<TBigNumber> {
    * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
    * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB<TBigNumber>> {
+  public static async createAndInitializeDB<TBigNumber>(
+    networkId: number,
+    blockstreamDelay: number,
+    defaultStartSyncBlockNumber: number,
+    trackedUsers: Array<string>,
+    genericEventNames: Array<string>,
+    userSpecificEvents: Array<UserSpecificEvent>,
+    pouchDBFactory: PouchDBFactoryType
+  ): Promise<DB<TBigNumber>> {
     const dbController = new DB<TBigNumber>(pouchDBFactory);
-    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents, blockAndLogStreamerListener);
+    await dbController.initializeDB(
+      networkId,
+      blockstreamDelay,
+      defaultStartSyncBlockNumber,
+      trackedUsers, genericEventNames,
+      userSpecificEvents
+    );
     return dbController;
   }
 
@@ -53,7 +70,14 @@ export class DB<TBigNumber> {
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<void> {
+  public async initializeDB(
+    networkId: number,
+    blockstreamDelay: number,
+    defaultStartSyncBlockNumber: number,
+    trackedUsers: Array<string>,
+    genericEventNames: Array<string>,
+    userSpecificEvents: Array<UserSpecificEvent>
+  ): Promise<void> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
@@ -61,7 +85,7 @@ export class DB<TBigNumber> {
     this.metaDatabase = new MetaDB(this, networkId, this.pouchDBFactory);
     this.genericEventNames = genericEventNames;
     this.userSpecificEvents = userSpecificEvents;
-    this.blockAndLogStreamerListener = blockAndLogStreamerListener;
+    // TODO Initialize this.blockAndLogStreamerListener
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (let eventName of genericEventNames) {
@@ -98,80 +122,36 @@ export class DB<TBigNumber> {
     this.syncableDatabases[db.dbName] = db;
   }
 
-  protected processLog(log: Log): BaseDocument {
-    if (!log.blockNumber) throw new Error(`Corrupt log: ${JSON.stringify(log)}`);
-    const _id = `${log.blockNumber.toPrecision(21)}${log.logIndex}`;
-    return Object.assign(
-      { _id },
-      log
-    );
-  }
-
-  public async getGenericEventLogs(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {//Promise<Array<ParsedLog>> {
+  private async getGenericEventLogs(ethereumProvider: Provider, events: Events, chunkSize: number): Promise<void> {
     const startSyncBlockNumber = await this.getSyncStartingBlock();
-    const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
+    const endSyncBlockNumber = await ethereumProvider.getBlockNumber() - this.blockstreamDelay;
+
     let highestSyncedBlockNumber = startSyncBlockNumber;
-    const goalBlock = highestAvailableBlockNumber - blockstreamDelay;
-    console.log(`SYNCING generic events from ${startSyncBlockNumber} to ${goalBlock}`);
-    while (highestSyncedBlockNumber < goalBlock) {
-      const endBlockNumber = Math.min(highestSyncedBlockNumber + chunkSize, highestAvailableBlockNumber);
-      // for (let genericEventName of augur.genericEventNames) {
-        const extendedLogs = await augur.events.getLogs(["MarketCreated"], highestSyncedBlockNumber, endBlockNumber);
-        console.log("extendedLogs");
-        console.log(extendedLogs);
-        for (let extendedLog in extendedLogs) {
-          // await this.blockAndLogStreamerListener.onLogsAdded(extendedLog.blockHash, extendedLog);
-        }
-        let success = true;
-        // if (logs.length > 1) {
-        //   const documents = _.sortBy(_.map(logs, this.processLog), "_id");
-        //   success = await this.bulkUpsertDocuments(documents[0]._id, documents);
-        // }
-        if (success) {
-          highestSyncedBlockNumber = endBlockNumber;
-          // await this.syncStatus.setHighestSyncBlock(this.dbName, highestSyncedBlockNumber);
-        }
-      // }
+    let totalLogs = 0;
+    while (highestSyncedBlockNumber < endSyncBlockNumber) {
+      const lastBlockNumberInChunk = Math.min(highestSyncedBlockNumber + chunkSize, endSyncBlockNumber);
+      console.log(`SYNCING generic events from ${highestSyncedBlockNumber} to ${lastBlockNumberInChunk}`);
+      const extendedLogs = await events.getLogs(this.genericEventNames, highestSyncedBlockNumber, lastBlockNumberInChunk);
+      // TODO Save logs to respective DBs & set their highest sync block
+      highestSyncedBlockNumber = lastBlockNumberInChunk + 1;
     }
   }
 
-  public async getUserSpecificEventLogs() {
-
+  private async getUserSpecificEventLogs(ethereumProvider: Provider, events: Events, chunkSize: number) {
+    // TODO
   }
 
   /**
    * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
    *
-   * @param {Augur<TBigNumber>} augur Augur object with which to sync
+   * @param {Provider} ethereumProvider Ethereum provider to use for syncing
+   * @param {Events} events Object used for getting and parsing logs from the blockchain
    * @param {number} chunkSize Number of blocks to retrieve at a time when syncing logs
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
    */
-  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
-    this.getGenericEventLogs(augur, chunkSize, blockstreamDelay);
-
-    // for (let trackedUser of await this.trackedUsers.getUsers()) {
-    //   for (let userSpecificEvent of this.userSpecificEvents) {
-    //     // console.log(userSpecificEvent.name);
-    //     const bytes32User = `0x000000000000000000000000${trackedUser.substr(2)}`;
-    //     let topics: string | Array<string> = [augur.provider.getEventTopic("Augur", userSpecificEvent.name)];
-    //     // console.log(topics);
-    //     let additionalTopics: string | Array<string> = [];
-    //     additionalTopics.fill("", userSpecificEvent.numAdditionalTopics);
-    //     additionalTopics[userSpecificEvent.userTopicIndex] = bytes32User;
-    //     topics = topics.concat(additionalTopics);
-    //     // const logs = await this.provider.getLogs({fromBlock, toBlock, topics, address: this.augurAddress});
-    //     eventList.push(topics);
-    //   }
-    // }
-    // console.log(eventList);
-
-    // let temp: any = [];
-    // temp.fill("", 3)
-    // temp[0] = "0x000000000000000000000000913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
-
-    // const bulkLogs = await augur.events.getBulkLogs(eventList, this.syncStatus.defaultStartSyncBlockNumber, highestAvailableBlockNumber);
-    // console.log(bulkLogs.length);
-
+  public async sync(ethereumProvider: Provider, events: Events, chunkSize: number): Promise<void> {
+    this.getGenericEventLogs(ethereumProvider, events, chunkSize);
+    this.getUserSpecificEventLogs(ethereumProvider, events, chunkSize);
 
     // let dbSyncPromises = [];
     // const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
@@ -246,12 +226,13 @@ export class DB<TBigNumber> {
   }
 
   /**
-   * Gets a syncable database based upon the name
+   * Gets a syncable database based on `eventName` & `trackableUserAddress`.
    *
-   * @param {string} dbName The name of the database
+   * @param {string} eventName Event log name
+   * @param {string=} trackableUserAddress User address to append to DB name
    */
-  public getSyncableDatabase(dbName: string) : SyncableDB<TBigNumber> {
-    return this.syncableDatabases[dbName];
+  public getSyncableDatabase(eventName: string, trackableUserAddress?: string) : SyncableDB<TBigNumber> {
+    return this.syncableDatabases[this.getDatabaseName(eventName, trackableUserAddress)];
   }
 
   /**

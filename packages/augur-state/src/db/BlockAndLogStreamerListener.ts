@@ -19,7 +19,6 @@ export interface BlockAndLogStreamerListenerDependencies {
   eventLogDBRouter: EventLogDBRouter;
   // TODO Use an emitter?
   listenForNewBlocks: (callback: (block: Block) => Promise<void>) => void;
-  // parseLogs(logs: Log[]): ParsedLog[];
 }
 
 export type LogCallbackType<T> = (blockHash: string, logs: T[]) => void;
@@ -44,11 +43,10 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
         blockAndLogStreamer,
         eventLogDBRouter,
         listenForNewBlocks: dependencies.startPollingForBlocks,
-        // parseLogs,
       });
     }
 
-  public listenForEvent(eventName: string, address: string, topic: string, onLogsAdded: LogCallbackType<ParsedLog>) {
+  public listenForEvent(eventName: string, address: string, topic: string, callback: LogCallbackType<ParsedLog>) {
     this.deps.blockAndLogStreamer.addLogFilter({
       address,
       topics: [
@@ -56,8 +54,7 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
       ]
     });
 
-    // this.deps.eventLogDBRouter.logCallBacks.push(this.filterCallbackByTopic(topic, onLogsAdded));
-    this.deps.eventLogDBRouter.addLogCallback(topic);
+    this.deps.eventLogDBRouter.addLogCallback(topic, callback);
   }
 
   startBlockStreamListener(): void {

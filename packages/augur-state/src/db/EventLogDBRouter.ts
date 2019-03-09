@@ -16,8 +16,8 @@ export class EventLogDBRouter {
     }
   }
 
-  public addLogCallback(topic: string) {
-    this.logCallbacks.push(this.filterCallbackByTopic(topic, onLogsAdded));
+  public addLogCallback(topic: string, callback: LogCallbackType<ParsedLog>) {
+    this.logCallbacks.push(this.filterCallbackByTopic(topic, callback));
   }
 
   onLogsAdded = async (blockHash: string, extendedLogs: ExtendedLog[]) => {
@@ -27,8 +27,8 @@ export class EventLogDBRouter {
         blockNumber: parseInt(log.blockNumber, 10)
     }));
 
-    const p = this.logCallbacks.map((cb) => cb(blockHash, logs));
+    const logCallbackPromises = this.logCallbacks.map((cb) => cb(blockHash, logs));
 
-    await Promise.all(p);
+    await Promise.all(logCallbackPromises);
   };
 }

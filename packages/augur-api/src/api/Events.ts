@@ -23,13 +23,6 @@ export class Events {
     if (additionalTopics) {
       topics = topics.concat(additionalTopics);
     }
-    // console.log("params");
-    // console.log({fromBlock, toBlock, topics, address: this.augurAddress});
-
-    // let blah: any = [ [ '0x32d554e498d0c7f2a5c7fd8b6b234bfc4e1dfb5290466d998af09a813db32f31' ] ];
-    // blah.fill("", 3);
-    // blah[1] = "0x000000000000000000000000913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
-    // topics = blah;
 
     const logs = await this.provider.getLogs({fromBlock, toBlock, topics, address: this.augurAddress});
     return this.parseLogs(logs);

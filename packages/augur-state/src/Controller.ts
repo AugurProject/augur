@@ -1,8 +1,7 @@
 import { Augur } from "@augurproject/api";
 import settings from "./settings.json";
-import { PouchDBFactoryType } from "./db/AbstractDB";
+import { PouchDBFactory, PouchDBFactoryType } from "./db/AbstractDB";
 import { DB } from "./db/DB";
-import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
 import FlexSearch = require("flexsearch"); // because flexsearch is a UMD type lib
 
 // Need this interface to access these items on the documents in a SyncableDB
@@ -14,16 +13,16 @@ interface SyncableMarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Co
 export class Controller<TBigNumber> {
   private dbController: DB<TBigNumber>;
   private FTS: FlexSearch;
+  private pouchDBFactory: PouchDBFactoryType;
 
   public constructor (
     private augur: Augur<TBigNumber>,
     private networkId: number,
     private blockstreamDelay: number,
     private defaultStartSyncBlockNumber: number,
-    private trackedUsers: Array<string>,
-    private pouchDBFactory: PouchDBFactoryType,
-    private blockAndLogStreamerListener: BlockAndLogStreamerListener
+    private trackedUsers: Array<string>
   ) {
+    this.pouchDBFactory = PouchDBFactory({});
     this.FTS = FlexSearch.create({ doc: {
       id: "id",
       start: "start",
@@ -44,16 +43,15 @@ export class Controller<TBigNumber> {
         this.trackedUsers,
         this.augur.genericEventNames,
         this.augur.userSpecificEvents,
-        this.pouchDBFactory,
-        this.blockAndLogStreamerListener
+        this.pouchDBFactory
       );
       await this.dbController.sync(
-        this.augur,
-        settings.chunkSize,
-        settings.blockstreamDelay
+        this.augur.provider,
+        this.augur.events,
+        settings.chunkSize
       );
 
-      const previousDocumentEntries = await this.dbController.getSyncableDatabase(this.dbController.getDatabaseName("MarketCreated")).allDocs();
+      const previousDocumentEntries = await this.dbController.getSyncableDatabase("MarketCreated").allDocs();
       for (let row of previousDocumentEntries.rows) {
         if (row === undefined) {
           continue;
