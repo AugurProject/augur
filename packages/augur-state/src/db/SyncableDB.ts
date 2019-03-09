@@ -1,8 +1,9 @@
-import { AbstractDB, BaseDocument, PouchDBFactoryType } from "./AbstractDB";
-import { Augur, Log, ParsedLog } from "@augurproject/api";
+import * as _ from "lodash";
+import { Log, ParsedLog } from "@augurproject/api";
+import { AbstractDB, BaseDocument } from "./AbstractDB";
 import { DB } from "./DB";
 import { SyncStatus } from "./SyncStatus";
-import * as _ from "lodash";
+
 
 /**
  * Stores event logs for non-user-specific events.
@@ -26,46 +27,9 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     dbController.notifySyncableDBAdded(this);
   }
 
-  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
-    let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
-    const goalBlock = highestAvailableBlockNumber - blockStreamDelay;
-    console.log(`SYNCING ${this.dbName} from ${highestSyncedBlockNumber} to ${goalBlock}`);
-    while (highestSyncedBlockNumber < goalBlock) {
-      const endBlockNumber = Math.min(highestSyncedBlockNumber + chunkSize, highestAvailableBlockNumber);
-      const logs = await this.getLogs(augur, highestSyncedBlockNumber, endBlockNumber);
-      let success = true;
-      if (logs.length > 1) {
-        const documents = _.sortBy(_.map(logs, this.processLog), "_id");
-        success = await this.bulkUpsertDocuments(documents[0]._id, documents);
-      }
-      if (success) {
-        highestSyncedBlockNumber = endBlockNumber;
-        await this.syncStatus.setHighestSyncBlock(this.dbName, highestSyncedBlockNumber);
-      }
-    }
-    console.log(`SYNCING SUCCESS ${this.dbName} up to ${goalBlock}`);
-
-    // TODO Make any external calls as needed (such as pushing user's balance to UI)
-
-    // TODO start blockstream
-  }
-
-  protected async getLogs(augur: Augur<TBigNumber>, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {
-    return await augur.events.getLogs([this.eventName], startBlock, endBlock);
-  }
-
-  protected processLog(log: Log): BaseDocument {
-    if (!log.blockNumber) throw new Error(`Corrupt log: ${JSON.stringify(log)}`);
-    const _id = `${log.blockNumber.toPrecision(21)}${log.logIndex}`;
-    return Object.assign(
-      { _id },
-      log
-    );
-  }
-
   public async saveLogs(logs: Array<ParsedLog>, highestSyncedBlockNumber: number): Promise<void> {
     let success = true;
-    if (logs.length > 1) {
+    if (logs.length > 0) {
       const documents = _.sortBy(_.map(logs, this.processLog), "_id");
       success = await this.bulkUpsertDocuments(documents[0]._id, documents);
     }
@@ -107,5 +71,14 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  protected processLog(log: Log): BaseDocument {
+    if (!log.blockNumber) throw new Error(`Corrupt log: ${JSON.stringify(log)}`);
+    const _id = `${log.blockNumber.toPrecision(21)}${log.logIndex}`;
+    return Object.assign(
+      { _id },
+      log
+    );
   }
 }

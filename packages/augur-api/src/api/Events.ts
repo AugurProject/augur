@@ -14,7 +14,12 @@ export class Events {
     this.provider.storeAbiData(<Abi>abi["Augur"], "Augur");
   }
 
-  public async getLogs(eventNames: Array<string>, fromBlock: number, toBlock: number, additionalTopics?: Array<string | Array<string>>): Promise<Array<ParsedLog>> {
+  public async getLogs(
+    eventNames: Array<string>,
+    fromBlock: number,
+    toBlock: number,
+    additionalTopics?: Array<string | Array<string>>
+  ): Promise<Array<Log>> {
     let events: Array<string> = [];
     for (let eventName of eventNames) {
       events.push(this.provider.getEventTopic("Augur", eventName));
@@ -24,11 +29,10 @@ export class Events {
       topics = topics.concat(additionalTopics);
     }
 
-    const logs = await this.provider.getLogs({fromBlock, toBlock, topics, address: this.augurAddress});
-    return this.parseLogs(logs);
+    return this.provider.getLogs({fromBlock, toBlock, topics, address: this.augurAddress});
   }
 
-  public parseLogs(logs: Log[]): ParsedLog[] {
+  public parseLogs(logs: Array<Log>): Array<ParsedLog> {
     return _.map(logs, (log) => {
       const logValues = this.provider.parseLogValues("Augur", log);
       return Object.assign(

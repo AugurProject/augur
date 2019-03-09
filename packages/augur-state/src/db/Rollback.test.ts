@@ -34,10 +34,9 @@ test("sync databases", async () => {
       trackedUsers,
       augur.genericEventNames,
       augur.userSpecificEvents,
-      mock.makeFactory(),
-      blockAndLogStreamerListener
+      mock.makeFactory()
     );
-    await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
+    await db.sync(augur.provider, augur.events, settings.chunkSize);
 
     const syncableDBName = TEST_NETWORK_ID + "-DisputeCrowdsourcerCompleted";
     const metaDBName = TEST_NETWORK_ID + "-BlockNumbersSequenceIds";
@@ -108,5 +107,5 @@ test("sync databases", async () => {
     expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
     expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);
   },
-  30000
+  500000
 );
