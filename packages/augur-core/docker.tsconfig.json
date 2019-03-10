@@ -15,5 +15,10 @@
     "rootDir": "source",
     "baseUrl": ".",
     "typeRoots": ["../augur-types/types", "../../node_modules/@types", "node_modules/@types"]
-  }
+  },
+  "references": [
+    {
+      "path": "../augur-artifacts"
+    }
+  ]
 }
