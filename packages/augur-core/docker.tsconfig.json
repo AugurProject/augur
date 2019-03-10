@@ -15,5 +15,6 @@
     "rootDir": "source",
     "baseUrl": ".",
     "typeRoots": ["../augur-types/types", "../../node_modules/@types", "node_modules/@types", "../augur-artifacts"]
-  }
+  },
+  "extends": "../../tsconfig-base.json"
 }
