@@ -113,6 +113,6 @@ export const loadReporting = (marketIdsParam, callback = logError) => (
 
   Promise.all([openPromise, prePromise, designatedPromise]).then(errors => {
     const nonNullErrors = head(filter(errors, err => err !== null));
-    callback(nonNullErrors);
+    if (callback) callback(nonNullErrors);
   });
 };
