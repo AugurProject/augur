@@ -2,7 +2,8 @@ import * as AugurJS from "services/augurjs";
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
-  updateAugurNodeConnectionStatus
+  updateAugurNodeConnectionStatus,
+  updateUseWebsocketToConnectAugurNode
 } from "modules/app/actions/update-connection";
 import { getAugurNodeNetworkId } from "modules/app/actions/get-augur-node-network-id";
 import { updateContractAddresses } from "modules/contracts/actions/update-contract-addresses";
@@ -18,6 +19,7 @@ import { loadUniverse } from "modules/app/actions/load-universe";
 import { registerTransactionRelay } from "modules/transactions/actions/register-transaction-relay";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
+import { isGoogleBot } from "src/utils/is-google-bot";
 import logError from "utils/log-error";
 import networkConfig from "config/network";
 import { version } from "src/version";
@@ -169,6 +171,7 @@ export function connectAugur(
 ) {
   return (dispatch, getState) => {
     const { modal, loginAccount } = getState();
+
     AugurJS.connect(
       env,
       (err, ConnectionInfo) => {
@@ -233,7 +236,6 @@ export function connectAugur(
                 dispatch(setSelectedUniverse());
                 location.reload();
               }
-
               doIt();
             }
           );
@@ -264,6 +266,20 @@ export function initAugur(
       // If only the http param is provided we need to prevent this "default from taking precedence.
       isEmpty(ethereumNodeHttp) ? env["ethereum-node"].ws : ""
     );
+
+    env["use-websocket-for-augur-node"] = !isGoogleBot();
+    if (!env["use-websocket-for-augur-node"]) {
+      env["ethereum-node"].ws = "";
+    }
+
+    const action = updateUseWebsocketToConnectAugurNode(
+      env["use-websocket-for-augur-node"]
+    );
+    dispatch(action);
+
+    if (!env["use-websocket-for-augur-node"]) {
+      env["augur-node"] = env["augur-node"].replace(/^ws/, "http");
+    }
 
     dispatch(updateEnv(env));
     connectAugur(history, env, true, callback)(dispatch, getState);

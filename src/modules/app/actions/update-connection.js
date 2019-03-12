@@ -3,6 +3,8 @@ export const UPDATE_AUGUR_NODE_CONNECTION_STATUS =
   "UPDATE_AUGUR_NODE_CONNECTION_STATUS";
 export const UPDATE_AUGUR_NODE_NETWORK_ID = "UPDATE_AUGUR_NODE_NETWORK_ID";
 export const UPDATE_IS_RECONNECTION_PAUSED = "UPDATE_IS_RECONNECTION_PAUSED";
+export const UPDATE_USE_WEBSOCKET_TO_CONNECT_AUGUR_NODE =
+  "USE_WEBSOCKET_TO_CONNECT_AUGUR_NODE";
 
 /**
  * @param {Boolean} isConnected
@@ -16,7 +18,7 @@ export function updateConnectionStatus(isConnected) {
 }
 
 /**
- * @param {Boolean} isConnected
+ * @param {Boolean} isConnectedToAugurNode
  * @return {{type: string, isConnected: *}} returns action
  */
 export function updateAugurNodeConnectionStatus(isConnectedToAugurNode) {
@@ -45,5 +47,18 @@ export function updateIsReconnectionPaused(isReconnectionPaused) {
   return {
     type: UPDATE_IS_RECONNECTION_PAUSED,
     data: { isReconnectionPaused }
+  };
+}
+
+/**
+ * @param {Boolean} useWebsocketToConnectAugurNode
+ * @return {{type: string, useWebsocketToConnectAugurNode: *}} returns action
+ */
+export function updateUseWebsocketToConnectAugurNode(
+  useWebsocketToConnectAugurNode
+) {
+  return {
+    type: UPDATE_USE_WEBSOCKET_TO_CONNECT_AUGUR_NODE,
+    data: { useWebsocketToConnectAugurNode }
   };
 }

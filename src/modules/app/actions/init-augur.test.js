@@ -12,7 +12,6 @@ jest.mock("modules/app/actions/update-env", () => ({
     type: "UPDATE_ENV"
   })
 }));
-jest.mock("modules/app/actions/update-connection");
 jest.mock("modules/contracts/actions/update-contract-addresses");
 jest.mock("modules/contracts/actions/update-contract-api");
 jest.mock("modules/transactions/actions/register-transaction-relay");

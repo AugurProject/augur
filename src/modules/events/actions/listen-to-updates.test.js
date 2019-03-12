@@ -28,7 +28,11 @@ describe("events/actions/listen-to-updates", () => {
     let augurOnSpy;
     let ethereumOnSpy;
 
-    const store = mockStore({});
+    const store = mockStore({
+      connection: {
+        useWebsocketToConnectAugurNode: true
+      }
+    });
     const ACTIONS = {
       STOP_BLOCK_LISTENERS: { type: "STOP_BLOCK_LISTENERS" },
       STOP_AUGUR_NODE_EVENT_LISTENERS: {
@@ -142,7 +146,10 @@ describe("events/actions/listen-to-updates", () => {
 
     beforeEach(() => {
       state = {
-        universe: { id: "UNIVERSE_ADDRESS" }
+        universe: { id: "UNIVERSE_ADDRESS" },
+        connection: {
+          useWebsocketToConnectAugurNode: true
+        }
       };
       store = mockStore(state);
       loadMarketsInfoSpy = jest
@@ -225,7 +232,10 @@ describe("events/actions/listen-to-updates", () => {
     beforeEach(() => {
       state = {
         universe: { id: "UNIVERSE_ADDRESS" },
-        loginAccount: { address: "MY_ADDRESS" }
+        loginAccount: { address: "MY_ADDRESS" },
+        connection: {
+          useWebsocketToConnectAugurNode: true
+        }
       };
       store = mockStore(state);
       loadMarketsInfoSpy = jest
@@ -404,7 +414,10 @@ describe("events/actions/listen-to-updates", () => {
     test("Handled calling initial reporter redeemed not designated reporter", () => {
       const state = {
         universe: { id: "UNIVERSE_ADDRESS" },
-        loginAccount: { address: "MY_ADDRESS" }
+        loginAccount: { address: "MY_ADDRESS" },
+        connection: {
+          useWebsocketToConnectAugurNode: true
+        }
       };
       const store = mockStore(state);
       jest
@@ -427,7 +440,10 @@ describe("events/actions/listen-to-updates", () => {
     test("Handled calling initial reporter redeemed IS designated reporter", () => {
       const state = {
         universe: { id: "UNIVERSE_ADDRESS" },
-        loginAccount: { address: "MY_ADDRESS" }
+        loginAccount: { address: "MY_ADDRESS" },
+        connection: {
+          useWebsocketToConnectAugurNode: true
+        }
       };
       const store = mockStore(state);
       jest

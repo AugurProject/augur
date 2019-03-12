@@ -5,7 +5,8 @@ export const connect = (env, callback = logError) => {
   const connectOptions = {
     augurNode: env["augur-node"],
     ethereumNode: env["ethereum-node"],
-    useWeb3Transport: env.useWeb3Transport
+    useWeb3Transport: env.useWeb3Transport,
+    useWebsocketToConnectAugurNode: env["use-websocket-for-augur-node"]
   };
   if (env.debug) augur.rpc.setDebugOptions(env.debug);
   augur.connect(

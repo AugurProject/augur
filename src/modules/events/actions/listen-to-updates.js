@@ -29,9 +29,12 @@ import {
   handleApprovalLog
 } from "modules/events/actions/log-handlers";
 import { wrapLogHandler } from "modules/events/actions/wrap-log-handler";
+import { selectUseWebsocketToConnectAugurNode } from "modules/app/selectors/connection";
 import logError from "utils/log-error";
 
 export const listenToUpdates = history => (dispatch, getState) => {
+  if (!selectUseWebsocketToConnectAugurNode(getState())) return;
+
   augur.events.stopBlockListeners();
   augur.events.stopAugurNodeEventListeners();
   augur.events.startBlockListeners({
