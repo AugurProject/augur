@@ -123,7 +123,8 @@ def finalize(fixture, market, universe, finalizeByMigration = True):
 def generateFees(fixture, universe, market):
     completeSets = fixture.contracts['CompleteSets']
     cash = fixture.contracts['Cash']
-    oldFeesBalance = cash.balanceOf(universe.getAuction())
+    disputeWindow = universe.getOrCreateNextDisputeWindow(False)
+    oldFeesBalance = cash.balanceOf(disputeWindow)
 
     cost = 1000 * market.getNumTicks()
     marketCreatorFees = cost / market.getMarketCreatorSettlementFeeDivisor()
@@ -133,7 +134,7 @@ def generateFees(fixture, universe, market):
     initialMarketCreatorFees = market.marketCreatorFeesAttoEth()
     completeSets.publicSellCompleteSets(market.address, 1000, sender=tester.k1)
     assert marketCreatorFees == market.marketCreatorFeesAttoEth() - initialMarketCreatorFees, "The market creator didn't get correct share of fees from complete set sale"
-    newFeesBalance = cash.balanceOf(universe.getAuction())
+    newFeesBalance = cash.balanceOf(disputeWindow)
     reporterFees = cost / universe.getOrCacheReportingFeeDivisor()
     feesGenerated = newFeesBalance - oldFeesBalance
-    assert feesGenerated == reporterFees, "Cash balance of auction higher by: " + str(fees - reporterFees)
+    assert feesGenerated == reporterFees, "Cash balance of dispute window higher by: " + str(feesGenerated - reporterFees)
