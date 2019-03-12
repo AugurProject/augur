@@ -5,8 +5,8 @@ import { EthersProvider as EProvider } from "contract-dependencies-ethers";
 import { ethers } from "ethers";
 import { Abi } from "ethereum";
 import * as _ from "lodash";
-import { queue, AsyncQueue} from "async";
-import {retryable} from "@augurproject/types/types/ethersjs-provider";
+// import { queue, retryable, AsyncQueue} from "async";
+import { queue, retryable, AsyncQueue} from "@augurproject/types/types/async";
 
 interface ContractMapping {
     [contractName: string]: ethers.utils.Interface;
