@@ -1,4 +1,4 @@
-import { LoggerInterface } from "./logger";
+import {LoggerInterface} from "./logger";
 
 export class StandardLogger implements LoggerInterface {
   public error(...err: Array<string | Error>): void {

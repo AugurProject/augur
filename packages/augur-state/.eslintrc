@@ -5,7 +5,9 @@
     "es6": true,
     "jest/globals": true
   },
-  "plugins": ["jest"],
+  "plugins": [
+    "jest"
+  ],
   "extends": "eslint:recommended",
   "rules": {
     "indent": [
