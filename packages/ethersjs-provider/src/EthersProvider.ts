@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 import { Abi } from "ethereum";
 import * as _ from "lodash";
 import { queue, AsyncQueue} from "async";
-import {retryable} from "./async";
+import {retryable} from "@augurproject/types/types/ethersjs-provider";
 
 interface ContractMapping {
     [contractName: string]: ethers.utils.Interface;
