@@ -35,6 +35,13 @@ contract Trade is Initializable, ReentrancyGuard {
     IFillOrder public fillOrder;
     IOrders public orders;
 
+    address private constant NULL_ADDRESS = address(0);
+    uint256 private constant DEFAULT_LOOP_LIMIT = 3;
+
+    // Trade Signing support
+    mapping (bytes32 => bool) public executed;
+    mapping (bytes32 => bool) public cancelled;
+
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
@@ -68,16 +75,24 @@ contract Trade is Initializable, ReentrancyGuard {
     }
 
     function publicTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress) external afterInitialized returns (bytes32) {
+        return internalTrade(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender);
+    }
+
+    function publicFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress) external afterInitialized returns (uint256) {
+        return internalFillBestOrder(_direction, _market, _outcome, _amount, _price, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender);
+    }
+
+    function internalTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender) internal returns (bytes32) {
         require(augur.isValidMarket(_market));
-        Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender);
+        Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, _sender);
         bytes32 _result = trade(_tradeData);
         _market.assertBalances();
         return _result;
     }
 
-    function publicFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress) external afterInitialized returns (uint256) {
+    function internalFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender) internal returns (uint256) {
         require(augur.isValidMarket(_market));
-        Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender);
+        Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, _sender);
         uint256 _result = fillBestOrder(_tradeData);
         _market.assertBalances();
         return _result;
@@ -133,5 +148,79 @@ contract Trade is Initializable, ReentrancyGuard {
         uint256 _result = fillBestOrder(_tradeData);
         _market.assertBalances();
         return _result;
+    }
+
+    function executeSignedTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, bool _fillOnly, uint256 _expirationTimestampInSec, uint256 _salt, uint256 _payment, uint8 v, bytes32 r, bytes32 s) public returns (bool) {
+        bytes32 _tradeHash = getTradeHash(_direction, _market, _outcome, _amount, _price, _sender, _fillOnly, _expirationTimestampInSec, _salt, _payment);
+
+        require(isValidSignature(_sender, _tradeHash, v, r, s));
+
+        require(augur.getTimestamp() < _expirationTimestampInSec);
+
+        require(!executed[_tradeHash]);
+
+        require(!cancelled[_tradeHash]);
+
+        if (_fillOnly) {
+            internalExecuteSignedFillBestOrder(_direction, _market, _outcome, _amount, _price, _sender);
+        } else {
+            internalExecuteSignedTrade(_direction, _market, _outcome, _amount, _price, _sender);
+        }
+
+        executed[_tradeHash] = true;
+
+        augur.trustedTransfer(_market.getDenominationToken(), _sender, msg.sender, _payment);
+
+        return true;
+    }
+
+    function internalExecuteSignedFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender) internal returns (bool) {
+        internalFillBestOrder(_direction, _market, _outcome, _amount, _price, bytes32(0), DEFAULT_LOOP_LIMIT, false, NULL_ADDRESS, _sender);
+        return true;
+    }
+
+    function internalExecuteSignedTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender) internal returns (bool) {
+        internalTrade(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), bytes32(0), DEFAULT_LOOP_LIMIT, false, NULL_ADDRESS, _sender);
+        return true;
+    }
+
+    function cancelTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, bool _fillOnly, uint256 _expirationTimestampInSec, uint256 _salt, uint256 _payment)
+        public
+        nonReentrant
+        returns (bool)
+    {
+        bytes32 _tradeHash = getTradeHash(_direction, _market, _outcome, _amount, _price, _sender, _fillOnly, _expirationTimestampInSec, _salt, _payment);
+
+        require(_sender == msg.sender);
+
+        cancelled[_tradeHash] = true;
+
+        return true;
+    }
+
+    function getTradeHash(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, bool _fillOnly, uint256 _expirationTimestampInSec, uint256 _salt, uint256 _payment)
+        public
+        view
+        returns (bytes32)
+    {
+        return keccak256(abi.encodePacked(address(this), _direction, _market, _outcome, _amount, _price, _sender, _fillOnly, _expirationTimestampInSec, _salt, _payment));
+    }
+
+    function isValidSignature(
+        address signer,
+        bytes32 hash,
+        uint8 v,
+        bytes32 r,
+        bytes32 s)
+        public
+        pure
+        returns (bool)
+    {
+        return signer == ecrecover(
+            keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)),
+            v,
+            r,
+            s
+        );
     }
 }
