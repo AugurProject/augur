@@ -1,28 +1,28 @@
-import { Augur } from "@augurproject/api";
-import { uploadBlockNumbers } from "@augurproject/artifacts";
+import {Augur} from "@augurproject/api";
+import {uploadBlockNumbers} from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
-import { DB, UserSpecificEvent } from "../db/DB";
-import { makeMock } from "../utils/MakeMock";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { EthersProvider, Web3AsyncSendable } from "ethers-provider";
+import {DB, UserSpecificEvent} from "../db/DB";
+import {makeMock} from "../utils/MakeMock";
+import {ContractDependenciesEthers} from "contract-dependencies-ethers";
+import {EthersProvider, Web3AsyncSendable} from "ethers-provider";
 
 const TEST_NETWORK_ID = 4;
 
 // TODO Get these from GenericContractInterfaces (and do not include any that are unneeded)
 const genericEventNames: Array<string> = [
-    "DisputeCrowdsourcerCompleted",
-    "DisputeCrowdsourcerCreated",
-    "DisputeWindowCreated",
-    "MarketCreated",
-    "MarketFinalized",
-    "MarketMigrated",
-    "MarketParticipantsDisavowed",
-    "ReportingParticipantDisavowed",
-    "TimestampSet",
-    "TokensBurned",
-    "TokensMinted",
-    "UniverseCreated",
-    "UniverseForked",
+  "DisputeCrowdsourcerCompleted",
+  "DisputeCrowdsourcerCreated",
+  "DisputeWindowCreated",
+  "MarketCreated",
+  "MarketFinalized",
+  "MarketMigrated",
+  "MarketParticipantsDisavowed",
+  "ReportingParticipantDisavowed",
+  "TimestampSet",
+  "TokensBurned",
+  "TokensMinted",
+  "UniverseCreated",
+  "UniverseForked",
 ];
 
 // TODO Update numAdditionalTopics/userTopicIndexes once contract events are updated
@@ -100,7 +100,6 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
 ];
 
 
-
 /**
  * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.
  * Queries before & after rollback to ensure blocks are removed successfully.
@@ -135,17 +134,17 @@ test("sync databases", async () => {
     originalHighestSyncedBlockNumbers[metaDBName] = await db.syncStatus.getHighestSyncBlock(metaDBName);
 
     let blockLogs = [
-        {
-          "universe": universe,
-          "market": "0xC0ffe3F654d442589BAb472937F094970339d214",
-          "disputeCrowdsourcer": "0x65d4f86927D1f10eFa2Fb884e4DEe0aB86137caD",
-          "blockHash": "0x8132a0cdb4226b3bbb5bcf8429ec0883859255751be2c321c58b488395188040",
-          "blockNumber": originalHighestSyncedBlockNumbers[syncableDBName] + 1,
-          "transactionIndex": 8,
-          "removed": false,
-          "transactionHash": "0xf750ebb0d039c623385f8227f7a6cbe49f5efbc5485ac0e38b5a7b0e389726d8",
-          "logIndex": 1,
-        },
+      {
+        "universe": universe,
+        "market": "0xC0ffe3F654d442589BAb472937F094970339d214",
+        "disputeCrowdsourcer": "0x65d4f86927D1f10eFa2Fb884e4DEe0aB86137caD",
+        "blockHash": "0x8132a0cdb4226b3bbb5bcf8429ec0883859255751be2c321c58b488395188040",
+        "blockNumber": originalHighestSyncedBlockNumbers[syncableDBName] + 1,
+        "transactionIndex": 8,
+        "removed": false,
+        "transactionHash": "0xf750ebb0d039c623385f8227f7a6cbe49f5efbc5485ac0e38b5a7b0e389726d8",
+        "logIndex": 1,
+      },
     ];
 
     await db.addNewBlock(syncableDBName, blockLogs);
@@ -160,7 +159,7 @@ test("sync databases", async () => {
 
     // Verify that 2 new blocks were added to SyncableDB
     let queryObj: any = {
-      selector: { universe },
+      selector: {universe},
       fields: ['_id', 'universe'],
       sort: ['_id']
     };
@@ -169,10 +168,14 @@ test("sync databases", async () => {
     expect(result).toEqual(expect.objectContaining(
       {
         docs:
-        [ { _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 1) + '.000000000000001',
-            universe: universe },
-          { _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 2) + '.000000000000001',
-            universe: universe } ],
+          [{
+            _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 1) + '.000000000000001',
+            universe: universe
+          },
+            {
+              _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 2) + '.000000000000001',
+              universe: universe
+            }],
         warning:
           'no matching index found, create an index to optimize query time'
       }
@@ -185,13 +188,14 @@ test("sync databases", async () => {
     // Verify that newest 2 blocks were removed from SyncableDB
     result = await db.findInSyncableDB(syncableDBName, queryObj);
     expect(result).toEqual(expect.objectContaining(
-      { docs: [],
+      {
+        docs: [],
         warning:
-         'no matching index found, create an index to optimize query time'
+          'no matching index found, create an index to optimize query time'
       }
     ));
 
-    expect( await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
+    expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
     expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
     expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);
   },
