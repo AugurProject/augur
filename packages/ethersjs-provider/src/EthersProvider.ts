@@ -1,11 +1,11 @@
 import { NetworkId } from "@augurproject/artifacts";
-import { Filter, Log, LogValues, Provider } from "@augurproject/api";
+import { Filter, Log, LogValues } from "@augurproject/api";
 import { Transaction } from "contract-dependencies";
 import { EthersProvider as EProvider } from "contract-dependencies-ethers";
 import { ethers } from "ethers";
 import { Abi } from "ethereum";
 import * as _ from "lodash";
-import { queue, AsyncQueue} from "async";
+import { queue, retryable, AsyncQueue, AsyncFunction} from "async";
 
 interface ContractMapping {
     [contractName: string]: ethers.utils.Interface;
@@ -23,18 +23,24 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
     private performQueue: AsyncQueue<PerformQueueTask>;
     readonly provider: ethers.providers.JsonRpcProvider;
 
-    constructor(provider: ethers.providers.JsonRpcProvider, concurrency: number) {
-        super(provider.getNetwork());
-        this.provider = provider;
-        this.performQueue = queue((item: PerformQueueTask, callback: () => void) => {
+    constructor(provider: ethers.providers.JsonRpcProvider, times: number, interval: number, concurrency: number) {
+      super(provider.getNetwork());
+      this.provider = provider;
+      this.performQueue = queue(
+        retryable(
+          { times, interval},
+          (item: PerformQueueTask, callback: () => void): void => {
             this.provider.perform(item.message, item.params).then((res) => {
-                item.resolve(res);
-                callback();
+              item.resolve(res);
+              callback();
             }).catch((err: Error) => {
-                item.reject(err);
-                callback();
+              item.reject(err);
+              callback();
             });
-        }, concurrency);
+          }
+        ),
+        concurrency
+      );
     }
 
     public async listAccounts(): Promise<Array<string>> {
