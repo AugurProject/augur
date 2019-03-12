@@ -4,7 +4,8 @@ import settings from "@augurproject/state/src/settings.json";
 import { DB, UserSpecificEvent } from "../db/DB";
 import { makeMock } from "../utils/MakeMock";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { EthersProvider, Web3AsyncSendable } from "ethers-provider";
+import { JsonRpcProvider } from "ethers/providers/json-rpc-provider";
+import { EthersProvider } from "ethers-provider";
 
 const TEST_NETWORK_ID = 4;
 
@@ -108,8 +109,7 @@ const userSpecificEvents: Array<UserSpecificEvent> = [
  * and checks DBs to make sure highest sync block is correct.
  */
 test("sync databases", async () => {
-    const web3AsyncSendable = new Web3AsyncSendable(settings.ethNodeURLs[4], 5, 0, 40);
-    const ethersProvider = new EthersProvider(web3AsyncSendable);
+    const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 40);
     const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
     const augur = await Augur.create(ethersProvider, contractDependencies);
     const trackedUsers = [settings.testAccounts[0]];
