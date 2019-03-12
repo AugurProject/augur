@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 import { Abi } from "ethereum";
 import * as _ from "lodash";
 import { queue, AsyncQueue} from "async";
-const retryable = require("./async");
+import {retryable} from "./async";
 
 interface ContractMapping {
     [contractName: string]: ethers.utils.Interface;
