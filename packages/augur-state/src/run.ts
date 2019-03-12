@@ -10,7 +10,7 @@ import { Controller } from "./Controller";
 
 // TODO Add Ethereum node URL as param
 export async function start() {
-  const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 40);
+  const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 5, 0, 40);
   const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
   const augur = await Augur.create(ethersProvider, contractDependencies);
   const pouchDBFactory = PouchDBFactory({});

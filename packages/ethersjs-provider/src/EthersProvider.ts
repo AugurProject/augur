@@ -5,7 +5,8 @@ import { EthersProvider as EProvider } from "contract-dependencies-ethers";
 import { ethers } from "ethers";
 import { Abi } from "ethereum";
 import * as _ from "lodash";
-import { queue, retryable, AsyncQueue, AsyncFunction} from "async";
+import { queue, AsyncQueue} from "async";
+const retryable = require("./async");
 
 interface ContractMapping {
     [contractName: string]: ethers.utils.Interface;
@@ -29,13 +30,13 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
       this.performQueue = queue(
         retryable(
           { times, interval},
-          (item: PerformQueueTask, callback: () => void): void => {
+          (item: PerformQueueTask, callback: (err: null) => void): void => {
             this.provider.perform(item.message, item.params).then((res) => {
               item.resolve(res);
-              callback();
+              callback(null);
             }).catch((err: Error) => {
               item.reject(err);
-              callback();
+              callback(null);
             });
           }
         ),
