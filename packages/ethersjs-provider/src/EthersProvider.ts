@@ -5,15 +5,41 @@ import { EthersProvider as EProvider } from "contract-dependencies-ethers";
 import { ethers } from "ethers";
 import { Abi } from "ethereum";
 import * as _ from "lodash";
-import { Web3AsyncSendable } from "./Web3AsyncSendable";
+import { queue, AsyncQueue} from "async";
 
 interface ContractMapping {
     [contractName: string]: ethers.utils.Interface;
 }
 
-export class EthersProvider extends ethers.providers.Web3Provider implements Provider, EProvider {
-    private contractMapping: ContractMapping = {};
+interface PerformQueueTask {
+  message: any;
+  params: any;
+  resolve: (res: any) => void;
+  reject: (err?: Error | null) => void;
+}
 
+export class EthersProvider extends ethers.providers.BaseProvider implements EProvider {
+    private contractMapping: ContractMapping = {};
+    private performQueue: AsyncQueue<PerformQueueTask>;
+    readonly provider: ethers.providers.JsonRpcProvider;
+
+    constructor(provider: ethers.providers.JsonRpcProvider, concurrency: number) {
+        super(provider.getNetwork());
+        this.provider = provider;
+        this.performQueue = queue((item: PerformQueueTask, callback: () => void) => {
+            this.provider.perform(item.message, item.params).then((res) => {
+                item.resolve(res);
+                callback();
+            }).catch((err: Error) => {
+                item.reject(err);
+                callback();
+            });
+        }, concurrency);
+    }
+
+    public async listAccounts(): Promise<Array<string>> {
+      return this.provider.listAccounts();
+    }
     public async call(transaction: Transaction<ethers.utils.BigNumber>): Promise<string> {
         return await super.call(transaction);
     }
@@ -58,5 +84,11 @@ export class EthersProvider extends ethers.providers.Web3Provider implements Pro
 
     public async getLogs(filter: Filter): Promise<Array<Log>> {
         return super.getLogs(filter);
+    }
+
+    public async perform(message: any, params: any): Promise<any> {
+      return new Promise((resolve, reject) => {
+        this.performQueue.push({ message, params, resolve, reject });
+      });
     }
 }
