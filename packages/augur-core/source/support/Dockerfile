@@ -33,7 +33,6 @@ RUN wget --quiet --output-document /usr/local/bin/solc https://github.com/ethere
 
 WORKDIR /augur
 
-#COPY packages/augur-core/requirements.txt /augur/requirements.txt
 
 COPY --from=augur-build /augur/packages/augur-core/ packages/augur-core
 COPY --from=augur-build /augur/packages/augur-artifacts/ packages/augur-artifacts
