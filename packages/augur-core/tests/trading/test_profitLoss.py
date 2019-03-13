@@ -2,7 +2,7 @@
 
 import math
 from ethereum.tools import tester
-from utils import fix, bytesToHexString, AssertLog, longTo32Bytes, longToHexString, stringToBytes, BuyWithCash
+from utils import fix, bytesToHexString, AssertLog, longTo32Bytes, longToHexString, stringToBytes, BuyWithCash, nullAddress
 from constants import BID, ASK, LONG, SHORT, YES
 
 INVALID = 0
@@ -298,7 +298,7 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
         fillerCost = longCost if direction == ASK else shortCost
 
         assert cash.depositEther(value = creatorCost, sender = tester.k1)
-        orderID = createOrder.publicCreateOrder(direction, trade['quantity'], onChainLongPrice, market.address, trade['outcome'], longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, sender = tester.k1)
+        orderID = createOrder.publicCreateOrder(direction, trade['quantity'], onChainLongPrice, market.address, trade['outcome'], longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = tester.k1)
 
         avgPrice = math.ceil((trade['avgPrice'] - minPrice) * market.getNumTicks() / displayRange)
         realizedProfit = math.ceil(trade['realizedPL'] * market.getNumTicks() / displayRange)

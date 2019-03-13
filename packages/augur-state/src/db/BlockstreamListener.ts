@@ -5,22 +5,23 @@ import * as _ from "lodash";
 import { EthersProvider } from "@augurproject/ethers-provider";
 
 interface BlockstreamListenerDeps {
-  blockAndLogStreamer:BlockAndLogStreamer<Block, ExtendedLog>;
+  blockAndLogStreamer: BlockAndLogStreamer<Block, ExtendedLog>;
   // TODO Use an emitter?
-  listenForNewBlocks: (callback: (block:Block) => void) => void;
+  listenForNewBlocks: (callback: (block: Block) => void) => void;
+
   parseLogs(logs: Log[]): ParsedLog[];
 }
 
 type LogCallbackType<T> = (blockHash: string, logs: T[]) => void;
 
 export class BlockstreamListener {
-  private logCallBacks:LogCallbackType<Log>[] = [];
+  private logCallBacks: LogCallbackType<Log>[] = [];
 
-  constructor(private deps:BlockstreamListenerDeps) {
+  constructor(private deps: BlockstreamListenerDeps) {
     deps.blockAndLogStreamer.subscribeToOnLogsAdded(this.onLogsAdded);
   }
 
-  public static create(provider:EthersProvider, parseLogs:(logs: Log[])=> ParsedLog[]) {
+  public static create(provider: EthersProvider, parseLogs: (logs: Log[]) => ParsedLog[]) {
     const getBlockByHashOrTag = (provider: EthersProvider) => async (hashOrTag: string | number): Promise<Block> => {
       const block = await provider.getBlock(hashOrTag, false);
       return {
@@ -44,8 +45,8 @@ export class BlockstreamListener {
       }));
     };
 
-    const listenForNewBlocks = (provider: EthersProvider, getBlockByHashOrTag:(hashOrTag: string | number) => Promise<Block> ) => async (callback: (block: Block) => void) => {
-      const blockNumberCallback = async (blockNumber:string) => {
+    const listenForNewBlocks = (provider: EthersProvider, getBlockByHashOrTag: (hashOrTag: string | number) => Promise<Block>) => async (callback: (block: Block) => void) => {
+      const blockNumberCallback = async (blockNumber: string) => {
         const block = await getBlockByHashOrTag(blockNumber);
         callback(block);
       };
@@ -54,7 +55,7 @@ export class BlockstreamListener {
       provider.on("block", blockNumberCallback);
     };
 
-    const blockAndLogStreamer = new BlockAndLogStreamer<Block, ExtendedLog>(getBlockByHashOrTag(provider), getLogs(provider), (error:Error) => {
+    const blockAndLogStreamer = new BlockAndLogStreamer<Block, ExtendedLog>(getBlockByHashOrTag(provider), getLogs(provider), (error: Error) => {
       console.error(error);
     });
 
@@ -65,7 +66,7 @@ export class BlockstreamListener {
     });
   }
 
-  public listenForEvent(eventName:string, address:string, topic: string, onLogsAdded:LogCallbackType<ParsedLog>) {
+  public listenForEvent(eventName: string, address: string, topic: string, onLogsAdded: LogCallbackType<ParsedLog>) {
     this.deps.blockAndLogStreamer.addLogFilter({
       address,
       topics: [
@@ -76,8 +77,8 @@ export class BlockstreamListener {
     this.logCallBacks.push(this.filterCallbackByTopic(topic, onLogsAdded));
   }
 
-  public filterCallbackByTopic(topic:string, callback:LogCallbackType<ParsedLog>):LogCallbackType<Log> {
-    return (blockHash: string, logs:Log[]) => {
+  public filterCallbackByTopic(topic: string, callback: LogCallbackType<ParsedLog>): LogCallbackType<Log> {
+    return (blockHash: string, logs: Log[]) => {
       const filteredLogs = logs.filter((log) => log.topics.includes(topic));
       const parsedLogs = this.deps.parseLogs(filteredLogs);
 
@@ -86,24 +87,24 @@ export class BlockstreamListener {
   }
 
   onNewBlock = async (block: Block) => {
-    if(block) {
+    if (block) {
       await this.deps.blockAndLogStreamer.reconcileNewBlock(block);
     }
   };
 
-    onLogsAdded = async (blockHash: string, extendedLogs: ExtendedLog[]) => {
-        const logs: Log[] = extendedLogs.map((log) => ({
+  onLogsAdded = async (blockHash: string, extendedLogs: ExtendedLog[]) => {
+    const logs: Log[] = extendedLogs.map((log) => ({
       ...log,
       logIndex: parseInt(log.logIndex, 10),
       blockNumber: parseInt(log.blockNumber, 10)
     }));
 
-        const p = this.logCallBacks.map((cb) => cb(blockHash, logs));
+    const p = this.logCallBacks.map((cb) => cb(blockHash, logs));
 
     await Promise.all(p);
   };
 
-  startListeningForNewBlocks(fromBlock:number): void {
+  startListeningForNewBlocks(fromBlock: number): void {
     this.deps.listenForNewBlocks(this.onNewBlock);
   };
 }

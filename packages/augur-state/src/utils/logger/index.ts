@@ -1,5 +1,5 @@
-import { StandardLogger } from "./StandardLogger";
-import { Logger } from "./logger";
+import {StandardLogger} from "./StandardLogger";
+import {Logger} from "./logger";
 
 const standardLogger = new StandardLogger();
 

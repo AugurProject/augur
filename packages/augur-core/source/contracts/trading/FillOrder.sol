@@ -36,6 +36,7 @@ library Trade {
     struct FilledOrder {
         bytes32 orderId;
         uint256 outcome;
+        ERC20Token kycToken;
         uint256 sharePriceRange;
         uint256 sharePriceLong;
         uint256 sharePriceShort;
@@ -284,6 +285,7 @@ library Trade {
         return FilledOrder({
             orderId: _orderId,
             outcome: _contracts.orders.getOutcome(_orderId),
+            kycToken: _contracts.orders.getKYCToken(_orderId),
             sharePriceRange: _sharePriceRange,
             sharePriceLong: _sharePriceLong,
             sharePriceShort: _sharePriceShort
@@ -380,14 +382,15 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
     function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external afterInitialized returns (uint256) {
         uint256 _result = this.fillOrder(msg.sender, _orderId, _amountFillerWants, _tradeGroupId, _ignoreShares, _affiliateAddress);
-        //IMarket _market = orders.getMarket(_orderId);
-        //_market.assertBalances();
+        IMarket _market = orders.getMarket(_orderId);
+        _market.assertBalances();
         return _result;
     }
 
     function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external afterInitialized nonReentrant returns (uint256) {
         require(msg.sender == trade || msg.sender == address(this));
         Trade.Data memory _tradeData = Trade.create(augur, _orderId, _filler, _amountFillerWants, _ignoreShares, _affiliateAddress);
+        require(_tradeData.order.kycToken == ERC20Token(0) || _tradeData.order.kycToken.balanceOf(_filler) > 0);
         uint256 _marketCreatorFees;
         uint256 _reporterFees;
         if (!_ignoreShares) {

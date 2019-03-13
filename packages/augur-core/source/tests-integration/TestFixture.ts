@@ -10,6 +10,8 @@ import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { stringTo32ByteHex } from '../libraries/HelperFunctions';
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 
+const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+
 export class TestFixture {
     // FIXME: extract out the bits of contract deployer that we need access to, like the contracts/abis, so we can have a more targeted dependency
     public readonly contractDeployer: ContractDeployer;
@@ -88,7 +90,7 @@ export class TestFixture {
         const ethValue = numShares.mul(price);
 
         await this.cash.depositEther({attachedEth: ethValue});
-        await createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false);
+        await createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
         return;
     }
 
@@ -106,12 +108,12 @@ export class TestFixture {
 
         await this.cash.depositEther({ attachedEth: ethValue });
 
-        const bestPriceAmount = await trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, "0x0000000000000000000000000000000000000000");
+        const bestPriceAmount = await trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
         if (bestPriceAmount == new ethers.utils.BigNumber(0)) {
             throw new Error("Could not take best Order");
         }
 
-        await trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, "0x0000000000000000000000000000000000000000");
+        await trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
         return;
     }
 
@@ -151,7 +153,7 @@ export class TestFixture {
         const ordersContract = await this.contractDeployer.getContractAddress("Orders");
         const orders = new Orders(this.dependencies, ordersContract);
 
-        const orderID = await orders.getBestOrderId_(type, market, outcome);
+        const orderID = await orders.getBestOrderId_(type, market, outcome, NULL_ADDRESS);
         if (!orderID) {
             throw new Error("Unable to get order price");
         }

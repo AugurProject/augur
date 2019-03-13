@@ -1,10 +1,10 @@
-import { Augur } from "@augurproject/api";
-import { MetaDB, SequenceIds } from "./MetaDB";
-import { PouchDBFactoryType } from "./AbstractDB";
-import { SyncableDB } from "./SyncableDB";
-import { SyncStatus } from "./SyncStatus";
-import { TrackedUsers } from "./TrackedUsers";
-import { UserSyncableDB } from "./UserSyncableDB";
+import {Augur} from "@augurproject/api";
+import {MetaDB, SequenceIds} from "./MetaDB";
+import {PouchDBFactoryType} from "./AbstractDB";
+import {SyncableDB} from "./SyncableDB";
+import {SyncStatus} from "./SyncStatus";
+import {TrackedUsers} from "./TrackedUsers";
+import {UserSyncableDB} from "./UserSyncableDB";
 
 export interface UserSpecificEvent {
   name: string;
@@ -23,7 +23,7 @@ export class DB<TBigNumber> {
   public readonly pouchDBFactory: PouchDBFactoryType;
   public syncStatus: SyncStatus;
 
-  public constructor (pouchDBFactory: PouchDBFactoryType) {
+  public constructor(pouchDBFactory: PouchDBFactoryType) {
     this.pouchDBFactory = pouchDBFactory;
   }
 
@@ -180,7 +180,7 @@ export class DB<TBigNumber> {
    *
    * @param {string} dbName The name of the database
    */
-  public getSyncableDatabase(dbName: string) : SyncableDB<TBigNumber> {
+  public getSyncableDatabase(dbName: string): SyncableDB<TBigNumber> {
     return this.syncableDatabases[dbName];
   }
 
@@ -222,9 +222,9 @@ export class DB<TBigNumber> {
     }
     // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbRollbackPromises)
-    .catch(error => {
-      throw error;
-    });
+      .catch(error => {
+        throw error;
+      });
 
     // Perform rollback on UserSyncableDBs
     for (let trackedUser of await this.trackedUsers.getUsers()) {
@@ -235,23 +235,23 @@ export class DB<TBigNumber> {
     }
     // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbRollbackPromises)
-    .catch(error => {
-      throw error;
-    });
+      .catch(error => {
+        throw error;
+      });
 
     // TODO If derived DBs end up getting used, call `this.metaDatabase.find`
     // here to get sequenceIds for blocks >= blockNumber. Then call
     // `this.metaDatabase.rollback` to remove those documents from derived DBs.
   }
 
- /**
-  * Adds a new block to a SyncableDB/UserSyncableDB and updates MetaDB.
-  *
-  * TODO Define blockLogs interface
-  *
-  * @param {string} dbName Name of the database to which the block should be added
-  * @param {any} blockLogs Logs from a new block
-  */
+  /**
+   * Adds a new block to a SyncableDB/UserSyncableDB and updates MetaDB.
+   *
+   * TODO Define blockLogs interface
+   *
+   * @param {string} dbName Name of the database to which the block should be added
+   * @param {any} blockLogs Logs from a new block
+   */
   public async addNewBlock(dbName: string, blockLogs: any): Promise<void> {
     let db = this.syncableDatabases[dbName];
     if (!db) {

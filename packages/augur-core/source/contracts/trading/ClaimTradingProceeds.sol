@@ -59,7 +59,6 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
 
     function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) private returns (bool) {
         ICash _denominationToken = _market.getDenominationToken();
-        IAuction _auction = IAuction(_market.getUniverse().getAuction());
 
         if (_shareHolderShare > 0) {
             require(_denominationToken.transferFrom(address(_market), _shareHolder, _shareHolderShare));
@@ -68,8 +67,7 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
             _market.recordMarketCreatorFees(_creatorShare, address(0));
         }
         if (_reporterShare > 0) {
-            require(_denominationToken.transferFrom(address(_market), address(_auction), _reporterShare));
-            _auction.recordFees(_reporterShare);
+            require(_denominationToken.transferFrom(address(_market), address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare));
         }
         return true;
     }

@@ -103,9 +103,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
             _market.recordMarketCreatorFees(_creatorFee, _affiliateAddress);
         }
         if (_reportingFee != 0) {
-            IAuction _auction = IAuction(_market.getUniverse().getAuction());
-            require(_denominationToken.transferFrom(address(_market), address(_auction), _reportingFee));
-            _auction.recordFees(_reportingFee);
+            require(_denominationToken.transferFrom(address(_market), address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reportingFee));
         }
         require(_denominationToken.transferFrom(address(_market), _sender, _payout));
 

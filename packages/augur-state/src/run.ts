@@ -1,12 +1,11 @@
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { EthersProvider, Web3AsyncSendable } from "@augurproject/ethers-provider";
-import { BigNumber as EthersBigNumber } from "ethers/utils";
-import { Augur } from "@augurproject/api";
-import { uploadBlockNumbers } from "@augurproject/artifacts";
+import {ContractDependenciesEthers} from "contract-dependencies-ethers";
+import {EthersProvider, Web3AsyncSendable} from "ethers-provider";
+import {BigNumber as EthersBigNumber} from "ethers/utils";
+import {Augur} from "@augurproject/api";
+import {uploadBlockNumbers, addresses} from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
-import { PouchDBFactory } from "./db/AbstractDB";
-import { Controller } from "./Controller";
-import { addresses } from "@augurproject/artifacts";
+import {PouchDBFactory} from "./db/AbstractDB";
+import {Controller} from "./Controller";
 
 // TODO Add Ethereum node URL as param
 export async function start() {
