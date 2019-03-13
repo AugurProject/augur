@@ -178,12 +178,12 @@ contract Trade is Initializable, ReentrancyGuard {
     }
 
     function internalExecuteSignedFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender) internal returns (bool) {
-        internalFillBestOrder(_direction, _market, _outcome, _amount, _price, bytes32(0), DEFAULT_LOOP_LIMIT, false, NULL_ADDRESS, _sender);
+        internalFillBestOrder(_direction, _market, _outcome, _amount, _price, bytes32(0), DEFAULT_LOOP_LIMIT, false, NULL_ADDRESS, _sender, ERC20Token(NULL_ADDRESS));
         return true;
     }
 
     function internalExecuteSignedTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender) internal returns (bool) {
-        internalTrade(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), bytes32(0), DEFAULT_LOOP_LIMIT, false, NULL_ADDRESS, _sender);
+        internalTrade(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), bytes32(0), DEFAULT_LOOP_LIMIT, false, NULL_ADDRESS, _sender, ERC20Token(NULL_ADDRESS));
         return true;
     }
 

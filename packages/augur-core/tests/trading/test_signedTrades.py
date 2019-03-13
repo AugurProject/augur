@@ -3,7 +3,7 @@
 from ethereum.tools import tester
 from ethereum.tools.tester import ABIContract, TransactionFailed
 from pytest import fixture, raises
-from utils import longTo32Bytes, PrintGasUsed, fix, bytesToHexString, BuyWithCash, longToHexString, TokenDelta
+from utils import longTo32Bytes, PrintGasUsed, fix, bytesToHexString, BuyWithCash, longToHexString, TokenDelta, nullAddress
 from constants import BID, ASK, YES, NO
 from datetime import timedelta
 from ethereum.utils import ecsign, sha3, normalize_key, int_to_32bytearray, bytearray_to_bytestr, zpad
@@ -39,7 +39,7 @@ def test_signed_trade(contractsFixture, universe, market, cash, augur):
             sender=tester.k1)
 
     # The user has created an order
-    orderID = orders.getBestOrderId(BID, market.address, YES)
+    orderID = orders.getBestOrderId(BID, market.address, YES, nullAddress)
     assert orders.getAmount(orderID) == 10
     assert orders.getPrice(orderID) == 1000
     assert orders.getOrderCreator(orderID) == bytesToHexString(tester.a0)
@@ -56,7 +56,7 @@ def test_signed_fill(contractsFixture, universe, market, cash, augur):
     payment = 100
 
     with BuyWithCash(cash, 90000, tester.k1, "place an order"):
-        orderID = createOrder.publicCreateOrder(ASK, 10, 1000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, sender = tester.k1)
+        orderID = createOrder.publicCreateOrder(ASK, 10, 1000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = tester.k1)
 
     tradeHash = trade.getTradeHash(BID, market.address, YES, 10, 1000, tester.a0, False, expirationTimestampInSec, 42, payment)
     v, r, s = createTrade(tradeHash)
