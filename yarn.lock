@@ -1897,13 +1897,6 @@
     "@types/pouchdb-core" "*"
     "@types/pouchdb-find" "*"
 
-"@types/pouchdb-upsert@^2.2.6":
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-upsert/-/pouchdb-upsert-2.2.6.tgz#f3a745cc049825a6ed08c47a4cac519b5dad26e7"
-  integrity sha512-twSau/vlyPM14Fboss0fv81ombRLtN0A7/1dQi6btLjRfF/Gw0kEBTZOg+Jttjr/9366JYhlK6HAzjybDIxN/A==
-  dependencies:
-    "@types/pouchdb-core" "*"
-
 "@types/pouchdb@6.3.2":
   version "6.3.2"
   resolved "https://registry.yarnpkg.com/@types/pouchdb/-/pouchdb-6.3.2.tgz#fa6f70b98c55c7685867887350e44421d5446592"
@@ -14030,13 +14023,6 @@ pouchdb-selector-core@7.0.0:
   dependencies:
     pouchdb-collate "7.0.0"
     pouchdb-utils "7.0.0"
-
-pouchdb-upsert@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/pouchdb-upsert/-/pouchdb-upsert-2.2.0.tgz#42b15e420848f3b294c35060589fdb51cf7f7f5f"
-  integrity sha1-QrFeQghI87KUw1BgWJ/bUc9/f18=
-  dependencies:
-    pouchdb-promise "^6.1.2"
 
 pouchdb-utils@7.0.0:
   version "7.0.0"

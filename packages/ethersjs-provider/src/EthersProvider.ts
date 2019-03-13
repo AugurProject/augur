@@ -29,13 +29,13 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
       this.performQueue = queue(
         retryable(
           { times, interval},
-          (item: PerformQueueTask, callback: (err: null) => void): void => {
+          (item: PerformQueueTask, callback: () => void): void => {
             this.provider.perform(item.message, item.params).then((res) => {
               item.resolve(res);
-              callback(null);
+              callback();
             }).catch((err: Error) => {
               item.reject(err);
-              callback(null);
+              callback();
             });
           }
         ),

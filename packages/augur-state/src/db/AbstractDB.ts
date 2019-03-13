@@ -2,7 +2,6 @@ import fs from "fs";
 import PouchDB from "pouchdb";
 PouchDB.plugin(require('pouchdb-adapter-memory'));
 PouchDB.plugin(require('pouchdb-find'));
-PouchDB.plugin(require('pouchdb-upsert'));
 import * as _ from "lodash";
 
 interface DocumentIDToRev {
