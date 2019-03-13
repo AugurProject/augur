@@ -44,7 +44,7 @@ jobs:
           docker tag augurproject/augur-build:latest augurproject/augur-build:monorepo.$(Build.BuildID)
           docker push augurproject/augur-build:monorepo.$(Build.BuildID)
         condition: |
-          and
+          or
           (
               eq(variables.AUGUR_CORE, 'true'),
               eq(variables['Build.SourceBranch'], 'refs/heads/master')
@@ -86,7 +86,7 @@ jobs:
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
           docker push $CORE_IMAGE_BUILD
         condition: |
-          and
+          or
           (
               eq(variables.AUGUR_CORE, 'true'),
               eq(variables['Build.SourceBranch'], 'refs/heads/master')
@@ -271,7 +271,9 @@ jobs:
         and
         (
             succeeded(),
-            eq(variables.AUGUR_CORE, 'true'),
-            eq(variables['Build.SourceBranch'], 'refs/heads/master')
+            or (
+              eq(variables.AUGUR_CORE, 'true'),
+              eq(variables['Build.SourceBranch'], 'refs/heads/master')
+            )
         )
       displayName: 'build and (maybe) push docker image'
