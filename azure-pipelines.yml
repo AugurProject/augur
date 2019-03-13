@@ -10,12 +10,43 @@ trigger:
   branches:
     include:
     - master
-    - azure-pipelines
+    - azure/*
     - monorepo-integration
-    - petong/monorepo-conditonal
 
 jobs:
+  - job: Augur_build_docker_image
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.6.5'
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '10.x'
+      - bash: |
+          set -euo pipefail
+          echo "Build SourceBranch: $(Build.SourceBranch)"
+          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
+            do
+              echo "$f"
+              if [[ $f =~ .*augur-core.* ]]
+              then
+                echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+              fi
+            done
+      - bash: |
+          set -euo pipefail
+          echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+          docker pull augurproject/augur-build:latest
+          yarn docker:build:augur
+          docker images
+          docker tag augurproject/augur-build:latest augurproject/augur-build:monorepo.$(Build.BuildID)
+          docker push augurproject/augur-build:monorepo.$(Build.BuildID)
+        condition: eq(variables.AUGUR_CORE, 'true')
+
   - job: Build_Core_Docker
+    dependsOn: Augur_build_docker_image
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
@@ -40,7 +71,11 @@ jobs:
           set -euo pipefail
           which node
           node --version
+          docker images
           echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+          docker pull augurproject/augur-build:monorepo.$(Build.BuildID)
+          docker tag augurproject/augur-build:monorepo.$(Build.BuildID) augurproject/augur-build:latest
+          docker images
           docker pull $CORE_IMAGE_LATEST;
           yarn workspace @augurproject/core docker:build;
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
@@ -76,8 +111,8 @@ jobs:
           TESTS: integration:parity
         security_mithril:
           TESTS: security:mythril
-        security_main:
-          TESTS: security:maian
+#        security_main:
+#          TESTS: security:maian
 
     steps:
       - task: UsePythonVersion@0
@@ -100,6 +135,8 @@ jobs:
           set -euo pipefail
           which node
           node --version
+          docker pull augurproject/augur-build:monorepo.$(Build.BuildID)
+          docker tag augurproject/augur-build:monorepo.$(Build.BuildID) augurproject/augur-build:latest
           docker pull $CORE_IMAGE_BUILD
           docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST
           if [[ "$TESTS" == "integration:geth" ]]; then
