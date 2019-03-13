@@ -42,45 +42,13 @@ export abstract class AbstractDB {
     }
   }
 
-  // protected async upsertDocument(id: string, document: object): Promise<PouchDB.Core.Response> {
-  //   const previousBlockRev = await this.getPouchRevFromId(id);
-  //   let result;
-  //   try {
-  //     result = await this.db.put(Object.assign(
-  //       previousBlockRev ? { _rev: previousBlockRev } : {},
-  //       { _id: id },
-  //       document,
-  //     ));
-  //   } catch (err) {
-  //     this.upsertDocument(id, document);
-  //   }
-
-  //   return result;
-  // }
-
   protected async upsertDocument(id: string, document: object): Promise<PouchDB.Core.Response> {
     const previousBlockRev = await this.getPouchRevFromId(id);
-    let result = await this.db.upsert(
-      id,
-      function(doc) {
-        return Object.assign(
-          previousBlockRev ? { _rev: previousBlockRev } : {},
-            { _id: id },
-            document,
-          );
-      }
-    );
-    let newResult;
-    return {
-      id: result.id,
-      rev: result.rev,
-      ok: true,
-    };
-    // Object.assign(
-    // previousBlockRev ? { _rev: previousBlockRev } : {},
-    //   { _id: id },
-    //   document,
-    // ));
+    return await this.db.put(Object.assign(
+      previousBlockRev ? { _rev: previousBlockRev } : {},
+      { _id: id },
+      document,
+    ));
   }
 
   protected async bulkUpsertDocuments(startkey: string, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
