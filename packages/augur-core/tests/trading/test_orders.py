@@ -3,7 +3,7 @@
 from ethereum.tools import tester
 from ethereum.tools.tester import TransactionFailed
 from pytest import mark, raises
-from utils import fix, bytesToHexString, longTo32Bytes, longToHexString
+from utils import fix, bytesToHexString, longTo32Bytes, longToHexString, nullAddress
 from constants import BID, ASK, YES, NO
 
 WEI_TO_ETH = 10**18
@@ -31,12 +31,13 @@ def test_walkOrderList_bids(contractsFixture, market):
         "sharesEscrowed": 0,
         "betterOrderID": longTo32Bytes(0),
         "worseOrderID": longTo32Bytes(0),
-        "tradeGroupID": "0"
+        "tradeGroupID": "0",
+        "kycToken": nullAddress
     }
-    orderId5 = orders.testSaveOrder(order["type"], market.address, order["amount"], order["price"], order["sender"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"], order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"])
+    orderId5 = orders.testSaveOrder(order["type"], market.address, order["amount"], order["price"], order["sender"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"], order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"], order["kycToken"])
     assert(orderId5 != bytearray(32)), "Save order"
-    bestOrderID = orders.getBestOrderId(BID, market.address, outcomeID)
-    worstOrderID = orders.getWorstOrderId(BID, market.address, outcomeID)
+    bestOrderID = orders.getBestOrderId(BID, market.address, outcomeID, nullAddress)
+    worstOrderID = orders.getWorstOrderId(BID, market.address, outcomeID, nullAddress)
     assert(bestOrderID == orderId5)
     assert(worstOrderID == orderId5)
     # walk down order list starting from bestOrderID
@@ -62,12 +63,13 @@ def test_walkOrderList_bids(contractsFixture, market):
         "sharesEscrowed": 0,
         "betterOrderID": longTo32Bytes(0),
         "worseOrderID": longTo32Bytes(0),
-        "tradeGroupID": "0"
+        "tradeGroupID": "0",
+        "kycToken": nullAddress
     }
-    orderId6 = orders.testSaveOrder(order["type"], market.address, order["amount"], order["price"], order["sender"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"], order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"])
+    orderId6 = orders.testSaveOrder(order["type"], market.address, order["amount"], order["price"], order["sender"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"], order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"], order["kycToken"])
     assert(orderId6 != bytearray(32)), "Save order"
-    bestOrderID = orders.getBestOrderId(BID, market.address, outcomeID)
-    worstOrderID = orders.getWorstOrderId(BID, market.address, outcomeID)
+    bestOrderID = orders.getBestOrderId(BID, market.address, outcomeID, nullAddress)
+    worstOrderID = orders.getWorstOrderId(BID, market.address, outcomeID, nullAddress)
     assert(bestOrderID == orderId5)
     assert(worstOrderID == orderId6)
     # walk down order list starting from bestOrderID
@@ -93,12 +95,13 @@ def test_walkOrderList_bids(contractsFixture, market):
         "sharesEscrowed": 0,
         "betterOrderID": longTo32Bytes(0),
         "worseOrderID": longTo32Bytes(0),
-        "tradeGroupID": "0"
+        "tradeGroupID": "0",
+        "kycToken": nullAddress
     }
-    orderId7 = orders.testSaveOrder(order["type"], market.address, order["amount"], order["price"], order["sender"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"], order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"])
+    orderId7 = orders.testSaveOrder(order["type"], market.address, order["amount"], order["price"], order["sender"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"], order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"], order["kycToken"])
     assert(orderId7 != bytearray(32)), "Save order"
-    bestOrderID = orders.getBestOrderId(BID, market.address, outcomeID)
-    worstOrderID = orders.getWorstOrderId(BID, market.address, outcomeID)
+    bestOrderID = orders.getBestOrderId(BID, market.address, outcomeID, nullAddress)
+    worstOrderID = orders.getWorstOrderId(BID, market.address, outcomeID, nullAddress)
     assert(bestOrderID == orderId5)
     assert(worstOrderID == orderId6)
     # walk down order list starting from bestOrderID
@@ -129,12 +132,13 @@ def test_walkOrderList_asks(contractsFixture, market):
         "sharesEscrowed": 0,
         "betterOrderID": longTo32Bytes(0),
         "worseOrderID": longTo32Bytes(0),
-        "tradeGroupID": "0"
+        "tradeGroupID": "0",
+        "kycToken": nullAddress
     }
-    orderId8 = orders.testSaveOrder(order["type"], market.address, order["amount"], order["price"], order["sender"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"], order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"])
+    orderId8 = orders.testSaveOrder(order["type"], market.address, order["amount"], order["price"], order["sender"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"], order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"], order["kycToken"])
     assert(orderId8 != bytearray(32)), "Save order"
-    bestOrderID = orders.getBestOrderId(ASK, market.address, outcomeID)
-    worstOrderID = orders.getWorstOrderId(ASK, market.address, outcomeID)
+    bestOrderID = orders.getBestOrderId(ASK, market.address, outcomeID, nullAddress)
+    worstOrderID = orders.getWorstOrderId(ASK, market.address, outcomeID, nullAddress)
     assert(bestOrderID == orderId8)
     assert(worstOrderID == orderId8)
     # walk down order list starting from bestOrderID
@@ -158,12 +162,13 @@ def test_walkOrderList_asks(contractsFixture, market):
         "sharesEscrowed": 0,
         "betterOrderID": longTo32Bytes(0),
         "worseOrderID": longTo32Bytes(0),
-        "tradeGroupID": "0"
+        "tradeGroupID": "0",
+        "kycToken": nullAddress
     }
-    orderId9 = orders.testSaveOrder(order["type"], market.address, order["amount"], order["price"], order["sender"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"], order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"])
+    orderId9 = orders.testSaveOrder(order["type"], market.address, order["amount"], order["price"], order["sender"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"], order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"], order["kycToken"])
     assert(orderId9 != bytearray(32)), "Save order"
-    bestOrderID = orders.getBestOrderId(ASK, market.address, outcomeID)
-    worstOrderID = orders.getWorstOrderId(ASK, market.address, outcomeID)
+    bestOrderID = orders.getBestOrderId(ASK, market.address, outcomeID, nullAddress)
+    worstOrderID = orders.getWorstOrderId(ASK, market.address, outcomeID, nullAddress)
     assert(bestOrderID == orderId9)
     assert(worstOrderID == orderId8)
     # walk down order list starting from bestOrderID
@@ -189,12 +194,13 @@ def test_walkOrderList_asks(contractsFixture, market):
         "sharesEscrowed": 0,
         "betterOrderID": longTo32Bytes(0),
         "worseOrderID": longTo32Bytes(0),
-        "tradeGroupID": "0"
+        "tradeGroupID": "0",
+        "kycToken": nullAddress
     }
-    orderId10 = orders.testSaveOrder(order["type"], market.address, order["amount"], order["price"], order["sender"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"], order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"])
+    orderId10 = orders.testSaveOrder(order["type"], market.address, order["amount"], order["price"], order["sender"], order["outcome"], order["moneyEscrowed"], order["sharesEscrowed"], order["betterOrderID"], order["worseOrderID"], order["tradeGroupID"], order["kycToken"])
     assert(orderId10 != bytearray(32)), "Save order"
-    bestOrderID = orders.getBestOrderId(ASK, market.address, outcomeID)
-    worstOrderID = orders.getWorstOrderId(ASK, market.address, outcomeID)
+    bestOrderID = orders.getBestOrderId(ASK, market.address, outcomeID, nullAddress)
+    worstOrderID = orders.getWorstOrderId(ASK, market.address, outcomeID, nullAddress)
     assert(bestOrderID == orderId9)
     assert(worstOrderID == orderId8)
     # walk down order list starting from bestOrderID
@@ -231,12 +237,12 @@ def test_orderBidSorting(where, orderType, hints, contractsFixture, market):
     # setup pre-existing orders
     worstPrice = 6000 if orderType == BID else 6600
     bestPrice = 6600 if orderType == BID else 6000
-    worstOrderId = orders.testSaveOrder(orderType, market.address, fix('1'), worstPrice, tester.a0, YES, worstPrice, 0, longTo32Bytes(0), longTo32Bytes(0), "0")
-    bestOrderId = orders.testSaveOrder(orderType, market.address, fix('1'), bestPrice, tester.a0, YES, bestPrice, 0, longTo32Bytes(0), longTo32Bytes(0), "0")
+    worstOrderId = orders.testSaveOrder(orderType, market.address, fix('1'), worstPrice, tester.a0, YES, worstPrice, 0, longTo32Bytes(0), longTo32Bytes(0), "0", nullAddress)
+    bestOrderId = orders.testSaveOrder(orderType, market.address, fix('1'), bestPrice, tester.a0, YES, bestPrice, 0, longTo32Bytes(0), longTo32Bytes(0), "0", nullAddress)
 
     # validate that our setup went smoothly
-    assert orders.getBestOrderId(orderType, market.address, YES) == bestOrderId
-    assert orders.getWorstOrderId(orderType, market.address, YES) == worstOrderId
+    assert orders.getBestOrderId(orderType, market.address, YES, nullAddress) == bestOrderId
+    assert orders.getWorstOrderId(orderType, market.address, YES, nullAddress) == worstOrderId
     assert orders.getWorseOrderId(bestOrderId) == worstOrderId
     assert orders.getWorseOrderId(worstOrderId) == longTo32Bytes(0)
     assert orders.getBetterOrderId(worstOrderId) == bestOrderId
@@ -255,20 +261,20 @@ def test_orderBidSorting(where, orderType, hints, contractsFixture, market):
         orderPrice = 5900 if orderType == BID else 6700
         betterOrderId = worstOrderId if hints else longTo32Bytes(0)
         worseOrderId = longTo32Bytes(0)
-    insertedOrder = orders.testSaveOrder(orderType, market.address, fix('1'), orderPrice, tester.a0, YES, orderPrice, 0, betterOrderId, worseOrderId, "0")
+    insertedOrder = orders.testSaveOrder(orderType, market.address, fix('1'), orderPrice, tester.a0, YES, orderPrice, 0, betterOrderId, worseOrderId, "0", nullAddress)
 
     # validate the new order was inserted correctly
     assert orders.getBetterOrderId(insertedOrder) == longTo32Bytes(0) if where == 'best' else bestOrderId
     assert orders.getWorseOrderId(insertedOrder) == longTo32Bytes(0) if where == 'worst' else worstOrderId
-    assert orders.getBestOrderId(orderType, market.address, YES) == insertedOrder if where == 'best' else bestOrderId
-    assert orders.getWorstOrderId(orderType, market.address, YES) == insertedOrder if where == 'worst' else worstOrderId
+    assert orders.getBestOrderId(orderType, market.address, YES, nullAddress) == insertedOrder if where == 'best' else bestOrderId
+    assert orders.getWorstOrderId(orderType, market.address, YES, nullAddress) == insertedOrder if where == 'worst' else worstOrderId
 
 def test_saveOrder(contractsFixture, market):
     orders = contractsFixture.contracts['Orders']
 
-    orderId1 = orders.testSaveOrder(BID, market.address, fix(10), 5000, tester.a1, NO, 0, fix(10), longTo32Bytes(0), longTo32Bytes(0), "1")
+    orderId1 = orders.testSaveOrder(BID, market.address, fix(10), 5000, tester.a1, NO, 0, fix(10), longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
     assert(orderId1 != bytearray(32)), "saveOrder wasn't executed successfully"
-    orderId2 = orders.testSaveOrder(ASK, market.address, fix(10), 5000, tester.a2, NO, fix('10', '5000'), 0, longTo32Bytes(0), longTo32Bytes(0), "1")
+    orderId2 = orders.testSaveOrder(ASK, market.address, fix(10), 5000, tester.a2, NO, fix('10', '5000'), 0, longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
     assert(orderId2 != bytearray(32)), "saveOrder wasn't executed successfully"
 
     assert(orders.getAmount(orderId1) == fix(10)), "amount for order1 should be set to 10"
@@ -298,11 +304,11 @@ def test_saveOrder(contractsFixture, market):
 def test_removeOrder(contractsFixture, market):
     orders = contractsFixture.contracts['Orders']
 
-    orderId1 = orders.testSaveOrder(BID, market.address, fix('10'), 5000, tester.a1, NO, 0, fix('10'), longTo32Bytes(0), longTo32Bytes(0), "1")
+    orderId1 = orders.testSaveOrder(BID, market.address, fix('10'), 5000, tester.a1, NO, 0, fix('10'), longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
     assert(orderId1 != bytearray(32)), "saveOrder wasn't executed successfully"
-    orderId2 = orders.testSaveOrder(BID, market.address, fix('10'), 5000, tester.a2, NO, fix('10', '5000'), 0, longTo32Bytes(0), longTo32Bytes(0), "1")
+    orderId2 = orders.testSaveOrder(BID, market.address, fix('10'), 5000, tester.a2, NO, fix('10', '5000'), 0, longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
     assert(orderId2 != bytearray(32)), "saveOrder wasn't executed successfully"
-    orderId3 = orders.testSaveOrder(BID, market.address, fix('10'), 5000, tester.a1, YES, 0, fix('10'), longTo32Bytes(0), longTo32Bytes(0), "1")
+    orderId3 = orders.testSaveOrder(BID, market.address, fix('10'), 5000, tester.a1, YES, 0, fix('10'), longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
     assert(orderId3 != bytearray(32)), "saveOrder wasn't executed successfully"
     assert orders.getAmount(orderId3) == fix('10')
     assert orders.getPrice(orderId3) == 5000

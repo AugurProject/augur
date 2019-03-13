@@ -2,7 +2,7 @@
 
 from ethereum.tools import tester
 from ethereum.tools.tester import TransactionFailed
-from utils import longTo32Bytes, longToHexString, bytesToHexString, fix, AssertLog, stringToBytes, EtherDelta, PrintGasUsed, BuyWithCash, TokenDelta
+from utils import longTo32Bytes, longToHexString, bytesToHexString, fix, AssertLog, stringToBytes, EtherDelta, PrintGasUsed, BuyWithCash, TokenDelta, nullAddress
 from constants import ASK, BID, YES, NO, LONG, SHORT
 from pytest import raises, mark
 
@@ -15,7 +15,7 @@ def test_orders_set_order_price_all_tokens(contractsFixture, market, cash):
 
     # create order
     with BuyWithCash(cash, fix('10', '5000'), tester.k0, "create order"):
-        orderId = createOrder.publicCreateOrder(BID, fix(10), 5000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False)
+        orderId = createOrder.publicCreateOrder(BID, fix(10), 5000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress)
 
     assert orders.getAmount(orderId) == fix('10')
     assert orders.getPrice(orderId) == 5000
@@ -60,7 +60,7 @@ def test_orders_set_order_price_all_shares(contractsFixture, market, cash):
     with BuyWithCash(cash, fix('10', '10000'), tester.k0, "buy complete set"):
         assert completeSets.publicBuyCompleteSets(market.address, fix(10))
 
-    orderId = createOrder.publicCreateOrder(ASK, fix(10), 5000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False)
+    orderId = createOrder.publicCreateOrder(ASK, fix(10), 5000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress)
 
     assert orders.getAmount(orderId) == fix('10')
     assert orders.getPrice(orderId) == 5000
@@ -91,7 +91,7 @@ def test_orders_set_order_price_partial_shares(contractsFixture, market, cash):
         assert completeSets.publicBuyCompleteSets(market.address, fix(5))
 
     with BuyWithCash(cash, fix('5', '5000'), tester.k0, "create order"):
-        orderId = createOrder.publicCreateOrder(ASK, fix(10), 5000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False)
+        orderId = createOrder.publicCreateOrder(ASK, fix(10), 5000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress)
 
     assert orders.getAmount(orderId) == fix('10')
     assert orders.getPrice(orderId) == 5000

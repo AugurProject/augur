@@ -1,4 +1,4 @@
-import { PouchDBFactoryType } from "../db/AbstractDB";
+import {PouchDBFactoryType} from "../db/AbstractDB";
 import PouchDB from "pouchdb";
 import * as _ from "lodash";
 
@@ -50,17 +50,17 @@ export function makeMock() {
     }
   }
 
-  function makeFactory (): PouchDBFactoryType {
+  function makeFactory(): PouchDBFactoryType {
     return (dbName: string) => {
       const fullDbName = `db/${dbName}`;
       mockState.dbNames.push(fullDbName);
-      return new MockPouchDB(fullDbName, { adapter: "memory" })
+      return new MockPouchDB(fullDbName, {adapter: "memory"})
     }
   }
 
   async function wipeDB(): Promise<void> {
     await Promise.all(_.map(mockState.dbNames, dbName => {
-      const db = new PouchDB(dbName, { adapter: "memory" });
+      const db = new PouchDB(dbName, {adapter: "memory"});
       return db.destroy();
     }));
 

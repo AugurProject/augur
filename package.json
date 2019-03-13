@@ -54,7 +54,6 @@
     "@types/ws": "3.2.1",
     "@types/pouchdb": "6.3.2",
     "@types/web3": "1.0.18",
-    "@types/node": "10.12.29",
     "babel-loader": "8.0.5",
     "babel-jest": "23.6.0",
     "eslint-config-airbnb": "17.1.0",
