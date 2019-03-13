@@ -83,12 +83,12 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
           try {
             results = await _this.provider.perform(message, params);
           } catch (err) {
-            callback(err, []);
+            callback(err, undefined);
           }
           callback(null, results);
         },
         function (err: Error, results: any) {
-          if (err || typeof results === "undefined") {
+          if (err) {
             reject(err);
           }
           resolve(results);
