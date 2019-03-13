@@ -1,4 +1,4 @@
-import { Augur } from "@augurproject/api";
+import { Augur, UserSpecificEvent } from "@augurproject/api";
 import { MetaDB, SequenceIds } from "./MetaDB";
 import { PouchDBFactoryType } from "./AbstractDB";
 import { SyncableDB } from "./SyncableDB";
@@ -6,11 +6,6 @@ import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
 
-export interface UserSpecificEvent {
-  name: string;
-  numAdditionalTopics: number;
-  userTopicIndex: number;
-}
 
 export class DB<TBigNumber> {
   private networkId: number;
@@ -110,9 +105,10 @@ export class DB<TBigNumber> {
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
     let dbSyncPromises = [];
     const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
-    for (let dbIndex in this.syncableDatabases) {
+    for (let genericEventName of this.genericEventNames) {
+      let dbName = this.getDatabaseName(genericEventName);
       dbSyncPromises.push(
-        this.syncableDatabases[dbIndex].sync(
+        this.syncableDatabases[dbName].sync(
           augur,
           chunkSize,
           blockstreamDelay,
