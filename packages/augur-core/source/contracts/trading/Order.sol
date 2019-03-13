@@ -12,6 +12,7 @@ import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/trading/IOrders.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
 
 
 // CONSIDER: Is `price` the most appropriate name for the value being used? It does correspond 1:1 with the attoETH per share, but the range might be considered unusual?
@@ -31,6 +32,7 @@ library Order {
         IOrders orders;
         IMarket market;
         IAugur augur;
+        ERC20Token kycToken;
 
         // Order
         bytes32 id;
@@ -47,7 +49,7 @@ library Order {
     }
 
     // No validation is needed here as it is simply a librarty function for organizing data
-    function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares) internal view returns (Data memory) {
+    function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares, ERC20Token _kycToken) internal view returns (Data memory) {
         require(_outcome < _market.getNumberOfOutcomes());
         require(_price < _market.getNumTicks());
         require(_attoshares > 0);
@@ -59,6 +61,7 @@ library Order {
             orders: _orders,
             market: _market,
             augur: _augur,
+            kycToken: _kycToken,
             id: 0,
             creator: _creator,
             outcome: _outcome,
@@ -79,7 +82,7 @@ library Order {
 
     function getOrderId(Order.Data memory _orderData) internal view returns (bytes32) {
         if (_orderData.id == bytes32(0)) {
-            bytes32 _orderId = _orderData.orders.getOrderId(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, block.number, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed);
+            bytes32 _orderId = _orderData.orders.getOrderId(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, block.number, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed, _orderData.kycToken);
             require(_orderData.orders.getAmount(_orderId) == 0);
             _orderData.id = _orderId;
         }
@@ -103,7 +106,7 @@ library Order {
     }
 
     function saveOrder(Order.Data memory _orderData, bytes32 _tradeGroupId) internal returns (bytes32) {
-        return _orderData.orders.saveOrder(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed, _orderData.betterOrderId, _orderData.worseOrderId, _tradeGroupId);
+        return _orderData.orders.saveOrder(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed, _orderData.betterOrderId, _orderData.worseOrderId, _tradeGroupId, _orderData.kycToken);
     }
 
     //

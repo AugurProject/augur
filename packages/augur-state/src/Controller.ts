@@ -1,7 +1,7 @@
-import { Augur } from "@augurproject/api";
+import {Augur} from "@augurproject/api";
 import settings from "@augurproject/state/src/settings.json";
-import { PouchDBFactoryType } from "./db/AbstractDB";
-import { DB } from "./db/DB";
+import {PouchDBFactoryType} from "./db/AbstractDB";
+import {DB} from "./db/DB";
 
 // because flexsearch is a UMD type lib
 import FlexSearch = require("flexsearch");
@@ -23,7 +23,7 @@ export class Controller<TBigNumber> {
   private pouchDBFactory: PouchDBFactoryType;
   private FTS: FlexSearch;
 
-  public constructor (
+  public constructor(
     augur: Augur<TBigNumber>,
     networkId: number,
     blockstreamDelay: number,
@@ -37,16 +37,19 @@ export class Controller<TBigNumber> {
     this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
     this.trackedUsers = trackedUsers;
     this.pouchDBFactory = pouchDBFactory;
-    this.FTS = FlexSearch.create({ doc: {
-      id: "id",
-      start: "start",
-      end: "end",
-      field: [
-        "title",
-        "description",
-        "tags",
-      ]}});
-    }
+    this.FTS = FlexSearch.create({
+      doc: {
+        id: "id",
+        start: "start",
+        end: "end",
+        field: [
+          "title",
+          "description",
+          "tags",
+        ]
+      }
+    });
+  }
 
   public async run(): Promise<void> {
     try {
@@ -72,7 +75,7 @@ export class Controller<TBigNumber> {
           continue;
         }
 
-        const doc  = row.doc as SyncableMarketDataDoc;
+        const doc = row.doc as SyncableMarketDataDoc;
 
         if (doc) {
           const extraInfo = doc.extraInfo;
