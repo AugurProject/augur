@@ -6,7 +6,9 @@ RUN apk update \
 
 WORKDIR /augur
 ADD ./ .
-RUN yarn && yarn build
+RUN yarn
+
+RUN yarn build
 
 FROM alpine:3.9
 RUN apk update \
