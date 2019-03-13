@@ -66,7 +66,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
       let highestSyncBlock = await this.syncStatus.getHighestSyncBlock(this.dbName);
       // Sort blocks so newest blocks are removed first
       let blocksToRemove = await this.db.find({
-        selector: { blockNumber: { $gte: blockNumber } },
+        selector: {blockNumber: {$gte: blockNumber}},
         fields: ['_id', 'blockNumber', '_rev'],
         sort: [{blockNumber: 'desc'}],
       });
