@@ -245,16 +245,16 @@ jobs:
         echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
         sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
         sudo systemctl status docker
-        docker pull augurproject/augur-build:monorepo
+        docker pull augurproject/augur-build:monorepo:$(AUGUR_CORE_TAG)
         docker pull augurproject/augur-core:$(AUGUR_CORE_TAG)
-        #docker tag augurproject/augur-core:$(AUGUR_CORE_TAG) augurproject/augur-core:latest
+        docker tag augurproject/augur-build:monorepo:$(AUGUR_CORE_TAG) augurproject/augur-core:latest
+        docker tag augurproject/augur-core:$(AUGUR_CORE_TAG) augurproject/augur-core:latest
         docker images
-        yarn docker:build:augur
-        docker tag augurproject/augur-build:latest augurproject/augur-build:$(AUGUR_CORE_TAG)
         yarn workspace @augurproject/core artifacts
         yarn workspace @augurproject/tools docker:build
 
         if [[ "$(Build.SourceBranchName)" == "master" ]]; then
+            docker push augurproject/augur-core:latest
             yarn workspace @augurproject/tools docker:push
         fi
       condition: |
