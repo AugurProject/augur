@@ -5,12 +5,12 @@ declare module "ganache-core" {
     // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
     // TypeScript Version: 2.4
 
-    import { Provider } from "ethereum-protocol";
+    import { AsyncSendable } from "ethers.providers.Web3Provider";
     export type Account = {
         balance: number;
         secretKey?: string;
         publicKey?: string;
-    }
+    };
     export interface GanacheOpts {
         verbose?: boolean;
         logger?: {
@@ -21,12 +21,20 @@ declare module "ganache-core" {
         networkId?: number;
         mnemonic?: string;
         gasLimit?: number;
-        vmErrorsOnRPCResponse?: boolean;
         db_path?: string;
-        accounts?: Account[];
+
+        fork?: boolean;
+        blockTime?: number;
+
+        total_accounts?: number;
+        accounts?: Array<Account>;
+
+        vmErrorsOnRPCResponse?: boolean;
         allowUnlimitedContractSize?: boolean;
+        defaultTransactionGasLimit?: string;
+        debug?: boolean;
     }
-    export function provider(opts?: GanacheOpts): Provider;
+    export function provider(opts?: GanacheOpts): AsyncSendable;
 
     import * as http from "http";
     import * as https from "https";
