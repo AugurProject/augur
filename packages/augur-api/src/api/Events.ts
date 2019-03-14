@@ -1,6 +1,5 @@
 import {Provider} from "../ethereum/Provider";
 import {Log, ParsedLog} from "../ethereum/types";
-import * as _ from "lodash";
 import {abi} from "@augurproject/artifacts";
 import {Abi} from "ethereum";
 
@@ -24,7 +23,7 @@ export class Events {
     }
 
     public parseLogs(logs: Log[]): ParsedLog[] {
-        return _.map(logs, (log) => {
+        return logs.map((log) => {
             const logValues = this.provider.parseLogValues("Augur", log);
             return Object.assign(
                 logValues,

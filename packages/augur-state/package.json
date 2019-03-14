@@ -9,7 +9,7 @@
   },
   "scripts": {
     "version": "yarn rebuild",
-    "start": "ts-node -r tsconfig-paths/register ./src/run",
+    "start": "yarn build; ts-node -r tsconfig-paths/register ./src/run",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
     "build": "tsc -b",
     "watch": "tsc -w",
