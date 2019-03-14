@@ -1,4 +1,4 @@
-FROM node:10.15.0-alpine as node
+FROM node:10.15.3-alpine as node
 
 RUN apk update \
   && apk upgrade \
@@ -19,7 +19,7 @@ COPY --from=node /usr/local/lib/ /usr/local/lib/
 COPY --from=node /opt /opt
 COPY --from=node /usr/local/bin/node /usr/local/bin/
 COPY --from=node /augur /augur
-RUN ln -s /opt/yarn-v1.12.3/bin/yarn /usr/local/bin/yarn
+RUN ln -s /opt/yarn-v1.13.3/bin/yarn /usr/local/bin/yarn
 RUN cd /usr/local/bin && ln -s ../lib/node_modules/npm/bin/npm-cli.js npm
 RUN cd /usr/local/bin && ln -s ../lib/node_modules/npm/bin/npx-cli.js npx
 
