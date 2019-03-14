@@ -1,10 +1,8 @@
 import {Augur} from "@augurproject/api";
 import {uploadBlockNumbers} from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
-import {DB, UserSpecificEvent} from "../db/DB";
+import {DB} from "./DB";
 import {makeMock} from "../utils/MakeMock";
-import {ContractDependenciesEthers} from "contract-dependencies-ethers";
-import {EthersProvider, Web3AsyncSendable} from "ethers-provider";
 import {makeTestAugur, AccountList, genericEventNames, userSpecificEvents} from "./test";
 
 const mock = makeMock();

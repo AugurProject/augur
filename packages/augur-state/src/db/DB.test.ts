@@ -2,11 +2,9 @@ import {TrackedUsers} from "./TrackedUsers";
 import {DB, UserSpecificEvent} from "./DB";
 import {ContractDependenciesEthers} from "contract-dependencies-ethers";
 import {Augur} from "@augurproject/api";
-import {uploadBlockNumbers, ContractAddresses, NetworkId} from "@augurproject/artifacts";
-import {DeployerConfiguration, ContractDeployer} from "@augurproject/core";
+import {uploadBlockNumbers} from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
 import {makeMock} from "../utils/MakeMock";
-import {EthersProvider, Web3AsyncSendable} from "ethers-provider";
 import {makeTestAugur, AccountList, genericEventNames, userSpecificEvents} from "./test";
 
 const mock = makeMock();

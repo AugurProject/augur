@@ -1,5 +1,5 @@
 import {ContractDependenciesEthers} from "contract-dependencies-ethers";
-import {EthersProvider, Web3AsyncSendable} from "ethers-provider";
+import {EthersProvider, Web3AsyncSendable} from "@augurproject/ethers-provider";
 import {BigNumber as EthersBigNumber} from "ethers/utils";
 import {Augur} from "@augurproject/api";
 import {uploadBlockNumbers, addresses} from "@augurproject/artifacts";
