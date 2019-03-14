@@ -8,8 +8,6 @@ FROM augurproject/augur-build:latest as augur-build
 
 WORKDIR /augur
 
-RUN yarn && yarn build
-
 FROM augurproject/python2-and-3:monorepo
 ARG SOLC_VERSION=v0.5.4
 
@@ -49,7 +47,7 @@ RUN cd packages/augur-core && \
 
 
 # Yarn and Lint
-RUN yarn workspace @augurproject/core && yarn workspace @augurproject/core lint
+RUN yarn workspace @augurproject/core lint
 
 # Build first chunk
 RUN yarn workspace @augurproject/core build:source
@@ -64,6 +62,6 @@ RUN apk add --no-cache \
 
 WORKDIR packages/augur-core
 
-#RUN apk del .build-deps
+RUN apk del .build-deps
 
 ENTRYPOINT ["yarn"]
