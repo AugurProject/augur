@@ -2,8 +2,8 @@ import {Augur} from "@augurproject/api";
 import {uploadBlockNumbers} from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
 import {DB} from "./DB";
+import {makeTestAugur, AccountList} from "./test";
 import {makeMock} from "../utils/MakeMock";
-import {makeTestAugur, AccountList, genericEventNames, userSpecificEvents} from "./test";
 
 const mock = makeMock();
 const TEST_NETWORK_ID = 4;
@@ -40,8 +40,8 @@ test("sync databases", async () => {
       settings.blockstreamDelay,
       uploadBlockNumbers[TEST_NETWORK_ID],
       trackedUsers,
-      genericEventNames,
-      userSpecificEvents,
+      augur.genericEventNames,
+      augur.userSpecificEvents,
       mock.makeFactory()
     );
     await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
@@ -120,5 +120,5 @@ test("sync databases", async () => {
     expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
     expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);
   },
-  120000
+  60000
 );

@@ -1716,15 +1716,22 @@
   dependencies:
     "@types/express" "*"
 
+"@types/jest-diff@*":
+  version "20.0.1"
+  resolved "https://registry.yarnpkg.com/@types/jest-diff/-/jest-diff-20.0.1.tgz#35cc15b9c4f30a18ef21852e255fdb02f6d59b89"
+  integrity sha512-yALhelO3i0hqZwhjtcr6dYyaLoCHbAMshwtj6cGxTvHZAKXHsYGdff6E8EPw3xLKY0ELUTQ69Q1rQiJENnccMA==
+
 "@types/jest@23.3.14":
   version "23.3.14"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.14.tgz#37daaf78069e7948520474c87b80092ea912520a"
   integrity sha512-Q5hTcfdudEL2yOmluA1zaSyPbzWPmJ3XfSWeP3RyoYvS9hnje1ZyagrZOuQ6+1nQC1Gw+7gap3pLNL3xL6UBug==
 
-"@types/jest@24.0.3":
-  version "24.0.3"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.0.3.tgz#df8dc56565bd2d27fcbd099434f04f9891e16ab7"
-  integrity sha512-keRxrIwZZ/Ml83cGl3G0OjGlBO4UFQCCa5QlBPz2pY+ZvSnoeUvMJw0vmL4JU6g4vbpIW5H4qSq1xv9h8naAfg==
+"@types/jest@24.0.4":
+  version "24.0.4"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.0.4.tgz#9e91eeebd464536a2f57043fb50da29a91d1271d"
+  integrity sha512-7PbnoOkfxpvmPehi8hf/JapEc3nwQi2hOs3cB5SsiBiPcniT0ejrbjjEIY4bPsXlEYFuS/RiN/jpA6hrcbOokA==
+  dependencies:
+    "@types/jest-diff" "*"
 
 "@types/json5@^0.0.29":
   version "0.0.29"

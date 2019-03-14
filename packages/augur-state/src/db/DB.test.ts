@@ -1,11 +1,10 @@
 import {TrackedUsers} from "./TrackedUsers";
-import {DB, UserSpecificEvent} from "./DB";
-import {ContractDependenciesEthers} from "contract-dependencies-ethers";
+import {DB} from "./DB";
 import {Augur} from "@augurproject/api";
 import {uploadBlockNumbers} from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
 import {makeMock} from "../utils/MakeMock";
-import {makeTestAugur, AccountList, genericEventNames, userSpecificEvents} from "./test";
+import {makeTestAugur, AccountList} from "./test";
 
 const mock = makeMock();
 const TEST_NETWORK_ID = 4;
@@ -36,8 +35,8 @@ test("database failure during trackedUsers.getUsers() call", async () => {
     settings.blockstreamDelay,
     defaultStartSyncBlockNumber,
     [settings.testAccounts[0]],
-    genericEventNames,
-    userSpecificEvents,
+    augur.genericEventNames,
+    augur.userSpecificEvents,
     mock.makeFactory()
   );
 
@@ -61,8 +60,8 @@ test("database failure during sync, followed by another sync", async () => {
       settings.blockstreamDelay,
       defaultStartSyncBlockNumber,
       [settings.testAccounts[0]],
-      genericEventNames,
-      userSpecificEvents,
+      augur.genericEventNames,
+      augur.userSpecificEvents,
       mock.makeFactory()
     );
 
@@ -82,8 +81,8 @@ test("syncing: succeed then fail then succeed again", async () => {
       settings.blockstreamDelay,
       defaultStartSyncBlockNumber,
       [settings.testAccounts[0]],
-      genericEventNames,
-      userSpecificEvents,
+      augur.genericEventNames,
+      augur.userSpecificEvents,
       mock.makeFactory()
     );
 

@@ -34,7 +34,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
       const endBlockNumber = Math.min(highestSyncedBlockNumber + chunkSize, highestAvailableBlockNumber);
       const logs = await this.getLogs(augur, highestSyncedBlockNumber, endBlockNumber);
       let success = true;
-      if (logs.length > 1) {
+      if (logs.length > 0) {
         const documents = _.sortBy(_.map(logs, this.processLog), "_id");
         success = await this.bulkUpsertDocuments(documents[0]._id, documents);
       }
@@ -79,9 +79,11 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
           // Update highest sync block with decremented block number
           await this.syncStatus.setHighestSyncBlock(this.dbName, --highestSyncBlock);
         }
+      } else {
+        await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber);
       }
     } catch (err) {
-      console.error(err);
+        console.error(err);
     }
   }
 
