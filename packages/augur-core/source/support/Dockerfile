@@ -6,18 +6,18 @@
 # for other pieces
 FROM augurproject/augur-build:latest as augur-build
 
-WORKDIR /augur
-
-FROM augurproject/python2-and-3:monorepo
+FROM augurproject/python2-and-3:monorepo as core-build
 ARG SOLC_VERSION=v0.5.4
+ARG SOLC_MD5=fce0ea489308e86aa0d5f7d72bd2cd15
 
 COPY --from=augur-build /usr/local/ /usr/local
 COPY --from=augur-build /opt/ /opt/
 
-RUN apk add --no-cache --virtual .build-deps \
+RUN apk add --no-cache --update \
         bash \
-        gcc \
+        curl \
         g++ \
+        gcc \
         git \
         libffi-dev \
         linux-headers \
@@ -26,10 +26,10 @@ RUN apk add --no-cache --virtual .build-deps \
         openssl-dev \
         python2-dev
 
-RUN wget --quiet --output-document /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux \
-	&& chmod a+x /usr/local/bin/solc
-
-WORKDIR /augur
+RUN echo "${SOLC_MD5} */usr/local/bin/solc" > solc.md5 && \
+    curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux && \
+    md5sum -b -c solc.md5 && \
+    chmod a+x /usr/local/bin/solc
 
 
 COPY --from=augur-build /augur/packages/augur-core/ packages/augur-core
@@ -39,12 +39,10 @@ COPY --from=augur-build /augur/package.json .
 COPY --from=augur-build /augur/tsconfig.json .
 COPY --from=augur-build /augur/tsconfig-base.json .
 
+WORKDIR /augur
 
 RUN cd packages/augur-core && \
-    python2 -m pip install --cache-dir=.pip pip setuptools && \
-    python2 -m pip install --cache-dir=.pip pip-tools && \
     python2 -m pip install --cache-dir=.pip -r requirements.txt
-
 
 # Yarn and Lint
 RUN yarn workspace @augurproject/core lint
@@ -60,8 +58,16 @@ RUN yarn workspace @augurproject/core build:source
 RUN apk add --no-cache \
     libstdc++
 
+FROM augurproject/python2-and-3:monorepo
+
+COPY --from=core-build /augur/packages/augur-core/ /augur/packages/augur-core
+COPY --from=core-build /augur/packages/augur-artifacts/ /augur/packages/augur-artifacts
+COPY --from=core-build /augur/package.json /augur
+COPY --from=core-build /augur/tsconfig.json /augur
+COPY --from=core-build /augur/tsconfig-base.json /augur
+
 WORKDIR packages/augur-core
 
-RUN apk del .build-deps
+#RUN apk del .build-deps
 
 ENTRYPOINT ["yarn"]

@@ -11,7 +11,6 @@ trigger:
     include:
     - master
     - azure/*
-    - monorepo-integration
 
 jobs:
   - job: Augur_build_docker_image
@@ -32,7 +31,7 @@ jobs:
               echo "$f"
               if [[ $f =~ .*augur-core.* ]]
               then
-                echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+                echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
             done
       - bash: |
@@ -46,7 +45,7 @@ jobs:
         condition: |
           or
           (
-              eq(variables.AUGUR_CORE, 'true'),
+              eq(variables.JOB_TRIGGER, 'true'),
               eq(variables['Build.SourceBranch'], 'refs/heads/master')
           )
 
@@ -69,7 +68,7 @@ jobs:
               echo "$f"
               if [[ $f =~ .*augur-core.* ]]
               then
-                echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+                echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
             done
       - script: |
@@ -88,7 +87,7 @@ jobs:
         condition: |
           or
           (
-              eq(variables.AUGUR_CORE, 'true'),
+              eq(variables.JOB_TRIGGER, 'true'),
               eq(variables['Build.SourceBranch'], 'refs/heads/master')
           )
 
@@ -138,7 +137,7 @@ jobs:
               echo "$f"
               if [[ $f =~ .*augur-core.* ]]
               then
-                echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+                echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
             done
       - script: |
@@ -165,7 +164,7 @@ jobs:
           else
             yarn workspace @augurproject/core docker:run:test:unit -- $TESTS;
           fi
-        condition: eq(variables.AUGUR_CORE, 'true')
+        condition: eq(variables.JOB_TRIGGER, 'true')
 
   # - job: Test_Augur_UI_and_Node
   #   displayName: 'Test augur UI and augur-node'
@@ -220,7 +219,7 @@ jobs:
               echo "$f"
               if [[ $f =~ .*augur\.js.* ]]
               then
-                echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+                echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
             done
       - script: |
@@ -247,7 +246,7 @@ jobs:
             echo "$f"
             if [[ $f =~ .*augur-core.* ]]
             then
-              echo "##vso[task.setVariable variable=AUGUR_CORE]true";
+              echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
             fi
           done
     - script: |
@@ -272,7 +271,7 @@ jobs:
         (
             succeeded(),
             or (
-              eq(variables.AUGUR_CORE, 'true'),
+              eq(variables.JOB_TRIGGER, 'true'),
               eq(variables['Build.SourceBranch'], 'refs/heads/master')
             )
         )
