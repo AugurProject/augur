@@ -7,7 +7,7 @@ RUN apk update \
 
 WORKDIR /augur
 ADD ./ .
-RUN npm_config_devdir=/augur/.node-gpy yarn --verbose --cache-folder=/augur/.yarn-cache
+RUN npm_config_devdir=/augur/.node-gpy yarn --cache-folder=/augur/.yarn-cache
 
 RUN yarn build
 
