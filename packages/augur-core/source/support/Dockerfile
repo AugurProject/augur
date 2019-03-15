@@ -32,12 +32,7 @@ RUN echo "${SOLC_MD5} */usr/local/bin/solc" > solc.md5 && \
     chmod a+x /usr/local/bin/solc
 
 
-COPY --from=augur-build /augur/packages/augur-core/ packages/augur-core
-COPY --from=augur-build /augur/packages/augur-artifacts/ packages/augur-artifacts
-COPY --from=augur-build /augur/packages/augur-types/ packages/augur-types
-COPY --from=augur-build /augur/package.json .
-COPY --from=augur-build /augur/tsconfig.json .
-COPY --from=augur-build /augur/tsconfig-base.json .
+COPY --from=augur-build /augur/ /augur/
 
 WORKDIR /augur
 
@@ -66,7 +61,7 @@ COPY --from=core-build /augur/package.json /augur
 COPY --from=core-build /augur/tsconfig.json /augur
 COPY --from=core-build /augur/tsconfig-base.json /augur
 
-WORKDIR packages/augur-core
+WORKDIR /augur/packages/augur-core
 
 #RUN apk del .build-deps
 
