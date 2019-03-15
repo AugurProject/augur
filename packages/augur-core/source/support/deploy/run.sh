@@ -12,7 +12,7 @@ case "$environment" in
       -e DEPLOY \
       -e ARTIFACTS \
       --entrypoint "node"  \
-      augurproject/augur-core:monorepo -- /app/output/deployment/deployNetworks.js $@
+      augurproject/augur-core:monorepo -- /augur/packages/augur-core/output/deployment/deployNetworks.js $@
     ;;
   "direct")
     echo "Deploying to $@"

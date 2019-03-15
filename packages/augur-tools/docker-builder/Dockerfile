@@ -24,9 +24,9 @@ RUN apk add --no-cache \
 COPY --from=augur-build /augur /augur
 COPY --from=augur-build /opt /opt
 COPY --from=augur-build /usr/local /usr/local
-COPY --from=core-builder /app/output augur/packages/augur-core/output
-COPY --from=core-builder /app augur/packages/augur-core
-COPY --from=core-builder /app/output/contracts augur/packages/augur-artifacts
+COPY --from=core-builder /augur/packages/augur-core/output augur/packages/augur-core/output
+COPY --from=core-builder /augur/packages/augur-core augur/packages/augur-core
+COPY --from=core-builder /augur/packages/augur-core/output/contracts augur/packages/augur-artifacts
 
 RUN echo {} > /augur/packages/augur-artifacts/addresses.json \
   && echo {} > /augur/packages/augur-artifacts/upload-block-numbers.json

@@ -1,14 +1,29 @@
 import {Augur} from "@augurproject/api";
 import {uploadBlockNumbers} from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
-import {DB} from "../db/DB";
+import {DB} from "./DB";
+import {makeTestAugur, AccountList} from "./test";
 import {makeMock} from "../utils/MakeMock";
-import {ContractDependenciesEthers} from "contract-dependencies-ethers";
-import {JsonRpcProvider} from "ethers/providers/json-rpc-provider";
-import {EthersProvider} from "ethers-provider";
 
+const mock = makeMock();
 const TEST_NETWORK_ID = 4;
+const ACCOUNTS: AccountList = [
+  {
+    secretKey: "0xa429eeb001c683cf3d8faf4b26d82dbf973fb45b04daad26e1363efd2fd43913",
+    publicKey: "0x8fff40efec989fc938bba8b19584da08ead986ee",
+    balance: 100000000000000000000,  // 100 ETH
+  },
+];
 
+beforeEach(async () => {
+  mock.cancelFail();
+  await mock.wipeDB()
+});
+
+let augur: Augur<any>;
+beforeAll(async () => {
+  augur = await makeTestAugur(ACCOUNTS);
+}, 60000);
 
 /**
  * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.
@@ -17,9 +32,6 @@ const TEST_NETWORK_ID = 4;
  * and checks DBs to make sure highest sync block is correct.
  */
 test("sync databases", async () => {
-  const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 5, 0, 40);
-    const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
-    const augur = await Augur.create(ethersProvider, contractDependencies);
     const trackedUsers = [settings.testAccounts[0]];
     const mock = makeMock();
 
