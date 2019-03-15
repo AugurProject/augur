@@ -1,4 +1,4 @@
-import { EthersProvider } from "ethers-provider";
+import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { Augur } from "@augurproject/api";
 import { DeployerConfiguration, ContractDeployer } from "@augurproject/core";
@@ -23,6 +23,7 @@ function makeCompilerConfiguration() {
   const enableSdb = false;  // causes solc errors if true
   return new CompilerConfiguration(contractSourceRoot, outputRoot, enableSdb, useFlattener);
 }
+
 
 function makeDeployerConfiguration() {
   const augurCorePath = path.join(__dirname, "../../../augur-core/");
