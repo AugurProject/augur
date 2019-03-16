@@ -60,6 +60,8 @@ COPY --from=core-build /augur/packages/augur-artifacts/ /augur/packages/augur-ar
 COPY --from=core-build /augur/package.json /augur
 COPY --from=core-build /augur/tsconfig.json /augur
 COPY --from=core-build /augur/tsconfig-base.json /augur
+COPY --from=augur-build /usr/local/ /usr/local
+COPY --from=augur-build /opt/ /opt/
 
 WORKDIR /augur/packages/augur-core
 
