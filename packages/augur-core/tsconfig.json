@@ -5,7 +5,7 @@
     "rootDir": "source"
   },
   "include": [
-    "./source/**/*"
+    "source/**/*"
   ],
   "references": []
 }
