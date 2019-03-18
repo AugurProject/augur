@@ -15,8 +15,9 @@ export type AccountList = [{
       balance: number;
 }];
 
+const augurCorePath = path.join(__dirname, "../../augur-core/");
+
 function makeCompilerConfiguration() {
-  const augurCorePath = path.join(__dirname, "../../../augur-core/");
   const contractSourceRoot = path.join(augurCorePath, "source/contracts/");
   const outputRoot = path.join(augurCorePath, "output/contracts/");
   const useFlattener = false;  // TODO make flattener bin specifiable so this can be true
@@ -24,9 +25,7 @@ function makeCompilerConfiguration() {
   return new CompilerConfiguration(contractSourceRoot, outputRoot, enableSdb, useFlattener);
 }
 
-
 function makeDeployerConfiguration() {
-  const augurCorePath = path.join(__dirname, "../../../augur-core/");
   const contractInputRoot = path.join(augurCorePath, "output/contracts");
   const artifactOutputRoot  = path.join(augurCorePath, "output/contracts");
   const createGenesisUniverse = true;
@@ -60,3 +59,11 @@ export async function makeTestAugur(accounts: AccountList): Promise<Augur<any>> 
 
   return Augur.create(provider, dependencies, addresses);
 }
+
+export const ACCOUNTS: AccountList = [
+  {
+    secretKey: "0xa429eeb001c683cf3d8faf4b26d82dbf973fb45b04daad26e1363efd2fd43913",
+    publicKey: "0x8fff40efec989fc938bba8b19584da08ead986ee",
+    balance: 100000000000000000000,  // 100 ETH
+  },
+];

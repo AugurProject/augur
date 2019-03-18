@@ -2,15 +2,13 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "src",
+    "rootDir": ".",
     "baseUrl": "./"
   },
-  "exclude": [
-//    "./src/**/*.test.ts"
-  ],
+  "exclude": [],
   "include": [
-    "./src/**/*",
-    "./src/**/*.json"
+    "tests",
+    "libs"
   ],
   "references": [
     {
@@ -27,6 +25,9 @@
     },
     {
       "path": "../augur-artifacts"
+    },
+    {
+      "path": "../augur-state"
     }
   ]
 }
