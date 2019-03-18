@@ -1,9 +1,11 @@
-import {Augur} from "@augurproject/api";
-import {uploadBlockNumbers} from "@augurproject/artifacts";
-import settings from "@augurproject/state/src/settings.json";
-import {DB} from "./DB";
+import { Augur, UserSpecificEvent } from "@augurproject/api";
+import { uploadBlockNumbers } from "@augurproject/artifacts";
+const settings = require("../settings.json");
+import { DB } from "./DB";
 import {makeTestAugur, AccountList} from "./test";
 import {makeMock} from "../utils/MakeMock";
+import { IBlockAndLogStreamerListener } from "./BlockAndLogStreamerListener";
+import { JsonRpcProvider } from "ethers/providers";
 
 const mock = makeMock();
 const TEST_NETWORK_ID = 4;
@@ -34,6 +36,11 @@ beforeAll(async () => {
 test("sync databases", async () => {
     const trackedUsers = [settings.testAccounts[0]];
     const mock = makeMock();
+    const blockAndLogStreamerListener: IBlockAndLogStreamerListener = {
+      listenForBlockRemoved: jest.fn(),
+      listenForEvent: jest.fn(),
+      startBlockStreamListener: jest.fn()
+    };
 
     const db = await DB.createAndInitializeDB(
       TEST_NETWORK_ID,
@@ -42,7 +49,8 @@ test("sync databases", async () => {
       trackedUsers,
       augur.genericEventNames,
       augur.userSpecificEvents,
-      mock.makeFactory()
+      mock.makeFactory(),
+      blockAndLogStreamerListener
     );
     await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
 
@@ -64,8 +72,8 @@ test("sync databases", async () => {
         "transactionIndex": 8,
         "removed": false,
         "transactionHash": "0xf750ebb0d039c623385f8227f7a6cbe49f5efbc5485ac0e38b5a7b0e389726d8",
-        "logIndex": 1,
-      },
+        "logIndex": 1
+      }
     ];
 
     await db.addNewBlock(syncableDBName, blockLogs);
@@ -80,9 +88,9 @@ test("sync databases", async () => {
 
     // Verify that 2 new blocks were added to SyncableDB
     let queryObj: any = {
-      selector: {universe},
-      fields: ['_id', 'universe'],
-      sort: ['_id']
+      selector: { universe },
+      fields: ["_id", "universe"],
+      sort: ["_id"]
     };
     let result = await db.findInSyncableDB(syncableDBName, queryObj);
     // TODO Remove warning property from expected result once indexes are being used on SyncableDBs
@@ -90,15 +98,15 @@ test("sync databases", async () => {
       {
         docs:
           [{
-            _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 1) + '.000000000000001',
+            _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 1) + ".000000000000001",
             universe: universe
           },
             {
-              _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 2) + '.000000000000001',
+              _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 2) + ".000000000000001",
               universe: universe
             }],
         warning:
-          'no matching index found, create an index to optimize query time'
+          "no matching index found, create an index to optimize query time"
       }
     ));
 
@@ -112,7 +120,7 @@ test("sync databases", async () => {
       {
         docs: [],
         warning:
-          'no matching index found, create an index to optimize query time'
+          "no matching index found, create an index to optimize query time"
       }
     ));
 
@@ -120,5 +128,5 @@ test("sync databases", async () => {
     expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
     expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);
   },
-  60000
+  30000
 );

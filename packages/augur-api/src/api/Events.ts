@@ -1,7 +1,7 @@
-import {Provider} from "../ethereum/Provider";
-import {Log, ParsedLog} from "../ethereum/types";
-import {abi} from "@augurproject/artifacts";
-import {Abi} from "ethereum";
+import { Provider } from "../ethereum/Provider";
+import { Log, ParsedLog } from "../ethereum/types";
+import { abi } from "@augurproject/artifacts";
+import { Abi } from "ethereum";
 
 export class Events {
     private readonly provider: Provider;
@@ -13,8 +13,9 @@ export class Events {
         this.provider.storeAbiData(<Abi>abi["Augur"], "Augur");
     }
 
+
     public async getLogs(eventName: string, fromBlock: number, toBlock: number, additionalTopics?: Array<string | Array<string>>): Promise<Array<ParsedLog>> {
-        let topics: Array<string | Array<string>> = [this.provider.getEventTopic("Augur", eventName)];
+      let topics: Array<string | Array<string>> = this.getEventTopics(eventName);
         if (additionalTopics) {
             topics = topics.concat(additionalTopics);
         }
@@ -22,7 +23,11 @@ export class Events {
         return this.parseLogs(logs);
     }
 
-    public parseLogs(logs: Log[]): ParsedLog[] {
+  getEventTopics = (eventName: string) => {
+    return [this.provider.getEventTopic("Augur", eventName)];
+  };
+
+  public parseLogs(logs: Log[]): ParsedLog[] {
         return logs.map((log) => {
             const logValues = this.provider.parseLogValues("Augur", log);
             return Object.assign(
