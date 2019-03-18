@@ -1,6 +1,4 @@
 FROM node:10.15.0-alpine as node
-RUN ls -l /usr/local/lib
-RUN ls -l /opt/
 
 RUN apk update \
   && apk upgrade \
@@ -8,7 +6,7 @@ RUN apk update \
 
 WORKDIR /augur
 ADD ./ .
-RUN yarn
+RUN yarn && yarn build
 
 FROM alpine:3.9
 RUN apk update \

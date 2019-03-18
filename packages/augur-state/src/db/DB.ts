@@ -105,6 +105,20 @@ export class DB<TBigNumber> {
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
     let dbSyncPromises = [];
     const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
+
+    for (let trackedUser of await this.trackedUsers.getUsers()) {
+      for (let userSpecificEvent of this.userSpecificEvents) {
+        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
+          dbSyncPromises.push(
+            this.syncableDatabases[dbName].sync(
+              augur,
+              chunkSize,
+              blockstreamDelay,
+              highestAvailableBlockNumber
+            ));
+      }
+    }
+
     for (let genericEventName of this.genericEventNames) {
       let dbName = this.getDatabaseName(genericEventName);
       dbSyncPromises.push(
@@ -113,29 +127,10 @@ export class DB<TBigNumber> {
           chunkSize,
           blockstreamDelay,
           highestAvailableBlockNumber
-        )
-      );
+        ));
     }
 
-    for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let userSpecificEvent of this.userSpecificEvents) {
-        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        dbSyncPromises.push(
-          this.syncableDatabases[dbName].sync(
-            augur,
-            chunkSize,
-            blockstreamDelay,
-            highestAvailableBlockNumber
-          )
-        );
-      }
-    }
-
-    await Promise.all(dbSyncPromises).catch(
-      error => {
-        throw error;
-      }
-    );
+  return Promise.all(dbSyncPromises).then(() => undefined)
 
     // TODO Call `this.metaDatabase.addNewBlock` here if derived DBs end up getting used
   }
