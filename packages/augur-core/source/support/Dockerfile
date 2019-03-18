@@ -6,6 +6,9 @@
 # for other pieces
 FROM augurproject/augur-build:latest as augur-build
 
+WORKDIR /augur
+
+RUN yarn && yarn build
 
 FROM augurproject/python2-and-3:monorepo
 ARG SOLC_VERSION=v0.5.4
@@ -28,45 +31,38 @@ RUN apk add --no-cache --virtual .build-deps \
 RUN wget --quiet --output-document /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux \
 	&& chmod a+x /usr/local/bin/solc
 
-WORKDIR /app
-
-COPY packages/augur-core/requirements.txt /app/requirements.txt
-
-RUN python2 -m pip install --upgrade pip setuptools \
-    && python2 -m pip install --upgrade pip-tools \
-    && python2 -m pip install -r requirements.txt
+WORKDIR /augur
 
 
-# Install basics of the application
-COPY packages/augur-core/.soliumrc.json /app/.soliumrc.json
-COPY packages/augur-core/.soliumignore /app/.soliumignore
-COPY packages/augur-core/docker.tsconfig.json /app/tsconfig.json
-COPY packages/augur-core/source/contracts/ /app/source/contracts/
-COPY packages/augur-types/ /augur-types
-COPY packages/augur-core/source/deployment/compileContracts.ts /app/source/deployment/compileContracts.ts
-COPY packages/augur-core/source/libraries/ /app/source/libraries/
-COPY packages/augur-core/source/tools/ /app/source/tools/
-COPY packages/augur-core/package.json /app/package.json
-COPY packages/augur-core/.babelrc.js /app/.babelrc.js
-COPY packages/augur-core/jest.config.js /app/jest.config.js
+COPY --from=augur-build /augur/packages/augur-core/ packages/augur-core
+COPY --from=augur-build /augur/packages/augur-artifacts/ packages/augur-artifacts
+COPY --from=augur-build /augur/packages/augur-types/ packages/augur-types
+COPY --from=augur-build /augur/package.json .
+COPY --from=augur-build /augur/tsconfig.json .
+COPY --from=augur-build /augur/tsconfig-base.json .
 
-# Copy source
-COPY packages/augur-core/source/ /app/source/
-COPY packages/augur-core/tests/ /app/tests/
+
+RUN cd packages/augur-core && \
+    python2 -m pip install --cache-dir=.pip pip setuptools && \
+    python2 -m pip install --cache-dir=.pip pip-tools && \
+    python2 -m pip install --cache-dir=.pip -r requirements.txt
+
 
 # Yarn and Lint
-RUN yarn && yarn lint
+RUN yarn workspace @augurproject/core && yarn workspace @augurproject/core lint
 
 # Build first chunk
-RUN yarn build:source
+RUN yarn workspace @augurproject/core build:source
 
 # Build contracts and interfaces
-RUN yarn build:interfaces
+RUN yarn workspace @augurproject/core build:interfaces
 
 # Final build
-RUN yarn build:source
+RUN yarn workspace @augurproject/core build:source
 RUN apk add --no-cache \
     libstdc++
+
+WORKDIR packages/augur-core
 
 #RUN apk del .build-deps
 

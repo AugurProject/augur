@@ -1,3 +1,6 @@
 #!/bin/sh
-[ -d venv ] || virtualenv --python python3 venv
+if [ -d venv ]; then
+    rm -rf venv
+fi
+virtualenv --python python3 venv
 ./venv/bin/pip install augur-solidity-flattener==0.2.3

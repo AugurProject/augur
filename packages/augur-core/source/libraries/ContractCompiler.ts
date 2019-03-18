@@ -23,6 +23,10 @@ export class ContractCompiler {
 
     private async getCommandOutputFromInput(childProcess: ChildProcess, stdin: string): Promise<string> {
         return new Promise<string>((resolve, reject) => {
+            if (childProcess.stdout === null || childProcess.stdin === null || childProcess.stderr == null) {
+                throw Error("ChildProcess fields stdin, stdout, and stderr must not be null.");
+            }
+
             const buffers: Array<Buffer> = [];
             childProcess.stdout.on('data', function (data: Buffer) {
                 buffers.push(data);

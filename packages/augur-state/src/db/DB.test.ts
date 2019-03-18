@@ -1,18 +1,22 @@
 import {TrackedUsers} from "./TrackedUsers";
 import {DB} from "./DB";
-import {ContractDependenciesEthers} from "contract-dependencies-ethers";
 import {Augur} from "@augurproject/api";
 import {uploadBlockNumbers} from "@augurproject/artifacts";
 import settings from "@augurproject/state/src/settings.json";
 import {makeMock} from "../utils/MakeMock";
-import {JsonRpcProvider} from "ethers/providers/json-rpc-provider";
-import {EthersProvider} from "ethers-provider";
+import {makeTestAugur, AccountList} from "./test";
 
 const mock = makeMock();
 const TEST_NETWORK_ID = 4;
 const defaultStartSyncBlockNumber = uploadBlockNumbers[TEST_NETWORK_ID];
-const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 5, 0, 40);
-const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
+
+const ACCOUNTS: AccountList = [
+  {
+    secretKey: "0xa429eeb001c683cf3d8faf4b26d82dbf973fb45b04daad26e1363efd2fd43913",
+    publicKey: "0x8fff40efec989fc938bba8b19584da08ead986ee",
+    balance: 100000000000000000000,  // 100 ETH
+  },
+];
 
 beforeEach(async () => {
   mock.cancelFail();
@@ -21,8 +25,8 @@ beforeEach(async () => {
 
 let augur: Augur<any>;
 beforeAll(async () => {
-  augur = await Augur.create(ethersProvider, contractDependencies);
-});
+  augur = await makeTestAugur(ACCOUNTS);
+}, 60000);
 
 
 test("database failure during trackedUsers.getUsers() call", async () => {
@@ -68,9 +72,7 @@ test("database failure during sync, followed by another sync", async () => {
 
     console.log("Sync successfully.");
     await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
-  },
-  120000
-);
+}, 120000);
 
 
 test("syncing: succeed then fail then succeed again", async () => {
