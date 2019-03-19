@@ -68,11 +68,11 @@ test("sync databases", async () => {
     {
       docs:
           [{
-            _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 1) + ".000000000000001",
+            _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 1) + ".00000000000000000001",
             universe,
           },
           {
-            _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 2) + ".000000000000001",
+            _id: (originalHighestSyncedBlockNumbers[syncableDBName] + 2) + ".00000000000000000001",
             universe,
           }],
       warning:
