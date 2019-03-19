@@ -6366,19 +6366,6 @@ export class Cash<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public withdrawEtherTo = async (to: string, amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"withdrawEtherTo","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [to, amount], 'withdrawEtherTo', options.sender)
-	}
-
-	public withdrawEtherTo_ = async (to: string, amount: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"withdrawEtherTo","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [to, amount], options.sender)
-		return <boolean>result[0]
-	}
-
 	public transferFrom = async (from: string, to: string, amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -6399,37 +6386,24 @@ export class Cash<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public withdrawEther = async (amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_amount","type":"uint256"}],"name":"withdrawEther","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [amount], 'withdrawEther', options.sender)
-	}
-
-	public withdrawEther_ = async (amount: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_amount","type":"uint256"}],"name":"withdrawEther","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [amount], options.sender)
-		return <boolean>result[0]
-	}
-
-	public depositEtherFor = async (to: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_to","type":"address"}],"name":"depositEtherFor","outputs":[{"name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"}
-		return await this.remoteCall(abi, [to], 'depositEtherFor', options.sender, options.attachedEth)
-	}
-
-	public depositEtherFor_ = async (to: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_to","type":"address"}],"name":"depositEtherFor","outputs":[{"name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"}
-		const result = await this.localCall(abi, [to], options.sender, options.attachedEth)
-		return <boolean>result[0]
-	}
-
 	public granularity_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"granularity","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <TBigNumber>result[0]
+	}
+
+	public faucet = async (amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_amount","type":"uint256"}],"name":"faucet","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [amount], 'faucet', options.sender)
+	}
+
+	public faucet_ = async (amount: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_amount","type":"uint256"}],"name":"faucet","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [amount], options.sender)
+		return <boolean>result[0]
 	}
 
 	public ETERNAL_APPROVAL_VALUE_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
@@ -6490,19 +6464,6 @@ export class Cash<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
-	}
-
-	public depositEther = async (options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"depositEther","outputs":[{"name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"}
-		return await this.remoteCall(abi, [], 'depositEther', options.sender, options.attachedEth)
-	}
-
-	public depositEther_ = async (options?: { sender?: string, attachedEth?: TBigNumber }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"depositEther","outputs":[{"name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"}
-		const result = await this.localCall(abi, [], options.sender, options.attachedEth)
-		return <boolean>result[0]
 	}
 
 	public erc820Registry_ = async (options?: { sender?: string }): Promise<string> => {
@@ -6596,19 +6557,6 @@ export class Cash<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [owner, spender], options.sender)
 		return <TBigNumber>result[0]
-	}
-
-	public withdrawEtherToIfPossible = async (to: string, amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"withdrawEtherToIfPossible","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [to, amount], 'withdrawEtherToIfPossible', options.sender)
-	}
-
-	public withdrawEtherToIfPossible_ = async (to: string, amount: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"withdrawEtherToIfPossible","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [to, amount], options.sender)
-		return <boolean>result[0]
 	}
 
 	public revokeOperator = async (operator: string, options?: { sender?: string }): Promise<Array<Event>> => {

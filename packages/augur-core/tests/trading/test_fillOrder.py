@@ -13,8 +13,6 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
 
-    initialMakerETH = contractsFixture.chain.head_state.get_balance(tester.a1)
-    initialFillerETH = contractsFixture.chain.head_state.get_balance(tester.a2)
     creatorCost = fix('2', '6000')
     fillerCost = fix('2', '4000')
 
@@ -58,8 +56,6 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
                     fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
                     assert fillOrderID == 0
 
-    assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH - creatorCost
-    assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH - fillerCost
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
     assert orders.getOrderCreator(orderID) == longToHexString(0)
@@ -74,8 +70,6 @@ def test_publicFillOrder_ask(contractsFixture, cash, market, universe):
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
 
-    initialMakerETH = contractsFixture.chain.head_state.get_balance(tester.a1)
-    initialFillerETH = contractsFixture.chain.head_state.get_balance(tester.a2)
     creatorCost = fix('2', '4000')
     fillerCost = fix('2', '6000')
 
@@ -87,8 +81,6 @@ def test_publicFillOrder_ask(contractsFixture, cash, market, universe):
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
         fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
 
-    assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH - creatorCost
-    assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH - fillerCost
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
     assert orders.getOrderCreator(orderID) == longToHexString(0)
@@ -106,8 +98,6 @@ def test_publicFillOrder_bid_scalar(contractsFixture, cash, scalarMarket, univer
     market = scalarMarket
     tradeGroupID = longTo32Bytes(42)
 
-    initialMakerETH = contractsFixture.chain.head_state.get_balance(tester.a1)
-    initialFillerETH = contractsFixture.chain.head_state.get_balance(tester.a2)
     creatorCost = fix('2', '6000')
     fillerCost = fix('2', '394000')
 
@@ -119,8 +109,6 @@ def test_publicFillOrder_bid_scalar(contractsFixture, cash, scalarMarket, univer
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
         fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender=tester.k2)
 
-    assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH - creatorCost
-    assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH - fillerCost
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
     assert orders.getOrderCreator(orderID) == longToHexString(0)
@@ -290,8 +278,6 @@ def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
     secondShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(1))
     thirdShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(2))
 
-    initialMakerETH = contractsFixture.chain.head_state.get_balance(tester.a1)
-
     # create non matching orders
     with BuyWithCash(cash, fix('2', '6000'), tester.k1, "create order 1"):
         orderID1 = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
@@ -315,7 +301,6 @@ def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
     fees += market.deriveMarketCreatorFeeAmount(totalPayout)
     totalPayout -= fees
 
-    assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH - totalPaid
     assert cash.balanceOf(tester.a1) == totalPayout
 
 def test_publicFillOrder_ask_price_zero(contractsFixture, cash, market, universe):
@@ -324,8 +309,6 @@ def test_publicFillOrder_ask_price_zero(contractsFixture, cash, market, universe
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
 
-    initialMakerETH = contractsFixture.chain.head_state.get_balance(tester.a1)
-    initialFillerETH = contractsFixture.chain.head_state.get_balance(tester.a2)
     creatorCost = fix(2, 10000)
     fillerCost = 0
 
@@ -336,8 +319,6 @@ def test_publicFillOrder_ask_price_zero(contractsFixture, cash, market, universe
     # fill best order
     fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
 
-    assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH - creatorCost
-    assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH - fillerCost
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
     assert orders.getOrderCreator(orderID) == longToHexString(0)
@@ -353,8 +334,6 @@ def test_publicFillOrder_bid_price_zero(contractsFixture, cash, market, universe
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
 
-    initialMakerETH = contractsFixture.chain.head_state.get_balance(tester.a1)
-    initialFillerETH = contractsFixture.chain.head_state.get_balance(tester.a2)
     creatorCost = 0
     fillerCost = fix(2, 10000)
 
@@ -364,8 +343,6 @@ def test_publicFillOrder_bid_price_zero(contractsFixture, cash, market, universe
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
         fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
 
-    assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH - creatorCost
-    assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH - fillerCost
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
     assert orders.getOrderCreator(orderID) == longToHexString(0)
@@ -380,9 +357,6 @@ def test_publicFillOrder_kyc(contractsFixture, cash, market, universe, reputatio
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
-
-    initialMakerETH = contractsFixture.chain.head_state.get_balance(tester.a1)
-    initialFillerETH = contractsFixture.chain.head_state.get_balance(tester.a2)
 
     creatorCost = fix('2', '4000')
     fillerCost = fix('2', '6000')
@@ -403,8 +377,6 @@ def test_publicFillOrder_kyc(contractsFixture, cash, market, universe, reputatio
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
         fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
 
-    assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH - creatorCost
-    assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH - fillerCost
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
     assert orders.getOrderCreator(orderID) == longToHexString(0)
