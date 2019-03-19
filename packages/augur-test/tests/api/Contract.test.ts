@@ -5,6 +5,13 @@ import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { stringTo32ByteHex } from "@augurproject/core/build/libraries/HelperFunctions";
 import {ethers} from "ethers";
 
+interface MarketCreatedEvent {
+  name: "MarketCreated";
+  parameters: {
+    market: string;
+  };
+}
+
 let addresses: any;
 let dependencies: ContractDependenciesEthers;
 beforeAll(async () => {
@@ -77,18 +84,10 @@ test("Contract :: Universe :: Create Market", async() => {
     throw Error(`Expected "MarketCreated" log but got ${maybeMarketCreatedEvent.name}`);
   }
 
-  interface MarketCreatedEvent {
-    name: "MarketCreated";
-    parameters: {
-      market: string;
-    };
-  }
   const marketCreatedEvent = maybeMarketCreatedEvent as MarketCreatedEvent;
 
   const marketAddress = marketCreatedEvent.parameters.market;
-
-  const market = new GenericAugurInterfaces.Market<any>(dependencies, marketAddress);
-  console.log(market);
+  const market = contracts.marketFromAddress(marketAddress);
 
   const numticks = new ethers.utils.BigNumber("0x2710");
   await expect(await market.getNumTicks_()).toEqual(numticks);

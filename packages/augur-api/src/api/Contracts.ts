@@ -22,4 +22,8 @@ export class Contracts<TBigNumber> {
     const address = await this.universe.getReputationToken_();
     this.reputationToken = new Class<TBigNumber>(this.dependencies, address);
   }
+
+  public marketFromAddress(address: string): GenericAugurInterfaces.Market<TBigNumber> {
+    return new GenericAugurInterfaces.Market<TBigNumber>(this.dependencies, address);
+  }
 }
