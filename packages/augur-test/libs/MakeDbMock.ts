@@ -1,6 +1,9 @@
 import {PouchDBFactoryType} from "@augurproject/state/src/db/AbstractDB";
 import PouchDB from "pouchdb";
 import * as _ from "lodash";
+import { DB } from "@augurproject/state/build/db/DB";
+import {Augur} from "@augurproject/api";
+import { AccountList } from "./LocalAugur";
 
 export function makeDbMock() {
   const mockState = {
@@ -66,9 +69,17 @@ export function makeDbMock() {
     mockState.dbNames = [];
   }
 
+  const constants = {
+    chunkSize: 100000,
+      blockstreamDelay: 10,
+      networkId: 4,
+      defaultStartSyncBlockNumber: 0,
+  };
+
   return {
     makeFactory,
     wipeDB,
+    constants,
     failNext: () => mockState.failCountdown = 1,
     failInN: (n: number) => mockState.failCountdown = n,
     failForever: () => mockState.alwaysFail = true,
@@ -76,5 +87,14 @@ export function makeDbMock() {
       mockState.failCountdown = -1;
       mockState.alwaysFail = false;
     },
-  };
+    makeDB: (augur: Augur<any>, accounts: AccountList) => DB.createAndInitializeDB(
+        constants.networkId,
+        constants.blockstreamDelay,
+        constants.defaultStartSyncBlockNumber,
+        [accounts[0].publicKey],
+        augur.genericEventNames,
+        augur.userSpecificEvents,
+        makeFactory(),
+      ),
+    };
 }

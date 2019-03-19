@@ -1,12 +1,8 @@
 import {Augur} from "@augurproject/api";
-import {uploadBlockNumbers} from "@augurproject/artifacts";
-import settings from "@augurproject/state/src/settings.json";
-import {DB} from "@augurproject/state/src/db/DB";
 import {makeDbMock} from "../../libs/MakeDbMock";
 import {makeTestAugur, ACCOUNTS} from "../../libs/LocalAugur";
 
 const mock = makeDbMock();
-const TEST_NETWORK_ID = 4;
 
 beforeEach(async () => {
   mock.cancelFail();
@@ -25,21 +21,11 @@ beforeAll(async () => {
  * and checks DBs to make sure highest sync block is correct.
  */
 test("sync databases", async () => {
-  const trackedUsers = [settings.testAccounts[0]];
+  const db = await mock.makeDB(augur, ACCOUNTS);
+  await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay);
 
-  const db = await DB.createAndInitializeDB(
-    TEST_NETWORK_ID,
-    settings.blockstreamDelay,
-    uploadBlockNumbers[TEST_NETWORK_ID],
-    trackedUsers,
-    augur.genericEventNames,
-    augur.userSpecificEvents,
-    mock.makeFactory(),
-  );
-  await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
-
-  const syncableDBName = TEST_NETWORK_ID + "-DisputeCrowdsourcerCompleted";
-  const metaDBName = TEST_NETWORK_ID + "-BlockNumbersSequenceIds";
+  const syncableDBName = mock.constants.networkId + "-DisputeCrowdsourcerCompleted";
+  const metaDBName = mock.constants.networkId + "-BlockNumbersSequenceIds";
   const universe = "0x11149d40d255fCeaC54A3ee3899807B0539bad60";
 
   const originalHighestSyncedBlockNumbers: any = {};

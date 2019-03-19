@@ -8,6 +8,7 @@ import { CompilerConfiguration} from "@augurproject/core/source/libraries/Compil
 import { ContractCompiler } from "@augurproject/core/source/libraries/ContractCompiler";
 import { EthersFastSubmitWallet } from "@augurproject/core/source/libraries/EthersFastSubmitWallet";
 import { ethers } from "ethers";
+import { CompilerOutput } from "solc";
 
 export type AccountList = [{
       secretKey: string;
@@ -36,7 +37,14 @@ function makeDeployerConfiguration() {
   return new DeployerConfiguration(contractInputRoot, artifactOutputRoot, augurAddress, createGenesisUniverse, isProduction, useNormalTime, legacyRepAddress);
 }
 
-export async function makeTestAugur(accounts: AccountList): Promise<Augur<any>> {
+interface UsefulContractObjects {
+  provider: EthersProvider;
+  signer: EthersFastSubmitWallet;
+  dependencies: ContractDependenciesEthers;
+  compiledContracts: CompilerOutput;
+  addresses: any;
+}
+export async function compileAndDeployToGanache(accounts: AccountList): Promise<UsefulContractObjects> {
   const ganacheProvider = new ethers.providers.Web3Provider(ganache.provider({
     accounts,
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
@@ -57,6 +65,11 @@ export async function makeTestAugur(accounts: AccountList): Promise<Augur<any>> 
   const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, ganacheProvider, signer, compiledContracts);
   const addresses = await contractDeployer.deploy();
 
+  return {provider, signer, dependencies, compiledContracts, addresses};
+}
+
+export async function makeTestAugur(accounts: AccountList): Promise<Augur<any>> {
+  const {provider, dependencies, addresses} = await compileAndDeployToGanache(accounts);
   return Augur.create(provider, dependencies, addresses);
 }
 
