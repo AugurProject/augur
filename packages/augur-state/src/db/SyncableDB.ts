@@ -1,7 +1,7 @@
-import {AbstractDB, BaseDocument} from "./AbstractDB";
-import {Augur, Log, ParsedLog} from "@augurproject/api";
-import {DB} from "./DB";
-import {SyncStatus} from "./SyncStatus";
+import { AbstractDB, BaseDocument } from "./AbstractDB";
+import { Augur, Log, ParsedLog } from "@augurproject/api";
+import { DB } from "./DB";
+import { SyncStatus } from "./SyncStatus";
 import * as _ from "lodash";
 
 /**
@@ -12,8 +12,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   protected contractName: string; // TODO Remove if unused
   private syncStatus: SyncStatus;
 
-  constructor(dbController: DB<TBigNumber>, networkId: number, eventName: string, dbName?: string) {
-    dbName = dbName || dbController.getDatabaseName(eventName);
+  constructor(dbController: DB<TBigNumber>, networkId: number, eventName: string, dbName: string = dbController.getDatabaseName(eventName)) {
     super(networkId, dbName, dbController.pouchDBFactory);
     this.eventName = eventName;
     this.syncStatus = dbController.syncStatus;
@@ -24,6 +23,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
       }
     });
     dbController.notifySyncableDBAdded(this);
+    dbController.registerEventListener(this.eventName, this.addNewBlock);
   }
 
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
@@ -33,32 +33,31 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     while (highestSyncedBlockNumber < goalBlock) {
       const endBlockNumber = Math.min(highestSyncedBlockNumber + chunkSize, highestAvailableBlockNumber);
       const logs = await this.getLogs(augur, highestSyncedBlockNumber, endBlockNumber);
-      let success = true;
-      if (logs.length > 0) {
-        const documents = _.sortBy(_.map(logs, this.processLog), "_id");
-        success = await this.bulkUpsertDocuments(documents[0]._id, documents);
-      }
-      if (success) {
-        highestSyncedBlockNumber = endBlockNumber;
-        await this.syncStatus.setHighestSyncBlock(this.dbName, highestSyncedBlockNumber);
-      }
+
+      highestSyncedBlockNumber = await this.addNewBlock(endBlockNumber, logs);
     }
     console.log(`SYNCING SUCCESS ${this.dbName} up to ${goalBlock}`);
 
     // TODO Make any external calls as needed (such as pushing user's balance to UI)
-
-    // TODO start blockstream
   }
 
-  public async addNewBlock(logs: Array<ParsedLog>): Promise<void> {
+  addNewBlock = async (blocknumber: number, logs: Array<ParsedLog>): Promise<number> => {
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
-    const documents = _.sortBy(_.map(logs, this.processLog), "_id");
-    if (await this.bulkUpsertDocuments(documents[0]._id, documents)) {
-      await this.syncStatus.setHighestSyncBlock(this.dbName, highestSyncedBlockNumber + 1);
+
+    let success = true;
+    if (logs.length > 0) {
+      const documents = _.sortBy(_.map(logs, this.processLog), "_id");
+      success = await this.bulkUpsertDocuments(documents[0]._id, documents);
+    }
+    if (success) {
+      await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber);
+      console.log(`ADDED ${blocknumber} to ${this.dbName}`);
     } else {
       throw new Error(`Unable to add new block`);
     }
-  }
+
+    return blocknumber;
+  };
 
   public async rollback(blockNumber: number): Promise<void> {
     // Remove each change from blockNumber onward

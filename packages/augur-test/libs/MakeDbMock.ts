@@ -1,9 +1,10 @@
 import {PouchDBFactoryType} from "@augurproject/state/src/db/AbstractDB";
 import PouchDB from "pouchdb";
 import * as _ from "lodash";
-import { DB } from "@augurproject/state/build/db/DB";
+import { DB } from "@augurproject/state/src/db/DB";
 import {Augur} from "@augurproject/api";
 import { AccountList } from "./LocalAugur";
+import { IBlockAndLogStreamerListener } from "@augurproject/state/src/db/BlockAndLogStreamerListener";
 
 export function makeDbMock() {
   const mockState = {
@@ -69,6 +70,14 @@ export function makeDbMock() {
     mockState.dbNames = [];
   }
 
+  function makeBlockAndLogStreamerListener(): IBlockAndLogStreamerListener {
+    return {
+      listenForBlockRemoved: jest.fn(),
+      listenForEvent: jest.fn(),
+      startBlockStreamListener: jest.fn(),
+    };
+  }
+
   const constants = {
     chunkSize: 100000,
       blockstreamDelay: 10,
@@ -95,6 +104,7 @@ export function makeDbMock() {
         augur.genericEventNames,
         augur.userSpecificEvents,
         makeFactory(),
+        makeBlockAndLogStreamerListener(),
       ),
     };
 }

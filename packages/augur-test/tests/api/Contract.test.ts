@@ -2,7 +2,7 @@ import { ACCOUNTS, compileAndDeployToGanache } from "../../libs/LocalAugur";
 import {Contracts} from "@augurproject/api/src/api/Contracts";
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { stringTo32ByteHex } from "@augurproject/core/build/libraries/HelperFunctions";
+import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
 import {ethers} from "ethers";
 
 interface MarketCreatedEvent {
