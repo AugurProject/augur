@@ -490,7 +490,7 @@ contract Universe is ITyped, IUniverse {
             _expectedBalance = _expectedBalance.add(_market.getShareToken(0).totalSupply().mul(_market.getNumTicks()));
         }
 
-        assert(_market.getDenominationToken().balanceOf(address(_market)) >= _expectedBalance);
+        assert(ICash(augur.lookup("Cash")).balanceOf(address(_market)) >= _expectedBalance);
         return true;
     }
 }

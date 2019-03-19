@@ -537,10 +537,6 @@ contract Market is Initializable, Ownable, IMarket {
         return numTicks;
     }
 
-    function getDenominationToken() public view returns (ICash) {
-        return cash;
-    }
-
     function getShareToken(uint256 _outcome) public view returns (IShareToken) {
         return shareTokens[_outcome];
     }

@@ -270,7 +270,7 @@ library Trade {
             orders: _orders,
             market: _market,
             completeSets: ICompleteSets(_augur.lookup("CompleteSets")),
-            denominationToken: _market.getDenominationToken(),
+            denominationToken: ICash(_augur.lookup("Cash")),
             longShareToken: _market.getShareToken(_outcome),
             shortShareTokens: getShortShareTokens(_market, _outcome),
             augur: _augur
