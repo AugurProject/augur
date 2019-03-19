@@ -1,7 +1,6 @@
 import {uploadBlockNumbers} from "@augurproject/artifacts";
 import {makeTestAugur, ACCOUNTS} from "../../libs/LocalAugur";
 import {API} from "@augurproject/state/src/api/API";
-import {DB} from "@augurproject/state/src/db/DB";
 import {makeDbMock} from "../../libs/MakeDbMock";
 import {Augur} from "@augurproject/api";
 
@@ -30,4 +29,4 @@ test("State API :: Markets", async () => {
 test("State API :: Users", async () => {
   const api = new API<any>(augur, db);
   await expect(api.users).toEqual({});
-},);
+});
