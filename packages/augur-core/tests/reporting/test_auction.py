@@ -43,6 +43,10 @@ def test_bootstrap(localFixture, universe, reputationToken, auction, time, cash)
             with TokenDelta(repAuctionToken, cost, tester.a0, "REP auction token was not transferred to the user correctly"):
                 auction.tradeEthForRep(repAmount)
 
+    # We cannot yet redeem our auction tokens since the auction time hasnt expired and not enough tokens have been sold to qualify the auction as over
+    with raises(TransactionFailed):
+        repAuctionToken.redeem()
+
     # Lets purchase the remaining REP in the auction
     repAmount = auction.getCurrentAttoRepBalance()
     cost = repAmount * repSalePrice / 10 ** 18
@@ -57,6 +61,11 @@ def test_bootstrap(localFixture, universe, reputationToken, auction, time, cash)
         auction.tradeEthForRep(repAmount)
     cash.withdrawEther(cost)
 
+    # We can redeem our auction tokens immediately now that the auction is effectively over
+    expectedREP = reputationToken.balanceOf(repAuctionToken.address)
+    with TokenDelta(reputationToken, expectedREP, tester.a0, "REP was not distributed correctly from auction token redemption"):
+        repAuctionToken.redeem()
+
     # Lets end this auction then move time to the next auction
     endTime = auction.getAuctionEndTime()
     assert time.setTimestamp(endTime + 1)
@@ -64,11 +73,6 @@ def test_bootstrap(localFixture, universe, reputationToken, auction, time, cash)
     assert auction.getRoundType() == 3
     assert auction.bootstrapMode()
     assert not auction.isActive()
-
-    # Now we can redeem the tokens we received for the amount of REP we purchased
-    expectedREP = reputationToken.balanceOf(repAuctionToken.address)
-    with TokenDelta(reputationToken, expectedREP, tester.a0, "REP was not distributed correctly from auction token redemption"):
-        repAuctionToken.redeem()
 
     startTime = auction.getAuctionStartTime()
     assert time.setTimestamp(startTime)

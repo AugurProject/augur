@@ -106,7 +106,7 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     assert contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
 
     if invalid:
-        with TokenDelta(cash, minimumValidityBond, universe.getAuction(), "Validity bond did not go to the auction"):
+        with TokenDelta(cash, minimumValidityBond, universe.getOrCreateNextDisputeWindow(False), "Validity bond did not go to the dispute window"):
             market.finalize()
     else:
         with TokenDelta(cash, minimumValidityBond, market.getOwner(), "Validity bond did not go to the market creator"):
