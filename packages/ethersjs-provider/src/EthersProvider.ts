@@ -1,26 +1,54 @@
-import { NetworkId } from "@augurproject/artifacts";
-import { Filter, Log, LogValues } from "@augurproject/api";
-import { Transaction } from "contract-dependencies";
-import { EthersProvider as EProvider } from "contract-dependencies-ethers";
-import { ethers } from "ethers";
-import { Abi } from "ethereum";
+import {NetworkId} from "@augurproject/artifacts";
+import {Filter, Log, LogValues} from "@augurproject/api";
+import {Transaction} from "contract-dependencies";
+import {EthersProvider as EProvider} from "contract-dependencies-ethers";
+import {ethers} from "ethers";
+import {Abi} from "ethereum";
 import * as _ from "lodash";
-import { retry } from "async";
+import {AsyncQueue, queue, retry} from "async";
 
 interface ContractMapping {
   [contractName: string]: ethers.utils.Interface;
 }
 
+interface PerformQueueTask {
+  message: any;
+  params: any;
+  resolve: (res: any) => void;
+  reject: (err?: Error | null) => void;
+}
+
 export class EthersProvider extends ethers.providers.BaseProvider implements EProvider {
   private contractMapping: ContractMapping = {};
-  private opts: number | {
-    times: number,
-    interval: number | ((retryCount: number) => number)
-  };
+  private performQueue: AsyncQueue<PerformQueueTask>;
+  readonly provider: ethers.providers.JsonRpcProvider;
 
-  constructor(readonly provider: ethers.providers.JsonRpcProvider, times: number, interval: number, readonly concurrency: number) {
+  constructor(provider: ethers.providers.JsonRpcProvider, times: number, interval: number, concurrency: number) {
     super(provider.getNetwork());
-    this.opts = { times, interval };
+    this.provider = provider;
+    this.performQueue = queue((item: PerformQueueTask, callback: () => void) => {
+      const _this = this;
+      retry(
+        {times, interval},
+        async function (callback) {
+          let results: any;
+          try {
+            results = await _this.provider.perform(item.message, item.params);
+          } catch (err) {
+            return callback(err);
+          }
+          callback(null, results);
+        },
+        function (err: Error, results: any) {
+          if (err) {
+            item.reject(err);
+            callback();
+          }
+          item.resolve(results);
+          callback();
+        }
+      );
+    }, concurrency);
   }
 
   public async listAccounts(): Promise<Array<string>> {
@@ -74,26 +102,8 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
   }
 
   public async perform(message: any, params: any): Promise<any> {
-    const _this = this;
     return new Promise((resolve, reject) => {
-      retry(
-        this.opts,
-        async function (callback) {
-          let results: any;
-          try {
-            results = await _this.provider.perform(message, params);
-          } catch (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        },
-        function (err: Error, results: any) {
-          if (err) {
-            reject(err);
-          }
-          resolve(results);
-        }
-      );
+      this.performQueue.push({ message, params, resolve, reject });
     });
   }
 }

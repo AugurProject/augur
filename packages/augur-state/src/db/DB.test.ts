@@ -1,10 +1,12 @@
-import {TrackedUsers} from "./TrackedUsers";
-import {DB} from "./DB";
-import {Augur} from "@augurproject/api";
-import {uploadBlockNumbers} from "@augurproject/artifacts";
-import settings from "@augurproject/state/src/settings.json";
+import { TrackedUsers } from "./TrackedUsers";
+import { DB } from "./DB";
+import {  Augur, UserSpecificEvent } from "@augurproject/api";
+import { uploadBlockNumbers } from "@augurproject/artifacts";
+const settings = require("../settings.json");
 import {makeMock} from "../utils/MakeMock";
 import {makeTestAugur, AccountList} from "./test";
+import { IBlockAndLogStreamerListener } from "./BlockAndLogStreamerListener";
+import { JsonRpcProvider } from "ethers/providers";
 
 const mock = makeMock();
 const TEST_NETWORK_ID = 4;
@@ -18,9 +20,16 @@ const ACCOUNTS: AccountList = [
   },
 ];
 
+let blockAndLogStreamerListener: IBlockAndLogStreamerListener;
 beforeEach(async () => {
+  blockAndLogStreamerListener = {
+    listenForBlockRemoved: jest.fn(),
+    listenForEvent: jest.fn(),
+    startBlockStreamListener: jest.fn()
+  };
+
   mock.cancelFail();
-  await mock.wipeDB()
+  await mock.wipeDB();
 });
 
 let augur: Augur<any>;
@@ -30,6 +39,7 @@ beforeAll(async () => {
 
 
 test("database failure during trackedUsers.getUsers() call", async () => {
+
   const db = await DB.createAndInitializeDB(
     TEST_NETWORK_ID,
     settings.blockstreamDelay,
@@ -37,7 +47,8 @@ test("database failure during trackedUsers.getUsers() call", async () => {
     [settings.testAccounts[0]],
     augur.genericEventNames,
     augur.userSpecificEvents,
-    mock.makeFactory()
+    mock.makeFactory(),
+    blockAndLogStreamerListener
   );
 
   await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
@@ -55,20 +66,21 @@ test("database failure during trackedUsers.getUsers() call", async () => {
 
 
 test("database failure during sync, followed by another sync", async () => {
-    const db = await DB.createAndInitializeDB(
-      TEST_NETWORK_ID,
-      settings.blockstreamDelay,
-      defaultStartSyncBlockNumber,
-      [settings.testAccounts[0]],
-      augur.genericEventNames,
-      augur.userSpecificEvents,
-      mock.makeFactory()
-    );
+  const db = await DB.createAndInitializeDB(
+    TEST_NETWORK_ID,
+    settings.blockstreamDelay,
+    defaultStartSyncBlockNumber,
+    [settings.testAccounts[0]],
+    augur.genericEventNames,
+    augur.userSpecificEvents,
+    mock.makeFactory(),
+    blockAndLogStreamerListener
+  );
 
-    console.log("Sync with a database failure.");
-    mock.failForever();
-    await expect(db.sync(augur, settings.chunkSize, settings.blockstreamDelay)).rejects.toThrow();
-    mock.cancelFail();
+  console.log("Sync with a database failure.");
+  mock.failForever();
+  await expect(db.sync(augur, settings.chunkSize, settings.blockstreamDelay)).rejects.toThrow();
+  mock.cancelFail();
 
     console.log("Sync successfully.");
     await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
@@ -76,26 +88,25 @@ test("database failure during sync, followed by another sync", async () => {
 
 
 test("syncing: succeed then fail then succeed again", async () => {
-    const db = await DB.createAndInitializeDB(
-      TEST_NETWORK_ID,
-      settings.blockstreamDelay,
-      defaultStartSyncBlockNumber,
-      [settings.testAccounts[0]],
-      augur.genericEventNames,
-      augur.userSpecificEvents,
-      mock.makeFactory()
-    );
+  const db = await DB.createAndInitializeDB(
+    TEST_NETWORK_ID,
+    settings.blockstreamDelay,
+    defaultStartSyncBlockNumber,
+    [settings.testAccounts[0]],
+    augur.genericEventNames,
+    augur.userSpecificEvents,
+    mock.makeFactory(),
+    blockAndLogStreamerListener
+  );
 
-    console.log("Sync successfully.");
-    await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
+  console.log("Sync successfully.");
+  await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
 
-    console.log("Sync with a database failure.");
-    mock.failForever();
-    await expect(db.sync(augur, settings.chunkSize, settings.blockstreamDelay)).rejects.toThrow();
-    mock.cancelFail();
+  console.log("Sync with a database failure.");
+  mock.failForever();
+  await expect(db.sync(augur, settings.chunkSize, settings.blockstreamDelay)).rejects.toThrow();
+  mock.cancelFail();
 
-    console.log("Sync successfully.");
-    await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
-  },
-  120000
-);
+  console.log("Sync successfully.");
+  await db.sync(augur, settings.chunkSize, settings.blockstreamDelay);
+}, 120000);

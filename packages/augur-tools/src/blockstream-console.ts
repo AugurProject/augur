@@ -1,15 +1,13 @@
 import { Block, BlockAndLogStreamer, FilterOptions, Log } from "ethereumjs-blockstream";
-import * as adapters from "blockstream-adapters";
-import { GetBlockByString, isSupportedAdapter, SUPPORTED_ADAPTER } from "blockstream-adapters";
+import { createAdapter, EthersProviderBlockStreamAdapter, GetBlockByString } from "blockstream-adapters";
 
-const POLLING_FREQUENCY = parseInt(process.env.POLLING_FREQUENCY || "3000");;
+const POLLING_FREQUENCY = parseInt(process.env.POLLING_FREQUENCY || "3000");
 const STARTUP_BLOCKS = parseInt(process.env.STARTUP_BLOCKS || "5");
 const ETHEREUM_HTTP = process.env.ETHEREUM_HTTP || "http://127.0.0.1:8545";
 const ADAPTER_TYPE = process.env.ADAPTER_TYPE || "ethrpc";
 const LOG_FILTER = {
   address: process.env.FILTER_ADDRESS || "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
 };
-
 
 function startPollingForBlocks(blockstream: BlockAndLogStreamer<Block, Log>, getBlockByNumber: GetBlockByString) {
   setInterval(async function () {
@@ -52,8 +50,8 @@ function getBlockBehind(blockNumber: string, howManyBlocks: number) {
   return "0x" + (parseInt(blockNumber, 16) - howManyBlocks).toString(16);
 }
 
-async function doStuff(adapterType: SUPPORTED_ADAPTER) {
-  const dependencies = await adapters[adapterType](ETHEREUM_HTTP);
+async function doStuff() {
+  const dependencies = await createAdapter(ETHEREUM_HTTP);
   const blockstream = new BlockAndLogStreamer(dependencies.getBlockByHash, dependencies.getLogs, console.warn);
 
   const block = await dependencies.getBlockByNumber("latest");
@@ -69,8 +67,4 @@ async function doStuff(adapterType: SUPPORTED_ADAPTER) {
   startPollingForBlocks(blockstream, dependencies.getBlockByNumber);
 }
 
-if (isSupportedAdapter(ADAPTER_TYPE)) {
-  doStuff(ADAPTER_TYPE);
-} else {
-  console.error("Use supported ADAPTER_TYPE: " + SUPPORTED_ADAPTER)
-}
+doStuff();
