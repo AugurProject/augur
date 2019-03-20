@@ -58,11 +58,11 @@ test("sync databases", async () => {
     const metaDBName = TEST_NETWORK_ID + "-BlockNumbersSequenceIds";
     const universe = "0x11149d40d255fCeaC54A3ee3899807B0539bad60";
 
-    let originalHighestSyncedBlockNumbers: any = {};
+    const originalHighestSyncedBlockNumbers: any = {};
     originalHighestSyncedBlockNumbers[syncableDBName] = await db.syncStatus.getHighestSyncBlock(syncableDBName);
     originalHighestSyncedBlockNumbers[metaDBName] = await db.syncStatus.getHighestSyncBlock(metaDBName);
 
-    let blockLogs = [
+    const blockLogs = [
       {
         "universe": universe,
         "market": "0xC0ffe3F654d442589BAb472937F094970339d214",
@@ -76,13 +76,15 @@ test("sync databases", async () => {
       }
     ];
 
-    await db.addNewBlock(syncableDBName, blockLogs);
+    const dbInstance = db.getSyncableDatabase(syncableDBName);
+    dbInstance.addNewBlock(originalHighestSyncedBlockNumbers[syncableDBName], blockLogs);
+
     let highestSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock(syncableDBName);
     expect(highestSyncedBlockNumber).toBe(originalHighestSyncedBlockNumbers[syncableDBName] + 1);
 
     blockLogs[0].blockNumber = highestSyncedBlockNumber + 1;
 
-    await db.addNewBlock(syncableDBName, blockLogs);
+    await dbInstance.addNewBlock(originalHighestSyncedBlockNumbers[syncableDBName] + 1, blockLogs);
     highestSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock(syncableDBName);
     expect(highestSyncedBlockNumber).toBe(originalHighestSyncedBlockNumbers[syncableDBName] + 2);
 

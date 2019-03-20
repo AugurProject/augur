@@ -43,7 +43,8 @@ describe("BlockstreamListener", () => {
       blockAndLogStreamer,
       eventLogDBRouter,
       listenForNewBlocks: jest.fn(),
-      getEventTopics: jest.fn()
+      getEventTopics: jest.fn(),
+      getBlockByHash: jest.fn()
     };
 
     blockAndLogStreamerListener = new BlockAndLogStreamerListener(deps);
@@ -96,12 +97,12 @@ describe("BlockstreamListener", () => {
         removed: false,
         topics: ["0xSOMEOTHERTOPIC"],
         transactionHash: "HASHTWO",
-        transactionIndex: 2
+        transactionIndex: 2,
       }];
 
-      eventLogDBRouter.onLogsAdded("hashone", sampleLogs);
+      eventLogDBRouter.onLogsAdded(1234, sampleLogs);
 
-      expect(onNewLogCallback).toBeCalledWith("hashone",
+      expect(onNewLogCallback).toBeCalledWith(1234,
         expect.arrayContaining([
           expect.objectContaining({
             transactionHash: "HASHONE"
