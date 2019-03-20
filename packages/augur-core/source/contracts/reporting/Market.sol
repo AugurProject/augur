@@ -318,9 +318,7 @@ contract Market is Initializable, Ownable, IMarket {
                 withdrawAffiliateFees(_affiliateAddress);
             }
         } else {
-            IAuction _auction = universe.getAuction();
-            cash.transfer(address(universe.getAuction()), marketCreatorFeesAttoEth);
-            _auction.recordFees(marketCreatorFeesAttoEth);
+            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), marketCreatorFeesAttoEth);
         }
         marketCreatorFeesAttoEth = 0;
         return true;

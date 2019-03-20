@@ -18,7 +18,6 @@ contract AuctionToken is ITyped, Initializable, VariableSupplyToken, IAuctionTok
     IAugur public augur;
     IAuction public auction;
     IUniverse public universe;
-    ICash public cash;
     ERC20Token public redemptionToken; // The token being auctioned off and recieved at redemption
     uint256 public auctionIndex;
 
@@ -27,7 +26,6 @@ contract AuctionToken is ITyped, Initializable, VariableSupplyToken, IAuctionTok
         augur = _augur;
         auction = _auction;
         universe = auction.getUniverse();
-        cash = ICash(augur.lookup("Cash"));
         redemptionToken = _redemptionToken;
         auctionIndex = _auctionIndex;
         erc820Registry = IERC820Registry(_erc820RegistryAddress);
@@ -42,7 +40,7 @@ contract AuctionToken is ITyped, Initializable, VariableSupplyToken, IAuctionTok
     }
 
     function redeem() public returns (bool) {
-        require(auction.getAuctionIndexForCurrentTime() > auctionIndex);
+        require(auction.getAuctionIndexForCurrentTime() > auctionIndex || auction.auctionOver(this));
         uint256 _ownerBalance = balances[msg.sender];
         uint256 _tokenBalance = redemptionToken.balanceOf(address(this));
         uint256 _redemptionAmount = _ownerBalance.mul(_tokenBalance).div(totalSupply());
