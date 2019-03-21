@@ -1,5 +1,4 @@
-import { Augur } from "augur.js";
-import { ErrorCallback } from "../types";
+import { Augur, ErrorCallback } from "../types";
 
 const POLLING_FREQUENCY_IN_MS = 5000;
 

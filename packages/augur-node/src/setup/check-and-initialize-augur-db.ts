@@ -1,5 +1,4 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
+import Knex from "knex";
 import * as path from "path";
 import * as PouchDB from "pouchdb";
 import * as sqlite3 from "sqlite3";
@@ -9,9 +8,10 @@ import { setOverrideTimestamp } from "../blockchain/process-block";
 import { postProcessDatabaseResults } from "../server/post-process-database-results";
 import { monitorEthereumNodeHealth } from "../blockchain/monitor-ethereum-node-health";
 import { logger } from "../utils/logger";
-import { ErrorCallback } from "../types";
+import { Augur, ErrorCallback } from "../types";
 import { DB_VERSION, DB_FILE, POUCH_DB_DIR } from "../constants";
 import { ConnectOptions } from "./connectOptions";
+import { uploadBlockNumbers } from "@augurproject/artifacts/build";
 
 interface NetworkIdRow {
   networkId: string;
@@ -93,7 +93,7 @@ async function initializeNetworkInfo(db: Knex, augur: Augur): Promise<void> {
 async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string, databaseDir?: string): Promise<void> {
   const oldUploadBlockNumberFile = getUploadBlockPathFromNetworkId(networkId, databaseDir);
   const dbPath = getDatabasePathFromNetworkId(networkId, DB_FILE, databaseDir);
-  const currentUploadBlockNumber = augur.contracts.uploadBlockNumbers[augur.rpc.getNetworkID()];
+  const currentUploadBlockNumber = uploadBlockNumbers[augur.networkId];
   if (existsSync(dbPath) && existsSync(oldUploadBlockNumberFile)) {
     const oldUploadBlockNumber = Number(await promisify(readFile)(oldUploadBlockNumberFile));
     if (currentUploadBlockNumber !== oldUploadBlockNumber) {

@@ -1,16 +1,25 @@
 import * as _ from "lodash";
 import * as Knex from "knex";
 import { each } from "bluebird";
-import Augur, { FormattedEventLog } from "augur.js";
+import {
+  Address,
+  Augur,
+  BlockDetail,
+  BlocksRow,
+  DisputeWindowState,
+  FormattedEventLog,
+  MarketIdUniverseDisputeWindow,
+  MarketsContractAddressRow,
+  ReportingState,
+  TransactionHashesRow
+} from "../types";
 import { augurEmitter } from "../events";
-import { BlockDetail, BlocksRow, MarketsContractAddressRow, ReportingState, Address, DisputeWindowState, MarketIdUniverseDisputeWindow, TransactionHashesRow } from "../types";
 import { getPouchRevFromId, updateActiveDisputeWindows, updateMarketState } from "./log-processors/database";
 import { getMarketsWithReportingState } from "../server/getters/database";
 import { logger } from "../utils/logger";
 import { SubscriptionEventNames, DB_VERSION, DB_FILE, DB_WARP_SYNC_FILE, DUMP_EVERY_BLOCKS } from "../constants";
 import { processLogByName } from "./process-logs";
 import { BackupRestore } from "../sync/backup-restore";
-import { checkOrphanedOrders } from "./check-orphaned-orders";
 
 export type BlockDirection = "add" | "remove";
 
@@ -74,7 +83,6 @@ export async function processBlockAndLogs(db: Knex, pouch: PouchDB.Database, aug
       // TODO: un-advance time
     }
   });
-  await checkOrphanedOrders(db, augur);
   try {
     if (isWarpSync && parseInt(block.number, 16) % DUMP_EVERY_BLOCKS === 0) {
       // every X blocks export db to warp file.

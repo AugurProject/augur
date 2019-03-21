@@ -1,8 +1,7 @@
-import { Augur } from "augur.js";
+import { Address, Augur, Bytes32, Int256, OrderState } from "../../../types";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
 import { ZERO } from "../../../constants";
-import { Address, Bytes32, Int256, OrderState } from "../../../types";
 import { formatOrderAmount } from "../../../utils/format-order";
 import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
 

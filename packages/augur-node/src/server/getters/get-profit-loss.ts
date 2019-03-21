@@ -3,7 +3,7 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import { Dictionary, NumericDictionary } from "lodash";
 import BigNumber from "bignumber.js";
-import { Augur } from "augur.js";
+import { Address, Augur } from "../../types";
 import { getCurrentTime } from "../../blockchain/process-block";
 
 import { ZERO } from "../../constants";

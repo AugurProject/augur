@@ -1,7 +1,6 @@
-import { Augur } from "augur.js";
+import { Address, Augur, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, TradesRow } from "../../../types";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
-import { Address, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, TradesRow } from "../../../types";
 import { updateOrder } from "./update-order";
 import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";

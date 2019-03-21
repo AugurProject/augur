@@ -1,6 +1,5 @@
 import * as async from "async";
-import { FormattedEventLog, BlockDetail } from "augur.js";
-import { ErrorCallback } from "../types";
+import { BlockDetail, ErrorCallback, FormattedEventLog } from "../types";
 import { BlockDirection } from "./process-block";
 
 interface LogQueue {

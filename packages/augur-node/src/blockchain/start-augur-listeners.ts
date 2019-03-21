@@ -1,7 +1,6 @@
-import { Augur, FormattedEventLog } from "augur.js";
 import * as _ from "lodash";
 import * as Knex from "knex";
-import { BlockDetail, ErrorCallback } from "../types";
+import { Augur, BlockDetail, ErrorCallback, FormattedEventLog } from "../types";
 import { logProcessors } from "./log-processors";
 import { BlockAndLogsQueue } from "./block-and-logs-queue";
 import { BlockDirection, processBlockAndLogs } from "./process-block";

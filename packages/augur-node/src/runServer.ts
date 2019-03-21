@@ -1,20 +1,21 @@
-import Augur from "augur.js";
+import { Augur } from "./types";
 import { AugurNodeController } from "./controller";
 import { logger } from "./utils/logger";
 import { ConnectOptions } from "./setup/connectOptions";
 
-export function start(retries: number, config: ConnectOptions, databaseDir: string, isWarpSync: boolean) {
-  const augur = new Augur();
+import { EthersProvider } from "@augurproject/ethersjs-provider";
+import { JsonRpcProvider } from "ethers/providers/json-rpc-provider";
+import { addresses, uploadBlockNumbers } from "@augurproject/artifacts";
+import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { EthersProviderBlockStreamAdapter } from "blockstream-adapters";
+
+export async function start(retries: number, config: ConnectOptions, databaseDir: string, isWarpSync: boolean) {
+  const ethersProvider = new EthersProvider(new JsonRpcProvider("https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"), 5, 0, 40);
+  const BlockStreamAdapter = new EthersProviderBlockStreamAdapter(ethersProvider);
+  const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined);
+  const augur = await Augur.create(ethersProvider, contractDependencies, addresses[4]);
+
   const augurNodeController = new AugurNodeController(augur, config, databaseDir, isWarpSync);
-
-  augur.rpc.setDebugOptions({ broadcast: false });
-  augur.events.nodes.ethereum.on("disconnect", (event: any) => {
-    logger.warn("Disconnected from Ethereum node", (event || {}).reason);
-  });
-
-  augur.events.nodes.ethereum.on("reconnect", () => {
-    logger.warn("Reconnect to Ethereum node");
-  });
 
   function errorCatch(err: Error) {
     function fatalError(e: Error) {

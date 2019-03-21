@@ -1,4 +1,3 @@
-import Augur from "augur.js";
 import * as Knex from "knex";
 import { promisify } from "util";
 import { downloadAugurLogs } from "./download-augur-logs";
@@ -6,6 +5,8 @@ import { augurEmitter } from "../events";
 import { logger } from "../utils/logger";
 import { SubscriptionEventNames } from "../constants";
 import { delay } from "bluebird";
+import { uploadBlockNumbers } from "@augurproject/artifacts";
+import { Augur } from "../types";
 
 const BLOCKSTREAM_HANDOFF_BLOCKS = 5;
 const BLOCKSTREAM_HANDOFF_WAIT_TIME_MS = 15000;
@@ -27,7 +28,8 @@ function setSyncFinished() {
 export async function bulkSyncAugurNodeWithBlockchain(db: Knex, pouch: PouchDB.Database, augur: Augur, blocksPerChunk: number|undefined): Promise<number> {
   const row: HighestBlockNumberRow|null = await db("blocks").max("blockNumber as highestBlockNumber").first();
   const lastSyncBlockNumber: number|null|undefined = row!.highestBlockNumber;
-  const uploadBlockNumber: number = augur.contracts.uploadBlockNumbers[augur.rpc.getNetworkID()] || 0;
+
+  const uploadBlockNumber: number = parseInt(augur.networkId, 10);
   let highestBlockNumber: number = await getHighestBlockNumber(augur);
   let fromBlock: number;
   if (uploadBlockNumber > highestBlockNumber) {
@@ -61,10 +63,5 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, pouch: PouchDB.D
 }
 
 async function getHighestBlockNumber(augur: Augur): Promise<number> {
-  return new Promise<number>((resolve, reject) => {
-    augur.rpc.eth.blockNumber(null, (error, blockNumber: string) => {
-      if (error) reject("Couldn't get block number");
-      resolve(parseInt(blockNumber.toString(), 16));
-    });
-  });
+  return await augur.provider.getBlockNumber();
 }

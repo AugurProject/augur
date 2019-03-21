@@ -1,5 +1,5 @@
-import { BigNumber } from "bignumber.js";
-import { Augur, FormattedEventLog } from "augur.js";
+import { BigNumber } from "ethers/utils";
+import { FormattedEventLog } from "augur.js";
 import { EventEmitter } from "events";
 import * as Knex from "knex";
 import * as WebSocket from "ws";
@@ -7,15 +7,11 @@ import * as https from "https";
 import * as http from "http";
 import * as t from "io-ts";
 
-// BigNumber Configs
-//
-BigNumber.config({
-  MODULO_MODE: BigNumber.EUCLID,
-  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
-  EXPONENTIAL_AT: [-1E9, 1E9],
-});
+import { Augur as GenericAugur } from "@augurproject/api";
+export class Augur extends GenericAugur<BigNumber> {};
+export { ParsedLog as FormattedEventLog } from "@augurproject/api";
 
-export { BlockDetail, FormattedEventLog } from "augur.js";
+export { BlockDetail, ApiFunction, BlockRange } from "augur.js";
 
 export enum ReportingState {
   PRE_REPORTING = "PRE_REPORTING",
@@ -98,7 +94,7 @@ export type GenericCallback<ResultType> = (err: Error|null, result?: ResultType)
 
 export type AsyncCallback = (err: Error|null, result?: any) => void;
 
-export type LogProcessor = (augur: Augur, log: FormattedEventLog) => Promise<(db: Knex) => Promise<void>>;
+export type LogProcessor = (augur: Augur<BigNumber>, log: FormattedEventLog) => Promise<(db: Knex) => Promise<void>>;
 
 export interface EventLogProcessor {
   add: LogProcessor;

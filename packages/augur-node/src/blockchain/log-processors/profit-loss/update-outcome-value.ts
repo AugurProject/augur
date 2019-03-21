@@ -1,8 +1,7 @@
-import { Augur } from "augur.js";
+import { Address, Augur, PayoutNumerators } from "../../../types";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
-import { Address, PayoutNumerators } from "../../../types";
 import { numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
 import { getCurrentTime } from "../../process-block";
 

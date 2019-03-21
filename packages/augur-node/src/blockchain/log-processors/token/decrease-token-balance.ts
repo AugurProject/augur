@@ -1,7 +1,6 @@
-import { Augur } from "augur.js";
+import { Address, Augur, FormattedEventLog } from "../../../types";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
-import { Address, FormattedEventLog } from "../../../types";
 import { isLegacyReputationToken } from "./is-legacy-reputation-token";
 import { updateProfitLossChangeShareBalance } from "../profit-loss/update-profit-loss";
 import { TokenType } from "../../../constants";
