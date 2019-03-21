@@ -229,62 +229,62 @@ jobs:
         displayName: 'test augur.js'
         condition: eq(variables.AUGUR, 'true')
 
-  - job: Docker_populated_geth_images
-    dependsOn:
-    - Augur_build_docker_image
-    - Build_Core_Docker
-    - Test_Augur_Core
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    steps:
-    - bash: |
-        set -euo pipefail
-        # checked what files changed in merge to master
-        for f in $(git show --name-only --oneline $(Build.SourceVersion));
-          do
-            echo "$f"
-            if [[ $f =~ .*augur-core.* ]]
-            then
-              echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-            fi
-          done
+# - job: Docker_populated_geth_images
+#   dependsOn:
+#   - Augur_build_docker_image
+#   - Build_Core_Docker
+#   - Test_Augur_Core
+#   pool:
+#     vmImage: 'Ubuntu 16.04'
+#   steps:
+#   - bash: |
+#       set -euo pipefail
+#       # checked what files changed in merge to master
+#       for f in $(git show --name-only --oneline $(Build.SourceVersion));
+#         do
+#           echo "$f"
+#           if [[ $f =~ .*augur-core.* ]]
+#           then
+#             echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
+#           fi
+#         done
 
-        # checked what files changed in PR
-        for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
-          do
-            echo "$f"
-            if [[ $f =~ .*augur-core.* ]]
-            then
-              echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-            fi
-          done
-    - script: |
-        set -exuo pipefail
-        echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
-        sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
-        sudo systemctl status docker
-        docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-        docker pull augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
-        docker pull augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
-        docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-        docker tag augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG) augurproject/python2-and-3:monorepo
-        docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
-        docker images
-        yarn workspace @augurproject/core artifacts
-        yarn workspace @augurproject/tools docker:build
+#       # checked what files changed in PR
+#       for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
+#         do
+#           echo "$f"
+#           if [[ $f =~ .*augur-core.* ]]
+#           then
+#             echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
+#           fi
+#         done
+#   - script: |
+#       set -exuo pipefail
+#       echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+#       sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
+#       sudo systemctl status docker
+#       docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
+#       docker pull augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
+#       docker pull augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
+#       docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+#       docker tag augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG) augurproject/python2-and-3:monorepo
+#       docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
+#       docker images
+#       yarn workspace @augurproject/core artifacts
+#       yarn workspace @augurproject/tools docker:build
 
-        if [[ "$(Build.SourceBranchName)" == "master" ]]; then
-            docker push augurproject/python2-and-3:monorepo
-            docker push augurproject/augur-core:monorepo
-            yarn workspace @augurproject/tools docker:push
-        fi
-      condition: |
-        and
-        (
-            succeeded(),
-            eq(variables.JOB_TRIGGER, 'true')
-        )
-      displayName: 'build and (maybe) push core images'
+#       if [[ "$(Build.SourceBranchName)" == "master" ]]; then
+#           docker push augurproject/python2-and-3:monorepo
+#           docker push augurproject/augur-core:monorepo
+#           yarn workspace @augurproject/tools docker:push
+#       fi
+#     condition: |
+#       and
+#       (
+#           succeeded(),
+#           eq(variables.JOB_TRIGGER, 'true')
+#       )
+#     displayName: 'build and (maybe) push core images'
 
   - job: publish_docker_images
     dependsOn:
