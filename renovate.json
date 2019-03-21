@@ -1,15 +1,3 @@
 {
-  "extends": [
-    "config:base"
-  ],
-  "automerge": true,
-  "major": {
-    "automerge": false
-  },
-  "prHourlyLimit": 4,
-  "schedule": [
-    "after 6am",
-    "before 1pm"
-  ],
-  "timezone": "UTC"
+  "enabled": false
 }
