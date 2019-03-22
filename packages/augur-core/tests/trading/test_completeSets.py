@@ -19,7 +19,7 @@ def test_publicBuyCompleteSets(contractsFixture, universe, cash, market):
     assert universe.getOpenInterestInAttoEth() == 0
 
     cost = 10 * market.getNumTicks()
-    print cash.depositEther(sender=tester.k1, value=cost )
+    print cash.faucet(cost, sender=tester.k1)
 
     completeSetsPurchasedLog = {
         "universe": universe.address,
@@ -67,7 +67,7 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
     assert not noShareToken.totalSupply()
 
     cost = 10 * market.getNumTicks()
-    print cash.depositEther(sender=tester.k1, value=cost )
+    print cash.faucet(cost, sender=tester.k1)
     assert universe.getOpenInterestInAttoEth() == 0
     completeSets.publicBuyCompleteSets(market.address, 10, sender = tester.k1)
     assert universe.getOpenInterestInAttoEth() == 10 * market.getNumTicks()
@@ -100,7 +100,7 @@ def test_publicSellCompleteSets_failure(contractsFixture, universe, cash, market
     orders = contractsFixture.contracts['Orders']
 
     cost = 10 * market.getNumTicks()
-    cash.depositEther(sender=tester.k1, value=cost)
+    cash.faucet(cost, sender=tester.k1)
     completeSets.publicBuyCompleteSets(market.address, 10, sender = tester.k1)
 
     # Permissions exceptions

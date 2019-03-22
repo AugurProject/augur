@@ -28,11 +28,11 @@ def test_fill_order_with_tokens(localFixture, zeroX, market, cash, augur):
             s,
             sender = tester.k1)
 
-    assert cash.depositEther(value = 5000)
+    assert cash.faucet(5000)
     assert cash.approve(zeroX.address, 5000)
     assert zeroX.deposit(cash.address, 5000)
 
-    assert cash.depositEther(value = 45000, sender=tester.k1)
+    assert cash.faucet(45000, sender=tester.k1)
     assert cash.approve(zeroX.address, 45000, sender=tester.k1)
     assert zeroX.deposit(cash.address, 45000, sender=tester.k1)
 
@@ -83,7 +83,7 @@ def test_fill_order_with_shares(localFixture, zeroX, market, cash, augur):
     invalidShareToken = localFixture.applySignature('ShareToken', invalidShareAddress)
     completeSets = localFixture.contracts['CompleteSets']
 
-    cash.depositEther(value=fix('20', market.getNumTicks()))
+    cash.faucet(fix('20', market.getNumTicks()))
     assert completeSets.publicBuyCompleteSets(market.address, fix(20))
     assert noShareToken.transfer(tester.a1, 10)
     assert invalidShareToken.transfer(tester.a1, 10)
@@ -140,13 +140,13 @@ def test_maker_sell_shares_for_tokens(localFixture, zeroX, market, cash, augur):
     yesShareToken = localFixture.applySignature('ShareToken', yesShareAddress)
     completeSets = localFixture.contracts['CompleteSets']
 
-    assert cash.depositEther(value=fix('20', market.getNumTicks()))
+    assert cash.faucet(fix('20', market.getNumTicks()))
     assert completeSets.publicBuyCompleteSets(market.address, fix(20))
 
     assert yesShareToken.approve(zeroX.address, 10)
     assert zeroX.deposit(yesShareAddress, 10)
 
-    assert cash.depositEther(value = 5000, sender=tester.k1)
+    assert cash.faucet(5000, sender=tester.k1)
     assert cash.approve(zeroX.address, 5000, sender=tester.k1)
     assert zeroX.deposit(cash.address, 5000, sender=tester.k1)
 
@@ -187,7 +187,7 @@ def test_cancel_order(localFixture, zeroX, market, cash, augur):
     assert zeroX.getUnavailableAmount(orderHash) == cancelAmount
 
 def test_deposit_and_withdraw(localFixture, zeroX, cash):
-    assert cash.depositEther(value = 10)
+    assert cash.faucet(10)
     assert cash.approve(zeroX.address, 10)
     assert zeroX.deposit(cash.address, 9)
 

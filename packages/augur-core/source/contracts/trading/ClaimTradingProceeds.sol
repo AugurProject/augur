@@ -21,11 +21,13 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
 
     IAugur public augur;
     IProfitLoss public profitLoss;
+    ICash public cash;
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
+        cash = ICash(augur.lookup("Cash"));
         return true;
     }
 
@@ -58,16 +60,14 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
     }
 
     function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) private returns (bool) {
-        ICash _denominationToken = _market.getDenominationToken();
-
         if (_shareHolderShare > 0) {
-            require(_denominationToken.transferFrom(address(_market), _shareHolder, _shareHolderShare));
+            require(cash.transferFrom(address(_market), _shareHolder, _shareHolderShare));
         }
         if (_creatorShare > 0) {
             _market.recordMarketCreatorFees(_creatorShare, address(0));
         }
         if (_reporterShare > 0) {
-            require(_denominationToken.transferFrom(address(_market), address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare));
+            require(cash.transferFrom(address(_market), address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare));
         }
         return true;
     }
