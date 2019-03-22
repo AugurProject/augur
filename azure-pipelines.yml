@@ -300,6 +300,7 @@ jobs:
         docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
         docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
         docker images
+        docker push augurproject/augur-build:latest
       condition: |
         and
         (
