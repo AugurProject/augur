@@ -6,7 +6,7 @@ RUN apk update \
   && apk add  --no-cache git bash python make gcc g++
 
 WORKDIR /augur
-ADD ./ .
+COPY . .
 RUN npm_config_devdir=/augur/.node-gpy yarn --cache-folder=/augur/.yarn-cache
 
 RUN yarn build
