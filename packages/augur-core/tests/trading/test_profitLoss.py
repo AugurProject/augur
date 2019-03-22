@@ -297,7 +297,7 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
         creatorCost = longCost if direction == BID else shortCost
         fillerCost = longCost if direction == ASK else shortCost
 
-        assert cash.depositEther(value = creatorCost, sender = tester.k1)
+        assert cash.faucet(creatorCost, sender = tester.k1)
         orderID = createOrder.publicCreateOrder(direction, trade['quantity'], onChainLongPrice, market.address, trade['outcome'], longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = tester.k1)
 
         avgPrice = math.ceil((trade['avgPrice'] - minPrice) * market.getNumTicks() / displayRange)
@@ -312,7 +312,7 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
             "frozenFunds": frozenFunds,
         }
 
-        assert cash.depositEther(value = fillerCost, sender = tester.k2)
+        assert cash.faucet(fillerCost, sender = tester.k2)
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip = 0 if direction == BID else 1):
             fillOrder.publicFillOrder(orderID, trade['quantity'], longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
 

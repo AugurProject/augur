@@ -36,6 +36,7 @@ contract Trade is Initializable, ReentrancyGuard {
     ICreateOrder public createOrder;
     IFillOrder public fillOrder;
     IOrders public orders;
+    ICash public cash;
 
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant DEFAULT_LOOP_LIMIT = 3;
@@ -50,6 +51,7 @@ contract Trade is Initializable, ReentrancyGuard {
         createOrder = ICreateOrder(augur.lookup("CreateOrder"));
         fillOrder = IFillOrder(augur.lookup("FillOrder"));
         orders = IOrders(augur.lookup("Orders"));
+        cash = ICash(augur.lookup("Cash"));
         return true;
     }
 
@@ -172,7 +174,7 @@ contract Trade is Initializable, ReentrancyGuard {
 
         executed[_tradeHash] = true;
 
-        augur.trustedTransfer(_market.getDenominationToken(), _sender, msg.sender, _payment);
+        augur.trustedTransfer(cash, _sender, msg.sender, _payment);
 
         return true;
     }

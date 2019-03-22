@@ -27,7 +27,7 @@ def test_signed_trade(contractsFixture, universe, market, cash, augur):
             s,
             sender=tester.k1)
 
-    assert cash.depositEther(value = 10100)
+    assert cash.faucet(10100)
     assert cash.approve(augur.address, 10100)
 
     with TokenDelta(cash, 100, tester.a1, "User was not paid for executing the transaction"):
@@ -61,7 +61,7 @@ def test_signed_fill(contractsFixture, universe, market, cash, augur):
     tradeHash = trade.getTradeHash(BID, market.address, YES, 10, 1000, tester.a0, False, expirationTimestampInSec, 42, payment)
     v, r, s = createTrade(tradeHash)
 
-    assert cash.depositEther(value = 10100)
+    assert cash.faucet(10100)
     assert cash.approve(augur.address, 10100)
 
     assert trade.executeSignedTrade(
@@ -92,7 +92,7 @@ def test_signed_trade_cancel(contractsFixture, universe, market, cash, augur):
     tradeHash = trade.getTradeHash(BID, market.address, YES, 10, 1000, tester.a0, False, expirationTimestampInSec, 42, payment)
     v, r, s = createTrade(tradeHash)
 
-    assert cash.depositEther(value = 10000)
+    assert cash.faucet(10000)
     assert cash.approve(augur.address, 10000)
 
     # Cancel the order

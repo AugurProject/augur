@@ -22,10 +22,6 @@ contract MaliciousMarket {
         return victimMarket.getNumberOfOutcomes();
     }
 
-    function getDenominationToken() public view returns (ICash) {
-        return victimMarket.getDenominationToken();
-    }
-
     function getUniverse() public view returns (IUniverse) {
         return victimMarket.getUniverse();
     }

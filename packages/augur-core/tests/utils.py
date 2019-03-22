@@ -71,16 +71,12 @@ class BuyWithCash():
 
     def __enter__(self):
         self.originalBalance = self.cash.balanceOf(self.account)
-        self.cash.depositEther(value = self.amount, sender = self.privateKey)
+        self.cash.faucet(self.amount, sender = self.privateKey)
 
     def __exit__(self, *args):
         if args[1]:
             print args
             raise args[1]
-        originalBalance = self.originalBalance
-        newBalance = self.cash.balanceOf(self.account)
-        resultDelta = newBalance - originalBalance
-        assert resultDelta == 0, self.err + " Cash balance changed EXPECTED: 0 ACTUAL: %i, DEPOSITED: %i" % (resultDelta, self.amount)
 
 class EtherDelta():
 
