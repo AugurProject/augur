@@ -51,7 +51,7 @@
     "@types/lodash": "4.14.121",
     "@types/sqlite3": "3.1.5",
     "@types/uuid": "3.4.4",
-    "@types/ws": "3.2.1",
+    "@types/ws": "6.0.1",
     "@types/pouchdb": "6.3.3",
     "@types/web3": "1.0.18",
     "babel-loader": "8.0.5",
