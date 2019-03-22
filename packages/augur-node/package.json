@@ -58,7 +58,7 @@
   },
   "homepage": "https://github.com/AugurProject/augur-node#readme",
   "dependencies": {
-    "async": "2.6.1",
+    "async": "2.6.2",
     "@augurproject/artifacts": "10.0.0-0",
     "augur.js": "10.0.0-0",
     "bignumber.js": "6.0.0",
