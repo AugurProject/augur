@@ -28,10 +28,10 @@ beforeEach(async () => {
 test("Contract :: ReputationToken", async () => {
   expect(contracts.reputationToken).toBe(null);
 
-  await contracts.setReputationToken(false);
+  await contracts.setReputationToken("1");  // "1" -> production network
   expect(contracts.reputationToken).toBeInstanceOf(GenericAugurInterfaces.ReputationToken);
 
-  await contracts.setReputationToken(true);
+  await contracts.setReputationToken("2");  // not-"1" -> test network
   expect(contracts.reputationToken).toBeInstanceOf(GenericAugurInterfaces.TestNetReputationToken);
 
   if (contracts.reputationToken instanceof GenericAugurInterfaces.TestNetReputationToken) {
