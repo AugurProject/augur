@@ -100,7 +100,6 @@ def test_publicCreateOrder_bid2(contractsFixture, cash, market):
     tradeGroupID = longTo32Bytes(42)
 
     marketInitialCash = cash.balanceOf(market.address)
-    creatorInitialETH = contractsFixture.chain.head_state.get_balance(tester.a1)
 
     orderID = None
     shareToken = contractsFixture.getShareToken(market, 0)
@@ -122,7 +121,6 @@ def test_publicCreateOrder_bid2(contractsFixture, cash, market):
     assert orders.getOrderMoneyEscrowed(orderID) == fix(1, 4000)
     assert orders.getOrderSharesEscrowed(orderID) == 0
     assert cash.balanceOf(tester.a1) == 0
-    assert contractsFixture.chain.head_state.get_balance(tester.a1) == creatorInitialETH - long(4000 * 10**18)
     assert cash.balanceOf(market.address) - marketInitialCash == 4000 * 10**18
 
 def test_createOrder_failure(contractsFixture, cash, market):

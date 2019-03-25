@@ -5,6 +5,8 @@ export class Contract extends c.Contract<ethers.utils.BigNumber> {
 }
 export class Augur extends c.Augur<ethers.utils.BigNumber> {
 }
+export class Cash extends c.Cash<ethers.utils.BigNumber> {
+}
 export class ERC820Registry extends c.ERC820Registry<ethers.utils.BigNumber> {
 }
 export class LegacyReputationToken extends c.LegacyReputationToken<ethers.utils.BigNumber> {
@@ -62,8 +64,6 @@ export class ReputationToken extends c.ReputationToken<ethers.utils.BigNumber> {
 export class Universe extends c.Universe<ethers.utils.BigNumber> {
 }
 export class CancelOrder extends c.CancelOrder<ethers.utils.BigNumber> {
-}
-export class Cash extends c.Cash<ethers.utils.BigNumber> {
 }
 export class ClaimTradingProceeds extends c.ClaimTradingProceeds<ethers.utils.BigNumber> {
 }

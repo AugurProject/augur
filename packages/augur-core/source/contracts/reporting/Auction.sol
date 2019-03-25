@@ -130,15 +130,6 @@ contract Auction is Initializable, IAuction {
         uint256 _attoRepCost = _attoEthAmount.mul(_ethPriceInAttoRep) / 10**18;
         reputationToken.trustedAuctionTransfer(msg.sender, address(this), _attoRepCost);
         ethAuctionToken.mintForPurchaser(msg.sender, _attoRepCost);
-
-        // Burn any REP purchased using fee income
-        if (feeBalance > 0) {
-            uint256 _feesUsed = feeBalance.min(_attoEthAmount);
-            uint256 _burnAmount = _attoRepCost.mul(_feesUsed).div(_attoEthAmount);
-            reputationToken.burnForAuction(_burnAmount);
-            feeBalance = feeBalance.sub(_feesUsed);
-        }
-
         return true;
     }
 
@@ -153,12 +144,6 @@ contract Auction is Initializable, IAuction {
         // This will raise an exception if insufficient ETH was sent
         augur.trustedTransfer(cash, msg.sender, address(this), _attoEthCost);
         repAuctionToken.mintForPurchaser(msg.sender, _attoEthCost);
-        return true;
-    }
-
-    function recordFees(uint256 _feeAmount) public returns (bool) {
-        require(augur.isKnownFeeSender(msg.sender));
-        feeBalance = feeBalance.add(_feeAmount);
         return true;
     }
 
@@ -179,7 +164,7 @@ contract Auction is Initializable, IAuction {
 
     function getCurrentAttoRepBalance() public returns (uint256) {
         uint256 _repSalePriceInAttoEth = getRepSalePriceInAttoEth();
-        uint256 _ethSupply = repAuctionToken.totalSupply();
+        uint256 _ethSupply = repAuctionToken.maxSupply();
         uint256 _attoRepSold = _ethSupply.mul(10**18).div(_repSalePriceInAttoEth);
         if (_attoRepSold >= initialAttoRepBalance) {
             return 0;
@@ -189,12 +174,21 @@ contract Auction is Initializable, IAuction {
 
     function getCurrentAttoEthBalance() public returns (uint256) {
         uint256 _ethSalePriceInAttoRep = getEthSalePriceInAttoRep();
-        uint256 _repSupply = ethAuctionToken.totalSupply();
+        uint256 _repSupply = ethAuctionToken.maxSupply();
         uint256 _attoEthSold = _repSupply.mul(10**18).div(_ethSalePriceInAttoRep);
         if (_attoEthSold >= initialAttoEthBalance) {
             return 0;
         }
         return initialAttoEthBalance.sub(_attoEthSold);
+    }
+
+    function auctionOver(IAuctionToken _auctionToken) public returns (bool) {
+        if (_auctionToken == repAuctionToken) {
+            return getCurrentAttoRepBalance() == 0;
+        } else if (_auctionToken == ethAuctionToken) {
+            return getCurrentAttoEthBalance() == 0;
+        }
+        return true;
     }
 
     function getDerivedRepPriceInAttoEth() public view returns (uint256) {
