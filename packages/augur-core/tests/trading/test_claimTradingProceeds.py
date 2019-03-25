@@ -221,3 +221,23 @@ def test_reedem_failure(kitchenSinkFixture, cash, market):
 
     # validate that everything else is OK
     assert claimTradingProceeds.claimTradingProceeds(market.address, tester.a1)
+
+def test_redeem_shares_in_multiple_markets(kitchenSinkFixture, universe, cash, market, scalarMarket):
+    claimTradingProceeds = kitchenSinkFixture.contracts['ClaimTradingProceeds']
+
+    # Get scalar LONG shares with a1
+    expectedValue = 1 * scalarMarket.getNumTicks()
+    expectedSettlementFees = expectedValue * 0.02
+    expectedPayout = long(expectedValue - expectedSettlementFees) * 3 / 4
+    acquireLongShares(kitchenSinkFixture, cash, scalarMarket, YES, 1, claimTradingProceeds.address, sender = tester.k1)
+    finalizeMarket(kitchenSinkFixture, scalarMarket, [0, 10**5, 3*10**5])
+
+    # get YES shares with a1
+    expectedValue = 1 * market.getNumTicks()
+    expectedSettlementFees = expectedValue * 0.02
+    expectedPayout += long(expectedValue - expectedSettlementFees)
+    acquireLongShares(kitchenSinkFixture, cash, market, YES, 1, claimTradingProceeds.address, sender = tester.k1)
+    finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**4])
+
+    with TokenDelta(cash, expectedPayout, tester.a1, "Claiming multiple markets did not give expected payout"):
+        assert claimTradingProceeds.claimMarketsProceeds([market.address, scalarMarket.address], tester.a1)

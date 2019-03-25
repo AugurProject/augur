@@ -6666,6 +6666,19 @@ export class ClaimTradingProceeds<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
+	public claimMarketsProceeds = async (markets: Array<string>, shareHolder: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_markets","type":"address[]"},{"name":"_shareHolder","type":"address"}],"name":"claimMarketsProceeds","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [markets, shareHolder], 'claimMarketsProceeds', options.sender)
+	}
+
+	public claimMarketsProceeds_ = async (markets: Array<string>, shareHolder: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_markets","type":"address[]"},{"name":"_shareHolder","type":"address"}],"name":"claimMarketsProceeds","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [markets, shareHolder], options.sender)
+		return <boolean>result[0]
+	}
+
 	public getInitialized_ = async (options?: { sender?: string }): Promise<boolean> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getInitialized","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
