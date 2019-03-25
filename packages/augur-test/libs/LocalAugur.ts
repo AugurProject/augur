@@ -9,6 +9,7 @@ import { ContractCompiler } from "@augurproject/core/source/libraries/ContractCo
 import { EthersFastSubmitWallet } from "@augurproject/core/source/libraries/EthersFastSubmitWallet";
 import { ethers } from "ethers";
 import { CompilerOutput } from "solc";
+import { ContractAddresses } from "@augurproject/artifacts";
 
 export type AccountList = [{
       secretKey: string;
@@ -42,7 +43,7 @@ interface UsefulContractObjects {
   signer: EthersFastSubmitWallet;
   dependencies: ContractDependenciesEthers;
   compiledContracts: CompilerOutput;
-  addresses: any;
+  addresses: ContractAddresses;
 }
 export async function compileAndDeployToGanache(accounts: AccountList): Promise<UsefulContractObjects> {
   const ganacheProvider = new ethers.providers.Web3Provider(ganache.provider({
