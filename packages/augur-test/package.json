@@ -1,0 +1,47 @@
+{
+  "name": "@augurproject/test",
+  "version": "1.0.0-0",
+  "description": "Augur Test",
+  "author": "The Augur Developers <team@augur.net>",
+  "license": "MIT",
+  "directories": {
+    "tests": "tests"
+  },
+  "scripts": {
+    "version": "yarn rebuild",
+    "lint": "tslint -c tslint.json -p . ./tests/*.ts ./tests/**/*.ts ./tests/**/**/*.ts ./tests/**/**/**/*.ts",
+    "build": "tsc -b",
+    "watch": "tsc -w",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
+    "prepare": "tsc -b",
+    "clean": "echo delete database",
+    "rebuild": "yarn clean && yarn build",
+    "prepush": "yarn lint",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AugurProject/augur.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AugurProject/augur/issues"
+  },
+  "homepage": "https://github.com/AugurProject/augur#readme",
+  "dependencies": {
+    "@augurproject/api": "1.0.0-0",
+    "@augurproject/artifacts": "10.0.0-0",
+    "@augurproject/core": "2.0.0-0",
+    "@augurproject/state": "1.0.0-0",
+    "@augurproject/ethersjs-provider": "1.0.0-0",
+    "ganache-core": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/jest": "24.0.4",
+    "@types/node": "10.12.29",
+    "jest": "22.4.4",
+    "pouchdb-adapter-memory": "7.0.0",
+    "ts-jest": "23.10.5",
+    "ts-node": "7.0.1",
+    "tsconfig-paths": "3.7.0"
+  }
+}
