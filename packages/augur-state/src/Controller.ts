@@ -15,8 +15,8 @@ interface SyncableMarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Co
 }
 
 export class Controller<TBigNumber> {
-  public readonly FTS: FlexSearch;
   private dbController: DB<TBigNumber>;
+  private FTS: FlexSearch;
 
   public constructor(
     private augur: Augur<TBigNumber>,
@@ -36,8 +36,8 @@ export class Controller<TBigNumber> {
           "title",
           "description",
           "tags",
-        ],
-      },
+        ]
+      }
     });
   }
 
@@ -51,12 +51,12 @@ export class Controller<TBigNumber> {
         this.augur.genericEventNames,
         this.augur.userSpecificEvents,
         this.pouchDBFactory,
-        this.blockAndLogStreamerListener,
+        this.blockAndLogStreamerListener
       );
       await this.dbController.sync(
         this.augur,
         settings.chunkSize,
-        settings.blockstreamDelay,
+        settings.blockstreamDelay
       );
 
       this.blockAndLogStreamerListener.listenForBlockRemoved(this.dbController.rollback.bind(this.dbController));
@@ -82,11 +82,11 @@ export class Controller<TBigNumber> {
             if (info && info.tags && info.longDescription) {
               this.FTS.add({
                 id: row.id,
-                title: description,
+                Title: description,
                 description: info.longDescription,
                 tags: info.tags.toString(), // convert to comma separated so it is searchable
                 start: new Date(),
-                end: new Date(),
+                end: new Date()
               });
             }
           }

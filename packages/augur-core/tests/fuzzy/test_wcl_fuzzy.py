@@ -29,7 +29,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
         fillOrder = fixture.contracts['FillOrder']
 
         ethRequired = amount * numTicks
-        fixture.contracts['Cash'].depositEther(sender=sender, value = ethRequired)
+        fixture.contracts['Cash'].faucet(ethRequired, sender=sender)
         assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
         for otherOutcome in range(0, market.getNumberOfOutcomes()):
             if otherOutcome == outcome: continue
@@ -45,7 +45,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
         fillOrder = fixture.contracts['FillOrder']
 
         ethRequired = amount * numTicks
-        fixture.contracts['Cash'].depositEther(sender=sender, value = ethRequired)
+        fixture.contracts['Cash'].faucet(ethRequired, sender=sender)
         assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
         assert shareToken.transfer(1, amount, sender = sender)
         for otherOutcome in range(0, market.getNumberOfOutcomes()):
@@ -68,26 +68,15 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     creatorKey = tester.k1
     fillerKey = tester.k2
 
-    # Set creator/filler balances
-    creatorBalance = fixture.chain.head_state.get_balance(creatorAddress)
-    fillerBalance = fixture.chain.head_state.get_balance(fillerAddress)
-
     # Acquire shares for creator
     creatorEthRequiredLong = 0 if creatorLongShares == 0 else creatorLongShares * numTicks
     creatorEthRequiredShort = 0 if creatorShortShares == 0 else creatorShortShares * numTicks
     acquireLongShares(orderOutcome, creatorLongShares, createOrder.address, sender = creatorKey)
     acquireShortShareSet(orderOutcome, creatorShortShares, createOrder.address, sender = creatorKey)
-    assert fixture.chain.head_state.get_balance(creatorAddress) == creatorBalance - creatorEthRequiredLong - creatorEthRequiredShort
-    assert fixture.chain.head_state.get_balance(fillerAddress) == fillerBalance
-
-    creatorBalance = fixture.chain.head_state.get_balance(creatorAddress)
-    fillerBalance = fixture.chain.head_state.get_balance(fillerAddress)
 
     # Create order
-    fixture.contracts['Cash'].depositEther(sender=creatorKey, value = creatorTokens)
+    fixture.contracts['Cash'].faucet(creatorTokens, sender=creatorKey)
     orderId = createOrder.publicCreateOrder(orderType, orderSize, orderPrice, market.address, orderOutcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = creatorKey)
-    assert fixture.chain.head_state.get_balance(creatorAddress) == creatorBalance - creatorTokens
-    assert fixture.chain.head_state.get_balance(fillerAddress) == fillerBalance
 
     creatorBalance = fixture.chain.head_state.get_balance(creatorAddress)
     fillerBalance = fixture.chain.head_state.get_balance(fillerAddress)
@@ -104,21 +93,14 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     fillerEthRequiredShort = 0 if fillerShortShares == 0 else fillerShortShares * numTicks
     acquireLongShares(orderOutcome, fillerLongShares, fillOrder.address, sender = fillerKey)
     acquireShortShareSet(orderOutcome, fillerShortShares, fillOrder.address, sender = fillerKey)
-    assert fixture.chain.head_state.get_balance(creatorAddress) == creatorBalance
-    assert fixture.chain.head_state.get_balance(fillerAddress) == fillerBalance - fillerEthRequiredLong - fillerEthRequiredShort
-
-    creatorBalance = fixture.chain.head_state.get_balance(creatorAddress)
-    fillerBalance = fixture.chain.head_state.get_balance(fillerAddress)
 
     # Fill order
-    fixture.contracts['Cash'].depositEther(sender=fillerKey, value = fillerTokens)
+    fixture.contracts['Cash'].faucet(fillerTokens, sender=fillerKey)
     remaining = fillOrder.publicFillOrder(orderId, orderSize, longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = fillerKey)
     assert not remaining
 
     # Assert final state
-    assert fixture.chain.head_state.get_balance(creatorAddress) == creatorBalance
     assert fixture.contracts['Cash'].balanceOf(creatorAddress) == expectedMakerTokens
-    assert fixture.chain.head_state.get_balance(fillerAddress) == fillerBalance - fillerTokens
     assert fixture.contracts['Cash'].balanceOf(fillerAddress) == expectedFillerTokens
     for outcome in range(0, market.getNumberOfOutcomes()):
         shareToken = fixture.applySignature('ShareToken', market.getShareToken(outcome))

@@ -41,6 +41,7 @@
   "homepage": "https://github.com/augurproject/augur#readme",
   "dependencies": {
     "@augurproject/core": "2.0.0-0",
+    "@augurproject/artifacts": "10.0.0-0",
     "blockstream-adapters":"1.0.0-0",
     "options-parser": "0.4.0",
     "ethereumjs-blockstream": "7.0.0",

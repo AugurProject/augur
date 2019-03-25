@@ -57,7 +57,6 @@ def test_market_creation(localFixture, mockUniverse, mockDisputeWindow, mockCash
     assert market.getNumberOfOutcomes() == 6
     assert market.getEndTime() == endTime
     assert market.getNumTicks() == numTicks
-    assert market.getDenominationToken() == mockCash.address
     assert market.getMarketCreatorSettlementFeeDivisor() == oneEther / 16
     assert mockShareTokenFactory.getCreateShareTokenCounter() == 6
     assert mockShareTokenFactory.getCreateShareToken(0) == market.getShareToken(0)

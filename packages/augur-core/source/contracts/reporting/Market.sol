@@ -318,9 +318,7 @@ contract Market is Initializable, Ownable, IMarket {
                 withdrawAffiliateFees(_affiliateAddress);
             }
         } else {
-            IAuction _auction = universe.getAuction();
-            cash.transfer(address(universe.getAuction()), marketCreatorFeesAttoEth);
-            _auction.recordFees(marketCreatorFeesAttoEth);
+            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), marketCreatorFeesAttoEth);
         }
         marketCreatorFeesAttoEth = 0;
         return true;
@@ -535,10 +533,6 @@ contract Market is Initializable, Ownable, IMarket {
 
     function getNumTicks() public view returns (uint256) {
         return numTicks;
-    }
-
-    function getDenominationToken() public view returns (ICash) {
-        return cash;
     }
 
     function getShareToken(uint256 _outcome) public view returns (IShareToken) {

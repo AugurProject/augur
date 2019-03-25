@@ -17,8 +17,8 @@ export class Contracts<TBigNumber> {
     this.cash = new GenericAugurInterfaces.Cash<TBigNumber>(dependencies, addresses.Cash);
   }
 
-  public async setReputationToken(testnet: boolean = false) {
-    const Class = testnet ? GenericAugurInterfaces.TestNetReputationToken : GenericAugurInterfaces.ReputationToken;
+  public async setReputationToken(networkId: string) {
+    const Class = networkId === "1" ? GenericAugurInterfaces.ReputationToken : GenericAugurInterfaces.TestNetReputationToken;
     const address = await this.universe.getReputationToken_();
     this.reputationToken = new Class<TBigNumber>(this.dependencies, address);
   }

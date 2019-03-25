@@ -26,7 +26,6 @@ contract IMarket is IOwnable {
     function getDisputeWindow() public view returns (IDisputeWindow);
     function getNumberOfOutcomes() public view returns (uint256);
     function getNumTicks() public view returns (uint256);
-    function getDenominationToken() public view returns (ICash);
     function getShareToken(uint256 _outcome)  public view returns (IShareToken);
     function getMarketCreatorSettlementFeeDivisor() public view returns (uint256);
     function getForkingMarket() public view returns (IMarket _market);

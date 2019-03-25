@@ -66,8 +66,13 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.configuration.isProduction) {
             console.log(`Registering Legacy Rep Contract at ${this.configuration.legacyRepAddress}`);
             await this.augur!.registerContract(stringTo32ByteHex("LegacyReputationToken"), this.configuration.legacyRepAddress);
-            const contract = await this.contracts.get("LegacyReputationToken");
+            let contract = await this.contracts.get("LegacyReputationToken");
             contract.address = this.configuration.legacyRepAddress;
+
+            console.log(`Registering Cash Contract at ${this.configuration.cashAddress}`);
+            await this.augur!.registerContract(stringTo32ByteHex("Cash"), this.configuration.cashAddress);
+            contract = await this.contracts.get("Cash");
+            contract.address = this.configuration.cashAddress;
         }
 
         await this.initializeAllContracts();
@@ -80,6 +85,9 @@ Deploying to: ${networkConfiguration.networkName}
             if (!this.configuration.isProduction) {
                 console.log("Initializing legacy REP");
                 await this.initializeLegacyRep();
+
+                console.log("Initializing Cash");
+                await this.initializeCash();
             }
 
             this.universe = await this.createGenesisUniverse();
@@ -105,6 +113,7 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
+        mapping['Cash'] = this.contracts.get('Cash').address!;
         for (let contract of this.contracts) {
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'TimeControlled') continue;
@@ -175,6 +184,7 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract : this.contracts.get('TestNetReputationTokenFactory');
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
         if (this.configuration.isProduction && contractName === 'LegacyReputationToken') return;
+        if (this.configuration.isProduction && contractName === 'Cash') return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
         if (['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeOverloadToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) return;
         console.log(`Uploading new version of contract for ${contractName}`);
@@ -252,6 +262,17 @@ Deploying to: ${networkConfiguration.networkName}
         }
     }
 
+    public async initializeCash(): Promise<void> {
+        const cash = new LegacyReputationToken(this.dependencies, this.getContractAddress('Cash'));
+        await cash.initialize(this.augur!.address);
+        await cash.faucet(new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(18)).mul(new ethers.utils.BigNumber(1000)));
+        const defaultAddress = await this.signer.getAddress();
+        const legacyBalance = await cash.balanceOf_(defaultAddress);
+        if (!legacyBalance || legacyBalance == new ethers.utils.BigNumber(0)) {
+            throw new Error("Faucet call to Legacy REP failed");
+        }
+    }
+
     private async resetTimeControlled(): Promise<void> {
       console.log('Resetting Timestamp for false time...');
       const time = new TimeControlled(this.dependencies, this.getContractAddress("TimeControlled"));
@@ -300,6 +321,7 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
+        mapping['Cash'] = this.contracts.get('Cash').address!;
         for (let contract of this.contracts) {
             if (!contract.relativeFilePath.startsWith('trading/')) continue;
             if (/^I[A-Z].*/.test(contract.contractName)) continue;

@@ -77,15 +77,11 @@ def test_create_ask_with_shares_fill_with_cash(contractsFixture, cash, market):
     assert noShareToken.balanceOf(tester.a1) == fix(12)
 
     # 3. fill ASK order for YES with cash
-    initialMakerETH = contractsFixture.chain.head_state.get_balance(tester.a1)
-    initialFillerETH = contractsFixture.chain.head_state.get_balance(tester.a2)
     with BuyWithCash(cash, fix('12', '6000'), tester.k2, "filling order"):
         amountRemaining = fillOrder.publicFillOrder(askOrderID, fix(12), longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
     assert amountRemaining == 0
     assert cash.balanceOf(tester.a1) == fix('12', '6000')
     assert cash.balanceOf(tester.a2) == 0
-    assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH
-    assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH - fix('12', '6000')
     assert yesShareToken.balanceOf(tester.a1) == 0
     assert yesShareToken.balanceOf(tester.a2) == fix(12)
     assert noShareToken.balanceOf(tester.a1) == fix(12)
@@ -189,8 +185,6 @@ def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market,
     assert noShareToken.balanceOf(tester.a1) == 0
 
     # 3. fill BID order for YES with shares of YES
-    initialMakerETH = contractsFixture.chain.head_state.get_balance(tester.a1)
-    initialFillerETH = contractsFixture.chain.head_state.get_balance(tester.a2)
     assert yesShareToken.approve(fillOrder.address, fix(12), sender = tester.k2)
 
     orderFilledLog = {
@@ -207,8 +201,6 @@ def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market,
     fillerPayment = fix('12', '6000') - long(fillerFee)
     assert cash.balanceOf(tester.a1) == long(creatorPayment)
     assert cash.balanceOf(tester.a2) == long(fillerPayment)
-    assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH
-    assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH
     assert yesShareToken.balanceOf(tester.a1) == fix(12)
     assert yesShareToken.balanceOf(tester.a2) == 0
     assert noShareToken.balanceOf(tester.a1) == 0
@@ -238,15 +230,11 @@ def test_create_bid_with_shares_fill_with_cash(contractsFixture, cash, market):
     assert noShareToken.balanceOf(tester.a1) == 0
 
     # 3. fill BID order for YES with cash
-    initialMakerETH = contractsFixture.chain.head_state.get_balance(tester.a1)
-    initialFillerETH = contractsFixture.chain.head_state.get_balance(tester.a2)
     with BuyWithCash(cash, fix('12', '4000'), tester.k2, "fill order"):
         leftoverInOrder = fillOrder.publicFillOrder(orderID, fix(12), longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
     assert leftoverInOrder == 0
     assert cash.balanceOf(tester.a1) == fix('12', '4000')
     assert cash.balanceOf(tester.a2) == 0
-    assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH
-    assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH - fix('12', '4000')
     assert yesShareToken.balanceOf(tester.a1) == fix(12)
     assert yesShareToken.balanceOf(tester.a2) == 0
     assert noShareToken.balanceOf(tester.a1) == 0
@@ -391,7 +379,6 @@ def test_parametrized(type, outcome, displayPrice, orderSize, creatorYesShares, 
 
     def acquireShares(outcome, amount, approvalAddress, sender):
         if amount == 0: return
-        # assert cash.depositEther(value = amount * market.getNumTicks())
         with BuyWithCash(cash, amount * market.getNumTicks(), sender, "The sender didn't get cost deducted for complete set sale"):
             assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
         if outcome == YES:
@@ -410,18 +397,14 @@ def test_parametrized(type, outcome, displayPrice, orderSize, creatorYesShares, 
     # fill order
     acquireShares(YES, fillerYesShares, fillOrder.address, sender = fillerKey)
     acquireShares(NO, fillerNoShares, fillOrder.address, sender = fillerKey)
-    initialMakerETH = fixture.chain.head_state.get_balance(creatorAddress)
-    initialFillerETH = fixture.chain.head_state.get_balance(fillerAddress)
     with raises(TransactionFailed) if expectTakeRaise else placeholder_context():
-        # Cannot use BuyWithCash here, the test might deposit 0 ETH, but acquire large amounts ETH via selling existing shares
-        cash.depositEther(sender=fillerKey, value=fillerCost)
+        # Cannot use BuyWithCash here, the test might deposit 0 DAI, but acquire large amounts DAI via selling existing shares
+        cash.faucet(fillerCost, sender=fillerKey)
         fillOrder.publicFillOrder(orderID, fillSize, longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender=fillerKey)
 
     # assert final state
     assert cash.balanceOf(creatorAddress) == expectedMakerPayout
     assert cash.balanceOf(fillerAddress) == expectedFillerPayout
-    assert fixture.chain.head_state.get_balance(creatorAddress) == initialMakerETH
-    assert fixture.chain.head_state.get_balance(fillerAddress) == initialFillerETH - fillerCost
     assert yesShareToken.balanceOf(creatorAddress) == expectedMakerYesShares
     assert yesShareToken.balanceOf(fillerAddress) == expectedFillerYesShares
     assert noShareToken.balanceOf(creatorAddress) == expectedMakerNoShares
