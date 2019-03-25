@@ -35,14 +35,14 @@ contract Universe is ITyped, IUniverse {
     mapping(uint256 => IDisputeWindow) private disputeWindows;
     mapping(address => bool) private markets;
     mapping(bytes32 => IUniverse) private childUniverses;
-    uint256 private openInterestInAttoEth;
+    uint256 private openInterestInAttoCash;
     IMarketFactory public marketFactory;
     IDisputeWindowFactory public disputeWindowFactory;
 
-    mapping (address => uint256) private validityBondInAttoEth;
+    mapping (address => uint256) private validityBondInAttoCash;
     mapping (address => uint256) private designatedReportStakeInAttoRep;
     mapping (address => uint256) private designatedReportNoShowBondInAttoRep;
-    uint256 public previousValidityBondInAttoEth;
+    uint256 public previousValidityBondInAttoCash;
     uint256 public previousDesignatedReportStakeInAttoRep;
     uint256 public previousDesignatedReportNoShowBondInAttoRep;
 
@@ -62,7 +62,7 @@ contract Universe is ITyped, IUniverse {
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         completeSets = augur.lookup("CompleteSets");
         updateForkValues();
-        previousValidityBondInAttoEth = Reporting.getDefaultValidityBond();
+        previousValidityBondInAttoCash = Reporting.getDefaultValidityBond();
         previousDesignatedReportStakeInAttoRep = initialReportMinValue;
         previousDesignatedReportNoShowBondInAttoRep = initialReportMinValue;
     }
@@ -286,57 +286,57 @@ contract Universe is ITyped, IUniverse {
 
     function decrementOpenInterest(uint256 _amount) public returns (bool) {
         require(msg.sender == completeSets);
-        openInterestInAttoEth = openInterestInAttoEth.sub(_amount);
+        openInterestInAttoCash = openInterestInAttoCash.sub(_amount);
         return true;
     }
 
     function decrementOpenInterestFromMarket(IMarket _market) public returns (bool) {
         require(isContainerForMarket(IMarket(msg.sender)));
         uint256 _amount = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
-        openInterestInAttoEth = openInterestInAttoEth.sub(_amount);
+        openInterestInAttoCash = openInterestInAttoCash.sub(_amount);
         return true;
     }
 
     function incrementOpenInterest(uint256 _amount) public returns (bool) {
         require(msg.sender == completeSets);
-        openInterestInAttoEth = openInterestInAttoEth.add(_amount);
+        openInterestInAttoCash = openInterestInAttoCash.add(_amount);
         return true;
     }
 
     function incrementOpenInterestFromMarket(IMarket _market) public returns (bool) {
         require(isContainerForMarket(IMarket(msg.sender)));
         uint256 _amount = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
-        openInterestInAttoEth = openInterestInAttoEth.add(_amount);
+        openInterestInAttoCash = openInterestInAttoCash.add(_amount);
         return true;
     }
 
-    function getOpenInterestInAttoEth() public view returns (uint256) {
-        return openInterestInAttoEth;
+    function getOpenInterestInAttoCash() public view returns (uint256) {
+        return openInterestInAttoCash;
     }
 
-    function getRepMarketCapInAttoEth() public view returns (uint256) {
-        uint256 _attoEthPerRep = auction.getRepPriceInAttoEth();
-        uint256 _repMarketCapInAttoEth = getReputationToken().totalSupply().mul(_attoEthPerRep).div(10 ** 18);
-        return _repMarketCapInAttoEth;
+    function getRepMarketCapInAttoCash() public view returns (uint256) {
+        uint256 _attoCashPerRep = auction.getRepPriceInAttoCash();
+        uint256 _repMarketCapInAttoCash = getReputationToken().totalSupply().mul(_attoCashPerRep).div(10 ** 18);
+        return _repMarketCapInAttoCash;
     }
 
-    function getTargetRepMarketCapInAttoEth() public view returns (uint256) {
-        return getOpenInterestInAttoEth().mul(Reporting.getTargetRepMarketCapMultiplier()).div(Reporting.getTargetRepMarketCapDivisor());
+    function getTargetRepMarketCapInAttoCash() public view returns (uint256) {
+        return getOpenInterestInAttoCash().mul(Reporting.getTargetRepMarketCapMultiplier()).div(Reporting.getTargetRepMarketCapDivisor());
     }
 
     function getOrCacheValidityBond() public returns (uint256) {
         IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow(false);
         IDisputeWindow  _previousDisputeWindow = getOrCreatePreviousPreviousDisputeWindow(false);
-        uint256 _currentValidityBondInAttoEth = validityBondInAttoEth[address(_disputeWindow)];
-        if (_currentValidityBondInAttoEth != 0) {
-            return _currentValidityBondInAttoEth;
+        uint256 _currentValidityBondInAttoCash = validityBondInAttoCash[address(_disputeWindow)];
+        if (_currentValidityBondInAttoCash != 0) {
+            return _currentValidityBondInAttoCash;
         }
         uint256 _totalMarketsInPreviousWindow = _previousDisputeWindow.getNumMarkets();
         uint256 _invalidMarketsInPreviousWindow = _previousDisputeWindow.getNumInvalidMarkets();
-        _currentValidityBondInAttoEth = calculateFloatingValue(_invalidMarketsInPreviousWindow, _totalMarketsInPreviousWindow, Reporting.getTargetInvalidMarketsDivisor(), previousValidityBondInAttoEth, Reporting.getValidityBondFloor());
-        validityBondInAttoEth[address(_disputeWindow)] = _currentValidityBondInAttoEth;
-        previousValidityBondInAttoEth = _currentValidityBondInAttoEth;
-        return _currentValidityBondInAttoEth;
+        _currentValidityBondInAttoCash = calculateFloatingValue(_invalidMarketsInPreviousWindow, _totalMarketsInPreviousWindow, Reporting.getTargetInvalidMarketsDivisor(), previousValidityBondInAttoCash, Reporting.getValidityBondFloor());
+        validityBondInAttoCash[address(_disputeWindow)] = _currentValidityBondInAttoCash;
+        previousValidityBondInAttoCash = _currentValidityBondInAttoCash;
+        return _currentValidityBondInAttoCash;
     }
 
     function getOrCacheDesignatedReportStake() public returns (uint256) {
@@ -412,15 +412,15 @@ contract Universe is ITyped, IUniverse {
         if (_currentFeeDivisor != 0) {
             return _currentFeeDivisor;
         }
-        uint256 _repMarketCapInAttoEth = getRepMarketCapInAttoEth();
-        uint256 _targetRepMarketCapInAttoEth = getTargetRepMarketCapInAttoEth();
+        uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
+        uint256 _targetRepMarketCapInAttoCash = getTargetRepMarketCapInAttoCash();
         uint256 _previousFeeDivisor = shareSettlementFeeDivisor[address(_previousDisputeWindow)];
         if (_previousFeeDivisor == 0) {
             _currentFeeDivisor = Reporting.getDefaultReportingFeeDivisor();
-        } else if (_targetRepMarketCapInAttoEth == 0) {
+        } else if (_targetRepMarketCapInAttoCash == 0) {
             _currentFeeDivisor = Reporting.getDefaultReportingFeeDivisor();
         } else {
-            _currentFeeDivisor = _previousFeeDivisor.mul(_repMarketCapInAttoEth).div(_targetRepMarketCapInAttoEth);
+            _currentFeeDivisor = _previousFeeDivisor.mul(_repMarketCapInAttoCash).div(_targetRepMarketCapInAttoCash);
         }
 
         _currentFeeDivisor = _currentFeeDivisor
@@ -439,32 +439,32 @@ contract Universe is ITyped, IUniverse {
         return getOrCacheDesignatedReportNoShowBond().max(getOrCacheDesignatedReportStake());
     }
 
-    function createYesNoMarket(uint256 _endTime, uint256 _feePerEthInWei, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
+    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
         require(bytes(_description).length > 0);
-        _newMarket = createMarketInternal(_endTime, _feePerEthInWei, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, 10000);
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, 10000);
         augur.logMarketCreated(_topic, _description, _extraInfo, this, _newMarket, msg.sender, 0, 1 ether, IMarket.MarketType.YES_NO);
         return _newMarket;
     }
 
-    function createCategoricalMarket(uint256 _endTime, uint256 _feePerEthInWei, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
+    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
         require(bytes(_description).length > 0);
-        _newMarket = createMarketInternal(_endTime, _feePerEthInWei, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 10000);
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 10000);
         augur.logMarketCreated(_topic, _description, _extraInfo, this, _newMarket, msg.sender, _outcomes, 0, 1 ether, IMarket.MarketType.CATEGORICAL);
         return _newMarket;
     }
 
-    function createScalarMarket(uint256 _endTime, uint256 _feePerEthInWei, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256 _minPrice, int256 _maxPrice, uint256 _numTicks, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
+    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256 _minPrice, int256 _maxPrice, uint256 _numTicks, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
         require(bytes(_description).length > 0);
         require(_minPrice < _maxPrice);
         require(_numTicks.isMultipleOf(2));
-        _newMarket = createMarketInternal(_endTime, _feePerEthInWei, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, _numTicks);
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, _numTicks);
         augur.logMarketCreated(_topic, _description, _extraInfo, this, _newMarket, msg.sender, _minPrice, _maxPrice, IMarket.MarketType.SCALAR);
         return _newMarket;
     }
 
-    function createMarketInternal(uint256 _endTime, uint256 _feePerEthInWei, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) private returns (IMarket _newMarket) {
+    function createMarketInternal(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) private returns (IMarket _newMarket) {
         getReputationToken().trustedUniverseTransfer(_sender, address(marketFactory), getOrCacheMarketRepBond());
-        _newMarket = marketFactory.createMarket(augur, this, _endTime, _feePerEthInWei, _affiliateFeeDivisor, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
+        _newMarket = marketFactory.createMarket(augur, this, _endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
         markets[address(_newMarket)] = true;
         return _newMarket;
     }

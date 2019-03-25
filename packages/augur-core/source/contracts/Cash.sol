@@ -8,7 +8,7 @@ import 'ROOT/libraries/token/VariableSupplyToken.sol';
 
 /**
  * @title Cash
- * @dev Test contract for DAI
+ * @dev Test contract for CASH
  */
 contract Cash is ITyped, VariableSupplyToken, ICash {
 

@@ -26,7 +26,7 @@ contract Market is Initializable, Ownable, IMarket {
     using SafeMathInt256 for int256;
 
     // Constants
-    uint256 private constant MAX_FEE_PER_ETH_IN_ATTOETH = 15 * 10**16; // 15%
+    uint256 private constant MAX_FEE_PER_CASH_IN_ATTOCASH = 15 * 10**16; // 15%
     uint256 private constant APPROVAL_AMOUNT = 2 ** 256 - 1;
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant MIN_OUTCOMES = 3; // Includes INVALID
@@ -46,28 +46,28 @@ contract Market is Initializable, Ownable, IMarket {
     uint256 private endTime;
     uint256 private numOutcomes;
     bytes32 private winningPayoutDistributionHash;
-    uint256 private validityBondAttoEth;
+    uint256 private validityBondAttoCash;
     uint256 private finalizationTime;
     uint256 private repBond;
     bool private disputePacingOn;
     address private repBondOwner;
-    uint256 public marketCreatorFeesAttoEth;
+    uint256 public marketCreatorFeesAttoCash;
     IDisputeCrowdsourcer public preemptiveDisputeCrowdsourcer;
 
     // Collections
     IReportingParticipant[] public participants;
     IMap public crowdsourcers;
     IShareToken[] private shareTokens;
-    mapping (address => uint256) public affiliateFeesAttoEth;
+    mapping (address => uint256) public affiliateFeesAttoCash;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized returns (bool _success) {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized returns (bool _success) {
         endInitialization();
         augur = _augur;
         _numOutcomes += 1; // The INVALID outcome is always first
         require(MIN_OUTCOMES <= _numOutcomes && _numOutcomes <= MAX_OUTCOMES);
         require(_designatedReporterAddress != NULL_ADDRESS);
         require((_numTicks >= _numOutcomes));
-        require(_feePerEthInAttoEth <= MAX_FEE_PER_ETH_IN_ATTOETH);
+        require(_feePerCashInAttoCash <= MAX_FEE_PER_CASH_IN_ATTOCASH);
         require(_creator != NULL_ADDRESS);
         uint256 _timestamp = augur.getTimestamp();
         require(_timestamp < _endTime);
@@ -81,7 +81,7 @@ contract Market is Initializable, Ownable, IMarket {
         endTime = _endTime;
         numOutcomes = _numOutcomes;
         numTicks = _numTicks;
-        feeDivisor = _feePerEthInAttoEth == 0 ? 0 : 1 ether / _feePerEthInAttoEth;
+        feeDivisor = _feePerCashInAttoCash == 0 ? 0 : 1 ether / _feePerCashInAttoCash;
         affiliateFeeDivisor = _affiliateFeeDivisor;
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
         participants.push(_initialReporterFactory.createInitialReporter(augur, this, _designatedReporterAddress));
@@ -97,14 +97,14 @@ contract Market is Initializable, Ownable, IMarket {
     function assessFees() private returns (bool) {
         repBond = universe.getOrCacheMarketRepBond();
         require(getReputationToken().balanceOf(address(this)) >= repBond);
-        validityBondAttoEth = cash.balanceOf(address(this));
-        require(validityBondAttoEth >= universe.getOrCacheValidityBond());
+        validityBondAttoCash = cash.balanceOf(address(this));
+        require(validityBondAttoCash >= universe.getOrCacheValidityBond());
         return true;
     }
 
-    function increaseValidityBond(uint256 _attoETH) public returns (bool) {
-        cash.transferFrom(msg.sender, address(this), _attoETH);
-        validityBondAttoEth = validityBondAttoEth.add(_attoETH);
+    function increaseValidityBond(uint256 _attoCASH) public returns (bool) {
+        cash.transferFrom(msg.sender, address(this), _attoCASH);
+        validityBondAttoCash = validityBondAttoCash.add(_attoCASH);
         return true;
     }
 
@@ -296,10 +296,10 @@ contract Market is Initializable, Ownable, IMarket {
         require(augur.isKnownFeeSender(msg.sender));
         if (_affiliateAddress != NULL_ADDRESS && affiliateFeeDivisor != 0) {
             uint256 _affiliateFees = _marketCreatorFees / affiliateFeeDivisor;
-            affiliateFeesAttoEth[_affiliateAddress] = _affiliateFees;
+            affiliateFeesAttoCash[_affiliateAddress] = _affiliateFees;
             _marketCreatorFees = _marketCreatorFees.sub(_affiliateFees);
         }
-        marketCreatorFeesAttoEth = marketCreatorFeesAttoEth.add(_marketCreatorFees);
+        marketCreatorFeesAttoCash = marketCreatorFeesAttoCash.add(_marketCreatorFees);
         if (isFinalized()) {
             distributeMarketCreatorFees(_affiliateAddress);
         }
@@ -307,29 +307,29 @@ contract Market is Initializable, Ownable, IMarket {
 
     function distributeValidityBondAndMarketCreatorFees() private returns (bool) {
         // If the market resolved to invalid the bond gets sent to the auction. Otherwise it gets returned to the market creator.
-        marketCreatorFeesAttoEth = validityBondAttoEth.add(marketCreatorFeesAttoEth);
+        marketCreatorFeesAttoCash = validityBondAttoCash.add(marketCreatorFeesAttoCash);
         return distributeMarketCreatorFees(NULL_ADDRESS);
     }
 
     function distributeMarketCreatorFees(address _affiliateAddress) private returns (bool) {
         if (!isInvalid()) {
-            cash.transfer(owner, marketCreatorFeesAttoEth);
+            cash.transfer(owner, marketCreatorFeesAttoCash);
             if (_affiliateAddress != NULL_ADDRESS) {
                 withdrawAffiliateFees(_affiliateAddress);
             }
         } else {
-            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), marketCreatorFeesAttoEth);
+            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), marketCreatorFeesAttoCash);
         }
-        marketCreatorFeesAttoEth = 0;
+        marketCreatorFeesAttoCash = 0;
         return true;
     }
 
     function withdrawAffiliateFees(address _affiliate) public returns (bool) {
-        uint256 _affiliateBalance = affiliateFeesAttoEth[_affiliate];
+        uint256 _affiliateBalance = affiliateFeesAttoCash[_affiliate];
         if (_affiliateBalance == 0) {
             return true;
         }
-        affiliateFeesAttoEth[_affiliate] = 0;
+        affiliateFeesAttoCash[_affiliate] = 0;
         cash.transfer(_affiliate, _affiliateBalance);
         return true;
     }
@@ -547,8 +547,8 @@ contract Market is Initializable, Ownable, IMarket {
         return participants.length;
     }
 
-    function getValidityBondAttoEth() public view returns (uint256) {
-        return validityBondAttoEth;
+    function getValidityBondAttoCash() public view returns (uint256) {
+        return validityBondAttoCash;
     }
 
     function getDisputePacingOn() public view returns (bool) {

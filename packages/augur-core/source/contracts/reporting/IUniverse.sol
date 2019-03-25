@@ -27,9 +27,9 @@ contract IUniverse is ITyped {
     function getOrCreateCurrentDisputeWindow(bool _initial) public returns (IDisputeWindow);
     function getOrCreateNextDisputeWindow(bool _initial) public returns (IDisputeWindow);
     function getOrCreatePreviousDisputeWindow(bool _initial) public returns (IDisputeWindow);
-    function getOpenInterestInAttoEth() public view returns (uint256);
-    function getRepMarketCapInAttoEth() public view returns (uint256);
-    function getTargetRepMarketCapInAttoEth() public view returns (uint256);
+    function getOpenInterestInAttoCash() public view returns (uint256);
+    function getRepMarketCapInAttoCash() public view returns (uint256);
+    function getTargetRepMarketCapInAttoCash() public view returns (uint256);
     function getOrCacheValidityBond() public returns (uint256);
     function getOrCacheDesignatedReportStake() public returns (uint256);
     function getOrCacheDesignatedReportNoShowBond() public returns (uint256);

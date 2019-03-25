@@ -183,10 +183,10 @@ contract Augur is IAugur {
     function recordAuctionTokens(IUniverse _universe) public returns (bool) {
         require(isKnownUniverse(_universe));
         IAuction _auction = _universe.getAuction();
-        IAuctionToken _ethAuctionToken = _auction.ethAuctionToken();
+        IAuctionToken _cashAuctionToken = _auction.cashAuctionToken();
         IAuctionToken _repAuctionToken = _auction.repAuctionToken();
-        if (_ethAuctionToken != IAuctionToken(0)) {
-            auctionTokens[address(_ethAuctionToken)] = true;
+        if (_cashAuctionToken != IAuctionToken(0)) {
+            auctionTokens[address(_cashAuctionToken)] = true;
         }
         if (_repAuctionToken != IAuctionToken(0)) {
             auctionTokens[address(_repAuctionToken)] = true;
