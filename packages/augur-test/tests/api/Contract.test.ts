@@ -47,7 +47,7 @@ test("Contract :: Cash", async () => {
   const cash = contracts.cash;
   const universe = contracts.universe;
   const marketCreationCost = await universe.getOrCacheMarketCreationCost_();
-  await cash.depositEther({ sender: ACCOUNTS[0].publicKey, attachedEth: marketCreationCost });
+  await cash.faucet(marketCreationCost, { sender: ACCOUNTS[0].publicKey });
   await cash.approve(addresses.Augur, marketCreationCost, { sender: ACCOUNTS[0].publicKey });
   expect((await cash.allowance_(ACCOUNTS[0].publicKey, addresses.Augur))).toEqual(marketCreationCost);
 });
@@ -56,7 +56,7 @@ test("Contract :: Universe :: Create Market", async() => {
   const cash = contracts.cash;
   const universe = contracts.universe;
   const marketCreationCost = await universe.getOrCacheMarketCreationCost_();
-  await cash.depositEther({ sender: ACCOUNTS[0].publicKey, attachedEth: marketCreationCost });
+  await cash.faucet(marketCreationCost, { sender: ACCOUNTS[0].publicKey });
   await cash.approve(addresses.Augur, marketCreationCost, { sender: ACCOUNTS[0].publicKey });
 
   const endTime = new ethers.utils.BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
