@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import Knex from "knex";
 
 const KNOWN_ORPHANED_ORDERS = [
 "0xcb0d0001f04e8008a12f64be5f11d5c2dcc607899039a190cb7908416b9965c5",

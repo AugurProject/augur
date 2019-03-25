@@ -1,5 +1,5 @@
-import * as Knex from "knex";
-import { ETHER} from "../constants";
+import Knex from "knex";
+import { ETHER } from "../constants";
 
 exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.hasColumn("markets", "validityBondSize").then(async(exists) => {

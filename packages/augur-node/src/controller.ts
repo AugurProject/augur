@@ -1,20 +1,23 @@
 import { Augur, ErrorCallback, GenericCallback } from "./types";
-import * as Knex from "knex";
+import { UploadBlockNumbers } from "@augurproject/artifacts";
+
+
+import Knex from "knex";
 import * as path from "path";
 import { EventEmitter } from "events";
 import { runServer, RunServerResult, shutdownServers } from "./server/run-server";
 import { bulkSyncAugurNodeWithBlockchain } from "./blockchain/bulk-sync-augur-node-with-blockchain";
 import { startAugurListeners } from "./blockchain/start-augur-listeners";
 import { createDbAndConnect, renameBulkSyncDatabaseFile } from "./setup/check-and-initialize-augur-db";
-import { clearOverrideTimestamp } from "./blockchain/process-block";
-import { ControlMessageType, DB_VERSION, DB_FILE, NETWORK_NAMES } from "./constants";
+import { ControlMessageType, DB_FILE, DB_VERSION, NETWORK_NAMES } from "./constants";
 import { logger } from "./utils/logger";
-import { LoggerInterface } from "./utils/logger/logger";
 import { BlockAndLogsQueue } from "./blockchain/block-and-logs-queue";
 import { format } from "util";
 import { getFileHash } from "./sync/file-operations";
 import { BackupRestore } from "./sync/backup-restore";
 import { ConnectOptions } from "./setup/connectOptions";
+import { LoggerInterface } from "./utils/logger/logger";
+import { clearOverrideTimestamp } from "./blockchain/process-block";
 
 export interface SyncedBlockInfo {
   lastSyncBlockNumber: number;
@@ -109,20 +112,20 @@ export class AugurNodeController {
       .max("blockNumber as highestBlockNumber")
       .first();
     const lastSyncBlockNumber = row.highestBlockNumber;
-    const currentBlock = this.augur.rpc.getCurrentBlock();
+    const currentBlock = await this.augur.provider.getBlockNumber();
     if (currentBlock === null) {
       throw new Error("No Current Block");
     }
-    const highestBlockNumber = parseInt(this.augur.rpc.getCurrentBlock().number, 16);
-    const uploadBlockNumber = this.augur.contracts.uploadBlockNumbers[this.augur.rpc.getNetworkID()];
+    const highestBlockNumber = parseInt(`${await this.augur.provider.getBlockNumber()}`, 16);
+    const uploadBlockNumber = UploadBlockNumbers[this.augur.networkId];
     return {lastSyncBlockNumber, uploadBlockNumber, highestBlockNumber};
   }
 
   public async resetDatabase(id: string, errorCallback: ErrorCallback | undefined) {
     let networkId = id || "1";
     try {
-      if (this.augur != null && this.augur.rpc.getNetworkID()) {
-        networkId = this.augur.rpc.getNetworkID();
+      if (this.augur != null && this.augur.networkId) {
+        networkId = this.augur.networkId;
       }
       if (this.isRunning()) await this._shutdown();
       await renameBulkSyncDatabaseFile(networkId, this.databaseDir);
@@ -169,7 +172,6 @@ export class AugurNodeController {
       this.pouch = undefined;
     }
     clearOverrideTimestamp();
-    this.augur.disconnect();
     this.logger.clear();
   }
 }

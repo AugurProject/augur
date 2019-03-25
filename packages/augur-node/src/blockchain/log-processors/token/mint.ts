@@ -1,6 +1,6 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
-import { BigNumber } from "bignumber.js";
+import { Augur, BigNumber } from "../../../types";
+import Knex from "knex";
+
 import { FormattedEventLog } from "../../../types";
 import { increaseTokenBalance } from "./increase-token-balance";
 import { increaseTokenSupply } from "./increase-token-supply";

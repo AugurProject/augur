@@ -1,5 +1,6 @@
-import * as Knex from "knex";
-import BigNumber from "bignumber.js";
+import Knex from "knex";
+import { BigNumber } from "../../types";
+
 
 exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
@@ -27,7 +28,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
         seedData.push({
           marketId,
           volume,
-          shareVolume: new BigNumber(volume).multipliedBy(new BigNumber(price)).toString(),
+          shareVolume: new BigNumber(volume).mul(new BigNumber(price)).toString(),
           price,
           outcome: i,
           description: "outcome " + i,

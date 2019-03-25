@@ -1,8 +1,8 @@
 import * as t from "io-ts";
 import * as _ from "lodash";
-import * as Knex from "knex";
-import { BigNumber } from "bignumber.js";
-import { OrdersRow, OrderState, UIOrder, UIOrders, Bytes32, SortLimitParams, OutcomeParam } from "../../types";
+import Knex from "knex";
+
+import { Bytes32, OrdersRow, OrderState, OutcomeParam, SortLimitParams, UIOrder, UIOrders } from "../../types";
 import { queryModifier } from "./database";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 

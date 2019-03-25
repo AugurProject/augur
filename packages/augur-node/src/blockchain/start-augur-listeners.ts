@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import * as Knex from "knex";
+import Knex from "knex";
 import { Augur, BlockDetail, ErrorCallback, FormattedEventLog } from "../types";
 import { logProcessors } from "./log-processors";
 import { BlockAndLogsQueue } from "./block-and-logs-queue";

@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import Knex from "knex";
 import { createSearchProvider } from "../database/fts";
 
 exports.up = async (knex: Knex): Promise<any> => {

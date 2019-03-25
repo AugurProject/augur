@@ -1,9 +1,9 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
-import Augur from "augur.js";
-import { BigNumber } from "bignumber.js";
-import { Address, DisputeWindowState, ReportingState } from "../../types";
+import { Address, Augur, BigNumber, DisputeWindowState, ReportingState } from "../../types";
+import { BigNumber as BigNumberJS } from "bignumber.js";
+
 import { ZERO } from "../../constants";
 
 export const ReportingFeesParams = t.type({
@@ -247,22 +247,22 @@ async function getStakedRepResults(db: Knex, reporter: Address, universe: Addres
     const earnsRep = disputeWindowCompletionStake.completed && (disputeWindowCompletionStake.winning > 0);
     const lostRep = disputeWindowCompletionStake.completed && (disputeWindowCompletionStake.winning === 0);
     return {
-      unclaimedRepStaked: acc.unclaimedRepStaked.plus(disputeWindowCompletionStake.forking ? ZERO : (!getsRep ? ZERO : (disputeWindowCompletionStake.amountStaked || ZERO))),
-      unclaimedRepEarned: acc.unclaimedRepEarned.plus(disputeWindowCompletionStake.forking ? ZERO : (!earnsRep ? ZERO : (disputeWindowCompletionStake.amountStaked || ZERO)).times(2).div(5)),
-      lostRep: acc.lostRep.plus(lostRep ? (disputeWindowCompletionStake.amountStaked || ZERO) : ZERO),
-      unclaimedForkRepStaked: acc.unclaimedForkRepStaked.plus(disputeWindowCompletionStake.forking ? (disputeWindowCompletionStake.amountStaked || ZERO) : ZERO),
+      unclaimedRepStaked: acc.unclaimedRepStaked.add(disputeWindowCompletionStake.forking ? ZERO : (!getsRep ? ZERO : (disputeWindowCompletionStake.amountStaked || ZERO))),
+      unclaimedRepEarned: acc.unclaimedRepEarned.add(disputeWindowCompletionStake.forking ? ZERO : (!earnsRep ? ZERO : (disputeWindowCompletionStake.amountStaked || ZERO)).mul(2).div(5)),
+      lostRep: acc.lostRep.add(lostRep ? (disputeWindowCompletionStake.amountStaked || ZERO) : ZERO),
+      unclaimedForkRepStaked: acc.unclaimedForkRepStaked.add(disputeWindowCompletionStake.forking ? (disputeWindowCompletionStake.amountStaked || ZERO) : ZERO),
     };
   }, { unclaimedRepStaked: ZERO, unclaimedRepEarned: ZERO, lostRep: ZERO, unclaimedForkRepStaked: ZERO });
   fees = _.reduce(initialReporters, (acc: RepStakeResults, initialReporterStake: InitialReporterStakeRow) => {
     let unclaimedRepEarned = acc.unclaimedRepEarned;
     if (marketDisputed[initialReporterStake.marketId] && !initialReporterStake.forking && initialReporterStake.winning) {
-      unclaimedRepEarned = unclaimedRepEarned.plus((initialReporterStake.amountStaked || ZERO).times(2).div(5));
+      unclaimedRepEarned = unclaimedRepEarned.add((initialReporterStake.amountStaked || ZERO).mul(2).div(5));
     }
     return {
-      unclaimedRepStaked: acc.unclaimedRepStaked.plus(initialReporterStake.forking ? ZERO : (initialReporterStake.winning === 0 ? ZERO : (initialReporterStake.amountStaked || ZERO))),
+      unclaimedRepStaked: acc.unclaimedRepStaked.add(initialReporterStake.forking ? ZERO : (initialReporterStake.winning === 0 ? ZERO : (initialReporterStake.amountStaked || ZERO))),
       unclaimedRepEarned,
-      lostRep: acc.lostRep.plus(initialReporterStake.winning === 0 ? (initialReporterStake.amountStaked || ZERO) : ZERO),
-      unclaimedForkRepStaked: acc.unclaimedForkRepStaked.plus(initialReporterStake.forking ? (initialReporterStake.amountStaked || ZERO) : ZERO),
+      lostRep: acc.lostRep.add(initialReporterStake.winning === 0 ? (initialReporterStake.amountStaked || ZERO) : ZERO),
+      unclaimedForkRepStaked: acc.unclaimedForkRepStaked.add(initialReporterStake.forking ? (initialReporterStake.amountStaked || ZERO) : ZERO),
     };
   }, fees);
   return { fees };
@@ -270,15 +270,21 @@ async function getStakedRepResults(db: Knex, reporter: Address, universe: Addres
 
 export async function getReportingFees(db: Knex, augur: Augur, params: t.TypeOf<typeof ReportingFeesParams>): Promise<FeeDetails> {
   const currentUniverse = await getUniverse(db, params.universe);
-  const repStakeResults = await getStakedRepResults(db, params.reporter, params.universe);
+  const {
+    fees: {
+      lostRep,
+      unclaimedForkRepStaked,
+      unclaimedRepEarned,
+      unclaimedRepStaked
+    }
+  } = await getStakedRepResults(db, params.reporter, params.universe);
   const result: FormattedMarketInfo = await getMarketsReportingParticipants(db, params.reporter, currentUniverse);
-  const unclaimedRepStaked = repStakeResults.fees.unclaimedRepStaked;
   const response = {
     total: {
-      unclaimedRepStaked: unclaimedRepStaked.toFixed(0, BigNumber.ROUND_DOWN),
-      unclaimedRepEarned: repStakeResults.fees.unclaimedRepEarned.toFixed(0, BigNumber.ROUND_DOWN),
-      lostRep: repStakeResults.fees.lostRep.toFixed(0, BigNumber.ROUND_DOWN),
-      unclaimedForkRepStaked: repStakeResults.fees.unclaimedForkRepStaked.toFixed(0, BigNumber.ROUND_DOWN),
+      unclaimedRepStaked: new BigNumberJS(unclaimedRepStaked.toString()).toFixed(0, BigNumberJS.ROUND_DOWN),
+      unclaimedRepEarned: new BigNumberJS(unclaimedRepEarned.toString()).toFixed(0, BigNumberJS.ROUND_DOWN),
+      lostRep: new BigNumberJS(lostRep.toString()).toFixed(0, BigNumberJS.ROUND_DOWN),
+      unclaimedForkRepStaked: new BigNumberJS(unclaimedForkRepStaked.toString()).toFixed(0, BigNumberJS.ROUND_DOWN),
     },
     forkedMarket: result.forkedMarket,
     nonforkedMarkets: result.nonforkedMarkets,

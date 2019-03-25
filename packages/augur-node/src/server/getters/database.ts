@@ -1,31 +1,33 @@
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
-import Augur from "augur.js";
-import BigNumber from "bignumber.js";
-import { sortDirection } from "../../utils/sort-direction";
-import { safeBigNumberCompare } from "../../utils/safe-big-number-compare";
-import { GenericCallback, SortLimit } from "../../types";
-import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import { isFieldBigNumber } from "../post-process-database-results";
 import {
   Address,
-  MarketsRowWithTime,
-  OutcomesRow,
-  UIMarketInfo,
-  UIOutcomeInfo,
-  UIStakeInfo,
+  Augur,
+  BigNumber,
   DisputeTokensRowWithTokenState,
-  UIDisputeTokenInfo,
-  Payout,
-  PayoutRow,
+  GenericCallback,
+  MarketsRowWithTime,
   NormalizedPayout,
   NormalizedPayoutNumerators,
+  OutcomesRow,
+  Payout,
+  PayoutRow,
+  SortLimit,
   StakeDetails,
   TradingHistoryRow,
+  UIDisputeTokenInfo,
+  UIMarketInfo,
+  UIOutcomeInfo,
+  UIStakeInfo
 } from "../../types";
+import { sortDirection } from "../../utils/sort-direction";
+import { safeBigNumberCompare } from "../../utils/safe-big-number-compare";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+import { isFieldBigNumber } from "../post-process-database-results";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import * as t from "io-ts";
 import { TradingHistoryParams } from "./get-trading-history";
+import { Addresses } from "@augurproject/artifacts";
 
 const MAX_DB_CHUNK_SIZE = 800;
 
@@ -109,18 +111,16 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithTime, outcome
       numOutcomes: row.numOutcomes,
       minPrice: row.minPrice,
       maxPrice: row.maxPrice,
-      cumulativeScale: row.maxPrice.minus(row.minPrice),
+      cumulativeScale: row.maxPrice.sub(row.minPrice),
       author: row.marketCreator,
       consensus: null,
       creationTime: row.creationTime,
       creationBlock: row.creationBlockNumber,
       creationFee: row.creationFee,
-      settlementFee: row.reportingFeeRate.plus(row.marketCreatorFeeRate),
+      settlementFee: row.reportingFeeRate.add(row.marketCreatorFeeRate),
       reportingFeeRate: row.reportingFeeRate,
       marketCreatorFeeRate: row.marketCreatorFeeRate,
       marketCreatorFeesBalance: row.marketCreatorFeesBalance,
-      marketCreatorMailbox: row.marketCreatorMailbox,
-      marketCreatorMailboxOwner: row.marketCreatorMailboxOwner,
       initialReportSize: row.initialReportSize,
       category: row.category,
       tags: [row.tag1, row.tag2],
@@ -288,7 +288,7 @@ export function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields:
           if (sumFields.indexOf(key) === -1 || typeof previousValue === "undefined" || value === null || typeof value === "undefined") {
             return [key, value];
           } else if (BigNumber.isBigNumber(value)) {
-            return [key, (value as BigNumber).plus(result[key] as BigNumber)];
+            return [key, (value as BigNumber).add(result[key] as BigNumber)];
           } else {
             return [key, value + previousValue];
           }
@@ -312,7 +312,7 @@ export function sumBy<T extends Dictionary, K extends keyof T>(rows: Array<T>, .
         if (sumFields.indexOf(key) === -1 || typeof previousValue === "undefined" || value === null || typeof value === "undefined") {
           return [key, value];
         } else if (BigNumber.isBigNumber(value)) {
-          return [key, (value as BigNumber).plus(result[key] as BigNumber)];
+          return [key, (value as BigNumber).add(result[key] as BigNumber)];
         } else if (typeof value === "number") {
           return [key, value + previousValue];
         }
@@ -326,7 +326,7 @@ export function sumBy<T extends Dictionary, K extends keyof T>(rows: Array<T>, .
 }
 
 export function getCashAddress(augur: Augur) {
-  return augur.contracts.addresses[augur.rpc.getNetworkID()].Cash;
+  return Addresses[augur.networkId].Cash;
 }
 
 // move to database utils.

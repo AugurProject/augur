@@ -1,17 +1,16 @@
 import Knex from "knex";
 import * as path from "path";
-import * as PouchDB from "pouchdb";
+import PouchDB from "pouchdb";
 import * as sqlite3 from "sqlite3";
-import { promisify, format } from "util";
-import { rename, existsSync, readFile, writeFile } from "fs";
+import { format, promisify } from "util";
+import { existsSync, readFile, rename, writeFile } from "fs";
 import { setOverrideTimestamp } from "../blockchain/process-block";
 import { postProcessDatabaseResults } from "../server/post-process-database-results";
-import { monitorEthereumNodeHealth } from "../blockchain/monitor-ethereum-node-health";
 import { logger } from "../utils/logger";
 import { Augur, ErrorCallback } from "../types";
-import { DB_VERSION, DB_FILE, POUCH_DB_DIR } from "../constants";
+import { DB_FILE, DB_VERSION, POUCH_DB_DIR } from "../constants";
 import { ConnectOptions } from "./connectOptions";
-import { uploadBlockNumbers } from "@augurproject/artifacts/build";
+import { UploadBlockNumbers } from "@augurproject/artifacts";
 
 interface NetworkIdRow {
   networkId: string;
@@ -73,7 +72,7 @@ async function isDatabaseDamaged(db: Knex): Promise<boolean> {
 }
 
 async function initializeNetworkInfo(db: Knex, augur: Augur): Promise<void> {
-  const networkId: string = augur.rpc.getNetworkID();
+  const networkId: string = augur.networkId;
   if (networkId == null) throw new Error("Got null from augur.rpc.getNetworkID()");
   const networkRow: NetworkIdRow = await db.first(["networkId", "overrideTimestamp"]).from("network_id");
   if (networkRow == null || networkRow.networkId == null) {
@@ -93,7 +92,7 @@ async function initializeNetworkInfo(db: Knex, augur: Augur): Promise<void> {
 async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string, databaseDir?: string): Promise<void> {
   const oldUploadBlockNumberFile = getUploadBlockPathFromNetworkId(networkId, databaseDir);
   const dbPath = getDatabasePathFromNetworkId(networkId, DB_FILE, databaseDir);
-  const currentUploadBlockNumber = uploadBlockNumbers[augur.networkId];
+  const currentUploadBlockNumber = UploadBlockNumbers[augur.networkId];
   if (existsSync(dbPath) && existsSync(oldUploadBlockNumberFile)) {
     const oldUploadBlockNumber = Number(await promisify(readFile)(oldUploadBlockNumberFile));
     if (currentUploadBlockNumber !== oldUploadBlockNumber) {
@@ -121,22 +120,13 @@ export async function createDbAndConnect(errorCallback: ErrorCallback|undefined,
       network.propagationDelayWaitMillis != null ? { propagationDelayWaitMillis: network.propagationDelayWaitMillis } : {},
       network.maxRetries != null ? { maxRetries: network.maxRetries } : {},
     );
-    augur.connect(connectOptions, async (err) => {
-      if (err) return reject(new Error(`Could not connect via augur.connect ${err}`));
-      const networkId: string = augur.rpc.getNetworkID();
-      if (networkId == null) return reject(new Error("could not get networkId"));
-      try {
-        await monitorEthereumNodeHealth(augur, errorCallback);
-        await checkAndUpdateContractUploadBlock(augur, networkId, databaseDir);
-        resolve(checkAndInitializeAugurDb(augur, networkId, databaseDir));
-      } catch (err) {
-        reject(err);
-      }
-    });
+
+    resolve(checkAndInitializeAugurDb(augur, databaseDir));
   });
 }
 
-export async function checkAndInitializeAugurDb(augur: Augur, networkId: string, databaseDir?: string): Promise<KnexAndPouch> {
+export async function checkAndInitializeAugurDb(augur: Augur, databaseDir?: string): Promise<KnexAndPouch> {
+  const networkId = augur.networkId;
   const knexDatabasePath = getDatabasePathFromNetworkId(networkId, DB_FILE, databaseDir);
   const pouchDatabasePath = getDatabasePathFromNetworkId(networkId, POUCH_DB_DIR, databaseDir);
   if (existsSync(knexDatabasePath)) {

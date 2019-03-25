@@ -1,11 +1,12 @@
-import { Augur, CompleteSetsRow, FormattedEventLog, MarketsRow } from "../../types";
-import * as Knex from "knex";
-import { BigNumber } from "bignumber.js";
+import { Augur, BigNumber, CompleteSetsRow, FormattedEventLog, MarketsRow } from "../../types";
+import Knex from "knex";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { augurEmitter } from "../../events";
 import { SubscriptionEventNames } from "../../constants";
 import { updateMarketOpenInterest } from "./order-filled/update-volumetrics";
 import { updateProfitLossBuyShares, updateProfitLossSellShares } from "./profit-loss/update-profit-loss";
+import { convertOnChainAmountToDisplayAmount } from "../../utils";
+import { Addresses } from "@augurproject/artifacts";
 
 export async function processCompleteSetsPurchasedOrSoldLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
@@ -17,7 +18,7 @@ export async function processCompleteSetsPurchasedOrSoldLog(augur: Augur, log: F
     const numTicks = marketsRow.numTicks;
     const numOutcomes = marketsRow.numOutcomes;
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-    const numCompleteSets = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numCompleteSets, 10), tickSize);
+    const numCompleteSets = convertOnChainAmountToDisplayAmount(new BigNumber(log.numCompleteSets), tickSize);
     const completeSetPurchasedData: CompleteSetsRow<string> = {
       marketId,
       account: log.account,
@@ -36,7 +37,7 @@ export async function processCompleteSetsPurchasedOrSoldLog(augur: Augur, log: F
     await updateMarketOpenInterest(db, marketId);
 
     // Don't process FillOrder buying and selling complete sets for profit loss
-    if (log.account === augur.contracts.addresses[augur.rpc.getNetworkID()].FillOrder) return;
+    if (log.account === Addresses[augur.networkId].FillOrder) return;
     if (log.eventName === "CompleteSetsPurchased") {
       await updateProfitLossBuyShares(db, marketId, log.account, numCompleteSets, Array.from(Array(numOutcomes).keys()), log.transactionHash);
     } else {

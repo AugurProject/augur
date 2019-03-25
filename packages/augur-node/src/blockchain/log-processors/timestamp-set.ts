@@ -1,7 +1,11 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
-import { FormattedEventLog } from "../../types";
-import { advanceDisputeWindowActive, getCurrentTime, removeOverrideTimestamp, setOverrideTimestamp } from "../process-block";
+import { Augur, FormattedEventLog } from "../../types";
+import Knex from "knex";
+import {
+  advanceDisputeWindowActive,
+  getCurrentTime,
+  removeOverrideTimestamp,
+  setOverrideTimestamp
+} from "../process-block";
 
 export async function processTimestampSetLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {

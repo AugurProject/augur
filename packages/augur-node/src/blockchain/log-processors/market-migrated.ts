@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import Knex from "knex";
 import { Address, Augur, FormattedEventLog, ReportingState } from "../../types";
 import { rollbackMarketState, updateMarketDisputeWindow, updateMarketState } from "./database";
 import { getMarketsWithReportingState } from "../../server/getters/database";

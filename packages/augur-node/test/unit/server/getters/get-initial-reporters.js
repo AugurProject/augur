@@ -19,7 +19,7 @@ describe("server/getters/get-initial-reporters", () => {
     });
   };
   runTest({
-    description: "get the initial reporter contracts owned by this reporter",
+    description: "get the initial reporter Contracts owned by this reporter",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000b0b",

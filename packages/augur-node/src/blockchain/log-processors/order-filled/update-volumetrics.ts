@@ -1,10 +1,10 @@
-import { Address, Augur, Bytes32, ReportingState, TradesRow } from "../../../types";
-import BigNumber from "bignumber.js";
-import * as Knex from "knex";
-import { Address, Bytes32, TradesRow, ReportingState} from "../../../types";
+import { Address, Augur, BigNumber, Bytes32, ReportingState, TradesRow } from "../../../types";
+
+import Knex from "knex";
 import { convertFixedPointToDecimal } from "../../../utils/convert-fixed-point-to-decimal";
 import { WEI_PER_ETHER } from "../../../constants";
 import { updateCategoryAggregationsOnMarketOpenInterestChanged } from "../category-aggregations";
+import { convertOnChainAmountToDisplayAmount } from "../../../utils";
 
 // volumeForTrade owns the business definition for the incremental financial
 // volume produced by one Augur transaction. Traditional finance uses `volume`
@@ -19,20 +19,21 @@ export function volumeForTrade(numTicks: BigNumber, p: {
 }): BigNumber {
   // Our buiness definition for volume is "currency/token changing hands". We include "escrowed" as one of the "hands":
   // numCreatorTokens is currency being escrowed to create complete sets, or currency going to the counterparty. Either way this contributes to volume.
-  return p.numCreatorTokens.plus(
+  return p.numCreatorTokens.add(
     // numFillerTokens follows same reasoning as numCreatorTokens.
-    p.numFillerTokens).plus(
+    p.numFillerTokens).add(
       // When complete sets are destroyed, currency is unlocked from escrow and sent to the parties' wallets. To be destroyed, a complete set must be, in fact, "complete". If Bob provides 12 YES shares, and Jim provides 5 NO shares, we can only make 5 complete sets; Bob's 7 YES shares are excess, and cannot be matched with NO shares to become a complete set for destruction. (Bob's 7 YES shares become Jim's property.) That's why we use min() to determine the number of complete sets destroyed. We multiply by numTicks because (numOfCompleteSets*numTicks) is the currency/token (Ether) amount released from escrow when those complete sets are destroyed.
-      BigNumber.min(p.numCreatorShares, p.numFillerShares).multipliedBy(numTicks));
+      p.numCreatorShares.sub(p.numFillerShares).mul(numTicks)
+    );
 }
 
 async function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, tradesRow: TradesRow<BigNumber>, isIncrease: boolean): Promise<void> {
   const marketsRow: { numTicks: BigNumber, volume: BigNumber; shareVolume: BigNumber }|undefined = await db("markets").first("numTicks", "volume", "shareVolume").where({ marketId });
   if (marketsRow === undefined) throw new Error(`No marketId for incrementMarketVolume: ${marketId}`);
-  const newShareVolume = amount.plus(marketsRow.shareVolume);
+  const newShareVolume = amount.add(marketsRow.shareVolume);
   let vft = volumeForTrade(marketsRow.numTicks, tradesRow);
-  if (!isIncrease) vft = vft.negated();
-  const newVolume = marketsRow.volume.plus(vft);
+  if (!isIncrease) vft = vft.mul(new BigNumber(-1));
+  const newVolume = marketsRow.volume.add(vft);
   await db("markets").update({ volume: newVolume.toString(), shareVolume: newShareVolume.toString() }).where({ marketId });
 }
 
@@ -41,10 +42,10 @@ async function incrementOutcomeVolume(db: Knex, marketId: Address, outcome: numb
   if (marketsRow === undefined) throw new Error(`No marketId for incrementOutcomeVolume: ${marketId}`);
   const outcomesRow: { volume: BigNumber; shareVolume: BigNumber }|undefined = await db("outcomes").first("volume", "shareVolume").where({ marketId, outcome });
   if (outcomesRow === undefined) throw new Error(`No outcome for incrementOutcomeVolume: marketId=${marketId} outcome=${outcome}`);
-  const newShareVolume = amount.plus(outcomesRow.shareVolume);
+  const newShareVolume = amount.add(outcomesRow.shareVolume);
   let vft = volumeForTrade(marketsRow.numTicks, tradesRow);
-  if (!isIncrease) vft = vft.negated();
-  const newVolume = outcomesRow.volume.plus(vft);
+  if (!isIncrease) vft = vft.mul(new BigNumber(-1));;
+  const newVolume = outcomesRow.volume.add(vft);
   await db("outcomes").update({ volume: newVolume.toString(), shareVolume: newShareVolume.toString() }).where({ marketId, outcome });
 }
 
@@ -74,10 +75,10 @@ export async function updateMarketOpenInterest(db: Knex, marketId: Address) {
   });
   if (shareTokenRow == null) throw new Error(`No shareToken supply found for market: ${marketId}`);
 
-  const newOpenInterestInETHString: string = convertFixedPointToDecimal(shareTokenRow.supply.multipliedBy(marketRow.numTicks), WEI_PER_ETHER);
+  const newOpenInterestInETHString: string = convertFixedPointToDecimal(shareTokenRow.supply.mul(marketRow.numTicks), WEI_PER_ETHER);
   await db("markets").update({ openInterest: newOpenInterestInETHString }).where({ marketId });
 
-  const newOpenInterestInETH = new BigNumber(newOpenInterestInETHString, 10);
+  const newOpenInterestInETH = new BigNumber(newOpenInterestInETHString);
   await updateCategoryAggregationsOnMarketOpenInterestChanged({
     db,
     categoryName: marketRow.category,
@@ -90,13 +91,13 @@ export async function updateMarketOpenInterest(db: Knex, marketId: Address) {
 export async function updateVolumetrics(db: Knex, augur: Augur, category: string, marketId: Address, outcome: number, blockNumber: number, orderId: Bytes32, orderCreator: Address, tickSize: BigNumber, minPrice: BigNumber, maxPrice: BigNumber, isIncrease: boolean) {
   const shareTokenRow: { supply: BigNumber } = await db.first("token_supply.supply").from("tokens").join("token_supply", "token_supply.token", "tokens.contractAddress").where({ outcome, marketId });
   if (shareTokenRow == null) throw new Error(`No shareToken found for market: ${marketId} outcome: ${outcome}`);
-  const sharesOutstanding = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(shareTokenRow.supply, 10), tickSize).toString();
+  const sharesOutstanding = convertOnChainAmountToDisplayAmount(new BigNumber(shareTokenRow.supply), tickSize).toString();
   await db("markets").where({ marketId }).update({ sharesOutstanding });
   const tradesRow: TradesRow<BigNumber>|undefined = await db.first("numCreatorShares", "numCreatorTokens", "numFillerTokens", "numFillerShares", "amount").from("trades")
     .where({ marketId, outcome, orderId, blockNumber });
   if (!tradesRow) throw new Error(`trade not found, orderId: ${orderId}`);
   let amount = tradesRow.amount!;
-  if (!isIncrease) amount = amount.negated();
+  if (!isIncrease) amount = amount.mul(new BigNumber(-1));
   await incrementMarketVolume(db, marketId, amount, tradesRow, isIncrease);
   await incrementOutcomeVolume(db, marketId, outcome, amount, tradesRow, isIncrease);
   await setMarketLastTrade(db, marketId, blockNumber);

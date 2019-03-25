@@ -1,9 +1,8 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
-import Augur from "augur.js";
-import { BigNumber } from "bignumber.js";
-import { TradingHistoryRow, UITrade, SortLimitParams, OutcomeParam } from "../../types";
+import { Augur, BigNumber, OutcomeParam, SortLimitParams, TradingHistoryRow, UITrade } from "../../types";
+
 import { queryTradingHistoryParams } from "./database";
 
 export const TradingHistoryParamsSpecific = t.type({
@@ -45,7 +44,7 @@ export async function getTradingHistory(db: Knex, augur: Augur, params: t.TypeOf
       selfFilled: trade.creator === trade.filler,
       marketCreatorFees: trade.marketCreatorFees.toString(),
       reporterFees: trade.reporterFees.toString(),
-      settlementFees: new BigNumber(trade.reporterFees, 10).plus(new BigNumber(trade.marketCreatorFees, 10)).toString(),
+      settlementFees: new BigNumber(trade.reporterFees).add(new BigNumber(trade.marketCreatorFees)).toString(),
     });
   });
 }

@@ -1,11 +1,13 @@
-import { Augur } from "./types";
+import { BigNumber } from "./types";
 import { AugurNodeController } from "./controller";
 import { logger } from "./utils/logger";
 import { ConnectOptions } from "./setup/connectOptions";
 
+import {  Augur } from "@augurproject/api";
+
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers/json-rpc-provider";
-import { addresses, uploadBlockNumbers } from "@augurproject/artifacts";
+import { Addresses } from "@augurproject/artifacts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { EthersProviderBlockStreamAdapter } from "blockstream-adapters";
 
@@ -13,7 +15,8 @@ export async function start(retries: number, config: ConnectOptions, databaseDir
   const ethersProvider = new EthersProvider(new JsonRpcProvider("https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"), 5, 0, 40);
   const BlockStreamAdapter = new EthersProviderBlockStreamAdapter(ethersProvider);
   const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined);
-  const augur = await Augur.create(ethersProvider, contractDependencies, addresses[4]);
+  const networkId = await ethersProvider.getNetworkId();
+  const augur = new Augur<BigNumber, EthersProvider>(ethersProvider, contractDependencies, networkId, Addresses[4]);
 
   const augurNodeController = new AugurNodeController(augur, config, databaseDir, isWarpSync);
 

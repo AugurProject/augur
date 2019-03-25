@@ -1,0 +1,7 @@
+let bignum = require("./bignum");
+
+export function encodeNumberAsJSNumber(s, isWrapped) {
+  return bignum(s, "number", isWrapped);
+}
+
+

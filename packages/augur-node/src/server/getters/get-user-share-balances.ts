@@ -1,10 +1,9 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
-import Augur from "augur.js";
-import BigNumber from "bignumber.js";
-import { Address } from "../../types";
+import { Address, Augur, BigNumber } from "../../types";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
+import { convertOnChainAmountToDisplayAmount } from "../../utils";
 
 export const UserShareBalancesParams = t.type({
   marketIds: t.array(t.string),
@@ -55,7 +54,7 @@ export async function getUserShareBalances(db: Knex, augur: Augur, params: t.Typ
       return groupedBalances.map((row) => {
         if (row.balance === null) return "0";
         const tickSize = numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice);
-        return augur.utils.convertOnChainAmountToDisplayAmount(row.balance, tickSize).toString();
+        return convertOnChainAmountToDisplayAmount(row.balance, tickSize).toString();
       });
     })
     .value();

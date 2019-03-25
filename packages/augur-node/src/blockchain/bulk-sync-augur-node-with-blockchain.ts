@@ -1,11 +1,10 @@
-import * as Knex from "knex";
+import Knex from "knex";
 import { promisify } from "util";
 import { downloadAugurLogs } from "./download-augur-logs";
 import { augurEmitter } from "../events";
 import { logger } from "../utils/logger";
 import { SubscriptionEventNames } from "../constants";
 import { delay } from "bluebird";
-import { uploadBlockNumbers } from "@augurproject/artifacts";
 import { Augur } from "../types";
 
 const BLOCKSTREAM_HANDOFF_BLOCKS = 5;

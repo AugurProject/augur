@@ -20,7 +20,7 @@ describe("server/getters/get-sync-data", () => {
     });
   };
   runTest({
-    description: "get contract addresses",
+    description: "get contract Addresses",
     params: {
       augur: {
         version: "the-version-string",

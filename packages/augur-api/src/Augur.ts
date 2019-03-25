@@ -11,9 +11,9 @@ export interface UserSpecificEvent {
   userTopicIndex: number;
 }
 
-export class Augur<TBigNumber> {
-  public readonly provider: Provider;
-  private readonly dependencies?:  GenericAugurInterfaces.Dependencies<TBigNumber>;
+export class Augur<TBigNumber, TProvider extends Provider = Provider> {
+  public readonly provider: TProvider;
+  private readonly dependencies:  GenericAugurInterfaces.Dependencies<TBigNumber>;
 
   public readonly networkId: NetworkId;
   public readonly events: Events;
@@ -57,7 +57,7 @@ export class Augur<TBigNumber> {
     },
   ];
 
-  public constructor (provider: Provider, dependencies: GenericAugurInterfaces.Dependencies<TBigNumber>, networkId: NetworkId, addresses: ContractAddresses) {
+  public constructor (provider: TProvider, dependencies: GenericAugurInterfaces.Dependencies<TBigNumber>, networkId: NetworkId, addresses: ContractAddresses) {
     this.provider = provider;
     this.dependencies = dependencies;
     this.networkId = networkId;
@@ -68,12 +68,20 @@ export class Augur<TBigNumber> {
     this.events = new Events(this.provider, this.addresses.Augur);
   }
 
-  public static async create<TBigNumber>(provider: Provider, dependencies: GenericAugurInterfaces.Dependencies<TBigNumber>, addresses: ContractAddresses): Promise<Augur<TBigNumber>> {
+  public static async create<TBigNumber, TProvider extends Provider=Provider>(provider: TProvider, dependencies: GenericAugurInterfaces.Dependencies<TBigNumber>, addresses: ContractAddresses): Promise<Augur<TBigNumber>> {
     const networkId = await provider.getNetworkId();
-    const augur = new Augur<TBigNumber>(provider, dependencies, networkId, addresses);
+    const augur = new Augur<TBigNumber, TProvider>(provider, dependencies, networkId, addresses);
 
     await augur.contracts.setReputationToken(networkId);
 
     return augur;
+  }
+
+  public getMarket(address:string):GenericAugurInterfaces.Market<TBigNumber> {
+    return new GenericAugurInterfaces.Market<TBigNumber>(this.dependencies, address);
+  }
+
+  public getOrders():GenericAugurInterfaces.Orders<TBigNumber> {
+    return new GenericAugurInterfaces.Orders<TBigNumber>(this.dependencies, this.addresses.Orders);
   }
 }

@@ -1,17 +1,22 @@
 import { BigNumber } from "ethers/utils";
-import { FormattedEventLog } from "augur.js";
+export { BigNumber } from "ethers/utils";
+export { Block as BlockDetail } from "ethers/providers";
+
 import { EventEmitter } from "events";
-import * as Knex from "knex";
+import Knex from "knex";
 import * as WebSocket from "ws";
 import * as https from "https";
 import * as http from "http";
 import * as t from "io-ts";
 
-import { Augur as GenericAugur } from "@augurproject/api";
-export class Augur extends GenericAugur<BigNumber> {};
+import { EthersProvider } from "@augurproject/ethersjs-provider";
+import { Augur as GenericAugur, ParsedLog } from "@augurproject/api";
+
+export class Augur extends GenericAugur<BigNumber, EthersProvider> {};
 export { ParsedLog as FormattedEventLog } from "@augurproject/api";
 
-export { BlockDetail, ApiFunction, BlockRange } from "augur.js";
+export type BlockRange = { fromBlock: number; toBlock: number };
+
 
 export enum ReportingState {
   PRE_REPORTING = "PRE_REPORTING",
@@ -94,7 +99,7 @@ export type GenericCallback<ResultType> = (err: Error|null, result?: ResultType)
 
 export type AsyncCallback = (err: Error|null, result?: any) => void;
 
-export type LogProcessor = (augur: Augur<BigNumber>, log: FormattedEventLog) => Promise<(db: Knex) => Promise<void>>;
+export type LogProcessor = (augur: Augur, log: ParsedLog) => Promise<(db: Knex) => Promise<void>>;
 
 export interface EventLogProcessor {
   add: LogProcessor;
@@ -193,8 +198,6 @@ export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> 
   reportingFeeRate: BigNumberType;
   marketCreatorFeeRate: BigNumberType;
   marketCreatorFeesBalance: BigNumberType|null;
-  marketCreatorMailbox: Address;
-  marketCreatorMailboxOwner: Address;
   initialReportSize: BigNumberType|null;
   validityBondSize: BigNumberType;
   category: string;
@@ -377,8 +380,6 @@ export interface UIMarketInfo<BigNumberType> {
   reportingFeeRate: BigNumberType;
   marketCreatorFeeRate: BigNumberType;
   marketCreatorFeesBalance: BigNumberType|null;
-  marketCreatorMailbox: Address;
-  marketCreatorMailboxOwner: Address;
   initialReportSize: BigNumberType|null;
   category: string;
   tags: Array<string|null>;

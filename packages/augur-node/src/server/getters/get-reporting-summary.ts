@@ -1,6 +1,6 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
-import Augur from "augur.js";
+import Knex from "knex";
+import { Augur } from "../../types";
 import { getMarketsWithReportingState } from "./database";
 
 export const ReportingSummaryParams = t.type({

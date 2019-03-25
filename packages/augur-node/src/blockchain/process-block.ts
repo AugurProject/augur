@@ -1,5 +1,7 @@
+import { Addresses } from "@augurproject/artifacts";
+
 import * as _ from "lodash";
-import * as Knex from "knex";
+import Knex from "knex";
 import { each } from "bluebird";
 import {
   Address,
@@ -17,7 +19,14 @@ import { augurEmitter } from "../events";
 import { getPouchRevFromId, updateActiveDisputeWindows, updateMarketState } from "./log-processors/database";
 import { getMarketsWithReportingState } from "../server/getters/database";
 import { logger } from "../utils/logger";
-import { SubscriptionEventNames, DB_VERSION, DB_FILE, DB_WARP_SYNC_FILE, DUMP_EVERY_BLOCKS } from "../constants";
+import {
+  CONTRACT_INTERVAL,
+  DB_FILE,
+  DB_VERSION,
+  DB_WARP_SYNC_FILE,
+  DUMP_EVERY_BLOCKS,
+  SubscriptionEventNames
+} from "../constants";
 import { processLogByName } from "./process-logs";
 import { BackupRestore } from "../sync/backup-restore";
 
@@ -70,7 +79,7 @@ export async function processBlockAndLogs(db: Knex, pouch: PouchDB.Database, aug
       await dbWritesFunction(trx);
       await pouchUpsertBlockRow(pouch, block, logs, false);
     } else {
-      logger.info(`block removed: ${parseInt(block.number, 16)} (${block.hash})`);
+      logger.info(`block removed: ${block.number} (${block.hash})`);
       await dbWritesFunction(trx);
       await db("transactionHashes")
         .transacting(trx)
@@ -84,10 +93,9 @@ export async function processBlockAndLogs(db: Knex, pouch: PouchDB.Database, aug
     }
   });
   try {
-    if (isWarpSync && parseInt(block.number, 16) % DUMP_EVERY_BLOCKS === 0) {
+    if (isWarpSync && block.number % DUMP_EVERY_BLOCKS === 0) {
       // every X blocks export db to warp file.
-      const networkId: string = augur.rpc.getNetworkID();
-      await BackupRestore.export(DB_FILE, networkId, DB_VERSION, DB_WARP_SYNC_FILE, databaseDir);
+      await BackupRestore.export(DB_FILE, augur.networkId, DB_VERSION, DB_WARP_SYNC_FILE, databaseDir);
     }
   } catch (err) {
     logger.error("ERROR: could not create warp sync file");
@@ -122,14 +130,14 @@ export async function pouchUpsertBlockRow(pouch: PouchDB.Database, blockDetail: 
     blockDetail,
     { logs, bulkSync },
   );
-  return pouchUpsert(pouch, blockDetail.number, newBlockRow);
+  return pouchUpsert(pouch, blockDetail.number.toString(), newBlockRow);
 }
 
 export async function processBlockByBlockDetails(db: Knex, augur: Augur, block: BlockDetail, bulkSync: boolean) {
   if (!block || !block.timestamp) throw new Error(JSON.stringify(block));
-  const blockNumber = parseInt(block.number, 16);
+  const blockNumber = block.number;
   const blockHash = block.hash;
-  blockHeadTimestamp = parseInt(block.timestamp, 16);
+  blockHeadTimestamp = block.timestamp;
   const timestamp = getOverrideTimestamp() || blockHeadTimestamp;
   logger.info("new block:", `${blockNumber}, ${timestamp} (${new Date(timestamp * 1000).toString()})`);
   await insertBlockRow(db, blockNumber, blockHash, bulkSync, timestamp);
@@ -151,36 +159,34 @@ async function advanceTime(db: Knex, augur: Augur, blockNumber: number, timestam
 }
 
 async function advanceMarketReachingEndTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number) {
-  const networkId: string = augur.rpc.getNetworkID();
-  const universe: string = augur.contracts.addresses[networkId].Universe;
+  const universe: string = Addresses[augur.networkId].Universe;
   const designatedDisputeQuery = db("markets")
     .select("markets.marketId")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId");
-  designatedDisputeQuery.where("reportingState", augur.constants.REPORTING_STATE.PRE_REPORTING).where("endTime", "<", timestamp);
+  designatedDisputeQuery.where("reportingState", ReportingState.PRE_REPORTING).where("endTime", "<", timestamp);
   const designatedDisputeMarketIds: Array<MarketsContractAddressRow> = await designatedDisputeQuery;
   await each(designatedDisputeMarketIds, async (marketIdRow) => {
-    await updateMarketState(db, marketIdRow.marketId, blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_REPORTING);
+    await updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.DESIGNATED_REPORTING);
     augurEmitter.emit(SubscriptionEventNames.MarketState, {
       universe,
       marketId: marketIdRow.marketId,
-      reportingState: augur.constants.REPORTING_STATE.DESIGNATED_REPORTING,
+      reportingState: ReportingState.DESIGNATED_REPORTING,
     });
   });
 }
 
 async function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumber: number, timestamp: number) {
-  const networkId: string = augur.rpc.getNetworkID();
-  const universe: string = augur.contracts.addresses[networkId].Universe;
+  const universe: string = Addresses[augur.networkId].Universe;
   const marketsMissingDesignatedReport = getMarketsWithReportingState(db, ["markets.marketId"])
-    .where("endTime", "<", timestamp - augur.constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS)
-    .where("reportingState", augur.constants.REPORTING_STATE.DESIGNATED_REPORTING);
+    .where("endTime", "<", timestamp - CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS)
+    .where("reportingState", ReportingState.DESIGNATED_REPORTING);
   const marketAddressRows: Array<MarketsContractAddressRow> = await marketsMissingDesignatedReport;
   await each(marketAddressRows, async (marketIdRow) => {
-    await updateMarketState(db, marketIdRow.marketId, blockNumber, augur.constants.REPORTING_STATE.OPEN_REPORTING);
+    await updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.OPEN_REPORTING);
     augurEmitter.emit(SubscriptionEventNames.MarketState, {
       universe,
       marketId: marketIdRow.marketId,
-      reportingState: augur.constants.REPORTING_STATE.OPEN_REPORTING,
+      reportingState: ReportingState.OPEN_REPORTING,
     });
   });
 }

@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
 import { mapLimit, queue } from "async";
 import { each } from "bluebird";
@@ -14,7 +14,9 @@ interface BlockDetailsByBlock {
 }
 
 function extractBlockNumbers(batchOfAugurLogs: Array<FormattedEventLog>): Array<number> {
-  return _.uniq(batchOfAugurLogs.map((augurLog) => augurLog.blockNumber));
+  const ublockNumbers = _.map(batchOfAugurLogs, "blockNumber");
+  const blockNumbers = _.compact<number>(ublockNumbers);
+  return _.uniqBy<number>(blockNumbers, "blockNumber");
 }
 
 function getBlockNumbersInRange(blockRange: BlockRange): Array<number> {
@@ -28,15 +30,18 @@ async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): 
     console.log(`Fetching blocks details from ${blockNumbers[0]} to ${blockNumbers[blockNumbers.length - 1]}`);
     let fetchedBlockCount = 0;
     let highestBlockFetched = 0;
-    mapLimit(blockNumbers, BLOCK_DOWNLOAD_PARALLEL_LIMIT, (blockNumber, nextBlockNumber) => {
-      augur.rpc.eth.getBlockByNumber([blockNumber, false], (err: Error|null, block: BlockDetail): void => {
-        if (err) return nextBlockNumber(new Error("Could not get block"));
+    mapLimit(blockNumbers, BLOCK_DOWNLOAD_PARALLEL_LIMIT, async (blockNumber, nextBlockNumber) => {
+      try {
+        const block = await augur.provider.getBlock(blockNumber);
         if (block == null) return nextBlockNumber(new Error(`Block ${blockNumber} returned null response. This is usually an issue with a partially sync'd parity warp node. See: https://github.com/paritytech/parity-ethereum/issues/7411`));
+
         fetchedBlockCount++;
         if (fetchedBlockCount % 10 === 0) console.log(`Fetched ${fetchedBlockCount} / ${blockNumbers.length} block details (current: ${highestBlockFetched})`);
         if (blockNumber > highestBlockFetched) highestBlockFetched = blockNumber;
         nextBlockNumber(undefined, [blockNumber, block]);
-      });
+      } catch (e) {
+        return nextBlockNumber(new Error("Could not get block"));
+      }
     }, (err: Error|undefined, blockDetails: Array<[number, BlockDetail]>) => {
       if (err) return reject(err);
       const blockDetailsByBlock = _.fromPairs(blockDetails);

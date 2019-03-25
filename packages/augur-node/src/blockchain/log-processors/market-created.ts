@@ -1,10 +1,18 @@
-import * as Knex from "knex";
-import BigNumber from "bignumber.js";
-import Augur from "augur.js";
-import * as _ from "lodash";
+import Knex from "knex";
+import {
+  Address,
+  Augur,
+  BigNumber,
+  ErrorCallback,
+  FormattedEventLog,
+  MarketCreatedLogExtraInfo,
+  MarketsRow,
+  OutcomesRow,
+  ReportingState,
+  TokensRow
+} from "../../types";
 import { each } from "bluebird";
 import { forEachOf } from "async";
-import { Address, FormattedEventLog, MarketCreatedLogExtraInfo, MarketsRow, OutcomesRow, TokensRow, ErrorCallback } from "../../types";
 import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { createSearchProvider } from "../../database/fts";
@@ -14,17 +22,23 @@ import { augurEmitter } from "../../events";
 import { ETHER, MarketType, SubscriptionEventNames, WEI_PER_ETHER, ZERO } from "../../constants";
 import { getCurrentTime } from "../process-block";
 
-function getOutcomes(augur: Augur, log: FormattedEventLog) {
-  return new Promise((resolve, reject) => {
+interface IOutcomes {
+  numOutcomes: number;
+  outcomeNames: Array<string|number|null>;
+  shareTokens: Array<string>;
+}
 
-    const marketPayload: {} = { tx: { to: log.market } };
+
+function getOutcomes(augur: Augur, log: FormattedEventLog) {
+  return new Promise<IOutcomes>((resolve, reject) => {
+    const market = augur.getMarket(log.market);
     const numOutcomes = parseInt(log.marketType, 10) === MarketType.categorical ? (log.outcomes.length + 1) : 3;
 
     const shareTokens = new Array(numOutcomes);
     const outcomeNames: Array<string|number|null> = (log.marketType === "1" && log.outcomes) ? log.outcomes : new Array(numOutcomes - 1).fill(null);
 
     forEachOf(shareTokens, async (_: null, outcome: number, nextOutcome: ErrorCallback) => {
-      const shareToken = await augur.contracts.augur.getShareToken(Object.assign({ _outcome: outcome }, marketPayload)).catch(nextOutcome);
+      const shareToken = await market.getShareToken_(new BigNumber(outcome));
       shareTokens[outcome] = shareToken;
       nextOutcome(null);
     }, (err: Error | null): void => {
@@ -39,27 +53,24 @@ function getOutcomes(augur: Augur, log: FormattedEventLog) {
 }
 
 export async function processMarketCreatedLog(augur: Augur, log: FormattedEventLog) {
-  const marketPayload: {} = { tx: { to: log.market } };
-  const universePayload: {} = { tx: { to: log.universe, send: false } };
-  const callPromises = {
-    disputeWindow: augur.api.Market.getDisputeWindow(marketPayload),
-    endTime: augur.api.Market.getEndTime(marketPayload),
-    designatedReporter: augur.api.Market.getDesignatedReporter(marketPayload),
-    marketCreatorMailbox: augur.api.Market.getMarketCreatorMailbox(marketPayload),
-    numTicks: augur.api.Market.getNumTicks(marketPayload),
-    marketCreatorSettlementFeeDivisor: augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload),
-    reportingFeeDivisor: augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload),
-    validityBondAttoeth: augur.api.Market.getValidityBondAttoEth(marketPayload),
-    getOutcomes: getOutcomes(augur, log),
+  const market = augur.getMarket(log.market);
+  const calls = {
+    disputeWindow: (await market.getDisputeWindow_()).toString(),
+    endTime: (await market.getEndTime_()).toString(),
+    designatedReporter: (await market.getDesignatedReporter_()).toString(),
+    numTicks: (await market.getNumTicks_()).toString(),
+    marketCreatorSettlementFeeDivisor: (await market.getMarketCreatorSettlementFeeDivisor_()).toString(),
+    reportingFeeDivisor: (await augur.contracts.universe.getOrCacheReportingFeeDivisor_()).toString(),
+    validityBondAttoeth: (await market.getValidityBondAttoEth_()).toString(),
+    getOutcomes: await getOutcomes(augur, log),
   };
-  const calls = _.zipObject(_.keys(callPromises), await Promise.all(_.values(callPromises)));
 
   return async (db: Knex) => {
     const designatedReportStakeRow: { balance: BigNumber } = await db("balances_detail").first("balance").where({ owner: log.market, symbol: "REP" });
     if (designatedReportStakeRow == null) throw new Error(`No REP balance on market: ${log.market} (${log.transactionHash}`);
     const marketStateDataToInsert: { [index: string]: string | number | boolean } = {
       marketId: log.market,
-      reportingState: augur.constants.REPORTING_STATE.PRE_REPORTING,
+      reportingState: ReportingState.PRE_REPORTING,
       blockNumber: log.blockNumber,
     };
     let query = db.insert(marketStateDataToInsert).into("market_state");
@@ -97,11 +108,9 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
       designatedReporter: calls.designatedReporter,
       designatedReportStake: convertFixedPointToDecimal(designatedReportStakeRow.balance, WEI_PER_ETHER),
       numTicks: calls.numTicks,
-      marketCreatorFeeRate: convertDivisorToRate(calls.marketCreatorSettlementFeeDivisor, 10),
-      marketCreatorMailbox: calls.marketCreatorMailbox,
-      marketCreatorMailboxOwner: log.marketCreator,
+      marketCreatorFeeRate: convertDivisorToRate(calls.marketCreatorSettlementFeeDivisor),
       initialReportSize: null,
-      reportingFeeRate: convertDivisorToRate(calls.reportingFeeDivisor, 10),
+      reportingFeeRate: convertDivisorToRate(calls.reportingFeeDivisor),
       marketCreatorFeesBalance: "0",
       volume: "0",
       sharesOutstanding: "0",
@@ -114,7 +123,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
     };
     const outcomesDataToInsert: Partial<OutcomesRow<string>> = formatBigNumberAsFixed<Partial<OutcomesRow<BigNumber>>, Partial<OutcomesRow<string>>>({
       marketId: log.market,
-      price: new BigNumber(log.minPrice, 10).plus(new BigNumber(log.maxPrice, 10)).dividedBy(new BigNumber(calls.getOutcomes.numOutcomes, 10)),
+      price: new BigNumber(log.minPrice).add(new BigNumber(log.maxPrice)).div(new BigNumber(calls.getOutcomes.numOutcomes)),
       volume: ZERO,
       shareVolume: ZERO,
     });

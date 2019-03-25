@@ -1,14 +1,13 @@
-import * as Knex from "knex";
+import Knex from "knex";
 import helmet from "helmet";
 import * as t from "io-ts";
-import Augur from "augur.js";
-import { Address, ServersData } from "../types";
+import { Address, Augur, ServersData } from "../types";
 import { runWebsocketServer } from "./run-websocket-server";
 import { getMarkets, GetMarketsParams } from "./getters/get-markets";
 import { isSyncFinished } from "../blockchain/bulk-sync-augur-node-with-blockchain";
 import { EventEmitter } from "events";
-import express, { Express, Request, Response } from "express";
-import { addresses } from "@augurproject/artifacts";
+import express from "express";
+import { Addresses } from "@augurproject/artifacts";
 
 // tslint:disable-next-line:no-var-requires
 const { websocketConfigs } = require("../../config");
@@ -44,8 +43,7 @@ export function runServer(db: Knex, augur: Augur, controlEmitter: EventEmitter =
         return;
       }
 
-      const networkId: string = augur.rpc.getNetworkID();
-      const universe: Address = addresses[networkId].Universe;
+      const universe: Address = Addresses[augur.networkId].Universe;
 
       getMarkets(db, augur, {universe} as t.TypeOf<typeof GetMarketsParams>).then((result: any) => {
         if (result.length === 0) {

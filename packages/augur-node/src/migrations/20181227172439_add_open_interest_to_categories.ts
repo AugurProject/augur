@@ -1,6 +1,6 @@
-import * as Knex from "knex";
-import { BigNumber } from "bignumber.js";
-import { ReportingState } from "../types";
+import Knex from "knex";
+
+import { BigNumber, ReportingState } from "../types";
 
 interface MarketRow {
   category: string;
@@ -17,9 +17,9 @@ async function backfillCategoryOpenInterestFromMarkets(knex: Knex, marketRows: A
   marketRows.forEach((r: MarketRow) => {
     const oi = oiByCategory.get(r.category);
     if (oi === undefined) {
-      oiByCategory.set(r.category, new BigNumber(r.openInterest, 10));
+      oiByCategory.set(r.category, new BigNumber(r.openInterest));
     } else {
-      oiByCategory.set(r.category, oi.plus(new BigNumber(r.openInterest, 10)));
+      oiByCategory.set(r.category, oi.add(new BigNumber(r.openInterest)));
     }
   });
 

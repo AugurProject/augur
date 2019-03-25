@@ -1,6 +1,6 @@
-import { Address, Augur, FormattedEventLog } from "../../../types";
-import * as Knex from "knex";
-import { BigNumber } from "bignumber.js";
+import { Address, Augur, BigNumber, FormattedEventLog } from "../../../types";
+import Knex from "knex";
+
 import { isLegacyReputationToken } from "./is-legacy-reputation-token";
 import { updateProfitLossChangeShareBalance } from "../profit-loss/update-profit-loss";
 import { TokenType } from "../../../constants";
@@ -14,7 +14,7 @@ export async function decreaseTokenBalance(db: Knex, augur: Augur, token: Addres
   const oldBalance: BalanceResult = await db.first("balance").from("balances").where({ token, owner });
   if (amount.isZero()) return;
   if (oldBalance == null) throw new Error(`Could not find balance for token decrease (token: ${token}, owner: ${owner})`);
-  const balance = oldBalance.balance.minus(amount);
+  const balance = oldBalance.balance.sub(amount);
   await db.update({ balance: balance.toString() }).into("balances").where({ token, owner });
 
   if (parseInt(log.tokenType, 10) === TokenType.ShareToken) {

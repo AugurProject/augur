@@ -1,5 +1,6 @@
 import { Address, Augur } from "../../../types";
+import { Addresses } from "@augurproject/artifacts";
 
 export function isLegacyReputationToken(augur: Augur, token: Address) {
-  return token === augur.contracts.addresses[augur.rpc.getNetworkID()].LegacyReputationToken;
+  return Addresses[augur.networkId].LegacyReputationToken;
 }

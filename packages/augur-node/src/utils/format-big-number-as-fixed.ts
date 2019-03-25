@@ -1,4 +1,4 @@
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "../types";
 
 export function formatBigNumberAsFixed<InputType, OutputType> (row: InputType): OutputType {
   if (row === null || typeof row !== "object") throw new Error(`Invalid row provided to formatBigNumberAsFixed: ${row}`);

@@ -1,7 +1,6 @@
-import { Address, Augur, PayoutNumerators } from "../../../types";
-import * as Knex from "knex";
-import * as _ from "lodash";
-import { BigNumber } from "bignumber.js";
+import { Address, Augur, BigNumber, PayoutNumerators } from "../../../types";
+import Knex from "knex";
+
 import { numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
 import { getCurrentTime } from "../../process-block";
 
@@ -49,7 +48,7 @@ export async function updateOutcomeValuesFromFinalization(db: Knex, augur: Augur
     const column = `payout${i}`;
     const payoutValue = payouts[column as keyof PayoutAndMarket<BigNumber>];
     if (payoutValue != null) {
-      const value = payoutValue.times(tickSize).plus(minPrice);
+      const value = payoutValue.mul(tickSize).add(minPrice);
       insertValues.push({
         marketId,
         transactionHash,

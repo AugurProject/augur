@@ -1,9 +1,8 @@
 import * as t from "io-ts";
 import { PathReporter } from "io-ts/lib/PathReporter";
-import * as Knex from "knex";
-import Augur from "augur.js";
+import Knex from "knex";
+import { Augur, JsonRpcRequest } from "../types";
 import { logger } from "../utils/logger";
-import { JsonRpcRequest } from "../types";
 import { AccountTransferHistoryParams, getAccountTransferHistory } from "./getters/get-account-transfer-history";
 import { getReportingHistory, ReportingHistoryParams } from "./getters/get-reporting-history";
 import { getReportingSummary, ReportingSummaryParams } from "./getters/get-reporting-summary";
@@ -12,10 +11,16 @@ import { getMarketPriceHistory, MarketPriceHistoryParams } from "./getters/get-m
 import { getMarketPriceCandlesticks, MarketPriceCandlesticksParams } from "./getters/get-market-price-candlesticks";
 import { getUserTradingPositions, UserTradingPositionsParams } from "./getters/get-user-trading-positions";
 import { getUserShareBalances, UserShareBalancesParams } from "./getters/get-user-share-balances";
-import { getUnclaimedMarketCreatorFees, UnclaimedMarketCreatorFeesParams } from "./getters/get-unclaimed-market-creator-fees";
+import {
+  getUnclaimedMarketCreatorFees,
+  UnclaimedMarketCreatorFeesParams
+} from "./getters/get-unclaimed-market-creator-fees";
 import { DisputeTokensParams, getDisputeTokens } from "./getters/get-dispute-tokens";
 import { getMarkets, GetMarketsParams } from "./getters/get-markets";
-import { getMarketsClosingInDateRange, MarketsClosingInDateRangeParams } from "./getters/get-markets-closing-in-date-range";
+import {
+  getMarketsClosingInDateRange,
+  MarketsClosingInDateRangeParams
+} from "./getters/get-markets-closing-in-date-range";
 import { getMarketsInfo, MarketsInfoParams } from "./getters/get-markets-info";
 import { getOrders, OrdersParams } from "./getters/get-orders";
 import { AllOrdersParams, getAllOrders } from "./getters/get-all-orders";
@@ -27,9 +32,14 @@ import { getInitialReporters, InitialReportersParams } from "./getters/get-initi
 import { ForkMigrationTotalsParams, getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 import { getReportingFees, ReportingFeesParams } from "./getters/get-reporting-fees";
 import { getUniversesInfo, UniverseInfoParams } from "./getters/get-universes-info";
-import { getProfitLoss, GetProfitLossParams, getProfitLossSummary, GetProfitLossSummaryParams } from "./getters/get-profit-loss";
+import {
+  getProfitLoss,
+  GetProfitLossParams,
+  getProfitLossSummary,
+  GetProfitLossSummaryParams
+} from "./getters/get-profit-loss";
 import { getWinningBalance, WinningBalanceParams } from "./getters/get-winning-balance";
-import { getCategories, CategoriesParams } from "./getters/get-categories";
+import { CategoriesParams, getCategories } from "./getters/get-categories";
 
 type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
 
