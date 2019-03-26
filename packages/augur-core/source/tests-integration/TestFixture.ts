@@ -66,7 +66,7 @@ export class TestFixture {
         const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
 
         console.log("Creating Market");
-        await this.cash.depositEther({attachedEth: marketCreationFee});
+        await this.cash.faucet(marketCreationFee);
         const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '');
         if (!marketAddress || marketAddress == "0x") {
             throw new Error("Unable to get address for new categorical market.");
@@ -89,7 +89,7 @@ export class TestFixture {
 
         const ethValue = numShares.mul(price);
 
-        await this.cash.depositEther({attachedEth: ethValue});
+        await this.cash.faucet(ethValue);
         await createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
         return;
     }
@@ -106,7 +106,7 @@ export class TestFixture {
         }
         const ethValue = numShares.mul(actualPrice);
 
-        await this.cash.depositEther({ attachedEth: ethValue });
+        await this.cash.faucet(ethValue);
 
         const bestPriceAmount = await trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
         if (bestPriceAmount == new ethers.utils.BigNumber(0)) {
@@ -167,7 +167,7 @@ export class TestFixture {
         const numTicks = await market.getNumTicks_();
         const ethValue = amount.mul(numTicks);
 
-        await this.cash.depositEther({ attachedEth: ethValue });
+        await this.cash.faucet(ethValue);
         await completeSets.publicBuyCompleteSets(market.address, amount);
         return;
     }

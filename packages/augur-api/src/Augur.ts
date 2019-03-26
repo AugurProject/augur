@@ -70,6 +70,10 @@ export class Augur<TBigNumber> {
 
   public static async create<TBigNumber>(provider: Provider, dependencies: GenericAugurInterfaces.Dependencies<TBigNumber>, addresses: ContractAddresses): Promise<Augur<TBigNumber>> {
     const networkId = await provider.getNetworkId();
-    return new Augur<TBigNumber>(provider, dependencies, networkId, addresses);
+    const augur = new Augur<TBigNumber>(provider, dependencies, networkId, addresses);
+
+    await augur.contracts.setReputationToken(networkId);
+
+    return augur;
   }
 }

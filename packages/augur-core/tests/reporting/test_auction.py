@@ -56,10 +56,9 @@ def test_bootstrap(localFixture, universe, reputationToken, auction, time, cash)
                 assert auction.tradeEthForRep(repAmount)
 
     # If we try to purchase any more the transaction will fail
-    cash.depositEther(value=cost)
+    cash.faucet(cost)
     with raises(TransactionFailed):
         auction.tradeEthForRep(repAmount)
-    cash.withdrawEther(cost)
 
     # We can redeem our auction tokens immediately now that the auction is effectively over
     expectedREP = reputationToken.balanceOf(repAuctionToken.address)

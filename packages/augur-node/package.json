@@ -58,7 +58,7 @@
   },
   "homepage": "https://github.com/AugurProject/augur-node#readme",
   "dependencies": {
-    "async": "2.6.1",
+    "async": "2.6.2",
     "@augurproject/artifacts": "10.0.0-0",
     "augur.js": "10.0.0-0",
     "bignumber.js": "6.0.0",
@@ -78,10 +78,10 @@
     "ts-node": "^6.1.1",
     "uuid": "3.3.2",
     "webpack": "4.27.1",
-    "ws": "5.2.2"
+    "ws": "6.2.0"
   },
   "devDependencies": {
-    "@types/pouchdb": "6.3.2",
+    "@types/pouchdb": "6.3.3",
     "eslint": "5.12.1",
     "husky": "0.14.3",
     "node-gyp": "3.8.0",

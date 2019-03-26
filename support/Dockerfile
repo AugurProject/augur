@@ -1,23 +1,20 @@
-FROM node:10.15.0-alpine as node
+# when updating node version, make sure link to yarn in /opt is still the correct version
+ARG NODE_VERSION=10.15.3
+FROM node:${NODE_VERSION}-alpine as node
 
 RUN apk update \
   && apk upgrade \
-  && apk add  --no-cache git bash python make gcc g++
+  && apk add  --no-cache --virtual .build-dep git bash python make gcc g++
 
 WORKDIR /augur
-ADD ./ .
-RUN yarn && yarn build
+COPY . .
 
-FROM alpine:3.9
+RUN npm_config_devdir=/augur/.node-gyp yarn --cache-folder=/augur/.yarn-cache
+
+RUN yarn build
+
 RUN apk update \
   && apk upgrade \
   && apk add  --no-cache libstdc++
 
-COPY --from=node /usr/local/lib/ /usr/local/lib/
-COPY --from=node /opt /opt
-COPY --from=node /usr/local/bin/node /usr/local/bin/
-COPY --from=node /augur /augur
-RUN ln -s /opt/yarn-v1.12.3/bin/yarn /usr/local/bin/yarn
-RUN cd /usr/local/bin && ln -s ../lib/node_modules/npm/bin/npm-cli.js npm
-RUN cd /usr/local/bin && ln -s ../lib/node_modules/npm/bin/npx-cli.js npx
-
+RUN apk del .build-dep

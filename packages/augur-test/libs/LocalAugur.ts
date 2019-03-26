@@ -8,6 +8,8 @@ import { CompilerConfiguration} from "@augurproject/core/source/libraries/Compil
 import { ContractCompiler } from "@augurproject/core/source/libraries/ContractCompiler";
 import { EthersFastSubmitWallet } from "@augurproject/core/source/libraries/EthersFastSubmitWallet";
 import { ethers } from "ethers";
+import { CompilerOutput } from "solc";
+import { ContractAddresses } from "@augurproject/artifacts";
 
 export type AccountList = [{
       secretKey: string;
@@ -15,8 +17,9 @@ export type AccountList = [{
       balance: number;
 }];
 
+const augurCorePath = path.join(__dirname, "../../augur-core/");
+
 function makeCompilerConfiguration() {
-  const augurCorePath = path.join(__dirname, "../../../augur-core/");
   const contractSourceRoot = path.join(augurCorePath, "source/contracts/");
   const outputRoot = path.join(augurCorePath, "output/contracts/");
   const useFlattener = false;  // TODO make flattener bin specifiable so this can be true
@@ -24,9 +27,7 @@ function makeCompilerConfiguration() {
   return new CompilerConfiguration(contractSourceRoot, outputRoot, enableSdb, useFlattener);
 }
 
-
 function makeDeployerConfiguration() {
-  const augurCorePath = path.join(__dirname, "../../../augur-core/");
   const contractInputRoot = path.join(augurCorePath, "output/contracts");
   const artifactOutputRoot  = path.join(augurCorePath, "output/contracts");
   const createGenesisUniverse = true;
@@ -37,7 +38,14 @@ function makeDeployerConfiguration() {
   return new DeployerConfiguration(contractInputRoot, artifactOutputRoot, augurAddress, createGenesisUniverse, isProduction, useNormalTime, legacyRepAddress);
 }
 
-export async function makeTestAugur(accounts: AccountList): Promise<Augur<any>> {
+interface UsefulContractObjects {
+  provider: EthersProvider;
+  signer: EthersFastSubmitWallet;
+  dependencies: ContractDependenciesEthers;
+  compiledContracts: CompilerOutput;
+  addresses: ContractAddresses;
+}
+export async function compileAndDeployToGanache(accounts: AccountList): Promise<UsefulContractObjects> {
   const ganacheProvider = new ethers.providers.Web3Provider(ganache.provider({
     accounts,
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
@@ -58,5 +66,18 @@ export async function makeTestAugur(accounts: AccountList): Promise<Augur<any>> 
   const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, ganacheProvider, signer, compiledContracts);
   const addresses = await contractDeployer.deploy();
 
+  return {provider, signer, dependencies, compiledContracts, addresses};
+}
+
+export async function makeTestAugur(accounts: AccountList): Promise<Augur<any>> {
+  const {provider, dependencies, addresses} = await compileAndDeployToGanache(accounts);
   return Augur.create(provider, dependencies, addresses);
 }
+
+export const ACCOUNTS: AccountList = [
+  {
+    secretKey: "0xa429eeb001c683cf3d8faf4b26d82dbf973fb45b04daad26e1363efd2fd43913",
+    publicKey: "0x8fff40efec989fc938bba8b19584da08ead986ee",
+    balance: 100000000000000000000,  // 100 ETH
+  },
+];

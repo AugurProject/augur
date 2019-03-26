@@ -30,6 +30,7 @@ contract Orders is IOrders, Initializable {
     mapping(bytes32 => bytes32) private worstOrder;
 
     IAugur public augur;
+    ICash public cash;
     address public trade;
     address public fillOrder;
     address public cancelOrder;
@@ -42,6 +43,7 @@ contract Orders is IOrders, Initializable {
         fillOrder = augur.lookup("FillOrder");
         cancelOrder = augur.lookup("CancelOrder");
         trade = augur.lookup("Trade");
+        cash = ICash(augur.lookup("Cash"));
         return true;
     }
 
@@ -239,11 +241,11 @@ contract Orders is IOrders, Initializable {
             uint256 _attoSharesToCoverByTokens = _order.amount.sub(_order.sharesEscrowed);
             uint256 _amount = _attoSharesToCoverByTokens.mul(_priceDelta);
             if (_isRefund) {
-                require(_market.getDenominationToken().transferFrom(address(_market), msg.sender, _amount));
+                require(cash.transferFrom(address(_market), msg.sender, _amount));
                 marketOrderData[address(_market)].totalEscrowed -= _amount;
                 _order.moneyEscrowed -= _amount;
             } else {
-                require(augur.trustedTransfer(_market.getDenominationToken(), msg.sender, address(_market), _amount));
+                require(augur.trustedTransfer(cash, msg.sender, address(_market), _amount));
                 marketOrderData[address(_market)].totalEscrowed += _amount;
                 _order.moneyEscrowed += _amount;
             }

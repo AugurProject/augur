@@ -18,12 +18,15 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     using SafeMathUint256 for uint256;
 
     IAugur public augur;
+    ICash public cash;
     address public fillOrder;
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         fillOrder = augur.lookup("FillOrder");
+        cash = ICash(augur.lookup("Cash"));
+        return true;
     }
 
     /**
@@ -49,10 +52,9 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         require(_sender != address(0));
 
         uint256 _numOutcomes = _market.getNumberOfOutcomes();
-        ICash _denominationToken = _market.getDenominationToken();
 
         uint256 _cost = _amount.mul(_market.getNumTicks());
-        require(augur.trustedTransfer(_denominationToken, _sender, address(_market), _cost));
+        require(augur.trustedTransfer(cash, _sender, address(_market), _cost));
         for (uint256 _outcome = 0; _outcome < _numOutcomes; ++_outcome) {
             _market.getShareToken(_outcome).createShares(_sender, _amount);
         }
@@ -84,7 +86,6 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         require(_sender != address(0));
 
         uint256 _numOutcomes = _market.getNumberOfOutcomes();
-        ICash _denominationToken = _market.getDenominationToken();
         uint256 _payout = _amount.mul(_market.getNumTicks());
         if (!_market.isFinalized()) {
             _market.getUniverse().decrementOpenInterest(_payout);
@@ -103,9 +104,9 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
             _market.recordMarketCreatorFees(_creatorFee, _affiliateAddress);
         }
         if (_reportingFee != 0) {
-            require(_denominationToken.transferFrom(address(_market), address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reportingFee));
+            require(cash.transferFrom(address(_market), address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reportingFee));
         }
-        require(_denominationToken.transferFrom(address(_market), _sender, _payout));
+        require(cash.transferFrom(address(_market), _sender, _payout));
 
         return (_creatorFee, _reportingFee);
     }
