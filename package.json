@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "tsc -b",
+    "build:release": "tsc -b tsconfig.release.json",
     "build:ci-docker": "docker build . -t augurproject/gitlab-ci-base-node:latest",
     "clean": "lerna clean -y",
     "test": "jest",

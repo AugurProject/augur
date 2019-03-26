@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "src/**/*.test.ts"
+  ],
+  "references": [{
+    "path": "../contract-dependencies/tsconfig.release.json"
+  }]
+
+}

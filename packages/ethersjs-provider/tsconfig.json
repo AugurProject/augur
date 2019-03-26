@@ -4,6 +4,9 @@
     "outDir": "build",
     "rootDir": "src"
   },
+  "include": [
+    "src/**/*"
+  ],
   "references": [
     {
       "path": "../augur-api"
