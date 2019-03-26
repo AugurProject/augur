@@ -1,14 +1,17 @@
 import {PouchDBFactoryType} from "@augurproject/state/src/db/AbstractDB";
 import PouchDB from "pouchdb";
-import * as _ from "lodash";
 import { DB } from "@augurproject/state/src/db/DB";
 import {Augur} from "@augurproject/api";
 import { AccountList } from "./LocalAugur";
 import { IBlockAndLogStreamerListener } from "@augurproject/state/src/db/BlockAndLogStreamerListener";
 
+interface Databases {
+  [dbName: string]: PouchDB.Database;
+}
+
 export function makeDbMock() {
   const mockState = {
-    dbNames: [] as Array<string>,
+    dbs: {} as Databases,
     failCountdown: -1,  // default state never fails
     alwaysFail: false,
   };
@@ -56,18 +59,18 @@ export function makeDbMock() {
   function makeFactory(): PouchDBFactoryType {
     return (dbName: string) => {
       const fullDbName = `db/${dbName}`;
-      mockState.dbNames.push(fullDbName);
-      return new MockPouchDB(fullDbName, {adapter: "memory"});
+      const db = new MockPouchDB(fullDbName, {adapter: "memory"});
+      mockState.dbs[fullDbName] = db;
+      return db;
     };
   }
 
   async function wipeDB(): Promise<void> {
-    await Promise.all(_.map(mockState.dbNames, (dbName) => {
-      const db = new PouchDB(dbName, {adapter: "memory"});
+    await Promise.all(Object.values(mockState.dbs).map( (db) => {
       return db.destroy();
     }));
 
-    mockState.dbNames = [];
+    mockState.dbs = {};
   }
 
   function makeBlockAndLogStreamerListener(): IBlockAndLogStreamerListener {
@@ -89,6 +92,7 @@ export function makeDbMock() {
     makeFactory,
     wipeDB,
     constants,
+    getDatabases: () => mockState.dbs,
     failNext: () => mockState.failCountdown = 1,
     failInN: (n: number) => mockState.failCountdown = n,
     failForever: () => mockState.alwaysFail = true,
