@@ -5,13 +5,13 @@
     "rootDir": "src"
   },
   "include": [
-    "./src/**/*"
+    "src/**/*"
   ],
   "files": [
-    "./src/abi.json",
-    "./src/addresses.json",
-    "./src/contracts.json",
-    "./src/upload-block-numbers.json"
+    "src/abi.json",
+    "src/addresses.json",
+    "src/contracts.json",
+    "src/upload-block-numbers.json"
   ],
   "references": []
 }

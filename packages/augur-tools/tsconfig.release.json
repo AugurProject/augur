@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "src/**/*.test.ts"
+  ],
+  "references": [{
+    "path": "../blockstream-adapters/tsconfig.release.json"
+  }]
+}
