@@ -1,6 +1,5 @@
 import {PouchDBFactoryType} from "@augurproject/state/src/db/AbstractDB";
 import PouchDB from "pouchdb";
-import * as _ from "lodash";
 import { DB } from "@augurproject/state/src/db/DB";
 import {Augur} from "@augurproject/api";
 import { AccountList } from "./LocalAugur";
@@ -67,7 +66,7 @@ export function makeDbMock() {
   }
 
   async function wipeDB(): Promise<void> {
-    await Promise.all(_.map(Object.values(mockState.dbs), (db) => {
+    await Promise.all(Object.values(mockState.dbs).map( (db) => {
       return db.destroy();
     }));
 
