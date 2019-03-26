@@ -6,11 +6,11 @@ import {Augur} from "@augurproject/api";
 import { AccountList } from "./LocalAugur";
 import { IBlockAndLogStreamerListener } from "@augurproject/state/src/db/BlockAndLogStreamerListener";
 
-export function makeDbMock() {
-  interface Databases {
-    [dbName: string]: MockPouchDB;
-  }
+interface Databases {
+  [dbName: string]: PouchDB.Database;
+}
 
+export function makeDbMock() {
   const mockState = {
     dbs: {} as Databases,
     failCountdown: -1,  // default state never fails
