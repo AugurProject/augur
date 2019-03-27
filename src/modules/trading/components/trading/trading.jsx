@@ -19,6 +19,8 @@ class MarketTrading extends Component {
     isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
     market: PropTypes.object.isRequired,
+    marketReviewSeen: PropTypes.bool.isRequired,
+    marketReviewModal: PropTypes.func.isRequired,
     selectedOrderProperties: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.string,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
@@ -94,9 +96,11 @@ class MarketTrading extends Component {
       isLogged,
       isMobile,
       market,
+      marketReviewSeen,
       selectedOrderProperties,
       gasPrice,
-      handleFilledOnly
+      handleFilledOnly,
+      marketReviewModal
     } = this.props;
     const s = this.state;
 
@@ -138,6 +142,8 @@ class MarketTrading extends Component {
             }
             gasPrice={gasPrice}
             handleFilledOnly={handleFilledOnly}
+            marketReviewModal={marketReviewModal}
+            marketReviewSeen={marketReviewSeen}
           />
         )}
         {isMobile &&

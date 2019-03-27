@@ -21,7 +21,9 @@ const MarketTradingConfirm = ({
   doNotCreateOrders,
   showOrderPlaced,
   marketQuantity,
-  handleFilledOnly
+  handleFilledOnly,
+  marketReviewModal,
+  marketReviewSeen
 }) => {
   const {
     numShares,
@@ -218,22 +220,46 @@ const MarketTradingConfirm = ({
           className={Styles["TradingConfirmation__button--submit"]}
           onClick={e => {
             e.preventDefault();
-            market.onSubmitPlaceTrade(
-              selectedOutcome.id,
-              (err, tradeGroupID) => {
-                // onSent/onFailed CB
-                if (!err) {
-                  showOrderPlaced();
+            if (!marketReviewSeen) {
+              marketReviewModal({
+                marketId: market.id,
+                cb: () => {
+                  market.onSubmitPlaceTrade(
+                    selectedOutcome.id,
+                    (err, tradeGroupID) => {
+                      // onSent/onFailed CB
+                      if (!err) {
+                        showOrderPlaced();
+                      }
+                    },
+                    res => {
+                      if (doNotCreateOrders && res.res !== res.sharesToFill)
+                        handleFilledOnly(res.tradeInProgress);
+                      // onComplete CB
+                    },
+                    doNotCreateOrders
+                  );
+                  prevPage(e, true);
                 }
-              },
-              res => {
-                if (doNotCreateOrders && res.res !== res.sharesToFill)
-                  handleFilledOnly(res.tradeInProgress);
-                // onComplete CB
-              },
-              doNotCreateOrders
-            );
-            prevPage(e, true);
+              });
+            } else {
+              market.onSubmitPlaceTrade(
+                selectedOutcome.id,
+                (err, tradeGroupID) => {
+                  // onSent/onFailed CB
+                  if (!err) {
+                    showOrderPlaced();
+                  }
+                },
+                res => {
+                  if (doNotCreateOrders && res.res !== res.sharesToFill)
+                    handleFilledOnly(res.tradeInProgress);
+                  // onComplete CB
+                },
+                doNotCreateOrders
+              );
+              prevPage(e, true);
+            }
           }}
         >
           Confirm {selectedNav}
@@ -245,6 +271,7 @@ const MarketTradingConfirm = ({
 
 MarketTradingConfirm.propTypes = {
   market: PropTypes.object.isRequired,
+  marketReviewSeen: PropTypes.bool.isRequired,
   selectedNav: PropTypes.string.isRequired,
   orderType: PropTypes.string.isRequired,
   marketQuantity: PropTypes.string.isRequired,
@@ -264,7 +291,8 @@ MarketTradingConfirm.propTypes = {
   }).isRequired,
   isMobile: PropTypes.bool.isRequired,
   showOrderPlaced: PropTypes.func.isRequired,
-  handleFilledOnly: PropTypes.func.isRequired
+  handleFilledOnly: PropTypes.func.isRequired,
+  marketReviewModal: PropTypes.func.isRequired
 };
 
 export default MarketTradingConfirm;

@@ -23,6 +23,8 @@ import Styles from "modules/trading/components/trading--wrapper/trading--wrapper
 class MarketTradingWrapper extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
+    marketReviewSeen: PropTypes.bool.isRequired,
+    marketReviewModal: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
     selectedOrderProperties: PropTypes.object.isRequired,
     initialMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
@@ -187,7 +189,9 @@ class MarketTradingWrapper extends Component {
       toggleForm,
       showOrderPlaced,
       gasPrice,
-      handleFilledOnly
+      handleFilledOnly,
+      marketReviewModal,
+      marketReviewSeen
     } = this.props;
     const s = this.state;
 
@@ -326,6 +330,8 @@ class MarketTradingWrapper extends Component {
               clearOrderForm={this.clearOrderForm}
               showOrderPlaced={showOrderPlaced}
               handleFilledOnly={handleFilledOnly}
+              marketReviewModal={marketReviewModal}
+              marketReviewSeen={marketReviewSeen}
             />
           )}
       </section>

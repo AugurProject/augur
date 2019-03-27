@@ -15,6 +15,7 @@ import ModalParticipate from "modules/modal/containers/modal-participate";
 import ModalMigrateMarket from "modules/modal/containers/modal-migrate-market";
 import ModalNetworkConnect from "modules/modal/containers/modal-network-connect";
 import ModalDisclaimer from "modules/modal/containers/modal-disclaimer";
+import ModalMarketReview from "modules/modal/containers/modal-market-review";
 import ModalGasPrice from "modules/modal/containers/modal-gas-price";
 import ModalClaimTradingProceeds from "modules/modal/containers/modal-claim-trading-proceeds";
 
@@ -84,6 +85,9 @@ export default class ModalView extends Component {
           )}
           {modal.type === TYPES.MODAL_DISCLAIMER && (
             <ModalDisclaimer {...modal} />
+          )}
+          {modal.type === TYPES.MODAL_MARKET_REVIEW && (
+            <ModalMarketReview {...modal} />
           )}
         </div>
       </section>

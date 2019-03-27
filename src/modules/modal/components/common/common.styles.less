@@ -533,6 +533,116 @@ div.ErrorField:focus {
   }
 }
 
+.ModalMarketReview {
+  background-color: @color-white;
+  border-radius: 0.32rem;
+  color: @color-almostblack;
+  flex-flow: row nowrap;
+  max-width: 35rem;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  padding: 1.5rem 0;
+  position: relative;
+  text-align: center;
+  width: 100%;
+
+  h1 {
+    color: @color-almostblack;
+    font-size: 1.375rem;
+    font-weight: bold;
+    margin: 0 0 0.25rem;
+    text-align: center;
+  }
+}
+
+.ModalMarketReview__Header {
+  color: @color-almostblack;
+  font-size: 0.875rem;
+  font-weight: normal;
+  padding: 0 2rem 1rem;
+  text-align: left;
+
+  > p:first-of-type {
+    > span {
+      font-weight: bold;
+    }
+  }
+}
+
+.ModalMarketReview__ReadMore {
+  color: @color-almostblack;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.ModalMarketReview__TextBox {
+  background-color: @color-offwhite;
+  color: @color-almostblack;
+  margin: 0 2rem 1.5rem;
+  overflow-wrap: break-word;
+  padding: 1.5rem 2rem;
+  text-align: left;
+  width: 89%;
+
+  > div {
+    > p {
+      font-size: 0.875rem;
+      font-weight: bold;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    font-size: 0.875rem;
+    font-weight: normal;
+    margin: 0 0 1rem;
+  }
+}
+
+.ModalMarketReview__checkbox {
+  display: flex;
+  flex-flow: row nowrap;
+  margin-bottom: 1.5rem;
+  width: 100%;
+
+  > label {
+    align-items: center;
+    color: @color-darkpurple;
+    display: flex;
+    font-size: 0.875rem;
+    font-weight: bold;
+    margin: 0 2rem;
+    text-transform: none;
+    user-select: none;
+
+    > div {
+      margin-right: 2rem;
+    }
+  }
+
+  &:active,
+  &:focus {
+    outline: none;
+  }
+}
+
+.ModalMarketReview__ActionButtons {
+  border-top: 1px solid #d8d8d8;
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 2rem 0;
+  width: 100%;
+
+  > div:first-of-type {
+    margin-right: 1rem;
+  }
+
+  > div {
+    border: 0;
+    margin: 0;
+    padding: 0;
+  }
+}
+
 @media @breakpoint-mobile-small {
   .ModalView__content {
     padding: 1rem;
