@@ -91,7 +91,7 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
 
     # No longer testing a higher validity bond, token transfers are token precisely, no ability to send more than required
     market = contractsFixture.createReasonableYesNoMarket(universe, validityBond=minimumValidityBond)
-    assert market.getValidityBondAttoEth() == minimumValidityBond
+    assert market.getValidityBondAttoCash() == minimumValidityBond
 
     # If we resolve the market the bond in it's entirety will go to the fee pool or to the market creator if the resolution was not invalid
     proceedToDesignatedReporting(contractsFixture, market)

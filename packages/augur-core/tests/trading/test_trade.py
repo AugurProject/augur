@@ -902,7 +902,7 @@ def test_fees_from_trades(finalized, contractsFixture, cash, market):
 
     if not finalized:
         # We can confirm that the 3rd test account has an affiliate fee balance of 25% of the market creator fee 1% taken from the 1 ETH order
-        assert market.affiliateFeesAttoEth(tester.a3) == expectedAffiliateFees
+        assert market.affiliateFeesAttoCash(tester.a3) == expectedAffiliateFees
 
         # The affiliate can withdraw their fees
         with TokenDelta(cash, expectedAffiliateFees, tester.a3, "Affiliate did not recieve the correct fees"):

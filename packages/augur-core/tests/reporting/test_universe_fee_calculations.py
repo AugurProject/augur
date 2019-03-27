@@ -51,11 +51,11 @@ def test_reporter_fees(contractsFixture, universe, market, cash):
     assert universe.getOrCacheReportingFeeDivisor() == defaultValue
 
     # Generate OI
-    assert universe.getOpenInterestInAttoEth() == 0
+    assert universe.getOpenInterestInAttoCash() == 0
     cost = 10 * market.getNumTicks()
     with BuyWithCash(cash, cost, tester.k1, "buy complete set"):
         completeSets.publicBuyCompleteSets(market.address, 10, sender = tester.k1)
-    assert universe.getOpenInterestInAttoEth() > 0
+    assert universe.getOpenInterestInAttoCash() > 0
 
     # Move dispute window forward
     disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getCurrentDisputeWindow(False))
