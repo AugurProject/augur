@@ -11,8 +11,8 @@ contract IAugur {
     function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] memory _parentPayoutNumerators) public returns (IUniverse);
     function isKnownUniverse(IUniverse _universe) public view returns (bool);
     function trustedTransfer(ERC20Token _token, address _from, address _to, uint256 _amount) public returns (bool);
-    function logMarketCreated(bytes32 _topic, string memory _description, string memory _extraInfo, IUniverse _universe, IMarket _market, address _marketCreator, bytes32[] memory _outcomes, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool);
-    function logMarketCreated(bytes32 _topic, string memory _description, string memory _extraInfo, IUniverse _universe, IMarket _market, address _marketCreator, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool);
+    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _description, string memory _extraInfo, IUniverse _universe, IMarket _market, address _marketCreator, bytes32[] memory _outcomes, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool);
+    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _description, string memory _extraInfo, IUniverse _universe, IMarket _market, address _marketCreator, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool);
     function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] memory _payoutNumerators, string memory description) public returns (bool);
     function disputeCrowdsourcerCreated(IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] memory _payoutNumerators, uint256 _size) public returns (bool);
     function logDisputeCrowdsourcerContribution(IUniverse _universe, address _reporter, address _market, address _disputeCrowdsourcer, uint256 _amountStaked, string memory description) public returns (bool);
