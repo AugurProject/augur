@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
 import { Augur } from "@augurproject/api";
 import { DisputeWindow, Universe, Market, DisputeCrowdsourcer, ReputationToken, TimeControlled } from "@augurproject/core/source/libraries/ContractInterfaces";
+import { EthersProvider } from "@augurproject/ethersjs-provider";
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -13,6 +14,7 @@ export class ContractAPI {
 
   public constructor(
     public readonly augur: Augur<any>,
+    public readonly provider: EthersProvider,
     public readonly account: string, // address
   ) {}
 
@@ -197,10 +199,10 @@ export class ContractAPI {
     return this.augur.contracts.reputationTokenFromAddress(repContractAddress, this.augur.networkId);
   }
 
-  // // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
-  // public async getEthBalance(): Promise<ethers.utils.BigNumber> {
-  //   return await this.provider.getBalance(this.account);
-  // }
+  // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
+  public async getEthBalance(): Promise<ethers.utils.BigNumber> {
+    return await this.provider.getBalance(this.account);
+  }
 
   public getRepBalance(owner: string): Promise<ethers.utils.BigNumber> {
     return this.augur.contracts.getReputationToken().balanceOf_(owner);
