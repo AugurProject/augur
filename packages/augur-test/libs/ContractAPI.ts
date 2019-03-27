@@ -7,11 +7,6 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 export class ContractAPI {
-  public get universe() { return this.augur.contracts.universe!; }
-  public get cash() { return this.augur.contracts.cash!; }
-  public get createOrder() { return this.augur.contracts.createOrder!; }
-  public get trade() { return this.augur.contracts.trade!; }
-
   public constructor(
     public readonly augur: Augur<any>,
     public readonly provider: EthersProvider,
@@ -20,13 +15,13 @@ export class ContractAPI {
 
   public async approveCentralAuthority(): Promise<void> {
     const authority = this.augur.addresses.Augur;
-    await this.cash.approve(authority, new ethers.utils.BigNumber(2).pow(new ethers.utils.BigNumber(256)).sub(new ethers.utils.BigNumber(1)));
+    await this.augur.contracts.cash.approve(authority, new ethers.utils.BigNumber(2).pow(new ethers.utils.BigNumber(256)).sub(new ethers.utils.BigNumber(1)));
   }
 
   public async createMarket(universe: Universe, outcomes: Array<string>, endTime: ethers.utils.BigNumber, feePerEthInWei: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string): Promise<Market> {
     const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
 
-    await this.cash.faucet(marketCreationFee);
+    await this.augur.contracts.cash.faucet(marketCreationFee);
     const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), "description", "");
     if (!marketAddress || marketAddress === "0x") {
       throw new Error("Unable to get address for new categorical market.");
@@ -54,7 +49,7 @@ export class ContractAPI {
   ): Promise<void> {
     const createOrder = this.augur.contracts.createOrder;
     const ethValue = numShares.mul(price);
-    await this.cash.faucet(ethValue);
+    await this.augur.contracts.cash.faucet(ethValue);
     await createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
   }
 
@@ -67,14 +62,14 @@ export class ContractAPI {
     }
     const ethValue = numShares.mul(actualPrice);
 
-    await this.cash.faucet(ethValue);
+    await this.augur.contracts.cash.faucet(ethValue);
 
-    const bestPriceAmount = await this.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
+    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
     if (bestPriceAmount === new ethers.utils.BigNumber(0)) {
       throw new Error("Could not take best Order");
     }
 
-    await this.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
+    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
   }
 
   public async cancelOrder(orderID: string): Promise<void> {
@@ -109,7 +104,7 @@ export class ContractAPI {
     const numTicks = await market.getNumTicks_();
     const ethValue = amount.mul(numTicks);
 
-    await this.cash.faucet(ethValue);
+    await this.augur.contracts.cash.faucet(ethValue);
     await this.augur.contracts.completeSets.publicBuyCompleteSets(market.address, amount);
   }
 
@@ -126,7 +121,7 @@ export class ContractAPI {
   }
 
   public isForking(): Promise<boolean> {
-    return this.universe!.isForking_();
+    return this.augur.contracts.universe.isForking_();
   }
 
   public migrateOutByPayout(reputationToken: ReputationToken, payoutNumerators: Array<ethers.utils.BigNumber>, attotokens: ethers.utils.BigNumber) {
@@ -193,7 +188,7 @@ export class ContractAPI {
   }
 
   public async getChildUniverseReputationToken(parentPayoutDistributionHash: string) {
-    const childUniverseAddress = await this.universe!.getChildUniverse_(parentPayoutDistributionHash);
+    const childUniverseAddress = await this.augur.contracts.universe!.getChildUniverse_(parentPayoutDistributionHash);
     const childUniverse = this.augur.contracts.universeFromAddress(childUniverseAddress);
     const repContractAddress = await childUniverse.getReputationToken_();
     return this.augur.contracts.reputationTokenFromAddress(repContractAddress, this.augur.networkId);
