@@ -4,5 +4,8 @@
     "outDir": "build",
     "rootDir": "src"
   },
+  "include": [
+    "src/**/*"
+  ],
   "references": []
 }

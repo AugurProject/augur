@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "src/**/*.test.ts"
+  ],
+  "references": [
+    {
+      "path": "../augur-api/tsconfig.release.json"
+    },
+    {
+      "path": "../augur-artifacts/tsconfig.release.json"
+    },
+    {
+      "path": "../contract-dependencies/tsconfig.release.json"
+    },
+    {
+      "path": "../contract-dependencies-ethers/tsconfig.release.json"
+    }
+  ]
+}

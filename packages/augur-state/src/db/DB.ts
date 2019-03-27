@@ -34,9 +34,10 @@ export class DB<TBigNumber> {
    * @param {Array<string>} genericEventNames Array of names for generic event types
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
+   * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
    * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener:IBlockAndLogStreamerListener): Promise<DB<TBigNumber>> {
+  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB<TBigNumber>> {
     const dbController = new DB<TBigNumber>(pouchDBFactory);
     await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents, blockAndLogStreamerListener);
     return dbController;
@@ -246,6 +247,34 @@ export class DB<TBigNumber> {
     // TODO If derived DBs end up getting used, call `this.metaDatabase.find`
     // here to get sequenceIds for blocks >= blockNumber. Then call
     // `this.metaDatabase.rollback` to remove those documents from derived DBs.
+  }
+
+  /**
+   * Adds a new block to a SyncableDB/UserSyncableDB and updates MetaDB.
+   *
+   * TODO Define blockLogs interface
+   *
+   * @param {string} dbName Name of the database to which the block should be added
+   * @param {any} blockLogs Logs from a new block
+   */
+  public async addNewBlock(dbName: string, blockLogs: any): Promise<void> {
+    let db = this.syncableDatabases[dbName];
+    if (!db) {
+      throw new Error("Unknown DB name: " + dbName);
+    }
+    try {
+      await db.addNewBlock(blockLogs[0].blockNumber, blockLogs);
+
+      const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(dbName);
+      if (highestSyncBlock !== blockLogs[0].blockNumber) {
+        throw new Error("Highest sync block is " + highestSyncBlock + "; newest block number is " + blockLogs[0].blockNumber);
+      }
+
+      // TODO If derived DBs end up getting used, call `this.getAllSequenceIds` here
+      // and pass the returned sequenceIds into `this.metaDatabase.addNewBlock`.
+    } catch (err) {
+      throw err;
+    }
   }
 
   /**

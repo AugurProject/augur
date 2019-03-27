@@ -2,16 +2,15 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "src"
+    "rootDir": ".",
+    "baseUrl": "./"
   },
+  "exclude": [],
   "include": [
-    "src/**/*",
-    "src/**/*.json"
+    "tests",
+    "libs"
   ],
   "references": [
-    {
-      "path": "../blockstream-adapters"
-    },
     {
       "path": "../ethersjs-provider"
     },
@@ -26,6 +25,9 @@
     },
     {
       "path": "../augur-artifacts"
+    },
+    {
+      "path": "../augur-state"
     }
   ]
 }

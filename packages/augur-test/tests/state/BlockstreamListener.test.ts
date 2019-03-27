@@ -2,11 +2,11 @@ import {
   BlockAndLogStreamerInterface,
   BlockAndLogStreamerListener,
   BlockAndLogStreamerListenerDependencies
-} from "./BlockAndLogStreamerListener";
+} from "@augurproject/state/src/db/BlockAndLogStreamerListener";
 import { Block } from "ethereumjs-blockstream";
 import { BlockAndLogStreamerDependencies, ExtendedLog } from "blockstream-adapters";
-import { EventLogDBRouter } from "./EventLogDBRouter";
-import { ParsedLog } from "@augurproject/api/build";
+import { EventLogDBRouter } from "@augurproject/state/src/db/EventLogDBRouter";
+import { ParsedLog } from "@augurproject/api";
 
 // this extends syntax handles nested "mockify" types.
 type Mockify<T> = {
@@ -43,7 +43,8 @@ describe("BlockstreamListener", () => {
       blockAndLogStreamer,
       eventLogDBRouter,
       listenForNewBlocks: jest.fn(),
-      getEventTopics: jest.fn()
+      getEventTopics: jest.fn(),
+      getBlockByHash: jest.fn(),
     };
 
     blockAndLogStreamerListener = new BlockAndLogStreamerListener(deps);
@@ -56,7 +57,7 @@ describe("BlockstreamListener", () => {
       onNewLogCallback = jest.fn();
 
       deps.getEventTopics.mockReturnValue([
-        "0xSOMETOPIC"
+        "0xSOMETOPIC",
       ]);
 
       blockAndLogStreamerListener.listenForEvent("SomeEvent", onNewLogCallback);
@@ -68,7 +69,7 @@ describe("BlockstreamListener", () => {
       const nextBlock: Block = {
         number: "1234",
         hash: "1234",
-        parentHash: "ParentHash"
+        parentHash: "ParentHash",
       };
 
       blockAndLogStreamerListener.onNewBlock(nextBlock);
@@ -86,7 +87,7 @@ describe("BlockstreamListener", () => {
         removed: false,
         topics: ["0xSOMETOPIC"],
         transactionHash: "HASHONE",
-        transactionIndex: 1
+        transactionIndex: 1,
       }, {
         blockHash: "hashone",
         blockNumber: "1234",
@@ -96,17 +97,17 @@ describe("BlockstreamListener", () => {
         removed: false,
         topics: ["0xSOMEOTHERTOPIC"],
         transactionHash: "HASHTWO",
-        transactionIndex: 2
+        transactionIndex: 2,
       }];
 
-      eventLogDBRouter.onLogsAdded("hashone", sampleLogs);
+      eventLogDBRouter.onLogsAdded(1234, sampleLogs);
 
-      expect(onNewLogCallback).toBeCalledWith("hashone",
+      expect(onNewLogCallback).toBeCalledWith(1234,
         expect.arrayContaining([
           expect.objectContaining({
-            transactionHash: "HASHONE"
-          })
-        ])
+            transactionHash: "HASHONE",
+          }),
+        ]),
       );
     });
   });
