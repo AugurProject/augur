@@ -55,7 +55,7 @@ const MarketHeaderMessage = ({ marketId, dismiss, show, loggedIn }) => (
                     <p>
                       If the reporting start time (UTC) isn’t after the actual
                       end of the event, or if the title/description and
-                      reporting start time don’t match up,there is a high
+                      reporting start time don’t match up, there is a high
                       probability that the market will resolve as invalid.
                     </p>
                   </div>
