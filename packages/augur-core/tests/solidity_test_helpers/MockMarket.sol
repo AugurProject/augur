@@ -39,7 +39,7 @@ contract MockMarket is IMarket {
     uint256 private initializeEndTime;
     uint256 private initializeNumOutcomesValue;
     uint256 private initializeNumTicksValue;
-    uint256 private initializeFeePerEthInAttoEthValue;
+    uint256 private initializeFeePerEthInAttoCashValue;
     address private initializeCreatorValue;
     address private initializeDesignatedReporterAddressValue;
     IMailbox private setMarketCreatorMailbox;
@@ -172,8 +172,8 @@ contract MockMarket is IMarket {
         return initializeNumTicksValue;
     }
 
-    function getInitializeFeePerEthInAttoEthValue() public returns(uint256) {
-        return initializeFeePerEthInAttoEthValue;
+    function getInitializeFeePerEthInAttoCashValue() public returns(uint256) {
+        return initializeFeePerEthInAttoCashValue;
     }
 
     function getInitializeCreatorValue() public returns(address) {
@@ -219,12 +219,12 @@ contract MockMarket is IMarket {
         return "Market";
     }
 
-    function initialize(IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoEth, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public returns (bool _success) {
+    function initialize(IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public returns (bool _success) {
         initializeUniverseValue = _universe;
         initializeEndTime = _endTime;
         initializeNumOutcomesValue = _numOutcomes;
         initializeNumTicksValue = _numTicks;
-        initializeFeePerEthInAttoEthValue = _feePerEthInAttoEth;
+        initializeFeePerEthInAttoCashValue = _feePerCashInAttoCash;
         initializeCreatorValue = _creator;
         initializeDesignatedReporterAddressValue = _designatedReporterAddress;
         return true;

@@ -15,7 +15,7 @@ import 'ROOT/trading/IOrders.sol';
 import 'ROOT/libraries/token/ERC20Token.sol';
 
 
-// CONSIDER: Is `price` the most appropriate name for the value being used? It does correspond 1:1 with the attoETH per share, but the range might be considered unusual?
+// CONSIDER: Is `price` the most appropriate name for the value being used? It does correspond 1:1 with the attoCASH per share, but the range might be considered unusual?
 library Order {
     using SafeMathUint256 for uint256;
 

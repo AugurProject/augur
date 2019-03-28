@@ -398,7 +398,7 @@ def test_parametrized(type, outcome, displayPrice, orderSize, creatorYesShares, 
     acquireShares(YES, fillerYesShares, fillOrder.address, sender = fillerKey)
     acquireShares(NO, fillerNoShares, fillOrder.address, sender = fillerKey)
     with raises(TransactionFailed) if expectTakeRaise else placeholder_context():
-        # Cannot use BuyWithCash here, the test might deposit 0 DAI, but acquire large amounts DAI via selling existing shares
+        # Cannot use BuyWithCash here, the test might deposit 0 CASH, but acquire large amounts CASH via selling existing shares
         cash.faucet(fillerCost, sender=fillerKey)
         fillOrder.publicFillOrder(orderID, fillSize, longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender=fillerKey)
 

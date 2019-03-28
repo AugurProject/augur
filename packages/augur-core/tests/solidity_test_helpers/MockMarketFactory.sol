@@ -50,13 +50,13 @@ contract MockMarketFactory {
         return createMarketDesignatedReporterAddressValue;
     }
 
-    function createMarket(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerEthInWei, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) public returns (IMarket _market) {
+    function createMarket(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) public returns (IMarket _market) {
         createMarketAugurValue = _augur;
         createMarketUniverseValue = _universe;
         createMarketEndTimeValue = _endTime;
         createMarketNumOutcomesValue = _numOutcomes;
         createMarketNumTicksValue = _numTicks;
-        createMarketfeePerEthInWeiValue = _feePerEthInWei;
+        createMarketfeePerEthInWeiValue = _feePerCashInAttoCash;
         createMarketCreatorValue = _sender;
         createMarketDesignatedReporterAddressValue = _designatedReporterAddress;
         return setMarketValue;
