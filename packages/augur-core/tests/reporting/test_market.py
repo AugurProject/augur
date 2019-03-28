@@ -14,7 +14,7 @@ def test_market_creation(contractsFixture, universe, market):
 
     marketCreatedLog = {
         "extraInfo": 'so extra',
-        "marketCreationFee": universe.getOrCacheMarketCreationCost(),
+        "endTime": contractsFixture.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
         "marketCreator": bytesToHexString(tester.a0),
     }
     with AssertLog(contractsFixture, "MarketCreated", marketCreatedLog):
