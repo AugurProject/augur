@@ -68,7 +68,7 @@ export default class ModalMarketReview extends Component {
             description, the market might resolve as invalid.
           </p>
         </div>
-        <div ref="containerText" className={Styles.ModalMarketReview__TextBox}>
+        <div className={Styles.ModalMarketReview__TextBox}>
           <div>
             <p>Market Question</p>
             {market.description}
@@ -84,13 +84,13 @@ export default class ModalMarketReview extends Component {
             </div>
           )}
 
-          {market.endTime &&
-            market.endTime.timestamp && (
-              <div>
-                <p>Reporting starts (UTC)</p>
-                {new Date(market.endTime.timestamp * 1000).toUTCString()}
-              </div>
-            )}
+          {market.endTime && (
+            <div>
+              <p>Reporting starts</p>
+              <div>{market.endTime.formattedUtc}</div>
+              <div>{market.endTime.formattedTimezone}</div>
+            </div>
+          )}
 
           <div>
             <p>Resolution source</p>
