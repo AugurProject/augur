@@ -31,9 +31,9 @@ contract MockUniverse is Initializable, IUniverse {
     IDisputeWindow private setCurrentDisputeWindowValue;
     IDisputeWindow private setNextDisputeWindowValue;
     IDisputeWindow private setDisputeWindowForForkEndTimeValue;
-    uint256 private setOpenInterestInAttoEthValue;
-    uint256 private setRepMarketCapInAttoEthValue;
-    uint256 private setTargetRepMarketCapInAttoEthValue;
+    uint256 private setOpenInterestInAttoCashValue;
+    uint256 private setRepMarketCapInAttoCashValue;
+    uint256 private setTargetRepMarketCapInAttoCashValue;
     uint256 private setValidityBondValue;
     uint256 private setDesignatedReportStakeValue;
     uint256 private setDesignatedReportNoShowBondValue;
@@ -135,16 +135,16 @@ contract MockUniverse is Initializable, IUniverse {
         setDisputeWindowForForkEndTimeValue = _setDisputeWindowForForkEndTimeValue;
     }
 
-    function setOpenInterestInAttoEth(uint256 _setOpenInterestInAttoEthValue) public {
-        setOpenInterestInAttoEthValue = _setOpenInterestInAttoEthValue;
+    function setOpenInterestInAttoCash(uint256 _setOpenInterestInAttoCashValue) public {
+        setOpenInterestInAttoCashValue = _setOpenInterestInAttoCashValue;
     }
 
-    function setRepMarketCapInAttoEth(uint256 _setRepMarketCapInAttoEthValue) public {
-        setRepMarketCapInAttoEthValue = _setRepMarketCapInAttoEthValue;
+    function setRepMarketCapInAttoCash(uint256 _setRepMarketCapInAttoCashValue) public {
+        setRepMarketCapInAttoCashValue = _setRepMarketCapInAttoCashValue;
     }
 
-    function setTargetRepMarketCapInAttoEth(uint256 _setTargetRepMarketCapInAttoEthValue) public {
-        setTargetRepMarketCapInAttoEthValue = _setTargetRepMarketCapInAttoEthValue;
+    function setTargetRepMarketCapInAttoCash(uint256 _setTargetRepMarketCapInAttoCashValue) public {
+        setTargetRepMarketCapInAttoCashValue = _setTargetRepMarketCapInAttoCashValue;
     }
 
     function setOrCacheValidityBond(uint256 _setValidityBondValue) public {
@@ -304,16 +304,16 @@ contract MockUniverse is Initializable, IUniverse {
         return setDisputeWindowForForkEndTimeValue;
     }
 
-    function getOpenInterestInAttoEth() public view returns (uint256) {
-        return setOpenInterestInAttoEthValue;
+    function getOpenInterestInAttoCash() public view returns (uint256) {
+        return setOpenInterestInAttoCashValue;
     }
 
-    function getRepMarketCapInAttoEth() public view returns (uint256) {
-        return setRepMarketCapInAttoEthValue;
+    function getRepMarketCapInAttoCash() public view returns (uint256) {
+        return setRepMarketCapInAttoCashValue;
     }
 
-    function getTargetRepMarketCapInAttoEth() public view returns (uint256) {
-        return setTargetRepMarketCapInAttoEthValue;
+    function getTargetRepMarketCapInAttoCash() public view returns (uint256) {
+        return setTargetRepMarketCapInAttoCashValue;
     }
 
     function getOrCacheValidityBondWallCalled() public returns(bool) { return getOrCacheValidityBondWallCalledValue; }
@@ -418,24 +418,24 @@ contract MockUniverse is Initializable, IUniverse {
         return setForkReputationGoalValue;
     }
 
-    function createYesNoMarket(uint256 _endTime, uint256 _feePerEthInWei, address _designatedReporterAddress, bytes32 _topic, string _description, string _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerEthInWei, _designatedReporterAddress, msg.sender, 2, 10000);
+    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, address _designatedReporterAddress, bytes32 _topic, string _description, string _extraInfo) public returns (IMarket _newMarket) {
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _designatedReporterAddress, msg.sender, 2, 10000);
         return _newMarket;
     }
 
-    function createCategoricalMarket(uint256 _endTime, uint256 _feePerEthInWei, address _designatedReporterAddress, bytes32[] _outcomes, bytes32 _topic, string _description, string _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerEthInWei, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 10000);
+    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, address _designatedReporterAddress, bytes32[] _outcomes, bytes32 _topic, string _description, string _extraInfo) public returns (IMarket _newMarket) {
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 10000);
         return _newMarket;
     }
 
-    function createScalarMarket(uint256 _endTime, uint256 _feePerEthInWei, address _designatedReporterAddress, int256 _minPrice, int256 _maxPrice, uint256 _numTicks, bytes32 _topic, string _description, string _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerEthInWei, _designatedReporterAddress, msg.sender, 2, _numTicks);
+    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, address _designatedReporterAddress, int256 _minPrice, int256 _maxPrice, uint256 _numTicks, bytes32 _topic, string _description, string _extraInfo) public returns (IMarket _newMarket) {
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _designatedReporterAddress, msg.sender, 2, _numTicks);
         return _newMarket;
     }
 
-    function createMarketInternal(uint256 _endTime, uint256 _feePerEthInWei, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) private returns (IMarket _newMarket) {
+    function createMarketInternal(uint256 _endTime, uint256 _feePerCashInAttoCash, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) private returns (IMarket _newMarket) {
         getReputationToken().trustedUniverseTransfer(_sender, marketFactory, getOrCacheDesignatedReportNoShowBond());
-        _newMarket = marketFactory.createMarket.value(msg.value)(augur, this, _endTime, _feePerEthInWei, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
+        _newMarket = marketFactory.createMarket.value(msg.value)(augur, this, _endTime, _feePerCashInAttoCash, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
         return _newMarket;
     }
 

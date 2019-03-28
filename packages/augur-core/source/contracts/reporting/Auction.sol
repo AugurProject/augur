@@ -30,21 +30,21 @@ contract Auction is Initializable, IAuction {
     IV2ReputationToken private reputationToken;
     ICash public cash;
     AuctionTokenFactory public auctionTokenFactory;
-    uint256 public initialRepPriceInAttoEth;
+    uint256 public initialRepPriceInAttoCash;
 
-    bool public bootstrapMode; // Indicates the auction is currently bootstrapping by selling off minted REP to get ETH for the ETH auction
+    bool public bootstrapMode; // Indicates the auction is currently bootstrapping by selling off minted REP to get CASH for the CASH auction
     bool public bootstrapped; // Records that a bootstrap initialization occurred. We can turn bootstrapping off if this has happened before.
     uint256 public initializationTime; // The time this contract was uploaded and initialized. The auction cadence is relative to this time
 
-    uint256 public feeBalance; // The ETH this contract has received in fees.
+    uint256 public feeBalance; // The CASH this contract has received in fees.
     uint256 public currentAuctionIndex; // The current auction index. Indicies starts at 0 relative to epoch where each week has 2
     RoundType public currentRoundType; // The current auction type.
     uint256 public initialAttoRepBalance; // The initial REP balance in attoREP considered for the current auction
-    uint256 public initialAttoEthBalance; // The initial ETH balance in attoETH considered for the current auction
-    uint256 public initialRepSalePrice; // The initial price of REP in attoETH for the current auction
-    uint256 public initialEthSalePrice; // The initial price of ETH in attoREP for the current auction
-    uint256 public lastRepPrice; // The last auction's Rep price in attoETH, regardless of whether the result is used in determining reporting fees
-    uint256 public repPrice; // The Rep price in attoETH that should be used to determine reporting fees during and immediately after an ignored auction.
+    uint256 public initialAttoCashBalance; // The initial CASH balance in attoCASH considered for the current auction
+    uint256 public initialRepSalePrice; // The initial price of REP in attoCASH for the current auction
+    uint256 public initialCashSalePrice; // The initial price of CASH in attoREP for the current auction
+    uint256 public lastRepPrice; // The last auction's Rep price in attoCASH, regardless of whether the result is used in determining reporting fees
+    uint256 public repPrice; // The Rep price in attoCASH that should be used to determine reporting fees during and immediately after an ignored auction.
 
     function initialize(IAugur _augur, IUniverse _universe, IV2ReputationToken _reputationToken) public beforeInitialized returns (bool) {
         endInitialization();
@@ -54,15 +54,15 @@ contract Auction is Initializable, IAuction {
         cash = ICash(augur.lookup("Cash"));
         auctionTokenFactory = AuctionTokenFactory(augur.lookup("AuctionTokenFactory"));
         initializationTime = augur.getTimestamp();
-        initialRepPriceInAttoEth = Reporting.getAuctionInitialRepPrice();
-        lastRepPrice = initialRepPriceInAttoEth;
-        repPrice = initialRepPriceInAttoEth;
+        initialRepPriceInAttoCash = Reporting.getAuctionInitialRepPrice();
+        lastRepPrice = initialRepPriceInAttoCash;
+        repPrice = initialRepPriceInAttoCash;
         bootstrapMode = true;
         return true;
     }
 
     function initializeNewAuction() public returns (bool) {
-        uint256 _derivedRepPrice = getDerivedRepPriceInAttoEth();
+        uint256 _derivedRepPrice = getDerivedRepPriceInAttoCash();
         if (currentRoundType == RoundType.RECORDED) {
             repPrice = _derivedRepPrice;
         }
@@ -81,8 +81,8 @@ contract Auction is Initializable, IAuction {
         if (repAuctionToken != IAuctionToken(0)) {
             repAuctionToken.retrieveFunds();
         }
-        if (ethAuctionToken != IAuctionToken(0)) {
-            ethAuctionToken.retrieveFunds();
+        if (cashAuctionToken != IAuctionToken(0)) {
+            cashAuctionToken.retrieveFunds();
         }
 
         uint256 _auctionRepBalanceTarget = reputationToken.totalSupply() / Reporting.getAuctionTargetSupplyDivisor();
@@ -93,18 +93,18 @@ contract Auction is Initializable, IAuction {
         }
 
         initialAttoRepBalance = reputationToken.balanceOf(address(this));
-        initialAttoEthBalance = cash.balanceOf(address(this));
+        initialAttoCashBalance = cash.balanceOf(address(this));
 
         currentAuctionIndex = _currentAuctionIndex;
 
         initialRepSalePrice = lastRepPrice.mul(Reporting.getAuctionInitialPriceMultiplier());
-        initialEthSalePrice = Reporting.getAuctionInitialPriceMultiplier().mul(10**36).div(lastRepPrice);
+        initialCashSalePrice = Reporting.getAuctionInitialPriceMultiplier().mul(10**36).div(lastRepPrice);
 
         // Create and fund Tokens
         repAuctionToken = auctionTokenFactory.createAuctionToken(augur, this, reputationToken, currentAuctionIndex);
         if (!bootstrapMode) {
-            ethAuctionToken = auctionTokenFactory.createAuctionToken(augur, this, cash, currentAuctionIndex);
-            cash.transfer(address(ethAuctionToken), initialAttoEthBalance);
+            cashAuctionToken = auctionTokenFactory.createAuctionToken(augur, this, cash, currentAuctionIndex);
+            cash.transfer(address(cashAuctionToken), initialAttoCashBalance);
         }
         augur.recordAuctionTokens(universe);
 
@@ -119,102 +119,96 @@ contract Auction is Initializable, IAuction {
         return true;
     }
 
-    function tradeRepForEth(uint256 _attoEthAmount) public returns (bool) {
+    function tradeRepForCash(uint256 _attoCashAmount) public returns (bool) {
         initializeNewAuctionIfNeeded();
         require(!bootstrapMode);
-        uint256 _currentAttoEthBalance = getCurrentAttoEthBalance();
-        require(_currentAttoEthBalance > 0);
-        require(_attoEthAmount > 0);
-        _attoEthAmount = _attoEthAmount.min(_currentAttoEthBalance);
-        uint256 _ethPriceInAttoRep = getEthSalePriceInAttoRep();
-        uint256 _attoRepCost = _attoEthAmount.mul(_ethPriceInAttoRep) / 10**18;
+        uint256 _currentAttoCashBalance = getCurrentAttoCashBalance();
+        require(_currentAttoCashBalance > 0);
+        require(_attoCashAmount > 0);
+        _attoCashAmount = _attoCashAmount.min(_currentAttoCashBalance);
+        uint256 _cashPriceInAttoRep = getCashSalePriceInAttoRep();
+        uint256 _attoRepCost = _attoCashAmount.mul(_cashPriceInAttoRep) / 10**18;
         reputationToken.trustedAuctionTransfer(msg.sender, address(this), _attoRepCost);
-        ethAuctionToken.mintForPurchaser(msg.sender, _attoRepCost);
-
-        // Burn any REP purchased using fee income
-        if (feeBalance > 0) {
-            uint256 _feesUsed = feeBalance.min(_attoEthAmount);
-            uint256 _burnAmount = _attoRepCost.mul(_feesUsed).div(_attoEthAmount);
-            reputationToken.burnForAuction(_burnAmount);
-            feeBalance = feeBalance.sub(_feesUsed);
-        }
-
+        cashAuctionToken.mintForPurchaser(msg.sender, _attoRepCost);
         return true;
     }
 
-    function tradeEthForRep(uint256 _attoRepAmount) public payable returns (bool) {
+    function tradeCashForRep(uint256 _attoRepAmount) public payable returns (bool) {
         initializeNewAuctionIfNeeded();
         uint256 _currentAttoRepBalance = getCurrentAttoRepBalance();
         require(_currentAttoRepBalance > 0);
         require(_attoRepAmount > 0);
         _attoRepAmount = _attoRepAmount.min(_currentAttoRepBalance);
-        uint256 _repPriceInAttoEth = getRepSalePriceInAttoEth();
-        uint256 _attoEthCost = _attoRepAmount.mul(_repPriceInAttoEth) / 10**18;
-        // This will raise an exception if insufficient ETH was sent
-        augur.trustedTransfer(cash, msg.sender, address(this), _attoEthCost);
-        repAuctionToken.mintForPurchaser(msg.sender, _attoEthCost);
+        uint256 _repPriceInAttoCash = getRepSalePriceInAttoCash();
+        uint256 _attoCashCost = _attoRepAmount.mul(_repPriceInAttoCash) / 10**18;
+        // This will raise an exception if insufficient CASH was sent
+        augur.trustedTransfer(cash, msg.sender, address(this), _attoCashCost);
+        repAuctionToken.mintForPurchaser(msg.sender, _attoCashCost);
         return true;
     }
 
-    function recordFees(uint256 _feeAmount) public returns (bool) {
-        require(augur.isKnownFeeSender(msg.sender));
-        feeBalance = feeBalance.add(_feeAmount);
-        return true;
-    }
-
-    function getRepSalePriceInAttoEth() public returns (uint256) {
+    function getRepSalePriceInAttoCash() public returns (uint256) {
         initializeNewAuctionIfNeeded();
         uint256 _timePassed = augur.getTimestamp().sub(initializationTime).sub(currentAuctionIndex * 1 days);
         uint256 _priceDecrease = initialRepSalePrice.mul(_timePassed) / Reporting.getAuctionDuration();
         return initialRepSalePrice.sub(_priceDecrease);
     }
 
-    function getEthSalePriceInAttoRep() public returns (uint256) {
+    function getCashSalePriceInAttoRep() public returns (uint256) {
         initializeNewAuctionIfNeeded();
         require(!bootstrapMode);
         uint256 _timePassed = augur.getTimestamp().sub(initializationTime).sub(currentAuctionIndex * 1 days);
-        uint256 _priceDecrease = initialEthSalePrice.mul(_timePassed) / Reporting.getAuctionDuration();
-        return initialEthSalePrice.sub(_priceDecrease);
+        uint256 _priceDecrease = initialCashSalePrice.mul(_timePassed) / Reporting.getAuctionDuration();
+        return initialCashSalePrice.sub(_priceDecrease);
     }
 
     function getCurrentAttoRepBalance() public returns (uint256) {
-        uint256 _repSalePriceInAttoEth = getRepSalePriceInAttoEth();
-        uint256 _ethSupply = repAuctionToken.totalSupply();
-        uint256 _attoRepSold = _ethSupply.mul(10**18).div(_repSalePriceInAttoEth);
+        uint256 _repSalePriceInAttoCash = getRepSalePriceInAttoCash();
+        uint256 _cashSupply = repAuctionToken.maxSupply();
+        uint256 _attoRepSold = _cashSupply.mul(10**18).div(_repSalePriceInAttoCash);
         if (_attoRepSold >= initialAttoRepBalance) {
             return 0;
         }
         return initialAttoRepBalance.sub(_attoRepSold);
     }
 
-    function getCurrentAttoEthBalance() public returns (uint256) {
-        uint256 _ethSalePriceInAttoRep = getEthSalePriceInAttoRep();
-        uint256 _repSupply = ethAuctionToken.totalSupply();
-        uint256 _attoEthSold = _repSupply.mul(10**18).div(_ethSalePriceInAttoRep);
-        if (_attoEthSold >= initialAttoEthBalance) {
+    function getCurrentAttoCashBalance() public returns (uint256) {
+        uint256 _cashSalePriceInAttoRep = getCashSalePriceInAttoRep();
+        uint256 _repSupply = cashAuctionToken.maxSupply();
+        uint256 _attoCashSold = _repSupply.mul(10**18).div(_cashSalePriceInAttoRep);
+        if (_attoCashSold >= initialAttoCashBalance) {
             return 0;
         }
-        return initialAttoEthBalance.sub(_attoEthSold);
+        return initialAttoCashBalance.sub(_attoCashSold);
     }
 
-    function getDerivedRepPriceInAttoEth() public view returns (uint256) {
-        if (repAuctionToken == IAuctionToken(0) || ethAuctionToken == IAuctionToken(0)) {
+    function auctionOver(IAuctionToken _auctionToken) public returns (bool) {
+        if (_auctionToken == repAuctionToken) {
+            return getCurrentAttoRepBalance() == 0;
+        } else if (_auctionToken == cashAuctionToken) {
+            return getCurrentAttoCashBalance() == 0;
+        }
+        return true;
+    }
+
+    function getDerivedRepPriceInAttoCash() public view returns (uint256) {
+        if (repAuctionToken == IAuctionToken(0) || cashAuctionToken == IAuctionToken(0)) {
             return repPrice;
         }
         uint256 _repAuctionTokenMaxSupply = repAuctionToken.maxSupply();
-        uint256 _ethAuctionTokenMaxSupply = ethAuctionToken.maxSupply();
-        if (_repAuctionTokenMaxSupply == 0 || _ethAuctionTokenMaxSupply == 0) {
+        uint256 _cashAuctionTokenMaxSupply = cashAuctionToken.maxSupply();
+        if (_repAuctionTokenMaxSupply == 0 || _cashAuctionTokenMaxSupply == 0) {
             return repPrice;
         }
         uint256 _upperBoundRepPrice = repAuctionToken.maxSupply().mul(10**18).div(initialAttoRepBalance);
-        uint256 _lowerBoundRepPrice = initialAttoEthBalance.mul(10**18).div(_ethAuctionTokenMaxSupply);
+        uint256 _lowerBoundRepPrice = initialAttoCashBalance.mul(10**18).div(_cashAuctionTokenMaxSupply);
         return _upperBoundRepPrice.add(_lowerBoundRepPrice) / 2;
     }
 
-    function getRepPriceInAttoEth() public view returns (uint256) {
+    function getRepPriceInAttoCash() public view returns (uint256) {
         // If this auction is over and it is a recorded auction use the price it found
         if (getAuctionIndexForCurrentTime() != currentAuctionIndex && currentRoundType == RoundType.RECORDED) {
-            return getDerivedRepPriceInAttoEth();
+            return getDerivedRepPriceInAttoCash();
         }
 
         return repPrice;

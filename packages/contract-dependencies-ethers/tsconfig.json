@@ -4,9 +4,10 @@
     "outDir": "build",
     "rootDir": "src"
   },
-  "references": [
-    {
-      "path": "../contract-dependencies"
-    }
-  ]
+  "include": [
+    "src/**/*"
+  ],
+  "references": [{
+    "path": "../contract-dependencies"
+  }]
 }

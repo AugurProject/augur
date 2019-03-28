@@ -28,6 +28,12 @@
     },
     {
       "path": "./packages/blockstream-adapters"
+    },
+    {
+      "path": "./packages/augur-test"
+    },
+    {
+      "path": "./packages/augur-tools"
     }
   ]
 }

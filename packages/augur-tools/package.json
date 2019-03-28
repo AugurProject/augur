@@ -16,7 +16,7 @@
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
     "docker:geth:files": "./scripts/copy-docker-files.sh augurproject/dev-pop-geth:core-$(node scripts/core-version.js)",
     "flash": "node ./scripts/flash",
-    "blockstream-console": "ts-node ./scripts/blockstream-console.ts"
+    "blockstream-console": "ts-node ./src/blockstream-console.ts"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,7 @@
   "homepage": "https://github.com/augurproject/augur#readme",
   "dependencies": {
     "@augurproject/core": "2.0.0-0",
+    "@augurproject/artifacts": "10.0.0-0",
     "blockstream-adapters":"1.0.0-0",
     "options-parser": "0.4.0",
     "ethereumjs-blockstream": "7.0.0",

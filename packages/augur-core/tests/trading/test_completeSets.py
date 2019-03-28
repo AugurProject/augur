@@ -16,10 +16,10 @@ def test_publicBuyCompleteSets(contractsFixture, universe, cash, market):
     assert cash.balanceOf(market.address) == universe.getOrCacheValidityBond()
     assert not yesShareToken.totalSupply()
     assert not noShareToken.totalSupply()
-    assert universe.getOpenInterestInAttoEth() == 0
+    assert universe.getOpenInterestInAttoCash() == 0
 
     cost = 10 * market.getNumTicks()
-    print cash.depositEther(sender=tester.k1, value=cost )
+    print cash.faucet(cost, sender=tester.k1)
 
     completeSetsPurchasedLog = {
         "universe": universe.address,
@@ -37,7 +37,7 @@ def test_publicBuyCompleteSets(contractsFixture, universe, cash, market):
     assert cash.balanceOf(market.address) == cost + universe.getOrCacheValidityBond(), "Increase in market's cash should equal the cost to purchase the complete set"
     assert yesShareToken.totalSupply() == 10, "Increase in yes shares purchased for this market should be 10"
     assert noShareToken.totalSupply() == 10, "Increase in yes shares purchased for this market should be 10"
-    assert universe.getOpenInterestInAttoEth() == cost, "Open interest in the universe increases by the cost in ETH of the sets purchased"
+    assert universe.getOpenInterestInAttoCash() == cost, "Open interest in the universe increases by the cost in ETH of the sets purchased"
 
 def test_publicBuyCompleteSets_failure(contractsFixture, universe, cash, market):
     completeSets = contractsFixture.contracts['CompleteSets']
@@ -67,10 +67,10 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
     assert not noShareToken.totalSupply()
 
     cost = 10 * market.getNumTicks()
-    print cash.depositEther(sender=tester.k1, value=cost )
-    assert universe.getOpenInterestInAttoEth() == 0
+    print cash.faucet(cost, sender=tester.k1)
+    assert universe.getOpenInterestInAttoCash() == 0
     completeSets.publicBuyCompleteSets(market.address, 10, sender = tester.k1)
-    assert universe.getOpenInterestInAttoEth() == 10 * market.getNumTicks()
+    assert universe.getOpenInterestInAttoCash() == 10 * market.getNumTicks()
     initialTester1ETH = contractsFixture.chain.head_state.get_balance(tester.a1)
     initialTester0ETH = contractsFixture.chain.head_state.get_balance(tester.a0)
 
@@ -79,12 +79,14 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
         "market": market.address,
         "account": bytesToHexString(tester.a1),
         "numCompleteSets": 9,
-        "marketOI": market.getNumTicks()
+        "marketOI": market.getNumTicks(),
+        "marketCreatorFees": 900,
+        "reporterFees": 900,
     }
     with AssertLog(contractsFixture, "CompleteSetsSold", completeSetsSoldLog):
         result = completeSets.publicSellCompleteSets(market.address, 9, sender=tester.k1)
 
-    assert universe.getOpenInterestInAttoEth() == 1 * market.getNumTicks()
+    assert universe.getOpenInterestInAttoCash() == 1 * market.getNumTicks()
 
     assert yesShareToken.balanceOf(tester.a1) == 1, "Should have 1 share of outcome yes"
     assert noShareToken.balanceOf(tester.a1) == 1, "Should have 1 share of outcome no"
@@ -93,14 +95,14 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
     assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialTester1ETH
     assert cash.balanceOf(tester.a1) == 88200
     assert cash.balanceOf(market.address) == universe.getOrCacheValidityBond() + 10000 + 900
-    assert market.marketCreatorFeesAttoEth() == 900
+    assert market.marketCreatorFeesAttoCash() == 900
 
 def test_publicSellCompleteSets_failure(contractsFixture, universe, cash, market):
     completeSets = contractsFixture.contracts['CompleteSets']
     orders = contractsFixture.contracts['Orders']
 
     cost = 10 * market.getNumTicks()
-    cash.depositEther(sender=tester.k1, value=cost)
+    cash.faucet(cost, sender=tester.k1)
     completeSets.publicBuyCompleteSets(market.address, 10, sender = tester.k1)
 
     # Permissions exceptions

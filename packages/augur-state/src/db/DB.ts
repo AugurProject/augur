@@ -1,10 +1,11 @@
-import {Augur, UserSpecificEvent} from "@augurproject/api";
-import {MetaDB, SequenceIds} from "./MetaDB";
-import {PouchDBFactoryType} from "./AbstractDB";
-import {SyncableDB} from "./SyncableDB";
-import {SyncStatus} from "./SyncStatus";
-import {TrackedUsers} from "./TrackedUsers";
-import {UserSyncableDB} from "./UserSyncableDB";
+import { Augur, UserSpecificEvent } from "@augurproject/api";
+import { MetaDB, SequenceIds } from "./MetaDB";
+import { PouchDBFactoryType } from "./AbstractDB";
+import { SyncableDB } from "./SyncableDB";
+import { SyncStatus } from "./SyncStatus";
+import { TrackedUsers } from "./TrackedUsers";
+import { UserSyncableDB } from "./UserSyncableDB";
+import { IBlockAndLogStreamerListener, LogCallbackType } from "./BlockAndLogStreamerListener";
 
 
 export class DB<TBigNumber> {
@@ -15,6 +16,7 @@ export class DB<TBigNumber> {
   private userSpecificEvents: Array<UserSpecificEvent>;
   private syncableDatabases: { [eventName: string]: SyncableDB<TBigNumber> } = {};
   private metaDatabase: MetaDB<TBigNumber>; // TODO Remove this if derived DBs are not used.
+  private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
   public readonly pouchDBFactory: PouchDBFactoryType;
   public syncStatus: SyncStatus;
 
@@ -32,11 +34,12 @@ export class DB<TBigNumber> {
    * @param {Array<string>} genericEventNames Array of names for generic event types
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
+   * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
    * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType): Promise<DB<TBigNumber>> {
+  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB<TBigNumber>> {
     const dbController = new DB<TBigNumber>(pouchDBFactory);
-    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents);
+    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents, blockAndLogStreamerListener);
     return dbController;
   }
 
@@ -49,9 +52,10 @@ export class DB<TBigNumber> {
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
    * @param {Array<string>} genericEventNames Array of names for generic event types
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
-   * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
+   * @param blockAndLogStreamerListener
+   * @return {Promise<void>}
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>): Promise<void> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener:IBlockAndLogStreamerListener): Promise<void> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
@@ -59,6 +63,7 @@ export class DB<TBigNumber> {
     this.metaDatabase = new MetaDB(this, networkId, this.pouchDBFactory);
     this.genericEventNames = genericEventNames;
     this.userSpecificEvents = userSpecificEvents;
+    this.blockAndLogStreamerListener = blockAndLogStreamerListener;
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (let eventName of genericEventNames) {
@@ -93,6 +98,10 @@ export class DB<TBigNumber> {
    */
   public notifySyncableDBAdded(db: SyncableDB<TBigNumber>): void {
     this.syncableDatabases[db.dbName] = db;
+  }
+
+  public registerEventListener(eventName: string, callback: LogCallbackType): void {
+      this.blockAndLogStreamerListener.listenForEvent(eventName, callback);
   }
 
   /**
@@ -254,7 +263,7 @@ export class DB<TBigNumber> {
       throw new Error("Unknown DB name: " + dbName);
     }
     try {
-      await db.addNewBlock(blockLogs);
+      await db.addNewBlock(blockLogs[0].blockNumber, blockLogs);
 
       const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(dbName);
       if (highestSyncBlock !== blockLogs[0].blockNumber) {

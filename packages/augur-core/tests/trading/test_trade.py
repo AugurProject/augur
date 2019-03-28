@@ -37,9 +37,6 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
     with BuyWithCash(cash, fix('2', '4000'), tester.k2, "fill order"):
         with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
             assert trade.publicTrade(SHORT,market.address, YES, fix(2), 6000, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender=tester.k2)
-            # It is a self-trade, so the other side have ether left in Cash
-            if withSelf:
-                assert cash.withdrawEther(fix('2', '10000'), sender=tester.k2)
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -556,7 +553,7 @@ def test_take_best_order_multiple_orders(contractsFixture, cash, market):
     price = 6000 + numOrders
     with PrintGasUsed(contractsFixture, "fill multiple asks", 0):
         # Fills across orders of differing prices, give it some eth to play with
-        assert cash.depositEther(sender=tester.k1, value=fix(numOrders, price))
+        assert cash.faucet(fix(numOrders, price), sender=tester.k1)
         assert trade.publicFillBestOrder(BID, market.address, YES, fix(numOrders), price, "43", 6, False, nullAddress, nullAddress, sender=tester.k1) == 0
 
     for i in range(numOrders):
@@ -595,11 +592,6 @@ def test_take_best_order_with_shares_escrowed_buy_with_cash(withSelf, contractsF
     with PrintGasUsed(contractsFixture, "buy shares escrowed order", 0):
         with BuyWithCash(cash, fix('1', '6000'), tester.k2, "fill best order"):
             assert trade.publicFillBestOrder(BID, market.address, YES, fix(1), 6000, "43", 6, False, nullAddress, nullAddress, sender=tester.k2) == 0
-            if withSelf:
-                totalProceeds = fix(1, '10000') + fix('1', '6000')
-                totalProceeds -= fix(1, '10000') / market.getMarketCreatorSettlementFeeDivisor()
-                totalProceeds -= fix(1, '10000') / universe.getOrCacheReportingFeeDivisor()
-                assert cash.withdrawEther(totalProceeds, sender=tester.k2)
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -692,9 +684,6 @@ def test_trade_with_self(contractsFixture, cash, market, universe):
         with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
             with AssertLog(contractsFixture, "OrderCreated", orderCreatedLog):
                 fillOrderID = trade.publicTrade(SHORT,market.address, YES, fix(5), 6000, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender = tester.k1)
-                # Since this is self order, withdraw the amount we expect to be paid to ourselves
-                # 4 instead of 5 because 4 was market depth for LONG, leaving an order size of 1
-                cash.withdrawEther(fix('4', '10000'), sender=tester.k1)
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -734,9 +723,6 @@ def test_trade_with_self_take_order_make_order(withTotalCost, contractsFixture, 
             fillOrderID = trade.publicTradeWithTotalCost(BID, market.address, YES, takeCost, 5000, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender = tester.k1)
         else:
             fillOrderID = trade.publicTrade(BID, market.address, YES, fix(1), 5000, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender = tester.k1)
-        # The cost of the original order plus the portion of this order that matched
-        cash.withdrawEther(fix('0.003', '6000') + fix('0.003', '5000'), sender=tester.k1)
-
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -783,13 +769,6 @@ def test_create_order_after_exhausting_book(isMatch, contractsFixture, cash, mar
     takeCost = fix('2', '6000')
     with BuyWithCash(cash, takeCost, tester.k0, "trade"):
         fillOrderID = trade.publicTrade(BID, market.address, YES, fix(2), 6000, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress)
-        if isMatch:
-            # Withdraw the difference from the price of the match
-            assert cash.withdrawEther(fix('1', '2000') + fix('1', '1000'), sender=tester.k0)
-        else:
-            # Withdraw difference from one order, the rest created new order at exact price
-            assert cash.withdrawEther(fix('1', '2000'), sender=tester.k0)
-
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -906,7 +885,7 @@ def test_fees_from_trades(finalized, contractsFixture, cash, market):
     assert orderID
 
     expectedAffiliateFees = fix(10000) * 0.01 * .25
-    cash.depositEther(value=fix(6000), sender=tester.k2)
+    cash.faucet(fix(6000), sender=tester.k2)
     # Trade and specify an affiliate address.
     if finalized:
         with TokenDelta(cash, expectedAffiliateFees, tester.a3, "Affiliate did not recieve the correct fees"):
@@ -923,7 +902,7 @@ def test_fees_from_trades(finalized, contractsFixture, cash, market):
 
     if not finalized:
         # We can confirm that the 3rd test account has an affiliate fee balance of 25% of the market creator fee 1% taken from the 1 ETH order
-        assert market.affiliateFeesAttoEth(tester.a3) == expectedAffiliateFees
+        assert market.affiliateFeesAttoCash(tester.a3) == expectedAffiliateFees
 
         # The affiliate can withdraw their fees
         with TokenDelta(cash, expectedAffiliateFees, tester.a3, "Affiliate did not recieve the correct fees"):

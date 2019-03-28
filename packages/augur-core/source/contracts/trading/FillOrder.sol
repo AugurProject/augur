@@ -172,7 +172,7 @@ library Trade {
         uint256 _creatorTokensToCover = getTokensToCover(_data, _data.creator.direction, _numberOfCompleteSets);
         uint256 _fillerTokensToCover = getTokensToCover(_data, _data.filler.direction, _numberOfCompleteSets);
 
-        // If someone is filling their own order with ETH both ways we just return the ETH
+        // If someone is filling their own order with CASH both ways we just return the CASH
         if (_data.creator.participantAddress == _data.filler.participantAddress) {
             require(_data.contracts.denominationToken.transferFrom(address(_data.contracts.market), _data.creator.participantAddress, _creatorTokensToCover));
 
@@ -270,7 +270,7 @@ library Trade {
             orders: _orders,
             market: _market,
             completeSets: ICompleteSets(_augur.lookup("CompleteSets")),
-            denominationToken: _market.getDenominationToken(),
+            denominationToken: ICash(_augur.lookup("Cash")),
             longShareToken: _market.getShareToken(_outcome),
             shortShareTokens: getShortShareTokens(_market, _outcome),
             augur: _augur

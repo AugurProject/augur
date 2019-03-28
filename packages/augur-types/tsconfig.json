@@ -4,5 +4,8 @@
     "outDir": "build",
     "rootDir": "types"
   },
+  "include": [
+    "types/**/*"
+  ],
   "references": []
 }

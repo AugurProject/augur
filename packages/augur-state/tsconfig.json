@@ -2,17 +2,16 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "src",
-    "baseUrl": "./"
+    "rootDir": "src"
   },
-  "exclude": [
-    "./src/**/*.test.ts"
-  ],
   "include": [
-    "./src/**/*",
-    "./src/**/*.json"
+    "src/**/*",
+    "src/**/*.json"
   ],
   "references": [
+    {
+      "path": "../blockstream-adapters"
+    },
     {
       "path": "../ethersjs-provider"
     },

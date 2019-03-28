@@ -4,5 +4,10 @@
     "outDir": "build",
     "rootDir": "src"
   },
-  "references": []
+  "include": [
+    "src/**/*"
+  ],
+  "references": [{
+    "path": "../augur-types"
+  }]
 }

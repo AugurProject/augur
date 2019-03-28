@@ -14,7 +14,7 @@ def test_market_creation(contractsFixture, universe, market):
 
     marketCreatedLog = {
         "extraInfo": 'so extra',
-        "marketCreationFee": universe.getOrCacheMarketCreationCost(),
+        "endTime": contractsFixture.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
         "marketCreator": bytesToHexString(tester.a0),
     }
     with AssertLog(contractsFixture, "MarketCreated", marketCreatedLog):
@@ -91,7 +91,7 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
 
     # No longer testing a higher validity bond, token transfers are token precisely, no ability to send more than required
     market = contractsFixture.createReasonableYesNoMarket(universe, validityBond=minimumValidityBond)
-    assert market.getValidityBondAttoEth() == minimumValidityBond
+    assert market.getValidityBondAttoCash() == minimumValidityBond
 
     # If we resolve the market the bond in it's entirety will go to the fee pool or to the market creator if the resolution was not invalid
     proceedToDesignatedReporting(contractsFixture, market)
@@ -106,7 +106,7 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     assert contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
 
     if invalid:
-        with TokenDelta(cash, minimumValidityBond, universe.getAuction(), "Validity bond did not go to the auction"):
+        with TokenDelta(cash, minimumValidityBond, universe.getOrCreateNextDisputeWindow(False), "Validity bond did not go to the dispute window"):
             market.finalize()
     else:
         with TokenDelta(cash, minimumValidityBond, market.getOwner(), "Validity bond did not go to the market creator"):

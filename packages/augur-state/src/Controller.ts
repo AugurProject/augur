@@ -1,7 +1,8 @@
-import {Augur} from "@augurproject/api";
+import { Augur } from "@augurproject/api";
 import settings from "@augurproject/state/src/settings.json";
-import {PouchDBFactoryType} from "./db/AbstractDB";
-import {DB} from "./db/DB";
+import { PouchDBFactoryType } from "./db/AbstractDB";
+import { DB } from "./db/DB";
+import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
 
 // because flexsearch is a UMD type lib
 import FlexSearch = require("flexsearch");
@@ -14,29 +15,18 @@ interface SyncableMarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Co
 }
 
 export class Controller<TBigNumber> {
+  public readonly FTS: FlexSearch;
   private dbController: DB<TBigNumber>;
-  private augur: Augur<TBigNumber>;
-  private networkId: number;
-  private blockstreamDelay: number;
-  private defaultStartSyncBlockNumber: number;
-  private trackedUsers: Array<string>;
-  private pouchDBFactory: PouchDBFactoryType;
-  private FTS: FlexSearch;
 
   public constructor(
-    augur: Augur<TBigNumber>,
-    networkId: number,
-    blockstreamDelay: number,
-    defaultStartSyncBlockNumber: number,
-    trackedUsers: Array<string>,
-    pouchDBFactory: PouchDBFactoryType
+    private augur: Augur<TBigNumber>,
+    private networkId: number,
+    private blockstreamDelay: number,
+    private defaultStartSyncBlockNumber: number,
+    private trackedUsers: Array<string>,
+    private pouchDBFactory: PouchDBFactoryType,
+    private blockAndLogStreamerListener: BlockAndLogStreamerListener
   ) {
-    this.augur = augur;
-    this.networkId = networkId;
-    this.blockstreamDelay = blockstreamDelay;
-    this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
-    this.trackedUsers = trackedUsers;
-    this.pouchDBFactory = pouchDBFactory;
     this.FTS = FlexSearch.create({
       doc: {
         id: "id",
@@ -46,8 +36,8 @@ export class Controller<TBigNumber> {
           "title",
           "description",
           "tags",
-        ]
-      }
+        ],
+      },
     });
   }
 
@@ -60,16 +50,21 @@ export class Controller<TBigNumber> {
         this.trackedUsers,
         this.augur.genericEventNames,
         this.augur.userSpecificEvents,
-        this.pouchDBFactory
+        this.pouchDBFactory,
+        this.blockAndLogStreamerListener,
       );
       await this.dbController.sync(
         this.augur,
         settings.chunkSize,
-        settings.blockstreamDelay
+        settings.blockstreamDelay,
       );
+
+      this.blockAndLogStreamerListener.listenForBlockRemoved(this.dbController.rollback.bind(this.dbController));
+      this.blockAndLogStreamerListener.startBlockStreamListener();
 
       const marketCreatedDB = await this.dbController.getSyncableDatabase(this.dbController.getDatabaseName("MarketCreated"));
       const previousDocumentEntries = await marketCreatedDB.allDocs();
+
       for (let row of previousDocumentEntries.rows) {
         if (row === undefined) {
           continue;
@@ -87,11 +82,11 @@ export class Controller<TBigNumber> {
             if (info && info.tags && info.longDescription) {
               this.FTS.add({
                 id: row.id,
-                Title: description,
+                title: description,
                 description: info.longDescription,
                 tags: info.tags.toString(), // convert to comma separated so it is searchable
                 start: new Date(),
-                end: new Date()
+                end: new Date(),
               });
             }
           }

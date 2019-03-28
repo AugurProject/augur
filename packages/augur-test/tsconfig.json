@@ -1,0 +1,33 @@
+{
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": ".",
+    "baseUrl": "./"
+  },
+  "exclude": [],
+  "include": [
+    "tests",
+    "libs"
+  ],
+  "references": [
+    {
+      "path": "../ethersjs-provider"
+    },
+    {
+      "path": "../augur-core"
+    },
+    {
+      "path": "../augur-types"
+    },
+    {
+      "path": "../augur-api"
+    },
+    {
+      "path": "../augur-artifacts"
+    },
+    {
+      "path": "../augur-state"
+    }
+  ]
+}

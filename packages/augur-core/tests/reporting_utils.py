@@ -131,9 +131,9 @@ def generateFees(fixture, universe, market):
 
     with BuyWithCash(cash, cost, tester.k1, "buy complete set"):
         completeSets.publicBuyCompleteSets(market.address, 1000, sender=tester.k1)
-    initialMarketCreatorFees = market.marketCreatorFeesAttoEth()
+    initialMarketCreatorFees = market.marketCreatorFeesAttoCash()
     completeSets.publicSellCompleteSets(market.address, 1000, sender=tester.k1)
-    assert marketCreatorFees == market.marketCreatorFeesAttoEth() - initialMarketCreatorFees, "The market creator didn't get correct share of fees from complete set sale"
+    assert marketCreatorFees == market.marketCreatorFeesAttoCash() - initialMarketCreatorFees, "The market creator didn't get correct share of fees from complete set sale"
     newFeesBalance = cash.balanceOf(disputeWindow)
     reporterFees = cost / universe.getOrCacheReportingFeeDivisor()
     feesGenerated = newFeesBalance - oldFeesBalance

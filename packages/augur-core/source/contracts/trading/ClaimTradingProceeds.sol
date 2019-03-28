@@ -21,11 +21,20 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
 
     IAugur public augur;
     IProfitLoss public profitLoss;
+    ICash public cash;
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
+        cash = ICash(augur.lookup("Cash"));
+        return true;
+    }
+
+    function claimMarketsProceeds(IMarket[] calldata _markets, address _shareHolder) external afterInitialized returns(bool) {
+        for (uint256 i=0; i < _markets.length; i++) {
+            this.claimTradingProceeds(_markets[i], _shareHolder);
+        }
         return true;
     }
 
@@ -45,7 +54,7 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
             // always destroy shares as it gives a minor gas refund and is good for the network
             if (_numberOfShares > 0) {
                 _shareToken.destroyShares(_shareHolder, _numberOfShares);
-                logTradingProceedsClaimed(_market, address(_shareToken), _shareHolder, _numberOfShares, _shareHolderShare);
+                logTradingProceedsClaimed(_market, address(_shareToken), _shareHolder, _numberOfShares, _shareHolderShare, _creatorShare, _reporterShare);
             }
             distributeProceeds(_market, _shareHolder, _shareHolderShare, _creatorShare, _reporterShare);
         }
@@ -58,22 +67,20 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
     }
 
     function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) private returns (bool) {
-        ICash _denominationToken = _market.getDenominationToken();
-
         if (_shareHolderShare > 0) {
-            require(_denominationToken.transferFrom(address(_market), _shareHolder, _shareHolderShare));
+            require(cash.transferFrom(address(_market), _shareHolder, _shareHolderShare));
         }
         if (_creatorShare > 0) {
             _market.recordMarketCreatorFees(_creatorShare, address(0));
         }
         if (_reporterShare > 0) {
-            require(_denominationToken.transferFrom(address(_market), address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare));
+            require(cash.transferFrom(address(_market), address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare));
         }
         return true;
     }
 
-    function logTradingProceedsClaimed(IMarket _market, address _shareToken, address _sender, uint256 _numShares, uint256 _numPayoutTokens) private returns (bool) {
-        augur.logTradingProceedsClaimed(_market.getUniverse(), _shareToken, _sender, address(_market), _numShares, _numPayoutTokens, _sender.balance.add(_numPayoutTokens));
+    function logTradingProceedsClaimed(IMarket _market, address _shareToken, address _sender, uint256 _numShares, uint256 _numPayoutTokens, uint256 _creatorShare, uint256 _reporterShare) private returns (bool) {
+        augur.logTradingProceedsClaimed(_market.getUniverse(), _shareToken, _sender, address(_market), _numShares, _numPayoutTokens, _sender.balance.add(_numPayoutTokens),_creatorShare, _reporterShare);
         return true;
     }
 

@@ -259,7 +259,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     cost = categoricalMarket.getNumTicks() * numSets
     with BuyWithCash(cash, cost, tester.k1, "buy complete set"):
         assert completeSets.publicBuyCompleteSets(categoricalMarket.address, 10, sender=tester.k1)
-    assert universe.getOpenInterestInAttoEth() == cost
+    assert universe.getOpenInterestInAttoCash() == cost
 
     marketMigratedLog = {
         "market": categoricalMarket.address,
@@ -269,7 +269,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     with AssertLog(localFixture, "MarketMigrated", marketMigratedLog):
         assert categoricalMarket.migrateThroughOneFork([0,0,0,categoricalMarket.getNumTicks()], "")
 
-    assert universe.getOpenInterestInAttoEth() == 0
+    assert universe.getOpenInterestInAttoCash() == 0
 
 
     # The dispute crowdsourcer has been disavowed
@@ -278,7 +278,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     assert categoricalDisputeCrowdsourcer.isDisavowed()
     assert not universe.isContainerForReportingParticipant(categoricalDisputeCrowdsourcer.address)
     assert not newUniverse.isContainerForReportingParticipant(categoricalDisputeCrowdsourcer.address)
-    assert newUniverse.getOpenInterestInAttoEth() == cost
+    assert newUniverse.getOpenInterestInAttoCash() == cost
 
     # The initial report is still present however
     categoricalInitialReport = localFixture.applySignature("InitialReporter", categoricalMarket.getReportingParticipant(0))

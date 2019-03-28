@@ -23,11 +23,13 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
 
     IAugur public augur;
     IOrders public orders;
+    ICash public cash;
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         orders = IOrders(augur.lookup("Orders"));
+        cash = ICash(augur.lookup("Cash"));
         return true;
     }
 
@@ -90,8 +92,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
 
         // Return to user moneyEscrowed that wasn't filled yet
         if (_moneyEscrowed > 0) {
-            ICash _denominationToken = _market.getDenominationToken();
-            require(_denominationToken.transferFrom(address(_market), _sender, _moneyEscrowed));
+            require(cash.transferFrom(address(_market), _sender, _moneyEscrowed));
         }
 
         return true;

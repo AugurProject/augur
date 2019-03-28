@@ -15,7 +15,7 @@ import 'ROOT/trading/IOrders.sol';
 import 'ROOT/libraries/token/ERC20Token.sol';
 
 
-// CONSIDER: Is `price` the most appropriate name for the value being used? It does correspond 1:1 with the attoETH per share, but the range might be considered unusual?
+// CONSIDER: Is `price` the most appropriate name for the value being used? It does correspond 1:1 with the attoCASH per share, but the range might be considered unusual?
 library Order {
     using SafeMathUint256 for uint256;
 
@@ -33,6 +33,7 @@ library Order {
         IMarket market;
         IAugur augur;
         ERC20Token kycToken;
+        ICash cash;
 
         // Order
         bytes32 id;
@@ -62,6 +63,7 @@ library Order {
             market: _market,
             augur: _augur,
             kycToken: _kycToken,
+            cash: ICash(_augur.lookup("Cash")),
             id: 0,
             creator: _creator,
             outcome: _outcome,
@@ -144,7 +146,7 @@ library Order {
         // If not able to cover entire order with shares alone, then cover remaining with tokens
         if (_attosharesToCover > 0) {
             _orderData.moneyEscrowed = _attosharesToCover.mul(_orderData.price);
-            require(_orderData.augur.trustedTransfer(_orderData.market.getDenominationToken(), _orderData.creator, address(_orderData.market), _orderData.moneyEscrowed));
+            require(_orderData.augur.trustedTransfer(_orderData.cash, _orderData.creator, address(_orderData.market), _orderData.moneyEscrowed));
         }
 
         return true;
@@ -171,7 +173,7 @@ library Order {
         // If not able to cover entire order with shares alone, then cover remaining with tokens
         if (_attosharesToCover > 0) {
             _orderData.moneyEscrowed = _orderData.market.getNumTicks().sub(_orderData.price).mul(_attosharesToCover);
-            require(_orderData.augur.trustedTransfer(_orderData.market.getDenominationToken(), _orderData.creator, address(_orderData.market), _orderData.moneyEscrowed));
+            require(_orderData.augur.trustedTransfer(_orderData.cash, _orderData.creator, address(_orderData.market), _orderData.moneyEscrowed));
         }
 
         return true;

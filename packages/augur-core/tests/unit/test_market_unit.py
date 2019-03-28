@@ -21,7 +21,7 @@ def test_market_creation(localFixture, mockUniverse, mockDisputeWindow, mockCash
     with raises(TransactionFailed, message="numTicks needs to be divisable by outcomes"):
         market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 7, numTicks)
 
-    with raises(TransactionFailed, message="fee per eth can not be greater than max fee per eth in attoEth"):
+    with raises(TransactionFailed, message="fee per eth can not be greater than max fee per eth in attoCash"):
         market.initialize(mockUniverse.address, endTime, oneEther / 2 + 1, tester.a1, tester.a1, 5, numTicks)
 
     with raises(TransactionFailed, message="creator address can not be 0"):
@@ -57,7 +57,6 @@ def test_market_creation(localFixture, mockUniverse, mockDisputeWindow, mockCash
     assert market.getNumberOfOutcomes() == 6
     assert market.getEndTime() == endTime
     assert market.getNumTicks() == numTicks
-    assert market.getDenominationToken() == mockCash.address
     assert market.getMarketCreatorSettlementFeeDivisor() == oneEther / 16
     assert mockShareTokenFactory.getCreateShareTokenCounter() == 6
     assert mockShareTokenFactory.getCreateShareToken(0) == market.getShareToken(0)

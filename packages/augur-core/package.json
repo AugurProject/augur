@@ -9,7 +9,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "lint": "solium --dir source --reporter=gcc",
-    "build:source": "tsc --version; tsc",
+    "build:source": "tsc -b",
     "build:contracts": "npm run build:flattener && . venv/bin/activate && node -r ts-node/register source/deployment/compileContracts.ts",
     "build:interfaces": "npm run build:flattener && . venv/bin/activate && node -r ts-node/register source/tools/generateContractInterfaces.ts",
     "build:flattener": "sh source/tools/installSolidityFlattener",
@@ -105,7 +105,7 @@
     "babel-loader": "8.0.5",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
-    "child_process": "^1.0.2",
+    "child_process": "1.0.2",
     "cross-env": "5.2.0",
     "jest": "23.6.0",
     "options-parser": "0.4.0",
@@ -114,7 +114,7 @@
     "solium": "1.2.3",
     "source-map-support": "0.5.9",
     "ts-node": "7.0.1",
-    "typescript": "^3.3.3333",
-    "util": "^0.11.1"
+    "typescript": "3.3.3333",
+    "util": "0.11.1"
   }
 }
