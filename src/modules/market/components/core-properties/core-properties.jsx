@@ -60,6 +60,7 @@ const Property = ({ numRow, property }) => (
     {Array.isArray(property.value) &&
       property.value.map((item, i) => (
         <span
+          key={i}
           className={classNames({
             [Styles.CoreProperties__smaller]: i === 1
           })}
