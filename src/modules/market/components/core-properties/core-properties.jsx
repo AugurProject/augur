@@ -57,7 +57,19 @@ const Property = ({ numRow, property }) => (
         </div>
       )}
     </span>
-    <span style={property.textStyle}>{property.value}</span>
+    {Array.isArray(property.value) &&
+      property.value.map((item, i) => (
+        <span
+          className={classNames({
+            [Styles.CoreProperties__smaller]: i === 1
+          })}
+        >
+          {item}
+        </span>
+      ))}
+    {!Array.isArray(property.value) && (
+      <span style={property.textStyle}>{property.value}</span>
+    )}
   </div>
 );
 
@@ -209,12 +221,10 @@ export default class CoreProperties extends Component {
           )
             ? "Event Ended & Reporting Started"
             : "Event Ends & Reporting Starts",
-          value: getValue(
-            market,
-            isMobileSmall
-              ? "endTime.formattedLocalShortTime"
-              : "endTime.formattedLocal"
-          )
+          value: [
+            getValue(market, "endTime.formattedUtc"),
+            getValue(market, "endTime.formattedTimezone")
+          ]
         },
         {
           name: "denominated in",

@@ -49,6 +49,9 @@ export function formatDate(d) {
   const localOffset = (date.getTimezoneOffset() / 60) * -1;
   const localOffsetFormatted =
     localOffset > 0 ? `+${localOffset}` : localOffset.toString();
+  const timezone = `(${
+    date.toLocaleTimeString("en-us", { timeZoneName: "short" }).split(" ")[2]
+  })`;
 
   return {
     value: date,
@@ -84,7 +87,17 @@ export function formatDate(d) {
     )} ${localAMPM} (UTC ${localOffsetFormatted})`,
     formattedSimpleData: `${
       months[date.getMonth()]
-    } ${date.getDate()}, ${date.getFullYear()}`
+    } ${date.getDate()}, ${date.getFullYear()}`,
+    formattedTimezone: `${
+      months[date.getMonth()]
+    } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
+      ":"
+    )} ${localAMPM} ${timezone} (Your timezone)`,
+    formattedUtc: `${
+      months[date.getUTCMonth()]
+    } ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(
+      ":"
+    )} ${utcAMPM} (UTC 0)`
   };
 }
 
