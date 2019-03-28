@@ -202,8 +202,8 @@ export default class CreateMarketPreview extends Component {
               <li>
                 <span>
                   {dateHasPassed(currentTimestamp, newMarket.endTime.timestamp)
-                    ? "Expired"
-                    : "Expires"}
+                    ? "Reporting Started"
+                    : "Reporting Starts"}
                 </span>
                 <span>{s.expirationDate}</span>
               </li>

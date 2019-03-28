@@ -7,6 +7,7 @@ import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
 import { registerUserDefinedGasPriceFunction } from "modules/app/actions/register-user-defined-gasPrice-function";
 import { loadUniverse } from "modules/app/actions/load-universe";
 import { isNewFavoritesStyle } from "modules/markets/helpers/favorites-processor";
+import { addAllMarketBanners } from "modules/markets/actions/market-banners";
 import { setSelectedUniverse } from "./selected-universe-management";
 
 export const loadAccountDataFromLocalStorage = address => (
@@ -78,6 +79,12 @@ export const loadAccountDataFromLocalStorage = address => (
           })
         );
         dispatch(registerUserDefinedGasPriceFunction());
+      }
+      if (
+        storedAccountData.marketBanners &&
+        storedAccountData.marketBanners.length > 0
+      ) {
+        dispatch(addAllMarketBanners(storedAccountData.marketBanners));
       }
     }
   }

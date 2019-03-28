@@ -236,7 +236,8 @@ export function assembleMarket(
           marketLoading !== null ? marketLoading.state : marketLoading;
 
         market.endTime = convertUnixToFormattedDate(marketData.endTime);
-        market.endTimeLabel = market.endTime < now ? "expired" : "expires";
+        market.endTimeLabel =
+          market.endTime < now ? "Reporting Started" : "Reporting Starts";
         market.creationTime = convertUnixToFormattedDate(
           marketData.creationTime
         );

@@ -168,8 +168,8 @@ export default class MarketProperties extends Component {
             <li>
               <span>
                 {endTime && dateHasPassed(currentTimestamp, endTime.timestamp)
-                  ? "Expired"
-                  : "Expires"}
+                  ? "Reporting Started"
+                  : "Reporting Starts"}
               </span>
               <span className="value_expires">
                 {isMobile

@@ -42,6 +42,7 @@ import transactionsData from "modules/transactions/reducers/transactions-data";
 import transactionsStatus from "modules/transactions/reducers/transactions-status";
 import universe from "modules/universe/reducers/universe";
 import versions from "modules/app/reducers/versions";
+import marketBanners from "modules/markets/reducers/market-banners";
 
 export function createReducer() {
   return {
@@ -88,6 +89,7 @@ export function createReducer() {
     transactionsData,
     transactionsStatus,
     universe,
-    versions
+    versions,
+    marketBanners
   };
 }

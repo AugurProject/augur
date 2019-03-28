@@ -18,6 +18,7 @@ import {
   TYPE_REPORT,
   TYPE_DISPUTE
 } from "modules/markets/constants/link-types";
+import MarketHeaderMessage from "modules/market/containers/market-header-message";
 
 const Property = ({ numRow, property }) => (
   <div
@@ -154,7 +155,7 @@ export default class CoreProperties extends Component {
       isScalar ? "consensus.winningOutcome" : "consensus.outcomeName"
     );
 
-    const propertyRows = [
+    const topPropertyRows = [
       [
         {
           name: "volume",
@@ -171,7 +172,10 @@ export default class CoreProperties extends Component {
           name: "phase",
           value: this.determinePhase()
         }
-      ],
+      ]
+    ];
+
+    const propertyRows = [
       [
         {
           name: "created",
@@ -203,8 +207,8 @@ export default class CoreProperties extends Component {
             currentTimestamp,
             getValue(market, "endTime.timestamp")
           )
-            ? "expired"
-            : "expires",
+            ? "Event Ended & Reporting Started"
+            : "Event Ends & Reporting Starts",
           value: getValue(
             market,
             isMobileSmall
@@ -261,6 +265,33 @@ export default class CoreProperties extends Component {
         }
       });
       renderedProperties.push(
+        <div
+          key={`row${numRow}`}
+          className={classNames(Styles.CoreProperties__row, {
+            [Styles.CoreProperties__rowBorder]: numRow === 0
+          })}
+        >
+          {" "}
+          {row}
+        </div>
+      );
+    });
+
+    const topHeaderContent = [];
+    topPropertyRows.forEach((propertyRow, numRow) => {
+      const row = [];
+      propertyRow.forEach((property, numCol) => {
+        if (property.value) {
+          row.push(
+            <Property
+              key={`property${numRow}${numCol}`}
+              property={property}
+              numRow={numRow}
+            />
+          );
+        }
+      });
+      topHeaderContent.push(
         <div
           key={`row${numRow}`}
           className={classNames(Styles.CoreProperties__row, {
@@ -405,6 +436,7 @@ export default class CoreProperties extends Component {
 
     return (
       <div className={Styles.CoreProperties__coreContainer}>
+        {topHeaderContent}
         {headerContent && (
           <div
             className={classNames(
@@ -420,6 +452,7 @@ export default class CoreProperties extends Component {
             </div>
           </div>
         )}
+        <MarketHeaderMessage marketId={market.id} />
         {renderedProperties}
       </div>
     );
