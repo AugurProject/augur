@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
 import { Augur } from "@augurproject/api";
-import { DisputeWindow, Universe, Market, DisputeCrowdsourcer, ReputationToken, TimeControlled } from "@augurproject/core/source/libraries/ContractInterfaces";
+import { DisputeWindow, Universe, Market, DisputeCrowdsourcer, ReputationToken } from "@augurproject/core/source/libraries/ContractInterfaces";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -109,7 +109,7 @@ export class ContractAPI {
   }
 
   public async sellCompleteSets(market: Market, amount: ethers.utils.BigNumber): Promise<void> {
-    await this.augur.contracts.completeSets.publicSellCompleteSets(market.address, amount)
+    await this.augur.contracts.completeSets.publicSellCompleteSets(market.address, amount);
   }
 
   public async contribute(market: Market, payoutNumerators: Array<ethers.utils.BigNumber>, amount: ethers.utils.BigNumber): Promise<void> {
