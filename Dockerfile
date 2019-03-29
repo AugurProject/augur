@@ -23,6 +23,7 @@ COPY node-v10.15.0-headers.tar.gz /augur
 WORKDIR /augur
 RUN git init \
   && export npm_config_dist_url=https://s3.amazonaws.com/repo.augur.net/node-v10.15.0-headers.tar.gz \
+  && export npm_config_silly \
   && yarn add require-from-string \
   && yarn \
   && rm -rf .git \
