@@ -19,7 +19,6 @@ RUN apk --no-cache add \
 
 # begin create caching layer
 COPY package.json /augur/package.json
-COPY node-v10.15.0-headers.tar.gz /augur
 WORKDIR /augur
 RUN git init \
   && export npm_config_nodedir=/opt/hostedtoolcache/node/10.15.3/x64 \
