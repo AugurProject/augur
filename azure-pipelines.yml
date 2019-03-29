@@ -54,6 +54,7 @@ jobs:
           dockerRegistryEndpoint: dockerhub-augurproject
       - bash: |
           set -euxo pipefail
+          env
           npm --verbose $(COMMAND)
       - task: Docker@1
         displayName: docker logout
