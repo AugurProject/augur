@@ -52,10 +52,9 @@ jobs:
           command: login
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
-      - task: Npm@1
-        inputs:
-          command: custom
-          customCommand: $(COMMAND)
+      - bash: |
+          set -euxo pipefail
+          npm --verbose $(COMMAND)
       - task: Docker@1
         displayName: docker logout
         inputs:
