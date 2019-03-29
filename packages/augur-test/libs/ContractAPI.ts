@@ -3,14 +3,16 @@ import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFun
 import { Augur } from "@augurproject/api";
 import { DisputeWindow, Universe, Market, DisputeCrowdsourcer, ReputationToken } from "@augurproject/core/source/libraries/ContractInterfaces";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
+import { BigNumber } from "bignumber.js";
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+const ETERNAL_APPROVAL_VALUE = new BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", 16); // 2^256 - 1
 
 export class ContractAPI {
   public constructor(
     public readonly augur: Augur<any>,
     public readonly provider: EthersProvider,
-    public readonly account: string, // address
+    public account: string, // address
   ) {}
 
   public async approveCentralAuthority(): Promise<void> {
@@ -205,5 +207,14 @@ export class ContractAPI {
 
   public getRepAllowance(owner: string, spender: string): Promise<ethers.utils.BigNumber> {
     return this.augur.contracts.getReputationToken().allowance_(owner, spender);
+  }
+
+  public async approveAugurEternalApprovalValue(owner: string) {
+    const spender = this.augur.addresses.Augur;
+    const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, spender), 10);
+
+    if (!allowance.eq(ETERNAL_APPROVAL_VALUE)) {
+      await this.augur.contracts.cash.approve(spender, ETERNAL_APPROVAL_VALUE, { sender: this.account });
+    }
   }
 }
