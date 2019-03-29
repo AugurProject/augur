@@ -29,6 +29,7 @@ import {
 } from "../constants";
 import { processLogByName } from "./process-logs";
 import { BackupRestore } from "../sync/backup-restore";
+import { Log } from "@augurproject/api";
 
 export type BlockDirection = "add" | "remove";
 
@@ -63,7 +64,7 @@ export function clearOverrideTimestamp(): void {
   blockHeadTimestamp = 0;
 }
 
-export async function processBlockAndLogs(db: Knex, pouch: PouchDB.Database, augur: Augur, direction: BlockDirection, block: BlockDetail, bulkSync: boolean, logs: Array<FormattedEventLog>, databaseDir: string, isWarpSync: boolean) {
+export async function processBlockAndLogs(db: Knex, pouch: PouchDB.Database, augur: Augur, direction: BlockDirection, block: BlockDetail, bulkSync: boolean, logs: Array<Log>, databaseDir: string, isWarpSync: boolean) {
   if (!block || !block.timestamp) throw new Error(JSON.stringify(block));
   const dbWritePromises = _.compact(logs.map((log) => processLogByName(augur, log, true)));
   const dbWriteFunctions = await Promise.all(dbWritePromises);
@@ -77,7 +78,6 @@ export async function processBlockAndLogs(db: Knex, pouch: PouchDB.Database, aug
     if (direction === "add") {
       await processBlockByBlockDetails(trx, augur, block, bulkSync);
       await dbWritesFunction(trx);
-      await pouchUpsertBlockRow(pouch, block, logs, false);
     } else {
       logger.info(`block removed: ${block.number} (${block.hash})`);
       await dbWritesFunction(trx);

@@ -1,4 +1,3 @@
-import {uploadBlockNumbers} from "@augurproject/artifacts";
 import {makeTestAugur, ACCOUNTS} from "../../libs/LocalAugur";
 import {API} from "@augurproject/state/src/api/API";
 import {makeDbMock} from "../../libs/MakeDbMock";

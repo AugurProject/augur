@@ -1,5 +1,5 @@
 import { BigNumber } from "../types";
-import  speedomatic = require("speedomatic");
+import  speedomatic from "speedomatic";
 
 export function convertOnChainAmountToDisplayAmount(onChainAmount:BigNumber, tickSize:BigNumber) {
   return speedomatic.unfix(onChainAmount.div(tickSize));

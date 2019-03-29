@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@augurproject/types": "10.0.0-0",
-    "ts-node": "7.0.1"
+    "ts-node": "8.0.3"
   },
   "buildDependencies": [
     "typescript"

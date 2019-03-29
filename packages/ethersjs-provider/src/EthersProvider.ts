@@ -98,7 +98,17 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
   }
 
   public async getLogs(filter: Filter): Promise<Array<Log>> {
-    return super.getLogs(filter);
+    const logs = await super.getLogs(filter);
+    return logs.map<Log>((log) => ({
+      transactionHash: "",
+      blockNumber: 0,
+      blockHash: "",
+      logIndex: 0,
+      transactionIndex: 0,
+      transactionLogIndex: 0,
+      removed: false,
+      ...log,
+    }))
   }
 
   public async perform(message: any, params: any): Promise<any> {

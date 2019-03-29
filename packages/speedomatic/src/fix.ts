@@ -5,7 +5,7 @@ import { wrap } from "./wrap";
 
 import { FXP_ONE } from "./constants";
 
-export function fix(n, encoding, isWrapped=false) {
+export function fix(n, encoding?, isWrapped=false) {
   let fixed;
   if (n && n !== "0x" && !n.error && !n.message) {
     if (encoding && n.constructor === String) {

@@ -4,8 +4,10 @@ import { mapLimit, queue } from "async";
 import { each } from "bluebird";
 import { Augur, BlockDetail, BlockRange, ErrorCallback, FormattedEventLog } from "../types";
 import { processLogByName } from "./process-logs";
-import { insertTransactionHash, pouchUpsertBlockRow, processBlockByBlockDetails } from "./process-block";
+import { insertTransactionHash, processBlockByBlockDetails } from "./process-block";
 import { logger } from "../utils/logger";
+import { logProcessors } from "./log-processors";
+import { Log } from "@augurproject/api";
 
 const BLOCK_DOWNLOAD_PARALLEL_LIMIT = 15;
 
@@ -50,16 +52,15 @@ async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): 
   });
 }
 
-async function processBatchOfLogs(db: Knex, pouchDB: PouchDB.Database, augur: Augur, allAugurLogs: Array<FormattedEventLog>, blockNumbers: Array<number>, blockDetailsByBlockPromise: Promise<BlockDetailsByBlock>) {
+async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Log>, blockNumbers: Array<number>, blockDetailsByBlockPromise: Promise<BlockDetailsByBlock>) {
   const blockDetailsByBlock = await blockDetailsByBlockPromise;
-  const logsByBlock: { [blockNumber: number]: Array<FormattedEventLog> } = _.groupBy(allAugurLogs, (log) => log.blockNumber);
+  const logsByBlock: { [blockNumber: number]: Array<Log> } = _.groupBy(allAugurLogs, (log) => log.blockNumber);
   await each(blockNumbers, async (blockNumber: number) => {
     const blockDetail = blockDetailsByBlock[blockNumber];
     const logs = logsByBlock[blockNumber];
-    await pouchUpsertBlockRow(pouchDB, blockDetail, logs || [], true);
     if (logs === undefined || logs.length === 0) return;
     const dbWritePromises: Array<Promise<(db: Knex) => Promise<void>>> = [];
-    await each(logs, async (log: FormattedEventLog) => {
+    await each(logs, async (log: Log) => {
       const dbWritePromise = processLogByName(augur, log, false);
       if (dbWritePromise != null) {
         dbWritePromises.push(dbWritePromise);
@@ -79,35 +80,63 @@ async function processBatchOfLogs(db: Knex, pouchDB: PouchDB.Database, augur: Au
   });
 }
 
-export function downloadAugurLogs(db: Knex, pouchDB: PouchDB.Database, augur: Augur, fromBlock: number, toBlock: number, blocksPerChunk: number|undefined, callback: ErrorCallback): void {
+export async function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, endBlockNumber: number, blocksPerChunk: number|undefined=50):Promise<void>  {
   const batchLogProcessQueue = queue((processFunction: (callback: ErrorCallback) => void, nextFunction: ErrorCallback): void => {
     processFunction(nextFunction);
   }, 1);
 
-  logger.info(`Getting Augur logs from block ${fromBlock} to block ${toBlock}`);
+  logger.info(`Getting Augur logs from block ${fromBlock} to block ${endBlockNumber}`);
   let lastBlockDetails = new Promise<BlockDetailsByBlock>((resolve) => resolve([]));
-  augur.events.getAllAugurLogs({ fromBlock, toBlock, blocksPerChunk }, (batchOfAugurLogs: Array<FormattedEventLog>, blockRange: BlockRange): void => {
-      if (!batchOfAugurLogs || batchLogProcessQueue.paused) return;
-      const blockNumbers = batchOfAugurLogs.length > 0 ? extractBlockNumbers(batchOfAugurLogs) : getBlockNumbersInRange(blockRange);
-      const blockDetailPromise = lastBlockDetails.then(() => fetchAllBlockDetails(augur, blockNumbers));
-      lastBlockDetails = blockDetailPromise;
-      batchLogProcessQueue.push(async (nextBatch) => {
-        try {
-          await processBatchOfLogs(db, pouchDB, augur, batchOfAugurLogs, blockNumbers, blockDetailPromise);
-          nextBatch(null);
-        } catch (err) {
-          batchLogProcessQueue.kill();
-          batchLogProcessQueue.pause();
-          callback(err);
-        }
+  let highestSyncedBlockNumber = fromBlock;
+  const goalBlock = endBlockNumber;
+
+  while (highestSyncedBlockNumber < goalBlock) {
+    const toBlock = Math.min(highestSyncedBlockNumber + blocksPerChunk, endBlockNumber);
+
+    const logsPromises = Object.keys(logProcessors.Augur).map(async (event) => {
+      const topics: Array<string | Array<string>> = augur.events.getEventTopics(event);
+      return await augur.provider.getLogs({
+        fromBlock: highestSyncedBlockNumber,
+        toBlock,
+        address: augur.addresses.Augur,
+        topics
       });
-    },
-    (err) => {
-      if (!batchLogProcessQueue.paused) {
-        batchLogProcessQueue.push(() => {
-          callback(err);
-          batchLogProcessQueue.kill();
-        });
-      }
     });
+    const deepLogs = await Promise.all(logsPromises);
+    const batchOfAugurLogs = _.flatten(deepLogs);
+    const blockNumbers = batchOfAugurLogs.length > 0 ? extractBlockNumbers(batchOfAugurLogs) : getBlockNumbersInRange({
+      fromBlock: highestSyncedBlockNumber,
+      toBlock
+    });
+
+    const blockDetailPromise = fetchAllBlockDetails(augur, blockNumbers);
+    await processBatchOfLogs(db, augur, batchOfAugurLogs, blockNumbers, blockDetailPromise);
+
+    highestSyncedBlockNumber = toBlock;
+  }
+
+  // augur.events.getAllAugurLogs({ fromBlock, toBlock, blocksPerChunk }, (batchOfAugurLogs: Array<FormattedEventLog>, blockRange: BlockRange): void => {
+  //     if (!batchOfAugurLogs || batchLogProcessQueue.paused) return;
+  //     const blockNumbers = batchOfAugurLogs.length > 0 ? extractBlockNumbers(batchOfAugurLogs) : getBlockNumbersInRange(blockRange);
+  //     const blockDetailPromise = lastBlockDetails.then(() => fetchAllBlockDetails(augur, blockNumbers));
+  //     lastBlockDetails = blockDetailPromise;
+  //     batchLogProcessQueue.push(async (nextBatch) => {
+  //       try {
+  //         await processBatchOfLogs(db, augur, batchOfAugurLogs, blockNumbers, blockDetailPromise);
+  //         nextBatch(null);
+  //       } catch (err) {
+  //         batchLogProcessQueue.kill();
+  //         batchLogProcessQueue.pause();
+  //         callback(err);
+  //       }
+  //     });
+  //   },
+  //   (err: Error) => {
+  //     if (!batchLogProcessQueue.paused) {
+  //       batchLogProcessQueue.push(() => {
+  //         callback(err);
+  //         batchLogProcessQueue.kill();
+  //       });
+  //     }
+  //   });
 }

@@ -10,7 +10,7 @@ import { updateProfitLossRemoveRow } from "../profit-loss/update-profit-loss";
 
 export async function processMintLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
-    const value = new BigNumber(log.amount || log.value);
+    const value = new BigNumber(log.amount.toString() || log.value.toString());
     const token = log.token || log.address;
     await db.insert({
       transactionHash: log.transactionHash,

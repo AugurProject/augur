@@ -22,10 +22,16 @@ export class EventLogDBRouter {
   }
 
   onLogsAdded = async (blockNumber: number, extendedLogs: ExtendedLog[]) => {
-    const logs: Log[] = extendedLogs.map((log) => ({
+    const logs: Log[] = extendedLogs.map<Log>((log) => ({
       ...log,
       logIndex: parseInt(log.logIndex, 10),
-      blockNumber: parseInt(log.blockNumber, 10)
+      blockNumber: parseInt(log.blockNumber, 10),
+
+      // TODO Should these be optional in the Log type?
+      removed: log.removed ? log.removed : false,
+      transactionIndex: log.transactionIndex ? log.transactionIndex : 0,
+      transactionLogIndex: log.transactionLogIndex ? log.transactionLogIndex : 0,
+      transactionHash: log.transactionHash ? log.transactionHash : ""
     }));
 
     const logCallbackPromises = this.logCallbacks.map((cb) => cb(blockNumber, logs));

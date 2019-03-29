@@ -4,11 +4,7 @@
   "description": "Grab bag of formatting and ABI encoding/decoding functions",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
-  "main": "src/index.js",
-  "directories": {
-    "src": "src",
-    "test": "test"
-  },
+  "main": "build",
   "scripts": {
     "build": "tsc -b"
   },

@@ -75,7 +75,7 @@
     "pouchdb": "7.0.0",
     "speedomatic": "2.1.5",
     "sqlite3": "4.0.6",
-    "ts-node": "^6.1.1",
+    "ts-node": "8.0.3",
     "uuid": "3.3.2",
     "webpack": "4.27.1",
     "ws": "6.2.0"

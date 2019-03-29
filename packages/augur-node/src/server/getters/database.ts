@@ -1,5 +1,6 @@
 import Knex from "knex";
 import * as _ from "lodash";
+
 import {
   Address,
   Augur,
@@ -144,7 +145,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithTime, outcome
       resolutionSource: row.resolutionSource,
       numTicks: row.numTicks,
       outcomes: _.map(outcomesInfo, (outcomeInfo) => formatBigNumberAsFixed<UIOutcomeInfo<BigNumber>, UIOutcomeInfo<string>>(outcomeInfo)),
-      tickSize: numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice),
+      tickSize: numTicksToTickSize(new BigNumber(row.numTicks.toString()), new BigNumber(row.minPrice.toString()), new BigNumber(row.maxPrice.toString())),
     }),
     {
       consensus,
@@ -171,7 +172,7 @@ export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<str
 }
 
 export function normalizePayouts(payoutRow: Payout<BigNumber>): NormalizedPayout<BigNumber> {
-  const payout = [];
+  const payout:Array<BigNumber> = [];
   for (let i = 0; i < 8; i++) {
     const payoutNumerator = payoutRow[("payout" + i) as keyof Payout<BigNumber>] as BigNumber|null;
     if (payoutNumerator == null) break;

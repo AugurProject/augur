@@ -1,6 +1,8 @@
+import { BigNumber as BigNumberJS } from "bignumber.js";
 import { BigNumber } from "ethers/utils";
 export { BigNumber } from "ethers/utils";
 export { Block as BlockDetail } from "ethers/providers";
+
 
 import { EventEmitter } from "events";
 import Knex from "knex";

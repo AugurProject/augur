@@ -5,7 +5,8 @@
     "rootDir": "src"
   },
   "references": [{
-    "path": "../blockstream-adapters",
+      "path": "../blockstream-adapters"
+    }, {
     "path" : "../augur-artifacts"
   }]
 }

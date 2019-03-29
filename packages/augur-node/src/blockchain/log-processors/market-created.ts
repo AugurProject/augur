@@ -28,14 +28,13 @@ interface IOutcomes {
   shareTokens: Array<string>;
 }
 
-
 function getOutcomes(augur: Augur, log: FormattedEventLog) {
   return new Promise<IOutcomes>((resolve, reject) => {
     const market = augur.getMarket(log.market);
-    const numOutcomes = parseInt(log.marketType, 10) === MarketType.categorical ? (log.outcomes.length + 1) : 3;
+    const numOutcomes = parseInt(log.marketType, 10) === MarketType.categorical ? (log.outcomes.length + 1) : 2;
 
     const shareTokens = new Array(numOutcomes);
-    const outcomeNames: Array<string|number|null> = (log.marketType === "1" && log.outcomes) ? log.outcomes : new Array(numOutcomes - 1).fill(null);
+    const outcomeNames: Array<string|number|null> = (parseInt(log.marketType) === MarketType.categorical && log.outcomes) ? log.outcomes : new Array(numOutcomes - 1).fill(null);
 
     forEachOf(shareTokens, async (_: null, outcome: number, nextOutcome: ErrorCallback) => {
       const shareToken = await market.getShareToken_(new BigNumber(outcome));
@@ -61,7 +60,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
     numTicks: (await market.getNumTicks_()).toString(),
     marketCreatorSettlementFeeDivisor: (await market.getMarketCreatorSettlementFeeDivisor_()).toString(),
     reportingFeeDivisor: (await augur.contracts.universe.getOrCacheReportingFeeDivisor_()).toString(),
-    validityBondAttoeth: (await market.getValidityBondAttoEth_()).toString(),
+    validityBondAttoeth: (await market.getValidityBondAttoCash_()).toString(),
     getOutcomes: await getOutcomes(augur, log),
   };
 

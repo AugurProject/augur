@@ -205,7 +205,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
     );
   });
 
-  let disputeRound = null;
+  let disputeRound:number | null = null;
   if (!totalCompletedStakeOnAllPayouts.eq(0)) {
     disputeRound = stakeRows.disputeRound[0] ? stakeRows.disputeRound[0].disputeRound + 1 : 1;
   }

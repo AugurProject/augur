@@ -6,6 +6,7 @@ import { logger } from "../utils/logger";
 import { SubscriptionEventNames } from "../constants";
 import { delay } from "bluebird";
 import { Augur } from "../types";
+import { UploadBlockNumbers } from "@augurproject/artifacts";
 
 const BLOCKSTREAM_HANDOFF_BLOCKS = 5;
 const BLOCKSTREAM_HANDOFF_WAIT_TIME_MS = 15000;
@@ -24,11 +25,11 @@ function setSyncFinished() {
   augurEmitter.emit(SubscriptionEventNames.SyncFinished);
 }
 
-export async function bulkSyncAugurNodeWithBlockchain(db: Knex, pouch: PouchDB.Database, augur: Augur, blocksPerChunk: number|undefined): Promise<number> {
+export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur, blocksPerChunk: number|undefined): Promise<number> {
   const row: HighestBlockNumberRow|null = await db("blocks").max("blockNumber as highestBlockNumber").first();
   const lastSyncBlockNumber: number|null|undefined = row!.highestBlockNumber;
 
-  const uploadBlockNumber: number = parseInt(augur.networkId, 10);
+  const uploadBlockNumber: number = UploadBlockNumbers[parseInt(augur.networkId, 10)];
   let highestBlockNumber: number = await getHighestBlockNumber(augur);
   let fromBlock: number;
   if (uploadBlockNumber > highestBlockNumber) {
@@ -54,7 +55,7 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, pouch: PouchDB.D
     setSyncFinished();
     return fromBlock - 1;
   }
-  await promisify(downloadAugurLogs)(db, pouch, augur, fromBlock, handoffBlockNumber, blocksPerChunk);
+  await downloadAugurLogs(db, augur, fromBlock, handoffBlockNumber, blocksPerChunk);
   setSyncFinished();
   await db.insert({ highestBlockNumber }).into("blockchain_sync_history");
   logger.info(`Finished batch load from ${fromBlock} to ${handoffBlockNumber}`);

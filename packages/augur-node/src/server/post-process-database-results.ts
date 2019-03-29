@@ -1,4 +1,4 @@
-import BigNumber from "bignumber.js";
+import { BigNumber } from "../types";
 
 interface FieldWhitelist {
   [key: string]: boolean;

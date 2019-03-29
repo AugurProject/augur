@@ -1,16 +1,31 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "composite": true,
-    "rootDir": "src"
+    "outDir": "build",
+    "rootDirs": [
+      "src",
+      "test"
+    ],
+    "noImplicitAny": false
   },
   "include": [
     "src"
   ],
+  "exclude": [
+    "**/*.test.ts"
+  ],
   "references": [
+    {
+      "path": "../augur-api"
+    },
+    {
+      "path": "../augur-state"
+    },
+    {
+      "path": "../ethersjs-provider"
+    },
     {
       "path": "../speedomatic"
     }
-
   ]
 }

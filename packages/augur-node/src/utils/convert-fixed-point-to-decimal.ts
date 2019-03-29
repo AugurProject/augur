@@ -16,7 +16,7 @@ export function convertDecimalToFixedPoint(decimalValue: string|number, conversi
   return decimalToFixedPoint(new BigNumber(decimalValue), new BigNumber(conversionFactor)).toString();
 }
 
-export function numTicksToTickSize(numTicks: BigNumber, minPrice: BigNumber, maxPrice: BigNumber): BigNumber {
+export function numTicksToTickSize<TBigNumber>(numTicks: BigNumber, minPrice: BigNumber, maxPrice: BigNumber): BigNumber {
   return maxPrice.sub(minPrice).div(numTicks);
 }
 
