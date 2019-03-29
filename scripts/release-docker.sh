@@ -56,6 +56,8 @@ case ${augur_env} in
         ;;
 esac
 
+curl -LO https://nodejs.org/download/release/v10.15.0/node-v10.15.0-headers.tar.gz
+
 docker build . --build-arg ethereum_network=${network} --build-arg build_environment=${build_environment} --tag augurproject/augur:${augur_env} --tag augurproject/augur:$version || exit 1
 
 docker push augurproject/augur:$version

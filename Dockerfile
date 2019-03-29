@@ -21,6 +21,7 @@ RUN apk --no-cache add \
 COPY package.json /augur/package.json
 WORKDIR /augur
 RUN git init \
+  && export npm_config_tarball=node-v10.15.0-headers.tar.gz \
   && yarn add require-from-string \
   && yarn \
   && rm -rf .git \
