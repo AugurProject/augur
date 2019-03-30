@@ -1,0 +1,6 @@
+{
+  "cannedMarkets": true,
+  "connect": true,
+  "broadcast": false,
+  "tx": false
+}

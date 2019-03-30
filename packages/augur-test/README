@@ -1,0 +1,3 @@
+This is a port of the flash scripts from javascript and augur-node to typescript and augur-state.
+They don't work because at the time of this writing, augur-state isn't yet far enough along.
+The flash scripts in augur-tools will likely work.
