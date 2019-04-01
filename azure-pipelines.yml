@@ -1,0 +1,17 @@
+trigger:
+- master
+
+jobs:
+  - job: test_ui
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: 10.15
+      - script: yarn
+      - script: yarn lint && yarn test
+          # This is here to confirm the build works.
+          # Nothing is done with the resulting artifacts.
+      - script: yarn build --dev
+        displayName: 'lint and test'

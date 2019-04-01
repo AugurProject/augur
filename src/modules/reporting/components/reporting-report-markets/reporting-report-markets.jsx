@@ -113,7 +113,7 @@ class ReportingReporting extends React.Component {
 
   componentDidMount() {
     const { loadReporting, universe } = this.props;
-    if (universe) loadReporting(null);
+    if (universe) loadReporting();
   }
 
   componentWillReceiveProps(nextProps) {

@@ -50,7 +50,7 @@ const mapDispatchToProps = dispatch => ({
       })
     ),
   getUniverseInitialReporterStake: (universe, cb) =>
-    dispatch(getUniverseInitialReporterStake(universe, cb))
+    getUniverseInitialReporterStake(universe, cb)
 });
 
 const mergeProps = (sP, dP, oP) => {
