@@ -1,0 +1,94 @@
+dist: xenial
+sudo: required
+language: node_js
+services:
+  - docker
+branches:
+  only:
+    - master
+    - stable
+    - sneakpeak
+    - mvp
+    - petong/travis-ci
+    - "/^v\\d+\\.\\d+\\.\\d$/"
+node_js:
+  - '9'
+  - '10.15.0'
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-4.8
+      - g++-4.8
+      - build-essential
+      - libusb-1.0-0-dev
+before_install:
+    - pyenv versions
+script:
+  - yarn lint && yarn test;
+  # This is here to confirm the build works.
+  # Nothing is done with the resulting artifacts.
+  - yarn build --dev
+jobs:
+  include:
+  - stage: Deploy to stable
+    if: (branch = stable) AND (NOT (type IN (pull_request)))
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- stable
+      skip_cleanup: true
+      on:
+        all_branches: true
+  - stage: Deploy to sneakpeak
+    if: (branch = sneakpeak) AND (NOT (type IN (pull_request)))
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- sneakpeak
+      skip_cleanup: true
+      on:
+        all_branches: true
+  - stage: Deploy to dev
+    if: (branch = master) AND (NOT (type IN (pull_request)))
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- dev
+      skip_cleanup: true
+      on:
+        all_branches: true
+  - stage: Deploy to kovan
+    if: (branch = master) AND (NOT (type IN (pull_request)))
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- kovan
+      skip_cleanup: true
+      on:
+        all_branches: true
+  - stage: Deploy optimized build
+    if: (branch = master) AND (NOT (type IN (pull_request)))
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- dev-optimized
+      skip_cleanup: true
+      on:
+        all_branches: true
+  - stage: Build docker release
+    if: tag = true
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- release
+      skip_cleanup: true
+      on:
+        all_branches: true
+env:
+  global:
+    - DOCKER_USERNAME=augurintegration
+    - secure: "XDre72+I7IA/5UxNuM4nR6ZO2RNEO0gyoMZq8uVnzQYqlvEHz69ucZG3rQVGOLOJnq/NZvehDrZ4sgYazVPABGlbFYIhLyLMNEy32N5MuuOOnd/kuPCj3L2BMPWB93jUssXbv6RsFjmxmuBPzVAD9QDhHM0DKTHed/txAu0g5Jo/wZmYf0J7UM5mc+47w1FY7LiUAG9DSkRyoFUIzPCT7OlKLLa7/qibQWdzdluZK6GOKMwkbqcjB49QDqsw9nHnsMNTegBRMJNeX1ZtDeBN9wJvn3ZZut9BXWBCnqKYJ4WP+VQpJ2hs/I12aIVVzOM5GmCz/ot/8asKXDssD4NPQK68+2hmmrStyjU15+/2BEO/jPNIi4cd6J4tihdD0BUYuo713xR+KFEBQJvKHAygAKBc3LHeDEl2XYMfWweakjlE9V3YYEHSbi5rRmhgjwMpmwBEoC064vo+0hysim/I9LejN39nn38XXvoE85ClgCjthqcvHn6VjNXS3K7C3KqQInyAvuZ0lEgiij068CEHF/356RtHVjuAfuQeUzroN+H9WiXNQxFoCEQ4ccruFLPAovu9zC94ZlEZ4Q0c4lcwA1ZFbD3RG2alyk1xnYns+XS5SrEYniF1uld0z40befuZDN3y4feF6ZOmxo3VxGY0q1GzjSliBjsS+Lakm1hrKbo="
+    - secure: "wS1aieRNI01us7pvm7txg2LuvMJ/+zBwtCh6rabkI+vH8fK0BiDrWkmKFslLyWgecX/L0zL35vBQWAIYsUXjcE7SPoPcW7gYtiReSd33KPMhflPdSm71pnvV3TgOiY+YxqJPfgzx9mGl5JvflPoKqMEM7tk1KAJru2s0F/YVxkIDSVf34F1QwfhYh41YoA8J93mRlX/nczrcshU2cwDHxP/OvJz4Uqc0+b6m683ezoIzVIEnVxFAPckVtZP0dwJ1UaXDwgkmijG6qX+McBi4fCc4djSY6sPJ6Q2GH+VWma/G/CbRQ05wrZdZsgl0bA47Q/JTjAM46r98J2AiCycBlw95xmfLef2qDs+BYAYG8XmPYeDv8JIKSidDmbwki491hivyJBowJZtBrPIbFOvS8fc7ji9Zllu1PgEPxuz5eHdLs9fTK7+inQbugHbBybE1lziFD98vkwyAjAPUKFhLfheVlBHo8ssh423DIs0nycsnlgTv96ztEgjy4FB+YwsGOBMQBH/H6oWHjX11etLyPy/CyahMFL4Pckchr191j4FSNUK2pZWFeijwDg3DnzV5EZuPX5b9Bmtnifs9qfOSJo/Jw1qF5euSIa1z19bR3enEpBImghh0opx5Tdr648OBWD7fRXeakET9tvQnyYiHKGjOPIen2ngntB13o2VPyZ4="
+    - secure: "QcRX1CXpgi6+LC48bPFhrzXUYj/c26Q/8pIKMU2RNFUrYctKD86vlhfBE/k3Vqyrg8Mi48GpHOCQNCVGrNrVh0ROTkFjzAsykf3lSBfRJOhYLZMARSIim/wVeHZVnNZhwVKyG45ilKfSTcaW38gwHPEwg/TG0fUy2IHJypHCmkrPnEodzRqRCDzakZmss5T8enZBa1BBWhdBKwOSmxpGs7Mhv6v/YQwebamq+UrU1ANZaXx2gmYvMuT/4gxPSMOo8fqflO+aqZvmKCxCMJOt0TB116DaDnwaaKT5H/UOR4PhegcTQ3vJ+7lk/37m4mlr6gWk1BCM2Fqk59/FzMcEGHUflWmiBxE0T5YP/OAbQ9ZPNsBCzezBkwhOQ3IgZnnOGmtvXVe7c9DY1BDmi3zpSwsTb7lK5jl5jabdlf21y29zuEU3vD1dYYmOl2V1bAmeCHERfyaAXuhcAkg2BGSSWH4hCgCKPt3gKwrlpGdOBw57iO+Z7OTm18MIMsqM7m0J0tBOBpPx7sOl9b1/mi1zrWRW9ihyJdOm3XOz+8spr9ErTbtyoB6pZsYEfzlHIc3h6iuG6IwmEvgQCvp4Q/m/LSYuBPwgQ9dWBLBnG7veMlyqAv+HmPxL+osebJ2Yr9rgOROUdAEO1DnHO/0QSQcrVud8alNCmN5KAzRDo0If5Q8="
