@@ -6,7 +6,7 @@ library Reporting {
     uint256 private constant DISPUTE_ROUND_DURATION_SECONDS = 7 days;
     uint256 private constant INITIAL_DISPUTE_ROUND_DURATION_SECONDS = 1 days;
     uint256 private constant FORK_DURATION_SECONDS = 60 days;
-    uint256 private constant MAXIMUM_MARKET_DURATION = 91 days;
+    uint256 private constant MAXIMUM_MARKET_DURATION = 181 days;
 
     uint256 private constant INITIAL_REP_SUPPLY = 11 * 10 ** 6 * 10 ** 18; // 11 Million REP
 
