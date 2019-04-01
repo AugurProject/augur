@@ -1,0 +1,30 @@
+@import (reference) "~assets/styles/shared";
+
+.InvalidMessage {
+  color: @color-darkpurple;
+  display: flex;
+  flex-direction: column;
+  font-family: @roboto;
+  font-size: @font-size-medium;
+  line-height: @font-size-kinda-large;
+  max-width: 315px;
+  min-width: 315px;
+
+  > div {
+    background-color: @color-yellowish-alert;
+    border-radius: 4px;
+    margin: 0.5rem;
+    padding: 1rem;
+
+    > span {
+      &.bolden {
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.InvalidMessage li {
+  list-style-type: disc;
+  margin: 0.3125rem 0 0 1.25rem;
+}

@@ -15,7 +15,6 @@ import {
 import { SCALAR } from "modules/markets/constants/market-types";
 
 import getValue from "utils/get-value";
-import { dateHasPassed } from "utils/format-date";
 import Styles from "modules/market/components/market-properties/market-properties.styles";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 import { MODAL_MIGRATE_MARKET } from "modules/modal/constants/modal-types";
@@ -107,7 +106,6 @@ export default class MarketProperties extends Component {
       loginAccount,
       reportingState,
       settlementFeePercent,
-      currentTimestamp,
       endTime,
       resolutionSource,
       id,
@@ -166,15 +164,12 @@ export default class MarketProperties extends Component {
               />
             </li>
             <li>
-              <span>
-                {endTime && dateHasPassed(currentTimestamp, endTime.timestamp)
-                  ? "Reporting Started"
-                  : "Reporting Starts"}
-              </span>
-              <span className="value_expires">
+              <span>Reporting Start Time</span>
+              <span className="value_expires">{endTime.formattedUtc}</span>
+              <span className={Styles.MarketProperties_value_small}>
                 {isMobile
                   ? endTime.formattedLocalShort
-                  : endTime.formattedLocalShortTime}
+                  : endTime.formattedTimezone}
               </span>
             </li>
             {showResolution && (

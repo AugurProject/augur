@@ -47,10 +47,10 @@ const MarketHeaderMessage = ({ marketId, dismiss, show, loggedIn }) => (
                   <div>
                     <p>
                       Markets on Augur are created by the community, this means
-                      that errors are can be made in the creation of a market,
-                      which can result in the market being resolved as invalid.
-                      If a market resolves as invalid, each share is refunded to
-                      traders in equal amounts.
+                      that errors can be made in the creation of a market, which
+                      can result in the market being resolved as invalid. If a
+                      market resolves as invalid, each share is worth equal
+                      amounts at resolution.
                     </p>
                     <p>
                       If the reporting start time (UTC) isn’t after the actual

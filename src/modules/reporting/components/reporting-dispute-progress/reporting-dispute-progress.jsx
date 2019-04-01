@@ -91,7 +91,7 @@ const ReportingDisputeProgress = ({
             <div
               className={Styles["ReportingDisputeProgress__dispute-tentative"]}
             >
-              New tentative outcome
+              New Tent. Outcome
             </div>
           )}
       </section>

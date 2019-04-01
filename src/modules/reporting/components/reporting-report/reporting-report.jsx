@@ -17,6 +17,7 @@ import ReportingReportConfirm from "modules/reporting/components/reporting-repor
 import { TYPE_VIEW } from "modules/markets/constants/link-types";
 import { isEmpty } from "lodash";
 import FormStyles from "modules/common/less/form";
+import InvalidMessage from "modules/reporting/components/common/invalid-message";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
 
 export default class ReportingReport extends Component {
@@ -191,17 +192,22 @@ export default class ReportingReport extends Component {
         {!isEmpty(market) && (
           <article className={FormStyles.Form}>
             {s.currentStep === 0 && (
-              <ReportingReportForm
-                market={market}
-                updateState={this.updateState}
-                isMarketInValid={s.isMarketInValid}
-                selectedOutcome={s.selectedOutcome}
-                stake={s.stake}
-                validations={s.validations}
-                isOpenReporting={isOpenReporting}
-                insufficientRep={insufficientRep}
-                isDesignatedReporter={isDesignatedReporter}
-              />
+              <div className={Styles.ReportingReport_form_message}>
+                <div>
+                  <ReportingReportForm
+                    market={market}
+                    updateState={this.updateState}
+                    isMarketInValid={s.isMarketInValid}
+                    selectedOutcome={s.selectedOutcome}
+                    stake={s.stake}
+                    validations={s.validations}
+                    isOpenReporting={isOpenReporting}
+                    insufficientRep={insufficientRep}
+                    isDesignatedReporter={isDesignatedReporter}
+                  />
+                  <InvalidMessage />
+                </div>
+              </div>
             )}
             {s.currentStep === 1 && (
               <ReportingReportConfirm
