@@ -17,7 +17,7 @@ const CreateMarketLiquidityOrders = props => {
   const isNullState = !(outcomeOrders && outcomeOrders.length);
 
   return (
-    <div className={StylesForm["CreateMarketForm__form-inner-wrapper"]}>
+    <div className={StylesForm.CreateMarketForm_form_inner_wrapper}>
       <div className={Styles.LiquidityOrders__Container}>
         <h1 className={Styles.LiquidityOrders__Header}>
           Initial Liquidity Orders

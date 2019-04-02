@@ -18,7 +18,11 @@ import { CATEGORICAL, SCALAR } from "modules/markets/constants/market-types";
 import { BID } from "modules/transactions/constants/types";
 
 const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
-
+const STEP_NAME = {
+  0: "Market details",
+  1: "Add initial market liquidity",
+  2: "Review"
+};
 export default class CreateMarketForm extends Component {
   static propTypes = {
     categories: PropTypes.array.isRequired,
@@ -285,8 +289,15 @@ export default class CreateMarketForm extends Component {
 
     return (
       <article className={Styles.CreateMarketForm}>
-        <div className={Styles["CreateMarketForm__form-outer-wrapper"]}>
-          <div className={Styles["CreateMarketForm__form-inner-wrapper"]}>
+        <div className={Styles.CreateMarketForm_form_outer_wrapper}>
+          <div className={Styles.CreateMarketForm_form_inner_wrapper}>
+            <div>
+              <span>Create new market</span>
+              <span>
+                Step {newMarket.currentStep + 1} of 3:{" "}
+                {STEP_NAME[newMarket.currentStep]}
+              </span>
+            </div>
             {newMarket.currentStep === 0 && (
               <CreateMarketDefine
                 newMarket={newMarket}
