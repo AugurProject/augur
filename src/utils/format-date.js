@@ -187,3 +187,7 @@ export function getMinutesMinusHoursRemaining(
   const hours = getHours * 60;
   return getMinutesRemaining(endUnixTimestamp, startUnixTimestamp) - hours;
 }
+
+export function getUserTimezone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}

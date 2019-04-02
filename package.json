@@ -89,6 +89,7 @@
     "react-router-dom": "4.2.2",
     "react-spinners": "0.4.8",
     "react-textfit": "1.1.0",
+    "react-timezone": "^2.3.0",
     "react-tooltip": "3.4.0",
     "redux": "3.7.2",
     "redux-devtools-extension": "2.13.2",

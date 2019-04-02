@@ -3,13 +3,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import moment from "moment";
-
-import "react-dates/initialize";
-import "react-dates/lib/css/_datepicker.css";
-import { SingleDatePicker } from "react-dates";
-
-import { formatDate } from "utils/format-date";
 import {
   EXPIRY_SOURCE_GENERIC,
   EXPIRY_SOURCE_SPECIFIC,
@@ -18,86 +11,21 @@ import {
 } from "modules/markets/constants/new-market-constraints";
 import isAddress from "modules/auth/helpers/is-address";
 
-import InputDropdown from "modules/common/components/input-dropdown/input-dropdown";
-import {
-  ExclamationCircle as InputErrorIcon,
-  Hint
-} from "modules/common/components/icons";
+import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import Styles from "modules/create-market/components/create-market-form-resolution/create-market-form-resolution.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
-import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip.styles";
-
-export const ChevronLeft = () => (
-  <svg viewBox="0 0 8 14" xmlns="http://www.w3.org/2000/svg">
-    <g
-      id="Symbols"
-      fill="none"
-      fillRule="evenodd"
-      strokeLinecap="round"
-      opacity=".54"
-      strokeLinejoin="round"
-    >
-      <g id="Selector/Calendar" stroke="#231A3A">
-        <g id="Group-2">
-          <g id="Icon/chevron-left">
-            <path id="Stroke-3" d="M7.362 13.228L.998 6.864 7.362.5" />
-          </g>
-        </g>
-      </g>
-    </g>
-  </svg>
-);
-
-export const ChevronRight = () => (
-  <svg viewBox="0 0 9 14" xmlns="http://www.w3.org/2000/svg">
-    <g
-      id="Symbols"
-      fill="none"
-      fillRule="evenodd"
-      strokeLinecap="round"
-      opacity=".54"
-      strokeLinejoin="round"
-    >
-      <g id="Selector/Calendar" stroke="#231A3A">
-        <g id="Group-2">
-          <g id="Icon/chevron-right">
-            <path id="Stroke-3" d="M1.16 13.228l6.363-6.364L1.16.5" />
-          </g>
-        </g>
-      </g>
-    </g>
-  </svg>
-);
 
 export default class CreateMarketResolution extends Component {
   static propTypes = {
-    isMobileSmall: PropTypes.bool.isRequired,
-    currentTimestamp: PropTypes.number.isRequired,
     newMarket: PropTypes.object.isRequired,
     isValid: PropTypes.func.isRequired,
     keyPressed: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
-    validateField: PropTypes.func.isRequired,
-    validateNumber: PropTypes.func.isRequired
+    validateField: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      // expirySourceType: false,
-      date: Object.keys(this.props.newMarket.endTime).length
-        ? moment(this.props.newMarket.endTime.timestamp * 1000)
-        : null,
-      focused: false,
-      hours: Array.from(new Array(12), (val, index) => index + 1),
-      minutes: [
-        ...Array.from(Array(10).keys(), (val, index) => "0" + index),
-        ...Array.from(Array(50).keys(), (val, index) => index + 10)
-      ],
-      ampm: ["AM", "PM"]
-    };
 
     this.validateExpiryType = this.validateExpiryType.bind(this);
   }
@@ -165,17 +93,8 @@ export default class CreateMarketResolution extends Component {
   }
 
   render() {
-    const {
-      currentTimestamp,
-      isMobileSmall,
-      newMarket,
-      validateField,
-      validateNumber,
-      keyPressed
-    } = this.props;
-    const s = this.state;
+    const { newMarket, validateField, keyPressed } = this.props;
     const validations = newMarket.validations[newMarket.currentStep];
-    const { utcLocalOffset } = formatDate(new Date(currentTimestamp));
 
     const designatedReporterError =
       newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC &&
@@ -319,129 +238,6 @@ export default class CreateMarketResolution extends Component {
               </div>
             </li>
           </ul>
-        </li>
-        <li className={Styles.CreateMarketResolution__datepicker}>
-          <label htmlFor="cm__input--date">
-            <span>Expiration Date</span>
-            <div style={{ display: "inline-block" }}>
-              <label
-                className={classNames(
-                  TooltipStyles.TooltipHint,
-                  Styles.CreateMarketResolution__tooltip
-                )}
-                data-tip
-                data-for="tooltip--expiration-date"
-              >
-                {Hint}
-              </label>
-              <ReactTooltip
-                id="tooltip--expiration-date"
-                className={classNames(
-                  TooltipStyles.Tooltip,
-                  Styles.CreateMarketResolution__tooltipContainer
-                )}
-                effect="solid"
-                place="right"
-                type="light"
-              >
-                <h4>Market Expiration Date</h4>
-                <p style={{ color: "#372e4b" }}>
-                  {
-                    "Augur is still experimental software, creating markets past six months has been disabled to discourage long running markets."
-                  }
-                </p>
-              </ReactTooltip>
-            </div>
-          </label>
-          <p>
-            This should be a date and time sufficiently <b>after</b> the event,
-            when the result can be viewed publicly.
-          </p>
-          <p style={{ marginBottom: "1rem" }}>
-            If an event happens on 01/01 and is reported on 01/02, the
-            expiration date should be after the time it&apos;s reported on
-            01/02.
-          </p>
-          <SingleDatePicker
-            id="cm__input--date"
-            date={this.state.date}
-            placeholder="Date (MMM D, YYYY)"
-            onDateChange={date => {
-              this.setState({ date });
-              // if date is null, invalidate form.
-              if (!date) return validateField("endTime", "");
-              validateField("endTime", formatDate(date.toDate()));
-            }}
-            isOutsideRange={day =>
-              day.isAfter(moment(currentTimestamp).add(6, "M")) ||
-              day.isBefore(moment(currentTimestamp))
-            }
-            focused={this.state.focused}
-            onFocusChange={({ focused }) => {
-              if (this.state.date == null) {
-                const date = moment(currentTimestamp);
-                this.setState({
-                  date
-                });
-                validateField("endTime", formatDate(date.toDate()));
-              }
-              this.setState({ focused });
-            }}
-            displayFormat="MMM D, YYYY"
-            numberOfMonths={1}
-            navPrev={<ChevronLeft />}
-            navNext={<ChevronRight />}
-          />
-        </li>
-        <li>
-          <label htmlFor="cm__input--time">
-            <span>Expiration Time (UTC {utcLocalOffset})</span>
-            {newMarket.validations[newMarket.currentStep].hour && (
-              <span className={StylesForm.CreateMarketForm__error}>
-                {InputErrorIcon}
-                {newMarket.validations[newMarket.currentStep].hour}
-              </span>
-            )}
-            {newMarket.validations[newMarket.currentStep].minute && (
-              <span className={StylesForm.CreateMarketForm__error}>
-                {InputErrorIcon}
-                {newMarket.validations[newMarket.currentStep].minute}
-              </span>
-            )}
-          </label>
-          <div
-            id="cm__input--time"
-            className={Styles.CreateMarketResolution__time}
-          >
-            <InputDropdown
-              label="Hour"
-              options={s.hours}
-              default={newMarket.hour}
-              onChange={value =>
-                validateNumber("hour", value, "hour", 1, 12, 0)
-              }
-              isMobileSmall={isMobileSmall}
-              onKeyPress={e => keyPressed(e)}
-            />
-            <InputDropdown
-              label="Minute"
-              options={s.minutes}
-              default={newMarket.minute}
-              onChange={value =>
-                validateNumber("minute", value, "minute", 0, 59, 0)
-              }
-              isMobileSmall={isMobileSmall}
-              onKeyPress={e => keyPressed(e)}
-            />
-            <InputDropdown
-              label="AM/PM"
-              default={newMarket.meridiem || ""}
-              options={s.ampm}
-              onChange={value => validateField("meridiem", value)}
-              isMobileSmall={isMobileSmall}
-              onKeyPress={e => keyPressed(e)}
-            />
-          </div>
         </li>
       </ul>
     );

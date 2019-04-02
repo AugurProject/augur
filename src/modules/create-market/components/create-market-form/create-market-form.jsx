@@ -51,7 +51,7 @@ export default class CreateMarketForm extends Component {
     super(props);
 
     this.state = {
-      pages: ["Define", "Outcome", "Resolution", "Liquidity", "Review"],
+      pages: ["Define", "Liquidity", "Review"],
       liquidityState: {},
       awaitingSignature: false,
       insufficientFunds: true
@@ -299,38 +299,37 @@ export default class CreateMarketForm extends Component {
               </span>
             </div>
             {newMarket.currentStep === 0 && (
-              <CreateMarketDefine
-                newMarket={newMarket}
-                updateNewMarket={updateNewMarket}
-                validateField={this.validateField}
-                categories={categories}
-                isValid={this.isValid}
-                keyPressed={this.keyPressed}
-              />
+              <>
+                <CreateMarketDefine
+                  newMarket={newMarket}
+                  updateNewMarket={updateNewMarket}
+                  validateField={this.validateField}
+                  categories={categories}
+                  isValid={this.isValid}
+                  keyPressed={this.keyPressed}
+                  currentTimestamp={currentTimestamp}
+                  validateNumber={this.validateNumber}
+                  isMobileSmall={isMobileSmall}
+                />
+                <CreateMarketOutcome
+                  newMarket={newMarket}
+                  updateNewMarket={updateNewMarket}
+                  validateField={this.validateField}
+                  isValid={this.isValid}
+                  isMobileSmall={isMobileSmall}
+                  keyPressed={this.keyPressed}
+                />
+                <CreateMarketResolution
+                  newMarket={newMarket}
+                  updateNewMarket={updateNewMarket}
+                  validateField={this.validateField}
+                  isValid={this.isValid}
+                  isMobileSmall={isMobileSmall}
+                  keyPressed={this.keyPressed}
+                />
+              </>
             )}
             {newMarket.currentStep === 1 && (
-              <CreateMarketOutcome
-                newMarket={newMarket}
-                updateNewMarket={updateNewMarket}
-                validateField={this.validateField}
-                isValid={this.isValid}
-                isMobileSmall={isMobileSmall}
-                keyPressed={this.keyPressed}
-              />
-            )}
-            {newMarket.currentStep === 2 && (
-              <CreateMarketResolution
-                newMarket={newMarket}
-                updateNewMarket={updateNewMarket}
-                validateField={this.validateField}
-                validateNumber={this.validateNumber}
-                isValid={this.isValid}
-                isMobileSmall={isMobileSmall}
-                currentTimestamp={currentTimestamp}
-                keyPressed={this.keyPressed}
-              />
-            )}
-            {newMarket.currentStep === 3 && (
               <CreateMarketLiquidity
                 newMarket={newMarket}
                 updateNewMarket={updateNewMarket}
@@ -344,7 +343,7 @@ export default class CreateMarketForm extends Component {
                 updateState={this.updateState}
               />
             )}
-            {newMarket.currentStep === 4 && (
+            {newMarket.currentStep === 2 && (
               <CreateMarketReview
                 estimateSubmitNewMarket={estimateSubmitNewMarket}
                 meta={meta}
@@ -369,7 +368,7 @@ export default class CreateMarketForm extends Component {
                 >
                   Previous: {s.pages[newMarket.currentStep - 1]}
                 </button>
-                {newMarket.currentStep < 4 && (
+                {newMarket.currentStep < 2 && (
                   <button
                     className={classNames(Styles.CreateMarketForm__next, {
                       [`${Styles["hide-button"]}`]:
@@ -381,7 +380,7 @@ export default class CreateMarketForm extends Component {
                     Next: {s.pages[newMarket.currentStep + 1]}
                   </button>
                 )}
-                {newMarket.currentStep === 4 && (
+                {newMarket.currentStep === 2 && (
                   <button
                     className={Styles.CreateMarketForm__submit}
                     disabled={s.insufficientFunds || s.awaitingSignature}
@@ -399,14 +398,14 @@ export default class CreateMarketForm extends Component {
               </div>
             </div>
           </div>
-          {newMarket.currentStep === 3 && (
+          {newMarket.currentStep === 1 && (
             <CreateMarketLiquidityOrders
               newMarket={newMarket}
               removeOrderFromNewMarket={this.handleCancelOrder}
               liquidityState={s.liquidityState}
             />
           )}
-          {newMarket.currentStep === 4 &&
+          {newMarket.currentStep === 2 &&
             s.awaitingSignature && (
               <div className={Styles["CreateMarketForm__submit-wrapper"]}>
                 <div className={Styles.CreateMarketForm__submitWarning}>

@@ -9,9 +9,11 @@ import {
   DESCRIPTION_MAX_LENGTH,
   TAGS_MAX_LENGTH
 } from "modules/markets/constants/new-market-constraints";
+import moment from "moment";
+import { formatDate, getUserTimezone } from "utils/format-date";
 
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
-
+import { MarketCreateFormTime } from "modules/create-market/components/create-market-form-time/create-market-form-time";
 import Styles from "modules/create-market/components/create-market-form-define/create-market-form-define.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
 
@@ -22,7 +24,10 @@ export default class CreateMarketDefine extends Component {
     isValid: PropTypes.func.isRequired,
     keyPressed: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
-    validateField: PropTypes.func.isRequired
+    validateField: PropTypes.func.isRequired,
+    validateNumber: PropTypes.func.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
+    currentTimestamp: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -35,11 +40,22 @@ export default class CreateMarketDefine extends Component {
     this.state = {
       suggestedCategories: this.filterCategories(this.props.newMarket.category),
       shownSuggestions: 2,
-      localValues
+      localValues,
+      date: Object.keys(this.props.newMarket.endTime).length
+        ? moment(this.props.newMarket.endTime.timestamp * 1000)
+        : null,
+      focused: false,
+      hours: Array.from(new Array(12), (val, index) => index + 1),
+      minutes: [
+        ...Array.from(Array(10).keys(), (val, index) => "0" + index),
+        ...Array.from(Array(50).keys(), (val, index) => index + 10)
+      ],
+      userTimezone: getUserTimezone()
     };
     this.filterCategories = this.filterCategories.bind(this);
     this.updateFilteredCategories = this.updateFilteredCategories.bind(this);
     this.validateTag = this.validateTag.bind(this);
+    this.updateState = this.updateState.bind(this);
   }
 
   filterCategories(category) {
@@ -117,8 +133,19 @@ export default class CreateMarketDefine extends Component {
     updateNewMarket(updatedMarket);
   }
 
+  updateState(state) {
+    this.setState(state);
+  }
+
   render() {
-    const { newMarket, validateField, keyPressed } = this.props;
+    const {
+      newMarket,
+      validateField,
+      keyPressed,
+      currentTimestamp,
+      isMobileSmall,
+      validateNumber
+    } = this.props;
     const s = this.state;
 
     let tagMessage = null;
@@ -127,9 +154,43 @@ export default class CreateMarketDefine extends Component {
     } else if (newMarket.validations[newMarket.currentStep].tag2) {
       tagMessage = newMarket.validations[newMarket.currentStep].tag2;
     }
-
+    const { utcLocalOffset } = formatDate(new Date(currentTimestamp));
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
+        <li className={Styles.CreateMarketDefine_datepicker}>
+          <MarketCreateFormTime
+            utcLocalOffset={utcLocalOffset}
+            date={s.date}
+            hours={s.hours}
+            minutes={s.minutes}
+            userTimezone={s.userTimezone}
+            isMobileSmall={isMobileSmall}
+            validateNumber={validateNumber}
+            currentTimestamp={currentTimestamp}
+            newMarket={newMarket}
+            keyPressed={keyPressed}
+            validateField={validateField}
+            updateState={this.updateState}
+            focused={s.focused}
+          />
+          <div className={Styles.CreateMarketDefine_datepicker_message}>
+            <div>
+              Make sure to factor in potential delays that can impact the event
+              end time when entering the{" "}
+              <span className={Styles.CreateMarketDefine_bolden}>
+                Event End Date and Time.
+              </span>{" "}
+            </div>
+            <div>
+              <span className={Styles.CreateMarketDefine_bolden}>
+                Delay Reporting
+              </span>{" "}
+              add additional time before reporting begins to avoid any unforseen
+              issues that may result. Reporting starting before event end time
+              may result in the market being reported as invalid.
+            </div>
+          </div>
+        </li>
         <li className={Styles.CreateMarketDefine__question}>
           <label htmlFor="cm__input--desc">
             <span>Market Question</span>
@@ -240,55 +301,57 @@ export default class CreateMarketDefine extends Component {
           </ul>
         </li>
         <li className={Styles.CreateMarketDefine__tags}>
-          <label
-            className={classNames({
-              [StylesForm["CreateMarketForm__error--label"]]: tagMessage
-            })}
-            htmlFor="cm__input--tag1"
-          >
-            <span>Tags</span>
-            {tagMessage && (
-              <span
-                className={classNames(
-                  StylesForm["CreateMarketForm__error--abs"],
-                  StylesForm["CreateMarketForm__error--lessSpace"]
-                )}
-              >
-                {InputErrorIcon}
-                {tagMessage}
-              </span>
-            )}
-          </label>
-          <input
-            id="cm__input--tag1"
-            type="text"
-            className={classNames({
-              [`${StylesForm["CreateMarketForm__error--field"]}`]: newMarket
-                .validations[newMarket.currentStep].tag1
-            })}
-            value={s.localValues.tag1}
-            maxLength={TAGS_MAX_LENGTH}
-            placeholder="Tag 1"
-            onChange={e =>
-              this.validateTag("tag1", e.target.value, TAGS_MAX_LENGTH, false)
-            }
-            onKeyPress={e => keyPressed(e)}
-          />
-          <input
-            id="cm__input--tag2"
-            type="text"
-            className={classNames({
-              [`${StylesForm["CreateMarketForm__error--field"]}`]: newMarket
-                .validations[newMarket.currentStep].tag2
-            })}
-            value={s.localValues.tag2}
-            maxLength={TAGS_MAX_LENGTH}
-            placeholder="Tag 2"
-            onChange={e =>
-              this.validateTag("tag2", e.target.value, TAGS_MAX_LENGTH, false)
-            }
-            onKeyPress={e => keyPressed(e)}
-          />
+          <div>
+            <label
+              className={classNames({
+                [StylesForm["CreateMarketForm__error--label"]]: tagMessage
+              })}
+              htmlFor="cm__input--tag1"
+            >
+              <span>Tags</span>
+              {tagMessage && (
+                <span
+                  className={classNames(
+                    StylesForm["CreateMarketForm__error--abs"],
+                    StylesForm["CreateMarketForm__error--lessSpace"]
+                  )}
+                >
+                  {InputErrorIcon}
+                  {tagMessage}
+                </span>
+              )}
+            </label>
+            <input
+              id="cm__input--tag1"
+              type="text"
+              className={classNames({
+                [`${StylesForm["CreateMarketForm__error--field"]}`]: newMarket
+                  .validations[newMarket.currentStep].tag1
+              })}
+              value={s.localValues.tag1}
+              maxLength={TAGS_MAX_LENGTH}
+              placeholder="Tag 1"
+              onChange={e =>
+                this.validateTag("tag1", e.target.value, TAGS_MAX_LENGTH, false)
+              }
+              onKeyPress={e => keyPressed(e)}
+            />
+            <input
+              id="cm__input--tag2"
+              type="text"
+              className={classNames({
+                [`${StylesForm["CreateMarketForm__error--field"]}`]: newMarket
+                  .validations[newMarket.currentStep].tag2
+              })}
+              value={s.localValues.tag2}
+              maxLength={TAGS_MAX_LENGTH}
+              placeholder="Tag 2"
+              onChange={e =>
+                this.validateTag("tag2", e.target.value, TAGS_MAX_LENGTH, false)
+              }
+              onKeyPress={e => keyPressed(e)}
+            />
+          </div>
         </li>
       </ul>
     );

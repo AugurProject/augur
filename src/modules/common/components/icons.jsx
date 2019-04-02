@@ -1082,6 +1082,28 @@ export const ChevronLeft = (
     </g>
   </svg>
 );
+
+export const ChevronRight = (
+  <svg viewBox="0 0 9 14" xmlns="http://www.w3.org/2000/svg">
+    <g
+      id="Symbols"
+      fill="none"
+      fillRule="evenodd"
+      strokeLinecap="round"
+      opacity=".54"
+      strokeLinejoin="round"
+    >
+      <g id="Selector/Calendar" stroke="#231A3A">
+        <g id="Group-2">
+          <g id="Icon/chevron-right">
+            <path id="Stroke-3" d="M1.16 13.228l6.363-6.364L1.16.5" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
 export const ChevronDown = p => (
   <svg viewBox="0 0 16 16">
     <g
