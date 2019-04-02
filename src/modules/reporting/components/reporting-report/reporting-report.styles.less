@@ -14,5 +14,21 @@
     display: flex;
     flex-direction: row;
     padding-bottom: 0.5rem;
+
+    > div:first-of-type {
+      display: none;
+    }
+
+    @media @breakpoint-mobile {
+      flex-direction: column;
+
+      > div:first-of-type {
+        display: block;
+      }
+
+      > div:last-of-type {
+        display: none;
+      }
+    }
   }
 }

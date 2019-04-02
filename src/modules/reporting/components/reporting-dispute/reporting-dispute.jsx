@@ -149,6 +149,7 @@ export default class ReportingDispute extends Component {
             {s.currentStep === 0 && (
               <div className={Styles.ReportingReport_form_message}>
                 <div>
+                  <InvalidMessage />
                   <ReportingDisputeForm
                     market={market}
                     updateState={this.updateState}
