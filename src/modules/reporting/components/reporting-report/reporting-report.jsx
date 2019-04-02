@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Helmet } from "react-helmet";
 import { createBigNumber } from "utils/create-big-number";
-
+import { augur } from "services/augurjs";
 import {
   formatEtherEstimate,
   formatGasCostToEther,
@@ -36,8 +36,7 @@ export default class ReportingReport extends Component {
     submitInitialReport: PropTypes.func.isRequired,
     universe: PropTypes.string.isRequired,
     availableRep: PropTypes.string.isRequired,
-    gasPrice: PropTypes.number.isRequired,
-    getUniverseInitialReporterStake: PropTypes.func.isRequired
+    gasPrice: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -101,30 +100,27 @@ export default class ReportingReport extends Component {
   }
 
   calculateMarketCreationCosts() {
-    const {
-      isOpenReporting,
+    const { isOpenReporting, universe, market, isDRMarketCreator } = this.props;
+    augur.api.Universe.getOrCacheDesignatedReportStake(
       universe,
-      market,
-      isDRMarketCreator,
-      getUniverseInitialReporterStake
-    } = this.props;
-    getUniverseInitialReporterStake(universe, (err, initialReporterStake) => {
-      if (err) return console.error(err);
+      (err, initialReporterStake) => {
+        if (err) return console.error(err);
 
-      const { designatedReportStake } = market;
-      const initialStake = formatAttoEth(initialReporterStake);
-      const neededStake = isDRMarketCreator
-        ? createBigNumber(initialStake.fullPrecision).minus(
-            designatedReportStake
-          )
-        : initialStake.fullPrecision;
+        const { designatedReportStake } = market;
+        const initialStake = formatAttoEth(initialReporterStake);
+        const neededStake = isDRMarketCreator
+          ? createBigNumber(initialStake.fullPrecision).minus(
+              designatedReportStake
+            )
+          : initialStake.fullPrecision;
 
-      const repAmount = formatEtherEstimate(neededStake);
+        const repAmount = formatEtherEstimate(neededStake);
 
-      this.setState({
-        stake: isOpenReporting ? "0" : repAmount.formatted
-      });
-    });
+        this.setState({
+          stake: isOpenReporting ? "0" : repAmount.formatted
+        });
+      }
+    );
   }
 
   calculateGasEstimates(gasPrice) {

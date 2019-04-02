@@ -382,10 +382,3 @@ export function getUniverseProperties(universe, callback) {
     );
   };
 }
-
-export function getUniverseInitialReporterStake(universe, cb) {
-  augur.api.Universe.getOrCacheDesignatedReportStake(
-    { tx: { to: universe, send: false } },
-    (err, initialReporterStake) => cb(err, initialReporterStake)
-  );
-}
