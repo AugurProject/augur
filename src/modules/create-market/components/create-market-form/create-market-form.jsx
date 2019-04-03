@@ -105,7 +105,7 @@ export default class CreateMarketForm extends Component {
     const { newMarket, updateNewMarket } = this.props;
     if (
       newMarket.currentStep !== nextProps.newMarket.currentStep &&
-      nextProps.newMarket.currentStep !== 4
+      nextProps.newMarket.currentStep !== 2
     ) {
       updateNewMarket({
         isValid: this.isValid(nextProps.newMarket.currentStep)

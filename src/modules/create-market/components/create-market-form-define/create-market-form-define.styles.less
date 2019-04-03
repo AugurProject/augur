@@ -10,17 +10,19 @@
 .CreateMarketDefine__tags {
   display: flex;
   flex-direction: row;
+  min-width: 100%;
 
   > div {
     display: flex;
     flex-direction: column;
+    min-width: 50%;
 
     > label {
       width: 100%;
     }
 
     > input {
-      width: 48%;
+      margin: 0.5rem 0;
     }
   }
 }
@@ -43,7 +45,13 @@
 }
 
 li.CreateMarketDefine__question {
-  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: row;
+  margin: 1rem 0;
+
+  div:first-of-type {
+    min-width: 50%;
+  }
 }
 
 .CreateMarketDefine__question-disclaimer {
@@ -102,22 +110,36 @@ li.CreateMarketDefine__question {
   }
 }
 
-.CreateMarketDefine_datepicker_message {
+.CreateMarketDefine_message {
+  color: @color-offwhite-2;
   padding: 1rem;
 
   > div {
     padding: 0.5rem 0.5rem 1rem;
+
+    &.blockit {
+      padding: 0.5rem 0 1rem;
+    }
+  }
+
+  div:nth-of-type(2) {
+    min-width: unset;
+    max-width: unset;
   }
 }
 
-.CreateMarketDefine_datepicker {
+.CreateMarketDefine_block {
   display: flex;
   flex-direction: row;
 
   > div {
-    color: @color-offwhite-2;
     font-size: @font-size-medium;
     min-width: 50%;
+
+    > input,
+    textarea {
+      margin-bottom: 1rem;
+    }
   }
 
   :global {
