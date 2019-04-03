@@ -34,20 +34,24 @@
     "@augurproject/api": "1.0.0-0",
     "@augurproject/artifacts": "10.0.0-0",
     "@augurproject/core": "2.0.0-0",
+    "@augurproject/ethersjs-provider": "1.0.0-0",
     "@types/async": "2.4.1",
     "@types/web3": "1.0.18",
     "async": "2.6.2",
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.24",
-    "@augurproject/ethersjs-provider": "1.0.0-0",
     "express": "4.16.4",
     "flexsearch": "0.6.2",
     "ganache-core": "2.4.0",
     "io-ts": "1.4.2",
     "lodash": "4.17.11",
     "postinstall-build": "5.0.3",
-    "pouchdb": "7.0.0",
-    "pouchdb-find": "7.0.0"
+    "pouchdb": "^7.0.0",
+    "pouchdb-find": "7.0.0",
+    "ts-loader": "^5.3.3",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "yarn": "^1.15.2"
   },
   "devDependencies": {
     "@types/jest": "24.0.4",
@@ -56,6 +60,7 @@
     "pouchdb-adapter-memory": "7.0.0",
     "ts-jest": "23.10.5",
     "ts-node": "7.0.1",
-    "tsconfig-paths": "3.7.0"
+    "tsconfig-paths": "3.7.0",
+    "webpack-dev-server": "^3.2.1"
   }
 }
