@@ -32,6 +32,7 @@ export interface ContractAddresses {
     OrdersFinder?: string;
     OrdersFetcher?: string;
     TradingEscapeHatch?: string;
+    Time?: string;
 }
 
 // TS doesn't allow mapping of any type but string or number so we list it out manually
