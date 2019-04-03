@@ -102,7 +102,7 @@
     "shifty": "2.6.1",
     "speedomatic": "2.1.4",
     "trezor-connect": "5.0.34",
-    "yarn": "^1.15.2"
+    "yarn": "1.15.2"
   },
   "devDependencies": {
     "@augurproject/tools": "6.0.0",
