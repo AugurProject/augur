@@ -13,19 +13,17 @@ import Styles from "modules/create-market/components/create-market-form-define/c
 import moment from "moment";
 import { formatDate } from "utils/format-date";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
-import TimezonePicker from "react-timezone";
 
 export const MarketCreateFormTime = ({
   validateField,
   currentTimestamp,
-  utcLocalOffset,
   newMarket,
   validateNumber,
   isMobileSmall,
   keyPressed,
   hours,
   minutes,
-  userTimezone,
+  ampm,
   date,
   updateState,
   focused
@@ -64,7 +62,7 @@ export const MarketCreateFormTime = ({
       navNext={ChevronRight}
     />
     <label htmlFor="cm__input--time">
-      <span>Event End Time</span>
+      <span>Event End Time (UTC -0)</span>
       {newMarket.validations[newMarket.currentStep].hour && (
         <span className={StylesForm.CreateMarketForm__error}>
           {InputErrorIcon}
@@ -79,20 +77,11 @@ export const MarketCreateFormTime = ({
       )}
     </label>
     <div id="cm__input--time" className={Styles.CreateMarketDefine__time}>
-      <TimezonePicker
-        value={userTimezone}
-        onChange={timezone => console.log("New Timezone Selected:", timezone)}
-        inputProps={{
-          placeholder: "Timezone",
-          name: "timezone"
-        }}
-        className={Styles.CreateMarketDefine_timezone}
-      />
       <InputDropdown
         label="Hour"
         options={hours}
         default={newMarket.hour}
-        onChange={value => validateNumber("hour", value, "hour", 0, 23, 0)}
+        onChange={value => validateNumber("hour", value, "hour", 1, 12, 0)}
         isMobileSmall={isMobileSmall}
         onKeyPress={e => keyPressed(e)}
       />
@@ -101,6 +90,14 @@ export const MarketCreateFormTime = ({
         options={minutes}
         default={newMarket.minute}
         onChange={value => validateNumber("minute", value, "minute", 0, 59, 0)}
+        isMobileSmall={isMobileSmall}
+        onKeyPress={e => keyPressed(e)}
+      />
+      <InputDropdown
+        label="AM/PM"
+        default={newMarket.meridiem || ""}
+        options={ampm}
+        onChange={value => validateField("meridiem", value)}
         isMobileSmall={isMobileSmall}
         onKeyPress={e => keyPressed(e)}
       />
@@ -115,10 +112,9 @@ MarketCreateFormTime.propTypes = {
   validateNumber: PropTypes.func.isRequired,
   isMobileSmall: PropTypes.bool.isRequired,
   currentTimestamp: PropTypes.number.isRequired,
-  utcLocalOffset: PropTypes.number.isRequired,
   hours: PropTypes.array.isRequired,
   minutes: PropTypes.array.isRequired,
-  userTimezone: PropTypes.string.isRequired,
+  ampm: PropTypes.array.isRequired,
   date: PropTypes.object,
   updateState: PropTypes.func.isRequired,
   focused: PropTypes.bool.isRequired

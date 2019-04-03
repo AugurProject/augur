@@ -16,6 +16,8 @@ import { ExclamationCircle as InputErrorIcon } from "modules/common/components/i
 import { createBigNumber } from "utils/create-big-number";
 import { CATEGORICAL, SCALAR } from "modules/markets/constants/market-types";
 import { BID } from "modules/transactions/constants/types";
+import moment from "moment";
+import { formatDate } from "utils/format-date";
 
 const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 const STEP_NAME = {
@@ -23,7 +25,35 @@ const STEP_NAME = {
   1: "Add initial market liquidity",
   2: "Review"
 };
+const TIME_FIELDNAMES = ["endTime", "hour", "minute", "meridiem"];
+
 export default class CreateMarketForm extends Component {
+  static processEndTime(newMarket) {
+    if (!Object.keys(newMarket.endTime).length) {
+      return newMarket.endTime;
+    }
+
+    const endTime = moment(newMarket.endTime.timestamp * 1000);
+    endTime.set({
+      hour: newMarket.hour,
+      minute: newMarket.minute
+    });
+
+    if (
+      (newMarket.meridiem === "" || newMarket.meridiem === "AM") &&
+      endTime.hours() >= 12
+    ) {
+      endTime.hours(endTime.hours() - 12);
+    } else if (
+      newMarket.meridiem &&
+      newMarket.meridiem === "PM" &&
+      endTime.hours() < 12
+    ) {
+      endTime.hours(endTime.hours() + 12);
+    }
+    return formatDate(endTime.toDate());
+  }
+
   static propTypes = {
     categories: PropTypes.array.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
@@ -137,6 +167,10 @@ export default class CreateMarketForm extends Component {
     updatedMarket[fieldName] = value;
     updatedMarket.isValid = this.isValid(currentStep);
 
+    if (TIME_FIELDNAMES.indexOf(fieldName) !== -1) {
+      updatedMarket.endTime = CreateMarketForm.processEndTime(updatedMarket);
+    }
+
     updateNewMarket(updatedMarket);
   }
 
@@ -188,6 +222,9 @@ export default class CreateMarketForm extends Component {
       typeof value === "number" ? value.toString() : value;
     updatedMarket.isValid = this.isValid(currentStep);
 
+    if (TIME_FIELDNAMES.indexOf(fieldName) !== -1) {
+      updatedMarket.endTime = CreateMarketForm.processEndTime(updatedMarket);
+    }
     updateNewMarket(updatedMarket);
   }
 

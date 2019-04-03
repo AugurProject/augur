@@ -15,14 +15,14 @@
     display: flex;
     flex-direction: column;
 
-  > label {
-    width: 100%;
-  }
+    > label {
+      width: 100%;
+    }
 
-  > input {
-    width: 48%;
+    > input {
+      width: 48%;
+    }
   }
-}
 }
 
 .CreateMarketDefine__suggested-categories {
@@ -56,16 +56,50 @@ li.CreateMarketDefine__question {
 
 .CreateMarketDefine__time {
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-flow: row nowrap;
   justify-content: space-between;
 
   > * {
     width: 31%;
   }
 }
+
 .CreateMarketDefine_bolden {
   font-weight: bold;
+}
+
+.CreateMarketDefine_time_display_tooltip {
+  margin-bottom: 0;
+  margin-left: 0.25rem;
+  margin-top: -0.375rem;
+  width: 0.75rem;
+}
+
+.CreateMarketDefine_time_display {
+  > div {
+    color: @color-light-dark-purple;
+    font-size: @font-size-small;
+    font-weight: bold;
+    line-height: @font-size-normal;
+    text-transform: uppercase;
+  }
+
+  > span {
+    display: flex;
+
+    > div {
+      color: @color-white;
+      font-size: @font-size-normal;
+      font-style: normal;
+      font-weight: bold;
+      padding: 0.25rem 0;
+    }
+  }
+
+  span:last-of-type {
+    color: @color-offwhite-2;
+    font-size: @font-size-medium-small;
+  }
 }
 
 .CreateMarketDefine_datepicker_message {
@@ -206,25 +240,6 @@ li.CreateMarketDefine__question {
 
     .DayPickerKeyboardShortcuts_show__bottomRight_3.DayPickerKeyboardShortcuts_show__bottomRight_3.DayPickerKeyboardShortcuts_show__bottomRight_3 {
       display: none;
-    }
-  }
-}
-
-.CreateMarketDefine_timezone {
-  background-color: @color-white;
-  color: @color-darkpurple;
-  cursor: pointer;
-  z-index: 3;
-
-  > ul {
-    width: 350px;
-
-    > li > button {
-      background-color: @color-white;
-
-      &.focus {
-        background-color: @color-lightgray
-      }
     }
   }
 }

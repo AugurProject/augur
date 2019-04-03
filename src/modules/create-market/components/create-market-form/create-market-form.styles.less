@@ -1,4 +1,4 @@
-@import (reference) '~assets/styles/shared';
+@import (reference) "~assets/styles/shared";
 
 .CreateMarketForm {
   padding: 3.75rem 0 0;
@@ -35,8 +35,8 @@
     }
 
     > span:last-of-type {
-      color: @color-offwhite-2;
       border-bottom: 1px solid rgba(206, 215, 216, 0.3);
+      color: @color-offwhite-2;
       padding-bottom: 1rem;
     }
   }
@@ -137,8 +137,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  padding-top: 2rem;
   min-height: 28.75rem;
+  padding-top: 2rem;
 
   > li {
     margin-bottom: 3.7rem;
@@ -159,9 +159,6 @@
     }
 
     p {
-      color: @color-lightgray;
-      margin: 0;
-
       &.error {
         color: @color-red;
         font-size: 0.875rem;
@@ -190,8 +187,8 @@
       padding-top: 1rem;
     }
 
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
       appearance: none;
       margin: 0;
     }

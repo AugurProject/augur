@@ -10,10 +10,10 @@ import {
   TAGS_MAX_LENGTH
 } from "modules/markets/constants/new-market-constraints";
 import moment from "moment";
-import { formatDate, getUserTimezone } from "utils/format-date";
 
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import { MarketCreateFormTime } from "modules/create-market/components/create-market-form-time/create-market-form-time";
+import { MarketCreationTimeDisplay } from "modules/create-market/components/create-market-form-time/market-create-time-display";
 import Styles from "modules/create-market/components/create-market-form-define/create-market-form-define.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
 
@@ -50,7 +50,7 @@ export default class CreateMarketDefine extends Component {
         ...Array.from(Array(10).keys(), (val, index) => "0" + index),
         ...Array.from(Array(50).keys(), (val, index) => index + 10)
       ],
-      userTimezone: getUserTimezone()
+      ampm: ["AM", "PM"]
     };
     this.filterCategories = this.filterCategories.bind(this);
     this.updateFilteredCategories = this.updateFilteredCategories.bind(this);
@@ -154,16 +154,15 @@ export default class CreateMarketDefine extends Component {
     } else if (newMarket.validations[newMarket.currentStep].tag2) {
       tagMessage = newMarket.validations[newMarket.currentStep].tag2;
     }
-    const { utcLocalOffset } = formatDate(new Date(currentTimestamp));
+
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li className={Styles.CreateMarketDefine_datepicker}>
           <MarketCreateFormTime
-            utcLocalOffset={utcLocalOffset}
             date={s.date}
             hours={s.hours}
             minutes={s.minutes}
-            userTimezone={s.userTimezone}
+            ampm={s.ampm}
             isMobileSmall={isMobileSmall}
             validateNumber={validateNumber}
             currentTimestamp={currentTimestamp}
@@ -189,6 +188,10 @@ export default class CreateMarketDefine extends Component {
               issues that may result. Reporting starting before event end time
               may result in the market being reported as invalid.
             </div>
+            {newMarket.endTime &&
+              newMarket.endTime.formattedUtc && (
+                <MarketCreationTimeDisplay endTime={newMarket.endTime} />
+              )}
           </div>
         </li>
         <li className={Styles.CreateMarketDefine__question}>
