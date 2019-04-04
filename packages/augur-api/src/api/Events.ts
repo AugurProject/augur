@@ -10,6 +10,8 @@ export class Events {
         this.provider = provider;
         this.augurAddress = augurAddress;
         this.provider.storeAbiData(abi.Augur as Abi, "Augur");
+
+        this.getEventTopics = this.getEventTopics.bind(this);
     }
 
     public async getLogs(eventName: string, fromBlock: number, toBlock: number, additionalTopics?: Array<string | Array<string>>): Promise<Array<ParsedLog>> {
@@ -21,7 +23,7 @@ export class Events {
         return this.parseLogs(logs);
     }
 
-    public getEventTopics (eventName: string) {
+    public getEventTopics(eventName: string) {
         return [this.provider.getEventTopic("Augur", eventName)];
     }
 
