@@ -227,7 +227,6 @@ export default class CreateMarketReview extends Component {
       <article className={StylesForm.CreateMarketForm__fields}>
         <div className={Styles.CreateMarketReview}>
           <div className={Styles.CreateMarketReview__wrapper}>
-
             <div className={Styles.CreateMarketReview_properties}>
               <div>
                 <span>category:</span>
@@ -246,7 +245,10 @@ export default class CreateMarketReview extends Component {
               <span>market question</span>
               <span className={Styles.title}>{newMarket.description}</span>
             </div>
-            <div className={Styles.CreateMarketReview_inline_property} style={{marginTop: '1.5rem'}}>
+            <div
+              className={Styles.CreateMarketReview_inline_property}
+              style={{ marginTop: "1.5rem" }}
+            >
               <span>Additional Details</span>
               <span>
                 <MarkdownRenderer
@@ -281,7 +283,7 @@ export default class CreateMarketReview extends Component {
                   : `Someone Else: ${newMarket.designatedReporterAddress}`}
               </p>
             </div>
-           
+
             <span className={Styles.CreateMarketReview_line} />
 
             <div className={Styles.CreateMarketReview_market_properties}>
@@ -311,7 +313,9 @@ export default class CreateMarketReview extends Component {
                   </div>
                   <div className={Styles.CreateMarketReview_inline_property}>
                     <span>Max Price</span>
-                    <span>{formatNumber(newMarket.scalarBigNum).formatted}</span>
+                    <span>
+                      {formatNumber(newMarket.scalarBigNum).formatted}
+                    </span>
                   </div>
                 </div>
               )}
@@ -322,12 +326,12 @@ export default class CreateMarketReview extends Component {
                 </div>
                 <div className={Styles.CreateMarketReview_inline_property}>
                   <span>fee</span>
-                  <span>{formatPercent(newMarket.settlementFee).formatted}%</span>
+                  <span>
+                    {formatPercent(newMarket.settlementFee).formatted}%
+                  </span>
                 </div>
               </div>
             </div>
-            
-            
 
             <span className={Styles.CreateMarketReview_line} />
             <div className={Styles.CreateMarketReview__columns}>
@@ -384,7 +388,10 @@ export default class CreateMarketReview extends Component {
             <span className={Styles.CreateMarketReview_line} />
 
             <div className={Styles.CreateMarketReview__explainer}>
-              The Augur platform does not work well for markets that are subjective or ambiguous. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the expiration date, you should not create this market!
+              The Augur platform does not work well for markets that are
+              subjective or ambiguous. If you're not sure that the market's
+              outcome will be known beyond a reasonable doubt by the expiration
+              date, you should not create this market!
             </div>
           </div>
           <div>

@@ -1,5 +1,5 @@
 import React from "react";
-import Styles from "modules/reporting/components/common/highlighted-message.styles"
+import Styles from "modules/reporting/components/common/highlighted-message.styles";
 
 const InvalidMessage = () => (
   <div className={Styles.HighlightedMessage}>
