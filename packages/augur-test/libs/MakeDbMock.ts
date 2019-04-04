@@ -4,6 +4,7 @@ import { DB } from "@augurproject/state/src/db/DB";
 import {Augur} from "@augurproject/api";
 import { AccountList } from "./LocalAugur";
 import { IBlockAndLogStreamerListener } from "@augurproject/state/src/db/BlockAndLogStreamerListener";
+import { ethers } from "ethers";
 
 interface Databases {
   [dbName: string]: PouchDB.Database;
@@ -100,7 +101,7 @@ export function makeDbMock() {
       mockState.failCountdown = -1;
       mockState.alwaysFail = false;
     },
-    makeDB: (augur: Augur<any>, accounts: AccountList) => DB.createAndInitializeDB(
+    makeDB: (augur: Augur<ethers.utils.BigNumber>, accounts: AccountList) => DB.createAndInitializeDB(
         constants.networkId,
         constants.blockstreamDelay,
         constants.defaultStartSyncBlockNumber,

@@ -1,6 +1,6 @@
 import {Augur} from "@augurproject/api";
-import {makeDbMock} from "../../libs/MakeDbMock";
-import {makeTestAugur, ACCOUNTS} from "../../libs/LocalAugur";
+import {makeTestAugur, ACCOUNTS, makeDbMock} from "../../libs";
+import {ethers} from "ethers";
 
 const mock = makeDbMock();
 
@@ -9,10 +9,10 @@ beforeEach(async () => {
   await mock.wipeDB();
 });
 
-let augur: Augur<any>;
+let augur: Augur<ethers.utils.BigNumber>;
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
-}, 60000);
+}, 120000);
 
 /**
  * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.
