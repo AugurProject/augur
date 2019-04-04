@@ -110,7 +110,7 @@ export const MarketCreateFormTime = ({
     </label>
     <div id="cm__input--time" className={Styles.CreateMarketDefine_delay_time}>
       <InputDropdown
-        label="days"
+        label="Days"
         options={Array.from(new Array(31), (val, index) => index)}
         default={newMarket.delayDays || ""}
         onChange={value =>
