@@ -337,7 +337,7 @@ export default class ReportingReportForm extends Component {
             </span>
           </label>
         )}
-        {!isOpenReporting && (
+        {(!isOpenReporting || isDesignatedReporter) && (
           <li>
             <label htmlFor="sr__input--stake">
               <span>Required Stake</span>
