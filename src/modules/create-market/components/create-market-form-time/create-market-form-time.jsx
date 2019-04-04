@@ -30,7 +30,7 @@ export const MarketCreateFormTime = ({
 }) => (
   <div>
     <label htmlFor="cm__input--date">
-      <span>Event End Date</span>
+      <span>Reporting Starts Date</span>
     </label>
     <SingleDatePicker
       id="cm__input--date"
@@ -62,7 +62,7 @@ export const MarketCreateFormTime = ({
       navNext={ChevronRight}
     />
     <label htmlFor="cm__input--time">
-      <span>Event End Time (UTC -0)</span>
+      <span>Reporting Starts Time (UTC -0)</span>
       {newMarket.validations[newMarket.currentStep].hour && (
         <span className={StylesForm.CreateMarketForm__error}>
           {InputErrorIcon}

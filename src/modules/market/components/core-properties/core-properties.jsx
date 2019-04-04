@@ -220,8 +220,8 @@ export default class CoreProperties extends Component {
             currentTimestamp,
             getValue(market, "endTime.timestamp")
           )
-            ? "Event Ended & Reporting Started"
-            : "Event Ends & Reporting Starts",
+            ? "Reporting Started"
+            : "Reporting Starts",
           value: [
             getValue(market, "endTime.formattedUtc"),
             getValue(market, "endTime.formattedTimezone")

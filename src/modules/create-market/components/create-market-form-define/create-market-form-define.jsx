@@ -179,7 +179,7 @@ export default class CreateMarketDefine extends Component {
               Make sure to factor in potential delays that can impact the event
               end time when entering the{" "}
               <span className={Styles.CreateMarketDefine_bolden}>
-                Event End Date and Time.
+                Reporting Starts Date and Time.
               </span>{" "}
             </div>
             <div>

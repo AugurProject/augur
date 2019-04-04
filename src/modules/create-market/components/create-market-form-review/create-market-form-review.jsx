@@ -6,7 +6,12 @@ import getValue from "src/utils/get-value";
 import insufficientFunds from "modules/markets/helpers/insufficient-funds";
 
 import MarkdownRenderer from "modules/common/components/markdown-renderer/markdown-renderer";
-import { formatEtherEstimate, formatGasCostToEther } from "utils/format-number";
+import {
+  formatEtherEstimate,
+  formatGasCostToEther,
+  formatPercent,
+  formatNumber
+} from "utils/format-number";
 import {
   EXPIRY_SOURCE_GENERIC,
   DESIGNATED_REPORTER_SELF
@@ -16,8 +21,19 @@ import { ExclamationCircle as InputErrorIcon } from "modules/common/components/i
 import Styles from "modules/create-market/components/create-market-form-review/create-market-form-review.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
 import HighlightedStyles from "modules/reporting/components/common/highlighted-message.styles";
+import { DisplayOutcomes } from "modules/create-market/components/create-market-form-review/create-market-form-outcomes-display";
 import { MarketCreationTimeDisplay } from "modules/create-market/components/create-market-form-time/market-create-time-display";
+import {
+  YES_NO,
+  SCALAR,
+  CATEGORICAL
+} from "modules/markets/constants/market-types";
 
+const MARKET_TYPE_NAME = {
+  [YES_NO]: "Yes No",
+  [SCALAR]: "Scalar",
+  [CATEGORICAL]: "Categorical"
+};
 export default class CreateMarketReview extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
@@ -225,6 +241,64 @@ export default class CreateMarketReview extends Component {
                 </span>
               </div>
             </div>
+            <div className={Styles.CreateMarketReview_inline_property}>
+              <span>market question</span>
+              <span className={Styles.title}>{newMarket.description}</span>
+            </div>
+            <MarketCreationTimeDisplay simple endTime={newMarket.endTime} />
+            <div className={Styles.CreateMarketReview_inline_property}>
+              <span>Additional Details</span>
+              <span>
+                <MarkdownRenderer
+                  text={newMarket.detailsText || "None"}
+                  className={
+                    Styles["CreateMarketReview__AdditionalDetails-text"]
+                  }
+                />
+              </span>
+            </div>
+            <span className={Styles.CreateMarketReview_line} />
+            <div className={Styles.CreateMarketReview_market_properties}>
+              <div className={Styles.CreateMarketReview_inline_property}>
+                <span>market type</span>
+                <span>{MARKET_TYPE_NAME[newMarket.type]}</span>
+              </div>
+              <div className={Styles.CreateMarketReview_inline_property}>
+                <span>fee</span>
+                <span>{formatPercent(newMarket.settlementFee).formatted}%</span>
+              </div>
+            </div>
+            {newMarket.type === SCALAR && (
+              <div className={Styles.CreateMarketReview_market_properties}>
+                <div className={Styles.CreateMarketReview_inline_property}>
+                  <span>denomination</span>
+                  <span>{newMarket.scalarDenomination}</span>
+                </div>
+                <div className={Styles.CreateMarketReview_inline_property}>
+                  <span>Min Price</span>
+                  <span>
+                    {formatNumber(newMarket.scalarSmallNum).formatted}
+                  </span>
+                </div>
+                <div className={Styles.CreateMarketReview_inline_property}>
+                  <span>Max Price</span>
+                  <span>{formatNumber(newMarket.scalarBigNum).formatted}</span>
+                </div>
+              </div>
+            )}
+            {newMarket.type === CATEGORICAL && (
+              <div className={Styles.CreateMarketReview_inline_property}>
+                <span>outcomes</span>
+                <span
+                  className={
+                    Styles.CreateMarketReview_market_properties_outcomes
+                  }
+                >
+                  <DisplayOutcomes outcomes={newMarket.outcomes} />
+                </span>
+              </div>
+            )}
+            <span className={Styles.CreateMarketReview_line} />
             <div className={Styles.CreateMarketReview__creation}>
               <h3 className={Styles.CreateMarketReview__subheading}>
                 Market Creation
@@ -263,7 +337,6 @@ export default class CreateMarketReview extends Component {
                 </li>
               </ul>
             </div>
-            <MarketCreationTimeDisplay simple endTime={newMarket.endTime} />
             {s.insufficientFundsString !== "" && (
               <span
                 className={
@@ -338,7 +411,6 @@ export default class CreateMarketReview extends Component {
                 <span className={HighlightedStyles.bolden}>
                   resolve as invalid
                 </span>
-                .
               </div>
             </div>
           </div>
