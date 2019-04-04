@@ -1,5 +1,4 @@
 import { Augur } from "@augurproject/api";
-import settings from "@augurproject/state/src/settings.json";
 import { PouchDBFactoryType } from "./db/AbstractDB";
 import { DB } from "./db/DB";
 import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
@@ -7,6 +6,7 @@ import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
 // because flexsearch is a UMD type lib
 import FlexSearch = require("flexsearch");
 
+const settings = require("@augurproject/state/src/settings.json");
 
 // Need this interface to access these items on the documents in a SyncableDB
 interface SyncableMarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
@@ -77,7 +77,12 @@ export class Controller<TBigNumber> {
           const description = doc.description;
 
           if (extraInfo && description) {
-            const info = JSON.parse(extraInfo);
+            let info;
+            try {
+              info = JSON.parse(extraInfo);
+            } catch (err) {
+              console.error("Cannot parse document json: " + extraInfo);
+            }
 
             if (info && info.tags && info.longDescription) {
               this.FTS.add({

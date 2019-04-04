@@ -5,8 +5,9 @@
     "rootDir": "src"
   },
   "include": [
-    "src/**/*",
-    "src/**/*.json"
+    "src/**/*.ts",
+    "src/**/*.json",
+    "src/**/*"
   ],
   "references": [
     {
