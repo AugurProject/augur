@@ -1,8 +1,8 @@
 import React from "react";
-import Styles from "modules/reporting/components/common/highlighted-message.styles";
+import Styles from "modules/reporting/components/common/highlighted-message.styles"
 
 const InvalidMessage = () => (
-  <div className={Styles.highlightedMessage}>
+  <div className={Styles.HighlightedMessage}>
     <div>
       If a timezone isn’t provided in the Market Question and/or Additional
       Details, use the{" "}

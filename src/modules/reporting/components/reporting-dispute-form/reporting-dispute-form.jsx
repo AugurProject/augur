@@ -522,7 +522,9 @@ export default class ReportingDisputeForm extends Component {
                           className={classNames({
                             [`${FormStyles.active}`]:
                               s.selectedOutcome === outcome.id &&
-                              !s.scalarInputChoosen
+                              !s.scalarInputChoosen,
+                            [FormStyles.isInvalidField]:
+                              outcome.name === "Indeterminate"
                           })}
                           onClick={e => {
                             this.validateOutcome(

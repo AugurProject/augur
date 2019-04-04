@@ -238,7 +238,7 @@ export default class ReportingReportForm extends Component {
               ))}
               <li className={FormStyles["Form__radio-buttons--per-line"]}>
                 <button
-                  className={classNames({
+                  className={classNames(FormStyles.isInvalidField, {
                     [`${FormStyles.active}`]: isMarketInValid === true
                   })}
                   onClick={e => {
@@ -256,7 +256,7 @@ export default class ReportingReportForm extends Component {
             <ul className={FormStyles["Form__radio-buttons--per-line"]}>
               <li className={FormStyles["Form__radio-buttons--per-line"]}>
                 <button
-                  className={classNames({
+                  className={classNames(FormStyles.isInvalidField, {
                     [`${FormStyles.active}`]:
                       s.activeButton ===
                       ReportingReportForm.BUTTONS.MARKET_IS_INVALID
