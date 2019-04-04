@@ -43,7 +43,7 @@ export class EthersProviderBlockStreamAdapter implements BlockAndLogStreamerDepe
       ...filterOptions,
       topics: _.compact(filterOptions.topics),
     });
-    console.error(`Finished querying logs ${JSON.stringify(filterOptions)} (${logs.length})`);
+    console.log(`Finished querying logs ${JSON.stringify(filterOptions)} (${logs.length})`);
 
     return _.map(logs, (log) => ({
       ...log,

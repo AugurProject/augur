@@ -1,9 +1,11 @@
 import fs from "fs";
+import Find from "pouchdb-find";
+import Memory from "pouchdb-adapter-memory";
 import PouchDB from "pouchdb";
 import * as _ from "lodash";
 
-PouchDB.plugin(require('pouchdb-find'));
-PouchDB.plugin(require('pouchdb-adapter-memory'));
+PouchDB.plugin(Find);
+PouchDB.plugin(Memory);
 
 interface DocumentIDToRev {
   [docId: string]: string;
@@ -56,6 +58,9 @@ export abstract class AbstractDB {
       return result;
     }, {} as DocumentIDToRev);
     const mergedRevisionDocuments = _.map(documents, (doc) => {
+      // The c'tor needs to be deleted since indexeddb bulkUpsert cannot accept objects with methods on them
+      delete doc.constructor;
+
       const previousRev = previousDocs[doc._id!];
       return Object.assign(
         previousRev ? {_rev: previousRev} : {},
@@ -90,8 +95,10 @@ export type PouchDBFactoryType = (dbName: string) => PouchDB.Database;
 
 export function PouchDBFactory(dbArgs: object) {
   const dbDir = "db";
-  if (!fs.existsSync(dbDir)) {
+
+  if (fs && fs.existsSync && !fs.existsSync(dbDir)) {
     fs.mkdirSync(dbDir);
   }
+
   return (dbName: string) => new PouchDB(`${dbDir}/${dbName}`, dbArgs);
 }

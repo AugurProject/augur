@@ -1,5 +1,4 @@
-import { Provider } from "../ethereum/Provider";
-import { Log, ParsedLog } from "../ethereum/types";
+import { Provider, Log, ParsedLog } from "..";
 import { abi } from "@augurproject/artifacts";
 import { Abi } from "ethereum";
 
@@ -10,12 +9,11 @@ export class Events {
     public constructor(provider: Provider, augurAddress: string) {
         this.provider = provider;
         this.augurAddress = augurAddress;
-        this.provider.storeAbiData(<Abi>abi["Augur"], "Augur");
+        this.provider.storeAbiData(abi.Augur as Abi, "Augur");
     }
 
-
     public async getLogs(eventName: string, fromBlock: number, toBlock: number, additionalTopics?: Array<string | Array<string>>): Promise<Array<ParsedLog>> {
-      let topics: Array<string | Array<string>> = this.getEventTopics(eventName);
+        let topics: Array<string | Array<string>> = this.getEventTopics(eventName);
         if (additionalTopics) {
             topics = topics.concat(additionalTopics);
         }
@@ -23,11 +21,11 @@ export class Events {
         return this.parseLogs(logs);
     }
 
-  getEventTopics = (eventName: string) => {
-    return [this.provider.getEventTopic("Augur", eventName)];
-  };
+    public getEventTopics = (eventName: string) => {
+        return [this.provider.getEventTopic("Augur", eventName)];
+    };
 
-  public parseLogs(logs: Log[]): ParsedLog[] {
+    public parseLogs(logs: Array<Log>): Array<ParsedLog> {
         return logs.map((log) => {
             const logValues = this.provider.parseLogValues("Augur", log);
             return Object.assign(
@@ -40,8 +38,8 @@ export class Events {
                     transactionLogIndex: log.transactionLogIndex,
                     transactionHash: log.transactionHash,
                     logIndex: log.logIndex,
-                }
-            )
+                },
+            );
         });
     }
 }
