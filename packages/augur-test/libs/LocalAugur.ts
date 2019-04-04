@@ -69,7 +69,7 @@ export async function compileAndDeployToGanache(accounts: AccountList): Promise<
   return {provider, signer, dependencies, compiledContracts, addresses};
 }
 
-export async function makeTestAugur(accounts: AccountList): Promise<Augur<any>> {
+export async function makeTestAugur(accounts: AccountList): Promise<Augur<ethers.utils.BigNumber>> {
   const {provider, dependencies, addresses} = await compileAndDeployToGanache(accounts);
   return Augur.create(provider, dependencies, addresses);
 }

@@ -4,6 +4,7 @@ import { GenericAugurInterfaces } from "@augurproject/core";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
 import {ethers} from "ethers";
+import { ContractAddresses } from "@augurproject/artifacts";
 
 interface MarketCreatedEvent {
   name: "MarketCreated";
@@ -12,7 +13,7 @@ interface MarketCreatedEvent {
   };
 }
 
-let addresses: any;
+let addresses: ContractAddresses;
 let dependencies: ContractDependenciesEthers;
 beforeAll(async () => {
   const result = await compileAndDeployToGanache(ACCOUNTS);
@@ -20,7 +21,7 @@ beforeAll(async () => {
   dependencies = result.dependencies;
 }, 60000);
 
-let contracts: Contracts<any>;
+let contracts: Contracts<ethers.utils.BigNumber>;
 beforeEach(async () => {
   contracts = new Contracts(addresses, dependencies);
 });

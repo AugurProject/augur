@@ -1,5 +1,6 @@
 import {Augur} from "@augurproject/api";
 import {makeTestAugur, ACCOUNTS, makeDbMock} from "../../libs";
+import {ethers} from "ethers";
 
 const mock = makeDbMock();
 
@@ -8,7 +9,7 @@ beforeEach(async () => {
   await mock.wipeDB();
 });
 
-let augur: Augur<any>;
+let augur: Augur<ethers.utils.BigNumber>;
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
 }, 120000);

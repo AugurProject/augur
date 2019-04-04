@@ -4,6 +4,7 @@ import { EventLogDBRouter } from "@augurproject/state/src/db/EventLogDBRouter";
 import {Augur} from "@augurproject/api";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ACCOUNTS, compileAndDeployToGanache, makeDbMock } from "../../libs";
+import {ethers} from "ethers";
 
 const mock = makeDbMock();
 
@@ -12,13 +13,13 @@ beforeEach(async () => {
   await mock.wipeDB();
 });
 
-let augur: Augur<any>;
+let augur: Augur<ethers.utils.BigNumber>;
 let ethersProvider: EthersProvider;
 beforeAll(async () => {
   const {provider, dependencies, addresses} = await compileAndDeployToGanache(ACCOUNTS);
   augur = await Augur.create(provider, dependencies, addresses);
   ethersProvider = provider;
-}, 60000);
+}, 120000);
 
 test("Flexible Search", async () => {
   const trackedUsers: Array<string> = [];

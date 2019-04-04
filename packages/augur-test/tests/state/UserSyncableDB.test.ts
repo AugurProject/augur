@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers/utils/bignumber";
 import { ACCOUNTS, compileAndDeployToGanache, makeDbMock, makeTestAugur } from "../../libs";
 import { UserSyncableDB } from "@augurproject/state/src/db/UserSyncableDB";
 import {Augur} from "@augurproject/api";
@@ -6,11 +5,12 @@ import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFun
 import { Contracts } from "@augurproject/api/src/api/Contracts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import {ethers} from "ethers";
+import { ContractAddresses } from "@augurproject/artifacts";
 
 const mock = makeDbMock();
 
-let augur: Augur<any>;
-let addresses: any;
+let augur: Augur<ethers.utils.BigNumber>;
+let addresses: ContractAddresses;
 let dependencies: ContractDependenciesEthers;
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
@@ -19,7 +19,7 @@ beforeAll(async () => {
   dependencies = result.dependencies;
 }, 120000);
 
-let contracts: Contracts<any>;
+let contracts: Contracts<ethers.utils.BigNumber>;
 beforeEach(async () => {
   contracts = new Contracts(addresses, dependencies);
   mock.cancelFail();
@@ -33,7 +33,7 @@ test.skip("sync", async () => {
   const eventName = "TokensTransferred";
   const sender = ACCOUNTS[0].publicKey;
   const highestAvailableBlockNumber = 0;
-  const db = new UserSyncableDB<BigNumber>(dbController, mock.constants.networkId, eventName, sender, 0, 0);
+  const db = new UserSyncableDB<ethers.utils.BigNumber>(dbController, mock.constants.networkId, eventName, sender, 0, 0);
 
   // Generate logs to be synced
   // TODO generate user-specific TokensTransferred
@@ -79,7 +79,7 @@ test("props", async () => {
 
   const eventName = "foo";
   const user = "artistotle";
-  const db = new UserSyncableDB<BigNumber>(dbController, mock.constants.networkId, eventName, user, 2, 0);
+  const db = new UserSyncableDB<ethers.utils.BigNumber>(dbController, mock.constants.networkId, eventName, user, 2, 0);
 
   // @ts-ignore - verify private property "additionalTopics"
   expect(db.additionalTopics).toEqual([
