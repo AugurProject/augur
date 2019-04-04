@@ -47,12 +47,8 @@ describe("modules/markets/reducers/new-market.js", () => {
           description: null,
           category: null,
           tag1: "",
-          tag2: ""
-        },
-        {
-          type: null
-        },
-        {
+          tag2: "",
+          type: null,
           designatedReporterType: null,
           designatedReporterAddress: null,
           expirySourceType: null,
@@ -426,12 +422,8 @@ describe("modules/markets/reducers/new-market.js", () => {
           description: null,
           category: null,
           tag1: "",
-          tag2: ""
-        },
-        {
-          type: null
-        },
-        {
+          tag2: "",
+          type: null,
           designatedReporterType: null,
           designatedReporterAddress: null,
           expirySourceType: null,

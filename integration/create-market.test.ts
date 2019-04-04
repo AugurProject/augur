@@ -90,11 +90,6 @@ describe("Create market page", () => {
     await expect(page).toFill("#cm__input--tag1", "Yes/No");
     await expect(page).toFill("#cm__input--tag2", "Test");
 
-    // Verify that the white market card above the form updates for each field
-    await expect(page).toMatchElement(
-      ".create-market-preview-styles_CreateMarketPreview__description",
-      { text: "Will this yes/no market be created successfully?" }
-    );
     await expect(page).toMatchElement(
       ".category-tag-trail-styles_CategoryTagTrail .word-trail-styles_WordTrail:nth-child(1) .tag-trail-button",
       { text: "Integration Test" }
