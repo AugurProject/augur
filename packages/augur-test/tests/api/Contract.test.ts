@@ -1,4 +1,4 @@
-import { ACCOUNTS, compileAndDeployToGanache } from "../../libs/LocalAugur";
+import { ACCOUNTS, compileAndDeployToGanache } from "../../libs";
 import {Contracts} from "@augurproject/api/src/api/Contracts";
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";

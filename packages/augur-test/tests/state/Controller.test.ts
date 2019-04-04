@@ -3,8 +3,7 @@ import { BlockAndLogStreamerListener } from "@augurproject/state/src/db/BlockAnd
 import { EventLogDBRouter } from "@augurproject/state/src/db/EventLogDBRouter";
 import {Augur} from "@augurproject/api";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import {makeDbMock} from "../../libs/MakeDbMock";
-import { ACCOUNTS, compileAndDeployToGanache } from "../../libs/LocalAugur";
+import { ACCOUNTS, compileAndDeployToGanache, makeDbMock } from "../../libs";
 
 const mock = makeDbMock();
 

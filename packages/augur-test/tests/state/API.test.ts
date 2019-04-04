@@ -1,7 +1,5 @@
-import {uploadBlockNumbers} from "@augurproject/artifacts";
-import {makeTestAugur, ACCOUNTS} from "../../libs/LocalAugur";
+import {makeTestAugur, ACCOUNTS, makeDbMock} from "../../libs";
 import {API} from "@augurproject/state/src/api/API";
-import {makeDbMock} from "../../libs/MakeDbMock";
 import {Augur} from "@augurproject/api";
 
 const mock = makeDbMock();
