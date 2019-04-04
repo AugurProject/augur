@@ -93,23 +93,16 @@
 .CreateMarketReview_market_properties_outcomes {
   color: @color-white;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column wrap;
   font-size: @font-size-small;
   justify-content: space-between;
   margin: 0.5rem 0;
   text-transform: uppercase;
 
-  > div {
-    display: flex;
-
-    > div {
-      flex: 1;
-      margin-right: 90px;
-    }
-  }
-
-  > div:nth-of-type(2) {
-    margin-top: 4px;
+  > li {
+    display: list-item;
+    list-style-type: disc;
+    padding: 0.25rem 0;
   }
 }
 

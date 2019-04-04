@@ -287,6 +287,18 @@ export default class CreateMarketReview extends Component {
             <span className={Styles.CreateMarketReview_line} />
 
             <div className={Styles.CreateMarketReview_market_properties}>
+              <div>
+                <div className={Styles.CreateMarketReview_inline_property}>
+                  <span>market type</span>
+                  <span>{MARKET_TYPE_NAME[newMarket.type]}</span>
+                </div>
+                <div className={Styles.CreateMarketReview_inline_property}>
+                  <span>fee</span>
+                  <span>
+                    {formatPercent(newMarket.settlementFee).formatted}%
+                  </span>
+                </div>
+              </div>
               {newMarket.type === CATEGORICAL && (
                 <div className={Styles.CreateMarketReview_inline_property}>
                   <span>outcomes</span>
@@ -307,30 +319,14 @@ export default class CreateMarketReview extends Component {
                   </div>
                   <div className={Styles.CreateMarketReview_inline_property}>
                     <span>Min Price</span>
-                    <span>
-                      {formatNumber(newMarket.scalarSmallNum).formatted}
-                    </span>
+                    <span>{newMarket.scalarSmallNum.toString()}</span>
                   </div>
                   <div className={Styles.CreateMarketReview_inline_property}>
                     <span>Max Price</span>
-                    <span>
-                      {formatNumber(newMarket.scalarBigNum).formatted}
-                    </span>
+                    <span>{newMarket.scalarBigNum.toString()}</span>
                   </div>
                 </div>
               )}
-              <div>
-                <div className={Styles.CreateMarketReview_inline_property}>
-                  <span>market type</span>
-                  <span>{MARKET_TYPE_NAME[newMarket.type]}</span>
-                </div>
-                <div className={Styles.CreateMarketReview_inline_property}>
-                  <span>fee</span>
-                  <span>
-                    {formatPercent(newMarket.settlementFee).formatted}%
-                  </span>
-                </div>
-              </div>
             </div>
 
             <span className={Styles.CreateMarketReview_line} />
@@ -389,9 +385,9 @@ export default class CreateMarketReview extends Component {
 
             <div className={Styles.CreateMarketReview__explainer}>
               The Augur platform does not work well for markets that are
-              subjective or ambiguous. If you're not sure that the market's
-              outcome will be known beyond a reasonable doubt by the expiration
-              date, you should not create this market!
+              subjective or ambiguous. If you&#39;re not sure that the
+              market&#39;s outcome will be known beyond a reasonable doubt by
+              the expiration date, you should not create this market!
             </div>
           </div>
           <div>
