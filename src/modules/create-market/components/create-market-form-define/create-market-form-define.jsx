@@ -190,10 +190,7 @@ export default class CreateMarketDefine extends Component {
               issues that may result. Reporting starting before event end time
               may result in the market being reported as invalid.
             </div>
-            {newMarket.endTime &&
-              newMarket.endTime.formattedUtc && (
-                <MarketCreationTimeDisplay endTime={newMarket.endTime} />
-              )}
+            <MarketCreationTimeDisplay endTime={newMarket.endTime} />
           </div>
         </li>
         <li className={Styles.CreateMarketDefine_block}>

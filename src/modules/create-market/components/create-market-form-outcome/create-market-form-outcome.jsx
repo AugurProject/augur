@@ -622,43 +622,6 @@ export default class CreateMarketOutcome extends Component {
             </div>
           </li>
         )}
-        {/*newMarket.type && (
-          <li
-            className={classNames(
-              StylesForm["field--50"],
-              Styles.CreateMarketFormOutcome__details
-            )}
-          >
-            <label htmlFor="cm__input--details">
-              <span>Additional Details</span>
-            </label>
-            <textarea
-              id="cm__input--details"
-              value={newMarket.detailsText}
-              placeholder="Optional - Include any additional information that traders should know about this market."
-              onChange={e => {
-                updateNewMarket({ detailsText: e.target.value });
-              }}
-              className={Styles.CreateMarketForm__textArea}
-            />
-          </li>
-        )}
-        {newMarket.type && (
-          <li
-            className={classNames(
-              StylesForm["field--50"],
-              Styles.CreateMarketFormOutcome__detailsPreview
-            )}
-          >
-            <label htmlFor="cm__input--details">
-              <span>Additional Details Preview</span>
-            </label>
-            <MarkdownRenderer
-              text={newMarket.detailsText}
-              className={StylesForm.CreateMarketForm__additionalDetailsRendered}
-            />
-          </li>
-            )*/}
       </ul>
     );
   }

@@ -84,12 +84,18 @@ li.CreateMarketDefine__question {
 }
 
 .CreateMarketDefine_time_display {
+  min-height: 6rem;
+
   > div {
     color: @color-light-dark-purple;
     font-size: @font-size-small;
     font-weight: bold;
     line-height: @font-size-normal;
     text-transform: uppercase;
+
+    &.simple {
+      color: @color-white;
+    }
   }
 
   > span {
@@ -123,8 +129,8 @@ li.CreateMarketDefine__question {
   }
 
   div:nth-of-type(2) {
-    min-width: unset;
     max-width: unset;
+    min-width: unset;
   }
 }
 

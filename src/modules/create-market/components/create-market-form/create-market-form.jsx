@@ -429,7 +429,7 @@ export default class CreateMarketForm extends Component {
                       });
                     }}
                   >
-                    Submit
+                    Create Market
                   </button>
                 )}
               </div>

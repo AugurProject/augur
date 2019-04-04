@@ -11,10 +11,12 @@ import {
   EXPIRY_SOURCE_GENERIC,
   DESIGNATED_REPORTER_SELF
 } from "modules/markets/constants/new-market-constraints";
-
+import classNames from "classnames";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import Styles from "modules/create-market/components/create-market-form-review/create-market-form-review.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
+import HighlightedStyles from "modules/reporting/components/common/highlighted-message.styles";
+import { MarketCreationTimeDisplay } from "modules/create-market/components/create-market-form-time/market-create-time-display";
 
 export default class CreateMarketReview extends Component {
   static propTypes = {
@@ -208,8 +210,21 @@ export default class CreateMarketReview extends Component {
     return (
       <article className={StylesForm.CreateMarketForm__fields}>
         <div className={Styles.CreateMarketReview}>
-          <h2 className={Styles.CreateMarketReview__heading}>Confirm Market</h2>
           <div className={Styles.CreateMarketReview__wrapper}>
+            <div className={Styles.CreateMarketReview_properties}>
+              <div>
+                <span>category:</span>
+                <span>{newMarket.category}</span>
+              </div>
+              <div>
+                <span>tags:</span>
+                <span>
+                  {newMarket.tag1 ||
+                    (newMarket.tag2 &&
+                      [newMarket.tag1, newMarket.tag2].join(","))}
+                </span>
+              </div>
+            </div>
             <div className={Styles.CreateMarketReview__creation}>
               <h3 className={Styles.CreateMarketReview__subheading}>
                 Market Creation
@@ -248,49 +263,84 @@ export default class CreateMarketReview extends Component {
                 </li>
               </ul>
             </div>
+            <MarketCreationTimeDisplay simple endTime={newMarket.endTime} />
+            {s.insufficientFundsString !== "" && (
+              <span
+                className={
+                  StylesForm["CreateMarketForm__error--insufficient-funds"]
+                }
+              >
+                {InputErrorIcon}
+                You have insufficient {s.insufficientFundsString} to create this
+                market.
+              </span>
+            )}
+            <div className={Styles.CreateMarketReview__resolution}>
+              <h4 className={Styles.CreateMarketReview__smallheading}>
+                Resolution Source
+              </h4>
+              <p className={Styles.CreateMarketReview__smallparagraph}>
+                {newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC
+                  ? "General knowledge"
+                  : `Outcome will be detailed on public website: ${
+                      newMarket.expirySource
+                    }`}
+              </p>
+            </div>
+            <div className={Styles.CreateMarketReview_spacer} />
+            <div className={Styles.CreateMarketReview__designated_report}>
+              <h4 className={Styles.CreateMarketReview__smallheading}>
+                Designated Reporter
+              </h4>
+              <p className={Styles.CreateMarketReview__smallparagraph}>
+                {newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF
+                  ? "Myself"
+                  : `Someone Else: ${newMarket.designatedReporterAddress}`}
+              </p>
+            </div>
+            <div className={Styles.CreateMarketReview__addedDetails}>
+              <h4 className={Styles.CreateMarketReview__smallheading}>
+                Additional Details
+              </h4>
+              <MarkdownRenderer
+                text={newMarket.detailsText || "None"}
+                className={Styles["CreateMarketReview__AdditionalDetails-text"]}
+              />
+            </div>
           </div>
-          {s.insufficientFundsString !== "" && (
-            <span
-              className={
-                StylesForm["CreateMarketForm__error--insufficient-funds"]
-              }
+          <div>
+            <div
+              className={classNames(
+                HighlightedStyles.HighlightedMessage,
+                Styles.blockit
+              )}
             >
-              {InputErrorIcon}
-              You have insufficient {s.insufficientFundsString} to create this
-              market.
-            </span>
-          )}
-          <div className={Styles.CreateMarketReview__resolution}>
-            <h4 className={Styles.CreateMarketReview__smallheading}>
-              Resolution Source
-            </h4>
-            <p className={Styles.CreateMarketReview__smallparagraph}>
-              {newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC
-                ? "General knowledge"
-                : `Outcome will be detailed on public website: ${
-                    newMarket.expirySource
-                  }`}
-            </p>
-          </div>
-          <div className={Styles.CreateMarketReview_spacer} />
-          <div className={Styles.CreateMarketReview__designated_report}>
-            <h4 className={Styles.CreateMarketReview__smallheading}>
-              Designated Reporter
-            </h4>
-            <p className={Styles.CreateMarketReview__smallparagraph}>
-              {newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF
-                ? "Myself"
-                : `Someone Else: ${newMarket.designatedReporterAddress}`}
-            </p>
-          </div>
-          <div className={Styles.CreateMarketReview__addedDetails}>
-            <h4 className={Styles.CreateMarketReview__smallheading}>
-              Additional Details
-            </h4>
-            <MarkdownRenderer
-              text={newMarket.detailsText || "None"}
-              className={Styles["CreateMarketReview__AdditionalDetails-text"]}
-            />
+              <div>
+                Review the markets details to confirm that there are{" "}
+                <span className={HighlightedStyles.bolden}>no conflicts</span>{" "}
+                between the{" "}
+                <span className={HighlightedStyles.bolden}>
+                  Market Question
+                </span>
+                ,{" "}
+                <span className={HighlightedStyles.bolden}>
+                  Additional Details
+                </span>{" "}
+                and{" "}
+                <span className={HighlightedStyles.bolden}>
+                  Reporting Start Time
+                </span>
+                .
+              </div>
+              <div>
+                If they don’t match up, or there are any conflicts between them,
+                there is a high probability that the market will{" "}
+                <span className={HighlightedStyles.bolden}>
+                  resolve as invalid
+                </span>
+                .
+              </div>
+            </div>
           </div>
         </div>
       </article>

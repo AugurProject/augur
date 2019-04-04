@@ -2,7 +2,28 @@
 
 .CreateMarketReview {
   color: @color-white;
-  width: 36rem;
+  display: flex;
+  flex-direction: row;
+  min-width: 100%;
+
+  > div.blockit {
+    padding: 0.5rem 0 1rem;
+  }
+
+  > div {
+    margin: 1rem 0;
+  }
+}
+
+.CreateMarketReview_properties {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  text-transform: capitalize;
+
+  > div {
+    padding-right: 1rem;
+  }
 }
 
 .CreateMarketReview__AdditionalDetails-text {
@@ -65,12 +86,10 @@
 
 .CreateMarketReview__wrapper {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   margin-bottom: 3rem;
-
-  > div {
-    width: 14.375rem;
-  }
+  min-width: 50%;
 }
 
 .CreateMarketReview__smallheading {
