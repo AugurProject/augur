@@ -204,9 +204,8 @@ export default class CreateMarketDefine extends Component {
                 </span>
               )}
             </label>
-            <input
+            <textarea
               id="cm__input--desc"
-              type="text"
               className={classNames({
                 [`${StylesForm["CreateMarketForm__error--field"]}`]: newMarket
                   .validations[newMarket.currentStep].description
@@ -223,6 +222,11 @@ export default class CreateMarketDefine extends Component {
               }
               onKeyPress={e => keyPressed(e)}
             />
+            <div className={StylesForm.CreateMarketForm_textarea_footer}>
+              Official Reporting Start Time{" "}
+              <span>{(newMarket.endTime || {}).formattedUtc}</span>
+            </div>
+
             <div
               className={classNames(
                 StylesForm["field--50"],
@@ -235,12 +239,16 @@ export default class CreateMarketDefine extends Component {
               <textarea
                 id="cm__input--details"
                 value={newMarket.detailsText}
-                placeholder="Optional - Include any additional information that traders should know about this market."
+                placeholder="Add any additional details traders and reporters should know about this market (optional)"
                 onChange={e => {
                   updateNewMarket({ detailsText: e.target.value });
                 }}
                 className={Styles.CreateMarketForm__textArea}
               />
+              <div className={StylesForm.CreateMarketForm_textarea_footer}>
+                Official Reporting Start Time{" "}
+                <span>{(newMarket.endTime || {}).formattedUtc}</span>
+              </div>
             </div>
           </div>
           <div className={Styles.CreateMarketDefine_message}>

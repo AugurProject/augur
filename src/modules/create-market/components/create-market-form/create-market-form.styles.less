@@ -172,6 +172,7 @@
       background-color: @color-lightergray;
       font-size: 1.125rem;
       line-height: 1.5rem;
+      margin-bottom: 0;
 
       &.error {
         border-color: @color-red;
@@ -184,7 +185,7 @@
     }
 
     textarea {
-      height: 9.5rem;
+      height: 83px;
       padding-top: 1rem;
     }
 
@@ -194,6 +195,19 @@
       margin: 0;
     }
   }
+}
+
+.CreateMarketForm_textarea_footer {
+    background-color: @color-gray2;
+    color: @color-almostblack;
+    font-size: @font-size-extra-small;
+    margin-bottom: 1rem;
+    padding: 0.25rem 0.5rem;
+    width: 100%;
+
+    > span {
+      font-weight: bold;
+    }
 }
 
 .CreateMarketForm__navigation {
@@ -414,7 +428,7 @@
 
 @media @breakpoint-mobile-small {
   .CreateMarketForm__fields > li textarea {
-    height: 6.5rem;
+    height: 83px;
   }
 
   .CreateMarketForm__navigation {
