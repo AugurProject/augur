@@ -19,7 +19,7 @@ beforeAll(async () => {
   const result = await compileAndDeployToGanache(ACCOUNTS);
   addresses = result.addresses;
   dependencies = result.dependencies;
-}, 60000);
+}, 120000);
 
 let contracts: Contracts<ethers.utils.BigNumber>;
 beforeEach(async () => {
