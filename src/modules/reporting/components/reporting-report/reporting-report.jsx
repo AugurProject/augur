@@ -100,14 +100,19 @@ export default class ReportingReport extends Component {
   }
 
   calculateMarketCreationCosts() {
-    const { isOpenReporting, universe, market, isDRMarketCreator } = this.props;
-    augur.api.Universe.getOrCacheDesignatedReportStake(
+    const {
       universe,
+      market,
+      isDRMarketCreator,
+      isDesignatedReporter
+    } = this.props;
+    augur.api.Universe.getOrCacheDesignatedReportStake(
+      { tx: { to: universe, send: false } },
       (err, initialReporterStake) => {
         if (err) return console.error(err);
 
         const { designatedReportStake } = market;
-        const initialStake = formatAttoEth(initialReporterStake);
+        const initialStake = formatAttoEth(initialReporterStake || 0);
         const neededStake = isDRMarketCreator
           ? createBigNumber(initialStake.fullPrecision).minus(
               designatedReportStake
@@ -117,7 +122,7 @@ export default class ReportingReport extends Component {
         const repAmount = formatEtherEstimate(neededStake);
 
         this.setState({
-          stake: isOpenReporting ? "0" : repAmount.formatted
+          stake: isDesignatedReporter ? repAmount.formatted : "0"
         });
       }
     );
