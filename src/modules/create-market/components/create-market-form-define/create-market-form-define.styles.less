@@ -62,13 +62,27 @@ li.CreateMarketDefine__question {
   top: 0.25rem;
 }
 
+.CreateMarketDefine_delay_time,
 .CreateMarketDefine__time {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
+  margin-bottom: 1rem;
 
   > * {
     width: 31%;
+  }
+}
+
+.CreateMarketDefine_delay_time_sub {
+  z-index: 2;
+}
+
+.CreateMarketDefine_delay_time {
+  justify-content: flex-start;
+
+  > div:first-of-type {
+    margin-right: 1rem;
   }
 }
 
@@ -84,6 +98,7 @@ li.CreateMarketDefine__question {
 }
 
 .CreateMarketDefine_time_display {
+  margin-top: 2rem;
   min-height: 6rem;
 
   > div {

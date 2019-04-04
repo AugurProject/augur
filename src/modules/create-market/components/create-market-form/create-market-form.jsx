@@ -25,19 +25,33 @@ const STEP_NAME = {
   1: "Add initial market liquidity",
   2: "Review"
 };
-const TIME_FIELDNAMES = ["endTime", "hour", "minute", "meridiem"];
+const TIME_FIELDNAMES = [
+  "setEndTime",
+  "hour",
+  "minute",
+  "meridiem",
+  "delayDays",
+  "delayHours"
+];
 
 export default class CreateMarketForm extends Component {
   static processEndTime(newMarket) {
-    if (!Object.keys(newMarket.endTime).length) {
-      return newMarket.endTime;
+    if (!Object.keys(newMarket.setEndTime).length) {
+      return newMarket.setEndTime;
     }
 
-    const endTime = moment(newMarket.endTime.timestamp * 1000);
+    const endTime = moment(newMarket.setEndTime.timestamp * 1000).utc();
     endTime.set({
       hour: newMarket.hour,
       minute: newMarket.minute
     });
+
+    if (newMarket.delayDays !== "" && newMarket.delayDays !== undefined) {
+      endTime.add(newMarket.delayDays, "day");
+    }
+    if (newMarket.delayHours !== "" && newMarket.delayHours !== undefined) {
+      endTime.add(newMarket.delayHours, "hour");
+    }
 
     if (
       (newMarket.meridiem === "" || newMarket.meridiem === "AM") &&

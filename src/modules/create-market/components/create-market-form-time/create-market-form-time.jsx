@@ -38,8 +38,8 @@ export const MarketCreateFormTime = ({
       placeholder="Date"
       onDateChange={date => {
         updateState({ date });
-        if (!date) return validateField("endTime", "");
-        validateField("endTime", formatDate(date.toDate()));
+        if (!date) return validateField("setEndTime", "");
+        validateField("setEndTime", formatDate(date.toDate()));
       }}
       isOutsideRange={day =>
         day.isAfter(moment(currentTimestamp).add(6, "M")) ||
@@ -52,7 +52,7 @@ export const MarketCreateFormTime = ({
           updateState({
             date
           });
-          validateField("endTime", formatDate(date.toDate()));
+          validateField("setEndTime", formatDate(date.toDate()));
         }
         updateState({ focused });
       }}
@@ -81,6 +81,7 @@ export const MarketCreateFormTime = ({
         label="Hour"
         options={hours}
         default={newMarket.hour}
+        className={Styles.CreateMarketDefine_delay_time_sub}
         onChange={value => validateNumber("hour", value, "hour", 1, 12, 0)}
         isMobileSmall={isMobileSmall}
         onKeyPress={e => keyPressed(e)}
@@ -89,6 +90,7 @@ export const MarketCreateFormTime = ({
         label="Minute"
         options={minutes}
         default={newMarket.minute}
+        className={Styles.CreateMarketDefine_delay_time_sub}
         onChange={value => validateNumber("minute", value, "minute", 0, 59, 0)}
         isMobileSmall={isMobileSmall}
         onKeyPress={e => keyPressed(e)}
@@ -97,7 +99,33 @@ export const MarketCreateFormTime = ({
         label="AM/PM"
         default={newMarket.meridiem || ""}
         options={ampm}
+        className={Styles.CreateMarketDefine_delay_time_sub}
         onChange={value => validateField("meridiem", value)}
+        isMobileSmall={isMobileSmall}
+        onKeyPress={e => keyPressed(e)}
+      />
+    </div>
+    <label htmlFor="cm__input--time">
+      <span>Delay Reporting by</span>
+    </label>
+    <div id="cm__input--time" className={Styles.CreateMarketDefine_delay_time}>
+      <InputDropdown
+        label="days"
+        options={Array.from(new Array(31), (val, index) => index)}
+        default={newMarket.delayDays || ""}
+        onChange={value =>
+          validateNumber("delayDays", value, "delayDays", 0, 30, 0)
+        }
+        isMobileSmall={isMobileSmall}
+        onKeyPress={e => keyPressed(e)}
+      />
+      <InputDropdown
+        label="Hours"
+        options={Array.from(new Array(25), (val, index) => index)}
+        default={newMarket.delayHours || ""}
+        onChange={value =>
+          validateNumber("delayHours", value, "delayHours", 0, 24, 0)
+        }
         isMobileSmall={isMobileSmall}
         onKeyPress={e => keyPressed(e)}
       />
