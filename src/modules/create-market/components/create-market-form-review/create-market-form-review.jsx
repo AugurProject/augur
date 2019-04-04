@@ -9,8 +9,7 @@ import MarkdownRenderer from "modules/common/components/markdown-renderer/markdo
 import {
   formatEtherEstimate,
   formatGasCostToEther,
-  formatPercent,
-  formatNumber
+  formatPercent
 } from "utils/format-number";
 import {
   EXPIRY_SOURCE_GENERIC,
