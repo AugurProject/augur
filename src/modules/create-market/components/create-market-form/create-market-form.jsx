@@ -36,8 +36,8 @@ const TIME_FIELDNAMES = [
 
 export default class CreateMarketForm extends Component {
   static processEndTime(newMarket) {
-    if (!Object.keys(newMarket.setEndTime).length) {
-      return newMarket.setEndTime;
+    if (!newMarket.setEndTime) {
+      return newMarket.endTime;
     }
 
     const endTime = moment(newMarket.setEndTime.timestamp * 1000).utc();
@@ -179,11 +179,13 @@ export default class CreateMarketForm extends Component {
     }
 
     updatedMarket[fieldName] = value;
-    updatedMarket.isValid = this.isValid(currentStep);
 
     if (TIME_FIELDNAMES.indexOf(fieldName) !== -1) {
       updatedMarket.endTime = CreateMarketForm.processEndTime(updatedMarket);
+      updatedMarket.validations[currentStep].endTime = "";
     }
+
+    updatedMarket.isValid = this.isValid(currentStep);
 
     updateNewMarket(updatedMarket);
   }
@@ -225,7 +227,6 @@ export default class CreateMarketForm extends Component {
         break;
       default:
         updatedMarket.validations[currentStep][fieldName] = "";
-        break;
     }
 
     if (leadingZero && value < 10) {
@@ -234,11 +235,14 @@ export default class CreateMarketForm extends Component {
 
     updatedMarket[fieldName] =
       typeof value === "number" ? value.toString() : value;
-    updatedMarket.isValid = this.isValid(currentStep);
 
     if (TIME_FIELDNAMES.indexOf(fieldName) !== -1) {
+      updatedMarket.validations[currentStep].endTime = "";
       updatedMarket.endTime = CreateMarketForm.processEndTime(updatedMarket);
     }
+
+    updatedMarket.isValid = this.isValid(currentStep);
+
     updateNewMarket(updatedMarket);
   }
 
