@@ -176,19 +176,22 @@ export default class CreateMarketDefine extends Component {
           />
           <div className={Styles.CreateMarketDefine_message}>
             <div>
-              Make sure to factor in potential delays that can impact the event
-              end time when entering the{" "}
+              Choose a{" "}
               <span className={Styles.CreateMarketDefine_bolden}>
-                Reporting Starts Date and Time.
+                Reporting Start Date and Time
               </span>{" "}
+              that is sufficiently after the end of the event. If reporting
+              starts before the event end time the market will likely be
+              reported as{" "}
+              <span className={Styles.CreateMarketDefine_bolden}>invalid</span>.
             </div>
             <div>
+              Make sure to factor in{" "}
               <span className={Styles.CreateMarketDefine_bolden}>
-                Delay Reporting
+                potential delays
               </span>{" "}
-              add additional time before reporting begins to avoid any unforseen
-              issues that may result. Reporting starting before event end time
-              may result in the market being reported as invalid.
+              that can impact the event end time. Reporting should start only
+              when the event outcome is known beyond a doubt.
             </div>
             <MarketCreationTimeDisplay endTime={newMarket.endTime} />
           </div>

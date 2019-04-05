@@ -30,7 +30,7 @@ export const MarketCreateFormTime = ({
 }) => (
   <div>
     <label htmlFor="cm__input--date">
-      <span>Reporting Starts Date</span>
+      <span>Reporting Start Date</span>
     </label>
     <SingleDatePicker
       id="cm__input--date"
@@ -62,7 +62,7 @@ export const MarketCreateFormTime = ({
       navNext={ChevronRight}
     />
     <label htmlFor="cm__input--time">
-      <span>Reporting Starts Time (UTC -0)</span>
+      <span>Reporting Start Time (UTC -0)</span>
       {newMarket.validations[newMarket.currentStep].hour && (
         <span className={StylesForm.CreateMarketForm__error}>
           {InputErrorIcon}
@@ -101,31 +101,6 @@ export const MarketCreateFormTime = ({
         options={ampm}
         className={Styles.CreateMarketDefine_delay_time_sub}
         onChange={value => validateField("meridiem", value)}
-        isMobileSmall={isMobileSmall}
-        onKeyPress={e => keyPressed(e)}
-      />
-    </div>
-    <label htmlFor="cm__input--time">
-      <span>Delay Reporting by</span>
-    </label>
-    <div id="cm__input--time" className={Styles.CreateMarketDefine_delay_time}>
-      <InputDropdown
-        label="Days"
-        options={Array.from(new Array(31), (val, index) => index)}
-        default={newMarket.delayDays || ""}
-        onChange={value =>
-          validateNumber("delayDays", value, "delayDays", 0, 30, 0)
-        }
-        isMobileSmall={isMobileSmall}
-        onKeyPress={e => keyPressed(e)}
-      />
-      <InputDropdown
-        label="Hours"
-        options={Array.from(new Array(25), (val, index) => index)}
-        default={newMarket.delayHours || ""}
-        onChange={value =>
-          validateNumber("delayHours", value, "delayHours", 0, 24, 0)
-        }
         isMobileSmall={isMobileSmall}
         onKeyPress={e => keyPressed(e)}
       />

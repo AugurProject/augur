@@ -31,7 +31,7 @@ import {
 
 const sortOptions = [
   { value: MARKET_CREATION_TIME, label: "Creation Time" },
-  { value: MARKET_END_DATE, label: "End Time" },
+  { value: MARKET_END_DATE, label: "Reporting Starts" },
   { value: MARKET_RECENTLY_TRADED, label: "Recently Traded" },
   { value: MARKET_VOLUME, label: "Volume" },
   { value: MARKET_FEE, label: "Settlement Fee" },

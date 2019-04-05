@@ -235,7 +235,8 @@ export function addMarketCreationTransactions(marketsCreated) {
         market: transaction.marketId,
         "market type": market.marketType,
         category: market.category,
-        "end time": convertUnixToFormattedDate(market.endTime).formattedLocal,
+        "reporting start": convertUnixToFormattedDate(market.endTime)
+          .formattedLocal,
         "designated reporter": market.designatedReporter
       };
       const header = Object.assign(

@@ -3,7 +3,7 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip.styles";
-import { Hint } from "modules/common/components/icons";
+import { Info } from "modules/common/components/icons";
 import Styles from "modules/create-market/components/create-market-form-define/create-market-form-define.styles";
 
 export const MarketCreationTimeDisplay = ({ simple, endTime }) => (
@@ -27,7 +27,7 @@ export const MarketCreationTimeDisplay = ({ simple, endTime }) => (
             data-tip
             data-for="tooltip--market-fees"
           >
-            {Hint}
+            {Info}
           </label>
           <ReactTooltip
             id="tooltip--market-fees"
