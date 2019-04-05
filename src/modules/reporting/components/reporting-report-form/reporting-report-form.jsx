@@ -24,6 +24,7 @@ export default class ReportingReportForm extends Component {
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     stake: PropTypes.string.isRequired,
+    stakeLabel: PropTypes.string.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
     isDesignatedReporter: PropTypes.bool.isRequired,
     isMarketInValid: PropTypes.bool,
@@ -179,6 +180,7 @@ export default class ReportingReportForm extends Component {
       market,
       selectedOutcome,
       stake,
+      stakeLabel,
       validations,
       insufficientRep,
       isDesignatedReporter
@@ -340,7 +342,7 @@ export default class ReportingReportForm extends Component {
         {(!isOpenReporting || isDesignatedReporter) && (
           <li>
             <label htmlFor="sr__input--stake">
-              <span>Required Stake</span>
+              <span>{stakeLabel}</span>
             </label>
             <p>{stake} REP</p>
           </li>

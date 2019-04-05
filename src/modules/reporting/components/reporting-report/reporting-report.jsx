@@ -10,6 +10,7 @@ import {
   formatRep,
   formatAttoEth
 } from "utils/format-number";
+import { ZERO } from "modules/trades/constants/numbers";
 import MarketPreview from "modules/market/containers/market-preview";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import ReportingReportForm from "modules/reporting/components/reporting-report-form/reporting-report-form";
@@ -49,7 +50,7 @@ export default class ReportingReport extends Component {
       selectedOutcomeName: "",
       // need to get value from augur-node for
       // designated reporter or initial reporter (open reporting)
-      stake: "0",
+      stake: formatRep("0"),
       validations: {
         selectedOutcome: null
       },
@@ -122,7 +123,7 @@ export default class ReportingReport extends Component {
         const repAmount = formatEtherEstimate(neededStake);
 
         this.setState({
-          stake: isDesignatedReporter ? repAmount.formatted : "0"
+          stake: isDesignatedReporter ? repAmount : formatRep("0")
         });
       }
     );
@@ -164,7 +165,7 @@ export default class ReportingReport extends Component {
     } = this.props;
     const s = this.state;
 
-    const BNstake = createBigNumber(formatRep(s.stake).fullPrecision);
+    const BNstake = createBigNumber(s.stake.fullPrecision);
     const insufficientRep = !isOpenReporting
       ? createBigNumber(availableRep).lt(BNstake)
       : false;
@@ -172,6 +173,13 @@ export default class ReportingReport extends Component {
       !Object.keys(s.validations).every(key => s.validations[key] === true) ||
       insufficientRep ||
       (!isDesignatedReporter && !isOpenReporting);
+    let stakeLabel = "Required Stake";
+    let stakeValue = s.stake.formatted;
+    if (createBigNumber(s.stake.fullPrecision).lt(ZERO)) {
+      stakeLabel = "REP STAKE RETURNS";
+      stakeValue = formatRep(createBigNumber(s.stake.fullPrecision).abs())
+        .formatted;
+    }
     return (
       <section>
         <Helmet>
@@ -201,7 +209,8 @@ export default class ReportingReport extends Component {
                     updateState={this.updateState}
                     isMarketInValid={s.isMarketInValid}
                     selectedOutcome={s.selectedOutcome}
-                    stake={s.stake}
+                    stake={stakeValue}
+                    stakeLabel={stakeLabel}
                     validations={s.validations}
                     isOpenReporting={isOpenReporting}
                     insufficientRep={insufficientRep}
@@ -216,11 +225,12 @@ export default class ReportingReport extends Component {
                 market={market}
                 isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcomeName}
-                stake={s.stake}
+                stake={stakeValue}
+                stakeLabel={stakeLabel}
                 designatedReportNoShowReputationBond={
                   s.designatedReportNoShowReputationBond
                 }
-                isOpenReporting={isOpenReporting}
+                isDesignatedReporter={isDesignatedReporter}
                 gasEstimate={s.gasEstimate}
               />
             )}

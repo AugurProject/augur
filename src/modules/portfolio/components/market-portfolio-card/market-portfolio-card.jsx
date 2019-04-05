@@ -152,12 +152,15 @@ export default class MarketPortfolioCard extends Component {
           >
             <div className={Styles.MarketCard__headertext}>
               <span className={Styles["MarketCard__expiration--mobile"]}>
-                {dateHasPassed(currentTimestamp, market.endTime.timestamp)
+                {dateHasPassed(
+                  currentTimestamp,
+                  (market.endTime || {}).timestamp
+                )
                   ? "Reporting Started "
                   : "Reporting Starts "}
                 {isMobile
-                  ? market.endTime.formattedLocalShort
-                  : market.endTime.formattedLocal}
+                  ? (market.endTime || {}).formattedLocalShort
+                  : (market.endTime || {}).formattedLocal}
               </span>
               <h1 className={CommonStyles.MarketCommon__description}>
                 <MarketLink id={market.id}>{market.description}</MarketLink>

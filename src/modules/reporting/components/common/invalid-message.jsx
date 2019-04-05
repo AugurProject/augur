@@ -19,7 +19,10 @@ const InvalidMessage = () => (
       </span>
       <ul>
         <li>The question is subjective in nature</li>
-        <li>The outcome was not known at reporting start time</li>
+        <li>
+          Reporting Start Time must not conflict with the Market Question or
+          Additional Details.
+        </li>
         <li>
           The title, details, reporting start time, resolution source, and
           outcomes are in direct conflict
