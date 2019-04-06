@@ -2,7 +2,7 @@ export {API} from "./api/API";
 export {ServerController} from "./server/ServerController";
 export {Controller} from "./Controller";
 
-import RunWorker from "./run.worker.ts";
+import RunWorker from "./run.worker";
 
 const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
 
