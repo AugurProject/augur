@@ -16,7 +16,8 @@ import {
     FillOrder,
     Orders,
     ClaimTradingProceeds,
-    Cash
+    Cash,
+    ProfitLoss
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -241,6 +242,10 @@ Deploying to: ${networkConfiguration.networkName}
         const cashContract = await this.getContractAddress("Cash");
         const cash = new Cash(this.dependencies, cashContract);
         promises.push(cash.initialize(this.augur!.address));
+
+        const profitLossContract = await this.getContractAddress("ProfitLoss");
+        const profitLoss = new ProfitLoss(this.dependencies, profitLossContract);
+        promises.push(profitLoss.initialize(this.augur!.address));
 
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");

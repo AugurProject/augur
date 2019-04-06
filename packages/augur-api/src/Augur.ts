@@ -33,7 +33,6 @@ export class Augur<TBigNumber> {
     "InitialReporterRedeemed",
     "InitialReportSubmitted",
     "InitialReporterTransferred",
-    "MarketMailboxTransferred",
     "MarketCreated",
     "MarketFinalized",
     "MarketMigrated",

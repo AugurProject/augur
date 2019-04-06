@@ -106,8 +106,9 @@ def test_publicCreateOrder_bid2(contractsFixture, cash, market):
 
     orderCreatedLog = {
         'creator': bytesToHexString(tester.a1),
-        'shareToken': shareToken.address,
+        'marketId': market.address,
         'tradeGroupId': stringToBytes(longTo32Bytes(42)),
+        'outcome': 0,
     }
 
     with BuyWithCash(cash, fix('1', '4000'), tester.k1, "create order"):
