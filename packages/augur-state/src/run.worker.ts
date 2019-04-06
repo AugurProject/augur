@@ -1,6 +1,7 @@
 // have to use require in workers so webpack is happy
 const Run = require("./run");
 
+// this to be as typesafe as possible with self and addEventListener + postMessage
 const ctx: Worker = self as any;
 
 ctx.addEventListener("message", event => {
