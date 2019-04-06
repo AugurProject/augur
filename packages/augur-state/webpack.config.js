@@ -1,15 +1,12 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/run.ts',
+  entry: './src/index.ts',
   devtool: 'inline-source-map',
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/
-      }
+      { test: /\.worker\.ts$/, loader: 'worker-loader' },
+      { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ }
     ]
   },
   resolve: {
@@ -25,6 +22,7 @@ module.exports = {
   node: {
     net: 'empty',
     fs: 'empty',
-    dns: 'empty'
+    dns: 'empty',
+    child_process: 'empty'
   }
 };

@@ -25,5 +25,22 @@ export async function start() {
   return controller.run();
 }
 
-// This will need to change when we place augur-state in a worker
-start();
+const isNode =
+  typeof process !== 'undefined' &&
+  process.versions != null &&
+  process.versions.node != null;
+
+// Use this to see if you're running within a webworker
+/* eslint-disable no-restricted-globals */
+// const isWebWorker =
+//   typeof self === 'object' &&
+//   self.constructor &&
+//   self.constructor.name === 'DedicatedWorkerGlobalScope';
+/* eslint-enable no-restricted-globals */
+
+// if being run start as a server
+if (isNode) {
+  // XXX: TODO - open a WS and JSON-RPC port
+  start();
+}
+
