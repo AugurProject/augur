@@ -3,7 +3,7 @@ const Run = require("./run");
 
 const ctx: Worker = self as any;
 
-ctx.addEventListener('message', event => {
+ctx.addEventListener("message", event => {
   // XXX: todo, add routing code here
   ctx.postMessage("Response boo");
 });
