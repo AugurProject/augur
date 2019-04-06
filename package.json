@@ -186,5 +186,8 @@
     "webpack-deadcode-plugin": "^0.1.9",
     "webpack-hot-middleware": "2.24.2",
     "webpack-merge": "4.1.4"
+  },
+  "resolutions": {
+    "**/sha3": "2.0.1"
   }
 }
