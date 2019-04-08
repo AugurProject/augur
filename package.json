@@ -92,5 +92,8 @@
       "augur-ui/@types/expect-puppeteer",
       "augur.js/uuid-parse"
     ]
+  },
+  "resolutions": {
+    "**/sha3": "2.0.1"
   }
 }
