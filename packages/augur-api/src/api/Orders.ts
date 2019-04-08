@@ -1,8 +1,7 @@
 import { Provider } from '../ethereum/Provider';
 import { Contracts } from './Contracts';
 
-
-export class Trade<TBigNumber> {
+export class Orders<TBigNumber> {
   private readonly provider: Provider;
   private readonly contracts: Contracts<TBigNumber>;
 
@@ -11,11 +10,7 @@ export class Trade<TBigNumber> {
     this.contracts = contracts;
   }
 
-  public async trade(arg: any): Promise<void> {
-    // TODO
-  }
-
-  private async getBetterWorseOrders(arg: any): Promise<void> {
+  public async getOrders(arg: any): Promise<void> {
     // TODO
   }
 }
