@@ -1,6 +1,6 @@
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { Augur } from "@augurproject/api";
+import { Augur, Provider } from "@augurproject/api";
 import { DeployerConfiguration, ContractDeployer } from "@augurproject/core";
 import * as path from "path";
 import * as ganache from "ganache-core";
@@ -11,11 +11,13 @@ import { ethers } from "ethers";
 import { CompilerOutput } from "solc";
 import { ContractAddresses } from "@augurproject/artifacts";
 
-export type AccountList = [{
-      secretKey: string;
-      publicKey: string;
-      balance: number;
-}];
+export type Account = {
+  secretKey: string;
+  publicKey: string;
+  balance: number;
+}
+
+export type AccountList = Array<Account>;
 
 const augurCorePath = path.join(__dirname, "../../augur-core/");
 
@@ -69,15 +71,26 @@ export async function compileAndDeployToGanache(accounts: AccountList): Promise<
   return {provider, signer, dependencies, compiledContracts, addresses};
 }
 
-export async function makeTestAugur(accounts: AccountList): Promise<Augur<any>> {
+export async function makeTestAugur(accounts: AccountList): Promise<Augur<ethers.utils.BigNumber>> {
   const {provider, dependencies, addresses} = await compileAndDeployToGanache(accounts);
+  return Augur.create(provider, dependencies, addresses);
+}
+
+export async function makeAdditionalTestAugur(account: Account, provider: Provider, addresses: ContractAddresses): Promise<Augur<any>> {
+  const signer = await EthersFastSubmitWallet.create(account.secretKey, provider as EthersProvider);
+  const dependencies = new ContractDependenciesEthers(provider as EthersProvider, signer, account.publicKey);
   return Augur.create(provider, dependencies, addresses);
 }
 
 export const ACCOUNTS: AccountList = [
   {
     secretKey: "0xa429eeb001c683cf3d8faf4b26d82dbf973fb45b04daad26e1363efd2fd43913",
-    publicKey: "0x8fff40efec989fc938bba8b19584da08ead986ee",
+    publicKey: "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
     balance: 100000000000000000000,  // 100 ETH
   },
+  {
+    secretKey: "0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a",
+    publicKey: "0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb",
+    balance: 100000000000000000000,  // 100 ETH
+  }
 ];

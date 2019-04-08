@@ -11,6 +11,7 @@ export class Contracts<TBigNumber> {
   public orders: GenericAugurInterfaces.Orders<TBigNumber>;
   public createOrder: GenericAugurInterfaces.CreateOrder<TBigNumber>;
   public cancelOrder: GenericAugurInterfaces.CancelOrder<TBigNumber>;
+  public fillOrder: GenericAugurInterfaces.FillOrder<TBigNumber>;
   public trade: GenericAugurInterfaces.Trade<TBigNumber>;
   public completeSets: GenericAugurInterfaces.CompleteSets<TBigNumber>;
   public claimTradingProceeds: GenericAugurInterfaces.ClaimTradingProceeds<TBigNumber>;
@@ -28,6 +29,7 @@ export class Contracts<TBigNumber> {
     this.orders = new GenericAugurInterfaces.Orders<TBigNumber>(dependencies, addresses.Orders);
     this.createOrder = new GenericAugurInterfaces.CreateOrder<TBigNumber>(dependencies, addresses.CreateOrder);
     this.cancelOrder = new GenericAugurInterfaces.CancelOrder<TBigNumber>(dependencies, addresses.CancelOrder);
+    this.fillOrder = new GenericAugurInterfaces.FillOrder<TBigNumber>(dependencies, addresses.FillOrder);
     this.trade = new GenericAugurInterfaces.Trade<TBigNumber>(dependencies, addresses.Trade);
     this.completeSets = new GenericAugurInterfaces.CompleteSets<TBigNumber>(dependencies, addresses.CompleteSets);
     this.claimTradingProceeds = new GenericAugurInterfaces.ClaimTradingProceeds<TBigNumber>(dependencies, addresses.ClaimTradingProceeds);

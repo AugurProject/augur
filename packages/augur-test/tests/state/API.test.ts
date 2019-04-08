@@ -1,8 +1,8 @@
-import {uploadBlockNumbers} from "@augurproject/artifacts";
-import {makeTestAugur, ACCOUNTS} from "../../libs/LocalAugur";
+import {makeTestAugur, ACCOUNTS, makeDbMock} from "../../libs";
 import {API} from "@augurproject/state/src/api/API";
-import {makeDbMock} from "../../libs/MakeDbMock";
+import {DB} from "@augurproject/state/src/db/DB";
 import {Augur} from "@augurproject/api";
+import {ethers} from "ethers";
 
 const mock = makeDbMock();
 
@@ -11,12 +11,12 @@ beforeEach(async () => {
   await mock.wipeDB();
 });
 
-let augur: Augur<any>;
-let db: any;
+let augur: Augur<ethers.utils.BigNumber>;
+let db: DB<ethers.utils.BigNumber>;
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
   db = await mock.makeDB(augur, ACCOUNTS);
-}, 60000);
+}, 120000);
 
 test("State API :: Markets", async () => {
   const api = new API<any>(augur, db);
@@ -27,6 +27,6 @@ test("State API :: Markets", async () => {
 });
 
 test("State API :: Users", async () => {
-  const api = new API<any>(augur, db);
+  const api = new API<ethers.utils.BigNumber>(augur, db);
   await expect(api.users).toEqual({});
 });

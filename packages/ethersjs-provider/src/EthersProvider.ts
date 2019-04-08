@@ -76,6 +76,9 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
     if (!contractInterface) {
       throw new Error(`Contract name ${contractName} not found in EthersJSProvider. Call 'storeAbiData' first with this name and the contract abi`);
     }
+    if (contractInterface.events[eventName] === undefined) {
+      throw new Error(`Contract name ${contractName} did not have event ${eventName}`);
+    }
     return contractInterface.events[eventName].topic;
   }
 
