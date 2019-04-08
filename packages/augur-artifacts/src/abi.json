@@ -4,6 +4,61 @@
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_endTime",
+					"type": "uint256"
+				},
+				{
+					"name": "_topic",
+					"type": "bytes32"
+				},
+				{
+					"name": "_description",
+					"type": "string"
+				},
+				{
+					"name": "_extraInfo",
+					"type": "string"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_marketCreator",
+					"type": "address"
+				},
+				{
+					"name": "_minPrice",
+					"type": "int256"
+				},
+				{
+					"name": "_maxPrice",
+					"type": "int256"
+				},
+				{
+					"name": "_marketType",
+					"type": "uint8"
+				},
+				{
+					"name": "_numTicks",
+					"type": "uint256"
+				}
+			],
+			"name": "logMarketCreated",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_universe",
 					"type": "address"
 				},
@@ -306,23 +361,15 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_endTime",
-					"type": "uint256"
-				},
-				{
-					"name": "_topic",
-					"type": "bytes32"
-				},
-				{
-					"name": "_description",
-					"type": "string"
-				},
-				{
-					"name": "_extraInfo",
-					"type": "string"
-				},
-				{
 					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_filler",
+					"type": "address"
+				},
+				{
+					"name": "_creator",
 					"type": "address"
 				},
 				{
@@ -330,23 +377,31 @@
 					"type": "address"
 				},
 				{
-					"name": "_marketCreator",
-					"type": "address"
+					"name": "_orderId",
+					"type": "bytes32"
 				},
 				{
-					"name": "_minPrice",
-					"type": "int256"
+					"name": "_marketCreatorFees",
+					"type": "uint256"
 				},
 				{
-					"name": "_maxPrice",
-					"type": "int256"
+					"name": "_reporterFees",
+					"type": "uint256"
 				},
 				{
-					"name": "_marketType",
-					"type": "uint8"
+					"name": "_amountFilled",
+					"type": "uint256"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_tradeGroupId",
+					"type": "bytes32"
 				}
 			],
-			"name": "logMarketCreated",
+			"name": "logOrderFilled",
 			"outputs": [
 				{
 					"name": "",
@@ -456,6 +511,61 @@
 				}
 			],
 			"name": "disputeCrowdsourcerCreated",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_endTime",
+					"type": "uint256"
+				},
+				{
+					"name": "_topic",
+					"type": "bytes32"
+				},
+				{
+					"name": "_description",
+					"type": "string"
+				},
+				{
+					"name": "_extraInfo",
+					"type": "string"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_marketCreator",
+					"type": "address"
+				},
+				{
+					"name": "_minPrice",
+					"type": "int256"
+				},
+				{
+					"name": "_maxPrice",
+					"type": "int256"
+				},
+				{
+					"name": "_marketType",
+					"type": "uint8"
+				},
+				{
+					"name": "_outcomes",
+					"type": "bytes32[]"
+				}
+			],
+			"name": "logMarketCreated",
 			"outputs": [
 				{
 					"name": "",
@@ -1026,69 +1136,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_shareToken",
-					"type": "address"
-				},
-				{
-					"name": "_filler",
-					"type": "address"
-				},
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_numCreatorShares",
-					"type": "uint256"
-				},
-				{
-					"name": "_numCreatorTokens",
-					"type": "uint256"
-				},
-				{
-					"name": "_numFillerShares",
-					"type": "uint256"
-				},
-				{
-					"name": "_numFillerTokens",
-					"type": "uint256"
-				},
-				{
-					"name": "_marketCreatorFees",
-					"type": "uint256"
-				},
-				{
-					"name": "_reporterFees",
-					"type": "uint256"
-				},
-				{
-					"name": "_amountFilled",
-					"type": "uint256"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				}
-			],
-			"name": "logOrderFilled",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -1532,65 +1579,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_endTime",
-					"type": "uint256"
-				},
-				{
-					"name": "_topic",
-					"type": "bytes32"
-				},
-				{
-					"name": "_description",
-					"type": "string"
-				},
-				{
-					"name": "_extraInfo",
-					"type": "string"
-				},
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_marketCreator",
-					"type": "address"
-				},
-				{
-					"name": "_outcomes",
-					"type": "bytes32[]"
-				},
-				{
-					"name": "_minPrice",
-					"type": "int256"
-				},
-				{
-					"name": "_maxPrice",
-					"type": "int256"
-				},
-				{
-					"name": "_marketType",
-					"type": "uint8"
-				}
-			],
-			"name": "logMarketCreated",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_universe",
 					"type": "address"
 				},
@@ -1920,6 +1908,11 @@
 			"anonymous": false,
 			"inputs": [
 				{
+					"indexed": true,
+					"name": "universe",
+					"type": "address"
+				},
+				{
 					"indexed": false,
 					"name": "endTime",
 					"type": "uint256"
@@ -1940,11 +1933,6 @@
 					"type": "string"
 				},
 				{
-					"indexed": true,
-					"name": "universe",
-					"type": "address"
-				},
-				{
 					"indexed": false,
 					"name": "market",
 					"type": "address"
@@ -1953,11 +1941,6 @@
 					"indexed": true,
 					"name": "marketCreator",
 					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "outcomes",
-					"type": "bytes32[]"
 				},
 				{
 					"indexed": false,
@@ -1973,6 +1956,16 @@
 					"indexed": false,
 					"name": "marketType",
 					"type": "uint8"
+				},
+				{
+					"indexed": false,
+					"name": "numTicks",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "outcomes",
+					"type": "bytes32[]"
 				}
 			],
 			"name": "MarketCreated",
@@ -2432,39 +2425,24 @@
 					"type": "address"
 				},
 				{
-					"indexed": true,
-					"name": "shareToken",
-					"type": "address"
-				},
-				{
 					"indexed": false,
 					"name": "filler",
 					"type": "address"
 				},
 				{
 					"indexed": false,
+					"name": "creator",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "marketId",
+					"type": "address"
+				},
+				{
+					"indexed": false,
 					"name": "orderId",
 					"type": "bytes32"
-				},
-				{
-					"indexed": false,
-					"name": "numCreatorShares",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "numCreatorTokens",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "numFillerShares",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "numFillerTokens",
-					"type": "uint256"
 				},
 				{
 					"indexed": false,
@@ -2479,6 +2457,11 @@
 				{
 					"indexed": false,
 					"name": "amountFilled",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "outcome",
 					"type": "uint256"
 				},
 				{

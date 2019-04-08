@@ -442,14 +442,14 @@ contract Universe is ITyped, IUniverse {
     function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
         require(bytes(_description).length > 0);
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, 10000);
-        augur.logMarketCreated(_endTime, _topic, _description, _extraInfo, this, _newMarket, msg.sender, 0, 1 ether, IMarket.MarketType.YES_NO);
+        augur.logMarketCreated(_endTime, _topic, _description, _extraInfo, _newMarket, msg.sender, 0, 1 ether, IMarket.MarketType.YES_NO, 10000);
         return _newMarket;
     }
 
     function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
         require(bytes(_description).length > 0);
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 10000);
-        augur.logMarketCreated(_endTime, _topic, _description, _extraInfo, this, _newMarket, msg.sender, _outcomes, 0, 1 ether, IMarket.MarketType.CATEGORICAL);
+        augur.logMarketCreated(_endTime, _topic, _description, _extraInfo, _newMarket, msg.sender, 0, 1 ether, IMarket.MarketType.CATEGORICAL, _outcomes);
         return _newMarket;
     }
 
@@ -458,7 +458,7 @@ contract Universe is ITyped, IUniverse {
         require(_minPrice < _maxPrice);
         require(_numTicks.isMultipleOf(2));
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, _numTicks);
-        augur.logMarketCreated(_endTime, _topic, _description, _extraInfo, this, _newMarket, msg.sender, _minPrice, _maxPrice, IMarket.MarketType.SCALAR);
+        augur.logMarketCreated(_endTime, _topic, _description, _extraInfo, _newMarket, msg.sender, _minPrice, _maxPrice, IMarket.MarketType.SCALAR, _numTicks);
         return _newMarket;
     }
 
