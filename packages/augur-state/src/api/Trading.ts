@@ -60,45 +60,45 @@ export class Trading<TBigNumber> {
       limit: params.limit,
       skip: params.offset,
     };
-    const orderFilledResponse = await this.db.findInSyncableDB(this.db.getDatabaseName("OrderFilled"), request);
+    const orderFilledResponse = await this.db.findOrderFilledLogs(request);
 
-    const orderIds = _.map(orderFilledResponse.docs, "orderId");
+    const orderIds = _.map(orderFilledResponse, "orderId");
 
-    const ordersResponse = await this.db.findInSyncableDB(this.db.getDatabaseName("OrderCreated"), {selector: {orderId: {$in: orderIds}}});
-    const orders = _.keyBy(ordersResponse.docs, "orderId");
+    const ordersResponse = await this.db.findOrderCreatedLogs({selector: {orderId: {$in: orderIds}}});
+    const orders = _.keyBy(ordersResponse, "orderId");
 
-    const marketIds = _.map(orderFilledResponse.docs, "marketId");
+    const marketIds = _.map(orderFilledResponse, "marketId");
 
-    const marketsResponse = await this.db.findInSyncableDB(this.db.getDatabaseName("MarketCreated"), {selector: {market: {$in: marketIds}}});
-    const markets = _.keyBy(marketsResponse.docs, "market");
+    const marketsResponse = await this.db.findMarketCreatedLogs({selector: {market: {$in: marketIds}}});
+    const markets = _.keyBy(marketsResponse, "market");
 
-    return orderFilledResponse.docs.reduce((trades: Array<MarketTradingHistory>, orderFilledDoc) => {
-      const orderDoc = orders[_.get(orderFilledDoc, "orderId")];
+    return orderFilledResponse.reduce((trades: Array<MarketTradingHistory>, orderFilledDoc) => {
+      const orderDoc = orders[orderFilledDoc.orderId];
       if (!orderDoc) return trades;
-      const marketDoc = markets[_.get(orderDoc, "marketId")];
+      const marketDoc = markets[orderDoc.marketId];
       if (!marketDoc) return trades;
-      const isMaker: boolean | null = params.account == null ? false : params.account === _.get(orderFilledDoc, "creator");
-      const orderType = _.get(orderFilledDoc, "orderType") === 0 ? "buy" : "sell";
-      const marketCreatorFees = new BigNumber(_.get(orderFilledDoc, "marketCreatorFees"));
-      const reporterFees = new BigNumber(_.get(orderFilledDoc, "reporterFees"));
-      const minPrice = new BigNumber(_.get(marketDoc, "minPrice"));
-      const maxPrice = new BigNumber(_.get(marketDoc, "maxPrice"));
-      const numTicks = new BigNumber(_.get(marketDoc, "numTicks"));
+      const isMaker: boolean | null = params.account == null ? false : params.account === orderFilledDoc.creator;
+      const orderType = orderDoc.orderType === 0 ? "buy" : "sell";
+      const marketCreatorFees = new BigNumber(orderFilledDoc.marketCreatorFees);
+      const reporterFees = new BigNumber(orderFilledDoc.reporterFees);
+      const minPrice = new BigNumber(marketDoc.minPrice);
+      const maxPrice = new BigNumber(marketDoc.maxPrice);
+      const numTicks = new BigNumber(marketDoc.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(_.get(orderFilledDoc, "amountFilled"), 16), tickSize);
-      const price = convertOnChainPriceToDisplayPrice(new BigNumber(_.get(orderDoc, "price"), 16), minPrice, tickSize);
+      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderFilledDoc.amountFilled, 16), tickSize);
+      const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderDoc.price, 16), minPrice, tickSize);
       trades.push(Object.assign(_.pick(orderFilledDoc, [
         "transactionHash",
         "logIndex",
         "orderId",
         "marketId",
-        "outcome",
         "timestamp",
         "tradeGroupId",
       ]), {
+        outcome: new BigNumber(orderFilledDoc.outcome).toNumber(),
         maker: isMaker,
         type: isMaker ? orderType : (orderType === "buy" ? "sell" : "buy"),
-        selfFilled: _.get(orderFilledDoc, "creator") === _.get(orderFilledDoc, "filler"),
+        selfFilled: orderFilledDoc.creator === orderFilledDoc.filler,
         price: price.toString(10),
         amount: amount.toString(10),
         marketCreatorFees: marketCreatorFees.toString(10),

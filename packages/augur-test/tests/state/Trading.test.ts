@@ -72,9 +72,10 @@ test("State API :: Trading :: getTradingHistory", async () => {
   let trade = trades[0];
 
   await expect(trade.price).toEqual("0.215");
-  await expect(trade.type).toEqual("buy");
+  await expect(trade.type).toEqual("sell");
   await expect(trade.amount).toEqual("0.05");
   await expect(trade.maker).toEqual(false);
+  await expect(trade.outcome).toEqual(0);
   await expect(trade.selfFilled).toEqual(false);
 
   // Get trades by market
