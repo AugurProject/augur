@@ -26,6 +26,14 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     dbController.registerEventListener(this.eventName, this.addNewBlock);
   }
 
+  public async createIndex(indexOptions: PouchDB.Find.CreateIndexOptions): Promise<PouchDB.Find.CreateIndexResponse<{}>> {
+    return this.db.createIndex(indexOptions);
+  }
+
+  public async getIndexes(): Promise<PouchDB.Find.GetIndexesResponse<{}>> {
+    return this.db.getIndexes();
+  }
+
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const goalBlock = highestAvailableBlockNumber - blockStreamDelay;

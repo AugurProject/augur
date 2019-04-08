@@ -23,13 +23,11 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
     # fill best order
     orderFilledLog = {
         "filler": bytesToHexString(tester.a2),
-        "numCreatorShares": 0,
-        "numCreatorTokens": creatorCost,
-        "numFillerShares": 0,
-        "numFillerTokens": fillerCost,
+        "marketId": market.address,
+        "outcome": YES,
+        "creator": bytesToHexString(tester.a1),
         "marketCreatorFees": 0,
         "reporterFees": 0,
-        "shareToken": market.getShareToken(YES),
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
         "amountFilled": fix(2),
     }
@@ -385,3 +383,29 @@ def test_publicFillOrder_kyc(contractsFixture, cash, market, universe, reputatio
     assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
     assert fillOrderID == 0
+
+def test_publicFillOrder_withSelf(contractsFixture, cash, market, universe):
+    createOrder = contractsFixture.contracts['CreateOrder']
+    fillOrder = contractsFixture.contracts['FillOrder']
+    orders = contractsFixture.contracts['Orders']
+    tradeGroupID = longTo32Bytes(42)
+
+    creatorCost = fix('2', '6000')
+    fillerCost = fix('2', '4000')
+
+    # create order
+    with BuyWithCash(cash, creatorCost, tester.k1, "complete set buy"):
+        orderID = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
+
+    # fill best order
+    with BuyWithCash(cash, fillerCost, tester.k1, "filling order"):
+        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1)
+        assert fillOrderID == 0
+
+    assert orders.getAmount(orderID) == 0
+    assert orders.getPrice(orderID) == 0
+    assert orders.getOrderCreator(orderID) == longToHexString(0)
+    assert orders.getOrderMoneyEscrowed(orderID) == 0
+    assert orders.getOrderSharesEscrowed(orderID) == 0
+    assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
+    assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)

@@ -25,13 +25,8 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
     # fill best order
     orderFilledLog = {
         "filler": bytesToHexString(tester.a2),
-        "numCreatorShares": 0,
-        "numCreatorTokens": fix('2', '6000'),
-        "numFillerShares": 0,
-        "numFillerTokens": fix('2', '4000'),
         "marketCreatorFees": 0,
         "reporterFees": 0,
-        "shareToken": market.getShareToken(YES),
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
     }
     with BuyWithCash(cash, fix('2', '4000'), tester.k2, "fill order"):
@@ -122,18 +117,12 @@ def test_one_bid_on_books_buy_excess_order(withTotalCost, contractsFixture, cash
     # fill best order
     orderFilledLog = {
         "filler": bytesToHexString(tester.a2),
-        "numCreatorShares": 0,
-        "numCreatorTokens": fix('4', '6000'),
-        "numFillerShares": 0,
-        "numFillerTokens": fix('4', '4000'),
         "marketCreatorFees": 0,
         "reporterFees": 0,
-        "shareToken": market.getShareToken(YES),
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
     }
     orderCreatedLog = {
         "creator": bytesToHexString(tester.a2),
-        "shareToken": market.getShareToken(YES),
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
     }
     with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
@@ -666,18 +655,12 @@ def test_trade_with_self(contractsFixture, cash, market, universe):
     # fill best order
     orderFilledLog = {
         "filler": bytesToHexString(tester.a1),
-        "numCreatorShares": 0,
-        "numCreatorTokens": fix('4', '6000'),
-        "numFillerShares": 0,
-        "numFillerTokens": fix('4', '4000'),
         "marketCreatorFees": 0,
         "reporterFees": 0,
-        "shareToken": market.getShareToken(YES),
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
     }
     orderCreatedLog = {
         "creator": bytesToHexString(tester.a1),
-        "shareToken": market.getShareToken(YES),
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
     }
     with BuyWithCash(cash, fix('5', '4000'), tester.k1, "trade"):

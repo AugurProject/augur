@@ -34,7 +34,7 @@ contract Augur is IAugur {
         ParticipationToken
     }
 
-    event MarketCreated(uint256 endTime, bytes32 indexed topic, string description, string extraInfo, IUniverse indexed universe, IMarket market, address indexed marketCreator, bytes32[] outcomes, int256 minPrice, int256 maxPrice, IMarket.MarketType marketType);
+    event MarketCreated(IUniverse indexed universe, uint256 endTime, bytes32 indexed topic, string description, string extraInfo, IMarket market, address indexed marketCreator, int256 minPrice, int256 maxPrice, IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes);
     event InitialReportSubmitted(address indexed universe, address indexed reporter, address indexed market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description);
     event DisputeCrowdsourcerCreated(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size);
     event DisputeCrowdsourcerContribution(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountStaked, string description);
@@ -50,8 +50,8 @@ contract Augur is IAugur {
     event OrderCanceled(address indexed universe, address indexed shareToken, address indexed sender, bytes32 orderId, Order.Types orderType, uint256 tokenRefund, uint256 sharesRefund);
     event OrderPriceChanged(address indexed universe, bytes32 orderId, uint256 price);
     // The ordering here is to match functions higher in the call chain to avoid stack depth issues
-    event OrderCreated(Order.Types orderType, uint256 amount, uint256 price, address indexed creator, uint256 moneyEscrowed, uint256 sharesEscrowed, bytes32 tradeGroupId, bytes32 orderId, address indexed universe, address indexed shareToken, address _kycToken);
-    event OrderFilled(address indexed universe, address indexed shareToken, address filler, bytes32 orderId, uint256 numCreatorShares, uint256 numCreatorTokens, uint256 numFillerShares, uint256 numFillerTokens, uint256 marketCreatorFees, uint256 reporterFees, uint256 amountFilled, bytes32 tradeGroupId);
+    event OrderCreated(Order.Types orderType, uint256 amount, uint256 price, address indexed creator, bytes32 tradeGroupId, bytes32 orderId, IUniverse indexed universe, IMarket indexed marketId, ERC20Token kycToken, uint256 outcome);
+    event OrderFilled(address indexed universe, address filler, address creator, IMarket marketId, bytes32 orderId, uint256 marketCreatorFees, uint256 reporterFees, uint256 amountFilled, uint256 outcome, bytes32 tradeGroupId);
     event CompleteSetsPurchased(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI);
     event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 marketCreatorFees, uint256 reporterFees);
     event TradingProceedsClaimed(address indexed universe, address indexed shareToken, address indexed sender, address market, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance, uint256 marketCreatorFees, uint256 reporterFees);
@@ -228,22 +228,22 @@ contract Augur is IAugur {
     //
 
     // This signature is intended for the categorical market creation. We use two signatures for the same event because of stack depth issues which can be circumvented by maintaining order of paramaters
-    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _description, string memory _extraInfo, IUniverse _universe, IMarket _market, address _marketCreator, bytes32[] memory _outcomes, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool) {
+    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _description, string memory _extraInfo, IMarket _market, address _marketCreator, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType, bytes32[] memory _outcomes) public returns (bool) {
+        IUniverse _universe = IUniverse(msg.sender);
         require(isKnownUniverse(_universe));
-        require(_universe == IUniverse(msg.sender));
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
-        emit MarketCreated(_endTime, _topic, _description, _extraInfo, _universe, _market, _marketCreator, _outcomes, _minPrice, _maxPrice, _marketType);
+        emit MarketCreated(_universe, _endTime, _topic, _description, _extraInfo, _market, _marketCreator, _minPrice, _maxPrice, _marketType, 10000, _outcomes);
         return true;
     }
 
     // This signature is intended for yesNo and scalar market creation. See function comment above for explanation.
-    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _description, string memory _extraInfo, IUniverse _universe, IMarket _market, address _marketCreator, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool) {
+    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _description, string memory _extraInfo, IMarket _market, address _marketCreator,int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType, uint256 _numTicks) public returns (bool) {
+        IUniverse _universe = IUniverse(msg.sender);
         require(isKnownUniverse(_universe));
-        require(_universe == IUniverse(msg.sender));
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
-        emit MarketCreated(_endTime, _topic, _description, _extraInfo, _universe, _market, _marketCreator, new bytes32[](0), _minPrice, _maxPrice, _marketType);
+        emit MarketCreated(_universe, _endTime, _topic, _description, _extraInfo, _market, _marketCreator, _minPrice, _maxPrice, _marketType, _numTicks, new bytes32[](0));
         return true;
     }
 
@@ -318,15 +318,15 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logOrderCreated(Order.Types _orderType, uint256 _amount, uint256 _price, address _creator, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _tradeGroupId, bytes32 _orderId, IUniverse _universe, address _shareToken, ERC20Token _kycToken) public returns (bool) {
+    function logOrderCreated(Order.Types _orderType, uint256 _amount, uint256 _price, address _creator, bytes32 _tradeGroupId, bytes32 _orderId, IUniverse _universe, IMarket _market, ERC20Token _kycToken, uint256 _outcome) public returns (bool) {
         require(msg.sender == registry["Orders"]);
-        emit OrderCreated(_orderType, _amount, _price, _creator, _moneyEscrowed, _sharesEscrowed, _tradeGroupId, _orderId, address(_universe), _shareToken, address(_kycToken));
+        emit OrderCreated(_orderType, _amount, _price, _creator, _tradeGroupId, _orderId, _universe, _market, _kycToken, _outcome);
         return true;
     }
 
-    function logOrderFilled(IUniverse _universe, address _shareToken, address _filler, bytes32 _orderId, uint256 _numCreatorShares, uint256 _numCreatorTokens, uint256 _numFillerShares, uint256 _numFillerTokens, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, bytes32 _tradeGroupId) public returns (bool) {
+    function logOrderFilled(IUniverse _universe, address _filler, address _creator, IMarket _market, bytes32 _orderId, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, uint256 _outcome, bytes32 _tradeGroupId) public returns (bool) {
         require(msg.sender == registry["FillOrder"]);
-        emit OrderFilled(address(_universe), _shareToken, _filler, _orderId, _numCreatorShares, _numCreatorTokens, _numFillerShares, _numFillerTokens, _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
+        emit OrderFilled(address(_universe), _filler, _creator, _market, _orderId, _marketCreatorFees, _reporterFees, _amountFilled, _outcome, _tradeGroupId);
         return true;
     }
 

@@ -6,6 +6,7 @@ import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
 import { IBlockAndLogStreamerListener, LogCallbackType } from "./BlockAndLogStreamerListener";
+import { OrderFilledLog, OrderCreatedLog, MarketCreatedLog } from "../logs/types";
 
 
 export class DB<TBigNumber> {
@@ -296,5 +297,38 @@ export class DB<TBigNumber> {
    */
   public async findInMetaDB(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
     return await this.metaDatabase.find(request);
+  }
+
+  /**
+   * Queries the OrderFilled DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<OrderFilledLog>>}
+   */
+  public async findOrderFilledLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<OrderFilledLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("OrderFilled"), request);
+    return results.docs as unknown as Array<OrderFilledLog>;
+  }
+
+  /**
+   * Queries the OrderCreated DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<OrderCreatedLog>>}
+   */
+  public async findOrderCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<OrderCreatedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("OrderCreated"), request);
+    return results.docs as unknown as Array<OrderCreatedLog>;
+  }
+
+  /**
+   * Queries the MarketCreated DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<MarketCreatedLog>>}
+   */
+  public async findMarketCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<MarketCreatedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("MarketCreated"), request);
+    return results.docs as unknown as Array<MarketCreatedLog>;
   }
 }
