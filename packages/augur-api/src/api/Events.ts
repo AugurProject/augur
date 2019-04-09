@@ -40,6 +40,7 @@ export class Events {
                     transactionLogIndex: log.transactionLogIndex,
                     transactionHash: log.transactionHash,
                     logIndex: log.logIndex,
+                    topics: log.topics
                 }
             )
         });

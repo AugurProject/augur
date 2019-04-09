@@ -23,6 +23,7 @@ export interface ParsedLog {
   transactionLogIndex: number;
   transactionHash: string;
   logIndex: number;
+  topics?: Array<string | Array<string>>;
   [paramName: string]: any;
 }
 
