@@ -34,14 +34,8 @@ test("topic filtering", async () => {
 
   const eventLogDBRouter = new EventLogDBRouter(parseLogs);
 
-  // @ts-ignore - verify private field
-  expect(eventLogDBRouter.logCallbacks.length).toEqual(0);
-
   // Note that this callback only applies to "tropical" topics
   eventLogDBRouter.addLogCallback("tropical", logCallback);
-
-  // @ts-ignore - verify private field
-  expect(eventLogDBRouter.logCallbacks.length).toEqual(1);
 
   await eventLogDBRouter.onLogsAdded(12, logsToParse);
 
