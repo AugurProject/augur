@@ -1,6 +1,6 @@
 let rawDecode = require("ethereumjs-abi").rawDecode;
-let formatAbiRawDecodedDataArray = require("./format-abi-raw-decoded-data-array");
-let strip0xPrefix = require("./strip-0x-prefix");
+import { formatAbiRawDecodedDataArray } from "./format-abi-raw-decoded-data-array";
+import { strip0xPrefix } from "./strip-0x-prefix";
 
 export function abiDecodeData(inputs, abiEncodedData) {
   let dataInputTypes = inputs.filter(function (input) {

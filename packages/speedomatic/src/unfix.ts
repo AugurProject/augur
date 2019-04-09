@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
-let bignum = require("./bignum");
-let prefixHex = require("./prefix-hex");
-let FXP_ONE = require("./constants").FXP_ONE;
+import { bignum } from "./bignum";
+import { prefixHex } from "./prefix-hex";
+import { FXP_ONE } from "./constants";
 
 export function unfix(n, encoding?) {
   let unfixed;

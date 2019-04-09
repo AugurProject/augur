@@ -1,7 +1,7 @@
-let padLeft = require("./pad-left");
-let prefixHex = require("./prefix-hex");
-let strip0xPrefix = require("./strip-0x-prefix");
-let unfork = require("./unfork");
+import { padLeft } from "./pad-left";
+import { prefixHex } from "./prefix-hex";
+import { strip0xPrefix } from "./strip-0x-prefix";
+import { unfork } from "./unfork";
 
 export function formatInt256(s) {
   if (s === undefined || s === null || s === "0x") return s;

@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
-let abiEncodeInt256 = require("./abi-encode-int256");
-let padLeft = require("./pad-left");
+import { abiEncodeInt256 } from "./abi-encode-int256";
+import { padLeft } from "./pad-left";
 
 export function serialize(x) {
   let serialized;

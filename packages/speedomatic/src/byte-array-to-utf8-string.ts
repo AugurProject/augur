@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-let strip0xPrefix = require("./strip-0x-prefix");
+import { strip0xPrefix } from "./strip-0x-prefix";
 
 export function byteArrayToUtf8String(byteArray:(Buffer|string|BigNumber|Number)) {
   let el, byteString;

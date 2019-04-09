@@ -1,9 +1,8 @@
-let chunk = require("./chunk");
-let strip0xPrefix = require("./strip-0x-prefix");
-let prefixHex = require("./prefix-hex");
+import { chunk } from "./chunk";
+import { strip0xPrefix } from "./strip-0x-prefix";
+import { prefixHex } from "./prefix-hex";
 
-export function padRight(s, chunkLength, hasPrefix) {
-  chunkLength = chunkLength || 64;
+export function padRight(s, chunkLength = 64, hasPrefix = false) {
   s = strip0xPrefix(s);
   let multiple = chunkLength * (chunk(s.length, chunkLength) || 1);
   while (s.length < multiple) {

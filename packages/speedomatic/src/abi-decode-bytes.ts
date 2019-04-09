@@ -1,5 +1,5 @@
-let byteArrayToUtf8String = require("./byte-array-to-utf8-string");
-let removeTrailingZeros = require("./remove-trailing-zeros");
+import { byteArrayToUtf8String } from "./byte-array-to-utf8-string";
+import { removeTrailingZeros } from "./remove-trailing-zeros";
 
 export function abiDecodeBytes(abiEncodedBytes, strip:boolean) {
   let hex = abiEncodedBytes.toString();

@@ -1,5 +1,5 @@
-let prefixHex = require("./prefix-hex");
-let strip0xPrefix = require("./strip-0x-prefix");
+import { prefixHex } from "./prefix-hex";
+import { strip0xPrefix } from "./strip-0x-prefix";
 
 export function formatEthereumAddress(addr) {
   if (addr == null) return addr;

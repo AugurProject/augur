@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
-let isHex = require("./is-hex");
-let prefixHex = require("./prefix-hex");
-let wrap = require("./wrap");
+import { isHex } from "./is-hex";
+import { prefixHex } from "./prefix-hex";
+import { wrap } from "./wrap";
 
 export function bignum(n, encoding="", isWrapped=false) {
   let bn, len;

@@ -1,4 +1,4 @@
-export function removeTrailingZeros(h, isUtf8) {
+export function removeTrailingZeros(h, isUtf8 = false) {
   let hex = h.toString();
   if (isUtf8) {
     while (hex.slice(-1) === "\u0000") {

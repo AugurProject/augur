@@ -1,6 +1,6 @@
-let ethereumjsAbi = require("ethereumjs-abi");
-let abiEncodeData = require("./abi-encode-data");
-let prefixHex = require("./prefix-hex");
+import { ethereumjsAbi } from "ethereumjs-abi";
+import { abiEncodeData } from "./abi-encode-data";
+import { prefixHex } from "./prefix-hex";
 
 // ABI-encode the 'data' field in a transaction payload, with method ID prefix
 export function abiEncodeTransactionPayload(payload) {

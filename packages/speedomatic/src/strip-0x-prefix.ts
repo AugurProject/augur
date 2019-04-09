@@ -1,4 +1,4 @@
-let isHex = require("./is-hex");
+import { isHex } from "./is-hex";
 
 export function strip0xPrefix(str) {
   if (str && str.constructor === String && str.length >= 2) {

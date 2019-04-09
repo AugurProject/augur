@@ -1,4 +1,4 @@
-let strip0xPrefix = require("./strip-0x-prefix");
+import { strip0xPrefix } from "./strip-0x-prefix";
 
 export function byteArrayToHexString(b) {
   let hexbyte, h = "";

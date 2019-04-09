@@ -1,5 +1,5 @@
-let padRight = require("./pad-right");
-let prefixHex = require("./prefix-hex");
+import { padRight } from "./pad-right";
+import { prefixHex } from "./prefix-hex";
 
 export function abiEncodeShortStringAsInt256(shortString) {
   let encoded = shortString;

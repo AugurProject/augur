@@ -1,6 +1,6 @@
-let encodeNumberAsBase10String = require("./encode-number-as-base10-string");
-let prefixHex = require("./prefix-hex");
-let unfixSigned = require("./unfix-signed");
+import { encodeNumberAsBase10String } from "./encode-number-as-base10-string";
+import { prefixHex } from "./prefix-hex";
+import { unfixSigned } from "./unfix-signed";
 
 // Unroll an abi-encoded string into an array
 export function unrollArray(string, returns, stride, init) {

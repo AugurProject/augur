@@ -1,8 +1,8 @@
 import BigNumber from "bignumber.js";
-let abiEncodeBytes = require("./abi-encode-bytes");
-let bignum = require("./bignum");
-let prefixHex = require("./prefix-hex");
-let wrap = require("./wrap");
+import { abiEncodeBytes } from "./abi-encode-bytes";
+import { bignum } from "./bignum";
+import { prefixHex } from "./prefix-hex";
+import { wrap } from "./wrap";
 
 export function hex(n, isWrapped=false) {
   let h;

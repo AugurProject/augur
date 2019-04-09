@@ -1,7 +1,7 @@
-let formatEthereumAddress = require("./format-ethereum-address");
-let hex = require("./hex");
-let prefixHex = require("./prefix-hex");
-let formatInt256 = require("./format-int256");
+import { formatEthereumAddress } from "./format-ethereum-address";
+import { hex } from "./hex";
+import { prefixHex } from "./prefix-hex";
+import { formatInt256 } from "./format-int256";
 
 export function formatAbiRawDecodedData(inputType, decodedData) {
   if (inputType === "null") return null;

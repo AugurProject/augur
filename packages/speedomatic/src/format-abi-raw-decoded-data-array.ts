@@ -1,4 +1,4 @@
-let formatAbiRawDecodedData = require("./format-abi-raw-decoded-data");
+import { formatAbiRawDecodedData } from "./format-abi-raw-decoded-data";
 
 export function formatAbiRawDecodedDataArray(dataInputTypes, decodedDataArray) {
   return decodedDataArray.map(function (decodedData, i) {

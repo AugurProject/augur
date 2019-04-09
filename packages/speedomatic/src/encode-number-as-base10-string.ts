@@ -1,6 +1,6 @@
-let bignum = require("./bignum");
+import { bignum } from "./bignum";
 
-export function encodeNumberAsBase10String(n, isWrapped) {
+export function encodeNumberAsBase10String(n, isWrapped = false) {
   return bignum(n, "string", isWrapped);
 }
 
