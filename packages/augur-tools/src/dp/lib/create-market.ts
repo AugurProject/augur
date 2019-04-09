@@ -1,10 +1,8 @@
-"use strict";
-
-var chalk = require("chalk");
-var immutableDelete = require("immutable-delete");
-var printTransactionStatus = require("./print-transaction-status");
-var speedomatic = require("speedomatic");
-var debugOptions = require("../../debug-options");
+import chalk from "chalk";
+import immutableDelete from "immutable-delete";
+import printTransactionStatus from "./print-transaction-status";
+import speedomatic from "speedomatic";
+import debugOptions from "../../debug-options";
 
 function createMarket(
   augur,
@@ -13,7 +11,7 @@ function createMarket(
   auth,
   callback
 ) {
-  var createMarketOfType;
+  let createMarketOfType;
   switch (market.marketType) {
     case "categorical":
       createMarketOfType = augur.createMarket.createCategoricalMarket;
@@ -25,7 +23,7 @@ function createMarket(
     default:
       createMarketOfType = augur.createMarket.createYesNoMarket;
   }
-  var createMarketParams = Object.assign(
+  let createMarketParams = Object.assign(
     {},
     immutableDelete(market, ["orderBook", "marketType"]),
     {
@@ -65,4 +63,4 @@ function createMarket(
   createMarketOfType(createMarketParams);
 }
 
-module.exports = createMarket;
+export default createMarket;

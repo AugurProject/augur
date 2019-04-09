@@ -15,6 +15,8 @@
     "docker:geth:pop-normal-time": "docker-builder/run.sh augurproject/dev-pop-normtime-geth-v2",
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
     "docker:geth:files": "./scripts/copy-docker-files.sh augurproject/dev-pop-geth:core-$(node scripts/core-version.js)",
+    "dp": "node scripts/dp",
+    "deploy": "node scripts/dp deploy",
     "flash": "node ./scripts/flash",
     "blockstream-console": "ts-node ./src/blockstream-console.ts"
   },

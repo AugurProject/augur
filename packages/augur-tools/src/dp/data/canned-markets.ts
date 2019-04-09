@@ -1,43 +1,41 @@
-"use strict";
+import yesNoOrderBook from "./yes-no-order-book";
+import singleOutcomeAsks from "./single-outcome-asks.json";
+import singleOutcomeBids from "./single-outcome-bids.json";
 
-var yesNoOrderBook = require("./yes-no-order-book");
-var singleOutcomeAsks = require("./single-outcome-asks");
-var singleOutcomeBids = require("./single-outcome-bids");
-
-function daysInMonth(month, year) {
+function daysInMonth(month:number, year:number) {
   return new Date(year, month, 0).getDate();
 }
 
 function addMonths(date, months) {
-  var target_month = date.getMonth() + months;
-  var year = date.getFullYear() + parseInt(target_month / 12);
-  var month = target_month % 12;
-  var day = date.getDate();
-  var last_day = daysInMonth(year, month);
+  let target_month = date.getMonth() + months;
+  let year = date.getFullYear() + parseInt(target_month / 12);
+  let month = target_month % 12;
+  let day = date.getDate();
+  let last_day = daysInMonth(year, month);
   if (day > last_day) {
     day = last_day;
   }
   return new Date(year, month, day);
 }
 
-var midnightTomorrow = new Date();
+let midnightTomorrow = new Date();
 midnightTomorrow.setDate(midnightTomorrow.getDate() + 1);
 midnightTomorrow.setHours(0, 0, 0, 0);
-var closingBellTomorrow = new Date();
+let closingBellTomorrow = new Date();
 closingBellTomorrow.setDate(closingBellTomorrow.getDate() + 1);
 closingBellTomorrow.setHours(20, 0, 0, 0);
-var today = new Date();
+let today = new Date();
 // needs to be less than 90 days. todo: update when contracts allow for 6 months
 today.setDate(today.getDate() - 3);
-var inOneMonths = addMonths(today, 1);
-var inTwoMonths = addMonths(today, 2);
-var inThreeMonths = addMonths(today, 3);
-var inFourMonths = addMonths(today, 1);
-var inFiveMonths = addMonths(today, 2);
-var inSixMonths = addMonths(today, 3);
-var thisYear = today.getUTCFullYear();
+let inOneMonths = addMonths(today, 1);
+let inTwoMonths = addMonths(today, 2);
+let inThreeMonths = addMonths(today, 3);
+let inFourMonths = addMonths(today, 1);
+let inFiveMonths = addMonths(today, 2);
+let inSixMonths = addMonths(today, 3);
+let thisYear = today.getUTCFullYear();
 
-module.exports = [
+export default [
   {
     marketType: "yesNo",
     _description:
@@ -270,7 +268,7 @@ module.exports = [
       resolutionSource: "https://www.esrl.noaa.gov/gmd/ccgg/trends_ch4",
       tags: ["climate", "atmosphere"],
       longDescription:
-        'Vast quantities of methane are normally locked into the Earth\'s crust on the continental plateaus in one of the many deposits consisting of compounds of methane hydrate, a solid precipitated combination of methane and water much like ice. Because the methane hydrates are unstable, except at cool temperatures and high (deep) pressures, scientists have observed smaller "burps" due to tectonic events. Studies suggest the huge release of natural gas could be a major climatological trigger, methane itself being a greenhouse gas many times more powerful than carbon dioxide. References: https://en.wikipedia.org/wiki/Anoxic_event, https://en.wikipedia.org/wiki/Atmospheric_methane, https://en.wikipedia.org/wiki/Clathrate_gun_hypothesis',
+        "Vast quantities of methane are normally locked into the Earth's crust on the continental plateaus in one of the many deposits consisting of compounds of methane hydrate, a solid precipitated combination of methane and water much like ice. Because the methane hydrates are unstable, except at cool temperatures and high (deep) pressures, scientists have observed smaller \"burps\" due to tectonic events. Studies suggest the huge release of natural gas could be a major climatological trigger, methane itself being a greenhouse gas many times more powerful than carbon dioxide. References: https://en.wikipedia.org/wiki/Anoxic_event, https://en.wikipedia.org/wiki/Atmospheric_methane, https://en.wikipedia.org/wiki/Clathrate_gun_hypothesis",
       _scalarDenomination: "parts-per-billion"
     }
   },

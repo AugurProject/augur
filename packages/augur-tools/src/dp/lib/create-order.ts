@@ -1,11 +1,9 @@
-"use strict";
+import chalk from "chalk";
+import speedomatic from "speedomatic";
+import printTransactionStatus from "./print-transaction-status";
+import debugOptions from "../../debug-options";
 
-var chalk = require("chalk");
-var speedomatic = require("speedomatic");
-var printTransactionStatus = require("./print-transaction-status");
-var debugOptions = require("../../debug-options");
-
-var USE_PUBLIC_CREATE_ORDER = process.env.USE_PUBLIC_TRADE !== "true"; // set to false to test trading.placeTrade endpoint
+let USE_PUBLIC_CREATE_ORDER = process.env.USE_PUBLIC_TRADE !== "true"; // set to false to test trading.placeTrade endpoint
 
 function createOrder(
   augur,
@@ -21,10 +19,10 @@ function createOrder(
   auth,
   callback
 ) {
-  var displayPrice = order.price;
-  var displayAmount = order.shares;
-  var orderTypeCode = orderType === "buy" ? 0 : 1;
-  var tradeCost = augur.trading.calculateTradeCost({
+  let displayPrice = order.price;
+  let displayAmount = order.shares;
+  let orderTypeCode = orderType === "buy" ? 0 : 1;
+  let tradeCost = augur.trading.calculateTradeCost({
     displayPrice: displayPrice,
     displayAmount: displayAmount,
     sharesProvided: "0",
@@ -134,4 +132,4 @@ function createOrder(
   }
 }
 
-module.exports = createOrder;
+export default createOrder;

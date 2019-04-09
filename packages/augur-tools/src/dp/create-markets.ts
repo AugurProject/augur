@@ -1,24 +1,22 @@
-#!/usr/bin/env node
 /**
  * Create a handful of canned markets for us to test with.
  */
 
-"use strict";
+import chalk from "chalk";
 
-var chalk = require("chalk");
-var Augur = require("augur.js");
-var createMarkets = require("./lib/create-markets");
-var getPrivateKey = require("./lib/get-private-key").getPrivateKey;
-var connectionEndpoints = require("../connection-endpoints");
-var debugOptions = require("../debug-options");
+import Augur from "augur.js";
+import createMarkets from "./lib/create-markets";
+import { getPrivateKey } from "./lib/get-private-key";
+import connectionEndpoints from "../connection-endpoints";
+import debugOptions from "../debug-options";
 
-var keystoreFilePath = process.argv[2];
+const keystoreFilePath = process.argv[2];
 
-var augur = new Augur();
+const augur = new Augur();
 
 augur.rpc.setDebugOptions(debugOptions);
 
-module.exports = createMarkets;
+export default createMarkets;
 
 if (require.main === module) {
   getPrivateKey(keystoreFilePath, function(err, auth) {

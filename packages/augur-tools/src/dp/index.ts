@@ -1,30 +1,27 @@
-#!/usr/bin/env node
+import ethers from "ethers";
 
-var ethers = require("ethers");
-var path = require("path");
-var assign = require("lodash").assign;
-var Augur = require("augur.js");
-var debugOptions = require("../debug-options");
-var connectionEndpoints = require("../connection-endpoints");
-var core = require("@augurproject/core");
-var getPrivateKeyFromString = require("./lib/get-private-key")
-  .getPrivateKeyFromString;
-var parrotSay = require("parrotsay-api");
-var chalk = require("chalk");
-var columnify = require("columnify");
+import path from "path";
+import { assign } from "lodash";
+import Augur from "augur.js";
+import debugOptions from "../debug-options";
+import connectionEndpoints from "../connection-endpoints";
+import core from "@augurproject/core";
+import { getPrivateKeyFromString } from "./lib/get-private-key";
+import parrotSay from "parrotsay-api";
+import chalk from "chalk";
+import columnify from "columnify";
+import repFaucet from "../rep-faucet";
+import createMarkets from "./create-markets";
+import createOrders from "./create-orders";
 
-var repFaucet = require("../rep-faucet");
-var createMarkets = require("./create-markets");
-var createOrders = require("./create-orders");
-
-var COMMANDS = [
+const COMMANDS = [
   "create-markets",
   "create-orders",
   "deploy",
   "rep-faucet",
   "upload"
 ];
-var NETWORKS = [
+const NETWORKS = [
   "aura",
   "clique",
   "environment",
@@ -44,8 +41,8 @@ function help() {
     console.log(COMMANDS.join(", "), "or help for this message");
     console.log(
       "  NOTE: create-orders only supports " +
-        chalk.bold("one network") +
-        " at a time"
+      chalk.bold("one network") +
+      " at a time"
     );
 
     console.log(chalk.underline("\nNetworks"));
@@ -54,8 +51,8 @@ function help() {
     console.log(chalk.underline("\nConfiguration"));
     console.log(
       "Set the following " +
-        chalk.bold("environment variables") +
-        " to modify the behavior of the deployment process"
+      chalk.bold("environment variables") +
+      " to modify the behavior of the deployment process"
     );
     console.log("ex: USE_NORMAL_TIME=false dp deploy aura");
 
@@ -164,25 +161,25 @@ function help() {
 }
 
 function runCannedData(command, networks, callback) {
-  var deployerConfiguration = core.DeployerConfiguration.create(
+  const deployerConfiguration = core.DeployerConfiguration.create(
     path.join(__dirname, "../../../augur-artifacts/")
   );
-  var networkConfigurations = networks.map(core.NetworkConfiguration.create);
+  const networkConfigurations = networks.map(core.NetworkConfiguration.create);
   // This is done in two steps on purpose, create validates the envs and will throw an error
   // if it doesn't work
   networkConfigurations.forEach(function(network) {
-    var augur = new Augur();
+    const augur = new Augur();
     augur.rpc.setDebugOptions(debugOptions);
 
-    var auth = getPrivateKeyFromString(network.privateKey);
-    var ethereumNode = assign({}, connectionEndpoints.ethereumNode, {
+    const auth = getPrivateKeyFromString(network.privateKey);
+    const ethereumNode = assign({}, connectionEndpoints.ethereumNode, {
       http: network.http
     });
     switch (command) {
       case "upload": {
         var provider = new ethers.providers.JsonRpcProvider(network.http);
-        core.EthersFastSubmitWallet.create(network.privateKey, provider).then(function (signer) {
-          var dependencies = new core.ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
+        core.EthersFastSubmitWallet.create(network.privateKey, provider).then(function(signer) {
+          const dependencies = new core.ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
           core.ContractDeployer.deployToNetwork(network, dependencies, provider, signer, deployerConfiguration).then(function() {
             callback(null);
           });
@@ -244,24 +241,24 @@ function runCannedData(command, networks, callback) {
 
       case "deploy": {
         var provider = new ethers.providers.JsonRpcProvider(network.http);
-        core.EthersFastSubmitWallet.create(network.privateKey, provider).then(function (signer) {
-          var dependencies = new core.ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
+        core.EthersFastSubmitWallet.create(network.privateKey, provider).then(function(signer) {
+          const dependencies = new core.ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
           core.ContractDeployer.deployToNetwork(network, dependencies, provider, signer, deployerConfiguration).then(function() {
-            augur.contracts.reloadAddresses(function (err) {
+            augur.contracts.reloadAddresses(function(err) {
               if (err) return callback(err);
               augur.connect(
-                  {ethereumNode: ethereumNode},
-                  function (err) {
-                    if (err) return callback(err);
-                    // geth bug related to contract availability for estimating gas requires timeout
-                    setTimeout(function () {
-                      repFaucet(augur, 100000, auth, function (err) {
-                        if (err) return callback(err);
-                        createMarkets(augur, auth, callback);
-                        callback();
-                      });
-                    }, 4000);
-                  }
+                { ethereumNode: ethereumNode },
+                function(err) {
+                  if (err) return callback(err);
+                  // geth bug related to contract availability for estimating gas requires timeout
+                  setTimeout(function() {
+                    repFaucet(augur, 100000, auth, function(err) {
+                      if (err) return callback(err);
+                      createMarkets(augur, auth, callback);
+                      callback();
+                    });
+                  }, 4000);
+                }
               );
             });
           });
