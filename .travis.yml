@@ -6,13 +6,7 @@ services:
 branches:
   only:
     - master
-    - stable
-    - sneakpeak
-    - mvp
-    - petong/travis-ci
-    - "/^v\\d+\\.\\d+\\.\\d$/"
 node_js:
-  - '9'
   - '10.15.0'
 addons:
   apt:
@@ -30,62 +24,7 @@ script:
   # This is here to confirm the build works.
   # Nothing is done with the resulting artifacts.
   - yarn build --dev
-jobs:
-  include:
-  - stage: Deploy to stable
-    if: (branch = stable) AND (NOT (type IN (pull_request)))
-    script: skip
-    deploy:
-      provider: script
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- stable
-      skip_cleanup: true
-      on:
-        all_branches: true
-  - stage: Deploy to sneakpeak
-    if: (branch = sneakpeak) AND (NOT (type IN (pull_request)))
-    script: skip
-    deploy:
-      provider: script
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- sneakpeak
-      skip_cleanup: true
-      on:
-        all_branches: true
-  - stage: Deploy to dev
-    if: (branch = master) AND (NOT (type IN (pull_request)))
-    script: skip
-    deploy:
-      provider: script
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- dev
-      skip_cleanup: true
-      on:
-        all_branches: true
-  - stage: Deploy to kovan
-    if: (branch = master) AND (NOT (type IN (pull_request)))
-    script: skip
-    deploy:
-      provider: script
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- kovan
-      skip_cleanup: true
-      on:
-        all_branches: true
-  - stage: Deploy optimized build
-    if: (branch = master) AND (NOT (type IN (pull_request)))
-    script: skip
-    deploy:
-      provider: script
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- dev-optimized
-      skip_cleanup: true
-      on:
-        all_branches: true
-  - stage: Build docker release
-    if: tag = true
-    script: skip
-    deploy:
-      provider: script
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- release
-      skip_cleanup: true
-      on:
-        all_branches: true
+
 env:
   global:
     - DOCKER_USERNAME=augurintegration

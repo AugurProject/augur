@@ -1,5 +1,9 @@
+variables:
+  NODE_JS_VERSION: 10.15.0
+
 trigger:
 - master
+- azure/*
 
 jobs:
   - job: test_ui
@@ -8,10 +12,98 @@ jobs:
     steps:
       - task: NodeTool@0
         inputs:
-          versionSpec: 10.15
-      - script: yarn
-      - script: yarn lint && yarn test
+          versionSpec: $(NODE_JS_VERSION)
+      - bash: |
+          yarn
+          yarn lint
+          yarn test
           # This is here to confirm the build works.
           # Nothing is done with the resulting artifacts.
-      - script: yarn build --dev
-        displayName: 'lint and test'
+          yarn build --dev
+        displayName: 'lint, test, and build'
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'junit.xml'
+
+  - job: deploy_ui_on_master
+    dependsOn:
+      - test_ui
+    strategy:
+      maxParallel: 3
+      matrix:
+        dev:
+          RELEASE_ENV: dev
+        kovan:
+          RELEASE_ENV: kovan
+        dev-optimized:
+          RELEASE_ENV: dev-optimized
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.6.5'
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(NODE_JS_VERSION)
+      - task: Docker@1
+        displayName: docker login
+        inputs:
+          command: login
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+      - bash: |
+          set -euxo pipefail
+          npm run docker:release -- $(RELEASE_ENV)
+        displayName: docker release $(RELEASE_ENV)
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+    condition: |
+      and
+      (
+          succeeded(),
+          eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      )
+
+  - job: deploy_ui_on_sneakpreview
+    dependsOn:
+      - test_ui
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.6.5'
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(NODE_JS_VERSION)
+      - task: Docker@1
+        displayName: docker login
+        inputs:
+          command: login
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+      - bash: |
+          set -euxo pipefail
+          npm run docker:release -- sneakpeak
+        displayName: docker release sneakpeak
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+    condition: |
+      and
+      (
+          succeeded(),
+          eq(variables['Build.SourceBranch'], 'refs/heads/sneakpeak')
+      )
+

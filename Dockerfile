@@ -1,4 +1,5 @@
-FROM node:10.15.0-alpine as builder
+ARG NODE_VERSION=10.15.0
+FROM node:${NODE_VERSION}-alpine as builder
 
 ENV PATH /root/.yarn/bin:$PATH
 ARG ethereum_network=rinkeby
@@ -19,6 +20,7 @@ RUN apk --no-cache add \
 
 # begin create caching layer
 COPY package.json /augur/package.json
+ADD https://nodejs.org/download/release/v${NODE_VERSION}/node-v${NODE_VERSION}-headers.tar.gz /augur/node-v${NODE_VERSION}-headers.tar.gz
 WORKDIR /augur
 RUN git init \
   && yarn add require-from-string \
@@ -49,7 +51,10 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && chmod 755 /augur/local-run.sh \
   && cd /augur
 
-RUN rm -rf node_modules && yarn install --production
+RUN rm -rf node_modules && \
+    npm config set loglevel silly && \
+    npm config set tarball /augur/node-v${NODE_VERSION}-headers.tar.gz && \
+    yarn install --production
 
 FROM node:10.15.0-alpine
 
