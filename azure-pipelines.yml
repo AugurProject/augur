@@ -3,6 +3,7 @@ variables:
 
 trigger:
 - master
+- sneakpeak
 - azure/*
 
 jobs:
