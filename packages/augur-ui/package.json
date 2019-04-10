@@ -51,7 +51,7 @@
     "@0xproject/order-utils": "1.0.7",
     "@0xproject/utils": "2.0.2",
     "@augurproject/artifacts": "10.0.0-0",
-    "@ledgerhq/hw-app-eth": "4.35.0",
+    "@ledgerhq/hw-app-eth": "4.48.0",
     "@ledgerhq/hw-transport-u2f": "4.21.0",
     "async": "2.6.1",
     "augur.js": "10.0.0-0",
