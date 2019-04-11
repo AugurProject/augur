@@ -36,7 +36,7 @@ test("State API :: Trading :: getTradingHistory", async () => {
   await mary.approveCentralAuthority();
 
   // Create a market
-  const market = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")], MarketType.Categorical);
+  const market = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
 
   // Place an order
   const bid = new ethers.utils.BigNumber(0);
