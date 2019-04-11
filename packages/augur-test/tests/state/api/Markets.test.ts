@@ -25,7 +25,7 @@ beforeAll(async () => {
   const {provider, addresses} = await compileAndDeployToGanache(ACCOUNTS);
 
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
-  mary = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+  mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
   db = await mock.makeDB(john.augur, ACCOUNTS);
   api = new API<any>(john.augur, db);
 }, 60000);
