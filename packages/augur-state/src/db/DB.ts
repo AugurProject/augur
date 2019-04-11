@@ -6,7 +6,7 @@ import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
 import { IBlockAndLogStreamerListener, LogCallbackType } from "./BlockAndLogStreamerListener";
-import { OrderFilledLog, OrderCreatedLog, MarketCreatedLog } from "../logs/types";
+import { OrderFilledLog, OrderCreatedLog, MarketCreatedLog, ProfitLossChangedLog } from "../logs/types";
 
 
 export class DB<TBigNumber> {
@@ -140,7 +140,7 @@ export class DB<TBigNumber> {
         ));
     }
 
-  return Promise.all(dbSyncPromises).then(() => undefined)
+    return Promise.all(dbSyncPromises).then(() => undefined)
 
     // TODO Call `this.metaDatabase.addNewBlock` here if derived DBs end up getting used
   }
@@ -330,5 +330,16 @@ export class DB<TBigNumber> {
   public async findMarketCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<MarketCreatedLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("MarketCreated"), request);
     return results.docs as unknown as Array<MarketCreatedLog>;
+  }
+
+  /**
+   * Queries the ProfitLossChanged DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<ProfitLossChangedLog>>}
+   */
+  public async findProfitLossChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<ProfitLossChangedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("ProfitLossChanged"), request);
+    return results.docs as unknown as Array<ProfitLossChangedLog>;
   }
 }

@@ -5,6 +5,7 @@ import {Augur} from "@augurproject/api";
 import { AccountList } from "./LocalAugur";
 import { IBlockAndLogStreamerListener } from "@augurproject/state/src/db/BlockAndLogStreamerListener";
 import { ethers } from "ethers";
+import * as _ from "lodash";
 
 interface Databases {
   [dbName: string]: PouchDB.Database;
@@ -105,7 +106,7 @@ export function makeDbMock() {
         constants.networkId,
         constants.blockstreamDelay,
         constants.defaultStartSyncBlockNumber,
-        [accounts[0].publicKey],
+        _.map(accounts, "publicKey"),
         augur.genericEventNames,
         augur.userSpecificEvents,
         makeFactory(),

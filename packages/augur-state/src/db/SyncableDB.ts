@@ -37,15 +37,11 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const goalBlock = highestAvailableBlockNumber - blockStreamDelay;
-    console.log(`SYNCING ${this.dbName} from ${highestSyncedBlockNumber} to ${goalBlock}`);
     while (highestSyncedBlockNumber < goalBlock) {
       const endBlockNumber = Math.min(highestSyncedBlockNumber + chunkSize, highestAvailableBlockNumber);
       const logs = await this.getLogs(augur, highestSyncedBlockNumber, endBlockNumber);
-
       highestSyncedBlockNumber = await this.addNewBlock(endBlockNumber, logs);
     }
-    console.log(`SYNCING SUCCESS ${this.dbName} up to ${goalBlock}`);
-
     // TODO Make any external calls as needed (such as pushing user's balance to UI)
   }
 
@@ -59,7 +55,6 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     }
     if (success) {
       await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber);
-      console.log(`ADDED ${blocknumber} to ${this.dbName}`);
     } else {
       throw new Error(`Unable to add new block`);
     }

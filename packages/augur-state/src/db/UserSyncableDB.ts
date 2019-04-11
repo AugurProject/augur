@@ -16,7 +16,6 @@ export class UserSyncableDB<TBigNumber> extends SyncableDB<TBigNumber> {
     this.additionalTopics = [];
     this.additionalTopics.fill("", numAdditionalTopics);
     this.additionalTopics[userTopicIndex] = bytes32User;
-    console.log(JSON.stringify(this.additionalTopics));
   }
 
   protected async getLogs(augur: Augur<TBigNumber>, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {

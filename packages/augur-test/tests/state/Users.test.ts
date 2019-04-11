@@ -1,19 +1,36 @@
-import {makeTestAugur, makeAdditionalTestAugur, ACCOUNTS} from "../../libs/LocalAugur";
+import {
+    ACCOUNTS,
+    makeDbMock,
+    compileAndDeployToGanache,
+    ContractAPI,
+  } from "../../libs";
 import {API} from "@augurproject/state/src/api/API";
 import {DB} from "@augurproject/state/src/db/DB";
-import {makeDbMock} from "../../libs/MakeDbMock";
-import {Augur} from "@augurproject/api";
-import {ContractAPI} from "../../libs/ContractAPI";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
+import { convertDisplayAmountToOnChainAmount } from "@augurproject/api";
+import { GenericAugurInterfaces } from "@augurproject/core";
+import { ethers } from "ethers";
+import { stringTo32ByteHex } from "../../libs/Utils";
+import { BigNumber } from "bignumber.js";
 import * as _ from "lodash";
 
-const BID = 0;
-const LONG = 0;
-const ASK = 1;
-const SHORT = 1;
+const ZERO_BYTES = stringTo32ByteHex("");
+
+const ZERO = 0;
+const ONE = 1;
+const TWO = 2;
+
+const BID = ZERO;
+const LONG = ZERO;
+const ASK = ONE;
+const SHORT = ONE;
+const YES = TWO;
+const NO = ONE;
+
+const DEFAULT_MIN_PRICE = new BigNumber(ZERO);
+const DEFAULT_DISPLAY_RANGE = new BigNumber(ONE);
 
 export interface TradeData {
-    direction: 0 | 1;
+    direction: number;
     outcome: number;
     quantity: number;
     price: number;
@@ -29,68 +46,113 @@ beforeEach(async () => {
   mock.cancelFail();
 });
 
-let augur: Augur<any>;
-let augur_2: Augur<any>;
 let db: DB<any>;
 let api: API<any>;
-let contractAPI: ContractAPI;
-let contractAPI_2: ContractAPI;
+let john: ContractAPI;
+let mary: ContractAPI;
 
 beforeAll(async () => {
-  augur = await makeTestAugur(ACCOUNTS);
-  augur_2 = await makeAdditionalTestAugur(ACCOUNTS[1], augur.provider, augur.addresses);
-  db = await mock.makeDB(augur, ACCOUNTS);
-  api = new API<any>(augur, db);
-  contractAPI = new ContractAPI(augur, augur.provider as EthersProvider, ACCOUNTS[0].publicKey);
-  contractAPI_2 = new ContractAPI(augur_2, augur_2.provider as EthersProvider, ACCOUNTS[1].publicKey);
+  const {provider, addresses} = await compileAndDeployToGanache(ACCOUNTS);
+
+  john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+  mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
+  db = await mock.makeDB(john.augur, ACCOUNTS);
+  api = new API<any>(john.augur, db);
 }, 60000);
 
-test("server/getters/get-user-trading-positions#Binary-1", () => {
-    // Create Binary Market
+test("State API :: Users :: getUserTradingPositions binary-1", async () => {
+    await john.approveCentralAuthority();
+    await mary.approveCentralAuthority();
 
-    // Create Orders
+    const market = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
 
-    // Fill Orders
+    const trades: Array<TradeData> = [
+        {
+            "direction": SHORT,
+            "outcome": YES,
+            "quantity": 10,
+            "price": .65,
+            "position": -10,
+            "avgPrice": .65,
+            "realizedPL": 0,
+            "frozenFunds": 3.5
+        }, {
+            "direction": LONG,
+            "outcome": YES,
+            "quantity": 3,
+            "price": .58,
+            "position": -7,
+            "avgPrice": .65,
+            "realizedPL": .21,
+            "frozenFunds": 2.45
+        }, {
+            "direction": SHORT,
+            "outcome": YES,
+            "quantity": 13,
+            "price": .62,
+            "position": -20,
+            "avgPrice": .6305,
+            "realizedPL": .21,
+            "frozenFunds": 7.39
+        }, {
+            "direction": LONG,
+            "outcome": YES,
+            "quantity": 10,
+            "price": .5,
+            "position": -10,
+            "avgPrice": .6305,
+            "realizedPL": 1.515,
+            "frozenFunds": 3.695
+        }, {
+            "direction": LONG,
+            "outcome": YES,
+            "quantity": 7,
+            "price": .15,
+            "position": -3,
+            "avgPrice": .6305,
+            "realizedPL": 4.8785,
+            "frozenFunds": 1.1085
+        }
+    ]
 
-    // Call getter
+    await processTrades(trades, market, john.augur.contracts.universe.address);
+}, 60000);
 
-    // Verify Results
-});
+async function processTrades(tradeData: Array<TradeData>, market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, universe: string, minPrice: BigNumber = DEFAULT_MIN_PRICE, displayRange: BigNumber = DEFAULT_DISPLAY_RANGE) : Promise<void> {
+    for (let trade of tradeData) {
+        const numTicks = new BigNumber((await market.getNumTicks_()).toNumber());
+        const price = new BigNumber(trade.price);
+        const tickSize = displayRange.dividedBy(numTicks);
+        const quantity = convertDisplayAmountToOnChainAmount(new BigNumber(trade.quantity), tickSize);
 
-export function process_trades(tradeData: Array<TradeData>, market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, contractAPI: ContractAPI, minPrice: number = 0, displayRange: number = 1) : void {
-    _.forEach(tradeData, (trade: TradeData) => {
-        const onChainLongPrice = (trade.price - minPrice) * market.getNumTicks() / displayRange;
-        const onChainShortPrice = market.getNumTicks() - onChainLongPrice;
+        const onChainLongPrice = price.minus(minPrice).multipliedBy(numTicks).dividedBy(displayRange);
+        const onChainShortPrice = numTicks.minus(onChainLongPrice);
         const direction = trade.direction === SHORT ? BID : ASK;
-        const longCost = trade.quantity * onChainLongPrice;
-        const shortCost = trade.quantity * onChainShortPrice;
-        const creatorCost = trade.direction === BID ? longCost : shortCost;
+        const longCost = quantity.multipliedBy(onChainLongPrice);
+        const shortCost = quantity.multipliedBy(onChainShortPrice);
         const fillerCost = trade.direction === ASK ? longCost : shortCost;
 
-        await contractAPI.faucet(creatorCost)
-        const orderID = await createOrder.publicCreateOrder(direction, trade['quantity'], onChainLongPrice, market.address, trade['outcome'], longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = tester.k1)
+        const orderID = await john.placeOrder(market.address, new ethers.utils.BigNumber(direction), new ethers.utils.BigNumber(quantity.toFixed()), new ethers.utils.BigNumber(onChainLongPrice.toFixed()), new ethers.utils.BigNumber(trade.outcome), ZERO_BYTES, ZERO_BYTES, ZERO_BYTES);
 
-        const avgPrice = math.ceil((trade['avgPrice'] - minPrice) * market.getNumTicks() / displayRange)
-        const realizedProfit = math.ceil(trade['realizedPL'] * market.getNumTicks() / displayRange)
-        const frozenFunds = math.ceil(trade['frozenFunds'] * market.getNumTicks() / displayRange)
+        await mary.fillOrder(orderID, new ethers.utils.BigNumber(fillerCost.toFixed()), new ethers.utils.BigNumber(quantity.toFixed()), "");
 
-        await contractAPI.faucet(fillerCost)
-        await fillOrder.publicFillOrder(orderID, trade['quantity'], longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
+        await db.sync(
+            john.augur,
+            mock.constants.chunkSize,
+            0,
+        );
 
-        const { tradingPositions } = await getUserTradingPositions({
+        const { tradingPositions } = await api.users.getUserTradingPositions({
             universe,
-            account,
-            marketId,
-            outcome: null,
-            sortBy: null,
-            isSortDescending: null,
-            limit: null,
-            offset: null,
+            account: mary.account,
+            marketId: market.address,
         });
     
-        expect(tradingPositions[0].netPosition).toEqual(trade.position);
-        expect(tradingPositions[0].averagePrice).toEqual(avgPrice);
-        expect(tradingPositions[0].realized).toEqual(realizedProfit);
-        expect(tradingPositions[0].frozenFunds).toEqual(frozenFunds);
-    })
-}        
+        //console.log(`TRADE RECEIVED: ${JSON.stringify(tradingPositions[0])}`);
+        //console.log(`TRADE EXPEXTED: ${JSON.stringify(trade)}`);
+        await expect(tradingPositions[0].netPosition).toEqual(trade.position.toString());
+        await expect(tradingPositions[0].averagePrice).toEqual(trade.avgPrice.toString());
+        await expect(tradingPositions[0].realized).toEqual(trade.realizedPL.toString());
+        await expect(tradingPositions[0].frozenFunds).toEqual(trade.frozenFunds.toString());
+    };
+}
