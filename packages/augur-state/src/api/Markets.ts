@@ -106,8 +106,6 @@ export class Markets<TBigNumber> {
       const maxPrice = new BigNumber(marketCreatedLog.maxPrice);
       const numTicks = new BigNumber(marketCreatedLog.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-      console.log("tickSize");
-      console.log(tickSize);
       const cumulativeScale = maxPrice.minus(minPrice);
       const category = marketCreatedLog.topic.replace("0x", "");
       const consensus = null; // TODO Set once consensus has been added to MarketFinalized event
