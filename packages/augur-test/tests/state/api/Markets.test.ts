@@ -33,9 +33,9 @@ beforeAll(async () => {
 test("State API :: Markets :: getMarketsInfo", async () => {
   await john.approveCentralAuthority();
 
-  const yesNoMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("Yes"), stringTo32ByteHex("No")], MarketType.YesNo);
-  const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")], MarketType.Categorical);
-  const scalarMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex(""), stringTo32ByteHex("")], MarketType.Scalar);
+  const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+  const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
+  const scalarMarket = await john.createReasonableScalarMarket(john.augur.contracts.universe, [stringTo32ByteHex(""), stringTo32ByteHex("")]);
 
   await db.sync(
     john.augur,
@@ -66,7 +66,6 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "consensus": null,
         "creationBlock": 88,
-        "creationTime": undefined,
         "cumulativeScale": "1000000000000000000",
         "description": "description",
         "details": null,
@@ -104,7 +103,6 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "consensus": null,
         "creationBlock": 90,
-        "creationTime": undefined,
         "cumulativeScale": "1000000000000000000",
         "description": "description",
         "details": null,
@@ -147,7 +145,6 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "consensus": null,
         "creationBlock": 92,
-        "creationTime": undefined,
         "cumulativeScale": "40",
         "description": "description",
         "details": null,

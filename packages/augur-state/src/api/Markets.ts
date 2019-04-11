@@ -51,7 +51,6 @@ export interface MarketInfo {
   maxPrice: string;
   cumulativeScale: string;
   author: string;
-  creationTime: number;
   creationBlock: number;
   category:string;
   volume: string;
@@ -223,7 +222,6 @@ export class Markets<TBigNumber> {
         maxPrice: maxPrice.toString(10),
         cumulativeScale: cumulativeScale.toString(10),
         author: marketCreatedLog.marketCreator,
-        creationTime: marketCreatedLog.timestamp, // TODO Need to save block timestamp in DBs
         creationBlock: marketCreatedLog.blockNumber,
         category: Buffer.from(category, "hex").toString(),
         volume,
