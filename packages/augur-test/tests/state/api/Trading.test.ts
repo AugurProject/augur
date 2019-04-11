@@ -4,8 +4,9 @@ import {
   compileAndDeployToGanache,
   ContractAPI,
 } from "../../../libs";
-import {API} from "@augurproject/state/src/api/API";
-import {DB} from "@augurproject/state/src/db/DB";
+import { API } from "@augurproject/state/src/api/API";
+import { MarketType } from "@augurproject/state/src/api/types";
+import { DB } from "@augurproject/state/src/db/DB";
 import {MarketTradingHistory} from "@augurproject/state/src/api/Trading";
 import { ethers } from "ethers";
 import { stringTo32ByteHex } from "../../../libs/Utils";
