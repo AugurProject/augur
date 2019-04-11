@@ -1,4 +1,3 @@
-import { Augur } from "@augurproject/api";
 import { API } from "@augurproject/state/src/api/API";
 import { MarketInfo } from "@augurproject/state/src/api/Markets";
 import { MarketType } from "@augurproject/state/src/api/types";
@@ -9,14 +8,7 @@ import {
   compileAndDeployToGanache,
   ContractAPI,
 } from "../../../libs";
-import { stringTo32ByteHex, NULL_ADDRESS } from "../../../libs/Utils";
-
-interface MarketCreatedEvent {
-  name: "MarketCreated";
-  parameters: {
-    market: string;
-  };
-}
+import { stringTo32ByteHex } from "../../../libs/Utils";
 
 const mock = makeDbMock();
 
