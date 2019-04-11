@@ -1,15 +1,14 @@
 import {SortLimit} from './types';
 import { DB } from "../db/DB";
 import * as _ from "lodash";
-import { Dictionary, NumericDictionary } from "lodash";
+import { NumericDictionary } from "lodash";
 import { numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/api";
 import { BigNumber } from "bignumber.js";
-import { TrackedUsers } from '../db/TrackedUsers';
 import { ProfitLossChangedLog, OrderFilledLog } from '../logs/types';
 
 export interface UserTradingPositionsParams {
+  account: string,
   universe?: string,
-  account?: string,
   marketId?: string,
   outcome?: number,
 };
@@ -17,22 +16,17 @@ export interface UserTradingPositionsParams {
 export interface GetUserTradingPositionsParams extends UserTradingPositionsParams, SortLimit {
 }
 
-export interface GetProfitLossParams {
-  universe?: string,
-  account?: string,
-  startTime?: number,
-  endTime?: number,
-  periodInterval?: number,
-  marketId?: string,
-  outcome?: number,
-};
-
-
 export interface GetProfitLossSummaryParams {
   universe?: string,
   account?: string,
   marketId?: string,
   endTime?: number,
+};
+
+export interface GetProfitLossParams extends GetProfitLossSummaryParams {
+  startTime?: number,
+  periodInterval?: number,
+  outcome?: number,
 };
 
 export interface MarketTradingPosition {
@@ -87,9 +81,6 @@ export class Users<TBigNumber> {
   }
 
   public async getUserTradingPositions(params: GetUserTradingPositionsParams): Promise<UserTradingPositions> {
-    if (!params.account) {
-      throw new Error("'getTradingHistory' requires an 'account' param be provided");
-    }
     if (!params.universe && !params.marketId) {
       throw new Error("'getTradingHistory' requires a 'universe' or 'marketId' param be provided");
     }
