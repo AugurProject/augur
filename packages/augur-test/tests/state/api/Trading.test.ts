@@ -1,13 +1,14 @@
-import {makeTestAugur, makeAdditionalTestAugur, ACCOUNTS} from "../../libs/LocalAugur";
+import {makeTestAugur, makeAdditionalTestAugur, ACCOUNTS} from "../../../libs/LocalAugur";
 import {API} from "@augurproject/state/src/api/API";
 import {DB} from "@augurproject/state/src/db/DB";
-import {makeDbMock} from "../../libs/MakeDbMock";
+import {makeDbMock} from "../../../libs/MakeDbMock";
 import {Augur} from "@augurproject/api";
-import {ContractAPI} from "../../libs/ContractAPI";
+import {ContractAPI} from "../../../libs/ContractAPI";
 import {MarketTradingHistory} from "@augurproject/state/src/api/Trading";
 import { ethers } from "ethers";
+import { MarketType } from "@augurproject/state/src/api/types";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { stringTo32ByteHex, NULL_ADDRESS } from "../../libs/Utils";
+import { stringTo32ByteHex, NULL_ADDRESS } from "../../../libs/Utils";
 
 const mock = makeDbMock();
 
@@ -37,7 +38,7 @@ test("State API :: Trading :: getTradingHistory", async () => {
   await contractAPI_2.approveCentralAuthority();
 
   // Create a market
-  const market = await contractAPI.createReasonableMarket(augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
+  const market = await contractAPI.createReasonableMarket(augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")], MarketType.Categorical);
 
   // Place an order
   let bid = new ethers.utils.BigNumber(0);
