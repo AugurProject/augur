@@ -290,6 +290,8 @@ export class DB<TBigNumber> {
     }
   }
 
+  // TODO Combine find functions into single function
+
   /**
    * Queries a SyncableDB.
    *

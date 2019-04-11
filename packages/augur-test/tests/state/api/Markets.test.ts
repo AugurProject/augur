@@ -1,13 +1,14 @@
-import { ethers } from "ethers";
 import { Augur } from "@augurproject/api";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { API } from "@augurproject/state/src/api/API";
 import { MarketInfo } from "@augurproject/state/src/api/Markets";
 import { MarketType } from "@augurproject/state/src/api/types";
 import { DB } from "@augurproject/state/src/db/DB";
-import { ContractAPI } from "../../../libs/ContractAPI";
-import { makeTestAugur, makeAdditionalTestAugur, ACCOUNTS } from "../../../libs/LocalAugur";
-import { makeDbMock } from "../../../libs/MakeDbMock";
+import {
+  ACCOUNTS,
+  makeDbMock,
+  compileAndDeployToGanache,
+  ContractAPI,
+} from "../../../libs";
 import { stringTo32ByteHex, NULL_ADDRESS } from "../../../libs/Utils";
 
 interface MarketCreatedEvent {
@@ -23,31 +24,29 @@ beforeEach(async () => {
   mock.cancelFail();
 });
 
-let augur: Augur<any>;
-let augur2: Augur<any>;
 let db: DB<any>;
 let api: API<any>;
-let contractAPI: ContractAPI;
-let contractAPI2: ContractAPI;
+let john: ContractAPI;
+let mary: ContractAPI;
 
 beforeAll(async () => {
-  augur = await makeTestAugur(ACCOUNTS);
-  augur2 = await makeAdditionalTestAugur(ACCOUNTS[1], augur.provider, augur.addresses);
-  db = await mock.makeDB(augur, ACCOUNTS);
-  api = new API<any>(augur, db);
-  contractAPI = new ContractAPI(augur, augur.provider as EthersProvider, ACCOUNTS[0].publicKey);
-  contractAPI2 = new ContractAPI(augur2, augur2.provider as EthersProvider, ACCOUNTS[1].publicKey);
+  const {provider, addresses} = await compileAndDeployToGanache(ACCOUNTS);
+
+  john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+  mary = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+  db = await mock.makeDB(john.augur, ACCOUNTS);
+  api = new API<any>(john.augur, db);
 }, 60000);
 
 test("State API :: Markets :: getMarketsInfo", async () => {
-  await contractAPI.approveCentralAuthority();
+  await john.approveCentralAuthority();
 
-  const yesNoMarket = await contractAPI.createReasonableMarket(augur.contracts.universe, [stringTo32ByteHex("Yes"), stringTo32ByteHex("No")], MarketType.YesNo);
-  const categoricalMarket = await contractAPI.createReasonableMarket(augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")], MarketType.Categorical);
-  const scalarMarket = await contractAPI.createReasonableMarket(augur.contracts.universe, [stringTo32ByteHex(""), stringTo32ByteHex("")], MarketType.Scalar);
+  const yesNoMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("Yes"), stringTo32ByteHex("No")], MarketType.YesNo);
+  const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")], MarketType.Categorical);
+  const scalarMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex(""), stringTo32ByteHex("")], MarketType.Scalar);
 
   await db.sync(
-    augur,
+    john.augur,
     100000,
     10,
   );
