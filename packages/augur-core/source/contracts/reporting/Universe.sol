@@ -72,7 +72,7 @@ contract Universe is ITyped, IUniverse {
         require(isContainerForMarket(IMarket(msg.sender)));
         forkingMarket = IMarket(msg.sender);
         forkEndTime = augur.getTimestamp().add(Reporting.getForkDurationSeconds());
-        augur.logUniverseForked();
+        augur.logUniverseForked(forkingMarket);
         return true;
     }
 

@@ -38,20 +38,20 @@ contract Augur is IAugur {
     event InitialReportSubmitted(address indexed universe, address indexed reporter, address indexed market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description);
     event DisputeCrowdsourcerCreated(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size);
     event DisputeCrowdsourcerContribution(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountStaked, string description);
-    event DisputeCrowdsourcerCompleted(address indexed universe, address indexed market, address disputeCrowdsourcer);
+    event DisputeCrowdsourcerCompleted(address indexed universe, address indexed market, address disputeCrowdsourcer, bool pacingOn);
     event InitialReporterRedeemed(address indexed universe, address indexed reporter, address indexed market, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators);
     event DisputeCrowdsourcerRedeemed(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators);
     event ReportingParticipantDisavowed(address indexed universe, address indexed market, address reportingParticipant);
     event MarketParticipantsDisavowed(address indexed universe, address indexed market);
     event MarketFinalized(address indexed universe, address indexed market);
     event MarketMigrated(address indexed market, address indexed originalUniverse, address indexed newUniverse);
-    event UniverseForked(address indexed universe);
+    event UniverseForked(address indexed universe, IMarket forkingMarket);
     event UniverseCreated(address indexed parentUniverse, address indexed childUniverse, uint256[] payoutNumerators);
     event OrderCanceled(address indexed universe, address indexed shareToken, address indexed sender, bytes32 orderId, Order.Types orderType, uint256 tokenRefund, uint256 sharesRefund);
     event OrderPriceChanged(address indexed universe, bytes32 orderId, uint256 price);
     // The ordering here is to match functions higher in the call chain to avoid stack depth issues
     event OrderCreated(Order.Types orderType, uint256 amount, uint256 price, address indexed creator, bytes32 tradeGroupId, bytes32 orderId, IUniverse indexed universe, IMarket indexed marketId, ERC20Token kycToken, uint256 outcome);
-    event OrderFilled(address indexed universe, address filler, address creator, IMarket marketId, bytes32 orderId, uint256 marketCreatorFees, uint256 reporterFees, uint256 amountFilled, uint256 outcome, bytes32 tradeGroupId);
+    event OrderFilled(address indexed universe, address filler, address creator, IMarket marketId, bytes32 orderId, uint256 price, uint256 outcome, uint256 marketCreatorFees, uint256 reporterFees, uint256 amountFilled, bytes32 tradeGroupId);
     event CompleteSetsPurchased(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI);
     event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 marketCreatorFees, uint256 reporterFees);
     event TradingProceedsClaimed(address indexed universe, address indexed shareToken, address indexed sender, address market, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance, uint256 marketCreatorFees, uint256 reporterFees);
@@ -62,7 +62,7 @@ contract Augur is IAugur {
     event InitialReporterTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume);
-    event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds);
+    event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp);
     event ParticipationTokensRedeemed(address indexed universe, address indexed disputeWindow, address indexed account, uint256 attoParticipationTokens, uint256 feePayoutShare);
     event TimestampSet(uint256 newTimestamp);
 
@@ -261,10 +261,10 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logDisputeCrowdsourcerCompleted(IUniverse _universe, address _market, address _disputeCrowdsourcer) public returns (bool) {
+    function logDisputeCrowdsourcerCompleted(IUniverse _universe, address _market, address _disputeCrowdsourcer, bool _pacingOn) public returns (bool) {
         require(isKnownUniverse(_universe));
         require(_universe.isContainerForMarket(IMarket(msg.sender)));
-        emit DisputeCrowdsourcerCompleted(address(_universe), _market, _disputeCrowdsourcer);
+        emit DisputeCrowdsourcerCompleted(address(_universe), _market, _disputeCrowdsourcer, _pacingOn);
         return true;
     }
 
@@ -324,9 +324,9 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logOrderFilled(IUniverse _universe, address _filler, address _creator, IMarket _market, bytes32 _orderId, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, uint256 _outcome, bytes32 _tradeGroupId) public returns (bool) {
+    function logOrderFilled(IUniverse _universe, address _filler, address _creator, IMarket _market, bytes32 _orderId, uint256 _price, uint256 _outcome, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, bytes32 _tradeGroupId) public returns (bool) {
         require(msg.sender == registry["FillOrder"]);
-        emit OrderFilled(address(_universe), _filler, _creator, _market, _orderId, _marketCreatorFees, _reporterFees, _amountFilled, _outcome, _tradeGroupId);
+        emit OrderFilled(address(_universe), _filler, _creator, _market, _orderId, _price, _outcome, _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
         return true;
     }
 
@@ -355,9 +355,9 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logUniverseForked() public returns (bool) {
+    function logUniverseForked(IMarket _forkingMarket) public returns (bool) {
         require(universes[msg.sender]);
-        emit UniverseForked(msg.sender);
+        emit UniverseForked(msg.sender, _forkingMarket);
         return true;
     }
 
@@ -531,9 +531,9 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logProfitLossChanged(IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds) public returns (bool) {
+    function logProfitLossChanged(IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost) public returns (bool) {
         require(msg.sender == registry["ProfitLoss"]);
-        emit ProfitLossChanged(address(_market.getUniverse()), address(_market), _account, _outcome, _netPosition, _avgPrice, _realizedProfit, _frozenFunds);
+        emit ProfitLossChanged(address(_market.getUniverse()), address(_market), _account, _outcome, _netPosition, _avgPrice, _realizedProfit, _frozenFunds, _realizedCost, getTimestamp());
         return true;
     }
 }
