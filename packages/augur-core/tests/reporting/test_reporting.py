@@ -41,10 +41,13 @@ def test_designatedReportHappyPath(localFixture, universe, market):
     disputeWindow = localFixture.applySignature('DisputeWindow', newDisputeWindowAddress)
 
     # time marches on and the market can be finalized
-    localFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    timestamp = disputeWindow.getEndTime() + 1
+    localFixture.contracts["Time"].setTimestamp(timestamp)
     marketFinalizedLog = {
         "universe": universe.address,
-        "market": market.address
+        "market": market.address,
+        "timestamp": timestamp,
+        "winningPayoutNumerators": [0, 0, market.getNumTicks()]
     }
     with AssertLog(localFixture, "MarketFinalized", marketFinalizedLog):
         assert market.finalize()
