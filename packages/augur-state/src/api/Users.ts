@@ -190,12 +190,18 @@ export class Users<TBigNumber> {
 
     const tradingPositions = _.flatten(_.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values)));
 
-    // TODO Market Sum
-    // TODO Sum Frozen Funds
+    const marketTradingPositions = _.mapValues(tradingPositionsByMarketAndOutcome, (tradingPositionsByOutcome) => {
+      const tradingPositions = _.values(_.omitBy(tradingPositionsByOutcome, _.isNull));
+      return this.sumTradingPositions(tradingPositions);
+    })
+
+    const frozenFundsTotal = _.reduce(tradingPositions, (value, tradingPosition) => { return value.plus(tradingPosition.frozenFunds); }, new BigNumber(0));
+    // TODO add market bonds to total
+
     return {
       tradingPositions,
-      tradingPositionsPerMarket: {},
-      frozenFundsTotal: "0"
+      tradingPositionsPerMarket: marketTradingPositions,
+      frozenFundsTotal: frozenFundsTotal.toFixed()
     };
   }
 
@@ -209,5 +215,63 @@ export class Users<TBigNumber> {
   public static async getProfitLossSummary(params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<NumericDictionary<TradingPosition>> {
     // TODO
     return {};
+  }
+
+  private sumTradingPositions(tradingPositions: Array<MarketTradingPosition>): MarketTradingPosition {
+    const summedTrade = _.reduce(tradingPositions, (resultPosition, tradingPosition) => {
+      const frozenFunds = new BigNumber(resultPosition.frozenFunds).plus(tradingPosition.frozenFunds);
+      const realized = new BigNumber(resultPosition.realized).plus(tradingPosition.realized);
+      const unrealized = new BigNumber(resultPosition.unrealized).plus(tradingPosition.unrealized);
+      const realizedCost = new BigNumber(resultPosition.realizedCost).plus(tradingPosition.realizedCost);
+      const unrealizedCost = new BigNumber(resultPosition.unrealizedCost).plus(tradingPosition.unrealizedCost);
+
+      return {
+        timestamp: tradingPosition.timestamp,
+        frozenFunds: frozenFunds.toFixed(),
+        marketId: tradingPosition.marketId,
+        realized: realized.toFixed(),
+        unrealized: unrealized.toFixed(),
+        total: "0",
+        unrealizedCost: unrealizedCost.toFixed(),
+        realizedCost: realizedCost.toFixed(),
+        totalCost: "0",
+        realizedPercent: "0",
+        unrealizedPercent: "0",
+        totalPercent: "0",
+        currentValue: "0",
+      };
+    }, {
+      timestamp: 0,
+      frozenFunds: "0",
+      marketId: "",
+      realized: "0",
+      unrealized: "0",
+      total: "0",
+      unrealizedCost: "0",
+      realizedCost: "0",
+      totalCost: "0",
+      realizedPercent: "0",
+      unrealizedPercent: "0",
+      totalPercent: "0",
+      currentValue: "0",
+    } as MarketTradingPosition);
+
+    const frozenFunds = new BigNumber(summedTrade.frozenFunds);
+    const realized = new BigNumber(summedTrade.realized);
+    const unrealized = new BigNumber(summedTrade.unrealized);
+    const realizedCost = new BigNumber(summedTrade.realizedCost);
+    const unrealizedCost = new BigNumber(summedTrade.unrealizedCost);
+
+    const total = realized.plus(unrealized);
+    const totalCost = realizedCost.plus(unrealizedCost);
+
+    summedTrade.total = total.toFixed();
+    summedTrade.totalCost = totalCost.toFixed();
+    summedTrade.realizedPercent = realizedCost.isZero() ? "0" : realized.dividedBy(realizedCost).toFixed();
+    summedTrade.unrealizedPercent = unrealizedCost.isZero() ? "0" : unrealized.dividedBy(unrealizedCost).toFixed();
+    summedTrade.totalPercent = totalCost.isZero() ? "0" : total.dividedBy(totalCost).toFixed();
+    summedTrade.currentValue = unrealized.minus(frozenFunds).toFixed();
+
+    return summedTrade;
   }
 }
