@@ -38,6 +38,7 @@ contract IUniverse is ITyped {
     function getDisputeThresholdForFork() public view returns (uint256);
     function getDisputeThresholdForDisputePacing() public view returns (uint256);
     function getInitialReportMinValue() public view returns (uint256);
+    function getPayoutNumerators() public view returns (uint256[] memory);
     function calculateFloatingValue(uint256 _badMarkets, uint256 _totalMarkets, uint256 _targetDivisor, uint256 _previousValue, uint256 _floor) public pure returns (uint256 _newValue);
     function getOrCacheMarketCreationCost() public returns (uint256);
     function getCurrentDisputeWindow(bool _initial) public view returns (IDisputeWindow);

@@ -19,7 +19,7 @@ contract IAugur {
     function logDisputeCrowdsourcerCompleted(IUniverse _universe, address _market, address _disputeCrowdsourcer, bool _pacingOn) public returns (bool);
     function logInitialReporterRedeemed(IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] memory _payoutNumerators) public returns (bool);
     function logDisputeCrowdsourcerRedeemed(IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] memory _payoutNumerators) public returns (bool);
-    function logMarketFinalized(IUniverse _universe) public returns (bool);
+    function logMarketFinalized(IUniverse _universe, uint256[] memory _winningPayoutNumerators) public returns (bool);
     function logMarketMigrated(IMarket _market, IUniverse _originalUniverse) public returns (bool);
     function logReportingParticipantDisavowed(IUniverse _universe, IMarket _market) public returns (bool);
     function logMarketParticipantsDisavowed(IUniverse _universe) public returns (bool);
