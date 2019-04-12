@@ -17,6 +17,7 @@ import {
   MarketFinalizedLog,
   MarketMigratedLog,
   MarketVolumeChangedLog,
+  ProfitLossChangedLog,
   UniverseForkedLog
 } from "../logs/types";
 
@@ -152,7 +153,7 @@ export class DB<TBigNumber> {
         ));
     }
 
-  return Promise.all(dbSyncPromises).then(() => undefined)
+    return Promise.all(dbSyncPromises).then(() => undefined)
 
     // TODO Call `this.metaDatabase.addNewBlock` here if derived DBs end up getting used
   }
@@ -421,6 +422,17 @@ export class DB<TBigNumber> {
   public async findOrderFilledLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<OrderFilledLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("OrderFilled"), request);
     return results.docs as unknown as Array<OrderFilledLog>;
+  }
+
+  /*
+   * Queries the ProfitLossChanged DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<ProfitLossChangedLog>>}
+   */
+  public async findProfitLossChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<ProfitLossChangedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("ProfitLossChanged"), request);
+    return results.docs as unknown as Array<ProfitLossChangedLog>;
   }
 
   /**

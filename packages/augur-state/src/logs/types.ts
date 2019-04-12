@@ -4,16 +4,20 @@ import { AddressZero } from "ethers/constants";
 type Address = string;
 type Bytes32 = string;
 
+export interface Doc {
+  _id: string;
+  _rev: string;
+}
+
 export interface Log {
     blockNumber: number;
     blockHash: Bytes32;
     transactionIndex: number;
     transactionHash: Bytes32;
     logIndex: number;
-    timestamp: number;
 }
 
-export interface CompleteSetsPurchasedLog extends Log {
+export interface CompleteSetsPurchasedLog extends Log, Doc {
   universe: Address;
   market: Address;
   account: Address;
@@ -21,7 +25,7 @@ export interface CompleteSetsPurchasedLog extends Log {
   marketOI: string;
 }
 
-export interface CompleteSetsSoldLog extends Log {
+export interface CompleteSetsSoldLog extends Log, Doc {
   universe: Address;
   market: Address;
   account: Address;
@@ -31,13 +35,13 @@ export interface CompleteSetsSoldLog extends Log {
   reporterFees: string;
 }
 
-export interface DisputeCrowdsourcerCompletedLog extends Log {
+export interface DisputeCrowdsourcerCompletedLog extends Log, Doc {
   universe: Address;
   market: Address;
   disputeCrowdsourcer: Address;
 }
 
-export interface InitialReportSubmittedLog extends Log {
+export interface InitialReportSubmittedLog extends Log, Doc {
   universe: Address;
   reporter: Address;
   market: Address;
@@ -47,70 +51,84 @@ export interface InitialReportSubmittedLog extends Log {
   description: string;
 }
 
-export interface OrderFilledLog extends Log {
-  universe: Address;
-  filler: Address;
-  creator: Address;
-  marketId: Address;
-  orderId: string;
-  marketCreatorFees: string;
-  reporterFees: string;
-  amountFilled: string;
-  outcome: string;
-  tradeGroupId: string;
-}
-
-export interface OrderCreatedLog extends Log {
-  orderType: number;
-  amount: string;
-  price: string;
-  creator: Address;
-  tradeGroupId: string;
-  orderId: string;
-  universe: Address;
-  marketId: Address;
-  kycToken: string;
-  outcome: string;
-}
-
 export interface MarketCreatedLogExtraInfo {
   longDescription?: string;
   resolutionSource?: string;
   _scalarDenomination?: string;
 }
 
-export interface MarketCreatedLog extends Log {
-  universe: Address;
+export interface MarketCreatedLog extends Log, Doc {
+  universe: string;
   endTime: string;
   topic: string;
   description: string;
   extraInfo: string;
-  market: Address;
-  marketCreator: Address;
+  market: string;
+  marketCreator: string;
   minPrice: string;
   maxPrice: string;
-  marketType: number;
+  marketType: string;
   numTicks: string;
   outcomes: Array<string>;
 }
 
-export interface MarketFinalizedLog extends Log {
+export interface MarketFinalizedLog extends Log, Doc {
   universe: Address;
   market: Address;
 }
 
-export interface MarketMigratedLog extends Log {
+export interface MarketMigratedLog extends Log, Doc {
   market: Address;
   originalUniverse: Address;
   newUniverse: Address;
 }
 
-export interface MarketVolumeChangedLog extends Log {
+export interface MarketVolumeChangedLog extends Log, Doc {
   universe: Address;
   market: Address;
   volume: string;
 }
 
-export interface UniverseForkedLog extends Log {
+export interface OrderCreatedLog extends Log, Doc {
+  orderType: number;
+  amount: string;
+  price: string;
+  creator: string;
+  tradeGroupId: string;
+  orderId: string;
+  universe: string;
+  marketId: string;
+  kycToken: string;
+  outcome: string;
+}
+
+export interface OrderFilledLog extends Log, Doc {
+  universe: string;
+  filler: string;
+  creator: string;
+  marketId: string;
+  orderId: string;
+  marketCreatorFees: string;
+  reporterFees: string;
+  amountFilled: string;
+  outcome: string;
+  tradeGroupId: string;
+  price: string;
+}
+
+export interface ProfitLossChangedLog extends Log, Doc {
+  universe: string;
+  market: string;
+  account: string;
+  outcome: string;
+  netPosition: string;
+  avgPrice: string;
+  realizedProfit: string;
+  frozenFunds: string;
+  realizedCost: string;
+  timestamp: string;
+}
+
+export interface UniverseForkedLog extends Log, Doc {
   universe: Address;
 }

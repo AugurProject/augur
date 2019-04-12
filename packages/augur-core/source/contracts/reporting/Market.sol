@@ -208,7 +208,7 @@ contract Market is Initializable, Ownable, IMarket {
             }
             disputeWindow = universe.getOrCreateNextDisputeWindow(false);
         }
-        augur.logDisputeCrowdsourcerCompleted(universe, address(this), address(_crowdsourcer));
+        augur.logDisputeCrowdsourcerCompleted(universe, address(this), address(_crowdsourcer), disputePacingOn);
         if (preemptiveDisputeCrowdsourcer != IDisputeCrowdsourcer(0)) {
             IDisputeCrowdsourcer _newCrowdsourcer = preemptiveDisputeCrowdsourcer;
             preemptiveDisputeCrowdsourcer = IDisputeCrowdsourcer(0);

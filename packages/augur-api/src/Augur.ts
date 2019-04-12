@@ -58,6 +58,11 @@ export class Augur<TBigNumber> {
       "numAdditionalTopics": 3,
       "userTopicIndex": 2,
     },
+    {
+      "name": "ProfitLossChanged",
+      "numAdditionalTopics": 3,
+      "userTopicIndex": 2,
+    },
   ];
 
   public constructor (provider: Provider, dependencies: GenericAugurInterfaces.Dependencies<TBigNumber>, networkId: NetworkId, addresses: ContractAddresses) {

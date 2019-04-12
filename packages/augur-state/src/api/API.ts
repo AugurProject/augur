@@ -9,14 +9,14 @@ export class API<TBigNumber> {
   private readonly db: DB<TBigNumber>;
 
   public readonly markets: Markets<TBigNumber>;
-  public readonly users: Users;
+  public readonly users: Users<TBigNumber>;
   public readonly trading: Trading<TBigNumber>;
 
   public constructor (augurAPI: Augur<TBigNumber>, db: DB<TBigNumber>) {
     this.augurAPI = augurAPI;
     this.db = db;
     this.markets = new Markets<TBigNumber>(this.db);
-    this.users = new Users();
+    this.users = new Users<TBigNumber>(this.db);
     this.trading = new Trading<TBigNumber>(this.db);
   }
 }
