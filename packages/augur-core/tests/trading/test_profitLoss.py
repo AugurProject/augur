@@ -304,12 +304,15 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
         realizedProfit = math.ceil(trade['realizedPL'] * market.getNumTicks() / displayRange)
         frozenFunds = math.ceil(trade['frozenFunds'] * market.getNumTicks() / displayRange)
 
+        timestamp = contractsFixture.contracts["Augur"].getTimestamp()
+
         profitLossChangedLog = {
             "outcome": trade['outcome'],
             "netPosition": trade['position'],
             "avgPrice": avgPrice,
             "realizedProfit": realizedProfit,
             "frozenFunds": frozenFunds,
+            "timestamp": timestamp,
         }
 
         assert cash.faucet(fillerCost, sender = tester.k2)

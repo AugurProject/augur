@@ -6,10 +6,14 @@ export interface Log {
     transactionIndex: number;
     transactionHash: string;
     logIndex: number;
-    timestamp: number;
 }
 
-export interface OrderFilledLog extends Log {
+export interface Doc {
+    _id: string;
+    _rev: string;
+}
+
+export interface OrderFilledLog extends Log, Doc {
     universe: string;
     filler: string;
     creator: string;
@@ -20,9 +24,10 @@ export interface OrderFilledLog extends Log {
     amountFilled: string;
     outcome: string;
     tradeGroupId: string;
+    price: string;
 }
 
-export interface OrderCreatedLog extends Log {
+export interface OrderCreatedLog extends Log, Doc {
     orderType: number;
     amount: string;
     price: string;
@@ -35,7 +40,7 @@ export interface OrderCreatedLog extends Log {
     outcome: string;
 }
 
-export interface MarketCreatedLog extends Log {
+export interface MarketCreatedLog extends Log, Doc {
     universe: string;
     endTime: string;
     topic: string;
@@ -48,4 +53,17 @@ export interface MarketCreatedLog extends Log {
     marketType: string;
     numTicks: string;
     outcomes: Array<string>;
+}
+
+export interface ProfitLossChangedLog extends Log, Doc {
+    universe: string;
+    market: string;
+    account: string;
+    outcome: string;
+    netPosition: string;
+    avgPrice: string;
+    realizedProfit: string;
+    frozenFunds: string;
+    realizedCost: string;
+    timestamp: string;
 }

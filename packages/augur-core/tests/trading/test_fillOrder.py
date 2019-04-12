@@ -30,6 +30,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
         "reporterFees": 0,
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
         "amountFilled": fix(2),
+        "price": 6000
     }
 
     marketVolumeChangedLog = {
