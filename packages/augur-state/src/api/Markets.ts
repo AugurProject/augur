@@ -99,7 +99,7 @@ export class Markets<TBigNumber> {
       let volume = "0";
       const marketVolumeChangedLogs = (await this.db.findMarketVolumeChangedLogs({selector: {market: marketCreatedLog.market}})).reverse();
       if (marketVolumeChangedLogs.length > 0) {
-        volume = marketVolumeChangedLogs[0].volume;
+        volume = new BigNumber(marketVolumeChangedLogs[0].volume).toString();
       }
 
       const minPrice = new BigNumber(marketCreatedLog.minPrice);
@@ -158,18 +158,18 @@ export class Markets<TBigNumber> {
       const completeSetsSoldLogs = (await this.db.findCompleteSetsSoldLogs({selector: {market: marketCreatedLog.market}})).reverse();
       if (completeSetsPurchasedLogs.length > 0 && completeSetsSoldLogs.length > 0) {
         if (completeSetsPurchasedLogs[0].blockNumber > completeSetsSoldLogs[0].blockNumber) {
-          openInterest = completeSetsPurchasedLogs[0].marketOI;
+          openInterest = new BigNumber(completeSetsPurchasedLogs[0].marketOI).toString();
         } else if (completeSetsSoldLogs[0].blockNumber > completeSetsPurchasedLogs[0].blockNumber) {
-          openInterest = completeSetsSoldLogs[0].marketOI;
+          openInterest = new BigNumber(completeSetsSoldLogs[0].marketOI).toString();
         } else if (completeSetsPurchasedLogs[0].transactionIndex > completeSetsSoldLogs[0].transactionIndex) {
-          openInterest = completeSetsPurchasedLogs[0].marketOI;
+          openInterest = new BigNumber(completeSetsPurchasedLogs[0].marketOI).toString();
         } else {
-          openInterest = completeSetsSoldLogs[0].marketOI;
+          openInterest = new BigNumber(completeSetsSoldLogs[0].marketOI).toString();
         }
       } else if (completeSetsPurchasedLogs.length > 0) {
-        openInterest = completeSetsPurchasedLogs[0].marketOI;
+        openInterest = new BigNumber(completeSetsPurchasedLogs[0].marketOI).toString();
       } else  if (completeSetsSoldLogs.length > 0) {
-        openInterest = completeSetsSoldLogs[0].marketOI;
+        openInterest = new BigNumber(completeSetsSoldLogs[0].marketOI).toString();
       }
 
       let reportingState: MarketInfoReportingState = MarketInfoReportingState.PRE_REPORTING;

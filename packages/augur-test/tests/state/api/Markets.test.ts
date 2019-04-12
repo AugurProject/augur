@@ -1,6 +1,6 @@
+import { ethers } from "ethers";
 import { API } from "@augurproject/state/src/api/API";
 import { MarketInfo } from "@augurproject/state/src/api/Markets";
-import { MarketType } from "@augurproject/state/src/api/types";
 import { DB } from "@augurproject/state/src/db/DB";
 import {
   ACCOUNTS,
@@ -32,10 +32,34 @@ beforeAll(async () => {
 
 test("State API :: Markets :: getMarketsInfo", async () => {
   await john.approveCentralAuthority();
+  await mary.approveCentralAuthority();
 
   const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
   const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
   const scalarMarket = await john.createReasonableScalarMarket(john.augur.contracts.universe, [stringTo32ByteHex(""), stringTo32ByteHex("")]);
+
+  // Place orders
+  const bid = new ethers.utils.BigNumber(0);
+  const outcome = new ethers.utils.BigNumber(0);
+  const numShares = new ethers.utils.BigNumber(10000000000000);
+  const price = new ethers.utils.BigNumber(2150);
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(categoricalMarket.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(scalarMarket.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+
+  // Partially fill orders
+  const cost = numShares.mul(7850).div(2);
+  const yesNoOrderId = await john.getBestOrderId(bid, yesNoMarket.address, outcome);
+  const categoricalOrderId = await john.getBestOrderId(bid, categoricalMarket.address, outcome);
+  const scalarOrderId = await john.getBestOrderId(bid, scalarMarket.address, outcome);
+  await mary.fillOrder(yesNoOrderId, cost, numShares.div(2), "43");
+  await mary.fillOrder(categoricalOrderId, cost, numShares.div(2), "44");
+  await mary.fillOrder(scalarOrderId, cost, numShares.div(2), "45");
+
+  // Purchase complete sets
+  await mary.buyCompleteSets(yesNoMarket, numShares);
+  await mary.buyCompleteSets(categoricalMarket, numShares);
+  await mary.buyCompleteSets(scalarMarket, numShares);
 
   await db.sync(
     john.augur,
@@ -65,7 +89,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
         "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "consensus": null,
-        "creationBlock": 88,
+        "creationBlock": 89,
         "cumulativeScale": "1000000000000000000",
         "description": "description",
         "details": null,
@@ -78,7 +102,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "needsMigration": false,
         "numOutcomes": 0,
         "numTicks": "10000",
-        "openInterest": "0",
+        "openInterest": "150000000000000000",
         "outcomes": [
           {
             "description": null,
@@ -96,13 +120,13 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "scalarDenomination": null,
         "tickSize": "0.0001",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "0",
+        "volume": "50000000000000000",
       },
       {
         "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
         "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "consensus": null,
-        "creationBlock": 90,
+        "creationBlock": 91,
         "cumulativeScale": "1000000000000000000",
         "description": "description",
         "details": null,
@@ -115,7 +139,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "needsMigration": false,
         "numOutcomes": 3,
         "numTicks": "10000",
-        "openInterest": "0",
+        "openInterest": "150000000000000000",
         "outcomes": [
           {
             "description": "A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
@@ -138,13 +162,13 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "scalarDenomination": null,
         "tickSize": "0.0001",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "0",
+        "volume": "50000000000000000",
       },
       {
         "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
         "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "consensus": null,
-        "creationBlock": 92,
+        "creationBlock": 93,
         "cumulativeScale": "40",
         "description": "description",
         "details": null,
@@ -157,7 +181,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "needsMigration": false,
         "numOutcomes": 0,
         "numTicks": "4000",
-        "openInterest": "0",
+        "openInterest": "60000000000000000",
         "outcomes": [
           {
             "description": null,
@@ -175,12 +199,10 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "scalarDenomination": null,
         "tickSize": "0.00000000000000000001",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "0",
+        "volume": "20000000000000000",
       },
     ]
   );
-
-  // TODO Place orders and add checks for volume & open interest
 
   // TODO Add checks for reportingState, needsMigration, finalizationBlockNumber, & finalizationTime
   // by reporting, disputing, & finalizing a market
