@@ -39,6 +39,7 @@ export interface DisputeCrowdsourcerCompletedLog extends Log, Doc {
   universe: Address;
   market: Address;
   disputeCrowdsourcer: Address;
+  pacingOn: boolean;
 }
 
 export interface InitialReportSubmittedLog extends Log, Doc {
@@ -75,6 +76,8 @@ export interface MarketCreatedLog extends Log, Doc {
 export interface MarketFinalizedLog extends Log, Doc {
   universe: Address;
   market: Address;
+  timestamp: number;
+  winningPayoutNumerators: Array<number>;
 }
 
 export interface MarketMigratedLog extends Log, Doc {
@@ -114,12 +117,12 @@ export interface OrderFilledLog extends Log, Doc {
   creator: string;
   marketId: string;
   orderId: string;
+  price: string;
+  outcome: string;
   marketCreatorFees: string;
   reporterFees: string;
   amountFilled: string;
-  outcome: string;
   tradeGroupId: string;
-  price: string;
 }
 
 export interface ProfitLossChangedLog extends Log, Doc {
@@ -137,4 +140,5 @@ export interface ProfitLossChangedLog extends Log, Doc {
 
 export interface UniverseForkedLog extends Log, Doc {
   universe: Address;
+  market: Address;
 }
