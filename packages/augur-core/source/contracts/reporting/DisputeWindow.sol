@@ -157,12 +157,12 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     }
 
     function onMint(address _target, uint256 _amount) internal returns (bool) {
-        augur.logParticipationTokensMinted(universe, _target, _amount, totalSupply());
+        augur.logParticipationTokensMinted(universe, _target, _amount, totalSupply(), balances[_target]);
         return true;
     }
 
     function onBurn(address _target, uint256 _amount) internal returns (bool) {
-        augur.logParticipationTokensBurned(universe, _target, _amount, totalSupply());
+        augur.logParticipationTokensBurned(universe, _target, _amount, totalSupply(), balances[_target]);
         return true;
     }
 }
