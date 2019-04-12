@@ -1,6 +1,5 @@
 import { string, number } from "prop-types";
 import { AddressZero } from "ethers/constants";
-import { MarketType } from "../types";
 
 type Address = string;
 type Bytes32 = string;
@@ -82,6 +81,12 @@ export interface MarketMigratedLog extends Log, Doc {
   market: Address;
   originalUniverse: Address;
   newUniverse: Address;
+}
+
+export enum MarketType {
+  YesNo = 0,
+  Categorical = 1,
+  Scalar = 2
 }
 
 export interface MarketVolumeChangedLog extends Log, Doc {

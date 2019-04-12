@@ -2,7 +2,8 @@ import { BigNumber } from "bignumber.js";
 import * as _ from "lodash";
 import { numTicksToTickSize } from "@augurproject/api";
 import { DB } from "../db/DB";
-import { MarketType, SortLimit } from "./types";
+import { MarketType } from "../logs/types";
+import { SortLimit } from "./types";
 
 export interface GetMarketsParamsSpecific {
   universe: string;
