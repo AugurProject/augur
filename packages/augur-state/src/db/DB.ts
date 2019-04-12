@@ -6,7 +6,20 @@ import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
 import { IBlockAndLogStreamerListener, LogCallbackType } from "./BlockAndLogStreamerListener";
-import { OrderFilledLog, OrderCreatedLog, MarketCreatedLog, ProfitLossChangedLog } from "../logs/types";
+import {
+  CompleteSetsPurchasedLog,
+  CompleteSetsSoldLog,
+  DisputeCrowdsourcerCompletedLog,
+  InitialReportSubmittedLog,
+  OrderFilledLog,
+  OrderCreatedLog,
+  MarketCreatedLog,
+  MarketFinalizedLog,
+  MarketMigratedLog,
+  MarketVolumeChangedLog,
+  ProfitLossChangedLog,
+  UniverseForkedLog
+} from "../logs/types";
 
 
 export class DB<TBigNumber> {
@@ -278,6 +291,8 @@ export class DB<TBigNumber> {
     }
   }
 
+  // TODO Combine find functions into single function
+
   /**
    * Queries a SyncableDB.
    *
@@ -300,25 +315,47 @@ export class DB<TBigNumber> {
   }
 
   /**
-   * Queries the OrderFilled DB
+   * Queries the CompleteSetsPurchased DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<OrderFilledLog>>}
+   * @returns {Promise<Array<CompleteSetsPurchasedLog>>}
    */
-  public async findOrderFilledLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<OrderFilledLog>> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("OrderFilled"), request);
-    return results.docs as unknown as Array<OrderFilledLog>;
+  public async findCompleteSetsPurchasedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<CompleteSetsPurchasedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("CompleteSetsPurchased"), request);
+    return results.docs as unknown as Array<CompleteSetsPurchasedLog>;
   }
 
   /**
-   * Queries the OrderCreated DB
+   * Queries the CompleteSetsSold DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<OrderCreatedLog>>}
+   * @returns {Promise<Array<CompleteSetsSoldLog>>}
    */
-  public async findOrderCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<OrderCreatedLog>> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("OrderCreated"), request);
-    return results.docs as unknown as Array<OrderCreatedLog>;
+  public async findCompleteSetsSoldLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<CompleteSetsSoldLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("CompleteSetsSold"), request);
+    return results.docs as unknown as Array<CompleteSetsSoldLog>;
+  }
+
+  /**
+   * Queries the DisputeCrowdsourcerCompleted DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<InitialReportSubmittedLog>>}
+   */
+  public async findDisputeCrowdsourcerCompletedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeCrowdsourcerCompletedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerCompleted"), request);
+    return results.docs as unknown as Array<DisputeCrowdsourcerCompletedLog>;
+  }
+
+  /**
+   * Queries the InitialReportSubmitted DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<InitialReportSubmittedLog>>}
+   */
+  public async findInitialReportSubmittedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<InitialReportSubmittedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("InitialReportSubmitted"), request);
+    return results.docs as unknown as Array<InitialReportSubmittedLog>;
   }
 
   /**
@@ -333,6 +370,61 @@ export class DB<TBigNumber> {
   }
 
   /**
+   * Queries the MarketFinalized DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<MarketFinalizedLog>>}
+   */
+  public async findMarketFinalizedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<MarketFinalizedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("MarketFinalized"), request);
+    return results.docs as unknown as Array<MarketFinalizedLog>;
+  }
+
+  /**
+   * Queries the MarketMigrated DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<MarketMigratedLog>>}
+   */
+  public async findMarketMigratedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<MarketMigratedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("MarketMigrated"), request);
+    return results.docs as unknown as Array<MarketMigratedLog>;
+  }
+
+  /**
+   * Queries the MarketVolumeChanged DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<MarketVolumeChangedLog>>}
+   */
+  public async findMarketVolumeChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<MarketVolumeChangedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("MarketVolumeChanged"), request);
+    return results.docs as unknown as Array<MarketVolumeChangedLog>;
+  }
+
+  /**
+   * Queries the OrderCreated DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<OrderCreatedLog>>}
+   */
+  public async findOrderCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<OrderCreatedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("OrderCreated"), request);
+    return results.docs as unknown as Array<OrderCreatedLog>;
+  }
+
+  /**
+   * Queries the OrderFilled DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<OrderFilledLog>>}
+   */
+  public async findOrderFilledLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<OrderFilledLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("OrderFilled"), request);
+    return results.docs as unknown as Array<OrderFilledLog>;
+  }
+
+  /*
    * Queries the ProfitLossChanged DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
@@ -342,4 +434,17 @@ export class DB<TBigNumber> {
     const results = await this.findInSyncableDB(this.getDatabaseName("ProfitLossChanged"), request);
     return results.docs as unknown as Array<ProfitLossChangedLog>;
   }
+
+  /**
+   * Queries the UniverseForked DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<UniverseForkedLog>>}
+   */
+  public async findUniverseForkedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<UniverseForkedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("UniverseForked"), request);
+    return results.docs as unknown as Array<UniverseForkedLog>;
+  }
+
+
 }

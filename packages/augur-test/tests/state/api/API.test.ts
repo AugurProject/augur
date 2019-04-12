@@ -1,4 +1,4 @@
-import {makeTestAugur, ACCOUNTS, makeDbMock} from "../../libs";
+import {makeTestAugur, ACCOUNTS, makeDbMock} from "../../../libs";
 import {API} from "@augurproject/state/src/api/API";
 import {DB} from "@augurproject/state/src/db/DB";
 import {Augur} from "@augurproject/api";

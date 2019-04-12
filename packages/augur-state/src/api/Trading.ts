@@ -1,4 +1,4 @@
-import {SortLimit} from './types';
+import { SortLimit } from './types';
 import { DB } from "../db/DB";
 import * as _ from "lodash";
 import { numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/api";
@@ -46,7 +46,7 @@ export class Trading<TBigNumber> {
       throw new Error("'getTradingHistory' requires an 'account' or 'marketId' param be provided");
     }
     const request = {
-      selector: { 
+      selector: {
         universe: params.universe,
         marketId: params.marketId,
         outcome: params.outcome,

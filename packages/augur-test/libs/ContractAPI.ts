@@ -69,6 +69,28 @@ export class ContractAPI {
     return await this.createCategoricalMarket(universe, outcomes, endTime, fee, affiliateFeeDivisor, this.account);
   }
 
+  public async createScalarMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, outcomes: Array<string>, endTime: ethers.utils.BigNumber, feePerEthInWei: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
+    const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
+
+    await this.faucet(marketCreationFee);
+    const minPrice = new ethers.utils.BigNumber(0);
+    const maxPrice = new ethers.utils.BigNumber(40);
+    const numTicks = new ethers.utils.BigNumber(4000);
+    const marketAddress = await universe.createScalarMarket_(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, minPrice, maxPrice, numTicks, stringTo32ByteHex(" "), "description", "");
+    if (!marketAddress || marketAddress === "0x") {
+      throw new Error("Unable to get address for new scalar market.");
+    }
+    await universe.createScalarMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, minPrice, maxPrice, numTicks, stringTo32ByteHex(" "), "description", "");
+    return this.augur.contracts.marketFromAddress(marketAddress);
+  }
+
+  public async createReasonableScalarMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, outcomes: Array<string>): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
+    const endTime = new ethers.utils.BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
+    const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
+    const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
+    return await this.createScalarMarket(universe, outcomes, endTime, fee, affiliateFeeDivisor, this.account);
+  }
+
   public async placeOrder(
     market: string,
     type: ethers.utils.BigNumber,
