@@ -1,5 +1,6 @@
 import { string, number } from "prop-types";
 import { AddressZero } from "ethers/constants";
+import { MarketType } from "../types";
 
 type Address = string;
 type Bytes32 = string;
@@ -67,7 +68,7 @@ export interface MarketCreatedLog extends Log, Doc {
   marketCreator: string;
   minPrice: string;
   maxPrice: string;
-  marketType: string;
+  marketType: MarketType;
   numTicks: string;
   outcomes: Array<string>;
 }

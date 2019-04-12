@@ -92,8 +92,7 @@ export class Markets<TBigNumber> {
       const marketFinalizedLogs = await this.db.findMarketFinalizedLogs({selector: {market: marketCreatedLog.market}});
       if (marketFinalizedLogs.length > 0) {
         finalizationBlockNumber = marketFinalizedLogs[0].blockNumber;
-        // TODO Update line below once finalizationTime has been added to MarketFinalized event
-        finalizationTime = marketFinalizedLogs[0].timestamp;
+        // TODO Update finalizationTime once finalizationTime has been added to MarketFinalized event
       }
 
       let volume = "0";
