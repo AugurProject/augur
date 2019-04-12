@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js";
 import chalk from "chalk";
 import speedomatic from "speedomatic";
 import getOrderToFill from "./get-order-to-fill";
-import debugOptions from "../../debug-options";
+
 
 function fillOrder(
   augur,

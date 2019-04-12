@@ -1,10 +1,9 @@
 import chalk from "chalk";
 import immutableDelete from "immutable-delete";
-import printTransactionStatus from "./print-transaction-status";
+import { printTransactionStatus } from "./print-transaction-status";
 import speedomatic from "speedomatic";
-import debugOptions from "../../debug-options";
 
-function createMarket(
+export function createMarket(
   augur,
   market,
   designatedReporterAddress,
@@ -23,7 +22,8 @@ function createMarket(
     default:
       createMarketOfType = augur.createMarket.createYesNoMarket;
   }
-  let createMarketParams = Object.assign(
+
+  const createMarketParams = Object.assign(
     {},
     immutableDelete(market, ["orderBook", "marketType"]),
     {
@@ -33,34 +33,27 @@ function createMarket(
       _affiliateFeeDivisor: market._affiliateFeeDivisor,
       _designatedReporterAddress: designatedReporterAddress,
       onSent: function(res) {
-        if (debugOptions.cannedMarkets)
-          console.log(
-            chalk.green.dim("createMarket sent:"),
-            chalk.green(res.hash)
-          );
+        console.log(
+          chalk.green.dim("createMarket sent:"),
+          chalk.green(res.hash)
+        );
       },
       onSuccess: function(res) {
-        if (debugOptions.cannedMarkets) {
-          console.log(
-            chalk.green.dim("createMarket success:"),
-            chalk.green(res.callReturn)
-          );
-          printTransactionStatus(augur.rpc, res.hash);
-        }
+        console.log(
+          chalk.green.dim("createMarket success:"),
+          chalk.green(res.callReturn)
+        );
+        printTransactionStatus(augur.rpc, res.hash);
         callback(null, res.callReturn);
       },
       onFailed: function(err) {
-        if (debugOptions.cannedMarkets) {
-          console.error(chalk.red.bold("createMarket failed:"), err, market);
-          if (err != null) printTransactionStatus(augur.rpc, err.hash);
-        }
+        console.error(chalk.red.bold("createMarket failed:"), err, market);
+        if (err != null) printTransactionStatus(augur.rpc, err.hash);
         callback(err);
       }
     }
   );
-  if (debugOptions.cannedMarkets)
-    console.log("createMarket params:", createMarketParams);
+  console.log("createMarket params:", createMarketParams);
   createMarketOfType(createMarketParams);
 }
 
-export default createMarket;

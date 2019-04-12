@@ -1,7 +1,6 @@
 import chalk from "chalk";
 import speedomatic from "speedomatic";
-import printTransactionStatus from "./print-transaction-status";
-import debugOptions from "../../debug-options";
+import { printTransactionStatus } from "./print-transaction-status";
 
 let USE_PUBLIC_CREATE_ORDER = process.env.USE_PUBLIC_TRADE !== "true"; // set to false to test trading.placeTrade endpoint
 

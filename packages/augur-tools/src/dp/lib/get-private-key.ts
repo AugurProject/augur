@@ -3,7 +3,7 @@ import chalk from "chalk";
 import keythereum from "keythereum";
 import speedomatic from "speedomatic";
 import readlineSync from "readline-sync";
-import debugOptions from "../../debug-options";
+
 
 interface Account {
   accountType: string;

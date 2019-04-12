@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import debugOptions from "../../debug-options";
+
 
 function cancelOrder(augur, orderId, orderType, marketId, outcome, auth, callback) {
   augur.api.Orders.getAmount({ _orderId: orderId }, function(err, amount) {
@@ -9,7 +9,7 @@ function cancelOrder(augur, orderId, orderType, marketId, outcome, auth, callbac
       meta: auth,
       tx: { gas: augur.constants.CANCEL_ORDER_GAS },
       _orderId: orderId,
-      onSent: function() {
+      onSent: function() {º
       },
       onSuccess: function() {
         if (debugOptions.cannedMarkets) console.log(chalk.white.dim(new Date().toString()), chalk.green(marketId + " " + outcome + " ") + chalk.red.bold(orderType) + chalk.green(" " + orderId));

@@ -3,16 +3,16 @@ import ethers from "ethers";
 import path from "path";
 import { assign } from "lodash";
 import Augur from "augur.js";
-import debugOptions from "../debug-options";
-import connectionEndpoints from "../connection-endpoints";
+
+import { ethereumNode } from "./connection-endpoints";
 import core from "@augurproject/core";
 import { getPrivateKeyFromString } from "./lib/get-private-key";
 import parrotSay from "parrotsay-api";
 import chalk from "chalk";
 import columnify from "columnify";
-import repFaucet from "../rep-faucet";
-import createMarkets from "./create-markets";
-import createOrders from "./create-orders";
+import repFaucet from "./rep-faucet";
+import { createMarkets } from "./create-markets";
+import { _createOrders } from "./create-orders";
 
 const COMMANDS = [
   "create-markets",
@@ -51,7 +51,7 @@ function help() {
     console.log(chalk.underline("\nConfiguration"));
     console.log(
       "Set the following " +
-      chalk.bold("environment variables") +
+      chalk.bold("environment constiables") +
       " to modify the behavior of the deployment process"
     );
     console.log("ex: USE_NORMAL_TIME=false dp deploy aura");
@@ -81,7 +81,7 @@ function help() {
           {
             env: "GAS_PRICE_IN_NANOETH",
             Description:
-              "The transaction gas price to use, specified in nanoeth (default: varies)"
+              "The transaction gas price to use, specified in nanoeth (default: consties)"
           }
         ],
         {
@@ -169,15 +169,15 @@ function runCannedData(command, networks, callback) {
   // if it doesn't work
   networkConfigurations.forEach(function(network) {
     const augur = new Augur();
-    augur.rpc.setDebugOptions(debugOptions);
+
 
     const auth = getPrivateKeyFromString(network.privateKey);
-    const ethereumNode = assign({}, connectionEndpoints.ethereumNode, {
+    const ethereumNode = assign({}, ethereumNode, {
       http: network.http
     });
     switch (command) {
       case "upload": {
-        var provider = new ethers.providers.JsonRpcProvider(network.http);
+        const provider = new ethers.providers.JsonRpcProvider(network.http);
         core.EthersFastSubmitWallet.create(network.privateKey, provider).then(function(signer) {
           const dependencies = new core.ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
           core.ContractDeployer.deployToNetwork(network, dependencies, provider, signer, deployerConfiguration).then(function() {
@@ -233,14 +233,14 @@ function runCannedData(command, networks, callback) {
           },
           function(err) {
             if (err) return callback(err);
-            createOrders(augur, auth, callback);
+            _createOrders(augur, auth, callback);
           }
         );
         break;
       }
 
       case "deploy": {
-        var provider = new ethers.providers.JsonRpcProvider(network.http);
+        const provider = new ethers.providers.JsonRpcProvider(network.http);
         core.EthersFastSubmitWallet.create(network.privateKey, provider).then(function(signer) {
           const dependencies = new core.ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
           core.ContractDeployer.deployToNetwork(network, dependencies, provider, signer, deployerConfiguration).then(function() {
@@ -285,8 +285,8 @@ function showError(error) {
 }
 
 if (require.main === module) {
-  var command = process.argv[2];
-  var networks = process.argv.slice(3);
+  const command = process.argv[2];
+  const networks = process.argv.slice(3);
 
   if (networks.length === 0) {
     networks = ["environment"];
@@ -307,3 +307,6 @@ if (require.main === module) {
     }
   }
 }
+
+
+

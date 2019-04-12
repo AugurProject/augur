@@ -1,8 +1,8 @@
 import async from "async";
 import chalk from "chalk";
-import createOrderBook from "./create-order-book";
-import selectCannedMarket from "./select-canned-market";
-import debugOptions from "../../debug-options";
+import {createOrderBook } from "./create-order-book";
+import {selectCannedMarket} from "./select-canned-market";
+
 
 function createOrders(augur, marketIds, auth, callback) {
   augur.markets.getMarketsInfo({ marketIds: marketIds }, function(err, marketsInfo) {

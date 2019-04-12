@@ -6,11 +6,11 @@ import Augur from "augur.js";
 import verifyOrderBook from "./lib/verify-order-book";
 import selectCannedMarket from "./lib/select-canned-market";
 import connectionEndpoints from "../connection-endpoints";
-import debugOptions from "../debug-options";
+
 
 const augur = new Augur();
 
-augur.rpc.setDebugOptions(debugOptions);
+
 
 augur.connect(connectionEndpoints, function(err) {
   if (err) return console.error(err);

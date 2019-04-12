@@ -1,7 +1,7 @@
 import async from "async";
 import chalk from "chalk";
 import cancelOrder from "./cancel-order";
-import debugOptions from "../../debug-options";
+
 
 function cancelOrders(augur, creator, universe, auth, callback) {
   console.log(chalk.cyan("Canceling orders for"), chalk.green(creator), chalk.cyan("in universe"), chalk.green(universe));

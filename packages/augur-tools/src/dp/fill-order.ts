@@ -5,13 +5,13 @@ import approveAugurEternalApprovalValue from "./lib/approve-augur-eternal-approv
 import fillBothOrderTypes from "./lib/fill-both-order-types";
 import { getPrivateKey } from "./lib/get-private-key";
 import connectionEndpoints from "../connection-endpoints";
-import debugOptions from "../debug-options";
+
 
 const keystoreFilePath = process.argv[2];
 
 const augur = new Augur();
 
-augur.rpc.setDebugOptions(debugOptions);
+
 
 getPrivateKey(keystoreFilePath, function(err, auth) {
   if (err) return console.error("getPrivateKey failed:", err);

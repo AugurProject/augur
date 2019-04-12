@@ -4,7 +4,7 @@ import Augur from "augur.js";
 import fundAccounts from "./lib/fund-accounts";
 import { getPrivateKey } from "./lib/get-private-key";
 import connectionEndpoints from "../connection-endpoints";
-import debugOptions from "../debug-options";
+
 
 const etherFundingPerAccount = process.env.ETHER_FUNDING_PER_ACCOUNT || "10000";
 
@@ -19,7 +19,7 @@ const keystoreFilePath = process.argv[3];
 
 const augur = new Augur();
 
-augur.rpc.setDebugOptions(debugOptions);
+
 
 export default fundAccounts;
 

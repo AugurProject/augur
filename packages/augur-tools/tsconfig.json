@@ -2,11 +2,22 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "src"
+    "rootDir": "src",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
-  "references": [{
+  "references": [
+    {
       "path": "../blockstream-adapters"
-    }, {
-    "path" : "../augur-artifacts"
-  }]
+    },
+    {
+      "path": "../augur-artifacts"
+    },
+    {
+      "path": "../augur-api"
+    },
+    {
+      "path": "../augur-types"
+    }
+  ]
 }

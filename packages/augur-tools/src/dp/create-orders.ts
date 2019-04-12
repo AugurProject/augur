@@ -1,13 +1,13 @@
 import chalk from "chalk";
 
-import Augur from "augur.js";
 import approveAugurEternalApprovalValue from "./lib/approve-augur-eternal-approval-value";
 import createOrders from "./lib/create-orders";
 import { getPrivateKey } from "./lib/get-private-key";
-import connectionEndpoints from "../connection-endpoints";
-import debugOptions from "../debug-options";
+import * as connectionEndpoints from "./connection-endpoints";
 
-export function _createOrders(augur, auth, callback) {
+import { Augur } from "@augurproject/api";
+
+export function _createOrders(augur:Augur, auth, callback) {
   console.log(chalk.cyan.dim("networkId:"), chalk.cyan(augur.rpc.getNetworkID()));
   const universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
   console.log(chalk.green.dim("universe:"), chalk.green(universe));
@@ -27,9 +27,7 @@ export function _createOrders(augur, auth, callback) {
 if (require.main === module) {
   const keystoreFilePath = process.argv[2];
 
-  var augur = new Augur();
-
-  augur.rpc.setDebugOptions(debugOptions);
+  const augur = new Augur();
 
   getPrivateKey(keystoreFilePath, function(err, auth) {
     if (err) return console.error("getPrivateKey failed:", err);

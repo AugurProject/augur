@@ -3,27 +3,25 @@ import BigNumber from "bignumber.js";
 import chalk from "chalk";
 import speedomatic from "speedomatic";
 import approveAugurEternalApprovalValue from "./approve-augur-eternal-approval-value";
-import createMarket from "./create-market";
-import createOrderBook from "./create-order-book";
+import { createMarket } from "./create-market";
+import { createOrderBook } from "./create-order-book";
 import getBalances from "./get-balances";
-import cannedMarketsData from "../data/canned-markets";
-import debugOptions from "../../debug-options";
+import {cannedMarketsData} from "../data/canned-markets";
+import { Addresses } from "@augurproject/artifacts";
 
-function createMarkets(augur, auth, callback) {
+export function createMarkets(augur, auth, callback) {
   let networkId = augur.rpc.getNetworkID();
   let universe = augur.contracts.addresses[networkId].Universe;
-  if (debugOptions.cannedMarkets) {
-    console.log(chalk.cyan("Network"), chalk.green(networkId));
-    console.log(chalk.cyan("Account"), chalk.green(auth.address));
-  }
+  console.log(chalk.cyan("Network"), chalk.green(networkId));
+  console.log(chalk.cyan("Account"), chalk.green(auth.address));
   getBalances(augur, universe, auth.address, function(err, balances) {
     if (err) return console.error("getBalances failed:", err);
-    if (debugOptions.cannedMarkets) {
-      console.log(chalk.cyan("Balances:"));
-      console.log("Ether:      " + chalk.green(balances.ether));
-      console.log("Reputation: " + chalk.green(balances.reputation));
-    }
-    let cash = augur.contracts.addresses[networkId].Cash;
+
+    console.log(chalk.cyan("Balances:"));
+    console.log("Ether:      " + chalk.green(balances.ether));
+    console.log("Reputation: " + chalk.green(balances.reputation));
+
+    let cash = Addresses[augur.networkId].Cash;
     augur.api.Cash.depositEther({
       meta: auth, tx: {
         to: cash,
@@ -60,4 +58,3 @@ function createMarkets(augur, auth, callback) {
   });
 }
 
-export default createMarkets;

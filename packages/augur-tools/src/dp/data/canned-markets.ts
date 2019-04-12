@@ -1,48 +1,64 @@
-import yesNoOrderBook from "./yes-no-order-book";
-import singleOutcomeAsks from "./single-outcome-asks.json";
-import singleOutcomeBids from "./single-outcome-bids.json";
+import { singleOutcomeAsks, singleOutcomeBids, yesNoOrderBook } from "./yes-no-order-book";
 
 function daysInMonth(month:number, year:number) {
   return new Date(year, month, 0).getDate();
 }
 
-function addMonths(date, months) {
-  let target_month = date.getMonth() + months;
-  let year = date.getFullYear() + parseInt(target_month / 12);
-  let month = target_month % 12;
-  let day = date.getDate();
-  let last_day = daysInMonth(year, month);
-  if (day > last_day) {
-    day = last_day;
-  }
-  return new Date(year, month, day);
+function addMonths(date:Date, months:number) {
+  const target_month = date.getMonth() + months;
+  const year = date.getFullYear() + (target_month / 12);
+  const month = target_month % 12;
+  const day = date.getDate();
+  const last_day = daysInMonth(year, month);
+
+  return new Date(year, month, (day > last_day) ? last_day : day);
 }
 
-let midnightTomorrow = new Date();
+const midnightTomorrow = new Date();
 midnightTomorrow.setDate(midnightTomorrow.getDate() + 1);
 midnightTomorrow.setHours(0, 0, 0, 0);
-let closingBellTomorrow = new Date();
+const closingBellTomorrow = new Date();
 closingBellTomorrow.setDate(closingBellTomorrow.getDate() + 1);
 closingBellTomorrow.setHours(20, 0, 0, 0);
-let today = new Date();
+const today = new Date();
 // needs to be less than 90 days. todo: update when contracts allow for 6 months
 today.setDate(today.getDate() - 3);
-let inOneMonths = addMonths(today, 1);
-let inTwoMonths = addMonths(today, 2);
-let inThreeMonths = addMonths(today, 3);
-let inFourMonths = addMonths(today, 1);
-let inFiveMonths = addMonths(today, 2);
-let inSixMonths = addMonths(today, 3);
-let thisYear = today.getUTCFullYear();
+const inOneMonths = addMonths(today, 1);
+const inTwoMonths = addMonths(today, 2);
+const inThreeMonths = addMonths(today, 3);
+const inFourMonths = addMonths(today, 1);
+const inFiveMonths = addMonths(today, 2);
+const inSixMonths = addMonths(today, 3);
+const thisYear = today.getUTCFullYear();
 
-export default [
+interface CannedMarketData {
+  marketType: string;
+  _description: string;
+  _endTime: number;
+  _affiliateFeeDivisor: number;
+  _topic: string;
+  _extraInfo: {
+    longDescription?: string;
+    resolutionSource?: string;
+    _scalarDenomination?: string;
+    tags?: string[]
+  };
+  _minPrice?: string;
+  _maxPrice?: string;
+  _outcomes?: Array<string>;
+  orderBook?: any;
+  tickSize?: string;
+
+}
+
+export const cannedMarketsData:Array<CannedMarketData> = [
   {
     marketType: "yesNo",
     _description:
       "Will SpaceX successfully complete a manned flight to the International Space Station by the end of " +
       thisYear +
       "?",
-    _endTime: parseInt(inOneMonths.getTime() / 1000, 10),
+    _endTime: inOneMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "space",
     _extraInfo: {
@@ -57,7 +73,7 @@ export default [
       "Will SpaceX successfully complete a manned flight beyond Earth orbit by " +
       inOneMonths.toDateString() +
       "?",
-    _endTime: parseInt(inOneMonths.getTime() / 1000, 10),
+    _endTime: inOneMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "space",
     _extraInfo: {
@@ -72,7 +88,7 @@ export default [
       "Will SpaceX successfully complete a Mars landing (manned or unmanned) by " +
       inTwoMonths.toDateString() +
       "?",
-    _endTime: parseInt(inTwoMonths.getTime() / 1000, 10),
+    _endTime: inTwoMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "space",
     _extraInfo: {
@@ -88,7 +104,7 @@ export default [
       "Will California secede from the United States before, " +
       inTwoMonths.toDateString() +
       "?",
-    _endTime: parseInt(inTwoMonths.getTime() / 1000, 10),
+    _endTime: inTwoMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "politics",
     _extraInfo: {
@@ -105,7 +121,7 @@ export default [
       "Will the Dow Jones Industrial Average close at a higher price on " +
       closingBellTomorrow.toDateString() +
       " than it closed at the previous day?",
-    _endTime: parseInt(closingBellTomorrow.getTime() / 1000, 10),
+    _endTime: closingBellTomorrow.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "finance",
     _extraInfo: {
@@ -122,7 +138,7 @@ export default [
       "Will Augur's live release happen by " +
       inThreeMonths.toDateString() +
       "?",
-    _endTime: parseInt(inThreeMonths.getTime() / 1000, 10),
+    _endTime: inThreeMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "Augur",
     _extraInfo: {
@@ -138,7 +154,7 @@ export default [
       "Will Jair Messias Bolsonaro be elected the president of Brazil in " +
       inThreeMonths.toDateString() +
       "?",
-    _endTime: parseInt(inThreeMonths.getTime() / 1000, 10),
+    _endTime: inThreeMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "politics",
     _extraInfo: {
@@ -154,7 +170,7 @@ export default [
       "Will Ethereum trade at $2000 or higher at any time before the end of " +
       inFourMonths.toDateString() +
       "?",
-    _endTime: parseInt(inFourMonths.getTime() / 1000, 10),
+    _endTime: inFourMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "crypto",
     _extraInfo: {
@@ -170,7 +186,7 @@ export default [
       "Will the Larsen B ice shelf collapse by " +
       inFourMonths.toDateString() +
       "?",
-    _endTime: parseInt(inFourMonths.getTime() / 1000, 10),
+    _endTime: inFourMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "climate",
     _extraInfo: {
@@ -185,7 +201,7 @@ export default [
       "Will the Golden State Warriors win the Championship on " +
       inFiveMonths.toDateString() +
       "?",
-    _endTime: parseInt(inFiveMonths.getTime() / 1000, 10),
+    _endTime: inFiveMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "sports",
     _extraInfo: {
@@ -201,7 +217,7 @@ export default [
       "Will antibiotics be outlawed for agricultural use in China by " +
       inFiveMonths.toDateString() +
       "?",
-    _endTime: parseInt(inFiveMonths.getTime() / 1000, 10),
+    _endTime: inFiveMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "agriculture",
     _extraInfo: {
@@ -217,7 +233,7 @@ export default [
       "High temperature (in degrees Fahrenheit) on " +
       today.toDateString() +
       " at the San Francisco International Airport, as reported by Weather Underground",
-    _endTime: parseInt(midnightTomorrow.getTime() / 1000, 10),
+    _endTime: midnightTomorrow.getTime() / 1000,
     _minPrice: "-10",
     _maxPrice: "120",
     tickSize: "0.1",
@@ -258,7 +274,7 @@ export default [
     _description:
       "Average tropospheric methane concentration (in parts-per-billion) on " +
       inFiveMonths.toDateString(),
-    _endTime: parseInt(inFiveMonths.getTime() / 1000, 10),
+    _endTime: inFiveMonths.getTime() / 1000,
     _minPrice: "600",
     _maxPrice: "5000",
     tickSize: ".01",
@@ -276,7 +292,7 @@ export default [
     marketType: "scalar",
     _description:
       "New antibiotics approved by the FDA on " + inSixMonths.toDateString(),
-    _endTime: parseInt(inSixMonths.getTime() / 1000, 10),
+    _endTime: inSixMonths.getTime() / 1000,
     _minPrice: "0",
     _maxPrice: "30",
     tickSize: "1",
@@ -313,7 +329,7 @@ export default [
       "Millions of Tether tokens issued on " +
       today.toDateString() +
       " (round down)",
-    _endTime: parseInt(midnightTomorrow.getTime() / 1000, 10),
+    _endTime: midnightTomorrow.getTime() / 1000,
     _minPrice: "0",
     _maxPrice: "10000",
     tickSize: "1",
@@ -350,7 +366,7 @@ export default [
       "Who will win the University of Georgia vs. University of Florida football game on " +
       midnightTomorrow.toDateString() +
       "?",
-    _endTime: parseInt(midnightTomorrow.getTime() / 1000, 10),
+    _endTime: midnightTomorrow.getTime() / 1000,
     _outcomes: ["Georgia", "Florida"],
     _affiliateFeeDivisor: 4,
     _topic: "sports",
@@ -377,7 +393,7 @@ export default [
       "What will be the status of the U.S. electoral college on " +
       midnightTomorrow.toDateString() +
       "?",
-    _endTime: parseInt(midnightTomorrow.getTime() / 1000, 10),
+    _endTime: midnightTomorrow.getTime() / 1000,
     _outcomes: [
       "Unchanged from 2016",
       "Existing, but changed from 2016",
@@ -398,7 +414,7 @@ export default [
       "What will be the number one killer in the United States by " +
       inOneMonths.toDateString() +
       "?",
-    _endTime: parseInt(inOneMonths.getTime() / 1000, 10),
+    _endTime: inOneMonths.getTime() / 1000,
     _outcomes: [
       "cancer",
       "heart attacks",
@@ -438,7 +454,7 @@ export default [
       "Which city will have the lowest median single-family home price on " +
       inOneMonths.toDateString() +
       "?",
-    _endTime: parseInt(inOneMonths.getTime() / 1000, 10),
+    _endTime: inOneMonths.getTime() / 1000,
     _outcomes: [
       "London",
       "New York",
@@ -481,7 +497,7 @@ export default [
       "Which city will have the highest median single-family home price on " +
       inTwoMonths.toDateString() +
       "?",
-    _endTime: parseInt(inTwoMonths.getTime() / 1000, 10),
+    _endTime: inTwoMonths.getTime() / 1000,
     _outcomes: [
       "London",
       "New York",

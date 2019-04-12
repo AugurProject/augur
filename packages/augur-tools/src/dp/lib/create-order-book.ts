@@ -1,9 +1,8 @@
 import async from "async";
 import chalk from "chalk";
 import createOrder from "./create-order";
-import debugOptions from "../../debug-options";
 
-function createOrderBook(augur, marketId, numOutcomes, maxPrice, minPrice, numTicks, orderBook, auth, callback) {
+export function createOrderBook(augur, marketId, numOutcomes, maxPrice, minPrice, numTicks, orderBook, auth, callback) {
   async.forEachOfLimit(orderBook, augur.constants.PARALLEL_LIMIT, function(orders, orderType, nextOrderType) {
     let tradeGroupId = augur.trading.generateTradeGroupId();
     if (debugOptions.cannedMarkets) console.log(chalk.cyan.dim("Creating"), chalk.cyan(orderType), chalk.cyan.dim("orders - trade group ID"), chalk.green(tradeGroupId));
@@ -15,5 +14,3 @@ function createOrderBook(augur, marketId, numOutcomes, maxPrice, minPrice, numTi
     }, nextOrderType);
   }, callback);
 }
-
-export default createOrderBook;

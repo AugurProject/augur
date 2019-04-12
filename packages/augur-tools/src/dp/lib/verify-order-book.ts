@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import chalk from "chalk";
-import debugOptions from "../../debug-options";
+
 
 function verifyOrderBook(augur, marketId, orderState, minimumExpectedOrderBook, callback) {
   if (debugOptions.cannedMarkets) {

@@ -5,18 +5,17 @@
 import chalk from "chalk";
 
 import Augur from "augur.js";
-import createMarkets from "./lib/create-markets";
+import { createMarkets } from "./lib/create-markets";
 import { getPrivateKey } from "./lib/get-private-key";
-import connectionEndpoints from "../connection-endpoints";
-import debugOptions from "../debug-options";
+import * as connectionEndpoints from "./connection-endpoints";
 
 const keystoreFilePath = process.argv[2];
 
 const augur = new Augur();
 
-augur.rpc.setDebugOptions(debugOptions);
 
-export default createMarkets;
+
+export { createMarkets };
 
 if (require.main === module) {
   getPrivateKey(keystoreFilePath, function(err, auth) {
