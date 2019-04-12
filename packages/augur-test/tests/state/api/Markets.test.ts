@@ -204,9 +204,10 @@ test("State API :: Markets :: getMarketsInfo", async () => {
     ]
   );
 
-  // TODO Add checks for reportingState, needsMigration, finalizationBlockNumber, & finalizationTime
-  // by reporting, disputing, & finalizing a market
+  // TODO Add checks for outcome prices
 
-  // TODO Add checks for consensus, finalizationTime, outcome prices, & block timestamp
-  // once more logs have been added
+  // TODO Add checks for reportingState, needsMigration, finalizationBlockNumber,
+  // & finalizationTime by reporting, disputing, & finalizing a market
+
+  // TODO Add checks for consensus & finalizationTime once more logs have been added
 }, 60000);
