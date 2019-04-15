@@ -214,7 +214,7 @@ export class ContractAPI {
   public async setTimestamp(timestamp: ethers.utils.BigNumber): Promise<void> {
     const time = this.augur.contracts.getTime();
 
-    if (this.augur.contracts.isTimeControlled(time)) {
+        if (this.augur.contracts.isTimeControlled(time)) {
       await time.setTimestamp(timestamp);
     } else {
       throw Error("Cannot set timestamp because Time contract is not TimeControlled");

@@ -67,7 +67,7 @@ export interface MarketInfo {
   resolutionSource: string|null;
   numTicks: string;
   tickSize: string;
-  consensus: null, // TODO Update once consensus has been added to MarketFinalized Event
+  consensus: Array<number>|null,
   outcomes: Array<MarketInfoOutcome>;
 }
 
@@ -82,7 +82,7 @@ export class Markets<TBigNumber> {
     // TODO
   }
 
-  private getMarketOutcomes(marketCreatedLog: MarketCreatedLog): Array<MarketInfoOutcome> {
+  private async getMarketOutcomes(marketCreatedLog: MarketCreatedLog): Promise<Array<MarketInfoOutcome>> {
     let outcomes: Array<MarketInfoOutcome> = [];
     // TODO Set outcome prices
     if (marketCreatedLog.outcomes.length === 0) {
@@ -151,13 +151,13 @@ export class Markets<TBigNumber> {
         if (initialReportSubmittedLogs.length > 0) {
           return MarketInfoReportingState.OPEN_REPORTING;
         } else {
-          const disputeCrowdsourcerCompletedLogs = (await this.db.findDisputeCrowdsourcerCompletedLogs({selector: {market: marketCreatedLog.market}})).reverse();
-          // TODO Finish if statement below
-          if (disputeCrowdsourcerCompletedLogs[0].pacingOn) {
-            return MarketInfoReportingState.AWAITING_NEXT_WINDOW;
+          if (marketFinalizedLogs.length > 0) {
+            return MarketInfoReportingState.FINALIZED;
           } else {
-            if (marketFinalizedLogs.length > 0) {
-              return MarketInfoReportingState.FINALIZED;
+            const disputeCrowdsourcerCompletedLogs = (await this.db.findDisputeCrowdsourcerCompletedLogs({selector: {market: marketCreatedLog.market}})).reverse();
+            // TODO Finish if statement below
+            if (disputeCrowdsourcerCompletedLogs[0].pacingOn) {
+              return MarketInfoReportingState.AWAITING_NEXT_WINDOW;
             } else {
               return MarketInfoReportingState.CROWDSOURCING_DISPUTE;
             }
@@ -186,10 +186,11 @@ export class Markets<TBigNumber> {
       const reportingState = await this.getMarketReportingState(marketCreatedLog, marketFinalizedLogs);
       const needsMigration = (reportingState === MarketInfoReportingState.AWAITING_FORK_MIGRATION) ? true : false;
 
-      const consensus = null; // TODO Set once consensus has been added to MarketFinalized event
+      let consensus = null;
       let finalizationBlockNumber = null;
       let finalizationTime = null;
       if (marketFinalizedLogs.length > 0) {
+        consensus = marketFinalizedLogs[0].winningPayoutNumerators;
         finalizationBlockNumber = marketFinalizedLogs[0].blockNumber;
         finalizationTime = marketFinalizedLogs[0].timestamp;
       }
@@ -238,7 +239,7 @@ export class Markets<TBigNumber> {
         numTicks: numTicks.toString(10),
         tickSize: tickSize.toString(10),
         consensus,
-        outcomes: this.getMarketOutcomes(marketCreatedLog)
+        outcomes: await this.getMarketOutcomes(marketCreatedLog)
       });
     }));
   }
