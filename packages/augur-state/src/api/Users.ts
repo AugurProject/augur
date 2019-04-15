@@ -1,30 +1,34 @@
-// TODO: Define Users class
+import { DB } from "../db/DB";
+import { Getter } from "./Router";
 
-export interface GetUserTradingPositionsParams {
-  universe: string,
-  creator?: string,
-  category?: string,
-  search?: string,
-  reportingState?: string,
-  disputeWindow?: string,
-  designatedReporter?: string,
-  maxFee?: number,
-  hasOrders?: boolean,
-}
+import * as t from "io-ts";
 
 export class Users {
-  constructor() {
-  }
+  public static GetUserTradingPositionsParams = t.intersection([t.type({
+    universe: t.string,
+  }), t.partial({
+    creator: t.string,
+    category: t.string,
+    search: t.string,
+    reportingState: t.string,
+    disputeWindow: t.string,
+    designatedReporter: t.string,
+    maxFee: t.number,
+    hasOrders: t.boolean,
+  })]);
 
-  public async getUserTradingPositions(params: GetUserTradingPositionsParams): Promise<void> {
+  @Getter("GetUserTradingPositionsParams")
+  public async getUserTradingPositions(params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<void> {
     // TODO
   }
 
-  public async getProfitLoss(params: GetUserTradingPositionsParams): Promise<void> {
+  @Getter("GetUserTradingPositionsParams")
+  public async getProfitLoss(params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<void> {
     // TODO
   }
 
-  public async getProfitLossSummary(params: GetUserTradingPositionsParams): Promise<void> {
+  @Getter("GetUserTradingPositionsParams")
+  public async getProfitLossSummary(params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<void> {
     // TODO
   }
 }

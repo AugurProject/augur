@@ -1,33 +1,33 @@
-import {SortLimit} from './types';
+import { DB } from "../db/DB";
+import { Getter } from "./Router";
+import { SortLimit } from "./types";
 
-export interface GetMarketsParamsSpecific {
-  universe: string,
-  creator?: string,
-  category?: string,
-  search?: string,
-  reportingState?: string,
-  disputeWindow?: string,
-  designatedReporter?: string,
-  maxFee?: number,
-  hasOrders?: boolean,
-}
+import * as t from "io-ts";
 
-export interface GetMarketsParams extends GetMarketsParamsSpecific, SortLimit {
-}
-
-export interface MarketsInfoParams {
-  marketIds: Array<string>
-}
+const GetMarketsParamsSpecific = t.intersection([t.type({
+  universe: t.string,
+}), t.partial({
+  creator: t.string,
+  category: t.string,
+  search: t.string,
+  reportingState: t.string,
+  disputeWindow: t.string,
+  designatedReporter: t.string,
+  maxFee: t.number,
+  hasOrders: t.boolean,
+})]);
 
 export class Markets {
-  constructor() {
-  }
+  public static GetMarketsParams = t.intersection([GetMarketsParamsSpecific, SortLimit]);
+  public static MarketsInfoParams = t.type({ marketIds: t.array(t.string) });
 
-  public async getMarkets(params: GetMarketsParams): Promise<void> {
+  @Getter("GetMarketsParams")
+  public static async getMarkets<TBigNumber>(db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<void> {
     // TODO
   }
 
-  public async getMarketsInfo(params: MarketsInfoParams): Promise<void> {
+  @Getter("MarketsInfoParams")
+  public static async getMarketsInfo<TBigNumber>(db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.MarketsInfoParams>): Promise<void> {
     // TODO
   }
 }
