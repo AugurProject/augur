@@ -63,7 +63,7 @@ test("State API :: Trading :: getTradingHistory", async () => {
   );
 
   // Get trades by user
-  let trades: Array<MarketTradingHistory> = await api.trading.getTradingHistory({
+  let trades: Array<MarketTradingHistory> = await api.route("getTradingHistory", {
     account: ACCOUNTS[1].publicKey,
   });
 
@@ -79,7 +79,7 @@ test("State API :: Trading :: getTradingHistory", async () => {
   await expect(trade.selfFilled).toEqual(false);
 
   // Get trades by market
-  trades = await api.trading.getTradingHistory({
+  trades = await api.route("getTradingHistory", {
     marketId: market.address
   });
 

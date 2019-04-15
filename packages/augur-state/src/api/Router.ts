@@ -31,8 +31,6 @@ export class Router<TBigNumber> {
   constructor(augurAPI: Augur<TBigNumber>, db: DB<TBigNumber>) {
     this.augurAPI = augurAPI;
     this.db = db;
-
-    console.log("Blah de blah");
   }
 
   public route(name: string, params: any): Promise<any> {

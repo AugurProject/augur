@@ -21,12 +21,7 @@ beforeAll(async () => {
 test("State API :: Markets", async () => {
   const api = new API<any>(augur, db);
 
-  await expect(await api.markets.getMarkets({
+  await expect(await api.route("getMarkets", {
     universe: augur.addresses.Universe,
   })).toEqual(undefined);
-});
-
-test("State API :: Users", async () => {
-  const api = new API<ethers.utils.BigNumber>(augur, db);
-  await expect(api.users).toEqual({});
 });

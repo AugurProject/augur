@@ -3,7 +3,6 @@ import { DB } from "../db/DB";
 import { Router } from "./Router";
 
 // Getters are evaluated by importing these files in this matter
-import "./GetUserState";
 import "./Markets";
 import "./Trading";
 import "./Users";
