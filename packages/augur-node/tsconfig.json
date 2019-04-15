@@ -9,7 +9,8 @@
     "noImplicitAny": false
   },
   "include": [
-    "src"
+    "src",
+    "./config.json"
   ],
   "exclude": [
     "**/*.test.ts"
@@ -22,10 +23,16 @@
       "path": "../augur-state"
     },
     {
+      "path": "../blockstream-adapters"
+    },
+    {
       "path": "../ethersjs-provider"
     },
     {
       "path": "../speedomatic"
+    },
+    {
+      "path": "../contract-dependencies-ethers"
     }
   ]
 }

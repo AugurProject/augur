@@ -18,6 +18,9 @@
     },
     {
       "path": "../augur-types"
+    },
+    {
+      "path": "../contract-dependencies-ethers"
     }
   ]
 }
