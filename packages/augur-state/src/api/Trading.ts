@@ -107,6 +107,4 @@ export class Trading {
       return trades;
     }, [] as Array<MarketTradingHistory>);
   }
-
-  private readonly db: DB<TBigNumber>;
 }
