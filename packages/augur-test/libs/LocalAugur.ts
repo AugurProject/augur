@@ -15,7 +15,7 @@ export type Account = {
   secretKey: string;
   publicKey: string;
   balance: number;
-}
+};
 
 export type AccountList = Array<Account>;
 
@@ -76,12 +76,6 @@ export async function makeTestAugur(accounts: AccountList): Promise<Augur<ethers
   return Augur.create(provider, dependencies, addresses);
 }
 
-export async function makeAdditionalTestAugur(account: Account, provider: Provider, addresses: ContractAddresses): Promise<Augur<any>> {
-  const signer = await EthersFastSubmitWallet.create(account.secretKey, provider as EthersProvider);
-  const dependencies = new ContractDependenciesEthers(provider as EthersProvider, signer, account.publicKey);
-  return Augur.create(provider, dependencies, addresses);
-}
-
 export const ACCOUNTS: AccountList = [
   {
     secretKey: "0xa429eeb001c683cf3d8faf4b26d82dbf973fb45b04daad26e1363efd2fd43913",
@@ -92,5 +86,5 @@ export const ACCOUNTS: AccountList = [
     secretKey: "0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a",
     publicKey: "0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb",
     balance: 100000000000000000000,  // 100 ETH
-  }
+  },
 ];

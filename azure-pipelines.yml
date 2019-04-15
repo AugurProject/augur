@@ -19,7 +19,7 @@ jobs:
     steps:
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: '3.6.5'
+          versionSpec: '3.x'
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'
@@ -39,7 +39,7 @@ jobs:
     steps:
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: '3.6.5'
+          versionSpec: '3.x'
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'
@@ -121,7 +121,7 @@ jobs:
     steps:
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: '3.6.5'
+          versionSpec: '3.x'
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'

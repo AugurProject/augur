@@ -23,6 +23,7 @@ contract Universe is ITyped, IUniverse {
     IAugur public augur;
     IUniverse private parentUniverse;
     bytes32 private parentPayoutDistributionHash;
+    uint256[] public payoutNumerators;
     IV2ReputationToken private reputationToken;
     IAuction private auction;
     IMarket private forkingMarket;
@@ -52,10 +53,11 @@ contract Universe is ITyped, IUniverse {
 
     uint256 constant public INITIAL_WINDOW_ID_BUFFER = 365 days * 10 ** 8;
 
-    constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash) public {
+    constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public {
         augur = _augur;
         parentUniverse = _parentUniverse;
         parentPayoutDistributionHash = _parentPayoutDistributionHash;
+        payoutNumerators = _payoutNumerators;
         reputationToken = IReputationTokenFactory(augur.lookup("ReputationTokenFactory")).createReputationToken(augur, this, parentUniverse);
         auction = IAuctionFactory(augur.lookup("AuctionFactory")).createAuction(augur, this, reputationToken);
         marketFactory = IMarketFactory(augur.lookup("MarketFactory"));
@@ -72,7 +74,7 @@ contract Universe is ITyped, IUniverse {
         require(isContainerForMarket(IMarket(msg.sender)));
         forkingMarket = IMarket(msg.sender);
         forkEndTime = augur.getTimestamp().add(Reporting.getForkDurationSeconds());
-        augur.logUniverseForked();
+        augur.logUniverseForked(forkingMarket);
         return true;
     }
 
@@ -127,6 +129,10 @@ contract Universe is ITyped, IUniverse {
 
     function getInitialReportMinValue() public view returns (uint256) {
         return initialReportMinValue;
+    }
+
+    function getPayoutNumerators() public view returns (uint256[] memory) {
+        return payoutNumerators;
     }
 
     function getDisputeWindow(uint256 _disputeWindowId) public view returns (IDisputeWindow) {

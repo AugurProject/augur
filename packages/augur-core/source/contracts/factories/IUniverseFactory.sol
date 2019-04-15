@@ -5,5 +5,5 @@ import 'ROOT/IAugur.sol';
 
 
 contract IUniverseFactory {
-    function createUniverse(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash) public returns (IUniverse);
+    function createUniverse(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public returns (IUniverse);
 }

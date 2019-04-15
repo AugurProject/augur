@@ -69,12 +69,12 @@ contract AuctionToken is ITyped, Initializable, VariableSupplyToken, IAuctionTok
 
     function onMint(address _target, uint256 _amount) internal returns (bool) {
         maxSupply = maxSupply.max(totalSupply());
-        augur.logAuctionTokensMinted(universe, _target, _amount, totalSupply());
+        augur.logAuctionTokensMinted(universe, _target, _amount, totalSupply(), balances[_target]);
         return true;
     }
 
     function onBurn(address _target, uint256 _amount) internal returns (bool) {
-        augur.logAuctionTokensBurned(universe, _target, _amount, totalSupply());
+        augur.logAuctionTokensBurned(universe, _target, _amount, totalSupply(), balances[_target]);
         return true;
     }
 }

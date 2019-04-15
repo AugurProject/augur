@@ -123,12 +123,12 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
     }
 
     function onMint(address _target, uint256 _amount) internal returns (bool) {
-        augur.logDisputeCrowdsourcerTokensMinted(universe, _target, _amount, totalSupply());
+        augur.logDisputeCrowdsourcerTokensMinted(universe, _target, _amount, totalSupply(), balances[_target]);
         return true;
     }
 
     function onBurn(address _target, uint256 _amount) internal returns (bool) {
-        augur.logDisputeCrowdsourcerTokensBurned(universe, _target, _amount, totalSupply());
+        augur.logDisputeCrowdsourcerTokensBurned(universe, _target, _amount, totalSupply(), balances[_target]);
         return true;
     }
 

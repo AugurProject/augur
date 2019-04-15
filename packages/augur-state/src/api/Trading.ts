@@ -3,8 +3,13 @@ import { DB } from "../db/DB";
 import * as _ from "lodash";
 import { numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/api";
 import { BigNumber } from "bignumber.js";
+<<<<<<< HEAD
 import { Getter } from "./Router";
 import { TrackedUsers } from "../db/TrackedUsers";
+||||||| merged common ancestors
+import { TrackedUsers } from '../db/TrackedUsers';
+=======
+>>>>>>> b140aebee9a44605156373c279ea7701c87d4530
 
 import * as t from "io-ts";
 
@@ -74,7 +79,7 @@ export class Trading {
     return orderFilledResponse.reduce((trades: Array<MarketTradingHistory>, orderFilledDoc) => {
       const orderDoc = orders[orderFilledDoc.orderId];
       if (!orderDoc) return trades;
-      const marketDoc = markets[orderDoc.marketId];
+      const marketDoc = markets[orderFilledDoc.marketId];
       if (!marketDoc) return trades;
       const isMaker: boolean | null = params.account == null ? false : params.account === orderFilledDoc.creator;
       const orderType = orderDoc.orderType === 0 ? "buy" : "sell";
@@ -85,13 +90,12 @@ export class Trading {
       const numTicks = new BigNumber(marketDoc.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
       const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderFilledDoc.amountFilled, 16), tickSize);
-      const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderDoc.price, 16), minPrice, tickSize);
+      const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderFilledDoc.price, 16), minPrice, tickSize);
       trades.push(Object.assign(_.pick(orderFilledDoc, [
         "transactionHash",
         "logIndex",
         "orderId",
         "marketId",
-        "timestamp",
         "tradeGroupId",
       ]), {
           outcome: new BigNumber(orderFilledDoc.outcome).toNumber(),
