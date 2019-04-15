@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 import { API } from "@augurproject/state/src/api/API";
-import { MarketInfo } from "@augurproject/state/src/api/Markets";
 import { DB } from "@augurproject/state/src/db/DB";
 import {
   ACCOUNTS,
@@ -67,22 +66,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
     10,
   );
 
-  const newTime = (await yesNoMarket.getEndTime_()).add(1);
-  await john.setTimestamp(newTime);
-  await db.sync(
-    john.augur,
-    100000,
-    10,
-  );
-  await john.doInitialReport(yesNoMarket, [new ethers.utils.BigNumber(10000), new ethers.utils.BigNumber(0)]);
-/*
-  await db.sync(
-    john.augur,
-    100000,
-    10,
-  );
-
-  let markets: Array<MarketInfo> = await api.markets.getMarketsInfo({
+  let markets = await api.markets.getMarketsInfo({
     marketIds: [
       yesNoMarket.address,
       categoricalMarket.address,
@@ -90,9 +74,70 @@ test("State API :: Markets :: getMarketsInfo", async () => {
     ]
   });
 
-  console.log("REPORTING STATE: ", markets[0].reportingState);
+  expect(markets[0].reportingState).toBe("PRE_REPORTING");
+  expect(markets[1].reportingState).toBe("PRE_REPORTING");
+  expect(markets[2].reportingState).toBe("PRE_REPORTING");
 
+  let newTime = (await yesNoMarket.getEndTime_()).add(1);
+  console.log("SETTING TIME TO " + newTime.toNumber());
+  await john.setTimestamp(newTime);
 
+  await db.sync(
+    john.augur,
+    100000,
+    10,
+  );
+
+  markets = await api.markets.getMarketsInfo({
+    marketIds: [
+      yesNoMarket.address,
+      categoricalMarket.address,
+      scalarMarket.address
+    ]
+  });
+
+  expect(markets[0].reportingState).toBe("DESIGNATED_REPORTING");
+  expect(markets[1].reportingState).toBe("DESIGNATED_REPORTING");
+  expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
+
+  await john.doInitialReport(yesNoMarket, [new ethers.utils.BigNumber(10000), new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(0)]);
+
+  await db.sync(
+    john.augur,
+    100000,
+    10,
+  );
+
+  markets = await api.markets.getMarketsInfo({
+    marketIds: [
+      yesNoMarket.address,
+      categoricalMarket.address,
+      scalarMarket.address
+    ]
+  });
+
+  expect(markets[0].reportingState).toBe("CROWDSOURCING_DISPUTE");
+  expect(markets[1].reportingState).toBe("DESIGNATED_REPORTING");
+  expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
+
+  await john.contribute(yesNoMarket, [new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(10000), new ethers.utils.BigNumber(0)], new ethers.utils.BigNumber(250000));
+
+  newTime = newTime.add(60 * 60 * 24 * 14);
+  await john.setTimestamp(newTime);
+
+  await db.sync(
+    john.augur,
+    100000,
+    10,
+  );
+
+  markets = await api.markets.getMarketsInfo({
+    marketIds: [
+      yesNoMarket.address,
+      categoricalMarket.address,
+      scalarMarket.address
+    ]
+  });
 
   // TODO Add checks for reportingState, needsMigration, consensus,
   // finalizationBlockNumber, & finalizationTime by reporting, disputing, & finalizing a market
@@ -139,7 +184,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
             "price": "0",
           },
         ],
-        "reportingState": "PRE_REPORTING",
+        "reportingState": "FINALIZED",
         "resolutionSource": null,
         "scalarDenomination": null,
         "tickSize": "0.0001",
@@ -181,7 +226,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
             "price": "0",
           },
         ],
-        "reportingState": "PRE_REPORTING",
+        "reportingState": "DESIGNATED_REPORTING",
         "resolutionSource": null,
         "scalarDenomination": null,
         "tickSize": "0.0001",
@@ -218,7 +263,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
             "price": "0",
           },
         ],
-        "reportingState": "PRE_REPORTING",
+        "reportingState": "DESIGNATED_REPORTING",
         "resolutionSource": null,
         "scalarDenomination": null,
         "tickSize": "0.00000000000000000001",
@@ -227,5 +272,4 @@ test("State API :: Markets :: getMarketsInfo", async () => {
       },
     ]
   );
-*/
 }, 60000);

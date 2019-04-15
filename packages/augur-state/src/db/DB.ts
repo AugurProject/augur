@@ -18,6 +18,7 @@ import {
   MarketMigratedLog,
   MarketVolumeChangedLog,
   ProfitLossChangedLog,
+  TimestampSetLog,
   UniverseForkedLog
 } from "../logs/types";
 
@@ -436,6 +437,17 @@ export class DB<TBigNumber> {
   }
 
   /**
+   * Queries the TimestampSet DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<TimestampSetLog>>}
+   */
+  public async findTimestampSetLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<TimestampSetLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("TimestampSet"), request);
+    return results.docs as unknown as Array<TimestampSetLog>;
+  }
+
+  /**
    * Queries the UniverseForked DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
@@ -445,6 +457,4 @@ export class DB<TBigNumber> {
     const results = await this.findInSyncableDB(this.getDatabaseName("UniverseForked"), request);
     return results.docs as unknown as Array<UniverseForkedLog>;
   }
-
-
 }

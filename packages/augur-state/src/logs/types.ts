@@ -3,6 +3,7 @@ import { AddressZero } from "ethers/constants";
 
 type Address = string;
 type Bytes32 = string;
+type Timestamp = string;
 
 export interface Doc {
   _id: string;
@@ -60,7 +61,7 @@ export interface MarketCreatedLogExtraInfo {
 
 export interface MarketCreatedLog extends Log, Doc {
   universe: string;
-  endTime: string;
+  endTime: Timestamp;
   topic: string;
   description: string;
   extraInfo: string;
@@ -76,7 +77,7 @@ export interface MarketCreatedLog extends Log, Doc {
 export interface MarketFinalizedLog extends Log, Doc {
   universe: Address;
   market: Address;
-  timestamp: number;
+  timestamp: Timestamp;
   winningPayoutNumerators: Array<number>;
 }
 
@@ -135,7 +136,11 @@ export interface ProfitLossChangedLog extends Log, Doc {
   realizedProfit: string;
   frozenFunds: string;
   realizedCost: string;
-  timestamp: string;
+  timestamp: Timestamp;
+}
+
+export interface TimestampSetLog extends Log, Doc {
+  newTimestamp: Timestamp;
 }
 
 export interface UniverseForkedLog extends Log, Doc {

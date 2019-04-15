@@ -142,13 +142,23 @@ export class Markets<TBigNumber> {
         }
       }
     } else {
-      if (new BigNumber(marketCreatedLog.endTime).lt(new BigNumber((Date.now() * 1000)))) {
+      const timestampSetLogs = (await this.db.findTimestampSetLogs({selector: {newTimestamp: {$ne: null}}})).reverse();
+      let currentTimestamp;
+      if (timestampSetLogs.length > 0) {
+        currentTimestamp = new BigNumber(timestampSetLogs[0].newTimestamp);
+      } else {
+        currentTimestamp = new BigNumber(Math.round(Date.now() / 1000));
+      }
+      console.log("current " + currentTimestamp.toString() + " end time " + new BigNumber(marketCreatedLog.endTime).toString());
+      if (new BigNumber(currentTimestamp).lt(marketCreatedLog.endTime)) {
         return MarketInfoReportingState.PRE_REPORTING;
-      } else if (new BigNumber(marketCreatedLog.endTime).lt(new BigNumber((Date.now() * 1000) + 86400))) {
-        return MarketInfoReportingState.DESIGNATED_REPORTING;
       } else {
         const initialReportSubmittedLogs = await this.db.findInitialReportSubmittedLogs({selector: {market: marketCreatedLog.market}});
-        if (initialReportSubmittedLogs.length > 0) {
+        const SECONDS_IN_A_DAY = 86400;
+        const designatedReportingEndTime = currentTimestamp.plus(SECONDS_IN_A_DAY);
+        if (initialReportSubmittedLogs.length === 0 && currentTimestamp.lt(designatedReportingEndTime)) {
+          return MarketInfoReportingState.DESIGNATED_REPORTING;
+        } else if (initialReportSubmittedLogs.length === 0 && currentTimestamp.gte(designatedReportingEndTime)) {
           return MarketInfoReportingState.OPEN_REPORTING;
         } else {
           if (marketFinalizedLogs.length > 0) {
@@ -156,7 +166,7 @@ export class Markets<TBigNumber> {
           } else {
             const disputeCrowdsourcerCompletedLogs = (await this.db.findDisputeCrowdsourcerCompletedLogs({selector: {market: marketCreatedLog.market}})).reverse();
             // TODO Finish if statement below
-            if (disputeCrowdsourcerCompletedLogs[0].pacingOn) {
+            if (disputeCrowdsourcerCompletedLogs.length > 0 && disputeCrowdsourcerCompletedLogs[0].pacingOn) {
               return MarketInfoReportingState.AWAITING_NEXT_WINDOW;
             } else {
               return MarketInfoReportingState.CROWDSOURCING_DISPUTE;
@@ -167,7 +177,6 @@ export class Markets<TBigNumber> {
     }
   }
 
-  // TODO Add decorator code
   public async getMarketsInfo(params: GetMarketsInfoParams): Promise<Array<MarketInfo>> {
     const marketCreatedLogs = await this.db.findMarketCreatedLogs({selector: {market: {$in: params.marketIds}}});
 

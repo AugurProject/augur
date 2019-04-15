@@ -44,7 +44,9 @@ export class ContractAPI {
   }
 
   public async createReasonableYesNoMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
-    const endTime = new ethers.utils.BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
+    const time = this.augur.contracts.getTime();
+    let currentTimestamp = (await time.getTimestamp_()).toNumber();
+    const endTime = new ethers.utils.BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
     return await this.createYesNoMarket(universe, endTime, fee, affiliateFeeDivisor, this.account);
@@ -63,7 +65,9 @@ export class ContractAPI {
   }
 
   public async createReasonableMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, outcomes: Array<string>): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
-    const endTime = new ethers.utils.BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
+    const time = this.augur.contracts.getTime();
+    let currentTimestamp = (await time.getTimestamp_()).toNumber();
+    const endTime = new ethers.utils.BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
     return await this.createCategoricalMarket(universe, outcomes, endTime, fee, affiliateFeeDivisor, this.account);
@@ -85,7 +89,9 @@ export class ContractAPI {
   }
 
   public async createReasonableScalarMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, outcomes: Array<string>): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
-    const endTime = new ethers.utils.BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
+    const time = this.augur.contracts.getTime();
+    let currentTimestamp = (await time.getTimestamp_()).toNumber();
+    const endTime = new ethers.utils.BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
     return await this.createScalarMarket(universe, outcomes, endTime, fee, affiliateFeeDivisor, this.account);
@@ -214,7 +220,7 @@ export class ContractAPI {
   public async setTimestamp(timestamp: ethers.utils.BigNumber): Promise<void> {
     const time = this.augur.contracts.getTime();
 
-        if (this.augur.contracts.isTimeControlled(time)) {
+    if (this.augur.contracts.isTimeControlled(time)) {
       await time.setTimestamp(timestamp);
     } else {
       throw Error("Cannot set timestamp because Time contract is not TimeControlled");
