@@ -1,33 +1,34 @@
-import {SortLimit} from './types';
-import { DB } from "../db/DB";
-import * as _ from "lodash";
-import { NumericDictionary } from "lodash";
-import { numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/api";
 import { BigNumber } from "bignumber.js";
+import { DB } from "../db/DB";
+import { Getter } from "./Router";
+import { NumericDictionary } from "lodash";
 import { ProfitLossChangedLog, OrderFilledLog } from '../logs/types';
+import { numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/api";
+import { SortLimit } from './types';
 
-export interface UserTradingPositionsParams {
-  account: string,
-  universe?: string,
-  marketId?: string,
-  outcome?: number,
-};
+import * as _ from "lodash";
+import * as t from "io-ts";
 
-export interface GetUserTradingPositionsParams extends UserTradingPositionsParams, SortLimit {
-}
+const UserTradingPositionsParams = t.intersection([t.type({
+  account: t.string,
+}), t.partial({
+  universe: t.string,
+  marketId: t.string,
+  outcome: t.number,
+})]);
 
-export interface GetProfitLossSummaryParams {
-  universe?: string,
-  account?: string,
-  marketId?: string,
-  endTime?: number,
-};
+const GetProfitLossSummaryParams = t.partial({
+  universe: t.string,
+  account: t.string,
+  marketId: t.string,
+  endTime: t.number,
+});
 
-export interface GetProfitLossParams extends GetProfitLossSummaryParams {
-  startTime?: number,
-  periodInterval?: number,
-  outcome?: number,
-};
+const GetProfitLossParams = t.intersection([GetProfitLossSummaryParams, t.partial({
+  startTime: t.number,
+  periodInterval: t.number,
+  outcome: t.number,
+})]);
 
 export interface MarketTradingPosition {
   timestamp: number;
@@ -74,13 +75,10 @@ export interface UserTradingPositions {
 }
 
 export class Users<TBigNumber> {
-  private readonly db: DB<TBigNumber>;
+  public static GetUserTradingPositionsParams = t.intersection([UserTradingPositionsParams, SortLimit]);
 
-  constructor(db: DB<TBigNumber>) {
-    this.db = db;
-  }
-
-  public async getUserTradingPositions(params: GetUserTradingPositionsParams): Promise<UserTradingPositions> {
+  @Getter("GetUserTradingPositionsParams")
+  public static async getUserTradingPositions<TBigNumber>(db: DB<TBigNumber>, params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<UserTradingPositions> {
     if (!params.universe && !params.marketId) {
       throw new Error("'getTradingHistory' requires a 'universe' or 'marketId' param be provided");
     }
@@ -94,7 +92,7 @@ export class Users<TBigNumber> {
       limit: params.limit,
       skip: params.offset,
     };
-    const profitLossResult = await this.db.findProfitLossChangedLogs(request);
+    const profitLossResult = await db.findProfitLossChangedLogs(request);
     const profitLossResultsByMarket = _.groupBy(profitLossResult, "market");
     const profitLossResultsByMarketAndOutcome = _.mapValues(profitLossResultsByMarket, (profitLossResults) => {
       const outcomeProfitLossResultsInMarket = _.groupBy(profitLossResults, "outcome");
@@ -113,12 +111,12 @@ export class Users<TBigNumber> {
         universe: params.universe,
         marketId: params.marketId,
         $or: [
-          {creator: params.account},
-          {filler : params.account}
+          { creator: params.account },
+          { filler: params.account }
         ]
       }
     }
-    const orderFilled = await this.db.findOrderFilledLogs(orderFilledRequest);
+    const orderFilled = await db.findOrderFilledLogs(orderFilledRequest);
     const ordersFilledByMarket = _.groupBy(orderFilled, "marketId");
     const ordersFilledResultsByMarketAndOutcome = _.mapValues(ordersFilledByMarket, (orderFilledResults) => {
       const outcomeOrderFilledResultsInMarket = _.groupBy(orderFilledResults, "outcome");
@@ -133,7 +131,7 @@ export class Users<TBigNumber> {
     });
 
     const marketIds = _.keys(profitLossResultsByMarket);
-    const marketsResponse = await this.db.findMarketCreatedLogs({selector: {market: {$in: marketIds}}});
+    const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
     const markets = _.keyBy(marketsResponse, "market");
 
     // map Latest PLs to Trading Positions
@@ -154,12 +152,12 @@ export class Users<TBigNumber> {
         const onChainAvgCost = onChainNetPosition.isNegative() ? numTicks.minus(onChainAvgPrice) : onChainAvgPrice;
         const onChainUnrealizedCost = onChainNetPosition.abs().multipliedBy(onChainAvgCost);
 
-        const frozenFunds = onChainFrozenFunds.dividedBy(10**18);
+        const frozenFunds = onChainFrozenFunds.dividedBy(10 ** 18);
         const netPosition: BigNumber = convertOnChainAmountToDisplayAmount(onChainNetPosition, tickSize);
-        const realizedProfit = onChainRealizedProfit.dividedBy(10**18);
+        const realizedProfit = onChainRealizedProfit.dividedBy(10 ** 18);
         const avgPrice: BigNumber = convertOnChainPriceToDisplayPrice(onChainAvgPrice, minPrice, tickSize);
-        const realizedCost = onChainRealizedCost.dividedBy(10**18);
-        const unrealizedCost = onChainUnrealizedCost.dividedBy(10**18);
+        const realizedCost = onChainRealizedCost.dividedBy(10 ** 18);
+        const unrealizedCost = onChainUnrealizedCost.dividedBy(10 ** 18);
 
         const onChainLastTradePrice = new BigNumber(ordersFilledResultsByMarketAndOutcome[profitLossResult.market][profitLossResult.outcome]!.price);
         const lastTradePrice: BigNumber = convertOnChainPriceToDisplayPrice(onChainLastTradePrice, minPrice, tickSize);
@@ -201,12 +199,14 @@ export class Users<TBigNumber> {
     };
   }
 
-  public async getProfitLoss(params: GetProfitLossParams): Promise<Array<TradingPosition>> {
+  @Getter("GetUserTradingPositionsParams")
+  public static async getProfitLoss(params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<Array<TradingPosition>> {
     // TODO
     return [];
   }
 
-  public async getProfitLossSummary(params: GetProfitLossSummaryParams): Promise<NumericDictionary<TradingPosition>> {
+  @Getter("GetUserTradingPositionsParams")
+  public static async getProfitLossSummary(params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<NumericDictionary<TradingPosition>> {
     // TODO
     return {};
   }

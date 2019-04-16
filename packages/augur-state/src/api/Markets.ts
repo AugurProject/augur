@@ -1,33 +1,30 @@
 import { BigNumber } from "bignumber.js";
-import * as _ from "lodash";
-import { numTicksToTickSize } from "@augurproject/api";
 import { DB } from "../db/DB";
+import { Getter } from "./Router";
 import { CompleteSetsPurchasedLog, CompleteSetsSoldLog, MarketType, MarketCreatedLog, MarketFinalizedLog } from "../logs/types";
 import { SortLimit } from "./types";
+import { numTicksToTickSize } from "@augurproject/api";
 
-export interface GetMarketsParamsSpecific {
-  universe: string;
-  creator?: string;
-  category?: string;
-  search?: string;
-  reportingState?: string;
-  disputeWindow?: string;
-  designatedReporter?: string;
-  maxFee?: number;
-  hasOrders?: boolean;
-}
+import * as _ from "lodash";
+import * as t from "io-ts";
 
-export interface GetMarketsParams extends GetMarketsParamsSpecific, SortLimit {
-}
-
-export interface GetMarketsInfoParams {
-  marketIds: Array<string>;
-}
+const GetMarketsParamsSpecific = t.intersection([t.type({
+  universe: t.string,
+}), t.partial({
+  creator: t.string,
+  category: t.string,
+  search: t.string,
+  reportingState: t.string,
+  disputeWindow: t.string,
+  designatedReporter: t.string,
+  maxFee: t.number,
+  hasOrders: t.boolean,
+})]);
 
 export interface MarketInfoOutcome {
   id: number;
   price: string;
-  description: string|null;
+  description: string | null;
 }
 
 export enum MarketInfoReportingState {
@@ -53,18 +50,18 @@ export interface MarketInfo {
   cumulativeScale: string;
   author: string;
   creationBlock: number;
-  category:string;
+  category: string;
   volume: string;
   openInterest: string;
   reportingState: string;
   needsMigration: boolean;
   endTime: number;
-  finalizationBlockNumber: number|null;
-  finalizationTime: number|null;
+  finalizationBlockNumber: number | null;
+  finalizationTime: number | null;
   description: string;
-  scalarDenomination: string|null;
-  details: string|null;
-  resolutionSource: string|null;
+  scalarDenomination: string | null;
+  details: string | null;
+  resolutionSource: string | null;
   numTicks: string;
   tickSize: string;
   consensus: Array<number>|null,
@@ -72,17 +69,15 @@ export interface MarketInfo {
 }
 
 export class Markets<TBigNumber> {
-  private readonly db: DB<TBigNumber>;
+  public static GetMarketsParams = t.intersection([GetMarketsParamsSpecific, SortLimit]);
+  public static GetMarketsInfoParams = t.type({ marketIds: t.array(t.string) });
 
-  constructor(db: DB<TBigNumber>) {
-    this.db = db;
-  }
-
-  public async getMarkets(params: GetMarketsParams): Promise<void> {
+  @Getter("GetMarketsParams")
+  public static async getMarkets<TBigNumber>(db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<void> {
     // TODO
   }
 
-  private async getMarketOutcomes(marketCreatedLog: MarketCreatedLog): Promise<Array<MarketInfoOutcome>> {
+  private static async getMarketOutcomes(marketCreatedLog: MarketCreatedLog): Promise<Array<MarketInfoOutcome>> {
     let outcomes: Array<MarketInfoOutcome> = [];
     // TODO Set outcome prices
     if (marketCreatedLog.outcomes.length === 0) {
@@ -109,7 +104,7 @@ export class Markets<TBigNumber> {
     return outcomes;
   }
 
-  private getMarketOpenInterest(completeSetsPurchasedLogs: Array<CompleteSetsPurchasedLog>, completeSetsSoldLogs: Array<CompleteSetsSoldLog>): string {
+  private static getMarketOpenInterest(completeSetsPurchasedLogs: Array<CompleteSetsPurchasedLog>, completeSetsSoldLogs: Array<CompleteSetsSoldLog>): string {
     if (completeSetsPurchasedLogs.length > 0 && completeSetsSoldLogs.length > 0) {
       if (completeSetsPurchasedLogs[0].blockNumber > completeSetsSoldLogs[0].blockNumber) {
         return new BigNumber(completeSetsPurchasedLogs[0].marketOI).toString();
@@ -128,10 +123,8 @@ export class Markets<TBigNumber> {
     return "0";
   }
 
-  private async getMarketReportingState(marketCreatedLog: MarketCreatedLog, marketFinalizedLogs: Array<MarketFinalizedLog>): Promise<MarketInfoReportingState> {
-    console.log("FINALIZED LOGS");
-    console.log(marketFinalizedLogs);
-    const universeForkedLogs = (await this.db.findUniverseForkedLogs({selector: {universe: marketCreatedLog.universe}})).reverse();
+  private static async getMarketReportingState<TBigNumber>(db: DB<TBigNumber>, marketCreatedLog: MarketCreatedLog, marketFinalizedLogs: Array<MarketFinalizedLog>): Promise<MarketInfoReportingState> {
+    const universeForkedLogs = (await db.findUniverseForkedLogs({selector: {universe: marketCreatedLog.universe}})).reverse();
     if (universeForkedLogs.length > 0) {
       if (universeForkedLogs[0].market === marketCreatedLog.market) {
         return MarketInfoReportingState.FORKING;
@@ -143,7 +136,7 @@ export class Markets<TBigNumber> {
         }
       }
     } else {
-      const timestampSetLogs = (await this.db.findTimestampSetLogs({selector: {newTimestamp: {$ne: null}}}));
+      const timestampSetLogs = (await db.findTimestampSetLogs({selector: {newTimestamp: {$ne: null}}}));
       let currentTimestamp;
       if (timestampSetLogs.length > 0) {
         currentTimestamp = new BigNumber(timestampSetLogs[0].newTimestamp);
@@ -154,7 +147,7 @@ export class Markets<TBigNumber> {
       if (new BigNumber(currentTimestamp).lt(marketCreatedLog.endTime)) {
         return MarketInfoReportingState.PRE_REPORTING;
       } else {
-        const initialReportSubmittedLogs = (await this.db.findInitialReportSubmittedLogs({selector: {market: marketCreatedLog.market}})).reverse();
+        const initialReportSubmittedLogs = (await db.findInitialReportSubmittedLogs({selector: {market: marketCreatedLog.market}})).reverse();
         const SECONDS_IN_A_DAY = 86400;
         const designatedReportingEndTime = currentTimestamp.plus(SECONDS_IN_A_DAY);
         if (initialReportSubmittedLogs.length === 0 && currentTimestamp.lt(designatedReportingEndTime)) {
@@ -165,10 +158,10 @@ export class Markets<TBigNumber> {
           if (marketFinalizedLogs.length > 0) {
             return MarketInfoReportingState.FINALIZED;
           } else {
-            const disputeCrowdsourcerCompletedLogs = (await this.db.findDisputeCrowdsourcerCompletedLogs({selector: {market: marketCreatedLog.market}})).reverse();
+            const disputeCrowdsourcerCompletedLogs = (await db.findDisputeCrowdsourcerCompletedLogs({selector: {market: marketCreatedLog.market}})).reverse();
             // TODO Finish if statement below
             if (disputeCrowdsourcerCompletedLogs.length > 0 && disputeCrowdsourcerCompletedLogs[0].pacingOn) {
-              const disputeWindowCreatedLogs = (await this.db.findDisputeWindowCreatedLogs({selector: {market: marketCreatedLog.market}})).reverse();
+              const disputeWindowCreatedLogs = (await db.findDisputeWindowCreatedLogs({selector: {market: marketCreatedLog.market}})).reverse();
               return MarketInfoReportingState.AWAITING_NEXT_WINDOW;
             }
             return MarketInfoReportingState.CROWDSOURCING_DISPUTE;
@@ -178,14 +171,15 @@ export class Markets<TBigNumber> {
     }
   }
 
-  public async getMarketsInfo(params: GetMarketsInfoParams): Promise<Array<MarketInfo>> {
-    const marketCreatedLogs = await this.db.findMarketCreatedLogs({selector: {market: {$in: params.marketIds}}});
+  @Getter("GetMarketsInfoParams")
+  public static async getMarketsInfo<TBigNumber>(db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsInfoParams>): Promise<Array<MarketInfo>> {
+    const marketCreatedLogs = await db.findMarketCreatedLogs({selector: {market: {$in: params.marketIds}}});
 
     return await Promise.all(marketCreatedLogs.map(async (marketCreatedLog) => {
-      const marketFinalizedLogs = (await this.db.findMarketFinalizedLogs({selector: {market: marketCreatedLog.market}})).reverse();
-      const marketVolumeChangedLogs = (await this.db.findMarketVolumeChangedLogs({selector: {market: marketCreatedLog.market}})).reverse();
-      const completeSetsPurchasedLogs = (await this.db.findCompleteSetsPurchasedLogs({selector: {market: marketCreatedLog.market}})).reverse();
-      const completeSetsSoldLogs = (await this.db.findCompleteSetsSoldLogs({selector: {market: marketCreatedLog.market}})).reverse();
+      const marketFinalizedLogs = (await db.findMarketFinalizedLogs({selector: {market: marketCreatedLog.market}})).reverse();
+      const marketVolumeChangedLogs = (await db.findMarketVolumeChangedLogs({selector: {market: marketCreatedLog.market}})).reverse();
+      const completeSetsPurchasedLogs = (await db.findCompleteSetsPurchasedLogs({selector: {market: marketCreatedLog.market}})).reverse();
+      const completeSetsSoldLogs = (await db.findCompleteSetsSoldLogs({selector: {market: marketCreatedLog.market}})).reverse();
 
       const minPrice = new BigNumber(marketCreatedLog.minPrice);
       const maxPrice = new BigNumber(marketCreatedLog.maxPrice);
@@ -193,7 +187,7 @@ export class Markets<TBigNumber> {
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
       const cumulativeScale = maxPrice.minus(minPrice);
 
-      const reportingState = await this.getMarketReportingState(marketCreatedLog, marketFinalizedLogs);
+      const reportingState = await Markets.getMarketReportingState(db, marketCreatedLog, marketFinalizedLogs);
       const needsMigration = (reportingState === MarketInfoReportingState.AWAITING_FORK_MIGRATION) ? true : false;
 
       let consensus = null;
@@ -236,7 +230,7 @@ export class Markets<TBigNumber> {
         creationBlock: marketCreatedLog.blockNumber,
         category: Buffer.from(marketCreatedLog.topic.replace("0x", ""), "hex").toString(),
         volume: (marketVolumeChangedLogs.length > 0) ? new BigNumber(marketVolumeChangedLogs[0].volume).toString() : "0",
-        openInterest: this.getMarketOpenInterest(completeSetsPurchasedLogs, completeSetsSoldLogs),
+        openInterest: Markets.getMarketOpenInterest(completeSetsPurchasedLogs, completeSetsSoldLogs),
         reportingState,
         needsMigration,
         endTime: new BigNumber(marketCreatedLog.endTime).toNumber(),
@@ -249,7 +243,7 @@ export class Markets<TBigNumber> {
         numTicks: numTicks.toString(10),
         tickSize: tickSize.toString(10),
         consensus,
-        outcomes: await this.getMarketOutcomes(marketCreatedLog)
+        outcomes: await Markets.getMarketOutcomes(marketCreatedLog)
       });
     }));
   }

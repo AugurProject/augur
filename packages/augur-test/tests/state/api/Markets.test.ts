@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { API } from "@augurproject/state/src/api/API";
+import { MarketInfo } from "@augurproject/state/src/api/Markets";
 import { DB } from "@augurproject/state/src/db/DB";
 import {
   ACCOUNTS,
@@ -21,7 +22,7 @@ let john: ContractAPI;
 let mary: ContractAPI;
 
 beforeAll(async () => {
-  const {provider, addresses} = await compileAndDeployToGanache(ACCOUNTS);
+  const { provider, addresses } = await compileAndDeployToGanache(ACCOUNTS);
 
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
@@ -62,7 +63,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
 
   await db.sync(john.augur, 100000, 0);
 
-  let markets = await api.markets.getMarketsInfo({
+  let markets: Array<MarketInfo> = await api.route("getMarketsInfo", {
     marketIds: [
       yesNoMarket.address,
       categoricalMarket.address,
@@ -80,7 +81,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
 
   await db.sync(john.augur, 100000, 0);
 
-  markets = await api.markets.getMarketsInfo({
+  markets = await api.route("getMarketsInfo", {
     marketIds: [
       yesNoMarket.address,
       categoricalMarket.address,
@@ -107,7 +108,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
 
   await db.sync(john.augur, 100000, 0);
 
-  markets = await api.markets.getMarketsInfo({
+  markets = await api.route("getMarketsInfo", {
     marketIds: [
       yesNoMarket.address,
       categoricalMarket.address,
@@ -143,7 +144,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
 
   await db.sync(john.augur, 100000, 0);
 
-  markets = await api.markets.getMarketsInfo({
+  markets = await api.route("getMarketsInfo", {
     marketIds: [
       yesNoMarket.address,
       categoricalMarket.address,
@@ -177,7 +178,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
 
   await db.sync(john.augur, 100000, 0);
 
-  markets = await api.markets.getMarketsInfo({
+  markets = await api.route("getMarketsInfo", {
     marketIds: [
       yesNoMarket.address,
       categoricalMarket.address,
@@ -199,7 +200,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
 
   await db.sync(john.augur, 100000, 0);
 
-  markets = await api.markets.getMarketsInfo({
+  markets = await api.route("getMarketsInfo", {
     marketIds: [
       yesNoMarket.address,
       categoricalMarket.address,
