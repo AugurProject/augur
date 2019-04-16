@@ -8,7 +8,6 @@ import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../../libs";
 const mock = makeDbMock();
 
 beforeEach(async () => {
-  mock.cancelFail();
   await mock.wipeDB();
 });
 
