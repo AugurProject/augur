@@ -147,7 +147,6 @@ async function processTrades(tradeData: Array<TradeData>, market: GenericAugurIn
             account: mary.account,
             marketId: market.address,
         });
-
         await expect(tradingPositions[0].netPosition).toEqual(trade.position.toString());
         await expect(tradingPositions[0].averagePrice).toEqual(trade.avgPrice.toString());
         await expect(tradingPositions[0].realized).toEqual(trade.realizedPL.toString());

@@ -33,7 +33,7 @@ test.skip("sync", async () => {
   const eventName = "TokensTransferred";
   const sender = ACCOUNTS[0].publicKey;
   const highestAvailableBlockNumber = 0;
-  const db = new UserSyncableDB<ethers.utils.BigNumber>(dbController, mock.constants.networkId, eventName, sender, 0, 0);
+  const db = new UserSyncableDB<ethers.utils.BigNumber>(dbController, mock.constants.networkId, eventName, sender, 0, [0]);
 
   // Generate logs to be synced
   // TODO generate user-specific TokensTransferred
@@ -79,7 +79,7 @@ test("props", async () => {
 
   const eventName = "foo";
   const user = "artistotle";
-  const db = new UserSyncableDB<ethers.utils.BigNumber>(dbController, mock.constants.networkId, eventName, user, 2, 0);
+  const db = new UserSyncableDB<ethers.utils.BigNumber>(dbController, mock.constants.networkId, eventName, user, 2, [0]);
 
   // @ts-ignore - verify private property "additionalTopics"
   expect(db.additionalTopics).toEqual([
