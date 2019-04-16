@@ -1,34 +1,34 @@
 from ethereum.tools import tester
 from ethereum.tools.tester import ABIContract, TransactionFailed
 from pytest import fixture, mark, raises
-from utils import longTo32Bytes, PrintGasUsed, fix
+from utils import longTo32Bytes, PrintGasUsed, fix, nullAddress
 from constants import BID, ASK, YES, NO
 from datetime import timedelta
 from trading.test_claimTradingProceeds import acquireLongShares, finalizeMarket
 from reporting_utils import proceedToNextRound, proceedToFork, finalize, proceedToDesignatedReporting
 
 # Market Methods
-MARKET_CREATION =               1657851
-MARKET_FINALIZATION =           249751
-INITIAL_REPORT =                888757
-FIRST_CONTRIBUTE =              803620
-FIRST_COMPLETED_CONTRIBUTE =    320628
-LAST_COMPLETED_CONTRIBUTE =     3319911
-FORKING_CONTRIBUTE =            972314
+MARKET_CREATION =               2196667
+MARKET_FINALIZATION =           492720
+INITIAL_REPORT =                551454
+FIRST_CONTRIBUTE =              819400
+FIRST_COMPLETED_CONTRIBUTE =    557334
+LAST_COMPLETED_CONTRIBUTE =     1430116
+FORKING_CONTRIBUTE =            962274
 
 # Redemption
-REPORTING_WINDOW_CREATE =           337745
-INITIAL_REPORT_REDEMPTION =         564162
-CROWDSOURCER_REDEMPTION =           405222
-PARTICIPATION_TOKEN_REDEMPTION =    115792
+REPORTING_WINDOW_CREATE =           300444
+INITIAL_REPORT_REDEMPTION =         90599
+CROWDSOURCER_REDEMPTION =           81698
+PARTICIPATION_TOKEN_REDEMPTION =    80634
 
 # Trading
-CREATE_ORDER =      589746
-FILL_ORDER =        704307
-CLAIM_PROCEEDS =    1090946
+CREATE_ORDER =      460030
+FILL_ORDER =        875638
+CLAIM_PROCEEDS =    962083
 
 # Other
-UNIVERSE_CREATE =   631183
+UNIVERSE_CREATE =   870579
 
 pytestmark = mark.skip(reason="Just for testing gas cost")
 
@@ -42,7 +42,7 @@ def test_disputeWindowCreation(localFixture, universe, cash):
     endTime = long(localFixture.chain.head_state.timestamp + timedelta(days=365).total_seconds())
 
     with PrintGasUsed(localFixture, "REPORTING_WINDOW_CREATE", REPORTING_WINDOW_CREATE):
-        universe.getOrCreateDisputeWindowByTimestamp(endTime)
+        universe.getOrCreateDisputeWindowByTimestamp(endTime, False)
 
 def test_marketCreation(localFixture, universe):
     marketCreationFee = universe.getOrCacheMarketCreationCost()
@@ -55,7 +55,8 @@ def test_marketCreation(localFixture, universe):
     numOutcomes = 2
 
     with PrintGasUsed(localFixture, "DisputeWindow:createMarket", MARKET_CREATION):
-        marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, "", "description", "", value = marketCreationFee)
+        localFixture.contracts["Cash"].faucet(marketCreationFee)
+        marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, "", "description", "")
 
 def test_marketFinalization(localFixture, universe, market):
     proceedToNextRound(localFixture, market)
@@ -74,20 +75,26 @@ def test_orderCreation(hints, localFixture, categoricalMarket):
     createOrder = localFixture.contracts['CreateOrder']
 
     for i in range(3900, 4003):
-        createOrder.publicCreateOrder(BID, fix(1), i, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", value = fix(1, i))
+        localFixture.contracts["Cash"].faucet(fix(1, i))
+        createOrder.publicCreateOrder(BID, fix(1), i, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
 
-    worseOrderId = createOrder.publicCreateOrder(BID, fix(1), 4004, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", value = fix(1, 4004))
-    betterOrderId = createOrder.publicCreateOrder(BID, fix(1), 4006, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", value = fix(1, 4006))
+    localFixture.contracts["Cash"].faucet(fix(1, 4004))
+    worseOrderId = createOrder.publicCreateOrder(BID, fix(1), 4004, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+    localFixture.contracts["Cash"].faucet(fix(1, 4006))
+    betterOrderId = createOrder.publicCreateOrder(BID, fix(1), 4006, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
 
     for i in range(4007, 4107):
-        createOrder.publicCreateOrder(BID, fix(1), i, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", value = fix(1, i))
+        localFixture.contracts["Cash"].faucet(fix(1, i))
+        createOrder.publicCreateOrder(BID, fix(1), i, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
 
     if not hints:
         with PrintGasUsed(localFixture, "CreateOrder:publicCreateOrder NO Hints", CREATE_ORDER):
-            orderID = createOrder.publicCreateOrder(BID, fix(1), 4005, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", value = fix(1, 4005))
+            localFixture.contracts["Cash"].faucet(fix(1, 4005))
+            orderID = createOrder.publicCreateOrder(BID, fix(1), 4005, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
     else:
         with PrintGasUsed(localFixture, "CreateOrder:publicCreateOrder HINTS", CREATE_ORDER):
-            orderID = createOrder.publicCreateOrder(BID, fix(1), 4005, categoricalMarket.address, 1, betterOrderId, worseOrderId, "7", value = fix(1, 4005))
+            localFixture.contracts["Cash"].faucet(fix(1, 4005))
+            orderID = createOrder.publicCreateOrder(BID, fix(1), 4005, categoricalMarket.address, 1, betterOrderId, worseOrderId, "7", False, nullAddress)
 
 def test_orderFilling(localFixture, market):
     createOrder = localFixture.contracts['CreateOrder']
@@ -98,10 +105,12 @@ def test_orderFilling(localFixture, market):
     fillerCost = fix('2', '6000')
 
     # create order
-    orderID = createOrder.publicCreateOrder(ASK, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, sender = tester.k1, value=creatorCost)
+    localFixture.contracts["Cash"].faucet(creatorCost, sender = tester.k1)
+    orderID = createOrder.publicCreateOrder(ASK, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     with PrintGasUsed(localFixture, "FillOrder:publicFillOrder", FILL_ORDER):
-        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2, value=fillerCost)
+        localFixture.contracts["Cash"].faucet(fillerCost, sender = tester.k2)
+        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
 
 def test_winningShareRedmption(localFixture, cash, market):
     claimTradingProceeds = localFixture.contracts['ClaimTradingProceeds']
@@ -125,7 +134,7 @@ def test_contribute(localFixture, universe, cash, market):
         market.contribute([0, 0, market.getNumTicks()], 1, "")
 
     with PrintGasUsed(localFixture, "Market.contribute", FIRST_COMPLETED_CONTRIBUTE):
-        market.contribute([0, 0, market.getNumTicks()], market.getParticipantStake(), "")
+        market.contribute([0, 0, market.getNumTicks()], market.getParticipantStake()*2, "")
 
     for i in range(9):
         proceedToNextRound(localFixture, market, randomPayoutNumerators = True)
@@ -160,7 +169,7 @@ def test_redeem(localFixture, universe, cash, market):
         winningDisputeCrowdsourcer1.redeem(tester.a0)
 
     with PrintGasUsed(localFixture, "DisputeWindow:redeem", PARTICIPATION_TOKEN_REDEMPTION):
-        disputeWindow.redeem(tester.a0)
+        disputeWindow.redeem()
 
 
 @fixture(scope="session")
