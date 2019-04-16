@@ -3,13 +3,13 @@ import {
     makeDbMock,
     compileAndDeployToGanache,
     ContractAPI,
-  } from "../../libs";
+  } from "../../../libs";
 import {API} from "@augurproject/state/src/api/API";
 import {DB} from "@augurproject/state/src/db/DB";
 import { convertDisplayAmountToOnChainAmount } from "@augurproject/api";
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { ethers } from "ethers";
-import { stringTo32ByteHex } from "../../libs/Utils";
+import { stringTo32ByteHex } from "../../../libs/Utils";
 import { BigNumber } from "bignumber.js";
 import * as _ from "lodash";
 
@@ -142,14 +142,11 @@ async function processTrades(tradeData: Array<TradeData>, market: GenericAugurIn
             0,
         );
 
-        const { tradingPositions } = await api.route("getUserTradingPositions", {
+        const { tradingPositions, tradingPositionsPerMarket, frozenFundsTotal } = await api.route("getUserTradingPositions", {
             universe,
             account: mary.account,
             marketId: market.address,
         });
-
-        //console.log(`TRADE RECEIVED: ${JSON.stringify(tradingPositions[0])}`);
-        //console.log(`TRADE EXPEXTED: ${JSON.stringify(trade)}`);
         await expect(tradingPositions[0].netPosition).toEqual(trade.position.toString());
         await expect(tradingPositions[0].averagePrice).toEqual(trade.avgPrice.toString());
         await expect(tradingPositions[0].realized).toEqual(trade.realizedPL.toString());
