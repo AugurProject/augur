@@ -215,6 +215,12 @@ export class ContractAPI {
     return this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
   }
 
+  public async getDisputeWindowEndTime(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>): Promise<ethers.utils.BigNumber> {
+    const disputeWindowAddress = await market.getDisputeWindow_();
+    const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
+    return await disputeWindow.getEndTime_();
+  }
+
   public async getWinningReportingParticipant(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>): Promise<GenericAugurInterfaces.DisputeCrowdsourcer<ethers.utils.BigNumber>> {
     const reportingParticipantAddress = await market.getWinningReportingParticipant_();
     return this.augur.contracts.getReportingParticipant(reportingParticipantAddress);

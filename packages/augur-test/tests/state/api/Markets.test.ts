@@ -121,6 +121,9 @@ test("State API :: Markets :: getMarketsInfo", async () => {
 
   newTime = newTime.add(60 * 60 * 24 * 7);
   await john.setTimestamp(newTime);
+  console.log("NEW TIME: ", newTime);
+  const disputeWindowEndTime = await john.getDisputeWindowEndTime(yesNoMarket);
+  console.log("Dispute window end time: ", disputeWindowEndTime);
   console.log("BEFORE FINALIZE");
   await john.finalizeMarket(yesNoMarket);
   console.log("AFTER FINALIZE");
