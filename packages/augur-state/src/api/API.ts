@@ -2,7 +2,7 @@ import { Augur } from "@augurproject/api";
 import { DB } from "../db/DB";
 import { Router } from "./Router";
 
-// Getters are evaluated by importing these files in this matter
+// Getters are evaluated by importing these files in this manner
 import "./Markets";
 import "./Trading";
 import "./Users";
