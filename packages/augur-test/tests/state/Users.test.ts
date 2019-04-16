@@ -142,12 +142,12 @@ async function processTrades(tradeData: Array<TradeData>, market: GenericAugurIn
             0,
         );
 
-        const { tradingPositions } = await api.users.getUserTradingPositions({
+        const { tradingPositions } = await api.route("getUserTradingPositions", {
             universe,
             account: mary.account,
             marketId: market.address,
         });
-    
+
         //console.log(`TRADE RECEIVED: ${JSON.stringify(tradingPositions[0])}`);
         //console.log(`TRADE EXPEXTED: ${JSON.stringify(trade)}`);
         await expect(tradingPositions[0].netPosition).toEqual(trade.position.toString());

@@ -1,13 +1,16 @@
-import {ContractDependenciesEthers} from "contract-dependencies-ethers";
-import {EthersProvider} from "@augurproject/ethersjs-provider";
-import {BigNumber as EthersBigNumber} from "ethers/utils";
-import {Augur} from "@augurproject/api";
-import {uploadBlockNumbers, addresses} from "@augurproject/artifacts";
-import {PouchDBFactory} from "./db/AbstractDB";
-import {Controller} from "./Controller";
+import { API } from "./api/API";
+import { Augur } from "@augurproject/api";
+import { BigNumber as EthersBigNumber } from "ethers/utils";
 import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
+import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { Controller } from "./Controller";
+import { DB } from "./db/DB";
+import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { EventLogDBRouter } from "./db/EventLogDBRouter";
 import { JsonRpcProvider } from "ethers/providers";
+import { PouchDBFactory } from "./db/AbstractDB";
+import { uploadBlockNumbers, addresses } from "@augurproject/artifacts";
+import { Trading } from "./api/Trading";
 
 const settings = require("@augurproject/state/src/settings.json");
 
@@ -22,6 +25,11 @@ export async function start() {
   const pouchDBFactory = PouchDBFactory({});
   const networkId = Number(augur.networkId);
   const controller = new Controller<EthersBigNumber>(augur, networkId, settings.blockstreamDelay, uploadBlockNumbers[networkId], [settings.testAccounts[0]], pouchDBFactory, blockAndLogStreamerListener);
+
+  const db = new DB<EthersBigNumber>(pouchDBFactory);
+  console.log("Starting API");
+  const api = new API(augur, db);
+
   return controller.run();
 }
 
@@ -37,6 +45,7 @@ const isNode =
 //   self.constructor &&
 //   self.constructor.name === 'DedicatedWorkerGlobalScope';
 /* eslint-enable no-restricted-globals */
+
 
 // if being run start as a server
 if (isNode) {
