@@ -336,41 +336,6 @@
 					"type": "address"
 				},
 				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_totalSupply",
-					"type": "uint256"
-				},
-				{
-					"name": "_balance",
-					"type": "uint256"
-				}
-			],
-			"name": "logDisputeOverloadTokensBurned",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
 					"name": "_filler",
 					"type": "address"
 				},
@@ -2772,7 +2737,7 @@
 					"type": "address"
 				},
 				{
-					"indexed": false,
+					"indexed": true,
 					"name": "from",
 					"type": "address"
 				},
