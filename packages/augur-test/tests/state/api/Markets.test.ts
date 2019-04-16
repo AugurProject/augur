@@ -22,7 +22,7 @@ let john: ContractAPI;
 let mary: ContractAPI;
 
 beforeAll(async () => {
-  const {provider, addresses} = await compileAndDeployToGanache(ACCOUNTS);
+  const { provider, addresses } = await compileAndDeployToGanache(ACCOUNTS);
 
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
@@ -67,7 +67,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
     10,
   );
 
-  let markets: Array<MarketInfo> = await api.markets.getMarketsInfo({
+  let markets: Array<MarketInfo> = await api.route("getMarketsInfo", {
     marketIds: [
       yesNoMarket.address,
       categoricalMarket.address,
