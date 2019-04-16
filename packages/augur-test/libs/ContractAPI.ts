@@ -6,6 +6,7 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { AccountList } from "./LocalAugur";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { ContractAddresses } from "@augurproject/artifacts";
+import { Market } from "@augurproject/core/build/libraries/ContractInterfaces";
 
 const ETERNAL_APPROVAL_VALUE = new ethers.utils.BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
 
@@ -184,11 +185,18 @@ export class ContractAPI {
     await market.contribute(payoutNumerators, amount, "");
   }
 
-  public derivePayoutDistributionHash(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, payoutNumerators: Array<ethers.utils.BigNumber>): Promise<string> {
+  public async getRemainingToFill(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, payoutNumerators: Array<ethers.utils.BigNumber>): Promise<ethers.utils.BigNumber> {
+    const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
+    const crowdsourcerAddress = await market.getCrowdsourcer_(payoutDistributionHash);
+    const crowdsourcer = this.augur.contracts.getReportingParticipant(crowdsourcerAddress);
+    return await crowdsourcer.getRemainingToFill_();
+  }
+
+  public async derivePayoutDistributionHash(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, payoutNumerators: Array<ethers.utils.BigNumber>): Promise<string> {
     return market.derivePayoutDistributionHash_(payoutNumerators);
   }
 
-  public isForking(): Promise<boolean> {
+  public async isForking(): Promise<boolean> {
     return this.augur.contracts.universe.isForking_();
   }
 
@@ -233,6 +241,13 @@ export class ContractAPI {
 
   public async doInitialReport(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, payoutNumerators: Array<ethers.utils.BigNumber>): Promise<void> {
     await market.doInitialReport(payoutNumerators, "");
+  }
+
+  public async getInitialReporterStake(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, payoutNumerators: Array<ethers.utils.BigNumber>): Promise<ethers.utils.BigNumber> {
+    const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
+    const initialReporterAddress = await market.getCrowdsourcer_(payoutDistributionHash);
+    const initialReporter = this.augur.contracts.getReportingParticipant(initialReporterAddress);
+    return await initialReporter.getStake_();
   }
 
   public async finalizeMarket(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>): Promise<void> {

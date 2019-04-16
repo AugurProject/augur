@@ -129,12 +129,13 @@ export class Markets<TBigNumber> {
   }
 
   private async getMarketReportingState(marketCreatedLog: MarketCreatedLog, marketFinalizedLogs: Array<MarketFinalizedLog>): Promise<MarketInfoReportingState> {
-    const universeForkedLogs = await this.db.findUniverseForkedLogs({selector: {universe: marketCreatedLog.universe}});
+    console.log("FINALIZED LOGS");
+    console.log(marketFinalizedLogs);
+    const universeForkedLogs = (await this.db.findUniverseForkedLogs({selector: {universe: marketCreatedLog.universe}})).reverse();
     if (universeForkedLogs.length > 0) {
       if (universeForkedLogs[0].market === marketCreatedLog.market) {
         return MarketInfoReportingState.FORKING;
       } else {
-        const marketFinalizedLogs = await this.db.findMarketFinalizedLogs({selector: {market: marketCreatedLog.market}});
         if (marketFinalizedLogs.length > 0) {
           return MarketInfoReportingState.FINALIZED;
         } else {
@@ -142,7 +143,7 @@ export class Markets<TBigNumber> {
         }
       }
     } else {
-      const timestampSetLogs = (await this.db.findTimestampSetLogs({selector: {newTimestamp: {$ne: null}}})).reverse();
+      const timestampSetLogs = (await this.db.findTimestampSetLogs({selector: {newTimestamp: {$ne: null}}}));
       let currentTimestamp;
       if (timestampSetLogs.length > 0) {
         currentTimestamp = new BigNumber(timestampSetLogs[0].newTimestamp);
@@ -153,7 +154,7 @@ export class Markets<TBigNumber> {
       if (new BigNumber(currentTimestamp).lt(marketCreatedLog.endTime)) {
         return MarketInfoReportingState.PRE_REPORTING;
       } else {
-        const initialReportSubmittedLogs = await this.db.findInitialReportSubmittedLogs({selector: {market: marketCreatedLog.market}});
+        const initialReportSubmittedLogs = (await this.db.findInitialReportSubmittedLogs({selector: {market: marketCreatedLog.market}})).reverse();
         const SECONDS_IN_A_DAY = 86400;
         const designatedReportingEndTime = currentTimestamp.plus(SECONDS_IN_A_DAY);
         if (initialReportSubmittedLogs.length === 0 && currentTimestamp.lt(designatedReportingEndTime)) {
@@ -167,10 +168,10 @@ export class Markets<TBigNumber> {
             const disputeCrowdsourcerCompletedLogs = (await this.db.findDisputeCrowdsourcerCompletedLogs({selector: {market: marketCreatedLog.market}})).reverse();
             // TODO Finish if statement below
             if (disputeCrowdsourcerCompletedLogs.length > 0 && disputeCrowdsourcerCompletedLogs[0].pacingOn) {
+              const disputeWindowCreatedLogs = (await this.db.findDisputeWindowCreatedLogs({selector: {market: marketCreatedLog.market}})).reverse();
               return MarketInfoReportingState.AWAITING_NEXT_WINDOW;
-            } else {
-              return MarketInfoReportingState.CROWDSOURCING_DISPUTE;
             }
+            return MarketInfoReportingState.CROWDSOURCING_DISPUTE;
           }
         }
       }
@@ -181,7 +182,7 @@ export class Markets<TBigNumber> {
     const marketCreatedLogs = await this.db.findMarketCreatedLogs({selector: {market: {$in: params.marketIds}}});
 
     return await Promise.all(marketCreatedLogs.map(async (marketCreatedLog) => {
-      const marketFinalizedLogs = await this.db.findMarketFinalizedLogs({selector: {market: marketCreatedLog.market}});
+      const marketFinalizedLogs = (await this.db.findMarketFinalizedLogs({selector: {market: marketCreatedLog.market}})).reverse();
       const marketVolumeChangedLogs = (await this.db.findMarketVolumeChangedLogs({selector: {market: marketCreatedLog.market}})).reverse();
       const completeSetsPurchasedLogs = (await this.db.findCompleteSetsPurchasedLogs({selector: {market: marketCreatedLog.market}})).reverse();
       const completeSetsSoldLogs = (await this.db.findCompleteSetsSoldLogs({selector: {market: marketCreatedLog.market}})).reverse();

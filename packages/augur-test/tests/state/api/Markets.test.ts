@@ -60,11 +60,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   await mary.buyCompleteSets(categoricalMarket, numShares);
   await mary.buyCompleteSets(scalarMarket, numShares);
 
-  await db.sync(
-    john.augur,
-    100000,
-    10,
-  );
+  await db.sync(john.augur, 100000, 0);
 
   let markets = await api.markets.getMarketsInfo({
     marketIds: [
@@ -78,15 +74,11 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[1].reportingState).toBe("PRE_REPORTING");
   expect(markets[2].reportingState).toBe("PRE_REPORTING");
 
+  // Skip to yes/no market end time
   let newTime = (await yesNoMarket.getEndTime_()).add(1);
-  console.log("SETTING TIME TO " + newTime.toNumber());
   await john.setTimestamp(newTime);
 
-  await db.sync(
-    john.augur,
-    100000,
-    10,
-  );
+  await db.sync(john.augur, 100000, 0);
 
   markets = await api.markets.getMarketsInfo({
     marketIds: [
@@ -100,13 +92,20 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[1].reportingState).toBe("DESIGNATED_REPORTING");
   expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
 
-  await john.doInitialReport(yesNoMarket, [new ethers.utils.BigNumber(10000), new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(0)]);
+  // Submit intial reports
+  const categoricalMarketPayoutSet = [
+    new ethers.utils.BigNumber(10000),
+    new ethers.utils.BigNumber(0),
+    new ethers.utils.BigNumber(0),
+    new ethers.utils.BigNumber(0)
+  ];
+  await john.doInitialReport(categoricalMarket, categoricalMarketPayoutSet);
 
-  await db.sync(
-    john.augur,
-    100000,
-    10,
-  );
+  const noPayoutSet = [new ethers.utils.BigNumber(10000), new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(0)];
+  const yesPayoutSet = [new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(10000), new ethers.utils.BigNumber(0)];
+  await john.doInitialReport(yesNoMarket, noPayoutSet);
+
+  await db.sync(john.augur, 100000, 0);
 
   markets = await api.markets.getMarketsInfo({
     marketIds: [
@@ -117,19 +116,29 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   });
 
   expect(markets[0].reportingState).toBe("CROWDSOURCING_DISPUTE");
-  expect(markets[1].reportingState).toBe("DESIGNATED_REPORTING");
+  expect(markets[1].reportingState).toBe("CROWDSOURCING_DISPUTE");
   expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
 
-  await john.contribute(yesNoMarket, [new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(10000), new ethers.utils.BigNumber(0)], new ethers.utils.BigNumber(250000));
-
-  newTime = newTime.add(60 * 60 * 24 * 14);
+  newTime = newTime.add(60 * 60 * 24 * 7);
   await john.setTimestamp(newTime);
+  console.log("BEFORE FINALIZE");
+  await john.finalizeMarket(yesNoMarket);
+  console.log("AFTER FINALIZE");
+/*
+  // Dispute 10 times
+  for (let disputeRound = 1; disputeRound <= 11; disputeRound++) {
+    if (disputeRound % 2 !== 0) {
+      await mary.contribute(yesNoMarket, yesPayoutSet, new ethers.utils.BigNumber(25000));
+      let remainingToFill = await john.getRemainingToFill(yesNoMarket, yesPayoutSet);
+      await mary.contribute(yesNoMarket, yesPayoutSet, remainingToFill);
+    } else {
+      await john.contribute(yesNoMarket, noPayoutSet, new ethers.utils.BigNumber(25000));
+      let remainingToFill = await john.getRemainingToFill(yesNoMarket, noPayoutSet);
+      await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
+    }
+  }
 
-  await db.sync(
-    john.augur,
-    100000,
-    10,
-  );
+  await db.sync(john.augur, 100000, 0);
 
   markets = await api.markets.getMarketsInfo({
     marketIds: [
@@ -139,6 +148,70 @@ test("State API :: Markets :: getMarketsInfo", async () => {
     ]
   });
 
+  expect(markets[0].reportingState).toBe("AWAITING_NEXT_WINDOW");
+  expect(markets[1].reportingState).toBe("CROWDSOURCING_DISPUTE");
+  expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
+
+  // Continue disputing
+  for (let disputeRound = 12; disputeRound <= 19; disputeRound++) {
+    newTime = newTime.add(60 * 60 * 24 * 7);
+    await john.setTimestamp(newTime);
+
+    if (disputeRound % 2 !== 0) {
+      await mary.contribute(yesNoMarket, yesPayoutSet, new ethers.utils.BigNumber(25000));
+      let remainingToFill = await john.getRemainingToFill(yesNoMarket, yesPayoutSet);
+      await mary.contribute(yesNoMarket, yesPayoutSet, remainingToFill);
+    } else {
+      await john.contribute(yesNoMarket, noPayoutSet, new ethers.utils.BigNumber(25000));
+      let remainingToFill = await john.getRemainingToFill(yesNoMarket, noPayoutSet);
+      await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
+    }
+  }
+
+  console.log("BEFORE FINALIZE")
+  await john.finalizeMarket(categoricalMarket);
+  console.log("AFTER FINALIZE")
+
+  await db.sync(john.augur, 100000, 0);
+
+  markets = await api.markets.getMarketsInfo({
+    marketIds: [
+      yesNoMarket.address,
+      categoricalMarket.address,
+      scalarMarket.address
+    ]
+  });
+
+  expect(markets[0].reportingState).toBe("AWAITING_NEXT_WINDOW");
+  expect(markets[1].reportingState).toBe("FINALIZED");
+  expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
+
+  // Fork market
+  await john.contribute(yesNoMarket, noPayoutSet, new ethers.utils.BigNumber(25000));
+  let remainingToFill = await john.getRemainingToFill(yesNoMarket, noPayoutSet);
+  await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
+
+  newTime = newTime.add(60 * 60 * 24 * 7);
+  await john.setTimestamp(newTime);
+
+  await db.sync(john.augur, 100000, 0);
+
+  markets = await api.markets.getMarketsInfo({
+    marketIds: [
+      yesNoMarket.address,
+      categoricalMarket.address,
+      scalarMarket.address
+    ]
+  });
+
+  expect(markets[0].reportingState).toBe("AWAITING_FORK_MIGRATION");
+  expect(markets[1].reportingState).toBe("AWAITING_FORK_MIGRATION");
+  expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
+
+  newTime = newTime.add(60 * 60 * 24 * 7);
+  await john.setTimestamp(newTime);
+
+/*
   // TODO Add checks for reportingState, needsMigration, consensus,
   // finalizationBlockNumber, & finalizationTime by reporting, disputing, & finalizing a market
 
@@ -272,4 +345,5 @@ test("State API :: Markets :: getMarketsInfo", async () => {
       },
     ]
   );
-}, 60000);
+*/
+}, 120000);

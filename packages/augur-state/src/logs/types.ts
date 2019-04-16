@@ -43,6 +43,24 @@ export interface DisputeCrowdsourcerCompletedLog extends Log, Doc {
   pacingOn: boolean;
 }
 
+export interface DisputeCrowdsourcerContributionLog extends Log, Doc {
+  universe: Address;
+  reporter: Address;
+  market: Address;
+  disputeCrowdsourcer: Address;
+  amountStaked: number;
+  description: string;
+}
+
+export interface DisputeWindowCreatedLog extends Log, Doc {
+  universe: Address;
+  disputeWindow: Address;
+  startTime: Timestamp;
+  endTime: Timestamp;
+  id: number;
+  initial: boolean;
+}
+
 export interface InitialReportSubmittedLog extends Log, Doc {
   universe: Address;
   reporter: Address;

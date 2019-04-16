@@ -10,6 +10,8 @@ import {
   CompleteSetsPurchasedLog,
   CompleteSetsSoldLog,
   DisputeCrowdsourcerCompletedLog,
+  DisputeCrowdsourcerContributionLog,
+  DisputeWindowCreatedLog,
   InitialReportSubmittedLog,
   OrderFilledLog,
   OrderCreatedLog,
@@ -346,6 +348,28 @@ export class DB<TBigNumber> {
   public async findDisputeCrowdsourcerCompletedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeCrowdsourcerCompletedLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerCompleted"), request);
     return results.docs as unknown as Array<DisputeCrowdsourcerCompletedLog>;
+  }
+
+    /**
+   * Queries the DisputeCrowdsourcerContribution DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<DisputeCrowdsourcerContributionLog>>}
+   */
+  public async findDisputeCrowdsourcerContributionLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeCrowdsourcerContributionLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerContribution"), request);
+    return results.docs as unknown as Array<DisputeCrowdsourcerContributionLog>;
+  }
+
+  /**
+   * Queries the DisputeWindowCreated DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<DisputeWindowCreatedLog>>}
+   */
+  public async findDisputeWindowCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeWindowCreatedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("DisputeWindowCreated"), request);
+    return results.docs as unknown as Array<DisputeWindowCreatedLog>;
   }
 
   /**
