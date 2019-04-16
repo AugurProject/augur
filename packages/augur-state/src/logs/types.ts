@@ -165,3 +165,12 @@ export interface UniverseForkedLog extends Log, Doc {
   universe: Address;
   market: Address;
 }
+
+export interface TokenBalanceChangedLog extends Log, Doc {
+  universe: string;
+  owner: string;
+  token: string;
+  tokenType: string;
+  market: string;
+  balance: string;
+}
