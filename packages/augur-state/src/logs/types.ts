@@ -138,3 +138,12 @@ export interface ProfitLossChangedLog extends Log, Doc {
 export interface UniverseForkedLog extends Log, Doc {
   universe: Address;
 }
+
+export interface TokenBalanceChangedLog extends Log, Doc {
+  universe: string;
+  owner: string;
+  token: string;
+  tokenType: string;
+  market: string;
+  balance: string;
+}
