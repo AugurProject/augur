@@ -77,7 +77,7 @@ export class Markets<TBigNumber> {
     // TODO
   }
 
-  @Getter("MarketsInfoParams")
+  @Getter("GetMarketsInfoParams")
   public static async getMarketsInfo<TBigNumber>(db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsInfoParams>): Promise<Array<MarketInfo>> {
     // TODO Improve performance by using Promise.all for DB queries
     const marketCreatedLogs = await db.findMarketCreatedLogs({ selector: { market: { $in: params.marketIds } } });

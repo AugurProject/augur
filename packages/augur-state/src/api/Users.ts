@@ -77,7 +77,8 @@ export interface UserTradingPositions {
 export class Users<TBigNumber> {
   public static GetUserTradingPositionsParams = t.intersection([UserTradingPositionsParams, SortLimit]);
 
-  public static async getUserTradingPositions<TBigNumber>(db: DB<TBigNumber>, params: Users.GetUserTradingPositionsParams): Promise<UserTradingPositions> {
+  @Getter("GetUserTradingPositionsParams")
+  public static async getUserTradingPositions<TBigNumber>(db: DB<TBigNumber>, params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<UserTradingPositions> {
     if (!params.universe && !params.marketId) {
       throw new Error("'getTradingHistory' requires a 'universe' or 'marketId' param be provided");
     }
@@ -91,7 +92,7 @@ export class Users<TBigNumber> {
       limit: params.limit,
       skip: params.offset,
     };
-    const profitLossResult = await this.db.findProfitLossChangedLogs(request);
+    const profitLossResult = await db.findProfitLossChangedLogs(request);
     const profitLossResultsByMarket = _.groupBy(profitLossResult, "market");
     const profitLossResultsByMarketAndOutcome = _.mapValues(profitLossResultsByMarket, (profitLossResults) => {
       const outcomeProfitLossResultsInMarket = _.groupBy(profitLossResults, "outcome");
@@ -115,7 +116,7 @@ export class Users<TBigNumber> {
         ]
       }
     }
-    const orderFilled = await this.db.findOrderFilledLogs(orderFilledRequest);
+    const orderFilled = await db.findOrderFilledLogs(orderFilledRequest);
     const ordersFilledByMarket = _.groupBy(orderFilled, "marketId");
     const ordersFilledResultsByMarketAndOutcome = _.mapValues(ordersFilledByMarket, (orderFilledResults) => {
       const outcomeOrderFilledResultsInMarket = _.groupBy(orderFilledResults, "outcome");
@@ -130,7 +131,7 @@ export class Users<TBigNumber> {
     });
 
     const marketIds = _.keys(profitLossResultsByMarket);
-    const marketsResponse = await this.db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
+    const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
     const markets = _.keyBy(marketsResponse, "market");
 
     // map Latest PLs to Trading Positions
@@ -199,13 +200,13 @@ export class Users<TBigNumber> {
   }
 
   @Getter("GetUserTradingPositionsParams")
-  public async getProfitLoss(params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<void> {
+  public static async getProfitLoss(params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<Array<TradingPosition>> {
     // TODO
     return [];
   }
 
   @Getter("GetUserTradingPositionsParams")
-  public async getProfitLossSummary(params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<void> {
+  public static async getProfitLossSummary(params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<NumericDictionary<TradingPosition>> {
     // TODO
     return {};
   }

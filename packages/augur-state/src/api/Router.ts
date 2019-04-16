@@ -7,10 +7,21 @@ import * as t from "io-ts";
 
 export function Getter(alternateInterface?: string) {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor): void => {
-    if (alternateInterface) {
-      Router.Add(propertyKey, descriptor.value, Object(target)[alternateInterface]);
+    if (!target || !target.name) {
+      throw new Error(`Getter function on ${target.constructor.name} must be declared public static`);
+    }
 
+    if (alternateInterface) {
+      if (!Object(target)[alternateInterface]) {
+        throw new Error(`No params object for ${target.name} getter`);
+      }
+
+      Router.Add(propertyKey, descriptor.value, Object(target)[alternateInterface]);
     } else {
+      if (!Object(target)[target.name + "Params"]) {
+        throw new Error(`No params object for ${target.name}Params getter`);
+      }
+
       Router.Add(propertyKey, descriptor.value, Object(target)[target.name + "Params"]);
     }
   };
@@ -35,12 +46,21 @@ export class Router<TBigNumber> {
 
   public route(name: string, params: any): Promise<any> {
     const getter = Router.routings.get(name);
+
+    if (!getter) {
+      throw new Error(`Invalid request ${name}`);
+    }
+
+    if (!getter.params) {
+      throw new Error("no params type for getter ${name}");
+    }
+
     const decodedParams = getter.params.decode(params);
 
     if (!decodedParams.isRight()) {
       throw new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`);
     }
 
-    return getter.func(this.db, decodedParams);
+    return getter.func(this.db, decodedParams.value);
   }
 }

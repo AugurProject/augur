@@ -3,13 +3,8 @@ import { DB } from "../db/DB";
 import * as _ from "lodash";
 import { numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/api";
 import { BigNumber } from "bignumber.js";
-<<<<<<< HEAD
 import { Getter } from "./Router";
 import { TrackedUsers } from "../db/TrackedUsers";
-||||||| merged common ancestors
-import { TrackedUsers } from '../db/TrackedUsers';
-=======
->>>>>>> b140aebee9a44605156373c279ea7701c87d4530
 
 import * as t from "io-ts";
 
