@@ -64,7 +64,7 @@ export interface MarketInfo {
   resolutionSource: string | null;
   numTicks: string;
   tickSize: string;
-  consensus: Array<number>|null,
+  consensus: Array<string>|null,
   outcomes: Array<MarketInfoOutcome>;
 }
 
@@ -118,7 +118,9 @@ export class Markets<TBigNumber> {
     return outcomes;
   }
 
-  private static getMarketOpenInterest(completeSetsPurchasedLogs: Array<CompleteSetsPurchasedLog>, completeSetsSoldLogs: Array<CompleteSetsSoldLog>): string {
+  private static async getMarketOpenInterest<TBigNumber>(db: DB<TBigNumber>, marketCreatedLog: MarketCreatedLog): Promise<string> {
+    const completeSetsPurchasedLogs = (await db.findCompleteSetsPurchasedLogs({selector: {market: marketCreatedLog.market}})).reverse();
+    const completeSetsSoldLogs = (await db.findCompleteSetsSoldLogs({selector: {market: marketCreatedLog.market}})).reverse();
     if (completeSetsPurchasedLogs.length > 0 && completeSetsSoldLogs.length > 0) {
       if (completeSetsPurchasedLogs[0].blockNumber > completeSetsSoldLogs[0].blockNumber) {
         return new BigNumber(completeSetsPurchasedLogs[0].marketOI).toString();
@@ -140,7 +142,7 @@ export class Markets<TBigNumber> {
   private static async getMarketReportingState<TBigNumber>(db: DB<TBigNumber>, marketCreatedLog: MarketCreatedLog, marketFinalizedLogs: Array<MarketFinalizedLog>): Promise<MarketInfoReportingState> {
     const universeForkedLogs = (await db.findUniverseForkedLogs({selector: {universe: marketCreatedLog.universe}})).reverse();
     if (universeForkedLogs.length > 0) {
-      if (universeForkedLogs[0].market === marketCreatedLog.market) {
+      if (universeForkedLogs[0].forkingMarket === marketCreatedLog.market) {
         return MarketInfoReportingState.FORKING;
       } else {
         if (marketFinalizedLogs.length > 0) {
@@ -150,10 +152,16 @@ export class Markets<TBigNumber> {
         }
       }
     } else {
-      const timestampSetLogs = (await db.findTimestampSetLogs({selector: {newTimestamp: {$ne: null}}}));
+      const timestampSetLogs = (await db.findTimestampSetLogs({selector: {newTimestamp: {$type: "string"}}}));
       let currentTimestamp;
       if (timestampSetLogs.length > 0) {
+        // Determine current timestamp since timestampSetLogs are not sorted by blockNumber
         currentTimestamp = new BigNumber(timestampSetLogs[0].newTimestamp);
+        for (let i = 0; i < timestampSetLogs.length; i++) {
+          if (new BigNumber(timestampSetLogs[i].newTimestamp).gt(currentTimestamp)) {
+            currentTimestamp = new BigNumber(timestampSetLogs[i].newTimestamp);
+          }
+        }
       } else {
         currentTimestamp = new BigNumber(Math.round(Date.now() / 1000));
       }
@@ -162,19 +170,21 @@ export class Markets<TBigNumber> {
       } else {
         const initialReportSubmittedLogs = (await db.findInitialReportSubmittedLogs({selector: {market: marketCreatedLog.market}})).reverse();
         const SECONDS_IN_A_DAY = 86400;
-        const designatedReportingEndTime = currentTimestamp.plus(SECONDS_IN_A_DAY);
-        if (initialReportSubmittedLogs.length === 0 && currentTimestamp.lt(designatedReportingEndTime)) {
+        const designatedReportingEndTime = new BigNumber(marketCreatedLog.endTime).plus(SECONDS_IN_A_DAY);
+        if (initialReportSubmittedLogs.length === 0 && currentTimestamp.lte(designatedReportingEndTime)) {
           return MarketInfoReportingState.DESIGNATED_REPORTING;
-        } else if (initialReportSubmittedLogs.length === 0 && currentTimestamp.gte(designatedReportingEndTime)) {
+        } else if (initialReportSubmittedLogs.length === 0 && currentTimestamp.gt(designatedReportingEndTime)) {
           return MarketInfoReportingState.OPEN_REPORTING;
         } else {
           if (marketFinalizedLogs.length > 0) {
             return MarketInfoReportingState.FINALIZED;
           } else {
             const disputeCrowdsourcerCompletedLogs = (await db.findDisputeCrowdsourcerCompletedLogs({selector: {market: marketCreatedLog.market}})).reverse();
-            // TODO Finish if statement below
-            if (disputeCrowdsourcerCompletedLogs.length > 0 && disputeCrowdsourcerCompletedLogs[0].pacingOn) {
-              const disputeWindowCreatedLogs = (await db.findDisputeWindowCreatedLogs({selector: {market: marketCreatedLog.market}})).reverse();
+            if (
+              disputeCrowdsourcerCompletedLogs.length > 0 &&
+              disputeCrowdsourcerCompletedLogs[0].pacingOn &&
+              currentTimestamp.lt(disputeCrowdsourcerCompletedLogs[0].nextWindowStartTime)
+            ) {
               return MarketInfoReportingState.AWAITING_NEXT_WINDOW;
             }
             return MarketInfoReportingState.CROWDSOURCING_DISPUTE;
@@ -191,8 +201,6 @@ export class Markets<TBigNumber> {
     return await Promise.all(marketCreatedLogs.map(async (marketCreatedLog) => {
       const marketFinalizedLogs = (await db.findMarketFinalizedLogs({selector: {market: marketCreatedLog.market}})).reverse();
       const marketVolumeChangedLogs = (await db.findMarketVolumeChangedLogs({selector: {market: marketCreatedLog.market}})).reverse();
-      const completeSetsPurchasedLogs = (await db.findCompleteSetsPurchasedLogs({selector: {market: marketCreatedLog.market}})).reverse();
-      const completeSetsSoldLogs = (await db.findCompleteSetsSoldLogs({selector: {market: marketCreatedLog.market}})).reverse();
 
       const minPrice = new BigNumber(marketCreatedLog.minPrice);
       const maxPrice = new BigNumber(marketCreatedLog.maxPrice);
@@ -207,7 +215,11 @@ export class Markets<TBigNumber> {
       let finalizationBlockNumber = null;
       let finalizationTime = null;
       if (marketFinalizedLogs.length > 0) {
-        consensus = marketFinalizedLogs[0].winningPayoutNumerators;
+        consensus = [];
+        marketFinalizedLogs[0].winningPayoutNumerators;
+        for (let i = 0; i < marketFinalizedLogs[0].winningPayoutNumerators.length; i++) {
+          consensus[i] = new BigNumber(marketFinalizedLogs[0].winningPayoutNumerators[i]._hex).toString(10);
+        }
         finalizationBlockNumber = marketFinalizedLogs[0].blockNumber;
         finalizationTime = new BigNumber(marketFinalizedLogs[0].timestamp).toString(10);
       }
@@ -243,7 +255,7 @@ export class Markets<TBigNumber> {
         creationBlock: marketCreatedLog.blockNumber,
         category: Buffer.from(marketCreatedLog.topic.replace("0x", ""), "hex").toString(),
         volume: (marketVolumeChangedLogs.length > 0) ? new BigNumber(marketVolumeChangedLogs[0].volume).toString() : "0",
-        openInterest: Markets.getMarketOpenInterest(completeSetsPurchasedLogs, completeSetsSoldLogs),
+        openInterest: await Markets.getMarketOpenInterest(db, marketCreatedLog),
         reportingState,
         needsMigration,
         endTime: new BigNumber(marketCreatedLog.endTime).toNumber(),
