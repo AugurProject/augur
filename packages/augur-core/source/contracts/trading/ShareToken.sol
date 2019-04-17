@@ -80,17 +80,17 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
     }
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
-        augur.logShareTokensTransferred(market.getUniverse(), _from, _to, _value, balances[_from], balances[_to]);
+        augur.logShareTokensTransferred(market.getUniverse(), _from, _to, _value, balances[_from], balances[_to], outcome);
         return true;
     }
 
     function onMint(address _target, uint256 _amount) internal returns (bool) {
-        augur.logShareTokensMinted(market.getUniverse(), _target, _amount, totalSupply());
+        augur.logShareTokensMinted(market.getUniverse(), _target, _amount, totalSupply(), balances[_target], outcome);
         return true;
     }
 
     function onBurn(address _target, uint256 _amount) internal returns (bool) {
-        augur.logShareTokensBurned(market.getUniverse(), _target, _amount, totalSupply());
+        augur.logShareTokensBurned(market.getUniverse(), _target, _amount, totalSupply(), balances[_target], outcome);
         return true;
     }
 }

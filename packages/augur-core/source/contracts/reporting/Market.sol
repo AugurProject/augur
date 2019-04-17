@@ -208,7 +208,7 @@ contract Market is Initializable, Ownable, IMarket {
             }
             disputeWindow = universe.getOrCreateNextDisputeWindow(false);
         }
-        augur.logDisputeCrowdsourcerCompleted(universe, address(this), address(_crowdsourcer));
+        augur.logDisputeCrowdsourcerCompleted(universe, address(this), address(_crowdsourcer), disputeWindow.getStartTime(), disputePacingOn);
         if (preemptiveDisputeCrowdsourcer != IDisputeCrowdsourcer(0)) {
             IDisputeCrowdsourcer _newCrowdsourcer = preemptiveDisputeCrowdsourcer;
             preemptiveDisputeCrowdsourcer = IDisputeCrowdsourcer(0);
@@ -234,13 +234,17 @@ contract Market is Initializable, Ownable, IMarket {
 
     function finalize() public returns (bool) {
         require(winningPayoutDistributionHash == bytes32(0));
+        uint256[] memory _winningPayoutNumerators;
         if (universe.getForkingMarket() == this) {
             IUniverse _winningUniverse = universe.getWinningChildUniverse();
             winningPayoutDistributionHash = _winningUniverse.getParentPayoutDistributionHash();
+            _winningPayoutNumerators = _winningUniverse.getPayoutNumerators();
         } else {
             require(disputeWindow.isOver());
             require(!universe.isForking());
-            winningPayoutDistributionHash = participants[participants.length-1].getPayoutDistributionHash();
+            IReportingParticipant _reportingParticipant = participants[participants.length-1];
+            winningPayoutDistributionHash = _reportingParticipant.getPayoutDistributionHash();
+            _winningPayoutNumerators = _reportingParticipant.getPayoutNumerators();
             // Make sure the dispute window for which we record finalization is the standard cadence window and not an initial dispute window
             disputeWindow = universe.getOrCreatePreviousDisputeWindow(false);
             disputeWindow.onMarketFinalized();
@@ -249,7 +253,7 @@ contract Market is Initializable, Ownable, IMarket {
         }
         distributeValidityBondAndMarketCreatorFees();
         finalizationTime = augur.getTimestamp();
-        augur.logMarketFinalized(universe);
+        augur.logMarketFinalized(universe, _winningPayoutNumerators);
         return true;
     }
 

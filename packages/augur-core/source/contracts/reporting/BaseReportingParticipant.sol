@@ -54,4 +54,8 @@ contract BaseReportingParticipant is IReportingParticipant {
     function getPayoutNumerator(uint256 _outcome) public view returns (uint256) {
         return payoutNumerators[_outcome];
     }
+
+    function getPayoutNumerators() public view returns (uint256[] memory) {
+        return payoutNumerators;
+    }
 }

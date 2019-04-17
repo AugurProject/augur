@@ -59,6 +59,53 @@
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_netPosition",
+					"type": "int256"
+				},
+				{
+					"name": "_avgPrice",
+					"type": "uint256"
+				},
+				{
+					"name": "_realizedProfit",
+					"type": "int256"
+				},
+				{
+					"name": "_frozenFunds",
+					"type": "int256"
+				},
+				{
+					"name": "_realizedCost",
+					"type": "int256"
+				}
+			],
+			"name": "logProfitLossChanged",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_universe",
 					"type": "address"
 				},
@@ -73,9 +120,13 @@
 				{
 					"name": "_totalSupply",
 					"type": "uint256"
+				},
+				{
+					"name": "_balance",
+					"type": "uint256"
 				}
 			],
-			"name": "logDisputeOverloadTokensMinted",
+			"name": "logDisputeCrowdsourcerTokensBurned",
 			"outputs": [
 				{
 					"name": "",
@@ -147,6 +198,49 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"name": "_value",
+					"type": "uint256"
+				},
+				{
+					"name": "_fromBalance",
+					"type": "uint256"
+				},
+				{
+					"name": "_toBalance",
+					"type": "uint256"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "logShareTokensTransferred",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getTimestamp",
@@ -207,15 +301,82 @@
 					"type": "address"
 				},
 				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"name": "_totalSupply",
+					"type": "uint256"
+				},
+				{
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"name": "logDisputeOverloadTokensBurned",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_filler",
+					"type": "address"
+				},
+				{
+					"name": "_creator",
+					"type": "address"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
 					"name": "_orderId",
 					"type": "bytes32"
 				},
 				{
 					"name": "_price",
 					"type": "uint256"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_marketCreatorFees",
+					"type": "uint256"
+				},
+				{
+					"name": "_reporterFees",
+					"type": "uint256"
+				},
+				{
+					"name": "_amountFilled",
+					"type": "uint256"
+				},
+				{
+					"name": "_tradeGroupId",
+					"type": "bytes32"
 				}
 			],
-			"name": "logOrderPriceChanged",
+			"name": "logOrderFilled",
 			"outputs": [
 				{
 					"name": "",
@@ -344,138 +505,13 @@
 				{
 					"name": "_universe",
 					"type": "address"
+				},
+				{
+					"name": "_winningPayoutNumerators",
+					"type": "uint256[]"
 				}
 			],
 			"name": "logMarketFinalized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_filler",
-					"type": "address"
-				},
-				{
-					"name": "_creator",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_marketCreatorFees",
-					"type": "uint256"
-				},
-				{
-					"name": "_reporterFees",
-					"type": "uint256"
-				},
-				{
-					"name": "_amountFilled",
-					"type": "uint256"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				}
-			],
-			"name": "logOrderFilled",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_totalSupply",
-					"type": "uint256"
-				}
-			],
-			"name": "logAuctionTokensMinted",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_account",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_netPosition",
-					"type": "int256"
-				},
-				{
-					"name": "_avgPrice",
-					"type": "uint256"
-				},
-				{
-					"name": "_realizedProfit",
-					"type": "int256"
-				},
-				{
-					"name": "_frozenFunds",
-					"type": "int256"
-				}
-			],
-			"name": "logProfitLossChanged",
 			"outputs": [
 				{
 					"name": "",
@@ -511,6 +547,41 @@
 				}
 			],
 			"name": "disputeCrowdsourcerCreated",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"name": "_totalSupply",
+					"type": "uint256"
+				},
+				{
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"name": "logReputationTokensBurned",
 			"outputs": [
 				{
 					"name": "",
@@ -632,47 +703,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [],
-			"name": "logUniverseForked",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_disputeCrowdsourcer",
-					"type": "address"
-				}
-			],
-			"name": "logDisputeCrowdsourcerCompleted",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -708,6 +738,45 @@
 				{
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"name": "_totalSupply",
+					"type": "uint256"
+				},
+				{
+					"name": "_balance",
+					"type": "uint256"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "logShareTokensMinted",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -761,27 +830,54 @@
 					"type": "address"
 				},
 				{
-					"name": "_from",
+					"name": "_target",
 					"type": "address"
 				},
 				{
-					"name": "_to",
-					"type": "address"
-				},
-				{
-					"name": "_value",
+					"name": "_amount",
 					"type": "uint256"
 				},
 				{
-					"name": "_fromBalance",
+					"name": "_totalSupply",
 					"type": "uint256"
 				},
 				{
-					"name": "_toBalance",
+					"name": "_balance",
 					"type": "uint256"
 				}
 			],
-			"name": "logShareTokensTransferred",
+			"name": "logDisputeOverloadTokensMinted",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_orderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				}
+			],
+			"name": "logOrderPriceChanged",
 			"outputs": [
 				{
 					"name": "",
@@ -828,6 +924,41 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"name": "_totalSupply",
+					"type": "uint256"
+				},
+				{
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"name": "logParticipationTokensBurned",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -941,37 +1072,6 @@
 					"type": "address"
 				},
 				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_totalSupply",
-					"type": "uint256"
-				}
-			],
-			"name": "logDisputeCrowdsourcerTokensBurned",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
 					"name": "_shareToken",
 					"type": "address"
 				},
@@ -1025,9 +1125,13 @@
 				{
 					"name": "_totalSupply",
 					"type": "uint256"
+				},
+				{
+					"name": "_balance",
+					"type": "uint256"
 				}
 			],
-			"name": "logParticipationTokensMinted",
+			"name": "logAuctionTokensMinted",
 			"outputs": [
 				{
 					"name": "",
@@ -1067,6 +1171,41 @@
 				}
 			],
 			"name": "logAuctionTokensTransferred",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"name": "_totalSupply",
+					"type": "uint256"
+				},
+				{
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"name": "logAuctionTokensBurned",
 			"outputs": [
 				{
 					"name": "",
@@ -1162,68 +1301,6 @@
 					"type": "address"
 				},
 				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_totalSupply",
-					"type": "uint256"
-				}
-			],
-			"name": "logDisputeOverloadTokensBurned",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_totalSupply",
-					"type": "uint256"
-				}
-			],
-			"name": "logAuctionTokensBurned",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
 					"name": "_shareToken",
 					"type": "address"
 				},
@@ -1285,9 +1362,17 @@
 				{
 					"name": "_totalSupply",
 					"type": "uint256"
+				},
+				{
+					"name": "_balance",
+					"type": "uint256"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
 				}
 			],
-			"name": "logReputationTokensMinted",
+			"name": "logShareTokensBurned",
 			"outputs": [
 				{
 					"name": "",
@@ -1315,6 +1400,60 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_forkingMarket",
+					"type": "address"
+				}
+			],
+			"name": "logUniverseForked",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"name": "_totalSupply",
+					"type": "uint256"
+				},
+				{
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"name": "logDisputeCrowdsourcerTokensMinted",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -1350,37 +1489,6 @@
 				}
 			],
 			"name": "logInitialReportSubmitted",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_totalSupply",
-					"type": "uint256"
-				}
-			],
-			"name": "logShareTokensMinted",
 			"outputs": [
 				{
 					"name": "",
@@ -1444,37 +1552,6 @@
 					"type": "address"
 				},
 				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_totalSupply",
-					"type": "uint256"
-				}
-			],
-			"name": "logShareTokensBurned",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
 					"name": "_reporter",
 					"type": "address"
 				},
@@ -1496,37 +1573,6 @@
 				}
 			],
 			"name": "logInitialReporterRedeemed",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_totalSupply",
-					"type": "uint256"
-				}
-			],
-			"name": "logReputationTokensBurned",
 			"outputs": [
 				{
 					"name": "",
@@ -1629,6 +1675,41 @@
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_disputeCrowdsourcer",
+					"type": "address"
+				},
+				{
+					"name": "_nextWindowStartTime",
+					"type": "uint256"
+				},
+				{
+					"name": "_pacingOn",
+					"type": "bool"
+				}
+			],
+			"name": "logDisputeCrowdsourcerCompleted",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_newTimestamp",
 					"type": "uint256"
 				}
@@ -1662,9 +1743,13 @@
 				{
 					"name": "_totalSupply",
 					"type": "uint256"
+				},
+				{
+					"name": "_balance",
+					"type": "uint256"
 				}
 			],
-			"name": "logDisputeCrowdsourcerTokensMinted",
+			"name": "logReputationTokensMinted",
 			"outputs": [
 				{
 					"name": "",
@@ -1808,9 +1893,13 @@
 				{
 					"name": "_totalSupply",
 					"type": "uint256"
+				},
+				{
+					"name": "_balance",
+					"type": "uint256"
 				}
 			],
-			"name": "logParticipationTokensBurned",
+			"name": "logParticipationTokensMinted",
 			"outputs": [
 				{
 					"name": "",
@@ -2099,6 +2188,16 @@
 					"indexed": false,
 					"name": "disputeCrowdsourcer",
 					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "nextWindowStartTime",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "pacingOn",
+					"type": "bool"
 				}
 			],
 			"name": "DisputeCrowdsourcerCompleted",
@@ -2234,6 +2333,16 @@
 					"indexed": true,
 					"name": "market",
 					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "winningPayoutNumerators",
+					"type": "uint256[]"
 				}
 			],
 			"name": "MarketFinalized",
@@ -2267,6 +2376,11 @@
 				{
 					"indexed": true,
 					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "forkingMarket",
 					"type": "address"
 				}
 			],
@@ -2349,6 +2463,11 @@
 					"indexed": false,
 					"name": "orderId",
 					"type": "bytes32"
+				},
+				{
+					"indexed": false,
+					"name": "outcome",
+					"type": "uint256"
 				},
 				{
 					"indexed": false,
@@ -2446,6 +2565,16 @@
 				},
 				{
 					"indexed": false,
+					"name": "price",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "outcome",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
 					"name": "marketCreatorFees",
 					"type": "uint256"
 				},
@@ -2457,11 +2586,6 @@
 				{
 					"indexed": false,
 					"name": "amountFilled",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "outcome",
 					"type": "uint256"
 				},
 				{
@@ -2608,7 +2732,7 @@
 					"type": "address"
 				},
 				{
-					"indexed": true,
+					"indexed": false,
 					"name": "token",
 					"type": "address"
 				},
@@ -2618,7 +2742,7 @@
 					"type": "address"
 				},
 				{
-					"indexed": false,
+					"indexed": true,
 					"name": "to",
 					"type": "address"
 				},
@@ -2636,16 +2760,6 @@
 					"indexed": false,
 					"name": "market",
 					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "fromBalance",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "toBalance",
-					"type": "uint256"
 				}
 			],
 			"name": "TokensTransferred",
@@ -2733,6 +2847,48 @@
 				}
 			],
 			"name": "TokensBurned",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "owner",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "token",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "tokenType",
+					"type": "uint8"
+				},
+				{
+					"indexed": false,
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "balance",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "TokenBalanceChanged",
 			"type": "event"
 		},
 		{
@@ -2890,6 +3046,16 @@
 					"indexed": false,
 					"name": "frozenFunds",
 					"type": "int256"
+				},
+				{
+					"indexed": false,
+					"name": "realizedCost",
+					"type": "int256"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "ProfitLossChanged",
@@ -7556,6 +7722,10 @@
 				{
 					"name": "_parentPayoutDistributionHash",
 					"type": "bytes32"
+				},
+				{
+					"name": "_payoutNumerators",
+					"type": "uint256[]"
 				}
 			],
 			"name": "createUniverse",
@@ -9419,6 +9589,20 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getPayoutNumerators",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -11924,6 +12108,20 @@
 				{
 					"name": "",
 					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getPayoutNumerators",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256[]"
 				}
 			],
 			"payable": false,
@@ -14579,6 +14777,25 @@
 			"constant": true,
 			"inputs": [
 				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"name": "payoutNumerators",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"name": "_timestamp",
 					"type": "uint256"
 				},
@@ -14639,6 +14856,20 @@
 				{
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getPayoutNumerators",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256[]"
 				}
 			],
 			"payable": false,
@@ -15427,6 +15658,10 @@
 				{
 					"name": "_parentPayoutDistributionHash",
 					"type": "bytes32"
+				},
+				{
+					"name": "_payoutNumerators",
+					"type": "uint256[]"
 				}
 			],
 			"payable": false,
@@ -17424,6 +17659,33 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getRealizedCost",
+			"outputs": [
+				{
+					"name": "",
+					"type": "int256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{

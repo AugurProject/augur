@@ -8,7 +8,8 @@ import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
 export interface UserSpecificEvent {
   name: string;
   numAdditionalTopics: number;
-  userTopicIndex: number;
+  userTopicIndicies: Array<number>;
+  idFields?: Array<string>;
 }
 
 export class Augur<TBigNumber> {
@@ -44,7 +45,6 @@ export class Augur<TBigNumber> {
     "OrderFilled",
     "OrderPriceChanged",
     "ParticipationTokensRedeemed",
-    "ProfitLossChanged",
     "ReportingParticipantDisavowed",
     "TimestampSet",
     "TradingProceedsClaimed",
@@ -56,7 +56,18 @@ export class Augur<TBigNumber> {
     {
       "name": "TokensTransferred",
       "numAdditionalTopics": 3,
-      "userTopicIndex": 2,
+      "userTopicIndicies": [1,2],
+    },
+    {
+      "name": "ProfitLossChanged",
+      "numAdditionalTopics": 3,
+      "userTopicIndicies": [2],
+    },
+    {
+      "name": "TokenBalanceChanged",
+      "numAdditionalTopics": 2,
+      "userTopicIndicies": [1],
+      "idFields": ["token"]
     },
   ];
 

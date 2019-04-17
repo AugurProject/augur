@@ -440,7 +440,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     }
 
     function logOrderFilled(Trade.Data memory _tradeData, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, bytes32 _tradeGroupId) private returns (bool) {
-        augur.logOrderFilled(_tradeData.contracts.market.getUniverse(), _tradeData.filler.participantAddress, _tradeData.creator.participantAddress, _tradeData.contracts.market, _tradeData.order.orderId, _marketCreatorFees, _reporterFees, _amountFilled, _tradeData.order.outcome, _tradeGroupId);
+        augur.logOrderFilled(_tradeData.contracts.market.getUniverse(), _tradeData.filler.participantAddress, _tradeData.creator.participantAddress, _tradeData.contracts.market, _tradeData.order.orderId, _tradeData.order.sharePriceLong, _tradeData.order.outcome, _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
         return true;
     }
 

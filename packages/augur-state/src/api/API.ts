@@ -1,22 +1,20 @@
 import { Augur } from "@augurproject/api";
 import { DB } from "../db/DB";
-import { Markets } from "./Markets";
-import { Users } from "./Users";
-import { Trading } from "./Trading";
+import { Router } from "./Router";
+
+// Getters are evaluated by importing these files in this manner
+import "./Markets";
+import "./Trading";
+import "./Users";
 
 export class API<TBigNumber> {
-  private readonly augurAPI: Augur<TBigNumber>;
-  private readonly db: DB<TBigNumber>;
+  private readonly router: Router<TBigNumber>;
 
-  public readonly markets: Markets;
-  public readonly users: Users;
-  public readonly trading: Trading<TBigNumber>;
+  constructor(augurAPI: Augur<TBigNumber>, db: DB<TBigNumber>) {
+    this.router = new Router<TBigNumber>(augurAPI, db);
+  }
 
-  public constructor (augurAPI: Augur<TBigNumber>, db: DB<TBigNumber>) {
-    this.augurAPI = augurAPI;
-    this.db = db;
-    this.markets = new Markets();
-    this.users = new Users();
-    this.trading = new Trading<TBigNumber>(this.db);
+  public route(name: string, params: any) {
+    return this.router.route(name, params);
   }
 }
