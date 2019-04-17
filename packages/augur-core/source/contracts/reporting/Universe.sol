@@ -162,7 +162,9 @@ contract Universe is ITyped, IUniverse {
     function getOrCreateDisputeWindowByTimestamp(uint256 _timestamp, bool _initial) public returns (IDisputeWindow) {
         uint256 _windowId = getDisputeWindowId(_timestamp, _initial);
         if (disputeWindows[_windowId] == IDisputeWindow(0)) {
-            IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, this, _windowId, _initial);
+            uint256 _duration = getDisputeRoundDurationInSeconds(_initial);
+            uint256 _startTime = _timestamp.div(_duration).mul(_duration);
+            IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, this, _windowId, _duration, _startTime);
             disputeWindows[_windowId] = _disputeWindow;
             augur.logDisputeWindowCreated(_disputeWindow, _windowId, _initial);
         }
