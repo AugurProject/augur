@@ -253,7 +253,7 @@ contract Orders is IOrders, Initializable {
         _order.price = _price;
         insertOrderIntoList(_order, _betterOrderId, _worseOrderId);
         _market.assertBalances();
-        augur.logOrderPriceChanged(_market.getUniverse(), _orderId, _price);
+        augur.logOrderPriceChanged(_market.getUniverse(), _orderId, _order.outcome, _price);
         return true;
     }
 
