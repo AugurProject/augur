@@ -129,7 +129,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[0].reportingState).toBe("CROWDSOURCING_DISPUTE");
   expect(markets[1].reportingState).toBe("CROWDSOURCING_DISPUTE");
   expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
-
+/*
   expect(markets).toMatchObject(
     [
       {
@@ -265,16 +265,16 @@ test("State API :: Markets :: getMarketsInfo", async () => {
       },
     ]
   );
-/*
+
   newTime = newTime.add(60 * 60 * 24 * 7);
   await john.setTimestamp(newTime);
   console.log("NEW TIME: ", newTime);
   const disputeWindowEndTime = await john.getDisputeWindowEndTime(yesNoMarket);
   console.log("Dispute window end time: ", disputeWindowEndTime);
   console.log("BEFORE FINALIZE");
-  await john.finalizeMarket(yesNoMarket);
+  await john.finalizeMarket(categoricalMarket);
   console.log("AFTER FINALIZE");
-
+*/
   // Dispute 10 times
   for (let disputeRound = 1; disputeRound <= 11; disputeRound++) {
     if (disputeRound % 2 !== 0) {
@@ -318,31 +318,15 @@ test("State API :: Markets :: getMarketsInfo", async () => {
     }
   }
 
-  console.log("BEFORE FINALIZE")
   await john.finalizeMarket(categoricalMarket);
-  console.log("AFTER FINALIZE")
 
-  await db.sync(john.augur, 100000, 0);
-
-  markets = await api.route("getMarketsInfo", {
-    marketIds: [
-      yesNoMarket.address,
-      categoricalMarket.address,
-      scalarMarket.address
-    ]
-  });
-
-  expect(markets[0].reportingState).toBe("AWAITING_NEXT_WINDOW");
-  expect(markets[1].reportingState).toBe("FINALIZED");
-  expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
+  newTime = newTime.add(60 * 60 * 24 * 7);
+  await john.setTimestamp(newTime);
 
   // Fork market
   await john.contribute(yesNoMarket, noPayoutSet, new ethers.utils.BigNumber(25000));
   let remainingToFill = await john.getRemainingToFill(yesNoMarket, noPayoutSet);
   await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
-
-  newTime = newTime.add(60 * 60 * 24 * 7);
-  await john.setTimestamp(newTime);
 
   await db.sync(john.augur, 100000, 0);
 
@@ -355,25 +339,23 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   });
 
   expect(markets[0].reportingState).toBe("AWAITING_FORK_MIGRATION");
-  expect(markets[1].reportingState).toBe("AWAITING_FORK_MIGRATION");
-  expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
+  expect(markets[1].reportingState).toBe("FINALIZED");
+  expect(markets[2].reportingState).toBe("AWAITING_FORK_MIGRATION");
 
-  // newTime = newTime.add(60 * 60 * 24 * 60);
-  // await john.setTimestamp(newTime);
+  newTime = newTime.add(60 * 60 * 24 * 60);
+  await john.setTimestamp(newTime);
 
-
-  // TODO Add checks for reportingState, needsMigration, consensus,
-  // finalizationBlockNumber, & finalizationTime by reporting, disputing, & finalizing a market
+  // TODO Add more checks for reportingState. Update consensus format
 
   // TODO Fix this workaround once bug in Jest is fixed: https://github.com/facebook/jest/issues/6184
   expect(markets[0].endTime).not.toBeNaN();
   expect(markets[1].endTime).not.toBeNaN();
   expect(markets[2].endTime).not.toBeNaN();
+  expect(markets[1].finalizationTime).not.toBeNaN();
   delete markets[0].endTime;
   delete markets[1].endTime;
   delete markets[2].endTime;
-
-  // TODO Add checks for outcome prices
+  delete markets[1].finalizationTime;
 
   expect(markets).toMatchObject(
     [
@@ -422,13 +404,25 @@ test("State API :: Markets :: getMarketsInfo", async () => {
       {
         "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
         "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
-        "consensus": null,
+        "consensus": [
+          {
+            "_hex": "0x2710",
+          },
+          {
+            "_hex": "0x00",
+          },
+          {
+            "_hex": "0x00",
+          },
+          {
+            "_hex": "0x00",
+          },
+        ],
         "creationBlock": 91,
         "cumulativeScale": "1000000000000000000",
         "description": "description",
         "details": null,
-        "finalizationBlockNumber": null,
-        "finalizationTime": null,
+        "finalizationBlockNumber": 173,
         "id": "0x253CDD7C827E9167797aEcBe2Bc055d879F2B164",
         "marketType": "categorical",
         "maxPrice": "1000000000000000000",
@@ -459,7 +453,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
             "price": "0",
           },
         ],
-        "reportingState": "DESIGNATED_REPORTING",
+        "reportingState": "FINALIZED",
         "resolutionSource": null,
         "scalarDenomination": null,
         "tickSize": "0.0001",
@@ -480,7 +474,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "marketType": "scalar",
         "maxPrice": "40",
         "minPrice": "0",
-        "needsMigration": false,
+        "needsMigration": true,
         "numOutcomes": 3,
         "numTicks": "4000",
         "openInterest": "60000000000000000",
@@ -501,7 +495,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
             "price": "0",
           },
         ],
-        "reportingState": "DESIGNATED_REPORTING",
+        "reportingState": "AWAITING_FORK_MIGRATION",
         "resolutionSource": null,
         "scalarDenomination": null,
         "tickSize": "0.00000000000000000001",
@@ -510,5 +504,4 @@ test("State API :: Markets :: getMarketsInfo", async () => {
       },
     ]
   );
-*/
 }, 120000);

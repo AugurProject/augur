@@ -209,7 +209,7 @@ export class Markets<TBigNumber> {
       if (marketFinalizedLogs.length > 0) {
         consensus = marketFinalizedLogs[0].winningPayoutNumerators;
         finalizationBlockNumber = marketFinalizedLogs[0].blockNumber;
-        finalizationTime = marketFinalizedLogs[0].timestamp;
+        finalizationTime = new BigNumber(marketFinalizedLogs[0].timestamp).toString(10);
       }
 
       let marketType: string;
