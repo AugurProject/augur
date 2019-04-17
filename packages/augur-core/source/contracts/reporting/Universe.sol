@@ -164,7 +164,7 @@ contract Universe is ITyped, IUniverse {
         if (disputeWindows[_windowId] == IDisputeWindow(0)) {
             uint256 _duration = getDisputeRoundDurationInSeconds(_initial);
             uint256 _startTime = _timestamp.div(_duration).mul(_duration);
-            IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, this, _windowId, _duration, _startTime, _initial);
+            IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, this, _windowId, _duration, _startTime);
             disputeWindows[_windowId] = _disputeWindow;
             augur.logDisputeWindowCreated(_disputeWindow, _windowId, _initial);
         }
