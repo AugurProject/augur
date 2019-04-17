@@ -11,7 +11,7 @@ import 'ROOT/libraries/token/ERC20Token.sol';
 
 
 contract IDisputeWindow is ITyped, ERC20Token {
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, address _erc820RegistryAddress) public returns (bool);
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc820RegistryAddress) public returns (bool);
     function getUniverse() public view returns (IUniverse);
     function getReputationToken() public view returns (IReputationToken);
     function getStartTime() public view returns (uint256);
