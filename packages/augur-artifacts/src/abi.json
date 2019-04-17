@@ -7497,8 +7497,12 @@
 					"type": "uint256"
 				},
 				{
-					"name": "_initial",
-					"type": "bool"
+					"name": "_windowDuration",
+					"type": "uint256"
+				},
+				{
+					"name": "_startTime",
+					"type": "uint256"
 				}
 			],
 			"name": "createDisputeWindow",
@@ -11282,41 +11286,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_disputeWindowId",
-					"type": "uint256"
-				},
-				{
-					"name": "_duration",
-					"type": "uint256"
-				},
-				{
-					"name": "_erc820RegistryAddress",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getWindowId",
@@ -11570,6 +11539,45 @@
 				}
 			],
 			"name": "send",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_disputeWindowId",
+					"type": "uint256"
+				},
+				{
+					"name": "_duration",
+					"type": "uint256"
+				},
+				{
+					"name": "_startTime",
+					"type": "uint256"
+				},
+				{
+					"name": "_erc820RegistryAddress",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
 			"outputs": [
 				{
 					"name": "",

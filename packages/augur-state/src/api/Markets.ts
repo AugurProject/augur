@@ -99,14 +99,14 @@ export class Markets<TBigNumber> {
         description: (marketCreatedLog.marketType === 0) ? "Yes" : new BigNumber(marketCreatedLog.maxPrice).toString(10)
       });
     } else {
-      const ordersFilled = (await db.findOrderPriceChangedLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x00"}})).reverse();
+      const ordersFilled = (await db.findOrderFilledLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x00"}})).reverse();
       outcomes.push({
         id: 0,
         price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : "0",
         description: "Invalid"
       });
       for (let i = 0; i < marketCreatedLog.outcomes.length; i++) {
-        const ordersFilled = (await db.findOrderPriceChangedLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x0" + (i + 1)}})).reverse();
+        const ordersFilled = (await db.findOrderFilledLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x0" + (i + 1)}})).reverse();
         const outcomeDescription = marketCreatedLog.outcomes[i].replace("0x", "");
         outcomes.push({
           id: i + 1,
