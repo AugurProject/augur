@@ -77,26 +77,40 @@ export class Markets<TBigNumber> {
     // TODO
   }
 
-  private static async getMarketOutcomes(marketCreatedLog: MarketCreatedLog): Promise<Array<MarketInfoOutcome>> {
+  private static async getMarketOutcomes<TBigNumber>(db: DB<TBigNumber>, marketCreatedLog: MarketCreatedLog): Promise<Array<MarketInfoOutcome>> {
     let outcomes: Array<MarketInfoOutcome> = [];
-    // TODO Set outcome prices
     if (marketCreatedLog.outcomes.length === 0) {
+      const ordersFilled0 = (await db.findOrderFilledLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x00"}})).reverse();
+      const ordersFilled1 = (await db.findOrderFilledLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x01"}})).reverse();
+      const ordersFilled2 = (await db.findOrderFilledLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x02"}})).reverse();
       outcomes.push({
         id: 0,
-        price: "0",
-        description: null
+        price: ordersFilled0.length > 0 ? new BigNumber(ordersFilled0[0].price).toString(10) : "0",
+        description: "Invalid"
       });
       outcomes.push({
         id: 1,
-        price: "0",
-        description: null
+        price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].price).toString(10) : "0",
+        description: (marketCreatedLog.marketType === 0) ? "No" : new BigNumber(marketCreatedLog.minPrice).toString(10)
+      });
+      outcomes.push({
+        id: 2,
+        price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].price).toString(10) : "0",
+        description: (marketCreatedLog.marketType === 0) ? "Yes" : new BigNumber(marketCreatedLog.maxPrice).toString(10)
       });
     } else {
+      const ordersFilled = (await db.findOrderPriceChangedLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x00"}})).reverse();
+      outcomes.push({
+        id: 0,
+        price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : "0",
+        description: "Invalid"
+      });
       for (let i = 0; i < marketCreatedLog.outcomes.length; i++) {
+        const ordersFilled = (await db.findOrderPriceChangedLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x0" + (i + 1)}})).reverse();
         const outcomeDescription = marketCreatedLog.outcomes[i].replace("0x", "");
         outcomes.push({
-          id: i,
-          price: "0",
+          id: i + 1,
+          price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : "0",
           description: Buffer.from(outcomeDescription, "hex").toString()
         });
       }
@@ -143,7 +157,6 @@ export class Markets<TBigNumber> {
       } else {
         currentTimestamp = new BigNumber(Math.round(Date.now() / 1000));
       }
-      console.log("current " + currentTimestamp.toString() + " end time " + new BigNumber(marketCreatedLog.endTime).toString());
       if (new BigNumber(currentTimestamp).lt(marketCreatedLog.endTime)) {
         return MarketInfoReportingState.PRE_REPORTING;
       } else {
@@ -222,7 +235,7 @@ export class Markets<TBigNumber> {
         id: marketCreatedLog.market,
         universe: marketCreatedLog.universe,
         marketType,
-        numOutcomes: marketCreatedLog.outcomes.length,
+        numOutcomes: (marketCreatedLog.outcomes.length > 0) ? marketCreatedLog.outcomes.length + 1 : 3,
         minPrice: minPrice.toString(10),
         maxPrice: maxPrice.toString(10),
         cumulativeScale: cumulativeScale.toString(10),
@@ -243,7 +256,7 @@ export class Markets<TBigNumber> {
         numTicks: numTicks.toString(10),
         tickSize: tickSize.toString(10),
         consensus,
-        outcomes: await Markets.getMarketOutcomes(marketCreatedLog)
+        outcomes: await Markets.getMarketOutcomes(db, marketCreatedLog)
       });
     }));
   }

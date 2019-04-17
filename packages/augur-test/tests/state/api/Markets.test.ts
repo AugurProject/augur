@@ -40,21 +40,31 @@ test("State API :: Markets :: getMarketsInfo", async () => {
 
   // Place orders
   const bid = new ethers.utils.BigNumber(0);
-  const outcome = new ethers.utils.BigNumber(0);
+  const outcome0 = new ethers.utils.BigNumber(0);
+  const outcome1 = new ethers.utils.BigNumber(1);
   const numShares = new ethers.utils.BigNumber(10000000000000);
   const price = new ethers.utils.BigNumber(2150);
-  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
-  await john.placeOrder(categoricalMarket.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
-  await john.placeOrder(scalarMarket.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(categoricalMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(categoricalMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(scalarMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(scalarMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 
   // Partially fill orders
   const cost = numShares.mul(7850).div(2);
-  const yesNoOrderId = await john.getBestOrderId(bid, yesNoMarket.address, outcome);
-  const categoricalOrderId = await john.getBestOrderId(bid, categoricalMarket.address, outcome);
-  const scalarOrderId = await john.getBestOrderId(bid, scalarMarket.address, outcome);
-  await mary.fillOrder(yesNoOrderId, cost, numShares.div(2), "43");
-  await mary.fillOrder(categoricalOrderId, cost, numShares.div(2), "44");
-  await mary.fillOrder(scalarOrderId, cost, numShares.div(2), "45");
+  const yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
+  const yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  const categoricalOrderId0 = await john.getBestOrderId(bid, categoricalMarket.address, outcome0);
+  const categoricalOrderId1 = await john.getBestOrderId(bid, categoricalMarket.address, outcome1);
+  const scalarOrderId0 = await john.getBestOrderId(bid, scalarMarket.address, outcome0);
+  const scalarOrderId1 = await john.getBestOrderId(bid, scalarMarket.address, outcome1);
+  await john.fillOrder(yesNoOrderId0, cost, numShares.div(2), "42");
+  await mary.fillOrder(yesNoOrderId1, cost, numShares.div(2), "43");
+  await mary.fillOrder(categoricalOrderId0, cost, numShares.div(2), "43");
+  await mary.fillOrder(categoricalOrderId1, cost, numShares.div(2), "43");
+  await mary.fillOrder(scalarOrderId0, cost, numShares.div(2), "43");
+  await mary.fillOrder(scalarOrderId1, cost, numShares.div(2), "43");
 
   // Purchase complete sets
   await mary.buyCompleteSets(yesNoMarket, numShares);
@@ -120,6 +130,142 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[1].reportingState).toBe("CROWDSOURCING_DISPUTE");
   expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
 
+  expect(markets).toMatchObject(
+    [
+      {
+        "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
+        "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+        "consensus": null,
+        "creationBlock": 89,
+        "cumulativeScale": "1000000000000000000",
+        "description": "description",
+        "details": null,
+        "finalizationBlockNumber": null,
+        "finalizationTime": null,
+        "id": "0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407",
+        "marketType": "yesNo",
+        "maxPrice": "1000000000000000000",
+        "minPrice": "0",
+        "needsMigration": false,
+        "numOutcomes": 3,
+        "numTicks": "10000",
+        "openInterest": "150000000000000000",
+        "outcomes": [
+          {
+            "description": "Invalid",
+            "id": 0,
+            "price": "2150",
+          },
+          {
+            "description": "No",
+            "id": 1,
+            "price": "2150",
+          },
+          {
+            "description": "Yes",
+            "id": 2,
+            "price": "0",
+          },
+        ],
+        "reportingState": "CROWDSOURCING_DISPUTE",
+        "resolutionSource": null,
+        "scalarDenomination": null,
+        "tickSize": "0.0001",
+        "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
+        "volume": "100000000000000000",
+      },
+      {
+        "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
+        "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+        "consensus": null,
+        "creationBlock": 91,
+        "cumulativeScale": "1000000000000000000",
+        "description": "description",
+        "details": null,
+        "finalizationBlockNumber": null,
+        "finalizationTime": null,
+        "id": "0x253CDD7C827E9167797aEcBe2Bc055d879F2B164",
+        "marketType": "categorical",
+        "maxPrice": "1000000000000000000",
+        "minPrice": "0",
+        "needsMigration": false,
+        "numOutcomes": 4,
+        "numTicks": "10000",
+        "openInterest": "150000000000000000",
+        "outcomes": [
+          {
+            "description": "Invalid",
+            "id": 0,
+            "price": "0",
+          },
+          {
+            "description": "A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "id": 1,
+            "price": "0",
+          },
+          {
+            "description": "B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "id": 2,
+            "price": "0",
+          },
+          {
+            "description": "C\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "id": 3,
+            "price": "0",
+          },
+        ],
+        "reportingState": "CROWDSOURCING_DISPUTE",
+        "resolutionSource": null,
+        "scalarDenomination": null,
+        "tickSize": "0.0001",
+        "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
+        "volume": "60750000000000000",
+      },
+      {
+        "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
+        "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+        "consensus": null,
+        "creationBlock": 93,
+        "cumulativeScale": "40",
+        "description": "description",
+        "details": null,
+        "finalizationBlockNumber": null,
+        "finalizationTime": null,
+        "id": "0x4976474ff73f3CA6a5fc17e8175ce41eAb31C77d",
+        "marketType": "scalar",
+        "maxPrice": "40",
+        "minPrice": "0",
+        "needsMigration": false,
+        "numOutcomes": 3,
+        "numTicks": "4000",
+        "openInterest": "60000000000000000",
+        "outcomes": [
+          {
+            "description": "Invalid",
+            "id": 0,
+            "price": "2150",
+          },
+          {
+            "description": "0",
+            "id": 1,
+            "price": "2150",
+          },
+          {
+            "description": "40",
+            "id": 2,
+            "price": "0",
+          },
+        ],
+        "reportingState": "DESIGNATED_REPORTING",
+        "resolutionSource": null,
+        "scalarDenomination": null,
+        "tickSize": "0.00000000000000000001",
+        "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
+        "volume": "30750000000000000",
+      },
+    ]
+  );
+/*
   newTime = newTime.add(60 * 60 * 24 * 7);
   await john.setTimestamp(newTime);
   console.log("NEW TIME: ", newTime);
@@ -128,7 +274,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   console.log("BEFORE FINALIZE");
   await john.finalizeMarket(yesNoMarket);
   console.log("AFTER FINALIZE");
-/*
+
   // Dispute 10 times
   for (let disputeRound = 1; disputeRound <= 11; disputeRound++) {
     if (disputeRound % 2 !== 0) {
@@ -212,10 +358,10 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[1].reportingState).toBe("AWAITING_FORK_MIGRATION");
   expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
 
-  newTime = newTime.add(60 * 60 * 24 * 7);
-  await john.setTimestamp(newTime);
+  // newTime = newTime.add(60 * 60 * 24 * 60);
+  // await john.setTimestamp(newTime);
 
-/*
+
   // TODO Add checks for reportingState, needsMigration, consensus,
   // finalizationBlockNumber, & finalizationTime by reporting, disputing, & finalizing a market
 
@@ -246,18 +392,23 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "maxPrice": "1000000000000000000",
         "minPrice": "0",
         "needsMigration": false,
-        "numOutcomes": 0,
+        "numOutcomes": 3,
         "numTicks": "10000",
         "openInterest": "150000000000000000",
         "outcomes": [
           {
-            "description": null,
+            "description": "Invalid",
             "id": 0,
-            "price": "0",
+            "price": "2150",
           },
           {
-            "description": null,
+            "description": "No",
             "id": 1,
+            "price": "2150",
+          },
+          {
+            "description": "Yes",
+            "id": 2,
             "price": "0",
           },
         ],
@@ -266,7 +417,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "scalarDenomination": null,
         "tickSize": "0.0001",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "50000000000000000",
+        "volume": "100000000000000000",
       },
       {
         "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
@@ -283,23 +434,28 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "maxPrice": "1000000000000000000",
         "minPrice": "0",
         "needsMigration": false,
-        "numOutcomes": 3,
+        "numOutcomes": 4,
         "numTicks": "10000",
         "openInterest": "150000000000000000",
         "outcomes": [
           {
-            "description": "A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "description": "Invalid",
             "id": 0,
             "price": "0",
           },
           {
-            "description": "B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "description": "A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
             "id": 1,
             "price": "0",
           },
           {
-            "description": "C\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "description": "B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
             "id": 2,
+            "price": "0",
+          },
+          {
+            "description": "C\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "id": 3,
             "price": "0",
           },
         ],
@@ -308,7 +464,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "scalarDenomination": null,
         "tickSize": "0.0001",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "50000000000000000",
+        "volume": "60750000000000000",
       },
       {
         "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
@@ -325,18 +481,23 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "maxPrice": "40",
         "minPrice": "0",
         "needsMigration": false,
-        "numOutcomes": 0,
+        "numOutcomes": 3,
         "numTicks": "4000",
         "openInterest": "60000000000000000",
         "outcomes": [
           {
-            "description": null,
+            "description": "Invalid",
             "id": 0,
-            "price": "0",
+            "price": "2150",
           },
           {
-            "description": null,
+            "description": "0",
             "id": 1,
+            "price": "2150",
+          },
+          {
+            "description": "40",
+            "id": 2,
             "price": "0",
           },
         ],
@@ -345,7 +506,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "scalarDenomination": null,
         "tickSize": "0.00000000000000000001",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "20000000000000000",
+        "volume": "30750000000000000",
       },
     ]
   );

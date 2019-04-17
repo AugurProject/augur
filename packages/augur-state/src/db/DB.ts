@@ -473,17 +473,6 @@ export class DB<TBigNumber> {
     return results.docs as unknown as Array<TimestampSetLog>;
   }
 
-  /**
-   * Queries the UniverseForked DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<UniverseForkedLog>>}
-   */
-  public async findUniverseForkedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<UniverseForkedLog>> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("UniverseForked"), request);
-    return results.docs as unknown as Array<UniverseForkedLog>;
-  }
-
   /*
    * Queries the TokenBalanceChanged DB
    *
@@ -494,5 +483,16 @@ export class DB<TBigNumber> {
   public async findTokenBalanceChangedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<Array<TokenBalanceChangedLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("TokenBalanceChanged", user), request);
     return results.docs as unknown as Array<TokenBalanceChangedLog>;
+  }
+
+  /**
+   * Queries the UniverseForked DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<UniverseForkedLog>>}
+   */
+  public async findUniverseForkedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<UniverseForkedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("UniverseForked"), request);
+    return results.docs as unknown as Array<UniverseForkedLog>;
   }
 }

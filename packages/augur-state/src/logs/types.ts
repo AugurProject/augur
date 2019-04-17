@@ -144,6 +144,19 @@ export interface OrderFilledLog extends Log, Doc {
   tradeGroupId: string;
 }
 
+export interface OrderPriceChangedLog extends Log, Doc {
+  orderType: number;
+  amount: string;
+  price: string;
+  creator: Address;
+  tradeGroupId: string;
+  orderId: string;
+  universe: Address;
+  marketId: Address;
+  kycToken: Address;
+  outcome: string;
+}
+
 export interface ProfitLossChangedLog extends Log, Doc {
   universe: string;
   market: string;
