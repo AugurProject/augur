@@ -4,12 +4,12 @@ import express from "express";
 import fs from "fs";
 import helmet from "helmet";
 import https from "https";
-
-import { API } from "./api/API";
 import { AddressFormatReviver } from "./AddressFormatReviver";
-import { JsonRpcRequest, EndpointSettings } from "./api/types";
-import { MakeJsonRpcError, JsonRpcErrorCode } from "./MakeJsonRpcError";
+import { API } from "./api/API";
+import { EndpointSettings, JsonRpcRequest } from "./api/types";
+import { JsonRpcErrorCode, MakeJsonRpcError } from "./MakeJsonRpcError";
 import { MakeJsonRpcResponse } from "./MakeJsonRpcResponse";
+
 
 export function createApp<TBigNumber>(api: API<TBigNumber>): express.Application {
   const app = express();

@@ -84,8 +84,8 @@ export async function run() {
 
   // Sync.start();
   console.log("Starting websocket and http endpoints");
-  // WebsocketEndpoint.run(api, endpointSettings);
-  await HTTPEndpoint.run(api, endpointSettings);
+  HTTPEndpoint.run(api, endpointSettings);
+  await WebsocketEndpoint.run(api, endpointSettings);
 }
 
 run();
