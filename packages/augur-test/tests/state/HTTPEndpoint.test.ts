@@ -25,7 +25,7 @@ test("HTTPEndpoint :: Responds to ping Json RPC Request ", async () => {
   const app = HTTPEndpoint.createApp(api);  // fire up the endpoint
 
   const result = await request(app).post("/").send({
-    jsonrpc: " 2.0",
+    jsonrpc: "2.0",
     method: "ping",
     params: {},
     id: 74,
