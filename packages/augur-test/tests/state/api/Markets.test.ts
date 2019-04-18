@@ -40,32 +40,38 @@ test("State API :: Markets :: getMarketsInfo", async () => {
 
   // Place orders
   const bid = new ethers.utils.BigNumber(0);
-  const outcome = new ethers.utils.BigNumber(0);
+  const outcome0 = new ethers.utils.BigNumber(0);
+  const outcome1 = new ethers.utils.BigNumber(1);
   const numShares = new ethers.utils.BigNumber(10000000000000);
   const price = new ethers.utils.BigNumber(2150);
-  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
-  await john.placeOrder(categoricalMarket.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
-  await john.placeOrder(scalarMarket.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(categoricalMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(categoricalMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(scalarMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(scalarMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 
   // Partially fill orders
   const cost = numShares.mul(7850).div(2);
-  const yesNoOrderId = await john.getBestOrderId(bid, yesNoMarket.address, outcome);
-  const categoricalOrderId = await john.getBestOrderId(bid, categoricalMarket.address, outcome);
-  const scalarOrderId = await john.getBestOrderId(bid, scalarMarket.address, outcome);
-  await mary.fillOrder(yesNoOrderId, cost, numShares.div(2), "43");
-  await mary.fillOrder(categoricalOrderId, cost, numShares.div(2), "44");
-  await mary.fillOrder(scalarOrderId, cost, numShares.div(2), "45");
+  const yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
+  const yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  const categoricalOrderId0 = await john.getBestOrderId(bid, categoricalMarket.address, outcome0);
+  const categoricalOrderId1 = await john.getBestOrderId(bid, categoricalMarket.address, outcome1);
+  const scalarOrderId0 = await john.getBestOrderId(bid, scalarMarket.address, outcome0);
+  const scalarOrderId1 = await john.getBestOrderId(bid, scalarMarket.address, outcome1);
+  await john.fillOrder(yesNoOrderId0, cost, numShares.div(2), "42");
+  await mary.fillOrder(yesNoOrderId1, cost, numShares.div(2), "43");
+  await mary.fillOrder(categoricalOrderId0, cost, numShares.div(2), "43");
+  await mary.fillOrder(categoricalOrderId1, cost, numShares.div(2), "43");
+  await mary.fillOrder(scalarOrderId0, cost, numShares.div(2), "43");
+  await mary.fillOrder(scalarOrderId1, cost, numShares.div(2), "43");
 
   // Purchase complete sets
   await mary.buyCompleteSets(yesNoMarket, numShares);
   await mary.buyCompleteSets(categoricalMarket, numShares);
   await mary.buyCompleteSets(scalarMarket, numShares);
 
-  await db.sync(
-    john.augur,
-    100000,
-    10,
-  );
+  await db.sync(john.augur, 100000, 0);
 
   let markets: Array<MarketInfo> = await api.route("getMarketsInfo", {
     marketIds: [
@@ -75,13 +81,161 @@ test("State API :: Markets :: getMarketsInfo", async () => {
     ]
   });
 
+  expect(markets[0].reportingState).toBe("PRE_REPORTING");
+  expect(markets[1].reportingState).toBe("PRE_REPORTING");
+  expect(markets[2].reportingState).toBe("PRE_REPORTING");
+
+  // Skip to yes/no market end time
+  let newTime = (await yesNoMarket.getEndTime_()).add(1);
+  await john.setTimestamp(newTime);
+
+  await db.sync(john.augur, 100000, 0);
+
+  markets = await api.route("getMarketsInfo", {
+    marketIds: [
+      yesNoMarket.address,
+      categoricalMarket.address,
+      scalarMarket.address
+    ]
+  });
+
+  expect(markets[0].reportingState).toBe("DESIGNATED_REPORTING");
+  expect(markets[1].reportingState).toBe("DESIGNATED_REPORTING");
+  expect(markets[2].reportingState).toBe("DESIGNATED_REPORTING");
+
+    // Skip to open reporting
+  newTime = newTime.add(60 * 60 * 24 * 7);
+  await john.setTimestamp(newTime);
+
+  await db.sync(john.augur, 100000, 0);
+
+  markets = await api.route("getMarketsInfo", {
+    marketIds: [
+      yesNoMarket.address,
+      categoricalMarket.address,
+      scalarMarket.address
+    ]
+  });
+
+  expect(markets[0].reportingState).toBe("OPEN_REPORTING");
+  expect(markets[1].reportingState).toBe("OPEN_REPORTING");
+  expect(markets[2].reportingState).toBe("OPEN_REPORTING");
+
+  // Submit intial reports
+  const categoricalMarketPayoutSet = [
+    new ethers.utils.BigNumber(10000),
+    new ethers.utils.BigNumber(0),
+    new ethers.utils.BigNumber(0),
+    new ethers.utils.BigNumber(0)
+  ];
+  await john.doInitialReport(categoricalMarket, categoricalMarketPayoutSet);
+
+  const noPayoutSet = [new ethers.utils.BigNumber(10000), new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(0)];
+  const yesPayoutSet = [new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(10000), new ethers.utils.BigNumber(0)];
+  await john.doInitialReport(yesNoMarket, noPayoutSet);
+
+  await db.sync(john.augur, 100000, 0);
+
+  markets = await api.route("getMarketsInfo", {
+    marketIds: [
+      yesNoMarket.address,
+      categoricalMarket.address,
+      scalarMarket.address
+    ]
+  });
+
+  expect(markets[0].reportingState).toBe("CROWDSOURCING_DISPUTE");
+  expect(markets[1].reportingState).toBe("CROWDSOURCING_DISPUTE");
+  expect(markets[2].reportingState).toBe("OPEN_REPORTING");
+
+  // Dispute 10 times
+  for (let disputeRound = 1; disputeRound <= 11; disputeRound++) {
+    if (disputeRound % 2 !== 0) {
+      await mary.contribute(yesNoMarket, yesPayoutSet, new ethers.utils.BigNumber(25000));
+      let remainingToFill = await john.getRemainingToFill(yesNoMarket, yesPayoutSet);
+      await mary.contribute(yesNoMarket, yesPayoutSet, remainingToFill);
+    } else {
+      await john.contribute(yesNoMarket, noPayoutSet, new ethers.utils.BigNumber(25000));
+      let remainingToFill = await john.getRemainingToFill(yesNoMarket, noPayoutSet);
+      await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
+    }
+  }
+
+  await db.sync(john.augur, 100000, 0);
+
+  markets = await api.route("getMarketsInfo", {
+    marketIds: [
+      yesNoMarket.address,
+      categoricalMarket.address,
+      scalarMarket.address
+    ]
+  });
+
+  expect(markets[0].reportingState).toBe("AWAITING_NEXT_WINDOW");
+  expect(markets[1].reportingState).toBe("CROWDSOURCING_DISPUTE");
+  expect(markets[2].reportingState).toBe("OPEN_REPORTING");
+
+  newTime = newTime.add(60 * 60 * 24 * 7);
+  await john.setTimestamp(newTime);
+
+  await db.sync(john.augur, 100000, 0);
+
+  markets = await api.route("getMarketsInfo", {
+    marketIds: [
+      yesNoMarket.address,
+      categoricalMarket.address,
+      scalarMarket.address
+    ]
+  });
+
+  expect(markets[0].reportingState).toBe("CROWDSOURCING_DISPUTE");
+  expect(markets[1].reportingState).toBe("CROWDSOURCING_DISPUTE");
+  expect(markets[2].reportingState).toBe("OPEN_REPORTING");
+
+  // Continue disputing
+  for (let disputeRound = 12; disputeRound <= 19; disputeRound++) {
+    if (disputeRound % 2 !== 0) {
+      await mary.contribute(yesNoMarket, yesPayoutSet, new ethers.utils.BigNumber(25000));
+      let remainingToFill = await john.getRemainingToFill(yesNoMarket, yesPayoutSet);
+      await mary.contribute(yesNoMarket, yesPayoutSet, remainingToFill);
+    } else {
+      await john.contribute(yesNoMarket, noPayoutSet, new ethers.utils.BigNumber(25000));
+      let remainingToFill = await john.getRemainingToFill(yesNoMarket, noPayoutSet);
+      await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
+    }
+    newTime = newTime.add(60 * 60 * 24 * 7);
+    await john.setTimestamp(newTime);
+  }
+
+  await john.finalizeMarket(categoricalMarket);
+
+  // Fork market
+  await john.contribute(yesNoMarket, noPayoutSet, new ethers.utils.BigNumber(25000));
+  let remainingToFill = await john.getRemainingToFill(yesNoMarket, noPayoutSet);
+  await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
+
+  await db.sync(john.augur, 100000, 0);
+
+  markets = await api.route("getMarketsInfo", {
+    marketIds: [
+      yesNoMarket.address,
+      categoricalMarket.address,
+      scalarMarket.address
+    ]
+  });
+
+  // newTime = newTime.add(60 * 60 * 24 * 60);
+  // await john.setTimestamp(newTime);
+
   // TODO Fix this workaround once bug in Jest is fixed: https://github.com/facebook/jest/issues/6184
   expect(markets[0].endTime).not.toBeNaN();
   expect(markets[1].endTime).not.toBeNaN();
   expect(markets[2].endTime).not.toBeNaN();
+  expect(markets[1].finalizationTime).not.toBeNaN();
   delete markets[0].endTime;
   delete markets[1].endTime;
   delete markets[2].endTime;
+  delete markets[1].finalizationTime;
 
   expect(markets).toMatchObject(
     [
@@ -100,69 +254,83 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "maxPrice": "1000000000000000000",
         "minPrice": "0",
         "needsMigration": false,
-        "numOutcomes": 0,
-        "numTicks": "10000",
-        "openInterest": "150000000000000000",
-        "outcomes": [
-          {
-            "description": null,
-            "id": 0,
-            "price": "0",
-          },
-          {
-            "description": null,
-            "id": 1,
-            "price": "0",
-          },
-        ],
-        "reportingState": "PRE_REPORTING",
-        "resolutionSource": null,
-        "scalarDenomination": null,
-        "tickSize": "0.0001",
-        "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "50000000000000000",
-      },
-      {
-        "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
-        "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
-        "consensus": null,
-        "creationBlock": 91,
-        "cumulativeScale": "1000000000000000000",
-        "description": "description",
-        "details": null,
-        "finalizationBlockNumber": null,
-        "finalizationTime": null,
-        "id": "0x253CDD7C827E9167797aEcBe2Bc055d879F2B164",
-        "marketType": "categorical",
-        "maxPrice": "1000000000000000000",
-        "minPrice": "0",
-        "needsMigration": false,
         "numOutcomes": 3,
         "numTicks": "10000",
         "openInterest": "150000000000000000",
         "outcomes": [
           {
-            "description": "A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "description": "Invalid",
             "id": 0,
-            "price": "0",
+            "price": "2150",
           },
           {
-            "description": "B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "description": "No",
             "id": 1,
-            "price": "0",
+            "price": "2150",
           },
           {
-            "description": "C\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "description": "Yes",
             "id": 2,
             "price": "0",
           },
         ],
-        "reportingState": "PRE_REPORTING",
+        "reportingState": "FORKING",
         "resolutionSource": null,
         "scalarDenomination": null,
         "tickSize": "0.0001",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "50000000000000000",
+        "volume": "100000000000000000",
+      },
+      {
+        "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
+        "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+        "consensus": [
+          "10000",
+          "0",
+          "0",
+          "0",
+        ],
+        "creationBlock": 91,
+        "cumulativeScale": "1000000000000000000",
+        "description": "description",
+        "details": null,
+        "finalizationBlockNumber": 175,
+        "id": "0x253CDD7C827E9167797aEcBe2Bc055d879F2B164",
+        "marketType": "categorical",
+        "maxPrice": "1000000000000000000",
+        "minPrice": "0",
+        "needsMigration": false,
+        "numOutcomes": 4,
+        "numTicks": "10000",
+        "openInterest": "150000000000000000",
+        "outcomes": [
+          {
+            "description": "Invalid",
+            "id": 0,
+            "price": "2150",
+          },
+          {
+            "description": "A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "id": 1,
+            "price": "2150",
+          },
+          {
+            "description": "B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "id": 2,
+            "price": "0",
+          },
+          {
+            "description": "C\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+            "id": 3,
+            "price": "0",
+          },
+        ],
+        "reportingState": "FINALIZED",
+        "resolutionSource": null,
+        "scalarDenomination": null,
+        "tickSize": "0.0001",
+        "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
+        "volume": "60750000000000000",
       },
       {
         "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
@@ -178,36 +346,34 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "marketType": "scalar",
         "maxPrice": "40",
         "minPrice": "0",
-        "needsMigration": false,
-        "numOutcomes": 0,
+        "needsMigration": true,
+        "numOutcomes": 3,
         "numTicks": "4000",
         "openInterest": "60000000000000000",
         "outcomes": [
           {
-            "description": null,
+            "description": "Invalid",
             "id": 0,
-            "price": "0",
+            "price": "2150",
           },
           {
-            "description": null,
+            "description": "0",
             "id": 1,
+            "price": "2150",
+          },
+          {
+            "description": "40",
+            "id": 2,
             "price": "0",
           },
         ],
-        "reportingState": "PRE_REPORTING",
+        "reportingState": "AWAITING_FORK_MIGRATION",
         "resolutionSource": null,
         "scalarDenomination": null,
         "tickSize": "0.00000000000000000001",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "20000000000000000",
+        "volume": "30750000000000000",
       },
     ]
   );
-
-  // TODO Add checks for outcome prices
-
-  // TODO Add checks for reportingState, needsMigration, finalizationBlockNumber,
-  // & finalizationTime by reporting, disputing, & finalizing a market
-
-  // TODO Add checks for consensus & finalizationTime once more logs have been added
-}, 60000);
+}, 120000);

@@ -10,6 +10,8 @@ import {
   CompleteSetsPurchasedLog,
   CompleteSetsSoldLog,
   DisputeCrowdsourcerCompletedLog,
+  DisputeCrowdsourcerContributionLog,
+  DisputeWindowCreatedLog,
   InitialReportSubmittedLog,
   OrderFilledLog,
   OrderCreatedLog,
@@ -18,8 +20,9 @@ import {
   MarketMigratedLog,
   MarketVolumeChangedLog,
   ProfitLossChangedLog,
-  UniverseForkedLog,
-  TokenBalanceChangedLog
+  TimestampSetLog,
+  TokenBalanceChangedLog,
+  UniverseForkedLog
 } from "../logs/types";
 
 
@@ -348,6 +351,28 @@ export class DB<TBigNumber> {
     return results.docs as unknown as Array<DisputeCrowdsourcerCompletedLog>;
   }
 
+    /**
+   * Queries the DisputeCrowdsourcerContribution DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<DisputeCrowdsourcerContributionLog>>}
+   */
+  public async findDisputeCrowdsourcerContributionLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeCrowdsourcerContributionLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerContribution"), request);
+    return results.docs as unknown as Array<DisputeCrowdsourcerContributionLog>;
+  }
+
+  /**
+   * Queries the DisputeWindowCreated DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<DisputeWindowCreatedLog>>}
+   */
+  public async findDisputeWindowCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeWindowCreatedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("DisputeWindowCreated"), request);
+    return results.docs as unknown as Array<DisputeWindowCreatedLog>;
+  }
+
   /**
    * Queries the InitialReportSubmitted DB
    *
@@ -438,14 +463,14 @@ export class DB<TBigNumber> {
   }
 
   /**
-   * Queries the UniverseForked DB
+   * Queries the TimestampSet DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<UniverseForkedLog>>}
+   * @returns {Promise<Array<TimestampSetLog>>}
    */
-  public async findUniverseForkedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<UniverseForkedLog>> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("UniverseForked"), request);
-    return results.docs as unknown as Array<UniverseForkedLog>;
+  public async findTimestampSetLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<TimestampSetLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("TimestampSet"), request);
+    return results.docs as unknown as Array<TimestampSetLog>;
   }
 
   /*
@@ -458,5 +483,16 @@ export class DB<TBigNumber> {
   public async findTokenBalanceChangedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<Array<TokenBalanceChangedLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("TokenBalanceChanged", user), request);
     return results.docs as unknown as Array<TokenBalanceChangedLog>;
+  }
+
+  /**
+   * Queries the UniverseForked DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<UniverseForkedLog>>}
+   */
+  public async findUniverseForkedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<UniverseForkedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("UniverseForked"), request);
+    return results.docs as unknown as Array<UniverseForkedLog>;
   }
 }
