@@ -1,27 +1,21 @@
-export {API} from "./api/API";
-export {ServerController} from "./server/ServerController";
-export {Controller} from "./Controller";
-
 import RunWorker from "./run.worker";
 
-const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+// start the web worker and move console.log over to paint in the browser
+console.log = (msg: string) => {
+  const c = document.getElementById("console") as HTMLInputElement;
+  if (msg && c)
+    c.value += msg + "\n";
+};
 
-// start the webworker and move console.log over to paint in the browser
-if (isBrowser) {
-  console.log = (msg: string) => {
-    let c = <HTMLInputElement>document.getElementById("console");
-    if (msg && c)
-      c.value += msg + '\n';
-  }
+console.log("Starting web worker");
 
-  console.log("Starting web worker");
-
+// assumption is this will fail if the browser doesn't support web workers
+try {
   const worker = new RunWorker();
 
   worker.onmessage = (event: MessageEvent) => {
     console.log(event.data);
-  }
-}
-else {
+  };
+} catch (error) {
   console.log("Your browser does not support web workers");
 }

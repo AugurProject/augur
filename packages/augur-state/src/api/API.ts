@@ -14,7 +14,7 @@ export class API<TBigNumber> {
     this.router = new Router<TBigNumber>(augurAPI, db);
   }
 
-  public route(name: string, params: any) {
+  public async route(name: string, params: any) {
     return this.router.route(name, params);
   }
 }

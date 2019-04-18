@@ -9,7 +9,7 @@
   },
   "scripts": {
     "version": "yarn rebuild",
-    "start": "yarn build; ts-node -r tsconfig-paths/register ./src/run",
+    "start": "yarn build; ts-node -r tsconfig-paths/register ./src/server",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
     "build": "tsc -b",
     "watch": "tsc -w",
@@ -36,8 +36,12 @@
     "@augurproject/core": "2.0.0-0",
     "@augurproject/ethersjs-provider": "1.0.0-0",
     "@types/async": "2.4.1",
+    "@types/cors": "^2.8.4",
+    "@types/express": "^4.16.1",
+    "@types/helmet": "^0.0.43",
     "@types/web3": "1.0.18",
     "async": "2.6.2",
+    "cors": "^2.8.5",
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.24",
     "express": "4.16.4",
@@ -63,5 +67,8 @@
     "ts-node": "7.0.1",
     "tsconfig-paths": "3.7.0",
     "webpack-dev-server": "3.2.1"
+  },
+  "resolutions": {
+    "**/sha3": "2.0.1"
   }
 }

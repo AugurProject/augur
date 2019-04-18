@@ -1,17 +1,36 @@
 {
-  "blockstreamDelay": 10,
-  "chunkSize": 100000,
-  "ethNodeURLs": {
-    "4": "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
-  },
-  "testAccounts": [
-    "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb",
-    "0xbd355a7e5a7adb23b51f54027e624bfe0e238df6",
-    "0xe4ec477bc4abd2b18225bb8cba14bf57867f082b",
-    "0x40075b21ee1fc506207ac45c006d68114dae9967",
-    "0xd1a8d03498407db8299bc912ffc0196564fe91e9",
-    "0x5eb11f4561da21e9070b8f664fc70aec62ec29d5",
-    "0x53c3d9be61c8375b34970801c5bd4d1a87860343",
-    "0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9"
-  ]
+    "blockstreamDelay": 10,
+    "chunkSize": 100000,
+    "ethNodeURLs": {
+        "4": "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
+    },
+    "testAccounts": [
+        "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb",
+        "0xbd355a7e5a7adb23b51f54027e624bfe0e238df6",
+        "0xe4ec477bc4abd2b18225bb8cba14bf57867f082b",
+        "0x40075b21ee1fc506207ac45c006d68114dae9967",
+        "0xd1a8d03498407db8299bc912ffc0196564fe91e9",
+        "0x5eb11f4561da21e9070b8f664fc70aec62ec29d5",
+        "0x53c3d9be61c8375b34970801c5bd4d1a87860343",
+        "0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9"
+    ],
+    "endpointSettings": {
+        "pingMs": 12000,
+        "ws": {
+            "port": 9001
+        },
+        "wss": {
+          "port": 9002
+        },
+        "http": {
+          "port": 9003
+        },
+        "https": {
+          "port": 9004
+        },
+        "certificateInfo": {
+          "certificateFile": "certs/ssl-cert-snakeoil.pem",
+          "certificateKeyFile": "certs/ssl-cert-snakeoil.key"
+        }
+    }
 }
