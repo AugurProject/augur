@@ -1,14 +1,16 @@
 import chalk from "chalk";
 import speedomatic from "speedomatic";
 import { printTransactionStatus } from "./print-transaction-status";
+import { Augur } from "@augurproject/api";
+import { BigNumber } from "../types";
 
 let USE_PUBLIC_CREATE_ORDER = process.env.USE_PUBLIC_TRADE !== "true"; // set to false to test trading.placeTrade endpoint
 
 function createOrder(
-  augur,
-  marketId,
-  outcome,
-  numOutcomes,
+  augur:Augur<BigNumber>,
+  marketId:string,
+  outcome:number,
+  numOutcomes:number,
   maxPrice,
   minPrice,
   numTicks,
@@ -18,6 +20,8 @@ function createOrder(
   auth,
   callback
 ) {
+  const market = augur.contracts.marketFromAddress(marketId);
+
   let displayPrice = order.price;
   let displayAmount = order.shares;
   let orderTypeCode = orderType === "buy" ? 0 : 1;
@@ -48,7 +52,7 @@ function createOrder(
         outcome: outcome,
         price: displayPrice
       },
-      function(err, betterWorseOrders) {
+      function(err:Error, betterWorseOrders) {
         if (err)
           betterWorseOrders = { betterOrderId: "0x0", worseOrderId: "0x0" };
         augur.api.CreateOrder.publicCreateOrder({

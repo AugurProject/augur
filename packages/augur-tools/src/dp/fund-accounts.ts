@@ -24,7 +24,7 @@ const augur = new Augur();
 export default fundAccounts;
 
 if (require.main === module) {
-  getPrivateKey(keystoreFilePath, function(err, auth) {
+  getPrivateKey(keystoreFilePath, function(err:Error, auth) {
     if (err) return console.error("getPrivateKey failed:", err);
     augur.connect({ ethereumNode: connectionEndpoints.ethereumNode }, function(err) {
       if (err) return console.error("connect failed:", err);

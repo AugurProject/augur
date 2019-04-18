@@ -1,7 +1,7 @@
 import chalk from "chalk";
 
 import approveAugurEternalApprovalValue from "./lib/approve-augur-eternal-approval-value";
-import createOrders from "./lib/create-orders";
+import {createOrders} from "./lib/create-orders";
 import { getPrivateKey } from "./lib/get-private-key";
 import * as connectionEndpoints from "./connection-endpoints";
 
@@ -13,7 +13,7 @@ export function _createOrders(augur:Augur, auth, callback) {
   console.log(chalk.green.dim("universe:"), chalk.green(universe));
   approveAugurEternalApprovalValue(augur, auth.address, auth, function(err) {
     if (err) return console.error(err);
-    augur.markets.getMarkets({ universe: universe, sortBy: "creationBlockNumber" }, function(err, marketIds) {
+    augur.markets.getMarkets({ universe: universe, sortBy: "creationBlockNumber" }, function(err:Error, marketIds) {
       console.log("marketIds:", marketIds);
       if (err) return console.error(err);
       createOrders(augur, marketIds, auth, function(err) {
@@ -29,7 +29,7 @@ if (require.main === module) {
 
   const augur = new Augur();
 
-  getPrivateKey(keystoreFilePath, function(err, auth) {
+  getPrivateKey(keystoreFilePath, function(err:Error, auth) {
     if (err) return console.error("getPrivateKey failed:", err);
     augur.connect(connectionEndpoints, function(err) {
       if (err) return console.error(err);

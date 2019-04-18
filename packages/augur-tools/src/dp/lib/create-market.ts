@@ -1,59 +1,50 @@
-import chalk from "chalk";
-import immutableDelete from "immutable-delete";
-import { printTransactionStatus } from "./print-transaction-status";
-import speedomatic from "speedomatic";
+import { Augur } from "@augurproject/api";
+import { MarketData } from "../data/canned-markets";
+import { BigNumber, Event } from "../types";
+import { ethers } from "ethers";
 
-export function createMarket(
-  augur,
-  market,
-  designatedReporterAddress,
-  auth,
-  callback
-) {
-  let createMarketOfType;
+export async function createMarket(
+  augur: Augur<BigNumber>,
+  market: MarketData,
+  designatedReporterAddress:string
+):Promise<Array<Event>> {
   switch (market.marketType) {
     case "categorical":
-      createMarketOfType = augur.createMarket.createCategoricalMarket;
-      break;
+      return augur.contracts.universe.createCategoricalMarket(
+        new BigNumber(market._endTime),
+        new BigNumber(1000),
+        new BigNumber(market._affiliateFeeDivisor),
+        designatedReporterAddress,
+        market._outcomes.map(ethers.utils.formatBytes32String),
+        ethers.utils.formatBytes32String(market._topic),
+        market._description,
+        JSON.stringify(market._extraInfo)
+      );
     case "scalar":
-      createMarketOfType = augur.createMarket.createScalarMarket;
-      break;
+      return augur.contracts.universe.createScalarMarket(
+        new BigNumber(market._endTime),
+        new BigNumber(1000),
+        new BigNumber(market._affiliateFeeDivisor),
+        designatedReporterAddress,
+        new BigNumber(market._minPrice),
+        new BigNumber(market._maxPrice),
+        new BigNumber(market._numTicks),
+        ethers.utils.formatBytes32String(market._topic),
+        market._description,
+        JSON.stringify(market._extraInfo)
+      );
     case "yesNo":
     default:
-      createMarketOfType = augur.createMarket.createYesNoMarket;
+      return augur.contracts.universe.createYesNoMarket(
+        new BigNumber(market._endTime),
+        new BigNumber(1000),
+        new BigNumber(market._affiliateFeeDivisor),
+        designatedReporterAddress,
+        ethers.utils.formatBytes32String(market._topic),
+        market._description,
+        JSON.stringify(market._extraInfo)
+      );
   }
 
-  const createMarketParams = Object.assign(
-    {},
-    immutableDelete(market, ["orderBook", "marketType"]),
-    {
-      meta: auth,
-      universe: augur.contracts.addresses[augur.rpc.getNetworkID()].Universe,
-      _feePerEthInWei: speedomatic.fix(0.01, "hex"),
-      _affiliateFeeDivisor: market._affiliateFeeDivisor,
-      _designatedReporterAddress: designatedReporterAddress,
-      onSent: function(res) {
-        console.log(
-          chalk.green.dim("createMarket sent:"),
-          chalk.green(res.hash)
-        );
-      },
-      onSuccess: function(res) {
-        console.log(
-          chalk.green.dim("createMarket success:"),
-          chalk.green(res.callReturn)
-        );
-        printTransactionStatus(augur.rpc, res.hash);
-        callback(null, res.callReturn);
-      },
-      onFailed: function(err) {
-        console.error(chalk.red.bold("createMarket failed:"), err, market);
-        if (err != null) printTransactionStatus(augur.rpc, err.hash);
-        callback(err);
-      }
-    }
-  );
-  console.log("createMarket params:", createMarketParams);
-  createMarketOfType(createMarketParams);
 }
 

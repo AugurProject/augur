@@ -4,8 +4,8 @@ import {createOrderBook } from "./create-order-book";
 import {selectCannedMarket} from "./select-canned-market";
 
 
-function createOrders(augur, marketIds, auth, callback) {
-  augur.markets.getMarketsInfo({ marketIds: marketIds }, function(err, marketsInfo) {
+export function createOrders(augur, marketIds, auth, callback) {
+  augur.markets.getMarketsInfo({ marketIds: marketIds }, function(err:Error, marketsInfo) {
     if (err) return callback(err);
     async.eachSeries(marketsInfo, function(marketInfo, nextMarket) {
       if (debugOptions.cannedMarkets) console.log(chalk.cyan("Creating orders for market"), chalk.green(marketInfo.id), chalk.cyan.dim(marketInfo.description));
@@ -23,4 +23,4 @@ function createOrders(augur, marketIds, auth, callback) {
   });
 }
 
-export default createOrders;
+

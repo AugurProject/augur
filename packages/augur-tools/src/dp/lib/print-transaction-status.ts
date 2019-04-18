@@ -5,7 +5,7 @@ export function printTransactionStatus(ethrpc, transactionHash, callback) {
   };
   if (transactionHash == null)
     return callback(new Error("no transaction hash provided"));
-  ethrpc.getTransactionReceipt(transactionHash, function(err, receipt) {
+  ethrpc.getTransactionReceipt(transactionHash, function(err:Error, receipt) {
     if (err) return callback(err);
     if (receipt == null)
       return callback(new Error("could not get transaction receipt"));

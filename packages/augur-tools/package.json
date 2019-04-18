@@ -4,6 +4,7 @@
   "description": "Tools and dev dependencies",
   "main": "index.js",
   "scripts": {
+    "build": "tsc -b",
     "test": "echo \"Error: no test specified\" && exit 1",
     "docker:build": "bash ./docker-builder/build.sh",
     "docker:push": "bash ./docker-builder/push.sh",

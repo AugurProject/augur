@@ -9,7 +9,7 @@ function cancelOrders(augur, creator, universe, auth, callback) {
     creator: creator,
     universe: universe,
     orderState: augur.constants.ORDER_STATE.OPEN
-  }, function(err, orders) {
+  }, function(err:Error, orders) {
     if (err) return callback(err);
     async.forEachOf(orders, function(ordersInMarket, marketId, nextMarket) {
       async.forEachOf(ordersInMarket, function(ordersInOutcome, outcome, nextOutcome) {

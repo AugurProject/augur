@@ -1,14 +1,14 @@
 import speedomatic from "speedomatic";
 
 function getBalances(augur, universe, address, callback) {
-  augur.api.Universe.getReputationToken({ tx: { to: universe } }, function(err, reputationTokenAddress) {
+  augur.api.Universe.getReputationToken({ tx: { to: universe } }, function(err:Error, reputationTokenAddress) {
     if (err) return callback(err);
     augur.api.ReputationToken.balanceOf({
       tx: { to: reputationTokenAddress },
       _tokenHolder: address
-    }, function(err, reputationBalance) {
+    }, function(err:Error, reputationBalance) {
       if (err) return callback(err);
-      augur.rpc.eth.getBalance([address, "latest"], function(err, etherBalance) {
+      augur.rpc.eth.getBalance([address, "latest"], function(err:Error, etherBalance) {
         if (err) return callback(err);
         if (etherBalance == null) return callback(new Error("rpc.eth.getBalance failed"));
         return callback(null, {

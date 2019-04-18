@@ -17,12 +17,12 @@ function fillOrder(
 ) {
   augur.markets.getMarkets(
     { universe: universe, sortBy: "creationBlockNumber" },
-    function(err, marketIds) {
+    function(err:Error, marketIds) {
       if (err) return callback(err);
       if (!marketIds || !Array.isArray(marketIds) || !marketIds.length)
         return callback(marketIds);
       augur.markets.getMarketsInfo({ marketIds: marketIds }, function(
-        err,
+        err:Error,
         marketsInfo
       ) {
         if (err) return callback(err);
@@ -37,7 +37,7 @@ function fillOrder(
               outcomeToTrade,
               orderType,
               fillerAddress,
-              function(err, orderToFill) {
+              function(err:Error, orderToFill) {
                 if (err) return callback(err);
                 if (
                   orderToFill == null ||

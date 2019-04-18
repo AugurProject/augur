@@ -5,7 +5,7 @@ function getOrderToFill(augur, marketId, outcomeToTrade, orderType, fillerAddres
     marketId: marketId,
     outcome: outcomeToTrade,
     orderType: orderType
-  }, function(err, orderBook) {
+  }, function(err:Error, orderBook) {
     if (err) return callback(err);
     if (!orderBook[marketId] || !orderBook[marketId][outcomeToTrade] || !orderBook[marketId][outcomeToTrade][orderType]) {
       return callback(null);

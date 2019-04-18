@@ -13,7 +13,7 @@ const augur = new Augur();
 
 
 
-getPrivateKey(keystoreFilePath, function(err, auth) {
+getPrivateKey(keystoreFilePath, function(err:Error, auth) {
   if (err) return console.error("getPrivateKey failed:", err);
   augur.connect(connectionEndpoints, function(err) {
     if (err) return console.error(err);

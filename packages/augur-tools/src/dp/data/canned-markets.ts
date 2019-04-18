@@ -1,4 +1,4 @@
-import { singleOutcomeAsks, singleOutcomeBids, yesNoOrderBook } from "./yes-no-order-book";
+import { OrderBook, singleOutcomeAsks, singleOutcomeBids, yesNoOrderBook } from "./yes-no-order-book";
 
 function daysInMonth(month:number, year:number) {
   return new Date(year, month, 0).getDate();
@@ -31,8 +31,8 @@ const inFiveMonths = addMonths(today, 2);
 const inSixMonths = addMonths(today, 3);
 const thisYear = today.getUTCFullYear();
 
-interface CannedMarketData {
-  marketType: string;
+
+interface BaseMarketData {
   _description: string;
   _endTime: number;
   _affiliateFeeDivisor: number;
@@ -43,15 +43,29 @@ interface CannedMarketData {
     _scalarDenomination?: string;
     tags?: string[]
   };
-  _minPrice?: string;
-  _maxPrice?: string;
-  _outcomes?: Array<string>;
-  orderBook?: any;
-  tickSize?: string;
+  orderBook?: OrderBook;
 
 }
 
-export const cannedMarketsData:Array<CannedMarketData> = [
+interface CategoricalMarket extends BaseMarketData {
+  marketType: "categorical",
+  _outcomes: Array<string>;
+}
+
+interface ScalarMarket extends BaseMarketData {
+  marketType: "scalar";
+  _minPrice: string;
+  _maxPrice: string;
+  _numTicks: string;
+}
+
+interface BinaryMarket extends BaseMarketData {
+  marketType: "yesNo";
+}
+
+export type MarketData = CategoricalMarket | ScalarMarket | BinaryMarket;
+
+export const cannedMarketsData:Array<MarketData> = [
   {
     marketType: "yesNo",
     _description:
@@ -236,7 +250,7 @@ export const cannedMarketsData:Array<CannedMarketData> = [
     _endTime: midnightTomorrow.getTime() / 1000,
     _minPrice: "-10",
     _maxPrice: "120",
-    tickSize: "0.1",
+    _numTicks: "1000",
     _affiliateFeeDivisor: 4,
     _topic: "temperature",
     _extraInfo: {
@@ -277,7 +291,7 @@ export const cannedMarketsData:Array<CannedMarketData> = [
     _endTime: inFiveMonths.getTime() / 1000,
     _minPrice: "600",
     _maxPrice: "5000",
-    tickSize: ".01",
+    _numTicks: "1000",
     _affiliateFeeDivisor: 4,
     _topic: "science",
     _extraInfo: {
@@ -295,7 +309,7 @@ export const cannedMarketsData:Array<CannedMarketData> = [
     _endTime: inSixMonths.getTime() / 1000,
     _minPrice: "0",
     _maxPrice: "30",
-    tickSize: "1",
+    _numTicks: "1000",
     _affiliateFeeDivisor: 4,
     _topic: "medicine",
     _extraInfo: {
@@ -332,7 +346,7 @@ export const cannedMarketsData:Array<CannedMarketData> = [
     _endTime: midnightTomorrow.getTime() / 1000,
     _minPrice: "0",
     _maxPrice: "10000",
-    tickSize: "1",
+    _numTicks: "1000",
     _affiliateFeeDivisor: 4,
     _topic: "crypto",
     _extraInfo: {

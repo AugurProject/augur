@@ -2,7 +2,7 @@ import chalk from "chalk";
 
 
 function cancelOrder(augur, orderId, orderType, marketId, outcome, auth, callback) {
-  augur.api.Orders.getAmount({ _orderId: orderId }, function(err, amount) {
+  augur.api.Orders.getAmount({ _orderId: orderId }, function(err:Error, amount) {
     if (err) return callback(err);
     if (amount === "0") return callback(null);
     augur.api.CancelOrder.cancelOrder({

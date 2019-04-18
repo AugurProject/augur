@@ -1,34 +1,42 @@
-import ethers from "ethers";
+import { Augur } from "@augurproject/api";
+import { providers } from "ethers";
+import { BigNumber } from "./types";
+import {Addresses} from "@augurproject/artifacts";
+import {EthersProvider} from "@augurproject/ethersjs-provider";
 
 import path from "path";
-import { assign } from "lodash";
-import Augur from "augur.js";
 
-import { ethereumNode } from "./connection-endpoints";
-import core from "@augurproject/core";
-import { getPrivateKeyFromString } from "./lib/get-private-key";
+import {
+  isNetwork,
+  NETWORKS,
+  ContractDeployer,
+  DeployerConfiguration,
+  EthersFastSubmitWallet,
+  NetworkConfiguration
+} from "@augurproject/core";
 import parrotSay from "parrotsay-api";
+
 import chalk from "chalk";
 import columnify from "columnify";
-import repFaucet from "./rep-faucet";
-import { createMarkets } from "./create-markets";
-import { _createOrders } from "./create-orders";
+// import repFaucet from "./lib/rep-faucet";
+import { createMarkets } from "./lib/create-markets";
+import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { repFaucet } from "./lib/rep-faucet";
 
 const COMMANDS = [
   "create-markets",
   "create-orders",
   "deploy",
   "rep-faucet",
-  "upload"
-];
-const NETWORKS = [
-  "aura",
-  "clique",
-  "environment",
-  "rinkeby",
-  "ropsten",
-  "thunder"
-];
+  "upload",
+  "all-logs"
+] as const;
+
+type COMMANDS = typeof COMMANDS[number];
+
+export function isCommand(x: any): x is COMMANDS {
+  return COMMANDS.includes(x);
+}
 
 function help() {
   return parrotSay(" Augur Deployment Parrot ").then(function(say) {
@@ -160,153 +168,195 @@ function help() {
   });
 }
 
-function runCannedData(command, networks, callback) {
-  const deployerConfiguration = core.DeployerConfiguration.create(
-    path.join(__dirname, "../../../augur-artifacts/")
-  );
-  const networkConfigurations = networks.map(core.NetworkConfiguration.create);
-  // This is done in two steps on purpose, create validates the envs and will throw an error
-  // if it doesn't work
-  networkConfigurations.forEach(function(network) {
-    const augur = new Augur();
-
-
-    const auth = getPrivateKeyFromString(network.privateKey);
-    const ethereumNode = assign({}, ethereumNode, {
-      http: network.http
-    });
-    switch (command) {
-      case "upload": {
-        const provider = new ethers.providers.JsonRpcProvider(network.http);
-        core.EthersFastSubmitWallet.create(network.privateKey, provider).then(function(signer) {
-          const dependencies = new core.ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
-          core.ContractDeployer.deployToNetwork(network, dependencies, provider, signer, deployerConfiguration).then(function() {
-            callback(null);
-          });
-        });
-        break;
+async function runCommandForNetwork(networkConfiguration: NetworkConfiguration, command: COMMANDS, deployerConfiguration: DeployerConfiguration) {
+  switch (command) {
+    case "upload": {
+      if (networkConfiguration.privateKey) {
+        const provider = new providers.JsonRpcProvider(networkConfiguration.http);
+        const signer = await EthersFastSubmitWallet.create(networkConfiguration.privateKey, provider);
+        const dependencies = new ContractDependenciesEthers(provider, signer);
+        await ContractDeployer.deployToNetwork(networkConfiguration, dependencies, provider, signer, deployerConfiguration);
       }
-
-      case "rep-faucet": {
-        augur.connect(
-          { ethereumNode: ethereumNode },
-          function(err) {
-            if (err) return callback(err);
-
-            repFaucet(augur, 100000, auth, callback);
-          }
-        );
-        break;
-      }
-
-      case "create-markets": {
-        augur.connect(
-          { ethereumNode: ethereumNode },
-          function(err) {
-            if (err) return callback(err);
-            repFaucet(augur, 100000, auth, function(err) {
-              if (err) return callback(err);
-              createMarkets(augur, auth, callback);
-            });
-          }
-        );
-        break;
-      }
-
-      case "create-orders": {
-        if (typeof process.env.AUGUR_WS === "undefined") {
-          console.log(
-            "Error: Must pass augur node URI in AUGUR_WS for create-orders\n"
-          );
-          return help().then(function() {
-            callback(null);
-          });
-        }
-        augur.connect(
-          {
-            ethereumNode: {
-              http: network.http,
-              ws: network.ws,
-              ipc: network.ipc
-            },
-            augurNode: process.env.AUGUR_WS
-          },
-          function(err) {
-            if (err) return callback(err);
-            _createOrders(augur, auth, callback);
-          }
-        );
-        break;
-      }
-
-      case "deploy": {
-        const provider = new ethers.providers.JsonRpcProvider(network.http);
-        core.EthersFastSubmitWallet.create(network.privateKey, provider).then(function(signer) {
-          const dependencies = new core.ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
-          core.ContractDeployer.deployToNetwork(network, dependencies, provider, signer, deployerConfiguration).then(function() {
-            augur.contracts.reloadAddresses(function(err) {
-              if (err) return callback(err);
-              augur.connect(
-                { ethereumNode: ethereumNode },
-                function(err) {
-                  if (err) return callback(err);
-                  // geth bug related to contract availability for estimating gas requires timeout
-                  setTimeout(function() {
-                    repFaucet(augur, 100000, auth, function(err) {
-                      if (err) return callback(err);
-                      createMarkets(augur, auth, callback);
-                      callback();
-                    });
-                  }, 4000);
-                }
-              );
-            });
-          });
-        });
-        break;
-      }
-
-      default: {
-        help().then(function() {
-          callback(null);
-        });
-      }
+      break;
     }
-  });
+    case "rep-faucet": {
+      if (networkConfiguration.privateKey) {
+        const provider = new providers.JsonRpcProvider(networkConfiguration.http);
+        const ethersProvider = new EthersProvider(provider, 5, 0, 40);
+        const signer = await EthersFastSubmitWallet.create(networkConfiguration.privateKey, provider);
+        const dependencies = new ContractDependenciesEthers(provider, signer);
+        const networkId = (await provider.getNetwork()).chainId.toString();
+
+        const addresses = Addresses[networkId];
+        const augur = await Augur.create(ethersProvider, dependencies, addresses);
+        await repFaucet(augur, new BigNumber(100000));
+      }
+      break;
+    }
+    case "create-markets": {
+      if (networkConfiguration.privateKey) {
+        const provider = new providers.JsonRpcProvider(networkConfiguration.http);
+        const ethersProvider = new EthersProvider(provider, 5, 0, 40);
+        const signer = await EthersFastSubmitWallet.create(networkConfiguration.privateKey, provider);
+        const dependencies = new ContractDependenciesEthers(provider, signer);
+        const networkId = await ethersProvider.getNetworkId();
+
+        const addresses = Addresses[networkId];
+        const augur = await Augur.create(ethersProvider, dependencies, addresses);
+
+        const ETERNAL_APPROVAL_VALUE_ = await augur.contracts.cash.ETERNAL_APPROVAL_VALUE_();
+        await augur.contracts.cash.approve(augur.addresses.Augur, ETERNAL_APPROVAL_VALUE_);
+
+        await createMarkets(augur, await signer.getAddress(), signer);
+      }
+      break;
+    }
+      case "all-logs": {
+        if(networkConfiguration.privateKey) {
+
+          const provider = new providers.JsonRpcProvider(networkConfiguration.http);
+          const ethersProvider = new EthersProvider(provider, 5, 0, 40);
+          const networkId = await ethersProvider.getNetworkId();
+
+
+          const signer = await EthersFastSubmitWallet.create(networkConfiguration.privateKey, provider);
+          const dependencies = new ContractDependenciesEthers(provider, signer);
+
+          const addresses = Addresses[networkId];
+          const { Augur: address } = Addresses[networkId];
+          const augur = await Augur.create(ethersProvider, dependencies, addresses);
+
+          const logs = await provider.getLogs({
+            address,
+            fromBlock: 0,
+            toBlock: "latest",
+            topics: []
+          });
+
+          const logsWithBlockNumber = logs.map((log) => ({
+            ...log,
+            logIndex: log.logIndex || 0,
+            transactionHash: log.transactionHash || "",
+            transactionIndex: log.transactionIndex || 0,
+            transactionLogIndex: log.transactionLogIndex || 0,
+            blockNumber: (log.blockNumber || 0),
+            blockHash: log.blockHash || "0",
+            removed: log.removed || false
+          }));
+
+          const parsedLogs = augur.events.parseLogs(logsWithBlockNumber);
+          parsedLogs.forEach((log) => console.log(JSON.stringify(log)));
+        }
+        break;
+      }
+
+
+
+
+    // case "create-orders": {
+    //   if (typeof process.env.AUGUR_WS === "undefined") {
+    //     console.log(
+    //       "Error: Must pass augur node URI in AUGUR_WS for create-orders\n"
+    //     );
+    //     return help().then(function() {
+    //       callback(null);
+    //     });
+    //   }
+    //   augur.connect(
+    //     {
+    //       ethereumNode: {
+    //         http: network.http,
+    //         ws: network.ws,
+    //         ipc: network.ipc
+    //       },
+    //       augurNode: process.env.AUGUR_WS
+    //     },
+    //     function(err) {
+    //       if (err) return callback(err);
+    //       _createOrders(augur, auth, callback);
+    //     }
+    //   );
+    //   break;
+    // }
+    //
+    // case "deploy": {
+    //   const provider = new ethers.providers.JsonRpcProvider(network.http);
+    //   EthersFastSubmitWallet.create(network.privateKey, provider).then(function(signer) {
+    //     const dependencies = new ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
+    //     ContractDeployer.deployToNetwork(network, dependencies, provider, signer, deployerConfiguration).then(function() {
+    //       augur.contracts.reloadAddresses(function(err) {
+    //         if (err) return callback(err);
+    //         augur.connect(
+    //           { ethereumNode: ethereumNode },
+    //           function(err) {
+    //             if (err) return callback(err);
+    //             // geth bug related to contract availability for estimating gas requires timeout
+    //             setTimeout(function() {
+    //               repFaucet(augur, 100000, auth, function(err) {
+    //                 if (err) return callback(err);
+    //                 createMarkets(augur, auth, callback);
+    //                 callback();
+    //               });
+    //             }, 4000);
+    //           }
+    //         );
+    //       });
+    //     });
+    //   });
+    //   break;
+    // }
+
+    default: {
+      help();
+    }
+  }
 }
 
-function showError(error) {
+async function runCannedData(command: COMMANDS, networks: Array<NETWORKS>): Promise<void> {
+  const deployerConfiguration = DeployerConfiguration.create(
+    path.join(__dirname, "../../../augur-artifacts/src")
+  );
+  const networkConfigurations = networks.map((network) => NetworkConfiguration.create(network));
+  // This is done in two steps on purpose, create validates the envs and will throw an error
+  // if it doesn't work
+  for (let networkConfiguration of networkConfigurations) {
+    await runCommandForNetwork(networkConfiguration, command, deployerConfiguration);
+  }
+
+}
+
+function showError(error: Error) {
   console.log("Failure!\n", error.message);
-  if (error.stack && debugOptions.cannedMarkets) {
+  if (error.stack) {
     console.log("-------- BACKTRACE ------");
     console.log(error.stack);
   }
   process.exit(1);
 }
 
-if (require.main === module) {
-  const command = process.argv[2];
-  const networks = process.argv.slice(3);
+async function doStuff() {
+  const command: string = process.argv[2];
+  let networks = process.argv.slice(3).filter(isNetwork);
 
   if (networks.length === 0) {
     networks = ["environment"];
   }
 
-  if (COMMANDS.indexOf(command) === -1 || command === "help") {
-    help().then(function() {
-      process.exit();
-    });
+  if (!isCommand(command)) {
+    await help();
   } else {
     try {
-      runCannedData(command, networks, function(error) {
-        if (error) return showError(error);
-        process.exit();
-      });
+      await runCannedData(command, networks);
     } catch (error) {
       showError(error);
     }
   }
 }
+
+if (require.main === module) {
+  doStuff();
+}
+
 
 
 
