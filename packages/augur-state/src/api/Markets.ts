@@ -198,7 +198,7 @@ export class Markets<TBigNumber> {
   public static async getMarketsInfo<TBigNumber>(db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsInfoParams>): Promise<Array<MarketInfo>> {
     const marketCreatedLogs = await db.findMarketCreatedLogs({selector: {market: {$in: params.marketIds}}});
 
-    return await Promise.all(marketCreatedLogs.map(async (marketCreatedLog) => {
+    return Promise.all(marketCreatedLogs.map(async (marketCreatedLog) => {
       const marketFinalizedLogs = (await db.findMarketFinalizedLogs({selector: {market: marketCreatedLog.market}})).reverse();
       const marketVolumeChangedLogs = (await db.findMarketVolumeChangedLogs({selector: {market: marketCreatedLog.market}})).reverse();
 
