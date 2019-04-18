@@ -1,6 +1,6 @@
-import * as Sync from "./sync";
-import * as HttpEndpoint from "./http-endpoint";
-import * as WebSocketEndpoint from "./web-socket-endpoint";
+import * as Sync from "./Sync";
+import * as HTTPEndpoint from "./HTTPEndpoint";
+import * as WebsocketEndpoint from "./WebsocketEndpoint";
 import { API } from "./api/API";
 import { Augur } from "@augurproject/api";
 import { BigNumber as EthersBigNumber } from "ethers/utils";
@@ -27,50 +27,65 @@ export async function run() {
 
   try {
     endpointSettings.httpPort = Number(process.env["HTTP_PORT".toString()]) ||
-      settings.endpointConfigs.http.port;
+      settings.endpointSettings.http.port;
   } catch {
     endpointSettings.httpPort = 9004;
   }
 
   try {
-    endpointSettings.httpsPort = Number(process.env["HTTP_PORT".toString()]) ||
-      settings.endpointConfigs.https.port;
+    endpointSettings.startHTTPS = Boolean(process.env["STATRT_HTTPS".toString()]) ||
+      settings.endpointSettings.https.startHTTPS;
+  } catch {
+    endpointSettings.startHTTPS = false;
+  }
+
+  try {
+    endpointSettings.httpsPort = Number(process.env["HTTPS_PORT".toString()]) ||
+      settings.endpointSettings.https.port;
   } catch {
     endpointSettings.httpsPort = 9004;
   }
 
   try {
-    endpointSettings.wsPort = Number(process.env["HTTP_PORT".toString()]) ||
-      settings.endpointConfigs.https.port;
+    endpointSettings.wsPort = Number(process.env["WS_PORT".toString()]) ||
+      settings.endpointSettings.ws.port;
   } catch {
     endpointSettings.wsPort = 9004;
   }
 
   try {
-    endpointSettings.wssPort = Number(process.env["HTTP_PORT".toString()]) ||
-      settings.endpointConfigs.https.port;
+    endpointSettings.startWSS = Boolean(process.env["START_WSS".toString()]) ||
+      settings.endpointSettings.wss.startWSS;
+  } catch {
+    endpointSettings.startWSS = false;
+  }
+
+  try {
+    endpointSettings.wssPort = Number(process.env["WSS_PORT".toString()]) ||
+      settings.endpointSettings.wss.port;
   } catch {
     endpointSettings.wssPort = 9004;
   }
 
   try {
     endpointSettings.certificateFile = process.env["CERTIFICATE_FILE".toString()] ||
-      settings.endpointConfigs.certificateInfo.certificateFile;
-  } catch {
-    endpointSettings.certificateFile = "./certs/ssl-cert-snakeoil.cert";
+      settings.endpointSettings.certificateInfo.certificateFile;
+  } catch (error) {
+    console.log(error);
+    endpointSettings.certificateFile = "./certs/ssl-cert-snakeoil.pem";
   }
 
   try {
     endpointSettings.certificateKeyFile = process.env["CERTIFICATE_KEY_FILE".toString()] ||
-      settings.endpointConfigs.certificateInfo.certificateKeyFile;
+      settings.endpointSettings.certificateInfo.certificateKeyFile;
   } catch {
-    endpointSettings.certificateKeyFile = "./certs/ssl-cert-snakeoil.cert";
+    endpointSettings.certificateKeyFile = "./certs/ssl-cert-snakeoil.pem";
   }
 
-  Sync.start();
+  // Sync.start();
   console.log("Starting websocket and http endpoints");
-  //WebSocketEndpoint.run(api, endpointSettings);
-  await HttpEndpoint.run(api, endpointSettings);
+  // WebsocketEndpoint.run(api, endpointSettings);
+  await HTTPEndpoint.run(api, endpointSettings);
 }
 
 run();

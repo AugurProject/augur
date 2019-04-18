@@ -20,17 +20,19 @@
             "port": 9001
         },
         "wss": {
-          "port": 9002
+            "startWSS": true,
+            "port": 9002
         },
         "http": {
-          "port": 9003
+            "port": 9003
         },
         "https": {
-          "port": 9004
+            "startHTTPS": true,
+            "port": 9004
         },
         "certificateInfo": {
-          "certificateFile": "certs/ssl-cert-snakeoil.pem",
-          "certificateKeyFile": "certs/ssl-cert-snakeoil.key"
+            "certificateFile": "certs/ssl-cert-snakeoil.pem",
+            "certificateKeyFile": "certs/ssl-cert-snakeoil.key"
         }
     }
 }

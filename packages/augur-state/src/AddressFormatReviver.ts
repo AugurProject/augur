@@ -20,9 +20,9 @@ function preCleanAddress(address: string) {
   return address.toLowerCase().trim();
 }
 
-export function addressFormatReviver (key: string, value: any) {
+export function AddressFormatReviver(key: string, value: any) {
   if (inputsExpectedAsAddress[key]) {
-    if ( typeof value === "string" ) {
+    if (typeof value === "string") {
       return formatEthereumAddress(preCleanAddress(value));
     } else if (Array.isArray(value)) {
       return formatEthereumAddress((value).map((address) => typeof address === "string" ? preCleanAddress(address) : ""));

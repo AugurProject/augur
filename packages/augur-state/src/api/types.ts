@@ -17,8 +17,10 @@ export interface JsonRpcRequest {
 export interface EndpointSettings {
   httpPort: number;
   httpsPort: number;
+  startHTTPS: boolean;
   wsPort: number;
   wssPort: number;
-  certificateFile: string;
-  certificateKeyFile: string;
+  startWSS: boolean;
+  certificateFile?: string;
+  certificateKeyFile?: string;
 }

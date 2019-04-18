@@ -1,4 +1,4 @@
-import RunWorker from "./run.worker";
+import RunWorker from "./Sync.worker";
 
 // start the web worker and move console.log over to paint in the browser
 console.log = (msg: string) => {
