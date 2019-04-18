@@ -6,7 +6,6 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { AccountList } from "./LocalAugur";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { ContractAddresses } from "@augurproject/artifacts";
-import { Market } from "@augurproject/core/build/libraries/ContractInterfaces";
 
 const ETERNAL_APPROVAL_VALUE = new ethers.utils.BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
 
@@ -50,7 +49,7 @@ export class ContractAPI {
     const endTime = new ethers.utils.BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
-    return await this.createYesNoMarket(universe, endTime, fee, affiliateFeeDivisor, this.account);
+    return this.createYesNoMarket(universe, endTime, fee, affiliateFeeDivisor, this.account);
   }
 
   public async createCategoricalMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, outcomes: Array<string>, endTime: ethers.utils.BigNumber, feePerEthInWei: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
@@ -71,7 +70,7 @@ export class ContractAPI {
     const endTime = new ethers.utils.BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
-    return await this.createCategoricalMarket(universe, outcomes, endTime, fee, affiliateFeeDivisor, this.account);
+    return this.createCategoricalMarket(universe, outcomes, endTime, fee, affiliateFeeDivisor, this.account);
   }
 
   public async createScalarMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, outcomes: Array<string>, endTime: ethers.utils.BigNumber, feePerEthInWei: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
@@ -95,7 +94,7 @@ export class ContractAPI {
     const endTime = new ethers.utils.BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
-    return await this.createScalarMarket(universe, outcomes, endTime, fee, affiliateFeeDivisor, this.account);
+    return this.createScalarMarket(universe, outcomes, endTime, fee, affiliateFeeDivisor, this.account);
   }
 
   public async placeOrder(
@@ -189,7 +188,7 @@ export class ContractAPI {
     const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
     const crowdsourcerAddress = await market.getCrowdsourcer_(payoutDistributionHash);
     const crowdsourcer = this.augur.contracts.getReportingParticipant(crowdsourcerAddress);
-    return await crowdsourcer.getRemainingToFill_();
+    return crowdsourcer.getRemainingToFill_();
   }
 
   public async derivePayoutDistributionHash(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, payoutNumerators: Array<ethers.utils.BigNumber>): Promise<string> {
@@ -207,7 +206,7 @@ export class ContractAPI {
   public async getNumSharesInMarket(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, outcome: ethers.utils.BigNumber): Promise<ethers.utils.BigNumber> {
     const shareTokenAddress = await market.getShareToken_(outcome);
     const shareToken = this.augur.contracts.shareTokenFromAddress(shareTokenAddress);
-    return await shareToken.balanceOf_(this.account);
+    return shareToken.balanceOf_(this.account);
   }
 
   public async getDisputeWindow(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>): Promise<GenericAugurInterfaces.DisputeWindow<ethers.utils.BigNumber>> {
@@ -218,7 +217,7 @@ export class ContractAPI {
   public async getDisputeWindowEndTime(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>): Promise<ethers.utils.BigNumber> {
     const disputeWindowAddress = await market.getDisputeWindow_();
     const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
-    return await disputeWindow.getEndTime_();
+    return disputeWindow.getEndTime_();
   }
 
   public async getWinningReportingParticipant(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>): Promise<GenericAugurInterfaces.DisputeCrowdsourcer<ethers.utils.BigNumber>> {
@@ -253,7 +252,7 @@ export class ContractAPI {
     const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
     const initialReporterAddress = await market.getCrowdsourcer_(payoutDistributionHash);
     const initialReporter = this.augur.contracts.getReportingParticipant(initialReporterAddress);
-    return await initialReporter.getStake_();
+    return initialReporter.getStake_();
   }
 
   public async finalizeMarket(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>): Promise<void> {
@@ -289,7 +288,7 @@ export class ContractAPI {
 
   // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
   public async getEthBalance(): Promise<ethers.utils.BigNumber> {
-    return await this.provider.getBalance(this.account);
+    return this.provider.getBalance(this.account);
   }
 
   public getRepBalance(owner: string): Promise<ethers.utils.BigNumber> {
