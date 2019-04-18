@@ -33,6 +33,7 @@
     "@augurproject/core": "2.0.0-0",
     "@augurproject/state": "1.0.0-0",
     "@augurproject/ethersjs-provider": "1.0.0-0",
+    "contract-dependencies-ethers": "1.0.0-0",
     "ganache-core": "^2.4.0"
   },
   "devDependencies": {
