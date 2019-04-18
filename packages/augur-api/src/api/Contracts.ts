@@ -34,9 +34,11 @@ export class Contracts<TBigNumber> {
     this.completeSets = new GenericAugurInterfaces.CompleteSets<TBigNumber>(dependencies, addresses.CompleteSets);
     this.claimTradingProceeds = new GenericAugurInterfaces.ClaimTradingProceeds<TBigNumber>(dependencies, addresses.ClaimTradingProceeds);
     this.legacyReputationToken = new GenericAugurInterfaces.LegacyReputationToken<TBigNumber>(dependencies, addresses.LegacyReputationToken);
-
     if (typeof addresses.Time !== "undefined") {
-      this.time = new GenericAugurInterfaces.TimeControlled<TBigNumber>(dependencies, addresses.Time);
+      this.time = new GenericAugurInterfaces.Time<TBigNumber>(dependencies, addresses.Time);
+    }
+    if (typeof addresses.TimeControlled !== "undefined") {
+      this.time = new GenericAugurInterfaces.TimeControlled<TBigNumber>(dependencies, addresses.TimeControlled);
     }
   }
 
