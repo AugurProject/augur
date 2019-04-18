@@ -131,7 +131,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   }
 
   protected async getLogs(augur: Augur<TBigNumber>, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {
-    return await augur.events.getLogs(this.eventName, startBlock, endBlock);
+    return augur.events.getLogs(this.eventName, startBlock, endBlock);
   }
 
   protected processLog(log: Log): BaseDocument {

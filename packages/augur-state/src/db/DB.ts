@@ -305,7 +305,7 @@ export class DB<TBigNumber> {
    * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse
    */
   public async findInSyncableDB(dbName: string, request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
-    return await this.syncableDatabases[dbName].find(request);
+    return this.syncableDatabases[dbName].find(request);
   }
 
   /**
@@ -315,7 +315,7 @@ export class DB<TBigNumber> {
    * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse
    */
   public async findInMetaDB(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
-    return await this.metaDatabase.find(request);
+    return this.metaDatabase.find(request);
   }
 
   /**
