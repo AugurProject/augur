@@ -8909,7 +8909,7 @@ ganache-core@2.4.0:
     ethereumjs-wallet "0.6.2"
     web3 "1.0.0-beta.35"
 
-ganache-core@^2.4.0:
+ganache-core@2.5.3:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/ganache-core/-/ganache-core-2.5.3.tgz#8c6f21d820a694826082dfbb2dc59f834a6874fc"
   integrity sha512-lTqPSxgWS5p4zJ8yNbhhsBXMPfcuV+jjnnYtsbJTph9L6InA6UkNpO0hhHuDFWF3GpblP3LjvWPpqW+X6pdZGg==
