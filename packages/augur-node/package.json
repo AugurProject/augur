@@ -31,7 +31,7 @@
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "migrate_pg": "knex migrate:latest --env pg",
     "migrate:make": "knex migrate:make -x ts $1",
-    "prepare": "tsc",
+    "prepare": "tsc -b",
     "postdeploy": "npm run migrate_pg",
     "link": "npm link augur.js speedomatic",
     "clean": "rm -rf augur*.db build definitions",
