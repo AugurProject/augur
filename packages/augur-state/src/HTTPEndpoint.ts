@@ -11,8 +11,6 @@ import { AddressFormatReviver } from "./AddressFormatReviver";
 import { MakeJsonRpcError, JsonRpcErrorCode } from "./MakeJsonRpcError";
 import { MakeJsonRpcResponse } from "./MakeJsonRpcResponse";
 
-const settings = require("@augurproject/state/src/settings.json");
-
 export function createApp<TBigNumber>(api: API<TBigNumber>): express.Application {
   const app = express();
 
