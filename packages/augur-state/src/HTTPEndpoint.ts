@@ -6,8 +6,8 @@ import helmet from "helmet";
 import https from "https";
 
 import { API } from "./api/API";
-import { JsonRpcRequest, EndpointSettings } from "./api/types";
 import { AddressFormatReviver } from "./AddressFormatReviver";
+import { JsonRpcRequest, EndpointSettings } from "./api/types";
 import { MakeJsonRpcError, JsonRpcErrorCode } from "./MakeJsonRpcError";
 import { MakeJsonRpcResponse } from "./MakeJsonRpcResponse";
 
@@ -25,7 +25,7 @@ export function createApp<TBigNumber>(api: API<TBigNumber>): express.Application
   app.use(cors());
 
   // catch 404 and forward to error handler
-  app.use(function(err: any, req: express.Request, _: express.Response, next: express.NextFunction) {
+  app.use((err: any, req: express.Request, _: express.Response, next: express.NextFunction) => {
     err.status = 404;
     next(err);
   });
