@@ -51,7 +51,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     // TODO Make any external calls as needed (such as pushing user's balance to UI)
   }
 
-  public async addNewBlock(blocknumber: number, logs: Array<ParsedLog>): Promise<number> {
+  public addNewBlock = async (blocknumber: number, logs: Array<ParsedLog>): Promise<number> => {
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
 
     let success = true;
@@ -81,7 +81,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     }
 
     return blocknumber;
-  };
+  }
 
   public async rollback(blockNumber: number): Promise<void> {
     if (this.idFields.length > 0) {
@@ -95,7 +95,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     // Remove each change from blockNumber onward
     try {
       let blocksToRemove = await this.db.find({
-        selector: {blockNumber: {$gte: blockNumber}},
+        selector: { blockNumber: { $gte: blockNumber } },
         fields: ['_id', 'blockNumber', '_rev'],
       });
       for (let doc of blocksToRemove.docs) {
@@ -103,14 +103,14 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
       }
       await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber);
     } catch (err) {
-        console.error(err);
+      console.error(err);
     }
   }
 
   private async revisionRollback(blockNumber: number): Promise<void> {
     try {
       let blocksToRemove = await this.db.find({
-        selector: {blockNumber: {$gte: blockNumber}},
+        selector: { blockNumber: { $gte: blockNumber } },
         fields: ['_id'],
       });
       for (let doc of blocksToRemove.docs) {
@@ -126,7 +126,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
       }
       await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber);
     } catch (err) {
-        console.error(err);
+      console.error(err);
     }
   }
 
@@ -146,7 +146,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
       _id = `${log.blockNumber.toPrecision(21)}${log.logIndex}`;
     }
     return Object.assign(
-      {_id},
+      { _id },
       log
     );
   }
