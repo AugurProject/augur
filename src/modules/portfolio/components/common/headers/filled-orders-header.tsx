@@ -16,7 +16,7 @@ const FilledOrdersHeader = (props: FilledOrdersHeaderProps) => (
   >
     <li>Outcome</li>
     <li>Type</li>
-    {!props.extendedView && <li>Quantity</li>}
+    <li>Quantity</li>
     <li>
       Quantity
       <br />

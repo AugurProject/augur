@@ -39,10 +39,6 @@
   &:last-child {
     margin-right: -0.5px;
   }
-
-  @media @breakpoint-1-0 {
-    grid-template-columns: 2.5rem 2.5rem repeat(3, 1fr) minmax(5rem, 1fr) 2.68rem;
-  }
 }
 
 .PositionHeader {
@@ -69,6 +65,12 @@
 .FilledOrdersHeader__extended {
   grid-template-columns: repeat(5, 1fr) 6rem;
   padding-right: 4rem;
+
+  > li {
+    &:nth-of-type(3) {
+      display: none;
+    }
+  }
 }
 
 @media @breakpoint-mobile-mid {
@@ -117,7 +119,7 @@
 
   .FilledOrdersHeader__extended {
     > li {
-      &:nth-of-type(6) {
+      &:nth-of-type(3) {
         display: flex;
       }
     }
