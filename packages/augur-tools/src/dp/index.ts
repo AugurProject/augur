@@ -22,6 +22,7 @@ import columnify from "columnify";
 import { createMarkets } from "./lib/create-markets";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { repFaucet } from "./lib/rep-faucet";
+import { UploadBlockNumbers } from "@augurproject/artifacts/build";
 
 const COMMANDS = [
   "create-markets",
@@ -213,22 +214,22 @@ async function runCommandForNetwork(networkConfiguration: NetworkConfiguration, 
     }
       case "all-logs": {
         if(networkConfiguration.privateKey) {
-
           const provider = new providers.JsonRpcProvider(networkConfiguration.http);
           const ethersProvider = new EthersProvider(provider, 5, 0, 40);
           const networkId = await ethersProvider.getNetworkId();
-
 
           const signer = await EthersFastSubmitWallet.create(networkConfiguration.privateKey, provider);
           const dependencies = new ContractDependenciesEthers(provider, signer);
 
           const addresses = Addresses[networkId];
           const { Augur: address } = Addresses[networkId];
-          const augur = await Augur.create(ethersProvider, dependencies, addresses);
 
+          const uploadBlock = UploadBlockNumbers[networkId];
+
+          const augur = await Augur.create(ethersProvider, dependencies, addresses);
           const logs = await provider.getLogs({
             address,
-            fromBlock: 0,
+            fromBlock: uploadBlock,
             toBlock: "latest",
             topics: []
           });

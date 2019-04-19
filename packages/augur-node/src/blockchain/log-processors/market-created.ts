@@ -24,17 +24,17 @@ import { getCurrentTime } from "../process-block";
 
 interface IOutcomes {
   numOutcomes: number;
-  outcomeNames: Array<string|number|null>;
+  outcomeNames: Array<string | number | null>;
   shareTokens: Array<string>;
 }
 
-function getOutcomes(augur: Augur, log: FormattedEventLog) {
+function getOutcomesFromLog(augur: Augur, log: FormattedEventLog) {
   return new Promise<IOutcomes>((resolve, reject) => {
     const market = augur.getMarket(log.market);
     const numOutcomes = parseInt(log.marketType, 10) === MarketType.categorical ? (log.outcomes.length + 1) : 2;
 
     const shareTokens = new Array(numOutcomes);
-    const outcomeNames: Array<string|number|null> = (parseInt(log.marketType) === MarketType.categorical && log.outcomes) ? log.outcomes : new Array(numOutcomes - 1).fill(null);
+    const outcomeNames: Array<string | number | null> = (parseInt(log.marketType) === MarketType.categorical && log.outcomes) ? log.outcomes : new Array(numOutcomes - 1).fill(null);
 
     forEachOf(shareTokens, async (_: null, outcome: number, nextOutcome: ErrorCallback) => {
       const shareToken = await market.getShareToken_(new BigNumber(outcome));
@@ -45,125 +45,134 @@ function getOutcomes(augur: Augur, log: FormattedEventLog) {
       resolve({
         numOutcomes,
         outcomeNames,
-        shareTokens,
+        shareTokens
       });
     });
   });
 }
 
 export async function processMarketCreatedLog(augur: Augur, log: FormattedEventLog) {
-  const market = augur.getMarket(log.market);
-  const calls = {
-    disputeWindow: (await market.getDisputeWindow_()).toString(),
-    endTime: (await market.getEndTime_()).toString(),
-    designatedReporter: (await market.getDesignatedReporter_()).toString(),
-    numTicks: (await market.getNumTicks_()).toString(),
-    marketCreatorSettlementFeeDivisor: (await market.getMarketCreatorSettlementFeeDivisor_()).toString(),
-    reportingFeeDivisor: (await augur.contracts.universe.getOrCacheReportingFeeDivisor_()).toString(),
-    validityBondAttoeth: (await market.getValidityBondAttoCash_()).toString(),
-    getOutcomes: await getOutcomes(augur, log),
-  };
+  try {
+    const market = augur.contracts.marketFromAddress(log.market);
 
-  return async (db: Knex) => {
-    const designatedReportStakeRow: { balance: BigNumber } = await db("balances_detail").first("balance").where({ owner: log.market, symbol: "REP" });
-    if (designatedReportStakeRow == null) throw new Error(`No REP balance on market: ${log.market} (${log.transactionHash}`);
-    const marketStateDataToInsert: { [index: string]: string | number | boolean } = {
-      marketId: log.market,
-      reportingState: ReportingState.PRE_REPORTING,
-      blockNumber: log.blockNumber,
-    };
-    let query = db.insert(marketStateDataToInsert).into("market_state");
-    if (db.client.config.client !== "sqlite3") {
-      query = query.returning("marketStateId");
-    }
-    const marketStateRow: Array<number> = await query;
-    if (!marketStateRow || !marketStateRow.length) throw new Error("No market state ID");
-    const marketStateId = marketStateRow[0];
-    const extraInfo: MarketCreatedLogExtraInfo = (log.extraInfo != null && typeof log.extraInfo === "object") ? log.extraInfo : {};
-    const marketType: string = MarketType[log.marketType];
-    const marketCategoryName = canonicalizeCategoryName(log.topic);
-    const marketsDataToInsert: MarketsRow<string | number> = {
-      marketType,
-      transactionHash: log.transactionHash,
-      logIndex: log.logIndex,
-      marketId: log.market,
-      marketCreator: log.marketCreator,
-      creationBlockNumber: log.blockNumber,
-      creationFee: log.marketCreationFee,
-      category: marketCategoryName,
-      shortDescription: log.description,
-      minPrice: log.minPrice,
-      maxPrice: log.maxPrice,
-      tag1: (extraInfo!.tags && extraInfo!.tags!.length) ? extraInfo!.tags![0] : null,
-      tag2: (extraInfo!.tags && extraInfo!.tags!.length > 1) ? extraInfo!.tags![1] : null,
-      longDescription: extraInfo!.longDescription || null,
-      scalarDenomination: extraInfo!._scalarDenomination || null,
-      resolutionSource: extraInfo!.resolutionSource || null,
-      universe: log.universe,
-      numOutcomes: calls.getOutcomes.numOutcomes,
-      marketStateId,
-      disputeWindow: calls.disputeWindow,
-      endTime: parseInt(calls.endTime, 10),
-      designatedReporter: calls.designatedReporter,
-      designatedReportStake: convertFixedPointToDecimal(designatedReportStakeRow.balance, WEI_PER_ETHER),
-      numTicks: calls.numTicks,
-      marketCreatorFeeRate: convertDivisorToRate(calls.marketCreatorSettlementFeeDivisor),
-      initialReportSize: null,
-      reportingFeeRate: convertDivisorToRate(calls.reportingFeeDivisor),
-      marketCreatorFeesBalance: "0",
-      volume: "0",
-      sharesOutstanding: "0",
-      openInterest: "0",
-      validityBondSize: calls.validityBondAttoeth,
-      forking: 0,
-      needsMigration: 0,
-      needsDisavowal: 0,
-      finalizationBlockNumber: null,
-    };
-    const outcomesDataToInsert: Partial<OutcomesRow<string>> = formatBigNumberAsFixed<Partial<OutcomesRow<BigNumber>>, Partial<OutcomesRow<string>>>({
-      marketId: log.market,
-      price: new BigNumber(log.minPrice).add(new BigNumber(log.maxPrice)).div(new BigNumber(calls.getOutcomes.numOutcomes)),
-      volume: ZERO,
-      shareVolume: ZERO,
-    });
-    const tokensDataToInsert: Partial<TokensRow> = {
-      marketId: log.market,
-      symbol: "shares",
-    };
-    await db.insert(marketsDataToInsert).into("markets");
-    const searchProvider = createSearchProvider(db);
-    if (searchProvider !== null) {
-      await searchProvider.addSearchData(contentSearchBuilder(marketsDataToInsert));
-    }
-    await db.batchInsert("outcomes", calls.getOutcomes.shareTokens.map((_: Address, outcome: number): Partial<OutcomesRow<string>> => Object.assign({
-      outcome,
-      description: outcome === 0 ? "Invalid" : calls.getOutcomes.outcomeNames[outcome - 1],
-    }, outcomesDataToInsert)), calls.getOutcomes.numOutcomes);
-    await db.batchInsert("tokens", calls.getOutcomes.shareTokens.map((contractAddress: Address, outcome: number): Partial<TokensRow> => Object.assign({
-      contractAddress,
-      outcome,
-    }, tokensDataToInsert)), calls.getOutcomes.numOutcomes);
-    await db.batchInsert("token_supply", calls.getOutcomes.shareTokens.map((contractAddress: Address): Partial<TokensRow> => Object.assign({
-      token: contractAddress,
-      supply: "0",
-    })), calls.getOutcomes.numOutcomes);
+    const endTime = await market.getEndTime_();
+    const marketCreatorSettlementFeeDivisor = (await market.getMarketCreatorSettlementFeeDivisor_()).toString();
+    const reportingFeeDivisor = (await augur.contracts.universe.getOrCacheReportingFeeDivisor_()).toString();
 
-    await db.insert({
-      blockNumber: log.blockNumber,
-      transactionHash: log.transactionHash,
-      logIndex: log.logIndex,
-      token: ETHER,
-      sender: log.marketCreator,
-      recipient: log.market,
-      value: calls.validityBondAttoeth,
-    }).into("transfers");
-    augurEmitter.emit(SubscriptionEventNames.MarketCreated, Object.assign(
-      { creationTime: getCurrentTime() },
-      log,
-      marketsDataToInsert));
+    const getOutcomes = await getOutcomesFromLog(augur, log);
+    const disputeWindow = await market.getDisputeWindow_();
+    const designatedReporter = await market.getDesignatedReporter_();
+    const numTicks = (await market.getNumTicks_()).toString();
+    const validityBondAttoeth = "1";
 
-    await createCategoryIfNotExists(db, log.universe, marketCategoryName);
-  };
+    return async (db: Knex) => {
+      const designatedReportStakeRow: { balance: BigNumber } = await db("balances_detail").first("balance").where({
+        owner: log.market,
+        symbol: "REP"
+      });
+      if (designatedReportStakeRow == null) throw new Error(`No REP balance on market: ${log.market} (${log.transactionHash}`);
+      const marketStateDataToInsert: { [index: string]: string | number | boolean } = {
+        marketId: log.market,
+        reportingState: ReportingState.PRE_REPORTING,
+        blockNumber: log.blockNumber
+      };
+      let query = db.insert(marketStateDataToInsert).into("market_state");
+      if (db.client.config.client !== "sqlite3") {
+        query = query.returning("marketStateId");
+      }
+      const marketStateRow: Array<number> = await query;
+      if (!marketStateRow || !marketStateRow.length) throw new Error("No market state ID");
+      const marketStateId = marketStateRow[0];
+      const extraInfo: MarketCreatedLogExtraInfo = (log.extraInfo != null && typeof log.extraInfo === "object") ? log.extraInfo : {};
+      const marketType: string = MarketType[log.marketType];
+      const marketCategoryName = canonicalizeCategoryName(log.topic);
+      const marketsDataToInsert: MarketsRow<string | number> = {
+        marketType,
+        transactionHash: log.transactionHash,
+        logIndex: log.logIndex,
+        marketId: log.market,
+        marketCreator: log.marketCreator,
+        creationBlockNumber: log.blockNumber,
+        creationFee: log.marketCreationFee,
+        category: marketCategoryName,
+        shortDescription: log.description,
+        minPrice: log.minPrice,
+        maxPrice: log.maxPrice,
+        tag1: (extraInfo!.tags && extraInfo!.tags!.length) ? extraInfo!.tags![0] : null,
+        tag2: (extraInfo!.tags && extraInfo!.tags!.length > 1) ? extraInfo!.tags![1] : null,
+        longDescription: extraInfo!.longDescription || null,
+        scalarDenomination: extraInfo!._scalarDenomination || null,
+        resolutionSource: extraInfo!.resolutionSource || null,
+        universe: log.universe,
+        numOutcomes: getOutcomes.numOutcomes,
+        marketStateId,
+        disputeWindow: disputeWindow,
+        endTime: endTime.toNumber(),
+        designatedReporter: designatedReporter,
+        designatedReportStake: convertFixedPointToDecimal(designatedReportStakeRow.balance, WEI_PER_ETHER),
+        numTicks: numTicks,
+        marketCreatorFeeRate: convertDivisorToRate(marketCreatorSettlementFeeDivisor),
+        initialReportSize: null,
+        reportingFeeRate: convertDivisorToRate(reportingFeeDivisor),
+        marketCreatorFeesBalance: "0",
+        volume: "0",
+        sharesOutstanding: "0",
+        openInterest: "0",
+        validityBondSize: validityBondAttoeth,
+        forking: 0,
+        needsMigration: 0,
+        needsDisavowal: 0,
+        finalizationBlockNumber: null
+      };
+      const outcomesDataToInsert: Partial<OutcomesRow<string>> = formatBigNumberAsFixed<Partial<OutcomesRow<BigNumber>>, Partial<OutcomesRow<string>>>({
+        marketId: log.market,
+        price: new BigNumber(log.minPrice).add(new BigNumber(log.maxPrice)).div(new BigNumber(getOutcomes.numOutcomes)),
+        volume: ZERO,
+        shareVolume: ZERO
+      });
+      const tokensDataToInsert: Partial<TokensRow> = {
+        marketId: log.market,
+        symbol: "shares"
+      };
+      await db.insert(marketsDataToInsert).into("markets");
+      const searchProvider = createSearchProvider(db);
+      if (searchProvider !== null) {
+        await searchProvider.addSearchData(contentSearchBuilder(marketsDataToInsert));
+      }
+      await db.batchInsert("outcomes", getOutcomes.shareTokens.map((_: Address, outcome: number): Partial<OutcomesRow<string>> => Object.assign({
+        outcome,
+        description: outcome === 0 ? "Invalid" : getOutcomes.outcomeNames[outcome - 1]
+      }, outcomesDataToInsert)), getOutcomes.numOutcomes);
+      await db.batchInsert("tokens", getOutcomes.shareTokens.map((contractAddress: Address, outcome: number): Partial<TokensRow> => Object.assign({
+        contractAddress,
+        outcome
+      }, tokensDataToInsert)), getOutcomes.numOutcomes);
+      await db.batchInsert("token_supply", getOutcomes.shareTokens.map((contractAddress: Address): Partial<TokensRow> => Object.assign({
+        token: contractAddress,
+        supply: "0"
+      })), getOutcomes.numOutcomes);
+
+      await db.insert({
+        blockNumber: log.blockNumber,
+        transactionHash: log.transactionHash,
+        logIndex: log.logIndex,
+        token: ETHER,
+        sender: log.marketCreator,
+        recipient: log.market,
+        value: validityBondAttoeth
+      }).into("transfers");
+      augurEmitter.emit(SubscriptionEventNames.MarketCreated, Object.assign(
+        { creationTime: getCurrentTime() },
+        log,
+        marketsDataToInsert));
+
+      await createCategoryIfNotExists(db, log.universe, marketCategoryName);
+    };
+
+  } catch (e) {
+    console.error(e);
+    throw(e);
+  }
 }
 
 // canonicalizeCategoryName owns the definition of what it means to

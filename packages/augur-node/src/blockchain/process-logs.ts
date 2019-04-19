@@ -1,31 +1,34 @@
-import { Augur, EventLogProcessor, FormattedEventLog } from "../types";
+import { Augur, EventLogProcessor, FormattedEventLog, ParsedLogWithEventName } from "../types";
 import Knex from "knex";
 import { logProcessors } from "./log-processors";
 import { augurEmitter } from "../events";
 import { SubscriptionEventNames } from "../constants";
-import { Log } from "@augurproject/api";
 import _ from "lodash";
+import { ParsedLog } from "@augurproject/api";
 
-export async function processLog(augur: Augur, log: FormattedEventLog, logProcessor: EventLogProcessor): Promise<(db: Knex) => Promise<void>> {
+export function processLog(augur: Augur, log: FormattedEventLog, logProcessor: EventLogProcessor): Promise<(db: Knex) => Promise<void>> {
   return (!log.removed ? logProcessor.add : logProcessor.remove)(augur, log);
 }
 
-export function processLogByName(augur: Augur, log: Log, emitEvent: boolean): null|Promise<(db: Knex) => Promise<void>> {
+export async function processLogByName(augur: Augur, log: ParsedLogWithEventName, emitEvent: boolean): Promise<(db: Knex) => Promise<void>> {
   const contractProcessors = logProcessors["Augur"];
-  const logProcessorName = Object.keys(contractProcessors).find((eventName) => {
-    const intersection = _.intersection(log.topics, augur.events.getEventTopics(eventName));
-    return !_.isEmpty(intersection);
-  });
+
+  if(!log.topics) {
+    return (db: Knex) => Promise.resolve();
+  }
+
+  const logProcessorName = log.eventName;
   if (logProcessorName && contractProcessors && contractProcessors[logProcessorName]) {
-    const parsedLog = augur.events.parseLogs([log])[0];
     const logProcessor = contractProcessors[logProcessorName];
     if (emitEvent) {
       if (!logProcessor.noAutoEmit) {
         const subscriptionEventName = logProcessorName as keyof typeof SubscriptionEventNames;
-        augurEmitter.emit(SubscriptionEventNames[subscriptionEventName], parsedLog);
+        augurEmitter.emit(SubscriptionEventNames[subscriptionEventName], log);
       }
     }
-    return processLog(augur, log, contractProcessors[log.eventName]);
+    return processLog(augur, log, contractProcessors[logProcessorName]);
+  } else {
+    console.log('Cannot find processor for: ', JSON.stringify(log));
   }
-  return null;
+  return (db: Knex) => Promise.resolve();
 }

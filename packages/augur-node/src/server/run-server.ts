@@ -9,8 +9,7 @@ import { EventEmitter } from "events";
 import express from "express";
 import { Addresses } from "@augurproject/artifacts";
 
-// tslint:disable-next-line:no-var-requires
-const { websocketConfigs } = require("../../config");
+import { websocketConfigs } from "../../config.json";
 
 export interface RunServerResult {
   app: express.Application;

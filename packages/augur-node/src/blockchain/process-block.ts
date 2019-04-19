@@ -11,7 +11,7 @@ import {
   DisputeWindowState,
   FormattedEventLog,
   MarketIdUniverseDisputeWindow,
-  MarketsContractAddressRow,
+  MarketsContractAddressRow, ParsedLogWithEventName,
   ReportingState,
   TransactionHashesRow
 } from "../types";
@@ -64,7 +64,7 @@ export function clearOverrideTimestamp(): void {
   blockHeadTimestamp = 0;
 }
 
-export async function processBlockAndLogs(db: Knex, pouch: PouchDB.Database, augur: Augur, direction: BlockDirection, block: BlockDetail, bulkSync: boolean, logs: Array<Log>, databaseDir: string, isWarpSync: boolean) {
+export async function processBlockAndLogs(db: Knex, pouch: PouchDB.Database, augur: Augur, direction: BlockDirection, block: BlockDetail, bulkSync: boolean, logs: Array<ParsedLogWithEventName>, databaseDir: string, isWarpSync: boolean) {
   if (!block || !block.timestamp) throw new Error(JSON.stringify(block));
   const dbWritePromises = _.compact(logs.map((log) => processLogByName(augur, log, true)));
   const dbWriteFunctions = await Promise.all(dbWritePromises);

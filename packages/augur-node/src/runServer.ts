@@ -12,11 +12,11 @@ import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 
 
 export async function start(retries: number, config: ConnectOptions, databaseDir: string, isWarpSync: boolean) {
-  const ethersProvider = new EthersProvider(new JsonRpcProvider("https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"), 5, 0, 40);
+  const ethersProvider = new EthersProvider(new JsonRpcProvider(config.http), 5, 0, 40);
 
   const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined);
   const networkId = await ethersProvider.getNetworkId();
-  const augur = new Augur<BigNumber, EthersProvider>(ethersProvider, contractDependencies, networkId, Addresses[4]);
+  const augur = new Augur<BigNumber, EthersProvider>(ethersProvider, contractDependencies, networkId, Addresses[networkId]);
 
   const augurNodeController = new AugurNodeController(augur, config, databaseDir, isWarpSync);
 

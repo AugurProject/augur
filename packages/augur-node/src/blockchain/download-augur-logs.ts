@@ -2,12 +2,12 @@ import Knex from "knex";
 import * as _ from "lodash";
 import { mapLimit, queue } from "async";
 import { each } from "bluebird";
-import { Augur, BlockDetail, BlockRange, ErrorCallback, FormattedEventLog } from "../types";
+import { Augur, BlockDetail, BlockRange, ErrorCallback, FormattedEventLog, ParsedLogWithEventName } from "../types";
 import { processLogByName } from "./process-logs";
 import { insertTransactionHash, processBlockByBlockDetails } from "./process-block";
 import { logger } from "../utils/logger";
 import { logProcessors } from "./log-processors";
-import { Log } from "@augurproject/api";
+import { ParsedLog } from "@augurproject/api";
 
 const BLOCK_DOWNLOAD_PARALLEL_LIMIT = 15;
 
@@ -18,7 +18,7 @@ interface BlockDetailsByBlock {
 function extractBlockNumbers(batchOfAugurLogs: Array<FormattedEventLog>): Array<number> {
   const ublockNumbers = _.map(batchOfAugurLogs, "blockNumber");
   const blockNumbers = _.compact<number>(ublockNumbers);
-  return _.uniqBy<number>(blockNumbers, "blockNumber");
+  return _.uniq<number>(blockNumbers);
 }
 
 function getBlockNumbersInRange(blockRange: BlockRange): Array<number> {
@@ -52,22 +52,21 @@ async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): 
   });
 }
 
-async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Log>, blockNumbers: Array<number>, blockDetailsByBlockPromise: Promise<BlockDetailsByBlock>) {
-  const blockDetailsByBlock = await blockDetailsByBlockPromise;
-  const logsByBlock: { [blockNumber: number]: Array<Log> } = _.groupBy(allAugurLogs, (log) => log.blockNumber);
-  await each(blockNumbers, async (blockNumber: number) => {
+async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<ParsedLogWithEventName>, blockNumbers: Array<number>, blockDetailsByBlock: BlockDetailsByBlock) {
+  const logsByBlock: { [blockNumber: number]: Array<ParsedLogWithEventName> } = _.groupBy(allAugurLogs, (log) => log.blockNumber);
+  for(let blockNumber of blockNumbers) {
     const blockDetail = blockDetailsByBlock[blockNumber];
     const logs = logsByBlock[blockNumber];
     if (logs === undefined || logs.length === 0) return;
     const dbWritePromises: Array<Promise<(db: Knex) => Promise<void>>> = [];
-    await each(logs, async (log: Log) => {
+    for(let log of _.sortBy(logs, 'logIndex')) {
       const dbWritePromise = processLogByName(augur, log, false);
       if (dbWritePromise != null) {
         dbWritePromises.push(dbWritePromise);
       } else {
         logger.info("Log processor does not exist:", JSON.stringify(log));
       }
-    });
+    }
     const dbWriteFunctions = await Promise.all(dbWritePromises);
     await db.transaction(async (trx: Knex.Transaction) => {
       await processBlockByBlockDetails(trx, augur, blockDetail, true);
@@ -77,14 +76,10 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Lo
         await dbWriteFunction(trx);
       }
     });
-  });
+  }
 }
 
 export async function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, endBlockNumber: number, blocksPerChunk: number|undefined=50):Promise<void>  {
-  const batchLogProcessQueue = queue((processFunction: (callback: ErrorCallback) => void, nextFunction: ErrorCallback): void => {
-    processFunction(nextFunction);
-  }, 1);
-
   logger.info(`Getting Augur logs from block ${fromBlock} to block ${endBlockNumber}`);
   let lastBlockDetails = new Promise<BlockDetailsByBlock>((resolve) => resolve([]));
   let highestSyncedBlockNumber = fromBlock;
@@ -92,25 +87,25 @@ export async function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: numbe
 
   while (highestSyncedBlockNumber < goalBlock) {
     const toBlock = Math.min(highestSyncedBlockNumber + blocksPerChunk, endBlockNumber);
+    const eventNames = Object.keys(logProcessors.Augur);
 
-    const logsPromises = Object.keys(logProcessors.Augur).map(async (event) => {
-      const topics: Array<string | Array<string>> = augur.events.getEventTopics(event);
-      return await augur.provider.getLogs({
-        fromBlock: highestSyncedBlockNumber,
-        toBlock,
-        address: augur.addresses.Augur,
-        topics
-      });
+    const promises = eventNames.map(async (eventName):Promise<Array<ParsedLogWithEventName>> => {
+      const logs = await augur.events.getLogs(eventName, highestSyncedBlockNumber, toBlock);
+      return logs.map((log) => ({...log, eventName}));
     });
-    const deepLogs = await Promise.all(logsPromises);
-    const batchOfAugurLogs = _.flatten(deepLogs);
-    const blockNumbers = batchOfAugurLogs.length > 0 ? extractBlockNumbers(batchOfAugurLogs) : getBlockNumbersInRange({
+
+    const logs = _.flatten(await Promise.all(promises));
+
+    // console.log(highestSyncedBlockNumber, toBlock, logs.length, JSON.stringify(logs));
+
+    const blockNumbers = logs.length > 0 ? extractBlockNumbers(logs) : getBlockNumbersInRange({
       fromBlock: highestSyncedBlockNumber,
       toBlock
     });
 
-    const blockDetailPromise = fetchAllBlockDetails(augur, blockNumbers);
-    await processBatchOfLogs(db, augur, batchOfAugurLogs, blockNumbers, blockDetailPromise);
+    const blockDetail = await fetchAllBlockDetails(augur, blockNumbers);
+
+    await processBatchOfLogs(db, augur, logs, blockNumbers, blockDetail);
 
     highestSyncedBlockNumber = toBlock;
   }

@@ -3,8 +3,8 @@ import { BigNumber } from "ethers/utils";
 export { BigNumber } from "ethers/utils";
 export { Block as BlockDetail } from "ethers/providers";
 
-
 import { EventEmitter } from "events";
+
 import Knex from "knex";
 import * as WebSocket from "ws";
 import * as https from "https";
@@ -19,6 +19,9 @@ export { ParsedLog as FormattedEventLog } from "@augurproject/api";
 
 export type BlockRange = { fromBlock: number; toBlock: number };
 
+export interface ParsedLogWithEventName extends ParsedLog {
+  eventName: string;
+}
 
 export enum ReportingState {
   PRE_REPORTING = "PRE_REPORTING",
