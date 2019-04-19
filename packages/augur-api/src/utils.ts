@@ -11,7 +11,11 @@ export function convertOnChainAmountToDisplayAmount(onChainAmount: BigNumber, ti
 }
 
 export function convertOnChainPriceToDisplayPrice(onChainPrice: BigNumber, minPrice: BigNumber, tickSize: BigNumber) {
-  return onChainPrice.multipliedBy(tickSize).plus(minPrice);
+  return onChainPrice.multipliedBy(tickSize).plus(minPrice.dividedBy(QUINTILLION));
+}
+
+export function convertDisplayPriceToOnChainPrice(displayPrice: BigNumber, minPrice: BigNumber, tickSize: BigNumber) {
+  return displayPrice.minus(minPrice).dividedBy(tickSize);
 }
 
 export function convertDisplayAmountToOnChainAmount(displayAmount: BigNumber, tickSize: BigNumber) {

@@ -181,11 +181,13 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
           open_revs: 'all',
           revs: true
         });
-        // TODO Find latest revision with blocknumber below blockNumber and make that the latest
-        for (let revDoc of revDocs) {
-          console.log(revDoc.ok.blockNumber);
+        // If a revision exists before this blockNumber make that the new record, otherwise simply delete the doc.
+        const replacementDoc = _.maxBy(_.remove(revDocs, (doc) => { return doc.ok.blockNumber > blockNumber; }), "ok.blockNumber");
+        if (replacementDoc) {
+          await this.db.put(replacementDoc.ok);
+        } else {
+          await this.db.remove(doc._id, doc._rev);
         }
-        await this.db.remove(doc._id, doc._rev);
       }
       await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber);
     } catch (err) {

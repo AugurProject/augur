@@ -202,7 +202,7 @@ export class Users<TBigNumber> {
       });
     });
 
-    // TODO add raw token balances that have no PL data for third party client integration to work ok.
+    // TODO (Maybe?) add raw token balances that have no PL data for third party client integration to work ok.
 
     const tradingPositions = _.flatten(_.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values)));
 
