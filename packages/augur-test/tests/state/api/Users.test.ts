@@ -1,9 +1,10 @@
 import {
     ACCOUNTS,
     makeDbMock,
-    compileAndDeployToGanache,
+    deployContracts,
     ContractAPI,
   } from "../../../libs";
+import { contracts as compilerOutput } from "@augurproject/artifacts";
 import {API} from "@augurproject/state/src/api/API";
 import {DB} from "@augurproject/state/src/db/DB";
 import { convertDisplayAmountToOnChainAmount } from "@augurproject/api";
@@ -11,7 +12,6 @@ import { GenericAugurInterfaces } from "@augurproject/core";
 import { ethers } from "ethers";
 import { stringTo32ByteHex } from "../../../libs/Utils";
 import { BigNumber } from "bignumber.js";
-import * as _ from "lodash";
 
 const ZERO_BYTES = stringTo32ByteHex("");
 
@@ -42,23 +42,19 @@ export interface TradeData {
 
 const mock = makeDbMock();
 
-beforeEach(async () => {
-  mock.cancelFail();
-});
-
 let db: DB<any>;
 let api: API<any>;
 let john: ContractAPI;
 let mary: ContractAPI;
 
 beforeAll(async () => {
-  const {provider, addresses} = await compileAndDeployToGanache(ACCOUNTS);
+  const {provider, addresses} = await deployContracts(ACCOUNTS, compilerOutput);
 
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
   db = await mock.makeDB(john.augur, ACCOUNTS);
   api = new API<any>(john.augur, db);
-}, 60000);
+}, 120000);
 
 test("State API :: Users :: getUserTradingPositions binary-1", async () => {
     await john.approveCentralAuthority();
@@ -151,5 +147,5 @@ async function processTrades(tradeData: Array<TradeData>, market: GenericAugurIn
         await expect(tradingPositions[0].averagePrice).toEqual(trade.avgPrice.toString());
         await expect(tradingPositions[0].realized).toEqual(trade.realizedPL.toString());
         await expect(tradingPositions[0].frozenFunds).toEqual(trade.frozenFunds.toString());
-    };
+    }
 }

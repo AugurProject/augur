@@ -1,28 +1,33 @@
-import { ACCOUNTS, compileAndDeployToGanache, makeDbMock, makeTestAugur } from "../../libs";
+import {
+  ACCOUNTS,
+  deployContracts,
+  makeDbMock,
+  makeTestAugur
+} from "../../libs";
 import { UserSyncableDB } from "@augurproject/state/src/db/UserSyncableDB";
 import {Augur} from "@augurproject/api";
 import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
 import { Contracts } from "@augurproject/api/src/api/Contracts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import {ethers} from "ethers";
-import { ContractAddresses } from "@augurproject/artifacts";
+import { ContractAddresses, contracts as compilerOutput } from "@augurproject/artifacts";
 
 const mock = makeDbMock();
 
 let augur: Augur<ethers.utils.BigNumber>;
 let addresses: ContractAddresses;
 let dependencies: ContractDependenciesEthers;
+let contracts: Contracts<ethers.utils.BigNumber>;
+
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
-  const result = await compileAndDeployToGanache(ACCOUNTS);
+  const result = await deployContracts(ACCOUNTS, compilerOutput);
   addresses = result.addresses;
   dependencies = result.dependencies;
+  contracts = new Contracts(addresses, dependencies);
 }, 120000);
 
-let contracts: Contracts<ethers.utils.BigNumber>;
 beforeEach(async () => {
-  contracts = new Contracts(addresses, dependencies);
-  mock.cancelFail();
   await mock.wipeDB();
 });
 
@@ -82,7 +87,7 @@ test("props", async () => {
   const db = new UserSyncableDB<ethers.utils.BigNumber>(dbController, mock.constants.networkId, eventName, user, 2, [0]);
 
   // @ts-ignore - verify private property "additionalTopics"
-  expect(db.additionalTopics).toEqual([
+  expect(db.additionalTopics).toEqual([[
     "0x000000000000000000000000tistotle",
-  ]);
+  ]]);
 });
