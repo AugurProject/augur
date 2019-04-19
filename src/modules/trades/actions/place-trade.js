@@ -1,13 +1,23 @@
 import { augur } from "services/augurjs";
-import { BUY } from "modules/transactions/constants/types";
-import { clearTradeInProgress } from "modules/trades/actions/update-trades-in-progress";
 import { createBigNumber } from "utils/create-big-number";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
-import { ZERO } from "modules/trades/constants/numbers";
-import { MODAL_ACCOUNT_APPROVAL } from "modules/modal/constants/modal-types";
+import {
+  BUY,
+  ZERO,
+  MODAL_ACCOUNT_APPROVAL
+} from "modules/common-elements/constants";
 import logError from "utils/log-error";
 import noop from "utils/noop";
+import {
+  addPendingOrder,
+  removePendingOrder
+} from "modules/orders/actions/pending-orders-management";
+import { formatEther, formatShares } from "utils/format-number";
+
+function getOutcomeName(outcomesData, outcomeId) {
+  return outcomesData[outcomeId].name || outcomesData[outcomeId].description;
+}
 
 export const placeTrade = ({
   marketId,
@@ -18,13 +28,12 @@ export const placeTrade = ({
   onComplete = noop
 }) => (dispatch, getState) => {
   if (!marketId) return null;
-  const { loginAccount, marketsData } = getState();
+  const { loginAccount, marketsData, blockchain, outcomesData } = getState();
   const market = marketsData[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
-    console.error(
-      `trade-in-progress not found for market ${marketId} outcome ${outcomeId}`
+    return console.error(
+      `required parameters not found for market ${marketId} outcome ${outcomeId}`
     );
-    return dispatch(clearTradeInProgress(marketId));
   }
   const bnAllowance = createBigNumber(loginAccount.allowance, 10);
   const sharesDepleted = createBigNumber(tradeInProgress.sharesDepleted, 10);
@@ -45,6 +54,7 @@ export const placeTrade = ({
     maxDisplayPrice: market.maxPrice
   });
   const sharesToFill = tradeCost.onChainAmount;
+  let hash = null;
   // make sure that we actually have an updated allowance.
   const placeTradeParams = {
     meta: loginAccount.meta,
@@ -60,10 +70,36 @@ export const placeTrade = ({
     _tradeGroupId: tradeInProgress.tradeGroupId,
     doNotCreateOrders,
     onSent: res => {
+      ({ hash } = res);
       dispatch(checkAccountAllowance());
+
+      dispatch(
+        addPendingOrder(
+          {
+            id: hash,
+            avgPrice: formatEther(tradeInProgress.limitPrice),
+            unmatchedShares: formatShares(tradeInProgress.numShares),
+            name: getOutcomeName(
+              outcomesData[marketId],
+              parseInt(outcomeId, 10)
+            ),
+            type: tradeInProgress.side,
+            pendingOrder: true,
+            pending: false,
+            blockNumber: blockchain.currentBlockNumber
+          },
+          marketId
+        )
+      );
+
       callback(null, tradeInProgress.tradeGroupId);
     },
-    onFailed: callback,
+    onFailed: () => {
+      if (hash) {
+        dispatch(removePendingOrder(hash, marketId));
+      }
+      callback();
+    },
     onSuccess: res => {
       if (bnAllowance.lte(0)) dispatch(checkAccountAllowance());
       onComplete({
@@ -76,7 +112,6 @@ export const placeTrade = ({
 
   const sendTrade = () => {
     augur.trading.placeTrade(placeTradeParams);
-    dispatch(clearTradeInProgress(marketId));
   };
 
   const promptApprovalandSend = () => {
@@ -97,8 +132,9 @@ export const placeTrade = ({
   };
 
   if (
+    bnAllowance === undefined ||
     bnAllowance.lte(0) ||
-    bnAllowance.lte(createBigNumber(tradeInProgress.totalCost))
+    bnAllowance.lte(createBigNumber(tradeInProgress.totalCost.value))
   ) {
     dispatch(
       checkAccountAllowance((err, allowance) => {

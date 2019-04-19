@@ -6,7 +6,7 @@ import { isNumber } from "lodash/fp";
 
 import Styles from "modules/market-charts/components/market-outcome-charts--header/market-outcome-charts--header.styles";
 
-import { ASKS } from "modules/orders/constants/orders";
+import { ASKS } from "modules/common-elements/constants";
 
 export default class MarketOutcomeDepthHeader extends Component {
   static propTypes = {

@@ -3,6 +3,7 @@
 ul.ReportingReportForm__fields {
   flex-flow: column nowrap;
   font-size: @font-size-normal;
+  justify-content: flex-start;
   min-height: 0;
 }
 
@@ -10,6 +11,15 @@ ul.ReportingReportForm__fields {
   color: @color-white;
   font-size: @font-size-large;
   margin-top: 2rem;
+}
+
+.ReportingReportREP {
+  display: flex;
+  flex-flow: row nowrap;
+
+  > div:last-of-type {
+    margin-left: @size-32;
+  }
 }
 
 .ReportingReport__insufficient-funds > svg {
@@ -31,8 +41,17 @@ ul.ReportingReportForm__fields {
 }
 
 .ReportingReport__outcome_selection_msg {
-  color: @color-white;
-  font-size: @font-size-kinda-large;
-  line-height: 28px;
+  color: @color-secondary-text;
+  font-size: @size-20;
+  line-height: @size-30;
   position: relative;
+}
+
+div.ReportingReport__outcome_selection_msg {
+  margin-bottom: 1.25rem;
+}
+
+.ReportingReport__outcome_selection_msg li {
+  list-style-type: circle;
+  margin: 0.3125rem 0 0 1.25rem;
 }

@@ -4,7 +4,7 @@ import {
   TYPE_REPORT,
   TYPE_DISPUTE,
   TYPE_TRADE
-} from "modules/markets/constants/link-types";
+} from "modules/common-elements/constants";
 import { determineMarketLinkType } from "modules/markets/helpers/determine-market-link-type";
 
 describe(`modules/markets/helpers/determine-market-link-type.js`, () => {

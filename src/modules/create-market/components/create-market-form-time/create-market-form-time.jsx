@@ -30,7 +30,7 @@ export const MarketCreateFormTime = ({
 }) => (
   <div>
     <label htmlFor="cm__input--date">
-      <span>Reporting Start Date</span>
+      <span>Reporting Starts Date</span>
     </label>
     <SingleDatePicker
       id="cm__input--date"
@@ -62,21 +62,21 @@ export const MarketCreateFormTime = ({
       navNext={ChevronRight}
     />
     <label htmlFor="cm__input--time">
-      <span>Reporting Start Time (UTC -0)</span>
+      <span>Reporting Starts Time (UTC -0)</span>
       {newMarket.validations[newMarket.currentStep].hour && (
         <span className={StylesForm.CreateMarketForm__error}>
-          {InputErrorIcon}
+          {InputErrorIcon()}
           {newMarket.validations[newMarket.currentStep].hour}
         </span>
       )}
       {newMarket.validations[newMarket.currentStep].minute && (
         <span className={StylesForm.CreateMarketForm__error}>
-          {InputErrorIcon}
+          {InputErrorIcon()}
           {newMarket.validations[newMarket.currentStep].minute}
         </span>
       )}
     </label>
-    <div id="cm__input--time" className={Styles.CreateMarketDefine__time}>
+    <div id="cm__input--time" className={Styles.CreateMarketDefine_time}>
       <InputDropdown
         label="Hour"
         options={hours}

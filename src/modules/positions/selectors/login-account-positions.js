@@ -1,5 +1,4 @@
 import { createSelector } from "reselect";
-import { generateMarketsPositionsSummary } from "modules/positions/selectors/positions-summary";
 
 import store from "src/store";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
@@ -8,11 +7,9 @@ import { selectAccountPositionsState } from "src/select-state";
 // TODO
 export default function() {
   const markets = selectLoginAccountPositionsMarkets(store.getState());
-  const summary = generateMarketsPositionsSummary(markets);
 
   return {
-    markets,
-    summary
+    markets
   };
 }
 

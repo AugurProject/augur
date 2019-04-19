@@ -1,6 +1,6 @@
 import speedomatic from "speedomatic";
 import { augur } from "services/augurjs";
-import { UNIVERSE_ID } from "modules/app/constants/network";
+import { UNIVERSE_ID } from "modules/common-elements/constants";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
 import { updateEtherBalance } from "modules/auth/actions/update-ether-balance";
 import logError from "utils/log-error";

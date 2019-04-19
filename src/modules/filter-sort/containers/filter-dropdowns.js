@@ -9,6 +9,7 @@ import {
   MARKET_MAX_FEES,
   HAS_OPEN_ORDERS
 } from "modules/filter-sort/actions/update-filter-sort-options";
+import { updateMobileMenuState } from "modules/app/actions/update-sidebar-status";
 
 const mapStateToProps = state => ({
   defaultFilter: state.filterSortOptions.marketFilter,
@@ -24,7 +25,8 @@ const mapDispatchToProps = dispatch => ({
   updateMaxFee: maxFee =>
     dispatch(updateFilterSortOptions(MARKET_MAX_FEES, maxFee)),
   updateHasOpenOrders: hasOpenOrders =>
-    dispatch(updateFilterSortOptions(HAS_OPEN_ORDERS, hasOpenOrders))
+    dispatch(updateFilterSortOptions(HAS_OPEN_ORDERS, hasOpenOrders)),
+  updateMobileMenuState: data => dispatch(updateMobileMenuState(data))
 });
 
 const FilterDropdownsContainer = withRouter(

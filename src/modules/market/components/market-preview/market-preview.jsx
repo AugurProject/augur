@@ -25,7 +25,6 @@ export default class MarketPreview extends Component {
     outcomes: PropTypes.array,
     isOpen: PropTypes.bool,
     isFavorite: PropTypes.bool,
-    isPendingReport: PropTypes.bool,
     endTime: PropTypes.object.isRequired,
     settlementFeePercent: PropTypes.object,
     volume: PropTypes.object,
@@ -40,7 +39,6 @@ export default class MarketPreview extends Component {
   static defaultProps = {
     isOpen: false,
     isFavorite: false,
-    isPendingReport: false,
     hideReportEndingIndicator: false,
     tags: [],
     volume: null,
@@ -64,7 +62,7 @@ export default class MarketPreview extends Component {
   }
 
   toggleDetails() {
-    toggleHeight(this.additionalDetails, this.state.showingDetails, () => {
+    toggleHeight(this.additionalDetails, this.state.showingDetails, 0, () => {
       this.setState({ showingDetails: !this.state.showingDetails });
     });
   }

@@ -13,26 +13,26 @@ import {
 } from "utils/format-number";
 import {
   EXPIRY_SOURCE_GENERIC,
-  DESIGNATED_REPORTER_SELF
-} from "modules/markets/constants/new-market-constraints";
+  DESIGNATED_REPORTER_SELF,
+  YES_NO,
+  SCALAR,
+  CATEGORICAL
+} from "modules/common-elements/constants";
+
 import classNames from "classnames";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import Styles from "modules/create-market/components/create-market-form-review/create-market-form-review.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
-import HighlightedStyles from "modules/reporting/components/common/highlighted-message.styles";
+import InvalidMessageStyles from "modules/reporting/components/invalid-message/invalid-message.styles";
 import { DisplayOutcomes } from "modules/create-market/components/create-market-form-review/create-market-form-outcomes-display";
 import { MarketCreationTimeDisplay } from "modules/create-market/components/create-market-form-time/market-create-time-display";
-import {
-  YES_NO,
-  SCALAR,
-  CATEGORICAL
-} from "modules/markets/constants/market-types";
 
 const MARKET_TYPE_NAME = {
   [YES_NO]: "Yes No",
   [SCALAR]: "Scalar",
   [CATEGORICAL]: "Categorical"
 };
+
 export default class CreateMarketReview extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
@@ -375,7 +375,7 @@ export default class CreateMarketReview extends Component {
                   StylesForm["CreateMarketForm__error--insufficient-funds"]
                 }
               >
-                {InputErrorIcon}
+                {InputErrorIcon()}
                 You have insufficient {s.insufficientFundsString} to create this
                 market.
               </span>
@@ -392,33 +392,37 @@ export default class CreateMarketReview extends Component {
           <div>
             <div
               className={classNames(
-                HighlightedStyles.HighlightedMessage,
+                InvalidMessageStyles.InvalidMessage,
                 Styles.blockit
               )}
             >
-              <div>
-                Review the markets details to confirm that there are{" "}
-                <span className={HighlightedStyles.bolden}>no conflicts</span>{" "}
-                between the{" "}
-                <span className={HighlightedStyles.bolden}>
-                  Market Question
-                </span>
-                ,{" "}
-                <span className={HighlightedStyles.bolden}>
-                  Additional Details
-                </span>{" "}
-                and{" "}
-                <span className={HighlightedStyles.bolden}>
-                  Reporting Start Time
-                </span>
-                .
-              </div>
-              <div>
-                If they don’t match up, or there are any conflicts between them,
-                there is a high probability that the market will{" "}
-                <span className={HighlightedStyles.bolden}>
-                  resolve as invalid
-                </span>
+              <div className={InvalidMessageStyles.textFlow}>
+                <div>
+                  Review the markets details to confirm that there are{" "}
+                  <span className={InvalidMessageStyles.bolden}>
+                    no conflicts
+                  </span>{" "}
+                  between the{" "}
+                  <span className={InvalidMessageStyles.bolden}>
+                    Market Question
+                  </span>
+                  ,{" "}
+                  <span className={InvalidMessageStyles.bolden}>
+                    Additional Details
+                  </span>{" "}
+                  and{" "}
+                  <span className={InvalidMessageStyles.bolden}>
+                    Reporting Start Time
+                  </span>
+                  .
+                </div>
+                <div>
+                  If they don’t match up, or there are any conflicts between
+                  them, there is a high probability that the market will{" "}
+                  <span className={InvalidMessageStyles.bolden}>
+                    resolve as invalid
+                  </span>
+                </div>
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { YES_NO } from "modules/markets/constants/market-types";
+import { YES_NO } from "modules/common-elements/constants";
 import { loadUniverseInfo } from "modules/universe/actions/load-universe-info";
 
 jest.mock("services/augurjs");

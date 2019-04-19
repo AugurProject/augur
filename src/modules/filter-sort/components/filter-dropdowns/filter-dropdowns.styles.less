@@ -1,42 +1,63 @@
 @import (reference) "~assets/styles/shared";
 
-.FilterDropdowns__container {
-  display: flex;
-  flex-direction: row;
-
-  @media @breakpoint-mobile-small {
-    flex-direction: column;
-  }
-}
-
 .FilterDropdowns {
+  align-items: center;
   display: flex;
   flex-flow: row nowrap;
 
-  > div > button:first-child {
-    &:extend(.caps--small);
-
-    color: @color-white;
-    font-size: @font-size-medium;
-    white-space: nowrap;
+  @media @breakpoint-mobile {
+    flex-flow: row wrap;
+    justify-content: space-between;
   }
-}
 
-.FilterDropdowns__hasOrders {
-  align-items: center;
-  color: @color-white;
-  display: flex;
-  flex-direction: row;
-  padding-left: 1rem;
+  > div {
+    margin-right: @size-16;
+  }
+
+  > div:first-of-type {
+    min-width: 6rem;
+  }
+
+  > div:nth-of-type(2) {
+    min-width: 7.125rem;
+
+    @media @breakpoint-mobile {
+      min-width: 6.625rem;
+    }
+  }
+
+  > div:nth-of-type(3) {
+    margin-right: 0;
+    min-width: 5.8125rem;
+
+    @media @breakpoint-mobile {
+      margin-right: @size-12;
+    }
+  }
+
+  > div:last-of-type {
+    height: @size-24;
+    margin: 0 @size-16;
+    width: @size-24;
+
+    @media @breakpoint-mobile {
+      margin: 0 @size-16 @size-16 auto;
+    }
+  }
+
+  > button {
+    display: none;
+
+    @media @breakpoint-mobile {
+      display: flex;
+    }
+  }
 
   > label {
-    margin-bottom: 0;
-    padding: 0.4rem 2rem;
-    white-space: nowrap;
-  }
+    margin: 0;
 
-  @media @breakpoint-mobile-small {
-    padding-bottom: 0.8rem;
-    padding-left: 0;
+    @media @breakpoint-mobile {
+      margin-right: @size-12;
+    }
   }
 }

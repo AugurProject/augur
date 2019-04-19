@@ -8,7 +8,7 @@ import {
   WALLET_TYPE,
   PARAMS,
   ERROR_TYPES
-} from "modules/auth/constants/connect-nav";
+} from "modules/common-elements/constants";
 import isMetaMaskPresent from "src/modules/auth/helpers/is-meta-mask";
 import { logoutIcon } from "modules/common/components/icons";
 

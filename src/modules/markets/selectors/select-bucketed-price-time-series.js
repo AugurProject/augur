@@ -1,5 +1,7 @@
 import { createBigNumber } from "utils/create-big-number";
-import { sortBy, last, each, pullAll } from "lodash";
+import { head, each, pullAll } from "lodash";
+import { ZERO } from "modules/common-elements/constants";
+import { roundTimestampToPastDayMidnight } from "utils/format-date";
 
 export const selectBucketedPriceTimeSeries = (
   creationTime,
@@ -11,7 +13,8 @@ export const selectBucketedPriceTimeSeries = (
   const mmSecondsInWeek = createBigNumber(7).times(mmSecondsInDay);
 
   const bnCurrentTimestamp = createBigNumber(currentTimestamp);
-  const bnCreationTimestamp = createBigNumber(creationTime);
+  const startTime = roundTimestampToPastDayMidnight(creationTime);
+  const bnCreationTimestamp = createBigNumber(startTime * 1000);
   const overWeekDuration = bnCurrentTimestamp
     .minus(bnCreationTimestamp)
     .gt(mmSecondsInWeek);
@@ -22,7 +25,8 @@ export const selectBucketedPriceTimeSeries = (
   }
 
   const bnRange = bnCurrentTimestamp.minus(bnCreationTimestamp);
-  const numBuckets = Math.ceil(bnRange.dividedBy(bucket).toNumber());
+  const buckets = Math.ceil(bnRange.dividedBy(bucket).toNumber());
+  const numBuckets = createBigNumber(buckets).gt(ZERO) ? buckets : 1;
   const timeBuckets = Array.from(new Array(numBuckets), (val, index) =>
     Math.ceil(
       bnCreationTimestamp.plus(createBigNumber(index).times(bucket)).toNumber()
@@ -35,7 +39,6 @@ export const selectBucketedPriceTimeSeries = (
   }, {});
 
   return {
-    timeBuckets,
     priceTimeSeries
   };
 };
@@ -43,14 +46,18 @@ export const selectBucketedPriceTimeSeries = (
 function splitTradesByTimeBucket(priceTimeSeries, timeBuckets) {
   if (!priceTimeSeries || priceTimeSeries.length === 0) return [];
   if (!timeBuckets || timeBuckets.length === 0) return [];
-  let timeSeries = sortBy(priceTimeSeries, "timestamp").slice();
+  let timeSeries = priceTimeSeries
+    .sort((a, b) => b.logIndex - a.logIndex)
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .slice();
 
   const series = [];
   for (let i = 0; i < timeBuckets.length - 1; i++) {
     const start = timeBuckets[i];
     const end = timeBuckets[i + 1];
     const result = getTradeInTimeRange(timeSeries, start, end);
-    if (result.trades.length > 0) series.push(last(result.trades));
+    if (result.trades.length > 0)
+      series.push({ ...head(result.trades), timestamp: start });
     timeSeries = result.trimmedTimeSeries;
   }
   return series;
@@ -75,6 +82,8 @@ function getTradeInTimeRange(timeSeries, startTime, endTime) {
 
   return {
     trimmedTimeSeries: pullAll(timeSeries, bucket),
-    trades: sortBy(bucket, "timestamp")
+    trades: bucket
+      .sort((a, b) => b.logIndex - a.logIndex)
+      .sort((a, b) => b.timestamp - a.timestamp)
   };
 }

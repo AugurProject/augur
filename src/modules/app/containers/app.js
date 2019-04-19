@@ -5,20 +5,16 @@ import { withRouter } from "react-router-dom";
 
 import App from "modules/app/components/app/app";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
-import { selectInfoNotificationsAndSeenCount } from "modules/notifications/selectors/notifications";
-import { selectMarketsHeader } from "modules/markets/selectors/markets-header";
+import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import { selectCoreStats } from "modules/account/selectors/core-stats";
-import portfolio from "modules/positions/selectors/portfolio";
 import {
   IS_ANIMATING,
   IS_MOBILE,
   IS_MOBILE_SMALL,
   updateAppStatus
 } from "modules/app/actions/update-app-status";
-import getAllMarkets from "modules/markets/selectors/markets-all";
 import { initAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { isLoading } from "modules/markets/selectors/is-loading";
 import {
   selectBlockchainState,
   selectCategoriesState,
@@ -31,33 +27,38 @@ import {
   selectLoginAccountState,
   selectModal,
   selectUniverseState,
-  selectUrlState
+  selectUrlState,
+  selectSidebarStatus
 } from "src/select-state";
 import { RewriteUrlParams } from "src/modules/app/hocs/rewrite-url-params";
 import { windowRef } from "src/utils/window-ref";
 import isGlobalWeb3 from "modules/auth/helpers/is-global-web3";
 import { logout } from "modules/auth/actions/logout";
+import {
+  updateCurrentBasePath,
+  updateCurrentInnerNavType,
+  updateMobileMenuState,
+  updateIsAlertVisible,
+  updateSidebarStatus
+} from "modules/app/actions/update-sidebar-status";
 
 const mapStateToProps = state => ({
   blockchain: selectBlockchainState(state),
   categories: selectCategoriesState(state),
   connection: selectConnectionState(state),
   coreStats: selectCoreStats(state),
-  isLoading: isLoading(state.marketLoading),
   env: selectEnvState(state),
   isLogged: selectIsLogged(state),
   isMobile: selectIsMobile(state),
   isMobileSmall: selectIsMobileSmall(state),
   isAnimating: selectIsAnimating(state),
   loginAccount: selectLoginAccountState(state),
-  markets: getAllMarkets(),
-  marketsHeader: selectMarketsHeader(state),
   modal: selectModal(state),
-  notifications: selectInfoNotificationsAndSeenCount(state),
-  portfolio: portfolio(),
+  alerts: selectInfoAlertsAndSeenCount(state),
   universe: selectUniverseState(state),
   url: selectUrlState(state),
-  useWeb3Transport: isGlobalWeb3()
+  useWeb3Transport: isGlobalWeb3(),
+  sidebarStatus: selectSidebarStatus(state)
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -70,7 +71,12 @@ const mapDispatchToProps = dispatch => ({
     dispatch(updateAppStatus(IS_ANIMATING, isAnimating)),
   updateModal: modal => dispatch(updateModal(modal)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
-  logout: () => dispatch(logout())
+  logout: () => dispatch(logout()),
+  updateCurrentBasePath: data => dispatch(updateCurrentBasePath(data)),
+  updateCurrentInnerNavType: data => dispatch(updateCurrentInnerNavType(data)),
+  updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
+  updateIsAlertVisible: data => dispatch(updateIsAlertVisible(data)),
+  updateSidebarStatus: data => dispatch(updateSidebarStatus(data))
 });
 
 const AppContainer = compose(

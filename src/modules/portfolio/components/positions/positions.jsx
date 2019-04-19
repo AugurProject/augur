@@ -1,102 +1,128 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
-import makePath from "modules/routes/helpers/make-path";
 
-import PositionsMarketsList from "modules/portfolio/components/positions-markets-list/positions-markets-list";
-import PortfolioStyles from "modules/portfolio/components/portfolio-view/portfolio-view.styles";
-import { MARKETS } from "modules/routes/constants/views";
+import FilterBox from "modules/portfolio/containers/filter-box";
+import { CompactButton } from "modules/common-elements/buttons";
+import { MovementLabel } from "modules/common-elements/labels";
+import PositionsTable from "modules/market/containers/positions-table";
+
+import Styles from "modules/portfolio/components/common/quads/quad.styles";
+
+const sortByOptions = [
+  {
+    label: "Sort by Most Recently Traded",
+    value: "recentlyTraded",
+    comp(marketA, marketB) {
+      return (
+        marketB.recentlyTraded.timestamp - marketA.recentlyTraded.timestamp
+      );
+    }
+  },
+  {
+    label: "Sort by Current Value",
+    value: "currentValue",
+    comp(marketA, marketB) {
+      return (
+        marketB.myPositionsSummary.currentValue.formatted -
+        marketA.myPositionsSummary.currentValue.formatted
+      );
+    }
+  },
+  {
+    label: "Sort by Total Returns",
+    value: "totalReturns",
+    comp(marketA, marketB) {
+      return (
+        marketB.myPositionsSummary.totalReturns.formatted -
+        marketA.myPositionsSummary.totalReturns.formatted
+      );
+    }
+  },
+  {
+    label: "Sort by Expiring Soonest",
+    value: "endTime",
+    comp(marketA, marketB) {
+      return marketA.endTime.timestamp - marketB.endTime.timestamp;
+    }
+  }
+];
+
+function filterComp(input, market) {
+  return market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+}
+
+function renderToggleContent(market) {
+  return <PositionsTable marketId={market.id} />;
+}
 
 export default class Positions extends Component {
   static propTypes = {
-    currentTimestamp: PropTypes.number.isRequired,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-    transactionsStatus: PropTypes.object.isRequired,
-    openPositionMarkets: PropTypes.array.isRequired,
-    reportingMarkets: PropTypes.array.isRequired,
-    closedMarkets: PropTypes.array.isRequired,
-    loadAccountTrades: PropTypes.func.isRequired,
-    marketsCount: PropTypes.number.isRequired,
-    claimTradingProceeds: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool.isRequired
+    markets: PropTypes.array.isRequired
   };
 
-  componentWillMount() {
-    const { loadAccountTrades } = this.props;
-    loadAccountTrades();
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showCurrentValue: false
+    };
+
+    this.updateRightContentValue = this.updateRightContentValue.bind(this);
+    this.renderRightContent = this.renderRightContent.bind(this);
+  }
+
+  updateRightContentValue() {
+    this.setState({ showCurrentValue: !this.state.showCurrentValue });
+  }
+
+  renderRightContent(market) {
+    const { showCurrentValue } = this.state;
+
+    return showCurrentValue ? (
+      market.myPositionsSummary.currentValue.formatted
+    ) : (
+      <div className={Styles.Quad__column}>
+        <span>{market.myPositionsSummary.totalReturns.formatted}</span>
+        <MovementLabel
+          showPercent
+          showPlusMinus
+          showColors
+          size="small"
+          value={market.myPositionsSummary.totalPercent.formatted}
+        />
+      </div>
+    );
   }
 
   render() {
-    const {
-      claimTradingProceeds,
-      closedMarkets,
-      currentTimestamp,
-      history,
-      isMobile,
-      location,
-      marketsCount,
-      openPositionMarkets,
-      reportingMarkets,
-      transactionsStatus
-    } = this.props;
+    const { markets } = this.props;
+    const { showCurrentValue } = this.state;
+
     return (
-      <section>
-        <Helmet>
-          <title>Positions</title>
-        </Helmet>
-        {marketsCount !== 0 && (
-          <div>
-            <PositionsMarketsList
-              title="Open"
-              markets={openPositionMarkets}
-              location={location}
-              history={history}
-              transactionsStatus={transactionsStatus}
-              currentTimestamp={currentTimestamp}
-              isMobile={isMobile}
-              paginationName="open"
-              noTopPadding
-            />
-            <PositionsMarketsList
-              title="In Reporting"
-              markets={reportingMarkets}
-              location={location}
-              history={history}
-              transactionsStatus={transactionsStatus}
-              positionsDefault={false}
-              currentTimestamp={currentTimestamp}
-              isMobile={isMobile}
-              paginationName="reporting"
-            />
-            <PositionsMarketsList
-              title="Resolved"
-              markets={closedMarkets}
-              location={location}
-              history={history}
-              transactionsStatus={transactionsStatus}
-              positionsDefault={false}
-              currentTimestamp={currentTimestamp}
-              claimTradingProceeds={claimTradingProceeds}
-              isMobile={isMobile}
-              paginationName="resolved"
-              addNullPadding
-            />
-          </div>
-        )}
-        {marketsCount === 0 && (
-          <div className={PortfolioStyles.NoMarkets__container}>
-            <span>You don&apos;t have any positions.</span>
-            <Link
-              className={PortfolioStyles.NoMarkets__link}
-              to={makePath(MARKETS)}
-            >
-              <span>Click here to view markets.</span>
-            </Link>
-          </div>
-        )}
-      </section>
+      <FilterBox
+        sortByStyles={{ minWidth: "10.8125rem" }}
+        title="Positions"
+        sortByOptions={sortByOptions}
+        markets={markets}
+        filterComp={filterComp}
+        bottomRightContent={
+          <CompactButton
+            text={showCurrentValue ? "Current Value" : "Total Returns"}
+            action={this.updateRightContentValue}
+          />
+        }
+        renderRightContent={this.renderRightContent}
+        renderToggleContent={renderToggleContent}
+        filterLabel="positions"
+        pickVariables={[
+          "id",
+          "description",
+          "reportingState",
+          "myPositionsSummary",
+          "recentlyTraded",
+          "endTime"
+        ]}
+      />
     );
   }
 }

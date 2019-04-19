@@ -10,9 +10,9 @@ import configureMockStore from "redux-mock-store";
 
 jest.mock("services/augurjs");
 jest.mock("src/select-state");
-jest.mock("modules/notifications/actions/notifications", () => ({
-  updateNotification: () => ({
-    type: "UPDATE_NOTIFICATION"
+jest.mock("modules/alerts/actions/alerts", () => ({
+  updateAlert: () => ({
+    type: "UPDATE_ALERT"
   })
 }));
 
@@ -28,11 +28,7 @@ describe("events/actions/listen-to-updates", () => {
     let augurOnSpy;
     let ethereumOnSpy;
 
-    const store = mockStore({
-      connection: {
-        useWebsocketToConnectAugurNode: true
-      }
-    });
+    const store = mockStore({});
     const ACTIONS = {
       STOP_BLOCK_LISTENERS: { type: "STOP_BLOCK_LISTENERS" },
       STOP_AUGUR_NODE_EVENT_LISTENERS: {
@@ -146,10 +142,7 @@ describe("events/actions/listen-to-updates", () => {
 
     beforeEach(() => {
       state = {
-        universe: { id: "UNIVERSE_ADDRESS" },
-        connection: {
-          useWebsocketToConnectAugurNode: true
-        }
+        universe: { id: "UNIVERSE_ADDRESS" }
       };
       store = mockStore(state);
       loadMarketsInfoSpy = jest
@@ -232,10 +225,7 @@ describe("events/actions/listen-to-updates", () => {
     beforeEach(() => {
       state = {
         universe: { id: "UNIVERSE_ADDRESS" },
-        loginAccount: { address: "MY_ADDRESS" },
-        connection: {
-          useWebsocketToConnectAugurNode: true
-        }
+        loginAccount: { address: "MY_ADDRESS" }
       };
       store = mockStore(state);
       loadMarketsInfoSpy = jest
@@ -318,7 +308,7 @@ describe("events/actions/listen-to-updates", () => {
         { type: "LOAD_MARKETS_INFO", marketIds: ["MARKET_ADDRESS"] },
         { type: "UPDATE_UNCLAIMED_DATA", marketIds: ["MARKET_ADDRESS"] },
         { type: "LOAD_REPORTING" },
-        { type: "UPDATE_NOTIFICATION" },
+        { type: "UPDATE_ALERT" },
         { type: "UPDATE_ASSETS" },
         {
           type: "UPDATE_LOGGED_TRANSACTIONS",
@@ -414,10 +404,7 @@ describe("events/actions/listen-to-updates", () => {
     test("Handled calling initial reporter redeemed not designated reporter", () => {
       const state = {
         universe: { id: "UNIVERSE_ADDRESS" },
-        loginAccount: { address: "MY_ADDRESS" },
-        connection: {
-          useWebsocketToConnectAugurNode: true
-        }
+        loginAccount: { address: "MY_ADDRESS" }
       };
       const store = mockStore(state);
       jest
@@ -440,10 +427,7 @@ describe("events/actions/listen-to-updates", () => {
     test("Handled calling initial reporter redeemed IS designated reporter", () => {
       const state = {
         universe: { id: "UNIVERSE_ADDRESS" },
-        loginAccount: { address: "MY_ADDRESS" },
-        connection: {
-          useWebsocketToConnectAugurNode: true
-        }
+        loginAccount: { address: "MY_ADDRESS" }
       };
       const store = mockStore(state);
       jest

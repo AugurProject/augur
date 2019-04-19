@@ -3,12 +3,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+
 import {
   EXPIRY_SOURCE_GENERIC,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SELF,
   DESIGNATED_REPORTER_SPECIFIC
-} from "modules/markets/constants/new-market-constraints";
+} from "modules/common-elements/constants";
 import isAddress from "modules/auth/helpers/is-address";
 
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
@@ -152,7 +153,7 @@ export default class CreateMarketResolution extends Component {
                     <span
                       className={StylesForm["CreateMarketForm__error--bottom"]}
                     >
-                      {InputErrorIcon}{" "}
+                      {InputErrorIcon()}
                       {
                         newMarket.validations[newMarket.currentStep]
                           .expirySource
@@ -228,7 +229,7 @@ export default class CreateMarketResolution extends Component {
                   <span
                     className={StylesForm["CreateMarketForm__error--bottom"]}
                   >
-                    {InputErrorIcon}
+                    {InputErrorIcon()}
                     {
                       newMarket.validations[newMarket.currentStep]
                         .designatedReporterAddress

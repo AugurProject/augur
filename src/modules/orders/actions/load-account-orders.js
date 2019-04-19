@@ -4,11 +4,28 @@ import { forEach } from "lodash";
 import { ungroupBy } from "utils/ungroupBy";
 import { addOrphanedOrder } from "modules/orders/actions/orphaned-orders";
 import { updateOrderBook } from "modules/orders/actions/update-order-book";
-import { addOpenOrderTransactions } from "modules/transactions/actions/add-transactions";
-import { OPEN } from "modules/orders/constants/orders";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
+import { OPEN } from "modules/common-elements/constants";
+import { formatEther, formatShares } from "utils/format-number";
 
-export const loadAccountOrders = (options = {}, callback = logError) => (
+export const loadAccountOrders = (
+  options = {},
+  callback = logError,
+  marketIdAggregator
+) => (dispatch, getState) => {
+  dispatch(
+    loadUserAccountOrders(options, (err, { marketIds = [], orders = {} }) => {
+      if (!err) postProcessing(marketIds, dispatch, { orders }, callback);
+      dispatch(
+        loadAccountOrphanedOrders(options, (oMarketIds = []) => {
+          const comb = [...new Set([...marketIds, oMarketIds])];
+          if (marketIdAggregator && marketIdAggregator(comb));
+        })
+      );
+    })
+  );
+};
+
+const loadUserAccountOrders = (options = {}, callback) => (
   dispatch,
   getState
 ) => {
@@ -18,48 +35,42 @@ export const loadAccountOrders = (options = {}, callback = logError) => (
   augur.trading.getOrders(
     { ...options, creator: loginAccount.address, universe: universe.id },
     (err, orders) => {
-      if (err) return callback(err);
+      if (err) return callback(err, {});
       if (orders == null || Object.keys(orders).length === 0)
-        return callback(null);
-      const marketIds = Object.keys(orders);
-      dispatch(
-        loadMarketsInfoIfNotLoaded(marketIds, err => {
-          if (err) return callback(err);
-          dispatch(addOpenOrderTransactions(orders));
-          forEach(marketIds, marketId => {
-            forEach(orders[marketId], (outcomeOrder, outcome) => {
-              forEach(outcomeOrder, (orderBook, orderTypeLabel) => {
-                const openOrders = Object.keys(orderBook).reduce((p, key) => {
-                  if (
-                    orderBook[key].orderState ===
-                    augur.constants.ORDER_STATE.OPEN
-                  ) {
-                    p[key] = orderBook[key];
-                  }
-                  return p;
-                }, {});
-                dispatch(
-                  updateOrderBook({
-                    marketId,
-                    outcome,
-                    orderTypeLabel,
-                    orderBook: openOrders
-                  })
-                );
-              });
-            });
-          });
-          callback(null, orders);
-        })
-      );
+        return callback(null, {});
+      callback(null, { marketIds: Object.keys(orders), orders });
     }
   );
 };
 
-export const loadAccountOrphanedOrders = (
-  options = {},
-  callback = logError
-) => (dispatch, getState) => {
+const postProcessing = (marketIds, dispatch, properties, callback) => {
+  forEach(marketIds, marketId => {
+    forEach(properties.orders[marketId], (outcomeOrder, outcome) => {
+      forEach(outcomeOrder, (orderBook, orderTypeLabel) => {
+        const openOrders = Object.keys(orderBook).reduce((p, key) => {
+          if (orderBook[key].orderState === augur.constants.ORDER_STATE.OPEN) {
+            p[key] = orderBook[key];
+          }
+          return p;
+        }, {});
+        dispatch(
+          updateOrderBook({
+            marketId,
+            outcome,
+            orderTypeLabel,
+            orderBook: openOrders
+          })
+        );
+      });
+    });
+  });
+  if (callback) callback(null, properties.orders);
+};
+
+const loadAccountOrphanedOrders = (options = {}, callback) => (
+  dispatch,
+  getState
+) => {
   const { universe, loginAccount } = getState();
 
   augur.trading.getOrders(
@@ -76,15 +87,21 @@ export const loadAccountOrphanedOrders = (
 
       ungroupBy(orders, ["marketId", "outcome", "orderTypeLabel", "orderId"])
         .filter(it => it.orderState === OPEN)
-        .forEach(it => dispatch(addOrphanedOrder(it)));
+        .forEach(it =>
+          dispatch(
+            addOrphanedOrder({
+              ...it,
+              type: it.orderTypeLabel,
+              description: it.description || it.outcomeName,
+              sharesEscrowed: formatEther(it.sharesEscrowed),
+              tokensEscrowed: formatEther(it.tokensEscrowed),
+              avgPrice: formatEther(it.fullPrecisionPrice),
+              unmatchedShares: formatShares(it.fullPrecisionAmount)
+            })
+          )
+        );
 
-      const marketIds = Object.keys(orders);
-      dispatch(
-        loadMarketsInfoIfNotLoaded(marketIds, err => {
-          if (err) return callback(err);
-          callback(null, orders);
-        })
-      );
+      callback(err, { marketIds: Object.keys(orders) });
     }
   );
 };

@@ -14,10 +14,11 @@ import CreateMarketReview from "modules/create-market/components/create-market-f
 import Styles from "modules/create-market/components/create-market-form/create-market-form.styles";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import { createBigNumber } from "utils/create-big-number";
-import { CATEGORICAL, SCALAR } from "modules/markets/constants/market-types";
-import { BID } from "modules/transactions/constants/types";
+import { CATEGORICAL, SCALAR, BID } from "modules/common-elements/constants";
 import moment from "moment";
 import { formatDate } from "utils/format-date";
+import { RepBalance } from "modules/common-elements/labels";
+import { formatRep } from "utils/format-number";
 
 const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 const STEP_NAME = {
@@ -25,7 +26,14 @@ const STEP_NAME = {
   1: "Add initial market liquidity",
   2: "Review"
 };
-const TIME_FIELDNAMES = ["setEndTime", "hour", "minute", "meridiem"];
+const TIME_FIELDNAMES = [
+  "setEndTime",
+  "hour",
+  "minute",
+  "meridiem",
+  "delayDays",
+  "delayHours"
+];
 
 export default class CreateMarketForm extends Component {
   static processEndTime(newMarket) {
@@ -220,6 +228,7 @@ export default class CreateMarketForm extends Component {
         break;
       default:
         updatedMarket.validations[currentStep][fieldName] = "";
+        break;
     }
 
     if (leadingZero && value < 10) {
@@ -340,11 +349,14 @@ export default class CreateMarketForm extends Component {
         <div className={Styles.CreateMarketForm_form_outer_wrapper}>
           <div className={Styles.CreateMarketForm_form_inner_wrapper}>
             <div>
-              <span>Create new market</span>
-              <span>
-                Step {newMarket.currentStep + 1} of 3:{" "}
-                {STEP_NAME[newMarket.currentStep]}
-              </span>
+              <div>
+                <span>Create new market</span>
+                <span>
+                  Step {newMarket.currentStep + 1} of 3:{" "}
+                  {STEP_NAME[newMarket.currentStep]}
+                </span>
+              </div>
+              <RepBalance rep={formatRep(availableRep).formattedValue} />
             </div>
             {newMarket.currentStep === 0 && (
               <>
@@ -457,7 +469,7 @@ export default class CreateMarketForm extends Component {
             s.awaitingSignature && (
               <div className={Styles["CreateMarketForm__submit-wrapper"]}>
                 <div className={Styles.CreateMarketForm__submitWarning}>
-                  {InputErrorIcon} Please sign transaction(s) to complete market
+                  {InputErrorIcon()} Please sign transaction(s) to complete
                   creation.
                 </div>
               </div>

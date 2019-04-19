@@ -1,5 +1,5 @@
 import mocks from "test/mockStore";
-import { CANCEL_ORDER, BID, ASK } from "modules/transactions/constants/types";
+import { CANCEL_ORDER, BID, ASK } from "modules/common-elements/constants";
 import { augur } from "services/augurjs";
 
 jest.mock("services/augurjs");

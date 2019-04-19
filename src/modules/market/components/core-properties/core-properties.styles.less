@@ -1,161 +1,26 @@
 @import (reference) "~assets/styles/shared";
 @import (reference) "~modules/market/components/market-view/market-view.styles";
 
-.CoreProperties__row {
+.CoreProperties {
   display: flex;
-  flex-direction: row;
-  margin-bottom: 24px;
-}
+  flex: 1 0 20%;
+  flex-flow: row wrap;
+  justify-content: space-between;
 
-.CoreProperties__rowBorder {
-  padding-bottom: 0.5rem;
-}
-
-.CoreProperties__property {
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  font-size: 18px;
-  text-transform: capitalize;
-  white-space: nowrap;
-
-  &:not(:last-of-type) {
-    margin-right: 45px;
+  > div {
+    flex: 0 0 50%;
+    margin-top: @size-14;
   }
 
-  span:first-of-type {
-    .caps--small();
-
-    margin-bottom: 0.5em;
-  }
-
-  span:last-of-type {
-    color: @color-white;
+  > div:first-of-type,
+  > div:nth-of-type(2) {
+    margin-top: 0;
   }
 }
 
-.CoreProperties__smaller {
-  font-size: @font-size-small;
-  padding-top: 0.25rem;
-}
-
-.CoreProperties__propertySmall {
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-  min-width: 120px;
-  text-transform: capitalize;
-  white-space: nowrap;
-
-  &:first-of-type {
-    min-width: 210px;
+@media @breakpoint-mobile {
+  .CoreProperties {
+    background: @color-secondary-action;
+    padding: @size-16;
   }
-
-  &:not(:last-of-type) {
-    margin-right: 2.5rem;
-
-    @media @breakpoint-mobile-medium {
-      margin-right: 0.5rem;
-    }
-  }
-
-  span:first-of-type {
-    .caps--small();
-
-    margin-bottom: 0.5em;
-  }
-
-  span:last-of-type {
-    color: @color-white;
-  }
-}
-
-.CoreProperties__coreContainer {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.CoreProperties__property-name {
-  color: #a7a2b2;
-  display: flex;
-  flex-direction: row;
-  font-size: 12px;
-  font-weight: 500;
-  max-height: 0.75rem;
-}
-
-.CoreProperties__property-tooltip {
-  margin-bottom: 0;
-  margin-left: 0.25rem;
-  margin-top: -0.375rem;
-  width: 0.75rem;
-}
-
-.CoreProperties__property-winningOutcome {
-  color: #9b8bf5 !important;
-  display: flex;
-  flex-grow: 1;
-  font-size: 24px;
-  margin-top: 0.3rem;
-}
-
-.CoreProperties__property-tentativeWinningOutcome {
-  color: white !important;
-  display: flex;
-  flex-grow: 1;
-  font-size: 24px;
-  font-weight: 700;
-  margin-top: 0.3rem;
-}
-
-.CoreProperties__property-button {
-  &:extend(.button--offWhite all);
-
-  &:visited {
-    background-color: @color-offwhite;
-    color: @color-purple;
-  }
-
-  &:visited:hover {
-    background-color: @color-white;
-  }
-}
-
-.CoreProperties__header-firstElement {
-  align-items: center;
-  display: flex;
-  flex-grow: 1;
-}
-
-.CoreProperties__header-Submit {
-  align-items: center;
-  color: white !important;
-  display: flex;
-  flex-grow: 1;
-  font-size: 24px;
-  font-weight: 700;
-  margin-top: 0.3rem;
-  text-transform: none;
-
-  @media @breakpoint-mobile-extra-small {
-    flex-grow: unset;
-    font-size: 18px;
-    margin-right: 10px;
-  }
-}
-
-.CoreProperties__header__tooltip {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  margin-bottom: 0;
-  margin-right: 0.55rem;
-  width: 0.75rem;
-}
-
-.CoreProperties__header__finalize {
-  display: flex;
-  flex-direction: row;
 }

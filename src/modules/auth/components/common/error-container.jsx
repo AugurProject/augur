@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import toggleHeight from "utils/toggle-height/toggle-height";
-import { PARAMS, ERROR_TYPES } from "modules/auth/constants/connect-nav";
+import { PARAMS, ERROR_TYPES } from "modules/common-elements/constants";
 import { errorIcon } from "modules/common/components/icons";
 
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
@@ -51,13 +51,13 @@ export default class ErrorContainer extends Component {
 
   showError() {
     this.setState({ errorShown: true }, () => {
-      toggleHeight(this.error, false, () => {});
+      toggleHeight(this.error, false);
     });
   }
 
   hideError() {
     this.setState({ errorShown: false }, () => {
-      toggleHeight(this.error, true, () => {});
+      toggleHeight(this.error, true);
     });
   }
 

@@ -4,13 +4,11 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 import {
   YES_NO,
   CATEGORICAL,
-  SCALAR
-} from "modules/markets/constants/market-types";
-import {
+  SCALAR,
   YES_NO_YES_ID,
   SCALAR_UP_ID,
   YES_NO_YES_OUTCOME_NAME
-} from "modules/markets/constants/market-outcomes";
+} from "modules/common-elements/constants";
 
 const DEFAULT_STATE = {};
 
@@ -118,7 +116,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
     return marketData.outcomes.reduce((p, outcome) => {
       if (outcome.id !== SCALAR_UP_ID) return p;
       p[outcome.id] = { ...outcome };
-      p[outcome.id].name = "";
+      p[outcome.id].name = marketData.scalarDenomination || "N/A";
       return p;
     }, {});
   }

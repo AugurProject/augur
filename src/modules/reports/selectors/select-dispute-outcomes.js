@@ -1,9 +1,11 @@
-import { SCALAR } from "modules/markets/constants/market-types";
+import {
+  SCALAR,
+  MALFORMED_OUTCOME,
+  ZERO
+} from "modules/common-elements/constants";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 import { isEmpty } from "lodash";
 import { createBigNumber } from "utils/create-big-number";
-import { MALFORMED_OUTCOME } from "utils/constants";
-import { ZERO } from "modules/trades/constants/numbers";
 
 export default function(
   market,

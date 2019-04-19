@@ -10,7 +10,7 @@ import classNames from "classnames";
 import AddressPickerContent from "modules/auth/components/common/address-picker-content";
 import DerivationPathEditor from "modules/auth/components/common/derivation-path-editor";
 import toggleHeight from "utils/toggle-height/toggle-height";
-import { ERROR_TYPES } from "modules/auth/constants/connect-nav";
+import { ERROR_TYPES } from "modules/common-elements/constants";
 import { errorIcon } from "modules/common/components/icons";
 import { filter } from "lodash";
 import Styles from "modules/auth/components/common/hardware-wallet.styles";
@@ -257,11 +257,11 @@ export default class HardwareWallet extends Component {
   }
 
   showAdvanced(value) {
-    toggleHeight(this.advanced, value, () => {});
+    toggleHeight(this.advanced, value);
   }
 
   showHardwareWallet() {
-    toggleHeight(this.hardwareContent, false, () => {
+    toggleHeight(this.hardwareContent, false, 0, () => {
       this.setState({ showWallet: true });
     });
   }
@@ -269,7 +269,7 @@ export default class HardwareWallet extends Component {
   hideHardwareWallet() {
     const { setShowAdvancedButton } = this.props;
     setShowAdvancedButton(false);
-    toggleHeight(this.hardwareContent, true, () => {
+    toggleHeight(this.hardwareContent, true, 0, () => {
       this.setState({ showWallet: false });
     });
   }

@@ -4,11 +4,11 @@ import memoize from "memoizee";
 import store from "src/store";
 import {
   selectLoginAccountAddress,
-  selectPriceHistoryState,
+  selectMarketTradingHistoryState,
   selectMarketCreatorFeesState
 } from "src/select-state";
 import selectAllMarkets from "modules/markets/selectors/markets-all";
-import { ZERO } from "modules/trades/constants/numbers";
+import { ZERO } from "modules/common-elements/constants";
 import { formatNumber, formatEther } from "utils/format-number";
 import { orderBy } from "lodash";
 
@@ -27,18 +27,18 @@ export const selectAuthorOwnedMarkets = createSelector(
 
 export const selectLoginAccountMarkets = createSelector(
   selectAuthorOwnedMarkets,
-  selectPriceHistoryState,
+  selectMarketTradingHistoryState,
   selectMarketCreatorFeesState,
-  (authorOwnedMarkets, priceHistory, marketCreatorFees) => {
+  (authorOwnedMarkets, marketTradingHistory, marketCreatorFees) => {
     if (!authorOwnedMarkets) return [];
     const markets = [];
     authorOwnedMarkets.forEach(market => {
       const fees = formatEther(marketCreatorFees[market.id] || 0);
       const numberOfTrades = formatNumber(
-        selectNumberOfTrades(priceHistory[market.id])
+        selectNumberOfTrades(marketTradingHistory[market.id])
       );
       const averageTradeSize = formatNumber(
-        selectAverageTradeSize(priceHistory[market.id])
+        selectAverageTradeSize(marketTradingHistory[market.id])
       );
       const openVolume = formatNumber(selectOpenVolume(market));
       markets.push({
@@ -91,15 +91,17 @@ export const selectAverageTradeSize = memoize(
     };
     const priceHistoryTotals = Object.keys(marketPriceHistory).reduce(
       (historyTotals, currentOutcome) => {
-        const outcomeTotals = marketPriceHistory[currentOutcome].reduce(
-          (outcomeTotals, trade) => ({
-            shares: createBigNumber(outcomeTotals.shares, 10).plus(
-              createBigNumber(trade.amount, 10)
-            ),
-            trades: outcomeTotals.trades + 1
-          }),
-          initialState
-        );
+        const outcomeTotals = marketPriceHistory
+          .filter(history => history.outcome.toString() === currentOutcome)
+          .reduce(
+            (outcomeTotals, trade) => ({
+              shares: createBigNumber(outcomeTotals.shares, 10).plus(
+                createBigNumber(trade.amount, 10)
+              ),
+              trades: outcomeTotals.trades + 1
+            }),
+            initialState
+          );
         return {
           shares: historyTotals.shares.plus(outcomeTotals.shares),
           trades: historyTotals.trades + outcomeTotals.trades

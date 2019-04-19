@@ -1,6 +1,6 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
-import { YES_NO } from "modules/markets/constants/market-types";
+import { YES_NO } from "modules/common-elements/constants";
 import { buildCreateMarket } from "modules/markets/helpers/build-create-market";
 
 jest.mock("modules/markets/helpers/build-create-market");

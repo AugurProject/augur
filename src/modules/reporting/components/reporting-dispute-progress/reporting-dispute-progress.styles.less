@@ -1,95 +1,58 @@
-@import (reference) '~assets/styles/shared';
+@import (reference) "~assets/styles/shared";
 
-.ReportingDisputeProgress__dispute-wrapper {
-  align-items: center;
+.ReportingDisputeProgress {
   display: flex;
-  width: 100%;
+  flex-direction: column;
 
-  @media @breakpoint-mobile-medium {
-    flex-wrap: wrap;
-  }
-}
+  > div {
+    display: flex;
 
-.ReportingDisputeProgress__graph {
-  background-color: @color-darkgray;
-  display: flex;
-  height: 0.5rem;
-  justify-content: space-between;
-  overflow: hidden;
-  white-space: nowrap;
+    @media @breakpoint-mobile {
+      flex-direction: column;
+    }
 
-  @media @breakpoint-mobile-small {
-    margin-right: 1rem;
-  }
-}
+    > div:first-of-type {
+      align-content: center;
+      background-color: @color-highlight-background;
+      display: flex;
+      height: 0.5rem;
+      min-width: 8em;
+      position: relative;
+      width: 15rem;
 
-.ReportingDisputeProgress__dispute-label {
-  letter-spacing: 0.3px;
-  margin-left: 1rem;
-  white-space: nowrap;
+      > div:first-child {
+        background: @color-bright-teal;
+        height: 100%;
+        transition: width 0.4s linear;
+      }
 
-  @media @breakpoint-mobile-small {
-    margin-left: 0;
-  }
-}
+      > div:last-child {
+        background: @color-bright-highlight;
+        height: 100%;
+        transition: width 0.4s linear;
+      }
+    }
 
-.ReportingDisputeProgress__dispute-label-total-rep-text {
-  color: @color-lightergray;
-  font-size: @font-size-medium;
-  font-weight: 500;
-}
+    > div:last-of-type {
+      .text-10;
 
-.ReportingDisputeProgress__dispute-label-break {
-  color: @color-lightgray;
-  font-size: @font-size-medium;
-  font-weight: 500;
-  margin-left: 0.2em;
-}
+      color: @color-lightgray;
+      letter-spacing: 0.3px;
+      margin-left: 1rem;
+      white-space: nowrap;
 
-.ReportingDisputeProgress__dispute-label-goal-text {
-  color: @color-lightgray;
-  font-size: @font-size-small;
-  font-weight: 500;
-  line-height: 1em;
-  margin-left: 0.2em;
-  white-space: nowrap;
-}
-
-.ReportingDisputeProgress__dispute-tentative {
-  &:extend(.ReportingDisputeProgress__dispute-label);
-
-  color: @color-lighter-purple;
-  font-size: @font-size-small;
-  margin-left: 0.5rem;
-  text-transform: uppercase;
-  white-space: normal;
-
-  @media @breakpoint-mobile-medium {
-    margin-left: 0;
-    margin-top: 0.2rem;
+      @media @breakpoint-mobile {
+        margin: 0;
+        padding-top: 0.25rem;
+      }
+    }
   }
 
-  @media @breakpoint-mobile-small {
-    margin-left: 0.2rem;
-  }
-}
+  div:nth-of-type(2) {
+    .text-12-bold;
 
-.ReportingDisputeProgress__graph-current {
-  background: #4f4761;
-  display: flex;
-  min-width: 8em;
-  position: relative;
-  width: 8rem;
-
-  > div:first-child {
-    background: @color-purple;
-    height: 100%;
-    transition: width 0.4s linear;
-  }
-
-  > div:last-child {
-    background: @color-lighter-purple;
-    height: 100%;
-    transition: width 0.4s linear;
+    align-self: flex-start;
+    color: @color-bright-highlight;
+    text-transform: uppercase;
   }
 }

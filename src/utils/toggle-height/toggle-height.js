@@ -1,4 +1,4 @@
-export default function(target, isOpen, callback) {
+export default function(target, isOpen, closeHeight = 0, callback) {
   if (isOpen) {
     const targetTransition = target.style.transition;
     target.style.transition = "";
@@ -8,7 +8,7 @@ export default function(target, isOpen, callback) {
       target.style.transition = targetTransition;
 
       requestAnimationFrame(() => {
-        target.style.height = "0px";
+        target.style.height = `${closeHeight}px`;
       });
     });
   } else {
@@ -20,5 +20,5 @@ export default function(target, isOpen, callback) {
     });
   }
 
-  callback();
+  if (callback) callback();
 }

@@ -1,7 +1,6 @@
 @import (reference) '~assets/styles/shared';
 
 .MarketLiquidity__TableScroll {
-  border: 1px solid @color-lightest-gray;
   border-top-width: 0;
   max-height: 36.75rem;
   overflow-y: auto;
@@ -22,8 +21,7 @@
 }
 
 .MarketLiquidity__container {
-  background-color: @color-yellow-alert;
-  padding: 0.25rem;
+  background-color: @color-medium-gray;
 }
 
 .MarketLiquidity__heading {
@@ -31,7 +29,7 @@
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  padding: 0 1.75rem;
+  padding: 0.5rem 2rem;
   width: 100%;
 
   > h1 {
@@ -46,9 +44,10 @@
 
 .MarketLiquidity__showMore {
   align-items: center;
+  background: @color-medium-gray;
   display: flex;
   flex-flow: row nowrap;
-  margin: 1rem 0 0;
+  padding: 0.5rem 2rem;
   width: 100%;
 
   > h1 {
@@ -74,9 +73,8 @@
 .MarketLiquidity__TableHeader {
   &:extend(.caps--small);
 
-  color: @color-darkpurple;
+  color: @color-light-gray;
   display: table-header-group;
-  font-weight: 500;
 
   &:first-child > li {
     padding-top: 0;
@@ -116,8 +114,8 @@
 }
 
 .MarketLiquidity__ExtendedContainer {
-  background-color: @color-yellow-washed;
-  padding: 1rem 2rem;
+  background-color: @color-grayish-purple;
+  padding: 40px 32px 0;
 
   > h1 {
     &:extend(.caps--large all);
@@ -153,14 +151,17 @@
 
   h4 {
     flex: 1;
-    font-size: @font-size-medium;
-    margin-bottom: 1rem;
+    font-size: @font-size-small;
+    line-height: @font-size-large;
+    margin-bottom: 0.5rem;
+    text-transform: capitalize;
   }
 
   h3 {
     flex: 1;
     font-size: @font-size-large;
     font-weight: 500;
+    text-transform: capitalize;
   }
 }
 
@@ -171,8 +172,8 @@
 
   h4 {
     flex: 1;
-    font-size: @font-size-medium;
-    margin-bottom: 1rem;
+    font-size: @font-size-large;
+    margin-bottom: 0.5rem;
   }
 
   h3 {
@@ -185,16 +186,16 @@
 .MarketLiquidity__submit-container {
   display: flex;
   flex-flow: row-reverse nowrap;
+  padding-bottom: 1rem;
 }
 
 .MarketLiquidity__submit {
-  &:extend(.button--purple all);
+  &:extend(.button--bright all);
 
+  margin-left: 0.5rem;
   padding: 0 1.5rem;
 
   &.disabled {
-    &:extend(.button--purple--disabled);
-
     pointer-events: none;
   }
 }
@@ -202,8 +203,8 @@
 .MarketLiquidity__clearAll {
   &:extend(.button--gray all);
 
-  margin-right: 2rem;
   padding: 0 1.5rem;
+  text-transform: capitalize;
 
   &.disabled {
     &:extend(.button--grey-disabled);

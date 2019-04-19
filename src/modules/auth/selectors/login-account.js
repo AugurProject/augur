@@ -8,6 +8,7 @@ import generateDownloadAccountLink from "modules/auth/helpers/generate-download-
 import store from "src/store";
 
 import getValue from "utils/get-value";
+import { createBigNumber } from "utils/create-big-number";
 
 export default function() {
   return selectLoginAccount(store.getState());
@@ -32,4 +33,30 @@ export const selectLoginAccount = createSelector(
       decimalsRounded: 4
     })
   })
+);
+
+export const selectAccountFunds = createSelector(
+  selectLoginAccount,
+  loginAccount => {
+    let totalAvailableTradingBalance = createBigNumber(0);
+    let totalFrozenFunds = createBigNumber(0);
+
+    if (loginAccount.eth && loginAccount.eth.value) {
+      totalAvailableTradingBalance = createBigNumber(loginAccount.eth.value);
+    }
+
+    if (loginAccount.totalFrozenFunds) {
+      totalFrozenFunds = createBigNumber(loginAccount.totalFrozenFunds);
+    }
+
+    const totalAccountValue = totalAvailableTradingBalance.plus(
+      totalFrozenFunds
+    );
+
+    return {
+      totalAvailableTradingBalance,
+      totalFrozenFunds,
+      totalAccountValue
+    };
+  }
 );

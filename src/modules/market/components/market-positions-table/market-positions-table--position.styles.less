@@ -1,0 +1,121 @@
+@import (reference) '~assets/styles/shared';
+
+.Outcome {
+  .mono-12;
+
+  background-color: @color-tertiary-background;
+  border-bottom: 0.0625rem solid @color-primary-background;
+  display: grid;
+  flex-direction: row;
+  flex-grow: 1;
+  grid-template-columns: 2fr repeat(5, 1fr);
+  max-height: 40px;
+  position: relative;
+  transition: background-color 0.15s ease;
+
+  &:first-child > li {
+    border-top-width: 0;
+  }
+
+  > li {
+    .mono-11;
+
+    color: @color-tertiary-text;
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+    max-height: 40px;
+    overflow: hidden;
+    padding: 0.5rem 0;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    > span > label {
+      font-size: @size-11;
+    }
+
+    &:first-child {
+      .text-11;
+
+      font-weight: 500;
+      justify-content: flex-start;
+      padding-left: 2rem;
+      position: relative;
+      text-align: left;
+    }
+
+    &:last-of-type {
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      padding-right: 2rem;
+
+      > button {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile {
+  .Outcome {
+    grid-template-columns: repeat(5, 1fr);
+    max-height: 64px;
+    position: relative;
+
+    > div {
+      display: none;
+    }
+
+    > li {
+      max-height: 64px;
+      padding: 34px 0 1rem;
+
+      > span > label {
+        font-size: @size-10;
+      }
+
+      &:first-child {
+        bottom: 0;
+        font-weight: 500;
+        left: 1rem;
+        min-width: 100px;
+        padding: 0;
+        position: absolute;
+        top: -0.5rem;
+      }
+
+      &:nth-child(2) {
+        flex-grow: unset;
+        justify-content: flex-start;
+        max-width: 160px;
+        padding-left: 1rem;
+        position: relative;
+        text-align: left;
+      }
+
+      &:last-of-type {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        padding-right: 1.5rem;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .Outcome {
+    > li {
+      &:first-child {
+        min-width: 50px;
+      }
+
+      &:last-of-type {
+        padding-right: 1.5rem;
+      }
+    }
+  }
+}

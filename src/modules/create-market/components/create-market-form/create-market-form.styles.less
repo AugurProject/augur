@@ -5,7 +5,7 @@
 }
 
 .CreateMarketForm__button-outer-wrapper,
-.CreateMarketForm_form_outer_wrapper {
+.CreateMarketForm__form-outer-wrapper {
   display: flex;
   flex-flow: column nowrap;
   max-width: 81.25rem;
@@ -23,21 +23,207 @@
 
 .CreateMarketForm_form_inner_wrapper {
   > div {
+    border-bottom: 1px solid @color-primary-light;
     color: @color-text-light;
     display: flex;
-    flex-direction: column;
     font-size: @font-size-kinda-large;
+    justify-content: space-between;
+    padding-bottom: 1rem;
 
-    > span:first-of-type {
-      font-size: @font-size-extra-large;
-      font-weight: 500;
-      padding-bottom: 0.5rem;
+    > div:first-of-type {
+      display: flex;
+      flex-direction: column;
+      font-size: @size-20;
+
+      > span:first-of-type {
+        font-size: @size-32;
+        font-weight: 500;
+        padding-bottom: 0.5rem;
+      }
     }
 
-    > span:last-of-type {
-      border-bottom: 1px solid rgba(206, 215, 216, 0.3);
-      color: @color-offwhite-2;
-      padding-bottom: 1rem;
+    > div:nth-of-type(2) {
+      align-self: flex-end;
+    }
+  }
+}
+
+.CreateMarketForm_block {
+  .text-12;
+
+  display: flex;
+  flex-direction: row;
+  min-height: 6rem;
+
+  &.Categorical {
+    display: flex;
+    flex-direction: column;
+
+    > label {
+      > span:nth-of-type(2) {
+        color: @color-error-text;
+        padding: 0 0.5rem;
+
+        > svg {
+          height: 1rem;
+          padding-right: 0.25rem;
+          vertical-align: text-bottom;
+          width: 1rem;
+        }
+      }
+    }
+  }
+
+  > div {
+    font-size: @font-size-medium;
+    min-width: 50%;
+
+    > input,
+    textarea {
+      margin-bottom: 1rem;
+    }
+
+    > label {
+      > span:nth-of-type(2) {
+        color: @color-error-text;
+        padding: 0 0.5rem;
+
+        > svg {
+          height: 1rem;
+          padding-right: 0.25rem;
+          vertical-align: text-bottom;
+          width: 1rem;
+        }
+      }
+    }
+
+    input[type="text"],
+    input[type="number"],
+    > input {
+      margin: 0.5rem 0;
+    }
+  }
+
+  :global {
+    .SingleDatePicker_1 {
+      display: block;
+      margin-bottom: 1rem;
+      width: 100%;
+      z-index: 5;
+    }
+
+    .SingleDatePickerInput {
+      border: none;
+    }
+
+    .DateInput_input_1,
+    .DateInput_input__focused {
+      border: 0;
+    }
+
+    .DateInput__openDown_3::before,
+    .DateInput__openDown_3::after {
+      display: none;
+    }
+
+    .SingleDatePicker_picker__openDown_3.SingleDatePicker_picker__openDown_3.SingleDatePicker_picker__openDown_3 {
+      top: auto;
+    }
+
+    .DayPicker__horizontal_2 {
+      background-color: @color-input-background;
+      border-radius: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      font-size: 0.75rem;
+      line-height: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .SingleDatePickerInput_1 {
+      background-color: #dbdae1;
+      font-size: 1.125rem;
+      line-height: 1.5rem;
+    }
+
+    .DateInput_1 {
+      background: none;
+      color: inherit;
+      display: block;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      width: auto;
+    }
+
+    .DateInput_displayText.DateInput_displayText_1 {
+      background: none;
+      color: @color-lightgray;
+
+      &.DateInput_displayText__hasInput {
+        color: inherit;
+      }
+    }
+
+    .CalendarMonth_1,
+    .CalendarMonthGrid_1,
+    .CalendarMonthGrid_1 {
+      background: none;
+    }
+
+    .CalendarMonth_caption_1 {
+      color: @color-lightgray;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      padding-bottom: 2.8rem;
+      padding-top: 1.75rem;
+    }
+
+    .DayPickerNavigation_button__default_2.DayPickerNavigation_button__default_2 {
+      background: none;
+      border: none;
+    }
+
+    .DayPickerNavigation_leftButton__horizontal_3,
+    .DayPickerNavigation_rightButton__horizontal_3 {
+      > svg {
+        height: 1rem;
+        width: 1rem;
+      }
+    }
+
+    .DayPicker_weekHeader_li_1 {
+      color: @color-lightgray;
+      font-size: 0;
+
+      &::first-letter {
+        font-size: 0.6875rem;
+      }
+    }
+
+    .CalendarDay_container_1 {
+      background: none;
+      border: none;
+      color: @color-darkpurple;
+
+      &.CalendarDay__selected,
+      &:hover {
+        background: @color-lightergray;
+        border: none;
+        border-radius: 100%;
+      }
+
+      &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2 {
+        border: none;
+        color: #cacccd;
+
+        &:hover {
+          background: none;
+        }
+      }
+    }
+
+    .DayPickerKeyboardShortcuts_show__bottomRight_3.DayPickerKeyboardShortcuts_show__bottomRight_3.DayPickerKeyboardShortcuts_show__bottomRight_3 {
+      display: none;
     }
   }
 }
@@ -134,19 +320,19 @@
 
 .CreateMarketForm__fields {
   align-content: flex-start;
-  border-bottom: 1px solid rgba(206, 215, 216, 0.3);
+  border-bottom: 1px solid @color-primary-light;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  padding-top: 2rem;
+  min-height: 20rem;
+  padding: 2rem 0;
 
   > li {
-    margin-bottom: 3.7rem;
     position: relative;
     width: 100%;
 
     &.field--50 {
-      width: 48%;
+      width: 50%;
     }
 
     > label {
@@ -155,11 +341,19 @@
       position: relative;
 
       > span:first-child {
+        font-weight: bold;
         margin-right: 0.5rem;
       }
     }
 
     p {
+      margin: 0;
+
+      &.Message {
+        color: @color-secondary-text;
+        margin-bottom: 0.5rem;
+      }
+
       &.error {
         color: @color-red;
         font-size: 0.875rem;
@@ -180,7 +374,6 @@
 
       &::placeholder {
         color: @color-lightgray;
-        font-weight: 400;
         line-height: 1.5rem;
       }
     }
@@ -220,7 +413,7 @@
 .CreateMarketForm__next,
 .CreateMarketForm__prev,
 .CreateMarketForm__submit {
-  &:extend(.button--white all);
+  &:extend(.button--offWhite all);
 
   min-width: 13.5rem;
 
@@ -312,11 +505,11 @@
     order: 3;
   }
 
-  .CreateMarketForm_form_outer_wrapper {
+  .CreateMarketForm__form-outer-wrapper {
     order: 1;
   }
 
-  .CreateMarketForm_form_outer_wrapper:nth-of-type(2) {
+  .CreateMarketForm__form-outer-wrapper:nth-of-type(2) {
     order: 2;
   }
 

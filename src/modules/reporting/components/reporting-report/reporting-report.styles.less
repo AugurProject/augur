@@ -1,4 +1,4 @@
-@import (reference) "~assets/styles/shared";
+@import (reference) '~assets/styles/shared';
 
 .NullState {
   color: @color-lightgray;
@@ -6,29 +6,18 @@
 }
 
 .ReportingReport_form_message {
+  border-bottom: 1px solid rgba(206, 215, 216, 0.3);
+  display: flex;
   margin-bottom: 1rem;
   padding: 1rem;
 
+  @media @breakpoint-mobile {
+    flex-direction: column-reverse;
+  }
+
   > div {
-    border-bottom: 1px solid rgba(206, 215, 216, 0.3);
     display: flex;
     flex-direction: row;
     padding-bottom: 0.5rem;
-
-    > div:first-of-type {
-      display: none;
-    }
-
-    @media @breakpoint-mobile {
-      flex-direction: column;
-
-      > div:first-of-type {
-        display: block;
-      }
-
-      > div:last-of-type {
-        display: none;
-      }
-    }
   }
 }

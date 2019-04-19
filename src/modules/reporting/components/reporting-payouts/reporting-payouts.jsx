@@ -6,7 +6,7 @@ import { formatAttoRep } from "utils/format-number";
 import Styles from "modules/reporting/components/reporting-payouts/reporting-payouts.styles";
 import TooltipStyles from "modules/common/less/tooltip.styles";
 import { ExclamationCircle } from "modules/common/components/icons";
-import { MALFORMED_OUTCOME } from "utils/constants";
+import { MALFORMED_OUTCOME } from "modules/common-elements/constants";
 
 const CELL_MARGIN = 12;
 const INITIAL_CELL_HEIGHT = 54;
@@ -43,7 +43,7 @@ const Outcome = ({ className, outcome, marketId }) => {
               data-tip
               data-for="tooltip--potential-fork"
             >
-              {ExclamationCircle}
+              {ExclamationCircle()}
             </div>
             <ReactTooltip
               id="tooltip--potential-fork"
@@ -75,7 +75,7 @@ const Outcome = ({ className, outcome, marketId }) => {
           data-testid={"winning-" + marketId + "-" + outcome.id}
           className={Styles["MarketReportingPayouts__winning-outcome-message"]}
         >
-          tentative winning outcome
+          Tentative Winning Outcome
         </div>
       )}
       {!outcome.tentativeWinning && (

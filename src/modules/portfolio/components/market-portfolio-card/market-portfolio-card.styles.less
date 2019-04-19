@@ -2,11 +2,12 @@
 @import '~modules/market/components/common/market-common.styles.less';
 
 .MarketCard__topcontent {
-  border-bottom: 1px solid @color-lightgray;
-  padding-bottom: 0.3125rem;
+  border: 1px solid rgba(15, 10, 25, 0.45);
+  padding-bottom: 19px;
 }
 
 .MarketCard__header {
+  margin-bottom: 8px;
   margin-left: 0.4rem;
 }
 
@@ -21,6 +22,42 @@
 .MarketCard__topstats {
   overflow: hidden;
   position: relative;
+}
+
+.MarketCard__status {
+  color: @color-white;
+  display: flex;
+  flex-direction: column;
+  font-size: @font-size-small;
+  justify-content: space-between;
+  padding-right: 1rem;
+
+  > span {
+    &:first-child {
+      padding-bottom: 0.25rem;
+    }
+  }
+}
+
+.MarketCard__underline__reporting,
+.MarketCard__underline__resolved,
+.MarketCard__underline__open,
+.MarketCard__underline {
+  border-radius: 100px;
+  margin-bottom: 0.25rem;
+  transform: matrix(1, 0, 0, -1, 0, 0);
+}
+
+.MarketCard__underline__open {
+  border-bottom: 2px solid @color-open-green;
+}
+
+.MarketCard__underline__resolved {
+  border-bottom: 2px solid @color-resolved-red;
+}
+
+.MarketCard__underline__reporting {
+  border-bottom: 2px solid @color-dispute-yellow;
 }
 
 .MarketCard__leftstats {
@@ -42,19 +79,26 @@
 
 .MarketCard__statlabel {
   .MarketCommon__small-label();
+
+  color: @color-light-gray;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  margin-right: 8px;
 }
 
 .MarketCard__statvalue {
-  bottom: -0.165rem;
-  font-size: 1.5rem;
+  color: @color-white;
+  font-size: 18px;
+  font-weight: bold;
   margin-right: 0.208em;
   position: relative;
 }
 
 .MarketCard__statunit {
-  color: @color-purple;
-  font-size: 0.875rem;
-  margin-right: 3.375rem;
+  color: @color-white;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 38px;
   text-transform: uppercase;
 
   @media @breakpoint-1-0 {
@@ -71,16 +115,18 @@
 .MarketCard__expirationlabel {
   .MarketCommon__small-label();
 
+  color: @color-light-gray;
   display: block;
-  font-weight: 500;
+  font-size: 12px;
   margin-bottom: 0.25rem;
   margin-right: 0;
 }
 
 .MarketCard__expirationvalue {
-  color: @color-darkpurple;
+  color: @color-white;
   display: block;
-  font-size: 1rem;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .MarketCard__expiration--mobile {
@@ -89,7 +135,7 @@
 
 .MarketCard__tablesection {
   overflow: hidden;
-  padding: 1.5rem 2rem;
+  padding: 1rem 2rem;
 
   &:first-of-type {
     padding-bottom: 0;
@@ -111,22 +157,23 @@
   display: flex;
   justify-content: flex-end;
   overflow: hidden;
-  padding: 1.5rem 2rem;
 }
 
 .MarketCard__tablesection-footer-light {
-  background-color: @color-lightgray-2;
+  background-color: #2b2438;
   justify-content: flex-start;
-  padding: 1rem 2rem;
+  padding: 10px 16px;
 }
 
 .MarketCard__light-text {
   font-size: @font-size-large;
+  line-height: 21px;
+  padding-left: 1.3rem;
 }
 
 .MarketCard__heavy-text {
   font-size: @font-size-large;
-  font-weight: 500;
+  line-height: 23px;
   padding: 0 1rem;
 }
 
@@ -165,15 +212,14 @@
 }
 
 .MarketCard__tableheading {
-  color: @color-darkpurple;
+  color: @color-white;
   flex: 1;
   float: left;
-  font-size: 1.125rem;
-  font-weight: 500;
-  line-height: unset;
+  font-size: 16px;
+  line-height: 21px;
   margin: 0 0 0.5rem;
   padding-left: 0.5rem;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .MarketCard__tabletoggle {
@@ -183,20 +229,23 @@
 .MarketCard__action {
   margin-right: 2rem;
 
-  &:extend(.button--purple all);
+  &:extend(.button--whiteRound all);
 }
 
 .MarketCard__action-footer {
   display: flex;
   margin-right: 2rem;
 
-  &:extend(.button--purple all);
+  &:extend(.button--whiteRound all);
 }
 
 .MarketCard__action-footer-light {
   display: flex;
-  padding: 0 1em;
-  &:extend(.button--offWhite all);
+  &:extend(.button--whiteRound all);
+}
+
+.MarketCard__claim {
+  &:extend(.button--bright all);
 }
 
 .MarketCard__proceeds-container {
@@ -211,7 +260,6 @@
 
 @media @breakpoint-mobile {
   .MarketCard__topcontent {
-    border-bottom: 1px solid @color-lightest-gray;
     padding: 1rem 1rem 0.625rem;
   }
 
@@ -276,7 +324,7 @@
   }
 
   .MarketCard__expiration--mobile {
-    color: @color-darkpurple;
+    color: @color-white;
     display: block;
     font-size: 0.625rem;
     font-weight: 500;
@@ -292,7 +340,6 @@
   }
 
   .MarketCard__tablesection-footer {
-    border-top: 1px solid @color-lightgray;
     display: flex;
     flex-flow: row-reverse nowrap;
     padding: 0.25rem;

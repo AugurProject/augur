@@ -1,18 +1,23 @@
 @import (reference) '~assets/styles/shared';
 
 .MarketOutcomesList {
-  border-bottom: 1px solid @color-lightergray;
+  border-bottom: 8px solid @color-light-purple;
 }
 
 .MarketOutcomesList__heading {
   align-items: center;
+  background-color: @color-light-purple;
+  border-bottom: 1px solid @color-extra-darkpurple;
   display: flex;
+  font-size: 16px;
+  height: 3.5rem;
   justify-content: space-between;
-  padding: 1rem 2rem;
+  min-height: 3.5rem;
+  padding: 14px 24px;
   width: 100%;
 
-  > h2 {
-    &:extend(.caps--large);
+  > span {
+    display: flex;
   }
 }
 
@@ -24,21 +29,25 @@
 .MarketOutcomesList__table-header {
   &:extend(.caps--small);
 
-  color: @color-lightgray;
+  background-color: @color-light-purple;
+  color: @color-light-gray;
   display: table-header-group;
+  font-size: 12px;
 
   > li {
     display: table-cell;
     padding: 0 0 0.625rem;
+    padding-top: 8px;
     text-align: right;
+    text-transform: capitalize;
 
     &:first-child {
-      padding-left: 2rem;
+      padding-left: 24px;
       text-align: left;
     }
 
     &:last-child {
-      padding-right: 4.5rem;
+      padding-right: 2.2rem;
     }
   }
 }
@@ -57,64 +66,13 @@
 
 @media @breakpoint-mobile {
   .MarketOutcomesList {
-    border-bottom: 0;
+    background: @color-theme-primary;
+    border-radius: @border-radius-default;
+    color: @color-secondary-text;
   }
 
   .MarketOutcomesList__heading {
-    cursor: default;
-    padding: 2rem 1rem 1.5rem;
-
-    > h2 {
-      color: @color-white;
-      cursor: text;
-      font-size: @font-size-rather-large;
-      font-weight: 400;
-      line-height: @font-size-rather-large;
-      text-transform: none;
-    }
-  }
-
-  .MarketOutcomesList__table-header {
-    color: @color-lightgray;
-
-    > li {
-      &:first-child {
-        padding-left: 1rem;
-      }
-
-      &:last-child {
-        padding-right: 1rem;
-      }
-    }
-  }
-
-  .MarketOutcomesList__table-body {
-    background-color: transparent;
-    color: @color-lightgray;
-  }
-}
-
-@media @breakpoint-mobile-medium {
-  .MarketOutcomesList__heading > h2 {
-    font-size: @font-size-normal;
-    line-height: @font-size-normal;
-  }
-
-  .MarketOutcomesList__table-header {
-    font-size: @font-size-extra-small;
-    line-height: @font-size-medium;
-
-    > li {
-      text-align: left;
-      vertical-align: bottom;
-
-      > span {
-        float: right;
-
-        > span {
-          display: block;
-        }
-      }
-    }
+    font-size: @size-14;
+    padding-left: @size-16;
   }
 }

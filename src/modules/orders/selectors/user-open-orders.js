@@ -5,26 +5,19 @@ import store from "src/store";
 
 import { isOrderOfUser } from "modules/orders/helpers/is-order-of-user";
 
-import { BUY, SELL } from "modules/transactions/constants/types";
+import { BUY, SELL } from "modules/common-elements/constants";
 
+import { convertUnixToFormattedDate } from "utils/format-date";
 import { formatNone, formatEther, formatShares } from "utils/format-number";
 import { cancelOrder } from "modules/orders/actions/cancel-order";
-/**
- * Pulls off existing order book in state
- * @param {String} outcomeId
- * @param {String} marketId
- *
- * @param marketOrderBook
- * @param orderCancellation
- * @param marketOrderBook
- * @param orderCancellation
- * @return {Array}
- */
+
 export function selectUserOpenOrders(
   marketId,
   outcomeId,
   marketOrderBook,
-  orderCancellation
+  orderCancellation,
+  marketDescription,
+  name
 ) {
   const { loginAccount } = store.getState();
   if (!loginAccount.address || marketOrderBook == null) return [];
@@ -34,21 +27,22 @@ export function selectUserOpenOrders(
     outcomeId,
     loginAccount,
     marketOrderBook,
-    orderCancellation
+    orderCancellation,
+    marketDescription,
+    name
   );
 }
 
-/**
- * Orders are sorted: asks then bids. By price in descending order
- *
- * @param {String} outcomeId
- * @param {Object} loginAccount
- * @param {{buy: object, sell: object}} marketOrderBook
- *
- * @return {Array}
- */
 const userOpenOrders = memoize(
-  (marketId, outcomeId, loginAccount, marketOrderBook, orderCancellation) => {
+  (
+    marketId,
+    outcomeId,
+    loginAccount,
+    marketOrderBook,
+    orderCancellation,
+    marketDescription,
+    name
+  ) => {
     const orderData = marketOrderBook[outcomeId];
 
     const userBids =
@@ -60,7 +54,9 @@ const userOpenOrders = memoize(
             BUY,
             outcomeId,
             loginAccount.address,
-            orderCancellation
+            orderCancellation,
+            marketDescription,
+            name
           );
     const userAsks =
       orderData == null || orderData.sell == null
@@ -71,37 +67,31 @@ const userOpenOrders = memoize(
             SELL,
             outcomeId,
             loginAccount.address,
-            orderCancellation
+            orderCancellation,
+            marketDescription,
+            name
           );
 
-    return userAsks.concat(userBids);
+    const orders = userAsks.concat(userBids);
+    return orders.sort(
+      (a, b) => a.creationTime.timestamp - b.creationTime.timestamp
+    );
   },
   { max: 10 }
 );
 
-/**
- * Returns user's order for specified outcome sorted by price
- *
- * @param marketId
- * @param marketId
- * @param {Object} orders
- * @param {String} orderType
- * @param {String} outcomeId
- * @param orderCancellation
- * @param {String} userId
- *
- * @param orderCancellation
- * @return {Array}
- */
 function getUserOpenOrders(
   marketId,
   orders,
   orderType,
   outcomeId,
   userId,
-  orderCancellation = {}
+  orderCancellation = {},
+  marketDescription = "",
+  name = ""
 ) {
   const typeOrders = orders[orderType];
+
   return Object.keys(typeOrders)
     .map(orderId => typeOrders[orderId])
     .filter(
@@ -117,6 +107,7 @@ function getUserOpenOrders(
       type: orderType,
       marketId,
       outcomeId,
+      creationTime: convertUnixToFormattedDate(order.creationTime),
       pending: !!orderCancellation[order.orderId],
       orderCancellationStatus: orderCancellation[order.orderId],
       originalShares: formatNone(),
@@ -125,6 +116,8 @@ function getUserOpenOrders(
       unmatchedShares: formatShares(order.amount),
       tokensEscrowed: formatEther(order.tokensEscrowed),
       sharesEscrowed: formatShares(order.sharesEscrowed),
+      marketDescription,
+      name,
       cancelOrder: ({ id, marketId, outcomeId, type }) => {
         store.dispatch(
           cancelOrder({

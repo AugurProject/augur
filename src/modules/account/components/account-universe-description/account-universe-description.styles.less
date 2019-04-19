@@ -1,13 +1,14 @@
 @import (reference) '~assets/styles/shared';
 
 .AccountUniverseDescription {
+  color: @color-white;
   margin-bottom: 2em;
 
   h3 {
-    color: @color-purple;
+    color: @color-white;
     font-weight: bold;
     text-overflow: ellipsis;
-    text-transform: uppercase;
+    text-transform: capitalize;
   }
 }
 
@@ -26,11 +27,11 @@
 }
 
 .AccountUniverseDescription__winning_universe {
-  color: #9e82ef;
+  color: @color-white;
   font-size: small;
   font-weight: bold;
   margin-top: 0.25em;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .AccountUniverseDescription__description {
@@ -40,12 +41,12 @@
     font-size: 0.7em;
     font-weight: bold;
     padding: 0.5em 0;
-    text-transform: uppercase;
+    text-transform: capitalize;
   }
 }
 
 .AccountUniversesDescription__button {
-  &:extend(.button--purple all);
+  &:extend(.button--bright all);
 
   margin-right: 1rem;
   max-height: 2.5rem;
@@ -55,11 +56,12 @@
 .AccountUniversesDescription__current_universe_button {
   &:extend(.button--white--short all);
 
-  border: 2px solid @color-darkpurple;
+  border-radius: 0.1875rem;
   color: @color-darkpurple;
   cursor: auto;
   margin-right: 1rem;
   min-width: 7.75rem;
+  text-transform: capitalize;
 
   &:hover {
     background-color: @color-white;

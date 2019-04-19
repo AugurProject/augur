@@ -21,7 +21,7 @@ describe("portfolio-reports", () => {
           formattedValue: 0,
           formatted: "-",
           roundedValue: 0,
-          rounded: "-",
+          roundedFormatted: "-",
           minimized: "-",
           denomination: "",
           full: "-"
@@ -31,7 +31,7 @@ describe("portfolio-reports", () => {
           formattedValue: 0,
           formatted: "-",
           roundedValue: 0,
-          rounded: "-",
+          roundedFormatted: "-",
           minimized: "-",
           denomination: "",
           full: "-"
@@ -62,29 +62,6 @@ describe("portfolio-reports", () => {
       describe("getReportingFees function", () => {
         test("Called once with args ", () => {
           expect(getReportingFees).toBeTruthy();
-        });
-      });
-
-      describe("ETH total", () => {
-        test("Displayed as '-'", () => {
-          expect(Cmp.html()).toEqual(
-            expect.stringContaining("<span>ETH</span><span>-</span>")
-          );
-        });
-      });
-
-      describe("REP total", () => {
-        test("Displayed as '-'", () => {
-          expect(Cmp.html()).toEqual(
-            expect.stringContaining("<span>REP</span><span>-</span>")
-          );
-        });
-      });
-
-      describe("claim-reporting-fees-nonforked-markets-button", () => {
-        test("Is disabled", () => {
-          const button = Cmp.find("button");
-          expect(button.html()).toEqual(expect.stringContaining("disabled"));
         });
       });
 

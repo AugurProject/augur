@@ -1,5 +1,6 @@
 // MAIN VIEWS
 export const MARKET = "market";
+
 export const MARKETS = "markets";
 export const CREATE_MARKET = "create-market";
 export const TRANSACTIONS = "transactions";
@@ -17,11 +18,7 @@ export const DEFAULT_VIEW = MARKETS;
 
 // SUB VIEWS
 //  Portfolio
-export const MY_POSITIONS = "my-positions";
-export const MY_MARKETS = "my-markets";
-export const FAVORITES = "favorites";
-export const PORTFOLIO_TRANSACTIONS = "transactions";
-export const PORTFOLIO_REPORTS = "reports";
+export const MY_POSITIONS = "portfolio";
 
 //  Market (TODO -- These should be params, not routes)
 export const MARKET_DATA_NAV_OUTCOMES = "outcomes";
@@ -44,6 +41,7 @@ export const ACCOUNT_UNIVERSES = "universes";
 export const REPORTING_DISPUTE_MARKETS = "reporting-dispute-markets";
 export const REPORTING_REPORT_MARKETS = "reporting-report-markets";
 export const REPORTING_RESOLVED_MARKETS = "reporting-resolved-markets";
+export const REPORTING_REPORTS = "reports";
 
 // Dev only
 export const STYLE_SANDBOX = "style-sandbox";

@@ -9,6 +9,8 @@ import { listenToUpdates } from "modules/events/actions/listen-to-updates";
 import loadCategories from "modules/categories/actions/load-categories";
 import { loadMarketsToReportOn } from "modules/reports/actions/load-markets-to-report-on";
 import logError from "utils/log-error";
+import { clearPendingOrders } from "modules/orders/actions/pending-orders-management";
+import { updatePlatformTimeframeData } from "modules/account/actions/update-platform-timeframe-data";
 
 export const loadUniverse = (universeId, history, callback = logError) => (
   dispatch,
@@ -45,9 +47,14 @@ export const loadUniverse = (universeId, history, callback = logError) => (
       if (err) return callback(err);
       dispatch(updateUniverse({ ...staticUniverseData, id: universeId }));
       dispatch(updateUniverse(getReportingCycle()));
-      dispatch(syncBlockchain());
+      dispatch(updatePlatformTimeframeData());
       dispatch(
-        syncUniverse(err => {
+        syncBlockchain(() => {
+          dispatch(clearPendingOrders());
+        })
+      );
+      dispatch(
+        syncUniverse(null, err => {
           if (err) return callback(err);
           dispatch(listenToUpdates(history));
           callback(null);

@@ -90,6 +90,7 @@ describe("Create market page", () => {
     await expect(page).toFill("#cm__input--tag1", "Yes/No");
     await expect(page).toFill("#cm__input--tag2", "Test");
 
+
     await expect(page).toMatchElement(
       ".category-tag-trail-styles_CategoryTagTrail .word-trail-styles_WordTrail:nth-child(1) .tag-trail-button",
       { text: "Integration Test" }
@@ -377,7 +378,7 @@ describe("Create market page", () => {
 
     // Verify that the Market End Date/Time are displayed
     let marketPageEndDateString = await page.$eval(
-      ".core-properties-styles_CoreProperties__coreContainer .core-properties-styles_CoreProperties__row:nth-child(4) span:nth-child(2)",
+      ".core-properties-styles_CoreProperties__coreContainer .core-properties-styles_CoreProperties__column:nth-child(4) span:nth-child(2)",
       el => el.textContent
     );
     let marketPageEndDate = new Date(marketPageEndDateString);

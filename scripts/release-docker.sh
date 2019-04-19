@@ -8,9 +8,11 @@ build_environment="dev"
 
 aws_preconfigure () {
     # we need aws cli tools to deploy
-    python --version
-    sudo apt-get install libssl-dev python-pyasn1 python3-pyasn1
-    sudo pip install awscli
+    if [[ ${TRAVIS} = true ]]; then
+        python --version
+        sudo apt-get install libssl-dev python-pyasn1 python3-pyasn1
+        sudo pip install awscli
+    fi
 }
 
 aws_deploy () {
@@ -44,28 +46,16 @@ case ${augur_env} in
         cluster="sneakpeak-augur-net"
         augur_service="sneakpeak-ui"
         ;;
-    release)
-        network="rinkeby"
-        cluster=""
-        augur_service=""
-        build_environment="release"
-        version = "$(node scripts/get-version.js)"
-        ;;
     *)
         network=${augur_env}
         ;;
 esac
 
-docker build . --build-arg ethereum_network=${network} --build-arg build_environment=${build_environment} --cache-from augurproject/augur:${augur_env} --tag augurproject/augur:${augur_env} --tag augurproject/augur:$version
+docker build . --build-arg ethereum_network=${network} --build-arg build_environment=${build_environment} --tag augurproject/augur:${augur_env} --tag augurproject/augur:$version || exit 1
 
 docker push augurproject/augur:$version
 docker push augurproject/augur:${augur_env}
 
 # install packages needed to deploy to aws, then deploy
-if [[ -n "$cluster" ]]; then
-    echo "deploy";
-    aws_preconfigure
-    aws_deploy
-else
-    echo "no deploy";
-fi
+aws_preconfigure
+aws_deploy

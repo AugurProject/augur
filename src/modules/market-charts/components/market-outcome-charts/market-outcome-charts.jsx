@@ -2,52 +2,34 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import ScrollSnap from "scroll-snap";
-import logError from "utils/log-error";
 
-import MarketOutcomeCandlestick from "modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick";
 import MarketOutcomeDepth from "modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth";
 import MarketOutcomeChartsOrders from "modules/market-charts/components/market-outcome-charts--orders/market-outcome-charts--orders";
 
 import Styles from "modules/market-charts/components/market-outcome-charts/market-outcome-charts.styles";
-import { loadCandleStickData } from "modules/markets/actions/load-candlestick-data";
 
 import { BigNumber } from "bignumber.js";
-import {
-  clampPeriodByRange,
-  defaultRangePeriodDurations
-} from "modules/markets/helpers/range";
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
-    currentTimeInSeconds: PropTypes.number,
-    excludeCandlestick: PropTypes.bool,
     hasOrders: PropTypes.bool.isRequired,
     marketDepth: PropTypes.object.isRequired,
     maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
     minPrice: PropTypes.instanceOf(BigNumber).isRequired,
     orderBook: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.object.isRequired,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
     pricePrecision: PropTypes.number.isRequired,
-    marketId: PropTypes.string,
     isMobile: PropTypes.bool,
-    isMobileSmall: PropTypes.bool,
     updatePrecision: PropTypes.func,
     priceTimeSeries: PropTypes.array,
-    fixedPrecision: PropTypes.number,
-    outcomeName: PropTypes.string
+    fixedPrecision: PropTypes.number
   };
 
   static defaultProps = {
-    marketId: null,
     fixedPrecision: 4,
-    outcomeName: "",
     priceTimeSeries: [],
-    excludeCandlestick: false,
     isMobile: false,
-    isMobileSmall: false,
-    currentTimeInSeconds: null,
     updatePrecision: () => {}
   };
 
@@ -61,8 +43,6 @@ export default class MarketOutcomeCharts extends Component {
 
     this.snapScroller = null;
 
-    const { range, period } = defaultRangePeriodDurations;
-
     this.sharedChartMargins = {
       top: 0,
       bottom: 30
@@ -70,19 +50,14 @@ export default class MarketOutcomeCharts extends Component {
 
     this.state = {
       candleScrolled: true,
-      selectedPeriod: period,
-      selectedRange: range,
       hoveredDepth: [],
       hoveredPrice: null,
       headerHeight: props.isMobile ? 20 : 0,
-      priceTimeSeriesCandleStick: [],
       ordersWidth: 0
     };
 
     this.updateHoveredPrice = this.updateHoveredPrice.bind(this);
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this);
-    this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this);
-    this.updateSelectedRange = this.updateSelectedRange.bind(this);
     this.snapScrollHandler = this.snapScrollHandler.bind(this);
     this.updateChartHeaderHeight = this.updateChartHeaderHeight.bind(this);
     this.determineActiveScrolledChart = this.determineActiveScrolledChart.bind(
@@ -94,13 +69,6 @@ export default class MarketOutcomeCharts extends Component {
   componentDidMount() {
     this.snapScrollHandler();
 
-    if (
-      this.props.selectedOutcome &&
-      !this.props.excludeCandlestick &&
-      this.props.currentTimeInSeconds
-    ) {
-      this.getData();
-    }
     this.calculateOrdersWidth();
   }
 
@@ -109,44 +77,7 @@ export default class MarketOutcomeCharts extends Component {
       this.snapScrollHandler();
     }
 
-    if (
-      (prevState.selectedPeriod !== this.state.selectedPeriod ||
-        prevState.selectedRange !== this.state.selectedRange ||
-        prevProps.selectedOutcome.id !== this.props.selectedOutcome.id ||
-        prevProps.currentTimeInSeconds !== this.props.currentTimeInSeconds) &&
-      !this.props.excludeCandlestick
-    ) {
-      this.getData();
-    }
     this.calculateOrdersWidth();
-  }
-
-  getData() {
-    const { currentTimeInSeconds, marketId, selectedOutcome } = this.props;
-
-    const { selectedPeriod, selectedRange } = this.state;
-
-    // This prevents the candlestick from continuously shifting around.
-    const currentTimeAsMultipleOfPeriod =
-      Math.floor(currentTimeInSeconds / selectedPeriod) * selectedPeriod;
-
-    loadCandleStickData(
-      {
-        marketId,
-        period: selectedPeriod,
-        start: currentTimeAsMultipleOfPeriod - selectedRange,
-        end: currentTimeInSeconds,
-        outcome: selectedOutcome.id
-      },
-      (err, data) => {
-        if (err) return logError(err);
-
-        const priceTimeSeriesCandleStick = data[selectedOutcome.id] || [];
-        this.setState({
-          priceTimeSeriesCandleStick
-        });
-      }
-    );
   }
 
   calculateOrdersWidth() {
@@ -165,23 +96,6 @@ export default class MarketOutcomeCharts extends Component {
   updateHoveredPrice(hoveredPrice) {
     this.setState({
       hoveredPrice
-    });
-  }
-
-  updateSelectedPeriod(selectedPeriod) {
-    this.setState({
-      selectedPeriod
-    });
-  }
-
-  updateSelectedRange(selectedRange) {
-    const selectedPeriod = clampPeriodByRange(
-      selectedRange,
-      this.state.selectedPeriod
-    );
-    this.setState({
-      selectedPeriod,
-      selectedRange
     });
   }
 
@@ -224,8 +138,6 @@ export default class MarketOutcomeCharts extends Component {
 
   render() {
     const {
-      currentTimeInSeconds,
-      outcomeName,
       hasOrders,
       marketDepth,
       maxPrice,
@@ -234,9 +146,7 @@ export default class MarketOutcomeCharts extends Component {
       orderBookKeys,
       priceTimeSeries,
       updateSelectedOrderProperties,
-      excludeCandlestick,
       isMobile,
-      isMobileSmall,
       fixedPrecision,
       pricePrecision,
       updatePrecision
@@ -253,35 +163,6 @@ export default class MarketOutcomeCharts extends Component {
             [Styles["MarketOutcomeCharts__charts--mobile"]]: isMobile
           })}
         >
-          {excludeCandlestick || (
-            <div
-              ref={candlestickContainer => {
-                this.candlestickContainer = candlestickContainer;
-              }}
-              className={classNames(Styles.MarketOutcomeCharts__candlestick, {
-                [Styles["MarketOutcomeCharts__candlestick--mobile"]]: isMobile
-              })}
-            >
-              <MarketOutcomeCandlestick
-                currentTimeInSeconds={currentTimeInSeconds}
-                outcomeName={outcomeName}
-                isMobile={isMobile}
-                isMobileSmall={isMobileSmall}
-                sharedChartMargins={this.sharedChartMargins}
-                priceTimeSeries={s.priceTimeSeriesCandleStick}
-                selectedPeriod={s.selectedPeriod}
-                selectedRange={s.selectedRange}
-                fixedPrecision={fixedPrecision}
-                pricePrecision={pricePrecision}
-                orderBookKeys={orderBookKeys}
-                marketMax={maxPrice}
-                marketMin={minPrice}
-                updateSelectedPeriod={this.updateSelectedPeriod}
-                updateSelectedRange={this.updateSelectedRange}
-                updateSelectedOrderProperties={updateSelectedOrderProperties}
-              />
-            </div>
-          )}
           <div
             ref={ordersContainer => {
               this.ordersContainer = ordersContainer;

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import { MODAL_GAS_PRICE } from "modules/modal/constants/modal-types";
+import { MODAL_GAS_PRICE } from "modules/common-elements/constants";
 
 import Styles from "modules/app/components/gas-price-edit/gas-price-edit.styles";
 

@@ -1,6 +1,6 @@
 import memoize from "memoizee";
 import { createBigNumber } from "utils/create-big-number";
-import { ZERO } from "modules/trades/constants/numbers";
+import { ZERO } from "modules/common-elements/constants";
 
 /**
  * Returns true if user has enough funds for trades, false otherwise

@@ -30,7 +30,7 @@ const shortMonths = [
   "Dec"
 ];
 
-const NUMBER_OF_SECONDS_IN_A_DAY = 86400;
+export const NUMBER_OF_SECONDS_IN_A_DAY = 86400;
 const HOURS_IN_A_DAY = 24;
 const MINUTES_IN_A_HOUR = 60;
 
@@ -39,13 +39,18 @@ export function formatDate(d) {
 
   // UTC Time Formatting
   const utcTime = [date.getUTCHours(), date.getUTCMinutes()];
-  const utcAMPM = ampm(utcTime[0]);
-  const utcTimeTwelve = getTwelveHour(utcTime);
+  const utcTimeTwelve = getTwelveHourTime(utcTime);
+  const utcTimeWithSeconds = [
+    ("0" + date.getUTCHours()).slice(-2),
+    ("0" + date.getUTCMinutes()).slice(-2),
+    ("0" + date.getUTCSeconds()).slice(-2)
+  ];
+  const utcAMPM = ampm(("0" + date.getUTCHours()).slice(-2));
 
   // Locat Time Formatting
   const localTime = [date.getHours(), date.getMinutes()];
   const localAMPM = ampm(localTime[0]);
-  const localTimeTwelve = getTwelveHour(localTime);
+  const localTimeTwelve = getTwelveHourTime(localTime);
   const localOffset = (date.getTimezoneOffset() / 60) * -1;
   const localOffsetFormatted =
     localOffset > 0 ? `+${localOffset}` : localOffset.toString();
@@ -61,16 +66,21 @@ export function formatDate(d) {
     } ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(
       ":"
     )} ${utcAMPM}`, // UTC time
-    formattedShort: `${
+    formattedShortDate: `${("0" + date.getUTCDate()).slice(-2)}${
       shortMonths[date.getUTCMonth()]
-    } ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(
-      ":"
-    )} ${utcAMPM}`, // UTC time
+    } ${date.getUTCFullYear()}`,
+    formattedShortTime: `${utcTimeWithSeconds.join(":")}`,
+    formattedShort: `${shortMonths[date.getUTCMonth()]}${(
+      "0" + date.getUTCDate()
+    ).slice(-2)} ${date.getUTCFullYear()} ${utcTimeWithSeconds.join(":")}`,
     formattedLocal: `${
       months[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
       ":"
     )} ${localAMPM} (UTC ${localOffsetFormatted})`, // local time
+    formattedLocalShortDate: `${
+      shortMonths[date.getMonth()]
+    } ${date.getDate()}, ${date.getFullYear()}`,
     formattedLocalShort: `${
       shortMonths[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffsetFormatted})`, // local time
@@ -88,11 +98,15 @@ export function formatDate(d) {
     formattedSimpleData: `${
       months[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()}`,
+    formattedUtcShortDate: `${
+      shortMonths[date.getUTCMonth()]
+    } ${date.getUTCDate()}, ${date.getUTCFullYear()}`,
+    clockTimeUtc: `${utcTimeTwelve.join(":")} ${utcAMPM} - UTC`,
     formattedTimezone: `${
       months[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
       ":"
-    )} ${localAMPM} ${timezone} (Your timezone)`,
+    )} ${localAMPM} ${timezone} (Local timezone)`,
     formattedUtc: `${
       months[date.getUTCMonth()]
     } ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(
@@ -105,9 +119,13 @@ function ampm(time) {
   return time < 12 ? "AM" : "PM";
 }
 
-function getTwelveHour(time) {
-  time[0] = time[0] < 12 ? time[0] : time[0] - 12;
-  time[0] = time[0] || 12;
+function convertToTwelveHour(value) {
+  const hour = value < 12 ? value : value - 12;
+  return hour || 12;
+}
+
+function getTwelveHourTime(time) {
+  time[0] = convertToTwelveHour(time[0]);
   if (time[1] < 10) time[1] = "0" + time[1];
 
   return time;
@@ -170,6 +188,19 @@ export function getMinutesRemaining(endUnixTimestamp, startUnixTimestamp) {
   );
 }
 
+export function getSecondsRemaining(endUnixTimestamp, startUnixTimestamp) {
+  if (!endUnixTimestamp || !startUnixTimestamp) return 0;
+  if (startUnixTimestamp > endUnixTimestamp) return 0;
+  const remainingTicks = endUnixTimestamp - startUnixTimestamp;
+  // use MINUTES_IN_A_HOUR 2 times since there are also 60 seconds in a minute
+  return Math.floor(
+    (remainingTicks / NUMBER_OF_SECONDS_IN_A_DAY) *
+      HOURS_IN_A_DAY *
+      MINUTES_IN_A_HOUR *
+      MINUTES_IN_A_HOUR
+  );
+}
+
 export function getHoursMinusDaysRemaining(
   endUnixTimestamp,
   startUnixTimestamp
@@ -186,4 +217,26 @@ export function getMinutesMinusHoursRemaining(
   const getHours = getHoursRemaining(endUnixTimestamp, startUnixTimestamp);
   const hours = getHours * 60;
   return getMinutesRemaining(endUnixTimestamp, startUnixTimestamp) - hours;
+}
+
+export function getMarketAgeInDays(creationTimeTimestamp, currentTimestamp) {
+  const start = moment(creationTimeTimestamp * 1000).utc();
+  const daysPassed = moment(currentTimestamp * 1000).diff(start, "days");
+  return daysPassed;
+}
+
+export function getSecondsMinusMinutesRemaining(
+  endUnixTimestamp,
+  startUnixTimestamp
+) {
+  const getMinutes = getMinutesRemaining(endUnixTimestamp, startUnixTimestamp);
+  const minutes = getMinutes * 60;
+  return getSecondsRemaining(endUnixTimestamp, startUnixTimestamp) - minutes;
+}
+
+export function roundTimestampToPastDayMidnight(unixTimestamp) {
+  const actual = moment(unixTimestamp)
+    .utc()
+    .startOf("day");
+  return actual.unix();
 }

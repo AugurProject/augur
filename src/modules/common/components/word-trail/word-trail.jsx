@@ -5,11 +5,10 @@ import { SimpleButton } from "src/modules/common/components/simple-button";
 
 const WordTrail = ({ items = [], typeLabel }) => (
   <div className={Styles.WordTrail}>
-    <div className={Styles.WordTrail__label}>{typeLabel}</div>
     {items.map(({ label, onClick }, index) => (
       <SimpleButton
         testid={typeLabel + "-" + index}
-        className="tag-trail-button"
+        className={Styles.WordTrail__button}
         key={label}
         text={label}
         onClick={onClick}

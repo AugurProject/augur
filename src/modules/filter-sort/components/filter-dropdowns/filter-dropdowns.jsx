@@ -6,32 +6,30 @@ import {
   MARKET_END_DATE,
   MARKET_RECENTLY_TRADED,
   MARKET_FEE,
-  MARKET_OPEN_INTEREST
-} from "modules/filter-sort/constants/market-sort-params";
-import {
+  MARKET_OPEN_INTEREST,
   MARKET_OPEN,
   MARKET_REPORTING,
-  MARKET_CLOSED
-} from "modules/filter-sort/constants/market-states";
-import Checkbox from "src/modules/common/components/checkbox/checkbox";
-import Dropdown from "modules/common/components/dropdown/dropdown";
-import Styles from "modules/filter-sort/components/filter-dropdowns/filter-dropdowns.styles";
-import parseQuery from "modules/routes/helpers/parse-query";
-import makeQuery from "modules/routes/helpers/make-query";
-import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
-import {
+  MARKET_CLOSED,
   MAX_FEE_02_PERCENT,
   MAX_FEE_05_PERCENT,
   MAX_FEE_100_PERCENT,
   MAX_FEE_10_PERCENT,
   MAX_FEE_20_PERCENT,
   MAX_FEE_30_PERCENT,
-  MAX_FEE_40_PERCENT
-} from "src/modules/filter-sort/constants/market-max-fees";
+  MAX_FEE_40_PERCENT,
+  MOBILE_MENU_STATES
+} from "modules/common-elements/constants";
+import Checkbox from "src/modules/common/components/checkbox/checkbox";
+import Styles from "modules/filter-sort/components/filter-dropdowns/filter-dropdowns.styles";
+import parseQuery from "modules/routes/helpers/parse-query";
+import makeQuery from "modules/routes/helpers/make-query";
+import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
+import { SquareDropdown } from "modules/common-elements/selection";
+import { FilterButton } from "modules/common-elements/buttons";
 
 const sortOptions = [
   { value: MARKET_CREATION_TIME, label: "Creation Time" },
-  { value: MARKET_END_DATE, label: "Reporting Starts" },
+  { value: MARKET_END_DATE, label: "End Time" },
   { value: MARKET_RECENTLY_TRADED, label: "Recently Traded" },
   { value: MARKET_VOLUME, label: "Volume" },
   { value: MARKET_FEE, label: "Settlement Fee" },
@@ -68,6 +66,7 @@ export default class FilterSearch extends Component {
     updateSortOption: PropTypes.func.isRequired,
     updateMaxFee: PropTypes.func.isRequired,
     updateHasOpenOrders: PropTypes.func.isRequired,
+    updateMobileMenuState: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired
   };
@@ -149,39 +148,45 @@ export default class FilterSearch extends Component {
   }
 
   render() {
-    const { defaultFilter, defaultSort, defaultMaxFee, hasOrders } = this.props;
+    const {
+      defaultFilter,
+      defaultSort,
+      defaultMaxFee,
+      hasOrders,
+      updateMobileMenuState
+    } = this.props;
 
     return (
-      <div className={Styles.FilterDropdowns__container}>
-        <div className={Styles.FilterDropdowns}>
-          <Dropdown
-            default={defaultFilter}
-            onChange={this.changeFilterDropdown}
-            options={filterOptions}
-            alignLeft
-          />
-          <Dropdown
-            default={defaultSort}
-            onChange={this.changeSortDropdown}
-            options={sortOptions}
-          />
-          <Dropdown
-            default={defaultMaxFee}
-            onChange={this.changeMaxFees}
-            options={maxFeesOptions}
-          />
-        </div>
-        <div className={Styles.FilterDropdowns__hasOrders}>
-          <Checkbox
-            id="has-orders"
-            type="checkbox"
-            name="hasOrders"
-            isChecked={hasOrders}
-            value={hasOrders}
-            onClick={this.changeHasOrders}
-          />{" "}
-          <label htmlFor="has-orders">has open orders</label>
-        </div>
+      <div className={Styles.FilterDropdowns}>
+        <SquareDropdown
+          defaultValue={defaultFilter}
+          onChange={this.changeFilterDropdown}
+          options={filterOptions}
+        />
+        <SquareDropdown
+          defaultValue={defaultSort}
+          onChange={this.changeSortDropdown}
+          options={sortOptions}
+        />
+        <SquareDropdown
+          defaultValue={defaultMaxFee}
+          onChange={this.changeMaxFees}
+          options={maxFeesOptions}
+        />
+        <FilterButton
+          action={() =>
+            updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)
+          }
+        />
+        <Checkbox
+          id="has-orders"
+          type="checkbox"
+          name="hasOrders"
+          isChecked={hasOrders}
+          value={hasOrders}
+          onClick={this.changeHasOrders}
+        />
+        <label htmlFor="has-orders">has open orders</label>
       </div>
     );
   }

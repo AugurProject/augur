@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 import CreateMarketOutcome from "modules/create-market/components/create-market-form-outcome/create-market-form-outcome";
-import { SCALAR } from "modules/markets/constants/market-types";
+import { SCALAR } from "modules/common-elements/constants";
 import { createBigNumber } from "utils/create-big-number";
 
 describe("create-market-form-outcome", () => {

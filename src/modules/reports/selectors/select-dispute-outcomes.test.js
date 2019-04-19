@@ -1,9 +1,5 @@
 import sinon from "sinon";
-import {
-  CATEGORICAL,
-  SCALAR,
-  YES_NO
-} from "modules/markets/constants/market-types";
+import { CATEGORICAL, SCALAR, YES_NO } from "modules/common-elements/constants";
 import selectDisputeOutcomes from "modules/reports/selectors/select-dispute-outcomes";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 

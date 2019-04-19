@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { BigNumber } from "utils/create-big-number";
 
 import ConfirmStyles from "modules/common/less/confirm-table";
 
@@ -25,7 +26,9 @@ const ReportingReportConfirm = ({
           </li>
           <li>
             <span>{stakeLabel}</span>
-            <span>{stake} REP</span>
+            <span>
+              {BigNumber.isBigNumber(stake) ? stake.toNumber() : stake} REP
+            </span>
           </li>
           <li>
             <span>Gas</span>
@@ -47,8 +50,8 @@ const ReportingReportConfirm = ({
 ReportingReportConfirm.propTypes = {
   selectedOutcome: PropTypes.string.isRequired,
   stake: PropTypes.string.isRequired,
-  stakeLabel: PropTypes.string.isRequired,
   gasEstimate: PropTypes.string.isRequired,
+  stakeLabel: PropTypes.string.isRequired,
   isMarketInValid: PropTypes.bool.isRequired,
   isDesignatedReporter: PropTypes.bool.isRequired,
   designatedReportNoShowReputationBond: PropTypes.object

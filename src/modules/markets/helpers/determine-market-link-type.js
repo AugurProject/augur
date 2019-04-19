@@ -5,7 +5,7 @@ import {
   TYPE_TRADE,
   TYPE_FINALIZE_MARKET,
   TYPE_CLAIM_PROCEEDS
-} from "modules/markets/constants/link-types";
+} from "modules/common-elements/constants";
 import { constants } from "services/augurjs";
 import { isEmpty } from "lodash";
 

@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 
 /*
-* Note this component does not update as time progresses.
-*
-* */
+ * Note this component does not update as time progresses.
+ *
+ * */
 export default function TimeRemainingIndicatorWrapper(BaseCmp) {
   const TimeRemainingIndicator = props => {
     const { startDate, endTime, currentTimestamp, ...otherProps } = props;

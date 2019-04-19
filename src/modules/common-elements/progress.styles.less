@@ -1,0 +1,161 @@
+@import (reference) '~assets/styles/shared';
+
+.ProgressLabel {
+  .text-10;
+
+  align-items: baseline;
+  color: @color-tertiary-text;
+  display: flex;
+  flex-flow: column nowrap;
+  line-height: @size-14;
+  white-space: nowrap;
+
+  > span:last-of-type {
+    .text-12-bold;
+
+    color: @color-secondary-text;
+    line-height: @size-16;
+    text-align: left;
+    width: 100%;
+  }
+
+  &.ProgressLabel__FirstBreakpoint {
+    > span:last-of-type {
+      color: @color-in-reporting;
+    }
+  }
+
+  &.ProgressLabel__SecondBreakpoint {
+    > span:last-of-type {
+      color: @color-resolved;
+    }
+  }
+
+  &.ProgressLabel__Finished {
+    > span:last-of-type {
+      color: @color-alternate-text;
+    }
+  }
+}
+
+.TimeLabel {
+  color: @color-secondary-text;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 2.875rem;
+  line-height: @size-14;
+
+  > span:first-of-type {
+    .mono-12;
+
+    color: @color-neutral;
+    text-transform: capitalize;
+  }
+
+  > span {
+    .mono-14-bold;
+  }
+
+  > span:last-of-type {
+    .mono-10;
+
+    line-height: @size-12;
+  }
+
+  @media @breakpoint-mobile {
+    height: auto;
+  }
+}
+
+.TimeProgressBar {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-flow: row nowrap;
+  height: @size-8;
+  width: 100%;
+
+  > span:first-of-type {
+    background: @color-primary-action;
+    height: 1px;
+    position: relative;
+    top: 0;
+    width: var(--percent-done);
+  }
+
+  > span:last-of-type {
+    background: @color-shadow-text;
+    height: 1px;
+    position: relative;
+    top: 0;
+    width: var(--percent-to-go);
+  }
+
+  @media @breakpoint-mobile {
+    flex: 1;
+    flex-flow: row nowrap;
+    height: @size-8;
+    width: 100%;
+
+    > span:first-of-type {
+      height: 1px;
+      width: var(--percent-done);
+    }
+
+    > span:last-of-type {
+      height: 1px;
+      width: var(--percent-to-go);
+    }
+  }
+}
+
+.MarketTimeline {
+  height: 100%;
+  width: 100%;
+
+  > div {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  > div:last-of-type {
+    > span > span {
+      .mono-10;
+
+      color: @color-secondary-text;
+    }
+
+    > span:last-of-type {
+      text-align: right;
+    }
+  }
+
+  > div.TimeLabel__fade:last-of-type {
+    > span:first-of-type {
+      > span {
+        color: @color-shadow-text;
+      }
+    }
+  }
+}
+
+.MarketTimeline_open,
+.MarketTimeline_reported {
+  .mono-10;
+
+  color: @color-shadow-text;
+  text-transform: uppercase;
+}
+
+.MarketTimeline_open {
+  color: @color-shadow-text;
+}
+
+.MarketTimeline_reported {
+  color: @color-primary-action;
+
+  > div:first-of-type {
+    color: @color-shadow-text;
+  }
+}
+

@@ -23,7 +23,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   loadReporting: cb => dispatch(loadReporting(null, cb)),
-  loadMarketsInfo: marketIds => dispatch(loadMarketsInfoIfNotLoaded(marketIds))
+  loadMarketsInfoIfNotLoaded: marketIds =>
+    dispatch(loadMarketsInfoIfNotLoaded(marketIds))
 });
 
 const ReportingReportingContainer = withRouter(

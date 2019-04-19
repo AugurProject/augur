@@ -1,7 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .AccountDeposit {
-  background: white;
+  background: @color-grayish-purple;
+  color: @color-white;
   padding: 5.5rem 4.625rem 7rem;
 }
 
@@ -9,14 +10,16 @@
   margin-bottom: 2.5rem;
 
   > h1 {
-    color: @color-darkpurple;
+    color: @color-white;
     display: inline-block;
-    font-size: @font-size-extra-large;
-    font-weight: 500;
-    letter-spacing: 0.14rem;
+    font-size: 2.25rem;
     margin-bottom: 0;
     margin-right: 1rem;
-    text-transform: uppercase;
+    text-transform: capitalize;
+
+    > span {
+      font-weight: bold;
+    }
   }
 }
 
@@ -58,7 +61,7 @@
   > a {
     &:extend(.caps--large);
 
-    color: @color-purple;
+    color: @color-white;
     font-weight: 500;
   }
 }
@@ -68,10 +71,6 @@
   display: flex;
   flex-direction: column;
   margin-top: 1rem;
-
-  > button {
-    &:extend(.button--purple all);
-  }
 }
 
 .AccountDeposit__noFeeTextStyle {
@@ -91,7 +90,7 @@
 .AccountDeposit__addressLabel {
   &:extend(.caps);
 
-  color: @color-lightgray;
+  color: @color-white;
   font-size: @font-size-normal;
   margin-bottom: 0.625rem;
 }

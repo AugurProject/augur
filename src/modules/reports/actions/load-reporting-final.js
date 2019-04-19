@@ -7,41 +7,27 @@ export const loadReportingFinal = (callback = logError) => (
   getState
 ) => {
   const { universe } = getState();
-
   augur.augurNode.submitRequest(
     "getMarkets",
     {
-      reportingState: constants.REPORTING_STATE.FINALIZED,
-      sortBy: "finalizationBlockNumber",
+      reportingState: [
+        constants.REPORTING_STATE.FINALIZED,
+        constants.REPORTING_STATE.AWAITING_FINALIZATION
+      ],
+      sortBy: "endTime",
       isSortDescending: true,
       universe: universe.id
     },
-    (err, finalizedMarketIds) => {
+    (err, resolvedMarketIds) => {
       if (err) return callback(err);
 
-      augur.augurNode.submitRequest(
-        "getMarkets",
-        {
-          reportingState: constants.REPORTING_STATE.AWAITING_FINALIZATION,
-          sortBy: "endTime",
-          isSortDescending: true,
-          universe: universe.id
-        },
-        (err, awaitingFinalizationMarketIds) => {
-          if (err) return callback(err);
+      if (!resolvedMarketIds || resolvedMarketIds.length === 0) {
+        dispatch(updateResolvedMarkets([]));
+        return callback(null, []);
+      }
 
-          const marketIds = awaitingFinalizationMarketIds.concat(
-            finalizedMarketIds
-          );
-          if (!marketIds || marketIds.length === 0) {
-            dispatch(updateResolvedMarkets([]));
-            return callback(null);
-          }
-
-          dispatch(updateResolvedMarkets(marketIds));
-          callback(null, marketIds);
-        }
-      );
+      dispatch(updateResolvedMarkets(resolvedMarketIds));
+      callback(null, resolvedMarketIds);
     }
   );
 };

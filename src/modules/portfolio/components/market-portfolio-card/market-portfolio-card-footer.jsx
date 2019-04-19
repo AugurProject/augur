@@ -7,7 +7,7 @@ import { convertUnixToFormattedDate } from "utils/format-date";
 import TimeRemainingIndicatorWrapper from "src/modules/market/components/common/time-remaining-indicator/time-remaining-indicator";
 import { createBigNumber } from "utils/create-big-number";
 import moment from "moment";
-import { TYPE_CLAIM_PROCEEDS } from "modules/markets/constants/link-types";
+import { TYPE_CLAIM_PROCEEDS } from "modules/common-elements/constants";
 import Styles from "modules/portfolio/components/market-portfolio-card/market-portfolio-card.styles";
 import { constants } from "services/augurjs";
 import { formatEther } from "utils/format-number";
@@ -100,14 +100,16 @@ const MarketPortfolioCardFooter = ({
                       startDate={startTime}
                       endTime={finalTime}
                       currentTimestamp={currentTimestamp * 1000}
-                      backgroundColor="#ceccd8"
+                      backgroundColor="transparent"
                     />
                   </span>
                 </div>
               )}
             <button
               data-testid={"claimButton-" + marketId}
-              className={classNames(Styles["MarketCard__action-footer-light"])}
+              className={classNames(Styles["MarketCard__action-footer-light"], {
+                [Styles.MarketCard__claim]: linkType === TYPE_CLAIM_PROCEEDS
+              })}
               onClick={buttonAction}
               disabled={
                 (linkType === TYPE_CLAIM_PROCEEDS &&

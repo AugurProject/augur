@@ -7,7 +7,7 @@ import MarketsList from "modules/markets-list/components/markets-list";
 import {
   TYPE_VIEW,
   TYPE_FINALIZE_MARKET
-} from "modules/markets/constants/link-types";
+} from "modules/common-elements/constants";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
 import Styles from "modules/reporting/components/reporting-resolved/reporting-resolved.styles";
 import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";

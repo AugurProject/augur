@@ -11,6 +11,7 @@ import * as loadGadPriceInfoModule from "modules/app/actions/load-gas-price-info
 jest.mock("services/augurjs", () => ({
   augur: {
     rpc: {
+      getNetworkID: () => 4,
       getCurrentBlock: () => ({
         number: 10000,
         timestamp: 4886718345
@@ -98,9 +99,6 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
       {
         type: "UPDATE_BLOCKCHAIN",
         data: dataReturned
-      },
-      {
-        type: "UPDATE_GAS_PRICE_INFO"
       },
       {
         type: "UPDATE_ASSETS"

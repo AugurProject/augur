@@ -113,11 +113,16 @@ class ReportingReporting extends React.Component {
 
   componentDidMount() {
     const { loadReporting, universe } = this.props;
-    if (universe) loadReporting();
+    if (universe) loadReporting(null);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { universe, loadReporting, loadMarketsInfo, marketIds } = this.props;
+    const {
+      universe,
+      loadReporting,
+      loadMarketsInfoIfNotLoaded,
+      marketIds
+    } = this.props;
     const { paginations } = this.state;
     if (nextProps.universe !== universe && nextProps.universe) {
       loadReporting();
@@ -132,7 +137,7 @@ class ReportingReporting extends React.Component {
         const newMarketIdArray = keyMarketIds.slice(lower - 1, marketIdLength);
         initMarketIds = [...initMarketIds, ...newMarketIdArray];
       });
-      loadMarketsInfo(initMarketIds);
+      loadMarketsInfoIfNotLoaded(initMarketIds);
     }
   }
 
@@ -149,13 +154,13 @@ class ReportingReporting extends React.Component {
   }
 
   keyedSetSegment(lower, upperBound, boundedLength, key) {
-    const { marketIds, loadMarketsInfo } = this.props;
+    const { marketIds, loadMarketsInfoIfNotLoaded } = this.props;
     const { paginations } = this.state;
     paginations[key] = { lower, boundedLength };
     const keyMarketIds = marketIds[key];
     const marketIdLength = boundedLength + (lower - 1);
     const newMarketIdArray = keyMarketIds.slice(lower - 1, marketIdLength);
-    loadMarketsInfo(newMarketIdArray);
+    loadMarketsInfoIfNotLoaded(newMarketIdArray);
     this.setState(paginations);
   }
 
@@ -222,7 +227,7 @@ ReportingReporting.propTypes = {
   marketIds: PropTypes.object.isRequired,
   markets: PropTypes.object.isRequired,
   loadReporting: PropTypes.func.isRequired,
-  loadMarketsInfo: PropTypes.func.isRequired,
+  loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
   universe: PropTypes.string
 };
 

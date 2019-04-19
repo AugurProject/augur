@@ -3,10 +3,9 @@ import logError from "utils/log-error";
 import noop from "utils/noop";
 import speedomatic from "speedomatic";
 import { augur } from "services/augurjs";
-import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
-import { updateNotification } from "modules/notifications/actions/notifications";
+import { updateAlert } from "modules/alerts/actions/alerts";
 
 export const UPDATE_MARKET_CREATOR_FEES = "UPDATE_MARKET_CREATOR_FEES";
 
@@ -93,11 +92,10 @@ export const collectMarketCreatorFees = (
                   meta: loginAccount.meta,
                   onSent: noop,
                   onSuccess: res => {
-                    dispatch(loadMarketsInfo([marketId]));
                     dispatch(loadUnclaimedFees([marketId]));
                     callback(null, combined);
                     dispatch(
-                      updateNotification(res.hash, {
+                      updateAlert(res.hash, {
                         id: res.hash,
                         status: "Confirmed",
                         timestamp: selectCurrentTimestampInSeconds(getState())

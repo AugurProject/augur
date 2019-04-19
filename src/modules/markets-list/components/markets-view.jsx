@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 
 import MarketsHeader from "modules/markets-list/components/markets-header/markets-header";
 import MarketsList from "modules/markets-list/components/markets-list";
-import { TYPE_TRADE } from "modules/markets/constants/link-types";
+import { TYPE_TRADE } from "modules/common-elements/constants";
 
 export default class MarketsView extends Component {
   static propTypes = {
@@ -40,7 +40,8 @@ export default class MarketsView extends Component {
       sort: props.defaultSort,
       maxFee: props.defaultMaxFee,
       hasOrders: props.defaultHasOrders,
-      filterSortedMarkets: []
+      filterSortedMarkets: [],
+      isSearchingMarkets: false
     };
 
     this.updateFilter = this.updateFilter.bind(this);
@@ -76,11 +77,15 @@ export default class MarketsView extends Component {
   updateFilteredMarkets() {
     const { search, category, loadMarketsByFilter } = this.props;
     const { filter, sort, maxFee, hasOrders } = this.state;
+    this.setState({ isSearchingMarkets: true });
     loadMarketsByFilter(
       { category, search, filter, sort, maxFee, hasOrders },
       (err, filterSortedMarkets) => {
         if (err) return console.log("Error loadMarketsFilter:", err);
-        if (this.componentWrapper) this.setState({ filterSortedMarkets });
+        if (this.componentWrapper) {
+          this.setState({ filterSortedMarkets });
+          setTimeout(() => this.setState({ isSearchingMarkets: false }), 500);
+        }
       }
     );
   }
@@ -95,7 +100,14 @@ export default class MarketsView extends Component {
       markets,
       toggleFavorite
     } = this.props;
-    const { filter, sort, maxFee, hasOrders, filterSortedMarkets } = this.state;
+    const {
+      filter,
+      sort,
+      maxFee,
+      hasOrders,
+      filterSortedMarkets,
+      isSearchingMarkets
+    } = this.state;
 
     return (
       <section
@@ -109,7 +121,7 @@ export default class MarketsView extends Component {
         <MarketsHeader
           isLogged={isLogged}
           location={location}
-          markets={markets}
+          isSearchingMarkets={isSearchingMarkets}
           filter={filter}
           sort={sort}
           maxFee={maxFee}

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { BigNumber } from "utils/create-big-number";
 
-import { SCALAR } from "modules/markets/constants/market-types";
+import { SCALAR } from "modules/common-elements/constants";
 
 import Styles from "modules/create-market/components/create-market-preview-range/create-market-preview-range.styles";
 

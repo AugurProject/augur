@@ -1,0 +1,178 @@
+@import (reference) '~assets/styles/shared';
+
+.OverviewFundsContent {
+  align-items: center;
+  background: @color-secondary-action;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+
+  > div:first-of-type {
+    .mono-11;
+
+    color: @color-secondary-text;
+  }
+
+  > div:nth-of-type(2) {
+    margin: 10px 0 3px;
+  }
+
+  > div:nth-of-type(3) {
+    .text-24-bold;
+
+    margin: 0 0.25rem;
+
+    > svg {
+      fill: @color-secondary-text;
+      height: 18px;
+      margin: 0 0 0 0.25rem;
+      width: 12px;
+    }
+  }
+}
+
+.BalanceFrozenFunds {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px 0 0;
+  text-align: center;
+  width: 100%;
+
+  > div {
+    flex: 1;
+    flex-direction: column;
+
+    > div:first-of-type {
+      .mono-10;
+
+      color: @color-shadow-text;
+      text-align: center;
+    }
+
+    > div:nth-of-type(2) {
+      .mono-14;
+
+      color: @color-secondary-text;
+      margin: 0.25rem 0 0;
+      text-align: center;
+    }
+
+    > div svg {
+      fill: @color-secondary-text;
+      height: 12px;
+      margin: 0 0 0 0.25rem;
+      width: 8px;
+    }
+  }
+}
+
+.RepBalanceStaked {
+  align-items: center;
+  border: 2px solid @color-tertiary-background;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 1rem 1.5rem 0;
+  text-align: center;
+  width: 100%;
+
+  > div {
+    > svg {
+      fill: @color-secondary-text;
+      height: 32px;
+      margin: 0 40px;
+      width: 29.5px;
+    }
+
+    > div:first-of-type {
+      .mono-10;
+
+      color: @color-shadow-text;
+      margin: 1rem 0 0;
+      text-align: center;
+    }
+
+    > div:nth-of-type(2) {
+      .mono-12;
+
+      color: @color-secondary-text;
+      margin: 0 0 1rem;
+      text-align: center;
+    }
+  }
+}
+
+.ShowOnMobile {
+  display: none;
+}
+
+.HideOnMobile {
+  display: flex;
+}
+
+.RepBalanceStaked__container {
+  display: flex;
+  width: 100%;
+}
+
+@media @breakpoint-mobile {
+  .RepBalanceStaked {
+    background: unset;
+    margin: 1.5rem 2rem;
+
+    > div {
+      > div:nth-of-type(2) {
+        color: @color-tertiary-text;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .OverviewFunds__changeForMobile {
+    flex-direction: column;
+  }
+
+  .BalanceFrozenFunds {
+    > div:first-of-type {
+      flex-direction: row;
+    }
+
+    > div:last-of-type {
+      flex-grow: unset;
+
+      > svg {
+        fill: @color-secondary-text;
+        height: 0.75rem;
+        margin: 0 0 0 0.25rem;
+        width: 0.5rem;
+      }
+    }
+  }
+
+  .OverviewFundsContent {
+    background: unset;
+
+    > div:first-of-type {
+      .mono-10;
+    }
+
+    > div:nth-of-type(3) {
+      margin-bottom: @size-18;
+    }
+  }
+
+  .ShowOnMobile {
+    display: flex;
+    margin-top: 0;
+  }
+
+  .HideOnMobile {
+    display: none;
+  }
+}
+

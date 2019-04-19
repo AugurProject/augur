@@ -17,7 +17,8 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       priceTimeSeries: [
         {
           price: 0.1,
-          timestamp: 1533312111000
+          timestamp: 1533312111000,
+          logIndex: 0
         }
       ]
     },
@@ -26,7 +27,8 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       priceTimeSeries: [
         {
           price: 0.1,
-          timestamp: 1533312111000
+          timestamp: 1533312111000,
+          logIndex: 0
         }
       ]
     }
@@ -38,27 +40,33 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       priceTimeSeries: [
         {
           price: 0.1,
-          timestamp: 1533312111000
+          timestamp: 1533312111000,
+          logIndex: 0
         },
         {
           price: 0.2,
-          timestamp: 1533315711000
+          timestamp: 1533315711000,
+          logIndex: 0
         },
         {
           price: 0.3,
-          timestamp: 1533319310000
+          timestamp: 1533319310000,
+          logIndex: 0
         },
         {
           price: 0.6,
-          timestamp: 1533319310002
+          timestamp: 1533319310002,
+          logIndex: 0
         },
         {
           price: 0.5,
-          timestamp: 1533319310003
+          timestamp: 1533319310003,
+          logIndex: 0
         },
         {
           price: 0.4,
-          timestamp: 1533319310004
+          timestamp: 1533319310004,
+          logIndex: 0
         }
       ]
     },
@@ -67,27 +75,33 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       priceTimeSeries: [
         {
           price: 0.1,
-          timestamp: 1533312111000
+          timestamp: 1533312111000,
+          logIndex: 0
         },
         {
           price: 0.2,
-          timestamp: 1533315711000
+          timestamp: 1533315711000,
+          logIndex: 0
         },
         {
           price: 0.3,
-          timestamp: 1533319310000
+          timestamp: 1533319310000,
+          logIndex: 0
         },
         {
           price: 0.6,
-          timestamp: 1533319310002
+          timestamp: 1533319310002,
+          logIndex: 0
         },
         {
           price: 0.5,
-          timestamp: 1533319310003
+          timestamp: 1533319310003,
+          logIndex: 0
         },
         {
           price: 0.4,
-          timestamp: 1533319310004
+          timestamp: 1533319310004,
+          logIndex: 0
         }
       ]
     }
@@ -102,13 +116,12 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       market1Outcomes
     );
     const expected = {
-      priceTimeSeries: { 0: [], 1: [] },
-      timeBuckets: [1533312112000, 1533312312000]
+      priceTimeSeries: { 0: [], 1: [] }
     };
     expect(actual).toEqual(expected);
   });
 
-  test(`bucketed trades in categorical market`, () => {
+  test(`bucketed trades in categorical market simple`, () => {
     const creationTimestamp = 1533312111000;
     const currentTimestamp = 1533322111000;
     const actual = selectBucketedPriceTimeSeries(
@@ -117,18 +130,19 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       market2Outcomes
     );
     const expected = {
-      timeBuckets: [1533312111000, 1533315711000, 1533319311000, 1533322111000],
       priceTimeSeries: {
         0: [
           {
             price: 0.1,
-            timestamp: 1533312111000
+            timestamp: 1533312000000,
+            logIndex: 0
           }
         ],
         1: [
           {
             price: 0.1,
-            timestamp: 1533312111000
+            timestamp: 1533312000000,
+            logIndex: 0
           }
         ]
       }
@@ -136,7 +150,7 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
     expect(actual).toEqual(expected);
   });
 
-  test(`bucketed trades in categorical market`, () => {
+  test(`bucketed trades in categorical market blah blah blah`, () => {
     const creationTimestamp = 1533312111000;
     const currentTimestamp = 1533322111000;
     const actual = selectBucketedPriceTimeSeries(
@@ -145,26 +159,39 @@ describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`,
       market3Outcomes
     );
     const expected = {
-      timeBuckets: [1533312111000, 1533315711000, 1533319311000, 1533322111000],
       priceTimeSeries: {
-        0: [
+        "0": [
           {
-            price: 0.2,
-            timestamp: 1533315711000
+            logIndex: 0,
+            price: 0.1,
+            timestamp: 1533312000000
           },
           {
+            logIndex: 0,
+            price: 0.2,
+            timestamp: 1533315600000
+          },
+          {
+            logIndex: 0,
             price: 0.4,
-            timestamp: 1533319310004
+            timestamp: 1533319200000
           }
         ],
-        2: [
+        "2": [
           {
-            price: 0.2,
-            timestamp: 1533315711000
+            logIndex: 0,
+            price: 0.1,
+            timestamp: 1533312000000
           },
           {
+            logIndex: 0,
+            price: 0.2,
+            timestamp: 1533315600000
+          },
+          {
+            logIndex: 0,
             price: 0.4,
-            timestamp: 1533319310004
+            timestamp: 1533319200000
           }
         ]
       }

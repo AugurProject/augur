@@ -1,0 +1,130 @@
+@import (reference) '~assets/styles/shared';
+
+.AlertsView {
+  background-color: @color-light-purple;
+  border: 1px solid @color-dark-gray;
+  border-top: 0;
+  box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
+  color: @color-white;
+  display: flex;
+  flex-direction: column;
+  max-height: 470px;
+  position: relative;
+  text-align: left;
+  width: 360px;
+  z-index: @mask-above;
+}
+
+.AlertsView__dark {
+  background-color: @color-darkpurple;
+}
+
+.AlertsView__parent {
+  position: absolute;
+  right: 0;
+  top: @top-bar-height;
+}
+
+.AlertsView__box {
+  overflow-y: auto;
+  width: 100%;
+}
+
+.Alert__close {
+  cursor: pointer;
+  display: none;
+  height: @font-size-normal;
+  left: @font-size-normal;
+  position: absolute;
+  top: @font-size-normal;
+  width: @font-size-normal;
+}
+
+.NullStateMessage {
+  align-self: center;
+  color: @color-lightgray;
+  font-size: 1rem;
+  font-weight: 400;
+  margin-top: 0.5rem;
+  padding: 30px;
+  text-align: center;
+  width: 100%;
+}
+
+.AlertsView__dismissContainer {
+  align-items: flex-end;
+  background-color: @color-light-purple;
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+  min-height: 27px;
+  padding: 7px 16px;
+}
+
+.AlertsView__dismissContainerBorder {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
+.AlertsView__dismissButton {
+  border-bottom: dotted 0.5px @color-lightergray;
+  color: @color-lightergray;
+  cursor: pointer;
+  display: inline;
+  font-size: @font-size-small;
+
+  &:hover {
+    border-bottom: dotted 0.5px @color-white;
+    color: @color-white;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@media @breakpoint-mobile {
+  .AlertsView {
+    bottom: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+    left: 0;
+    max-height: 100%;
+    padding-bottom: 0.25em;
+    right: 0;
+    text-align: left;
+    top: 0;
+    width: 100%;
+    z-index: @mask-above;
+  }
+
+  .AlertsView__parent {
+    bottom: 0;
+    left: 0;
+    top: 0;
+  }
+
+  .AlertsView::after {
+    border: none;
+    bottom: 0;
+    content: "";
+    display: none;
+    right: 0;
+  }
+
+  .AlertsView__box {
+    margin-top: 2.5rem;
+    max-height: unset;
+    overflow-y: auto;
+  }
+
+  .Alert__close {
+    display: block;
+  }
+
+  .NullStateMessage {
+    margin-top: 0.5rem;
+  }
+}

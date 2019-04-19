@@ -2,24 +2,24 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Helmet } from "react-helmet";
-import { createBigNumber } from "utils/create-big-number";
 import { augur } from "services/augurjs";
+import { createBigNumber } from "utils/create-big-number";
+
 import {
   formatEtherEstimate,
   formatGasCostToEther,
   formatRep,
   formatAttoEth
 } from "utils/format-number";
-import { ZERO } from "modules/trades/constants/numbers";
 import MarketPreview from "modules/market/containers/market-preview";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import ReportingReportForm from "modules/reporting/components/reporting-report-form/reporting-report-form";
 import ReportingReportConfirm from "modules/reporting/components/reporting-report-confirm/reporting-report-confirm";
-import { TYPE_VIEW } from "modules/markets/constants/link-types";
+import { TYPE_VIEW, ZERO } from "modules/common-elements/constants";
 import { isEmpty } from "lodash";
 import FormStyles from "modules/common/less/form";
-import InvalidMessage from "modules/reporting/components/common/invalid-message";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
+import InvalidMessage from "modules/reporting/components/invalid-message/invalid-message";
 
 export default class ReportingReport extends Component {
   static propTypes = {
@@ -102,10 +102,10 @@ export default class ReportingReport extends Component {
 
   calculateMarketCreationCosts() {
     const {
+      isDesignatedReporter,
       universe,
       market,
-      isDRMarketCreator,
-      isDesignatedReporter
+      isDRMarketCreator
     } = this.props;
     augur.api.Universe.getOrCacheDesignatedReportStake(
       { tx: { to: universe, send: false } },
@@ -173,13 +173,15 @@ export default class ReportingReport extends Component {
       !Object.keys(s.validations).every(key => s.validations[key] === true) ||
       insufficientRep ||
       (!isDesignatedReporter && !isOpenReporting);
+
     let stakeLabel = "Required Stake";
     let stakeValue = s.stake.formatted;
     if (createBigNumber(s.stake.fullPrecision).lt(ZERO)) {
-      stakeLabel = "REP STAKE RETURNS";
+      stakeLabel = "REP Stake Returns";
       stakeValue = formatRep(createBigNumber(s.stake.fullPrecision).abs())
         .formatted;
     }
+
     return (
       <section>
         <Helmet>
@@ -202,22 +204,20 @@ export default class ReportingReport extends Component {
           <article className={FormStyles.Form}>
             {s.currentStep === 0 && (
               <div className={Styles.ReportingReport_form_message}>
-                <div>
-                  <InvalidMessage />
-                  <ReportingReportForm
-                    market={market}
-                    updateState={this.updateState}
-                    isMarketInValid={s.isMarketInValid}
-                    selectedOutcome={s.selectedOutcome}
-                    stake={stakeValue}
-                    stakeLabel={stakeLabel}
-                    validations={s.validations}
-                    isOpenReporting={isOpenReporting}
-                    insufficientRep={insufficientRep}
-                    isDesignatedReporter={isDesignatedReporter}
-                  />
-                  <InvalidMessage />
-                </div>
+                <ReportingReportForm
+                  market={market}
+                  availableRep={availableRep}
+                  updateState={this.updateState}
+                  isMarketInValid={s.isMarketInValid}
+                  selectedOutcome={s.selectedOutcome}
+                  stake={stakeValue}
+                  stakeLabel={stakeLabel}
+                  validations={s.validations}
+                  isOpenReporting={isOpenReporting}
+                  insufficientRep={insufficientRep}
+                  isDesignatedReporter={isDesignatedReporter}
+                />
+                <InvalidMessage />
               </div>
             )}
             {s.currentStep === 1 && (
@@ -226,12 +226,12 @@ export default class ReportingReport extends Component {
                 isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcomeName}
                 stake={stakeValue}
-                stakeLabel={stakeLabel}
                 designatedReportNoShowReputationBond={
                   s.designatedReportNoShowReputationBond
                 }
                 isDesignatedReporter={isDesignatedReporter}
                 gasEstimate={s.gasEstimate}
+                stakeLabel={stakeLabel}
               />
             )}
             <div className={FormStyles.Form__navigation}>

@@ -4,7 +4,7 @@ import logError from "utils/log-error";
 import { selectMarkets } from "src/modules/markets/selectors/markets-all";
 import { loadMarkets } from "modules/markets/actions/load-markets";
 import store from "src/store";
-import { DISCLAIMER_SEEN } from "src/modules/modal/constants/local-storage-keys";
+import { DISCLAIMER_SEEN } from "modules/common-elements/constants";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import {
   selectCurrentTimestamp,

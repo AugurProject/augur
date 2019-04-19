@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .AccountUniverses {
-  background: white;
+  background: @color-grayish-purple;
   padding: 5.5rem 4.625rem 7rem;
 }
 
@@ -9,14 +9,12 @@
   margin-bottom: 2.5rem;
 
   > h1 {
-    color: @color-darkpurple;
+    color: @color-white;
     display: inline-block;
-    font-size: @font-size-extra-large;
-    font-weight: 500;
-    letter-spacing: 0.14rem;
+    font-size: 2.25rem;
     margin-bottom: 0;
     margin-right: 1rem;
-    text-transform: uppercase;
+    text-transform: capitalize;
   }
 }
 
@@ -37,21 +35,17 @@
 
 .AccountUniverses__description {
   > h4 {
-    font-weight: bold;
+    color: @color-white;
     margin-bottom: 3em;
-    text-transform: uppercase;
+    text-transform: capitalize;
   }
 
   > a {
     &:extend(.caps--large);
 
-    color: @color-purple;
-    font-weight: 500;
+    color: @color-white;
+    text-transform: capitalize;
   }
-}
-
-.AccountUniverses__legacyRep {
-  font-weight: bold;
 }
 
 @media @breakpoint-mobile {

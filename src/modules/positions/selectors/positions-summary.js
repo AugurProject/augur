@@ -1,98 +1,67 @@
 import memoize from "memoizee";
 import { createBigNumber } from "utils/create-big-number";
 
-import { ZERO } from "modules/trades/constants/numbers";
-import { LONG, SHORT } from "modules/positions/constants/position-types";
+import { LONG, SHORT, ZERO, CLOSED } from "modules/common-elements/constants";
+import { formatEther, formatShares, formatPercent } from "utils/format-number";
 
-import { formatEther, formatShares, formatNumber } from "utils/format-number";
-
-export const generateOutcomePositionSummary = memoize(
-  adjustedPosition => {
+export const positionSummary = memoize(
+  (adjustedPosition, outcome) => {
     if (!adjustedPosition) {
       return null;
     }
     const {
       netPosition,
-      position,
       realized,
+      realizedPercent,
       unrealized,
+      unrealizedPercent,
       averagePrice,
       marketId,
-      outcome: outcomeId
+      outcome: outcomeId,
+      total,
+      totalPercent,
+      unrealizedRevenue,
+      unrealizedCost,
+      unrealizedRevenue24hChangePercent
     } = adjustedPosition;
+
+    const quantity = createBigNumber(netPosition).abs();
+    let type = createBigNumber(netPosition).gte("0") ? LONG : SHORT;
+    if (
+      createBigNumber(quantity).isEqualTo(ZERO) &&
+      createBigNumber(averagePrice).isEqualTo(ZERO)
+    ) {
+      type = CLOSED;
+    }
+
     return {
       marketId,
       outcomeId,
-      ...generatePositionsSummary(
-        1,
-        netPosition,
-        position,
-        averagePrice,
-        realized,
-        unrealized
-      )
-    };
-  },
-  {
-    max: 50
-  }
-);
-
-export const generateMarketsPositionsSummary = memoize(
-  markets => {
-    if (!markets || !markets.length) {
-      return null;
-    }
-    let position = ZERO;
-    let totalRealizedNet = ZERO;
-    let totalUnrealizedNet = ZERO;
-    let netPosition = ZERO;
-    let totalNet = ZERO;
-    let purchasePrice = ZERO;
-    const positionOutcomes = [];
-    markets.forEach(market => {
-      market.outcomes.forEach(outcome => {
-        if (
-          !outcome ||
-          !outcome.position ||
-          !outcome.position.numPositions ||
-          !outcome.position.numPositions.value
-        ) {
-          return;
+      type,
+      quantity: formatShares(quantity),
+      purchasePrice: formatEther(averagePrice),
+      realizedNet: formatEther(realized),
+      unrealizedNet: formatEther(unrealized),
+      realizedPercent: formatPercent(timesHundred(realizedPercent || ZERO), {
+        decimalsRounded: 2
+      }),
+      unrealizedPercent: formatPercent(
+        timesHundred(unrealizedPercent || ZERO),
+        { decimalsRounded: 2 }
+      ),
+      totalCost: formatEther(unrealizedCost),
+      totalValue: formatEther(unrealizedRevenue),
+      lastPrice: formatEther(outcome.price),
+      totalReturns: formatEther(total || ZERO),
+      valueChange: formatPercent(
+        timesHundred(unrealizedRevenue24hChangePercent),
+        {
+          decimalsRounded: 2
         }
-        netPosition = netPosition.plus(
-          createBigNumber(outcome.position.netPosition.value, 10)
-        );
-        position = position.plus(
-          createBigNumber(outcome.position.position.value, 10)
-        );
-        purchasePrice = purchasePrice.plus(
-          createBigNumber(outcome.position.purchasePrice.value, 10)
-        );
-        totalRealizedNet = totalRealizedNet.plus(
-          createBigNumber(outcome.position.realizedNet.value, 10)
-        );
-        totalUnrealizedNet = totalUnrealizedNet.plus(
-          createBigNumber(outcome.position.unrealizedNet.value, 10)
-        );
-        totalNet = totalNet.plus(
-          createBigNumber(outcome.position.totalNet.value, 10)
-        );
-        positionOutcomes.push(outcome);
-      });
-    });
-    const positionsSummary = generatePositionsSummary(
-      positionOutcomes.length,
-      netPosition,
-      position,
-      purchasePrice,
-      totalRealizedNet,
-      totalUnrealizedNet,
-      totalNet
-    );
-    return {
-      ...positionsSummary,
-      positionOutcomes
+      ),
+      totalPercent: formatPercent(timesHundred(totalPercent || ZERO), {
+        decimalsRounded: 2
+      })
     };
   },
   {
@@ -100,32 +69,4 @@ export const generateMarketsPositionsSummary = memoize(
   }
 );
 
-export const generatePositionsSummary = memoize(
-  (
-    numPositions,
-    netPosition,
-    position,
-    meanTradePrice,
-    realizedNet,
-    unrealizedNet,
-    totalNet
-  ) => ({
-    numPositions: formatNumber(numPositions, {
-      decimals: 0,
-      decimalsRounded: 0,
-      denomination: "Positions",
-      positiveSign: false,
-      zeroStyled: false
-    }),
-    type: createBigNumber(netPosition).gt("0") ? LONG : SHORT,
-    netPosition: formatShares(netPosition),
-    position: formatShares(position),
-    purchasePrice: formatEther(meanTradePrice),
-    realizedNet: formatEther(realizedNet),
-    unrealizedNet: formatEther(unrealizedNet),
-    totalNet: formatEther(totalNet)
-  }),
-  {
-    max: 20
-  }
-);
+const timesHundred = value => createBigNumber(value).times(100);

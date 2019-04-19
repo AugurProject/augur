@@ -17,14 +17,15 @@
 //	STEP 2
 // 	Medium layout @ > 600px && <= 1200px
 //		Steps
+@step-1-0: 2000px;
 @step-1-1: 1319px;
 @step-2: 1200px;
 //		Sub-Steps
-@step-2-0: 1152px;
+@step-2-0: 1200px;
 @step-2-1: 1050px;
 @step-2-15: 965px;
 @step-2-2: 1090px; // Mobile tipping point
-@step-2-25: 950px; // Top bar changes
+@step-2-25: 900px; // Top bar changes
 @step-2-3: 450px;
 
 @step-3: 575px; // Decreased Height
@@ -32,6 +33,7 @@
 @step-4: 320px; // extra small mobile: iPhone 5/se
 
 //		Rules
+@breakpoint-1-0-0: ~"all and (min-width: @{step-1}) and (max-width: @{step-1-0})";
 @breakpoint-1-0: ~"all and (min-width: @{step-1}) and (max-width: @{step-1-1})";
 @breakpoint-2: ~"all and (min-width: @{step-1}) and (max-width: @{step-2})";
 @breakpoint-2-0: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-0})";
@@ -59,7 +61,7 @@
 //	Mobile (up to step-2-2)
 @breakpoint-mobile: ~"all and (max-width: @{step-2-2})"; // 900
 // Mobile (up to step-2-25)
-@breakpoint-mobile-mid: ~"all and (max-width: @{step-2-25})"; // 850
+@breakpoint-mobile-mid: ~"all and (max-width: @{step-2-25})"; // 900
 // Mobile (up to step-1)
 @breakpoint-mobile-medium: ~"all and (max-width: @{step-1})"; // 600
 //	Mobile (up to step-2-2)

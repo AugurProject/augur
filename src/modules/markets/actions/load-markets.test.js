@@ -1,6 +1,6 @@
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
-import { MARKET_REPORTING } from "modules/filter-sort/constants/market-states";
+import { MARKET_REPORTING } from "modules/common-elements/constants";
 import { augur, constants } from "services/augurjs";
 
 describe(`modules/markets/actions/load-markets`, () => {

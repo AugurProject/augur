@@ -7,7 +7,7 @@ import {
   selectUniverseReportingPeriodDurationInSeconds
 } from "src/select-state";
 import { augur } from "services/augurjs";
-import { ONE } from "modules/trades/constants/numbers";
+import { ONE } from "modules/common-elements/constants";
 
 export default function() {
   return selectReportingCycle(store.getState());

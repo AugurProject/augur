@@ -1,5 +1,5 @@
 import async from "async";
-import { BUY, SELL } from "modules/transactions/constants/types";
+import { BUY, SELL } from "modules/common-elements/constants";
 import loadOneOutcomeBidsOrAsks from "modules/orders/actions/load-one-outcome-bids-or-asks";
 import logError from "utils/log-error";
 

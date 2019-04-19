@@ -101,9 +101,9 @@ describe("Account", () => {
         { timeout: TIMEOUT }
       );
 
-      // verify you receieved a confirmed notification
+      // verify you receieved a confirmed alert
       await expect(page).toClick(
-        "button.top-bar-styles_TopBar__notification-icon"
+        "button.top-bar-styles_TopBar__alert-icon"
       );
       await expect(page).toMatch("Confirmed", {
         timeout: TIMEOUT
@@ -112,7 +112,7 @@ describe("Account", () => {
         timeout: TIMEOUT
       });
       await expect(page).toClick(
-        ".notification-styles_Notification__closeButton"
+        ".alert-styles_Alert__closeButton"
       );
 
       // balance should now have 47.00 more REP - compare old and new account balances
@@ -141,9 +141,9 @@ describe("Account", () => {
       );
       await expect(page).toClick("button#withdraw-button");
 
-      // check for notification
+      // check for alert
       await expect(page).toClick(
-        "button.top-bar-styles_TopBar__notification-icon"
+        "button.top-bar-styles_TopBar__alert-icon"
       );
       await expect(page).toMatch("Confirmed", {
         timeout: TIMEOUT
@@ -158,10 +158,10 @@ describe("Account", () => {
         }
       );
       await expect(page).toClick(
-        ".notification-styles_Notification__closeButton"
+        ".alert-styles_Alert__closeButton"
       );
       await expect(page).toClick(
-        "button.top-bar-styles_TopBar__notification-icon"
+        "button.top-bar-styles_TopBar__alert-icon"
       );
 
       // withdraw rep
@@ -174,9 +174,9 @@ describe("Account", () => {
       );
       await expect(page).toClick("button#withdraw-button");
 
-      // check for notification
+      // check for alert
       await expect(page).toClick(
-        "button.top-bar-styles_TopBar__notification-icon"
+        "button.top-bar-styles_TopBar__alert-icon"
       );
       await expect(page).toMatch("Confirmed", {
         timeout: TIMEOUT
@@ -191,10 +191,10 @@ describe("Account", () => {
         }
       );
       await expect(page).toClick(
-        ".notification-styles_Notification__closeButton"
+        ".alert-styles_Alert__closeButton"
       );
       await expect(page).toClick(
-        "button.top-bar-styles_TopBar__notification-icon"
+        "button.top-bar-styles_TopBar__alert-icon"
       );
 
       // log into original account

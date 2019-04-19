@@ -8,7 +8,7 @@ import parseQuery from "modules/routes/helpers/parse-query";
 import parsePath from "modules/routes/helpers/parse-path";
 
 import { MARKETS } from "modules/routes/constants/views";
-import { CATEGORY_PARAM_NAME } from "modules/filter-sort/constants/param-names";
+import { CATEGORY_PARAM_NAME } from "modules/common-elements/constants";
 
 import Styles from "modules/markets-list/components/markets-header/markets-header.styles";
 
@@ -21,7 +21,8 @@ export default class MarketsHeader extends Component {
     maxFee: PropTypes.string.isRequired,
     hasOrders: PropTypes.bool.isRequired,
     updateFilter: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
+    isSearchingMarkets: PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -71,29 +72,24 @@ export default class MarketsHeader extends Component {
       maxFee,
       hasOrders,
       updateFilter,
-      history
+      history,
+      isSearchingMarkets
     } = this.props;
     const s = this.state;
 
     return (
       <article className={Styles.MarketsHeader}>
-        <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
-        <div className={Styles.MarketsHeader__wrapper}>
-          <div className={Styles.MarketsHeader__filters}>
-            <FilterDropDowns
-              filter={filter}
-              sort={sort}
-              maxFee={maxFee}
-              hasOrders={hasOrders}
-              updateFilter={updateFilter}
-              history={history}
-              location={location}
-            />
-          </div>
-          <div className={Styles.MarketsHeader__search}>
-            <FilterSearch />
-          </div>
-        </div>
+        <h1>{s.headerTitle}</h1>
+        <FilterDropDowns
+          filter={filter}
+          sort={sort}
+          maxFee={maxFee}
+          hasOrders={hasOrders}
+          updateFilter={updateFilter}
+          history={history}
+          location={location}
+        />
+        <FilterSearch isSearchingMarkets={isSearchingMarkets} />
       </article>
     );
   }

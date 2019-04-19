@@ -5,17 +5,16 @@ import { Helmet } from "react-helmet";
 
 import speedomatic from "speedomatic";
 import { createBigNumber } from "utils/create-big-number";
-import { ZERO } from "modules/trades/constants/numbers";
 import { formatGasCostToEther } from "utils/format-number";
 import MarketPreview from "modules/market/containers/market-preview";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import ReportingDisputeForm from "modules/reporting/containers/reporting-dispute-form";
 import ReportingDisputeConfirm from "modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm";
-import { TYPE_VIEW } from "modules/markets/constants/link-types";
+import { TYPE_VIEW, ZERO } from "modules/common-elements/constants";
 import { isEmpty } from "lodash";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
-import InvalidMessage from "modules/reporting/components/common/invalid-message";
+import InvalidMessage from "modules/reporting/components/invalid-message/invalid-message";
 
 export default class ReportingDispute extends Component {
   static propTypes = {
@@ -148,16 +147,13 @@ export default class ReportingDispute extends Component {
           <article className={FormStyles.Form}>
             {s.currentStep === 0 && (
               <div className={Styles.ReportingReport_form_message}>
-                <div>
-                  <InvalidMessage />
-                  <ReportingDisputeForm
-                    market={market}
-                    updateState={this.updateState}
-                    stakeInfo={s.stakeInfo}
-                    availableRep={availableRep}
-                  />
-                  <InvalidMessage />
-                </div>
+                <ReportingDisputeForm
+                  market={market}
+                  updateState={this.updateState}
+                  stakeInfo={s.stakeInfo}
+                  availableRep={availableRep}
+                />
+                <InvalidMessage />
               </div>
             )}
             {s.currentStep === 1 && (

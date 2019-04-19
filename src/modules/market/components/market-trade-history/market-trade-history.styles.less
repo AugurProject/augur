@@ -1,0 +1,171 @@
+@import (reference) "~assets/styles/shared";
+
+.MarketTradeHistory__container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  @media @breakpoint-mobile {
+    max-height: 400px;
+  }
+}
+
+.MarketTradeHistory__heading {
+  align-items: center;
+  background-color: @color-light-purple;
+  border-bottom: 1px solid @color-extra-darkpurple;
+  display: flex;
+  font-size: 16px;
+  justify-content: space-between;
+  max-height: inherit;
+  padding: 18px 24px;
+  width: 100%;
+}
+
+.MarketTradeHistory__table {
+  display: table;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 5;
+}
+
+.MarketTradeHistory__table-header {
+  background-color: @color-light-purple;
+  color: @color-light-gray;
+  display: flex;
+  font-size: @font-size-small;
+  justify-content: space-between;
+  padding: 0.5625rem 1.5rem 0.5625rem 1.875rem;
+  width: 100%;
+
+  > li {
+    &:first-child {
+      padding-right: 0.8rem;
+    }
+
+    &:nth-child(2) {
+      padding-right: 2rem;
+    }
+  }
+}
+
+.MarketTradeHistory__table__trade__data {
+  background-color: @color-grayish-purple;
+  color: @color-white;
+  display: flex;
+  font-size: @size-11;
+  padding-bottom: 0.25rem;
+  position: relative;
+  width: 100%;
+
+  > li {
+    font-family: 'Roboto Mono', monospace;
+    padding-bottom: 4px;
+    padding-top: 4px;
+
+    &:first-child {
+      text-align: left;
+    }
+
+    &:nth-child(2) {
+      flex: 1;
+      justify-content: right;
+      padding-left: 0.625rem;
+    }
+
+    &:nth-child(3) {
+      flex: 1;
+      justify-content: right;
+      padding-left: 1rem;
+    }
+
+    &:last-child {
+      color: @color-light-gray;
+      padding-right: 25px;
+      text-align: right;
+    }
+  }
+}
+
+.MarketTradeHistory__table__header__day {
+  background-color: fade(@color-primary-alternate, 70%);
+  color: @color-shadow-text;
+  display: flex;
+  font-size: @font-size-extra-small;
+  justify-content: center;
+  width: 100%;
+
+  > li {
+    display: table-cell;
+    padding-bottom: 6px;
+    padding-top: 6px;
+    text-align: right;
+
+    &:first-child {
+      padding-left: 32px;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    &:nth-of-type(2) {
+      margin: 0 0.5rem;
+    }
+
+    &:last-child {
+      padding-right: 25px;
+    }
+  }
+}
+
+.MarketTradeHistory__trade__bar {
+  background-color: @color-positive;
+  width: 1px;
+}
+
+.MarketTradeHistory__trade__barNeg {
+  background-color: @color-negative2;
+}
+
+.MarketTradeHistory__table__price {
+  background-color: @color-light-purple;
+  display: table;
+  width: 100%;
+}
+
+.MarketTradeHistory__table__data {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: overlay;
+  overflow-y: auto;
+}
+
+.MarketTradeHistory__trade__indicatorDown,
+.MarketTradeHistory__trade__indicatorUp,
+.MarketTradeHistory__trade__indicator {
+  border: solid transparent;
+  border-width: 0.25rem;
+  margin-left: 0.5rem;
+  position: relative;
+}
+
+.MarketTradeHistory__buy {
+  color: @color-positive;
+}
+
+.MarketTradeHistory__sell {
+  color: @color-negative2;
+}
+
+.MarketTradeHistory__trade__indicatorUp {
+  border-bottom-color: fade(@color-positive, 50%);
+  border-width: 0 3.5px 6px;
+  top: -0.65rem;
+}
+
+.MarketTradeHistory__trade__indicatorDown {
+  border-top-color: fade(@color-negative, 50%);
+  border-width: 6px 3.5px 0;
+  top: 0.75rem;
+}

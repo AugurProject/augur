@@ -6,15 +6,12 @@ import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
 import { constants } from "services/augurjs";
 
-import {
-  YES_NO,
-  CATEGORICAL,
-  SCALAR
-} from "modules/markets/constants/market-types";
-
+import { YES_NO, CATEGORICAL, SCALAR } from "modules/common-elements/constants";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-report-form/reporting-report-form.styles";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
+import { formatRep } from "utils/format-number";
+import { RepBalance } from "modules/common-elements/labels";
 
 export default class ReportingReportForm extends Component {
   static propTypes = {
@@ -24,15 +21,17 @@ export default class ReportingReportForm extends Component {
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     stake: PropTypes.string.isRequired,
-    stakeLabel: PropTypes.string.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
     isDesignatedReporter: PropTypes.bool.isRequired,
     isMarketInValid: PropTypes.bool,
-    insufficientRep: PropTypes.bool.isRequired
+    insufficientRep: PropTypes.bool.isRequired,
+    availableRep: PropTypes.string,
+    stakeLabel: PropTypes.string.isRequired
   };
 
   static defaultProps = {
-    isMarketInValid: false
+    isMarketInValid: false,
+    availableRep: "0"
   };
 
   static BUTTONS = {
@@ -180,10 +179,11 @@ export default class ReportingReportForm extends Component {
       market,
       selectedOutcome,
       stake,
-      stakeLabel,
+      availableRep,
       validations,
       insufficientRep,
-      isDesignatedReporter
+      isDesignatedReporter,
+      stakeLabel
     } = this.props;
 
     const { reportingState } = market;
@@ -208,8 +208,8 @@ export default class ReportingReportForm extends Component {
       >
         <li>
           <div className={Styles.ReportingReport__outcome_selection_msg}>
-            Please choose an outcome below based on the resolution source when
-            the event ends.
+            Choose an outcome based on the resolution source when the event
+            ended.
           </div>
         </li>
         <li>
@@ -240,7 +240,7 @@ export default class ReportingReportForm extends Component {
               ))}
               <li className={FormStyles["Form__radio-buttons--per-line"]}>
                 <button
-                  className={classNames(FormStyles.isInvalidField, {
+                  className={classNames({
                     [`${FormStyles.active}`]: isMarketInValid === true
                   })}
                   onClick={e => {
@@ -258,7 +258,7 @@ export default class ReportingReportForm extends Component {
             <ul className={FormStyles["Form__radio-buttons--per-line"]}>
               <li className={FormStyles["Form__radio-buttons--per-line"]}>
                 <button
-                  className={classNames(FormStyles.isInvalidField, {
+                  className={classNames({
                     [`${FormStyles.active}`]:
                       s.activeButton ===
                       ReportingReportForm.BUTTONS.MARKET_IS_INVALID
@@ -323,7 +323,7 @@ export default class ReportingReportForm extends Component {
               <li>
                 {validations.hasOwnProperty("err") && (
                   <span className={FormStyles.Form__error}>
-                    {InputErrorIcon}
+                    {InputErrorIcon()}
                     {validations.err}
                   </span>
                 )}
@@ -334,24 +334,27 @@ export default class ReportingReportForm extends Component {
         {errorMessage && (
           <label>
             <span className={Styles["ReportingReport__insufficient-funds"]}>
-              {InputErrorIcon}
+              {InputErrorIcon()}
               {errorMessage}
             </span>
           </label>
         )}
         {(!isOpenReporting || isDesignatedReporter) && (
-          <li>
-            <label htmlFor="sr__input--stake">
-              <span>{stakeLabel}</span>
-            </label>
-            <p>{stake} REP</p>
+          <li className={Styles.ReportingReportREP}>
+            <div>
+              <label htmlFor="sr__input--stake">
+                <span>{stakeLabel}</span>
+              </label>
+              <p>{stake} REP</p>
+            </div>
+            <RepBalance rep={formatRep(availableRep).formattedValue} />
           </li>
         )}
         {validations.hasOwnProperty("neverReported") &&
           !validations.neverReported && (
             <label>
               <span className={Styles["ReportingReport__insufficient-funds"]}>
-                {InputErrorIcon}
+                {InputErrorIcon()}
                 {`Market has already been reported on`}
               </span>
             </label>

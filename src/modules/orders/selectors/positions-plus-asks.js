@@ -6,7 +6,7 @@ import {
   selectAccountPositionsState,
   selectOrderBooksState
 } from "src/select-state";
-import { ZERO } from "modules/trades/constants/numbers";
+import { ZERO } from "modules/common-elements/constants";
 import { isOrderOfUser } from "modules/orders/helpers/is-order-of-user";
 
 import getValue from "utils/get-value";

@@ -1,10 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 
+import { CheckMark } from "modules/common-elements/icons";
 import Styles from "modules/common/components/checkbox/checkbox.styles";
 
-const Checkbox = ({ id, isChecked, value, onClick, disabled }) => (
-  <div className={Styles.Checkbox}>
+const Checkbox = ({ id, small, isChecked, value, onClick, disabled }) => (
+  <div
+    className={classNames(Styles.Checkbox, { [Styles.Checkbox__small]: small })}
+  >
     <input
       id={id}
       type="checkbox"
@@ -17,8 +21,12 @@ const Checkbox = ({ id, isChecked, value, onClick, disabled }) => (
       role="button"
       tabIndex={0}
       onClick={onClick}
-      className={Styles.Checkbox__checkmark}
-    />
+      className={classNames(Styles.Checkbox__checkmark, {
+        [Styles.Checkbox__checkmark__small]: small
+      })}
+    >
+      {CheckMark}
+    </span>
   </div>
 );
 
@@ -27,11 +35,13 @@ Checkbox.propTypes = {
   isChecked: PropTypes.bool.isRequired,
   disabled: PropTypes.bool,
   value: PropTypes.bool.isRequired,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
+  small: PropTypes.bool
 };
 
 Checkbox.defaultProps = {
-  disabled: false
+  disabled: false,
+  small: false
 };
 
 export default Checkbox;

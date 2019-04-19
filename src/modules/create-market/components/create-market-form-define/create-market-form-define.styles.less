@@ -1,16 +1,16 @@
 @import (reference) "~assets/styles/shared";
 
 .CreateMarketDefine_bugBountyDisclaimer {
-  background-color: #80808052;
-  color: #cacccd;
+  background-color: @color-primary-background;
+  color: @color-alternate-text;
   margin-bottom: 2rem;
   padding: 1.25rem 0.75rem;
 }
 
 .CreateMarketDefine__tags {
   display: flex;
-  flex-direction: row;
   min-width: 100%;
+  padding-top: 1rem;
 
   > div {
     display: flex;
@@ -24,6 +24,21 @@
     > input {
       margin: 0.5rem 0;
     }
+  }
+}
+
+.CreateMarketDefine_time {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  > * {
+    width: 31%;
+  }
+
+  > div:not(:first-of-type) {
+    margin-left: 0.5rem;
   }
 }
 
@@ -46,11 +61,82 @@
 
 li.CreateMarketDefine__question {
   display: flex;
-  flex-direction: row;
   margin: 1rem 0;
 
   div:first-of-type {
     min-width: 50%;
+  }
+}
+
+.CreateMarketDefine_bolden {
+  font-weight: bold;
+}
+
+.highlighted {
+  .text-12;
+
+  color: @color-highlight;
+  padding-left: 0.5rem;
+  text-transform: uppercase;
+}
+
+.CreateMarketDefine_time_display {
+  margin: 1rem 0;
+  min-height: 6rem;
+
+  > div {
+    .text-12-bold;
+
+    color: @color-highlight;
+    text-transform: uppercase;
+
+    &.simple {
+      color: @color-secondary-text;
+    }
+  }
+
+  > span {
+    display: flex;
+
+    > div {
+      color: @color-secondary-text;
+      font-size: @font-size-normal;
+      font-style: normal;
+      font-weight: bold;
+      padding: 0.25rem 0;
+    }
+  }
+
+  span:last-of-type {
+    color: @color-tertiary-text;
+    font-size: @size-11;
+  }
+}
+
+.CreateMarketDefine_message {
+  color: @color-tertiary-text;
+  padding: 1rem;
+
+  > div {
+    padding: 0.5rem 0.5rem 1rem;
+
+    &.Suggestions {
+      .text-16-bold;
+
+      padding: 0 0.5rem;
+
+      > span:not(:first-child) {
+        padding-left: 0.25rem;
+      }
+    }
+
+    &.blockit {
+      padding: 0.5rem 0 1rem;
+    }
+
+    > button {
+      .text-16-bold;
+    }
   }
 }
 
@@ -60,231 +146,6 @@ li.CreateMarketDefine__question {
   line-height: 1rem;
   position: relative;
   top: 0.25rem;
-}
-
-.CreateMarketDefine_delay_time,
-.CreateMarketDefine__time {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-
-  > * {
-    width: 31%;
-  }
-}
-
-.CreateMarketDefine_delay_time_sub {
-  z-index: 2;
-}
-
-.CreateMarketDefine_delay_time {
-  justify-content: flex-start;
-
-  > div:first-of-type {
-    margin-right: 1rem;
-  }
-}
-
-.CreateMarketDefine_bolden {
-  font-weight: bold;
-}
-
-.CreateMarketDefine_time_display_tooltip {
-  margin-bottom: 0;
-  margin-left: 0.25rem;
-  margin-top: -0.375rem;
-  width: 0.75rem;
-}
-
-.CreateMarketDefine_time_display {
-  margin: 1rem 0;
-  min-height: 6rem;
-
-  > div {
-    color: @color-light-dark-purple;
-    font-size: @font-size-small;
-    font-weight: bold;
-    line-height: @font-size-normal;
-    text-transform: uppercase;
-
-    &.simple {
-      color: @color-white;
-    }
-  }
-
-  > span {
-    display: flex;
-
-    > div {
-      color: @color-white;
-      font-size: @font-size-normal;
-      font-style: normal;
-      font-weight: bold;
-      padding: 0.25rem 0;
-    }
-  }
-
-  span:last-of-type {
-    color: @color-offwhite-2;
-    font-size: @font-size-medium-small;
-  }
-}
-
-.CreateMarketDefine_message {
-  color: @color-offwhite-2;
-  padding: 1rem;
-
-  > div {
-    padding: 0.5rem 0.5rem 1rem;
-
-    &.blockit {
-      padding: 0.5rem 0 1rem;
-    }
-  }
-
-  div:nth-of-type(2) {
-    max-width: unset;
-    min-width: unset;
-  }
-}
-
-.CreateMarketDefine_block {
-  display: flex;
-  flex-direction: row;
-
-  > div {
-    font-size: @font-size-medium;
-    min-width: 50%;
-
-    > input,
-    textarea {
-      margin-bottom: 1rem;
-    }
-  }
-
-  :global {
-    .SingleDatePicker_1 {
-      display: block;
-      margin-bottom: 1rem;
-      width: 100%;
-      z-index: 5;
-    }
-
-    .SingleDatePickerInput {
-      border: none;
-    }
-
-    .DateInput_input_1,
-    .DateInput_input__focused {
-      border: 0;
-    }
-
-    .DateInput__openDown_3::before,
-    .DateInput__openDown_3::after {
-      display: none;
-    }
-
-    .SingleDatePicker_picker__openDown_3.SingleDatePicker_picker__openDown_3.SingleDatePicker_picker__openDown_3 {
-      top: auto;
-    }
-
-    .DayPicker__horizontal_2 {
-      background-color: @color-input-background;
-      border-radius: 0;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-      font-size: 0.75rem;
-      line-height: 0.75rem;
-      text-transform: uppercase;
-    }
-
-    .SingleDatePickerInput_1 {
-      background-color: #dbdae1;
-      font-size: 1.125rem;
-      line-height: 1.5rem;
-    }
-
-    .DateInput_1 {
-      background: none;
-      color: inherit;
-      display: block;
-      font-size: inherit;
-      font-weight: inherit;
-      line-height: inherit;
-      width: auto;
-    }
-
-    .DateInput_displayText.DateInput_displayText_1 {
-      background: none;
-      color: @color-lightgray;
-
-      &.DateInput_displayText__hasInput {
-        color: inherit;
-      }
-    }
-
-    .CalendarMonth_1,
-    .CalendarMonthGrid_1,
-    .CalendarMonthGrid_1 {
-      background: none;
-    }
-
-    .CalendarMonth_caption_1 {
-      color: @color-lightgray;
-      font-size: 0.8125rem;
-      font-weight: 700;
-      padding-bottom: 2.8rem;
-      padding-top: 1.75rem;
-    }
-
-    .DayPickerNavigation_button__default_2.DayPickerNavigation_button__default_2 {
-      background: none;
-      border: none;
-    }
-
-    .DayPickerNavigation_leftButton__horizontal_3,
-    .DayPickerNavigation_rightButton__horizontal_3 {
-      > svg {
-        height: 1rem;
-        width: 1rem;
-      }
-    }
-
-    .DayPicker_weekHeader_li_1 {
-      color: @color-lightgray;
-      font-size: 0;
-
-      &::first-letter {
-        font-size: 0.6875rem;
-      }
-    }
-
-    .CalendarDay_container_1 {
-      background: none;
-      border: none;
-      color: @color-darkpurple;
-
-      &.CalendarDay__selected,
-      &:hover {
-        background: @color-lightergray;
-        border: none;
-        border-radius: 100%;
-      }
-
-      &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2 {
-        border: none;
-        color: #cacccd;
-
-        &:hover {
-          background: none;
-        }
-      }
-    }
-
-    .DayPickerKeyboardShortcuts_show__bottomRight_3.DayPickerKeyboardShortcuts_show__bottomRight_3.DayPickerKeyboardShortcuts_show__bottomRight_3 {
-      display: none;
-    }
-  }
 }
 
 @media @breakpoint-mobile-medium {

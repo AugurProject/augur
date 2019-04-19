@@ -5,13 +5,16 @@ import QRCode from "qrcode.react";
 import Clipboard from "clipboard";
 import TextFit from "react-textfit";
 
-import { NETWORK_IDS } from "modules/app/constants/network";
+import { NETWORK_IDS } from "modules/common-elements/constants";
 import {
   Deposit as DepositIcon,
   Copy as CopyIcon
 } from "modules/common/components/icons";
 
 import { augur } from "services/augurjs";
+
+import { PrimaryButton } from "modules/common-elements/buttons";
+
 import Styles from "modules/account/components/account-deposit/account-deposit.styles";
 
 function airSwapOnClick(e) {
@@ -88,7 +91,9 @@ export default class AccountDeposit extends Component {
         }}
       >
         <div className={Styles.AccountDeposit__heading}>
-          <h1>Account: Deposit</h1>
+          <h1>
+            Account: <span>Deposit</span>
+          </h1>
           {DepositIcon}
         </div>
         <div className={Styles.AccountDeposit__main}>
@@ -102,16 +107,16 @@ export default class AccountDeposit extends Component {
               ETH is used for Trading
             </h3>
             <div className={Styles.AccountDeposit__0xInstantButton}>
-              <button onClick={() => window.open("http://www.sendwyre.com/")}>
-                Buy ETH using Wyre
-              </button>
+              <PrimaryButton
+                text="Buy ETH using Wyre"
+                action={() => window.open("http://www.sendwyre.com/")}
+              />
             </div>
             <div className={Styles.AccountDeposit__0xInstantButton}>
-              <button
-                onClick={() => window.open("https://www.coinbase.com/buy/ETH")}
-              >
-                Buy ETH on Coinbase
-              </button>
+              <PrimaryButton
+                text="Buy ETH on Coinbase"
+                action={() => window.open("https://www.coinbase.com/buy/ETH")}
+              />
             </div>
             <br />
             <h3 className={Styles.AccountDeposit__addressLabel}>
@@ -132,7 +137,10 @@ export default class AccountDeposit extends Component {
             )}
             {showAirSwap && (
               <div className={Styles.AccountDeposit__0xInstantButton}>
-                <button onClick={airSwapOnClick}>Buy REP using AirSwap</button>
+                <PrimaryButton
+                  text="Buy REP using AirSwap"
+                  action={airSwapOnClick}
+                />
               </div>
             )}
           </div>

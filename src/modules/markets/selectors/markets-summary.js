@@ -1,6 +1,6 @@
 import { createBigNumber } from "utils/create-big-number";
 import selectMyMarkets from "modules/markets/selectors/user-markets";
-import { ZERO } from "modules/trades/constants/numbers";
+import { ZERO } from "modules/common-elements/constants";
 
 export default function() {
   const markets = selectMyMarkets();

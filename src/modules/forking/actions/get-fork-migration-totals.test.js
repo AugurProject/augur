@@ -1,4 +1,4 @@
-import { YES_NO } from "modules/markets/constants/market-types";
+import { YES_NO } from "modules/common-elements/constants";
 import { getForkMigrationTotals } from "modules/forking/actions/get-fork-migration-totals";
 import { augur } from "services/augurjs";
 

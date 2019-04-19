@@ -1,0 +1,123 @@
+@import (reference) '~assets/styles/shared';
+
+.Alert {
+  background-color: @color-medium-gray;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  padding: 16px 24px;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:last-of-type {
+    border-bottom: 0;
+  }
+}
+
+.Alert__seen {
+  background-color: @color-grayish-purple;
+}
+
+.Alert__row {
+  display: flex;
+}
+
+.Alert__column {
+  display: flex;
+  flex-direction: column;
+}
+
+.Alert__closeButton {
+  display: block;
+}
+
+.Alert__closeButtonHidden {
+  display: none;
+}
+
+.Alert__title {
+  color: @color-white;
+  flex: 0 1 auto;
+  font-size: @font-size-medium;
+  font-weight: bold;
+  height: 1rem;
+  margin: 0 0.625rem 0.25rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: flex 1000ms ease-in;
+  white-space: nowrap;
+  width: 17.188rem;
+}
+
+.Alert__title::first-letter {
+  text-transform: capitalize;
+}
+
+.Alert__status {
+  color: @color-white;
+  font-size: @font-size-extra-small;
+  font-weight: 500;
+  height: 0.688rem;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.Alert__etherLink {
+  color: @color-white;
+  font-size: @font-size-extra-small;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.Alert__dot {
+  flex: 0 1rem;
+  height: 1rem;
+  left: 0.5rem;
+  margin-top: -0.025rem;
+  position: absolute;
+  transition: flex 500ms ease-out;
+  width: 1rem;
+}
+
+.Alert__dot-seen {
+  flex: 0 0 0;
+  height: 0;
+  margin: 0;
+  transition: flex 500ms ease-out;
+  width: 0;
+}
+
+.Alert__close {
+  align-self: baseline;
+  margin-left: auto;
+  width: 12px;
+}
+
+.Alert__description {
+  flex: 1 0 100%;
+  font-size: @font-size-small;
+  height: 0.875rem;
+  margin-bottom: 0.25rem;
+  overflow: hidden;
+  padding-right: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 17.188rem;
+}
+
+.Alert__time {
+  color: @color-white;
+  font-size: @font-size-extra-small;
+  margin-right: 0.25rem;
+}
+
+@media @breakpoint-mobile {
+  .Alert__description {
+    flex: 1 0 100%;
+    font-size: @font-size-small;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

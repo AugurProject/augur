@@ -1,7 +1,4 @@
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { MARKET_OPEN } from "modules/filter-sort/constants/market-states";
-import { MARKET_OPEN_INTEREST } from "modules/filter-sort/constants/market-sort-params";
-import { DAY } from "modules/transactions/constants/transaction-periods";
 import {
   UPDATE_FILTER_SORT_OPTIONS,
   MARKET_FILTER,
@@ -10,14 +7,19 @@ import {
   TRANSACTION_PERIOD,
   HAS_OPEN_ORDERS
 } from "modules/filter-sort/actions/update-filter-sort-options";
-import { MAX_FEE_05_PERCENT } from "src/modules/filter-sort/constants/market-max-fees";
+import {
+  MAX_FEE_05_PERCENT,
+  MARKET_OPEN,
+  MARKET_OPEN_INTEREST,
+  DAY
+} from "modules/common-elements/constants";
 
 const DEFAULT_STATE = {
   [MARKET_FILTER]: MARKET_OPEN,
   [MARKET_SORT]: MARKET_OPEN_INTEREST,
   [MARKET_MAX_FEES]: MAX_FEE_05_PERCENT,
   [TRANSACTION_PERIOD]: DAY,
-  [HAS_OPEN_ORDERS]: true
+  [HAS_OPEN_ORDERS]: false
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);

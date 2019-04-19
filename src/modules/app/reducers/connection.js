@@ -2,8 +2,7 @@ import {
   UPDATE_CONNECTION_STATUS,
   UPDATE_AUGUR_NODE_CONNECTION_STATUS,
   UPDATE_IS_RECONNECTION_PAUSED,
-  UPDATE_AUGUR_NODE_NETWORK_ID,
-  UPDATE_USE_WEBSOCKET_TO_CONNECT_AUGUR_NODE
+  UPDATE_AUGUR_NODE_NETWORK_ID
 } from "modules/app/actions/update-connection";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
@@ -11,7 +10,6 @@ const DEFAULT_STATE = {
   isConnected: false,
   isConnectedToAugurNode: false,
   augurNodeNetworkId: null,
-  useWebsocketToConnectAugurNode: true,
   isReconnectionPaused: false
 };
 
@@ -45,14 +43,6 @@ export default function(connection = DEFAULT_STATE, { type, data }) {
         isReconnectionPaused
       };
     }
-    case UPDATE_USE_WEBSOCKET_TO_CONNECT_AUGUR_NODE: {
-      const { useWebsocketToConnectAugurNode } = data;
-      return {
-        ...connection,
-        useWebsocketToConnectAugurNode
-      };
-    }
-
     case RESET_STATE:
       return DEFAULT_STATE;
     default:

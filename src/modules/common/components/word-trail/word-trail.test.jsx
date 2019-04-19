@@ -16,10 +16,6 @@ describe("word-trail", () => {
       wrapper = shallow(<WordTrail items={items} typeLabel={SOME_LABEL} />);
     });
 
-    test("should render a list", () => {
-      expect(wrapper.html()).toEqual(expect.stringContaining(SOME_LABEL));
-    });
-
     test("should only display the label prop", () => {
       const topLabel = wrapper.find("button");
       expect(topLabel).toHaveLength(0);

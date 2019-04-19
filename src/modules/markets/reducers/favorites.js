@@ -15,14 +15,14 @@ export default function(favorites = DEFAULT_STATE, { type, data }) {
         ...data.favorites
       };
     case TOGGLE_FAVORITE: {
-      const { marketId } = data;
+      const { marketId, timestamp } = data;
       const newFavorites = {
         ...favorites
       };
       if (newFavorites[marketId]) {
         delete newFavorites[marketId];
       } else {
-        newFavorites[marketId] = Date.now();
+        newFavorites[marketId] = timestamp;
       }
       return newFavorites;
     }

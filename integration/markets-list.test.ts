@@ -207,7 +207,7 @@ describe("Markets List", () => {
       await expect(yesNoMarket).toClick(
         "button.market-properties-styles_MarketProperties__favorite"
       );
-      await page.waitForSelector(".fa-star");
+      await page.waitForSelector(".buttons-styles_FavoriteButton_Favorite");
     });
 
     it("should display an action button that reads 'trade' which when clicked brings you to the trade view for that market", async () => {

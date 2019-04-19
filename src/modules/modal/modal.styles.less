@@ -1,0 +1,1101 @@
+@import (reference) "~assets/styles/shared";
+
+.Container {
+  background: @color-tertiary-background;
+  border: 1px solid fade(@color-highlight, 50%);
+  border-radius: @border-radius-default;
+  display: flex;
+  flex-flow: column nowrap;
+  max-height: 90vh;
+  max-width: 35rem;
+  min-height: 13.5rem;
+  position: relative;
+  width: 100%;
+
+  > main {
+    overflow: auto;
+    padding: @size-16 @size-24;
+  }
+
+  > main > h1 {
+    .text-12;
+
+    color: @color-secondary-text;
+    font-weight: @weight-medium;
+    line-height: @size-16;
+    margin-bottom: @size-16;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  > main > h2 {
+    .text-16;
+
+    color: @color-secondary-text;
+    font-weight: @weight-medium;
+    margin: @size-8 0 @size-24;
+  }
+
+  > main > h3 {
+    .text-12-bold;
+
+    color: @color-secondary-text;
+    line-height: @size-16;
+    margin: 0 0 @size-14;
+  }
+
+  > div:last-of-type {
+    display: flex;
+    flex-flow: row-reverse nowrap;
+    margin-top: auto;
+
+    > button {
+      margin-left: @size-16;
+    }
+  }
+}
+
+.TitleHeader {
+  align-items: center;
+  border-bottom: 1px solid fade(@color-highlight, 50%);
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  padding: @size-24;
+
+  @media @breakpoint-mobile {
+    margin: 0 0 @size-16;
+    padding: @size-16;
+  }
+
+  > h1 {
+    .text-12;
+
+    color: @color-secondary-text;
+    font-weight: @weight-medium;
+    line-height: @size-16;
+    margin-bottom: 0;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  > button:first-of-type {
+    > svg {
+      height: @size-12;
+      width: @size-12;
+
+      > path {
+        stroke: @color-secondary-text;
+      }
+    }
+  }
+}
+
+div.ButtonsRow:last-of-type {
+  border-top: 1px solid fade(@color-highlight, 50%);
+  margin: @size-24 0 0;
+  padding: @size-12 @size-24;
+
+  @media @breakpoint-mobile {
+    margin: @size-16 0 0;
+    padding: @size-8 @size-16;
+  }
+}
+
+.CondensedContainer {
+  .Container;
+
+  max-width: 20rem;
+}
+
+.Message {
+  .Container;
+
+  max-width: 35rem;
+
+  > main > p {
+    .text-12-paragraph;
+
+    color: @color-secondary-text;
+    margin: 0 0 @size-16 0;
+  }
+}
+
+.bid {
+  color: @color-positive;
+}
+
+.ask {
+  color: @color-negative;
+}
+
+.Orders {
+  .Message;
+
+  background: @color-secondary-action;
+  min-width: 842px;
+
+  @media @breakpoint-mobile {
+    min-width: 328px;
+  }
+
+  > main {
+    > .Orders__header {
+      align-items: center;
+      background: @color-theme-primary;
+      border-top: 1px solid @color-primary-background;
+      display: flex;
+      flex-flow: row nowrap;
+      height: @size-40;
+      justify-content: space-between;
+      padding: @size-12 @size-24;
+
+      > span {
+        .mono-10;
+
+        color: @color-shadow-text;
+        flex: 0 0 5.5rem;
+        text-transform: uppercase;
+      }
+
+      > span:first-of-type {
+        flex: 0 1 15.5rem;
+      }
+
+      > span:last-of-type {
+        flex: 1 0 6.5rem;
+      }
+
+      @media @breakpoint-mobile {
+        border-bottom: 1px solid @color-primary-background;
+        height: @size-32;
+        margin: 0 -@size-16 @size-4;
+        padding: @size-10 @size-16;
+
+        > span {
+          .mono-9;
+
+          flex: 0 0 3.75rem;
+        }
+
+        > span:first-of-type,
+        > span:last-of-type {
+          display: none;
+        }
+      }
+    }
+
+    > section {
+      border-bottom: 1px solid @color-primary-background;
+      color: @color-secondary-text;
+      margin-bottom: @size-24;
+      max-height: 450px;
+      overflow-y: auto;
+
+      > div {
+        align-items: center;
+        background: @color-tertiary-background;
+        border-top: 1px solid @color-primary-background;
+        color: @color-tertiary-text;
+        display: flex;
+        flex-flow: row nowrap;
+        height: @size-32;
+        justify-content: space-between;
+        padding: @size-8 @size-24;
+
+        > span:first-of-type {
+          .mono-12-bold;
+
+          flex: 0 1 15.5rem;
+          text-transform: capitalize;
+        }
+
+        > span:nth-of-type(2) {
+          .mono-12-bold;
+
+          text-transform: uppercase;
+        }
+
+        > span {
+          .mono-12;
+
+          flex: 0 0 5.5rem;
+        }
+
+        > div {
+          align-items: center;
+          display: flex;
+          flex: 1 0 6.5rem;
+
+          > button:first-of-type {
+            margin-left: auto;
+            margin-right: 1rem;
+          }
+        }
+      }
+
+      @media @breakpoint-mobile {
+        margin: 0 -@size-16 @size-24;
+
+        > div {
+          flex-flow: row wrap;
+          height: 7.25rem;
+          padding: @size-12 @size-16;
+
+          > span:first-of-type {
+            .mono-11;
+
+            flex: 1 100%;
+            margin-bottom: @size-8;
+          }
+
+          > span {
+            .mono-10;
+
+            flex: 0 1 auto;
+          }
+
+          > span:nth-of-type(2) {
+            .mono-11-bold;
+          }
+
+          > div {
+            flex: 1 100%;
+            margin: @size-24 0;
+          }
+        }
+      }
+    }
+
+    > div:first-of-type > div > div {
+      background: @color-tertiary-background;
+      min-height: unset;
+    }
+
+    > div:last-of-type {
+      margin-top: 1rem;
+    }
+  }
+}
+
+.WithdrawForm {
+  .Message;
+
+  > main {
+    > p {
+      border-bottom: 1px solid @color-primary-background;
+      margin-bottom: @size-16;
+      padding-bottom: @size-24;
+    }
+  }
+
+  > div:last-of-type {
+    margin-top: 1rem;
+  }
+}
+
+.GroupedForm {
+  border-bottom: 1px solid @color-primary-background;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  margin-bottom: @size-16;
+
+  > div {
+    height: 6.25rem;
+
+    > span {
+      .text-10;
+
+      align-content: center;
+      color: @color-error-text;
+      display: flex;
+      flex-flow: row nowrap;
+      margin-top: @size-8;
+
+      > svg {
+        fill: none;
+        height: @size-12;
+        margin-right: @size-8;
+        width: @size-12;
+
+        > circle {
+          stroke: @color-error-text;
+        }
+
+        > rect,
+        > path {
+          fill: @color-error-text;
+        }
+      }
+    }
+
+    > label {
+      .mono-10;
+
+      color: @color-shadow-text;
+      margin-bottom: @size-8;
+    }
+
+    > button {
+      .mono-12;
+
+      color: @color-secondary-text;
+    }
+
+    > input {
+      .text-14;
+
+      background: @color-secondary-action;
+      border: 1px solid @color-primary-alternate;
+      border-radius: @border-radius-default;
+      color: @color-secondary-text;
+      height: @size-40;
+      line-height: 1rem;
+
+      &::placeholder {
+        color: @color-shadow-text;
+      }
+    }
+
+    > input[type="number"]::-webkit-outer-spin-button,
+    > input[type="number"]::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
+    > input[type="number"] {
+      appearance: textfield;
+    }
+  }
+
+  > div:nth-of-type(2) {
+    display: flex;
+    flex-flow: column wrap;
+
+    > div {
+      height: @size-40;
+
+      > button {
+        padding: @size-10 @size-12;
+      }
+
+      > button,
+      > div > button {
+        .text-14;
+
+        line-height: @size-16;
+      }
+    }
+
+    > span {
+      .mono-10;
+
+      color: @color-shadow-text;
+      margin-left: auto;
+      text-transform: uppercase;
+    }
+  }
+
+  > div:last-of-type {
+    align-content: start;
+    align-items: flex-start;
+    display: flex;
+    flex-flow: row wrap;
+
+    > label {
+      height: 1rem;
+    }
+
+    > button {
+      height: 1rem;
+      margin-left: auto;
+    }
+  }
+
+  > div:first-of-type {
+    flex: 1;
+  }
+}
+
+.Gas {
+  .CondensedContainer;
+
+  > main {
+    > h2 {
+      .text-12;
+
+      color: @color-secondary-text;
+      margin-top: @size-16;
+    }
+
+    > p {
+      .mono-10;
+
+      color: @color-secondary-text;
+      margin: 0 0 @size-16;
+    }
+  }
+
+  > div:last-of-type {
+    margin-top: @size-24;
+  }
+}
+
+.Proceeds {
+  .Container;
+
+  background: @color-secondary-action;
+  max-height: 80vh;
+  max-width: 842px;
+
+  > main {
+    > section:first-of-type {
+      margin-top: @size-16;
+    }
+
+    > section:last-of-type {
+      border-bottom: 1px solid @color-primary-background;
+      margin-bottom: @size-24;
+    }
+
+    > div:nth-of-type(2) {
+      margin: 1rem 0 1.5rem;
+      overflow-y: auto;
+    }
+  }
+
+  > div:last-of-type {
+    margin-top: 1.5rem;
+  }
+
+  @media @breakpoint-mobile {
+    padding: 1rem;
+
+    > main {
+      > h1,
+      > div:first-of-type,
+      > button {
+        padding: 0 0.5rem;
+      }
+    }
+  }
+}
+
+.DescriptionMessage {
+  .text-12;
+
+  color: @color-tertiary-text;
+  line-height: 20px;
+  margin: 0;
+}
+
+.TransactionsTable {
+  align-items: center;
+  border: 1px solid @color-primary-background;
+  display: grid;
+  grid-template-columns:
+    200px minmax(320px, 2fr) minmax(125px, 1fr) minmax(125px, 150px)
+    repeat(2, 100px) 50px repeat(2, 100px) 80px;
+  grid-template-rows: auto;
+}
+
+.NullTransactionsRow {
+  grid-column: span 10;
+  text-align: center;
+}
+
+.Transactions {
+  .Container;
+
+  margin: 80px 0;
+  max-width: 95vw;
+  padding: 0 @size-24 @size-24;
+
+  > header {
+    margin: 0 -@size-24 @size-24;
+
+    @media @breakpoint-mobile {
+      margin: 0 -@size-16 @size-16;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    margin: 0;
+    padding: @size-16;
+  }
+
+  > section:first-of-type {
+    display: grid;
+    grid-gap: 0.25rem 0.5rem;
+    grid-template-columns: 108px 108px 205px 108px 200px 1fr;
+    grid-template-rows: 1fr 2fr;
+
+    @media @breakpoint-mobile {
+      grid-gap: 0 @size-12;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto;
+      height: 280px;
+
+      > span:first-of-type {
+        order: 2;
+      }
+
+      > span:nth-of-type(2) {
+        order: 3;
+      }
+
+      > span:nth-of-type(3) {
+        order: 6;
+      }
+
+      > div[role="button"] {
+        > div {
+          left: 0;
+          max-height: 40vh;
+          overflow: auto;
+          right: 0;
+
+          > button {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+      }
+
+      > div:nth-of-type(2) {
+        order: 4;
+      }
+
+      > div:nth-of-type(3) {
+        order: 5;
+      }
+
+      > div:nth-of-type(4) {
+        order: 8;
+      }
+
+      > div:nth-of-type(5) {
+        order: 9;
+      }
+
+      > div:last-of-type {
+        display: flex;
+        flex-flow: row nowrap;
+        order: 11;
+
+        > button {
+          padding: @size-8 @size-16;
+        }
+
+        > button:last-of-type {
+          margin-left: @size-4;
+        }
+      }
+
+      > button {
+        grid-column: span 2;
+        order: 1;
+        width: 100%;
+      }
+    }
+
+    > span {
+      .mono-10;
+
+      color: @color-shadow-text;
+      text-transform: uppercase;
+    }
+
+    > span:last-of-type {
+      grid-column: span 3;
+
+      @media @breakpoint-mobile {
+        grid-column: span 1;
+        order: 7;
+      }
+    }
+
+    > div:first-of-type {
+      display: none;
+
+      @media @breakpoint-mobile {
+        display: flex;
+        order: 10;
+      }
+    }
+
+    > div[role="button"] {
+      height: @size-40;
+      max-width: 100%;
+
+      > div > button,
+      > button {
+        .text-12;
+      }
+    }
+
+    > div:last-of-type {
+      > button:last-of-type {
+        margin-left: @size-8;
+      }
+    }
+
+    > button:last-of-type {
+      margin-left: auto;
+    }
+  }
+
+  > div:first-of-type {
+    .TransactionsTable;
+    .text-12;
+
+    background: @color-theme-primary;
+    border-bottom: 0;
+    color: @color-neutral;
+    margin: @size-24 0 0;
+    min-height: @size-40;
+    overflow: auto;
+
+    @media @breakpoint-mobile {
+      margin: 0;
+    }
+
+    > span {
+      padding: 0 @size-12;
+    }
+
+    > span:first-of-type {
+      padding-left: @size-24;
+    }
+
+    > span:nth-of-type(5),
+    > span:nth-of-type(6),
+    > span:nth-of-type(8),
+    > span:nth-of-type(9) {
+      text-align: right;
+
+      > button {
+        width: 100%;
+      }
+    }
+
+    > span:last-of-type {
+      padding-right: @size-24;
+    }
+  }
+
+  > section:last-of-type {
+    .TransactionsTable;
+
+    border-top: 0;
+    color: @color-tertiary-text;
+    max-height: 650px;
+    overflow: auto;
+
+    @media @breakpoint-mobile {
+      max-height: 416px;
+    }
+
+    > span {
+      .mono-11;
+
+      border-top: 1px solid @color-primary-background;
+      height: @size-32;
+      line-height: @size-13;
+      overflow: hidden;
+      padding: @size-10 @size-12;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    > span:nth-of-type(9n + 1) {
+      .mono-12;
+
+      line-height: @size-15;
+      padding: @size-8 @size-12 @size-8 @size-24;
+    }
+
+    > span:nth-of-type(9n + 2),
+    > span:nth-of-type(9n + 3) {
+      .text-11;
+    }
+
+    > span:nth-of-type(9n + 4) {
+      .mono-11-bold;
+
+      text-transform: capitalize;
+    }
+
+    > span:nth-of-type(9n + 5),
+    > span:nth-of-type(9n + 6),
+    > span:nth-of-type(9n + 8),
+    > span:nth-of-type(9n + 9) {
+      text-align: right;
+    }
+
+    > div:nth-of-type(1n) {
+      border-top: 1px solid @color-primary-background;
+      display: flex;
+      height: @size-32;
+      justify-content: flex-end;
+      padding: @size-12 @size-24 @size-10 0;
+
+      &:hover {
+        color: @color-secondary-text;
+      }
+    }
+  }
+
+  > div:last-of-type {
+    align-items: center;
+    display: grid;
+    grid-gap: @size-8;
+    grid-template-columns: 95px 30px 1fr 30px 95px;
+    margin: @size-32 0 0;
+
+    @media @breakpoint-mobile {
+      display: flex;
+      flex-flow: row nowrap;
+      margin: @size-16 0 0;
+
+      > div:first-of-type {
+        margin: 0;
+        width: 100%;
+      }
+
+      > span,
+      > div:last-of-type {
+        display: none;
+      }
+    }
+
+    > div:first-of-type {
+      grid-column: 3 / span 1;
+      margin: 0 auto;
+    }
+
+    > span {
+      .text-12;
+
+      color: @color-neutral;
+    }
+  }
+}
+
+.AlertMessage {
+  .text-12;
+
+  color: @color-outcome-four;
+  margin: 0 0 @size-8;
+}
+
+.Breakdown {
+  > h4 {
+    .mono-10;
+
+    color: @color-secondary-text;
+    margin-bottom: @size-10;
+    text-transform: uppercase;
+  }
+}
+
+.ShortBreakdown {
+  .Breakdown;
+
+  margin-left: auto;
+  max-width: 15rem;
+
+  @media @breakpoint-mobile {
+    margin-left: 0;
+    max-width: 100%;
+  }
+}
+
+.ReverseBreakdown {
+  .Breakdown;
+
+  margin-right: auto;
+  max-width: 15rem;
+}
+
+.ReadableAddress {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  margin-top: 1rem;
+
+  > h4 {
+    .mono-10;
+
+    color: @color-neutral;
+    line-height: @size-14;
+    margin-bottom: @size-14;
+    text-transform: uppercase;
+  }
+
+  > canvas {
+    border: @size-4 solid @color-secondary-text;
+  }
+}
+
+.AccountAddressDisplay {
+  .mono-12;
+
+  align-items: center;
+  border: 1px solid @color-primary-alternate;
+  border-radius: @border-radius-default;
+  color: @color-secondary-text;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 2.5rem;
+  line-height: @size-16;
+  margin: @size-18 0;
+  padding-left: @size-12;
+
+  @media @breakpoint-mobile {
+    .mono-10;
+
+    height: 2.25rem;
+    line-height: @size-14;
+    padding-left: @size-8;
+  }
+
+  > button {
+    align-items: center;
+    background: @color-primary-alternate;
+    color: @color-neutral;
+    display: flex;
+    height: 100%;
+    line-height: @size-14;
+    margin-left: @size-8;
+    padding: @size-12 @size-16;
+    text-transform: uppercase;
+
+    @media @breakpoint-mobile {
+      line-height: @size-10;
+      margin-left: @size-4;
+      padding: @size-12 @size-14;
+    }
+
+    > svg {
+      fill: none;
+      height: @size-14;
+      width: @size-12;
+
+      @media @breakpoint-mobile {
+        height: @size-10;
+        width: @size-8;
+      }
+
+      > path {
+        fill: @color-neutral;
+      }
+    }
+  }
+}
+
+.ActionRow {
+  align-items: center;
+  background: @color-tertiary-background;
+  border-bottom: 1px solid @color-primary-background;
+  display: flex;
+  flex-flow: column nowrap;
+  padding: @size-16;
+
+  &:not(:first-of-type) {
+    margin-top: 0.25rem;
+  }
+
+  > section {
+    align-content: center;
+    display: flex;
+    flex: 1 100%;
+    flex-flow: row nowrap;
+    justify-content: stretch;
+    margin-bottom: @size-16;
+    width: 100%;
+
+    > div:first-of-type {
+      align-items: center;
+      flex: 0 0 auto;
+      flex-flow: row nowrap;
+      margin-left: 50px;
+      max-width: 250px;
+
+      > span {
+        display: flex;
+        margin-bottom: 0.25rem;
+      }
+    }
+
+    > h2 {
+      .text-12;
+
+      color: @color-secondary-text;
+      flex: 1 auto;
+      font-weight: @weight-medium;
+      line-height: 15px;
+    }
+
+    @media @breakpoint-mobile {
+      flex-direction: column;
+
+      > h2 {
+        margin-bottom: 1rem;
+      }
+
+      > div:first-of-type {
+        margin-left: 0;
+        max-width: unset;
+      }
+    }
+  }
+
+  > button {
+    margin-left: auto;
+  }
+
+  > div {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    width: 100%;
+
+    > span {
+      margin-right: 0.75rem;
+    }
+  }
+}
+
+.SelectableTable {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: stretch;
+
+  > button {
+    border: 1px solid @color-primary-background;
+    border-top: 0;
+    color: @color-secondary-text;
+    display: flex;
+    flex: 1;
+    flex-flow: row nowrap;
+    width: 100%;
+
+    > span {
+      .mono-10;
+
+      border-right: 1px solid @color-primary-background;
+      flex: 1;
+      padding: @size-4 @size-8;
+      text-align: left;
+      white-space: nowrap;
+
+      &:last-of-type {
+        border-right: 0;
+      }
+    }
+
+    &:hover {
+      color: @color-neutral;
+      cursor: pointer;
+    }
+
+    &:first-of-type {
+      border-top: 1px solid @color-primary-background;
+
+      &:hover {
+        color: @color-secondary-text;
+        cursor: auto;
+      }
+    }
+  }
+}
+
+.DepositInfo {
+  border-top: 1px solid @color-primary-alternate;
+  color: @color-secondary-text;
+
+  > h3 {
+    .text-12-bold;
+
+    margin: @size-24 0 @size-12;
+  }
+
+  > ul {
+    .text-12;
+
+    color: @color-secondary-text;
+    list-style-type: decimal;
+    margin-left: @size-12;
+
+    > li {
+      margin: @size-4 0;
+    }
+  }
+}
+
+.ModalMarketReview {
+  padding: @size-16 0 0;
+}
+
+.ModalMarketReview__ReadMore {
+  .text-12;
+
+  color: @color-primary-action;
+  cursor: pointer;
+}
+
+.ModalMarketReview__TextBox {
+  background-color: @color-theme-primary;
+  margin: 0 0 @size-24;
+  padding: @size-16;
+
+  > div {
+    > p {
+      .mono-10;
+
+      color: @color-shadow-text;
+      margin: @size-4 0;
+      text-transform: uppercase;
+    }
+
+    .text-12;
+
+    color: @color-secondary-text;
+    line-height: normal;
+    margin: 0 0 @size-16;
+  }
+
+  > div:last-of-type {
+    margin: 0;
+  }
+}
+
+.CheckboxCTA__checkbox {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+
+  > label {
+    .text-14-bold;
+
+    align-items: center;
+    color: @color-secondary-text;
+    display: flex;
+    font-weight: 500;
+    text-transform: none;
+    user-select: none;
+
+    > div {
+      margin-right: 2.5rem;
+    }
+  }
+
+  &:active,
+  &:focus {
+    outline: none;
+  }
+}

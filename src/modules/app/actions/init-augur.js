@@ -2,8 +2,7 @@ import * as AugurJS from "services/augurjs";
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
-  updateAugurNodeConnectionStatus,
-  updateUseWebsocketToConnectAugurNode
+  updateAugurNodeConnectionStatus
 } from "modules/app/actions/update-connection";
 import { getAugurNodeNetworkId } from "modules/app/actions/get-augur-node-network-id";
 import { updateContractAddresses } from "modules/contracts/actions/update-contract-addresses";
@@ -19,21 +18,20 @@ import { loadUniverse } from "modules/app/actions/load-universe";
 import { registerTransactionRelay } from "modules/transactions/actions/register-transaction-relay";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
-import { isGoogleBot } from "src/utils/is-google-bot";
 import logError from "utils/log-error";
 import networkConfig from "config/network";
 import { version } from "src/version";
 import { updateVersions } from "modules/app/actions/update-versions";
 
 import { defaultTo, isEmpty } from "lodash";
-import { NETWORK_NAMES } from "modules/app/constants/network";
 import {
   MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,
   MODAL_DISCLAIMER,
-  MODAL_NETWORK_DISABLED
-} from "modules/modal/constants/modal-types";
-import { DISCLAIMER_SEEN } from "modules/modal/constants/local-storage-keys";
+  MODAL_NETWORK_DISABLED,
+  NETWORK_NAMES,
+  DISCLAIMER_SEEN
+} from "modules/common-elements/constants";
 import { windowRef } from "utils/window-ref";
 import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
 
@@ -171,7 +169,6 @@ export function connectAugur(
 ) {
   return (dispatch, getState) => {
     const { modal, loginAccount } = getState();
-
     AugurJS.connect(
       env,
       (err, ConnectionInfo) => {
@@ -236,6 +233,7 @@ export function connectAugur(
                 dispatch(setSelectedUniverse());
                 location.reload();
               }
+
               doIt();
             }
           );
@@ -266,20 +264,6 @@ export function initAugur(
       // If only the http param is provided we need to prevent this "default from taking precedence.
       isEmpty(ethereumNodeHttp) ? env["ethereum-node"].ws : ""
     );
-
-    env["use-websocket-for-augur-node"] = !isGoogleBot();
-    if (!env["use-websocket-for-augur-node"]) {
-      env["ethereum-node"].ws = "";
-    }
-
-    const action = updateUseWebsocketToConnectAugurNode(
-      env["use-websocket-for-augur-node"]
-    );
-    dispatch(action);
-
-    if (!env["use-websocket-for-augur-node"]) {
-      env["augur-node"] = env["augur-node"].replace(/^ws/, "http");
-    }
 
     dispatch(updateEnv(env));
     connectAugur(history, env, true, callback)(dispatch, getState);

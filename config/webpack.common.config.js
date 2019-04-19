@@ -13,17 +13,19 @@ const PATHS = {
 // COMMON CONFIG
 module.exports = {
   mode: "development",
-  entry: [
-    `${PATHS.APP}/web-workers-exit`,
-    "react",
-    "react-dom",
-    "redux",
-    "redux-thunk",
-    "moment",
-    "react-datetime",
-    "@babel/polyfill",
-    `${PATHS.APP}/main`
-  ],
+  entry: {
+    // 'assets/styles/styles': `${PATHS.APP}/styles`,
+    "assets/scripts/vendor": [
+      `${PATHS.APP}/web-workers-exit`,
+      "react",
+      "react-dom",
+      "redux",
+      "redux-thunk",
+      "moment",
+      "react-datetime"
+    ],
+    main: ["@babel/polyfill", `${PATHS.APP}/main`]
+  },
   output: {
     filename: "[name].[chunkhash].js",
     chunkFilename: "[name].[chunkhash].js",
@@ -32,7 +34,7 @@ module.exports = {
   },
   resolve: {
     modules: ["node_modules", PATHS.APP],
-    extensions: [".html", ".less", ".json", ".js", ".jsx"],
+    extensions: [".html", ".less", ".json", ".js", ".jsx", ".ts", ".tsx"],
     alias: {
       // NOTE --  these aliases are utilized during build + linting,
       //          only testing utilizes the aliases w/in .babelrc
@@ -66,24 +68,8 @@ module.exports = {
         }
       },
       {
-        test: /\.jsx?$/,
+        test: /\.[jt]sx?$/,
         loader: "babel-loader",
-        options: {
-          presets: [
-            [
-              "@babel/preset-env",
-              {
-                modules: "cjs",
-                targets: "> 0.5%, not dead, chrome >= 41, not ie <=11"
-              }
-            ],
-            "@babel/preset-react"
-          ],
-          plugins: [
-            "@babel/plugin-proposal-class-properties",
-            "@babel/plugin-syntax-dynamic-import"
-          ]
-        },
         exclude: function(modulePath) {
           return (
             /node_modules/.test(modulePath) &&

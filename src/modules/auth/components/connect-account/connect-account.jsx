@@ -13,8 +13,10 @@ import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
 export default class ConnectAccount extends Component {
   static propTypes = {
     isLogged: PropTypes.bool.isRequired,
+    isConnectionTrayOpen: PropTypes.bool.isRequired,
     address: PropTypes.string,
-    className: PropTypes.string
+    className: PropTypes.string,
+    updateConnectionTray: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -25,13 +27,7 @@ export default class ConnectAccount extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      dropdownOpen: false
-    };
-
     this.toggleDropdown = this.toggleDropdown.bind(this);
-    this.handleWindowOnClick = this.handleWindowOnClick.bind(this);
-    this.setDropdownOpen = this.setDropdownOpen.bind(this);
   }
 
   componentDidMount() {
@@ -39,8 +35,15 @@ export default class ConnectAccount extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    if (nextProps.isLogged !== this.props.isLogged && nextProps.isLogged) {
-      this.setDropdownOpen(false);
+    const { isLogged, isConnectionTrayOpen } = this.props;
+    if (nextProps.isConnectionTrayOpen !== isConnectionTrayOpen) {
+      toggleHeight(this.ConnectDropdown, isConnectionTrayOpen);
+    } else if (
+      nextProps.isLogged !== isLogged &&
+      nextProps.isLogged &&
+      isConnectionTrayOpen
+    ) {
+      toggleHeight(this.ConnectDropdown, false);
     }
   }
 
@@ -48,40 +51,19 @@ export default class ConnectAccount extends Component {
     window.removeEventListener("click", this.handleWindowOnClick);
   }
 
-  setDropdownOpen(value) {
-    this.setState({ dropdownOpen: value }, () => {
-      toggleHeight(this.ConnectDropdown, true, () => {});
-    });
-  }
-
   toggleDropdown(cb) {
-    toggleHeight(this.ConnectDropdown, this.state.dropdownOpen, () =>
-      console.log("dropped down login window")
-    );
-    this.setState({ dropdownOpen: !this.state.dropdownOpen });
+    const { updateConnectionTray, isConnectionTrayOpen } = this.props;
+    updateConnectionTray(!isConnectionTrayOpen);
     if (cb && typeof cb === "function") cb();
   }
 
-  handleWindowOnClick(event) {
-    if (
-      this.state.dropdownOpen &&
-      event.target.id !== "login-class" &&
-      event.target.id !== "login-button" &&
-      this.connectAccount &&
-      !this.connectAccount.contains(event.target)
-    ) {
-      this.toggleDropdown();
-    }
-  }
-
   render() {
-    const { isLogged, address, className } = this.props;
-    const s = this.state;
+    const { isLogged, address, className, isConnectionTrayOpen } = this.props;
 
     return (
       <div
         className={classNames(Styles.ConnectAccount, className, {
-          [Styles.ConnectAccount__selected]: s.dropdownOpen,
+          [Styles.ConnectAccount__selected]: isConnectionTrayOpen,
           [Styles.ConnectAccountLoggedIn]: isLogged
         })}
         ref={connectAccount => {
@@ -116,7 +98,7 @@ export default class ConnectAccount extends Component {
                 })}
               >
                 <ChevronFlip
-                  pointDown={s.dropdownOpen}
+                  pointDown={isConnectionTrayOpen}
                   stroke="#fff"
                   filledInIcon
                   quick

@@ -1,0 +1,83 @@
+// Colors for the V2 Redesign
+@color-primary-text: #1A1D23;
+@color-secondary-text: #FFFFFF;
+@color-alternate-text: #777777;
+@color-tertiary-text: #CED7D8;
+@color-primary-light: #443B59;
+@color-primary-alternate: #2B2438;
+@color-primary-alternate-two: #665789;
+@color-tertiary-one: #1A1627;
+
+@color-shadow-text: #76737E;
+@color-primary-background: #0F0A19;
+@color-secondary-background: #120D1B;
+@color-tertiary-background: #1B1528;
+@color-theme-primary: #211A32;
+@color-contrast-background: #FBE9A6;
+
+@color-primary-action: #09CFE1;
+@color-secondary-action: #161022;
+@color-secondary-border: @color-primary-alternate;
+@color-highlight-background: #4F4761;
+@color-open: #7DFFA8;
+@color-in-reporting: #F1E700;
+@color-resolved: #F12B00;
+
+@color-highlight: #665789;
+@color-bright-highlight: #988FEA;
+@color-highlight-masked: fade(#C4C4C4, 10%);
+
+@color-positive: #00F1C4;
+@color-neutral: #999999;
+@color-negative: #FF7D5E;
+@color-error-text: #ff2727;
+@color-error-fade: #52121D;
+
+@color-active-hover: #211B2E;
+
+@color-underline: #7EC9FF;
+
+@color-less-neutral: @color-tertiary-text;
+
+@color-primary-button-background: @color-primary-action;
+@color-primary-button-background-hover: #00EAFF;
+@color-primary-button-background-disabled: fade(#09CFE1, 30%);
+
+@color-buy-order-button-background: fade(@color-positive, 40%);
+@color-buy-order-button-background-hover: fade(@color-positive, 60%);
+@color-buy-order-button-background-disabled: fade(@color-positive, 20%);
+
+@color-buy-order-button-border: @color-positive;
+@color-buy-order-button-border-disabled: fade(@color-positive, 10%);
+
+@color-sell-order-button-background: fade(@color-negative, 40%);
+@color-sell-order-button-background-hover: fade(@color-negative, 60%);
+@color-sell-order-button-background-disabled: fade(@color-negative, 20%);
+
+@color-sell-order-button-border: @color-negative;
+@color-sell-order-button-border-disabled: fade(@color-negative, 10%);
+
+@color-primary-button-text: @color-primary-background;
+@color-secondary-button-text: @color-secondary-text;
+@color-secondary-button-text-disabled: fade(@color-secondary-text, 20%);
+
+@color-error-message-fade: fade(@color-error-fade, 90%);
+@color-error-message-bright-fade: fade(@color-error-text, 20%);
+
+//  Chart
+@color-outcome-one: #fadca2;
+@color-outcome-two: #f3a2fa;
+@color-outcome-three: @color-secondary-text;
+@color-outcome-four: #fd6266;
+@color-outcome-five: #a5a5a5;
+@color-outcome-six: #665cdf;
+@color-outcome-seven: #09cfe1;
+@color-outcome-eight: #5cdf88;
+@color-outcome-list: @color-outcome-one @color-outcome-two @color-outcome-three @color-outcome-four @color-outcome-five @color-outcome-six @color-outcome-seven @color-outcome-eight;
+
+.generate-indexed-color-outcome-classes(@rules) {
+  each(@color-outcome-list, {
+    @newIndex: @index - 1;
+    @rules();
+  });
+}

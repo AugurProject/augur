@@ -1,28 +1,28 @@
 @import (reference) "~assets/styles/shared";
 
 .CreateMarketReview {
-  color: @color-white;
+  color: @color-secondary-text;
   display: flex;
-  flex-direction: row;
   min-width: 100%;
 
-  > div.blockit {
-    margin-left: 1rem;
-    padding: 0.5rem 0 1rem;
-  }
+  > div:nth-of-type(2) {
+    margin-left: 3rem;
 
-  > div {
-    margin: 1rem 0;
+    > div {
+      margin: 1rem 0;
+
+      &.blockit {
+        margin-left: 1rem;
+        padding: 0.5rem 0 1rem;
+      }
+    }
   }
 }
 
 .CreateMarketReview__explainer {
-  color: #a7a2b2;
-  font-family: Roboto;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: normal;
-  line-height: normal;
+  .text-16;
+
+  color: @color-lightgray;
   margin-bottom: 56px;
   margin-top: 1.5rem;
 }
@@ -31,13 +31,14 @@
   display: flex;
   flex-direction: row;
   margin-top: 32px;
+  text-transform: uppercase;
 
   > div {
     flex: 1;
   }
 
   > div:first-of-type {
-    margin-right: 144px;
+    margin-right: 104px;
   }
 }
 
@@ -46,6 +47,7 @@
   display: flex;
   flex-direction: column;
   margin: 0;
+  padding-bottom: 2rem;
 
   > span:first-of-type {
     font-size: @font-size-small;
@@ -64,7 +66,7 @@
 }
 
 .CreateMarketReview_line {
-  border-bottom: 1px solid rgba(206, 215, 216, 0.3);
+  border-bottom: 1px solid @color-primary-light;
   min-width: 50%;
   padding: 1rem 0;
 }
@@ -112,7 +114,6 @@
   flex-direction: column;
   justify-content: space-between;
   margin-top: 2rem;
-  max-width: 50%;
   text-transform: uppercase;
 
   > span:last-of-type {
@@ -172,10 +173,17 @@
 .CreateMarketReview__heading {
   &:extend(.caps--large);
 
+  align-items: flex-end;
   border-bottom: 1px solid @color-input-background;
+  display: flex;
+  flex-flow: row wrap;
   font-weight: 700;
   margin-bottom: 1.375rem;
   padding-bottom: 0.5rem;
+
+  > div {
+    margin-left: auto;
+  }
 }
 
 .CreateMarketReview__list {
@@ -207,6 +215,7 @@
 
   font-size: 1rem;
   margin-bottom: 1.875rem;
+  text-transform: uppercase;
 }
 
 .CreateMarketReview__wrapper {
@@ -214,6 +223,7 @@
   flex-direction: column;
   justify-content: space-between;
   margin-bottom: 3rem;
+  max-width: 50%;
   min-width: 50%;
 }
 

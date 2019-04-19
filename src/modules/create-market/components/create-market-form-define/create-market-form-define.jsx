@@ -8,15 +8,15 @@ import { uniqBy, isEmpty } from "lodash";
 import {
   DESCRIPTION_MAX_LENGTH,
   TAGS_MAX_LENGTH
-} from "modules/markets/constants/new-market-constraints";
-import moment from "moment";
+} from "modules/common-elements/constants";
 
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
-import { MarketCreateFormTime } from "modules/create-market/components/create-market-form-time/create-market-form-time";
-import { MarketCreationTimeDisplay } from "modules/create-market/components/create-market-form-time/market-create-time-display";
+import moment from "moment";
 import Styles from "modules/create-market/components/create-market-form-define/create-market-form-define.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
-import HighlightedStyles from "modules/reporting/components/common/highlighted-message.styles";
+import { MarketCreateFormTime } from "modules/create-market/components/create-market-form-time/create-market-form-time";
+import { MarketCreationTimeDisplay } from "modules/create-market/components/create-market-form-time/market-create-time-display";
+import InvalidMessageStyles from "modules/reporting/components/invalid-message/invalid-message.styles";
 
 export default class CreateMarketDefine extends Component {
   static propTypes = {
@@ -159,7 +159,7 @@ export default class CreateMarketDefine extends Component {
 
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
-        <li className={Styles.CreateMarketDefine_block}>
+        <li className={StylesForm.CreateMarketForm_block}>
           <MarketCreateFormTime
             date={s.date}
             hours={s.hours}
@@ -178,31 +178,31 @@ export default class CreateMarketDefine extends Component {
             <div>
               Choose a{" "}
               <span className={Styles.CreateMarketDefine_bolden}>
-                Reporting Start Date and Time
+                Reporting Starts Date and Time.
               </span>{" "}
               that is sufficiently after the end of the event. If reporting
-              starts before the event end time the market will likely be
+              starts before the event end time it may result in the market being
               reported as{" "}
-              <span className={Styles.CreateMarketDefine_bolden}>invalid</span>.
+              <span className={Styles.CreateMarketDefine_bolden}>invalid.</span>
             </div>
             <div>
-              Make sure to factor in{" "}
+              Make sure to factor in
               <span className={Styles.CreateMarketDefine_bolden}>
                 potential delays
               </span>{" "}
-              that can impact the event end time. Reporting should start only
-              when the event outcome is known beyond a doubt.
+              that can impact the events end time. Reporting should only start
+              when the outcome will be known beyond a reasonable doubt.
             </div>
             <MarketCreationTimeDisplay endTime={newMarket.endTime} />
           </div>
         </li>
-        <li className={Styles.CreateMarketDefine_block}>
+        <li className={StylesForm.CreateMarketForm_block}>
           <div>
             <label htmlFor="cm__input--desc">
               <span>Market Question</span>
               {newMarket.validations[newMarket.currentStep].description && (
-                <span className={StylesForm.CreateMarketForm__error}>
-                  {InputErrorIcon}
+                <span>
+                  {InputErrorIcon()}
                   {newMarket.validations[newMarket.currentStep].description}
                 </span>
               )}
@@ -261,89 +261,105 @@ export default class CreateMarketDefine extends Component {
                 objective outcome
               </span>{" "}
               by the events end time. Avoid creating markets that have
-              subjective or ambiguous outcomes. If you&#39;re not sure that the
-              market&#39;s outcome will be known beyond a reasonable doubt by
-              the reporting start time, you should not create this market.
+              subjective or ambiguous outcomes.
             </div>
             <div
               className={classNames(
-                HighlightedStyles.HighlightedMessage,
+                InvalidMessageStyles.InvalidMessage,
                 Styles.blockit
               )}
             >
-              <div>
-                If entering a date and time in the Market Question and/or
-                Additional Details, use the Official Reporting Start Time in
-                UTC-0
-              </div>
-              <div>
-                Reporting Start Time must not conflict with the Market Question
-                or Additional Details. If they don’t match up there is a high
-                probability that the market will resolve as invalid.
+              <div className={InvalidMessageStyles.textFlow}>
+                <div>
+                  If entering a date and time in the Market Question and/or
+                  Additional Details, use the{" "}
+                  <span className={Styles.CreateMarketDefine_bolden}>
+                    Official Reporting Start Time
+                  </span>{" "}
+                  in
+                  <span className={Styles.CreateMarketDefine_bolden}>
+                    UTC-0
+                  </span>
+                </div>
+                <div>
+                  <span className={Styles.CreateMarketDefine_bolden}>
+                    Event Start Date and Time
+                  </span>{" "}
+                  must not conflict with the{" "}
+                  <span className={Styles.CreateMarketDefine_bolden}>
+                    Market Question
+                  </span>{" "}
+                  or{" "}
+                  <span className={Styles.CreateMarketDefine_bolden}>
+                    Additional Details.
+                  </span>{" "}
+                  If they don’t match up there is a high probability that the
+                  market will{" "}
+                  <span className={Styles.CreateMarketDefine_bolden}>
+                    resolve as invalid.
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </li>
-        <li className={StylesForm["field--50"]}>
-          <label htmlFor="cm__input--cat">
-            <span>Category</span>
-          </label>
-          <input
-            ref={catInput => {
-              this.catInput = catInput;
-            }}
-            id="cm__input--cat"
-            className={classNames({
-              [`${StylesForm["CreateMarketForm__error--field"]}`]: newMarket
-                .validations[newMarket.currentStep].category
-            })}
-            type="text"
-            value={s.localValues.category}
-            maxLength={TAGS_MAX_LENGTH}
-            placeholder="Help users find your market by defining its category"
-            onChange={e => {
-              this.updateFilteredCategories(e.target.value);
-              this.validateTag("category", e.target.value, TAGS_MAX_LENGTH);
-            }}
-            onKeyPress={e => keyPressed(e)}
-          />
-          {newMarket.validations[newMarket.currentStep].category && (
-            <span
-              className={[`${StylesForm["CreateMarketForm__error--bottom"]}`]}
-            >
-              {InputErrorIcon}
-              {newMarket.validations[newMarket.currentStep].category}
-            </span>
-          )}
-        </li>
-        <li className={StylesForm["field--50"]}>
-          <label>
-            <span>Suggested Categories</span>
-          </label>
-          <ul className={Styles["CreateMarketDefine__suggested-categories"]}>
-            {newMarket.category &&
-              s.suggestedCategories
-                .slice(0, s.shownSuggestions)
-                .map((cat, i) => (
-                  <li key={i}>
-                    <button
-                      onClick={() => {
-                        this.updateFilteredCategories(cat.categoryName, true);
-                        this.catInput.value = cat.categoryName;
-                        this.validateTag(
-                          "category",
-                          cat.categoryName,
-                          TAGS_MAX_LENGTH
-                        );
-                      }}
-                    >
-                      {cat.categoryName}
-                    </button>
-                  </li>
-                ))}
-            {newMarket.category &&
-              s.suggestedCategories.length > s.shownSuggestions && (
-                <li>
+        <li className={StylesForm.CreateMarketForm_block}>
+          <div>
+            <label htmlFor="cm__input--cat">
+              <span>Category</span>
+              {newMarket.validations[newMarket.currentStep].category && (
+                <span>
+                  {InputErrorIcon()}
+                  {newMarket.validations[newMarket.currentStep].category}
+                </span>
+              )}
+            </label>
+            <input
+              ref={catInput => {
+                this.catInput = catInput;
+              }}
+              id="cm__input--cat"
+              className={classNames({
+                [`${StylesForm["CreateMarketForm__error--field"]}`]: newMarket
+                  .validations[newMarket.currentStep].category
+              })}
+              type="text"
+              value={s.localValues.category}
+              maxLength={TAGS_MAX_LENGTH}
+              placeholder="Help users find your market by defining its category"
+              onChange={e => {
+                this.updateFilteredCategories(e.target.value);
+                this.validateTag("category", e.target.value, TAGS_MAX_LENGTH);
+              }}
+              onKeyPress={e => keyPressed(e)}
+            />
+          </div>
+          <div className={Styles.CreateMarketDefine_message}>
+            <span className={Styles.highlighted}>Suggested Categories</span>
+            <div className={Styles.Suggestions}>
+              {newMarket.category &&
+                s.suggestedCategories
+                  .slice(0, s.shownSuggestions)
+                  .map((cat, i) => (
+                    <span key={i}>
+                      <button
+                        onClick={() => {
+                          this.updateFilteredCategories(cat.categoryName, true);
+                          this.catInput.value = cat.categoryName;
+                          this.validateTag(
+                            "category",
+                            cat.categoryName,
+                            TAGS_MAX_LENGTH
+                          );
+                        }}
+                      >
+                        {cat.categoryName}
+                      </button>
+                      {","}
+                    </span>
+                  ))}
+              {newMarket.category &&
+                s.suggestedCategories.length > s.shownSuggestions && (
                   <button
                     onClick={() =>
                       this.setState({
@@ -353,27 +369,17 @@ export default class CreateMarketDefine extends Component {
                   >
                     + {s.suggestedCategories.length - 2} more
                   </button>
-                </li>
-              )}
-          </ul>
+                )}
+            </div>
+          </div>
         </li>
-        <li className={Styles.CreateMarketDefine__tags}>
+        <li className={StylesForm.CreateMarketForm_block}>
           <div>
-            <label
-              className={classNames({
-                [StylesForm["CreateMarketForm__error--label"]]: tagMessage
-              })}
-              htmlFor="cm__input--tag1"
-            >
+            <label htmlFor="cm__input--tag1">
               <span>Tags</span>
               {tagMessage && (
-                <span
-                  className={classNames(
-                    StylesForm["CreateMarketForm__error--abs"],
-                    StylesForm["CreateMarketForm__error--lessSpace"]
-                  )}
-                >
-                  {InputErrorIcon}
+                <span>
+                  {InputErrorIcon()}
                   {tagMessage}
                 </span>
               )}

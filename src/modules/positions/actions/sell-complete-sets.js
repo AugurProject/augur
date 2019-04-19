@@ -1,16 +1,11 @@
 import { augur } from "services/augurjs";
 import { createBigNumber } from "utils/create-big-number";
-import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import logError from "utils/log-error";
 import {
   updateTransactionStatus,
   clearTransactionStatus
 } from "modules/transactions/actions/update-transactions-status";
-import {
-  AWAITING_SIGNATURE,
-  PENDING
-} from "modules/transactions/constants/statuses";
-// import noop from "utils/noop";
+import { AWAITING_SIGNATURE, PENDING } from "modules/common-elements/constants";
 
 export function sellCompleteSets(
   marketId,
@@ -38,7 +33,6 @@ export function sellCompleteSets(
       },
       onSuccess: res => {
         dispatch(clearTransactionStatus(pendingHash));
-        dispatch(loadAccountTrades({ marketId }));
         callback(null, res);
       },
       onFailed: err => {
