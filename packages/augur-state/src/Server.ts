@@ -26,49 +26,49 @@ export async function run() {
   const endpointSettings = {} as EndpointSettings;
 
   try {
-    endpointSettings.httpPort = Number(process.env["HTTP_PORT".toString()]) ||
+    endpointSettings.httpPort = Number(process.env.HTTP_PORT) ||
       settings.endpointSettings.http.port;
   } catch {
     endpointSettings.httpPort = 9004;
   }
 
   try {
-    endpointSettings.startHTTPS = Boolean(process.env["STATRT_HTTPS".toString()]) ||
+    endpointSettings.startHTTPS = Boolean(process.env.START_HTTPS) ||
       settings.endpointSettings.https.startHTTPS;
   } catch {
     endpointSettings.startHTTPS = false;
   }
 
   try {
-    endpointSettings.httpsPort = Number(process.env["HTTPS_PORT".toString()]) ||
+    endpointSettings.httpsPort = Number(process.env.HTTPS_PORT) ||
       settings.endpointSettings.https.port;
   } catch {
     endpointSettings.httpsPort = 9004;
   }
 
   try {
-    endpointSettings.wsPort = Number(process.env["WS_PORT".toString()]) ||
+    endpointSettings.wsPort = Number(process.env.WS_PORT) ||
       settings.endpointSettings.ws.port;
   } catch {
     endpointSettings.wsPort = 9004;
   }
 
   try {
-    endpointSettings.startWSS = Boolean(process.env["START_WSS".toString()]) ||
+    endpointSettings.startWSS = Boolean(process.env.START_WSS) ||
       settings.endpointSettings.wss.startWSS;
   } catch {
     endpointSettings.startWSS = false;
   }
 
   try {
-    endpointSettings.wssPort = Number(process.env["WSS_PORT".toString()]) ||
+    endpointSettings.wssPort = Number(process.env.WSS_PORT) ||
       settings.endpointSettings.wss.port;
   } catch {
     endpointSettings.wssPort = 9004;
   }
 
   try {
-    endpointSettings.certificateFile = process.env["CERTIFICATE_FILE".toString()] ||
+    endpointSettings.certificateFile = process.env.CERTIFICATE_FILE ||
       settings.endpointSettings.certificateInfo.certificateFile;
   } catch (error) {
     console.log(error);
@@ -76,7 +76,7 @@ export async function run() {
   }
 
   try {
-    endpointSettings.certificateKeyFile = process.env["CERTIFICATE_KEY_FILE".toString()] ||
+    endpointSettings.certificateKeyFile = process.env.CERTIFICATE_KEY_FILE ||
       settings.endpointSettings.certificateInfo.certificateKeyFile;
   } catch {
     endpointSettings.certificateKeyFile = "./certs/ssl-cert-snakeoil.pem";
@@ -84,8 +84,8 @@ export async function run() {
 
   // Sync.start();
   console.log("Starting websocket and http endpoints");
-  // WebsocketEndpoint.run(api, endpointSettings);
-  await HTTPEndpoint.run(api, endpointSettings);
+  HTTPEndpoint.run(api, endpointSettings);
+  await WebsocketEndpoint.run(api, endpointSettings);
 }
 
 run();
