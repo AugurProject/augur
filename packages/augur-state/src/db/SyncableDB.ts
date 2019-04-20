@@ -174,14 +174,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   }
 
   public async bulkSyncFullTextSearch<TBigNumber>(): Promise<void> {
-    await SyncableDB.bulkSyncFullTextSearch(this.db, this.flexSearch);
-  }
-
-  /**
-   * Should only be called directly by tests. Otherwise, call the function above.
-   */
-  public static async bulkSyncFullTextSearch<TBigNumber>(pouchDB: PouchDB.Database, fullTextSearch: FlexSearch): Promise<void> {
-    const previousDocumentEntries = await pouchDB.allDocs({include_docs: true});
+    const previousDocumentEntries = await this.db.allDocs({include_docs: true});
 
     for (let row of previousDocumentEntries.rows) {
       if (row === undefined) {
@@ -203,7 +196,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
           }
 
           if (info && info.tags && info.longDescription) {
-            fullTextSearch.add({
+            this.flexSearch.add({
               id: row.id,
               title: description,
               description: info.longDescription,
@@ -218,13 +211,6 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   }
 
   public fullTextSearch(query: string): Array<object> {
-    return SyncableDB.fullTextSearch(this.flexSearch, query);
-  }
-
-  /**
-   * Should only be called directly by tests. Otherwise, call the function above.
-   */
-  public static fullTextSearch(flexSearch: FlexSearch, query: string): Array<object> {
-    return flexSearch.search(query);
+    return this.flexSearch.search(query);
   }
 }
