@@ -14,6 +14,7 @@ import { MakeJsonRpcResponse } from "./MakeJsonRpcResponse";
 function isSafe(websocket: WebSocket) {
   if (websocket.readyState !== WebSocket.OPEN) {
     console.warn("Client disconnected during request, ignoring response");
+    websocket.terminate();
     return false;
   }
   return true;
@@ -21,7 +22,9 @@ function isSafe(websocket: WebSocket) {
 
 function safeSend(websocket: WebSocket, payload: string) {
   if (isSafe(websocket))
-    websocket.send(payload);
+    websocket.send(payload, (_) => {
+      websocket.terminate();
+    });
 }
 
 function safePing(websocket: WebSocket) {

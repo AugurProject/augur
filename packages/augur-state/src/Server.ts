@@ -33,7 +33,7 @@ export async function run() {
   }
 
   try {
-    endpointSettings.startHTTPS = Boolean(process.env.STATRT_HTTPS) ||
+    endpointSettings.startHTTPS = Boolean(process.env.START_HTTPS) ||
       settings.endpointSettings.https.startHTTPS;
   } catch {
     endpointSettings.startHTTPS = false;
