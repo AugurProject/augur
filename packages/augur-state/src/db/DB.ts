@@ -86,7 +86,22 @@ export class DB<TBigNumber> {
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (let eventName of genericEventNames) {
-      new SyncableDB<TBigNumber>(this, networkId, eventName);
+      let fullTextSearchOptions = undefined;
+      if (eventName === "MarketCreated") {
+        fullTextSearchOptions = {
+          doc: {
+            id: "id",
+            start: "start",
+            end: "end",
+            field: [
+              "title",
+              "description",
+              "tags",
+            ],
+          },
+        };
+      }
+      new SyncableDB<TBigNumber>(this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
     }
     // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
     // Also update topics/indexes for user-specific events once these changes are made to the contracts.
@@ -155,8 +170,6 @@ export class DB<TBigNumber> {
           highestAvailableBlockNumber
         ));
     }
-
-    await this.getSyncableDatabase(this.getDatabaseName("MarketCreated")).bulkSyncFullTextSearch();
 
     return Promise.all(dbSyncPromises).then(() => undefined)
 

@@ -25,12 +25,19 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   protected contractName: string; // TODO Remove if unused
   private syncStatus: SyncStatus;
   private idFields: Array<string>;
-  private flexSearch: FlexSearch;
+  private flexSearch: FlexSearch | undefined;
 
-  constructor(dbController: DB<TBigNumber>, networkId: number, eventName: string, dbName: string = dbController.getDatabaseName(eventName), idFields: Array<string> = []) {
-    super(networkId, dbName, dbController.pouchDBFactory);
+  constructor(
+    db: DB<TBigNumber>,
+    networkId: number,
+    eventName: string,
+    dbName: string = db.getDatabaseName(eventName),
+    idFields: Array<string> = [],
+    fullTextSearchOptions: object | undefined
+  ) {
+    super(networkId, dbName, db.pouchDBFactory);
     this.eventName = eventName;
-    this.syncStatus = dbController.syncStatus;
+    this.syncStatus = db.syncStatus;
     this.idFields = idFields;
     // TODO Set other indexes as need be
     this.db.createIndex({
@@ -38,20 +45,12 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         fields: ['blockNumber']
       }
     });
-    dbController.notifySyncableDBAdded(this);
-    dbController.registerEventListener(this.eventName, this.addNewBlock);
-    this.flexSearch = FlexSearch.create({
-      doc: {
-        id: "id",
-        start: "start",
-        end: "end",
-        field: [
-          "title",
-          "description",
-          "tags",
-        ],
-      },
-    });
+    db.notifySyncableDBAdded(this);
+    db.registerEventListener(this.eventName, this.addNewBlock);
+
+    if (fullTextSearchOptions) {
+      this.flexSearch = new FlexSearch(fullTextSearchOptions);
+    }
   }
 
   public async createIndex(indexOptions: PouchDB.Find.CreateIndexOptions): Promise<PouchDB.Find.CreateIndexResponse<{}>> {
@@ -70,7 +69,49 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
       const logs = await this.getLogs(augur, highestSyncedBlockNumber, endBlockNumber);
       highestSyncedBlockNumber = await this.addNewBlock(endBlockNumber, logs);
     }
+
+    this.syncFullTextSearch();
+
     // TODO Make any external calls as needed (such as pushing user's balance to UI)
+  }
+
+  private async syncFullTextSearch<TBigNumber>(): Promise<void> {
+    if (this.flexSearch) {
+      const previousDocumentEntries = await this.db.allDocs({include_docs: true});
+
+      for (let row of previousDocumentEntries.rows) {
+        if (row === undefined) {
+          continue;
+        }
+
+        const doc = row.doc as SyncableMarketDataDoc;
+
+        if (doc) {
+          const extraInfo = doc.extraInfo;
+          const description = doc.description;
+
+          if (extraInfo && description) {
+            let info;
+            try {
+              info = JSON.parse(extraInfo);
+            } catch (err) {
+              console.error("Cannot parse document json: " + extraInfo);
+            }
+
+            if (info && info.tags && info.longDescription) {
+              this.flexSearch.add({
+                id: row.id,
+                title: description,
+                description: info.longDescription,
+                tags: info.tags.toString(), // convert to comma separated so it is searchable
+                start: new Date(),
+                end: new Date(),
+              });
+            }
+          }
+        }
+      }
+    }
   }
 
   public addNewBlock = async (blocknumber: number, logs: Array<ParsedLog>): Promise<number> => {
@@ -173,44 +214,10 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     );
   }
 
-  public async bulkSyncFullTextSearch<TBigNumber>(): Promise<void> {
-    const previousDocumentEntries = await this.db.allDocs({include_docs: true});
-
-    for (let row of previousDocumentEntries.rows) {
-      if (row === undefined) {
-        continue;
-      }
-
-      const doc = row.doc as SyncableMarketDataDoc;
-
-      if (doc) {
-        const extraInfo = doc.extraInfo;
-        const description = doc.description;
-
-        if (extraInfo && description) {
-          let info;
-          try {
-            info = JSON.parse(extraInfo);
-          } catch (err) {
-            console.error("Cannot parse document json: " + extraInfo);
-          }
-
-          if (info && info.tags && info.longDescription) {
-            this.flexSearch.add({
-              id: row.id,
-              title: description,
-              description: info.longDescription,
-              tags: info.tags.toString(), // convert to comma separated so it is searchable
-              start: new Date(),
-              end: new Date(),
-            });
-          }
-        }
-      }
-    }
-  }
-
   public fullTextSearch(query: string): Array<object> {
-    return this.flexSearch.search(query);
+    if (this.flexSearch) {
+      return this.flexSearch.search(query);
+    }
+    return [];
   }
 }

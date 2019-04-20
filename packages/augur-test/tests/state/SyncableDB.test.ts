@@ -36,13 +36,10 @@ test("Flexible Search", async () => {
       })
     }
   ];
-
   await db.addNewBlock(syncableDBName, blockLogs);
+  await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay);
 
   const syncableDB = await db.getSyncableDatabase(syncableDBName);
-
-    // Index flex search with new entry
-  await syncableDB.bulkSyncFullTextSearch();
 
   let docs = syncableDB.fullTextSearch("Foobar");  // description/title
   expect(docs.length).toEqual(1);
