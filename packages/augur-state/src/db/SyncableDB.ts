@@ -4,6 +4,15 @@ import { DB } from "./DB";
 import { SyncStatus } from "./SyncStatus";
 import * as _ from "lodash";
 
+// because flexsearch is a UMD type lib
+import FlexSearch = require("flexsearch");
+
+// Need this interface to access these items on the documents in a SyncableDB
+interface SyncableMarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
+  extraInfo: string;
+  description: string;
+}
+
 export interface Document extends BaseDocument {
   blockNumber: number;
 }
@@ -16,6 +25,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   protected contractName: string; // TODO Remove if unused
   private syncStatus: SyncStatus;
   private idFields: Array<string>;
+  private flexSearch: FlexSearch;
 
   constructor(dbController: DB<TBigNumber>, networkId: number, eventName: string, dbName: string = dbController.getDatabaseName(eventName), idFields: Array<string> = []) {
     super(networkId, dbName, dbController.pouchDBFactory);
@@ -30,6 +40,18 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     });
     dbController.notifySyncableDBAdded(this);
     dbController.registerEventListener(this.eventName, this.addNewBlock);
+    this.flexSearch = FlexSearch.create({
+      doc: {
+        id: "id",
+        start: "start",
+        end: "end",
+        field: [
+          "title",
+          "description",
+          "tags",
+        ],
+      },
+    });
   }
 
   public async createIndex(indexOptions: PouchDB.Find.CreateIndexOptions): Promise<PouchDB.Find.CreateIndexResponse<{}>> {
@@ -149,5 +171,60 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
       {_id},
       log
     );
+  }
+
+  public async bulkSyncFullTextSearch<TBigNumber>(): Promise<void> {
+    await SyncableDB.bulkSyncFullTextSearch(this.db, this.flexSearch);
+  }
+
+  /**
+   * Should only be called directly by tests. Otherwise, call the function above.
+   */
+  public static async bulkSyncFullTextSearch<TBigNumber>(pouchDB: PouchDB.Database, fullTextSearch: FlexSearch): Promise<void> {
+    const previousDocumentEntries = await pouchDB.allDocs({include_docs: true});
+
+    for (let row of previousDocumentEntries.rows) {
+      if (row === undefined) {
+        continue;
+      }
+
+      const doc = row.doc as SyncableMarketDataDoc;
+
+      if (doc) {
+        const extraInfo = doc.extraInfo;
+        const description = doc.description;
+
+        if (extraInfo && description) {
+          let info;
+          try {
+            info = JSON.parse(extraInfo);
+          } catch (err) {
+            console.error("Cannot parse document json: " + extraInfo);
+          }
+
+          if (info && info.tags && info.longDescription) {
+            fullTextSearch.add({
+              id: row.id,
+              title: description,
+              description: info.longDescription,
+              tags: info.tags.toString(), // convert to comma separated so it is searchable
+              start: new Date(),
+              end: new Date(),
+            });
+          }
+        }
+      }
+    }
+  }
+
+  public fullTextSearch(query: string): Array<object> {
+    return SyncableDB.fullTextSearch(this.flexSearch, query);
+  }
+
+  /**
+   * Should only be called directly by tests. Otherwise, call the function above.
+   */
+  public static fullTextSearch(flexSearch: FlexSearch, query: string): Array<object> {
+    return flexSearch.search(query);
   }
 }

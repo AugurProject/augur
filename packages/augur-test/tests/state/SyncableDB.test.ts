@@ -1,10 +1,14 @@
-import {Controller} from "@augurproject/state/src/Controller";
+import { Controller } from "@augurproject/state/src/Controller";
 import { BlockAndLogStreamerListener } from "@augurproject/state/src/db/BlockAndLogStreamerListener";
 import { EventLogDBRouter } from "@augurproject/state/src/db/EventLogDBRouter";
-import {Augur} from "@augurproject/api";
+import { Augur } from "@augurproject/api";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ACCOUNTS, compileAndDeployToGanache, makeDbMock } from "../../libs";
-import {ethers} from "ethers";
+import { ethers } from "ethers";
+import { SyncableDB } from "@augurproject/state/build/db/SyncableDB";
+
+// because flexsearch is a UMD type lib
+import FlexSearch = require("flexsearch");
 
 const mock = makeDbMock();
 
@@ -47,15 +51,29 @@ test("Flexible Search", async () => {
       tags: ["humanity", "30"],
     })});
 
-  await controller.run();  // re-index flex search with new entry
+  const flexSearch = FlexSearch.create({
+    doc: {
+      id: "id",
+      start: "start",
+      end: "end",
+      field: [
+        "title",
+        "description",
+        "tags",
+      ],
+    },
+  });
 
-  let docs = controller.FTS.search("Foobar");  // description/title
+  // Re-index flex search with new entry
+  await mock.bulkSyncFullTextSearch(dbMarketCreated, flexSearch);
+
+  let docs = SyncableDB.fullTextSearch(flexSearch, "Foobar");  // description/title
   expect(docs.length).toEqual(1);
 
-  docs = controller.FTS.search("humanity");  // tags
+  docs = SyncableDB.fullTextSearch(flexSearch, "humanity");  // tags
   expect(docs.length).toEqual(1);
 
-  docs = controller.FTS.search("lol");  // longDescription/description
+  docs = SyncableDB.fullTextSearch(flexSearch, "lol");  // longDescription/description
   expect(docs.length).toEqual(1);
 
   const doc = docs[0];
