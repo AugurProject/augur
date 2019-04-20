@@ -74,7 +74,7 @@ export class DB<TBigNumber> {
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener:IBlockAndLogStreamerListener): Promise<void> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<void> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
@@ -118,7 +118,7 @@ export class DB<TBigNumber> {
   }
 
   public registerEventListener(eventName: string, callback: LogCallbackType): void {
-      this.blockAndLogStreamerListener.listenForEvent(eventName, callback);
+    this.blockAndLogStreamerListener.listenForEvent(eventName, callback);
   }
 
   /**
@@ -135,13 +135,13 @@ export class DB<TBigNumber> {
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let userSpecificEvent of this.userSpecificEvents) {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-          dbSyncPromises.push(
-            this.syncableDatabases[dbName].sync(
-              augur,
-              chunkSize,
-              blockstreamDelay,
-              highestAvailableBlockNumber
-            ));
+        dbSyncPromises.push(
+          this.syncableDatabases[dbName].sync(
+            augur,
+            chunkSize,
+            blockstreamDelay,
+            highestAvailableBlockNumber
+          ));
       }
     }
 
