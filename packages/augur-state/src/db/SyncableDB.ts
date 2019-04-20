@@ -25,7 +25,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   protected contractName: string; // TODO Remove if unused
   private syncStatus: SyncStatus;
   private idFields: Array<string>;
-  private flexSearch: FlexSearch | undefined;
+  private flexSearch?: FlexSearch;
 
   constructor(
     db: DB<TBigNumber>,
@@ -33,7 +33,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     eventName: string,
     dbName: string = db.getDatabaseName(eventName),
     idFields: Array<string> = [],
-    fullTextSearchOptions: object | undefined
+    fullTextSearchOptions?: object
   ) {
     super(networkId, dbName, db.pouchDBFactory);
     this.eventName = eventName;
