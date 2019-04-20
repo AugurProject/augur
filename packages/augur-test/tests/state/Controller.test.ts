@@ -1,22 +1,22 @@
-import {Controller} from "@augurproject/state/src/Controller";
+import { ethers } from "ethers";
+import { Controller } from "@augurproject/state/src/Controller";
 import { BlockAndLogStreamerListener } from "@augurproject/state/src/db/BlockAndLogStreamerListener";
 import { EventLogDBRouter } from "@augurproject/state/src/db/EventLogDBRouter";
-import {Augur} from "@augurproject/api";
+import { Augur } from "@augurproject/api";
+import { contracts as compilerOutput } from "@augurproject/artifacts";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { ACCOUNTS, compileAndDeployToGanache, makeDbMock } from "../../libs";
-import {ethers} from "ethers";
+import { ACCOUNTS, deployContracts, makeDbMock } from "../../libs";
 
 const mock = makeDbMock();
 
 beforeEach(async () => {
-  mock.cancelFail();
   await mock.wipeDB();
 });
 
 let augur: Augur<ethers.utils.BigNumber>;
 let ethersProvider: EthersProvider;
 beforeAll(async () => {
-  const {provider, dependencies, addresses} = await compileAndDeployToGanache(ACCOUNTS);
+  const {provider, dependencies, addresses} = await deployContracts(ACCOUNTS, compilerOutput);
   augur = await Augur.create(provider, dependencies, addresses);
   ethersProvider = provider;
 }, 120000);
