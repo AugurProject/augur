@@ -115,9 +115,6 @@ export function makeDbMock() {
       augur.userSpecificEvents,
       makeFactory(),
       makeBlockAndLogStreamerListener(),
-    ),
-    bulkSyncFullTextSearch: (pouchDB: PouchDB.Database, fullTextSearch: FlexSearch) => SyncableDB.bulkSyncFullTextSearch(
-      pouchDB, fullTextSearch
     )
   };
 }
