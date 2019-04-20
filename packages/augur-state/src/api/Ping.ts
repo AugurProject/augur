@@ -1,7 +1,6 @@
+import * as t from "io-ts";
 import { DB } from "../db/DB";
 import { Getter } from "./Router";
-
-import * as t from "io-ts";
 
 export interface Pong {
   response: string;
