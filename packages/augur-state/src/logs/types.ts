@@ -11,11 +11,11 @@ export interface Doc {
 }
 
 export interface Log {
-    blockNumber: number;
-    blockHash: Bytes32;
-    transactionIndex: number;
-    transactionHash: Bytes32;
-    logIndex: number;
+  blockNumber: number;
+  blockHash: Bytes32;
+  transactionIndex: number;
+  transactionHash: Bytes32;
+  logIndex: number;
 }
 
 export interface CompleteSetsPurchasedLog extends Log, Doc {
@@ -118,8 +118,18 @@ export interface MarketVolumeChangedLog extends Log, Doc {
   volume: string;
 }
 
+export interface OrderCanceledLog extends Log, Doc {
+  universe: Address;
+  shareToken: Address;
+  sender: Address;
+  orderId: Bytes32;
+  orderType: OrderType;
+  tokenRefund: string;
+  sharesRefund: string;
+}
+
 export interface OrderCreatedLog extends Log, Doc {
-  orderType: number;
+  orderType: OrderType;
   amount: string;
   price: string;
   creator: string;
@@ -146,7 +156,7 @@ export interface OrderFilledLog extends Log, Doc {
 }
 
 export interface OrderPriceChangedLog extends Log, Doc {
-  orderType: number;
+  orderType: OrderType;
   amount: string;
   price: string;
   creator: Address;
@@ -156,6 +166,11 @@ export interface OrderPriceChangedLog extends Log, Doc {
   marketId: Address;
   kycToken: Address;
   outcome: string;
+}
+
+export enum OrderType {
+  Bid = 0,
+  Ask = 1
 }
 
 export interface PayoutNumerator {

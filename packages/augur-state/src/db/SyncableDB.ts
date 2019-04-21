@@ -4,6 +4,15 @@ import { DB } from "./DB";
 import { SyncStatus } from "./SyncStatus";
 import * as _ from "lodash";
 
+// because flexsearch is a UMD type lib
+import FlexSearch = require("flexsearch");
+
+// Need this interface to access these items on the documents in a SyncableDB
+interface SyncableMarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
+  extraInfo: string;
+  description: string;
+}
+
 export interface Document extends BaseDocument {
   blockNumber: number;
 }
@@ -16,11 +25,19 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   protected contractName: string; // TODO Remove if unused
   private syncStatus: SyncStatus;
   private idFields: Array<string>;
+  private flexSearch?: FlexSearch;
 
-  constructor(dbController: DB<TBigNumber>, networkId: number, eventName: string, dbName: string = dbController.getDatabaseName(eventName), idFields: Array<string> = []) {
-    super(networkId, dbName, dbController.pouchDBFactory);
+  constructor(
+    db: DB<TBigNumber>,
+    networkId: number,
+    eventName: string,
+    dbName: string = db.getDatabaseName(eventName),
+    idFields: Array<string> = [],
+    fullTextSearchOptions?: object
+  ) {
+    super(networkId, dbName, db.pouchDBFactory);
     this.eventName = eventName;
-    this.syncStatus = dbController.syncStatus;
+    this.syncStatus = db.syncStatus;
     this.idFields = idFields;
     // TODO Set other indexes as need be
     this.db.createIndex({
@@ -28,8 +45,12 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         fields: ['blockNumber']
       }
     });
-    dbController.notifySyncableDBAdded(this);
-    dbController.registerEventListener(this.eventName, this.addNewBlock);
+    db.notifySyncableDBAdded(this);
+    db.registerEventListener(this.eventName, this.addNewBlock);
+
+    if (fullTextSearchOptions) {
+      this.flexSearch = new FlexSearch(fullTextSearchOptions);
+    }
   }
 
   public async createIndex(indexOptions: PouchDB.Find.CreateIndexOptions): Promise<PouchDB.Find.CreateIndexResponse<{}>> {
@@ -48,7 +69,49 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
       const logs = await this.getLogs(augur, highestSyncedBlockNumber, endBlockNumber);
       highestSyncedBlockNumber = await this.addNewBlock(endBlockNumber, logs);
     }
+
+    this.syncFullTextSearch();
+
     // TODO Make any external calls as needed (such as pushing user's balance to UI)
+  }
+
+  private async syncFullTextSearch<TBigNumber>(): Promise<void> {
+    if (this.flexSearch) {
+      const previousDocumentEntries = await this.db.allDocs({include_docs: true});
+
+      for (let row of previousDocumentEntries.rows) {
+        if (row === undefined) {
+          continue;
+        }
+
+        const doc = row.doc as SyncableMarketDataDoc;
+
+        if (doc) {
+          const extraInfo = doc.extraInfo;
+          const description = doc.description;
+
+          if (extraInfo && description) {
+            let info;
+            try {
+              info = JSON.parse(extraInfo);
+            } catch (err) {
+              console.error("Cannot parse document json: " + extraInfo);
+            }
+
+            if (info && info.tags && info.longDescription) {
+              this.flexSearch.add({
+                id: row.id,
+                title: description,
+                description: info.longDescription,
+                tags: info.tags.toString(), // convert to comma separated so it is searchable
+                start: new Date(),
+                end: new Date(),
+              });
+            }
+          }
+        }
+      }
+    }
   }
 
   public addNewBlock = async (blocknumber: number, logs: Array<ParsedLog>): Promise<number> => {
@@ -131,7 +194,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   }
 
   protected async getLogs(augur: Augur<TBigNumber>, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {
-    return await augur.events.getLogs(this.eventName, startBlock, endBlock);
+    return augur.events.getLogs(this.eventName, startBlock, endBlock);
   }
 
   protected processLog(log: Log): BaseDocument {
@@ -149,5 +212,12 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
       { _id },
       log
     );
+  }
+
+  public fullTextSearch(query: string): Array<object> {
+    if (this.flexSearch) {
+      return this.flexSearch.search(query);
+    }
+    return [];
   }
 }

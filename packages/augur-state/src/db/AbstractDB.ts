@@ -28,7 +28,7 @@ export abstract class AbstractDB {
   }
 
   public async allDocs(): Promise<PouchDB.Core.AllDocsResponse<{}>> {
-    return await this.db.allDocs({include_docs: true});
+    return this.db.allDocs({include_docs: true});
   }
 
   protected async getDocument<Document>(id: string): Promise<Document | undefined> {
@@ -44,7 +44,7 @@ export abstract class AbstractDB {
 
   protected async upsertDocument(id: string, document: object): Promise<PouchDB.Core.Response> {
     const previousBlockRev = await this.getPouchRevFromId(id);
-    return await this.db.put(Object.assign(
+    return this.db.put(Object.assign(
       previousBlockRev ? {_rev: previousBlockRev} : {},
       {_id: id},
       document,
@@ -77,11 +77,11 @@ export abstract class AbstractDB {
   }
 
   public async getInfo(): Promise<PouchDB.Core.DatabaseInfo> {
-    return await this.db.info();
+    return this.db.info();
   }
 
   public async find(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
-    return await this.db.find(request);
+    return this.db.find(request);
   }
 
   private async getPouchRevFromId(id: string): Promise<string | undefined> {
