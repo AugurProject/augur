@@ -104,7 +104,7 @@ class TradingForm extends Component {
 
   updateTestProperty(property, nextProps) {
     const { clearOrderConfirmation } = this.props;
-    if (!isEqual(nextProps[property], this.state[property])) {
+    if (nextProps[property] !== this.state[property]) {
       this.setState(
         {
           [property]: nextProps[property]
@@ -117,7 +117,8 @@ class TradingForm extends Component {
           const { isOrderValid, errors, errorCount } = this.orderValidation(
             newOrderInfo,
             null,
-            nextProps
+            nextProps,
+            true
           );
           if (errorCount > 0) {
             clearOrderConfirmation();
@@ -149,7 +150,7 @@ class TradingForm extends Component {
     return { isOrderValid: passedTest, errors, errorCount };
   }
 
-  testQuantity(value, errors, isOrderValid) {
+  testQuantity(value, errors, isOrderValid, nextProps, fromExternal) {
     let errorCount = 0;
     let passedTest = !!isOrderValid;
     const precision = getPrecision(value, 0);
@@ -160,18 +161,18 @@ class TradingForm extends Component {
       passedTest = false;
       errors[this.INPUT_TYPES.QUANTITY].push("Quantity must be greater than 0");
     }
-    if (value && value.lt(0.000000001) && !value.eq(0)) {
+    if (value && value.lt(0.000000001) && !value.eq(0) && !fromExternal) {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.QUANTITY].push(
         "Quantity must be greater than 0.000000001"
       );
     }
-    if (value && precision > UPPER_FIXED_PRECISION_BOUND) {
+    if (value && precision > UPPER_FIXED_PRECISION_BOUND && !fromExternal) {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.QUANTITY].push(
-        `Quantity precision must be ${UPPER_FIXED_PRECISION_BOUND} decimals or less`
+        `Precision must be ${UPPER_FIXED_PRECISION_BOUND} decimals or less`
       );
     }
     return { isOrderValid: passedTest, errors, errorCount };
@@ -236,7 +237,12 @@ class TradingForm extends Component {
     return { isOrderValid: errorCount === 0, errors, errorCount };
   }
 
-  orderValidation(order, changedProperty, nextProps = null) {
+  orderValidation(
+    order,
+    changedProperty,
+    nextProps = null,
+    fromExternal = false
+  ) {
     let errors = {
       [this.INPUT_TYPES.QUANTITY]: [],
       [this.INPUT_TYPES.PRICE]: [],
@@ -273,7 +279,13 @@ class TradingForm extends Component {
         isOrderValid: bob,
         errors: quantityErrors,
         errorCount: quantityErrorCount
-      } = this.testQuantity(quantity, errors, isOrderValid, nextProps);
+      } = this.testQuantity(
+        quantity,
+        errors,
+        isOrderValid,
+        nextProps,
+        fromExternal
+      );
 
       quantityValid = bob;
       errorCount += quantityErrorCount;
