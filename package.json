@@ -81,6 +81,7 @@
     "prop-types": "15.6.0",
     "qrcode.react": "0.7.2",
     "query-string": "^6.1.0",
+    "re-reselect": "^3.1.0",
     "react": "16.7.0",
     "react-addons-shallow-compare": "15.6.2",
     "react-dates": "15.1.0",

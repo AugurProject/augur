@@ -15,7 +15,6 @@ import filterSortOptions from "modules/filter-sort/reducers/filter-sort-options"
 import functionsAPI from "modules/contracts/reducers/functions-api";
 import gasPriceInfo from "modules/app/reducers/gas-price-info";
 import initialReporters from "modules/reports/reducers/initial-reporters-data";
-import isFirstOrderBookChunkLoaded from "modules/orders/reducers/is-first-order-book-chunk-loaded";
 import loginAccount from "modules/auth/reducers/login-account";
 import marketCreatorFees from "modules/markets/reducers/market-creator-fees";
 import marketTradingHistory from "modules/markets/reducers/market-trading-history";
@@ -64,7 +63,6 @@ export function createReducer() {
     functionsAPI,
     gasPriceInfo,
     initialReporters,
-    isFirstOrderBookChunkLoaded,
     loginAccount,
     marketCreatorFees,
     marketReportState,

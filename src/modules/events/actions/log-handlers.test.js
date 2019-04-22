@@ -11,7 +11,7 @@ import * as isCurrentMarketModule from "modules/trades/helpers/is-current-market
 import * as convertLogsToTransactionsModule from "modules/transactions/actions/convert-logs-to-transactions";
 import * as loadReportingWindowBoundsModule from "modules/reports/actions/load-reporting-window-bounds";
 import * as getWinningBalanceModule from "modules/reports/actions/get-winning-balance";
-import * as loadBidsAsksModule from "modules/orders/actions/load-bids-asks";
+import * as loadMarketOpenOrdersModule from "modules/orders/actions/load-market-open-orders";
 import * as updateAssetsModule from "modules/auth/actions/update-assets";
 import * as loadAccountPositionsModule from "modules/positions/actions/load-account-positions";
 
@@ -23,7 +23,7 @@ describe("modules/events/actions/log-handlers.js", () => {
     let loadAccountTradesSpy;
     let loadReportingWindowBoundsSpy;
     let getWinningBalanceSpy;
-    let loadBidsAsksSpy;
+    let loadMarketOpenOrdersSpy;
     let loadAccountPositions;
     let updateAssetsSpy;
     const ACTIONS = {
@@ -31,7 +31,7 @@ describe("modules/events/actions/log-handlers.js", () => {
       UPDATE_ASSETS: "UPDATE_ASSETS",
       LOAD_REPORTING_WINDOW: "LOAD_REPORTING_WINDOW",
       GET_WINNING_BALANCE: "GET_WINNING_BALANCE",
-      LOAD_BID_ASKS: "LOAD_BID_ASKS",
+      LOAD_MARKET_OPEN_ORDERS: "LOAD_MARKET_OPEN_ORDERS",
       LOAD_ACCOUNT_POSITIONS: "LOAD_ACCOUNT_POSITIONS"
     };
 
@@ -57,10 +57,10 @@ describe("modules/events/actions/log-handlers.js", () => {
             marketIds
           }
         }));
-      loadBidsAsksSpy = jest
-        .spyOn(loadBidsAsksModule, "default")
+      loadMarketOpenOrdersSpy = jest
+        .spyOn(loadMarketOpenOrdersModule, "loadMarketOpenOrders")
         .mockImplementation(options => ({
-          type: ACTIONS.LOAD_BID_ASKS,
+          type: ACTIONS.LOAD_MARKET_OPEN_ORDERS,
           data: {
             marketId: options.marketId
           }
@@ -83,7 +83,7 @@ describe("modules/events/actions/log-handlers.js", () => {
       loadReportingWindowBoundsSpy.mockReset();
       loadAccountTradesSpy.mockReset();
       getWinningBalanceSpy.mockReset();
-      loadBidsAsksSpy.mockReset();
+      loadMarketOpenOrdersSpy.mockReset();
       loadAccountPositions.mockReset();
       updateAssetsSpy.mockReset();
     });

@@ -1,20 +1,20 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
-import { forEach } from "lodash";
 import { ungroupBy } from "utils/ungroupBy";
 import { addOrphanedOrder } from "modules/orders/actions/orphaned-orders";
 import { updateOrderBook } from "modules/orders/actions/update-order-book";
 import { OPEN } from "modules/common-elements/constants";
 import { formatEther, formatShares } from "utils/format-number";
+import { shapeGetOrders } from "modules/orders/helpers/shape-getOrders";
 
-export const loadAccountOrders = (
+export const loadAccountOpenOrders = (
   options = {},
   callback = logError,
   marketIdAggregator
-) => (dispatch, getState) => {
+) => dispatch => {
   dispatch(
     loadUserAccountOrders(options, (err, { marketIds = [], orders = {} }) => {
-      if (!err) postProcessing(marketIds, dispatch, { orders }, callback);
+      if (!err) postProcessing(marketIds, dispatch, orders, callback);
       dispatch(
         loadAccountOrphanedOrders(options, (oMarketIds = []) => {
           const comb = [...new Set([...marketIds, oMarketIds])];
@@ -43,28 +43,12 @@ const loadUserAccountOrders = (options = {}, callback) => (
   );
 };
 
-const postProcessing = (marketIds, dispatch, properties, callback) => {
-  forEach(marketIds, marketId => {
-    forEach(properties.orders[marketId], (outcomeOrder, outcome) => {
-      forEach(outcomeOrder, (orderBook, orderTypeLabel) => {
-        const openOrders = Object.keys(orderBook).reduce((p, key) => {
-          if (orderBook[key].orderState === augur.constants.ORDER_STATE.OPEN) {
-            p[key] = orderBook[key];
-          }
-          return p;
-        }, {});
-        dispatch(
-          updateOrderBook({
-            marketId,
-            outcome,
-            orderTypeLabel,
-            orderBook: openOrders
-          })
-        );
-      });
-    });
-  });
-  if (callback) callback(null, properties.orders);
+const postProcessing = (marketIds, dispatch, orders, callback) => {
+  marketIds.forEach(marketId =>
+    shapeGetOrders(orders, marketId).map(v => dispatch(updateOrderBook(v)))
+  );
+
+  if (callback) callback(null, orders);
 };
 
 const loadAccountOrphanedOrders = (options = {}, callback) => (

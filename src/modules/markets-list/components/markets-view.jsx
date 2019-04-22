@@ -22,8 +22,7 @@ export default class MarketsView extends Component {
     defaultFilter: PropTypes.string.isRequired,
     defaultSort: PropTypes.string.isRequired,
     defaultMaxFee: PropTypes.string.isRequired,
-    defaultHasOrders: PropTypes.bool.isRequired,
-    loadDisputing: PropTypes.func.isRequired
+    defaultHasOrders: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
@@ -49,10 +48,9 @@ export default class MarketsView extends Component {
   }
 
   componentDidMount() {
-    const { universe, loadDisputing } = this.props;
+    const { universe } = this.props;
     if (universe) {
       this.updateFilteredMarkets();
-      loadDisputing();
     }
   }
 

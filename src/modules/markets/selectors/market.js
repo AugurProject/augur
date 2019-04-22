@@ -1,25 +1,4 @@
-/*
-This is one of the most important and sensitive selectors in the app.
-It builds the fat, heavy, rigid, hierarchical market objects,
-that are used to render and display many parts of the ui.
-This is the point where the shallow, light, loose, flexible, independent
-pieces of state come together to make each market.
-
-IMPORTANT
-The assembleMarket() function (where all the action happens) is heavily memoized, and performance sensitive.
-Doing things sub-optimally here will cause noticeable performance degradation in the app.
-The "trick" is to maximize memoization cache hits as much as possible, and not have assembleMarket()
-run any more than it has to.
-
-To achieve that, we pass in the minimum number of the shallowest arguments possible.
-For example, instead of passing in the entire `outcomesData` collection and letting the
-function find the one it needs for the market, we instead find the specific favorite
-for that market in advance, and only pass in: `outcomesData[marketId]`
-That way the market only gets re-assembled when that specific market outcomes changes.
-
-This is true for all selectors, but especially important for this one.
-*/
-import { createSelector } from "reselect";
+import createCachedSelector from "re-reselect";
 import { createBigNumber } from "utils/create-big-number";
 import {
   formatShares,
@@ -76,7 +55,8 @@ import {
 } from "src/select-state";
 
 export const selectMarket = marketId => {
-  const marketsData = selectMarketsDataState(store.getState());
+  const state = store.getState();
+  const marketsData = selectMarketsDataState(state);
 
   if (
     !marketId ||
@@ -87,38 +67,49 @@ export const selectMarket = marketId => {
     return {};
   }
 
-  return getMarketSelector(store.getState(), marketId);
+  return getMarketSelector(state, marketId);
 };
 
-const selectMarketsDataStateMarket = (state, marketId) =>
-  selectMarketsDataState(state)[marketId];
+function selectMarketsDataStateMarket(state, marketId) {
+  return selectMarketsDataState(state)[marketId];
+}
 
-const selectMarketTradingHistoryStateMarket = (state, marketId) =>
-  selectMarketTradingHistoryState(state)[marketId];
+function selectMarketTradingHistoryStateMarket(state, marketId) {
+  return selectMarketTradingHistoryState(state)[marketId];
+}
 
-const selectOutcomesDataStateMarket = (state, marketId) =>
-  selectOutcomesDataState(state)[marketId];
+function selectOutcomesDataStateMarket(state, marketId) {
+  return selectOutcomesDataState(state)[marketId];
+}
 
-const selectAccountPositionsStateMarket = (state, marketId) =>
-  (selectAccountPositions(state) || {})[marketId] || {};
+function selectAccountPositionsStateMarket(state, marketId) {
+  return selectAccountPositions(state)[marketId];
+}
 
-const selectOrderBooksStateMarket = (state, marketId) =>
-  selectOrderBooksState(state)[marketId];
+function selectOrderBooksStateMarket(state, marketId) {
+  return selectOrderBooksState(state)[marketId];
+}
 
-const selectAccountShareBalanceMarket = (state, marketId) =>
-  selectAccountShareBalance(state)[marketId];
+function selectLoginAccountStateAddress(state) {
+  return selectLoginAccountState(state).address;
+}
 
-const selectPendingOrdersStateMarket = (state, marketId) =>
-  selectPendingOrdersState(state)[marketId];
+function selectAccountShareBalanceMarket(state, marketId) {
+  return selectAccountShareBalance(state)[marketId];
+}
 
-const getMarketSelector = createSelector(
+function selectPendingOrdersStateMarket(state, marketId) {
+  return selectPendingOrdersState(state)[marketId];
+}
+
+const getMarketSelector = createCachedSelector(
   selectMarketsDataStateMarket,
   selectMarketTradingHistoryStateMarket,
   selectOutcomesDataStateMarket,
   selectAccountPositionsStateMarket,
   selectOrderBooksStateMarket,
   selectOrderCancellationState,
-  selectLoginAccountState,
+  selectLoginAccountStateAddress,
   selectAccountShareBalanceMarket,
   selectPendingOrdersStateMarket,
   (
@@ -143,7 +134,7 @@ const getMarketSelector = createSelector(
       accountShareBalances,
       pendingOrders
     )
-);
+)((state, marketId) => marketId);
 
 const assembleMarket = (
   marketData,
@@ -244,9 +235,10 @@ const assembleMarket = (
       Math.min.apply(null, accountShareBalances).toString()) ||
     "0";
 
+  const userTradingPositions = marketAccountPositions || {};
   if (market.outcomes) {
     market.userPositions = Object.values(
-      marketAccountPositions.tradingPositions || []
+      userTradingPositions.tradingPositions || []
     ).map(position => {
       const outcome = market.outcomes[position.outcome];
       return {
@@ -400,12 +392,9 @@ const assembleMarket = (
     name: INDETERMINATE_OUTCOME_NAME
   });
 
-  if (
-    marketAccountPositions &&
-    marketAccountPositions.tradingPositionsPerMarket
-  ) {
+  if (userTradingPositions.tradingPositionsPerMarket) {
     market.myPositionsSummary = {};
-    const marketPositions = marketAccountPositions.tradingPositionsPerMarket;
+    const marketPositions = userTradingPositions.tradingPositionsPerMarket;
     // leave complete sets here, until we finish new notifications
     if (numCompleteSets) {
       market.myPositionsSummary.numCompleteSets = formatShares(numCompleteSets);

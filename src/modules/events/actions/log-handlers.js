@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import { addAlert, updateAlert } from "modules/alerts/actions/alerts";
 import { loadAccountPositions } from "modules/positions/actions/load-account-positions";
-import loadBidsAsks from "modules/orders/actions/load-bids-asks";
+import { loadMarketOpenOrders } from "modules/orders/actions/load-market-open-orders";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { updateLoggedTransactions } from "modules/transactions/actions/convert-logs-to-transactions";
 import { removeMarket } from "modules/markets/actions/update-markets-data";
@@ -33,7 +33,7 @@ import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 import { appendCategoryIfNew } from "modules/categories/actions/append-category";
 import { removePendingOrder } from "modules/orders/actions/pending-orders-management";
-import { loadAccountOrders } from "modules/orders/actions/load-account-orders";
+import { loadAccountOpenOrders } from "modules/orders/actions/load-account-open-orders";
 
 const ACTION_WAIT_TIME = 1000 * 5;
 
@@ -145,9 +145,10 @@ export const handleOrderCreatedLog = log => (dispatch, getState) => {
     dispatch(updateOrder(log, true));
     handlePendingOrder(log, dispatch, getState);
     handleAlertUpdate(log, dispatch, getState);
-    dispatch(loadAccountOrders({ marketId: log.marketId }));
+    dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
   }
-  if (isCurrentMarket(log.marketId)) dispatch(loadBidsAsks(log.marketId));
+  if (isCurrentMarket(log.marketId))
+    dispatch(loadMarketOpenOrders(log.marketId));
 };
 
 export const handleOrderCanceledLog = log => (dispatch, getState) => {
@@ -158,9 +159,10 @@ export const handleOrderCanceledLog = log => (dispatch, getState) => {
     handleAlertUpdate(log, dispatch, getState);
     dispatch(updateAssets());
     dispatch(updateOrder(log, false));
-    dispatch(loadAccountOrders({ marketId: log.marketId }));
+    dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
   }
-  if (isCurrentMarket(log.marketId)) dispatch(loadBidsAsks(log.marketId));
+  if (isCurrentMarket(log.marketId))
+    dispatch(loadMarketOpenOrders(log.marketId));
 };
 
 export const handleOrderFilledLog = log => (dispatch, getState) => {
@@ -180,12 +182,13 @@ export const handleOrderFilledLog = log => (dispatch, getState) => {
     dispatch(loadUserMarketTradingHistory({ marketId: log.marketId }));
     handlePendingOrder(log, dispatch, getState);
     handleAlertUpdate(log, dispatch, getState);
-    dispatch(loadAccountOrders({ marketId: log.marketId }));
+    dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
   }
   // always reload account positions on trade so we get up to date PL data.
   delayAction(dispatch(loadAccountPositions()));
   dispatch(loadMarketTradingHistory({ marketId: log.marketId }));
-  if (isCurrentMarket(log.marketId)) dispatch(loadBidsAsks(log.marketId));
+  if (isCurrentMarket(log.marketId))
+    dispatch(loadMarketOpenOrders(log.marketId));
 };
 
 export const handleTradingProceedsClaimedLog = log => (dispatch, getState) => {
@@ -195,7 +198,7 @@ export const handleTradingProceedsClaimedLog = log => (dispatch, getState) => {
     dispatch(updateLoggedTransactions(log));
     delayAction(dispatch(loadAccountPositions()));
   }
-  if (isCurrentMarket(log.market)) dispatch(loadBidsAsks(log.market));
+  if (isCurrentMarket(log.market)) dispatch(loadMarketOpenOrders(log.market));
 };
 
 export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {

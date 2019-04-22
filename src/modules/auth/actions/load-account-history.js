@@ -1,6 +1,5 @@
-import { augur } from "services/augurjs";
 import { loadAccountPositions } from "modules/positions/actions/load-account-positions";
-import { loadAccountOrders } from "modules/orders/actions/load-account-orders";
+import { loadAccountOpenOrders } from "modules/orders/actions/load-account-open-orders";
 import { loadCreateMarketHistory } from "modules/markets/actions/load-create-market-history";
 import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
 import {
@@ -32,13 +31,7 @@ function loadTransactions(dispatch, callback) {
   );
   promises.push(
     new Promise(resolve =>
-      dispatch(
-        loadAccountOrders(
-          { ...options, orderState: augur.constants.ORDER_STATE.ALL },
-          null,
-          resolve
-        )
-      )
+      dispatch(loadAccountOpenOrders({ ...options }, null, resolve))
     )
   );
   promises.push(

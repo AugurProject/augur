@@ -11,7 +11,6 @@ import { getSelectedTagsAndCategoriesFromLocation } from "src/modules/markets/he
 import { loadMarketsByFilter } from "modules/markets/actions/load-markets";
 import { buildSearchString } from "modules/markets/selectors/build-search-string";
 import debounce from "utils/debounce";
-import { loadDisputing } from "modules/reports/actions/load-disputing";
 
 const mapStateToProps = (state, { location }) => {
   const markets = selectMarkets(state);
@@ -42,8 +41,7 @@ const mapDispatchToProps = dispatch => ({
   loadMarketsInfoIfNotLoaded: marketIds =>
     dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
   loadMarketsByFilter: (filter, cb) =>
-    debounce(dispatch(loadMarketsByFilter(filter, cb))),
-  loadDisputing: () => dispatch(loadDisputing())
+    debounce(dispatch(loadMarketsByFilter(filter, cb)))
 });
 
 const Markets = compose(
