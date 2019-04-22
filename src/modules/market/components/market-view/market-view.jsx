@@ -444,7 +444,7 @@ export default class MarketView extends Component {
                 />
               </div>
             </ModulePane>
-            <ModulePane label="Orders">
+            <ModulePane label="Orders/Positions">
               <div
                 className={classNames(
                   Styles["MarketView__paneContainer--mobile"],
