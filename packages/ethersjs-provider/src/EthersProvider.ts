@@ -56,7 +56,7 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
   }
 
   public async call(transaction: Transaction<ethers.utils.BigNumber>): Promise<string> {
-    return await super.call(transaction);
+    return super.call(transaction);
   }
 
   public async getNetworkId(): Promise<NetworkId> {
@@ -64,7 +64,7 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
   }
 
   public async getBlockNumber(): Promise<number> {
-    return await super.getBlockNumber();
+    return super.getBlockNumber();
   }
 
   public storeAbiData(abi: Abi, contractName: string): void {
