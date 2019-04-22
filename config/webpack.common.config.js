@@ -13,19 +13,18 @@ const PATHS = {
 // COMMON CONFIG
 module.exports = {
   mode: "development",
-  entry: {
+  entry: [
     // 'assets/styles/styles': `${PATHS.APP}/styles`,
-    "assets/scripts/vendor": [
-      `${PATHS.APP}/web-workers-exit`,
-      "react",
-      "react-dom",
-      "redux",
-      "redux-thunk",
-      "moment",
-      "react-datetime"
-    ],
-    main: ["@babel/polyfill", `${PATHS.APP}/main`]
-  },
+    `${PATHS.APP}/web-workers-exit`,
+    "react",
+    "react-dom",
+    "redux",
+    "redux-thunk",
+    "moment",
+    "react-datetime",
+    "@babel/polyfill",
+    `${PATHS.APP}/main`
+  ],
   output: {
     filename: "[name].[chunkhash].js",
     chunkFilename: "[name].[chunkhash].js",
