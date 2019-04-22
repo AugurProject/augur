@@ -1,75 +1,31 @@
-import asyncComponent from "modules/common/components/async-component";
+export {
+  default as Markets
+} from "modules/markets-list/containers/markets-view-container";
 
-// NOTE -- Webpack code splits at each of these imports to reduce the initial load time.
+export {
+  default as Account
+} from "modules/account/components/account-view/account-view";
 
-export const Markets = asyncComponent({
-  moduleName: "Markets",
-  loader: () =>
-    import(/* webpackChunkName: 'markets' */ "modules/markets-list/containers/markets-view-container").then(
-      module => module.default
-    )
-});
+export { default as Market } from "modules/market/containers/market-view";
 
-export const Account = asyncComponent({
-  moduleName: "Account",
-  loader: () =>
-    import(/* webpackChunkName: 'account' */ "modules/account/containers/account-view").then(
-      module => module.default
-    )
-});
+export {
+  default as Portfolio
+} from "modules/portfolio/components/portfolio-view/portfolio-page";
 
-export const Market = asyncComponent({
-  moduleName: "Market",
-  loader: () =>
-    import(/* webpackChunkName: 'market' */ "modules/market/containers/market-view").then(
-      module => module.default
-    )
-});
+export {
+  default as CreateMarket
+} from "modules/create-market/containers/create-market";
 
-export const Portfolio = asyncComponent({
-  moduleName: "Portfolio",
-  loader: () =>
-    import(/* webpackChunkName: 'portfolio' */ "modules/portfolio/containers/portfolio-page").then(
-      module => module.default
-    )
-});
+export {
+  default as Reporting
+} from "modules/reporting/components/reporting-view/reporting-view";
 
-export const CreateMarket = asyncComponent({
-  moduleName: "CreateMarket",
-  loader: () =>
-    import(/* webpackChunkName: 'create-market' */ "modules/create-market/containers/create-market").then(
-      module => module.default
-    )
-});
+export {
+  default as Report
+} from "modules/reporting/containers/reporting-report";
 
-export const Reporting = asyncComponent({
-  moduleName: "Reporting",
-  loader: () =>
-    import(/* webpackChunkName: 'reporting' */ "modules/reporting/components/reporting-view/reporting-view").then(
-      module => module.default
-    )
-});
+export {
+  default as Dispute
+} from "modules/reporting/containers/reporting-dispute";
 
-export const Report = asyncComponent({
-  moduleName: "Report",
-  loader: () =>
-    import(/* webpackChunkName: 'report' */ "modules/reporting/containers/reporting-report").then(
-      module => module.default
-    )
-});
-
-export const Dispute = asyncComponent({
-  moduleName: "Dispute",
-  loader: () =>
-    import(/* webpackChunkName: 'report' */ "modules/reporting/containers/reporting-dispute").then(
-      module => module.default
-    )
-});
-
-export const MigrateRep = asyncComponent({
-  moduleName: "MigrateRep",
-  loader: () =>
-    import(/* webpackChunkName: 'report' */ "modules/forking/containers/migrate-rep").then(
-      module => module.default
-    )
-});
+export { default as MigrateRep } from "modules/forking/containers/migrate-rep";
