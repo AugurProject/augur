@@ -44,7 +44,7 @@ export class Router<TBigNumber> {
     this.db = db;
   }
 
-  public route(name: string, params: any): Promise<any> {
+  public async route(name: string, params: any): Promise<any> {
     const getter = Router.routings.get(name);
 
     if (!getter) {

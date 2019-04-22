@@ -1,9 +1,10 @@
 import {
   ACCOUNTS,
   makeDbMock,
-  compileAndDeployToGanache,
+  deployContracts,
   ContractAPI,
 } from "../../../libs";
+import { contracts as compilerOutput } from "@augurproject/artifacts";
 import { API } from "@augurproject/state/src/api/API";
 import { DB } from "@augurproject/state/src/db/DB";
 import { MarketTradingHistory } from "@augurproject/state/src/api/Trading";
@@ -12,23 +13,19 @@ import { stringTo32ByteHex } from "../../../libs/Utils";
 
 const mock = makeDbMock();
 
-beforeEach(async () => {
-  mock.cancelFail();
-});
-
 let db: DB<any>;
 let api: API<any>;
 let john: ContractAPI;
 let mary: ContractAPI;
 
 beforeAll(async () => {
-  const {provider, addresses} = await compileAndDeployToGanache(ACCOUNTS);
+  const {provider, addresses} = await deployContracts(ACCOUNTS, compilerOutput);
 
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
   db = await mock.makeDB(john.augur, ACCOUNTS);
   api = new API<any>(john.augur, db);
-}, 60000);
+}, 120000);
 
 test("State API :: Trading :: getTradingHistory", async () => {
   await john.approveCentralAuthority();
