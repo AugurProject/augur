@@ -288,11 +288,12 @@ export default class MarketView extends Component {
     const s = this.state;
 
     const selectedOutcomeName =
-      marketType === CATEGORICAL &&
+      // marketType === CATEGORICAL &&
+      marketType &&
       s.selectedOutcome &&
       outcomes.find(
         outcomeValue => outcomeValue.id === s.selectedOutcome.toString()
-      ).description;
+      ).name;
 
     const daysPassed =
       market &&
@@ -353,7 +354,15 @@ export default class MarketView extends Component {
                 </div>
               </div>
             </ModulePane>
-            <ModulePane label="Trade">
+            <ModulePane
+              label="Trade"
+              onClickCallback={() => {
+                this.node.children[0].children[1].scrollTo({
+                  top: 0,
+                  behavior: "smooth"
+                });
+              }}
+            >
               <div className={Styles["MarketView__paneContainer--mobile"]}>
                 <h1>{description}</h1>
                 {marketType === CATEGORICAL && (
@@ -362,6 +371,11 @@ export default class MarketView extends Component {
                     outcomeName={selectedOutcomeName}
                     selectOutcome={this.showSelectOutcome}
                   />
+                )}
+                {marketType !== CATEGORICAL && (
+                  <div className={Styles.OutcomeNameDisplay}>
+                    {selectedOutcomeName}
+                  </div>
                 )}
                 <ModuleTabs selected={0} fillForMobile>
                   <ModulePane label="Order Book">

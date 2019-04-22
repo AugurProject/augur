@@ -43,11 +43,12 @@ export default class ModuleTabs extends Component {
     this.renderContent = this.renderContent.bind(this);
   }
 
-  handleClick(e, index) {
+  handleClick(e, index, onClickCallback) {
     if (e) e.preventDefault();
     this.setState({
       selected: index
     });
+    if (onClickCallback) onClickCallback();
   }
 
   renderTabs() {
@@ -63,7 +64,7 @@ export default class ModuleTabs extends Component {
         >
           <button
             onClick={e => {
-              this.handleClick(e, index);
+              this.handleClick(e, index, child.props.onClickCallback);
             }}
           >
             <span
