@@ -22,14 +22,13 @@ const claimTradingProceeds = (marketId, callback = logError) => (
 ) => {
   const { loginAccount } = getState();
   if (!loginAccount.address || !marketId) return callback(null);
-  dispatch(addPendingData(marketId, CLAIM_PROCEEDS, PENDING));
 
   augur.api.ClaimTradingProceeds.claimTradingProceeds({
     tx: { gas: CLAIM_SHARES_GAS_COST, returns: "null" },
     meta: loginAccount.meta,
     _market: marketId,
     _shareHolder: loginAccount.address,
-    onSent: noop,
+    onSent: () => dispatch(addPendingData(marketId, CLAIM_PROCEEDS, PENDING)),
     onSuccess: () => {
       dispatch(addPendingData(marketId, CLAIM_PROCEEDS, SUCCESS));
       dispatch(getWinningBalance([marketId]));

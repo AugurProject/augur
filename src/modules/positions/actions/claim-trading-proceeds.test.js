@@ -86,6 +86,7 @@ describe(`modules/positions/actions/claim-trading-proceeds.js`, () => {
     };
 
     augur.api.ClaimTradingProceeds.claimTradingProceeds = jest.fn(value => {
+      value.onSent();
       value.onFailed();
     });
 
