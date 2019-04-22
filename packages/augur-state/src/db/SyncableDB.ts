@@ -208,7 +208,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         _id += _.get(log, fieldName);
       }
     } else {
-      _id = `${log.blockNumber.toPrecision(21)}${log.logIndex}`;
+      _id = `${(log.blockNumber + 10000000000).toPrecision(21)}${log.logIndex}`;
     }
     return Object.assign(
       { _id },

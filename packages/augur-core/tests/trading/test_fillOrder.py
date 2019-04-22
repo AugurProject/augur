@@ -26,8 +26,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
         "marketId": market.address,
         "outcome": YES,
         "creator": bytesToHexString(tester.a1),
-        "marketCreatorFees": 0,
-        "reporterFees": 0,
+        "fees": 0,
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
         "amountFilled": fix(2),
         "price": 6000

@@ -96,8 +96,7 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
         'numShares': 1,
         'sender': bytesToHexString(tester.a1),
         'finalTokenBalance': initialLongHolderETH + expectedPayout,
-        'marketCreatorFees': 100,
-        'reporterFees': 100,
+        'fees': 200,
     }
 
     with TokenDelta(cash, expectedMarketCreatorFees, market.getOwner(), "market creator fees not paid"):
