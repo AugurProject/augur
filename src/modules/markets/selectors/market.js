@@ -341,7 +341,7 @@ const assembleMarket = (
 
       market.filledOrders = selectFilledOrders(
         marketPriceHistory,
-        (accountAddress || {}).address,
+        accountAddress,
         marketOutcomesData,
         market,
         market.userOpenOrders
