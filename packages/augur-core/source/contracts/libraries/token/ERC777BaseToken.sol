@@ -94,7 +94,7 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
         }
 
         require(_to != address(0), "Cannot send to 0x0");
-        require(balances[_from] >= _amount, "Not enough funds");
+        require(balances[_from] >= _amount, "SEND Not enough funds");
 
         balances[_from] = balances[_from].sub(_amount);
         balances[_to] = balances[_to].add(_amount);
@@ -110,7 +110,7 @@ contract ERC777BaseToken is ERC777Token, ERC820Implementer {
     function doBurn(address _operator, address _tokenHolder, uint256 _amount, bytes32 _data, bytes32 _operatorData) internal returns (bool) {
         callSender(_operator, _tokenHolder, address(0x0), _amount, _data, _operatorData);
 
-        require(balanceOf(_tokenHolder) >= _amount, "Not enough funds");
+        require(balanceOf(_tokenHolder) >= _amount, "BURN Not enough funds");
 
         balances[_tokenHolder] = balances[_tokenHolder].sub(_amount);
         supply = supply.sub(_amount);

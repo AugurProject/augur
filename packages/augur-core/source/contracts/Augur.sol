@@ -51,10 +51,10 @@ contract Augur is IAugur {
     event OrderPriceChanged(address indexed universe, bytes32 orderId, uint256 outcome, uint256 price);
     // The ordering here is to match functions higher in the call chain to avoid stack depth issues
     event OrderCreated(Order.Types orderType, uint256 amount, uint256 price, address indexed creator, bytes32 tradeGroupId, bytes32 orderId, IUniverse indexed universe, IMarket indexed marketId, ERC20Token kycToken, uint256 outcome);
-    event OrderFilled(address indexed universe, address filler, address creator, IMarket marketId, bytes32 orderId, uint256 price, uint256 outcome, uint256 marketCreatorFees, uint256 reporterFees, uint256 amountFilled, bytes32 tradeGroupId);
+    event OrderFilled(address indexed universe, address filler, address creator, IMarket market, bytes32 orderId, uint256 price, uint256 outcome, uint256 fees, uint256 amountFilled, bytes32 tradeGroupId, uint256 timestamp);
     event CompleteSetsPurchased(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI);
-    event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 marketCreatorFees, uint256 reporterFees);
-    event TradingProceedsClaimed(address indexed universe, address indexed shareToken, address indexed sender, address market, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance, uint256 marketCreatorFees, uint256 reporterFees);
+    event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 fees);
+    event TradingProceedsClaimed(address indexed universe, address indexed shareToken, address indexed sender, address market, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance, uint256 fees);
     event TokensTransferred(address indexed universe, address token, address indexed from, address indexed to, uint256 value, TokenType tokenType, address market);
     event TokensMinted(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market, uint256 totalSupply);
     event TokensBurned(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market, uint256 totalSupply);
@@ -325,9 +325,9 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logOrderFilled(IUniverse _universe, address _filler, address _creator, IMarket _market, bytes32 _orderId, uint256 _price, uint256 _outcome, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, bytes32 _tradeGroupId) public returns (bool) {
+    function logOrderFilled(IUniverse _universe, address _filler, address _creator, IMarket _market, bytes32 _orderId, uint256 _price, uint256 _outcome, uint256 _fees, uint256 _amountFilled, bytes32 _tradeGroupId) public returns (bool) {
         require(msg.sender == registry["FillOrder"]);
-        emit OrderFilled(address(_universe), _filler, _creator, _market, _orderId, _price, _outcome, _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
+        emit OrderFilled(address(_universe), _filler, _creator, _market, _orderId, _price, _outcome, _fees, _amountFilled, _tradeGroupId, getTimestamp());
         return true;
     }
 
@@ -337,9 +337,9 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logCompleteSetsSold(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets, uint256 _marketCreatorFees, uint256 _reporterFees) public returns (bool) {
+    function logCompleteSetsSold(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees) public returns (bool) {
         require(msg.sender == registry["CompleteSets"]);
-        emit CompleteSetsSold(address(_universe), address(_market), _account, _numCompleteSets, getMarketOpenInterest(_market), _marketCreatorFees, _reporterFees);
+        emit CompleteSetsSold(address(_universe), address(_market), _account, _numCompleteSets, getMarketOpenInterest(_market), _fees);
         return true;
     }
 
@@ -350,9 +350,9 @@ contract Augur is IAugur {
         return _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
     }
 
-    function logTradingProceedsClaimed(IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _numShares, uint256 _numPayoutTokens, uint256 _finalTokenBalance, uint256 _marketCreatorFees, uint256 _reporterFees) public returns (bool) {
+    function logTradingProceedsClaimed(IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _numShares, uint256 _numPayoutTokens, uint256 _finalTokenBalance, uint256 _fees) public returns (bool) {
         require(msg.sender == registry["ClaimTradingProceeds"]);
-        emit TradingProceedsClaimed(address(_universe), _shareToken, _sender, _market, _numShares, _numPayoutTokens, _finalTokenBalance, _marketCreatorFees, _reporterFees);
+        emit TradingProceedsClaimed(address(_universe), _shareToken, _sender, _market, _numShares, _numPayoutTokens, _finalTokenBalance, _fees);
         return true;
     }
 

@@ -61,6 +61,6 @@ export class Router<TBigNumber> {
       throw new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`);
     }
 
-    return getter.func(this.db, decodedParams.value);
+    return getter.func(this.augurAPI, this.db, decodedParams.value);
   }
 }

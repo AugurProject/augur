@@ -10,6 +10,10 @@ export interface Doc {
   _rev: string;
 }
 
+export interface Timestamped {
+  timestamp: Timestamp;
+}
+
 export interface Log {
   blockNumber: number;
   blockHash: Bytes32;
@@ -93,10 +97,9 @@ export interface MarketCreatedLog extends Log, Doc {
   outcomes: Array<string>;
 }
 
-export interface MarketFinalizedLog extends Log, Doc {
+export interface MarketFinalizedLog extends Log, Doc, Timestamped {
   universe: Address;
   market: Address;
-  timestamp: Timestamp;
   winningPayoutNumerators: Array<PayoutNumerator>;
 }
 
@@ -141,11 +144,11 @@ export interface OrderCreatedLog extends Log, Doc {
   outcome: string;
 }
 
-export interface OrderFilledLog extends Log, Doc {
+export interface OrderFilledLog extends Log, Doc, Timestamped {
   universe: string;
   filler: string;
   creator: string;
-  marketId: string;
+  market: string;
   orderId: string;
   price: string;
   outcome: string;
@@ -177,7 +180,7 @@ export interface PayoutNumerator {
   _hex: string;
 }
 
-export interface ProfitLossChangedLog extends Log, Doc {
+export interface ProfitLossChangedLog extends Log, Doc, Timestamped {
   universe: string;
   market: string;
   account: string;
@@ -187,7 +190,6 @@ export interface ProfitLossChangedLog extends Log, Doc {
   realizedProfit: string;
   frozenFunds: string;
   realizedCost: string;
-  timestamp: Timestamp;
 }
 
 export interface TimestampSetLog extends Log, Doc {

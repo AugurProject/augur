@@ -74,7 +74,7 @@ export class Trading {
     return orderFilledResponse.reduce((trades: Array<MarketTradingHistory>, orderFilledDoc) => {
       const orderDoc = orders[orderFilledDoc.orderId];
       if (!orderDoc) return trades;
-      const marketDoc = markets[orderFilledDoc.marketId];
+      const marketDoc = markets[orderFilledDoc.market];
       if (!marketDoc) return trades;
       const isMaker: boolean | null = params.account == null ? false : params.account === orderFilledDoc.creator;
       const orderType = orderDoc.orderType === 0 ? "buy" : "sell";
@@ -90,9 +90,9 @@ export class Trading {
         "transactionHash",
         "logIndex",
         "orderId",
-        "marketId",
         "tradeGroupId",
       ]), {
+          marketId: orderFilledDoc.market,
           outcome: new BigNumber(orderFilledDoc.outcome).toNumber(),
           maker: isMaker,
           type: isMaker ? orderType : (orderType === "buy" ? "sell" : "buy"),

@@ -68,14 +68,14 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
 
     function publicSellCompleteSets(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
         (uint256 _creatorFee, uint256 _reportingFee) = this.sellCompleteSets(msg.sender, _market, _amount, address(0));
-        augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount, _creatorFee, _reportingFee);
+        augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount, _creatorFee.add(_reportingFee));
         _market.assertBalances();
         return true;
     }
 
     function publicSellCompleteSetsWithCash(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
         (uint256 _creatorFee, uint256 _reportingFee) = this.sellCompleteSets(msg.sender, _market, _amount, address(0));
-        augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount, _creatorFee, _reportingFee);
+        augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount, _creatorFee.add(_reportingFee));
         _market.assertBalances();
         return true;
     }
