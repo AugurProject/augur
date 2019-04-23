@@ -59,15 +59,16 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         uint256 _outcome = orders.getOutcome(_orderId);
 
         // Check that the order ID is correct and that the sender owns the order
-        require(_sender == orders.getOrderCreator(_orderId));
+        address _orderCreator = orders.getOrderCreator(_orderId);
+        require(_sender == _orderCreator || _sender == address(orders));
 
         // Clear the order first
         orders.removeOrder(_orderId);
 
-        refundOrder(_sender, _type, _sharesEscrowed, _moneyEscrowed, _market, _outcome);
+        refundOrder(_orderCreator, _type, _sharesEscrowed, _moneyEscrowed, _market, _outcome);
         _market.assertBalances();
 
-        augur.logOrderCanceled(_market.getUniverse(), address(_market.getShareToken(_outcome)), _sender, _orderId, _type, _moneyEscrowed, _sharesEscrowed);
+        augur.logOrderCanceled(_market.getUniverse(), address(_market.getShareToken(_outcome)), _orderCreator, _orderId, _type, _moneyEscrowed, _sharesEscrowed);
 
         return true;
     }

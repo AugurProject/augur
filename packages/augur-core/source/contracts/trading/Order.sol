@@ -49,12 +49,16 @@ library Order {
         bool ignoreShares;
     }
 
+    uint256 public constant MIN_ORDER_VALUE = 10 ether; // 10 Cash
+
     // No validation is needed here as it is simply a librarty function for organizing data
     function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares, ERC20Token _kycToken) internal view returns (Data memory) {
         require(_outcome < _market.getNumberOfOutcomes());
-        require(_price < _market.getNumTicks());
+        uint256 _numTicks = _market.getNumTicks();
+        require(_price < _numTicks);
         require(_attoshares > 0);
         require(_creator != address(0));
+        require(isOrderValueValid(_type, _attoshares, _price, _numTicks));
 
         IOrders _orders = IOrders(_augur.lookup("Orders"));
 
@@ -97,6 +101,14 @@ library Order {
 
     function getOrderTradingTypeFromFillerDirection(Order.TradeDirections _fillerDirection) internal pure returns (Order.Types) {
         return (_fillerDirection == Order.TradeDirections.Long) ? Order.Types.Ask : Order.Types.Bid;
+    }
+
+    function isOrderValueValid(Order.Types _type, uint256 _amount, uint256 _price, uint256 _numTicks) public pure returns (bool) {
+        if (_type == Order.Types.Ask) {
+            return _numTicks.sub(_price).mul(_amount) > MIN_ORDER_VALUE;
+        } else if (_type == Order.Types.Bid) {
+            return _amount.mul(_price) > MIN_ORDER_VALUE;
+        }
     }
 
     function escrowFunds(Order.Data memory _orderData) internal returns (bool) {

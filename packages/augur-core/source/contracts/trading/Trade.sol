@@ -108,7 +108,12 @@ contract Trade is Initializable, ReentrancyGuard {
         if (_bestAmount == 0) {
             return bytes32(uint256(1));
         }
-        return createOrder.createOrder(_tradeData.sender, Order.getOrderTradingTypeFromMakerDirection(_tradeData.direction), _bestAmount, _tradeData.price, _tradeData.market, _tradeData.outcome, _tradeData.betterOrderId, _tradeData.worseOrderId, _tradeData.tradeGroupId, _tradeData.ignoreShares, _tradeData.kycToken);
+        // If the remaining amount is less than the minimum order size just return the sentinel value indicating the trade was totally filled
+        Order.Types _type = Order.getOrderTradingTypeFromMakerDirection(_tradeData.direction);
+        if (!Order.isOrderValueValid(_type, _bestAmount, _tradeData.price, _tradeData.market.getNumTicks())) {
+            return bytes32(uint256(1));
+        }
+        return createOrder.createOrder(_tradeData.sender, _type, _bestAmount, _tradeData.price, _tradeData.market, _tradeData.outcome, _tradeData.betterOrderId, _tradeData.worseOrderId, _tradeData.tradeGroupId, _tradeData.ignoreShares, _tradeData.kycToken);
     }
 
     function fillBestOrder(Data memory _tradeData) internal nonReentrant returns (uint256 _bestAmount) {

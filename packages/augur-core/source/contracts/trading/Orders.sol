@@ -2,6 +2,7 @@ pragma solidity 0.5.4;
 
 
 import 'ROOT/trading/IOrders.sol';
+import 'ROOT/trading/ICancelOrder.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/math/SafeMathInt256.sol';
 import 'ROOT/trading/Order.sol';
@@ -204,7 +205,8 @@ contract Orders is IOrders, Initializable {
         require(_orderId != bytes32(0));
         require(_sharesFilled <= _order.sharesEscrowed);
         require(_tokensFilled <= _order.moneyEscrowed);
-        require(_order.price <= _order.market.getNumTicks());
+        uint256 _numTicks = _order.market.getNumTicks();
+        require(_order.price <= _numTicks);
         require(_fill <= _order.amount);
         _order.amount -= _fill;
         _order.moneyEscrowed -= _tokensFilled;
@@ -218,6 +220,11 @@ contract Orders is IOrders, Initializable {
             _order.creator = address(0);
             _order.betterOrderId = bytes32(0);
             _order.worseOrderId = bytes32(0);
+        } else {
+            // If the remaining amount is less than the minimum order size cancel the order
+            if (!Order.isOrderValueValid(_order.orderType, _order.amount, _order.price, _numTicks)) {
+                ICancelOrder(cancelOrder).cancelOrder(_orderId);
+            }
         }
         return true;
     }
