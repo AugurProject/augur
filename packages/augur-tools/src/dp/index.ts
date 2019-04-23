@@ -1,18 +1,18 @@
 import { Augur } from "@augurproject/api";
 import { providers } from "ethers";
 import { BigNumber } from "./types";
-import {Addresses} from "@augurproject/artifacts";
-import {EthersProvider} from "@augurproject/ethersjs-provider";
+import { Addresses } from "@augurproject/artifacts";
+import { EthersProvider } from "@augurproject/ethersjs-provider";
 
 import path from "path";
 
 import {
-  isNetwork,
-  NETWORKS,
   ContractDeployer,
   DeployerConfiguration,
   EthersFastSubmitWallet,
-  NetworkConfiguration
+  isNetwork,
+  NetworkConfiguration,
+  NETWORKS
 } from "@augurproject/core";
 import parrotSay from "parrotsay-api";
 
@@ -28,6 +28,7 @@ const COMMANDS = [
   "create-markets",
   "create-orders",
   "deploy",
+  "gas-limit",
   "rep-faucet",
   "upload",
   "all-logs"
@@ -210,6 +211,14 @@ async function runCommandForNetwork(networkConfiguration: NetworkConfiguration, 
 
         await createMarkets(augur, await signer.getAddress(), signer);
       }
+      break;
+    }
+    case "gas-limit": {
+      const provider = new providers.JsonRpcProvider(networkConfiguration.http);
+      const ethersProvider = new EthersProvider(provider, 5, 0, 40);
+
+      const block = await ethersProvider.getBlock("latest");
+      console.log(block.gasLimit.toNumber());
       break;
     }
       case "all-logs": {
