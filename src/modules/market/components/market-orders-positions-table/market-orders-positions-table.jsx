@@ -11,6 +11,7 @@ import { CancelTextButton } from "modules/common-elements/buttons";
 import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.style";
 
 const MarketOrdersPositionsTable = ({
+  hasPending,
   isMobile,
   marketId,
   outcomes,
@@ -32,12 +33,13 @@ const MarketOrdersPositionsTable = ({
         market={market}
       />
       <div className={Styles.MarketOrders__footer}>
-        {openOrders.length > 0 && (
-          <CancelTextButton
-            action={() => cancelAllOpenOrders(openOrders)}
-            text="Cancel All"
-          />
-        )}
+        {openOrders.length > 0 &&
+          !hasPending && (
+            <CancelTextButton
+              action={() => cancelAllOpenOrders(openOrders)}
+              text="Cancel All"
+            />
+          )}
       </div>
     </ModulePane>
     <ModulePane label="My Fills">
@@ -53,6 +55,7 @@ const MarketOrdersPositionsTable = ({
 );
 
 MarketOrdersPositionsTable.propTypes = {
+  hasPending: PropTypes.bool,
   isMobile: PropTypes.bool.isRequired,
   marketId: PropTypes.string.isRequired,
   outcomes: PropTypes.array,
@@ -65,6 +68,7 @@ MarketOrdersPositionsTable.propTypes = {
 };
 
 MarketOrdersPositionsTable.defaultProps = {
+  hasPending: false,
   outcomes: [],
   orphanedOrders: [],
   openOrders: [],
