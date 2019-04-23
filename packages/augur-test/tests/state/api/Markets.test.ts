@@ -33,7 +33,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
 
   const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
   const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
-  const scalarMarket = await john.createReasonableScalarMarket(john.augur.contracts.universe, [stringTo32ByteHex(""), stringTo32ByteHex("")]);
+  const scalarMarket = await john.createReasonableScalarMarket(john.augur.contracts.universe);
 
   // Place orders
   const bid = new ethers.utils.BigNumber(0);
