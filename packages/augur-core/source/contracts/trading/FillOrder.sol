@@ -407,10 +407,11 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
         uint256 _amountRemainingFillerWants = _tradeData.filler.sharesToSell.add(_tradeData.filler.sharesToBuy);
         uint256 _amountFilled = _amountFillerWants.sub(_amountRemainingFillerWants);
-        logOrderFilled(_tradeData, _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
+        _tradeData.contracts.orders.recordFillOrder(_orderId, _tradeData.getMakerSharesDepleted(), _tradeData.getMakerTokensDepleted(), _amountFilled);
+        bool _orderIsCompletelyFilled = _tradeData.contracts.orders.getAmount(_orderId) == 0 ? true : false;
+        logOrderFilled(_tradeData, _marketCreatorFees.add(_reporterFees), _amountFilled, _tradeGroupId, _orderIsCompletelyFilled);
         logAndUpdateVolume(_tradeData);
         updateProfitLoss(_tradeData, _amountFilled);
-        _tradeData.contracts.orders.recordFillOrder(_orderId, _tradeData.getMakerSharesDepleted(), _tradeData.getMakerTokensDepleted(), _amountFilled);
         return _amountRemainingFillerWants;
     }
 
@@ -439,8 +440,8 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         return true;
     }
 
-    function logOrderFilled(Trade.Data memory _tradeData, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, bytes32 _tradeGroupId) private returns (bool) {
-        augur.logOrderFilled(_tradeData.contracts.market.getUniverse(), _tradeData.filler.participantAddress, _tradeData.creator.participantAddress, _tradeData.contracts.market, _tradeData.order.orderId, _tradeData.order.sharePriceLong, _tradeData.order.outcome, _marketCreatorFees, _reporterFees, _amountFilled, _tradeGroupId);
+    function logOrderFilled(Trade.Data memory _tradeData, uint256 _fees, uint256 _amountFilled, bytes32 _tradeGroupId, bool _orderIsCompletelyFilled) private returns (bool) {
+        augur.logOrderFilled(_tradeData.contracts.market.getUniverse(), _tradeData.filler.participantAddress, _tradeData.creator.participantAddress, _tradeData.contracts.market, _tradeData.order.orderId, _tradeData.order.sharePriceLong, _tradeData.order.outcome, _fees, _amountFilled, _tradeGroupId, _orderIsCompletelyFilled);
         return true;
     }
 

@@ -25,9 +25,9 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
     # fill best order
     orderFilledLog = {
         "filler": bytesToHexString(tester.a2),
-        "marketCreatorFees": 0,
-        "reporterFees": 0,
+        "fees": 0,
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
+        "orderIsCompletelyFilled": True
     }
     with BuyWithCash(cash, fix('2', '4000'), tester.k2, "fill order"):
         with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
@@ -56,6 +56,7 @@ def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
     fillOrderID = None
     orderFilledLog = {
         "amountFilled": fix(1),
+        "orderIsCompletelyFilled": False
     }
     with BuyWithCash(cash, fix('1', '4000'), tester.k2, "trade"):
         with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
@@ -117,9 +118,9 @@ def test_one_bid_on_books_buy_excess_order(withTotalCost, contractsFixture, cash
     # fill best order
     orderFilledLog = {
         "filler": bytesToHexString(tester.a2),
-        "marketCreatorFees": 0,
-        "reporterFees": 0,
+        "fees": 0,
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
+        "orderIsCompletelyFilled": True
     }
     orderCreatedLog = {
         "creator": bytesToHexString(tester.a2),
@@ -655,9 +656,9 @@ def test_trade_with_self(contractsFixture, cash, market, universe):
     # fill best order
     orderFilledLog = {
         "filler": bytesToHexString(tester.a1),
-        "marketCreatorFees": 0,
-        "reporterFees": 0,
+        "fees": 0,
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
+        "orderIsCompletelyFilled": True
     }
     orderCreatedLog = {
         "creator": bytesToHexString(tester.a1),
