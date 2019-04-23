@@ -6,7 +6,6 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { AccountList } from "./LocalAugur";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { ContractAddresses } from "@augurproject/artifacts";
-import { Market } from "@augurproject/core/build/libraries/ContractInterfaces";
 
 const ETERNAL_APPROVAL_VALUE = new ethers.utils.BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
 
