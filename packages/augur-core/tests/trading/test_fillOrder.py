@@ -23,7 +23,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
     # fill best order
     orderFilledLog = {
         "filler": bytesToHexString(tester.a2),
-        "marketId": market.address,
+        "market": market.address,
         "outcome": YES,
         "creator": bytesToHexString(tester.a1),
         "fees": 0,
