@@ -18,11 +18,10 @@ import parrotSay from "parrotsay-api";
 
 import chalk from "chalk";
 import columnify from "columnify";
-// import repFaucet from "./lib/rep-faucet";
 import { createMarkets } from "./lib/create-markets";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { repFaucet } from "./lib/rep-faucet";
-import { UploadBlockNumbers } from "@augurproject/artifacts/build";
+import { UploadBlockNumbers } from "@augurproject/artifacts";
 
 const COMMANDS = [
   "create-markets",

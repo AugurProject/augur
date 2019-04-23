@@ -1,8 +1,6 @@
 import { Augur } from "@augurproject/api";
 import chalk from "chalk";
 import { createMarket } from "./create-market";
-import { createOrderBook } from "./create-order-book";
-import getBalances from "./get-balances";
 import { cannedMarketsData } from "../data/canned-markets";
 import { Addresses } from "@augurproject/artifacts";
 import { BigNumber, Event } from "../types";
