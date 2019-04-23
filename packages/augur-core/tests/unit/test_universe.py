@@ -200,6 +200,7 @@ def test_universe_create_market(localFixture, chain, populatedUniverse, mockMark
     assert populatedUniverse.getOrCreatePreviousDisputeWindow() == mockDisputeWindow.address
 
     assert mockAugur.logMarketCreatedCalled() == False
+    assert mockAugur.logMarketCreated2Called() == False
     mockMarketFactory.setMarket(mockMarket.address)
 
     newMarket = populatedUniverse.createYesNoMarket(endTimeValue, feePerEthInWeiValue, affiliateFeeDivisor, designatedReporterAddressValue, "topic", "description", "info")
@@ -207,6 +208,7 @@ def test_universe_create_market(localFixture, chain, populatedUniverse, mockMark
     assert mockMarketFactory.getCreateMarketUniverseValue() == populatedUniverse.address
     assert populatedUniverse.isContainerForMarket(mockMarket.address)
     assert mockAugur.logMarketCreatedCalled() == True
+    assert mockAugur.logMarketCreated2Called() == True
     assert newMarket == mockMarket.address
 
 @fixture(scope="module")

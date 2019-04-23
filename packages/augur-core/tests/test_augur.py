@@ -22,6 +22,9 @@ def test_log_requires(augur, universe):
         augur.logMarketCreated(0, "", "", "", universe.address, universe.address, 0, 100, 0, [])
 
     with raises(TransactionFailed):
+        augur.logMarketCreated2(universe.address, universe.address, 0)
+
+    with raises(TransactionFailed):
         augur.logInitialReportSubmitted(universe.address, universe.address, universe.address, 1, False, [0, 0, 10000])
 
     with raises(TransactionFailed):

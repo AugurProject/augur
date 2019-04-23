@@ -249,6 +249,13 @@ contract Augur is IAugur {
         return true;
     }
 
+    function logMarketCreated2(IMarket _market, address _designatedReporter, uint256 _feeDivisor) public returns (bool) {
+        IUniverse _universe = IUniverse(msg.sender);
+        require(isKnownUniverse(_universe));
+        emit MarketCreated2(_universe, _market, _designatedReporter, _feeDivisor);
+        return true;
+    }
+
     function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] memory _payoutNumerators, string memory _description) public returns (bool) {
         require(isKnownUniverse(_universe));
         require(_universe.isContainerForMarket(IMarket(msg.sender)));

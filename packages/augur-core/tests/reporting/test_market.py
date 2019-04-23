@@ -17,7 +17,11 @@ def test_market_creation(contractsFixture, universe, market):
         "endTime": contractsFixture.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
         "marketCreator": bytesToHexString(tester.a0),
     }
-    with AssertLog(contractsFixture, "MarketCreated", marketCreatedLog):
+    marketCreated2Log = {
+      "designatedReporter": "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
+      "feeDivisor": 10000000000000000
+    }
+    with AssertLog(contractsFixture, "MarketCreated", marketCreatedLog) and AssertLog(contractsFixture, "MarketCreated2", marketCreated2Log):
         market = contractsFixture.createReasonableYesNoMarket(universe, extraInfo="so extra")
 
     assert market.getUniverse() == universe.address

@@ -242,6 +242,19 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
+  public logMarketCreated2 = async (universe: string, market: string, designatedReporter: string, feeDivisor: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"string"},{"name":"_market","type":"string"},{"name":"_designatedReporter","type":"string"},{"name":"_feeDivisor","type":"uint256"}],"name":"logMarketCreated2","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [universe, market, designatedReporter, feeDivisor], 'logMarketCreated2', options.sender)
+	}
+
+	public logMarketCreated2_ = async (universe: string, market: string, designatedReporter: string, feeDivisor: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"string"},{"name":"_market","type":"string"},{"name":"_designatedReporter","type":"string"},{"name":"_feeDivisor","type":"uint256"}],"name":"logMarketCreated","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [universe, market, designatedReporter, feeDivisor], options.sender)
+		return <boolean>result[0]
+  }
+
 	public logProfitLossChanged = async (market: string, account: string, outcome: TBigNumber, netPosition: TBigNumber, avgPrice: TBigNumber, realizedProfit: TBigNumber, frozenFunds: TBigNumber, realizedCost: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_account","type":"address"},{"name":"_outcome","type":"uint256"},{"name":"_netPosition","type":"int256"},{"name":"_avgPrice","type":"uint256"},{"name":"_realizedProfit","type":"int256"},{"name":"_frozenFunds","type":"int256"},{"name":"_realizedCost","type":"int256"}],"name":"logProfitLossChanged","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}

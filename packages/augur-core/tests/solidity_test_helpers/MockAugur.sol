@@ -15,6 +15,7 @@ contract MockAugur {
 
     function reset() public {
         logMarketCreatedCalledValue = false;
+        logMarketCreated2CalledValue = false;
         logReportsDisputedCalledValue = false;
         logUniverseForkedCalledValue = false;
         logReputationTokensTransferredCalledValue = false;
@@ -29,6 +30,7 @@ contract MockAugur {
     // Logging
     //
     bool private logMarketCreatedCalledValue;
+    bool private logMarketCreated2CalledValue;
 
     function logMarketCreatedCalled() public returns(bool) {return logMarketCreatedCalledValue;}
 
@@ -39,6 +41,13 @@ contract MockAugur {
 
     function logMarketCreated(bytes32 _topic, string _description, string _extraInfo, IUniverse _universe, address _market, address _marketCreator, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool) {
         logMarketCreatedCalledValue = true;
+        return true;
+    }
+
+    function logMarketCreated2Called() public returns(bool) {return logMarketCreated2CalledValue;}
+
+    function logMarketCreated2(IUniverse _universe, address _market, address _designatedReporter, uint256 _feeDivisor) public returns (bool) {
+        logMarketCreated2CalledValue = true;
         return true;
     }
 
