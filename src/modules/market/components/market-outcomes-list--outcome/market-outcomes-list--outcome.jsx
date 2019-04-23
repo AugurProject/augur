@@ -54,16 +54,20 @@ const Outcome = ({
           </div>
         )}
       </li>
-      <li>
+      <li
+        className={classNames({ [SharedStyles.Null]: topBidShares === null })}
+      >
         <ValueLabel value={topBidShares} showEmptyDash />
       </li>
-      <li>
+      <li className={classNames({ [SharedStyles.Null]: topBidPrice === null })}>
         <ValueLabel value={topBidPrice} showEmptyDash />
       </li>
-      <li>
+      <li className={classNames({ [SharedStyles.Null]: topAskPrice === null })}>
         <ValueLabel value={topAskPrice} showEmptyDash />
       </li>
-      <li>
+      <li
+        className={classNames({ [SharedStyles.Null]: topAskShares === null })}
+      >
         <ValueLabel value={topAskShares} showEmptyDash />
       </li>
       <li style={{ position: "relative" }}>
