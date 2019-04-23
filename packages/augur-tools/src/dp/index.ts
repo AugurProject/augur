@@ -323,6 +323,7 @@ async function runCommandForNetwork(networkConfiguration: NetworkConfiguration, 
 
 async function runCannedData(command: COMMANDS, networks: Array<NETWORKS>): Promise<void> {
   const deployerConfiguration = DeployerConfiguration.create(
+    path.join(__dirname, "../../../augur-artifacts/src"),
     path.join(__dirname, "../../../augur-artifacts/src")
   );
   const networkConfigurations = networks.map((network) => NetworkConfiguration.create(network));
