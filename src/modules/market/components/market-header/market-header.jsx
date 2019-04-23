@@ -1,3 +1,4 @@
+import WordTrail from "modules/common/components/word-trail/word-trail";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
@@ -17,7 +18,6 @@ import { MarketTypeLabel } from "modules/common-elements/labels";
 import { MarketHeaderCollapsed } from "modules/market/components/market-header/market-header-collapsed";
 import toggleHeight from "utils/toggle-height/toggle-height";
 import makeQuery from "modules/routes/helpers/make-query";
-import { CategoryTagTrail } from "src/modules/common/components/category-tag-trail/category-tag-trail";
 import { compact } from "lodash";
 import { constants } from "services/constants";
 import {
@@ -234,9 +234,8 @@ export default class MarketHeader extends Component {
         )}
       >
         <h1 className={Styles.MarketHeaderMobile_description}>{description}</h1>
-
         <div className={Styles.MarketHeader__topContainer}>
-          <div>
+          <WordTrail items={[...categoriesWithClick, ...tagsWithClick]}>
             <button
               className={Styles.MarketHeader__backButton}
               onClick={() => history.goBack()}
@@ -245,12 +244,7 @@ export default class MarketHeader extends Component {
             </button>
 
             <MarketTypeLabel marketType={marketType} />
-
-            <CategoryTagTrail
-              categories={categoriesWithClick}
-              tags={tagsWithClick}
-            />
-          </div>
+          </WordTrail>
           <div className={Styles.MarketHeader__properties}>
             {market.id && (
               <MarketHeaderBar
