@@ -19,10 +19,6 @@ import {
   redeemStake
 } from "modules/reports/actions/claim-reporting-fees";
 import {
-  addPendingData,
-  removePendingData
-} from "modules/pending-queue/actions/pending-queue-management";
-import {
   ALL,
   CLAIM_FEE_WINDOWS,
   CLAIM_STAKE_FEES
@@ -43,11 +39,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: Function) => ({
   closeModal: () => dispatch(closeModal()),
-  redeemStake: (options, callback) => dispatch(redeemStake(options, callback)),
-  addPendingData: (pendingId, queueName) =>
-    dispatch(addPendingData(pendingId, queueName)),
-  removePendingData: (pendingId, queueName) =>
-    dispatch(removePendingData(pendingId, queueName))
+  redeemStake: (options, callback) => dispatch(redeemStake(options, callback))
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
@@ -232,24 +224,40 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     ],
     rows: markets,
     breakdown,
-    closeAction: () => dP.closeModal(),
+    closeAction: () => {
+      if (sP.modal.cb) {
+        sP.modal.cb();
+      }
+      dP.closeModal();
+    },
     buttons: [
       {
         text: "Claim All Stake & Fees",
+        disabled: markets.find(market => market.status === "pending"),
         action: () => {
           const RedeemStakeOptions = {
             feeWindows: feeWindowsPending ? [] : sP.reportingFees.feeWindows,
             nonforkedMarkets: claimableMarkets,
             onSent: () => {
-              dP.closeModal();
+              if (sP.modal.cb) {
+                sP.modal.cb();
+              }
             }
           };
-          dP.redeemStake(RedeemStakeOptions);
+          dP.redeemStake(RedeemStakeOptions, () => {
+            if (sP.modal.cb) {
+              sP.modal.cb();
+            }
+          });
+          dP.closeModal();
         }
       },
       {
         text: "Close",
         action: () => {
+          if (sP.modal.cb) {
+            sP.modal.cb();
+          }
           dP.closeModal();
         }
       }

@@ -9,6 +9,7 @@ import {
   REMOVE_MARKET,
   UPDATE_MARKET_ETH_BALANCE
 } from "modules/markets/actions/update-markets-data";
+import { CLEAR_LOGIN_ACCOUNT } from "modules/auth/actions/update-login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
@@ -76,6 +77,7 @@ export default function(marketsData = DEFAULT_STATE, action) {
       return immutableDelete(marketsData, action.data.marketId);
     case RESET_STATE:
     case CLEAR_MARKETS_DATA:
+    case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;
     default:
       return marketsData;

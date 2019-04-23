@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch: Function) => ({
     dispatch(
       updateModal({
         type: MODAL_CLAIM_FEES,
-        modalCallback: cb,
+        cb,
         ...reportingFees
       })
     ),

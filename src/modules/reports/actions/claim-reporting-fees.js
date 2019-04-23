@@ -50,8 +50,6 @@ export function redeemStake(options, callback = logError) {
       estimateGas
     } = options;
 
-    pendingId && dispatch(addPendingData(pendingId, CLAIM_STAKE_FEES, PENDING));
-
     const reportingParticipants = [];
     nonforkedMarkets.forEach(nonforkedMarket => {
       if (nonforkedMarket.initialReporter) {
@@ -83,14 +81,22 @@ export function redeemStake(options, callback = logError) {
       )
     );
 
-    Promise.all(promises).then((gasCosts = [], failed = []) => {
-      onSuccess &&
-        onSuccess(
-          sumAndformatGasCostToEther(gasCosts, { decimalsRounded: 4 }, gasPrice)
-        );
-      onFailed && failed.forEach(m => onFailed(m));
-      callback();
-    });
+    Promise.all(promises)
+      .then((gasCosts = [], failed = []) => {
+        onSuccess &&
+          onSuccess(
+            sumAndformatGasCostToEther(
+              gasCosts,
+              { decimalsRounded: 4 },
+              gasPrice
+            )
+          );
+        onFailed && failed.forEach(m => onFailed(m));
+        callback();
+      })
+      .catch(() => {
+        callback();
+      });
   };
 
   function batchContractIds(feeWindows, reportingParticipants) {
@@ -152,6 +158,8 @@ export function redeemStake(options, callback = logError) {
       _feeWindows: feeWindows,
       _reportingParticipants: reportingParticipants,
       onSent: () => {
+        pendingId &&
+          dispatch(addPendingData(pendingId, CLAIM_STAKE_FEES, PENDING));
         onSent && onSent();
       },
       onSuccess: gas => {
