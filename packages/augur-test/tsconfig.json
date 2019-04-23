@@ -9,7 +9,8 @@
   "exclude": [],
   "include": [
     "tests",
-    "libs"
+    "libs",
+    "flash"
   ],
   "references": [
     {

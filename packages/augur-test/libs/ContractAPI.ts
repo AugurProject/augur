@@ -1,10 +1,9 @@
 import { ethers } from "ethers";
 import { stringTo32ByteHex, NULL_ADDRESS} from "./Utils";
 import { Augur } from "@augurproject/api";
-import { GenericAugurInterfaces, EthersFastSubmitWallet } from "@augurproject/core";
+import { GenericAugurInterfaces } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { AccountList } from "./LocalAugur";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { AccountList, makeDependencies, makeSigner } from "./LocalAugur";
 import { ContractAddresses } from "@augurproject/artifacts";
 
 const ETERNAL_APPROVAL_VALUE = new ethers.utils.BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
@@ -13,8 +12,8 @@ export class ContractAPI {
   public static async userWrapper(accounts: AccountList, accountIndex: number, provider: EthersProvider, addresses: ContractAddresses) {
     const account = accounts[accountIndex];
 
-    const signer = await EthersFastSubmitWallet.create(account.secretKey, provider);
-    const dependencies = new ContractDependenciesEthers(provider, signer, account.publicKey);
+    const signer = await makeSigner(account, provider);
+    const dependencies = makeDependencies(account, provider, signer);
     const augur = await Augur.create(provider, dependencies, addresses);
 
     return new ContractAPI(augur, provider, account.publicKey);
@@ -31,11 +30,20 @@ export class ContractAPI {
     await this.augur.contracts.cash.approve(authority, new ethers.utils.BigNumber(2).pow(new ethers.utils.BigNumber(256)).sub(new ethers.utils.BigNumber(1)));
   }
 
-  public async createYesNoMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, endTime: ethers.utils.BigNumber, feePerCashInAttoCash: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string, topic: string, extraInfo: string): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
+  public async createYesNoMarket(
+    universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>,
+    endTime: ethers.utils.BigNumber,
+    feePerCashInAttoCash: ethers.utils.BigNumber,
+    affiliateFeeDivisor: ethers.utils.BigNumber,
+    designatedReporter: string,
+    topic: string,
+    extraInfo:string
+  ): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
     const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
     const byteTopic = stringTo32ByteHex(topic);
 
     await this.faucet(marketCreationFee);
+
     const marketAddress = await universe.createYesNoMarket_(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, byteTopic, extraInfo);
     if (!marketAddress || marketAddress === "0x") {
       throw new Error("Unable to get address for new binary market.");
@@ -46,7 +54,7 @@ export class ContractAPI {
 
   public async createReasonableYesNoMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
     const time = this.augur.contracts.getTime();
-    let currentTimestamp = (await time.getTimestamp_()).toNumber();
+    const currentTimestamp = (await time.getTimestamp_()).toNumber();
     const endTime = new ethers.utils.BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
@@ -68,14 +76,24 @@ export class ContractAPI {
 
   public async createReasonableMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, outcomes: Array<string>): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
     const time = this.augur.contracts.getTime();
-    let currentTimestamp = (await time.getTimestamp_()).toNumber();
+    const currentTimestamp = (await time.getTimestamp_()).toNumber();
     const endTime = new ethers.utils.BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
     return this.createCategoricalMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, outcomes, " ", "{\"description\": \"description\"}");
   }
 
-  public async createScalarMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, endTime: ethers.utils.BigNumber, feePerCashInAttoCash: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string, prices: Array<ethers.utils.BigNumber>, numTicks: ethers.utils.BigNumber, topic: string, extraInfo: string): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
+  public async createScalarMarket(
+    universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>,
+    endTime: ethers.utils.BigNumber,
+    feePerCashInAttoCash: ethers.utils.BigNumber,
+    affiliateFeeDivisor: ethers.utils.BigNumber,
+    designatedReporter: string,
+    prices: Array<ethers.utils.BigNumber>,
+    numTicks: ethers.utils.BigNumber,
+    topic: string,
+    extraInfo: string,
+    ): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
     const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
     const byteTopic = stringTo32ByteHex(topic);
 
@@ -90,7 +108,7 @@ export class ContractAPI {
 
   public async createReasonableScalarMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
     const time = this.augur.contracts.getTime();
-    let currentTimestamp = (await time.getTimestamp_()).toNumber();
+    const currentTimestamp = (await time.getTimestamp_()).toNumber();
     const endTime = new ethers.utils.BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
@@ -110,11 +128,8 @@ export class ContractAPI {
     worseOrderID: string,
     tradeGroupID: string,
   ): Promise<string> {
-    const createOrder = this.augur.contracts.createOrder;
-    const ethValue = numShares.mul(price);
-    await this.faucet(ethValue);
-    const orderId = await createOrder.publicCreateOrder_(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
-    await createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
+    const orderId = await this.augur.contracts.createOrder.publicCreateOrder_(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
+    await this.augur.contracts.createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
     return orderId;
   }
 
@@ -122,7 +137,6 @@ export class ContractAPI {
     await this.faucet(cost.mul(10000));
     await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, stringTo32ByteHex(tradeGroupId), false, NULL_ADDRESS);
   }
-
 
   public async takeBestOrder(marketAddress: string, type: ethers.utils.BigNumber, numShares: ethers.utils.BigNumber, price: ethers.utils.BigNumber, outcome: ethers.utils.BigNumber, tradeGroupID: string): Promise<void> {
     let actualPrice = price;
@@ -264,6 +278,10 @@ export class ContractAPI {
 
   public async faucet(wei: ethers.utils.BigNumber): Promise<void> {
     await this.augur.contracts.cash.faucet(wei);
+  }
+
+  public async approve(wei: ethers.utils.BigNumber): Promise<void> {
+    await  this.augur.contracts.cash.approve(this.augur.addresses.Augur, wei);
   }
 
   public getLegacyRepBalance(owner: string): Promise<ethers.utils.BigNumber> {

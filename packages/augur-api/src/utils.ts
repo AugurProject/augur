@@ -10,14 +10,14 @@ export function convertOnChainAmountToDisplayAmount(onChainAmount: BigNumber, ti
   return onChainAmount.dividedBy(tickSize).dividedBy(QUINTILLION);
 }
 
+export function convertDisplayAmountToOnChainAmount(displayAmount: BigNumber, tickSize: BigNumber) {
+  return displayAmount.multipliedBy(tickSize).multipliedBy(QUINTILLION);
+}
+
 export function convertOnChainPriceToDisplayPrice(onChainPrice: BigNumber, minPrice: BigNumber, tickSize: BigNumber) {
   return onChainPrice.multipliedBy(tickSize).plus(minPrice.dividedBy(QUINTILLION));
 }
 
 export function convertDisplayPriceToOnChainPrice(displayPrice: BigNumber, minPrice: BigNumber, tickSize: BigNumber) {
   return displayPrice.minus(minPrice).dividedBy(tickSize);
-}
-
-export function convertDisplayAmountToOnChainAmount(displayAmount: BigNumber, tickSize: BigNumber) {
-  return displayAmount.multipliedBy(tickSize).multipliedBy(QUINTILLION);
 }
