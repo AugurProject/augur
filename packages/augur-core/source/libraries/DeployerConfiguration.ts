@@ -29,8 +29,7 @@ export class DeployerConfiguration {
         this.contractInputPath = path.join(contractInputRoot, 'contracts.json');
     }
 
-    public static create(artifactOutputRoot: string=ARTIFACT_OUTPUT_ROOT, isProduction: boolean=false, legacyRepAddress: string=PRODUCTION_LEGACY_REP_CONTRACT_ADDRESS, cashAddress: string=PRODUCTION_CASH_CONTRACT_ADDRESS): DeployerConfiguration {
-        const contractInputRoot = (typeof process.env.CONTRACT_INPUT_ROOT === 'undefined') ? path.join(__dirname, '../../output/contracts') : path.normalize(<string> process.env.CONTRACT_INPUT_ROOT);
+    public static create(contractInputRoot:string=path.join(__dirname, '../../output/contracts'), artifactOutputRoot: string=ARTIFACT_OUTPUT_ROOT, isProduction: boolean=false, legacyRepAddress: string=PRODUCTION_LEGACY_REP_CONTRACT_ADDRESS, cashAddress: string=PRODUCTION_CASH_CONTRACT_ADDRESS): DeployerConfiguration {
         const augurAddress = process.env.AUGUR_ADDRESS;
         const createGenesisUniverse = (typeof process.env.CREATE_GENESIS_UNIVERSE === 'undefined') ? true : process.env.CREATE_GENESIS_UNIVERSE === 'true';
         const useNormalTime = (typeof process.env.USE_NORMAL_TIME === 'string') ? process.env.USE_NORMAL_TIME === 'true' : true;

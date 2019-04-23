@@ -28,8 +28,8 @@ function makeCompilerConfiguration() {
 }
 
 function makeDeployerConfiguration() {
-  const contractInputRoot = path.join(augurCorePath, "output/contracts");
-  const artifactOutputRoot  = path.join(augurCorePath, "output/contracts");
+  const contractInputRoot = path.join(augurCorePath, "../augur-artifacts/src");
+  const artifactOutputRoot  = path.join(augurCorePath, "../augur-artifacts/src");
   const createGenesisUniverse = true;
   const useNormalTime = false;
   const isProduction = false;
