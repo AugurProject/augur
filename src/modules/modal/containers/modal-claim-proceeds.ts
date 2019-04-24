@@ -112,7 +112,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     },
     buttons: [
       {
-        text: `${multiMarket ? "Claim All Proceeds" : "Claim Proceeds"}`,
+        text: `${multiMarket ? "Claim All" : "Claim Proceeds"}`,
         disabled: markets.find(market => market.status === "pending"),
         action: () => {
           dP.closeModal();

@@ -232,7 +232,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     },
     buttons: [
       {
-        text: "Claim All Stake & Fees",
+        text: "Claim All",
         disabled: markets.find(market => market.status === "pending"),
         action: () => {
           const RedeemStakeOptions = {
