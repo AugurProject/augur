@@ -9,6 +9,19 @@
     margin-bottom: 0.375rem;
   }
 
+  @media @breakpoint-mobile {
+    > div {
+      > span:first-of-type {
+        font-size: @size-10;
+      }
+
+      > span:last-of-type {
+        font-size: @size-12;
+        font-weight: bold;
+      }
+    }
+  }
+
   @media @breakpoint-mobile-mid {
     grid-template-columns: repeat(1, 1fr);
   }

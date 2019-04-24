@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 0 0 1rem;
+  margin: 0 0 @size-16;
   text-transform: uppercase;
 
   > div:first-of-type {
@@ -16,18 +16,18 @@
   }
 
   > div:nth-of-type(2) {
-    margin: 10px 0 3px;
+    margin-top: @size-8;
   }
 
   > div:nth-of-type(3) {
     .text-24-bold;
 
-    margin: 0 0.25rem;
+    margin: 0 @size-4;
 
     > svg {
       fill: @color-secondary-text;
       height: 18px;
-      margin: 0 0 0 0.25rem;
+      margin: 0 0 0 @size-4;
       width: 12px;
     }
   }
@@ -57,14 +57,14 @@
       .mono-14;
 
       color: @color-secondary-text;
-      margin: 0.25rem 0 0;
+      margin: @size-4 0 0;
       text-align: center;
     }
 
     > div svg {
       fill: @color-secondary-text;
       height: 12px;
-      margin: 0 0 0 0.25rem;
+      margin: 0 0 0 @size-4;
       width: 8px;
     }
   }
@@ -77,7 +77,7 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin: 1rem 1.5rem 0;
+  margin: @size-16 @size-24 0;
   text-align: center;
   width: 100%;
 
@@ -93,7 +93,7 @@
       .mono-10;
 
       color: @color-shadow-text;
-      margin: 1rem 0 0;
+      margin: @size-16 0 0;
       text-align: center;
     }
 
@@ -101,7 +101,7 @@
       .mono-12;
 
       color: @color-secondary-text;
-      margin: 0 0 1rem;
+      margin: 0 0 @size-16;
       text-align: center;
     }
   }
@@ -123,7 +123,7 @@
 @media @breakpoint-mobile {
   .RepBalanceStaked {
     background: unset;
-    margin: 1.5rem 2rem;
+    margin: @size-16 @size-32 @size-24;
 
     > div {
       > div:nth-of-type(2) {
@@ -138,6 +138,22 @@
   }
 
   .BalanceFrozenFunds {
+    > span {
+      > div:first-of-type {
+        > span {
+          .mono-10;
+        }
+
+        > span:last-of-type {
+          .mono-14-bold;
+        }
+      }
+
+      > div:last-of-type {
+        margin: 0 0 3px;
+      }
+    }
+
     > div:first-of-type {
       flex-direction: row;
     }
@@ -147,22 +163,24 @@
 
       > svg {
         fill: @color-secondary-text;
-        height: 0.75rem;
-        margin: 0 0 0 0.25rem;
-        width: 0.5rem;
+        height: @size-12;
+        margin: 0 0 0 @size-4;
+        width: @size-8;
       }
     }
   }
 
   .OverviewFundsContent {
     background: unset;
+    margin: 0;
 
     > div:first-of-type {
-      .mono-10;
+      .mono-12-bold;
     }
 
     > div:nth-of-type(3) {
-      margin-bottom: @size-18;
+      color: @color-tertiary-text;
+      margin-bottom: @size-12;
     }
   }
 

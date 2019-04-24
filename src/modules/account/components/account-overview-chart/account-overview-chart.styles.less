@@ -38,6 +38,22 @@
     padding: 1rem 0 0.5rem;
   }
 
+  @media @breakpoint-mobile {
+    > div:first-of-type {
+      .mono-12-bold;
+
+      padding-bottom: @size-8;
+    }
+
+    > div:nth-of-type(3) {
+      > div {
+        padding-bottom: @size-8;
+      }
+    }
+
+    padding-top: @size-24;
+  }
+
   @media @breakpoint-mobile-mid {
     flex: 1;
     justify-content: flex-end;

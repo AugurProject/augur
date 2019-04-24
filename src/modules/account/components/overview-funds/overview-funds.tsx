@@ -66,6 +66,7 @@ const OverviewFunds = (props: OverviewFundsProps) => {
         showPlusMinus
         showPercent
         showIcon
+        showBrackets
         value={realizedPLPercent}
       />
       <div>
@@ -107,11 +108,7 @@ const FundDataRow = (props: FundDataRowProps) => {
     <>
       {changeForMobile && (
         <span className={classNames(props.className, Styles.ShowOnMobile)}>
-          <LinearPropertyLabel
-            value={value.value}
-            label={value.title}
-            highlight
-          />
+          <LinearPropertyLabel value={value.value} label={value.title} />
           <div>{showEthLogo ? EthIcon : null}</div>
         </span>
       )}

@@ -136,6 +136,10 @@
 
   &:not(:last-of-type) {
     margin-bottom: @size-4;
+
+    @media @breakpoint-mobile {
+      margin-bottom: @size-8;
+    }
   }
 
   > span:first-of-type {

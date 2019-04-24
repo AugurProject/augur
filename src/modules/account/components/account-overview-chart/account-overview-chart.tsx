@@ -154,6 +154,7 @@ export default class AccountOverviewChart extends React.Component<
               showColors
               showIcon={profitLossChangeHasValue}
               showPlusMinus
+              showBrackets
               value={profitLossChange}
               size="medium"
             />
