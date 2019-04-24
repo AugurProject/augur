@@ -202,6 +202,17 @@
       stroke: @color-secondary-button-text;
     }
   }
+
+  @media @breakpoint-mobile {
+    &:disabled {
+      color: @color-disabled-text;
+      opacity: 0.5;
+
+      > svg > path {
+        stroke: @color-disabled-text;
+      }
+    }
+  }
 }
 
 .SubmitTextButton {

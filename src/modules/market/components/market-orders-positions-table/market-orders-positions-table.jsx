@@ -33,13 +33,13 @@ const MarketOrdersPositionsTable = ({
         market={market}
       />
       <div className={Styles.MarketOrders__footer}>
-        {openOrders.length > 0 &&
-          !hasPending && (
-            <CancelTextButton
-              action={() => cancelAllOpenOrders(openOrders)}
-              text="Cancel All"
-            />
-          )}
+        {openOrders.length > 0 && (
+          <CancelTextButton
+            action={() => cancelAllOpenOrders(openOrders)}
+            text="Cancel All"
+            disabled={hasPending}
+          />
+        )}
       </div>
     </ModulePane>
     <ModulePane label="My Fills">
