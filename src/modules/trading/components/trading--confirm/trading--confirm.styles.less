@@ -128,7 +128,7 @@
 }
 
 .TradingConfirm__FeeLabel {
-  margin-right: 0.5rem;
+  margin-right: @size-8;
   width: unset;
 }
 
@@ -154,7 +154,7 @@
 
 .TradingConfirm__error_message_container {
   background: fade(@color-darker-teal, 90%);
-  border: 1px solid @color-negative;
+  border: 1px solid @color-outcome-four;
   border-radius: 3px;
   bottom: 0;
   box-sizing: border-box;
@@ -163,7 +163,7 @@
   font-size: @font-size-small;
   left: 1rem;
   line-height: @font-size-medium;
-  padding: 0.75rem;
+  padding: @size-13 @size-8;
   position: absolute;
   right: 1rem;
 
@@ -173,9 +173,11 @@
   }
 
   div:first-child {
+    .mono-10-bold;
+
     color: @color-secondary-text;
-    font-weight: 500;
-    padding-bottom: 0.25rem;
+    padding-bottom: @size-4;
+    text-transform: uppercase;
 
     > button {
       float: right;
@@ -195,51 +197,37 @@
   }
 
   div:last-child {
+    .text-11;
+
     color: @color-white;
   }
 }
 
-.TradingConfirm__message__warning {
-  > svg {
-    margin-right: 0.25rem;
-
-    > circle {
-      opacity: 1;
-      stroke: @color-negative;
-    }
-
-    > rect {
-      fill: @color-negative;
-    }
-
-    > path {
-      fill: @color-negative;
-    }
-  }
-}
-
+.TradingConfirm__message__warning,
 .TradingConfirm__message__error {
   > svg {
-    margin-right: 0.25rem;
+    height: @size-12;
+    margin-right: @size-8;
+    vertical-align: bottom;
+    width: @size-12;
 
     > circle {
-      fill: @color-error-message-fade;
       opacity: 1;
       stroke: @color-error-text;
     }
 
     > rect {
-      fill: @color-neutral;
+      fill: @color-error-text;
     }
 
     > path {
-      fill: @color-neutral;
+      fill: @color-error-text;
     }
   }
 }
 
 .TradingConfirm__TooltipContainer {
-  margin-left: 0.5rem;
+  margin-left: @size-8;
   position: absolute;
   top: -0.1875rem;
   width: 5rem;
@@ -297,6 +285,14 @@ span.negative__profit > * {
 
   .TradingConfirm__error_message_container {
     background: @color-secondary-action;
+  }
+
+  .TradingConfirm__message__error,
+  .TradingConfirm__message__warning {
+    > svg {
+      height: @size-16;
+      width: @size-16;
+    }
   }
 }
 

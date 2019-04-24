@@ -17,7 +17,6 @@ import { darkBgExclamationCircle } from "modules/common/components/icons";
 import { SquareDropdown } from "modules/common-elements/selection";
 import Checkbox from "src/modules/common/components/checkbox/checkbox";
 import MarketOutcomeOrders from "modules/market-charts/containers/market-outcome--orders";
-import { DashlineLong } from "modules/common/components/dashline/dashline";
 import getPrecision from "utils/get-number-precision";
 import convertExponentialToDecimal from "utils/convert-exponential";
 
@@ -529,10 +528,7 @@ class TradingForm extends Component {
           !isMobile && (
             <div className={Styles.TradingForm__outcome__container}>
               <div className={Styles.TradingForm__outcome__container__yes}>
-                Yes
-                <span>
-                  <DashlineLong />
-                </span>
+                <span>Outcome:</span> Yes
               </div>
             </div>
           )}
@@ -670,10 +666,12 @@ class TradingForm extends Component {
                 ETH
               </span>
             </div>
-            <label className={Styles.smallLabel}>
-              {darkBgExclamationCircle}
-              {` Max cost of ${orderEscrowdEth} ETH will be escrowed`}
-            </label>
+            {orderEscrowdEth && (
+              <label className={Styles.smallLabel}>
+                {darkBgExclamationCircle}
+                {` Max cost of ${orderEscrowdEth} ETH will be escrowed`}
+              </label>
+            )}
           </li>
           <li>
             <Checkbox

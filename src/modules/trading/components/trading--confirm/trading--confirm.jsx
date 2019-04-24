@@ -305,7 +305,9 @@ class MarketTradingConfirm extends Component {
             >
               {darkBgExclamationCircle}
               <span>{messages.header}</span>
-              <button onClick={this.clearErrorMessage}>{closeIcon}</button>
+              {messages.type !== ERROR && (
+                <button onClick={this.clearErrorMessage}>{closeIcon}</button>
+              )}
             </div>
             <div>{messages.message}</div>
           </div>
