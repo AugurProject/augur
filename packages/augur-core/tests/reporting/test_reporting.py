@@ -448,11 +448,17 @@ def test_forking_values(localFixture, universe, market):
 def test_fee_window_record_keeping(localFixture, universe, market, categoricalMarket, scalarMarket):
     disputeWindow = localFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
 
+    noShowBond = universe.getOrCacheDesignatedReportNoShowBond()
+    initialReportBond = universe.getOrCacheDesignatedReportStake()
+    validityBond = universe.getOrCacheValidityBond()
+
     # First we'll confirm we get the expected default values for the window record keeping
-    assert disputeWindow.getNumMarkets() == 0
-    assert disputeWindow.getNumInvalidMarkets() == 0
-    assert disputeWindow.getNumIncorrectDesignatedReportMarkets() == 0
-    assert disputeWindow.getNumDesignatedReportNoShows() == 0
+    assert disputeWindow.invalidMarketsTotal() == 0
+    assert disputeWindow.validityBondTotal() == 0
+    assert disputeWindow.incorrectDesignatedReportTotal() == 0
+    assert disputeWindow.initialReportBondTotal() == 0
+    assert disputeWindow.designatedReportNoShowsTotal() == 0
+    assert disputeWindow.designatedReporterNoShowBondTotal() == 0
 
     # Go to designated reporting
     proceedToDesignatedReporting(localFixture, market)
@@ -499,13 +505,15 @@ def test_fee_window_record_keeping(localFixture, universe, market, categoricalMa
 
     # Now we'll confirm the record keeping was updated
     # Dispute Window cadence is different in the subFork Univese tests so we account for that
-    assert disputeWindow.getNumMarkets() == 3 if localFixture.subFork else 2
-    assert disputeWindow.getNumInvalidMarkets() == 1
-    assert disputeWindow.getNumIncorrectDesignatedReportMarkets() == 2
+    assert disputeWindow.invalidMarketsTotal() == validityBond
+    assert disputeWindow.validityBondTotal() == 3 * validityBond
+
+    assert disputeWindow.incorrectDesignatedReportTotal() == 2 * initialReportBond
+    assert disputeWindow.initialReportBondTotal() == 3 * initialReportBond
 
     disputeWindow = localFixture.applySignature('DisputeWindow', scalarMarket.getDisputeWindow())
-    assert disputeWindow.getNumMarkets() == 3 if localFixture.subFork else 1
-    assert disputeWindow.getNumDesignatedReportNoShows() == 1
+    assert disputeWindow.designatedReportNoShowsTotal() == noShowBond
+    assert disputeWindow.designatedReporterNoShowBondTotal() == 3 * noShowBond
 
 def test_rep_migration_convenience_function(localFixture, universe, market):
     proceedToFork(localFixture, market, universe)

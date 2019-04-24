@@ -18,7 +18,7 @@ library Reporting {
 
     uint256 private constant TARGET_INVALID_MARKETS_DIVISOR = 100; // 1% of markets are expected to be invalid
     uint256 private constant TARGET_INCORRECT_DESIGNATED_REPORT_MARKETS_DIVISOR = 100; // 1% of markets are expected to have an incorrect designate report
-    uint256 private constant TARGET_DESIGNATED_REPORT_NO_SHOWS_DIVISOR = 100; // 1% of markets are expected to have an incorrect designate report
+    uint256 private constant TARGET_DESIGNATED_REPORT_NO_SHOWS_DIVISOR = 20; // 5% of markets are expected to have a no show designated reporter
     uint256 private constant TARGET_REP_MARKET_CAP_MULTIPLIER = 3; // We multiply and divide by constants since we may want to multiply by a fractional amount
     uint256 private constant TARGET_REP_MARKET_CAP_DIVISOR = 1;
 

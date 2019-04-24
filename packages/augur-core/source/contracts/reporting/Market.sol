@@ -103,6 +103,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function increaseValidityBond(uint256 _attoCASH) public returns (bool) {
+        require(!isFinalized());
         cash.transferFrom(msg.sender, address(this), _attoCASH);
         validityBondAttoCash = validityBondAttoCash.add(_attoCASH);
         return true;
