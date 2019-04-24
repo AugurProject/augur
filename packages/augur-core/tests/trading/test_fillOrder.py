@@ -3,7 +3,7 @@
 from ethereum.tools import tester
 from ethereum.tools.tester import TransactionFailed
 from pytest import raises
-from utils import fix, bytesToHexString, AssertLog, longTo32Bytes, longToHexString, stringToBytes, BuyWithCash, nullAddress
+from utils import fix, bytesToHexString, AssertLog, longTo32Bytes, longToHexString, stringToBytes, BuyWithCash, nullAddress, TokenDelta
 from constants import BID, ASK, YES, NO
 
 
@@ -378,6 +378,33 @@ def test_publicFillOrder_withSelf(contractsFixture, cash, market, universe):
         fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1)
         assert fillOrderID == 0
 
+    assert orders.getAmount(orderID) == 0
+    assert orders.getPrice(orderID) == 0
+    assert orders.getOrderCreator(orderID) == longToHexString(0)
+    assert orders.getOrderMoneyEscrowed(orderID) == 0
+    assert orders.getOrderSharesEscrowed(orderID) == 0
+    assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
+    assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
+
+def test_publicFillOrder_minValueCancelation(contractsFixture, cash, market, universe):
+    createOrder = contractsFixture.contracts['CreateOrder']
+    fillOrder = contractsFixture.contracts['FillOrder']
+    orders = contractsFixture.contracts['Orders']
+    tradeGroupID = longTo32Bytes(42)
+
+    creatorCost = fix('2', '6000')
+    fillerCost = fix('2', '4000')
+
+    # create order
+    with BuyWithCash(cash, creatorCost, tester.k1, "complete set buy"):
+        orderID = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
+
+    # fill best order only leaving dust
+    with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
+        with TokenDelta(cash, 600000, tester.a1, "Tester 1 was not refunded for the remaining dust order cancelation"):
+            fillOrder.publicFillOrder(orderID, fix(2) - 100, tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
+
+    # The order is canceled
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
     assert orders.getOrderCreator(orderID) == longToHexString(0)

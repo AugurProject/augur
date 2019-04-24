@@ -891,3 +891,41 @@ def test_fees_from_trades(finalized, contractsFixture, cash, market):
     # No more fees can be withdrawn
     with TokenDelta(cash, 0, tester.a3, "Affiliate double received fees"):
         market.withdrawAffiliateFees(tester.a3)
+
+def test_two_bids_on_books_buy_one_full_then_exit_due_to_min_value(contractsFixture, cash, market, universe):
+    createOrder = contractsFixture.contracts['CreateOrder']
+    trade = contractsFixture.contracts['Trade']
+    fillOrder = contractsFixture.contracts['FillOrder']
+    orders = contractsFixture.contracts['Orders']
+    tradeGroupID = longTo32Bytes(42)
+
+    # create order 1
+    with BuyWithCash(cash, fix('12', '6000'), tester.k1, "create order"):
+        orderID1 = createOrder.publicCreateOrder(BID, fix(12), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
+    # create order 2
+    with BuyWithCash(cash, fix('7', '5000'), tester.k3, "create order"):
+        orderID2 = createOrder.publicCreateOrder(BID, fix(7), 5000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k3)
+
+    # fill/create
+    amount = fix(12) + 100
+    with PrintGasUsed(contractsFixture, "buy one and create", 0):
+        with BuyWithCash(cash, amount * 4000, tester.k2, "trade"):
+            fillOrderID = trade.publicTrade(SHORT,market.address, YES, amount, 6000, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender = tester.k2)
+
+    assert orders.getAmount(orderID1) == 0
+    assert orders.getPrice(orderID1) == 0
+    assert orders.getOrderCreator(orderID1) == longToHexString(0)
+    assert orders.getOrderMoneyEscrowed(orderID1) == 0
+    assert orders.getOrderSharesEscrowed(orderID1) == 0
+    assert orders.getBetterOrderId(orderID1) == longTo32Bytes(0)
+    assert orders.getWorseOrderId(orderID1) == longTo32Bytes(0)
+
+    assert orders.getAmount(orderID2) == fix(7)
+    assert orders.getPrice(orderID2) == 5000
+    assert orders.getOrderCreator(orderID2) == bytesToHexString(tester.a3)
+    assert orders.getOrderMoneyEscrowed(orderID2) == fix('7', '5000')
+    assert orders.getOrderSharesEscrowed(orderID2) == 0
+    assert orders.getBetterOrderId(orderID2) == longTo32Bytes(0)
+    assert orders.getWorseOrderId(orderID2) == longTo32Bytes(0)
+
+    assert fillOrderID == longTo32Bytes(1)

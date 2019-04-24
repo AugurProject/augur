@@ -290,3 +290,11 @@ def test_publicCreateOrder_kycToken(contractsFixture, cash, market, reputationTo
     assert orders.getOrderSharesEscrowed(orderID) == 0
     assert orders.getBetterOrderId(orderID) == bytearray(32)
     assert orders.getWorseOrderId(orderID) == bytearray(32)
+
+def test_publicCreateOrder_minValue(contractsFixture, cash, market):
+    orders = contractsFixture.contracts['Orders']
+    createOrder = contractsFixture.contracts['CreateOrder']
+
+    with BuyWithCash(cash, 4000, tester.k0, "create order"):
+        with raises(TransactionFailed):
+            createOrder.publicCreateOrder(BID, 1, 4000, market.address, 1, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(7), False, nullAddress)

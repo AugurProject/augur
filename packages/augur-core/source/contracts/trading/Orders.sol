@@ -194,7 +194,13 @@ contract Orders is IOrders, Initializable {
         removeOrderFromList(_orderId);
         Order.Data storage _order = orders[_orderId];
         marketOrderData[address(_order.market)].totalEscrowed -= _order.moneyEscrowed;
-        delete orders[_orderId];
+        _order.amount = 0;
+        _order.price = 0;
+        _order.creator = address(0);
+        _order.betterOrderId = bytes32(0);
+        _order.worseOrderId = bytes32(0);
+        _order.moneyEscrowed = 0;
+        _order.sharesEscrowed = 0;
         return true;
     }
 
