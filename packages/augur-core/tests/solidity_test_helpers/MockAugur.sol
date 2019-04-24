@@ -32,12 +32,12 @@ contract MockAugur {
 
     function logMarketCreatedCalled() public returns(bool) {return logMarketCreatedCalledValue;}
 
-    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, int256[] memory _prices, IMarket.MarketType _marketType, bytes32[] memory _outcomes) public returns (bool) {
+    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] memory _prices, IMarket.MarketType _marketType, bytes32[] memory _outcomes) public returns (bool) {
         logMarketCreatedCalledValue = true;
         return true;
     }
 
-    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, int256[] memory _prices, IMarket.MarketType _marketType, uint256 _numTicks) public returns (bool) {
+    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] memory _prices, IMarket.MarketType _marketType, uint256 _numTicks) public returns (bool) {
         logMarketCreatedCalledValue = true;
         return true;
     }

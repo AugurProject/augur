@@ -452,7 +452,7 @@ contract Universe is ITyped, IUniverse {
         int256[] memory _prices = new int256[](2);
         _prices[0] = 0;
         _prices[1] = 1 ether;
-        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _prices, IMarket.MarketType.YES_NO, 10000);
+        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 10000);
         return _newMarket;
     }
 
@@ -461,7 +461,7 @@ contract Universe is ITyped, IUniverse {
         int256[] memory _prices = new int256[](2);
         _prices[0] = 0;
         _prices[1] = 1 ether;
-        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _prices, IMarket.MarketType.CATEGORICAL, _outcomes);
+        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, _outcomes);
         return _newMarket;
     }
 
@@ -470,7 +470,7 @@ contract Universe is ITyped, IUniverse {
         require(_prices[0] < _prices[1]);
         require(_numTicks.isMultipleOf(2));
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, _numTicks);
-        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _prices, IMarket.MarketType.SCALAR, _numTicks);
+        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks);
         return _newMarket;
     }
 

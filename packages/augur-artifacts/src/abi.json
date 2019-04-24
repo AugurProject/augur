@@ -142,57 +142,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_endTime",
-					"type": "uint256"
-				},
-				{
-					"name": "_topic",
-					"type": "bytes32"
-				},
-				{
-					"name": "_extraInfo",
-					"type": "string"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_marketCreator",
-					"type": "address"
-				},
-				{
-					"name": "_designatedReporter",
-					"type": "address"
-				},
-				{
-					"name": "_prices",
-					"type": "int256[]"
-				},
-				{
-					"name": "_marketType",
-					"type": "uint8"
-				},
-				{
-					"name": "_outcomes",
-					"type": "bytes32[]"
-				}
-			],
-			"name": "logMarketCreated",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "time",
@@ -508,6 +457,61 @@
 				}
 			],
 			"name": "logMarketFinalized",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_endTime",
+					"type": "uint256"
+				},
+				{
+					"name": "_topic",
+					"type": "bytes32"
+				},
+				{
+					"name": "_extraInfo",
+					"type": "string"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_marketCreator",
+					"type": "address"
+				},
+				{
+					"name": "_designatedReporter",
+					"type": "address"
+				},
+				{
+					"name": "_feeDivisor",
+					"type": "uint256"
+				},
+				{
+					"name": "_prices",
+					"type": "int256[]"
+				},
+				{
+					"name": "_marketType",
+					"type": "uint8"
+				},
+				{
+					"name": "_outcomes",
+					"type": "bytes32[]"
+				}
+			],
+			"name": "logMarketCreated",
 			"outputs": [
 				{
 					"name": "",
@@ -1558,6 +1562,61 @@
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_endTime",
+					"type": "uint256"
+				},
+				{
+					"name": "_topic",
+					"type": "bytes32"
+				},
+				{
+					"name": "_extraInfo",
+					"type": "string"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_marketCreator",
+					"type": "address"
+				},
+				{
+					"name": "_designatedReporter",
+					"type": "address"
+				},
+				{
+					"name": "_feeDivisor",
+					"type": "uint256"
+				},
+				{
+					"name": "_prices",
+					"type": "int256[]"
+				},
+				{
+					"name": "_marketType",
+					"type": "uint8"
+				},
+				{
+					"name": "_numTicks",
+					"type": "uint256"
+				}
+			],
+			"name": "logMarketCreated",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_universe",
 					"type": "address"
 				},
@@ -1885,57 +1944,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_endTime",
-					"type": "uint256"
-				},
-				{
-					"name": "_topic",
-					"type": "bytes32"
-				},
-				{
-					"name": "_extraInfo",
-					"type": "string"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_marketCreator",
-					"type": "address"
-				},
-				{
-					"name": "_designatedReporter",
-					"type": "address"
-				},
-				{
-					"name": "_prices",
-					"type": "int256[]"
-				},
-				{
-					"name": "_marketType",
-					"type": "uint8"
-				},
-				{
-					"name": "_numTicks",
-					"type": "uint256"
-				}
-			],
-			"name": "logMarketCreated",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_universe",
 					"type": "address"
 				},
@@ -2014,6 +2022,11 @@
 					"indexed": false,
 					"name": "designatedReporter",
 					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "feeDivisor",
+					"type": "uint256"
 				},
 				{
 					"indexed": false,

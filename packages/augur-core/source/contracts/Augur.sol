@@ -34,7 +34,7 @@ contract Augur is IAugur {
         ParticipationToken
     }
 
-    event MarketCreated(IUniverse indexed universe, uint256 endTime, bytes32 indexed topic, string extraInfo, IMarket market, address indexed marketCreator, address designatedReporter, int256[] prices, IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes);
+    event MarketCreated(IUniverse indexed universe, uint256 endTime, bytes32 indexed topic, string extraInfo, IMarket market, address indexed marketCreator, address designatedReporter, uint256 feeDivisor, int256[] prices, IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes);
     event InitialReportSubmitted(address indexed universe, address indexed reporter, address indexed market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description);
     event DisputeCrowdsourcerCreated(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size);
     event DisputeCrowdsourcerContribution(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountStaked, string description);
@@ -229,22 +229,22 @@ contract Augur is IAugur {
     //
 
     // This signature is intended for the categorical market creation. We use two signatures for the same event because of stack depth issues which can be circumvented by maintaining order of paramaters
-    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, int256[] memory _prices, IMarket.MarketType _marketType, bytes32[] memory _outcomes) public returns (bool) {
+    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] memory _prices, IMarket.MarketType _marketType, bytes32[] memory _outcomes) public returns (bool) {
         IUniverse _universe = IUniverse(msg.sender);
         require(isKnownUniverse(_universe));
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
-        emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market, _marketCreator, _designatedReporter, _prices, _marketType, 10000, _outcomes);
+        emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market,_marketCreator, _designatedReporter, _feeDivisor, _prices, _marketType, 10000, _outcomes);
         return true;
     }
 
     // This signature is intended for yesNo and scalar market creation. See function comment above for explanation.
-    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, int256[] memory _prices, IMarket.MarketType _marketType, uint256 _numTicks) public returns (bool) {
+    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] memory _prices, IMarket.MarketType _marketType, uint256 _numTicks) public returns (bool) {
         IUniverse _universe = IUniverse(msg.sender);
         require(isKnownUniverse(_universe));
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
-        emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market, _marketCreator, _designatedReporter, _prices, _marketType, _numTicks, new bytes32[](0));
+        emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market, _marketCreator, _designatedReporter, _feeDivisor, _prices, _marketType, _numTicks, new bytes32[](0));
         return true;
     }
 
