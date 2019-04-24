@@ -335,28 +335,24 @@ export const PERIOD_RANGES = {
     period: 3600,
     format: "{value:%H:%M}",
     crosshair: "{value:%H:%M}",
-    step: 3,
     range: 24 * 3600 * 1000 // 1 day
   },
   43200: {
     period: 43200,
     format: "{value:%H:%M}",
     crosshair: "{value:%H:%M}",
-    step: 3,
     range: 7 * 24 * 3600 * 1000 // 1 week
   },
   86400: {
     period: 86400,
     format: "{value:%b %d}",
     crosshair: "{value:%b %d}",
-    step: 2,
     range: 30 * 24 * 3600 * 1000 // month
   },
   604800: {
     period: 604800,
     format: "{value:%b %d}",
     crosshair: "{value:%b %d}",
-    step: 2,
     range: 6 * 30 * 24 * 3600 * 1000 // 6 months
   }
 };

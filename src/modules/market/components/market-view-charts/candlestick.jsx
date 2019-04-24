@@ -88,7 +88,7 @@ export class Candlestick extends React.Component {
   }
 
   render() {
-    const { maxPrice, minPrice, currentTimeInSeconds, isMobile } = this.props;
+    const { maxPrice, minPrice, isMobile } = this.props;
     const { priceTimeSeries, selectedPeriod } = this.state;
 
     return (
@@ -102,7 +102,6 @@ export class Candlestick extends React.Component {
         updateSelectedOrderProperties={() => {}}
         marketMax={maxPrice}
         marketMin={minPrice}
-        currentTimeInSeconds={currentTimeInSeconds}
       />
     );
   }

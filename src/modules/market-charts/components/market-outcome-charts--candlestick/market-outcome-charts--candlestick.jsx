@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import React from "react";
 import PropTypes from "prop-types";
 import CustomPropTypes from "utils/custom-prop-types";
@@ -12,7 +11,7 @@ import {
   StaticLabelDropdown
 } from "modules/common-elements/selection";
 import Styles from "modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles";
-import MarketOutcomeChartsCandlestickHighchart from "modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts-candlestick-highchart";
+import MarketOutcomeChartsCandlestickHighchart from "modules/market-charts/containers/market-candlestick";
 import { CandlestickOchl } from "modules/market-charts/components/market-outcome-charts--candlestick/candlestick-ochl";
 
 class MarketOutcomeCandlestick extends React.PureComponent {
@@ -24,8 +23,7 @@ class MarketOutcomeCandlestick extends React.PureComponent {
     priceTimeSeries: PropTypes.array.isRequired,
     selectedPeriod: PropTypes.number.isRequired,
     updateSelectedPeriod: PropTypes.func.isRequired,
-    pricePrecision: PropTypes.number.isRequired,
-    currentTimeInSeconds: PropTypes.number.isRequired
+    pricePrecision: PropTypes.number.isRequired
   };
 
   static defaultProps = {
@@ -88,8 +86,7 @@ class MarketOutcomeCandlestick extends React.PureComponent {
       selectedPeriod,
       updateSelectedPeriod,
       marketMin,
-      marketMax,
-      currentTimeInSeconds
+      marketMax
     } = this.props;
 
     const {
@@ -102,30 +99,13 @@ class MarketOutcomeCandlestick extends React.PureComponent {
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
         <div className={Styles.MarketOutcomeChartsHeader__chart__interaction}>
-          <div
-            className={classNames({
-              [Styles.MarketOutcomeChartsHeader__selector__mobile]: isMobile
-            })}
-          >
+          <div>
             <SquareDropdown
               defaultValue={defaultCandlePeriod}
               options={PERIODS}
               onChange={updateSelectedPeriod}
               sortByStyles={{ minWidth: "4.875rem" }}
             />
-          </div>
-          <CandlestickOchl
-            hoveredPeriod={hoveredPeriod}
-            pricePrecision={pricePrecision}
-          />
-          <div
-            className={classNames(
-              Styles.MarketOutcomeChartsHeader__label_container,
-              {
-                [Styles.MarketOutcomeChartsHeader__label_hover]: !!hoveredPeriod.volume
-              }
-            )}
-          >
             <StaticLabelDropdown
               options={VOLUME_ETH_SHARES}
               sortByStyles={{ minWidth: "9.375rem" }}
@@ -137,8 +117,13 @@ class MarketOutcomeCandlestick extends React.PureComponent {
                   : "Show Volume in "
               }
               onChange={this.updateVolumeType}
+              highlight={!!hoveredPeriod.volume}
             />
           </div>
+          <CandlestickOchl
+            hoveredPeriod={hoveredPeriod}
+            pricePrecision={pricePrecision}
+          />
         </div>
         <div
           ref={drawContainer => {
@@ -155,7 +140,6 @@ class MarketOutcomeCandlestick extends React.PureComponent {
             marketMax={marketMax}
             volumeType={volumeType}
             containerHeight={containerHeight}
-            currentTimeInSeconds={currentTimeInSeconds}
             isMobile={isMobile}
           />
         </div>

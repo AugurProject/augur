@@ -22,6 +22,7 @@ export interface DropdownProps {
   stretchOutOnMobile?: boolean;
   sortByStyles?: Object;
   openTop?: boolean;
+  highlight?: boolean;
 }
 
 interface DropdownState {
@@ -195,7 +196,7 @@ export const SquareDropdown = (props: DropdownProps) => <Dropdown {...props} />;
 
 export class StaticLabelDropdown extends Dropdown {
   render() {
-    const { sortByStyles, options, large, staticLabel } = this.props;
+    const { sortByStyles, options, large, staticLabel, highlight } = this.props;
     const { selected, showList } = this.state;
     return (
       <div
@@ -203,7 +204,8 @@ export class StaticLabelDropdown extends Dropdown {
         className={classNames({
           [Styles.Dropdown_Large]: large,
           [Styles.Dropdown_Normal]: !large,
-          [Styles.Dropdown__isOpen]: showList
+          [Styles.Dropdown_isOpen]: showList,
+          [Styles.Dropdown_highlight]: highlight
         })}
         ref={dropdown => {
           this.refDropdown = dropdown;

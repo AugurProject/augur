@@ -1,6 +1,6 @@
 @import (reference) "~assets/styles/shared";
 
-.MarketOutcomeChartsCandlestickHighcharts {
+.Candlestick {
   svg {
     :global {
       .highcharts-background {
@@ -8,7 +8,7 @@
       }
 
       g.highcharts-axis-labels > text > tspan {
-        .mono-12;
+        .mono-9;
 
         color: @color-secondary-text;
         fill: @color-secondary-text;
@@ -16,10 +16,9 @@
 
       .highcharts-yaxis-labels,
       .highcharts-label {
-        .mono-12;
+        .mono-10;
 
         fill: @color-secondary-text;
-        // stroke: @color-secondary-text;
       }
 
       .highcharts-no-data {
@@ -59,13 +58,16 @@
       }
 
       .highcharts-crosshair-label.highcharts-crosshair-label > .highcharts-label-box {
+        .mono-9;
+
         stroke: @color-secondary-text;
       }
 
       .highcharts-crosshair-label {
+        .mono-10;
+
         background-color: @color-theme-primary;
-        color: @color-secondary-text;
-        font-size: @size-10;
+        padding: 0.5rem;
         z-index: 2;
       }
 
@@ -115,10 +117,16 @@
   }
 }
 
-.MarketOutcomeCharts__highcharts_display_none {
+.Candlestick_display_none {
   display: none;
 }
 
-.MarketOutcomeCharts__highcharts_display_yLables {
+.Candlestick_display_yLables {
+  .mono-10;
+
   color: @color-secondary-text;
+}
+
+.Candlestick_candlesticks {
+  border-radius: 1px;
 }
