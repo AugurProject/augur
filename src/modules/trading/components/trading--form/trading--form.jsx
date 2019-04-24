@@ -507,6 +507,8 @@ class TradingForm extends Component {
       s[this.INPUT_TYPES.QUANTITY]
     );
     const defaultOutcome = selectedOutcome ? selectedOutcome.id : "Outcome";
+    const isScalerWithDenomination =
+      marketType === SCALAR && market.scalarDenomination;
 
     return (
       <div className={Styles.TradingForm__form__container}>
@@ -618,13 +620,16 @@ class TradingForm extends Component {
               />
               <span
                 className={classNames({
-                  [`${Styles.isScalar}`]: marketType === SCALAR,
+                  [`${Styles.isScalar_largeText}`]:
+                    isScalerWithDenomination &&
+                    market.scalarDenomination.length <= 24,
+                  [`${Styles.isScalar_smallText}`]:
+                    isScalerWithDenomination &&
+                    market.scalarDenomination.length > 24,
                   [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length
                 })}
               >
-                {marketType === SCALAR && market.scalarDenomination
-                  ? market.scalarDenomination
-                  : "ETH"}
+                {isScalerWithDenomination ? market.scalarDenomination : "ETH"}
               </span>
             </div>
           </li>
