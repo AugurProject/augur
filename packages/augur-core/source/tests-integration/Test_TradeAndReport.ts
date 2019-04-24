@@ -27,7 +27,7 @@ describe("TradeAndReport", () => {
         // Place an order
         let type = new ethers.utils.BigNumber(0); // BID
         let outcome = new ethers.utils.BigNumber(0);
-        let numShares = new ethers.utils.BigNumber(10000000000000);
+        let numShares = new ethers.utils.BigNumber("10000000000000000");
         let price = new ethers.utils.BigNumber(2150);
 
         await fixture.placeOrder(market.address, type, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
@@ -43,7 +43,7 @@ describe("TradeAndReport", () => {
         // Buy complete sets
         await fixture.buyCompleteSets(market, numShares);
         const numOwnedShares = await fixture.getNumSharesInMarket(market, outcome);
-        expect(numOwnedShares.toNumber()).to.equal(numShares.toNumber());
+        expect(numOwnedShares.toString()).to.equal(numShares.toString());
 
         ethBalance = await fixture.getEthBalance();
         console.log("ethBalance after buying complete set", ethBalance.toString());
@@ -51,7 +51,7 @@ describe("TradeAndReport", () => {
         // Cancel the original rest of order
         await fixture.cancelOrder(orderID);
         const remainingAmount = await fixture.getOrderAmount(orderID);
-        expect(remainingAmount.toNumber()).to.equal(0);
+        expect(remainingAmount.toString()).to.equal("0");
 
         // Proceed to reporting
         const reportingUtils = new ReportingUtils();
