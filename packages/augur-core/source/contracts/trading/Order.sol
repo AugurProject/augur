@@ -103,7 +103,7 @@ library Order {
         return (_fillerDirection == Order.TradeDirections.Long) ? Order.Types.Ask : Order.Types.Bid;
     }
 
-    function isOrderValueValid(Order.Types _type, uint256 _amount, uint256 _price, uint256 _numTicks) internal view returns (bool) {
+    function isOrderValueValid(Order.Types _type, uint256 _amount, uint256 _price, uint256 _numTicks) internal pure returns (bool) {
         if (_type == Order.Types.Ask) {
             return _numTicks.sub(_price).mul(_amount) > MIN_ORDER_VALUE;
         } else if (_type == Order.Types.Bid) {
