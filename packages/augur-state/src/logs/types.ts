@@ -77,21 +77,22 @@ export interface InitialReportSubmittedLog extends Log, Doc {
 }
 
 export interface MarketCreatedLogExtraInfo {
+  description: string;
   longDescription?: string;
   resolutionSource?: string;
   _scalarDenomination?: string;
 }
 
 export interface MarketCreatedLog extends Log, Doc {
-  universe: string;
+  universe: Address;
   endTime: Timestamp;
   topic: string;
-  description: string;
   extraInfo: string;
-  market: string;
-  marketCreator: string;
-  minPrice: string;
-  maxPrice: string;
+  market: Address;
+  marketCreator: Address;
+  designatedReporter: Address;
+  feeDivisor: string;
+  prices: Array<string>;
   marketType: MarketType;
   numTicks: string;
   outcomes: Array<string>;

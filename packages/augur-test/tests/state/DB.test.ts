@@ -1,7 +1,7 @@
-import {TrackedUsers} from "@augurproject/state/src/db/TrackedUsers";
-import {Augur} from "@augurproject/api";
-import {makeTestAugur, ACCOUNTS, makeDbMock} from "../../libs";
-import {ethers} from "ethers";
+import { TrackedUsers } from "@augurproject/state/src/db/TrackedUsers";
+import { Augur } from "@augurproject/api";
+import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../libs";
+import { ethers } from "ethers";
 
 const mock = makeDbMock();
 
