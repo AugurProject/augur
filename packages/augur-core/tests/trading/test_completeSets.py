@@ -80,8 +80,7 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
         "account": bytesToHexString(tester.a1),
         "numCompleteSets": 9,
         "marketOI": market.getNumTicks(),
-        "marketCreatorFees": 900,
-        "reporterFees": 900,
+        "fees": 900 + 900,
     }
     with AssertLog(contractsFixture, "CompleteSetsSold", completeSetsSoldLog):
         result = completeSets.publicSellCompleteSets(market.address, 9, sender=tester.k1)

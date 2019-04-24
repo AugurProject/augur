@@ -44,7 +44,7 @@ export class Router<TBigNumber> {
     this.db = db;
   }
 
-  public route(name: string, params: any): Promise<any> {
+  public async route(name: string, params: any): Promise<any> {
     const getter = Router.routings.get(name);
 
     if (!getter) {
@@ -61,6 +61,6 @@ export class Router<TBigNumber> {
       throw new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`);
     }
 
-    return getter.func(this.db, decodedParams.value);
+    return getter.func(this.augurAPI, this.db, decodedParams.value);
   }
 }

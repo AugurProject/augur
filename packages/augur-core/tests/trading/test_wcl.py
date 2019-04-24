@@ -188,8 +188,7 @@ def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market,
     assert yesShareToken.approve(fillOrder.address, fix(12), sender = tester.k2)
 
     orderFilledLog = {
-        'marketCreatorFees': marketCreatorFee,
-        'reporterFees': reporterFee,
+        'fees': marketCreatorFee + reporterFee
     }
     with AssertLog(contractsFixture, 'OrderFilled', orderFilledLog):
         leftoverInOrder = fillOrder.publicFillOrder(orderID, fix(12), longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = tester.k2)

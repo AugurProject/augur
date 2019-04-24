@@ -292,7 +292,7 @@ const methods = {
       console.log(chalk.green.dim("address:"), chalk.green(address));
       console.log(chalk.green.dim("universe:"), chalk.green(universe));
 
-      return await contractAPI.approveAugurEternalApprovalValue(address);
+      return contractAPI.approveAugurEternalApprovalValue(address);
     },
   },
   "list-market-orders": {

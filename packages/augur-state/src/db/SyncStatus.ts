@@ -14,7 +14,7 @@ export class SyncStatus extends AbstractDB {
 
   public async setHighestSyncBlock(dbName: string, blockNumber: number): Promise<PouchDB.Core.Response> {
     const document: SyncDocument = {blockNumber};
-    return await this.upsertDocument(dbName, document);
+    return this.upsertDocument(dbName, document);
   }
 
   public async getHighestSyncBlock(dbName: string): Promise<number> {

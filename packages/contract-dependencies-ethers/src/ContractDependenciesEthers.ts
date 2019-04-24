@@ -39,14 +39,14 @@ export class ContractDependenciesEthers implements Dependencies<ethers.utils.Big
     }
 
     public async call(transaction: Transaction<ethers.utils.BigNumber>): Promise<string> {
-        return await this.provider.call(transaction);
+        return this.provider.call(transaction);
     }
 
     public async getDefaultAddress(): Promise<string> {
         if (this.signer) {
-            return await this.signer.getAddress();
+            return this.signer.getAddress();
         }
-        
+
         const addresses = await this.provider.listAccounts();
         if (addresses.length > 0) return addresses[0];
 
