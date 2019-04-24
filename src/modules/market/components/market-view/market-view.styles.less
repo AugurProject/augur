@@ -197,11 +197,23 @@
   display: flex;
   flex-flow: row nowrap;
   height: @size-40;
-  margin: 0 0 @size-8;
   padding: 0 @size-16;
 }
 
 @media @breakpoint-mobile {
+  .OutcomeSelectionArea {
+    background-color: @color-primary-background;
+    margin-top: -1px;
+    padding: 0 @size-8 @size-16;
+    position: fixed;
+    width: 100%;
+    z-index: @mask;
+  }
+
+  .TradesMobile {
+    margin-top: @size-40;
+  }
+
   .Market__upper {
     padding: 0 1rem;
   }

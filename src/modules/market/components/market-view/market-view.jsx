@@ -363,8 +363,7 @@ export default class MarketView extends Component {
                 });
               }}
             >
-              <div className={Styles["MarketView__paneContainer--mobile"]}>
-                <h1>{description}</h1>
+              <div className={Styles.OutcomeSelectionArea}>
                 {marketType === CATEGORICAL && (
                   <MarketOutcomeSelector
                     outcome={s.selectedOutcome}
@@ -377,6 +376,14 @@ export default class MarketView extends Component {
                     {selectedOutcomeName}
                   </div>
                 )}
+              </div>
+              <div
+                className={classNames(
+                  Styles["MarketView__paneContainer--mobile"],
+                  Styles.TradesMobile
+                )}
+              >
+                <h1>{description}</h1>
                 <ModuleTabs selected={0} fillForMobile>
                   <ModulePane label="Order Book">
                     <div className={Styles.MarketView__orders}>
