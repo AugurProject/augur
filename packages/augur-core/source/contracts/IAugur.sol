@@ -11,8 +11,8 @@ contract IAugur {
     function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] memory _parentPayoutNumerators) public returns (IUniverse);
     function isKnownUniverse(IUniverse _universe) public view returns (bool);
     function trustedTransfer(ERC20Token _token, address _from, address _to, uint256 _amount) public returns (bool);
-    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _description, string memory _extraInfo, IMarket _market, address _marketCreator, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType, bytes32[] memory _outcomes) public returns (bool);
-    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _description, string memory _extraInfo, IMarket _market, address _marketCreator, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType, uint256 _numTicks) public returns (bool);
+    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, int256[] memory _prices, IMarket.MarketType _marketType, bytes32[] memory _outcomes) public returns (bool);
+    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, int256[] memory _prices, IMarket.MarketType _marketType, uint256 _numTicks) public returns (bool);
     function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] memory _payoutNumerators, string memory description) public returns (bool);
     function disputeCrowdsourcerCreated(IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] memory _payoutNumerators, uint256 _size) public returns (bool);
     function logDisputeCrowdsourcerContribution(IUniverse _universe, address _reporter, address _market, address _disputeCrowdsourcer, uint256 _amountStaked, string memory description) public returns (bool);
@@ -25,7 +25,7 @@ contract IAugur {
     function logMarketParticipantsDisavowed(IUniverse _universe) public returns (bool);
     function logOrderCanceled(IUniverse _universe, address _shareToken, address _sender, bytes32 _orderId, Order.Types _orderType, uint256 _tokenRefund, uint256 _sharesRefund) public returns (bool);
     function logOrderCreated(Order.Types _orderType, uint256 _amount, uint256 _price, address _creator, bytes32 _tradeGroupId, bytes32 _orderId, IUniverse _universe, IMarket _market, ERC20Token _kycToken, uint256 _outcome) public returns (bool);
-    function logOrderFilled(IUniverse _universe, address _filler, address creator, IMarket _market, bytes32 _orderId, uint256 _price, uint256 _fees, uint256 _amountFilled, uint256 _outcome, bytes32 _tradeGroupId) public returns (bool);
+    function logOrderFilled(IUniverse _universe, address _filler, address creator, IMarket _market, bytes32 _orderId, uint256 _price, uint256 _fees, uint256 _amountFilled, uint256 _outcome, bytes32 _tradeGroupId, bool _orderIsCompletelyFilled) public returns (bool);
     function logCompleteSetsPurchased(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) public returns (bool);
     function logCompleteSetsSold(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees) public returns (bool);
     function logTradingProceedsClaimed(IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _numShares, uint256 _numPayoutTokens, uint256 _finalTokenBalance, uint256 _fees) public returns (bool);

@@ -32,12 +32,12 @@ contract MockAugur {
 
     function logMarketCreatedCalled() public returns(bool) {return logMarketCreatedCalledValue;}
 
-    function logMarketCreated(bytes32 _topic, string _description, string _extraInfo, IUniverse _universe, address _market, address _marketCreator, bytes32[] _outcomes, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool) {
+    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, int256[] memory _prices, IMarket.MarketType _marketType, bytes32[] memory _outcomes) public returns (bool) {
         logMarketCreatedCalledValue = true;
         return true;
     }
 
-    function logMarketCreated(bytes32 _topic, string _description, string _extraInfo, IUniverse _universe, address _market, address _marketCreator, int256 _minPrice, int256 _maxPrice, IMarket.MarketType _marketType) public returns (bool) {
+    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, int256[] memory _prices, IMarket.MarketType _marketType, uint256 _numTicks) public returns (bool) {
         logMarketCreatedCalledValue = true;
         return true;
     }
@@ -108,7 +108,7 @@ contract MockAugur {
         return true;
     }
 
-    function logOrderFilled(IUniverse _universe, address _shareToken, address _filler, bytes32 _orderId, uint256 _numCreatorShares, uint256 _numCreatorTokens, uint256 _numFillerShares, uint256 _numFillerTokens, uint256 _marketCreatorFees, uint256 _reporterFees, uint256 _amountFilled, bytes32 _tradeGroupId) public returns (bool) {
+    function logOrderFilled(IUniverse _universe, address _shareToken, address _filler, bytes32 _orderId, uint256 _numCreatorShares, uint256 _numCreatorTokens, uint256 _numFillerShares, uint256 _numFillerTokens, uint256 _fees, uint256 _amountFilled, bytes32 _tradeGroupId, bool _orderIsCompletelyFilled) public returns (bool) {
         return true;
     }
 

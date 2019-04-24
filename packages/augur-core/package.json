@@ -111,7 +111,6 @@
     "jest": "23.6.0",
     "options-parser": "0.4.0",
     "solc": "0.5.1",
-    "solidity-typescript-generator": "1.1.2",
     "solium": "1.2.3",
     "source-map-support": "0.5.9",
     "ts-node": "7.0.1",

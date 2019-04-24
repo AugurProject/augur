@@ -29,7 +29,8 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
         "fees": 0,
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
         "amountFilled": fix(2),
-        "price": 6000
+        "price": 6000,
+        "orderIsCompletelyFilled": True
     }
 
     marketVolumeChangedLog = {
