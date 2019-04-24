@@ -17,6 +17,23 @@
       }
     }
   }
+
+  @media @breakpoint-mobile {
+    flex-flow: column-reverse;
+
+    > div:nth-of-type(2) {
+      margin-left: 0;
+
+      > div {
+        margin: 0;
+
+        &.blockit {
+          margin-left: 0;
+          padding: 0;
+        }
+      }
+    }
+  }
 }
 
 .CreateMarketReview__explainer {
@@ -39,6 +56,10 @@
 
   > div:first-of-type {
     margin-right: 104px;
+
+    @media @breakpoint-mobile {
+      margin-right: 0;
+    }
   }
 }
 
@@ -192,6 +213,11 @@
     display: flex;
     justify-content: space-between;
 
+    @media @breakpoint-mobile {
+      align-items: initial;
+      flex-flow: column;
+    }
+
     &:not(:last-child) {
       margin-bottom: 1rem;
     }
@@ -225,6 +251,11 @@
   margin-bottom: 3rem;
   max-width: 50%;
   min-width: 50%;
+
+  @media @breakpoint-mobile {
+    max-width: 100%;
+    min-width: 100%;
+  }
 }
 
 .CreateMarketReview__smallheading {

@@ -156,7 +156,7 @@ export default class CreateMarketDefine extends Component {
     } else if (newMarket.validations[newMarket.currentStep].tag2) {
       tagMessage = newMarket.validations[newMarket.currentStep].tag2;
     }
-
+    const endTime = (newMarket.endTime || {}).formattedUtc;
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li className={StylesForm.CreateMarketForm_block}>
@@ -176,22 +176,15 @@ export default class CreateMarketDefine extends Component {
           />
           <div className={Styles.CreateMarketDefine_message}>
             <div>
-              Choose a{" "}
-              <span className={Styles.CreateMarketDefine_bolden}>
-                Reporting Starts Date and Time.
-              </span>{" "}
-              that is sufficiently after the end of the event. If reporting
-              starts before the event end time it may result in the market being
-              reported as{" "}
-              <span className={Styles.CreateMarketDefine_bolden}>invalid.</span>
+              Choose a <b>Reporting Starts Date and Time.</b> that is
+              sufficiently after the end of the event. If reporting starts
+              before the event end time it may result in the market being
+              reported as <b>invalid.</b>
             </div>
             <div>
-              Make sure to factor in
-              <span className={Styles.CreateMarketDefine_bolden}>
-                potential delays
-              </span>{" "}
-              that can impact the events end time. Reporting should only start
-              when the outcome will be known beyond a reasonable doubt.
+              Make sure to factor in <b>potential delays</b> that can impact the
+              events end time. Reporting should only start when the outcome will
+              be known beyond a reasonable doubt.
             </div>
             <MarketCreationTimeDisplay endTime={newMarket.endTime} />
           </div>
@@ -226,8 +219,7 @@ export default class CreateMarketDefine extends Component {
               onKeyPress={e => keyPressed(e)}
             />
             <div className={StylesForm.CreateMarketForm_textarea_footer}>
-              Official Reporting Start Time{" "}
-              <span>{(newMarket.endTime || {}).formattedUtc}</span>
+              Official Reporting Start Time <b>{endTime}</b>
             </div>
 
             <div
@@ -249,19 +241,15 @@ export default class CreateMarketDefine extends Component {
                 className={Styles.CreateMarketForm__textArea}
               />
               <div className={StylesForm.CreateMarketForm_textarea_footer}>
-                Official Reporting Start Time{" "}
-                <span>{(newMarket.endTime || {}).formattedUtc}</span>
+                Official Reporting Start Time <b>{endTime}</b>
               </div>
             </div>
           </div>
           <div className={Styles.CreateMarketDefine_message}>
             <div>
-              Create markets that will have an{" "}
-              <span className={Styles.CreateMarketDefine_bolden}>
-                objective outcome
-              </span>{" "}
-              by the events end time. Avoid creating markets that have
-              subjective or ambiguous outcomes.
+              Create markets that will have an <b>objective outcome</b> by the
+              events end time. Avoid creating markets that have subjective or
+              ambiguous outcomes.
             </div>
             <div
               className={classNames(
@@ -273,31 +261,13 @@ export default class CreateMarketDefine extends Component {
                 <div>
                   If entering a date and time in the Market Question and/or
                   Additional Details, use the{" "}
-                  <span className={Styles.CreateMarketDefine_bolden}>
-                    Official Reporting Start Time
-                  </span>{" "}
-                  in
-                  <span className={Styles.CreateMarketDefine_bolden}>
-                    UTC-0
-                  </span>
+                  <b>Official Reporting Start Time</b> in <b>UTC-0</b>
                 </div>
                 <div>
-                  <span className={Styles.CreateMarketDefine_bolden}>
-                    Event Start Date and Time
-                  </span>{" "}
-                  must not conflict with the{" "}
-                  <span className={Styles.CreateMarketDefine_bolden}>
-                    Market Question
-                  </span>{" "}
-                  or{" "}
-                  <span className={Styles.CreateMarketDefine_bolden}>
-                    Additional Details.
-                  </span>{" "}
-                  If they don’t match up there is a high probability that the
-                  market will{" "}
-                  <span className={Styles.CreateMarketDefine_bolden}>
-                    resolve as invalid.
-                  </span>
+                  <b>Event Start Date and Time</b> must not conflict with the{" "}
+                  <b>Market Question</b> or <b>Additional Details.</b> If they
+                  don’t match up there is a high probability that the market
+                  will <b>resolve as invalid.</b>
                 </div>
               </div>
             </div>
@@ -355,7 +325,7 @@ export default class CreateMarketDefine extends Component {
                       >
                         {cat.categoryName}
                       </button>
-                      {","}
+                      ,
                     </span>
                   ))}
               {newMarket.category &&
