@@ -292,13 +292,14 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
         onChainLongPrice = int((trade['price'] - minPrice) * market.getNumTicks() / displayRange)
         onChainShortPrice = int(market.getNumTicks() - onChainLongPrice)
         direction = BID if trade['direction'] == SHORT else ASK
-        longCost = trade['quantity'] * onChainLongPrice
-        shortCost = trade['quantity'] * onChainShortPrice
+        quantity = trade['quantity'] * 10 ** 18
+        longCost = quantity * onChainLongPrice
+        shortCost = quantity * onChainShortPrice
         creatorCost = longCost if direction == BID else shortCost
         fillerCost = longCost if direction == ASK else shortCost
 
         assert cash.faucet(creatorCost, sender = tester.k1)
-        orderID = createOrder.publicCreateOrder(direction, trade['quantity'], onChainLongPrice, market.address, trade['outcome'], longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = tester.k1)
+        orderID = createOrder.publicCreateOrder(direction, quantity, onChainLongPrice, market.address, trade['outcome'], longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = tester.k1)
 
         avgPrice = math.ceil((trade['avgPrice'] - minPrice) * market.getNumTicks() / displayRange)
         realizedProfit = math.ceil(trade['realizedPL'] * market.getNumTicks() / displayRange)

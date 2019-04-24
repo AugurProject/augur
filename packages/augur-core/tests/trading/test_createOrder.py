@@ -257,10 +257,10 @@ def test_publicCreateOrders(contractsFixture, cash, market):
 
     types = [BID,BID,BID,ASK,ASK,ASK]
     outcomes = [0, 1, 2, 0, 1, 2]
-    attoshareAmounts = [100, 200, 300, 100, 200, 300]
+    attoshareAmounts = [fix(1), fix(2), fix(3), fix(1), fix(2), fix(3)]
     prices = [4000, 4100, 4200, 7000, 7100, 7200]
-    value = 4000 * 100 + 4100 * 200 + 4200 * 300 + 3000 * 100 + 2900 * 200 + 2800 * 300
-    with BuyWithCash(cash, value, tester.k0, "create order"):
+    value = 4000 * 1 + 4100 * 2 + 4200 * 3 + 3000 * 1 + 2900 * 2 + 2800 * 3
+    with BuyWithCash(cash, fix(value), tester.k0, "create order"):
         orderIDs = createOrder.publicCreateOrders(outcomes, types, attoshareAmounts, prices, market.address, False, longTo32Bytes(42), nullAddress)
         assert orderIDs
 
