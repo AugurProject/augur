@@ -4447,9 +4447,9 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
-	public getNumMarkets_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+	public designatedReporterNoShowBondTotal_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getNumMarkets","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"designatedReporterNoShowBondTotal","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <TBigNumber>result[0]
 	}
@@ -4457,6 +4457,13 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 	public decimals_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public validityBondTotal_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"validityBondTotal","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <TBigNumber>result[0]
 	}
@@ -4489,6 +4496,13 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
+	public incorrectDesignatedReportTotal_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"incorrectDesignatedReportTotal","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
 	public decreaseApproval = async (spender: string, subtractedValue: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_subtractedValue","type":"uint256"}],"name":"decreaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -4516,6 +4530,13 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
+	public invalidMarketsTotal_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"invalidMarketsTotal","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
 	public sendNoHooks = async (to: string, amount: TBigNumber, data: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_data","type":"bytes32"}],"name":"sendNoHooks","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -4534,6 +4555,13 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getUniverse","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
+	}
+
+	public initialReportBondTotal_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"initialReportBondTotal","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
 	}
 
 	public onMarketFinalized = async (options?: { sender?: string }): Promise<Array<Event>> => {
@@ -4581,13 +4609,6 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"erc820Registry","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
-	}
-
-	public getNumIncorrectDesignatedReportMarkets_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getNumIncorrectDesignatedReportMarkets","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <TBigNumber>result[0]
 	}
 
 	public transfer = async (to: string, amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -4663,13 +4684,6 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public getNumInvalidMarkets_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getNumInvalidMarkets","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public increaseApproval = async (spender: string, addedValue: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_addedValue","type":"uint256"}],"name":"increaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -4701,13 +4715,6 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_attotokens","type":"uint256"}],"name":"buy","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [attotokens], options.sender)
 		return <boolean>result[0]
-	}
-
-	public getNumDesignatedReportNoShows_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getNumDesignatedReportNoShows","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <TBigNumber>result[0]
 	}
 
 	public getTypeName_ = async (options?: { sender?: string }): Promise<string> => {
@@ -4742,6 +4749,13 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getInitialized","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <boolean>result[0]
+	}
+
+	public designatedReportNoShowsTotal_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"designatedReportNoShowsTotal","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
 	}
 
 	public revokeOperator = async (operator: string, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -5909,10 +5923,10 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		super(dependencies, address)
 	}
 
-	public calculateFloatingValue_ = async (badMarkets: TBigNumber, totalMarkets: TBigNumber, targetDivisor: TBigNumber, previousValue: TBigNumber, floor: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+	public calculateFloatingValue_ = async (totalBad: TBigNumber, total: TBigNumber, targetDivisor: TBigNumber, previousValue: TBigNumber, floor: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_badMarkets","type":"uint256"},{"name":"_totalMarkets","type":"uint256"},{"name":"_targetDivisor","type":"uint256"},{"name":"_previousValue","type":"uint256"},{"name":"_floor","type":"uint256"}],"name":"calculateFloatingValue","outputs":[{"name":"_newValue","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [badMarkets, totalMarkets, targetDivisor, previousValue, floor], options.sender)
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_totalBad","type":"uint256"},{"name":"_total","type":"uint256"},{"name":"_targetDivisor","type":"uint256"},{"name":"_previousValue","type":"uint256"},{"name":"_floor","type":"uint256"}],"name":"calculateFloatingValue","outputs":[{"name":"_newValue","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [totalBad, total, targetDivisor, previousValue, floor], options.sender)
 		return <TBigNumber>result[0]
 	}
 

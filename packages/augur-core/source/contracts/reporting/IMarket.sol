@@ -37,6 +37,7 @@ contract IMarket is IOwnable {
     function getFinalizationTime() public view returns (uint256);
     function getInitialReporter() public view returns (IInitialReporter);
     function getDesignatedReportingEndTime() public view returns (uint256);
+    function getValidityBondAttoCash() public view returns (uint256);
     function deriveMarketCreatorFeeAmount(uint256 _amount) public view returns (uint256);
     function recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress) public returns (bool);
     function isContainerForShareToken(IShareToken _shadyTarget) public view returns (bool);
