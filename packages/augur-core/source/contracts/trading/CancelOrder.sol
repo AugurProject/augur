@@ -13,6 +13,7 @@ import 'ROOT/trading/ICash.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/IAugur.sol';
+import 'ROOT/trading/IProfitLoss.sol';
 
 
 /**
@@ -24,12 +25,14 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
     IAugur public augur;
     IOrders public orders;
     ICash public cash;
+    IProfitLoss public profitLoss;
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         orders = IOrders(augur.lookup("Orders"));
         cash = ICash(augur.lookup("Cash"));
+        profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
         return true;
     }
 
@@ -68,6 +71,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         _market.assertBalances();
 
         augur.logOrderCanceled(_market.getUniverse(), address(_market.getShareToken(_outcome)), _sender, _orderId, _type, _moneyEscrowed, _sharesEscrowed);
+        profitLoss.recordFrozenFundChange(_market, _sender, _outcome, -int256(_moneyEscrowed));
 
         return true;
     }

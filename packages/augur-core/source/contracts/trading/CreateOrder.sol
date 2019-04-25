@@ -9,6 +9,7 @@ import 'ROOT/trading/ICreateOrder.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/ERC20Token.sol';
 import 'ROOT/IAugur.sol';
+import 'ROOT/trading/IProfitLoss.sol';
 
 
 contract CreateOrder is Initializable, ReentrancyGuard {
@@ -16,11 +17,14 @@ contract CreateOrder is Initializable, ReentrancyGuard {
 
     IAugur public augur;
     address public trade;
+    IProfitLoss public profitLoss;
+
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         trade = augur.lookup("Trade");
+        profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
         return true;
     }
 
@@ -37,6 +41,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         Order.Data memory _orderData = Order.create(augur, _creator, _outcome, _type, _attoshares, _price, _market, _betterOrderId, _worseOrderId, _ignoreShares, _kycToken);
         Order.escrowFunds(_orderData);
         require(_orderData.orders.getAmount(_orderData.getOrderId()) == 0);
+        profitLoss.recordFrozenFundChange(_market, _creator, _outcome, int256(_orderData.moneyEscrowed));
         return Order.saveOrder(_orderData, _tradeGroupId);
     }
 
@@ -49,6 +54,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
             Order.Data memory _orderData = Order.create(augur, msg.sender, _outcomes[i], _types[i], _attoshareAmounts[i], _prices[i], _market, bytes32(0), bytes32(0), _ignoreShares, _kycToken);
             Order.escrowFunds(_orderData);
             require(_orderData.orders.getAmount(_orderData.getOrderId()) == 0);
+            profitLoss.recordFrozenFundChange(_market, msg.sender, _outcomes[i], int256(_orderData.moneyEscrowed));
             _orders[i] = Order.saveOrder(_orderData, _tradeGroupId);
         }
 
