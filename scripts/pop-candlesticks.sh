@@ -7,6 +7,12 @@ if [ $# -eq 0 ]
 fi
 
 MARKET_ID=$1;
+PUSH_TIME=$2;
+
+if [ "$PUSH_TIME" = "" ] ; then
+  echo "set push time"
+  PUSH_TIME=true;
+fi
 
 MARKET_TYPE=$(npx flash market-info -m $MARKET_ID | grep marketType | cut -d " " -f2);
 NUM_OF_OUTCOMES=1;
@@ -42,11 +48,16 @@ do
     echo "Filling trade $i";
     ETHEREUM_PRIVATE_KEY=48c5da6dff330a9829d843ea90c2629e8134635a294c7e62ad4466eb2ae03712 npx flash fill-market-orders -m $MARKET_ID -o $OUTCOME -t $TRANS_TWO_TYPE;
 
-    npx flash push-timestamp -s -c 600;
-    sleep 15
+    if [ "$PUSH_TIME" = true ] ; then
+      npx flash push-timestamp -s -c 600;
+    fi
+
+    sleep 30
   done
 
-  echo "Push time";
-  npx flash push-timestamp -s -c 3600;
-  sleep 15
+  if [ "$PUSH_TIME" = true ] ; then
+    echo "Push time";
+    npx flash push-timestamp -s -c 3600;
+  fi
+  sleep 30
 done

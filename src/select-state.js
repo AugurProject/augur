@@ -55,6 +55,7 @@ export const selectUrlState = state => state.url;
 export const selectPendingLiquidityOrders = state =>
   state.pendingLiquidityOrders;
 export const selectAccountShareBalance = state => state.accountShareBalances;
+export const selectFilledOrders = state => state.filledOrders;
 
 export const selectCurrentTimestamp = createSelector(
   selectBlockchainState,
