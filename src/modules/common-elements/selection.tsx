@@ -15,6 +15,7 @@ export interface NameValuePair {
 
 export interface DropdownProps {
   onChange(value: string): void;
+  className?: string;
   defaultValue?: string;
   options: Array<NameValuePair>;
   large?: boolean;
@@ -137,13 +138,14 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       options,
       large,
       stretchOutOnMobile,
-      openTop
+      openTop,
+      className
     } = this.props;
     const { selected, showList } = this.state;
     return (
       <div
         style={sortByStyles}
-        className={classNames({
+        className={classNames(className, {
           [Styles.Dropdown_Large]: large,
           [Styles.Dropdown_Normal]: !large,
           [Styles.Dropdown_stretchOut]: stretchOutOnMobile,

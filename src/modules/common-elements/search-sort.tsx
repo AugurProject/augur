@@ -59,15 +59,15 @@ export class SearchSort extends React.Component<
           )}
         </div>
         <div className={classNames(Styles.SearchSort, Styles.HideOnMobile)}>
-          {sortByOptions &&
-            showSortByOptions && (
-              <SquareDropdown
-                options={sortByOptions}
-                onChange={updateDropdown}
-                stretchOutOnMobile
-                sortByStyles={sortByStyles}
-              />
-            )}
+          {sortByOptions && (
+            <SquareDropdown
+              className={classNames({ [Styles.Hide]: !showSortByOptions })}
+              options={sortByOptions}
+              onChange={updateDropdown}
+              stretchOutOnMobile
+              sortByStyles={sortByStyles}
+            />
+          )}
           <SearchBar onFocus={this.onFocus} onChange={onChange} />
         </div>
       </>
