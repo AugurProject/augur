@@ -447,26 +447,30 @@ contract Universe is ITyped, IUniverse {
         return getOrCacheDesignatedReportNoShowBond().max(getOrCacheDesignatedReportStake());
     }
 
-    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
-        require(bytes(_description).length > 0);
+    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, 100);
-        augur.logMarketCreated(_endTime, _topic, _description, _extraInfo, _newMarket, msg.sender, 0, 1 ether, IMarket.MarketType.YES_NO, 100);
+        int256[] memory _prices = new int256[](2);
+        _prices[0] = 0;
+        _prices[1] = 1 ether;
+        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 100);
         return _newMarket;
     }
 
-    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
-        require(bytes(_description).length > 0);
+    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 100);
-        augur.logMarketCreated(_endTime, _topic, _description, _extraInfo, _newMarket, msg.sender, 0, 1 ether, IMarket.MarketType.CATEGORICAL, _outcomes);
+        int256[] memory _prices = new int256[](2);
+        _prices[0] = 0;
+        _prices[1] = 1 ether;
+        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, _outcomes);
         return _newMarket;
     }
 
-    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256 _minPrice, int256 _maxPrice, uint256 _numTicks, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
-        require(bytes(_description).length > 0);
-        require(_minPrice < _maxPrice);
+    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
+        require(_prices.length == 2);
+        require(_prices[0] < _prices[1]);
         require(_numTicks.isMultipleOf(2));
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, _numTicks);
-        augur.logMarketCreated(_endTime, _topic, _description, _extraInfo, _newMarket, msg.sender, _minPrice, _maxPrice, IMarket.MarketType.SCALAR, _numTicks);
+        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks);
         return _newMarket;
     }
 

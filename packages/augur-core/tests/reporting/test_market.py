@@ -16,7 +16,9 @@ def test_market_creation(contractsFixture, universe, market):
         "extraInfo": 'so extra',
         "endTime": contractsFixture.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
         "marketCreator": bytesToHexString(tester.a0),
+        "designatedReporter": "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
     }
+
     with AssertLog(contractsFixture, "MarketCreated", marketCreatedLog):
         market = contractsFixture.createReasonableYesNoMarket(universe, extraInfo="so extra")
 
@@ -34,18 +36,6 @@ def test_market_creation(contractsFixture, universe, market):
     endTime = contractsFixture.contracts["Time"].getTimestamp() + contractsFixture.contracts["Constants"].MAXIMUM_MARKET_DURATION() + 1
     with raises(TransactionFailed, message="Cannot create a market with an end date past the maximum duration"):
         contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
-
-def test_description_requirement(contractsFixture, universe):
-    endTime = contractsFixture.contracts["Time"].getTimestamp() + 1
-
-    with raises(TransactionFailed):
-        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0, description="")
-
-    with raises(TransactionFailed):
-        contractsFixture.createCategoricalMarket(universe, 2, endTime, 1, 0, tester.a0, description="")
-
-    with raises(TransactionFailed):
-        contractsFixture.createScalarMarket(universe, endTime, 1, 0, 10, 0, 10000, tester.a0, description="")
 
 def test_categorical_market_creation(contractsFixture, universe):
     endTime = contractsFixture.contracts["Time"].getTimestamp() + 1
