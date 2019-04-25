@@ -26,10 +26,12 @@ const mapStateToProps = (state, ownProps) => {
   filteredOrphanOrders.forEach(order => {
     const id = order.outcome;
     const outcome = find(market.outcomes, { id });
-    order.outcomeName =
-      market.marketType === CATEGORICAL
-        ? outcome.description
-        : outcome.name || order.price;
+    if (outcome) {
+      order.outcomeName =
+        market.marketType === CATEGORICAL
+          ? outcome.description
+          : outcome.name || order.price;
+    }
   });
 
   let canClaim = false;

@@ -8,7 +8,8 @@ import {
   selectOrderCancellationState,
   selectPendingOrdersState,
   selectAccountShareBalance,
-  selectLoginAccountAddress
+  selectLoginAccountAddress,
+  selectAccountPositionsState
 } from "src/select-state";
 import { createSelector } from "reselect";
 
@@ -25,6 +26,7 @@ export const selectMarkets = createSelector(
   selectLoginAccountAddress,
   selectAccountShareBalance,
   selectPendingOrdersState,
+  selectAccountPositionsState,
   (
     marketsData,
     marketPriceHistory,
@@ -33,7 +35,8 @@ export const selectMarkets = createSelector(
     orderCancellation,
     accountAddress,
     accountShareBalances,
-    pendingOrders
+    pendingOrders,
+    accountPositions
   ) => {
     if (!marketsData) return [];
     return Object.keys(marketsData).map(marketId => {

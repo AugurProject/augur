@@ -23,11 +23,7 @@ export const marketsFilledOrders = createSelector(
       marketReportState.resolved
     );
     const markets = filterMarketsByStatus(marketIds);
-
-    const allFilledOrders = marketIds.reduce(
-      (p, marketId) => [...p, ...selectMarket(marketId).filledOrders],
-      []
-    );
+    const allFilledOrders = getAllFilledOrders(marketIds);
 
     return {
       markets,
@@ -59,6 +55,19 @@ const filterMarketsByStatus = marketIds => {
     market => market && market.marketStatus !== constants.MARKET_CLOSED
   );
 };
+
+const getAllFilledOrders = marketIds =>
+  marketIds.reduce((p, marketId) => {
+    const market = selectMarket(marketId);
+    if (
+      market !== null &&
+      market.filledOrders &&
+      market.filledOrders.length > 0
+    ) {
+      return [...p, ...selectMarket(marketId).filledOrders];
+    }
+    return p;
+  }, []);
 
 const keyObjectsById = array =>
   array.reduce((obj, o) => {

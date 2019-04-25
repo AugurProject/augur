@@ -50,7 +50,8 @@ import {
   selectOrderCancellationState,
   selectPendingOrdersState,
   selectAccountShareBalance,
-  selectLoginAccountAddress
+  selectLoginAccountAddress,
+  selectAccountPositionsState
 } from "src/select-state";
 
 export const selectMarket = marketId => {
@@ -93,6 +94,10 @@ function selectPendingOrdersStateMarket(state, marketId) {
   return selectPendingOrdersState(state)[marketId];
 }
 
+function selectAccountPositionsStateMarket(state, marketId) {
+  return selectAccountPositionsState(state)[marketId];
+}
+
 const getMarketSelector = createCachedSelector(
   selectMarketsDataStateMarket,
   selectMarketTradingHistoryStateMarket,
@@ -102,6 +107,7 @@ const getMarketSelector = createCachedSelector(
   selectLoginAccountAddress,
   selectAccountShareBalanceMarket,
   selectPendingOrdersStateMarket,
+  selectAccountPositionsStateMarket,
   (
     marketData,
     marketPriceHistory,
@@ -110,7 +116,8 @@ const getMarketSelector = createCachedSelector(
     orderCancellation,
     accountAddress,
     accountShareBalances,
-    pendingOrders
+    pendingOrders,
+    accountPositions
   ) =>
     assembleMarket(
       marketData,
@@ -120,7 +127,8 @@ const getMarketSelector = createCachedSelector(
       orderCancellation,
       accountAddress,
       accountShareBalances,
-      pendingOrders
+      pendingOrders,
+      accountPositions
     )
 )((state, marketId) => marketId);
 
@@ -132,7 +140,8 @@ const assembleMarket = (
   orderCancellation,
   accountAddress,
   accountShareBalances,
-  pendingOrders
+  pendingOrders,
+  accountPositions
 ) => {
   const marketId = marketData.id;
   const market = {
@@ -222,7 +231,7 @@ const assembleMarket = (
       Math.min.apply(null, accountShareBalances).toString()) ||
     "0";
 
-  const userTradingPositions = {};
+  const userTradingPositions = accountPositions || {};
   if (market.outcomes) {
     market.userPositions = Object.values(
       userTradingPositions.tradingPositions || []
