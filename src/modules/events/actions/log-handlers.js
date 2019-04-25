@@ -35,8 +35,6 @@ import { appendCategoryIfNew } from "modules/categories/actions/append-category"
 import { removePendingOrder } from "modules/orders/actions/pending-orders-management";
 import { loadAccountOpenOrders } from "modules/orders/actions/load-account-open-orders";
 
-const ACTION_WAIT_TIME = 1000 * 5;
-
 const handleAlertUpdate = (log, dispatch, getState) => {
   dispatch(
     updateAlert(log.transactionHash, {
