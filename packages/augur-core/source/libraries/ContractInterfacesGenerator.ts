@@ -5,7 +5,7 @@ import {GenerateReplacementTypesForGenerics} from "./GenerateReplacementTypesFor
 import { CompilerOutput } from "solc";
 import { CompilerConfiguration } from './CompilerConfiguration';
 
-import { generateContractInterfaces }  from "../../../solidity-typescript-generator/library";
+import { generateContractInterfaces }  from "@augurproject/solidity-typescript-generator";
 
 export class ContractInterfaceGenerator {
     private readonly compiler: ContractCompiler;

@@ -11219,7 +11219,7 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "getNumMarkets",
+			"name": "designatedReporterNoShowBondTotal",
 			"outputs": [
 				{
 					"name": "",
@@ -11238,6 +11238,20 @@
 				{
 					"name": "",
 					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "validityBondTotal",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -11290,6 +11304,20 @@
 			"constant": true,
 			"inputs": [],
 			"name": "ETERNAL_APPROVAL_VALUE",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "incorrectDesignatedReportTotal",
 			"outputs": [
 				{
 					"name": "",
@@ -11357,6 +11385,20 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "invalidMarketsTotal",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -11391,6 +11433,20 @@
 				{
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "initialReportBondTotal",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -11466,20 +11522,6 @@
 				{
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getNumIncorrectDesignatedReportMarkets",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -11632,20 +11674,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "getNumInvalidMarkets",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -11708,20 +11736,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getNumDesignatedReportNoShows",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -11804,6 +11818,20 @@
 				{
 					"name": "",
 					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "designatedReportNoShowsTotal",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -14440,11 +14468,11 @@
 			"constant": true,
 			"inputs": [
 				{
-					"name": "_badMarkets",
+					"name": "_totalBad",
 					"type": "uint256"
 				},
 				{
-					"name": "_totalMarkets",
+					"name": "_total",
 					"type": "uint256"
 				},
 				{
