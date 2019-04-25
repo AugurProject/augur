@@ -13,12 +13,12 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
 
-    creatorCost = fix('2', '6000')
-    fillerCost = fix('2', '4000')
+    creatorCost = fix('2', '60')
+    fillerCost = fix('2', '40')
 
     # create order
     with BuyWithCash(cash, creatorCost, tester.k1, "complete set buy"):
-        orderID = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
+        orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     # fill best order
     orderFilledLog = {
@@ -29,7 +29,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
         "fees": 0,
         "tradeGroupId": stringToBytes(longTo32Bytes(42)),
         "amountFilled": fix(2),
-        "price": 6000,
+        "price": 60,
         "orderIsCompletelyFilled": True
     }
 
@@ -43,7 +43,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
         "account": bytesToHexString(tester.a2),
         "outcome": YES,
         "netPosition": -fix(2),
-        "avgPrice": 6000,
+        "avgPrice": 60,
         "realizedProfit": 0,
         "frozenFunds": fillerCost,
     }
@@ -69,12 +69,12 @@ def test_publicFillOrder_ask(contractsFixture, cash, market, universe):
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
 
-    creatorCost = fix('2', '4000')
-    fillerCost = fix('2', '6000')
+    creatorCost = fix('2', '40')
+    fillerCost = fix('2', '60')
 
     # create order
     with BuyWithCash(cash, creatorCost, tester.k1, "creating order"):
-        orderID = createOrder.publicCreateOrder(ASK, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
+        orderID = createOrder.publicCreateOrder(ASK, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     # fill best order
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
@@ -97,12 +97,12 @@ def test_publicFillOrder_bid_scalar(contractsFixture, cash, scalarMarket, univer
     market = scalarMarket
     tradeGroupID = longTo32Bytes(42)
 
-    creatorCost = fix('2', '6000')
-    fillerCost = fix('2', '394000')
+    creatorCost = fix('2', '60')
+    fillerCost = fix('2', market.getNumTicks()-60)
 
     # create order
     with BuyWithCash(cash, creatorCost, tester.k1, "creating order"):
-        orderID = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender=tester.k1)
+        orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender=tester.k1)
 
     # fill best order
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
@@ -126,15 +126,15 @@ def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash
     noShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(NO))
 
     # buy complete sets for both users
-    with BuyWithCash(cash, fix('1', '10000'), tester.k1, "buy complete set"):
+    with BuyWithCash(cash, fix('1', '100'), tester.k1, "buy complete set"):
         assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=tester.k1)
     assert yesShareToken.balanceOf(tester.a1) == fix(1)
-    with BuyWithCash(cash, fix('1', '10000'), tester.k2, "buy complete set"):
+    with BuyWithCash(cash, fix('1', '100'), tester.k2, "buy complete set"):
         assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=tester.k2)
     assert noShareToken.balanceOf(tester.a2) == fix(1)
 
     # create order with shares
-    orderID = createOrder.publicCreateOrder(ASK, fix(1), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender=tester.k1)
+    orderID = createOrder.publicCreateOrder(ASK, fix(1), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender=tester.k1)
     assert orderID
 
     # fill order with shares
@@ -169,7 +169,7 @@ def test_fill_order_with_shares_escrowed_sell_with_shares_categorical(contractsF
     assert thirdShareToken.balanceOf(tester.a1) == thirdShareToken.balanceOf(tester.a2) == fix(1)
 
     # create order with shares
-    price = 6000
+    price = 60
     orderID = createOrder.publicCreateOrder(ASK, fix(1), price, market.address, 0, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender=tester.k1)
     assert orderID
 
@@ -199,7 +199,7 @@ def test_fill_buy_order_with_buy_categorical(contractsFixture, cash, categorical
     thirdShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(2))
 
     # create order with cash
-    price = 6000
+    price = 60
     numTicks = market.getNumTicks()
     with BuyWithCash(cash, fix(1, price), tester.k1, "create order"):
         orderID = createOrder.publicCreateOrder(BID, fix(1), price, market.address, 0, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender=tester.k1)
@@ -240,7 +240,7 @@ def test_malicious_order_creator(contractsFixture, cash, market, universe):
     maliciousTrader.approveAugur(cash.address, augur.address)
 
     # create order with the malicious contract by escrowing shares
-    price = 6000
+    price = 60
     numTicks = market.getNumTicks()
     with BuyWithCash(cash, fix('1', numTicks), tester.k0, "buy complete set"):
         assert completeSets.publicBuyCompleteSets(market.address, fix(1))
@@ -266,7 +266,7 @@ def test_malicious_order_creator(contractsFixture, cash, market, universe):
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
 
     # The malicious contract may have just been a smart contract that has expensive and dumb fallback behavior. We do the right thing and still award them Cash in this case.
-    assert cash.balanceOf(maliciousTrader.address) == fix(1, 4000)
+    assert cash.balanceOf(maliciousTrader.address) == fix(1, 40)
 
 def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts['CreateOrder']
@@ -278,15 +278,15 @@ def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
     thirdShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(2))
 
     # create non matching orders
-    with BuyWithCash(cash, fix('2', '6000'), tester.k1, "create order 1"):
-        orderID1 = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
-    with BuyWithCash(cash, fix('2', '3000'), tester.k1, "create order 2"):
-        orderID2 = createOrder.publicCreateOrder(ASK, fix(2), 7000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
+    with BuyWithCash(cash, fix('2', '60'), tester.k1, "create order 1"):
+        orderID1 = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
+    with BuyWithCash(cash, fix('2', '30'), tester.k1, "create order 2"):
+        orderID2 = createOrder.publicCreateOrder(ASK, fix(2), 70, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     # Have other users fill them
-    with BuyWithCash(cash, fix('2', '4000'), tester.k2, "fill order 1"):
+    with BuyWithCash(cash, fix('2', '40'), tester.k2, "fill order 1"):
         assert fillOrder.publicFillOrder(orderID1, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2) == 0
-    with BuyWithCash(cash, fix('2', '7000'), tester.k3, "fill order 1"):
+    with BuyWithCash(cash, fix('2', '70'), tester.k3, "fill order 1"):
         assert fillOrder.publicFillOrder(orderID2, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k3) == 0
 
     # The first user would have ended up with 2 complete sets at the end of the second fill and we expect those to be automatically sold
@@ -294,7 +294,7 @@ def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
     assert secondShareToken.balanceOf(tester.a1) == 0
     assert thirdShareToken.balanceOf(tester.a1) == 0
 
-    totalPaid = fix('2', '6000') + fix('2', '3000')
+    totalPaid = fix('2', '60') + fix('2', '30')
     totalPayout = fix(2) * market.getNumTicks()
     fees = totalPayout / universe.getOrCacheReportingFeeDivisor()
     fees += market.deriveMarketCreatorFeeAmount(totalPayout)
@@ -308,7 +308,7 @@ def test_publicFillOrder_ask_price_zero(contractsFixture, cash, market, universe
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
 
-    creatorCost = fix(2, 10000)
+    creatorCost = fix(2, 100)
     fillerCost = 0
 
     # create order
@@ -334,7 +334,7 @@ def test_publicFillOrder_bid_price_zero(contractsFixture, cash, market, universe
     tradeGroupID = longTo32Bytes(42)
 
     creatorCost = 0
-    fillerCost = fix(2, 10000)
+    fillerCost = fix(2, 100)
 
     # create order
     orderID = createOrder.publicCreateOrder(BID, fix(2), 0, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
@@ -357,15 +357,15 @@ def test_publicFillOrder_kyc(contractsFixture, cash, market, universe, reputatio
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
 
-    creatorCost = fix('2', '4000')
-    fillerCost = fix('2', '6000')
+    creatorCost = fix('2', '40')
+    fillerCost = fix('2', '60')
 
     # Using the reputation token as "KYC"
     reputationToken.transfer(tester.a1, 1)
 
     # create order
     with BuyWithCash(cash, creatorCost, tester.k1, "creating order"):
-        orderID = createOrder.publicCreateOrder(ASK, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, reputationToken.address, sender = tester.k1)
+        orderID = createOrder.publicCreateOrder(ASK, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, reputationToken.address, sender = tester.k1)
 
     with raises(TransactionFailed):
         fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
@@ -391,12 +391,12 @@ def test_publicFillOrder_withSelf(contractsFixture, cash, market, universe):
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
 
-    creatorCost = fix('2', '6000')
-    fillerCost = fix('2', '4000')
+    creatorCost = fix('2', '60')
+    fillerCost = fix('2', '40')
 
     # create order
     with BuyWithCash(cash, creatorCost, tester.k1, "complete set buy"):
-        orderID = createOrder.publicCreateOrder(BID, fix(2), 6000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
+        orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     # fill best order
     with BuyWithCash(cash, fillerCost, tester.k1, "filling order"):

@@ -70,7 +70,7 @@ def test_validity_bond_up(contractsFixture, universe, market):
     proceedToInitialReporting(contractsFixture, market)
 
     # The DR will admit the market is invalid
-    payoutNumerators = [10000, 0, 0]
+    payoutNumerators = [100, 0, 0]
     assert market.doInitialReport(payoutNumerators, "")
 
     # Move time forward to finalize the market
@@ -91,7 +91,7 @@ def test_validity_bond_min(contractsFixture, universe, market):
     proceedToInitialReporting(contractsFixture, market)
 
     # The DR will report the market had a normal resolution
-    payoutNumerators = [0, 0, 10000]
+    payoutNumerators = [0, 0, 100]
     assert market.doInitialReport(payoutNumerators, "")
 
     # Move time forward to finalize the market
@@ -112,7 +112,7 @@ def test_validity_bond_down(contractsFixture, universe, market, scalarMarket, ca
     proceedToInitialReporting(contractsFixture, market)
 
     # The DR will admit the market is invalid
-    payoutNumerators = [10000, 0, 0]
+    payoutNumerators = [100, 0, 0]
     assert market.doInitialReport(payoutNumerators, "")
 
     # Move time forward into the dispute window and report on the other market

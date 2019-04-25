@@ -448,16 +448,16 @@ contract Universe is ITyped, IUniverse {
     }
 
     function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, 10000);
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, 100);
         int256[] memory _prices = new int256[](2);
         _prices[0] = 0;
         _prices[1] = 1 ether;
-        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 10000);
+        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 100);
         return _newMarket;
     }
 
     function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 10000);
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 100);
         int256[] memory _prices = new int256[](2);
         _prices[0] = 0;
         _prices[1] = 1 ether;
