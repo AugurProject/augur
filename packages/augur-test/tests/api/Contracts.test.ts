@@ -71,7 +71,6 @@ test("Contract :: Universe :: Create Market", async() => {
     ACCOUNTS[0].publicKey,
     outcomes,
     topic,
-    description,
     extraInfo,
     { sender: ACCOUNTS[0].publicKey },
   )).pop();

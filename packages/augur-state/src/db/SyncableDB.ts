@@ -10,7 +10,6 @@ import FlexSearch = require("flexsearch");
 // Need this interface to access these items on the documents in a SyncableDB
 interface SyncableMarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
   extraInfo: string;
-  description: string;
 }
 
 export interface Document extends BaseDocument {
@@ -88,9 +87,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
 
         if (doc) {
           const extraInfo = doc.extraInfo;
-          const description = doc.description;
-
-          if (extraInfo && description) {
+          if (extraInfo) {
             let info;
             try {
               info = JSON.parse(extraInfo);
@@ -98,15 +95,20 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
               console.error("Cannot parse document json: " + extraInfo);
             }
 
-            if (info && info.tags && info.longDescription) {
-              this.flexSearch.add({
-                id: row.id,
-                title: description,
-                description: info.longDescription,
-                tags: info.tags.toString(), // convert to comma separated so it is searchable
-                start: new Date(),
-                end: new Date(),
-              });
+            if (info) {
+              const title = info.description ? info.description : "";
+              const description = info.longDescription ? info.longDescription : "";
+              const tags = info.tags ? info.tags.toString() : ""; // convert to comma separated so it is searchable
+              if (info.description || info.tags || info.longDescription) {
+                this.flexSearch.add({
+                  id: row.id,
+                  title,
+                  description,
+                  tags,
+                  start: new Date(),
+                  end: new Date(),
+                });
+              }
             }
           }
         }

@@ -29,8 +29,8 @@ test("Flexible Search", async () => {
     {
       _id: "robert",
       blockNumber: 1,
-      description: "Foobar has 12% market share by 2041",
       extraInfo: JSON.stringify({
+        description: "Foobar has 12% market share by 2041",
         longDescription: "lol",
         tags: ["humanity", "30"],
       })
