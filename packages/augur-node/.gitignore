@@ -10,4 +10,3 @@ upload-block*
 tags
 *.warp
 augur-pouch-*/
-tsconfig-local.json

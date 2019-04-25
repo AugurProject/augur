@@ -6,4 +6,3 @@ build/
 definitions/
 upload-block*
 tags
-tsconfig.tsbuildinfo

@@ -15,3 +15,5 @@ junit.xml
 
 .indium.json
 *.tsbuildinfo
+tsconfig.tsbuildinfo
+tsconfig-local.json
