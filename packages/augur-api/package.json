@@ -4,14 +4,14 @@
   "description": "Augur API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
+  "main": "build",
   "directories": {
     "src": "src"
   },
-  "main": "build",
   "scripts": {
     "version": "yarn rebuild",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
-    "build": "tsc",
+    "build": "tsc -b",
     "watch": "tsc -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
     "prepare": "tsc",

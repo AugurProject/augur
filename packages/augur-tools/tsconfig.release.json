@@ -1,4 +1,8 @@
 {
+  "compilerOptions": {
+    "inlineSources": false,
+    "inlineSourceMap": false
+  },
   "extends": "./tsconfig.json",
   "exclude": [
     "src/**/*.test.ts"
