@@ -92,7 +92,7 @@ export interface MarketCreatedLog extends Log, Doc {
   marketCreator: Address;
   designatedReporter: Address;
   feeDivisor: string;
-  prices: Array<string>;
+  prices: Array<Price>;
   marketType: MarketType;
   numTicks: string;
   outcomes: Array<string>;
@@ -178,6 +178,10 @@ export enum OrderType {
 }
 
 export interface PayoutNumerator {
+  _hex: string;
+}
+
+export interface Price {
   _hex: string;
 }
 
