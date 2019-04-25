@@ -4,7 +4,8 @@ import * as constants from "src/modules/common-elements/constants";
 import {
   selectMarketReportState,
   selectLoginAccountAddress,
-  selectFilledOrders
+  selectFilledOrders,
+  selectMarketsDataState
 } from "src/select-state";
 import { selectMarket } from "modules/markets/selectors/market";
 import { keyArrayBy } from "utils/key-by";
@@ -17,7 +18,8 @@ export const marketsFilledOrders = createSelector(
   selectMarketReportState,
   selectLoginAccountAddress,
   selectFilledOrders,
-  (marketReportState, loginAccountAddress, filledOrders) => {
+  selectMarketsDataState,
+  (marketReportState, loginAccountAddress, filledOrders, marketsData) => {
     const marketIds = filterMarketIds(
       filledOrders[loginAccountAddress] || [],
       marketReportState.resolved
