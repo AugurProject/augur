@@ -162,10 +162,10 @@ library Trade {
         return true;
     }
 
-    function tradeMakerTokensForFillerTokens(Data memory _data) internal returns (bool) {
+    function tradeMakerTokensForFillerTokens(Data memory _data) internal returns (uint256) {
         uint256 _numberOfCompleteSets = _data.creator.sharesToBuy.min(_data.filler.sharesToBuy);
         if (_numberOfCompleteSets == 0) {
-            return true;
+            return 0;
         }
 
         // transfer tokens to this contract
@@ -178,7 +178,7 @@ library Trade {
 
             _data.creator.sharesToBuy -= _numberOfCompleteSets;
             _data.filler.sharesToBuy -= _numberOfCompleteSets;
-            return true;
+            return _creatorTokensToCover.add(_fillerTokensToCover);
         }
 
         require(_data.contracts.denominationToken.transferFrom(address(_data.contracts.market), address(this), _creatorTokensToCover));
@@ -201,7 +201,7 @@ library Trade {
 
         _data.creator.sharesToBuy -= _numberOfCompleteSets;
         _data.filler.sharesToBuy -= _numberOfCompleteSets;
-        return true;
+        return 0;
     }
 
     //
@@ -398,7 +398,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
             _tradeData.tradeMakerTokensForFillerShares();
         }
         _tradeData.tradeMakerSharesForFillerTokens();
-        _tradeData.tradeMakerTokensForFillerTokens();
+        uint256 _tokensRefunded = _tradeData.tradeMakerTokensForFillerTokens();
 
         // Sell any complete sets the maker or filler may have ended up holding
         if (!_ignoreShares) {
@@ -412,6 +412,9 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         logOrderFilled(_tradeData, _marketCreatorFees.add(_reporterFees), _amountFilled, _tradeGroupId, _orderIsCompletelyFilled);
         logAndUpdateVolume(_tradeData);
         updateProfitLoss(_tradeData, _amountFilled);
+        if (_tradeData.creator.participantAddress == _tradeData.filler.participantAddress) {
+            profitLoss.recordFrozenFundChange(_tradeData.contracts.market, _tradeData.creator.participantAddress, _tradeData.order.outcome, -int256(_tokensRefunded));
+        }
         return _amountRemainingFillerWants;
     }
 

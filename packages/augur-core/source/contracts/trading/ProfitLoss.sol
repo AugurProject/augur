@@ -42,7 +42,7 @@ contract ProfitLoss is Initializable {
     }
 
     function recordFrozenFundChange(IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta) public afterInitialized returns (bool) {
-        require(msg.sender == createOrder || msg.sender == cancelOrder || msg.sender == address(orders));
+        require(msg.sender == createOrder || msg.sender == cancelOrder || msg.sender == address(orders) || msg.sender == fillOrder);
         OutcomeData storage _outcomeData = profitLossData[_account][address(_market)][_outcome];
         _outcomeData.frozenFunds += _frozenFundDelta;
         augur.logProfitLossChanged(_market, _account, _outcome, _outcomeData.netPosition, uint256(_outcomeData.avgPrice), _outcomeData.realizedProfit, _outcomeData.frozenFunds,  _outcomeData.realizedCost);

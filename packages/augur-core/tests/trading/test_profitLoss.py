@@ -366,6 +366,28 @@ def test_frozen_funds(contractsFixture, cash, market, universe):
 
     assert profitLoss.getFrozenFunds(market.address, tester.a0, outcome) == cost
 
+    # Create new Order
+    newOutcome = 2
+    assert cash.faucet(cost)
+    orderID = createOrder.publicCreateOrder(BID, amount, price, market.address, newOutcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress)
+
+    # Fill own Order. This should make FF 0
+    profitLossChangedLog = {
+        "outcome": newOutcome,
+        "netPosition": 0,
+        "avgPrice": 0,
+        "realizedProfit": 0,
+        "frozenFunds": 0,
+    }
+
+    fillerCost = (market.getNumTicks() - price) * amount
+
+    assert cash.faucet(fillerCost)
+    with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip=2):
+        fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000")
+
+    assert profitLoss.getFrozenFunds(market.address, tester.a0, newOutcome) == 0
+
 
 def process_trades(contractsFixture, trade_data, cash, market, createOrder, fillOrder, profitLoss, minPrice = 0, displayRange = 1):
     for trade in trade_data:
