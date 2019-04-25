@@ -10,7 +10,7 @@ from ethereum.utils import ecsign, sha3, normalize_key, int_to_32bytearray, byte
 def test_fill_order_with_tokens(localFixture, zeroX, market, cash, augur):
     expirationTimestampInSec = augur.getTimestamp() + 1
     orderAddresses = [tester.a0, market.address]
-    orderValues = [YES, BID, 10, 1000, expirationTimestampInSec, 42]
+    orderValues = [YES, BID, 10, 10, expirationTimestampInSec, 42]
 
     orderHash = zeroX.getOrderHash(orderAddresses, orderValues)
     v, r, s = createOrder(orderHash)
@@ -28,13 +28,13 @@ def test_fill_order_with_tokens(localFixture, zeroX, market, cash, augur):
             s,
             sender = tester.k1)
 
-    assert cash.faucet(5000)
-    assert cash.approve(zeroX.address, 5000)
-    assert zeroX.deposit(cash.address, 5000)
+    assert cash.faucet(50)
+    assert cash.approve(zeroX.address, 50)
+    assert zeroX.deposit(cash.address, 50)
 
-    assert cash.faucet(45000, sender=tester.k1)
-    assert cash.approve(zeroX.address, 45000, sender=tester.k1)
-    assert zeroX.deposit(cash.address, 45000, sender=tester.k1)
+    assert cash.faucet(450, sender=tester.k1)
+    assert cash.approve(zeroX.address, 450, sender=tester.k1)
+    assert zeroX.deposit(cash.address, 450, sender=tester.k1)
 
     with PrintGasUsed(localFixture, "FILL_0X"):
         assert zeroX.fillOrder(
@@ -57,7 +57,7 @@ def test_fill_order_with_tokens(localFixture, zeroX, market, cash, augur):
 def test_fill_order_with_shares(localFixture, zeroX, market, cash, augur):
     expirationTimestampInSec = augur.getTimestamp() + 1
     orderAddresses = [tester.a0, market.address]
-    orderValues = [YES, ASK, 10, 1000, expirationTimestampInSec, 42]
+    orderValues = [YES, ASK, 10, 10, expirationTimestampInSec, 42]
 
     orderHash = zeroX.getOrderHash(orderAddresses, orderValues)
     v, r, s = createOrder(orderHash)
@@ -108,16 +108,16 @@ def test_fill_order_with_shares(localFixture, zeroX, market, cash, augur):
 
     yesShareAddress = market.getShareToken(YES)
     noShareAddress = market.getShareToken(NO)
-    assert zeroX.getTokenBalance(cash.address, tester.a0) == 4900
+    assert zeroX.getTokenBalance(cash.address, tester.a0) == 49
     assert zeroX.getTokenBalance(yesShareAddress, tester.a0) == 5
-    assert zeroX.getTokenBalance(cash.address, tester.a1) == 44100
+    assert zeroX.getTokenBalance(cash.address, tester.a1) == 441
     assert zeroX.getTokenBalance(noShareAddress, tester.a1) == 5
     assert zeroX.getUnavailableAmount(orderHash) == fillAmount
 
 def test_maker_sell_shares_for_tokens(localFixture, zeroX, market, cash, augur):
     expirationTimestampInSec = augur.getTimestamp() + 1
     orderAddresses = [tester.a0, market.address]
-    orderValues = [YES, ASK, 10, 1000, expirationTimestampInSec, 42]
+    orderValues = [YES, ASK, 10, 10, expirationTimestampInSec, 42]
 
     orderHash = zeroX.getOrderHash(orderAddresses, orderValues)
     v, r, s = createOrder(orderHash)
@@ -146,9 +146,9 @@ def test_maker_sell_shares_for_tokens(localFixture, zeroX, market, cash, augur):
     assert yesShareToken.approve(zeroX.address, 10)
     assert zeroX.deposit(yesShareAddress, 10)
 
-    assert cash.faucet(5000, sender=tester.k1)
-    assert cash.approve(zeroX.address, 5000, sender=tester.k1)
-    assert zeroX.deposit(cash.address, 5000, sender=tester.k1)
+    assert cash.faucet(50, sender=tester.k1)
+    assert cash.approve(zeroX.address, 50, sender=tester.k1)
+    assert zeroX.deposit(cash.address, 50, sender=tester.k1)
 
     with PrintGasUsed(localFixture, "FILL_0X"):
         assert zeroX.fillOrder(
@@ -161,7 +161,7 @@ def test_maker_sell_shares_for_tokens(localFixture, zeroX, market, cash, augur):
             sender = tester.k1)
 
     yesShareAddress = market.getShareToken(YES)
-    assert zeroX.getTokenBalance(cash.address, tester.a0) == 5000
+    assert zeroX.getTokenBalance(cash.address, tester.a0) == 50
     assert zeroX.getTokenBalance(yesShareAddress, tester.a0) == 5
     assert zeroX.getTokenBalance(cash.address, tester.a1) == 0
     assert zeroX.getTokenBalance(yesShareAddress, tester.a1) == 5
@@ -174,7 +174,7 @@ def test_maker_buy_shares_for_tokens(localFixture, zeroX, market, cash, augur):
 def test_cancel_order(localFixture, zeroX, market, cash, augur):
     expirationTimestampInSec = augur.getTimestamp() + 1
     orderAddresses = [tester.a0, market.address]
-    orderValues = [YES, BID, 10, 1000, expirationTimestampInSec, 42]
+    orderValues = [YES, BID, 10, 10, expirationTimestampInSec, 42]
 
     cancelAmount = 5
 

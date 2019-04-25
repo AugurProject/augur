@@ -28,7 +28,7 @@ describe("TradeAndReport", () => {
         let type = new ethers.utils.BigNumber(0); // BID
         let outcome = new ethers.utils.BigNumber(0);
         let numShares = new ethers.utils.BigNumber(10000000000000);
-        let price = new ethers.utils.BigNumber(2150);
+        let price = new ethers.utils.BigNumber(21);
 
         await fixture.placeOrder(market.address, type, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 

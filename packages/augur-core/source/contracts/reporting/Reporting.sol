@@ -6,7 +6,7 @@ library Reporting {
     uint256 private constant DISPUTE_ROUND_DURATION_SECONDS = 7 days;
     uint256 private constant INITIAL_DISPUTE_ROUND_DURATION_SECONDS = 1 days;
     uint256 private constant FORK_DURATION_SECONDS = 60 days;
-    uint256 private constant MAXIMUM_MARKET_DURATION = 181 days;
+    uint256 private constant MAXIMUM_MARKET_DURATION = 365 days;
 
     uint256 private constant INITIAL_REP_SUPPLY = 11 * 10 ** 6 * 10 ** 18; // 11 Million REP
 
@@ -18,8 +18,8 @@ library Reporting {
 
     uint256 private constant TARGET_INVALID_MARKETS_DIVISOR = 100; // 1% of markets are expected to be invalid
     uint256 private constant TARGET_INCORRECT_DESIGNATED_REPORT_MARKETS_DIVISOR = 100; // 1% of markets are expected to have an incorrect designate report
-    uint256 private constant TARGET_DESIGNATED_REPORT_NO_SHOWS_DIVISOR = 20; // 5% of markets are expected to have a no show designated reporter
-    uint256 private constant TARGET_REP_MARKET_CAP_MULTIPLIER = 3; // We multiply and divide by constants since we may want to multiply by a fractional amount
+    uint256 private constant TARGET_DESIGNATED_REPORT_NO_SHOWS_DIVISOR = 100; // 1% of markets are expected to have an incorrect designate report
+    uint256 private constant TARGET_REP_MARKET_CAP_MULTIPLIER = 5; // We multiply and divide by constants since we may want to multiply by a fractional amount
     uint256 private constant TARGET_REP_MARKET_CAP_DIVISOR = 1;
 
     uint256 private constant AUCTION_INITIAL_REP_PRICE = 15 * 10**18; // Initial REP price for the auction in CASH
