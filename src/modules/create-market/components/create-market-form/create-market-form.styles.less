@@ -518,14 +518,24 @@
   .CreateMarketForm__fields {
     display: flex;
     flex-flow: column;
+    min-height: auto;
   }
 
   .CreateMarketForm__fields > li textarea {
     height: 5.1rem;
+    padding-top: @size-12;
+
+    &::placeholder {
+      .text-16;
+    }
   }
 
   .CreateMarketForm__fields > li > label {
     display: block;
+  }
+
+  .CreateMarketForm__fields > li > div {
+    padding: 0;
   }
 
   .CreateMarketForm__next,
