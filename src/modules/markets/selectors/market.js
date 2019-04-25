@@ -399,7 +399,7 @@ const assembleMarket = (
     if (numCompleteSets) {
       market.myPositionsSummary.numCompleteSets = formatShares(numCompleteSets);
     }
-    if (market.userPositions.length > 0) {
+    if (market.userPositions && market.userPositions.length > 0) {
       market.myPositionsSummary.currentValue = formatEther(
         marketPositions.unrealizedRevenue || ZERO
       );
