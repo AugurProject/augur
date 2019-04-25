@@ -18,7 +18,7 @@ export const NETWORKS = [
   "kovan",
   "thunder",
   "testrpc"
-];
+] as const;
 
 export type NETWORKS = typeof NETWORKS[number];
 
