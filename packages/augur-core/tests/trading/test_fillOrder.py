@@ -302,55 +302,6 @@ def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
 
     assert cash.balanceOf(tester.a1) == totalPayout
 
-def test_publicFillOrder_ask_price_zero(contractsFixture, cash, market, universe):
-    createOrder = contractsFixture.contracts['CreateOrder']
-    fillOrder = contractsFixture.contracts['FillOrder']
-    orders = contractsFixture.contracts['Orders']
-    tradeGroupID = longTo32Bytes(42)
-
-    creatorCost = fix(2, 100)
-    fillerCost = 0
-
-    # create order
-    with BuyWithCash(cash, creatorCost, tester.k1, "creating order"):
-        orderID = createOrder.publicCreateOrder(ASK, fix(2), 0, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
-
-    # fill best order
-    fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
-
-    assert orders.getAmount(orderID) == 0
-    assert orders.getPrice(orderID) == 0
-    assert orders.getOrderCreator(orderID) == longToHexString(0)
-    assert orders.getOrderMoneyEscrowed(orderID) == 0
-    assert orders.getOrderSharesEscrowed(orderID) == 0
-    assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
-    assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
-    assert fillOrderID == 0
-
-def test_publicFillOrder_bid_price_zero(contractsFixture, cash, market, universe):
-    createOrder = contractsFixture.contracts['CreateOrder']
-    fillOrder = contractsFixture.contracts['FillOrder']
-    orders = contractsFixture.contracts['Orders']
-    tradeGroupID = longTo32Bytes(42)
-
-    creatorCost = 0
-    fillerCost = fix(2, 100)
-
-    # create order
-    orderID = createOrder.publicCreateOrder(BID, fix(2), 0, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
-
-    with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
-        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
-
-    assert orders.getAmount(orderID) == 0
-    assert orders.getPrice(orderID) == 0
-    assert orders.getOrderCreator(orderID) == longToHexString(0)
-    assert orders.getOrderMoneyEscrowed(orderID) == 0
-    assert orders.getOrderSharesEscrowed(orderID) == 0
-    assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
-    assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
-    assert fillOrderID == 0
-
 def test_publicFillOrder_kyc(contractsFixture, cash, market, universe, reputationToken):
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']

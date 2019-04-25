@@ -460,8 +460,8 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     }
 
     function updateProfitLoss(Trade.Data memory _tradeData, uint256 _amountFilled) private returns (bool) {
-        uint256 _numLongTokens = _tradeData.creator.direction == Trade.Direction.Long ? _tradeData.getMakerTokensDepleted() : _tradeData.getFillerTokensDepleted();
-        uint256 _numShortTokens = _tradeData.creator.direction == Trade.Direction.Short ? _tradeData.getMakerTokensDepleted() : _tradeData.getFillerTokensDepleted();
+        uint256 _numLongTokens = _tradeData.creator.direction == Trade.Direction.Long ? 0 : _tradeData.getFillerTokensDepleted();
+        uint256 _numShortTokens = _tradeData.creator.direction == Trade.Direction.Short ? 0 : _tradeData.getFillerTokensDepleted();
         uint256 _numLongShares = _tradeData.creator.direction == Trade.Direction.Long ? _tradeData.getMakerSharesDepleted() : _tradeData.getFillerSharesDepleted();
         uint256 _numShortShares = _tradeData.creator.direction == Trade.Direction.Short ? _tradeData.getMakerSharesDepleted() : _tradeData.getFillerSharesDepleted();
         profitLoss.recordTrade(_tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, int256(_amountFilled), int256(_tradeData.order.sharePriceLong), _numLongTokens, _numShortTokens, _numLongShares, _numShortShares);
