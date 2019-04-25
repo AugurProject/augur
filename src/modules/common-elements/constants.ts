@@ -413,7 +413,6 @@ export const DISCLAIMER_SEEN = "disclaimerSeen";
 export const MARKET_REVIEW_SEEN = "marketReviewSeen";
 export const MARKET_REVIEWS = "marketReviews";
 export const MARKET_REVIEW_TRADE_SEEN = "marketReviewTradeSeen";
-export const MARKET_REVIEWS_TRADE = "marketReviewsTrade";
 export const MODAL_MARKET_REVIEW = "MODAL_MARKET_REVIEW";
 export const MODAL_MARKET_REVIEW_TRADE = "MODAL_MARKET_REVIEW_TRADE";
 export const MODAL_OPEN_ORDERS = "MODAL_OPEN_ORDERS";
