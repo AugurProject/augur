@@ -6,16 +6,5 @@
   },
   "include": [
     "src/**/*"
-  ],
-  "references": [
-    {
-      "path": "../augur-artifacts"
-    },
-    {
-      "path": "../augur-core"
-    },
-    {
-      "path": "../augur-types"
-    }
   ]
 }
