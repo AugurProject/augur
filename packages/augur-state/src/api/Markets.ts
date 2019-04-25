@@ -91,12 +91,12 @@ export class Markets<TBigNumber> {
       outcomes.push({
         id: 1,
         price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].price).toString(10) : "0",
-        description: (marketCreatedLog.marketType === 0) ? "No" : new BigNumber(marketCreatedLog.prices[0]).toString(10)
+        description: (marketCreatedLog.marketType === 0) ? "No" : new BigNumber(marketCreatedLog.prices[0]._hex).toString(10)
       });
       outcomes.push({
         id: 2,
         price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].price).toString(10) : "0",
-        description: (marketCreatedLog.marketType === 0) ? "Yes" : new BigNumber(marketCreatedLog.prices[1]).toString(10)
+        description: (marketCreatedLog.marketType === 0) ? "Yes" : new BigNumber(marketCreatedLog.prices[1]._hex).toString(10)
       });
     } else {
       const ordersFilled = (await db.findOrderFilledLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x00"}})).reverse();
@@ -202,8 +202,8 @@ export class Markets<TBigNumber> {
       const marketFinalizedLogs = (await db.findMarketFinalizedLogs({selector: {market: marketCreatedLog.market}})).reverse();
       const marketVolumeChangedLogs = (await db.findMarketVolumeChangedLogs({selector: {market: marketCreatedLog.market}})).reverse();
 
-      const minPrice = new BigNumber(marketCreatedLog.prices[0]);
-      const maxPrice = new BigNumber(marketCreatedLog.prices[1]);
+      const minPrice = new BigNumber(marketCreatedLog.prices[0]._hex);
+      const maxPrice = new BigNumber(marketCreatedLog.prices[1]._hex);
       const numTicks = new BigNumber(marketCreatedLog.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
       const cumulativeScale = maxPrice.minus(minPrice);

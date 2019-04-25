@@ -80,8 +80,8 @@ export class Trading {
       const orderType = orderDoc.orderType === 0 ? "buy" : "sell";
       const marketCreatorFees = new BigNumber(orderFilledDoc.marketCreatorFees);
       const reporterFees = new BigNumber(orderFilledDoc.reporterFees);
-      const minPrice = new BigNumber(marketDoc.prices[0]);
-      const maxPrice = new BigNumber(marketDoc.prices[1]);
+      const minPrice = new BigNumber(marketDoc.prices[0]._hex);
+      const maxPrice = new BigNumber(marketDoc.prices[1]._hex);
       const numTicks = new BigNumber(marketDoc.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
       const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderFilledDoc.amountFilled, 16), tickSize);
