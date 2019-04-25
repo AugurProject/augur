@@ -12,7 +12,7 @@
     "version": "yarn rebuild",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
     "build": "tsc -b",
-    "watch": "tsc -w",
+    "watch": "tsc -b -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
     "prepare": "tsc",
     "prepush": "yarn lint"
