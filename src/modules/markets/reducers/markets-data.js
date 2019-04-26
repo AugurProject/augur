@@ -77,7 +77,6 @@ export default function(marketsData = DEFAULT_STATE, action) {
       return immutableDelete(marketsData, action.data.marketId);
     case RESET_STATE:
     case CLEAR_MARKETS_DATA:
-    case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;
     default:
       return marketsData;
