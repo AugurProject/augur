@@ -15,11 +15,11 @@ import { updateModal } from "modules/modal/actions/update-modal";
 import { createBigNumber } from "utils/create-big-number";
 import { cancelAllOpenOrders } from "modules/orders/actions/cancel-order";
 import { selectUserFilledOrders } from "modules/orders/selectors/filled-orders";
-import selectUserOpenOrders from "modules/orders/selectors/user-open-orders";
+import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId);
-  const openOrders = selectUserOpenOrders(market.id) || [];
+  const openOrders = getUserOpenOrders(market.id) || [];
 
   const filteredOrphanOrders = selectOrphanOrders(state).filter(
     order => order.marketId === ownProps.marketId

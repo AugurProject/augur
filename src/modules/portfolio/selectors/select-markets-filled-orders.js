@@ -54,7 +54,7 @@ const filterMarketsByStatus = marketIds =>
     const market = selectMarket(m);
     if (
       Object.keys(market).length === 0 ||
-      market.marketStatus !== constants.MARKET_CLOSED
+      market.marketStatus === constants.MARKET_CLOSED
     ) {
       return p;
     }
