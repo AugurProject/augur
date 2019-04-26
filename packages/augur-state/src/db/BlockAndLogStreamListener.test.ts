@@ -35,16 +35,20 @@ describe("BlockstreamListener", () => {
         blockHash: log.blockHash,
         blockNumber: log.blockNumber,
         transactionIndex: parseInt(log.transactionHash || "0", 10),
-        transactionHash: log.transactionHash
+        transactionHash: log.transactionHash,
+        transactionLogIndex: 1,
+        logIndex: 1,
+        removed: false
       }));
     });
+
     deps = {
       address: "0xSomeAddress",
       blockAndLogStreamer,
       eventLogDBRouter,
       listenForNewBlocks: jest.fn(),
       getEventTopics: jest.fn(),
-      getBlockByHash: jest.fn(),
+      getBlockByHash: jest.fn()
     };
 
     blockAndLogStreamerListener = new BlockAndLogStreamerListener(deps);
@@ -74,6 +78,36 @@ describe("BlockstreamListener", () => {
 
       blockAndLogStreamerListener.onNewBlock(nextBlock);
       expect(blockAndLogStreamer.reconcileNewBlock).toHaveBeenCalledWith(nextBlock);
+    });
+
+
+    describe("on block removed", () => {
+      let onRemoveLogCallback: jest.Mock;
+      let nextBlock: Block;
+
+      beforeEach(() => {
+        onRemoveLogCallback = jest.fn();
+        deps.getEventTopics.mockReturnValue([
+          "0xSOMETOPIC"
+        ]);
+
+        nextBlock = {
+          number: "1234",
+          hash: "1234",
+          parentHash: "ParentHash"
+        };
+
+        blockAndLogStreamerListener.listenForEvent("SomeEvent", onNewLogCallback, onRemoveLogCallback);
+        onRemoveLogCallback.mockResolvedValue(undefined);
+      });
+
+      test("should trigger onLogRemoved CB", () => {
+
+      });
+
+      test("should trigger onBlockRemoved Listener", () => {
+
+      });
     });
 
     test("should filter logs passed to listeners", () => {

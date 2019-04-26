@@ -1,5 +1,5 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { InitialReportersRow, UIInitialReporters } from "../../types";
 

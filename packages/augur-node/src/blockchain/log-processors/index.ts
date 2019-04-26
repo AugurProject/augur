@@ -1,16 +1,21 @@
-import * as Knex from "knex";
-import Augur from "augur.js";
-import { EventLogProcessor, FormattedEventLog, LogProcessors } from "../../types";
+import Knex from "knex";
+import { Augur, EventLogProcessor, FormattedEventLog, LogProcessors } from "../../types";
 import { processMarketCreatedLog, processMarketCreatedLogRemoval } from "./market-created";
 import { processTokensTransferredLog, processTokensTransferredLogRemoval } from "./tokens-transferred";
 import { processOrderCanceledLog, processOrderCanceledLogRemoval } from "./order-canceled";
 import { processOrderCreatedLog, processOrderCreatedLogRemoval } from "./order-created";
 import { processOrderFilledLog, processOrderFilledLogRemoval } from "./order-filled";
 import { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } from "./trading-proceeds-claimed";
-import { processDisputeCrowdsourcerRedeemedLog, processDisputeCrowdsourcerRedeemedLogRemoval } from "./crowdsourcer";
-import { processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedLogRemoval } from "./crowdsourcer";
-import { processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval } from "./crowdsourcer";
-import { processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval } from "./crowdsourcer";
+import {
+  processDisputeCrowdsourcerCompletedLog,
+  processDisputeCrowdsourcerCompletedLogRemoval,
+  processDisputeCrowdsourcerContributionLog,
+  processDisputeCrowdsourcerContributionLogRemoval,
+  processDisputeCrowdsourcerCreatedLog,
+  processDisputeCrowdsourcerCreatedLogRemoval,
+  processDisputeCrowdsourcerRedeemedLog,
+  processDisputeCrowdsourcerRedeemedLogRemoval
+} from "./crowdsourcer";
 import { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } from "./initial-report-submitted";
 import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./market-finalized";
 import { processUniverseCreatedLog, processUniverseCreatedLogRemoval } from "./universe-created";
@@ -22,11 +27,23 @@ import { processBurnLog, processBurnLogRemoval } from "./token/burn";
 import { processTimestampSetLog, processTimestampSetLogRemoval } from "./timestamp-set";
 import { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSoldLogRemoval } from "./completesets";
 import { processInitialReporterRedeemedLog, processInitialReporterRedeemedLogRemoval } from "./initial-report-redeemed";
-import { processInitialReporterTransferredLog, processInitialReporterTransferredLogRemoval } from "./initial-report-transferred";
+import {
+  processInitialReporterTransferredLog,
+  processInitialReporterTransferredLogRemoval
+} from "./initial-report-transferred";
 import { processMarketMigratedLog, processMarketMigratedLogRemoval } from "./market-migrated";
-import { processReportingParticipantDisavowedLog, processReportingParticipantDisavowedLogRemoval } from "./reporting-participant-disavowed";
-import { processMarketMailboxTransferredLog, processMarketMailboxTransferredLogRemoval } from "./market-mailbox-transferred";
-import { processMarketParticipantsDisavowedLog, processMarketParticipantsDisavowedLogRemoval } from "./market-participants-disavowed";
+import {
+  processReportingParticipantDisavowedLog,
+  processReportingParticipantDisavowedLogRemoval
+} from "./reporting-participant-disavowed";
+import {
+  processMarketMailboxTransferredLog,
+  processMarketMailboxTransferredLogRemoval
+} from "./market-mailbox-transferred";
+import {
+  processMarketParticipantsDisavowedLog,
+  processMarketParticipantsDisavowedLogRemoval
+} from "./market-participants-disavowed";
 
 async function noop(augur: Augur, log: FormattedEventLog) {
   return async(db: Knex) => {

@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import Knex from "knex";
 import { SearchProvider } from "./provider";
 import { SearchSqlite } from "./sqlite";
 import { SearchPostgres } from "./postgres";

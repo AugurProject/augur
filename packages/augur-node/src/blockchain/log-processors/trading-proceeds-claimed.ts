@@ -1,8 +1,7 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
+import { Augur, BigNumber, FormattedEventLog } from "../../types";
+import Knex from "knex";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import { BigNumber } from "bignumber.js";
-import { FormattedEventLog } from "../../types";
+
 import { augurEmitter } from "../../events";
 import { SubscriptionEventNames } from "../../constants";
 import { updateProfitLossSellShares } from "./profit-loss/update-profit-loss";
@@ -39,8 +38,8 @@ export async function processTradingProceedsClaimedLog(augur: Augur, log: Format
     const maxPrice = marketData.maxPrice;
     const numTicks = marketData.numTicks;
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-    const numShares = new BigNumber(log.numShares, 10).dividedBy(tickSize).dividedBy(10 ** 18);
-    const payoutTokens = new BigNumber(log.numPayoutTokens).dividedBy(10 ** 18);
+    const numShares = new BigNumber(log.numShares).div(tickSize).div(10 ** 18);
+    const payoutTokens = new BigNumber(log.numPayoutTokens).div(10 ** 18);
 
     await updateProfitLossSellShares(db, log.market, numShares, log.sender, [shareTokenOutcome.outcome], payoutTokens, log.transactionHash);
     augurEmitter.emit(SubscriptionEventNames.TradingProceedsClaimed, log);

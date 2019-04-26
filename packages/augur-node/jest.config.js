@@ -58,7 +58,7 @@ module.exports = {
   // ],
 
   // An array of file extensions your modules use
-  "moduleFileExtensions": ["js", "jsx", "json", "ts", "tsx"],
+  moduleFileExtensions: ["js", "jsx", "json", "ts", "tsx"],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   // moduleNameMapper: {},
@@ -97,15 +97,9 @@ module.exports = {
   // rootDir: "<rootDir>",
 
   // A list of paths to directories that Jest should use to search for files in
-  roots: [
-    "<rootDir>",
-  ],
+  roots: ["<rootDir>"],
 
-  modulePaths: [
-    "<rootDir>",
-    "<rootDir>/src/",
-    "<rootDir>/test/unit"
-  ],
+  modulePaths: ["<rootDir>", "<rootDir>/src/", "<rootDir>/test/unit"],
 
   // Allows you to use a custom runner instead of Jest's default test runner
   // "runner": "jest-runner-mocha",
@@ -113,7 +107,7 @@ module.exports = {
   // The paths to modules that run some code to configure or set up the testing environment before each test
   // setupFiles: ["<rootDir>/test/setup.js"],
   // The path to a module that runs some code to configure or set up the testing framework before each test
-  setupTestFrameworkScriptFile: "<rootDir>/test/setup.js",
+  setupTestFrameworkScriptFile: "<rootDir>/test/setup.ts",
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
@@ -128,17 +122,13 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ["<rootDir>/test/(unit|integration)/**/*.(j|t)s"],
+  // testMatch: ["<rootDir>/src/(unit|integration)/**/*.(j|t)s"],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: [
-    "/node_modules/",
-    "<rootDir>/test/unit/test.database.js",
-    "<rootDir>/test/setup.js",
-  ],
+  testPathIgnorePatterns: ["/node_modules/", "<rootDir>/test/unit/test.database.js", "<rootDir>/test/setup.js"],
 
   // The regexp pattern Jest uses to detect test files
-  // testRegex: "",
+  testRegex: "\\.test\\.tsx?$",
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: null,

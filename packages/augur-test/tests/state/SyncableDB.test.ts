@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { Augur } from "@augurproject/api";
-import { contracts as compilerOutput } from "@augurproject/artifacts";
+import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ACCOUNTS, deployContracts, makeDbMock } from "../../libs";
 

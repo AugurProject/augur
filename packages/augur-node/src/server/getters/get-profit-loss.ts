@@ -1,15 +1,11 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
 import { Dictionary, NumericDictionary } from "lodash";
-import BigNumber from "bignumber.js";
-import { Augur } from "augur.js";
+import { Address, Augur, BigNumber } from "../../types";
 import { getCurrentTime } from "../../blockchain/process-block";
 
 import { ZERO } from "../../constants";
-import {
-  Address,
-  } from "../../types";
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 
@@ -93,15 +89,15 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
 }
 
 export function sumProfitLossResults<T extends ProfitLossResult>(left: T, right: T): T {
-  const leftPosition = new BigNumber(left.position, 10);
-  const rightPosition = new BigNumber(right.position, 10);
+  const leftPosition = new BigNumber(left.position);
+  const rightPosition = new BigNumber(right.position);
 
-  const position = leftPosition.plus(rightPosition);
-  const realized = left.realized.plus(right.realized);
-  const unrealized = left.unrealized.plus(right.unrealized);
-  const total = realized.plus(unrealized);
-  const cost = left.cost.plus(right.cost);
-  const averagePrice = position.gt(ZERO) ? cost.dividedBy(position) : ZERO;
+  const position = leftPosition.add(rightPosition);
+  const realized = left.realized.add(right.realized);
+  const unrealized = left.unrealized.add(right.unrealized);
+  const total = realized.add(unrealized);
+  const cost = left.cost.add(right.cost);
+  const averagePrice = position.gt(ZERO) ? cost.div(position) : ZERO;
 
   return Object.assign(_.clone(left), {
     position,
@@ -167,7 +163,7 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
     const position = plResult!.numOwned;
     const realized = plResult!.profit;
     const cost = plResult!.moneySpent;
-    const averagePrice = position.gt(ZERO) ? cost.dividedBy(position) : ZERO;
+    const averagePrice = position.gt(ZERO) ? cost.div(position) : ZERO;
 
     let lastPrice = ZERO;
     let unrealized = ZERO;
@@ -176,10 +172,10 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
       const ovResultIndex = Math.max(0, _.sortedLastIndexBy(outcomeValues, bucket, "timestamp") - 1);
       const ovResult = outcomeValues[ovResultIndex];
       lastPrice = ovResult.value;
-      unrealized = lastPrice.times(position).minus(cost);
+      unrealized = lastPrice.mul(position).sub(cost);
     }
 
-    const total = realized.plus(unrealized);
+    const total = realized.add(unrealized);
     return {
       timestamp: bucket.timestamp,
       position,
@@ -289,11 +285,11 @@ export async function getProfitLossSummary(db: Knex, augur: Augur, params: GetPr
 
     const negativeStartProfit: ProfitLossResult = {
       timestamp: startProfit.timestamp,
-      position: startProfit.position.negated(),
-      realized: startProfit.realized.negated(),
-      unrealized: startProfit.unrealized.negated(),
-      total: startProfit.total.negated(),
-      cost: startProfit.cost.negated(),
+      position: startProfit.position.mul(new BigNumber(-1)),
+      realized: startProfit.realized.mul(new BigNumber(-1)),
+      unrealized: startProfit.unrealized.mul(new BigNumber(-1)),
+      total: startProfit.total.mul(new BigNumber(-1)),
+      cost: startProfit.cost.mul(new BigNumber(-1)),
       averagePrice: startProfit.averagePrice,
     };
 

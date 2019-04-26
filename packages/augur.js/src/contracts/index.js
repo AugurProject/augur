@@ -10,12 +10,12 @@ var e = module.exports = {
 };
 
 module.exports.reloadAddresses = function (callback) {
-  readJsonFile(require.resolve("@augurproject/artifacts/addresses"), function (err, data) {
+  readJsonFile(require.resolve("@augurproject/artifacts/build/addresses.json"), function (err, data) {
     if (err) return callback(err);
 
     e.addresses = data;
 
-    readJsonFile(require.resolve("@augurproject/artifacts/upload-block-numbers"), function (err, data) {
+    readJsonFile(require.resolve("@augurproject/artifacts/build/upload-block-numbers.json"), function (err, data) {
       if (err) return callback(err);
       e.uploadBlockNumbers = data;
 

@@ -1,22 +1,22 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
+import { Augur, ErrorCallback, GenericCallback } from "./types";
+import { UploadBlockNumbers } from "@augurproject/artifacts";
+
+import Knex from "knex";
 import * as path from "path";
 import { EventEmitter } from "events";
 import { runServer, RunServerResult, shutdownServers } from "./server/run-server";
-import { bulkSyncAugurNodeWithBlockchain } from "./blockchain/bulk-sync-augur-node-with-blockchain";
 import { startAugurListeners } from "./blockchain/start-augur-listeners";
 import { createDbAndConnect, renameBulkSyncDatabaseFile } from "./setup/check-and-initialize-augur-db";
-import { clearOverrideTimestamp } from "./blockchain/process-block";
-import { ErrorCallback, GenericCallback } from "./types";
-import { ControlMessageType, DB_VERSION, DB_FILE, NETWORK_NAMES } from "./constants";
+import { ControlMessageType, DB_FILE, DB_VERSION, NETWORK_NAMES } from "./constants";
 import { logger } from "./utils/logger";
-import { LoggerInterface } from "./utils/logger/logger";
-import { BlockAndLogsQueue } from "./blockchain/block-and-logs-queue";
 import { format } from "util";
 import { getFileHash } from "./sync/file-operations";
 import { BackupRestore } from "./sync/backup-restore";
-import { checkOrphanedOrders } from "./blockchain/check-orphaned-orders";
 import { ConnectOptions } from "./setup/connectOptions";
+import { LoggerInterface } from "./utils/logger/logger";
+import { clearOverrideTimestamp } from "./blockchain/process-block";
+import { BlockAndLogStreamerListener } from "@augurproject/state/build/db/BlockAndLogStreamerListener";
+import { bulkSyncAugurNodeWithBlockchain } from "./blockchain/bulk-sync-augur-node-with-blockchain";
 
 export interface SyncedBlockInfo {
   lastSyncBlockNumber: number;
@@ -32,11 +32,10 @@ export class AugurNodeController {
   private running: boolean;
   private controlEmitter: EventEmitter;
   private db: Knex | undefined;
-  private pouch: PouchDB.Database | undefined;
   private serverResult: RunServerResult | undefined;
   private errorCallback: ErrorCallback | undefined;
   private logger = logger;
-  private blockAndLogsQueue: BlockAndLogsQueue | undefined;
+  private blockAndLogsQueue: BlockAndLogStreamerListener | undefined;
 
   constructor(augur: Augur, networkConfig: ConnectOptions, databaseDir: string = ".", isWarpSync: boolean = false) {
     this.augur = augur;
@@ -51,21 +50,22 @@ export class AugurNodeController {
     this.running = true;
     this.errorCallback = errorCallback;
     try {
-      ({knex: this.db, pouch: this.pouch } = await createDbAndConnect(errorCallback, this.augur, this.networkConfig, this.databaseDir));
+      ({knex: this.db } = await createDbAndConnect(errorCallback, this.augur, this.networkConfig, this.databaseDir));
       this.controlEmitter.emit(ControlMessageType.BulkSyncStarted);
-      this.serverResult = runServer(this.db, this.augur, this.controlEmitter);
-      const handoffBlockNumber = await bulkSyncAugurNodeWithBlockchain(this.db, this.pouch, this.augur, this.networkConfig.blocksPerChunk);
+
+      const handoffBlockNumber = await bulkSyncAugurNodeWithBlockchain(this.db, this.augur, 720);
       this.controlEmitter.emit(ControlMessageType.BulkSyncFinished);
+
+      this.serverResult = runServer(this.db, this.augur, this.controlEmitter);
       this.logger.info("Bulk sync with blockchain complete.");
       // We received a shutdown so just return.
       if (!this.isRunning()) return;
-      this.controlEmitter.emit(ControlMessageType.BulkOrphansCheckStarted);
-      await checkOrphanedOrders(this.db, this.augur);
-      this.controlEmitter.emit(ControlMessageType.BulkOrphansCheckFinished);
       this.logger.info("Bulk orphaned orders check with blockchain complete.");
       // We received a shutdown so just return.
       if (!this.isRunning()) return;
-      this.blockAndLogsQueue = startAugurListeners(this.db, this.pouch, this.augur, handoffBlockNumber + 1, this.databaseDir, this.isWarpSync, this._shutdownCallback.bind(this));
+      this.blockAndLogsQueue = await startAugurListeners(this.augur);
+
+      this.blockAndLogsQueue.startBlockStreamListener();
     } catch (err) {
       if (this.errorCallback) this.errorCallback(err);
     }
@@ -114,20 +114,20 @@ export class AugurNodeController {
       .max("blockNumber as highestBlockNumber")
       .first();
     const lastSyncBlockNumber = row.highestBlockNumber;
-    const currentBlock = this.augur.rpc.getCurrentBlock();
+    const currentBlock = await this.augur.provider.getBlockNumber();
     if (currentBlock === null) {
       throw new Error("No Current Block");
     }
-    const highestBlockNumber = parseInt(this.augur.rpc.getCurrentBlock().number, 16);
-    const uploadBlockNumber = this.augur.contracts.uploadBlockNumbers[this.augur.rpc.getNetworkID()];
+    const highestBlockNumber = parseInt(`${await this.augur.provider.getBlockNumber()}`, 16);
+    const uploadBlockNumber = UploadBlockNumbers[this.augur.networkId];
     return {lastSyncBlockNumber, uploadBlockNumber, highestBlockNumber};
   }
 
   public async resetDatabase(id: string, errorCallback: ErrorCallback | undefined) {
     let networkId = id || "1";
     try {
-      if (this.augur != null && this.augur.rpc.getNetworkID()) {
-        networkId = this.augur.rpc.getNetworkID();
+      if (this.augur != null && this.augur.networkId) {
+        networkId = this.augur.networkId;
       }
       if (this.isRunning()) await this._shutdown();
       await renameBulkSyncDatabaseFile(networkId, this.databaseDir);
@@ -157,7 +157,6 @@ export class AugurNodeController {
     this.running = false;
     this.logger.info("Stopping Augur Node Server");
     if (this.blockAndLogsQueue !== undefined) {
-      this.blockAndLogsQueue.stop();
       this.blockAndLogsQueue = undefined;
     }
     if (this.serverResult !== undefined) {
@@ -169,12 +168,7 @@ export class AugurNodeController {
       await this.db.destroy();
       this.db = undefined;
     }
-    if (this.pouch !== undefined) {
-      await this.pouch.close();
-      this.pouch = undefined;
-    }
     clearOverrideTimestamp();
-    this.augur.disconnect();
     this.logger.clear();
   }
 }

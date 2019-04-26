@@ -1,10 +1,11 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
-import { BigNumber } from "bignumber.js";
-import Augur from "augur.js";
+
+import { Address, Augur, BigNumber, OutcomeParam, SortLimitParams } from "../../types";
+import { BigNumber as BigNumberJS } from "bignumber.js";
+
 import { ZERO } from "../../constants";
-import { Address, OutcomeParam, SortLimitParams } from "../../types";
 import { getAllOutcomesProfitLoss, ProfitLossResult, sumProfitLossResults } from "./get-profit-loss";
 
 export const UserTradingPositionsParamsSpecific = t.type({
@@ -84,7 +85,7 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
       const marketType = marketTypesByMarket[marketId];
 
       const sortedOutcomes = _.sortBy(outcomes, "outcome")!;
-      const outcomesWithZeroPosition = _.filter(outcomes, (outcome) => outcome.position.eq(ZERO));
+      const outcomesWithZeroPosition = outcomes.filter((outcome) => outcome.position.eq(ZERO));
 
       const isMissingOneOutcome = numOutcomes === sortedOutcomes.length + 1;
       const hasOneZeroPosition = outcomesWithZeroPosition.length === 1;
@@ -115,9 +116,9 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
       }
 
       const nonZeroPositionOutcomePls = _.filter(sortedOutcomes, (outcome) => !outcome.position.eq(ZERO));
-      const minimumPosition = BigNumber.minimum(..._.map(nonZeroPositionOutcomePls, "position"));
-      const adjustedOutcomePls = _.map(nonZeroPositionOutcomePls, (outcomePl) => Object.assign({}, outcomePl, { netPosition: outcomePl.netPosition.minus(minimumPosition) }));
-      const shortOutcome = Object.assign({}, _.first(outcomesWithZeroPosition)!, { netPosition: minimumPosition.negated() });
+      const minimumPosition = new BigNumber(BigNumberJS.minimum(..._.map(nonZeroPositionOutcomePls, "position").map((p) =>new BigNumberJS(p.toString()))).toString());
+      const adjustedOutcomePls = _.map(nonZeroPositionOutcomePls, (outcomePl) => Object.assign({}, outcomePl, { netPosition: outcomePl.netPosition.sub(minimumPosition) }));
+      const shortOutcome = Object.assign({}, _.first(outcomesWithZeroPosition)!, { netPosition: minimumPosition.mul(new BigNumber(-1)) });
 
       if (marketType === "categorical") return _.concat(adjustedOutcomePls, shortOutcome);
       if (shortOutcome.outcome === 1) {

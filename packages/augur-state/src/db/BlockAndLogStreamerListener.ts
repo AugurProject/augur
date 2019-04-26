@@ -2,7 +2,7 @@ import { EthersProviderBlockStreamAdapter, ExtendedLog } from "blockstream-adapt
 import { Block, BlockAndLogStreamer, Log as BlockStreamLog } from "ethereumjs-blockstream";
 import { Filter } from "ethereumjs-blockstream/output/source/models/filters";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { Augur, Log, ParsedLog, Provider } from "@augurproject/api";
+import { Log, ParsedLog } from "@augurproject/api";
 import { EventLogDBRouter } from "./EventLogDBRouter";
 
 export interface BlockAndLogStreamerInterface<TBlock extends Block, TLog extends BlockStreamLog> {
@@ -30,7 +30,7 @@ export type BlockstreamLogCallbackType = GenericLogCallbackType<string, Log>
 export type LogCallbackType = GenericLogCallbackType<number, ParsedLog>
 
 export interface IBlockAndLogStreamerListener {
-  listenForEvent(eventName: string, onLogsAdded: LogCallbackType): void;
+  listenForEvent(eventName: string, onLogsAdded: LogCallbackType, onLogRemoved?: LogCallbackType): void;
   listenForBlockRemoved(callback: (blockNumber: number) => void): void;
   startBlockStreamListener(): void;
 }
@@ -59,7 +59,7 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
     });
   }
 
-  public listenForEvent(eventName: string, onLogsAdded: LogCallbackType): void {
+  public listenForEvent(eventName: string, onLogsAdded: LogCallbackType, onLogsRemoved?: LogCallbackType): void {
     const topics = this.deps.getEventTopics(eventName);
 
     this.deps.blockAndLogStreamer.addLogFilter({
