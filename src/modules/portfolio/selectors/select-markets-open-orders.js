@@ -10,9 +10,6 @@ export default function() {
 }
 
 export const marketsOpenOrders = createSelector(selectMarkets, allMarkets => {
-
-  console.log("marketsOpenOrders selector");
-
   const markets = allMarkets.reduce((p, m) => {
     if (m.marketStatus === constants.MARKET_CLOSED) return p;
     const userOpenOrders = getUserOpenOrders(m.id) || [];

@@ -551,7 +551,7 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
 
 
 export const PendingLabel = () => (
-  <span 
+  <span
     className={Styles.PendingLabel}
     data-tip
     data-for={'processing'}
@@ -566,7 +566,7 @@ export const PendingLabel = () => (
       data-event="mouseover"
       data-event-off="blur scroll"
     >
-      You will receive an alert when the transaction has finalized. 
+      You will receive an alert when the transaction has finalized.
     </ReactTooltip>
   </span>
 );

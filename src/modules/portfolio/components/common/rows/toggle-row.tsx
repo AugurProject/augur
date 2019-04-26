@@ -76,15 +76,11 @@ export default class ToggleRow extends React.Component<
             </div>
           </div>
         </div>
-        {open &&
-          <div
-            className={classNames(
-              Styles.ToggleContent
-            )}
-          >
+        {open && (
+          <div className={classNames(Styles.ToggleContent)}>
             {toggleContent}
           </div>
-        }
+        )}
       </div>
     );
   }
