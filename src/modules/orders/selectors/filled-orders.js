@@ -64,7 +64,7 @@ function findOrders(
       const priceBN = createBigNumber(price);
       let typeOp = type;
 
-      const outcomeName = getOutcomeName(marketsData, outcomesData[outcome]);
+      const outcomeName = getOutcomeName(marketsData, (outcomesData || {})[outcome]);
 
       let originalQuantity = amountBN;
       if (accountId === creator && !foundOrder) {
