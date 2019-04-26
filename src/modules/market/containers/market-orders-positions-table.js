@@ -14,10 +14,12 @@ import { constants } from "services/augurjs";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { createBigNumber } from "utils/create-big-number";
 import { cancelAllOpenOrders } from "modules/orders/actions/cancel-order";
+import { selectUserFilledOrders } from "modules/orders/selectors/filled-orders";
+import selectUserOpenOrders from "modules/orders/selectors/user-open-orders";
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId);
-  const openOrders = market.userOpenOrders || [];
+  const openOrders = selectUserOpenOrders(market.id) || [];
 
   const filteredOrphanOrders = selectOrphanOrders(state).filter(
     order => order.marketId === ownProps.marketId
@@ -44,8 +46,7 @@ const mapStateToProps = (state, ownProps) => {
     canClaim = timeHasPassed.toNumber() > 0;
   }
 
-  const { filledOrders } = market;
-
+  const filledOrders = selectUserFilledOrders(state, market.id);
   const hasPending = Boolean(openOrders.find(order => order.pending));
 
   return {

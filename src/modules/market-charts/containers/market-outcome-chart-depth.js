@@ -26,7 +26,6 @@ const mapStateToProps = (state, ownProps) => {
     (market.outcomes || []).find(
       outcome => outcome.id === ownProps.selectedOutcome
     ) || {};
-  const priceTimeSeries = outcome.priceTimeSeries || [];
   const cumulativeOrderBook = orderAndAssignCumulativeShares(
     outcome.orderBook,
     userOrders,
@@ -46,7 +45,6 @@ const mapStateToProps = (state, ownProps) => {
     hasOrders:
       !isEmpty(cumulativeOrderBook[BIDS]) ||
       !isEmpty(cumulativeOrderBook[ASKS]),
-    priceTimeSeries,
     pricePrecision,
     marketDepth,
     orderBookKeys,

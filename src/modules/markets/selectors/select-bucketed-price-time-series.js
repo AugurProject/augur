@@ -1,9 +1,59 @@
 import { createBigNumber } from "utils/create-big-number";
+import createCachedSelector from "re-reselect";
 import { head, each, pullAll } from "lodash";
+import store from "src/store";
 import { ZERO } from "modules/common-elements/constants";
-import { roundTimestampToPastDayMidnight } from "utils/format-date";
+import {
+  convertUnixToFormattedDate,
+  roundTimestampToPastDayMidnight
+} from "utils/format-date";
+import {
+  selectMarketsDataState,
+  selectOutcomesDataState,
+  selectCurrentTimestamp,
+  selectMarketTradingHistoryState
+} from "src/select-state";
+import { selectPriceTimeSeries } from "modules/markets/selectors/price-time-series";
 
-export const selectBucketedPriceTimeSeries = (
+function selectMarketsDataStateMarket(state, marketId) {
+  return selectMarketsDataState(state)[marketId] || {};
+}
+
+function selectOutcomesDataStateMarket(state, marketId) {
+  return selectOutcomesDataState(state)[marketId] || {};
+}
+
+function selectMarketTradingHistoryStateMarket(state, marketId) {
+  return selectMarketTradingHistoryState(state)[marketId];
+}
+
+export default function(marketId) {
+  return bucketedPriceTimeSeries(store.getState(), marketId);
+}
+
+export const bucketedPriceTimeSeries = createCachedSelector(
+  selectOutcomesDataStateMarket,
+  selectCurrentTimestamp,
+  selectMarketsDataStateMarket,
+  selectMarketTradingHistoryStateMarket,
+  (outcomesData, currentTimestamp, marketData, marketTradeHistory) => {
+    const creationTime = convertUnixToFormattedDate(
+      (marketData || {}).creationTime || 0
+    ).value.getTime();
+    const outcomes =
+      Object.keys(outcomesData).map(oId => ({
+        ...outcomesData[oId],
+        priceTimeSeries: selectPriceTimeSeries(
+          outcomesData[oId],
+          marketTradeHistory
+        )
+      })) || [];
+    const currentTime = currentTimestamp || Date.now();
+    return bucketedPriceTimeSeriesInternal(creationTime, currentTime, outcomes);
+  }
+)((state, marketId) => marketId);
+
+const bucketedPriceTimeSeriesInternal = (
   creationTime,
   currentTimestamp,
   outcomes
@@ -32,6 +82,7 @@ export const selectBucketedPriceTimeSeries = (
       bnCreationTimestamp.plus(createBigNumber(index).times(bucket)).toNumber()
     )
   );
+
   timeBuckets.push(currentTimestamp);
   const priceTimeSeries = outcomes.reduce((p, o) => {
     p[o.id] = splitTradesByTimeBucket(o.priceTimeSeries, timeBuckets);

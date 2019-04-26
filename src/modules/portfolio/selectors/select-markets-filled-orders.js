@@ -9,6 +9,8 @@ import {
 } from "src/select-state";
 import { selectMarket } from "modules/markets/selectors/market";
 import { keyArrayBy } from "utils/key-by";
+import getUserFilledOrders from "modules/orders/selectors/filled-orders";
+import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
 
 export default function() {
   return marketsFilledOrders(store.getState());
@@ -25,7 +27,7 @@ export const marketsFilledOrders = createSelector(
       marketReportState.resolved
     );
     const markets = filterMarketsByStatus(marketIds);
-    const allFilledOrders = getAllFilledOrders(marketIds);
+    const allFilledOrders = getAllUserFilledOrders(marketIds);
 
     return {
       markets,
@@ -47,29 +49,33 @@ const filterMarketIds = (userFilledOrders, resolvedMarkets) =>
     )
   );
 
-const filterMarketsByStatus = marketIds => {
-  const mappedMarkets = marketIds.map(m => selectMarket(m)).map(item => {
-    if (Object.keys(item).length === 0) return null;
-    return item;
-  });
-
-  return mappedMarkets.filter(
-    market => market && market.marketStatus !== constants.MARKET_CLOSED
-  );
-};
-
-const getAllFilledOrders = marketIds =>
-  marketIds.reduce((p, marketId) => {
-    const market = selectMarket(marketId);
+const filterMarketsByStatus = marketIds =>
+  marketIds.reduce((p, m) => {
+    const market = selectMarket(m);
     if (
-      market !== null &&
-      market.filledOrders &&
-      market.filledOrders.length > 0
+      Object.keys(market).length === 0 ||
+      market.marketStatus !== constants.MARKET_CLOSED
     ) {
-      return [...p, ...selectMarket(marketId).filledOrders];
+      return p;
     }
-    return p;
+    const filledOrders = getUserFilledOrders(m);
+    if (filledOrders.length === 0) return p;
+
+    return [
+      ...p,
+      {
+        ...market,
+        filledOrders,
+        userOpenOrders: getUserOpenOrders(m)
+      }
+    ];
   }, []);
+
+const getAllUserFilledOrders = marketIds =>
+  marketIds.reduce(
+    (p, marketId) => [...p, ...(getUserFilledOrders(marketId) || [])],
+    []
+  );
 
 const keyObjectsById = array =>
   array.reduce((obj, o) => {

@@ -10,6 +10,7 @@ import {
 import selectAllMarkets from "modules/markets/selectors/markets-all";
 import { ZERO } from "modules/common-elements/constants";
 import { formatNumber, formatEther } from "utils/format-number";
+import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
 import { orderBy } from "lodash";
 
 export default function() {
@@ -51,7 +52,8 @@ export const selectLoginAccountMarkets = createSelector(
         fees,
         numberOfTrades,
         averageTradeSize,
-        openVolume
+        openVolume,
+        recentlyTraded: getLastTradeTimestamp(marketTradingHistory[market.id])
       });
     });
 

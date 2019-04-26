@@ -28,6 +28,7 @@ import {
   ORPHAN_ORDERS_TITLE,
   MARKET_CLOSED
 } from "modules/common-elements/constants";
+import userOpenOrders from "modules/orders/selectors/user-open-orders";
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -36,7 +37,7 @@ export const selectResolvedMarketsOpenOrders = createSelector(
     if (markets.length > 0) {
       return markets
         .filter(market => market.marketStatus === MARKET_CLOSED)
-        .filter(market => market.userOpenOrders.length > 0)
+        .filter(market => userOpenOrders(market.id).length > 0)
         .map(getRequiredMarketData);
     }
     return [];

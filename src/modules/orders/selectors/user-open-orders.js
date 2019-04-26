@@ -1,6 +1,6 @@
 import memoize from "memoizee";
 import { createBigNumber } from "utils/create-big-number";
-
+import createCachedSelector from "re-reselect";
 import store from "src/store";
 
 import { isOrderOfUser } from "modules/orders/helpers/is-order-of-user";
@@ -10,8 +10,67 @@ import { BUY, SELL } from "modules/common-elements/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { formatNone, formatEther, formatShares } from "utils/format-number";
 import { cancelOrder } from "modules/orders/actions/cancel-order";
+import { getOutcomeName } from "utils/get-outcome";
+import {
+  selectMarketsDataState,
+  selectOutcomesDataState,
+  selectOrderBooksState,
+  selectOrderCancellationState,
+  selectPendingOrdersState
+} from "src/select-state";
 
-export function selectUserOpenOrders(
+function selectMarketsDataStateMarket(state, marketId) {
+  return selectMarketsDataState(state)[marketId];
+}
+
+function selectOutcomesDataStateMarket(state, marketId) {
+  return selectOutcomesDataState(state)[marketId];
+}
+
+function selectOrderBooksStateMarket(state, marketId) {
+  return selectOrderBooksState(state)[marketId];
+}
+
+function selectPendingOrdersStateMarket(state, marketId) {
+  return selectPendingOrdersState(state)[marketId];
+}
+
+export default function(marketId) {
+  return selectUserOpenOrders(store.getState(), marketId);
+}
+
+export const selectUserOpenOrders = createCachedSelector(
+  selectMarketsDataStateMarket,
+  selectOutcomesDataStateMarket,
+  selectOrderBooksStateMarket,
+  selectOrderCancellationState,
+  selectPendingOrdersStateMarket,
+  (market, outcomes, orderBook, orderCancellation, pendingOrders) => {
+    let userOpenOrders =
+      Object.keys(outcomes || {})
+        .map(outcomeId =>
+          selectUserOpenOrdersInternal(
+            market.id,
+            outcomeId,
+            orderBook,
+            orderCancellation,
+            market.description,
+            getOutcomeName(market, outcomes[outcomeId])
+          )
+        )
+        .filter(collection => collection.length !== 0)
+        .flat() || [];
+
+    // add pending orders
+    if (pendingOrders && pendingOrders.length > 0) {
+      userOpenOrders = pendingOrders.concat(userOpenOrders);
+    }
+
+    return userOpenOrders || [];
+  }
+)((state, marketId) => marketId);
+
+function selectUserOpenOrdersInternal(
   marketId,
   outcomeId,
   marketOrderBook,

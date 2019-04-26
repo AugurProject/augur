@@ -3,13 +3,15 @@ import { withRouter } from "react-router-dom";
 import { UnsignedOrders } from "modules/modal/unsigned-orders";
 import { selectMarket } from "modules/markets/selectors/market";
 import { closeModal } from "modules/modal/actions/close-modal";
-
+import selectUserOpenOrders from "modules/orders/selectors/user-open-orders";
 import { cancelAllOpenOrders } from "modules/orders/actions/cancel-order";
 
 const mapStateToProps = (state: any) => {
   const market = selectMarket(state.modal.marketId);
+  const userOpenOrders = selectUserOpenOrders(state.modal.marketId) || [];
   return {
     modal: state.modal,
+    userOpenOrders,
     market,
     loginAccount: state.loginAccount,
     isMobile: state.appStatus.isMobile
@@ -22,7 +24,7 @@ const mapDispatchToProps = (dispatch: Function) => ({
 });
 
 const mergeProps = (sP, dP, oP) => {
-  const openOrders = sP.market.userOpenOrders || [];
+  const openOrders = sP.userOpenOrders;
   const { description: marketTitle } = sP.market;
   return {
     isMobile: sP.isMobile,
