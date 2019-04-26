@@ -14,6 +14,7 @@ export default class TrezorConnect extends Component {
     showError: PropTypes.func.isRequired,
     hideError: PropTypes.func.isRequired,
     error: PropTypes.bool.isRequired,
+    onSuccess: PropTypes.func.isRequired,
     setIsLoading: PropTypes.func.isRequired,
     setShowAdvancedButton: PropTypes.func.isRequired,
     isClicked: PropTypes.bool.isRequired,
@@ -95,6 +96,7 @@ export default class TrezorConnect extends Component {
       const { address } = result.payload;
 
       if (address) {
+        this.props.onSuccess();
         return loginWithTrezor(
           address.toLowerCase(),
           TrezorConnectImport,
