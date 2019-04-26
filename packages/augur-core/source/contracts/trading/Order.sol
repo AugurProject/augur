@@ -52,6 +52,7 @@ library Order {
     // No validation is needed here as it is simply a librarty function for organizing data
     function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares, ERC20Token _kycToken) internal view returns (Data memory) {
         require(_outcome < _market.getNumberOfOutcomes());
+        require(_price != 0);
         require(_price < _market.getNumTicks());
         require(_attoshares > 0);
         require(_creator != address(0));
