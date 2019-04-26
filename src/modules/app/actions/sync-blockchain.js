@@ -38,15 +38,18 @@ export const syncBlockchain = cb => (dispatch, getState) => {
     cb && cb();
   });
 
-  augur.augurNode.getSyncData((err, res) => {
-    if (!err && res) {
-      dispatch(
-        updateBlockchain({
-          highestBlock: res.highestBlock.number,
-          lastProcessedBlock: res.lastProcessedBlock.number
-        })
-      );
-    }
-  });
+  if (blockNumber % 2 === 0) {
+    augur.augurNode.getSyncData((err, res) => {
+      if (!err && res) {
+        dispatch(
+          updateBlockchain({
+            highestBlock: res.highestBlock.number,
+            lastProcessedBlock: res.lastProcessedBlock.number
+          })
+        );
+      }
+    });
+  }
+
   dispatch(updateAssets());
 };
