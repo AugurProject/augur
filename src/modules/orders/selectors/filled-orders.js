@@ -10,6 +10,7 @@ import {
 } from "src/select-state";
 import createCachedSelector from "re-reselect";
 import { selectUserOpenOrders } from "modules/orders/selectors/user-open-orders";
+import { getOutcomeName } from "utils/get-outcome";
 
 function findOrders(
   tradesCreatedOrFilledByThisAccount,
@@ -63,7 +64,7 @@ function findOrders(
       const priceBN = createBigNumber(price);
       let typeOp = type;
 
-      const outcomeName = outcomesData[outcome].name;
+      const outcomeName = getOutcomeName(marketsData, outcomesData[outcome]);
 
       let originalQuantity = amountBN;
       if (accountId === creator && !foundOrder) {
