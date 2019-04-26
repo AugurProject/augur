@@ -1,13 +1,15 @@
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { Augur, Provider } from "@augurproject/api";
-import { DeployerConfiguration, ContractDeployer } from "@augurproject/core";
+import { Augur } from "@augurproject/api";
+import { ContractDeployer, DeployerConfiguration } from "@augurproject/core";
 import * as path from "path";
 import * as ganache from "ganache-core";
 import { EthersFastSubmitWallet } from "@augurproject/core/source/libraries/EthersFastSubmitWallet";
 import { ethers } from "ethers";
 import { CompilerOutput } from "solc";
 import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
+
+const level = require("level-mem");
 
 export type Account = {
   secretKey: string;
@@ -42,6 +44,7 @@ export async function deployContracts(accounts: AccountList, compiledContracts: 
     accounts,
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
     allowUnlimitedContractSize: true,
+    db: level(),
     gasLimit: 75000000000,
     debug: false,
     // vmErrorsOnRPCResponse: true,
