@@ -85,7 +85,10 @@
 
 .MarketOutcomeCharts__orderbook {
   flex: 0.7;
-  min-width: 95vw;
+
+  @media @breakpoint-mobile {
+    min-width: 95vw;
+  }
 }
 
 .MarketOutcomeCharts__indicator {
