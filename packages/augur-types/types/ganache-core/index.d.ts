@@ -5,8 +5,10 @@ declare module "ganache-core" {
     // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
     // TypeScript Version: 2.4
 
-    import { AsyncSendable } from "ethers.providers.Web3Provider";
-    export type Account = {
+  import { AsyncSendable } from "ethers.providers.Web3Provider";
+  import * as http from "http";
+  import * as https from "https";
+  export type Account = {
         balance: number;
         secretKey?: string;
         publicKey?: string;
@@ -22,6 +24,7 @@ declare module "ganache-core" {
         mnemonic?: string;
         gasLimit?: number;
         db_path?: string;
+      db: Object;
 
         fork?: boolean;
         blockTime?: number;
@@ -36,8 +39,5 @@ declare module "ganache-core" {
     }
     export function provider(opts?: GanacheOpts): AsyncSendable;
 
-    import * as http from "http";
-    import * as https from "https";
-
-    export function server(opts?: GanacheOpts): http.Server | https.Server;
+  export function server(opts?: GanacheOpts): http.Server | https.Server;
 }
