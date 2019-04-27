@@ -2,9 +2,9 @@ import { convertUnixToFormattedDate } from "utils/format-date";
 import { ZERO } from "modules/common-elements/constants";
 import { createBigNumber } from "utils/create-big-number";
 
-export const getLastTradeTimestamp = marketTradHistory =>
+export const getLastTradeTimestamp = marketTradeHistory =>
   convertUnixToFormattedDate(
-    (marketTradHistory || []).reduce(
+    (marketTradeHistory || []).reduce(
       (p, t) =>
         createBigNumber(t.timestamp || 0).gt(p)
           ? createBigNumber(t.timestamp)
