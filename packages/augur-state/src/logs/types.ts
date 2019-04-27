@@ -153,10 +153,10 @@ export interface OrderFilledLog extends Log, Doc, Timestamped {
   orderId: string;
   price: string;
   outcome: string;
-  marketCreatorFees: string;
-  reporterFees: string;
+  fees: string;
   amountFilled: string;
   tradeGroupId: string;
+  orderIsCompletelyFilled: boolean;
 }
 
 export interface OrderPriceChangedLog extends Log, Doc {

@@ -25,7 +25,7 @@ beforeAll(async () => {
   addresses = result.addresses;
   dependencies = result.dependencies;
   contracts = new Contracts(addresses, dependencies);
-}, 120000);
+}, 180000);
 
 beforeEach(async () => {
   await mock.wipeDB();

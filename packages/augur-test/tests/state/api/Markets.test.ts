@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { API } from "@augurproject/state/src/api/API";
-import { MarketInfo } from "@augurproject/state/src/api/Markets";
+import { MarketInfo, SECONDS_IN_A_DAY } from "@augurproject/state/src/api/Markets";
 import { contracts as compilerOutput } from "@augurproject/artifacts";
 import { DB } from "@augurproject/state/src/db/DB";
 import {
@@ -40,7 +40,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   const outcome0 = new ethers.utils.BigNumber(0);
   const outcome1 = new ethers.utils.BigNumber(1);
   const numShares = new ethers.utils.BigNumber(10000000000000);
-  const price = new ethers.utils.BigNumber(2150);
+  const price = new ethers.utils.BigNumber(22);
   await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
   await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
   await john.placeOrder(categoricalMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
@@ -49,7 +49,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   await john.placeOrder(scalarMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 
   // Partially fill orders
-  const cost = numShares.mul(7850).div(2);
+  const cost = numShares.mul(78).div(2);
   const yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
   const yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
   const categoricalOrderId0 = await john.getBestOrderId(bid, categoricalMarket.address, outcome0);
@@ -68,7 +68,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   await mary.buyCompleteSets(categoricalMarket, numShares);
   await mary.buyCompleteSets(scalarMarket, numShares);
 
-  await db.sync(john.augur, 100000, 0);
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
 
   let markets: Array<MarketInfo> = await api.route("getMarketsInfo", {
     marketIds: [
@@ -86,7 +86,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   let newTime = (await yesNoMarket.getEndTime_()).add(1);
   await john.setTimestamp(newTime);
 
-  await db.sync(john.augur, 100000, 0);
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarketsInfo", {
     marketIds: [
@@ -104,7 +104,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   newTime = newTime.add(60 * 60 * 24 * 7);
   await john.setTimestamp(newTime);
 
-  await db.sync(john.augur, 100000, 0);
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarketsInfo", {
     marketIds: [
@@ -120,18 +120,18 @@ test("State API :: Markets :: getMarketsInfo", async () => {
 
   // Submit intial reports
   const categoricalMarketPayoutSet = [
-    new ethers.utils.BigNumber(10000),
+    new ethers.utils.BigNumber(100),
     new ethers.utils.BigNumber(0),
     new ethers.utils.BigNumber(0),
     new ethers.utils.BigNumber(0)
   ];
   await john.doInitialReport(categoricalMarket, categoricalMarketPayoutSet);
 
-  const noPayoutSet = [new ethers.utils.BigNumber(10000), new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(0)];
-  const yesPayoutSet = [new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(10000), new ethers.utils.BigNumber(0)];
+  const noPayoutSet = [new ethers.utils.BigNumber(100), new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(0)];
+  const yesPayoutSet = [new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(100), new ethers.utils.BigNumber(0)];
   await john.doInitialReport(yesNoMarket, noPayoutSet);
 
-  await db.sync(john.augur, 100000, 0);
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarketsInfo", {
     marketIds: [
@@ -158,7 +158,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
     }
   }
 
-  await db.sync(john.augur, 100000, 0);
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarketsInfo", {
     marketIds: [
@@ -175,7 +175,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   newTime = newTime.add(60 * 60 * 24 * 7);
   await john.setTimestamp(newTime);
 
-  await db.sync(john.augur, 100000, 0);
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarketsInfo", {
     marketIds: [
@@ -211,7 +211,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   let remainingToFill = await john.getRemainingToFill(yesNoMarket, noPayoutSet);
   await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
 
-  await db.sync(john.augur, 100000, 0);
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarketsInfo", {
     marketIds: [
@@ -220,9 +220,6 @@ test("State API :: Markets :: getMarketsInfo", async () => {
       scalarMarket.address
     ]
   });
-
-  // newTime = newTime.add(60 * 60 * 24 * 60);
-  // await john.setTimestamp(newTime);
 
   // TODO Fix this workaround once bug in Jest is fixed: https://github.com/facebook/jest/issues/6184
   expect(markets[0].endTime).not.toBeNaN();
@@ -242,7 +239,6 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "consensus": null,
         "creationBlock": 89,
         "cumulativeScale": "1000000000000000000",
-        "description": "description",
         "details": null,
         "finalizationBlockNumber": null,
         "finalizationTime": null,
@@ -252,18 +248,18 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "minPrice": "0",
         "needsMigration": false,
         "numOutcomes": 3,
-        "numTicks": "10000",
-        "openInterest": "150000000000000000",
+        "numTicks": "100",
+        "openInterest": "1500000000000000",
         "outcomes": [
           {
             "description": "Invalid",
             "id": 0,
-            "price": "2150",
+            "price": "22",
           },
           {
             "description": "No",
             "id": 1,
-            "price": "2150",
+            "price": "22",
           },
           {
             "description": "Yes",
@@ -274,22 +270,21 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "reportingState": "FORKING",
         "resolutionSource": null,
         "scalarDenomination": null,
-        "tickSize": "0.0001",
+        "tickSize": "0.01",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "100000000000000000",
+        "volume": "1000000000000000",
       },
       {
         "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
         "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "consensus": [
-          "10000",
+          "100",
           "0",
           "0",
           "0",
         ],
         "creationBlock": 91,
         "cumulativeScale": "1000000000000000000",
-        "description": "description",
         "details": null,
         "finalizationBlockNumber": 175,
         "id": "0x253CDD7C827E9167797aEcBe2Bc055d879F2B164",
@@ -299,17 +294,17 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "needsMigration": false,
         "numOutcomes": 4,
         "numTicks": "10000",
-        "openInterest": "150000000000000000",
+        "openInterest": "1500000000000000",
         "outcomes": [
           {
             "description": "Invalid",
             "id": 0,
-            "price": "2150",
+            "price": "22",
           },
           {
             "description": "A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
             "id": 1,
-            "price": "2150",
+            "price": "22",
           },
           {
             "description": "B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
@@ -327,39 +322,38 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "scalarDenomination": null,
         "tickSize": "0.0001",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "60750000000000000",
+        "volume": "610000000000000",
       },
       {
         "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
         "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "consensus": null,
         "creationBlock": 93,
-        "cumulativeScale": "40",
-        "description": "description",
+        "cumulativeScale": "200000000000000000000",
         "details": null,
         "finalizationBlockNumber": null,
         "finalizationTime": null,
         "id": "0x4976474ff73f3CA6a5fc17e8175ce41eAb31C77d",
         "marketType": "scalar",
-        "maxPrice": "40",
-        "minPrice": "0",
+        "maxPrice": "250000000000000000000",
+        "minPrice": "50000000000000000000",
         "needsMigration": true,
         "numOutcomes": 3,
-        "numTicks": "4000",
-        "openInterest": "60000000000000000",
+        "numTicks": "2000000",
+        "openInterest": "30000000000000000000",
         "outcomes": [
           {
             "description": "Invalid",
             "id": 0,
-            "price": "2150",
+            "price": "22",
           },
           {
-            "description": "0",
+            "description": "50000000000000000000",
             "id": 1,
-            "price": "2150",
+            "price": "22",
           },
           {
-            "description": "40",
+            "description": "250000000000000000000",
             "id": 2,
             "price": "0",
           },
@@ -367,10 +361,10 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "reportingState": "AWAITING_FORK_MIGRATION",
         "resolutionSource": null,
         "scalarDenomination": null,
-        "tickSize": "0.00000000000000000001",
+        "tickSize": "0.0001",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "30750000000000000",
+        "volume": "10000110000000000000",
       },
     ]
   );
-}, 120000);
+}, 180000);
