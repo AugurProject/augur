@@ -9,7 +9,6 @@ import { ethers } from "ethers";
 
 import * as _ from "lodash";
 import * as t from "io-ts";
-import { EtherscanProvider } from "ethers/providers";
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 

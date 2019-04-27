@@ -31,15 +31,16 @@ export class ContractAPI {
     await this.augur.contracts.cash.approve(authority, new ethers.utils.BigNumber(2).pow(new ethers.utils.BigNumber(256)).sub(new ethers.utils.BigNumber(1)));
   }
 
-  public async createYesNoMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, endTime: ethers.utils.BigNumber, feePerCashInAttoCash: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
+  public async createYesNoMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, endTime: ethers.utils.BigNumber, feePerCashInAttoCash: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string, topic: string, extraInfo: string): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
     const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
+    const byteTopic = stringTo32ByteHex(topic);
 
     await this.faucet(marketCreationFee);
-    const marketAddress = await universe.createYesNoMarket_(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, stringTo32ByteHex(" "), "{\"description\": \"description\"}");
+    const marketAddress = await universe.createYesNoMarket_(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, byteTopic, extraInfo);
     if (!marketAddress || marketAddress === "0x") {
       throw new Error("Unable to get address for new binary market.");
     }
-    await universe.createYesNoMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, stringTo32ByteHex(" "), "{\"description\": \"description\"}");
+    await universe.createYesNoMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, byteTopic, extraInfo);
     return this.augur.contracts.marketFromAddress(marketAddress);
   }
 
@@ -49,18 +50,19 @@ export class ContractAPI {
     const endTime = new ethers.utils.BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
-    return this.createYesNoMarket(universe, endTime, fee, affiliateFeeDivisor, this.account);
+    return this.createYesNoMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, " ", "{\"description\": \"description\"}");
   }
 
-  public async createCategoricalMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, outcomes: Array<string>, endTime: ethers.utils.BigNumber, feePerCashInAttoCash: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
+  public async createCategoricalMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, endTime: ethers.utils.BigNumber, feePerCashInAttoCash: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string, outcomes: Array<string>, topic: string, extraInfo: string): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
     const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
+    const byteTopic = stringTo32ByteHex(topic);
 
     await this.faucet(marketCreationFee);
-    const marketAddress = await universe.createCategoricalMarket_(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), "{\"description\": \"description\"}");
+    const marketAddress = await universe.createCategoricalMarket_(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, outcomes, byteTopic, extraInfo);
     if (!marketAddress || marketAddress === "0x") {
       throw new Error("Unable to get address for new categorical market.");
     }
-    await universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), "{\"description\": \"description\"}");
+    await universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, outcomes, byteTopic, extraInfo);
     return this.augur.contracts.marketFromAddress(marketAddress);
   }
 
@@ -70,21 +72,19 @@ export class ContractAPI {
     const endTime = new ethers.utils.BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
-    return this.createCategoricalMarket(universe, outcomes, endTime, fee, affiliateFeeDivisor, this.account);
+    return this.createCategoricalMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, outcomes, " ", "{\"description\": \"description\"}");
   }
 
-  public async createScalarMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, endTime: ethers.utils.BigNumber, feePerCashInAttoCash: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
+  public async createScalarMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, endTime: ethers.utils.BigNumber, feePerCashInAttoCash: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string, prices: Array<ethers.utils.BigNumber>, numTicks: ethers.utils.BigNumber, topic: string, extraInfo: string): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
     const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
+    const byteTopic = stringTo32ByteHex(topic);
 
     await this.faucet(marketCreationFee);
-    const minPrice = new ethers.utils.BigNumber(50).mul(new ethers.utils.BigNumber(10).pow(18));
-    const maxPrice = new ethers.utils.BigNumber(250).mul(new ethers.utils.BigNumber(10).pow(18));
-    const numTicks = new ethers.utils.BigNumber(2000000);
-    const marketAddress = await universe.createScalarMarket_(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, [minPrice, maxPrice], numTicks, stringTo32ByteHex(" "), "{\"description\": \"description\"}");
+    const marketAddress = await universe.createScalarMarket_(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, prices, numTicks, byteTopic, extraInfo);
     if (!marketAddress || marketAddress === "0x") {
       throw new Error("Unable to get address for new scalar market.");
     }
-    await universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, [minPrice, maxPrice], numTicks, stringTo32ByteHex(" "), "{\"description\": \"description\"}");
+    await universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, prices, numTicks, byteTopic, extraInfo);
     return this.augur.contracts.marketFromAddress(marketAddress);
   }
 
@@ -94,7 +94,10 @@ export class ContractAPI {
     const endTime = new ethers.utils.BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(16));
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
-    return this.createScalarMarket(universe, endTime, fee, affiliateFeeDivisor, this.account);
+    const minPrice = new ethers.utils.BigNumber(50).mul(new ethers.utils.BigNumber(10).pow(18));
+    const maxPrice = new ethers.utils.BigNumber(250).mul(new ethers.utils.BigNumber(10).pow(18));
+    const numTicks = new ethers.utils.BigNumber(2000000);
+    return this.createScalarMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, [minPrice, maxPrice], numTicks, " ", "{\"description\": \"description\"}");
   }
 
   public async placeOrder(
