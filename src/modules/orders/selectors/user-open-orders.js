@@ -16,7 +16,8 @@ import {
   selectOutcomesDataState,
   selectOrderBooksState,
   selectOrderCancellationState,
-  selectPendingOrdersState
+  selectPendingOrdersState,
+  selectLoginAccountAddress
 } from "src/select-state";
 
 function selectMarketsDataStateMarket(state, marketId) {
@@ -47,7 +48,8 @@ export const selectUserOpenOrders = createCachedSelector(
   selectOrderBooksStateMarket,
   selectOrderCancellationState,
   selectPendingOrdersStateMarket,
-  (market, outcomes, orderBook, orderCancellation, pendingOrders) => {
+  selectLoginAccountAddress,
+  (market, outcomes, orderBook, orderCancellation, pendingOrders, account) => {
     let userOpenOrders =
       Object.keys(outcomes || {})
         .map(outcomeId =>
