@@ -11,7 +11,7 @@ export const selectPriceTimeSeries = (outcome, marketPriceHistory) => {
   }
 
   return marketPriceHistory
-    .filter(hist => hist.outcome.toString() === outcome.id)
+    .filter(hist => hist.outcome.toString() === outcome.id.toString())
     .map(priceTimePoint => ({
       price: priceTimePoint.price,
       amount: priceTimePoint.amount,

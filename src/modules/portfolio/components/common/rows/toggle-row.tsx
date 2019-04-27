@@ -1,10 +1,8 @@
 import React, { ReactNode } from "react";
 import classNames from "classnames";
 
-import toggleHeight from "utils/toggle-height/toggle-height";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 
-import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
 import Styles from "modules/portfolio/components/common/rows/toggle-row.styles";
 
 export interface ToggleRowProps {
@@ -29,9 +27,7 @@ export default class ToggleRow extends React.Component<
   };
 
   toggleRow = () => {
-    toggleHeight(this.additionalDetails, this.state.open, 0, () => {
-      this.setState({ open: !this.state.open });
-    });
+    this.setState({ open: !this.state.open });
   };
 
   render() {
@@ -80,18 +76,11 @@ export default class ToggleRow extends React.Component<
             </div>
           </div>
         </div>
-        <div
-          ref={additionalDetails => {
-            this.additionalDetails = additionalDetails;
-          }}
-          className={classNames(
-            Styles.ToggleContent,
-            ToggleHeightStyles["toggle-height-target"],
-            ToggleHeightStyles["toggle-height-target-quick"]
-          )}
-        >
-          {toggleContent}
-        </div>
+        {open && (
+          <div className={classNames(Styles.ToggleContent)}>
+            {toggleContent}
+          </div>
+        )}
       </div>
     );
   }

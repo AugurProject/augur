@@ -25,10 +25,6 @@ import { getOutcomeName } from "utils/get-outcome";
 
 import store from "src/store";
 
-import { selectUserOpenOrders } from "modules/orders/selectors/user-open-orders";
-
-import { selectPriceTimeSeries } from "modules/markets/selectors/price-time-series";
-
 import {
   selectAggregateOrderBook,
   selectTopBid,
@@ -41,16 +37,13 @@ import { positionSummary } from "modules/positions/selectors/positions-summary";
 import { selectReportableOutcomes } from "modules/reports/selectors/reportable-outcomes";
 
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
-import { selectFilledOrders } from "modules/orders/selectors/filled-orders";
+
 import {
   selectMarketsDataState,
   selectOutcomesDataState,
-  selectMarketTradingHistoryState,
   selectOrderBooksState,
   selectOrderCancellationState,
-  selectPendingOrdersState,
   selectAccountShareBalance,
-  selectLoginAccountAddress,
   selectAccountPositionsState
 } from "src/select-state";
 
@@ -74,10 +67,6 @@ function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketsDataState(state)[marketId];
 }
 
-function selectMarketTradingHistoryStateMarket(state, marketId) {
-  return selectMarketTradingHistoryState(state)[marketId];
-}
-
 function selectOutcomesDataStateMarket(state, marketId) {
   return selectOutcomesDataState(state)[marketId];
 }
@@ -90,57 +79,41 @@ function selectAccountShareBalanceMarket(state, marketId) {
   return selectAccountShareBalance(state)[marketId];
 }
 
-function selectPendingOrdersStateMarket(state, marketId) {
-  return selectPendingOrdersState(state)[marketId];
-}
-
 function selectAccountPositionsStateMarket(state, marketId) {
   return selectAccountPositionsState(state)[marketId];
 }
 
 const getMarketSelector = createCachedSelector(
   selectMarketsDataStateMarket,
-  selectMarketTradingHistoryStateMarket,
   selectOutcomesDataStateMarket,
   selectOrderBooksStateMarket,
   selectOrderCancellationState,
-  selectLoginAccountAddress,
   selectAccountShareBalanceMarket,
-  selectPendingOrdersStateMarket,
   selectAccountPositionsStateMarket,
   (
     marketData,
-    marketPriceHistory,
     marketOutcomesData,
     orderBooks,
     orderCancellation,
-    accountAddress,
     accountShareBalances,
-    pendingOrders,
     accountPositions
   ) =>
     assembleMarket(
       marketData,
-      marketPriceHistory,
       marketOutcomesData,
       orderBooks,
       orderCancellation,
-      accountAddress,
       accountShareBalances,
-      pendingOrders,
       accountPositions
     )
 )((state, marketId) => marketId);
 
 const assembleMarket = (
   marketData,
-  marketPriceHistory,
   marketOutcomesData,
   orderBooks,
   orderCancellation,
-  accountAddress,
   accountShareBalances,
-  pendingOrders,
   accountPositions
 ) => {
   const marketId = marketData.id;
@@ -254,26 +227,6 @@ const assembleMarket = (
     );
   }
 
-  market.userOpenOrders =
-    Object.keys(marketOutcomesData || {})
-      .map(outcomeId =>
-        selectUserOpenOrders(
-          market.id,
-          outcomeId,
-          orderBooks,
-          orderCancellation,
-          market.description,
-          getOutcomeName(market, marketOutcomesData[outcomeId])
-        )
-      )
-      .filter(collection => collection.length !== 0)
-      .flat() || [];
-
-  // add pending orders
-  if (pendingOrders && pendingOrders.length > 0) {
-    market.userOpenOrders = pendingOrders.concat(market.userOpenOrders);
-  }
-
   market.outcomes = Object.keys(marketOutcomesData || {})
     .map(outcomeId => {
       const outcomeData = marketOutcomesData[outcomeId];
@@ -335,19 +288,6 @@ const assembleMarket = (
         });
       }
 
-      market.filledOrders = selectFilledOrders(
-        marketPriceHistory,
-        accountAddress,
-        marketOutcomesData,
-        market,
-        market.userOpenOrders
-      )
-        .sort((a, b) => b.logIndex - a.logIndex)
-        .sort((a, b) => b.timestamp.timestamp - a.timestamp.timestamp);
-      market.recentlyTraded = convertUnixToFormattedDate(
-        market.filledOrders[0] ? market.filledOrders[0].timestamp.timestamp : 0
-      ); // the first one is the most recent
-
       const orderBook = selectAggregateOrderBook(
         outcome.id,
         orderBooks,
@@ -357,11 +297,6 @@ const assembleMarket = (
       outcome.orderBookSeries = getOrderBookSeries(orderBook);
       outcome.topBid = selectTopBid(orderBook, false);
       outcome.topAsk = selectTopAsk(orderBook, false);
-
-      outcome.priceTimeSeries = selectPriceTimeSeries(
-        outcome,
-        marketPriceHistory
-      );
 
       return outcome;
     })

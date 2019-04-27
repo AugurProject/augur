@@ -138,6 +138,7 @@ export default class MarketView extends Component {
         (nextProps.marketId !== marketId || nextProps.marketType === undefined))
     ) {
       nextProps.loadFullMarket(nextProps.marketId);
+      nextProps.loadMarketTradingHistory(marketId);
     }
   }
 

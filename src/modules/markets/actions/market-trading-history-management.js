@@ -5,6 +5,8 @@ import { keyArrayBy } from "utils/key-by";
 
 export const UPDATE_MARKET_TRADING_HISTORY = "UPDATE_MARKET_TRADING_HISTORY";
 export const UPDATE_USER_TRADING_HISTORY = "UPDATE_USER_TRADING_HISTORY";
+export const UPDATE_USER_MARKET_TRADING_HISTORY =
+  "UPDATE_USER_MARKET_TRADING_HISTORY";
 export const BULK_MARKET_TRADING_HISTORY = "BULK_MARKET_TRADING_HISTORY";
 
 export function bulkMarketTradingHistory(keyedMarketTradingHistory) {
@@ -31,6 +33,21 @@ export function updateUserTradingHistory(account, userFilledOrders) {
     type: UPDATE_USER_TRADING_HISTORY,
     data: {
       account,
+      userFilledOrders
+    }
+  };
+}
+
+export function updateUserMarketTradingHistory(
+  account,
+  marketId,
+  userFilledOrders
+) {
+  return {
+    type: UPDATE_USER_MARKET_TRADING_HISTORY,
+    data: {
+      account,
+      marketId,
       userFilledOrders
     }
   };
@@ -93,7 +110,18 @@ export const loadUserMarketTradingHistory = (options, callback = logError) => (
       );
     }
 
-    dispatch(updateUserTradingHistory(loginAccount.address, tradingHistory));
+    if (allOptions.marketId) {
+      dispatch(
+        updateUserMarketTradingHistory(
+          loginAccount.address,
+          allOptions.marketId,
+          tradingHistory
+        )
+      );
+    } else {
+      dispatch(updateUserTradingHistory(loginAccount.address, tradingHistory));
+    }
+
     callback(null, tradingHistory);
   });
 };

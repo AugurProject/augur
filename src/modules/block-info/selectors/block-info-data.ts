@@ -15,7 +15,7 @@ export const selectBlockInfoData = createSelector(
   (blockchainState: any) => {
     if (blockchainState && blockchainState.lastProcessedBlock) {
       const { currentBlockNumber, lastProcessedBlock } = blockchainState;
-      const highestBlockBn = createBigNumber(currentBlockNumber);
+      const highestBlockBn = createBigNumber(currentBlockNumber || 0);
       const lastProcessedBlockBn = createBigNumber(lastProcessedBlock);
 
       const diff = highestBlockBn.minus(lastProcessedBlockBn);

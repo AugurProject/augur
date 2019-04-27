@@ -1,6 +1,16 @@
+import store from "src/store";
 import { createBigNumber } from "utils/create-big-number";
 import { BUY, SELL } from "modules/common-elements/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
+import {
+  selectMarketsDataState,
+  selectOutcomesDataState,
+  selectMarketTradingHistoryState,
+  selectLoginAccountAddress
+} from "src/select-state";
+import createCachedSelector from "re-reselect";
+import { selectUserOpenOrders } from "modules/orders/selectors/user-open-orders";
+import { getOutcomeName } from "utils/get-outcome";
 
 function findOrders(
   tradesCreatedOrFilledByThisAccount,
@@ -54,7 +64,10 @@ function findOrders(
       const priceBN = createBigNumber(price);
       let typeOp = type;
 
-      const outcomeName = outcomesData[outcome].name;
+      const outcomeName = getOutcomeName(
+        marketsData,
+        (outcomesData || {})[outcome]
+      );
 
       let originalQuantity = amountBN;
       if (accountId === creator && !foundOrder) {
@@ -138,31 +151,50 @@ function findOrders(
 
   return orders;
 }
-export function selectFilledOrders(
-  marketTradeHistory,
-  accountId,
-  outcomesData,
-  marketsData,
-  openOrders
-) {
-  if (!marketTradeHistory || marketTradeHistory.length < 1) {
-    return [];
-  }
 
-  const tradesCreatedOrFilledByThisAccount = marketTradeHistory.filter(
-    trade => trade.creator === accountId || trade.filler === accountId
-  );
-
-  const orders = findOrders(
-    tradesCreatedOrFilledByThisAccount,
-    accountId,
-    outcomesData,
-    marketsData,
-    openOrders
-  );
-  orders
-    .sort((a, b) => b.logIndex - a.logIndex)
-    .sort((a, b) => b.timestamp - a.timestamp);
-
-  return orders;
+function selectMarketsDataStateMarket(state, marketId) {
+  return selectMarketsDataState(state)[marketId];
 }
+
+function selectMarketTradingHistoryStateMarket(state, marketId) {
+  return selectMarketTradingHistoryState(state)[marketId];
+}
+
+function selectOutcomesDataStateMarket(state, marketId) {
+  return selectOutcomesDataState(state)[marketId];
+}
+
+export default function(marketId) {
+  if (!marketId) return [];
+  return selectUserFilledOrders(store.getState(), marketId);
+}
+
+export const selectUserFilledOrders = createCachedSelector(
+  selectMarketTradingHistoryStateMarket,
+  selectLoginAccountAddress,
+  selectOutcomesDataStateMarket,
+  selectMarketsDataStateMarket,
+  selectUserOpenOrders,
+  (marketTradeHistory, accountId, outcomesData, marketsData, openOrders) => {
+    if (!marketTradeHistory || marketTradeHistory.length < 1) {
+      return [];
+    }
+
+    const tradesCreatedOrFilledByThisAccount = marketTradeHistory.filter(
+      trade => trade.creator === accountId || trade.filler === accountId
+    );
+
+    const orders = findOrders(
+      tradesCreatedOrFilledByThisAccount,
+      accountId,
+      outcomesData,
+      marketsData,
+      openOrders
+    );
+    orders
+      .sort((a, b) => b.logIndex - a.logIndex)
+      .sort((a, b) => b.timestamp - a.timestamp);
+
+    return orders || [];
+  }
+)((state, marketId) => marketId);

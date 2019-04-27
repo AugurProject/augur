@@ -4,12 +4,12 @@ import Positions from "modules/portfolio/components/positions/positions";
 import getLoginAccountPositions from "modules/positions/selectors/login-account-positions";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/common-elements/constants";
+import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
 
 const mapStateToProps = state => {
   const positions = getLoginAccountPositions();
-
-  // NOTE: for data wiring, this should probably be just done as calls for getting openPosition Markets, getting Reporting Markets, and getting Closed Markets respectively from the node and just passed the expected keys below
-  const markets = getPositionsMarkets(positions);
+  const timestamps = getMarketsPositionsRecentlyTraded(state);
+  const markets = getPositionsMarkets(timestamps, positions);
 
   return {
     markets
@@ -22,7 +22,11 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const getPositionsMarkets = memoize(
-  positions => Array.from(new Set([...positions.markets])),
+  (marketsPositionsRecentlyTraded, positions) =>
+    Array.from(new Set([...positions.markets])).map(m => ({
+      ...m,
+      recentlyTraded: marketsPositionsRecentlyTraded[m.id]
+    })),
   { max: 1 }
 );
 

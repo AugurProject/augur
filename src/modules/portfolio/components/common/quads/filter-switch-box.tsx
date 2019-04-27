@@ -39,11 +39,6 @@ export default class FilterSwitchBox extends React.Component<
     view: false
   };
 
-  componentDidMount() {
-    const filteredData = this.applySearch(this.state.search, this.props.data);
-    this.updateFilteredData(filteredData);
-  }
-
   componentWillUpdate(nextProps: FilterBoxProps, nextState: FilterBoxState) {
     if (
       nextProps.data.length !== this.props.data.length ||
