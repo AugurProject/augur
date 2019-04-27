@@ -165,6 +165,7 @@ function selectOutcomesDataStateMarket(state, marketId) {
 }
 
 export default function(marketId) {
+  if (!marketId) return [];
   return selectUserFilledOrders(store.getState(), marketId);
 }
 

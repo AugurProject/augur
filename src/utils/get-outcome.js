@@ -10,6 +10,8 @@ export const getOutcomeName = (
   alwaysReturnYesForBinaryMarket = true
 ) => {
   const { marketType } = market;
+  // default to handle app loading
+  if (!marketType) return YES_NO_YES_OUTCOME_NAME;
   switch (marketType) {
     case YES_NO: {
       if (!alwaysReturnYesForBinaryMarket && outcome.toString() === "0") {

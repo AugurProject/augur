@@ -36,6 +36,8 @@ function selectPendingOrdersStateMarket(state, marketId) {
 }
 
 export default function(marketId) {
+  if (!marketId) return [];
+
   return selectUserOpenOrders(store.getState(), marketId);
 }
 
