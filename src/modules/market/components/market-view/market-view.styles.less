@@ -186,7 +186,7 @@
   }
 }
 
-.OutcomeNameDisplay {
+div.OutcomeNameDisplay {
   .text-12;
 
   align-items: center;
@@ -198,12 +198,12 @@
   flex-flow: row nowrap;
   height: @size-40;
   padding: 0 @size-16;
+  z-index: @mask;
 }
 
 @media @breakpoint-mobile {
   .OutcomeSelectionArea {
-    background-color: @color-primary-background;
-    margin-top: -1px;
+    background: @color-primary-background;
     padding: 0 @size-8 @size-16;
     position: absolute;
     width: 100%;
