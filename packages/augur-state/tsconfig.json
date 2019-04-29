@@ -28,6 +28,9 @@
     },
     {
       "path": "../augur-artifacts"
+    },
+    {
+      "path": "../speedomatic"
     }
   ]
 }
