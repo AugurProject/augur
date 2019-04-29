@@ -14,7 +14,7 @@ export const marketsOpenOrders = createSelector(selectMarkets, allMarkets => {
   const markets = allMarkets.reduce((p, m) => {
     if (m.marketStatus === constants.MARKET_CLOSED) return p;
     const userOpenOrders = getUserOpenOrders(m.id) || [];
-    const marketsPositionsRecentlyTraded = getMarketsPositionsRecentlyTraded(state);
+    const marketsPositionsRecentlyTraded = getMarketsPositionsRecentlyTraded();
     if (userOpenOrders.length === 0) return p;
     return [
       ...p,
@@ -27,7 +27,9 @@ export const marketsOpenOrders = createSelector(selectMarkets, allMarkets => {
     ];
   }, []);
 
-  markets.sort((a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp);
+  markets.sort(
+    (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
+  );
 
   const individualOrders = markets.reduce(
     (p, market) => [...p, ...getUserOpenOrders(market.id)],

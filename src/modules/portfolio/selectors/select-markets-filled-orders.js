@@ -23,12 +23,20 @@ export const marketsFilledOrders = createSelector(
   selectFilledOrders,
   selectMarketsDataState,
   getMarketsPositionsRecentlyTraded,
-  (marketReportState, loginAccountAddress, filledOrders, marketsData, timestamps) => {
+  (
+    marketReportState,
+    loginAccountAddress,
+    filledOrders,
+    marketsData,
+    timestamps
+  ) => {
     const marketIds = filterMarketIds(
       filledOrders[loginAccountAddress] || [],
       marketReportState.resolved
     );
-    const markets = filterMarketsByStatus(marketIds, timestamps).sort((a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp);
+    const markets = filterMarketsByStatus(marketIds, timestamps).sort(
+      (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
+    );
     const allFilledOrders = getAllUserFilledOrders(marketIds);
 
     return {
