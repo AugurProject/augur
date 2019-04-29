@@ -19,7 +19,8 @@ export const selectBlockInfoData = createSelector(
       const lastProcessedBlockBn = createBigNumber(lastProcessedBlock);
 
       const diff = highestBlockBn.minus(lastProcessedBlockBn);
-      let blocksBehind = formatNumber(diff.toString()).roundedFormatted;
+      const diffBlocks = diff.lt(ZERO) ? ZERO : diff;
+      let blocksBehind = formatNumber(diffBlocks.toString()).roundedFormatted;
 
       blocksBehind = blocksBehind === "-" ? 0 : blocksBehind;
 
