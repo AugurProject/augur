@@ -240,18 +240,19 @@ export const ValueLabel = (props: ValueLabelProps) => {
       >
         {`${frontFacingLabel}${postfix}${denominationLabel}`}
       </label>
-      <ReactTooltip
-        id={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
-        className={TooltipStyles.Tooltip}
-        effect="solid"
-        place="top"
-        type="light"
-        data-event="mouseover"
-        data-event-off="blur scroll"
-        disable={postfix.length === 0}
-      >
-        {`${fullPrecision} ${denominationLabel}`}
-      </ReactTooltip>
+      {postfix.length !== 0 && 
+        <ReactTooltip
+          id={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="top"
+          type="light"
+          data-event="mouseover"
+          data-event-off="blur scroll"
+        >
+          {`${fullPrecision} ${denominationLabel}`}
+        </ReactTooltip>
+      }
     </span>
   );
 };
@@ -272,18 +273,19 @@ export class TextLabel extends React.Component<TextLabelProps> {
         >
           {text}
         </label>
-        <ReactTooltip
-          id={`${keyId}-${text.replace(" ", "-")}`}
-          className={TooltipStyles.Tooltip}
-          effect="solid"
-          place="top"
-          type="light"
-          data-event="mouseover"
-          data-event-off="blur scroll"
-          disable={isDisabled}
-        >
-          {text}
-        </ReactTooltip>
+        {!isDisabled && 
+          <ReactTooltip
+            id={`${keyId}-${text.replace(" ", "-")}`}
+            className={TooltipStyles.Tooltip}
+            effect="solid"
+            place="top"
+            type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
+          >
+            {text}
+          </ReactTooltip>
+        }
       </span>
     );
   }
