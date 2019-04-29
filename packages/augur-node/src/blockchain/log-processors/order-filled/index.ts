@@ -1,15 +1,18 @@
-import { Augur } from "augur.js";
-import * as Knex from "knex";
-import { BigNumber } from "bignumber.js";
-import { Address, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, TradesRow } from "../../../types";
+import { Address, Augur, BigNumber, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, TradesRow } from "../../../types";
+import Knex from "knex";
 import { updateOrder } from "./update-order";
 import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";
 import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
 import { fixedPointToDecimal, numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
-import { BN_WEI_PER_ETHER, MarketType, SubscriptionEventNames } from "../../../constants";
-import { updateOutcomeValueFromOrders, removeOutcomeValue } from "../profit-loss/update-outcome-value";
-import { updateProfitLossBuyShares, updateProfitLossSellShares, updateProfitLossSellEscrowedShares } from "../profit-loss/update-profit-loss";
+import { BN_WEI_PER_ETHER, SubscriptionEventNames } from "../../../constants";
+import { removeOutcomeValue, updateOutcomeValueFromOrders } from "../profit-loss/update-outcome-value";
+import {
+  updateProfitLossBuyShares,
+  updateProfitLossSellEscrowedShares,
+  updateProfitLossSellShares
+} from "../profit-loss/update-profit-loss";
+import { convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "../../../utils";
 
 interface TokensRowWithNumTicksAndCategory extends TokensRow {
   category: string;
@@ -44,13 +47,13 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
     const orderCreator = ordersRow.orderCreator;
     const price = ordersRow.fullPrecisionPrice;
     const orderType = ordersRow.orderType;
-    const amount = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.amountFilled, 10), tickSize);
-    const numCreatorTokens = fixedPointToDecimal(new BigNumber(log.numCreatorTokens, 10), BN_WEI_PER_ETHER);
-    const numCreatorShares = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numCreatorShares, 10), tickSize);
-    const numFillerTokens = fixedPointToDecimal(new BigNumber(log.numFillerTokens, 10), BN_WEI_PER_ETHER);
-    const numFillerShares = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numFillerShares, 10), tickSize);
-    const marketCreatorFees = fixedPointToDecimal(new BigNumber(log.marketCreatorFees, 10), BN_WEI_PER_ETHER);
-    const reporterFees = fixedPointToDecimal(new BigNumber(log.reporterFees, 10), BN_WEI_PER_ETHER);
+    const amount = convertOnChainAmountToDisplayAmount(new BigNumber(log.amountFilled), tickSize);
+    const numCreatorTokens = fixedPointToDecimal(new BigNumber(log.numCreatorTokens), BN_WEI_PER_ETHER);
+    const numCreatorShares = convertOnChainAmountToDisplayAmount(new BigNumber(log.numCreatorShares), tickSize);
+    const numFillerTokens = fixedPointToDecimal(new BigNumber(log.numFillerTokens), BN_WEI_PER_ETHER);
+    const numFillerShares = convertOnChainAmountToDisplayAmount(new BigNumber(log.numFillerShares), tickSize);
+    const marketCreatorFees = fixedPointToDecimal(new BigNumber(log.marketCreatorFees), BN_WEI_PER_ETHER);
+    const reporterFees = fixedPointToDecimal(new BigNumber(log.reporterFees), BN_WEI_PER_ETHER);
     const tradeData = formatBigNumberAsFixed<TradesRow<BigNumber>, TradesRow<string>>({
       marketId,
       outcome,
@@ -79,29 +82,29 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
 
     await updateOrder(db, augur, marketId, orderId, amount, orderCreator, filler, tickSize, minPrice);
 
-    await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash, orderType === "buy" ? price : maxPrice.minus(price));
+    await updateOutcomeValueFromOrders(db, marketId, outcome, log.transactionHash, orderType === "buy" ? price : maxPrice.sub(price));
     if (numOutcomes === 2) {
       const otherOutcome = outcome === 0 ? 1 : 0;
-      await updateOutcomeValueFromOrders(db, marketId, otherOutcome, log.transactionHash, orderType === "sell" ? price : maxPrice.minus(price));
+      await updateOutcomeValueFromOrders(db, marketId, otherOutcome, log.transactionHash, orderType === "sell" ? price : maxPrice.sub(price));
     }
     const orderOutcome = [outcome];
     const otherOutcomes = Array.from(Array(numOutcomes).keys());
     otherOutcomes.splice(outcome, 1);
-    const displayRange = augur.utils.convertOnChainPriceToDisplayPrice(maxPrice.minus(minPrice), minPrice, tickSize);
+    const displayRange = convertOnChainPriceToDisplayPrice(maxPrice.sub(minPrice), minPrice, tickSize);
     if (numCreatorTokens.gt(0)) {
       await updateProfitLossBuyShares(db, marketId, orderCreator, numCreatorTokens, orderType === "buy" ? orderOutcome : otherOutcomes, log.transactionHash);
     }
     if (numFillerTokens.gt(0)) {
       await updateProfitLossBuyShares(db, marketId, filler, numFillerTokens, orderType === "sell" ? orderOutcome : otherOutcomes, log.transactionHash);
     }
-    const creatorShares = new BigNumber(numCreatorShares, 10);
-    const fillerShares = new BigNumber(numFillerShares, 10);
-    const actualPrice = price.minus(minPrice);
+    const creatorShares = new BigNumber(numCreatorShares);
+    const fillerShares = new BigNumber(numFillerShares);
+    const actualPrice = price.sub(minPrice);
     if (creatorShares.gt(0)) {
-      await updateProfitLossSellEscrowedShares(db, marketId, creatorShares, orderCreator, orderType === "buy" ? otherOutcomes : orderOutcome, creatorShares.multipliedBy(orderType === "buy" ? displayRange.minus(actualPrice) : actualPrice), log.transactionHash);
+      await updateProfitLossSellEscrowedShares(db, marketId, creatorShares, orderCreator, orderType === "buy" ? otherOutcomes : orderOutcome, creatorShares.mul(orderType === "buy" ? displayRange.sub(actualPrice) : actualPrice), log.transactionHash);
     }
     if (fillerShares.gt(0)) {
-      await updateProfitLossSellShares(db, marketId, fillerShares, filler, orderType === "sell" ? otherOutcomes : orderOutcome, fillerShares.multipliedBy(orderType === "sell" ? displayRange.minus(actualPrice) : actualPrice), log.transactionHash);
+      await updateProfitLossSellShares(db, marketId, fillerShares, filler, orderType === "sell" ? otherOutcomes : orderOutcome, fillerShares.mul(orderType === "sell" ? displayRange.sub(actualPrice) : actualPrice), log.transactionHash);
     }
   };
 }
@@ -128,16 +131,16 @@ export async function processOrderFilledLogRemoval(augur: Augur, log: FormattedE
     const orderType = ordersRow.orderType;
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
     const numCreatorTokens = fixedPointToDecimal(new BigNumber(log.numCreatorTokens), BN_WEI_PER_ETHER);
-    const numCreatorShares = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numCreatorShares, 10), new BigNumber(tickSize, 10));
+    const numCreatorShares = convertOnChainAmountToDisplayAmount(new BigNumber(log.numCreatorShares), new BigNumber(tickSize));
     const numFillerTokens = fixedPointToDecimal(new BigNumber(log.numFillerTokens), BN_WEI_PER_ETHER);
-    const numFillerShares = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numFillerShares, 10), new BigNumber(tickSize, 10));
+    const numFillerShares = convertOnChainAmountToDisplayAmount(new BigNumber(log.numFillerShares), new BigNumber(tickSize));
     const marketCreatorFees = fixedPointToDecimal(new BigNumber(log.marketCreatorFees), BN_WEI_PER_ETHER);
     const reporterFees = fixedPointToDecimal(new BigNumber(log.reporterFees), BN_WEI_PER_ETHER);
-    const amount = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.amountFilled, 10), tickSize);
+    const amount = convertOnChainAmountToDisplayAmount(new BigNumber(log.amountFilled), tickSize);
 
     await updateVolumetrics(db, augur, category, marketId, outcome, blockNumber, orderId, orderCreator, tickSize, minPrice, maxPrice, false);
     await db.from("trades").where({ marketId, outcome, orderId, blockNumber }).del();
-    await updateOrder(db, augur, marketId, orderId, amount.negated(), orderCreator, log.filler, tickSize, minPrice);
+    await updateOrder(db, augur, marketId, orderId, amount.mul(new BigNumber(-1)), orderCreator, log.filler, tickSize, minPrice);
     augurEmitter.emit(SubscriptionEventNames.OrderFilled, Object.assign({}, log, {
       marketId,
       outcome,

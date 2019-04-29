@@ -1,9 +1,9 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
-import { BigNumber } from "bignumber.js";
+
 import { ZERO } from "../../constants";
-import { OutcomeParam } from "../../types";
+import { BigNumber, OutcomeParam } from "../../types";
 
 export const MarketPriceCandlesticksParams = t.type({
   marketId: t.string,
@@ -61,7 +61,7 @@ export async function getMarketPriceCandlesticks(db: Knex, augur: {}, params: t.
         end: _.maxBy(trades, "timestamp")!.price.toString(),
         min: _.minBy(trades, "price")!.price.toString(),
         max: _.maxBy(trades, "price")!.price.toString(),
-        volume: _.reduce(trades, (totalAmount: BigNumber, tradeRow: MarketPriceHistoryRow) => totalAmount.plus(tradeRow.amount), ZERO)!.toString(),
+        volume: _.reduce(trades, (totalAmount: BigNumber, tradeRow: MarketPriceHistoryRow) => totalAmount.add(tradeRow.amount), ZERO)!.toString(),
       };
     });
   });

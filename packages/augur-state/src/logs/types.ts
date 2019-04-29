@@ -77,21 +77,22 @@ export interface InitialReportSubmittedLog extends Log, Doc {
 }
 
 export interface MarketCreatedLogExtraInfo {
+  description: string;
   longDescription?: string;
   resolutionSource?: string;
   _scalarDenomination?: string;
 }
 
 export interface MarketCreatedLog extends Log, Doc {
-  universe: string;
+  universe: Address;
   endTime: Timestamp;
   topic: string;
-  description: string;
   extraInfo: string;
-  market: string;
-  marketCreator: string;
-  minPrice: string;
-  maxPrice: string;
+  market: Address;
+  marketCreator: Address;
+  designatedReporter: Address;
+  feeDivisor: string;
+  prices: Array<Price>;
   marketType: MarketType;
   numTicks: string;
   outcomes: Array<string>;
@@ -152,10 +153,10 @@ export interface OrderFilledLog extends Log, Doc, Timestamped {
   orderId: string;
   price: string;
   outcome: string;
-  marketCreatorFees: string;
-  reporterFees: string;
+  fees: string;
   amountFilled: string;
   tradeGroupId: string;
+  orderIsCompletelyFilled: boolean;
 }
 
 export interface OrderPriceChangedLog extends Log, Doc {
@@ -177,6 +178,10 @@ export enum OrderType {
 }
 
 export interface PayoutNumerator {
+  _hex: string;
+}
+
+export interface Price {
   _hex: string;
 }
 

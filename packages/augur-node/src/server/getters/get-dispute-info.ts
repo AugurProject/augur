@@ -1,11 +1,20 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
-import * as _ from "lodash";
-import Augur from "augur.js";
-import { Address, MarketsRowWithTime, Payout, UIStakeInfo, PayoutRow, StakeDetails, ReportingState } from "../../types";
-import { getMarketsWithReportingState, normalizePayouts, uiStakeInfoToFixed, groupByAndSum } from "./database";
-import { BigNumber } from "bignumber.js";
+import Knex from "knex";
 import { QueryBuilder } from "knex";
+import * as _ from "lodash";
+import {
+  Address,
+  Augur,
+  BigNumber,
+  MarketsRowWithTime,
+  Payout,
+  PayoutRow,
+  ReportingState,
+  StakeDetails,
+  UIStakeInfo
+} from "../../types";
+import { getMarketsWithReportingState, groupByAndSum, normalizePayouts, uiStakeInfoToFixed } from "./database";
+
 import { ZERO } from "../../constants";
 
 export const DisputeInfoParams = t.intersection([
@@ -109,7 +118,7 @@ async function getAccountStakes(db: Knex, marketIds: Array<Address>, account: Ad
 }
 
 function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completedStakeAmount: BigNumber): BigNumber {
-  return totalCompletedStakeOnAllPayouts.times(2).minus(completedStakeAmount.times(3));
+  return totalCompletedStakeOnAllPayouts.mul(2).sub(completedStakeAmount.mul(3));
 }
 
 export async function getDisputeInfo(db: Knex, augur: Augur, params: t.TypeOf<typeof DisputeInfoParams>): Promise<Array<UIStakeInfo<string>|null>> {
@@ -142,7 +151,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
   if (marketRow == null) return null;
   const totalCompletedStakeOnAllPayouts = _.reduce(
     stakeRows.stakesCompleted,
-    (result: BigNumber, completedStake: StakeRow): BigNumber => result.plus(completedStake.amountStaked),
+    (result: BigNumber, completedStake: StakeRow): BigNumber => result.add(completedStake.amountStaked),
     ZERO,
   );
 
@@ -178,9 +187,9 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
         bondSizeCurrent,
         stakeCurrent,
         accountStakeCurrent,
-        accountStakeTotal: accountStakeCurrent.plus(accountStakeCompleted),
-        stakeRemaining: bondSizeCurrent.minus(stakeCurrent),
-        bondSizeTotal: bondSizeCurrent.plus(stakeCompleted),
+        accountStakeTotal: accountStakeCurrent.add(accountStakeCompleted),
+        stakeRemaining: bondSizeCurrent.sub(stakeCurrent),
+        bondSizeTotal: bondSizeCurrent.add(stakeCompleted),
       };
     }
     currentAmounts.accountStakeCompleted = accountStakeCompleted;
@@ -196,15 +205,15 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
     );
   });
 
-  let disputeRound = null;
-  if (!totalCompletedStakeOnAllPayouts.isEqualTo(0)) {
+  let disputeRound:number | null = null;
+  if (!totalCompletedStakeOnAllPayouts.eq(0)) {
     disputeRound = stakeRows.disputeRound[0] ? stakeRows.disputeRound[0].disputeRound + 1 : 1;
   }
 
   return uiStakeInfoToFixed({
     marketId: marketRow.marketId,
     stakeCompletedTotal: totalCompletedStakeOnAllPayouts,
-    bondSizeOfNewStake: totalCompletedStakeOnAllPayouts.times(2),
+    bondSizeOfNewStake: totalCompletedStakeOnAllPayouts.mul(2),
     stakes: stakeResults,
     disputeRound,
   });

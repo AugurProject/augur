@@ -1,6 +1,5 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
-import { FormattedEventLog } from "../../types";
+import { Augur, FormattedEventLog } from "../../types";
+import Knex from "knex";
 
 //     event MarketMailboxTransferred(address indexed universe, address indexed market, address indexed mailbox, address from, address to);
 export async function processMarketMailboxTransferredLog(augur: Augur, log: FormattedEventLog) {

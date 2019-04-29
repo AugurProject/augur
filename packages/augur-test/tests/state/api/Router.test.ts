@@ -25,7 +25,7 @@ test("State API :: Bad parameters to getter", async () => {
 
   let message = "";
   try {
-    router.route("getMarkets", { this: "that" });
+    await router.route("getMarkets", { this: "that" });
   } catch (error) {
     message = error.message;
   }
@@ -39,7 +39,7 @@ test("State API :: Nonexistant getter", async () => {
 
   let message = "";
   try {
-    router.route("fooBar", { this: "that" });
+    await router.route("fooBar", { this: "that" });
   } catch (error) {
     message = error.message;
   }

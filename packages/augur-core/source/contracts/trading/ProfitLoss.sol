@@ -14,6 +14,8 @@ contract ProfitLoss is Initializable {
 
     IAugur public augur;
     IOrders public orders;
+    address public createOrder;
+    address public cancelOrder;
     address public fillOrder;
     address public claimTradingProceeds;
 
@@ -31,9 +33,19 @@ contract ProfitLoss is Initializable {
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
+        createOrder = augur.lookup("CreateOrder");
+        cancelOrder = augur.lookup("CancelOrder");
         fillOrder = augur.lookup("FillOrder");
         claimTradingProceeds = augur.lookup("ClaimTradingProceeds");
         orders = IOrders(augur.lookup("Orders"));
+        return true;
+    }
+
+    function recordFrozenFundChange(IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta) public afterInitialized returns (bool) {
+        require(msg.sender == createOrder || msg.sender == cancelOrder || msg.sender == address(orders) || msg.sender == fillOrder);
+        OutcomeData storage _outcomeData = profitLossData[_account][address(_market)][_outcome];
+        _outcomeData.frozenFunds += _frozenFundDelta;
+        augur.logProfitLossChanged(_market, _account, _outcome, _outcomeData.netPosition, uint256(_outcomeData.avgPrice), _outcomeData.realizedProfit, _outcomeData.frozenFunds,  _outcomeData.realizedCost);
         return true;
     }
 

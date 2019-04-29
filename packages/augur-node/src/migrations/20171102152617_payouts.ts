@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import Knex from "knex";
 
 exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("payouts").then( (): PromiseLike<any> => {

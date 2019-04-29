@@ -1,7 +1,6 @@
-import { Augur } from "augur.js";
-import * as Knex from "knex";
-import { BigNumber } from "bignumber.js";
-import { Address, FormattedEventLog } from "../../../types";
+import { Address, Augur, BigNumber, FormattedEventLog } from "../../../types";
+import Knex from "knex";
+
 import { isLegacyReputationToken } from "./is-legacy-reputation-token";
 import { updateProfitLossChangeShareBalance } from "../profit-loss/update-profit-loss";
 import { TokenType } from "../../../constants";
@@ -17,7 +16,7 @@ export async function increaseTokenBalance(db: Knex, augur: Augur, token: Addres
   if (oldBalance == null) {
     await db.insert({ owner, token, balance: balance.toString() }).into("balances");
   } else {
-    balance = oldBalance.balance.plus(amount);
+    balance = oldBalance.balance.add(amount);
     await db.update({ balance: balance.toString() }).into("balances").where({ token, owner });
   }
 

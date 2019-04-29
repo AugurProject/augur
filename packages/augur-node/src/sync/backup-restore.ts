@@ -1,4 +1,4 @@
-import { removeOldSyncFiles, fileCompatible, restoreWarpSyncFile, compressAndHashFile } from "./file-operations";
+import { compressAndHashFile, fileCompatible, removeOldSyncFiles, restoreWarpSyncFile } from "./file-operations";
 import { format } from "util";
 
 export class BackupRestore {

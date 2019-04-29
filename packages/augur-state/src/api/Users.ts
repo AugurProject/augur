@@ -9,7 +9,6 @@ import { ethers } from "ethers";
 
 import * as _ from "lodash";
 import * as t from "io-ts";
-import { EtherscanProvider } from "ethers/providers";
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 
@@ -133,7 +132,7 @@ export class Users<TBigNumber> {
         market: { $in: marketIds }
       }
     }
-    
+
     const marketFinalizedResults = await db.findMarketFinalizedLogs(marketFinalizedRequest);
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, "market");
 
@@ -222,7 +221,7 @@ export class Users<TBigNumber> {
     const ordersFilledResultsByMarketAndOutcome = await getOrderFilledRecordsByMarketAndOutcome(db, orderFilledRequest);
 
     const marketIds = _.keys(profitLossByMarketAndOutcome);
-    
+
     const marketFinalizedRequest = {
       selector: {
         universe: params.universe,
@@ -437,8 +436,8 @@ function getLastDocBeforeTimestamp<TDoc extends Timestamped>(docs: Array<TDoc>, 
 }
 
 function getTradingPositionFromProfitLossFrame(profitLossFrame: ProfitLossChangedLog, marketDoc: MarketCreatedLog, onChainOutcomeValue: BigNumber, timestamp: number): TradingPosition {
-  const minPrice = new BigNumber(marketDoc.minPrice);
-  const maxPrice = new BigNumber(marketDoc.maxPrice);
+  const minPrice = new BigNumber(marketDoc.prices[0]._hex);
+  const maxPrice = new BigNumber(marketDoc.prices[1]._hex);
   const numTicks = new BigNumber(marketDoc.numTicks);
   const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
 

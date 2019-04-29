@@ -4,6 +4,7 @@
   "description": "Tools and dev dependencies",
   "main": "index.js",
   "scripts": {
+    "build": "tsc -b",
     "test": "echo \"Error: no test specified\" && exit 1",
     "docker:build": "bash ./docker-builder/build.sh",
     "docker:push": "bash ./docker-builder/push.sh",
@@ -15,6 +16,8 @@
     "docker:geth:pop-normal-time": "docker-builder/run.sh augurproject/dev-pop-normtime-geth-v2",
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
     "docker:geth:files": "./scripts/copy-docker-files.sh augurproject/dev-pop-geth:core-$(node scripts/core-version.js)",
+    "dp": "ts-node src/dp",
+    "deploy": "ts-node src/dp deploy",
     "flash": "node ./scripts/flash",
     "blockstream-console": "ts-node ./src/blockstream-console.ts"
   },
@@ -40,19 +43,22 @@
   },
   "homepage": "https://github.com/augurproject/augur#readme",
   "dependencies": {
-    "@augurproject/core": "2.0.0-0",
+    "@augurproject/api": "1.0.0-0",
     "@augurproject/artifacts": "10.0.0-0",
-    "blockstream-adapters":"1.0.0-0",
-    "options-parser": "0.4.0",
+    "@augurproject/ethersjs-provider": "1.0.0-0",
+    "@augurproject/core": "2.0.0-0",
+    "blockstream-adapters": "1.0.0-0",
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.24",
-    "ethrpc": "6.1.3",
-    "lodash": "4.17.11",
     "ethjs-abi": "0.2.1",
     "ethjs-account": "0.1.4",
     "ethjs-provider-http": "0.1.6",
     "ethjs-query": "0.3.8",
-    "ethjs-signer": "0.1.1"
+    "ethjs-signer": "0.1.1",
+    "ethrpc": "6.1.3",
+    "lodash": "4.17.11",
+    "options-parser": "0.4.0",
+    "tsyringe": "^3.2.0"
   },
   "devDependencies": {
     "options-parser": "0.4.0",

@@ -10,7 +10,7 @@ import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFun
 import { Contracts } from "@augurproject/api/src/api/Contracts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import {ethers} from "ethers";
-import { ContractAddresses, contracts as compilerOutput } from "@augurproject/artifacts";
+import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
 
 const mock = makeDbMock();
 
@@ -25,7 +25,7 @@ beforeAll(async () => {
   addresses = result.addresses;
   dependencies = result.dependencies;
   contracts = new Contracts(addresses, dependencies);
-}, 120000);
+}, 180000);
 
 beforeEach(async () => {
   await mock.wipeDB();
@@ -61,7 +61,6 @@ test.skip("sync", async () => {
     ACCOUNTS[0].publicKey,
     outcomes,
     topic,
-    description,
     extraInfo,
     { sender: ACCOUNTS[0].publicKey },
   );

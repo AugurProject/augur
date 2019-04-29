@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { Augur } from "@augurproject/api";
-import { contracts as compilerOutput } from "@augurproject/artifacts";
+import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ACCOUNTS, deployContracts, makeDbMock } from "../../libs";
 
@@ -29,8 +29,8 @@ test("Flexible Search", async () => {
     {
       _id: "robert",
       blockNumber: 1,
-      description: "Foobar has 12% market share by 2041",
       extraInfo: JSON.stringify({
+        description: "Foobar has 12% market share by 2041",
         longDescription: "lol",
         tags: ["humanity", "30"],
       })

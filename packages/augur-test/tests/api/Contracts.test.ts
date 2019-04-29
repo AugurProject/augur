@@ -4,7 +4,7 @@ import { GenericAugurInterfaces } from "@augurproject/core";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
 import { ethers } from "ethers";
-import { ContractAddresses, contracts as compilerOutput } from "@augurproject/artifacts";
+import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
 
 interface MarketCreatedEvent {
   name: "MarketCreated";
@@ -71,7 +71,6 @@ test("Contract :: Universe :: Create Market", async() => {
     ACCOUNTS[0].publicKey,
     outcomes,
     topic,
-    description,
     extraInfo,
     { sender: ACCOUNTS[0].publicKey },
   )).pop();
@@ -87,6 +86,6 @@ test("Contract :: Universe :: Create Market", async() => {
   const marketAddress = marketCreatedEvent.parameters.market;
   const market = contracts.marketFromAddress(marketAddress);
 
-  const numticks = new ethers.utils.BigNumber("0x2710");
+  const numticks = new ethers.utils.BigNumber("0x64");
   await expect(await market.getNumTicks_()).toEqual(numticks);
 }, 15000);

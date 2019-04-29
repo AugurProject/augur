@@ -339,9 +339,9 @@ contract Universe is ITyped, IUniverse {
         if (_currentValidityBondInAttoCash != 0) {
             return _currentValidityBondInAttoCash;
         }
-        uint256 _totalMarketsInPreviousWindow = _previousDisputeWindow.getNumMarkets();
-        uint256 _invalidMarketsInPreviousWindow = _previousDisputeWindow.getNumInvalidMarkets();
-        _currentValidityBondInAttoCash = calculateFloatingValue(_invalidMarketsInPreviousWindow, _totalMarketsInPreviousWindow, Reporting.getTargetInvalidMarketsDivisor(), previousValidityBondInAttoCash, Reporting.getValidityBondFloor());
+        uint256 _totalValidityBondsInPreviousWindow = _previousDisputeWindow.validityBondTotal();
+        uint256 _invalidBondsInPreviousWindow = _previousDisputeWindow.invalidMarketsTotal();
+        _currentValidityBondInAttoCash = calculateFloatingValue(_invalidBondsInPreviousWindow, _totalValidityBondsInPreviousWindow, Reporting.getTargetInvalidMarketsDivisor(), previousValidityBondInAttoCash, Reporting.getValidityBondFloor());
         validityBondInAttoCash[address(_disputeWindow)] = _currentValidityBondInAttoCash;
         previousValidityBondInAttoCash = _currentValidityBondInAttoCash;
         return _currentValidityBondInAttoCash;
@@ -354,10 +354,10 @@ contract Universe is ITyped, IUniverse {
         if (_currentDesignatedReportStakeInAttoRep != 0) {
             return _currentDesignatedReportStakeInAttoRep;
         }
-        uint256 _totalMarketsInPreviousWindow = _previousDisputeWindow.getNumMarkets();
-        uint256 _incorrectDesignatedReportMarketsInPreviousWindow = _previousDisputeWindow.getNumIncorrectDesignatedReportMarkets();
+        uint256 _totalInitialReportBondsInPreviousWindow = _previousDisputeWindow.initialReportBondTotal();
+        uint256 _incorrectDesignatedReportBondsInPreviousWindow = _previousDisputeWindow.incorrectDesignatedReportTotal();
 
-        _currentDesignatedReportStakeInAttoRep = calculateFloatingValue(_incorrectDesignatedReportMarketsInPreviousWindow, _totalMarketsInPreviousWindow, Reporting.getTargetIncorrectDesignatedReportMarketsDivisor(), previousDesignatedReportStakeInAttoRep, initialReportMinValue);
+        _currentDesignatedReportStakeInAttoRep = calculateFloatingValue(_incorrectDesignatedReportBondsInPreviousWindow, _totalInitialReportBondsInPreviousWindow, Reporting.getTargetIncorrectDesignatedReportMarketsDivisor(), previousDesignatedReportStakeInAttoRep, initialReportMinValue);
         designatedReportStakeInAttoRep[address(_disputeWindow)] = _currentDesignatedReportStakeInAttoRep;
         previousDesignatedReportStakeInAttoRep = _currentDesignatedReportStakeInAttoRep;
         return _currentDesignatedReportStakeInAttoRep;
@@ -370,10 +370,10 @@ contract Universe is ITyped, IUniverse {
         if (_currentDesignatedReportNoShowBondInAttoRep != 0) {
             return _currentDesignatedReportNoShowBondInAttoRep;
         }
-        uint256 _totalMarketsInPreviousWindow = _previousDisputeWindow.getNumMarkets();
-        uint256 _designatedReportNoShowsInPreviousWindow = _previousDisputeWindow.getNumDesignatedReportNoShows();
+        uint256 _totalNoShowBondsInPreviousWindow = _previousDisputeWindow.designatedReporterNoShowBondTotal();
+        uint256 _designatedReportNoShowBondsInPreviousWindow = _previousDisputeWindow.designatedReportNoShowsTotal();
 
-        _currentDesignatedReportNoShowBondInAttoRep = calculateFloatingValue(_designatedReportNoShowsInPreviousWindow, _totalMarketsInPreviousWindow, Reporting.getTargetDesignatedReportNoShowsDivisor(), previousDesignatedReportNoShowBondInAttoRep, initialReportMinValue);
+        _currentDesignatedReportNoShowBondInAttoRep = calculateFloatingValue(_designatedReportNoShowBondsInPreviousWindow, _totalNoShowBondsInPreviousWindow, Reporting.getTargetDesignatedReportNoShowsDivisor(), previousDesignatedReportNoShowBondInAttoRep, initialReportMinValue);
         designatedReportNoShowBondInAttoRep[address(_disputeWindow)] = _currentDesignatedReportNoShowBondInAttoRep;
         previousDesignatedReportNoShowBondInAttoRep = _currentDesignatedReportNoShowBondInAttoRep;
         return _currentDesignatedReportNoShowBondInAttoRep;
@@ -383,27 +383,27 @@ contract Universe is ITyped, IUniverse {
         return getOrCacheDesignatedReportNoShowBond().max(getOrCacheDesignatedReportStake());
     }
 
-    function calculateFloatingValue(uint256 _badMarkets, uint256 _totalMarkets, uint256 _targetDivisor, uint256 _previousValue, uint256 _floor) public pure returns (uint256 _newValue) {
-        if (_totalMarkets == 0) {
+    function calculateFloatingValue(uint256 _totalBad, uint256 _total, uint256 _targetDivisor, uint256 _previousValue, uint256 _floor) public pure returns (uint256 _newValue) {
+        if (_total == 0) {
             return _previousValue;
         }
 
         // Modify the amount based on the previous amount and the number of markets fitting the failure criteria. We want the amount to be somewhere in the range of 0.9 to 2 times its previous value where ALL markets with the condition results in 2x and 0 results in 0.9x.
         // Safe math div is redundant so we avoid here as we're at the stack limit.
-        if (_badMarkets <= _totalMarkets / _targetDivisor) {
+        if (_totalBad <= _total / _targetDivisor) {
             // FXP formula: previous_amount * actual_percent / (10 * target_percent) + 0.9;
-            _newValue = _badMarkets
+            _newValue = _totalBad
                 .mul(_previousValue)
                 .mul(_targetDivisor);
-            _newValue = _newValue / _totalMarkets;
+            _newValue = _newValue / _total;
             _newValue = _newValue / 10;
             _newValue = _newValue.add(_previousValue * 9 / 10);
         } else {
             // FXP formula: previous_amount * (1/(1 - target_percent)) * (actual_percent - target_percent) + 1;
             _newValue = _targetDivisor
                 .mul(_previousValue
-                    .mul(_badMarkets)
-                    .div(_totalMarkets)
+                    .mul(_totalBad)
+                    .div(_total)
                 .sub(_previousValue / _targetDivisor));
             _newValue = _newValue / (_targetDivisor - 1);
             _newValue = _newValue.add(_previousValue);
@@ -447,26 +447,30 @@ contract Universe is ITyped, IUniverse {
         return getOrCacheDesignatedReportNoShowBond().max(getOrCacheDesignatedReportStake());
     }
 
-    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
-        require(bytes(_description).length > 0);
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, 10000);
-        augur.logMarketCreated(_endTime, _topic, _description, _extraInfo, _newMarket, msg.sender, 0, 1 ether, IMarket.MarketType.YES_NO, 10000);
+    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, 100);
+        int256[] memory _prices = new int256[](2);
+        _prices[0] = 0;
+        _prices[1] = 1 ether;
+        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 100);
         return _newMarket;
     }
 
-    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
-        require(bytes(_description).length > 0);
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 10000);
-        augur.logMarketCreated(_endTime, _topic, _description, _extraInfo, _newMarket, msg.sender, 0, 1 ether, IMarket.MarketType.CATEGORICAL, _outcomes);
+    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 100);
+        int256[] memory _prices = new int256[](2);
+        _prices[0] = 0;
+        _prices[1] = 1 ether;
+        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, _outcomes);
         return _newMarket;
     }
 
-    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256 _minPrice, int256 _maxPrice, uint256 _numTicks, bytes32 _topic, string memory _description, string memory _extraInfo) public returns (IMarket _newMarket) {
-        require(bytes(_description).length > 0);
-        require(_minPrice < _maxPrice);
+    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
+        require(_prices.length == 2);
+        require(_prices[0] < _prices[1]);
         require(_numTicks.isMultipleOf(2));
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, _numTicks);
-        augur.logMarketCreated(_endTime, _topic, _description, _extraInfo, _newMarket, msg.sender, _minPrice, _maxPrice, IMarket.MarketType.SCALAR, _numTicks);
+        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks);
         return _newMarket;
     }
 

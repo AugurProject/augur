@@ -39,7 +39,7 @@ def test_binary(contractsFixture, cash, market, universe):
             "quantity": 13,
             "price": .62,
             "position": -20,
-            "avgPrice": .6305,
+            "avgPrice": .63,
             "realizedPL": .21,
             "frozenFunds": 7.39
         }, {
@@ -48,18 +48,18 @@ def test_binary(contractsFixture, cash, market, universe):
             "quantity": 10,
             "price": .5,
             "position": -10,
-            "avgPrice": .6305,
-            "realizedPL": 1.515,
-            "frozenFunds": 3.695
+            "avgPrice": .63,
+            "realizedPL": 1.51,
+            "frozenFunds": 3.69
         }, {
             "direction": LONG,
             "outcome": YES,
             "quantity": 7,
             "price": .15,
             "position": -3,
-            "avgPrice": .6305,
-            "realizedPL": 4.8785,
-            "frozenFunds": 1.1085
+            "avgPrice": .63,
+            "realizedPL": 4.87,
+            "frozenFunds": 1.10
         }
     ]
 
@@ -287,10 +287,112 @@ def test_scalar(contractsFixture, cash, universe):
 
     process_trades(contractsFixture, test_data, cash, scalarMarket, createOrder, fillOrder, profitLoss, 50, 200)
 
+def test_frozen_funds(contractsFixture, cash, market, universe):
+    createOrder = contractsFixture.contracts["CreateOrder"]
+    fillOrder = contractsFixture.contracts["FillOrder"]
+    profitLoss = contractsFixture.contracts["ProfitLoss"]
+    orders = contractsFixture.contracts["Orders"]
+    cancelOrder = contractsFixture.contracts["CancelOrder"]
+
+    amount = fix(1)
+    price = 10
+    cost = fix(10)
+    outcome = 1
+
+    # Create Order
+    profitLossChangedLog = {
+        "outcome": outcome,
+        "netPosition": 0,
+        "avgPrice": 0,
+        "realizedProfit": 0,
+        "frozenFunds": cost,
+    }
+
+    assert cash.faucet(cost)
+
+    with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog):
+        orderID = createOrder.publicCreateOrder(BID, amount, price, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress)
+
+    assert profitLoss.getFrozenFunds(market.address, tester.a0, outcome) == cost
+
+    # Change order price
+    newPrice = 9
+    newCost = fix(9)
+
+    profitLossChangedLog = {
+        "outcome": outcome,
+        "netPosition": 0,
+        "avgPrice": 0,
+        "realizedProfit": 0,
+        "frozenFunds": newCost,
+    }
+
+    with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog):
+        orders.setOrderPrice(orderID, newPrice, longTo32Bytes(0), longTo32Bytes(0))
+
+    assert profitLoss.getFrozenFunds(market.address, tester.a0, outcome) == newCost
+
+    # Cancel Order
+    profitLossChangedLog = {
+        "outcome": outcome,
+        "netPosition": 0,
+        "avgPrice": 0,
+        "realizedProfit": 0,
+        "frozenFunds": 0,
+    }
+
+    with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog):
+        orderID = cancelOrder.cancelOrder(orderID)
+
+    assert profitLoss.getFrozenFunds(market.address, tester.a0, outcome) == 0
+
+    # Create Order
+    orderID = createOrder.publicCreateOrder(BID, amount, price, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress)
+
+    # Fill Order
+    profitLossChangedLog = {
+        "outcome": outcome,
+        "netPosition": amount,
+        "avgPrice": 10,
+        "realizedProfit": 0,
+        "frozenFunds": cost,
+    }
+
+    fillerCost = (market.getNumTicks() - price) * amount
+
+    assert cash.faucet(fillerCost, sender = tester.k2)
+    with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip=1):
+        fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
+
+    assert profitLoss.getFrozenFunds(market.address, tester.a0, outcome) == cost
+
+    # Create new Order
+    newOutcome = 2
+    assert cash.faucet(cost)
+    orderID = createOrder.publicCreateOrder(BID, amount, price, market.address, newOutcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress)
+
+    # Fill own Order. This should make FF 0
+    profitLossChangedLog = {
+        "outcome": newOutcome,
+        "netPosition": 0,
+        "avgPrice": 0,
+        "realizedProfit": 0,
+        "frozenFunds": 0,
+    }
+
+    fillerCost = (market.getNumTicks() - price) * amount
+
+    assert cash.faucet(fillerCost)
+    with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip=2):
+        fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000")
+
+    assert profitLoss.getFrozenFunds(market.address, tester.a0, newOutcome) == 0
+
+
 def process_trades(contractsFixture, trade_data, cash, market, createOrder, fillOrder, profitLoss, minPrice = 0, displayRange = 1):
     for trade in trade_data:
-        onChainLongPrice = int((trade['price'] - minPrice) * market.getNumTicks() / displayRange)
-        onChainShortPrice = int(market.getNumTicks() - onChainLongPrice)
+        onChainLongPrice = int(round((trade['price'] - minPrice) * market.getNumTicks() / displayRange))
+        onChainShortPrice = int(round(market.getNumTicks() - onChainLongPrice))
         direction = BID if trade['direction'] == SHORT else ASK
         longCost = trade['quantity'] * onChainLongPrice
         shortCost = trade['quantity'] * onChainShortPrice
@@ -300,9 +402,9 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
         assert cash.faucet(creatorCost, sender = tester.k1)
         orderID = createOrder.publicCreateOrder(direction, trade['quantity'], onChainLongPrice, market.address, trade['outcome'], longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = tester.k1)
 
-        avgPrice = math.ceil((trade['avgPrice'] - minPrice) * market.getNumTicks() / displayRange)
-        realizedProfit = math.ceil(trade['realizedPL'] * market.getNumTicks() / displayRange)
-        frozenFunds = math.ceil(trade['frozenFunds'] * market.getNumTicks() / displayRange)
+        avgPrice = int(round((trade['avgPrice'] - minPrice) * market.getNumTicks() / displayRange))
+        realizedProfit = int(round(trade['realizedPL'] * market.getNumTicks() / displayRange))
+        frozenFunds = int(round(trade['frozenFunds'] * market.getNumTicks() / displayRange))
 
         timestamp = contractsFixture.contracts["Augur"].getTimestamp()
 
@@ -318,7 +420,7 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
         assert cash.faucet(fillerCost, sender = tester.k2)
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip = 0 if direction == BID else 1):
             fillOrder.publicFillOrder(orderID, trade['quantity'], longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
-
+            
         assert profitLoss.getNetPosition(market.address, tester.a2, trade['outcome']) == trade['position']
         assert profitLoss.getAvgPrice(market.address, tester.a2, trade['outcome']) == avgPrice
         assert profitLoss.getRealizedProfit(market.address, tester.a2, trade['outcome']) == realizedProfit

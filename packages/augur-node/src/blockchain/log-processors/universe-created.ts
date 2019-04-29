@@ -1,12 +1,11 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
-import { FormattedEventLog, Address } from "../../types";
+import { Address, Augur, FormattedEventLog } from "../../types";
+import Knex from "knex";
 import { insertPayout } from "./database";
 import { augurEmitter } from "../../events";
 import { SubscriptionEventNames } from "../../constants";
 
 export async function processUniverseCreatedLog(augur: Augur, log: FormattedEventLog) {
-  const reputationToken: Address = await augur.api.Universe.getReputationToken({ tx: { to: log.childUniverse } });
+  const reputationToken: Address = await augur.contracts.universe.getReputationToken_();
   return async (db: Knex) => {
     const payoutId: number = await insertPayout(db, log.childUniverse, log.payoutNumerators, true);
     const universeToInsert = {

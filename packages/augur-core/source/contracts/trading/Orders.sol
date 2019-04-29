@@ -9,6 +9,7 @@ import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/trading/IOrdersFetcher.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/trading/IProfitLoss.sol';
 
 
 /**
@@ -35,6 +36,7 @@ contract Orders is IOrders, Initializable {
     address public fillOrder;
     address public cancelOrder;
     address public createOrder;
+    IProfitLoss public profitLoss;
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
@@ -44,6 +46,7 @@ contract Orders is IOrders, Initializable {
         cancelOrder = augur.lookup("CancelOrder");
         trade = augur.lookup("Trade");
         cash = ICash(augur.lookup("Cash"));
+        profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
         return true;
     }
 
@@ -232,28 +235,35 @@ contract Orders is IOrders, Initializable {
         Order.Data storage _order = orders[_orderId];
         IMarket _market = _order.market;
         require(msg.sender == _order.creator);
+        require(_price != 0);
         require(_price < _market.getNumTicks());
         require(_price != _order.price);
         removeOrderFromList(_orderId);
+        bool _isRefund = true;
+        uint256 _moneyEscrowedDelta = 0;
         if (_order.moneyEscrowed != 0) {
-            bool _isRefund = _order.orderType == Order.Types.Bid ? _price < _order.price : _price > _order.price;
+            _isRefund = _order.orderType == Order.Types.Bid ? _price < _order.price : _price > _order.price;
             uint256 _priceDelta = _price < _order.price ? _order.price.sub(_price) : _price.sub(_order.price);
             uint256 _attoSharesToCoverByTokens = _order.amount.sub(_order.sharesEscrowed);
-            uint256 _amount = _attoSharesToCoverByTokens.mul(_priceDelta);
+            _moneyEscrowedDelta = _attoSharesToCoverByTokens.mul(_priceDelta);
             if (_isRefund) {
-                require(cash.transferFrom(address(_market), msg.sender, _amount));
-                marketOrderData[address(_market)].totalEscrowed -= _amount;
-                _order.moneyEscrowed -= _amount;
+                require(cash.transferFrom(address(_market), msg.sender, _moneyEscrowedDelta));
+                marketOrderData[address(_market)].totalEscrowed -= _moneyEscrowedDelta;
+                _order.moneyEscrowed -= _moneyEscrowedDelta;
             } else {
-                require(augur.trustedTransfer(cash, msg.sender, address(_market), _amount));
-                marketOrderData[address(_market)].totalEscrowed += _amount;
-                _order.moneyEscrowed += _amount;
+                require(augur.trustedTransfer(cash, msg.sender, address(_market), _moneyEscrowedDelta));
+                marketOrderData[address(_market)].totalEscrowed += _moneyEscrowedDelta;
+                _order.moneyEscrowed += _moneyEscrowedDelta;
             }
         }
         _order.price = _price;
         insertOrderIntoList(_order, _betterOrderId, _worseOrderId);
         _market.assertBalances();
         augur.logOrderPriceChanged(_market.getUniverse(), _orderId, _order.outcome, _price);
+        if (_moneyEscrowedDelta != 0) {
+            int256 _frozenFundDelta = _isRefund ? -int256(_moneyEscrowedDelta) : int256(_moneyEscrowedDelta);
+            profitLoss.recordFrozenFundChange(_market, msg.sender, _order.outcome, _frozenFundDelta);
+        }
         return true;
     }
 

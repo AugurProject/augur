@@ -25,7 +25,7 @@ export class Events {
         return [this.provider.getEventTopic("Augur", eventName)];
     };
 
-    public parseLogs(logs: Array<Log>): Array<ParsedLog> {
+    public parseLogs = (logs: Array<Log>): Array<ParsedLog> => {
         return logs.map((log) => {
             const logValues = this.provider.parseLogValues("Augur", log);
             return Object.assign(
@@ -38,6 +38,7 @@ export class Events {
                     transactionLogIndex: log.transactionLogIndex,
                     transactionHash: log.transactionHash,
                     logIndex: log.logIndex,
+                    topics: log.topics
                 },
             );
         });

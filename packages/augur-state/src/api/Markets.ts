@@ -1,9 +1,10 @@
 import { BigNumber } from "bignumber.js";
 import { DB } from "../db/DB";
 import { Getter } from "./Router";
-import { CompleteSetsPurchasedLog, CompleteSetsSoldLog, MarketType, MarketCreatedLog, MarketFinalizedLog } from "../logs/types";
+import { MarketType, MarketCreatedLog, MarketFinalizedLog } from "../logs/types";
 import { SortLimit } from "./types";
-import { numTicksToTickSize } from "@augurproject/api";
+import { Augur, numTicksToTickSize } from "@augurproject/api";
+import { ethers } from "ethers";
 
 import * as _ from "lodash";
 import * as t from "io-ts";
@@ -20,6 +21,8 @@ const GetMarketsParamsSpecific = t.intersection([t.type({
   maxFee: t.number,
   hasOrders: t.boolean,
 })]);
+
+export const SECONDS_IN_A_DAY = 86400;
 
 export interface MarketInfoOutcome {
   id: number;
@@ -73,16 +76,16 @@ export class Markets<TBigNumber> {
   public static GetMarketsInfoParams = t.type({ marketIds: t.array(t.string) });
 
   @Getter("GetMarketsParams")
-  public static async getMarkets<TBigNumber>(db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<void> {
+  public static async getMarkets<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<void> {
     // TODO
   }
 
   private static async getMarketOutcomes<TBigNumber>(db: DB<TBigNumber>, marketCreatedLog: MarketCreatedLog): Promise<Array<MarketInfoOutcome>> {
     let outcomes: Array<MarketInfoOutcome> = [];
     if (marketCreatedLog.outcomes.length === 0) {
-      const ordersFilled0 = (await db.findOrderFilledLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x00"}})).reverse();
-      const ordersFilled1 = (await db.findOrderFilledLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x01"}})).reverse();
-      const ordersFilled2 = (await db.findOrderFilledLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x02"}})).reverse();
+      const ordersFilled0 = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, outcome: "0x00"}})).reverse();
+      const ordersFilled1 = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, outcome: "0x01"}})).reverse();
+      const ordersFilled2 = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, outcome: "0x02"}})).reverse();
       outcomes.push({
         id: 0,
         price: ordersFilled0.length > 0 ? new BigNumber(ordersFilled0[0].price).toString(10) : "0",
@@ -91,22 +94,22 @@ export class Markets<TBigNumber> {
       outcomes.push({
         id: 1,
         price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].price).toString(10) : "0",
-        description: (marketCreatedLog.marketType === 0) ? "No" : new BigNumber(marketCreatedLog.minPrice).toString(10)
+        description: (marketCreatedLog.marketType === 0) ? "No" : new BigNumber(marketCreatedLog.prices[0]._hex).toString(10)
       });
       outcomes.push({
         id: 2,
         price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].price).toString(10) : "0",
-        description: (marketCreatedLog.marketType === 0) ? "Yes" : new BigNumber(marketCreatedLog.maxPrice).toString(10)
+        description: (marketCreatedLog.marketType === 0) ? "Yes" : new BigNumber(marketCreatedLog.prices[1]._hex).toString(10)
       });
     } else {
-      const ordersFilled = (await db.findOrderFilledLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x00"}})).reverse();
+      const ordersFilled = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, outcome: "0x00"}})).reverse();
       outcomes.push({
         id: 0,
         price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : "0",
         description: "Invalid"
       });
       for (let i = 0; i < marketCreatedLog.outcomes.length; i++) {
-        const ordersFilled = (await db.findOrderFilledLogs({selector: {marketId: marketCreatedLog.market, outcome: "0x0" + (i + 1)}})).reverse();
+        const ordersFilled = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, outcome: "0x0" + (i + 1)}})).reverse();
         const outcomeDescription = marketCreatedLog.outcomes[i].replace("0x", "");
         outcomes.push({
           id: i + 1,
@@ -169,7 +172,6 @@ export class Markets<TBigNumber> {
         return MarketInfoReportingState.PRE_REPORTING;
       } else {
         const initialReportSubmittedLogs = (await db.findInitialReportSubmittedLogs({selector: {market: marketCreatedLog.market}})).reverse();
-        const SECONDS_IN_A_DAY = 86400;
         const designatedReportingEndTime = new BigNumber(marketCreatedLog.endTime).plus(SECONDS_IN_A_DAY);
         if (initialReportSubmittedLogs.length === 0 && currentTimestamp.lte(designatedReportingEndTime)) {
           return MarketInfoReportingState.DESIGNATED_REPORTING;
@@ -195,15 +197,15 @@ export class Markets<TBigNumber> {
   }
 
   @Getter("GetMarketsInfoParams")
-  public static async getMarketsInfo<TBigNumber>(db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsInfoParams>): Promise<Array<MarketInfo>> {
+  public static async getMarketsInfo<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsInfoParams>): Promise<Array<MarketInfo>> {
     const marketCreatedLogs = await db.findMarketCreatedLogs({selector: {market: {$in: params.marketIds}}});
 
     return Promise.all(marketCreatedLogs.map(async (marketCreatedLog) => {
       const marketFinalizedLogs = (await db.findMarketFinalizedLogs({selector: {market: marketCreatedLog.market}})).reverse();
       const marketVolumeChangedLogs = (await db.findMarketVolumeChangedLogs({selector: {market: marketCreatedLog.market}})).reverse();
 
-      const minPrice = new BigNumber(marketCreatedLog.minPrice);
-      const maxPrice = new BigNumber(marketCreatedLog.maxPrice);
+      const minPrice = new BigNumber(marketCreatedLog.prices[0]._hex);
+      const maxPrice = new BigNumber(marketCreatedLog.prices[1]._hex);
       const numTicks = new BigNumber(marketCreatedLog.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
       const cumulativeScale = maxPrice.minus(minPrice);
@@ -233,11 +235,13 @@ export class Markets<TBigNumber> {
         marketType = "scalar";
       }
 
+      let description = null;
       let details = null;
       let resolutionSource = null;
       let scalarDenomination = null;
       if (marketCreatedLog.extraInfo) {
         const extraInfo = JSON.parse(marketCreatedLog.extraInfo);
+        description = extraInfo.description ? extraInfo.longDescription : null;
         details = extraInfo.longDescription ? extraInfo.longDescription : null;
         resolutionSource = extraInfo.resolutionSource ? extraInfo.resolutionSource : null;
         scalarDenomination = extraInfo._scalarDenomination ? extraInfo._scalarDenomination : null;
@@ -261,7 +265,7 @@ export class Markets<TBigNumber> {
         endTime: new BigNumber(marketCreatedLog.endTime).toNumber(),
         finalizationBlockNumber,
         finalizationTime,
-        description: marketCreatedLog.description,
+        description,
         scalarDenomination,
         details,
         resolutionSource,

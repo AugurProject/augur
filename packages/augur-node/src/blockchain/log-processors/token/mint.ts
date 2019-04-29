@@ -1,6 +1,6 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
-import { BigNumber } from "bignumber.js";
+import { Augur, BigNumber } from "../../../types";
+import Knex from "knex";
+
 import { FormattedEventLog } from "../../../types";
 import { increaseTokenBalance } from "./increase-token-balance";
 import { increaseTokenSupply } from "./increase-token-supply";
@@ -10,7 +10,7 @@ import { updateProfitLossRemoveRow } from "../profit-loss/update-profit-loss";
 
 export async function processMintLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
-    const value = new BigNumber(log.amount || log.value);
+    const value = new BigNumber(log.amount.toString() || log.value.toString());
     const token = log.token || log.address;
     await db.insert({
       transactionHash: log.transactionHash,

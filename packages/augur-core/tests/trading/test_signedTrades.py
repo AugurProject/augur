@@ -15,13 +15,13 @@ def test_signed_trade(contractsFixture, universe, market, cash, augur):
     expirationTimestampInSec = augur.getTimestamp() + 1
     payment = 100
 
-    tradeHash = trade.getTradeHash(BID, market.address, YES, 10, 1000, tester.a0, False, expirationTimestampInSec, 42, payment)
+    tradeHash = trade.getTradeHash(BID, market.address, YES, 10, 10, tester.a0, False, expirationTimestampInSec, 42, payment)
     v, r, s = createTrade(tradeHash)
 
     # Fail with no Cash deposited
     with raises(TransactionFailed):
         trade.executeSignedTrade(
-            BID, market.address, YES, 10, 1000, tester.a0, False, expirationTimestampInSec, 42, payment,
+            BID, market.address, YES, 10, 10, tester.a0, False, expirationTimestampInSec, 42, payment,
             v,
             r,
             s,
@@ -32,7 +32,7 @@ def test_signed_trade(contractsFixture, universe, market, cash, augur):
 
     with TokenDelta(cash, 100, tester.a1, "User was not paid for executing the transaction"):
         assert trade.executeSignedTrade(
-            BID, market.address, YES, 10, 1000, tester.a0, False, expirationTimestampInSec, 42, payment,
+            BID, market.address, YES, 10, 10, tester.a0, False, expirationTimestampInSec, 42, payment,
             v,
             r,
             s,
@@ -41,9 +41,9 @@ def test_signed_trade(contractsFixture, universe, market, cash, augur):
     # The user has created an order
     orderID = orders.getBestOrderId(BID, market.address, YES, nullAddress)
     assert orders.getAmount(orderID) == 10
-    assert orders.getPrice(orderID) == 1000
+    assert orders.getPrice(orderID) == 10
     assert orders.getOrderCreator(orderID) == bytesToHexString(tester.a0)
-    assert orders.getOrderMoneyEscrowed(orderID) == 10000
+    assert orders.getOrderMoneyEscrowed(orderID) == 100
     assert orders.getOrderSharesEscrowed(orderID) == 0
     assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
@@ -55,17 +55,17 @@ def test_signed_fill(contractsFixture, universe, market, cash, augur):
     expirationTimestampInSec = augur.getTimestamp() + 1
     payment = 100
 
-    with BuyWithCash(cash, 90000, tester.k1, "place an order"):
-        orderID = createOrder.publicCreateOrder(ASK, 10, 1000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = tester.k1)
+    with BuyWithCash(cash, 900, tester.k1, "place an order"):
+        orderID = createOrder.publicCreateOrder(ASK, 10, 10, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = tester.k1)
 
-    tradeHash = trade.getTradeHash(BID, market.address, YES, 10, 1000, tester.a0, False, expirationTimestampInSec, 42, payment)
+    tradeHash = trade.getTradeHash(BID, market.address, YES, 10, 10, tester.a0, False, expirationTimestampInSec, 42, payment)
     v, r, s = createTrade(tradeHash)
 
     assert cash.faucet(10100)
     assert cash.approve(augur.address, 10100)
 
     assert trade.executeSignedTrade(
-        BID, market.address, YES, 10, 1000, tester.a0, False, expirationTimestampInSec, 42, payment,
+        BID, market.address, YES, 10, 10, tester.a0, False, expirationTimestampInSec, 42, payment,
         v,
         r,
         s,
@@ -89,19 +89,19 @@ def test_signed_trade_cancel(contractsFixture, universe, market, cash, augur):
     expirationTimestampInSec = augur.getTimestamp() + 1
     payment = 100
 
-    tradeHash = trade.getTradeHash(BID, market.address, YES, 10, 1000, tester.a0, False, expirationTimestampInSec, 42, payment)
+    tradeHash = trade.getTradeHash(BID, market.address, YES, 10, 10, tester.a0, False, expirationTimestampInSec, 42, payment)
     v, r, s = createTrade(tradeHash)
 
-    assert cash.faucet(10000)
-    assert cash.approve(augur.address, 10000)
+    assert cash.faucet(100)
+    assert cash.approve(augur.address, 100)
 
     # Cancel the order
-    assert trade.cancelTrade(BID, market.address, YES, 10, 1000, tester.a0, False, expirationTimestampInSec, 42, payment)
+    assert trade.cancelTrade(BID, market.address, YES, 10, 10, tester.a0, False, expirationTimestampInSec, 42, payment)
 
     # Fail executing the order if cancelled
     with raises(TransactionFailed):
         trade.executeSignedTrade(
-            BID, market.address, YES, 10, 1000, tester.a0, False, expirationTimestampInSec, 42, payment,
+            BID, market.address, YES, 10, 10, tester.a0, False, expirationTimestampInSec, 42, payment,
             v,
             r,
             s)

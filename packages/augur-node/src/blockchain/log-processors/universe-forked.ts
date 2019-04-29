@@ -1,6 +1,5 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
-import { FormattedEventLog, Address, ReportingState, MarketsContractAddressRow } from "../../types";
+import { Address, Augur, FormattedEventLog, MarketsContractAddressRow, ReportingState } from "../../types";
+import Knex from "knex";
 import { updateMarketState } from "./database";
 import { augurEmitter } from "../../events";
 import { getMarketsWithReportingState } from "../../server/getters/database";
@@ -17,7 +16,7 @@ async function uncompleteNonforkingCrowdsourcers(db: Knex, universe: Address, fo
 }
 
 export async function processUniverseForkedLog(augur: Augur, log: FormattedEventLog) {
-  const forkingMarket: Address|undefined = await augur.api.Universe.getForkingMarket({ tx: { to: log.universe } });
+  const forkingMarket: Address|undefined = await augur.contracts.universe.getForkingMarket_();
   return async (db: Knex) => {
     if (forkingMarket == null) throw new Error(`Could not retrieve forking market for universe ${log.universe}`);
     await db("markets").update("forking", 1).where("marketId", forkingMarket);

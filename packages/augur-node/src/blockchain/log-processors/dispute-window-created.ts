@@ -1,6 +1,5 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
-import { FormattedEventLog, Address, DisputeWindowState } from "../../types";
+import Knex from "knex";
+import { Augur, DisputeWindowState, FormattedEventLog } from "../../types";
 import { augurEmitter } from "../../events";
 import { advanceDisputeWindowActive, getCurrentTime } from "../process-block";
 import { SubscriptionEventNames } from "../../constants";
