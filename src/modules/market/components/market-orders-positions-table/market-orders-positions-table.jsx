@@ -22,7 +22,12 @@ const MarketOrdersPositionsTable = ({
   filledOrders,
   cancelAllOpenOrders
 }) => (
-  <ModuleTabs selected={0} fillForMobile={isMobile} borderBetween>
+  <ModuleTabs
+    className={Styles.Table}
+    selected={0}
+    fillForMobile={isMobile}
+    borderBetween
+  >
     <ModulePane label="Open Orders">
       <OpenOrdersTable
         openOrders={openOrders}
