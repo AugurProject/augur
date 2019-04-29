@@ -1,5 +1,5 @@
-import * as Knex from "knex";
-import BigNumber from "bignumber.js";
+import Knex from "knex";
+import { BigNumber } from "bignumber.js";
 
 exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries

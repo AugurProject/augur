@@ -4,15 +4,15 @@
   "description": "Augur API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
+  "main": "build",
   "directories": {
     "src": "src"
   },
-  "main": "build",
   "scripts": {
     "version": "yarn rebuild",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
-    "build": "tsc",
-    "watch": "tsc -w",
+    "build": "tsc -b",
+    "watch": "tsc -b -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
     "prepare": "tsc",
     "prepush": "yarn lint"
@@ -37,7 +37,7 @@
   "devDependencies": {
     "@augurproject/types": "10.0.0-0",
     "@types/jest": "24.0.4",
-    "ts-node": "7.0.1",
+    "ts-node": "8.0.3",
     "jest": "22.4.4",
     "ts-jest": "23.10.5"
   },

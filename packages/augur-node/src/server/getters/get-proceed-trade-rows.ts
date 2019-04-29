@@ -1,10 +1,10 @@
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
-import Augur from "augur.js";
-import { BigNumber } from "bignumber.js";
-import { Address, ReportingState, PayoutRow, ProceedTradesRow } from "../../types";
-import { getMarketsWithReportingState} from "./database";
+import { Address, Augur, BigNumber, PayoutRow, ProceedTradesRow, ReportingState } from "../../types";
+
+import { getMarketsWithReportingState } from "./database";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
+import { convertOnChainAmountToDisplayAmount } from "../../utils";
 
 interface WinningPayoutRow extends PayoutRow<BigNumber> {
   blockNumber: number;
@@ -71,8 +71,8 @@ export async function getProceedTradeRows (db: Knex, augur: Augur, marketIds: Ar
       const payoutKey = `payout${row.outcome}` as keyof PayoutRow<BigNumber>;
       const payout = row[payoutKey] as BigNumber;
       const tickSize = numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice);
-      const amount = augur.utils.convertOnChainAmountToDisplayAmount(row.balance, tickSize);
-      const price = payout.times(tickSize).plus(row.minPrice);
+      const amount = convertOnChainAmountToDisplayAmount(row.balance, tickSize);
+      const price = payout.mul(tickSize).add(row.minPrice);
       return {
         blockNumber: row.blockNumber,
         logIndex: row.logIndex,

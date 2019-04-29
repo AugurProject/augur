@@ -1,4 +1,5 @@
-import BigNumber from "bignumber.js";
+import { BigNumber } from "./types";
+import { BigNumber as BigNumberJS } from "bignumber.js";
 
 export interface Precision {
   decimals: number;
@@ -7,14 +8,14 @@ export interface Precision {
   multiple: string;
 }
 
-const ten = new BigNumber(10, 10);
-const decimals = new BigNumber(18, 10);
-const multiple: BigNumber = ten.exponentiatedBy(decimals.toNumber());
+const ten = new BigNumberJS(10);
+const decimals = new BigNumberJS(18);
+const multiple: BigNumberJS = ten.pow(decimals.toNumber());
 
 export const PRECISION: Precision = {
   decimals: decimals.toNumber(),
-  limit: ten.dividedBy(multiple).toString(),
-  zero: new BigNumber(1, 10).dividedBy(multiple).toString(),
+  limit: ten.div(multiple).toString(),
+  zero: new BigNumberJS(1).div(multiple).toString(),
   multiple: multiple.toString(),
 };
 
@@ -29,7 +30,7 @@ export const DUMP_EVERY_BLOCKS = 100;
 export const ETHER = "ether";
 export const MINIMUM_TRADE_SIZE = "0.000001";
 
-export const BN_WEI_PER_ETHER: BigNumber = new BigNumber(10, 10).exponentiatedBy(18);
+export const BN_WEI_PER_ETHER: BigNumber = new BigNumber(10).pow(18);
 export const WEI_PER_ETHER: string = BN_WEI_PER_ETHER.toString();
 
 export const ZERO = new BigNumber(0);
@@ -100,4 +101,11 @@ export const NETWORK_NAMES: NetworkNames = {
   3: "Ropsten",
   4: "Rinkeby",
   42: "Kovan",
+};
+
+const SECONDS_PER_DAY = 3600 * 24;
+export const CONTRACT_INTERVAL = {
+  DESIGNATED_REPORTING_DURATION_SECONDS: 3 * SECONDS_PER_DAY,
+    DISPUTE_ROUND_DURATION_SECONDS: 7 * SECONDS_PER_DAY,
+    FORK_DURATION_SECONDS: 60 * SECONDS_PER_DAY,
 };

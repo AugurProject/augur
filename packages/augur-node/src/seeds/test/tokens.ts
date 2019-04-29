@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import Knex from "knex";
 
 exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries

@@ -3,11 +3,11 @@
 import { ethers } from 'ethers';
 import { ContractDependenciesEthers } from '../libraries/ContractDependenciesEthers';
 import { ContractDeployer } from "../libraries/ContractDeployer";
-import { NetworkConfiguration } from "../libraries/NetworkConfiguration";
+import { isNetwork, NetworkConfiguration, NETWORKS } from "../libraries/NetworkConfiguration";
 import { DeployerConfiguration } from "../libraries/DeployerConfiguration";
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 
-export async function deployToNetworks(networks: Array<string>) {
+export async function deployToNetworks(networks: Array<NETWORKS>) {
     // Create all network configs up front so that an error in any of them
     // causes us to die
     const networkConfigurations = networks.map((network) => NetworkConfiguration.create(network));
@@ -22,7 +22,7 @@ export async function deployToNetworks(networks: Array<string>) {
 }
 
 if (require.main === module) {
-    const networks: Array<string> = process.argv.slice(2);
+    const networks = process.argv.slice(2).filter(isNetwork);
     deployToNetworks(networks).then(() => {
         console.log("Deployment to all networks succeeded");
         process.exitCode = 0;

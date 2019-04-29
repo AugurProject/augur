@@ -4,7 +4,7 @@ import {
     deployContracts,
     ContractAPI,
   } from "../../../libs";
-import { contracts as compilerOutput } from "@augurproject/artifacts";
+import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import {API} from "@augurproject/state/src/api/API";
 import {DB} from "@augurproject/state/src/db/DB";
 import { convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, numTicksToTickSize } from "@augurproject/api";

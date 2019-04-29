@@ -94,7 +94,7 @@ getPrivateKey(null, function(err, auth) {
             var numberOfOrders = 50;
 
             // Get these to numbers
-            var tickSize = parseFloat(marketInfo.tickSize, 10);
+            var tickSize = parseFloat(marketInfo._numTicks, 10);
             var numTicks = parseFloat(marketInfo.numTicks, 10);
 
             var midPoint =

@@ -1,9 +1,11 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
-import { FormattedEventLog, Address } from "../../types";
+import { Address, Augur, FormattedEventLog, ReportingState } from "../../types";
+import Knex from "knex";
 import { refreshMarketMailboxEthBalance, rollbackMarketState, updateMarketState } from "./database";
-import { updateCategoryAggregationsOnMarketFinalizedRollback, updateCategoryAggregationsOnMarketFinalized } from "./category-aggregations";
-import { updateOutcomeValuesFromFinalization, removeOutcomeValue } from "./profit-loss/update-outcome-value";
+import {
+  updateCategoryAggregationsOnMarketFinalized,
+  updateCategoryAggregationsOnMarketFinalizedRollback
+} from "./category-aggregations";
+import { removeOutcomeValue, updateOutcomeValuesFromFinalization } from "./profit-loss/update-outcome-value";
 
 async function flagMarketsNeedingMigration(db: Knex, finalizedMarketId: Address, universe: Address) {
   const isForkingMarket: { forking: number } = await db("markets").first("forking").where("marketId", finalizedMarketId);
@@ -13,7 +15,7 @@ async function flagMarketsNeedingMigration(db: Knex, finalizedMarketId: Address,
 
 export async function processMarketFinalizedLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
-    await updateMarketState(db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.FINALIZED);
+    await updateMarketState(db, log.market, log.blockNumber, ReportingState.FINALIZED);
     await db("markets").where({ marketId: log.market }).update({ finalizationBlockNumber: log.blockNumber });
     await flagMarketsNeedingMigration(db, log.market, log.universe);
     await refreshMarketMailboxEthBalance(db, augur, log.market);
@@ -24,7 +26,7 @@ export async function processMarketFinalizedLog(augur: Augur, log: FormattedEven
 
 export async function processMarketFinalizedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
-    await rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.FINALIZED);
+    await rollbackMarketState(db, log.market, ReportingState.FINALIZED);
     await db("markets").where({ marketId: log.market }).update({ finalizationBlockNumber: null });
     await db("markets").where({ universe: log.universe }).update({ needsMigration: 0 });
     await refreshMarketMailboxEthBalance(db, augur, log.market);

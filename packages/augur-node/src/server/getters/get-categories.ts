@@ -1,9 +1,6 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
-import * as _ from "lodash";
-import Augur from "augur.js";
-import BigNumber from "bignumber.js";
-import { CategoriesRow, UICategory, TagAggregation, ReportingState } from "../../types";
+import Knex from "knex";
+import { Augur, BigNumber, CategoriesRow, ReportingState, TagAggregation, UICategory } from "../../types";
 
 export const CategoriesParams = t.type({
   universe: t.string,
@@ -41,17 +38,17 @@ function buildUICategories(categoriesRows: Array<CategoriesRow<BigNumber>>, mark
     let tagAggregation: TagAggregation<BigNumber> | undefined = tagAggregationByTagName.get(r[tagProp]);
     if (tagAggregation === undefined) {
       tagAggregation = {
-        nonFinalizedOpenInterest: new BigNumber("0", 10),
-        openInterest: new BigNumber("0", 10),
+        nonFinalizedOpenInterest: new BigNumber("0"),
+        openInterest: new BigNumber("0"),
         tagName: r[tagProp],
         numberOfMarketsWithThisTag: 0,
       };
       tagAggregationByTagName.set(r[tagProp], tagAggregation);
     }
     if (r.reportingState !== ReportingState.FINALIZED) {
-      tagAggregation.nonFinalizedOpenInterest = tagAggregation.nonFinalizedOpenInterest.plus(r.openInterest);
+      tagAggregation.nonFinalizedOpenInterest = tagAggregation.nonFinalizedOpenInterest.add(r.openInterest);
     }
-    tagAggregation.openInterest = tagAggregation.openInterest.plus(r.openInterest);
+    tagAggregation.openInterest = tagAggregation.openInterest.add(r.openInterest);
     tagAggregation.numberOfMarketsWithThisTag += 1;
   }
 

@@ -4,5 +4,8 @@
   "description": "ABI and Contract Address Artifacts",
   "author": "Augur Team <team@augur.net>",
   "license": "MIT",
-  "main": "build"
+  "main": "build",
+  "scripts": {
+    "build": "tsc -b"
+  }
 }
