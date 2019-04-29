@@ -14,7 +14,9 @@ const mapStateToProps = state => {
   const totalPercentage = getSelectLoginAccountTotals();
   const timestamps = getMarketsPositionsRecentlyTraded(state);
 
-  const markets = getPositionsMarkets(timestamps, positions).sort((a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp);
+  const markets = getPositionsMarkets(timestamps, positions).sort(
+    (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
+  );
 
   const marketsObj = markets.reduce((obj, market) => {
     obj[market.id] = market;
@@ -40,7 +42,16 @@ const getPositionsMarkets = memoize(
     positions.markets.reduce((p, m) => {
       if (m.marketStatus === MARKET_CLOSED) return p;
       const pos = m.userPositions.filter(position => position.type !== CLOSED);
-      return pos.length === 0 ? p : [...p, { ...m, userPositions: pos, recentlyTraded: marketsPositionsRecentlyTraded[m.id] }];
+      return pos.length === 0
+        ? p
+        : [
+            ...p,
+            {
+              ...m,
+              userPositions: pos,
+              recentlyTraded: marketsPositionsRecentlyTraded[m.id]
+            }
+          ];
     }, []),
   { max: 1 }
 );
