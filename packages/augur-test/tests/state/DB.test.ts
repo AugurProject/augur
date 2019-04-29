@@ -1,7 +1,7 @@
-import {TrackedUsers} from "@augurproject/state/src/db/TrackedUsers";
-import {Augur} from "@augurproject/api";
-import {makeDbMock} from "../../libs/MakeDbMock";
-import {makeTestAugur, ACCOUNTS} from "../../libs/LocalAugur";
+import { TrackedUsers } from "@augurproject/state/src/db/TrackedUsers";
+import { Augur } from "@augurproject/api";
+import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../libs";
+import { ethers } from "ethers";
 
 const mock = makeDbMock();
 
@@ -10,10 +10,10 @@ beforeEach(async () => {
   await mock.wipeDB();
 });
 
-let augur: Augur<any>;
+let augur: Augur<ethers.utils.BigNumber>;
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
-}, 60000);
+}, 120000);
 
 test("database failure during trackedUsers.getUsers() call", async () => {
   const db = await mock.makeDB(augur, ACCOUNTS);

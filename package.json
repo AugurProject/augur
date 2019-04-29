@@ -12,7 +12,8 @@
     "build": "tsc -b",
     "build:release": "tsc -b tsconfig.release.json",
     "build:ci-docker": "docker build . -t augurproject/gitlab-ci-base-node:latest",
-    "clean": "lerna clean -y",
+    "clean": "git clean -e .idea -Xdf",
+    "rebuild": "git clean -e .idea -Xdf && yarn && yarn build",
     "test": "jest",
     "test:watch": "jest --watch",
     "watch": " lerna run watch --parallel",
@@ -92,5 +93,8 @@
       "augur-ui/@types/expect-puppeteer",
       "augur.js/uuid-parse"
     ]
+  },
+  "resolutions": {
+    "**/sha3": "2.0.1"
   }
 }

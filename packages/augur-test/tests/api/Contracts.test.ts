@@ -1,9 +1,10 @@
-import { ACCOUNTS, compileAndDeployToGanache } from "../../libs/LocalAugur";
-import {Contracts} from "@augurproject/api/src/api/Contracts";
+import { ACCOUNTS, deployContracts } from "../../libs";
+import { Contracts } from "@augurproject/api/src/api/Contracts";
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
-import {ethers} from "ethers";
+import { ethers } from "ethers";
+import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
 
 interface MarketCreatedEvent {
   name: "MarketCreated";
@@ -12,18 +13,15 @@ interface MarketCreatedEvent {
   };
 }
 
-let addresses: any;
+let addresses: ContractAddresses;
 let dependencies: ContractDependenciesEthers;
+let contracts: Contracts<ethers.utils.BigNumber>;
 beforeAll(async () => {
-  const result = await compileAndDeployToGanache(ACCOUNTS);
+  const result = await deployContracts(ACCOUNTS, compilerOutput);
   addresses = result.addresses;
   dependencies = result.dependencies;
-}, 60000);
-
-let contracts: Contracts<any>;
-beforeEach(async () => {
   contracts = new Contracts(addresses, dependencies);
-});
+}, 120000);
 
 test("Contract :: ReputationToken", async () => {
   expect(contracts.reputationToken).toBe(null);
@@ -73,7 +71,6 @@ test("Contract :: Universe :: Create Market", async() => {
     ACCOUNTS[0].publicKey,
     outcomes,
     topic,
-    description,
     extraInfo,
     { sender: ACCOUNTS[0].publicKey },
   )).pop();
@@ -89,6 +86,6 @@ test("Contract :: Universe :: Create Market", async() => {
   const marketAddress = marketCreatedEvent.parameters.market;
   const market = contracts.marketFromAddress(marketAddress);
 
-  const numticks = new ethers.utils.BigNumber("0x2710");
+  const numticks = new ethers.utils.BigNumber("0x64");
   await expect(await market.getNumTicks_()).toEqual(numticks);
-});
+}, 15000);

@@ -17,7 +17,6 @@ export async function createMarket(
         designatedReporterAddress,
         market._outcomes.map(ethers.utils.formatBytes32String),
         ethers.utils.formatBytes32String(market._topic),
-        market._description,
         JSON.stringify(market._extraInfo)
       );
     case "scalar":
@@ -26,11 +25,12 @@ export async function createMarket(
         new BigNumber(1000),
         new BigNumber(market._affiliateFeeDivisor),
         designatedReporterAddress,
-        new BigNumber(market._minPrice),
-        new BigNumber(market._maxPrice),
+        [
+          new BigNumber(market._minPrice),
+          new BigNumber(market._maxPrice)
+        ],
         new BigNumber(market._numTicks),
         ethers.utils.formatBytes32String(market._topic),
-        market._description,
         JSON.stringify(market._extraInfo)
       );
     case "yesNo":
@@ -41,10 +41,8 @@ export async function createMarket(
         new BigNumber(market._affiliateFeeDivisor),
         designatedReporterAddress,
         ethers.utils.formatBytes32String(market._topic),
-        market._description,
         JSON.stringify(market._extraInfo)
       );
   }
 
 }
-

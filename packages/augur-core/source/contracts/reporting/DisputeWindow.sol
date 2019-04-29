@@ -23,21 +23,18 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     IUniverse private universe;
     ICash public cash;
     uint256 private startTime;
-    uint256 private numMarkets;
-    uint256 private invalidMarketsCount;
-    uint256 private incorrectDesignatedReportMarketCount;
-    uint256 private designatedReportNoShows;
+
     uint256 public windowId;
     uint256 public duration;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, address _erc820RegistryAddress) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc820RegistryAddress) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         universe = _universe;
         duration = _duration;
         windowId = _disputeWindowId;
         cash = ICash(augur.lookup("Cash"));
-        startTime = _disputeWindowId.mul(duration);
+        startTime = _startTime;
         erc820Registry = IERC820Registry(_erc820RegistryAddress);
         initialize820InterfaceImplementations();
         return true;
@@ -46,15 +43,33 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     function onMarketFinalized() public afterInitialized returns (bool) {
         IMarket _market = IMarket(msg.sender);
         require(universe.isContainerForMarket(_market));
-        numMarkets += 1;
-        if (_market.isInvalid()) {
-            invalidMarketsCount += 1;
+
+        uint256 _currentValidityBond = universe.getOrCacheValidityBond();
+        uint256 _currentInitialReportBond = universe.getOrCacheDesignatedReportStake();
+        uint256 _currentNoShowBond = universe.getOrCacheDesignatedReportNoShowBond();
+
+        uint256 _validityBond = _market.getValidityBondAttoCash();
+        uint256 _repBond = _market.getInitialReporter().getSize();
+
+        if (_validityBond >= _currentValidityBond / 2) {
+            validityBondTotal = validityBondTotal.add(_validityBond);
+            if (_market.isInvalid()) {
+                invalidMarketsTotal = invalidMarketsTotal.add(_validityBond);
+            }
         }
-        if (!_market.designatedReporterWasCorrect()) {
-            incorrectDesignatedReportMarketCount += 1;
+
+        if (_repBond >= _currentInitialReportBond / 2) {
+            initialReportBondTotal = initialReportBondTotal.add(_repBond);
+            if (!_market.designatedReporterWasCorrect()) {
+                incorrectDesignatedReportTotal = incorrectDesignatedReportTotal.add(_repBond);
+            }
         }
-        if (!_market.designatedReporterShowed()) {
-            designatedReportNoShows += 1;
+
+        if (_repBond >= _currentNoShowBond / 2) {
+            designatedReporterNoShowBondTotal = designatedReporterNoShowBondTotal.add(_repBond);
+            if (!_market.designatedReporterShowed()) {
+                designatedReportNoShowsTotal = designatedReportNoShowsTotal.add(_repBond);
+            }
         }
         return true;
     }
@@ -105,10 +120,6 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return universe;
     }
 
-    function getNumMarkets() public afterInitialized view returns (uint256) {
-        return numMarkets;
-    }
-
     function getReputationToken() public afterInitialized view returns (IReputationToken) {
         return universe.getReputationToken();
     }
@@ -119,18 +130,6 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
 
     function getEndTime() public afterInitialized view returns (uint256) {
         return getStartTime().add(duration);
-    }
-
-    function getNumInvalidMarkets() public afterInitialized view returns (uint256) {
-        return invalidMarketsCount;
-    }
-
-    function getNumIncorrectDesignatedReportMarkets() public view returns (uint256) {
-        return incorrectDesignatedReportMarketCount;
-    }
-
-    function getNumDesignatedReportNoShows() public view returns (uint256) {
-        return designatedReportNoShows;
     }
 
     function getWindowId() public view returns (uint256) {
@@ -157,12 +156,12 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     }
 
     function onMint(address _target, uint256 _amount) internal returns (bool) {
-        augur.logParticipationTokensMinted(universe, _target, _amount, totalSupply());
+        augur.logParticipationTokensMinted(universe, _target, _amount, totalSupply(), balances[_target]);
         return true;
     }
 
     function onBurn(address _target, uint256 _amount) internal returns (bool) {
-        augur.logParticipationTokensBurned(universe, _target, _amount, totalSupply());
+        augur.logParticipationTokensBurned(universe, _target, _amount, totalSupply(), balances[_target]);
         return true;
     }
 }

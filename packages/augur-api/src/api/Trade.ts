@@ -14,4 +14,8 @@ export class Trade<TBigNumber> {
   public async trade(arg: any): Promise<void> {
     // TODO
   }
+
+  private async getBetterWorseOrders(arg: any): Promise<void> {
+    // TODO
+  }
 }

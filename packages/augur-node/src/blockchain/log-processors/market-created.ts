@@ -66,16 +66,15 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
     const validityBondAttoeth = "1";
 
     return async (db: Knex) => {
-      console.log(" MARKET CREATION HAPPENING");
       const designatedReportStakeRow: { balance: BigNumber } = await db("balances_detail").first("balance").where({
         owner: log.market,
-        symbol: "REP",
+        symbol: "REP"
       });
       if (designatedReportStakeRow == null) throw new Error(`No REP balance on market: ${log.market} (${log.transactionHash}`);
       const marketStateDataToInsert: { [index: string]: string | number | boolean } = {
         marketId: log.market,
         reportingState: ReportingState.PRE_REPORTING,
-        blockNumber: log.blockNumber,
+        blockNumber: log.blockNumber
       };
       let query = db.insert(marketStateDataToInsert).into("market_state");
       if (db.client.config.client !== "sqlite3") {
@@ -94,7 +93,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
         marketId: log.market,
         marketCreator: log.marketCreator,
         creationBlockNumber: log.blockNumber,
-        creationFee: 0,
+        creationFee: log.marketCreationFee,
         category: marketCategoryName,
         shortDescription: log.description,
         minPrice: log.minPrice,
@@ -172,7 +171,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
 
   } catch (e) {
     console.error(e);
-    throw (e);
+    throw(e);
   }
 }
 

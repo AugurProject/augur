@@ -31,18 +31,23 @@
     "@augurproject/api": "1.0.0-0",
     "@augurproject/artifacts": "10.0.0-0",
     "@augurproject/core": "2.0.0-0",
-    "@augurproject/state": "1.0.0-0",
     "@augurproject/ethersjs-provider": "1.0.0-0",
+    "@augurproject/state": "1.0.0-0",
     "contract-dependencies-ethers": "1.0.0-0",
-    "ganache-core": "^2.4.0"
+    "ganache-core": "2.4.0"
   },
   "devDependencies": {
     "@types/jest": "24.0.4",
     "@types/node": "10.12.29",
+    "@types/supertest": "2.0.7",
     "jest": "22.4.4",
     "pouchdb-adapter-memory": "7.0.0",
+    "supertest": "4.0.2",
     "ts-jest": "23.10.5",
     "ts-node": "8.0.3",
     "tsconfig-paths": "3.7.0"
+  },
+  "resolutions": {
+    "**/sha3": "2.0.1"
   }
 }

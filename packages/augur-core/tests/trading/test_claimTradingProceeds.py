@@ -84,7 +84,7 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
     # get NO shares with a2
     acquireShortShareSet(kitchenSinkFixture, cash, market, YES, 1, claimTradingProceeds.address, sender = tester.k2)
     assert universe.getOpenInterestInAttoCash() == 2 * market.getNumTicks()
-    finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**4])
+    finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**2])
 
     initialLongHolderETH = kitchenSinkFixture.chain.head_state.get_balance(tester.a1)
     initialShortHolderETH = kitchenSinkFixture.chain.head_state.get_balance(tester.a2)
@@ -96,8 +96,7 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
         'numShares': 1,
         'sender': bytesToHexString(tester.a1),
         'finalTokenBalance': initialLongHolderETH + expectedPayout,
-        'marketCreatorFees': 100,
-        'reporterFees': 100,
+        'fees': 2,
     }
 
     with TokenDelta(cash, expectedMarketCreatorFees, market.getOwner(), "market creator fees not paid"):
@@ -210,7 +209,7 @@ def test_reedem_failure(kitchenSinkFixture, cash, market):
     # set timestamp to after market end
     kitchenSinkFixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
     # have tester.a0 subimt designated report (75% high, 25% low, range -10*10^18 to 30*10^18)
-    market.doInitialReport([0, 0, 10000], "")
+    market.doInitialReport([0, 0, 100], "")
     # set timestamp to after designated dispute end
     disputeWindow = kitchenSinkFixture.applySignature('DisputeWindow', market.getDisputeWindow())
     kitchenSinkFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
@@ -239,7 +238,7 @@ def test_redeem_shares_in_multiple_markets(kitchenSinkFixture, universe, cash, m
     expectedSettlementFees = expectedValue * 0.02
     expectedPayout += long(expectedValue - expectedSettlementFees)
     acquireLongShares(kitchenSinkFixture, cash, market, YES, 1, claimTradingProceeds.address, sender = tester.k1)
-    finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**4])
+    finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**2])
 
     with TokenDelta(cash, expectedPayout, tester.a1, "Claiming multiple markets did not give expected payout"):
         assert claimTradingProceeds.claimMarketsProceeds([market.address, scalarMarket.address], tester.a1)

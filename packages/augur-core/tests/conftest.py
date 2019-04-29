@@ -430,41 +430,41 @@ class ContractsFixture:
         childUniverse = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Universe']), childUniverseAddress)
         return childUniverse
 
-    def createYesNoMarket(self, universe, endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, sender=tester.k0, topic="", description="description", extraInfo="", validityBond=0):
+    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=tester.k0, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
         marketCreationFee = validityBond or universe.getOrCacheMarketCreationCost()
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, topic, description, extraInfo, sender=sender)
+            marketAddress = universe.createYesNoMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, topic, extraInfo, sender=sender)
         assert marketAddress
         market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
         return market
 
-    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, sender=tester.k0, topic="", description="description", extraInfo=""):
+    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=tester.k0, topic="", extraInfo="{description: '\"description\"}"):
         marketCreationFee = universe.getOrCacheMarketCreationCost()
         outcomes = [" "] * numOutcomes
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            marketAddress = universe.createCategoricalMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, outcomes, topic, description, extraInfo, sender=sender)
+            marketAddress = universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, outcomes, topic, extraInfo, sender=sender)
         assert marketAddress
         market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
         return market
 
-    def createScalarMarket(self, universe, endTime, feePerEthInWei, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=tester.k0, description="description", extraInfo=""):
+    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=tester.k0, topic="", extraInfo="{description: '\"description\"}"):
         marketCreationFee = universe.getOrCacheMarketCreationCost()
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            marketAddress = universe.createScalarMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, minPrice, maxPrice, numTicks, "", description, extraInfo, sender=sender)
+            marketAddress = universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, [minPrice, maxPrice], numTicks, topic, extraInfo, sender=sender)
+            # uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, bytes32 _topic, string memory _extraInfo
         assert marketAddress
         market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
         return market
 
-    def createReasonableYesNoMarket(self, universe, sender=tester.k0, topic="", description="description", extraInfo="", validityBond=0):
+    def createReasonableYesNoMarket(self, universe, sender=tester.k0, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
         return self.createYesNoMarket(
             universe = universe,
             endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
-            feePerEthInWei = 10**16,
+            feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 4,
             designatedReporterAddress = tester.a0,
             sender = sender,
             topic= topic,
-            description= description,
             extraInfo= extraInfo,
             validityBond= validityBond)
 
@@ -473,7 +473,7 @@ class ContractsFixture:
             universe = universe,
             numOutcomes = numOutcomes,
             endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
-            feePerEthInWei = 10**16,
+            feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 0,
             designatedReporterAddress = tester.a0,
             sender = sender)
@@ -482,7 +482,7 @@ class ContractsFixture:
         return self.createScalarMarket(
             universe = universe,
             endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
-            feePerEthInWei = 10**16,
+            feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 0,
             maxPrice= maxPrice,
             minPrice= minPrice,

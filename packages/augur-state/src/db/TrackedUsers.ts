@@ -7,7 +7,7 @@ export class TrackedUsers extends AbstractDB {
   }
 
   public async setUserTracked(user: string): Promise<PouchDB.Core.Response> {
-    return await this.upsertDocument(user, {});
+    return this.upsertDocument(user, {});
   }
 
   public async getUsers(): Promise<Array<string>> {

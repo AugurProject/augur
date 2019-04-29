@@ -80,8 +80,7 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
         "account": bytesToHexString(tester.a1),
         "numCompleteSets": 9,
         "marketOI": market.getNumTicks(),
-        "marketCreatorFees": 900,
-        "reporterFees": 900,
+        "fees": 9 + 9,
     }
     with AssertLog(contractsFixture, "CompleteSetsSold", completeSetsSoldLog):
         result = completeSets.publicSellCompleteSets(market.address, 9, sender=tester.k1)
@@ -93,9 +92,9 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
     assert yesShareToken.totalSupply() == 1
     assert noShareToken.totalSupply() == 1
     assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialTester1ETH
-    assert cash.balanceOf(tester.a1) == 88200
-    assert cash.balanceOf(market.address) == universe.getOrCacheValidityBond() + 10000 + 900
-    assert market.marketCreatorFeesAttoCash() == 900
+    assert cash.balanceOf(tester.a1) == 882
+    assert cash.balanceOf(market.address) == universe.getOrCacheValidityBond() + 100 + 9
+    assert market.marketCreatorFeesAttoCash() == 9
 
 def test_publicSellCompleteSets_failure(contractsFixture, universe, cash, market):
     completeSets = contractsFixture.contracts['CompleteSets']

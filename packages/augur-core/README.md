@@ -20,9 +20,8 @@ docker-compose -f source/support/test/integration/docker-compose-[geth/parity].y
 You need system-wide installations of Python 2.7.6+, Node.js 8+, and [Solidity 0.5.4](https://github.com/ethereum/solidity/releases/tag/v0.5.4).  (Or Docker; see below.)  Install the dependencies:
 
 ```bash
-npm install npx
-npm install
-pip install -r requirements.txt
+yarn
+pip install -r requirements.txt # macOS users will likely need to run this as `sudo pip install -r requirements.txt --ignore-installed`
 ```
 
 Note: on macOS, you need to use [virtualenv](https://python-guide-pt-br.readthedocs.io/en/latest/dev/virtualenvs/) or [homebrew](https://brew.sh/) Python to work around System Integrity Protection.

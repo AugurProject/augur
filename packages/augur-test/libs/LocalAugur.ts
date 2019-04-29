@@ -1,31 +1,23 @@
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { Augur } from "@augurproject/api";
+import { Augur, Provider } from "@augurproject/api";
 import { DeployerConfiguration, ContractDeployer } from "@augurproject/core";
 import * as path from "path";
 import * as ganache from "ganache-core";
-import { CompilerConfiguration} from "@augurproject/core/source/libraries/CompilerConfiguration";
-import { ContractCompiler } from "@augurproject/core/source/libraries/ContractCompiler";
 import { EthersFastSubmitWallet } from "@augurproject/core/source/libraries/EthersFastSubmitWallet";
 import { ethers } from "ethers";
 import { CompilerOutput } from "solc";
-import { ContractAddresses } from "@augurproject/artifacts";
+import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
 
-export type AccountList = [{
-      secretKey: string;
-      publicKey: string;
-      balance: number;
-}];
+export type Account = {
+  secretKey: string;
+  publicKey: string;
+  balance: number;
+};
+
+export type AccountList = Array<Account>;
 
 const augurCorePath = path.join(__dirname, "../../augur-core/");
-
-function makeCompilerConfiguration() {
-  const contractSourceRoot = path.join(augurCorePath, "source/contracts/");
-  const outputRoot = path.join(augurCorePath, "output/contracts/");
-  const useFlattener = false;  // TODO make flattener bin specifiable so this can be true
-  const enableSdb = false;  // causes solc errors if true
-  return new CompilerConfiguration(contractSourceRoot, outputRoot, enableSdb, useFlattener);
-}
 
 function makeDeployerConfiguration() {
   const contractInputRoot = path.join(augurCorePath, "../augur-artifacts/src");
@@ -42,10 +34,10 @@ interface UsefulContractObjects {
   provider: EthersProvider;
   signer: EthersFastSubmitWallet;
   dependencies: ContractDependenciesEthers;
-  compiledContracts: CompilerOutput;
   addresses: ContractAddresses;
 }
-export async function compileAndDeployToGanache(accounts: AccountList): Promise<UsefulContractObjects> {
+
+export async function deployContracts(accounts: AccountList, compiledContracts: CompilerOutput): Promise<UsefulContractObjects> {
   const ganacheProvider = new ethers.providers.Web3Provider(ganache.provider({
     accounts,
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
@@ -58,26 +50,27 @@ export async function compileAndDeployToGanache(accounts: AccountList): Promise<
   const signer = await EthersFastSubmitWallet.create(accounts[0].secretKey, provider);
   const dependencies = new ContractDependenciesEthers(provider, signer, accounts[0].publicKey);
 
-  const compilerConfiguration = makeCompilerConfiguration();
-  const contractCompiler = new ContractCompiler(compilerConfiguration);
-  const compiledContracts = await contractCompiler.compileContracts();
-
   const deployerConfiguration = makeDeployerConfiguration();
   const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, ganacheProvider, signer, compiledContracts);
   const addresses = await contractDeployer.deploy();
 
-  return {provider, signer, dependencies, compiledContracts, addresses};
+  return {provider, signer, dependencies, addresses};
 }
 
-export async function makeTestAugur(accounts: AccountList): Promise<Augur<any>> {
-  const {provider, dependencies, addresses} = await compileAndDeployToGanache(accounts);
+export async function makeTestAugur(accounts: AccountList): Promise<Augur<ethers.utils.BigNumber>> {
+  const {provider, dependencies, addresses} = await deployContracts(accounts, compilerOutput);
   return Augur.create(provider, dependencies, addresses);
 }
 
 export const ACCOUNTS: AccountList = [
   {
     secretKey: "0xa429eeb001c683cf3d8faf4b26d82dbf973fb45b04daad26e1363efd2fd43913",
-    publicKey: "0x8fff40efec989fc938bba8b19584da08ead986ee",
+    publicKey: "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
+    balance: 100000000000000000000,  // 100 ETH
+  },
+  {
+    secretKey: "0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a",
+    publicKey: "0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb",
     balance: 100000000000000000000,  // 100 ETH
   },
 ];

@@ -2,11 +2,13 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "src"
+    "rootDir": "src",
+    "experimentalDecorators": true
   },
   "include": [
-    "src/**/*",
-    "src/**/*.json"
+    "src/**/*.ts",
+    "src/**/*.json",
+    "src/**/*"
   ],
   "references": [
     {
@@ -26,6 +28,9 @@
     },
     {
       "path": "../augur-artifacts"
+    },
+    {
+      "path": "../speedomatic"
     }
   ]
 }

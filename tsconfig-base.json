@@ -4,6 +4,8 @@
     "target": "es5",
     "lib": [
       "es2015",
+      "dom",
+      "webworker",
       "es2017"
     ],
     "declarationMap": true,

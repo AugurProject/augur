@@ -33,11 +33,12 @@ const thisYear = today.getUTCFullYear();
 
 
 interface BaseMarketData {
-  _description: string;
+
   _endTime: number;
   _affiliateFeeDivisor: number;
   _topic: string;
   _extraInfo: {
+    _description: string;
     longDescription?: string;
     resolutionSource?: string;
     _scalarDenomination?: string;
@@ -68,14 +69,14 @@ export type MarketData = CategoricalMarket | ScalarMarket | BinaryMarket;
 export const cannedMarketsData:Array<MarketData> = [
   {
     marketType: "yesNo",
-    _description:
-      "Will SpaceX successfully complete a manned flight to the International Space Station by the end of " +
-      thisYear +
-      "?",
     _endTime: inOneMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "space",
     _extraInfo: {
+      _description:
+        "Will SpaceX successfully complete a manned flight to the International Space Station by the end of " +
+        thisYear +
+        "?",
       resolutionSource: "http://www.spacex.com",
       tags: ["SpaceX", "spaceflight"],
       longDescription: ""
@@ -83,14 +84,15 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "yesNo",
-    _description:
-      "Will SpaceX successfully complete a manned flight beyond Earth orbit by " +
-      inOneMonths.toDateString() +
-      "?",
+
     _endTime: inOneMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "space",
     _extraInfo: {
+      _description:
+        "Will SpaceX successfully complete a manned flight beyond Earth orbit by " +
+        inOneMonths.toDateString() +
+        "?",
       resolutionSource: "http://www.spacex.com",
       tags: ["SpaceX", "spaceflight"],
       longDescription: ""
@@ -98,14 +100,14 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "yesNo",
-    _description:
-      "Will SpaceX successfully complete a Mars landing (manned or unmanned) by " +
-      inTwoMonths.toDateString() +
-      "?",
     _endTime: inTwoMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "space",
     _extraInfo: {
+      _description:
+        "Will SpaceX successfully complete a Mars landing (manned or unmanned) by " +
+        inTwoMonths.toDateString() +
+        "?",
       resolutionSource: "http://www.spacex.com",
       tags: ["SpaceX", "spaceflight"],
       longDescription: ""
@@ -114,14 +116,15 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "yesNo",
-    _description:
-      "Will California secede from the United States before, " +
-      inTwoMonths.toDateString() +
-      "?",
+
     _endTime: inTwoMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "politics",
     _extraInfo: {
+      _description:
+        "Will California secede from the United States before, " +
+        inTwoMonths.toDateString() +
+        "?",
       resolutionSource: "",
       tags: ["California", "Calexit"],
       longDescription:
@@ -131,14 +134,14 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "yesNo",
-    _description:
-      "Will the Dow Jones Industrial Average close at a higher price on " +
-      closingBellTomorrow.toDateString() +
-      " than it closed at the previous day?",
     _endTime: closingBellTomorrow.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "finance",
     _extraInfo: {
+  _description:
+    "Will the Dow Jones Industrial Average close at a higher price on " +
+    closingBellTomorrow.toDateString() +
+    " than it closed at the previous day?",
       resolutionSource: "https://www.google.com/finance?q=INDEXDJX:.DJI",
       tags: ["stocks", "Dow Jones"],
       longDescription:
@@ -148,14 +151,14 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "yesNo",
-    _description:
-      "Will Augur's live release happen by " +
-      inThreeMonths.toDateString() +
-      "?",
     _endTime: inThreeMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "Augur",
     _extraInfo: {
+      _description:
+        "Will Augur's live release happen by " +
+        inThreeMonths.toDateString() +
+        "?",
       resolutionSource: "https://augur.net",
       tags: ["release date", "Ethereum"],
       longDescription: ""
@@ -164,14 +167,15 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "yesNo",
-    _description:
-      "Will Jair Messias Bolsonaro be elected the president of Brazil in " +
-      inThreeMonths.toDateString() +
-      "?",
+
     _endTime: inThreeMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "politics",
     _extraInfo: {
+      _description:
+        "Will Jair Messias Bolsonaro be elected the president of Brazil in " +
+        inThreeMonths.toDateString() +
+        "?",
       resolutionSource: "",
       tags: ["elections", "Brazil"],
       longDescription: ""
@@ -180,14 +184,14 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "yesNo",
-    _description:
-      "Will Ethereum trade at $2000 or higher at any time before the end of " +
-      inFourMonths.toDateString() +
-      "?",
     _endTime: inFourMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "crypto",
     _extraInfo: {
+      _description:
+        "Will Ethereum trade at $2000 or higher at any time before the end of " +
+        inFourMonths.toDateString() +
+        "?",
       resolutionSource: "https://api.coinmarketcap.com/v1/ticker/ethereum",
       tags: ["Ethereum", "trading"],
       longDescription: "http://coinmarketcap.com/currencies/ethereum"
@@ -196,14 +200,14 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "yesNo",
-    _description:
-      "Will the Larsen B ice shelf collapse by " +
-      inFourMonths.toDateString() +
-      "?",
     _endTime: inFourMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "climate",
     _extraInfo: {
+      _description:
+        "Will the Larsen B ice shelf collapse by " +
+        inFourMonths.toDateString() +
+        "?",
       resolutionSource: "",
       tags: ["Antarctica", "warming"]
     },
@@ -211,14 +215,14 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "yesNo",
-    _description:
-      "Will the Golden State Warriors win the Championship on " +
-      inFiveMonths.toDateString() +
-      "?",
     _endTime: inFiveMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "sports",
     _extraInfo: {
+      _description:
+        "Will the Golden State Warriors win the Championship on " +
+        inFiveMonths.toDateString() +
+        "?",
       resolutionSource: "ESPN",
       tags: ["basketball", "Warriors"],
       longDescription: ""
@@ -227,14 +231,14 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "yesNo",
-    _description:
-      "Will antibiotics be outlawed for agricultural use in China by " +
-      inFiveMonths.toDateString() +
-      "?",
     _endTime: inFiveMonths.getTime() / 1000,
     _affiliateFeeDivisor: 4,
     _topic: "agriculture",
     _extraInfo: {
+      _description:
+        "Will antibiotics be outlawed for agricultural use in China by " +
+        inFiveMonths.toDateString() +
+        "?",
       tags: ["antibiotics", "China"],
       longDescription:
         "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?"
@@ -243,10 +247,6 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "scalar",
-    _description:
-      "High temperature (in degrees Fahrenheit) on " +
-      today.toDateString() +
-      " at the San Francisco International Airport, as reported by Weather Underground",
     _endTime: midnightTomorrow.getTime() / 1000,
     _minPrice: "-10",
     _maxPrice: "120",
@@ -254,6 +254,10 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "temperature",
     _extraInfo: {
+      _description:
+        "High temperature (in degrees Fahrenheit) on " +
+        today.toDateString() +
+        " at the San Francisco International Airport, as reported by Weather Underground",
       resolutionSource:
         "https://www.wunderground.com/history/airport/KSFO/" +
         [
@@ -285,9 +289,6 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "scalar",
-    _description:
-      "Average tropospheric methane concentration (in parts-per-billion) on " +
-      inFiveMonths.toDateString(),
     _endTime: inFiveMonths.getTime() / 1000,
     _minPrice: "600",
     _maxPrice: "5000",
@@ -295,6 +296,9 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "science",
     _extraInfo: {
+      _description:
+        "Average tropospheric methane concentration (in parts-per-billion) on " +
+        inFiveMonths.toDateString(),
       resolutionSource: "https://www.esrl.noaa.gov/gmd/ccgg/trends_ch4",
       tags: ["climate", "atmosphere"],
       longDescription:
@@ -304,8 +308,6 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "scalar",
-    _description:
-      "New antibiotics approved by the FDA on " + inSixMonths.toDateString(),
     _endTime: inSixMonths.getTime() / 1000,
     _minPrice: "0",
     _maxPrice: "30",
@@ -313,6 +315,8 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "medicine",
     _extraInfo: {
+      _description:
+        "New antibiotics approved by the FDA on " + inSixMonths.toDateString(),
       resolutionSource:
         "https://www.centerwatch.com/drug-information/fda-approved-drugs/year/" +
         thisYear,
@@ -339,10 +343,6 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "scalar",
-    _description:
-      "Millions of Tether tokens issued on " +
-      today.toDateString() +
-      " (round down)",
     _endTime: midnightTomorrow.getTime() / 1000,
     _minPrice: "0",
     _maxPrice: "10000",
@@ -350,6 +350,10 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "crypto",
     _extraInfo: {
+      _description:
+        "Millions of Tether tokens issued on " +
+        today.toDateString() +
+        " (round down)",
       resolutionSource:
         "http://omnichest.info/lookupadd.aspx?address=3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL",
       tags: ["Tether", "trading"],
@@ -376,15 +380,15 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "categorical",
-    _description:
-      "Who will win the University of Georgia vs. University of Florida football game on " +
-      midnightTomorrow.toDateString() +
-      "?",
     _endTime: midnightTomorrow.getTime() / 1000,
     _outcomes: ["Georgia", "Florida"],
     _affiliateFeeDivisor: 4,
     _topic: "sports",
     _extraInfo: {
+      _description:
+        "Who will win the University of Georgia vs. University of Florida football game on " +
+        midnightTomorrow.toDateString() +
+        "?",
       resolutionSource: "http://www.mcubed.net/ncaaf/series/fla/ga.shtml",
       tags: ["college football", "football"],
       longDescription:
@@ -403,10 +407,6 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "categorical",
-    _description:
-      "What will be the status of the U.S. electoral college on " +
-      midnightTomorrow.toDateString() +
-      "?",
     _endTime: midnightTomorrow.getTime() / 1000,
     _outcomes: [
       "Unchanged from 2016",
@@ -416,6 +416,10 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "politics",
     _extraInfo: {
+      _description:
+        "What will be the status of the U.S. electoral college on " +
+        midnightTomorrow.toDateString() +
+        "?",
       resolutionSource: "",
       tags: ["elections", "US politics"],
       longDescription:
@@ -424,10 +428,6 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "categorical",
-    _description:
-      "What will be the number one killer in the United States by " +
-      inOneMonths.toDateString() +
-      "?",
     _endTime: inOneMonths.getTime() / 1000,
     _outcomes: [
       "cancer",
@@ -440,6 +440,10 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "science",
     _extraInfo: {
+      _description:
+        "What will be the number one killer in the United States by " +
+        inOneMonths.toDateString() +
+        "?",
       resolutionSource: "https://www.cdc.gov/nchs/nvss/deaths.htm",
       tags: ["mortality", "United States"]
     },
@@ -464,10 +468,6 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "categorical",
-    _description:
-      "Which city will have the lowest median single-family home price on " +
-      inOneMonths.toDateString() +
-      "?",
     _endTime: inOneMonths.getTime() / 1000,
     _outcomes: [
       "London",
@@ -481,6 +481,10 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "housing",
     _extraInfo: {
+      _description:
+        "Which city will have the lowest median single-family home price on " +
+        inOneMonths.toDateString() +
+        "?",
       resolutionSource: "http://www.demographia.com",
       tags: ["economy", "bubble"]
     },
@@ -507,10 +511,6 @@ export const cannedMarketsData:Array<MarketData> = [
   },
   {
     marketType: "categorical",
-    _description:
-      "Which city will have the highest median single-family home price on " +
-      inTwoMonths.toDateString() +
-      "?",
     _endTime: inTwoMonths.getTime() / 1000,
     _outcomes: [
       "London",
@@ -524,6 +524,10 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "housing",
     _extraInfo: {
+      _description:
+        "Which city will have the highest median single-family home price on " +
+        inTwoMonths.toDateString() +
+        "?",
       resolutionSource: "http://www.demographia.com",
       tags: ["economy", "bubble"]
     },

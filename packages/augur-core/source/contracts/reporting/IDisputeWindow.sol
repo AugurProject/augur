@@ -11,15 +11,20 @@ import 'ROOT/libraries/token/ERC20Token.sol';
 
 
 contract IDisputeWindow is ITyped, ERC20Token {
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, address _erc820RegistryAddress) public returns (bool);
+    uint256 public invalidMarketsTotal;
+    uint256 public validityBondTotal;
+
+    uint256 public incorrectDesignatedReportTotal;
+    uint256 public initialReportBondTotal;
+
+    uint256 public designatedReportNoShowsTotal;
+    uint256 public designatedReporterNoShowBondTotal;
+
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc820RegistryAddress) public returns (bool);
     function getUniverse() public view returns (IUniverse);
     function getReputationToken() public view returns (IReputationToken);
     function getStartTime() public view returns (uint256);
     function getEndTime() public view returns (uint256);
-    function getNumMarkets() public view returns (uint256);
-    function getNumInvalidMarkets() public view returns (uint256);
-    function getNumIncorrectDesignatedReportMarkets() public view returns (uint256);
-    function getNumDesignatedReportNoShows() public view returns (uint256);
     function getWindowId() public view returns (uint256);
     function isActive() public view returns (bool);
     function isOver() public view returns (bool);

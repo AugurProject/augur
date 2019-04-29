@@ -36,6 +36,9 @@
   },
   "devDependencies": {
     "@augurproject/types": "10.0.0-0",
+    "@types/jest": "24.0.4",
+    "jest": "22.4.4",
+    "ts-jest": "23.10.5",
     "ts-node": "8.0.3"
   },
   "buildDependencies": [

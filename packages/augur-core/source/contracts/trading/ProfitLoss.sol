@@ -14,6 +14,8 @@ contract ProfitLoss is Initializable {
 
     IAugur public augur;
     IOrders public orders;
+    address public createOrder;
+    address public cancelOrder;
     address public fillOrder;
     address public claimTradingProceeds;
 
@@ -22,6 +24,7 @@ contract ProfitLoss is Initializable {
         int256 avgPrice; // Cannot actually be negative. Typed for code convenience
         int256 realizedProfit;
         int256 frozenFunds;
+        int256 realizedCost; // Also cannot be negative.
     }
 
     // User => Market => Outcome => Data
@@ -30,9 +33,19 @@ contract ProfitLoss is Initializable {
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
+        createOrder = augur.lookup("CreateOrder");
+        cancelOrder = augur.lookup("CancelOrder");
         fillOrder = augur.lookup("FillOrder");
         claimTradingProceeds = augur.lookup("ClaimTradingProceeds");
         orders = IOrders(augur.lookup("Orders"));
+        return true;
+    }
+
+    function recordFrozenFundChange(IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta) public afterInitialized returns (bool) {
+        require(msg.sender == createOrder || msg.sender == cancelOrder || msg.sender == address(orders) || msg.sender == fillOrder);
+        OutcomeData storage _outcomeData = profitLossData[_account][address(_market)][_outcome];
+        _outcomeData.frozenFunds += _frozenFundDelta;
+        augur.logProfitLossChanged(_market, _account, _outcome, _outcomeData.netPosition, uint256(_outcomeData.avgPrice), _outcomeData.realizedProfit, _outcomeData.frozenFunds,  _outcomeData.realizedCost);
         return true;
     }
 
@@ -55,6 +68,7 @@ contract ProfitLoss is Initializable {
             int256 _amountSold = _outcomeData.netPosition.abs().min(_amount.abs());
             _profit = (_outcomeData.netPosition < 0 ? _outcomeData.avgPrice.sub(_price) : _price.sub(_outcomeData.avgPrice)).mul(_amountSold);
             _outcomeData.realizedProfit += _profit;
+            _outcomeData.realizedCost += (_outcomeData.netPosition < 0 ? int256(_market.getNumTicks()).sub(_outcomeData.avgPrice) : _outcomeData.avgPrice).mul(_amountSold);
             _outcomeData.frozenFunds = _outcomeData.frozenFunds + _profit;
         }
 
@@ -63,7 +77,7 @@ contract ProfitLoss is Initializable {
         if (_newNetPosition == 0) {
             _outcomeData.avgPrice = 0;
             _outcomeData.netPosition = 0;
-            augur.logProfitLossChanged(_market, _address, _outcome, 0, 0, _outcomeData.realizedProfit, _outcomeData.frozenFunds);
+            augur.logProfitLossChanged(_market, _address, _outcome, 0, 0, _outcomeData.realizedProfit, _outcomeData.frozenFunds, _outcomeData.realizedCost);
             return true;
         }
 
@@ -76,7 +90,7 @@ contract ProfitLoss is Initializable {
         }
 
         _outcomeData.netPosition = _newNetPosition;
-        augur.logProfitLossChanged(_market, _address, _outcome, _outcomeData.netPosition, uint256(_outcomeData.avgPrice), _outcomeData.realizedProfit, _outcomeData.frozenFunds);
+        augur.logProfitLossChanged(_market, _address, _outcome, _outcomeData.netPosition, uint256(_outcomeData.avgPrice), _outcomeData.realizedProfit, _outcomeData.frozenFunds,  _outcomeData.realizedCost);
         return true;
     }
 
@@ -89,11 +103,13 @@ contract ProfitLoss is Initializable {
                 continue;
             }
             int256 _salePrice = int256(_market.getWinningPayoutNumerator(_outcome));
-            _outcomeData.realizedProfit += (_outcomeData.netPosition < 0 ? _outcomeData.avgPrice.sub(_salePrice) : _salePrice.sub(_outcomeData.avgPrice)).mul(_outcomeData.netPosition.abs());
+            int256 _amount = _outcomeData.netPosition.abs();
+            _outcomeData.realizedProfit += (_outcomeData.netPosition < 0 ? _outcomeData.avgPrice.sub(_salePrice) : _salePrice.sub(_outcomeData.avgPrice)).mul(_amount);
+            _outcomeData.realizedCost += (_outcomeData.netPosition < 0 ? int256(_market.getNumTicks()).sub(_outcomeData.avgPrice) : _outcomeData.avgPrice).mul(_amount);
             _outcomeData.avgPrice = 0;
             _outcomeData.frozenFunds = 0;
             _outcomeData.netPosition = 0;
-            augur.logProfitLossChanged(_market, _account, _outcome, 0, 0, _outcomeData.realizedProfit, 0);
+            augur.logProfitLossChanged(_market, _account, _outcome, 0, 0, _outcomeData.realizedProfit, 0, _outcomeData.realizedCost);
         }
         return true;
     }
@@ -112,5 +128,9 @@ contract ProfitLoss is Initializable {
 
     function getFrozenFunds(address _market, address _account, uint256 _outcome) public view returns (int256) {
         return profitLossData[_account][_market][_outcome].frozenFunds;
+    }
+
+    function getRealizedCost(address _market, address _account, uint256 _outcome) public view returns (int256) {
+        return profitLossData[_account][_market][_outcome].realizedCost;
     }
 }
