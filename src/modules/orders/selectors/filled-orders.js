@@ -197,7 +197,7 @@ export const selectUserFilledOrders = createCachedSelector(
     );
     orders
       .sort((a, b) => b.logIndex - a.logIndex)
-      .sort((a, b) => b.timestamp - a.timestamp);
+      .sort((a, b) => b.timestamp.timestamp - a.timestamp.timestamp);
 
     return orders || [];
   }

@@ -137,7 +137,7 @@ const userOpenOrders = memoize(
 
     const orders = userAsks.concat(userBids);
     return orders.sort(
-      (a, b) => a.creationTime.timestamp - b.creationTime.timestamp
+      (a, b) => b.creationTime.timestamp - a.creationTime.timestamp
     );
   },
   { max: 10 }
