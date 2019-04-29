@@ -4,7 +4,11 @@ import classNames from "classnames";
 import getValue from "utils/get-value";
 
 import { formatEther, formatShares } from "utils/format-number";
-import { PositionTypeLabel, ValueLabel } from "modules/common-elements/labels";
+import {
+  PositionTypeLabel,
+  ValueLabel,
+  TextLabel
+} from "modules/common-elements/labels";
 
 import ToggleRow from "modules/portfolio/components/common/rows/toggle-row";
 import { FilledOrderInterface } from "modules/portfolio/types";
@@ -53,7 +57,12 @@ const FilledOrder = (props: FilledOrderProps) => {
               [Styles.FilledOrder__extendedView]: extendedView
             })}
           >
-            <li>{filledOrder.outcome}</li>
+            <li>
+              <TextLabel
+                text={filledOrder.outcome}
+                keyId={`${originalQuantity}-${orderQuantity}-${orderPrice}`}
+              />
+            </li>
             <li>
               <PositionTypeLabel type={orderType} pastTense />
             </li>

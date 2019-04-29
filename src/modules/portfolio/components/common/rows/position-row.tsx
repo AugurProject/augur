@@ -6,7 +6,8 @@ import {
   LinearPropertyLabelMovement,
   PositionTypeLabel,
   MovementLabel,
-  ValueLabel
+  ValueLabel,
+  TextLabel
 } from "modules/common-elements/labels";
 import ToggleRow from "modules/portfolio/components/common/rows/toggle-row";
 import { Order } from "modules/portfolio/types";
@@ -67,7 +68,9 @@ const PositionRow = (props: PositionRowProps) => {
         [Styles.Position__extended]: extendedView
       })}
     >
-      <li>{position.outcomeName}</li>
+      <li>
+        <TextLabel text={position.outcomeName} keyId={position.totalCost} />
+      </li>
       <li>
         <PositionTypeLabel type={position.type} />
       </li>

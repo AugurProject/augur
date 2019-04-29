@@ -5,7 +5,8 @@ import {
   LinearPropertyLabel,
   PendingLabel,
   PositionTypeLabel,
-  ValueLabel
+  ValueLabel,
+  TextLabel
 } from "modules/common-elements/labels";
 import ToggleRow from "modules/portfolio/components/common/rows/toggle-row";
 import { Order } from "modules/portfolio/types";
@@ -33,6 +34,8 @@ const OpenOrder = (props: OpenOrderProps) => {
   const creationTime = getValue(openOrder, "creationTime.formattedShort");
   const avgPrice = getValue(openOrder, "avgPrice");
   const unmatchedShares = getValue(openOrder, "unmatchedShares");
+  const orderLabel =
+    openOrder.description || openOrder.name || openOrder.outcomeName;
 
   const rowContent = (
     <ul
@@ -42,7 +45,7 @@ const OpenOrder = (props: OpenOrderProps) => {
       })}
     >
       <li>
-        {openOrder.description || openOrder.name || openOrder.outcomeName}
+        <TextLabel text={orderLabel} keyId={openOrder.id} />
       </li>
       <li>
         <PositionTypeLabel type={openOrder.type} />
