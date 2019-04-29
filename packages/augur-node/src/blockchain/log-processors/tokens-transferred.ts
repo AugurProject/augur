@@ -9,7 +9,6 @@ import { updateProfitLossRemoveRow } from "./profit-loss/update-profit-loss";
 
 export async function processTokensTransferredLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
-    console.log("TOKEN TRANSFER STARTS");
     const token = log.token || log.address;
     const value = new BigNumber(log.value || log.amount);
     const tokenTransferDataToInsert = {
@@ -26,7 +25,6 @@ export async function processTokensTransferredLog(augur: Augur, log: FormattedEv
 
     await increaseTokenBalance(db, augur, token, log.to, value, log);
     await decreaseTokenBalance(db, augur, token, log.from, value, log);
-    console.log("TOKEN TRANSFER ENDS");
   };
 }
 
