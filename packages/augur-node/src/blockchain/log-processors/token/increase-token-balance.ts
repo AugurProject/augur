@@ -10,7 +10,7 @@ interface BalanceResult {
 }
 
 export async function increaseTokenBalance(db: Knex, augur: Augur, token: Address, owner: Address, amount: BigNumber, log: FormattedEventLog) {
-  if (isLegacyReputationToken(augur, token)) return;
+  //if (isLegacyReputationToken(augur, token)) return;
   const oldBalance: BalanceResult = await db.first("balance").from("balances").where({ token, owner });
   let balance = amount;
   if (oldBalance == null) {

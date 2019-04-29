@@ -44,7 +44,7 @@ async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): 
       } catch (e) {
         return nextBlockNumber(new Error("Could not get block"));
       }
-    }, (err: Error|undefined, blockDetails: Array<[number, BlockDetail]>) => {
+    }, (err: Error | undefined, blockDetails: Array<[number, BlockDetail]>) => {
       if (err) return reject(err);
       const blockDetailsByBlock = _.fromPairs(blockDetails);
       resolve(blockDetailsByBlock);
@@ -54,12 +54,13 @@ async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): 
 
 async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<ParsedLogWithEventName>, blockNumbers: Array<number>, blockDetailsByBlock: BlockDetailsByBlock) {
   const logsByBlock: { [blockNumber: number]: Array<ParsedLogWithEventName> } = _.groupBy(allAugurLogs, (log) => log.blockNumber);
-  for(let blockNumber of blockNumbers) {
+  for (let blockNumber of blockNumbers) {
     const blockDetail = blockDetailsByBlock[blockNumber];
     const logs = logsByBlock[blockNumber];
     if (logs === undefined || logs.length === 0) return;
+
     const dbWritePromises: Array<Promise<(db: Knex) => Promise<void>>> = [];
-    for(let log of _.sortBy(logs, 'logIndex')) {
+    for (let log of _.sortBy(logs, 'logIndex')) {
       const dbWritePromise = processLogByName(augur, log, false);
       if (dbWritePromise != null) {
         dbWritePromises.push(dbWritePromise);
@@ -67,19 +68,25 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Pa
         logger.info("Log processor does not exist:", JSON.stringify(log));
       }
     }
-    const dbWriteFunctions = await Promise.all(dbWritePromises);
-    await db.transaction(async (trx: Knex.Transaction) => {
-      await processBlockByBlockDetails(trx, augur, blockDetail, true);
-      await each(logs, async (log) => await insertTransactionHash(trx, blockNumber, log.transactionHash));
-      logger.info(`Processing ${dbWriteFunctions.length} logs`);
-      for (const dbWriteFunction of dbWriteFunctions) {
-        await dbWriteFunction(trx);
-      }
-    });
+
+    try {
+      const dbWriteFunctions = await Promise.all(dbWritePromises);
+
+      await db.transaction(async (trx: Knex.Transaction) => {
+        await processBlockByBlockDetails(trx, augur, blockDetail, true);
+        await each(logs, async (log) => await insertTransactionHash(trx, blockNumber, log.transactionHash));
+        //logger.info(`Processing ${dbWriteFunctions.length} logs`);
+        for (const dbWriteFunction of dbWriteFunctions) {
+          await dbWriteFunction(trx);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
-export async function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, endBlockNumber: number, blocksPerChunk: number|undefined=50):Promise<void>  {
+export async function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, endBlockNumber: number, blocksPerChunk: number | undefined = 50): Promise<void> {
   logger.info(`Getting Augur logs from block ${fromBlock} to block ${endBlockNumber}`);
   let lastBlockDetails = new Promise<BlockDetailsByBlock>((resolve) => resolve([]));
   let highestSyncedBlockNumber = fromBlock;
@@ -89,14 +96,14 @@ export async function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: numbe
     const toBlock = Math.min(highestSyncedBlockNumber + blocksPerChunk, endBlockNumber);
     const eventNames = Object.keys(logProcessors.Augur);
 
-    const promises = eventNames.map(async (eventName):Promise<Array<ParsedLogWithEventName>> => {
+    const promises = eventNames.map(async (eventName): Promise<Array<ParsedLogWithEventName>> => {
       const logs = await augur.events.getLogs(eventName, highestSyncedBlockNumber, toBlock);
-      return logs.map((log) => ({...log, eventName}));
+      return logs.map((log) => ({ ...log, eventName }));
     });
 
     const logs = _.flatten(await Promise.all(promises));
 
-    // console.log(highestSyncedBlockNumber, toBlock, logs.length, JSON.stringify(logs));
+    //console.log(highestSyncedBlockNumber, toBlock, logs.length, JSON.stringify(logs));
 
     const blockNumbers = logs.length > 0 ? extractBlockNumbers(logs) : getBlockNumbersInRange({
       fromBlock: highestSyncedBlockNumber,
