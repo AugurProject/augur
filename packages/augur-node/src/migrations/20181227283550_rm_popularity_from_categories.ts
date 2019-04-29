@@ -2,7 +2,7 @@ import Knex from "knex";
 
 exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.table("categories", (table: Knex.CreateTableBuilder): void => {
-    //table.dropColumns("popularity");
+    table.dropColumns("popularity");
   });
 };
 
