@@ -9,12 +9,12 @@ import FilledOrdersHeader from "modules/portfolio/components/common/headers/fill
 const sortByOptions = [
   {
     label: "View by Most Recently Traded Market",
-    value: "creationTime",
+    value: "tradedMarket",
     comp: null
   },
   {
     label: "View by Most Recently Traded Outcome",
-    value: "endTime",
+    value: "tradedOutcome",
     comp: null
   }
 ];

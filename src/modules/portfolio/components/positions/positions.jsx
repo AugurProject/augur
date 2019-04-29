@@ -5,6 +5,7 @@ import FilterBox from "modules/portfolio/containers/filter-box";
 import { CompactButton } from "modules/common-elements/buttons";
 import { MovementLabel } from "modules/common-elements/labels";
 import PositionsTable from "modules/market/containers/positions-table";
+import { END_TIME } from "modules/common-elements/constants";
 
 import Styles from "modules/portfolio/components/common/quads/quad.styles";
 
@@ -40,7 +41,7 @@ const sortByOptions = [
   },
   {
     label: "Sort by Expiring Soonest",
-    value: "endTime",
+    value: END_TIME,
     comp(marketA, marketB) {
       return marketA.endTime.timestamp - marketB.endTime.timestamp;
     }

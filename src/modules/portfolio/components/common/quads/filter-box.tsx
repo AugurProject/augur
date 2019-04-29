@@ -1,7 +1,7 @@
 import React, { Component, ReactNode } from "react";
 
 import { find } from "lodash";
-import { ALL_MARKETS } from "modules/common-elements/constants";
+import { ALL_MARKETS, END_TIME } from "modules/common-elements/constants";
 import QuadBox from "modules/portfolio/components/common/quads/quad-box";
 import { SwitchLabelsGroup } from "modules/common-elements/switch-labels-group";
 import { NameValuePair, Market, Tab} from "modules/portfolio/types";
@@ -30,6 +30,7 @@ export interface FilterBoxProps {
   renderToggleContent?: Function;
   filterLabel: String;
   sortByStyles?: Object;
+  currentAugurTimestamp: Number;
 }
 
 interface FilterBoxState {
@@ -117,8 +118,28 @@ export default class FilterBox extends React.Component<FilterBoxProps, FilterBox
 
   applySortBy = (value: string, data: Array<Market>) => {
     const valueObj = find(this.props.sortByOptions, { value: value });
+    let comp = valueObj.comp;
 
-    data = data.sort(valueObj.comp);
+    const { currentAugurTimestamp } = this.props;
+
+    if (valueObj.value === END_TIME) {
+      comp = function(marketA, marketB) {
+          if (
+            marketA.endTime.timestamp < currentAugurTimestamp &&
+            marketB.endTime.timestamp < currentAugurTimestamp
+          ) {
+            return marketB.endTime.timestamp - marketA.endTime.timestamp;
+          }
+          if (marketA.endTime.timestamp < currentAugurTimestamp) {
+            return 1;
+          }
+          if (marketB.endTime.timestamp < currentAugurTimestamp) {
+            return -1;
+          }
+          return marketA.endTime.timestamp - marketB.endTime.timestamp;
+        }
+    }
+    data = data.sort(comp);
 
     return data;
   }

@@ -9,12 +9,12 @@ import OrderMarketRow from "modules/portfolio/components/common/rows/order-marke
 const sortByOptions = [
   {
     label: "View by Most Recently Traded Market",
-    value: "creationTime",
+    value: "tradedMarket",
     comp: null
   },
   {
     label: "View by Most Recently Traded Outcome",
-    value: "endTime",
+    value: "tradedOutcome",
     comp: null
   }
 ];
