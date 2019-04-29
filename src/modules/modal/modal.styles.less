@@ -8,7 +8,6 @@
   flex-flow: column nowrap;
   max-height: 90vh;
   max-width: 35rem;
-  min-height: 13.5rem;
   position: relative;
   width: 100%;
 
@@ -47,7 +46,6 @@
   > div:last-of-type {
     display: flex;
     flex-flow: row-reverse nowrap;
-    margin-top: auto;
 
     > button {
       margin-left: @size-16;
@@ -93,11 +91,9 @@
 
 div.ButtonsRow:last-of-type {
   border-top: 1px solid fade(@color-highlight, 50%);
-  margin: @size-24 0 0;
   padding: @size-12 @size-24;
 
   @media @breakpoint-mobile {
-    margin: @size-16 0 0;
     padding: @size-8 @size-16;
   }
 }
@@ -288,10 +284,6 @@ div.ButtonsRow:last-of-type {
       padding-bottom: @size-24;
     }
   }
-
-  > div:last-of-type {
-    margin-top: 1rem;
-  }
 }
 
 .GroupedForm {
@@ -436,10 +428,6 @@ div.ButtonsRow:last-of-type {
       margin: 0 0 @size-16;
     }
   }
-
-  > div:last-of-type {
-    margin-top: @size-24;
-  }
 }
 
 .Proceeds {
@@ -463,10 +451,6 @@ div.ButtonsRow:last-of-type {
       margin: 1rem 0 1.5rem;
       overflow-y: auto;
     }
-  }
-
-  > div:last-of-type {
-    margin-top: 1.5rem;
   }
 
   @media @breakpoint-mobile {
@@ -508,7 +492,6 @@ div.ButtonsRow:last-of-type {
 .Transactions {
   .Container;
 
-  margin: 80px 0;
   max-width: 95vw;
   padding: 0 @size-24 @size-24;
 

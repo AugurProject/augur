@@ -52,6 +52,6 @@ export const Message = (props: MessageProps) => (
       {props.marketReview && <MarketReview {...props.marketReview} />}
       {props.checkboxCTA && <CheckboxCTA {...props.checkboxCTA} />}
     </main>
-    {props.buttons.length && <ButtonsRow buttons={props.buttons} />}
+    {props.buttons.length > 0 && <ButtonsRow buttons={props.buttons} />}
   </div>
 );
