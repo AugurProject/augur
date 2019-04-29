@@ -11,6 +11,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { keyArrayBy } from "utils/key-by";
 import getUserFilledOrders from "modules/orders/selectors/filled-orders";
 import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
+import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
 
 export default function() {
   return marketsFilledOrders(store.getState());
@@ -21,12 +22,13 @@ export const marketsFilledOrders = createSelector(
   selectLoginAccountAddress,
   selectFilledOrders,
   selectMarketsDataState,
-  (marketReportState, loginAccountAddress, filledOrders, marketsData) => {
+  getMarketsPositionsRecentlyTraded,
+  (marketReportState, loginAccountAddress, filledOrders, marketsData, timestamps) => {
     const marketIds = filterMarketIds(
       filledOrders[loginAccountAddress] || [],
       marketReportState.resolved
     );
-    const markets = filterMarketsByStatus(marketIds);
+    const markets = filterMarketsByStatus(marketIds, timestamps).sort((a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp);
     const allFilledOrders = getAllUserFilledOrders(marketIds);
 
     return {
@@ -49,7 +51,7 @@ const filterMarketIds = (userFilledOrders, resolvedMarkets) =>
     )
   );
 
-const filterMarketsByStatus = marketIds =>
+const filterMarketsByStatus = (marketIds, marketsPositionsRecentlyTraded) =>
   marketIds.reduce((p, m) => {
     const market = selectMarket(m);
     if (
@@ -65,6 +67,7 @@ const filterMarketsByStatus = marketIds =>
       ...p,
       {
         ...market,
+        recentlyTraded: marketsPositionsRecentlyTraded[market.id] || 0,
         filledOrders,
         userOpenOrders: getUserOpenOrders(m)
       }
