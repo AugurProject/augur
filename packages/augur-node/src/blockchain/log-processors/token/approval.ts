@@ -1,6 +1,5 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
-import { FormattedEventLog } from "../../../types";
+import Knex from "knex";
+import { Augur, BigNumber, FormattedEventLog } from "../../../types";
 import { augurEmitter } from "../../../events";
 import { SubscriptionEventNames } from "../../../constants";
 

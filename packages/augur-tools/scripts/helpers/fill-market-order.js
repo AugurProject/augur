@@ -115,7 +115,7 @@ getPrivateKey(null, function(err, auth) {
                     minPrice: marketInfo.minPrice,
                     maxPrice: marketInfo.maxPrice,
                     numTicks: marketInfo.numTicks,
-                    tickSize: marketInfo.tickSize,
+                    tickSize: marketInfo._numTicks,
                     _direction: orderType === "sell" ? 0 : 1,
                     _market: marketInfo.id,
                     _outcome: outcomeToFill,

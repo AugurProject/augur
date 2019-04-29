@@ -9,11 +9,28 @@ type NetworkOptions = {
     gasPrice: ethers.utils.BigNumber;
 }
 
-type Networks = {
-    [networkName: string]: NetworkOptions;
+export const NETWORKS = [
+  "aura",
+  "clique",
+  "environment",
+  "rinkeby",
+  "ropsten",
+  "kovan",
+  "thunder",
+  "testrpc"
+] as const;
+
+export type NETWORKS = typeof NETWORKS[number];
+
+export function isNetwork(x: any): x is NETWORKS {
+  return NETWORKS.includes(x);
 }
 
-const networks: Networks = {
+type NetworksToOptions = {
+    [P in NETWORKS]?: NetworkOptions;
+}
+
+const networks: NetworksToOptions = {
     thunder: {
         isProduction: false,
         http: "http://testnet-rpc.thundercore.com:8545",
@@ -85,10 +102,7 @@ export class NetworkConfiguration {
         this.isProduction = isProduction;
     }
 
-    public static create(networkName: string="", validatePrivateKey: boolean=true): NetworkConfiguration {
-        if (networkName === '') {
-            networkName = (typeof process.env.TESTRPC === 'undefined') ? "environment" : 'testrpc';
-        }
+    public static create(networkName:NETWORKS=(typeof process.env.TESTRPC === 'undefined') ? "environment" : 'testrpc', validatePrivateKey: boolean=true): NetworkConfiguration {
         const network = networks[networkName];
         if (networkName === "environment" &&
             (process.env.ETHEREUM_HTTP || process.env.ETHEREUM_WS || process.env.ETHEREUM_IPC)) {

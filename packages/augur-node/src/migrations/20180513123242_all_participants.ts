@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import Knex from "knex";
 
 exports.up = async (knex: Knex): Promise<any> => {
   return knex.raw("DROP VIEW IF EXISTS all_participants").then((): PromiseLike<any> => {

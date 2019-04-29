@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import Knex from "knex";
 import { DisputeWindowState } from "../../types";
 
 exports.seed = async (knex: Knex): Promise<any> => {

@@ -1,5 +1,5 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import { Address, MarketsContractAddressRow, SortLimitParams } from "../../types";
 import { getMarketsWithReportingState, queryModifier } from "./database";
 import { createSearchProvider } from "../../database/fts";

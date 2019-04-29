@@ -1,5 +1,5 @@
-import * as Knex from "knex";
-import { SearchRow, Address } from "../../types";
+import Knex from "knex";
+import { Address, SearchRow } from "../../types";
 import { SearchProvider } from "./provider";
 
 export class SearchPostgres implements SearchProvider {

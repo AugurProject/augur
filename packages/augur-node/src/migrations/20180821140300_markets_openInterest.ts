@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import Knex from "knex";
 import { updateMarketOpenInterest } from "../blockchain/log-processors/order-filled/update-volumetrics";
 
 exports.up = async (knex: Knex): Promise<any> => {

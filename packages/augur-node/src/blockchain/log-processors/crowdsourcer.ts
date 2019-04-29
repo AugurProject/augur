@@ -1,12 +1,18 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
-import { BigNumber } from "bignumber.js";
-import { FormattedEventLog, Address, DisputeWindowState } from "../../types";
+import { Address, Augur, BigNumber, DisputeWindowState, FormattedEventLog, ReportingState } from "../../types";
+import { BigNumber as BigNumberJS } from "bignumber.js";
+
+import Knex from "knex";
+import { QueryBuilder } from "knex";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
-import { rollbackMarketState, insertPayout, updateDisputeRound, updateMarketDisputeWindow, updateMarketState } from "./database";
+import {
+  insertPayout,
+  rollbackMarketState,
+  updateDisputeRound,
+  updateMarketDisputeWindow,
+  updateMarketState
+} from "./database";
 import { groupByAndSum } from "../../server/getters/database";
-import { QueryBuilder } from "knex";
 import { SubscriptionEventNames } from "../../constants";
 
 interface StakesByPayoutId {
@@ -22,7 +28,7 @@ async function updateTentativeWinningPayout(db: Knex, marketId: Address) {
     builder.select(["payoutId", "amountStaked"]).from("initial_reports").where("marketId", marketId),
   );
   const summed = groupByAndSum(results, ["payoutId"], ["amountStaked"])
-    .sort((a: StakesByPayoutId, b: StakesByPayoutId) => b.amountStaked.comparedTo(a.amountStaked));
+    .sort((a: StakesByPayoutId, b: StakesByPayoutId) => new BigNumberJS(b.amountStaked.toString()).comparedTo(new BigNumberJS(a.amountStaked.toString())));
   const mostStakedPayoutId = summed[0];
   const query = db("payouts").update("tentativeWinning", 0).where("marketId", marketId);
   if (mostStakedPayoutId != null) query.whereNot("payoutId", mostStakedPayoutId.payoutId);
@@ -97,7 +103,7 @@ export async function processDisputeCrowdsourcerContributionLog(augur: Augur, lo
     });
     await db.insert(disputeToInsert).into("disputes");
     const result: { amountStaked: BigNumber } = await db("crowdsourcers").first("amountStaked").where("crowdsourcerId", log.disputeCrowdsourcer);
-    const amountStaked = result.amountStaked.plus(new BigNumber(log.amountStaked, 10)).toString();
+    const amountStaked = result.amountStaked.add(new BigNumber(log.amountStaked)).toString();
     await db("crowdsourcers").update({ amountStaked }).where("crowdsourcerId", log.disputeCrowdsourcer);
     augurEmitter.emit(SubscriptionEventNames.DisputeCrowdsourcerContribution, Object.assign({},
       log,
@@ -113,7 +119,7 @@ export async function processDisputeCrowdsourcerContributionLogRemoval(augur: Au
       logIndex: log.logIndex,
     }).del();
     const result: { amountStaked: BigNumber } = await db("crowdsourcers").first("amountStaked").where("crowdsourcerId", log.disputeCrowdsourcer);
-    const amountStaked = result.amountStaked.minus(new BigNumber(log.amountStaked, 10)).toString();
+    const amountStaked = result.amountStaked.sub(new BigNumber(log.amountStaked)).toString();
     await db("crowdsourcers").update({ amountStaked }).where("crowdsourcerId", log.disputeCrowdsourcer);
     augurEmitter.emit(SubscriptionEventNames.DisputeCrowdsourcerContribution, Object.assign({},
       log,
@@ -124,7 +130,7 @@ export async function processDisputeCrowdsourcerContributionLogRemoval(augur: Au
 export async function processDisputeCrowdsourcerCompletedLog(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await db("crowdsourcers").update({ completed: 1 }).where({ crowdsourcerId: log.disputeCrowdsourcer });
-    await updateMarketState(db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW);
+    await updateMarketState(db, log.market, log.blockNumber, ReportingState.AWAITING_NEXT_WINDOW);
     await updateDisputeRound(db, log.market);
     await updateMarketDisputeWindow(db, augur, log.universe, log.market, true);
     await updateIncompleteCrowdsourcers(db, log.market);
@@ -138,7 +144,7 @@ export async function processDisputeCrowdsourcerCompletedLog(augur: Augur, log: 
 export async function processDisputeCrowdsourcerCompletedLogRemoval(augur: Augur, log: FormattedEventLog) {
   return async (db: Knex) => {
     await rollbackCrowdsourcerCompletion(db, log.disputeCrowdsourcer, log.market);
-    await rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW);
+    await rollbackMarketState(db, log.market, ReportingState.AWAITING_NEXT_WINDOW);
     await updateDisputeRound(db, log.market);
     await updateMarketDisputeWindow(db, augur, log.universe, log.market, false);
     await rollbackIncompleteCrowdsourcers(db, log.market);

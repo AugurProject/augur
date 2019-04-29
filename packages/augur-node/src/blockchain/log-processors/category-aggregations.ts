@@ -1,5 +1,5 @@
-import * as Knex from "knex";
-import { ReportingState } from "../../types";
+import Knex from "knex";
+import { BigNumber, ReportingState } from "../../types";
 
 interface MarketOpenInterestChangedParams {
   db: Knex;
@@ -23,16 +23,16 @@ export async function updateCategoryAggregationsOnMarketOpenInterestChanged(para
     .where({ category: params.categoryName });
   if (row === undefined) throw new Error(`No category found with name ${params.categoryName}`);
 
-  const oiDelta: BigNumber = params.newOpenInterest.minus(params.oldOpenInterest);
+  const oiDelta: BigNumber = params.newOpenInterest.sub(params.oldOpenInterest);
 
   const updates: any = {
     // 1. update category.openInterest to reflect change in market's OI
-    openInterest: row.openInterest.plus(oiDelta).toString(),
+    openInterest: row.openInterest.add(oiDelta).toString(),
   };
 
   if (params.reportingState !== ReportingState.FINALIZED) {
     // 2. update category.nonFinalizedOpenInterest to reflect change in non-finalized market's OI
-    updates.nonFinalizedOpenInterest = row.nonFinalizedOpenInterest.plus(oiDelta).toString();
+    updates.nonFinalizedOpenInterest = row.nonFinalizedOpenInterest.add(oiDelta).toString();
   }
 
   await params.db("categories").update(updates).where({ category: params.categoryName });
@@ -43,7 +43,7 @@ export async function updateCategoryAggregationsOnMarketFinalized(params: Market
   // 1. update category.nonFinalizedOpenInterest because a finalized market is newly excluded from nonFinalizedOpenInterest
   const data = await marketFinalizedHelper(params.db, params.marketId);
   await params.db("categories").update({
-    nonFinalizedOpenInterest: data.categoryNonFinalizedOpenInterest.minus(data.marketOpenInterest).toString(),
+    nonFinalizedOpenInterest: data.categoryNonFinalizedOpenInterest.sub(data.marketOpenInterest).toString(),
   }).where({ category: data.categoryName });
 }
 
@@ -52,7 +52,7 @@ export async function updateCategoryAggregationsOnMarketFinalizedRollback(params
   // 1. update category.nonFinalizedOpenInterest because an un-finalized market is newly included in nonFinalizedOpenInterest
   const data = await marketFinalizedHelper(params.db, params.marketId);
   await params.db("categories").update({
-    nonFinalizedOpenInterest: data.categoryNonFinalizedOpenInterest.plus(data.marketOpenInterest).toString(),
+    nonFinalizedOpenInterest: data.categoryNonFinalizedOpenInterest.add(data.marketOpenInterest).toString(),
   }).where({ category: data.categoryName });
 }
 

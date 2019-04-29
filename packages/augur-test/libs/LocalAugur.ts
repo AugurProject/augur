@@ -7,7 +7,7 @@ import * as ganache from "ganache-core";
 import { EthersFastSubmitWallet } from "@augurproject/core/source/libraries/EthersFastSubmitWallet";
 import { ethers } from "ethers";
 import { CompilerOutput } from "solc";
-import { ContractAddresses, contracts as compilerOutput } from "@augurproject/artifacts";
+import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
 
 export type Account = {
   secretKey: string;
@@ -20,8 +20,8 @@ export type AccountList = Array<Account>;
 const augurCorePath = path.join(__dirname, "../../augur-core/");
 
 function makeDeployerConfiguration() {
-  const contractInputRoot = path.join(augurCorePath, "output/contracts");
-  const artifactOutputRoot  = path.join(augurCorePath, "output/contracts");
+  const contractInputRoot = path.join(augurCorePath, "../augur-artifacts/src");
+  const artifactOutputRoot  = path.join(augurCorePath, "../augur-artifacts/src");
   const createGenesisUniverse = true;
   const useNormalTime = false;
   const isProduction = false;

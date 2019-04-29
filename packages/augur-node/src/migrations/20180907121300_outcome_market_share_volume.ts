@@ -1,7 +1,7 @@
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
 import { ZERO } from "../constants";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "../types";
 
 interface MinimalTradeRow {
   price: BigNumber;
@@ -20,10 +20,10 @@ function getVolumesFromTrades(marketOutcomes: Array<MinimalTradeRow>, minPrice: 
   const volumes = _.reduce(marketOutcomes, (acc, trade) => {
     const tradeAmount = new BigNumber(trade.amount);
     const tradePrice = new BigNumber(trade.price);
-    const price = tradePrice.minus(minPrice);
+    const price = tradePrice.sub(minPrice);
     return {
-      shareVolume: acc.shareVolume.plus(tradeAmount),
-      volume: acc.volume.plus(tradeAmount.multipliedBy(price)),
+      shareVolume: acc.shareVolume.add(tradeAmount),
+      volume: acc.volume.add(tradeAmount.mul(price)),
     };
   }, { shareVolume: ZERO, volume: ZERO });
   return _.mapValues(volumes, (volume) => volume.toString());

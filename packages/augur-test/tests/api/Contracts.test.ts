@@ -4,7 +4,7 @@ import { GenericAugurInterfaces } from "@augurproject/core";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
 import { ethers } from "ethers";
-import { ContractAddresses, contracts as compilerOutput } from "@augurproject/artifacts";
+import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
 
 interface MarketCreatedEvent {
   name: "MarketCreated";
