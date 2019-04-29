@@ -323,8 +323,8 @@ const assembleMarket = (
     name: INDETERMINATE_OUTCOME_NAME
   });
 
+  market.myPositionsSummary = {};
   if (userTradingPositions.tradingPositionsPerMarket) {
-    market.myPositionsSummary = {};
     const marketPositions = userTradingPositions.tradingPositionsPerMarket;
     // leave complete sets here, until we finish new notifications
     if (numCompleteSets) {

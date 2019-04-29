@@ -24,7 +24,7 @@ describe("modules/events/actions/log-handlers.js", () => {
     let loadReportingWindowBoundsSpy;
     let getWinningBalanceSpy;
     let loadMarketOpenOrdersSpy;
-    let loadAccountPositions;
+    let loadMarketAccountPositions;
     let updateAssetsSpy;
     const ACTIONS = {
       UPDATE_LOGGED_TRANSACTIONS: "UPDATE_LOGGED_TRANSACTIONS",
@@ -65,8 +65,8 @@ describe("modules/events/actions/log-handlers.js", () => {
             marketId: options.marketId
           }
         }));
-      loadAccountPositions = jest
-        .spyOn(loadAccountPositionsModule, "loadAccountPositions")
+      loadMarketAccountPositions = jest
+        .spyOn(loadAccountPositionsModule, "loadMarketAccountPositions")
         .mockImplementation(() => ({
           type: ACTIONS.LOAD_ACCOUNT_POSITIONS
         }));
@@ -84,7 +84,7 @@ describe("modules/events/actions/log-handlers.js", () => {
       loadAccountTradesSpy.mockReset();
       getWinningBalanceSpy.mockReset();
       loadMarketOpenOrdersSpy.mockReset();
-      loadAccountPositions.mockReset();
+      loadMarketAccountPositions.mockReset();
       updateAssetsSpy.mockReset();
     });
 
@@ -117,6 +117,10 @@ describe("modules/events/actions/log-handlers.js", () => {
         },
         {
           type: ACTIONS.LOAD_ACCOUNT_POSITIONS
+        },
+        {
+          type: ACTIONS.GET_WINNING_BALANCE,
+          data: { marketIds: ["0xdeadbeef"] }
         }
       ]);
     });
@@ -212,6 +216,10 @@ describe("modules/events/actions/log-handlers.js", () => {
         },
         {
           type: ACTIONS.LOAD_ACCOUNT_POSITIONS
+        },
+        {
+          type: ACTIONS.GET_WINNING_BALANCE,
+          data: { marketIds: ["0xdeadbeef"] }
         }
       ]);
     });

@@ -20,9 +20,7 @@ export const loadMarketOpenOrders = (marketId, callback = logError) => (
     },
     (err, orders) => {
       if (err) return callback(err);
-      if (orders != null) {
-        shapeGetOrders(orders, marketId).map(v => dispatch(updateOrderBook(v)));
-      }
+      dispatch(updateOrderBook(shapeGetOrders(orders, marketId)));
       callback(null);
     }
   );

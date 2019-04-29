@@ -45,7 +45,7 @@ const loadUserAccountOrders = (options = {}, callback) => (
 
 const postProcessing = (marketIds, dispatch, orders, callback) => {
   marketIds.forEach(marketId =>
-    shapeGetOrders(orders, marketId).map(v => dispatch(updateOrderBook(v)))
+    dispatch(updateOrderBook(shapeGetOrders(orders, marketId)))
   );
 
   if (callback) callback(null, orders);

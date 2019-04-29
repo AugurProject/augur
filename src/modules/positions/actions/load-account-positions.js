@@ -2,9 +2,7 @@ import { augur } from "services/augurjs";
 import { updateAccountPositionsData } from "modules/positions/actions/update-account-trades-data";
 import logError from "utils/log-error";
 import { updateTopBarPL } from "modules/positions/actions/update-top-bar-pl";
-import { loadUsershareBalances } from "modules/positions/actions/load-user-share-balances";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
-import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 
 export const loadAccountPositions = (
   options = {},
@@ -19,6 +17,40 @@ export const loadAccountPositions = (
         if (!err) postProcessing(marketIds, dispatch, positions, callback);
       }
     )
+  );
+};
+
+export const loadMarketAccountPositions = (marketId, callback = logError) => (
+  dispatch,
+  getState
+) => {
+  dispatch(
+    loadAccountPositionsInternal(
+      { marketId },
+      (err, { marketIds = [], positions = {} }) => {
+        if (!err) postProcessing(marketIds, dispatch, positions, callback);
+        dispatch(loadAccountPositionsTotals());
+      }
+    )
+  );
+};
+
+const loadAccountPositionsTotals = (callback = logError) => (
+  dispatch,
+  getState
+) => {
+  const { universe, loginAccount } = getState();
+  augur.trading.getUserTradingPositions(
+    { account: loginAccount.address, universe: universe.id },
+    (err, positions) => {
+      if (err) return callback(err, {});
+      dispatch(
+        updateLoginAccount({
+          totalFrozenFunds: positions.frozenFundsTotal.frozenFunds,
+          tradingPositionsTotal: positions.tradingPositionsTotal
+        })
+      );
+    }
   );
 };
 
@@ -56,8 +88,6 @@ const loadAccountPositionsInternal = (options = {}, callback) => (
       );
 
       if (marketIds.length === 0) return callback(null, {});
-      dispatch(loadUsershareBalances(marketIds));
-      dispatch(getWinningBalance(marketIds));
       callback(err, { marketIds, positions });
     }
   );

@@ -176,7 +176,11 @@ export const selectUserFilledOrders = createCachedSelector(
   selectMarketsDataStateMarket,
   selectUserOpenOrders,
   (marketTradeHistory, accountId, outcomesData, marketsData, openOrders) => {
-    if (!marketTradeHistory || marketTradeHistory.length < 1) {
+    if (
+      !marketTradeHistory ||
+      marketTradeHistory.length < 1 ||
+      marketsData === undefined
+    ) {
       return [];
     }
 

@@ -66,7 +66,23 @@ export const loadMarketTradingHistory = (options, callback = logError) => (
   });
 };
 
-export const loadUserMarketTradingHistory = (options, callback = logError) => (
+export const loadUserMarketTradingHistory = (
+  options = {},
+  callback = logError,
+  marketIdAggregator
+) => (dispatch, getState) => {
+  dispatch(
+    loadUserMarketTradingHistoryInternal(
+      options,
+      (err, { marketIds = [], tradingHistory = {} }) => {
+        if (marketIdAggregator && marketIdAggregator(marketIds));
+        if (callback) callback(err, tradingHistory);
+      }
+    )
+  );
+};
+
+export const loadUserMarketTradingHistoryInternal = (options, callback) => (
   dispatch,
   getState
 ) => {
@@ -77,8 +93,8 @@ export const loadUserMarketTradingHistory = (options, callback = logError) => (
     options
   );
   getTradingHistory(allOptions, (err, tradingHistory) => {
-    if (err) return callback(err);
-    if (tradingHistory == null) return callback(null, []);
+    if (err) return callback(err, {});
+    if (tradingHistory == null) return callback(null, {});
     if (!allOptions.marketId) {
       dispatch(
         loadReportingFinal((err, finalizedMarkets) => {
@@ -103,6 +119,7 @@ export const loadUserMarketTradingHistory = (options, callback = logError) => (
                 if (!err) {
                   dispatch(bulkMarketTradingHistory(keyedMarketTradeHistory));
                 }
+                callback(null, { tradingHistory, marketIds });
               }
             );
           }
@@ -120,9 +137,8 @@ export const loadUserMarketTradingHistory = (options, callback = logError) => (
       );
     } else {
       dispatch(updateUserTradingHistory(loginAccount.address, tradingHistory));
+      callback(err, tradingHistory);
     }
-
-    callback(null, tradingHistory);
   });
 };
 

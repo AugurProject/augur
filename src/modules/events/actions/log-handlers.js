@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { addAlert, updateAlert } from "modules/alerts/actions/alerts";
-import { loadAccountPositions } from "modules/positions/actions/load-account-positions";
+import { loadMarketAccountPositions } from "modules/positions/actions/load-account-positions";
 import { loadMarketOpenOrders } from "modules/orders/actions/load-market-open-orders";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { updateLoggedTransactions } from "modules/transactions/actions/convert-logs-to-transactions";
@@ -34,6 +34,7 @@ import { selectCurrentTimestampInSeconds } from "src/select-state";
 import { appendCategoryIfNew } from "modules/categories/actions/append-category";
 import { removePendingOrder } from "modules/orders/actions/pending-orders-management";
 import { loadAccountOpenOrders } from "modules/orders/actions/load-account-open-orders";
+import { loadUsershareBalances } from "modules/positions/actions/load-user-share-balances";
 
 const handleAlertUpdate = (log, dispatch, getState) => {
   dispatch(
@@ -51,6 +52,12 @@ const handleAlertUpdate = (log, dispatch, getState) => {
 
 const handlePendingOrder = (log, dispatch, getState) => {
   dispatch(removePendingOrder(log.transactionHash, log.marketId));
+};
+
+const loadUserPositionsAndBalances = marketId => dispatch => {
+  dispatch(loadMarketAccountPositions(marketId));
+  dispatch(loadUsershareBalances([marketId]));
+  dispatch(getWinningBalance([marketId]));
 };
 
 export const handleMarketStateLog = log => dispatch => {
@@ -169,6 +176,8 @@ export const handleOrderFilledLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.filler === address || log.creator === address;
   if (isStoredTransaction) {
     dispatch(updateAssets());
+    handlePendingOrder(log, dispatch, getState);
+    handleAlertUpdate(log, dispatch, getState);
     dispatch(
       updateOutcomePrice(
         log.marketId,
@@ -178,12 +187,10 @@ export const handleOrderFilledLog = log => (dispatch, getState) => {
     );
     dispatch(updateOrder(log, false));
     dispatch(loadUserMarketTradingHistory({ marketId: log.marketId }));
-    handlePendingOrder(log, dispatch, getState);
-    handleAlertUpdate(log, dispatch, getState);
     dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
   }
   // always reload account positions on trade so we get up to date PL data.
-  dispatch(loadAccountPositions());
+  dispatch(loadUserPositionsAndBalances(log.marketId));
   dispatch(loadMarketTradingHistory({ marketId: log.marketId }));
   if (isCurrentMarket(log.marketId))
     dispatch(loadMarketOpenOrders(log.marketId));
@@ -194,7 +201,7 @@ export const handleTradingProceedsClaimedLog = log => (dispatch, getState) => {
   if (isStoredTransaction) {
     dispatch(updateAssets());
     dispatch(updateLoggedTransactions(log));
-    dispatch(loadAccountPositions());
+    dispatch(loadUserPositionsAndBalances(log.market));
   }
   if (isCurrentMarket(log.market)) dispatch(loadMarketOpenOrders(log.market));
 };
@@ -323,7 +330,7 @@ export const handleCompleteSetsSoldLog = log => (dispatch, getState) => {
   if (isStoredTransaction) {
     dispatch(updateAssets());
     dispatch(updateLoggedTransactions(log));
-    dispatch(loadAccountPositions());
+    dispatch(loadUserPositionsAndBalances(log.marketId));
   }
 };
 

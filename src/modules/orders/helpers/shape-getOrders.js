@@ -1,6 +1,6 @@
 export const shapeGetOrders = (orders, marketId, orderState) => {
-  const processedOrders = [];
-  if (Object.keys(orders).length === 0) return processedOrders;
+  const marketOrders = {};
+  if (Object.keys(orders).length === 0) return { marketId, orderBook: {} };
   Object.keys(orders[marketId]).forEach(outcome => {
     Object.keys(orders[marketId][outcome]).forEach(orderTypeLabel => {
       const orderBook = orders[marketId][outcome][orderTypeLabel];
@@ -12,13 +12,12 @@ export const shapeGetOrders = (orders, marketId, orderState) => {
             return p;
           }, {})
         : orderBook;
-      processedOrders.push({
-        marketId,
-        outcome,
-        orderTypeLabel,
-        orderBook: filteredOrders
-      });
+
+      marketOrders[outcome] = {
+        ...marketOrders[outcome],
+        [orderTypeLabel]: filteredOrders
+      };
     });
   });
-  return processedOrders;
+  return { marketId, orderBook: marketOrders };
 };
