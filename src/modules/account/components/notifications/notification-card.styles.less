@@ -91,7 +91,7 @@
   .mono-11;
 
   border-radius: @size-9;
-  color: @color-secondary-text;
+  color: @color-primary-action;
   line-height: normal;
   margin-left: auto;
   margin-top: @size-8;
@@ -99,14 +99,14 @@
   text-transform: uppercase;
 
   &:not(:disabled):hover {
-    color: @color-highlight;
+    color: fade(@color-primary-action, 90%);
   }
 
   &:disabled {
-    color: fade(@color-highlight, 70%);
+    color: fade(@color-primary-action, 40%);
 
     &:hover {
-      color: fade(@color-highlight, 70%);
+      color: fade(@color-primary-action, 40%);
       cursor: wait;
       font-weight: normal;
     }
