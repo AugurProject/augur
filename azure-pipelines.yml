@@ -26,7 +26,6 @@ jobs:
       - bash: |
           set -euo pipefail
           echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
-          docker pull augurproject/augur-build:latest
           yarn docker:build:augur
           docker images
           docker tag augurproject/augur-build:latest augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
