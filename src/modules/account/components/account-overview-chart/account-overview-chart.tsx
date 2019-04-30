@@ -37,6 +37,7 @@ interface AccountOverviewChartState {
   noTrades: boolean;
 }
 
+const BEGINNING_START_TIME = 1530366577;
 export default class AccountOverviewChart extends React.Component<
   AccountOverviewChartProps,
   AccountOverviewChartState
@@ -69,7 +70,7 @@ export default class AccountOverviewChart extends React.Component<
     let startTime: number | null =
       currentAugurTimestamp - timeRangeDataConfig.periodInterval;
     if (timeRangeDataConfig.id === ALL_TIME) {
-      startTime = null;
+      startTime = BEGINNING_START_TIME;
     }
     this.props.getProfitLoss(
       universe,
