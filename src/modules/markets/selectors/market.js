@@ -217,7 +217,7 @@ const assembleMarket = (
     });
   }
 
-  if (createBigNumber(numCompleteSets).gt(ZERO)) {
+  if (createBigNumber(numCompleteSets).gt(ZERO) && market.userPositions) {
     // need to remove all 0 positions
     market.userPositions = market.userPositions.filter(
       pos =>
