@@ -15,8 +15,6 @@ exports.up = async (knex: Knex): Promise<any> => {
       "reportingFeeRate" varchar(255) NOT NULL CONSTRAINT nonnegativeReportingFeeRate CHECK (ltrim("reportingFeeRate", '-') = "reportingFeeRate"),
       "marketCreatorFeeRate" varchar(255) NOT NULL CONSTRAINT nonnegativeMarketCreatorFeeRate CHECK (ltrim("marketCreatorFeeRate", '-') = "marketCreatorFeeRate"),
       "marketCreatorFeesBalance" VARCHAR(255) DEFAULT '0' CONSTRAINT nonnegativeMarketCreatorFeesBalance CHECK (ltrim("marketCreatorFeesBalance", '-') = "marketCreatorFeesBalance"),
-      "marketCreatorMailbox" VARCHAR(255) NOT NULL,
-      "marketCreatorMailboxOwner" VARCHAR(255) NOT NULL,
       "initialReportSize" VARCHAR(255) DEFAULT '0',
       category varchar(255) NOT NULL,
       tag1 varchar(255),

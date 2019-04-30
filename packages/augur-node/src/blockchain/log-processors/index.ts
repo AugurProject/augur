@@ -37,10 +37,6 @@ import {
   processReportingParticipantDisavowedLogRemoval
 } from "./reporting-participant-disavowed";
 import {
-  processMarketMailboxTransferredLog,
-  processMarketMailboxTransferredLogRemoval
-} from "./market-mailbox-transferred";
-import {
   processMarketParticipantsDisavowedLog,
   processMarketParticipantsDisavowedLogRemoval
 } from "./market-participants-disavowed";
@@ -82,11 +78,6 @@ export const logProcessors: LogProcessors = {
       noAutoEmit: true,
       add: processMarketCreatedLog,
       remove: processMarketCreatedLogRemoval,
-    },
-    MarketMailboxTransferred: {
-      noAutoEmit: false,
-      add: processMarketMailboxTransferredLog,
-      remove: processMarketMailboxTransferredLogRemoval,
     },
     MarketMigrated: {
       add: processMarketMigratedLog,

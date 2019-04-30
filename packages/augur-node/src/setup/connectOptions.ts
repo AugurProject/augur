@@ -7,18 +7,18 @@ export class ConnectOptions {
     return options;
   }
 
-  public http?: string = "http://localhost:8545";
-  public ws?: string = "ws://localhost:8546";
+  public http?: string = "http://0.0.0.0:8545";
+  public ws?: string = "ws://0.0.0.0:8546";
   public ipc?: string;
   public propagationDelayWaitMillis?: number;
-// maxRetries is the maximum number of retries for retryable Ethereum
-// RPC requests. maxRetries is passed to augur.js's augur.connect() and
-// then to ethrpc library.connect(), and is used internally by ethrpc
-// for both HTTP and WS transports. When an ethrpc request errors, a
-// subset of errors are statically configured as retryable, in which case
-// ethrpc will opaquely re-insert the RPC request at its internal queue
-// head, such that augur.js (and augur-node) are ignorant of requests
-// that eventually succeed after N retries (where N < maxRetries).
+  // maxRetries is the maximum number of retries for retryable Ethereum
+  // RPC requests. maxRetries is passed to augur.js's augur.connect() and
+  // then to ethrpc library.connect(), and is used internally by ethrpc
+  // for both HTTP and WS transports. When an ethrpc request errors, a
+  // subset of errors are statically configured as retryable, in which case
+  // ethrpc will opaquely re-insert the RPC request at its internal queue
+  // head, such that augur.js (and augur-node) are ignorant of requests
+  // that eventually succeed after N retries (where N < maxRetries).
   public maxRetries: number = 3;
 
   public blocksPerChunk?: number;

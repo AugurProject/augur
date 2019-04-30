@@ -112,19 +112,19 @@
   "TradingEscapeHatch": "0x021076fb9adafcf83869435f9d72a5873869b4ad"
  },
  "102": {
-  "Augur": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0x0ff6ee01f88145298761a29a0372ed24e16e73b1",
-  "LegacyReputationToken": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "CancelOrder": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
-  "Cash": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
-  "ClaimTradingProceeds": "0x257b56115544e9519fb2de5b7b99c3c2150528fb",
-  "CompleteSets": "0x07f175e786a57752b3d0d0f3250cebb4242e02ad",
-  "CreateOrder": "0xf265d8d30a1a2cdb9857e124010b02765c9a7c70",
-  "FillOrder": "0x3c6721551c2ba3973560aef3e11d34ce05db4047",
-  "Order": "0x2adaeaf11753515a37a3d50cecb636cf72ae4854",
-  "Orders": "0x0680f8580de983cd204aa909a4b1b366b29f58b6",
-  "ShareToken": "0x4eda1aae707c777b55641b9758029c0eabec626c",
-  "Trade": "0x5e9529c5c5ac0a7e7258a18782bd31a148c55f4c"
+  "Augur": "0xc9Ad57d6F70e0B72A693f74D2F31aC973448129f",
+  "Universe": "0xe81B5261031a316185a92629610221C1067bF9D6",
+  "LegacyReputationToken": "0x5A7dEddFE98a4b6A864bD05f7F6a382f9651aE57",
+  "Cash": "0xDB19416b0eCD1F353869998B1D0b21E896453238",
+  "CancelOrder": "0x3d3A4642EeFC4fAEE11F2576391e6FbBc49431F1",
+  "ClaimTradingProceeds": "0x39C51d6b184099b319A5dC68eaa1cfE594e97E59",
+  "CompleteSets": "0x96424BD40b0667feD4BbDBB4D9605697f6c7467A",
+  "CreateOrder": "0x46F3995AEF3F9f59c69a3550Dc13f6ABaAA082FC",
+  "FillOrder": "0xaD9E0Ae67dCAA88a802C4B7850058f011d418851",
+  "Orders": "0xecf228b39f9508552155c06fd7c41a004Be4cc2d",
+  "ProfitLoss": "0x5D7B85c25b443B730d2269A166aC0007634Cd4ED",
+  "ShareToken": "0x5E429B55F45344DCa3419fBA42cb0C9f51efbB46",
+  "Trade": "0x17F6FB7c2122e503B40E043C067D69a86fd21d29"
  },
  "103": {
   "Augur": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",

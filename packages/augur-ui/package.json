@@ -28,12 +28,10 @@
     "format": "prettier --write '**/*.{js,jsx,ts,tsx}'",
     "test": "jest",
     "kickoff": "./scripts/setup-local-dev.sh",
-    "___": "",
     "link": "npm link augur.js keythereum",
     "heroku-postbuild": "webpack  --debug --config config/webpack.heroku.config.js",
     "reinstall": "./scripts/reinstall.sh",
     "regenerate-lockfiles": "rm -f package-lock.json && npm install && rm -f yarn.lock && yarn",
-    "----": "",
     "docker:build": "docker build --tag augurproject/augur:latest  .",
     "docker:push": "docker push augurproject/augur:latest",
     "docker:release:stable": "scripts/release-stable.sh",
@@ -101,7 +99,8 @@
     "shelljs": "0.8.3",
     "shifty": "2.6.1",
     "speedomatic": "2.1.4",
-    "trezor-connect": "5.0.34"
+    "trezor-connect": "5.0.34",
+    "webpack-cli": "^3.3.1"
   },
   "devDependencies": {
     "@augurproject/tools": "6.0.0",

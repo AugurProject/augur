@@ -58,6 +58,7 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Pa
     const blockDetail = blockDetailsByBlock[blockNumber];
     const logs = logsByBlock[blockNumber];
     if (logs === undefined || logs.length === 0) return;
+
     const dbWritePromises: Array<Promise<(db: Knex) => Promise<void>>> = [];
     for(let log of _.sortBy(logs, 'logIndex')) {
       const dbWritePromise = processLogByName(augur, log, false);
