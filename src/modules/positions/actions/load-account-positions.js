@@ -35,7 +35,7 @@ export const loadMarketAccountPositions = (marketId, callback = logError) => (
   );
 };
 
-const loadAccountPositionsTotals = (callback = logError) => (
+export const loadAccountPositionsTotals = (callback = logError) => (
   dispatch,
   getState
 ) => {

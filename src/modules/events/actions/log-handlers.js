@@ -1,6 +1,9 @@
 import BigNumber from "bignumber.js";
 import { addAlert, updateAlert } from "modules/alerts/actions/alerts";
-import { loadMarketAccountPositions } from "modules/positions/actions/load-account-positions";
+import {
+  loadMarketAccountPositions,
+  loadAccountPositionsTotals
+} from "modules/positions/actions/load-account-positions";
 import { loadMarketOpenOrders } from "modules/orders/actions/load-market-open-orders";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { updateLoggedTransactions } from "modules/transactions/actions/convert-logs-to-transactions";
@@ -151,6 +154,7 @@ export const handleOrderCreatedLog = log => (dispatch, getState) => {
     handlePendingOrder(log, dispatch, getState);
     handleAlertUpdate(log, dispatch, getState);
     dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
+    dispatch(loadAccountPositionsTotals());
   }
   if (isCurrentMarket(log.marketId))
     dispatch(loadMarketOpenOrders(log.marketId));
@@ -165,6 +169,7 @@ export const handleOrderCanceledLog = log => (dispatch, getState) => {
     dispatch(updateAssets());
     dispatch(updateOrder(log, false));
     dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
+    dispatch(loadAccountPositionsTotals());
   }
   if (isCurrentMarket(log.marketId))
     dispatch(loadMarketOpenOrders(log.marketId));
