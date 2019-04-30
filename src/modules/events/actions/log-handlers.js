@@ -9,7 +9,6 @@ import { loadReportingWindowBounds } from "modules/reports/actions/load-reportin
 import { updateLoggedTransactions } from "modules/transactions/actions/convert-logs-to-transactions";
 import { removeMarket } from "modules/markets/actions/update-markets-data";
 import { updateOutcomePrice } from "modules/markets/actions/update-outcome-price";
-import { updateOrder } from "modules/orders/actions/update-orders";
 import { removeCanceledOrder } from "modules/orders/actions/update-order-status";
 import { defaultLogHandler } from "modules/events/actions/default-log-handler";
 import { isCurrentMarket } from "modules/trades/helpers/is-current-market";
@@ -150,7 +149,6 @@ export const handleOrderCreatedLog = log => (dispatch, getState) => {
     log.orderCreator === getState().loginAccount.address;
   if (isStoredTransaction) {
     dispatch(updateAssets());
-    dispatch(updateOrder(log, true));
     handlePendingOrder(log, dispatch, getState);
     handleAlertUpdate(log, dispatch, getState);
     dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
@@ -167,7 +165,6 @@ export const handleOrderCanceledLog = log => (dispatch, getState) => {
     if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
     handleAlertUpdate(log, dispatch, getState);
     dispatch(updateAssets());
-    dispatch(updateOrder(log, false));
     dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
     dispatch(loadAccountPositionsTotals());
   }
@@ -190,7 +187,6 @@ export const handleOrderFilledLog = log => (dispatch, getState) => {
         new BigNumber(log.price, 10)
       )
     );
-    dispatch(updateOrder(log, false));
     dispatch(loadUserMarketTradingHistory({ marketId: log.marketId }));
     dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
   }
