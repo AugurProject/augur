@@ -7,8 +7,8 @@ export class ConnectOptions {
     return options;
   }
 
-  public http?: string = "http://localhost:8545";
-  public ws?: string = "ws://localhost:8546";
+  public http?: string = "http://0.0.0.0:8545";
+  public ws?: string = "ws://0.0.0.0:8546";
   public ipc?: string;
   public propagationDelayWaitMillis?: number;
   // maxRetries is the maximum number of retries for retryable Ethereum
