@@ -10,7 +10,7 @@ import getValue from "utils/get-value";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 import Styles from "modules/market/components/market-outcomes-list--outcome/market-outcomes-list--outcome.styles";
 import SharedStyles from "modules/market/components/market-positions-table/market-positions-table--position.styles";
-import { ValueLabel } from "modules/common-elements/labels";
+import { ValueLabel, TextLabel } from "modules/common-elements/labels";
 import { CATEGORICAL } from "modules/common-elements/constants";
 
 const Outcome = ({
@@ -43,14 +43,12 @@ const Outcome = ({
       role="menu"
     >
       <li>
-        <div>
-          <span className={Styles.Outcome__name}>
-            {outcomeName || (scalarDenomination && scalarDenomination)}{" "}
-          </span>
+        <div className={Styles.name}>
+          <TextLabel text={outcomeName} keyId={outcomeName} />
         </div>
         {scalarDenomination ? null : (
           <div>
-            <span className={Styles.Outcome__percent}>{lastPricePercent}</span>
+            <span className={Styles.percent}>{lastPricePercent}</span>
           </div>
         )}
       </li>

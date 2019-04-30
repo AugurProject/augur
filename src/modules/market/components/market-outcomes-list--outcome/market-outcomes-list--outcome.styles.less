@@ -67,15 +67,24 @@
   }
 }
 
-.Outcome__name {
-  .text-12-bold;
-
+.name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  z-index: 2;
+
+  > span {
+    width: 100%;
+
+    > label {
+      .text-12-bold;
+
+      margin-bottom: 0;
+    }
+  }
 }
 
-.Outcome__percent {
+.percent {
   color: @color-lightgray;
   display: inline-block;
   margin-left: 0.5rem;
@@ -92,7 +101,7 @@
     }
   }
 
-  .Outcome__percent {
+  .percent {
     margin-left: 0.25rem;
   }
 }

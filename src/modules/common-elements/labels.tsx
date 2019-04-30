@@ -151,6 +151,12 @@ export interface TextLabelProps {
   keyId: string;
 }
 
+export interface TextLabelState {
+  scrollWidth: string | null;
+  clientWidth: string | null;
+  isDisabled: boolean;
+}
+
 export interface RepBalanceProps {
   rep: string;
 }
@@ -257,25 +263,54 @@ export const ValueLabel = (props: ValueLabelProps) => {
   );
 };
 
-export class TextLabel extends React.Component<TextLabelProps> {
+export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
   labelRef: any = null;
+  state: TextLabelState = {
+    scrollWidth: null,
+    clientWidth: null,
+    isDisabled: true
+  }
+
+  measure() {
+    const { clientWidth, scrollWidth } = this.labelRef;
+
+    this.setState({
+      scrollWidth,
+      clientWidth,
+      isDisabled: !(scrollWidth > clientWidth)
+    })
+  }
+
+  componentDidMount() {
+    this.measure()
+  }
+
+  componentDidUpdate() {
+    this.measure()
+  }
+
+  shouldComponentUpdate(nextProps: any, nextState: any) {
+    return (
+      this.state.scrollWidth !== nextState.scrollWidth ||
+      this.state.clientWidth !== nextState.clientWidth
+    )
+  }
   render() {
     const { text, keyId } = this.props;
-    const isDisabled = !(
-      this.labelRef && this.labelRef.scrollWidth > this.labelRef.clientWidth
-    );
+    const { isDisabled } = this.state;
+
     return (
       <span className={Styles.TextLabel}>
         <label
-          ref={label => (this.labelRef = label)}
+          ref={ref => (this.labelRef = ref)}
           data-tip
-          data-for={`${keyId}-${text.replace(" ", "-")}`}
+          data-for={`${keyId}-${text.replace(/\s+/g, "-")}`}
         >
           {text}
         </label>
         {!isDisabled && 
           <ReactTooltip
-            id={`${keyId}-${text.replace(" ", "-")}`}
+            id={`${keyId}-${text.replace(/\s+/g, "-")}`}
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="top"
