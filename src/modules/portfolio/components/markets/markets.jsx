@@ -86,6 +86,7 @@ class MyMarkets extends Component {
         currentTime={currentAugurTimestamp}
         endTime={market.endTime}
         reportingWindowEndtime={reportingWindowStatsEndTime}
+        alignRight
       />
     );
   }

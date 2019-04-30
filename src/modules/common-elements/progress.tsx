@@ -31,6 +31,7 @@ export interface CountdownProgressProps {
   countdownBreakpoint?: number;
   firstColorBreakpoint?: number;
   finalColorBreakpoint?: number;
+  alignRight?: Boolean;
 }
 
 export interface TimeLabelProps {
@@ -50,6 +51,7 @@ export interface MarketProgressProps {
   endTime: DateFormattedObject | number;
   reportingWindowEndtime: DateFormattedObject | number;
   customLabel?: string;
+  alignRight?: Boolean;
 }
 // default breakpoints
 const OneWeek = 168 * 60 * 60;
@@ -117,7 +119,8 @@ export const MarketProgress = (props: MarketProgressProps) => {
     currentTime,
     endTime,
     reportingWindowEndtime,
-    customLabel
+    customLabel,
+    alignRight
   } = props;
   const currTime = formatTime(currentTime);
   const marketEndTime = formatTime(endTime);
@@ -138,6 +141,7 @@ export const MarketProgress = (props: MarketProgressProps) => {
       label={customLabel || label}
       time={time}
       currentTime={currTime}
+      alignRight={alignRight}
     />
   );
 };
@@ -149,7 +153,8 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
     currentTime,
     countdownBreakpoint,
     firstColorBreakpoint,
-    finalColorBreakpoint
+    finalColorBreakpoint,
+    alignRight
   } = props;
   let valueString: string = "";
   let timeLeft: number = 1;
@@ -188,7 +193,8 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
       className={classNames(Styles.ProgressLabel, {
         [Styles.ProgressLabel__FirstBreakpoint]: breakpointOne,
         [Styles.ProgressLabel__SecondBreakpoint]: breakpointTwo,
-        [Styles.ProgressLabel__Finished]: timeLeft < 0
+        [Styles.ProgressLabel__Finished]: timeLeft < 0,
+        [Styles.ProgressLabel__AlignRight]: alignRight
       })}
     >
       <span>{label}</span>
