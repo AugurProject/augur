@@ -108,7 +108,7 @@ function findOrders(
         foundOrder.amount = createBigNumber(foundOrder.amount).plus(amountBN);
         foundOrder.trades
           .sort((a, b) => b.logIndex - a.logIndex)
-          .sort((a, b) => b.timestamp - a.timestamp);
+          .sort((a, b) => b.timestamp.timestamp - a.timestamp.timestamp);
 
         foundOrder.timestamp = foundOrder.trades[0].timestamp;
 
