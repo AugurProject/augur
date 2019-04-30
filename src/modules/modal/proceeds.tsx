@@ -29,11 +29,7 @@ export const Proceeds = (props: ProceedsProps) => (
       {props.descriptionMessage && (
         <DescriptionMessage messages={props.descriptionMessage} />
       )}
-      {props.rows && (
-        <div>
-          <ActionRows rows={props.rows} />
-        </div>
-      )}
+      {props.rows && <ActionRows rows={props.rows} />}
       {props.breakdown && <Breakdown short rows={props.breakdown} />}
     </main>
     <ButtonsRow buttons={props.buttons} />
