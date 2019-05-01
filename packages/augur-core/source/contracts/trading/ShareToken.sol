@@ -6,6 +6,7 @@ import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/IAugur.sol';
 
 
@@ -23,6 +24,15 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
     address public cancelOrder;
     address public completeSets;
     address public claimTradingProceeds;
+    IProfitLoss public profitLoss;
+
+    bool private shouldUpdatePL = true;
+
+    modifier doesNotUpdatePL() {
+        shouldUpdatePL = false;
+        _;
+        shouldUpdatePL = true;
+    }
 
     function initialize(IAugur _augur, IMarket _market, uint256 _outcome, address _erc820RegistryAddress) external beforeInitialized returns(bool) {
         endInitialization();
@@ -34,6 +44,7 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         cancelOrder = _augur.lookup("CancelOrder");
         completeSets = _augur.lookup("CompleteSets");
         claimTradingProceeds = _augur.lookup("ClaimTradingProceeds");
+        profitLoss = IProfitLoss(_augur.lookup("ProfitLoss"));
         erc820Registry = IERC820Registry(_erc820RegistryAddress);
         initialize820InterfaceImplementations();
         return true;
@@ -51,18 +62,18 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         return true;
     }
 
-    function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public afterInitialized returns (bool) {
+    function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL afterInitialized returns (bool) {
         require(msg.sender == createOrder);
         return internalTransfer(_source, _destination, _attotokens, true);
     }
 
-    function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public afterInitialized returns (bool) {
+    function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL afterInitialized returns (bool) {
         require(msg.sender == fillOrder);
         // We do not call ERC777 hooks here as it would allow a malicious order creator to halt trading
         return internalTransfer(_source, _destination, _attotokens, false);
     }
 
-    function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public afterInitialized returns (bool) {
+    function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL afterInitialized returns (bool) {
         require(msg.sender == cancelOrder);
         return internalTransfer(_source, _destination, _attotokens, true);
     }
@@ -80,6 +91,9 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
     }
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
+        if (shouldUpdatePL) {
+            profitLoss.recordExternalTransfer(_from, _to, _value);
+        }
         augur.logShareTokensTransferred(market.getUniverse(), _from, _to, _value, balances[_from], balances[_to], outcome);
         return true;
     }
