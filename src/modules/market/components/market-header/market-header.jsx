@@ -13,13 +13,10 @@ import { BigNumber } from "bignumber.js";
 import Styles from "modules/market/components/market-header/market-header.styles";
 import CoreProperties from "modules/market/components/core-properties/core-properties";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
-import canClaimProceeds from "utils/can-claim-proceeds";
 import { MarketTypeLabel } from "modules/common-elements/labels";
 import { MarketHeaderCollapsed } from "modules/market/components/market-header/market-header-collapsed";
-import toggleHeight from "utils/toggle-height/toggle-height";
 import makeQuery from "modules/routes/helpers/make-query";
 import { compact } from "lodash";
-import { constants } from "services/constants";
 import {
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
@@ -28,7 +25,7 @@ import {
 import MarketHeaderReporting from "modules/market/containers/market-header-reporting";
 import { MarketTimeline } from "modules/common-elements/progress";
 
-import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
+import ToggleHeightStyles from "utils/toggle-height.styles";
 
 const OVERFLOW_DETAILS_LENGTH = 89; // in px, overflow limit to trigger MORE details
 
@@ -46,8 +43,7 @@ export default class MarketHeader extends Component {
     isLogged: PropTypes.bool,
     toggleFavorite: PropTypes.func,
     isFavorite: PropTypes.bool,
-    history: PropTypes.object.isRequired,
-    currentAugurTimestamp: PropTypes.number
+    history: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -55,7 +51,6 @@ export default class MarketHeader extends Component {
     resolutionSource: "General knowledge",
     marketType: null,
     currentTime: 0,
-    currentAugurTimestamp: 0,
     isFavorite: false,
     isLogged: false,
     toggleFavorite: () => {}
@@ -72,7 +67,6 @@ export default class MarketHeader extends Component {
     this.gotoFilter = this.gotoFilter.bind(this);
     this.toggleReadMore = this.toggleReadMore.bind(this);
     this.updateDetailsHeight = this.updateDetailsHeight.bind(this);
-    this.toggleMarketHeader = this.toggleMarketHeader.bind(this);
     this.addToFavorites = this.addToFavorites.bind(this);
   }
 
@@ -94,63 +88,6 @@ export default class MarketHeader extends Component {
 
   toggleReadMore() {
     this.setState({ showReadMore: !this.state.showReadMore });
-  }
-
-  toggleMarketHeader(currentAugurTimestamp, market) {
-    const {
-      marketStatus,
-      outstandingReturns,
-      finalizationTime,
-      description,
-      reportingState
-    } = market;
-    const canClaim = canClaimProceeds(
-      finalizationTime,
-      outstandingReturns,
-      currentAugurTimestamp
-    );
-
-    let MIN_COLLAPSED_MARKET_HEADER;
-
-    if (marketStatus === "closed") {
-      if (reportingState === constants.REPORTING_STATE.AWAITING_FINALIZATION) {
-        MIN_COLLAPSED_MARKET_HEADER = 260;
-      } else if (!outstandingReturns || canClaim) {
-        MIN_COLLAPSED_MARKET_HEADER = 150;
-      } else {
-        MIN_COLLAPSED_MARKET_HEADER = 260;
-      }
-    } else if (marketStatus === "reporting") {
-      MIN_COLLAPSED_MARKET_HEADER = 150;
-    } else {
-      MIN_COLLAPSED_MARKET_HEADER = 120;
-      if (description.length > 150) {
-        MIN_COLLAPSED_MARKET_HEADER = 170;
-      } else if (description.length > 100) {
-        MIN_COLLAPSED_MARKET_HEADER = 140;
-      }
-    }
-
-    if (this.state.headerCollapsed) {
-      this.setState({ headerCollapsed: !this.state.headerCollapsed }, () => {
-        toggleHeight(
-          this.marketHeaderContainer,
-          this.state.headerCollapsed,
-          MIN_COLLAPSED_MARKET_HEADER
-        );
-      });
-    } else {
-      toggleHeight(
-        this.marketHeaderContainer,
-        !this.state.headerCollapsed,
-        MIN_COLLAPSED_MARKET_HEADER,
-        () => {
-          setTimeout(() => {
-            this.setState({ headerCollapsed: !this.state.headerCollapsed });
-          }, 50);
-        }
-      );
-    }
   }
 
   addToFavorites() {
@@ -186,8 +123,7 @@ export default class MarketHeader extends Component {
       currentTime,
       isLogged,
       isFavorite,
-      history,
-      currentAugurTimestamp
+      history
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed } = this.state;
@@ -225,11 +161,12 @@ export default class MarketHeader extends Component {
         }}
         className={classNames(
           Styles.MarketHeader,
-          ToggleHeightStyles["toggle-height-target"],
-          ToggleHeightStyles["start-open"],
-          ToggleHeightStyles["toggle-height-target-quick"],
+          ToggleHeightStyles.target,
+          ToggleHeightStyles.open,
+          ToggleHeightStyles.quick,
           {
-            [Styles.MarketHeader__container__collapsed]: headerCollapsed
+            [Styles.MarketHeader__container__collapsed]: headerCollapsed,
+            [ToggleHeightStyles.open]: !headerCollapsed
           }
         )}
       >
@@ -359,9 +296,7 @@ export default class MarketHeader extends Component {
           })}
         >
           <button
-            onClick={() =>
-              this.toggleMarketHeader(currentAugurTimestamp, market)
-            }
+            onClick={() => this.setState({ headerCollapsed: !headerCollapsed })}
           >
             <ChevronFlip
               stroke="#999999"

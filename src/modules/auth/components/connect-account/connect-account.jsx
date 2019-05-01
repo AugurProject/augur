@@ -2,13 +2,12 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import toggleHeight from "utils/toggle-height/toggle-height";
 import ConnectDropdown from "modules/auth/containers/connect-dropdown";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 import formatAddress from "modules/auth/helpers/format-address";
 
 import Styles from "modules/auth/components/connect-account/connect-account.styles";
-import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
+import ToggleHeightStyles from "utils/toggle-height.styles";
 
 export default class ConnectAccount extends Component {
   static propTypes = {
@@ -34,19 +33,6 @@ export default class ConnectAccount extends Component {
     window.addEventListener("click", this.handleWindowOnClick);
   }
 
-  componentWillUpdate(nextProps) {
-    const { isLogged, isConnectionTrayOpen } = this.props;
-    if (nextProps.isConnectionTrayOpen !== isConnectionTrayOpen) {
-      toggleHeight(this.ConnectDropdown, isConnectionTrayOpen);
-    } else if (
-      nextProps.isLogged !== isLogged &&
-      nextProps.isLogged &&
-      isConnectionTrayOpen
-    ) {
-      toggleHeight(this.ConnectDropdown, false);
-    }
-  }
-
   componentWillUnmount() {
     window.removeEventListener("click", this.handleWindowOnClick);
   }
@@ -63,7 +49,7 @@ export default class ConnectAccount extends Component {
     return (
       <div
         className={classNames(Styles.ConnectAccount, className, {
-          [Styles.ConnectAccount__selected]: isConnectionTrayOpen,
+          [Styles.selected]: isConnectionTrayOpen,
           [Styles.ConnectAccountLoggedIn]: isLogged
         })}
         ref={connectAccount => {
@@ -71,30 +57,27 @@ export default class ConnectAccount extends Component {
         }}
       >
         <div
-          className={classNames(Styles.ConnectAccount__container, {
-            [Styles.ConnectAccount__containerLoggedIn]: isLogged
+          className={classNames(Styles.container, {
+            [Styles.containerLoggedIn]: isLogged
           })}
           onClick={this.toggleDropdown}
           role="button"
           tabIndex="-1"
         >
-          <div className={Styles.ConnectAccount__column}>
-            <div className={Styles.ConnectAccount__status}>
+          <div className={Styles.column}>
+            <div className={Styles.status}>
               <div
-                className={classNames(
-                  Styles["ConnectAccount__status-indicator"],
-                  {
-                    [Styles.ConnectAccount__statusGreen]: isLogged
-                  }
-                )}
+                className={classNames(Styles.statusIndicator, {
+                  [Styles.statusGreen]: isLogged
+                })}
               />
               {isLogged ? "Connected" : "Disconnected"}
             </div>
-            <div className={Styles.ConnectAccount__title}>
+            <div className={Styles.title}>
               {isLogged ? formatAddress(address) : "Connect A Wallet"}
               <span
-                className={classNames(Styles.ConnectAccount__arrow, {
-                  [Styles.ConnectAccount__arrowHide]: isLogged
+                className={classNames(Styles.arrow, {
+                  [Styles.arrowHide]: isLogged
                 })}
               >
                 <ChevronFlip
@@ -112,9 +95,12 @@ export default class ConnectAccount extends Component {
             this.ConnectDropdown = ConnectDropdown;
           }}
           className={classNames(
-            Styles.ConnectAccount__connectDropdown,
-            ToggleHeightStyles["toggle-height-target"],
-            ToggleHeightStyles["toggle-height-target-quick"]
+            Styles.connectDropdown,
+            ToggleHeightStyles.target,
+            ToggleHeightStyles.quick,
+            {
+              [ToggleHeightStyles.open]: isConnectionTrayOpen
+            }
           )}
         >
           <ConnectDropdown toggleDropdown={this.toggleDropdown} />

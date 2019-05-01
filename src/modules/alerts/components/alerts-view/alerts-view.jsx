@@ -4,12 +4,11 @@ import classNames from "classnames";
 
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import Alert from "modules/alerts/components/alert/alert";
-import toggleHeight from "utils/toggle-height/toggle-height";
 
 import { Close } from "modules/common/components/icons";
 
 import Styles from "modules/alerts/components/alerts-view/alerts-view.styles";
-import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
+import ToggleHeightStyles from "utils/toggle-height.styles";
 
 export default class AlertsView extends Component {
   static propTypes = {
@@ -22,11 +21,7 @@ export default class AlertsView extends Component {
   };
 
   componentWillUpdate(nextProps) {
-    if (!this.props.alertsVisible && nextProps.alertsVisible) {
-      toggleHeight(this.alertsContainer, false);
-    } else if (this.props.alertsVisible && !nextProps.alertsVisible) {
-      toggleHeight(this.alertsContainer, true);
-
+    if (this.props.alertsVisible && !nextProps.alertsVisible) {
       const { updateAlert, alerts } = this.props;
       alerts.forEach(alert => {
         updateAlert(alert.id, { seen: true });
@@ -35,27 +30,33 @@ export default class AlertsView extends Component {
   }
 
   render() {
-    const { removeAlert, toggleAlerts, clearAlerts, alerts } = this.props;
+    const {
+      removeAlert,
+      toggleAlerts,
+      clearAlerts,
+      alerts,
+      alertsVisible
+    } = this.props;
 
     return (
       <div
         ref={alertsContainer => {
           this.alertsContainer = alertsContainer;
         }}
-        className={classNames(
-          Styles.AlertsView__parent,
-          ToggleHeightStyles["toggle-height-target"],
-          ToggleHeightStyles["toggle-height-target-quick"]
-        )}
+        className={classNames(Styles.parent, {
+          [ToggleHeightStyles.target]: true,
+          [ToggleHeightStyles.quick]: true,
+          [ToggleHeightStyles.open]: alertsVisible
+        })}
       >
         <section
           id="alerts_view"
           className={classNames(Styles.AlertsView, {
-            [Styles.AlertsView__dark]: !(alerts && alerts.length)
+            [Styles.dark]: !(alerts && alerts.length)
           })}
         >
           <button
-            className={Styles.Alert__close}
+            className={Styles.close}
             onClick={e => {
               e.stopPropagation();
               toggleAlerts();
@@ -68,7 +69,7 @@ export default class AlertsView extends Component {
               ref={alerts => {
                 this.alerts = alerts;
               }}
-              className={Styles.AlertsView__box}
+              className={Styles.box}
             >
               {alerts.map((alert, i) => (
                 <Alert
@@ -86,10 +87,10 @@ export default class AlertsView extends Component {
             />
           )}
           {alerts && alerts.length ? (
-            <div className={Styles.AlertsView__dismissContainer}>
-              <div className={Styles.AlertsView__dismissContainerBorder}>
+            <div className={Styles.dismissContainer}>
+              <div className={Styles.dismissContainerBorder}>
                 <div
-                  className={Styles.AlertsView__dismissButton}
+                  className={Styles.dismissButton}
                   onClick={clearAlerts}
                   role="button"
                   tabIndex="0"

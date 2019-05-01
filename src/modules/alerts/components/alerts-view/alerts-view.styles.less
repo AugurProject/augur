@@ -15,22 +15,22 @@
   z-index: @mask-above;
 }
 
-.AlertsView__dark {
+.dark {
   background-color: @color-darkpurple;
 }
 
-.AlertsView__parent {
+.parent {
   position: absolute;
   right: 0;
   top: @top-bar-height;
 }
 
-.AlertsView__box {
+.box {
   overflow-y: auto;
   width: 100%;
 }
 
-.Alert__close {
+.close {
   cursor: pointer;
   display: none;
   height: @font-size-normal;
@@ -51,7 +51,7 @@
   width: 100%;
 }
 
-.AlertsView__dismissContainer {
+.dismissContainer {
   align-items: flex-end;
   background-color: @color-light-purple;
   display: flex;
@@ -61,13 +61,13 @@
   padding: 7px 16px;
 }
 
-.AlertsView__dismissContainerBorder {
+.dismissContainerBorder {
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
 }
 
-.AlertsView__dismissButton {
+.dismissButton {
   border-bottom: dotted 0.5px @color-lightergray;
   color: @color-lightergray;
   cursor: pointer;
@@ -100,7 +100,7 @@
     z-index: @mask-above;
   }
 
-  .AlertsView__parent {
+  .parent {
     bottom: 0;
     left: 0;
     top: 0;
@@ -114,13 +114,13 @@
     right: 0;
   }
 
-  .AlertsView__box {
+  .box {
     margin-top: 2.5rem;
     max-height: unset;
     overflow-y: auto;
   }
 
-  .Alert__close {
+  .close {
     display: block;
   }
 

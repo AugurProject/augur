@@ -2,13 +2,12 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import toggleHeight from "utils/toggle-height/toggle-height";
 import { PARAMS, ERROR_TYPES } from "modules/common-elements/constants";
 import { errorIcon } from "modules/common/components/icons";
 
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
 import Styles from "modules/auth/components/common/error-container.styles";
-import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
+import ToggleHeightStyles from "utils/toggle-height.styles";
 
 export default class ErrorContainer extends Component {
   static propTypes = {
@@ -50,19 +49,16 @@ export default class ErrorContainer extends Component {
   }
 
   showError() {
-    this.setState({ errorShown: true }, () => {
-      toggleHeight(this.error, false);
-    });
+    this.setState({ errorShown: true });
   }
 
   hideError() {
-    this.setState({ errorShown: false }, () => {
-      toggleHeight(this.error, true);
-    });
+    this.setState({ errorShown: false });
   }
 
   render() {
     const { error, connect } = this.props;
+    const { errorShown } = this.state;
     return (
       <div
         ref={error => {
@@ -70,7 +66,10 @@ export default class ErrorContainer extends Component {
         }}
         className={classNames(
           StylesDropdown.ConnectDropdown__hardwareContent,
-          ToggleHeightStyles["toggle-height-target"]
+          ToggleHeightStyles.target,
+          {
+            [ToggleHeightStyles.open]: errorShown
+          }
         )}
       >
         <div className={classNames(StylesDropdown.ConnectDropdown__content)}>

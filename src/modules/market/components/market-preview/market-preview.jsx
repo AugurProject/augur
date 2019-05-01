@@ -6,13 +6,12 @@ import MarketBasics from "modules/market/containers/market-basics";
 import MarketProperties from "modules/market/containers/market-properties";
 import OutstandingReturns from "modules/market/components/market-outstanding-returns/market-outstanding-returns";
 import MarketLiquidity from "modules/market/containers/market-liquidity";
-import toggleHeight from "utils/toggle-height/toggle-height";
 
 import CommonStyles from "modules/market/components/common/market-common.styles";
 import Styles from "modules/market/components/market-preview/market-preview.styles";
 import MarketAdditonalDetails from "modules/market/components/market-additional-details/market-additional-details";
 import { isEmpty } from "lodash";
-import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
+import ToggleHeightStyles from "utils/toggle-height.styles";
 
 export default class MarketPreview extends Component {
   static propTypes = {
@@ -33,7 +32,10 @@ export default class MarketPreview extends Component {
     hideReportEndingIndicator: PropTypes.bool,
     linkType: PropTypes.string,
     collectMarketCreatorFees: PropTypes.func.isRequired,
-    showOutstandingReturns: PropTypes.bool
+    showOutstandingReturns: PropTypes.bool,
+    unclaimedCreatorFees: PropTypes.object,
+    pendingLiquidityOrders: PropTypes.object,
+    showAdditionalDetailsToggle: PropTypes.bool
   };
 
   static defaultProps = {
@@ -48,7 +50,10 @@ export default class MarketPreview extends Component {
     testid: null,
     outcomes: [],
     settlementFeePercent: null,
-    showOutstandingReturns: false
+    showOutstandingReturns: false,
+    unclaimedCreatorFees: { value: 0 },
+    pendingLiquidityOrders: {},
+    showAdditionalDetailsToggle: false
   };
 
   constructor(props) {
@@ -57,73 +62,75 @@ export default class MarketPreview extends Component {
     this.state = {
       showingDetails: true
     };
-
-    this.toggleDetails = this.toggleDetails.bind(this);
-  }
-
-  toggleDetails() {
-    toggleHeight(this.additionalDetails, this.state.showingDetails, 0, () => {
-      this.setState({ showingDetails: !this.state.showingDetails });
-    });
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const {
+      testid,
+      showOutstandingReturns,
+      cardStyle,
+      unclaimedCreatorFees,
+      collectMarketCreatorFees,
+      id,
+      pendingLiquidityOrders,
+      showAdditionalDetailsToggle
+    } = this.props;
+    const { showingDetails } = this.state;
 
     return (
       <div>
         <article
           className={classNames(CommonStyles.MarketCommon__container, {
-            [`${CommonStyles["single-card"]}`]: p.cardStyle === "single-card"
+            [`${CommonStyles["single-card"]}`]: cardStyle === "single-card"
           })}
-          id={"id-" + p.id}
-          data-testid={p.testid + "-" + p.id}
+          id={"id-" + id}
+          data-testid={testid + "-" + id}
         >
-          <MarketBasics {...p} />
+          <MarketBasics {...this.props} />
           <div
-            className={classNames(Styles.MarketPreview__footer, {
-              [`${Styles["single-card"]}`]: p.cardStyle === "single-card"
+            className={classNames(Styles.footer, {
+              [`${Styles["single-card"]}`]: cardStyle === "single-card"
             })}
           >
             <MarketProperties
-              {...p}
-              showingDetails={s.showingDetails}
-              toggleDetails={this.toggleDetails}
+              {...this.props}
+              showingDetails={showingDetails}
+              toggleDetails={() =>
+                this.setState({ showingDetails: !showingDetails })
+              }
             />
           </div>
-          {p.unclaimedCreatorFees.value > 0 &&
-            p.showOutstandingReturns && (
+          {unclaimedCreatorFees.value > 0 &&
+            showOutstandingReturns && (
               <div
-                className={classNames(Styles.MarketPreview__returns, {
-                  [`${Styles["single-card"]}`]: p.cardStyle === "single-card"
+                className={classNames(Styles.returns, {
+                  [`${Styles["single-card"]}`]: cardStyle === "single-card"
                 })}
               >
                 <OutstandingReturns
-                  id={p.id}
-                  unclaimedCreatorFees={p.unclaimedCreatorFees}
-                  collectMarketCreatorFees={p.collectMarketCreatorFees}
+                  id={id}
+                  unclaimedCreatorFees={unclaimedCreatorFees}
+                  collectMarketCreatorFees={collectMarketCreatorFees}
                 />
               </div>
             )}
           <MarketLiquidity
-            marketId={p.id}
-            market={p}
-            pendingLiquidityOrders={p.pendingLiquidityOrders}
+            marketId={id}
+            market={this.props}
+            pendingLiquidityOrders={pendingLiquidityOrders}
           />
         </article>
-        {!isEmpty(p) &&
-          p.showAdditionalDetailsToggle && (
+        {!isEmpty(this.props) &&
+          showAdditionalDetailsToggle && (
             <div
               ref={additionalDetails => {
                 this.additionalDetails = additionalDetails;
               }}
-              className={classNames(
-                ToggleHeightStyles["toggle-height-target"],
-                ToggleHeightStyles["start-open"]
-              )}
+              className={classNames(ToggleHeightStyles.target, {
+                [ToggleHeightStyles.open]: showingDetails
+              })}
             >
-              <MarketAdditonalDetails {...p} />
+              <MarketAdditonalDetails {...this.props} />
             </div>
           )}
       </div>

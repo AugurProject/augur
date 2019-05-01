@@ -1,12 +1,11 @@
 import React, { Component, SyntheticEvent } from "react";
 import classNames from "classnames";
 
-import toggleHeight from "utils/toggle-height/toggle-height";
 import { formatNumber } from "utils/format-number";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 
 import Styles from "modules/block-info/components/block-info-data/block-info-data.styles";
-import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
+import ToggleHeightStyles from "utils/toggle-height.styles";
 
 export interface SyncInfo {
   blocksBehind: number;
@@ -45,29 +44,23 @@ class BlockInfoData extends Component<BlockInfoDataProps, BlockInfoDataState> {
     window.removeEventListener("click", this.handleWindowOnClick);
   }
 
-  toggleDropdown() {
-    toggleHeight(this.blockInfoDropdown, this.state.dropdownOpen, 0, () => {
-      this.setState({ dropdownOpen: !this.state.dropdownOpen });
-    });
-  }
-
   handleWindowOnClick(event: SyntheticEvent) {
+    const { dropdownOpen } = this.state;
     if (
-      this.state.dropdownOpen &&
+      dropdownOpen &&
       this.blockInfoData &&
       !this.blockInfoData.contains(event.target)
     ) {
-      this.toggleDropdown();
+      this.setState({ dropdownOpen: !dropdownOpen });
     }
   }
 
   render() {
     const { syncInfo, isLogged } = this.props;
-
+    const { dropdownOpen } = this.state;
     if (!syncInfo) {
       return null;
     }
-    const s = this.state;
     const {
       blocksBehind,
       highestBlockBn,
@@ -78,24 +71,24 @@ class BlockInfoData extends Component<BlockInfoDataProps, BlockInfoDataState> {
     return (
       <div
         className={classNames(Styles.BlockInfoData, {
-          [Styles.BlockInfoData__selected]: s.dropdownOpen
+          [Styles.selected]: dropdownOpen
         })}
         ref={blockInfoData => {
           this.blockInfoData = blockInfoData;
         }}
       >
         <div
-          className={Styles.BlockInfoData__container}
+          className={Styles.container}
           role="button"
           tabIndex={0}
-          onClick={() => this.toggleDropdown()}
+          onClick={() => this.setState({ dropdownOpen: !dropdownOpen })}
         >
-          <div className={Styles.BlockInfoData__title}>Blocks Behind</div>
-          <div className={Styles.BlockInfoData__info}>
+          <div className={Styles.title}>Blocks Behind</div>
+          <div className={Styles.info}>
             {blocksBehind}
-            <span className={Styles.BlockInfoData__blocksBehind}>
+            <span className={Styles.blocksBehind}>
               <ChevronFlip
-                pointDown={s.dropdownOpen}
+                pointDown={dropdownOpen}
                 stroke="#fff"
                 filledInIcon
                 quick
@@ -108,26 +101,23 @@ class BlockInfoData extends Component<BlockInfoDataProps, BlockInfoDataState> {
             this.blockInfoDropdown = blockInfoDropdown;
           }}
           className={classNames(
-            Styles.BlockInfoData__connectDropdown,
-            ToggleHeightStyles["toggle-height-target"],
-            ToggleHeightStyles["toggle-height-target-quick"],
+            Styles.connectDropdown,
+            ToggleHeightStyles.target,
+            ToggleHeightStyles.quick,
             {
-              [Styles.BlockInfoData__connectDropdownLogged]: isLogged
+              [Styles.connectDropdownLogged]: isLogged,
+              [ToggleHeightStyles.open]: dropdownOpen
             }
           )}
         >
-          <div className={Styles.BlockInfoData__dropdownContainer}>
-            <div className={Styles.BlockInfoData__dropdownTitle}>
-              Processing Market Data
-            </div>
-            <div className={Styles.BlockInfoData__percent}>{percent}%</div>
-            <div className={Styles.BlockInfoData__dropdownTitle}>
-              Blocks Processed
-            </div>
-            <div className={Styles.BlockInfoData__processed}>
+          <div className={Styles.dropdownContainer}>
+            <div className={Styles.dropdownTitle}>Processing Market Data</div>
+            <div className={Styles.percent}>{percent}%</div>
+            <div className={Styles.dropdownTitle}>Blocks Processed</div>
+            <div className={Styles.processed}>
               {formatNumber(lastProcessedBlockBn.toString()).formatted}
-              <span className={Styles.BlockInfoData__bottom}>
-                <span className={Styles.BlockInfoData__slash}>/</span>
+              <span className={Styles.bottom}>
+                <span className={Styles.slash}>/</span>
                 {formatNumber(highestBlockBn.toString()).formatted}
               </span>
             </div>

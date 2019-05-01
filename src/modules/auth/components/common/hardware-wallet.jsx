@@ -9,14 +9,13 @@ import DerivationPath, {
 import classNames from "classnames";
 import AddressPickerContent from "modules/auth/components/common/address-picker-content";
 import DerivationPathEditor from "modules/auth/components/common/derivation-path-editor";
-import toggleHeight from "utils/toggle-height/toggle-height";
 import { ERROR_TYPES } from "modules/common-elements/constants";
 import { errorIcon } from "modules/common/components/icons";
 import { filter } from "lodash";
 import Styles from "modules/auth/components/common/hardware-wallet.styles";
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
 import StylesError from "modules/auth/components/common/error-container.styles";
-import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
+import ToggleHeightStyles from "utils/toggle-height.styles";
 import getEtherBalance from "modules/auth/actions/get-ether-balance";
 
 export default class HardwareWallet extends Component {
@@ -109,7 +108,6 @@ export default class HardwareWallet extends Component {
     }
 
     if (showAdvanced !== nextProps.showAdvanced) {
-      this.showAdvanced(showAdvanced);
       this.getWalletAddresses(DEFAULT_DERIVATION_PATH, 1);
     }
 
@@ -256,22 +254,14 @@ export default class HardwareWallet extends Component {
     }
   }
 
-  showAdvanced(value) {
-    toggleHeight(this.advanced, value);
-  }
-
   showHardwareWallet() {
-    toggleHeight(this.hardwareContent, false, 0, () => {
-      this.setState({ showWallet: true });
-    });
+    this.setState({ showWallet: true });
   }
 
   hideHardwareWallet() {
     const { setShowAdvancedButton } = this.props;
     setShowAdvancedButton(false);
-    toggleHeight(this.hardwareContent, true, 0, () => {
-      this.setState({ showWallet: false });
-    });
+    this.setState({ showWallet: false });
   }
 
   next() {
@@ -334,7 +324,6 @@ export default class HardwareWallet extends Component {
     if (isLoading && s.walletAddresses.every(element => !element)) {
       hideContent = true;
     }
-
     return (
       <div
         ref={hardwareContent => {
@@ -342,7 +331,8 @@ export default class HardwareWallet extends Component {
         }}
         className={classNames(
           StylesDropdown.ConnectDropdown__hardwareContent,
-          ToggleHeightStyles["toggle-height-target"]
+          ToggleHeightStyles.target,
+          { [ToggleHeightStyles.open]: s.showWallet }
         )}
       >
         <div>
@@ -352,7 +342,8 @@ export default class HardwareWallet extends Component {
             }}
             className={classNames(
               StylesDropdown.ConnectDropdown__advancedContent,
-              ToggleHeightStyles["toggle-height-target"]
+              ToggleHeightStyles.target,
+              { [ToggleHeightStyles.open]: showAdvanced }
             )}
           >
             <DerivationPathEditor
@@ -387,7 +378,7 @@ export default class HardwareWallet extends Component {
                 <div
                   className={classNames(
                     StylesError.ErrorContainer__subheader,
-                    Styles.ConnectWallet__subheader
+                    Styles.subheader
                   )}
                 >
                   {walletName === "trezor" && (
