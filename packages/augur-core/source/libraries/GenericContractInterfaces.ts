@@ -450,6 +450,19 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
+	public getMaximumMarketEndDate = async (options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"getMaximumMarketEndDate","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [], 'getMaximumMarketEndDate', options.sender)
+	}
+
+	public getMaximumMarketEndDate_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"getMaximumMarketEndDate","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
 	public getMarketOpenInterest_ = async (market: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_market","type":"address"}],"name":"getMarketOpenInterest","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -718,6 +731,13 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_target","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_totalSupply","type":"uint256"},{"name":"_balance","type":"uint256"}],"name":"logDisputeCrowdsourcerTokensMinted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [universe, target, amount, totalSupply, balance], options.sender)
 		return <boolean>result[0]
+	}
+
+	public upgradeTimestamp_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"upgradeTimestamp","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
 	}
 
 	public logInitialReportSubmitted = async (universe: string, reporter: string, market: string, amountStaked: TBigNumber, isDesignatedReporter: boolean, payoutNumerators: Array<TBigNumber>, description: string, options?: { sender?: string }): Promise<Array<Event>> => {
