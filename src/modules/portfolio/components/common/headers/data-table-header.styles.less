@@ -96,6 +96,10 @@
 
   .DataTableHeader__extended {
     > li {
+      &:nth-of-type(2) {
+        min-height: @size-22;
+      }
+
       &:nth-of-type(5),
       &:nth-of-type(6) {
         display: none;
@@ -138,11 +142,19 @@
   }
 
   .PositionHeader__extended {
+    border-bottom: 0.0625rem solid @color-primary-background;
     grid-template-columns: repeat(5, 1fr);
+    padding-bottom: @size-6;
+    padding-left: @size-16;
+    padding-top: @size-6;
 
     > li {
       padding-left: @size-10;
       white-space: pre-line;
+
+      &:nth-of-type(2) {
+        padding: 0;
+      }
 
       &:nth-of-type(5),
       &:last-child {
