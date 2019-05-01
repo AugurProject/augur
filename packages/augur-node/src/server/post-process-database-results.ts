@@ -1,4 +1,4 @@
-import BigNumber from "bignumber.js";
+import { BigNumber } from "../types";
 
 interface FieldWhitelist {
   [key: string]: boolean;
@@ -135,7 +135,7 @@ function convertToBigNumber(row: any) {
 
   for (const key in row) {
     if (row.hasOwnProperty(key) && isFieldBigNumber(key) && typeof row[key] === "string") {
-      row[key] = new BigNumber(row[key], 10);
+      row[key] = new BigNumber(row[key]);
     }
   }
 

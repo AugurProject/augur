@@ -1,9 +1,22 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
-import { BigNumber } from "bignumber.js";
-import { Address, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcomeInfo, PayoutRow, MarketsContractAddressRow } from "../../types";
-import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState, batchAndCombine } from "./database";
+import {
+  Address,
+  BigNumber,
+  MarketsContractAddressRow,
+  OutcomesRow,
+  PayoutRow,
+  UIMarketInfo,
+  UIMarketsInfo,
+  UIOutcomeInfo
+} from "../../types";
+import {
+  batchAndCombine,
+  getMarketsWithReportingState,
+  reshapeMarketsRowToUIMarketInfo,
+  reshapeOutcomesRowToUIOutcomeInfo
+} from "./database";
 
 export const MarketsInfoParams = t.type({
   marketIds: t.array(t.union([t.string, t.null, t.undefined])),

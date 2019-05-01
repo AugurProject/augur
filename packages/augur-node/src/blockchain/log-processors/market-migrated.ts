@@ -1,6 +1,5 @@
-import * as Knex from "knex";
-import { Augur, FormattedEventLog } from "augur.js";
-import { Address, ReportingState } from "../../types";
+import Knex from "knex";
+import { Address, Augur, FormattedEventLog, ReportingState } from "../../types";
 import { rollbackMarketState, updateMarketDisputeWindow, updateMarketState } from "./database";
 import { getMarketsWithReportingState } from "../../server/getters/database";
 import { createCategoryIfNotExists } from "./market-created";

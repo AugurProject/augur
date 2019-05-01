@@ -1,5 +1,5 @@
-import * as Knex from "knex";
-import { SearchRow, Address } from "../../types";
+import Knex from "knex";
+import { Address, SearchRow } from "../../types";
 
 export interface SearchProvider  {
   migrateUp(): Promise<any>;

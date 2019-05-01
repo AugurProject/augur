@@ -31,6 +31,7 @@ test("get logs", async () => {
     removed: false,
     transactionHash: "0x9876",
     transactionIndex: 3,  // not specified in logValues
+    transactionLogIndex: 0
   }];
   const logValues: LogValues = {
     blockNumber: 12,

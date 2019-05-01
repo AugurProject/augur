@@ -1,8 +1,8 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
-import { BigNumber } from "bignumber.js";
-import { Address } from "../../types";
+
+import { Address, BigNumber } from "../../types";
 import { ZERO } from "../../constants";
 
 export const OrderType = t.keyof({
@@ -31,9 +31,9 @@ export async function getBetterWorseOrders(db: Knex, augur: {}, params: t.TypeOf
   const ordersQuery = db("orders").select("orderId", "price").where({ orderState: "OPEN", ..._.pick(params, ["marketId", "outcome", "orderType"])});
   const orders: Array<OrderRow> = await ordersQuery;
   const priceBN = new BigNumber(params.price);
-  const [lesserOrders, greaterOrders] = _.partition(orders, (order) => order.price.isLessThan(priceBN));
-  const greaterOrder = _.reduce(greaterOrders, (result, order) => (result.orderId === null || order.price.isLessThan(result.price) ? order : result), { orderId: null, price: ZERO });
-  const lesserOrder = _.reduce(lesserOrders, (result, order) => (result.orderId === null || order.price.isGreaterThan(result.price) ? order : result), { orderId: null, price: ZERO });
+  const [lesserOrders, greaterOrders] = _.partition(orders, (order) => order.price.lt(priceBN));
+  const greaterOrder = _.reduce(greaterOrders, (result, order) => (result.orderId === null || order.price.lt(result.price) ? order : result), { orderId: null, price: ZERO });
+  const lesserOrder = _.reduce(lesserOrders, (result, order) => (result.orderId === null || order.price.gt(result.price) ? order : result), { orderId: null, price: ZERO });
   if (params.orderType === "buy") {
     return {
       betterOrderId: greaterOrder.orderId,

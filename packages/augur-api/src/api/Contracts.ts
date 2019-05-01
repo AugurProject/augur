@@ -24,7 +24,8 @@ export class Contracts<TBigNumber> {
   public constructor (addresses: ContractAddresses, dependencies: GenericAugurInterfaces.Dependencies<TBigNumber>) {
     this.dependencies = dependencies;
     this.augur = new GenericAugurInterfaces.Augur<TBigNumber>(dependencies, addresses.Augur);
-    this.universe = this.universeFromAddress(addresses.Universe);
+
+    this.universe = new GenericAugurInterfaces.Universe<TBigNumber>(dependencies, addresses.Universe);
     this.cash = new GenericAugurInterfaces.Cash<TBigNumber>(dependencies, addresses.Cash);
     this.orders = new GenericAugurInterfaces.Orders<TBigNumber>(dependencies, addresses.Orders);
     this.createOrder = new GenericAugurInterfaces.CreateOrder<TBigNumber>(dependencies, addresses.CreateOrder);

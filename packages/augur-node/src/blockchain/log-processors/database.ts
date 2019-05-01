@@ -1,11 +1,11 @@
 import * as _ from "lodash";
-import * as Knex from "knex";
-import Augur from "augur.js";
-import { BigNumber } from "bignumber.js";
-import { Address, ReportingState, DisputeWindowState} from "../../types";
+import Knex from "knex";
+import { Address, Augur, BigNumber, DisputeWindowState, ReportingState } from "../../types";
+
+
 import { getCurrentTime } from "../process-block";
 import { augurEmitter } from "../../events";
-import { SubscriptionEventNames } from "../../constants";
+import { CONTRACT_INTERVAL, SubscriptionEventNames } from "../../constants";
 
 export interface DisputeWindowModifications {
   expiredDisputeWindows: Array<Address>;
@@ -25,10 +25,10 @@ async function setMarketStateToLatest(db: Knex, marketId: Address) {
 // We fallback to the on-chain lookup if we have no row, because there is a possibility due to transaction log ordering
 // that we have not yet seen a DisputeWindowCreated event. Only happens in test, where a "next" isn't created ahead of time
 async function getDisputeWindow(db: Knex, augur: Augur, universe: Address, next: boolean): Promise<Address> {
-  const disputeWindowAtTime = getCurrentTime() + (next ? augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS : 0);
+  const disputeWindowAtTime = getCurrentTime() + (next ? CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS : 0);
   const disputeWindowRow = await db("dispute_windows").first("disputeWindow").where({ universe }).where("startTime", "<", disputeWindowAtTime).where("endTime", ">", disputeWindowAtTime);
   if (disputeWindowRow !== undefined) return disputeWindowRow.disputeWindow;
-  return augur.api.Universe.getDisputeWindowByTimestamp({ _timestamp: disputeWindowAtTime, tx: { to: universe } });
+  return augur.contracts.universe.getDisputeWindowByTimestamp_(new BigNumber(disputeWindowAtTime), false);
 }
 
 export async function updateMarketDisputeWindow(db: Knex, augur: Augur, universe: Address, marketId: Address, next: boolean) {
@@ -99,7 +99,7 @@ export async function insertPayout(db: Knex, marketId: Address, payoutNumerators
   };
   payoutNumerators.forEach((value, i): void => {
     if (value == null) return;
-    const numerator = new BigNumber(value, 10);
+    const numerator = new BigNumber(value);
     payoutRow["payout" + i] = numerator.toString();
     if (i === 0 && numerator.gt(0)) payoutRow.isInvalid = true;
   });
@@ -130,14 +130,8 @@ export async function updateDisputeRound(db: Knex, marketId: Address) {
 export async function refreshMarketMailboxEthBalance(db: Knex, augur: Augur, marketId: Address) {
   const marketCreatorMailboxRow: {marketCreatorMailbox: Address} = await db("markets").first("marketCreatorMailbox").where({ marketId });
   if (!marketCreatorMailboxRow) throw new Error(`Could not get market creator mailbox for market: ${marketId}`);
-  return new Promise((resolve, reject) => {
-    augur.rpc.eth.getBalance([marketCreatorMailboxRow.marketCreatorMailbox, "latest"], async (err: Error|null, mailboxBalanceResponse: string) => {
-      if (err) return reject(err);
-      const mailboxBalance = new BigNumber(mailboxBalanceResponse, 16);
-      await db("markets").update("marketCreatorFeesBalance", mailboxBalance.toString()).where({ marketId });
-      resolve();
-    });
-  });
+  const mailboxBalanceResponse = await augur.provider.getBalance(marketCreatorMailboxRow.marketCreatorMailbox);
+  await db("markets").update("marketCreatorFeesBalance", mailboxBalanceResponse.toString()).where({ marketId });
 }
 
 export async function getPouchRevFromId(pouch: PouchDB.Database, id: string): Promise<string|undefined> {

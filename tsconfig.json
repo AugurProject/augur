@@ -34,6 +34,12 @@
     },
     {
       "path": "./packages/augur-tools"
+    },
+    {
+      "path": "./packages/augur-node"
+    },
+    {
+      "path": "./packages/speedomatic"
     }
   ]
 }

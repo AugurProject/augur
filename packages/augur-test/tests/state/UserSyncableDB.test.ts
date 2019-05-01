@@ -10,7 +10,7 @@ import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFun
 import { Contracts } from "@augurproject/api/src/api/Contracts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import {ethers} from "ethers";
-import { ContractAddresses, contracts as compilerOutput } from "@augurproject/artifacts";
+import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
 
 const mock = makeDbMock();
 

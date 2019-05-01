@@ -16,6 +16,7 @@ import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/trading/Order.sol';
 import 'ROOT/reporting/IAuction.sol';
 import 'ROOT/reporting/IAuctionToken.sol';
+import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/ITime.sol';
 
 
@@ -80,8 +81,11 @@ contract Augur is IAugur {
 
     ITime public time;
 
+    uint256 public upgradeTimestamp;
+
     constructor() public {
         uploader = msg.sender;
+        upgradeTimestamp = Reporting.getInitialUpgradeTimestamp();
     }
 
     //
@@ -222,6 +226,16 @@ contract Augur is IAugur {
 
     function isValidMarket(IMarket _market) public view returns (bool) {
         return markets[address(_market)];
+    }
+
+    function getMaximumMarketEndDate() public returns (uint256) {
+        uint256 _now = getTimestamp();
+        while (_now > upgradeTimestamp) {
+            upgradeTimestamp = upgradeTimestamp.add(Reporting.getUpgradeCadence());
+        }
+        uint256 _upgradeCadenceDurationEndTime = upgradeTimestamp;
+        uint256 _baseDurationEndTime = _now + Reporting.getBaseMarketDurationMaximum();
+        return _baseDurationEndTime.max(_upgradeCadenceDurationEndTime);
     }
 
     //

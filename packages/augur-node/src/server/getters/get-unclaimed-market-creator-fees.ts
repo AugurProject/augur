@@ -1,8 +1,7 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
-import Augur from "augur.js";
-import { Address, UIMarketCreatorFee, ReportingState } from "../../types";
+import { Address, Augur, BigNumber, ReportingState, UIMarketCreatorFee } from "../../types";
 import { getCashAddress, getMarketsWithReportingState } from "./database";
 import { ZERO } from "../../constants";
 
@@ -35,7 +34,7 @@ export async function getUnclaimedMarketCreatorFees(db: Knex, augur: Augur, para
     } else {
       return {
         marketId,
-        unclaimedFee: market.marketCreatorFeesBalance.plus(market.balance || ZERO).toString(),
+        unclaimedFee: market.marketCreatorFeesBalance.add(market.balance || ZERO).toString(),
       };
     }
   });

@@ -1,21 +1,20 @@
-import Augur from "augur.js";
-import * as Knex from "knex";
-import { BigNumber } from "bignumber.js";
-import { Address, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState } from "../../types";
+import { Address, Augur, BigNumber, FormattedEventLog, MarketsRow, OrdersRow, OrderState, TokensRow } from "../../types";
+import Knex from "knex";
+import { QueryBuilder } from "knex";
 import { augurEmitter } from "../../events";
 import { fixedPointToDecimal, numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
 import { BN_WEI_PER_ETHER, SubscriptionEventNames } from "../../constants";
-import { QueryBuilder } from "knex";
 import { updateProfitLossNumEscrowed, updateProfitLossRemoveRow } from "./profit-loss/update-profit-loss";
+import { convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "../../utils";
 
 export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLog) {
   return async(db: Knex) => {
-    const amount: BigNumber = new BigNumber(log.amount, 10);
-    const price: BigNumber = new BigNumber(log.price, 10);
+    const amount: BigNumber = new BigNumber(log.amount);
+    const price: BigNumber = new BigNumber(log.price);
     const orderType: string = log.orderType;
-    const moneyEscrowed: BigNumber = new BigNumber(log.moneyEscrowed, 10);
-    const sharesEscrowed: BigNumber = new BigNumber(log.sharesEscrowed, 10);
+    const moneyEscrowed: BigNumber = new BigNumber(log.moneyEscrowed);
+    const sharesEscrowed: BigNumber = new BigNumber(log.sharesEscrowed);
     const shareToken: Address = log.shareToken;
     const tokensRow: TokensRow|undefined = await db.first("marketId", "outcome").from("tokens").where({ contractAddress: shareToken });
     if (!tokensRow) throw new Error(`ORDER CREATED: market and outcome not found for shareToken ${shareToken} (${log.transactionHash}`);
@@ -28,10 +27,10 @@ export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLo
     const numTicks = marketsRow.numTicks;
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
     const numOutcomes = marketsRow.numOutcomes;
-    const fullPrecisionAmount = augur.utils.convertOnChainAmountToDisplayAmount(amount, tickSize);
-    const fullPrecisionPrice = augur.utils.convertOnChainPriceToDisplayPrice(price, minPrice, tickSize);
+    const fullPrecisionAmount = convertOnChainAmountToDisplayAmount(amount, tickSize);
+    const fullPrecisionPrice = convertOnChainPriceToDisplayPrice(price, minPrice, tickSize);
     const orderTypeLabel = orderType === "0" ? "buy" : "sell";
-    const displaySharesEscrowed = augur.utils.convertOnChainAmountToDisplayAmount(sharesEscrowed, tickSize).toString();
+    const displaySharesEscrowed = convertOnChainAmountToDisplayAmount(sharesEscrowed, tickSize).toString();
     const orderData: OrdersRow<string> = {
       marketId,
       blockNumber: log.blockNumber,

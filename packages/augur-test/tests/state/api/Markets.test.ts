@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { API } from "@augurproject/state/src/api/API";
 import { MarketInfo, MarketInfoReportingState, SECONDS_IN_A_DAY } from "@augurproject/state/src/api/Markets";
-import { contracts as compilerOutput } from "@augurproject/artifacts";
+import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { DB } from "@augurproject/state/src/db/DB";
 import {
   ACCOUNTS,

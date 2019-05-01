@@ -28,12 +28,10 @@
     "format": "prettier --write '**/*.{js,jsx,ts,tsx}'",
     "test": "jest",
     "kickoff": "./scripts/setup-local-dev.sh",
-    "___": "",
     "link": "npm link augur.js keythereum",
     "heroku-postbuild": "webpack  --debug --config config/webpack.heroku.config.js",
     "reinstall": "./scripts/reinstall.sh",
     "regenerate-lockfiles": "rm -f package-lock.json && npm install && rm -f yarn.lock && yarn",
-    "----": "",
     "docker:build": "docker build --tag augurproject/augur:latest  .",
     "docker:push": "docker push augurproject/augur:latest",
     "docker:release:stable": "scripts/release-stable.sh",
@@ -102,7 +100,7 @@
     "shifty": "2.6.1",
     "speedomatic": "2.1.4",
     "trezor-connect": "5.0.34",
-    "yarn": "1.15.2"
+    "webpack-cli": "^3.3.1"
   },
   "devDependencies": {
     "@augurproject/tools": "6.0.0",
@@ -121,8 +119,8 @@
     "derequire": "2.0.6",
     "enzyme": "3.7.0",
     "enzyme-adapter-react-16": "1.7.0",
-    "eslint-config-airbnb": "17.1.0",
     "eslint": "5.12.1",
+    "eslint-config-airbnb": "17.1.0",
     "eslint-config-prettier": "3.3.0",
     "eslint-import-resolver-babel-module": "3.0.0",
     "eslint-import-resolver-webpack": "0.11.0",
@@ -172,6 +170,7 @@
     "stylelint-no-browser-hacks": "1.2.1",
     "stylelint-order": "0.8.1",
     "watchify": "3.11.0",
+    "webpack-cli": "^3.3.1",
     "webpack-deadcode-plugin": "0.1.9",
     "webpack-merge": "4.1.4"
   }

@@ -1,15 +1,14 @@
 import * as express from "express";
 import * as WebSocket from "ws";
-import * as Knex from "knex";
-import Augur from "augur.js";
+import Knex from "knex";
+import { Augur, JsonRpcRequest, ServersData, WebSocketConfigs } from "../types";
 import { clearInterval, setInterval } from "timers";
 import { augurEmitter } from "../events";
-import { JsonRpcRequest, WebSocketConfigs, ServersData } from "../types";
 import { addressFormatReviver } from "./address-format-reviver";
 import { isJsonRpcRequest } from "./is-json-rpc-request";
 import { dispatchJsonRpcRequest } from "./dispatch-json-rpc-request";
 import { makeJsonRpcResponse } from "./make-json-rpc-response";
-import { makeJsonRpcError, JsonRpcErrorCode } from "./make-json-rpc-error";
+import { JsonRpcErrorCode, makeJsonRpcError } from "./make-json-rpc-error";
 import { Subscriptions } from "./subscriptions";
 import * as fs from "fs";
 import * as https from "https";

@@ -9,7 +9,7 @@ import { DB } from "./db/DB";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers";
 import { PouchDBFactory } from "./db/AbstractDB";
-import { addresses } from "@augurproject/artifacts";
+import { Addresses } from "@augurproject/artifacts";
 import { EndpointSettings } from "./api/types";
 
 export async function run() {
@@ -17,7 +17,7 @@ export async function run() {
 
   const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
   const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
-  const augur = await Augur.create(ethersProvider, contractDependencies, addresses[4]);
+  const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4]);
 
   const pouchDBFactory = PouchDBFactory({});
 

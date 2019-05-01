@@ -1,5 +1,5 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import { Address, Bytes32, SortLimitParams } from "../../types";
 import { queryModifier } from "./database";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";

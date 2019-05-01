@@ -11,7 +11,7 @@
   "scripts": {
     "version": "yarn rebuild",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
-    "build": "tsc",
+    "build": "tsc -b",
     "watch": "tsc -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
     "prepare": "tsc",
@@ -26,6 +26,6 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "devDependencies": {
-    "ts-node": "7.0.1"
+    "ts-node": "8.0.3"
   }
 }

@@ -53,6 +53,7 @@
     "pouchdb": "7.0.0",
     "pouchdb-adapter-memory": "7.0.0",
     "pouchdb-find": "7.0.0",
+    "speedomatic": "2.1.5",
     "ts-loader": "5.3.3",
     "webpack": "4.29.6",
     "webpack-cli": "3.3.0",
@@ -64,8 +65,7 @@
     "@types/node": "10.12.29",
     "jest": "22.4.4",
     "ts-jest": "23.10.5",
-    "ts-node": "7.0.1",
-    "tsconfig-paths": "3.7.0",
+    "ts-node": "8.0.3",
     "webpack-dev-server": "3.2.1"
   },
   "resolutions": {

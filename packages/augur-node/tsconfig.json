@@ -1,6 +1,38 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "composite": true
-  }
+    "outDir": "build",
+    "rootDirs": [
+      "src",
+      "test"
+    ],
+    "noImplicitAny": false
+  },
+  "include": [
+    "src",
+    "./config.json"
+  ],
+  "exclude": [
+    "**/*.test.ts"
+  ],
+  "references": [
+    {
+      "path": "../augur-api"
+    },
+    {
+      "path": "../augur-state"
+    },
+    {
+      "path": "../blockstream-adapters"
+    },
+    {
+      "path": "../ethersjs-provider"
+    },
+    {
+      "path": "../speedomatic"
+    },
+    {
+      "path": "../contract-dependencies-ethers"
+    }
+  ]
 }

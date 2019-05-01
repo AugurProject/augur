@@ -6,6 +6,7 @@
   "license": "MIT",
   "main": "./build",
   "scripts": {
+    "build": "tsc -b",
     "watch": "tsc -b -w",
     "prepare": "tsc -b"
   },

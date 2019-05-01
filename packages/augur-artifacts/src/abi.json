@@ -648,6 +648,20 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [],
+			"name": "getMaximumMarketEndDate",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -1301,6 +1315,20 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "upgradeTimestamp",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -17637,6 +17665,33 @@
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_source",
+					"type": "address"
+				},
+				{
+					"name": "_destination",
+					"type": "address"
+				},
+				{
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "recordExternalTransfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_market",
 					"type": "address"
 				},
@@ -18410,6 +18465,20 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "profitLoss",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -19087,73 +19156,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_direction",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_fillOnly",
-					"type": "bool"
-				},
-				{
-					"name": "_expirationTimestampInSec",
-					"type": "uint256"
-				},
-				{
-					"name": "_salt",
-					"type": "uint256"
-				},
-				{
-					"name": "_payment",
-					"type": "uint256"
-				},
-				{
-					"name": "v",
-					"type": "uint8"
-				},
-				{
-					"name": "r",
-					"type": "bytes32"
-				},
-				{
-					"name": "s",
-					"type": "bytes32"
-				}
-			],
-			"name": "executeSignedTrade",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "orders",
@@ -19251,61 +19253,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_direction",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_fillOnly",
-					"type": "bool"
-				},
-				{
-					"name": "_expirationTimestampInSec",
-					"type": "uint256"
-				},
-				{
-					"name": "_salt",
-					"type": "uint256"
-				},
-				{
-					"name": "_payment",
-					"type": "uint256"
-				}
-			],
-			"name": "cancelTrade",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "augur",
@@ -19384,41 +19331,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"name": "signer",
-					"type": "address"
-				},
-				{
-					"name": "hash",
-					"type": "bytes32"
-				},
-				{
-					"name": "v",
-					"type": "uint8"
-				},
-				{
-					"name": "r",
-					"type": "bytes32"
-				},
-				{
-					"name": "s",
-					"type": "bytes32"
-				}
-			],
-			"name": "isValidSignature",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "cash",
 			"outputs": [
@@ -19467,61 +19379,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_direction",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_fillOnly",
-					"type": "bool"
-				},
-				{
-					"name": "_expirationTimestampInSec",
-					"type": "uint256"
-				},
-				{
-					"name": "_salt",
-					"type": "uint256"
-				},
-				{
-					"name": "_payment",
-					"type": "uint256"
-				}
-			],
-			"name": "getTradeHash",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{

@@ -1,9 +1,12 @@
 import * as t from "io-ts";
-import * as Knex from "knex";
+import Knex from "knex";
 import * as _ from "lodash";
-import { BigNumber } from "bignumber.js";
-import { Address, ReportingState, PayoutRow } from "../../types";
+
+import { Address, BigNumber, PayoutRow, ReportingState } from "../../types";
+import { BigNumber as BigNumberJS } from "bignumber.js";
+
 import { getMarketsWithReportingState, groupByAndSum } from "./database";
+import { roundToPrecision } from "../../utils/round-to-precision";
 
 export const WinningBalanceParams = t.type({
   marketIds: t.array(t.string),
@@ -45,8 +48,9 @@ export async function getWinningBalance(db: Knex, augur: {}, params: t.TypeOf<ty
   const calculatedWinnings = _.map(winningPayoutRows, (winningPayoutRow) => {
     const payoutKey = `payout${winningPayoutRow.outcome}` as keyof PayoutRow<BigNumber>;
     const payout = winningPayoutRow[payoutKey] as BigNumber;
-    const winnings: BigNumber = payout.times(winningPayoutRow.balance);
-    return { marketId: winningPayoutRow.marketId, winnings: winnings.decimalPlaces(0, BigNumber.ROUND_DOWN) };
+    const winnings: BigNumber = payout.mul(winningPayoutRow.balance);
+
+    return { marketId: winningPayoutRow.marketId, winnings: new BigNumber(roundToPrecision(winnings, 0, "", BigNumberJS.ROUND_DOWN)) };
   });
   return groupByAndSum(calculatedWinnings, ["marketId"], ["winnings"]);
 }
