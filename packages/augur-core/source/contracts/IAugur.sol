@@ -58,7 +58,9 @@ contract IAugur {
     function logProfitLossChanged(IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost) public returns (bool);
     function recordAuctionTokens(IUniverse _universe) public returns (bool);
     function isKnownFeeSender(address _feeSender) public view returns (bool);
+    function isKnownShareToken(IShareToken _token) public view returns (bool);
     function lookup(bytes32 _key) public view returns (address);
     function getTimestamp() public view returns (uint256);
+    function getMaximumMarketEndDate() public returns (uint256);
     function isValidMarket(IMarket _market) public view returns (bool);
 }
