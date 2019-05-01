@@ -71,7 +71,7 @@ contract Market is Initializable, Ownable, IMarket {
         require(_creator != NULL_ADDRESS);
         uint256 _timestamp = augur.getTimestamp();
         require(_timestamp < _endTime);
-        require(_endTime < _timestamp + Reporting.getMaximumMarketDuration());
+        require(_endTime < augur.getMaximumMarketEndDate());
         universe = _universe;
         require(!universe.isForking());
         cash = ICash(augur.lookup("Cash"));

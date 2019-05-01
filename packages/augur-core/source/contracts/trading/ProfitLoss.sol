@@ -49,13 +49,20 @@ contract ProfitLoss is Initializable {
         return true;
     }
 
+    function recordExternalTransfer(address _source, address _destination, uint256 _value) public afterInitialized returns (bool) {
+        IShareToken _shareToken = IShareToken(msg.sender);
+        require(augur.isKnownShareToken(_shareToken));
+        this.recordTrade(_shareToken.getMarket(), _destination, _source, _shareToken.getOutcome(), int256(_value), 0, 0, 0, 0, _value);
+        return true;
+    }
+
     function recordTrade(IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares) public afterInitialized returns (bool) {
-        require(msg.sender == fillOrder);
+        require(msg.sender == fillOrder || msg.sender == address(this));
         int256 _numTicks = int256(_market.getNumTicks());
         int256  _longFrozenTokenDelta = int256(_numLongTokens).sub(int256(_numLongShares).mul(_numTicks.sub(_price)));
         int256  _shortFrozenTokenDelta = int256(_numShortTokens).sub(int256(_numShortShares).mul(_price));
-        adjustForTrader(_market, _shortAddress, _outcome, -int256(_amount), _price, _shortFrozenTokenDelta);
-        adjustForTrader(_market, _longAddress, _outcome, int256(_amount), _price, _longFrozenTokenDelta);
+        adjustForTrader(_market, _shortAddress, _outcome, -_amount, _price, _shortFrozenTokenDelta);
+        adjustForTrader(_market, _longAddress, _outcome, _amount, _price, _longFrozenTokenDelta);
         return true;
     }
 
