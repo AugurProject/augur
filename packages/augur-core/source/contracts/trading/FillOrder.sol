@@ -194,9 +194,9 @@ library Trade {
         // distribute shares to participants
         address _longBuyer = getLongShareBuyerDestination(_data);
         address _shortBuyer = getShortShareBuyerDestination(_data);
-        require(_data.contracts.longShareToken.transfer(_longBuyer, _numberOfCompleteSets));
+        require(_data.contracts.longShareToken.trustedFillOrderTransfer(address(this), _longBuyer, _numberOfCompleteSets));
         for (uint256 _i = 0; _i < _data.contracts.shortShareTokens.length; ++_i) {
-            require(_data.contracts.shortShareTokens[_i].transfer(_shortBuyer, _numberOfCompleteSets));
+            require(_data.contracts.shortShareTokens[_i].trustedFillOrderTransfer(address(this), _shortBuyer, _numberOfCompleteSets));
         }
 
         _data.creator.sharesToBuy -= _numberOfCompleteSets;
