@@ -6,7 +6,10 @@ library Reporting {
     uint256 private constant DISPUTE_ROUND_DURATION_SECONDS = 7 days;
     uint256 private constant INITIAL_DISPUTE_ROUND_DURATION_SECONDS = 1 days;
     uint256 private constant FORK_DURATION_SECONDS = 60 days;
-    uint256 private constant MAXIMUM_MARKET_DURATION = 365 days;
+
+    uint256 private constant BASE_MARKET_DURATION_MAXIMUM = 30 days; // A market of 30 day length can always
+    uint256 private constant UPGRADE_CADENCE = 365 days;
+    uint256 private constant INITIAL_UPGRADE_TIMESTAMP = 1626307484; // July 15th 2021
 
     uint256 private constant INITIAL_REP_SUPPLY = 11 * 10 ** 6 * 10 ** 18; // 11 Million REP
 
@@ -31,7 +34,9 @@ library Reporting {
     function getInitialDisputeRoundDurationSeconds() internal pure returns (uint256) { return INITIAL_DISPUTE_ROUND_DURATION_SECONDS; }
     function getDisputeRoundDurationSeconds() internal pure returns (uint256) { return DISPUTE_ROUND_DURATION_SECONDS; }
     function getForkDurationSeconds() internal pure returns (uint256) { return FORK_DURATION_SECONDS; }
-    function getMaximumMarketDuration() internal pure returns (uint256) { return MAXIMUM_MARKET_DURATION; }
+    function getBaseMarketDurationMaximum() internal pure returns (uint256) { return BASE_MARKET_DURATION_MAXIMUM; }
+    function getUpgradeCadence() internal pure returns (uint256) { return UPGRADE_CADENCE; }
+    function getInitialUpgradeTimestamp() internal pure returns (uint256) { return INITIAL_UPGRADE_TIMESTAMP; }
     function getDefaultValidityBond() internal pure returns (uint256) { return DEFAULT_VALIDITY_BOND; }
     function getValidityBondFloor() internal pure returns (uint256) { return VALIDITY_BOND_FLOOR; }
     function getTargetInvalidMarketsDivisor() internal pure returns (uint256) { return TARGET_INVALID_MARKETS_DIVISOR; }

@@ -10,7 +10,9 @@ contract Constants {
     function DISPUTE_ROUND_DURATION_SECONDS() public returns (uint256) { return Reporting.getDisputeRoundDurationSeconds(); }
     function INITIAL_DISPUTE_ROUND_DURATION_SECONDS() public returns (uint256) { return Reporting.getInitialDisputeRoundDurationSeconds(); }
     function FORK_DURATION_SECONDS() public returns (uint256) { return Reporting.getForkDurationSeconds(); }
-    function MAXIMUM_MARKET_DURATION() public returns (uint256) { return Reporting.getMaximumMarketDuration(); }
+
+    function BASE_MARKET_DURATION_MAXIMUM() public returns (uint256) { return Reporting.getBaseMarketDurationMaximum(); }
+    function UPGRADE_CADENCE() public returns (uint256) { return Reporting.getUpgradeCadence(); }
 
     function DEFAULT_VALIDITY_BOND() public returns (uint256) { return Reporting.getDefaultValidityBond(); }
     function VALIDITY_BOND_FLOOR() public returns (uint256) { return Reporting.getValidityBondFloor(); }

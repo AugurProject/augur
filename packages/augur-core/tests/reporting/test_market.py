@@ -33,10 +33,6 @@ def test_market_creation(contractsFixture, universe, market):
     with raises(TransactionFailed, message="Cannot create a market with an end date in the past"):
         contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
 
-    endTime = contractsFixture.contracts["Time"].getTimestamp() + contractsFixture.contracts["Constants"].MAXIMUM_MARKET_DURATION() + 1
-    with raises(TransactionFailed, message="Cannot create a market with an end date past the maximum duration"):
-        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
-
 def test_categorical_market_creation(contractsFixture, universe):
     endTime = contractsFixture.contracts["Time"].getTimestamp() + 1
 
@@ -101,3 +97,28 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     else:
         with TokenDelta(cash, minimumValidityBond, market.getOwner(), "Validity bond did not go to the market creator"):
             market.finalize()
+
+def test_max_duration_with_upgrade_cadence(contractsFixture, universe):
+    baseMarketDurationMaximum = contractsFixture.contracts["Constants"].BASE_MARKET_DURATION_MAXIMUM()
+    upgradeCadence = contractsFixture.contracts["Constants"].UPGRADE_CADENCE()
+    upgradeDate = contractsFixture.contracts["Augur"].getMaximumMarketEndDate()
+
+    # We cannot create markets after the initial deployment upgrade Date
+    endTime = upgradeDate + 1
+    with raises(TransactionFailed, message="Cannot create a market with an end date past the maximum duration"):
+        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
+
+    # If we get within the baseMarketDurationMaximum window of the upgrade day we can create markets that end that much time from now
+    now = contractsFixture.contracts["Time"].getTimestamp()
+    contractsFixture.contracts["Time"].setTimestamp(upgradeDate - baseMarketDurationMaximum + 2)
+    assert contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
+
+    # Once the upgrade date has passed we can create markets with end times up to the old upgrade date + our upgrade cadence
+    contractsFixture.contracts["Time"].setTimestamp(upgradeDate + 1)
+    upgradeDate += upgradeCadence
+    endTime = upgradeDate + 1
+    with raises(TransactionFailed, message="Cannot create a market with an end date past the maximum duration"):
+        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
+
+    endTime = upgradeDate - 1
+    assert contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)

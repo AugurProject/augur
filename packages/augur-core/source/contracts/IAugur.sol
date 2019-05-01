@@ -60,5 +60,6 @@ contract IAugur {
     function isKnownFeeSender(address _feeSender) public view returns (bool);
     function lookup(bytes32 _key) public view returns (address);
     function getTimestamp() public view returns (uint256);
+    function getMaximumMarketEndDate() public returns (uint256);
     function isValidMarket(IMarket _market) public view returns (bool);
 }
