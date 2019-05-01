@@ -14,7 +14,11 @@ export const loadAccountOpenOrders = (
 ) => dispatch => {
   dispatch(
     loadUserAccountOrders(options, (err, { marketIds = [], orders = {} }) => {
-      if (!err) postProcessing(marketIds, dispatch, orders, callback);
+      let allMarketIds = marketIds;
+      if (options.marketId) {
+        allMarketIds = allMarketIds.concat([options.marketId]);
+      }
+      if (!err) postProcessing(allMarketIds, dispatch, orders, callback);
       dispatch(
         loadAccountOrphanedOrders(options, (oMarketIds = []) => {
           const comb = [...new Set([...marketIds, oMarketIds])];
@@ -36,8 +40,6 @@ const loadUserAccountOrders = (options = {}, callback) => (
     { ...options, creator: loginAccount.address, universe: universe.id },
     (err, orders) => {
       if (err) return callback(err, {});
-      if (orders == null || Object.keys(orders).length === 0)
-        return callback(null, {});
       callback(null, { marketIds: Object.keys(orders), orders });
     }
   );

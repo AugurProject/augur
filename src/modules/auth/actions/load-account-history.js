@@ -37,7 +37,7 @@ function loadTransactions(dispatch, callback) {
   );
   promises.push(
     new Promise(resolve =>
-      dispatch(loadAccountOpenOrders({ ...options }, null, resolve))
+      dispatch(loadAccountOpenOrders(options, null, resolve))
     )
   );
   promises.push(
