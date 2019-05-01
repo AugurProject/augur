@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { DB } from "../db/DB";
 import { Getter } from "./Router";
-import { MarketType, MarketCreatedLog, MarketFinalizedLog } from "../logs/types";
+import { Address, MarketType, MarketCreatedLog, MarketFinalizedLog } from "../logs/types";
 import { SortLimit } from "./types";
 import { Augur, numTicksToTickSize } from "@augurproject/api";
 import { ethers } from "ethers";
@@ -76,8 +76,142 @@ export class Markets<TBigNumber> {
   public static GetMarketsInfoParams = t.type({ marketIds: t.array(t.string) });
 
   @Getter("GetMarketsParams")
-  public static async getMarkets<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<void> {
-    // TODO
+  public static async getMarkets<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<Array<Address>> {
+    // TODO Calculate feeDivisor
+    let feeDivisor = undefined;
+    if (params.maxFee) {
+      // console.log("MAXFEE");
+      const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
+      // console.log("reportingFeeDivisor", reportingFeeDivisor);
+      feeDivisor = new ethers.utils.BigNumber(params.maxFee).sub(reportingFeeDivisor);
+      // console.log("feeDivisor", feeDivisor.toString());
+    }
+
+    const marketCreatedLogs = await db.findMarketCreatedLogs(
+      {
+        selector: {
+          universe: params.universe,
+          marketCreator: params.creator,
+          designatedReporter: params.designatedReporter,
+          feeDivisor: feeDivisor ? {$lte: feeDivisor} : undefined,
+        },
+        sort: params.sortBy ? [params.sortBy] : undefined,
+        limit: params.limit,
+        skip: params.offset
+      }
+    );
+
+    // console.log("MARKET CREATED LOGS");
+    // console.log(marketCreatedLogs);
+
+    let keyedMarketCreatedLogs = marketCreatedLogs.reduce(
+      (previousValue: any, currentValue: MarketCreatedLog) => {
+        previousValue[currentValue.market] = currentValue
+        return previousValue;
+      },
+      []
+    );
+
+    // console.log("KEYED MARKET CREATED LOGS");
+    // console.log(keyedMarketCreatedLogs);
+
+    let filteredKeyedMarketCreatedLogs = keyedMarketCreatedLogs;
+    if (params.search) {
+      const fullTextSearchResults = await db.fullTextSearch("MarketCreated", params.search);
+
+      const keyedFullTextMarketIds: any = fullTextSearchResults.reduce(
+        (previousValue: any, fullTextSearchResult: any) => {
+          previousValue[fullTextSearchResult.market] = fullTextSearchResult;
+          return previousValue;
+        },
+        []
+      );
+
+      // console.log("KEYED FULL TEXT MARKET IDS");
+      // console.log(keyedFullTextMarketIds);
+
+      filteredKeyedMarketCreatedLogs = Object.entries(keyedMarketCreatedLogs).reduce(
+        (previousValue: any, currentValue: any) => {
+          if (keyedFullTextMarketIds[currentValue[0]]) {
+            previousValue[currentValue[0]] = currentValue[1];
+          }
+          return previousValue;
+        },
+        []
+      );
+
+      // console.log("FILTERED KEYED MARKET CREATED LOGS");
+      // console.log(filteredKeyedMarketCreatedLogs);
+    }
+
+    await Promise.all(
+      Object.entries(filteredKeyedMarketCreatedLogs).map(async (marketCreatedLogInfo: any) => {
+        let includeMarket = true;
+
+        // TODO
+        if (params.disputeWindow) {
+        }
+
+        if (params.hasOrders) {
+          const orderCreatedLogs = await db.findOrderCreatedLogs({selector: {marketId: marketCreatedLogInfo[0]}});
+          // TODO Add `market` to OrderCanceled log
+          const orderCanceledLogs = await db.findOrderCanceledLogs({selector: {market: marketCreatedLogInfo[0]}});
+          const orderFilledLogs = await db.findOrderFilledLogs({selector: {market: marketCreatedLogInfo[0], orderIsCompletelyFilled: true}});
+          // console.log("Created: " + orderCreatedLogs.length);
+          // console.log("Canceled: " + orderCanceledLogs.length);
+          // console.log("Filled: " + orderFilledLogs.length);
+          if (orderCreatedLogs.length - orderCanceledLogs.length === orderFilledLogs.length) {
+            includeMarket = false;
+          }
+        }
+
+        if (params.reportingState) {
+          const marketFinalizedLogs = await db.findMarketFinalizedLogs({selector: {market: marketCreatedLogInfo[0]}});
+          const reportingState = await Markets.getMarketReportingState(db, marketCreatedLogInfo[1], marketFinalizedLogs);
+          // console.log("REPORTING_STATE");
+          // console.log("GOTTEN: ", reportingState);
+          // console.log("DESIRED: ", params.reportingState);
+          if (reportingState !== params.reportingState) {
+            includeMarket = false;
+          }
+        }
+
+        if (includeMarket) {
+          // console.log("INCLUDE");
+          // console.log(marketCreatedLogInfo);
+          return marketCreatedLogInfo[0];
+        }
+        return null;
+      })
+    ).then(
+      (marketIds: any) => {
+        marketIds = marketIds.reduce(
+          (previousValue: any, currentValue: string|null) => {
+            if (currentValue) {
+              previousValue[currentValue] = currentValue;
+            }
+            return previousValue;
+          },
+          []
+        );
+        // console.log("MARKET IDS");
+        // console.log(marketIds);
+
+        filteredKeyedMarketCreatedLogs = Object.entries(filteredKeyedMarketCreatedLogs).reduce(
+          (previousValue: any, currentValue: any) => {
+            if (marketIds[currentValue[1].market]) {
+              previousValue[currentValue[0]] = currentValue[1];
+            }
+            return previousValue;
+          },
+          []
+        );
+        // console.log("filteredKeyedMarketCreatedLogs");
+        // console.log(filteredKeyedMarketCreatedLogs);
+      }
+    );
+
+    return Object.keys(filteredKeyedMarketCreatedLogs);
   }
 
   private static async getMarketOutcomes<TBigNumber>(db: DB<TBigNumber>, marketCreatedLog: MarketCreatedLog): Promise<Array<MarketInfoOutcome>> {

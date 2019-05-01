@@ -1,9 +1,9 @@
 import { string, number } from "prop-types";
 import { AddressZero } from "ethers/constants";
 
-type Address = string;
-type Bytes32 = string;
-type Timestamp = string;
+export type Address = string;
+export type Bytes32 = string;
+export type Timestamp = string;
 
 export interface Doc {
   _id: string;

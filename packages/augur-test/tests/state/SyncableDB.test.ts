@@ -3,6 +3,8 @@ import { Augur } from "@augurproject/api";
 import { contracts as compilerOutput } from "@augurproject/artifacts";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ACCOUNTS, deployContracts, makeDbMock } from "../../libs";
+import { stringTo32ByteHex } from "../../libs/Utils";
+import { toAscii } from "@augurproject/state/src/utils/Utils";
 
 // because flexsearch is a UMD type lib
 import FlexSearch = require("flexsearch");
@@ -29,9 +31,13 @@ test("Flexible Search", async () => {
     {
       _id: "robert",
       blockNumber: 1,
+      market: "0x1111111111111111111111111111111111111111",
+      topic: stringTo32ByteHex("Market share"),
       extraInfo: JSON.stringify({
         description: "Foobar has 12% market share by 2041",
         longDescription: "lol",
+        resolutionSource: "http://www.blah.com",
+        _scalarDenomination: "fake scalar denomination",
         tags: ["humanity", "30"],
       })
     }
@@ -41,21 +47,37 @@ test("Flexible Search", async () => {
 
   const syncableDB = await db.getSyncableDatabase(syncableDBName);
 
-  let docs = syncableDB.fullTextSearch("Foobar");  // description/title
+  let docs = syncableDB.fullTextSearch("0x1111111111111111111111111111111111111111");  // market
   expect(docs.length).toEqual(1);
 
-  docs = syncableDB.fullTextSearch("humanity");  // tags
+  docs = syncableDB.fullTextSearch("share");  // topic
+  expect(docs.length).toEqual(1);
+
+  docs = syncableDB.fullTextSearch("Foobar");  // description/title
   expect(docs.length).toEqual(1);
 
   docs = syncableDB.fullTextSearch("lol");  // longDescription/description
+  expect(docs.length).toEqual(1);
+
+  docs = syncableDB.fullTextSearch("blah");  // resolutionSource
+  expect(docs.length).toEqual(1);
+
+  docs = syncableDB.fullTextSearch("fake");  // _scalarDenomination
+  expect(docs.length).toEqual(1);
+
+  docs = syncableDB.fullTextSearch("humanity");  // tags
   expect(docs.length).toEqual(1);
 
   const doc = docs[0];
 
   expect(doc).toMatchObject({
     id: "robert",
-    title: "Foobar has 12% market share by 2041",
-    description: "lol",
+    market: "0x1111111111111111111111111111111111111111",
+    topic: toAscii(stringTo32ByteHex("Market share")),
+    description: "Foobar has 12% market share by 2041",
+    longDescription: "lol",
+    resolutionSource: "http://www.blah.com",
+    _scalarDenomination: "fake scalar denomination",
     tags: "humanity,30",
   });
 
