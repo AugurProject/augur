@@ -9,7 +9,7 @@ import { ethers } from "ethers";
 import { CompilerOutput } from "solc";
 import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
 
-const level = require("level-mem");
+const memdown = require("memdown");
 
 export type Account = {
   secretKey: string;
@@ -44,7 +44,7 @@ export async function deployContracts(accounts: AccountList, compiledContracts: 
     accounts,
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
     allowUnlimitedContractSize: true,
-    db: level(),
+    db: memdown(),
     gasLimit: 75000000000,
     debug: false,
     // vmErrorsOnRPCResponse: true,
