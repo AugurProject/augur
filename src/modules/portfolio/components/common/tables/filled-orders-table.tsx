@@ -26,7 +26,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
       <div className={Styles.FilledOrdersTable__inner}>
         {showMarketInfo && (
           <MarketLink id={filledOrder.marketId}>
-            <span>Market:</span> {filledOrder.marketDescription}
+            {filledOrder.marketDescription}
           </MarketLink>
         )}
         <ul className={Styles.FilledOrdersTable__header}>
