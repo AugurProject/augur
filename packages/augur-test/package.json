@@ -35,7 +35,7 @@
     "@augurproject/state": "1.0.0-0",
     "contract-dependencies-ethers": "1.0.0-0",
     "ganache-core": "2.4.0",
-    "level-mem": "^4.0.0"
+    "memdown": "4.0.0"
   },
   "devDependencies": {
     "@types/jest": "24.0.4",
