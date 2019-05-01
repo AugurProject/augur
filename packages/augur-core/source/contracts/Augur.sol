@@ -47,10 +47,10 @@ contract Augur is IAugur {
     event MarketMigrated(address indexed market, address indexed originalUniverse, address indexed newUniverse);
     event UniverseForked(address indexed universe, IMarket forkingMarket);
     event UniverseCreated(address indexed parentUniverse, address indexed childUniverse, uint256[] payoutNumerators);
-    event OrderCanceled(address indexed universe, address indexed shareToken, address indexed sender, bytes32 orderId, Order.Types orderType, uint256 tokenRefund, uint256 sharesRefund);
+    event OrderCanceled(address indexed universe, address indexed shareToken, address indexed sender, IMarket market, bytes32 orderId, Order.Types orderType, uint256 tokenRefund, uint256 sharesRefund);
     event OrderPriceChanged(address indexed universe, bytes32 orderId, uint256 outcome, uint256 price);
     // The ordering here is to match functions higher in the call chain to avoid stack depth issues
-    event OrderCreated(Order.Types orderType, uint256 amount, uint256 price, address indexed creator, bytes32 tradeGroupId, bytes32 orderId, IUniverse indexed universe, IMarket indexed marketId, ERC20Token kycToken, uint256 outcome);
+    event OrderCreated(Order.Types orderType, uint256 amount, uint256 price, address indexed creator, bytes32 tradeGroupId, bytes32 orderId, IUniverse indexed universe, IMarket indexed market, ERC20Token kycToken, uint256 outcome);
     event OrderFilled(address indexed universe, address filler, address creator, IMarket market, bytes32 orderId, uint256 price, uint256 outcome, uint256 fees, uint256 amountFilled, bytes32 tradeGroupId, bool orderIsCompletelyFilled, uint256 timestamp);
     event CompleteSetsPurchased(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI);
     event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 fees);
@@ -313,9 +313,9 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logOrderCanceled(IUniverse _universe, address _shareToken, address _sender, bytes32 _orderId, Order.Types _orderType, uint256 _tokenRefund, uint256 _sharesRefund) public returns (bool) {
+    function logOrderCanceled(IUniverse _universe, address _shareToken, address _sender, IMarket _market, bytes32 _orderId, Order.Types _orderType, uint256 _tokenRefund, uint256 _sharesRefund) public returns (bool) {
         require(msg.sender == registry["CancelOrder"]);
-        emit OrderCanceled(address(_universe), _shareToken, _sender, _orderId, _orderType, _tokenRefund, _sharesRefund);
+        emit OrderCanceled(address(_universe), _shareToken, _sender, _market, _orderId, _orderType, _tokenRefund, _sharesRefund);
         return true;
     }
 

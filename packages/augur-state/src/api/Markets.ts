@@ -77,6 +77,10 @@ export class Markets<TBigNumber> {
 
   @Getter("GetMarketsParams")
   public static async getMarkets<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<Array<Address>> {
+    if (! await augur.contracts.augur.isKnownUniverse_(params.universe)) {
+      throw new Error("Unknown universe: " + params.universe);
+    }
+
     // TODO Calculate feeDivisor
     let feeDivisor = undefined;
     if (params.maxFee) {
@@ -153,13 +157,9 @@ export class Markets<TBigNumber> {
         }
 
         if (params.hasOrders) {
-          const orderCreatedLogs = await db.findOrderCreatedLogs({selector: {marketId: marketCreatedLogInfo[0]}});
-          // TODO Add `market` to OrderCanceled log
+          const orderCreatedLogs = await db.findOrderCreatedLogs({selector: {market: marketCreatedLogInfo[0]}});
           const orderCanceledLogs = await db.findOrderCanceledLogs({selector: {market: marketCreatedLogInfo[0]}});
           const orderFilledLogs = await db.findOrderFilledLogs({selector: {market: marketCreatedLogInfo[0], orderIsCompletelyFilled: true}});
-          // console.log("Created: " + orderCreatedLogs.length);
-          // console.log("Canceled: " + orderCanceledLogs.length);
-          // console.log("Filled: " + orderFilledLogs.length);
           if (orderCreatedLogs.length - orderCanceledLogs.length === orderFilledLogs.length) {
             includeMarket = false;
           }

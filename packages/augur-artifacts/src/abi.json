@@ -978,49 +978,6 @@
 					"type": "address"
 				},
 				{
-					"name": "_shareToken",
-					"type": "address"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_orderType",
-					"type": "uint8"
-				},
-				{
-					"name": "_tokenRefund",
-					"type": "uint256"
-				},
-				{
-					"name": "_sharesRefund",
-					"type": "uint256"
-				}
-			],
-			"name": "logOrderCanceled",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
 					"name": "_target",
 					"type": "address"
 				},
@@ -1397,6 +1354,53 @@
 				{
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_shareToken",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_orderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_orderType",
+					"type": "uint8"
+				},
+				{
+					"name": "_tokenRefund",
+					"type": "uint256"
+				},
+				{
+					"name": "_sharesRefund",
+					"type": "uint256"
+				}
+			],
+			"name": "logOrderCanceled",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -2421,6 +2425,11 @@
 				},
 				{
 					"indexed": false,
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": false,
 					"name": "orderId",
 					"type": "bytes32"
 				},
@@ -2510,7 +2519,7 @@
 				},
 				{
 					"indexed": true,
-					"name": "marketId",
+					"name": "market",
 					"type": "address"
 				},
 				{

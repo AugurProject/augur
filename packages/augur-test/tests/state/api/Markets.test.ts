@@ -100,13 +100,19 @@ test("State API :: Markets :: getMarkets", async () => {
 
   await db.sync(john.augur, mock.constants.chunkSize, 0);
 
-  const nonexistentAddress = "0x1111111111111111111111111111111111111111";
+  let markets: Array<MarketInfo>;
 
   // Test non-existent universe address
-  let markets: Array<MarketInfo> = await api.route("getMarkets", {
-    universe: nonexistentAddress
-  });
-  expect(markets).toEqual([]);
+  const nonexistentAddress = "0x1111111111111111111111111111111111111111";
+  let errorMessage = "";
+  try {
+    let markets: Array<MarketInfo> = await api.route("getMarkets", {
+      universe: nonexistentAddress
+    });
+  } catch (error) {
+    errorMessage = error.message;
+  }
+  expect(errorMessage).toEqual("Unknown universe: 0x1111111111111111111111111111111111111111");
 
   // Test creator
   markets = await api.route("getMarkets", {
@@ -182,9 +188,8 @@ test("State API :: Markets :: getMarkets", async () => {
   const numShares = new ethers.utils.BigNumber(10000000000000);
   const price = new ethers.utils.BigNumber(22);
   const yesNoOrderId = await john.placeOrder(yesNoMarket1.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
-  // TODO Add market to CancelOrder log
-  // await john.cancelOrder(yesNoOrderId);
-  // await john.placeOrder(yesNoMarket1.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.cancelOrder(yesNoOrderId);
+  await john.placeOrder(yesNoMarket1.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
   await john.placeOrder(categoricalMarket1.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
   await john.placeOrder(scalarMarket1.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 
@@ -295,7 +300,7 @@ test("State API :: Markets :: getMarkets", async () => {
     reportingState: MarketInfoReportingState.PRE_REPORTING
   });
   expect(markets).toEqual([]);
-}, 60000);
+}, 120000);
 /*
 test("State API :: Markets :: getMarketsInfo", async () => {
   await john.approveCentralAuthority();
