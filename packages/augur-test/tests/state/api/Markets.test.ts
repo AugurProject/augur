@@ -9,7 +9,7 @@ import {
   deployContracts,
   ContractAPI,
 } from "../../../libs";
-import { stringTo32ByteHex } from "../../../libs/Utils";
+import { stringTo32ByteHex, NULL_ADDRESS } from "../../../libs/Utils";
 
 const mock = makeDbMock();
 
@@ -34,13 +34,14 @@ test("State API :: Markets :: getMarkets", async () => {
 
   const universe = john.augur.contracts.universe;
   const endTime = (await john.getTimestamp()).add(SECONDS_IN_A_DAY);
-  const feePerCashInAttoCash = new ethers.utils.BigNumber(0);
+  const lowFeePerCashInAttoCash = new ethers.utils.BigNumber(10).pow(18).div(20); // 5% creator fee
+  const highFeePerCashInAttoCash = new ethers.utils.BigNumber(10).pow(18).div(10); // 10% creator fee
   const affiliateFeeDivisor = new ethers.utils.BigNumber(0);
   const designatedReporter = john.account;
   const yesNoMarket1 = await john.createYesNoMarket(
     universe,
     endTime,
-    feePerCashInAttoCash,
+    lowFeePerCashInAttoCash,
     affiliateFeeDivisor,
     designatedReporter,
     "yesNo topic 1",
@@ -49,7 +50,7 @@ test("State API :: Markets :: getMarkets", async () => {
   const yesNoMarket2 = await john.createYesNoMarket(
     universe,
     endTime,
-    feePerCashInAttoCash,
+    lowFeePerCashInAttoCash,
     affiliateFeeDivisor,
     designatedReporter,
     "yesNo topic 2",
@@ -58,7 +59,7 @@ test("State API :: Markets :: getMarkets", async () => {
   const categoricalMarket1 = await john.createCategoricalMarket(
     universe,
     endTime,
-    feePerCashInAttoCash,
+    lowFeePerCashInAttoCash,
     affiliateFeeDivisor,
     designatedReporter,
     [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")],
@@ -68,7 +69,7 @@ test("State API :: Markets :: getMarkets", async () => {
   const categoricalMarket2 = await john.createCategoricalMarket(
     universe,
     endTime,
-    feePerCashInAttoCash,
+    highFeePerCashInAttoCash,
     affiliateFeeDivisor,
     designatedReporter,
     [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")],
@@ -78,7 +79,7 @@ test("State API :: Markets :: getMarkets", async () => {
   const scalarMarket1 = await john.createScalarMarket(
     universe,
     endTime,
-    feePerCashInAttoCash,
+    highFeePerCashInAttoCash,
     affiliateFeeDivisor,
     designatedReporter,
     [new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(100)],
@@ -89,7 +90,7 @@ test("State API :: Markets :: getMarkets", async () => {
   const scalarMarket2 = await john.createScalarMarket(
     universe,
     endTime,
-    feePerCashInAttoCash,
+    highFeePerCashInAttoCash,
     affiliateFeeDivisor,
     designatedReporter,
     [new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(100)],
@@ -158,28 +159,39 @@ test("State API :: Markets :: getMarkets", async () => {
   });
   expect(markets).toEqual([]);
 
-  // TODO Test maxFee
-  // console.log("Test maxFee");
-  // markets = await api.route("getMarkets", {
-  //   universe: universe.address,
-  //   maxFee: feePerCashInAttoCash.toNumber
-  // });
-  // expect(markets).toEqual(
-  //   [
-  //     yesNoMarket1.address,
-  //     yesNoMarket2.address,
-  //     categoricalMarket1.address,
-  //     categoricalMarket2.address,
-  //     scalarMarket1.address,
-  //     scalarMarket2.address
-  //   ]
-  // );
+  // Test maxFee
+  markets = await api.route("getMarkets", {
+    universe: universe.address,
+    maxFee: "0.05"
+  });
+  expect(markets).toEqual([]);
 
-  // markets = await api.route("getMarkets", {
-  //   universe: universe.address,
-  //   maxFee: 0.1
-  // });
-  // expect(markets).toEqual([]);
+  markets = await api.route("getMarkets", {
+    universe: universe.address,
+    maxFee: "0.06"
+  });
+  expect(markets).toEqual(
+    [
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address
+    ]
+  );
+
+  markets = await api.route("getMarkets", {
+    universe: universe.address,
+    maxFee: "0.11"
+  });
+  expect(markets).toEqual(
+    [
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
+      scalarMarket2.address
+    ]
+  );
 
   // Place orders on some markets
   const bid = new ethers.utils.BigNumber(0);
@@ -264,22 +276,23 @@ test("State API :: Markets :: getMarkets", async () => {
 
   await db.sync(john.augur, mock.constants.chunkSize, 0);
 
-  // TODO Test disputeWindow
-  // console.log("Test disputeWindow");
-  // markets = await api.route("getMarkets", {
-  //   universe: universe.address,
-  //   creator: ACCOUNTS[0].publicKey,
-  //   designatedReporter: ACCOUNTS[0].publicKey,
-  //   feeDivisor: feePerCashInAttoCash,
-  //   // disputeWindow: ,
-  //   hasOrders: false,
-  //   reportingState: MarketInfoReportingState.PRE_REPORTING,
-  //   search: "description 1"
-  // });
-  // expect(markets).toEqual([]);
+  // Test disputeWindow
+  markets = await api.route("getMarkets", {
+    universe: universe.address,
+    disputeWindow: NULL_ADDRESS
+  });
+  expect(markets).toEqual(
+    [
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
+      scalarMarket2.address
+    ]
+  );
 
   // Test reportingState
-  console.log("Test reportingState");
   markets = await api.route("getMarkets", {
     universe: universe.address,
     reportingState: MarketInfoReportingState.DESIGNATED_REPORTING
@@ -300,8 +313,43 @@ test("State API :: Markets :: getMarkets", async () => {
     reportingState: MarketInfoReportingState.PRE_REPORTING
   });
   expect(markets).toEqual([]);
+
+  await john.setTimestamp(endTime.add(1));
+
+  const noPayoutSet = [new ethers.utils.BigNumber(100), new ethers.utils.BigNumber(0), new ethers.utils.BigNumber(0)];
+  await john.doInitialReport(yesNoMarket1, noPayoutSet);
+
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
+
+  // Retest disputeWindow & reportingState
+  let disputeWindow = await yesNoMarket1.getDisputeWindow_();
+  markets = await api.route("getMarkets", {
+    universe: universe.address,
+    disputeWindow
+  });
+  expect(markets).toEqual([yesNoMarket1.address]);
+
+  markets = await api.route("getMarkets", {
+    universe: universe.address,
+    reportingState: MarketInfoReportingState.DESIGNATED_REPORTING
+  });
+  expect(markets).toEqual(
+    [
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
+      scalarMarket2.address
+    ]
+  );
+
+  markets = await api.route("getMarkets", {
+    universe: universe.address,
+    reportingState: MarketInfoReportingState.CROWDSOURCING_DISPUTE
+  });
+  expect(markets).toEqual([yesNoMarket1.address]);
 }, 120000);
-/*
+
 test("State API :: Markets :: getMarketsInfo", async () => {
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
@@ -376,7 +424,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[2].reportingState).toBe(MarketInfoReportingState.DESIGNATED_REPORTING);
 
     // Skip to open reporting
-  newTime = newTime.add(60 * 60 * 24 * 7);
+  newTime = newTime.add(SECONDS_IN_A_DAY * 7);
   await john.setTimestamp(newTime);
 
   await db.sync(john.augur, mock.constants.chunkSize, 0);
@@ -447,7 +495,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[1].reportingState).toBe(MarketInfoReportingState.CROWDSOURCING_DISPUTE);
   expect(markets[2].reportingState).toBe(MarketInfoReportingState.OPEN_REPORTING);
 
-  newTime = newTime.add(60 * 60 * 24 * 7);
+  newTime = newTime.add(SECONDS_IN_A_DAY * 7);
   await john.setTimestamp(newTime);
 
   await db.sync(john.augur, mock.constants.chunkSize, 0);
@@ -475,7 +523,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
       let remainingToFill = await john.getRemainingToFill(yesNoMarket, noPayoutSet);
       await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
     }
-    newTime = newTime.add(60 * 60 * 24 * 7);
+    newTime = newTime.add(SECONDS_IN_A_DAY * 7);
     await john.setTimestamp(newTime);
   }
 
@@ -640,4 +688,3 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[1]).toHaveProperty("id");
   expect(markets[2]).toHaveProperty("id");
 }, 180000);
-*/

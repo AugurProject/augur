@@ -18,7 +18,7 @@ const GetMarketsParamsSpecific = t.intersection([t.type({
   reportingState: t.string,
   disputeWindow: t.string,
   designatedReporter: t.string,
-  maxFee: t.number,
+  maxFee: t.string,
   hasOrders: t.boolean,
 })]);
 
@@ -81,23 +81,12 @@ export class Markets<TBigNumber> {
       throw new Error("Unknown universe: " + params.universe);
     }
 
-    // TODO Calculate feeDivisor
-    let feeDivisor = undefined;
-    if (params.maxFee) {
-      // console.log("MAXFEE");
-      const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
-      // console.log("reportingFeeDivisor", reportingFeeDivisor);
-      feeDivisor = new ethers.utils.BigNumber(params.maxFee).sub(reportingFeeDivisor);
-      // console.log("feeDivisor", feeDivisor.toString());
-    }
-
     const marketCreatedLogs = await db.findMarketCreatedLogs(
       {
         selector: {
           universe: params.universe,
           marketCreator: params.creator,
           designatedReporter: params.designatedReporter,
-          feeDivisor: feeDivisor ? {$lte: feeDivisor} : undefined,
         },
         sort: params.sortBy ? [params.sortBy] : undefined,
         limit: params.limit,
@@ -105,19 +94,28 @@ export class Markets<TBigNumber> {
       }
     );
 
-    // console.log("MARKET CREATED LOGS");
-    // console.log(marketCreatedLogs);
+    let marketCreatorFeeDivisor: BigNumber|undefined = undefined;
+    if (params.maxFee) {
+      const reportingFeeDivisor = new BigNumber((await augur.contracts.universe.getOrCacheReportingFeeDivisor_()).toNumber());
+      const reportingFee = new BigNumber(1).div(reportingFeeDivisor);
+      const marketCreatorFee = new BigNumber(params.maxFee).minus(reportingFee);
+      marketCreatorFeeDivisor = new BigNumber(10 ** 18).multipliedBy(marketCreatorFee);
+    }
 
     let keyedMarketCreatedLogs = marketCreatedLogs.reduce(
       (previousValue: any, currentValue: MarketCreatedLog) => {
-        previousValue[currentValue.market] = currentValue
+        // Filter markets with fees > maxFee
+        if (
+          params.maxFee && typeof marketCreatorFeeDivisor !== "undefined" &&
+          new BigNumber(currentValue.feeDivisor).gt(marketCreatorFeeDivisor)
+        ) {
+          return previousValue;
+        }
+        previousValue[currentValue.market] = currentValue;
         return previousValue;
       },
       []
     );
-
-    // console.log("KEYED MARKET CREATED LOGS");
-    // console.log(keyedMarketCreatedLogs);
 
     let filteredKeyedMarketCreatedLogs = keyedMarketCreatedLogs;
     if (params.search) {
@@ -131,9 +129,6 @@ export class Markets<TBigNumber> {
         []
       );
 
-      // console.log("KEYED FULL TEXT MARKET IDS");
-      // console.log(keyedFullTextMarketIds);
-
       filteredKeyedMarketCreatedLogs = Object.entries(keyedMarketCreatedLogs).reduce(
         (previousValue: any, currentValue: any) => {
           if (keyedFullTextMarketIds[currentValue[0]]) {
@@ -143,17 +138,18 @@ export class Markets<TBigNumber> {
         },
         []
       );
-
-      // console.log("FILTERED KEYED MARKET CREATED LOGS");
-      // console.log(filteredKeyedMarketCreatedLogs);
     }
 
     await Promise.all(
       Object.entries(filteredKeyedMarketCreatedLogs).map(async (marketCreatedLogInfo: any) => {
         let includeMarket = true;
 
-        // TODO
         if (params.disputeWindow) {
+          const market = await augur.contracts.marketFromAddress(marketCreatedLogInfo[0]);
+          const disputeWindowAddress = await market.getDisputeWindow_();
+          if (params.disputeWindow != disputeWindowAddress) {
+            includeMarket = false;
+          }
         }
 
         if (params.hasOrders) {
@@ -168,17 +164,12 @@ export class Markets<TBigNumber> {
         if (params.reportingState) {
           const marketFinalizedLogs = await db.findMarketFinalizedLogs({selector: {market: marketCreatedLogInfo[0]}});
           const reportingState = await Markets.getMarketReportingState(db, marketCreatedLogInfo[1], marketFinalizedLogs);
-          // console.log("REPORTING_STATE");
-          // console.log("GOTTEN: ", reportingState);
-          // console.log("DESIRED: ", params.reportingState);
           if (reportingState !== params.reportingState) {
             includeMarket = false;
           }
         }
 
         if (includeMarket) {
-          // console.log("INCLUDE");
-          // console.log(marketCreatedLogInfo);
           return marketCreatedLogInfo[0];
         }
         return null;
@@ -194,8 +185,6 @@ export class Markets<TBigNumber> {
           },
           []
         );
-        // console.log("MARKET IDS");
-        // console.log(marketIds);
 
         filteredKeyedMarketCreatedLogs = Object.entries(filteredKeyedMarketCreatedLogs).reduce(
           (previousValue: any, currentValue: any) => {
@@ -206,8 +195,6 @@ export class Markets<TBigNumber> {
           },
           []
         );
-        // console.log("filteredKeyedMarketCreatedLogs");
-        // console.log(filteredKeyedMarketCreatedLogs);
       }
     );
 
