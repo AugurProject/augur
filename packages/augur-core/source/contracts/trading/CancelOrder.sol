@@ -70,7 +70,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         refundOrder(_sender, _type, _sharesEscrowed, _moneyEscrowed, _market, _outcome);
         _market.assertBalances();
 
-        augur.logOrderCanceled(_market.getUniverse(), address(_market.getShareToken(_outcome)), _sender, _orderId, _type, _moneyEscrowed, _sharesEscrowed);
+        augur.logOrderCanceled(_market.getUniverse(), address(_market.getShareToken(_outcome)), _sender, _market, _orderId, _type, _moneyEscrowed, _sharesEscrowed);
         profitLoss.recordFrozenFundChange(_market, _sender, _outcome, -int256(_moneyEscrowed));
 
         return true;

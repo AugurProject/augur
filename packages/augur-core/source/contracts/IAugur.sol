@@ -23,7 +23,7 @@ contract IAugur {
     function logMarketMigrated(IMarket _market, IUniverse _originalUniverse) public returns (bool);
     function logReportingParticipantDisavowed(IUniverse _universe, IMarket _market) public returns (bool);
     function logMarketParticipantsDisavowed(IUniverse _universe) public returns (bool);
-    function logOrderCanceled(IUniverse _universe, address _shareToken, address _sender, bytes32 _orderId, Order.Types _orderType, uint256 _tokenRefund, uint256 _sharesRefund) public returns (bool);
+    function logOrderCanceled(IUniverse _universe, address _shareToken, address _sender, IMarket _market, bytes32 _orderId, Order.Types _orderType, uint256 _tokenRefund, uint256 _sharesRefund) public returns (bool);
     function logOrderCreated(Order.Types _orderType, uint256 _amount, uint256 _price, address _creator, bytes32 _tradeGroupId, bytes32 _orderId, IUniverse _universe, IMarket _market, ERC20Token _kycToken, uint256 _outcome) public returns (bool);
     function logOrderFilled(IUniverse _universe, address _filler, address creator, IMarket _market, bytes32 _orderId, uint256 _price, uint256 _fees, uint256 _amountFilled, uint256 _outcome, bytes32 _tradeGroupId, bool _orderIsCompletelyFilled) public returns (bool);
     function logCompleteSetsPurchased(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) public returns (bool);
