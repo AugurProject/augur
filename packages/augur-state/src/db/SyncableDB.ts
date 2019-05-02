@@ -2,6 +2,7 @@ import { AbstractDB, BaseDocument } from "./AbstractDB";
 import { Augur, Log, ParsedLog } from "@augurproject/api";
 import { DB } from "./DB";
 import { SyncStatus } from "./SyncStatus";
+import { toAscii } from "../utils/utils";
 import * as _ from "lodash";
 
 // because flexsearch is a UMD type lib
@@ -9,6 +10,8 @@ import FlexSearch = require("flexsearch");
 
 // Need this interface to access these items on the documents in a SyncableDB
 interface SyncableMarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
+  market: string;
+  topic: string;
   extraInfo: string;
 }
 
@@ -86,6 +89,15 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         const doc = row.doc as SyncableMarketDataDoc;
 
         if (doc) {
+          const market = doc.market ? doc.market : "";
+          const topic = doc.topic ? toAscii(doc.topic) : ""; // convert hex to ascii so it is searchable
+
+          let description = "";
+          let longDescription = "";
+          let resolutionSource = "";
+          let _scalarDenomination = "";
+          let tags = "";
+
           const extraInfo = doc.extraInfo;
           if (extraInfo) {
             let info;
@@ -96,20 +108,25 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
             }
 
             if (info) {
-              const title = info.description ? info.description : "";
-              const description = info.longDescription ? info.longDescription : "";
-              const tags = info.tags ? info.tags.toString() : ""; // convert to comma separated so it is searchable
-              if (info.description || info.tags || info.longDescription) {
-                this.flexSearch.add({
-                  id: row.id,
-                  title,
-                  description,
-                  tags,
-                  start: new Date(),
-                  end: new Date(),
-                });
-              }
+              description = info.description ? info.description : "";
+              longDescription = info.longDescription ? info.longDescription : "";
+              resolutionSource = info.resolutionSource ? info.resolutionSource : "";
+              _scalarDenomination = info._scalarDenomination ? info._scalarDenomination : "";
+              tags = info.tags ? info.tags.toString() : ""; // convert to comma separated so it is searchable
             }
+
+            this.flexSearch.add({
+              id: row.id,
+              market,
+              topic,
+              description,
+              longDescription,
+              resolutionSource,
+              _scalarDenomination,
+              tags,
+              start: new Date(),
+              end: new Date(),
+            });
           }
         }
       }

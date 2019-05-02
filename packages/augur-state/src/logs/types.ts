@@ -1,9 +1,9 @@
 import { string, number } from "prop-types";
 import { AddressZero } from "ethers/constants";
 
-type Address = string;
-type Bytes32 = string;
-type Timestamp = string;
+export type Address = string;
+export type Bytes32 = string;
+export type Timestamp = string;
 
 export interface Doc {
   _id: string;
@@ -126,6 +126,7 @@ export interface OrderCanceledLog extends Log, Doc {
   universe: Address;
   shareToken: Address;
   sender: Address;
+  market: Address;
   orderId: Bytes32;
   orderType: OrderType;
   tokenRefund: string;
@@ -140,7 +141,7 @@ export interface OrderCreatedLog extends Log, Doc {
   tradeGroupId: string;
   orderId: string;
   universe: string;
-  marketId: string;
+  market: string;
   kycToken: string;
   outcome: string;
 }
@@ -160,16 +161,10 @@ export interface OrderFilledLog extends Log, Doc, Timestamped {
 }
 
 export interface OrderPriceChangedLog extends Log, Doc {
-  orderType: OrderType;
-  amount: string;
-  price: string;
-  creator: Address;
-  tradeGroupId: string;
-  orderId: string;
   universe: Address;
-  marketId: Address;
-  kycToken: Address;
+  orderId: string;
   outcome: string;
+  price: string;
 }
 
 export enum OrderType {
