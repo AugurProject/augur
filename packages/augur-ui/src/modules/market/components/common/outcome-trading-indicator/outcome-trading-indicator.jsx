@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { UP, DOWN, NONE } from "modules/trades/constants/types";
+import { UP, DOWN, NONE } from "modules/common-elements/constants";
 import Styles from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator.style";
 
 export default function OutcomeTradingIndicator({
@@ -29,7 +29,7 @@ export default function OutcomeTradingIndicator({
     if (direction !== NONE) {
       switch (`${loc}|${direction}`) {
         case "yes-no-scalar|up":
-          return { bottom: "0.975rem" };
+          return { bottom: "0.875rem" };
         case "yes-no-scalar|down":
           return { top: "1.075rem" };
         case "categorical|up":
@@ -40,14 +40,38 @@ export default function OutcomeTradingIndicator({
           return { position: "absolute" };
         case "outcomes|down":
           return { top: "1.5rem", position: "absolute" };
-        case "positions|up":
-          return { position: "absolute", bottom: "1.5rem" };
-        case "positions|down":
-          return { position: "absolute", top: "1.3rem" };
-        case "modileTradingForm|down":
-          return { top: "1rem" };
-        case "modileTradingForm|up":
-          return { bottom: "1rem" };
+        case "tradingPage|up":
+          return {
+            position: "absolute",
+            marginLeft: "0.75rem",
+            borderWidth: "0 4px 5px",
+            opacity: "1"
+          };
+        case "tradingPage|down":
+          return {
+            position: "absolute",
+            marginLeft: "0.75rem",
+            borderWidth: "5px 4px 0",
+            opacity: "1",
+            marginBottom: "-2px"
+          };
+        case "scalarScale|up":
+          return {
+            position: "absolute",
+            borderBottomColor: "#FFF",
+            marginLeft: "0.3rem",
+            borderWidth: "5px",
+            opacity: "1"
+          };
+        case "scalarScale|down":
+          return {
+            position: "absolute",
+            borderTopColor: "#FFF",
+            marginLeft: "0.3rem",
+            borderWidth: "5px",
+            opacity: "1",
+            top: "4px"
+          };
         default:
           return {};
       }

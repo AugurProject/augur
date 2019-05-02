@@ -53,7 +53,7 @@
   justify-content: flex-end;
   margin-bottom: 18px;
   margin-top: 8px;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .ReportingHeader__value-label {
@@ -61,7 +61,7 @@
   font-size: @font-size-small;
   font-weight: 500;
   margin-bottom: 5px;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .ReportingHeader__value-number {
@@ -77,11 +77,10 @@
 }
 
 .ReportingHeader__readMore-value-label {
-  color: @color-grayish-purple;
   font-size: @font-size-small;
   font-weight: 500;
   margin-bottom: 6px;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .ReportingHeader__border {
@@ -96,7 +95,6 @@
 }
 
 .ReportingHeader__readMore-value-number {
-  color: @color-almostblack;
   font-family: 'Roboto Mono', monospace;
   font-size: @font-size-medium;
   font-weight: 500;
@@ -175,14 +173,31 @@
 }
 
 .ReportingHeader__heading {
+  align-items: center;
   color: @color-lightergray;
+  display: flex;
+  flex-flow: row wrap;
   letter-spacing: 0.125rem;
   margin: 0 0 1rem;
-  text-transform: uppercase;
+  text-transform: capitalize;
 
   > span {
     color: @color-white;
     font-weight: 500;
+
+    @media @breakpoint-mobile {
+      flex: 1 50%;
+    }
+  }
+
+  > div {
+    margin-left: auto;
+
+    @media @breakpoint-mobile {
+      flex: 1 100%;
+      margin-left: 0;
+      margin-top: @size-24;
+    }
   }
 }
 
@@ -190,10 +205,11 @@
   &:extend(.caps--extra-small);
 
   display: flex;
-  font-weight: 700;
+  font-weight: bold;
   justify-content: space-between;
   margin-top: 0.5rem;
   text-align: left;
+  text-transform: capitalize;
 
   > span:last-child {
     width: 22%;
@@ -212,11 +228,11 @@
 }
 
 .ReportingHeader__participationHeader {
-  color: @color-lightgray;
+  color: @color-white;
   font-size: @font-size-small;
   font-weight: 500;
   margin-bottom: 10px;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .ReportingHeader__participationText {
@@ -240,9 +256,10 @@
 }
 
 .ReportingHeader__readMore {
-  background-color: #f6f6f6;
+  background-color: @color-dark-gray;
   border-radius: 4px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  color: @color-white;
   display: flex;
   left: -1.313rem;
   margin-top: -50px;

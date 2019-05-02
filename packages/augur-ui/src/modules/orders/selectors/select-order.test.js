@@ -1,4 +1,4 @@
-import { BUY } from "modules/transactions/constants/types";
+import { BUY } from "modules/common-elements/constants";
 
 describe("modules/orders/selectors/select-order.js", () => {
   const selectOrder = require("modules/orders/selectors/select-order").default;

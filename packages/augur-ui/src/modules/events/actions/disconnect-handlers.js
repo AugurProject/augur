@@ -4,7 +4,7 @@ import {
   updateConnectionStatus
 } from "modules/app/actions/update-connection";
 import { reInitAugur } from "modules/app/actions/re-init-augur";
-import { MODAL_NETWORK_DISCONNECTED } from "modules/modal/constants/modal-types";
+import { MODAL_NETWORK_DISCONNECTED } from "modules/common-elements/constants";
 
 export const handleAugurNodeDisconnect = (history, event) => (
   dispatch,

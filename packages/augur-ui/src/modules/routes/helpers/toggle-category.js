@@ -1,7 +1,7 @@
 import parseQuery from "modules/routes/helpers/parse-query";
 import makeQuery from "modules/routes/helpers/make-query";
 
-import { CATEGORY_PARAM_NAME } from "modules/filter-sort/constants/param-names";
+import { CATEGORY_PARAM_NAME } from "modules/common-elements/constants";
 
 const toggleCategory = (category, location, history) => () => {
   let searchParams = parseQuery(location.search);

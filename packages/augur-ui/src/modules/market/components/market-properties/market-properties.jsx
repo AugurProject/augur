@@ -10,16 +10,17 @@ import {
   TYPE_DISPUTE,
   TYPE_VIEW,
   TYPE_CLAIM_PROCEEDS,
-  TYPE_TRADE
-} from "modules/markets/constants/link-types";
-import { SCALAR } from "modules/markets/constants/market-types";
+  TYPE_TRADE,
+  SCALAR,
+  MODAL_MIGRATE_MARKET
+} from "modules/common-elements/constants";
 
 import getValue from "utils/get-value";
 import { dateHasPassed } from "utils/format-date";
 import Styles from "modules/market/components/market-properties/market-properties.styles";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
-import { MODAL_MIGRATE_MARKET } from "modules/modal/constants/modal-types";
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
+import { FavoritesButton } from "modules/common-elements/buttons";
 
 const {
   DESIGNATED_REPORTING,
@@ -192,7 +193,7 @@ export default class MarketProperties extends Component {
                     }
                   )}
                 >
-                  {resolutionSource || "General knowledge"}
+                  {resolutionSource}
                 </span>
               </li>
             )}
@@ -206,18 +207,11 @@ export default class MarketProperties extends Component {
           <div className={Styles.MarketProperties__actions}>
             {isLogged &&
               toggleFavorite && (
-                <button
-                  className={classNames(Styles.MarketProperties__favorite, {
-                    [Styles.favorite]: isFavorite
-                  })}
-                  onClick={() => toggleFavorite(id)}
-                >
-                  {isFavorite ? (
-                    <i className="fa fa-star" />
-                  ) : (
-                    <i className="fa fa-star-o" />
-                  )}
-                </button>
+                <FavoritesButton
+                  action={() => toggleFavorite(id)}
+                  isFavorite={isFavorite}
+                  hideText
+                />
               )}
             {(!linkType ||
               (linkType &&
@@ -293,7 +287,7 @@ export default class MarketProperties extends Component {
             <span
               className={Styles["MarketProperties__additional-details-chevron"]}
             >
-              <ChevronFlip pointDown={showingDetails} />
+              <ChevronFlip pointDown={showingDetails} stroke="#fff" />
             </span>
           </button>
         )}

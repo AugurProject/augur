@@ -13,6 +13,15 @@ ul.ReportingReportForm__fields {
   margin-top: 2rem;
 }
 
+.ReportingReportREP {
+  display: flex;
+  flex-flow: row nowrap;
+
+  > div:last-of-type {
+    margin-left: @size-32;
+  }
+}
+
 .ReportingReport__insufficient-funds > svg {
   margin: 0 0.2rem;
   max-height: 1rem;
@@ -21,7 +30,7 @@ ul.ReportingReportForm__fields {
 }
 
 .ReportingReport__insufficient-funds {
-  color: @color-negative;
+  color: @color-error;
   display: inline-block;
   font-size: 1rem;
   line-height: 1rem;
@@ -32,9 +41,9 @@ ul.ReportingReportForm__fields {
 }
 
 .ReportingReport__outcome_selection_msg {
-  color: @color-white;
-  font-size: 1rem;
-  line-height: 1rem;
+  color: @color-secondary-text;
+  font-size: @size-20;
+  line-height: @size-30;
   position: relative;
 }
 

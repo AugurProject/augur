@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import ModalDisclaimer from "modules/modal/components/modal-disclaimer";
 import { closeModal } from "modules/modal/actions/close-modal";
-import { DISCLAIMER_SEEN } from "src/modules/modal/constants/local-storage-keys";
+import { DISCLAIMER_SEEN } from "src/modules/common-elements/constants";
 
 const mapStateToProps = state => ({
   modal: state.modal

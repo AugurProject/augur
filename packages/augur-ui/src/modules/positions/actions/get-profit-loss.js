@@ -3,9 +3,10 @@ import logError from "utils/log-error";
 
 export default function getProfitLoss({
   universe,
-  startTime,
-  endTime,
+  startTime = null,
+  endTime = null,
   periodInterval = null,
+  marketId = null,
   callback = logError
 }) {
   // NOTE: PL data isn't going to be saved to the application state
@@ -13,6 +14,7 @@ export default function getProfitLoss({
   // have access to the data.
   return (dispatch, getState) => {
     const { loginAccount } = getState();
+    if (!loginAccount.address) return callback("not logged in");
     augur.augurNode.submitRequest(
       "getProfitLoss",
       {
@@ -20,7 +22,8 @@ export default function getProfitLoss({
         account: loginAccount.address,
         startTime,
         endTime,
-        periodInterval
+        periodInterval,
+        marketId
       },
       callback
     );

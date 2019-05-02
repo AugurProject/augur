@@ -2,29 +2,48 @@
 
 .FilterSearch {
   display: flex;
-  flex-direction: row;
+  flex-flow: row-reverse nowrap;
   min-width: 15.625rem; // 250px
-  width: 100%;
+
+  @media @breakpoint-mobile {
+    min-width: 12.5rem; //200px
+
+    > label,
+    > div:last-of-type {
+      display: none;
+    }
+  }
 }
 
-.FilterSearch__transition {
-  transition: min-width @animation-speed-normal @animation-default-type;
+.Tooltip {
+  margin: @size-4 @size-16 0 0;
+  width: @size-12;
 }
 
-.FilterSearch__input {
-  .caps--medium;
+.Search {
+  .text-16;
 
   align-items: center;
-  background-color: @color-white;
+  background-color: @color-secondary-text;
   border-radius: 17px;
-  color: @color-lightpurple;
+  color: @color-primary-alternate;
   display: flex;
-  font-size: @font-size-medium;
+  height: 35px;
+  min-width: 250px;
   padding: 5px 12px;
+  transition: min-width @animation-speed-normal @animation-default-type;
+
+  @media @breakpoint-mobile {
+    margin-right: @size-12;
+    min-width: 75vw;
+    transition: none;
+    width: 100%;
+  }
 
   > svg {
-    height: 0.75rem;
-    width: 0.75rem;
+    height: @size-12;
+    min-width: @size-12;
+    width: @size-12;
   }
 
   > input {
@@ -33,28 +52,21 @@
     font-size: inherit;
     line-height: normal;
     padding: 0 0 0 0.5rem;
-    text-transform: none;
 
     &::placeholder {
-      color: @color-gray2;
-      text-transform: uppercase;
+      color: @color-alternate-text;
     }
 
     &:focus {
       .border(false);
+
+      min-width: 400px;
+
+      @media @breakpoint-mobile {
+        max-width: 100%;
+        min-width: auto;
+        width: 100%;
+      }
     }
   }
-}
-
-@media @breakpoint-mobile {
-  .FilterSearch {
-    min-width: 12.5rem; //200px
-  }
-}
-
-.FilterSearch__tooltip {
-  margin-bottom: 0;
-  margin-right: 0.25rem;
-  margin-top: 1rem;
-  width: 0.75rem;
 }

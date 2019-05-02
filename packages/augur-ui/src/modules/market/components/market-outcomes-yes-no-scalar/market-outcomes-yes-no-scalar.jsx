@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { YES_NO } from "modules/markets/constants/market-types";
+import { YES_NO } from "modules/common-elements/constants";
 
 import getValue from "utils/get-value";
 import CustomPropTypes from "utils/custom-prop-types";
@@ -14,7 +14,7 @@ const MarketOutcomes = ({
   max,
   min,
   type,
-  scalarDenomination = ""
+  scalarDenomination = "N/A"
 }) => {
   const calculatePosition = () => {
     const lastPrice =
@@ -61,8 +61,8 @@ const MarketOutcomes = ({
       .length;
     const isMobileAttrs =
       window.outerWidth < 590
-        ? { marginTop: 4, fontSize: 16 }
-        : { marginTop: 7, fontSize: 20 };
+        ? { marginTop: 0, fontSize: 16, fontWeight: "bold" }
+        : { marginTop: 0, fontSize: 18, fontWeight: "bold" };
     for (let i = 6; i < size; i += 6) {
       size *= 0.8;
     }
@@ -111,7 +111,7 @@ MarketOutcomes.propTypes = {
 };
 
 MarketOutcomes.defaultProps = {
-  scalarDenomination: ""
+  scalarDenomination: "N/A"
 };
 
 export default MarketOutcomes;

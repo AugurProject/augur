@@ -1,6 +1,6 @@
 import { constructBasicTransaction } from "modules/transactions/actions/construct-transaction";
 import unpackTransactionParameters from "modules/transactions/helpers/unpack-transaction-parameters";
-import { addNotification } from "modules/notifications/actions/notifications";
+import { addAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 
 import makePath from "modules/routes/helpers/make-path";
@@ -8,16 +8,16 @@ import makePath from "modules/routes/helpers/make-path";
 import { TRANSACTIONS } from "modules/routes/constants/views";
 
 export const constructRelayTransaction = tx => (dispatch, getState) => {
-  const { notifications } = getState();
+  const { alerts } = getState();
   const { hash, status } = tx;
   const unpackedParams = unpackTransactionParameters(tx);
   const timestamp =
     tx.response.timestamp || selectCurrentTimestampInSeconds(getState());
   const blockNumber =
     tx.response.blockNumber && parseInt(tx.response.blockNumber, 16);
-  if (!notifications.filter(notification => notification.id === hash).length) {
+  if (!alerts.filter(alert => alert.id === hash).length) {
     dispatch(
-      addNotification({
+      addAlert({
         id: hash,
         timestamp,
         blockNumber,

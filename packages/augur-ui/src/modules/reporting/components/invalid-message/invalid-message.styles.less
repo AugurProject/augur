@@ -1,0 +1,40 @@
+@import (reference) "~assets/styles/shared";
+
+.InvalidMessage {
+  > div {
+    .text-default;
+
+    color: @color-primary-text;
+    display: flex;
+    flex-direction: column;
+    max-width: 315px;
+    min-width: 315px;
+
+    &.textFlow {
+      max-width: unset;
+      min-width: unset;
+    }
+
+    > div {
+      background-color: @color-contrast-background;
+      border-radius: 4px;
+      margin: 0.5rem;
+      padding: 1rem;
+
+      > span {
+        &.bolden {
+          font-weight: bold;
+        }
+      }
+    }
+
+    @media @breakpoint-mobile {
+      padding-bottom: 0.25rem;
+    }
+  }
+}
+
+.InvalidMessage li {
+  list-style-type: disc;
+  margin: 0.3125rem 0 0 1.25rem;
+}

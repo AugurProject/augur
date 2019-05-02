@@ -5,11 +5,13 @@ import { createBigNumber } from "utils/create-big-number";
 import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
 
 const GET_GAS_BLOCK_LIMIT = 100;
+const MAINNET_ID = "1";
 
-export const syncBlockchain = () => (dispatch, getState) => {
+export const syncBlockchain = cb => (dispatch, getState) => {
+  const networkId = augur.rpc.getNetworkID();
   const { gasPriceInfo } = getState();
   const blockNumber = parseInt(augur.rpc.getCurrentBlock().number, 16);
-  augur.api.Augur.getTimestamp((err, augurTimestamp) => {
+  augur.api.Controller.getTimestamp((err, augurTimestamp) => {
     if (err) console.error(err);
     dispatch(
       updateBlockchain({
@@ -21,15 +23,19 @@ export const syncBlockchain = () => (dispatch, getState) => {
         currentAugurTimestamp: parseInt(augurTimestamp, 10)
       })
     );
-
     const BNblockNumber = createBigNumber(blockNumber);
     const BNGasBlockNumberLimit = createBigNumber(
       gasPriceInfo.blockNumber || "0"
     ).plus(GET_GAS_BLOCK_LIMIT);
 
-    if (!gasPriceInfo.blockNumber || BNblockNumber.gte(BNGasBlockNumberLimit)) {
+    if (
+      (!gasPriceInfo.blockNumber || BNblockNumber.gte(BNGasBlockNumberLimit)) &&
+      networkId === MAINNET_ID
+    ) {
       dispatch(loadGasPriceInfo());
     }
+
+    cb && cb();
   });
 
   augur.augurNode.getSyncData((err, res) => {
@@ -42,5 +48,6 @@ export const syncBlockchain = () => (dispatch, getState) => {
       );
     }
   });
+
   dispatch(updateAssets());
 };

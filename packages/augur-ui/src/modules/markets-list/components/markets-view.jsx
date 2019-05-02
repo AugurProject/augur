@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 
 import MarketsHeader from "modules/markets-list/components/markets-header/markets-header";
 import MarketsList from "modules/markets-list/components/markets-list";
-import { TYPE_TRADE } from "modules/markets/constants/link-types";
+import { TYPE_TRADE } from "modules/common-elements/constants";
 
 export default class MarketsView extends Component {
   static propTypes = {
@@ -22,7 +22,7 @@ export default class MarketsView extends Component {
     defaultFilter: PropTypes.string.isRequired,
     defaultSort: PropTypes.string.isRequired,
     defaultMaxFee: PropTypes.string.isRequired,
-    loadDisputing: PropTypes.func.isRequired
+    defaultHasOrders: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
@@ -38,7 +38,9 @@ export default class MarketsView extends Component {
       filter: props.defaultFilter,
       sort: props.defaultSort,
       maxFee: props.defaultMaxFee,
-      filterSortedMarkets: []
+      hasOrders: props.defaultHasOrders,
+      filterSortedMarkets: [],
+      isSearchingMarkets: false
     };
 
     this.updateFilter = this.updateFilter.bind(this);
@@ -46,10 +48,9 @@ export default class MarketsView extends Component {
   }
 
   componentDidMount() {
-    const { universe, loadDisputing } = this.props;
+    const { universe } = this.props;
     if (universe) {
       this.updateFilteredMarkets();
-      loadDisputing();
     }
   }
 
@@ -64,18 +65,25 @@ export default class MarketsView extends Component {
   }
 
   updateFilter(params) {
-    const { filter, sort, maxFee } = params;
-    this.setState({ filter, sort, maxFee }, this.updateFilteredMarkets);
+    const { filter, sort, maxFee, hasOrders } = params;
+    this.setState(
+      { filter, sort, maxFee, hasOrders },
+      this.updateFilteredMarkets
+    );
   }
 
   updateFilteredMarkets() {
     const { search, category, loadMarketsByFilter } = this.props;
-    const { filter, sort, maxFee } = this.state;
+    const { filter, sort, maxFee, hasOrders } = this.state;
+    this.setState({ isSearchingMarkets: true });
     loadMarketsByFilter(
-      { category, search, filter, sort, maxFee },
+      { category, search, filter, sort, maxFee, hasOrders },
       (err, filterSortedMarkets) => {
         if (err) return console.log("Error loadMarketsFilter:", err);
-        if (this.componentWrapper) this.setState({ filterSortedMarkets });
+        if (this.componentWrapper) {
+          this.setState({ filterSortedMarkets });
+          setTimeout(() => this.setState({ isSearchingMarkets: false }), 500);
+        }
       }
     );
   }
@@ -90,7 +98,14 @@ export default class MarketsView extends Component {
       markets,
       toggleFavorite
     } = this.props;
-    const { filter, sort, maxFee, filterSortedMarkets } = this.state;
+    const {
+      filter,
+      sort,
+      maxFee,
+      hasOrders,
+      filterSortedMarkets,
+      isSearchingMarkets
+    } = this.state;
 
     return (
       <section
@@ -104,10 +119,11 @@ export default class MarketsView extends Component {
         <MarketsHeader
           isLogged={isLogged}
           location={location}
-          markets={markets}
+          isSearchingMarkets={isSearchingMarkets}
           filter={filter}
           sort={sort}
           maxFee={maxFee}
+          hasOrders={hasOrders}
           updateFilter={this.updateFilter}
           history={history}
         />

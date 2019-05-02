@@ -4,10 +4,14 @@
   margin: auto;
   max-width: 62.75rem;
   padding: 3.75rem 0 9.125rem;
+
+  @media @breakpoint-mobile {
+    padding: 0;
+  }
 }
 
 .Form__error {
-  color: @color-negative;
+  color: @color-error;
   display: inline-block;
   font-size: 1rem;
   line-height: 1rem;
@@ -25,7 +29,7 @@
 }
 
 .Form__error--even {
-  color: @color-negative;
+  color: @color-error;
   display: inline-block;
   font-size: 1rem;
   line-height: 1rem;
@@ -71,7 +75,7 @@
 }
 
 .Form__error--field {
-  border-color: @color-negative;
+  border-color: @color-error;
   border-width: 0.1rem;
 }
 
@@ -95,11 +99,12 @@
     width: 100%;
 
     &.field--50 {
-      width: 48%;
+      width: 50%;
     }
 
     > label {
       display: inline-block;
+      font-weight: bold;
       margin-bottom: 1rem;
       position: relative;
 
@@ -169,7 +174,7 @@ li.field--short {
 .Form__next,
 .Form__prev,
 .Form__submit {
-  &:extend(.button--white all);
+  &:extend(.button--bright all);
 
   &.hide-button {
     opacity: 0;
@@ -250,6 +255,10 @@ li.field--short {
 
   > li {
     > button {
+      &.isInvalidField {
+        color: @color-lighter-purple;
+      }
+
       text-transform: capitalize;
     }
   }
@@ -401,7 +410,7 @@ li.field--short {
   }
 
   .Form__error--field {
-    border-color: @color-negative;
+    border-color: @color-error;
     border-width: 0.1rem;
   }
 

@@ -7,7 +7,7 @@ import { BigNumber, createBigNumber } from "utils/create-big-number";
 
 import Input from "modules/common/components/input/input";
 import FormStyles from "modules/common/less/form";
-import { SCALAR } from "modules/markets/constants/market-types";
+import { SCALAR } from "modules/common-elements/constants";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import Styles from "modules/forking/components/migrate-rep-form/migrate-rep-form.styles";
 import FormattedMigrationTotals from "modules/forking/components/migrate-rep-form/formatted-migration-totals";
@@ -263,7 +263,7 @@ export default class MigrateRepForm extends Component {
                 <li>
                   {validations.hasOwnProperty("err") && (
                     <span className={FormStyles.Form__error}>
-                      {InputErrorIcon}
+                      {InputErrorIcon()}
                       {validations.err}
                     </span>
                   )}
@@ -304,7 +304,7 @@ export default class MigrateRepForm extends Component {
               {validations.hasOwnProperty("repAmount") &&
                 validations.repAmount.length && (
                   <span className={FormStyles["Form__error--even"]}>
-                    {InputErrorIcon}
+                    {InputErrorIcon()}
                     {validations.repAmount}
                   </span>
                 )}

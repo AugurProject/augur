@@ -2,7 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import CustomPropTypes from "utils/custom-prop-types";
 import Styles from "modules/market/components/market-additional-details/market-additional-details.style";
-import { SCALAR } from "modules/markets/constants/market-types";
+import { SCALAR } from "modules/common-elements/constants";
+import MarkdownRenderer from "modules/common/components/markdown-renderer/markdown-renderer";
 
 const MarketAdditonalDetails = ({
   details,
@@ -18,15 +19,14 @@ const MarketAdditonalDetails = ({
       <div className={Styles[`MarketAdditionalDetails__details-wrapper`]}>
         <div className={Styles[`MarketAdditionalDetails__details-container`]}>
           <h4>Resolution Source:</h4>
-          <span>{resolutionSource || "General knowledge"}</span>
+          <span>{resolutionSource}</span>
           {details && (
-            <label
+            <MarkdownRenderer
+              text={details}
               className={
                 Styles[`MarketAdditionalDetails__details-details-text`]
               }
-            >
-              {details}
-            </label>
+            />
           )}
           {marketType === SCALAR && (
             <p

@@ -5,10 +5,9 @@
 .TradingIndicator_arrow {
   border: solid transparent;
   border-color: rgba(136, 183, 213, 0);
-  border-width: 0.625rem;
+  border-width: 0 7px 8px;
   bottom: 45%;
   margin-left: 0.9375rem;
-  opacity: 0.4;
   position: relative;
 
   &.small {
@@ -17,9 +16,10 @@
 }
 
 .TradingIndicator_arrow_up {
-  border-bottom-color: @color-darkpurple;
+  border-bottom-color: @color-light-gray;
 }
 
 .TradingIndicator_arrow_down {
-  border-top-color: @color-darkpurple;
+  border-top-color: @color-light-gray;
+  border-width: 8px 7px 0;
 }

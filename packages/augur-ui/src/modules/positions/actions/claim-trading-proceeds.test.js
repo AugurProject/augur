@@ -72,13 +72,6 @@ describe(`modules/positions/actions/claim-trading-proceeds.js`, () => {
     expect(
       augur.api.ClaimTradingProceeds.claimTradingProceeds
     ).toHaveBeenCalledTimes(1);
-
-    expect(store.getActions()).toEqual([
-      {
-        data: { marketLoadingState: { "0x0000001": "MARKET_INFO_LOADING" } },
-        type: "UPDATE_MARKET_LOADING"
-      }
-    ]);
   });
 
   test("claim failed", () => {
@@ -93,6 +86,7 @@ describe(`modules/positions/actions/claim-trading-proceeds.js`, () => {
     };
 
     augur.api.ClaimTradingProceeds.claimTradingProceeds = jest.fn(value => {
+      value.onSent();
       value.onFailed();
     });
 
@@ -103,6 +97,6 @@ describe(`modules/positions/actions/claim-trading-proceeds.js`, () => {
       augur.api.ClaimTradingProceeds.claimTradingProceeds
     ).toHaveBeenCalledTimes(1);
 
-    expect(store.getActions()).toEqual([]);
+    expect(store.getActions()).toHaveLength(2);
   });
 });

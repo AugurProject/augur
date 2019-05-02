@@ -12,17 +12,13 @@ import toggleTag from "modules/routes/helpers/toggle-tag";
 import toggleCategory from "modules/routes/helpers/toggle-category";
 import { formatDate } from "utils/format-date";
 import getValue from "utils/get-value";
-import {
-  YES_NO,
-  SCALAR,
-  CATEGORICAL
-} from "modules/markets/constants/market-types";
+import { YES_NO, SCALAR, CATEGORICAL } from "modules/common-elements/constants";
 
 import CommonStyles from "modules/market/components/common/market-common.styles";
 import Styles from "modules/market/components/market-basics/market-basics.styles";
 import SingleSlicePieGraph from "src/modules/market/components/common/single-slice-pie-graph/single-slice-pie-graph";
 import TimeRemainingIndicatorWrapper from "src/modules/market/components/common/time-remaining-indicator/time-remaining-indicator";
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
 import moment from "moment";
 import { compact } from "lodash";
 import { CategoryTagTrail } from "src/modules/common/components/category-tag-trail/category-tag-trail";
@@ -62,6 +58,7 @@ const MarketBasics = ({
           startDate={p.endTime.value}
           endTime={endTime}
           currentTimestamp={p.currentTimestamp}
+          backgroundColor="transparent"
         />
       </div>
     );
@@ -120,7 +117,7 @@ const MarketBasics = ({
             min={p.minPrice}
             max={p.maxPrice}
             type={marketType}
-            scalarDenomination={p.isMobile ? "" : p.scalarDenomination}
+            scalarDenomination={p.isMobile ? "" : p.scalarDenomination || "N/A"}
           />
         )}
 

@@ -1,6 +1,6 @@
 import { prefixHex } from "speedomatic";
 import { augur } from "services/augurjs";
-import { EDGE_WALLET_TYPE } from "modules/auth/constants/auth-types";
+import { EDGE_WALLET_TYPE } from "modules/common-elements/constants";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import {
   updateAuthStatus,

@@ -1,13 +1,63 @@
-@import (reference) '~assets/styles/shared';
+@import (reference) "~assets/styles/shared";
 
 .FilterDropdowns {
+  align-items: center;
   display: flex;
   flex-flow: row nowrap;
 
-  > div > button:first-child {
-    &:extend(.caps--small);
+  @media @breakpoint-mobile {
+    flex-flow: row wrap;
+    justify-content: space-between;
+  }
 
-    color: @color-white;
-    font-size: @font-size-medium;
+  > div {
+    margin-right: @size-16;
+  }
+
+  > div:first-of-type {
+    min-width: 6rem;
+  }
+
+  > div:nth-of-type(2) {
+    min-width: 7.125rem;
+
+    @media @breakpoint-mobile {
+      min-width: 6.625rem;
+    }
+  }
+
+  > div:nth-of-type(3) {
+    margin-right: 0;
+    min-width: 5.8125rem;
+
+    @media @breakpoint-mobile {
+      margin-right: @size-12;
+    }
+  }
+
+  > div:last-of-type {
+    height: @size-24;
+    margin: 0 @size-16;
+    width: @size-24;
+
+    @media @breakpoint-mobile {
+      margin: 0 @size-16 @size-16 auto;
+    }
+  }
+
+  > button {
+    display: none;
+
+    @media @breakpoint-mobile {
+      display: flex;
+    }
+  }
+
+  > label {
+    margin: 0;
+
+    @media @breakpoint-mobile {
+      margin-right: @size-12;
+    }
   }
 }

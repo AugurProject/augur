@@ -11,6 +11,7 @@ import * as loadGadPriceInfoModule from "modules/app/actions/load-gas-price-info
 jest.mock("services/augurjs", () => ({
   augur: {
     rpc: {
+      getNetworkID: () => 4,
       getCurrentBlock: () => ({
         number: 10000,
         timestamp: 4886718345
@@ -21,24 +22,18 @@ jest.mock("services/augurjs", () => ({
       }
     },
     api: {
-      Augur: {
+      Controller: {
         getTimestamp: callback => {
           callback(null, 42);
         }
       }
     },
     augurNode: {
-      getSyncData: callback => {
-        callback(null, {
-          highestBlock: {
-            number: 22
-          },
-          lastProcessedBlock: {
-            number: 22
-          },
-        })
-      }
-    },
+      getSyncData: () => ({
+        highestBlock: { number: 111 },
+        lastProcessedBlock: { number: 110 }
+      })
+    }
   }
 }));
 
@@ -67,10 +62,6 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
     currentBlockNumber: 0x10000,
     currentBlockTimestamp: 0x4886718345,
     currentAugurTimestamp: 42
-  };
-  const syncData = {
-    highestBlock: 22,
-    lastProcessedBlock: 22,
   };
   const store = mockStore(state);
 
@@ -108,13 +99,6 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
       {
         type: "UPDATE_BLOCKCHAIN",
         data: dataReturned
-      },
-      {
-        type: "UPDATE_GAS_PRICE_INFO"
-      },
-      {
-        type: "UPDATE_BLOCKCHAIN",
-        data: syncData
       },
       {
         type: "UPDATE_ASSETS"

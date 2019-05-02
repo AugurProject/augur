@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-
+import { PaginationArrorw } from "modules/common/components/icons";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 
 import parseQuery from "modules/routes/helpers/parse-query";
@@ -236,7 +236,7 @@ class Paginator extends Component {
                   search: s.backQuery
                 }}
               >
-                <i className="fa fa-angle-left" />
+                <button aria-label="Previous page">{PaginationArrorw}</button>
               </Link>
             )}
           </div>
@@ -258,7 +258,12 @@ class Paginator extends Component {
                   search: s.forwardQuery
                 }}
               >
-                <i className="fa fa-angle-right" />
+                <button
+                  className={Styles.Paginator__forwardArrorw}
+                  aria-label="Next page"
+                >
+                  {PaginationArrorw}
+                </button>
               </Link>
             )}
           </div>

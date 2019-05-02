@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { createBigNumber } from "utils/create-big-number";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
 import { isEmpty, orderBy } from "lodash";
 import selectDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { selectUniverseState } from "src/select-state";

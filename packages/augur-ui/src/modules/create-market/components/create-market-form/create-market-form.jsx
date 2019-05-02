@@ -14,12 +14,61 @@ import CreateMarketReview from "modules/create-market/components/create-market-f
 import Styles from "modules/create-market/components/create-market-form/create-market-form.styles";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import { createBigNumber } from "utils/create-big-number";
-import { CATEGORICAL, SCALAR } from "modules/markets/constants/market-types";
-import { BID } from "modules/transactions/constants/types";
+import { CATEGORICAL, SCALAR, BID } from "modules/common-elements/constants";
+import moment from "moment";
+import { formatDate } from "utils/format-date";
+import { RepBalance } from "modules/common-elements/labels";
+import { formatRep } from "utils/format-number";
 
 const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
+const STEP_NAME = {
+  0: "Market details",
+  1: "Add initial market liquidity",
+  2: "Review"
+};
+const TIME_FIELDNAMES = [
+  "setEndTime",
+  "hour",
+  "minute",
+  "meridiem",
+  "delayDays",
+  "delayHours"
+];
 
 export default class CreateMarketForm extends Component {
+  static processEndTime(newMarket) {
+    if (!newMarket.setEndTime) {
+      return newMarket.endTime;
+    }
+
+    const endTime = moment(newMarket.setEndTime.timestamp * 1000).utc();
+    endTime.set({
+      hour: newMarket.hour,
+      minute: newMarket.minute
+    });
+
+    if (newMarket.delayDays !== "" && newMarket.delayDays !== undefined) {
+      endTime.add(newMarket.delayDays, "day");
+    }
+    if (newMarket.delayHours !== "" && newMarket.delayHours !== undefined) {
+      endTime.add(newMarket.delayHours, "hour");
+    }
+
+    if (
+      (newMarket.meridiem === "" || newMarket.meridiem === "AM") &&
+      endTime.hours() >= 12
+    ) {
+      endTime.hours(endTime.hours() - 12);
+    } else if (
+      newMarket.meridiem &&
+      newMarket.meridiem === "PM" &&
+      endTime.hours() < 12
+    ) {
+      endTime.hours(endTime.hours() + 12);
+    }
+    return formatDate(endTime.toDate());
+  }
+
   static propTypes = {
     categories: PropTypes.array.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
@@ -47,7 +96,7 @@ export default class CreateMarketForm extends Component {
     super(props);
 
     this.state = {
-      pages: ["Define", "Outcome", "Resolution", "Liquidity", "Review"],
+      pages: ["Define", "Liquidity", "Review"],
       liquidityState: {},
       awaitingSignature: false,
       insufficientFunds: true
@@ -71,7 +120,7 @@ export default class CreateMarketForm extends Component {
     const { newMarket, updateNewMarket } = this.props;
     if (
       newMarket.currentStep !== nextProps.newMarket.currentStep &&
-      nextProps.newMarket.currentStep !== 4
+      nextProps.newMarket.currentStep !== 2
     ) {
       updateNewMarket({
         isValid: this.isValid(nextProps.newMarket.currentStep)
@@ -131,6 +180,12 @@ export default class CreateMarketForm extends Component {
     }
 
     updatedMarket[fieldName] = value;
+
+    if (TIME_FIELDNAMES.indexOf(fieldName) !== -1) {
+      updatedMarket.endTime = CreateMarketForm.processEndTime(updatedMarket);
+      updatedMarket.validations[currentStep].endTime = "";
+    }
+
     updatedMarket.isValid = this.isValid(currentStep);
 
     updateNewMarket(updatedMarket);
@@ -182,6 +237,12 @@ export default class CreateMarketForm extends Component {
 
     updatedMarket[fieldName] =
       typeof value === "number" ? value.toString() : value;
+
+    if (TIME_FIELDNAMES.indexOf(fieldName) !== -1) {
+      updatedMarket.validations[currentStep].endTime = "";
+      updatedMarket.endTime = CreateMarketForm.processEndTime(updatedMarket);
+    }
+
     updatedMarket.isValid = this.isValid(currentStep);
 
     updateNewMarket(updatedMarket);
@@ -285,41 +346,50 @@ export default class CreateMarketForm extends Component {
 
     return (
       <article className={Styles.CreateMarketForm}>
-        <div className={Styles["CreateMarketForm__form-outer-wrapper"]}>
-          <div className={Styles["CreateMarketForm__form-inner-wrapper"]}>
+        <div className={Styles.CreateMarketForm_form_outer_wrapper}>
+          <div className={Styles.CreateMarketForm_form_inner_wrapper}>
+            <div>
+              <div>
+                <span>Create new market</span>
+                <span>
+                  Step {newMarket.currentStep + 1} of 3:{" "}
+                  {STEP_NAME[newMarket.currentStep]}
+                </span>
+              </div>
+              <RepBalance rep={formatRep(availableRep).formattedValue} />
+            </div>
             {newMarket.currentStep === 0 && (
-              <CreateMarketDefine
-                newMarket={newMarket}
-                updateNewMarket={updateNewMarket}
-                validateField={this.validateField}
-                categories={categories}
-                isValid={this.isValid}
-                keyPressed={this.keyPressed}
-              />
+              <>
+                <CreateMarketDefine
+                  newMarket={newMarket}
+                  updateNewMarket={updateNewMarket}
+                  validateField={this.validateField}
+                  categories={categories}
+                  isValid={this.isValid}
+                  keyPressed={this.keyPressed}
+                  currentTimestamp={currentTimestamp}
+                  validateNumber={this.validateNumber}
+                  isMobileSmall={isMobileSmall}
+                />
+                <CreateMarketOutcome
+                  newMarket={newMarket}
+                  updateNewMarket={updateNewMarket}
+                  validateField={this.validateField}
+                  isValid={this.isValid}
+                  isMobileSmall={isMobileSmall}
+                  keyPressed={this.keyPressed}
+                />
+                <CreateMarketResolution
+                  newMarket={newMarket}
+                  updateNewMarket={updateNewMarket}
+                  validateField={this.validateField}
+                  isValid={this.isValid}
+                  isMobileSmall={isMobileSmall}
+                  keyPressed={this.keyPressed}
+                />
+              </>
             )}
             {newMarket.currentStep === 1 && (
-              <CreateMarketOutcome
-                newMarket={newMarket}
-                updateNewMarket={updateNewMarket}
-                validateField={this.validateField}
-                isValid={this.isValid}
-                isMobileSmall={isMobileSmall}
-                keyPressed={this.keyPressed}
-              />
-            )}
-            {newMarket.currentStep === 2 && (
-              <CreateMarketResolution
-                newMarket={newMarket}
-                updateNewMarket={updateNewMarket}
-                validateField={this.validateField}
-                validateNumber={this.validateNumber}
-                isValid={this.isValid}
-                isMobileSmall={isMobileSmall}
-                currentTimestamp={currentTimestamp}
-                keyPressed={this.keyPressed}
-              />
-            )}
-            {newMarket.currentStep === 3 && (
               <CreateMarketLiquidity
                 newMarket={newMarket}
                 updateNewMarket={updateNewMarket}
@@ -333,7 +403,7 @@ export default class CreateMarketForm extends Component {
                 updateState={this.updateState}
               />
             )}
-            {newMarket.currentStep === 4 && (
+            {newMarket.currentStep === 2 && (
               <CreateMarketReview
                 estimateSubmitNewMarket={estimateSubmitNewMarket}
                 meta={meta}
@@ -358,7 +428,7 @@ export default class CreateMarketForm extends Component {
                 >
                   Previous: {s.pages[newMarket.currentStep - 1]}
                 </button>
-                {newMarket.currentStep < 4 && (
+                {newMarket.currentStep < 2 && (
                   <button
                     className={classNames(Styles.CreateMarketForm__next, {
                       [`${Styles["hide-button"]}`]:
@@ -370,7 +440,7 @@ export default class CreateMarketForm extends Component {
                     Next: {s.pages[newMarket.currentStep + 1]}
                   </button>
                 )}
-                {newMarket.currentStep === 4 && (
+                {newMarket.currentStep === 2 && (
                   <button
                     className={Styles.CreateMarketForm__submit}
                     disabled={s.insufficientFunds || s.awaitingSignature}
@@ -382,24 +452,24 @@ export default class CreateMarketForm extends Component {
                       });
                     }}
                   >
-                    Submit
+                    Create Market
                   </button>
                 )}
               </div>
             </div>
           </div>
-          {newMarket.currentStep === 3 && (
+          {newMarket.currentStep === 1 && (
             <CreateMarketLiquidityOrders
               newMarket={newMarket}
               removeOrderFromNewMarket={this.handleCancelOrder}
               liquidityState={s.liquidityState}
             />
           )}
-          {newMarket.currentStep === 4 &&
+          {newMarket.currentStep === 2 &&
             s.awaitingSignature && (
               <div className={Styles["CreateMarketForm__submit-wrapper"]}>
                 <div className={Styles.CreateMarketForm__submitWarning}>
-                  {InputErrorIcon} Please sign transaction(s) to complete market
+                  {InputErrorIcon()} Please sign transaction(s) to complete
                   creation.
                 </div>
               </div>

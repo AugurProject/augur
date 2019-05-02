@@ -2,18 +2,19 @@
 
 .MarketOutstandingReturns {
   align-items: center;
-  background-color: @color-lightgray-2;
+  background-color: @color-medium-gray;
   display: flex;
   justify-content: space-between;
 }
 
 .MarketOutstandingReturns__text {
-  font-size: @font-size-large;
+  font-size: @font-size-normal;
 }
 
 .MarketOutstandingReturns__value {
   &:extend(.caps all);
 
+  font-weight: bold;
   padding: 0 0.5rem;
 }
 
@@ -23,7 +24,7 @@
 }
 
 .MarketOutstandingReturns__collect {
-  &:extend(.button--offWhite all);
+  &:extend(.button--bright all);
 }
 
 @media @breakpoint-mobile-medium {

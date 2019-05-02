@@ -1,8 +1,11 @@
 import { augur } from "services/augurjs";
 import { createBigNumber } from "utils/create-big-number";
-import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import logError from "utils/log-error";
-// import noop from "utils/noop";
+import {
+  updateTransactionStatus,
+  clearTransactionStatus
+} from "modules/transactions/actions/update-transactions-status";
+import { AWAITING_SIGNATURE, PENDING } from "modules/common-elements/constants";
 
 export function sellCompleteSets(
   marketId,
@@ -18,18 +21,26 @@ export function sellCompleteSets(
       createBigNumber(maxPrice - minPrice),
       numTicks
     );
+    const pendingHash = `pending-${marketId}-${numCompleteSets.fullPrecision}`;
     const sellCompleteSetsParams = {
       tx: {},
       meta: loginAccount.meta,
       _market: marketId,
       _amount: numCompleteSetsOnChain,
-      onSent: res => callback(null, res),
-      onSuccess: res => {
-        dispatch(loadAccountTrades({ marketId }));
+      onSent: res => {
+        dispatch(updateTransactionStatus(pendingHash, res.hash, PENDING));
         callback(null, res);
       },
-      onFailed: err => callback(err)
+      onSuccess: res => {
+        dispatch(clearTransactionStatus(pendingHash));
+        callback(null, res);
+      },
+      onFailed: err => {
+        dispatch(clearTransactionStatus(pendingHash));
+        callback(err);
+      }
     };
+    dispatch(updateTransactionStatus(pendingHash, null, AWAITING_SIGNATURE));
     augur.api.CompleteSets.publicSellCompleteSets(sellCompleteSetsParams);
   };
 }

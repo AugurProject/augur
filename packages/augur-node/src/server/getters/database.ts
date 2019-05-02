@@ -54,14 +54,14 @@ async function queryModifierUserland<T>(
   defaultSortOrder: string,
   sortLimitParams: Partial<SortLimit>,
 ): Promise<Array<T>> {
-  type RowWithSort = T&{ xMySorterFieldx: BigNumber };
+  type RowWithSort = T & { xMySorterFieldx: BigNumber };
 
   let sortField: string = defaultSortBy;
   let sortDescending: boolean = defaultSortOrder.toLowerCase() === "desc";
 
   if (sortLimitParams.sortBy != null) {
     sortField = sortLimitParams.sortBy;
-    if (typeof(sortLimitParams.isSortDescending) !== "undefined" && sortLimitParams.isSortDescending !== null) {
+    if (typeof (sortLimitParams.isSortDescending) !== "undefined" && sortLimitParams.isSortDescending !== null) {
       sortDescending = sortLimitParams.isSortDescending;
     }
   }
@@ -99,8 +99,8 @@ export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow<BigNu
   };
 }
 
-export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithTime, outcomesInfo: Array<UIOutcomeInfo<BigNumber>>, winningPayoutRow: PayoutRow<BigNumber>|null): UIMarketInfo<string> {
-  let consensus: NormalizedPayout<string>|null = null;
+export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithTime, outcomesInfo: Array<UIOutcomeInfo<BigNumber>>, winningPayoutRow: PayoutRow<BigNumber> | null): UIMarketInfo<string> {
+  let consensus: NormalizedPayout<string> | null = null;
   if (winningPayoutRow != null) {
     consensus = normalizedPayoutsToFixed(normalizePayouts(winningPayoutRow));
   }
@@ -117,11 +117,8 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithTime, outcome
       consensus: null,
       creationTime: row.creationTime,
       creationBlock: row.creationBlockNumber,
-      creationFee: row.creationFee,
-      settlementFee: row.reportingFeeRate.add(row.marketCreatorFeeRate),
+      feeDivisor: row.feeDivisor,
       reportingFeeRate: row.reportingFeeRate,
-      marketCreatorFeeRate: row.marketCreatorFeeRate,
-      marketCreatorFeesBalance: row.marketCreatorFeesBalance,
       initialReportSize: row.initialReportSize,
       category: row.category,
       tags: [row.tag1, row.tag2],
@@ -172,9 +169,9 @@ export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<str
 }
 
 export function normalizePayouts(payoutRow: Payout<BigNumber>): NormalizedPayout<BigNumber> {
-  const payout:Array<BigNumber> = [];
+  const payout: Array<BigNumber> = [];
   for (let i = 0; i < 8; i++) {
-    const payoutNumerator = payoutRow[("payout" + i) as keyof Payout<BigNumber>] as BigNumber|null;
+    const payoutNumerator = payoutRow[("payout" + i) as keyof Payout<BigNumber>] as BigNumber | null;
     if (payoutNumerator == null) break;
     payout.push(payoutNumerator);
   }
@@ -215,7 +212,7 @@ export async function queryTradingHistoryParams(db: Knex, params: t.TypeOf<typeo
       params.limit,
       params.offset,
       params.ignoreSelfTrades,
-      (err: Error|null, userTradingHistory?: Array<TradingHistoryRow>): void => {
+      (err: Error | null, userTradingHistory?: Array<TradingHistoryRow>): void => {
         if (err) return reject(err);
         resolve(userTradingHistory);
       });
@@ -223,19 +220,19 @@ export async function queryTradingHistoryParams(db: Knex, params: t.TypeOf<typeo
 }
 
 export function queryTradingHistory(
-  db: Knex|Knex.Transaction,
-  universe: Address|null|undefined,
-  account: Address|null|undefined,
-  marketId: Address|null|undefined,
-  outcome: number|null|undefined,
-  orderType: string|null|undefined,
-  earliestCreationTime: number|null|undefined,
-  latestCreationTime: number|null|undefined,
-  sortBy: string|null|undefined,
-  isSortDescending: boolean|null|undefined,
-  limit: number|null|undefined,
-  offset: number|null|undefined,
-  ignoreSelfTrades: boolean|null|undefined,
+  db: Knex | Knex.Transaction,
+  universe: Address | null | undefined,
+  account: Address | null | undefined,
+  marketId: Address | null | undefined,
+  outcome: number | null | undefined,
+  orderType: string | null | undefined,
+  earliestCreationTime: number | null | undefined,
+  latestCreationTime: number | null | undefined,
+  sortBy: string | null | undefined,
+  isSortDescending: boolean | null | undefined,
+  limit: number | null | undefined,
+  offset: number | null | undefined,
+  ignoreSelfTrades: boolean | null | undefined,
   callback: GenericCallback<Array<TradingHistoryRow>>,
 ): void {
   if (universe == null && marketId == null) throw new Error("Must provide reference to universe, specify universe or marketId");
@@ -271,7 +268,7 @@ export function queryTradingHistory(
   if (latestCreationTime != null) query.where("timestamp", "<=", latestCreationTime);
   if (ignoreSelfTrades) query.where("trades.creator", "!=", db.raw("trades.filler"));
 
-  queryModifier<TradingHistoryRow>(db, query, "trades.blockNumber", "desc", {sortBy, isSortDescending, limit, offset})
+  queryModifier<TradingHistoryRow>(db, query, "trades.blockNumber", "desc", { sortBy, isSortDescending, limit, offset })
     .then((results) => callback(null, results))
     .catch(callback);
 }
@@ -281,10 +278,10 @@ export function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields:
     .groupBy((row) => _.values(_.pick(row, groupFields)))
     .values()
     .map((groupedRows: Array<T>): T => {
-      return _.reduce(groupedRows, (result: T|undefined, row: T): T => {
+      return _.reduce(groupedRows, (result: T | undefined, row: T): T => {
         if (typeof result === "undefined") return row;
 
-        const mapped = _.map(row, (value: BigNumber|number|null, key: string): Array<any> => {
+        const mapped = _.map(row, (value: BigNumber | number | null, key: string): Array<any> => {
           const previousValue = result[key];
           if (sumFields.indexOf(key) === -1 || typeof previousValue === "undefined" || value === null || typeof value === "undefined") {
             return [key, value];

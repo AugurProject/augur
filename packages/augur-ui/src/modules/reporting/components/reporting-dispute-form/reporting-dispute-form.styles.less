@@ -103,7 +103,7 @@ ul.ReportingDisputeForm__fields {
 }
 
 .ReportingDisputeForm__malformed {
-  color: @color-negative;
+  color: @color-error;
   font-size: @font-size-normal;
   font-weight: 700;
   margin-left: 0;
@@ -125,7 +125,7 @@ ul.ReportingDisputeForm__fields {
 }
 
 .ReportingDisputeForm__disputeEnded {
-  color: @color-negative;
+  color: @color-error;
   display: inline-block;
   font-size: 1rem;
   line-height: 1rem;
@@ -135,9 +135,9 @@ ul.ReportingDisputeForm__fields {
 }
 
 .ReportingDisputeForm__outcome_selection_msg {
-  color: @color-white;
-  font-size: 1rem;
-  line-height: 1rem;
+  color: @color-secondary-text;
+  font-size: @size-20;
+  line-height: @size-30;
   position: relative;
 }
 
@@ -151,10 +151,30 @@ div.ReportingDisputeForm__outcome_selection_msg {
 }
 
 .ReportingReport__malformed_msg {
-  color: @color-negative;
+  color: @color-error;
   font-size: 1rem;
   line-height: 1rem;
   margin-bottom: 1rem;
   margin-top: -2rem;
   text-transform: none;
+}
+
+.ReportingDisputeForm_Rep {
+  > div:last-of-type {
+    margin-left: @size-32;
+  }
+
+  @media @breakpoint-mobile {
+    display: flex;
+    flex-flow: column nowrap;
+
+    > div {
+      margin-right: auto;
+    }
+
+    > div:last-of-type {
+      margin-left: 0;
+      margin-top: 1rem;
+    }
+  }
 }

@@ -1,4 +1,4 @@
-@import (reference) '~assets/styles/shared';
+@import (reference) "~assets/styles/shared";
 
 .CreateMarketForm {
   padding: 3.75rem 0 0;
@@ -8,11 +8,12 @@
 .CreateMarketForm__form-outer-wrapper {
   display: flex;
   flex-flow: column nowrap;
+  margin: auto;
   max-width: 81.25rem;
 }
 
 .CreateMarketForm__button-inner-wrapper,
-.CreateMarketForm__form-inner-wrapper,
+.CreateMarketForm_form_inner_wrapper,
 .CreateMarketForm__submit-wrapper {
   flex: 1 100%;
   margin: auto;
@@ -21,13 +22,220 @@
   width: 100%;
 }
 
+.CreateMarketForm_form_inner_wrapper {
+  > div {
+    border-bottom: 1px solid @color-primary-light;
+    color: @color-text-light;
+    display: flex;
+    font-size: @font-size-kinda-large;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+
+    > div:first-of-type {
+      display: flex;
+      flex-direction: column;
+      font-size: @size-20;
+
+      > span:first-of-type {
+        font-size: @size-32;
+        font-weight: 500;
+        padding-bottom: 0.5rem;
+      }
+    }
+
+    > div:nth-of-type(2) {
+      align-self: flex-end;
+    }
+  }
+}
+
+.CreateMarketForm_block {
+  .text-12;
+
+  display: flex;
+  flex-direction: row;
+  min-height: 6rem;
+
+  &.Categorical {
+    display: flex;
+    flex-direction: column;
+
+    > label {
+      > span:nth-of-type(2) {
+        color: @color-error-text;
+        padding: 0 0.5rem;
+
+        > svg {
+          height: 1rem;
+          padding-right: 0.25rem;
+          vertical-align: text-bottom;
+          width: 1rem;
+        }
+      }
+    }
+  }
+
+  > div {
+    font-size: @font-size-medium;
+    min-width: 50%;
+
+    > input,
+    textarea {
+      margin-bottom: 1rem;
+    }
+
+    > label {
+      > span:nth-of-type(2) {
+        color: @color-error-text;
+        padding: 0 0.5rem;
+
+        > svg {
+          height: 1rem;
+          padding-right: 0.25rem;
+          vertical-align: text-bottom;
+          width: 1rem;
+        }
+      }
+    }
+
+    input[type="text"],
+    input[type="number"],
+    > input {
+      margin: 0.5rem 0;
+    }
+  }
+
+  :global {
+    .SingleDatePicker_1 {
+      display: block;
+      margin-bottom: 1rem;
+      width: 100%;
+      z-index: 5;
+    }
+
+    .SingleDatePickerInput {
+      border: none;
+    }
+
+    .DateInput_input_1,
+    .DateInput_input__focused {
+      border: 0;
+    }
+
+    .DateInput__openDown_3::before,
+    .DateInput__openDown_3::after {
+      display: none;
+    }
+
+    .SingleDatePicker_picker__openDown_3.SingleDatePicker_picker__openDown_3.SingleDatePicker_picker__openDown_3 {
+      top: auto;
+    }
+
+    .DayPicker__horizontal_2 {
+      background-color: @color-input-background;
+      border-radius: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      font-size: 0.75rem;
+      line-height: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .SingleDatePickerInput_1 {
+      background-color: #dbdae1;
+      font-size: 1.125rem;
+      line-height: 1.5rem;
+    }
+
+    .DateInput_1 {
+      background: none;
+      color: inherit;
+      display: block;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      width: auto;
+    }
+
+    .DateInput_displayText.DateInput_displayText_1 {
+      background: none;
+      color: @color-lightgray;
+
+      &.DateInput_displayText__hasInput {
+        color: inherit;
+      }
+    }
+
+    .CalendarMonth_1,
+    .CalendarMonthGrid_1,
+    .CalendarMonthGrid_1 {
+      background: none;
+    }
+
+    .CalendarMonth_caption_1 {
+      color: @color-lightgray;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      padding-bottom: 2.8rem;
+      padding-top: 1.75rem;
+    }
+
+    .DayPickerNavigation_button__default_2.DayPickerNavigation_button__default_2 {
+      background: none;
+      border: none;
+    }
+
+    .DayPickerNavigation_leftButton__horizontal_3,
+    .DayPickerNavigation_rightButton__horizontal_3 {
+      > svg {
+        height: 1rem;
+        width: 1rem;
+      }
+    }
+
+    .DayPicker_weekHeader_li_1 {
+      color: @color-lightgray;
+      font-size: 0;
+
+      &::first-letter {
+        font-size: 0.6875rem;
+      }
+    }
+
+    .CalendarDay_container_1 {
+      background: none;
+      border: none;
+      color: @color-darkpurple;
+
+      &.CalendarDay__selected,
+      &:hover {
+        background: @color-lightergray;
+        border: none;
+        border-radius: 100%;
+      }
+
+      &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2 {
+        border: none;
+        color: #cacccd;
+
+        &:hover {
+          background: none;
+        }
+      }
+    }
+
+    .DayPickerKeyboardShortcuts_show__bottomRight_3.DayPickerKeyboardShortcuts_show__bottomRight_3.DayPickerKeyboardShortcuts_show__bottomRight_3 {
+      display: none;
+    }
+  }
+}
+
 .CreateMarketForm__submit-wrapper {
   display: flex;
 }
 
 .CreateMarketForm__submitWarning,
 .CreateMarketForm__error {
-  color: @color-negative;
+  color: @color-error;
   display: inline-block;
   font-size: 1rem;
   line-height: 1rem;
@@ -92,7 +300,7 @@
 }
 
 .CreateMarketForm__error--field {
-  border-color: @color-negative;
+  border-color: @color-error;
   border-width: 0.1rem;
 }
 
@@ -113,32 +321,44 @@
 
 .CreateMarketForm__fields {
   align-content: flex-start;
+  border-bottom: 1px solid @color-primary-light;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  min-height: 28.75rem;
+  min-height: 20rem;
+  padding: 2rem 0;
 
   > li {
-    margin-bottom: 3.7rem;
     position: relative;
     width: 100%;
 
+    @media @breakpoint-mobile {
+      display: flex;
+      flex-flow: column;
+    }
+
     &.field--50 {
-      width: 48%;
+      width: 50%;
     }
 
     > label {
       display: inline-block;
+      padding-top: 0.5rem;
       position: relative;
 
       > span:first-child {
+        font-weight: bold;
         margin-right: 0.5rem;
       }
     }
 
     p {
-      color: @color-lightgray;
       margin: 0;
+
+      &.Message {
+        color: @color-secondary-text;
+        margin-bottom: 0.5rem;
+      }
 
       &.error {
         color: @color-red;
@@ -152,6 +372,7 @@
       background-color: @color-lightergray;
       font-size: 1.125rem;
       line-height: 1.5rem;
+      margin-bottom: 0;
 
       &.error {
         border-color: @color-red;
@@ -164,27 +385,37 @@
     }
 
     textarea {
-      height: 9.5rem;
+      height: 83px;
       padding-top: 1rem;
     }
 
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
       appearance: none;
       margin: 0;
     }
   }
 }
 
+.CreateMarketForm_textarea_footer {
+  background-color: @color-gray2;
+  color: @color-almostblack;
+  font-size: @font-size-extra-small;
+  margin-bottom: 1rem;
+  padding: 0.25rem 0.5rem;
+  width: 100%;
+}
+
 .CreateMarketForm__navigation {
   display: flex;
   justify-content: space-between;
+  padding-top: 1rem;
 }
 
 .CreateMarketForm__next,
 .CreateMarketForm__prev,
 .CreateMarketForm__submit {
-  &:extend(.button--white all);
+  &:extend(.button--offWhite all);
 
   min-width: 13.5rem;
 
@@ -284,12 +515,37 @@
     order: 2;
   }
 
+  .CreateMarketForm__fields {
+    display: flex;
+    flex-flow: column;
+    min-height: auto;
+  }
+
   .CreateMarketForm__fields > li textarea {
     height: 5.1rem;
+    padding-top: @size-12;
+
+    &::placeholder {
+      .text-16;
+    }
   }
 
   .CreateMarketForm__fields > li > label {
     display: block;
+  }
+
+  .CreateMarketForm__fields > li > div {
+    padding: 0;
+  }
+
+  .CreateMarketForm__next,
+  .CreateMarketForm__submit {
+    background-color: @color-purple;
+    color: @color-white;
+
+    &:hover {
+      background-color: @color-purple;
+    }
   }
 
   .CreateMarketForm__error,
@@ -317,8 +573,31 @@
   }
 }
 
+.CreateMarketForm__additionalDetailsRendered {
+  display: block !important;
+  text-transform: none !important;
+  white-space: pre-wrap;
+}
+
+.CreateMarketForm__additionalDetailsRendered ul {
+  display: block;
+  list-style-type: disc;
+  margin-block-end: 1em;
+  margin-block-start: 1em;
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+  padding-inline-start: 40px;
+}
+
+.CreateMarketForm__additionalDetailsRendered p {
+  margin-block-end: 1em !important;
+  margin-block-start: 1em !important;
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+}
+
 @media @breakpoint-mobile-medium {
-  .CreateMarketForm__form-inner-wrapper {
+  .CreateMarketForm_form_inner_wrapper {
     padding-left: 1rem;
     padding-right: 1rem;
   }
@@ -370,7 +649,7 @@
 
 @media @breakpoint-mobile-small {
   .CreateMarketForm__fields > li textarea {
-    height: 6.5rem;
+    height: 83px;
   }
 
   .CreateMarketForm__navigation {
@@ -385,7 +664,12 @@
 
   .CreateMarketForm__next,
   .CreateMarketForm__submit {
+    background-color: @color-purple;
     order: 1;
+
+    &:hover {
+      background-color: @color-purple;
+    }
   }
 
   .CreateMarketForm__prev {

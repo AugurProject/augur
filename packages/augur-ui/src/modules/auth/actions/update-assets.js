@@ -1,6 +1,6 @@
 import speedomatic from "speedomatic";
 import { augur } from "services/augurjs";
-import { UNIVERSE_ID } from "modules/app/constants/network";
+import { UNIVERSE_ID } from "modules/common-elements/constants";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
 import { updateEtherBalance } from "modules/auth/actions/update-ether-balance";
 import logError from "utils/log-error";
@@ -10,6 +10,7 @@ export function updateAssets(callback = logError) {
     const { loginAccount, universe } = getState();
     const universeID = universe.id || UNIVERSE_ID;
     const balances = { eth: undefined, rep: undefined };
+
     if (!loginAccount.address) return dispatch(updateLoginAccount(balances));
     augur.api.Universe.getReputationToken(
       { tx: { to: universeID } },
@@ -18,7 +19,7 @@ export function updateAssets(callback = logError) {
         augur.api.ReputationToken.balanceOf(
           {
             tx: { to: reputationTokenAddress },
-            _tokenHolder: loginAccount.address
+            _owner: loginAccount.address
           },
           (err, attoRepBalance) => {
             if (err) return callback(err);

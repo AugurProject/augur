@@ -1,6 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .ChevronFlip {
+  cursor: pointer;
   transition: transform 0.3s ease;
   width: 1rem;
 
@@ -18,5 +19,19 @@
 
   &.quick {
     transition: transform 0.2s ease-in-out;
+  }
+
+  &.hover {
+    &:hover {
+      > g {
+        > g {
+          stroke: @color-white;
+        }
+      }
+
+      > path {
+        stroke: @color-white;
+      }
+    }
   }
 }

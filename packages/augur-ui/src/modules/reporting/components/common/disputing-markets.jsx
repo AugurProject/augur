@@ -5,7 +5,6 @@ import NullStateMessage from "modules/common/components/null-state-message/null-
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
 import Paginator from "modules/common/components/paginator/paginator";
 import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
-import isEqual from "lodash/isEqual";
 
 export default class DisputingMarkets extends Component {
   static propTypes = {
@@ -26,7 +25,10 @@ export default class DisputingMarkets extends Component {
     loadMarkets: PropTypes.func.isRequired,
     nullDisputeMessage: PropTypes.string,
     nullUpcomingMessage: PropTypes.string,
-    addNullPadding: PropTypes.bool
+    addNullPadding: PropTypes.bool,
+    disputableMarketIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    upcomingDisputableMarketIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    loadDisputingDetails: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -45,9 +47,7 @@ export default class DisputingMarkets extends Component {
       boundedLength: paginationCount,
       lowerBoundUpcoming: 1,
       boundedLengthUpcoming: paginationCount,
-      loadedMarkets: [],
-      filteredMarkets: [],
-      loadedUpcomingMarkets: [],
+      filteredNonForkingMarkets: [],
       filteredUpcomingMarkets: []
     };
 
@@ -57,7 +57,9 @@ export default class DisputingMarkets extends Component {
 
   componentWillMount() {
     const { loadMarkets, isConnected } = this.props;
-    if (loadMarkets && isConnected) loadMarkets();
+    if (loadMarkets && isConnected) {
+      loadMarkets();
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -65,42 +67,49 @@ export default class DisputingMarkets extends Component {
       this.props.loadMarkets();
     if (
       this.state.lowerBound !== nextState.lowerBound ||
-      this.state.boundedLength !== nextState.boundedLength ||
-      !isEqual(this.state.loadedMarkets, nextProps.markets)
+      this.state.boundedLength !== nextState.boundedLength
     ) {
-      this.setLoadedMarkets(
-        nextProps.markets,
+      this.loadDisputingMarkets(
+        this.props.disputableMarketIds,
         nextState.lowerBound,
         nextState.boundedLength,
-        nextProps.showPagination
+        false
       );
     }
     if (
       this.state.lowerBoundUpcoming !== nextState.lowerBoundUpcoming ||
-      this.state.boundedLengthUpcoming !== nextState.boundedLengthUpcoming ||
-      !isEqual(this.state.loadedUpcomingMarkets, nextProps.upcomingMarkets)
+      this.state.boundedLengthUpcoming !== nextState.boundedLengthUpcoming
     ) {
-      this.setLoadedMarketsUpcoming(
-        nextProps.upcomingMarkets,
+      this.loadDisputingMarkets(
+        this.props.upcomingDisputableMarketIds,
         nextState.lowerBoundUpcoming,
         nextState.boundedLengthUpcoming,
-        nextProps.showUpcomingPagination
+        true
       );
     }
-  }
-
-  setLoadedMarkets(markets, lowerBound, boundedLength, showPagination) {
-    const filteredMarkets =
-      this.filterMarkets(markets, lowerBound, boundedLength, showPagination) ||
-      [];
-    this.setState({ filteredMarkets, loadedMarkets: markets });
-  }
-
-  setLoadedMarketsUpcoming(markets, lowerBound, boundedLength, showPagination) {
-    const filteredUpcomingMarkets =
-      this.filterMarkets(markets, lowerBound, boundedLength, showPagination) ||
-      [];
-    this.setState({ filteredUpcomingMarkets, loadedUpcomingMarkets: markets });
+    if (
+      this.props.disputableMarketIds !== nextProps.disputableMarketIds ||
+      this.props.markets.length !== nextProps.markets.length
+    ) {
+      this.loadDisputingMarkets(
+        nextProps.disputableMarketIds,
+        nextState.lowerBound,
+        nextState.boundedLength,
+        false
+      );
+    }
+    if (
+      this.props.upcomingDisputableMarketIds !==
+        nextProps.upcomingDisputableMarketIds ||
+      this.props.upcomingMarkets.length !== nextProps.upcomingMarkets.length
+    ) {
+      this.loadDisputingMarkets(
+        nextProps.upcomingDisputableMarketIds,
+        nextState.lowerBoundUpcoming,
+        nextState.boundedLengthUpcoming,
+        true
+      );
+    }
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
@@ -109,6 +118,28 @@ export default class DisputingMarkets extends Component {
 
   setSegmentUpcoming(lowerBoundUpcoming, upperBound, boundedLengthUpcoming) {
     this.setState({ lowerBoundUpcoming, boundedLengthUpcoming });
+  }
+
+  loadDisputingMarkets(marketIds, lowerBound, boundedLength, isUpcoming) {
+    const { loadDisputingDetails } = this.props;
+    const marketIdLength = boundedLength + (lowerBound - 1);
+    const newMarketIdArray = marketIds.slice(lowerBound - 1, marketIdLength);
+    loadDisputingDetails([...newMarketIdArray], () => {
+      const { upcomingMarkets, markets } = this.props;
+      const marketCollection = isUpcoming ? upcomingMarkets : markets;
+      const filtered = marketCollection.filter(
+        m => newMarketIdArray.indexOf(m.id) !== -1
+      );
+      if (isUpcoming) {
+        this.setState({
+          filteredUpcomingMarkets: filtered
+        });
+      } else {
+        this.setState({
+          filteredNonForkingMarkets: filtered
+        });
+      }
+    });
   }
 
   filterMarkets(markets, lowerBound, boundedLength, showPagination) {
@@ -122,6 +153,7 @@ export default class DisputingMarkets extends Component {
         ? markets.filter(m => newMarketIdArray.indexOf(m.id) !== -1)
         : markets;
     }
+    return [];
   }
 
   render() {
@@ -142,17 +174,17 @@ export default class DisputingMarkets extends Component {
       nullUpcomingMessage,
       addNullPadding
     } = this.props;
-    const { filteredMarkets, filteredUpcomingMarkets } = this.state;
+    const { filteredNonForkingMarkets, filteredUpcomingMarkets } = this.state;
 
     let forkingMarket = null;
-    let nonForkingMarkets = filteredMarkets;
+    let nonForkingMarkets = filteredNonForkingMarkets;
     if (isForking) {
       forkingMarket = markets.find(market => market.id === forkingMarketId);
-      nonForkingMarkets = filteredMarkets.filter(
+      nonForkingMarkets = filteredNonForkingMarkets.filter(
         market => market.id !== forkingMarketId
       );
     }
-    const nonForkingMarketsCount = filteredMarkets.length;
+    const nonForkingMarketsCount = nonForkingMarkets.length;
 
     return (
       <section>

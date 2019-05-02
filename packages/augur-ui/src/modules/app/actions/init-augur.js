@@ -24,14 +24,14 @@ import { version } from "src/version";
 import { updateVersions } from "modules/app/actions/update-versions";
 
 import { defaultTo, isEmpty } from "lodash";
-import { NETWORK_NAMES } from "modules/app/constants/network";
 import {
   MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,
   MODAL_DISCLAIMER,
-  MODAL_NETWORK_DISABLED
-} from "modules/modal/constants/modal-types";
-import { DISCLAIMER_SEEN } from "modules/modal/constants/local-storage-keys";
+  MODAL_NETWORK_DISABLED,
+  NETWORK_NAMES,
+  DISCLAIMER_SEEN
+} from "modules/common-elements/constants";
 import { windowRef } from "utils/window-ref";
 import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
 
@@ -207,7 +207,7 @@ export function connectAugur(
             windowRef.localStorage.getItem(loginAccount.address)
           ).selectedUniverse[
             getState().connection.augurNodeNetworkId ||
-              AugurJS.augur.rpc.getNetworkID()
+              AugurJS.augur.rpc.getNetworkID().toString()
           ];
           universeId = !storedUniverseId ? universeId : storedUniverseId;
         }
