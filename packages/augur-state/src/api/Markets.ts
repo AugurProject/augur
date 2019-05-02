@@ -15,7 +15,7 @@ const GetMarketsParamsSpecific = t.intersection([t.type({
   creator: t.string,
   category: t.string,
   search: t.string,
-  reportingState: t.string,
+  reportingState: t.union([t.string, t.array(t.string)]),
   disputeWindow: t.string,
   designatedReporter: t.string,
   maxFee: t.string,
@@ -162,9 +162,10 @@ export class Markets<TBigNumber> {
         }
 
         if (params.reportingState) {
+          const reportingStates = Array.isArray(params.reportingState) ? params.reportingState : [params.reportingState];
           const marketFinalizedLogs = await db.findMarketFinalizedLogs({selector: {market: marketCreatedLogInfo[0]}});
           const reportingState = await Markets.getMarketReportingState(db, marketCreatedLogInfo[1], marketFinalizedLogs);
-          if (reportingState !== params.reportingState) {
+          if (!reportingStates.includes(reportingState)) {
             includeMarket = false;
           }
         }

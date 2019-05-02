@@ -348,6 +348,23 @@ test("State API :: Markets :: getMarkets", async () => {
     reportingState: MarketInfoReportingState.CROWDSOURCING_DISPUTE
   });
   expect(markets).toEqual([yesNoMarket1.address]);
+
+  markets = await api.route("getMarkets", {
+    universe: universe.address,
+    reportingState: [
+      MarketInfoReportingState.CROWDSOURCING_DISPUTE,
+      MarketInfoReportingState.DESIGNATED_REPORTING
+    ]
+  });
+  expect(markets).toEqual(
+    [
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
+      scalarMarket2.address
+    ]);
 }, 120000);
 
 test("State API :: Markets :: getMarketsInfo", async () => {
