@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
 import store from "src/store";
 import { isEmpty } from "lodash";
 

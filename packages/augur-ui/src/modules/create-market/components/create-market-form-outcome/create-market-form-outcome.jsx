@@ -11,14 +11,12 @@ import { formatNumber, cutOffDecimal } from "utils/format-number";
 import {
   YES_NO,
   CATEGORICAL,
-  SCALAR
-} from "modules/markets/constants/market-types";
-import { ZERO } from "modules/trades/constants/numbers";
-import {
+  SCALAR,
   CATEGORICAL_OUTCOMES_MIN_NUM,
   CATEGORICAL_OUTCOMES_MAX_NUM,
-  CATEGORICAL_OUTCOME_MAX_LENGTH
-} from "modules/markets/constants/new-market-constraints";
+  CATEGORICAL_OUTCOME_MAX_LENGTH,
+  ZERO
+} from "modules/common-elements/constants";
 
 import {
   ExclamationCircle as InputErrorIcon,
@@ -285,7 +283,7 @@ export default class CreateMarketOutcome extends Component {
     }
 
     switch (true) {
-      case denomination === "":
+      case denomination.trim() === "":
         updatedMarket.validations[currentStep].scalarDenomination =
           "Denomination is required.";
         break;
@@ -364,13 +362,14 @@ export default class CreateMarketOutcome extends Component {
   }
 
   render() {
-    const { newMarket, updateNewMarket, keyPressed } = this.props;
+    const { newMarket, keyPressed } = this.props;
     const s = this.state;
     const cleanedOutcomes = newMarket.outcomes.filter(
       outcome => outcome !== ""
     );
 
     const validation = newMarket.validations[newMarket.currentStep];
+
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li>
@@ -414,16 +413,25 @@ export default class CreateMarketOutcome extends Component {
           </ul>
         </li>
         {newMarket.type === CATEGORICAL && (
-          <li>
+          <li
+            className={classNames(
+              StylesForm.Categorical,
+              StylesForm.CreateMarketForm_block
+            )}
+          >
             <label htmlFor="cm__input--outcome1">
               <span>Potential Outcomes</span>
               {validation.outcomes && (
-                <span className={StylesForm.CreateMarketForm__error}>
-                  {InputErrorIcon}
-                  {validation.outcomes}
+                <span>
+                  {InputErrorIcon()} {validation.outcomes}
                 </span>
               )}
             </label>
+            <p className={StylesForm.Message}>
+              To reduce ambiguity, categorical markets should cover all possible
+              outcomes. This can be done by including an outcome such as
+              &quot;Other&quot;
+            </p>
             <div className={Styles.CreateMarketOutcome__categorical}>
               {[...Array(s.outcomeFieldCount).keys()].map(i => {
                 const placeholderText = i < 2 ? "Outcome" : "Optional Outcome";
@@ -503,7 +511,7 @@ export default class CreateMarketOutcome extends Component {
                   <span
                     className={StylesForm["CreateMarketForm__error--bottom"]}
                   >
-                    {InputErrorIcon}
+                    {InputErrorIcon()}
                     {validation.scalarSmallNum}
                   </span>
                 )}
@@ -536,7 +544,7 @@ export default class CreateMarketOutcome extends Component {
                   <span
                     className={StylesForm["CreateMarketForm__error--bottom"]}
                   >
-                    {InputErrorIcon}
+                    {InputErrorIcon()}
                     {validation.scalarBigNum}
                   </span>
                 )}
@@ -559,11 +567,11 @@ export default class CreateMarketOutcome extends Component {
                       id="tooltip--market-fees"
                       className={TooltipStyles.Tooltip}
                       effect="solid"
-                      place="right"
+                      place="top"
                       type="light"
                     >
                       <h4>Enter a denomination for your scalar market</h4>
-                      <p style={{ color: "#372e4b" }}>
+                      <p>
                         {
                           'The denomination specifies what units your market is measured in. For example, a market predicting the temperature on a certain day might be denominated in "Degrees Fahrenheit".'
                         }
@@ -588,7 +596,7 @@ export default class CreateMarketOutcome extends Component {
                 />
                 {validation.scalarDenomination && (
                   <span className={StylesForm.CreateMarketForm__error_tick}>
-                    {InputErrorIcon}
+                    {InputErrorIcon()}
                     {validation.scalarDenomination}
                   </span>
                 )}
@@ -600,41 +608,25 @@ export default class CreateMarketOutcome extends Component {
                 <input
                   id="cm__input--ticksize"
                   type="number"
-                  step="0.0001"
+                  step="0.000001"
                   value={newMarket.tickSize}
                   placeholder="Tick Size"
                   onChange={e =>
                     this.validateScalarNum(
                       e.target.value,
-                      s.scalarType.TICK_SIZE,
-                      true
+                      s.scalarType.TICK_SIZE
                     )
                   }
                   onKeyPress={e => keyPressed(e)}
                 />
                 {validation.tickSize && (
                   <span className={StylesForm.CreateMarketForm__error_tick}>
-                    {InputErrorIcon}
+                    {InputErrorIcon()}
                     {validation.tickSize}
                   </span>
                 )}
               </div>
             </div>
-          </li>
-        )}
-        {newMarket.type && (
-          <li>
-            <label htmlFor="cm__input--details">
-              <span>Additional Details</span>
-            </label>
-            <textarea
-              id="cm__input--details"
-              value={newMarket.detailsText}
-              placeholder="Optional - Include any additional information that traders should know about this market."
-              onChange={e => {
-                updateNewMarket({ detailsText: e.target.value });
-              }}
-            />
           </li>
         )}
       </ul>

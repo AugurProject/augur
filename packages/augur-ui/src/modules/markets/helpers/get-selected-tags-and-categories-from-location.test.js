@@ -22,9 +22,9 @@ describe("src/modules/markets/helpers/get-tags-and-categories-from-location.js",
 
     test("should return an object with the relevant parsed data in an object", () => {
       expect(result).toEqual({
-        category: "Augur",
+        selectedCategoryName: "Augur",
         keywords: "test keywords",
-        tags: ["Ethereum", "trading"],
+        selectedTagNames: ["Ethereum", "trading"],
         balanceOfSearchParams: {}
       });
     });
@@ -37,9 +37,9 @@ describe("src/modules/markets/helpers/get-tags-and-categories-from-location.js",
 
     test("should return an object with the relevant parsed data", () => {
       expect(result).toEqual({
-        category: "Augur",
+        selectedCategoryName: "Augur",
         keywords: undefined,
-        tags: [],
+        selectedTagNames: [],
         balanceOfSearchParams: {}
       });
     });
@@ -52,9 +52,9 @@ describe("src/modules/markets/helpers/get-tags-and-categories-from-location.js",
 
     test("should return an object with a null category and empty tags array", () => {
       expect(result).toEqual({
-        category: undefined,
+        selectedCategoryName: undefined,
         keywords: undefined,
-        tags: [],
+        selectedTagNames: [],
         balanceOfSearchParams: {}
       });
     });
@@ -71,9 +71,9 @@ describe("src/modules/markets/helpers/get-tags-and-categories-from-location.js",
 
     test("should do something", () => {
       expect(result).toEqual({
-        category: undefined,
+        selectedCategoryName: undefined,
         keywords: undefined,
-        tags: [],
+        selectedTagNames: [],
         balanceOfSearchParams: {}
       });
     });
@@ -88,9 +88,9 @@ describe("src/modules/markets/helpers/get-tags-and-categories-from-location.js",
 
     test("should be returned as part of the balanceOfSearchParams", () => {
       expect(result).toEqual({
-        category: "Augur",
+        selectedCategoryName: "Augur",
         keywords: undefined,
-        tags: [],
+        selectedTagNames: [],
         balanceOfSearchParams: {
           page: "1",
           cats: "what"

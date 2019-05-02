@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
-import { mobileMenuStates } from "modules/app/components/app/app";
+import { MOBILE_MENU_STATES } from "modules/common-elements/constants";
 
 import Styles from "modules/app/components/inner-nav/inner-nav.styles";
 
@@ -29,8 +29,8 @@ export default class BaseInnerNav extends Component {
 
   render() {
     const { isMobile, mobileMenuState, subMenuScalar } = this.props;
-    const showMainMenu = mobileMenuState >= mobileMenuStates.FIRSTMENU_OPEN;
-    const showSubMenu = mobileMenuState === mobileMenuStates.SUBMENU_OPEN;
+    const showMainMenu = mobileMenuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN;
+    const showSubMenu = mobileMenuState === MOBILE_MENU_STATES.SUBMENU_OPEN;
 
     let subMenuAnimatedStyle;
     if (!isMobile) {
@@ -38,7 +38,11 @@ export default class BaseInnerNav extends Component {
     }
 
     const DataToItem = item => (
-      <MenuItem isSelected={item.isSelected} visible={item.visible}>
+      <MenuItem
+        isSelected={item.isSelected}
+        visible={item.visible}
+        seperator={item.seperator}
+      >
         {item.link && (
           <Link to={item.link} onClick={item.onClick}>
             {item.label}

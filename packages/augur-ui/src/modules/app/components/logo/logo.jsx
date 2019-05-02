@@ -6,10 +6,16 @@ import Styles from "modules/app/components/logo/logo.styles";
 const Logo = ({ isLoading }) => (
   <section className={Styles.Logo}>
     <LoadingLogo isLoading={isLoading} />
+    <span className={Styles.Logo__text}>AUGUR</span>
   </section>
 );
 
 Logo.propTypes = {
-  isLoading: PropTypes.bool.isRequired
+  isLoading: PropTypes.bool
 };
+
+Logo.defaultProps = {
+  isLoading: false
+};
+
 export default Logo;

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { CATEGORICAL } from "modules/markets/constants/market-types";
+import { CATEGORICAL } from "modules/common-elements/constants";
 import MarketLiquidityTable from "modules/market/components/market-liquidity-table/market-liquidity-table";
 
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
@@ -17,11 +17,11 @@ const CreateMarketLiquidityOrders = props => {
   const isNullState = !(outcomeOrders && outcomeOrders.length);
 
   return (
-    <div className={StylesForm["CreateMarketForm__form-inner-wrapper"]}>
+    <div className={StylesForm.CreateMarketForm_form_inner_wrapper}>
+      <h1 className={Styles.LiquidityOrders__Header}>
+        Initial Liquidity Orders
+      </h1>
       <div className={Styles.LiquidityOrders__Container}>
-        <h1 className={Styles.LiquidityOrders__Header}>
-          Initial Liquidity Orders
-        </h1>
         {isNullState && (
           <div className={Styles.LiquidityOrders__NullState}>
             It appears you have not created any orders for this outcome. You

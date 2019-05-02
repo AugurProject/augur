@@ -4,16 +4,19 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
-import { ZERO } from "modules/trades/constants/numbers";
-import { SCALAR } from "modules/markets/constants/market-types";
-import { formatAttoRep, formatNumber } from "utils/format-number";
+import {
+  SCALAR,
+  MALFORMED_OUTCOME,
+  ZERO
+} from "modules/common-elements/constants";
+import { formatAttoRep, formatNumber, formatRep } from "utils/format-number";
 import { augur } from "services/augurjs";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles";
 import ReportingDisputeProgress from "modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress";
-import { MALFORMED_OUTCOME } from "utils/constants";
 import Input from "modules/common/components/input/input";
+import { RepBalance } from "modules/common-elements/labels";
 
 const { ETHER } = augur.rpc.constants;
 export default class ReportingDisputeForm extends Component {
@@ -200,10 +203,6 @@ export default class ReportingDisputeForm extends Component {
     if (stakeValue < 0) {
       updatedValidations.stake = "The stake field must be a positive value.";
     } else if (
-      bnStake.gt(createBigNumber(maxRepObject.formatted.formattedValue, 10))
-      ) {
-        updatedValidations.stake = `Max value is ${maxRepObject.formatted.full}`;
-      } else if (
       createBigNumber(availableRepFormatted.formatted.formattedValue).lt(
         bnStake
       )
@@ -356,6 +355,7 @@ export default class ReportingDisputeForm extends Component {
       updatedValidations.selectedOutcome = true;
     } else {
       const minValue = parseFloat(min);
+      const bnMinPrice = createBigNumber(min);
       const maxValue = parseFloat(max);
       const valueValue = parseFloat(value);
       const bnValue = createBigNumber(value || 0);
@@ -375,7 +375,10 @@ export default class ReportingDisputeForm extends Component {
         case value === winner.id:
           updatedValidations.err = `Current tentative winning outcome.`;
           break;
-        case bnValue.mod(bnTickSize).gt("0"):
+        case bnValue
+          .minus(bnMinPrice)
+          .mod(bnTickSize)
+          .gt("0"):
           updatedValidations.err = `The ${humanName} field must be a multiple of ${tickSize}.`;
           break;
         default:
@@ -430,7 +433,7 @@ export default class ReportingDisputeForm extends Component {
   }
 
   render() {
-    const { market, stakeInfo, outcomes } = this.props;
+    const { market, stakeInfo, outcomes, availableRep } = this.props;
     const s = this.state;
     const winner = (outcomes && outcomes.find(o => o.tentativeWinning)) || {};
     const disputeRound = market.disputeInfo && market.disputeInfo.disputeRound;
@@ -459,19 +462,9 @@ export default class ReportingDisputeForm extends Component {
       >
         <li>
           <div className={Styles.ReportingDisputeForm__outcome_selection_msg}>
-            Please choose an outcome below based on the resolution source when the market ends.
+            Choose an outcome based on the resolution source when the event
+            ended.
           </div>
-          <div className={Styles.ReportingDisputeForm__outcome_selection_msg}>
-              The market should be considered INVALID if any of the following are true:
-          </div>
-          <ul className={Styles.ReportingDisputeForm__outcome_selection_msg}>
-            <li>The question is subjective in nature.</li>
-            <li>The outcome was not known at market end time.</li>
-            <li>The title, details, end time, resolution source, and outcomes are in direct conflict with each other.</li>
-            <li>There are strong arguments for the market resolving as multiple outcomes.</li>
-            <li>The resolution source does not provide a readily available answer.</li>
-            <li>The resolution source provides different answers to different viewers.</li>
-          </ul>
         </li>
         <li>
           <label>
@@ -532,7 +525,9 @@ export default class ReportingDisputeForm extends Component {
                           className={classNames({
                             [`${FormStyles.active}`]:
                               s.selectedOutcome === outcome.id &&
-                              !s.scalarInputChoosen
+                              !s.scalarInputChoosen,
+                            [FormStyles.isInvalidField]:
+                              outcome.name === "Indeterminate"
                           })}
                           onClick={e => {
                             this.validateOutcome(
@@ -619,7 +614,7 @@ export default class ReportingDisputeForm extends Component {
                   <li>
                     {s.validations.hasOwnProperty("err") && (
                       <span className={FormStyles.Form__error__space}>
-                        {InputErrorIcon}
+                        {InputErrorIcon()}
                         {s.validations.err}
                       </span>
                     )}
@@ -629,12 +624,12 @@ export default class ReportingDisputeForm extends Component {
             )}
           </ul>
         </li>
-        <li className={FormStyles["field--short"]}>
+        <li>
           <label>
             <span htmlFor="sr__input--stake">Deposit Stake</span>
           </label>
           <ul className={FormStyles["Form__radio-buttons--per-line-inline"]}>
-            <li>
+            <li className={Styles.ReportingDisputeForm_Rep}>
               <Input
                 id="sr__input--stake"
                 type="number"
@@ -654,12 +649,13 @@ export default class ReportingDisputeForm extends Component {
                 onMaxButtonClick={() => this.setMAXStake()}
                 darkMaxBtn
               />
+              <RepBalance rep={formatRep(availableRep).formattedValue} />
             </li>
             <li>
               {s.validations.hasOwnProperty("stake") &&
                 s.validations.stake.length && (
                   <span className={FormStyles["Form__error--even"]}>
-                    {InputErrorIcon}
+                    {InputErrorIcon()}
                     {s.validations.stake}
                   </span>
                 )}
@@ -668,7 +664,7 @@ export default class ReportingDisputeForm extends Component {
               !s.validations.isDisputeActive && (
                 <label>
                   <span className={Styles.ReportingDisputeForm__disputeEnded}>
-                    {InputErrorIcon}
+                    {InputErrorIcon()}
                     {`Dispute round has ended, wait for next round to dispute`}
                   </span>
                 </label>

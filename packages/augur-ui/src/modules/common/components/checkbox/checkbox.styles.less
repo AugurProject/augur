@@ -10,14 +10,27 @@
 }
 
 .Checkbox__checkmark {
-  background-color: white;
-  border: 1px solid @color-lightergray;
-  border-radius: 1px;
-  height: 23px;
+  background-color: @color-theme-primary;
+  border: 1px solid @color-highlight;
+  border-radius: @border-radius-default;
+  height: 24px;
   left: 0;
   position: absolute;
   top: 0;
-  width: 23px;
+  width: 24px;
+
+  > svg {
+    display: none;
+    height: 9px;
+    left: 6px;
+    position: absolute;
+    top: 6px;
+    width: 11px;
+
+    > path {
+      stroke: @color-secondary-text;
+    }
+  }
 }
 
 .Checkbox__checkmark:focus {
@@ -33,26 +46,28 @@
 }
 
 .Checkbox input:checked ~ .Checkbox__checkmark {
-  background-color: @color-purple;
-  border: 0;
+  background: fade(@color-highlight, 30%);
+  border: 1px solid @color-highlight;
+
+  > svg {
+    display: block;
+  }
 }
 
-.Checkbox input:checked ~ .Checkbox__checkmark::after {
-  display: block;
+.Checkbox__small {
+  margin-bottom: 0;
 }
 
-.Checkbox__checkmark::after {
-  content: "";
-  display: none;
-  position: absolute;
+.Checkbox__checkmark__small {
+  height: 16px;
+  width: 16px;
 }
 
-.Checkbox .Checkbox__checkmark::after {
-  border: solid white;
-  border-width: 0 1px 1px 0;
-  height: 13px;
-  left: 8px;
-  top: 3px;
-  transform: rotate(45deg);
-  width: 7px;
+.Checkbox__small .Checkbox__checkmark__small {
+  > svg {
+    height: 6px;
+    left: 3px;
+    top: 4px;
+    width: 8px;
+  }
 }

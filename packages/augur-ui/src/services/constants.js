@@ -1,1 +1,1 @@
-export { constants } from "augur.js";
+export { constants } from "@augurproject/augur.js";

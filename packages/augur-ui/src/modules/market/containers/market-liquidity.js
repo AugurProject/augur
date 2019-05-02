@@ -8,7 +8,7 @@ import {
 } from "modules/orders/actions/liquidity-management";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
-import { MODAL_CONFIRM } from "modules/modal/constants/modal-types";
+import { MODAL_CONFIRM } from "modules/common-elements/constants";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import MarketLiquidity from "modules/market/components/market-liquidity/market-liquidity";
 

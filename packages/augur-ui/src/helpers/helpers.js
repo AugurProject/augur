@@ -4,7 +4,7 @@ import logError from "utils/log-error";
 import { selectMarkets } from "src/modules/markets/selectors/markets-all";
 import { loadMarkets } from "modules/markets/actions/load-markets";
 import store from "src/store";
-import { DISCLAIMER_SEEN } from "src/modules/modal/constants/local-storage-keys";
+import { DISCLAIMER_SEEN } from "modules/common-elements/constants";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import {
   selectCurrentTimestamp,
@@ -15,7 +15,7 @@ import { logout } from "modules/auth/actions/logout";
 import { formatRep, formatEther } from "utils/format-number";
 import getRep from "modules/account/actions/get-rep";
 import { augur } from "services/augurjs";
-import { selectMarketDisputeOutcomes } from "modules/reports/selectors/select-market-dispute-outcomes";
+import getMarketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import {
   getDaysRemaining,
   getHoursRemaining,
@@ -187,7 +187,7 @@ export const helpers = store => {
           })
         )
       ),
-    getMarketDisputeOutcomes: () => selectMarketDisputeOutcomes(),
+    getMarketDisputeOutcomes: () => getMarketDisputeOutcomes(),
     getReportingWindowStats: () => getReportingWindowStats(),
     getDaysRemaining: (endTime, startTime) =>
       new Promise(resolve =>

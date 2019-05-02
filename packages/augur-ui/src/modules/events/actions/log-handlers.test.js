@@ -9,11 +9,11 @@ import {
 
 import * as isCurrentMarketModule from "modules/trades/helpers/is-current-market";
 import * as convertLogsToTransactionsModule from "modules/transactions/actions/convert-logs-to-transactions";
-import * as loadAccountTradesModule from "modules/positions/actions/load-account-trades";
 import * as loadReportingWindowBoundsModule from "modules/reports/actions/load-reporting-window-bounds";
 import * as getWinningBalanceModule from "modules/reports/actions/get-winning-balance";
-import * as loadBidsAsksModule from "modules/orders/actions/load-bids-asks";
+import * as loadMarketOpenOrdersModule from "modules/orders/actions/load-market-open-orders";
 import * as updateAssetsModule from "modules/auth/actions/update-assets";
+import * as loadAccountPositionsModule from "modules/positions/actions/load-account-positions";
 
 describe("modules/events/actions/log-handlers.js", () => {
   describe("log handlers", () => {
@@ -23,15 +23,16 @@ describe("modules/events/actions/log-handlers.js", () => {
     let loadAccountTradesSpy;
     let loadReportingWindowBoundsSpy;
     let getWinningBalanceSpy;
-    let loadBidsAsksSpy;
+    let loadMarketOpenOrdersSpy;
+    let loadMarketAccountPositions;
     let updateAssetsSpy;
     const ACTIONS = {
-      LOAD_ACCOUNT_TRADES: "LOAD_ACCOUNT_TRADES",
       UPDATE_LOGGED_TRANSACTIONS: "UPDATE_LOGGED_TRANSACTIONS",
       UPDATE_ASSETS: "UPDATE_ASSETS",
       LOAD_REPORTING_WINDOW: "LOAD_REPORTING_WINDOW",
       GET_WINNING_BALANCE: "GET_WINNING_BALANCE",
-      LOAD_BID_ASKS: "LOAD_BID_ASKS"
+      LOAD_MARKET_OPEN_ORDERS: "LOAD_MARKET_OPEN_ORDERS",
+      LOAD_ACCOUNT_POSITIONS: "LOAD_ACCOUNT_POSITIONS"
     };
 
     beforeAll(() => {
@@ -41,14 +42,6 @@ describe("modules/events/actions/log-handlers.js", () => {
           type: ACTIONS.UPDATE_LOGGED_TRANSACTIONS,
           data: {
             log
-          }
-        }));
-      loadAccountTradesSpy = jest
-        .spyOn(loadAccountTradesModule, "loadAccountTrades")
-        .mockImplementation(options => ({
-          type: ACTIONS.LOAD_ACCOUNT_TRADES,
-          data: {
-            marketId: options.marketId
           }
         }));
       loadReportingWindowBoundsSpy = jest
@@ -64,13 +57,18 @@ describe("modules/events/actions/log-handlers.js", () => {
             marketIds
           }
         }));
-      loadBidsAsksSpy = jest
-        .spyOn(loadBidsAsksModule, "default")
+      loadMarketOpenOrdersSpy = jest
+        .spyOn(loadMarketOpenOrdersModule, "loadMarketOpenOrders")
         .mockImplementation(options => ({
-          type: ACTIONS.LOAD_BID_ASKS,
+          type: ACTIONS.LOAD_MARKET_OPEN_ORDERS,
           data: {
             marketId: options.marketId
           }
+        }));
+      loadMarketAccountPositions = jest
+        .spyOn(loadAccountPositionsModule, "loadMarketAccountPositions")
+        .mockImplementation(() => ({
+          type: ACTIONS.LOAD_ACCOUNT_POSITIONS
         }));
       updateAssetsSpy = jest
         .spyOn(updateAssetsModule, "updateAssets")
@@ -85,7 +83,8 @@ describe("modules/events/actions/log-handlers.js", () => {
       loadReportingWindowBoundsSpy.mockReset();
       loadAccountTradesSpy.mockReset();
       getWinningBalanceSpy.mockReset();
-      loadBidsAsksSpy.mockReset();
+      loadMarketOpenOrdersSpy.mockReset();
+      loadMarketAccountPositions.mockReset();
       updateAssetsSpy.mockReset();
     });
 
@@ -117,10 +116,11 @@ describe("modules/events/actions/log-handlers.js", () => {
           }
         },
         {
-          type: ACTIONS.LOAD_ACCOUNT_TRADES,
-          data: {
-            marketId: "0xdeadbeef"
-          }
+          type: ACTIONS.LOAD_ACCOUNT_POSITIONS
+        },
+        {
+          type: ACTIONS.GET_WINNING_BALANCE,
+          data: { marketIds: ["0xdeadbeef"] }
         }
       ]);
     });
@@ -215,16 +215,11 @@ describe("modules/events/actions/log-handlers.js", () => {
           }
         },
         {
-          type: ACTIONS.LOAD_ACCOUNT_TRADES,
-          data: {
-            marketId: "0xdeadbeef"
-          }
+          type: ACTIONS.LOAD_ACCOUNT_POSITIONS
         },
         {
           type: ACTIONS.GET_WINNING_BALANCE,
-          data: {
-            marketIds: ["0xdeadbeef"]
-          }
+          data: { marketIds: ["0xdeadbeef"] }
         }
       ]);
     });

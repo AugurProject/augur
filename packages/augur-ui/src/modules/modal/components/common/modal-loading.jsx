@@ -18,7 +18,7 @@ ModalLoading.propTypes = {
 };
 
 ModalLoading.defaultProps = {
-  color: "#412468",
+  color: "#fff",
   size: 8,
   sizeUnit: "px",
   loading: true

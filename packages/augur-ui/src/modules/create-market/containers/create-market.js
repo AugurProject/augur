@@ -1,6 +1,5 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { selectCategories } from "modules/categories/selectors/categories";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import {
   addOrderToNewMarket,
@@ -8,7 +7,10 @@ import {
   updateNewMarket
 } from "modules/markets/actions/update-new-market";
 import CreateMarketView from "modules/create-market/components/create-market-view/create-market-view";
-import { selectCurrentTimestamp } from "src/select-state";
+import {
+  selectCategoriesState,
+  selectCurrentTimestamp
+} from "src/select-state";
 import { estimateSubmitNewMarket } from "modules/markets/actions/estimate-submit-new-market";
 
 import getValue from "utils/get-value";
@@ -20,7 +22,7 @@ const mapStateToProps = state => ({
   availableRep: getValue(state, "loginAccount.rep"),
   meta: getValue(state, "loginAccount.meta"),
   newMarket: state.newMarket,
-  categories: selectCategories(state),
+  categories: selectCategoriesState(state),
   isMobileSmall: state.appStatus.isMobileSmall,
   currentTimestamp: selectCurrentTimestamp(state),
   gasPrice: getGasPrice(state)

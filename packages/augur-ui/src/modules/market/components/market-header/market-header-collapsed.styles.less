@@ -1,0 +1,30 @@
+@import (reference) "~assets/styles/shared";
+
+.MarketHeaderCollapsed_mainValues {
+  display: flex;
+
+  @media @breakpoint-mobile {
+    flex-direction: column;
+  }
+}
+
+.MarketHeaderCollapsed__descContainer {
+  display: flex;
+  flex: 1;
+  margin-right: 1rem;
+  max-width: 100%;
+
+  > section > h1 {
+    .text-16-bold;
+
+    color: @color-secondary-text;
+  }
+}
+
+.MarketHeaderCollapsed__marketStatus {
+  flex: 1;
+  margin-left: 3rem;
+  min-height: fit-content;
+  min-width: 370px;
+  padding-left: 0.75rem;
+}

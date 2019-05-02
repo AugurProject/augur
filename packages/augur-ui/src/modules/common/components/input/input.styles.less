@@ -31,13 +31,6 @@
     .border(true, @border-all, @color-input-border, @border-width-1);
   }
 
-  .fa-search {
-    align-items: center;
-    background-color: transparent;
-    display: flex;
-    padding: 0 1em;
-  }
-
   .box {
     font-size: inherit;
     padding: 1em;
@@ -73,8 +66,11 @@
 .Input__max {
   .caps--small();
 
-  color: @color-purple;
+  color: @color-light-gray;
+  font-size: 10px;
+  font-weight: 500;
   padding: 0 1rem;
+  text-transform: capitalize;
 }
 
 .Input__maxDark {
@@ -129,13 +125,6 @@
   input[type=number]::-webkit-inner-spin-button {
     appearance: none;
     margin: 0;
-  }
-
-  .fa-search {
-    align-items: center;
-    background-color: transparent;
-    display: flex;
-    padding: 0 1em;
   }
 }
 

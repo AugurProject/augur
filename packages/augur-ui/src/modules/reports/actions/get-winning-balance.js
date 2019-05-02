@@ -18,7 +18,9 @@ export const getWinningBalance = (marketIds = [], callback = logError) => (
 
       // clear out outstandingReturns
       marketIds.forEach(marketId => {
-        delete marketsData[marketId].outstandingReturns;
+        if (marketsData[marketId] && marketsData[marketId].outstandingReturns) {
+          delete marketsData[marketId].outstandingReturns;
+        }
       });
 
       const balances = winningBalance.filter(

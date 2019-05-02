@@ -4,10 +4,9 @@ import network from "config/network";
 
 import { formatNumber, formatShares } from "utils/format-number";
 import { formatDate } from "utils/format-date";
-import { BUY } from "modules/transactions/constants/types";
+import { BUY } from "modules/common-elements/constants";
 
 const testState = {
-  marketLoading: [],
   activeView: "markets",
   accountTrades: {
     testMarketId: {
@@ -234,7 +233,7 @@ const testState = {
     numPerPage: 10,
     selectedPageNum: 1
   },
-  priceHistory: {
+  marketTradingHistory: {
     testMarketId: {},
     "0xMARKET1": {
       0: [{ amount: 10 }, { amount: 20 }],
@@ -256,7 +255,6 @@ const testState = {
     }
   },
   selectedMarketId: "testMarketId",
-  selectedMarketsHeader: "testMarketHeader",
   selectedFilterSort: {
     type: "open",
     sort: "volume",
@@ -268,18 +266,6 @@ const testState = {
     },
     tag: {
       name: "tag"
-    }
-  },
-  tradesInProgress: {
-    testMarketId: {
-      1: {
-        numShares: 5000,
-        limitPrice: "0.50",
-        totalCost: "2500",
-        type: "yes/no ",
-        side: BUY,
-        sharesFilled: 5000
-      }
     }
   },
   transactionsData: {

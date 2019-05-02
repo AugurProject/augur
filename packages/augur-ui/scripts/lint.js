@@ -19,7 +19,7 @@ if (require.main === module) {
 const lintSource = () =>
   new Promise((resolve, reject) => {
     shell.exec(
-      `eslint${shouldFix ? " --fix" : ""} --ext .js,.jsx ${srcPath}`,
+      `eslint${shouldFix ? " --fix" : ""} --ext .js,.jsx,.ts,.tsx ${srcPath}`,
       (code, stdOut) => {
         if (code !== 0) {
           console.error(stdOut);
@@ -35,7 +35,7 @@ const lintSource = () =>
 const lintTests = () =>
   new Promise((resolve, reject) => {
     shell.exec(
-      `eslint${shouldFix ? " --fix" : ""} --ext .js ${testPath}`,
+      `eslint${shouldFix ? " --fix" : ""} --ext .js,.jsx,.ts,.tsx ${testPath}`,
       (code, stdOut) => {
         if (code !== 0) {
           console.error(stdOut);

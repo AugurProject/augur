@@ -43,7 +43,6 @@ export default class ModalParticipate extends Component {
         this.state.quantity,
         true,
         (err, gasEstimate) => {
-          console.log("trigger review", err, gasEstimate);
           if (!err && !!gasEstimate) this.setState({ gasEstimate, page: 2 });
         }
       );
@@ -52,8 +51,8 @@ export default class ModalParticipate extends Component {
 
   submitForm(e, ...args) {
     const { purchaseParticipationTokens } = this.props;
-    purchaseParticipationTokens(this.state.quantity, false, (err, res) => {
-      console.log("onSuccess for purchaseParticipationTokens", err, res);
+    purchaseParticipationTokens(this.state.quantity, false, err => {
+      err && console.log("ERR for purchaseParticipationTokens", err);
     });
   }
 
@@ -174,7 +173,7 @@ export default class ModalParticipate extends Component {
             {!!errors.length &&
               errors.map((error, index) => (
                 <p key={error} className={Styles.Error}>
-                  {InputErrorIcon} {error}
+                  {InputErrorIcon()} {error}
                 </p>
               ))}
             <ModalActions

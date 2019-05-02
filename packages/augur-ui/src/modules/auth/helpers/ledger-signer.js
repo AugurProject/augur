@@ -3,7 +3,7 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import TX from "ethereumjs-tx";
 import { prefixHex } from "speedomatic";
 
-import { MODAL_LEDGER } from "modules/modal/constants/modal-types";
+import { MODAL_LEDGER } from "modules/common-elements/constants";
 
 const ledgerSigner = async (rawTxArgs, ledgerLib, derivationPath, dispatch) => {
   dispatch(

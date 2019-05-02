@@ -1,8 +1,4 @@
-import {
-  YES_NO,
-  CATEGORICAL,
-  SCALAR
-} from "modules/markets/constants/market-types";
+import { YES_NO, CATEGORICAL, SCALAR } from "modules/common-elements/constants";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 
 describe(`utils/calculate-payout-numerators-value.js`, () => {

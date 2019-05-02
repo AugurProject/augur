@@ -2,7 +2,7 @@ import parseQuery from "modules/routes/helpers/parse-query";
 import makeQuery from "modules/routes/helpers/make-query";
 import parseStringToArray from "modules/routes/helpers/parse-string-to-array";
 
-import { TAGS_PARAM_NAME } from "modules/filter-sort/constants/param-names";
+import { TAGS_PARAM_NAME } from "modules/common-elements/constants";
 import { QUERY_VALUE_DELIMITER } from "modules/routes/constants/query-value-delimiter";
 
 const toggleTag = (tag, location, history) => () => {

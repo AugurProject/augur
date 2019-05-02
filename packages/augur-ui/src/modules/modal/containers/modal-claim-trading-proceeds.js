@@ -8,7 +8,7 @@ import claimTradingProceeds, {
 import { closeModal } from "modules/modal/actions/close-modal";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { formatGasCostToEther } from "utils/format-number";
-import { MODAL_REVIEW } from "modules/modal/constants/modal-types";
+import { MODAL_REVIEW } from "modules/common-elements/constants";
 
 const mapStateToProps = state => ({
   modal: state.modal,
@@ -37,7 +37,7 @@ const mergeProps = (sP, dP, oP) => {
       {
         label: "cancel",
         action: () => {
-          cb();
+          if (cb) cb("modal closed");
           closeModal();
         },
         type: "gray"

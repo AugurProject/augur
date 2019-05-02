@@ -8,16 +8,18 @@ import { createBigNumber } from "utils/create-big-number";
 import {
   formatEtherEstimate,
   formatGasCostToEther,
-  formatRep
+  formatRep,
+  formatAttoEth
 } from "utils/format-number";
 import MarketPreview from "modules/market/containers/market-preview";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import ReportingReportForm from "modules/reporting/components/reporting-report-form/reporting-report-form";
 import ReportingReportConfirm from "modules/reporting/components/reporting-report-confirm/reporting-report-confirm";
-import { TYPE_VIEW } from "modules/markets/constants/link-types";
+import { TYPE_VIEW, ZERO } from "modules/common-elements/constants";
 import { isEmpty } from "lodash";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
+import InvalidMessage from "modules/reporting/components/invalid-message/invalid-message";
 
 export default class ReportingReport extends Component {
   static propTypes = {
@@ -27,6 +29,7 @@ export default class ReportingReport extends Component {
     isMarketLoaded: PropTypes.bool.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
     isDesignatedReporter: PropTypes.bool.isRequired,
+    isDRMarketCreator: PropTypes.bool.isRequired,
     loadFullMarket: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     market: PropTypes.object.isRequired,
@@ -47,7 +50,7 @@ export default class ReportingReport extends Component {
       selectedOutcomeName: "",
       // need to get value from augur-node for
       // designated reporter or initial reporter (open reporting)
-      stake: "0",
+      stake: formatRep("0"),
       validations: {
         selectedOutcome: null
       },
@@ -98,19 +101,29 @@ export default class ReportingReport extends Component {
   }
 
   calculateMarketCreationCosts() {
-    const { isOpenReporting, universe } = this.props;
-    // TODO: might have short-cut, designatedReportStake is on market from augur-node
-    augur.createMarket.getMarketCreationCostBreakdown(
-      { universe },
-      (err, marketCreationCostBreakdown) => {
+    const {
+      isDesignatedReporter,
+      universe,
+      market,
+      isDRMarketCreator
+    } = this.props;
+    augur.api.Universe.getOrCacheDesignatedReportStake(
+      { tx: { to: universe, send: false } },
+      (err, initialReporterStake) => {
         if (err) return console.error(err);
 
-        const repAmount = formatEtherEstimate(
-          marketCreationCostBreakdown.designatedReportNoShowReputationBond
-        );
+        const { designatedReportStake } = market;
+        const initialStake = formatAttoEth(initialReporterStake || 0);
+        const neededStake = isDRMarketCreator
+          ? createBigNumber(initialStake.fullPrecision).minus(
+              designatedReportStake
+            )
+          : initialStake.fullPrecision;
+
+        const repAmount = formatEtherEstimate(neededStake);
 
         this.setState({
-          stake: isOpenReporting ? "0" : repAmount.formatted
+          stake: isDesignatedReporter ? repAmount : formatRep("0")
         });
       }
     );
@@ -152,7 +165,7 @@ export default class ReportingReport extends Component {
     } = this.props;
     const s = this.state;
 
-    const BNstake = createBigNumber(formatRep(s.stake).fullPrecision);
+    const BNstake = createBigNumber(s.stake.fullPrecision);
     const insufficientRep = !isOpenReporting
       ? createBigNumber(availableRep).lt(BNstake)
       : false;
@@ -160,6 +173,15 @@ export default class ReportingReport extends Component {
       !Object.keys(s.validations).every(key => s.validations[key] === true) ||
       insufficientRep ||
       (!isDesignatedReporter && !isOpenReporting);
+
+    let stakeLabel = "Required Stake";
+    let stakeValue = s.stake.formatted;
+    if (createBigNumber(s.stake.fullPrecision).lt(ZERO)) {
+      stakeLabel = "REP Stake Returns";
+      stakeValue = formatRep(createBigNumber(s.stake.fullPrecision).abs())
+        .formatted;
+    }
+
     return (
       <section>
         <Helmet>
@@ -181,29 +203,35 @@ export default class ReportingReport extends Component {
         {!isEmpty(market) && (
           <article className={FormStyles.Form}>
             {s.currentStep === 0 && (
-              <ReportingReportForm
-                market={market}
-                updateState={this.updateState}
-                isMarketInValid={s.isMarketInValid}
-                selectedOutcome={s.selectedOutcome}
-                stake={s.stake}
-                validations={s.validations}
-                isOpenReporting={isOpenReporting}
-                insufficientRep={insufficientRep}
-                isDesignatedReporter={isDesignatedReporter}
-              />
+              <div className={Styles.ReportingReport_form_message}>
+                <ReportingReportForm
+                  market={market}
+                  availableRep={availableRep}
+                  updateState={this.updateState}
+                  isMarketInValid={s.isMarketInValid}
+                  selectedOutcome={s.selectedOutcome}
+                  stake={stakeValue}
+                  stakeLabel={stakeLabel}
+                  validations={s.validations}
+                  isOpenReporting={isOpenReporting}
+                  insufficientRep={insufficientRep}
+                  isDesignatedReporter={isDesignatedReporter}
+                />
+                <InvalidMessage />
+              </div>
             )}
             {s.currentStep === 1 && (
               <ReportingReportConfirm
                 market={market}
                 isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcomeName}
-                stake={s.stake}
+                stake={stakeValue}
                 designatedReportNoShowReputationBond={
                   s.designatedReportNoShowReputationBond
                 }
-                isOpenReporting={isOpenReporting}
+                isDesignatedReporter={isDesignatedReporter}
                 gasEstimate={s.gasEstimate}
+                stakeLabel={stakeLabel}
               />
             )}
             <div className={FormStyles.Form__navigation}>
