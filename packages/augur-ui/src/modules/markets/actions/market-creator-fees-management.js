@@ -1,7 +1,7 @@
 import async from "async";
 import logError from "utils/log-error";
 import noop from "utils/noop";
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import { augur } from "services/augurjs";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
