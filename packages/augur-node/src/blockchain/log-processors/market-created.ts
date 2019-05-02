@@ -170,7 +170,6 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
     };
 
   } catch (e) {
-    debugger;
     console.error(e);
     throw (e);
   }
