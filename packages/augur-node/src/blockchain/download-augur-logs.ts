@@ -12,7 +12,7 @@ import { ParsedLog } from "@augurproject/api";
 const BLOCK_DOWNLOAD_PARALLEL_LIMIT = 15;
 
 interface BlockDetailsByBlock {
-  [blockNumbe: number]: BlockDetail;
+  [blockNumber: number]: BlockDetail;
 }
 
 function extractBlockNumbers(batchOfAugurLogs: Array<FormattedEventLog>): Array<number> {
