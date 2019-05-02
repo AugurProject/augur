@@ -79,6 +79,7 @@ export class Augur<TBigNumber, TProvider extends Provider = Provider> {
     // API
     this.addresses = addresses;
     this.contracts = new Contracts(this.addresses, this.dependencies);
+    this.trade = new Trade(this.addresses, this.dependencies);
     this.events = new Events(this.provider, this.addresses.Augur);
   }
 

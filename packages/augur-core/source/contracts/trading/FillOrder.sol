@@ -393,6 +393,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         require(_tradeData.order.kycToken == ERC20Token(0) || _tradeData.order.kycToken.balanceOf(_filler) > 0);
         uint256 _marketCreatorFees;
         uint256 _reporterFees;
+        uint256 _price = orders.getPrice(_orderId);
         if (!_ignoreShares) {
             (_marketCreatorFees, _reporterFees) = _tradeData.tradeMakerSharesForFillerShares();
             _tradeData.tradeMakerTokensForFillerShares();
@@ -408,8 +409,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _amountRemainingFillerWants = _tradeData.filler.sharesToSell.add(_tradeData.filler.sharesToBuy);
         uint256 _amountFilled = _amountFillerWants.sub(_amountRemainingFillerWants);
         _tradeData.contracts.orders.recordFillOrder(_orderId, _tradeData.getMakerSharesDepleted(), _tradeData.getMakerTokensDepleted(), _amountFilled);
-        bool _orderIsCompletelyFilled = _tradeData.contracts.orders.getAmount(_orderId) == 0 ? true : false;
-        logOrderFilled(_tradeData, _marketCreatorFees.add(_reporterFees), _amountFilled, _tradeGroupId, _orderIsCompletelyFilled);
+        logOrderFilled(_tradeData, _price, _marketCreatorFees.add(_reporterFees), _amountFilled, _tradeGroupId);
         logAndUpdateVolume(_tradeData);
         updateProfitLoss(_tradeData, _amountFilled);
         if (_tradeData.creator.participantAddress == _tradeData.filler.participantAddress) {
@@ -443,8 +443,8 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         return true;
     }
 
-    function logOrderFilled(Trade.Data memory _tradeData, uint256 _fees, uint256 _amountFilled, bytes32 _tradeGroupId, bool _orderIsCompletelyFilled) private returns (bool) {
-        augur.logOrderFilled(_tradeData.contracts.market.getUniverse(), _tradeData.filler.participantAddress, _tradeData.creator.participantAddress, _tradeData.contracts.market, _tradeData.order.orderId, _tradeData.order.sharePriceLong, _tradeData.order.outcome, _fees, _amountFilled, _tradeGroupId, _orderIsCompletelyFilled);
+    function logOrderFilled(Trade.Data memory _tradeData, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _tradeGroupId) private returns (bool) {
+        augur.logOrderFilled(_tradeData.contracts.market.getUniverse(), _tradeData.creator.participantAddress, _tradeData.filler.participantAddress, _price, _fees, _amountFilled, _tradeData.order.orderId, _tradeGroupId);
         return true;
     }
 

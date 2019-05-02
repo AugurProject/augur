@@ -23,14 +23,13 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
         orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = sender)
 
     # fill best order
-    orderFilledLog = {
-        "filler": bytesToHexString(tester.a2),
-        "fees": 0,
-        "tradeGroupId": stringToBytes(longTo32Bytes(42)),
-        "orderIsCompletelyFilled": True
+    orderEventLog = {
+	    "eventType": 3,
+	    "addressData": [nullAddress, bytesToHexString(tester.a2 if withSelf else tester.a1) , bytesToHexString(tester.a2)],
+	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp()],
     }
     with BuyWithCash(cash, fix('2', '40'), tester.k2, "fill order"):
-        with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
+        with AssertLog(contractsFixture, "OrderEvent", orderEventLog):
             assert trade.publicTrade(SHORT,market.address, YES, fix(2), 60, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender=tester.k2)
 
     assert orders.getAmount(orderID) == 0
@@ -54,12 +53,13 @@ def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
 
     # fill best order
     fillOrderID = None
-    orderFilledLog = {
-        "amountFilled": fix(1),
-        "orderIsCompletelyFilled": False
+    orderEventLog = {
+	    "eventType": 3,
+	    "addressData": [nullAddress, bytesToHexString(tester.a1) , bytesToHexString(tester.a2)],
+	    "uint256Data": [60, fix(1), YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp()],
     }
     with BuyWithCash(cash, fix('1', '40'), tester.k2, "trade"):
-        with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
+        with AssertLog(contractsFixture, "OrderEvent", orderEventLog):
             with PrintGasUsed(contractsFixture, "publicTrade", 0):
                 fillOrderID = trade.publicTrade(1, market.address, YES, fix(1), 60, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender = tester.k2)
 
@@ -83,11 +83,13 @@ def test_one_bid_on_books_buy_partial_order_fill_loop_limit(contractsFixture, ca
         orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     # fill best order
-    orderFilledLog = {
-        "amountFilled": fix(1),
+    orderEventLog = {
+	    "eventType": 3,
+	    "addressData": [nullAddress, bytesToHexString(tester.a1) , bytesToHexString(tester.a2)],
+	    "uint256Data": [60, fix(1), YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp()],
     }
     with BuyWithCash(cash, fix('1', '40'), tester.k2, "trade 2"):
-        with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
+        with AssertLog(contractsFixture, "OrderEvent", orderEventLog):
             with PrintGasUsed(contractsFixture, "publicTrade", 0):
                 fillOrderID = trade.publicTrade(1, market.address, YES, fix(1), 60, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender=tester.k2)
 
@@ -116,18 +118,18 @@ def test_one_bid_on_books_buy_excess_order(withTotalCost, contractsFixture, cash
         orderID = createOrder.publicCreateOrder(BID, fix(4), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     # fill best order
-    orderFilledLog = {
-        "filler": bytesToHexString(tester.a2),
-        "fees": 0,
-        "tradeGroupId": stringToBytes(longTo32Bytes(42)),
-        "orderIsCompletelyFilled": True
+    orderFilledEventLog = {
+	    "eventType": 3,
+	    "addressData": [nullAddress, bytesToHexString(tester.a1) , bytesToHexString(tester.a2)],
+	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(4),  contractsFixture.contracts['Time'].getTimestamp()],
     }
-    orderCreatedLog = {
-        "creator": bytesToHexString(tester.a2),
-        "tradeGroupId": stringToBytes(longTo32Bytes(42)),
+    orderCreatedEventLog = {
+        "eventType": 0,
+	    "addressData": [nullAddress, bytesToHexString(tester.a2) , nullAddress],
+	    "uint256Data": [60, fix(1), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp()],
     }
-    with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
-        with AssertLog(contractsFixture, "OrderCreated", orderCreatedLog):
+    with AssertLog(contractsFixture, "OrderEvent", orderFilledEventLog):
+        with AssertLog(contractsFixture, "OrderEvent", orderCreatedEventLog, skip=1):
             if withTotalCost:
                 with BuyWithCash(cash, fix('5', '40'), tester.k2, "tradeWithTotalCost"):
                     fillOrderID = trade.publicTradeWithTotalCost(SHORT,market.address, YES, fix(5, 60), 60, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender=tester.k2)
@@ -654,19 +656,19 @@ def test_trade_with_self(contractsFixture, cash, market, universe):
         orderID = createOrder.publicCreateOrder(BID, fix(4), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     # fill best order
-    orderFilledLog = {
-        "filler": bytesToHexString(tester.a1),
-        "fees": 0,
-        "tradeGroupId": stringToBytes(longTo32Bytes(42)),
-        "orderIsCompletelyFilled": True
+    orderFilledEventLog = {
+	    "eventType": 3,
+	    "addressData": [nullAddress, bytesToHexString(tester.a1) , bytesToHexString(tester.a1)],
+	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(4),  contractsFixture.contracts['Time'].getTimestamp()],
     }
-    orderCreatedLog = {
-        "creator": bytesToHexString(tester.a1),
-        "tradeGroupId": stringToBytes(longTo32Bytes(42)),
+    orderCreatedEventLog = {
+	    "eventType": 0,
+	    "addressData": [nullAddress, bytesToHexString(tester.a1) , nullAddress],
+	    "uint256Data": [60, fix(1), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp()],
     }
     with BuyWithCash(cash, fix('5', '40'), tester.k1, "trade"):
-        with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
-            with AssertLog(contractsFixture, "OrderCreated", orderCreatedLog):
+        with AssertLog(contractsFixture, "OrderEvent", orderFilledEventLog):
+            with AssertLog(contractsFixture, "OrderEvent", orderCreatedEventLog, skip=1):
                 fillOrderID = trade.publicTrade(SHORT,market.address, YES, fix(5), 60, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender = tester.k1)
 
     assert orders.getAmount(orderID) == 0

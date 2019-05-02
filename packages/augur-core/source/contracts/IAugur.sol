@@ -23,9 +23,9 @@ contract IAugur {
     function logMarketMigrated(IMarket _market, IUniverse _originalUniverse) public returns (bool);
     function logReportingParticipantDisavowed(IUniverse _universe, IMarket _market) public returns (bool);
     function logMarketParticipantsDisavowed(IUniverse _universe) public returns (bool);
-    function logOrderCanceled(IUniverse _universe, address _shareToken, address _sender, IMarket _market, bytes32 _orderId, Order.Types _orderType, uint256 _tokenRefund, uint256 _sharesRefund) public returns (bool);
-    function logOrderCreated(Order.Types _orderType, uint256 _amount, uint256 _price, address _creator, bytes32 _tradeGroupId, bytes32 _orderId, IUniverse _universe, IMarket _market, ERC20Token _kycToken, uint256 _outcome) public returns (bool);
-    function logOrderFilled(IUniverse _universe, address _filler, address creator, IMarket _market, bytes32 _orderId, uint256 _price, uint256 _fees, uint256 _amountFilled, uint256 _outcome, bytes32 _tradeGroupId, bool _orderIsCompletelyFilled) public returns (bool);
+    function logOrderCanceled(IUniverse _universe, IMarket _market, address _creator, uint256 _tokenRefund, uint256 _sharesRefund, bytes32 _orderId) public returns (bool);
+    function logOrderCreated(IUniverse _universe, bytes32 _orderId, bytes32 _tradeGroupId) public returns (bool);
+    function logOrderFilled(IUniverse _universe, address _creator, address _filler, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _orderId, bytes32 _tradeGroupId) public returns (bool);
     function logCompleteSetsPurchased(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) public returns (bool);
     function logCompleteSetsSold(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees) public returns (bool);
     function logTradingProceedsClaimed(IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _numShares, uint256 _numPayoutTokens, uint256 _finalTokenBalance, uint256 _fees) public returns (bool);
@@ -53,7 +53,7 @@ contract IAugur {
     function logParticipationTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance) public returns (bool);
     function logParticipationTokensBurned(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
     function logParticipationTokensMinted(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
-    function logOrderPriceChanged(IUniverse _universe, bytes32 _orderId, uint256 _outcome, uint256 _price) public returns (bool);
+    function logOrderPriceChanged(IUniverse _universe, bytes32 _orderId) public returns (bool);
     function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume) public returns (bool);
     function logProfitLossChanged(IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost) public returns (bool);
     function recordAuctionTokens(IUniverse _universe) public returns (bool);
