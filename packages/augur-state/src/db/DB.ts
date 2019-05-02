@@ -94,9 +94,13 @@ export class DB<TBigNumber> {
             start: "start",
             end: "end",
             field: [
-              "title",
+              "market",
+              "topic",
               "description",
-              "tags",
+              "longDescription",
+              "resolutionSource",
+              "_scalarDenomination",
+              "tags"
             ],
           },
         };
