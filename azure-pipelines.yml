@@ -269,8 +269,6 @@ jobs:
         docker tag augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG) augurproject/python2-and-3:monorepo
         docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
         docker images
-        yarn
-        yarn workspace @augurproject/core OUTPUT_PATH='../augur-artifacts/src' npm run build:contracts
         yarn workspace @augurproject/tools docker:build
 
         if [[ "$(Build.SourceBranchName)" == "master" ]]; then
