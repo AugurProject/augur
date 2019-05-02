@@ -14,7 +14,7 @@ import * as t from "io-ts";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { Augur as GenericAugur, ParsedLog } from "@augurproject/api";
 
-export class Augur extends GenericAugur<BigNumber, EthersProvider> {};
+export class Augur extends GenericAugur<BigNumber, EthersProvider> { };
 export { ParsedLog as FormattedEventLog } from "@augurproject/api";
 
 export type BlockRange = { fromBlock: number; toBlock: number };
@@ -61,8 +61,8 @@ export interface BaseTransaction extends BaseTransactionRow {
 
 export interface WebSocketConfigs {
   pingMs?: number;
-  ws?: {[config: string]: any};
-  wss?: {[config: string]: any};
+  ws?: { [config: string]: any };
+  wss?: { [config: string]: any };
 }
 
 export interface EthereumNodeEndpoints {
@@ -80,12 +80,12 @@ export type Int256 = string;
 export interface MarketCreatedLogExtraInfo {
   minPrice?: string;
   maxPrice?: string;
-  tags?: Array<string|null>;
-  outcomeNames?: Array<string|number|null>;
+  tags?: Array<string | null>;
+  outcomeNames?: Array<string | number | null>;
   description?: string;
-  longDescription?: string|null;
-  _scalarDenomination?: string|null;
-  resolutionSource?: string|null;
+  longDescription?: string | null;
+  _scalarDenomination?: string | null;
+  resolutionSource?: string | null;
   marketType?: string;
 }
 
@@ -98,11 +98,11 @@ export interface MarketCreatedOnContractInfo {
   numTicks: string;
 }
 
-export type ErrorCallback = (err: Error|null) => void;
+export type ErrorCallback = (err: Error | null) => void;
 
-export type GenericCallback<ResultType> = (err: Error|null, result?: ResultType) => void;
+export type GenericCallback<ResultType> = (err: Error | null, result?: ResultType) => void;
 
-export type AsyncCallback = (err: Error|null, result?: any) => void;
+export type AsyncCallback = (err: Error | null, result?: any) => void;
 
 export type LogProcessor = (augur: Augur, log: ParsedLog) => Promise<(db: Knex) => Promise<void>>;
 
@@ -119,14 +119,14 @@ export interface LogProcessors {
 }
 
 export interface JsonRpcRequest {
-  id: string|number|null;
+  id: string | number | null;
   jsonrpc: string;
   method: string;
   params: any;
 }
 
 export interface JsonRpcResponse {
-  id: string|number|null;
+  id: string | number | null;
   jsonrpc: string;
   result: any;
 }
@@ -150,15 +150,15 @@ export const SortLimitParams = t.partial({
 });
 
 export interface SortLimit {
-  sortBy: string|null|undefined;
-  isSortDescending: boolean|null|undefined;
-  limit: number|null|undefined;
-  offset: number|null|undefined;
+  sortBy: string | null | undefined;
+  isSortDescending: boolean | null | undefined;
+  limit: number | null | undefined;
+  offset: number | null | undefined;
 }
 
 export interface GetMarketInfoRequest {
   jsonrpc: string;
-  id: string|number;
+  id: string | number;
   method: string;
   params: {
     market: string;
@@ -167,11 +167,11 @@ export interface GetMarketInfoRequest {
 
 export interface GetAccountTransferHistoryRequest {
   jsonrpc: string;
-  id: string|number;
+  id: string | number;
   method: string;
   params: {
     account: Address;
-    token: Address|null;
+    token: Address | null;
   };
 }
 
@@ -199,32 +199,30 @@ export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> 
   marketCreator: Address;
   numOutcomes: number;
   creationBlockNumber: number;
-  creationFee: BigNumberType;
+  feeDivisor: BigNumberType;
   reportingFeeRate: BigNumberType;
-  marketCreatorFeeRate: BigNumberType;
-  marketCreatorFeesBalance: BigNumberType|null;
-  initialReportSize: BigNumberType|null;
+  initialReportSize: BigNumberType | null;
   validityBondSize: BigNumberType;
   category: string;
-  tag1: string|null;
-  tag2: string|null;
+  tag1: string | null;
+  tag2: string | null;
   volume: BigNumberType;
   openInterest: BigNumberType;
   sharesOutstanding: BigNumberType;
   marketStateId: number;
   disputeWindow: Address;
   endTime: number;
-  finalizationBlockNumber?: number|null;
-  lastTradeBlockNumber?: number|null;
-  reportingState?: ReportingState|null;
+  finalizationBlockNumber?: number | null;
+  lastTradeBlockNumber?: number | null;
+  reportingState?: ReportingState | null;
   shortDescription: string;
-  longDescription?: string|null;
-  scalarDenomination?: string|null;
+  longDescription?: string | null;
+  scalarDenomination?: string | null;
   designatedReporter: Address;
   designatedReportStake: BigNumberType;
-  resolutionSource?: string|null;
-  consensusPayoutId?: number|null;
-  isInvalid?: boolean|null;
+  resolutionSource?: string | null;
+  consensusPayoutId?: number | null;
+  isInvalid?: boolean | null;
   forking: number;
   needsMigration: number;
   needsDisavowal: number;
@@ -233,18 +231,18 @@ export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> 
 export interface SearchRow {
   marketId: Address;
   category: string;
-  tags: string|null;
+  tags: string | null;
   shortDescription: string;
-  longDescription?: string|null;
-  scalarDenomination?: string|null;
-  resolutionSource?: string|null;
+  longDescription?: string | null;
+  scalarDenomination?: string | null;
+  resolutionSource?: string | null;
 }
 
 export interface PositionsRow<BigNumberType> {
   outcome: number;
   marketId?: Address;
-  numShares: BigNumberType|null;
-  account: Address|null;
+  numShares: BigNumberType | null;
+  account: Address | null;
   realizedProfitLoss?: BigNumberType;
   unrealizedProfitLoss?: BigNumberType;
   numSharesAdjustedForUserIntention?: BigNumberType;
@@ -256,7 +254,7 @@ export interface OutcomesRow<BigNumberType> {
   price: BigNumberType;
   volume: BigNumberType;
   shareVolume: BigNumberType;
-  description: string|null;
+  description: string | null;
 }
 
 export interface TokensRow {
@@ -288,7 +286,7 @@ export interface DisputeTokensRow<BigNumberType> extends Payout<BigNumberType> {
   marketId: Address;
   amountStaked: BigNumberType;
   claimed: BigNumberType;
-  winning: BigNumberType|null;
+  winning: BigNumberType | null;
 }
 
 export interface DisputeTokensRowWithTokenState<BigNumberType> extends DisputeTokensRow<BigNumberType> {
@@ -304,16 +302,16 @@ export interface PayoutRow<BigNumberType> extends Payout<BigNumberType> {
 export interface PayoutNumerators<BigNumberType> {
   payout0: BigNumberType;
   payout1: BigNumberType;
-  payout2: BigNumberType|null;
-  payout3: BigNumberType|null;
-  payout4: BigNumberType|null;
-  payout5: BigNumberType|null;
-  payout6: BigNumberType|null;
-  payout7: BigNumberType|null;
+  payout2: BigNumberType | null;
+  payout3: BigNumberType | null;
+  payout4: BigNumberType | null;
+  payout5: BigNumberType | null;
+  payout6: BigNumberType | null;
+  payout7: BigNumberType | null;
 }
 
 export interface Payout<BigNumberType> extends PayoutNumerators<BigNumberType> {
-  isInvalid: boolean|number;
+  isInvalid: boolean | number;
 }
 
 export interface NormalizedPayoutNumerators<BigNumberType> {
@@ -321,7 +319,7 @@ export interface NormalizedPayoutNumerators<BigNumberType> {
 }
 
 export interface NormalizedPayout<BigNumberType> extends NormalizedPayoutNumerators<BigNumberType> {
-  isInvalid: boolean|number;
+  isInvalid: boolean | number;
 }
 
 export interface UIDisputeTokenInfo<BigNumberType> extends Payout<BigNumberType> {
@@ -329,7 +327,7 @@ export interface UIDisputeTokenInfo<BigNumberType> extends Payout<BigNumberType>
   marketId: Address;
   amountStaked: BigNumberType;
   claimed: boolean;
-  winningToken: boolean|null;
+  winningToken: boolean | null;
   ReportingState: ReportingState;
 }
 
@@ -346,7 +344,7 @@ export interface StakeDetails<BigNumberType> extends NormalizedPayout<BigNumberT
 
 export interface UIStakeInfo<BigNumberType> {
   marketId: Address;
-  disputeRound: number|null;
+  disputeRound: number | null;
   stakeCompletedTotal: BigNumberType;
   bondSizeOfNewStake: BigNumberType;
   stakes: Array<StakeDetails<BigNumberType>>;
@@ -366,7 +364,7 @@ export interface UIOutcomeInfo<BigNumberType> {
   id: number;
   volume: BigNumberType;
   price: BigNumberType;
-  description: string|null;
+  description: string | null;
 }
 
 export interface UIMarketInfo<BigNumberType> {
@@ -380,39 +378,36 @@ export interface UIMarketInfo<BigNumberType> {
   author: Address;
   creationTime: number;
   creationBlock: number;
-  creationFee: BigNumberType;
-  settlementFee: BigNumberType;
+  feeDivisor: BigNumberType;
   reportingFeeRate: BigNumberType;
-  marketCreatorFeeRate: BigNumberType;
-  marketCreatorFeesBalance: BigNumberType|null;
-  initialReportSize: BigNumberType|null;
+  initialReportSize: BigNumberType | null;
   category: string;
-  tags: Array<string|null>;
+  tags: Array<string | null>;
   volume: BigNumberType;
   openInterest: BigNumberType;
   outstandingShares: BigNumberType;
   disputeWindow: Address;
   endTime: number;
-  finalizationBlockNumber?: number|null;
-  finalizationTime?: number|null;
-  lastTradeBlockNumber?: number|null;
-  lastTradeTime?: number|null;
-  reportingState?: ReportingState|null;
+  finalizationBlockNumber?: number | null;
+  finalizationTime?: number | null;
+  lastTradeBlockNumber?: number | null;
+  lastTradeTime?: number | null;
+  reportingState?: ReportingState | null;
   forking: number;
   needsMigration: number;
   description: string;
-  details?: string|null;
-  scalarDenomination?: string|null;
+  details?: string | null;
+  scalarDenomination?: string | null;
   designatedReporter: Address;
   designatedReportStake: BigNumberType;
-  resolutionSource?: string|null;
+  resolutionSource?: string | null;
   numTicks: BigNumberType;
   tickSize: BigNumberType;
-  consensus: NormalizedPayout<BigNumberType>|null;
+  consensus: NormalizedPayout<BigNumberType> | null;
   outcomes: Array<UIOutcomeInfo<string>>;
 }
 
-export type UIMarketsInfo<BigNumberType> = Array<UIMarketInfo<BigNumberType>|null>;
+export type UIMarketsInfo<BigNumberType> = Array<UIMarketInfo<BigNumberType> | null>;
 
 // OpenInterestAggregation is an aggregation of various types of open interest
 // for markets within some particular context. Eg. all markets within a category.
@@ -482,7 +477,7 @@ export interface OrdersRow<BigNumberType> extends BaseTransactionRow {
   originalFullPrecisionAmount: BigNumberType;
   tokensEscrowed: BigNumberType;
   sharesEscrowed: BigNumberType;
-  tradeGroupId: Bytes32|null;
+  tradeGroupId: Bytes32 | null;
 }
 
 export interface UITrade {
@@ -492,7 +487,7 @@ export interface UITrade {
   type: string;
   price: string;
   amount: string;
-  maker: boolean|null;
+  maker: boolean | null;
   selfFilled: boolean;
   marketCreatorFees: string;
   reporterFees: string;
@@ -501,7 +496,7 @@ export interface UITrade {
   outcome: number;
   shareToken: Address;
   timestamp: number;
-  tradeGroupId: Bytes32|null;
+  tradeGroupId: Bytes32 | null;
 }
 
 export interface TradesRow<BigNumberType> extends BaseTransactionRow {
@@ -520,7 +515,7 @@ export interface TradesRow<BigNumberType> extends BaseTransactionRow {
   amount: BigNumberType;
   marketCreatorFees: BigNumberType;
   reporterFees: BigNumberType;
-  tradeGroupId: Bytes32|null;
+  tradeGroupId: Bytes32 | null;
 }
 
 export interface CompleteSetsRow<BigNumberType> extends BaseTransactionRow {
@@ -530,7 +525,7 @@ export interface CompleteSetsRow<BigNumberType> extends BaseTransactionRow {
   eventName: string;
   numPurchasedOrSold: BigNumberType;
   numCompleteSets: BigNumberType;
-  tradeGroupId: Bytes32|null;
+  tradeGroupId: Bytes32 | null;
 }
 
 export interface UICompleteSetsRow<BigNumberType> extends CompleteSetsRow<BigNumberType> {
@@ -564,8 +559,8 @@ export interface MarketPriceHistory<BigNumberType> {
 
 export interface MarketsRowWithTime extends MarketsRow<BigNumber> {
   creationTime: number;
-  finalizationTime?: null|number;
-  lastTradeTime?: null|number;
+  finalizationTime?: null | number;
+  lastTradeTime?: null | number;
 }
 
 export interface JoinedReportsMarketsRow<BigNumberType> extends Payout<BigNumberType> {
@@ -593,7 +588,7 @@ export interface UIReport<BigNumberType> {
   blockHash: Bytes32;
   marketId: Address;
   disputeWindow: Address;
-  payoutNumerators: Array<BigNumberType|null>;
+  payoutNumerators: Array<BigNumberType | null>;
   amountStaked: BigNumberType;
   crowdsourcerId: Address;
   isCategorical: boolean;
@@ -609,7 +604,7 @@ export interface DisputeWindowRow {
   startTime: number;
   state: DisputeWindowState;
   endTime: number;
-  fees: number|string;
+  fees: number | string;
 }
 
 export interface InitialReportersRow<BigNumberType> {
