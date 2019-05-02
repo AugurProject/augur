@@ -1,4 +1,4 @@
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import { augur } from "services/augurjs";
 import { UNIVERSE_ID } from "modules/common-elements/constants";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";

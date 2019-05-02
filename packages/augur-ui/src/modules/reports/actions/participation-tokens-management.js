@@ -1,5 +1,5 @@
 import noop from "utils/noop";
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import logError from "utils/log-error";
 import { augur } from "services/augurjs";
 import { UNIVERSE_ID } from "modules/common-elements/constants";

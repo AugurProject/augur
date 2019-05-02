@@ -1,5 +1,5 @@
 import mockStore from "test/mockStore";
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import { formatGasCostToEther } from "utils/format-number";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 

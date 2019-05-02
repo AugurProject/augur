@@ -1,6 +1,6 @@
 import generateDownloadAccountLink from "modules/auth/helpers/generate-download-account-link";
 import keythereum from "keythereum";
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import { augur } from "services/augurjs";
 
 jest.mock("keythereum");

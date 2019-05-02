@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Helmet } from "react-helmet";
 
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import { formatGasCostToEther } from "utils/format-number";
 import MarketPreview from "modules/market/containers/market-preview";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";

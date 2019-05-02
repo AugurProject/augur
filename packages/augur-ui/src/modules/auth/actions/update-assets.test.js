@@ -1,6 +1,6 @@
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import * as updateLoginAccountModule from "modules/auth/actions/update-login-account";
 import { augur } from "services/augurjs";

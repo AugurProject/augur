@@ -1,9 +1,9 @@
 import keythereum from "keythereum";
-import speedomatic from "speedomatic";
+import { byteArrayToHexString } from "speedomatic";
 
 export default function(address, keystore, privateKey) {
   return {
-    accountPrivateKey: speedomatic.byteArrayToHexString(privateKey || ""),
+    accountPrivateKey: byteArrayToHexString(privateKey || ""),
     downloadAccountDataString: `data:,${encodeURIComponent(
       JSON.stringify(keystore)
     )}`,

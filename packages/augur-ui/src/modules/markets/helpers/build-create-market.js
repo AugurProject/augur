@@ -1,5 +1,5 @@
 import { augur } from "services/augurjs";
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import {
   YES_NO,
   CATEGORICAL,
