@@ -36,7 +36,8 @@ export default class Input extends Component {
     isLoading: PropTypes.bool,
     onFocus: PropTypes.func,
     lightBorder: PropTypes.bool,
-    darkMaxBtn: PropTypes.bool
+    darkMaxBtn: PropTypes.bool,
+    style: PropTypes.object
   };
 
   static defaultProps = {
@@ -61,7 +62,8 @@ export default class Input extends Component {
     incrementAmount: null,
     comparisonValue: null,
     placeholder: null,
-    darkMaxBtn: false
+    darkMaxBtn: false,
+    style: {}
   };
 
   constructor(props) {
@@ -178,6 +180,7 @@ export default class Input extends Component {
       isMultiline,
       type,
       darkMaxBtn,
+      style,
       ...p
     } = this.props; // eslint-disable-line no-unused-vars
     const { focused, isHiddenContentVisible, value } = this.state;
@@ -200,6 +203,7 @@ export default class Input extends Component {
         }}
         onFocus={this.onFocusIn}
         onBlur={this.onBlurThing}
+        style={style}
       >
         {isSearch && IconSearch}
         {!isMultiline && (

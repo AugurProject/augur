@@ -6,7 +6,7 @@ import {
 } from "modules/transactions/actions/update-transactions-data";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/auth/actions/update-login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { PENDING } from "modules/transactions/constants/statuses";
+import { PENDING } from "modules/common-elements/constants";
 
 const DEFAULT_STATE = {};
 

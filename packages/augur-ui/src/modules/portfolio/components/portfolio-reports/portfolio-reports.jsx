@@ -4,20 +4,23 @@ import { Helmet } from "react-helmet";
 
 import PortfolioReportsForkedMarketCard from "modules/portfolio/components/portfolio-reports/portfolio-reports-forked-market-card";
 import {
-  MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET,
-  MODAL_CLAIM_REPORTING_FEES_NONFORKED_MARKETS
-} from "modules/modal/constants/modal-types";
-import { TYPE_CLAIM_PROCEEDS } from "modules/markets/constants/link-types";
+  TYPE_CLAIM_PROCEEDS,
+  MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET
+} from "modules/common-elements/constants";
 import Styles from "modules/portfolio/components/portfolio-reports/portfolio-reports.styles";
 import DisputingMarkets from "modules/reporting/components/common/disputing-markets";
 import ReportingResolved from "modules/reporting/components/reporting-resolved/reporting-resolved";
 import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
+
+import { formatRep } from "utils/format-number";
+import { RepBalance } from "modules/common-elements/labels";
 
 export default class PortfolioReports extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
+    availableRep: PropTypes.string,
     upcomingMarkets: PropTypes.array.isRequired,
     upcomingMarketsCount: PropTypes.number.isRequired,
     isMobile: PropTypes.bool.isRequired,
@@ -36,14 +39,19 @@ export default class PortfolioReports extends Component {
     updateModal: PropTypes.func.isRequired,
     reportingFees: PropTypes.object.isRequired,
     resolvedMarkets: PropTypes.array.isRequired,
+    resolvedMarketIds: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
-    loadMarkets: PropTypes.func.isRequired
+    loadMarkets: PropTypes.func.isRequired,
+    disputableMarketIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    upcomingDisputableMarketIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    loadDisputingDetails: PropTypes.func.isRequired
   };
 
   static defaultProps = {
     forkedMarket: null,
-    disputableMarketsLength: 0
+    disputableMarketsLength: 0,
+    availableRep: "0"
   };
 
   constructor(props) {
@@ -52,22 +60,11 @@ export default class PortfolioReports extends Component {
     this.handleClaimReportingFeesForkedMarket = this.handleClaimReportingFeesForkedMarket.bind(
       this
     );
-    this.handleClaimReportingFeesNonforkedMarkets = this.handleClaimReportingFeesNonforkedMarkets.bind(
-      this
-    );
     this.modalCallback = this.modalCallback.bind(this);
   }
 
   componentWillMount() {
     this.props.getReportingFees();
-  }
-
-  handleClaimReportingFeesNonforkedMarkets() {
-    this.props.updateModal({
-      type: MODAL_CLAIM_REPORTING_FEES_NONFORKED_MARKETS,
-      ...this.props.reportingFees,
-      modalCallback: this.modalCallback
-    });
   }
 
   handleClaimReportingFeesForkedMarket = () => {
@@ -96,6 +93,7 @@ export default class PortfolioReports extends Component {
       forkedMarket,
       reportingFees,
       history,
+      availableRep,
       isForking,
       isMobile,
       location,
@@ -112,19 +110,12 @@ export default class PortfolioReports extends Component {
       showUpcomingPagination,
       loadMarketsInfoIfNotLoaded,
       resolvedMarkets,
-      toggleFavorite
+      resolvedMarketIds,
+      toggleFavorite,
+      disputableMarketIds,
+      upcomingDisputableMarketIds,
+      loadDisputingDetails
     } = this.props;
-    let disableClaimReportingFeesNonforkedMarketsButton = "";
-    if (
-      (isNaN(reportingFees.unclaimedEth.value) ||
-        reportingFees.unclaimedEth.formatted === "-" ||
-        reportingFees.unclaimedEth.formatted === "") &&
-      (isNaN(reportingFees.unclaimedRep.value) ||
-        reportingFees.unclaimedRep.formatted === "-" ||
-        reportingFees.unclaimedRep.formatted === "")
-    ) {
-      disableClaimReportingFeesNonforkedMarketsButton = "disabled";
-    }
     const userHasClaimableForkFees =
       reportingFees.forkedMarket &&
       (reportingFees.unclaimedForkEth.value > 0 ||
@@ -136,27 +127,10 @@ export default class PortfolioReports extends Component {
           <Helmet>
             <title>Reporting</title>
           </Helmet>
-          <h4>Claim all available stake and fees</h4>
-          <div className={Styles.PortfolioReports__details}>
-            <ul className={Styles.PortfolioReports__info}>
-              <li>
-                <span>REP</span>
-                <span>{reportingFees.unclaimedRep.formatted}</span>
-              </li>
-              <li>
-                <span>ETH</span>
-                <span>{reportingFees.unclaimedEth.formatted}</span>
-              </li>
-            </ul>
-            <button
-              className={Styles.PortfolioReports__claim}
-              disabled={disableClaimReportingFeesNonforkedMarketsButton}
-              onClick={this.handleClaimReportingFeesNonforkedMarkets}
-            >
-              Claim
-            </button>
-          </div>
         </section>
+        <div style={{ padding: "2rem 2rem 0" }}>
+          <RepBalance rep={formatRep(availableRep).formattedValue} />
+        </div>
         {userHasClaimableForkFees && (
           <section className={Styles.PortfolioReports}>
             <h4>Forked Market</h4>
@@ -183,6 +157,9 @@ export default class PortfolioReports extends Component {
             markets={markets}
             upcomingMarkets={upcomingMarkets}
             upcomingMarketsCount={upcomingMarketsCount}
+            disputableMarketIds={disputableMarketIds}
+            upcomingDisputableMarketIds={upcomingDisputableMarketIds}
+            loadDisputingDetails={loadDisputingDetails}
             isMobile={isMobile}
             isConnected={isConnected}
             loadMarkets={loadMarkets}
@@ -200,11 +177,13 @@ export default class PortfolioReports extends Component {
         <div>
           <ReportingResolved
             location={location}
+            isConnected={isConnected}
             history={history}
             isLogged={isConnected}
             isMobile={isMobile}
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
-            markets={resolvedMarkets}
+            resolvedMarkets={resolvedMarkets}
+            resolvedMarketIds={resolvedMarketIds}
             noShowHeader
             toggleFavorite={toggleFavorite}
             nullMessage="Markets you have staked on will be listed here when resolved."

@@ -79,7 +79,8 @@ export default class FormattedMigrationTotals extends Component {
             <li key={outcome.id}>
               <button
                 className={classNames({
-                  [`${FormStyles.active}`]: selectedOutcome === outcome.id
+                  [`${FormStyles.active}`]: selectedOutcome === outcome.id,
+                  [FormStyles.isInvalidField]: outcome.name === "Indeterminate"
                 })}
                 onClick={e => {
                   validateOutcome(outcome.id, outcome.name, false);

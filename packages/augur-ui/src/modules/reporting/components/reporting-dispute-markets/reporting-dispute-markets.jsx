@@ -6,7 +6,7 @@ import ReportingHeader from "modules/reporting/containers/reporting-header";
 import ReportDisputeNoRepState from "src/modules/reporting/components/reporting-dispute-no-rep-state/reporting-dispute-no-rep-state";
 import DisputingMarkets from "modules/reporting/components/common/disputing-markets";
 
-import Styles from "modules/reporting/components/reporting-dispute-markets/reporting-dispute-markets.styles";
+const Styles = require("./reporting-dispute-markets.styles");
 
 export default class ReportingDisputeMarkets extends Component {
   static propTypes = {
@@ -27,7 +27,10 @@ export default class ReportingDisputeMarkets extends Component {
     disputableMarketsLength: PropTypes.number.isRequired,
     forkEndTime: PropTypes.string,
     showPagination: PropTypes.bool.isRequired,
-    showUpcomingPagination: PropTypes.bool.isRequired
+    showUpcomingPagination: PropTypes.bool.isRequired,
+    disputableMarketIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    upcomingDisputableMarketIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    loadDisputingDetails: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -60,7 +63,10 @@ export default class ReportingDisputeMarkets extends Component {
       paginationCount,
       disputableMarketsLength,
       showPagination,
-      showUpcomingPagination
+      showUpcomingPagination,
+      disputableMarketIds,
+      upcomingDisputableMarketIds,
+      loadDisputingDetails
     } = this.props;
 
     return (
@@ -89,6 +95,9 @@ export default class ReportingDisputeMarkets extends Component {
           markets={markets}
           upcomingMarkets={upcomingMarkets}
           upcomingMarketsCount={upcomingMarketsCount}
+          disputableMarketIds={disputableMarketIds}
+          upcomingDisputableMarketIds={upcomingDisputableMarketIds}
+          loadDisputingDetails={loadDisputingDetails}
           isMobile={isMobile}
           isConnected={isConnected}
           loadMarkets={loadMarkets}

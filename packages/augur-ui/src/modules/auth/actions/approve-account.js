@@ -1,7 +1,7 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
-import { updateNotification } from "modules/notifications/actions/notifications";
+import { updateAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 
 export function checkAccountAllowance(callback = logError) {
@@ -12,7 +12,7 @@ export function checkAccountAllowance(callback = logError) {
     } else {
       augur.api.Cash.allowance(
         {
-          _tokenHolder: loginAccount.address,
+          _owner: loginAccount.address,
           _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].Augur
         },
         (err, allowance) => {
@@ -39,7 +39,7 @@ export function approveAccount(onSent = logError, onSuccess = logError) {
       },
       onFailed: res => {
         dispatch(
-          updateNotification(res.hash, {
+          updateAlert(res.hash, {
             id: res.hash,
             status: "Failed",
             timestamp: selectCurrentTimestampInSeconds(getState())

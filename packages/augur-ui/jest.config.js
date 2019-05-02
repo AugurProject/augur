@@ -19,10 +19,10 @@ module.exports = {
   clearMocks: true,
 
   // Indicates whether the coverage information should be collected while executing the test
-  collectCoverage: true,
+  collectCoverage: false,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: ["<rootDir>/src/**/*.{js,jsx}"],
+  collectCoverageFrom: ["<rootDir>/src/**/*.[jt]s?(x)"],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
@@ -59,12 +59,7 @@ module.exports = {
   // ],
 
   // An array of file extensions your modules use
-  // moduleFileExtensions: [
-  //   "js",
-  //   "json",
-  //   "jsx",
-  //   "node"
-  // ],
+  moduleFileExtensions: ["js", "ts", "json", "jsx", "tsx", "node"],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
@@ -73,10 +68,10 @@ module.exports = {
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
 
-  // Activates notifications for test results
+  // Activates alerts for test results
   // notify: false,
 
-  // An enum that specifies notification mode. Requires { notify: true }
+  // An enum that specifies alert mode. Requires { notify: true }
   // notifyMode: "always",
 
   // A preset that is used as a base for Jest's configuration
@@ -126,7 +121,7 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ["<rootDir>/src/**/*.test.js?(x)"],
+  testMatch: ["<rootDir>/src/**/*.test.[jt]s?(x)"],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [
@@ -149,7 +144,9 @@ module.exports = {
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
-  // transform: null,
+  transform: {
+    "^.+\\.[jt]sx?$": "babel-jest"
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [

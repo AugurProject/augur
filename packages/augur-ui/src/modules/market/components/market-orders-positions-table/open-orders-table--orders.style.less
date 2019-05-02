@@ -1,0 +1,70 @@
+@import (reference) '~assets/styles/shared';
+
+.Order {
+  > li {
+    &:nth-of-type(2) {
+      position: relative;
+
+      > span {
+        &:extend(.button--mediumgray all);
+
+        background-color: @color-medium-gray;
+        border-radius: 0.5rem;
+        color: @color-white;
+        cursor: default;
+        left: 0;
+        margin-left: 1rem;
+        padding: 2px 6px;
+        position: absolute;
+        text-transform: capitalize;
+        top: 18%;
+      }
+    }
+  }
+}
+
+.Order__cancel {
+  &:extend(.button--mediumgray all);
+
+  display: inline-block;
+  font-size: 10px;
+  padding: 1px 12px;
+
+  &.disabled {
+    &:extend(.button--mediumgray--disabled);
+  }
+}
+
+div.Order__cancelContainer {
+  bottom: -20px;
+  position: absolute;
+  right: 10px;
+  top: unset;
+  z-index: 5;
+}
+
+@media @breakpoint-mobile {
+  .Order__cancel {
+    margin-right: 0;
+  }
+
+  .Order {
+    > li {
+      &:nth-of-type(2) {
+        > span {
+          bottom: 0.3125rem;
+          left: unset;
+          right: 0;
+          top: unset;
+        }
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .Order__cancel {
+    padding: 8px 14px;
+  }
+}
+

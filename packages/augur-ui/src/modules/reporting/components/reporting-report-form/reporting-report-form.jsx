@@ -4,17 +4,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
 
-import {
-  YES_NO,
-  CATEGORICAL,
-  SCALAR
-} from "modules/markets/constants/market-types";
-
+import { YES_NO, CATEGORICAL, SCALAR } from "modules/common-elements/constants";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-report-form/reporting-report-form.styles";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
+import { formatRep } from "utils/format-number";
+import { RepBalance } from "modules/common-elements/labels";
 
 export default class ReportingReportForm extends Component {
   static propTypes = {
@@ -27,11 +24,14 @@ export default class ReportingReportForm extends Component {
     isOpenReporting: PropTypes.bool.isRequired,
     isDesignatedReporter: PropTypes.bool.isRequired,
     isMarketInValid: PropTypes.bool,
-    insufficientRep: PropTypes.bool.isRequired
+    insufficientRep: PropTypes.bool.isRequired,
+    availableRep: PropTypes.string,
+    stakeLabel: PropTypes.string.isRequired
   };
 
   static defaultProps = {
-    isMarketInValid: false
+    isMarketInValid: false,
+    availableRep: "0"
   };
 
   static BUTTONS = {
@@ -130,6 +130,7 @@ export default class ReportingReportForm extends Component {
     const updatedValidations = { ...validations };
     this.setState({ activeButton: ReportingReportForm.BUTTONS.SCALAR_VALUE });
     const minValue = parseFloat(min);
+    const bnMinPrice = createBigNumber(min);
     const maxValue = parseFloat(max);
     const valueValue = parseFloat(value);
     const bnValue = createBigNumber(value || 0);
@@ -149,7 +150,10 @@ export default class ReportingReportForm extends Component {
       case valueValue > maxValue || valueValue < minValue:
         updatedValidations.err = `Please enter a ${humanName} between ${min} and ${max}.`;
         break;
-      case bnValue.mod(bnTickSize).gt("0"):
+      case bnValue
+        .minus(bnMinPrice)
+        .mod(bnTickSize)
+        .gt("0"):
         updatedValidations.err = `The ${humanName} field must be a multiple of ${tickSize}.`;
         break;
       default:
@@ -175,9 +179,11 @@ export default class ReportingReportForm extends Component {
       market,
       selectedOutcome,
       stake,
+      availableRep,
       validations,
       insufficientRep,
-      isDesignatedReporter
+      isDesignatedReporter,
+      stakeLabel
     } = this.props;
 
     const { reportingState } = market;
@@ -202,20 +208,9 @@ export default class ReportingReportForm extends Component {
       >
         <li>
           <div className={Styles.ReportingReport__outcome_selection_msg}>
-            Please choose an outcome below based on the resolution source when the
-            market ends.
+            Choose an outcome based on the resolution source when the event
+            ended.
           </div>
-          <div className={Styles.ReportingReport__outcome_selection_msg}>
-              The market should be considered INVALID if any of the following are true:
-          </div>
-          <ul className={Styles.ReportingReport__outcome_selection_msg}>
-            <li>The question is subjective in nature.</li>
-            <li>The outcome was not known at market end time.</li>
-            <li>The title, details, end time, resolution source, and outcomes are in direct conflict with each other.</li>
-            <li>There are strong arguments for the market resolving as multiple outcomes.</li>
-            <li>The resolution source does not provide a readily available answer.</li>
-            <li>The resolution source provides different answers to different viewers.</li>
-          </ul>
         </li>
         <li>
           <label>
@@ -328,7 +323,7 @@ export default class ReportingReportForm extends Component {
               <li>
                 {validations.hasOwnProperty("err") && (
                   <span className={FormStyles.Form__error}>
-                    {InputErrorIcon}
+                    {InputErrorIcon()}
                     {validations.err}
                   </span>
                 )}
@@ -339,24 +334,27 @@ export default class ReportingReportForm extends Component {
         {errorMessage && (
           <label>
             <span className={Styles["ReportingReport__insufficient-funds"]}>
-              {InputErrorIcon}
+              {InputErrorIcon()}
               {errorMessage}
             </span>
           </label>
         )}
-        {!isOpenReporting && (
-          <li>
-            <label htmlFor="sr__input--stake">
-              <span>Required Stake</span>
-            </label>
-            <p>{stake} REP</p>
+        {(!isOpenReporting || isDesignatedReporter) && (
+          <li className={Styles.ReportingReportREP}>
+            <div>
+              <label htmlFor="sr__input--stake">
+                <span>{stakeLabel}</span>
+              </label>
+              <p>{stake} REP</p>
+            </div>
+            <RepBalance rep={formatRep(availableRep).formattedValue} />
           </li>
         )}
         {validations.hasOwnProperty("neverReported") &&
           !validations.neverReported && (
             <label>
               <span className={Styles["ReportingReport__insufficient-funds"]}>
-                {InputErrorIcon}
+                {InputErrorIcon()}
                 {`Market has already been reported on`}
               </span>
             </label>

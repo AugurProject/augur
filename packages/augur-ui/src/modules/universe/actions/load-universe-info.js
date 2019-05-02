@@ -1,5 +1,4 @@
 import { augur } from "services/augurjs";
-import { UNIVERSE_ID } from "modules/app/constants/network";
 import logError from "utils/log-error";
 import async from "async";
 import { createBigNumber } from "utils/create-big-number";
@@ -7,8 +6,11 @@ import { updateUniverse } from "modules/universe/actions/update-universe";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { selectReportableOutcomes } from "modules/reports/selectors/reportable-outcomes";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
-import { SCALAR } from "modules/markets/constants/market-types";
-import { NULL_ADDRESS } from "utils/constants";
+import {
+  SCALAR,
+  NULL_ADDRESS,
+  UNIVERSE_ID
+} from "modules/common-elements/constants";
 
 const REQUIRED_GENESIS_SUPPLY = createBigNumber(
   "1100000000000000000000000",
@@ -246,7 +248,7 @@ function getUniverseName(parentUniverseData, universeData) {
   return outComeLabel || "Unidentified";
 }
 
-export function getForkingInfo(universe, callback) {
+export function getForkingInfo(universe, callback = logError) {
   return (dispatch, getState) => {
     const universePayload = { tx: { to: universe.id } };
     // Getting current fork data
@@ -333,7 +335,7 @@ function updateUniverseIfForkingDataChanged(
   universeData
 ) {
   if (
-    oldUniverseData.id !== universeData.id ||
+    (universeData.id && oldUniverseData.id !== universeData.id) ||
     oldUniverseData.isForking !== universeData.isForking ||
     oldUniverseData.forkingMarket !== universeData.forkingMarket ||
     oldUniverseData.forkEndTime !== universeData.forkEndTime ||
@@ -355,7 +357,7 @@ export function getUniverseProperties(universe, callback) {
           augur.api.Universe.getDisputeThresholdForFork(
             universePayload,
             (err, disputeThresholdForFork) => {
-              if (err) return callback(err);
+              if (err) return next(err);
               const forkThreshold = createBigNumber(
                 disputeThresholdForFork,
                 10
@@ -378,6 +380,7 @@ export function getUniverseProperties(universe, callback) {
       },
       (err, universeData) => {
         dispatch(updateUniverse(universeData));
+        if (callback) callback(err, universeData);
       }
     );
   };

@@ -7,15 +7,6 @@ export const updateReports = reportsData => ({
   data: { reportsData }
 });
 
-export const updateReport = (universeId, marketId, report) => ({
-  type: UPDATE_REPORT,
-  data: {
-    universeId,
-    marketId,
-    report
-  }
-});
-
 export const addMarketsReport = (universeId, marketIds) => ({
   type: MARKETS_REPORT,
   data: {

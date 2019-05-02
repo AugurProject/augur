@@ -1,9 +1,11 @@
-import { SCALAR } from "modules/markets/constants/market-types";
+import {
+  SCALAR,
+  MALFORMED_OUTCOME,
+  ZERO
+} from "modules/common-elements/constants";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 import { isEmpty } from "lodash";
 import { createBigNumber } from "utils/create-big-number";
-import { MALFORMED_OUTCOME } from "utils/constants";
-import { ZERO } from "modules/trades/constants/numbers";
 
 export default function(
   market,
@@ -71,7 +73,7 @@ export default function(
   const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b));
 
   sortedOutcomes.map((outcome, index) => {
-    if (index < TopOutcomeCount - 1 || outcome.id === invalidMarketId) {
+    if (index <= TopOutcomeCount - 1 || outcome.id === invalidMarketId) {
       outcome.display = true;
     }
     if (outcome.id === MALFORMED_OUTCOME) {

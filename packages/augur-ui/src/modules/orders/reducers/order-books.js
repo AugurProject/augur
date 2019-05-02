@@ -1,7 +1,4 @@
-import {
-  UPDATE_ORDER_BOOK,
-  CLEAR_ORDER_BOOK
-} from "modules/orders/actions/update-order-book";
+import { UPDATE_ORDER_BOOK } from "modules/orders/actions/update-order-book";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
@@ -12,36 +9,14 @@ const DEFAULT_STATE = {};
 export default function(orderBooks = DEFAULT_STATE, { type, data }) {
   switch (type) {
     case UPDATE_ORDER_BOOK: {
-      const { marketId, outcome, orderTypeLabel, orderBook } = data;
-      const marketOrderBook = orderBooks[marketId] || {};
-      const outcomeOrderBook = marketOrderBook[outcome] || {};
+      const { marketId, orderBook } = data;
+      const newOrderBooks = Object.keys(orderBooks).reduce(
+        (p, m) => (m !== marketId ? { ...p, [m]: orderBooks[m] } : p),
+        {}
+      );
       return {
-        ...orderBooks,
-        [marketId]: {
-          ...marketOrderBook,
-          [outcome]: {
-            ...outcomeOrderBook,
-            [orderTypeLabel]: {
-              ...(outcomeOrderBook[orderTypeLabel] || {}),
-              ...orderBook
-            }
-          }
-        }
-      };
-    }
-    case CLEAR_ORDER_BOOK: {
-      const { marketId, outcome, orderTypeLabel } = data;
-      const marketOrderBook = orderBooks[marketId] || {};
-      const outcomeOrderBook = marketOrderBook[outcome] || {};
-      return {
-        ...orderBooks,
-        [marketId]: {
-          ...marketOrderBook,
-          [outcome]: {
-            ...outcomeOrderBook,
-            [orderTypeLabel]: {}
-          }
-        }
+        ...newOrderBooks,
+        [marketId]: orderBook
       };
     }
     case RESET_STATE:

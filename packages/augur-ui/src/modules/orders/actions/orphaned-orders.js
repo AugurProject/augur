@@ -1,9 +1,6 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
-import {
-  addNotification,
-  updateNotification
-} from "modules/notifications/actions/notifications";
+import { addAlert, updateAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 
 export const ADD_ORPHANED_ORDER = "ADD_ORPHANED_ORDER";
@@ -39,11 +36,11 @@ export const cancelOrphanedOrder = (
     meta: loginAccount.meta,
     _orderId: orderId,
     onSent: res => {
-      // Trigger the notification addition/updates in the callback functions
+      // Trigger the alert addition/updates in the callback functions
       // because there is no other way to distinguish between canceling
       // regular orders and orphaned orders.
       dispatch(
-        addNotification({
+        addAlert({
           id: res.hash,
           params: {
             type: "cancelOrphanedOrder"
@@ -57,7 +54,7 @@ export const cancelOrphanedOrder = (
     onSuccess: res => {
       dispatch(removeOrphanedOrder(orderId));
       dispatch(
-        updateNotification(res.hash, {
+        updateAlert(res.hash, {
           id: res.hash,
           timestamp,
           status: "Confirmed"
@@ -67,7 +64,7 @@ export const cancelOrphanedOrder = (
     },
     onFailed: err => {
       dispatch(
-        updateNotification({
+        updateAlert({
           id: orderId,
           timestamp,
           status: "Failed"

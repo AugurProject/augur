@@ -1,6 +1,5 @@
 import { augur } from "services/augurjs";
-import { SUCCESS } from "modules/transactions/constants/statuses";
-import { NO_RELAY } from "modules/transactions/constants/no-relay";
+import { NO_RELAY, SUCCESS } from "modules/common-elements/constants";
 import { formatEther } from "utils/format-number";
 import { updateTransactionsData } from "modules/transactions/actions/update-transactions-data";
 import { constructRelayTransaction } from "modules/transactions/actions/construct-relay-transaction";
