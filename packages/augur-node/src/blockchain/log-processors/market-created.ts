@@ -86,6 +86,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
       const extraInfo: MarketCreatedLogExtraInfo = (log.extraInfo != null && typeof log.extraInfo === "object") ? log.extraInfo : {};
       const marketType: string = MarketType[log.marketType];
       const marketCategoryName = canonicalizeCategoryName(log.topic);
+
       const marketsDataToInsert: MarketsRow<string | number> = {
         marketType,
         transactionHash: log.transactionHash,
@@ -93,11 +94,10 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
         marketId: log.market,
         marketCreator: log.marketCreator,
         creationBlockNumber: log.blockNumber,
-        creationFee: log.marketCreationFee,
         category: marketCategoryName,
-        shortDescription: log.description,
-        minPrice: log.minPrice,
-        maxPrice: log.maxPrice,
+        shortDescription: JSON.parse(log.extraInfo)["_description".toString()],
+        minPrice: log.prices[0].toString(),
+        maxPrice: log.prices[1].toString(),
         tag1: (extraInfo!.tags && extraInfo!.tags!.length) ? extraInfo!.tags![0] : null,
         tag2: (extraInfo!.tags && extraInfo!.tags!.length > 1) ? extraInfo!.tags![1] : null,
         longDescription: extraInfo!.longDescription || null,
@@ -111,10 +111,9 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
         designatedReporter: designatedReporter,
         designatedReportStake: convertFixedPointToDecimal(designatedReportStakeRow.balance, WEI_PER_ETHER),
         numTicks: numTicks,
-        marketCreatorFeeRate: convertDivisorToRate(marketCreatorSettlementFeeDivisor),
+        feeDivisor: log.feeDivisor,
         initialReportSize: null,
         reportingFeeRate: convertDivisorToRate(reportingFeeDivisor),
-        marketCreatorFeesBalance: "0",
         volume: "0",
         sharesOutstanding: "0",
         openInterest: "0",
@@ -126,7 +125,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
       };
       const outcomesDataToInsert: Partial<OutcomesRow<string>> = formatBigNumberAsFixed<Partial<OutcomesRow<BigNumber>>, Partial<OutcomesRow<string>>>({
         marketId: log.market,
-        price: new BigNumber(log.minPrice).add(new BigNumber(log.maxPrice)).div(new BigNumber(getOutcomes.numOutcomes)),
+        price: new BigNumber(log.prices[0]).add(new BigNumber(log.prices[1])).div(new BigNumber(getOutcomes.numOutcomes)),
         volume: ZERO,
         shareVolume: ZERO
       });
@@ -152,6 +151,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
         supply: "0"
       })), getOutcomes.numOutcomes);
 
+
       await db.insert({
         blockNumber: log.blockNumber,
         transactionHash: log.transactionHash,
@@ -170,8 +170,9 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
     };
 
   } catch (e) {
+    debugger;
     console.error(e);
-    throw(e);
+    throw (e);
   }
 }
 
