@@ -1,160 +1,221 @@
 @import (reference) "~assets/styles/shared";
 
-.MarketOutcomesChart {
-  h3 {
-    .caps--medium();
-
-    color: @color-white;
-    padding: 10px 0 20px;
-  }
-}
-
-.MarketOutcomesChart__chart-header {
+.MarketOutcomeChartsHighcharts {
   display: flex;
-  width: 100%;
-}
+  flex: 1 100%;
+  flex-direction: column;
+  min-height: @charts-min-height;
+  position: relative;
 
-.MarketOutcomesChart__details {
-  .caps--small();
+  svg {
+    :global {
+      .highcharts-background {
+        fill: @color-theme-primary;
+      }
 
-  color: @color-lightgray;
-  flex: 1;
+      g.highcharts-axis-labels > text > tspan {
+        .mono-12;
 
-  * {
-    margin-right: 1em;
-  }
-}
+        color: @color-secondary-text;
+        fill: @color-secondary-text;
+      }
 
-.MarketOutcomesChart__name {
-  color: @color-white;
-}
+      .highcharts-yaxis-labels,
+      .highcharts-label {
+        .mono-12;
 
-.MarketOutcomesChart__filter {
-  align-self: flex-end;
-}
+        fill: @color-secondary-text;
+      }
 
-.MarketOutcomesChart__chart {
-  align-items: center;
-  cursor: cell;
-  display: flex;
-  height: 400px;
-  justify-content: center;
-  width: 100%;
+      .highcharts-no-data {
+        font-size: @size-16;
+      }
 
-  & > div {
-    height: 100%;
-    width: 100%;
-  }
-}
+      .highcharts-label-box {
+        fill: @color-theme-primary;
+        font-weight: bold;
 
-.MarketOutcomesChart__outcomes-axis {
-  & > path {
-    display: none;
-  }
+        > text > tspan:last-child {
+          font-size: @size-12;
+        }
+      }
 
-  line {
-    stroke: @color-lightgray;
-  }
+      .highcharts-tick,
+      .highcharts-axis-line {
+        stroke: fade(@color-secondary-text, 40%);
+      }
 
-  text {
-    &:extend(.caps--extra-small all);
+      .highcharts-xaxis-grid,
+      g.highcharts-yaxis-grid path.highcharts-grid-line:nth-child(1),
+      g.highcharts-yaxis path.highcharts-axis-line {
+        display: none;
+      }
 
-    fill: @color-lightgray;
-  }
-}
+      .highcharts-yaxis-grid {
+        .dashline-long;
 
-.MarketOutcomesChart__price-label {
-  &:extend(.caps--extra-small all);
+        .highcharts-grid-line {
+          stroke: fade(@color-secondary-text, 40%);
+        }
+      }
 
-  fill: @color-lightgray;
-}
+      .highcharts-xaxis-category {
+        display: none;
+      }
 
-.MarketOutcomesChart__bounding-line {
-  stroke: @color-gray;
-  stroke-width: 1px;
-}
+      .highcharts-crosshair-label.highcharts-crosshair-label > .highcharts-label-box {
+        stroke: @color-secondary-text;
+      }
 
-.MarketOutcomesChart__tick-line {
-  stroke: @color-gray;
-  stroke-width: 1px;
-}
+      .highcharts-crosshair-label {
+        background-color: @color-theme-primary;
+        color: @color-secondary-text;
+        font-size: @size-10;
+        z-index: 2;
+      }
 
-.MarketOutcomesChart__tick-line--excluded {
-  display: none;
-}
+      .highcharts-crosshair {
+        .dashline-long;
+      }
 
-.MarketOutcomesChart__tick-value {
-  &:extend(.caps--extra-small all);
+      .eth-label {
+        font-size: @size-9;
+      }
 
-  fill: @color-lightgray;
-}
+      // --- area styling
+      .highcharts-area {
+        opacity: 0.4;
+      }
 
-.MarketOutcomesChart__outcome-line {
-  fill: none;
+      .highcharts-area-series.highcharts-color-0 > path.highcharts-graph {
+        stroke: @color-outcome-two;
+      }
 
-  :global {
-    .domain,
-    .tick > line {
-      stroke: @color-gray;
+      .highcharts-area-series.highcharts-halo.highcharts-color-0 {
+        fill: @color-outcome-two;
+        stroke: @color-outcome-two;
+      }
+
+      .highcharts-area-series.highcharts-series-hover,
+      .highcharts-area-series.highcharts-color-0.highcharts-tracker > path,
+      .highcharts-area-series > .highcharts-area {
+        fill: @color-outcome-two;
+        stroke: @color-outcome-two;
+      }
+
+      // --- mulitple line styling
+      g.highcharts-line-series.highcharts-color-0 > path.highcharts-point,
+      .highcharts-line-series.highcharts-color-0 > .highcharts-halo,
+      g.highcharts-line-series.highcharts-color-0.highcharts-tracker > path:nth-child(2),
+      .highcharts-line-series.highcharts-color-0 {
+        fill: @color-outcome-one;
+        stroke: @color-outcome-one;
+      }
+
+      .highcharts-line-series.highcharts-color-0 > path.highcharts-graph {
+        stroke: @color-outcome-one;
+      }
+
+      g.highcharts-line-series.highcharts-color-1 > path.highcharts-point,
+      .highcharts-line-series.highcharts-color-1 > .highcharts-halo,
+      g.highcharts-line-series.highcharts-color-1.highcharts-tracker > path:nth-child(2),
+      .highcharts-line-series.highcharts-color-1 {
+        fill: @color-outcome-two;
+        stroke: @color-outcome-two;
+      }
+
+      .highcharts-line-series.highcharts-series-hover.highcharts-color-1,
+      .highcharts-line-series.highcharts-color-1 > path.highcharts-graph {
+        stroke: @color-outcome-two;
+      }
+
+      g.highcharts-line-series.highcharts-color-2 > path.highcharts-point,
+      .highcharts-line-series.highcharts-color-2 > .highcharts-halo,
+      g.highcharts-line-series.highcharts-color-2.highcharts-tracker > path:nth-child(2),
+      .highcharts-line-series.highcharts-color-2 {
+        fill: @color-outcome-three;
+        stroke: @color-outcome-three;
+      }
+
+      .highcharts-line-series.highcharts-halo.highcharts-color-2,
+      .highcharts-line-series.highcharts-color-2 > path.highcharts-graph {
+        stroke: @color-outcome-three;
+      }
+
+      g.highcharts-line-series.highcharts-color-3 > path.highcharts-point,
+      .highcharts-line-series.highcharts-color-3 > .highcharts-halo,
+      g.highcharts-line-series.highcharts-color-3.highcharts-tracker > path:nth-child(2),
+      .highcharts-line-series.highcharts-color-3 {
+        fill: @color-outcome-four;
+        stroke: @color-outcome-four;
+      }
+
+      .highcharts-line-series.highcharts-halo.highcharts-color-3,
+      .highcharts-line-series.highcharts-color-3 > path.highcharts-graph {
+        stroke: @color-outcome-four;
+      }
+
+      g.highcharts-line-series.highcharts-color-4 > path.highcharts-point,
+      .highcharts-line-series.highcharts-color-4 > .highcharts-halo,
+      g.highcharts-line-series.highcharts-color-4.highcharts-tracker > path:nth-child(2),
+      .highcharts-line-series.highcharts-color-4 {
+        fill: @color-outcome-five;
+        stroke: @color-outcome-five;
+      }
+
+      .highcharts-line-series.highcharts-halo.highcharts-color-4,
+      .highcharts-line-series.highcharts-color-4 > path.highcharts-graph {
+        stroke: @color-outcome-five;
+      }
+
+      g.highcharts-line-series.highcharts-color-5 > path.highcharts-point,
+      .highcharts-line-series.highcharts-color-5 > .highcharts-halo,
+      g.highcharts-line-series.highcharts-color-5.highcharts-tracker > path:nth-child(2),
+      .highcharts-line-series.highcharts-color-5 {
+        fill: @color-outcome-six;
+        stroke: @color-outcome-six;
+      }
+
+      .highcharts-line-series.highcharts-halo.highcharts-color-5,
+      .highcharts-line-series.highcharts-color-5 > path.highcharts-graph {
+        stroke: @color-outcome-six;
+      }
+
+      g.highcharts-line-series.highcharts-color-6 > path.highcharts-point,
+      .highcharts-line-series.highcharts-color-6 > .highcharts-halo,
+      g.highcharts-line-series.highcharts-color-6.highcharts-tracker > path:nth-child(2),
+      .highcharts-line-series.highcharts-color-6 {
+        fill: @color-outcome-seven;
+        stroke: @color-outcome-seven;
+      }
+
+      .highcharts-line-series.highcharts-halo.highcharts-color-6,
+      .highcharts-line-series.highcharts-color-6 > path.highcharts-graph {
+        stroke: @color-outcome-seven;
+      }
+
+      g.highcharts-line-series.highcharts-color-7 > path.highcharts-point,
+      .highcharts-line-series.highcharts-color-7 > .highcharts-halo,
+      g.highcharts-line-series.highcharts-color-7.highcharts-tracker > path:nth-child(2),
+      .highcharts-line-series.highcharts-color-7 {
+        fill: @color-outcome-eight;
+        stroke: @color-outcome-eight;
+      }
+
+      .highcharts-line-series.highcharts-halo.highcharts-color-7,
+      .highcharts-line-series.highcharts-color-7 > path.highcharts-graph {
+        stroke: @color-outcome-eight;
+      }
+
+      text.highcharts-title tspan {
+        color: @color-secondary-text;
+        fill: @color-secondary-text;
+        font-size: @size-10;
+      }
     }
   }
 }
 
-.MarketOutcomesChart__crosshair {
-  fill: none;
-  stroke: @color-white;
-  stroke-dasharray: 5;
-}
-
-.MarketOutcomesChart__outcome-line--1 {
-  stroke: @color-outcome-one;
-}
-
-.MarketOutcomesChart__outcome-line--2 {
-  stroke: @color-outcome-two;
-}
-
-.MarketOutcomesChart__outcome-line--3 {
-  stroke: @color-outcome-three;
-}
-
-.MarketOutcomesChart__outcome-line--4 {
-  stroke: @color-outcome-four;
-}
-
-.MarketOutcomesChart__outcome-line--5 {
-  stroke: @color-outcome-five;
-}
-
-.MarketOutcomesChart__outcome-line--6 {
-  stroke: @color-outcome-six;
-}
-
-.MarketOutcomesChart__outcome-line--7 {
-  stroke: @color-outcome-seven;
-}
-
-.MarketOutcomesChart__outcome-line--8 {
-  stroke: @color-outcome-eight;
-}
-
-.MarketOutcomesChart__hover-overlay {
-  fill: none;
-  pointer-events: visible;
-}
-
-.MarketOutcomesChart__null-message {
-  fill: @color-gray;
-}
-
-:global {
-  #priceTimeSeries_chart {
-    height: 100%;
-    width: 100%;
-  }
-
-  #priceTimeSeries_crosshairs {
-    cursor: crosshair;
-    pointer-events: none;
-  }
+.MarketOutcomeChartsHighcharts__yLabels {
+  color: @color-secondary-text;
 }

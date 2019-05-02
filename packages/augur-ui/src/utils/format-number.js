@@ -6,7 +6,7 @@ import {
 } from "speedomatic";
 import { augur } from "services/augurjs";
 import { constants } from "services/constants";
-import { ZERO, TEN } from "modules/trades/constants/numbers";
+import { ZERO, TEN } from "modules/common-elements/constants";
 import addCommas from "utils/add-commas-to-number";
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -25,7 +25,8 @@ The formatted number object that is returned looks something like this:
     formatted: the value in string form with possibly additional formatting, like comma separator, used for display
 
     o.roundedValue: the value in numerical form, with extra rounding, can be used in calculations
-    o.rounded: the value in string form, with extra rounding and possibly additional formatting, like comma separator, used for display
+    o.rounded: the value in string form, with extra rounding
+    o.roundedFormatted: the value in string form, with formatting, like comma separator, used for display
 
     o.minimized: the value in string form, with trailing 0 decimals omitted, for example if the `formatted` value is 1.00, this minimized value would be 1
   }
@@ -165,9 +166,11 @@ export function formatNone() {
     formatted: "-",
     roundedValue: 0,
     rounded: "-",
+    roundedFormatted: "-",
     minimized: "-",
     denomination: "",
-    full: "-"
+    full: "-",
+    fullPrecision: "0"
   };
 }
 
@@ -178,18 +181,28 @@ export function formatBlank() {
     formatted: "",
     roundedValue: 0,
     rounded: "",
+    roundedFormatted: "",
     minimized: "",
     denomination: "",
-    full: ""
+    full: "",
+    fullPrecision: "0"
   };
 }
 
-export function formatGasCostToEther(num, opts, gasPrice) {
-  const gas = unfix(num, "number");
-  const estimatedGasCost = createBigNumber(gas).times(
+export function sumAndformatGasCostToEther(gases, opts, gasPrice) {
+  const summedGas = gases.reduce(
+    (p, g) => createBigNumber(unfix(g, "number")).plus(p),
+    ZERO
+  );
+
+  const estimatedGasCost = createBigNumber(summedGas).times(
     createBigNumber(gasPrice)
   );
-  return formatGasCost(estimatedGasCost, opts).rounded;
+  return formatGasCost(estimatedGasCost, opts).roundedFormatted;
+}
+
+export function formatGasCostToEther(num, opts, gasPrice) {
+  return sumAndformatGasCostToEther([num], opts, gasPrice);
 }
 
 export function formatAttoRep(num, opts) {
@@ -199,7 +212,7 @@ export function formatAttoRep(num, opts) {
     createBigNumber(num.toString())
       .dividedBy(ETHER)
       .toNumber(),
-    opts
+    { blankZero: false, ...opts }
   );
 }
 
@@ -211,7 +224,7 @@ export function formatAttoEth(num, opts) {
     createBigNumber(num.toString())
       .dividedBy(ETHER)
       .toNumber(),
-    opts
+    { blankZero: false, ...opts }
   );
 }
 
@@ -289,7 +302,9 @@ export function formatNumber(
     o.formatted = "0";
     o.roundedValue = 0;
     o.rounded = "0";
+    o.roundedFormatted = "0";
     o.minimized = "0";
+    o.fullPrecision = "0";
   } else {
     const useSignificantFiguresThreshold = TEN.exponentiatedBy(
       new BigNumber(decimals, 10)
@@ -348,16 +363,16 @@ export function formatNumber(
     } else {
       o.formatted = addCommas(o.formattedValue);
     }
-
     o.fullPrecision = value.toFixed();
     o.roundedValue = value
       .times(decimalsRoundedValue)
       .integerValue(roundingMode)
       .dividedBy(decimalsRoundedValue);
-    o.rounded = bigUnitPostfix
+    o.roundedFormatted = bigUnitPostfix
       ? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded))
       : addCommas(o.roundedValue.toFixed(decimalsRounded));
     o.minimized = addCommas(encodeNumberAsBase10String(o.formattedValue));
+    o.rounded = encodeNumberAsBase10String(o.roundedValue);
     o.formattedValue = encodeNumberAsJSNumber(o.formattedValue);
     o.roundedValue = o.roundedValue.toNumber();
   }
@@ -379,6 +394,9 @@ export function formatNumber(
   o.denomination = denomination;
   o.full = makeFull(o.formatted, o.denomination); // should this use this?
 
+  if (isNaN(parseFloat(num)) || o.formatted === "0") {
+    o.formatted = constants.PRECISION.zero.toFixed(decimalsRounded);
+  }
   return o;
 }
 

@@ -70,8 +70,8 @@
   "rinkeby": {
     "augur-node": "wss://dev.augur.net/augur-node",
     "ethereum-node": {
-      "http": "https://rinkeby.augur.net/ethereum-http",
-      "ws": "wss://rinkeby.augur.net/ethereum-ws",
+      "http": "https://eth-rinkeby.alchemyapi.io/jsonrpc/xWkVwAbM7Qr-p8j-Zu_PPwldZJKmaKjx",
+      "ws": "",
       "pollingIntervalMilliseconds": 10000,
       "blockRetention": 100,
       "connectionTimeout": 60000
@@ -106,23 +106,6 @@
     "ethereum-node": {
       "http": "https://srt.augur.net/ethereum-http",
       "ws": "wss://srt.augur.net/ethereum-ws",
-      "pollingIntervalMilliseconds": 10000,
-      "blockRetention": 100,
-      "connectionTimeout": 60000
-    },
-    "universe": null,
-    "bug-bounty": false,
-    "bug-bounty-address": null,
-    "debug": {
-      "connect": true,
-      "broadcast": false
-    }
-  },
-  "stable": {
-    "augur-node": "wss://stable.augur.net/augur-node",
-    "ethereum-node": {
-      "http": "https://rinkeby.augur.net/ethereum-http",
-      "ws": "wss://rinkeby.augur.net/ethereum-ws",
       "pollingIntervalMilliseconds": 10000,
       "blockRetention": 100,
       "connectionTimeout": 60000

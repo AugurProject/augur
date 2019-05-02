@@ -11,7 +11,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
 import { submitInitialReport } from "modules/reports/actions/submit-initial-report";
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 const mapStateToProps = state => ({
@@ -54,19 +54,21 @@ const mergeProps = (sP, dP, oP) => {
   const marketId = parseQuery(oP.location.search)[MARKET_ID_PARAM_NAME];
   const market = selectMarket(marketId);
   let returnPath = parseQuery(oP.location.search)[RETURN_PARAM_NAME];
-  if (returnPath && returnPath.substring(0, 2) === "#/") {
+  if (returnPath && returnPath.substring(0, 3) === "#!/") {
     // need to get rid of this
-    returnPath = returnPath.substring(2, returnPath.length);
+    returnPath = returnPath.substring(3, returnPath.length);
   }
   const isOpenReporting =
     market.reportingState === constants.REPORTING_STATE.OPEN_REPORTING;
   const isDesignatedReporter = market.designatedReporter === sP.userAddress;
+  const isDRMarketCreator = market.author === market.designatedReporter;
   return {
     ...oP,
     ...sP,
     marketId,
     isOpenReporting,
     isDesignatedReporter,
+    isDRMarketCreator,
     isLogged: sP.isLogged,
     isConnected: sP.isConnected && getValue(sP, "universe.id") != null,
     isMarketLoaded: sP.marketsData[marketId] != null,

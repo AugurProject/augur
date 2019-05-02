@@ -1,77 +1,32 @@
 import { connect } from "react-redux";
 import memoize from "memoizee";
-
-import { selectCurrentTimestamp, selectOrphanOrders } from "src/select-state";
 import Positions from "modules/portfolio/components/positions/positions";
 import getLoginAccountPositions from "modules/positions/selectors/login-account-positions";
-import { selectOpenOrdersMarkets } from "modules/orders/selectors/open-orders";
-import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
-import { triggerTransactionsExport } from "modules/transactions/actions/trigger-transactions-export";
-import { constants } from "services/constants";
-import { orderBy } from "lodash";
-import { selectMarket } from "modules/markets/selectors/market";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/modal/constants/modal-types";
+import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/common-elements/constants";
+import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
 
 const mapStateToProps = state => {
-  const positions = getLoginAccountPositions(state);
-  const openOrders = selectOpenOrdersMarkets(state);
-  const orphanedOrders = selectOrphanOrders(state);
-  const orphanedMarkets = [];
-  for (let i = 0; i < orphanedOrders.length; i++) {
-    orphanedMarkets.push(selectMarket(orphanedOrders[i].marketId));
-  }
-  const reportingStates = constants.REPORTING_STATE;
-  const openPositionMarkets = [];
-  const reportingMarkets = [];
-  const closedMarkets = [];
-  // NOTE: for data wiring, this should probably be just done as calls for getting openPosition Markets, getting Reporting Markets, and getting Closed Markets respectively from the node and just passed the expected keys below
-  const markets = getPositionsMarkets(positions, openOrders, orphanedMarkets);
-  // TODO -- getting each section of markets should be it's own call
-  const marketsCount = markets.length;
-  markets.forEach(market => {
-    if (
-      market.reportingState === reportingStates.FINALIZED ||
-      market.reportingState === reportingStates.AWAITING_FINALIZATION
-    ) {
-      closedMarkets.push(market);
-    } else if (market.reportingState !== reportingStates.PRE_REPORTING) {
-      reportingMarkets.push(market);
-    } else {
-      openPositionMarkets.push(market);
-    }
-  });
-
-  const orderdClosedMarkets = orderBy(
-    closedMarkets,
-    ["endTime.timestamp"],
-    ["desc"]
-  );
+  const positions = getLoginAccountPositions();
+  const timestamps = getMarketsPositionsRecentlyTraded(state);
+  const markets = getPositionsMarkets(timestamps, positions);
 
   return {
-    currentTimestamp: selectCurrentTimestamp(state),
-    marketsCount,
-    openPositionMarkets,
-    reportingMarkets,
-    closedMarkets: orderdClosedMarkets,
-    transactionsLoading: state.appStatus.transactionsLoading,
-    registerBlockNumber: state.loginAccount.registerBlockNumber,
-    isMobile: state.appStatus.isMobile
+    markets
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  loadAccountTrades: () => dispatch(loadAccountTrades()),
-  triggerTransactionsExport: () => dispatch(triggerTransactionsExport()),
   claimTradingProceeds: marketId =>
     dispatch(updateModal({ type: MODAL_CLAIM_TRADING_PROCEEDS, marketId }))
 });
 
 const getPositionsMarkets = memoize(
-  (positions, openOrders, orphanedMarkets) =>
-    Array.from(
-      new Set([...positions.markets, ...openOrders, ...orphanedMarkets])
-    ),
+  (marketsPositionsRecentlyTraded, positions) =>
+    Array.from(new Set([...positions.markets])).map(m => ({
+      ...m,
+      recentlyTraded: marketsPositionsRecentlyTraded[m.id]
+    })),
   { max: 1 }
 );
 

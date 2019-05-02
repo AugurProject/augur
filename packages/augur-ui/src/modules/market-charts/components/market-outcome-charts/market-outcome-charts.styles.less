@@ -66,14 +66,29 @@
 
 .MarketOutcomeCharts__orders--mobile {
   flex: 1 0 100%;
+  overflow-x: auto;
 }
 
 .MarketOutcomeCharts__depth {
+  display: flex;
   flex: 1;
+
+  > div {
+    background: none;
+  }
+
+  @media @breakpoint-mobile {
+    flex: 0 0 auto;
+    min-width: 95vw;
+  }
 }
 
 .MarketOutcomeCharts__orderbook {
   flex: 0.7;
+
+  @media @breakpoint-mobile {
+    min-width: 95vw;
+  }
 }
 
 .MarketOutcomeCharts__indicator {

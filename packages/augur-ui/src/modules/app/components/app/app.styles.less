@@ -7,7 +7,7 @@ html,
 }
 
 body {
-  background: @color-almostblack;
+  background: @color-almost-black;
 
   @media @breakpoint-mobile {
     --is-mobile: true;
@@ -58,7 +58,7 @@ h6 {
 
   @media @breakpoint-mobile {
     /* topbar mobile height */
-    grid-template-rows: 1.5rem auto;
+    grid-template-rows: @top-bar-height-mobile auto;
   }
 }
 
@@ -71,9 +71,8 @@ h6 {
   overflow: hidden;
 
   @media @breakpoint-mobile {
-    /*
-    disable inner menubar mobile grid width */
-    grid-template-columns: 0 auto;
+    grid-template-columns: none;
+    grid-template-rows: 0 auto;
     margin-left: 0;
   }
 }
@@ -91,23 +90,38 @@ h6 {
 }
 
 .SideBar {
-  background: @color-purple;
+  background: @color-light-purple;
+  border-right: 0.0625rem solid @color-almost-black;
   height: 100vh;
-  position: relative;
+  padding-top: 71px;
   z-index: @mask-above;
+
+  @media @breakpoint-mobile {
+    padding-top: 0;
+  }
+}
+
+.Logo {
+  background: @color-light-purple;
+  border-bottom: 1px solid @color-almost-black;
+  left: 1rem;
+  position: absolute;
+  top: -1px;
+
+  @media @breakpoint-mobile {
+    border-bottom: 1px solid @color-primary-light;
+  }
 }
 
 .SideBar__mobile-bars {
-  background: none;
-  border: none;
+  background: @color-light-purple;
+  border-bottom: 1px solid @color-almost-black;
   display: none;
-  height: 2.25rem;
-  left: 0.375rem;
+  height: @top-bar-height-mobile;
   outline: none;
-  padding: 0.625rem;
+  padding: 1rem;
   position: absolute;
-  top: 0.375rem;
-  width: 2.25rem;
+  width: 3.125rem;
   z-index: @mask-above;
 
   svg {
@@ -116,7 +130,12 @@ h6 {
   }
 
   @media @breakpoint-mobile {
+    border-bottom: 1px solid @color-primary-light;
     display: block;
+
+    > svg > g {
+      stroke-width: 1.5;
+    }
   }
 }
 
@@ -137,13 +156,19 @@ svg.SideBar__mobile-bars-unseen {
 }
 
 .TopBar {
-  z-index: @above-all-content-above;
+  z-index: @mask-above;
 
   @media @breakpoint-mobile {
-    height: 50px;
+    height: @top-bar-height-mobile;
   }
 }
 
 .TopBar__floatAbove {
-  z-index: @above-all-content-top-layer;
+  border-bottom: 1px solid @color-almost-black;
+  margin-left: 3.15rem;
+  z-index: @mask-above;
+
+  @media @breakpoint-mobile {
+    border-bottom: 1px solid @color-primary-light;
+  }
 }

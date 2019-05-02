@@ -1,50 +1,55 @@
-import { augur } from "services/augurjs";
+import { augur, constants } from "services/augurjs";
 import logError from "src/utils/log-error";
-import {
-  loadMarketsInfoIfNotLoaded,
-  loadMarketsDisputeInfo
-} from "modules/markets/actions/load-markets-info";
 import {
   updateAwaitingDisputeMarkets,
   updateCrowdDisputeMarkets
 } from "modules/reports/actions/update-markets-in-reporting-state";
-import { constants } from "src/services/constants";
+import async from "async";
+import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-info";
 
 export const loadDisputing = (callback = logError) => (dispatch, getState) => {
   const { universe } = getState();
   const args = {
+    sortBy: "endTime",
+    isSortDescending: false,
     universe: universe.id
   };
-
-  augur.augurNode.submitRequest(
-    "getMarkets",
-    {
-      reportingState: constants.REPORTING_STATE.CROWDSOURCING_DISPUTE,
-      sortBy: "endTime",
-      ...args
-    },
-    (err, result) => {
-      if (err) return callback(err);
-
-      dispatch(loadMarketsInfoIfNotLoaded(result));
-      dispatch(updateCrowdDisputeMarkets(result));
-      dispatch(loadMarketsDisputeInfo(result));
-    }
-  );
-
-  augur.augurNode.submitRequest(
-    "getMarkets",
-    {
-      reportingState: constants.REPORTING_STATE.AWAITING_NEXT_WINDOW,
-      sortBy: "endTime",
-      ...args
-    },
-    (err, result) => {
-      if (err) return callback(err);
-
-      dispatch(loadMarketsInfoIfNotLoaded(result));
-      dispatch(updateAwaitingDisputeMarkets(result));
-      dispatch(loadMarketsDisputeInfo(result));
+  async.parallel(
+    [
+      next =>
+        augur.augurNode.submitRequest(
+          "getMarkets",
+          {
+            reportingState: [
+              constants.REPORTING_STATE.CROWDSOURCING_DISPUTE,
+              constants.REPORTING_STATE.AWAITING_FORK_MIGRATION
+            ],
+            ...args
+          },
+          (err, result) => {
+            if (err) return next(err);
+            dispatch(loadMarketsDisputeInfo(result));
+            dispatch(updateCrowdDisputeMarkets(result));
+            next(null);
+          }
+        ),
+      next =>
+        augur.augurNode.submitRequest(
+          "getMarkets",
+          {
+            reportingState: constants.REPORTING_STATE.AWAITING_NEXT_WINDOW,
+            ...args
+          },
+          (err, result) => {
+            if (err) return next(err);
+            dispatch(updateAwaitingDisputeMarkets(result));
+            next(null);
+          }
+        )
+    ],
+    err => {
+      if (err) callback(err);
+      callback(null);
     }
   );
 };

@@ -8,13 +8,16 @@
 }
 
 .MarketLiquidityTable__Order {
-  background-color: white;
+  background-color: @color-dark-grayish-purple;
   display: table-row;
   transition: background-color 0.15s ease;
 
   > li {
-    border-top: 1px solid @color-lightest-gray;
+    border-bottom: 1px solid @color-almost-black;
+    color: @color-white;
     display: table-cell;
+    font-family: "Roboto Mono", monospace;
+    font-size: 12px;
     min-width: 9.5rem;
     overflow: hidden;
     padding: 0.625rem 0.2rem 0.625rem 0;
@@ -23,12 +26,10 @@
     white-space: nowrap;
     width: 12.5rem;
 
-    > span {
-      font-size: @font-size-medium;
-    }
-
     &:first-child {
-      font-weight: 500;
+      font-family: @roboto;
+      font-size: 14px;
+      font-weight: bold;
       min-width: 4.25rem;
       padding-left: 1rem;
       padding-right: 0.5rem;
@@ -41,6 +42,9 @@
     }
 
     &:nth-child(2) {
+      font-family: @roboto;
+      font-size: 14px;
+      font-weight: bold;
       min-width: 4.375rem;
       width: auto;
     }
@@ -51,17 +55,10 @@
       width: 9.38rem;
 
       > button {
-        &:extend(.button--transparent all);
+        &:extend(.button--mediumgray all);
 
-        font-size: @font-size-medium;
         margin: auto;
       }
-    }
-  }
-
-  &:hover {
-    > li {
-      background-color: @color-selection-modal-background;
     }
   }
 }
@@ -101,7 +98,6 @@
 
   .MarketLiquidityTable__Order {
     > li {
-      color: inherit;
       min-width: 7.5rem;
 
       &:first-child {

@@ -2,7 +2,7 @@ import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import { startOrderSending } from "modules/orders/actions/liquidity-management";
 import { augur } from "services/augurjs";
-import { YES_NO } from "modules/markets/constants/market-types";
+import { YES_NO } from "modules/common-elements/constants";
 
 jest.mock("services/augurjs");
 

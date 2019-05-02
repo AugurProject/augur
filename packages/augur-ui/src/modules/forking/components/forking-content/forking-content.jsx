@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { formatAttoRep } from "utils/format-number";
 import { convertUnixToFormattedDate, dateHasPassed } from "utils/format-date";
 import TimeProgressBar from "modules/reporting/components/time-progress-bar/time-progress-bar";
-import { TYPE_MIGRATE_REP } from "modules/markets/constants/link-types";
+import { TYPE_MIGRATE_REP } from "modules/common-elements/constants";
 import MarketLink from "modules/market/components/market-link/market-link";
 import { createBigNumber } from "utils/create-big-number";
 import Styles from "modules/forking/components/forking-content/forking-content.styles";

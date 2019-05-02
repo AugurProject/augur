@@ -17,7 +17,6 @@ export default class SideNav extends Component {
     isLogged: PropTypes.bool.isRequired,
     menuData: PropTypes.array.isRequired,
     mobileShow: PropTypes.bool.isRequired,
-    stats: PropTypes.array.isRequired,
     currentBasePath: PropTypes.string
   };
 
@@ -83,8 +82,7 @@ export default class SideNav extends Component {
       isLogged,
       defaultMobileClick,
       menuData,
-      mobileShow,
-      stats
+      mobileShow
     } = this.props;
 
     const accessFilteredMenu = menuData.filter(
@@ -142,25 +140,6 @@ export default class SideNav extends Component {
               <GasPriceEdit />
               <div className={Styles.SideNav__amt}>
                 <div className={Styles.SideNav__nav__separator} />
-                <div className={Styles.SideName__placement}>
-                  <div className={Styles["SideNav__stat-label"]}>
-                    {stats[1].totalPLMonth.label}
-                    <span className={Styles["SideNav__stat-value"]}>
-                      {stats[1].totalPLMonth.value.formatted}
-                      <span className={Styles["SideNav__stat-unit"]}>ETH</span>
-                    </span>
-                  </div>
-                  <div
-                    className={Styles["SideNav__stat-label"]}
-                    style={{ paddingBottom: "0" }}
-                  >
-                    {stats[1].totalPLDay.label}
-                    <span className={Styles["SideNav__stat-value"]}>
-                      {stats[1].totalPLDay.value.formatted}
-                      <span className={Styles["SideNav__stat-unit"]}>ETH</span>
-                    </span>
-                  </div>
-                </div>
               </div>
               <ConnectAccount />
             </div>

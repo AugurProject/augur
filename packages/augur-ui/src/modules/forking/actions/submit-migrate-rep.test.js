@@ -1,4 +1,4 @@
-import { YES_NO } from "modules/markets/constants/market-types";
+import { YES_NO } from "modules/common-elements/constants";
 import { submitMigrateREP } from "modules/forking/actions/submit-migrate-rep";
 import { augur } from "services/augurjs";
 

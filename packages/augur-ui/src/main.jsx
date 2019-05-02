@@ -31,7 +31,7 @@ console.log(`
 function render(Root) {
   ReactDOM.render(
     <Provider store={store}>
-      <HashRouter>
+      <HashRouter hashType="hashbang">
         <MainErrorBoundary>
           <Root />
         </MainErrorBoundary>

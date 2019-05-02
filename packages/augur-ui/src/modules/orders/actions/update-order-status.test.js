@@ -1,6 +1,5 @@
 import mocks from "test/mockStore";
-import { CLOSE_DIALOG_CLOSING } from "modules/markets/constants/close-dialog-status";
-import { BUY } from "modules/transactions/constants/types";
+import { CLOSE_DIALOG_CLOSING, BUY } from "modules/common-elements/constants";
 import { updateOrderStatus } from "modules/orders/actions/update-order-status";
 
 describe("modules/orders/actions/update-order-status.js", () => {

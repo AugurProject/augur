@@ -24,10 +24,7 @@ describe("purchase participation tokens tests", () => {
   afterEach(() => {
     store.clearActions();
   });
-  augur.api.FeeWindow = jest.fn(() => {});
-  augur.api.FeeWindow.buy = jest.fn(() => {});
-  augur.reporting.getFeeWindowCurrent = jest.fn(() => {});
-  augur.api.Universe.buyParticipationTokens = jest.fn(() => {});
+
   test("It should handle buying 10.25 participation tokens", done => {
     augur.reporting.getFeeWindowCurrent.mockImplementation((p, cb) => {
       expect(p).toEqual({ universe: store.getState().universe.id });

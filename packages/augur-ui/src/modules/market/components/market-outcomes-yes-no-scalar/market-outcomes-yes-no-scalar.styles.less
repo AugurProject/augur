@@ -22,7 +22,7 @@
 }
 
 .MarketOutcomes__current-value::before {
-  background-color: @color-purple;
+  background-color: @color-white;
   content: "";
   height: 0.9375rem;
   left: 0;
@@ -35,10 +35,10 @@
 
 .MarketOutcomes__max,
 .MarketOutcomes__min {
-  &:extend(.caps--medium);
-
-  color: @color-lightgray;
+  color: @color-white;
+  font-size: 14px;
   left: 0;
+  margin-top: 0;
   padding-top: 1px;
   position: absolute;
 }
@@ -49,13 +49,13 @@
 }
 
 .MarketOutcomes__range {
-  border-bottom: 1px solid @color-purple;
+  border-bottom: 1px solid @color-white;
   padding-top: 0.875rem;
   position: relative;
 
   &::before,
   &::after {
-    background-color: @color-purple;
+    background-color: @color-white;
     bottom: 0;
     content: "";
     height: 0.5rem;

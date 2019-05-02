@@ -80,7 +80,7 @@ const TimeProgressBar = ({
         )}
       >
         <span data-testid="endTime" className={Styles.TimeProgressBar__endTime}>
-          {timePeriodLabel} ends{" "}
+          {timePeriodLabel} Ends{" "}
           <span className={Styles.TimeProgressBar__endTimeValue}>
             {" "}
             {formattedDate.formattedSimpleData}{" "}

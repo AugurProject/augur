@@ -21,7 +21,7 @@
   transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
 
   *:hover {
-    background: @color-lightpurple;
+    background: @color-medium-gray;
   }
 
   a,
@@ -43,7 +43,7 @@
     text-align: inherit;
     text-decoration: none;
     text-overflow: ellipsis;
-    text-transform: uppercase;
+    text-transform: capitalize;
     transform: translateY(-50%) scaleY(0);
     transition: transform 0.3s ease-in-out;
     white-space: nowrap;
@@ -66,22 +66,45 @@
 }
 
 .InnerNav__menu-item--selected {
-  background: @color-lightpurple;
+  background: @color-medium-gray;
+}
+
+.InnerNav__menu-item--seperator {
+  border-top: 1px solid @color-primary-background;
+  display: flex;
+  height: 0;
+  margin: @size-12 @size-11 0;
+  padding-top: @size-12;
+
+  &:hover {
+    background: unset;
+  }
 }
 
 .InnerNav__menu--main {
-  background: @color-darkgray;
+  background: @color-light-purple;
   position: relative;
   z-index: @mask;
 }
 
 .InnerNav__menu--submenu {
-  background: @color-darkpurple;
+  background: @color-medium-gray;
+  border-left: 0.0625rem solid @color-almost-black;
   left: 0;
   position: absolute;
   top: 0;
   width: 6.875rem;
   z-index: @above-all-content-above;
+
+  > .InnerNav__menu-item {
+    *:hover {
+      background: @color-light-purple;
+    }
+  }
+
+  > .InnerNav__menu-item--selected {
+    background: @color-light-purple;
+  }
 }
 
 @media @breakpoint-mobile {
@@ -93,11 +116,60 @@
 
     &.mobileShow {
       left: 0;
-    }
-  }
 
-  .InnerNav__menu {
-    padding-top: 2rem;
+      > div {
+        align-items: center;
+        background: @color-light-purple;
+        border-bottom: 1px solid @color-primary-background;
+        color: white;
+        display: flex;
+        flex-flow: row nowrap;
+        height: 50px;
+        padding: @size-16;
+        position: fixed;
+        width: 200px;
+        z-index: @mask-above;
+
+        > button {
+          height: @size-24;
+          width: @size-24;
+        }
+
+        > button > svg > path {
+          stroke: @color-secondary-text;
+        }
+
+        > button:first-of-type {
+          display: none;
+          height: @size-24;
+          width: @size-24;
+
+          > svg {
+            transform: rotate(180deg);
+          }
+        }
+
+        > button:last-of-type {
+          height: @size-16;
+          margin-left: auto;
+          width: @size-16;
+        }
+
+        &.SubMenuShow {
+          background: @color-medium-gray;
+
+          > button:first-of-type {
+            display: block;
+          }
+        }
+      }
+    }
+
+    &.AddMargin {
+      > ul {
+        margin: 50px 0;
+      }
+    }
   }
 
   .InnerNav__menu-item {
@@ -126,7 +198,6 @@
 
   .InnerNav__menu--main,
   .InnerNav__menu--submenu {
-    top: 0.5rem;
     width: 100%;
     z-index: @above-all-content;
   }
@@ -139,11 +210,5 @@
 
   .InnerNav__menu--submenu--mobileshow {
     left: 0;
-  }
-}
-
-@media @breakpoint-mobile-medium {
-  .InnerNav__menu--submenu {
-    top: 1.1rem;
   }
 }

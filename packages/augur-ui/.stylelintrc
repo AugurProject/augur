@@ -17,6 +17,7 @@
     # "declaration-block-trailing-semicolon": "never",
     selector-pseudo-class-no-unknown: [true, {
       ignorePseudoClasses: ["global", "local"]
-    }],
-  }
+    }]
+  },
+  "ignoreFiles": ["src/assets/styles/_colors_redesign.less"]
 }

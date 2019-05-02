@@ -1,7 +1,9 @@
 import { augur } from "services/augurjs";
 import logError from "src/utils/log-error";
 
-export const loadUsershareBalances = ({ market }, callback = logError) => (
+export const LOAD_USER_SHARE_BALANCES = "LOAD_USER_SHARE_BALANCES";
+
+export const loadUsershareBalances = (marketIds, callback = logError) => (
   dispatch,
   getState
 ) => {
@@ -10,12 +12,13 @@ export const loadUsershareBalances = ({ market }, callback = logError) => (
   augur.augurNode.submitRequest(
     "getUserShareBalances",
     {
-      marketIds: [market],
+      marketIds,
       account: loginAccount.address
     },
     (err, data) => {
       if (err) return callback(err);
-      callback(null, data[market]);
+      dispatch({ type: LOAD_USER_SHARE_BALANCES, data });
+      callback(null, data);
     }
   );
 };

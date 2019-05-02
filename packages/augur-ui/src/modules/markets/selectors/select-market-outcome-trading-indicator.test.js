@@ -1,5 +1,5 @@
 import { selectMarketOutcomeTradingIndicator } from "modules/markets/selectors/select-market-outcome-trading-indicator";
-import { UP, DOWN, NONE, BUY, SELL } from "modules/trades/constants/types";
+import { UP, DOWN, NONE, BUY, SELL } from "modules/common-elements/constants";
 
 describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`, () => {
   const marketTradingHistory = {

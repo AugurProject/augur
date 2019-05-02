@@ -1,7 +1,8 @@
 import { debounce } from "lodash";
 import { connectAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { MODAL_NETWORK_DISCONNECTED } from "modules/modal/constants/modal-types";
+import { MODAL_NETWORK_DISCONNECTED } from "modules/common-elements/constants";
+import { closeModal } from "modules/modal/actions/close-modal";
 
 const RETRY_TIMER = 3000; // attempt re-initAugur every 3 seconds.
 
@@ -19,6 +20,8 @@ export const reInitAugur = history => (dispatch, getState) => {
         // reconnection isn't paused, retry connectAugur
         dispatch(connectAugur(history, env, false, callback));
       }
+    } else {
+      dispatch(closeModal());
     }
   }, RETRY_TIMER);
   const cb = (err, connection) => {

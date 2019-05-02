@@ -1,6 +1,5 @@
-import { SCALAR } from "modules/markets/constants/market-types";
+import { SCALAR, MALFORMED_OUTCOME } from "modules/common-elements/constants";
 import { createBigNumber } from "utils/create-big-number";
-import { MALFORMED_OUTCOME } from "utils/constants";
 
 export default function calculatePayoutNumeratorsValue(
   market,

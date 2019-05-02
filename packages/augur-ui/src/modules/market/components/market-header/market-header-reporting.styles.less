@@ -1,0 +1,181 @@
+@import (reference) "~assets/styles/shared";
+
+.MarketHeaderReporting__finalization,
+.MarketHeaderReporting__claimOnHold {
+  background: @color-theme-primary;
+  border: 1px solid fade(@color-highlight, 50%);
+  border-radius: @border-radius-default;
+  margin-bottom: @size-16;
+  padding: @size-16;
+
+  @media @breakpoint-mobile {
+    margin-bottom: @size-8;
+  }
+}
+
+.MarketHeaderReporting__finalization {
+  > div:first-of-type {
+    .mono-11-bold;
+
+    color: @color-secondary-text;
+    text-transform: uppercase;
+  }
+
+  > div:last-of-type {
+    .text-11;
+
+    color: @color-tertiary-text;
+    margin: @size-8 0 0;
+  }
+}
+
+.MarketHeaderReporting__claimOnHold {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  > div:first-of-type {
+    > div:first-of-type {
+      .mono-11-bold;
+
+      color: @color-secondary-text;
+      text-transform: uppercase;
+    }
+
+    > div:last-of-type {
+      .text-11;
+
+      color: @color-tertiary-text;
+      margin: @size-8 0 0;
+    }
+  }
+
+  > div:last-of-type {
+    margin-bottom: 0;
+
+    > span > span:first-of-type {
+      .mono-10;
+
+      color: @color-shadow-text;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    > span > span:last-of-type {
+      .mono-11;
+
+      text-align: right;
+    }
+
+    @media @breakpoint-1-0 {
+      margin-bottom: @size-24;
+    }
+
+    @media @breakpoint-mobile {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.MarketHeaderReporting__container {
+  background: @color-grayish-purple;
+  border-radius: @border-radius-default;
+}
+
+.MarketHeaderReporting__break {
+  background: @color-theme-primary;
+  height: 0.125rem;
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
+}
+
+.MarketHeaderReporting__button {
+  &:extend(.button--bright all);
+
+  height: @size-40;
+}
+
+.MarketHeaderReporting__buttonNoMargin {
+  &:extend(.button--bright all);
+
+  color: @color-primary-background;
+  margin-left: @size-14;
+  white-space: nowrap;
+}
+
+.MarketHeaderReporting__winner__container {
+  border-radius: @border-radius-default;
+  display: flex;
+  flex-direction: row;
+  padding: @size-16;
+
+  @media @breakpoint-mobile {
+    margin-bottom: @size-8;
+  }
+
+  @media @breakpoint-mobile-extra-small {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.MarketHeaderReporting__winner__container__set {
+  min-width: 250px;
+}
+
+.MarketHeaderReporting__winner {
+  .text-12-bold;
+
+  color: @color-tertiary-text;
+}
+
+.MarketHeaderReporting__buttonContainer {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+
+  @media @breakpoint-mobile-extra-small {
+    margin: @size-24 auto;
+  }
+}
+
+.MarketHeader__winning {
+  .mono-12-bold;
+
+  color: @color-outcome-four;
+  text-transform: uppercase;
+}
+
+.MarketHeaderReporting__winner__row {
+  display: flex;
+  flex-direction: row;
+  margin-top: @size-8;
+}
+
+.MarketHeader__tentative,
+.MarketHeader__reporting {
+  .mono-12-bold;
+
+  color: @color-highlight;
+  text-transform: uppercase;
+}
+
+.MarketHeaderReporting__reporting__row {
+  .text-12;
+
+  color: @color-tertiary-text;
+  margin-top: @size-8;
+}
+
+.MarketHeaderReporting__info {
+  display: flex;
+  flex-direction: column;
+
+  @media @breakpoint-mobile {
+    flex: 1 50%;
+  }
+}
