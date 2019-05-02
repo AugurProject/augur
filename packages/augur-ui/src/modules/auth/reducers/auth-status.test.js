@@ -1,12 +1,13 @@
 import {
   NOT_CONNECTED,
   ATTEMPTING_CONNECTION
-} from "modules/auth/constants/ledger-status";
+} from "modules/common-elements/constants";
 import {
   IS_LOGGED,
   LEDGER_STATUS,
   EDGE_LOADING,
   EDGE_CONTEXT,
+  IS_CONNECTION_TRAY_OPEN,
   updateAuthStatus
 } from "modules/auth/actions/update-auth-status";
 import { resetState } from "modules/app/actions/reset-state";
@@ -18,7 +19,8 @@ describe(`modules/auth/reducers/auth-status.js`, () => {
     [IS_LOGGED]: false,
     [LEDGER_STATUS]: NOT_CONNECTED,
     [EDGE_CONTEXT]: null,
-    [EDGE_LOADING]: false
+    [EDGE_LOADING]: false,
+    [IS_CONNECTION_TRAY_OPEN]: false
   };
 
   test("It should return the default state on unrecognized action", () => {

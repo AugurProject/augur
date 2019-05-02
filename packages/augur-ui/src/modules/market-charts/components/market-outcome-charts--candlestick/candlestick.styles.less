@@ -1,0 +1,132 @@
+@import (reference) "~assets/styles/shared";
+
+.Candlestick {
+  svg {
+    :global {
+      .highcharts-background {
+        fill: @color-theme-primary;
+      }
+
+      g.highcharts-axis-labels > text > tspan {
+        .mono-9;
+
+        color: @color-secondary-text;
+        fill: @color-secondary-text;
+      }
+
+      .highcharts-yaxis-labels,
+      .highcharts-label {
+        .mono-10;
+
+        fill: @color-secondary-text;
+      }
+
+      .highcharts-no-data {
+        font-size: @size-16;
+      }
+
+      .highcharts-label-box {
+        fill: @color-theme-primary;
+        font-weight: bold;
+
+        > text > tspan:last-child {
+          font-size: @size-12;
+        }
+      }
+
+      .highcharts-tick,
+      .highcharts-axis-line {
+        stroke: fade(@color-secondary-text, 40%);
+      }
+
+      .highcharts-xaxis-grid,
+      g.highcharts-yaxis-grid path.highcharts-grid-line:nth-child(1),
+      g.highcharts-yaxis path.highcharts-axis-line {
+        display: none;
+      }
+
+      .highcharts-yaxis-grid {
+        .dashline-long;
+
+        .highcharts-grid-line {
+          stroke: fade(@color-secondary-text, 40%);
+        }
+      }
+
+      .highcharts-xaxis-category {
+        display: none;
+      }
+
+      .highcharts-crosshair-label.highcharts-crosshair-label > .highcharts-label-box {
+        .mono-9;
+
+        stroke: @color-secondary-text;
+      }
+
+      .highcharts-crosshair-label {
+        .mono-10;
+
+        background-color: @color-theme-primary;
+        padding: 0.5rem;
+        z-index: 2;
+      }
+
+      .highcharts-crosshair {
+        .dashline-long;
+      }
+
+      .highcharts-plot-band {
+        fill: @color-highlight-masked;
+        z-index: -1;
+      }
+
+      .highcharts-point-down {
+        color: @color-negative;
+        fill: @color-negative;
+        stroke: @color-negative;
+      }
+
+      .highcharts-point-up {
+        color: @color-positive;
+        fill: none;
+        stroke: @color-positive;
+      }
+
+      path.highcharts-crosshair-thin:nth-of-type(2) {
+        stroke-width: 0;
+      }
+
+      @media @breakpoint-mobile {
+        path.highcharts-crosshair-thin:nth-of-type(1) {
+          stroke-width: 0;
+        }
+
+        path.highcharts-crosshair-thin:nth-of-type(2) {
+          stroke-width: 1;
+        }
+
+        path.highcharts-crosshair-thin:only-of-type {
+          stroke-width: 1;
+        }
+      }
+
+      .eth-label {
+        font-size: @size-9;
+      }
+    }
+  }
+}
+
+.Candlestick_display_none {
+  display: none;
+}
+
+.Candlestick_display_yLables {
+  .mono-10;
+
+  color: @color-secondary-text;
+}
+
+.Candlestick_candlesticks {
+  border-radius: 1px;
+}

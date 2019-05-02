@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Styles from "modules/modal/components/common/common.styles";
 
 import ModalActions from "modules/modal/components/common/modal-actions";
+import Checkbox from "src/modules/common/components/checkbox/checkbox";
 
 const EST_HEIGHT_PERCENT = 0.98;
 
@@ -34,7 +35,7 @@ export default class ModalDisclaimer extends Component {
   }
 
   checkCheckbox(didCheck) {
-    this.setState({ didCheck });
+    if (this.state.didScroll) this.setState({ didCheck });
   }
 
   render() {
@@ -142,16 +143,27 @@ export default class ModalDisclaimer extends Component {
             with any applicable laws.
           </p>
         </div>
+        <div className={Styles.ModalDisclaimer__helperText}>
+          <label>
+            Read the full disclaimer above. When you&apos;ve scrolled to the
+            bottom, click the checkbox below to mark that you understand and
+            agree.
+          </label>
+        </div>
         <div className={Styles.ModalDisclaimer__checkbox}>
           <label htmlFor="i_have_read_disclaimer">
-            I have read and understand the above
-            <input
+            <Checkbox
               id="i_have_read_disclaimer"
               type="checkbox"
-              value={didCheck}
+              value={didCheck && didScroll}
+              isChecked={didCheck && didScroll}
               disabled={!didScroll}
-              onClick={e => this.checkCheckbox(!didCheck)}
+              onClick={e => {
+                e.preventDefault();
+                this.checkCheckbox(!didCheck);
+              }}
             />
+            I have read and understood the above.
           </label>
         </div>
         <ModalActions

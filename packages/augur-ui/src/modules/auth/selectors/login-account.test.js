@@ -25,8 +25,8 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 
       const expected = {
         accountName: null,
-        rep: formatRep(undefined),
-        eth: formatEther(undefined)
+        rep: formatRep(undefined, { decimalsRounded: 4 }),
+        eth: formatEther(undefined, { decimalsRounded: 4 })
       };
 
       expect(actual).toEqual(expected);

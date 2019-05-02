@@ -11,9 +11,15 @@ import InputDropdown from "modules/common/components/input-dropdown/input-dropdo
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import CreateMarketFormLiquidityCharts from "modules/market-charts/containers/create-market-form-liquidity-charts";
 
-import { BID, ASK } from "modules/transactions/constants/types";
-import { CATEGORICAL, SCALAR } from "modules/markets/constants/market-types";
-import { ONE, ZERO } from "modules/trades/constants/numbers";
+import {
+  CATEGORICAL,
+  SCALAR,
+  YES_NO,
+  BID,
+  ASK,
+  ONE,
+  ZERO
+} from "modules/common-elements/constants";
 import getValue from "utils/get-value";
 import isPopulated from "utils/is-populated";
 
@@ -166,9 +172,21 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   handleAddOrder() {
-    const { addOrderToNewMarket, updateInitialLiquidityCosts } = this.props;
+    const {
+      addOrderToNewMarket,
+      updateInitialLiquidityCosts,
+      newMarket
+    } = this.props;
     if (this.state.isOrderValid) {
+      const { type, scalarDenomination } = newMarket;
+      let outcomeName = this.state.selectedOutcome;
+      if (type === YES_NO) {
+        outcomeName = "Yes";
+      } else if (type === SCALAR) {
+        outcomeName = scalarDenomination;
+      }
       addOrderToNewMarket({
+        outcomeName,
         outcome: this.state.selectedOutcome,
         type: this.state.selectedNav,
         price: this.state.orderPrice,
@@ -381,9 +399,16 @@ export default class CreateMarketLiquidity extends Component {
         newMarket.orderBookSorted[this.state.selectedOutcome],
         `${ASK}`
       );
-
-      if (orderPrice.mod(tickSize).gt("0")) {
-        errors.price.push(`Price must be a multiple of ${tickSize}`);
+      if (newMarket.minPrice) {
+        const bnMinPrice = createBigNumber(newMarket.minPrice);
+        if (
+          orderPrice
+            .minus(bnMinPrice)
+            .mod(tickSize)
+            .gt("0")
+        ) {
+          errors.price.push(`Price must be a multiple of ${tickSize}`);
+        }
       }
       if (newMarket.type !== SCALAR) {
         if (
@@ -552,7 +577,7 @@ export default class CreateMarketLiquidity extends Component {
             <span
               className={[`${StylesForm["CreateMarketForm__error--bottom"]}`]}
             >
-              {InputErrorIcon}{" "}
+              {InputErrorIcon()}{" "}
               {newMarket.validations[newMarket.currentStep].settlementFee}
             </span>
           )}
@@ -568,7 +593,9 @@ export default class CreateMarketLiquidity extends Component {
             <ul
               className={classNames(
                 Styles["CreateMarketLiquidity__order-form-header"],
-                { [`${Styles.headerPositive}`]: s.selectedNav === BID }
+                {
+                  [`${Styles.headerPositive}`]: s.selectedNav === BID
+                }
               )}
             >
               <li
@@ -710,7 +737,6 @@ export default class CreateMarketLiquidity extends Component {
           </div>
           <div className={Styles["CreateMarketLiquidity__order-graph"]}>
             <CreateMarketFormLiquidityCharts
-              excludeCandlestick
               selectedOutcome={s.selectedOutcome}
               updateSelectedOrderProperties={() => {}}
             />

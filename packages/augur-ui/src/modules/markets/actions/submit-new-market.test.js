@@ -1,20 +1,13 @@
 import { createBigNumber } from "utils/create-big-number";
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
-import { BUY, SELL } from "modules/transactions/constants/types";
+import { BUY, SELL } from "modules/common-elements/constants";
 import { buildCreateMarket } from "modules/markets/helpers/build-create-market";
-
-jest.mock("modules/transactions/actions/add-transactions", () => ({
-  addNewMarketCreationTransactions: jest.fn(() => ({
-    type: "ADD_NEW_MARKET_CREATION_TRANSACTIONS"
-  }))
-}));
 
 jest.mock("modules/markets/helpers/build-create-market");
 
 describe("modules/markets/actions/submit-new-market", () => {
   const mockStore = configureMockStore([thunk]);
-  const pendingTransaction = { type: "ADD_NEW_MARKET_CREATION_TRANSACTIONS" };
   const clearNewMarket = { type: "CLEAR_NEW_MARKET" };
   const invalidateMarketCreation = {
     data: { newMarketData: { isValid: false } },
@@ -69,7 +62,7 @@ describe("modules/markets/actions/submit-new-market", () => {
       store.dispatch(submitNewMarket(store.getState().newMarket, history));
       expect(history.push).toHaveBeenCalledTimes(1);
       const actual = store.getActions();
-      const expected = [pendingTransaction, clearNewMarket];
+      const expected = [clearNewMarket];
       expect(actual).toEqual(expected);
     });
 
@@ -236,11 +229,7 @@ describe("modules/markets/actions/submit-new-market", () => {
           }
         }
       };
-      const expected = [
-        pendingTransaction,
-        clearNewMarket,
-        addMarketLiquidityOrders
-      ];
+      const expected = [clearNewMarket, addMarketLiquidityOrders];
       expect(history.push).toHaveBeenCalledTimes(1);
       expect(actual).toEqual(expected);
     });
@@ -264,7 +253,7 @@ describe("modules/markets/actions/submit-new-market", () => {
       const store = mockStore(state || {});
       store.dispatch(submitNewMarket(store.getState().newMarket, history));
       const actual = store.getActions();
-      const expected = [pendingTransaction, clearNewMarket];
+      const expected = [clearNewMarket];
       expect(history.push).toHaveBeenCalledTimes(1);
       expect(actual).toEqual(expected);
     });
@@ -303,11 +292,7 @@ describe("modules/markets/actions/submit-new-market", () => {
       const store = mockStore(state || {});
       store.dispatch(submitNewMarket(store.getState().newMarket, history));
       const actual = store.getActions();
-      const expected = [
-        pendingTransaction,
-        clearNewMarket,
-        invalidateMarketCreation
-      ];
+      const expected = [clearNewMarket, invalidateMarketCreation];
       expect(history.push).toHaveBeenCalledTimes(1);
       expect(actual).toEqual(expected);
     });

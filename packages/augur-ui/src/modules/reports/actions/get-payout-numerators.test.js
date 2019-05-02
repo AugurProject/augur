@@ -1,8 +1,4 @@
-import {
-  CATEGORICAL,
-  SCALAR,
-  YES_NO
-} from "modules/markets/constants/market-types";
+import { CATEGORICAL, SCALAR, YES_NO } from "modules/common-elements/constants";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { createBigNumber } from "utils/create-big-number";
 

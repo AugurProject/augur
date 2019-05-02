@@ -1,5 +1,199 @@
 import React from "react";
 
+export const closeIcon = (
+  <svg
+    width="10"
+    height="10"
+    viewBox="0 0 10 10"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M1 1L9 9" stroke="white" strokeLinecap="round" />
+    <path d="M9 1L1 9" stroke="white" strokeLinecap="round" />
+  </svg>
+);
+
+export const collapseIcon = (
+  <svg
+    width="20"
+    height="30"
+    viewBox="0 0 20 30"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      x="1"
+      y="1"
+      width="18"
+      height="28"
+      rx="1"
+      stroke="#484552"
+      strokeLinecap="round"
+    />
+    <path
+      d="M13 9L10 6L7 9"
+      stroke="#484552"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path d="M10 6.5L10 13.5" stroke="#484552" strokeLinecap="round" />
+    <path
+      d="M13 21L10 24L7 21"
+      stroke="#484552"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path d="M10 23.5L10 16.5" stroke="#484552" strokeLinecap="round" />
+  </svg>
+);
+
+export const expandIcon = (
+  <svg
+    width="20"
+    height="28"
+    viewBox="0 0 20 28"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g opacity="0.87">
+      <rect
+        x="1"
+        y="12"
+        width="18"
+        height="4"
+        rx="1"
+        stroke="#484552"
+        strokeLinecap="round"
+      />
+      <path
+        d="M13 6L10 9L7 6"
+        stroke="#484552"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <line
+        x1="0.5"
+        y1="-0.5"
+        x2="7.5"
+        y2="-0.5"
+        transform="matrix(-4.37114e-08 -1 -1 4.37114e-08 9.5 8)"
+        stroke="#484552"
+        strokeLinecap="round"
+      />
+      <path
+        d="M13 22L10 19L7 22"
+        stroke="#484552"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <line
+        x1="10"
+        y1="20.5"
+        x2="10"
+        y2="27.5"
+        stroke="#484552"
+        strokeLinecap="round"
+      />
+    </g>
+  </svg>
+);
+
+export const downChevron = (strokeWidth = 4) => (
+  <svg
+    width="18"
+    height="9"
+    viewBox="0 0 18 9"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M1.35355 0.146447C1.15829 -0.0488155 0.841709 -0.0488155 0.646447 0.146447C0.451184 0.341709 0.451184 0.658291 0.646447 0.853553L8.64562 8.85272C8.64589 8.853 8.64617 8.85328 8.64645 8.85355C8.84171 9.04882 9.15829 9.04882 9.35355 8.85355C9.35375 8.85336 9.35394 8.85316 9.35414 8.85297L17.3536 0.853553C17.5488 0.658291 17.5488 0.341709 17.3536 0.146447C17.1583 -0.0488155 16.8417 -0.0488155 16.6464 0.146447L9 7.79289L1.35355 0.146447Z"
+      fill="white"
+      stroke="white"
+      strokeWidth={strokeWidth}
+    />
+  </svg>
+);
+
+export const BackArrow = (
+  <svg
+    width="18"
+    height="10"
+    viewBox="0 0 18 10"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M5 1L1 5L5 9"
+      stroke="white"
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <rect x="2" y="4" width="16" height="2" rx="1" fill="white" />
+  </svg>
+);
+
+export const twoArrows = (
+  <svg
+    width="60"
+    height="40"
+    viewBox="0 0 60 54"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M34 31L30 35L26 31"
+      stroke="white"
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M34 23L30 19L26 23"
+      stroke="white"
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const threeDots = (
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="16" cy="9.5" r="1.5" fill="#76737E" />
+    <circle cx="16" cy="22.5" r="1.5" fill="#76737E" />
+    <circle cx="16" cy="16" r="1.5" fill="#76737E" />
+  </svg>
+);
+
+export const RightChevron = (
+  <svg
+    width="7"
+    height="14"
+    viewBox="0 0 7 14"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      opacity="0.5"
+      d="M0.65686 1.34315C0.65686 1.34315 4.10458 4.79086 6.31372 7L0.65686 12.6568"
+      stroke="white"
+    />
+  </svg>
+);
+
 export const CreateMarketEdit = (
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <g id="Symbols" fill="none" fillRule="evenodd" strokeLinejoin="round">
@@ -457,7 +651,22 @@ export const Alert = (
   </svg>
 );
 
-export const ExclamationCircle = (
+export const darkBgExclamationCircle = (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="8" cy="8" r="7.5" fill="#1A1627" stroke="#443B59" />
+    <rect x="7.55566" y="3.55554" width="1.15556" height="6.22222" />
+    <path d="M7.57252 10.8973C7.44279 11.0463 7.37793 11.2313 7.37793 11.4523C7.37793 11.6685 7.44279 11.8487 7.57252 11.9928C7.70706 12.137 7.90886 12.209 8.17793 12.209C8.44219 12.209 8.64159 12.137 8.77613 11.9928C8.91066 11.8487 8.97793 11.6685 8.97793 11.4523C8.97793 11.2313 8.91066 11.0463 8.77613 10.8973C8.64159 10.7436 8.44219 10.6667 8.17793 10.6667C7.90886 10.6667 7.70706 10.7436 7.57252 10.8973Z" />
+  </svg>
+);
+
+export const WarningExclamationCircle = () => ExclamationCircle("#00eaff");
+export const ExclamationCircle = (c = "#ff2727") => (
   <svg viewBox="0 0 16 16">
     <g
       id="Updated-Screens"
@@ -468,14 +677,7 @@ export const ExclamationCircle = (
     >
       <g id="New-Market_11" transform="translate(-682.000000, -464.000000)">
         <g id="Icon/Error" transform="translate(682.000000, 464.000000)">
-          <circle
-            id="Oval"
-            stroke="#FF0068"
-            strokeWidth="1"
-            cx="8"
-            cy="8"
-            r="7"
-          />
+          <circle id="Oval" stroke={c} strokeWidth="1" cx="8" cy="8" r="7" />
           <text
             id="!"
             transform="translate(8.000000, 7.500000) scale(-1, 1) translate(-8.000000, -7.500000) "
@@ -483,9 +685,9 @@ export const ExclamationCircle = (
             fontSize="10.5"
             fontWeight="normal"
             letterSpacing="0.262500018"
-            fill="#FF0068"
+            fill={c}
           >
-            <tspan x="6.1" y="11">
+            <tspan x="6.7" y="11.5">
               !
             </tspan>
           </text>
@@ -496,21 +698,25 @@ export const ExclamationCircle = (
 );
 
 export const Hint = (
-  <svg viewBox="0 0 16 16">
-    <g
-      id="Icon/Hint"
-      stroke="none"
-      strokeWidth="1"
-      fill="none"
-      fillRule="evenodd"
-    >
-      <circle id="Oval" stroke="#736E89" cx="8" cy="8" r="7" />
-      <path
-        d="M10.178273,6.02785515 C10.178273,4.8356546 9.26462396,4 8.09470752,4 C6.8913649,4 6,4.90250696 6,6.03899721 L6.80222841,6.03899721 C6.80222841,5.33704735 7.30362117,4.71309192 8.09470752,4.71309192 C8.84122563,4.71309192 9.37604457,5.28133705 9.37604457,6.02785515 C9.37604457,6.40668524 9.22005571,6.66295265 9.00835655,6.97493036 L8.10584958,8.27855153 C7.8718663,8.61281337 7.76044568,8.8913649 7.76044568,9.32590529 L7.76044568,9.77158774 L8.56267409,9.77158774 L8.56267409,9.33704735 C8.56267409,9.15877437 8.62952646,8.8913649 8.7632312,8.6908078 L9.67688022,7.37604457 C9.96657382,6.95264624 10.178273,6.55153203 10.178273,6.02785515 Z M8.64066852,12 L8.64066852,11.0640669 L7.68245125,11.0640669 L7.68245125,12 L8.64066852,12 Z"
-        id="?"
-        fill="#736E89"
-      />
-    </g>
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      cx="9"
+      cy="9"
+      r="8"
+      fill="#1A1627"
+      stroke="#2B2438"
+      strokeWidth="2"
+    />
+    <path
+      d="M6.5 6.30273H9.74023V11.7051H11.8086V12.6426H6.5V11.7051H8.65625V7.24609H6.5V6.30273ZM8.51562 4.63867C8.51562 4.45898 8.56836 4.30859 8.67383 4.1875C8.7832 4.0625 8.94727 4 9.16602 4C9.38086 4 9.54297 4.0625 9.65234 4.1875C9.76172 4.30859 9.81641 4.45898 9.81641 4.63867C9.81641 4.81445 9.76172 4.96094 9.65234 5.07812C9.54297 5.19531 9.38086 5.25391 9.16602 5.25391C8.94727 5.25391 8.7832 5.19531 8.67383 5.07812C8.56836 4.96094 8.51562 4.81445 8.51562 4.63867Z"
+      fill="white"
+    />
   </svg>
 );
 
@@ -675,7 +881,7 @@ export const Deposit = (
       <g
         id="Account_1"
         transform="translate(-575.000000, -448.000000)"
-        stroke="#372E4B"
+        stroke="#fff"
       >
         <g id="Icon/Deposit" transform="translate(574.000000, 447.000000)">
           <path
@@ -710,7 +916,7 @@ export const Withdraw = (
       <g
         id="Account_2"
         transform="translate(-615.000000, -452.000000)"
-        stroke="#372E4B"
+        stroke="#fff"
       >
         <g id="Icon/Withdraw" transform="translate(614.000000, 448.000000)">
           <g id="Page-1" transform="translate(1.000000, 4.000000)">
@@ -739,7 +945,7 @@ export const Copy = (
       <g
         id="Account_2"
         transform="translate(-1291.000000, -549.000000)"
-        stroke="#372E4B"
+        stroke="#fff"
       >
         <g id="Icon/Copy" transform="translate(1288.000000, 549.000000)">
           <g id="Page-1" transform="translate(3.428571, 0.857143)">
@@ -907,41 +1113,26 @@ export const ChevronFlipIcon = (className = "", fillColor = "#A7A2B2") => (
 
 export const ChevronFlipFilledIcon = (className = "", fillColor = "#FFF") => (
   <svg
-    width="12px"
-    height="8px"
-    viewBox="0 0 12 8"
-    version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
     className={className}
+    width="10"
+    height="6"
+    viewBox="0 0 10 6"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <defs />
-    <g
-      id="Create/Connect-Account"
-      stroke="none"
-      strokeWidth="1"
-      fill="none"
-      fillRule="evenodd"
-    >
-      <g
-        id="SoftwareWalletDisconnectedInactive"
-        transform="translate(-281.000000, -32.000000)"
-        fill={fillColor}
-        fillRule="nonzero"
-      >
-        <g id="connectWallet" transform="translate(125.000000, 0.000000)">
-          <polygon
-            id="Triangle"
-            transform="translate(162.000000, 36.000000) scale(1, -1) translate(-162.000000, -36.000000) "
-            points="162 32 168 40 156 40"
-          />
-        </g>
-      </g>
-    </g>
+    <path
+      d="M9 1L5 5L1 1"
+      stroke={fillColor}
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
-export const Notifications = (unseenCount, rxWidth, stroke = "#FFFFFF") => (
-  <svg viewBox="0 0 24 24">
+export const Alerts = unseenCount => (
+  <svg width="34" height="24" viewBox="0 0 34 24">
     <defs />
     <g
       id="Symbols"
@@ -950,48 +1141,62 @@ export const Notifications = (unseenCount, rxWidth, stroke = "#FFFFFF") => (
       fill="none"
       fillRule="evenodd"
     >
-      <g id="Icon/Notification">
+      <g id="Icon/Alert">
         <g
           id="Page-1"
           transform="translate(4.000000, 1.000000)"
-          stroke={stroke}
-          strokeWidth="0.894"
+          stroke="#FFFFFF"
+          strokeWidth="0"
         >
           <path
-            d="M7.9209,2.5717 L7.9209,1.9467 C7.9209,1.1217 8.5959,0.4467 9.4209,0.4467 C10.2459,0.4467 10.9209,1.1217 10.9209,1.9467 L10.9209,2.5467"
-            id="Stroke-1"
+            d="M7.9209 2.57172V1.94672C7.9209 1.12172 8.5959 0.446716 9.4209 0.446716C10.2459 0.446716 10.9209 1.12172 10.9209 1.94672V2.54672"
+            stroke="#FFFFFF"
+            strokeWidth="0.894"
           />
           <path
-            d="M11.4209,19.4472 C11.4209,20.5512 10.5249,21.4472 9.4209,21.4472 C8.3169,21.4472 7.4209,20.5512 7.4209,19.4472"
-            id="Stroke-3"
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M11.4209 20.4472C11.4209 21.5512 10.5249 22.4472 9.4209 22.4472C8.3169 22.4472 7.4209 21.5512 7.4209 20.4472"
+            fill="#FFFFFF"
           />
           <path
-            d="M18.3389,17.4491 C16.5789,14.4471 15.2629,11.4471 15.4209,8.4471 C15.5789,5.4471 12.7349,2.4471 9.4209,2.4471 C6.1069,2.4471 3.2469,5.1381 3.4209,8.4471 C3.5789,11.4471 2.5789,14.4471 0.5789,17.4471 C-1.4211,20.4471 20.0989,20.4501 18.3389,17.4491 Z"
-            id="Stroke-5"
+            d="M11.4209 20.4472C11.4209 21.5512 10.5249 22.4472 9.4209 22.4472C8.3169 22.4472 7.4209 21.5512 7.4209 20.4472C7.4209 20.4472 8.63985 20.4472 9.4209 20.4472C10.2019 20.4472 11.4209 20.4472 11.4209 20.4472Z"
+            stroke="#FFFFFF"
+            strokeWidth="0.894"
+          />
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M18.3387 17.4493C16.5787 14.4473 15.2627 11.4473 15.4207 8.44727C15.5787 5.44727 12.7347 2.44727 9.42066 2.44727C6.10666 2.44727 3.24666 5.13827 3.42066 8.44727C3.57866 11.4473 2.57866 14.4473 0.578663 17.4473C-1.42134 20.4473 20.0987 20.4503 18.3387 17.4493Z"
+            fill="#FFFFFF"
+            stroke="#FFFFFF"
+            strokeWidth="0.894"
           />
         </g>
         {!!unseenCount && (
           <g
             id="Group-14"
-            transform="translate(1.000000, 2.000000)"
+            transform="translate(13.000000, 2.000000)"
             textAnchor="middle"
           >
-            <ellipse
+            <rect
               id="Oval"
-              fill={stroke}
-              cx="6.4591451"
-              cy="7.00261291"
-              rx={rxWidth}
-              ry="6.43043779"
+              x="0.5"
+              y="0.5"
+              width="21"
+              height="13"
+              rx="6.5"
+              fill="#FD6266"
+              stroke="#211A32"
             />
             <text
               id="1"
               fontFamily="roboto-Bold, roboto"
               fontSize="8"
               fontWeight="bold"
-              fill="#341D53"
+              fill="#FFFFFF"
             >
-              <tspan x="6.01902362" y="10.0428031">
+              <tspan x="11.01902362" y="10.0428031">
                 {unseenCount}
               </tspan>
             </text>
@@ -1737,5 +1942,46 @@ export const logoutIcon = (
       <path d="M14.16 10.123H5.624a1.125 1.125 0 0 1 0-2.25h8.534l-1.454-1.455a1.125 1.125 0 0 1 1.59-1.59l3.375 3.374a1.125 1.125 0 0 1 0 1.591l-3.375 3.375a1.125 1.125 0 1 1-1.59-1.59l1.454-1.455z" />
       <path d="M9 15.5v-2a1 1 0 0 1 2 0v4H0V0h11v4a1 1 0 0 1-2 0V2H2v13.5h7z" />
     </g>
+  </svg>
+);
+
+export const infoIcon = (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      cx="9"
+      cy="9"
+      r="8"
+      fill="#1A1627"
+      stroke="#2B2438"
+      strokeWidth="2"
+    />
+    <path
+      d="M6.5 6.30273H9.74023V11.7051H11.8086V12.6426H6.5V11.7051H8.65625V7.24609H6.5V6.30273ZM8.51562 4.63867C8.51562 4.45898 8.56836 4.30859 8.67383 4.1875C8.7832 4.0625 8.94727 4 9.16602 4C9.38086 4 9.54297 4.0625 9.65234 4.1875C9.76172 4.30859 9.81641 4.45898 9.81641 4.63867C9.81641 4.81445 9.76172 4.96094 9.65234 5.07812C9.54297 5.19531 9.38086 5.25391 9.16602 5.25391C8.94727 5.25391 8.7832 5.19531 8.67383 5.07812C8.56836 4.96094 8.51562 4.81445 8.51562 4.63867Z"
+      fill="white"
+    />
+  </svg>
+);
+
+export const PaginationArrorw = (
+  <svg
+    width="6"
+    height="10"
+    viewBox="0 0 6 10"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M5 9L1 5L5 1"
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );

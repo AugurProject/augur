@@ -32,20 +32,8 @@ const Routes = p => (
       component={COMPONENTS.Portfolio}
     />
     <AuthenticatedRoute
-      path={makePath(VIEWS.MY_MARKETS)}
-      component={COMPONENTS.Portfolio}
-    />
-    <AuthenticatedRoute
-      path={makePath(VIEWS.FAVORITES)}
-      component={COMPONENTS.Portfolio}
-    />
-    <AuthenticatedRoute
-      path={makePath(VIEWS.PORTFOLIO_TRANSACTIONS)}
-      component={COMPONENTS.Portfolio}
-    />
-    <AuthenticatedRoute
-      path={makePath(VIEWS.PORTFOLIO_REPORTS)}
-      component={COMPONENTS.Portfolio}
+      path={makePath(VIEWS.REPORTING_REPORTS)}
+      component={COMPONENTS.Reporting}
     />
     <AuthenticatedRoute
       path={makePath(VIEWS.ACCOUNT)}

@@ -11,14 +11,25 @@
   }
 }
 
-.MarketPreview__details {
+.details {
   display: flex;
   flex: 4;
   flex-direction: column;
 }
 
-.MarketPreview__footer {
-  border-top: 1px solid @color-lightest-gray;
+.footer {
+  border-top: 1px solid @color-almost-black;
+  padding: 20px 2rem;
+
+  &.single-card {
+    margin: auto;
+    max-width: 62.75rem;
+  }
+}
+
+.returns {
+  background-color: @color-medium-gray;
+  border-top: 1px solid @color-almost-black;
   padding: 1rem 2rem;
 
   &.single-card {
@@ -27,18 +38,7 @@
   }
 }
 
-.MarketPreview__returns {
-  background-color: @color-lightgray-2;
-  border-top: 1px solid @color-lightest-gray;
-  padding: 0.625rem 2rem;
-
-  &.single-card {
-    margin: auto;
-    max-width: 62.75rem;
-  }
-}
-
-.MarketPreview__outcomes {
+.outcomes {
   .border(true, @border-left);
 
   display: flex;
@@ -51,8 +51,8 @@
 }
 
 @media @breakpoint-mobile-medium {
-  .MarketPreview__footer,
-  .MarketPreview__returns {
+  .footer,
+  .returns {
     padding-left: 1rem;
     padding-right: 1rem;
   }

@@ -3,7 +3,10 @@
 @import '_normalize';
 @import '_colors_OLD';
 @import '_colors';
+@import '_colors_redesign';
 @import '_typography';
+@import '_typography_redesign';
+@import '_misc_redesign';
 @import '_animations';
 @import '_arrangement';
 @import '_borders';
@@ -21,7 +24,7 @@ html {
 }
 
 body {
-  color: @color-darkpurple;
+  color: @color-extra-darkpurple;
   font-family: @roboto;
   font-size: 16px;
   font-style: normal;
@@ -41,4 +44,15 @@ body {
 .view--constrained {
   max-width: @max-width;
   min-height: 100%;
+}
+
+:global .App--windowsScrollBars {
+  ::-webkit-scrollbar {
+    width: 0.375rem;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: @color-primary-light;
+    border-radius: @border-radius-full-round;
+  }
 }

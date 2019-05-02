@@ -1,7 +1,126 @@
 @import (reference) "~assets/styles/shared";
 
+.MarketView {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.MarketView__button {
+  > svg {
+    height: 0.5rem;
+    margin-left: 1rem;
+    width: 0.25rem;
+  }
+}
+
+.MarketView__overlay {
+  background-color: @color-light-purple;
+  bottom: 0;
+  color: white;
+  height: 100vh;
+  left: 0;
+  min-height: 800px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100vw;
+  z-index: 100;
+}
+
+.MarketView__paneContainer--mobile {
+  flex: 1;
+  padding: @size-16 @size-8;
+
+  > div:first-of-type {
+    margin-bottom: @size-8;
+  }
+
+  > div:nth-of-type(2) {
+    margin-bottom: @size-8;
+  }
+
+  > div:last-of-type {
+    margin-top: @size-8;
+  }
+
+  > h1 {
+    display: none;
+  }
+}
+
+.MarketView__body {
+  color: white;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  margin: 1.5rem;
+  margin-top: 0;
+}
+
+.MarketView__firstColumn {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.MarketView__secondColumn {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-left: 0.75rem;
+  max-width: 20.3125rem;
+  min-height: 100vh;
+  min-width: 20.3125rem;
+}
+
+.MarketView__component {
+  background-color: @color-grayish-purple;
+  display: flex;
+  flex: 1 auto;
+  flex-flow: column nowrap;
+}
+
+.MarketView__component__history {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: 100%;
+}
+
+.MarketView__firstRow {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.MarketView__secondRow {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0.75rem;
+}
+
+.MarketView__innerFirstColumn {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-right: 0.75rem;
+  max-width: 325px;
+  min-width: 325px;
+}
+
+.MarketView__innerSecondColumn {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
 .Market__upper {
   .view();
+
+  margin-bottom: 1rem;
+  min-height: unset;
+  padding: 2rem 2.5rem 0.5rem;
 }
 
 .Market__graphs {
@@ -22,7 +141,80 @@
   width: 25rem;
 }
 
+.MarketView__orders {
+  display: flex;
+  flex-direction: column;
+  height: 50vh;
+  margin-bottom: 0.75rem;
+}
+
+.MarketView__hide {
+  height: 3.5rem !important;
+  max-height: 3.5rem !important;
+}
+
+.MarketView__show {
+  height: calc(~"100vh - 3.5rem") !important;
+  max-height: 100% !important;
+}
+
+.MarketView__history {
+  border-bottom: 8px solid @color-light-purple;
+  height: 50vh;
+}
+
+.MarketView__history,
+.MarketView__orders {
+  max-height: 50%;
+  transition: max-height 0.2s ease;
+}
+
+.MarketView__outcomesList {
+  flex-grow: unset;
+  margin-bottom: 12px;
+}
+
+.MarketView__priceHistoryChart {
+  background-color: @color-light-purple;
+
+  > p {
+    background-color: @color-light-purple;
+    border-bottom: 1px solid @color-very-dark-purple;
+    color: white;
+    font-size: 1rem;
+    margin-top: 1rem;
+    padding: 1.125rem 1rem;
+  }
+}
+
+div.OutcomeNameDisplay {
+  .text-12;
+
+  align-items: center;
+  background: @color-primary-background;
+  border: 1px solid @color-primary-alternate;
+  border-radius: @border-radius-default;
+  color: @color-secondary-text;
+  display: flex;
+  flex-flow: row nowrap;
+  height: @size-40;
+  padding: 0 @size-16;
+  z-index: @mask;
+}
+
 @media @breakpoint-mobile {
+  .OutcomeSelectionArea {
+    background: @color-primary-background;
+    padding: 0 @size-8 @size-16;
+    position: absolute;
+    width: 100%;
+    z-index: @mask;
+  }
+
+  .TradesMobile {
+    margin-top: @size-40;
+  }
+
   .Market__upper {
     padding: 0 1rem;
   }
@@ -39,5 +231,46 @@
 
   .Market__details-trading {
     width: auto;
+  }
+
+  .MarketView__paneContainer--mobile {
+    > h1 {
+      .text-12-bold;
+
+      color: @color-secondary-text;
+      display: block;
+      margin: 0;
+      padding: 0.75rem 1rem;
+    }
+
+    > div:last-of-type {
+      margin-top: 0;
+    }
+  }
+
+  .MarketView__orders {
+    margin-bottom: 0;
+  }
+
+  .MarketView__history {
+    background: @color-grayish-purple;
+    margin-bottom: 0;
+    max-height: unset;
+  }
+
+  .MarketView {
+    height: 100%;
+  }
+
+  .MarketView__button {
+    > svg {
+      height: 0.75rem;
+      margin-left: 1rem;
+      width: 0.5rem;
+    }
+  }
+
+  .MarketView__priceHistoryChart > p {
+    font-size: @size-14;
   }
 }

@@ -2,8 +2,7 @@
 
 .BlockInfoData {
   align-items: center;
-  border-left: 0.0625rem solid @color-lightpurple;
-  color: white;
+  color: @color-secondary-text;
   flex-direction: column;
   justify-content: center;
   max-width: 162px;
@@ -11,11 +10,11 @@
   width: unset !important;
 
   &:hover {
-    background-color: @color-lightpurple;
+    background-color: @color-primary-light;
   }
 }
 
-.BlockInfoData__container {
+.container {
   cursor: pointer;
   display: flex;
   flex: 1;
@@ -33,8 +32,8 @@
   }
 }
 
-.BlockInfoData__title {
-  color: @color-lightergray;
+.title {
+  color: @color-less-neutral;
   font-size: @font-size-extra-small;
   line-height: 2;
 
@@ -43,31 +42,31 @@
   }
 }
 
-.BlockInfoData__selected {
-  background-color: @color-lightpurple;
+.selected {
+  background-color: @color-primary-light;
 }
 
-.BlockInfoData__info {
+.info {
+  .mono-14-bold;
+
   align-items: flex-end;
   display: flex;
-  font-weight: bold;
 }
 
-.BlockInfoData__connectDropdown {
-  background-color: @color-lightpurple;
+.connectDropdown {
+  background-color: @color-primary-light;
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
   box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
   height: 0;
   position: absolute;
-  right: -1px;
+  right: 0;
   text-align: left;
-  top: @top-bar-height;
+  top: 100%;
   width: 308px;
   z-index: @above-all-content;
 
   @media @breakpoint-mobile {
-    top: 3.1rem;
     width: 250px;
   }
 
@@ -77,23 +76,23 @@
   }
 }
 
-.BlockInfoData__connectDropdownLogged {
+.connectDropdownLogged {
   @media @breakpoint-mobile-small {
     left: unset;
     right: -1px;
   }
 }
 
-.BlockInfoData__dropdownContainer {
+.dropdownContainer {
   padding: 24px;
 }
 
-.BlockInfoData__dropdownTitle {
+.dropdownTitle {
   color: @color-lightergray;
   font-size: @font-size-medium;
 }
 
-.BlockInfoData__percent {
+.percent {
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   color: @color-white;
   display: flex;
@@ -106,24 +105,24 @@
   padding-bottom: 16px;
 }
 
-.BlockInfoData__processed {
+.processed {
   color: @color-white;
   font-size: @font-size-large;
   font-weight: bold;
   margin-top: 8px;
 }
 
-.BlockInfoData__slash {
+.slash {
   font-weight: normal;
   margin-left: 6px;
   margin-right: 4px;
 }
 
-.BlockInfoData__bottom {
+.bottom {
   color: @color-white;
 }
 
-.BlockInfoData__blocksBehind {
+.blocksBehind {
   align-self: center;
   display: flex;
   flex-direction: column;
@@ -134,20 +133,8 @@
   text-decoration: underline;
 }
 
-@media @breakpoint-mobile-mid {
+@media @breakpoint-mobile {
   .BlockInfoData {
-    max-width: unset;
-  }
-
-  .BlockInfoData__container {
-    justify-content: center;
-    padding: 5px 24px;
+    display: none;
   }
 }
-
-@media @breakpoint-mobile-small {
-  .BlockInfoData__container {
-    padding: 5px 10px;
-  }
-}
-

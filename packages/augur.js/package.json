@@ -1,5 +1,5 @@
 {
-  "name": "augur.js",
+  "name": "@augurproject/augur.js",
   "version": "10.0.0-0",
   "description": "Augur JavaScript API",
   "author": "The Augur Developers <team@augur.net>",

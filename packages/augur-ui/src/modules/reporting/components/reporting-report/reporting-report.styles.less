@@ -4,3 +4,20 @@
   color: @color-lightgray;
   margin-top: 5rem;
 }
+
+.ReportingReport_form_message {
+  border-bottom: 1px solid rgba(206, 215, 216, 0.3);
+  display: flex;
+  margin-bottom: 1rem;
+  padding: 1rem;
+
+  @media @breakpoint-mobile {
+    flex-direction: column-reverse;
+  }
+
+  > div {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 0.5rem;
+  }
+}

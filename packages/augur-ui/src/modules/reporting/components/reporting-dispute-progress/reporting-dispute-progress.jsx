@@ -54,47 +54,18 @@ const ReportingDisputeProgress = ({
   };
 
   return (
-    <article>
-      <section className={Styles["ReportingDisputeProgress__dispute-wrapper"]}>
-        <div className={Styles["ReportingDisputeProgress__dispute-graph"]}>
-          <div className={Styles.ReportingDisputeProgress__graph}>
-            <div className={Styles["ReportingDisputeProgress__graph-current"]}>
-              <div style={percentageCompleteStyle} />
-              <div style={percentageAccountStyle} />
-            </div>
-          </div>
+    <article className={Styles.ReportingDisputeProgress}>
+      <div>
+        <div>
+          <div style={percentageCompleteStyle} />
+          <div style={percentageAccountStyle} />
         </div>
-        <div className={Styles["ReportingDisputeProgress__dispute-label"]}>
-          <span
-            className={
-              Styles["ReportingDisputeProgress__dispute-label-total-rep-text"]
-            }
-          >
-            {repStakedFormatted}
-          </span>
-          <span
-            className={Styles["ReportingDisputeProgress__dispute-label-break"]}
-          >
-            {" "}
-            /{" "}
-          </span>
-          <span
-            className={
-              Styles["ReportingDisputeProgress__dispute-label-goal-text"]
-            }
-          >
-            {bondSizeCurrentFormatted.formatted} REP
-          </span>
+        <div>
+          {repStakedFormatted} / {bondSizeCurrentFormatted.formatted} REP
         </div>
-        {userStaked &&
-          totalPercentageComplete >= 100 && (
-            <div
-              className={Styles["ReportingDisputeProgress__dispute-tentative"]}
-            >
-              New tentative outcome
-            </div>
-          )}
-      </section>
+      </div>
+      {userStaked &&
+        totalPercentageComplete >= 100 && <div>New tentative outcome</div>}
     </article>
   );
 };

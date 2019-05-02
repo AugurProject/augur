@@ -1,0 +1,184 @@
+@import (reference) '~assets/styles/shared';
+
+.Table {
+  cursor: default;
+}
+
+div.MarketOpenOrdersList__table {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-top: 0;
+  position: relative;
+  width: 100%;
+}
+
+.MarketOpenOrdersList__table-header {
+  .mono-10;
+
+  background-color: @color-light-purple;
+  border-bottom: 0.0625rem solid @color-primary-background;
+  color: @color-shadow-text;
+  display: grid;
+  flex-direction: row;
+  flex-grow: 1;
+  grid-template-columns: 2fr repeat(5, 1fr);
+  text-transform: uppercase;
+  transition: background-color 0.15s ease;
+
+  &:first-child > li {
+    border-top-width: 0;
+    padding-bottom: 0.75rem;
+    padding-top: 0.75rem;
+  }
+
+  > li {
+    flex-grow: 1;
+    overflow: hidden;
+    padding: 0.75rem 0;
+    padding-left: 1rem;
+    text-align: right;
+    white-space: normal;
+
+    &:first-child {
+      max-width: 160px;
+      padding-left: 2rem;
+      position: relative;
+      text-align: left;
+    }
+
+    &:last-of-type {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      padding-right: 1.25rem;
+    }
+  }
+
+  .NotActive {
+    color: @color-lightgray;
+  }
+}
+
+.MarketOpenOrdersList__order-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.MarketFilledOrdersList__table-header {
+  > li {
+    &:last-of-type {
+      padding-right: 1.2rem;
+    }
+  }
+}
+
+.MarketOpenOrdersList__footer {
+  background-color: @color-light-purple;
+  height: 8px;
+}
+
+.MarketOpenOrdersList__empty {
+  background-color: @color-grayish-purple;
+}
+
+.MarketOpenOrdersList__table-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  font-size: @font-size-large;
+  line-height: @font-size-large;
+}
+
+.MarketOpenOrdersList__scrollContainer {
+  max-height: 30vh;
+  min-height: 30vh;
+  overflow-y: auto;
+}
+
+.MarketOutcomes__table-header {
+  > li {
+    &:last-of-type {
+      padding-right: 2rem;
+    }
+  }
+}
+
+.MarketOrders__footer {
+  background: @color-light-purple;
+  display: flex;
+  justify-content: flex-end;
+  min-height: 2rem;
+  padding: 0.5rem 1rem;
+}
+
+@media @breakpoint-mobile {
+  .MarketOrders__footer {
+    background: @color-tertiary-background;
+    margin-top: 0.125rem;
+  }
+
+  .MarketOpenOrdersList__scrollContainer {
+    max-height: calc(100vh - 300px);
+    min-height: unset;
+  }
+
+  .MarketOpenOrdersList__table {
+    height: 100%;
+  }
+
+  .MarketOpenOrdersList__table-header {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+
+    > li {
+      &:first-child {
+        flex-grow: unset;
+        padding-left: 16px;
+      }
+
+      &:last-of-type {
+        padding-right: 1.5rem;
+      }
+    }
+  }
+
+  .MarketOutcomes__table-header {
+    > li {
+      font-size: @size-9;
+
+      &:first-child {
+        min-width: 100px;
+      }
+
+      &:last-of-type {
+        padding-right: 1rem;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .MarketOpenOrdersList__table-header {
+    > li {
+      min-width: unset;
+
+      &:last-of-type {
+        padding-right: 1rem;
+      }
+    }
+  }
+
+  .MarketOutcomes__table-header {
+    > li {
+      &:first-child {
+        min-width: 50px;
+      }
+
+      &:last-of-type {
+        padding-right: 1rem;
+      }
+    }
+  }
+}

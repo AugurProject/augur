@@ -1,11 +1,12 @@
 import { selectReportableOutcomes } from "modules/reports/selectors/reportable-outcomes";
-import { CATEGORICAL, YES_NO } from "modules/markets/constants/market-types";
 import {
+  CATEGORICAL,
+  YES_NO,
   YES_NO_NO_ID,
   YES_NO_NO_OUTCOME_NAME,
   YES_NO_YES_ID,
   YES_NO_YES_OUTCOME_NAME
-} from "modules/markets/constants/market-outcomes";
+} from "modules/common-elements/constants";
 
 describe("modules/reports/selectors/reportable-outcomes.js", () => {
   let actual;

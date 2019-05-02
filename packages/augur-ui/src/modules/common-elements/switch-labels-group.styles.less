@@ -1,0 +1,104 @@
+@import (reference) '~assets/styles/shared';
+
+.SwitchLabelsGroup {
+  display: flex;
+  flex: 1;
+  padding-top: @size-12;
+
+  @media @breakpoint-mobile-mid {
+    padding-top: @size-18;
+  }
+}
+
+.SwitchLabelsGroup__label {
+  .mono-11;
+
+  color: @color-shadow-text;
+  padding-bottom: 0.75rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  &:not(:first-of-type) {
+    margin-left: 1rem;
+  }
+
+  > span {
+    flex-grow: 1;
+
+    > span {
+      font-weight: @weight-medium;
+      margin-left: 0.1875rem;
+    }
+  }
+
+  &.active {
+    color: @color-secondary-text;
+    position: relative;
+
+    > span {
+      &::after {
+        background-color: @color-secondary-text;
+        border-radius: 0.1875rem;
+        bottom: 0;
+        content: "";
+        height: 0.125rem;
+        left: 0;
+        position: absolute;
+        right: 0.125rem;
+      }
+    }
+  }
+
+  // TODO: Circle back and remove this when SIDE NAV is removed
+  // Temporary quick fix for sizing issues between 1281 - 1420
+  @media @breakpoint-temp {
+    .mono-9;
+  }
+
+  @media @breakpoint-mobile-mid {
+    flex: 1;
+    padding-bottom: @size-18;
+
+    > span {
+      .mono-10;
+
+      position: relative;
+
+      &::after {
+        bottom: unset;
+        margin-top: 2px;
+        top: 100%;
+      }
+    }
+  }
+}
+
+.SwitchLabelsGroup_open {
+  &.active {
+    > span {
+      &::after {
+        background: @color-open;
+      }
+    }
+  }
+}
+
+.SwitchLabelsGroup_reporting {
+  &.active {
+    > span {
+      &::after {
+        background: @color-in-reporting;
+      }
+    }
+  }
+}
+
+.SwitchLabelsGroup_resolved {
+  &.active {
+    > span {
+      &::after {
+        background: @color-resolved;
+      }
+    }
+  }
+}

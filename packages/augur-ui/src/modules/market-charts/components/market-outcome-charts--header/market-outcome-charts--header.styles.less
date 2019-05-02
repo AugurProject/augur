@@ -64,7 +64,13 @@
   height: 100%;
   justify-content: space-between;
   margin-bottom: 0.4em;
-  width: 100%;
+  width: 80%;
+
+  @media @breakpoint-mobile {
+    grid-column: 1 / span 3;
+    grid-row: 2 / span 1;
+    height: unset;
+  }
 }
 
 .MarketOutcomeChartsHeader__stat {

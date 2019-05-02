@@ -89,7 +89,7 @@
 }
 
 .MarketReportingPayouts__malformed {
-  color: @color-negative;
+  color: @color-error;
   font-size: @font-size-normal;
   font-weight: 700;
   line-height: unset;
@@ -106,11 +106,11 @@
 }
 
 .MarketReportingPayouts__winning-outcome-message {
-  color: #9d93d0;
+  color: @color-white;
   font-size: 0.8em;
   font-weight: 500;
   margin-top: 0.55em;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .MarketReportingPayouts__outcome-value {
@@ -180,7 +180,7 @@
 }
 
 .MarketReportingPayouts__progress-bar {
-  background: @color-lightergray;
+  background: rgba(119, 119, 119, 0.25);
   display: flex;
   min-width: 11em;
   position: relative;
@@ -188,36 +188,33 @@
   width: 15rem;
 
   > div:first-child {
-    background: @color-lighter-purple;
+    background: @color-bright-highlight;
     height: 100%;
   }
 
   > div:last-child {
-    background: @color-purple;
+    background: @color-bright-teal;
     height: 100%;
   }
 }
 
 .MarketReportingPayouts__progress-bar-total-rep-text {
-  color: @color-purple;
-  font-size: @font-size-medium;
-  font-weight: 500;
-  line-height: 0.6em;
+  color: @color-white;
+  font-size: 16px;
+  line-height: 0.9em;
   margin-left: 1em;
 }
 
 .MarketReportingPayouts__progress-bar-break {
-  color: @color-lightgray;
+  color: @color-white;
   font-size: @font-size-medium;
-  font-weight: 500;
-  line-height: 0.6em;
+  line-height: 0.9em;
   margin-left: 0.4em;
 }
 
 .MarketReportingPayouts__progress-bar-goal-text {
-  color: @color-lightgray;
-  font-size: @font-size-small;
-  font-weight: 500;
+  color: @color-white;
+  font-size: 14px;
   line-height: 0.9em;
   margin-left: 0.4em;
   white-space: nowrap;

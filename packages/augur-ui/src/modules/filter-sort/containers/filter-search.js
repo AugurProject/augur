@@ -5,17 +5,16 @@ import FilterSearch from "modules/filter-sort/components/filter-search/filter-se
 import { getSelectedTagsAndCategoriesFromLocation } from "src/modules/markets/helpers/get-selected-tags-and-categories-from-location";
 
 const mapStateToProps = (state, { location }) => {
-  const { category, tags, keywords } = getSelectedTagsAndCategoriesFromLocation(
-    location
-  );
-  const { isMobileSmall } = state.appStatus;
+  const {
+    selectedCategoryName,
+    selectedTagNames,
+    keywords
+  } = getSelectedTagsAndCategoriesFromLocation(location);
 
   return {
-    isMobileSmall,
-    category,
-    tags,
-    keywords,
-    hasLoadedMarkets: state.appStatus.hasLoadedMarkets
+    category: selectedCategoryName,
+    tags: selectedTagNames,
+    keywords
   };
 };
 

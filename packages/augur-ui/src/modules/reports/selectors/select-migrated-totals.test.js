@@ -1,9 +1,5 @@
 import immutableDelete from "immutable-delete";
-import {
-  CATEGORICAL,
-  SCALAR,
-  YES_NO
-} from "modules/markets/constants/market-types";
+import { CATEGORICAL, SCALAR, YES_NO } from "modules/common-elements/constants";
 import selectMigratedTotals from "modules/reports/selectors/select-migrated-totals";
 import { formatAttoRep } from "utils/format-number";
 

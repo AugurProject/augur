@@ -1,4 +1,4 @@
-import { BID } from "modules/transactions/constants/types";
+import { BID } from "modules/common-elements/constants";
 
 export function sortOrders(orderBook) {
   const sortedOrderBook = {};

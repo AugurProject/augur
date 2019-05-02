@@ -161,8 +161,7 @@ export default class MarketLiquidity extends Component {
             Liquidity. Please submit or cancel these orders.
           </h1>
           <div>
-            <div style={{ height: "0.445rem" }}>&nbsp;</div>
-            <ChevronFlip big stroke="#372e4b" pointDown={!isOpen} />
+            <ChevronFlip big stroke="#fff" pointDown={!isOpen} />
           </div>
         </button>
         {isOpen &&
@@ -215,12 +214,12 @@ export default class MarketLiquidity extends Component {
                 }}
               >
                 <h1>{showAllOrders ? "Show Less" : "Show All"}</h1>
-                <ChevronFlip big stroke="#372e4b" pointDown={!showAllOrders} />
+                <ChevronFlip stroke="#fff" pointDown={!showAllOrders} />
               </button>
               <div className={Styles.MarketLiquidity__costs}>
                 <div className={Styles["MarketLiquidity__costs-labels"]}>
-                  <h4>EST. GAS</h4>
-                  <h3>TOTAL COST</h3>
+                  <h4>Estimasted Gas</h4>
+                  <h3>Total Cost</h3>
                 </div>
                 <div className={Styles["MarketLiquidity__costs-values"]}>
                   <h4>
@@ -242,7 +241,7 @@ export default class MarketLiquidity extends Component {
                   className={Styles.MarketLiquidity__submit}
                   onClick={this.handleSubmitOrders}
                 >
-                  SUBMIT ORDERS
+                  Submit Orders
                 </button>
                 <button
                   className={Styles.MarketLiquidity__clearAll}

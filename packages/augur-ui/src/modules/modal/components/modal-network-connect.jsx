@@ -9,7 +9,7 @@ import Styles from "modules/modal/components/common/common.styles";
 import ModalActions from "modules/modal/components/common/modal-actions";
 import { windowRef } from "src/utils/window-ref";
 import { editEndpointParams } from "src/utils/edit-endpoint-params";
-import { MODAL_NETWORK_CONNECT } from "modules/modal/constants/modal-types";
+import { MODAL_NETWORK_CONNECT } from "modules/common-elements/constants";
 
 export default class ModalNetworkConnect extends Component {
   static propTypes = {
@@ -149,7 +149,7 @@ export default class ModalNetworkConnect extends Component {
         {AugurNodeInValid &&
           formErrors.augurNode.map(error => (
             <p key={error} className={Styles.Error}>
-              {InputErrorIcon} {error}
+              {InputErrorIcon()} {error}
             </p>
           ))}
         <label htmlFor="modal__ethNode-input">Ethereum Node address:</label>
@@ -176,13 +176,13 @@ export default class ModalNetworkConnect extends Component {
           ethereumNodeInValid &&
           formErrors.ethereumNode.map(error => (
             <p key={error} className={Styles.Error}>
-              {InputErrorIcon} {error}
+              {InputErrorIcon()} {error}
             </p>
           ))}
         {hasConnectionErrors &&
           connectErrors.map(error => (
             <p key={error} className={Styles.Error}>
-              {InputErrorIcon} {error}
+              {InputErrorIcon()} {error}
             </p>
           ))}
         <ModalActions
