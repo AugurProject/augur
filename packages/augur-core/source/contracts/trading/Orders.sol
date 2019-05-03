@@ -87,6 +87,18 @@ contract Orders is IOrders, Initializable {
         return orders[_orderId].moneyEscrowed;
     }
 
+    function getOrderDataForLogs(bytes32 _orderId) public view returns (Order.Types _type, address[] memory _addressData, uint256[] memory _uint256Data) {
+        Order.Data storage _order = orders[_orderId];
+        _addressData = new address[](3);
+        _uint256Data = new uint256[](8);
+        _addressData[0] = address(_order.kycToken);
+        _addressData[1] = _order.creator;
+        _uint256Data[0] = _order.price;
+        _uint256Data[1] = _order.amount;
+        _uint256Data[2] = _order.outcome;
+        return (_order.orderType, _addressData, _uint256Data);
+    }
+
     function getTotalEscrowed(IMarket _market) public view returns (uint256) {
         return marketOrderData[address(_market)].totalEscrowed;
     }
@@ -187,7 +199,7 @@ contract Orders is IOrders, Initializable {
         marketOrderData[address(_market)].totalEscrowed += _moneyEscrowed;
         _order.sharesEscrowed = _sharesEscrowed;
         insertOrderIntoList(_order, _betterOrderId, _worseOrderId);
-        augur.logOrderCreated(_type, _amount, _price, _sender, _tradeGroupId, _orderId, _order.market.getUniverse(), _order.market, _kycToken, _order.outcome);
+        augur.logOrderCreated(_order.market.getUniverse(), _orderId, _tradeGroupId);
         return _orderId;
     }
 
@@ -235,6 +247,7 @@ contract Orders is IOrders, Initializable {
         Order.Data storage _order = orders[_orderId];
         IMarket _market = _order.market;
         require(msg.sender == _order.creator);
+        require(_order.amount > 0);
         require(_price != 0);
         require(_price < _market.getNumTicks());
         require(_price != _order.price);
@@ -259,7 +272,7 @@ contract Orders is IOrders, Initializable {
         _order.price = _price;
         insertOrderIntoList(_order, _betterOrderId, _worseOrderId);
         _market.assertBalances();
-        augur.logOrderPriceChanged(_market.getUniverse(), _orderId, _order.outcome, _price);
+        augur.logOrderPriceChanged(_market.getUniverse(), _orderId);
         if (_moneyEscrowedDelta != 0) {
             int256 _frozenFundDelta = _isRefund ? -int256(_moneyEscrowedDelta) : int256(_moneyEscrowedDelta);
             profitLoss.recordFrozenFundChange(_market, msg.sender, _order.outcome, _frozenFundDelta);
