@@ -135,7 +135,7 @@ export interface OrderCanceledLog extends Log, Doc {
 
 //  addressData
 //  0:  kycToken
-//  1:  orderCreator (Fill)
+//  1:  orderCreator
 //  2:  orderFiller (Fill)
 //
 //  uint256Data
@@ -182,7 +182,7 @@ export enum OrderEventUint256Value {
   outcome = 2,
   tokenRefund = 3,
   sharesRefund = 4,
-  feeDivisor = 5,
+  fees = 5,
   amountFilled = 6,
   timestamp = 7,
 }

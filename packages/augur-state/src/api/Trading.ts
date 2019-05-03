@@ -77,7 +77,7 @@ export class Trading {
       if (!marketDoc) return trades;
       const isMaker: boolean | null = params.account == null ? false : params.account === orderFilledDoc.addressData[OrderEventAddressValue.orderCreator];
       const orderType = orderDoc.orderType === 0 ? "buy" : "sell";
-      const fees = new BigNumber(orderFilledDoc.uint256Data[5]);
+      const fees = new BigNumber(orderFilledDoc.uint256Data[OrderEventUint256Value.fees]);
       const minPrice = new BigNumber(marketDoc.prices[0]);
       const maxPrice = new BigNumber(marketDoc.prices[1]);
       const numTicks = new BigNumber(marketDoc.numTicks);

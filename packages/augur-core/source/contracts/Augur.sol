@@ -59,7 +59,7 @@ contract Augur is IAugur {
 
     //  addressData
     //  0:  kycToken
-    //  1:  orderCreator (Fill)
+    //  1:  orderCreator
     //  2:  orderFiller (Fill)
     //
     //  uint256Data
