@@ -1002,7 +1002,7 @@
   dependencies:
     "@ledgerhq/errors" "^4.55.0"
 
-"@ledgerhq/errors@^4.48.0", "@ledgerhq/errors@^4.55.0":
+"@ledgerhq/errors@^4.55.0":
   version "4.55.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-4.55.0.tgz#5fbef730abbcf3fd8a37838f37a08eada11720fd"
   integrity sha512-XzygAQYafn7Bqj52WT2cCtNdS7CfcEd8f2e5KOxll0eYgT9ZgAHpdQUZvRAxmgeP+007zO4lseJ2bSdWbxb/rw==
@@ -1014,16 +1014,16 @@
   dependencies:
     "@ledgerhq/hw-transport" "^4.48.0"
 
-"@ledgerhq/hw-transport-u2f@4.48.0":
-  version "4.48.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-u2f/-/hw-transport-u2f-4.48.0.tgz#0419f7d54c989d6119450d9e505aa54a5d701c1f"
-  integrity sha512-qqKlLWDDibwKGWIcL3c9DLr9DdA+71AS5GwWGIJaKaOyGYeMK6uuJrqPphXO2xvHkPNG1B56vpAFy3ojp1mtMA==
+"@ledgerhq/hw-transport-u2f@4.55.0":
+  version "4.55.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-u2f/-/hw-transport-u2f-4.55.0.tgz#3dc318801adf900a9a673420fa741ad6dfc3ce89"
+  integrity sha512-23aGdDFCGnGo9Qx4wjmK2letzwKL2i43nEgevGUPBmKUtvaxVdovmaPkSHOTqGN52Tpa1k/Coi+vHL6Qod+JSQ==
   dependencies:
-    "@ledgerhq/errors" "^4.48.0"
-    "@ledgerhq/hw-transport" "^4.48.0"
+    "@ledgerhq/errors" "^4.55.0"
+    "@ledgerhq/hw-transport" "^4.55.0"
     u2f-api "0.2.7"
 
-"@ledgerhq/hw-transport@^4.48.0":
+"@ledgerhq/hw-transport@^4.48.0", "@ledgerhq/hw-transport@^4.55.0":
   version "4.55.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-4.55.0.tgz#76249204d9571245ff3efb354a618f94b2634f33"
   integrity sha512-X01EmZaLfDVHOUe5X2RDjqg/d6zuRPWZvwKV0rMp9GQXJNucmL6kbTV+5vjXMWTqRSL5Zul4lK8y63Nh7o9WBQ==
@@ -18844,14 +18844,6 @@ specificity@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/specificity/-/specificity-0.4.1.tgz#aab5e645012db08ba182e151165738d00887b019"
   integrity sha512-1klA3Gi5PD1Wv9Q0wUoOQN1IWAuPu0D1U03ThXTr0cJ20+/iq2tHSDnK7Kk/0LXJ1ztUB2/1Os0wKmfyNgUQfg==
-
-speedomatic@2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/speedomatic/-/speedomatic-2.1.4.tgz#be3009a33ad9b4e480c7434127566f181005d87c"
-  integrity sha512-JKRislPClp+yX3RM5oWO/pG8AZE7zSkYFBZhT4aM5v7nK7dY163tURzDqlKYyuIzACfF01c03IltQ5l5bWLx2g==
-  dependencies:
-    bignumber.js "6.0.0"
-    ethereumjs-abi "0.6.5"
 
 split-string@^3.0.1, split-string@^3.0.2:
   version "3.1.0"
