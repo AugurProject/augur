@@ -21,16 +21,12 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
         orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
 
     # fill best order
-    orderFilledLog = {
-        "filler": bytesToHexString(tester.a2),
+    orderEventLog = {
+        "universe": universe.address,
         "market": market.address,
-        "outcome": YES,
-        "creator": bytesToHexString(tester.a1),
-        "fees": 0,
-        "tradeGroupId": stringToBytes(longTo32Bytes(42)),
-        "amountFilled": fix(2),
-        "price": 60,
-        "orderIsCompletelyFilled": True
+	    "eventType": 3,
+	    "addressData": [nullAddress, bytesToHexString(tester.a1), bytesToHexString(tester.a2)],
+	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp()],
     }
 
     marketVolumeChangedLog = {
@@ -50,7 +46,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
 
     with BuyWithCash(cash, fillerCost, tester.k2, "filling order"):
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog):
-            with AssertLog(contractsFixture, "OrderFilled", orderFilledLog):
+            with AssertLog(contractsFixture, "OrderEvent", orderEventLog):
                 with AssertLog(contractsFixture, "MarketVolumeChanged", marketVolumeChangedLog):
                     fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
                     assert fillOrderID == 0

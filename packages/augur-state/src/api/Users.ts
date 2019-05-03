@@ -2,7 +2,7 @@ import { BigNumber } from "bignumber.js";
 import { DB } from "../db/DB";
 import { Getter } from "./Router";
 import { NumericDictionary } from "lodash";
-import { ProfitLossChangedLog, OrderFilledLog, Doc, Timestamped, MarketCreatedLog } from '../logs/types';
+import { ProfitLossChangedLog, OrderEventLog, Doc, Timestamped, MarketCreatedLog, OrderEventUint256Value, ORDER_EVENT_CREATOR, ORDER_EVENT_FILLER, ORDER_EVENT_TIMESTAMP, ORDER_EVENT_OUTCOME } from '../logs/types';
 import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/api";
 import { SortLimit } from './types';
 import { ethers } from "ethers";
@@ -114,9 +114,9 @@ export class Users<TBigNumber> {
         universe: params.universe,
         market: params.marketId,
         $or: [
-          { creator: params.account },
-          { filler: params.account }
-        ]
+          { [ORDER_EVENT_CREATOR]: params.account },
+          { [ORDER_EVENT_FILLER]: params.account },
+        ],
       }
     }
 
@@ -150,9 +150,9 @@ export class Users<TBigNumber> {
     const tradingPositionsByMarketAndOutcome = _.mapValues(profitLossResultsByMarketAndOutcome, (profitLossResultsByOutcome) => {
       return _.mapValues(profitLossResultsByOutcome, (profitLossResult: ProfitLossChangedLog) => {
         const marketDoc = markets[profitLossResult.market];
-        let outcomeValue = new BigNumber(ordersFilledResultsByMarketAndOutcome[profitLossResult.market][profitLossResult.outcome]!.price);
+        let outcomeValue = new BigNumber(ordersFilledResultsByMarketAndOutcome[profitLossResult.market][profitLossResult.outcome]!.uint256Data[OrderEventUint256Value.price]);
         if (marketFinalizedByMarket[profitLossResult.market]) {
-          outcomeValue = new BigNumber(marketFinalizedByMarket[profitLossResult.market].winningPayoutNumerators[new BigNumber(profitLossResult.outcome).toNumber()]._hex);
+          outcomeValue = new BigNumber(marketFinalizedByMarket[profitLossResult.market].winningPayoutNumerators[new BigNumber(profitLossResult.outcome).toNumber()]);
         }
         const tradingPosition = getTradingPositionFromProfitLossFrame(profitLossResult, marketDoc, outcomeValue, 0);
         let rawPosition = new BigNumber(0);
@@ -209,12 +209,12 @@ export class Users<TBigNumber> {
       selector: {
         universe: params.universe,
         $or: [
-          { creator: params.account },
-          { filler: params.account }
+          { [ORDER_EVENT_CREATOR]: params.account },
+          { [ORDER_EVENT_FILLER]: params.account },
         ],
         $and: [
-          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-          { timestamp: { $gte: `0x${startTime.toString(16)}` } }
+          { [ORDER_EVENT_TIMESTAMP]: { $lte: `0x${endTime.toString(16)}` } },
+          { [ORDER_EVENT_TIMESTAMP]: { $gte: `0x${startTime.toString(16)}` } }
         ]
       },
     }
@@ -264,9 +264,9 @@ export class Users<TBigNumber> {
             };
           }
           const outcomeValues = ordersFilledResultsByMarketAndOutcome[marketId][outcome];
-          let outcomeValue = new BigNumber(getLastDocBeforeTimestamp<OrderFilledLog>(outcomeValues, bucketTimestamp)!.price);
+          let outcomeValue = new BigNumber(getLastDocBeforeTimestamp<OrderEventLog>(outcomeValues, bucketTimestamp)!.uint256Data[OrderEventUint256Value.price]);
           if (marketFinalizedByMarket[marketId] && bucketTimestamp.lte(marketFinalizedByMarket[marketId].timestamp)) {
-            outcomeValue = new BigNumber(marketFinalizedByMarket[marketId].winningPayoutNumerators[new BigNumber(outcome).toNumber()]._hex);
+            outcomeValue = new BigNumber(marketFinalizedByMarket[marketId].winningPayoutNumerators[new BigNumber(outcome).toNumber()]);
           }
           return getTradingPositionFromProfitLossFrame(latestOutcomePLValue, marketDoc, outcomeValue, bucketTimestamp.toNumber());
         });
@@ -399,15 +399,15 @@ async function getProfitLossRecordsByMarketAndOutcome<TBigNumber>(db: DB<TBigNum
   return groupDocumentsByMarketAndOutcome<ProfitLossChangedLog>(profitLossResult);
 }
 
-async function getOrderFilledRecordsByMarketAndOutcome<TBigNumber>(db: DB<TBigNumber>, request: PouchDB.Find.FindRequest<{}>): Promise<_.Dictionary<_.Dictionary<Array<OrderFilledLog>>>> {
+async function getOrderFilledRecordsByMarketAndOutcome<TBigNumber>(db: DB<TBigNumber>, request: PouchDB.Find.FindRequest<{}>): Promise<_.Dictionary<_.Dictionary<Array<OrderEventLog>>>> {
   const orderFilled = await db.findOrderFilledLogs(request);
-  return groupDocumentsByMarketAndOutcome<OrderFilledLog>(orderFilled);
+  return groupDocumentsByMarketAndOutcome<OrderEventLog>(orderFilled, ORDER_EVENT_OUTCOME);
 }
 
-function groupDocumentsByMarketAndOutcome<TDoc extends Doc>(docs: Array<TDoc>): _.Dictionary<_.Dictionary<Array<TDoc>>> {
+function groupDocumentsByMarketAndOutcome<TDoc extends Doc>(docs: Array<TDoc>, outcomeField: string = "outcome"): _.Dictionary<_.Dictionary<Array<TDoc>>> {
   const byMarket = _.groupBy(docs, "market");
   return _.mapValues(byMarket, (marketResult) => {
-    const outcomeResultsInMarket = _.groupBy(marketResult, "outcome");
+    const outcomeResultsInMarket = _.groupBy(marketResult, outcomeField);
     return _.mapValues(outcomeResultsInMarket, (outcomeResults) => {
       return _.sortBy(outcomeResults, "_id");
     });
@@ -436,8 +436,8 @@ function getLastDocBeforeTimestamp<TDoc extends Timestamped>(docs: Array<TDoc>, 
 }
 
 function getTradingPositionFromProfitLossFrame(profitLossFrame: ProfitLossChangedLog, marketDoc: MarketCreatedLog, onChainOutcomeValue: BigNumber, timestamp: number): TradingPosition {
-  const minPrice = new BigNumber(marketDoc.prices[0]._hex);
-  const maxPrice = new BigNumber(marketDoc.prices[1]._hex);
+  const minPrice = new BigNumber(marketDoc.prices[0]);
+  const maxPrice = new BigNumber(marketDoc.prices[1]);
   const numTicks = new BigNumber(marketDoc.numTicks);
   const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
 

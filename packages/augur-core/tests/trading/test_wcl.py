@@ -3,7 +3,7 @@
 from ethereum.tools import tester
 from ethereum.tools.tester import TransactionFailed
 from pytest import raises, mark
-from utils import longTo32Bytes, fix, AssertLog, TokenDelta, BuyWithCash, nullAddress
+from utils import longTo32Bytes, fix, AssertLog, TokenDelta, BuyWithCash, nullAddress, bytesToHexString
 from constants import BID, ASK, YES, NO
 
 tester.STARTGAS = long(6.7 * 10**6)
@@ -187,11 +187,12 @@ def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market,
     # 3. fill BID order for YES with shares of YES
     assert yesShareToken.approve(fillOrder.address, fix(12), sender = tester.k2)
 
-    orderFilledLog = {
-        'fees': marketCreatorFee + reporterFee,
-        'orderIsCompletelyFilled': True
+    orderFilledEventLog = {
+	    "eventType": 3,
+	    "addressData": [nullAddress, bytesToHexString(tester.a1) , bytesToHexString(tester.a2)],
+	    "uint256Data": [60, 0, YES, 0, 0, completeSetFees, fix(12),  contractsFixture.contracts['Time'].getTimestamp()],
     }
-    with AssertLog(contractsFixture, 'OrderFilled', orderFilledLog):
+    with AssertLog(contractsFixture, 'OrderEvent', orderFilledEventLog):
         leftoverInOrder = fillOrder.publicFillOrder(orderID, fix(12), longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
         assert leftoverInOrder == 0
 
