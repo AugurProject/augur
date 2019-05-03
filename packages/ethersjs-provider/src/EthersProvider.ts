@@ -95,6 +95,14 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
       if (val._hex) {
         return val._hex;
       }
+      else if (Array.isArray(val)) {
+        val = _.map(val, (innerVal) => {
+          if (innerVal._hex) {
+            return innerVal._hex;
+          }
+          return innerVal;
+        })
+      }
       return val;
     });
     return logValues;

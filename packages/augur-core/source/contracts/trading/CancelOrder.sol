@@ -60,9 +60,10 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         Order.Types _type = orders.getOrderType(_orderId);
         IMarket _market = orders.getMarket(_orderId);
         uint256 _outcome = orders.getOutcome(_orderId);
+        address _creator = orders.getOrderCreator(_orderId);
 
         // Check that the order ID is correct and that the sender owns the order
-        require(_sender == orders.getOrderCreator(_orderId));
+        require(_sender == _creator);
 
         // Clear the order first
         orders.removeOrder(_orderId);
@@ -70,7 +71,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         refundOrder(_sender, _type, _sharesEscrowed, _moneyEscrowed, _market, _outcome);
         _market.assertBalances();
 
-        augur.logOrderCanceled(_market.getUniverse(), address(_market.getShareToken(_outcome)), _sender, _market, _orderId, _type, _moneyEscrowed, _sharesEscrowed);
+        augur.logOrderCanceled(_market.getUniverse(), _market, _creator, _moneyEscrowed, _sharesEscrowed, _orderId);
         profitLoss.recordFrozenFundChange(_market, _sender, _outcome, -int256(_moneyEscrowed));
 
         return true;
