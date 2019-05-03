@@ -7,10 +7,6 @@ yarn docker:build:augur
 echo "yarn workspace @augurproject/core docker:build - building augur-core image"
 yarn workspace @augurproject/core docker:build
 
-# augur-core artifacts
-echo " yarn workspace @augurproject/core artifacts - building artifacts"
-yarn workspace @augurproject/core artifacts
-
 # augur-tools
 echo "building @augurproject/tools image"
 yarn workspace @augurproject/tools docker:build
