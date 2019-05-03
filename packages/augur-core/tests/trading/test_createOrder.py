@@ -106,7 +106,7 @@ def test_publicCreateOrder_bid2(contractsFixture, cash, market):
 
     orderCreatedLog = {
         'creator': bytesToHexString(tester.a1),
-        'marketId': market.address,
+        'market': market.address,
         'tradeGroupId': stringToBytes(longTo32Bytes(42)),
         'outcome': 0,
     }

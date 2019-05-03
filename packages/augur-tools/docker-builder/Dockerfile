@@ -1,3 +1,4 @@
+# pop-geth images
 FROM augurproject/augur-core:monorepo as core-builder
 
 # using the augur image grab all repos
@@ -11,7 +12,7 @@ ARG normal_time=false
 ENV USE_NORMAL_TIME=$normal_time
 
 ARG network_id=101
-ARG period_time=1
+ARG period_time=5
 
 ENV NETWORK_ID=$network_id
 ENV PERIOD_TIME=$period_time

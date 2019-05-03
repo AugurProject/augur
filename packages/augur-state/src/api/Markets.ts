@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { DB } from "../db/DB";
 import { Getter } from "./Router";
-import { MarketType, MarketCreatedLog, MarketFinalizedLog } from "../logs/types";
+import { Address, MarketType, MarketCreatedLog, MarketFinalizedLog } from "../logs/types";
 import { SortLimit } from "./types";
 import { Augur, numTicksToTickSize } from "@augurproject/api";
 import { ethers } from "ethers";
@@ -15,10 +15,10 @@ const GetMarketsParamsSpecific = t.intersection([t.type({
   creator: t.string,
   category: t.string,
   search: t.string,
-  reportingState: t.string,
+  reportingState: t.union([t.string, t.array(t.string)]),
   disputeWindow: t.string,
   designatedReporter: t.string,
-  maxFee: t.number,
+  maxFee: t.string,
   hasOrders: t.boolean,
 })]);
 
@@ -76,8 +76,130 @@ export class Markets<TBigNumber> {
   public static GetMarketsInfoParams = t.type({ marketIds: t.array(t.string) });
 
   @Getter("GetMarketsParams")
-  public static async getMarkets<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<void> {
-    // TODO
+  public static async getMarkets<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<Array<Address>> {
+    if (! await augur.contracts.augur.isKnownUniverse_(params.universe)) {
+      throw new Error("Unknown universe: " + params.universe);
+    }
+
+    const marketCreatedLogs = await db.findMarketCreatedLogs(
+      {
+        selector: {
+          universe: params.universe,
+          marketCreator: params.creator,
+          designatedReporter: params.designatedReporter,
+        },
+        sort: params.sortBy ? [params.sortBy] : undefined,
+        limit: params.limit,
+        skip: params.offset
+      }
+    );
+
+    let marketCreatorFeeDivisor: BigNumber|undefined = undefined;
+    if (params.maxFee) {
+      const reportingFeeDivisor = new BigNumber((await augur.contracts.universe.getOrCacheReportingFeeDivisor_()).toNumber());
+      const reportingFee = new BigNumber(1).div(reportingFeeDivisor);
+      const marketCreatorFee = new BigNumber(params.maxFee).minus(reportingFee);
+      marketCreatorFeeDivisor = new BigNumber(10 ** 18).multipliedBy(marketCreatorFee);
+    }
+
+    let keyedMarketCreatedLogs = marketCreatedLogs.reduce(
+      (previousValue: any, currentValue: MarketCreatedLog) => {
+        // Filter markets with fees > maxFee
+        if (
+          params.maxFee && typeof marketCreatorFeeDivisor !== "undefined" &&
+          new BigNumber(currentValue.feeDivisor).gt(marketCreatorFeeDivisor)
+        ) {
+          return previousValue;
+        }
+        previousValue[currentValue.market] = currentValue;
+        return previousValue;
+      },
+      []
+    );
+
+    let filteredKeyedMarketCreatedLogs = keyedMarketCreatedLogs;
+    if (params.search) {
+      const fullTextSearchResults = await db.fullTextSearch("MarketCreated", params.search);
+
+      const keyedFullTextMarketIds: any = fullTextSearchResults.reduce(
+        (previousValue: any, fullTextSearchResult: any) => {
+          previousValue[fullTextSearchResult.market] = fullTextSearchResult;
+          return previousValue;
+        },
+        []
+      );
+
+      filteredKeyedMarketCreatedLogs = Object.entries(keyedMarketCreatedLogs).reduce(
+        (previousValue: any, currentValue: any) => {
+          if (keyedFullTextMarketIds[currentValue[0]]) {
+            previousValue[currentValue[0]] = currentValue[1];
+          }
+          return previousValue;
+        },
+        []
+      );
+    }
+
+    await Promise.all(
+      Object.entries(filteredKeyedMarketCreatedLogs).map(async (marketCreatedLogInfo: any) => {
+        let includeMarket = true;
+
+        if (params.disputeWindow) {
+          const market = await augur.contracts.marketFromAddress(marketCreatedLogInfo[0]);
+          const disputeWindowAddress = await market.getDisputeWindow_();
+          if (params.disputeWindow != disputeWindowAddress) {
+            includeMarket = false;
+          }
+        }
+
+        if (params.hasOrders) {
+          const orderCreatedLogs = await db.findOrderCreatedLogs({selector: {market: marketCreatedLogInfo[0]}});
+          const orderCanceledLogs = await db.findOrderCanceledLogs({selector: {market: marketCreatedLogInfo[0]}});
+          const orderFilledLogs = await db.findOrderFilledLogs({selector: {market: marketCreatedLogInfo[0], orderIsCompletelyFilled: true}});
+          if (orderCreatedLogs.length - orderCanceledLogs.length === orderFilledLogs.length) {
+            includeMarket = false;
+          }
+        }
+
+        if (params.reportingState) {
+          const reportingStates = Array.isArray(params.reportingState) ? params.reportingState : [params.reportingState];
+          const marketFinalizedLogs = await db.findMarketFinalizedLogs({selector: {market: marketCreatedLogInfo[0]}});
+          const reportingState = await Markets.getMarketReportingState(db, marketCreatedLogInfo[1], marketFinalizedLogs);
+          if (!reportingStates.includes(reportingState)) {
+            includeMarket = false;
+          }
+        }
+
+        if (includeMarket) {
+          return marketCreatedLogInfo[0];
+        }
+        return null;
+      })
+    ).then(
+      (marketIds: any) => {
+        marketIds = marketIds.reduce(
+          (previousValue: any, currentValue: string|null) => {
+            if (currentValue) {
+              previousValue[currentValue] = currentValue;
+            }
+            return previousValue;
+          },
+          []
+        );
+
+        filteredKeyedMarketCreatedLogs = Object.entries(filteredKeyedMarketCreatedLogs).reduce(
+          (previousValue: any, currentValue: any) => {
+            if (marketIds[currentValue[1].market]) {
+              previousValue[currentValue[0]] = currentValue[1];
+            }
+            return previousValue;
+          },
+          []
+        );
+      }
+    );
+
+    return Object.keys(filteredKeyedMarketCreatedLogs);
   }
 
   private static async getMarketOutcomes<TBigNumber>(db: DB<TBigNumber>, marketCreatedLog: MarketCreatedLog): Promise<Array<MarketInfoOutcome>> {
