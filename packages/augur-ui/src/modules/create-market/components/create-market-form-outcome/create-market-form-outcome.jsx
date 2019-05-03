@@ -5,7 +5,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import { uniq, isEmpty } from "lodash";
 import { formatNumber, cutOffDecimal } from "utils/format-number";
 import {

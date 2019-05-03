@@ -1,4 +1,4 @@
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import { augur } from "services/augurjs";
 // import isAddress from "modules/auth/helpers/is-address";
 

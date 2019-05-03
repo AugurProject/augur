@@ -1,4 +1,4 @@
-import { ethereumjsAbi } from "ethereumjs-abi";
+import * as ethereumjsAbi from "ethereumjs-abi";
 import { abiEncodeData } from "./abi-encode-data";
 import { prefixHex } from "./prefix-hex";
 

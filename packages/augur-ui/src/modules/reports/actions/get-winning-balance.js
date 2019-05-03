@@ -1,6 +1,6 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 
 export const getWinningBalance = (marketIds = [], callback = logError) => (
