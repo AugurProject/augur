@@ -3,6 +3,7 @@ A reviver is a function that prescribes how the value originally produced by JSO
 */
 
 import { formatEthereumAddress } from "speedomatic";
+import { getAddress } from "ethers/utils/address";
 
 export interface StringToBoolMap {
   [key: string]: boolean;
@@ -17,7 +18,7 @@ export const inputsExpectedAsAddress: StringToBoolMap = {
 };
 
 function preCleanAddress(address: string) {
-  return address.toLowerCase().trim();
+  return getAddress(address);
 }
 
 export function AddressFormatReviver(key: string, value: any) {
