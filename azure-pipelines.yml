@@ -23,9 +23,14 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
       - bash: |
           set -euo pipefail
-          echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
           yarn docker:build:augur
           docker images
           docker tag augurproject/augur-build:latest augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
@@ -62,12 +67,17 @@ jobs:
                 echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
             done
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
       - script: |
           set -euo pipefail
           which node
           node --version
           docker images
-          echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
           docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
           yarn workspace @augurproject/core docker:build:python2-and-3
@@ -257,9 +267,14 @@ jobs:
               echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
             fi
           done
+    - task: Docker@1
+      displayName: docker logout
+      inputs:
+        command: logout
+        containerRegistryType: Container Registry
+        dockerRegistryEndpoint: dockerhub-augurproject
     - script: |
         set -exuo pipefail
-        echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
         sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
         sudo systemctl status docker
         docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
@@ -292,9 +307,13 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
+    - task: Docker@1 displayName: docker logout
+      inputs:
+        command: logout
+        containerRegistryType: Container Registry
+        dockerRegistryEndpoint: dockerhub-augurproject
     - script: |
         set -euo pipefail
-        echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
         docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
         docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
         docker images
