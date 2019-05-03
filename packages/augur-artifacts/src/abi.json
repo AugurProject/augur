@@ -4,65 +4,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_filler",
-					"type": "address"
-				},
-				{
-					"name": "_creator",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_marketCreatorFees",
-					"type": "uint256"
-				},
-				{
-					"name": "_fees",
-					"type": "uint256"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_orderIsCompletelyFilled",
-					"type": "bool"
-				}
-			],
-			"name": "logOrderFilled",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_market",
 					"type": "address"
 				},
@@ -96,6 +37,29 @@
 				}
 			],
 			"name": "logProfitLossChanged",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_orderId",
+					"type": "bytes32"
+				}
+			],
+			"name": "logOrderPriceChanged",
 			"outputs": [
 				{
 					"name": "",
@@ -594,61 +558,6 @@
 		},
 		{
 			"constant": false,
-			"inputs": [
-				{
-					"name": "_orderType",
-					"type": "uint8"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_creator",
-					"type": "address"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				}
-			],
-			"name": "logOrderCreated",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
 			"inputs": [],
 			"name": "getMaximumMarketEndDate",
 			"outputs": [
@@ -778,37 +687,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				}
-			],
-			"name": "logOrderPriceChanged",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -871,6 +749,53 @@
 				}
 			],
 			"name": "logParticipationTokensBurned",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_creator",
+					"type": "address"
+				},
+				{
+					"name": "_filler",
+					"type": "address"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_fees",
+					"type": "uint256"
+				},
+				{
+					"name": "_amountFilled",
+					"type": "uint256"
+				},
+				{
+					"name": "_orderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_tradeGroupId",
+					"type": "bytes32"
+				}
+			],
+			"name": "logOrderFilled",
 			"outputs": [
 				{
 					"name": "",
@@ -1396,35 +1321,15 @@
 					"type": "address"
 				},
 				{
-					"name": "_shareToken",
-					"type": "address"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
 					"name": "_orderId",
 					"type": "bytes32"
 				},
 				{
-					"name": "_orderType",
-					"type": "uint8"
-				},
-				{
-					"name": "_tokenRefund",
-					"type": "uint256"
-				},
-				{
-					"name": "_sharesRefund",
-					"type": "uint256"
+					"name": "_tradeGroupId",
+					"type": "bytes32"
 				}
 			],
-			"name": "logOrderCanceled",
+			"name": "logOrderCreated",
 			"outputs": [
 				{
 					"name": "",
@@ -1739,6 +1644,45 @@
 				}
 			],
 			"name": "logTimestampSet",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_creator",
+					"type": "address"
+				},
+				{
+					"name": "_tokenRefund",
+					"type": "uint256"
+				},
+				{
+					"name": "_sharesRefund",
+					"type": "uint256"
+				},
+				{
+					"name": "_orderId",
+					"type": "bytes32"
+				}
+			],
+			"name": "logOrderCanceled",
 			"outputs": [
 				{
 					"name": "",
@@ -2443,23 +2387,13 @@
 				},
 				{
 					"indexed": true,
-					"name": "shareToken",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"indexed": false,
 					"name": "market",
 					"type": "address"
 				},
 				{
-					"indexed": false,
-					"name": "orderId",
-					"type": "bytes32"
+					"indexed": true,
+					"name": "eventType",
+					"type": "uint8"
 				},
 				{
 					"indexed": false,
@@ -2468,67 +2402,8 @@
 				},
 				{
 					"indexed": false,
-					"name": "tokenRefund",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "sharesRefund",
-					"type": "uint256"
-				}
-			],
-			"name": "OrderCanceled",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "universe",
-					"type": "address"
-				},
-				{
-					"indexed": false,
 					"name": "orderId",
 					"type": "bytes32"
-				},
-				{
-					"indexed": false,
-					"name": "outcome",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "price",
-					"type": "uint256"
-				}
-			],
-			"name": "OrderPriceChanged",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": false,
-					"name": "orderType",
-					"type": "uint8"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "price",
-					"type": "uint256"
-				},
-				{
-					"indexed": true,
-					"name": "creator",
-					"type": "address"
 				},
 				{
 					"indexed": false,
@@ -2537,98 +2412,16 @@
 				},
 				{
 					"indexed": false,
-					"name": "orderId",
-					"type": "bytes32"
-				},
-				{
-					"indexed": true,
-					"name": "universe",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "market",
-					"type": "address"
+					"name": "addressData",
+					"type": "address[]"
 				},
 				{
 					"indexed": false,
-					"name": "kycToken",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "outcome",
-					"type": "uint256"
+					"name": "uint256Data",
+					"type": "uint256[]"
 				}
 			],
-			"name": "OrderCreated",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "universe",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "filler",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "creator",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "market",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "orderId",
-					"type": "bytes32"
-				},
-				{
-					"indexed": false,
-					"name": "price",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "outcome",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "fees",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "amountFilled",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "tradeGroupId",
-					"type": "bytes32"
-				},
-				{
-					"indexed": false,
-					"name": "orderIsCompletelyFilled",
-					"type": "bool"
-				},
-				{
-					"indexed": false,
-					"name": "timestamp",
-					"type": "uint256"
-				}
-			],
-			"name": "OrderFilled",
+			"name": "OrderEvent",
 			"type": "event"
 		},
 		{
@@ -6765,6 +6558,33 @@
 				{
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_orderId",
+					"type": "bytes32"
+				}
+			],
+			"name": "getOrderDataForLogs",
+			"outputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_addressData",
+					"type": "address[]"
+				},
+				{
+					"name": "_uint256Data",
+					"type": "uint256[]"
 				}
 			],
 			"payable": false,
@@ -17200,6 +17020,33 @@
 				{
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_orderId",
+					"type": "bytes32"
+				}
+			],
+			"name": "getOrderDataForLogs",
+			"outputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_addressData",
+					"type": "address[]"
+				},
+				{
+					"name": "_uint256Data",
+					"type": "uint256[]"
 				}
 			],
 			"payable": false,
