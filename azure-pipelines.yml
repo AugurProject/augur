@@ -35,6 +35,7 @@ jobs:
           docker images
           docker tag augurproject/augur-build:latest augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker push augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
+        displayName: augur-build
 
   - job: Build_Core_Docker
     dependsOn: Augur_build_docker_image
@@ -67,6 +68,7 @@ jobs:
                 echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
             done
+        displayName: check git for augur-core changes
       - task: Docker@1
         displayName: docker logout
         inputs:
@@ -88,6 +90,7 @@ jobs:
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
           docker push $CORE_IMAGE_BUILD
           docker push augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
+        displayName: augur-core docker image
         condition: |
           and
           (
@@ -144,6 +147,7 @@ jobs:
                 echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
             done
+        displayName: check git for augur-core changes
       - script: |
           set -euo pipefail
           which node
@@ -171,6 +175,7 @@ jobs:
           else
             yarn workspace @augurproject/core docker:run:test:unit -- $TESTS;
           fi
+        displayName: integration tests
         condition: eq(variables.JOB_TRIGGER, 'true')
 
   # - job: Test_Augur_UI_and_Node
@@ -229,6 +234,7 @@ jobs:
                 echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
             done
+        displayName: check git for augur.js changes
       - script: |
           set -euo pipefail
           which node
@@ -267,6 +273,7 @@ jobs:
               echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
             fi
           done
+      displayName: check git for augur-core changes
     - task: Docker@1
       displayName: docker logout
       inputs:
