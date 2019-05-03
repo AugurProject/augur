@@ -558,67 +558,6 @@
 		},
 		{
 			"constant": false,
-<<<<<<< HEAD
-			"inputs": [
-				{
-					"name": "_orderType",
-					"type": "uint8"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_creator",
-					"type": "address"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				}
-			],
-			"name": "logOrderCreated",
-=======
-			"inputs": [],
-			"name": "getMaximumMarketEndDate",
->>>>>>> checkpoint
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-<<<<<<< HEAD
-			"type": "function"
-		},
-		{
-			"constant": false,
 			"inputs": [],
 			"name": "getMaximumMarketEndDate",
 			"outputs": [
@@ -629,8 +568,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-=======
->>>>>>> checkpoint
 			"type": "function"
 		},
 		{
@@ -793,8 +730,6 @@
 				{
 					"name": "_universe",
 					"type": "address"
-<<<<<<< HEAD
-=======
 				},
 				{
 					"name": "_target",
@@ -811,7 +746,6 @@
 				{
 					"name": "_balance",
 					"type": "uint256"
->>>>>>> checkpoint
 				}
 			],
 			"name": "logParticipationTokensBurned",
@@ -1387,9 +1321,6 @@
 					"type": "address"
 				},
 				{
-<<<<<<< HEAD
-					"name": "_shareToken",
-=======
 					"name": "_orderId",
 					"type": "bytes32"
 				},
@@ -1407,55 +1338,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_account",
->>>>>>> checkpoint
-					"type": "address"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_orderType",
-					"type": "uint8"
-				},
-				{
-					"name": "_tokenRefund",
-					"type": "uint256"
-				},
-				{
-					"name": "_sharesRefund",
-					"type": "uint256"
-				}
-			],
-			"name": "logOrderCanceled",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-<<<<<<< HEAD
 			"type": "function"
 		},
 		{
@@ -1487,8 +1369,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-=======
->>>>>>> checkpoint
 			"type": "function"
 		},
 		{
@@ -1797,8 +1677,6 @@
 					"name": "_sharesRefund",
 					"type": "uint256"
 				},
-<<<<<<< HEAD
-=======
 				{
 					"name": "_orderId",
 					"type": "bytes32"
@@ -1806,7 +1684,6 @@
 			],
 			"name": "logOrderCanceled",
 			"outputs": [
->>>>>>> checkpoint
 				{
 					"name": "",
 					"type": "bool"
@@ -2293,7 +2170,6 @@
 			],
 			"name": "DisputeCrowdsourcerCompleted",
 			"type": "event"
-<<<<<<< HEAD
 		},
 		{
 			"anonymous": false,
@@ -2419,267 +2295,6 @@
 				{
 					"indexed": true,
 					"name": "universe",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "market",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "timestamp",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "winningPayoutNumerators",
-					"type": "uint256[]"
-				}
-			],
-			"name": "MarketFinalized",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "market",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "originalUniverse",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "newUniverse",
-					"type": "address"
-				}
-			],
-			"name": "MarketMigrated",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "universe",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "forkingMarket",
-					"type": "address"
-				}
-			],
-			"name": "UniverseForked",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "parentUniverse",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "childUniverse",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "payoutNumerators",
-					"type": "uint256[]"
-				}
-			],
-			"name": "UniverseCreated",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "universe",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "shareToken",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "market",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "orderId",
-					"type": "bytes32"
-				},
-				{
-					"indexed": false,
-					"name": "orderType",
-					"type": "uint8"
-				},
-				{
-					"indexed": false,
-					"name": "tokenRefund",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "sharesRefund",
-					"type": "uint256"
-				}
-			],
-			"name": "OrderCanceled",
-			"type": "event"
-=======
->>>>>>> checkpoint
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "universe",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "reporter",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "market",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amountRedeemed",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "repReceived",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "payoutNumerators",
-					"type": "uint256[]"
-				}
-			],
-			"name": "InitialReporterRedeemed",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-<<<<<<< HEAD
-=======
-				{
-					"indexed": true,
-					"name": "universe",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "reporter",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "market",
-					"type": "address"
-				},
->>>>>>> checkpoint
-				{
-					"indexed": false,
-					"name": "disputeCrowdsourcer",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amountRedeemed",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "repReceived",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "payoutNumerators",
-					"type": "uint256[]"
-				}
-			],
-			"name": "DisputeCrowdsourcerRedeemed",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "universe",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "market",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "reportingParticipant",
-					"type": "address"
-				}
-			],
-			"name": "ReportingParticipantDisavowed",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "universe",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "market",
-<<<<<<< HEAD
-=======
-					"type": "address"
-				}
-			],
-			"name": "MarketParticipantsDisavowed",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "universe",
->>>>>>> checkpoint
 					"type": "address"
 				},
 				{
@@ -2787,12 +2402,12 @@
 				},
 				{
 					"indexed": false,
-					"name": "_orderId",
+					"name": "orderId",
 					"type": "bytes32"
 				},
 				{
 					"indexed": false,
-					"name": "_tradeGroupId",
+					"name": "tradeGroupId",
 					"type": "bytes32"
 				},
 				{

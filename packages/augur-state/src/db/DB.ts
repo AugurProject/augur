@@ -23,6 +23,7 @@ import {
   TokenBalanceChangedLog,
   UniverseForkedLog,
   OrderEventType,
+  OrderEventUint256Value,
 } from "../logs/types";
 
 
@@ -459,7 +460,7 @@ export class DB<TBigNumber> {
     request.selector["eventType"] = OrderEventType.Cancel;
     const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
     const logs = results.docs as unknown as Array<OrderEventLog>;
-    for (const log of logs) log.timestamp = log.uint256Data[7];
+    for (const log of logs) log.timestamp = log.uint256Data[OrderEventUint256Value.timestamp];
     return logs;
   }
 
@@ -473,7 +474,7 @@ export class DB<TBigNumber> {
     request.selector["eventType"] = OrderEventType.Create;
     const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
     const logs = results.docs as unknown as Array<OrderEventLog>;
-    for (const log of logs) log.timestamp = log.uint256Data[7];
+    for (const log of logs) log.timestamp = log.uint256Data[OrderEventUint256Value.timestamp];
     return logs;
   }
 
@@ -487,7 +488,7 @@ export class DB<TBigNumber> {
     request.selector["eventType"] = OrderEventType.Fill;
     const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
     const logs = results.docs as unknown as Array<OrderEventLog>;
-    for (const log of logs) log.timestamp = log.uint256Data[7];
+    for (const log of logs) log.timestamp = log.uint256Data[OrderEventUint256Value.timestamp];
     return logs;
   }
 

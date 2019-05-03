@@ -71,7 +71,7 @@ contract Augur is IAugur {
     //  5:  fees (Fill)
     //  6:  amountFilled (Fill)
     //  7:  timestamp
-    event OrderEvent(address indexed universe, address indexed market, OrderEventType indexed eventType, Order.Types orderType, bytes32 _orderId, bytes32 _tradeGroupId, address[] addressData, uint256[] uint256Data);
+    event OrderEvent(address indexed universe, address indexed market, OrderEventType indexed eventType, Order.Types orderType, bytes32 orderId, bytes32 tradeGroupId, address[] addressData, uint256[] uint256Data);
 
     event CompleteSetsPurchased(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI);
     event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 fees);
