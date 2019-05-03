@@ -1,12 +1,15 @@
-import { updateFavorites } from "modules/markets/actions/update-favorites";
+import { loadFavoritesMarkets } from "modules/markets/actions/update-favorites";
 import { updateScalarMarketShareDenomination } from "modules/markets/actions/update-scalar-market-share-denomination";
 import { updateReports } from "modules/reports/actions/update-reports";
-import { addNotification } from "modules/notifications/actions/notifications";
+import { addAlert } from "modules/alerts/actions/alerts";
 import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-management";
+import { updateReadNotifications } from "modules/notifications/actions/update-notifications";
+import { loadPendingOrders } from "modules/orders/actions/pending-orders-management";
 import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
 import { registerUserDefinedGasPriceFunction } from "modules/app/actions/register-user-defined-gasPrice-function";
 import { loadUniverse } from "modules/app/actions/load-universe";
 import { isNewFavoritesStyle } from "modules/markets/helpers/favorites-processor";
+import { loadPendingQueue } from "modules/pending-queue/actions/pending-queue-management";
 import { setSelectedUniverse } from "./selected-universe-management";
 
 export const loadAccountDataFromLocalStorage = address => (
@@ -21,6 +24,10 @@ export const loadAccountDataFromLocalStorage = address => (
     if (storedAccountData) {
       const { selectedUniverse } = storedAccountData;
       const { favorites } = storedAccountData;
+      const { readNotifications } = storedAccountData;
+      if (readNotifications) {
+        dispatch(updateReadNotifications(readNotifications));
+      }
       if (selectedUniverse && selectedUniverse[augurNodeNetworkId]) {
         const selectedUniverseId = selectedUniverse[augurNodeNetworkId];
         if (universe.id !== selectedUniverseId) {
@@ -36,10 +43,12 @@ export const loadAccountDataFromLocalStorage = address => (
         favorites[augurNodeNetworkId] &&
         favorites[augurNodeNetworkId][universe.id]
       ) {
-        dispatch(updateFavorites(favorites[augurNodeNetworkId][universe.id]));
+        dispatch(
+          loadFavoritesMarkets(favorites[augurNodeNetworkId][universe.id])
+        );
       }
-      if (storedAccountData.notifications) {
-        storedAccountData.notifications.map(n => dispatch(addNotification(n)));
+      if (storedAccountData.alerts) {
+        storedAccountData.alerts.map(n => dispatch(addAlert(n)));
       }
       if (storedAccountData.scalarMarketsShareDenomination) {
         Object.keys(storedAccountData.scalarMarketsShareDenomination).forEach(
@@ -66,6 +75,18 @@ export const loadAccountDataFromLocalStorage = address => (
         dispatch(
           loadPendingLiquidityOrders(storedAccountData.pendingLiquidityOrders)
         );
+      }
+      if (
+        storedAccountData.pendingOrders &&
+        Object.keys(storedAccountData.pendingOrders).length
+      ) {
+        dispatch(loadPendingOrders(storedAccountData.pendingOrders));
+      }
+      if (
+        storedAccountData.pendingQueue &&
+        Object.keys(storedAccountData.pendingQueue).length
+      ) {
+        dispatch(loadPendingQueue(storedAccountData.pendingQueue));
       }
       if (
         storedAccountData.gasPriceInfo &&

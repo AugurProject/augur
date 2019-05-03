@@ -1,0 +1,188 @@
+@import (reference) '~assets/styles/shared';
+
+.ModuleTabs__tab {
+  border-bottom: 1px solid @color-very-dark-purple;
+  display: flex;
+  flex: 1;
+
+  > li {
+    color: rgba(255, 255, 255, 0.4);
+
+    &:hover {
+      color: white;
+    }
+
+    > button {
+      font-size: 1rem;
+      padding: 0.875rem 3rem;
+      position: relative;
+      white-space: nowrap;
+      width: 100%;
+
+      @media @breakpoint-mobile {
+        font-size: 0.875rem;
+      }
+    }
+  }
+}
+
+.ModuleTabs__headers {
+  display: flex;
+}
+
+.ModuleTabs__isNew {
+  position: relative;
+}
+
+.ModuleTabs__activeTab {
+  background-color: @color-light-purple;
+  color: white !important;
+
+  .ModuleTabs__isNew::before {
+    background: @color-outcome-four;
+    border-radius: @border-radius-default;
+    content: ' ';
+    height: @size-4;
+    position: absolute;
+    right: -0.25rem;
+    top: -0.25rem;
+    width: @size-4;
+  }
+}
+
+.ModuleTabs__isNew::before {
+  background: @color-outcome-four;
+  border-radius: @border-radius-default;
+  content: ' ';
+  height: @size-4;
+  position: absolute;
+  right: -0.25rem;
+  top: -0.25rem;
+  width: @size-4;
+}
+
+.ModuleTabs {
+  display: flex;
+  flex: 1 auto;
+  flex-flow: column nowrap;
+  height: 100%;
+
+  @media @breakpoint-mobile {
+    height: fit-content;
+  }
+}
+
+.ModuleTabs__scrollOver {
+  display: grid;
+  grid-template-rows: 3rem auto;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.ModuleTabs__content {
+  display: flex;
+  flex: 1;
+  flex-flow: column nowrap;
+
+  @media @breakpoint-mobile {
+    overflow-y: auto;
+  }
+}
+
+.ModuleTabs__tabFillWidth {
+  background-color: @color-grayish-purple;
+
+  > li {
+    align-content: center;
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+    font-size: @size-14;
+    justify-content: center;
+
+    > button {
+      padding: 0.875rem 0;
+    }
+  }
+}
+
+.ModuleTabs__tabFill {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  left: 0;
+  right: 0;
+  z-index: 5;
+
+  > li {
+    > button {
+      font-size: @font-size-medium;
+    }
+  }
+}
+
+.ModuleTabs__activeTabFill {
+  background-color: transparent;
+}
+
+.ModuleTabs__activeSpanFill {
+  border-bottom: 1px solid white;
+}
+
+.ModuleTabs__noBorder {
+  background-color: unset;
+  border: 0;
+  overflow-x: auto;
+  padding: 0 0.5rem;
+
+  > li {
+    > button {
+      font-size: @size-12;
+      padding: 1.5rem 0.5rem;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.ModuleTabs__noBorder::-webkit-scrollbar {
+  display: none;
+}
+
+.ModuleTabs__borderBetween {
+  > li {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+
+    > button {
+      flex: 1;
+      margin: 0.5rem 0;
+      padding: 0.375rem 0.5rem;
+    }
+
+    &:not(:first-child) {
+      > button {
+        border-left: 1px solid fade(@color-primary-alternate, 50%);
+      }
+    }
+  }
+}
+
+.ModuleTabs__activeBorderBetween {
+  border-left: 0;
+}
+
+.ModuleTabs__activeNoBorder {
+  border: 0;
+  padding-bottom: 0.25rem;
+  position: relative;
+
+  &::after {
+    background-color: @color-underline;
+    border-radius: @size-9;
+    bottom: 0;
+    content: "";
+    height: 2px;
+    left: 0;
+    position: absolute;
+    right: 0;
+  }
+}

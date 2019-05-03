@@ -7,9 +7,10 @@ import ConfirmStyles from "modules/common/less/confirm-table";
 const ReportingReportConfirm = ({
   selectedOutcome,
   stake,
+  stakeLabel,
   gasEstimate,
   isMarketInValid,
-  isOpenReporting,
+  isDesignatedReporter,
   designatedReportNoShowReputationBond
 }) => (
   <article className={ConfirmStyles.Confirm}>
@@ -23,14 +24,12 @@ const ReportingReportConfirm = ({
               {isMarketInValid ? "Market is Invalid" : selectedOutcome}
             </span>
           </li>
-          {!isOpenReporting && (
-            <li>
-              <span>Stake</span>
-              <span>
-                {BigNumber.isBigNumber(stake) ? stake.toNumber() : stake} REP
-              </span>
-            </li>
-          )}
+          <li>
+            <span>{stakeLabel}</span>
+            <span>
+              {BigNumber.isBigNumber(stake) ? stake.toNumber() : stake} REP
+            </span>
+          </li>
           <li>
             <span>Gas</span>
             <span>{gasEstimate} ETH</span>
@@ -38,7 +37,7 @@ const ReportingReportConfirm = ({
         </ul>
       </div>
     </div>
-    {isOpenReporting &&
+    {!isDesignatedReporter &&
       designatedReportNoShowReputationBond && (
         <div className={ConfirmStyles.Confirm__note_text}>
           If your report is accepted as the winning outcome, you will receive at
@@ -52,8 +51,9 @@ ReportingReportConfirm.propTypes = {
   selectedOutcome: PropTypes.string.isRequired,
   stake: PropTypes.string.isRequired,
   gasEstimate: PropTypes.string.isRequired,
+  stakeLabel: PropTypes.string.isRequired,
   isMarketInValid: PropTypes.bool.isRequired,
-  isOpenReporting: PropTypes.bool.isRequired,
+  isDesignatedReporter: PropTypes.bool.isRequired,
   designatedReportNoShowReputationBond: PropTypes.object
 };
 

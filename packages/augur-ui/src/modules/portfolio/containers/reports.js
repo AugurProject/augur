@@ -1,4 +1,4 @@
-import { constants } from "services/constants";
+import { constants } from "services/augurjs";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { selectCurrentTimestamp } from "src/select-state";
@@ -6,20 +6,20 @@ import { each, orderBy } from "lodash";
 import PortfolioReports from "modules/portfolio/components/portfolio-reports/portfolio-reports";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
-import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { selectMarket } from "modules/markets/selectors/market";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
-import { selectMarketDisputeOutcomes } from "modules/reports/selectors/select-market-dispute-outcomes";
+import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
+import { loadDisputingDetails } from "modules/reports/actions/load-disputing-details";
 
 const mapStateToProps = state => {
   const PAGINATION_COUNT = 10;
   const forkedMarket = state.universe.isForking
     ? selectMarket(state.universe.forkingMarket)
     : null;
-  const disputeOutcomes = selectMarketDisputeOutcomes(state) || {};
+  const disputeOutcomes = marketDisputeOutcomes() || {};
   const disputableMarkets = [];
   const upcomingDisputableMarkets = [];
   const resolvedMarkets = [];
@@ -50,39 +50,54 @@ const mapStateToProps = state => {
     }
   });
 
-  orderBy(resolvedMarkets, ["endTime.timestamp"], ["desc"]);
+  const userResolvedMarkets = orderBy(
+    resolvedMarkets,
+    ["endTime.timestamp"],
+    ["desc"]
+  );
+
+  const disputableMarketIds = disputableMarkets.map(item => item.id) || [];
+  const resolvedMarketIds = userResolvedMarkets.map(item => item.id) || [];
+  const upcomingDisputableMarketIds = upcomingDisputableMarkets.map(
+    item => item.id
+  );
 
   return {
     currentTimestamp: selectCurrentTimestamp(state),
     forkedMarket,
+    availableRep: state.loginAccount.rep,
     isLogged: state.authStatus.isLogged,
     isMobile: state.appStatus.isMobile,
     isConnected: state.connection.isConnected && state.universe.id != null,
     reportingFees: state.reportingWindowStats.reportingFees,
     markets: disputableMarkets,
     showPagination: disputableMarkets.length > PAGINATION_COUNT,
-    disputableMarketsLength: disputableMarkets.length,
+    disputableMarketsLength: disputableMarketIds.length,
     upcomingMarkets: upcomingDisputableMarkets,
-    upcomingMarketsCount: upcomingDisputableMarkets.length,
+    upcomingMarketsCount: upcomingDisputableMarketIds.length,
     showUpcomingPagination: upcomingDisputableMarkets.length > PAGINATION_COUNT,
     paginationCount: PAGINATION_COUNT,
     outcomes: disputeOutcomes,
-    resolvedMarkets,
+    resolvedMarkets: userResolvedMarkets,
+    resolvedMarketIds,
     isForking: state.universe.isForking,
     forkEndTime: state.universe.forkEndTime,
-    forkingMarketId: state.universe.forkingMarket
+    forkingMarketId: state.universe.forkingMarket,
+    disputableMarketIds,
+    upcomingDisputableMarketIds
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
   getReportingFees: callback => dispatch(getReportingFees(callback)),
-  getWinningBalances: marketIds => dispatch(getWinningBalance(marketIds)),
   updateModal: modal => dispatch(updateModal(modal)),
   loadMarkets: () => dispatch(loadReportingHistory()),
   loadMarketsInfoIfNotLoaded: marketIds =>
     dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
-  toggleFavorite: marketId => dispatch(toggleFavorite(marketId))
+  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
+  loadDisputingDetails: (marketIds, cb) =>
+    dispatch(loadDisputingDetails(marketIds, cb))
 });
 
 export default withRouter(

@@ -41,13 +41,13 @@ export async function getMarkets(db: Knex, augur: {}, params: t.TypeOf<typeof Ge
 
   const searchProvider = createSearchProvider(db);
   if (params.search != null && searchProvider !== null) {
-    query.whereIn("markets.marketId", function (this: Knex.QueryBuilder) {
+    query.whereIn("markets.marketId", function(this: Knex.QueryBuilder) {
       searchProvider.searchBuilder(this, params.search!);
     });
   }
 
   if (params.maxFee) {
-    query.whereRaw("(CAST(markets.reportingFeeRate as numeric) + CAST(markets.marketCreatorFeeRate as numeric)) < ?", [params.maxFee]);
+    query.whereRaw("CAST(markets.reportingFeeRate as numeric) < ?", [params.maxFee]);
   }
 
   const marketsRows = await queryModifier<MarketsContractAddressRow>(db, query, "volume", "desc", params);

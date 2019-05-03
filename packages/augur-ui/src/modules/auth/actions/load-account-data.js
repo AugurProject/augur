@@ -9,6 +9,10 @@ import { clearOrphanedOrderData } from "modules/orders/actions/orphaned-orders";
 import { windowRef } from "src/utils/window-ref";
 import getValue from "utils/get-value";
 import logError from "utils/log-error";
+import { loadDesignatedReporterMarkets } from "modules/reports/actions/load-designated-reporter-markets";
+import { loadDisputing } from "modules/reports/actions/load-disputing";
+import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
+import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
 
 const { ACCOUNT_TYPES } = augur.rpc.constants;
 
@@ -22,7 +26,6 @@ export const loadAccountData = (account, callback = logError) => dispatch => {
   ) {
     windowRef.localStorage.setItem("loggedInAccount", account.address);
   }
-
   dispatch(loadAccountDataFromLocalStorage(account.address));
   dispatch(updateLoginAccount(account));
   dispatch(clearOrphanedOrderData());
@@ -30,4 +33,8 @@ export const loadAccountData = (account, callback = logError) => dispatch => {
   dispatch(checkAccountAllowance());
   dispatch(updateAssets());
   dispatch(loadReportingWindowBounds());
+  dispatch(loadDesignatedReporterMarkets());
+  dispatch(loadDisputing());
+  dispatch(loadGasPriceInfo());
+  dispatch(getReportingFees());
 };

@@ -1,0 +1,63 @@
+@import (reference) "~assets/styles/shared";
+
+.OpenMarkets__expandedContent {
+  background: fade(@color-primary-alternate, 40%);
+  flex: 1;
+
+  > div {
+    align-items: center;
+    border-top: 1px solid fade(@color-primary-background, 50%);
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    margin: 0 2rem;
+    padding: 0.25rem 0;
+
+    > span {
+      .text-11;
+
+      color: @color-tertiary-text;
+      flex: 1;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    > div {
+      margin: 0 1rem;
+      padding-right: 0;
+    }
+  }
+}
+
+.OpenMarkets__bottomBar {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  padding-bottom: 0.25rem;
+  padding-right: 0.5rem;
+
+  > div {
+    align-items: center;
+    background: @color-tertiary-background;
+    border-radius: 3px;
+    display: flex;
+    margin-bottom: 0.25rem;
+    margin-top: 0.5rem;
+    padding: 6px 0.5rem;
+
+    > span {
+      .mono-11;
+
+      color: @color-tertiary-text;
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      padding-right: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    > div > div {
+      font-weight: bold;
+    }
+  }
+}

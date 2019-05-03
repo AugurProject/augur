@@ -32,6 +32,7 @@ rules:
   import/prefer-default-export: 0
   no-underscore-dangle: 0
   react/require-default-props: 1
+  react/no-multi-comp: 0
   no-prototype-builtins: 0
   no-restricted-globals:
   - 0
@@ -86,3 +87,8 @@ rules:
   react/no-string-refs: 0
   react/no-unused-prop-types: 1
   react/forbid-prop-types: 0
+  react/jsx-filename-extension:
+  - 1
+  - extensions:
+    - ".tsx"
+    - ".jsx"

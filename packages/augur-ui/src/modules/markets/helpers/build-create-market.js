@@ -1,11 +1,11 @@
 import { augur } from "services/augurjs";
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import {
   YES_NO,
   CATEGORICAL,
-  SCALAR
-} from "modules/markets/constants/market-types";
-import { DESIGNATED_REPORTER_SELF } from "modules/markets/constants/new-market-constraints";
+  SCALAR,
+  DESIGNATED_REPORTER_SELF
+} from "modules/common-elements/constants";
 
 export const buildCreateMarket = (
   newMarket,

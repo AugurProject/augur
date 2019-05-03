@@ -1,7 +1,7 @@
 import accountDisputes from "modules/reports/reducers/account-disputes-state";
 import accountPositions from "modules/positions/reducers/account-positions";
-import accountTrades from "modules/positions/reducers/account-trades";
 import appStatus from "modules/app/reducers/app-status";
+import sidebarStatus from "modules/app/reducers/sidebar-status";
 import authStatus from "modules/auth/reducers/auth-status";
 import blockchain from "modules/app/reducers/blockchain";
 import categories from "modules/categories/reducers/categories-data";
@@ -15,38 +15,40 @@ import filterSortOptions from "modules/filter-sort/reducers/filter-sort-options"
 import functionsAPI from "modules/contracts/reducers/functions-api";
 import gasPriceInfo from "modules/app/reducers/gas-price-info";
 import initialReporters from "modules/reports/reducers/initial-reporters-data";
-import isFirstOrderBookChunkLoaded from "modules/orders/reducers/is-first-order-book-chunk-loaded";
 import loginAccount from "modules/auth/reducers/login-account";
 import marketCreatorFees from "modules/markets/reducers/market-creator-fees";
-import marketLoading from "modules/markets/reducers/market-loading";
 import marketTradingHistory from "modules/markets/reducers/market-trading-history";
 import marketReportState from "modules/reports/reducers/market-report-state";
 import marketsData from "modules/markets/reducers/markets-data";
 import marketsWithAccountReport from "modules/reports/reducers/markets-with-account-report";
 import modal from "modules/modal/reducers/modal";
 import newMarket from "modules/markets/reducers/new-market";
-import notifications from "modules/notifications/reducers/notifications";
+import alerts from "modules/alerts/reducers/alerts";
 import orderBooks from "modules/orders/reducers/order-books";
 import orderCancellation from "modules/orders/reducers/order-cancellation";
 import orphanedOrders from "modules/orders/reducers/orphaned-orders";
 import outcomesData from "modules/markets/reducers/outcomes-data";
 import participationTokens from "modules/reports/reducers/participation-token-data";
-import priceHistory from "modules/markets/reducers/price-history";
 import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
 import reportingWindowStats from "modules/reports/reducers/reporting-window-stats";
 import reports from "modules/reports/reducers/reports";
 import scalarMarketsShareDenomination from "modules/markets/reducers/scalar-markets-share-denomination";
 import selectedMarketId from "modules/markets/reducers/selected-market-id";
-import tradesInProgress from "modules/trades/reducers/trades-in-progress";
 import transactionsData from "modules/transactions/reducers/transactions-data";
+import transactionsStatus from "modules/transactions/reducers/transactions-status";
 import universe from "modules/universe/reducers/universe";
 import versions from "modules/app/reducers/versions";
+import pendingOrders from "modules/orders/reducers/pending-orders";
+import filledOrders from "modules/orders/reducers/filled-orders";
+import accountShareBalances from "modules/positions/reducers/account-share-balances";
+import readNotifications from "modules/notifications/reducers/read-notifications";
+import pendingQueue from "modules/pending-queue/reducers/pending-queue";
 
 export function createReducer() {
   return {
     accountDisputes,
     accountPositions,
-    accountTrades,
+    alerts,
     appStatus,
     authStatus,
     blockchain,
@@ -61,31 +63,33 @@ export function createReducer() {
     functionsAPI,
     gasPriceInfo,
     initialReporters,
-    isFirstOrderBookChunkLoaded,
     loginAccount,
     marketCreatorFees,
-    marketLoading,
     marketReportState,
     marketTradingHistory,
     marketsData,
     marketsWithAccountReport,
     modal,
     newMarket,
-    notifications,
+    readNotifications,
     orderBooks,
     orderCancellation,
     orphanedOrders,
     outcomesData,
     participationTokens,
     pendingLiquidityOrders,
-    priceHistory,
+    pendingOrders,
+    pendingQueue,
+    filledOrders,
     reportingWindowStats,
     reports,
     scalarMarketsShareDenomination,
     selectedMarketId,
-    tradesInProgress,
+    sidebarStatus,
     transactionsData,
+    transactionsStatus,
     universe,
-    versions
+    versions,
+    accountShareBalances
   };
 }

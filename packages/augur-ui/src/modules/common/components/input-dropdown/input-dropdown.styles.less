@@ -1,4 +1,4 @@
-@import '~assets/styles/shared.less';
+@import "~assets/styles/shared.less";
 
 .InputDropdown {
   background-color: @color-input-background;
@@ -35,7 +35,7 @@
   font-size: 1.125rem;
   line-height: 1.5rem;
   max-height: 10rem;
-  overflow: scroll;
+  overflow: auto;
   padding: 0.5rem 0;
   position: absolute;
   right: 0;
@@ -72,7 +72,15 @@
 }
 
 .InputDropdown__icon {
-  align-self: center;
+  align-self: flex-end;
+
+  svg {
+    height: 1em;
+
+    polyline {
+      stroke: @color-lightgray;
+    }
+  }
 }
 
 @media @breakpoint-mobile-small {

@@ -9,6 +9,7 @@ import {
   REMOVE_MARKET,
   UPDATE_MARKET_ETH_BALANCE
 } from "modules/markets/actions/update-markets-data";
+
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};

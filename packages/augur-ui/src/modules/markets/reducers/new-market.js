@@ -5,8 +5,8 @@ import {
   CLEAR_NEW_MARKET
 } from "modules/markets/actions/update-new-market";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { SETTLEMENT_FEE_DEFAULT } from "modules/markets/constants/new-market-constraints";
-import { DEFAULT_SCALAR_TICK_SIZE } from "augur.js/src/constants";
+import { SETTLEMENT_FEE_DEFAULT } from "modules/common-elements/constants";
+import { DEFAULT_SCALAR_TICK_SIZE } from "@augurproject/augur.js/src/constants";
 
 import { createBigNumber } from "utils/create-big-number";
 
@@ -17,12 +17,8 @@ const DEFAULT_STATE = () => ({
       description: null,
       category: null,
       tag1: "",
-      tag2: ""
-    },
-    {
-      type: null
-    },
-    {
+      tag2: "",
+      type: null,
       designatedReporterType: null,
       designatedReporterAddress: null,
       expirySourceType: null,
@@ -69,7 +65,14 @@ export default function(newMarket = DEFAULT_STATE(), action) {
   switch (action.type) {
     case ADD_ORDER_TO_NEW_MARKET: {
       const orderToAdd = action.data.order;
-      const { quantity, price, type, orderEstimate, outcome } = orderToAdd;
+      const {
+        quantity,
+        price,
+        type,
+        orderEstimate,
+        outcome,
+        outcomeName
+      } = orderToAdd;
       const existingOrders = newMarket.orderBook[outcome] || [];
       let orderAdded = false;
       const updatedOrders = existingOrders.reduce((Orders, order) => {
@@ -87,6 +90,7 @@ export default function(newMarket = DEFAULT_STATE(), action) {
 
       if (!orderAdded) {
         updatedOrders.push({
+          outcomeName,
           type,
           price,
           quantity,

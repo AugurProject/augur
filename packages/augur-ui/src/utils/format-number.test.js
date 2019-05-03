@@ -11,8 +11,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 1000.1,
         roundedValue: 1000.1,
         formatted: "1,000.1000",
-        rounded: "1,000.1000",
+        roundedFormatted: "1,000.1000",
         minimized: "1,000.1",
+        rounded: "1000.1",
         denomination: " ETH",
         full: "1,000.1000 ETH",
         fullPrecision: "1000.1"
@@ -26,8 +27,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 1000.1,
         roundedValue: 1000.1,
         formatted: "1,000.1000",
-        rounded: "1,000.1000",
+        roundedFormatted: "1,000.1000",
         minimized: "1,000.1",
+        rounded: "1000.1",
         denomination: " ETH (estimated)",
         full: "1,000.1000 ETH (estimated)",
         fullPrecision: "1000.1"
@@ -41,8 +43,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 1000.1,
         roundedValue: 1000,
         formatted: "1,000.10",
-        rounded: "1,000",
+        roundedFormatted: "1,000",
         minimized: "1,000.1",
+        rounded: "1000",
         denomination: "%",
         full: "1,000.10%",
         fullPrecision: "1000.1"
@@ -56,8 +59,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 1000.1,
         roundedValue: 1000.1,
         formatted: "1,000.1000",
-        rounded: "1,000.1000",
+        roundedFormatted: "1,000.1000",
         minimized: "1,000.1",
+        rounded: "1000.1",
         denomination: " Shares",
         full: "1,000.1000 Shares",
         fullPrecision: "1000.1"
@@ -72,8 +76,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 1,
         roundedValue: 1,
         formatted: "1.0000",
-        rounded: "1.0000",
+        roundedFormatted: "1.0000",
         minimized: "1",
+        rounded: "1",
         denomination: " Share",
         full: "1.0000 Share",
         fullPrecision: "1"
@@ -87,8 +92,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 1000.1,
         roundedValue: 1000,
         formatted: "1,000.1000",
-        rounded: "1,000",
+        roundedFormatted: "1,000",
         minimized: "1,000.1",
+        rounded: "1000",
         denomination: " REP",
         full: "1,000.1000 REP",
         fullPrecision: "1000.1"
@@ -102,8 +108,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 1000.1,
         roundedValue: 1000.1,
         formatted: "1,000.10",
-        rounded: "1,000.10",
+        roundedFormatted: "1,000.10",
         minimized: "1,000.1",
+        rounded: "1000.1",
         denomination: " REP Tokens",
         full: "1,000.10 REP Tokens",
         fullPrecision: "1000.1"
@@ -131,8 +138,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 0.00003405,
         roundedValue: 0,
         formatted: "0.000034",
-        rounded: "0.0000",
+        roundedFormatted: "0.0000",
         minimized: "0.00003405",
+        rounded: "0",
         denomination: " ETH",
         full: "0.000034 ETH",
         fullPrecision: "0.0000340524"
@@ -146,8 +154,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 0.00003405,
         roundedValue: 0,
         formatted: "0.000034",
-        rounded: "0.0000",
+        roundedFormatted: "0.0000",
         minimized: "0.00003405",
+        rounded: "0",
         denomination: " Shares",
         full: "0.000034 Shares",
         fullPrecision: "0.0000340524"
@@ -175,8 +184,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 0.000998,
         roundedValue: 0.001,
         formatted: "0.0010",
-        rounded: "0.0010",
+        roundedFormatted: "0.0010",
         minimized: "0.000998",
+        rounded: "0.001",
         denomination: " ETH",
         full: "0.0010 ETH",
         fullPrecision: "0.000998"
@@ -190,8 +200,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 0.000998,
         roundedValue: 0.0009,
         formatted: "0.0010",
-        rounded: "0.0009",
+        roundedFormatted: "0.0009",
         minimized: "0.000998",
+        rounded: "0.0009",
         denomination: " Shares",
         full: "0.0010 Shares",
         fullPrecision: "0.000998"
@@ -219,8 +230,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 2.103e-7,
         roundedValue: 0,
         formatted: "0.00000021",
-        rounded: "0.0000",
+        roundedFormatted: "0.0000",
         minimized: "0.0000002103",
+        rounded: "0",
         denomination: " ETH",
         full: "0.00000021 ETH",
         fullPrecision: "0.00000021034"
@@ -234,8 +246,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 2.103e-7,
         roundedValue: 0,
         formatted: "0.00000021",
-        rounded: "0.0000",
+        roundedFormatted: "0.0000",
         minimized: "0.0000002103",
+        rounded: "0",
         denomination: " Shares",
         full: "0.00000021 Shares",
         fullPrecision: "0.00000021034"
@@ -263,8 +276,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 2.34e-11,
         roundedValue: 0,
         formatted: "0.0000",
-        rounded: "0.0000",
+        roundedFormatted: "0.0000",
         minimized: "0.0000000000234",
+        rounded: "0",
         denomination: " ETH",
         full: "0.0000 ETH",
         fullPrecision: "0.0000000000234"
@@ -278,8 +292,9 @@ describe("utils/format-number.js", () => {
         formattedValue: 2.34e-11,
         roundedValue: 0,
         formatted: "0.0000",
-        rounded: "0.0000",
+        roundedFormatted: "0.0000",
         minimized: "0.0000000000234",
+        rounded: "0",
         denomination: " Shares",
         full: "0.0000 Shares",
         fullPrecision: "0.0000000000234"
@@ -307,8 +322,9 @@ describe("utils/format-number.js", () => {
         formattedValue: -2.34e-11,
         roundedValue: -0,
         formatted: "0.0000",
-        rounded: "0.0000",
+        roundedFormatted: "0.0000",
         minimized: "-0.0000000000234",
+        rounded: "0",
         denomination: " ETH",
         full: "0.0000 ETH",
         fullPrecision: "-0.0000000000234"
@@ -322,8 +338,9 @@ describe("utils/format-number.js", () => {
         formattedValue: -2.34e-11,
         roundedValue: -0,
         formatted: "0.0000",
-        rounded: "0.0000",
+        roundedFormatted: "0.0000",
         minimized: "-0.0000000000234",
+        rounded: "0",
         denomination: " Shares",
         full: "0.0000 Shares",
         fullPrecision: "-0.0000000000234"
@@ -351,8 +368,9 @@ describe("utils/format-number.js", () => {
         formattedValue: -0.00004,
         roundedValue: -0,
         formatted: "-0.000040",
-        rounded: "0.0000",
+        roundedFormatted: "0.0000",
         minimized: "-0.00004",
+        rounded: "0",
         denomination: " ETH",
         full: "-0.000040 ETH",
         fullPrecision: "-0.00004"
@@ -366,8 +384,9 @@ describe("utils/format-number.js", () => {
         formattedValue: -0.00004,
         roundedValue: -0,
         formatted: "-0.000040",
-        rounded: "0.0000",
+        roundedFormatted: "0.0000",
         minimized: "-0.00004",
+        rounded: "0",
         denomination: " Shares",
         full: "-0.000040 Shares",
         fullPrecision: "-0.00004"
@@ -391,10 +410,12 @@ describe("utils/format-number.js", () => {
           formattedValue: 0,
           formatted: "-",
           roundedValue: 0,
-          rounded: "-",
+          roundedFormatted: "-",
           minimized: "-",
+          rounded: "-",
           denomination: "",
-          full: "-"
+          full: "-",
+          fullPrecision: "0"
         };
 
         expect(formatNumber.formatNone()).toEqual(out);

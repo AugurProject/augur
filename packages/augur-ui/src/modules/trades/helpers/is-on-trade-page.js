@@ -1,2 +1,1 @@
-export const isOnTradePage = () =>
-  document.location.hash.slice(0, 9) === "#/market?";
+export const isOnTradePage = () => document.location.hash.includes("/market?");

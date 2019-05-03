@@ -1,6 +1,6 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 
 export const getWinningBalance = (marketIds = [], callback = logError) => (
@@ -18,7 +18,9 @@ export const getWinningBalance = (marketIds = [], callback = logError) => (
 
       // clear out outstandingReturns
       marketIds.forEach(marketId => {
-        delete marketsData[marketId].outstandingReturns;
+        if (marketsData[marketId] && marketsData[marketId].outstandingReturns) {
+          delete marketsData[marketId].outstandingReturns;
+        }
       });
 
       const balances = winningBalance.filter(

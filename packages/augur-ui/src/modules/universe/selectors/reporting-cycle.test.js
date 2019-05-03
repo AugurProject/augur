@@ -1,24 +1,14 @@
 import { selectReportingCycle } from "modules/universe/selectors/reporting-cycle";
-import * as augurModule from "services/augurjs";
+import { augur } from "services/augurjs";
 
-jest.mock("services/augurjs", () => ({
-  augur: {
-    rpc: {
-      constants: []
-    },
-    reporting: {
-      getCurrentPeriodProgress: () => {}
-    }
-  },
-  constants: []
-}));
+jest.mock("services/augurjs");
 
 describe(`modules/universe/selectors/reporting-cycle.js`, () => {
   let getCurrentPeriodProgressSpy;
 
   beforeEach(() => {
     getCurrentPeriodProgressSpy = jest.spyOn(
-      augurModule.augur.reporting,
+      augur.reporting,
       "getCurrentPeriodProgress"
     );
   });

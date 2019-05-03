@@ -1,10 +1,11 @@
-import { YES_NO, CATEGORICAL } from "modules/markets/constants/market-types";
 import {
   YES_NO_NO_ID,
   YES_NO_NO_OUTCOME_NAME,
   YES_NO_YES_ID,
-  YES_NO_YES_OUTCOME_NAME
-} from "modules/markets/constants/market-outcomes";
+  YES_NO_YES_OUTCOME_NAME,
+  YES_NO,
+  CATEGORICAL
+} from "modules/common-elements/constants";
 
 export const selectReportableOutcomes = (type, outcomes) => {
   switch (type) {

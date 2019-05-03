@@ -1,9 +1,10 @@
 export {
   YES_NO,
   SCALAR,
-  CATEGORICAL
-} from "modules/markets/constants/market-types";
-export { BUY, SELL } from "modules/transactions/constants/types";
+  CATEGORICAL,
+  BUY,
+  SELL
+} from "modules/common-elements/constants";
 
 export const tradeTestState = {
   loginAccount: {
@@ -378,7 +379,6 @@ export const tradeTestState = {
       }
     }
   },
-  tradesInProgress: {},
   transactionsData: {
     trans1: {
       data: {

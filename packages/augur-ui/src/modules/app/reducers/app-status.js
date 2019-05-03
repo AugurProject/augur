@@ -2,7 +2,6 @@ import {
   IS_ANIMATING,
   IS_MOBILE,
   IS_MOBILE_SMALL,
-  HAS_LOADED_MARKETS,
   TRANSACTIONS_LOADING,
   UPDATE_APP_STATUS
 } from "modules/app/actions/update-app-status";
@@ -12,7 +11,6 @@ const DEFAULT_STATE = {
   [IS_ANIMATING]: false,
   [IS_MOBILE]: false,
   [IS_MOBILE_SMALL]: false,
-  [HAS_LOADED_MARKETS]: false,
   [TRANSACTIONS_LOADING]: false
 };
 

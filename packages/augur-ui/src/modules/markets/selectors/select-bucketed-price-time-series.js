@@ -1,7 +1,59 @@
 import { createBigNumber } from "utils/create-big-number";
-import { sortBy, last, each, pullAll } from "lodash";
+import createCachedSelector from "re-reselect";
+import { head, each, pullAll } from "lodash";
+import store from "src/store";
+import { ZERO } from "modules/common-elements/constants";
+import {
+  convertUnixToFormattedDate,
+  roundTimestampToPastDayMidnight
+} from "utils/format-date";
+import {
+  selectMarketsDataState,
+  selectOutcomesDataState,
+  selectCurrentTimestamp,
+  selectMarketTradingHistoryState
+} from "src/select-state";
+import { selectPriceTimeSeries } from "modules/markets/selectors/price-time-series";
 
-export const selectBucketedPriceTimeSeries = (
+function selectMarketsDataStateMarket(state, marketId) {
+  return selectMarketsDataState(state)[marketId] || {};
+}
+
+function selectOutcomesDataStateMarket(state, marketId) {
+  return selectOutcomesDataState(state)[marketId] || {};
+}
+
+function selectMarketTradingHistoryStateMarket(state, marketId) {
+  return selectMarketTradingHistoryState(state)[marketId];
+}
+
+export default function(marketId) {
+  return bucketedPriceTimeSeries(store.getState(), marketId);
+}
+
+export const bucketedPriceTimeSeries = createCachedSelector(
+  selectOutcomesDataStateMarket,
+  selectCurrentTimestamp,
+  selectMarketsDataStateMarket,
+  selectMarketTradingHistoryStateMarket,
+  (outcomesData, currentTimestamp, marketData, marketTradeHistory) => {
+    const creationTime = convertUnixToFormattedDate(
+      (marketData || {}).creationTime || 0
+    ).value.getTime();
+    const outcomes =
+      Object.keys(outcomesData).map(oId => ({
+        ...outcomesData[oId],
+        priceTimeSeries: selectPriceTimeSeries(
+          outcomesData[oId],
+          marketTradeHistory
+        )
+      })) || [];
+    const currentTime = currentTimestamp || Date.now();
+    return bucketedPriceTimeSeriesInternal(creationTime, currentTime, outcomes);
+  }
+)((state, marketId) => marketId);
+
+const bucketedPriceTimeSeriesInternal = (
   creationTime,
   currentTimestamp,
   outcomes
@@ -11,7 +63,8 @@ export const selectBucketedPriceTimeSeries = (
   const mmSecondsInWeek = createBigNumber(7).times(mmSecondsInDay);
 
   const bnCurrentTimestamp = createBigNumber(currentTimestamp);
-  const bnCreationTimestamp = createBigNumber(creationTime);
+  const startTime = roundTimestampToPastDayMidnight(creationTime);
+  const bnCreationTimestamp = createBigNumber(startTime * 1000);
   const overWeekDuration = bnCurrentTimestamp
     .minus(bnCreationTimestamp)
     .gt(mmSecondsInWeek);
@@ -22,12 +75,14 @@ export const selectBucketedPriceTimeSeries = (
   }
 
   const bnRange = bnCurrentTimestamp.minus(bnCreationTimestamp);
-  const numBuckets = Math.ceil(bnRange.dividedBy(bucket).toNumber());
+  const buckets = Math.ceil(bnRange.dividedBy(bucket).toNumber());
+  const numBuckets = createBigNumber(buckets).gt(ZERO) ? buckets : 1;
   const timeBuckets = Array.from(new Array(numBuckets), (val, index) =>
     Math.ceil(
       bnCreationTimestamp.plus(createBigNumber(index).times(bucket)).toNumber()
     )
   );
+
   timeBuckets.push(currentTimestamp);
   const priceTimeSeries = outcomes.reduce((p, o) => {
     p[o.id] = splitTradesByTimeBucket(o.priceTimeSeries, timeBuckets);
@@ -35,7 +90,6 @@ export const selectBucketedPriceTimeSeries = (
   }, {});
 
   return {
-    timeBuckets,
     priceTimeSeries
   };
 };
@@ -43,14 +97,18 @@ export const selectBucketedPriceTimeSeries = (
 function splitTradesByTimeBucket(priceTimeSeries, timeBuckets) {
   if (!priceTimeSeries || priceTimeSeries.length === 0) return [];
   if (!timeBuckets || timeBuckets.length === 0) return [];
-  let timeSeries = sortBy(priceTimeSeries, "timestamp").slice();
+  let timeSeries = priceTimeSeries
+    .sort((a, b) => b.logIndex - a.logIndex)
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .slice();
 
   const series = [];
   for (let i = 0; i < timeBuckets.length - 1; i++) {
     const start = timeBuckets[i];
     const end = timeBuckets[i + 1];
     const result = getTradeInTimeRange(timeSeries, start, end);
-    if (result.trades.length > 0) series.push(last(result.trades));
+    if (result.trades.length > 0)
+      series.push({ ...head(result.trades), timestamp: start });
     timeSeries = result.trimmedTimeSeries;
   }
   return series;
@@ -75,6 +133,8 @@ function getTradeInTimeRange(timeSeries, startTime, endTime) {
 
   return {
     trimmedTimeSeries: pullAll(timeSeries, bucket),
-    trades: sortBy(bucket, "timestamp")
+    trades: bucket
+      .sort((a, b) => b.logIndex - a.logIndex)
+      .sort((a, b) => b.timestamp - a.timestamp)
   };
 }

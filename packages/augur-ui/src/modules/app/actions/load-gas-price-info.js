@@ -14,25 +14,22 @@ export function loadGasPriceInfo(callback = logError) {
     if (!loginAccount.address) return callback(null);
     const networkId = augur.rpc.getNetworkID();
 
-    getGasPriceRanges(networkId, result => {
-      dispatch(
-        updateGasPriceInfo({
-          ...result,
-          blockNumber: blockchain.currentBlockNumber
-        })
-      );
-    });
+    if (networkId === MAINNET_ID) {
+      getGasPriceRanges(networkId, result => {
+        dispatch(
+          updateGasPriceInfo({
+            ...result,
+            blockNumber: blockchain.currentBlockNumber
+          })
+        );
+      });
+    }
   };
 }
 
 function getGasPriceRanges(networkId, callback) {
   const defaultGasPrice = setDefaultGasInfo();
-  if (networkId === MAINNET_ID) {
-    getGasPriceValues(defaultGasPrice, result => callback(result));
-  } else {
-    // no gas api for testnets
-    return callback(defaultGasPrice);
-  }
+  getGasPriceValues(defaultGasPrice, result => callback(result));
 }
 
 function getGasPriceValues(defaultGasPrice, callback) {

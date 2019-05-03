@@ -1,9 +1,5 @@
 import sinon from "sinon";
-import {
-  CATEGORICAL,
-  SCALAR,
-  YES_NO
-} from "modules/markets/constants/market-types";
+import { CATEGORICAL, SCALAR, YES_NO } from "modules/common-elements/constants";
 import selectDisputeOutcomes from "modules/reports/selectors/select-dispute-outcomes";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 
@@ -204,6 +200,7 @@ describe(`modules/reports/selectors/select-dispute-outcomes.js`, () => {
         tentativeWinning: false,
         stakeCurrent: "30",
         stakeRemaining: "70",
+        display: true,
         id: "30",
         name: "30"
       },

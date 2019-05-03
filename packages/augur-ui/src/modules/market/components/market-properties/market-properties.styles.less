@@ -7,6 +7,7 @@
 }
 
 .MarketProperties__actions {
+  align-items: center;
   display: flex;
   justify-content: flex-end;
 }
@@ -18,20 +19,17 @@
   margin-right: 1rem;
   position: relative;
   transition: color 0.15s ease;
-
-  :global {
-    .fa-star {
-      color: @color-lighter-purple;
-    }
-  }
 }
 
 .MarketProperties__additional-details {
   &:extend(.caps--small);
 
-  color: @color-lightgray;
+  color: @color-white;
   display: inline-block;
+  font-size: @font-size-medium;
+  font-weight: bold;
   margin-top: 2rem;
+  text-transform: capitalize;
 }
 
 .MarketProperties__additional-details-chevron {
@@ -60,14 +58,16 @@
     }
 
     > span {
-      color: @color-purple;
+      color: @color-white;
       display: block;
+      font-size: 12px;
+      font-weight: bold;
 
       &:first-child {
-        &:extend(.caps--small);
-
-        color: @color-lightgray;
-        margin-bottom: 0.625rem;
+        color: @color-light-gray;
+        font-size: 10px;
+        font-weight: 400;
+        margin-bottom: 2px;
       }
     }
   }
@@ -83,13 +83,9 @@
 }
 
 .MarketProperties__trade {
-  &:extend(.button--purple all);
+  &:extend(.button--bright all);
 
-  &.disabled {
-    &:extend(.button--purple--disabled);
-
-    pointer-events: none;
-  }
+  text-transform: capitalize;
 }
 
 .MarketProperties__migrate {

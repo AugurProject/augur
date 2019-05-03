@@ -3,18 +3,18 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Helmet } from "react-helmet";
 
-import speedomatic from "speedomatic";
+import * as speedomatic from "speedomatic";
 import { createBigNumber } from "utils/create-big-number";
-import { ZERO } from "modules/trades/constants/numbers";
 import { formatGasCostToEther } from "utils/format-number";
 import MarketPreview from "modules/market/containers/market-preview";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import ReportingDisputeForm from "modules/reporting/containers/reporting-dispute-form";
 import ReportingDisputeConfirm from "modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm";
-import { TYPE_VIEW } from "modules/markets/constants/link-types";
+import { TYPE_VIEW, ZERO } from "modules/common-elements/constants";
 import { isEmpty } from "lodash";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
+import InvalidMessage from "modules/reporting/components/invalid-message/invalid-message";
 
 export default class ReportingDispute extends Component {
   static propTypes = {
@@ -146,12 +146,15 @@ export default class ReportingDispute extends Component {
         {!isEmpty(market) && (
           <article className={FormStyles.Form}>
             {s.currentStep === 0 && (
-              <ReportingDisputeForm
-                market={market}
-                updateState={this.updateState}
-                stakeInfo={s.stakeInfo}
-                availableRep={availableRep}
-              />
+              <div className={Styles.ReportingReport_form_message}>
+                <ReportingDisputeForm
+                  market={market}
+                  updateState={this.updateState}
+                  stakeInfo={s.stakeInfo}
+                  availableRep={availableRep}
+                />
+                <InvalidMessage />
+              </div>
             )}
             {s.currentStep === 1 && (
               <ReportingDisputeConfirm

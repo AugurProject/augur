@@ -1,9 +1,9 @@
 import { string, number } from "prop-types";
 import { AddressZero } from "ethers/constants";
 
-type Address = string;
-type Bytes32 = string;
-type Timestamp = string;
+export type Address = string;
+export type Bytes32 = string;
+export type Timestamp = string;
 
 export interface Doc {
   _id: string;
@@ -92,7 +92,7 @@ export interface MarketCreatedLog extends Log, Doc {
   marketCreator: Address;
   designatedReporter: Address;
   feeDivisor: string;
-  prices: Array<Price>;
+  prices: Array<string>;
   marketType: MarketType;
   numTicks: string;
   outcomes: Array<string>;
@@ -101,7 +101,7 @@ export interface MarketCreatedLog extends Log, Doc {
 export interface MarketFinalizedLog extends Log, Doc, Timestamped {
   universe: Address;
   market: Address;
-  winningPayoutNumerators: Array<PayoutNumerator>;
+  winningPayoutNumerators: Array<string>;
 }
 
 export interface MarketMigratedLog extends Log, Doc {
@@ -126,50 +126,36 @@ export interface OrderCanceledLog extends Log, Doc {
   universe: Address;
   shareToken: Address;
   sender: Address;
+  market: Address;
   orderId: Bytes32;
   orderType: OrderType;
   tokenRefund: string;
   sharesRefund: string;
 }
 
-export interface OrderCreatedLog extends Log, Doc {
-  orderType: OrderType;
-  amount: string;
-  price: string;
-  creator: string;
-  tradeGroupId: string;
-  orderId: string;
-  universe: string;
-  marketId: string;
-  kycToken: string;
-  outcome: string;
-}
-
-export interface OrderFilledLog extends Log, Doc, Timestamped {
-  universe: string;
-  filler: string;
-  creator: string;
-  market: string;
-  orderId: string;
-  price: string;
-  outcome: string;
-  fees: string;
-  amountFilled: string;
-  tradeGroupId: string;
-  orderIsCompletelyFilled: boolean;
-}
-
-export interface OrderPriceChangedLog extends Log, Doc {
-  orderType: OrderType;
-  amount: string;
-  price: string;
-  creator: Address;
-  tradeGroupId: string;
-  orderId: string;
+//  addressData
+//  0:  kycToken
+//  1:  orderCreator
+//  2:  orderFiller (Fill)
+//
+//  uint256Data
+//  0:  price
+//  1:  amount
+//  2:  outcome
+//  3:  tokenRefund (Cancel)
+//  4:  sharesRefund (Cancel)
+//  5:  fees (Fill)
+//  6:  amountFilled (Fill)
+//  7:  timestamp
+export interface OrderEventLog extends Log, Doc, Timestamped {
   universe: Address;
-  marketId: Address;
-  kycToken: Address;
-  outcome: string;
+  market: Address;
+  eventType: OrderEventType;
+  orderType: OrderType;
+  orderId: Bytes32;
+  tradeGroupId: Bytes32;
+  addressData: Array<Address>;
+  uint256Data: Array<string>;
 }
 
 export enum OrderType {
@@ -177,13 +163,41 @@ export enum OrderType {
   Ask = 1
 }
 
-export interface PayoutNumerator {
-  _hex: string;
+export enum OrderEventType {
+  Create = 0,
+  Cancel = 1,
+  PriceChanged = 2,
+  Fill = 3,
 }
 
-export interface Price {
-  _hex: string;
+export enum OrderEventAddressValue {
+  kycToken = 0,
+  orderCreator = 1,
+  orderFiller = 2,
 }
+
+export enum OrderEventUint256Value {
+  price = 0,
+  amount = 1,
+  outcome = 2,
+  tokenRefund = 3,
+  sharesRefund = 4,
+  fees = 5,
+  amountFilled = 6,
+  timestamp = 7,
+}
+
+export const ORDER_EVENT_KYC_TOKEN = "addressData.0";
+export const ORDER_EVENT_CREATOR = "addressData.1";
+export const ORDER_EVENT_FILLER = "addressData.2";
+export const ORDER_EVENT_PRICE = "uint256Data.0";
+export const ORDER_EVENT_AMOUNT = "uint256Data.1";
+export const ORDER_EVENT_OUTCOME = "uint256Data.2";
+export const ORDER_EVENT_TOKEN_REFUND = "uint256Data.3";
+export const ORDER_EVENT_SHARES_REFUND = "uint256Data.4";
+export const ORDER_EVENT_FEES = "uint256Data.5";
+export const ORDER_EVENT_AMOUNT_FILLED = "uint256Data.6";
+export const ORDER_EVENT_TIMESTAMP = "uint256Data.7";
 
 export interface ProfitLossChangedLog extends Log, Doc, Timestamped {
   universe: string;

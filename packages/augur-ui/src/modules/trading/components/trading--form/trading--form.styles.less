@@ -1,80 +1,262 @@
 @import (reference) "~assets/styles/shared";
 
 .TradingForm__form-body {
-  padding: 1.875rem;
+  padding: 0.75rem 1rem 0;
 
   > li {
-    align-items: center;
+    color: @color-white;
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
+    flex-flow: column nowrap;
+    font-size: @font-size-normal;
+    width: 100%;
+
+    &.yesOption {
+      padding: 1rem 2rem;
+    }
 
     &:not(:last-child) {
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
+
+      > label {
+        .mono-10;
+
+        text-transform: uppercase;
+      }
     }
 
     &:last-child {
-      margin-top: 1.5rem;
-    }
+      align-items: center;
+      border: none;
+      flex-direction: row;
+      font-size: @size-12;
 
-    &.TradingForm__error-message {
-      color: @color-red;
-      display: block;
-      font-size: @font-size-medium;
-      line-height: @font-size-medium;
-      margin-bottom: 2rem;
-
-      > p {
-        display: inline-block;
-        margin: 0;
-        margin-bottom: 0.5rem;
-      }
-
-      > svg {
-        margin: -0.1rem 0.2rem 0;
-        max-height: 1rem;
-        max-width: 1rem;
-        vertical-align: top;
+      > label {
+        color: @color-secondary-text;
+        padding: 0.125rem 0 0 @size-24;
       }
     }
 
     > label {
-      &:extend(.caps--small);
-
-      color: @color-darkpurple;
-      font-weight: 500;
+      color: @color-shadow-text;
       margin-bottom: 0;
-      width: 4.6rem;
+      padding-bottom: 0.25rem;
+      width: 100%;
+
+      &.smallLabel {
+        .text-10;
+
+        color: @color-white;
+        padding-top: 0.5rem;
+        text-transform: none;
+
+        > svg {
+          height: @size-12;
+          width: @size-12;
+
+          > circle {
+            fill: @color-theme-primary;
+            opacity: 1;
+            stroke: @color-highlight;
+          }
+
+          > rect {
+            fill: @color-neutral;
+          }
+
+          > path {
+            fill: @color-neutral;
+          }
+        }
+      }
 
       &:last-child {
-        width: 88%;
-      }
-    }
+        align-items: center;
+        border: none;
+        display: flex;
 
-    > div,
-    > input,
-    > ul {
-      width: 70%;
-
-      &:not(:last-child) {
-        width: 12%;
-      }
-    }
-
-    > input[type="number"] {
-      background-color: @color-input-background;
-      border-width: 1px;
-
-      &::placeholder {
-        color: @color-lightgray;
-        line-height: @font-size-rather-large;
-      }
-
-      &.error {
-        border-color: @color-red;
+        > svg {
+          margin-right: 0.375rem;
+        }
       }
     }
   }
+}
+
+.TradingForm__button__clear {
+  .mono-12;
+
+  color: @color-primary-action;
+  display: inline-block;
+  padding: @size-4 @size-12;
+  text-transform: uppercase;
+}
+
+.TradingForm__error_message_container {
+  background: @color-error-message-bright-fade;
+  border: 1px solid @color-error-text;
+  border-radius: 3px;
+  box-sizing: border-box;
+  display: block;
+  font-size: @font-size-small;
+  line-height: @font-size-medium;
+  margin: @size-16;
+  padding: @size-13 @size-8;
+}
+
+.TradingForm__error_message {
+  .mono-10-bold;
+
+  color: @color-secondary-text;
+  margin-bottom: @size-4;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+
+  > svg {
+    height: @size-12;
+    vertical-align: text-bottom;
+    width: @size-12;
+
+    > circle {
+      fill: @color-error-message-fade;
+      opacity: 0.5;
+      stroke: @color-error-text;
+    }
+
+    > rect {
+      fill: @color-error-text;
+    }
+
+    > path {
+      fill: @color-error-text;
+    }
+  }
+
+  span {
+    white-space: nowrap;
+  }
+}
+
+.TradingForm__outcome__container {
+  padding: @size-8 @size-16 0;
+}
+
+.TradingForm__outcome__container__yes {
+  background-color: @color-theme-primary;
+  border: 1px solid @color-primary-alternate;
+  border-radius: @border-radius-default;
+  font-size: @size-14;
+  font-weight: 500;
+  padding: 0.625rem 0.625rem 0.625rem 1rem;
+
+  > span {
+    .mono-11;
+
+    color: @color-shadow-text;
+    text-transform: uppercase;
+  }
+}
+
+.TradingForm__dashline {
+  stroke: fade(@color-white, 40%);
+}
+
+.TradingForm__input {
+  display: flex;
+  flex-grow: 1;
+  padding: 0.4375rem 1rem;
+  width: auto;
+}
+
+.TradingForm__input__container {
+  align-items: center;
+  background-color: @color-dark-grayish-purple;
+  border: 1px solid @color-dark-gray;
+  display: flex;
+  flex-direction: row;
+  font-family: @roboto-mono;
+
+  > input[type="number"] {
+    background-color: @color-dark-grayish-purple;
+    border-width: 0;
+    color: @color-white;
+    font-family: @roboto-mono;
+    font-size: @font-size-medium;
+
+    &::placeholder {
+      color: fade(@color-secondary-text, 20%);
+      font-family: @roboto-mono;
+      font-size: @font-size-medium;
+    }
+  }
+
+  &.error {
+    border: 0.0625rem solid fade(@color-error-text, 50%);
+
+    &:focus-within,
+    &:focus {
+      border: 0.0625rem solid fade(@color-error-text, 50%);
+    }
+  }
+
+  > span {
+    background: @color-grayish-purple;
+    border-left: 0.0625rem solid @color-dark-gray;
+    color: @color-tertiary-text;
+    font-size: @font-size-small;
+    min-width: 4.28rem;
+    overflow: hidden;
+    padding: 0.59375rem 0.75rem;
+    text-align: center;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    &.isScalar_smallText {
+      font-size: @size-9;
+    }
+
+    &.isScalar_largeText {
+      font-size: @size-11;
+    }
+
+    &.error {
+      background: @color-error-message-bright-fade;
+      border-left: 0;
+      opacity: 0.5;
+    }
+  }
+
+  > label {
+    color: @color-light-gray;
+    font-size: @font-size-small;
+  }
+
+  &:focus-within {
+    border: 0.0625rem solid @color-bright-gray-purple;
+
+    > span {
+      background: @color-bright-gray-purple;
+      border-left: 0;
+
+      &.error {
+        background: @color-error-message-bright-fade;
+        opacity: 0.5;
+      }
+    }
+
+    > input {
+      border: 0;
+    }
+  }
+}
+
+.TradingForm__form_container {
+  border: 1px solid @color-white;
+  opacity: 0.4;
 }
 
 .TradingForm__form-estimated-cost {
@@ -100,8 +282,6 @@
       white-space: nowrap;
 
       &:first-child {
-        &:extend(.caps--small);
-
         color: @color-darkpurple;
         font-weight: 500;
         margin: 0 1.5rem 0 0;
@@ -158,8 +338,6 @@
   display: flex;
 
   > button {
-    &:extend(.caps--small);
-
     background-color: @color-lightgray;
     color: @color-lightergray;
     font-weight: 500;
@@ -182,13 +360,79 @@
 }
 
 @media @breakpoint-mobile {
-  .TradingForm__form-body > li {
-    > label {
-      color: @color-white;
+  .TradingForm__outcome__container {
+    background: @color-extra-darkpurple;
+    margin-bottom: 24px;
+    margin-top: 16px;
+    padding-bottom: 0;
+    padding-top: 0;
+  }
+
+  .TradingForm__input__container {
+    > span {
+      font-size: @size-9;
     }
 
     > input[type="number"] {
-      background-color: @color-lightergray;
+      font-size: @size-12;
+
+      &::placeholder {
+        font-size: @size-12;
+      }
+    }
+  }
+
+  .TradingForm__form-body {
+    display: flex;
+    flex-flow: row wrap;
+
+    > li {
+      flex: 1;
+
+      &:nth-of-type(1),
+      &:nth-of-type(2),
+      &:nth-of-type(3) {
+        > label {
+          .mono-9;
+        }
+      }
+
+      &:nth-of-type(2) {
+        margin: 0 0 0 @size-8;
+      }
+
+      &:nth-of-type(3) {
+        flex: 2 100%;
+        margin-top: @size-8;
+
+        > label {
+          .text-10;
+        }
+      }
+
+      &:nth-of-type(4) {
+        > label {
+          .text-12;
+
+          padding: 0.125rem 0 0 @size-32;
+        }
+      }
+
+      > input[type="number"] {
+        background-color: @color-lightergray;
+        font-size: @size-12;
+      }
+
+      > label {
+        &.smallLabel {
+          .text-10;
+
+          > svg {
+            height: @size-16;
+            width: @size-16;
+          }
+        }
+      }
     }
   }
 
@@ -221,10 +465,13 @@
   .TradingForm__static-field {
     color: @color-white;
   }
-}
 
-.TradingForm__error-message p:not(:first-of-type) {
-  margin-left: 1.65rem !important;
+  .TradingForm__error_message {
+    > svg {
+      height: @size-16;
+      width: @size-16;
+    }
+  }
 }
 
 @media @breakpoint-mobile-extra-small {

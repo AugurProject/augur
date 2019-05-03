@@ -4,7 +4,7 @@ import TX from "ethereumjs-tx";
 import { prefixHex } from "speedomatic";
 import { augur } from "services/augurjs";
 
-import { MODAL_TREZOR } from "modules/modal/constants/modal-types";
+import { MODAL_TREZOR } from "modules/common-elements/constants";
 
 const trezorSigner = async (connect, path, dispatch, rawTxArgs) => {
   function hex(num) {

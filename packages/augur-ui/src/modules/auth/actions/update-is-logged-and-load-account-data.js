@@ -11,7 +11,7 @@ export const updateIsLoggedAndLoadAccountData = (
   unlockedAddress,
   accountType
 ) => dispatch => {
-  augur.rpc.clear(); // clear ethrpc transaction history, registered callbacks, and notifications
+  augur.rpc.clear(); // clear ethrpc transaction history, registered callbacks, and alerts
   dispatch(clearLoginAccount()); // clear the loginAccount data in local state
   const displayAddress = toChecksumAddress(unlockedAddress);
   const address = unlockedAddress;

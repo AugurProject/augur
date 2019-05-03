@@ -13,6 +13,7 @@ import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/reporting/IDisputeOverloadToken.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/Order.sol';
 import 'ROOT/reporting/IAuction.sol';
 import 'ROOT/reporting/IAuctionToken.sol';
@@ -24,7 +25,7 @@ import 'ROOT/ITime.sol';
 contract Augur is IAugur {
     using SafeMathUint256 for uint256;
 
-    enum TokenType{
+    enum TokenType {
         ReputationToken,
         ShareToken,
         DisputeCrowdsourcer,
@@ -33,6 +34,13 @@ contract Augur is IAugur {
         AuctionToken,
         DisputeOverloadToken,
         ParticipationToken
+    }
+
+    enum OrderEventType {
+        Create,
+        Cancel,
+        ChangePrice,
+        Fill
     }
 
     event MarketCreated(IUniverse indexed universe, uint256 endTime, bytes32 indexed topic, string extraInfo, IMarket market, address indexed marketCreator, address designatedReporter, uint256 feeDivisor, int256[] prices, IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes);
@@ -48,11 +56,23 @@ contract Augur is IAugur {
     event MarketMigrated(address indexed market, address indexed originalUniverse, address indexed newUniverse);
     event UniverseForked(address indexed universe, IMarket forkingMarket);
     event UniverseCreated(address indexed parentUniverse, address indexed childUniverse, uint256[] payoutNumerators);
-    event OrderCanceled(address indexed universe, address indexed shareToken, address indexed sender, bytes32 orderId, Order.Types orderType, uint256 tokenRefund, uint256 sharesRefund);
-    event OrderPriceChanged(address indexed universe, bytes32 orderId, uint256 outcome, uint256 price);
-    // The ordering here is to match functions higher in the call chain to avoid stack depth issues
-    event OrderCreated(Order.Types orderType, uint256 amount, uint256 price, address indexed creator, bytes32 tradeGroupId, bytes32 orderId, IUniverse indexed universe, IMarket indexed marketId, ERC20Token kycToken, uint256 outcome);
-    event OrderFilled(address indexed universe, address filler, address creator, IMarket market, bytes32 orderId, uint256 price, uint256 outcome, uint256 fees, uint256 amountFilled, bytes32 tradeGroupId, bool orderIsCompletelyFilled, uint256 timestamp);
+
+    //  addressData
+    //  0:  kycToken
+    //  1:  orderCreator
+    //  2:  orderFiller (Fill)
+    //
+    //  uint256Data
+    //  0:  price
+    //  1:  amount
+    //  2:  outcome
+    //  3:  tokenRefund (Cancel)
+    //  4:  sharesRefund (Cancel)
+    //  5:  fees (Fill)
+    //  6:  amountFilled (Fill)
+    //  7:  timestamp
+    event OrderEvent(address indexed universe, address indexed market, OrderEventType indexed eventType, Order.Types orderType, bytes32 orderId, bytes32 tradeGroupId, address[] addressData, uint256[] uint256Data);
+
     event CompleteSetsPurchased(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI);
     event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 fees);
     event TradingProceedsClaimed(address indexed universe, address indexed shareToken, address indexed sender, address market, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance, uint256 fees);
@@ -327,21 +347,38 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logOrderCanceled(IUniverse _universe, address _shareToken, address _sender, bytes32 _orderId, Order.Types _orderType, uint256 _tokenRefund, uint256 _sharesRefund) public returns (bool) {
+    function logOrderCanceled(IUniverse _universe, IMarket _market, address _creator, uint256 _tokenRefund, uint256 _sharesRefund, bytes32 _orderId) public returns (bool) {
         require(msg.sender == registry["CancelOrder"]);
-        emit OrderCanceled(address(_universe), _shareToken, _sender, _orderId, _orderType, _tokenRefund, _sharesRefund);
+        IOrders _orders = IOrders(registry["Orders"]);
+        (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
+        _addressData[1] = _creator;
+        _uint256Data[3] = _tokenRefund;
+        _uint256Data[4] = _sharesRefund;
+        _uint256Data[7] = getTimestamp();
+        emit OrderEvent(address(_universe), address(_market), OrderEventType.Cancel, _orderType, _orderId, 0, _addressData, _uint256Data);
         return true;
     }
 
-    function logOrderCreated(Order.Types _orderType, uint256 _amount, uint256 _price, address _creator, bytes32 _tradeGroupId, bytes32 _orderId, IUniverse _universe, IMarket _market, ERC20Token _kycToken, uint256 _outcome) public returns (bool) {
+    function logOrderCreated(IUniverse _universe, bytes32 _orderId, bytes32 _tradeGroupId) public returns (bool) {
         require(msg.sender == registry["Orders"]);
-        emit OrderCreated(_orderType, _amount, _price, _creator, _tradeGroupId, _orderId, _universe, _market, _kycToken, _outcome);
+        IOrders _orders = IOrders(registry["Orders"]);
+        (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
+        _uint256Data[7] = getTimestamp();
+        emit OrderEvent(address(_universe), address(_orders.getMarket(_orderId)), OrderEventType.Create, _orderType, _orderId, _tradeGroupId, _addressData, _uint256Data);
         return true;
     }
 
-    function logOrderFilled(IUniverse _universe, address _filler, address _creator, IMarket _market, bytes32 _orderId, uint256 _price, uint256 _outcome, uint256 _marketCreatorFees, uint256 _fees, bytes32 _tradeGroupId, bool _orderIsCompletelyFilled) public returns (bool) {
+    function logOrderFilled(IUniverse _universe, address _creator, address _filler, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _orderId, bytes32 _tradeGroupId) public returns (bool) {
         require(msg.sender == registry["FillOrder"]);
-        emit OrderFilled(address(_universe), _filler, _creator, _market, _orderId, _price, _outcome, _marketCreatorFees, _fees, _tradeGroupId, _orderIsCompletelyFilled, getTimestamp());
+        IOrders _orders = IOrders(registry["Orders"]);
+        (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
+        _addressData[1] = _creator;
+        _addressData[2] = _filler;
+        _uint256Data[0] = _price;
+        _uint256Data[5] = _fees;
+        _uint256Data[6] = _amountFilled;
+        _uint256Data[7] = getTimestamp();
+        emit OrderEvent(address(_universe), address(_orders.getMarket(_orderId)), OrderEventType.Fill, _orderType, _orderId, _tradeGroupId, _addressData, _uint256Data);
         return true;
     }
 
@@ -553,9 +590,12 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logOrderPriceChanged(IUniverse _universe, bytes32 _orderId, uint256 _outcome, uint256 _price) public returns (bool) {
+    function logOrderPriceChanged(IUniverse _universe, bytes32 _orderId) public returns (bool) {
         require(msg.sender == registry["Orders"]);
-        emit OrderPriceChanged(address(_universe), _orderId, _outcome, _price);
+        IOrders _orders = IOrders(registry["Orders"]);
+        (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
+        _uint256Data[7] = getTimestamp();
+        emit OrderEvent(address(_universe), address(_orders.getMarket(_orderId)), OrderEventType.ChangePrice, _orderType, _orderId, 0, _addressData, _uint256Data);
         return true;
     }
 

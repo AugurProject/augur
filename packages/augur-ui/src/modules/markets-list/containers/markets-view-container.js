@@ -11,27 +11,28 @@ import { getSelectedTagsAndCategoriesFromLocation } from "src/modules/markets/he
 import { loadMarketsByFilter } from "modules/markets/actions/load-markets";
 import { buildSearchString } from "modules/markets/selectors/build-search-string";
 import debounce from "utils/debounce";
-import { loadDisputing } from "modules/reports/actions/load-disputing";
 
 const mapStateToProps = (state, { location }) => {
   const markets = selectMarkets(state);
-  const { category, keywords, tags } = getSelectedTagsAndCategoriesFromLocation(
-    location
-  );
+  const {
+    selectedCategoryName,
+    keywords,
+    selectedTagNames
+  } = getSelectedTagsAndCategoriesFromLocation(location);
 
-  const searchPhrase = buildSearchString(keywords, tags);
+  const searchPhrase = buildSearchString(keywords, selectedTagNames);
 
   return {
     isLogged: state.authStatus.isLogged,
     universe: (state.universe || {}).id,
-    hasLoadedMarkets: state.appStatus.hasLoadedMarkets,
     search: searchPhrase,
     isMobile: state.appStatus.isMobile,
     markets,
-    category,
+    category: selectedCategoryName,
     defaultFilter: state.filterSortOptions.marketFilter,
     defaultSort: state.filterSortOptions.marketSort,
-    defaultMaxFee: state.filterSortOptions.maxFee
+    defaultMaxFee: state.filterSortOptions.maxFee,
+    defaultHasOrders: state.filterSortOptions.hasOrders
   };
 };
 
@@ -40,8 +41,7 @@ const mapDispatchToProps = dispatch => ({
   loadMarketsInfoIfNotLoaded: marketIds =>
     dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
   loadMarketsByFilter: (filter, cb) =>
-    debounce(dispatch(loadMarketsByFilter(filter, cb))),
-  loadDisputing: () => dispatch(loadDisputing())
+    debounce(dispatch(loadMarketsByFilter(filter, cb)))
 });
 
 const Markets = compose(

@@ -1,4 +1,4 @@
-import Augur from "augur.js";
+import Augur from "@augurproject/augur.js";
 import logError from "utils/log-error";
 
 export const connect = (env, callback = logError) => {
@@ -19,3 +19,4 @@ export const connect = (env, callback = logError) => {
 };
 
 export const augur = new Augur();
+export const { constants } = augur;

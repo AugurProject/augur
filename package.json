@@ -26,6 +26,7 @@
     "docker:pull": "yarn workspace @augurproject/tools docker:pull",
     "docker:geth:pop-15": "yarn workspace @augurproject/tools docker:geth:pop-15",
     "docker:geth:pop-normal-time": "yarn workspace @augurproject/tools docker:geth:pop-normal-time",
+    "docker:geth": "yarn workspace @augurproject/tools docker:geth",
     "flash": "yarn workspace @augurproject/tools flash"
   },
   "devDependencies": {
@@ -90,8 +91,8 @@
       "packages/*"
     ],
     "nohoist": [
-      "augur-ui/@types/expect-puppeteer",
-      "augur.js/uuid-parse"
+      "@augurproject/ui/react-dates",
+      "@augurproject/ui/normalize.css"
     ]
   },
   "resolutions": {

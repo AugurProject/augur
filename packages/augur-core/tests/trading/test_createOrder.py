@@ -104,15 +104,14 @@ def test_publicCreateOrder_bid2(contractsFixture, cash, market):
     orderID = None
     shareToken = contractsFixture.getShareToken(market, 0)
 
-    orderCreatedLog = {
-        'creator': bytesToHexString(tester.a1),
-        'marketId': market.address,
-        'tradeGroupId': stringToBytes(longTo32Bytes(42)),
-        'outcome': 0,
+    orderCreatedEventLog = {
+	    "eventType": 0,
+	    "addressData": [nullAddress, bytesToHexString(tester.a1) , nullAddress],
+	    "uint256Data": [fxpPrice, amount, outcome, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp()],
     }
 
     with BuyWithCash(cash, fix('1', '40'), tester.k1, "create order"):
-        with AssertLog(contractsFixture, "OrderCreated", orderCreatedLog):
+        with AssertLog(contractsFixture, "OrderEvent", orderCreatedEventLog):
             orderID = createOrder.publicCreateOrder(orderType, amount, fxpPrice, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress,sender=tester.k1)
         assert orderID != bytearray(32), "Order ID should be non-zero"
 
@@ -180,12 +179,13 @@ def test_ask_withPartialShares(contractsFixture, universe, cash, market):
 
     orderID = None
 
-    orderCreatedLog = {
-        'creator': bytesToHexString(tester.a1),
-        'tradeGroupId': stringToBytes(longTo32Bytes(42)),
+    orderCreatedEventLog = {
+	    "eventType": 0,
+	    "addressData": [nullAddress, bytesToHexString(tester.a1) , nullAddress],
+	    "uint256Data": [40, fix(3), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp()],
     }
     with BuyWithCash(cash, fix('60'), tester.k1, "buy complete set"):
-        with AssertLog(contractsFixture, "OrderCreated", orderCreatedLog):
+        with AssertLog(contractsFixture, "OrderEvent", orderCreatedEventLog):
             orderID = createOrder.publicCreateOrder(ASK, fix(3), 40, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender=tester.k1)
     assert cash.balanceOf(tester.a1) == fix('0')
     assert yesShareToken.balanceOf(tester.a1) == 0
@@ -232,12 +232,13 @@ def test_ask_withSharesIgnored(contractsFixture, cash, market):
     with raises(TransactionFailed):
         createOrder.publicCreateOrder(BID, fix(1), 50, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), True, nullAddress, sender=tester.k1)
 
-    orderCreatedLog = {
-        'creator': bytesToHexString(tester.a1),
-        'tradeGroupId': stringToBytes(longTo32Bytes(42)),
+    orderCreatedEventLog = {
+	    "eventType": 0,
+	    "addressData": [nullAddress, bytesToHexString(tester.a1) , nullAddress],
+	    "uint256Data": [50, fix(1), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp()],
     }
     with BuyWithCash(cash, fix('50'), tester.k1, "create order"):
-        with AssertLog(contractsFixture, "OrderCreated", orderCreatedLog):
+        with AssertLog(contractsFixture, "OrderEvent", orderCreatedEventLog):
             orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), True, nullAddress, sender=tester.k1)
     assert cash.balanceOf(tester.a1) == fix('0')
     assert yesShareToken.balanceOf(tester.a1) == fix(2)

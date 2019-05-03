@@ -4,12 +4,10 @@ import configureMockStore from "redux-mock-store";
 import {
   YES_NO,
   CATEGORICAL,
-  SCALAR
-} from "modules/markets/constants/market-types";
-import {
+  SCALAR,
   DESIGNATED_REPORTER_SELF,
   DESIGNATED_REPORTER_SPECIFIC
-} from "modules/markets/constants/new-market-constraints";
+} from "modules/common-elements/constants";
 import { augur } from "services/augurjs";
 
 jest.mock("services/augurjs");
