@@ -1,3 +1,4 @@
+# pop-geth images
 FROM augurproject/augur-core:monorepo as core-builder
 
 # using the augur image grab all repos
