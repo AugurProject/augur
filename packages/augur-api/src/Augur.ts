@@ -40,10 +40,7 @@ export class Augur<TBigNumber, TProvider extends Provider = Provider> {
     "MarketParticipantsDisavowed",
     "MarketTransferred",
     "MarketVolumeChanged",
-    "OrderCanceled",
-    "OrderCreated",
-    "OrderFilled",
-    "OrderPriceChanged",
+    "OrderEvent",
     "ParticipationTokensRedeemed",
     "ReportingParticipantDisavowed",
     "TimestampSet",
@@ -79,6 +76,7 @@ export class Augur<TBigNumber, TProvider extends Provider = Provider> {
     // API
     this.addresses = addresses;
     this.contracts = new Contracts(this.addresses, this.dependencies);
+    this.trade = new Trade(this.provider, this.contracts);
     this.events = new Events(this.provider, this.addresses.Augur);
   }
 
