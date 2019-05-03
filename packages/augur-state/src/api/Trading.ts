@@ -5,6 +5,7 @@ import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convert
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
 import { ethers } from "ethers";
+import { OrderEventAddressValue, OrderEventUint256Value, ORDER_EVENT_CREATOR, ORDER_EVENT_FILLER, ORDER_EVENT_OUTCOME } from "../logs/types";
 
 import * as t from "io-ts";
 
@@ -46,10 +47,10 @@ export class Trading {
       selector: {
         universe: params.universe,
         market: params.marketId,
-        outcome: params.outcome,
+        [ORDER_EVENT_OUTCOME]: params.outcome,
         $or: [
-          { creator: params.account },
-          { filler: params.account },
+          { [ORDER_EVENT_CREATOR] : params.account },
+          { [ORDER_EVENT_FILLER]: params.account },
         ],
       },
       sort: params.sortBy ? [params.sortBy] : undefined,
@@ -74,15 +75,15 @@ export class Trading {
       if (!orderDoc) return trades;
       const marketDoc = markets[orderFilledDoc.market];
       if (!marketDoc) return trades;
-      const isMaker: boolean | null = params.account == null ? false : params.account === orderFilledDoc.creator;
+      const isMaker: boolean | null = params.account == null ? false : params.account === orderFilledDoc.addressData[OrderEventAddressValue.orderCreator];
       const orderType = orderDoc.orderType === 0 ? "buy" : "sell";
-      const fees = new BigNumber(orderFilledDoc.fees);
-      const minPrice = new BigNumber(marketDoc.prices[0]._hex);
-      const maxPrice = new BigNumber(marketDoc.prices[1]._hex);
+      const fees = new BigNumber(orderFilledDoc.uint256Data[OrderEventUint256Value.fees]);
+      const minPrice = new BigNumber(marketDoc.prices[0]);
+      const maxPrice = new BigNumber(marketDoc.prices[1]);
       const numTicks = new BigNumber(marketDoc.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderFilledDoc.amountFilled, 16), tickSize);
-      const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderFilledDoc.price, 16), minPrice, tickSize);
+      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderFilledDoc.uint256Data[OrderEventUint256Value.amountFilled], 16), tickSize);
+      const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderFilledDoc.uint256Data[OrderEventUint256Value.price], 16), minPrice, tickSize);
       trades.push(Object.assign(_.pick(orderFilledDoc, [
         "transactionHash",
         "logIndex",
@@ -90,10 +91,10 @@ export class Trading {
         "tradeGroupId",
       ]), {
           marketId: orderFilledDoc.market,
-          outcome: new BigNumber(orderFilledDoc.outcome).toNumber(),
+          outcome: new BigNumber(orderFilledDoc.uint256Data[OrderEventUint256Value.outcome]).toNumber(),
           maker: isMaker,
           type: isMaker ? orderType : (orderType === "buy" ? "sell" : "buy"),
-          selfFilled: orderFilledDoc.creator === orderFilledDoc.filler,
+          selfFilled: orderFilledDoc.addressData[OrderEventAddressValue.orderCreator] === orderFilledDoc.addressData[OrderEventAddressValue.orderFiller],
           price: price.toString(10),
           amount: amount.toString(10),
           settlementFees: fees.toString(10),

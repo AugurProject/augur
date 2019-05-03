@@ -35,7 +35,7 @@ export async function processOrderCanceledLog(augur: Augur, log: FormattedEventL
     await updateProfitLossNumEscrowed(db, ordersRow.marketId, ordersRow.sharesEscrowed.mul(new BigNumber(-1)), ordersRow.orderCreator, outcomes, log.transactionHash);
 
     ordersRow.orderType = orderTypeLabel;
-    augurEmitter.emit(SubscriptionEventNames.OrderCanceled, Object.assign({}, log, ordersRow));
+    augurEmitter.emit(SubscriptionEventNames.OrderEvent, Object.assign({}, log, ordersRow));
 
   };
 }
@@ -48,6 +48,6 @@ export async function processOrderCanceledLogRemoval(augur: Augur, log: Formatte
     const ordersRow: MarketIDAndOutcomeAndPrice = await db.first("marketId", "outcome", "price").from("orders").where("orderId", log.orderId);
     if (ordersRow) ordersRow.orderType = orderTypeLabel;
     await updateProfitLossRemoveRow(db, log.transactionHash);
-    augurEmitter.emit(SubscriptionEventNames.OrderCanceled, Object.assign({}, log, ordersRow));
+    augurEmitter.emit(SubscriptionEventNames.OrderEvent, Object.assign({}, log, ordersRow));
   };
 }

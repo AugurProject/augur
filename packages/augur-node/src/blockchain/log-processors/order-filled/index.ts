@@ -75,7 +75,7 @@ export async function processOrderFilledLog(augur: Augur, log: FormattedEventLog
       marketCreatorFees,
       reporterFees,
     });
-    augurEmitter.emit(SubscriptionEventNames.OrderFilled, Object.assign({}, log, tradeData));
+    augurEmitter.emit(SubscriptionEventNames.OrderEvent, Object.assign({}, log, tradeData));
     await db.insert(tradeData).into("trades");
 
     await updateVolumetrics(db, augur, category, marketId, outcome, blockNumber, orderId, orderCreator, tickSize, minPrice, maxPrice, true);
@@ -141,7 +141,7 @@ export async function processOrderFilledLogRemoval(augur: Augur, log: FormattedE
     await updateVolumetrics(db, augur, category, marketId, outcome, blockNumber, orderId, orderCreator, tickSize, minPrice, maxPrice, false);
     await db.from("trades").where({ marketId, outcome, orderId, blockNumber }).del();
     await updateOrder(db, augur, marketId, orderId, amount.mul(new BigNumber(-1)), orderCreator, log.filler, tickSize, minPrice);
-    augurEmitter.emit(SubscriptionEventNames.OrderFilled, Object.assign({}, log, {
+    augurEmitter.emit(SubscriptionEventNames.OrderEvent, Object.assign({}, log, {
       marketId,
       outcome,
       creator: orderCreator,
