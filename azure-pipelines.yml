@@ -315,21 +315,21 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
-    - task: Docker@1 displayName: docker logout
-      inputs:
-        command: logout
-        containerRegistryType: Container Registry
-        dockerRegistryEndpoint: dockerhub-augurproject
-    - script: |
-        set -euo pipefail
-        docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-        docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-        docker images
-        docker push augurproject/augur-build:latest
-      condition: |
-        and
-        (
-            succeeded(),
-            eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        )
-      displayName: 'publish docker images on merge to master'
+      - task: Docker@1 displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+      - script: |
+          set -euo pipefail
+          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
+          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+          docker images
+          docker push augurproject/augur-build:latest
+        condition: |
+          and
+          (
+              succeeded(),
+              eq(variables['Build.SourceBranch'], 'refs/heads/master')
+          )
+        displayName: 'publish docker images on merge to master'
