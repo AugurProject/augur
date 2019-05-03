@@ -24,9 +24,9 @@ jobs:
         inputs:
           versionSpec: '10.x'
       - task: Docker@1
-        displayName: docker logout
+        displayName: docker login
         inputs:
-          command: logout
+          command: login
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
       - bash: |
@@ -36,6 +36,12 @@ jobs:
           docker tag augurproject/augur-build:latest augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker push augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
         displayName: augur-build
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
 
   - job: Build_Core_Docker
     dependsOn: Augur_build_docker_image
@@ -70,9 +76,9 @@ jobs:
             done
         displayName: check git for augur-core changes
       - task: Docker@1
-        displayName: docker logout
+        displayName: docker login
         inputs:
-          command: logout
+          command: login
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
       - script: |
@@ -97,6 +103,12 @@ jobs:
               succeeded(),
               eq(variables.JOB_TRIGGER, 'true')
           )
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
 
   - job: Test_Augur_Core
     dependsOn: Build_Core_Docker
@@ -275,9 +287,9 @@ jobs:
           done
       displayName: check git for augur-core changes
     - task: Docker@1
-      displayName: docker logout
+      displayName: docker login
       inputs:
-        command: logout
+        command: login
         containerRegistryType: Container Registry
         dockerRegistryEndpoint: dockerhub-augurproject
     - script: |
@@ -306,6 +318,12 @@ jobs:
             eq(variables.JOB_TRIGGER, 'true')
         )
       displayName: 'build and (maybe) push core images'
+    - task: Docker@1
+      displayName: docker logout
+      inputs:
+        command: logout
+        containerRegistryType: Container Registry
+        dockerRegistryEndpoint: dockerhub-augurproject
 
   - job: publish_docker_images
     dependsOn:
@@ -316,9 +334,9 @@ jobs:
       vmImage: 'Ubuntu 16.04'
     steps:
       - task: Docker@1
-        displayName: docker logout
+        displayName: docker login
         inputs:
-          command: logout
+          command: login
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
       - script: |
@@ -334,3 +352,9 @@ jobs:
               eq(variables['Build.SourceBranch'], 'refs/heads/master')
           )
         displayName: 'publish docker images on merge to master'
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
