@@ -315,7 +315,8 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
-      - task: Docker@1 displayName: docker logout
+      - task: Docker@1
+        displayName: docker logout
         inputs:
           command: logout
           containerRegistryType: Container Registry
