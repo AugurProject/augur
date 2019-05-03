@@ -93,14 +93,6 @@ jobs:
           docker images
           docker pull $CORE_IMAGE_LATEST;
           yarn workspace @augurproject/core docker:build;
-          # test to see if contracts change, if so, exit
-          docker run --rm --entrypoint cat augurproject/augur-core:monorepo /augur/packages/augur-artifacts/src/contracts.json > packages/augur-artifacts/src/contracts.json
-          git diff --ignore-all-space --quiet
-          if [[ $? -ne 0 ]];
-          then
-            echo "contracts have changed, please upload"
-            exit 1;
-          fi
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
           docker push $CORE_IMAGE_BUILD
           docker push augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
