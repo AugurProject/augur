@@ -54,7 +54,7 @@ async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): 
 
 async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<ParsedLogWithEventName>, blockNumbers: Array<number>, blockDetailsByBlock: BlockDetailsByBlock) {
   const logsByBlock: { [blockNumber: number]: Array<ParsedLogWithEventName> } = _.groupBy(allAugurLogs, (log) => log.blockNumber);
-  for (const blockNumber of blockNumbers.sort()) {
+  for (const blockNumber of blockNumbers) {
     const blockDetail = blockDetailsByBlock[blockNumber];
     const logs = logsByBlock[blockNumber];
     if (logs === undefined || logs.length === 0) return;
@@ -100,10 +100,10 @@ export async function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: numbe
 
     // console.log(highestSyncedBlockNumber, toBlock, logs.length, JSON.stringify(logs));
 
-    const blockNumbers = logs.length > 0 ? extractBlockNumbers(logs) : getBlockNumbersInRange({
+    const blockNumbers = (logs.length > 0 ? extractBlockNumbers(logs) : getBlockNumbersInRange({
       fromBlock: highestSyncedBlockNumber,
       toBlock
-    });
+    })).sort();
 
     const blockDetail = await fetchAllBlockDetails(augur, blockNumbers);
 
