@@ -90,7 +90,6 @@ export interface MarketCreatedLogExtraInfo {
 }
 
 export interface MarketCreatedOnContractInfo {
-  marketCreatorFeeRate: string;
   disputeWindow: Address;
   endTime: string;
   designatedReporter: Address;
