@@ -205,37 +205,37 @@ export class Markets<TBigNumber> {
   private static async getMarketOutcomes<TBigNumber>(db: DB<TBigNumber>, marketCreatedLog: MarketCreatedLog): Promise<Array<MarketInfoOutcome>> {
     let outcomes: Array<MarketInfoOutcome> = [];
     if (marketCreatedLog.outcomes.length === 0) {
-      const ordersFilled0 = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, outcome: "0x00"}})).reverse();
-      const ordersFilled1 = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, outcome: "0x01"}})).reverse();
-      const ordersFilled2 = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, outcome: "0x02"}})).reverse();
+      const ordersFilled0 = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, "uint256Data.2": "0x00"}})).reverse();
+      const ordersFilled1 = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, "uint256Data.2": "0x01"}})).reverse();
+      const ordersFilled2 = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, "uint256Data.2": "0x02"}})).reverse();
       outcomes.push({
         id: 0,
-        price: ordersFilled0.length > 0 ? new BigNumber(ordersFilled0[0].price).toString(10) : "0",
+        price: ordersFilled0.length > 0 ? new BigNumber(ordersFilled0[0].uint256Data[0]).toString(10) : "0",
         description: "Invalid"
       });
       outcomes.push({
         id: 1,
-        price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].price).toString(10) : "0",
+        price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].uint256Data[0]).toString(10) : "0",
         description: (marketCreatedLog.marketType === 0) ? "No" : new BigNumber(marketCreatedLog.prices[0]._hex).toString(10)
       });
       outcomes.push({
         id: 2,
-        price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].price).toString(10) : "0",
+        price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].uint256Data[0]).toString(10) : "0",
         description: (marketCreatedLog.marketType === 0) ? "Yes" : new BigNumber(marketCreatedLog.prices[1]._hex).toString(10)
       });
     } else {
-      const ordersFilled = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, outcome: "0x00"}})).reverse();
+      const ordersFilled = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, "uint256Data.2": "0x00"}})).reverse();
       outcomes.push({
         id: 0,
-        price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : "0",
+        price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].uint256Data[0]).toString(10) : "0",
         description: "Invalid"
       });
       for (let i = 0; i < marketCreatedLog.outcomes.length; i++) {
-        const ordersFilled = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, outcome: "0x0" + (i + 1)}})).reverse();
+        const ordersFilled = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, "uint256Data.2": "0x0" + (i + 1)}})).reverse();
         const outcomeDescription = marketCreatedLog.outcomes[i].replace("0x", "");
         outcomes.push({
           id: i + 1,
-          price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : "0",
+          price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].uint256Data[0]).toString(10) : "0",
           description: Buffer.from(outcomeDescription, "hex").toString()
         });
       }

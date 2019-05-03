@@ -57,10 +57,6 @@ contract Augur is IAugur {
     event UniverseForked(address indexed universe, IMarket forkingMarket);
     event UniverseCreated(address indexed parentUniverse, address indexed childUniverse, uint256[] payoutNumerators);
 
-    //  bytes32Data
-    //  0:  orderId
-    //  1:  tradeGroupId (Create / Fill)
-    //
     //  addressData
     //  0:  kycToken
     //  1:  orderCreator (Fill)

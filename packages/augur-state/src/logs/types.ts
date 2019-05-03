@@ -133,43 +133,41 @@ export interface OrderCanceledLog extends Log, Doc {
   sharesRefund: string;
 }
 
-export interface OrderCreatedLog extends Log, Doc {
-  orderType: OrderType;
-  amount: string;
-  price: string;
-  creator: string;
-  tradeGroupId: string;
-  orderId: string;
-  universe: string;
-  market: string;
-  kycToken: string;
-  outcome: string;
-}
-
-export interface OrderFilledLog extends Log, Doc, Timestamped {
-  universe: string;
-  filler: string;
-  creator: string;
-  market: string;
-  orderId: string;
-  price: string;
-  outcome: string;
-  fees: string;
-  amountFilled: string;
-  tradeGroupId: string;
-  orderIsCompletelyFilled: boolean;
-}
-
-export interface OrderPriceChangedLog extends Log, Doc {
+//  addressData
+//  0:  kycToken
+//  1:  orderCreator (Fill)
+//  2:  orderFiller (Fill)
+//
+//  uint256Data
+//  0:  price
+//  1:  amount
+//  2:  outcome
+//  3:  tokenRefund (Cancel)
+//  4:  sharesRefund (Cancel)
+//  5:  fees (Fill)
+//  6:  amountFilled (Fill)
+//  7:  timestamp
+export interface OrderEventLog extends Log, Doc, Timestamped {
   universe: Address;
-  orderId: string;
-  outcome: string;
-  price: string;
+  market: Address;
+  eventType: OrderEventType;
+  orderType: OrderType;
+  orderId: Bytes32;
+  tradeGroupId: Bytes32;
+  addressData: Array<Address>;
+  uint256Data: Array<string>;
 }
 
 export enum OrderType {
   Bid = 0,
   Ask = 1
+}
+
+export enum OrderEventType {
+  Create = 0,
+  Cancel = 1,
+  PriceChanged = 2,
+  Fill = 3,
 }
 
 export interface PayoutNumerator {

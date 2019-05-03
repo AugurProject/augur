@@ -2,7 +2,7 @@ import { BigNumber } from "bignumber.js";
 import { DB } from "../db/DB";
 import { Getter } from "./Router";
 import { NumericDictionary } from "lodash";
-import { ProfitLossChangedLog, OrderFilledLog, Doc, Timestamped, MarketCreatedLog } from '../logs/types';
+import { ProfitLossChangedLog, OrderEventLog, Doc, Timestamped, MarketCreatedLog } from '../logs/types';
 import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/api";
 import { SortLimit } from './types';
 import { ethers } from "ethers";
@@ -114,8 +114,8 @@ export class Users<TBigNumber> {
         universe: params.universe,
         market: params.marketId,
         $or: [
-          { creator: params.account },
-          { filler: params.account }
+          { "addressData.1" : params.account },
+          { "addressData.2" : params.account }
         ]
       }
     }
@@ -150,7 +150,7 @@ export class Users<TBigNumber> {
     const tradingPositionsByMarketAndOutcome = _.mapValues(profitLossResultsByMarketAndOutcome, (profitLossResultsByOutcome) => {
       return _.mapValues(profitLossResultsByOutcome, (profitLossResult: ProfitLossChangedLog) => {
         const marketDoc = markets[profitLossResult.market];
-        let outcomeValue = new BigNumber(ordersFilledResultsByMarketAndOutcome[profitLossResult.market][profitLossResult.outcome]!.price);
+        let outcomeValue = new BigNumber(ordersFilledResultsByMarketAndOutcome[profitLossResult.market][profitLossResult.outcome]!.uint256Data[0]);
         if (marketFinalizedByMarket[profitLossResult.market]) {
           outcomeValue = new BigNumber(marketFinalizedByMarket[profitLossResult.market].winningPayoutNumerators[new BigNumber(profitLossResult.outcome).toNumber()]._hex);
         }
@@ -209,12 +209,12 @@ export class Users<TBigNumber> {
       selector: {
         universe: params.universe,
         $or: [
-          { creator: params.account },
-          { filler: params.account }
+          { "addressData.1": params.account },
+          { "addressData.2": params.account }
         ],
         $and: [
-          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-          { timestamp: { $gte: `0x${startTime.toString(16)}` } }
+          { "uint256Data.7": { $lte: `0x${endTime.toString(16)}` } },
+          { "uint256Data.7": { $gte: `0x${startTime.toString(16)}` } }
         ]
       },
     }
@@ -264,7 +264,7 @@ export class Users<TBigNumber> {
             };
           }
           const outcomeValues = ordersFilledResultsByMarketAndOutcome[marketId][outcome];
-          let outcomeValue = new BigNumber(getLastDocBeforeTimestamp<OrderFilledLog>(outcomeValues, bucketTimestamp)!.price);
+          let outcomeValue = new BigNumber(getLastDocBeforeTimestamp<OrderEventLog>(outcomeValues, bucketTimestamp)!.uint256Data[0]);
           if (marketFinalizedByMarket[marketId] && bucketTimestamp.lte(marketFinalizedByMarket[marketId].timestamp)) {
             outcomeValue = new BigNumber(marketFinalizedByMarket[marketId].winningPayoutNumerators[new BigNumber(outcome).toNumber()]._hex);
           }
@@ -399,9 +399,9 @@ async function getProfitLossRecordsByMarketAndOutcome<TBigNumber>(db: DB<TBigNum
   return groupDocumentsByMarketAndOutcome<ProfitLossChangedLog>(profitLossResult);
 }
 
-async function getOrderFilledRecordsByMarketAndOutcome<TBigNumber>(db: DB<TBigNumber>, request: PouchDB.Find.FindRequest<{}>): Promise<_.Dictionary<_.Dictionary<Array<OrderFilledLog>>>> {
+async function getOrderFilledRecordsByMarketAndOutcome<TBigNumber>(db: DB<TBigNumber>, request: PouchDB.Find.FindRequest<{}>): Promise<_.Dictionary<_.Dictionary<Array<OrderEventLog>>>> {
   const orderFilled = await db.findOrderFilledLogs(request);
-  return groupDocumentsByMarketAndOutcome<OrderFilledLog>(orderFilled);
+  return groupDocumentsByMarketAndOutcome<OrderEventLog>(orderFilled);
 }
 
 function groupDocumentsByMarketAndOutcome<TDoc extends Doc>(docs: Array<TDoc>): _.Dictionary<_.Dictionary<Array<TDoc>>> {
