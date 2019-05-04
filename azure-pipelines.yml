@@ -156,7 +156,7 @@ jobs:
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
-              if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.* ]]
+              if [[ $f =~ .*augur-core.* ]]
               then
                 echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
@@ -228,10 +228,6 @@ jobs:
       vmImage: 'Ubuntu 16.04'
     strategy:
       matrix:
-        node_8_x:
-          node_version: 8.x
-        node_9_x:
-          node_version: 9.x
         node_10_x:
           node_version: 10.x
     steps:
