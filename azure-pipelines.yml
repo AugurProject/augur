@@ -57,10 +57,10 @@ jobs:
       - bash: |
           set -euo pipefail
           # checked what files changed in merge to master
-          for f in $(git show --name-only --oneline $(Build.SourceVersion));
+          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
             do
               echo "$f"
-              if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.* ]]
+              if [[ $f =~ .*augur-core/source.* ]] || [[ $f =~ .*package.json ]]
               then
                 echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
@@ -69,7 +69,7 @@ jobs:
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
-              if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.* ]]
+              if [[ $f =~ .*augur-core/source.* ]] || [[ $f =~ .*package.json ]]
               then
                 echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
@@ -82,19 +82,17 @@ jobs:
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
       - script: |
+          docker pull $CORE_IMAGE_LATEST;
+        displayName: augur-core pull
+      - script: |
           set -euo pipefail
-          which node
-          node --version
           docker images
           docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
           yarn workspace @augurproject/core docker:build:python2-and-3
           docker tag augurproject/python2-and-3:monorepo augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
           docker images
-          docker pull $CORE_IMAGE_LATEST;
           yarn workspace @augurproject/core docker:build;
-          docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
-          docker push $CORE_IMAGE_BUILD
           docker push augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
         displayName: augur-core docker image
         condition: |
@@ -103,6 +101,10 @@ jobs:
               succeeded(),
               eq(variables.JOB_TRIGGER, 'true')
           )
+      - script: |
+          docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
+          docker push $CORE_IMAGE_BUILD
+        displayName: augur-core push
       - task: Docker@1
         displayName: docker logout
         inputs:
