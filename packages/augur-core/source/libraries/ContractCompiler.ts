@@ -138,7 +138,7 @@ export class ContractCompiler {
                 },
                 outputSelection: {
                     "*": {
-                        "*": [ "abi", "evm.bytecode.object" ]
+                        "*": [ "abi", "evm.bytecode.object", "evm.methodIdentifiers" ]
                     }
                 }
             },
