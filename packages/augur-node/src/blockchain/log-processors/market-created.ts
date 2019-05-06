@@ -95,7 +95,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
         marketCreator: log.marketCreator,
         creationBlockNumber: log.blockNumber,
         category: marketCategoryName,
-        shortDescription: extraInfo!.description || "",
+        shortDescription: extraInfo!._description || "",
         minPrice: log.prices[0].toString(),
         maxPrice: log.prices[1].toString(),
         tag1: (extraInfo!.tags && extraInfo!.tags!.length) ? extraInfo!.tags![0] : null,
