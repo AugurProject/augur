@@ -17,10 +17,10 @@
   ],
   "references": [
     {
-      "path": "../augur-api"
+      "path": "../api"
     },
     {
-      "path": "../augur-state"
+      "path": "../state"
     },
     {
       "path": "../blockstream-adapters"
