@@ -38,7 +38,7 @@ Run the following 4 commands, each in a separate terminal session from the root 
 
 ### docker images available
  * `yarn workspace @augurproject/tools docker:geth:pop-15`
-   - 15 second block times, has contracts and canned market data
+   - 15 second block times, real time, has contracts and canned market data
  * `yarn workspace @augurproject/tools docker:geth:pop`
    - 5 second block times, fake time, use flash scripts to move time manually. has contracts and canned market data
  * `yarn workspace @augurproject/tools docker:geth:pop-normal-time`
