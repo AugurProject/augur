@@ -33,10 +33,16 @@ export async function startAugurListeners(augur: Augur): Promise<BlockAndLogStre
 
     blockAndLogStreamerListener.listenForEvent(event,
       (blockIdentifier, logs=[]) => {
-        logs.forEach(onAdd);
+        logs.forEach((log) => {
+          if (log["extraInfo"] != null && typeof log["extraInfo"] === "string") log["extraInfo"] = JSON.parse(log["extraInfo"])
+          onAdd(log)
+        });
       },
       (blockIdentifier, logs=[]) => {
-        logs.forEach(onRemove);
+        logs.forEach((log) => {
+          if (log["extraInfo"] != null && typeof log["extraInfo"] === "string") log["extraInfo"] = JSON.parse(log["extraInfo"])
+          onRemove(log)
+        });
       });
   });
 
