@@ -31,6 +31,17 @@
 
 <p align="center"><a href="https://github.com/AugurProject/augur-app/releases/latest"> <img width="200" src="https://augur.net/dist/images/meta_logo.png"> </a></p>
 
+## UI development
+Run the following 4 commands, each in a separate terminal session from the root of the project.
+ 
+`yarn build -w`
+
+`yarn workspace @augurproject/tools docker:geth:pop-15`
+
+`yarn workspace @augurproject/node start`
+
+`yarn workspace @augurproject/ui dev`
+
 ## 100% Open Source
 
 All parts of Augur are entirely open source. You can view, edit, and contribute to Augur via the repositories hosted on GitHub!
