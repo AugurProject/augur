@@ -38,7 +38,7 @@ Run the following 4 commands, each in a separate terminal session from the root 
 
 `yarn workspace @augurproject/tools docker:geth:pop-15`
 
-`yarn workspace @augurproject/node start`
+`yarn workspace @augurproject/node clean-start`
 
 `yarn workspace @augurproject/ui dev`
 
