@@ -13,7 +13,7 @@ if (process.argv.length == 2) {
   tasks = new Listr([
     {
       title: 'Augur Core',
-      task: async (ctx, task) => await refreshPackage(task, 'augur-core')
+      task: async (ctx, task) => await refreshPackage(task, 'core')
     },
     {
       title: 'Augur.js',
@@ -21,11 +21,11 @@ if (process.argv.length == 2) {
     },
     {
       title: 'Augur UI',
-      task: async (ctx, task) => await refreshPackage(task, 'augur-ui')
+      task: async (ctx, task) => await refreshPackage(task, 'ui')
     },
     {
       title: 'Augur Node',
-      task: async (ctx, task) => await refreshPackage(task, 'augur-node')
+      task: async (ctx, task) => await refreshPackage(task, 'node')
     }
   ]);
 

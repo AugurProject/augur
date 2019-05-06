@@ -4,6 +4,6 @@
     "src/**/*.test.ts"
   ],
   "references": [{
-    "path": "../augur-types/tsconfig.release.json"
+    "path": "../types/tsconfig.release.json"
   }]
 }

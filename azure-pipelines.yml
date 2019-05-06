@@ -2,8 +2,8 @@ variables:
     SOLC_VERSION: v0.4.24
     SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
     DOCKER_CI_BUILD_TAG: monorepo.$(Build.BuildID)
-    CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
-    CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
+    CORE_IMAGE_BUILD: augurproject/core:$(DOCKER_CI_BUILD_TAG)
+    CORE_IMAGE_LATEST: augurproject/core:monorepo
 
 trigger:
   batch: false
@@ -33,9 +33,9 @@ jobs:
           set -euo pipefail
           yarn docker:build:augur
           docker images
-          docker tag augurproject/augur-build:latest augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker push augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-        displayName: augur-build
+          docker tag augurproject/build:latest augurproject/build:$(DOCKER_CI_BUILD_TAG)
+          docker push augurproject/build:$(DOCKER_CI_BUILD_TAG)
+        displayName: build
       - task: Docker@1
         displayName: docker logout
         inputs:
@@ -60,7 +60,7 @@ jobs:
           for f in $(git show --name-only --oneline $(Build.SourceVersion));
             do
               echo "$f"
-              if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.* ]]
+              if [[ $f =~ .*core.* ]] || [[ $f =~ .*tools.* ]]
               then
                 echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
@@ -69,12 +69,12 @@ jobs:
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
-              if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.* ]]
+              if [[ $f =~ .*core.* ]] || [[ $f =~ .*tools.* ]]
               then
                 echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
             done
-        displayName: check git for augur-core changes
+        displayName: check git for core changes
       - task: Docker@1
         displayName: docker login
         inputs:
@@ -86,8 +86,8 @@ jobs:
           which node
           node --version
           docker images
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+          docker pull augurproject/build:$(DOCKER_CI_BUILD_TAG)
+          docker tag augurproject/build:$(DOCKER_CI_BUILD_TAG) augurproject/build:latest
           yarn workspace @augurproject/core docker:build:python2-and-3
           docker tag augurproject/python2-and-3:monorepo augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
           docker images
@@ -96,7 +96,7 @@ jobs:
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
           docker push $CORE_IMAGE_BUILD
           docker push augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
-        displayName: augur-core docker image
+        displayName: core docker image
         condition: |
           and
           (
@@ -154,18 +154,18 @@ jobs:
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
-              if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.* ]]
+              if [[ $f =~ .*core.* ]] || [[ $f =~ .*tools.* ]]
               then
                 echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
             done
-        displayName: check git for augur-core changes
+        displayName: check git for core changes
       - script: |
           set -euo pipefail
           which node
           node --version
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+          docker pull augurproject/build:$(DOCKER_CI_BUILD_TAG)
+          docker tag augurproject/build:$(DOCKER_CI_BUILD_TAG) augurproject/build:latest
           docker pull augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
           docker tag augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG) augurproject/python2-and-3:monorepo
           docker pull $CORE_IMAGE_BUILD
@@ -270,7 +270,7 @@ jobs:
         for f in $(git show --name-only --oneline $(Build.SourceVersion));
           do
             echo "$f"
-            if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.* ]]
+            if [[ $f =~ .*core.* ]] || [[ $f =~ .*tools.* ]]
             then
               echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
             fi
@@ -280,7 +280,7 @@ jobs:
         for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
           do
             echo "$f"
-            if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.* ]]
+            if [[ $f =~ .*core.* ]] || [[ $f =~ .*tools.* ]]
             then
               echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
             fi
@@ -296,19 +296,19 @@ jobs:
         set -exuo pipefail
         sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
         sudo systemctl status docker
-        docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
+        docker pull augurproject/build:$(DOCKER_CI_BUILD_TAG)
         docker pull augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
-        docker pull augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
-        docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+        docker pull augurproject/core:$(DOCKER_CI_BUILD_TAG)
+        docker tag augurproject/build:$(DOCKER_CI_BUILD_TAG) augurproject/build:latest
         docker tag augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG) augurproject/python2-and-3:monorepo
-        docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
+        docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/core:monorepo
         docker images
         yarn
         yarn workspace @augurproject/tools docker:build
 
         if [[ "$(Build.SourceBranchName)" == "master" ]]; then
             docker push augurproject/python2-and-3:monorepo
-            docker push augurproject/augur-core:monorepo
+            docker push augurproject/core:monorepo
         fi
         yarn workspace @augurproject/tools docker:push
       condition: |
@@ -341,10 +341,10 @@ jobs:
           dockerRegistryEndpoint: dockerhub-augurproject
       - script: |
           set -euo pipefail
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+          docker pull augurproject/build:$(DOCKER_CI_BUILD_TAG)
+          docker tag augurproject/build:$(DOCKER_CI_BUILD_TAG) augurproject/build:latest
           docker images
-          docker push augurproject/augur-build:latest
+          docker push augurproject/build:latest
         condition: |
           and
           (

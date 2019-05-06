@@ -4,7 +4,7 @@
   "include": [],
   "references": [
     {
-      "path": "./packages/augur-core/tsconfig.release.json"
+      "path": "./packages/core/tsconfig.release.json"
     },
     {
       "path": "./packages/ethersjs-provider/tsconfig.release.json"
@@ -13,19 +13,19 @@
       "path": "./packages/blockstream-adapters/tsconfig.release.json"
     },
     {
-      "path": "./packages/augur-types/tsconfig.release.json"
+      "path": "./packages/types/tsconfig.release.json"
     },
     {
-      "path": "./packages/augur-api/tsconfig.release.json"
+      "path": "./packages/api/tsconfig.release.json"
     },
     {
-      "path": "./packages/augur-artifacts/tsconfig.release.json"
+      "path": "./packages/artifacts/tsconfig.release.json"
     },
     {
       "path": "./packages/contract-dependencies/tsconfig.release.json"
     },
     {
-      "path": "./packages/augur-state/tsconfig.release.json"
+      "path": "./packages/state/tsconfig.release.json"
     },
     {
       "path": "./packages/contract-dependencies-ethers/tsconfig.release.json"

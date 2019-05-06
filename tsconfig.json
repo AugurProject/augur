@@ -6,22 +6,22 @@
       "path": "./packages/ethersjs-provider"
     },
     {
-      "path": "./packages/augur-core"
+      "path": "./packages/core"
     },
     {
-      "path": "./packages/augur-types"
+      "path": "./packages/types"
     },
     {
-      "path": "./packages/augur-api"
+      "path": "./packages/api"
     },
     {
-      "path": "./packages/augur-artifacts"
+      "path": "./packages/artifacts"
     },
     {
       "path": "./packages/contract-dependencies"
     },
     {
-      "path": "./packages/augur-state"
+      "path": "./packages/state"
     },
     {
       "path": "./packages/contract-dependencies-ethers"
@@ -30,13 +30,13 @@
       "path": "./packages/blockstream-adapters"
     },
     {
-      "path": "./packages/augur-test"
+      "path": "./packages/test"
     },
     {
-      "path": "./packages/augur-tools"
+      "path": "./packages/tools"
     },
     {
-      "path": "./packages/augur-node"
+      "path": "./packages/node"
     },
     {
       "path": "./packages/speedomatic"

@@ -36,7 +36,7 @@ augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
 
 Deployment of Augur Contracts and Augur.js consists three or four steps. For production deploys, we will not perform step 3 "Market Data Seeding."
 
-1. Contract Uploading - This is handled by the deployment code within the `augur-core` npm package. The deploy process handles uploading/versioning contracts and generating deployment artifacts.
+1. Contract Uploading - This is handled by the deployment code within the `core` npm package. The deploy process handles uploading/versioning contracts and generating deployment artifacts.
 2. Install Artifacts - Here we take the generated artifacts from (1) and wrap them into an Augur.js version, along with any necessary changes to augur.js to interface with the uploaded contracts.
 3. Market Data Seeding - After installing the new deployment artifacts into augur.js after step (1), this happens only on non-production deploys.
 4. Augur.js is bundled with the new deployment artifacts, and published to NPM
@@ -122,7 +122,7 @@ augur.js$ node scripts/dp deploy aura clique rinkeby
 #### Releasing Augur.js
 After this succeeds for each market, your local tree will be updated with new contract addresses, and starting block numbers. These files are by default placed in the right spot of the source tree: `src/contracts/addresses.json` and `src/contracts/upload-block-numbers.json`.
 
-After testing augur.js works with augur-node and augur-ui (guides will be provided in their respective repositories), it is time to create a new NPM package version for augur.js.
+After testing augur.js works with node and ui (guides will be provided in their respective repositories), it is time to create a new NPM package version for augur.js.
 
 While in development, we want to increment pre-release versions of augur.js, and publish it to the @dev tag on NPM, while on production we will update a major, minor, or patch number and publish to @latest. Helpers for this process are defined as npm scripts:
 
@@ -151,20 +151,20 @@ augur.js$ npm run release:dev
 To perform this NPM update, you must have access to the augurproject NPM repository.
 
 
-### Summary (Example Full Deploy, to a new version of augur-core)
+### Summary (Example Full Deploy, to a new version of core)
 
 ```
-augur.js$ npm install --save-exact augur-core@latest
+augur.js$ npm install --save-exact core@latest
 augur.js$ git add package.json package-lock.json
 augur.js$ RINKEBY_PRIVATE_KEY=$(cat $HOME/dev/key/deploy_keys.prv) node scripts/dp deploy aura clique rinkeby
 augur.js$ git add src/contracts/{address,upload-block-numbers}.json
-augur.js$ git commit -m 'Bumping contracts to new deploy for updated augur-contracts'
+augur.js$ git commit -m 'Bumping contracts to new deploy for updated contracts'
 augur.js$ npm run release:dev
 ```
 
 ## NPM commands of interest
 
-This command is used to build pre-populated docker image and push to [docker hub](https://hub.docker.com/r/augurproject/dev-pop-geth/tags/). the image is tagged with`:latest` and with the version of augur-core used. ie `core-0.12.2`, see scripts/build-docker.sh for more details.
+This command is used to build pre-populated docker image and push to [docker hub](https://hub.docker.com/r/augurproject/dev-pop-geth/tags/). the image is tagged with`:latest` and with the version of core used. ie `core-0.12.2`, see scripts/build-docker.sh for more details.
 * npm run docker:build
 
 

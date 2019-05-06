@@ -1,0 +1,36 @@
+{
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": "src",
+    "experimentalDecorators": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json",
+    "src/**/*"
+  ],
+  "references": [
+    {
+      "path": "../blockstream-adapters"
+    },
+    {
+      "path": "../ethersjs-provider"
+    },
+    {
+      "path": "../core"
+    },
+    {
+      "path": "../types"
+    },
+    {
+      "path": "../api"
+    },
+    {
+      "path": "../artifacts"
+    },
+    {
+      "path": "../speedomatic"
+    }
+  ]
+}

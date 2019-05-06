@@ -2,20 +2,22 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "src"
+    "rootDir": "src",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
-  "include": [
-    "src/**/*"
-  ],
   "references": [
     {
-      "path": "../api"
+      "path": "../blockstream-adapters"
     },
     {
       "path": "../artifacts"
     },
     {
-      "path": "../contract-dependencies"
+      "path": "../api"
+    },
+    {
+      "path": "../types"
     },
     {
       "path": "../contract-dependencies-ethers"

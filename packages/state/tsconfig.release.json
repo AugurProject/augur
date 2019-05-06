@@ -1,0 +1,26 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "src/**/*.test.ts"
+  ],
+  "references": [
+    {
+      "path": "../blockstream-adapters/tsconfig.release.json"
+    },
+    {
+      "path": "../ethersjs-provider/tsconfig.release.json"
+    },
+    {
+      "path": "../core/tsconfig.release.json"
+    },
+    {
+      "path": "../types/tsconfig.release.json"
+    },
+    {
+      "path": "../api/tsconfig.release.json"
+    },
+    {
+      "path": "../artifacts/tsconfig.release.json"
+    }
+  ]
+}

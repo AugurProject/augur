@@ -4,7 +4,7 @@ echo "docker:build:augur - build base augur image"
 yarn docker:build:augur
 
 # build augur core
-echo "yarn workspace @augurproject/core docker:build - building augur-core image"
+echo "yarn workspace @augurproject/core docker:build - building core image"
 yarn workspace @augurproject/core docker:build
 
 # augur-tools
