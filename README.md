@@ -9,7 +9,7 @@
 <br>
 <a href="https://github.com/AugurProject/augur/pulls"><img src="https://img.shields.io/github/issues-pr-raw/AugurProject/augur.svg"></a>
 <a href="https://github.com/AugurProject/augur/pulls?utf8=%E2%9C%93&q=is%3Apr+is%3Aclosed"><img src="https://img.shields.io/github/issues-pr-closed-raw/AugurProject/augur.svg"></a>
-<br> 
+<br>
 <a href="https://invite.augur.net"><img src="https://img.shields.io/discord/378030344374583298.svg"></a>
 <a href="https://github.com/AugurProject/augur/issues"><img src="https://img.shields.io/badge/contributions-welcome-orange.svg"></a>
 <a href="https://github.com/AugurProject/augur/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg"></a>
@@ -33,10 +33,18 @@
 
 ## UI development
 Run the following 4 commands, each in a separate terminal session from the root of the project.
- 
+
 `yarn build -w`
 
-`yarn workspace @augurproject/tools docker:geth:pop-15`
+### docker images available
+ * `yarn workspace @augurproject/tools docker:geth:pop-15`
+   - 15 second block times
+ * `yarn workspace @augurproject/tools docker:geth:pop`
+   - 5 second block times, fake time, use flash scripts to move time manually. has canned market data
+ * `yarn workspace @augurproject/tools docker:geth:pop-normal-time`
+   - 5 second block times, real time, has canned market data
+ * `yarn workspace @augurproject/tools docker:geth`
+   - 5 second block times, no contracts uploaded, use `dp` to upload contracts ...
 
 `yarn workspace @augurproject/node clean-start`
 
