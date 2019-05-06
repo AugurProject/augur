@@ -268,7 +268,7 @@ jobs:
         for f in $(git show --name-only --oneline $(Build.SourceVersion));
           do
             echo "$f"
-            if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.* ]]
+            if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.*Dockerfile ]]
             then
               echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
             fi
@@ -278,7 +278,7 @@ jobs:
         for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
           do
             echo "$f"
-            if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.* ]]
+            if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.*Dockerfile ]]
             then
               echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
             fi
