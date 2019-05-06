@@ -3,6 +3,11 @@
 var augurNodeState = require("./state");
 
 function submitJsonRpcRequest(method, params, callback) {
+  if(method === "getPlatformActivityStats") {
+    callback(null, [])
+    return;
+  }
+
   var transport = augurNodeState.getTransport();
   if (transport == null) {
     return callback(new Error("Not connected to augur-node, could not submit request " + method + " " + JSON.stringify(params)));
