@@ -221,6 +221,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   protected processLog(log: Log): BaseDocument {
     if (!log.blockNumber) throw new Error(`Corrupt log: ${JSON.stringify(log)}`);
     let _id = "";
+    // TODO: This works in bulk sync currently because we process logs chronologically. When we switch to reverse chrono for bulk sync we'll need to add more logic
     if (this.idFields.length > 0) {
       // need to preserve order of fields in id
       for (let fieldName of this.idFields) {

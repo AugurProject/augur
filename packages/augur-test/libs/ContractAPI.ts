@@ -119,10 +119,9 @@ export class ContractAPI {
   }
 
   public async fillOrder(orderId: string, cost: ethers.utils.BigNumber, numShares: ethers.utils.BigNumber, tradeGroupId: string) {
-    await this.faucet(cost.mul(10000));
+    await this.faucet(cost.mul(100));
     await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, stringTo32ByteHex(tradeGroupId), false, NULL_ADDRESS);
   }
-
 
   public async takeBestOrder(marketAddress: string, type: ethers.utils.BigNumber, numShares: ethers.utils.BigNumber, price: ethers.utils.BigNumber, outcome: ethers.utils.BigNumber, tradeGroupID: string): Promise<void> {
     let actualPrice = price;
@@ -145,6 +144,10 @@ export class ContractAPI {
 
   public async cancelOrder(orderID: string): Promise<void> {
     await this.augur.contracts.cancelOrder.cancelOrder(orderID);
+  }
+
+  public async setOrderPrice(orderId: string, price: ethers.utils.BigNumber, betterOrderId: string, worseOrderId: string): Promise<void> {
+    await this.augur.contracts.orders.setOrderPrice(orderId, price, betterOrderId, worseOrderId);
   }
 
   public async claimTradingProceeds(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, shareholder: string): Promise<void> {
