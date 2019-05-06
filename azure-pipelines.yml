@@ -60,7 +60,7 @@ jobs:
           for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
             do
               echo "$f"
-              if [[ $f =~ .*augur-core/source.* ]] || [[ $f =~ .*package.json ]]
+              if [[ $f =~ .*augur-core/source.* ]] || [[ $f =~ .*augur-core/package.json ]]
               then
                 echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
@@ -69,7 +69,7 @@ jobs:
           for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
             do
               echo "$f"
-              if [[ $f =~ .*augur-core/source.* ]] || [[ $f =~ .*package.json ]]
+              if [[ $f =~ .*augur-core/source.* ]] || [[ $f =~ .*augur-core/package.json ]]
               then
                 echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
               fi
