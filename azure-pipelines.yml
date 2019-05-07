@@ -315,7 +315,7 @@ jobs:
             succeeded(),
             eq(variables.JOB_TRIGGER, 'true')
         )
-      displayName: 'build and (maybe) push core images'
+      displayName: 'build and push core images'
     - task: Docker@1
       displayName: docker logout
       inputs:
