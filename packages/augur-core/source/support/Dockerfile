@@ -10,36 +10,24 @@ ARG SOLC_VERSION=v0.5.4
 ARG SOLC_MD5=fce0ea489308e86aa0d5f7d72bd2cd15
 ENV PATH="/augur/node_modules/.bin:${PATH}"
 
-COPY --from=augur-build /usr/local/ /usr/local
-COPY --from=augur-build /opt/ /opt/
 
-RUN apk add --no-cache --update \
-        bash \
-        curl \
-        g++ \
-        gcc \
-        git \
-        libffi-dev \
-        linux-headers \
-        make \
-        musl-dev \
-        openssl-dev \
-        python2-dev
+
+WORKDIR /augur
+COPY packages/augur-core/requirements.txt /augur/
+RUN python3 -m venv /augur/venv && \
+    source /augur/venv/bin/activate && \
+    python -m pip install --cache-dir=/root/.pip -r requirements.txt
+
 
 RUN echo "${SOLC_MD5} */usr/local/bin/solc" > solc.md5 && \
     curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux && \
     md5sum -b -c solc.md5 && \
     chmod a+x /usr/local/bin/solc
 
+COPY --from=augur-build /usr/local/ /usr/local
+COPY --from=augur-build /opt/ /opt/
 
 COPY --from=augur-build /augur/ /augur/
-
-WORKDIR /augur
-
-RUN /usr/bin/virtualenv /augur/venv && \
-    source /augur/venv/bin/activate && \
-    cd packages/augur-core && \
-    python2 -m pip install --cache-dir=/augur/.pip -r requirements.txt
 
 RUN yarn workspace @augurproject/core build
 

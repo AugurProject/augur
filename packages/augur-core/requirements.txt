@@ -5,26 +5,35 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 asn1crypto==0.24.0        # via coincurve
-cffi==1.11.5              # via coincurve
-coincurve==11.0.0         # via ethereum
-ethereum==2.3.1
+atomicwrites==1.3.0       # via pytest
+attrs==19.1.0             # via pytest
+cffi==1.12.3              # via coincurve
+coincurve==12.0.0         # via ethereum
+cytoolz==0.9.0.1          # via eth-utils
+eth-hash[pycryptodome]==0.2.0  # via eth-utils, py-ecc
+eth-typing==2.1.0         # via eth-utils, py-ecc
+eth-utils==1.5.2          # via py-ecc, rlp
+ethereum==2.3.2
 future==0.17.1            # via ethereum
 gprof2dot==2017.9.19      # via pytest-profiling
-numpy==1.13.0
+more-itertools==7.0.0     # via pytest
+mypy-extensions==0.4.1    # via py-ecc
+numpy==1.16.3
 pbkdf2==1.3               # via ethereum
-py-ecc==1.4.3             # via ethereum
-py-solc==1.4.0
-py==1.7.0                 # via pytest
+pluggy==0.9.0             # via pytest
+py-ecc==1.6.0             # via ethereum
+py-solc==3.2.0
+py==1.8.0                 # via pytest
 pycparser==2.19           # via cffi
-pycryptodome==3.7.3
+pycryptodome==3.8.1
 pyethash==0.1.27          # via ethereum
 pysha3==1.0.2             # via ethereum
-pytest-profiling==1.4.0
-pytest==3.1.2
-pyyaml==3.13              # via ethereum
+pytest-profiling==1.6.0
+pytest==3.10.1
+pyyaml==5.1               # via ethereum
 repoze.lru==0.7           # via ethereum
-rlp==0.6.0                # via ethereum
-scrypt==0.8.6             # via ethereum
+rlp==1.1.0                # via ethereum
+scrypt==0.8.13            # via ethereum
 semantic-version==2.6.0   # via py-solc
-six==1.11.0               # via pytest-profiling
-virtualenv==15.2.0
+six==1.12.0               # via pytest, pytest-profiling
+toolz==0.9.0              # via cytoolz
