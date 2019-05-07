@@ -2,9 +2,7 @@ import Knex from "knex";
 import { Augur, EventLogProcessor, FormattedEventLog, LogProcessors } from "../../types";
 import { processMarketCreatedLog, processMarketCreatedLogRemoval } from "./market-created";
 import { processTokensTransferredLog, processTokensTransferredLogRemoval } from "./tokens-transferred";
-import { processOrderCanceledLog, processOrderCanceledLogRemoval } from "./order-canceled";
-import { processOrderCreatedLog, processOrderCreatedLogRemoval } from "./order-created";
-import { processOrderFilledLog, processOrderFilledLogRemoval } from "./order-filled";
+import { processOrderEventLog, processOrderEventLogRemoval } from "./order-event";
 import { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } from "./trading-proceeds-claimed";
 import {
   processDisputeCrowdsourcerCompletedLog,
@@ -87,20 +85,10 @@ export const logProcessors: LogProcessors = {
       add: processMarketFinalizedLog,
       remove: processMarketFinalizedLogRemoval,
     },
-    OrderCanceled: {
+    OrderEvent: {
       noAutoEmit: true,
-      add: processOrderCanceledLog,
-      remove: processOrderCanceledLogRemoval,
-    },
-    OrderCreated: {
-      noAutoEmit: true,
-      add: processOrderCreatedLog,
-      remove: processOrderCreatedLogRemoval,
-    },
-    OrderFilled: {
-      noAutoEmit: true,
-      add: processOrderFilledLog,
-      remove: processOrderFilledLogRemoval,
+      add: processOrderEventLog,
+      remove: processOrderEventLogRemoval,
     },
     DisputeCrowdsourcerCreated: {
       noAutoEmit: true,
