@@ -1,0 +1,27 @@
+@startuml
+
+title "Augur Trading Page Sequence Diagram"
+
+actor User
+boundary "UI" as UI
+boundary "API" as API
+control "Web Worker" as Server
+control "Contract Interfaces" as CI
+database "Blockchain" as Blockchain
+database "PouchDB" as Storage
+
+User -> UI : /#!/trading?marketId=...
+autonumber
+UI -> Server : start worker
+Server -> CI : fetch logs
+CI -> Blockchain : getLogs(...)
+CI <- Blockchain : event logs
+Server <- CI : event logs
+Server -> Storage : store in pouch
+UI -> API : getMarketsInfo(marketId)
+API -> Server : postMessage("getMarketsInfo, {marketId})
+Server -> Storage: marketDB.findById(marketId)
+Server <- Storage: MarketInfo(id)
+UI <- Server : MarketInfo(id)
+
+@enduml

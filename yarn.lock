@@ -14291,6 +14291,20 @@ node-modules-regexp@^1.0.0:
   resolved "https://registry.yarnpkg.com/node-modules-regexp/-/node-modules-regexp-1.0.0.tgz#8d9dbe28964a4ac5712e9131642107c71e90ec40"
   integrity sha1-jZ2+KJZKSsVxLpExZCEHxx6Q7EA=
 
+node-nailgun-client@^0.1.0:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/node-nailgun-client/-/node-nailgun-client-0.1.2.tgz#c8ee2f8226664020192e4936cacaadf9aa13ae29"
+  integrity sha512-OC611lR0fsDUSptwnhBf8d3sj4DZ5fiRKfS2QaGPe0kR3Dt9YoZr1MY7utK0scFPTbXuQdSBBbeoKYVbME1q5g==
+  dependencies:
+    commander "^2.8.1"
+
+node-nailgun-server@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/node-nailgun-server/-/node-nailgun-server-0.1.4.tgz#80cbf1af37611030c60aa88be72d657994df50d4"
+  integrity sha512-e0Hbh6XPb/7GqATJ45BePaUEO5AwR7InRW/pGeMKHH1cqPMBFCeqdBNfvi+bkVLnsbYOOQE+pAek9nmNoD8sYw==
+  dependencies:
+    commander "^2.8.1"
+
 node-notifier@^5.2.1:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/node-notifier/-/node-notifier-5.4.0.tgz#7b455fdce9f7de0c63538297354f3db468426e6a"
@@ -14301,6 +14315,16 @@ node-notifier@^5.2.1:
     semver "^5.5.0"
     shellwords "^0.1.1"
     which "^1.3.0"
+
+node-plantuml@0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/node-plantuml/-/node-plantuml-0.8.1.tgz#966c2155a7349666dc309dfce51207af800dc6cb"
+  integrity sha512-sEI9j61MLunxkV0QTUyycanLhk9qP23iEkv4IBT+bcndR8qJ1hm9TCD21I0cK5XyBCXNQ3gywXKujHWDojwcQg==
+  dependencies:
+    commander "^2.8.1"
+    node-nailgun-client "^0.1.0"
+    node-nailgun-server "^0.1.4"
+    plantuml-encoder "^1.2.5"
 
 node-pre-gyp@0.12.0, node-pre-gyp@^0.12.0:
   version "0.12.0"
@@ -15060,6 +15084,11 @@ pacote@^9.2.3:
     unique-filename "^1.1.1"
     which "^1.3.1"
 
+pako@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.3.tgz#5f515b0c6722e1982920ae8005eacb0b7ca73ccf"
+  integrity sha1-X1FbDGci4ZgpIK6ABerLC3ynPM8=
+
 pako@~1.0.5:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.10.tgz#4328badb5086a426aa90f541977d4955da5c9732"
@@ -15468,6 +15497,14 @@ pkg-up@^2.0.0:
   integrity sha1-yBmscoBZpGHKscOImivjxJoATX8=
   dependencies:
     find-up "^2.1.0"
+
+plantuml-encoder@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/plantuml-encoder/-/plantuml-encoder-1.2.5.tgz#6b8e5b9e1a1dbd88b3fd9fb46f734eec7d44b548"
+  integrity sha512-viV7Sz+BJNX/sC3iyebh2VfLyAZKuu3+JuBs2ISms8+zoTGwPqwk3/WEDw/zROmGAJ/xD4sNd8zsBw/YmTo7ng==
+  dependencies:
+    pako "1.0.3"
+    utf8-bytes "0.0.1"
 
 platform@1.3.5:
   version "1.3.5"
@@ -20631,6 +20668,11 @@ user-home@^2.0.0:
   integrity sha1-nHC/2Babwdy/SGBODwS4tJzenp8=
   dependencies:
     os-homedir "^1.0.0"
+
+utf8-bytes@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/utf8-bytes/-/utf8-bytes-0.0.1.tgz#116b025448c9b500081cdfbf1f4d6c6c37d8837d"
+  integrity sha1-EWsCVEjJtQAIHN+/H01sbDfYg30=
 
 utf8@2.1.1:
   version "2.1.1"

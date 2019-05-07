@@ -1,0 +1,11 @@
+{
+  "name": "docs",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+   "node-plantuml": "0.8.1"
+  },
+  "scripts": {
+    "build": "node scripts/generate-diagrams.js"
+  }
+}
