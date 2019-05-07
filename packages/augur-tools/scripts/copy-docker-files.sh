@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -Eeuxo pipefail
 # copy files so augur.js is consistant with docker image passed as $1
 IMAGE=$1
