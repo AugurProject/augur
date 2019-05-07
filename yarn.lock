@@ -777,7 +777,7 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-syntax-typescript" "^7.2.0"
 
-"@babel/plugin-transform-typescript@^7.1.0", "@babel/plugin-transform-typescript@^7.3.2":
+"@babel/plugin-transform-typescript@7.4.4", "@babel/plugin-transform-typescript@^7.1.0", "@babel/plugin-transform-typescript@^7.3.2":
   version "7.4.4"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-typescript/-/plugin-transform-typescript-7.4.4.tgz#93e9c3f2a546e6d3da1e9cc990e30791b807aa9f"
   integrity sha512-rwDvjaMTx09WC0rXGBRlYSSkEHOKRrecY6hEr3SVIPKII8DVWXtapNAfAyMC0dovuO+zYArcAuKeu3q9DNRfzA==
@@ -873,7 +873,7 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-transform-typescript" "^7.1.0"
 
-"@babel/preset-typescript@^7.1.0":
+"@babel/preset-typescript@7.3.3":
   version "7.3.3"
   resolved "https://registry.yarnpkg.com/@babel/preset-typescript/-/preset-typescript-7.3.3.tgz#88669911053fa16b2b276ea2ede2ca603b3f307a"
   integrity sha512-mzMVuIP4lqtn4du2ynEfdO0+RYcslwrZiJHXu4MGaC1ctJiW2fyaeDrtjJGs7R/KebZ1sgowcIoWf4uRpEfKEg==
@@ -1786,7 +1786,7 @@
   resolved "https://registry.yarnpkg.com/@types/jest-diff/-/jest-diff-20.0.1.tgz#35cc15b9c4f30a18ef21852e255fdb02f6d59b89"
   integrity sha512-yALhelO3i0hqZwhjtcr6dYyaLoCHbAMshwtj6cGxTvHZAKXHsYGdff6E8EPw3xLKY0ELUTQ69Q1rQiJENnccMA==
 
-"@types/jest-environment-puppeteer@^2.2.0":
+"@types/jest-environment-puppeteer@2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@types/jest-environment-puppeteer/-/jest-environment-puppeteer-2.2.1.tgz#ececed13f3950ea6a7f8846537d3a1f6fc598646"
   integrity sha512-jY3BOc+oAMls2Yl0HSXulCoqQoDgHBIgshulIcKwl9ZS+rlIdDPwfdN1Mvl973D2sl7FgwCfjI+pVkiaZBCqcw==
@@ -1800,7 +1800,7 @@
   dependencies:
     "@types/jest-diff" "*"
 
-"@types/jest@23.3.14", "@types/jest@^23.3.2":
+"@types/jest@23.3.14":
   version "23.3.14"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.14.tgz#37daaf78069e7948520474c87b80092ea912520a"
   integrity sha512-Q5hTcfdudEL2yOmluA1zaSyPbzWPmJ3XfSWeP3RyoYvS9hnje1ZyagrZOuQ6+1nQC1Gw+7gap3pLNL3xL6UBug==
@@ -1830,7 +1830,7 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.121.tgz#9327e20d49b95fc2bf983fc2f045b2c6effc80b9"
   integrity sha512-ORj7IBWj13iYufXt/VXrCNMbUuCTJfhzme5kx9U/UtcIPdJYuvPDUAlHlbNhz/8lKCLy9XGIZnGrqXOtQbPGoQ==
 
-"@types/lodash@^4.14.120":
+"@types/lodash@4.14.123":
   version "4.14.123"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.123.tgz#39be5d211478c8dd3bdae98ee75bb7efe4abfe4d"
   integrity sha512-pQvPkc4Nltyx7G1Ww45OjVqUsJP4UsZm+GWJpigXgkikZqJgRm4c48g027o6tdgubWHwFRF15iFd+Y4Pmqv6+Q==
@@ -2023,7 +2023,7 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.1.tgz#f1a11e7babb0c3cad68100be381d1e064c68f1f6"
   integrity sha512-CFzn9idOEpHrgdw8JsoTkaDDyRWk1jrzIV8djzcgpq0y9tG4B4lFT+Nxh52DVpDXV+n4+NPNv7M1Dj5uMp6XFg==
 
-"@types/puppeteer@*", "@types/puppeteer@^1.6.4":
+"@types/puppeteer@*", "@types/puppeteer@1.12.3":
   version "1.12.3"
   resolved "https://registry.yarnpkg.com/@types/puppeteer/-/puppeteer-1.12.3.tgz#1309882d368ed21004dfc4520864fdafcf126277"
   integrity sha512-mJtUPdXqB8THRwiHPbx8pkGYi+8IPf3dMuwJS9hHpr59BwkuLDkkEJ4qMST0k6TbOUXp+wyMJii30ouSkoEtaw==
@@ -21191,7 +21191,7 @@ webpack-cli@^3.3.1:
     v8-compile-cache "^2.0.2"
     yargs "^12.0.5"
 
-webpack-deadcode-plugin@^0.1.9:
+webpack-deadcode-plugin@0.1.11:
   version "0.1.11"
   resolved "https://registry.yarnpkg.com/webpack-deadcode-plugin/-/webpack-deadcode-plugin-0.1.11.tgz#d48327e2533f9088fd2c76de69348a59f68f4fac"
   integrity sha512-fY/a7GHZXxn0io/Pps1BHN4fJ8dY7ui7yVdXZx6JhXTeEUxTyiu05cvh6FQBKf6Rezkl9TIi8F5ZoZXl6ZONww==
