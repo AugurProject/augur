@@ -233,8 +233,8 @@ test("State API :: Users :: getUserTradingPositions cat3-1", async () => {
             "outcome": A,
             "quantity": 1,
             "price": .4,
-            "position": 100,
-            "avgPrice": .004,
+            "position": 1,
+            "avgPrice": .4,
             "realizedPL": 0,
             "frozenFunds": 0.4
         }, {
@@ -242,8 +242,8 @@ test("State API :: Users :: getUserTradingPositions cat3-1", async () => {
             "outcome": B,
             "quantity": 2,
             "price": .2,
-            "position": -200,
-            "avgPrice": .002,
+            "position": -2,
+            "avgPrice": .2,
             "realizedPL": 0,
             "frozenFunds": 1.6
         }, {
@@ -251,8 +251,8 @@ test("State API :: Users :: getUserTradingPositions cat3-1", async () => {
             "outcome": C,
             "quantity": 1,
             "price": .3,
-            "position": 100,
-            "avgPrice": .003,
+            "position": 1,
+            "avgPrice": .3,
             "realizedPL": 0,
             "frozenFunds": .3
         }, {
@@ -279,8 +279,8 @@ test("State API :: Users :: getUserTradingPositions cat3-2", async () => {
             "outcome": A,
             "quantity": 5,
             "price": .4,
-            "position": -500,
-            "avgPrice": .004,
+            "position": -5,
+            "avgPrice": .4,
             "realizedPL": 0,
             "frozenFunds": 3
         }, {
@@ -288,8 +288,8 @@ test("State API :: Users :: getUserTradingPositions cat3-2", async () => {
             "outcome": B,
             "quantity": 3,
             "price": .35,
-            "position": -300,
-            "avgPrice": .0035,
+            "position": -3,
+            "avgPrice": .35,
             "realizedPL": 0,
             "frozenFunds": -1.05
         }, {
@@ -297,8 +297,8 @@ test("State API :: Users :: getUserTradingPositions cat3-2", async () => {
             "outcome": C,
             "quantity": 10,
             "price": .3,
-            "position": -1000,
-            "avgPrice": .003,
+            "position": -10,
+            "avgPrice": .3,
             "realizedPL": 0,
             "frozenFunds": 2
         }, {
@@ -306,8 +306,8 @@ test("State API :: Users :: getUserTradingPositions cat3-2", async () => {
             "outcome": C,
             "quantity": 8,
             "price": .1,
-            "position": -200,
-            "avgPrice": .003,
+            "position": -2,
+            "avgPrice": .3,
             "realizedPL": 1.6,
             "frozenFunds": -0.6
         }
@@ -325,8 +325,8 @@ test("State API :: Users :: getUserTradingPositions cat3-3", async () => {
             "outcome": INVALID,
             "quantity": 5,
             "price": .05,
-            "position": 500,
-            "avgPrice": .0005,
+            "position": 5,
+            "avgPrice": .05,
             "realizedPL": 0,
             "frozenFunds": .25
         },
@@ -335,8 +335,8 @@ test("State API :: Users :: getUserTradingPositions cat3-3", async () => {
             "outcome": A,
             "quantity": 10,
             "price": .15,
-            "position": 1000,
-            "avgPrice": .0015,
+            "position": 10,
+            "avgPrice": .15,
             "realizedPL": 0,
             "frozenFunds": 1.5
         }, {
@@ -344,8 +344,8 @@ test("State API :: Users :: getUserTradingPositions cat3-3", async () => {
             "outcome": B,
             "quantity": 25,
             "price": .1,
-            "position": 2500,
-            "avgPrice": .001,
+            "position": 25,
+            "avgPrice": .1,
             "realizedPL": 0,
             "frozenFunds": 2.5
         }, {
@@ -353,8 +353,8 @@ test("State API :: Users :: getUserTradingPositions cat3-3", async () => {
             "outcome": C,
             "quantity": 5,
             "price": .6,
-            "position": 500,
-            "avgPrice": .006,
+            "position": 5,
+            "avgPrice": .6,
             "realizedPL": 0,
             "frozenFunds": -2
         }, {
@@ -362,8 +362,8 @@ test("State API :: Users :: getUserTradingPositions cat3-3", async () => {
             "outcome": B,
             "quantity": 13,
             "price": .2,
-            "position": 1200,
-            "avgPrice": .001,
+            "position": 12,
+            "avgPrice": .1,
             "realizedPL": 1.3,
             "frozenFunds": 1.2
         }, {
@@ -371,8 +371,8 @@ test("State API :: Users :: getUserTradingPositions cat3-3", async () => {
             "outcome": C,
             "quantity": 3,
             "price": .8,
-            "position": 200,
-            "avgPrice": .006,
+            "position": 2,
+            "avgPrice": .6,
             "realizedPL": .6,
             "frozenFunds": -0.8
         }, {

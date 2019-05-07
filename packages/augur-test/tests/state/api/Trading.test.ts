@@ -26,7 +26,7 @@ beforeAll(async () => {
   db = await mock.makeDB(john.augur, ACCOUNTS);
   api = new API<any>(john.augur, db);
 }, 120000);
-/*
+
 test("State API :: Trading :: getTradingHistory", async () => {
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
@@ -59,9 +59,9 @@ test("State API :: Trading :: getTradingHistory", async () => {
   await expect(trades).toHaveLength(1);
 
   const trade = trades[0];
-  await expect(trade.price).toEqual("0.0022");
+  await expect(trade.price).toEqual("0.22");
   await expect(trade.type).toEqual("sell");
-  await expect(trade.amount).toEqual("0.05");
+  await expect(trade.amount).toEqual("0.0005");
   await expect(trade.maker).toEqual(false);
   await expect(trade.outcome).toEqual(0);
   await expect(trade.selfFilled).toEqual(false);
@@ -74,7 +74,7 @@ test("State API :: Trading :: getTradingHistory", async () => {
   await expect(trades).toHaveLength(2);
 
 }, 60000);
-*/
+
 test("State API :: Trading :: getOrders", async () => {
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
@@ -182,5 +182,60 @@ test("State API :: Trading :: getOrders", async () => {
 
   order = orders[market.address][0]["0"][newOrderId];
   await expect(order.orderId).toEqual(newOrderId);
+
+}, 60000);
+
+test("State API :: Trading :: getBetterWorseOrders", async () => {
+  await john.approveCentralAuthority();
+
+  // Create a market
+  const market = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
+
+  // Place orders of varying price
+  const bid = new ethers.utils.BigNumber(0);
+  const outcome = new ethers.utils.BigNumber(0);
+  const numShares = new ethers.utils.BigNumber(10000000000000);
+  const lowPrice = new ethers.utils.BigNumber(10);
+  const highPrice = new ethers.utils.BigNumber(20);
+  await john.placeOrder(market.address, bid, numShares, lowPrice, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  const lowOrderId = await john.getBestOrderId(bid, market.address, outcome);
+  await john.placeOrder(market.address, bid, numShares, highPrice, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  const highOrderId = await john.getBestOrderId(bid, market.address, outcome);
+
+
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
+
+  // Get better worse order ids for a price in the middle
+  let betterWorseOrders = await api.route("getBetterWorseOrders", {
+    marketId: market.address,
+    outcome: outcome.toNumber(),
+    orderType: "buy",
+    price: 0.15,
+  });
+
+  await expect(betterWorseOrders.betterOrderId).toEqual(highOrderId);
+  await expect(betterWorseOrders.worseOrderId).toEqual(lowOrderId);
+
+  // Get better worse order ids for a high price
+  betterWorseOrders = await api.route("getBetterWorseOrders", {
+    marketId: market.address,
+    outcome: outcome.toNumber(),
+    orderType: "buy",
+    price: 0.25,
+  });
+
+  await expect(betterWorseOrders.betterOrderId).toEqual(null);
+  await expect(betterWorseOrders.worseOrderId).toEqual(highOrderId);
+
+  // Get better worse order ids for a low price
+  betterWorseOrders = await api.route("getBetterWorseOrders", {
+    marketId: market.address,
+    outcome: outcome.toNumber(),
+    orderType: "buy",
+    price: 0.05,
+  });
+
+  await expect(betterWorseOrders.betterOrderId).toEqual(lowOrderId);
+  await expect(betterWorseOrders.worseOrderId).toEqual(null);
 
 }, 60000);

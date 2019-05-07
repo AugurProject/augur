@@ -1,13 +1,15 @@
 import { SortLimit } from './types';
 import { DB } from "../db/DB";
 import * as _ from "lodash";
-import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/api";
+import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertDisplayPriceToOnChainPrice } from "@augurproject/api";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
 import { ethers } from "ethers";
 import { OrderEventLog, OrderEventAddressValue, OrderEventUint256Value, ORDER_EVENT_CREATOR, ORDER_EVENT_FILLER, ORDER_EVENT_OUTCOME, ORDER_EVENT_AMOUNT, ORDER_EVENT_TIMESTAMP } from "../logs/types";
 
 import * as t from "io-ts";
+
+const ZERO = new BigNumber(0);
 
 const TradingHistoryParams = t.partial({
   universe: t.string,
@@ -93,9 +95,27 @@ export interface Orders {
   };
 }
 
+export const OrderType = t.keyof({
+  buy: null,
+  sell: null,
+});
+
+export const BetterWorseOrdersParams = t.type({
+  marketId: t.string,
+  outcome: t.number,
+  orderType: OrderType,
+  price: t.number,
+});
+
+export interface BetterWorseResult {
+  betterOrderId: string|null;
+  worseOrderId: string|null;
+}
+
 export class Trading {
   public static GetTradingHistoryParams = t.intersection([SortLimit, TradingHistoryParams]);
   public static GetOrdersParams = t.intersection([SortLimit, OrdersParams]);
+  public static GetBetterWorseOrdersParams = BetterWorseOrdersParams;
 
   @Getter("GetTradingHistoryParams")
   public static async getTradingHistory<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Trading.GetTradingHistoryParams>): Promise<Array<any>> {
@@ -252,5 +272,41 @@ export class Trading {
         } as Order);
        return orders;
     }, {} as Orders);
+  }
+
+  @Getter("GetBetterWorseOrdersParams")
+  public static async getBetterWorseOrders<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Trading.GetBetterWorseOrdersParams>): Promise<BetterWorseResult> {
+    const request = {
+      selector: {
+        market: params.marketId,
+        [ORDER_EVENT_OUTCOME]: `0x0${params.outcome.toString()}`,
+        orderType: params.orderType === "buy" ? 0 : 1,
+        [ORDER_EVENT_AMOUNT] : { $gt: "0x00"}
+      }
+    };
+
+    const currentOrdersResponse = await db.findCurrentOrders(request);
+    const marketReponse = await db.findMarketCreatedLogs({selector: {market: params.marketId }});
+    if (marketReponse.length < 1) throw new Error(`Market ${params.marketId} not found.`);
+    const marketDoc = marketReponse[0];
+    const minPrice = new BigNumber(marketDoc.prices[0]);
+    const maxPrice = new BigNumber(marketDoc.prices[1]);
+    const numTicks = new BigNumber(marketDoc.numTicks);
+    const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+    const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(params.price), minPrice, tickSize);
+    const [lesserOrders, greaterOrders] = _.partition(currentOrdersResponse, (order) => new BigNumber(order.uint256Data[OrderEventUint256Value.price]).lt(onChainPrice));
+    const greaterOrder = _.reduce(greaterOrders, (result, order) => (result.orderId === null || new BigNumber(order.uint256Data[OrderEventUint256Value.price]).lt(result.price) ? { orderId: order.orderId, price: new BigNumber(order.uint256Data[OrderEventUint256Value.price]) } : result), { orderId: null, price: ZERO });
+    const lesserOrder = _.reduce(lesserOrders, (result, order) => (result.orderId === null || new BigNumber(order.uint256Data[OrderEventUint256Value.price]).gt(result.price) ? { orderId: order.orderId, price: new BigNumber(order.uint256Data[OrderEventUint256Value.price]) } : result), { orderId: null, price: ZERO });
+    if (params.orderType === "buy") {
+      return {
+        betterOrderId: greaterOrder.orderId,
+        worseOrderId: lesserOrder.orderId,
+      };
+    } else {
+      return {
+        betterOrderId: lesserOrder.orderId,
+        worseOrderId: greaterOrder.orderId,
+      };
+    }
   }
 }

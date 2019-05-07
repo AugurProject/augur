@@ -96,7 +96,7 @@ export class ContractAPI {
     const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
     const minPrice = new ethers.utils.BigNumber(50).mul(new ethers.utils.BigNumber(10).pow(18));
     const maxPrice = new ethers.utils.BigNumber(250).mul(new ethers.utils.BigNumber(10).pow(18));
-    const numTicks = new ethers.utils.BigNumber(2000000);
+    const numTicks = new ethers.utils.BigNumber(20000);
     return this.createScalarMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, [minPrice, maxPrice], numTicks, " ", "{\"description\": \"description\"}");
   }
 

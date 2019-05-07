@@ -617,7 +617,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "minPrice": "0",
         "needsMigration": false,
         "numOutcomes": 4,
-        "numTicks": "10000",
+        "numTicks": "100",
         "openInterest": "1500000000000000",
         "outcomes": [
           {
@@ -644,7 +644,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "reportingState": "FINALIZED",
         "resolutionSource": null,
         "scalarDenomination": null,
-        "tickSize": "0.0001",
+        "tickSize": "0.01",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
         "volume": "610000000000000",
       },
@@ -660,8 +660,8 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "minPrice": "50000000000000000000",
         "needsMigration": true,
         "numOutcomes": 3,
-        "numTicks": "2000000",
-        "openInterest": "30000000000000000000",
+        "numTicks": "20000",
+        "openInterest": "300000000000000000",
         "outcomes": [
           {
             "description": "Invalid",
@@ -682,9 +682,9 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "reportingState": "AWAITING_FORK_MIGRATION",
         "resolutionSource": null,
         "scalarDenomination": null,
-        "tickSize": "0.0001",
+        "tickSize": "0.01",
         "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
-        "volume": "10000110000000000000",
+        "volume": "100110000000000000",
       },
     ]
   );
