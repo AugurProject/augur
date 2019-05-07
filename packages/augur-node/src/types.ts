@@ -82,7 +82,7 @@ export interface MarketCreatedLogExtraInfo {
   maxPrice?: string;
   tags?: Array<string | null>;
   outcomeNames?: Array<string | number | null>;
-  description?: string;
+  _description?: string;
   longDescription?: string | null;
   _scalarDenomination?: string | null;
   resolutionSource?: string | null;

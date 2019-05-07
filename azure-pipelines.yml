@@ -310,8 +310,8 @@ jobs:
         if [[ "$(Build.SourceBranchName)" == "master" ]]; then
             docker push augurproject/python2-and-3:monorepo
             docker push augurproject/augur-core:monorepo
-            yarn workspace @augurproject/tools docker:push
         fi
+        yarn workspace @augurproject/tools docker:push
       condition: |
         and
         (

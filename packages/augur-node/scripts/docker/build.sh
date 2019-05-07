@@ -1,7 +1,6 @@
 #!/bin/bash
 
-TAG=core-$(node scripts/core-version.js)
-
+TAG=$(scripts/get-contract-hashes.js)
 # Make sure you're up to date
 docker pull node:10.12
 

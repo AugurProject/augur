@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IMAGE=$1
-TAG=core-$(node scripts/core-version.js)
+TAG=$(node ./scripts/get-contract-hashes.js)
 
 echo "Running Geth with contracts deployed from augur-core@${TAG}"
 
