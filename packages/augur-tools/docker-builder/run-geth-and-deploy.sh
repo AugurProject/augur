@@ -19,3 +19,4 @@ yarn workspace @augurproject/tools dp rep-faucet
 yarn workspace @augurproject/tools dp create-markets
 
 $(kill -TERM $(pidof geth))
+wait
