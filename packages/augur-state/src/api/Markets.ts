@@ -96,7 +96,7 @@ export class Markets<TBigNumber> {
   public static GetMarketsParams = t.intersection([GetMarketsParamsSpecific, SortLimit]);
   public static GetMarketsInfoParams = t.type({ marketIds: t.array(t.string) });
 
-  @Getter("GetMarketPriceHistory")
+  @Getter("GetMarketPriceHistoryParams")
   public static async getMarketPriceHistory<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketPriceHistoryParams>): Promise<MarketPriceHistory> {
     let orderFilledLogs = await db.findOrderFilledLogs({selector: {market: params.marketId, eventType: OrderEventType.Fill}});
     orderFilledLogs.sort(
@@ -107,13 +107,14 @@ export class Markets<TBigNumber> {
 
     return orderFilledLogs.reduce(
       (previousValue: MarketPriceHistory, currentValue: OrderEventLog): MarketPriceHistory => {
-        if (!previousValue[currentValue.uint256Data[OrderEventUint256Value.outcome]]) {
-          previousValue[currentValue.uint256Data[OrderEventUint256Value.outcome]] = [];
+        const outcomeString = new BigNumber(currentValue.uint256Data[OrderEventUint256Value.outcome]).toString(10);
+        if (!previousValue[outcomeString]) {
+          previousValue[outcomeString] = [];
         }
-        previousValue[currentValue.uint256Data[OrderEventUint256Value.outcome]].push({
-          price: currentValue.uint256Data[OrderEventUint256Value.price],
-          amount: currentValue.uint256Data[OrderEventUint256Value.amount],
-          timestamp: currentValue.uint256Data[OrderEventUint256Value.timestamp]
+        previousValue[outcomeString].push({
+          price: new BigNumber(currentValue.uint256Data[OrderEventUint256Value.price]).toString(10),
+          amount: new BigNumber(currentValue.uint256Data[OrderEventUint256Value.amount]).toString(10),
+          timestamp: new BigNumber(currentValue.uint256Data[OrderEventUint256Value.timestamp]).toString(10),
         });
         return previousValue;
       },

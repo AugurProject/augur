@@ -1,4 +1,3 @@
-import { API } from "./API";
 import { Augur } from "@augurproject/api";
 import { DB } from "../db/DB";
 import { PathReporter } from "io-ts/lib/PathReporter";
