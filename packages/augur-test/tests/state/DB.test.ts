@@ -1,4 +1,4 @@
-import { TrackedUsers } from "@augurproject/state/src/db/TrackedUsers";
+import { TrackedUsers } from "@augurproject/sdk/src/state/db/TrackedUsers";
 import { Augur } from "@augurproject/sdk";
 import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../libs";
 import { ethers } from "ethers";

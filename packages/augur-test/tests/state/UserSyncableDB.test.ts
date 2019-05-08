@@ -4,7 +4,7 @@ import {
   makeDbMock,
   makeTestAugur
 } from "../../libs";
-import { UserSyncableDB } from "@augurproject/state/src/db/UserSyncableDB";
+import { UserSyncableDB } from "@augurproject/sdk/src/state/db/UserSyncableDB";
 import {Augur} from "@augurproject/sdk";
 import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
 import { Contracts } from "@augurproject/sdk/src/api/Contracts";

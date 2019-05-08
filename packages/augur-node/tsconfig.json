@@ -20,9 +20,6 @@
       "path": "../augur-sdk"
     },
     {
-      "path": "../augur-state"
-    },
-    {
       "path": "../blockstream-adapters"
     },
     {

@@ -21,9 +21,6 @@
       "path": "./packages/contract-dependencies"
     },
     {
-      "path": "./packages/augur-state"
-    },
-    {
       "path": "./packages/contract-dependencies-ethers"
     },
     {

@@ -25,9 +25,6 @@
       "path": "./packages/contract-dependencies/tsconfig.release.json"
     },
     {
-      "path": "./packages/augur-state/tsconfig.release.json"
-    },
-    {
       "path": "./packages/contract-dependencies-ethers/tsconfig.release.json"
     }
   ]
