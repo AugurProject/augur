@@ -21,6 +21,8 @@ import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
 import { ETHER, MarketType, SubscriptionEventNames, WEI_PER_ETHER, ZERO } from "../../constants";
 import { getCurrentTime } from "../process-block";
+import { BigNumber as BigNumberJS } from "bignumber.js";
+import { PRECISION } from "../../constants";
 
 interface IOutcomes {
   numOutcomes: number;
@@ -86,8 +88,8 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
       const extraInfo: MarketCreatedLogExtraInfo = (log.extraInfo != null && typeof log.extraInfo === "object") ? log.extraInfo : {};
       const marketType: string = MarketType[log.marketType];
       const marketCategoryName = canonicalizeCategoryName(log.topic);
-      const minPrice = new BigNumber(log.prices[0]).toFixed();
-      const maxPrice = new BigNumber(log.prices[1]).toFixed();
+      const minPrice = new BigNumberJS(log.prices[0]).div(PRECISION.multiple).toFixed();
+      const maxPrice = new BigNumberJS(log.prices[1]).div(PRECISION.multiple).toFixed();
 
       const marketsDataToInsert: MarketsRow<string | number> = {
         marketType,
