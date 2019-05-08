@@ -6,7 +6,7 @@ import {
 import { Block } from "ethereumjs-blockstream";
 import { BlockAndLogStreamerDependencies, ExtendedLog } from "blockstream-adapters";
 import { EventLogDBRouter } from "./EventLogDBRouter";
-import { ParsedLog } from "../../ethereum/types";
+import { ParsedLog } from "@augurproject/types/types/ethereum/logs";
 
 // this extends syntax handles nested "mockify" types.
 type Mockify<T> = {

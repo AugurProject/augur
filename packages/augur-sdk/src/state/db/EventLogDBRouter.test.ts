@@ -1,5 +1,5 @@
 import {EventLogDBRouter} from "./EventLogDBRouter";
-import { Log, ParsedLog, LogValues } from "../../ethereum/types";
+import { Log, ParsedLog, LogValues } from "@augurproject/types/types/ethereum/logs";
 import { ExtendedLog } from "blockstream-adapters";
 
 test("topic filtering", async () => {

@@ -26,11 +26,12 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "ethers": "4.0.24",
     "@augurproject/artifacts": "10.0.0-0",
     "@augurproject/sdk": "1.0.0-0",
+    "@augurproject/types": "10.0.0-0",
     "contract-dependencies": "1.0.0-0",
-    "contract-dependencies-ethers": "1.0.0-0"
+    "contract-dependencies-ethers": "1.0.0-0",
+    "ethers": "4.0.24"
   },
   "devDependencies": {
     "ts-node": "7.0.1"

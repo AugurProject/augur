@@ -1,6 +1,6 @@
 import { AbstractDB, BaseDocument } from "./AbstractDB";
 import { Augur } from "../../Augur";
-import { Log, ParsedLog } from "../../ethereum/types";
+import { Log, ParsedLog } from "@augurproject/types/types/ethereum/logs";
 import { DB } from "./DB";
 import { SyncStatus } from "./SyncStatus";
 import { toAscii } from "../utils/utils";
