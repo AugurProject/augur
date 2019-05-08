@@ -10,7 +10,7 @@ import { BigNumber } from "ethers/utils";
 export default function(callback = logError) {
   return async (dispatch, getState) => {
     const { contracts } = augurApi.get();
-    contracts.cash.faucet(new BigNumber("1000000000000000000000")).then(
+    contracts.cash.faucet(new BigNumber(100000)).then(
       success => {
         console.log("success", success);
       },
