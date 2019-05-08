@@ -1019,22 +1019,25 @@ div.ButtonsRow:last-of-type {
 }
 
 .ModalMarketReview {
-  padding: @size-16 0 0;
-}
-
-.ModalMarketReview__ReadMore {
-  .text-12;
-
-  color: @color-primary-action;
-  cursor: pointer;
-}
-
-.ModalMarketReview__TextBox {
   background-color: @color-theme-primary;
   margin: 0 0 @size-24;
-  padding: @size-16;
+  padding: @size-32 0 0;
 
   > div {
+    .text-12;
+
+    color: @color-secondary-text;
+    line-height: normal;
+    margin: 0 0 @size-16;
+    word-break: break-all;
+
+    > div > button {
+      .text-12;
+
+      color: @color-primary-action;
+      cursor: pointer;
+    }
+
     > p {
       .mono-10;
 
@@ -1042,13 +1045,6 @@ div.ButtonsRow:last-of-type {
       margin: @size-4 0;
       text-transform: uppercase;
     }
-
-    .text-12;
-
-    color: @color-secondary-text;
-    line-height: normal;
-    margin: 0 0 @size-16;
-    word-break: break-all;
   }
 
   > div:last-of-type {
@@ -1056,7 +1052,7 @@ div.ButtonsRow:last-of-type {
   }
 }
 
-.CheckboxCTA__checkbox {
+.CheckboxCTA {
   display: flex;
   flex-flow: row nowrap;
   width: 100%;
