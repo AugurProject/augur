@@ -6,7 +6,6 @@ import Styles from "modules/market/components/market-outstanding-returns/market-
 export default class MarketPreview extends Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
-    unclaimedCreatorFees: PropTypes.object.isRequired,
     collectMarketCreatorFees: PropTypes.func.isRequired
   };
 
@@ -14,12 +13,23 @@ export default class MarketPreview extends Component {
     super(props);
 
     this.state = {
-      disableClaim: false
+      unclaimedCreatorFees: "0"
     };
   }
 
+  componentWillMount() {
+    const { id, collectMarketCreatorFees } = this.props;
+
+    collectMarketCreatorFees(id, (err, fees) => {
+      this.setState({
+        unclaimedCreatorFees: fees
+      });
+    });
+  }
+
   render() {
-    const { id, unclaimedCreatorFees, collectMarketCreatorFees } = this.props;
+    const { id } = this.props;
+    const { unclaimedCreatorFees } = this.state;
 
     return (
       <div className={Styles.MarketOutstandingReturns}>
@@ -29,21 +39,14 @@ export default class MarketPreview extends Component {
             className={Styles.MarketOutstandingReturns__value}
             data-testid={"unclaimedCreatorFees-" + id}
           >
-            {unclaimedCreatorFees.full}
+            {unclaimedCreatorFees}
           </span>
         </div>
         <div className={Styles.MarketOutstandingReturns__actions}>
           <button
             className={Styles.MarketOutstandingReturns__collect}
-            data-testid={"collectMarketCreatorFees-" + id}
-            disabled={this.state.disableClaim}
             onClick={() => {
-              this.setState({ disableClaim: true });
-              collectMarketCreatorFees(false, id, err => {
-                if (err) {
-                  this.setState({ disableClaim: false });
-                }
-              });
+              // TODO: fees are auto claimed on market finalization
             }}
           >
             Claim

@@ -14,7 +14,7 @@ import { useUnlockedAccount } from "modules/auth/actions/use-unlocked-account";
 import { logout } from "modules/auth/actions/logout";
 import { verifyMatchingNetworkIds } from "modules/app/actions/verify-matching-network-ids";
 import { checkIfMainnet } from "modules/app/actions/check-if-mainnet";
-import { loadUniverse } from "modules/app/actions/load-universe";
+import { updateUniverse } from "modules/universe/actions/update-universe";
 import { registerTransactionRelay } from "modules/transactions/actions/register-transaction-relay";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
@@ -213,7 +213,7 @@ export function connectAugur(
         }
 
         const doIt = () => {
-          dispatch(loadUniverse(universeId, history));
+          dispatch(updateUniverse({ id: universeId }));
           if (modal && modal.type === MODAL_NETWORK_DISCONNECTED)
             dispatch(closeModal());
           if (isInitialConnection) {

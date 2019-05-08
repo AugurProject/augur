@@ -20,7 +20,7 @@ const mapStateToProps = state => {
     isLogged: state.authStatus.isLogged,
     markets: filteredMarkets,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
-    reportingWindowStatsEndTime: state.reportingWindowStats.endTime || 0
+    reportingWindowStatsEndTime: state.reportingWindowStats.endTime
   };
 };
 

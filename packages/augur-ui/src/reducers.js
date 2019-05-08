@@ -16,7 +16,6 @@ import functionsAPI from "modules/contracts/reducers/functions-api";
 import gasPriceInfo from "modules/app/reducers/gas-price-info";
 import initialReporters from "modules/reports/reducers/initial-reporters-data";
 import loginAccount from "modules/auth/reducers/login-account";
-import marketCreatorFees from "modules/markets/reducers/market-creator-fees";
 import marketTradingHistory from "modules/markets/reducers/market-trading-history";
 import marketReportState from "modules/reports/reducers/market-report-state";
 import marketsData from "modules/markets/reducers/markets-data";
@@ -64,7 +63,6 @@ export function createReducer() {
     gasPriceInfo,
     initialReporters,
     loginAccount,
-    marketCreatorFees,
     marketReportState,
     marketTradingHistory,
     marketsData,

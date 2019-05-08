@@ -19,7 +19,7 @@ export function updateAssets(callback = logError) {
         augur.api.ReputationToken.balanceOf(
           {
             tx: { to: reputationTokenAddress },
-            _owner: loginAccount.address
+            _tokenHolder: loginAccount.address
           },
           (err, attoRepBalance) => {
             if (err) return callback(err);
