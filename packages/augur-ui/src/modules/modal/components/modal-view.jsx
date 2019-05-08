@@ -6,6 +6,7 @@ import ModalSignTransaction from "modules/modal/containers/modal-sign-transactio
 import ModalConfirm from "modules/modal/components/modal-confirm";
 import ModalReview from "modules/modal/components/modal-review";
 import ModalRepFaucet from "modules/modal/containers/modal-rep-faucet";
+import ModalDaiFaucet from "modules/modal/containers/modal-dai-faucet";
 import ModalDeposit from "modules/modal/containers/modal-deposit";
 import ModalWithdraw from "modules/modal/containers/modal-withdraw";
 import ModalNetworkDisabled from "modules/modal/containers/modal-network-disabled";
@@ -100,6 +101,7 @@ export default class ModalView extends Component {
           {modal.type === TYPES.MODAL_OPEN_ORDERS && <ModalOpenOrders />}
           {modal.type === TYPES.MODAL_TRANSACTIONS && <ModalTransactions />}
           {modal.type === TYPES.MODAL_REP_FAUCET && <ModalRepFaucet />}
+          {modal.type === TYPES.MODAL_DAI_FAUCET && <ModalDaiFaucet />}
           {modal.type === TYPES.MODAL_DEPOSIT && <ModalDeposit />}
           {modal.type === TYPES.MODAL_WITHDRAW && <ModalWithdraw />}
           {modal.type === TYPES.MODAL_CONFIRM && (
