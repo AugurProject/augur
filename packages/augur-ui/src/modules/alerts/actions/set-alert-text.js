@@ -436,7 +436,11 @@ export default function setAlertText(alert, callback) {
 
       // TestNetReputationToken
       case FAUCET:
-        alert.title = "Get REP from faucet";
+        let token = "REP";
+        if (alert.params._amount.indexOf("3635c9adc5dea00000") > -1) {
+          token = "DAI";
+        }
+        alert.title = `Get ${token} from faucet`;
         break;
 
       // TradingEscapeHatch
