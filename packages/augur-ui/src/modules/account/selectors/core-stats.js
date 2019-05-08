@@ -31,7 +31,7 @@ export const selectCoreStats = createSelector(
     {
       realizedPL: {
         label: "Realized P/L",
-        value: formatEther(loginAccount.realizedPL).formatted
+        value: "0" // need to get realized PnL from contract log emitted
       }
     }
   ]

@@ -35,7 +35,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     "Always make sure that the Market Question, Additional Details, Reporting Start Time, Resolution Source and Outcomes are not in direct conflict with each other. Always make sure the market has mutually exclusive outcomes, i.e. only one outcome can occur.",
     "If the reporting start time (UTC) isn’t after the actual end of the event, or if the title/description and reporting start time don’t match up, there is a high probability that the market will resolve as invalid."
   ],
-  checkboxCTA: {
+  checkbox: {
     markModalAsSeen: dP.markModalAsSeen,
     unmarkModalAsSeen: dP.unmarkModalAsSeen
   },

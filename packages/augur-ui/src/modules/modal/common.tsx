@@ -371,14 +371,14 @@ export class MarketReview extends Component<
 
   render() {
     const { description, details, endTime, resolutionSource } = this.props;
+    const { readMore } = this.state;
 
     const showReadMore = details && details.length > 126;
-    const readMore = showReadMore && (
+    const readMoreSection = showReadMore && (
       <div>
         {`${details.substr(0, 126)}...`}{" "}
         <button
           onClick={() => this.setState({ readMore: true })}
-          className={Styles.ModalMarketReview__ReadMore}
         >
           Read more
         </button>
@@ -387,7 +387,6 @@ export class MarketReview extends Component<
 
     return (
       <section className={Styles.ModalMarketReview}>
-        <div className={Styles.ModalMarketReview__TextBox}>
           <div>
             <p>Market Question</p>
             {description}
@@ -396,8 +395,8 @@ export class MarketReview extends Component<
           {details && (
             <div>
               <p>Additional details</p>
-              {showReadMore && !this.state.readMore && readMore}
-              {(!showReadMore || this.state.readMore) && <div>{details}</div>}
+              {showReadMore && !readMore && readMoreSection}
+              {(!showReadMore || readMore) && <div>{details}</div>}
             </div>
           )}
 
@@ -413,7 +412,6 @@ export class MarketReview extends Component<
             <p>Resolution source</p>
             {resolutionSource || "General knowledge"}
           </div>
-        </div>
       </section>
     );
   }
@@ -431,19 +429,23 @@ export class CheckboxCTA extends Component<CheckboxCTAProps, CheckboxCTAState> {
   }
 
   checkCheckbox() {
-    this.setState({ didCheck: !this.state.didCheck }, () => {
+    const { markModalAsSeen, unmarkModalAsSeen } = this.props;
+    const { didCheck } = this.state;
+    this.setState({ didCheck: !didCheck }, () => {
       if (this.state.didCheck) {
-        this.props.markModalAsSeen();
+        markModalAsSeen();
       } else {
-        this.props.unmarkModalAsSeen();
+        unmarkModalAsSeen();
       }
     });
   }
 
   render() {
+    const { didCheck } = this.state;
+
     return (
       <div
-        className={Styles.CheckboxCTA__checkbox}
+        className={Styles.CheckboxCTA}
         role="button"
         tabIndex={0}
         onClick={(e: React.SyntheticEvent) => {
@@ -455,8 +457,8 @@ export class CheckboxCTA extends Component<CheckboxCTAProps, CheckboxCTAState> {
           <Checkbox
             id="marketReview"
             type="checkbox"
-            value={this.state.didCheck}
-            isChecked={this.state.didCheck}
+            value={didCheck}
+            isChecked={didCheck}
             onClick={(e: React.SyntheticEvent) => {
               e.preventDefault();
               this.checkCheckbox();

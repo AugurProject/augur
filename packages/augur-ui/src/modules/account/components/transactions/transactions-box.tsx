@@ -5,7 +5,8 @@ import {
   DepositButton,
   WithdrawButton,
   ViewTransactionsButton,
-  REPFaucetButton
+  REPFaucetButton,
+  DAIFaucetButton,
 } from "modules/common-elements/buttons";
 import Styles from "modules/account/components/transactions/transactions-box.styles";
 
@@ -15,6 +16,7 @@ interface TransactionsBoxProps {
   rep: number | string;
   gasPrice: string;
   repFaucet: Function;
+  daiFaucet: Function;
   deposit: Function;
   withdraw: Function;
   transactions: Function;
@@ -34,6 +36,12 @@ export const TransactionsBox = (props: TransactionsBoxProps) => (
           <div>
             <p>REP for test net</p>
             <REPFaucetButton action={props.repFaucet} />
+          </div>
+        )}
+        {!props.isMainnet && (
+          <div>
+            <p>DAI for test net</p>
+            <DAIFaucetButton action={props.daiFaucet} />
           </div>
         )}
       </div>
