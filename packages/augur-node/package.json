@@ -59,7 +59,7 @@
   "dependencies": {
     "async": "2.6.2",
     "@augurproject/artifacts": "10.0.0-0",
-    "@augurproject/api": "1.0.0-0",
+    "@augurproject/sdk": "1.0.0-0",
     "@augurproject/state": "1.0.0-0",
     "blockstream-adapters": "1.0.0-0",
     "contract-dependencies-ethers": "1.0.0-0",

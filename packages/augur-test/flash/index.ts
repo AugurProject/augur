@@ -34,7 +34,7 @@ import { JsonRpcProvider } from "ethers/providers";
 
 import { NetworkConfiguration } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { Augur } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import { Controller } from "@augurproject/state";
 const debugOptions = require("../debug-options");
 import { ContractAPI } from "../libs/ContractAPI";

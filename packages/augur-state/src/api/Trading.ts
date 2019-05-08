@@ -1,7 +1,7 @@
 import { SortLimit } from './types';
 import { DB } from "../db/DB";
 import * as _ from "lodash";
-import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/api";
+import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/sdk";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
 import { ethers } from "ethers";

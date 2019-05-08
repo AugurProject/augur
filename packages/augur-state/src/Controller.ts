@@ -1,4 +1,4 @@
-import { Augur } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import { PouchDBFactoryType } from "./db/AbstractDB";
 import { DB } from "./db/DB";
 import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";

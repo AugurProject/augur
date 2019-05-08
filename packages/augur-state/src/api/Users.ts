@@ -3,7 +3,7 @@ import { DB } from "../db/DB";
 import { Getter } from "./Router";
 import { NumericDictionary } from "lodash";
 import { ProfitLossChangedLog, OrderEventLog, Doc, Timestamped, MarketCreatedLog, OrderEventUint256Value, ORDER_EVENT_CREATOR, ORDER_EVENT_FILLER, ORDER_EVENT_TIMESTAMP, ORDER_EVENT_OUTCOME } from '../logs/types';
-import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/api";
+import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/sdk";
 import { SortLimit } from './types';
 import { ethers } from "ethers";
 

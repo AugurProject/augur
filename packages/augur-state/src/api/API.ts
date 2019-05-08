@@ -1,4 +1,4 @@
-import { Augur } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import { DB } from "../db/DB";
 import { Router } from "./Router";
 

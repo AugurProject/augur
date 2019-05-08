@@ -2,7 +2,7 @@ import { BigNumber } from "./types";
 import { AugurNodeController } from "./controller";
 import { logger } from "./utils/logger";
 import { ConnectOptions } from "./setup/connectOptions";
-import {  Augur } from "@augurproject/api";
+import {  Augur } from "@augurproject/sdk";
 
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers/json-rpc-provider";

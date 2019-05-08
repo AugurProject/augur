@@ -2,7 +2,7 @@ import * as Sync from "./Sync";
 import * as HTTPEndpoint from "./HTTPEndpoint";
 import * as WebsocketEndpoint from "./WebsocketEndpoint";
 import { API } from "./api/API";
-import { Augur } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import { BigNumber as EthersBigNumber } from "ethers/utils";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { DB } from "./db/DB";

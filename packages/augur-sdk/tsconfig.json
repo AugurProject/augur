@@ -2,12 +2,19 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "src"
+    "rootDir": "src",
+    "experimentalDecorators": true
   },
   "include": [
     "src/**/*"
   ],
   "references": [
+    {
+      "path": "../blockstream-adapters"
+    },
+    {
+      "path": "../speedomatic"
+    },
     {
       "path": "../augur-artifacts"
     },

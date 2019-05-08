@@ -1,5 +1,5 @@
 import {NetworkId} from "@augurproject/artifacts";
-import {Filter, Log, LogValues} from "@augurproject/api";
+//import {Filter, Log, LogValues} from "@augurproject/sdk";
 import {Transaction} from "contract-dependencies";
 import {EthersProvider as EProvider} from "contract-dependencies-ethers";
 import {ethers} from "ethers";
@@ -16,6 +16,42 @@ interface PerformQueueTask {
   params: any;
   resolve: (res: any) => void;
   reject: (err?: Error | null) => void;
+}
+
+interface Log {
+  blockNumber: number;
+  blockHash: string;
+  transactionIndex: number;
+  removed: boolean;
+  transactionLogIndex: number;
+  address: string;
+  data: string;
+  topics: Array<string>;
+  transactionHash: string;
+  logIndex: number;
+}
+
+interface LogValues {
+  [paramName: string]: any;
+}
+
+export interface ParsedLog {
+  blockNumber: number;
+  blockHash: string;
+  transactionIndex: number;
+  removed: boolean;
+  transactionLogIndex: number;
+  transactionHash: string;
+  logIndex: number;
+  topics?: Array<string | Array<string>>;
+  [paramName: string]: any;
+}
+
+interface Filter {
+  fromBlock?: number | string;
+  toBlock?: number | string;
+  address?: string;
+  topics?: Array<string | Array<string>>;
 }
 
 export class EthersProvider extends ethers.providers.BaseProvider implements EProvider {

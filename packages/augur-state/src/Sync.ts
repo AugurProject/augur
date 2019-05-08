@@ -1,5 +1,5 @@
 import {BigNumber as EthersBigNumber} from "ethers/utils";
-import {Augur} from "@augurproject/api";
+import {Augur} from "@augurproject/sdk";
 import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { Controller } from "./Controller";

@@ -1,5 +1,5 @@
 import { AbstractDB, BaseDocument } from "./AbstractDB";
-import { Augur, Log, ParsedLog } from "@augurproject/api";
+import { Augur, Log, ParsedLog } from "@augurproject/sdk";
 import { DB } from "./DB";
 import { SyncStatus } from "./SyncStatus";
 import { toAscii } from "../utils/utils";

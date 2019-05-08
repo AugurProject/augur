@@ -1,7 +1,7 @@
 import * as HTTPEndpoint from "@augurproject/state/src/HTTPEndpoint";
 import request from "supertest";
 import { API } from "@augurproject/state/src/api/API";
-import { Augur } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import { DB } from "@augurproject/state/src/db/DB";
 import { ethers } from "ethers";
 import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../libs";

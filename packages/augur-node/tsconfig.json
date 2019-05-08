@@ -17,7 +17,7 @@
   ],
   "references": [
     {
-      "path": "../augur-api"
+      "path": "../augur-sdk"
     },
     {
       "path": "../augur-state"

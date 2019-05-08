@@ -17,7 +17,7 @@
       "path": "../augur-types/tsconfig.release.json"
     },
     {
-      "path": "../augur-api/tsconfig.release.json"
+      "path": "../augur-sdk/tsconfig.release.json"
     },
     {
       "path": "../augur-artifacts/tsconfig.release.json"

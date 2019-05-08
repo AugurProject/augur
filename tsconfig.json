@@ -12,7 +12,7 @@
       "path": "./packages/augur-types"
     },
     {
-      "path": "./packages/augur-api"
+      "path": "./packages/augur-sdk"
     },
     {
       "path": "./packages/augur-artifacts"

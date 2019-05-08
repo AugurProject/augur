@@ -5,9 +5,9 @@ import {
   makeTestAugur
 } from "../../libs";
 import { UserSyncableDB } from "@augurproject/state/src/db/UserSyncableDB";
-import {Augur} from "@augurproject/api";
+import {Augur} from "@augurproject/sdk";
 import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
-import { Contracts } from "@augurproject/api/src/api/Contracts";
+import { Contracts } from "@augurproject/sdk/src/api/Contracts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import {ethers} from "ethers";
 import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";

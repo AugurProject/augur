@@ -1,5 +1,5 @@
 import { API } from "./API";
-import { Augur } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import { DB } from "../db/DB";
 import { PathReporter } from "io-ts/lib/PathReporter";
 

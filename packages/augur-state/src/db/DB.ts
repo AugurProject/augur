@@ -1,4 +1,4 @@
-import { Augur, UserSpecificEvent } from "@augurproject/api";
+import { Augur, UserSpecificEvent } from "@augurproject/sdk";
 import { MetaDB, SequenceIds } from "./MetaDB";
 import { PouchDBFactoryType } from "./AbstractDB";
 import { SyncableDB } from "./SyncableDB";

@@ -28,7 +28,7 @@
   "dependencies": {
     "ethers": "4.0.24",
     "@augurproject/artifacts": "10.0.0-0",
-    "@augurproject/api": "1.0.0-0",
+    "@augurproject/sdk": "1.0.0-0",
     "contract-dependencies": "1.0.0-0",
     "contract-dependencies-ethers": "1.0.0-0"
   },

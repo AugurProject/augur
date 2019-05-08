@@ -22,7 +22,7 @@
       "path": "../augur-types"
     },
     {
-      "path": "../augur-api"
+      "path": "../augur-sdk"
     },
     {
       "path": "../augur-artifacts"

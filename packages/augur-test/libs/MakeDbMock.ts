@@ -1,7 +1,7 @@
 import { PouchDBFactoryType } from "@augurproject/state/src/db/AbstractDB";
 import PouchDB from "pouchdb";
 import { DB } from "@augurproject/state/src/db/DB";
-import { Augur } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import { AccountList } from "./LocalAugur";
 import { IBlockAndLogStreamerListener } from "@augurproject/state/src/db/BlockAndLogStreamerListener";
 import { ethers } from "ethers";

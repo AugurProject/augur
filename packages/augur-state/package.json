@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "@augurproject/api": "1.0.0-0",
+    "@augurproject/sdk": "1.0.0-0",
     "@augurproject/artifacts": "10.0.0-0",
     "@augurproject/core": "2.0.0-0",
     "@augurproject/ethersjs-provider": "1.0.0-0",

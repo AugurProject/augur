@@ -3,7 +3,7 @@ import { DB } from "../db/DB";
 import { Getter } from "./Router";
 import { Address, MarketType, MarketCreatedLog, MarketFinalizedLog, OrderEventUint256Value, ORDER_EVENT_OUTCOME, ORDER_EVENT_AMOUNT } from "../logs/types";
 import { SortLimit } from "./types";
-import { Augur, numTicksToTickSize } from "@augurproject/api";
+import { Augur, numTicksToTickSize } from "@augurproject/sdk";
 import { ethers } from "ethers";
 
 import * as _ from "lodash";
