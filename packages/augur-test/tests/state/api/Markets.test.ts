@@ -25,13 +25,59 @@ beforeAll(async () => {
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
   db = await mock.makeDB(john.augur, ACCOUNTS);
   api = new API<any>(john.augur, db);
-}, 120000);
-
-// NOTE: Full-text searching is tested more in SyncableDB.test.ts
-test("State API :: Markets :: getMarkets", async () => {
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
+}, 120000);
 
+test("State API :: Markets :: getMarketPriceHistory", async () => {
+  const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+  // const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
+  // const scalarMarket = await john.createReasonableScalarMarket(john.augur.contracts.universe);
+
+  // Place orders
+  const bid = new ethers.utils.BigNumber(0);
+  const outcome0 = new ethers.utils.BigNumber(0);
+  const outcome1 = new ethers.utils.BigNumber(1);
+  const numShares = new ethers.utils.BigNumber(10000000000000);
+  const price = new ethers.utils.BigNumber(22);
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  // await john.placeOrder(categoricalMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  // await john.placeOrder(categoricalMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  // await john.placeOrder(scalarMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  // await john.placeOrder(scalarMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+
+  // Partially fill orders
+  const cost = numShares.mul(78).div(2);
+  const yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
+  const yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  // const categoricalOrderId0 = await john.getBestOrderId(bid, categoricalMarket.address, outcome0);
+  // const categoricalOrderId1 = await john.getBestOrderId(bid, categoricalMarket.address, outcome1);
+  // const scalarOrderId0 = await john.getBestOrderId(bid, scalarMarket.address, outcome0);
+  // const scalarOrderId1 = await john.getBestOrderId(bid, scalarMarket.address, outcome1);
+  await john.fillOrder(yesNoOrderId0, cost, numShares.div(2), "42");
+  await mary.fillOrder(yesNoOrderId1, cost, numShares.div(2), "43");
+  // await mary.fillOrder(categoricalOrderId0, cost, numShares.div(2), "43");
+  // await mary.fillOrder(categoricalOrderId1, cost, numShares.div(2), "43");
+  // await mary.fillOrder(scalarOrderId0, cost, numShares.div(2), "43");
+  // await mary.fillOrder(scalarOrderId1, cost, numShares.div(2), "43");
+
+  let newTime = (await john.getTimestamp()).add(SECONDS_IN_A_DAY);
+  await john.setTimestamp(newTime);
+
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
+
+  let markets = await api.route("getMarketPriceHistory", {
+    marketId: yesNoMarket.address
+  });
+  expect(markets).toEqual(
+    [
+    ]
+  );
+});
+/*
+// NOTE: Full-text searching is tested more in SyncableDB.test.ts
+test("State API :: Markets :: getMarkets", async () => {
   const universe = john.augur.contracts.universe;
   const endTime = (await john.getTimestamp()).add(SECONDS_IN_A_DAY);
   const lowFeePerCashInAttoCash = new ethers.utils.BigNumber(10).pow(18).div(20); // 5% creator fee
@@ -368,9 +414,6 @@ test("State API :: Markets :: getMarkets", async () => {
 }, 120000);
 
 test("State API :: Markets :: getMarketsInfo", async () => {
-  await john.approveCentralAuthority();
-  await mary.approveCentralAuthority();
-
   const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
   const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
   const scalarMarket = await john.createReasonableScalarMarket(john.augur.contracts.universe);
@@ -705,3 +748,4 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[1]).toHaveProperty("id");
   expect(markets[2]).toHaveProperty("id");
 }, 180000);
+*/
