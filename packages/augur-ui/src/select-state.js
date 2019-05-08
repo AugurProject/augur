@@ -24,7 +24,6 @@ export const selectIsMobileSmall = state => state.appStatus.isMobileSmall;
 export const selectLoginAccountState = state => state.loginAccount;
 export const selectLoginAccountTotalsState = state =>
   state.loginAccount.tradingPositionsTotal;
-export const selectMarketCreatorFeesState = state => state.marketCreatorFees;
 export const selectMarketReportState = state => state.marketReportState;
 export const selectMarketsDataState = state => state.marketsData;
 export const selectMarketsFilteredSorted = state => state.marketsFilteredSorted;

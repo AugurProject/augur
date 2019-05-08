@@ -31,9 +31,10 @@ export default class ModalNetworkDisconnected extends Component {
 
   showForm(e) {
     const { updateIsReconnectionPaused } = this.props;
-    this.setState({ showEnvForm: !this.state.showEnvForm });
+    const { showEnvForm } = this.state;
+    this.setState({ showEnvForm: !showEnvForm });
     // if the form is going to be shown, we pass true to pause reconnection
-    updateIsReconnectionPaused(!this.state.showEnvForm);
+    updateIsReconnectionPaused(!showEnvForm);
   }
 
   submitForm(e, env) {
@@ -49,7 +50,7 @@ export default class ModalNetworkDisconnected extends Component {
 
   render() {
     const { modal } = this.props;
-    const s = this.state;
+    const { showEnvForm } = this.state;
     const connectionStatus = getValue(this.props, "modal.connection");
     let nodeTitleText = "";
     let nodeDescriptionText = "";
@@ -75,8 +76,8 @@ export default class ModalNetworkDisconnected extends Component {
 
     return (
       <section className={commonStyles.ModalContainer}>
-        {!s.showEnvForm && <h1>{titleText}</h1>}
-        {!s.showEnvForm && (
+        {!showEnvForm && <h1>{titleText}</h1>}
+        {!showEnvForm && (
           <p>
             {`You have been disconnected${nodeDescriptionText}.`}
             <br />
@@ -84,8 +85,8 @@ export default class ModalNetworkDisconnected extends Component {
             <button onClick={this.showForm}>here</button>.
           </p>
         )}
-        {!s.showEnvForm && <ModalLoading />}
-        {s.showEnvForm && (
+        {!showEnvForm && <ModalLoading />}
+        {showEnvForm && (
           <ModalNetworkConnect submitForm={this.submitForm} env={modal.env} />
         )}
       </section>
