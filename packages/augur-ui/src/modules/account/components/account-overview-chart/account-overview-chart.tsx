@@ -96,7 +96,7 @@ export default class AccountOverviewChart extends React.Component<
         const chartValues = data.reduce(
           (p, d) => ({
             ...p,
-            [d.timestamp * 1000]: createBigNumber(d.realized || "0").toNumber(4)
+            [d.timestamp * 1000]: createBigNumber(d.realized).toNumber(4)
           }),
           {}
         );
