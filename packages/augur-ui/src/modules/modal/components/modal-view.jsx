@@ -37,6 +37,70 @@ import Styles from "modules/modal/components/common/common.styles";
 
 const ESCAPE_KEYCODE = 27;
 
+function selectModal(type, props, closeModal, modal) {
+  switch (type) {
+    case TYPES.MODAL_SELL_COMPLETE_SETS:
+      return <ModalSellCompleteSets {...props} />;
+    case TYPES.MODAL_CLAIM_PROCEEDS:
+      return <ModalClaimProceeds {...props} />;
+    case TYPES.MODAL_CLAIM_TRADING_PROCEEDS:
+      return <ModalClaimTradingProceeds {...props} />;
+    case TYPES.MODAL_GAS_PRICE:
+      return <ModalGasPrice {...props} />;
+    case TYPES.MODAL_UNSIGNED_ORDERS:
+      return <ModalUnsignedOrders />;
+    case TYPES.MODAL_OPEN_ORDERS:
+      return <ModalOpenOrders />;
+    case TYPES.MODAL_TRANSACTIONS:
+      return <ModalTransactions />;
+    case TYPES.MODAL_REP_FAUCET:
+      return <ModalRepFaucet />;
+    case TYPES.MODAL_DAI_FAUCET:
+      return <ModalDaiFaucet />;
+    case TYPES.MODAL_DEPOSIT:
+      return <ModalDeposit />;
+    case TYPES.MODAL_WITHDRAW:
+      return <ModalWithdraw />;
+    case TYPES.MODAL_CONFIRM:
+      return <ModalConfirm {...modal} closeModal={closeModal} />;
+    case TYPES.MODAL_REVIEW:
+      return <ModalReview {...modal} />;
+    case TYPES.MODAL_LEDGER:
+    case TYPES.MODAL_TREZOR:
+      return <ModalSignTransaction {...modal} />;
+    case TYPES.MODAL_PARTICIPATE:
+      return <ModalParticipate />;
+    case TYPES.MODAL_NETWORK_MISMATCH:
+      return <ModalNetworkMismatch {...modal} />;
+    case TYPES.MODAL_NETWORK_DISABLED:
+      return <ModalNetworkDisabled {...modal} />;
+    case TYPES.MODAL_NETWORK_CONNECT:
+      return <ModalNetworkConnect />;
+    case TYPES.MODAL_NETWORK_DISCONNECTED:
+      return <ModalNetworkDisconnected {...props} />;
+    case TYPES.MODAL_FINALIZE_MARKET:
+      return <ModalFinalize />;
+    case TYPES.MODAL_MARKET_REVIEW:
+      return <ModalMarketReview {...modal} />;
+    case TYPES.MODAL_MARKET_REVIEW_TRADE:
+      return <ModalMarketReviewTrade {...modal} />;
+    case TYPES.MODAL_ACCOUNT_APPROVAL:
+      return <ModalApproval />;
+    case TYPES.MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET:
+      return <ModalClaimReportingFeesForkedMarket {...modal} />;
+    case TYPES.MODAL_CLAIM_FEES:
+      return <ModalClaimFees {...modal} />;
+    case TYPES.MODAL_MIGRATE_MARKET:
+      return <ModalMigrateMarket {...modal} closeModal={closeModal} />;
+    case TYPES.MODAL_DISCLAIMER:
+      return <ModalDisclaimer {...modal} />;
+    case TYPES.MODAL_TRADING_OVERLAY:
+      return <ModalTradingOverlay {...modal} closeModal={closeModal} />;
+    default:
+      return <div />;
+  }
+}
+
 export default class ModalView extends Component {
   static propTypes = {
     modal: PropTypes.object.isRequired,
@@ -50,8 +114,9 @@ export default class ModalView extends Component {
   }
 
   componentDidMount() {
+    const { closeModal } = this.props;
     window.onpopstate = () => {
-      this.props.closeModal();
+      closeModal();
     };
 
     window.addEventListener("keydown", this.handleKeyDown);
@@ -62,91 +127,32 @@ export default class ModalView extends Component {
   }
 
   handleKeyDown(e) {
+    const { modal, closeModal } = this.props;
+
     if (e.keyCode === ESCAPE_KEYCODE) {
-      if (this.props.modal && this.props.modal.cb) {
-        this.props.modal.cb();
+      if (modal && modal.cb) {
+        modal.cb();
       }
-      this.props.closeModal();
+      closeModal();
     }
   }
 
   render() {
     const { closeModal, modal } = this.props;
 
+    const Modal = selectModal(modal.type, this.props, closeModal, modal);
+
     return (
       <section className={Styles.ModalView}>
         <div
-          className={classNames(Styles.ModalView__content, {
+          className={classNames({
             [`${Styles["ModalView__content--taller"]}`]:
               modal.type === TYPES.MODAL_DISCLAIMER,
             [`${Styles["ModalView__content--full"]}`]:
               modal.type === TYPES.MODAL_TRADING_OVERLAY
           })}
         >
-          {modal.type === TYPES.MODAL_SELL_COMPLETE_SETS && (
-            <ModalSellCompleteSets {...this.props} />
-          )}
-          {modal.type === TYPES.MODAL_CLAIM_PROCEEDS && (
-            <ModalClaimProceeds {...this.props} />
-          )}
-          {modal.type === TYPES.MODAL_CLAIM_TRADING_PROCEEDS && (
-            <ModalClaimTradingProceeds {...this.props} />
-          )}
-          {modal.type === TYPES.MODAL_GAS_PRICE && (
-            <ModalGasPrice {...this.props} />
-          )}
-          {modal.type === TYPES.MODAL_UNSIGNED_ORDERS && (
-            <ModalUnsignedOrders />
-          )}
-          {modal.type === TYPES.MODAL_OPEN_ORDERS && <ModalOpenOrders />}
-          {modal.type === TYPES.MODAL_TRANSACTIONS && <ModalTransactions />}
-          {modal.type === TYPES.MODAL_REP_FAUCET && <ModalRepFaucet />}
-          {modal.type === TYPES.MODAL_DAI_FAUCET && <ModalDaiFaucet />}
-          {modal.type === TYPES.MODAL_DEPOSIT && <ModalDeposit />}
-          {modal.type === TYPES.MODAL_WITHDRAW && <ModalWithdraw />}
-          {modal.type === TYPES.MODAL_CONFIRM && (
-            <ModalConfirm {...modal} closeModal={closeModal} />
-          )}
-          {modal.type === TYPES.MODAL_REVIEW && <ModalReview {...modal} />}
-          {modal.type === (TYPES.MODAL_LEDGER || TYPES.MODAL_TREZOR) && (
-            <ModalSignTransaction {...modal} />
-          )}
-          {modal.type === TYPES.MODAL_PARTICIPATE && <ModalParticipate />}
-          {modal.type === TYPES.MODAL_NETWORK_MISMATCH && (
-            <ModalNetworkMismatch {...modal} />
-          )}
-          {modal.type === TYPES.MODAL_NETWORK_DISABLED && (
-            <ModalNetworkDisabled {...modal} />
-          )}
-          {modal.type === TYPES.MODAL_NETWORK_CONNECT && (
-            <ModalNetworkConnect />
-          )}
-          {modal.type === TYPES.MODAL_NETWORK_DISCONNECTED && (
-            <ModalNetworkDisconnected {...this.props} />
-          )}
-          {modal.type === TYPES.MODAL_FINALIZE_MARKET && <ModalFinalize />}
-          {modal.type === TYPES.MODAL_MARKET_REVIEW && (
-            <ModalMarketReview {...modal} />
-          )}
-          {modal.type === TYPES.MODAL_MARKET_REVIEW_TRADE && (
-            <ModalMarketReviewTrade {...modal} />
-          )}
-          {modal.type === TYPES.MODAL_ACCOUNT_APPROVAL && <ModalApproval />}
-          {modal.type === TYPES.MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET && (
-            <ModalClaimReportingFeesForkedMarket {...modal} />
-          )}
-          {modal.type === TYPES.MODAL_CLAIM_FEES && (
-            <ModalClaimFees {...modal} />
-          )}
-          {modal.type === TYPES.MODAL_MIGRATE_MARKET && (
-            <ModalMigrateMarket {...modal} closeModal={closeModal} />
-          )}
-          {modal.type === TYPES.MODAL_DISCLAIMER && (
-            <ModalDisclaimer {...modal} />
-          )}
-          {modal.type === TYPES.MODAL_TRADING_OVERLAY && (
-            <ModalTradingOverlay {...modal} closeModal={closeModal} />
-          )}
+          {Modal}
         </div>
       </section>
     );
