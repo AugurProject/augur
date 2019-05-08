@@ -171,6 +171,7 @@ export function connectAugur(
     const { modal, loginAccount } = getState();
     AugurJS.connect(
       env,
+      loginAccount,
       async (err, ConnectionInfo) => {
         if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
           return callback(err, ConnectionInfo);

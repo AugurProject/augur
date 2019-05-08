@@ -4,11 +4,23 @@ import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 import logError from "utils/log-error";
 import noop from "utils/noop";
+import { augurApi } from "services/augurapi";
+import { BigNumber } from "ethers/utils";
 
 export default function(callback = logError) {
-  return (dispatch, getState) => {
-    const { loginAccount } = getState();
-    augur.api.Cash.faucet({
+  return async (dispatch, getState) => {
+    const { contracts } = augurApi.get();
+    contracts.cash.faucet(new BigNumber("1000000000000000000000")).then(
+      success => {
+        console.log("success", success);
+      },
+      err => {
+        console.log("failure", err);
+      }
+    );
+
+    /*
+      {
       tx: { to: augur.contracts.addresses[augur.rpc.getNetworkID()].Cash },
       _amount: 1000000000000000000000,
       meta: loginAccount.meta,
@@ -35,5 +47,6 @@ export default function(callback = logError) {
         logError(res);
       }
     });
+    */
   };
 }
