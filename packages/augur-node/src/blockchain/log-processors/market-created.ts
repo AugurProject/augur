@@ -86,6 +86,8 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
       const extraInfo: MarketCreatedLogExtraInfo = (log.extraInfo != null && typeof log.extraInfo === "object") ? log.extraInfo : {};
       const marketType: string = MarketType[log.marketType];
       const marketCategoryName = canonicalizeCategoryName(log.topic);
+      const minPrice = new BigNumber(log.prices[0]).toFixed();
+      const maxPrice = new BigNumber(log.prices[1]).toFixed();
 
       const marketsDataToInsert: MarketsRow<string | number> = {
         marketType,
@@ -96,8 +98,8 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
         creationBlockNumber: log.blockNumber,
         category: marketCategoryName,
         shortDescription: extraInfo!._description || "",
-        minPrice: log.prices[0].toString(),
-        maxPrice: log.prices[1].toString(),
+        minPrice,
+        maxPrice,
         tag1: (extraInfo!.tags && extraInfo!.tags!.length) ? extraInfo!.tags![0] : null,
         tag2: (extraInfo!.tags && extraInfo!.tags!.length > 1) ? extraInfo!.tags![1] : null,
         longDescription: extraInfo!.longDescription || null,
