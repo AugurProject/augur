@@ -106,7 +106,7 @@ jobs:
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
           docker tag $CORE_IMAGE_LATEST $contract_sha;
           docker push $CORE_IMAGE_BUILD
-          docker push $contract_sha
+          docker push augurproject/augur-core:$contract_sha
         displayName: augur-core push
       - task: Docker@1
         displayName: docker logout
