@@ -278,9 +278,6 @@ const testState = {
       data: {}
     }
   },
-  marketCreatorFees: {
-    "0xMARKET1": 21
-  },
   allMarkets: [
     {
       id: "0xMARKET1",
