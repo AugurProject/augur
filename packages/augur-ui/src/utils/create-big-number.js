@@ -4,7 +4,11 @@ import { BigNumber } from "bignumber.js";
 export const createBigNumber = (value, ...args) => {
   let newBigNumber;
   try {
-    newBigNumber = new BigNumber(`${value}`, ...args);
+    let useValue = value;
+    if (typeof value === "object" && Object.keys(value).indexOf("_hex") > -1) {
+      useValue = value._hex;
+    }
+    newBigNumber = new BigNumber(`${useValue}`, ...args);
   } catch (e) {
     logError("Error instantiating WrappedBigNumber", e);
   }
