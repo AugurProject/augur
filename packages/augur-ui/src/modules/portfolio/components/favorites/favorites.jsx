@@ -39,9 +39,14 @@ function filterComp(input, market) {
 export default class Favorites extends Component {
   static propTypes = {
     markets: PropTypes.array.isRequired,
-    currentAugurTimestamp: PropTypes.number.isRequired,
-    reportingWindowStatsEndTime: PropTypes.number.isRequired,
+    currentAugurTimestamp: PropTypes.number,
+    reportingWindowStatsEndTime: PropTypes.number,
     toggleFavorite: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    currentAugurTimestamp: 0,
+    reportingWindowStatsEndTime: 0
   };
 
   constructor(props) {

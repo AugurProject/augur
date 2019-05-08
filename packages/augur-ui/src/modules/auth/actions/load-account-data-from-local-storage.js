@@ -7,7 +7,7 @@ import { updateReadNotifications } from "modules/notifications/actions/update-no
 import { loadPendingOrders } from "modules/orders/actions/pending-orders-management";
 import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
 import { registerUserDefinedGasPriceFunction } from "modules/app/actions/register-user-defined-gasPrice-function";
-import { loadUniverse } from "modules/app/actions/load-universe";
+import { updateUniverse } from "modules/universe/actions/update-universe";
 import { isNewFavoritesStyle } from "modules/markets/helpers/favorites-processor";
 import { loadPendingQueue } from "modules/pending-queue/actions/pending-queue-management";
 import { setSelectedUniverse } from "./selected-universe-management";
@@ -31,7 +31,7 @@ export const loadAccountDataFromLocalStorage = address => (
       if (selectedUniverse && selectedUniverse[augurNodeNetworkId]) {
         const selectedUniverseId = selectedUniverse[augurNodeNetworkId];
         if (universe.id !== selectedUniverseId) {
-          dispatch(loadUniverse(selectedUniverseId));
+          dispatch(updateUniverse({ id: selectedUniverseId }));
         }
       } else {
         // we have a no selectedUniveres for this account, default to default universe for this network.

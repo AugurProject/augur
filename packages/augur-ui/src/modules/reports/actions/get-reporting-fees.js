@@ -35,12 +35,12 @@ export const getReportingFees = (callback = logError) => (
 
       const promises = [];
 
-      if (result.feeWindows.length > 0 || result.nonforkedMarkets.length > 0) {
+      if (result.nonforkedMarkets.length > 0) {
         promises.push(
           new Promise(resolve =>
             dispatch(
               redeemStake({
-                feeWindows: result.feeWindows,
+                feeWindows: [],
                 nonforkedMarkets: result.nonforkedMarkets,
                 estimateGas: true,
                 onSuccess: gasCost => {
@@ -79,7 +79,7 @@ export const getReportingFees = (callback = logError) => (
 
       Promise.all(promises).then(gasCosts => {
         const windowGas = createBigNumber(CLAIM_WINDOW_GAS_COST)
-          .times(result.feeWindows.length)
+          .times(0) // TODO: no more fee windows, prob use dispute window
           .toNumber();
         const gasPrice = getGasPrice(getState());
         const gasCost = formatGasCostToEther(
@@ -130,7 +130,7 @@ export const getReportingFees = (callback = logError) => (
                   zeroStyled: false
                 }
               ),
-              feeWindows: result.feeWindows,
+              feeWindows: [], // TODO: no more fee windows, prob use dispute window
               forkedMarket: result.forkedMarket,
               nonforkedMarkets: result.nonforkedMarkets,
               gasCosts: {
