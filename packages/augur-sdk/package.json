@@ -33,7 +33,7 @@
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
     "@augurproject/sdk": "1.0.0-0",
-    "@augurproject/artifacts": "10.0.0-0",
+    "@augurproject/artifacts": "1.0.0-0",
     "@augurproject/core": "2.0.0-0",
     "@augurproject/ethersjs-provider": "1.0.0-0",
     "@types/async": "2.4.1",
@@ -62,7 +62,7 @@
     "yarn": "1.15.2"
   },
   "devDependencies": {
-    "@augurproject/types": "10.0.0-0",
+    "@augurproject/types": "1.0.0-0",
     "@types/jest": "24.0.4",
     "@types/node": "10.12.29",
     "jest": "22.4.4",

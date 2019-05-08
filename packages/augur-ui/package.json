@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/ui",
-  "version": "10.0.0-0",
+  "version": "1.0.0-0",
   "description": "Augur UI",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -55,7 +55,7 @@
     "@types/react-dom": "16.8.0",
     "@types/react-router-dom": "4.3.1",
     "async": "2.6.1",
-    "@augurproject/augur.js": "10.0.0-0",
+    "@augurproject/augur.js": "1.0.0-0",
     "bignumber.js": "6.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.6",

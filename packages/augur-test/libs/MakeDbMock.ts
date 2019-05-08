@@ -61,14 +61,14 @@ export function makeDbMock() {
   function makeFactory(): PouchDBFactoryType {
     return (dbName: string) => {
       const fullDbName = `db/${dbName}`;
-      const db = new MockPouchDB(fullDbName, {adapter: "memory"});
+      const db = new MockPouchDB(fullDbName, { adapter: "memory" });
       mockState.dbs[fullDbName] = db;
       return db;
     };
   }
 
   async function wipeDB(): Promise<void> {
-    await Promise.all(Object.values(mockState.dbs).map( (db) => {
+    await Promise.all(Object.values(mockState.dbs).map((db) => {
       return db.destroy();
     }));
 
@@ -102,7 +102,7 @@ export function makeDbMock() {
       mockState.failCountdown = -1;
       mockState.alwaysFail = false;
     },
-    makeDB: (augur: Augur<ethers.utils.BigNumber>, accounts: AccountList) => DB.createAndInitializeDB(
+    makeDB: (augur: Augur<ethers.utils.BigNumber>, accounts: AccountList) => DB<ethers.utils.BigNumber>.createAndInitializeDB(
       constants.networkId,
       constants.blockstreamDelay,
       constants.defaultStartSyncBlockNumber,
