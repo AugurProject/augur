@@ -35,7 +35,7 @@ interface MessageProps {
   readableAddress?: ReadableAddressProps;
   depositInfo?: DepositInfoProps;
   marketReview?: MarketReviewProps;
-  checkboxCTA?: CheckboxCTAProps;
+  checkbox?: CheckboxCTAProps;
 }
 
 export const Message = (props: MessageProps) => (
@@ -50,7 +50,7 @@ export const Message = (props: MessageProps) => (
       {props.readableAddress && <ReadableAddress {...props.readableAddress} />}
       {props.depositInfo && <DepositInfo {...props.depositInfo} />}
       {props.marketReview && <MarketReview {...props.marketReview} />}
-      {props.checkboxCTA && <CheckboxCTA {...props.checkboxCTA} />}
+      {props.checkbox && <CheckboxCTA {...props.checkbox} />}
     </main>
     {props.buttons.length > 0 && <ButtonsRow buttons={props.buttons} />}
   </div>
