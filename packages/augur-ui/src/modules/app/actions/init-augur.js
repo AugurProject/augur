@@ -1,4 +1,5 @@
 import * as AugurJS from "services/augurjs";
+import { augurApi } from "services/augurapi";
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
@@ -14,7 +15,7 @@ import { useUnlockedAccount } from "modules/auth/actions/use-unlocked-account";
 import { logout } from "modules/auth/actions/logout";
 import { verifyMatchingNetworkIds } from "modules/app/actions/verify-matching-network-ids";
 import { checkIfMainnet } from "modules/app/actions/check-if-mainnet";
-import { loadUniverse } from "modules/app/actions/load-universe";
+import { updateUniverse } from "modules/universe/actions/update-universe";
 import { registerTransactionRelay } from "modules/transactions/actions/register-transaction-relay";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
@@ -22,7 +23,6 @@ import logError from "utils/log-error";
 import networkConfig from "config/network";
 import { version } from "src/version";
 import { updateVersions } from "modules/app/actions/update-versions";
-
 import { defaultTo, isEmpty } from "lodash";
 import {
   MODAL_NETWORK_MISMATCH,
@@ -171,7 +171,7 @@ export function connectAugur(
     const { modal, loginAccount } = getState();
     AugurJS.connect(
       env,
-      (err, ConnectionInfo) => {
+      async (err, ConnectionInfo) => {
         if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
           return callback(err, ConnectionInfo);
         }
@@ -213,7 +213,7 @@ export function connectAugur(
         }
 
         const doIt = () => {
-          dispatch(loadUniverse(universeId, history));
+          dispatch(updateUniverse({ id: universeId }));
           if (modal && modal.type === MODAL_NETWORK_DISCONNECTED)
             dispatch(closeModal());
           if (isInitialConnection) {
@@ -224,19 +224,12 @@ export function connectAugur(
         };
 
         if (process.env.NODE_ENV === "development") {
-          AugurJS.augur.api.Augur.isKnownUniverse(
-            {
-              _universe: universeId
-            },
-            (err, data) => {
-              if (data === false) {
-                dispatch(setSelectedUniverse());
-                location.reload();
-              }
-
-              doIt();
-            }
-          );
+          const { contracts } = augurApi.get();
+          if ((await contracts.augur.isKnownUniverse_(universeId)) === false) {
+            dispatch(setSelectedUniverse());
+            location.reload();
+          }
+          doIt();
         } else {
           doIt();
         }

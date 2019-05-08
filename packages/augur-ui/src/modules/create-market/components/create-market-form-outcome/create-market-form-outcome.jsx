@@ -58,13 +58,13 @@ export default class CreateMarketOutcome extends Component {
       showAddOutcome:
         CreateMarketOutcome.calculateOutcomeFieldCount(this.props) < 8,
       scalarMin: createBigNumber(
-        speedomatic.constants.INT256_MIN_VALUE
+        speedomatic.INT256_MIN_VALUE
       ).decimalPlaces(18, BigNumber.ROUND_DOWN),
-      scalarMinFormatted: formatNumber(speedomatic.constants.INT256_MIN_VALUE),
+      scalarMinFormatted: formatNumber(speedomatic.INT256_MIN_VALUE),
       scalarMax: createBigNumber(
-        speedomatic.constants.INT256_MAX_VALUE
+        speedomatic.INT256_MAX_VALUE
       ).decimalPlaces(18, BigNumber.ROUND_DOWN),
-      scalarMaxFormatted: formatNumber(speedomatic.constants.INT256_MAX_VALUE),
+      scalarMaxFormatted: formatNumber(speedomatic.INT256_MAX_VALUE),
       scalarType: {
         MIN_PRICE: "MIN_PRICE",
         MAX_PRICE: "MAX_PRICE",

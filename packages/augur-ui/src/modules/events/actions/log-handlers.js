@@ -24,7 +24,6 @@ import {
   loadMarketsInfoIfNotLoaded,
   loadMarketsDisputeInfo
 } from "src/modules/markets/actions/load-markets-info";
-import { loadUnclaimedFees } from "modules/markets/actions/market-creator-fees-management";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { startOrderSending } from "modules/orders/actions/liquidity-management";
 import {
@@ -210,7 +209,6 @@ export const handleTradingProceedsClaimedLog = log => (dispatch, getState) => {
 export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
   dispatch(loadMarketsInfo([log.market]));
   dispatch(loadMarketsDisputeInfo([log.market]));
-  dispatch(loadUnclaimedFees([log.market]));
   dispatch(loadReporting([log.market]));
   const isStoredTransaction = log.reporter === getState().loginAccount.address;
   if (isStoredTransaction) {
@@ -223,7 +221,6 @@ export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
 
 export const handleInitialReporterRedeemedLog = log => (dispatch, getState) => {
   dispatch(loadMarketsInfo([log.market]));
-  dispatch(loadUnclaimedFees([log.market]));
   const isStoredTransaction = log.reporter === getState().loginAccount.address;
   if (isStoredTransaction) {
     dispatch(updateAssets());

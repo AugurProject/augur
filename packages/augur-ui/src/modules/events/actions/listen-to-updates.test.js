@@ -234,12 +234,6 @@ describe("events/actions/listen-to-updates", () => {
           type: "LOAD_MARKETS_INFO",
           marketIds
         }));
-      loadUnclaimedFeesSpy = jest
-        .spyOn(loadUnclaimedFeesModule, "loadUnclaimedFees")
-        .mockImplementation(marketIds => ({
-          type: "UPDATE_UNCLAIMED_DATA",
-          marketIds
-        }));
       updateLoggedTransactionsSpy = jest
         .spyOn(convertLogsToTransactionsModule, "updateLoggedTransactions")
         .mockImplementation(log => ({
@@ -360,12 +354,6 @@ describe("events/actions/listen-to-updates", () => {
         .spyOn(loadMarketsInfoModule, "loadMarketsDisputeInfo")
         .mockImplementation(marketIds => ({
           type: "LOAD_DISPUTE_MARKETS_INFO",
-          marketIds
-        }));
-      loadUnclaimedFeesSpy = jest
-        .spyOn(loadUnclaimedFeesModule, "loadUnclaimedFees")
-        .mockImplementation(marketIds => ({
-          type: "UPDATE_UNCLAIMED_DATA",
           marketIds
         }));
       updateLoggedTransactionsSpy = jest
