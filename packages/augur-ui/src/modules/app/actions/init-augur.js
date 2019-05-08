@@ -1,4 +1,5 @@
 import * as AugurJS from "services/augurjs";
+import { augurApi } from "services/augurapi";
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
@@ -22,7 +23,6 @@ import logError from "utils/log-error";
 import networkConfig from "config/network";
 import { version } from "src/version";
 import { updateVersions } from "modules/app/actions/update-versions";
-
 import { defaultTo, isEmpty } from "lodash";
 import {
   MODAL_NETWORK_MISMATCH,
@@ -171,7 +171,7 @@ export function connectAugur(
     const { modal, loginAccount } = getState();
     AugurJS.connect(
       env,
-      (err, ConnectionInfo) => {
+      async (err, ConnectionInfo) => {
         if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
           return callback(err, ConnectionInfo);
         }
@@ -224,19 +224,12 @@ export function connectAugur(
         };
 
         if (process.env.NODE_ENV === "development") {
-          AugurJS.augur.api.Augur.isKnownUniverse(
-            {
-              _universe: universeId
-            },
-            (err, data) => {
-              if (data === false) {
-                dispatch(setSelectedUniverse());
-                location.reload();
-              }
-
-              doIt();
-            }
-          );
+          const { contracts } = augurApi.get();
+          if ((await contracts.augur.isKnownUniverse_(universeId)) === false) {
+            dispatch(setSelectedUniverse());
+            location.reload();
+          }
+          doIt();
         } else {
           doIt();
         }
