@@ -11,7 +11,7 @@ export const collectMarketCreatorFees = (marketId, callback = logError) => (
     { tx: { to: marketId } },
     (err, creatorFees) => {
       if (err) return callback(err);
-      // todo: convert to display value
+      // TODO: convert to display value
       callback(null, creatorFees);
     }
   );

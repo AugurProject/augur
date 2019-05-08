@@ -46,7 +46,7 @@ export default class MarketPreview extends Component {
           <button
             className={Styles.MarketOutstandingReturns__collect}
             onClick={() => {
-              // fees are auto claimed on market finalization
+              // TODO: fees are auto claimed on market finalization
             }}
           >
             Claim

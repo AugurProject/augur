@@ -79,7 +79,7 @@ export const getReportingFees = (callback = logError) => (
 
       Promise.all(promises).then(gasCosts => {
         const windowGas = createBigNumber(CLAIM_WINDOW_GAS_COST)
-          .times(0) // no more fee windows
+          .times(0) // TODO: no more fee windows, prob use dispute window
           .toNumber();
         const gasPrice = getGasPrice(getState());
         const gasCost = formatGasCostToEther(
@@ -130,7 +130,7 @@ export const getReportingFees = (callback = logError) => (
                   zeroStyled: false
                 }
               ),
-              feeWindows: [], // no more fee windows
+              feeWindows: [], // TODO: no more fee windows, prob use dispute window
               forkedMarket: result.forkedMarket,
               nonforkedMarkets: result.nonforkedMarkets,
               gasCosts: {
