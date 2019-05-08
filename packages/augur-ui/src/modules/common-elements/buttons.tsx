@@ -226,7 +226,7 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
 export const DAIFaucetButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
-    className={Styles.REPFaucetButton}
+    className={Styles.DAIFaucetButton}
     disabled={props.disabled}
     title={props.title || "DAI Faucet"}
   >
