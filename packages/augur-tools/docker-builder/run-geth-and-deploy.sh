@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euxo pipefail
 
-(cd /; ./start.sh &)
+cd /
+./start.sh &
 
 which node
 node --version
@@ -17,6 +18,10 @@ yarn workspace @augurproject/tools dp upload
 yarn workspace @augurproject/tools build
 yarn workspace @augurproject/tools dp rep-faucet
 yarn workspace @augurproject/tools dp create-markets
+
+# debug info
+geth version | tee /augur/geth-version.txt
+curl -s -H "Content-Type: application/json" --data '[{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1} ]' localhost:8545 | tee /augur/geth-blockNumber.txt
 
 $(kill -TERM $(pidof geth))
 wait

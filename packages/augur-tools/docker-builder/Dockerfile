@@ -50,6 +50,7 @@ COPY --from=geth /common_start.sh /common_start.sh
 COPY --from=geth /start.sh /start.sh
 COPY --from=geth /geth /geth
 COPY --from=geth /augur/packages/augur-artifacts /augur/packages/augur-artifacts
+COPY --from=geth /augur/*.txt /augur/
 COPY --from=augur-build /opt /opt
 COPY --from=augur-build /usr/local /usr/local
 
