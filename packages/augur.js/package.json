@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/augur.js",
-  "version": "10.0.0-0",
+  "version": "1.0.0-0",
   "description": "Augur JavaScript API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -48,7 +48,7 @@
     "prepush": "npm run lint && npm run test -- --reporter min"
   },
   "dependencies": {
-    "@augurproject/artifacts": "10.0.0-0",
+    "@augurproject/artifacts": "1.0.0-0",
     "async": "2.6.2",
     "bignumber.js": "6.0.0",
     "clone": "2.1.2",

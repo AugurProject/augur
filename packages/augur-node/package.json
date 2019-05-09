@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/node",
-  "version": "10.0.0-0",
+  "version": "1.0.0-0",
   "description": "Augur Node",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -58,9 +58,8 @@
   "homepage": "https://github.com/AugurProject/augur-node#readme",
   "dependencies": {
     "async": "2.6.2",
-    "@augurproject/artifacts": "10.0.0-0",
-    "@augurproject/api": "1.0.0-0",
-    "@augurproject/state": "1.0.0-0",
+    "@augurproject/artifacts": "1.0.0-0",
+    "@augurproject/sdk": "1.0.0-0",
     "blockstream-adapters": "1.0.0-0",
     "contract-dependencies-ethers": "1.0.0-0",
     "bignumber.js": "6.0.0",

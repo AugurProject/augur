@@ -15,7 +15,7 @@ import { BackupRestore } from "./sync/backup-restore";
 import { ConnectOptions } from "./setup/connectOptions";
 import { LoggerInterface } from "./utils/logger/logger";
 import { clearOverrideTimestamp } from "./blockchain/process-block";
-import { BlockAndLogStreamerListener } from "@augurproject/state/build/db/BlockAndLogStreamerListener";
+import { BlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import { bulkSyncAugurNodeWithBlockchain } from "./blockchain/bulk-sync-augur-node-with-blockchain";
 
 export interface SyncedBlockInfo {
