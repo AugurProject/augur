@@ -13,7 +13,6 @@ import { ethers } from "ethers";
 import { stringTo32ByteHex } from "../../../libs/Utils";
 import { BigNumber } from "bignumber.js";
 import * as _ from "lodash";
-import { number } from "prop-types";
 
 const ZERO_BYTES = stringTo32ByteHex("");
 
