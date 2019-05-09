@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers/utils";
-import { Augur, Provider } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import { ContractDependenciesEthers, EthersSigner } from "contract-dependencies-ethers";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers";
