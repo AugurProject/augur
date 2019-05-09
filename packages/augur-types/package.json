@@ -5,6 +5,10 @@
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
   "types": "./types",
+  "main": "build",
+  "directories": {
+    "src": "types"
+  },
   "scripts": {
     "build": "tsc -b"
   }
