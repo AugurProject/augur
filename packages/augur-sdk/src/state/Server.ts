@@ -13,7 +13,7 @@ import { Addresses } from "@augurproject/artifacts";
 import { EndpointSettings } from "./api/types";
 
 export async function run() {
-  const settings = require("@augurproject/state/src/state/settings.json");
+  const settings = require("@augurproject/sdk/src/state/settings.json");
 
   const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
   const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
@@ -82,7 +82,7 @@ export async function run() {
     endpointSettings.certificateKeyFile = "./certs/ssl-cert-snakeoil.pem";
   }
 
-  // Sync.start();
+  Sync.start();
   console.log("Starting websocket and http endpoints");
   HTTPEndpoint.run(api, endpointSettings);
   await WebsocketEndpoint.run(api, endpointSettings);
