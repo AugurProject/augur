@@ -104,7 +104,7 @@ jobs:
       - script: |
           contract_sha=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
-          docker tag $CORE_IMAGE_LATEST $contract_sha;
+          docker tag $CORE_IMAGE_LATEST augurproject/augur-core:$contract_sha;
           docker push $CORE_IMAGE_BUILD
           docker push augurproject/augur-core:$contract_sha
         displayName: augur-core push
