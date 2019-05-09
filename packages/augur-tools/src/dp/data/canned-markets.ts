@@ -38,7 +38,7 @@ interface BaseMarketData {
   _affiliateFeeDivisor: number;
   _topic: string;
   _extraInfo: {
-    _description: string;
+    description: string;
     longDescription?: string;
     resolutionSource?: string;
     _scalarDenomination?: string;
@@ -73,7 +73,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "space",
     _extraInfo: {
-      _description:
+      description:
         "Will SpaceX successfully complete a manned flight to the International Space Station by the end of " +
         thisYear +
         "?",
@@ -89,7 +89,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "space",
     _extraInfo: {
-      _description:
+      description:
         "Will SpaceX successfully complete a manned flight beyond Earth orbit by " +
         inOneMonths.toDateString() +
         "?",
@@ -104,7 +104,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "space",
     _extraInfo: {
-      _description:
+      description:
         "Will SpaceX successfully complete a Mars landing (manned or unmanned) by " +
         inTwoMonths.toDateString() +
         "?",
@@ -121,7 +121,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "politics",
     _extraInfo: {
-      _description:
+      description:
         "Will California secede from the United States before, " +
         inTwoMonths.toDateString() +
         "?",
@@ -138,7 +138,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "finance",
     _extraInfo: {
-  _description:
+  description:
     "Will the Dow Jones Industrial Average close at a higher price on " +
     closingBellTomorrow.toDateString() +
     " than it closed at the previous day?",
@@ -155,7 +155,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "Augur",
     _extraInfo: {
-      _description:
+      description:
         "Will Augur's live release happen by " +
         inThreeMonths.toDateString() +
         "?",
@@ -172,7 +172,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "politics",
     _extraInfo: {
-      _description:
+      description:
         "Will Jair Messias Bolsonaro be elected the president of Brazil in " +
         inThreeMonths.toDateString() +
         "?",
@@ -188,7 +188,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "crypto",
     _extraInfo: {
-      _description:
+      description:
         "Will Ethereum trade at $2000 or higher at any time before the end of " +
         inFourMonths.toDateString() +
         "?",
@@ -204,7 +204,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "climate",
     _extraInfo: {
-      _description:
+      description:
         "Will the Larsen B ice shelf collapse by " +
         inFourMonths.toDateString() +
         "?",
@@ -219,7 +219,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "sports",
     _extraInfo: {
-      _description:
+      description:
         "Will the Golden State Warriors win the Championship on " +
         inFiveMonths.toDateString() +
         "?",
@@ -235,7 +235,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "agriculture",
     _extraInfo: {
-      _description:
+      description:
         "Will antibiotics be outlawed for agricultural use in China by " +
         inFiveMonths.toDateString() +
         "?",
@@ -254,7 +254,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "temperature",
     _extraInfo: {
-      _description:
+      description:
         "High temperature (in degrees Fahrenheit) on " +
         today.toDateString() +
         " at the San Francisco International Airport, as reported by Weather Underground",
@@ -296,7 +296,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "science",
     _extraInfo: {
-      _description:
+      description:
         "Average tropospheric methane concentration (in parts-per-billion) on " +
         inFiveMonths.toDateString(),
       resolutionSource: "https://www.esrl.noaa.gov/gmd/ccgg/trends_ch4",
@@ -315,7 +315,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "medicine",
     _extraInfo: {
-      _description:
+      description:
         "New antibiotics approved by the FDA on " + inSixMonths.toDateString(),
       resolutionSource:
         "https://www.centerwatch.com/drug-information/fda-approved-drugs/year/" +
@@ -350,7 +350,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "crypto",
     _extraInfo: {
-      _description:
+      description:
         "Millions of Tether tokens issued on " +
         today.toDateString() +
         " (round down)",
@@ -385,7 +385,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "sports",
     _extraInfo: {
-      _description:
+      description:
         "Who will win the University of Georgia vs. University of Florida football game on " +
         midnightTomorrow.toDateString() +
         "?",
@@ -416,7 +416,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "politics",
     _extraInfo: {
-      _description:
+      description:
         "What will be the status of the U.S. electoral college on " +
         midnightTomorrow.toDateString() +
         "?",
@@ -440,7 +440,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "science",
     _extraInfo: {
-      _description:
+      description:
         "What will be the number one killer in the United States by " +
         inOneMonths.toDateString() +
         "?",
@@ -481,7 +481,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "housing",
     _extraInfo: {
-      _description:
+      description:
         "Which city will have the lowest median single-family home price on " +
         inOneMonths.toDateString() +
         "?",
@@ -524,7 +524,7 @@ export const cannedMarketsData:Array<MarketData> = [
     _affiliateFeeDivisor: 4,
     _topic: "housing",
     _extraInfo: {
-      _description:
+      description:
         "Which city will have the highest median single-family home price on " +
         inTwoMonths.toDateString() +
         "?",

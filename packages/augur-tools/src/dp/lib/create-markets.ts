@@ -1,4 +1,4 @@
-import { Augur } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import chalk from "chalk";
 import { createMarket } from "./create-market";
 import { cannedMarketsData } from "../data/canned-markets";
@@ -27,7 +27,7 @@ export async function createMarkets(augur:Augur<BigNumber>, address:string, sign
     const events = await createMarket(augur, market, address);
     const marketCreatedEvent = <MarketCreatedEvent>events.find((event) => event.name === "MarketCreated");
 
-    console.log(chalk.green(chalk.cyan.dim(market._extraInfo._description), JSON.stringify(marketCreatedEvent.parameters.market)));
+    console.log(chalk.green(chalk.cyan.dim(market._extraInfo.description), JSON.stringify(marketCreatedEvent.parameters.market)));
 
     if (process.env.NO_CREATE_ORDERS) continue;
     // createOrderBook(augur, marketId, numOutcomes, market._maxPrice || "1", market._minPrice || "0", numTicks, market.orderBook, auth, nextMarket);

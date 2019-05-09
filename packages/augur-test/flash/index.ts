@@ -34,13 +34,13 @@ import { JsonRpcProvider } from "ethers/providers";
 
 import { NetworkConfiguration } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { Augur } from "@augurproject/api";
-import { Controller } from "@augurproject/state";
+import { Augur } from "@augurproject/sdk";
+import { Controller } from "@augurproject/sdk/build/state/Controller";
 const debugOptions = require("../debug-options");
 import { ContractAPI } from "../libs/ContractAPI";
 import { makeDbMock } from "../libs/MakeDbMock";
-import { BlockAndLogStreamerListener } from "@augurproject/state/src/db/BlockAndLogStreamerListener";
-import { EventLogDBRouter } from "@augurproject/state/src/db/EventLogDBRouter";
+import { BlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
+import { EventLogDBRouter } from "@augurproject/sdk/build/state/db/EventLogDBRouter";
 
 function getPrivateKeyFromString(privateKey) {
   privateKey = Buffer.from(strip0xPrefix(privateKey), "hex");
@@ -50,7 +50,7 @@ function getPrivateKeyFromString(privateKey) {
 }
 
 const NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
-const mock = makeDbMock();  // TODO when augur-state API is ready, deprecate using the mock here
+const mock = makeDbMock();  // TODO when augur-sdk API is ready, deprecate using the mock here
 
 const methods = {
   "trade-complete-sets": {

@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": "src",
+    "experimentalDecorators": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "references": [
+    {
+      "path": "../blockstream-adapters"
+    },
+    {
+      "path": "../speedomatic"
+    },
+    {
+      "path": "../augur-artifacts"
+    },
+    {
+      "path": "../augur-core"
+    },
+    {
+      "path": "../augur-types"
+    }
+  ]
+}
