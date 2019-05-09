@@ -4,8 +4,8 @@ import { logProcessors } from "./log-processors";
 
 import { EthersProviderBlockStreamAdapter, ExtendedLog } from "blockstream-adapters";
 import { Block, BlockAndLogStreamer} from "ethereumjs-blockstream";
-import { BlockAndLogStreamerListener } from "@augurproject/state/build/db/BlockAndLogStreamerListener";
-import { EventLogDBRouter } from "@augurproject/state/build/db/EventLogDBRouter";
+import { BlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
+import { EventLogDBRouter } from "@augurproject/sdk/build/state/db/EventLogDBRouter";
 import { Addresses, UploadBlockNumbers } from "@augurproject/artifacts";
 
 export async function startAugurListeners(augur: Augur): Promise<BlockAndLogStreamerListener> {

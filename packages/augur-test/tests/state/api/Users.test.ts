@@ -5,9 +5,9 @@ import {
     ContractAPI,
   } from "../../../libs";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
-import {API} from "@augurproject/state/src/api/API";
-import {DB} from "@augurproject/state/src/db/DB";
-import { convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, numTicksToTickSize } from "@augurproject/api";
+import {API} from "@augurproject/sdk/build/state/api/API";
+import {DB} from "@augurproject/sdk/build/state/db/DB";
+import { convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, numTicksToTickSize } from "@augurproject/sdk";
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { ethers } from "ethers";
 import { stringTo32ByteHex } from "../../../libs/Utils";
