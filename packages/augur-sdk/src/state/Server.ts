@@ -13,7 +13,7 @@ import { Addresses } from "@augurproject/artifacts";
 import { EndpointSettings } from "./api/types";
 
 export async function run() {
-  const settings = require("./settings.json");
+  const settings = require("@augurproject/state/src/state/settings.json");
 
   const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
   const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
