@@ -9,7 +9,7 @@ import { JsonRpcProvider } from "ethers/providers";
 import { PouchDBFactory } from "./db/AbstractDB";
 import { UploadBlockNumbers, Addresses } from "@augurproject/artifacts";
 
-const settings = require("@augurproject/sdk/state/settings.json");
+const settings = require("@augurproject/sdk/src/state/settings.json");
 
 // TODO Add Ethereum node URL as param
 export async function start() {
