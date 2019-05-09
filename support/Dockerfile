@@ -9,9 +9,9 @@ RUN apk update \
 WORKDIR /augur
 COPY . .
 
-RUN npm_config_devdir=/root/.node-gyp yarn --cache-folder=/root/.yarn-cache
+# RUN npm_config_devdir=/root/.node-gyp yarn --cache-folder=/root/.yarn-cache
 
-RUN yarn build
+#RUN yarn build
 
 RUN apk update \
   && apk upgrade \

@@ -1,3 +1,4 @@
+# adding artifact caching: https://github.com/Microsoft/azure-pipelines-artifact-caching-tasks/blob/master/README.md
 variables:
     SOLC_VERSION: v0.4.24
     SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
@@ -29,8 +30,26 @@ jobs:
           command: login
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
+
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: '$(ArtifactFeed)'
+
+      - script: |
+          yarn install
+        displayName: Install Dependencies
+
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: '$(ArtifactFeed)'
+
       - bash: |
           set -euo pipefail
+          yarn build
           yarn docker:build:augur
           docker images
           docker tag augurproject/augur-build:latest augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
