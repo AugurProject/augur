@@ -50,12 +50,11 @@ contract IUniverse is ITyped {
     function isContainerForMarket(IMarket _shadyTarget) public view returns (bool);
     function isContainerForReportingParticipant(IReportingParticipant _reportingParticipant) public view returns (bool);
     function isContainerForShareToken(IShareToken _shadyTarget) public view returns (bool);
-    function addMarketTo() public returns (bool);
-    function removeMarketFrom() public returns (bool);
+    function migrateMarketOut(IUniverse _destinationUniverse) public returns (bool);
+    function migrateMarketIn(IMarket _market, uint256 _cashBalance, uint256 _marketOI) public returns (bool);
     function decrementOpenInterest(uint256 _amount) public returns (bool);
     function decrementOpenInterestFromMarket(IMarket _market) public returns (bool);
     function incrementOpenInterest(uint256 _amount) public returns (bool);
-    function incrementOpenInterestFromMarket(IMarket _market) public returns (bool);
     function getWinningChildUniverse() public view returns (IUniverse);
     function isForking() public view returns (bool);
     function assertMarketBalance() public view returns (bool);

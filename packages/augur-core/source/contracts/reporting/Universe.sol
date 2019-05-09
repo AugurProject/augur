@@ -272,16 +272,25 @@ contract Universe is ITyped, IUniverse {
         return markets[address(_shadyMarket)];
     }
 
-    function addMarketTo() public returns (bool) {
-        require(parentUniverse.isContainerForMarket(IMarket(msg.sender)));
-        markets[msg.sender] = true;
-        augur.logMarketMigrated(IMarket(msg.sender), parentUniverse);
+    function migrateMarketOut(IUniverse _destinationUniverse) public returns (bool) {
+        IMarket _market = IMarket(msg.sender);
+        require(isContainerForMarket(_market));
+        markets[msg.sender] = false;
+        uint256 _cashBalance = marketBalance[address(msg.sender)];
+        uint256 _marketOI = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
+        withdraw(address(this), _cashBalance, msg.sender);
+        openInterestInAttoCash = openInterestInAttoCash.sub(_marketOI);
+        cash.approve(address(augur), _cashBalance);
+        _destinationUniverse.migrateMarketIn(_market, _cashBalance, _marketOI);
         return true;
     }
 
-    function removeMarketFrom() public returns (bool) {
-        require(isContainerForMarket(IMarket(msg.sender)));
-        markets[msg.sender] = false;
+    function migrateMarketIn(IMarket _market, uint256 _cashBalance, uint256 _marketOI) public returns (bool) {
+        require(address(parentUniverse) == msg.sender);
+        markets[address(_market)] = true;
+        deposit(address(msg.sender), _cashBalance, address(_market));
+        openInterestInAttoCash = openInterestInAttoCash.add(_marketOI);
+        augur.logMarketMigrated(_market, parentUniverse);
         return true;
     }
 
@@ -329,13 +338,6 @@ contract Universe is ITyped, IUniverse {
 
     function incrementOpenInterest(uint256 _amount) public returns (bool) {
         require(msg.sender == completeSets);
-        openInterestInAttoCash = openInterestInAttoCash.add(_amount);
-        return true;
-    }
-
-    function incrementOpenInterestFromMarket(IMarket _market) public returns (bool) {
-        require(isContainerForMarket(IMarket(msg.sender)));
-        uint256 _amount = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
         openInterestInAttoCash = openInterestInAttoCash.add(_amount);
         return true;
     }

@@ -368,25 +368,17 @@ contract Market is Initializable, Ownable, IMarket {
 
         disavowCrowdsourcers();
 
-        IUniverse _currentUniverse = universe;
         bytes32 _winningForkPayoutDistributionHash = _forkingMarket.getWinningPayoutDistributionHash();
-        IUniverse _destinationUniverse = _currentUniverse.getChildUniverse(_winningForkPayoutDistributionHash);
-
-        uint256 _cashBalance = universe.marketBalance(address(this));
-        universe.withdraw(address(this), _cashBalance, address(this));
-        universe.decrementOpenInterestFromMarket(this);
+        IUniverse _destinationUniverse = universe.getChildUniverse(_winningForkPayoutDistributionHash);
 
         // follow the forking market to its universe
         if (disputeWindow != IDisputeWindow(0)) {
             // Markets go into the standard resolution period during fork migration even if they were in the initial dispute window. We want to give some time for REP to migrate.
             disputeWindow = _destinationUniverse.getOrCreateNextDisputeWindow(false);
         }
-        _destinationUniverse.addMarketTo();
-        _currentUniverse.removeMarketFrom();
-        universe = _destinationUniverse;
 
-        universe.deposit(address(this), _cashBalance, address(this));
-        universe.incrementOpenInterestFromMarket(this);
+        universe.migrateMarketOut(_destinationUniverse);
+        universe = _destinationUniverse;
 
         // Pay the REP bond.
         repBond = universe.getOrCacheMarketRepBond();
@@ -394,6 +386,7 @@ contract Market is Initializable, Ownable, IMarket {
         getReputationToken().trustedMarketTransfer(repBondOwner, address(this), repBond);
 
         // Update the Initial Reporter
+
         IInitialReporter _initialReporter = getInitialReporter();
         _initialReporter.migrateToNewUniverse(msg.sender);
 
