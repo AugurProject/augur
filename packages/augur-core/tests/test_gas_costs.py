@@ -28,7 +28,7 @@ FILL_ORDER =        875638
 CLAIM_PROCEEDS =    962083
 
 # Other
-UNIVERSE_CREATE =   870579
+UNIVERSE_CREATE =   1050772
 
 pytestmark = mark.skip(reason="Just for testing gas cost")
 

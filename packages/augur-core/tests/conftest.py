@@ -324,14 +324,14 @@ class ContractsFixture:
                 if name == 'Orders': continue # In testing we use the TestOrders version which lets us call protected methods
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
-                if name in ['TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin']: continue # We upload these manually after this process
+                if name in ['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin']: continue # We upload the Test Dai contracts manually after this process
                 if name in ['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeOverloadToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock
                 # if name == 'ReputationTokenFactory': continue # tests use mock
                 # if name == 'DisputeWindowFactory': continue # tests use mock
                 # if name == 'UniverseFactory': continue # tests use mock
-                onlySignatures = ["ReputationToken", "TestNetReputationToken", "Universe"]
+                onlySignatures = ["ReputationToken", "TestNetReputationToken"]
                 if name in onlySignatures:
                     self.generateAndStoreSignature(path.join(directory, filename))
                 elif name == "TimeControlled":
@@ -345,10 +345,11 @@ class ContractsFixture:
                     self.uploadAndAddToAugur(path.join(directory, filename))
 
     def uploadTestDaiContracts(self):
+        self.uploadAndAddToAugur("../source/contracts/Cash.sol")
         self.uploadAndAddToAugur("../source/contracts/TestNetDaiVat.sol", lookupKey = "DaiVat", signatureKey = "DaiVat")
         self.uploadAndAddToAugur("../source/contracts/TestNetDaiPot.sol", lookupKey = "DaiPot", signatureKey = "DaiPot", constructorArgs=[self.contracts['DaiVat'].address])
         self.uploadAndAddToAugur("../source/contracts/TestNetDaiJoin.sol", lookupKey = "DaiJoin", signatureKey = "DaiJoin", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Cash'].address])
-
+        self.contracts["Cash"].initialize(self.contracts['Augur'].address)
 
     def buildMockContracts(self):
         testContractsPath = resolveRelativePath(self.relativeTestContractsPath)
@@ -381,7 +382,7 @@ class ContractsFixture:
                 self.upload(path.join(directory, filename), constructorArgs=constructorArgs)
 
     def initializeAllContracts(self):
-        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','Cash','LegacyReputationToken', 'ProfitLoss']
+        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','LegacyReputationToken', 'ProfitLoss']
         for contractName in contractsToInitialize:
             if getattr(self.contracts[contractName], "initializeERC820", None):
                 self.contracts[contractName].initializeERC820(self.contracts['Augur'].address)

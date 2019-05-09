@@ -3,6 +3,7 @@ pragma solidity 0.5.4;
 
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/factories/IReputationTokenFactory.sol';
 import 'ROOT/factories/IDisputeWindowFactory.sol';
 import 'ROOT/factories/IMarketFactory.sol';
@@ -21,7 +22,7 @@ import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/IAugur.sol';
 
 
-contract Universe is ITyped, IUniverse {
+contract Universe is ITyped, Initializable, IUniverse {
     using SafeMathUint256 for uint256;
 
     IAugur public augur;
@@ -68,7 +69,8 @@ contract Universe is ITyped, IUniverse {
 
     uint256 constant public DAI_ONE = 10 ** 27;
 
-    constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public {
+    function initialize(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public beforeInitialized returns (bool) {
+        endInitialization();
         augur = _augur;
         parentUniverse = _parentUniverse;
         parentPayoutDistributionHash = _parentPayoutDistributionHash;
@@ -85,7 +87,7 @@ contract Universe is ITyped, IUniverse {
         cash = ICash(augur.lookup("Cash"));
         daiVat = IDaiVat(augur.lookup("DaiVat"));
         daiPot = IDaiPot(augur.lookup("DaiPot"));
-        daiJoin = IDaiJoin(augur.lookup("DaiPot"));
+        daiJoin = IDaiJoin(augur.lookup("DaiJoin"));
         daiVat.hope(address(daiPot));
         daiVat.hope(address(daiJoin));
         cash.approve(address(daiJoin), 2 ** 256 - 1);
@@ -551,7 +553,7 @@ contract Universe is ITyped, IUniverse {
 
     function canToggleDSR() public view returns (bool) {
         uint256 _dsr = daiPot.dsr();
-        uint256 _maxDSRMovement = DAI_ONE / 100; // TODO: Get from MKR contract
+        uint256 _maxDSRMovement = DAI_ONE / 100; // TODO: Get from MKR contract when this is available
         uint256 _dsrThreshold = DAI_ONE.add(_maxDSRMovement);
         if (useDSR && _dsr < _dsrThreshold) {
             return true;

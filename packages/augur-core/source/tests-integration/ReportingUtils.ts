@@ -1,7 +1,7 @@
 import { ethers } from "ethers"
 import { expect } from "chai";
 import { TestFixture } from './TestFixture';
-import { Market } from '../libraries/ContractInterfaces';
+import { Market, Universe } from '../libraries/ContractInterfaces';
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -104,7 +104,7 @@ export class ReportingUtils {
         }
     }
 
-    public async proceedToFork(fixture: TestFixture, market: Market) {
+    public async proceedToFork(fixture: TestFixture, market: Market, universe: Universe) {
         let forkingMarket = await market.getForkingMarket_();
         let disputeRound = 0;
         while (forkingMarket === ZERO_ADDRESS) {
@@ -121,6 +121,9 @@ export class ReportingUtils {
         for (let i = 0; i < numParticipants.toNumber(); i++) {
             const reportingParticipantAddress = await market.getReportingParticipant_(new ethers.utils.BigNumber(i));
             const reportingParticipant = await fixture.getReportingParticipant(reportingParticipantAddress);
+            console.log(`Creating universe for participant: ${i}`);
+            await universe.createChildUniverse(await reportingParticipant.getPayoutNumerators_());
+            console.log(`Calling forkAndRedeem for participant: ${i}`);
             await reportingParticipant.forkAndRedeem();
 
             const reportingParticipantStake = await reportingParticipant.getStake_();

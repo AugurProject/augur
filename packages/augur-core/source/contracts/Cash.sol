@@ -3,16 +3,21 @@ pragma solidity 0.5.4;
 import 'ROOT/IAugur.sol';
 import 'ROOT/trading/ICash.sol';
 import 'ROOT/libraries/ITyped.sol';
-import 'ROOT/libraries/token/VariableSupplyToken.sol';
+import 'ROOT/libraries/token/ERC20Token.sol';
 import 'ROOT/external/IDaiVat.sol';
 import 'ROOT/external/IDaiJoin.sol';
 
 
 /**
  * @title Cash
- * @dev Test contract for CASH
+ * @dev Test contract for CASH (Dai)
  */
-contract Cash is ITyped, VariableSupplyToken, ICash {
+contract Cash is ITyped, ICash {
+    using SafeMathUint256 for uint256;
+    uint256 public constant ETERNAL_APPROVAL_VALUE = 2 ** 256 - 1;
+
+    event Mint(address indexed target, uint256 value);
+    event Burn(address indexed target, uint256 value);
 
     mapping (address => uint) public wards;
     modifier auth {
@@ -25,17 +30,87 @@ contract Cash is ITyped, VariableSupplyToken, ICash {
 
     uint256 constant public DAI_ONE = 10 ** 27;
 
+    mapping(address => uint) internal balances;
+    uint256 public supply;
+    mapping(address => mapping(address => uint256)) internal allowed;
+
+    uint8 constant public decimals = 18;
+
     IDaiVat public daiVat;
     IDaiJoin public daiJoin;
 
     function initialize(IAugur _augur) public returns (bool) {
-        erc820Registry = IERC820Registry(_augur.lookup("ERC820Registry"));
-        initialize820InterfaceImplementations();
         daiJoin = IDaiJoin(_augur.lookup("DaiJoin"));
         daiVat = IDaiVat(_augur.lookup("DaiVat"));
         wards[address(this)] = 1;
         wards[address(daiJoin)] = 1;
         return true;
+    }
+
+    function transfer(address _to, uint256 _amount) public returns (bool) {
+        require(_to != address(0), "Cannot send to 0x0");
+        internalTransfer(msg.sender, _to, _amount);
+        return true;
+    }
+
+    function transferFrom(address _from, address _to, uint256 _amount) public returns (bool) {
+        uint256 _allowance = allowed[_from][msg.sender];
+        require(_amount <= _allowance, "Not enough funds allowed");
+
+        if (_allowance != ETERNAL_APPROVAL_VALUE) {
+            allowed[_from][msg.sender] = _allowance.sub(_amount);
+        }
+
+        internalTransfer(_from, _to, _amount);
+        return true;
+    }
+
+    function internalTransfer(address _from, address _to, uint256 _amount) internal returns (bool) {
+        require(_to != address(0), "Cannot send to 0x0");
+        require(balances[_from] >= _amount, "SEND Not enough funds");
+
+        balances[_from] = balances[_from].sub(_amount);
+        balances[_to] = balances[_to].add(_amount);
+        emit Transfer(_from, _to, _amount);
+        return true;
+    }
+
+    function totalSupply() public view returns (uint256) {
+        return supply;
+    }
+
+    function balanceOf(address _owner) public view returns (uint256) {
+        return balances[_owner];
+    }
+
+    function approve(address _spender, uint256 _amount) public returns (bool) {
+        approveInternal(msg.sender, _spender, _amount);
+        return true;
+    }
+
+    function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
+        approveInternal(msg.sender, _spender, allowed[msg.sender][_spender].add(_addedValue));
+        return true;
+    }
+
+    function decreaseApproval(address _spender, uint _subtractedValue) public returns (bool) {
+        uint oldValue = allowed[msg.sender][_spender];
+        if (_subtractedValue > oldValue) {
+            approveInternal(msg.sender, _spender, 0);
+        } else {
+            approveInternal(msg.sender, _spender, oldValue.sub(_subtractedValue));
+        }
+        return true;
+    }
+
+    function approveInternal(address _owner, address _spender, uint256 _allowance) internal returns (bool) {
+        allowed[_owner][_spender] = _allowance;
+        emit Approval(_owner, _spender, _allowance);
+        return true;
+    }
+
+    function allowance(address _owner, address _spender) public view returns (uint256) {
+        return allowed[_owner][_spender];
     }
 
     function faucet(uint256 _amount) public returns (bool) {
@@ -59,19 +134,25 @@ contract Cash is ITyped, VariableSupplyToken, ICash {
         return burn(usr, wad);
     }
 
+    function mint(address _target, uint256 _amount) internal returns (bool) {
+        balances[_target] = balances[_target].add(_amount);
+        supply = supply.add(_amount);
+        emit Mint(_target, _amount);
+        emit Transfer(address(0), _target, _amount);
+        return true;
+    }
+
+    function burn(address _target, uint256 _amount) internal returns (bool) {
+        require(balanceOf(_target) >= _amount, "BURN Not enough funds");
+
+        balances[_target] = balances[_target].sub(_amount);
+        supply = supply.sub(_amount);
+
+        emit Burn(_target, _amount);
+        return true;
+    }
+
     function getTypeName() public view returns (bytes32) {
         return "Cash";
-    }
-
-    function onMint(address, uint256) internal returns (bool) {
-        return true;
-    }
-
-    function onBurn(address, uint256) internal returns (bool) {
-        return true;
-    }
-
-    function onTokenTransfer(address, address, uint256) internal returns (bool) {
-        return true;
     }
 }

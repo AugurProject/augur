@@ -82,16 +82,16 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0x11dda748f0bd3af85a073da0088a0acb827d9584a4fdb825c81f1232a5309538': {"name":"TimestampSet","signature":"TimestampSet(uint256)","signatureHash":"0x11dda748f0bd3af85a073da0088a0acb827d9584a4fdb825c81f1232a5309538","parameters":[{"indexed":false,"name":"newTimestamp","type":"uint256"}]},
 	'0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885': {"name":"Mint","signature":"Mint(address,uint256)","signatureHash":"0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885","parameters":[{"indexed":true,"name":"target","type":"address"},{"indexed":false,"name":"value","type":"uint256"}]},
 	'0xcc16f5dbb4873280815c1ee09dbd06736cffcc184412cf7a71a0fdb75d397ca5': {"name":"Burn","signature":"Burn(address,uint256)","signatureHash":"0xcc16f5dbb4873280815c1ee09dbd06736cffcc184412cf7a71a0fdb75d397ca5","parameters":[{"indexed":true,"name":"target","type":"address"},{"indexed":false,"name":"value","type":"uint256"}]},
-	'0xb531fea5aa9b801cfa979874223cdc61cc3691d97679ecbf9165d54b1bc3357a': {"name":"Sent","signature":"Sent(address,address,address,uint256,bytes32,bytes32)","signatureHash":"0xb531fea5aa9b801cfa979874223cdc61cc3691d97679ecbf9165d54b1bc3357a","parameters":[{"indexed":true,"name":"operator","type":"address"},{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"},{"indexed":false,"name":"data","type":"bytes32"},{"indexed":false,"name":"operatorData","type":"bytes32"}]},
-	'0x794f771c64c4db2f318b4519d7ddc0ccbe03f9a239852dbe286e32a140c188ce': {"name":"Minted","signature":"Minted(address,address,uint256,bytes32)","signatureHash":"0x794f771c64c4db2f318b4519d7ddc0ccbe03f9a239852dbe286e32a140c188ce","parameters":[{"indexed":true,"name":"operator","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"},{"indexed":false,"name":"operatorData","type":"bytes32"}]},
-	'0x50c1bacbee5f911f0dbd7e235811ea8d16f220b78fa9e771ebff91202834b2fb': {"name":"Burned","signature":"Burned(address,address,uint256,bytes32,bytes32)","signatureHash":"0x50c1bacbee5f911f0dbd7e235811ea8d16f220b78fa9e771ebff91202834b2fb","parameters":[{"indexed":true,"name":"operator","type":"address"},{"indexed":true,"name":"from","type":"address"},{"indexed":false,"name":"amount","type":"uint256"},{"indexed":false,"name":"data","type":"bytes32"},{"indexed":false,"name":"operatorData","type":"bytes32"}]},
-	'0xf4caeb2d6ca8932a215a353d0703c326ec2d81fc68170f320eb2ab49e9df61f9': {"name":"AuthorizedOperator","signature":"AuthorizedOperator(address,address)","signatureHash":"0xf4caeb2d6ca8932a215a353d0703c326ec2d81fc68170f320eb2ab49e9df61f9","parameters":[{"indexed":true,"name":"operator","type":"address"},{"indexed":true,"name":"tokenHolder","type":"address"}]},
-	'0x50546e66e5f44d728365dc3908c63bc5cfeeab470722c1677e3073a6ac294aa1': {"name":"RevokedOperator","signature":"RevokedOperator(address,address)","signatureHash":"0x50546e66e5f44d728365dc3908c63bc5cfeeab470722c1677e3073a6ac294aa1","parameters":[{"indexed":true,"name":"operator","type":"address"},{"indexed":true,"name":"tokenHolder","type":"address"}]},
 	'0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef': {"name":"Transfer","signature":"Transfer(address,address,uint256)","signatureHash":"0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef","parameters":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}]},
 	'0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925': {"name":"Approval","signature":"Approval(address,address,uint256)","signatureHash":"0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925","parameters":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}]},
 	'0x93baa6efbd2244243bfee6ce4cfdd1d04fc4c0e9a786abd3a41313bd352db153': {"name":"InterfaceImplementerSet","signature":"InterfaceImplementerSet(address,bytes32,address)","signatureHash":"0x93baa6efbd2244243bfee6ce4cfdd1d04fc4c0e9a786abd3a41313bd352db153","parameters":[{"indexed":true,"name":"addr","type":"address"},{"indexed":true,"name":"interfaceHash","type":"bytes32"},{"indexed":true,"name":"implementer","type":"address"}]},
 	'0x605c2dbf762e5f7d60a546d42e7205dcb1b011ebc62a61736a57c9089d3a4350': {"name":"ManagerChanged","signature":"ManagerChanged(address,address)","signatureHash":"0x605c2dbf762e5f7d60a546d42e7205dcb1b011ebc62a61736a57c9089d3a4350","parameters":[{"indexed":true,"name":"addr","type":"address"},{"indexed":true,"name":"newManager","type":"address"}]},
-	'0xbf88b5a3158512dc8ad44dadf221f46eb1df762a2e7fd1de86aab34b0af455cf': {"name":"FundedAccount","signature":"FundedAccount(address,address,uint256,uint256)","signatureHash":"0xbf88b5a3158512dc8ad44dadf221f46eb1df762a2e7fd1de86aab34b0af455cf","parameters":[{"indexed":true,"name":"_universe","type":"address"},{"indexed":true,"name":"_sender","type":"address"},{"indexed":false,"name":"_repBalance","type":"uint256"},{"indexed":false,"name":"_timestamp","type":"uint256"}]}
+	'0xbf88b5a3158512dc8ad44dadf221f46eb1df762a2e7fd1de86aab34b0af455cf': {"name":"FundedAccount","signature":"FundedAccount(address,address,uint256,uint256)","signatureHash":"0xbf88b5a3158512dc8ad44dadf221f46eb1df762a2e7fd1de86aab34b0af455cf","parameters":[{"indexed":true,"name":"_universe","type":"address"},{"indexed":true,"name":"_sender","type":"address"},{"indexed":false,"name":"_repBalance","type":"uint256"},{"indexed":false,"name":"_timestamp","type":"uint256"}]},
+	'0xb531fea5aa9b801cfa979874223cdc61cc3691d97679ecbf9165d54b1bc3357a': {"name":"Sent","signature":"Sent(address,address,address,uint256,bytes32,bytes32)","signatureHash":"0xb531fea5aa9b801cfa979874223cdc61cc3691d97679ecbf9165d54b1bc3357a","parameters":[{"indexed":true,"name":"operator","type":"address"},{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"},{"indexed":false,"name":"data","type":"bytes32"},{"indexed":false,"name":"operatorData","type":"bytes32"}]},
+	'0x794f771c64c4db2f318b4519d7ddc0ccbe03f9a239852dbe286e32a140c188ce': {"name":"Minted","signature":"Minted(address,address,uint256,bytes32)","signatureHash":"0x794f771c64c4db2f318b4519d7ddc0ccbe03f9a239852dbe286e32a140c188ce","parameters":[{"indexed":true,"name":"operator","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"},{"indexed":false,"name":"operatorData","type":"bytes32"}]},
+	'0x50c1bacbee5f911f0dbd7e235811ea8d16f220b78fa9e771ebff91202834b2fb': {"name":"Burned","signature":"Burned(address,address,uint256,bytes32,bytes32)","signatureHash":"0x50c1bacbee5f911f0dbd7e235811ea8d16f220b78fa9e771ebff91202834b2fb","parameters":[{"indexed":true,"name":"operator","type":"address"},{"indexed":true,"name":"from","type":"address"},{"indexed":false,"name":"amount","type":"uint256"},{"indexed":false,"name":"data","type":"bytes32"},{"indexed":false,"name":"operatorData","type":"bytes32"}]},
+	'0xf4caeb2d6ca8932a215a353d0703c326ec2d81fc68170f320eb2ab49e9df61f9': {"name":"AuthorizedOperator","signature":"AuthorizedOperator(address,address)","signatureHash":"0xf4caeb2d6ca8932a215a353d0703c326ec2d81fc68170f320eb2ab49e9df61f9","parameters":[{"indexed":true,"name":"operator","type":"address"},{"indexed":true,"name":"tokenHolder","type":"address"}]},
+	'0x50546e66e5f44d728365dc3908c63bc5cfeeab470722c1677e3073a6ac294aa1': {"name":"RevokedOperator","signature":"RevokedOperator(address,address)","signatureHash":"0x50546e66e5f44d728365dc3908c63bc5cfeeab470722c1677e3073a6ac294aa1","parameters":[{"indexed":true,"name":"operator","type":"address"},{"indexed":true,"name":"tokenHolder","type":"address"}]}
 }
 
 
@@ -1000,13 +1000,6 @@ export class Cash<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public defaultOperators_ = async (options?: { sender?: string }): Promise<Array<string>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"defaultOperators","outputs":[{"name":"","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <Array<string>>result[0]
-	}
-
 	public name_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -1068,13 +1061,6 @@ export class Cash<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public granularity_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"granularity","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public faucet = async (amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_amount","type":"uint256"}],"name":"faucet","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -1108,49 +1094,16 @@ export class Cash<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
-	public balanceOf_ = async (tokenHolder: string, options?: { sender?: string }): Promise<TBigNumber> => {
+	public balanceOf_ = async (owner: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_tokenHolder","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [tokenHolder], options.sender)
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [owner], options.sender)
 		return <TBigNumber>result[0]
-	}
-
-	public sendNoHooks = async (to: string, amount: TBigNumber, data: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_data","type":"bytes32"}],"name":"sendNoHooks","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [to, amount, data], 'sendNoHooks', options.sender)
-	}
-
-	public sendNoHooks_ = async (to: string, amount: TBigNumber, data: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_data","type":"bytes32"}],"name":"sendNoHooks","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [to, amount, data], options.sender)
-		return <boolean>result[0]
-	}
-
-	public authorizeOperator = async (operator: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_operator","type":"address"}],"name":"authorizeOperator","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [operator], 'authorizeOperator', options.sender)
-	}
-
-	public authorizeOperator_ = async (operator: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_operator","type":"address"}],"name":"authorizeOperator","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [operator], options.sender)
-		return <boolean>result[0]
 	}
 
 	public symbol_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public erc820Registry_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"erc820Registry","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
 	}
@@ -1165,19 +1118,6 @@ export class Cash<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [to, amount], options.sender)
-		return <boolean>result[0]
-	}
-
-	public send = async (to: string, amount: TBigNumber, data: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_data","type":"bytes32"}],"name":"send","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [to, amount, data], 'send', options.sender)
-	}
-
-	public send_ = async (to: string, amount: TBigNumber, data: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_data","type":"bytes32"}],"name":"send","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [to, amount, data], options.sender)
 		return <boolean>result[0]
 	}
 
@@ -1221,31 +1161,11 @@ export class Cash<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
-	public isOperatorFor_ = async (operator: string, tokenHolder: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_operator","type":"address"},{"name":"_tokenHolder","type":"address"}],"name":"isOperatorFor","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [operator, tokenHolder], options.sender)
-		return <boolean>result[0]
-	}
-
 	public getTypeName_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getTypeName","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
-	}
-
-	public operatorSend = async (from: string, to: string, amount: TBigNumber, data: string, operatorData: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_data","type":"bytes32"},{"name":"_operatorData","type":"bytes32"}],"name":"operatorSend","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [from, to, amount, data, operatorData], 'operatorSend', options.sender)
-	}
-
-	public operatorSend_ = async (from: string, to: string, amount: TBigNumber, data: string, operatorData: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_data","type":"bytes32"},{"name":"_operatorData","type":"bytes32"}],"name":"operatorSend","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [from, to, amount, data, operatorData], options.sender)
-		return <boolean>result[0]
 	}
 
 	public allowance_ = async (owner: string, spender: string, options?: { sender?: string }): Promise<TBigNumber> => {
@@ -1278,19 +1198,6 @@ export class Cash<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"usr","type":"address"},{"name":"wad","type":"uint256"}],"name":"joinBurn","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [usr, wad], options.sender)
-		return <boolean>result[0]
-	}
-
-	public revokeOperator = async (operator: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_operator","type":"address"}],"name":"revokeOperator","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [operator], 'revokeOperator', options.sender)
-	}
-
-	public revokeOperator_ = async (operator: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_operator","type":"address"}],"name":"revokeOperator","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [operator], options.sender)
 		return <boolean>result[0]
 	}
 }
@@ -6341,6 +6248,19 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
+	public initialize = async (augur: string, parentUniverse: string, parentPayoutDistributionHash: string, payoutNumerators: Array<TBigNumber>, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_parentUniverse","type":"address"},{"name":"_parentPayoutDistributionHash","type":"bytes32"},{"name":"_payoutNumerators","type":"uint256[]"}],"name":"initialize","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [augur, parentUniverse, parentPayoutDistributionHash, payoutNumerators], 'initialize', options.sender)
+	}
+
+	public initialize_ = async (augur: string, parentUniverse: string, parentPayoutDistributionHash: string, payoutNumerators: Array<TBigNumber>, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_parentUniverse","type":"address"},{"name":"_parentPayoutDistributionHash","type":"bytes32"},{"name":"_payoutNumerators","type":"uint256[]"}],"name":"initialize","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [augur, parentUniverse, parentPayoutDistributionHash, payoutNumerators], options.sender)
+		return <boolean>result[0]
+	}
+
 	public createChildUniverse = async (parentPayoutNumerators: Array<TBigNumber>, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_parentPayoutNumerators","type":"uint256[]"}],"name":"createChildUniverse","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -6878,6 +6798,13 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_parentPayoutDistributionHash","type":"bytes32"}],"name":"getChildUniverse","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [parentPayoutDistributionHash], options.sender)
 		return <string>result[0]
+	}
+
+	public getInitialized_ = async (options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getInitialized","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <boolean>result[0]
 	}
 
 	public previousValidityBondInAttoCash_ = async (options?: { sender?: string }): Promise<TBigNumber> => {

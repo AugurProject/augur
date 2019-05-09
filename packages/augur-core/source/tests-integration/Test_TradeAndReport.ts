@@ -55,7 +55,7 @@ describe("TradeAndReport", () => {
 
         // Proceed to reporting
         const reportingUtils = new ReportingUtils();
-        await reportingUtils.proceedToFork(fixture, market);
+        await reportingUtils.proceedToFork(fixture, market, await fixture.getUniverse(market));
 
         const isForking = await fixture.isForking();
         expect(isForking).to.be.true;
