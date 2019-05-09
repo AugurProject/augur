@@ -28,7 +28,7 @@ class ContractDescription(object):
         self = cls(contract_name, solidity_version)
 
         for thing in abi:
-            # print json.dumps(thing, indent=2, separators=',:')
+            # print(json.dumps(thing, indent=2, separators=',:'))
             type_ = thing['type']
             if type_ == 'constructor':
                 inputs = thing['inputs']

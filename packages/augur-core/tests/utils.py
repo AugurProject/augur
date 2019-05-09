@@ -75,7 +75,7 @@ class BuyWithCash():
 
     def __exit__(self, *args):
         if args[1]:
-            print args
+            print(args)
             raise args[1]
 
 class EtherDelta():
@@ -113,9 +113,9 @@ class PrintGasUsed():
             raise args[1]
         gasUsed = self.fixture.chain.head_state.gas_used - self.startingGas
         if self.originalGas:
-            print "GAS USED WITH %s : %i. ORIGINAL: %i DELTA: %i" % (self.action, gasUsed, self.originalGas, self.originalGas - gasUsed)
+            print("GAS USED WITH {} : {}. ORIGINAL: {} DELTA: {}".format(self.action, gasUsed, self.originalGas, self.originalGas - gasUsed))
         else:
-            print "GAS USED WITH %s : %i" % (self.action, gasUsed)
+            print("GAS USED WITH {} : {}".format(self.action, gasUsed))
 
 class AssertLog():
 
