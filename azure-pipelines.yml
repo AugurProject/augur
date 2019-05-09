@@ -35,7 +35,7 @@ jobs:
         inputs:
           keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
           targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: '$(ArtifactFeed)'
+          vstsFeed: npmPackages
 
       - script: |
           yarn install
@@ -45,7 +45,7 @@ jobs:
         inputs:
           keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
           targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: '$(ArtifactFeed)'
+          vstsFeed: npmPackages
 
       - bash: |
           set -euo pipefail
