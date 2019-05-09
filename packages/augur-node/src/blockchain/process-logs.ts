@@ -4,7 +4,7 @@ import { logProcessors } from "./log-processors";
 import { augurEmitter } from "../events";
 import { SubscriptionEventNames } from "../constants";
 import _ from "lodash";
-import { ParsedLog } from "@augurproject/api";
+import { ParsedLog } from "@augurproject/sdk";
 
 export function processLog(augur: Augur, log: FormattedEventLog, logProcessor: EventLogProcessor): Promise<(db: Knex) => Promise<void>> {
   if (log["extraInfo"] != null && typeof log["extraInfo"] === "string") log["extraInfo"] = JSON.parse(log["extraInfo"])

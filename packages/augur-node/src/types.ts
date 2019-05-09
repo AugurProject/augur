@@ -12,10 +12,10 @@ import * as http from "http";
 import * as t from "io-ts";
 
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { Augur as GenericAugur, ParsedLog } from "@augurproject/api";
+import { Augur as GenericAugur, ParsedLog } from "@augurproject/sdk";
 
 export class Augur extends GenericAugur<BigNumber, EthersProvider> { };
-export { ParsedLog as FormattedEventLog } from "@augurproject/api";
+export { ParsedLog as FormattedEventLog } from "@augurproject/sdk";
 
 export type BlockRange = { fromBlock: number; toBlock: number };
 
@@ -82,7 +82,7 @@ export interface MarketCreatedLogExtraInfo {
   maxPrice?: string;
   tags?: Array<string | null>;
   outcomeNames?: Array<string | number | null>;
-  _description?: string;
+  description?: string;
   longDescription?: string | null;
   _scalarDenomination?: string | null;
   resolutionSource?: string | null;
