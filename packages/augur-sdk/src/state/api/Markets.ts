@@ -1,7 +1,17 @@
 import { BigNumber } from "bignumber.js";
 import { DB } from "../db/DB";
 import { Getter } from "./Router";
-import { Address, MarketType, MarketCreatedLog, MarketFinalizedLog, OrderEventUint256Value, ORDER_EVENT_OUTCOME, ORDER_EVENT_AMOUNT } from "../logs/types";
+import {
+  Address,
+  MarketType,
+  MarketCreatedLog,
+  MarketFinalizedLog,
+  OrderEventLog,
+  OrderEventType,
+  OrderEventUint256Value,
+  ORDER_EVENT_AMOUNT,
+  ORDER_EVENT_OUTCOME
+} from "../logs/types";
 import { SortLimit } from "./types";
 import { Augur, numTicksToTickSize } from "../../index";
 import { ethers } from "ethers";
@@ -67,13 +77,50 @@ export interface MarketInfo {
   resolutionSource: string | null;
   numTicks: string;
   tickSize: string;
-  consensus: Array<string>|null,
+  consensus: Array<string> | null,
   outcomes: Array<MarketInfoOutcome>;
 }
 
+export interface TimestampedPriceAmount {
+  price: string;
+  amount: string;
+  timestamp: string;
+}
+
+export interface MarketPriceHistory {
+  [outcome: string]: Array<TimestampedPriceAmount>;
+}
+
 export class Markets<TBigNumber> {
+  public static GetMarketPriceHistoryParams = t.type({ marketId: t.string });
   public static GetMarketsParams = t.intersection([GetMarketsParamsSpecific, SortLimit]);
   public static GetMarketsInfoParams = t.type({ marketIds: t.array(t.string) });
+
+  @Getter("GetMarketPriceHistoryParams")
+  public static async getMarketPriceHistory<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketPriceHistoryParams>): Promise<MarketPriceHistory> {
+    let orderFilledLogs = await db.findOrderFilledLogs({selector: {market: params.marketId, eventType: OrderEventType.Fill}});
+    orderFilledLogs.sort(
+      (a: OrderEventLog, b: OrderEventLog) => {
+        return (new BigNumber(a.uint256Data[OrderEventUint256Value.timestamp]).minus(b.uint256Data[OrderEventUint256Value.timestamp])).toNumber();
+      }
+    );
+
+    return orderFilledLogs.reduce(
+      (previousValue: MarketPriceHistory, currentValue: OrderEventLog): MarketPriceHistory => {
+        const outcomeString = new BigNumber(currentValue.uint256Data[OrderEventUint256Value.outcome]).toString(10);
+        if (!previousValue[outcomeString]) {
+          previousValue[outcomeString] = [];
+        }
+        previousValue[outcomeString].push({
+          price: new BigNumber(currentValue.uint256Data[OrderEventUint256Value.price]).toString(10),
+          amount: new BigNumber(currentValue.uint256Data[OrderEventUint256Value.amount]).toString(10),
+          timestamp: new BigNumber(currentValue.uint256Data[OrderEventUint256Value.timestamp]).toString(10),
+        });
+        return previousValue;
+      },
+      {}
+    )
+  }
 
   @Getter("GetMarketsParams")
   public static async getMarkets<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<Array<Address>> {
@@ -278,7 +325,7 @@ export class Markets<TBigNumber> {
         }
       }
     } else {
-      const timestampSetLogs = (await db.findTimestampSetLogs({selector: {newTimestamp: {$type: "string"}}}));
+      const timestampSetLogs = await db.findTimestampSetLogs({selector: {newTimestamp: {$type: "string"}}});
       let currentTimestamp;
       if (timestampSetLogs.length > 0) {
         // Determine current timestamp since timestampSetLogs are not sorted by blockNumber
