@@ -2,7 +2,7 @@ import { Augur } from "../Augur";
 import { PouchDBFactoryType } from "./db/AbstractDB";
 import { DB } from "./db/DB";
 import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
-const settings = require("@augurproject/state/src/state/settings.json");
+const settings = require("@augurproject/sdk/src/state/settings.json");
 
 export class Controller<TBigNumber> {
   private db: DB<TBigNumber>;
