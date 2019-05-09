@@ -11,7 +11,7 @@ contract TestNetDaiPot is IDaiPot {
     uint256 public Pie;  // total Savings Dai
 
     IDaiVat public vat;  // CDP engine
-    uint48  public rho;  // Time of last drip
+    uint256  public rho;  // Time of last drip
 
     uint constant ONE = 10 ** 27;
 
@@ -45,7 +45,7 @@ contract TestNetDaiPot is IDaiPot {
         }
     }
 
-    function add(uint x, int y) internal pure returns (uint z) {
+    function Add(uint x, int y) internal pure returns (uint z) {
         assembly {
             z := add(x, y)
             if sgt(y, 0) { if iszero(gt(z, x)) { revert(0, 0) } }
@@ -53,7 +53,7 @@ contract TestNetDaiPot is IDaiPot {
         }
     }
 
-    function sub(uint x, int y) internal pure returns (uint z) {
+    function Sub(uint x, int y) internal pure returns (uint z) {
         assembly {
             z := sub(x, y)
             if slt(y, 0) { if iszero(gt(z, x)) { revert(0, 0) } }
@@ -61,7 +61,7 @@ contract TestNetDaiPot is IDaiPot {
         }
     }
 
-    function mul(uint x, int y) internal pure returns (int z) {
+    function Mul(uint x, int y) internal pure returns (int z) {
         assembly {
             z := mul(x, y)
             if slt(x, 0) { revert(0, 0) }
@@ -69,7 +69,7 @@ contract TestNetDaiPot is IDaiPot {
         }
     }
 
-    function sub(uint x, uint y) internal pure returns (int z) {
+    function Sub(uint x, uint y) internal pure returns (int z) {
         z = int(x) - int(y);
         require(int(x) >= 0 && int(y) >= 0);
     }
@@ -82,20 +82,20 @@ contract TestNetDaiPot is IDaiPot {
 
     function drip() public {
         require(now >= rho);
-        int chi_ = sub(rmul(rpow(dsr, now - rho, ONE), chi), chi);
-        chi = add(chi, chi_);
+        int chi_ = Sub(rmul(rpow(dsr, now - rho, ONE), chi), chi);
+        chi = Add(chi, chi_);
         rho  = uint48(now);
-        vat.heal(-mul(Pie, chi_));
+        vat.heal(-Mul(Pie, chi_));
     }
 
     function save(int wad) public {
         address guy = msg.sender;
-        pie[guy] = add(pie[guy], wad);
-        Pie      = add(Pie,      wad);
+        pie[guy] = Add(pie[guy], wad);
+        Pie      = Add(Pie,      wad);
         if (wad >= 0) {
-            vat.move(guy, address(this), mul(chi, wad));
+            vat.move(guy, address(this), Mul(chi, wad));
         } else {
-            vat.move(address(this), guy, -mul(chi, wad));
+            vat.move(address(this), guy, -Mul(chi, wad));
         }
     }
 }

@@ -11,6 +11,12 @@ export class ERC820Registry extends c.ERC820Registry<ethers.utils.BigNumber> {
 }
 export class LegacyReputationToken extends c.LegacyReputationToken<ethers.utils.BigNumber> {
 }
+export class TestNetDaiJoin extends c.TestNetDaiJoin<ethers.utils.BigNumber> {
+}
+export class TestNetDaiPot extends c.TestNetDaiPot<ethers.utils.BigNumber> {
+}
+export class TestNetDaiVat extends c.TestNetDaiVat<ethers.utils.BigNumber> {
+}
 export class TestNetReputationToken extends c.TestNetReputationToken<ethers.utils.BigNumber> {
 }
 export class TestOrders extends c.TestOrders<ethers.utils.BigNumber> {
