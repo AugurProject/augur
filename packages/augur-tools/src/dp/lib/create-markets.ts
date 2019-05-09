@@ -1,4 +1,4 @@
-import { Augur } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import chalk from "chalk";
 import { createMarket } from "./create-market";
 import { cannedMarketsData } from "../data/canned-markets";

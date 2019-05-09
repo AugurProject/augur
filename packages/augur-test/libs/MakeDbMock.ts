@@ -1,9 +1,9 @@
-import { PouchDBFactoryType } from "@augurproject/state/src/db/AbstractDB";
+import { PouchDBFactoryType } from "@augurproject/sdk/build/state/db/AbstractDB";
 import PouchDB from "pouchdb";
-import { DB } from "@augurproject/state/src/db/DB";
-import { Augur } from "@augurproject/api";
+import { DB } from "@augurproject/sdk/build/state/db/DB";
+import { Augur } from "@augurproject/sdk";
 import { AccountList } from "./LocalAugur";
-import { IBlockAndLogStreamerListener } from "@augurproject/state/src/db/BlockAndLogStreamerListener";
+import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import { ethers } from "ethers";
 import * as _ from "lodash";
 
@@ -61,14 +61,14 @@ export function makeDbMock() {
   function makeFactory(): PouchDBFactoryType {
     return (dbName: string) => {
       const fullDbName = `db/${dbName}`;
-      const db = new MockPouchDB(fullDbName, {adapter: "memory"});
+      const db = new MockPouchDB(fullDbName, { adapter: "memory" });
       mockState.dbs[fullDbName] = db;
       return db;
     };
   }
 
   async function wipeDB(): Promise<void> {
-    await Promise.all(Object.values(mockState.dbs).map( (db) => {
+    await Promise.all(Object.values(mockState.dbs).map((db) => {
       return db.destroy();
     }));
 
@@ -102,7 +102,7 @@ export function makeDbMock() {
       mockState.failCountdown = -1;
       mockState.alwaysFail = false;
     },
-    makeDB: (augur: Augur<ethers.utils.BigNumber>, accounts: AccountList) => DB.createAndInitializeDB(
+    makeDB: (augur: Augur<ethers.utils.BigNumber>, accounts: AccountList) => DB.createAndInitializeDB<ethers.utils.BigNumber>(
       constants.networkId,
       constants.blockstreamDelay,
       constants.defaultStartSyncBlockNumber,
@@ -111,6 +111,6 @@ export function makeDbMock() {
       augur.userSpecificEvents,
       makeFactory(),
       makeBlockAndLogStreamerListener(),
-    )
+    ),
   };
 }
