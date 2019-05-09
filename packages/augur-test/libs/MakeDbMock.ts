@@ -1,9 +1,9 @@
-import { PouchDBFactoryType } from "@augurproject/sdk/src/state/db/AbstractDB";
+import { PouchDBFactoryType } from "@augurproject/sdk/build/state/db/AbstractDB";
 import PouchDB from "pouchdb";
-import { DB } from "@augurproject/sdk/src/state/db/DB";
+import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { Augur } from "@augurproject/sdk";
 import { AccountList } from "./LocalAugur";
-import { IBlockAndLogStreamerListener } from "@augurproject/sdk/src/state/db/BlockAndLogStreamerListener";
+import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import { ethers } from "ethers";
 import * as _ from "lodash";
 
@@ -102,7 +102,7 @@ export function makeDbMock() {
       mockState.failCountdown = -1;
       mockState.alwaysFail = false;
     },
-    makeDB: (augur: Augur<ethers.utils.BigNumber>, accounts: AccountList) => DB<ethers.utils.BigNumber>.createAndInitializeDB(
+    makeDB: (augur: Augur<ethers.utils.BigNumber>, accounts: AccountList) => DB.createAndInitializeDB<ethers.utils.BigNumber>(
       constants.networkId,
       constants.blockstreamDelay,
       constants.defaultStartSyncBlockNumber,
@@ -111,6 +111,6 @@ export function makeDbMock() {
       augur.userSpecificEvents,
       makeFactory(),
       makeBlockAndLogStreamerListener(),
-    )
+    ),
   };
 }

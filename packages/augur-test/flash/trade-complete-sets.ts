@@ -2,7 +2,7 @@ import chalk from "chalk";
 import { bignum, unfix } from "speedomatic";
 import BigNumber from "bignumber.js";
 import { ContractAPI } from "../libs/ContractAPI";
-import { DB } from "@augurproject/sdk/src/state/db/DB";
+import { DB } from "@augurproject/sdk/build/state/db/DB";
 
 function help() {
   console.log(chalk.red("Puts cash on the next fee window"));

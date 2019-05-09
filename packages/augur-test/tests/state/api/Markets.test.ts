@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
-import { API } from "@augurproject/sdk/src/state/api/API";
-import { MarketInfo, MarketInfoReportingState, SECONDS_IN_A_DAY } from "@augurproject/sdk/src/state/api/Markets";
+import { API } from "@augurproject/sdk/build/state/api/API";
+import { MarketInfo, MarketInfoReportingState, SECONDS_IN_A_DAY } from "@augurproject/sdk/build/state/api/Markets";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
-import { DB } from "@augurproject/sdk/src/state/db/DB";
+import { DB } from "@augurproject/sdk/build/state/db/DB";
 import {
   ACCOUNTS,
   makeDbMock,

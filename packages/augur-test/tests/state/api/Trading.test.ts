@@ -5,9 +5,9 @@ import {
   ContractAPI,
 } from "../../../libs";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
-import { API } from "@augurproject/sdk/src/state/api/API";
-import { DB } from "@augurproject/sdk/src/state/db/DB";
-import { MarketTradingHistory } from "@augurproject/sdk/src/state/api/Trading";
+import { API } from "@augurproject/sdk/build/state/api/API";
+import { DB } from "@augurproject/sdk/build/state/db/DB";
+import { MarketTradingHistory } from "@augurproject/sdk/build/state/api/Trading";
 import { ethers } from "ethers";
 import { stringTo32ByteHex } from "../../../libs/Utils";
 
