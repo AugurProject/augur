@@ -32,6 +32,17 @@ const GetMarketsParamsSpecific = t.intersection([t.type({
   hasOrders: t.boolean,
 })]);
 
+const OutcomeParam = t.keyof({
+  0: null,
+  1: null,
+  2: null,
+  3: null,
+  4: null,
+  5: null,
+  6: null,
+  7: null,
+});
+
 export const SECONDS_IN_A_DAY = 86400;
 
 export interface MarketInfoOutcome {
@@ -81,6 +92,16 @@ export interface MarketInfo {
   outcomes: Array<MarketInfoOutcome>;
 }
 
+export interface MarketPricCandlestick {
+  startTimestamp: number;
+  start: string;
+  end: string;
+  min: string;
+  max: string;
+  volume: string; // volume in ETH for this Candlestick's time window, has same business definition as markets/outcomes.volume
+  shareVolume: string; // shareVolume in number of shares for this Candlestick's time window, has same business definition as markets/outcomes.shareVolume
+  // tokenVolume: string; // TEMPORARY - this is a copy of Candlestick.shareVolume for the purposes of a backwards-compatible renaming of tokenVolume->shareVolume. The UI should change all references of Candlestick.tokenVolume to shareVolume and then this field can be removed.
+}
 export interface TimestampedPriceAmount {
   price: string;
   amount: string;
@@ -92,9 +113,41 @@ export interface MarketPriceHistory {
 }
 
 export class Markets<TBigNumber> {
+  public static GetMarketPriceCandlestickParams = t.type({
+    marketId: t.string,
+    outcome: t.union([OutcomeParam, t.number, t.null, t.undefined]),
+    start: t.union([t.number, t.null, t.undefined]),
+    end: t.union([t.number, t.null, t.undefined]),
+    period: t.union([t.number, t.null, t.undefined]),
+  });
   public static GetMarketPriceHistoryParams = t.type({ marketId: t.string });
   public static GetMarketsParams = t.intersection([GetMarketsParamsSpecific, SortLimit]);
   public static GetMarketsInfoParams = t.type({ marketIds: t.array(t.string) });
+
+  @Getter("GetMarketPriceHistoryParams")
+  public static async getMarketPriceCandlesticks<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketPriceCandlestickParams>): Promise<Array<MarketPriceCandlestick>> {
+    const orderFilledLogs = await db.findOrderFilledLogs({selector: {market: params.marketId, eventType: OrderEventType.Fill}});
+
+    let filteredOrderFilledLogs = orderFilledLogs;
+    // Filter logs based on specified parameters
+    if (params.outcome || params.start || params.end || params.period) {
+      filteredOrderFilledLogs = orderFilledLogs.reduce(
+        (previousValue: Array<OrderEventLog>, currentValue: OrderEventLog): Array<OrderEventLog> => {
+          // TODO add filter for params.period
+          if (
+            (params.outcome && currentValue.uint256Data[OrderEventUint256Value.outcome].toString() === params.outcome.toString()) ||
+            (params.start && new BigNumber(currentValue.timestamp).lt(params.start)) ||
+            (params.end && new BigNumber(currentValue.timestamp).gt(params.end))
+          ) {
+            return previousValue;
+          }
+          previousValue.push(currentValue);
+          return [];
+        },
+        []
+      )
+    }
+  }
 
   @Getter("GetMarketPriceHistoryParams")
   public static async getMarketPriceHistory<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketPriceHistoryParams>): Promise<MarketPriceHistory> {
