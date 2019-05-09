@@ -537,7 +537,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     yesNoMarket = fixture.createReasonableYesNoMarket(universe)
     startingGas = fixture.chain.head_state.gas_used
     categoricalMarket = fixture.createReasonableCategoricalMarket(universe, 3)
-    print 'Gas Used: %s' % (fixture.chain.head_state.gas_used - startingGas)
+    print('Gas Used: {}'.format(fixture.chain.head_state.gas_used - startingGas))
     scalarMarket = fixture.createReasonableScalarMarket(universe, 30, -10, 400000)
     fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
     snapshot = fixture.createSnapshot()
