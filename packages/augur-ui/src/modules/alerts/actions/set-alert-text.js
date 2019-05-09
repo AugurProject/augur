@@ -437,6 +437,7 @@ export default function setAlertText(alert, callback) {
       // TestNetReputationToken
       case FAUCET:
         let token = "REP";
+        // TODO: we'll need to differentiate between rep and dai faucet
         if (alert.params._amount.indexOf("3635c9adc5dea00000") > -1) {
           token = "DAI";
         }
