@@ -75,6 +75,12 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         return true;
     }
 
+    function mintForUniverse(uint256 _amountToMint, address _target) public returns (bool) {
+        require(universe == IUniverse(msg.sender));
+        mint(_target, _amountToMint);
+        return true;
+    }
+
     function mintForAuction(uint256 _amountToMint) public returns (bool) {
         require(universe.getAuction() == IAuction(msg.sender));
         mint(msg.sender, _amountToMint);

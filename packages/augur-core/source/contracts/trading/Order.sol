@@ -147,7 +147,7 @@ library Order {
         // If not able to cover entire order with shares alone, then cover remaining with tokens
         if (_attosharesToCover > 0) {
             _orderData.moneyEscrowed = _attosharesToCover.mul(_orderData.price);
-            require(_orderData.augur.trustedTransfer(_orderData.cash, _orderData.creator, address(_orderData.market), _orderData.moneyEscrowed));
+            _orderData.market.getUniverse().deposit(_orderData.creator, _orderData.moneyEscrowed, address(_orderData.market));
         }
 
         return true;
@@ -174,7 +174,7 @@ library Order {
         // If not able to cover entire order with shares alone, then cover remaining with tokens
         if (_attosharesToCover > 0) {
             _orderData.moneyEscrowed = _orderData.market.getNumTicks().sub(_orderData.price).mul(_attosharesToCover);
-            require(_orderData.augur.trustedTransfer(_orderData.cash, _orderData.creator, address(_orderData.market), _orderData.moneyEscrowed));
+            _orderData.market.getUniverse().deposit(_orderData.creator, _orderData.moneyEscrowed, address(_orderData.market));
         }
 
         return true;

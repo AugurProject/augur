@@ -13,7 +13,7 @@ def test_publicBuyCompleteSets(contractsFixture, universe, cash, market):
     noShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(NO))
 
     assert not cash.balanceOf(tester.a1)
-    assert cash.balanceOf(market.address) == universe.getOrCacheValidityBond()
+    assert universe.marketBalance(market.address) == universe.getOrCacheValidityBond()
     assert not yesShareToken.totalSupply()
     assert not noShareToken.totalSupply()
     assert universe.getOpenInterestInAttoCash() == 0
@@ -34,7 +34,7 @@ def test_publicBuyCompleteSets(contractsFixture, universe, cash, market):
     assert yesShareToken.balanceOf(tester.a1) == 10, "Should have 10 shares of outcome 1"
     assert noShareToken.balanceOf(tester.a1) == 10, "Should have 10 shares of outcome 2"
     assert cash.balanceOf(tester.a1) == 0, "Sender's cash balance should be 0"
-    assert cash.balanceOf(market.address) == cost + universe.getOrCacheValidityBond(), "Increase in market's cash should equal the cost to purchase the complete set"
+    assert universe.marketBalance(market.address) == cost + universe.getOrCacheValidityBond(), "Increase in market's cash should equal the cost to purchase the complete set"
     assert yesShareToken.totalSupply() == 10, "Increase in yes shares purchased for this market should be 10"
     assert noShareToken.totalSupply() == 10, "Increase in yes shares purchased for this market should be 10"
     assert universe.getOpenInterestInAttoCash() == cost, "Open interest in the universe increases by the cost in ETH of the sets purchased"
@@ -62,7 +62,7 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
 
     assert not cash.balanceOf(tester.a0)
     assert not cash.balanceOf(tester.a1)
-    assert cash.balanceOf(market.address) == universe.getOrCacheValidityBond()
+    assert universe.marketBalance(market.address) == universe.getOrCacheValidityBond()
     assert not yesShareToken.totalSupply()
     assert not noShareToken.totalSupply()
 
@@ -93,7 +93,7 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
     assert noShareToken.totalSupply() == 1
     assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialTester1ETH
     assert cash.balanceOf(tester.a1) == 882
-    assert cash.balanceOf(market.address) == universe.getOrCacheValidityBond() + 100 + 9
+    assert universe.marketBalance(market.address) == universe.getOrCacheValidityBond() + 100 + 9
     assert market.marketCreatorFeesAttoCash() == 9
 
 def test_publicSellCompleteSets_failure(contractsFixture, universe, cash, market):

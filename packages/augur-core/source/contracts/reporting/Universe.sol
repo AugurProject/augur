@@ -14,6 +14,10 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/external/IDaiVat.sol';
+import 'ROOT/external/IDaiPot.sol';
+import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/IAugur.sol';
 
 
@@ -53,6 +57,17 @@ contract Universe is ITyped, IUniverse {
 
     uint256 constant public INITIAL_WINDOW_ID_BUFFER = 365 days * 10 ** 8;
 
+    // DAI / DSR specific
+    uint256 public totalBalance;
+    bool public useDSR = false;
+
+    ICash public cash;
+    IDaiVat public daiVat;
+    IDaiPot public daiPot;
+    IDaiJoin public daiJoin;
+
+    uint256 constant public DAI_ONE = 10 ** 27;
+
     constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public {
         augur = _augur;
         parentUniverse = _parentUniverse;
@@ -67,6 +82,13 @@ contract Universe is ITyped, IUniverse {
         previousValidityBondInAttoCash = Reporting.getDefaultValidityBond();
         previousDesignatedReportStakeInAttoRep = initialReportMinValue;
         previousDesignatedReportNoShowBondInAttoRep = initialReportMinValue;
+        cash = ICash(augur.lookup("Cash"));
+        daiVat = IDaiVat(augur.lookup("DaiVat"));
+        daiPot = IDaiPot(augur.lookup("DaiPot"));
+        daiJoin = IDaiJoin(augur.lookup("DaiPot"));
+        daiVat.hope(address(daiPot));
+        daiVat.hope(address(daiJoin));
+        cash.approve(address(daiJoin), 2 ** 256 - 1);
     }
 
     function fork() public returns (bool) {
@@ -420,6 +442,7 @@ contract Universe is ITyped, IUniverse {
         if (_currentFeeDivisor != 0) {
             return _currentFeeDivisor;
         }
+        sweepInterest();
         uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
         uint256 _targetRepMarketCapInAttoCash = getTargetRepMarketCapInAttoCash();
         uint256 _previousFeeDivisor = shareSettlementFeeDivisor[address(_previousDisputeWindow)];
@@ -488,6 +511,79 @@ contract Universe is ITyped, IUniverse {
         return true;
     }
 
+    function saveDaiInDSR(uint256 _amount) private returns (bool) {
+        // TODO: These will become one call in a future MKR update
+        daiJoin.join(address(this), _amount);
+        daiPot.save(int256(_amount.mul(DAI_ONE) / daiPot.chi()));
+        return true;
+    }
+
+    function withdrawDaiFromDSR(uint256 _amount) private returns (bool) {
+        // TODO: These will become one call in a future MKR update
+        daiPot.save(-int256(_amount.mul(DAI_ONE) / daiPot.chi()));
+        daiJoin.exit(address(this), _amount);
+        return true;
+    }
+
+    function deposit(address _sender, uint256 _amount, address _market) public returns (bool) {
+        require(augur.isTrustedSender(msg.sender) || msg.sender == _sender);
+        augur.trustedTransfer(cash, _sender, address(this), _amount);
+        totalBalance = totalBalance.add(_amount);
+        marketBalance[_market] = marketBalance[_market].add(_amount);
+        if (useDSR) {
+            saveDaiInDSR(_amount);
+        }
+        return true;
+    }
+
+    function withdraw(address _recipient, uint256 _amount, address _market) public returns (bool) {
+        require(augur.isTrustedSender(msg.sender) || augur.isValidMarket(IMarket(msg.sender)));
+        totalBalance = totalBalance.sub(_amount);
+        marketBalance[_market] = marketBalance[_market].sub(_amount);
+        if (useDSR) {
+            withdrawDaiFromDSR(_amount);
+        }
+        cash.transfer(_recipient, _amount);
+        return true;
+    }
+
+    function canToggleDSR() public view returns (bool) {
+        uint256 _dsr = daiPot.dsr();
+        uint256 _maxDSRMovement = DAI_ONE / 100; // TODO: Get from MKR contract
+        uint256 _dsrThreshold = DAI_ONE.add(_maxDSRMovement);
+        if (useDSR && _dsr < _dsrThreshold) {
+            return true;
+        } else if (!useDSR && _dsr >= _dsrThreshold) {
+            return true;
+        }
+        return false;
+    }
+
+    function toggleDSR() public returns (bool) {
+        require(canToggleDSR());
+        if (useDSR) {
+            useDSR = false;
+            withdrawDaiFromDSR(totalBalance);
+        } else {
+            useDSR = true;
+            saveDaiInDSR(totalBalance);
+        }
+        reputationToken.mintForUniverse(1 ether, msg.sender); // TODO Figure out actual REP award for toggling DSR
+        return true;
+    }
+
+    function sweepInterest() private returns (bool) {
+        uint256 _extraCash = cash.balanceOf(address(this));
+        if (useDSR) {
+            uint256 _totalAvailable = totalBalance.mul(daiPot.chi()).div(DAI_ONE);
+            withdrawDaiFromDSR(_totalAvailable.sub(totalBalance));
+        } else {
+            _extraCash = _extraCash.sub(totalBalance);
+        }
+        cash.transfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
+        return true;
+    }
+
     function assertMarketBalance() public view returns (bool) {
         IMarket _market = IMarket(msg.sender);
         // Escrowed funds for open orders
@@ -502,7 +598,7 @@ contract Universe is ITyped, IUniverse {
             _expectedBalance = _expectedBalance.add(_market.getShareToken(0).totalSupply().mul(_market.getNumTicks()));
         }
 
-        assert(ICash(augur.lookup("Cash")).balanceOf(address(_market)) >= _expectedBalance);
+        assert(marketBalance[msg.sender] >= _expectedBalance);
         return true;
     }
 }

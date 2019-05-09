@@ -12,6 +12,8 @@ import 'ROOT/trading/IShareToken.sol';
 
 
 contract IUniverse is ITyped {
+    mapping(address => uint256) public marketBalance;
+
     function fork() public returns (bool);
     function getParentUniverse() public view returns (IUniverse);
     function createChildUniverse(uint256[] memory _parentPayoutNumerators) public returns (IUniverse);
@@ -57,4 +59,6 @@ contract IUniverse is ITyped {
     function getWinningChildUniverse() public view returns (IUniverse);
     function isForking() public view returns (bool);
     function assertMarketBalance() public view returns (bool);
+    function deposit(address _sender, uint256 _amount, address _market) public returns (bool);
+    function withdraw(address _recipient, uint256 _amount, address _market) public returns (bool);
 }

@@ -154,6 +154,7 @@ contract Augur is IAugur {
         IUniverseFactory _universeFactory = IUniverseFactory(registry["UniverseFactory"]);
         IUniverse _newUniverse = _universeFactory.createUniverse(this, _parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators);
         universes[address(_newUniverse)] = true;
+        trustedSender[address(_newUniverse)] = true;
         trustedSender[address(_newUniverse.getAuction())] = true;
         emit UniverseCreated(address(_parentUniverse), address(_newUniverse), _parentPayoutNumerators);
         return _newUniverse;
@@ -230,6 +231,10 @@ contract Augur is IAugur {
         require(trustedSender[msg.sender]);
         require(_token.transferFrom(_from, _to, _amount));
         return true;
+    }
+
+    function isTrustedSender(address _address) public returns (bool) {
+        return trustedSender[_address];
     }
 
     //

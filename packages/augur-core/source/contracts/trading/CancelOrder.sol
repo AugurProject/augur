@@ -97,7 +97,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
 
         // Return to user moneyEscrowed that wasn't filled yet
         if (_moneyEscrowed > 0) {
-            require(cash.transferFrom(address(_market), _sender, _moneyEscrowed));
+            _market.getUniverse().withdraw(_sender, _moneyEscrowed, address(_market));
         }
 
         return true;

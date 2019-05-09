@@ -77,6 +77,7 @@ contract Market is Initializable, Ownable, IMarket {
         cash = ICash(augur.lookup("Cash"));
         owner = _creator;
         repBondOwner = owner;
+        cash.approve(address(augur), APPROVAL_AMOUNT);
         assessFees();
         endTime = _endTime;
         numOutcomes = _numOutcomes;
@@ -99,12 +100,13 @@ contract Market is Initializable, Ownable, IMarket {
         require(getReputationToken().balanceOf(address(this)) >= repBond);
         validityBondAttoCash = cash.balanceOf(address(this));
         require(validityBondAttoCash >= universe.getOrCacheValidityBond());
+        universe.deposit(address(this), validityBondAttoCash, address(this));
         return true;
     }
 
     function increaseValidityBond(uint256 _attoCASH) public returns (bool) {
         require(!isFinalized());
-        cash.transferFrom(msg.sender, address(this), _attoCASH);
+        universe.deposit(msg.sender, _attoCASH, address(this));
         validityBondAttoCash = validityBondAttoCash.add(_attoCASH);
         return true;
     }
@@ -113,7 +115,6 @@ contract Market is Initializable, Ownable, IMarket {
         return ShareTokenFactory(augur.lookup("ShareTokenFactory")).createShareToken(augur, this, _outcome);
     }
 
-    // This will need to be called manually for each open market if a spender contract is updated
     function approveSpenders() public returns (bool) {
         bytes32[5] memory _names = [bytes32("CancelOrder"), bytes32("CompleteSets"), bytes32("FillOrder"), bytes32("ClaimTradingProceeds"), bytes32("Orders")];
         for (uint256 i = 0; i < _names.length; i++) {
@@ -318,12 +319,12 @@ contract Market is Initializable, Ownable, IMarket {
 
     function distributeMarketCreatorFees(address _affiliateAddress) private returns (bool) {
         if (!isInvalid()) {
-            cash.transfer(owner, marketCreatorFeesAttoCash);
+            universe.withdraw(owner, marketCreatorFeesAttoCash, address(this));
             if (_affiliateAddress != NULL_ADDRESS) {
                 withdrawAffiliateFees(_affiliateAddress);
             }
         } else {
-            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), marketCreatorFeesAttoCash);
+            universe.withdraw(address(universe.getOrCreateNextDisputeWindow(false)), marketCreatorFeesAttoCash, address(this));
         }
         marketCreatorFeesAttoCash = 0;
         return true;
@@ -335,7 +336,7 @@ contract Market is Initializable, Ownable, IMarket {
             return true;
         }
         affiliateFeesAttoCash[_affiliate] = 0;
-        cash.transfer(_affiliate, _affiliateBalance);
+        universe.withdraw(_affiliate, _affiliateBalance, address(this));
         return true;
     }
 
@@ -371,6 +372,8 @@ contract Market is Initializable, Ownable, IMarket {
         bytes32 _winningForkPayoutDistributionHash = _forkingMarket.getWinningPayoutDistributionHash();
         IUniverse _destinationUniverse = _currentUniverse.getChildUniverse(_winningForkPayoutDistributionHash);
 
+        uint256 _cashBalance = universe.marketBalance(address(this));
+        universe.withdraw(address(this), _cashBalance, address(this));
         universe.decrementOpenInterestFromMarket(this);
 
         // follow the forking market to its universe
@@ -382,6 +385,7 @@ contract Market is Initializable, Ownable, IMarket {
         _currentUniverse.removeMarketFrom();
         universe = _destinationUniverse;
 
+        universe.deposit(address(this), _cashBalance, address(this));
         universe.incrementOpenInterestFromMarket(this);
 
         // Pay the REP bond.

@@ -260,11 +260,11 @@ contract Orders is IOrders, Initializable {
             uint256 _attoSharesToCoverByTokens = _order.amount.sub(_order.sharesEscrowed);
             _moneyEscrowedDelta = _attoSharesToCoverByTokens.mul(_priceDelta);
             if (_isRefund) {
-                require(cash.transferFrom(address(_market), msg.sender, _moneyEscrowedDelta));
+                _market.getUniverse().withdraw(msg.sender, _moneyEscrowedDelta, address(_market));
                 marketOrderData[address(_market)].totalEscrowed -= _moneyEscrowedDelta;
                 _order.moneyEscrowed -= _moneyEscrowedDelta;
             } else {
-                require(augur.trustedTransfer(cash, msg.sender, address(_market), _moneyEscrowedDelta));
+                _market.getUniverse().deposit(msg.sender, _moneyEscrowedDelta, address(_market));
                 marketOrderData[address(_market)].totalEscrowed += _moneyEscrowedDelta;
                 _order.moneyEscrowed += _moneyEscrowedDelta;
             }

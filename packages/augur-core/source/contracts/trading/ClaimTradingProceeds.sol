@@ -45,18 +45,22 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
         for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
             IShareToken _shareToken = _market.getShareToken(_outcome);
             uint256 _numberOfShares = _shareToken.balanceOf(_shareHolder);
-            uint256 _proceeds;
-            uint256 _shareHolderShare;
-            uint256 _creatorShare;
-            uint256 _reporterShare;
-            (_proceeds, _shareHolderShare, _creatorShare, _reporterShare) = divideUpWinnings(_market, _outcome, _numberOfShares);
-
-            // always destroy shares as it gives a minor gas refund and is good for the network
             if (_numberOfShares > 0) {
+                uint256 _proceeds;
+                uint256 _shareHolderShare;
+                uint256 _creatorShare;
+                uint256 _reporterShare;
+                (_proceeds, _shareHolderShare, _creatorShare, _reporterShare) = divideUpWinnings(_market, _outcome, _numberOfShares);
+
+                // always destroy shares as it gives a minor gas refund and is good for the network
                 _shareToken.destroyShares(_shareHolder, _numberOfShares);
                 logTradingProceedsClaimed(_market, address(_shareToken), _shareHolder, _numberOfShares, _shareHolderShare, _creatorShare, _reporterShare);
+
+                if (_proceeds > 0) {
+                    _market.getUniverse().withdraw(address(this), _shareHolderShare.add(_reporterShare), address(_market));
+                    distributeProceeds(_market, _shareHolder, _shareHolderShare, _creatorShare, _reporterShare);
+                }
             }
-            distributeProceeds(_market, _shareHolder, _shareHolderShare, _creatorShare, _reporterShare);
         }
 
         profitLoss.recordClaim(_market, _shareHolder);
@@ -68,13 +72,13 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
 
     function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) private returns (bool) {
         if (_shareHolderShare > 0) {
-            require(cash.transferFrom(address(_market), _shareHolder, _shareHolderShare));
+            require(cash.transfer(_shareHolder, _shareHolderShare));
         }
         if (_creatorShare > 0) {
             _market.recordMarketCreatorFees(_creatorShare, address(0));
         }
         if (_reporterShare > 0) {
-            require(cash.transferFrom(address(_market), address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare));
+            require(cash.transfer(address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare));
         }
         return true;
     }
