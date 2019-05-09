@@ -29,7 +29,7 @@ COPY --from=augur-build /opt/ /opt/
 
 COPY --from=augur-build /augur/ /augur/
 
-RUN yarn workspace @augurproject/core build
+RUN yarn workspace @augurproject/core install && yarn workspace @augurproject/core build
 
 RUN apk add --no-cache \
     libstdc++
