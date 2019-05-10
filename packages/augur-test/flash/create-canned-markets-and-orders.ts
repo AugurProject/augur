@@ -9,7 +9,7 @@ import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFun
 import { NULL_ADDRESS } from "../libs/Utils";
 import { cannedMarkets, CannedMarket, OrderBook } from "./data/canned-markets";
 import { GenericAugurInterfaces } from "@augurproject/core";
-import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice } from "@augurproject/api";
+import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice } from "@augurproject/sdk";
 import { ArgumentParser } from "argparse";
 
 async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<GenericAugurInterfaces.Market<BigNumber>> {

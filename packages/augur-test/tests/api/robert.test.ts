@@ -1,5 +1,5 @@
 import { ACCOUNTS, deployContracts } from "../../libs";
-import { Contracts } from "@augurproject/api/src/api/Contracts";
+import { Contracts } from "@augurproject/sdk/src/api/Contracts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { ethers } from "ethers";
 import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
