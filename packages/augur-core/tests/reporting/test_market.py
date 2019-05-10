@@ -5,7 +5,7 @@ from pytest import raises, mark
 from utils import stringToBytes, AssertLog, bytesToHexString, EtherDelta, TokenDelta
 from reporting_utils import proceedToDesignatedReporting
 
-tester.STARTGAS = long(6.7 * 10**6)
+tester.STARTGAS = int(6.7 * 10**6)
 
 def test_market_creation(contractsFixture, universe, market):
     numTicks = market.getNumTicks()

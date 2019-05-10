@@ -6,7 +6,7 @@ from pytest import raises
 from utils import longTo32Bytes, bytesToHexString, fix, AssertLog, BuyWithCash, stringToBytes, nullAddress
 from constants import BID, ASK, YES, NO
 
-tester.STARTGAS = long(6.7 * 10**6)
+tester.STARTGAS = int(6.7 * 10**6)
 
 ATTOSHARES = 0
 DISPLAY_PRICE = 1

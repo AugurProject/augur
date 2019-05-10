@@ -191,7 +191,7 @@ class ContractsFixture:
 
     def __init__(self):
         tester.GASPRICE = 0
-        tester.STARTGAS = long(6.7 * 10**7)
+        tester.STARTGAS = int(6.7 * 10**7)
         config_metropolis['GASLIMIT_ADJMAX_FACTOR'] = .000000000001
         config_metropolis['GENESIS_GAS_LIMIT'] = 2**60
         config_metropolis['MIN_GAS_LIMIT'] = 2**60
@@ -459,7 +459,7 @@ class ContractsFixture:
     def createReasonableYesNoMarket(self, universe, sender=tester.k0, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
         return self.createYesNoMarket(
             universe = universe,
-            endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
+            endTime = int(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 4,
             designatedReporterAddress = tester.a0,
@@ -472,7 +472,7 @@ class ContractsFixture:
         return self.createCategoricalMarket(
             universe = universe,
             numOutcomes = numOutcomes,
-            endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
+            endTime = int(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 0,
             designatedReporterAddress = tester.a0,
@@ -481,7 +481,7 @@ class ContractsFixture:
     def createReasonableScalarMarket(self, universe, maxPrice, minPrice, numTicks, sender=tester.k0):
         return self.createScalarMarket(
             universe = universe,
-            endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
+            endTime = int(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 0,
             maxPrice= maxPrice,

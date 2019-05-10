@@ -3,7 +3,7 @@ from textwrap import dedent
 
 from solc import compile_standard
 
-from specifics import add_all
+from .specifics import add_all
 
 
 # TODO resolve relative source paths from the sources directory, not this directory
