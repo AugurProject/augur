@@ -2,8 +2,9 @@ pragma solidity 0.5.4;
 
 
 contract IDaiVat {
+    mapping (address => uint256) public dai;  // [rad]
     function hope(address usr) public;
-    function move(address src, address dst, int256 rad) public;
-    function heal(int rad) public;
+    function move(address src, address dst, uint256 rad) public;
+    function suck(address u, address v, uint rad) public;
     function faucet(address _target, uint256 _amount) public;
 }

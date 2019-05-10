@@ -21,13 +21,13 @@ contract TestNetDaiJoin is IDaiJoin {
     }
 
     function join(address urn, uint wad) public {
-        vat.move(address(this), urn, int(mul(ONE, wad)));
+        vat.move(address(this), urn, mul(ONE, wad));
         dai.joinBurn(msg.sender, wad);
     }
 
     function exit(address usr, uint wad) public {
         address urn = msg.sender;
-        vat.move(urn, address(this), int(mul(ONE, wad)));
+        vat.move(urn, address(this), mul(ONE, wad));
         dai.joinMint(usr, wad);
     }
 }

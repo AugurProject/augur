@@ -364,11 +364,11 @@ def test_fork_migration_no_report(localFixture, universe, market):
 
     # Now when we migrate the market through the fork we'll place a new bond in the winning universe's REP
     oldReputationToken = localFixture.applySignature("ReputationToken", universe.getReputationToken())
-    oldBalance = oldReputationToken.balanceOf(longMarket.address)
     newUniverse = localFixture.applySignature("Universe", universe.getChildUniverse(market.getWinningPayoutDistributionHash()))
+    newNoShowBond = newUniverse.getOrCacheMarketRepBond()
     newReputationToken = localFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
     with TokenDelta(oldReputationToken, 0, longMarket.address, "Migrating didn't disavow old no show bond"):
-        with TokenDelta(newReputationToken, oldBalance, longMarket.address, "Migrating didn't place new no show bond"):
+        with TokenDelta(newReputationToken, newNoShowBond, longMarket.address, "Migrating didn't place new no show bond"):
             assert longMarket.migrateThroughOneFork([], "")
 
 def test_forking_values(localFixture, universe, market):
@@ -412,6 +412,7 @@ def test_forking_values(localFixture, universe, market):
 
     # The universe needs to be nudged to actually update values since there are potentially unbounded universes and updating the values derived by this total is not essential as a matter of normal procedure
     # In a forked universe the total supply will be different so its childrens goals will not be the same initially
+    assert universe.updateForkValues()
     if not localFixture.subFork:
         assert childUniverse.getForkReputationGoal() == universe.getForkReputationGoal()
         assert childUniverse.getDisputeThresholdForFork() == universe.getDisputeThresholdForFork()

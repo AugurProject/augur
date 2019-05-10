@@ -186,7 +186,7 @@ Deploying to: ${networkConfiguration.networkName}
         vatContract.address = await this.uploadAndAddToAugur(vatContract, "DaiVat", []);
 
         const potContract = await this.contracts.get("TestNetDaiPot");
-        potContract.address = await this.uploadAndAddToAugur(potContract, "DaiPot", [vatContract.address]);
+        potContract.address = await this.uploadAndAddToAugur(potContract, "DaiPot", [vatContract.address, await this.augur!.lookup_(stringTo32ByteHex("Time"))]);
 
         const joinContract = await this.contracts.get("TestNetDaiJoin");
         joinContract.address = await this.uploadAndAddToAugur(joinContract, "DaiJoin", [vatContract.address, cashContract.address]);

@@ -2,26 +2,28 @@ pragma solidity 0.5.4;
 
 import 'ROOT/external/IDaiVat.sol';
 import 'ROOT/external/IDaiPot.sol';
+import 'ROOT/ITime.sol';
 
 
 contract TestNetDaiPot is IDaiPot {
-
-    mapping (address => uint256) public pie;  // user Savings Dai
-
     uint256 public Pie;  // total Savings Dai
 
     IDaiVat public vat;  // CDP engine
-    uint256  public rho;  // Time of last drip
+    uint256 public rho;  // Time of last drip
+
+    ITime public time;
 
     uint constant ONE = 10 ** 27;
 
-    constructor(address vat_) public {
+    constructor(address vat_, ITime _time) public {
         vat = IDaiVat(vat_);
         dsr = ONE;
         chi = ONE;
+        time = _time;
+        rho = time.getTimestamp();
     }
 
-    function rpow(uint x, uint n, uint base) internal pure returns (uint z) {
+    function rpow(uint x, uint n, uint base) public pure returns (uint z) {
         assembly {
             switch x case 0 {switch n case 0 {z := base} default {z := 0}}
             default {
@@ -45,57 +47,46 @@ contract TestNetDaiPot is IDaiPot {
         }
     }
 
-    function Add(uint x, int y) internal pure returns (uint z) {
-        assembly {
-            z := add(x, y)
-            if sgt(y, 0) { if iszero(gt(z, x)) { revert(0, 0) } }
-            if slt(y, 0) { if iszero(lt(z, x)) { revert(0, 0) } }
-        }
-    }
-
-    function Sub(uint x, int y) internal pure returns (uint z) {
-        assembly {
-            z := sub(x, y)
-            if slt(y, 0) { if iszero(gt(z, x)) { revert(0, 0) } }
-            if sgt(y, 0) { if iszero(lt(z, x)) { revert(0, 0) } }
-        }
-    }
-
-    function Mul(uint x, int y) internal pure returns (int z) {
-        assembly {
-            z := mul(x, y)
-            if slt(x, 0) { revert(0, 0) }
-            if iszero(eq(y, 0)) { if iszero(eq(sdiv(z, y), x)) { revert(0, 0) } }
-        }
-    }
-
-    function Sub(uint x, uint y) internal pure returns (int z) {
-        z = int(x) - int(y);
-        require(int(x) >= 0 && int(y) >= 0);
-    }
-
     function rmul(uint x, uint y) internal pure returns (uint z) {
-        z = x * y;
-        require(y == 0 || z / y == x);
-        z = z / ONE;
+        z = Mul(x, y) / ONE;
+    }
+
+    function Add(uint x, uint y) internal pure returns (uint z) {
+        require((z = x + y) >= x);
+    }
+
+    function Sub(uint x, uint y) internal pure returns (uint z) {
+        require((z = x - y) <= x);
+    }
+
+    function Mul(uint x, uint y) internal pure returns (uint z) {
+        require(y == 0 || (z = x * y) / y == x);
     }
 
     function drip() public {
-        require(now >= rho);
-        int chi_ = Sub(rmul(rpow(dsr, now - rho, ONE), chi), chi);
+        uint256 _now = time.getTimestamp();
+        require(_now >= rho);
+        uint chi_ = Sub(rmul(rpow(dsr, _now - rho, ONE), chi), chi);
         chi = Add(chi, chi_);
-        rho  = uint48(now);
-        vat.heal(-Mul(Pie, chi_));
+        rho  = _now;
+        vat.suck(address(0), address(this), Mul(Pie, chi_));
     }
 
-    function save(int wad) public {
-        address guy = msg.sender;
-        pie[guy] = Add(pie[guy], wad);
-        Pie      = Add(Pie,      wad);
-        if (wad >= 0) {
-            vat.move(guy, address(this), Mul(chi, wad));
-        } else {
-            vat.move(address(this), guy, -Mul(chi, wad));
-        }
+    function setDSR(uint256 _dsr) public returns (bool) {
+        dsr = _dsr;
+        return true;
+    }
+
+    // --- Savings Dai Management ---
+    function join(uint wad) public {
+        pie[msg.sender] = Add(pie[msg.sender], wad);
+        Pie = Add(Pie, wad);
+        vat.move(msg.sender, address(this), Mul(chi, wad));
+    }
+
+    function exit(uint wad) public {
+        pie[msg.sender] = Sub(pie[msg.sender], wad);
+        Pie = Sub(Pie, wad);
+        vat.move(address(this), msg.sender, Mul(chi, wad));
     }
 }

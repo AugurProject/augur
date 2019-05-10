@@ -4,13 +4,10 @@ from utils import longToHexString
 
 NULL_ADDRESS = longToHexString(0)
 
-def test_reporting_window_functions(kitchenSinkFixture):
-    universe = kitchenSinkFixture.createUniverse()
-
+def test_reporting_window_functions(kitchenSinkFixture, universe):
     # We have many getters and getOrCreate method on the universe for retreiving and creating dispute windows. We'll confirm first that all the getters simply return 0 when the requested window does not yet exist
     assert universe.getDisputeWindowByTimestamp(0, False) == NULL_ADDRESS
     assert universe.getPreviousDisputeWindow(False) == NULL_ADDRESS
-    assert universe.getCurrentDisputeWindow(False) == NULL_ADDRESS
     assert universe.getNextDisputeWindow(False) == NULL_ADDRESS
 
     # Now lets use the getOrCreate variants to actually generate these windows
@@ -25,22 +22,19 @@ def test_reporting_window_functions(kitchenSinkFixture):
     assert universe.getCurrentDisputeWindow(False) != NULL_ADDRESS
     assert universe.getNextDisputeWindow(False) != NULL_ADDRESS
 
-def test_market_creation_fee(kitchenSinkFixture):
-    universe = kitchenSinkFixture.createUniverse()
+def test_market_creation_fee(kitchenSinkFixture, universe):
 
     # Calling the normal function which creates these windows if they do not exist should return correctly
     marketCreationCost = universe.getOrCacheMarketCreationCost()
     assert marketCreationCost > 0
 
-def test_validity_bond(kitchenSinkFixture):
-    universe = kitchenSinkFixture.createUniverse()
+def test_validity_bond(kitchenSinkFixture, universe):
 
     # Calling the normal function which creates these windows if they do not exist should return correctly
     bond = universe.getOrCacheValidityBond()
     assert bond > 0
 
-def test_designated_report_stake(kitchenSinkFixture):
-    universe = kitchenSinkFixture.createUniverse()
+def test_designated_report_stake(kitchenSinkFixture, universe):
 
     # Calling the normal function which creates these windows if they do not exist should return correctly
     stake = universe.getOrCacheDesignatedReportStake()
@@ -48,15 +42,13 @@ def test_designated_report_stake(kitchenSinkFixture):
 
     assert universe.getInitialReportStakeSize() == stake
 
-def test_designated_report_no_show_bond(kitchenSinkFixture):
-    universe = kitchenSinkFixture.createUniverse()
+def test_designated_report_no_show_bond(kitchenSinkFixture, universe):
 
     # Calling the normal function which creates these windows if they do not exist should return correctly
     bond = universe.getOrCacheDesignatedReportNoShowBond()
     assert bond > 0
 
-def test_reporting_fee_divisor(kitchenSinkFixture):
-    universe = kitchenSinkFixture.createUniverse()
+def test_reporting_fee_divisor(kitchenSinkFixture, universe):
 
     # Calling the normal function which creates these windows if they do not exist should return correctly
     feeDivisor = universe.getOrCacheReportingFeeDivisor()

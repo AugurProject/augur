@@ -446,7 +446,6 @@ contract Universe is ITyped, Initializable, IUniverse {
         if (_currentFeeDivisor != 0) {
             return _currentFeeDivisor;
         }
-        sweepInterest();
         uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
         uint256 _targetRepMarketCapInAttoCash = getTargetRepMarketCapInAttoCash();
         uint256 _previousFeeDivisor = shareSettlementFeeDivisor[address(_previousDisputeWindow)];
@@ -516,15 +515,20 @@ contract Universe is ITyped, Initializable, IUniverse {
     }
 
     function saveDaiInDSR(uint256 _amount) private returns (bool) {
-        // TODO: These will become one call in a future MKR update
         daiJoin.join(address(this), _amount);
-        daiPot.save(int256(_amount.mul(DAI_ONE) / daiPot.chi()));
+        uint256 _sDaiAmount = _amount.mul(DAI_ONE) / daiPot.chi(); // sDai may be lower than the full amount joined above. This means the VAT may have some dust and we'll be saving less than intended by a dust amount
+        daiPot.join(_sDaiAmount);
         return true;
     }
 
     function withdrawDaiFromDSR(uint256 _amount) private returns (bool) {
-        // TODO: These will become one call in a future MKR update
-        daiPot.save(-int256(_amount.mul(DAI_ONE) / daiPot.chi()));
+        uint256 _chi = daiPot.chi();
+        uint256 _sDaiAmount = _amount.mul(DAI_ONE) / _chi; // sDai may be lower than the amount needed to retrieve `amount` from the VAT. We cover for this rounding error below
+        if (_sDaiAmount.mul(_chi) < _amount.mul(DAI_ONE)) {
+            _sDaiAmount += 1;
+        }
+        _sDaiAmount = _sDaiAmount.min(daiPot.pie(address(this))); // Never try to draw more than the balance in the pot. If we have less than needed we _must_ have enough already in the VAT provided no negative interest was ever applied
+        daiPot.exit(_sDaiAmount);
         daiJoin.exit(address(this), _amount);
         return true;
     }
@@ -553,7 +557,7 @@ contract Universe is ITyped, Initializable, IUniverse {
 
     function canToggleDSR() public view returns (bool) {
         uint256 _dsr = daiPot.dsr();
-        uint256 _maxDSRMovement = DAI_ONE / 100; // TODO: Get from MKR contract when this is available
+        uint256 _maxDSRMovement = 10**20; // TODO: Get from MKR contract when this is available
         uint256 _dsrThreshold = DAI_ONE.add(_maxDSRMovement);
         if (useDSR && _dsr < _dsrThreshold) {
             return true;
@@ -576,13 +580,16 @@ contract Universe is ITyped, Initializable, IUniverse {
         return true;
     }
 
-    function sweepInterest() private returns (bool) {
-        uint256 _extraCash = cash.balanceOf(address(this));
+    function sweepInterest() public returns (bool) {
+        uint256 _extraCash = 0;
         if (useDSR) {
-            uint256 _totalAvailable = totalBalance.mul(daiPot.chi()).div(DAI_ONE);
-            withdrawDaiFromDSR(_totalAvailable.sub(totalBalance));
+            daiPot.drip();
+            uint256 _totalAvailable = daiPot.pie(address(this)).mul(daiPot.chi()).div(DAI_ONE); // May be less by dust than what is technically totally available.
+            uint256 _excessFunds = _totalAvailable.sub(totalBalance);
+            withdrawDaiFromDSR(_excessFunds);
+            _extraCash = cash.balanceOf(address(this));
         } else {
-            _extraCash = _extraCash.sub(totalBalance);
+            _extraCash = cash.balanceOf(address(this)).sub(totalBalance);
         }
         cash.transfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
         return true;

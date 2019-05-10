@@ -347,7 +347,7 @@ class ContractsFixture:
     def uploadTestDaiContracts(self):
         self.uploadAndAddToAugur("../source/contracts/Cash.sol")
         self.uploadAndAddToAugur("../source/contracts/TestNetDaiVat.sol", lookupKey = "DaiVat", signatureKey = "DaiVat")
-        self.uploadAndAddToAugur("../source/contracts/TestNetDaiPot.sol", lookupKey = "DaiPot", signatureKey = "DaiPot", constructorArgs=[self.contracts['DaiVat'].address])
+        self.uploadAndAddToAugur("../source/contracts/TestNetDaiPot.sol", lookupKey = "DaiPot", signatureKey = "DaiPot", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Time'].address])
         self.uploadAndAddToAugur("../source/contracts/TestNetDaiJoin.sol", lookupKey = "DaiJoin", signatureKey = "DaiJoin", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Cash'].address])
         self.contracts["Cash"].initialize(self.contracts['Augur'].address)
 
@@ -549,6 +549,8 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     print 'Gas Used: %s' % (fixture.chain.head_state.gas_used - startingGas)
     scalarMarket = fixture.createReasonableScalarMarket(universe, 30, -10, 400000)
     fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
+    fixture.contracts['DaiPot'].setDSR(1000000564701133626865910626) # 5% a day
+    assert universe.toggleDSR()
     snapshot = fixture.createSnapshot()
     snapshot['universe'] = universe
     snapshot['cash'] = cash

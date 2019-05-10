@@ -78,6 +78,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     function mintForUniverse(uint256 _amountToMint, address _target) public returns (bool) {
         require(universe == IUniverse(msg.sender));
         mint(_target, _amountToMint);
+        updateTotalTheoreticalSupply();
         return true;
     }
 
@@ -158,7 +159,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
 
     function updateTotalTheoreticalSupply() public returns (bool) {
         if (parentUniverse == IUniverse(0)) {
-            totalTheoreticalSupply = Reporting.getInitialREPSupply();
+            totalTheoreticalSupply = Reporting.getInitialREPSupply().max(totalSupply());
         } else if (augur.getTimestamp() >= parentUniverse.getForkEndTime()) {
             totalTheoreticalSupply = totalSupply();
         } else {

@@ -100,6 +100,7 @@ contract Augur is IAugur {
     mapping(bytes32 => address) public registry;
 
     ITime public time;
+    IUniverse public genesisUniverse;
 
     uint256 public upgradeTimestamp;
 
@@ -141,7 +142,9 @@ contract Augur is IAugur {
 
     function createGenesisUniverse() public returns (IUniverse) {
         require(msg.sender == uploader);
-        return createUniverse(IUniverse(0), bytes32(0), new uint256[](0));
+        require(genesisUniverse == IUniverse(0));
+        genesisUniverse = createUniverse(IUniverse(0), bytes32(0), new uint256[](0));
+        return genesisUniverse;
     }
 
     function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] memory _parentPayoutNumerators) public returns (IUniverse) {

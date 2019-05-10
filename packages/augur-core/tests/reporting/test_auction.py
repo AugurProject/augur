@@ -32,7 +32,8 @@ def test_bootstrap(localFixture, universe, reputationToken, auction, time, cash)
     # Before we do any trading lets confirm the contract balances are as expected
     repAuctionToken = localFixture.applySignature("AuctionToken", auction.repAuctionToken())
     assert auction.initialAttoRepBalance() == reputationToken.balanceOf(repAuctionToken.address)
-    assert auction.initialAttoRepBalance() == 11 * 10 ** 6 * 10 ** 18 / 11000
+    expectedBalance = (11 * 10 ** 6  + 1) * 10 ** 18 / 11000
+    assert auction.initialAttoRepBalance() == expectedBalance
     assert localFixture.chain.head_state.get_balance(auction.address) == 0
 
     # We can purchase some of the REP now. We'll send some extra CASH to confirm it just gets returned too

@@ -1,6 +1,20 @@
 {
 	"Augur": [
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "genesisUniverse",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -4863,6 +4877,20 @@
 	],
 	"TestNetDaiPot": [
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "wad",
+					"type": "uint256"
+				}
+			],
+			"name": "join",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -4875,6 +4903,20 @@
 				{
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "time",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -4941,11 +4983,57 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "wad",
-					"type": "int256"
+					"name": "_dsr",
+					"type": "uint256"
 				}
 			],
-			"name": "save",
+			"name": "setDSR",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "x",
+					"type": "uint256"
+				},
+				{
+					"name": "n",
+					"type": "uint256"
+				},
+				{
+					"name": "base",
+					"type": "uint256"
+				}
+			],
+			"name": "rpow",
+			"outputs": [
+				{
+					"name": "z",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "wad",
+					"type": "uint256"
+				}
+			],
+			"name": "exit",
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
@@ -4979,6 +5067,10 @@
 				{
 					"name": "vat_",
 					"type": "address"
+				},
+				{
+					"name": "_time",
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -4987,28 +5079,6 @@
 		}
 	],
 	"TestNetDaiVat": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "src",
-					"type": "address"
-				},
-				{
-					"name": "dst",
-					"type": "address"
-				},
-				{
-					"name": "rad",
-					"type": "int256"
-				}
-			],
-			"name": "move",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
 		{
 			"constant": true,
 			"inputs": [
@@ -5030,20 +5100,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "rad",
-					"type": "int256"
-				}
-			],
-			"name": "heal",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -5101,11 +5157,55 @@
 			"constant": false,
 			"inputs": [
 				{
+					"name": "src",
+					"type": "address"
+				},
+				{
+					"name": "dst",
+					"type": "address"
+				},
+				{
+					"name": "rad",
+					"type": "uint256"
+				}
+			],
+			"name": "move",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "usr",
 					"type": "address"
 				}
 			],
 			"name": "nope",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "v",
+					"type": "address"
+				},
+				{
+					"name": "rad",
+					"type": "uint256"
+				}
+			],
+			"name": "suck",
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
@@ -14719,6 +14819,20 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "sweepInterest",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
