@@ -121,6 +121,7 @@ export interface MarketVolumeChangedLog extends Log, Doc {
   market: Address;
   volume: string;
   shareVolume: string;
+  outcome: string;
 }
 
 export interface OrderCanceledLog extends Log, Doc {

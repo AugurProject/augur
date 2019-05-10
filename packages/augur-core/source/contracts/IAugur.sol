@@ -54,7 +54,7 @@ contract IAugur {
     function logParticipationTokensBurned(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
     function logParticipationTokensMinted(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
     function logOrderPriceChanged(IUniverse _universe, bytes32 _orderId) public returns (bool);
-    function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume, uint256 _shareVolume) public returns (bool);
+    function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume, uint256 _shareVolume, uint256 _outcome) public returns (bool);
     function logProfitLossChanged(IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost) public returns (bool);
     function recordAuctionTokens(IUniverse _universe) public returns (bool);
     function isKnownFeeSender(address _feeSender) public view returns (bool);
