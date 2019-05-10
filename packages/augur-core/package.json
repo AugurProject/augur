@@ -8,7 +8,7 @@
   "browser": "build/browser.js",
   "license": "GPL-3.0",
   "scripts": {
-    "lint": "echo lint",
+    "lint": "solium --dir source --reporter=gcc",
     "build:source": "tsc -b",
     "build:contracts": "npm run build:flattener && . venv/bin/activate && node -r ts-node/register source/deployment/compileContracts.ts",
     "build:interfaces": "npm run build:flattener && . venv/bin/activate && node -r ts-node/register source/tools/generateContractInterfaces.ts",
