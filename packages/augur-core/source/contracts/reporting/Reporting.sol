@@ -13,6 +13,8 @@ library Reporting {
 
     uint256 private constant INITIAL_REP_SUPPLY = 11 * 10 ** 6 * 10 ** 18; // 11 Million REP
 
+    uint256 private constant DSR_TOGGLE_REWARD_IN_ATTO_REP = 1 ether; // 1 REP for toggling the DSR
+
     uint256 private constant DEFAULT_VALIDITY_BOND = 1 ether / 100;
     uint256 private constant VALIDITY_BOND_FLOOR = 1 ether / 100;
     uint256 private constant DEFAULT_REPORTING_FEE_DIVISOR = 100; // 1% fees
@@ -48,6 +50,7 @@ library Reporting {
     function getMinimumReportingFeeDivisor() internal pure returns (uint256) { return MINIMUM_REPORTING_FEE_DIVISOR; }
     function getDefaultReportingFeeDivisor() internal pure returns (uint256) { return DEFAULT_REPORTING_FEE_DIVISOR; }
     function getInitialREPSupply() internal pure returns (uint256) { return INITIAL_REP_SUPPLY; }
+    function getDSRToggleRewardInAttoREP() internal pure returns (uint256) { return DSR_TOGGLE_REWARD_IN_ATTO_REP; }
     function getAuctionInitialRepPrice() internal pure returns (uint256) { return AUCTION_INITIAL_REP_PRICE; }
     function getAuctionTargetSupplyDivisor() internal pure returns (uint256) { return AUCTION_TARGET_SUPPLY_DIVISOR; }
     function getAuctionInitialPriceMultiplier() internal pure returns (uint256) { return AUCTION_INITIAL_PRICE_MULTIPLIER; }

@@ -528,8 +528,13 @@ contract Universe is ITyped, Initializable, IUniverse {
             _sDaiAmount += 1;
         }
         _sDaiAmount = _sDaiAmount.min(daiPot.pie(address(this))); // Never try to draw more than the balance in the pot. If we have less than needed we _must_ have enough already in the VAT provided no negative interest was ever applied
+        withdrawSDaiFromDSR(_sDaiAmount);
+        return true;
+    }
+
+    function withdrawSDaiFromDSR(uint256 _sDaiAmount) private returns (bool) {
         daiPot.exit(_sDaiAmount);
-        daiJoin.exit(address(this), _amount);
+        daiJoin.exit(address(this), daiVat.dai(address(this)).div(DAI_ONE));
         return true;
     }
 
@@ -576,7 +581,7 @@ contract Universe is ITyped, Initializable, IUniverse {
             useDSR = true;
             saveDaiInDSR(totalBalance);
         }
-        reputationToken.mintForUniverse(1 ether, msg.sender); // TODO Figure out actual REP award for toggling DSR
+        reputationToken.mintForUniverse(Reporting.getDSRToggleRewardInAttoREP(), msg.sender);
         return true;
     }
 
@@ -584,10 +589,12 @@ contract Universe is ITyped, Initializable, IUniverse {
         uint256 _extraCash = 0;
         if (useDSR) {
             daiPot.drip();
-            uint256 _totalAvailable = daiPot.pie(address(this)).mul(daiPot.chi()).div(DAI_ONE); // May be less by dust than what is technically totally available.
-            uint256 _excessFunds = _totalAvailable.sub(totalBalance);
-            withdrawDaiFromDSR(_excessFunds);
-            _extraCash = cash.balanceOf(address(this));
+            uint256 _chi = daiPot.chi();
+            withdrawSDaiFromDSR(daiPot.pie(address(this))); // Pull out all funds
+            _extraCash = cash.balanceOf(address(this)).sub(totalBalance);
+            saveDaiInDSR(totalBalance); // Put the required funds back in savings
+            // The amount in the DSR pot and VAT must cover our totalBalance of Dai
+            assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
         } else {
             _extraCash = cash.balanceOf(address(this)).sub(totalBalance);
         }

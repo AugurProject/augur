@@ -28,6 +28,8 @@ contract Constants {
 
     function INITIAL_REP_SUPPLY() public returns (uint256) { return Reporting.getInitialREPSupply(); }
 
+    function DSR_TOGGLE_REWARD_IN_ATTO_REP() public returns (uint256) { return Reporting.getDSRToggleRewardInAttoREP(); }
+
     function BID() public returns (uint256) { return uint256(Order.Types.Bid); }
     function ASK() public returns (uint256) { return uint256(Order.Types.Ask); }
     function LONG() public returns (uint256) { return uint256(Order.TradeDirections.Long); }

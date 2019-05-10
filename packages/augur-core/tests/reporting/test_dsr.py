@@ -5,10 +5,9 @@ from pytest import raises
 from reporting_utils import proceedToNextRound
 
 DAI_ONE = 10**27
+
 # TODO when Max movement is available from MKR contracts update
 MAX_DSR_MOVEMENT = 10**20
-# TODO figure out what this should actually be
-REP_AWARD = 10**18
 
 def test_dsr_toggle(contractsFixture, market, universe, cash, reputationToken):
     daiPot = contractsFixture.contracts["DaiPot"]
@@ -36,7 +35,9 @@ def test_dsr_toggle(contractsFixture, market, universe, cash, reputationToken):
 
     assert universe.canToggleDSR()
 
-    with TokenDelta(reputationToken, REP_AWARD, tester.a0, "REP award was not given for toggling the DSR"):
+    repAward = contractsFixture.contracts["Constants"].DSR_TOGGLE_REWARD_IN_ATTO_REP()
+
+    with TokenDelta(reputationToken, repAward, tester.a0, "REP award was not given for toggling the DSR"):
         universe.toggleDSR()
 
     # The cash balance of the universe should now be 0 as the funds are in the DSR contract
@@ -53,7 +54,7 @@ def test_dsr_toggle(contractsFixture, market, universe, cash, reputationToken):
 
     assert universe.canToggleDSR()
 
-    with TokenDelta(reputationToken, REP_AWARD, tester.a0, "REP award was not given for toggling the DSR"):
+    with TokenDelta(reputationToken, repAward, tester.a0, "REP award was not given for toggling the DSR"):
         universe.toggleDSR()
 
     # The cash balance of the universe should be restored to its initial value
