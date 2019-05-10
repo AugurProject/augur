@@ -589,12 +589,11 @@ contract Universe is ITyped, Initializable, IUniverse {
         uint256 _extraCash = 0;
         if (useDSR) {
             daiPot.drip();
-            uint256 _chi = daiPot.chi();
             withdrawSDaiFromDSR(daiPot.pie(address(this))); // Pull out all funds
-            _extraCash = cash.balanceOf(address(this)).sub(totalBalance);
             saveDaiInDSR(totalBalance); // Put the required funds back in savings
+            _extraCash = cash.balanceOf(address(this));
             // The amount in the DSR pot and VAT must cover our totalBalance of Dai
-            assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
+            assert(daiPot.pie(address(this)).mul(daiPot.chi()).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
         } else {
             _extraCash = cash.balanceOf(address(this)).sub(totalBalance);
         }
