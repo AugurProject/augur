@@ -778,3 +778,30 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[1]).toHaveProperty("id");
   expect(markets[2]).toHaveProperty("id");
 }, 180000);
+
+test("State API :: Markets :: getMarkets", async () => {
+  const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+  const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
+
+  // Place orders
+  const bid = new ethers.utils.BigNumber(0);
+  const outcome0 = new ethers.utils.BigNumber(0);
+  const outcome1 = new ethers.utils.BigNumber(1);
+  const numShares = new ethers.utils.BigNumber(10000000000000);
+  const price = new ethers.utils.BigNumber(22);
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+
+  // Fill orders
+  const cost = numShares.mul(78).div(10);
+  let yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
+  let yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  await john.fillOrder(yesNoOrderId0, cost, numShares.div(10).mul(2), "42");
+  await mary.fillOrder(yesNoOrderId1, cost, numShares.div(10).mul(3), "43");
+
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
+
+  let yesNoMarketPriceCandlesticks = await api.route("getMarketPriceCandlesticks", {
+    marketId: yesNoMarket.address
+  });
+}, 120000);
