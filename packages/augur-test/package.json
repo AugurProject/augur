@@ -4,12 +4,13 @@
   "description": "Augur Test",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
+  "main": "build",
   "directories": {
-    "tests": "tests"
+    "tests": "src/tests"
   },
   "scripts": {
     "version": "yarn rebuild",
-    "lint": "tslint -c tslint.json -p . ./tests/*.ts ./tests/**/*.ts ./tests/**/**/*.ts ./tests/**/**/**/*.ts",
+    "lint": "tslint -c tslint.json -p . src/tests/*.ts ./tests/**/*.ts ./tests/**/**/*.ts ./tests/**/**/**/*.ts",
     "build": "tsc -b",
     "watch": "tsc -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",

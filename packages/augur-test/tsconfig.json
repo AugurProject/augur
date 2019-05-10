@@ -2,15 +2,12 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": ".",
-    "baseUrl": "./",
+    "rootDir": "src",
     "experimentalDecorators": true
   },
   "exclude": [],
   "include": [
-    "tests",
-    "libs",
-    "flash"
+    "src/**/*"
   ],
   "references": [
     {

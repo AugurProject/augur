@@ -22,8 +22,7 @@ import { createMarkets } from "./lib/create-markets";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { repFaucet } from "./lib/rep-faucet";
 import { UploadBlockNumbers } from "@augurproject/artifacts";
-import {createCannedMarketsAndOrders} from "@augurproject/test/build/flash/create-canned-markets-and-orders";
-import {AccountList} from "@augurproject/test/libs";
+import {AccountList, createCannedMarketsAndOrders} from "@augurproject/test";
 
 export const ACCOUNTS: AccountList = [
   {
