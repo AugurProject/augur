@@ -281,7 +281,7 @@ class ContractsFixture:
 
     def applySignature(self, signatureName, address):
         assert address
-        if type(address) is long:
+        if type(address) is int:
             address = longToHexString(address)
         translator = ContractTranslator(ContractsFixture.signatures[signatureName])
         contract = ABIContract(self.chain, translator, address)
