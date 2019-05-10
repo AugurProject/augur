@@ -28,7 +28,7 @@ beforeAll(async () => {
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
 }, 120000);
-
+/*
 // NOTE: Full-text searching is tested more in SyncableDB.test.ts
 test("State API :: Markets :: getMarkets", async () => {
   const universe = john.augur.contracts.universe;
@@ -778,10 +778,10 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[1]).toHaveProperty("id");
   expect(markets[2]).toHaveProperty("id");
 }, 180000);
-
-test("State API :: Markets :: getMarkets", async () => {
+*/
+test("State API :: Markets :: getMarketPriceCandlesticks", async () => {
   const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
-  const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
+  // const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
 
   // Place orders
   const bid = new ethers.utils.BigNumber(0);

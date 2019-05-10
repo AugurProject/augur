@@ -132,13 +132,12 @@ export class Markets<TBigNumber> {
     }
 
     const orderFilledLogs = await db.findOrderFilledLogs({selector: {market: params.marketId, eventType: OrderEventType.Fill}});
-    // let filteredOrderFilledLogs = filterOrderFilledLogs(orderFilledLogs, params);
     const filteredOrderFilledLogsByOutcome = _.groupBy(
       filterOrderFilledLogs(orderFilledLogs, params),
-      (orderFilledLog) => {orderFilledLog.uint256Data[OrderEventUint256Value.outcome]}
+      (orderFilledLog) => {return orderFilledLog.uint256Data[OrderEventUint256Value.outcome]}
     );
 
-    console.log(filteredOrderFilledLogsByOutcome);
+    const marketVolumeChangedLogs = await db.findMarketVolumeChangedLogs({selector: {market: params.marketId}});
 
     let marketPriceCandlesticks = [];
     return [
