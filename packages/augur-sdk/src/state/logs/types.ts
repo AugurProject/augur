@@ -120,6 +120,7 @@ export interface MarketVolumeChangedLog extends Log, Doc {
   universe: Address;
   market: Address;
   volume: string;
+  shareVolume: string;
 }
 
 export interface OrderCanceledLog extends Log, Doc {
