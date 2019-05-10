@@ -20,7 +20,7 @@ export class GenerateReplacementTypesForGenerics {
     visit(n:ts.Node) {
         if(ts.isClassDeclaration(n) && n.typeParameters) {
             const item = n.typeParameters.find((m) =>
-                m.name.escapedText === "TBigNumber"
+                m.name.escapedText === "TLargeInteger"
             );
 
             if(item) {

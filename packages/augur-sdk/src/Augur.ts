@@ -3,7 +3,7 @@ import { Events } from "./api/Events";
 import { Contracts } from "./api/Contracts";
 import { Trade } from "./api/Trade";
 import { GenericAugurInterfaces } from "@augurproject/core";
-import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
+import { Address, ContractAddresses, NetworkId } from "@augurproject/artifacts";
 
 export interface UserSpecificEvent {
   name: string;
@@ -89,7 +89,7 @@ export class Augur<TBigNumber, TProvider extends Provider = Provider> {
     return augur;
   }
 
-  public getMarket(address:string):GenericAugurInterfaces.Market<TBigNumber> {
+  public getMarket(address:Address):GenericAugurInterfaces.Market<TBigNumber> {
     return new GenericAugurInterfaces.Market<TBigNumber>(this.dependencies, address);
   }
 

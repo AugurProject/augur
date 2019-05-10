@@ -25,7 +25,7 @@ describe("TradeAndReport", () => {
         const market = await fixture.createReasonableMarket(fixture.universe!, [stringTo32ByteHex(" "), stringTo32ByteHex(" ")]);
 
         // Place an order
-        let type = new ethers.utils.BigNumber(0); // BID
+        let type = 0; // BID
         let outcome = new ethers.utils.BigNumber(0);
         let numShares = new ethers.utils.BigNumber(10000000000000);
         let price = new ethers.utils.BigNumber(21);

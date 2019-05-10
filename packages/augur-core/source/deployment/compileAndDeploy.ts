@@ -17,7 +17,7 @@ async function doWork(): Promise<void> {
 
     const provider = new ethers.providers.JsonRpcProvider(networkConfiguration.http);
     const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
-    const dependencies = new ContractDependenciesEthers(provider, signer, networkConfiguration.gasPrice.toNumber());
+    const dependencies = new ContractDependenciesEthers(provider, signer, () => Promise.resolve(networkConfiguration.gasPrice.toNumber()));
 
     const deployerConfiguration = DeployerConfiguration.create();
     const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider, signer, compiledContracts);

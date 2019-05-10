@@ -1,7 +1,7 @@
 import { string, number } from "prop-types";
 import { AddressZero } from "ethers/constants";
+import {Address} from "@augurproject/artifacts";
 
-export type Address = string;
 export type Bytes32 = string;
 export type Timestamp = string;
 

@@ -2,6 +2,7 @@ import { Events } from "./Events";
 import { NetworkId } from "@augurproject/artifacts";
 import { Filter, Log, LogValues, Provider } from "..";
 import { Abi } from "ethereum";
+import {Address} from "@augurproject/artifacts";
 
 function makeProviderMock(opts?: any): Provider {
   const networkId = opts.networkId || "4";
@@ -46,7 +47,7 @@ test("get logs", async () => {
     fakeValueIMadeUp: "ddr3",  // not specified in log and cannot be
   };
   const provider = makeProviderMock({ logs, logValues });
-  const events = new Events(provider, "0x0");
+  const events = new Events(provider, Address.fromStringLiteral("0x0"));
 
   const eventName = "some event name";
   const fromBlock = 0;
@@ -74,7 +75,7 @@ test("get event topics", async () => {
   const eventTopic = "foobarington";
   const provider = makeProviderMock({ eventTopic });
 
-  const events = new Events(provider, "0x0");
+  const events = new Events(provider, Address.fromStringLiteral("0x0"));
   const topics = await events.getEventTopics("foobar");
 
   expect(topics).toEqual([eventTopic]);

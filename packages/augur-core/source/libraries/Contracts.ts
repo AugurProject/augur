@@ -1,12 +1,13 @@
 import { Abi } from 'ethereum';
 import { CompilerOutput } from 'solc';
+import {Address} from "./GenericContractInterfaces";
 
 export class ContractData {
     public readonly relativeFilePath: string;
     public readonly contractName: string;
     public readonly abi: Abi;
     public readonly bytecode: Buffer;
-    public address?: string;
+    public address?: Address;
 
     public constructor(relativeFilePath: string, contractName: string, abi: Abi, bytecode: Buffer) {
         this.relativeFilePath = relativeFilePath;

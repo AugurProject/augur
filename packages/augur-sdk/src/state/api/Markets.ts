@@ -2,7 +2,6 @@ import { BigNumber } from "bignumber.js";
 import { DB } from "../db/DB";
 import { Getter } from "./Router";
 import {
-  Address,
   MarketType,
   MarketCreatedLog,
   MarketFinalizedLog,
@@ -18,6 +17,7 @@ import { ethers } from "ethers";
 
 import * as _ from "lodash";
 import * as t from "io-ts";
+import {Address} from "@augurproject/artifacts";
 
 const GetMarketsParamsSpecific = t.intersection([t.type({
   universe: t.string,
@@ -124,7 +124,7 @@ export class Markets<TBigNumber> {
 
   @Getter("GetMarketsParams")
   public static async getMarkets<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<Array<Address>> {
-    if (! await augur.contracts.augur.isKnownUniverse_(params.universe)) {
+    if (! await augur.contracts.augur.isKnownUniverse_(Address.fromStringLiteral(params.universe))) {
       throw new Error("Unknown universe: " + params.universe);
     }
 
@@ -194,7 +194,7 @@ export class Markets<TBigNumber> {
         if (params.disputeWindow) {
           const market = await augur.contracts.marketFromAddress(marketCreatedLogInfo[0]);
           const disputeWindowAddress = await market.getDisputeWindow_();
-          if (params.disputeWindow != disputeWindowAddress) {
+          if (params.disputeWindow != disputeWindowAddress.to0xString()) {
             includeMarket = false;
           }
         }

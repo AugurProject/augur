@@ -1,5 +1,5 @@
 import { GenericAugurInterfaces } from "@augurproject/core";
-import { ContractAddresses } from "@augurproject/artifacts";
+import { Address, ContractAddresses } from "@augurproject/artifacts";
 
 export type SomeRepToken<TBigNumber> = GenericAugurInterfaces.ReputationToken<TBigNumber> | GenericAugurInterfaces.TestNetReputationToken<TBigNumber>;
 export type SomeTime<TBigNumber> = GenericAugurInterfaces.Time<TBigNumber> | GenericAugurInterfaces.TimeControlled<TBigNumber>;
@@ -64,28 +64,28 @@ export class Contracts<TBigNumber> {
     this.reputationToken = this.reputationTokenFromAddress(address, networkId);
   }
 
-  public reputationTokenFromAddress(address: string, networkId: string): SomeRepToken<TBigNumber> {
+  public reputationTokenFromAddress(address: Address, networkId: string): SomeRepToken<TBigNumber> {
     const Class = networkId === "1" ? GenericAugurInterfaces.ReputationToken : GenericAugurInterfaces.TestNetReputationToken;
     return new Class<TBigNumber>(this.dependencies, address);
   }
 
-  public universeFromAddress(address: string): GenericAugurInterfaces.Universe<TBigNumber> {
+  public universeFromAddress(address: Address): GenericAugurInterfaces.Universe<TBigNumber> {
     return new GenericAugurInterfaces.Universe<TBigNumber>(this.dependencies, address);
   }
 
-  public marketFromAddress(address: string): GenericAugurInterfaces.Market<TBigNumber> {
+  public marketFromAddress(address: Address): GenericAugurInterfaces.Market<TBigNumber> {
     return new GenericAugurInterfaces.Market<TBigNumber>(this.dependencies, address);
   }
 
-  public shareTokenFromAddress(address: string): GenericAugurInterfaces.ShareToken<TBigNumber> {
+  public shareTokenFromAddress(address: Address): GenericAugurInterfaces.ShareToken<TBigNumber> {
     return new GenericAugurInterfaces.ShareToken<TBigNumber>(this.dependencies, address);
   }
 
-  public disputeWindowFromAddress(address: string): GenericAugurInterfaces.DisputeWindow<TBigNumber> {
+  public disputeWindowFromAddress(address: Address): GenericAugurInterfaces.DisputeWindow<TBigNumber> {
     return new GenericAugurInterfaces.DisputeWindow<TBigNumber>(this.dependencies, address);
   }
 
-  public getReportingParticipant(reportingParticipantAddress: string): GenericAugurInterfaces.DisputeCrowdsourcer<TBigNumber> {
+  public getReportingParticipant(reportingParticipantAddress: Address): GenericAugurInterfaces.DisputeCrowdsourcer<TBigNumber> {
     return new GenericAugurInterfaces.DisputeCrowdsourcer<TBigNumber>(this.dependencies, reportingParticipantAddress);
   }
 

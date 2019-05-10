@@ -4,26 +4,46 @@ import { stringTo32ByteHex, resolveAll } from "./HelperFunctions";
 import { CompilerOutput } from "solc";
 import { DeployerConfiguration } from './DeployerConfiguration';
 import {
-    Augur,
-    Universe,
-    ReputationToken,
-    LegacyReputationToken,
-    TimeControlled,
-    CompleteSets,
-    Trade,
-    CreateOrder,
-    CancelOrder,
-    FillOrder,
-    Orders,
-    ClaimTradingProceeds,
-    Cash,
-    ProfitLoss
+  Augur,
+  Universe,
+  ReputationToken,
+  LegacyReputationToken,
+  TimeControlled,
+  CompleteSets,
+  Trade,
+  CreateOrder,
+  CancelOrder,
+  FillOrder,
+  Orders,
+  ClaimTradingProceeds,
+  Cash,
+  ProfitLoss, Address
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
-import { ContractAddresses } from "@augurproject/artifacts";
 
+interface ContractAddresses {
+  Universe: Address;
+  Augur: Address;
+  LegacyReputationToken: Address;
+  CancelOrder: Address;
+  Cash: Address;
+  ClaimTradingProceeds: Address;
+  CompleteSets: Address;
+  CreateOrder: Address;
+  FillOrder: Address;
+  Order: Address;
+  Orders: Address;
+  ShareToken: Address;
+  Trade: Address;
+  Controller?: Address;
+  OrdersFinder?: Address;
+  OrdersFetcher?: Address;
+  TradingEscapeHatch?: Address;
+  Time?: Address;
+  TimeControlled?: Address;
+}
 
 export class ContractDeployer {
     private readonly configuration: DeployerConfiguration;
@@ -135,7 +155,7 @@ Deploying to: ${networkConfiguration.networkName}
         return mapping;
     }
 
-    public getContractAddress = (contractName: string): string => {
+    public getContractAddress = (contractName: string): Address => {
         if (!this.contracts.has(contractName)) throw new Error(`Contract named ${contractName} does not exist.`);
         const contract = this.contracts.get(contractName);
         if (contract.address === undefined) throw new Error(`Contract name ${contractName} has not yet been uploaded.`);
@@ -149,14 +169,14 @@ Deploying to: ${networkConfiguration.networkName}
         const augur = new Augur(this.dependencies, address);
         const ownerAddress = await augur.uploader_();
         contract.address = address;
-        if (ownerAddress.toLowerCase() !== (await this.signer.getAddress()).toLowerCase()) {
+        if (ownerAddress.toString().toLowerCase() !== (await this.signer.getAddress()).toLowerCase()) {
             throw new Error("Augur owner does not equal from address");
         }
         console.log(`Augur address: ${augur.address}`);
         return augur;
     }
 
-    public async uploadLegacyRep(): Promise<string> {
+    public async uploadLegacyRep(): Promise<Address> {
         const contract = await this.contracts.get("LegacyReputationToken");
         contract.address = await this.construct(contract, []);
         return contract.address;
@@ -192,19 +212,19 @@ Deploying to: ${networkConfiguration.networkName}
         contract.address = await this.uploadAndAddToAugur(contract, contractName, []);
     }
 
-    private async uploadAndAddToAugur(contract: ContractData, registrationContractName: string = contract.contractName, constructorArgs: Array<any> = []): Promise<string> {
+    private async uploadAndAddToAugur(contract: ContractData, registrationContractName: string = contract.contractName, constructorArgs: Array<any> = []): Promise<Address> {
         const address = await this.construct(contract, constructorArgs);
         await this.augur!.registerContract(stringTo32ByteHex(registrationContractName), address);
         return address;
     }
 
-    private async construct(contract: ContractData, constructorArgs: Array<string>): Promise<string> {
+    private async construct(contract: ContractData, constructorArgs: Array<string>): Promise<Address> {
         console.log(`Upload contract: ${contract.contractName}`);
         const factory = new ethers.ContractFactory(contract.abi, contract.bytecode, this.signer);
         const contractObj = await factory.deploy(...constructorArgs);
         await contractObj.deployed();
         console.log(`Uploaded contract: ${contract.contractName}: \"${contractObj.address}\"`);
-        return contractObj.address;
+        return Address.fromStringLiteral(contractObj.address);
     }
 
     private async initializeAllContracts(): Promise<void> {
@@ -260,7 +280,7 @@ Deploying to: ${networkConfiguration.networkName}
         const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
         await legacyReputationToken.initializeERC820(this.augur!.address);
         await legacyReputationToken.faucet(new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(18)).mul(new ethers.utils.BigNumber(11000000)));
-        const defaultAddress = await this.signer.getAddress();
+        const defaultAddress = Address.fromStringLiteral(await this.signer.getAddress());
         const legacyBalance = await legacyReputationToken.balanceOf_(defaultAddress);
         if (!legacyBalance || legacyBalance == new ethers.utils.BigNumber(0)) {
             throw new Error("Faucet call to Legacy REP failed");
@@ -271,7 +291,7 @@ Deploying to: ${networkConfiguration.networkName}
         const cash = new LegacyReputationToken(this.dependencies, this.getContractAddress('Cash'));
         await cash.initialize(this.augur!.address);
         await cash.faucet(new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(18)).mul(new ethers.utils.BigNumber(1000)));
-        const defaultAddress = await this.signer.getAddress();
+        const defaultAddress = Address.fromStringLiteral(await this.signer.getAddress());
         const legacyBalance = await cash.balanceOf_(defaultAddress);
         if (!legacyBalance || legacyBalance == new ethers.utils.BigNumber(0)) {
             throw new Error("Faucet call to Legacy REP failed");
@@ -289,7 +309,7 @@ Deploying to: ${networkConfiguration.networkName}
         console.log('Creating genesis universe...');
         const augur = new Augur(this.dependencies, this.getContractAddress("Augur"));
         const universeAddress = await augur.createGenesisUniverse_();
-        if (!universeAddress || universeAddress == "0x") {
+        if (!universeAddress || universeAddress.to0xString() == "0x") {
             throw new Error("Unable to create genesis universe. eth_call failed");
         }
         await augur.createGenesisUniverse();
@@ -306,7 +326,7 @@ Deploying to: ${networkConfiguration.networkName}
         const reputationTokenAddress = await this.universe!.getReputationToken_();
         const reputationToken = new ReputationToken(this.dependencies, reputationTokenAddress);
         const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
-        const defaultAddress = await this.signer.getAddress();
+        const defaultAddress = Address.fromStringLiteral(await this.signer.getAddress());
         const legacyBalance = await legacyReputationToken.balanceOf_(defaultAddress);
         await legacyReputationToken.approve(reputationTokenAddress, legacyBalance);
         await reputationToken.migrateFromLegacyReputationToken();
@@ -317,7 +337,7 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     private async generateAddressMapping(): Promise<string> {
-        type ContractAddressMapping = { [name: string]: string };
+        type ContractAddressMapping = { [name: string]: Address };
         type NetworkAddressMapping = { [networkId: string]: ContractAddressMapping };
 
         const mapping: ContractAddressMapping = {};

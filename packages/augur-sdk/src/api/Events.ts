@@ -1,12 +1,13 @@
 import { Provider, Log, ParsedLog } from "..";
 import { abi } from "@augurproject/artifacts";
 import { Abi } from "ethereum";
+import {Address} from "@augurproject/artifacts";
 
 export class Events {
     private readonly provider: Provider;
-    private readonly augurAddress: string;
+    private readonly augurAddress: Address;
 
-    public constructor(provider: Provider, augurAddress: string) {
+    public constructor(provider: Provider, augurAddress: Address) {
         this.provider = provider;
         this.augurAddress = augurAddress;
         this.provider.storeAbiData(abi.Augur as Abi, "Augur");
@@ -17,7 +18,7 @@ export class Events {
         if (additionalTopics) {
             topics = topics.concat(additionalTopics);
         }
-        const logs = await this.provider.getLogs({fromBlock, toBlock, topics, address: this.augurAddress});
+        const logs = await this.provider.getLogs({fromBlock, toBlock, topics, address: this.augurAddress.to0xString()});
         return this.parseLogs(logs);
     }
 

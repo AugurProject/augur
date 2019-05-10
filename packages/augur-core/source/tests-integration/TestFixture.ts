@@ -5,24 +5,41 @@ import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
 import { DeployerConfiguration } from '../libraries/DeployerConfiguration';
 import { NetworkConfiguration } from '../libraries/NetworkConfiguration';
 import { ContractDependenciesEthers } from '../libraries/ContractDependenciesEthers';
-import { DisputeWindow, ShareToken, ClaimTradingProceeds, CompleteSets, TimeControlled, Cash, Universe, Market, CreateOrder, Orders, Trade, CancelOrder, LegacyReputationToken, DisputeCrowdsourcer, ReputationToken,  } from '../libraries/ContractInterfaces';
+import {
+  DisputeWindow,
+  ShareToken,
+  ClaimTradingProceeds,
+  CompleteSets,
+  TimeControlled,
+  Cash,
+  Universe,
+  Market,
+  CreateOrder,
+  Orders,
+  Trade,
+  CancelOrder,
+  LegacyReputationToken,
+  DisputeCrowdsourcer,
+  ReputationToken,
+  Bytes32, UInt8, Address,
+} from '../libraries/ContractInterfaces';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { stringTo32ByteHex } from '../libraries/HelperFunctions';
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 
-const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+const NULL_ADDRESS = Address.fromStringLiteral("0x0000000000000000000000000000000000000000");
 
 export class TestFixture {
     // FIXME: extract out the bits of contract deployer that we need access to, like the contracts/abis, so we can have a more targeted dependency
     public readonly contractDeployer: ContractDeployer;
     public readonly dependencies: Dependencies<ethers.utils.BigNumber>;
     public readonly provider: ethers.providers.JsonRpcProvider;
-    public readonly account: string;
+    public readonly account: Address;
 
     public get universe() { return this.contractDeployer.universe!; }
     public get cash() { return new Cash(this.dependencies, this.contractDeployer.getContractAddress('Cash')); }
 
-    public constructor(dependencies: Dependencies<ethers.utils.BigNumber>, provider: ethers.providers.JsonRpcProvider, contractDeployer: ContractDeployer, account: string) {
+    public constructor(dependencies: Dependencies<ethers.utils.BigNumber>, provider: ethers.providers.JsonRpcProvider, contractDeployer: ContractDeployer, account: Address) {
         this.contractDeployer = contractDeployer;
         this.dependencies = dependencies;
         this.provider = provider;
@@ -37,7 +54,7 @@ export class TestFixture {
 
         const provider = new ethers.providers.JsonRpcProvider(networkConfiguration.http);
         const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
-        const dependencies = new ContractDependenciesEthers(provider, signer, networkConfiguration.gasPrice.toNumber());
+        const dependencies = new ContractDependenciesEthers(provider, signer, () => Promise.resolve(networkConfiguration.gasPrice.toNumber()));
 
         const deployerConfiguration = DeployerConfiguration.createWithControlledTime();
         let contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider, signer, compiledContracts);
@@ -52,7 +69,7 @@ export class TestFixture {
 
         await contractDeployer.deploy();
 
-        const testFixture = new TestFixture(dependencies, provider, contractDeployer, signer.address);
+        const testFixture = new TestFixture(dependencies, provider, contractDeployer, Address.fromStringLiteral(signer.address));
 
         return testFixture;
     }
@@ -62,13 +79,13 @@ export class TestFixture {
         await this.cash.approve(authority, new ethers.utils.BigNumber(2).pow(new ethers.utils.BigNumber(256)).sub(new ethers.utils.BigNumber(1)));
     }
 
-    public async createMarket(universe: Universe, outcomes: string[], endTime: ethers.utils.BigNumber, feePerEthInWei: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string): Promise<Market> {
+    public async createMarket(universe: Universe, outcomes: Bytes32[], endTime: ethers.utils.BigNumber, feePerEthInWei: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: Address): Promise<Market> {
         const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
 
         console.log("Creating Market");
         await this.cash.faucet(marketCreationFee);
         const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), '{description: "description"}');
-        if (!marketAddress || marketAddress == "0x") {
+        if (!marketAddress || marketAddress.to0xString() == "0x") {
             throw new Error("Unable to get address for new categorical market.");
         }
         await universe.createCategoricalMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), '{description: "description"}');
@@ -76,14 +93,14 @@ export class TestFixture {
         return market;
     }
 
-    public async createReasonableMarket(universe: Universe, outcomes: string[]): Promise<Market> {
+    public async createReasonableMarket(universe: Universe, outcomes: Bytes32[]): Promise<Market> {
         const endTime = new ethers.utils.BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
         const fee = (new ethers.utils.BigNumber(10)).pow(new ethers.utils.BigNumber(16));
         const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
         return await this.createMarket(universe, outcomes, endTime, fee, affiliateFeeDivisor, this.account);
     }
 
-    public async placeOrder(market: string, type: ethers.utils.BigNumber, numShares: ethers.utils.BigNumber, price: ethers.utils.BigNumber, outcome: ethers.utils.BigNumber, betterOrderID: string, worseOrderID: string, tradeGroupID: string): Promise<void> {
+    public async placeOrder(market: Address, type: UInt8, numShares: ethers.utils.BigNumber, price: ethers.utils.BigNumber, outcome: ethers.utils.BigNumber, betterOrderID: Bytes32, worseOrderID: Bytes32, tradeGroupID: Bytes32): Promise<void> {
         const createOrderContract = await this.contractDeployer.getContractAddress("CreateOrder");
         const createOrder = new CreateOrder(this.dependencies, createOrderContract);
 
@@ -94,12 +111,12 @@ export class TestFixture {
         return;
     }
 
-    public async takeBestOrder(marketAddress: string, type: ethers.utils.BigNumber, numShares: ethers.utils.BigNumber, price: ethers.utils.BigNumber, outcome: ethers.utils.BigNumber, tradeGroupID: string): Promise<void> {
+    public async takeBestOrder(marketAddress: Address, type: UInt8, numShares: ethers.utils.BigNumber, price: ethers.utils.BigNumber, outcome: ethers.utils.BigNumber, tradeGroupID: Bytes32): Promise<void> {
         const tradeContract = await this.contractDeployer.getContractAddress("Trade");
         const trade = new Trade(this.dependencies, tradeContract);
 
         let actualPrice = price;
-        if (type == new ethers.utils.BigNumber(1)) {
+        if (type == 1) {
             const market = new Market(this.dependencies, marketAddress);
             const numTicks = await market.getNumTicks_();
             actualPrice = numTicks.sub(price);
@@ -117,7 +134,7 @@ export class TestFixture {
         return;
     }
 
-    public async cancelOrder(orderID: string): Promise<void> {
+    public async cancelOrder(orderID: Bytes32): Promise<void> {
         const cancelOrderContract = await this.contractDeployer.getContractAddress("CancelOrder");
         const cancelOrder = new CancelOrder(this.dependencies, cancelOrderContract);
 
@@ -125,14 +142,14 @@ export class TestFixture {
         return;
     }
 
-    public async claimTradingProceeds(market: Market, shareholder: string): Promise<void> {
+    public async claimTradingProceeds(market: Market, shareholder: Address): Promise<void> {
         const claimTradingProceedsContract = await this.contractDeployer.getContractAddress("ClaimTradingProceeds");
         const claimTradingProceeds = new ClaimTradingProceeds(this.dependencies, claimTradingProceedsContract);
         await claimTradingProceeds.claimTradingProceeds(market.address, shareholder);
         return;
     }
 
-    public async getOrderPrice(orderID: string): Promise<ethers.utils.BigNumber> {
+    public async getOrderPrice(orderID: Bytes32): Promise<ethers.utils.BigNumber> {
         const ordersContract = await this.contractDeployer.getContractAddress("Orders");
         const orders = new Orders(this.dependencies, ordersContract);
 
@@ -143,13 +160,13 @@ export class TestFixture {
         return price;
     }
 
-    public async getOrderAmount(orderID: string): Promise<ethers.utils.BigNumber> {
+    public async getOrderAmount(orderID: Bytes32): Promise<ethers.utils.BigNumber> {
         const ordersContract = await this.contractDeployer.getContractAddress("Orders");
         const orders = new Orders(this.dependencies, ordersContract);
         return await orders.getAmount_(orderID);
     }
 
-    public async getBestOrderId(type: ethers.utils.BigNumber, market: string, outcome: ethers.utils.BigNumber): Promise<string> {
+    public async getBestOrderId(type: UInt8, market: Address, outcome: ethers.utils.BigNumber): Promise<Bytes32> {
         const ordersContract = await this.contractDeployer.getContractAddress("Orders");
         const orders = new Orders(this.dependencies, ordersContract);
 
@@ -185,7 +202,7 @@ export class TestFixture {
         return;
     }
 
-    public async derivePayoutDistributionHash(market: Market, payoutNumerators: Array<ethers.utils.BigNumber>): Promise<string> {
+    public async derivePayoutDistributionHash(market: Market, payoutNumerators: Array<ethers.utils.BigNumber>): Promise<Bytes32> {
         return await market.derivePayoutDistributionHash_(payoutNumerators);
     }
 
@@ -209,7 +226,7 @@ export class TestFixture {
         return new DisputeWindow(this.dependencies, disputeWindowAddress);
     }
 
-    public async getReportingParticipant(reportingParticipantAddress: string): Promise<DisputeCrowdsourcer> {
+    public async getReportingParticipant(reportingParticipantAddress: Address): Promise<DisputeCrowdsourcer> {
         return new DisputeCrowdsourcer(this.dependencies, reportingParticipantAddress);
     }
 
@@ -244,33 +261,33 @@ export class TestFixture {
         return;
     }
 
-    public async getLegacyRepBalance(owner: string): Promise<ethers.utils.BigNumber> {
+    public async getLegacyRepBalance(owner: Address): Promise<ethers.utils.BigNumber> {
         const legacyRepContract = await this.contractDeployer.getContractAddress("LegacyReputationToken");
         const legacyRep = new LegacyReputationToken(this.dependencies, legacyRepContract);
         return await legacyRep.balanceOf_(owner);
     }
 
-    public async getLegacyRepAllowance(owner: string, spender: string): Promise<ethers.utils.BigNumber> {
+    public async getLegacyRepAllowance(owner: Address, spender: Address): Promise<ethers.utils.BigNumber> {
         const legacyRepContract = await this.contractDeployer.getContractAddress("LegacyReputationToken");
         const legacyRep = new LegacyReputationToken(this.dependencies, legacyRepContract);
         return await legacyRep.allowance_(owner, spender);
     }
 
-    public async transferLegacyRep(to: string, amount: ethers.utils.BigNumber): Promise<void> {
+    public async transferLegacyRep(to: Address, amount: ethers.utils.BigNumber): Promise<void> {
         const legacyRepContract = await this.contractDeployer.getContractAddress("LegacyReputationToken");
         const legacyRep = new LegacyReputationToken(this.dependencies, legacyRepContract);
         await legacyRep.transfer(to, amount);
         return;
     }
 
-    public async approveLegacyRep(spender: string, amount: ethers.utils.BigNumber): Promise<void> {
+    public async approveLegacyRep(spender: Address, amount: ethers.utils.BigNumber): Promise<void> {
         const legacyRepContract = await this.contractDeployer.getContractAddress("LegacyReputationToken");
         const legacyRep = new LegacyReputationToken(this.dependencies, legacyRepContract);
         await legacyRep.approve(spender, amount);
         return;
     }
 
-    public async getChildUniverseReputationToken(parentPayoutDistributionHash: string) {
+    public async getChildUniverseReputationToken(parentPayoutDistributionHash: Bytes32) {
         const childUniverseAddress = await this.contractDeployer.universe!.getChildUniverse_(parentPayoutDistributionHash);
         const childUniverse = new Universe(this.dependencies, childUniverseAddress);
         const repContractAddress = await childUniverse.getReputationToken_();
@@ -284,15 +301,15 @@ export class TestFixture {
 
     // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
     public async getEthBalance(): Promise<ethers.utils.BigNumber> {
-        return await this.provider.getBalance(this.account);
+        return await this.provider.getBalance(this.account.to0xString());
     }
 
-    public async getRepBalance(owner: string): Promise<ethers.utils.BigNumber> {
+    public async getRepBalance(owner: Address): Promise<ethers.utils.BigNumber> {
         const rep = await this.getReputationToken();
         return await rep.balanceOf_(owner);
     }
 
-    public async getRepAllowance(owner: string, spender: string): Promise<ethers.utils.BigNumber> {
+    public async getRepAllowance(owner: Address, spender: Address): Promise<ethers.utils.BigNumber> {
         const rep = await this.getReputationToken();
         return await rep.allowance_(owner, spender);
     }

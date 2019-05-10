@@ -16,7 +16,7 @@ export async function deployToNetworks(networks: Array<NETWORKS>) {
         // Deploy sequentially
         const provider = new ethers.providers.JsonRpcProvider(network.http);
         const signer = await EthersFastSubmitWallet.create(<string>network.privateKey, provider);
-        const dependencies = new ContractDependenciesEthers(provider, signer, network.gasPrice.toNumber());
+        const dependencies = new ContractDependenciesEthers(provider, signer, () => Promise.resolve(network.gasPrice.toNumber()));
         await ContractDeployer.deployToNetwork(network, dependencies, provider, signer, deployerConfiguration);
     }
 }

@@ -1,9 +1,9 @@
 import { ethers } from "ethers"
 import { expect } from "chai";
 import { TestFixture } from './TestFixture';
-import { Market } from '../libraries/ContractInterfaces';
+import {Address, Bytes32, Market} from '../libraries/ContractInterfaces';
 
-const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+const ZERO_ADDRESS = Address.fromStringLiteral("0x0000000000000000000000000000000000000000");
 
 export class ReportingUtils {
     public async proceedToDesignatedReporting(fixture: TestFixture, market: Market) {
@@ -32,8 +32,8 @@ export class ReportingUtils {
         let payoutNumerators = new Array(numberOfOutcomes.toNumber()).fill(new ethers.utils.BigNumber(0));
         payoutNumerators[1] = numTicks;
 
-        let winningPayoutHash = "";
-        if (disputeWindowAddress === ZERO_ADDRESS) {
+        let winningPayoutHash:Bytes32;
+        if (disputeWindowAddress.equals(ZERO_ADDRESS)) {
             await market.doInitialReport(payoutNumerators, "");
             expect(await market.getDisputeWindow_() === ZERO_ADDRESS).to.be.false;
             console.log("Submitted initial report");
