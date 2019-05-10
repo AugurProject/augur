@@ -22,10 +22,28 @@ import { createMarkets } from "./lib/create-markets";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { repFaucet } from "./lib/rep-faucet";
 import { UploadBlockNumbers } from "@augurproject/artifacts";
+import {createCannedMarketsAndOrders} from "@augurproject/test/build/flash/create-canned-markets-and-orders";
+import {AccountList} from "@augurproject/test/libs";
+
+export const ACCOUNTS: AccountList = [
+  {
+    secretKey: "48c5da6dff330a9829d843ea90c2629e8134635a294c7e62ad4466eb2ae03712",
+    publicKey: "0xbd355a7e5a7adb23b51f54027e624bfe0e238df6",
+    balance: 100000000000000000000,  // 100 ETH
+  },
+  {
+    secretKey: "0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a",
+    publicKey: "0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb",
+    balance: 100000000000000000000,  // 100 ETH
+  },
+];
+
+
 
 const COMMANDS = [
   "create-markets",
   "create-orders",
+  "create-markets-and-orders",
   "deploy",
   "gas-limit",
   "rep-faucet",
@@ -211,6 +229,15 @@ async function runCommandForNetwork(networkConfiguration: NetworkConfiguration, 
         await createMarkets(augur, await signer.getAddress(), signer);
       }
       break;
+    }
+    case "create-markets-and-orders": {
+      const provider = new providers.JsonRpcProvider(networkConfiguration.http);
+      const ethersProvider = new EthersProvider(provider, 5, 0, 40);
+
+      const networkId = await ethersProvider.getNetworkId();
+      const addresses = Addresses[networkId];
+
+      await createCannedMarketsAndOrders( ACCOUNTS.slice(0,1), ethersProvider, addresses);
     }
     case "gas-limit": {
       const provider = new providers.JsonRpcProvider(networkConfiguration.http);
