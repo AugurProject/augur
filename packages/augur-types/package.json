@@ -7,7 +7,7 @@
   "types": "./types",
   "main": "build",
   "directories": {
-    "src": "types"
+    "src": "src"
   },
   "scripts": {
     "build": "tsc -b"
