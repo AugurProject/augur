@@ -12,16 +12,13 @@
       "path": "./packages/augur-types"
     },
     {
-      "path": "./packages/augur-api"
+      "path": "./packages/augur-sdk"
     },
     {
       "path": "./packages/augur-artifacts"
     },
     {
       "path": "./packages/contract-dependencies"
-    },
-    {
-      "path": "./packages/augur-state"
     },
     {
       "path": "./packages/contract-dependencies-ethers"

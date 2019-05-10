@@ -29,7 +29,7 @@ import {
 } from "../constants";
 import { processLogByName } from "./process-logs";
 import { BackupRestore } from "../sync/backup-restore";
-import { Log } from "@augurproject/api";
+import { Log } from "@augurproject/sdk";
 
 export type BlockDirection = "add" | "remove";
 

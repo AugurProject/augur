@@ -17,10 +17,7 @@
   ],
   "references": [
     {
-      "path": "../augur-api"
-    },
-    {
-      "path": "../augur-state"
+      "path": "../augur-sdk"
     },
     {
       "path": "../blockstream-adapters"

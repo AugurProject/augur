@@ -1,6 +1,6 @@
-import {Augur} from "@augurproject/api";
-import {makeTestAugur, ACCOUNTS, makeDbMock} from "../../libs";
-import {ethers} from "ethers";
+import { Augur } from "@augurproject/sdk";
+import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../libs";
+import { ethers } from "ethers";
 
 const mock = makeDbMock();
 
@@ -58,7 +58,7 @@ test("sync databases", async () => {
 
   // Verify that 2 new blocks were added to SyncableDB
   const queryObj: any = {
-    selector: {universe},
+    selector: { universe },
     fields: ["_id", "universe"],
     sort: ["_id"],
   };
@@ -67,16 +67,16 @@ test("sync databases", async () => {
   expect(result).toEqual(expect.objectContaining(
     {
       docs:
-          [{
-            _id: (10000000000 + originalHighestSyncedBlockNumbers[syncableDBName] + 1) + ".00000000001",
-            universe,
-          },
-          {
-            _id: (10000000000 + originalHighestSyncedBlockNumbers[syncableDBName] + 2) + ".00000000001",
-            universe,
-          }],
+        [{
+          _id: (10000000000 + originalHighestSyncedBlockNumbers[syncableDBName] + 1) + ".00000000001",
+          universe,
+        },
+        {
+          _id: (10000000000 + originalHighestSyncedBlockNumbers[syncableDBName] + 2) + ".00000000001",
+          universe,
+        }],
       warning:
-          "no matching index found, create an index to optimize query time",
+        "no matching index found, create an index to optimize query time",
     },
   ));
 
@@ -90,7 +90,7 @@ test("sync databases", async () => {
     {
       docs: [],
       warning:
-          "no matching index found, create an index to optimize query time",
+        "no matching index found, create an index to optimize query time",
     },
   ));
 

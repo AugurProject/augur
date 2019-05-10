@@ -1,4 +1,4 @@
-import { Augur } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import { providers } from "ethers";
 import { BigNumber } from "./types";
 import { Addresses } from "@augurproject/artifacts";
