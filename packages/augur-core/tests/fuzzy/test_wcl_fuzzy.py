@@ -55,7 +55,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     fixture.resetToSnapshot(snapshot)
 
     legacyReputationToken = fixture.contracts['LegacyReputationToken']
-    legacyReputationToken.faucet(long(11 * 10**6 * 10**18))
+    legacyReputationToken.faucet(int(11 * 10**6 * 10**18))
     fixture.chain.head_state.timestamp += 15000
 
     orders = fixture.contracts['Orders']
@@ -112,9 +112,9 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
             assert shareToken.balanceOf(fillerAddress) == expectedFillerShortShares
 
 def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amount, fxpPrice, numTicks):
-    longCost = long(amount * fxpPrice)
-    shortCost = long(amount * (numTicks - fxpPrice))
-    totalProceeds = long(amount * numTicks)
+    longCost = int(amount * fxpPrice)
+    shortCost = int(amount * (numTicks - fxpPrice))
+    totalProceeds = int(amount * numTicks)
     completeSetFees = totalProceeds / 100 + totalProceeds / 100
     shortFee = Decimal(completeSetFees * shortCost) / Decimal(longCost + shortCost)
     longFee = completeSetFees - shortFee
@@ -216,9 +216,9 @@ def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amoun
         numTicks = numTicks)
 
 def execute_askOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amount, fxpPrice, numTicks):
-    longCost = long(amount * fxpPrice)
-    shortCost = long(amount * (numTicks - fxpPrice))
-    totalProceeds = long(amount * numTicks)
+    longCost = int(amount * fxpPrice)
+    shortCost = int(amount * (numTicks - fxpPrice))
+    totalProceeds = int(amount * numTicks)
     completeSetFees = totalProceeds / 100 + totalProceeds / 100
     longFee = Decimal(completeSetFees * longCost) / Decimal(longCost + shortCost)
     shortFee = completeSetFees - longFee
@@ -326,7 +326,7 @@ def test_yesNo(fixture, kitchenSinkSnapshot, universe, yesNoMarket, randomAmount
     print("")
     amount = randomAmount
     numTicks = yesNoMarket.getNumTicks()
-    fxpPrice = long(randomNormalizedPrice * numTicks)
+    fxpPrice = int(randomNormalizedPrice * numTicks)
     print("Start Fuzzy WCL tests - YesNo Market - bidOrders.")
     execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, yesNoMarket, amount, fxpPrice, numTicks)
     print("Finished Fuzzy WCL tests - YesNo Market - bidOrders.")
@@ -343,7 +343,7 @@ def test_categorical(fixture, kitchenSinkSnapshot, universe, categoricalMarket, 
     print("")
     amount = randomAmount
     numTicks = categoricalMarket.getNumTicks()
-    fxpPrice = long(randomNormalizedPrice * numTicks)
+    fxpPrice = int(randomNormalizedPrice * numTicks)
     print("Start Fuzzy WCL tests - Categorical Market - bidOrders.")
     execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, categoricalMarket, amount, fxpPrice, numTicks)
     print("Finished Fuzzy WCL tests - Categorical Market - bidOrders.")
@@ -360,7 +360,7 @@ def test_scalar(fixture, kitchenSinkSnapshot, universe, scalarMarket, randomAmou
     print("")
     amount = randomAmount / 40
     numTicks = scalarMarket.getNumTicks()
-    fxpPrice = long(randomNormalizedPrice * numTicks)
+    fxpPrice = int(randomNormalizedPrice * numTicks)
     print("Start Fuzzy WCL tests - Scalar Market - bidOrders.")
     execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, scalarMarket, amount, fxpPrice, numTicks)
     print("Finished Fuzzy WCL tests - Scalar Market - bidOrders.")

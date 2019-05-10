@@ -198,10 +198,10 @@ def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market,
 
     creatorFee = completeSetFees * 0.4
     fillerFee = completeSetFees * 0.6
-    creatorPayment = fix('12', '40') - long(creatorFee)
-    fillerPayment = fix('12', '60') - long(fillerFee)
-    assert cash.balanceOf(tester.a1) == long(creatorPayment)
-    assert cash.balanceOf(tester.a2) == long(fillerPayment)
+    creatorPayment = fix('12', '40') - int(creatorFee)
+    fillerPayment = fix('12', '60') - int(fillerFee)
+    assert cash.balanceOf(tester.a1) == int(creatorPayment)
+    assert cash.balanceOf(tester.a2) == int(fillerPayment)
     assert yesShareToken.balanceOf(tester.a1) == fix(12)
     assert yesShareToken.balanceOf(tester.a2) == 0
     assert noShareToken.balanceOf(tester.a1) == 0

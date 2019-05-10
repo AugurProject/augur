@@ -11,7 +11,7 @@ twentyZeros = str(pack(">l", 0).rjust(20, b'\x00'))
 thirtyTwoZeros = str(pack(">l", 0).rjust(32, b'\x00'))
 
 def fix(n, m = 1):
-    return long(Decimal(n) * Decimal(m) * 10**18)
+    return int(Decimal(n) * Decimal(m) * 10**18)
 
 def unfix(n):
     return n // 10**18
@@ -27,7 +27,7 @@ def longToHexString(value, leftPad=40):
     return '0x' + hex(value)[2:].rstrip('L').zfill(leftPad)
 
 def bytesToLong(value):
-    return long(value.encode('hex'), 16)
+    return int(value.encode('hex'), 16)
 
 def bytesToHexString(value):
     return longToHexString(bytesToLong(value))
