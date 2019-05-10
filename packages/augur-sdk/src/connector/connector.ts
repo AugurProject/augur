@@ -1,4 +1,4 @@
-import { ContractEvents } from "@augurproject/types";
+import { ContractEvents } from "@augurproject/artifacts";
 
 export type Callback = (data: any) => Promise<unknown>;
 
