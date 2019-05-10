@@ -1,6 +1,6 @@
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { Augur } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import { ContractDeployer, DeployerConfiguration } from "@augurproject/core";
 import * as path from "path";
 import * as ganache from "ganache-core";

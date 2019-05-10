@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { stringTo32ByteHex, NULL_ADDRESS} from "./Utils";
-import { Augur } from "@augurproject/api";
-import { GenericAugurInterfaces } from "@augurproject/core";
+import { Augur } from "@augurproject/sdk";
+import { GenericAugurInterfaces, EthersFastSubmitWallet } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { AccountList, makeDependencies, makeSigner } from "./LocalAugur";
 import { ContractAddresses } from "@augurproject/artifacts";
