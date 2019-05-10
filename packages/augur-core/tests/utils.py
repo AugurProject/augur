@@ -7,8 +7,8 @@ from ethereum.utils import privtoaddr
 
 nullAddress = "0x0000000000000000000000000000000000000000"
 garbageAddress = '0xdefec8eddefec8eddefec8eddefec8eddefec8ed'
-twentyZeros = str(pack(">l", 0).rjust(20, '\x00'))
-thirtyTwoZeros = str(pack(">l", 0).rjust(32, '\x00'))
+twentyZeros = str(pack(">l", 0).rjust(20, b'\x00'))
+thirtyTwoZeros = str(pack(">l", 0).rjust(32, b'\x00'))
 
 def fix(n, m = 1):
     return long(Decimal(n) * Decimal(m) * 10**18)
@@ -17,10 +17,10 @@ def unfix(n):
     return n // 10**18
 
 def stringToBytes(value):
-    return value.ljust(32, '\x00')
+    return value.ljust(32, b'\x00')
 
 def longTo32Bytes(value):
-    return pack(">l", value).rjust(32, '\x00')
+    return pack(">l", value).rjust(32, b'\x00')
 
 def longToHexString(value, leftPad=40):
     # convert the value to a hex string, strip off the `0x`, strip off any trailing `L`, pad with zeros, prefix with `0x`
