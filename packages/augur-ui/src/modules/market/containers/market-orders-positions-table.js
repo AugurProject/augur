@@ -46,7 +46,9 @@ const mapStateToProps = (state, ownProps) => {
     canClaim = timeHasPassed.toNumber() > 0;
   }
 
-  const filledOrders = selectUserFilledOrders(state, market.id);
+  const filledOrders = market.id
+    ? selectUserFilledOrders(state, market.id)
+    : [];
   const hasPending = Boolean(openOrders.find(order => order.pending));
 
   return {

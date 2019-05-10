@@ -34,7 +34,7 @@
 ## UI development
 Run the following 4 commands, each in a separate terminal session from the root of the project.
 
-`yarn build -w`
+`yarn; yarn build -w`
 
 ### docker images available
  * `yarn workspace @augurproject/tools docker:geth:pop-15`

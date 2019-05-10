@@ -10,10 +10,11 @@ import {
   PaperAirplaneIcon,
   DoubleArrowIcon,
   RepLogoIcon,
+  DaiLogoIcon,
   ViewIcon,
   DownloadIcon,
   RotatableChevron,
-  Filter
+  Filter,
 } from "modules/common-elements/icons";
 import classNames from "classnames";
 import EtherscanLink from "modules/common/containers/etherscan-link";
@@ -219,6 +220,18 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
   >
     {RepLogoIcon}
     <span>REP Faucet</span>
+  </button>
+);
+
+export const DAIFaucetButton = (props: DefaultActionButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.DAIFaucetButton}
+    disabled={props.disabled}
+    title={props.title || "DAI Faucet"}
+  >
+    {DaiLogoIcon}
+    <span>DAI Faucet</span>
   </button>
 );
 

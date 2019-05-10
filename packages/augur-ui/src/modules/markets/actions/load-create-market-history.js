@@ -1,6 +1,5 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
-import { loadUnclaimedFees } from "modules/markets/actions/market-creator-fees-management";
 
 export function loadCreateMarketHistory(
   options = {},
@@ -32,7 +31,6 @@ export function loadCreateMarketHistory(
           ) {
             return callback(null);
           }
-          dispatch(loadUnclaimedFees(marketsCreatedByUser));
           callback(err, marketsCreatedByUser);
         }
       );

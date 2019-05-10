@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
-import { API } from "@augurproject/state/src/api/API";
-import { MarketInfo, MarketInfoReportingState, SECONDS_IN_A_DAY } from "@augurproject/state/src/api/Markets";
+import { API } from "@augurproject/sdk/build/state/api/API";
+import { MarketInfo, MarketInfoReportingState, SECONDS_IN_A_DAY } from "@augurproject/sdk/build/state/api/Markets";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
-import { DB } from "@augurproject/state/src/db/DB";
+import { DB } from "@augurproject/sdk/build/state/db/DB";
 import {
   ACCOUNTS,
   makeDbMock,
@@ -25,13 +25,12 @@ beforeAll(async () => {
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
   db = await mock.makeDB(john.augur, ACCOUNTS);
   api = new API<any>(john.augur, db);
+  await john.approveCentralAuthority();
+  await mary.approveCentralAuthority();
 }, 120000);
 
 // NOTE: Full-text searching is tested more in SyncableDB.test.ts
 test("State API :: Markets :: getMarkets", async () => {
-  await john.approveCentralAuthority();
-  await mary.approveCentralAuthority();
-
   const universe = john.augur.contracts.universe;
   const endTime = (await john.getTimestamp()).add(SECONDS_IN_A_DAY);
   const lowFeePerCashInAttoCash = new ethers.utils.BigNumber(10).pow(18).div(20); // 5% creator fee
@@ -367,10 +366,84 @@ test("State API :: Markets :: getMarkets", async () => {
     ]);
 }, 120000);
 
-test("State API :: Markets :: getMarketsInfo", async () => {
-  await john.approveCentralAuthority();
-  await mary.approveCentralAuthority();
+test("State API :: Markets :: getMarketPriceHistory", async () => {
+  const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+  const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
 
+  // Place orders
+  const bid = new ethers.utils.BigNumber(0);
+  const outcome0 = new ethers.utils.BigNumber(0);
+  const outcome1 = new ethers.utils.BigNumber(1);
+  const numShares = new ethers.utils.BigNumber(10000000000000);
+  const price = new ethers.utils.BigNumber(22);
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(categoricalMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(categoricalMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+
+  // Fill orders
+  const cost = numShares.mul(78).div(10);
+  let yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
+  let yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  let categoricalOrderId0 = await john.getBestOrderId(bid, categoricalMarket.address, outcome0);
+  let categoricalOrderId1 = await john.getBestOrderId(bid, categoricalMarket.address, outcome1);
+  await john.fillOrder(yesNoOrderId0, cost, numShares.div(10).mul(2), "42");
+  await mary.fillOrder(yesNoOrderId1, cost, numShares.div(10).mul(3), "43");
+  await mary.fillOrder(categoricalOrderId0, cost, numShares.div(10).mul(2), "43");
+  await mary.fillOrder(categoricalOrderId1, cost, numShares.div(10).mul(4), "43");
+
+  const newTime = (await john.getTimestamp()).add(SECONDS_IN_A_DAY);
+  await john.setTimestamp(newTime);
+
+  yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
+  yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  categoricalOrderId0 = await john.getBestOrderId(bid, categoricalMarket.address, outcome0);
+  categoricalOrderId1 = await john.getBestOrderId(bid, categoricalMarket.address, outcome1);
+  await john.fillOrder(yesNoOrderId0, cost, numShares.div(10).mul(4), "42");
+  await mary.fillOrder(yesNoOrderId1, cost, numShares.div(10).mul(5), "43");
+  await mary.fillOrder(categoricalOrderId0, cost, numShares.div(10).mul(4), "43");
+  await mary.fillOrder(categoricalOrderId1, cost, numShares.div(10).mul(2), "43");
+
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
+
+  let yesNoMarketPriceHistory = await api.route("getMarketPriceHistory", {
+    marketId: yesNoMarket.address
+  });
+  expect(yesNoMarketPriceHistory).toMatchObject(
+    {
+      "0": [{"amount": "8000000000000", "price": "22"}, {"amount": "4000000000000", "price": "22"}],
+      "1": [{"amount": "7000000000000", "price": "22"}, {"amount": "2000000000000", "price": "22"}]
+    }
+  );
+  for (let outcome = 0; outcome < yesNoMarketPriceHistory.length; outcome++) {
+    for (let fillOrder = 0; fillOrder < yesNoMarketPriceHistory[outcome].length; fillOrder++) {
+      expect(yesNoMarketPriceHistory[outcome][fillOrder]).toHaveProperty("timestamp");
+      if (fillOrder > 0) {
+        expect(yesNoMarketPriceHistory[outcome][fillOrder].timestamp).toBeGreaterThan(yesNoMarketPriceHistory[outcome][fillOrder].timestamp);
+      }
+    }
+  }
+
+  let categoricalMarketPriceHistory = await api.route("getMarketPriceHistory", {
+    marketId: categoricalMarket.address
+  });
+  expect(categoricalMarketPriceHistory).toMatchObject(
+    {
+      "0": [{"amount": "8000000000000", "price": "22"}, {"amount": "4000000000000", "price": "22"}],
+      "1": [{"amount": "6000000000000", "price": "22"}, {"amount": "4000000000000", "price": "22"}]
+    }
+  );
+  for (let outcome = 0; outcome < categoricalMarketPriceHistory.length; outcome++) {
+    for (let fillOrder = 0; fillOrder < categoricalMarketPriceHistory[outcome].length; fillOrder++) {
+      expect(categoricalMarketPriceHistory[outcome][fillOrder]).toHaveProperty("timestamp");
+      if (fillOrder > 0) {
+        expect(categoricalMarketPriceHistory[outcome][fillOrder].timestamp).toBeGreaterThan(categoricalMarketPriceHistory[outcome][fillOrder].timestamp);
+      }
+    }
+  }
+}, 120000);
+
+test("State API :: Markets :: getMarketsInfo", async () => {
   const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
   const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
   const scalarMarket = await john.createReasonableScalarMarket(john.augur.contracts.universe);

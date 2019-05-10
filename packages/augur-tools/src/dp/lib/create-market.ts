@@ -1,4 +1,4 @@
-import { Augur } from "@augurproject/api";
+import { Augur } from "@augurproject/sdk";
 import { MarketData } from "../data/canned-markets";
 import { BigNumber, Event } from "../types";
 import { ethers } from "ethers";
