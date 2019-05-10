@@ -40,61 +40,30 @@ export const cancelOrder = (
     outcomesData[marketId] &&
     outcomesData[marketId][outcome]
   ) {
-    dispatch(
-      updateOrderStatus({
-        orderId,
-        status: CLOSE_DIALOG_PENDING,
-        marketId,
-        outcome,
-        orderTypeLabel
-      })
-    );
+    const updateStatus = status => {
+      dispatch(
+        updateOrderStatus({
+          orderId,
+          status,
+          marketId,
+          outcome,
+          orderTypeLabel
+        })
+      );
+    };
+    updateStatus(CLOSE_DIALOG_PENDING);
     augur.api.CancelOrder.cancelOrder({
       meta: loginAccount.meta,
       _orderId: orderId,
-      onSent: () =>
-        dispatch(
-          updateOrderStatus({
-            orderId,
-            status: CLOSE_DIALOG_PENDING,
-            marketId,
-            outcome,
-            orderTypeLabel
-          })
-        ),
+      onSent: () => updateStatus(CLOSE_DIALOG_PENDING),
       onSuccess: () => {
-        dispatch(
-          updateOrderStatus({
-            orderId,
-            status: CLOSE_DIALOG_CLOSING,
-            marketId,
-            outcome,
-            orderTypeLabel
-          })
-        );
+        updateStatus(CLOSE_DIALOG_CLOSING);
         callback(null);
       },
       onFailed: err => {
-        dispatch(
-          updateOrderStatus({
-            orderId,
-            status: CLOSE_DIALOG_FAILED,
-            marketId,
-            outcome,
-            orderTypeLabel
-          })
-        );
+        updateStatus(CLOSE_DIALOG_FAILED);
         setTimeout(
-          () =>
-            dispatch(
-              updateOrderStatus({
-                orderId,
-                status: null,
-                marketId,
-                outcome,
-                orderTypeLabel
-              })
-            ),
+          () => updateStatus(null),
           TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS
         );
         callback(err);

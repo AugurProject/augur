@@ -8,14 +8,14 @@ const GAS_PRICE_API_ENDPOINT = "https://ethgasstation.info/json/ethgasAPI.json";
 const GWEI_CONVERSION = 1000000000;
 const MAINNET_ID = "1";
 
-export function loadGasPriceInfo(callback = logError) {
-  return (dispatch, getState) => {
+export function loadGasPriceInfo(callback: Function = logError) {
+  return (dispatch: Function, getState: Function) => {
     const { loginAccount, blockchain } = getState();
     if (!loginAccount.address) return callback(null);
     const networkId = augur.rpc.getNetworkID();
 
     if (networkId === MAINNET_ID) {
-      getGasPriceRanges(networkId, result => {
+      getGasPriceRanges(networkId, (result: any) => {
         dispatch(
           updateGasPriceInfo({
             ...result,
@@ -27,12 +27,12 @@ export function loadGasPriceInfo(callback = logError) {
   };
 }
 
-function getGasPriceRanges(networkId, callback) {
+function getGasPriceRanges(networkId: String, callback: Function) {
   const defaultGasPrice = setDefaultGasInfo();
-  getGasPriceValues(defaultGasPrice, result => callback(result));
+  getGasPriceValues(defaultGasPrice, (result: any) => callback(result));
 }
 
-function getGasPriceValues(defaultGasPrice, callback) {
+function getGasPriceValues(defaultGasPrice: any, callback: Function) {
   fetch(GAS_PRICE_API_ENDPOINT)
     .then(
       res => res.json()

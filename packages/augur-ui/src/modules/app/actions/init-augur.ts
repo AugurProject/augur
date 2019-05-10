@@ -39,12 +39,16 @@ const { ACCOUNT_TYPES } = AugurJS.augur.rpc.constants;
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
-function pollForAccount(dispatch, getState, callback) {
+function pollForAccount(
+  dispatch: Function,
+  getState: Function,
+  callback: any
+) {
   const { loginAccount } = getState();
   let accountType =
     loginAccount && loginAccount.meta && loginAccount.meta.accountType;
 
-  loadAccount(dispatch, null, accountType, (err, loadedAccount) => {
+  loadAccount(dispatch, null, accountType, (err: any, loadedAccount: any) => {
     if (err) {
       console.error(err);
       return callback(err);
@@ -56,10 +60,15 @@ function pollForAccount(dispatch, getState, callback) {
         loginAccount && loginAccount.meta && loginAccount.meta.accountType;
 
       if (authStatus.isLogged) {
-        loadAccount(dispatch, account, accountType, (err, loadedAccount) => {
-          if (err) console.error(err);
-          account = loadedAccount;
-        });
+        loadAccount(
+          dispatch,
+          account,
+          accountType,
+          (err: any, loadedAccount: any) => {
+            if (err) console.error(err);
+            account = loadedAccount;
+          }
+        );
       }
       const disclaimerSeen =
         windowRef &&
@@ -76,13 +85,18 @@ function pollForAccount(dispatch, getState, callback) {
   });
 }
 
-function loadAccount(dispatch, existing, accountType, callback) {
-  let loggedInAccount = null;
+function loadAccount(
+  dispatch: Function,
+  existing: any,
+  accountType: String,
+  callback: Function
+) {
+  let loggedInAccount: any = null;
   const usingMetaMask = accountType === ACCOUNT_TYPES.META_MASK;
   if (windowRef.localStorage && windowRef.localStorage.getItem) {
     loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
   }
-  AugurJS.augur.rpc.eth.accounts((err, accounts) => {
+  AugurJS.augur.rpc.eth.accounts((err: any, accounts: Array<any>) => {
     if (err) return callback(err);
     let account = existing;
     if (existing !== accounts[0]) {
@@ -120,11 +134,11 @@ function loadAccount(dispatch, existing, accountType, callback) {
   });
 }
 
-function pollForNetwork(dispatch, getState) {
+function pollForNetwork(dispatch: Function, getState: Function) {
   setInterval(() => {
     const { modal } = getState();
     dispatch(
-      verifyMatchingNetworkIds((err, expectedNetworkId) => {
+      verifyMatchingNetworkIds((err: any, expectedNetworkId: String) => {
         if (err) return console.error("pollForNetwork failed", err);
         if (expectedNetworkId != null && isEmpty(modal)) {
           dispatch(
@@ -144,7 +158,7 @@ function pollForNetwork(dispatch, getState) {
     );
     if (!process.env.ENABLE_MAINNET) {
       dispatch(
-        checkIfMainnet((err, isMainnet) => {
+        checkIfMainnet((err: any, isMainnet: Boolean) => {
           if (err) return console.error("pollForNetwork failed", err);
           if (isMainnet && isEmpty(modal)) {
             dispatch(
@@ -162,16 +176,16 @@ function pollForNetwork(dispatch, getState) {
 }
 
 export function connectAugur(
-  history,
-  env,
-  isInitialConnection = false,
-  callback = logError
+  history: any,
+  env: any,
+  isInitialConnection: Boolean = false,
+  callback: Function = logError
 ) {
-  return (dispatch, getState) => {
+  return (dispatch: Function, getState: Function) => {
     const { modal, loginAccount } = getState();
     AugurJS.connect(
       env,
-      async (err, ConnectionInfo) => {
+      async (err: any, ConnectionInfo: any) => {
         if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
           return callback(err, ConnectionInfo);
         }
@@ -183,7 +197,7 @@ export function connectAugur(
         dispatch(updateAugurNodeConnectionStatus(true));
         dispatch(getAugurNodeNetworkId());
         dispatch(registerTransactionRelay());
-        AugurJS.augur.augurNode.getSyncData((err, res) => {
+        AugurJS.augur.augurNode.getSyncData((err: any, res: any) => {
           if (!err && res) {
             dispatch(
               updateVersions({
@@ -217,7 +231,7 @@ export function connectAugur(
           if (modal && modal.type === MODAL_NETWORK_DISCONNECTED)
             dispatch(closeModal());
           if (isInitialConnection) {
-            pollForAccount(dispatch, getState);
+            pollForAccount(dispatch, getState, null);
             pollForNetwork(dispatch, getState);
           }
           callback();
@@ -238,13 +252,21 @@ export function connectAugur(
   };
 }
 
+interface initAugurParams {
+  augurNode: String | null;
+  ethereumNodeHttp: String | null;
+  ethereumNodeWs: String | null;
+  useWeb3Transport: Boolean;
+}
+
 export function initAugur(
-  history,
-  { augurNode, ethereumNodeHttp, ethereumNodeWs, useWeb3Transport },
+  history: any,
+  { augurNode, ethereumNodeHttp, ethereumNodeWs, useWeb3Transport }: initAugurParams,
   callback = logError
 ) {
-  return (dispatch, getState) => {
+  return (dispatch: Function, getState: Function) => {
     const env = networkConfig[`${process.env.ETHEREUM_NETWORK}`];
+    console.log(env);
     env.useWeb3Transport = useWeb3Transport;
     env["augur-node"] = defaultTo(augurNode, env["augur-node"]);
     env["ethereum-node"].http = defaultTo(

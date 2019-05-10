@@ -6,18 +6,17 @@ import { createBigNumber } from "utils/create-big-number";
 import makePath from "modules/routes/helpers/make-path";
 import { TRANSACTIONS } from "modules/routes/constants/views";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
-import { updateAlert as updateAlertAction } from "modules/alerts/actions/alerts";
 
 export const ADD_ALERT = "ADD_ALERT";
 export const REMOVE_ALERT = "REMOVE_ALERT";
 export const UPDATE_ALERT = "UPDATE_ALERT";
 export const CLEAR_ALERTS = "CLEAR_ALERTS";
 
-function packageAlertInfo(alertId, timestamp, transaction) {
+function packageAlertInfo(id: String, timestamp: Number, transaction: any) {
   return {
-    id: alertId,
+    id,
     timestamp,
-    status: "Confirmed",
+    status: constants.CONFIRMED,
     linkPath: makePath(TRANSACTIONS),
     seen: false,
     log: {
@@ -31,8 +30,8 @@ function packageAlertInfo(alertId, timestamp, transaction) {
   };
 }
 
-export function handleFilledOnly(tradeInProgress = null) {
-  return (dispatch, getState) => {
+export function handleFilledOnly(tradeInProgress: any = null) {
+  return (dispatch: Function, getState: Function) => {
     const { alerts, transactionsData } = store.getState();
     for (let i = 0; i < alerts.length; i++) {
       if (alerts[i].status.toLowerCase() === constants.PENDING) {
@@ -49,9 +48,9 @@ export function handleFilledOnly(tradeInProgress = null) {
           );
           // handle fill only orders alerts updates.
           dispatch(
-            updateAlertAction(alerts[i].id, {
+            updateAlert(alerts[i].id, {
               id: alerts[i].id,
-              status: "Confirmed",
+              status: constants.CONFIRMED,
               timestamp:
                 selectCurrentTimestampInSeconds(getState()) || Date.now(),
               seen: false,
@@ -80,9 +79,9 @@ export function handleFilledOnly(tradeInProgress = null) {
             ) {
               // handle fill only orders alerts updates.
               dispatch(
-                updateAlertAction(alerts[i].id, {
+                updateAlert(alerts[i].id, {
                   id: alerts[i].id,
-                  status: "Confirmed",
+                  status: constants.CONFIRMED,
                   timestamp:
                     selectCurrentTimestampInSeconds(getState()) ||
                     transactionsData[key].timestamp.timestamp,
@@ -107,7 +106,7 @@ export function handleFilledOnly(tradeInProgress = null) {
 }
 
 export function loadAlerts() {
-  return (dispatch, getState) => {
+  return (dispatch: Function, getState: Function) => {
     const { alerts, transactionsData } = store.getState();
     for (let i = 0; i < alerts.length; i++) {
       if (alerts[i].status.toLowerCase() === constants.PENDING) {
@@ -126,9 +125,9 @@ export function loadAlerts() {
           ) {
             // handle fill only orders alerts updates.
             dispatch(
-              updateAlertAction(alerts[i].id, {
+              updateAlert(alerts[i].id, {
                 id: alerts[i].id,
-                status: "Confirmed",
+                status: constants.CONFIRMED,
                 timestamp:
                   selectCurrentTimestampInSeconds(getState()) ||
                   transactionsData[key].timestamp.timestamp,
@@ -162,12 +161,13 @@ export function loadAlerts() {
               )
             );
             return true;
-          } else if (
+          }
+          if (
             alerts[i].params.type.toUpperCase() === constants.CANCELORDER &&
             transactionsData[key].status.toLowerCase() === constants.SUCCESS
           ) {
             const groupedTransactions = transactionsData[key].transactions;
-            groupedTransactions.forEach(transaction => {
+            groupedTransactions.forEach((transaction: any) => {
               if (
                 transaction.meta &&
                 transaction.meta.canceledTransactionHash === alerts[i].id
@@ -189,7 +189,7 @@ export function loadAlerts() {
             transactionsData[key].status.toLowerCase() === constants.SUCCESS
           ) {
             const groupedTransactions = transactionsData[key].transactions;
-            groupedTransactions.forEach(transaction => {
+            groupedTransactions.forEach((transaction: any) => {
               if (
                 transaction.meta &&
                 transaction.meta.txhash === alerts[i].id
@@ -215,18 +215,18 @@ export function loadAlerts() {
   };
 }
 
-export function addCriticalAlert(alert) {
+export function addCriticalAlert(alert: any) {
   return addAlert({
     level: constants.CRITICAL,
     ...alert
   });
 }
 
-export function addAlert(alert) {
-  return (dispatch, getState) => {
+export function addAlert(alert: any) {
+  return (dispatch: Function, getState: Function) => {
     if (alert != null) {
       const { universe } = store.getState();
-      const callback = alert => {
+      const callback = (alert: any) => {
         const fullAlert = {
           type: ADD_ALERT,
           data: {
@@ -246,16 +246,16 @@ export function addAlert(alert) {
   };
 }
 
-export function removeAlert(id) {
+export function removeAlert(id: String) {
   return {
     type: REMOVE_ALERT,
     data: { id }
   };
 }
 
-export function updateAlert(id, alert) {
-  return (dispatch, getState) => {
-    const callback = alert => {
+export function updateAlert(id: String, alert: any) {
+  return (dispatch: Function, getState: Function) => {
+    const callback = (alert: any) => {
       const fullAlert = {
         type: UPDATE_ALERT,
         data: {
@@ -293,7 +293,7 @@ export function updateAlert(id, alert) {
                 timestamp: alert.timestamp,
                 blockNumber: alert.log.blockNumber,
                 log: alert.log,
-                status: "Confirmed",
+                status: constants.CONFIRMED,
                 linkPath: makePath(TRANSACTIONS),
                 params: alert.params
               })

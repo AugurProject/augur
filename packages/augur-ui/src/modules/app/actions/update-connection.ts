@@ -8,7 +8,7 @@ export const UPDATE_IS_RECONNECTION_PAUSED = "UPDATE_IS_RECONNECTION_PAUSED";
  * @param {Boolean} isConnected
  * @return {{type: string, isConnected: *}} returns action
  */
-export function updateConnectionStatus(isConnected) {
+export function updateConnectionStatus(isConnected: Boolean) {
   return {
     type: UPDATE_CONNECTION_STATUS,
     data: { isConnected }
@@ -19,7 +19,7 @@ export function updateConnectionStatus(isConnected) {
  * @param {Boolean} isConnected
  * @return {{type: string, isConnected: *}} returns action
  */
-export function updateAugurNodeConnectionStatus(isConnectedToAugurNode) {
+export function updateAugurNodeConnectionStatus(isConnectedToAugurNode: Boolean) {
   return {
     type: UPDATE_AUGUR_NODE_CONNECTION_STATUS,
     data: { isConnectedToAugurNode }
@@ -30,7 +30,7 @@ export function updateAugurNodeConnectionStatus(isConnectedToAugurNode) {
  * @param {string} augurNodeNetworkId
  * @return {{type: string, augurNodeNetworkId: *}} returns action
  */
-export function updateAugurNodeNetworkId(augurNodeNetworkId) {
+export function updateAugurNodeNetworkId(augurNodeNetworkId: String) {
   return {
     type: UPDATE_AUGUR_NODE_NETWORK_ID,
     data: { augurNodeNetworkId }
@@ -41,7 +41,7 @@ export function updateAugurNodeNetworkId(augurNodeNetworkId) {
  * @param {Boolean} isReconnectionPaused
  * @return {{type: string, isReconnectionPaused: *}} returns action
  */
-export function updateIsReconnectionPaused(isReconnectionPaused) {
+export function updateIsReconnectionPaused(isReconnectionPaused: Boolean) {
   return {
     type: UPDATE_IS_RECONNECTION_PAUSED,
     data: { isReconnectionPaused }

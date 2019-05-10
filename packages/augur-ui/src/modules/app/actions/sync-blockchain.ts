@@ -7,11 +7,14 @@ import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
 const GET_GAS_BLOCK_LIMIT = 100;
 const MAINNET_ID = "1";
 
-export const syncBlockchain = cb => (dispatch, getState) => {
+export const syncBlockchain = (cb: Function) => (
+  dispatch: Function,
+  getState: Function
+) => {
   const networkId = augur.rpc.getNetworkID();
   const { gasPriceInfo } = getState();
   const blockNumber = parseInt(augur.rpc.getCurrentBlock().number, 16);
-  augur.api.Controller.getTimestamp((err, augurTimestamp) => {
+  augur.api.Controller.getTimestamp((err: any, augurTimestamp: any) => {
     if (err) console.error(err);
     dispatch(
       updateBlockchain({
@@ -38,7 +41,7 @@ export const syncBlockchain = cb => (dispatch, getState) => {
     cb && cb();
   });
 
-  augur.augurNode.getSyncData((err, res) => {
+  augur.augurNode.getSyncData((err: any, res: any) => {
     if (!err && res) {
       dispatch(
         updateBlockchain({

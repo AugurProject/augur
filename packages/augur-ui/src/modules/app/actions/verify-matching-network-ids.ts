@@ -3,8 +3,14 @@ import { getAugurNodeNetworkId } from "modules/app/actions/get-augur-node-networ
 import isGlobalWeb3 from "modules/auth/helpers/is-global-web3";
 import logError from "utils/log-error";
 
-const allNetworkIdsMatch = (networkIds, callback = logError) => {
-  const networkIdValues = Object.values(networkIds);
+interface NetworkIdsObject {
+  augurNode: String | null;
+  middleware: String | null;
+  netVersion?: String | null;
+}
+
+const allNetworkIdsMatch = (networkIds: NetworkIdsObject, callback: Function = logError) => {
+  const networkIdValues: any = Object.values(networkIds);
   if (networkIdValues.indexOf(null) > -1) {
     return callback(
       `One or more network IDs not found: ${JSON.stringify(networkIds)}`
@@ -17,16 +23,16 @@ const allNetworkIdsMatch = (networkIds, callback = logError) => {
   callback(null);
 };
 
-export const verifyMatchingNetworkIds = (callback = logError) => dispatch =>
+export const verifyMatchingNetworkIds = (callback: Function = logError) => (dispatch: Function) =>
   dispatch(
-    getAugurNodeNetworkId((err, augurNodeNetworkId) => {
+    getAugurNodeNetworkId((err: any, augurNodeNetworkId: String) => {
       if (err) return callback(err);
-      const networkIds = {
+      const networkIds: NetworkIdsObject = {
         augurNode: augurNodeNetworkId,
         middleware: augur.rpc.getNetworkID()
       };
       if (!isGlobalWeb3()) return allNetworkIdsMatch(networkIds, callback);
-      augur.rpc.net.version((err, netVersion) => {
+      augur.rpc.net.version((err: any, netVersion: String) => {
         if (err) return callback(err);
         networkIds.netVersion = netVersion;
         allNetworkIdsMatch({ ...networkIds, netVersion }, callback);

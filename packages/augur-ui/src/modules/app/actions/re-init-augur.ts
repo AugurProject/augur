@@ -6,7 +6,10 @@ import { closeModal } from "modules/modal/actions/close-modal";
 
 const RETRY_TIMER = 3000; // attempt re-initAugur every 3 seconds.
 
-export const reInitAugur = history => (dispatch, getState) => {
+export const reInitAugur = (history: any) => (
+  dispatch: Function,
+  getState: Function
+) => {
   const debounceCall = debounce((callback = cb) => {
     const { connection, env } = getState();
     if (!connection.isConnected || !connection.isConnectedToAugurNode) {
@@ -24,7 +27,7 @@ export const reInitAugur = history => (dispatch, getState) => {
       dispatch(closeModal());
     }
   }, RETRY_TIMER);
-  const cb = (err, connection) => {
+  const cb = (err: any, connection: any) => {
     // both args should be undefined if we are connected.
     if (!err && !connection) return;
     if (err || !connection.augurNode || !connection.ethereumNode) {

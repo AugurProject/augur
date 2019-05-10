@@ -12,6 +12,8 @@ import { createBigNumber } from "utils/create-big-number";
 import {
   BUY,
   SELL,
+  REP,
+  DAI,
   TEN_TO_THE_EIGHTEENTH_POWER,
   CREATEGENESISUNIVERSE,
   CANCELORPHANEDORDER,
@@ -89,8 +91,8 @@ import {
   SENDREPUTATION
 } from "modules/common-elements/constants";
 
-export default function setAlertText(alert, callback) {
-  return (dispatch, getState) => {
+export default function setAlertText(alert: any, callback: any) {
+  return (dispatch: Function, getState: Function) => {
     if (!alert || isEmpty(alert)) {
       return dispatch(callback(alert));
     }
@@ -200,7 +202,7 @@ export default function setAlertText(alert, callback) {
       }
 
       // FeeWindow & Universe
-      case "BUY":
+      case BUY:
       case BUYPARTICIPATIONTOKENS:
         alert.title = "Buy participation token(s)";
         if (!alert.description && alert.log) {
@@ -228,7 +230,7 @@ export default function setAlertText(alert, callback) {
               const outcomeDescription = getOutcomeName(
                 marketInfo,
                 marketInfo.outcomes.find(
-                  outcome =>
+                  (outcome: any) =>
                     outcome.id ===
                     createBigNumber(alert.params._outcome).toFixed()
                 ).name
@@ -417,7 +419,7 @@ export default function setAlertText(alert, callback) {
               const outcome =
                 alert.log.outcome !== undefined &&
                 marketInfo.outcomes.find(
-                  o => o.id === alert.log.outcome.toString()
+                  (o: any) => o.id === alert.log.outcome.toString()
                 );
               const outcomeDescription = getOutcomeName(marketInfo, outcome);
               alert.description = `Place ${orderType} order for ${
@@ -436,9 +438,9 @@ export default function setAlertText(alert, callback) {
 
       // TestNetReputationToken
       case FAUCET:
-        let token = "REP";
+        let token = REP;
         if (alert.params._amount.indexOf("3635c9adc5dea00000") > -1) {
-          token = "DAI";
+          token = DAI;
         }
         alert.title = `Get ${token} from faucet`;
         break;
