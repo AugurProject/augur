@@ -1,4 +1,4 @@
-import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
+import { formatBytes32String } from "ethers/utils";
 
 interface AskBid {
   shares: string;
@@ -87,7 +87,7 @@ const thisYear = today.getUTCFullYear();
 function massageMarkets(markets: Array<CannedMarket>): Array<CannedMarket> {
   return markets.map((market): CannedMarket => {
     if (market.outcomes) {
-      market.outcomes = market.outcomes.map(stringTo32ByteHex);
+      market.outcomes = market.outcomes.map(formatBytes32String);
     }
     return market;
   });

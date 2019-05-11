@@ -1,13 +1,13 @@
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { Augur } from "@augurproject/sdk";
-import { ContractDeployer, DeployerConfiguration } from "@augurproject/core";
 import * as path from "path";
 import * as ganache from "ganache-core";
-import { EthersFastSubmitWallet } from "@augurproject/core/source/libraries/EthersFastSubmitWallet";
 import { ethers } from "ethers";
 import { CompilerOutput } from "solc";
+
+import { Augur } from "@augurproject/sdk";
+import { EthersProvider } from "@augurproject/ethersjs-provider";
+import { ContractDeployer, DeployerConfiguration, EthersFastSubmitWallet } from "@augurproject/core";
 import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
+import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 
 const memdown = require("memdown");
 

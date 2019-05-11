@@ -1,16 +1,17 @@
 #!/usr/bin/env ts-node
 
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { AccountList, ContractAPI, ACCOUNTS, deployContracts} from "../libs";
+import { ArgumentParser } from "argparse";
 import { BigNumber as DecimalBigNumber } from "bignumber.js";
-import { BigNumber } from "ethers/utils";
+import { BigNumber, formatBytes32String } from "ethers/utils";
+
+import { EthersProvider } from "@augurproject/ethersjs-provider";
+import { GenericAugurInterfaces } from "@augurproject/core";
 import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
-import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
+import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice } from "@augurproject/sdk";
+
+import { AccountList, ContractAPI, ACCOUNTS, deployContracts} from "../libs";
 import { NULL_ADDRESS } from "../libs/Utils";
 import { cannedMarkets, CannedMarket, OrderBook } from "./data/canned-markets";
-import { GenericAugurInterfaces } from "@augurproject/core";
-import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice } from "@augurproject/sdk";
-import { ArgumentParser } from "argparse";
 
 async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<GenericAugurInterfaces.Market<BigNumber>> {
   const contracts = person.augur.contracts;
@@ -78,7 +79,7 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
 }
 
 function generateRandom32ByteHex() {
-  return stringTo32ByteHex(String(Date.now()));
+  return formatBytes32String(String(Date.now()));
 }
 
 function dbn2bn (dbn: DecimalBigNumber): BigNumber {
@@ -101,8 +102,8 @@ async function placeOrder(person: ContractAPI,
 
   const attoShares = dbn2bn(convertDisplayAmountToOnChainAmount(shares, tickSize));
   const attoPrice = dbn2bn(convertDisplayPriceToOnChainPrice(price, minPrice, tickSize));
-  const betterOrderId = stringTo32ByteHex("");
-  const worseOrderId = stringTo32ByteHex("");
+  const betterOrderId = formatBytes32String("");
+  const worseOrderId = formatBytes32String("");
 
   return await person.placeOrder(
     market.address,
