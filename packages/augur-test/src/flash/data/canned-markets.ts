@@ -108,7 +108,7 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
       tags: ["SpaceX", "spaceflight"],
       longDescription: "",
     },
-    orderBook: {},
+    orderBook: yesNoOrderBook,
   },
   {
     marketType: "yesNo",
@@ -124,7 +124,7 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
       tags: ["SpaceX", "spaceflight"],
       longDescription: "",
     },
-    orderBook: {},
+    orderBook: yesNoOrderBook,
   },
   {
     marketType: "yesNo",
