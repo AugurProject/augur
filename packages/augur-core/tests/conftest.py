@@ -241,7 +241,7 @@ class ContractsFixture:
         lookupKey = lookupKey if lookupKey else path.splitext(path.basename(relativeFilePath))[0]
         contract = self.upload(relativeFilePath, lookupKey, signatureKey, constructorArgs)
         if not contract: return None
-        self.contracts['Augur'].registerContract(lookupKey.ljust(32, '\x00'), contract.address)
+        self.contracts['Augur'].registerContract(lookupKey.ljust(32, '0'), contract.address)
         return(contract)
 
     def generateAndStoreSignature(self, relativePath):
