@@ -14,6 +14,7 @@ import { NULL_ADDRESS } from "../libs/Utils";
 import { cannedMarkets, CannedMarket, OrderBook } from "./data/canned-markets";
 
 async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<GenericAugurInterfaces.Market<BigNumber>> {
+  console.log("CREATING CANNED MARKET: ", can.extraInfo.description)
   const contracts = person.augur.contracts;
   const universe = contracts.universe;
 

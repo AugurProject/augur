@@ -44,12 +44,22 @@ export class ContractAPI {
 
     await this.faucet(marketCreationFee);
 
-    const marketAddress = await universe.createYesNoMarket_(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, byteTopic, extraInfo);
-    if (!marketAddress || marketAddress === "0x") {
-      throw new Error("Unable to get address for new binary market.");
+    const createMarketEvents = await universe.createYesNoMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, byteTopic, extraInfo);
+
+
+    // TODO: turn this into a function
+    var marketId = "";
+    for(const ev of createMarketEvents) {
+      if (ev.name === "MarketCreated") {
+        interface HasMarket {
+          market: string
+        }
+        marketId = (ev.parameters as HasMarket).market;
+      }
     }
-    await universe.createYesNoMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, byteTopic, extraInfo);
-    return this.augur.contracts.marketFromAddress(marketAddress);
+
+    console.log("Market created with id: ", marketId);
+    return this.augur.contracts.marketFromAddress(marketId);
   }
 
   public async createReasonableYesNoMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {

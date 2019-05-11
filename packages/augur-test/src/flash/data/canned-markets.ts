@@ -33,13 +33,13 @@ const yesNoOrderBook: OrderBook = {
 
 export interface ExtraInfo {
   resolutionSource?: string;
+  description: string;
   tags: Array<string>;
   longDescription?: string;
   _scalarDenomination?: string;
 }
 export interface CannedMarket {
   marketType: string;
-  description: string;
   endTime: number;
   minPrice?: string;
   maxPrice?: string;
@@ -96,14 +96,14 @@ function massageMarkets(markets: Array<CannedMarket>): Array<CannedMarket> {
 export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   {
     marketType: "yesNo",
-    description:
-      "Will SpaceX successfully complete a manned flight to the International Space Station by the end of " +
-      thisYear +
-      "?",
     endTime: inOneMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
     topic: "space",
     extraInfo: {
+      description:
+        "Will SpaceX successfully complete a manned flight to the International Space Station by the end of " +
+        thisYear +
+        "?",
       resolutionSource: "http://www.spacex.com",
       tags: ["SpaceX", "spaceflight"],
       longDescription: "",
@@ -112,14 +112,14 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "yesNo",
-    description:
-      "Will SpaceX successfully complete a manned flight beyond Earth orbit by " +
-      inOneMonths.toDateString() +
-      "?",
     endTime: inOneMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
     topic: "space",
     extraInfo: {
+      description:
+        "Will SpaceX successfully complete a manned flight beyond Earth orbit by " +
+        inOneMonths.toDateString() +
+        "?",
       resolutionSource: "http://www.spacex.com",
       tags: ["SpaceX", "spaceflight"],
       longDescription: "",
@@ -128,14 +128,14 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "yesNo",
-    description:
-      "Will SpaceX successfully complete a Mars landing (manned or unmanned) by " +
-      inTwoMonths.toDateString() +
-      "?",
     endTime: inTwoMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
     topic: "space",
     extraInfo: {
+      description:
+        "Will SpaceX successfully complete a Mars landing (manned or unmanned) by " +
+        inTwoMonths.toDateString() +
+        "?",
       resolutionSource: "http://www.spacex.com",
       tags: ["SpaceX", "spaceflight"],
       longDescription: "",
@@ -144,14 +144,14 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "yesNo",
-    description:
-      "Will California secede from the United States before, " +
-      inTwoMonths.toDateString() +
-      "?",
     endTime: inTwoMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
     topic: "politics",
     extraInfo: {
+      description:
+        "Will California secede from the United States before, " +
+        inTwoMonths.toDateString() +
+        "?",
       resolutionSource: "",
       tags: ["California", "Calexit"],
       longDescription:
@@ -161,14 +161,14 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "yesNo",
-    description:
-      "Will the Dow Jones Industrial Average close at a higher price on " +
-      closingBellTomorrow.toDateString() +
-      " than it closed at the previous day?",
     endTime: closingBellTomorrow.getTime() / 1000,
     affiliateFeeDivisor: 4,
     topic: "finance",
     extraInfo: {
+      description:
+        "Will the Dow Jones Industrial Average close at a higher price on " +
+        closingBellTomorrow.toDateString() +
+        " than it closed at the previous day?",
       resolutionSource: "https://www.google.com/finance?q=INDEXDJX:.DJI",
       tags: ["stocks", "Dow Jones"],
       longDescription:
@@ -178,14 +178,14 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "yesNo",
-    description:
-      "Will Augur's live release happen by " +
-      inThreeMonths.toDateString() +
-      "?",
     endTime: inThreeMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
     topic: "Augur",
     extraInfo: {
+      description:
+        "Will Augur's live release happen by " +
+        inThreeMonths.toDateString() +
+        "?",
       resolutionSource: "https://augur.net",
       tags: ["release date", "Ethereum"],
       longDescription: "",
@@ -194,14 +194,14 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "yesNo",
-    description:
-      "Will Jair Messias Bolsonaro be elected the president of Brazil in " +
-      inThreeMonths.toDateString() +
-      "?",
     endTime: inThreeMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
     topic: "politics",
     extraInfo: {
+      description:
+        "Will Jair Messias Bolsonaro be elected the president of Brazil in " +
+        inThreeMonths.toDateString() +
+        "?",
       resolutionSource: "",
       tags: ["elections", "Brazil"],
       longDescription: "",
@@ -210,14 +210,14 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "yesNo",
-    description:
-      "Will Ethereum trade at $2000 or higher at any time before the end of " +
-      inFourMonths.toDateString() +
-      "?",
     endTime: inFourMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
     topic: "crypto",
     extraInfo: {
+      description:
+        "Will Ethereum trade at $2000 or higher at any time before the end of " +
+        inFourMonths.toDateString() +
+        "?",
       resolutionSource: "https://api.coinmarketcap.com/v1/ticker/ethereum",
       tags: ["Ethereum", "trading"],
       longDescription: "http://coinmarketcap.com/currencies/ethereum",
@@ -226,14 +226,14 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "yesNo",
-    description:
-      "Will the Larsen B ice shelf collapse by " +
-      inFourMonths.toDateString() +
-      "?",
     endTime: inFourMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
     topic: "climate",
     extraInfo: {
+      description:
+        "Will the Larsen B ice shelf collapse by " +
+        inFourMonths.toDateString() +
+        "?",
       resolutionSource: "",
       tags: ["Antarctica", "warming"],
     },
@@ -241,14 +241,14 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "yesNo",
-    description:
-      "Will the Golden State Warriors win the Championship on " +
-      inFiveMonths.toDateString() +
-      "?",
     endTime: inFiveMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
     topic: "sports",
     extraInfo: {
+      description:
+        "Will the Golden State Warriors win the Championship on " +
+        inFiveMonths.toDateString() +
+        "?",
       resolutionSource: "ESPN",
       tags: ["basketball", "Warriors"],
       longDescription: "",
@@ -257,14 +257,14 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "yesNo",
-    description:
-      "Will antibiotics be outlawed for agricultural use in China by " +
-      inFiveMonths.toDateString() +
-      "?",
     endTime: inFiveMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
     topic: "agriculture",
     extraInfo: {
+      description:
+        "Will antibiotics be outlawed for agricultural use in China by " +
+        inFiveMonths.toDateString() +
+        "?",
       tags: ["antibiotics", "China"],
       longDescription:
         "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
@@ -273,10 +273,6 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "scalar",
-    description:
-      "High temperature (in degrees Fahrenheit) on " +
-      today.toDateString() +
-      " at the San Francisco International Airport, as reported by Weather Underground",
     endTime: midnightTomorrow.getTime() / 1000,
     minPrice: "-10",
     maxPrice: "120",
@@ -284,6 +280,10 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
     affiliateFeeDivisor: 4,
     topic: "temperature",
     extraInfo: {
+      description:
+        "High temperature (in degrees Fahrenheit) on " +
+        today.toDateString() +
+        " at the San Francisco International Airport, as reported by Weather Underground",
       resolutionSource:
         "https://www.wunderground.com/history/airport/KSFO/" +
         [
@@ -313,9 +313,6 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "scalar",
-    description:
-      "Average tropospheric methane concentration (in parts-per-billion) on " +
-      inFiveMonths.toDateString(),
     endTime: inFiveMonths.getTime() / 1000,
     minPrice: "600",
     maxPrice: "5000",
@@ -323,6 +320,9 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
     affiliateFeeDivisor: 4,
     topic: "science",
     extraInfo: {
+      description:
+        "Average tropospheric methane concentration (in parts-per-billion) on " +
+      inFiveMonths.toDateString(),
       resolutionSource: "https://www.esrl.noaa.gov/gmd/ccgg/trends_ch4",
       tags: ["climate", "atmosphere"],
       longDescription:
@@ -333,8 +333,6 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "scalar",
-    description:
-      "New antibiotics approved by the FDA on " + inSixMonths.toDateString(),
     endTime: inSixMonths.getTime() / 1000,
     minPrice: "0",
     maxPrice: "30",
@@ -342,6 +340,8 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
     affiliateFeeDivisor: 4,
     topic: "medicine",
     extraInfo: {
+      description:
+        "New antibiotics approved by the FDA on " + inSixMonths.toDateString(),
       resolutionSource:
         "https://www.centerwatch.com/drug-information/fda-approved-drugs/year/" +
         thisYear,
@@ -366,10 +366,6 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "scalar",
-    description:
-      "Millions of Tether tokens issued on " +
-      today.toDateString() +
-      " (round down)",
     endTime: midnightTomorrow.getTime() / 1000,
     minPrice: "0",
     maxPrice: "10000",
@@ -377,6 +373,10 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
     affiliateFeeDivisor: 4,
     topic: "crypto",
     extraInfo: {
+      description:
+        "Millions of Tether tokens issued on " +
+        today.toDateString() +
+        " (round down)",
       resolutionSource:
         "http://omnichest.info/lookupadd.aspx?address=3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL",
       tags: ["Tether", "trading"],
@@ -401,15 +401,15 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "categorical",
-    description:
-      "Who will win the University of Georgia vs. University of Florida football game on " +
-      midnightTomorrow.toDateString() +
-      "?",
     endTime: midnightTomorrow.getTime() / 1000,
     outcomes: ["Georgia", "Florida"],
     affiliateFeeDivisor: 4,
     topic: "sports",
     extraInfo: {
+      description:
+        "Who will win the University of Georgia vs. University of Florida football game on " +
+        midnightTomorrow.toDateString() +
+        "?",
       resolutionSource: "http://www.mcubed.net/ncaaf/series/fla/ga.shtml",
       tags: ["college football", "football"],
       longDescription:
@@ -428,10 +428,6 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "categorical",
-    description:
-      "What will be the status of the U.S. electoral college on " +
-      midnightTomorrow.toDateString() +
-      "?",
     endTime: midnightTomorrow.getTime() / 1000,
     outcomes: [
       "Unchanged from 2016",
@@ -441,6 +437,10 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
     affiliateFeeDivisor: 4,
     topic: "politics",
     extraInfo: {
+      description:
+        "What will be the status of the U.S. electoral college on " +
+        midnightTomorrow.toDateString() +
+        "?",
       resolutionSource: "",
       tags: ["elections", "US politics"],
       longDescription:
@@ -450,10 +450,6 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "categorical",
-    description:
-      "What will be the number one killer in the United States by " +
-      inOneMonths.toDateString() +
-      "?",
     endTime: inOneMonths.getTime() / 1000,
     outcomes: [
       "cancer",
@@ -466,6 +462,10 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
     affiliateFeeDivisor: 4,
     topic: "science",
     extraInfo: {
+      description:
+        "What will be the number one killer in the United States by " +
+        inOneMonths.toDateString() +
+        "?",
       resolutionSource: "https://www.cdc.gov/nchs/nvss/deaths.htm",
       tags: ["mortality", "United States"],
     },
@@ -498,10 +498,6 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "categorical",
-    description:
-      "Which city will have the lowest median single-family home price on " +
-      inOneMonths.toDateString() +
-      "?",
     endTime: inOneMonths.getTime() / 1000,
     outcomes: [
       "London",
@@ -515,6 +511,10 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
     affiliateFeeDivisor: 4,
     topic: "housing",
     extraInfo: {
+      description:
+        "Which city will have the lowest median single-family home price on " +
+        inOneMonths.toDateString() +
+        "?",
       resolutionSource: "http://www.demographia.com",
       tags: ["economy", "bubble"],
     },
@@ -547,10 +547,6 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
   },
   {
     marketType: "categorical",
-    description:
-      "Which city will have the highest median single-family home price on " +
-      inTwoMonths.toDateString() +
-      "?",
     endTime: inTwoMonths.getTime() / 1000,
     outcomes: [
       "London",
@@ -564,6 +560,10 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
     affiliateFeeDivisor: 4,
     topic: "housing",
     extraInfo: {
+      description:
+        "Which city will have the highest median single-family home price on " +
+        inTwoMonths.toDateString() +
+        "?",
       resolutionSource: "http://www.demographia.com",
       tags: ["economy", "bubble"],
     },

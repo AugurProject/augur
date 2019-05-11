@@ -123,7 +123,7 @@ export class Contract<TBigNumber> {
 		const data = this.encodeMethod(abi, parameters)
 		const transaction = Object.assign({ to: this.address, data: data }, attachedEth ? { value: attachedEth } : {}, from ? { from: from } : {})
 		const result = await this.dependencies.call(transaction)
-		if (result === '0x') throw new Error(`Call returned '0x' indicating failure.`)
+		if (result === '0x') throw new Error(`Call returned '0x' indicating failure. ABI: ${JSON.stringify(abi, null, 2)} \n parameters: ${JSON.stringify(parameters, null, 2)}`)
 		return this.dependencies.decodeParams(abi.outputs, result)
 	}
 
