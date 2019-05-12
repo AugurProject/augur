@@ -7,7 +7,7 @@ import { processLogByName } from "./process-logs";
 import { insertTransactionHash, processBlockByBlockDetails } from "./process-block";
 import { logger } from "../utils/logger";
 import { logProcessors } from "./log-processors";
-import { ParsedLog } from "@augurproject/api";
+import { ParsedLog } from "@augurproject/sdk";
 
 const BLOCK_DOWNLOAD_PARALLEL_LIMIT = 15;
 

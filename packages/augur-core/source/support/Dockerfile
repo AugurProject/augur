@@ -9,19 +9,6 @@ ARG SOLC_VERSION=v0.5.4
 ARG SOLC_MD5=fce0ea489308e86aa0d5f7d72bd2cd15
 ENV PATH="/augur/node_modules/.bin:${PATH}"
 
-#RUN apk add --no-cache \
-#        bash \
-#        curl \
-#        g++ \
-#        gcc \
-#        git \
-#        libffi-dev \
-#        linux-headers \
-#        make \
-#        musl-dev \
-#        openssl-dev \
-#        python3-dev
-
 # install "virtualenv", since the vast majority of users of this image will want it
 RUN python3 -m pip install --no-cache-dir virtualenv
 
@@ -38,10 +25,6 @@ RUN echo "${SOLC_MD5} */usr/local/bin/solc" > solc.md5 && \
     md5sum -b -c solc.md5 && \
     chmod a+x /usr/local/bin/solc
 
-#COPY --from=augur-build /usr/local/ /usr/local
-#COPY --from=augur-build /opt/ /opt/
-#
-#COPY --from=augur-build /augur/ /augur/
 
 RUN yarn workspace @augurproject/core install && yarn workspace @augurproject/core build
 
