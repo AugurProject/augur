@@ -169,7 +169,7 @@ def test_redeem(localFixture, universe, cash, market):
         winningDisputeCrowdsourcer1.redeem(tester.a0)
 
     with PrintGasUsed(localFixture, "DisputeWindow:redeem", PARTICIPATION_TOKEN_REDEMPTION):
-        disputeWindow.redeem()
+        disputeWindow.redeem(tester.a0)
 
 
 @fixture(scope="session")
