@@ -160,8 +160,8 @@ jobs:
           TESTS: integration:parity
         security_mithril:
           TESTS: security:mythril
-         security_main:
-           TESTS: security:maian
+          #security_main:
+          #  TESTS: security:maian
 
     steps:
       - task: UsePythonVersion@0
