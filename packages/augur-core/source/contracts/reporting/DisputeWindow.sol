@@ -83,10 +83,10 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return true;
     }
 
-    function redeem() public afterInitialized returns (bool) {
+    function redeem(address _account) public afterInitialized returns (bool) {
         require(isOver() || universe.isForking());
 
-        uint256 _attoParticipationTokens = balances[msg.sender];
+        uint256 _attoParticipationTokens = balances[_account];
 
         if (_attoParticipationTokens == 0) {
             return true;
@@ -101,14 +101,14 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         uint256 _supply = totalSupply();
 
         // Burn tokens and send back REP
-        burn(msg.sender, _attoParticipationTokens);
-        require(getReputationToken().transfer(msg.sender, _attoParticipationTokens));
+        burn(_account, _attoParticipationTokens);
+        require(getReputationToken().transfer(_account, _attoParticipationTokens));
 
         // Pay out fees
         uint256 _feePayoutShare = _cashBalance.mul(_attoParticipationTokens).div(_supply);
-        cash.transfer(msg.sender, _feePayoutShare);
+        cash.transfer(_account, _feePayoutShare);
 
-        augur.logParticipationTokensRedeemed(universe, msg.sender, _attoParticipationTokens, _feePayoutShare);
+        augur.logParticipationTokensRedeemed(universe, _account, _attoParticipationTokens, _feePayoutShare);
         return true;
     }
 
