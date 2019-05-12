@@ -108,11 +108,8 @@ jobs:
           docker images
           docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-          yarn workspace @augurproject/core docker:build:python2-and-3
-          docker tag augurproject/python2-and-3:monorepo augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
           docker images
           yarn workspace @augurproject/core docker:build;
-          docker push augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
         displayName: augur-core docker image
         condition: |
           and
@@ -190,8 +187,6 @@ jobs:
           node --version
           docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-          docker pull augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG) augurproject/python2-and-3:monorepo
           docker pull $CORE_IMAGE_BUILD
           docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST
           docker images
@@ -317,17 +312,14 @@ jobs:
         sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
         sudo systemctl status docker
         docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-        docker pull augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG)
         docker pull augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
         docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-        docker tag augurproject/python2-and-3:$(DOCKER_CI_BUILD_TAG) augurproject/python2-and-3:monorepo
         docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
         docker images
         yarn
         yarn workspace @augurproject/tools docker:build
 
         if [[ "$(Build.SourceBranchName)" == "master" ]]; then
-            docker push augurproject/python2-and-3:monorepo
             docker push augurproject/augur-core:monorepo
         fi
         yarn workspace @augurproject/tools docker:push
