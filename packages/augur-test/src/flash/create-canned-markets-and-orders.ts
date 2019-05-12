@@ -97,7 +97,7 @@ async function placeOrder(person: ContractAPI,
                           price: DecimalBigNumber) {
   const tickSize = can.tickSize
     ? new DecimalBigNumber(can.tickSize)
-    : numTicksToTickSize(new DecimalBigNumber("10000"), new DecimalBigNumber("0"), new DecimalBigNumber("0x0de0b6b3a7640000"));
+    : numTicksToTickSize(new DecimalBigNumber("100"), new DecimalBigNumber("0"), new DecimalBigNumber("0x0de0b6b3a7640000"));
 
   const minPrice = new DecimalBigNumber(can.minPrice || 0);
 
