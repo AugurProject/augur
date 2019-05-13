@@ -2,27 +2,29 @@ import { augur } from "services/augurjs";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
 import logError from "utils/log-error";
 
-export const updateTimeframeData = (
+export const updateTopBarPL = (
   options: any = {},
-  callback: any = logError
+  callback: Function = logError
 ) => (dispatch: Function, getState: Function) => {
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
     return callback(null);
-
   augur.augurNode.submitRequest(
-    "getAccountTimeRangedStats",
+    "getProfitLoss",
     {
-      account: loginAccount.address,
       universe: universe.id,
-      startTime: options.startTime || null,
-      endTime: null
+      account: loginAccount.address,
+      startTime: null,
+      endTime: null,
+      periodInterval: null,
+      marketId: null
     },
-    (err: any, timeframeData: any) => {
+    (err: any, data: any) => {
       if (err) return callback(err);
       dispatch(
         updateLoginAccount({
-          timeframeData
+          realizedPL: data[data.length - 1].realized,
+          realizedPLPercent: data[data.length - 1].realizedPercent
         })
       );
     }
