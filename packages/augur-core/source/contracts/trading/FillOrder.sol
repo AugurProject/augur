@@ -370,7 +370,6 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     address public trade;
 
     mapping (address => uint256) public marketVolume;
-    mapping (address => uint256) public marketShareVolume;
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
@@ -411,7 +410,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _amountFilled = _amountFillerWants.sub(_amountRemainingFillerWants);
         _tradeData.contracts.orders.recordFillOrder(_orderId, _tradeData.getMakerSharesDepleted(), _tradeData.getMakerTokensDepleted(), _amountFilled);
         logOrderFilled(_tradeData, _price, _marketCreatorFees.add(_reporterFees), _amountFilled, _tradeGroupId);
-        logAndUpdateVolume(_tradeData, _amountFilled);
+        logAndUpdateVolume(_tradeData);
         updateProfitLoss(_tradeData, _amountFilled);
         if (_tradeData.creator.participantAddress == _tradeData.filler.participantAddress) {
             profitLoss.recordFrozenFundChange(_tradeData.contracts.market, _tradeData.creator.participantAddress, _tradeData.order.outcome, -int256(_tokensRefunded));
@@ -449,10 +448,9 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         return true;
     }
 
-    function logAndUpdateVolume(Trade.Data memory _tradeData, uint256 _amountFilled) private returns (uint256) {
+    function logAndUpdateVolume(Trade.Data memory _tradeData) private returns (uint256) {
         IMarket _market = _tradeData.contracts.market;
         uint256 _volume = marketVolume[address(_market)];
-        uint256 _shareVolume = marketShareVolume[address(_market)];
         uint256 _makerSharesDepleted = _tradeData.getMakerSharesDepleted();
         uint256 _fillerSharesDepleted = _tradeData.getFillerSharesDepleted();
         uint256 _makerTokensDepleted = _tradeData.getMakerTokensDepleted();
@@ -460,9 +458,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _completeSetTokens = _makerSharesDepleted.min(_fillerSharesDepleted).mul(_market.getNumTicks());
         _volume = _volume.add(_makerTokensDepleted).add(_fillerTokensDepleted).add(_completeSetTokens);
         marketVolume[address(_market)] = _volume;
-        _shareVolume = _shareVolume.add(_amountFilled);
-        marketShareVolume[address(_market)] = _shareVolume;
-        augur.logMarketVolumeChanged(_tradeData.contracts.market.getUniverse(), address(_market), _volume, _shareVolume);
+        augur.logMarketVolumeChanged(_tradeData.contracts.market.getUniverse(), address(_market), _volume);
         return _volume;
     }
 

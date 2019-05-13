@@ -32,8 +32,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
     marketVolumeChangedLog = {
         "universe": universe.address,
         "market": market.address,
-        "volume": creatorCost + fillerCost,
-        "shareVolume": fix(2)
+        "volume": creatorCost + fillerCost
     }
 
     profitLossChangedLog = {
