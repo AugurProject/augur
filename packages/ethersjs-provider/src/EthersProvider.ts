@@ -1,5 +1,5 @@
 import {NetworkId} from "@augurproject/artifacts";
-import {Filter, Log, LogValues} from "@augurproject/types/build/ethereum/logs";
+import {Filter, Log, LogValues} from "@augurproject/types";
 import {Transaction} from "contract-dependencies";
 import {EthersProvider as EProvider} from "contract-dependencies-ethers";
 import {ethers} from "ethers";

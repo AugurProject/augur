@@ -1,6 +1,6 @@
 import {SyncableDB} from "./SyncableDB";
 import {Augur} from "../../Augur";
-import {ParsedLog} from "@augurproject/types/types/ethereum/logs";
+import {ParsedLog} from "@augurproject/types";
 import {DB} from "./DB";
 
 /**

@@ -2,10 +2,11 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "types"
+    "rootDir": "./types"
   },
   "include": [
-    "types/**/*"
+    "types/**/*",
+    "types/**/**/*"
   ],
   "references": []
 }
