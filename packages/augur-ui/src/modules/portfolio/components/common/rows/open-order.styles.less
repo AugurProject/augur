@@ -1,6 +1,6 @@
 @import (reference) '~assets/styles/shared';
 
-.Order {
+.GenericColumns {
   display: grid;
   flex-direction: row;
   flex-grow: 1;
@@ -73,7 +73,7 @@
   border: 0;
 }
 
-.Order__extended {
+.BottomBorder {
   border-bottom: 0.0625rem solid @color-primary-background;
 }
 
@@ -92,28 +92,15 @@
   padding-right: 0;
 }
 
-.Order__border {
-  border-bottom: 0.0625rem solid @color-primary-background;
-}
-
-.Order__extendedView {
+.FiveColumns__extendedView {
   grid-template-columns: repeat(6, 1fr) 6.2rem;
 }
 
-.Position,
-.FilledOrder {
-  > li {
-    &:first-child {
-      font-weight: 500;
-    }
-  }
-}
-
-.FilledOrder {
+.EightColumns {
   grid-template-columns: repeat(5, 1fr) minmax(5rem, 1fr) 3.2rem;
 }
 
-.FilledOrder__extendedView {
+.EightColumns__extendedView {
   grid-template-columns: repeat(5, 1fr) 6rem;
 
   > li {
@@ -255,7 +242,7 @@ div.OpenOrder__labels {
 }
 
 @media @breakpoint-mobile-mid {
-  .Order {
+  .GenericColumns {
     grid-template-columns: repeat(3, 1fr);
     position: relative;
 
@@ -317,7 +304,7 @@ div.OpenOrder__labels {
     margin-left: 1.25rem;
   }
 
-  .FilledOrder {
+  .EightColumns {
     grid-template-columns: repeat(5, 1fr);
     position: relative;
 

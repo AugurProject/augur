@@ -1,0 +1,47 @@
+import React from "react";
+import * as constants from "modules/common-elements/constants";
+import {
+  LinearPropertyLabel,
+  PendingLabel,
+  PositionTypeLabel,
+  ValueLabel,
+  TextLabel
+} from "modules/common-elements/labels";
+import { CancelTextButton } from "modules/common-elements/buttons";
+
+const { COLUMN_TYPES } = constants;
+
+function selectColumn(columnType, properties) {
+  switch (columnType) {
+    case COLUMN_TYPES.TEXT:
+      return <TextLabel text={properties.text} keyId={properties.keyId} />;
+    case COLUMN_TYPES.POSITION_TYPE:
+      return <PositionTypeLabel type={properties.type} pastTense={properties.pastTense} />;
+    case COLUMN_TYPES.VALUE:
+      return properties.value && <ValueLabel value={properties.value} keyId={properties.keyId} />;
+    case COLUMN_TYPES.CANCEL_TEXT_BUTTON: // todo: need to figure out pending for mobile
+      return (properties.pending ? <span> <PendingLabel /> </span> : <CancelTextButton disabled={properties.disabled} text={properties.text} action={properties.action} />);
+    case COLUMN_TYPES.PLAIN:
+      return properties.value;
+    default:
+      return <div/>;
+  }
+}
+
+export interface RowColumnProps {
+  columnType: String;
+  hide?: Boolean;
+  properties: Object;
+}
+
+const RowColumn = (props: RowColumnProps) => {
+  const { columnType, hide, properties } = props;
+
+  const Column = selectColumn(columnType, properties);
+
+  if (hide) return null;
+
+  return <li>{Column}</li>;
+}
+
+export default RowColumn;

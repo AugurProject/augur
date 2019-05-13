@@ -64,7 +64,7 @@ const PositionRow = (props: PositionRowProps) => {
 
   const rowContent = (
     <ul
-      className={classNames(Styles.Order, Styles.Position, {
+      className={classNames(Styles.GenericColumns, Styles.Position, {
         [Styles.Position__extended]: extendedView
       })}
     >
@@ -124,6 +124,7 @@ const PositionRow = (props: PositionRowProps) => {
     );
   }
 
+  // when on mobile the toggle shows always 
   return (
     <Media query={SMALL_MOBILE}>
       {matches =>
