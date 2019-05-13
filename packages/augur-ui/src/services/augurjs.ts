@@ -3,7 +3,7 @@ import logError from "utils/log-error";
 import { augurSdk } from "services/augursdk";
 import { JsonRpcProvider, Web3Provider } from "ethers/providers";
 
-export const connect = async (env, loginAccount, callback = logError) => {
+export const connect = async (env: any, loginAccount: string, callback = logError) => {
   const connectOptions = {
     augurNode: env["augur-node"],
     ethereumNode: env["ethereum-node"],
