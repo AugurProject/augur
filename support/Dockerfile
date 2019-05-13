@@ -1,20 +1,25 @@
 # when updating node version, make sure link to yarn in /opt is still the correct version
 ARG NODE_VERSION=10.15.3
-FROM node:${NODE_VERSION}-alpine as node
+FROM node:${NODE_VERSION}-alpine
 
-RUN apk update \
-  && apk upgrade \
-  && apk add  --no-cache --virtual .build-dep git bash python make gcc g++
+RUN apk add --no-cache \
+        bash \
+        curl \
+        g++ \
+        gcc \
+        git \
+        libffi-dev \
+        libstdc++ \
+        linux-headers \
+        make \
+        musl-dev \
+        openssl-dev \
+        python-dev \
+        python3-dev
+
 
 WORKDIR /augur
 COPY . .
 
-RUN npm_config_devdir=/root/.node-gyp yarn --cache-folder=/root/.yarn-cache
+RUN yarn && yarn build
 
-RUN yarn build
-
-RUN apk update \
-  && apk upgrade \
-  && apk add  --no-cache libstdc++
-
-RUN apk del .build-dep

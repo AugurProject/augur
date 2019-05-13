@@ -87,7 +87,7 @@ FILL_ORDER_DOUBLE_REVERSE_POSITION    =   [
     3046586,
 ]
 
-tester.STARTGAS = long(6.7 * 10**6)
+tester.STARTGAS = int(6.7 * 10**6)
 
 @mark.parametrize('numOutcomes', range(2,8))
 def test_order_creation_best_case(numOutcomes, localFixture, markets):
@@ -192,7 +192,7 @@ def test_order_filling_both_eth(numOutcomes, localFixture, markets):
     localFixture.contracts["Cash"].faucet(cost, sender = tester.k1)
     fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1)
     maxGas = localFixture.chain.head_state.gas_used - startGas
-    print "MAX GAS: %i FOR %i OUTCOMES" % (maxGas, numOutcomes)
+    print("MAX GAS: {} FOR {} OUTCOMES".format(maxGas, numOutcomes))
     # assert maxGas == FILL_ORDER_BOTH_ETH[marketIndex]
 
 @mark.parametrize('numOutcomes', range(2,9))

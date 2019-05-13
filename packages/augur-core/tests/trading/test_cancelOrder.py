@@ -6,7 +6,7 @@ from pytest import raises, mark
 from utils import longTo32Bytes, longToHexString, fix, AssertLog, bytesToHexString, BuyWithCash, nullAddress
 from constants import BID, ASK, YES, NO
 
-tester.STARTGAS = long(6.7 * 10**6)
+tester.STARTGAS = int(6.7 * 10**6)
 
 def test_cancelBid(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts['CreateOrder']
