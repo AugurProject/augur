@@ -19,7 +19,6 @@ import parrotSay from "parrotsay-api";
 
 import chalk from "chalk";
 import columnify from "columnify";
-import { createMarkets } from "./lib/create-markets";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { repFaucet } from "./lib/rep-faucet";
 import { UploadBlockNumbers } from "@augurproject/artifacts";
@@ -194,24 +193,6 @@ async function runCommandForNetwork(networkConfiguration: NetworkConfiguration, 
         const addresses = Addresses[networkId];
         const augur = await Augur.create(ethersProvider, dependencies, addresses);
         await repFaucet(augur, new BigNumber(100000));
-      }
-      break;
-    }
-    case "create-markets": {
-      if (networkConfiguration.privateKey) {
-        const provider = new providers.JsonRpcProvider(networkConfiguration.http);
-        const ethersProvider = new EthersProvider(provider, 5, 0, 40);
-        const signer = await EthersFastSubmitWallet.create(networkConfiguration.privateKey, provider);
-        const dependencies = new ContractDependenciesEthers(provider, signer);
-        const networkId = await ethersProvider.getNetworkId();
-
-        const addresses = Addresses[networkId];
-        const augur = await Augur.create(ethersProvider, dependencies, addresses);
-
-        const ETERNAL_APPROVAL_VALUE_ = await augur.contracts.cash.ETERNAL_APPROVAL_VALUE_();
-        await augur.contracts.cash.approve(augur.addresses.Augur, ETERNAL_APPROVAL_VALUE_);
-
-        await createMarkets(augur, await signer.getAddress(), signer);
       }
       break;
     }
