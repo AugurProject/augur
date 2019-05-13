@@ -20,6 +20,7 @@ import { isEmpty } from "lodash";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
 import InvalidMessage from "modules/reporting/components/invalid-message/invalid-message";
+import { getOrCacheDesignatedReportStake } from "modules/contracts/actions/contractCalls";
 
 export default class ReportingReport extends Component {
   static propTypes = {
@@ -100,33 +101,26 @@ export default class ReportingReport extends Component {
     this.setState(newState);
   }
 
-  calculateMarketCreationCosts() {
+  async calculateMarketCreationCosts() {
     const {
       isDesignatedReporter,
       universe,
       market,
       isDRMarketCreator
     } = this.props;
-    augur.api.Universe.getOrCacheDesignatedReportStake(
-      { tx: { to: universe, send: false } },
-      (err, initialReporterStake) => {
-        if (err) return console.error(err);
+    const initialReporterStake = await getOrCacheDesignatedReportStake();
 
-        const { designatedReportStake } = market;
-        const initialStake = formatAttoEth(initialReporterStake || 0);
-        const neededStake = isDRMarketCreator
-          ? createBigNumber(initialStake.fullPrecision).minus(
-              designatedReportStake
-            )
-          : initialStake.fullPrecision;
+    const { designatedReportStake } = market;
+    const initialStake = formatAttoEth(initialReporterStake || 0);
+    const neededStake = isDRMarketCreator
+      ? createBigNumber(initialStake.fullPrecision).minus(designatedReportStake)
+      : initialStake.fullPrecision;
 
-        const repAmount = formatEtherEstimate(neededStake);
+    const repAmount = formatEtherEstimate(neededStake);
 
-        this.setState({
-          stake: isDesignatedReporter ? repAmount : formatRep("0")
-        });
-      }
-    );
+    this.setState({
+      stake: isDesignatedReporter ? repAmount : formatRep("0")
+    });
   }
 
   calculateGasEstimates(gasPrice) {

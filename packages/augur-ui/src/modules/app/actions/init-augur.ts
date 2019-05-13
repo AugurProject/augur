@@ -1,5 +1,5 @@
 import * as AugurJS from "services/augurjs";
-import { augurApi } from "services/augurapi";
+import { checkIsKnownUniverse } from "modules/contracts/actions/contractCalls";
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
@@ -185,6 +185,7 @@ export function connectAugur(
     const { modal, loginAccount } = getState();
     AugurJS.connect(
       env,
+      loginAccount,
       async (err: any, ConnectionInfo: any) => {
         if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
           return callback(err, ConnectionInfo);
@@ -238,8 +239,7 @@ export function connectAugur(
         };
 
         if (process.env.NODE_ENV === "development") {
-          const { contracts } = augurApi.get();
-          if ((await contracts.augur.isKnownUniverse_(universeId)) === false) {
+          if ((await checkIsKnownUniverse(universeId)) === false) {
             dispatch(setSelectedUniverse());
             location.reload();
           }
