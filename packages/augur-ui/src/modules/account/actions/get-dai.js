@@ -1,12 +1,12 @@
 import { updateAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 import logError from "utils/log-error";
-import { augurApi } from "services/augurapi";
+import { augurSdk } from "services/augursdk";
 import { BigNumber } from "ethers/utils";
 
 export default function(callback = logError) {
   return async (dispatch, getState) => {
-    const { contracts } = augurApi.get();
+    const { contracts } = augurSdk.get();
     contracts.cash.faucet(new BigNumber("100000000000000000000000")).then(
       success => {
         // TODO: SDK will management pending tx queue

@@ -12,8 +12,7 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
   test("should dispatch UPDATE_BLOCKCHAIN action", () => {
     store.dispatch(
       action({
-        currentBlockNumber: 10000,
-        currentBlockTimestamp: 4886718345
+        currentBlockNumber: 10000
       })
     );
     expect(store.getActions()).toEqual([
@@ -21,8 +20,7 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
         type: "UPDATE_BLOCKCHAIN",
         data: {
           blockchainData: {
-            currentBlockNumber: 10000,
-            currentBlockTimestamp: 4886718345
+            currentBlockNumber: 10000
           }
         }
       }
