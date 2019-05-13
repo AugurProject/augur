@@ -1,9 +1,10 @@
+import { augur } from "services/augurjs";
 import { updateAlert } from "modules/alerts/actions/alerts";
-
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds as getTime } from "src/select-state";
 import { CONFIRMED, FAILED } from "modules/common-elements/constants";
 import logError from "utils/log-error";
+import noop from "utils/noop";
 
 export default function(callback = logError) {
   return (dispatch: Function, getState: Function) => {
@@ -18,7 +19,7 @@ export default function(callback = logError) {
       );
     augur.api.Cash.faucet({
       tx: { to: augur.contracts.addresses[augur.rpc.getNetworkID()].Cash },
-      _amount: 100000000000000000000000,
+      _amount: 1000000000000000000000,
       meta: loginAccount.meta,
       onSent: noop,
       onSuccess: (res: any) => {
