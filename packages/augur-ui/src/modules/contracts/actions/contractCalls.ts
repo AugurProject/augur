@@ -10,7 +10,7 @@ import { BigNumber } from "ethers/utils";
 
 export async function checkIsKnownUniverse(universeId: string) {
   const { contracts } = augurSdk.get();
-  const result = await contracts.augur.isKnownUniverse_(universeId);
+return await contracts.augur.isKnownUniverse_(universeId);
   return result;
 }
 
