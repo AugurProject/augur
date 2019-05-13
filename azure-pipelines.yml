@@ -30,31 +30,34 @@ jobs:
           command: login
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
-
       - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
         inputs:
           keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
           targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
           vstsFeed: npmPackages
-
       - script: |
           yarn install
         displayName: Install Dependencies
-
       - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
         inputs:
           keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
           targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
           vstsFeed: npmPackages
-
       - bash: |
           set -euo pipefail
           yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          yarn test
+        displayName: yarn test
+      - bash: |
+          set -euo pipefail
           yarn docker:build:augur
           docker images
           docker tag augurproject/augur-build:latest augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker push augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-        displayName: augur-build
+        displayName: docker build
       - task: Docker@1
         displayName: docker logout
         inputs:
