@@ -11367,6 +11367,25 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "redeem",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "cash",
@@ -11523,20 +11542,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [],
-			"name": "redeem",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -12487,6 +12492,20 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "validityBondAttoCash",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "getHighestNonTentativeParticipantStake",
 			"outputs": [
 				{
@@ -12680,6 +12699,20 @@
 				{
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "totalAffiliateFeesAttoCash",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -14883,6 +14916,29 @@
 		},
 		{
 			"constant": false,
+			"inputs": [
+				{
+					"name": "_reportingParticipants",
+					"type": "address[]"
+				},
+				{
+					"name": "_disputeWindows",
+					"type": "address[]"
+				}
+			],
+			"name": "redeemStake",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
 			"inputs": [],
 			"name": "getOrCacheReportingFeeDivisor",
 			"outputs": [
@@ -15246,25 +15302,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_reportingParticipants",
-					"type": "address[]"
-				}
-			],
-			"name": "redeemStake",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{

@@ -26,12 +26,23 @@ def test_redeem_reporting_participants(kitchenSinkFixture, market, categoricalMa
 
     # Fast forward time until the new dispute window is over and we can redeem
     disputeWindow = kitchenSinkFixture.applySignature("DisputeWindow", market.getDisputeWindow())
+
+    # Purchase PTs and inject fees into the window
+    ptAmount = 10**18
+    additionalfees = 10**18
+    assert cash.faucet(additionalfees)
+    assert cash.transfer(disputeWindow.address, additionalfees)
+    assert disputeWindow.buy(ptAmount)
+
     kitchenSinkFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     assert market.finalize()
 
     expectedRep = winningDisputeCrowdsourcer2.getStake() + winningDisputeCrowdsourcer1.getStake() + initialReporter.getStake()
     expectedRep = expectedRep + expectedRep * 2 / 5
+    expectedRep += ptAmount
     expectedRep -= 1 # Rounding error
+    fees = cash.balanceOf(disputeWindow.address)
     with TokenDelta(reputationToken, expectedRep, tester.a0, "Redeeming didn't refund REP"):
-        with PrintGasUsed(kitchenSinkFixture, "Universe Redeem:", 0):
-            assert universe.redeemStake([initialReporter.address, winningDisputeCrowdsourcer1.address, winningDisputeCrowdsourcer2.address])
+        with TokenDelta(cash, fees, tester.a0, "Redeeming didn't pay out fees"):
+            with PrintGasUsed(kitchenSinkFixture, "Universe Redeem:", 0):
+                assert universe.redeemStake([initialReporter.address, winningDisputeCrowdsourcer1.address, winningDisputeCrowdsourcer2.address], [disputeWindow.address])
