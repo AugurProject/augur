@@ -25,6 +25,7 @@ export const loadAccountDataFromLocalStorage = (address: String) => (
       const { selectedUniverse } = storedAccountData;
       const { favorites } = storedAccountData;
       const { readNotifications } = storedAccountData;
+      const { pendingQueue } = storedAccountData;
       if (readNotifications) {
         dispatch(updateReadNotifications(readNotifications));
       }

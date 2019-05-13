@@ -1,9 +1,9 @@
 import Augur from "@augurproject/augur.js";
 import logError from "utils/log-error";
-import { augurApi } from "services/augurapi";
+import { augurSdk } from "services/augursdk";
 import { JsonRpcProvider, Web3Provider } from "ethers/providers";
 
-export const connect = async (env, callback = logError) => {
+export const connect = async (env: any, loginAccount: string, callback = logError) => {
   const connectOptions = {
     augurNode: env["augur-node"],
     ethereumNode: env["ethereum-node"],
@@ -11,15 +11,15 @@ export const connect = async (env, callback = logError) => {
   };
   if (env.debug) augur.rpc.setDebugOptions(env.debug);
 
-
   let provider;
-  if(window.web3 && window.web3.currentProvider) {
-    provider = new Web3Provider(window.web3.currentProvider)
+  if (window.web3 && window.web3.currentProvider) {
+    provider = new Web3Provider(window.web3.currentProvider);
   } else {
     provider = new JsonRpcProvider(env["ethereum-node"].http);
   }
 
-  await augurApi.makeApi(provider);
+  await augurSdk.makeApi(provider, loginAccount.address, provider.getSigner());
+
   augur.connect(
     connectOptions,
     (err, connectionInfo) => {
