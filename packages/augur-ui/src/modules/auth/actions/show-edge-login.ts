@@ -13,13 +13,16 @@ import { makeEdgeUiContext } from "edge-login-ui-web";
 export const BEGIN_EDGE_LOADING = "BEGIN_EDGE_LOADING";
 export const UPDATE_EDGE_CONTEXT = "UPDATE_EDGE_CONTEXT";
 
-export const showEdgeLogin = history => (dispatch, getState) => {
+export const showEdgeLogin = (history: any) => (
+  dispatch: Function,
+  getState: Function
+) => {
   const state = getState();
   const edgeContext = selectEdgeContextState(state);
   const edgeLoading = selectEdgeLoadingState(state);
 
   if (edgeContext) {
-    edgeContext.on("login", edgeAccount =>
+    edgeContext.on("login", (edgeAccount: any) =>
       dispatch(loginWithEdge(edgeAccount, history))
     );
     edgeContext.showLoginWindow();
@@ -32,10 +35,10 @@ export const showEdgeLogin = history => (dispatch, getState) => {
       vendorName: "Augur",
       vendorImageUrl:
         "https://airbitz.co/go/wp-content/uploads/2016/08/augur_logo_100.png"
-    }).then(edgeContext => {
+    }).then((edgeContext: any) => {
       dispatch(updateAuthStatus(EDGE_LOADING, false));
       dispatch(updateAuthStatus(EDGE_CONTEXT, edgeContext));
-      edgeContext.on("login", edgeAccount =>
+      edgeContext.on("login", (edgeAccount: any) =>
         dispatch(loginWithEdge(edgeAccount, history))
       );
       edgeContext.showLoginWindow();

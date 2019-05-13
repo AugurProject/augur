@@ -4,7 +4,7 @@ import { updateLoginAccount } from "modules/auth/actions/update-login-account";
 import { updateAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 
-export function checkAccountAllowance(callback = logError) {
+export function checkAccountAllowance(callback: Function = logError) {
   return (dispatch, getState) => {
     const { loginAccount } = getState();
     if (loginAccount.allowance && loginAccount.allowance !== "0") {
@@ -25,7 +25,10 @@ export function checkAccountAllowance(callback = logError) {
   };
 }
 
-export function approveAccount(onSent = logError, onSuccess = logError) {
+export function approveAccount(
+  onSent: Function = logError,
+  onSuccess: Function = logError
+) {
   return (dispatch, getState) => {
     const { loginAccount } = getState();
     const { address, meta } = loginAccount;

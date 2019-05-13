@@ -5,7 +5,7 @@ export const EDGE_CONTEXT = "edgeContext";
 export const IS_CONNECTION_TRAY_OPEN = "isConnectionTrayOpen";
 export const UPDATE_AUTH_STATUS = "UPDATE_AUTH_STATUS";
 
-export function updateAuthStatus(statusKey, value) {
+export function updateAuthStatus(statusKey: String, value: any) {
   return {
     type: UPDATE_AUTH_STATUS,
     data: {

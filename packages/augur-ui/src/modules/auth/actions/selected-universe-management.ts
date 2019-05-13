@@ -1,9 +1,9 @@
 import { windowRef } from "utils/window-ref";
 import { augur } from "services/augurjs";
 
-export const setSelectedUniverse = selectedUniverseId => (
-  dispatch,
-  getState
+export const setSelectedUniverse = (selectedUniverseId: String) => (
+  dispatch: Function,
+  getState: Function
 ) => {
   const { loginAccount, env, connection } = getState();
   const { address } = loginAccount;

@@ -2,8 +2,12 @@ import { updateCategories } from "modules/categories/actions/update-categories";
 
 // makeUICategory returns a new category literal, ie. an
 // object matching the type of augur-node's UICategory<string>.
-function makeUICategory(categoryName, tagName1, tagName2) {
-  function makeTagAggregation(tagName) {
+function makeUICategory(
+  categoryName: String,
+  tagName1: String,
+  tagName2: String
+) {
+  function makeTagAggregation(tagName: String) {
     return {
       nonFinalizedOpenInterest: "0",
       numberOfMarketsWithThisTag: 1,
@@ -23,9 +27,9 @@ function makeUICategory(categoryName, tagName1, tagName2) {
 }
 
 export function appendCategoryIfNew(
-  dispatch,
-  categories,
-  marketWithMaybeNewCategory
+  dispatch: Function,
+  categories: Array<any>,
+  marketWithMaybeNewCategory: any
 ) {
   const isExistingCategory = categories.find(
     c => c.categoryName === marketWithMaybeNewCategory.category

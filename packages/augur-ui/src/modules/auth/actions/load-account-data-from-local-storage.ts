@@ -12,9 +12,9 @@ import { isNewFavoritesStyle } from "modules/markets/helpers/favorites-processor
 import { loadPendingQueue } from "modules/pending-queue/actions/pending-queue-management";
 import { setSelectedUniverse } from "./selected-universe-management";
 
-export const loadAccountDataFromLocalStorage = address => (
-  dispatch,
-  getState
+export const loadAccountDataFromLocalStorage = (address: String) => (
+  dispatch: Function,
+  getState: Function
 ) => {
   const localStorageRef = typeof window !== "undefined" && window.localStorage;
   const { universe, connection } = getState();
@@ -47,55 +47,59 @@ export const loadAccountDataFromLocalStorage = address => (
           loadFavoritesMarkets(favorites[augurNodeNetworkId][universe.id])
         );
       }
-      if (storedAccountData.alerts) {
-        storedAccountData.alerts.map(n => dispatch(addAlert(n)));
+      const {
+        alerts,
+        scalarMarketsShareDenomination,
+        reports,
+        pendingLiquidityOrders,
+        pendingOrders,
+        gasPriceInfo
+      } = storedAccountData;
+      if (alerts) {
+        alerts.map(n => dispatch(addAlert(n)));
       }
-      if (storedAccountData.scalarMarketsShareDenomination) {
-        Object.keys(storedAccountData.scalarMarketsShareDenomination).forEach(
+      if (scalarMarketsShareDenomination) {
+        Object.keys(scalarMarketsShareDenomination).forEach(
           marketId => {
             dispatch(
               updateScalarMarketShareDenomination(
                 marketId,
-                storedAccountData.scalarMarketsShareDenomination[marketId]
+                scalarMarketsShareDenomination[marketId]
               )
             );
           }
         );
       }
       if (
-        storedAccountData.reports &&
-        Object.keys(storedAccountData.reports).length
+        reports
       ) {
-        dispatch(updateReports(storedAccountData.reports));
+        dispatch(updateReports(reports));
       }
       if (
-        storedAccountData.pendingLiquidityOrders &&
-        Object.keys(storedAccountData.pendingLiquidityOrders).length
+        pendingLiquidityOrders
       ) {
         dispatch(
-          loadPendingLiquidityOrders(storedAccountData.pendingLiquidityOrders)
+          loadPendingLiquidityOrders(pendingLiquidityOrders)
         );
       }
       if (
-        storedAccountData.pendingOrders &&
-        Object.keys(storedAccountData.pendingOrders).length
+        pendingOrders
       ) {
-        dispatch(loadPendingOrders(storedAccountData.pendingOrders));
+        dispatch(loadPendingOrders(pendingOrders));
       }
       if (
-        storedAccountData.pendingQueue &&
-        Object.keys(storedAccountData.pendingQueue).length
+        pendingQueue
       ) {
-        dispatch(loadPendingQueue(storedAccountData.pendingQueue));
+        dispatch(loadPendingQueue(pendingQueue));
       }
       if (
-        storedAccountData.gasPriceInfo &&
-        storedAccountData.gasPriceInfo.userDefinedGasPrice
+        gasPriceInfo &&
+        gasPriceInfo.userDefinedGasPrice
       ) {
         dispatch(
           updateGasPriceInfo({
             userDefinedGasPrice:
-              storedAccountData.gasPriceInfo.userDefinedGasPrice
+              gasPriceInfo.userDefinedGasPrice
           })
         );
         dispatch(registerUserDefinedGasPriceFunction());

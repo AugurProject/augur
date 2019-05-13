@@ -1,14 +1,27 @@
 import * as speedomatic from "speedomatic";
 import { augur } from "services/augurjs";
 import { updateAlert, addAlert } from "modules/alerts/actions/alerts";
-import { selectCurrentTimestampInSeconds } from "src/select-state";
-import { ETH, REP } from "modules/common-elements/constants";
+import { selectCurrentTimestampInSeconds as getTime } from "src/select-state";
+import { ETH, REP, CONFIRMED, FAILED } from "modules/common-elements/constants";
 
-export function transferFunds(amount, currency, toAddress) {
-  return (dispatch, getState) => {
+export function transferFunds(
+  amount: String,
+  currency: String,
+  toAddress: String
+) {
+  return (dispatch: Function, getState: Function) => {
     const { universe, loginAccount } = getState();
     const fromAddress = loginAccount.address;
     const to = speedomatic.formatEthereumAddress(toAddress);
+    const update = (id: String, status: String) => {
+      dispatch(
+        updateAlert(id, {
+          id,
+          status,
+          timestamp: getTime(getState())
+        })
+      );
+    };
     switch (currency) {
       case ETH:
         return augur.assets.sendEther({
@@ -16,7 +29,7 @@ export function transferFunds(amount, currency, toAddress) {
           to,
           etherToSend: amount,
           from: fromAddress,
-          onSent: tx => {
+          onSent: (tx: any) => {
             // Trigger the alert addition/updates in the callback functions
             // because Augur Node does not emit an event for transferrring ETH.
             dispatch(
@@ -28,27 +41,12 @@ export function transferFunds(amount, currency, toAddress) {
                   to,
                   type: "sendEther"
                 },
-                timestamp: selectCurrentTimestampInSeconds(getState())
+                timestamp: getTime(getState())
               })
             );
           },
-          onSuccess: tx => {
-            dispatch(
-              updateAlert(tx.hash, {
-                id: tx.hash,
-                status: "Confirmed",
-                timestamp: selectCurrentTimestampInSeconds(getState())
-              })
-            );
-          },
-          onFailed: tx => {
-            dispatch(
-              updateAlert(tx.hash, {
-                status: "Failed",
-                timestamp: selectCurrentTimestampInSeconds(getState())
-              })
-            );
-          }
+          onSuccess: (tx: any) => update(tx.hash, CONFIRMED),
+          onFailed: (tx: any) => update(tx.hash, FAILED)
         });
       case REP:
         return augur.assets.sendReputation({
@@ -56,7 +54,7 @@ export function transferFunds(amount, currency, toAddress) {
           universe: universe.id,
           reputationToSend: amount,
           _to: to,
-          onSent: tx => {
+          onSent: (tx: any) => {
             // Trigger the alert addition/updates in the callback functions
             // because we only want to display this TokensTransferred event,
             // and not ones from other contracts.
@@ -70,30 +68,14 @@ export function transferFunds(amount, currency, toAddress) {
                   _to: to,
                   type: "sendReputation"
                 },
-                timestamp: selectCurrentTimestampInSeconds(getState()),
+                timestamp: getTime(getState()),
                 reputationToSend: amount,
                 _to: to
               })
             );
           },
-          onSuccess: tx => {
-            dispatch(
-              updateAlert(tx.hash, {
-                id: tx.hash,
-                status: "Confirmed",
-                timestamp: selectCurrentTimestampInSeconds(getState())
-              })
-            );
-          },
-          onFailed: tx => {
-            dispatch(
-              updateAlert(tx.hash, {
-                id: tx.hash,
-                status: "Failed",
-                timestamp: selectCurrentTimestampInSeconds(getState())
-              })
-            );
-          }
+          onSuccess: (tx: any) => update(tx.hash, CONFIRMED),
+          onFailed: (tx: any) => update(tx.hash, FAILED)
         });
       default:
         console.error("transferFunds: unknown currency", currency);

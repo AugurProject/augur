@@ -13,7 +13,10 @@ import { loadUsershareBalances } from "modules/positions/actions/load-user-share
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 
-export const loadAccountHistory = () => (dispatch, getState) => {
+export const loadAccountHistory = () => (
+  dispatch: Function,
+  getState: Function
+) => {
   dispatch(updateAppStatus(TRANSACTIONS_LOADING, true));
   dispatch(clearTransactions());
   loadTransactions(dispatch, () => {
@@ -22,7 +25,7 @@ export const loadAccountHistory = () => (dispatch, getState) => {
   });
 };
 
-function loadTransactions(dispatch, callback) {
+function loadTransactions(dispatch: Function, callback: Function) {
   const options = {};
   const promises = [];
   promises.push(

@@ -16,17 +16,17 @@ import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
 
 const { ACCOUNT_TYPES } = augur.rpc.constants;
 
-export const loadAccountData = (account, callback = logError) => dispatch => {
-  const address = getValue(account, "address");
+export const loadAccountData = (account: any, callback: Function = logError) => (dispatch: Function) => {
+  const address: String = getValue(account, "address");
   if (!address) return callback("account address required");
   if (
     windowRef &&
     windowRef.localStorage.setItem &&
     account.meta.accountType === ACCOUNT_TYPES.META_MASK
   ) {
-    windowRef.localStorage.setItem("loggedInAccount", account.address);
+    windowRef.localStorage.setItem("loggedInAccount", address);
   }
-  dispatch(loadAccountDataFromLocalStorage(account.address));
+  dispatch(loadAccountDataFromLocalStorage(address));
   dispatch(updateLoginAccount(account));
   dispatch(clearOrphanedOrderData());
   dispatch(loadAccountHistory());

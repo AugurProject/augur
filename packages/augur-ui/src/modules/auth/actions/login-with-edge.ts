@@ -9,12 +9,12 @@ import {
 import logError from "utils/log-error";
 
 export const loginWithEdgeEthereumWallet = (
-  edgeUiAccount,
-  ethereumWallet,
-  history
-) => dispatch => {
-  const mixedCaseAddress = ethereumWallet.keys.ethereumAddress;
-  const lowerCaseAddress = mixedCaseAddress.toLowerCase();
+  edgeUiAccount: any,
+  ethereumWallet: any,
+  history: any
+) => (dispatch: Function) => {
+  const mixedCaseAddress: String = ethereumWallet.keys.ethereumAddress;
+  const lowerCaseAddress: String = mixedCaseAddress.toLowerCase();
   dispatch(updateAuthStatus(IS_LOGGED, true));
   dispatch(
     loadAccountData({
@@ -22,7 +22,7 @@ export const loginWithEdgeEthereumWallet = (
       displayAddress: mixedCaseAddress,
       meta: {
         address: lowerCaseAddress,
-        signer: (tx, callback) => {
+        signer: (tx: any, callback: Function) => {
           edgeUiAccount
             .signEthereumTransaction(ethereumWallet.id, tx)
             .then(signed => callback(null, prefixHex(signed)))
@@ -37,10 +37,10 @@ export const loginWithEdgeEthereumWallet = (
 };
 
 export const loginWithEdge = (
-  edgeAccount,
-  history,
-  callback = logError
-) => dispatch => {
+  edgeAccount: any,
+  history: any,
+  callback: Function = logError
+) => (dispatch: Function) => {
   const ethereumWallet = edgeAccount.getFirstWalletInfo(EDGE_WALLET_TYPE);
   if (ethereumWallet != null) {
     return dispatch(
