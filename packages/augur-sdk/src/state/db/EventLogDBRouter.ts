@@ -1,5 +1,5 @@
 import { ExtendedLog } from "blockstream-adapters";
-import { Log, ParsedLog } from "@augurproject/types/types/ethereum/logs";
+import { Log, ParsedLog } from "@augurproject/types";
 import { LogCallbackType } from "./BlockAndLogStreamerListener";
 
 export class EventLogDBRouter {
