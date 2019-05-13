@@ -481,9 +481,12 @@ contract Universe is ITyped, IUniverse {
         return _newMarket;
     }
 
-    function redeemStake(IReportingParticipant[] memory _reportingParticipants) public returns (bool) {
+    function redeemStake(IReportingParticipant[] memory _reportingParticipants, IDisputeWindow[] memory _disputeWindows) public returns (bool) {
         for (uint256 i=0; i < _reportingParticipants.length; i++) {
             _reportingParticipants[i].redeem(msg.sender);
+        }
+        for (uint256 i=0; i < _disputeWindows.length; i++) {
+            _disputeWindows[i].redeem(msg.sender);
         }
         return true;
     }
