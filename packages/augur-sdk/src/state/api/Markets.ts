@@ -15,6 +15,7 @@ import {
 import { SortLimit } from "./types";
 import { Augur, numTicksToTickSize } from "../../index";
 import { ethers } from "ethers";
+import { toAscii } from "@augurproject/sdk/src/state/utils/utils";
 
 import * as _ from "lodash";
 import * as t from "io-ts";
@@ -128,6 +129,7 @@ export class Markets<TBigNumber> {
   public static GetMarketPriceHistoryParams = t.type({ marketId: t.string });
   public static GetMarketsParams = t.intersection([GetMarketsParamsSpecific, SortLimit]);
   public static GetMarketsInfoParams = t.type({ marketIds: t.array(t.string) });
+  public static GetTopics = t.type({ universe: t.string });
 
   @Getter("GetMarketPriceCandlestickParams")
   public static async getMarketPriceCandlesticks<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketPriceCandlestickParams>): Promise<MarketPriceCandlesticks> {
@@ -397,6 +399,18 @@ export class Markets<TBigNumber> {
       });
     }));
   }
+
+  @Getter("GetTopics")
+  public static async getTopics<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetTopics>): Promise<Array<string>> {
+    const marketCreatedLogs = await db.findMarketCreatedLogs({selector: {universe: params.universe}});
+    let topics: any = {};
+    for (let i = 0; i < marketCreatedLogs.length; i++) {
+      if (!(topics[toAscii(marketCreatedLogs[i].topic)])) {
+        topics[toAscii(marketCreatedLogs[i].topic)] = null;
+      }
+    }
+    return Object.keys(topics);
+  }
 }
 
 function filterOrderFilledLogs(orderFilledLogs: Array<OrderEventLog>, params: t.TypeOf<typeof Markets.GetMarketPriceCandlestickParams>): Array<OrderEventLog> {
@@ -415,7 +429,7 @@ function filterOrderFilledLogs(orderFilledLogs: Array<OrderEventLog>, params: t.
         return previousValue;
       },
       []
-    )
+    );
   }
   return filteredOrderFilledLogs;
 }
@@ -534,21 +548,6 @@ async function getMarketReportingState<TBigNumber>(db: DB<TBigNumber>, marketCre
       }
     }
   }
-}
-
-function getOrdersPriceRange(orderEventLogs: Array<OrderEventLog>, ): {minPrice: BigNumber|undefined, maxPrice: BigNumber|undefined} {
-  let minPrice: BigNumber | undefined;
-  let maxPrice: BigNumber | undefined;
-  for (let i = 0; i < orderEventLogs.length; i++) {
-    const  currentOrderFilledPrice = new BigNumber(orderEventLogs[i].uint256Data[OrderEventUint256Value.price]);
-    if (!minPrice || currentOrderFilledPrice.lt(minPrice) ) {
-      minPrice = currentOrderFilledPrice;
-    }
-    if (!maxPrice || currentOrderFilledPrice.gt(maxPrice) ) {
-      maxPrice = currentOrderFilledPrice;
-    }
-  }
-  return {minPrice, maxPrice};
 }
 
 function getPeriodStartTime(globalStarttime: number, periodStartime: number, period: number): number {
