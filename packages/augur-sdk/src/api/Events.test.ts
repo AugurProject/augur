@@ -58,13 +58,13 @@ test("get logs", async () => {
       blockNumber: 19,
       address: "0xthere",
       data: "other data",
-      topics: ["some topic", "another topic"],
+      topics: ["some topic"],
       blockHash: "0x123",
       logIndex: 2,
       removed: false,
       transactionHash: "0x9876",
       transactionIndex: 3,
-      transactionLogIndex: undefined,  // value comes only from `log` despite `logValues` specifying it
+      transactionLogIndex: 0,  // value comes only from `log` despite `logValues` specifying it
       fakeValueIMadeUp: "ddr3",  // `log` only overwrites certain predefined values, which this is not one of
     },
   ]);
