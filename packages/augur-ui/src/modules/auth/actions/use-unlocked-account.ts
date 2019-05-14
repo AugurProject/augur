@@ -12,7 +12,7 @@ export const useUnlockedAccount = (
   if (unlockedAddress == null) return callback("no account address");
   if (isGlobalWeb3()) {
     dispatch(
-      updateIsLoggedAndLoadAccountData(unlockedAddress, ACCOUNT_TYPES.META_MASK)
+      updateIsLoggedAndLoadAccountData(unlockedAddress, ACCOUNT_TYPES.METAMASK)
     );
     return callback(null);
   }

@@ -47,7 +47,7 @@ jest.mock("services/augurjs", () => ({
       constants: {
         ACCOUNT_TYPES: {
           UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
-          META_MASK: "metaMask"
+          METAMASK: "metaMask"
         }
       }
     },
@@ -358,7 +358,7 @@ describe("modules/app/actions/init-augur.js", () => {
         augur.rpc.Constants = {
           ACCOUNT_TYPES: {
             UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
-            META_MASK: "metaMask"
+            METAMASK: "metaMask"
           }
         };
 

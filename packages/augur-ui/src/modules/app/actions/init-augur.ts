@@ -92,7 +92,7 @@ function loadAccount(
   callback: Function
 ) {
   let loggedInAccount: any = null;
-  const usingMetaMask = accountType === ACCOUNT_TYPES.META_MASK;
+  const usingMetaMask = accountType === ACCOUNT_TYPES.METAMASK;
   if (windowRef.localStorage && windowRef.localStorage.getItem) {
     loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
   }
