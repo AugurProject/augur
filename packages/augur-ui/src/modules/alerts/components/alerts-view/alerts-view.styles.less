@@ -1,11 +1,11 @@
 @import (reference) '~assets/styles/shared';
 
 .AlertsView {
-  background-color: @color-light-purple;
-  border: 1px solid @color-dark-gray;
+  background-color: @color-theme-primary;
+  border: 1px solid @color-primary-alternate;
   border-top: 0;
   box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
-  color: @color-white;
+  color: @color-secondary-text;
   display: flex;
   flex-direction: column;
   max-height: 470px;
@@ -53,7 +53,7 @@
 
 .dismissContainer {
   align-items: flex-end;
-  background-color: @color-light-purple;
+  background-color: @color-theme-primary;
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
@@ -75,8 +75,8 @@
   font-size: @font-size-small;
 
   &:hover {
-    border-bottom: dotted 0.5px @color-white;
-    color: @color-white;
+    border-bottom: dotted 0.5px @color-secondary-text;
+    color: @color-secondary-text;
   }
 
   &:focus {

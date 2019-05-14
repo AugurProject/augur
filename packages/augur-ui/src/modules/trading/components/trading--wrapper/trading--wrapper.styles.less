@@ -18,9 +18,9 @@
 .TradingWrapper__header_buy,
 .TradingWrapper__header_sell,
 .TradingWrapper__header {
-  background-color: @color-grayish-purple;
-  border-bottom: 1px solid @color-very-dark-purple;
-  color: @color-light-gray;
+  background-color: @color-tertiary-background;
+  border-bottom: 1px solid @color-tertiary-one;
+  color: @color-neutral;
   display: flex;
 
   > li {
@@ -29,17 +29,17 @@
     width: 50%;
 
     &.active_buy {
-      background-color: @color-light-purple;
-      color: @color-white;
+      background-color: @color-theme-primary;
+      color: @color-secondary-text;
     }
 
     &.active_sell {
-      background-color: @color-light-purple;
-      color: @color-white;
+      background-color: @color-theme-primary;
+      color: @color-secondary-text;
     }
 
     &:hover {
-      color: @color-white;
+      color: @color-secondary-text;
     }
 
     > div {
@@ -85,7 +85,7 @@
 }
 
 .TradingWrapper__scalar__line {
-  background-color: @color-light-purple;
+  background-color: @color-theme-primary;
   padding: 0.25rem;
   width: 100%;
 }
@@ -110,7 +110,7 @@
 }
 
 .TradingWrapper__underline__sell {
-  border-bottom: 1px solid @color-negative2;
+  border-bottom: 1px solid @color-negative;
 }
 
 .TradingWrapper__padding__bar {
@@ -125,7 +125,7 @@
 }
 
 .TradingWrapper__mobile-header {
-  color: @color-white;
+  color: @color-secondary-text;
   padding: 1.5rem 1rem 0;
   position: relative;
   text-align: center;

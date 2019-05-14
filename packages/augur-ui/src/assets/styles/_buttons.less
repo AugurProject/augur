@@ -3,7 +3,7 @@
 
   align-items: center;
   border-radius: 3px;
-  color: @color-text-light;
+  color: @color-secondary-text;
   cursor: pointer;
   display: flex;
   font-size: @font-size-medium;
@@ -31,7 +31,7 @@
   }
 
   &:visited {
-    color: @color-text-light;
+    color: @color-secondary-text;
   }
 }
 
@@ -46,7 +46,7 @@
   .button;
 
   background-color: @color-purple;
-  color: @color-white;
+  color: @color-secondary-text;
 
   &:hover {
     background-color: @color-lightpurple;
@@ -65,7 +65,7 @@
   .button;
 
   background-color: @color-lightpurple;
-  color: @color-white;
+  color: @color-secondary-text;
 
   &:hover {
     background-color: #6a528a;
@@ -89,7 +89,7 @@
   text-transform: capitalize;
 
   &:hover {
-    background-color: @color-white;
+    background-color: @color-secondary-text;
   }
 }
 
@@ -127,7 +127,7 @@
   &:hover,
   &:visited:hover {
     background-color: @color-lightpurple;
-    color: @color-white;
+    color: @color-secondary-text;
   }
 
   &:disabled,
@@ -155,12 +155,12 @@
 .button--white--short {
   .button;
 
-  background-color: @color-white;
+  background-color: @color-secondary-text;
   color: @color-text-dark;
 
   &:hover {
     background-color: @color-lightpurple;
-    color: @color-white;
+    color: @color-secondary-text;
   }
 
   &:disabled,
@@ -203,17 +203,17 @@
   .button--transparent;
 
   background-color: @color-transparent;
-  border: 1px solid @color-medium-gray;
-  color: @color-dark-light-gray;
+  border: 1px solid @color-primary-light;
+  color: @color-alternate-text;
   font-family: 'Roboto Mono', monospace;
   font-size: 10px;
   font-weight: 400;
   padding: 4px 12px;
 
   &:hover {
-    background-color: @color-bright-gray-purple;
-    border: 1px solid @color-bright-gray-purple;
-    color: @color-white;
+    background-color: @color-highlight;
+    border: 1px solid @color-highlight;
+    color: @color-secondary-text;
   }
 }
 
@@ -222,10 +222,10 @@
 .button--mediumgray:disabled:hover {
   .button--mediumgray;
 
-  background-color: @color-dark-gray !important;
+  background-color: @color-primary-alternate !important;
   border: 0 !important;
   border-radius: 0 !important;
-  color: @color-white;
+  color: @color-secondary-text;
   cursor: default;
   display: inline-block;
   font-size: 10px;
@@ -234,10 +234,10 @@
 }
 
 .button--transparent--rounded {
-  border: 2px solid @color-dark-gray;
+  border: 2px solid @color-primary-alternate;
   border-radius: 100px;
   box-sizing: border-box;
-  color: @color-white;
+  color: @color-secondary-text;
   cursor: pointer;
   font-size: @font-size-small;
   font-style: normal;
@@ -271,7 +271,7 @@
   padding: 0.75rem 1.5rem;
 
   &:hover {
-    background: @color-bright-teal;
+    background: @color-primary-button-background-hover;
     border: 0;
     color: @color-extra-darkpurple;
   }
