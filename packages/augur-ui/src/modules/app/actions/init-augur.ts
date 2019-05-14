@@ -1,5 +1,5 @@
 import * as AugurJS from "services/augurjs";
-import { checkIsKnownUniverse } from "modules/contracts/actions/contractCalls";
+import { checkIsKnownUniverse, getNetworkId } from "modules/contracts/actions/contractCalls";
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
@@ -211,7 +211,7 @@ export function connectAugur(
         });
         let universeId =
           env.universe ||
-          AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()]
+          AugurJS.augur.contracts.addresses[getNetworkId()]
             .Universe;
         if (
           windowRef.localStorage &&
@@ -222,7 +222,7 @@ export function connectAugur(
             windowRef.localStorage.getItem(loginAccount.address)
           ).selectedUniverse[
             getState().connection.augurNodeNetworkId ||
-              AugurJS.augur.rpc.getNetworkID().toString()
+            getNetworkId().toString()
           ];
           universeId = !storedUniverseId ? universeId : storedUniverseId;
         }
