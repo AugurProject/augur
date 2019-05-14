@@ -14,9 +14,9 @@ import {
   TOTAL_ACCOUNT_VALUE_IN_ETH
 } from "modules/common-elements/constants";
 
-import Styles from "modules/account/components/overview-funds/overview-funds.styles";
+import Styles from "modules/account/components/funds.styles";
 
-export interface OverviewFundsProps {
+export interface FundsProps {
   repStaked: number;
   repBalance: string;
   totalFrozenFunds: string;
@@ -25,7 +25,7 @@ export interface OverviewFundsProps {
   realizedPLPercent: string;
 }
 
-const OverviewFunds = (props: OverviewFundsProps) => {
+const Funds = (props: FundsProps) => {
   const {
     totalFrozenFunds,
     totalAvailableTradingBalance,
@@ -58,7 +58,7 @@ const OverviewFunds = (props: OverviewFundsProps) => {
   ];
 
   return (
-    <div className={Styles.OverviewFundsContent}>
+    <section className={Styles.Funds}>
       <div>{TOTAL_ACCOUNT_VALUE_IN_ETH}</div>
       <MovementLabel
         showColors
@@ -77,28 +77,26 @@ const OverviewFunds = (props: OverviewFundsProps) => {
       <FundDataRow
         className={Styles.BalanceFrozenFunds}
         columns={tradingBalanceFrozenFunds}
-        showRepLogo={false}
         showEthLogo
         changeForMobile
       />
-      <div className={Styles.RepBalanceStaked__container}>
+      <div>
         <FundDataRow
           className={Styles.RepBalanceStaked}
           columns={repBalanceStaked}
           showRepLogo
-          showEthLogo={false}
         />
       </div>
-    </div>
+    </section>
   );
 };
 
 export interface FundDataRowProps {
   className: string;
   columns: Array<any>;
-  showRepLogo: boolean;
-  showEthLogo: boolean;
-  changeForMobile: boolean;
+  showRepLogo?: boolean;
+  showEthLogo?: boolean;
+  changeForMobile?: boolean;
 }
 
 const FundDataRow = (props: FundDataRowProps) => {
@@ -125,7 +123,7 @@ const FundDataRow = (props: FundDataRowProps) => {
   return (
     <div
       className={classNames(props.className, {
-        [Styles.OverviewFunds__changeForMobile]: changeForMobile
+        [Styles.ChangeForMobile]: changeForMobile
       })}
     >
       {rows[0]}
@@ -135,4 +133,4 @@ const FundDataRow = (props: FundDataRowProps) => {
   );
 };
 
-export default OverviewFunds;
+export default Funds;

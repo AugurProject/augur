@@ -3,15 +3,15 @@ import React from "react";
 import { LinearPropertyLabel } from "modules/common-elements/labels";
 import { formatNumber } from "utils/format-number";
 
-import Styles from "modules/account/components/overview-stats/overview-stats.styles";
+import Styles from "modules/account/components/stats.styles";
 
-export interface OverviewStatsProps {
+export interface StatsProps {
   properties: Array<any>;
 }
 
-const OverviewStats = (props: OverviewStatsProps) => (
-  <div className={Styles.OverviewStats}>
-    {props.properties.map(property => (
+const Stats = (props: StatsProps) => (
+  <div className={Styles.Stats}>
+    {props.properties.map((property: any) => (
       <LinearPropertyLabel
         key={property.key}
         label={property.label}
@@ -29,4 +29,4 @@ const OverviewStats = (props: OverviewStatsProps) => (
   </div>
 );
 
-export default OverviewStats;
+export default Stats;

@@ -7,7 +7,7 @@ import TransactionsBoxContainer from "modules/account/containers/transactions-bo
 import AugurStatus from "modules/account/containers/augur-status";
 import Favorites from "modules/portfolio/containers/favorites";
 import OpenMarkets from "modules/account/containers/open-markets";
-import AccountOverview from "modules/account/containers/account-overview";
+import Overview from "modules/account/containers/overview";
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 import * as constants from "modules/common-elements/constants";
@@ -26,7 +26,7 @@ const AccountView = (props: AccountViewProps) => (
         matches ? (
           <ModuleTabs selected={0} fillWidth noBorder>
             <ModulePane label={constants.YOUR_OVERVIEW_TITLE}>
-              <AccountOverview />
+              <Overview />
             </ModulePane>
             <ModulePane label="Notifications" isNew={props.newNotifications}>
               <Notifications />
@@ -57,7 +57,7 @@ const AccountView = (props: AccountViewProps) => (
                         <AugurStatus />
                       </div>
                       <div>
-                        <AccountOverview />
+                        <Overview />
                         <Favorites />
                         <TransactionsBoxContainer />
                       </div>
@@ -74,7 +74,7 @@ const AccountView = (props: AccountViewProps) => (
                         <OpenMarkets />
                       </div>
                       <div>
-                        <AccountOverview />
+                        <Overview />
                         <AugurStatus />
                       </div>
                       <div>
@@ -94,7 +94,7 @@ const AccountView = (props: AccountViewProps) => (
                         <AugurStatus />
                       </div>
                       <div>
-                        <AccountOverview />
+                        <Overview />
                         <TransactionsBoxContainer />
                       </div>
                       <div>

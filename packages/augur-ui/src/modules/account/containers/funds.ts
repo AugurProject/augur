@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 
-import OverviewFunds from "modules/account/components/overview-funds/overview-funds";
+import Funds from "modules/account/components/funds";
 import { formatEther, formatAttoRep, formatPercent } from "utils/format-number";
 import {
   selectLoginAccount,
@@ -14,21 +14,23 @@ const mapStateToProps = (state: any) => {
     totalFrozenFunds,
     totalAccountValue
   } = selectAccountFunds(state);
+  const { reportingWindowStats } = state;
+  const { rep, realizedPLPercent } = loginAccount;
 
   return {
     repStaked:
-      formatAttoRep(state.reportingWindowStats.stake, {
+      formatAttoRep(reportingWindowStats.stake, {
         decimals: 4,
         denomination: " REP"
       }).formattedValue || 0,
-    repBalance: loginAccount.rep.formatted || "0",
+    repBalance: rep.formatted || "0",
     totalFrozenFunds: formatEther(totalFrozenFunds).formatted,
     totalAvailableTradingBalance: formatEther(totalAvailableTradingBalance)
       .formatted,
     totalAccountValue: formatEther(totalAccountValue).formatted,
-    realizedPLPercent: formatPercent(loginAccount.realizedPLPercent)
+    realizedPLPercent: formatPercent(realizedPLPercent)
       .formattedValue
   };
 };
 
-export default connect(mapStateToProps)(OverviewFunds);
+export default connect(mapStateToProps)(Funds);

@@ -1,19 +1,23 @@
 import React from "react";
 
-import * as constants from "modules/common-elements/constants";
+import {
+  YOUR_OVERVIEW_TITLE,
+  TIMEFRAME_OPTIONS
+} from "modules/common-elements/constants";
 import QuadBox from "modules/portfolio/components/common/quads/quad-box";
 import { PillSelection } from "modules/common-elements/selection";
-import AccountOverviewFunds from "modules/account/containers/account-overview-funds";
-import AccountOverviewStats from "modules/account/containers/account-overview-stats";
+import Funds from "modules/account/containers/funds";
+import Stats from "modules/account/containers/stats";
 import AccountOverviewChart from "modules/account/containers/account-overview-chart";
-import Styles from "modules/account/components/account-overview/account-overview.styles";
+import Styles from "modules/account/components/overview.styles";
 
-export interface AccountOverviewProps {}
+export interface AccountOverviewProps {
+  currentAugurTimestamp: number;
+  updateTimeframeData: Function;
+}
 
 interface AccountOverviewState {
   selected: number;
-  updateTimeSelection: Function;
-  currentAugurTimestamp: number;
 }
 
 export default class AccountOverview extends React.Component<
@@ -21,16 +25,16 @@ export default class AccountOverview extends React.Component<
   AccountOverviewState
 > {
   state: AccountOverviewState = {
-    selected: constants.TIMEFRAME_OPTIONS[3].id
+    selected: TIMEFRAME_OPTIONS[3].id
   };
 
   componentDidMount() {
-    this.updateTimeSelection(constants.TIMEFRAME_OPTIONS[3].id);
+    this.updateTimeSelection(TIMEFRAME_OPTIONS[3].id);
   }
 
-  updateTimeSelection = id => {
+  updateTimeSelection = (id: number) => {
     this.setState({ selected: id });
-    const period = constants.TIMEFRAME_OPTIONS[id].periodInterval;
+    const period = TIMEFRAME_OPTIONS[id].periodInterval;
     const startTime =
       period === 0 ? null : this.props.currentAugurTimestamp - period;
     this.props.updateTimeframeData({ startTime });
@@ -41,18 +45,18 @@ export default class AccountOverview extends React.Component<
 
     return (
       <QuadBox
-        title={constants.YOUR_OVERVIEW_TITLE}
+        title={YOUR_OVERVIEW_TITLE}
         content={
           <div className={Styles.AccountOverview}>
-            <AccountOverviewFunds />
+            <Funds />
             <div className={Styles.AccountOverview__pillSelector}>
               <PillSelection
-                options={constants.TIMEFRAME_OPTIONS}
-                defaultSelection={constants.TIMEFRAME_OPTIONS[3].id}
+                options={TIMEFRAME_OPTIONS}
+                defaultSelection={TIMEFRAME_OPTIONS[3].id}
                 onChange={this.updateTimeSelection}
               />
             </div>
-            <AccountOverviewStats timeframe={selected} />
+            <Stats timeframe={selected} />
             <AccountOverviewChart timeframe={selected} />
           </div>
         }

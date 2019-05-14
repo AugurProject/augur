@@ -1,6 +1,6 @@
 @import (reference) '~assets/styles/shared';
-
-.OverviewFundsContent {
+  
+.Funds {
   align-items: center;
   background: @color-secondary-action;
   display: flex;
@@ -9,10 +9,19 @@
   margin: 0 0 @size-16;
   text-transform: uppercase;
 
+  @media @breakpoint-mobile {
+    background: unset;
+    margin: 0;
+  }
+
   > div:first-of-type {
     .mono-11;
 
     color: @color-secondary-text;
+
+    @media @breakpoint-mobile {
+      .mono-12-bold;
+    }
   }
 
   > div:nth-of-type(2) {
@@ -24,12 +33,22 @@
 
     margin: 0 @size-4;
 
+    @media @breakpoint-mobile {
+      color: @color-tertiary-text;
+      margin-bottom: @size-12;
+    }
+
     > svg {
       fill: @color-secondary-text;
-      height: 18px;
+      height: @size-18;
       margin: 0 0 0 @size-4;
-      width: 12px;
+      width: @size-12;
     }
+  }
+
+  > div:last-of-type {
+    display: flex;
+    width: 100%;
   }
 }
 
@@ -63,9 +82,42 @@
 
     > div svg {
       fill: @color-secondary-text;
-      height: 12px;
+      height: @size-12;
       margin: 0 0 0 @size-4;
-      width: 8px;
+      width: @size-8;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    > span {
+      > div:first-of-type {
+        > span {
+          .mono-10;
+        }
+  
+        > span:last-of-type {
+          .mono-14-bold;
+        }
+      }
+  
+      > div:last-of-type {
+        margin: 0 0 @border-radius-default;
+      }
+    }
+  
+    > div:first-of-type {
+      flex-direction: row;
+    }
+  
+    > div:last-of-type {
+      flex-grow: unset;
+  
+      > svg {
+        fill: @color-secondary-text;
+        height: @size-12;
+        margin: 0 0 0 @size-4;
+        width: @size-8;
+      }
     }
   }
 }
@@ -73,7 +125,7 @@
 .RepBalanceStaked {
   align-items: center;
   border: 2px solid @color-tertiary-background;
-  border-radius: 3px;
+  border-radius: @border-radius-default;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -81,11 +133,16 @@
   text-align: center;
   width: 100%;
 
+  @media @breakpoint-mobile {
+    background: unset;
+    margin: @size-16 @size-32 @size-24;
+  }
+
   > div {
     > svg {
       fill: @color-secondary-text;
-      height: 32px;
-      margin: 0 40px;
+      height: @size-32;
+      margin: 0 @size-40;
       width: 29.5px;
     }
 
@@ -103,94 +160,35 @@
       color: @color-secondary-text;
       margin: 0 0 @size-16;
       text-align: center;
+
+      @media @breakpoint-mobile {
+        .mono-12-bold;
+
+        color: @color-tertiary-text;
+      }
     }
   }
 }
 
 .ShowOnMobile {
   display: none;
+
+  @media @breakpoint-mobile {
+    display: flex;
+    margin-top: 0;
+  }
 }
 
 .HideOnMobile {
   display: flex;
-}
 
-.RepBalanceStaked__container {
-  display: flex;
-  width: 100%;
-}
-
-@media @breakpoint-mobile {
-  .RepBalanceStaked {
-    background: unset;
-    margin: @size-16 @size-32 @size-24;
-
-    > div {
-      > div:nth-of-type(2) {
-        color: @color-tertiary-text;
-        font-weight: bold;
-      }
-    }
-  }
-
-  .OverviewFunds__changeForMobile {
-    flex-direction: column;
-  }
-
-  .BalanceFrozenFunds {
-    > span {
-      > div:first-of-type {
-        > span {
-          .mono-10;
-        }
-
-        > span:last-of-type {
-          .mono-14-bold;
-        }
-      }
-
-      > div:last-of-type {
-        margin: 0 0 3px;
-      }
-    }
-
-    > div:first-of-type {
-      flex-direction: row;
-    }
-
-    > div:last-of-type {
-      flex-grow: unset;
-
-      > svg {
-        fill: @color-secondary-text;
-        height: @size-12;
-        margin: 0 0 0 @size-4;
-        width: @size-8;
-      }
-    }
-  }
-
-  .OverviewFundsContent {
-    background: unset;
-    margin: 0;
-
-    > div:first-of-type {
-      .mono-12-bold;
-    }
-
-    > div:nth-of-type(3) {
-      color: @color-tertiary-text;
-      margin-bottom: @size-12;
-    }
-  }
-
-  .ShowOnMobile {
-    display: flex;
-    margin-top: 0;
-  }
-
-  .HideOnMobile {
+  @media @breakpoint-mobile {
     display: none;
   }
 }
 
+.ChangeForMobile {
+  @media @breakpoint-mobile {
+    flex-direction: column;
+  }
+}
