@@ -13,10 +13,12 @@ import { loadDesignatedReporterMarkets } from "modules/reports/actions/load-desi
 import { loadDisputing } from "modules/reports/actions/load-disputing";
 import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
+import { ACCOUNT_TYPES } from "modules/common-elements/constants";
 
-const { ACCOUNT_TYPES } = augur.rpc.constants;
-
-export const loadAccountData = (account: any, callback: Function = logError) => (dispatch: Function) => {
+export const loadAccountData = (
+  account: any,
+  callback: Function = logError
+) => (dispatch: Function) => {
   const address: String = getValue(account, "address");
   if (!address) return callback("account address required");
   if (

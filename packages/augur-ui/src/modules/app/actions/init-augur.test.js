@@ -195,13 +195,6 @@ describe("modules/app/actions/init-augur.js", () => {
         }
       };
 
-      augur.rpc.constants = {
-        ACCOUNT_TYPES: {
-          UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
-          META_MASK: "metaMask"
-        }
-      };
-
       augur.rpc.eth = { accounts: cb => cb(null, []) };
       augur.api.Controller = { stopped: () => {} };
 

@@ -6,7 +6,7 @@ import { PulseLoader } from "react-spinners";
 import {
   ITEMS,
   WALLET_TYPE,
-  PARAMS,
+  ACCOUNT_TYPES,
   ERROR_TYPES
 } from "modules/common-elements/constants";
 import isMetaMaskPresent from "src/modules/auth/helpers/is-meta-mask";
@@ -91,7 +91,7 @@ export default class ConnectDropdown extends Component {
 
   connect(param) {
     const { history, connectMetaMask, edgeLoginLink } = this.props;
-    if (param === PARAMS.METAMASK) {
+    if (param === ACCOUNT_TYPES.METAMASK) {
       if (!isMetaMaskPresent()) {
         this.showError(ERROR_TYPES.UNABLE_TO_CONNECT);
         return;
@@ -101,7 +101,7 @@ export default class ConnectDropdown extends Component {
           this.showError(ERROR_TYPES.NOT_SIGNED_IN);
         }
       });
-    } else if (param === PARAMS.EDGE) {
+    } else if (param === ACCOUNT_TYPES.EDGE) {
       edgeLoginLink(history);
       this.closeMenu();
     }
@@ -201,9 +201,9 @@ export default class ConnectDropdown extends Component {
                 <div className={Styles.ConnectDropdown__title}>
                   {item.title}
                   {s.selectedOption === item.param &&
-                    ((item.param === PARAMS.EDGE && edgeLoading) ||
-                      (item.param === PARAMS.LEDGER && s.isLedgerLoading) ||
-                      (item.param === PARAMS.TREZOR && s.isTrezorLoading)) && (
+                    ((item.param === ACCOUNT_TYPES.EDGE && edgeLoading) ||
+                      (item.param === ACCOUNT_TYPES.LEDGER && s.isLedgerLoading) ||
+                      (item.param === ACCOUNT_TYPES.TREZOR && s.isTrezorLoading)) && (
                       <div style={{ marginLeft: "8px" }}>
                         <PulseLoader
                           color="#FFF"

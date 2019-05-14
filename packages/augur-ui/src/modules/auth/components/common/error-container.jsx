@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import { PARAMS, ERROR_TYPES } from "modules/common-elements/constants";
+import { ACCOUNT_TYPES, ERROR_TYPES } from "modules/common-elements/constants";
 import { errorIcon } from "modules/common/components/icons";
 
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
@@ -103,7 +103,7 @@ export default class ErrorContainer extends Component {
                   onClick={e => {
                     e.stopPropagation();
                     e.preventDefault();
-                    connect(PARAMS.METAMASK);
+                    connect(ACCOUNT_TYPES.METAMASK);
                   }}
                 >
                   Retry

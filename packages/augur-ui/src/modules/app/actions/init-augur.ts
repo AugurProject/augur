@@ -30,12 +30,12 @@ import {
   MODAL_DISCLAIMER,
   MODAL_NETWORK_DISABLED,
   NETWORK_NAMES,
+  ACCOUNT_TYPES,
   DISCLAIMER_SEEN
 } from "modules/common-elements/constants";
 import { windowRef } from "utils/window-ref";
 import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
 
-const { ACCOUNT_TYPES } = AugurJS.augur.rpc.constants;
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
