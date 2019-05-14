@@ -33,10 +33,6 @@ export const verifyMatchingNetworkIds = (callback: Function = logError) => (disp
         middleware: getNetworkId().toString()
       };
       if (!isGlobalWeb3()) return allNetworkIdsMatch(networkIds, callback);
-      augur.rpc.net.version((err: any, netVersion: string) => {
-        if (err) return callback(err);
-        networkIds.netVersion = netVersion;
-        allNetworkIdsMatch({ ...networkIds, netVersion }, callback);
-      });
+      allNetworkIdsMatch({ ...networkIds }, callback);
     }),
   );
