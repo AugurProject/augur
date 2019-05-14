@@ -32,14 +32,14 @@ UNIVERSE_CREATE =   870579
 
 pytestmark = mark.skip(reason="Just for testing gas cost")
 
-tester.STARTGAS = int(6.7 * 10**6)
+tester.STARTGAS = long(6.7 * 10**6)
 
 def test_universe_creation(localFixture, augur):
     with PrintGasUsed(localFixture, "UNIVERSE_CREATE", UNIVERSE_CREATE):
         augur.createGenesisUniverse()
 
 def test_disputeWindowCreation(localFixture, universe, cash):
-    endTime = int(localFixture.chain.head_state.timestamp + timedelta(days=365).total_seconds())
+    endTime = long(localFixture.chain.head_state.timestamp + timedelta(days=365).total_seconds())
 
     with PrintGasUsed(localFixture, "REPORTING_WINDOW_CREATE", REPORTING_WINDOW_CREATE):
         universe.getOrCreateDisputeWindowByTimestamp(endTime, False)
@@ -47,7 +47,7 @@ def test_disputeWindowCreation(localFixture, universe, cash):
 def test_marketCreation(localFixture, universe):
     marketCreationFee = universe.getOrCacheMarketCreationCost()
 
-    endTime = int(localFixture.chain.head_state.timestamp + timedelta(days=1).total_seconds())
+    endTime = long(localFixture.chain.head_state.timestamp + timedelta(days=1).total_seconds())
     feePerEthInWei = 10**16
     affiliateFeeDivisor = 100
     designatedReporterAddress = tester.a0
