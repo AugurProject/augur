@@ -98,10 +98,15 @@ export interface MarketPriceCandlestick {
   end: string;
   min: string;
   max: string;
-  volume: string; // volume in ETH for this Candlestick's time window, has same business definition as markets/outcomes.volume
+  volume: string; // volume in Dai for this Candlestick's time window, has same business definition as markets/outcomes.volume
   shareVolume: string; // shareVolume in number of shares for this Candlestick's time window, has same business definition as markets/outcomes.shareVolume
   tokenVolume: string; // TEMPORARY - this is a copy of Candlestick.shareVolume for the purposes of a backwards-compatible renaming of tokenVolume->shareVolume. The UI should change all references of Candlestick.tokenVolume to shareVolume and then this field can be removed.
 }
+
+export interface MarketPriceCandlesticks {
+  [outcome: number]: Array<MarketPriceCandlestick>;
+}
+
 export interface TimestampedPriceAmount {
   price: string;
   amount: string;
@@ -125,33 +130,37 @@ export class Markets<TBigNumber> {
   public static GetMarketsInfoParams = t.type({ marketIds: t.array(t.string) });
 
   @Getter("GetMarketPriceCandlestickParams")
-  public static async getMarketPriceCandlesticks<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketPriceCandlestickParams>): Promise<Array<MarketPriceCandlestick>> {
-    const marketCreatedLog = await db.findMarketCreatedLogs({selector: {market: params.marketId}});
-    if (marketCreatedLog.length < 1) {
+  public static async getMarketPriceCandlesticks<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketPriceCandlestickParams>): Promise<MarketPriceCandlesticks> {
+    const marketCreatedLogs = await db.findMarketCreatedLogs({selector: {market: params.marketId}});
+    if (marketCreatedLogs.length < 1) {
       throw new Error(`No marketId for getMarketPriceCandlesticks: ${params.marketId}`);
     }
 
     const orderFilledLogs = await db.findOrderFilledLogs({selector: {market: params.marketId, eventType: OrderEventType.Fill}});
-    const filteredOrderFilledLogsByOutcome = _.groupBy(
-      filterOrderFilledLogs(orderFilledLogs, params),
-      (orderFilledLog) => {return orderFilledLog.uint256Data[OrderEventUint256Value.outcome]}
-    );
+    const filteredOrderFilledLogs = filterOrderFilledLogs(orderFilledLogs, params);
+    const tradeRowsByOutcome = _.groupBy(filteredOrderFilledLogs, (orderFilledLog) => {return new BigNumber(orderFilledLog.uint256Data[OrderEventUint256Value.outcome]).toString(10);});
 
-    const marketVolumeChangedLogs = await db.findMarketVolumeChangedLogs({selector: {market: params.marketId}});
-
-    let marketPriceCandlesticks = [];
-    return [
-      {
-        startTimestamp: 0,
-        start: "",
-        end: "",
-        min: "",
-        max: "",
-        volume: "", // volume in ETH for this Candlestick's time window, has same business definition as markets/outcomes.volume
-        shareVolume: "", // shareVolume in number of shares for this Candlestick's time window, has same business definition as markets/outcomes.shareVolume
-        tokenVolume: "" // TEMPORARY - this is a copy of Candlestick.shareVolume for the purposes of a backwards-compatible renaming of tokenVolume->shareVolume. The UI should change all references of Candlestick.tokenVolume to shareVolume and then this field can be removed.
-      }
-    ];
+    return _.mapValues(tradeRowsByOutcome, (outcomeTradeRows) => {
+      const outcomeTradeRowsByPeriod = _.groupBy(outcomeTradeRows, (tradeRow) => getPeriodStartTime(params.start || 0, new BigNumber(tradeRow.uint256Data[OrderEventUint256Value.timestamp]).toNumber(), params.period || 60));
+        return _.map(outcomeTradeRowsByPeriod, (trades: Array<OrderEventLog>, startTimestamp): MarketPriceCandlestick => {
+          // TODO remove this partialCandlestick stuff and just return
+          // a Candlestick after the temporary Candlestick.tokenVolume
+          // is removed (see note on Candlestick.tokenVolume).
+          const partialCandlestick = {
+            startTimestamp: parseInt(startTimestamp, 10),
+            start: new BigNumber(_.minBy(trades, (tradeLog) => {return new BigNumber(tradeLog.uint256Data[OrderEventUint256Value.timestamp]).toNumber();})!.uint256Data[OrderEventUint256Value.price]).toString(10),
+            end: new BigNumber(_.maxBy(trades, (tradeLog) => {return new BigNumber(tradeLog.uint256Data[OrderEventUint256Value.timestamp]).toNumber();})!.uint256Data[OrderEventUint256Value.price]).toString(10),
+            min: new BigNumber(_.minBy(trades, (tradeLog) => {return new BigNumber(tradeLog.uint256Data[OrderEventUint256Value.price]).toNumber();})!.uint256Data[OrderEventUint256Value.price]).toString(10),
+            max: new BigNumber(_.maxBy(trades, (tradeLog) => {return new BigNumber(tradeLog.uint256Data[OrderEventUint256Value.price]).toNumber();})!.uint256Data[OrderEventUint256Value.price]).toString(10),
+            volume: _.reduce(trades, (totalVolume: BigNumber, tradeRow: OrderEventLog) => totalVolume.plus(new BigNumber(tradeRow.uint256Data[OrderEventUint256Value.amount]).times(tradeRow.uint256Data[OrderEventUint256Value.price])), new BigNumber(0)).toString(10),
+            shareVolume: _.reduce(trades, (totalShareVolume: BigNumber, tradeRow: OrderEventLog) => totalShareVolume.plus(tradeRow.uint256Data[OrderEventUint256Value.amount]), new BigNumber(0)).toString(10), // the business definition of shareVolume should be the same as used with markets/outcomes.shareVolume (which currently is just summation of trades.amount)
+          };
+          return {
+            tokenVolume: partialCandlestick.shareVolume, // tokenVolume is temporary, see note on Candlestick.tokenVolume
+            ...partialCandlestick,
+          };
+        });
+    });
   }
 
   @Getter("GetMarketPriceHistoryParams")
@@ -396,14 +405,14 @@ function filterOrderFilledLogs(orderFilledLogs: Array<OrderEventLog>, params: t.
     filteredOrderFilledLogs = orderFilledLogs.reduce(
       (previousValue: Array<OrderEventLog>, currentValue: OrderEventLog): Array<OrderEventLog> => {
         if (
-          (params.outcome && currentValue.uint256Data[OrderEventUint256Value.outcome].toString() === params.outcome.toString()) ||
-          (params.start && new BigNumber(currentValue.timestamp).lt(params.start)) ||
-          (params.end && new BigNumber(currentValue.timestamp).gt(params.end))
+          (params.outcome && new BigNumber(currentValue.uint256Data[OrderEventUint256Value.outcome]).toString(10) !== params.outcome.toString(10)) ||
+          (params.start && new BigNumber(currentValue.uint256Data[OrderEventUint256Value.timestamp]).toNumber() <= params.start) ||
+          (params.end && new BigNumber(currentValue.uint256Data[OrderEventUint256Value.timestamp]).toNumber() >= params.end)
         ) {
           return previousValue;
         }
         previousValue.push(currentValue);
-        return [];
+        return previousValue;
       },
       []
     )
