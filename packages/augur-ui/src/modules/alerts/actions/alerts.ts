@@ -6,6 +6,7 @@ import { createBigNumber } from "utils/create-big-number";
 import makePath from "modules/routes/helpers/make-path";
 import { TRANSACTIONS } from "modules/routes/constants/views";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 export const ADD_ALERT = "ADD_ALERT";
 export const REMOVE_ALERT = "REMOVE_ALERT";
@@ -233,7 +234,7 @@ export function addAlert(alert: any) {
             alert: {
               seen: false,
               level: constants.INFO,
-              networkId: augur.rpc.getNetworkID(),
+              networkId: getNetworkId(),
               universe: universe.id,
               ...alert
             }

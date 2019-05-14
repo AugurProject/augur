@@ -5,7 +5,6 @@ import { withRouter } from "react-router-dom";
 
 import App from "modules/app/components/app/app";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
-import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import { selectCoreStats } from "modules/account/selectors/core-stats";
 import {
   IS_ANIMATING,
@@ -54,7 +53,6 @@ const mapStateToProps = state => ({
   isAnimating: selectIsAnimating(state),
   loginAccount: selectLoginAccountState(state),
   modal: selectModal(state),
-  alerts: selectInfoAlertsAndSeenCount(state),
   universe: selectUniverseState(state),
   url: selectUrlState(state),
   useWeb3Transport: isGlobalWeb3(),

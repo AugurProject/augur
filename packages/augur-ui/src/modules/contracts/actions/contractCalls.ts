@@ -8,9 +8,10 @@ import { augurSdk } from "services/augursdk";
 import { ethers } from "ethers";
 import { BigNumber } from "ethers/utils";
 
-export function getNetworkId(): string {
+export function getNetworkId(): number {
   const Augur = augurSdk.get();
-  return Augur.provider.getNetworkId();
+  const networkId = Augur.provider.network.chainId;
+  return networkId;
 }
 
 export async function checkIsKnownUniverse(universeId: string) {
@@ -100,10 +101,7 @@ export async function isFinalized(marketId: string) {
   return status;
 }
 
-export async function getDai() {
+export function getDai() {
   const { contracts } = augurSdk.get();
-  await contracts.cash.faucet(1000000000000000000000).catch((err: Error) => {
-    console.log("error getting dai", err);
-    return err;
-  });
+  return contracts.cash.faucet("1000000000000000000000");
 }
