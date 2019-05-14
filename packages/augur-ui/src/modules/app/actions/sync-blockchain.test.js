@@ -50,7 +50,6 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
   const mockStore = configureMockStore(middlewares);
   const state = Object.assign({}, testState, {
     blockchain: {
-      currentBlockTimestamp: 4886718335,
       currentBlockNumber: 9999,
       currentAugurTimestamp: 42
     },
@@ -60,7 +59,6 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
   });
   const dataReturned = {
     currentBlockNumber: 0x10000,
-    currentBlockTimestamp: 0x4886718345,
     currentAugurTimestamp: 42
   };
   const store = mockStore(state);
