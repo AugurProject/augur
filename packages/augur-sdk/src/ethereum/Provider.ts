@@ -1,6 +1,6 @@
 import { NetworkId } from "@augurproject/artifacts";
 import { Abi } from "ethereum";
-import { Filter, Log, LogValues } from "@augurproject/types/types/ethereum/logs";
+import { Filter, Log, LogValues } from "@augurproject/types";
 
 export interface Provider {
   getNetworkId(): Promise<NetworkId>;
