@@ -75,7 +75,7 @@ export const EDGE_WALLET_TYPE = "wallet:ethereum";
 export const ACCOUNT_TYPES = {
   EDGE: "edge",
   LEDGER: "ledger",
-  METAMASK: "metamask",
+  METAMASK: "metaMask",
   TREZOR: "trezor",
   UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
 };
