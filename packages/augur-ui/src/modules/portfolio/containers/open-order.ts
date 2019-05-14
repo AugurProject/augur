@@ -5,7 +5,7 @@ import getValue from "utils/get-value";
 import * as constants from "modules/common-elements/constants";
 const { COLUMN_TYPES } = constants;
 
-import OpenOrder from "modules/portfolio/components/common/rows/open-order";
+import Row from "modules/portfolio/components/common/rows/row";
 
 const mapStateToProps = (state: any) => ({});
 
@@ -92,5 +92,5 @@ export default withRouter(
     mapStateToProps,
     mapDispatchToProps,
     mergeProps
-  )(OpenOrder)
+  )(Row)
 );

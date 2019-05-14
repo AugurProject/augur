@@ -7,10 +7,11 @@ import OpenOrderExpandedContent from "modules/portfolio/components/common/rows/o
 import RowColumn from "modules/portfolio/components/common/rows/row-column";
 import FilledOrdersTable from "modules/portfolio/components/common/tables/filled-orders-table";
 import { FilledOrderInterface } from "modules/portfolio/types";
+import PositionExpandedContent from "modules/portfolio/components/common/rows/position-expanded-content";
 
 import Styles from "modules/portfolio/components/common/rows/open-order.styles";
 
-export interface OpenOrderProps {
+export interface RowProps {
   rowProperties: Order | FilledOrderInterface;
   isSingle?: Boolean;
   extendedView?: Boolean;
@@ -18,7 +19,7 @@ export interface OpenOrderProps {
   styleOptions: Object;
 }
 
-const OpenOrder = (props: OpenOrderProps) => {
+const Row = (props: RowProps) => {
   const { rowProperties, isSingle, extendedView, columnProperties, styleOptions } = props;
 
   if (!rowProperties) {
@@ -30,7 +31,9 @@ const OpenOrder = (props: OpenOrderProps) => {
       className={classNames(Styles.GenericColumns, {
         [Styles.EightColumns]: styleOptions.filledOrder,
         [Styles.EightColumns__extendedView]: styleOptions.filledOrder && extendedView,
-        [Styles.FiveColumns__extendedView]: styleOptions.openOrder && extendedView
+        [Styles.FiveColumns__extendedView]: styleOptions.openOrder && extendedView,
+        [Styles.EightColumns_alternative]: styleOptions.position,
+        [Styles.EightColumns_alternative__extendedView]: styleOptions.position && extendedView,
       })}
     >
       {columnProperties.map(column => 
@@ -47,6 +50,24 @@ const OpenOrder = (props: OpenOrderProps) => {
     );
   }
 
+  if (styleOptions.showExpandedToggle) {
+    return (
+      <div
+        className={classNames(
+          Styles.Order__single,
+          Styles.Position__single
+        )}
+      >
+        <div
+          className={Styles.Position__innerSingle}
+        >
+          {rowContent}
+        </div>
+        {styleOptions.position && <PositionExpandedContent showExpandedToggle position={rowProperties} />}
+      </div>
+    );
+  }
+
   return (
     <div
       className={classNames({
@@ -55,28 +76,32 @@ const OpenOrder = (props: OpenOrderProps) => {
     >
       <ToggleRow
         className={classNames({
-          [Styles.Order__single]: isSingle,
-          [Styles.Order__group]: !isSingle,
-          [Styles.BottomBorder]: extendedView
+          [Styles.Order__single]: isSingle || styleOptions.position,
+          [Styles.Order__group]: !isSingle && !styleOptions.position,
+          [Styles.BottomBorder]: extendedView && !styleOptions.position,
+          [Styles.Position__single]: styleOptions.position
         })}
         innerClassName={classNames({
-          [Styles.Order__innerGroup]: !isSingle,
-          [Styles.Order__innerGroupExtended]: extendedView
+          [Styles.Order__innerGroup]: !isSingle || styleOptions.position,
+          [Styles.Order__innerGroupExtended]: extendedView || styleOptions.position && styleOptions.isFirst
         })}
         arrowClassName={Styles.Order__arrow}
         rowContent={rowContent}
         toggleContent={
-          styleOptions.openOrder ?
-          <OpenOrderExpandedContent openOrder={rowProperties} isSingle={isSingle} /> 
-          : 
-          <FilledOrdersTable
-            filledOrder={rowProperties}
-            showMarketInfo={isSingle}
-          />
+          <>
+            {styleOptions.openOrder && <OpenOrderExpandedContent openOrder={rowProperties} isSingle={isSingle} />}
+            {styleOptions.filledOrder && <FilledOrdersTable
+              filledOrder={rowProperties}
+              showMarketInfo={isSingle}
+            />}
+            {styleOptions.position &&
+              <PositionExpandedContent showExpandedToggle={styleOptions.showExpandedToggle} position={rowProperties} /> 
+            }
+          </>
         }
       />
     </div>
   );
 };
 
-export default OpenOrder;
+export default Row;

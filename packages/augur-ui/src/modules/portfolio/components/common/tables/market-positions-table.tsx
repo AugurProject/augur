@@ -1,10 +1,12 @@
 import React from "react";
+import Media from "react-media";
 
 import PositionsHeader from "modules/portfolio/components/common/headers/positions-header";
-import PositionRow from "modules/portfolio/components/common/rows/position-row";
+import PositionRow from "modules/portfolio/containers/position-row";
 import { Position } from "modules/portfolio/types";
 import classNames from "classnames";
 import CompleteSets from "modules/market/components/complete-sets/complete-sets";
+import { SMALL_MOBILE } from "modules/common-elements/constants";
 
 import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.style";
 import Styles from "modules/portfolio/components/common/tables/market-positions-table.styles";
@@ -61,14 +63,28 @@ export class MarketPositionsTable extends React.Component<
           })}
         >
           {positions.map((position: Position, index: number) => (
-            <PositionRow
-              key={"positionRow_" + position.marketId + position.outcomeId}
-              isFirst={index === 0}
-              position={position}
-              showPercent={showPercent}
-              extendedView={extendedView}
-              isSingle={extendedView}
-            />
+            <Media query={SMALL_MOBILE}>
+              {matches =>
+                matches ? (
+                <PositionRow
+                  key={"positionRow_" + position.marketId + position.outcomeId}
+                  position={position}
+                  showPercent={showPercent}
+                  extendedView={extendedView}
+                  isSingle={extendedView}
+                  showExpandedToggle
+                  isFirst={index === 0}
+                /> ) : (
+                <PositionRow
+                  key={"positionRow_" + position.marketId + position.outcomeId}
+                  position={position}
+                  showPercent={showPercent}
+                  extendedView={extendedView}
+                  isSingle={extendedView}
+                  isFirst={index === 0}
+                /> )
+              }
+            </Media>
           ))}
         </div>
         {extendedView &&

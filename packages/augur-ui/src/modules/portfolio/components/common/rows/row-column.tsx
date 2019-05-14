@@ -5,7 +5,8 @@ import {
   PendingLabel,
   PositionTypeLabel,
   ValueLabel,
-  TextLabel
+  TextLabel,
+  MovementLabel
 } from "modules/common-elements/labels";
 import { CancelTextButton } from "modules/common-elements/buttons";
 
@@ -19,10 +20,19 @@ function selectColumn(columnType, properties) {
       return <PositionTypeLabel type={properties.type} pastTense={properties.pastTense} />;
     case COLUMN_TYPES.VALUE:
       return properties.value && <ValueLabel value={properties.value} keyId={properties.keyId} />;
-    case COLUMN_TYPES.CANCEL_TEXT_BUTTON: // todo: need to figure out pending for mobile
+    case COLUMN_TYPES.CANCEL_TEXT_BUTTON:
       return (properties.pending ? <span> <PendingLabel /> </span> : <CancelTextButton disabled={properties.disabled} text={properties.text} action={properties.action} />);
     case COLUMN_TYPES.PLAIN:
       return properties.value;
+    case COLUMN_TYPES.MOVEMENT_LABEL:
+      return (<MovementLabel
+              showPercent={properties.showPercent}
+              showBrackets={properties.showBrackets}
+              showPlusMinus={properties.showPlusMinus}
+              showColors={properties.showColors}
+              size={properties.size}
+              value={properties.value}
+            />);
     default:
       return <div/>;
   }

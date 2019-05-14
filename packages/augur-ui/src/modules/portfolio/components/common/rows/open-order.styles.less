@@ -73,10 +73,6 @@
   border: 0;
 }
 
-.BottomBorder {
-  border-bottom: 0.0625rem solid @color-primary-background;
-}
-
 .Order__parentSingle {
   &:not(:first-of-type) {
     border-top: 0.0625rem solid @color-primary-background;
@@ -87,9 +83,16 @@
   padding: 0.5rem 1.75rem 0.5rem 1rem;
 }
 
-.Order__arrow {
-  margin-left: 1.5rem;
-  padding-right: 0;
+.Position__BottomBorder {
+  border-bottom: 0.0625rem solid @color-primary-background;
+}
+
+.BottomBorder {
+  border-bottom: 0.0625rem solid @color-primary-background;
+}
+
+.TopBorder {
+  border-top: 0.0625rem solid @color-primary-background;
 }
 
 .FiveColumns__extendedView {
@@ -170,7 +173,7 @@ div.OpenOrder__labels {
   text-align: right;
 }
 
-.Position {
+.EightColumns_alternative {
   grid-template-columns: repeat(8, 1fr);
 
   > li {
@@ -213,10 +216,6 @@ div.OpenOrder__labels {
   }
 }
 
-.Position__border {
-  border-top: 0.0625rem solid @color-primary-background;
-}
-
 .Position__innerSingle {
   padding: 0.5rem 0;
 }
@@ -226,12 +225,12 @@ div.OpenOrder__labels {
   padding: 0 1.75rem 0 1.5rem;
 }
 
-.Position__arrow {
+.Order__arrow {
   margin-left: 1.25rem;
   padding-right: 0;
 }
 
-.Position__extended {
+.EightColumns_alternative__extendedView {
   grid-template-columns: repeat(6, 1fr);
 
   > li {
@@ -289,6 +288,10 @@ div.OpenOrder__labels {
     padding-right: @size-20;
   }
 
+  .BottomBorder {
+    border: 0;
+  }
+
   .Order__parentSingle {
     border-radius: @border-radius-default;
     border-top: 0;
@@ -298,10 +301,6 @@ div.OpenOrder__labels {
   .Order__group {
     padding-left: @size-16;
     padding-right: @size-20;
-  }
-
-  .Order__arrow {
-    margin-left: 1.25rem;
   }
 
   .EightColumns {
@@ -319,7 +318,7 @@ div.OpenOrder__labels {
     }
   }
 
-  .Position {
+  .EightColumns_alternative {
     grid-template-columns: repeat(6, 1fr);
 
     > li {
@@ -355,7 +354,7 @@ div.OpenOrder__labels {
     }
   }
 
-  .Position__extended {
+  .EightColumns_alternative__extendedView {
     grid-template-columns: repeat(5, 1fr);
 
     > li {

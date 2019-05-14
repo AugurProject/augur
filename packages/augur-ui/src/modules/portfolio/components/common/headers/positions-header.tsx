@@ -15,9 +15,9 @@ interface PositionsHeaderProps {
 const PositionsHeader = (props: PositionsHeaderProps) => (
   <ul
     className={classNames(Styles.DataTableHeader, Styles.PositionHeader, {
-      [SharedStyles.Position]: !props.extendedView,
+      [SharedStyles.EightColumns_alternative]: !props.extendedView,
       [Styles.DataTableHeader__extended]: props.extendedView,
-      [Styles.PositionHeader__extended]: props.extendedView
+      [Styles.EightColumns_alternative__extendedView]: props.extendedView
     })}
   >
     <li>Outcome</li>
