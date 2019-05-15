@@ -9,6 +9,7 @@ import { createReducer } from "src/reducers";
 import { windowRef } from "src/utils/window-ref";
 import { augur } from "services/augurjs";
 import { processFavorites } from "src/modules/markets/helpers/favorites-processor";
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 // console log middleware
 const consoleLog = store => next => action => {
@@ -43,8 +44,8 @@ const localStorageMiddleware = store => next => action => {
   } = state;
   if (windowRef.localStorage && windowRef.localStorage.setItem) {
     const { localStorage } = windowRef;
-    const { augurNodeNetworkId } = connection;
-    const networkIdToUse = augurNodeNetworkId || augur.rpc.getNetworkID();
+    const { augurNodeNetworkId, isConnected } = connection;
+    const networkIdToUse = isConnected ? getNetworkId() : augurNodeNetworkId;
     const universeIdToUse =
       env.universe || augur.contracts.addresses[networkIdToUse].Universe;
     let storedAccountData = JSON.parse(localStorage.getItem(address));

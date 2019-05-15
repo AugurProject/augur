@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import {
   updateAuthStatus,
   IS_LOGGED
@@ -6,6 +5,7 @@ import {
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import trezorSigner from "modules/auth/helpers/trezor-signer";
 import { toChecksumAddress } from "ethereumjs-util";
+import { ACCOUNT_TYPES } from "modules/common-elements/constants";
 
 export default function loginWithTrezor(
   address: String,
@@ -23,7 +23,7 @@ export default function loginWithTrezor(
           signer: async (...args: any) => {
             trezorSigner(connect, addressPath, dispatch, args);
           },
-          accountType: augur.rpc.constants.ACCOUNT_TYPES.TREZOR
+          accountType: ACCOUNT_TYPES.TREZOR
         }
       })
     );

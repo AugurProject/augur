@@ -1,5 +1,5 @@
 import * as AugurJS from "services/augurjs";
-import { checkIsKnownUniverse } from "modules/contracts/actions/contractCalls";
+import { checkIsKnownUniverse, getNetworkId } from "modules/contracts/actions/contractCalls";
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
@@ -30,12 +30,12 @@ import {
   MODAL_DISCLAIMER,
   MODAL_NETWORK_DISABLED,
   NETWORK_NAMES,
+  ACCOUNT_TYPES,
   DISCLAIMER_SEEN
 } from "modules/common-elements/constants";
 import { windowRef } from "utils/window-ref";
 import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
 
-const { ACCOUNT_TYPES } = AugurJS.augur.rpc.constants;
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -92,7 +92,7 @@ function loadAccount(
   callback: Function
 ) {
   let loggedInAccount: any = null;
-  const usingMetaMask = accountType === ACCOUNT_TYPES.META_MASK;
+  const usingMetaMask = accountType === ACCOUNT_TYPES.METAMASK;
   if (windowRef.localStorage && windowRef.localStorage.getItem) {
     loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
   }
@@ -211,7 +211,7 @@ export function connectAugur(
         });
         let universeId =
           env.universe ||
-          AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()]
+          AugurJS.augur.contracts.addresses[getNetworkId()]
             .Universe;
         if (
           windowRef.localStorage &&
@@ -222,7 +222,7 @@ export function connectAugur(
             windowRef.localStorage.getItem(loginAccount.address)
           ).selectedUniverse[
             getState().connection.augurNodeNetworkId ||
-              AugurJS.augur.rpc.getNetworkID().toString()
+            getNetworkId().toString()
           ];
           universeId = !storedUniverseId ? universeId : storedUniverseId;
         }
