@@ -2,10 +2,10 @@ import { augur } from "services/augurjs";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
 import logError from "utils/log-error";
 
-export const updateTimeframeData = (options = {}, callback = logError) => (
-  dispatch,
-  getState
-) => {
+export const updateTimeframeData = (
+  options: any = {},
+  callback: any = logError
+) => (dispatch: Function, getState: Function) => {
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
     return callback(null);
@@ -18,7 +18,7 @@ export const updateTimeframeData = (options = {}, callback = logError) => (
       startTime: options.startTime || null,
       endTime: null
     },
-    (err, timeframeData) => {
+    (err: any, timeframeData: any) => {
       if (err) return callback(err);
       dispatch(
         updateLoginAccount({

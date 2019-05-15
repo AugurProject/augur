@@ -107,10 +107,10 @@
     ethers "4.0.0-beta.14"
     lodash "^4.17.5"
 
-"@augurproject/solidity-typescript-generator@1.1.3":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@augurproject/solidity-typescript-generator/-/solidity-typescript-generator-1.1.3.tgz#04457b973908d4972d57bb038fb498a0a9513b3e"
-  integrity sha512-gNbcde3dxGn+W75NpcCB1lHGzU6wdia4lTmakHNRSs0W8Vj5w/LpLwItXGKn19eOZ7PhzldA+P4fzvhxhWFbjg==
+"@augurproject/solidity-typescript-generator@1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@augurproject/solidity-typescript-generator/-/solidity-typescript-generator-1.1.5.tgz#51f185704cbf1993932d19288e55e1a1b391b263"
+  integrity sha512-nQpifNZHUt30zREytkwRCMeRu1j3QnSvaNe/Zlt4mCV8ZsunA73Cwic12GAaOXqEqQleMHzJa/dUIpz9Zovo/Q==
   dependencies:
     js-sha3 "0.8.0"
 

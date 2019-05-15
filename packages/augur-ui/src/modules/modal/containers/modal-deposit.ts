@@ -6,6 +6,7 @@ import { BigNumber } from "@0xproject/utils";
 import { augur } from "services/augurjs";
 import { NETWORK_IDS } from "modules/common-elements/constants";
 import { closeModal } from "modules/modal/actions/close-modal";
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 const mapStateToProps = (state: any) => ({
   modal: state.modal,
@@ -66,7 +67,7 @@ const mapDispatchToProps = (dispatch: Function) => ({
           }
         ];
 
-        const currentNetworkId = parseInt(augur.rpc.getNetworkID(), 10);
+        const currentNetworkId = getNetworkId();
         const currentNetworkParams = networkSettings.find(
           net => net.networkId === currentNetworkId
         );
@@ -80,7 +81,7 @@ const mapDispatchToProps = (dispatch: Function) => ({
 
 function airSwapOnClick(e) {
   const env =
-    parseInt(augur.rpc.getNetworkID(), 10) === 1 ? "production" : "sandbox";
+    getNetworkId() === 1 ? "production" : "sandbox";
   e.preventDefault();
   // The widget will offer swaps for REP <-> ETH on mainnet
   // It can still be tested on rinkeby, but only AST <-> ETH is offered

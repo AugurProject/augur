@@ -1,5 +1,7 @@
 import {Dependencies, AbiFunction, AbiParameter, Transaction, TransactionReceipt} from 'contract-dependencies';
 import {ethers} from 'ethers'
+import {BigNumber} from "ethers/utils";
+import {TransactionRequest} from "ethers/providers";
 
 export interface EthersSigner {
     sendTransaction(transaction: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionResponse>;
@@ -8,6 +10,7 @@ export interface EthersSigner {
 
 export interface EthersProvider {
     call(transaction: Transaction<ethers.utils.BigNumber>): Promise<string>;
+    estimateGas(transaction: TransactionRequest): Promise<BigNumber>;
     listAccounts(): Promise<string[]>;
 }
 
@@ -61,5 +64,9 @@ export class ContractDependenciesEthers implements Dependencies<ethers.utils.Big
         const receipt = await (await this.signer.sendTransaction(transaction)).wait();
         // ethers has `status` on the receipt as optional, even though it isn't and never will be undefined if using a modern network (which this is designed for)
         return <TransactionReceipt>receipt
+    }
+
+    estimateGas(transaction: Transaction<ethers.utils.BigNumber>): Promise<ethers.utils.BigNumber> {
+      return this.provider.estimateGas(transaction);
     }
 }
