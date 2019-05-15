@@ -7,11 +7,46 @@
 import { augurSdk } from "services/augursdk";
 import { ethers } from "ethers";
 import { BigNumber } from "ethers/utils";
+import { Web3Provider } from "ethers/providers";
+
+export function clearUserTx(): void {
+  const Augur = augurSdk.get();
+  // TODO: impl this for ethers
+  // old comment - clear ethrpc transaction history, registered callbacks, and alerts
+}
+
+export function isWeb3Transport(): boolean {
+  return augurSdk.isWeb3Transport;
+}
+
+export async function getTransaction(): Promise<string> {
+  const Augur = augurSdk.get();
+  const tx = await Augur.provider.getTransaction();
+  return tx;
+}
+
+export async function getGasPrice(): Promise<string> {
+  const Augur = augurSdk.get();
+  const gasPrice = await Augur.provider.getGasPrice();
+  return gasPrice;
+}
+
+export async function isUnlocked(address: string): Promise<boolean> {
+  const Augur = augurSdk.get();
+  const isUnlockedAccount = await Augur.provider.unlock(address);
+  return isUnlockedAccount;
+}
 
 export function getNetworkId(): number {
   const Augur = augurSdk.get();
   const networkId = Augur.provider.network.chainId;
   return networkId;
+}
+
+export async function getAccounts(): Promise<Array<string>> {
+  const Augur = augurSdk.get();
+  const accounts = Augur.provider.listAccounts();
+  return accounts;
 }
 
 export async function checkIsKnownUniverse(universeId: string) {

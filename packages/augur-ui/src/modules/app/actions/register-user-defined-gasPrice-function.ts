@@ -5,6 +5,7 @@ export const registerUserDefinedGasPriceFunction = () => (
   dispatch: Function,
   getState: Function
 ) => {
+  // TODO: how to set gasPrice in ethers
   augur.getGasPrice = (callback: Function) => {
     callback(getGasPrice(getState()));
   };

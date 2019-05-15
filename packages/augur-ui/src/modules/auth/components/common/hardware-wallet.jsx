@@ -16,7 +16,7 @@ import Styles from "modules/auth/components/common/hardware-wallet.styles";
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
 import StylesError from "modules/auth/components/common/error-container.styles";
 import ToggleHeightStyles from "utils/toggle-height.styles";
-import getEtherBalance from "modules/auth/actions/get-ether-balance";
+import { getEthBalance } from "modules/contracts/actions/contractCalls";
 
 export default class HardwareWallet extends Component {
   static propTypes = {
@@ -203,10 +203,7 @@ export default class HardwareWallet extends Component {
           const promises = [];
           walletAddresses.forEach(addr => {
             const getPromise = new Promise((resolve, reject) => {
-              getEtherBalance(addr.address, (err, balance, address) => {
-                if (err) return reject(new Error(err));
-                resolve({ balance, address });
-              });
+              getEthBalance(addr.address).then(balance => resolve({ balance, address })).catch(err => reject(err));
             });
             promises.push(getPromise);
           });

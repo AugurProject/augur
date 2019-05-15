@@ -1,18 +1,14 @@
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
-import getEtherBalance from "modules/auth/actions/get-ether-balance";
+import { getEthBalance } from "modules/contracts/actions/contractCalls";
 import logError from "utils/log-error";
 
-export const updateEtherBalance = (callback: Function = logError) => (
+export const updateEtherBalance = (callback: Function = logError) => async (
   dispatch: Function,
   getState: Function
 ) => {
   const { loginAccount } = getState();
   if (!loginAccount.address) return callback(null);
-  getEtherBalance(loginAccount.address, (err: any, etherBalance: String) => {
-    if (err) console.log("Could not get ether balance", loginAccount.address);
-    if (!loginAccount.eth || loginAccount.eth !== etherBalance) {
-      dispatch(updateLoginAccount({ eth: etherBalance }));
-    }
-    callback(null, etherBalance);
-  });
+  const etherBalance = await getEthBalance(loginAccount.address);
+  dispatch(updateLoginAccount({ eth: etherBalance }));
+  callback(null, etherBalance);
 };
