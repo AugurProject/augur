@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 
-import Styles from "modules/portfolio/components/common/rows/toggle-row.styles";
+import Styles from "modules/common-elements/toggle-row.styles";
 
 export interface ToggleRowProps {
   rowContent: ReactNode;
