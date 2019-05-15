@@ -4,11 +4,10 @@ import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds as getTime } from "src/select-state";
 import { CONFIRMED, FAILED } from "modules/common-elements/constants";
 import logError from "utils/log-error";
-import noop from "utils/noop";
+import { getDai } from "modules/contracts/actions/contractCalls";
 
 export default function(callback = logError) {
-  return (dispatch: Function, getState: Function) => {
-    const { loginAccount } = getState();
+  return async (dispatch: Function, getState: Function) => {
     const update = (id: String, status: String) =>
       dispatch(
         updateAlert(id, {
@@ -17,20 +16,15 @@ export default function(callback = logError) {
           timestamp: getTime(getState())
         })
       );
-    augur.api.Cash.faucet({
-      tx: { to: augur.contracts.addresses[augur.rpc.getNetworkID()].Cash },
-      _amount: 1000000000000000000000,
-      meta: loginAccount.meta,
-      onSent: noop,
-      onSuccess: (res: any) => {
-        update(res.hash, CONFIRMED);
-        dispatch(updateAssets());
-        callback(null);
-      },
-      onFailed: (res: any) => {
-        update(res.hash, FAILED);
-        logError(res);
-      }
+    // TODO: this will change when pending tx exists
+    await getDai().catch((err: Error) => {
+      console.log("error could not get dai", err);
+      update("get-Dai", FAILED);
+      logError("get-Dai");
     });
+    // TODO: this will change when pending tx exists
+    update("get-Dai", CONFIRMED);
+    dispatch(updateAssets());
+    callback(null);
   };
 }

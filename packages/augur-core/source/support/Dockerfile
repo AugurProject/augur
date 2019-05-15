@@ -5,26 +5,20 @@
 # for other pieces
 FROM augurproject/augur-build:latest as augur-build
 
-FROM augurproject/python2-and-3:monorepo as core-build
 ARG SOLC_VERSION=v0.5.4
 ARG SOLC_MD5=fce0ea489308e86aa0d5f7d72bd2cd15
 ENV PATH="/augur/node_modules/.bin:${PATH}"
 
-COPY --from=augur-build /usr/local/ /usr/local
-COPY --from=augur-build /opt/ /opt/
+# install "virtualenv", since the vast majority of users of this image will want it
+RUN pip install --no-cache-dir virtualenv
 
-RUN apk add --no-cache --update \
-        bash \
-        curl \
-        g++ \
-        gcc \
-        git \
-        libffi-dev \
-        linux-headers \
-        make \
-        musl-dev \
-        openssl-dev \
-        python2-dev
+
+WORKDIR /augur
+COPY packages/augur-core/requirements.txt /augur/
+RUN virtualenv /augur/venv && \
+    source /augur/venv/bin/activate && \
+    pip install --no-cache-dir -r requirements.txt
+
 
 RUN echo "${SOLC_MD5} */usr/local/bin/solc" > solc.md5 && \
     curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux && \
@@ -32,30 +26,25 @@ RUN echo "${SOLC_MD5} */usr/local/bin/solc" > solc.md5 && \
     chmod a+x /usr/local/bin/solc
 
 
-COPY --from=augur-build /augur/ /augur/
+RUN yarn workspace @augurproject/core install && yarn workspace @augurproject/core build
 
-WORKDIR /augur
 
-RUN /usr/bin/virtualenv /augur/venv && \
-    source /augur/venv/bin/activate && \
-    cd packages/augur-core && \
-    python2 -m pip install --cache-dir=/augur/.pip -r requirements.txt
-
-RUN yarn workspace @augurproject/core build
-
-RUN apk add --no-cache \
-    libstdc++
-
-FROM augurproject/python2-and-3:monorepo
+FROM alpine:3.9
 ENV PATH="/augur/venv/bin:${PATH}"
 
-COPY --from=core-build /usr/local/bin/solc /usr/local/bin/solc
-COPY --from=core-build /augur/packages/augur-core/ /augur/packages/augur-core
-COPY --from=core-build /augur/packages/augur-artifacts/ /augur/packages/augur-artifacts
-COPY --from=core-build /augur/package.json /augur
-COPY --from=core-build /augur/tsconfig.json /augur
-COPY --from=core-build /augur/tsconfig-base.json /augur
-COPY --from=core-build /augur/venv /augur/venv
+RUN apk add --no-cache \
+    git \
+    libstdc++ \
+    python2 \
+    python3
+
+COPY --from=augur-build /usr/local/bin/solc /usr/local/bin/solc
+COPY --from=augur-build /augur/packages/augur-core/ /augur/packages/augur-core
+COPY --from=augur-build /augur/packages/augur-artifacts/ /augur/packages/augur-artifacts
+COPY --from=augur-build /augur/package.json /augur
+COPY --from=augur-build /augur/tsconfig.json /augur
+COPY --from=augur-build /augur/tsconfig-base.json /augur
+COPY --from=augur-build /augur/venv /augur/venv
 COPY --from=augur-build /usr/local/ /usr/local
 COPY --from=augur-build /opt/ /opt/
 

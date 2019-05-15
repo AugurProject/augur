@@ -3,6 +3,7 @@ import logError from "utils/log-error";
 import { createBigNumber } from "utils/create-big-number";
 import { formatGasCost } from "utils/format-number";
 import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 const GAS_PRICE_API_ENDPOINT = "https://ethgasstation.info/json/ethgasAPI.json";
 const GWEI_CONVERSION = 1000000000;
@@ -12,7 +13,7 @@ export function loadGasPriceInfo(callback: Function = logError) {
   return (dispatch: Function, getState: Function) => {
     const { loginAccount, blockchain } = getState();
     if (!loginAccount.address) return callback(null);
-    const networkId = augur.rpc.getNetworkID();
+    const networkId = getNetworkId();
 
     if (networkId === MAINNET_ID) {
       getGasPriceRanges(networkId, (result: any) => {

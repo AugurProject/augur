@@ -24,7 +24,7 @@ export default function loginWithLedger(
           signer: async (...args: any) => {
             ledgerSigner(args, ledgerLib, derivationPath, dispatch);
           },
-          accountType: augur.rpc.constants.ACCOUNT_TYPES.LEDGER
+          accountType: ACCOUNT_TYPES.LEDGER
         }
       })
     );
