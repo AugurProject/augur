@@ -2,7 +2,7 @@ import { BigNumber } from "ethers/utils";
 import { Augur } from "@augurproject/sdk";
 import {
   ContractDependenciesEthers,
-  EthersSigner
+  EthersSigner,
 } from "contract-dependencies-ethers";
 
 import { EthersProvider } from "@augurproject/ethersjs-provider";
@@ -10,29 +10,29 @@ import { JsonRpcProvider } from "ethers/providers";
 import { Addresses } from "@augurproject/artifacts";
 
 export class SDK {
-  _sdk: Augur<BigNumber, EthersProvider> | null = null;
+  public _sdk: Augur<BigNumber, EthersProvider> | null = null;
 
-  async makeApi(
+  public async makeApi(
     provider: JsonRpcProvider,
     account: string = "",
-    signer: EthersSigner
+    signer: EthersSigner,
   ) {
     const ethersProvider = new EthersProvider(provider, 10, 0, 40);
     const networkId = await ethersProvider.getNetworkId();
     const contractDependencies = new ContractDependenciesEthers(
       ethersProvider,
       signer,
-      account
+      account,
     );
 
     this._sdk = await Augur.create<BigNumber, EthersProvider>(
       ethersProvider,
       contractDependencies,
-      Addresses[networkId]
+      Addresses[networkId],
     );
   }
 
-  get(): Augur<BigNumber, EthersProvider> {
+  public get(): Augur<BigNumber, EthersProvider> {
     if (this._sdk) {
       return this._sdk;
     }
