@@ -2,8 +2,7 @@ import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
 import TX from "ethereumjs-tx";
 import { prefixHex } from "speedomatic";
-import { augur } from "services/augurjs";
-
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import { MODAL_TREZOR } from "modules/common-elements/constants";
 
 const trezorSigner = async (connect, path, dispatch, rawTxArgs) => {
@@ -24,7 +23,7 @@ const trezorSigner = async (connect, path, dispatch, rawTxArgs) => {
 
   tx.gasLimit || (tx.gasLimit = tx.gas);
 
-  const chain = augur.rpc.getNetworkID();
+  const chain = getNetworkId();
 
   const transaction = {
     to: tx.to.slice(2),

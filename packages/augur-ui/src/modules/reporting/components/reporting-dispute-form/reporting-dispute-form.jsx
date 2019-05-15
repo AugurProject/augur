@@ -7,10 +7,10 @@ import { createBigNumber } from "utils/create-big-number";
 import {
   SCALAR,
   MALFORMED_OUTCOME,
-  ZERO
+  ZERO,
+  ETHER
 } from "modules/common-elements/constants";
 import { formatAttoRep, formatNumber, formatRep } from "utils/format-number";
-import { augur } from "services/augurjs";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles";
@@ -18,7 +18,6 @@ import ReportingDisputeProgress from "modules/reporting/components/reporting-dis
 import Input from "modules/common/components/input/input";
 import { RepBalance } from "modules/common-elements/labels";
 
-const { ETHER } = augur.rpc.constants;
 export default class ReportingDisputeForm extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,

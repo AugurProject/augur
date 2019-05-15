@@ -1,5 +1,6 @@
 import { windowRef } from "utils/window-ref";
 import { augur } from "services/augurjs";
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 export const setSelectedUniverse = (selectedUniverseId: String) => (
   dispatch: Function,
@@ -10,7 +11,7 @@ export const setSelectedUniverse = (selectedUniverseId: String) => (
   const { augurNodeNetworkId } = connection;
   const defaultUniverseId =
     env.universe ||
-    augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
+    augur.contracts.addresses[getNetworkId()].Universe;
   if (windowRef && windowRef.localStorage) {
     const { localStorage } = windowRef;
     const accountStorage = JSON.parse(localStorage.getItem(address));

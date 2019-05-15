@@ -8,9 +8,15 @@ import { augurSdk } from "services/augursdk";
 import { ethers } from "ethers";
 import { BigNumber } from "ethers/utils";
 
+export function getNetworkId(): number {
+  const Augur = augurSdk.get();
+  const networkId = Augur.provider.network.chainId;
+  return networkId;
+}
+
 export async function checkIsKnownUniverse(universeId: string) {
   const { contracts } = augurSdk.get();
- const result = await contracts.augur.isKnownUniverse_(universeId);
+  const result = await contracts.augur.isKnownUniverse_(universeId);
   return result;
 }
 
@@ -93,4 +99,9 @@ export async function isFinalized(marketId: string) {
   if (!market) return false; // TODO: prob should throw error if market not found
   const status = await market.isFinalized();
   return status;
+}
+
+export function getDai() {
+  const { contracts } = augurSdk.get();
+  return contracts.cash.faucet("1000000000000000000000");
 }

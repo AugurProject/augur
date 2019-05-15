@@ -1,5 +1,5 @@
 import BaseInnerNav from "modules/app/components/inner-nav/base-inner-nav";
-
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import { augur } from "services/augurjs";
 
 import {
@@ -15,7 +15,7 @@ export default class AccountInnerNav extends BaseInnerNav {
   };
 
   getMainMenuData() {
-    const showRepFaucet = parseInt(augur.rpc.getNetworkID(), 10) !== 1;
+    const showRepFaucet = getNetworkId() !== 1;
     const { currentBasePath } = this.props;
     return [
       {
