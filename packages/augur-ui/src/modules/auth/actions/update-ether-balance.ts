@@ -8,7 +8,7 @@ export const updateEtherBalance = (callback: Function = logError) => async (
 ) => {
   const { loginAccount } = getState();
   if (!loginAccount.address) return callback(null);
-  const etherBalance = await getEthBalance(loginAccount.address);
-  dispatch(updateLoginAccount({ eth: etherBalance }));
-  callback(null, etherBalance);
+  const { balance } = await getEthBalance(loginAccount.address);
+  dispatch(updateLoginAccount({ eth: balance }));
+  callback(null, balance);
 };

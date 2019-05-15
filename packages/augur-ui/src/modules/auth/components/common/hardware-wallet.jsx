@@ -203,7 +203,9 @@ export default class HardwareWallet extends Component {
           const promises = [];
           walletAddresses.forEach(addr => {
             const getPromise = new Promise((resolve, reject) => {
-              getEthBalance(addr.address).then(balance => resolve({ balance, address })).catch(err => reject(err));
+              getEthBalance(addr.address)
+                .then((balance, address) => resolve({ balance, address }))
+                .catch(err => reject(err));
             });
             promises.push(getPromise);
           });
@@ -305,7 +307,7 @@ export default class HardwareWallet extends Component {
         NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber -
           NUM_DERIVATION_PATHS_TO_DISPLAY,
         NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber >
-        s.walletAddresses.length
+          s.walletAddresses.length
           ? s.walletAddresses.length
           : NUM_DERIVATION_PATHS_TO_DISPLAY * s.addressPageNumber
       );
@@ -329,7 +331,9 @@ export default class HardwareWallet extends Component {
         className={classNames(
           StylesDropdown.ConnectDropdown__hardwareContent,
           ToggleHeightStyles.target,
-          { [ToggleHeightStyles.open]: s.showWallet }
+          {
+            [ToggleHeightStyles.open]: s.showWallet
+          }
         )}
       >
         <div>
@@ -340,7 +344,9 @@ export default class HardwareWallet extends Component {
             className={classNames(
               StylesDropdown.ConnectDropdown__advancedContent,
               ToggleHeightStyles.target,
-              { [ToggleHeightStyles.open]: showAdvanced }
+              {
+                [ToggleHeightStyles.open]: showAdvanced
+              }
             )}
           >
             <DerivationPathEditor
@@ -349,74 +355,68 @@ export default class HardwareWallet extends Component {
               isClicked={isClicked}
             />
           </div>
-          {!error &&
-            !s.displayInstructions &&
-            !hideContent && (
-              <AddressPickerContent
-                addresses={s.walletAddresses}
-                indexArray={indexes}
-                clickAction={this.connectWallet}
-                clickPrevious={this.previous}
-                clickNext={this.next}
-                disablePrevious={s.addressPageNumber === 1}
-                disableNext={lessThanPageAddresses && s.cachedAddresses}
-              />
-            )}
+          {!error && !s.displayInstructions && !hideContent && (
+            <AddressPickerContent
+              addresses={s.walletAddresses}
+              indexArray={indexes}
+              clickAction={this.connectWallet}
+              clickPrevious={this.previous}
+              clickNext={this.next}
+              disablePrevious={s.addressPageNumber === 1}
+              disableNext={lessThanPageAddresses && s.cachedAddresses}
+            />
+          )}
 
-          {!error &&
-            s.displayInstructions && (
-              <div className={StylesDropdown.ConnectDropdown__content}>
-                <div className={StylesError.ErrorContainer__header}>
-                  <div className={StylesError.ErrorContainer__headerIcon}>
-                    {errorIcon}
-                  </div>
-                  Unable To Connect
+          {!error && s.displayInstructions && (
+            <div className={StylesDropdown.ConnectDropdown__content}>
+              <div className={StylesError.ErrorContainer__header}>
+                <div className={StylesError.ErrorContainer__headerIcon}>
+                  {errorIcon}
                 </div>
-                <div
-                  className={classNames(
-                    StylesError.ErrorContainer__subheader,
-                    Styles.subheader
-                  )}
-                >
-                  {walletName === "trezor" && (
-                    <ul>
-                      <li>Make sure you have connected your Trezor</li>
-                      <li>Try dismissing Trezor web browser tab</li>
-                      <li>
-                        Disconnecting and reconnecting Trezor might fix the
-                        issue
-                      </li>
-                    </ul>
-                  )}
-                  {walletName === "ledger" && <div>Make sure you have:</div>}
-                  {walletName === "ledger" && (
-                    <ul>
-                      <li>Accessed Augur via HTTPS</li>
-                      <li>Connected your Ledger</li>
-                      <li>Opened the Ethereum App</li>
-                      <li>Enabled contract data</li>
-                      <li>Enabled browser support</li>
-                      <li>Unlocked Ledger Wallet</li>
-                    </ul>
-                  )}
-                  <div
-                    className={StylesDropdown.ConnectDropdown__retryContainer}
-                  >
-                    <button
-                      className={StylesDropdown.ConnectDropdown__retryButton}
-                      onClick={e => {
-                        e.stopPropagation();
-                        e.preventDefault();
+                Unable To Connect
+              </div>
+              <div
+                className={classNames(
+                  StylesError.ErrorContainer__subheader,
+                  Styles.subheader
+                )}
+              >
+                {walletName === "trezor" && (
+                  <ul>
+                    <li>Make sure you have connected your Trezor</li>
+                    <li>Try dismissing Trezor web browser tab</li>
+                    <li>
+                      Disconnecting and reconnecting Trezor might fix the issue
+                    </li>
+                  </ul>
+                )}
+                {walletName === "ledger" && <div>Make sure you have:</div>}
+                {walletName === "ledger" && (
+                  <ul>
+                    <li>Accessed Augur via HTTPS</li>
+                    <li>Connected your Ledger</li>
+                    <li>Opened the Ethereum App</li>
+                    <li>Enabled contract data</li>
+                    <li>Enabled browser support</li>
+                    <li>Unlocked Ledger Wallet</li>
+                  </ul>
+                )}
+                <div className={StylesDropdown.ConnectDropdown__retryContainer}>
+                  <button
+                    className={StylesDropdown.ConnectDropdown__retryButton}
+                    onClick={e => {
+                      e.stopPropagation();
+                      e.preventDefault();
 
-                        this.getWalletAddressesWithBalance();
-                      }}
-                    >
-                      Retry
-                    </button>
-                  </div>
+                      this.getWalletAddressesWithBalance();
+                    }}
+                  >
+                    Retry
+                  </button>
                 </div>
               </div>
-            )}
+            </div>
+          )}
         </div>
       </div>
     );

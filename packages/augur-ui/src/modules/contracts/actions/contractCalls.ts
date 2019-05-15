@@ -77,7 +77,7 @@ export async function getRepBalance(address: string) {
 export async function getEthBalance(address: string) {
   const Augur = augurSdk.get();
   const balance = await Augur.provider.getBalance(address);
-  return ethers.utils.formatEther(balance);
+  return { balance: ethers.utils.formatEther(balance), address };
 }
 
 export async function getDaiBalance(address: string) {
