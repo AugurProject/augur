@@ -107,12 +107,15 @@ export class ContractAPI {
     const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
     const byteTopic = stringTo32ByteHex(topic);
 
+    console.log("FAUCET")
     await this.faucet(marketCreationFee);
     const marketAddress = await universe.createScalarMarket_(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, prices, numTicks, byteTopic, extraInfo);
     if (!marketAddress || marketAddress === "0x") {
       throw new Error("Unable to get address for new scalar market.");
     }
+    console.log("ADDRESS", marketAddress)
     await universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, prices, numTicks, byteTopic, extraInfo);
+    console.log("CREATED")
     return this.augur.contracts.marketFromAddress(marketAddress);
   }
 
@@ -138,7 +141,9 @@ export class ContractAPI {
     worseOrderID: string,
     tradeGroupID: string,
   ): Promise<string> {
+    await this.faucet(numShares.mul(price).mul(1000));
     const orderId = await this.augur.contracts.createOrder.publicCreateOrder_(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
+    console.log("orderId", orderId);
     await this.augur.contracts.createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
     return orderId;
   }
@@ -318,12 +323,16 @@ export class ContractAPI {
   }
 
   // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
-  public async getEthBalance(): Promise<ethers.utils.BigNumber> {
+  public getEthBalance(): Promise<ethers.utils.BigNumber> {
     return this.provider.getBalance(this.account);
   }
 
-  public getRepBalance(owner: string): Promise<ethers.utils.BigNumber> {
+  public getRepBalance(owner: string=this.account): Promise<ethers.utils.BigNumber> {
     return this.augur.contracts.getReputationToken().balanceOf_(owner);
+  }
+
+  public getCashBalance(owner: string=this.account): Promise<ethers.utils.BigNumber> {
+    return this.augur.contracts.cash.balanceOf_(owner);
   }
 
   public getRepAllowance(owner: string, spender: string): Promise<ethers.utils.BigNumber> {

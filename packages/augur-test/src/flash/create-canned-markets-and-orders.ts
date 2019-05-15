@@ -15,6 +15,9 @@ import { cannedMarkets, CannedMarket, OrderBook } from "./data/canned-markets";
 
 async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<GenericAugurInterfaces.Market<BigNumber>> {
   console.log("CREATING CANNED MARKET: ", can.extraInfo.description)
+  console.log("REP BALANCE", bn2dbn(await person.getRepBalance()).div(QUINTILLION).toFixed());
+  console.log("CASH BALANCE", bn2dbn(await person.getEthBalance()).div(QUINTILLION).toFixed());
+  console.log("ETH BALANCE", bn2dbn(await person.getCashBalance()).div(QUINTILLION).toFixed());
   const contracts = person.augur.contracts;
   const universe = contracts.universe;
 
@@ -89,6 +92,10 @@ function generateRandom32ByteHex() {
 
 function dbn2bn (dbn: DecimalBigNumber): BigNumber {
   return new BigNumber(dbn.toFixed());
+}
+
+function bn2dbn (dbn: BigNumber): DecimalBigNumber {
+  return new DecimalBigNumber(dbn.toHexString());
 }
 
 async function placeOrder(person: ContractAPI,
