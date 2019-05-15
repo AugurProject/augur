@@ -11,12 +11,15 @@ import { Addresses } from "@augurproject/artifacts";
 
 export class SDK {
   public _sdk: Augur<BigNumber, EthersProvider> | null = null;
+  public isWeb3Transport: boolean = false;
 
   public async makeApi(
     provider: JsonRpcProvider,
     account: string = "",
     signer: EthersSigner,
+    isWeb3: boolean = false,
   ) {
+    this.isWeb3Transport = isWeb3;
     const ethersProvider = new EthersProvider(provider, 10, 0, 40);
     const networkId = await ethersProvider.getNetworkId();
     const contractDependencies = new ContractDependenciesEthers(

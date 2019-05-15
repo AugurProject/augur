@@ -1,5 +1,5 @@
 import * as AugurJS from "services/augurjs";
-import { checkIsKnownUniverse, getNetworkId } from "modules/contracts/actions/contractCalls";
+import { checkIsKnownUniverse, getNetworkId, getAccounts } from "modules/contracts/actions/contractCalls";
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
@@ -96,8 +96,7 @@ function loadAccount(
   if (windowRef.localStorage && windowRef.localStorage.getItem) {
     loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
   }
-  AugurJS.augur.rpc.eth.accounts((err: any, accounts: Array<any>) => {
-    if (err) return callback(err);
+  getAccounts().then((accounts: Array<string>) => {
     let account = existing;
     if (existing !== accounts[0]) {
       account = accounts[0];
@@ -131,6 +130,8 @@ function loadAccount(
       }
     }
     callback(null, account);
+  }).catch((err: Error) => {
+    callback(null);
   });
 }
 

@@ -694,6 +694,8 @@ export const LARGE_DESKTOP = "(min-width: 2001px)";
 // Sort variables
 export const END_TIME = "endTime";
 
+export type voidFunction = () => void;
+
 // Table Column types
 export const PLAIN = "PLAIN";
 export const TEXT = "TEXT";
