@@ -8,13 +8,10 @@ import {
   REPFaucetButton,
   DAIFaucetButton,
 } from "modules/common-elements/buttons";
-import Styles from "modules/account/components/transactions/transactions-box.styles";
+import Styles from "modules/account/components/transactions.styles";
 
-interface TransactionsBoxProps {
+interface TransactionsProps {
   isMainnet: boolean;
-  eth: number | string;
-  rep: number | string;
-  gasPrice: string;
   repFaucet: Function;
   daiFaucet: Function;
   deposit: Function;
@@ -22,26 +19,33 @@ interface TransactionsBoxProps {
   transactions: Function;
 }
 
-export const TransactionsBox = (props: TransactionsBoxProps) => (
+export const Transactions = ({
+  transactions,
+  deposit,
+  withdraw,
+  isMainnet,
+  repFaucet,
+  daiFaucet
+}: TransactionsProps) => (
   <QuadBox
     title="Transactions"
     content={
-      <div className={Styles.TransactionsBoxContent}>
+      <div className={Styles.Content}>
         <p>Your transactions history</p>
-        <ViewTransactionsButton action={props.transactions} />
+        <ViewTransactionsButton action={transactions} />
         <p>Your wallet</p>
-        <DepositButton action={props.deposit} />
-        <WithdrawButton action={props.withdraw} />
-        {!props.isMainnet && (
+        <DepositButton action={deposit} />
+        <WithdrawButton action={withdraw} />
+        {!isMainnet && (
           <div>
             <p>REP for test net</p>
-            <REPFaucetButton action={props.repFaucet} />
+            <REPFaucetButton action={repFaucet} />
           </div>
         )}
-        {!props.isMainnet && (
+        {!isMainnet && (
           <div>
             <p>DAI for test net</p>
-            <DAIFaucetButton action={props.daiFaucet} />
+            <DAIFaucetButton action={daiFaucet} />
           </div>
         )}
       </div>

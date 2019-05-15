@@ -5,10 +5,14 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: @size-18 0 0;
+  margin: @size-18 0 @size-24;
   text-align: center;
   text-transform: uppercase;
   width: 100%;
+
+  @media @breakpoint-mobile-mid {
+    display: none;
+  }
 
   > div {
     flex: 1;
@@ -20,7 +24,7 @@
       text-align: center;
     }
 
-    > div:nth-of-type(2) {
+    > div:last-of-type {
       .text-14;
 
       color: @color-secondary-text;
@@ -32,21 +36,10 @@
 
 .ShowOnMobile {
   display: none;
-}
 
-.HideOnMobile {
-  display: flex;
-  padding-bottom: 1.5rem;
-}
-
-@media @breakpoint-mobile-mid {
-  .ShowOnMobile {
+  @media @breakpoint-mobile-mid {
     display: flex;
     flex-direction: column;
-    padding: 1.5rem 1rem;
-  }
-
-  .HideOnMobile {
-    display: none;
+    padding: @size-24 @size-16;
   }
 }

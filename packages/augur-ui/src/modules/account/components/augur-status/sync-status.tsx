@@ -5,7 +5,15 @@ import {
   Syncing as SyncingIcon,
   ImmediateImportance
 } from "modules/common-elements/icons";
-import * as constants from "modules/common-elements/constants";
+import {
+  SYNCED,
+  SYNCING,
+  MANY_BLOCKS_BEHIND,
+  SYNC_MESSAGE_SYNCED,
+  SYNC_MESSAGE_SYNCING,
+  SYNC_MESSAGE_BLOCKSBEHIND,
+  SYNCING_TITLE
+} from "modules/common-elements/constants";
 
 import Styles from "modules/account/components/augur-status/sync-status.styles";
 
@@ -22,55 +30,57 @@ const SyncStatus = (props: SyncStatusProps) => {
   const Synced = (
     <div>
       <span />
-      {constants.SYNCED}
+      {SYNCED}
     </div>
   );
 
   const Syncing = (
     <div>
       <span>{SyncingIcon}</span>
-      {constants.SYNCING}
+      {SYNCING}
     </div>
   );
 
   const BlocksBehind = (
     <div>
       <span>{ImmediateImportance}</span>
-      {constants.SYNCING} <span>{constants.MANY_BLOCKS_BEHIND}</span>
+      {SYNCING} <span>{MANY_BLOCKS_BEHIND}</span>
     </div>
   );
 
-  let data: dataProps;
+  let data: dataProps = {
+    message: SYNC_MESSAGE_BLOCKSBEHIND,
+    status: BlocksBehind
+  };
 
-  if (props.syncPercent >= 99.99) {
+  const { syncPercent } = props;
+
+  if (syncPercent >= 99.99) {
     data = {
-      message: constants.SYNC_MESSAGE_SYNCED,
+      message: SYNC_MESSAGE_SYNCED,
       status: Synced
     };
-  } else if (props.syncPercent >= 99.9) {
+  } else if (syncPercent >= 99.9) {
     data = {
-      message: constants.SYNC_MESSAGE_SYNCING,
+      message: SYNC_MESSAGE_SYNCING,
       status: Syncing
     };
-  } else {
-    data = {
-      message: constants.SYNC_MESSAGE_BLOCKSBEHIND,
-      status: BlocksBehind
-    };
   }
+
+  const { message, status } = data;
 
   return (
     <div
       className={classNames(Styles.SyncStatus, {
-        [Styles.SyncStatus__green]: data.status === Synced,
-        [Styles.SyncStatus__yellow]: data.status === Syncing,
-        [Styles.SyncStatus__red]: data.status === BlocksBehind
+        [Styles.green]: status === Synced,
+        [Styles.yellow]: status === Syncing,
+        [Styles.red]: status === BlocksBehind
       })}
     >
-      <div>{constants.SYNCING_TITLE}</div>
-      {data.status}
-      <div>{props.syncPercent}%</div>
-      <div>{data.message}</div>
+      <div>{SYNCING_TITLE}</div>
+      {status}
+      <div>{syncPercent}%</div>
+      <div>{message}</div>
     </div>
   );
 };

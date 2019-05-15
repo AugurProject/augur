@@ -8,6 +8,11 @@
   justify-content: space-between;
   padding: @size-24 0;
 
+  @media @breakpoint-mobile-mid {
+    background: unset;
+    padding-top: 0;
+  }
+
   > a {
     .mono-10;
 
@@ -15,12 +20,5 @@
     margin: @size-12 0 @size-18;
     text-align: center;
     text-decoration-line: underline;
-  }
-}
-
-@media @breakpoint-mobile-mid {
-  .AugurStatusContent {
-    background: unset;
-    padding-top: 0;
   }
 }

@@ -12,7 +12,7 @@ import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 import * as constants from "modules/common-elements/constants";
 
-import Styles from "modules/account/components/account-view/account-view.styles";
+import Styles from "modules/account/components/account-view.styles";
 
 export interface AccountViewProps {
   isMobile?: Boolean;

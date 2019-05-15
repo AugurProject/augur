@@ -4,7 +4,7 @@ import BlockStatus from "modules/account/components/augur-status/block-status";
 import SyncStatus from "modules/account/components/augur-status/sync-status";
 import Activity from "modules/account/containers/activity";
 import QuadBox from "modules/portfolio/components/common/quads/quad-box";
-import * as constants from "modules/common-elements/constants";
+import { AUGUR_STATUS_TITLE } from "modules/common-elements/constants";
 
 import Styles from "modules/account/components/augur-status/augur-status.styles";
 
@@ -16,11 +16,11 @@ export interface SyncingInfo {
 }
 
 export interface AugurStatusProps {
-  syncingInfo: SyncingInfo;
+  syncingInfo?: SyncingInfo;
 }
 
-const AugurStatus = (props: AugurStatusProps) => {
-  if (!props.syncingInfo) {
+const AugurStatus = ({ syncingInfo }: AugurStatusProps) => {
+  if (!syncingInfo) {
     return null;
   }
 
@@ -29,11 +29,11 @@ const AugurStatus = (props: AugurStatusProps) => {
     blocksBehind,
     highestBlockBn,
     lastProcessedBlockBn
-  } = props.syncingInfo;
+  } = syncingInfo;
 
   return (
     <QuadBox
-      title={constants.AUGUR_STATUS_TITLE}
+      title={AUGUR_STATUS_TITLE}
       content={
         <div className={Styles.AugurStatusContent}>
           <SyncStatus syncPercent={percent} />

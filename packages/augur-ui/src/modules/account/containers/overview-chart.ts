@@ -1,9 +1,9 @@
 import { connect } from "react-redux";
 
-import AccountOverviewChartCmp from "modules/account/components/account-overview-chart/account-overview-chart";
+import OverviewChart from "modules/account/components/overview-chart";
 import getProfitLoss from "modules/positions/actions/get-profit-loss";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   const { blockchain } = state;
   const { currentAugurTimestamp } = blockchain;
 
@@ -13,14 +13,14 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
   getProfitLoss: (
-    universe,
-    startTime,
-    endTime,
-    periodInterval,
-    marketId,
-    callback
+    universe: String,
+    startTime: number,
+    endTime: number,
+    periodInterval: number,
+    marketId: String,
+    callback: Function
   ) =>
     dispatch(
       getProfitLoss({
@@ -34,9 +34,9 @@ const mapDispatchToProps = dispatch => ({
     )
 });
 
-const AccountOverviewChart = connect(
+const OverviewChartContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AccountOverviewChartCmp);
+)(OverviewChart);
 
-export default AccountOverviewChart;
+export default OverviewChartContainer;

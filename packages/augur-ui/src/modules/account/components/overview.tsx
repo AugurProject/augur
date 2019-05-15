@@ -8,23 +8,23 @@ import QuadBox from "modules/portfolio/components/common/quads/quad-box";
 import { PillSelection } from "modules/common-elements/selection";
 import Funds from "modules/account/containers/funds";
 import Stats from "modules/account/containers/stats";
-import AccountOverviewChart from "modules/account/containers/account-overview-chart";
+import OverviewChart from "modules/account/containers/overview-chart";
 import Styles from "modules/account/components/overview.styles";
 
-export interface AccountOverviewProps {
+export interface OverviewProps {
   currentAugurTimestamp: number;
   updateTimeframeData: Function;
 }
 
-interface AccountOverviewState {
+interface OverviewState {
   selected: number;
 }
 
-export default class AccountOverview extends React.Component<
-  AccountOverviewProps,
-  AccountOverviewState
+export default class Overview extends React.Component<
+  OverviewProps,
+  OverviewState
 > {
-  state: AccountOverviewState = {
+  state: OverviewState = {
     selected: TIMEFRAME_OPTIONS[3].id
   };
 
@@ -57,7 +57,7 @@ export default class AccountOverview extends React.Component<
               />
             </div>
             <Stats timeframe={selected} />
-            <AccountOverviewChart timeframe={selected} />
+            <OverviewChart timeframe={selected} />
           </div>
         }
       />

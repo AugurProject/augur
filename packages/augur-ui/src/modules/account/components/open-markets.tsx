@@ -5,26 +5,32 @@ import FilterSwitchBox from "modules/portfolio/components/common/quads/filter-sw
 import MarketRow from "modules/portfolio/components/common/rows/market-row";
 import { MovementLabel } from "modules/common-elements/labels";
 
-import Styles from "modules/account/components/open-markets/open-markets.styles";
+import Styles from "modules/account/components/open-markets.styles";
 
-function filterComp(input, market) {
+function filterComp(input: any, market: any) {
   return market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 }
 
-export default class OpenMarkets extends Component {
+interface OpenMarketsProps {
+  markets: Array<any>;
+  marketsObj: any;
+  totalPercentage: String;
+}
+
+export default class OpenMarkets extends Component<OpenMarketsProps> {
   static propTypes = {
     markets: PropTypes.array.isRequired,
     marketsObj: PropTypes.object.isRequired,
     totalPercentage: PropTypes.string.isRequired
   };
 
-  constructor(props) {
+  constructor(props: OpenMarketsProps) {
     super(props);
 
     this.renderRows = this.renderRows.bind(this);
   }
 
-  renderRows(market) {
+  renderRows(market: any) {
     const { marketsObj } = this.props;
 
     return (
@@ -47,7 +53,7 @@ export default class OpenMarkets extends Component {
         }
         toggleContent={
           <div className={Styles.OpenMarkets__expandedContent}>
-            {marketsObj[market.id].userPositions.map(position => (
+            {marketsObj[market.id].userPositions.map((position: any) => (
               <div key={position.outcomeId}>
                 <span>{position.outcomeName}</span>
                 <MovementLabel

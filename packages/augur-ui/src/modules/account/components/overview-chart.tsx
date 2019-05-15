@@ -3,13 +3,13 @@ import React from "react";
 import * as constants from "modules/common-elements/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { EthIcon } from "modules/common-elements/icons";
-import AccountProfitLossChart from "modules/account/components/account-overview-chart/account-profit-loss-chart";
+import ProfitLossChart from "modules/account/components/profit-loss-chart";
 import { MovementLabel } from "modules/common-elements/labels";
-import Styles from "modules/account/components/account-overview-chart/account-overview-chart.styles";
+import Styles from "modules/account/components/overview-chart.styles";
 import { formatEther } from "utils/format-number";
 
 const ALL_TIME = 3;
-export interface AccountOverviewChartProps {
+export interface OverviewChartProps {
   universe: string;
   currentAugurTimestamp: number;
   timeframe: number;
@@ -29,7 +29,7 @@ export interface UserTimeRangeData {
   totalCost: number;
 }
 
-interface AccountOverviewChartState {
+interface OverviewChartState {
   profitLossData: Array<Array<number>>;
   profitLossChange: string | null;
   profitLossValue: string | null;
@@ -38,11 +38,11 @@ interface AccountOverviewChartState {
 }
 
 const BEGINNING_START_TIME = 1530366577;
-export default class AccountOverviewChart extends React.Component<
-  AccountOverviewChartProps,
-  AccountOverviewChartState
+export default class OverviewChart extends React.Component<
+  OverviewChartProps,
+  OverviewChartState
 > {
-  state: AccountOverviewChartState = {
+  state: OverviewChartState = {
     profitLossData: [],
     profitLossChange: null,
     profitLossValue: null,
@@ -56,7 +56,7 @@ export default class AccountOverviewChart extends React.Component<
     this.getChartData(timeRangeDataConfig);
   };
 
-  componentDidUpdate = (nextProps: AccountOverviewChartProps) => {
+  componentDidUpdate = (nextProps: OverviewChartProps) => {
     if (nextProps.timeframe !== this.props.timeframe) {
       const timeRangeDataConfig =
         constants.TIMEFRAME_OPTIONS[this.props.timeframe];
@@ -141,14 +141,14 @@ export default class AccountOverviewChart extends React.Component<
 
     if (noTrades) {
       content = (
-        <React.Fragment>
+        <>
           <div>{constants.PROFIT_LOSS_CHART_TITLE}</div>
           <span>No Trading Activity to date</span>
-        </React.Fragment>
+        </>
       );
     } else {
       content = (
-        <React.Fragment>
+        <>
           <div>{constants.PROFIT_LOSS_CHART_TITLE}</div>
           <div>
             <MovementLabel
@@ -164,11 +164,11 @@ export default class AccountOverviewChart extends React.Component<
             {profitLossValue}
             {EthIcon}
           </div>
-          <AccountProfitLossChart
+          <ProfitLossChart
             data={profitLossData}
             width={this.container.clientWidth}
           />
-        </React.Fragment>
+        </>
       );
     }
     return (
