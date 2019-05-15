@@ -1,5 +1,72 @@
 @import (reference) '~assets/styles/shared';
 
+.AugurStatusContent {
+  align-items: center;
+  background: @color-tertiary-background;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: @size-24 0;
+
+  @media @breakpoint-mobile-mid {
+    background: unset;
+    padding-top: 0;
+  }
+
+  > a {
+    .mono-10;
+
+    color: @color-shadow-text;
+    margin: @size-12 0 @size-18;
+    text-align: center;
+    text-decoration-line: underline;
+  }
+}
+
+.BlockStatus {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: @size-18 0 @size-24;
+  text-align: center;
+  text-transform: uppercase;
+  width: 100%;
+
+  @media @breakpoint-mobile-mid {
+    display: none;
+  }
+
+  > div {
+    flex: 1;
+
+    > div:first-of-type {
+      .mono-10;
+
+      color: @color-shadow-text;
+      text-align: center;
+    }
+
+    > div:last-of-type {
+      .text-14;
+
+      color: @color-secondary-text;
+      margin: @size-4 0 0;
+      text-align: center;
+    }
+  }
+}
+
+.ShowOnMobile {
+  display: none;
+
+  @media @breakpoint-mobile-mid {
+    display: flex;
+    flex-direction: column;
+    padding: @size-24 @size-16;
+  }
+}
+
 .SyncStatus {
   align-items: center;
   display: flex;

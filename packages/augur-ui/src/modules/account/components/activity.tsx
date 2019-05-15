@@ -4,7 +4,7 @@ import { PillSelection } from "modules/common-elements/selection";
 import PlatformOverviewStats from "modules/account/containers/platform-overview-stats";
 import * as constants from "modules/common-elements/constants";
 import { LinearPropertyLabel } from "modules/common-elements/labels";
-import Styles from "modules/account/components/augur-status/activity.styles";
+import Styles from "modules/account/components/activity.styles";
 
 export interface ActivityProps {
   updatePlatformTimeframeData: Function;

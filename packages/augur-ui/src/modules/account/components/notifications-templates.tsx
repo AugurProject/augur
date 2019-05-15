@@ -8,11 +8,13 @@ import {
 } from "modules/common-elements/progress";
 import { SubmitTextButton } from "modules/common-elements/buttons";
 
-import * as constants from "modules/common-elements/constants";
+import Styles from "modules/account/components/notification.styles";
 
-import Styles from "modules/account/components/notifications/notification-card.styles";
-
-const { NOTIFICATION_TYPES } = constants;
+import {
+  NOTIFICATION_TYPES,
+  MARKET_STATUS_MESSAGES,
+  REPORTING_ENDS
+} from "modules/common-elements/constants";
 
 export interface DisputeInfo {
   disputeRound: number;
@@ -98,9 +100,9 @@ const Counter = (props: CounterProps) => {
 
     if (props.type === NOTIFICATION_TYPES.proceedsToClaimOnHold) {
       counter = (
-        <div className={Styles.NotificationCard__countdown}>
+        <div className={Styles.Countdown}>
           <CountdownProgress
-            label={constants.MARKET_STATUS_MESSAGES.WAITING_PERIOD_ENDS}
+            label={MARKET_STATUS_MESSAGES.WAITING_PERIOD_ENDS}
             time={formatTime(finalizationTimeWithHold)}
             currentTime={formatTime(props.currentTime)}
           />
@@ -108,13 +110,13 @@ const Counter = (props: CounterProps) => {
       );
     } else {
       counter = (
-        <div className={Styles.NotificationCard__countdown}>
+        <div className={Styles.Countdown}>
           <MarketProgress
             reportingState={reportingState}
             currentTime={props.currentTime}
             endTime={endTime}
             reportingWindowEndtime={props.reportingWindowStatsEndTime}
-            customLabel={constants.REPORTING_ENDS}
+            customLabel={REPORTING_ENDS}
           />
         </div>
       );
@@ -124,9 +126,9 @@ const Counter = (props: CounterProps) => {
 };
 
 const Template = (props: TemplateProps) => (
-  <React.Fragment>
+  <>
     <TemplateBody market={props.market} message={props.message} />
-    <div className={Styles.NotificationCard_bottomRow}>
+    <div className={Styles.BottomRow}>
       <Counter
         type={props.type}
         market={props.market || null}
@@ -140,7 +142,7 @@ const Template = (props: TemplateProps) => (
         disabled={props.isDisabled}
       />
     </div>
-  </React.Fragment>
+  </>
 );
 
 // Notifications Tempalates

@@ -3,14 +3,21 @@ import Media from "react-media";
 
 import TermsAndConditions from "modules/app/containers/terms-and-conditions";
 import Notifications from "modules/account/containers/notifications";
-import TransactionsBoxContainer from "modules/account/containers/transactions-box";
+import Transactions from "modules/account/containers/transactions";
 import AugurStatus from "modules/account/containers/augur-status";
 import Favorites from "modules/portfolio/containers/favorites";
 import OpenMarkets from "modules/account/containers/open-markets";
 import Overview from "modules/account/containers/overview";
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
-import * as constants from "modules/common-elements/constants";
+import {
+  SMALL_MOBILE,
+  YOUR_OVERVIEW_TITLE,
+  AUGUR_STATUS_TITLE,
+  TABLET,
+  DESKTOP,
+  LARGE_DESKTOP
+} from "modules/common-elements/constants";
 
 import Styles from "modules/account/components/account-view.styles";
 
@@ -21,11 +28,11 @@ export interface AccountViewProps {
 
 const AccountView = (props: AccountViewProps) => (
   <>
-    <Media query={constants.SMALL_MOBILE}>
+    <Media query={SMALL_MOBILE}>
       {matches =>
         matches ? (
           <ModuleTabs selected={0} fillWidth noBorder>
-            <ModulePane label={constants.YOUR_OVERVIEW_TITLE}>
+            <ModulePane label={YOUR_OVERVIEW_TITLE}>
               <Overview />
             </ModulePane>
             <ModulePane label="Notifications" isNew={props.newNotifications}>
@@ -37,17 +44,17 @@ const AccountView = (props: AccountViewProps) => (
             <ModulePane label="My Active Markets">
               <OpenMarkets />
             </ModulePane>
-            <ModulePane label={constants.AUGUR_STATUS_TITLE}>
+            <ModulePane label={AUGUR_STATUS_TITLE}>
               <AugurStatus />
             </ModulePane>
             <ModulePane label="Transactions">
-              <TransactionsBoxContainer />
+              <Transactions />
             </ModulePane>
           </ModuleTabs>
         ) : (
           <section className={Styles.AccountView}>
             <div className={Styles.AccountView__container}>
-              <Media query={constants.TABLET}>
+              <Media query={TABLET}>
                 {matches =>
                   matches && (
                     <>
@@ -59,13 +66,13 @@ const AccountView = (props: AccountViewProps) => (
                       <div>
                         <Overview />
                         <Favorites />
-                        <TransactionsBoxContainer />
+                        <Transactions />
                       </div>
                     </>
                   )
                 }
               </Media>
-              <Media query={constants.DESKTOP}>
+              <Media query={DESKTOP}>
                 {matches =>
                   matches && (
                     <>
@@ -79,13 +86,13 @@ const AccountView = (props: AccountViewProps) => (
                       </div>
                       <div>
                         <Favorites />
-                        <TransactionsBoxContainer />
+                        <Transactions />
                       </div>
                     </>
                   )
                 }
               </Media>
-              <Media query={constants.LARGE_DESKTOP}>
+              <Media query={LARGE_DESKTOP}>
                 {matches =>
                   matches && (
                     <>
@@ -95,7 +102,7 @@ const AccountView = (props: AccountViewProps) => (
                       </div>
                       <div>
                         <Overview />
-                        <TransactionsBoxContainer />
+                        <Transactions />
                       </div>
                       <div>
                         <Favorites />

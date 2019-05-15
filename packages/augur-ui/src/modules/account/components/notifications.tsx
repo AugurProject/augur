@@ -7,7 +7,7 @@ import EmptyDisplay from "modules/portfolio/components/common/tables/empty-displ
 import makePath from "modules/routes/helpers/make-path";
 import makeQuery from "modules/routes/helpers/make-query";
 
-import { NotificationCard } from "modules/account/components/notifications/notification-card";
+import { NotificationCard } from "modules/account/components/notification-card";
 import { PillLabel } from "modules/common-elements/labels";
 import { MARKET, REPORT, DISPUTE } from "modules/routes/constants/views";
 import {
@@ -26,9 +26,14 @@ import {
   ProceedsToClaimTemplate,
   ProceedsToClaimOnHoldTemplate,
   OrphanOrdersTemplate
-} from "modules/account/components/notifications/notifications-templates";
+} from "modules/account/components/notifications-templates";
 
-import * as constants from "modules/common-elements/constants";
+import { 
+  NOTIFICATION_TYPES,
+  NOTIFICATIONS_TITLE,
+  NOTIFICATIONS_LABEL,
+  NEW
+} from "modules/common-elements/constants";
 
 export interface INotifications {
   id: string;
@@ -63,8 +68,6 @@ export interface NotificationsProps extends RouteComponentProps {
 export interface NotificationsState {
   disabledNotifications: any;
 }
-
-const { NOTIFICATION_TYPES } = constants;
 
 class Notifications extends React.Component<
   NotificationsProps,
@@ -348,20 +351,20 @@ class Notifications extends React.Component<
       <div>
         {!this.props.isMobile &&
           newNotificationCount > 0 && (
-            <PillLabel label={`${newNotificationCount} ${constants.NEW}`} />
+            <PillLabel label={`${newNotificationCount} ${NEW}`} />
           )}
       </div>
     );
 
     return (
       <QuadBox
-        title={constants.NOTIFICATIONS_TITLE}
+        title={NOTIFICATIONS_TITLE}
         rightContent={labelContent}
         content={
           notificationCount === 0 ? (
             <EmptyDisplay
               selectedTab=""
-              filterLabel={constants.NOTIFICATIONS_LABEL}
+              filterLabel={NOTIFICATIONS_LABEL}
             />
           ) : (
             rows

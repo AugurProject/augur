@@ -15,7 +15,7 @@ import {
   SYNCING_TITLE
 } from "modules/common-elements/constants";
 
-import Styles from "modules/account/components/augur-status/sync-status.styles";
+import Styles from "modules/account/components/status.styles";
 
 export interface dataProps {
   status: ReactNode;

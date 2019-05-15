@@ -1,19 +1,15 @@
 import { createSelector } from "reselect";
 import { formatEther } from "utils/format-number";
-import {
-  selectLoginAccount,
-  selectAccountFunds
-} from "modules/auth/selectors/login-account";
+import { selectAccountFunds } from "modules/auth/selectors/login-account";
 
-export const selectOutcomeLastPrice = (marketOutcomeData, outcomeId) => {
+export const selectOutcomeLastPrice = (marketOutcomeData: any, outcomeId: any) => {
   if (!marketOutcomeData || !outcomeId) return null;
   return (marketOutcomeData[outcomeId] || {}).price;
 };
 
 export const selectCoreStats = createSelector(
-  selectLoginAccount,
   selectAccountFunds,
-  (loginAccount, accountFunds) => [
+  (accountFunds: any) => [
     {
       availableFunds: {
         label: "Available Funds",

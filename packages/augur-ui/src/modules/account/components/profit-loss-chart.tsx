@@ -2,8 +2,8 @@ import React, { Component } from "react";
 
 import Highcharts from "highcharts/highstock";
 import { createBigNumber } from "utils/create-big-number";
-import Styles from "modules/account/components/account-overview-chart/account-overview-chart.styles";
-import { UserTimeRangeData } from "modules/account/components/account-overview-chart/account-overview-chart";
+import Styles from "modules/account/components/overview-chart.styles";
+import { UserTimeRangeData } from "modules/account/components/overview-chart";
 import { isEqual } from "lodash";
 import { formatEther } from "utils/format-number";
 

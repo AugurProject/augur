@@ -14,26 +14,26 @@
   border: 1px solid fade(@color-highlight, 50%);
 }
 
-.NotificationCard__content__titleBar {
+.TitleBar {
   align-items: center;
   display: flex;
   margin: 0 0 @size-8;
 
   > span:last-of-type {
-    min-height: 1rem;
+    min-height: @size-16;
     min-width: 1.9375rem;
   }
 }
 
-.NotificationCard__content__Importance {
+.Importance {
   align-items: center;
   display: flex;
   justify-content: center;
   margin: 0 @size-8 0 0;
 
   > svg {
-    height: 12px;
-    width: 12px;
+    height: @size-12;
+    width: @size-12;
 
     > circle {
       fill: none;
@@ -50,7 +50,7 @@
   }
 }
 
-.NotificationCard__content__title {
+.Title {
   .mono-11-bold;
 
   color: @color-shadow-text;
@@ -62,7 +62,7 @@
   }
 }
 
-.NotificationCard__content__message {
+.Message {
   .text-11;
 
   color: @color-shadow-text;
@@ -75,11 +75,11 @@
   }
 }
 
-.NotificationCard__content__title__new {
+.TitleNew {
   color: @color-secondary-text;
 }
 
-.NotificationCard__content__message__new {
+.MessageNew {
   color: @color-tertiary-text;
 
   > span > span {
@@ -117,12 +117,12 @@
   }
 }
 
-.NotificationCard_bottomRow {
+.BottomRow {
   align-items: flex-end;
   display: flex;
 }
 
-.NotificationCard__countdown {
+.Countdown {
   margin: @size-12 0 0;
 
   > span {

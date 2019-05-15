@@ -5,7 +5,7 @@ import { formatNumber } from "utils/format-number";
 import * as constants from "modules/common-elements/constants";
 import { LinearPropertyLabel } from "modules/common-elements/labels";
 
-import Styles from "modules/account/components/augur-status/block-status.styles";
+import Styles from "modules/account/components/status.styles";
 
 export interface BlockStatusProps {
   blocksBehind: number;
