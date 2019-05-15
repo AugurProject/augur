@@ -1,6 +1,6 @@
 @import (reference) '~assets/styles/shared';
 
-.GenericColumns {
+.Row {
   display: grid;
   flex-direction: row;
   flex-grow: 1;
@@ -60,31 +60,27 @@
   }
 }
 
-.Order__group {
+.GroupRow {
   padding: 0 1.75rem 0 1.5rem;
 }
 
-.Order__innerGroup {
+.InnerGroupRow {
   border-top: 0.0625rem solid @color-primary-background;
   padding: 0.5rem 0;
 }
 
-.Order__innerGroupExtended {
+.InnerGroupRow_a {
   border: 0;
 }
 
-.Order__parentSingle {
+.ParentSingleRow {
   &:not(:first-of-type) {
     border-top: 0.0625rem solid @color-primary-background;
   }
 }
 
-.Order__single {
+.SingleRow {
   padding: 0.5rem 1.75rem 0.5rem 1rem;
-}
-
-.Position__BottomBorder {
-  border-bottom: 0.0625rem solid @color-primary-background;
 }
 
 .BottomBorder {
@@ -95,15 +91,15 @@
   border-top: 0.0625rem solid @color-primary-background;
 }
 
-.FiveColumns__extendedView {
+.Row_a {
   grid-template-columns: repeat(6, 1fr) 6.2rem;
 }
 
-.EightColumns {
+.Row2 {
   grid-template-columns: repeat(5, 1fr) minmax(5rem, 1fr) 3.2rem;
 }
 
-.EightColumns__extendedView {
+.Row2_a {
   grid-template-columns: repeat(5, 1fr) 6rem;
 
   > li {
@@ -113,67 +109,7 @@
   }
 }
 
-.OpenOrder_infoContainer {
-  background: @color-active-hover;
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-}
-
-.OpenOrder__info {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  padding: 0.5rem 1.625rem 0.5rem 2rem;
-
-  > div {
-    display: flex;
-    flex: 1;
-
-    > button {
-      display: none;
-    }
-  }
-
-  > span {
-    color: @color-white;
-    display: flex;
-    flex-direction: column;
-    font-size: @size-11;
-    font-weight: 500;
-    margin-bottom: 0.625rem;
-  }
-}
-
-.OpenOrder__infoSingle {
-  padding-left: 1.5rem;
-}
-
-div.OpenOrder__labels {
-  margin-bottom: 0;
-  max-width: 12rem;
-
-  > div:nth-of-type(2) {
-    margin-bottom: 0;
-  }
-
-  > div:nth-of-type(3) {
-    display: none;
-  }
-}
-
-.OpenOrder__timestamp {
-  align-items: flex-end;
-  color: @color-alternate-text;
-  display: flex;
-  flex: 1;
-  font-family: @roboto-mono;
-  font-size: @size-11;
-  justify-content: flex-end;
-  text-align: right;
-}
-
-.EightColumns_alternative {
+.Row3 {
   grid-template-columns: repeat(8, 1fr);
 
   > li {
@@ -195,42 +131,21 @@ div.OpenOrder__labels {
   }
 }
 
-.Position_infoContainer {
+.SingleRow3 {
   background-color: @color-active-hover;
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  justify-content: flex-end;
-  padding: 0.5rem 4rem 0.5rem 0;
-}
+  padding: 0 1.75rem 0 1.5rem;
 
-.Position__info {
-  align-items: flex-end;
-  flex: 1;
-  flex-direction: column;
-  grid-template-rows: repeat(2, 1fr);
-  max-width: 250px;
-
-  > span:first-of-type {
-    display: none;
+  > div {
+    padding: 0.5rem 0;
   }
 }
 
-.Position__innerSingle {
-  padding: 0.5rem 0;
-}
-
-.Position__single {
-  background-color: @color-active-hover;
-  padding: 0 1.75rem 0 1.5rem;
-}
-
-.Order__arrow {
+.Arrow {
   margin-left: 1.25rem;
   padding-right: 0;
 }
 
-.EightColumns_alternative__extendedView {
+.Row3_a {
   grid-template-columns: repeat(6, 1fr);
 
   > li {
@@ -241,7 +156,7 @@ div.OpenOrder__labels {
 }
 
 @media @breakpoint-mobile-mid {
-  .GenericColumns {
+  .Row {
     grid-template-columns: repeat(3, 1fr);
     position: relative;
 
@@ -280,7 +195,7 @@ div.OpenOrder__labels {
     }
   }
 
-  .Order__single {
+  .SingleRow {
     border: 1px solid @color-primary-alternate;
     border-radius: @border-radius-default;
     padding-bottom: @size-12;
@@ -288,22 +203,18 @@ div.OpenOrder__labels {
     padding-right: @size-20;
   }
 
-  .BottomBorder {
-    border: 0;
-  }
-
-  .Order__parentSingle {
+  .ParentSingleRow {
     border-radius: @border-radius-default;
     border-top: 0;
     margin-top: 0.125rem;
   }
 
-  .Order__group {
+  .GroupRow {
     padding-left: @size-16;
     padding-right: @size-20;
   }
 
-  .EightColumns {
+  .Row2 {
     grid-template-columns: repeat(5, 1fr);
     position: relative;
 
@@ -318,7 +229,7 @@ div.OpenOrder__labels {
     }
   }
 
-  .EightColumns_alternative {
+  .Row3 {
     grid-template-columns: repeat(6, 1fr);
 
     > li {
@@ -332,29 +243,27 @@ div.OpenOrder__labels {
     }
   }
 
-  .Position__innerSingle {
+  .Row3_a {
+    grid-template-columns: repeat(5, 1fr);
+
+     > li {
+      &:last-child {
+        display: flex;
+      }
+    }
+  }
+
+  .InnerSingleRow3 {
     padding: 0.75rem 0;
   }
 
-  .Position__single {
+  .SingleRow3 {
     background: fade(@color-primary-alternate, 40%);
     border: 0;
     padding: 0 1rem;
   }
 
-  .Position_infoContainer {
-    padding: 0 0 0.75rem;
-  }
-
-  .Position__info {
-    max-width: unset;
-
-    > span:first-of-type {
-      display: flex;
-    }
-  }
-
-  .EightColumns_alternative__extendedView {
+  .Row2__a {
     grid-template-columns: repeat(5, 1fr);
 
     > li {
@@ -362,53 +271,5 @@ div.OpenOrder__labels {
         display: flex;
       }
     }
-  }
-
-  div.OpenOrder__labels {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    max-width: unset;
-
-    > div:nth-of-type(2) {
-      margin-bottom: 0.375rem;
-    }
-
-    > div:nth-of-type(3) {
-      display: flex;
-    }
-  }
-
-  .OpenOrder__timestamp {
-    display: none;
-  }
-
-  .OpenOrder__info {
-    padding: 0 @size-16 @size-8;
-
-    > div {
-      flex-direction: column;
-
-      > button {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: @size-16;
-        padding-bottom: @size-8;
-      }
-    }
-  }
-
-  .OpenOrder__infoSingle {
-    border: 1px solid @color-primary-alternate;
-    border-radius: @border-radius-default;
-    border-top: 0;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    padding-left: 1rem;
-  }
-
-  .Order__border {
-    border: 0;
-    border-bottom: 0.0625rem solid @color-primary-background;
   }
 }

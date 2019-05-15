@@ -29,16 +29,12 @@ const OrderMarketRow = (props: OrderMarketRowProps) => {
         <MarketLink id={market.id}>{market.description}</MarketLink>
       </div>
       <div>
-        {orders.map(
-          (order: Order) =>
-            filledOrders ? (
-              <FilledOrder
-                key={"sFilledOrder_" + order.id}
-                filledOrder={order}
-              />
-            ) : (
-              <OpenOrder key={"sOpenOrder_" + order.id} openOrder={order} />
-            )
+        {orders.map((order: Order) =>
+          filledOrders ? (
+            <FilledOrder key={"sFilledOrder_" + order.id} filledOrder={order} />
+          ) : (
+            <OpenOrder key={"sOpenOrder_" + order.id} openOrder={order} />
+          )
         )}
       </div>
     </div>

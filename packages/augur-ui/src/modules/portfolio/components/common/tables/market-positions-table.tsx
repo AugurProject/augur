@@ -17,6 +17,7 @@ export interface MarketPositionsTableProps {
   transactionsStatus: any;
   sellCompleteSets: Function;
   extendedView: Boolean;
+  marketId: String;
 }
 
 export interface MarketPositionsTableState {
@@ -66,31 +67,36 @@ export class MarketPositionsTable extends React.Component<
             <Media query={SMALL_MOBILE}>
               {matches =>
                 matches ? (
-                <PositionRow
-                  key={"positionRow_" + position.marketId + position.outcomeId}
-                  position={position}
-                  showPercent={showPercent}
-                  extendedView={extendedView}
-                  isSingle={extendedView}
-                  showExpandedToggle
-                  isFirst={index === 0}
-                /> ) : (
-                <PositionRow
-                  key={"positionRow_" + position.marketId + position.outcomeId}
-                  position={position}
-                  showPercent={showPercent}
-                  extendedView={extendedView}
-                  isSingle={extendedView}
-                  isFirst={index === 0}
-                /> )
+                  <PositionRow
+                    key={
+                      "positionRow_" + position.marketId + position.outcomeId
+                    }
+                    position={position}
+                    showPercent={showPercent}
+                    extendedView={extendedView}
+                    isSingle={extendedView}
+                    showExpandedToggle
+                    isFirst={index === 0}
+                  />
+                ) : (
+                  <PositionRow
+                    key={
+                      "positionRow_" + position.marketId + position.outcomeId
+                    }
+                    position={position}
+                    showPercent={showPercent}
+                    extendedView={extendedView}
+                    isSingle={extendedView}
+                    isFirst={index === 0}
+                  />
+                )
               }
             </Media>
           ))}
         </div>
-        {extendedView &&
-          positions.length === 0 && (
-            <div className={SharedStyles.MarketOpenOrdersList__empty} />
-          )}
+        {extendedView && positions.length === 0 && (
+          <div className={SharedStyles.MarketOpenOrdersList__empty} />
+        )}
         {extendedView && (
           <CompleteSets
             marketId={marketId}
