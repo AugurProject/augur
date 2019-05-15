@@ -98,8 +98,8 @@ function loadAccount(
   }
   getAccounts().then((accounts: Array<string>) => {
     let account = existing;
-    if (existing !== accounts[0].toLowerCase()) {
-      account = accounts[0].toLowerCase();
+    if (existing !== accounts[0]) {
+      account = accounts[0];
       if (account && process.env.AUTO_LOGIN) {
         dispatch(useUnlockedAccount(account));
       } else if (

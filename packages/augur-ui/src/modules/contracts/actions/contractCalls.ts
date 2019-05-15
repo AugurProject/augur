@@ -45,8 +45,8 @@ export function getNetworkId(): number {
 
 export async function getAccounts(): Promise<Array<string>> {
   const Augur = augurSdk.get();
-  const accounts = Augur.provider.listAccounts();
-  return accounts;
+  const accounts = await Augur.provider.listAccounts();
+  return accounts.map((a: string) => a.toLowerCase());
 }
 
 export async function checkIsKnownUniverse(universeId: string) {
