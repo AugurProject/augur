@@ -281,9 +281,7 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
     topic: "temperature",
     extraInfo: {
       description:
-        "High temperature (in degrees Fahrenheit) on " +
-        today.toDateString() +
-        " at the San Francisco International Airport, as reported by Weather Underground",
+        `High temperature (in degrees Fahrenheit) on ${today.toDateString()} at the San Francisco International Airport, as reported by Weather Underground`,
       resolutionSource:
         "https://www.wunderground.com/history/airport/KSFO/" +
         [
@@ -336,7 +334,7 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
     endTime: inSixMonths.getTime() / 1000,
     minPrice: "0",
     maxPrice: "30",
-    tickSize: "1",
+    tickSize: "1000",
     affiliateFeeDivisor: 4,
     topic: "medicine",
     extraInfo: {
