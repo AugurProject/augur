@@ -1,6 +1,5 @@
 import { prefixHex } from "speedomatic";
-import { augur } from "services/augurjs";
-import { EDGE_WALLET_TYPE } from "modules/common-elements/constants";
+import { EDGE_WALLET_TYPE, ACCOUNT_TYPES } from "modules/common-elements/constants";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import {
   updateAuthStatus,
@@ -28,7 +27,7 @@ export const loginWithEdgeEthereumWallet = (
             .then(signed => callback(null, prefixHex(signed)))
             .catch(e => callback(e));
         },
-        accountType: augur.rpc.constants.ACCOUNT_TYPES.EDGE
+        accountType: ACCOUNT_TYPES.EDGE
       },
       name: edgeUiAccount.username,
       edgeUiAccount

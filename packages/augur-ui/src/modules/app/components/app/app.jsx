@@ -107,7 +107,8 @@ export default class AppView extends Component {
     updateCurrentInnerNavType: PropTypes.func.isRequired,
     updateMobileMenuState: PropTypes.func.isRequired,
     updateIsAlertVisible: PropTypes.func.isRequired,
-    updateSidebarStatus: PropTypes.func.isRequired
+    updateSidebarStatus: PropTypes.func.isRequired,
+    alerts: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -484,11 +485,12 @@ export default class AppView extends Component {
       finalizeMarket,
       isMobileSmall,
       sidebarStatus,
-      updateMobileMenuState
+      updateMobileMenuState,
+      alerts
     } = this.props;
 
     const { mainMenu, subMenu } = this.state;
-    const unseenCount = getValue(this.props, "alerts.unseenCount");
+    const { unseenCount } = alerts;
     const currentPath = parsePath(location.pathname)[0];
     const InnerNav = sidebarStatus.currentInnerNavType;
     let innerNavMenuMobileClick;

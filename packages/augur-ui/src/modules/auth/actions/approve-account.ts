@@ -3,9 +3,10 @@ import logError from "utils/log-error";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
 import { updateAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 export function checkAccountAllowance(callback: Function = logError) {
-  return (dispatch, getState) => {
+  return (dispatch: Function, getState: Function) => {
     const { loginAccount } = getState();
     if (loginAccount.allowance && loginAccount.allowance !== "0") {
       callback(null, loginAccount.allowance);
@@ -13,9 +14,9 @@ export function checkAccountAllowance(callback: Function = logError) {
       augur.api.Cash.allowance(
         {
           _owner: loginAccount.address,
-          _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].Augur
+          _spender: augur.contracts.addresses[getNetworkId()].Augur
         },
-        (err, allowance) => {
+        (err: any, allowance: string) => {
           if (err) callback(err);
           callback(null, allowance);
           dispatch(updateLoginAccount({ allowance }));
