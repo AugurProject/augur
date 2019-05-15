@@ -334,7 +334,7 @@ export const cannedMarkets: Array<CannedMarket> = massageMarkets([
     endTime: inSixMonths.getTime() / 1000,
     minPrice: "0",
     maxPrice: "30",
-    tickSize: "1000",
+    tickSize: "1",
     affiliateFeeDivisor: 4,
     topic: "medicine",
     extraInfo: {
