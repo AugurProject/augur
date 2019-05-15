@@ -1,0 +1,3 @@
+describe('Account class', () => {
+
+});
