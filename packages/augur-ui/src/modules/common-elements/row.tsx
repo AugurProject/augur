@@ -8,6 +8,7 @@ import FilledOrdersTable from "modules/portfolio/components/common/tables/filled
 import { FilledOrderInterface } from "modules/portfolio/types";
 import PositionExpandedContent from "modules/portfolio/components/common/rows/position-expanded-content";
 import RowColumn from "modules/common-elements/row-column";
+import { Properties } from "modules/common-elements/row-column";
 
 import Styles from "modules/common-elements/row.styles";
 
@@ -22,7 +23,7 @@ export interface StyleOptions {
 
 export interface RowProps {
   rowProperties: Order | FilledOrderInterface;
-  columnProperties: Array<any>;
+  columnProperties: Array<Properties>;
   styleOptions: StyleOptions;
   isSingle?: Boolean;
   extendedView?: Boolean;

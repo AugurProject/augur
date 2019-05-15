@@ -85,9 +85,9 @@ export interface RowColumnProps {
 const RowColumn = (props: RowColumnProps) => {
   const { columnType, hide, properties } = props;
 
-  const Column = selectColumn(columnType, properties);
-
   if (hide) return null;
+
+  const Column = selectColumn(columnType, properties);
 
   return <li>{Column}</li>;
 };
