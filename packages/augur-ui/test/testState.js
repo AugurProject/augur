@@ -18,7 +18,6 @@ const testState = {
     selectedAuthType: "register"
   },
   blockchain: {
-    currentBlockTimestamp: 1461774253,
     currentBlockNumber: 833339
   },
   universe: {

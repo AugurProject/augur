@@ -4,8 +4,7 @@ import { selectAlertsState } from "src/select-state";
 import store from "src/store";
 
 import * as alertLevels from "modules/common-elements/constants";
-
-import { augur } from "services/augurjs";
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import getValue from "utils/get-value";
 
 export const selectAlertsByLevel = level => state =>
@@ -17,10 +16,11 @@ export const selectInfoAlerts = selectAlertsByLevel(alertLevels.INFO);
 export const selectInfoAlertsAndSeenCount = createSelector(
   selectInfoAlerts,
   alerts => {
-    const networkId = augur.rpc.getNetworkID();
-    const { universe } = store.getState();
+    const { universe, connection } = store.getState();
+    if (!connection.isConnected) return { unseenCount: 0, alerts: [] };
 
     let filteredAlerts = alerts;
+    const networkId = getNetworkId();
     if (networkId && universe) {
       // Filter out alerts from other networks/universes
       filteredAlerts = alerts

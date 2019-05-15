@@ -66,11 +66,6 @@ export const selectCurrentTimestampInSeconds = createSelector(
   blockchain => blockchain.currentAugurTimestamp
 );
 
-export const selectBlockchainCurrentBlockTimestamp = createSelector(
-  selectBlockchainState,
-  blockchain => blockchain.currentBlockTimestamp
-);
-
 export const selectUniverseReportingPeriodDurationInSeconds = createSelector(
   selectUniverseState,
   universe => universe.reportingPeriodDurationInSeconds

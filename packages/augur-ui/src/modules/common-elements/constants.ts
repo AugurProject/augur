@@ -72,11 +72,12 @@ export const DEFAULT_AUTH_TYPE = REGISTER;
 export const EDGE_WALLET_TYPE = "wallet:ethereum";
 
 // # Connect Nav Constants
-export const PARAMS = {
+export const ACCOUNT_TYPES = {
   EDGE: "edge",
   LEDGER: "ledger",
-  METAMASK: "metamask",
-  TREZOR: "trezor"
+  METAMASK: "metaMask",
+  TREZOR: "trezor",
+  UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
 };
 
 export const WALLET_TYPE = {
@@ -102,19 +103,19 @@ export const ERROR_TYPES = {
 const DEFAULT_ITEM_INDEX = 0;
 export const ITEMS = [
   {
-    param: PARAMS.METAMASK,
+    param: ACCOUNT_TYPES.METAMASK,
     title: "Metamask / Web 3 Provider",
     icon: MetaMask,
     type: WALLET_TYPE.SOFTWARE
   },
   {
-    param: PARAMS.TREZOR,
+    param: ACCOUNT_TYPES.TREZOR,
     title: "Trezor",
     icon: Trezor,
     type: WALLET_TYPE.HARDWARE
   },
   {
-    param: PARAMS.LEDGER,
+    param: ACCOUNT_TYPES.LEDGER,
     title: "Ledger",
     icon: Ledger,
     type: WALLET_TYPE.HARDWARE
@@ -122,7 +123,7 @@ export const ITEMS = [
 ];
 if (!process.env.AUGUR_HOSTED) {
   ITEMS.unshift({
-    param: PARAMS.EDGE,
+    param: ACCOUNT_TYPES.EDGE,
     title: "Edge",
     icon: Edge,
     type: WALLET_TYPE.SOFTWARE
@@ -530,6 +531,7 @@ export const TEN = createBigNumber(10, 10);
 export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber("0.00000001");
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
+export const ETHER = createBigNumber(10).pow(18);
 
 // # Positions
 export const LONG = "long";
@@ -543,7 +545,8 @@ export const NO_RELAY = ["buyCompleteSets"];
 export const AWAITING_SIGNATURE = "awaiting signature";
 export const PENDING = "pending";
 export const SUCCESS = "success";
-export const FAILED = "failed";
+export const FAILED = "Failed";
+export const CONFIRMED = "Confirmed";
 export const COMMITTING = "committing";
 export const SUBMITTED = "submitted";
 export const INTERRUPTED = "interrupted";
