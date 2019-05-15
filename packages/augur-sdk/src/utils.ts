@@ -1,6 +1,6 @@
 import { BigNumber } from "bignumber.js";
 
-const QUINTILLION = new BigNumber(10).pow(18);
+export const QUINTILLION = new BigNumber(10).pow(18);
 
 export function numTicksToTickSize(numTicks: BigNumber, minPrice: BigNumber, maxPrice: BigNumber): BigNumber {
   return maxPrice.minus(minPrice).div(numTicks).dividedBy(QUINTILLION);

@@ -7,7 +7,7 @@ import { BigNumber, formatBytes32String } from "ethers/utils";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
-import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice } from "@augurproject/sdk";
+import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, QUINTILLION } from "@augurproject/sdk";
 
 import { AccountList, ContractAPI, ACCOUNTS, deployContracts} from "../libs";
 import { NULL_ADDRESS } from "../libs/Utils";
@@ -40,9 +40,12 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         throw Error(`Scalar market must have minPrice, maxPrice, and tickSize.`);
       }
 
-      const minPrice = new DecimalBigNumber(can.minPrice);
-      const maxPrice = new DecimalBigNumber(can.maxPrice);
-      const tickSize = new DecimalBigNumber(can.tickSize);
+      const minDisplayPrice = new DecimalBigNumber(can.minPrice);
+      const maxDisplayPrice = new DecimalBigNumber(can.maxPrice);
+      const tickSize = new DecimalBigNumber(can.tickSize).times(QUINTILLION);
+
+      const minPrice = minDisplayPrice.times(QUINTILLION);
+      const maxPrice = maxDisplayPrice.times(QUINTILLION);
       const numTicks = maxPrice.minus(minPrice).div(tickSize);
 
       market = await person.createScalarMarket(
@@ -76,6 +79,7 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
       throw Error(`Invalid CannedMarket.marketType "${can.marketType}"`);
   }
 
+  console.log(`MARKET CREATED: ${market.address}`)
   return market;
 }
 
@@ -99,12 +103,14 @@ async function placeOrder(person: ContractAPI,
     ? new DecimalBigNumber(can.tickSize)
     : numTicksToTickSize(new DecimalBigNumber("100"), new DecimalBigNumber("0"), new DecimalBigNumber("0x0de0b6b3a7640000"));
 
-  const minPrice = new DecimalBigNumber(can.minPrice || 0);
-
+  const minDisplayPrice = new DecimalBigNumber(can.minPrice || "0");
   const attoShares = dbn2bn(convertDisplayAmountToOnChainAmount(shares, tickSize));
-  const attoPrice = dbn2bn(convertDisplayPriceToOnChainPrice(price, minPrice, tickSize));
+  const attoPrice = dbn2bn(convertDisplayPriceToOnChainPrice(price, minDisplayPrice, tickSize));
   const betterOrderId = formatBytes32String("");
   const worseOrderId = formatBytes32String("");
+
+  console.log("Shares:", attoShares.toString());
+  console.log("Price:", attoPrice.toString());
 
   return await person.placeOrder(
     market.address,
