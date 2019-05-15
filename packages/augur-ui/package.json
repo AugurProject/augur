@@ -49,7 +49,7 @@
     "@0xproject/order-utils": "1.0.7",
     "@0xproject/utils": "2.0.2",
     "@babel/polyfill": "7.2.5",
-    "@ledgerhq/hw-app-eth": "4.48.0",
+    "@ledgerhq/hw-app-eth": "4.56.0",
     "@ledgerhq/hw-transport-u2f": "4.48.0",
     "@types/react": "16.8.2",
     "@types/react-dom": "16.8.0",
