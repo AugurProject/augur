@@ -1,8 +1,6 @@
-import { string, number } from "prop-types";
-import { AddressZero } from "ethers/constants";
-
 export type Address = string;
 export type Bytes32 = string;
+export type PayoutNumerators = Array<string>;
 export type Timestamp = string;
 
 export interface Doc {
@@ -57,6 +55,16 @@ export interface DisputeCrowdsourcerContributionLog extends Log, Doc {
   description: string;
 }
 
+export interface DisputeCrowdsourcerRedeemedLog extends Log, Doc {
+  universe: Address;
+  reporter: Address;
+  market: Address;
+  disputeCrowdsourcer: Address;
+  amountRedeemed: string;
+  repReceived: string;
+  payoutNumerators: PayoutNumerators;
+}
+
 export interface DisputeWindowCreatedLog extends Log, Doc {
   universe: Address;
   disputeWindow: Address;
@@ -66,13 +74,22 @@ export interface DisputeWindowCreatedLog extends Log, Doc {
   initial: boolean;
 }
 
+export interface InitialReporterRedeemedLog extends Log, Doc {
+  universe: Address;
+  reporter: Address;
+  market: Address;
+  amountRedeemed: string;
+  repReceived: string;
+  payoutNumerators: PayoutNumerators;
+}
+
 export interface InitialReportSubmittedLog extends Log, Doc {
   universe: Address;
   reporter: Address;
   market: Address;
   amountStaked: string;
   isDesignatedReporter: boolean;
-  payoutNumerators: Array<string>;
+  payoutNumerators: PayoutNumerators;
   description: string;
 }
 
@@ -199,10 +216,18 @@ export const ORDER_EVENT_FEES = "uint256Data.5";
 export const ORDER_EVENT_AMOUNT_FILLED = "uint256Data.6";
 export const ORDER_EVENT_TIMESTAMP = "uint256Data.7";
 
+export interface ParticipationTokensRedeemedLog extends Log, Doc {
+  universe: Address;
+  disputeWindow: Address;
+  account: Address;
+  attoParticipationTokens: string;
+  feePayoutShare: string;
+}
+
 export interface ProfitLossChangedLog extends Log, Doc, Timestamped {
-  universe: string;
-  market: string;
-  account: string;
+  universe: Address;
+  market: Address;
+  account: Address;
   outcome: string;
   netPosition: string;
   avgPrice: string;
@@ -215,16 +240,27 @@ export interface TimestampSetLog extends Log, Doc {
   newTimestamp: Timestamp;
 }
 
+export interface TradingProceedsClaimedLog extends Log, Doc {
+  universe: Address;
+  shareToken: Address;
+  sender: Address;
+  market: Address,
+  numShares: string;
+  numPayoutTokens: string;
+  finalTokenBalance: string;
+  fees: string;
+}
+
 export interface UniverseForkedLog extends Log, Doc {
   universe: Address;
   forkingMarket: Address;
 }
 
 export interface TokenBalanceChangedLog extends Log, Doc {
-  universe: string;
-  owner: string;
+  universe: Address;
+  owner: Address;
   token: string;
   tokenType: string;
-  market: string;
+  market: Address;
   balance: string;
 }

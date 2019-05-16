@@ -7,7 +7,6 @@ import {
   MarketCreatedLog,
   MarketFinalizedLog,
   OrderEventLog,
-  OrderEventType,
   OrderEventUint256Value,
   ORDER_EVENT_AMOUNT,
   ORDER_EVENT_OUTCOME
@@ -138,7 +137,7 @@ export class Markets<TBigNumber> {
       throw new Error(`No marketId for getMarketPriceCandlesticks: ${params.marketId}`);
     }
 
-    const orderFilledLogs = await db.findOrderFilledLogs({selector: {market: params.marketId, eventType: OrderEventType.Fill}});
+    const orderFilledLogs = await db.findOrderFilledLogs({selector: {market: params.marketId}});
     const filteredOrderFilledLogs = filterOrderFilledLogs(orderFilledLogs, params);
     const tradeRowsByOutcome = _.groupBy(filteredOrderFilledLogs, (orderFilledLog) => {return new BigNumber(orderFilledLog.uint256Data[OrderEventUint256Value.outcome]).toString(10);});
 
@@ -167,7 +166,7 @@ export class Markets<TBigNumber> {
 
   @Getter("GetMarketPriceHistoryParams")
   public static async getMarketPriceHistory<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketPriceHistoryParams>): Promise<MarketPriceHistory> {
-    let orderFilledLogs = await db.findOrderFilledLogs({selector: {market: params.marketId, eventType: OrderEventType.Fill}});
+    let orderFilledLogs = await db.findOrderFilledLogs({selector: {market: params.marketId}});
     orderFilledLogs.sort(
       (a: OrderEventLog, b: OrderEventLog) => {
         return (new BigNumber(a.uint256Data[OrderEventUint256Value.timestamp]).minus(b.uint256Data[OrderEventUint256Value.timestamp])).toNumber();
