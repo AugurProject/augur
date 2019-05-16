@@ -17,7 +17,7 @@ def unfix(n):
     return n // 10**18
 
 def stringToBytes(value):
-    return value.ljust(32, '0')
+    return value.ljust(32, '\x00')
 
 def longTo32Bytes(value):
     return pack(">l", value).rjust(32, b'\x00')
