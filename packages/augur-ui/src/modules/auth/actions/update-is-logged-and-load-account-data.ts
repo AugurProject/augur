@@ -1,17 +1,17 @@
 import { toChecksumAddress } from "ethereumjs-util";
-import { augur } from "services/augurjs";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import {
   updateAuthStatus,
   IS_LOGGED
 } from "modules/auth/actions/update-auth-status";
 import { clearLoginAccount } from "modules/auth/actions/update-login-account";
+import { clearUserTx } from "modules/contracts/actions/contractCalls";
 
 export const updateIsLoggedAndLoadAccountData = (
-  unlockedAddress: String,
-  accountType: String
+  unlockedAddress: string,
+  accountType: string,
 ) => (dispatch: Function) => {
-  augur.rpc.clear(); // clear ethrpc transaction history, registered callbacks, and alerts
+  clearUserTx();
   dispatch(clearLoginAccount()); // clear the loginAccount data in local state
   const displayAddress = toChecksumAddress(unlockedAddress);
   const address = unlockedAddress;

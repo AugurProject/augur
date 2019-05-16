@@ -3,7 +3,7 @@ import logError from "utils/log-error";
 import { createBigNumber } from "utils/create-big-number";
 import { formatGasCost } from "utils/format-number";
 import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
-import { getNetworkId } from "modules/contracts/actions/contractCalls";
+import { getNetworkId, getGasPrice } from "modules/contracts/actions/contractCalls";
 
 const GAS_PRICE_API_ENDPOINT = "https://ethgasstation.info/json/ethgasAPI.json";
 const GWEI_CONVERSION = 1000000000;
@@ -61,8 +61,8 @@ function getGasPriceValues(defaultGasPrice: any, callback: Function) {
     );
 }
 
-function setDefaultGasInfo() {
-  const gasPrice = augur.rpc.getGasPrice();
+async function setDefaultGasInfo() {
+  const gasPrice = await getGasPrice();
   const inGwei = createBigNumber(gasPrice).dividedBy(
     createBigNumber(GWEI_CONVERSION)
   );

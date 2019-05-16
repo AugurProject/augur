@@ -15,8 +15,6 @@ export const handleRelayTransaction = (tx: any) => (
     if (!hash) return console.error("uncaught relayed transaction", tx);
     const { loginAccount, transactionsData } = getState();
     if (tx.data.from === loginAccount.address) {
-      // const gasPrice = augur.rpc.gasPrice || augur.constants.DEFAULT_GASPRICE
-      // const gasFees = tx.response.gasFees || augur.trading.simulation.getTxGasEth({ ...tx.data }, gasPrice).toFixed()
       const gasFees = tx.response.gasFees || 0;
       const isBlacklisted = blacklist.includes(type);
       if (hash) {

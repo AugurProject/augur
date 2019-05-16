@@ -1,6 +1,5 @@
 import { createSelector } from "reselect";
 import { selectGasPriceInfo } from "src/select-state";
-import { augur } from "services/augurjs";
 import { createBigNumber } from "utils/create-big-number";
 import store from "src/store";
 
@@ -10,14 +9,12 @@ export default function() {
   return getGasPrice(store.getState());
 }
 
-export const getGasPrice = createSelector(selectGasPriceInfo, gasPriceInfo => {
-  const gweiValue = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
-  let weiValue = augur.rpc.getGasPrice();
-
-  if (gweiValue) {
-    weiValue = createBigNumber(gweiValue)
+export const getGasPrice = createSelector(
+  selectGasPriceInfo,
+  gasPriceInfo => {
+    const gweiValue = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
+    return createBigNumber(gweiValue)
       .times(createBigNumber(GWEI_CONVERSION))
       .toNumber();
   }
-  return weiValue;
-});
+);

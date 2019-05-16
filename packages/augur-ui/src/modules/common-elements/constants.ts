@@ -693,3 +693,22 @@ export const LARGE_DESKTOP = "(min-width: 2001px)";
 
 // Sort variables
 export const END_TIME = "endTime";
+
+export type voidFunction = () => void;
+
+// Table Column types
+export const PLAIN = "PLAIN";
+export const TEXT = "TEXT";
+export const POSITION_TYPE = "POSITION_TYPE";
+export const VALUE = "VALUE";
+export const CANCEL_TEXT_BUTTON = "CANCEL_TEXT_BUTTON";
+export const MOVEMENT_LABEL = "MOVEMENT_LABEL";
+
+export const COLUMN_TYPES = {
+  [TEXT]: TEXT,
+  [POSITION_TYPE]: POSITION_TYPE,
+  [VALUE]: VALUE,
+  [CANCEL_TEXT_BUTTON]: CANCEL_TEXT_BUTTON,
+  [MOVEMENT_LABEL]: MOVEMENT_LABEL,
+};
+
