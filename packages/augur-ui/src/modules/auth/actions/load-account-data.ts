@@ -1,6 +1,5 @@
-import { augur } from "services/augurjs";
 import { loadAccountDataFromLocalStorage } from "modules/auth/actions/load-account-data-from-local-storage";
-import { updateLoginAccount } from "modules/auth/actions/update-login-account";
+import { updateLoginAccountAction } from "modules/common/types/login-account";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import { loadAccountHistory } from "modules/auth/actions/load-account-history";
 import { updateAssets } from "modules/auth/actions/update-assets";
@@ -29,7 +28,7 @@ export const loadAccountData = (
     windowRef.localStorage.setItem("loggedInAccount", address);
   }
   dispatch(loadAccountDataFromLocalStorage(address));
-  dispatch(updateLoginAccount(account));
+  dispatch(updateLoginAccountAction(account));
   dispatch(clearOrphanedOrderData());
   dispatch(loadAccountHistory());
   dispatch(checkAccountAllowance());

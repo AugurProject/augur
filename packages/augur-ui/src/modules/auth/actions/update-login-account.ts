@@ -1,14 +1,14 @@
 import { updateFromAddress } from "modules/contracts/actions/update-contract-api";
-
-export const UPDATE_LOGIN_ACCOUNT = "UPDATE_LOGIN_ACCOUNT";
+import { LOGIN_ACTIONS, LoginAccount, UpdateLoginAccountAction } from "modules/common/types/login-account";
+import { voidFunction } from "modules/common/types";
 export const CLEAR_LOGIN_ACCOUNT = "CLEAR_LOGIN_ACCOUNT";
 
-export const updateLoginAccount = (loginAccount: any) => (
-  dispatch: Function
+export const updateLoginAccount = (loginAccount: LoginAccount) => (
+  dispatch: Function,
 ) => {
-  dispatch({ type: UPDATE_LOGIN_ACCOUNT, data: { loginAccount } });
+  dispatch(UpdateLoginAccountAction(loginAccount));
   const { address } = loginAccount;
   if (address) dispatch(updateFromAddress(address));
 };
 
-export const clearLoginAccount = () => ({ type: CLEAR_LOGIN_ACCOUNT });
+export const clearLoginAccount = () => ({ type: LOGIN_ACTIONS.CLEAR_LOGIN_ACCOUNT });
