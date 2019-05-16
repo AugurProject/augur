@@ -122,8 +122,8 @@ export function formatShares(num, opts) {
 
 export function formatDai(num, opts) {
   return formatNumber(num, {
-    decimals: 4,
-    decimalsRounded: 0,
+    decimals: 2,
+    decimalsRounded: 2,
     denomination: " DAI",
     positiveSign: false,
     zeroStyled: false,
