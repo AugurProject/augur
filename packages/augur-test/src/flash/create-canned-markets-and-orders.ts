@@ -1,23 +1,18 @@
 #!/usr/bin/env ts-node
 
-import { ArgumentParser } from "argparse";
 import { BigNumber as DecimalBigNumber } from "bignumber.js";
 import { BigNumber, formatBytes32String } from "ethers/utils";
 
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { GenericAugurInterfaces } from "@augurproject/core";
-import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
+import { ContractAddresses } from "@augurproject/artifacts";
 import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, QUINTILLION } from "@augurproject/sdk";
 
-import { AccountList, ContractAPI, ACCOUNTS, deployContracts} from "../libs";
-import { NULL_ADDRESS } from "../libs/Utils";
-import { cannedMarkets, CannedMarket, OrderBook } from "./data/canned-markets";
+import { AccountList, ContractAPI } from "../libs";
+import { cannedMarkets, CannedMarket } from "./data/canned-markets";
 
 async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<GenericAugurInterfaces.Market<BigNumber>> {
-  console.log("CREATING CANNED MARKET: ", can.extraInfo.description)
-  console.log("REP BALANCE", bn2dbn(await person.getRepBalance()).div(QUINTILLION).toFixed());
-  console.log("CASH BALANCE", bn2dbn(await person.getEthBalance()).div(QUINTILLION).toFixed());
-  console.log("ETH BALANCE", bn2dbn(await person.getCashBalance()).div(QUINTILLION).toFixed());
+  console.log("CREATING CANNED MARKET: ", can.extraInfo.description);
   const contracts = person.augur.contracts;
   const universe = contracts.universe;
 
@@ -35,7 +30,7 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         new BigNumber(affiliateFeeDivisor),
         designatedReporter,
         can.topic,
-        JSON.stringify(can.extraInfo)
+        JSON.stringify(can.extraInfo),
       );
       break;
     case "scalar":
@@ -60,7 +55,7 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         [dbn2bn(minPrice), dbn2bn(maxPrice)],
         dbn2bn(numTicks),
         can.topic,
-        JSON.stringify(can.extraInfo)
+        JSON.stringify(can.extraInfo),
       );
       break;
     case "categorical":
@@ -75,14 +70,14 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         designatedReporter,
         can.outcomes,
         can.topic,
-        JSON.stringify(can.extraInfo)
+        JSON.stringify(can.extraInfo),
       );
       break;
     default:
       throw Error(`Invalid CannedMarket.marketType "${can.marketType}"`);
   }
 
-  console.log(`MARKET CREATED: ${market.address}`)
+  console.log(`MARKET CREATED: ${market.address}`);
   return market;
 }
 
@@ -159,60 +154,5 @@ export async function createCannedMarketsAndOrders(accounts: AccountList, provid
   for (const can of cannedMarkets) {
     const market = await createCannedMarket(person, can);
     await createOrderBook(person, market, can);
-    await verifyOrderBook(person, market.address, can.orderBook);
   }
-}
-
-enum OrderType {
-  bid = 0,
-  ask = 1,
-
-  buy = 0,
-  sell = 1,
-}
-
-function getBestOrder(person: ContractAPI, marketAddress: string, orderType: OrderType, outcome: string) {
-  return person.augur.contracts.orders.getBestOrderId_(new BigNumber(orderType), marketAddress, new BigNumber(outcome), NULL_ADDRESS);
-}
-
-function verifyOrderBook(person: ContractAPI, marketAddress: string, orderBook: OrderBook) {
-  return Promise.all(Object.keys(orderBook).map(async (outcome) => {
-    const bestBid = await getBestOrder(person, marketAddress, OrderType.bid, outcome);
-    const bestAsk = await getBestOrder(person, marketAddress, OrderType.ask, outcome);
-
-    console.log("verify", marketAddress, outcome, bestBid, bestAsk);
-
-    // expect((new BigNumber(bestBid)).eq(0x0)).toEqual(false);
-    // expect((new BigNumber(bestAsk)).eq(0x0)).toEqual(false);
-  }));
-}
-
-function parse() {
-  const parser = new ArgumentParser({
-    version: "1.0.0",
-    addHelp: true,
-    description: "Populate blockchain with test markets and orders.",
-  });
-
-  parser.addArgument(
-    ["--network"],
-    {
-      help: "specify blockchain network number",
-    },
-  );
-
-  return parser.parseArgs();
-}
-
-async function main() {
-  const args = parse();
-  console.log(args);
-
-  const { provider, addresses } = await deployContracts(ACCOUNTS, compilerOutput);
-
-  await createCannedMarketsAndOrders(ACCOUNTS, provider, addresses);
-}
-
-if (require.main === module) {
-  main();
 }
