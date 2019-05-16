@@ -9,16 +9,17 @@ export const connect = async (env: any, loginAccount: string, callback = logErro
     ethereumNode: env["ethereum-node"],
     useWeb3Transport: env.useWeb3Transport
   };
-  if (env.debug) augur.rpc.setDebugOptions(env.debug);
 
   let provider;
+  let isWeb3 = false;
   if (window.web3 && window.web3.currentProvider) {
     provider = new Web3Provider(window.web3.currentProvider);
+    isWeb3 = true;
   } else {
     provider = new JsonRpcProvider(env["ethereum-node"].http);
   }
 
-  await augurSdk.makeApi(provider, loginAccount.address, provider.getSigner());
+  await augurSdk.makeApi(provider, loginAccount.address, provider.getSigner(), isWeb3);
 
   augur.connect(
     connectOptions,
