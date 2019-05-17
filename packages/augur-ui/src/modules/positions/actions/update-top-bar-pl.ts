@@ -1,5 +1,5 @@
 import { augur } from "services/augurjs";
-import { updateLoginAccount } from "modules/auth/actions/update-login-account";
+import { updateLoginAccountAction } from "modules/common/types/login-account";
 import logError from "utils/log-error";
 
 export const updateTopBarPL = (
@@ -22,7 +22,7 @@ export const updateTopBarPL = (
     (err: any, data: any) => {
       if (err) return callback(err);
       dispatch(
-        updateLoginAccount({
+        updateLoginAccountAction({
           realizedPL: data[data.length - 1].realized,
           realizedPLPercent: data[data.length - 1].realizedPercent
         })
