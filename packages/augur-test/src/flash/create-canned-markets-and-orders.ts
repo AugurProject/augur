@@ -135,15 +135,19 @@ async function createOrderBook(person: ContractAPI, market: GenericAugurInterfac
 
     const { buy, sell } = buySell;
 
+    const promises = [];
+
     for (const { shares, price } of buy) {
       const buyOrderType = new BigNumber(0);
-      await placeOrder(person, market, can, tradeGroupId, new BigNumber(outcome), buyOrderType, new DecimalBigNumber(shares), new DecimalBigNumber(price));
+      promises.push(placeOrder(person, market, can, tradeGroupId, new BigNumber(outcome), buyOrderType, new DecimalBigNumber(shares), new DecimalBigNumber(price)));
     }
 
     for (const { shares, price } of sell) {
       const sellOrderType = new BigNumber(1);
-      await placeOrder(person, market, can, tradeGroupId, new BigNumber(outcome), sellOrderType, new DecimalBigNumber(shares), new DecimalBigNumber(price));
+      promises.push(placeOrder(person, market, can, tradeGroupId, new BigNumber(outcome), sellOrderType, new DecimalBigNumber(shares), new DecimalBigNumber(price)));
     }
+
+    await Promise.all(promises);
   }
 }
 
@@ -151,8 +155,8 @@ export async function createCannedMarketsAndOrders(accounts: AccountList, provid
   const person = await ContractAPI.userWrapper(accounts, 0, provider, addresses);
   await person.approveCentralAuthority();
 
-  for (const can of cannedMarkets) {
+  await Promise.all(cannedMarkets.map(async (can) => {
     const market = await createCannedMarket(person, can);
     await createOrderBook(person, market, can);
-  }
+  }));
 }

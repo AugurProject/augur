@@ -46,13 +46,12 @@ export class ContractAPI {
 
     const createMarketEvents = await universe.createYesNoMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, byteTopic, extraInfo);
 
-
     // TODO: turn this into a function
-    var marketId = "";
-    for(const ev of createMarketEvents) {
+    let marketId = "";
+    for (const ev of createMarketEvents) {
       if (ev.name === "MarketCreated") {
         interface HasMarket {
-          market: string
+          market: string;
         }
         marketId = (ev.parameters as HasMarket).market;
       }
@@ -76,12 +75,21 @@ export class ContractAPI {
     const byteTopic = stringTo32ByteHex(topic);
 
     await this.faucet(marketCreationFee);
-    const marketAddress = await universe.createCategoricalMarket_(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, outcomes, byteTopic, extraInfo);
-    if (!marketAddress || marketAddress === "0x") {
-      throw new Error("Unable to get address for new categorical market.");
+
+    const createMarketEvents = await universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, outcomes, byteTopic, extraInfo);
+
+    // TODO: turn this into a function
+    let marketId = "";
+    for (const ev of createMarketEvents) {
+      if (ev.name === "MarketCreated") {
+        interface HasMarket {
+          market: string;
+        }
+        marketId = (ev.parameters as HasMarket).market;
+      }
     }
-    await universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, outcomes, byteTopic, extraInfo);
-    return this.augur.contracts.marketFromAddress(marketAddress);
+
+    return this.augur.contracts.marketFromAddress(marketId);
   }
 
   public async createReasonableMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, outcomes: Array<string>): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
@@ -107,16 +115,22 @@ export class ContractAPI {
     const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
     const byteTopic = stringTo32ByteHex(topic);
 
-    console.log("FAUCET")
     await this.faucet(marketCreationFee);
-    const marketAddress = await universe.createScalarMarket_(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, prices, numTicks, byteTopic, extraInfo);
-    if (!marketAddress || marketAddress === "0x") {
-      throw new Error("Unable to get address for new scalar market.");
+
+    const createMarketEvents = await universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, prices, numTicks, byteTopic, extraInfo);
+
+    // TODO: turn this into a function
+    let marketId = "";
+    for (const ev of createMarketEvents) {
+      if (ev.name === "MarketCreated") {
+        interface HasMarket {
+          market: string;
+        }
+        marketId = (ev.parameters as HasMarket).market;
+      }
     }
-    console.log("ADDRESS", marketAddress)
-    await universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, prices, numTicks, byteTopic, extraInfo);
-    console.log("CREATED")
-    return this.augur.contracts.marketFromAddress(marketAddress);
+
+    return this.augur.contracts.marketFromAddress(marketId);
   }
 
   public async createReasonableScalarMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
@@ -161,7 +175,6 @@ export class ContractAPI {
       actualPrice = numTicks.sub(price);
     }
     const ethValue = numShares.mul(actualPrice);
-
     await this.faucet(ethValue);
 
     const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
@@ -203,8 +216,8 @@ export class ContractAPI {
   public async buyCompleteSets(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, amount: ethers.utils.BigNumber): Promise<void> {
     const numTicks = await market.getNumTicks_();
     const ethValue = amount.mul(numTicks);
-
     await this.faucet(ethValue);
+
     await this.augur.contracts.completeSets.publicBuyCompleteSets(market.address, amount);
   }
 
@@ -291,8 +304,8 @@ export class ContractAPI {
     await market.finalize();
   }
 
-  public async faucet(wei: ethers.utils.BigNumber): Promise<void> {
-    await this.augur.contracts.cash.faucet(wei);
+  public async faucet(attoCash: ethers.utils.BigNumber): Promise<void> {
+    await this.augur.contracts.cash.faucet(attoCash);
   }
 
   public async approve(wei: ethers.utils.BigNumber): Promise<void> {
