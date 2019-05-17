@@ -120,6 +120,19 @@ export function formatShares(num, opts) {
   return formattedShares;
 }
 
+export function formatDai(num, opts) {
+  return formatNumber(num, {
+    decimals: 2,
+    decimalsRounded: 2,
+    denomination: " DAI",
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+    ...opts
+  });
+}
+
 export function formatRep(num, opts) {
   return formatNumber(num, {
     decimals: 4,

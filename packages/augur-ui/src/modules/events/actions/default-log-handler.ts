@@ -1,18 +1,17 @@
-import { augur } from "services/augurjs";
 import { updateLoggedTransactions } from "modules/transactions/actions/convert-logs-to-transactions";
+import { getTransaction } from "modules/contracts/actions/contractCalls";
 
-export const defaultLogHandler = (log: any) => (dispatch: Function, getState: Function) => {
+export const defaultLogHandler = (log: any) => (
+  dispatch: Function,
+  getState: Function
+) => {
   if (log.transactionHash == null)
     return console.error("transaction hash not found", log);
-  augur.rpc.eth.getTransactionByHash(
-    [log.transactionHash],
-    (err: any, transaction: any) => {
-      if (err) return console.error(err);
-      const isOwnTransaction =
-        transaction.from === getState().loginAccount.address;
-      if (isOwnTransaction) {
-        dispatch(updateLoggedTransactions(log));
-      }
+  getTransaction(log.transactionHash).then((transaction: any) => {
+    const isOwnTransaction =
+      transaction.from === getState().loginAccount.address;
+    if (isOwnTransaction) {
+      dispatch(updateLoggedTransactions(log));
     }
-  );
+  });
 };
