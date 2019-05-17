@@ -26,6 +26,7 @@ export interface Properties {
   showColors?: Boolean;
   value?: String;
   size?: String;
+  showEmptyDash?: Boolean;
 }
 
 function selectColumn(columnType: String, properties: Properties) {
@@ -41,8 +42,8 @@ function selectColumn(columnType: String, properties: Properties) {
       );
     case COLUMN_TYPES.VALUE:
       return (
-        properties.value && (
-          <ValueLabel value={properties.value} keyId={properties.keyId} />
+        (properties.value || properties.showEmptyDash) && (
+          <ValueLabel value={properties.value} keyId={properties.keyId} showEmptyDash={properties.showEmptyDash} />
         )
       );
     case COLUMN_TYPES.CANCEL_TEXT_BUTTON:
