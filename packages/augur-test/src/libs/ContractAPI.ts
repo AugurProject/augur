@@ -39,10 +39,7 @@ export class ContractAPI {
     topic: string,
     extraInfo:string
   ): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
-    const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
     const byteTopic = stringTo32ByteHex(topic);
-
-    await this.faucet(marketCreationFee);
 
     const createMarketEvents = await universe.createYesNoMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, byteTopic, extraInfo);
 
@@ -71,10 +68,7 @@ export class ContractAPI {
   }
 
   public async createCategoricalMarket(universe: GenericAugurInterfaces.Universe<ethers.utils.BigNumber>, endTime: ethers.utils.BigNumber, feePerCashInAttoCash: ethers.utils.BigNumber, affiliateFeeDivisor: ethers.utils.BigNumber, designatedReporter: string, outcomes: Array<string>, topic: string, extraInfo: string): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
-    const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
     const byteTopic = stringTo32ByteHex(topic);
-
-    await this.faucet(marketCreationFee);
 
     const createMarketEvents = await universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, outcomes, byteTopic, extraInfo);
 
@@ -112,10 +106,7 @@ export class ContractAPI {
     topic: string,
     extraInfo: string,
     ): Promise<GenericAugurInterfaces.Market<ethers.utils.BigNumber>> {
-    const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
     const byteTopic = stringTo32ByteHex(topic);
-
-    await this.faucet(marketCreationFee);
 
     const createMarketEvents = await universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, prices, numTicks, byteTopic, extraInfo);
 
@@ -155,7 +146,6 @@ export class ContractAPI {
     worseOrderID: string,
     tradeGroupID: string,
   ): Promise<string> {
-    await this.faucet(numShares.mul(price).mul(1000));
     const orderId = await this.augur.contracts.createOrder.publicCreateOrder_(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
     console.log("orderId", orderId);
     await this.augur.contracts.createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
@@ -163,20 +153,10 @@ export class ContractAPI {
   }
 
   public async fillOrder(orderId: string, cost: ethers.utils.BigNumber, numShares: ethers.utils.BigNumber, tradeGroupId: string) {
-    await this.faucet(cost.mul(10000));
     await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, stringTo32ByteHex(tradeGroupId), false, NULL_ADDRESS);
   }
 
   public async takeBestOrder(marketAddress: string, type: ethers.utils.BigNumber, numShares: ethers.utils.BigNumber, price: ethers.utils.BigNumber, outcome: ethers.utils.BigNumber, tradeGroupID: string): Promise<void> {
-    let actualPrice = price;
-    if (type === new ethers.utils.BigNumber(1)) {
-      const market = this.augur.contracts.marketFromAddress(marketAddress);
-      const numTicks = await market.getNumTicks_();
-      actualPrice = numTicks.sub(price);
-    }
-    const ethValue = numShares.mul(actualPrice);
-    await this.faucet(ethValue);
-
     const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new ethers.utils.BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
     if (bestPriceAmount === new ethers.utils.BigNumber(0)) {
       throw new Error("Could not take best Order");
@@ -214,10 +194,6 @@ export class ContractAPI {
   }
 
   public async buyCompleteSets(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, amount: ethers.utils.BigNumber): Promise<void> {
-    const numTicks = await market.getNumTicks_();
-    const ethValue = amount.mul(numTicks);
-    await this.faucet(ethValue);
-
     await this.augur.contracts.completeSets.publicBuyCompleteSets(market.address, amount);
   }
 

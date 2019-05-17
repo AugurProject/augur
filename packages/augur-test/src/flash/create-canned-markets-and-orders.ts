@@ -155,6 +155,8 @@ export async function createCannedMarketsAndOrders(accounts: AccountList, provid
   const person = await ContractAPI.userWrapper(accounts, 0, provider, addresses);
   await person.approveCentralAuthority();
 
+  await person.faucet(new BigNumber(10).pow(18).mul(1000000));
+
   await Promise.all(cannedMarkets.map(async (can) => {
     const market = await createCannedMarket(person, can);
     await createOrderBook(person, market, can);
