@@ -13,6 +13,7 @@ import {
   timeSecond,
   timeFormat
 } from "d3";
+
 import { createBigNumber } from "utils/create-big-number";
 // All named constants go here
 
@@ -694,7 +695,6 @@ export const LARGE_DESKTOP = "(min-width: 2001px)";
 // Sort variables
 export const END_TIME = "endTime";
 
-export type voidFunction = () => void;
 
 // Table Column types
 export const PLAIN = "PLAIN";

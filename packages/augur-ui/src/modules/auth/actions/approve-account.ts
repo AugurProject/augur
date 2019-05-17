@@ -1,6 +1,6 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
-import { updateLoginAccount } from "modules/auth/actions/update-login-account";
+import { updateLoginAccountAction } from "modules/common/types/login-account";
 import { updateAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
@@ -19,7 +19,7 @@ export function checkAccountAllowance(callback: Function = logError) {
         (err: any, allowance: string) => {
           if (err) callback(err);
           callback(null, allowance);
-          dispatch(updateLoginAccount({ allowance }));
+          dispatch(updateLoginAccountAction({ allowance }));
         }
       );
     }

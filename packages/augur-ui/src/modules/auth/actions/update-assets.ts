@@ -1,5 +1,8 @@
-import { updateLoginAccount } from "modules/auth/actions/update-login-account";
-
+import {
+  LoginAccount,
+  updateLoginAccountAction
+} from "modules/common/types/login-account";
+import { voidFunction } from "modules/common/types";
 import logError from "utils/log-error";
 import {
   getEthBalance,
@@ -7,23 +10,23 @@ import {
   getRepBalance
 } from "src/modules/contracts/actions/contractCalls";
 
-export function updateAssets(callback: Function = logError) {
+export function updateAssets(callback: voidFunction = logError) {
   return async (dispatch: Function, getState: Function) => {
     const { loginAccount } = getState();
-    let balances: {
+    let balances: LoginAccount = {
       eth: undefined,
       rep: undefined,
       dai: undefined
     };
 
     if (!loginAccount.address)
-      return dispatch(updateLoginAccount(balances));
+      return dispatch(updateLoginAccountAction(balances));
     const { address } = loginAccount;
     const rep = await getRepBalance(address);
     const dai = await getDaiBalance(address);
     const { balance: eth } = await getEthBalance(address);
     balances = { rep, eth, dai };
-    dispatch(updateLoginAccount(balances));
+    dispatch(updateLoginAccountAction(balances));
     callback(null, balances);
   };
 }
