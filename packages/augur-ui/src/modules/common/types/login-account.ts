@@ -3,10 +3,16 @@ export const LOGIN_ACTIONS = {
   CLEAR_LOGIN_ACCOUNT: "CLEAR_LOGIN_ACCOUNT",
 };
 
+export interface UnrealizedRevenue {
+  unrealizedRevenue24hChangePercent: string;
+}
+
 export interface LoginAccount {
   address: string;
   displayAddress: string;
   meta: { accontType: string; address: string; signer: object | null };
+  totalFrozenFunds: string;
+  tradingPositionsTotal: UnrealizedRevenue;
   eth: string;
   rep: string;
   dai: string;
