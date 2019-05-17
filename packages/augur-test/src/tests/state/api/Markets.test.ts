@@ -443,6 +443,193 @@ test("State API :: Markets :: getMarketPriceHistory", async () => {
   }
 }, 120000);
 
+test("State API :: Markets :: getMarketPriceCandlesticks", async () => {
+  const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+
+  const startTime = (await john.getTimestamp()).toNumber();
+
+  // Place orders
+  const bid = new ethers.utils.BigNumber(0);
+  const outcome0 = new ethers.utils.BigNumber(0);
+  const outcome1 = new ethers.utils.BigNumber(1);
+  const numShares = new ethers.utils.BigNumber(10000000000000);
+  const price0 = new ethers.utils.BigNumber(10);
+  const price1 = new ethers.utils.BigNumber(20);
+  const price2 = new ethers.utils.BigNumber(30);
+  const price3 = new ethers.utils.BigNumber(40);
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price0, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price1, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price2, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price3, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price0, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price1, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price2, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(yesNoMarket.address, bid, numShares, price3, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+
+  // Fill orders
+  const cost0 = numShares.mul(new ethers.utils.BigNumber(100).sub(price0)).div(10);
+  const cost1 = numShares.mul(new ethers.utils.BigNumber(100).sub(price1)).div(10);
+  const cost2 = numShares.mul(new ethers.utils.BigNumber(100).sub(price2)).div(10);
+  const cost3 = numShares.mul(new ethers.utils.BigNumber(100).sub(price3)).div(10);
+  let yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
+  let yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  await mary.fillOrder(yesNoOrderId0, cost0, numShares.div(10).mul(5), "42");
+  await mary.fillOrder(yesNoOrderId1, cost1, numShares.div(10).mul(7), "43");
+
+  // Move time forward 10 minutes
+  let newTime = (await john.getTimestamp()).add(60 * 10);
+  await john.setTimestamp(newTime);
+
+  yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
+  yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  await mary.fillOrder(yesNoOrderId0, cost1, numShares.div(10).mul(4), "42");
+  await mary.fillOrder(yesNoOrderId1, cost0, numShares.div(10).mul(4), "43");
+
+  // Move time forward 30 minutes
+  newTime = (await john.getTimestamp()).add(60 * 30);
+  await john.setTimestamp(newTime);
+
+  yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
+  yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  await mary.fillOrder(yesNoOrderId0, cost0, numShares.div(10).mul(6), "42");
+  await mary.fillOrder(yesNoOrderId1, cost1, numShares.div(10).mul(8), "43");
+
+  yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
+  yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  await mary.fillOrder(yesNoOrderId0, cost1, numShares.div(10).mul(7), "42");
+  await mary.fillOrder(yesNoOrderId1, cost1, numShares.div(10).mul(9), "43");
+
+  // Move time forward 30 minutes
+  newTime = (await john.getTimestamp()).add(60 * 30);
+  await john.setTimestamp(newTime);
+
+  yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
+  yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  await mary.fillOrder(yesNoOrderId0, cost2, numShares.div(10).mul(6), "42");
+  await mary.fillOrder(yesNoOrderId1, cost1, numShares.div(10).mul(5), "43");
+
+  yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
+  yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  await mary.fillOrder(yesNoOrderId0, cost0, numShares.div(10).mul(7), "42");
+  await mary.fillOrder(yesNoOrderId1, cost3, numShares.div(10).mul(3), "43");
+
+  // Move time forward 60 minutes
+  newTime = (await john.getTimestamp()).add(60 * 60);
+  await john.setTimestamp(newTime);
+
+  const endTime = (await john.getTimestamp()).toNumber();
+
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
+
+  let yesNoMarketPriceCandlesticks = await api.route("getMarketPriceCandlesticks", {
+    marketId: yesNoMarket.address
+  });
+  expect(yesNoMarketPriceCandlesticks).toMatchObject(
+    { '0':
+      [ { tokenVolume: '5000000000000',
+          start: '40',
+          end: '40',
+          min: '40',
+          max: '40',
+          volume: '200000000000000',
+          shareVolume: '5000000000000' },
+        { tokenVolume: '1000000000000',
+          start: '40',
+          end: '40',
+          min: '40',
+          max: '40',
+          volume: '40000000000000',
+          shareVolume: '1000000000000' },
+        { tokenVolume: '3000000000000',
+          start: '40',
+          end: '40',
+          min: '30',
+          max: '40',
+          volume: '90000000000000',
+          shareVolume: '3000000000000' },
+        { tokenVolume: '3000000000000',
+          start: '30',
+          end: '30',
+          min: '20',
+          max: '30',
+          volume: '60000000000000',
+          shareVolume: '3000000000000' } ],
+    '1':
+      [ { tokenVolume: '3000000000000',
+          start: '40',
+          end: '40',
+          min: '40',
+          max: '40',
+          volume: '120000000000000',
+          shareVolume: '3000000000000' },
+        { tokenVolume: '0',
+          start: '40',
+          end: '40',
+          min: '40',
+          max: '40',
+          volume: '0',
+          shareVolume: '0' },
+        { tokenVolume: '2000000000000',
+          start: '30',
+          end: '30',
+          min: '30',
+          max: '30',
+          volume: '60000000000000',
+          shareVolume: '2000000000000' },
+        { tokenVolume: '7000000000000',
+          start: '20',
+          end: '20',
+          min: '20',
+          max: '20',
+          volume: '140000000000000',
+          shareVolume: '7000000000000' } ]
+    }
+  );
+  for (let outcome in yesNoMarketPriceCandlesticks) {
+    for (let candlestickIndex = 0; candlestickIndex < yesNoMarketPriceCandlesticks[outcome]; candlestickIndex++) {
+      expect(yesNoMarketPriceCandlesticks[outcome][candlestickIndex]["startTimestamp"]).toBeInstanceOf(Number);
+    }
+  }
+
+  yesNoMarketPriceCandlesticks = await api.route("getMarketPriceCandlesticks", {
+    marketId: yesNoMarket.address,
+    start: startTime + 30,
+    end: endTime - 30,
+    outcome: 1,
+    period: 30,
+  });
+  expect(yesNoMarketPriceCandlesticks).toMatchObject(
+    { '1':
+      [ { tokenVolume: '0',
+          start: '40',
+          end: '40',
+          min: '40',
+          max: '40',
+          volume: '0',
+          shareVolume: '0' },
+        { tokenVolume: '2000000000000',
+          start: '30',
+          end: '30',
+          min: '30',
+          max: '30',
+          volume: '60000000000000',
+          shareVolume: '2000000000000' },
+        { tokenVolume: '7000000000000',
+          start: '20',
+          end: '20',
+          min: '20',
+          max: '20',
+          volume: '140000000000000',
+          shareVolume: '7000000000000' } ]
+    }
+  );
+  for (let outcome in yesNoMarketPriceCandlesticks) {
+    for (let candlestickIndex = 0; candlestickIndex < yesNoMarketPriceCandlesticks[outcome]; candlestickIndex++) {
+      expect(yesNoMarketPriceCandlesticks[outcome][candlestickIndex]["startTimestamp"]).toBeInstanceOf(Number);
+    }
+  }
+}, 120000);
+
 test("State API :: Markets :: getMarketsInfo", async () => {
   const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
   const categoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
@@ -778,3 +965,20 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[1]).toHaveProperty("id");
   expect(markets[2]).toHaveProperty("id");
 }, 180000);
+
+test("State API :: Markets :: getTopics", async () => {
+  const topics = await api.route("getTopics", {
+    universe: john.augur.contracts.universe.address
+  });
+  expect(topics).toMatchObject(
+    [
+      'yesNo topic 1\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+      'yesNo topic 2\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+      'categorical topic 1\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+      'categorical topic 2\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+      'scalar topic 1\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+      'scalar topic 2\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+      ' \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000'
+    ]
+  );
+}, 120000);
