@@ -10,6 +10,7 @@ import { convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice 
 
 export async function processOrderCreatedLog(augur: Augur, log: FormattedEventLog) {
   return async(db: Knex) => {
+    console.log("ORDER CREATED", JSON.stringify(log, null, 2));
     const amount: BigNumber = new BigNumber(log.amount);
     const price: BigNumber = new BigNumber(log.price);
     const orderType: string = log.orderType;
