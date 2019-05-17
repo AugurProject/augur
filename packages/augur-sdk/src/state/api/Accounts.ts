@@ -75,10 +75,12 @@ export class Accounts<TBigNumber> {
     if (!params.coin) params.coin = Coin.ALL;
     if (!params.action) params.action = Action.ALL;
 
-    // TODO Check for coin/action compatibility
+    if (!actionAndCoinAreValid(params)) {
+
+    }
 
     const marketCreatedLogs = await db.findMarketCreatedLogs({selector: {universe: params.universe}});
-    const orderCreatedLogs = await db.findOrderCreatedLogs({selector: {universe: params.universe}});
+    // const orderCreatedLogs = await db.findOrderCreatedLogs({selector: {universe: params.universe}});
     const orderFilledLogs = await db.findOrderFilledLogs({selector: {universe: params.universe}});
     const orderCanceledLogs = await db.findOrderCanceledLogs({selector: {universe: params.universe}});
     const completeSetsPurchasedLogs = await db.findCompleteSetsPurchasedLogs({selector: {universe: params.universe}});
@@ -90,20 +92,21 @@ export class Accounts<TBigNumber> {
 
     // TODO Filter logs by account, earliestTransactionTime & latestTransactionTime
 
-    let results = formatMarketCreatedLogs(marketCreatedLogs);
+    let results = formatMarketCreatedLogs(marketCreatedLogs, params.action);
 
     // TODO Sort/limit results by implementing sortBy, isSortDescending, limit, & offset
     return results;
   }
 }
 
-function formatMarketCreatedLogs(transactionLogs: MarketCreatedLog[]|OrderEventLog[]|CompleteSetsPurchasedLog[]|CompleteSetsSoldLog[]|ParticipationTokensRedeemedLog[]|TradingProceedsClaimedLog[]|DisputeCrowdsourcerRedeemedLog[]|InitialReporterRedeemedLog[]): Array<AccountTransaction> {
+function actionAndCoinAreValid(params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): boolean {
+  // TODO
+  return true;
+}
+
+function formatMarketCreatedLogs(transactionLogs: MarketCreatedLog[]|OrderEventLog[]|CompleteSetsPurchasedLog[]|CompleteSetsSoldLog[]|ParticipationTokensRedeemedLog[]|TradingProceedsClaimedLog[]|DisputeCrowdsourcerRedeemedLog[]|InitialReporterRedeemedLog[], action: string): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
-    console.log(typeof transactionLogs);
-    // switch (typeof transactionLogs) {
-    //   case
-    // }
     formattedLogs.push(
       {
         action: Action.MARKET_CREATION,
@@ -121,5 +124,10 @@ function formatMarketCreatedLogs(transactionLogs: MarketCreatedLog[]|OrderEventL
       }
     );
   }
-  return formattedLogs
+  return formattedLogs;
+}
+
+function formatOrderFilledLogs(transactionLogs: MarketCreatedLog[]|OrderEventLog[]|CompleteSetsPurchasedLog[]|CompleteSetsSoldLog[]|ParticipationTokensRedeemedLog[]|TradingProceedsClaimedLog[]|DisputeCrowdsourcerRedeemedLog[]|InitialReporterRedeemedLog[], action: string): Array<AccountTransaction> {
+  let formattedLogs: Array<AccountTransaction> = [];
+  return formattedLogs;
 }

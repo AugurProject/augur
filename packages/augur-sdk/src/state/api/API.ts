@@ -7,6 +7,7 @@ import "./Markets";
 import "./Ping";
 import "./Trading";
 import "./Users";
+import "./Accounts";
 
 export class API<TBigNumber> {
   private readonly router: Router<TBigNumber>;
