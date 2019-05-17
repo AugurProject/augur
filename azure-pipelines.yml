@@ -14,10 +14,96 @@ trigger:
     - azure/*
 
 jobs:
-  - job: Augur_build_docker_image
+  - job: PreFlightCheck
+    displayName: 'Pre-Flight Check'
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
+      - checkout: self
+        fetchDepth: 5
+      - bash: |
+          set -euo pipefail
+          echo "Build Source Branch: $(Build.SourceBranchName)"
+          if [[ "$(Build.SourceBranchName)" == "master" ]]; then
+            GIT_COMMAND='git show --name-only --oneline $(Build.SourceVersion)'
+          else
+            GIT_COMMAND='git diff --name-only origin/master..HEAD'
+          fi
+          echo "running git command: $GIT_COMMAND"
+          for f in $(eval "$GIT_COMMAND");
+            do
+              echo "$f"
+              if [[ $f =~ .*augur-core/source.* ]] || [[ $f =~ .*augur-core/package.json ]]
+              then
+                echo "found a core change: $f"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_CORE;isOutput=true]true"
+              fi
+              if [[ $f =~ .*augur-ui.* ]]
+              then
+                echo "found a ui change: $f"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_UI;isOutput=true]true"
+              fi
+            done
+        displayName: check git for changes
+        name: setVars
+
+  - job: TestAndLint
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    strategy:
+      matrix:
+        node_10_x:
+          node_version: 10.x
+    steps:
+      - checkout: self
+        fetchDepth: 5
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - bash: |
+          set -euo pipefail
+          yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/sdk test
+        displayName: yarn test
+
+
+  - job: Augur_build_docker_image
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    dependsOn:
+      - TestAndLint
+      - PreFlightCheck
+    variables:
+      JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
+    condition: |
+      and
+      (
+        succeeded(),
+        or
+        (
+          eq(variables['JOB_TRIGGER_CORE'], 'true'),
+          eq(variables['Build.SourceBranch'], 'refs/heads/master')
+        )
+      )
+    steps:
+      - checkout: self
+        fetchDepth: 5
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.x'
@@ -66,37 +152,33 @@ jobs:
           dockerRegistryEndpoint: dockerhub-augurproject
 
   - job: Build_Core_Docker
-    dependsOn: Augur_build_docker_image
+    dependsOn:
+    - TestAndLint
+    - Augur_build_docker_image
+    - PreFlightCheck
+    variables:
+      JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
+    condition: |
+      and
+      (
+        succeeded(),
+        or
+        (
+          eq(variables['JOB_TRIGGER_CORE'], 'true'),
+          eq(variables['Build.SourceBranch'], 'refs/heads/master')
+        )
+      )
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
+      - checkout: self
+        fetchDepth: 5
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.x'
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'
-      - bash: |
-          set -euo pipefail
-          # checked what files changed in merge to master
-          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
-            do
-              echo "$f"
-              if [[ $f =~ .*augur-core/source.* ]] || [[ $f =~ .*augur-core/package.json ]]
-              then
-                echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-              fi
-            done
-          echo "Build SourceBranch: $(Build.SourceBranch)"
-          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
-            do
-              echo "$f"
-              if [[ $f =~ .*augur-core/source.* ]] || [[ $f =~ .*augur-core/package.json ]]
-              then
-                echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-              fi
-            done
-        displayName: check git for augur-core changes
       - task: Docker@1
         displayName: docker login
         inputs:
@@ -114,12 +196,6 @@ jobs:
           docker images
           yarn workspace @augurproject/core docker:build;
         displayName: augur-core docker image
-        condition: |
-          and
-          (
-              succeeded(),
-              eq(variables.JOB_TRIGGER, 'true')
-          )
       - script: |
           contract_sha=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
@@ -135,7 +211,22 @@ jobs:
           dockerRegistryEndpoint: dockerhub-augurproject
 
   - job: Test_Augur_Core
-    dependsOn: Build_Core_Docker
+    dependsOn:
+    - TestAndLint
+    - Build_Core_Docker
+    - PreFlightCheck
+    variables:
+      JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
+    condition: |
+      and
+      (
+        succeeded(),
+        or
+        (
+          eq(variables['JOB_TRIGGER_CORE'], 'true'),
+          eq(variables['Build.SourceBranch'], 'refs/heads/master')
+        )
+      )
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -163,27 +254,15 @@ jobs:
           TESTS: integration:parity
         security_mithril:
           TESTS: security:mythril
-          #security_main:
-          #  TESTS: security:maian
-
     steps:
+      - checkout: self
+        fetchDepth: 5
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.x'
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'
-      - bash: |
-          set -euo pipefail
-          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
-            do
-              echo "$f"
-              if [[ $f =~ .*augur-core.* ]]
-              then
-                echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-              fi
-            done
-        displayName: check git for augur-core changes
       - script: |
           set -euo pipefail
           which node
@@ -210,142 +289,70 @@ jobs:
             yarn workspace @augurproject/core docker:run:test:unit -- $TESTS;
           fi
         displayName: integration tests
-        condition: eq(variables.JOB_TRIGGER, 'true')
-
-  # - job: Test_Augur_UI_and_Node
-  #   displayName: 'Test augur UI and augur-node'
-  #   pool:
-  #     vmImage: 'Ubuntu 16.04'
-  #   strategy:
-  #     matrix:
-  #       node_8_x:
-  #         node_version: 8.x
-  #       node_9_x:
-  #         node_version: 9.x
-  #       node_10_x:
-  #         node_version: 10.x
-  #   steps:
-  #     - task: NodeTool@0
-  #       inputs:
-  #         versionSpec: $(node_version)
-  #     - script: |
-  #         set -euo pipefail
-  #         which node
-  #         node --version
-  #         yarn workspace @augurproject/node add sqlite3 --force --build-from-source
-  #         yarn install --ignore-scripts --frozen-lockfile
-  #       displayName: 'Install Dependencies'
-  #     - script: |
-  #         yarn test --forceExit --detectOpenHandles
-  #       displayName: 'Run Tests'
-  #     - task: PublishTestResults@2
-  #       inputs:
-  #         testResultsFormat: 'JUnit'
-  #         testResultsFiles: 'junit.xml'
-
-  - job: Test_Augur_js
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    strategy:
-      matrix:
-        node_10_x:
-          node_version: 10.x
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(node_version)
-      - bash: |
-          set -euo pipefail
-          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
-            do
-              echo "$f"
-              if [[ $f =~ .*augur\.js.* ]]
-              then
-                echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-              fi
-            done
-        displayName: check git for augur.js changes
-      - script: |
-          set -euo pipefail
-          which node
-          node --version
-          yarn install --ignore-scripts --frozen-lockfile
-          npx lerna run test --stream --scope augur.js
-        displayName: 'test augur.js'
-        condition: eq(variables.AUGUR, 'true')
 
   - job: Docker_populated_geth_images
     dependsOn:
-    - Augur_build_docker_image
-    - Build_Core_Docker
     - Test_Augur_Core
+    - PreFlightCheck
+    variables:
+      JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
+    condition: |
+      and
+      (
+        succeeded(),
+        or
+        (
+          eq(variables['JOB_TRIGGER_CORE'], 'true'),
+          eq(variables['Build.SourceBranch'], 'refs/heads/master')
+        )
+      )
     pool:
       vmImage: 'Ubuntu 16.04'
     timeoutInMinutes: 120
     steps:
-    - bash: |
-        set -euo pipefail
-        # checked what files changed in merge to master
-        for f in $(git show --name-only --oneline $(Build.SourceVersion));
-          do
-            echo "$f"
-            if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.*Dockerfile ]]
-            then
-              echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-            fi
-          done
+      - checkout: self
+        fetchDepth: 5
+      - task: Docker@1
+        displayName: docker login
+        inputs:
+          command: login
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+      - script: |
+          set -exuo pipefail
+          sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
+          sudo systemctl status docker
+          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
+          docker pull augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
+          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+          docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
+          docker images
+          yarn
+          yarn workspace @augurproject/tools docker:build
 
-        # checked what files changed in PR
-        for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
-          do
-            echo "$f"
-            if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.*Dockerfile ]]
-            then
-              echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-            fi
-          done
-      displayName: check git for augur-core changes
-    - task: Docker@1
-      displayName: docker login
-      inputs:
-        command: login
-        containerRegistryType: Container Registry
-        dockerRegistryEndpoint: dockerhub-augurproject
-    - script: |
-        set -exuo pipefail
-        sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
-        sudo systemctl status docker
-        docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-        docker pull augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
-        docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-        docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
-        docker images
-        yarn
-        yarn workspace @augurproject/tools docker:build
-
-        if [[ "$(Build.SourceBranchName)" == "master" ]]; then
-            docker push augurproject/augur-core:monorepo
-        fi
-        yarn workspace @augurproject/tools docker:push
-      condition: |
-        and
-        (
-            succeeded(),
-            eq(variables.JOB_TRIGGER, 'true')
-        )
-      displayName: 'build and push core images'
-    - task: Docker@1
-      displayName: docker logout
-      inputs:
-        command: logout
-        containerRegistryType: Container Registry
-        dockerRegistryEndpoint: dockerhub-augurproject
+          if [[ "$(Build.SourceBranchName)" == "master" ]]; then
+              docker push augurproject/augur-core:monorepo
+          fi
+          yarn workspace @augurproject/tools docker:push
+        displayName: 'build and push core images'
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
 
   - job: publish_docker_images
     dependsOn:
     - Augur_build_docker_image
     - Build_Core_Docker
     - Test_Augur_Core
+    condition: |
+      and
+      (
+          succeeded(),
+          eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      )
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
@@ -361,12 +368,6 @@ jobs:
           docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
           docker images
           docker push augurproject/augur-build:latest
-        condition: |
-          and
-          (
-              succeeded(),
-              eq(variables['Build.SourceBranch'], 'refs/heads/master')
-          )
         displayName: 'publish docker images on merge to master'
       - task: Docker@1
         displayName: docker logout
