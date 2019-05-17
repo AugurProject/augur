@@ -17,7 +17,7 @@ cd /augur
 yarn workspace @augurproject/tools dp upload
 yarn workspace @augurproject/tools build
 yarn workspace @augurproject/tools dp rep-faucet
-yarn workspace @augurproject/tools dp create-markets
+yarn workspace @augurproject/tools dp create-markets-and-orders
 
 # debug info
 geth version | tee /augur/geth-version.txt

@@ -8,7 +8,7 @@ import { delay } from "bluebird";
 import { Augur } from "../types";
 import { UploadBlockNumbers } from "@augurproject/artifacts";
 
-const BLOCKSTREAM_HANDOFF_BLOCKS = 5;
+const BLOCKSTREAM_HANDOFF_BLOCKS = 0;
 const BLOCKSTREAM_HANDOFF_WAIT_TIME_MS = 15000;
 let syncFinished = false;
 
