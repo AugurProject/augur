@@ -1,13 +1,13 @@
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { Augur } from "@augurproject/sdk";
-import { ContractDeployer, DeployerConfiguration } from "@augurproject/core";
 import * as path from "path";
 import * as ganache from "ganache-core";
-import { EthersFastSubmitWallet } from "@augurproject/core/source/libraries/EthersFastSubmitWallet";
 import { ethers } from "ethers";
 import { CompilerOutput } from "solc";
+
+import { Augur } from "@augurproject/sdk";
+import { EthersProvider } from "@augurproject/ethersjs-provider";
+import { ContractDeployer, DeployerConfiguration, EthersFastSubmitWallet } from "@augurproject/core";
 import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
+import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 
 const memdown = require("memdown");
 
@@ -40,7 +40,20 @@ interface UsefulContractObjects {
 }
 
 export async function deployContracts(accounts: AccountList, compiledContracts: CompilerOutput): Promise<UsefulContractObjects> {
-  const ganacheProvider = new ethers.providers.Web3Provider(ganache.provider({
+  const ganacheProvider = makeGanacheProvider(accounts);
+  const provider = new EthersProvider(makeGanacheProvider(accounts), 5, 0, 40);
+  const signer = await makeSigner(accounts[0], provider);
+  const dependencies = makeDependencies(accounts[0], provider, signer);
+
+  const deployerConfiguration = makeDeployerConfiguration();
+  const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, ganacheProvider, signer, compiledContracts);
+  const addresses = await contractDeployer.deploy();
+
+  return {provider, signer, dependencies, addresses};
+}
+
+export function makeGanacheProvider(accounts: AccountList): ethers.providers.Web3Provider {
+  return new ethers.providers.Web3Provider(ganache.provider({
     accounts,
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
     allowUnlimitedContractSize: true,
@@ -49,15 +62,14 @@ export async function deployContracts(accounts: AccountList, compiledContracts: 
     debug: false,
     // vmErrorsOnRPCResponse: true,
   }));
-  const provider = new EthersProvider(ganacheProvider, 5, 0, 40);
-  const signer = await EthersFastSubmitWallet.create(accounts[0].secretKey, provider);
-  const dependencies = new ContractDependenciesEthers(provider, signer, accounts[0].publicKey);
+}
 
-  const deployerConfiguration = makeDeployerConfiguration();
-  const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, ganacheProvider, signer, compiledContracts);
-  const addresses = await contractDeployer.deploy();
+export async function makeSigner(account: Account, provider: EthersProvider) {
+  return await EthersFastSubmitWallet.create(account.secretKey, provider);
+}
 
-  return {provider, signer, dependencies, addresses};
+export function makeDependencies(account: Account, provider: EthersProvider, signer: EthersFastSubmitWallet) {
+  return new ContractDependenciesEthers(provider, signer, account.publicKey);
 }
 
 export async function makeTestAugur(accounts: AccountList): Promise<Augur<ethers.utils.BigNumber>> {
