@@ -107,11 +107,11 @@ class ContractError extends Error {
     Error.captureStackTrace(this, ContractError);
   }
 
-  setAbi(abi: AbiFunction) {
+  setAbi = (abi: AbiFunction) => {
     this.abi = JSON.stringify(abi);
   }
 
-  setParameters(parameters: Array<any>) {
+  setParameters = (parameters: Array<any>) => {
     this.parameters = JSON.stringify(parameters);
   }
 }
