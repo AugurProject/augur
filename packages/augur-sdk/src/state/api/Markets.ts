@@ -15,7 +15,7 @@ import {
 import { SortLimit } from "./types";
 import { Augur, numTicksToTickSize } from "../../index";
 import { ethers } from "ethers";
-import { toAscii } from "@augurproject/sdk/src/state/utils/utils";
+import { toAscii } from "../utils/utils";
 
 import * as _ from "lodash";
 import * as t from "io-ts";
