@@ -9,8 +9,8 @@ export class WebsocketConnector extends Connector {
 
   }
 
-  public async send(data: any): Promise<any> {
-
+  public async invoke<R, P>(f: (db: any, augur: any, params: P) => R, params: P): Promise<R> {
+    return {} as R;
   }
 
   public async subscribe(event: string, callback: Callback): Promise<any> {
