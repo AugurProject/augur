@@ -9,7 +9,7 @@
     "src": "src"
   },
   "scripts": {
-    "start": "yarn build; ts-node -r tsconfig-paths/register ./src/state/Server",
+    "start": "ts-node -r tsconfig-paths/register ./src/state/Server",
     "connect": "ts-node -r tsconfig-paths/register ./src/connector/http-connector.test",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
     "test": "jest",
@@ -45,6 +45,7 @@
     "@types/web3": "1.0.18",
     "async": "2.6.2",
     "cors": "2.8.5",
+    "cross-fetch": "3.0.2",
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.24",
     "express": "4.16.4",
@@ -52,7 +53,6 @@
     "ganache-core": "2.4.0",
     "io-ts": "1.4.2",
     "lodash": "4.17.11",
-    "node-fetch": "2.6.0",
     "postinstall-build": "5.0.3",
     "pouchdb": "7.0.0",
     "pouchdb-adapter-memory": "7.0.0",

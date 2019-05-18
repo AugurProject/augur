@@ -1,6 +1,6 @@
 import { Connector, Callback } from "./connector";
 // TODO: use cross-fetch?
-import fetch from "node-fetch";
+import fetch from "cross-fetch";
 
 export class HTTPConnector extends Connector {
 
@@ -16,13 +16,15 @@ export class HTTPConnector extends Connector {
 
   }
 
-  public async invoke<R, P>(f: (db: any, augur: any, params: P) => R, params: P): Promise<R> {
-    console.log(params);
-    return <R> (await (await fetch(this.endpoint, {
-      method: 'POST',
-      body: JSON.stringify({id: 42, method: f.name, params, jsonrpc: "2.0"}),
-      headers: { 'Content-Type': 'application/json' },
-    })).json());
+  public bindTo<R, P>(f: (db: any, augur: any, params: P) => R) {
+    return async (params: P): Promise<R> => {
+      console.log(params);
+      return <R> (await (await fetch(this.endpoint, {
+        method: 'POST',
+        body: JSON.stringify({id: 42, method: f.name, params, jsonrpc: "2.0"}),
+        headers: { 'Content-Type': 'application/json' },
+      })).json());
+    }
   }
 
   public async subscribe(event: string, callback: Callback): Promise<any> {

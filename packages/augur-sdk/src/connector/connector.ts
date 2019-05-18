@@ -9,8 +9,8 @@ export abstract class Connector {
   public abstract async connect(params: any): Promise<any>;
   public abstract async disconnect(): Promise<any>;
 
-  // Invoke API calls
-  public abstract invoke<R, P>(f: (db: any, augur: any, params: P) => R, params: P): Promise<R>;
+  // bind API calls
+  public abstract bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R>;
 
   // Events
   public abstract async subscribe(event: string, callback: Callback): Promise<any>;
