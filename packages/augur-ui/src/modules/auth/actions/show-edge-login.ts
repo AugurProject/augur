@@ -1,9 +1,9 @@
 import { loginWithEdge } from "modules/auth/actions/login-with-edge";
 import {
   updateAuthStatus,
-  EDGE_CONTEXT,
-  EDGE_LOADING
-} from "modules/auth/actions/update-auth-status";
+  EDGE_LOADING,
+  EDGE_CONTEXT
+} from "modules/auth/actions/auth-status";
 import {
   selectEdgeContextState,
   selectEdgeLoadingState

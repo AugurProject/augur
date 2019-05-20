@@ -1,5 +1,5 @@
 import { UPDATE_READ_NOTIFICATIONS } from "modules/notifications/actions/update-notifications";
-import { LOGIN_ACTIONS } from "modules/common/types/login-account";
+import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { INotifications } from "modules/account/components/notifications";
 
@@ -20,7 +20,7 @@ export default (notifications = DEFAULT_STATE, action: Action) => {
       return action.data.notifications;
 
     case RESET_STATE:
-    case LOGIN_ACTIONS.CLEAR_LOGIN_ACCOUNT:
+    case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;
     default:
       return notifications;
