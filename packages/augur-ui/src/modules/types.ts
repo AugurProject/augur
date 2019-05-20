@@ -1,3 +1,19 @@
+
+export interface EthereumNodeOptions {
+  blockRetention: number;
+  connectionTimeout: number;
+  http: string | null;
+  pollingIntervalMilliseconds: number;
+  ws: string | null;
+}
+
+export interface EnvObject {
+  "augur-node": string;
+  "ethereum-node": EthereumNodeOptions;
+  universe: string | null;
+  useWeb3Transport: boolean;
+}
+
 export interface Connection {
   isConnected: boolean;
   isConnectedToAugurNode: boolean;
