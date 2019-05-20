@@ -13,7 +13,7 @@ return Promise.resolve();
   }
 
   public async disconnect(): Promise<any> {
-
+return Promise.resolve();
   }
 
   public bindTo<R, P>(f: (db: any, augur: any, params: P) => R) {
