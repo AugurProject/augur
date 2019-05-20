@@ -1,5 +1,5 @@
 import { loadAccountDataFromLocalStorage } from "modules/auth/actions/load-account-data-from-local-storage";
-import { updateLoginAccountAction } from "modules/common/types/login-account";
+import { updateLoginAccount } from "modules/account/actions/login-account";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import { loadAccountHistory } from "modules/auth/actions/load-account-history";
 import { updateAssets } from "modules/auth/actions/update-assets";
@@ -24,12 +24,12 @@ export const loadAccountData = (
   if (
     windowRef &&
     windowRef.localStorage.setItem &&
-    account.meta.accountType === ACCOUNT_TYPES.META_MASK
+    account.meta.accountType === ACCOUNT_TYPES.METAMASK
   ) {
     windowRef.localStorage.setItem("loggedInAccount", address);
   }
   dispatch(loadAccountDataFromLocalStorage(address));
-  dispatch(updateLoginAccountAction(account));
+  dispatch(updateLoginAccount(account));
   dispatch(updateFromAddress(account.address));
   dispatch(clearOrphanedOrderData());
   dispatch(loadAccountHistory());

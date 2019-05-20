@@ -150,7 +150,6 @@ export const OPEN_APP = "OPEN_APP";
 export const SWITCH_MODE = "SWITCH_MODE";
 export const ENABLE_CONTRACT_SUPPORT = "ENABLE_CONTRACT_SUPPORT";
 export const OTHER_ISSUE = "OTHER_ISSUE";
-export const NOT_CONNECTED = "NOT_CONNECTED";
 
 // # Market Max Fees
 export const MAX_FEE_100_PERCENT = "1";
