@@ -57,7 +57,6 @@ const mapStateToProps = (state, ownProps) => {
     maxPrice: market.maxPrice || createBigNumber(0),
     universe,
     orderBooks,
-    isMobile: appStatus.isMobile,
     marketId,
     marketsData,
     pricePrecision,
