@@ -1,3 +1,9 @@
+export interface Blockchain {
+  currentBlockNumber: number;
+  currentAugurTimestamp: number;
+  highestBlock: number;
+  lastProcessedBlock: number;
+}
 
 export interface AppStatus {
   isLogged: boolean|undefined;
