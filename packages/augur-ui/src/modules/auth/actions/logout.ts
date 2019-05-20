@@ -1,4 +1,5 @@
-import { clearLoginAccount } from "modules/auth/actions/update-login-account";
+
+import { clearLoginAccountAction } from "modules/common/types/login-account";
 import { clearOrphanedOrderData } from "modules/orders/actions/orphaned-orders";
 import { clearUserTx } from "modules/contracts/actions/contractCalls";
 
@@ -13,6 +14,6 @@ export function logout() {
       localStorageRef.removeItem("loggedInAccount");
     }
     dispatch(clearOrphanedOrderData());
-    dispatch(clearLoginAccount());
+    dispatch(clearLoginAccountAction());
   };
 }

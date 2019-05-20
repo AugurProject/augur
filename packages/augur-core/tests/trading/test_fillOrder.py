@@ -24,12 +24,13 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
     orderEventLog = {
         "universe": universe.address,
         "market": market.address,
-	    "eventType": 3,
-	    "addressData": [nullAddress, bytesToHexString(tester.a1), bytesToHexString(tester.a2)],
-	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp()],
+        "eventType": 3,
+        "addressData": [nullAddress, bytesToHexString(tester.a1), bytesToHexString(tester.a2)],
+        "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp()],
     }
 
     marketVolumeChangedLog = {
+        "universe": universe.address,
         "market": market.address,
         "volume": creatorCost + fillerCost
     }
