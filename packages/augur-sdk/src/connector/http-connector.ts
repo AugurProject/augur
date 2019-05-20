@@ -8,11 +8,11 @@ export class HTTPConnector extends Connector {
   }
 
   public async connect(params: any): Promise<any> {
-return Promise.resolve();
+    return Promise.resolve();
   }
 
   public async disconnect(): Promise<any> {
-return Promise.resolve();
+    return Promise.resolve();
   }
 
   public bindTo<R, P>(f: (db: any, augur: any, params: P) => R) {
