@@ -4,7 +4,7 @@ import { LOGIN_ACTIONS, LoginAccount, LoginAccountAction } from "modules/common/
 const DEFAULT_STATE: LoginAccount = { eth: undefined, rep: undefined, dai: undefined };
 
 export default function(
-  loginAccount = DEFAULT_STATE,
+  loginAccount: LoginAccount = DEFAULT_STATE,
   action: LoginAccountAction,
 ) {
   switch (action.type) {
