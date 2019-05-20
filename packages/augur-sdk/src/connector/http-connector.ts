@@ -9,7 +9,7 @@ export class HTTPConnector extends Connector {
   }
 
   public async connect(params: any): Promise<any> {
-
+return Promise.resolve();
   }
 
   public async disconnect(): Promise<any> {
