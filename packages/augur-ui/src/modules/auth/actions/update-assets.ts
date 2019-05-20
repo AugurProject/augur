@@ -1,6 +1,6 @@
 import { LoginAccount } from "modules/types";
 import {
-  updateLoginAccountAction
+  updateLoginAccount
 } from "modules/account/actions/login-account";
 import logError from "utils/log-error";
 import {
@@ -19,13 +19,13 @@ export function updateAssets(callback: Function = logError) {
     };
 
     if (!loginAccount.address)
-      return dispatch(updateLoginAccountAction(balances));
+      return dispatch(updateLoginAccount(balances));
     const { address } = loginAccount;
     const rep = await getRepBalance(address);
     const dai = await getDaiBalance(address);
     const { balance: eth } = await getEthBalance(address);
     balances = { rep, eth, dai };
-    dispatch(updateLoginAccountAction(balances));
+    dispatch(updateLoginAccount(balances));
     callback(null, balances);
   };
 }

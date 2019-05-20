@@ -1,5 +1,5 @@
 import { augur } from "services/augurjs";
-import { updateLoginAccountAction } from "modules/account/actions/login-account";
+import { updateLoginAccount } from "modules/account/actions/login-account";
 import logError from "utils/log-error";
 
 export const updateTimeframeData = (
@@ -20,7 +20,7 @@ export const updateTimeframeData = (
     },
     (err: any, timeframeData: any) => {
       if (err) return callback(err);
-      dispatch(updateLoginAccountAction({timeframeData}));
+      dispatch(updateLoginAccount({timeframeData}));
     },
   );
 };

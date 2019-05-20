@@ -4,7 +4,7 @@ import {
   updateAuthStatus,
   IS_LOGGED,
 } from "modules/auth/actions/auth-status";
-import { clearLoginAccountAction } from "modules/account/actions/login-account";
+import { clearLoginAccount } from "modules/account/actions/login-account";
 import { clearUserTx } from "modules/contracts/actions/contractCalls";
 
 export const updateIsLoggedAndLoadAccountData = (
@@ -12,7 +12,7 @@ export const updateIsLoggedAndLoadAccountData = (
   accountType: string
 ) => (dispatch: Function) => {
   clearUserTx();
-  dispatch(clearLoginAccountAction()); // clear the loginAccount data in local state
+  dispatch(clearLoginAccount()); // clear the loginAccount data in local state
   const displayAddress = toChecksumAddress(unlockedAddress);
   const address = unlockedAddress;
   const loginAccount = {

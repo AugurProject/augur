@@ -1,7 +1,7 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { updateTopBarPL } from "modules/positions/actions/update-top-bar-pl";
-import { updateLoginAccountAction } from "modules/account/actions/login-account";
+import { updateLoginAccount } from "modules/account/actions/login-account";
 import {
   updateAccountPositionsData,
 } from "modules/positions/actions/account-positions";
@@ -48,7 +48,7 @@ export const loadAccountPositionsTotals = (callback = logError) => (
     (err: any, positions: any) => {
       if (err) return callback(err, {});
       dispatch(
-        updateLoginAccountAction({
+        updateLoginAccount({
           totalFrozenFunds: positions.frozenFundsTotal.frozenFunds,
           tradingPositionsTotal: positions.tradingPositionsTotal,
         }),
@@ -74,7 +74,7 @@ const loadAccountPositionsInternal = (
 
       if (!options.marketId) {
         dispatch(
-          updateLoginAccountAction({
+          updateLoginAccount({
             totalFrozenFunds: positions.frozenFundsTotal.frozenFunds,
             tradingPositionsTotal: positions.tradingPositionsTotal,
           }),
