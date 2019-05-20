@@ -4,7 +4,7 @@ import { loadAccountData } from "modules/auth/actions/load-account-data";
 import {
   updateAuthStatus,
   IS_LOGGED
-} from "modules/auth/actions/update-auth-status";
+} from "modules/auth/actions/auth-status";
 import logError from "utils/log-error";
 
 export const loginWithEdgeEthereumWallet = (

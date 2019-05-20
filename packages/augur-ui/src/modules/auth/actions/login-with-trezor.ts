@@ -1,7 +1,7 @@
 import {
-  updateAuthStatus,
-  IS_LOGGED
-} from "modules/auth/actions/update-auth-status";
+updateAuthStatus,
+IS_LOGGED,
+} from "modules/auth/actions/auth-status";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import trezorSigner from "modules/auth/helpers/trezor-signer";
 import { toChecksumAddress } from "ethereumjs-util";

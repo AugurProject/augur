@@ -8,7 +8,6 @@ import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import { selectCoreStats } from "modules/account/selectors/core-stats";
 import {
-  IS_ANIMATING,
   IS_MOBILE,
   IS_MOBILE_SMALL,
   updateAppStatus
@@ -23,7 +22,6 @@ import {
   selectIsLogged,
   selectIsMobile,
   selectIsMobileSmall,
-  selectIsAnimating,
   selectLoginAccountState,
   selectModal,
   selectUniverseState,
@@ -51,7 +49,6 @@ const mapStateToProps = state => ({
   isLogged: selectIsLogged(state),
   isMobile: selectIsMobile(state),
   isMobileSmall: selectIsMobileSmall(state),
-  isAnimating: selectIsAnimating(state),
   loginAccount: selectLoginAccountState(state),
   modal: selectModal(state),
   alerts: selectInfoAlertsAndSeenCount(state),
@@ -67,8 +64,6 @@ const mapDispatchToProps = dispatch => ({
   updateIsMobile: isMobile => dispatch(updateAppStatus(IS_MOBILE, isMobile)),
   updateIsMobileSmall: isMobileSmall =>
     dispatch(updateAppStatus(IS_MOBILE_SMALL, isMobileSmall)),
-  updateIsAnimating: isAnimating =>
-    dispatch(updateAppStatus(IS_ANIMATING, isAnimating)),
   updateModal: modal => dispatch(updateModal(modal)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
   logout: () => dispatch(logout()),
