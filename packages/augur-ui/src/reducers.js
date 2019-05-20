@@ -1,4 +1,3 @@
-import accountDisputes from "modules/reports/reducers/account-disputes-state";
 import accountPositions from "modules/positions/reducers/account-positions";
 import appStatus from "modules/app/reducers/app-status";
 import sidebarStatus from "modules/app/reducers/sidebar-status";
@@ -45,7 +44,6 @@ import pendingQueue from "modules/pending-queue/reducers/pending-queue";
 
 export function createReducer() {
   return {
-    accountDisputes,
     accountPositions,
     alerts,
     appStatus,
