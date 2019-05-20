@@ -8,6 +8,7 @@ import { ParsedLog } from "@augurproject/sdk";
 
 export function processLog(augur: Augur, log: FormattedEventLog, logProcessor: EventLogProcessor): Promise<(db: Knex) => Promise<void>> {
   if (log["extraInfo"] != null && typeof log["extraInfo"] === "string") log["extraInfo"] = JSON.parse(log["extraInfo"])
+  console.log(JSON.stringify(log, null, 2));
   return (!log.removed ? logProcessor.add : logProcessor.remove)(augur, log);
 }
 

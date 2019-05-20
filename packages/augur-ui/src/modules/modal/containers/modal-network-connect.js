@@ -7,15 +7,13 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { updateEnv } from "modules/app/actions/update-env";
 import { connectAugur } from "modules/app/actions/init-augur";
 import isAugurJSVersionsEqual from "modules/auth/helpers/is-augurjs-versions-equal";
-import { augur } from "src/services/augurjs";
+import { isWeb3Transport } from "modules/contracts/actions/contractCalls";
 
 const mapStateToProps = state => ({
   modal: state.modal,
   env: state.env,
   connection: state.connection,
-  isConnectedThroughWeb3:
-    augur.rpc.getTransport() &&
-    augur.rpc.getTransport().getTransportName() === "Web3Transport"
+  isConnectedThroughWeb3: isWeb3Transport()
 });
 
 const mapDispatchToProps = dispatch => ({

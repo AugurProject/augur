@@ -29,4 +29,5 @@ contract IDisputeWindow is ITyped, ERC20Token {
     function isActive() public view returns (bool);
     function isOver() public view returns (bool);
     function onMarketFinalized() public returns (bool);
+    function redeem(address _account) public returns (bool);
 }

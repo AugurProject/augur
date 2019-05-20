@@ -9,8 +9,10 @@
     "src": "src"
   },
   "scripts": {
-    "start": "yarn build; ts-node -r tsconfig-paths/register ./src/state/Server",
+    "start": "ts-node -r tsconfig-paths/register ./src/state/Server",
+    "connect": "ts-node -r tsconfig-paths/register ./src/connector/http-connector.test",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
+    "test": "jest",
     "version": "yarn rebuild",
     "build": "tsc -b",
     "watch": "tsc -b -w",
@@ -39,9 +41,11 @@
     "@types/cors": "2.8.4",
     "@types/express": "4.16.1",
     "@types/helmet": "0.0.43",
+    "@types/node-fetch": "2.3.4",
     "@types/web3": "1.0.18",
     "async": "2.6.2",
     "cors": "2.8.5",
+    "cross-fetch": "3.0.2",
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.24",
     "express": "4.16.4",

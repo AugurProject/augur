@@ -4,12 +4,13 @@
   "description": "Augur Test",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
+  "main": "build",
   "directories": {
-    "tests": "tests"
+    "tests": "src/tests"
   },
   "scripts": {
     "version": "yarn rebuild",
-    "lint": "tslint -c tslint.json -p . ./tests/*.ts ./tests/**/*.ts ./tests/**/**/*.ts ./tests/**/**/**/*.ts",
+    "lint": "tslint -c tslint.json -p . src/tests/*.ts ./tests/**/*.ts ./tests/**/**/*.ts ./tests/**/**/**/*.ts",
     "build": "tsc -b",
     "watch": "tsc -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
@@ -35,9 +36,11 @@
     "contract-dependencies-ethers": "1.0.0-0",
     "ethers": "4.0.24",
     "ganache-core": "2.4.0",
-    "memdown": "4.0.0"
+    "memdown": "4.0.0",
+    "ganache-core": "2.4.0"
   },
   "devDependencies": {
+    "@types/argparse": "^1.0.36",
     "@types/jest": "24.0.4",
     "@types/node": "10.12.29",
     "@types/supertest": "2.0.7",

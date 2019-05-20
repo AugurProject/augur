@@ -8,23 +8,31 @@ var connectionEndpoints = require("./connection-endpoints");
 var debugOptions = require("./debug-options");
 
 function faucetIn(augur, universe, amount, auth, callback) {
-  augur.api.Universe.getReputationToken({ tx: { to: universe } }, function(
-    err,
-    reputationToken
-  ) {
+  augur.api.Universe.getReputationToken({ tx: { to: universe } }, function(err, reputationToken) {
     if (err) return callback(err);
-    if (debugOptions.cannedMarkets)
-      console.log("reputationToken:", reputationToken);
+    if (debugOptions.cannedMarkets) console.log("reputationToken:", reputationToken);
     augur.api.TestNetReputationToken.faucet({
       tx: { to: reputationToken },
       meta: auth,
       _amount: speedomatic.fix(amount, "hex"),
       onSent: function(res) {
-        if (debugOptions.cannedMarkets) console.log("faucet sent:", res.hash);
+        if (debugOptions.cannedMarkets) console.log("rep aucet sent:", res.hash);
+        // also give dai
+        var cash = augur.contracts.addresses[augur.rpc.getNetworkID()].Cash;
+        augur.api.Cash.faucet({
+          tx: { to: cash },
+          _amount: speedomatic.fix(amount, "hex"),
+          onSent: function(res) {
+            if (debugOptions.cannedMarkets) console.log("dai faucet sent:", res.hash);
+          },
+          onSuccess: function(res) {
+            if (debugOptions.cannedMarkets) console.log("dai faucet success:", res.callReturn);
+          },
+          onFailed: callback
+        });
       },
       onSuccess: function(res) {
-        if (debugOptions.cannedMarkets)
-          console.log("faucet success:", res.callReturn);
+        if (debugOptions.cannedMarkets) console.log("rep faucet success:", res.callReturn);
         callback(null);
       },
       onFailed: callback
@@ -49,10 +57,7 @@ if (require.main === module) {
     { ethereumNode: connectionEndpoints.ethereumNode },
     function(err) {
       if (err) return console.error(err);
-      console.log(
-        chalk.cyan.dim("networkId:"),
-        chalk.cyan(augur.rpc.getNetworkID())
-      );
+      console.log(chalk.cyan.dim("networkId:"), chalk.cyan(augur.rpc.getNetworkID()));
       getPrivateKey(keystoreFilePath, function(err, auth) {
         if (err) return console.log("Error: ", err);
         repFaucet(augur, 100000, auth, function(err) {

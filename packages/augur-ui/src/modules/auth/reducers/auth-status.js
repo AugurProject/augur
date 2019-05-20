@@ -7,7 +7,7 @@ import {
   IS_CONNECTION_TRAY_OPEN
 } from "modules/auth/actions/update-auth-status";
 import { NOT_CONNECTED } from "modules/common-elements/constants";
-import { CLEAR_LOGIN_ACCOUNT } from "modules/auth/actions/update-login-account";
+import { LOGIN_ACTIONS } from "modules/common/types/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {
@@ -32,7 +32,7 @@ export default function(authStatus = DEFAULT_STATE, { type, data }) {
       return authStatus;
     }
     case RESET_STATE:
-    case CLEAR_LOGIN_ACCOUNT:
+    case LOGIN_ACTIONS.CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;
     default:
       return authStatus;

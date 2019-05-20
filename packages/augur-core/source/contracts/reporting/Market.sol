@@ -46,12 +46,13 @@ contract Market is Initializable, Ownable, IMarket {
     uint256 private endTime;
     uint256 private numOutcomes;
     bytes32 private winningPayoutDistributionHash;
-    uint256 private validityBondAttoCash;
+    uint256 public validityBondAttoCash;
     uint256 private finalizationTime;
     uint256 private repBond;
     bool private disputePacingOn;
     address private repBondOwner;
     uint256 public marketCreatorFeesAttoCash;
+    uint256 public totalAffiliateFeesAttoCash;
     IDisputeCrowdsourcer public preemptiveDisputeCrowdsourcer;
 
     // Collections
@@ -303,6 +304,7 @@ contract Market is Initializable, Ownable, IMarket {
             uint256 _affiliateFees = _marketCreatorFees / affiliateFeeDivisor;
             affiliateFeesAttoCash[_affiliateAddress] = _affiliateFees;
             _marketCreatorFees = _marketCreatorFees.sub(_affiliateFees);
+            totalAffiliateFeesAttoCash = totalAffiliateFeesAttoCash.add(_affiliateFees);
         }
         marketCreatorFeesAttoCash = marketCreatorFeesAttoCash.add(_marketCreatorFees);
         if (isFinalized()) {
@@ -323,13 +325,15 @@ contract Market is Initializable, Ownable, IMarket {
                 withdrawAffiliateFees(_affiliateAddress);
             }
         } else {
-            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), marketCreatorFeesAttoCash);
+            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), marketCreatorFeesAttoCash.add(totalAffiliateFeesAttoCash));
+            totalAffiliateFeesAttoCash = 0;
         }
         marketCreatorFeesAttoCash = 0;
         return true;
     }
 
     function withdrawAffiliateFees(address _affiliate) public returns (bool) {
+        require(!isInvalid());
         uint256 _affiliateBalance = affiliateFeesAttoCash[_affiliate];
         if (_affiliateBalance == 0) {
             return true;

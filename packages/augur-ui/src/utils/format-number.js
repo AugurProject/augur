@@ -6,7 +6,7 @@ import {
 } from "speedomatic";
 import { augur } from "services/augurjs";
 import { constants } from "services/constants";
-import { ZERO, TEN } from "modules/common-elements/constants";
+import { ZERO, TEN, ETHER } from "modules/common-elements/constants";
 import addCommas from "utils/add-commas-to-number";
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -120,6 +120,19 @@ export function formatShares(num, opts) {
   return formattedShares;
 }
 
+export function formatDai(num, opts) {
+  return formatNumber(num, {
+    decimals: 2,
+    decimalsRounded: 2,
+    denomination: " DAI",
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+    ...opts
+  });
+}
+
 export function formatRep(num, opts) {
   return formatNumber(num, {
     decimals: 4,
@@ -207,7 +220,6 @@ export function formatGasCostToEther(num, opts, gasPrice) {
 
 export function formatAttoRep(num, opts) {
   if (!num || num === 0 || isNaN(num)) return 0;
-  const { ETHER } = augur.rpc.constants;
   return formatNumber(
     createBigNumber(num.toString())
       .dividedBy(ETHER)
@@ -219,7 +231,6 @@ export function formatAttoRep(num, opts) {
 // At some point potentially refactor all this to be more generic (e.g formatAttoAmount)
 export function formatAttoEth(num, opts) {
   if (!num || num === 0 || isNaN(num)) return 0;
-  const { ETHER } = augur.rpc.constants;
   return formatNumber(
     createBigNumber(num.toString())
       .dividedBy(ETHER)

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { EthPercentButton } from "modules/common-elements/buttons";
 
 import Styles from "modules/portfolio/components/common/headers/data-table-header.styles";
-import SharedStyles from "modules/portfolio/components/common/rows/open-order.styles";
+import SharedStyles from "modules/common-elements/row.styles";
 
 interface PositionsHeaderProps {
   showPercent: Boolean;
@@ -15,7 +15,7 @@ interface PositionsHeaderProps {
 const PositionsHeader = (props: PositionsHeaderProps) => (
   <ul
     className={classNames(Styles.DataTableHeader, Styles.PositionHeader, {
-      [SharedStyles.Position]: !props.extendedView,
+      [SharedStyles.Row3]: !props.extendedView,
       [Styles.DataTableHeader__extended]: props.extendedView,
       [Styles.PositionHeader__extended]: props.extendedView
     })}
