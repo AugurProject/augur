@@ -160,13 +160,26 @@
 }
 
 .Row4 {
-  position: relative;
   grid-template-columns: 2fr repeat(5, 1fr);
   padding: 0.5rem 1.75rem 0.5rem 1.5rem;
+  position: relative;
 
   > li {
     &:first-child {
+      display: flex;
       padding-left: 0;
+
+      > span:nth-of-type(2) {
+        color: @color-lightgray;
+        display: inline-block;
+        margin-left: 0.5rem;
+      }
+    }
+
+    &:last-child {
+      > span:first-of-type {
+        right: -0.75rem;
+      }
     }
   }
 
@@ -322,11 +335,25 @@
     }
   }
 
+  .Row4Parent {
+    border: 0;
+    border-bottom: 0.0625rem solid @color-primary-background;
+    padding: 0;
+  }
+
   .Row4 {
     grid-template-columns: repeat(5, 1fr);
 
     &::before {
       width: 2px;
+    }
+
+    > li {
+      &:last-of-type {
+        > span {
+          display: flex;
+        }
+      }
     }
   }
 }

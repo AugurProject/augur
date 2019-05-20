@@ -103,7 +103,7 @@ div.MarketOpenOrdersList__table {
   padding: 0.5rem 1rem;
 }
 
-@media @breakpoint-mobile {
+@media @breakpoint-mobile-mid {
   .MarketOrders__footer {
     background: @color-tertiary-background;
     margin-top: 0.125rem;
@@ -121,15 +121,17 @@ div.MarketOpenOrdersList__table {
   .MarketOpenOrdersList__table-header {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
+    padding: 0 1.75rem 0 1.5rem;
 
     > li {
       &:first-child {
+        display: none;
         flex-grow: unset;
-        padding-left: 16px;
+        padding-left: 1rem;
       }
 
-      &:last-of-type {
-        padding-right: 1.5rem;
+      &:nth-of-type(2) {
+        text-align: left;
       }
     }
   }

@@ -342,7 +342,6 @@ export default class MarketView extends Component {
                   outcomes={outcomes}
                   selectedOutcome={s.selectedOutcome}
                   updateSelectedOutcome={this.updateSelectedOutcome}
-                  isMobile={isMobile}
                 />
                 <div className={Styles.MarketView__priceHistoryChart}>
                   <p>Price History</p>
