@@ -1,5 +1,4 @@
 import {
-  IS_ANIMATING,
   IS_MOBILE,
   IS_MOBILE_SMALL,
   TRANSACTIONS_LOADING,
@@ -8,7 +7,6 @@ import {
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {
-  [IS_ANIMATING]: false,
   [IS_MOBILE]: false,
   [IS_MOBILE_SMALL]: false,
   [TRANSACTIONS_LOADING]: false

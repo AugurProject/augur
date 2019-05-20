@@ -1,4 +1,3 @@
-export const IS_ANIMATING = "isAnimating";
 export const IS_MOBILE = "isMobile";
 export const IS_MOBILE_SMALL = "isMobileSmall";
 export const TRANSACTIONS_LOADING = "transactionsLoading";

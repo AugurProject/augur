@@ -95,7 +95,6 @@ export default class AppView extends Component {
     updateIsMobile: PropTypes.func.isRequired,
     updateIsMobileSmall: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
-    updateIsAnimating: PropTypes.func.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
     augurNode: PropTypes.string,
     ethereumNodeHttp: PropTypes.string,
@@ -372,13 +371,11 @@ export default class AppView extends Component {
         }
       });
     };
-    const { updateIsAnimating } = this.props;
     const alreadyDone =
       (!nowOpen && this.state[menuKey].scalar === 0) ||
       (nowOpen && this.state[menuKey].scalar === 1);
     if (alreadyDone) {
       if (cb && typeof cb === "function") cb();
-      updateIsAnimating(false);
     } else {
       const baseMenuState = { open: nowOpen };
       const currentTween = tween({
@@ -392,11 +389,9 @@ export default class AppView extends Component {
           );
         }
       }).then(() => {
-        updateIsAnimating(false);
         if (cb && typeof cb === "function") cb();
         setMenuState({ locked: false, currentTween: null });
       });
-      updateIsAnimating(true);
       setMenuState({ currentTween });
     }
   }
