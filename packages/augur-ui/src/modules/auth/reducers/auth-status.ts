@@ -3,13 +3,11 @@ import {
   AppStatus,
   AppStatusAction,
 } from "modules/common/types/auth-status";
-import { NOT_CONNECTED } from "modules/common-elements/constants";
 import { LOGIN_ACTIONS } from "modules/common/types/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE: AppStatus = {
   [AUTH_STATUS.IS_LOGGED]: false,
-  [AUTH_STATUS.LEDGER_STATUS]: NOT_CONNECTED,
   [AUTH_STATUS.EDGE_CONTEXT]: undefined,
   [AUTH_STATUS.EDGE_LOADING]: false,
   [AUTH_STATUS.IS_CONNECTION_TRAY_OPEN]: false,
