@@ -1,4 +1,9 @@
-import { string } from "prop-types";
+export interface Connection {
+  isConnected: boolean;
+  isConnectedToAugurNode: boolean;
+  augurNodeNetworkId: string;
+  isReconnectionPaused: boolean;
+}
 
 export interface Category {
   categoryName: string;
