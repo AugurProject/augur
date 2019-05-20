@@ -14,7 +14,7 @@ export const UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS =
  * @param {string[]} marketIds
  * @returns {{type: string, data: string[]}}
  */
-export function updateDesignatedReportingMarkets(marketIds: Array<String>) {
+export function updateDesignatedReportingMarkets(marketIds: Array<string>) {
   return {
     type: UPDATE_DESIGNATED_REPORTING_MARKETS,
     data: { marketIds }
@@ -26,7 +26,7 @@ export function updateDesignatedReportingMarkets(marketIds: Array<String>) {
  * @param {string[]} marketIds
  * @returns {{type: string, data: string[]}}
  */
-export function updateAwaitingDisputeMarkets(marketIds: Array<String>) {
+export function updateAwaitingDisputeMarkets(marketIds: Array<string>) {
   return {
     type: UPDATE_AWAITING_DISPUTE_MARKETS,
     data: { marketIds }
@@ -38,7 +38,7 @@ export function updateAwaitingDisputeMarkets(marketIds: Array<String>) {
  * @param {string[]} marketIds
  * @returns {{type: string, data: string[]}}
  */
-export function updateCrowdDisputeMarkets(marketIds: Array<String>) {
+export function updateCrowdDisputeMarkets(marketIds: Array<string>) {
   return {
     type: UPDATE_CROWD_DISPUTE_MARKETS,
     data: { marketIds }
@@ -50,7 +50,7 @@ export function updateCrowdDisputeMarkets(marketIds: Array<String>) {
  * @param {string[]} marketIds
  * @returns {{type: string, data: string[]}}
  */
-export function updateResolvedMarkets(marketIds: Array<String>) {
+export function updateResolvedMarkets(marketIds: Array<string>) {
   return {
     type: UPDATE_RESOLVED_REPORTING_MARKETS,
     data: { marketIds }
@@ -62,7 +62,7 @@ export function updateResolvedMarkets(marketIds: Array<String>) {
  * @param {string[]} marketIds
  * @returns {{type: string, data: string[]}}
  */
-export function updateOpenMarkets(marketIds: Array<String>) {
+export function updateOpenMarkets(marketIds: Array<string>) {
   return {
     type: UPDATE_OPEN_REPORTING_MARKETS,
     data: { marketIds }
@@ -75,7 +75,7 @@ export function updateOpenMarkets(marketIds: Array<String>) {
  * @returns {{type: string, data: string[]}}
  */
 export function updateUpcomingDesignatedReportingMarkets(
-  marketIds: Array<String>
+  marketIds: Array<string>
 ) {
   return {
     type: UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS,

@@ -1,3 +1,43 @@
+export interface FilledOrder {
+  creator: string;
+  orderId: string;
+  outcome: string;
+  amount: string;
+  price: string;
+  type: string;
+  timestamp: number;
+  transactionHash: string;
+  marketId: string;
+  logIndex: number;
+}
+
+export interface TradingHistory {
+  trades: Array<FilledOrder>;
+}
+
+export interface MarketTradingHistory {
+  [marketId: string]: TradingHistory;
+}
+export interface MarketsInReporting {
+  designated: Array<string>;
+  open: Array<string>;
+  upcoming: Array<string>;
+  awaiting: Array<string>;
+  dispute: Array<string>;
+  resolved: Array<string>;
+}
+export interface GasPriceInfo {
+  average: number;
+  fast: number;
+  safeLow: number;
+}
+export interface FilterSortOptions {
+  marketFilter: string;
+  marketSort: string;
+  maxFee: string;
+  transactionPeriod: string;
+  hasOrders: boolean;
+}
 export interface Favorite {
   marketId: string;
   timestamp: number;

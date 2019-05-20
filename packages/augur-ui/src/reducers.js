@@ -9,7 +9,6 @@ import env from "modules/app/reducers/env";
 import favorites from "modules/markets/reducers/favorites";
 import filterSortOptions from "modules/filter-sort/reducers/filter-sort-options";
 import gasPriceInfo from "modules/app/reducers/gas-price-info";
-import initialReporters from "modules/reports/reducers/initial-reporters-data";
 import loginAccount from "modules/auth/reducers/login-account";
 import marketTradingHistory from "modules/markets/reducers/market-trading-history";
 import marketReportState from "modules/reports/reducers/market-report-state";
@@ -51,7 +50,6 @@ export function createReducer() {
     favorites,
     filterSortOptions,
     gasPriceInfo,
-    initialReporters,
     loginAccount,
     marketReportState,
     marketTradingHistory,
