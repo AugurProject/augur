@@ -23,6 +23,8 @@ export function Getter(alternateInterface?: string) {
 
       Router.Add(propertyKey, descriptor.value, Object(target)[target.name + "Params"]);
     }
+
+    Object.defineProperty(Object(target)[propertyKey], 'name', {value: propertyKey, writable: false});
   };
 }
 
