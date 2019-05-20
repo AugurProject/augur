@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 
-import AlertsView from "modules/alerts/components/alerts-view/alerts-view";
+import AlertsView from "modules/alerts/components/alerts-view";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import {
   updateAlert,
@@ -8,16 +8,16 @@ import {
   clearAlerts
 } from "modules/alerts/actions/alerts";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   return {
     alerts
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  updateAlert: (id, alert) => dispatch(updateAlert(id, alert)),
-  removeAlert: id => dispatch(removeAlert(id)),
+const mapDispatchToProps = (dispatch: Function) => ({
+  updateAlert: (id: String, alert: any) => dispatch(updateAlert(id, alert)),
+  removeAlert: (id: String) => dispatch(removeAlert(id)),
   clearAlerts: () => dispatch(clearAlerts())
 });
 

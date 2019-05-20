@@ -3,14 +3,23 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
-import Alert from "modules/alerts/components/alert/alert";
+import Alert from "modules/alerts/components/alert";
 
 import { Close } from "modules/common/components/icons";
 
-import Styles from "modules/alerts/components/alerts-view/alerts-view.styles";
+import Styles from "modules/alerts/components/alerts-view.styles";
 import ToggleHeightStyles from "utils/toggle-height.styles";
 
-export default class AlertsView extends Component {
+interface AlertsViewProps {
+  alerts: Array<any>;
+  updateAlert: Function;
+  removeAlert: Function;
+  clearAlerts: Function;
+  toggleAlerts: Function;
+  alertsVisible: Boolean;
+}
+
+export default class AlertsView extends Component<AlertsViewProps> {
   static propTypes = {
     alerts: PropTypes.array.isRequired,
     updateAlert: PropTypes.func.isRequired,
@@ -20,7 +29,10 @@ export default class AlertsView extends Component {
     alertsVisible: PropTypes.bool.isRequired
   };
 
-  componentWillUpdate(nextProps) {
+  alertsContainer: any = null;
+  alerts: any = null;
+
+  componentWillUpdate(nextProps: AlertsViewProps) {
     if (this.props.alertsVisible && !nextProps.alertsVisible) {
       const { updateAlert, alerts } = this.props;
       alerts.forEach(alert => {
@@ -89,14 +101,14 @@ export default class AlertsView extends Component {
           {alerts && alerts.length ? (
             <div className={Styles.dismissContainer}>
               <div className={Styles.dismissContainerBorder}>
-                <div
+                <button
                   className={Styles.dismissButton}
                   onClick={clearAlerts}
                   role="button"
                   tabIndex="0"
                 >
                   Dismiss All
-                </div>
+                </button>
               </div>
             </div>
           ) : null}

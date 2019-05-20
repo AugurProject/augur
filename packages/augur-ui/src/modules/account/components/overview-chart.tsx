@@ -173,7 +173,7 @@ export default class OverviewChart extends React.Component<
     }
     return (
       <div
-        className={Styles.AccountOverviewChart}
+        className={Styles.OverviewChart}
         ref={container => {
           this.container = container;
         }}

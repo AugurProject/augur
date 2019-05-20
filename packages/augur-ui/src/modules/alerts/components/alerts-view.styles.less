@@ -13,6 +13,26 @@
   text-align: left;
   width: 360px;
   z-index: @mask-above;
+
+  @media @breakpoint-mobile {
+    bottom: 0;
+    flex-flow: column nowrap;
+    height: 100%;
+    left: 0;
+    max-height: 100%;
+    padding-bottom: 0.25em;
+    right: 0;
+    top: 0;
+    width: 100%;
+
+    &::after {
+      border: none;
+      bottom: 0;
+      content: "";
+      display: none;
+      right: 0;
+    }
+  }
 }
 
 .dark {
@@ -23,29 +43,44 @@
   position: absolute;
   right: 0;
   top: @top-bar-height;
+
+  @media @breakpoint-mobile {
+    bottom: 0;
+    left: 0;
+    top: 0;
+  }
 }
 
 .box {
   overflow-y: auto;
   width: 100%;
+
+  @media @breakpoint-mobile {
+    margin-top: 2.5rem;
+    max-height: unset;
+  }
 }
 
 .close {
   cursor: pointer;
   display: none;
-  height: @font-size-normal;
-  left: @font-size-normal;
+  height: @size-16;
+  left: @size-16;
   position: absolute;
-  top: @font-size-normal;
-  width: @font-size-normal;
+  top: @size-16;
+  width: @size-16;
+
+  @media @breakpoint-mobile {
+    display: block;
+  }
 }
 
 .NullStateMessage {
+  .text-16;
+
   align-self: center;
   color: @color-lightgray;
-  font-size: 1rem;
-  font-weight: 400;
-  margin-top: 0.5rem;
+  margin-top: @size-8;
   padding: 30px;
   text-align: center;
   width: 100%;
@@ -58,7 +93,7 @@
   flex-grow: 1;
   justify-content: flex-end;
   min-height: 27px;
-  padding: 7px 16px;
+  padding: 7px @size-16;
 }
 
 .dismissContainerBorder {
@@ -72,7 +107,7 @@
   color: @color-lightergray;
   cursor: pointer;
   display: inline;
-  font-size: @font-size-small;
+  font-size: @size-12;
 
   &:hover {
     border-bottom: dotted 0.5px @color-secondary-text;
@@ -81,50 +116,5 @@
 
   &:focus {
     outline: none;
-  }
-}
-
-@media @breakpoint-mobile {
-  .AlertsView {
-    bottom: 0;
-    display: flex;
-    flex-flow: column nowrap;
-    height: 100%;
-    left: 0;
-    max-height: 100%;
-    padding-bottom: 0.25em;
-    right: 0;
-    text-align: left;
-    top: 0;
-    width: 100%;
-    z-index: @mask-above;
-  }
-
-  .parent {
-    bottom: 0;
-    left: 0;
-    top: 0;
-  }
-
-  .AlertsView::after {
-    border: none;
-    bottom: 0;
-    content: "";
-    display: none;
-    right: 0;
-  }
-
-  .box {
-    margin-top: 2.5rem;
-    max-height: unset;
-    overflow-y: auto;
-  }
-
-  .close {
-    display: block;
-  }
-
-  .NullStateMessage {
-    margin-top: 0.5rem;
   }
 }

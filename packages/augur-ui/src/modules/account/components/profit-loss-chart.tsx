@@ -23,7 +23,7 @@ interface ChartState {
   options: any;
 }
 
-export default class AccountProfitLossChart extends Component<
+export default class ProfitLossChart extends Component<
   ChartProps,
   ChartState
 > {
@@ -67,7 +67,7 @@ export default class AccountProfitLossChart extends Component<
         endOnTick: false,
         startOnTick: false,
         labels: {
-          style: Styles.AccountOverviewChart_chart_labels,
+          style: Styles.Labels,
           format: "{value:%b %d}",
           formatter() {
             if (this.isLast) return "Today";
@@ -211,7 +211,7 @@ export default class AccountProfitLossChart extends Component<
   render() {
     return (
       <div
-        className={Styles.AccountOverviewChart_chart}
+        className={Styles.ProfitLossChart}
         ref={container => {
           this.container = container;
         }}

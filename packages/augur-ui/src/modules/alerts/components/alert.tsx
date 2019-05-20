@@ -5,10 +5,23 @@ import moment from "moment";
 import classNames from "classnames";
 
 import { Close } from "modules/common/components/icons";
-import Styles from "modules/alerts/components/alert/alert.styles";
+import Styles from "modules/alerts/components/alert.styles";
 import EtherscanLink from "modules/common/containers/etherscan-link";
 
-export default class Alert extends Component {
+interface AlertProps {
+  id: String;
+  description?: String;
+  linkPath?: String | any;
+  onClick?: Function;
+  removeAlert: Function;
+  seen: Boolean;
+  timestamp?: number;
+  title: String;
+  status: String;
+  toggleAlerts: Function;
+}
+
+export default class Alert extends Component<AlertProps> {
   static propTypes = {
     description: PropTypes.string,
     id: PropTypes.string.isRequired,
@@ -48,12 +61,12 @@ export default class Alert extends Component {
           this.alert = alert;
         }}
         className={classNames(Styles.Alert, {
-          [Styles.Alert__seen]: seen
+          [Styles.Seen]: seen
         })}
       >
-        <div className={Styles.Alert__column} style={{ flex: "1" }}>
+        <div className={Styles.Column} style={{ flex: "1" }}>
           <Link
-            className={Styles.Alert__link}
+            className={Styles.Link}
             to={linkPath || ""}
             onClick={e => {
               e.stopPropagation();
@@ -61,42 +74,42 @@ export default class Alert extends Component {
               if (linkPath && onClick) toggleAlerts();
             }}
           >
-            <div className={Styles.Alert__row}>
-              <div className={Styles.Alert__status}>{status}</div>
+            <div className={Styles.Row}>
+              <div className={Styles.Status}>{status}</div>
             </div>
-            <div className={Styles.Alert__row}>
-              <span className={Styles.Alert__title}>{title}</span>
+            <div className={Styles.Row}>
+              <span className={Styles.Title}>{title}</span>
             </div>
             {description &&
               description !== "" && (
-                <div className={Styles.Alert__row}>
-                  <span className={Styles.Alert__description}>
+                <div className={Styles.Row}>
+                  <span className={Styles.Description}>
                     {description}
                   </span>
                 </div>
               )}
           </Link>
-          <div className={Styles.Alert__row}>
-            <span className={Styles.Alert__etherLink}>
+          <div className={Styles.Row}>
+            <span className={Styles.EtherLink}>
               <EtherscanLink txhash={id} label="etherscan tx" />
             </span>
-            <span className={Styles.Alert__time}>
+            <span className={Styles.Time}>
               &nbsp;— {moment.unix(timestamp).fromNow()}
             </span>
           </div>
         </div>
         <div
-          className={Styles.Alert__column}
+          className={Styles.Column}
           style={{ justifyContent: "center" }}
         >
-          <div className={Styles.Alert__row}>
+          <div className={Styles.Row}>
             <button
-              className={Styles.Alert__close}
+              className={Styles.Close}
               onClick={e => {
                 removeAlert();
               }}
             >
-              <div className={Styles.Alert__closeButton}>{Close}</div>
+              <div className={Styles.CloseButton}>{Close}</div>
             </button>
           </div>
         </div>

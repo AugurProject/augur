@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  padding: 16px 24px;
+  padding: @size-16 @size-24;
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -15,28 +15,28 @@
   }
 }
 
-.Alert__seen {
+.Seen {
   background-color: @color-tertiary-background;
 }
 
-.Alert__row {
+.Row {
   display: flex;
 }
 
-.Alert__column {
+.Column {
   display: flex;
   flex-direction: column;
 }
 
-.Alert__closeButton {
+.CloseButton {
   display: block;
 }
 
-.Alert__closeButtonHidden {
+.CloseButtonHidden {
   display: none;
 }
 
-.Alert__title {
+.Title {
   color: @color-secondary-text;
   flex: 0 1 auto;
   font-size: @font-size-medium;
@@ -50,11 +50,11 @@
   width: 17.188rem;
 }
 
-.Alert__title::first-letter {
+.Title::first-letter {
   text-transform: capitalize;
 }
 
-.Alert__status {
+.Status {
   color: @color-secondary-text;
   font-size: @font-size-extra-small;
   font-weight: 500;
@@ -63,14 +63,14 @@
   text-transform: uppercase;
 }
 
-.Alert__etherLink {
+.EtherLink {
   color: @color-secondary-text;
   font-size: @font-size-extra-small;
   font-weight: 500;
   text-decoration: underline;
 }
 
-.Alert__dot {
+.Dot {
   flex: 0 1rem;
   height: 1rem;
   left: 0.5rem;
@@ -80,7 +80,7 @@
   width: 1rem;
 }
 
-.Alert__dot-seen {
+.DotSeen {
   flex: 0 0 0;
   height: 0;
   margin: 0;
@@ -88,36 +88,34 @@
   width: 0;
 }
 
-.Alert__close {
+.Close {
   align-self: baseline;
   margin-left: auto;
-  width: 12px;
+  width: @size-12;
 }
 
-.Alert__description {
+.Description {
   flex: 1 0 100%;
   font-size: @font-size-small;
   height: 0.875rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: @size-4;
   overflow: hidden;
-  padding-right: 20px;
+  padding-right: @size-20;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 17.188rem;
-}
 
-.Alert__time {
-  color: @color-secondary-text;
-  font-size: @font-size-extra-small;
-  margin-right: 0.25rem;
-}
-
-@media @breakpoint-mobile {
-  .Alert__description {
+  @media @breakpoint-mobile {
     flex: 1 0 100%;
     font-size: @font-size-small;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+
+.Time {
+  color: @color-secondary-text;
+  font-size: @font-size-extra-small;
+  margin-right: 0.25rem;
 }
