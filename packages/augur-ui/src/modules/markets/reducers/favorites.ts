@@ -4,18 +4,19 @@ import {
 } from "modules/markets/actions/update-favorites";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
+import { BaseAction } from "src/modules/types";
 
 const DEFAULT_STATE = {};
 
-export default function(favorites = DEFAULT_STATE, { type, data }) {
-  switch (type) {
+export default function(favorites = DEFAULT_STATE, action: BaseAction) {
+  switch (action.type) {
     case UPDATE_FAVORITES:
       return {
         ...favorites,
-        ...data.favorites
+        ...action.data.favorites
       };
     case TOGGLE_FAVORITE: {
-      const { marketId, timestamp } = data;
+      const { marketId, timestamp } = action.data;
       const newFavorites = {
         ...favorites
       };

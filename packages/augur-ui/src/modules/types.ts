@@ -1,3 +1,7 @@
+export interface Favorite {
+  marketId: string;
+  timestamp: number;
+}
 
 export interface EthereumNodeOptions {
   blockRetention: number;
