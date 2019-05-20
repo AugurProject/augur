@@ -5,7 +5,7 @@ import {
   CLEAR_ALERTS
 } from "modules/alerts/actions/alerts";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { LOGIN_ACTIONS } from "modules/account/actions/login-account";
+import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 
 const DEFAULT_STATE = [];
 
@@ -73,7 +73,7 @@ export default function(alerts = DEFAULT_STATE, { data, type }) {
       return alerts.filter(it => it.level !== data.level);
 
     case RESET_STATE:
-    case LOGIN_ACTIONS.CLEAR_LOGIN_ACCOUNT:
+    case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;
     default:
       return alerts;

@@ -2,7 +2,7 @@ import {
   UPDATE_FAVORITES,
   TOGGLE_FAVORITE
 } from "modules/markets/actions/update-favorites";
-import { LOGIN_ACTIONS } from "modules/account/actions/login-account";
+import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
@@ -27,7 +27,7 @@ export default function(favorites = DEFAULT_STATE, { type, data }) {
       return newFavorites;
     }
     case RESET_STATE:
-    case LOGIN_ACTIONS.CLEAR_LOGIN_ACCOUNT:
+    case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;
     default:
       return favorites;

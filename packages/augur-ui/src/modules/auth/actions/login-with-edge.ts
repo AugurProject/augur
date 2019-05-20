@@ -3,7 +3,7 @@ import { EDGE_WALLET_TYPE, ACCOUNT_TYPES } from "modules/common-elements/constan
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import {
   updateAuthStatus,
-  AUTH_STATUS
+  IS_LOGGED
 } from "modules/auth/actions/auth-status";
 import logError from "utils/log-error";
 
@@ -14,7 +14,7 @@ export const loginWithEdgeEthereumWallet = (
 ) => (dispatch: Function) => {
   const mixedCaseAddress: String = ethereumWallet.keys.ethereumAddress;
   const lowerCaseAddress: String = mixedCaseAddress.toLowerCase();
-  dispatch(updateAuthStatus(AUTH_STATUS.IS_LOGGED, true));
+  dispatch(updateAuthStatus(IS_LOGGED, true));
   dispatch(
     loadAccountData({
       address: lowerCaseAddress,

@@ -1,6 +1,6 @@
 import {
 updateAuthStatus,
-AUTH_STATUS,
+IS_LOGGED,
 } from "modules/auth/actions/auth-status";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import trezorSigner from "modules/auth/helpers/trezor-signer";
@@ -13,7 +13,7 @@ export default function loginWithTrezor(
   addressPath: String
 ) {
   return (dispatch: Function) => {
-    dispatch(updateAuthStatus(AUTH_STATUS.IS_LOGGED, true));
+    dispatch(updateAuthStatus(IS_LOGGED, true));
     dispatch(
       loadAccountData({
         address,

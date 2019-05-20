@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import ConnectAccount from "modules/auth/components/connect-account/connect-account";
 import {
   updateAuthStatus,
-  AUTH_STATUS
+  IS_CONNECTION_TRAY_OPEN
 } from "modules/auth/actions/auth-status";
 
 const mapStateToProps = state => ({
@@ -14,7 +14,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateConnectionTray: value =>
-    dispatch(updateAuthStatus(AUTH_STATUS.IS_CONNECTION_TRAY_OPEN, value))
+    dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value))
 });
 
 export default withRouter(

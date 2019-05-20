@@ -1,6 +1,6 @@
 import {
   updateAuthStatus,
-  AUTH_STATUS,
+  IS_LOGGED,
 } from "modules/auth/actions/auth-status";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import { toChecksumAddress } from "ethereumjs-util";
@@ -12,7 +12,7 @@ export default function loginWithLedger(
   derivationPath: string
 ) {
   return (dispatch: Function) => {
-    dispatch(updateAuthStatus(AUTH_STATUS.IS_LOGGED, true));
+    dispatch(updateAuthStatus(IS_LOGGED, true));
     dispatch(
       loadAccountData({
         address,

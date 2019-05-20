@@ -2,7 +2,7 @@ import { toChecksumAddress } from "ethereumjs-util";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import {
   updateAuthStatus,
-  AUTH_STATUS,
+  IS_LOGGED,
 } from "modules/auth/actions/auth-status";
 import { clearLoginAccountAction } from "modules/account/actions/login-account";
 import { clearUserTx } from "modules/contracts/actions/contractCalls";
@@ -21,6 +21,6 @@ export const updateIsLoggedAndLoadAccountData = (
     meta: { accountType, address, signer: null }
   };
 
-  dispatch(updateAuthStatus(AUTH_STATUS.IS_LOGGED, true));
+  dispatch(updateAuthStatus(IS_LOGGED, true));
   dispatch(loadAccountData(loginAccount));
 };
