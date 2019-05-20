@@ -1,5 +1,4 @@
 import { Connector, Callback } from "./connector";
-// TODO: use cross-fetch?
 import fetch from "cross-fetch";
 
 export class HTTPConnector extends Connector {
