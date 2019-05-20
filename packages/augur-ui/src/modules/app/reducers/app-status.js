@@ -1,15 +1,13 @@
 import {
   IS_MOBILE,
   IS_MOBILE_SMALL,
-  TRANSACTIONS_LOADING,
   UPDATE_APP_STATUS
 } from "modules/app/actions/update-app-status";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {
   [IS_MOBILE]: false,
-  [IS_MOBILE_SMALL]: false,
-  [TRANSACTIONS_LOADING]: false
+  [IS_MOBILE_SMALL]: false
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);
