@@ -1,7 +1,7 @@
 import {
-  updateAuthStatus,
-  IS_LOGGED
-} from "modules/auth/actions/update-auth-status";
+updateAuthStatus,
+AUTH_STATUS,
+} from "modules/common/types/auth-status";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import trezorSigner from "modules/auth/helpers/trezor-signer";
 import { toChecksumAddress } from "ethereumjs-util";
@@ -13,7 +13,7 @@ export default function loginWithTrezor(
   addressPath: String
 ) {
   return (dispatch: Function) => {
-    dispatch(updateAuthStatus(IS_LOGGED, true));
+    dispatch(updateAuthStatus(AUTH_STATUS.IS_LOGGED, true));
     dispatch(
       loadAccountData({
         address,
