@@ -18,7 +18,7 @@ import { placeTrade } from "modules/trades/actions/place-trade";
 import {
   updateAuthStatus,
   AUTH_STATUS
-} from "modules/common/types/auth-status";
+} from "modules/auth/actions/auth-status";
 
 const mapStateToProps = (state, ownProps) => {
   const { authStatus, appStatus } = state;

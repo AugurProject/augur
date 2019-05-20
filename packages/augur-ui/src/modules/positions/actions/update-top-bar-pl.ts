@@ -1,5 +1,5 @@
 import { augur } from "services/augurjs";
-import { updateLoginAccountAction } from "modules/common/types/login-account";
+import { updateLoginAccountAction } from "modules/account/actions/login-account";
 import logError from "utils/log-error";
 
 export const updateTopBarPL = (

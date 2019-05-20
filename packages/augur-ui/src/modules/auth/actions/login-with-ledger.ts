@@ -1,7 +1,7 @@
 import {
   updateAuthStatus,
   AUTH_STATUS,
-} from "modules/common/types/auth-status";
+} from "modules/auth/actions/auth-status";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import { toChecksumAddress } from "ethereumjs-util";
 import ledgerSigner from "modules/auth/helpers/ledger-signer";

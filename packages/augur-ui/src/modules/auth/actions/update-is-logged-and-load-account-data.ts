@@ -3,8 +3,8 @@ import { loadAccountData } from "modules/auth/actions/load-account-data";
 import {
   updateAuthStatus,
   AUTH_STATUS,
-} from "modules/common/types/auth-status";
-import { clearLoginAccountAction } from "modules/common/types/login-account";
+} from "modules/auth/actions/auth-status";
+import { clearLoginAccountAction } from "modules/account/actions/login-account";
 import { clearUserTx } from "modules/contracts/actions/contractCalls";
 
 export const updateIsLoggedAndLoadAccountData = (

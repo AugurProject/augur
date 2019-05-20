@@ -1,8 +1,7 @@
+import { LoginAccount } from "modules/types";
 import {
-  LoginAccount,
   updateLoginAccountAction
-} from "modules/common/types/login-account";
-import { voidFunction } from "modules/common/types";
+} from "modules/account/actions/login-account";
 import logError from "utils/log-error";
 import {
   getEthBalance,
@@ -10,7 +9,7 @@ import {
   getRepBalance
 } from "src/modules/contracts/actions/contractCalls";
 
-export function updateAssets(callback: voidFunction = logError) {
+export function updateAssets(callback: Function = logError) {
   return async (dispatch: Function, getState: Function) => {
     const { loginAccount } = getState();
     let balances: LoginAccount = {

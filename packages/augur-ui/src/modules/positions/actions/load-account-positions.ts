@@ -1,11 +1,11 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { updateTopBarPL } from "modules/positions/actions/update-top-bar-pl";
-import { updateLoginAccountAction } from "modules/common/types/login-account";
+import { updateLoginAccountAction } from "modules/account/actions/login-account";
 import {
   updateAccountPositionsData,
-  AccountPosition,
-} from "src/modules/common/types/account-positions";
+} from "modules/positions/actions/account-positions";
+import { AccountPosition } from "modules/types";
 
 export const loadAccountPositions = (
   options: any = {},

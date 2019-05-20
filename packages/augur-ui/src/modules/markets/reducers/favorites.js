@@ -2,7 +2,7 @@ import {
   UPDATE_FAVORITES,
   TOGGLE_FAVORITE
 } from "modules/markets/actions/update-favorites";
-import { LOGIN_ACTIONS } from "modules/common/types/login-account";
+import { LOGIN_ACTIONS } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};

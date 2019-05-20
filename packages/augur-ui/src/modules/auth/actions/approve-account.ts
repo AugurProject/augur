@@ -1,6 +1,6 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
-import { updateLoginAccountAction } from "modules/common/types/login-account";
+import { updateLoginAccountAction } from "modules/account/actions/login-account";
 import { updateAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";

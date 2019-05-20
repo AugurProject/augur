@@ -1,5 +1,5 @@
 import { UPDATE_READ_NOTIFICATIONS } from "modules/notifications/actions/update-notifications";
-import { LOGIN_ACTIONS } from "modules/common/types/login-account";
+import { LOGIN_ACTIONS } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { INotifications } from "modules/account/components/notifications/notifications";
 

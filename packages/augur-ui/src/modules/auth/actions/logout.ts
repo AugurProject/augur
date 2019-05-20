@@ -1,5 +1,5 @@
 
-import { clearLoginAccountAction } from "modules/common/types/login-account";
+import { clearLoginAccountAction } from "modules/account/actions/login-account";
 import { clearOrphanedOrderData } from "modules/orders/actions/orphaned-orders";
 import { clearUserTx } from "modules/contracts/actions/contractCalls";
 

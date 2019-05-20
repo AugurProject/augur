@@ -4,7 +4,7 @@ import {
   DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH,
   CLEAR_TRANSACTION_DATA
 } from "modules/transactions/actions/update-transactions-data";
-import { LOGIN_ACTIONS } from "modules/common/types/login-account";
+import { LOGIN_ACTIONS } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { PENDING } from "modules/common-elements/constants";
 

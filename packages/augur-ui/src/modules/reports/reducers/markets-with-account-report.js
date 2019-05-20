@@ -1,5 +1,5 @@
 import { UPDATE_MARKETS_WITH_ACCOUNT_REPORT_DATA } from "modules/reports/actions/update-markets-with-account-report-data";
-import { LOGIN_ACTIONS } from "modules/common/types/login-account";
+import { LOGIN_ACTIONS } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};

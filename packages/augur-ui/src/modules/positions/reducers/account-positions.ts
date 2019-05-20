@@ -1,32 +1,27 @@
-import {
-  POSITION_ACTIONS,
-  AccountPosition,
-  AccountPositionAction,
-} from "modules/common/types/account-positions";
-import { LOGIN_ACTIONS } from "modules/common/types/login-account";
+import { AccountPosition, BaseAction } from "modules/types";
+
+import { UPDATE_ACCOUNT_POSITIONS_DATA } from "modules/positions/actions/account-positions";
+import { LOGIN_ACTIONS } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE: AccountPosition = {};
 
-export default function(
-  accountPositions = DEFAULT_STATE,
-  action: AccountPositionAction,
-) {
+export default function(accountPositions = DEFAULT_STATE, action: BaseAction) {
   switch (action.type) {
-    case POSITION_ACTIONS.UPDATE_ACCOUNT_POSITIONS_DATA: {
+    case UPDATE_ACCOUNT_POSITIONS_DATA: {
       const { positionData, marketId } = action.data;
       if (positionData) {
         if (marketId) {
           return {
             ...accountPositions,
             [marketId]: {
-              ...positionData[marketId],
-            },
+              ...positionData[marketId]
+            }
           };
         }
         return {
           ...accountPositions,
-          ...positionData,
+          ...positionData
         };
       }
       return accountPositions;

@@ -2,7 +2,7 @@ import {
   UPDATE_TRANSACTION_STATUS,
   CLEAR_TRANSACTION_STATUS
 } from "modules/transactions/actions/update-transactions-status";
-import { LOGIN_ACTIONS } from "modules/common/types/login-account";
+import { LOGIN_ACTIONS } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};

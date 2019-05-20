@@ -1,9 +1,6 @@
-import {
-  AUTH_STATUS,
-  AppStatus,
-  AppStatusAction,
-} from "modules/common/types/auth-status";
-import { LOGIN_ACTIONS } from "modules/common/types/login-account";
+import { AUTH_STATUS } from "modules/auth/actions/auth-status";
+import { AppStatus, BaseAction } from "modules/types";
+import { LOGIN_ACTIONS } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE: AppStatus = {
@@ -17,7 +14,7 @@ const KEYS = Object.keys(DEFAULT_STATE);
 
 export default function(
   authStatus: AppStatus = DEFAULT_STATE,
-  action: AppStatusAction,
+  action: BaseAction,
 ) {
   switch (action.type) {
     case AUTH_STATUS.UPDATE_AUTH_STATUS: {

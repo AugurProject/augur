@@ -5,7 +5,7 @@ import {
   CLEAR_ALERTS
 } from "modules/alerts/actions/alerts";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { LOGIN_ACTIONS } from "modules/common/types/login-account";
+import { LOGIN_ACTIONS } from "modules/account/actions/login-account";
 
 const DEFAULT_STATE = [];
 
