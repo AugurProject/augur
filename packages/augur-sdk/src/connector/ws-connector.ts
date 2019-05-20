@@ -1,23 +1,28 @@
 import { Connector, Callback } from "./connector";
+import { webSocket, WebSocketSubject } from "rxjs/webSocket";
 
 export class WebsocketConnector extends Connector {
-  public async connect(params: any): Promise<any> {
+  private subject: WebSocketSubject<any>;
 
+  public async connect(url: string): Promise<any> {
+    this.subject = WebSocketSubject.create(url);
+
+    this.subject.subscribe(
+      (msg) => dispatch(msg),
+      (err) => console.error(err),
+      () => console.log("closed")
+    )
   }
 
   public async disconnect(): Promise<any> {
-
+    this.subject.complete();
   }
 
-  public async send(data: any): Promise<any> {
-
+  public dispatch(msg: any): void {
+    console.log(msg);
   }
 
-  public async subscribe(event: string, callback: Callback): Promise<any> {
-
-  }
-
-  public async unsubscribe(event: string): Promise<any> {
-
+  public async send(data: any, callback: Callback): Promise<any> {
+    this.subject.next(data);
   }
 }

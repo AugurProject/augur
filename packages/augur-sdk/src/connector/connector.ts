@@ -3,20 +3,30 @@ import { ContractEvents } from "@augurproject/artifacts";
 export type Callback = (data: any) => Promise<unknown>;
 
 export abstract class Connector {
-  private callbacks: { [key in ContractEvents]?: Callback } = {};
+  private subscribedEvents: { [key in ContractEvents]?: Callback } = {};
 
   public abstract async connect(params: any): Promise<any>;
   public abstract async disconnect(): Promise<any>;
-  public abstract async send(data: any): Promise<any>;
-  public abstract async subscribe(event: string, callback: Callback): Promise<any>;
-  public abstract async unsubscribe(event: string): Promise<any>;
+  public abstract async send(data: any, callbak: Callback): Promise<any>;
+
+  public subscribe(event: ContractEvents, callback: Callback): void {
+    this.subscribedEvents[event] = callback;
+  }
+
+  public unsubscribe(event: ContractEvents): void {
+    delete this.subscribedEvents[event];
+  }
 
   // is ts-io being used with this connector?
   public decode?(): boolean {
     return false;
   }
 
-  public async unsubscribeAll(): Promise<Array<Promise<void>>> {
-    return Object.keys(this.callbacks).map((event) => this.unsubscribe(event));
+  public unsubscribeAll(): void {
+    this.subscribedEvents = {};
+  }
+
+  protected dispatch(data: any): any {
+
   }
 }
