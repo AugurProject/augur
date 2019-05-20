@@ -118,7 +118,6 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(store.getActions()).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
             { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
             { type: "REGISTER_TRANSACTION_RELAY" },
             { type: "LOAD_UNIVERSE" },
@@ -155,7 +154,6 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(store.getActions).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
             { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
             { type: "REGISTER_TRANSACTION_RELAY" },
             { type: "LOAD_UNIVERSE" },
@@ -199,7 +197,6 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(store.getActions()).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
             { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
             { type: "REGISTER_TRANSACTION_RELAY" },
             { type: "LOAD_UNIVERSE" },
@@ -237,7 +234,6 @@ describe("modules/app/actions/init-augur.js", () => {
             expect(connInfo).toBeUndefined();
             expect(store.getActions()).deepEqual([
               { type: "UPDATE_CONNECTION_STATUS" },
-              { type: "UPDATE_CONTRACT_ADDRESSES" },
               { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
               { type: "REGISTER_TRANSACTION_RELAY" },
               { type: "LOAD_UNIVERSE" },
@@ -276,7 +272,6 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(store.getActions()).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
             { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
             { type: "REGISTER_TRANSACTION_RELAY" },
             { type: "LOAD_UNIVERSE" }

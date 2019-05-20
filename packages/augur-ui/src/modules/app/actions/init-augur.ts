@@ -6,7 +6,6 @@ import {
   updateAugurNodeConnectionStatus
 } from "modules/app/actions/update-connection";
 import { getAugurNodeNetworkId } from "modules/app/actions/get-augur-node-network-id";
-import { updateContractAddresses } from "modules/contracts/actions/update-contract-addresses";
 import { useUnlockedAccount } from "modules/auth/actions/use-unlocked-account";
 import { logout } from "modules/auth/actions/logout";
 import { verifyMatchingNetworkIds } from "modules/app/actions/verify-matching-network-ids";
@@ -187,9 +186,7 @@ export function connectAugur(
         if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
           return callback(err, ConnectionInfo);
         }
-        const ethereumNodeConnectionInfo = ConnectionInfo.ethereumNode;
         dispatch(updateConnectionStatus(true));
-        dispatch(updateContractAddresses(ethereumNodeConnectionInfo.contracts));
         dispatch(updateAugurNodeConnectionStatus(true));
         dispatch(getAugurNodeNetworkId());
         dispatch(registerTransactionRelay());

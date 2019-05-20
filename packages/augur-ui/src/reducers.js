@@ -5,7 +5,6 @@ import authStatus from "modules/auth/reducers/auth-status";
 import blockchain from "modules/app/reducers/blockchain";
 import categories from "modules/categories/reducers/categories-data";
 import connection from "modules/app/reducers/connection";
-import contractAddresses from "modules/contracts/reducers/contract-addresses";
 import env from "modules/app/reducers/env";
 import favorites from "modules/markets/reducers/favorites";
 import filterSortOptions from "modules/filter-sort/reducers/filter-sort-options";
@@ -48,7 +47,6 @@ export function createReducer() {
     blockchain,
     categories,
     connection,
-    contractAddresses,
     env,
     favorites,
     filterSortOptions,
