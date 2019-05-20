@@ -1,6 +1,5 @@
 import { createSelector } from "reselect";
 
-export const selectAccountDisputes = state => state.accountDisputes;
 export const selectAccountNameState = state => state.accountName;
 export const selectAccountPositionsState = state => state.accountPositions;
 export const selectActiveViewState = state => state.activeView;
@@ -19,7 +18,6 @@ export const selectReportingWindowStats = state => state.reportingWindowStats;
 export const selectInitialReporters = state => state.initialReporters;
 export const selectIsLogged = state => state.authStatus.isLogged;
 export const selectIsMobile = state => state.appStatus.isMobile;
-export const selectIsAnimating = state => state.appStatus.isAnimating;
 export const selectIsMobileSmall = state => state.appStatus.isMobileSmall;
 export const selectLoginAccountState = state => state.loginAccount;
 export const selectLoginAccountTotalsState = state =>
