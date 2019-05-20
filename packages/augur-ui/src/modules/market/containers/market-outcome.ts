@@ -33,7 +33,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "outcomeName",
       columnType: COLUMN_TYPES.TEXT,
       text: outcomeName,
-      keyId: outcomeName
+      keyId: outcomeName,
+      showExtraNumber: !oP.scalarDenomination,
+      value: lastPricePercent,
     },
     {
       key: "topBidShares",
@@ -62,7 +64,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     {
       key: "lastPrice",
       columnType: COLUMN_TYPES.VALUE,
-      value: lastPrice
+      value: lastPrice,
+      addIndicator: true,
+      outcome: outcome,
+      location: "tradingPage",
     }
   ];
   return {
