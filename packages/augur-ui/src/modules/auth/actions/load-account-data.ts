@@ -1,6 +1,5 @@
-import { augur } from "services/augurjs";
 import { loadAccountDataFromLocalStorage } from "modules/auth/actions/load-account-data-from-local-storage";
-import { updateLoginAccount } from "modules/auth/actions/update-login-account";
+import { updateLoginAccountAction } from "modules/common/types/login-account";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import { loadAccountHistory } from "modules/auth/actions/load-account-history";
 import { updateAssets } from "modules/auth/actions/update-assets";
@@ -14,6 +13,7 @@ import { loadDisputing } from "modules/reports/actions/load-disputing";
 import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
 import { ACCOUNT_TYPES } from "modules/common-elements/constants";
+import { updateFromAddress } from "modules/contracts/actions/update-contract-api";
 
 export const loadAccountData = (
   account: any,
@@ -29,7 +29,8 @@ export const loadAccountData = (
     windowRef.localStorage.setItem("loggedInAccount", address);
   }
   dispatch(loadAccountDataFromLocalStorage(address));
-  dispatch(updateLoginAccount(account));
+  dispatch(updateLoginAccountAction(account));
+  dispatch(updateFromAddress(account.address));
   dispatch(clearOrphanedOrderData());
   dispatch(loadAccountHistory());
   dispatch(checkAccountAllowance());
