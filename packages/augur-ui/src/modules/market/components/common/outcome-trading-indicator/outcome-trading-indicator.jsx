@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
 import { UP, DOWN, NONE } from "modules/common-elements/constants";
 import Styles from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator.style";
 
@@ -90,7 +89,7 @@ export default function OutcomeTradingIndicator({
   }
   return (
     <span
-      className={classNames(indicatorStyle, { [`${Styles.small}`]: isMobile })}
+      className={indicatorStyle}
       style={arrowStyles(location, direction(tradingIndicator))}
     />
   );
@@ -99,11 +98,9 @@ export default function OutcomeTradingIndicator({
 OutcomeTradingIndicator.propTypes = {
   tradingIndicator: PropTypes.string.isRequired,
   style: PropTypes.object,
-  location: PropTypes.string.isRequired,
-  isMobile: PropTypes.bool
+  location: PropTypes.string.isRequired
 };
 
 OutcomeTradingIndicator.defaultProps = {
-  style: {},
-  isMobile: false
+  style: {}
 };

@@ -20,7 +20,6 @@ const mapStateToProps = (state, ownProps) => {
     currentTime: (state.blockchain || {}).currentAugurTimestamp,
     isLogged: state.authStatus.isLogged,
     isForking: state.universe.isForking,
-    isMobileSmall: state.appStatus.isMobileSmall,
     market,
     isFavorite: !!state.favorites[ownProps.marketId],
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp

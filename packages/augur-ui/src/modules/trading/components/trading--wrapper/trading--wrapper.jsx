@@ -34,7 +34,6 @@ class TradingWrapper extends Component {
     updateSelectedOutcome: PropTypes.func.isRequired,
     updateTradeCost: PropTypes.func.isRequired,
     updateTradeShares: PropTypes.func.isRequired,
-    showSelectOutcome: PropTypes.func.isRequired,
     onSubmitPlaceTrade: PropTypes.func.isRequired
   };
 
@@ -309,7 +308,6 @@ class TradingWrapper extends Component {
       selectedOutcome,
       gasPrice,
       updateSelectedOutcome,
-      showSelectOutcome,
       marketReviewTradeSeen,
       marketReviewTradeModal
     } = this.props;
@@ -407,7 +405,6 @@ class TradingWrapper extends Component {
                 updateSelectedOutcome={updateSelectedOutcome}
                 updateTradeTotalCost={this.updateTradeTotalCost}
                 updateTradeNumShares={this.updateTradeNumShares}
-                showSelectOutcome={showSelectOutcome}
                 updateNewOrderProperties={this.updateNewOrderProperties}
                 clearOrderConfirmation={this.clearOrderConfirmation}
               />

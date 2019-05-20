@@ -12,7 +12,7 @@ const MarketOutcomeSelector = ({ outcomeName, outcome, selectOutcome }) => (
     role="button"
     tabIndex="-1"
     className={Styles.MarketOutcomeSelector}
-    onClick={() => selectOutcome(false)}
+    onClick={selectOutcome}
   >
     <div>{outcome ? outcomeName : "Select an Outcome"}</div>
     <span>{twoArrows}</span>
