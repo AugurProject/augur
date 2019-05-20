@@ -1,3 +1,12 @@
+import { string } from "prop-types";
+
+export interface Category {
+  categoryName: string;
+  nonFinalizedOpenInterest: string;
+  openInterest: string;
+  tags: Array<string>;
+}
+
 export interface Blockchain {
   currentBlockNumber: number;
   currentAugurTimestamp: number;
