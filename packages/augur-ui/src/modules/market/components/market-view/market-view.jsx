@@ -93,7 +93,6 @@ export default class MarketView extends Component {
     );
     this.clearSelectedOutcome = this.clearSelectedOutcome.bind(this);
     this.updatePrecision = this.updatePrecision.bind(this);
-    this.showSelectOutcome = this.showSelectOutcome.bind(this);
     this.showModal = this.showModal.bind(this);
     this.toggleOrderBook = this.toggleOrderBook.bind(this);
     this.toggleTradeHistory = this.toggleTradeHistory.bind(this);
@@ -220,10 +219,6 @@ export default class MarketView extends Component {
     this.setState({ selectedOutcome: null });
   }
 
-  showSelectOutcome() {
-    this.showModal();
-  }
-
   showModal() {
     const {
       isLogged,
@@ -345,7 +340,7 @@ export default class MarketView extends Component {
                         <MarketOutcomeSelector
                           outcome={s.selectedOutcome}
                           outcomeName={selectedOutcomeName}
-                          selectOutcome={this.showSelectOutcome}
+                          selectOutcome={this.showModal}
                         />
                       )}
                       {marketType !== CATEGORICAL && (
