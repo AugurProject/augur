@@ -91,8 +91,6 @@ export default class MarketView extends Component {
     this.updateSelectedOrderProperties = this.updateSelectedOrderProperties.bind(
       this
     );
-    this.clearSelectedOutcome = this.clearSelectedOutcome.bind(this);
-    this.updatePrecision = this.updatePrecision.bind(this);
     this.showModal = this.showModal.bind(this);
     this.toggleOrderBook = this.toggleOrderBook.bind(this);
     this.toggleTradeHistory = this.toggleTradeHistory.bind(this);
@@ -165,10 +163,10 @@ export default class MarketView extends Component {
   updateSelectedOutcomeSwitch(selectedOutcome) {
     this.updateSelectedOutcome(selectedOutcome);
 
-      FindReact(document.getElementById("tabs_mobileView")).handleClick(
-        null,
-        1
-      );
+    FindReact(document.getElementById("tabs_mobileView")).handleClick(
+      null,
+      1
+    );
   }
 
   updateSelectedOutcome(selectedOutcome) {
@@ -201,22 +199,6 @@ export default class MarketView extends Component {
     this.setState({
       selectedOrderProperties
     });
-  }
-
-  updatePrecision(isIncreasing) {
-    let { fixedPrecision } = this.state;
-
-    if (isIncreasing) {
-      fixedPrecision += 1;
-    } else {
-      fixedPrecision -= 1;
-    }
-
-    this.setState({ fixedPrecision: precisionClampFunction(fixedPrecision) });
-  }
-
-  clearSelectedOutcome() {
-    this.setState({ selectedOutcome: null });
   }
 
   showModal() {
@@ -304,9 +286,6 @@ export default class MarketView extends Component {
                     <div className={Styles["MarketView__paneContainer--mobile"]}>
                       <MarketHeader
                         marketId={marketId}
-                        selectedOutcome={s.selectedOutcome}
-                        updateSelectedOutcome={this.updateSelectedOutcome}
-                        clearSelectedOutcome={this.clearSelectedOutcome}
                         location={location}
                       />
                       <MarketOutcomesList
@@ -436,9 +415,6 @@ export default class MarketView extends Component {
                 <div className={Styles.Market__upper}>
                   <MarketHeader
                     marketId={marketId}
-                    selectedOutcome={s.selectedOutcome}
-                    updateSelectedOutcome={this.updateSelectedOutcome}
-                    clearSelectedOutcome={this.clearSelectedOutcome}
                     location={location}
                   />
                 </div>
