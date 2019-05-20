@@ -7,8 +7,6 @@ export const selectAuthState = state => state.auth;
 export const selectBlockchainState = state => state.blockchain;
 export const selectCategoriesState = state => state.categories;
 export const selectConnectionState = state => state.connection;
-export const selectDisputeCrowdsourcerTokens = state =>
-  state.disputeCrowdsourcerTokens;
 export const selectEdgeContextState = state => state.authStatus.edgeContext;
 export const selectEdgeLoadingState = state => state.authStatus.edgeLoading;
 export const selectEnvState = state => state.env;

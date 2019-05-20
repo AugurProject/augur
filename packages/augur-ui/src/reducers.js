@@ -6,7 +6,6 @@ import blockchain from "modules/app/reducers/blockchain";
 import categories from "modules/categories/reducers/categories-data";
 import connection from "modules/app/reducers/connection";
 import contractAddresses from "modules/contracts/reducers/contract-addresses";
-import disputeCrowdsourcerTokens from "modules/reports/reducers/dispute-crowdsourcer-data";
 import env from "modules/app/reducers/env";
 import eventsAPI from "modules/contracts/reducers/events-api";
 import favorites from "modules/markets/reducers/favorites";
@@ -52,7 +51,6 @@ export function createReducer() {
     categories,
     connection,
     contractAddresses,
-    disputeCrowdsourcerTokens,
     env,
     eventsAPI,
     favorites,
