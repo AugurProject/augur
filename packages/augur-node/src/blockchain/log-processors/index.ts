@@ -85,11 +85,13 @@ export const logProcessors: LogProcessors = {
       add: processMarketFinalizedLog,
       remove: processMarketFinalizedLogRemoval,
     },
+    /* not going to fix order processor
     OrderEvent: {
       noAutoEmit: true,
       add: processOrderEventLog,
       remove: processOrderEventLogRemoval,
     },
+    */
     DisputeCrowdsourcerCreated: {
       noAutoEmit: true,
       add: processDisputeCrowdsourcerCreatedLog,
