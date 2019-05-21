@@ -5,15 +5,10 @@ import authStatus from "modules/auth/reducers/auth-status";
 import blockchain from "modules/app/reducers/blockchain";
 import categories from "modules/categories/reducers/categories-data";
 import connection from "modules/app/reducers/connection";
-import contractAddresses from "modules/contracts/reducers/contract-addresses";
-import disputeCrowdsourcerTokens from "modules/reports/reducers/dispute-crowdsourcer-data";
 import env from "modules/app/reducers/env";
-import eventsAPI from "modules/contracts/reducers/events-api";
 import favorites from "modules/markets/reducers/favorites";
 import filterSortOptions from "modules/filter-sort/reducers/filter-sort-options";
-import functionsAPI from "modules/contracts/reducers/functions-api";
 import gasPriceInfo from "modules/app/reducers/gas-price-info";
-import initialReporters from "modules/reports/reducers/initial-reporters-data";
 import loginAccount from "modules/auth/reducers/login-account";
 import marketTradingHistory from "modules/markets/reducers/market-trading-history";
 import marketReportState from "modules/reports/reducers/market-report-state";
@@ -51,15 +46,10 @@ export function createReducer() {
     blockchain,
     categories,
     connection,
-    contractAddresses,
-    disputeCrowdsourcerTokens,
     env,
-    eventsAPI,
     favorites,
     filterSortOptions,
-    functionsAPI,
     gasPriceInfo,
-    initialReporters,
     loginAccount,
     marketReportState,
     marketTradingHistory,

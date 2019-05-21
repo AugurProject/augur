@@ -5,12 +5,15 @@ export const MARKET_MAX_FEES = "maxFee";
 export const TRANSACTION_PERIOD = "transactionPeriod";
 export const HAS_OPEN_ORDERS = "hasOrders";
 
-export function updateFilterSortOptions(optionKey: String, optionValue: any) {
+export function updateFilterSortOptions(
+  optionKey: string,
+  optionValue: string | boolean,
+) {
   return {
     type: UPDATE_FILTER_SORT_OPTIONS,
     data: {
       optionKey,
-      optionValue
-    }
+      optionValue,
+    },
   };
 }
