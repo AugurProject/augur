@@ -46,9 +46,9 @@ function buildUICategories(categoriesRows: Array<CategoriesRow<BigNumber>>, mark
       tagAggregationByTagName.set(r[tagProp], tagAggregation);
     }
     if (r.reportingState !== ReportingState.FINALIZED) {
-      tagAggregation.nonFinalizedOpenInterest = tagAggregation.nonFinalizedOpenInterest.add(r.openInterest);
+      tagAggregation.nonFinalizedOpenInterest = tagAggregation.nonFinalizedOpenInterest.plus(r.openInterest);
     }
-    tagAggregation.openInterest = tagAggregation.openInterest.add(r.openInterest);
+    tagAggregation.openInterest = tagAggregation.openInterest.plus(r.openInterest);
     tagAggregation.numberOfMarketsWithThisTag += 1;
   }
 

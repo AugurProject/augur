@@ -118,7 +118,7 @@ export interface MarketPriceHistory {
   [outcome: string]: Array<TimestampedPriceAmount>;
 }
 
-export class Markets<TBigNumber> {
+export class Markets {
   public static GetMarketPriceCandlestickParams = t.type({
     marketId: t.string,
     outcome: t.union([OutcomeParam, t.number, t.null, t.undefined]),
@@ -132,7 +132,7 @@ export class Markets<TBigNumber> {
   public static GetTopics = t.type({ universe: t.string });
 
   @Getter("GetMarketPriceCandlestickParams")
-  public static async getMarketPriceCandlesticks<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketPriceCandlestickParams>): Promise<MarketPriceCandlesticks> {
+  public static async getMarketPriceCandlesticks(augur: Augur, db: DB, params: t.TypeOf<typeof Markets.GetMarketPriceCandlestickParams>): Promise<MarketPriceCandlesticks> {
     const marketCreatedLogs = await db.findMarketCreatedLogs({selector: {market: params.marketId}});
     if (marketCreatedLogs.length < 1) {
       throw new Error(`No marketId for getMarketPriceCandlesticks: ${params.marketId}`);
@@ -166,7 +166,7 @@ export class Markets<TBigNumber> {
   }
 
   @Getter("GetMarketPriceHistoryParams")
-  public static async getMarketPriceHistory<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketPriceHistoryParams>): Promise<MarketPriceHistory> {
+  public static async getMarketPriceHistory(augur: Augur, db: DB, params: t.TypeOf<typeof Markets.GetMarketPriceHistoryParams>): Promise<MarketPriceHistory> {
     let orderFilledLogs = await db.findOrderFilledLogs({selector: {market: params.marketId, eventType: OrderEventType.Fill}});
     orderFilledLogs.sort(
       (a: OrderEventLog, b: OrderEventLog) => {
@@ -192,7 +192,7 @@ export class Markets<TBigNumber> {
   }
 
   @Getter("GetMarketsParams")
-  public static async getMarkets<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<Array<Address>> {
+  public static async getMarkets(augur: Augur, db: DB, params: t.TypeOf<typeof Markets.GetMarketsParams>): Promise<Array<Address>> {
     if (! await augur.contracts.augur.isKnownUniverse_(params.universe)) {
       throw new Error("Unknown universe: " + params.universe);
     }
@@ -320,7 +320,7 @@ export class Markets<TBigNumber> {
   }
 
   @Getter("GetMarketsInfoParams")
-  public static async getMarketsInfo<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetMarketsInfoParams>): Promise<Array<MarketInfo>> {
+  public static async getMarketsInfo(augur: Augur, db: DB, params: t.TypeOf<typeof Markets.GetMarketsInfoParams>): Promise<Array<MarketInfo>> {
     const marketCreatedLogs = await db.findMarketCreatedLogs({selector: {market: {$in: params.marketIds}}});
 
     return Promise.all(marketCreatedLogs.map(async (marketCreatedLog) => {
@@ -401,7 +401,7 @@ export class Markets<TBigNumber> {
   }
 
   @Getter("GetTopics")
-  public static async getTopics<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Markets.GetTopics>): Promise<Array<string>> {
+  public static async getTopics(augur: Augur, db: DB, params: t.TypeOf<typeof Markets.GetTopics>): Promise<Array<string>> {
     const marketCreatedLogs = await db.findMarketCreatedLogs({selector: {universe: params.universe}});
     let topics: any = {};
     for (let i = 0; i < marketCreatedLogs.length; i++) {
@@ -434,7 +434,7 @@ function filterOrderFilledLogs(orderFilledLogs: Array<OrderEventLog>, params: t.
   return filteredOrderFilledLogs;
 }
 
-async function getMarketOpenInterest<TBigNumber>(db: DB<TBigNumber>, marketCreatedLog: MarketCreatedLog): Promise<string> {
+async function getMarketOpenInterest(db: DB, marketCreatedLog: MarketCreatedLog): Promise<string> {
   const completeSetsPurchasedLogs = (await db.findCompleteSetsPurchasedLogs({selector: {market: marketCreatedLog.market}})).reverse();
   const completeSetsSoldLogs = (await db.findCompleteSetsSoldLogs({selector: {market: marketCreatedLog.market}})).reverse();
   if (completeSetsPurchasedLogs.length > 0 && completeSetsSoldLogs.length > 0) {
@@ -455,7 +455,7 @@ async function getMarketOpenInterest<TBigNumber>(db: DB<TBigNumber>, marketCreat
   return "0";
 }
 
-async function getMarketOutcomes<TBigNumber>(db: DB<TBigNumber>, marketCreatedLog: MarketCreatedLog): Promise<Array<MarketInfoOutcome>> {
+async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog): Promise<Array<MarketInfoOutcome>> {
   let outcomes: Array<MarketInfoOutcome> = [];
   if (marketCreatedLog.outcomes.length === 0) {
     const ordersFilled0 = (await db.findOrderFilledLogs({selector: {market: marketCreatedLog.market, [ORDER_EVENT_OUTCOME]: "0x00"}})).reverse();
@@ -496,7 +496,7 @@ async function getMarketOutcomes<TBigNumber>(db: DB<TBigNumber>, marketCreatedLo
   return outcomes;
 }
 
-async function getMarketReportingState<TBigNumber>(db: DB<TBigNumber>, marketCreatedLog: MarketCreatedLog, marketFinalizedLogs: Array<MarketFinalizedLog>): Promise<MarketInfoReportingState> {
+async function getMarketReportingState(db: DB, marketCreatedLog: MarketCreatedLog, marketFinalizedLogs: Array<MarketFinalizedLog>): Promise<MarketInfoReportingState> {
   const universeForkedLogs = (await db.findUniverseForkedLogs({selector: {universe: marketCreatedLog.universe}})).reverse();
   if (universeForkedLogs.length > 0) {
     if (universeForkedLogs[0].forkingMarket === marketCreatedLog.market) {

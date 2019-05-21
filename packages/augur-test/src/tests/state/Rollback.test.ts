@@ -9,7 +9,7 @@ beforeEach(async () => {
   await mock.wipeDB();
 });
 
-let augur: Augur<ethers.utils.BigNumber>;
+let augur: Augur;
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
 }, 120000);

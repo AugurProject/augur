@@ -8,13 +8,13 @@ import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { API } from "@augurproject/sdk/build/state/api/API";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { MarketTradingHistory } from "@augurproject/sdk/build/state/api/Trading";
-import { ethers } from "ethers";
+import { BigNumber } from "bignumber.js";
 import { stringTo32ByteHex } from "../../../libs/Utils";
 
 const mock = makeDbMock();
 
-let db: DB<any>;
-let api: API<any>;
+let db: DB;
+let api: API;
 let john: ContractAPI;
 let mary: ContractAPI;
 
@@ -24,7 +24,7 @@ beforeAll(async () => {
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
   db = await mock.makeDB(john.augur, ACCOUNTS);
-  api = new API<any>(john.augur, db);
+  api = new API(john.augur, db);
 }, 120000);
 
 test("State API :: Trading :: getTradingHistory", async () => {
@@ -35,14 +35,14 @@ test("State API :: Trading :: getTradingHistory", async () => {
   const market = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
 
   // Place an order
-  const bid = new ethers.utils.BigNumber(0);
-  const outcome = new ethers.utils.BigNumber(0);
-  const numShares = new ethers.utils.BigNumber(10000000000000);
-  const price = new ethers.utils.BigNumber(22);
+  const bid = new BigNumber(0);
+  const outcome = new BigNumber(0);
+  const numShares = new BigNumber(10000000000000);
+  const price = new BigNumber(22);
   await john.placeOrder(market.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 
   // Take half the order using the same account
-  const cost = numShares.mul(78).div(2);
+  const cost = numShares.multipliedBy(78).div(2);
   const orderId = await john.getBestOrderId(bid, market.address, outcome);
   await john.fillOrder(orderId, cost, numShares.div(2), "42");
 

@@ -39,7 +39,7 @@ export class Trading {
   public static GetTradingHistoryParams = t.intersection([SortLimit, TradingHistoryParams]);
 
   @Getter("GetTradingHistoryParams")
-  public static async getTradingHistory<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Trading.GetTradingHistoryParams>): Promise<Array<any>> {
+  public static async getTradingHistory(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetTradingHistoryParams>): Promise<Array<any>> {
     if (!params.account && !params.marketId) {
       throw new Error("'getTradingHistory' requires an 'account' or 'marketId' param be provided");
     }
