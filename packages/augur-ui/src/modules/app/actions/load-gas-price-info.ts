@@ -28,7 +28,7 @@ export function loadGasPriceInfo(callback: Function = logError) {
   };
 }
 
-function getGasPriceRanges(networkId: String, callback: Function) {
+function getGasPriceRanges(networkId: string, callback: Function) {
   const defaultGasPrice = setDefaultGasInfo();
   getGasPriceValues(defaultGasPrice, (result: any) => callback(result));
 }

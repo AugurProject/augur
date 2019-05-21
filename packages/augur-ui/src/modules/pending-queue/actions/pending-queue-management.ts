@@ -8,9 +8,9 @@ export const loadPendingQueue = (pendingQueue: any) => ({
 });
 
 export const addPendingData = (
-  pendingId: String,
-  queueName: String,
-  status: String
+  pendingId: string,
+  queueName: string,
+  status: string
 ) => ({
   type: ADD_PENDING_DATA,
   data: {
@@ -20,7 +20,7 @@ export const addPendingData = (
   }
 });
 
-export const removePendingData = (pendingId: String, queueName: String) => ({
+export const removePendingData = (pendingId: string, queueName: string) => ({
   type: REMOVE_PENDING_DATA,
   data: { pendingId, queueName }
 });

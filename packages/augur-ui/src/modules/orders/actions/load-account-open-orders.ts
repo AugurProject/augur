@@ -38,7 +38,7 @@ const loadUserAccountOrders = (options = {}, callback: Function) => (
   );
 };
 
-const postProcessing = (marketIds: Array<String>, dispatch: Function, orders: any, callback: Function | undefined) => {
+const postProcessing = (marketIds: Array<string>, dispatch: Function, orders: any, callback: Function | undefined) => {
   marketIds.forEach(marketId =>
     dispatch(updateOrderBook(shapeGetOrders(orders, marketId)))
   );

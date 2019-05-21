@@ -5,8 +5,9 @@ import {
   LOAD_PENDING_LIQUIDITY_ORDERS,
   CLEAR_ALL_MARKET_ORDERS
 } from "modules/orders/actions/liquidity-management";
+import { OrderBooks, BaseAction } from "src/modules/types";
 
-const DEFAULT_STATE = () => ({});
+const DEFAULT_STATE: OrderBooks = {};
 
 /*
 Example:
@@ -20,16 +21,16 @@ Example:
 */
 
 export default function(
-  pendingLiquidityOrders = DEFAULT_STATE(),
-  { type, data }
+  pendingLiquidityOrders: OrderBooks = DEFAULT_STATE,
+  action: BaseAction,
 ) {
-  switch (type) {
+  switch (action.type) {
     case LOAD_PENDING_LIQUIDITY_ORDERS:
       return {
         ...data.pendingLiquidityOrders
       };
     case ADD_MARKET_LIQUIDITY_ORDERS: {
-      const { liquidityOrders, marketId } = data;
+      const { liquidityOrders, marketId } = action.data;
       const marketOutcomes = Object.keys(liquidityOrders);
       const updatedOrderBook = marketOutcomes.reduce((acc, outcome) => {
         acc[outcome] = liquidityOrders[outcome].map((order, index, array) => ({
@@ -48,7 +49,7 @@ export default function(
       return { ...pendingLiquidityOrders };
     }
     case UPDATE_LIQUIDITY_ORDER: {
-      const { order, updates, marketId, outcomeId } = data;
+      const { order, updates, marketId, outcomeId } = action.data;
       const updatedOrder = {
         ...order,
         ...updates
@@ -64,7 +65,7 @@ export default function(
     }
     case REMOVE_LIQUIDITY_ORDER: {
       // data: marketId, outcomeId, orderId (index)
-      const { marketId, outcomeId, orderId } = data;
+      const { marketId, outcomeId, orderId } = action.data;
       const marketOutcomes = Object.keys(pendingLiquidityOrders[marketId]);
       // if removing this order will clear the order array, delete the outcome/market if no other outcomes
       if (pendingLiquidityOrders[marketId][outcomeId].length === 1) {

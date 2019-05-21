@@ -17,7 +17,7 @@ import {
 export const CLAIM_SHARES_GAS_COST = 3000000;
 
 const claimTradingProceeds = (
-  marketId: String,
+  marketId: string,
   callback: Function = logError
 ) => (dispatch: Function, getState: Function) => {
   const { loginAccount } = getState();
@@ -42,7 +42,7 @@ const claimTradingProceeds = (
 };
 
 export const claimMultipleTradingProceeds = (
-  marketIds: Array<String>,
+  marketIds: Array<string>,
   callback: Function = logError
 ) => (dispatch: Function, getState: Function) => {
   const { loginAccount } = getState();

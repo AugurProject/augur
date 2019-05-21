@@ -20,7 +20,7 @@ export const loadParticipationTokens = (
   augur.augurNode.submitRequest(
     "getFeeWindows",
     { universe: universeID, account: loginAccount.address, includeCurrent },
-    (err: any, feeWindowsWithUnclaimedTokens: String) => {
+    (err: any, feeWindowsWithUnclaimedTokens: string) => {
       if (err) return callback(err);
       Object.keys(feeWindowsWithUnclaimedTokens).forEach(feeWindowID => {
         augur.api.FeeWindow.withdrawInEmergency({
@@ -37,7 +37,7 @@ export const loadParticipationTokens = (
 };
 
 export const purchaseParticipationTokens = (
-  amount: String,
+  amount: string,
   estimateGas = false,
   callback = logError
 ) => (dispatch: Function, getState: Function) => {
@@ -61,8 +61,8 @@ export const purchaseParticipationTokens = (
 
 const callMethod = (
   method: Function,
-  amount: String,
-  address: String,
+  amount: string,
+  address: string,
   estimateGas: Boolean = false,
   callback: Function
 ) => (dispatch: Function, getState: Function) => {

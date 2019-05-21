@@ -8,8 +8,8 @@ export const updateReports = (reportsData: any) => ({
 });
 
 export const addMarketsReport = (
-  universeId: String,
-  marketIds: Array<String>
+  universeId: string,
+  marketIds: Array<string>
 ) => ({
   type: MARKETS_REPORT,
   data: {

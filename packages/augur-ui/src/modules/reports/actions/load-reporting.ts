@@ -24,9 +24,9 @@ export const loadReporting = (
         marketIdsParam,
         (err: any, marketData: any) => {
           if (err) return logError(err);
-          const preReporting: Array<String> = [];
-          const designatedReporting: Array<String> = [];
-          const openReporting: Array<String> = [];
+          const preReporting: Array<string> = [];
+          const designatedReporting: Array<string> = [];
+          const openReporting: Array<string> = [];
           if (marketData) {
             Object.keys(marketData).forEach(marketId => {
               const state = marketData[marketId].reportingState;
@@ -61,7 +61,7 @@ export const loadReporting = (
           sortBy: "endTime",
           ...designatedReportingParams
         },
-        (err: any, marketIds: Array<String>) => {
+        (err: any, marketIds: Array<string>) => {
           if (err) return resolve(err);
           if (!marketIds || marketIds.length === 0 || !loginAccount.address) {
             dispatch(updateUpcomingDesignatedReportingMarkets([]));
@@ -81,7 +81,7 @@ export const loadReporting = (
           sortBy: "endTime",
           ...designatedReportingParams
         },
-        (err: any, marketIds: Array<String>) => {
+        (err: any, marketIds: Array<string>) => {
           if (err) return resolve(err);
           if (!marketIds || marketIds.length === 0 || !loginAccount.address) {
             dispatch(updateDesignatedReportingMarkets([]));
@@ -102,7 +102,7 @@ export const loadReporting = (
         sortBy: "endTime",
         universe: universe.id
       },
-      (err: any, marketIds: Array<String>) => {
+      (err: any, marketIds: Array<string>) => {
         if (err) return resolve(err);
         if (!marketIds || marketIds.length === 0) {
           dispatch(updateOpenMarkets([]));

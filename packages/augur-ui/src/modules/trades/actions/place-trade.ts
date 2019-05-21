@@ -137,7 +137,7 @@ export const placeTrade = ({
     bnAllowance.lte(createBigNumber(tradeInProgress.totalCost.value))
   ) {
     dispatch(
-      checkAccountAllowance((err: any, allowance: String) => {
+      checkAccountAllowance((err: any, allowance: string) => {
         if (allowance === "0") {
           promptApprovalandSend();
         } else {

@@ -1,6 +1,9 @@
 import { ReactNode } from "react";
 import { Market } from "./account/components/notifications/notifications-templates";
 
+export interface PendingOrders {
+  [marketId: string]: Array<Order>;
+}
 export interface OrderBookOrders {
   [id: string]: Order;
 }
@@ -8,6 +11,7 @@ export interface OrderBookOrderType {
   [orderType: string]: OrderBookOrders;
 }
 export interface OrderBook {
+  marketId: string;
   [outcome: number]: OrderBookOrderType;
 }
 export interface OrderBooks {

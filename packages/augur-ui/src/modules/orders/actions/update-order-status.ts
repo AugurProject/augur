@@ -5,11 +5,11 @@ export const UPDATE_ORDER_STATUS = "UPDATE_ORDER_STATUS";
 export const UPDATE_ORDER_REMOVE = "UPDATE_ORDER_REMOVE";
 /**
  *
- * @param {String} orderId
- * @param {String} status
- * @param {String} marketId
+ * @param {string} orderId
+ * @param {string} status
+ * @param {string} marketId
  * @param outcome
- * @param {String} orderTypeLabel
+ * @param {string} orderTypeLabel
  */
 
 export const updateOrderStatus = ({
@@ -45,15 +45,15 @@ export const updateOrderStatus = ({
   });
 };
 
-export const removeCanceledOrder = (orderId: String) => (dispatch: Function) =>
+export const removeCanceledOrder = (orderId: string) => (dispatch: Function) =>
   dispatch({ type: UPDATE_ORDER_REMOVE, data: { orderId } });
 
 function warnNonExistingOrder(
-  orderId: String,
-  status: String,
-  marketId: String,
+  orderId: string,
+  status: string,
+  marketId: string,
   outcome: any,
-  orderTypeLabel: String
+  orderTypeLabel: string
 ) {
   return console.warn(
     "updateOrderStatus: can't update %o",

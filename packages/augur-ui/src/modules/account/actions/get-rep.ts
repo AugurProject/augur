@@ -14,7 +14,7 @@ export default function(callback = logError) {
   return (dispatch: Function, getState: Function) => {
     const { universe, loginAccount } = getState();
     const universeID = universe.id || UNIVERSE_ID;
-    const update = (id: String, status: String) =>
+    const update = (id: string, status: string) =>
       dispatch(
         updateAlert(id, {
           id,
@@ -24,7 +24,7 @@ export default function(callback = logError) {
       );
     augur.api.Universe.getReputationToken(
       { tx: { to: universeID } },
-      (err: any, reputationTokenAddress: String) => {
+      (err: any, reputationTokenAddress: string) => {
         if (err) return callback(err);
         augur.api.TestNetReputationToken.faucet({
           tx: { to: reputationTokenAddress },

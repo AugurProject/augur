@@ -4,7 +4,7 @@ import logError from "src/utils/log-error";
 export const LOAD_USER_SHARE_BALANCES = "LOAD_USER_SHARE_BALANCES";
 
 export const loadUsershareBalances = (
-  marketIds: Array<String>,
+  marketIds: Array<string>,
   callback: Function = logError
 ) => (dispatch: Function, getState: Function) => {
   const { loginAccount } = getState();

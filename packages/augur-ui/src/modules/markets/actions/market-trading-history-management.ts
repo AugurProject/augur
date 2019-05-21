@@ -113,7 +113,7 @@ export const loadUserMarketTradingHistoryInternal = (
               )
             ];
             const marketIds = [userTradedMarketIds, finalizedMarkets].reduce(
-              (a, b) => a.filter((c: String) => !b.includes(c))
+              (a, b) => a.filter((c: string) => !b.includes(c))
             );
             // getTradingHistory `marketId` can be an array
             getTradingHistory(

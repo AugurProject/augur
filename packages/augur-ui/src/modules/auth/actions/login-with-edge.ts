@@ -12,8 +12,8 @@ export const loginWithEdgeEthereumWallet = (
   ethereumWallet: any,
   history: any
 ) => (dispatch: Function) => {
-  const mixedCaseAddress: String = ethereumWallet.keys.ethereumAddress;
-  const lowerCaseAddress: String = mixedCaseAddress.toLowerCase();
+  const mixedCaseAddress: string = ethereumWallet.keys.ethereumAddress;
+  const lowerCaseAddress: string = mixedCaseAddress.toLowerCase();
   dispatch(updateAuthStatus(IS_LOGGED, true));
   dispatch(
     loadAccountData({

@@ -12,7 +12,7 @@ import { isNewFavoritesStyle } from "modules/markets/helpers/favorites-processor
 import { loadPendingQueue } from "modules/pending-queue/actions/pending-queue-management";
 import { setSelectedUniverse } from "./selected-universe-management";
 
-export const loadAccountDataFromLocalStorage = (address: String) => (
+export const loadAccountDataFromLocalStorage = (address: string) => (
   dispatch: Function,
   getState: Function
 ) => {

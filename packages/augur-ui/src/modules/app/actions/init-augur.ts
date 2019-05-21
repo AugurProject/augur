@@ -83,7 +83,7 @@ function pollForAccount(
 function loadAccount(
   dispatch: Function,
   existing: any,
-  accountType: String,
+  accountType: string,
   callback: Function
 ) {
   let loggedInAccount: any = null;
@@ -134,7 +134,7 @@ function pollForNetwork(dispatch: Function, getState: Function) {
   setInterval(() => {
     const { modal } = getState();
     dispatch(
-      verifyMatchingNetworkIds((err: any, expectedNetworkId: String) => {
+      verifyMatchingNetworkIds((err: any, expectedNetworkId: string) => {
         if (err) return console.error("pollForNetwork failed", err);
         if (expectedNetworkId != null && isEmpty(modal)) {
           dispatch(
@@ -245,9 +245,9 @@ export function connectAugur(
 }
 
 interface initAugurParams {
-  augurNode: String | null;
-  ethereumNodeHttp: String | null;
-  ethereumNodeWs: String | null;
+  augurNode: string | null;
+  ethereumNodeHttp: string | null;
+  ethereumNodeWs: string | null;
   useWeb3Transport: Boolean;
 }
 

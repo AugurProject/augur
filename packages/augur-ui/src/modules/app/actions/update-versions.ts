@@ -1,9 +1,9 @@
 export const UPDATE_VERSIONS = "UPDATE_VERSIONS";
 
 interface Versions {
-  augurNode: String;
-  augurjs: String;
-  augurui: String;
+  augurNode: string;
+  augurjs: string;
+  augurui: string;
 }
 
 export function updateVersions(versions: Versions) {

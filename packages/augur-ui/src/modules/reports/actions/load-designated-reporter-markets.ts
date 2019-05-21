@@ -23,7 +23,7 @@ export const loadDesignatedReporterMarkets = (
 
   augur.markets.getMarkets(
     designatedReportingQuery,
-    (err: any, marketIds: Array<String>) => {
+    (err: any, marketIds: Array<string>) => {
       if (err) return callback(err);
       dispatch(
         loadMarketsInfoIfNotLoaded(marketIds, (err: any) => {
