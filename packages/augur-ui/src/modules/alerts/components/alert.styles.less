@@ -1,0 +1,121 @@
+@import (reference) '~assets/styles/shared';
+
+.Alert {
+  background-color: @color-primary-light;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  padding: @size-16 @size-24;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:last-of-type {
+    border-bottom: 0;
+  }
+}
+
+.Seen {
+  background-color: @color-tertiary-background;
+}
+
+.Row {
+  display: flex;
+}
+
+.Column {
+  display: flex;
+  flex-direction: column;
+}
+
+.CloseButton {
+  display: block;
+}
+
+.CloseButtonHidden {
+  display: none;
+}
+
+.Title {
+  color: @color-secondary-text;
+  flex: 0 1 auto;
+  font-size: @font-size-medium;
+  font-weight: bold;
+  height: @size-16;
+  margin: 0 @size-10 @size-4 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: flex 1000ms ease-in;
+  white-space: nowrap;
+  width: 17.188rem;
+}
+
+.Title::first-letter {
+  text-transform: capitalize;
+}
+
+.Status {
+  color: @color-secondary-text;
+  font-size: @font-size-extra-small;
+  font-weight: @weight-medium;
+  height: @size-11;
+  margin-bottom: @size-4;
+  text-transform: uppercase;
+}
+
+.EtherLink {
+  color: @color-secondary-text;
+  font-size: @font-size-extra-small;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.Dot {
+  flex: 0 @size-16;
+  height: @size-16;
+  left: @size-8;
+  margin-top: -0.025rem;
+  position: absolute;
+  transition: flex 500ms ease-out;
+  width: @size-16;
+}
+
+.DotSeen {
+  flex: 0 0 0;
+  height: 0;
+  margin: 0;
+  transition: flex 500ms ease-out;
+  width: 0;
+}
+
+.Close {
+  align-self: baseline;
+  margin-left: auto;
+  width: @size-12;
+}
+
+.Description {
+  flex: 1 0 100%;
+  font-size: @font-size-small;
+  height: @size-14;
+  margin-bottom: @size-4;
+  overflow: hidden;
+  padding-right: @size-20;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 17.188rem;
+
+  @media @breakpoint-mobile {
+    flex: 1 0 100%;
+    font-size: @font-size-small;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.Time {
+  color: @color-secondary-text;
+  font-size: @font-size-extra-small;
+  margin-right: @size-4;
+}

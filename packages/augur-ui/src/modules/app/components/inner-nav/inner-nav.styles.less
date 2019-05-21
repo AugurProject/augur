@@ -21,14 +21,14 @@
   transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
 
   *:hover {
-    background: @color-medium-gray;
+    background: @color-primary-light;
   }
 
   a,
   button {
     background: none;
     border: none;
-    color: @color-white;
+    color: @color-secondary-text;
     cursor: pointer;
     display: block;
     font-size: 0.75rem;
@@ -66,7 +66,7 @@
 }
 
 .InnerNav__menu-item--selected {
-  background: @color-medium-gray;
+  background: @color-primary-light;
 }
 
 .InnerNav__menu-item--seperator {
@@ -82,14 +82,14 @@
 }
 
 .InnerNav__menu--main {
-  background: @color-light-purple;
+  background: @color-theme-primary;
   position: relative;
   z-index: @mask;
 }
 
 .InnerNav__menu--submenu {
-  background: @color-medium-gray;
-  border-left: 0.0625rem solid @color-almost-black;
+  background: @color-primary-light;
+  border-left: 0.0625rem solid @color-primary-background;
   left: 0;
   position: absolute;
   top: 0;
@@ -98,12 +98,12 @@
 
   > .InnerNav__menu-item {
     *:hover {
-      background: @color-light-purple;
+      background: @color-theme-primary;
     }
   }
 
   > .InnerNav__menu-item--selected {
-    background: @color-light-purple;
+    background: @color-theme-primary;
   }
 }
 
@@ -119,7 +119,7 @@
 
       > div {
         align-items: center;
-        background: @color-light-purple;
+        background: @color-theme-primary;
         border-bottom: 1px solid @color-primary-background;
         color: white;
         display: flex;
@@ -156,7 +156,7 @@
         }
 
         &.SubMenuShow {
-          background: @color-medium-gray;
+          background: @color-primary-light;
 
           > button:first-of-type {
             display: block;

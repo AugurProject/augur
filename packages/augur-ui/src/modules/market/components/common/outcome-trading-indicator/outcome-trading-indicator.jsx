@@ -6,8 +6,7 @@ import Styles from "modules/market/components/common/outcome-trading-indicator/o
 export default function OutcomeTradingIndicator({
   tradingIndicator,
   style,
-  location,
-  isMobile
+  location
 }) {
   const indicatorArray = {
     [UP]: Styles.TradingIndicator_arrow_up,

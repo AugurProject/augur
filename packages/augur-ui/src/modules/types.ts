@@ -1,3 +1,83 @@
+export interface FilledOrder {
+  creator: string;
+  orderId: string;
+  outcome: string;
+  amount: string;
+  price: string;
+  type: string;
+  timestamp: number;
+  transactionHash: string;
+  marketId: string;
+  logIndex: number;
+}
+
+export interface TradingHistory {
+  trades: Array<FilledOrder>;
+}
+
+export interface MarketTradingHistory {
+  [marketId: string]: TradingHistory;
+}
+export interface MarketsInReporting {
+  designated: Array<string>;
+  open: Array<string>;
+  upcoming: Array<string>;
+  awaiting: Array<string>;
+  dispute: Array<string>;
+  resolved: Array<string>;
+}
+export interface GasPriceInfo {
+  average: number;
+  fast: number;
+  safeLow: number;
+}
+export interface FilterSortOptions {
+  marketFilter: string;
+  marketSort: string;
+  maxFee: string;
+  transactionPeriod: string;
+  hasOrders: boolean;
+}
+export interface Favorite {
+  marketId: string;
+  timestamp: number;
+}
+
+export interface EthereumNodeOptions {
+  blockRetention: number;
+  connectionTimeout: number;
+  http: string | null;
+  pollingIntervalMilliseconds: number;
+  ws: string | null;
+}
+
+export interface EnvObject {
+  "augur-node": string;
+  "ethereum-node": EthereumNodeOptions;
+  universe: string | null;
+  useWeb3Transport: boolean;
+}
+
+export interface Connection {
+  isConnected: boolean;
+  isConnectedToAugurNode: boolean;
+  augurNodeNetworkId: string;
+  isReconnectionPaused: boolean;
+}
+
+export interface Category {
+  categoryName: string;
+  nonFinalizedOpenInterest: string;
+  openInterest: string;
+  tags: Array<string>;
+}
+
+export interface Blockchain {
+  currentBlockNumber: number;
+  currentAugurTimestamp: number;
+  highestBlock: number;
+  lastProcessedBlock: number;
+}
 
 export interface AppStatus {
   isLogged: boolean|undefined;

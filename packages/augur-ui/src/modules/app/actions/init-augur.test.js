@@ -30,8 +30,6 @@ jest.mock("config/network.json", () => ({
       connectionTimeout: 60000
     },
     universe: null,
-    "bug-bounty": false,
-    "bug-bounty-address": null,
     debug: {
       connect: true,
       broadcast: false
@@ -119,9 +117,6 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(store.getActions()).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
-            { type: "UPDATE_FUNCTIONS_API" },
-            { type: "UPDATE_EVENTS_API" },
             { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
             { type: "REGISTER_TRANSACTION_RELAY" },
             { type: "CLOSE_MODAL" }
@@ -157,9 +152,6 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(store.getActions).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
-            { type: "UPDATE_FUNCTIONS_API" },
-            { type: "UPDATE_EVENTS_API" },
             { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
             { type: "REGISTER_TRANSACTION_RELAY" },
             { type: "CLOSE_MODAL" },
@@ -202,9 +194,6 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(store.getActions()).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
-            { type: "UPDATE_FUNCTIONS_API" },
-            { type: "UPDATE_EVENTS_API" },
             { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
             { type: "REGISTER_TRANSACTION_RELAY" },
             { type: "UPDATE_MODAL" },
@@ -241,9 +230,6 @@ describe("modules/app/actions/init-augur.js", () => {
             expect(connInfo).toBeUndefined();
             expect(store.getActions()).deepEqual([
               { type: "UPDATE_CONNECTION_STATUS" },
-              { type: "UPDATE_CONTRACT_ADDRESSES" },
-              { type: "UPDATE_FUNCTIONS_API" },
-              { type: "UPDATE_EVENTS_API" },
               { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
               { type: "REGISTER_TRANSACTION_RELAY" },
               { type: "CLOSE_MODAL" },
@@ -281,9 +267,6 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(store.getActions()).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
-            { type: "UPDATE_FUNCTIONS_API" },
-            { type: "UPDATE_EVENTS_API" },
             { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
             { type: "REGISTER_TRANSACTION_RELAY" },
           ]);

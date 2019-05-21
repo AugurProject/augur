@@ -13,13 +13,12 @@ import { loadDisputing } from "modules/reports/actions/load-disputing";
 import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
 import { ACCOUNT_TYPES } from "modules/common-elements/constants";
-import { updateFromAddress } from "modules/contracts/actions/update-contract-api";
 
 export const loadAccountData = (
   account: any,
   callback: Function = logError
 ) => (dispatch: Function) => {
-  const address: String = getValue(account, "address");
+  const address: string = getValue(account, "address");
   if (!address) return callback("account address required");
   if (
     windowRef &&
@@ -30,7 +29,6 @@ export const loadAccountData = (
   }
   dispatch(loadAccountDataFromLocalStorage(address));
   dispatch(updateLoginAccount(account));
-  dispatch(updateFromAddress(account.address));
   dispatch(clearOrphanedOrderData());
   dispatch(loadAccountHistory());
   dispatch(checkAccountAllowance());

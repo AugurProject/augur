@@ -41,7 +41,6 @@ interface UnsignedOrdersProps {
   removeLiquidityOrder: Function;
   scalarDenomination: string;
   openOrders: boolean;
-  isMobile: boolean;
 }
 
 interface Order {
@@ -139,7 +138,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
         </section>
       )}
       {props.openOrders && (
-        <OpenOrdersTable openOrders={props.orders} isMobile={props.isMobile} />
+        <OpenOrdersTable openOrders={props.orders} />
       )}
       {props.breakdown && <Breakdown rows={props.breakdown} short />}
     </main>
