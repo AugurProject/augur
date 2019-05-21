@@ -100,16 +100,13 @@ export default class AlertsView extends Component<AlertsViewProps> {
           )}
           {alerts && alerts.length ? (
             <div className={Styles.dismissContainer}>
-              <div className={Styles.dismissContainerBorder}>
-                <button
-                  className={Styles.dismissButton}
-                  onClick={clearAlerts}
-                  role="button"
-                  tabIndex="0"
-                >
-                  Dismiss All
-                </button>
-              </div>
+              <button
+                onClick={e => clearAlerts()}
+                role="button"
+                tabIndex={0}
+              >
+                Dismiss All
+              </button>
             </div>
           ) : null}
         </section>

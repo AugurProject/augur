@@ -15,7 +15,7 @@ interface AlertProps {
   onClick?: Function;
   removeAlert: Function;
   seen: Boolean;
-  timestamp?: number;
+  timestamp?: Number;
   title: String;
   status: String;
   toggleAlerts: Function;
@@ -34,6 +34,8 @@ export default class Alert extends Component<AlertProps> {
     status: PropTypes.string.isRequired,
     toggleAlerts: PropTypes.func.isRequired
   };
+
+  alert: any = null;
 
   static defaultProps = {
     description: "",

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { TransactionsBox } from "modules/account/components/transactions";
+import { Transactions } from "modules/account/components/transactions";
 import {
   NETWORK_IDS,
   MODAL_WITHDRAW,

@@ -41,8 +41,8 @@
   flex: 0 1 auto;
   font-size: @font-size-medium;
   font-weight: bold;
-  height: 1rem;
-  margin: 0 0.625rem 0.25rem 0;
+  height: @size-16;
+  margin: 0 @size-10 @size-4 0;
   overflow: hidden;
   text-overflow: ellipsis;
   transition: flex 1000ms ease-in;
@@ -57,9 +57,9 @@
 .Status {
   color: @color-secondary-text;
   font-size: @font-size-extra-small;
-  font-weight: 500;
-  height: 0.688rem;
-  margin-bottom: 0.25rem;
+  font-weight: @weight-medium;
+  height: @size-11;
+  margin-bottom: @size-4;
   text-transform: uppercase;
 }
 
@@ -71,13 +71,13 @@
 }
 
 .Dot {
-  flex: 0 1rem;
-  height: 1rem;
-  left: 0.5rem;
+  flex: 0 @size-16;
+  height: @size-16;
+  left: @size-8;
   margin-top: -0.025rem;
   position: absolute;
   transition: flex 500ms ease-out;
-  width: 1rem;
+  width: @size-16;
 }
 
 .DotSeen {
@@ -97,7 +97,7 @@
 .Description {
   flex: 1 0 100%;
   font-size: @font-size-small;
-  height: 0.875rem;
+  height: @size-14;
   margin-bottom: @size-4;
   overflow: hidden;
   padding-right: @size-20;
@@ -117,5 +117,5 @@
 .Time {
   color: @color-secondary-text;
   font-size: @font-size-extra-small;
-  margin-right: 0.25rem;
+  margin-right: @size-4;
 }

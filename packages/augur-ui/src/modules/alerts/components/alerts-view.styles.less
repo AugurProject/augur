@@ -20,7 +20,7 @@
     height: 100%;
     left: 0;
     max-height: 100%;
-    padding-bottom: 0.25em;
+    padding-bottom: @size-4;
     right: 0;
     top: 0;
     width: 100%;
@@ -56,7 +56,7 @@
   width: 100%;
 
   @media @breakpoint-mobile {
-    margin-top: 2.5rem;
+    margin-top: @size-40;
     max-height: unset;
   }
 }
@@ -81,7 +81,7 @@
   align-self: center;
   color: @color-lightgray;
   margin-top: @size-8;
-  padding: 30px;
+  padding: @size-30;
   text-align: center;
   width: 100%;
 }
@@ -90,31 +90,26 @@
   align-items: flex-end;
   background-color: @color-theme-primary;
   display: flex;
-  flex-grow: 1;
   justify-content: flex-end;
+  margin-top: auto;
   min-height: 27px;
-  padding: 7px @size-16;
-}
+  padding: @size-8 @size-16;
 
-.dismissContainerBorder {
-  display: flex;
-  flex-grow: 1;
-  justify-content: flex-end;
-}
+  > button {
+    align-self: flex-end;
+    border-bottom: dotted 0.5px @color-lightergray;
+    color: @color-lightergray;
+    cursor: pointer;
+    display: inline;
+    font-size: @size-12;
 
-.dismissButton {
-  border-bottom: dotted 0.5px @color-lightergray;
-  color: @color-lightergray;
-  cursor: pointer;
-  display: inline;
-  font-size: @size-12;
+    &:hover {
+      border-bottom: dotted 0.5px @color-secondary-text;
+      color: @color-secondary-text;
+    }
 
-  &:hover {
-    border-bottom: dotted 0.5px @color-secondary-text;
-    color: @color-secondary-text;
-  }
-
-  &:focus {
-    outline: none;
+    &:focus {
+      outline: none;
+    }
   }
 }
