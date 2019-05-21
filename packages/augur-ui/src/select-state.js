@@ -7,15 +7,12 @@ export const selectAuthState = state => state.auth;
 export const selectBlockchainState = state => state.blockchain;
 export const selectCategoriesState = state => state.categories;
 export const selectConnectionState = state => state.connection;
-export const selectDisputeCrowdsourcerTokens = state =>
-  state.disputeCrowdsourcerTokens;
 export const selectEdgeContextState = state => state.authStatus.edgeContext;
 export const selectEdgeLoadingState = state => state.authStatus.edgeLoading;
 export const selectEnvState = state => state.env;
 export const selectFavoritesState = state => state.favorites;
 export const selectGasPriceInfo = state => state.gasPriceInfo;
 export const selectReportingWindowStats = state => state.reportingWindowStats;
-export const selectInitialReporters = state => state.initialReporters;
 export const selectIsLogged = state => state.authStatus.isLogged;
 export const selectIsMobile = state => state.appStatus.isMobile;
 export const selectIsMobileSmall = state => state.appStatus.isMobileSmall;

@@ -29,7 +29,6 @@ class MarketTradingForm extends Component {
     updateSelectedOutcome: PropTypes.func.isRequired,
     updateTradeCost: PropTypes.func.isRequired,
     updateTradeShares: PropTypes.func.isRequired,
-    showSelectOutcome: PropTypes.func.isRequired,
     toggleConnectionTray: PropTypes.func.isRequired,
     onSubmitPlaceTrade: PropTypes.func.isRequired
   };
@@ -90,7 +89,6 @@ class MarketTradingForm extends Component {
       updateSelectedOutcome,
       updateTradeCost,
       updateTradeShares,
-      showSelectOutcome,
       toggleConnectionTray,
       onSubmitPlaceTrade,
       marketReviewTradeSeen,
@@ -135,7 +133,6 @@ class MarketTradingForm extends Component {
           updateSelectedOutcome={updateSelectedOutcome}
           updateTradeCost={updateTradeCost}
           updateTradeShares={updateTradeShares}
-          showSelectOutcome={showSelectOutcome}
           onSubmitPlaceTrade={onSubmitPlaceTrade}
           marketReviewTradeModal={marketReviewTradeModal}
           marketReviewTradeSeen={marketReviewTradeSeen}

@@ -4,30 +4,27 @@ import classNames from "classnames";
 
 import { collapseIcon, expandIcon } from "modules/common/components/icons";
 
-import Styles from "modules/market-charts/components/market-outcome--header-orders/market-outcome--header-orders.styles";
 import StylesHeader from "modules/market/components/market-outcomes-list/market-outcomes-list.styles";
+import Styles from "modules/market-charts/components/market-outcome--header-orders/market-outcome--header-orders.styles";
 
 const MarketOutcomeChartsHeaderOrders = ({
   title,
   headers,
-  isMobile,
   extended,
   toggle,
   hide
 }) => (
   <section className={Styles.MarketOutcomeChartsHeader__orders}>
-    {!isMobile && (
-      <button
-        className={classNames(
-          StylesHeader.MarketOutcomesList__heading,
-          Styles.MarketOutcomeChartsHeader__heading
-        )}
-        onClick={toggle}
-      >
-        {title}
-        <span>{extended ? expandIcon : collapseIcon}</span>
-      </button>
-    )}
+    <button
+      className={classNames(
+        StylesHeader.MarketOutcomesList__heading,
+        Styles.MarketOutcomeChartsHeader__heading
+      )}
+      onClick={toggle}
+    >
+      {title}
+      <span>{extended ? expandIcon : collapseIcon}</span>
+    </button>
     {!hide && (
       <div
         className={classNames(
@@ -64,7 +61,6 @@ const MarketOutcomeChartsHeaderOrders = ({
 export default MarketOutcomeChartsHeaderOrders;
 
 MarketOutcomeChartsHeaderOrders.propTypes = {
-  isMobile: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   headers: PropTypes.array.isRequired,
   extended: PropTypes.bool.isRequired,

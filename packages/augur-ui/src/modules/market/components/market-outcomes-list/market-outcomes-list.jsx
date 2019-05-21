@@ -4,7 +4,7 @@ import classNames from "classnames";
 
 import CustomPropTypes from "utils/custom-prop-types";
 import { SCALAR } from "modules/common-elements/constants";
-import MarketOutcomesListOutcome from "modules/market/components/market-outcomes-list--outcome/market-outcomes-list--outcome";
+import MarketOutcomesListOutcome from "modules/market/containers/market-outcome";
 import MarketScalarOutcomeDisplay from "modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display";
 
 import Styles from "modules/market/components/market-outcomes-list/market-outcomes-list.styles";
@@ -20,7 +20,6 @@ export default class MarketOutcomesList extends Component {
     marketType: PropTypes.string,
     minPrice: CustomPropTypes.bigNumber,
     maxPrice: CustomPropTypes.bigNumber,
-    isMobile: PropTypes.bool,
     popUp: PropTypes.bool
   };
 
@@ -30,7 +29,6 @@ export default class MarketOutcomesList extends Component {
     marketType: null,
     minPrice: null,
     maxPrice: null,
-    isMobile: false,
     popUp: false
   };
 
@@ -44,7 +42,6 @@ export default class MarketOutcomesList extends Component {
       scalarDenomination,
       minPrice,
       maxPrice,
-      isMobile,
       popUp
     } = this.props;
 
@@ -65,7 +62,7 @@ export default class MarketOutcomesList extends Component {
                 SharedStyles["MarketOutcomes__table-header"]
               )}
             >
-              {!isMobile && <li>Outcome</li>}
+              <li>Outcome</li>
               <li>
                 <span>
                   Bid <span />
@@ -103,7 +100,6 @@ export default class MarketOutcomesList extends Component {
                     marketId={marketId}
                     selectedOutcome={selectedOutcome}
                     updateSelectedOutcome={updateSelectedOutcome}
-                    isMobile={isMobile}
                     marketType={marketType}
                     scalarDenomination={
                       marketType === SCALAR && scalarDenomination

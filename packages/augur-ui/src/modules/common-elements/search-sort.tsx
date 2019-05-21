@@ -14,11 +14,10 @@ export interface SearchSortProps {
   bottomRightBarContent?: ReactNode;
   rightContent?: ReactNode;
   sortByStyles?: Object;
-  isMobile?: Boolean;
 }
 
 export interface SearchSortState {
-  showPercent: boolean;
+  showSortByOptions: Boolean;
 }
 
 export class SearchSort extends React.Component<
@@ -29,8 +28,8 @@ export class SearchSort extends React.Component<
     showSortByOptions: true
   };
 
-  onFocus = hide => {
-    if (!this.props.isMobile) this.setState({ showSortByOptions: hide });
+  onFocus = (hide: Boolean) => {
+    this.setState({ showSortByOptions: hide });
   };
 
   render() {
@@ -46,7 +45,7 @@ export class SearchSort extends React.Component<
     return (
       <>
         <div className={classNames(Styles.SearchSort, Styles.ShowOnMobile)}>
-          <SearchBar isMobile onFocus={this.onFocus} onChange={onChange} />
+          <SearchBar onChange={onChange} />
           {sortByOptions && (
             <div className={Styles.SearchSort_dropdown}>
               <SquareDropdown

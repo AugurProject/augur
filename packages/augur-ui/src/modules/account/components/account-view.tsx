@@ -22,7 +22,6 @@ import {
 import Styles from "modules/account/components/account-view.styles";
 
 export interface AccountViewProps {
-  isMobile?: Boolean;
   newNotifications?: Boolean;
 }
 
