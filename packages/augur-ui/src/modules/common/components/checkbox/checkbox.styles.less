@@ -3,8 +3,8 @@
 .Checkbox {
   cursor: pointer;
   display: block;
-  font-size: 22px;
-  margin-bottom: 8px;
+  font-size: @size-22;
+  margin-bottom: @size-8;
   position: relative;
   user-select: none;
 }
@@ -13,19 +13,19 @@
   background-color: @color-theme-primary;
   border: 1px solid @color-highlight;
   border-radius: @border-radius-default;
-  height: 24px;
+  height: @size-24;
   left: 0;
   position: absolute;
   top: 0;
-  width: 24px;
+  width: @size-24;
 
   > svg {
     display: none;
-    height: 9px;
-    left: 6px;
+    height: @size-9;
+    left: @size-6;
     position: absolute;
-    top: 6px;
-    width: 11px;
+    top: @size-6;
+    width: @size-11;
 
     > path {
       stroke: @color-secondary-text;
@@ -56,18 +56,34 @@
 
 .Checkbox__small {
   margin-bottom: 0;
+
+  @media @breakpoint-mobile {
+    margin-bottom: @size-8;
+  }
 }
 
 .Checkbox__checkmark__small {
-  height: 16px;
-  width: 16px;
+  height: @size-16;
+  width: @size-16;
+
+  @media @breakpoint-mobile {
+    height: @size-24;
+    width: @size-24;
+  }
 }
 
 .Checkbox__small .Checkbox__checkmark__small {
   > svg {
-    height: 6px;
+    height: @size-6;
     left: 3px;
-    top: 4px;
-    width: 8px;
+    top: @size-4;
+    width: @size-8;
+
+    @media @breakpoint-mobile {
+      height: @size-9;
+      left: @size-6;
+      top: @size-16;
+      width: @size-11;
+    }
   }
 }
