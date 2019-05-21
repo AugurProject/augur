@@ -5,9 +5,9 @@ import classNames from "classnames";
 import { CheckMark } from "modules/common-elements/icons";
 import Styles from "modules/common/components/checkbox/checkbox.styles";
 
-const Checkbox = ({ id, small, isChecked, value, onClick, disabled }) => (
+const Checkbox = ({ id, smallOnDesktop, isChecked, value, onClick, disabled }) => (
   <div
-    className={classNames(Styles.Checkbox, { [Styles.Checkbox__small]: small })}
+    className={classNames(Styles.Checkbox, { [Styles.Checkbox__small]: smallOnDesktop })}
   >
     <input
       id={id}
@@ -22,7 +22,7 @@ const Checkbox = ({ id, small, isChecked, value, onClick, disabled }) => (
       tabIndex={0}
       onClick={onClick}
       className={classNames(Styles.Checkbox__checkmark, {
-        [Styles.Checkbox__checkmark__small]: small
+        [Styles.Checkbox__checkmark__small]: smallOnDesktop
       })}
     >
       {CheckMark}

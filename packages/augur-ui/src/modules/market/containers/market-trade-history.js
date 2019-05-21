@@ -4,8 +4,6 @@ import { marketTradingPriceTimeSeries } from "modules/markets/selectors/market-t
 import { createBigNumber } from "utils/create-big-number";
 
 const mapStateToProps = state => ({
-  isMobile: state.appStatus.isMobile,
-  isMobileSmall: state.appStatus.isMobileSmall,
   marketTradingHistory: state.marketTradingHistory
 });
 

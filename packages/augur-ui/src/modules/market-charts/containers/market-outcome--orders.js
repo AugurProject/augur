@@ -36,8 +36,6 @@ const mapStateToProps = (state, ownProps) => {
   return {
     outcomeName: outcome.name,
     selectedOutcome: outcome,
-    isMobile: state.appStatus.isMobile,
-    isMobileSmall: state.appStatus.isMobileSmall,
     currentTimeInSeconds: selectCurrentTimestampInSeconds(state),
     orderBook: cumulativeOrderBook,
     hasOrders:
