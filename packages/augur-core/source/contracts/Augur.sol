@@ -268,7 +268,7 @@ contract Augur is IAugur {
         require(isKnownUniverse(_universe));
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
-        emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market,_marketCreator, _designatedReporter, _feeDivisor, _prices, _marketType, 10000, _outcomes);
+        emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market, _marketCreator, _designatedReporter, _feeDivisor, _prices, _marketType, 10000, _outcomes);
         return true;
     }
 

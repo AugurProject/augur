@@ -8,8 +8,8 @@ import {
   makeDbMock,
   deployContracts,
   ContractAPI,
-} from "../../../libs";
-import { stringTo32ByteHex, NULL_ADDRESS } from "../../../libs/Utils";
+} from "../../../src/libs";
+import { stringTo32ByteHex, NULL_ADDRESS } from "../../../src/libs/Utils";
 
 const mock = makeDbMock();
 
@@ -30,6 +30,7 @@ beforeAll(async () => {
 }, 120000);
 
 test("State API :: Accounts :: getAccountTransactionHistory", async () => {
+  // Create markets with multiple users
   const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
 
   // Place orders

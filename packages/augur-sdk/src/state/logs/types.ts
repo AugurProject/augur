@@ -51,7 +51,7 @@ export interface DisputeCrowdsourcerContributionLog extends Log, Doc {
   reporter: Address;
   market: Address;
   disputeCrowdsourcer: Address;
-  amountStaked: number;
+  amountStaked: string;
   description: string;
 }
 
