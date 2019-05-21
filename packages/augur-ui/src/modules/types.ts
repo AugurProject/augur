@@ -39,8 +39,7 @@ export interface FilterSortOptions {
   hasOrders: boolean;
 }
 export interface Favorite {
-  marketId: string;
-  timestamp: number;
+  [marketId: string]: number;
 }
 
 export interface EthereumNodeOptions {
