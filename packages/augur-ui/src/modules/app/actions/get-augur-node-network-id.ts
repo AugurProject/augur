@@ -1,6 +1,7 @@
 import { augur } from "services/augurjs";
 import { updateAugurNodeNetworkId } from "modules/app/actions/update-connection";
 import logError from "utils/log-error";
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 export const getAugurNodeNetworkId = (callback: Function = logError) => (
   dispatch: Function,
@@ -11,7 +12,7 @@ export const getAugurNodeNetworkId = (callback: Function = logError) => (
     return callback(null, connection.augurNodeNetworkId);
   augur.augurNode.getSyncData((err: any, contractAddresses: any) => {
     if (err) return callback(err);
-    const augurNodeNetworkId = contractAddresses.net_version;
+    const augurNodeNetworkId = getNetworkId();
     dispatch(updateAugurNodeNetworkId(augurNodeNetworkId));
     callback(null, augurNodeNetworkId);
   });

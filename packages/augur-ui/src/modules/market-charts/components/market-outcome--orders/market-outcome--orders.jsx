@@ -15,7 +15,6 @@ export default class MarketOutcomeChartsOrders extends Component {
     fixedPrecision: PropTypes.number.isRequired,
     pricePrecision: PropTypes.number.isRequired,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool.isRequired,
     hasOrders: PropTypes.bool.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     onMobileTradingPage: PropTypes.bool,
@@ -60,7 +59,6 @@ export default class MarketOutcomeChartsOrders extends Component {
       pricePrecision,
       orderBook,
       updateSelectedOrderProperties,
-      isMobile,
       hasOrders,
       orderBookKeys,
       onMobileTradingPage,
@@ -79,7 +77,6 @@ export default class MarketOutcomeChartsOrders extends Component {
         })}
       >
         <MarketOutcomeHeaderOrders
-          isMobile={isMobile}
           title="Order Book"
           headers={["quantity", "price", "my quantity"]}
           toggle={toggle}

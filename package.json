@@ -27,6 +27,7 @@
     "docker:geth:pop-15": "yarn workspace @augurproject/tools docker:geth:pop-15",
     "docker:geth:pop-normal-time": "yarn workspace @augurproject/tools docker:geth:pop-normal-time",
     "docker:geth": "yarn workspace @augurproject/tools docker:geth",
+    "sdk": "yarn workspace @augurproject/sdk",
     "tools": "yarn workspace @augurproject/tools",
     "an": "yarn workspace @augurproject/node",
     "flash": "yarn workspace @augurproject/tools flash",

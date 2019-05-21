@@ -1,5 +1,5 @@
 import { loadAccountDataFromLocalStorage } from "modules/auth/actions/load-account-data-from-local-storage";
-import { updateLoginAccountAction } from "modules/common/types/login-account";
+import { updateLoginAccount } from "modules/account/actions/login-account";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import { loadAccountHistory } from "modules/auth/actions/load-account-history";
 import { updateAssets } from "modules/auth/actions/update-assets";
@@ -13,24 +13,22 @@ import { loadDisputing } from "modules/reports/actions/load-disputing";
 import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
 import { ACCOUNT_TYPES } from "modules/common-elements/constants";
-import { updateFromAddress } from "modules/contracts/actions/update-contract-api";
 
 export const loadAccountData = (
   account: any,
   callback: Function = logError
 ) => (dispatch: Function) => {
-  const address: String = getValue(account, "address");
+  const address: string = getValue(account, "address");
   if (!address) return callback("account address required");
   if (
     windowRef &&
     windowRef.localStorage.setItem &&
-    account.meta.accountType === ACCOUNT_TYPES.META_MASK
+    account.meta.accountType === ACCOUNT_TYPES.METAMASK
   ) {
     windowRef.localStorage.setItem("loggedInAccount", address);
   }
   dispatch(loadAccountDataFromLocalStorage(address));
-  dispatch(updateLoginAccountAction(account));
-  dispatch(updateFromAddress(account.address));
+  dispatch(updateLoginAccount(account));
   dispatch(clearOrphanedOrderData());
   dispatch(loadAccountHistory());
   dispatch(checkAccountAllowance());
