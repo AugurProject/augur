@@ -6,10 +6,14 @@ import WebSocket from "ws";
 
 import { API } from "./api/API";
 import { AddressFormatReviver } from "./AddressFormatReviver";
-import { JsonRpcRequest, EndpointSettings } from "./api/types";
+import { ControlMessageType } from "../constants";
+import { EventEmitter } from "events";
 import { IsJsonRpcRequest } from "./IsJsonRpcRequest";
+import { JsonRpcRequest, EndpointSettings } from "./api/types";
 import { MakeJsonRpcError, JsonRpcErrorCode } from "./MakeJsonRpcError";
 import { MakeJsonRpcResponse } from "./MakeJsonRpcResponse";
+import { Subscriptions } from "../Subscriptions";
+import { augurEmitter } from "../events";
 
 function isSafe(websocket: WebSocket) {
   if (websocket.readyState !== WebSocket.OPEN) {
@@ -32,7 +36,7 @@ function safePing(websocket: WebSocket) {
     websocket.ping();
 }
 
-export async function run<TBigNumber>(api: API<TBigNumber>, endpointSettings: EndpointSettings): Promise<void> {
+export async function run<TBigNumber>(api: API<TBigNumber>, endpointSettings: EndpointSettings, controlEmitter: EventEmitter): Promise<void> {
   const servers: Array<WebSocket.Server> = [];
   const app = express();
 
@@ -52,12 +56,17 @@ export async function run<TBigNumber>(api: API<TBigNumber>, endpointSettings: En
   });
 
   servers.push(new WebSocket.Server({ server }));
+  controlEmitter.emit(ControlMessageType.ServerStart);
 
   servers.forEach((server) => {
     server.on("connection", (websocket: WebSocket): void => {
+      const subscriptions = new Subscriptions(augurEmitter);
       const pingInterval = setInterval(() => safePing(websocket), 12000);
 
       websocket.on("message", (data: WebSocket.Data): void => {
+
+        console.log("Received: " + data);
+
         let message: any;
         try {
           message = JSON.parse(data as string, AddressFormatReviver);
@@ -69,22 +78,20 @@ export async function run<TBigNumber>(api: API<TBigNumber>, endpointSettings: En
 
         try {
           if (message.method === "subscribe") {
-            // XXX: TODO - sort out what to do with async websocket messaging
-            // const eventName: string = message.params.shift();
+            const eventName: string = message.params.shift();
 
-            // try {
-            //   const subscription: string = subscriptions.subscribe(eventName, message.params, (data: {}): void => {
-            //     safeSend(websocket, MakeJsonRpcResponse(null, { subscription, result: data }));
-            //   });
-            //   safeSend(websocket, MakeJsonRpcResponse(message.id, { subscription }));
-            // } catch (exc) {
-            //   safeSend(websocket, MakeJsonRpcError(message.id, JsonRpcErrorCode.MethodNotFound, exc.toString(), false));
-            // }
+            try {
+              const subscription: string = subscriptions.subscribe(eventName, message.params, (data: {}): void => {
+                safeSend(websocket, MakeJsonRpcResponse(null, { subscription, result: data }));
+              });
+              safeSend(websocket, MakeJsonRpcResponse(message.id, { subscription }));
+            } catch (exc) {
+              safeSend(websocket, MakeJsonRpcError(message.id, JsonRpcErrorCode.MethodNotFound, exc.toString(), false));
+            }
           } else if (message.method === "unsubscribe") {
-            // XXX: TODO - sort out what to do with async websocket messaging
-            // const subscription: string = message.params.shift();
-            // subscriptions.unsubscribe(subscription);
-            // safeSend(websocket, MakeJsonRpcResponse(message.id, true));
+            const subscription: string = message.params.shift();
+            subscriptions.unsubscribe(subscription);
+            safeSend(websocket, MakeJsonRpcResponse(message.id, true));
           } else {
             const request = message as JsonRpcRequest;
             api.route(request.method, request.params).then((result: any) => {

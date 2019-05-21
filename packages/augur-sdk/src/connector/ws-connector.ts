@@ -3,34 +3,36 @@ import { WebSocketSubject } from 'rxjs/observable/dom/WebSocketSubject';
 
 export class WebsocketConnector extends Connector {
   private counter: number = 0;
-  private socket: WebSocketSubject<string>;
+  private socket: WebSocket;
 
   constructor(public readonly endpoint: string) {
     super();
   }
 
   public async connect(params: any): Promise<any> {
-    return this.socket = WebSocketSubject.create(params as string);
+    return this.socket = new WebSocket(this.endpoint);
   }
 
   public async disconnect(): Promise<any> {
-    return this.socket.complete();
+    return this.socket.close();
   }
 
-  public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {
-    return async (params: P): Promise<R> => {
-      return <R>()this.socket.subscribe(() => this.socket.next("msg to the server")));
-
-      //return <R>(this.socket.subscribe(() => this.socket.next("foo"));
-      //JSON.stringify({ id: 42, method: f.name, params, jsonrpc: "2.0" });
+  public bindTo<P>(f: (db: any, augur: any, params: P) => any): (params: P) => Promise<any> {
+    return async (params: P): Promise<any> => {
+      ++this.counter;
+      return await this.socket.send(JSON.stringify({ id: this.counter, method: f.name, params, jsonrpc: "2.0" }));
     };
   }
 
   public async subscribe(event: string, callback: Callback): Promise<any> {
+    this.socket.onmessage = callback;
 
+    ++this.counter;
+    return this.socket.send(JSON.stringify({ id: this.counter, method: "subscribe", event, jsonrpc: "2.0" }));
   }
 
   public async unsubscribe(event: string): Promise<any> {
-
+    ++this.counter;
+    return this.socket.send(JSON.stringify({ id: this.counter, method: "unsubscribe", event, jsonrpc: "2.0" }));
   }
 }
