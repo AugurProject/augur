@@ -1,4 +1,4 @@
-import { INotifications } from "modules/account/components/notifications/notifications";
+import { INotifications } from "modules/account/components/notifications";
 
 export const UPDATE_READ_NOTIFICATIONS = "UPDATE_READ_NOTIFICATIONS";
 

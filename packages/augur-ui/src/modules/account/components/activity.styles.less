@@ -1,0 +1,32 @@
+@import (reference) "~assets/styles/shared";
+
+.Activity {
+  align-items: center;
+  border-radius: @border-radius-default;
+  border-top: 2px solid @color-primary-background;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0 @size-24;
+  padding-top: @size-24;
+
+  @media @breakpoint-mobile-mid {
+    border-top: 1px solid @color-tertiary-background;
+  }
+
+  > span {
+    .mono-10;
+
+    margin-bottom: @size-16;
+    text-transform: uppercase;
+  }
+
+  > div:first-of-type {
+    margin-bottom: @size-24;
+    max-width: 10rem;
+  }
+
+  > ul {
+    margin-bottom: @size-20;
+  }
+}

@@ -17,7 +17,7 @@
 }
 
 .MarketOutcomeDepth__depth-hover-title {
-  color: @color-white;
+  color: @color-secondary-text;
   margin-right: 0.3em;
 }
 
@@ -27,7 +27,7 @@
 }
 
 .MarketOutcomeDepth__container {
-  background: @color-light-purple;
+  background: @color-theme-primary;
   cursor: cell;
   flex: 1;
   min-height: @charts-min-height;
@@ -38,11 +38,11 @@
 
   :global {
     .hovered_tooltip_div {
-      background-color: @color-grayish-purple;
-      border: 1px solid @color-white;
+      background-color: @color-tertiary-background;
+      border: 1px solid @color-secondary-text;
       border-radius: 0.125rem 0 0 0.125rem;
       border-right-width: 2px;
-      color: @color-white;
+      color: @color-secondary-text;
       display: flex;
       flex: 1 113px;
       flex-flow: row nowrap;
@@ -68,13 +68,13 @@
     }
 
     .hovered_tooltip_div.asks {
-      border-color: fade(@color-negative2, 30%);
-      border-right-color: @color-negative2;
+      border-color: fade(@color-negative, 30%);
+      border-right-color: @color-negative;
     }
 
     .hovered_tooltip_div.asks.flip {
-      border-left-color: @color-negative2;
-      border-right-color: fade(@color-negative2, 30%);
+      border-left-color: @color-negative;
+      border-right-color: fade(@color-negative, 30%);
     }
 
     .hovered_tooltip_labels {
@@ -109,7 +109,7 @@
       > div {
         .mono-10;
 
-        color: @color-white;
+        color: @color-secondary-text;
         flex: 1;
         font-weight: bold;
         line-height: @size-12;
@@ -130,8 +130,8 @@
     }
 
     .asks {
-      color: @color-negative2;
-      stroke: @color-negative2;
+      color: @color-negative;
+      stroke: @color-negative;
     }
 
     .bids {
@@ -141,7 +141,7 @@
 
     #depth_range_bounds {
       .bounding-box {
-        fill: @color-white;
+        fill: @color-secondary-text;
         opacity: 0.05;
       }
     }
@@ -168,14 +168,14 @@
     .tick-value {
       &:extend(.caps--extra-small all);
 
-      fill: @color-white;
+      fill: @color-secondary-text;
       font-size: @font-size-small;
     }
 
     .tick-value-midpoint {
       .mono-14;
 
-      fill: @color-white;
+      fill: @color-secondary-text;
     }
 
     .tick-value-midpoint-text {
@@ -185,13 +185,13 @@
     }
 
     .tick-value-denomination {
-      fill: @color-white;
+      fill: @color-secondary-text;
       font-family: @roboto;
       font-size: @font-size-small;
     }
 
     .tick > text {
-      fill: @color-white;
+      fill: @color-secondary-text;
     }
 
     .depth-line-bids {
@@ -201,7 +201,7 @@
 
     .depth-line-asks {
       fill: none;
-      stroke: @color-negative2;
+      stroke: @color-negative;
     }
 
     .stop-top-bid {
@@ -213,7 +213,7 @@
     }
 
     .stop-bottom-ask {
-      stop-color: @color-negative2;
+      stop-color: @color-negative;
     }
 
     .stop-bottom-bid {
@@ -235,13 +235,13 @@
     }
 
     .line .crosshairDot {
-      fill: @color-white;
-      stroke: @color-white;
+      fill: @color-secondary-text;
+      stroke: @color-secondary-text;
     }
 
     .line .crosshairDotOutline {
       fill: none;
-      stroke: @color-white;
+      stroke: @color-secondary-text;
     }
 
     .line .crosshair-bids {
@@ -253,7 +253,7 @@
     .line .crosshair-asks {
       .dashline-normal;
 
-      stroke: @color-negative2;
+      stroke: @color-negative;
     }
 
     .overlay {
@@ -272,7 +272,7 @@
       }
 
       text {
-        fill: @color-white;
+        fill: @color-secondary-text;
       }
     }
 
