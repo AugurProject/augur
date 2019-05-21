@@ -8,27 +8,6 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
-export const UPDATE_PARTICIPATION_TOKENS_DATA =
-  "UPDATE_PARTICIPATION_TOKENS_DATA";
-export const UPDATE_PARTICIPATION_TOKENS_BALANCE =
-  "UPDATE_PARTICIPATION_TOKENS_BALANCE";
-
-export const updateParticipationTokensData = (
-  participationTokensDataUpdated: any
-) => ({
-  type: UPDATE_PARTICIPATION_TOKENS_DATA,
-  data: { participationTokensDataUpdated }
-});
-export const updateParticipationTokenBalance = (
-  feeWindowID: String,
-  balance: String
-) => ({
-  type: UPDATE_PARTICIPATION_TOKENS_BALANCE,
-  data: {
-    feeWindowID,
-    balance
-  }
-});
 
 // TODO: is this even in use? on a search, i never see it imported...
 export const loadParticipationTokens = (
@@ -43,7 +22,6 @@ export const loadParticipationTokens = (
     { universe: universeID, account: loginAccount.address, includeCurrent },
     (err: any, feeWindowsWithUnclaimedTokens: String) => {
       if (err) return callback(err);
-      dispatch(updateParticipationTokensData(feeWindowsWithUnclaimedTokens));
       Object.keys(feeWindowsWithUnclaimedTokens).forEach(feeWindowID => {
         augur.api.FeeWindow.withdrawInEmergency({
           tx: { estimateGas: true, to: feeWindowID },

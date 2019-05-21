@@ -32,7 +32,6 @@ export const selectOrderBooksState = state => state.orderBooks;
 export const selectOrderCancellationState = state => state.orderCancellation;
 export const selectAllOrders = state => state.allOrders;
 export const selectOutcomesDataState = state => state.outcomesData;
-export const selectParticipationTokens = state => state.participationTokens;
 export const selectMarketTradingHistoryState = state =>
   state.marketTradingHistory;
 export const selectReportsState = state => state.reports;
