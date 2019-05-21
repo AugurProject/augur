@@ -12,6 +12,7 @@ export default class ModuleTabs extends Component {
     children: PropTypes.arrayOf(ModulePane).isRequired,
     fillWidth: PropTypes.bool,
     fillForMobile: PropTypes.bool,
+    fillForOnlyMobile: PropTypes.bool,
     noBorder: PropTypes.bool,
     id: PropTypes.string,
     borderBetween: PropTypes.bool,
@@ -24,6 +25,7 @@ export default class ModuleTabs extends Component {
     className: "",
     fillWidth: false,
     fillForMobile: false,
+    fillForOnlyMobile: false,
     id: "id",
     noBorder: false,
     borderBetween: false,
@@ -93,6 +95,8 @@ export default class ModuleTabs extends Component {
             [Styles.ModuleTabs__tabFill]: this.props.fillWidth,
             [Styles.ModuleTabs__tabFillWidth]:
               this.props.fillWidth || this.props.fillForMobile,
+            [Styles.ModuleTabs__tabFillWidthMobile]:
+              this.props.fillForOnlyMobile,
             [Styles.ModuleTabs__noBorder]: this.props.noBorder,
             [Styles.ModuleTabs__borderBetween]: this.props.borderBetween
           })}

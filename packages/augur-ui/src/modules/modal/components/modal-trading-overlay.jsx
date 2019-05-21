@@ -43,7 +43,6 @@ export default class ModalTradingOverlay extends Component {
       market,
       selectedOrderProperties,
       selectedOutcome,
-      isMobile,
       updateSelectedOutcome,
       updateSelectedOrderProperties,
     } = this.props;
