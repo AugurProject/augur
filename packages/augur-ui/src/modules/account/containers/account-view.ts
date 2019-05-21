@@ -8,7 +8,6 @@ const mapStateToProps = state => {
   const notifications = selectNotifications(state);
 
   return {
-    isMobile: state.appStatus.isMobile,
     newNotifications:
       notifications &&
       notifications.filter(notification => notification.isNew).length > 0
