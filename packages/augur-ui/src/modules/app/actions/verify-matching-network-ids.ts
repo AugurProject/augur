@@ -30,7 +30,7 @@ export const verifyMatchingNetworkIds = (callback: Function = logError) => (disp
       if (err) return callback(err);
       const networkIds: NetworkIdsObject = {
         augurNode: augurNodeNetworkId,
-        middleware: getNetworkId().toString()
+        middleware: getNetworkId(),
       };
       if (!isGlobalWeb3()) return allNetworkIdsMatch(networkIds, callback);
       allNetworkIdsMatch({ ...networkIds }, callback);
