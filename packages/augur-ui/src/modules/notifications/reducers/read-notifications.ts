@@ -1,20 +1,11 @@
 import { UPDATE_READ_NOTIFICATIONS } from "modules/notifications/actions/update-notifications";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { INotifications } from "modules/account/components/notifications/notifications";
+import { Notification, BaseAction } from "src/modules/types";
 
-const DEFAULT_STATE: Array<null> = [];
+const DEFAULT_STATE: Array<Notification> = [];
 
-export interface Data {
-  notifications: Array<INotifications>;
-}
-
-export interface Action {
-  type: string;
-  data: Data;
-}
-
-export default (notifications = DEFAULT_STATE, action: Action) => {
+export default (notifications = DEFAULT_STATE, action: BaseAction) => {
   switch (action.type) {
     case UPDATE_READ_NOTIFICATIONS:
       return action.data.notifications;

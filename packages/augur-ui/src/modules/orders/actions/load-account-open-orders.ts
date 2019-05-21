@@ -1,7 +1,6 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { ungroupBy } from "utils/ungroupBy";
-import { addOrphanedOrder } from "modules/orders/actions/orphaned-orders";
 import { updateOrderBook } from "modules/orders/actions/update-order-book";
 import { OPEN } from "modules/common-elements/constants";
 import { formatEther, formatShares } from "utils/format-number";
@@ -19,12 +18,6 @@ export const loadAccountOpenOrders = (
         allMarketIds = allMarketIds.concat([options.marketId]);
       }
       if (!err) postProcessing(allMarketIds, dispatch, orders, callback);
-      dispatch(
-        loadAccountOrphanedOrders(options, (oMarketIds = []) => {
-          const comb = [...new Set([...marketIds, oMarketIds])];
-          if (marketIdAggregator && marketIdAggregator(comb));
-        })
-      );
     })
   );
 };
@@ -51,43 +44,4 @@ const postProcessing = (marketIds: Array<String>, dispatch: Function, orders: an
   );
 
   if (callback) callback(null, orders);
-};
-
-const loadAccountOrphanedOrders = (options: any = {}, callback: Function) => (
-  dispatch: Function,
-  getState: Function
-) => {
-  const { universe, loginAccount } = getState();
-
-  augur.trading.getOrders(
-    {
-      ...options,
-      orphaned: true,
-      creator: loginAccount.address,
-      universe: universe.id
-    },
-    (err: any, orders: any) => {
-      if (err) return callback(err);
-      if (orders == null || Object.keys(orders).length === 0)
-        return callback(null);
-
-      ungroupBy(orders, ["marketId", "outcome", "orderTypeLabel", "orderId"])
-        .filter((it: any) => it.orderState === OPEN)
-        .forEach((it: any) =>
-          dispatch(
-            addOrphanedOrder({
-              ...it,
-              type: it.orderTypeLabel,
-              description: it.description || it.outcomeName,
-              sharesEscrowed: formatEther(it.sharesEscrowed),
-              tokensEscrowed: formatEther(it.tokensEscrowed),
-              avgPrice: formatEther(it.fullPrecisionPrice),
-              unmatchedShares: formatShares(it.fullPrecisionAmount)
-            })
-          )
-        );
-
-      callback(err, { marketIds: Object.keys(orders) });
-    }
-  );
 };

@@ -1,5 +1,5 @@
 import selectOrder from "modules/orders/selectors/select-order";
-import { any } from "async";
+import { OrderStatus } from "src/modules/types";
 
 export const UPDATE_ORDER_STATUS = "UPDATE_ORDER_STATUS";
 export const UPDATE_ORDER_REMOVE = "UPDATE_ORDER_REMOVE";
@@ -11,14 +11,6 @@ export const UPDATE_ORDER_REMOVE = "UPDATE_ORDER_REMOVE";
  * @param outcome
  * @param {String} orderTypeLabel
  */
-
- interface OrderStatus {
-  orderId: String;
-  status: String;
-  marketId: String;
-  outcome: any;
-  orderTypeLabel: String;
- };
 
 export const updateOrderStatus = ({
   orderId,
@@ -48,9 +40,7 @@ export const updateOrderStatus = ({
     type: UPDATE_ORDER_STATUS,
     data: {
       orderId,
-      status,
-      marketId,
-      orderType: orderTypeLabel
+      status
     }
   });
 };

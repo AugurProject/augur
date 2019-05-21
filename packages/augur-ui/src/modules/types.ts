@@ -1,3 +1,97 @@
+import { ReactNode } from "react";
+import { Market } from "./account/components/notifications/notifications-templates";
+
+export interface OrderBookOrders {
+  [id: string]: Order;
+}
+export interface OrderBookOrderType {
+  [orderType: string]: OrderBookOrders;
+}
+export interface OrderBook {
+  [outcome: number]: OrderBookOrderType;
+}
+export interface OrderBooks {
+  [marketId: string]: OrderBook;
+}
+export interface Notification {
+  id: string;
+  type: string;
+  isImportant: boolean;
+  isNew: boolean;
+  title: string;
+  buttonLabel: string;
+  buttonAction: Function;
+  Template: ReactNode;
+  market: Market | null;
+  markets: Array<string>;
+  claimReportingFees?: object;
+  totalProceeds?: number;
+}
+
+export interface OrderStatus {
+  orderId: string;
+  status: string;
+}
+export interface Order {
+  id: string;
+  outcome: string | number; // TODO: need to be consistent with outcome naming and type
+  index: number;
+  quantity: number;
+  price: string;
+  type: string;
+  orderEstimate: string;
+  outcomeName: string;
+}
+export interface NewMarketPropertiesValidations {
+  description: string|null;
+  category: string|null;
+  tag1: string|null;
+  tag2: string|null;
+  type: string|null;
+  designatedReporterType: string|null;
+  designatedReporterAddress: string|null;
+  expirySourceType: string|null;
+  endTime: string|null;
+  hour: string|null;
+  minute: string|null;
+  meridiem: string|null;
+}
+
+export interface NewMarketPropertyValidations {
+  settlementFee: string|null;
+}
+export interface NewMarket {
+  isValid: boolean;
+  validations: Array<NewMarketPropertiesValidations|NewMarketPropertyValidations>;
+  currentStep: number;
+  type: string;
+  outcomes: Array<string|number>;
+  scalarSmallNum: string;
+  scalarBigNum: string;
+  scalarDenomination: string;
+  description: string;
+  expirySourceType: string;
+  expirySource: string;
+  designatedReporterType: string;
+  designatedReporterAddress: string;
+  endTime: any;
+  tickSize: string;
+  hour: string;
+  minute: string;
+  meridiem: string;
+  detailsText: string;
+  category: string;
+  tag1: string;
+  tag2: string;
+  settlementFee: string;
+  orderBook: any; // TODO: object for order book
+  orderBookSorted: any; // TODO: object for order book
+  orderBookSeries: any; // TODO: object for order book
+  initialLiquidityEth: any; // TODO: big number type
+  initialLiquidityGas: any; // TODO: big number type
+  creationError: string;
+}
+
 export interface FilledOrder {
   creator: string;
   orderId: string;

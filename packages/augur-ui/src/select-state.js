@@ -28,7 +28,6 @@ export const selectAlertsState = state => state.alerts;
 export const selectReadNotificationState = state => state.readNotifications;
 export const selectPendingOrdersState = state => state.pendingOrders;
 export const selectPendingQueueState = state => state.pendingQueue;
-export const selectOrphanOrders = state => state.orphanedOrders;
 export const selectOrderBooksState = state => state.orderBooks;
 export const selectOrderCancellationState = state => state.orderCancellation;
 export const selectAllOrders = state => state.allOrders;

@@ -9,8 +9,9 @@ import { SETTLEMENT_FEE_DEFAULT } from "modules/common-elements/constants";
 import { DEFAULT_SCALAR_TICK_SIZE } from "@augurproject/augur.js/src/constants";
 
 import { createBigNumber } from "utils/create-big-number";
+import { NewMarket, BaseAction } from "src/modules/types";
 
-const DEFAULT_STATE = () => ({
+const DEFAULT_STATE: NewMarket = () => ({
   isValid: false,
   validations: [
     {
@@ -61,7 +62,7 @@ const DEFAULT_STATE = () => ({
     "Unable to create market.  Ensure your market is unique and all values are valid."
 });
 
-export default function(newMarket = DEFAULT_STATE(), action) {
+export default function(newMarket: NewMarket = DEFAULT_STATE(), action: BaseAction) {
   switch (action.type) {
     case ADD_ORDER_TO_NEW_MARKET: {
       const orderToAdd = action.data.order;

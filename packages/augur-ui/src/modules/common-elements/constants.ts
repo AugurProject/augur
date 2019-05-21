@@ -423,7 +423,6 @@ export const MODAL_OPEN_ORDERS = "MODAL_OPEN_ORDERS";
 export const CRITICAL = "CRITICAL";
 export const INFO = "INFO";
 export const CREATEGENESISUNIVERSE = "CREATEGENESISUNIVERSE";
-export const CANCELORPHANEDORDER = "CANCELORPHANEDORDER";
 export const CANCELORDER = "CANCELORDER";
 export const WITHDRAWETHERTOIFPOSSIBLE = "WITHDRAWETHERTOIFPOSSIBLE";
 export const CALCULATEREPORTINGFEE = "CALCULATEREPORTINGFEE";
@@ -638,7 +637,6 @@ export const SELL_COMPLETE_SETS_TITLE = "Sell Complete Sets";
 export const UNSIGNED_ORDERS_TITLE = "Unsigned Orders";
 export const CLAIM_REPORTING_FEES_TITLE = "Claim Stake and Fees";
 export const PROCEEDS_TO_CLAIM_TITLE = "Claim Proceeds";
-export const ORPHAN_ORDERS_TITLE = "Orphaned Orders";
 export const OPEN_ORDERS_RESOLVED_MARKET = "resolvedMarketsOpenOrders";
 export const REPORT_ON_MARKET = "reportOnMarkets";
 export const FINALIZE_MARKET = "finalizeMarkets";
@@ -648,7 +646,6 @@ export const CLAIM_REPORTING_FEES = "claimReportingFees";
 export const UNSIGNED_ORDERS = "unsignedOrders";
 export const PROCEEDS_TO_CLAIM = "proceedsToClaim";
 export const PROCEEDS_TO_CLAIM_ON_HOLD = "proceedsToClaimOnHold";
-export const ORPHAN_ORDERS = "orphanOrders";
 
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
@@ -660,7 +657,6 @@ export const NOTIFICATION_TYPES = {
   [UNSIGNED_ORDERS]: UNSIGNED_ORDERS,
   [PROCEEDS_TO_CLAIM]: PROCEEDS_TO_CLAIM,
   [PROCEEDS_TO_CLAIM_ON_HOLD]: PROCEEDS_TO_CLAIM_ON_HOLD,
-  [ORPHAN_ORDERS]: ORPHAN_ORDERS
 };
 
 // Account View - Timeframe selection options

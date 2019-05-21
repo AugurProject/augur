@@ -18,7 +18,6 @@ import newMarket from "modules/markets/reducers/new-market";
 import alerts from "modules/alerts/reducers/alerts";
 import orderBooks from "modules/orders/reducers/order-books";
 import orderCancellation from "modules/orders/reducers/order-cancellation";
-import orphanedOrders from "modules/orders/reducers/orphaned-orders";
 import outcomesData from "modules/markets/reducers/outcomes-data";
 import participationTokens from "modules/reports/reducers/participation-token-data";
 import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
@@ -58,7 +57,6 @@ export function createReducer() {
     readNotifications,
     orderBooks,
     orderCancellation,
-    orphanedOrders,
     outcomesData,
     participationTokens,
     pendingLiquidityOrders,

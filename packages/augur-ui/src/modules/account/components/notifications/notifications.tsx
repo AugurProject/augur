@@ -25,28 +25,15 @@ import {
   UnsignedOrdersTemplate,
   ProceedsToClaimTemplate,
   ProceedsToClaimOnHoldTemplate,
-  OrphanOrdersTemplate
 } from "modules/account/components/notifications/notifications-templates";
 
 import * as constants from "modules/common-elements/constants";
+import { Notification } from "src/modules/types";
 
-export interface INotifications {
-  id: string;
-  type: string;
-  isImportant: boolean;
-  isNew: boolean;
-  title: string;
-  buttonLabel: string;
-  buttonAction: Function;
-  Template: ReactNode;
-  market: Market | null;
-  markets: Array<string>;
-  claimReportingFees?: Object;
-  totalProceeds?: number;
-}
+const { NOTIFICATION_TYPES } = constants;
 
 export interface NotificationsProps extends RouteComponentProps {
-  notifications: Array<INotifications>;
+  notifications: Array<Notification>;
   isMobile: boolean;
   updateReadNotifications: Function;
   getReportingFees: Function;
@@ -64,8 +51,6 @@ export interface NotificationsState {
   disabledNotifications: any;
 }
 
-const { NOTIFICATION_TYPES } = constants;
-
 class Notifications extends React.Component<
   NotificationsProps,
   NotificationsState
@@ -74,7 +59,7 @@ class Notifications extends React.Component<
     disabledNotifications: {}
   };
 
-  getButtonAction(notification: INotifications) {
+  getButtonAction(notification: Notification) {
     let buttonAction;
     const { location, history } = this.props;
 
@@ -183,20 +168,6 @@ class Notifications extends React.Component<
         };
         break;
 
-      case NOTIFICATION_TYPES.orphanOrders:
-        buttonAction = () => {
-          this.markAsRead(notification);
-          const queryLink = {
-            [MARKET_ID_PARAM_NAME]: notification.market.id,
-            [RETURN_PARAM_NAME]: location.hash
-          };
-          history.push({
-            pathname: makePath(MARKET),
-            search: makeQuery(queryLink)
-          });
-        };
-        break;
-
       default:
         buttonAction = () => {
           this.markAsRead(notification);
@@ -219,9 +190,9 @@ class Notifications extends React.Component<
     });
   }
 
-  markAsRead({ id }: INotifications) {
+  markAsRead({ id }: Notification) {
     const newState = this.props.notifications.map(
-      (notification: INotifications | null) => {
+      (notification: Notification | null) => {
         if (notification && notification.id === id) {
           notification.isNew = false;
         }
@@ -336,9 +307,6 @@ class Notifications extends React.Component<
               isDisabled={isDisabled}
               {...templateProps}
             />
-          ) : null}
-          {type === NOTIFICATION_TYPES.orphanOrders ? (
-            <OrphanOrdersTemplate isDisabled={isDisabled} {...templateProps} />
           ) : null}
         </NotificationCard>
       );

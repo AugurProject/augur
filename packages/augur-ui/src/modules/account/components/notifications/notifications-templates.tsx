@@ -35,7 +35,6 @@ export interface Market {
   myPositionsSummary?: MyPositionsSummary;
   outstandingReturns?: string;
   finalizationTimeWithHold?: number;
-  orphanOrdersPerMarket?: number;
 }
 
 export interface TemplateProps {
@@ -172,17 +171,6 @@ export const UnsignedOrdersTemplate = (props: TemplateProps) => {
   return (
     <Template
       message={`You have unsigned orders pending for the following markets initial liquidity: "${description}"`}
-      {...props}
-    />
-  );
-};
-
-export const OrphanOrdersTemplate = (props: TemplateProps) => {
-  const { description } = props.market;
-
-  return (
-    <Template
-      message={`You have orphaned orders in this market: "${description}"`}
       {...props}
     />
   );

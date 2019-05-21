@@ -1,15 +1,16 @@
 import { UPDATE_ORDER_BOOK } from "modules/orders/actions/update-order-book";
 import { RESET_STATE } from "modules/app/actions/reset-state";
+import { Orderbooks, BaseAction } from "src/modules/types";
 
-const DEFAULT_STATE = {};
+const DEFAULT_STATE: Orderbooks = {};
 /**
  * @param {Object} orderBooks
  * @param {Object} action
  */
-export default function(orderBooks = DEFAULT_STATE, { type, data }) {
-  switch (type) {
+export default function(orderBooks = DEFAULT_STATE, action: BaseAction) {
+  switch (action.type) {
     case UPDATE_ORDER_BOOK: {
-      const { marketId, orderBook } = data;
+      const { marketId, orderBook } = action.data;
       const newOrderBooks = Object.keys(orderBooks).reduce(
         (p, m) => (m !== marketId ? { ...p, [m]: orderBooks[m] } : p),
         {}

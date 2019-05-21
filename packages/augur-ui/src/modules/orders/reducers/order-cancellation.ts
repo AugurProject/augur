@@ -3,23 +3,24 @@ import {
   UPDATE_ORDER_REMOVE
 } from "modules/orders/actions/update-order-status";
 import { RESET_STATE } from "modules/app/actions/reset-state";
+import { BaseAction } from "src/modules/types";
 
 const DEFAULT_STATE = {};
 /**
  * @param {Object} orderCancellation
  * @param {Object} action
  */
-export default function(orderCancellation = DEFAULT_STATE, { type, data }) {
-  switch (type) {
+export default function(orderCancellation = DEFAULT_STATE, action: BaseAction) {
+  switch (action.type) {
     case UPDATE_ORDER_STATUS: {
-      const { orderId, status } = data;
+      const { orderId, status } = action.data;
       return {
         ...orderCancellation,
         [orderId]: status
       };
     }
     case UPDATE_ORDER_REMOVE: {
-      const { orderId } = data;
+      const { orderId } = action.data;
       delete orderCancellation[orderId];
       return {
         ...orderCancellation
