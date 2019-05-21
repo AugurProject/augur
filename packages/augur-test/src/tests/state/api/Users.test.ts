@@ -469,19 +469,19 @@ async function processTrades(tradeData: Array<UTPTradeData>, market: ContractInt
 }
 
 async function doTrade(trade: TradeData, market: ContractInterfaces.Market, minPrice: BigNumber = DEFAULT_MIN_PRICE, maxPrice: BigNumber = DEFAULT_DISPLAY_RANGE) : Promise<void> {
-    const numTicks = new BigNumber((await market.getNumTicks_()).toNumber());
-        const price = new BigNumber(trade.price);
-        const tickSize = numTicksToTickSize(numTicks, minPrice.multipliedBy(10**18), maxPrice.multipliedBy(10**18));
-        const quantity = convertDisplayAmountToOnChainAmount(new BigNumber(trade.quantity), tickSize);
+    const numTicks = await market.getNumTicks_();
+    const price = new BigNumber(trade.price);
+    const tickSize = numTicksToTickSize(numTicks, minPrice.multipliedBy(10**18), maxPrice.multipliedBy(10**18));
+    const quantity = convertDisplayAmountToOnChainAmount(new BigNumber(trade.quantity), tickSize);
 
-        const onChainLongPrice = convertDisplayPriceToOnChainPrice(price, minPrice, tickSize);
-        const onChainShortPrice = numTicks.minus(onChainLongPrice);
-        const direction = trade.direction === SHORT ? BID : ASK;
-        const longCost = quantity.multipliedBy(onChainLongPrice);
-        const shortCost = quantity.multipliedBy(onChainShortPrice);
-        const fillerCost = trade.direction === ASK ? longCost : shortCost;
+    const onChainLongPrice = convertDisplayPriceToOnChainPrice(price, minPrice, tickSize);
+    const onChainShortPrice = numTicks.minus(onChainLongPrice);
+    const direction = trade.direction === SHORT ? BID : ASK;
+    const longCost = quantity.multipliedBy(onChainLongPrice);
+    const shortCost = quantity.multipliedBy(onChainShortPrice);
+    const fillerCost = trade.direction === ASK ? longCost : shortCost;
 
-        const orderID = await john.placeOrder(market.address, new BigNumber(direction), new BigNumber(quantity.toFixed()), new BigNumber(onChainLongPrice.toFixed()), new BigNumber(trade.outcome), ZERO_BYTES, ZERO_BYTES, ZERO_BYTES);
+    const orderID = await john.placeOrder(market.address, new BigNumber(direction), quantity, onChainLongPrice, new BigNumber(trade.outcome), ZERO_BYTES, ZERO_BYTES, ZERO_BYTES);
 
-        await mary.fillOrder(orderID, new BigNumber(fillerCost.toFixed()), new BigNumber(quantity.toFixed()), "");
+    await mary.fillOrder(orderID, fillerCost, quantity, "");
 }

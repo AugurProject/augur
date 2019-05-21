@@ -39,6 +39,8 @@ export class ContractAPI {
     topic: string,
     extraInfo:string
   ): Promise<ContractInterfaces.Market> {
+    const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
+    await this.faucet(marketCreationFee);
     const byteTopic = stringTo32ByteHex(topic);
 
     const createMarketEvents = await universe.createYesNoMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, byteTopic, extraInfo);
@@ -68,6 +70,8 @@ export class ContractAPI {
   }
 
   public async createCategoricalMarket(universe: ContractInterfaces.Universe, endTime: BigNumber, feePerCashInAttoCash: BigNumber, affiliateFeeDivisor: BigNumber, designatedReporter: string, outcomes: Array<string>, topic: string, extraInfo: string): Promise<ContractInterfaces.Market> {
+    const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
+    await this.faucet(marketCreationFee);
     const byteTopic = stringTo32ByteHex(topic);
 
     const createMarketEvents = await universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, outcomes, byteTopic, extraInfo);
@@ -106,6 +110,8 @@ export class ContractAPI {
     topic: string,
     extraInfo: string,
     ): Promise<ContractInterfaces.Market> {
+    const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
+    await this.faucet(marketCreationFee);
     const byteTopic = stringTo32ByteHex(topic);
 
     const createMarketEvents = await universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, prices, numTicks, byteTopic, extraInfo);
@@ -132,7 +138,7 @@ export class ContractAPI {
     const affiliateFeeDivisor = new BigNumber(25);
     const minPrice = new BigNumber(50).multipliedBy(new BigNumber(10).pow(18));
     const maxPrice = new BigNumber(250).multipliedBy(new BigNumber(10).pow(18));
-    const numTicks = new BigNumber(2000000);
+    const numTicks = new BigNumber(20000);
     return this.createScalarMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, [minPrice, maxPrice], numTicks, " ", "{\"description\": \"description\"}");
   }
 
@@ -146,6 +152,8 @@ export class ContractAPI {
     worseOrderID: string,
     tradeGroupID: string,
   ): Promise<string> {
+    const cost = numShares.multipliedBy(price);
+    await this.faucet(cost);
     const orderId = await this.augur.contracts.createOrder.publicCreateOrder_(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
     console.log("orderId", orderId);
     await this.augur.contracts.createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
@@ -153,10 +161,13 @@ export class ContractAPI {
   }
 
   public async fillOrder(orderId: string, cost: BigNumber, numShares: BigNumber, tradeGroupId: string) {
+    await this.faucet(cost.multipliedBy(10000));
     await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, stringTo32ByteHex(tradeGroupId), false, NULL_ADDRESS);
   }
 
   public async takeBestOrder(marketAddress: string, type: BigNumber, numShares: BigNumber, price: BigNumber, outcome: BigNumber, tradeGroupID: string): Promise<void> {
+    const cost = numShares.multipliedBy(price);
+    await this.faucet(cost);
     const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
     if (bestPriceAmount === new BigNumber(0)) {
       throw new Error("Could not take best Order");
@@ -194,6 +205,9 @@ export class ContractAPI {
   }
 
   public async buyCompleteSets(market: ContractInterfaces.Market, amount: BigNumber): Promise<void> {
+    const numTicks = await market.getNumTicks_();
+    const cashValue = amount.multipliedBy(numTicks);
+    await this.faucet(cashValue);
     await this.augur.contracts.completeSets.publicBuyCompleteSets(market.address, amount);
   }
 

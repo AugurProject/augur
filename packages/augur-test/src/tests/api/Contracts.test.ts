@@ -87,6 +87,6 @@ test("Contract :: Universe :: Create Market", async() => {
   const marketAddress = marketCreatedEvent.parameters.market;
   const market = contracts.marketFromAddress(marketAddress);
 
-  const numticks = new ethers.utils.BigNumber("0x64");
+  const numticks = new BigNumber(100);
   await expect(await market.getNumTicks_()).toEqual(numticks);
 }, 15000);
