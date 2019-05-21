@@ -19,6 +19,9 @@ export interface StyleOptions {
   noToggle?: Boolean;
   showExpandedToggle?: Boolean;
   isFirst?: Boolean;
+  outcome?: Boolean;
+  colorId?: String;
+  active?: Boolean;
 }
 
 export interface RowProps {
@@ -26,6 +29,7 @@ export interface RowProps {
   columnProperties: Array<Properties>;
   styleOptions: StyleOptions;
   isSingle?: Boolean;
+  rowOnClick?: Function;
   extendedView?: Boolean;
 }
 
@@ -35,14 +39,15 @@ const Row = (props: RowProps) => {
     isSingle, 
     extendedView, 
     columnProperties,
-    styleOptions
+    styleOptions,
+    rowOnClick
   } = props;
 
   if (!rowProperties) {
     return null;
   }
 
-  const { position, openOrder, filledOrder, noToggle, showExpandedToggle, isFirst } = styleOptions;
+  const { position, openOrder, filledOrder, noToggle, showExpandedToggle, isFirst, outcome, active, colorId } = styleOptions;
 
   const rowContent = (
     <ul
@@ -54,7 +59,12 @@ const Row = (props: RowProps) => {
           openOrder && extendedView,
         [Styles.Row3]: position,
         [Styles.Row3_a]:
-          position && extendedView
+          position && extendedView,
+        [Styles.Row4]:
+          outcome,
+        [`${Styles[`Row4-${colorId}`]}`]: outcome && colorId,
+        [`${Styles.active}`]:
+          outcome && active
       })}
     >
       {columnProperties.map(column => (
@@ -70,7 +80,7 @@ const Row = (props: RowProps) => {
 
   if (noToggle) {
     return (
-      <div className={classNames(Styles.SingleRow, Styles.BottomBorder)}>
+      <div onClick={rowOnClick} className={classNames(Styles.SingleRow, Styles.BottomBorder, {[Styles.Row4Parent]: outcome})}>
         {rowContent}
       </div>
     );

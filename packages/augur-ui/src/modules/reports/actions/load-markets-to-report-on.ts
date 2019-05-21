@@ -18,10 +18,6 @@ export const loadMarketsToReportOn = (
     reporter: loginAccount.address
   };
 
-  if (env["bug-bounty"]) {
-    query.creator = env["bug-bounty-address"];
-  }
-
   const designatedReportingQuery = {
     ...query,
     reportingState: "DESIGNATED_REPORTING",

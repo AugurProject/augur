@@ -2,10 +2,6 @@ import { loadAccountPositions } from "modules/positions/actions/load-account-pos
 import { loadAccountOpenOrders } from "modules/orders/actions/load-account-open-orders";
 import { loadCreateMarketHistory } from "modules/markets/actions/load-create-market-history";
 import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
-import {
-  TRANSACTIONS_LOADING,
-  updateAppStatus
-} from "modules/app/actions/update-app-status";
 import { loadUserMarketTradingHistory } from "modules/markets/actions/market-trading-history-management";
 import { clearTransactions } from "modules/transactions/actions/update-transactions-data";
 import { loadAlerts } from "modules/alerts/actions/alerts";
@@ -17,10 +13,8 @@ export const loadAccountHistory = () => (
   dispatch: Function,
   getState: Function
 ) => {
-  dispatch(updateAppStatus(TRANSACTIONS_LOADING, true));
   dispatch(clearTransactions());
   loadTransactions(dispatch, () => {
-    dispatch(updateAppStatus(TRANSACTIONS_LOADING, false));
     dispatch(loadAlerts());
   });
 };

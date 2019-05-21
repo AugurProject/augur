@@ -15,7 +15,6 @@ import * as constants from "modules/common-elements/constants";
 import Styles from "modules/account/components/account-view/account-view.styles";
 
 export interface AccountViewProps {
-  isMobile?: Boolean;
   newNotifications?: Boolean;
 }
 

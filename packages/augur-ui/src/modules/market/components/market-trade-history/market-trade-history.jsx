@@ -13,19 +13,11 @@ import Styles from "modules/market/components/market-trade-history/market-trade-
 
 export default class MarketTradeHistory extends Component {
   static propTypes = {
-    isMobile: PropTypes.bool,
-    // isMobileSmall: PropTypes.boolean,
-    // todo figure out how to do keyed objects shape prop type
     groupedTradeHistoryVolume: PropTypes.object.isRequired,
     groupedTradeHistory: PropTypes.object.isRequired,
     toggle: PropTypes.func.isRequired,
     extend: PropTypes.bool.isRequired,
     hide: PropTypes.bool.isRequired
-  };
-
-  static defaultProps = {
-    isMobile: false
-    // isMobileSmall: false
   };
 
   constructor(props) {
@@ -40,7 +32,6 @@ export default class MarketTradeHistory extends Component {
     const {
       groupedTradeHistory,
       groupedTradeHistoryVolume,
-      isMobile,
       toggle,
       extend,
       hide
@@ -49,7 +40,6 @@ export default class MarketTradeHistory extends Component {
     return (
       <section className={Styles.MarketTradeHistory__container}>
         <MarketOutcomeHeaderOrders
-          isMobile={isMobile}
           title="Trade History"
           headers={["quantity", "price", "time"]}
           toggle={toggle}

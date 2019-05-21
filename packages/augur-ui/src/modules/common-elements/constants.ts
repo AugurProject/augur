@@ -150,7 +150,6 @@ export const OPEN_APP = "OPEN_APP";
 export const SWITCH_MODE = "SWITCH_MODE";
 export const ENABLE_CONTRACT_SUPPORT = "ENABLE_CONTRACT_SUPPORT";
 export const OTHER_ISSUE = "OTHER_ISSUE";
-export const NOT_CONNECTED = "NOT_CONNECTED";
 
 // # Market Max Fees
 export const MAX_FEE_100_PERCENT = "1";
@@ -691,6 +690,8 @@ export const SMALL_MOBILE = "(max-width: 900px)"; // matches @breakpoint-mobile-
 export const TABLET = "(min-width: 901px) and (max-width: 1280px)";
 export const DESKTOP = "(min-width:1281px) and (max-width: 2000px)";
 export const LARGE_DESKTOP = "(min-width: 2001px)";
+// temp tablet breakpoint until trading pg additional breakpoints are implemented
+export const TEMP_TABLET = "(max-width: 1280px)";
 
 // Sort variables
 export const END_TIME = "endTime";

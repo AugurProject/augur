@@ -13,8 +13,9 @@ import {
   MARKET_OPEN_INTEREST,
   DAY
 } from "modules/common-elements/constants";
+import { FilterSortOptions, BaseAction } from "modules/types";
 
-const DEFAULT_STATE = {
+const DEFAULT_STATE: FilterSortOptions = {
   [MARKET_FILTER]: MARKET_OPEN,
   [MARKET_SORT]: MARKET_OPEN_INTEREST,
   [MARKET_MAX_FEES]: MAX_FEE_05_PERCENT,
@@ -24,10 +25,13 @@ const DEFAULT_STATE = {
 
 const KEYS = Object.keys(DEFAULT_STATE);
 
-export default function(filterSortOptions = DEFAULT_STATE, { type, data }) {
-  switch (type) {
+export default function(
+  filterSortOptions: FilterSortOptions = DEFAULT_STATE,
+  action: BaseAction
+) {
+  switch (action.type) {
     case UPDATE_FILTER_SORT_OPTIONS: {
-      const { optionKey, optionValue } = data;
+      const { optionKey, optionValue } = action.data;
       if (KEYS.includes(optionKey))
         return {
           ...filterSortOptions,

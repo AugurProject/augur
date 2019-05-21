@@ -33,7 +33,6 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
           updateDropdown={props.updateDropdown}
           sortByStyles={props.sortByStyles}
           onChange={props.onSearchChange}
-          isMobile={props.isMobile}
         />
       )) ||
       props.rightContent
@@ -64,7 +63,6 @@ const QuadBox = (props: QuadBoxProps) => (
         <div className={Styles.ShowOnMobile}>
           <BoxHeaderElement
             {...props}
-            isMobile
             switchHeaders={props.switchHeaders}
           />
         </div>

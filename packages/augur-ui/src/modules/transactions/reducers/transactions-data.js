@@ -4,7 +4,7 @@ import {
   DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH,
   CLEAR_TRANSACTION_DATA
 } from "modules/transactions/actions/update-transactions-data";
-import { LOGIN_ACTIONS } from "modules/common/types/login-account";
+import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { PENDING } from "modules/common-elements/constants";
 
@@ -48,7 +48,7 @@ export default function(transactionsData = DEFAULT_STATE, { type, data }) {
         return p;
       }, {});
     case RESET_STATE:
-    case LOGIN_ACTIONS.CLEAR_LOGIN_ACCOUNT:
+    case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;
     default:
       return transactionsData;

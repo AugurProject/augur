@@ -2,7 +2,7 @@ import {
   UPDATE_TRANSACTION_STATUS,
   CLEAR_TRANSACTION_STATUS
 } from "modules/transactions/actions/update-transactions-status";
-import { LOGIN_ACTIONS } from "modules/common/types/login-account";
+import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
@@ -23,7 +23,7 @@ export default function(transactionsStatus = DEFAULT_STATE, { type, data }) {
       delete transactionsStatus[data.pendingId];
       return transactionsStatus;
     case RESET_STATE:
-    case LOGIN_ACTIONS.CLEAR_LOGIN_ACCOUNT:
+    case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;
     default:
       return transactionsStatus;
