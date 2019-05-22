@@ -77,7 +77,7 @@ export class Augur<TProvider extends Provider = Provider> {
     // API
     this.addresses = addresses;
     this.contracts = new Contracts(this.addresses, this.dependencies);
-    this.trade = new Trade(this.provider, this.contracts);
+    this.trade = new Trade(this);
     this.events = new Events(this.provider, this.addresses.Augur);
   }
 
@@ -88,6 +88,10 @@ export class Augur<TProvider extends Provider = Provider> {
     await augur.contracts.setReputationToken(networkId);
 
     return augur;
+  }
+
+  public async getAccount(): Promise<string> {
+    return await this.dependencies.getDefaultAddress();
   }
 
   public getMarket(address:string):ContractInterfaces.Market {

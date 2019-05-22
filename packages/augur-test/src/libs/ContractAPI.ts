@@ -1,5 +1,5 @@
 import { stringTo32ByteHex, NULL_ADDRESS} from "./Utils";
-import { Augur } from "@augurproject/sdk";
+import { Augur, PlaceTradeDisplayParams } from "@augurproject/sdk";
 import { ContractInterfaces } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { AccountList, makeDependencies, makeSigner } from "./LocalAugur";
@@ -178,6 +178,36 @@ export class ContractAPI {
 
   public async cancelOrder(orderID: string): Promise<void> {
     await this.augur.contracts.cancelOrder.cancelOrder(orderID);
+  }
+
+  public async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
+    const price = params.direction == 0 ? params.displayPrice : params.numTicks.minus(params.displayPrice);
+    const cost = params.displayAmount.multipliedBy(price).multipliedBy(10**18);
+    await this.faucet(cost);
+    await this.augur.trade.placeTrade(params);
+  }
+
+  public async placeBasicYesNoTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber): Promise<void> {
+    await this.placeTrade({
+      direction,
+      market: market.address,
+      numTicks: await market.getNumTicks_(),
+      numOutcomes: <3 | 4 | 5 | 6 | 7 | 8><unknown>await market.getNumberOfOutcomes_(),
+      outcome,
+      tradeGroupId: stringTo32ByteHex("42"),
+      ignoreShares: false,
+      affiliateAddress: NULL_ADDRESS,
+      kycToken: NULL_ADDRESS,
+      doNotCreateOrders: false,
+      minPrice: new BigNumber(0),
+      maxPrice: new BigNumber(10**18),
+      displayAmount,
+      displayPrice,
+      displayShares,
+      onSuccess: function (r) { console.log(`SUCCESS: ${JSON.stringify(r)}`); },
+      onFailed: function (r) { console.log(`FAIL: ${r}`); },
+      onSent: function (r) { console.log(`SENT: ${JSON.stringify(r)}`); },
+    });
   }
 
   public async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string): Promise<void> {
