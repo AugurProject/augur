@@ -36,15 +36,25 @@ export interface RowProps {
   extendedViewNotOnMobile?: Boolean;
 }
 
-const RowContent = (props: RowProps) => {
-   const {
+const Row = (props: RowProps) => {
+  const {
+    rowProperties,
+    isSingle,
     extendedView,
+    extendedViewNotOnMobile,
     columnProperties,
     styleOptions,
+    rowOnClick
   } = props;
-  const { position, openOrder, filledOrder, active, outcome, colorId } = styleOptions;
 
-  return (<ul
+  if (!rowProperties) {
+    return null;
+  }
+
+  const { position, openOrder, filledOrder, showExpandedToggleOnMobile, noToggle, isFirst, outcome, active, colorId } = styleOptions;
+
+  const rowContent = (
+    <ul
       className={classNames(Styles.Row, {
         [Styles.Row2]: filledOrder,
         [Styles.Row2_a]:
@@ -70,33 +80,6 @@ const RowContent = (props: RowProps) => {
         />
       ))}
     </ul>
-  );
-}
-
-const Row = (props: RowProps) => {
-  const {
-    rowProperties,
-    isSingle,
-    extendedView,
-    extendedViewNotOnMobile,
-    columnProperties,
-    styleOptions,
-    rowOnClick
-  } = props;
-
-  if (!rowProperties) {
-    return null;
-  }
-
-  const { position, openOrder, filledOrder, showExpandedToggleOnMobile, noToggle, isFirst, outcome, active } = styleOptions;
-
-  const rowContent = (
-    <Media query={SMALL_MOBILE}>
-      {matches => (matches && !extendedViewNotOnMobile) ?
-        (<RowContent {...props} extendedView={extendedView} />) : 
-        (<RowContent {...props} extendedView={extendedViewNotOnMobile || extendedView}/>)
-      }
-    </Media>
   );
 
   if (noToggle) {
