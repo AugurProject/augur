@@ -19,7 +19,7 @@ export type Account = {
 
 export type AccountList = Array<Account>;
 
-const augurCorePath = path.join(__dirname, "../../augur-core/");
+const augurCorePath = path.join(__dirname, "../../../augur-core/");
 
 function makeDeployerConfiguration() {
   const contractInputRoot = path.join(augurCorePath, "../augur-artifacts/src");

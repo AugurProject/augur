@@ -8,7 +8,7 @@ import {
 import { AWAITING_SIGNATURE, PENDING } from "modules/common-elements/constants";
 
 export function sellCompleteSets(
-  marketId: String,
+  marketId: string,
   numCompleteSets: any,
   callback = logError
 ) {

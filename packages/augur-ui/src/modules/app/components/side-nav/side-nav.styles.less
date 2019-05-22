@@ -1,13 +1,13 @@
 @import (reference) '~assets/styles/shared';
 
 .SideNav {
-  background: @color-light-purple;
+  background: @color-theme-primary;
   display: flex;
   flex-flow: column nowrap;
 }
 
 .SideNav__nav {
-  border: 0.0625rem solid @color-almost-black;
+  border: 0.0625rem solid @color-primary-background;
   border-left: none;
   border-right: none;
   list-style: none;
@@ -15,7 +15,7 @@
   padding: 0;
 
   > li {
-    border-bottom: 0.0625rem solid @color-almost-black;
+    border-bottom: 0.0625rem solid @color-primary-background;
 
     &:last-child { border: none; }
   }
@@ -51,18 +51,18 @@
     width: 100%;
 
     &.selected {
-      background: @color-medium-gray;
+      background: @color-primary-light;
     }
 
     &:hover {
-      background: @color-medium-gray;
+      background: @color-primary-light;
       cursor: pointer;
     }
 
     &:last-child { border: none; }
 
     > span {
-      color: @color-white;
+      color: @color-secondary-text;
       display: block;
       font-size: 0.6875rem;
       font-weight: 400;
@@ -97,7 +97,7 @@
 }
 
 .SideNav__item--selected {
-  background: @color-medium-gray;
+  background: @color-primary-light;
 }
 
 .SideNav__container {
@@ -133,7 +133,7 @@
   }
 
   .SideNav__nav__separator {
-    background: @color-grayish-purple;
+    background: @color-tertiary-background;
     height: 0.0625rem;
   }
 
@@ -150,7 +150,7 @@
   }
 
   .SideNav__stat-value {
-    color: @color-white;
+    color: @color-secondary-text;
     display: flex;
     flex-direction: row;
     flex-grow: 1;

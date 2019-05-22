@@ -180,7 +180,7 @@ export function formatExpandedValue(
   const testValue = createBigNumber(fullPrecision);
   const isGreaterThan = testValue.abs().gt(max);
   const isLessThan = testValue.abs().lt(min) && !testValue.eq(ZERO);
-  let postfix = isGreaterThan || isLessThan ? String.fromCodePoint(0x2026) : "";
+  let postfix = isGreaterThan || isLessThan ? string.fromCodePoint(0x2026) : "";
   let frontFacingLabel = isGreaterThan ? fullWithoutDecimals : roundedFormatted;
   const denominationLabel = showDenomination ? `${denomination}` : "";
 
@@ -246,7 +246,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
       >
         {`${frontFacingLabel}${postfix}${denominationLabel}`}
       </label>
-      {postfix.length !== 0 && 
+      {postfix.length !== 0 &&
         <ReactTooltip
           id={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
           className={TooltipStyles.Tooltip}
@@ -308,7 +308,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
         >
           {text}
         </label>
-        {!isDisabled && 
+        {!isDisabled &&
           <ReactTooltip
             id={`${keyId}-${text.replace(/\s+/g, "-")}`}
             className={TooltipStyles.Tooltip}
@@ -659,7 +659,7 @@ export const MovementText = (props: MovementTextProps) => {
     return label;
   };
 
-  const toString: Function = (label: number): string => String(label);
+  const toString: Function = (label: number): string => string(label);
 
   const addPlus: Function = (label: string): string => {
     if (props.value > 0 && props.showPlusMinus) {

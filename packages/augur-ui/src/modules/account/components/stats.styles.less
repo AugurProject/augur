@@ -1,0 +1,28 @@
+@import (reference) '~assets/styles/shared';
+
+.Stats {
+  display: grid;
+  grid-column-gap: @size-20;
+  grid-template-columns: repeat(2, 1fr);
+
+  > div {
+    margin-bottom: @size-6;
+  }
+
+  @media @breakpoint-mobile {
+    > div {
+      > span:first-of-type {
+        .text-10;
+      }
+
+      > span:last-of-type {
+        .text-12-bold;
+      }
+    }
+  }
+
+  @media @breakpoint-mobile-mid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+

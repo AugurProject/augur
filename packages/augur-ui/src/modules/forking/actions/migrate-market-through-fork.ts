@@ -5,7 +5,7 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 export const migrateMarketThroughFork = (
-  marketId: String,
+  marketId: string,
   estimateGas: Boolean = false,
   callback: Function = logError
 ) => (dispatch: Function, getState: Function) => {

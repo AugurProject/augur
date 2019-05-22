@@ -16,7 +16,6 @@ import {
   DAI,
   TEN_TO_THE_EIGHTEENTH_POWER,
   CREATEGENESISUNIVERSE,
-  CANCELORPHANEDORDER,
   CANCELORDER,
   WITHDRAWETHERTOIFPOSSIBLE,
   CALCULATEREPORTINGFEE,
@@ -111,26 +110,6 @@ export default function setAlertText(alert: any, callback: any) {
         break;
 
       // CancelOrder
-      case CANCELORPHANEDORDER:
-        alert.title = "Cancel orphaned order";
-        if (!alert.description && alert.log) {
-          dispatch(
-            loadMarketsInfoIfNotLoaded([alert.log.marketId], () => {
-              const marketInfo = selectMarket(alert.log.marketId);
-              const outcomeDescription = getOutcomeName(
-                marketInfo,
-                alert.log.outcome
-              );
-              alert.description = `Cancel orphaned order for ${formatShares(
-                alert.log.quantity
-              ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
-                formatEther(alert.log.price).formatted
-              } ETH`;
-              return dispatch(callback(alert));
-            })
-          );
-        }
-        break;
       case CANCELORDER: {
         alert.title = "Cancel order";
         if (!alert.description && alert.log) {

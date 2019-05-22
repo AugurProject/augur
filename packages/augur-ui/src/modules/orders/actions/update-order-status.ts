@@ -1,24 +1,16 @@
 import selectOrder from "modules/orders/selectors/select-order";
-import { any } from "async";
+import { OrderStatus } from "modules/types";
 
 export const UPDATE_ORDER_STATUS = "UPDATE_ORDER_STATUS";
 export const UPDATE_ORDER_REMOVE = "UPDATE_ORDER_REMOVE";
 /**
  *
- * @param {String} orderId
- * @param {String} status
- * @param {String} marketId
+ * @param {string} orderId
+ * @param {string} status
+ * @param {string} marketId
  * @param outcome
- * @param {String} orderTypeLabel
+ * @param {string} orderTypeLabel
  */
-
- interface OrderStatus {
-  orderId: String;
-  status: String;
-  marketId: String;
-  outcome: any;
-  orderTypeLabel: String;
- };
 
 export const updateOrderStatus = ({
   orderId,
@@ -48,22 +40,20 @@ export const updateOrderStatus = ({
     type: UPDATE_ORDER_STATUS,
     data: {
       orderId,
-      status,
-      marketId,
-      orderType: orderTypeLabel
+      status
     }
   });
 };
 
-export const removeCanceledOrder = (orderId: String) => (dispatch: Function) =>
+export const removeCanceledOrder = (orderId: string) => (dispatch: Function) =>
   dispatch({ type: UPDATE_ORDER_REMOVE, data: { orderId } });
 
 function warnNonExistingOrder(
-  orderId: String,
-  status: String,
-  marketId: String,
+  orderId: string,
+  status: string,
+  marketId: string,
   outcome: any,
-  orderTypeLabel: String
+  orderTypeLabel: string
 ) {
   return console.warn(
     "updateOrderStatus: can't update %o",

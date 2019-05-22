@@ -10,6 +10,7 @@ import {
   MODAL_ACCOUNT_APPROVAL,
   BID
 } from "modules/common-elements/constants";
+import { OrderBook, BaseAction } from "modules/types";
 
 export const UPDATE_LIQUIDITY_ORDER = "UPDATE_LIQUIDITY_ORDER";
 export const ADD_MARKET_LIQUIDITY_ORDERS = "ADD_MARKET_LIQUIDITY_ORDERS";
@@ -19,15 +20,15 @@ export const CLEAR_ALL_MARKET_ORDERS = "CLEAR_ALL_MARKET_ORDERS";
 // liquidity should be an orderbook, example with yesNo:
 // { 1: [{ type, quantity, price, orderEstimate }, ...], ... }
 
-export const loadPendingLiquidityOrders = (pendingLiquidityOrders: any) => ({
+export const loadPendingLiquidityOrders = (pendingLiquidityOrders: OrderBook) => ({
   type: LOAD_PENDING_LIQUIDITY_ORDERS,
   data: { pendingLiquidityOrders }
 });
 
 export const addMarketLiquidityOrders = ({
   liquidityOrders,
-  marketId
-}: any) => ({
+  marketId,
+}: BaseAction) => ({
   type: ADD_MARKET_LIQUIDITY_ORDERS,
   data: {
     liquidityOrders,
@@ -35,7 +36,7 @@ export const addMarketLiquidityOrders = ({
   }
 });
 
-export const clearMarketLiquidityOrders = (marketId: String) => ({
+export const clearMarketLiquidityOrders = (marketId: string) => ({
   type: CLEAR_ALL_MARKET_ORDERS,
   data: { marketId }
 });
@@ -45,7 +46,7 @@ export const updateLiquidityOrder = ({
   updates,
   marketId,
   outcomeId
-}: any) => ({
+}: BaseAction) => ({
   type: UPDATE_LIQUIDITY_ORDER,
   data: {
     order,
@@ -59,7 +60,7 @@ export const removeLiquidityOrder = ({
   marketId,
   outcomeId,
   orderId
-}: any) => ({
+}: BaseAction) => ({
   type: REMOVE_LIQUIDITY_ORDER,
   data: { marketId, outcomeId, orderId }
 });
@@ -151,7 +152,7 @@ export const sendLiquidityOrder = (options: any) => (
 
   if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(cost))) {
     dispatch(
-      checkAccountAllowance((err: any, allowance: String) => {
+      checkAccountAllowance((err: any, allowance: string) => {
         if (allowance === "0") {
           promptApprovalandSend();
         } else {

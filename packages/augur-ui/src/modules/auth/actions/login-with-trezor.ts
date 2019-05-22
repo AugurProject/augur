@@ -8,9 +8,9 @@ import { toChecksumAddress } from "ethereumjs-util";
 import { ACCOUNT_TYPES } from "modules/common-elements/constants";
 
 export default function loginWithTrezor(
-  address: String,
+  address: string,
   connect: Function,
-  addressPath: String
+  addressPath: string
 ) {
   return (dispatch: Function) => {
     dispatch(updateAuthStatus(IS_LOGGED, true));

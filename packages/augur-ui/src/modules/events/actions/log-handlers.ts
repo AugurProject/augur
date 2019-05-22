@@ -63,7 +63,7 @@ const handlePendingOrder = (
   dispatch(removePendingOrder(log.transactionHash, log.marketId));
 };
 
-const loadUserPositionsAndBalances = (marketId: String) => (
+const loadUserPositionsAndBalances = (marketId: string) => (
   dispatch: Function
 ) => {
   dispatch(loadMarketAccountPositions(marketId));

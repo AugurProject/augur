@@ -3,7 +3,7 @@ import { tradeTestState } from "test/tradeTestState";
 import { augur } from "services/augurjs";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 
-const { placeTrade } = require("modules/trades/actions/place-trade.js");
+const { placeTrade } = require("modules/trades/actions/place-trade");
 
 const checkAllownaceActionObject = {
   type: "UPDATE_LOGIN_ACCOUNT",

@@ -1,5 +1,5 @@
 import newMarket from "modules/markets/reducers/new-market";
-import { DEFAULT_SCALAR_TICK_SIZE } from "augur.js/src/constants";
+import { DEFAULT_SCALAR_TICK_SIZE } from "@augurproject/augur.js/src/constants";
 
 import {
   ADD_ORDER_TO_NEW_MARKET,

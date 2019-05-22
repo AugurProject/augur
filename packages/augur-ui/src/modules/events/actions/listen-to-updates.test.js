@@ -197,7 +197,6 @@ describe("events/actions/listen-to-updates", () => {
     let state;
     let store;
     let loadMarketsInfoSpy;
-    let loadUnclaimedFeesSpy;
     let updateLoggedTransactionsSpy;
     let updateAssetsSpy;
     let loadReportingSpy;
@@ -211,7 +210,6 @@ describe("events/actions/listen-to-updates", () => {
       store.clearActions();
       loadMarketsInfoSpy.mockReset();
       loadReportingSpy.mockReset();
-      loadUnclaimedFeesSpy.mockReset();
       updateLoggedTransactionsSpy.mockReset();
       updateAssetsSpy.mockReset();
       loadReportingSpy.mockReset();
@@ -319,7 +317,6 @@ describe("events/actions/listen-to-updates", () => {
   describe("InitialReporterRedeemed", () => {
     let loadMarketsInfoSpy;
     let loadMarketsDisputeInfoSpy;
-    let loadUnclaimedFeesSpy;
     let updateLoggedTransactionsSpy;
     let updateAssetsSpy;
     let loadReportingSpy;
@@ -332,7 +329,6 @@ describe("events/actions/listen-to-updates", () => {
     afterEach(() => {
       loadMarketsInfoSpy.mockReset();
       loadMarketsDisputeInfoSpy.mockReset();
-      loadUnclaimedFeesSpy.mockReset();
       updateLoggedTransactionsSpy.mockReset();
       updateAssetsSpy.mockReset();
       loadReportingSpy.mockReset();

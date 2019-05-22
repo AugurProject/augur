@@ -5,7 +5,7 @@ export const checkIfMainnet = (callback: Function = logError) => (
   dispatch: Function
 ) => {
   dispatch(
-    getAugurNodeNetworkId((err: any, augurNodeNetworkId: String) => {
+    getAugurNodeNetworkId((err: any, augurNodeNetworkId: string) => {
       if (err) return callback(err);
       if (augurNodeNetworkId === "1") {
         // If any other networkId being used is 1 but this isnt we'll get a different error dialog anyway

@@ -13,13 +13,13 @@ const DEFAULT_STATE: LoginAccount = {
 
 export default function(
   loginAccount: LoginAccount = DEFAULT_STATE,
-  action: BaseAction
+  { type, data }: BaseAction
 ) {
-  switch (action.type) {
+  switch (type) {
     case UPDATE_LOGIN_ACCOUNT:
       return {
         ...loginAccount,
-        ...(action.data || {})
+        ...(data || {})
       };
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:

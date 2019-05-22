@@ -3,7 +3,7 @@ import { updateOrderBook } from "modules/orders/actions/update-order-book";
 import { shapeGetOrders } from "modules/orders/helpers/shape-getOrders";
 import logError from "utils/log-error";
 
-export const loadMarketOpenOrders = (marketId: String, callback = logError) => (
+export const loadMarketOpenOrders = (marketId: string, callback = logError) => (
   dispatch: Function,
   getState: Function
 ) => {

@@ -2,7 +2,7 @@ import { ACCOUNTS, deployContracts } from "../../libs";
 import { Contracts } from "@augurproject/sdk/build/api/Contracts";
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
+import { stringTo32ByteHex } from "@augurproject/core/build/libraries/HelperFunctions";
 import { ethers } from "ethers";
 import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
 
