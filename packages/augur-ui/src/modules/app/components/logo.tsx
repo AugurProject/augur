@@ -2,22 +2,26 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { AugurLoadingLogo } from "modules/common/components/icons";
-import Styles from "modules/app/components/loading-logo/loading-logo.styles";
+import Styles from "modules/app/components/logo.styles";
 
-export default class LoadingLogo extends Component {
-  static propTypes = {
+interface LogoProps {
+  isLoading: Boolean;
+}
+
+interface LogoState {
+  loading: Boolean;
+}
+
+class LoadingLogo extends Component<LogoProps, LogoState> {
+  propTypes = {
     isLoading: PropTypes.bool.isRequired
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      loading: props.isLoading
-    };
+  state: LogoState = {
+    loading: this.props.isLoading
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillReceiveProps(newProps: LogoProps) {
     if (newProps.isLoading) {
       this.setState({
         loading: newProps.isLoading
@@ -46,3 +50,20 @@ export default class LoadingLogo extends Component {
     );
   }
 }
+
+const Logo = ({ isLoading }: LogoProps) => (
+  <section className={Styles.Logo}>
+    <LoadingLogo isLoading={isLoading} />
+    <span>AUGUR</span>
+  </section>
+);
+
+Logo.propTypes = {
+  isLoading: PropTypes.bool
+};
+
+Logo.defaultProps = {
+  isLoading: false
+};
+
+export default Logo;

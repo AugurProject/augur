@@ -18,7 +18,7 @@ import TopBar from "modules/app/components/top-bar/top-bar";
 import ForkingAlert from "modules/forking/components/forking-alert/forking-alert";
 import AccountInnerNav from "modules/app/components/inner-nav/account-inner-nav";
 import SideNav from "modules/app/components/side-nav/side-nav";
-import Logo from "modules/app/components/logo/logo";
+import Logo from "modules/app/components/logo";
 import Routes from "modules/routes/components/routes/routes";
 import AlertsContainer from "modules/alerts/containers/alerts-view";
 
