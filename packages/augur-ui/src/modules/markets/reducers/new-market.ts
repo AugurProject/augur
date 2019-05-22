@@ -62,10 +62,10 @@ const DEFAULT_STATE: NewMarket = () => ({
     "Unable to create market.  Ensure your market is unique and all values are valid."
 });
 
-export default function(newMarket: NewMarket = DEFAULT_STATE(), action: BaseAction) {
-  switch (action.type) {
+export default function(newMarket: NewMarket = DEFAULT_STATE(), { type, data }: BaseAction) {
+  switch (type) {
     case ADD_ORDER_TO_NEW_MARKET: {
-      const orderToAdd = action.data.order;
+      const orderToAdd = data.order;
       const {
         quantity,
         price,
@@ -108,7 +108,7 @@ export default function(newMarket: NewMarket = DEFAULT_STATE(), action: BaseActi
       };
     }
     case REMOVE_ORDER_FROM_NEW_MARKET: {
-      const { outcome, index } = action.data && action.data.order;
+      const { outcome, index } = data && data.order;
       const updatedOutcome = [
         ...newMarket.orderBook[outcome].slice(0, index),
         ...newMarket.orderBook[outcome].slice(index + 1)
@@ -123,7 +123,7 @@ export default function(newMarket: NewMarket = DEFAULT_STATE(), action: BaseActi
       };
     }
     case UPDATE_NEW_MARKET: {
-      const { newMarketData } = action.data;
+      const { newMarketData } = data;
       return {
         ...newMarket,
         ...newMarketData

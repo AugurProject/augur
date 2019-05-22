@@ -13,11 +13,11 @@ const DEFAULT_STATE: TransacitonData = {};
 
 export default function(
   transactionsData: TransacitonData = DEFAULT_STATE,
-  action: BaseAction
+  { type, data }: BaseAction
 ) {
-  switch (action.type) {
+  switch (type) {
     case UPDATE_TRANSACTIONS_DATA:
-      return Object.keys(action.data.updatedTransactionsData).reduce(
+      return Object.keys(data.updatedTransactionsData).reduce(
         (p, transactionId) => {
           p[transactionId] = {
             ...transactionsData[transactionId],
@@ -31,7 +31,7 @@ export default function(
     case DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH:
       return Object.keys(transactionsData).reduce((p, transactionId) => {
         if (
-          action.data.transactionHash !==
+          data.transactionHash !==
           (transactionsData[transactionId] || {}).hash
         ) {
           p[transactionId] = transactionsData[transactionId];
@@ -40,7 +40,7 @@ export default function(
       }, {});
     case DELETE_TRANSACTION:
       return Object.keys(transactionsData).reduce((p, transactionId) => {
-        if (action.data.transactionId !== transactionId) {
+        if (data.transactionId !== transactionId) {
           p[transactionId] = transactionsData[transactionId];
         }
         return p;

@@ -17,12 +17,12 @@ const DEFAULT_STATE: GasPriceInfo = {
   safeLow: formatGasCost(inGwei).value
 };
 
-export default function(gasPriceInfo: GasPriceInfo = DEFAULT_STATE, action: BaseAction) {
-  switch (action.type) {
+export default function(gasPriceInfo: GasPriceInfo = DEFAULT_STATE, { type, data }: BaseAction) {
+  switch (type) {
     case UPDATE_GAS_INFO:
       return {
         ...gasPriceInfo,
-        ...action.data.gasPriceInfo
+        ...data.gasPriceInfo
       };
     case RESET_STATE:
       return DEFAULT_STATE;

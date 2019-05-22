@@ -5,10 +5,10 @@ import { Notification, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: Array<Notification> = [];
 
-export default (notifications = DEFAULT_STATE, action: BaseAction) => {
-  switch (action.type) {
+export default (notifications = DEFAULT_STATE, { type, data }: BaseAction) => {
+  switch (type) {
     case UPDATE_READ_NOTIFICATIONS:
-      return action.data.notifications;
+      return data.notifications;
 
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:

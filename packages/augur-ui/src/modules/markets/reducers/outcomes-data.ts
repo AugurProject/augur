@@ -15,16 +15,16 @@ const DEFAULT_STATE: OutcomesData = {};
 
 export default function(
   outcomesData: OutcomesData = DEFAULT_STATE,
-  action: BaseAction,
+  {type, data}: BaseAction,
 ) {
-  switch (action.type) {
+  switch (type) {
     case UPDATE_MARKETS_DATA:
       return {
         ...outcomesData,
-        ...parseOutcomes(action.data.marketsData, outcomesData),
+        ...parseOutcomes(data.marketsData, outcomesData),
       };
     case UPDATE_OUTCOME_PRICE: {
-      const { marketId, outcomeId, price } = action.data;
+      const { marketId, outcomeId, price } = data;
       if (
         !outcomesData ||
         !outcomesData[marketId] ||

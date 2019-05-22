@@ -7,10 +7,10 @@ import { PendingQueue, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: PendingQueue = {};
 
-export default function(pendingQueue: PendingQueue = DEFAULT_STATE, action: BaseAction) {
-  switch (action.type) {
+export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data }: BaseAction) {
+  switch (type) {
     case ADD_PENDING_DATA: {
-      const { pendingId, queueName, status } = action.data;
+      const { pendingId, queueName, status } = data;
       if (pendingQueue[queueName]) {
         pendingQueue[queueName][pendingId] = {
           status
@@ -27,14 +27,14 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, action: Base
       };
     }
     case REMOVE_PENDING_DATA: {
-      const { pendingId, queueName } = action.data;
+      const { pendingId, queueName } = data;
       delete pendingQueue[queueName][pendingId];
       return {
         ...pendingQueue
       };
     }
     case LOAD_PENDING_QUEUE: {
-      return action.data.pendingQueue;
+      return data.pendingQueue;
     }
     default:
       return pendingQueue;

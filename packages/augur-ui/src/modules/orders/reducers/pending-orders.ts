@@ -9,11 +9,11 @@ const DEFAULT_STATE: PendingOrders = {};
 
 export default function(
   pendingOrders: PendingOrders = DEFAULT_STATE,
-  action: BaseAction,
+  { type, data }: BaseAction,
 ) {
-  switch (action.type) {
+  switch (type) {
     case ADD_PENDING_ORDER: {
-      const { pendingOrder, marketId } = action.data;
+      const { pendingOrder, marketId } = data;
       const orders = pendingOrders[marketId] || [];
       if (pendingOrder) orders.push(pendingOrder);
 
@@ -23,7 +23,7 @@ export default function(
       };
     }
     case REMOVE_PENDING_ORDER: {
-      const { id, marketId } = action.data;
+      const { id, marketId } = data;
       let orders = pendingOrders[marketId] || [];
       orders = orders.filter((obj: Order) => obj.id !== id);
       if (orders.length > 0) {
@@ -38,7 +38,7 @@ export default function(
       };
     }
     case LOAD_PENDING_ORDERS: {
-      return action.data.pendingOrders;
+      return data.pendingOrders;
     }
     default:
       return pendingOrders;

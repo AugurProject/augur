@@ -6,13 +6,13 @@ const DEFAULT_STATE: AccountShareBalances = {};
 
 export default function(
   accountShareBalances: AccountShareBalances = DEFAULT_STATE,
-  action: BaseAction
+  { type, data }: BaseAction
 ) {
-  switch (action.type) {
+  switch (type) {
     case LOAD_USER_SHARE_BALANCES: {
       return {
         ...accountShareBalances,
-        ...action.data,
+        ...data,
       };
     }
     case RESET_STATE:

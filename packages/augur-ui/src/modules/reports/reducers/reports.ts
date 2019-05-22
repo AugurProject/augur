@@ -7,10 +7,10 @@ import { UserReports } from "modules/types";
 
 const DEFAULT_STATE: UserReports = {};
 
-export default function(reports: UserReports = DEFAULT_STATE, action: BaseAction) {
-  switch (action.type) {
+export default function(reports: UserReports = DEFAULT_STATE, { type, data }: BaseAction) {
+  switch (type) {
     case MARKETS_REPORT: {
-      const { universeId, marketIds } = action.data;
+      const { universeId, marketIds } = data;
       return {
         ...reports,
         markets: {

@@ -7,10 +7,10 @@ const DEFAULT_STATE: Orderbooks = {};
  * @param {Object} orderBooks
  * @param {Object} action
  */
-export default function(orderBooks = DEFAULT_STATE, action: BaseAction) {
-  switch (action.type) {
+export default function(orderBooks = DEFAULT_STATE, { type, data }: BaseAction) {
+  switch (type) {
     case UPDATE_ORDER_BOOK: {
-      const { marketId, orderBook } = action.data;
+      const { marketId, orderBook } = data;
       const newOrderBooks = Object.keys(orderBooks).reduce(
         (p, m) => (m !== marketId ? { ...p, [m]: orderBooks[m] } : p),
         {}

@@ -8,10 +8,10 @@ import { TransacitonStatus, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: TransacitonStatus = {};
 
-export default function(transactionsStatus: TransacitonStatus = DEFAULT_STATE, action: BaseAction) {
-  switch (action.type) {
+export default function(transactionsStatus: TransacitonStatus = DEFAULT_STATE, { type, data }: BaseAction) {
+  switch (type) {
     case UPDATE_TRANSACTION_STATUS: {
-      const { pendingId, transactionHash, status } = action.data;
+      const { pendingId, transactionHash, status } = data;
       return {
         ...transactionsStatus,
         [pendingId]: {
@@ -21,7 +21,7 @@ export default function(transactionsStatus: TransacitonStatus = DEFAULT_STATE, a
       };
     }
     case CLEAR_TRANSACTION_STATUS:
-      delete transactionsStatus[action.data.pendingId];
+      delete transactionsStatus[data.pendingId];
       return transactionsStatus;
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:

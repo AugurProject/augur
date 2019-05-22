@@ -15,23 +15,23 @@ import { MarketsData, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: MarketsData = {};
 
-export default function(marketsData: MarketsData = DEFAULT_STATE, action: BaseAction) {
-  switch (action.type) {
+export default function(marketsData: MarketsData = DEFAULT_STATE, { type, data }: BaseAction) {
+  switch (type) {
     case UPDATE_MARKETS_DATA: // TODO -- allow for the consumption of partial market objects
       return {
         ...marketsData,
-        ...processMarketsData(action.data.marketsData, marketsData)
+        ...processMarketsData(data.marketsData, marketsData)
       };
     case UPDATE_MARKETS_DISPUTE_INFO:
       return {
         ...marketsData,
         ...processMarketsDisputeInfo(
-          action.data.marketsDisputeInfo,
+          data.marketsDisputeInfo,
           marketsData
         )
       };
     case UPDATE_MARKET_CATEGORY: {
-      const { marketId, category } = action.data;
+      const { marketId, category } = data;
       if (!marketId) return marketsData;
       return {
         ...marketsData,
@@ -42,7 +42,7 @@ export default function(marketsData: MarketsData = DEFAULT_STATE, action: BaseAc
       };
     }
     case UPDATE_MARKET_REP_BALANCE: {
-      const { marketId, repBalance } = action.data;
+      const { marketId, repBalance } = data;
       if (!marketId) return marketsData;
       return {
         ...marketsData,
@@ -53,7 +53,7 @@ export default function(marketsData: MarketsData = DEFAULT_STATE, action: BaseAc
       };
     }
     case UPDATE_MARKET_ETH_BALANCE: {
-      const { marketId, ethBalance } = action.data;
+      const { marketId, ethBalance } = data;
       if (!marketId) return marketsData;
       return {
         ...marketsData,
@@ -64,7 +64,7 @@ export default function(marketsData: MarketsData = DEFAULT_STATE, action: BaseAc
       };
     }
     case UPDATE_MARKET_FROZEN_SHARES_VALUE: {
-      const { marketId, frozenSharesValue } = action.data;
+      const { marketId, frozenSharesValue } = data;
       if (!marketId) return marketsData;
       return {
         ...marketsData,
@@ -75,7 +75,7 @@ export default function(marketsData: MarketsData = DEFAULT_STATE, action: BaseAc
       };
     }
     case REMOVE_MARKET:
-      return immutableDelete(marketsData, action.data.marketId);
+      return immutableDelete(marketsData, data.marketId);
     case RESET_STATE:
     case CLEAR_MARKETS_DATA:
       return DEFAULT_STATE;

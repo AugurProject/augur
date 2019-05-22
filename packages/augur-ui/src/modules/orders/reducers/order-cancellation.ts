@@ -10,17 +10,17 @@ const DEFAULT_STATE = {};
  * @param {Object} orderCancellation
  * @param {Object} action
  */
-export default function(orderCancellation = DEFAULT_STATE, action: BaseAction) {
-  switch (action.type) {
+export default function(orderCancellation = DEFAULT_STATE, { type, data }: BaseAction) {
+  switch (type) {
     case UPDATE_ORDER_STATUS: {
-      const { orderId, status } = action.data;
+      const { orderId, status } = data;
       return {
         ...orderCancellation,
         [orderId]: status
       };
     }
     case UPDATE_ORDER_REMOVE: {
-      const { orderId } = action.data;
+      const { orderId } = data;
       delete orderCancellation[orderId];
       return {
         ...orderCancellation

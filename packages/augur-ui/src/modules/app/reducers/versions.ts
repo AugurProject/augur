@@ -10,11 +10,11 @@ const DEFAULT_STATE: Versions = {
 
 export default function(
   versions: Versions = DEFAULT_STATE,
-  action: BaseAction,
+  { type, data }: BaseAction,
 ) {
-  switch (action.type) {
+  switch (type) {
     case UPDATE_VERSIONS: {
-      return action.data;
+      return data;
     }
     case RESET_STATE:
       return DEFAULT_STATE;

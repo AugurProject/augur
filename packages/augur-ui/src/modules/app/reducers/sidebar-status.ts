@@ -17,27 +17,27 @@ const DEFAULT_STATE = {
   isAlertsVisible: false,
 };
 
-export default function(sideNavStatus = DEFAULT_STATE, action: BaseAction) {
-  switch (action.type) {
+export default function(sideNavStatus = DEFAULT_STATE, { type, data }: BaseAction) {
+  switch (type) {
     case UPDATE_CURRENT_BASE_PATH: {
-      return { ...sideNavStatus, currentBasePath: action.data };
+      return { ...sideNavStatus, currentBasePath: data };
     }
     case UPDATE_MOBILE_MENU_STATE: {
-      return { ...sideNavStatus, mobileMenuState: action.data };
+      return { ...sideNavStatus, mobileMenuState: data };
     }
     case UPDATE_CURRENT_INNER_NAV_TYPE: {
       return {
         ...sideNavStatus,
-        currentInnerNavType: action.data,
+        currentInnerNavType: data,
       };
     }
     case UPDATE_IS_ALERT_VISIBLE: {
-      return { ...sideNavStatus, isAlertsVisible: action.data };
+      return { ...sideNavStatus, isAlertsVisible: data };
     }
     case UPDATE_SIDEBAR_STATUS: {
       return {
         ...sideNavStatus,
-        ...action.data,
+        ...data,
       };
     }
     case RESET_STATE:
