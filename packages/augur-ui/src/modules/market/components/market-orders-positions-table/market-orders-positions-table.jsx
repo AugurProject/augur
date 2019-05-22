@@ -12,7 +12,6 @@ import Styles from "modules/market/components/market-orders-positions-table/open
 
 const MarketOrdersPositionsTable = ({
   hasPending,
-  isMobile,
   marketId,
   outcomes,
   market,
@@ -23,14 +22,13 @@ const MarketOrdersPositionsTable = ({
   <ModuleTabs
     className={Styles.Table}
     selected={0}
-    fillForMobile={isMobile}
+    fillForOnlyMobile
     borderBetween
   >
     <ModulePane label="Open Orders">
       <OpenOrdersTable
         openOrders={openOrders}
         marketId={marketId}
-        isMobile={isMobile}
         market={market}
       />
       <div className={Styles.MarketOrders__footer}>
@@ -57,7 +55,6 @@ const MarketOrdersPositionsTable = ({
 
 MarketOrdersPositionsTable.propTypes = {
   hasPending: PropTypes.bool,
-  isMobile: PropTypes.bool.isRequired,
   marketId: PropTypes.string.isRequired,
   outcomes: PropTypes.array,
   openOrders: PropTypes.array,

@@ -16,8 +16,7 @@ const mapStateToProps = (state: any, ownProps: any) => {
       (market.myPositionsSummary &&
         market.myPositionsSummary.numCompleteSets) ||
       undefined,
-    transactionsStatus: state.transactionsStatus,
-    isMobile: state.appStatus.isMobile
+    transactionsStatus: state.transactionsStatus
   };
 };
 

@@ -9,7 +9,7 @@
 }
 
 .TrandingConfirm__topBorder {
-  background: @color-grayish-purple;
+  background: @color-tertiary-background;
   height: 2px;
   margin: 0 1rem;
 }
@@ -23,7 +23,7 @@
 
   > svg {
     > line {
-      stroke: fade(@color-white, 40%);
+      stroke: fade(@color-secondary-text, 40%);
     }
   }
 }
@@ -49,7 +49,7 @@
 }
 
 .TradingConfirm__agg_position {
-  color: @color-white;
+  color: @color-secondary-text;
   font-size: @size-11;
   padding-bottom: 0.1875rem;
 
@@ -58,7 +58,7 @@
     text-transform: uppercase;
 
     &.short {
-      color: @color-negative2;
+      color: @color-negative;
     }
 
     &.long {
@@ -199,7 +199,7 @@
   div:last-child {
     .text-11;
 
-    color: @color-white;
+    color: @color-secondary-text;
   }
 }
 
@@ -235,7 +235,7 @@
 
 span.negative__profit,
 span.negative__profit > * {
-  color: @color-error;
+  color: @color-error-text;
 }
 
 @media @breakpoint-mobile {
@@ -257,7 +257,7 @@ span.negative__profit > * {
     padding: 1.5rem 2rem 1.1rem;
 
     > h2 {
-      color: @color-white;
+      color: @color-secondary-text;
 
       &.order__buy {
         color: @color-positive;
@@ -273,7 +273,7 @@ span.negative__profit > * {
 
   .TradingConfirm__total > li > span,
   .TradingConfirm__total > li > span:first-child {
-    color: @color-white;
+    color: @color-secondary-text;
   }
 
   .TradingConfirm__TooltipHint {
@@ -308,6 +308,6 @@ span.negative__profit > * {
 
   .TradingConfirm__details > li > span,
   .TradingConfirm__details > li > span:first-child {
-    color: @color-white;
+    color: @color-secondary-text;
   }
 }

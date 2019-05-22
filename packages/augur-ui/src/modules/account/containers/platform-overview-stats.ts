@@ -2,15 +2,15 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { formatAttoRep } from "utils/format-number";
 import getValue from "utils/get-value";
-import OverviewStats from "modules/account/components/overview-stats/overview-stats";
+import Stats from "modules/account/components/stats";
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: any) => ({
   timeframeData: state.universe.timeframeData
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = (dispatch: Function) => ({});
 
-const mergeProps = (sP, dP, oP) => {
+const mergeProps = (sP: any, dP: any, oP: any) => {
   const properties = [
     {
       key: 0,
@@ -59,7 +59,7 @@ const PlatformtOverviewStatsContainer = withRouter(
     mapStateToProps,
     mapDispatchToProps,
     mergeProps
-  )(OverviewStats)
+  )(Stats)
 );
 
 export default PlatformtOverviewStatsContainer;

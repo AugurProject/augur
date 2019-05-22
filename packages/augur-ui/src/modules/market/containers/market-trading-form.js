@@ -28,7 +28,6 @@ const mapStateToProps = (state, ownProps) => {
     availableFunds: createBigNumber(state.loginAccount.eth || 0),
     isLogged: authStatus.isLogged,
     isConnectionTrayOpen: authStatus.isConnectionTrayOpen,
-    isMobile: appStatus.isMobile
   };
 };
 

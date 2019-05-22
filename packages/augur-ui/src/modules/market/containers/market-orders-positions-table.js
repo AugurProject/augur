@@ -37,7 +37,6 @@ const mapStateToProps = (state, ownProps) => {
     hasClaimableReturns: market.outstandingReturns && canClaim,
     winningOutcome: market.consensus && market.consensus.winningOutcome,
     hasPending,
-    isMobile: state.appStatus.isMobile,
     outcomes: market.outcomes || [],
     openOrders,
     market,

@@ -2,15 +2,15 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import { selectNotifications } from "modules/notifications/selectors/notification-state";
-import AccountView from "modules/account/components/account-view/account-view";
+import AccountView from "modules/account/components/account-view";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   const notifications = selectNotifications(state);
 
   return {
     newNotifications:
       notifications &&
-      notifications.filter(notification => notification.isNew).length > 0
+      notifications.filter((notification: any) => notification.isNew).length > 0
   };
 };
 

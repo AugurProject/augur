@@ -4,7 +4,7 @@
   padding: 0.75rem 1rem 0;
 
   > li {
-    color: @color-white;
+    color: @color-secondary-text;
     display: flex;
     flex-flow: column nowrap;
     font-size: @font-size-normal;
@@ -45,7 +45,7 @@
       &.smallLabel {
         .text-10;
 
-        color: @color-white;
+        color: @color-secondary-text;
         padding-top: 0.5rem;
         text-transform: none;
 
@@ -144,6 +144,12 @@
   padding: @size-8 @size-16 0;
 }
 
+.HideOnMobile {
+  @media @breakpoint-mobile {
+    display: none;
+  }
+}
+
 .TradingForm__outcome__container__yes {
   background-color: @color-theme-primary;
   border: 1px solid @color-primary-alternate;
@@ -161,7 +167,7 @@
 }
 
 .TradingForm__dashline {
-  stroke: fade(@color-white, 40%);
+  stroke: fade(@color-secondary-text, 40%);
 }
 
 .TradingForm__input {
@@ -173,16 +179,16 @@
 
 .TradingForm__input__container {
   align-items: center;
-  background-color: @color-dark-grayish-purple;
-  border: 1px solid @color-dark-gray;
+  background-color: @color-secondary-action;
+  border: 1px solid @color-primary-alternate;
   display: flex;
   flex-direction: row;
   font-family: @roboto-mono;
 
   > input[type="number"] {
-    background-color: @color-dark-grayish-purple;
+    background-color: @color-secondary-action;
     border-width: 0;
-    color: @color-white;
+    color: @color-secondary-text;
     font-family: @roboto-mono;
     font-size: @font-size-medium;
 
@@ -203,8 +209,8 @@
   }
 
   > span {
-    background: @color-grayish-purple;
-    border-left: 0.0625rem solid @color-dark-gray;
+    background: @color-tertiary-background;
+    border-left: 0.0625rem solid @color-primary-alternate;
     color: @color-tertiary-text;
     font-size: @font-size-small;
     min-width: 4.28rem;
@@ -231,15 +237,15 @@
   }
 
   > label {
-    color: @color-light-gray;
+    color: @color-neutral;
     font-size: @font-size-small;
   }
 
   &:focus-within {
-    border: 0.0625rem solid @color-bright-gray-purple;
+    border: 0.0625rem solid @color-highlight;
 
     > span {
-      background: @color-bright-gray-purple;
+      background: @color-highlight;
       border-left: 0;
 
       &.error {
@@ -255,7 +261,7 @@
 }
 
 .TradingForm__form_container {
-  border: 1px solid @color-white;
+  border: 1px solid @color-secondary-text;
   opacity: 0.4;
 }
 
@@ -346,7 +352,7 @@
 
     &.active {
       background-color: @color-purple;
-      color: @color-white;
+      color: @color-secondary-text;
     }
 
     &:first-child {
@@ -439,7 +445,7 @@
   .TradingForm__form-estimated-cost {
     > li > span:first-child,
     > li > span:last-child {
-      color: @color-white;
+      color: @color-secondary-text;
     }
   }
 
@@ -463,7 +469,7 @@
   }
 
   .TradingForm__static-field {
-    color: @color-white;
+    color: @color-secondary-text;
   }
 
   .TradingForm__error_message {

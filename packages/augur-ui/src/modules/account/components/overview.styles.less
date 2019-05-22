@@ -1,0 +1,24 @@
+@import (reference) '~assets/styles/shared';
+
+.AccountOverview {
+  background: @color-secondary-action;
+  padding: @size-16 @size-24 0;
+
+  @media @breakpoint-mobile-mid {
+    background: unset;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 150px);
+    padding: 0 @size-16;
+  }
+}
+
+.AccountOverview__pillSelector {
+  display: flex;
+  justify-content: center;
+  margin-bottom: @size-16;
+
+  @media @breakpoint-mobile-mid {
+    margin-bottom: @size-24;
+  }
+}
