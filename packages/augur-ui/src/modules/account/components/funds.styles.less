@@ -1,5 +1,5 @@
 @import (reference) '~assets/styles/shared';
-  
+
 .Funds {
   align-items: center;
   background: @color-secondary-action;
@@ -40,9 +40,9 @@
 
     > svg {
       fill: @color-secondary-text;
-      height: @size-18;
+      height: @size-16;
       margin: 0 0 0 @size-4;
-      width: @size-12;
+      width: @size-16;
     }
   }
 
@@ -82,9 +82,10 @@
 
     > div svg {
       fill: @color-secondary-text;
-      height: @size-12;
+      height: @size-16;
       margin: 0 0 0 @size-4;
-      width: @size-8;
+      width: @size-16;
+      vertical-align: -@size-4;
     }
   }
 
@@ -94,24 +95,24 @@
         > span {
           .mono-10;
         }
-  
+
         > span:last-of-type {
           .mono-14-bold;
         }
       }
-  
+
       > div:last-of-type {
         margin: 0 0 @border-radius-default;
       }
     }
-  
+
     > div:first-of-type {
       flex-direction: row;
     }
-  
+
     > div:last-of-type {
       flex-grow: unset;
-  
+
       > svg {
         fill: @color-secondary-text;
         height: @size-12;
