@@ -1,5 +1,5 @@
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
-import { Favorite } from "src/modules/types";
+import { Favorite } from "modules/types";
 
 export const UPDATE_FAVORITES = "UPDATE_FAVORITES";
 export const TOGGLE_FAVORITE = "TOGGLE_FAVORITE";

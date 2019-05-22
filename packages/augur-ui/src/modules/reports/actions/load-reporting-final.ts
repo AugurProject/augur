@@ -18,7 +18,7 @@ export const loadReportingFinal = (callback: Function = logError) => (
       isSortDescending: true,
       universe: universe.id
     },
-    (err: any, resolvedMarketIds: Array<String>) => {
+    (err: any, resolvedMarketIds: Array<string>) => {
       if (err) return callback(err);
 
       if (!resolvedMarketIds || resolvedMarketIds.length === 0) {

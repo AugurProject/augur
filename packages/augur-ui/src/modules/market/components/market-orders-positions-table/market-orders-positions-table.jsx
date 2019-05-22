@@ -15,9 +15,7 @@ const MarketOrdersPositionsTable = ({
   marketId,
   outcomes,
   market,
-  orphanedOrders,
   openOrders,
-  cancelOrphanedOrder,
   filledOrders,
   cancelAllOpenOrders
 }) => (
@@ -30,8 +28,6 @@ const MarketOrdersPositionsTable = ({
     <ModulePane label="Open Orders">
       <OpenOrdersTable
         openOrders={openOrders}
-        orphanedOrders={orphanedOrders}
-        cancelOrphanedOrder={cancelOrphanedOrder}
         marketId={marketId}
         market={market}
       />
@@ -61,9 +57,7 @@ MarketOrdersPositionsTable.propTypes = {
   hasPending: PropTypes.bool,
   marketId: PropTypes.string.isRequired,
   outcomes: PropTypes.array,
-  orphanedOrders: PropTypes.array,
   openOrders: PropTypes.array,
-  cancelOrphanedOrder: PropTypes.func.isRequired,
   market: PropTypes.object.isRequired,
   filledOrders: PropTypes.array,
   cancelAllOpenOrders: PropTypes.func.isRequired
@@ -72,7 +66,6 @@ MarketOrdersPositionsTable.propTypes = {
 MarketOrdersPositionsTable.defaultProps = {
   hasPending: false,
   outcomes: [],
-  orphanedOrders: [],
   openOrders: [],
   filledOrders: []
 };

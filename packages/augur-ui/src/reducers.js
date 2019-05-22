@@ -13,20 +13,15 @@ import loginAccount from "modules/auth/reducers/login-account";
 import marketTradingHistory from "modules/markets/reducers/market-trading-history";
 import marketReportState from "modules/reports/reducers/market-report-state";
 import marketsData from "modules/markets/reducers/markets-data";
-import marketsWithAccountReport from "modules/reports/reducers/markets-with-account-report";
 import modal from "modules/modal/reducers/modal";
 import newMarket from "modules/markets/reducers/new-market";
 import alerts from "modules/alerts/reducers/alerts";
 import orderBooks from "modules/orders/reducers/order-books";
 import orderCancellation from "modules/orders/reducers/order-cancellation";
-import orphanedOrders from "modules/orders/reducers/orphaned-orders";
 import outcomesData from "modules/markets/reducers/outcomes-data";
-import participationTokens from "modules/reports/reducers/participation-token-data";
 import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
 import reportingWindowStats from "modules/reports/reducers/reporting-window-stats";
 import reports from "modules/reports/reducers/reports";
-import scalarMarketsShareDenomination from "modules/markets/reducers/scalar-markets-share-denomination";
-import selectedMarketId from "modules/markets/reducers/selected-market-id";
 import transactionsData from "modules/transactions/reducers/transactions-data";
 import transactionsStatus from "modules/transactions/reducers/transactions-status";
 import universe from "modules/universe/reducers/universe";
@@ -54,23 +49,18 @@ export function createReducer() {
     marketReportState,
     marketTradingHistory,
     marketsData,
-    marketsWithAccountReport,
     modal,
     newMarket,
     readNotifications,
     orderBooks,
     orderCancellation,
-    orphanedOrders,
     outcomesData,
-    participationTokens,
     pendingLiquidityOrders,
     pendingOrders,
     pendingQueue,
     filledOrders,
     reportingWindowStats,
     reports,
-    scalarMarketsShareDenomination,
-    selectedMarketId,
     sidebarStatus,
     transactionsData,
     transactionsStatus,

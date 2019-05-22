@@ -5,7 +5,7 @@ import { ethers } from "ethers";
  * Checks if the given string is an address
  *
  * @method isAddress
- * @param {String} address the given HEX adress
+ * @param {string} address the given HEX adress
  * @return {Boolean}
  */
 export default function isAddress(address) {

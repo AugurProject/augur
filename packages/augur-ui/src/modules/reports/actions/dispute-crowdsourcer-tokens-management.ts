@@ -11,8 +11,8 @@ export const updateDisputeCrowdsourcersData = (
 });
 
 export const updateDisputeCrowdsourcersBalance = (
-  disputeCrowdsourcerID: String,
-  balance: String
+  disputeCrowdsourcerID: string,
+  balance: string
 ) => ({
   type: UPDATE_DISPUTE_CROWDSOURCERS_BALANCE,
   data: {

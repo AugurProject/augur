@@ -7,10 +7,14 @@ import {
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { PENDING } from "modules/common-elements/constants";
+import { TransacitonData, BaseAction } from "modules/types";
 
-const DEFAULT_STATE = {};
+const DEFAULT_STATE: TransacitonData = {};
 
-export default function(transactionsData = DEFAULT_STATE, { type, data }) {
+export default function(
+  transactionsData: TransacitonData = DEFAULT_STATE,
+  { type, data }: BaseAction
+) {
   switch (type) {
     case UPDATE_TRANSACTIONS_DATA:
       return Object.keys(data.updatedTransactionsData).reduce(
@@ -27,7 +31,8 @@ export default function(transactionsData = DEFAULT_STATE, { type, data }) {
     case DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH:
       return Object.keys(transactionsData).reduce((p, transactionId) => {
         if (
-          data.transactionHash !== (transactionsData[transactionId] || {}).hash
+          data.transactionHash !==
+          (transactionsData[transactionId] || {}).hash
         ) {
           p[transactionId] = transactionsData[transactionId];
         }

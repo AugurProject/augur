@@ -6,7 +6,7 @@ import {
 } from "../../libs";
 import { UserSyncableDB } from "@augurproject/sdk/build/state/db/UserSyncableDB";
 import {Augur} from "@augurproject/sdk";
-import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
+import { stringTo32ByteHex } from "@augurproject/core/build/libraries/HelperFunctions";
 import { Contracts } from "@augurproject/sdk/build/api/Contracts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import {ethers} from "ethers";

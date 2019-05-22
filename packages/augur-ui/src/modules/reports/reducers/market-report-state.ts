@@ -8,7 +8,7 @@ import {
   UPDATE_RESOLVED_REPORTING_MARKETS
 } from "modules/reports/actions/update-markets-in-reporting-state";
 import { REMOVE_MARKET } from "modules/markets/actions/update-markets-data";
-import { MarketsInReporting, BaseAction } from "src/modules/types";
+import { MarketsInReporting, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: MarketsInReporting = {
   designated: [],
@@ -21,47 +21,47 @@ const DEFAULT_STATE: MarketsInReporting = {
 
 export default function(
   marketReportState: MarketsInReporting = DEFAULT_STATE,
-  action: BaseAction
+  { type, data }: BaseAction
 ) {
-  switch (action.type) {
+  switch (type) {
     case UPDATE_DESIGNATED_REPORTING_MARKETS:
       return {
         ...marketReportState,
-        designated: action.data.marketIds
+        designated: data.marketIds
       };
 
     case UPDATE_OPEN_REPORTING_MARKETS:
       return {
         ...marketReportState,
-        open: action.data.marketIds
+        open: data.marketIds
       };
 
     case UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS:
       return {
         ...marketReportState,
-        upcoming: action.data.marketIds
+        upcoming: data.marketIds
       };
 
     case UPDATE_AWAITING_DISPUTE_MARKETS:
       return {
         ...marketReportState,
-        awaiting: action.data.marketIds
+        awaiting: data.marketIds
       };
 
     case UPDATE_CROWD_DISPUTE_MARKETS:
       return {
         ...marketReportState,
-        dispute: action.data.marketIds
+        dispute: data.marketIds
       };
     case UPDATE_RESOLVED_REPORTING_MARKETS:
       return {
         ...marketReportState,
-        resolved: action.data.marketIds
+        resolved: data.marketIds
       };
     case REMOVE_MARKET:
       return Object.keys(marketReportState).reduce((p, reportType) => {
         const markets = marketReportState[reportType].filter(
-          marketId => marketId !== action.data.marketId
+          marketId => marketId !== data.marketId
         );
         return {
           ...p,

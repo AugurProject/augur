@@ -6,7 +6,7 @@ import { loadMarketOpenOrders } from "modules/orders/actions/load-market-open-or
 import logError from "utils/log-error";
 
 export const loadFullMarket = (
-  marketId: String,
+  marketId: string,
   callback: Function = logError
 ) => (dispatch: Function) => {
   // if the basic data hasn't loaded yet, load it first

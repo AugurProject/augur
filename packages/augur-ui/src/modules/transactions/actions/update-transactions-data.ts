@@ -4,13 +4,13 @@ export const DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH =
   "DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH";
 export const UPDATE_TRANSACTIONS_DATA = "UPDATE_TRANSACTIONS_DATA";
 
-export const deleteTransaction = (transactionId: String) => ({
+export const deleteTransaction = (transactionId: string) => ({
   type: DELETE_TRANSACTION,
   data: { transactionId }
 });
 
 export const deleteTransactionsWithTransactionHash = (
-  transactionHash: String
+  transactionHash: string
 ) => ({
   type: DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH,
   data: { transactionHash }

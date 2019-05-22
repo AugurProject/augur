@@ -172,8 +172,8 @@ describe("modules/markets/helpers/build-create-market", () => {
         category: "test category",
         tags: [],
         type: SCALAR,
-        scalarSmallNum: "-10", // String for the test case, normally a BigNumber
-        scalarBigNum: "10", // String for the test case, normally a BigNumber
+        scalarSmallNum: "-10", // string for the test case, normally a BigNumber
+        scalarBigNum: "10", // string for the test case, normally a BigNumber
         scalarDenomination: "%",
         tickSize: 1000
       }

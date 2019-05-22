@@ -5,8 +5,7 @@ import {
   selectReportingWindowStats,
   selectPendingLiquidityOrders,
   selectCurrentTimestampInSeconds,
-  selectReadNotificationState,
-  selectOrphanOrders
+  selectReadNotificationState
 } from "src/select-state";
 
 import { createBigNumber } from "utils/create-big-number";
@@ -25,7 +24,6 @@ import {
   CLAIM_REPORTING_FEES_TITLE,
   UNSIGNED_ORDERS_TITLE,
   PROCEEDS_TO_CLAIM_TITLE,
-  ORPHAN_ORDERS_TITLE,
   MARKET_CLOSED
 } from "modules/common-elements/constants";
 import userOpenOrders from "modules/orders/selectors/user-open-orders";
@@ -231,27 +229,6 @@ export const selectUnsignedOrders = createSelector(
   }
 );
 
-// Get all orphan orders state
-export const selectAllOrphanOrders = createSelector(
-  selectOrphanOrders,
-  selectMarkets,
-  (orphanOrders, markets) => {
-    if (orphanOrders) {
-      return markets
-        .filter(market =>
-          orphanOrders.find(order => order.marketId === market.id)
-        )
-        .map(getRequiredMarketData)
-        .map(notification => ({
-          ...notification,
-          orphanOrdersPerMarket: orphanOrders.filter(orders => notification.id)
-            .length
-        }));
-    }
-    return [];
-  }
-);
-
 // Returns all notifications currently relevant to the user.
 export const selectNotifications = createSelector(
   selectReportOnMarkets,
@@ -264,7 +241,6 @@ export const selectNotifications = createSelector(
   selectProceedsToClaim,
   selectProceedsToClaimOnHold,
   selectReadNotificationState,
-  selectAllOrphanOrders,
   (
     reportOnMarkets,
     resolvedMarketsOpenOrder,
@@ -275,8 +251,7 @@ export const selectNotifications = createSelector(
     unsignedOrders,
     proceedsToClaim,
     proceedsToClaimOnHold,
-    readNotifications,
-    orphanOrders
+    readNotifications
   ) => {
     // Generate non-unquie notifications
     const reportOnMarketsNotifications = generateCards(
@@ -308,11 +283,6 @@ export const selectNotifications = createSelector(
       NOTIFICATION_TYPES.proceedsToClaimOnHold
     );
 
-    const orphanOrdersNotifications = generateCards(
-      orphanOrders,
-      NOTIFICATION_TYPES.orphanOrders
-    );
-
     // Add non unquie notifications
     let notifications = [
       ...reportOnMarketsNotifications,
@@ -322,7 +292,6 @@ export const selectNotifications = createSelector(
       ...marketsInDisputeNotifications,
       ...unsignedOrdersNotifications,
       ...proceedsToClaimOnHoldNotifications,
-      ...orphanOrdersNotifications
     ];
 
     // Add unquie notifications
@@ -456,14 +425,6 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: PROCEEDS_TO_CLAIM_TITLE,
       buttonLabel: TYPE_VIEW_DETAILS
-    };
-  } else if (type === NOTIFICATION_TYPES.orphanOrders) {
-    defaults = {
-      type,
-      isImportant: false,
-      isNew: true,
-      title: ORPHAN_ORDERS_TITLE,
-      buttonLabel: TYPE_VIEW_ORDERS
     };
   }
 

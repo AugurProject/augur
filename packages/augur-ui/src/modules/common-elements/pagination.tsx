@@ -79,7 +79,7 @@ const renderPageButtons = (
         onClick={() => action(page.page)}
         disabled={page.page === null}
       >
-        {page.page ? page.page : String.fromCodePoint(0x2026)}
+        {page.page ? page.page : string.fromCodePoint(0x2026)}
       </button>
     ))}
   </>
