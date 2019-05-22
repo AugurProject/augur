@@ -9,7 +9,7 @@ import {
   SCALAR_UP_ID,
   YES_NO_YES_OUTCOME_NAME
 } from "modules/common-elements/constants";
-import { OutcomesData, BaseAction } from "src/modules/types";
+import { OutcomesData, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: OutcomesData = {};
 

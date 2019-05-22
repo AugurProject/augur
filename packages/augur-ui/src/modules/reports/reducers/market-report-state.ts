@@ -8,7 +8,7 @@ import {
   UPDATE_RESOLVED_REPORTING_MARKETS
 } from "modules/reports/actions/update-markets-in-reporting-state";
 import { REMOVE_MARKET } from "modules/markets/actions/update-markets-data";
-import { MarketsInReporting, BaseAction } from "src/modules/types";
+import { MarketsInReporting, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: MarketsInReporting = {
   designated: [],

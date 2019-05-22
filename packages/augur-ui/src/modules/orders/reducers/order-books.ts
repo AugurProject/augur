@@ -1,6 +1,6 @@
 import { UPDATE_ORDER_BOOK } from "modules/orders/actions/update-order-book";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { Orderbooks, BaseAction } from "src/modules/types";
+import { Orderbooks, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: Orderbooks = {};
 /**

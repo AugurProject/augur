@@ -1,7 +1,7 @@
 import { UPDATE_MODAL } from "modules/modal/actions/update-modal";
 import { CLOSE_MODAL } from "modules/modal/actions/close-modal";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { BaseAction } from "src/modules/types";
+import { BaseAction } from "modules/types";
 
 const DEFAULT_STATE = {};
 

@@ -4,7 +4,7 @@ import {
 } from "modules/markets/actions/update-favorites";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { BaseAction } from "src/modules/types";
+import { BaseAction } from "modules/types";
 
 const DEFAULT_STATE = {};
 

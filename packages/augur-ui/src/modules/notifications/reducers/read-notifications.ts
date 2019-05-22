@@ -1,7 +1,7 @@
 import { UPDATE_READ_NOTIFICATIONS } from "modules/notifications/actions/update-notifications";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { Notification, BaseAction } from "src/modules/types";
+import { Notification, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: Array<Notification> = [];
 

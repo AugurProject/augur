@@ -3,7 +3,7 @@ import {
   LOAD_PENDING_QUEUE,
   REMOVE_PENDING_DATA
 } from "modules/pending-queue/actions/pending-queue-management";
-import { PendingQueue, BaseAction } from "src/modules/types";
+import { PendingQueue, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: PendingQueue = {};
 

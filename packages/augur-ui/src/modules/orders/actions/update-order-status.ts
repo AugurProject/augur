@@ -1,5 +1,5 @@
 import selectOrder from "modules/orders/selectors/select-order";
-import { OrderStatus } from "src/modules/types";
+import { OrderStatus } from "modules/types";
 
 export const UPDATE_ORDER_STATUS = "UPDATE_ORDER_STATUS";
 export const UPDATE_ORDER_REMOVE = "UPDATE_ORDER_REMOVE";

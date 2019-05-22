@@ -1,4 +1,4 @@
-import { Universe, BaseAction } from "src/modules/types";
+import { Universe, BaseAction } from "modules/types";
 
 export const UPDATE_UNIVERSE = "UPDATE_UNIVERSE";
 

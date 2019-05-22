@@ -1,4 +1,4 @@
-import { Order } from "src/modules/types";
+import { Order } from "modules/types";
 
 const blockComparison = 3;
 

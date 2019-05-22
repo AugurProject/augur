@@ -3,8 +3,8 @@ import {
   UPDATE_MARKET_TRADING_HISTORY
 } from "modules/markets/actions/market-trading-history-management";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { BaseAction } from "src/modules/types";
-import { MarketTradingHistory } from "src/modules/types";
+import { BaseAction } from "modules/types";
+import { MarketTradingHistory } from "modules/types";
 
 const DEFAULT_STATE: MarketTradingHistory = {};
 

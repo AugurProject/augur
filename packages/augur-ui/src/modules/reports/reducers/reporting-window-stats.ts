@@ -1,7 +1,7 @@
 import { UPDATE_REPORTING_WINDOW_STATS } from "modules/reports/actions/update-reporting-window-stats";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { formatAttoRep, formatAttoEth } from "utils/format-number";
-import { ReportingWindowStats, BaseAction } from "src/modules/types";
+import { ReportingWindowStats, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: ReportingWindowStats = {
   startTime: null,

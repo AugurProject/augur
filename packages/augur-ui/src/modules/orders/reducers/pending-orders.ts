@@ -3,7 +3,7 @@ import {
   REMOVE_PENDING_ORDER,
   LOAD_PENDING_ORDERS,
 } from "modules/orders/actions/pending-orders-management";
-import { PendingOrders, BaseAction, Order } from "src/modules/types";
+import { PendingOrders, BaseAction, Order } from "modules/types";
 
 const DEFAULT_STATE: PendingOrders = {};
 

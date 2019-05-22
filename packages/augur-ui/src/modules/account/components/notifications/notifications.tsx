@@ -28,7 +28,7 @@ import {
 } from "modules/account/components/notifications/notifications-templates";
 
 import * as constants from "modules/common-elements/constants";
-import { Notification } from "src/modules/types";
+import { Notification } from "modules/types";
 
 const { NOTIFICATION_TYPES } = constants;
 

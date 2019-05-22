@@ -10,7 +10,7 @@ import {
   MODAL_ACCOUNT_APPROVAL,
   BID
 } from "modules/common-elements/constants";
-import { OrderBook, BaseAction } from "src/modules/types";
+import { OrderBook, BaseAction } from "modules/types";
 
 export const UPDATE_LIQUIDITY_ORDER = "UPDATE_LIQUIDITY_ORDER";
 export const ADD_MARKET_LIQUIDITY_ORDERS = "ADD_MARKET_LIQUIDITY_ORDERS";

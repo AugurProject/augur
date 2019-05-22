@@ -8,7 +8,7 @@ import {
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { MOBILE_MENU_STATES } from "modules/common-elements/constants";
 import { MARKETS } from "modules/routes/constants/views";
-import { BaseAction } from "src/modules/types";
+import { BaseAction } from "modules/types";
 
 const DEFAULT_STATE = {
   mobileMenuState: MOBILE_MENU_STATES.CLOSED,

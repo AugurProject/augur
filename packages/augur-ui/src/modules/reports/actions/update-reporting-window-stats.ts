@@ -1,4 +1,4 @@
-import { ReportingWindowStats, BaseAction } from "src/modules/types";
+import { ReportingWindowStats, BaseAction } from "modules/types";
 
 export const UPDATE_REPORTING_WINDOW_STATS = "UPDATE_REPORTING_WINDOW_STATS";
 

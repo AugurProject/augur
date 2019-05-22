@@ -1,6 +1,6 @@
 import { UPDATE_VERSIONS } from "modules/app/actions/update-versions";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { Versions, BaseAction } from "src/modules/types";
+import { Versions, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: Versions = {
   augurui: null,

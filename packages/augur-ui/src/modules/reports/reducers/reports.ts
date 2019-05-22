@@ -2,8 +2,8 @@ import {
   MARKETS_REPORT
 } from "modules/reports/actions/update-reports";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { BaseAction } from "src/modules/types";
-import { UserReports } from "src/modules/types";
+import { BaseAction } from "modules/types";
+import { UserReports } from "modules/types";
 
 const DEFAULT_STATE: UserReports = {};
 

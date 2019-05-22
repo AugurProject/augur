@@ -1,4 +1,4 @@
-import { BaseAction } from "src/modules/types";
+import { BaseAction } from "modules/types";
 
 export const ADD_PENDING_DATA = "ADD_PENDING_DATA";
 export const REMOVE_PENDING_DATA = "REMOVE_PENDING_DATA";

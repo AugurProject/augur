@@ -9,7 +9,7 @@ import { SETTLEMENT_FEE_DEFAULT } from "modules/common-elements/constants";
 import { DEFAULT_SCALAR_TICK_SIZE } from "@augurproject/augur.js/src/constants";
 
 import { createBigNumber } from "utils/create-big-number";
-import { NewMarket, BaseAction } from "src/modules/types";
+import { NewMarket, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: NewMarket = () => ({
   isValid: false,

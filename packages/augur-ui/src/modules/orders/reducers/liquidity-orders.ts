@@ -5,7 +5,7 @@ import {
   LOAD_PENDING_LIQUIDITY_ORDERS,
   CLEAR_ALL_MARKET_ORDERS
 } from "modules/orders/actions/liquidity-management";
-import { OrderBooks, BaseAction } from "src/modules/types";
+import { OrderBooks, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: OrderBooks = {};
 

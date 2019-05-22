@@ -1,6 +1,6 @@
 import { LOAD_USER_SHARE_BALANCES } from "modules/positions/actions/load-user-share-balances";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { AccountShareBalances, BaseAction } from "src/modules/types";
+import { AccountShareBalances, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: AccountShareBalances = {};
 

@@ -1,6 +1,6 @@
 import { UPDATE_UNIVERSE } from "modules/universe/actions/update-universe";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { Universe, BaseAction } from "src/modules/types";
+import { Universe, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: Universe = {};
 

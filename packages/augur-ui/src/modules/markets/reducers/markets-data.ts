@@ -11,7 +11,7 @@ import {
 } from "modules/markets/actions/update-markets-data";
 
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { MarketsData, BaseAction } from "src/modules/types";
+import { MarketsData, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: MarketsData = {};
 

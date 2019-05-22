@@ -3,7 +3,7 @@ import {
   UPDATE_ORDER_REMOVE
 } from "modules/orders/actions/update-order-status";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { BaseAction } from "src/modules/types";
+import { BaseAction } from "modules/types";
 
 const DEFAULT_STATE = {};
 /**

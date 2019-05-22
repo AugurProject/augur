@@ -1,4 +1,4 @@
-import { Notification, BaseAction } from "src/modules/types";
+import { Notification, BaseAction } from "modules/types";
 
 export const UPDATE_READ_NOTIFICATIONS = "UPDATE_READ_NOTIFICATIONS";
 

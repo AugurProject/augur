@@ -1,4 +1,4 @@
-import { Orderbook } from "src/modules/types";
+import { Orderbook } from "modules/types";
 
 export const UPDATE_ORDER_BOOK = "UPDATE_ORDER_BOOK";
 

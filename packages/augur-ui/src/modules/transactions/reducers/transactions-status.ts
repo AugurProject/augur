@@ -4,7 +4,7 @@ import {
 } from "modules/transactions/actions/update-transactions-status";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { TransacitonStatus, BaseAction } from "src/modules/types";
+import { TransacitonStatus, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: TransacitonStatus = {};
 

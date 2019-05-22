@@ -2,7 +2,7 @@ import {
   UPDATE_USER_TRADING_HISTORY,
   UPDATE_USER_MARKET_TRADING_HISTORY
 } from "modules/markets/actions/market-trading-history-management";
-import { FilledOrders, Order, BaseAction } from "src/modules/types";
+import { FilledOrders, Order, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: FilledOrders = {};
 

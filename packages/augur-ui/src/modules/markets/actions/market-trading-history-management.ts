@@ -2,7 +2,7 @@ import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { loadReportingFinal } from "src/modules/reports/actions/load-reporting-final";
 import { keyArrayBy } from "utils/key-by";
-import { MarketTradingHistory, TradingHistory } from "src/modules/types";
+import { MarketTradingHistory, TradingHistory } from "modules/types";
 
 export const UPDATE_MARKET_TRADING_HISTORY = "UPDATE_MARKET_TRADING_HISTORY";
 export const UPDATE_USER_TRADING_HISTORY = "UPDATE_USER_TRADING_HISTORY";
