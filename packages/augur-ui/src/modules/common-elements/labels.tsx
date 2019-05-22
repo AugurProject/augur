@@ -659,7 +659,7 @@ export const MovementText = (props: MovementTextProps) => {
     return label;
   };
 
-  const toString: Function = (label: number): string => string(label);
+  const toString: Function = (label: number): string => String(label);
 
   const addPlus: Function = (label: string): string => {
     if (props.value > 0 && props.showPlusMinus) {

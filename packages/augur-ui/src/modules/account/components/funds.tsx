@@ -5,7 +5,7 @@ import {
   MovementLabel,
   LinearPropertyLabel
 } from "modules/common-elements/labels";
-import { EthIcon, RepLogoIcon } from "modules/common-elements/icons";
+import { DaiLogoIcon, RepLogoIcon } from "modules/common-elements/icons";
 import {
   AVAILABLE_TRADING_BALANCE,
   TOTAL_FROZEN_FUNDS,
@@ -71,13 +71,13 @@ const Funds = (props: FundsProps) => {
       />
       <div>
         {totalAccountValue}
-        {EthIcon}
+        {DaiLogoIcon}
       </div>
 
       <FundDataRow
         className={Styles.BalanceFrozenFunds}
         columns={tradingBalanceFrozenFunds}
-        showEthLogo
+        showDaiLogo
         changeForMobile
       />
       <div>
@@ -95,26 +95,26 @@ export interface FundDataRowProps {
   className: string;
   columns: Array<any>;
   showRepLogo?: boolean;
-  showEthLogo?: boolean;
+  showDaiLogo?: boolean;
   changeForMobile?: boolean;
 }
 
 const FundDataRow = (props: FundDataRowProps) => {
-  const { columns, showRepLogo, showEthLogo, changeForMobile } = props;
+  const { columns, showRepLogo, showDaiLogo, changeForMobile } = props;
 
   const rows = columns.map((value: any) => (
     <>
       {changeForMobile && (
         <span className={classNames(props.className, Styles.ShowOnMobile)}>
           <LinearPropertyLabel value={value.value} label={value.title} />
-          <div>{showEthLogo ? EthIcon : null}</div>
+          <div>{showDaiLogo ? DaiLogoIcon : null}</div>
         </span>
       )}
       <div className={classNames({ [Styles.HideOnMobile]: changeForMobile })}>
         <div>{value.title}</div>
         <div>
           {value.value}
-          {showEthLogo ? EthIcon : null}
+          {showDaiLogo ? DaiLogoIcon : null}
         </div>
       </div>
     </>
