@@ -5,7 +5,7 @@ import { ContractDeployer } from '../libraries/ContractDeployer';
 import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
 import { DeployerConfiguration } from '../libraries/DeployerConfiguration';
 import { NetworkConfiguration } from '../libraries/NetworkConfiguration';
-import { ContractDependenciesEthers } from '../libraries/ContractDependenciesEthers';
+import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import { DisputeWindow, ShareToken, ClaimTradingProceeds, CompleteSets, TimeControlled, Cash, Universe, Market, CreateOrder, Orders, Trade, CancelOrder, LegacyReputationToken, DisputeCrowdsourcer, ReputationToken,  } from '../libraries/ContractInterfaces';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { stringTo32ByteHex } from '../libraries/HelperFunctions';
@@ -38,7 +38,7 @@ export class TestFixture {
 
         const provider = new ethers.providers.JsonRpcProvider(networkConfiguration.http);
         const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
-        const dependencies = new ContractDependenciesEthers(provider, signer, networkConfiguration.gasPrice.toNumber());
+        const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);
 
         const deployerConfiguration = DeployerConfiguration.createWithControlledTime();
         let contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider, signer, compiledContracts);

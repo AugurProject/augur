@@ -2,6 +2,7 @@ import { Dependencies, AbiFunction, AbiParameter, Transaction, TransactionReceip
 import { ethers } from 'ethers'
 import { BigNumber } from 'bignumber.js';
 import { TransactionRequest } from "ethers/providers";
+import { isInstanceOfBigNumber, isInstanceOfEthersBigNumber, isInstanceOfArray } from "./utils";
 import * as _ from "lodash";
 
 export interface EthersSigner {
@@ -45,22 +46,22 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
 
     public encodeParams(abiFunction: AbiFunction, parameters: Array<any>) {
         const ethersParams = _.map(parameters, (param) => {
-            if (param instanceof BigNumber) {
+            if (isInstanceOfBigNumber(param)) {
                 return new ethers.utils.BigNumber(param.toFixed());
-            } else if (param instanceof Array && param.length > 0 && param[0] instanceof BigNumber) {
+            } else if (isInstanceOfArray(param) && param.length > 0 && isInstanceOfBigNumber(param[0])) {
                 return _.map(param, (value) => new ethers.utils.BigNumber(value.toFixed()));
             }
             return param;
         });
-        return new ethers.utils.AbiCoder().encode(abiFunction.inputs, ethersParams).substr(2);
+        return this.abiCoder.encode(abiFunction.inputs, ethersParams).substr(2);
     }
 
     public decodeParams(abiParameters: Array<AbiParameter>, encoded: string) {
-        const results = new ethers.utils.AbiCoder().decode(abiParameters, encoded);
+        const results = this.abiCoder.decode(abiParameters, encoded);
         return _.map(results, (result) => {
-            if (result instanceof ethers.utils.BigNumber) {
+            if (isInstanceOfEthersBigNumber(result)) {
                 return new BigNumber(result.toString());
-            } else if (result instanceof Array && result.length > 0 && result[0] instanceof ethers.utils.BigNumber) {
+            } else if (isInstanceOfArray(result) && result.length > 0 && isInstanceOfEthersBigNumber(result[0])) {
                 return _.map(result, (value) => new BigNumber(value.toString()));
             }
             return result;
