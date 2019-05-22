@@ -111,6 +111,7 @@ export interface LinearPropertyLabelPercentMovementProps {
 
 export interface PillLabelProps {
   label: string;
+  hideOnMobile?: Boolean;
 }
 
 export interface PositionTypeLabelProps {
@@ -730,7 +731,7 @@ export const MovementLabel = (props: MovementLabelProps) => {
 };
 
 export const PillLabel = (props: PillLabelProps) => (
-  <span className={Styles.PillLabel}>{props.label}</span>
+  <span className={classNames(Styles.PillLabel, {[Styles.HideOnMobile]: props.hideOnMobile})}>{props.label}</span>
 );
 
 export const RepBalance = (props: RepBalanceProps) => (
