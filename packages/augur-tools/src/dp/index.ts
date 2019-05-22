@@ -23,6 +23,7 @@ import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { repFaucet } from "./lib/rep-faucet";
 import { UploadBlockNumbers } from "@augurproject/artifacts";
 import { createCannedMarketsAndOrders} from "@augurproject/test";
+import {createSeedFile} from "@augurproject/test/build/libs/GenerateGanacheSeed";
 
 const COMMANDS = [
   "create-markets",
@@ -32,7 +33,8 @@ const COMMANDS = [
   "gas-limit",
   "rep-faucet",
   "upload",
-  "all-logs"
+  "all-logs",
+  "create-seed-file"
 ] as const;
 
 type COMMANDS = typeof COMMANDS[number];
@@ -215,6 +217,10 @@ async function runCommandForNetwork(networkConfiguration: NetworkConfiguration, 
         await createCannedMarketsAndOrders(accounts, ethersProvider, addresses);
       }
     }
+    case "create-seed-file": {
+      await createSeedFile("../augur-test/seed.json");
+    }
+
     case "gas-limit": {
       const provider = new providers.JsonRpcProvider(networkConfiguration.http);
       const ethersProvider = new EthersProvider(provider, 5, 0, 40);

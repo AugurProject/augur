@@ -79,9 +79,12 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn workspace @augurproject/sdk test
+           yarn dp create-seed-file
+        displayName: Generate augur-test seed file
+      - bash: |
+          set -euo pipefail
+          yarn test
         displayName: yarn test
-
 
   - job: Augur_build_docker_image
     dependsOn:
