@@ -1,7 +1,7 @@
 import {BigNumber as EthersBigNumber} from "ethers/utils";
 import {Augur} from "../Augur";
 import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { ContractDependenciesEthers, EthersFastSubmitWallet, NetworkConfiguration } from "@augurproject/core";
 import { Controller } from "./Controller";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { EventLogDBRouter } from "./db/EventLogDBRouter";
@@ -13,8 +13,11 @@ const settings = require("@augurproject/sdk/src/state/settings.json");
 
 // TODO Add Ethereum node URL as param
 export async function start() {
+  const networkConfiguration = NetworkConfiguration.create();
+
   const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
-  const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
+  const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, ethersProvider);
+  const contractDependencies = new ContractDependenciesEthers(ethersProvider, signer, settings.testAccounts[0]);
   const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4]);
 
   const eventLogDBRouter = new EventLogDBRouter(augur.events.parseLogs);

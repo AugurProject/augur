@@ -4,19 +4,21 @@ import * as WebsocketEndpoint from "./WebsocketEndpoint";
 import { API } from "./api/API";
 import { Augur } from "../Augur";
 import { BigNumber as EthersBigNumber } from "ethers/utils";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { DB } from "./db/DB";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers";
 import { PouchDBFactory } from "./db/AbstractDB";
 import { Addresses } from "@augurproject/artifacts";
 import { EndpointSettings } from "./api/types";
+import {ContractDependenciesEthers, EthersFastSubmitWallet, NetworkConfiguration } from "@augurproject/core";
 
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");
+  const networkConfiguration = NetworkConfiguration.create();
 
   const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
-  const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
+  const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, ethersProvider);
+  const contractDependencies = new ContractDependenciesEthers(ethersProvider, signer, settings.testAccounts[0]);
   const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4]);
 
   const pouchDBFactory = PouchDBFactory({});
