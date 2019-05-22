@@ -8,35 +8,36 @@ import {
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { MOBILE_MENU_STATES } from "modules/common-elements/constants";
 import { MARKETS } from "modules/routes/constants/views";
+import { BaseAction } from "src/modules/types";
 
 const DEFAULT_STATE = {
   mobileMenuState: MOBILE_MENU_STATES.CLOSED,
   currentBasePath: MARKETS,
   currentInnerNavType: null,
-  isAlertsVisible: false
+  isAlertsVisible: false,
 };
 
-export default function(sideNavStatus = DEFAULT_STATE, { type, data }) {
-  switch (type) {
+export default function(sideNavStatus = DEFAULT_STATE, action: BaseAction) {
+  switch (action.type) {
     case UPDATE_CURRENT_BASE_PATH: {
-      return { ...sideNavStatus, currentBasePath: data };
+      return { ...sideNavStatus, currentBasePath: action.data };
     }
     case UPDATE_MOBILE_MENU_STATE: {
-      return { ...sideNavStatus, mobileMenuState: data };
+      return { ...sideNavStatus, mobileMenuState: action.data };
     }
     case UPDATE_CURRENT_INNER_NAV_TYPE: {
       return {
         ...sideNavStatus,
-        currentInnerNavType: data
+        currentInnerNavType: action.data,
       };
     }
     case UPDATE_IS_ALERT_VISIBLE: {
-      return { ...sideNavStatus, isAlertsVisible: data };
+      return { ...sideNavStatus, isAlertsVisible: action.data };
     }
     case UPDATE_SIDEBAR_STATUS: {
       return {
         ...sideNavStatus,
-        ...data
+        ...action.data,
       };
     }
     case RESET_STATE:

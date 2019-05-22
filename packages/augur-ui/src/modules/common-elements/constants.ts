@@ -538,9 +538,6 @@ export const SHORT = "short";
 export const CLOSED = "closed";
 export const NO_POSITION = "—";
 
-// # Transaction Constants
-export const NO_RELAY = ["buyCompleteSets"];
-
 export const AWAITING_SIGNATURE = "awaiting signature";
 export const PENDING = "pending";
 export const SUCCESS = "success";

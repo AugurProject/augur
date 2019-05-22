@@ -2,8 +2,18 @@ import { ReactNode } from "react";
 import { Market } from "./account/components/notifications/notifications-templates";
 import { BUY, SELL } from "./common-elements/constants";
 
+export interface Versions {
+  augurui: string | null;
+  augurjs: string | null;
+  augurNode: string | null;
+}
+export interface TransacitonData {
+  [transactionId: string]: {
+    hash: string;
+    status: string;
+  };
+}
 export interface UserReports {
-
   markets: {
     [universeId: string]: string;
   };

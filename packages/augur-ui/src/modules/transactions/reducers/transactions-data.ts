@@ -7,13 +7,17 @@ import {
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { PENDING } from "modules/common-elements/constants";
+import { TransacitonData, BaseAction } from "src/modules/types";
 
-const DEFAULT_STATE = {};
+const DEFAULT_STATE: TransacitonData = {};
 
-export default function(transactionsData = DEFAULT_STATE, { type, data }) {
-  switch (type) {
+export default function(
+  transactionsData: TransacitonData = DEFAULT_STATE,
+  action: BaseAction
+) {
+  switch (action.type) {
     case UPDATE_TRANSACTIONS_DATA:
-      return Object.keys(data.updatedTransactionsData).reduce(
+      return Object.keys(action.data.updatedTransactionsData).reduce(
         (p, transactionId) => {
           p[transactionId] = {
             ...transactionsData[transactionId],
@@ -27,7 +31,8 @@ export default function(transactionsData = DEFAULT_STATE, { type, data }) {
     case DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH:
       return Object.keys(transactionsData).reduce((p, transactionId) => {
         if (
-          data.transactionHash !== (transactionsData[transactionId] || {}).hash
+          action.data.transactionHash !==
+          (transactionsData[transactionId] || {}).hash
         ) {
           p[transactionId] = transactionsData[transactionId];
         }
@@ -35,7 +40,7 @@ export default function(transactionsData = DEFAULT_STATE, { type, data }) {
       }, {});
     case DELETE_TRANSACTION:
       return Object.keys(transactionsData).reduce((p, transactionId) => {
-        if (data.transactionId !== transactionId) {
+        if (action.data.transactionId !== transactionId) {
           p[transactionId] = transactionsData[transactionId];
         }
         return p;

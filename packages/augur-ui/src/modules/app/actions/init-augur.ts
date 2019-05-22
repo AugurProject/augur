@@ -11,7 +11,6 @@ import { logout } from "modules/auth/actions/logout";
 import { verifyMatchingNetworkIds } from "modules/app/actions/verify-matching-network-ids";
 import { checkIfMainnet } from "modules/app/actions/check-if-mainnet";
 import { updateUniverse } from "modules/universe/actions/update-universe";
-import { registerTransactionRelay } from "modules/transactions/actions/register-transaction-relay";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
 import logError from "utils/log-error";
@@ -189,7 +188,6 @@ export function connectAugur(
         dispatch(updateConnectionStatus(true));
         dispatch(updateAugurNodeConnectionStatus(true));
         dispatch(getAugurNodeNetworkId());
-        dispatch(registerTransactionRelay());
         AugurJS.augur.augurNode.getSyncData((err: any, res: any) => {
           if (!err && res) {
             dispatch(

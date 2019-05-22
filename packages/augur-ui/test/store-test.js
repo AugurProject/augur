@@ -13,7 +13,6 @@ import store from "src/store";
   marketsData: {},
   favorites: {},
   pendingReports: {},
-  selectedMarketId: null,
   tags: '',
   selectedFilters: { isOpen: true },
   selectedSort: { prop: 'volume', isDesc: true },

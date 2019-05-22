@@ -22,7 +22,6 @@ import outcomesData from "modules/markets/reducers/outcomes-data";
 import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
 import reportingWindowStats from "modules/reports/reducers/reporting-window-stats";
 import reports from "modules/reports/reducers/reports";
-import selectedMarketId from "modules/markets/reducers/selected-market-id";
 import transactionsData from "modules/transactions/reducers/transactions-data";
 import transactionsStatus from "modules/transactions/reducers/transactions-status";
 import universe from "modules/universe/reducers/universe";
@@ -62,7 +61,6 @@ export function createReducer() {
     filledOrders,
     reportingWindowStats,
     reports,
-    selectedMarketId,
     sidebarStatus,
     transactionsData,
     transactionsStatus,
