@@ -9,15 +9,19 @@ import {
   SCALAR_UP_ID,
   YES_NO_YES_OUTCOME_NAME
 } from "modules/common-elements/constants";
+import { OutcomesData, BaseAction } from "src/modules/types";
 
-const DEFAULT_STATE = {};
+const DEFAULT_STATE: OutcomesData = {};
 
-export default function(outcomesData = DEFAULT_STATE, action) {
+export default function(
+  outcomesData: OutcomesData = DEFAULT_STATE,
+  action: BaseAction,
+) {
   switch (action.type) {
     case UPDATE_MARKETS_DATA:
       return {
         ...outcomesData,
-        ...parseOutcomes(action.data.marketsData, outcomesData)
+        ...parseOutcomes(action.data.marketsData, outcomesData),
       };
     case UPDATE_OUTCOME_PRICE: {
       const { marketId, outcomeId, price } = action.data;

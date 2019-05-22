@@ -2,6 +2,18 @@ import { ReactNode } from "react";
 import { Market } from "./account/components/notifications/notifications-templates";
 import { BUY, SELL } from "./common-elements/constants";
 
+export interface MarketsData {
+  [marketId: string]: MarketData;
+}
+export interface MarketData {
+  id: string;
+  // TODO: this should come from SDK types
+}
+export interface OutcomesData {
+  [marketId: string]: {
+    [outcomeId: string]: MarketData;
+  };
+}
 export interface TransacitonStatus {
   [pendingId: string]: {
     status: string;

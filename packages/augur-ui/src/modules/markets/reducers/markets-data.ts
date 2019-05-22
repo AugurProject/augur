@@ -11,10 +11,11 @@ import {
 } from "modules/markets/actions/update-markets-data";
 
 import { RESET_STATE } from "modules/app/actions/reset-state";
+import { MarketsData, BaseAction } from "src/modules/types";
 
-const DEFAULT_STATE = {};
+const DEFAULT_STATE: MarketsData = {};
 
-export default function(marketsData = DEFAULT_STATE, action) {
+export default function(marketsData: MarketsData = DEFAULT_STATE, action: BaseAction) {
   switch (action.type) {
     case UPDATE_MARKETS_DATA: // TODO -- allow for the consumption of partial market objects
       return {
