@@ -13,7 +13,7 @@ export default class MarketOutcomeChartsOrders extends Component {
   static propTypes = {
     orderBook: PropTypes.object.isRequired,
     fixedPrecision: PropTypes.number,
-    fixedPrecision: PropTypes.number,
+    pricePrecision: PropTypes.number,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
     hasOrders: PropTypes.bool.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
@@ -29,7 +29,7 @@ export default class MarketOutcomeChartsOrders extends Component {
     extend: false,
     hide: false,
     fixedPrecision: 4,
-    fixedPrecision: 4
+    pricePrecision: 4
   };
 
   constructor(props) {
