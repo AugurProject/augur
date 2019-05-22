@@ -174,9 +174,9 @@ export interface NewMarket {
   tag1: string;
   tag2: string;
   settlementFee: string;
-  orderBook: any; // TODO: object for order book
-  orderBookSorted: any; // TODO: object for order book
-  orderBookSeries: any; // TODO: object for order book
+  orderBook: OrderBook;
+  orderBookSorted: OrderBook;
+  orderBookSeries: OrderBook;
   initialLiquidityEth: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
