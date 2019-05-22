@@ -2,6 +2,25 @@ import { ReactNode } from "react";
 import { Market } from "./account/components/notifications/notifications-templates";
 import { BUY, SELL } from "./common-elements/constants";
 
+export interface TransacitonStatus {
+  [pendingId: string]: {
+    status: string;
+    transactionHash: string;
+  };
+}
+export interface Universe {
+  id: string;
+  forkEndTime: number;
+  forkReputationGoal: string;
+  forkingMarket: string;
+  isForking: boolean;
+  winningChildUniverse: string;
+  openInterest: string;
+  forkThreshold: string;
+}
+export interface AccountShareBalances {
+  [marketId: string]: Array<string>;
+}
 export interface Versions {
   augurui: string | null;
   augurjs: string | null;

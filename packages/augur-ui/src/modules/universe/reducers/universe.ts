@@ -1,15 +1,19 @@
 import { UPDATE_UNIVERSE } from "modules/universe/actions/update-universe";
 import { RESET_STATE } from "modules/app/actions/reset-state";
+import { Universe, BaseAction } from "src/modules/types";
 
-const DEFAULT_STATE = {};
+const DEFAULT_STATE: Universe = {};
 
-export default function(universe = DEFAULT_STATE, { type, data }) {
-  switch (type) {
+export default function(
+  universe: Universe = DEFAULT_STATE,
+  action: BaseAction,
+) {
+  switch (action.type) {
     case UPDATE_UNIVERSE: {
-      const { updatedUniverse } = data;
+      const { updatedUniverse } = action.data;
       return {
         ...universe,
-        ...updatedUniverse
+        ...updatedUniverse,
       };
     }
     case RESET_STATE:
