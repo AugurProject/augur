@@ -195,7 +195,6 @@ test("State API :: Markets :: getMarkets", async () => {
   // Place orders on some markets
   const bid = new ethers.utils.BigNumber(0);
   const outcome0 = new ethers.utils.BigNumber(0);
-  const outcome1 = new ethers.utils.BigNumber(1);
   const numShares = new ethers.utils.BigNumber(10000000000000);
   const price = new ethers.utils.BigNumber(22);
   const yesNoOrderId = await john.placeOrder(yesNoMarket1.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));

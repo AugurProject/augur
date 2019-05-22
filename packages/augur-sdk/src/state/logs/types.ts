@@ -42,6 +42,7 @@ export interface DisputeCrowdsourcerCompletedLog extends Log, Doc {
   universe: Address;
   market: Address;
   disputeCrowdsourcer: Address;
+  payoutNumerators: PayoutNumerators;
   nextWindowStartTime: Timestamp;
   pacingOn: boolean;
 }
@@ -51,6 +52,7 @@ export interface DisputeCrowdsourcerContributionLog extends Log, Doc {
   reporter: Address;
   market: Address;
   disputeCrowdsourcer: Address;
+  payoutNumerators: PayoutNumerators;
   amountStaked: string;
   description: string;
 }

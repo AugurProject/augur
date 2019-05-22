@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 import { API } from "@augurproject/sdk/build/state/api/API";
-import { MarketInfo, MarketInfoReportingState, SECONDS_IN_A_DAY } from "@augurproject/sdk/build/state/api/Markets";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import {
@@ -8,8 +7,8 @@ import {
   makeDbMock,
   deployContracts,
   ContractAPI,
-} from "../../../src/libs";
-import { stringTo32ByteHex, NULL_ADDRESS } from "../../../src/libs/Utils";
+} from "../../../libs";
+import { stringTo32ByteHex, NULL_ADDRESS } from "../../../libs/Utils";
 
 const mock = makeDbMock();
 
@@ -31,7 +30,12 @@ beforeAll(async () => {
 
 test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   // Create markets with multiple users
-  const yesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+  const johnYesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+  const johnCategoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
+  const johnScalarMarket = await john.createReasonableScalarMarket(john.augur.contracts.universe);
+  const maryYesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+  const maryCategoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
+  const maryScalarMarket = await john.createReasonableScalarMarket(john.augur.contracts.universe);
 
   // Place orders
   const bid = new ethers.utils.BigNumber(0);
@@ -39,15 +43,15 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   const outcome1 = new ethers.utils.BigNumber(1);
   const numShares = new ethers.utils.BigNumber(10000000000000);
   const price = new ethers.utils.BigNumber(22);
-  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
-  await john.placeOrder(yesNoMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(johnYesNoMarket.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(johnYesNoMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 
   // Fill orders
   const cost = numShares.mul(78).div(10);
-  let yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
-  let yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  let yesNoOrderId0 = await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0);
+  let yesNoOrderId1 = await john.getBestOrderId(bid, johnYesNoMarket.address, outcome1);
   await john.fillOrder(yesNoOrderId0, cost, numShares.div(10).mul(2), "42");
-  await mary.fillOrder(yesNoOrderId1, cost, numShares.div(10).mul(3), "43");
+  await john.fillOrder(yesNoOrderId1, cost, numShares.div(10).mul(3), "43");
 
   await db.sync(john.augur, mock.constants.chunkSize, 0);
 

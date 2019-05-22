@@ -16,7 +16,8 @@ import {
   OrderEventUint256Value,
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
-  OrderType
+  OrderType,
+  MarketType
 } from "../logs/types";
 import { SortLimit } from "./types";
 import { Augur } from "../../index";
@@ -71,6 +72,10 @@ export interface AccountTransaction {
   transactionHash: string;
 };
 
+export interface MarketCreatedInfo {
+  [key: string]: MarketCreatedLog;
+}
+
 export class Accounts<TBigNumber> {
   public static GetAccountTransactionHistoryParams = t.intersection([GetAccountTransactionHistoryParamsSpecific, SortLimit]);
 
@@ -85,51 +90,70 @@ export class Accounts<TBigNumber> {
     let allFormattedLogs: any = [];
     if ((params.action === Action.BUY || params.action === Action.SELL || params.action === Action.ALL) && (params.coin === Coin.ETH || params.coin === Coin.ALL)) {
       const orderFilledLogs = await db.findOrderFilledLogs({selector: {universe: params.universe, $or: [{[ORDER_EVENT_CREATOR]: params.account}, {[ORDER_EVENT_FILLER]: params.account}]}});
-      allFormattedLogs.concat(formatOrderFilledLogs(orderFilledLogs, params));
+      const marketInfo = await Accounts.getMarketCreatedInfo(db, orderFilledLogs);
+      allFormattedLogs = allFormattedLogs.concat(formatOrderFilledLogs(orderFilledLogs, marketInfo, params));
+      actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.CANCEL || params.action === Action.ALL) && (params.coin === Coin.ETH || params.coin === Coin.ALL)) {
       const orderCanceledLogs = await db.findOrderCanceledLogs({selector: {universe: params.universe}});
-      allFormattedLogs.concat(formatOrderCanceledLogs(orderCanceledLogs, params));
+      const marketInfo = await Accounts.getMarketCreatedInfo(db, orderCanceledLogs);
+      allFormattedLogs = allFormattedLogs.concat(formatOrderCanceledLogs(orderCanceledLogs, marketInfo, params));
+      actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.CLAIM_PARTICIPATION_TOKENS || params.action === Action.ALL) && (params.coin === Coin.ETH || params.coin === Coin.ALL)) {
       const participationTokensRedeemedLogs = await db.findParticipationTokensRedeemedLogs({selector: {universe: params.universe, account: params.account}});
-      allFormattedLogs.concat(formatParticipationTokensRedeemedLogs(participationTokensRedeemedLogs, params));
+      allFormattedLogs = allFormattedLogs.concat(formatParticipationTokensRedeemedLogs(participationTokensRedeemedLogs, params));
+      actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.CLAIM_TRADING_PROCEEDS || params.action === Action.ALL) && (params.coin === Coin.ETH || params.coin === Coin.ALL)) {
       const tradingProceedsClaimedLogs = await db.findTradingProceedsClaimedLogs({selector: {universe: params.universe, sender: params.account}});
-      allFormattedLogs.concat(formatTradingProceedsClaimedLogs(tradingProceedsClaimedLogs, params));
+      const marketInfo = await Accounts.getMarketCreatedInfo(db, tradingProceedsClaimedLogs);
+      allFormattedLogs = allFormattedLogs.concat(formatTradingProceedsClaimedLogs(tradingProceedsClaimedLogs, marketInfo, params));
+      actionCoinComboIsValid = true;
     }
 
     if (params.action === Action.CLAIM_WINNING_CROWDSOURCERS || params.action === Action.ALL) {
       const disputeCrowdsourcerRedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs({selector: {universe: params.universe, reporter: params.account}});
+      let marketInfo = await Accounts.getMarketCreatedInfo(db, disputeCrowdsourcerRedeemedLogs);
+      allFormattedLogs = allFormattedLogs.concat(formatCrowdsourcerRedeemedLogs(disputeCrowdsourcerRedeemedLogs, marketInfo, params));
       const initialReporterRedeemedLogs = await db.findInitialReporterRedeemedLogs({selector: {universe: params.universe, reporter: params.account}});
-      allFormattedLogs.concat(formatCrowdsourcerRedeemedLogs(disputeCrowdsourcerRedeemedLogs, params));
-      allFormattedLogs.concat(formatCrowdsourcerRedeemedLogs(initialReporterRedeemedLogs, params));
+      marketInfo = await Accounts.getMarketCreatedInfo(db, initialReporterRedeemedLogs);
+      allFormattedLogs = allFormattedLogs.concat(formatCrowdsourcerRedeemedLogs(initialReporterRedeemedLogs, marketInfo, params));
+      actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.MARKET_CREATION || params.action === Action.ALL) && (params.coin === Coin.ETH || params.coin === Coin.ALL)) {
       const marketCreatedLogs = await db.findMarketCreatedLogs({selector: {universe: params.universe, marketCreator: params.account}});
-      allFormattedLogs.concat(formatMarketCreatedLogs(marketCreatedLogs, params));
+      const asdf = formatMarketCreatedLogs(marketCreatedLogs, params);
+      allFormattedLogs = allFormattedLogs.concat(asdf);
+      actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.DISPUTE || params.action === Action.ALL) && (params.coin === Coin.REP || params.coin === Coin.ALL)) {
-      const disputeCrowdsourcerRedeemedLogs = await db.findDisputeCrowdsourcerContributionLogs({selector: {universe: params.universe, reporter: params.account}});
-      allFormattedLogs.concat(formatDisputeCrowdsourcerContributionLogs(disputeCrowdsourcerRedeemedLogs, params));
+      const disputeCrowdsourcerContributionLogs = await db.findDisputeCrowdsourcerContributionLogs({selector: {universe: params.universe, reporter: params.account}});
+      const marketInfo = await Accounts.getMarketCreatedInfo(db, disputeCrowdsourcerContributionLogs);
+      allFormattedLogs = allFormattedLogs.concat(formatDisputeCrowdsourcerContributionLogs(disputeCrowdsourcerContributionLogs, marketInfo, params));
+      actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.INITIAL_REPORT || params.action === Action.ALL) && (params.coin === Coin.REP || params.coin === Coin.ALL)) {
       const initialReportSubmittedLogs = await db.findInitialReportSubmittedLogs({selector: {universe: params.universe, reporter: params.account}});
-      allFormattedLogs.concat(formatInitialReportSubmittedLogs(initialReportSubmittedLogs, params));
+      const marketInfo = await Accounts.getMarketCreatedInfo(db, initialReportSubmittedLogs);
+      allFormattedLogs = allFormattedLogs.concat(formatInitialReportSubmittedLogs(initialReportSubmittedLogs, marketInfo, params));
+      actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.COMPLETE_SETS || params.action === Action.ALL) && (params.coin === Coin.ETH || params.coin === Coin.ALL)) {
       const completeSetsPurchasedLogs = await db.findCompleteSetsPurchasedLogs({selector: {universe: params.universe, account: params.account}});
+      let marketInfo = await Accounts.getMarketCreatedInfo(db, completeSetsPurchasedLogs);
+      allFormattedLogs = allFormattedLogs.concat(formatCompleteSetsPurchasedLogs(completeSetsPurchasedLogs, marketInfo, params));
       const completeSetsSoldLogs = await db.findCompleteSetsSoldLogs({selector: {universe: params.universe, account: params.account}});
-      allFormattedLogs.concat(formatCompleteSetsPurchasedLogs(completeSetsPurchasedLogs, params));
-      allFormattedLogs.concat(formatCompleteSetsSoldLogs(completeSetsSoldLogs, params));
+      marketInfo = await Accounts.getMarketCreatedInfo(db, completeSetsSoldLogs);
+      allFormattedLogs = allFormattedLogs.concat(formatCompleteSetsSoldLogs(completeSetsSoldLogs, marketInfo, params));
+      actionCoinComboIsValid = true;
     }
 
     // TODO Filter logs by earliestTransactionTime & latestTransactionTime
@@ -142,9 +166,51 @@ export class Accounts<TBigNumber> {
 
     return allFormattedLogs;
   }
+
+  static async getMarketCreatedInfo<TBigNumber>(db: DB<TBigNumber>, transactionLogs: Array<OrderEventLog|TradingProceedsClaimedLog|DisputeCrowdsourcerRedeemedLog|InitialReporterRedeemedLog|DisputeCrowdsourcerContributionLog|InitialReportSubmittedLog|CompleteSetsPurchasedLog|CompleteSetsSoldLog>): Promise<MarketCreatedInfo> {
+    const markets = transactionLogs.map(transactionLogs => transactionLogs.market);
+    let marketCreatedLogs = await db.findMarketCreatedLogs({selector: {market: {$in: markets}}});
+    const marketCreatedInfo: MarketCreatedInfo = {};
+    for (let i = 0; i < marketCreatedLogs.length; i++) {
+      marketCreatedInfo[marketCreatedLogs[i].market] = marketCreatedLogs[i];
+    }
+    return marketCreatedInfo;
+  }
 }
 
-function formatOrderFilledLogs(transactionLogs: Array<OrderEventLog>, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+function getOutcomeDescriptionFromOutcome(outcome: number, market: MarketCreatedLog): string {
+  if (market.marketType === MarketType.YesNo) {
+    if (outcome === 0) {
+      return "Invalid";
+    } else if (outcome === 1) {
+      return "No";
+    } else {
+      return "Yes";
+    }
+  } else if (market.marketType === MarketType.Scalar) {
+    if (outcome === 0) {
+      return "Invalid"
+    } else if (outcome === 1) {
+      return market.outcomes[1].toString();
+    } else {
+      return market.outcomes[2].toString();
+    }
+  } else {
+    return market.outcomes[new BigNumber(outcome).toNumber()];
+  }
+}
+
+function getOutcomeFromPayoutNumerators(payoutNumerators: Array<string>, market: MarketCreatedLog): number {
+  let outcome = 0;
+  for (; outcome < payoutNumerators.length; outcome++) {
+    if (new BigNumber(payoutNumerators[outcome]).toNumber() > 0) {
+      break;
+    }
+  }
+  return outcome;
+}
+
+function formatOrderFilledLogs(transactionLogs: Array<OrderEventLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     const price = new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.price]);
@@ -161,9 +227,9 @@ function formatOrderFilledLogs(transactionLogs: Array<OrderEventLog>, params: t.
           coin: Coin.ETH,
           details: "Buy order",
           fee: "", // TODO: reporterFees + marketCreatorFees
-          marketDescription: "", // TODO: look up market
+          marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
           outcome: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(),
-          outcomeDescription: null, // TODO: look up market
+          outcomeDescription: getOutcomeDescriptionFromOutcome(new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(), marketInfo[transactionLogs[i].market]),
           price: price.toString(),
           quantity: quantity.toString(),
           timestamp: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.timestamp]).toNumber(),
@@ -183,9 +249,9 @@ function formatOrderFilledLogs(transactionLogs: Array<OrderEventLog>, params: t.
           coin: Coin.ETH,
           details: "Sell order",
           fee: "", // TODO: reporterFees + marketCreatorFees
-          marketDescription: "", // TODO: look up market
+          marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
           outcome: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(),
-          outcomeDescription: null, // TODO: look up market
+          outcomeDescription: getOutcomeDescriptionFromOutcome(new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(), marketInfo[transactionLogs[i].market]),
           price: price.toString(),
           quantity: quantity.toString(),
           timestamp: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.timestamp]).toNumber(),
@@ -198,7 +264,7 @@ function formatOrderFilledLogs(transactionLogs: Array<OrderEventLog>, params: t.
   return formattedLogs;
 }
 
-function formatOrderCanceledLogs(transactionLogs: Array<OrderEventLog>, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+function formatOrderCanceledLogs(transactionLogs: Array<OrderEventLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     formattedLogs.push(
@@ -207,9 +273,9 @@ function formatOrderCanceledLogs(transactionLogs: Array<OrderEventLog>, params: 
         coin: Coin.ETH,
         details: "Cancel order",
         fee: "0",
-        marketDescription: "", // TODO: look up market
+        marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
         outcome: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(),
-        outcomeDescription: null, // TODO: look up market
+        outcomeDescription: getOutcomeDescriptionFromOutcome(new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(), marketInfo[transactionLogs[i].market]),
         price: transactionLogs[i].uint256Data[OrderEventUint256Value.price],
         quantity: transactionLogs[i].uint256Data[OrderEventUint256Value.amount],
         timestamp: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.timestamp]).toNumber(),
@@ -230,7 +296,7 @@ function formatParticipationTokensRedeemedLogs(transactionLogs: Array<Participat
         coin: Coin.ETH,
         details: "Claimed reporting fees from participation tokens",
         fee: "0",
-        marketDescription: "", // TODO: look up market
+        marketDescription: "", // TODO: look up market?
         outcome: null,
         outcomeDescription: null,
         price: "0", // TODO: look up market numTicks
@@ -244,7 +310,7 @@ function formatParticipationTokensRedeemedLogs(transactionLogs: Array<Participat
   return formattedLogs;
 }
 
-function formatTradingProceedsClaimedLogs(transactionLogs: Array<TradingProceedsClaimedLog>, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+function formatTradingProceedsClaimedLogs(transactionLogs: Array<TradingProceedsClaimedLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     const price = 0; // TODO: look up outcome price
@@ -254,7 +320,7 @@ function formatTradingProceedsClaimedLogs(transactionLogs: Array<TradingProceeds
         coin: Coin.ETH,
         details: "Claimed trading proceeds",
         fee: (new BigNumber(transactionLogs[i].numShares).times(price)).minus(transactionLogs[i].numPayoutTokens).toString(),
-        marketDescription: "", // TODO: look up market
+        marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
         outcome: null, // TODO: look up market
         outcomeDescription: null, // TODO: look up market
         price: price.toString(),
@@ -268,9 +334,11 @@ function formatTradingProceedsClaimedLogs(transactionLogs: Array<TradingProceeds
   return formattedLogs;
 }
 
-function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrowdsourcerRedeemedLog>|Array<InitialReporterRedeemedLog>, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrowdsourcerRedeemedLog>|Array<InitialReporterRedeemedLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
+    const outcome = getOutcomeFromPayoutNumerators(transactionLogs[i].payoutNumerators, marketInfo[transactionLogs[i].market]);
+    const outcomeDescription = getOutcomeDescriptionFromOutcome(outcome, marketInfo[transactionLogs[i].market]);
     if (params.coin === "ETH" || params.coin === "ALL") {
       formattedLogs.push(
         {
@@ -278,9 +346,9 @@ function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrowdsourc
           coin: Coin.ETH,
           details: "Claimed reporting fees from crowdsourcers",
           fee: "0",
-          marketDescription: "", // TODO: look up market
-          outcome: 0, // TODO
-          outcomeDescription: null, // TODO: look up market
+          marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
+          outcome,
+          outcomeDescription,
           price: "0",
           quantity: "0",
           timestamp: 0, // TODO?
@@ -296,9 +364,9 @@ function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrowdsourc
           coin: Coin.REP,
           details: "Claimed REP fees from crowdsourcers",
           fee: "0",
-          marketDescription: "", // TODO: look up market
-          outcome: 0, // TODO
-          outcomeDescription: null, // TODO: look up market
+          marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
+          outcome,
+          outcomeDescription,
           price: "0",
           quantity: "0",
           timestamp: 0, // TODO?
@@ -320,7 +388,7 @@ function formatMarketCreatedLogs(transactionLogs: MarketCreatedLog[], params: t.
         coin: Coin.ETH,
         details: "ETH validity bond for market creation",
         fee: "", // TODO
-        marketDescription: transactionLogs[i].extraInfo ? JSON.parse(transactionLogs[i].extraInfo).description : "",
+        marketDescription: transactionLogs[i].extraInfo && JSON.parse(transactionLogs[i].extraInfo).description ? JSON.parse(transactionLogs[i].extraInfo).description : "",
         outcome: null,
         outcomeDescription: null,
         price: "0",
@@ -334,18 +402,20 @@ function formatMarketCreatedLogs(transactionLogs: MarketCreatedLog[], params: t.
   return formattedLogs;
 }
 
-function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<DisputeCrowdsourcerContributionLog>, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<DisputeCrowdsourcerContributionLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
+    const outcome = getOutcomeFromPayoutNumerators(transactionLogs[i].payoutNumerators, marketInfo[transactionLogs[i].market]);
+    const outcomeDescription = getOutcomeDescriptionFromOutcome(outcome, marketInfo[transactionLogs[i].market]);
     formattedLogs.push(
       {
         action: Action.DISPUTE,
         coin: Coin.REP,
         details: "REP staked in dispute crowdsourcers",
         fee: "0",
-        marketDescription: "", // TODO: look up market
-        outcome: 0, // TODO
-        outcomeDescription: "", // TODO
+        marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
+        outcome,
+        outcomeDescription,
         price: "0",
         quantity: transactionLogs[i].amountStaked,
         timestamp: 0, // TODO?
@@ -357,18 +427,20 @@ function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<Disput
   return formattedLogs;
 }
 
-function formatInitialReportSubmittedLogs(transactionLogs: Array<InitialReportSubmittedLog>, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+function formatInitialReportSubmittedLogs(transactionLogs: Array<InitialReportSubmittedLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
+    const outcome = getOutcomeFromPayoutNumerators(transactionLogs[i].payoutNumerators, marketInfo[transactionLogs[i].market]);
+    const outcomeDescription = getOutcomeDescriptionFromOutcome(outcome, marketInfo[transactionLogs[i].market]);
     formattedLogs.push(
       {
         action: Action.INITIAL_REPORT,
         coin: Coin.REP,
         details: "REP staked in initial reports",
         fee: "0",
-        marketDescription: "", // TODO: look up markets
-        outcome: 0, // TODO
-        outcomeDescription: "", // TODO
+        marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
+        outcome,
+        outcomeDescription,
         price: "0",
         quantity: transactionLogs[i].amountStaked,
         timestamp: 0, // TODO?
@@ -380,7 +452,7 @@ function formatInitialReportSubmittedLogs(transactionLogs: Array<InitialReportSu
   return formattedLogs;
 }
 
-function formatCompleteSetsPurchasedLogs(transactionLogs: Array<CompleteSetsPurchasedLog>, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+function formatCompleteSetsPurchasedLogs(transactionLogs: Array<CompleteSetsPurchasedLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     formattedLogs.push(
@@ -389,7 +461,7 @@ function formatCompleteSetsPurchasedLogs(transactionLogs: Array<CompleteSetsPurc
         coin: Coin.ETH,
         details: "Buy complete sets",
         fee: "0",
-        marketDescription: "", // TODO: look up market
+        marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
         outcome: null,
         outcomeDescription: null,
         price: "0", // TODO: look up market numTicks
@@ -403,7 +475,7 @@ function formatCompleteSetsPurchasedLogs(transactionLogs: Array<CompleteSetsPurc
   return formattedLogs;
 }
 
-function formatCompleteSetsSoldLogs(transactionLogs: Array<CompleteSetsSoldLog>, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+function formatCompleteSetsSoldLogs(transactionLogs: Array<CompleteSetsSoldLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     formattedLogs.push(
@@ -412,7 +484,7 @@ function formatCompleteSetsSoldLogs(transactionLogs: Array<CompleteSetsSoldLog>,
         coin: Coin.ETH,
         details: "Sell complete sets",
         fee: "0",
-        marketDescription: "", // TODO: look up market
+        marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
         outcome: null,
         outcomeDescription: null,
         price: "0", // TODO: look up market numTicks
