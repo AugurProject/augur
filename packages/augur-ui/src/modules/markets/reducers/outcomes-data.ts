@@ -9,18 +9,22 @@ import {
   SCALAR_UP_ID,
   YES_NO_YES_OUTCOME_NAME
 } from "modules/common-elements/constants";
+import { OutcomesData, BaseAction } from "modules/types";
 
-const DEFAULT_STATE = {};
+const DEFAULT_STATE: OutcomesData = {};
 
-export default function(outcomesData = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(
+  outcomesData: OutcomesData = DEFAULT_STATE,
+  {type, data}: BaseAction,
+) {
+  switch (type) {
     case UPDATE_MARKETS_DATA:
       return {
         ...outcomesData,
-        ...parseOutcomes(action.data.marketsData, outcomesData)
+        ...parseOutcomes(data.marketsData, outcomesData),
       };
     case UPDATE_OUTCOME_PRICE: {
-      const { marketId, outcomeId, price } = action.data;
+      const { marketId, outcomeId, price } = data;
       if (
         !outcomesData ||
         !outcomesData[marketId] ||

@@ -50,7 +50,7 @@ export function loadUniverseInfo(callback: Function = logError) {
 
     augur.api.Universe.getParentUniverse(
       { tx: { to: universeId } },
-      (err: any, parentUniverseId: String) => {
+      (err: any, parentUniverseId: string) => {
         if (err) return callback(err);
 
         if (parentUniverseId === NULL_ADDRESS) {
@@ -70,7 +70,7 @@ export function loadUniverseInfo(callback: Function = logError) {
 
             augur.api.Universe.getParentUniverse(
               { tx: { to: parentUniverseData.id } },
-              (err: any, grandParentUniverseId: String) => {
+              (err: any, grandParentUniverseId: string) => {
                 if (err) return callback(err);
 
                 if (grandParentUniverseId === NULL_ADDRESS) {
@@ -105,7 +105,7 @@ export function loadUniverseInfo(callback: Function = logError) {
   };
 }
 
-function getUniverseInfo(universeId: String, callback: Function) {
+function getUniverseInfo(universeId: string, callback: Function) {
   const universeData: any = {
     id: universeId,
     reportableOutcomes: null,
@@ -136,7 +136,7 @@ function getUniverseInfo(universeId: String, callback: Function) {
               }
               augur.api.Universe.getWinningChildUniverse(
                 { tx: { to: universeId } },
-                (err: any, winningChildUniverse: String) => {
+                (err: any, winningChildUniverse: string) => {
                   if (err) return callback(err);
                   universeData.winningChildUniverseId = winningChildUniverse;
                   return callback(null, universeData);
@@ -152,7 +152,7 @@ function getUniverseInfo(universeId: String, callback: Function) {
 
 // TODO: this whole thing will be refactored
 function getUniversesInfoWithParentContext(
-  account: String,
+  account: string,
   currentUniverseData: any,
   parentUniverseData: any,
   grandParentUniverseData: any,

@@ -20,7 +20,7 @@ export interface StyleOptions {
   showExpandedToggle?: Boolean;
   isFirst?: Boolean;
   outcome?: Boolean;
-  colorId?: String;
+  colorId?: string;
   active?: Boolean;
 }
 
@@ -36,8 +36,8 @@ export interface RowProps {
 const Row = (props: RowProps) => {
   const {
     rowProperties,
-    isSingle, 
-    extendedView, 
+    isSingle,
+    extendedView,
     columnProperties,
     styleOptions,
     rowOnClick

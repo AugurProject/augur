@@ -8,7 +8,7 @@ import { getDisputeInfo } from "modules/reports/actions/get-dispute-info";
 import logError from "utils/log-error";
 
 export const loadMarketsInfo = (
-  marketIds: Array<String>,
+  marketIds: Array<string>,
   callback: Function = logError
 ) => (dispatch: Function, getState: Function) => {
   if (!marketIds || marketIds.length === 0) {
@@ -50,7 +50,7 @@ export const loadMarketsInfo = (
 };
 
 export const loadMarketsInfoIfNotLoaded = (
-  marketIds: Array<String>,
+  marketIds: Array<string>,
   callback: Function = logError
 ) => (dispatch: Function, getState: Function) => {
   const { marketsData } = getState();
@@ -63,13 +63,13 @@ export const loadMarketsInfoIfNotLoaded = (
 };
 
 export const loadMarketsDisputeInfo = (
-  marketIds: Array<String>,
+  marketIds: Array<string>,
   callback: Function = logError
 ) => (dispatch: Function, getState: Function) => {
   dispatch(
     getDisputeInfo(
       marketIds,
-      (err: any, marketsDisputeInfoArray: Array<String>) => {
+      (err: any, marketsDisputeInfoArray: Array<string>) => {
         if (err) return callback(err);
         if (!marketsDisputeInfoArray.length) return callback(null);
         const marketsDisputeInfo = marketsDisputeInfoArray.reduce(
@@ -94,7 +94,7 @@ function loadingError(
   dispatch: Function,
   callback: Function,
   error: any,
-  marketIds: Array<String>
+  marketIds: Array<string>
 ) {
   callback(error);
 }

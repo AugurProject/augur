@@ -3,13 +3,10 @@ import { withRouter } from "react-router-dom";
 
 import MarketOrdersPositionsTable from "modules/market/components/market-orders-positions-table/market-orders-positions-table";
 import { selectMarket } from "modules/markets/selectors/market";
-import { cancelOrphanedOrder } from "modules/orders/actions/orphaned-orders";
 import {
-  CATEGORICAL,
   MODAL_CLAIM_TRADING_PROCEEDS
 } from "modules/common-elements/constants";
-import { find } from "lodash";
-import { selectCurrentTimestamp, selectOrphanOrders } from "src/select-state";
+import { selectCurrentTimestamp } from "src/select-state";
 import { constants } from "services/augurjs";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { createBigNumber } from "utils/create-big-number";
@@ -20,21 +17,6 @@ import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId);
   const openOrders = getUserOpenOrders(market.id) || [];
-
-  const filteredOrphanOrders = selectOrphanOrders(state).filter(
-    order => order.marketId === ownProps.marketId
-  );
-
-  filteredOrphanOrders.forEach(order => {
-    const id = order.outcome;
-    const outcome = find(market.outcomes, { id });
-    if (outcome) {
-      order.outcomeName =
-        market.marketType === CATEGORICAL
-          ? outcome.description
-          : outcome.name || order.price;
-    }
-  });
 
   let canClaim = false;
   if (market.finalizationTime) {
@@ -57,14 +39,12 @@ const mapStateToProps = (state, ownProps) => {
     hasPending,
     outcomes: market.outcomes || [],
     openOrders,
-    orphanedOrders: filteredOrphanOrders,
     market,
     filledOrders
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  cancelOrphanedOrder: (order, cb) => dispatch(cancelOrphanedOrder(order, cb)),
   claimTradingProceeds: (marketId, cb) =>
     dispatch(updateModal({ type: MODAL_CLAIM_TRADING_PROCEEDS, marketId, cb })),
   cancelAllOpenOrders: (orders, cb) => dispatch(cancelAllOpenOrders(orders, cb))

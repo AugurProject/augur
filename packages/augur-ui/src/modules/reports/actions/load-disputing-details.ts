@@ -5,7 +5,7 @@ import {
 } from "modules/markets/actions/load-markets-info";
 
 export const loadDisputingDetails = (
-  marketIds: Array<String>,
+  marketIds: Array<string>,
   callback: Function = logError
 ) => (dispatch: Function) => {
   dispatch(

@@ -5,8 +5,9 @@ import {
   LOAD_PENDING_LIQUIDITY_ORDERS,
   CLEAR_ALL_MARKET_ORDERS
 } from "modules/orders/actions/liquidity-management";
+import { OrderBooks, BaseAction } from "modules/types";
 
-const DEFAULT_STATE = () => ({});
+const DEFAULT_STATE: OrderBooks = {};
 
 /*
 Example:
@@ -20,8 +21,8 @@ Example:
 */
 
 export default function(
-  pendingLiquidityOrders = DEFAULT_STATE(),
-  { type, data }
+  pendingLiquidityOrders: OrderBooks = DEFAULT_STATE,
+  { type, data }: BaseAction,
 ) {
   switch (type) {
     case LOAD_PENDING_LIQUIDITY_ORDERS:

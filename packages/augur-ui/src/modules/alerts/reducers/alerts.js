@@ -11,7 +11,7 @@ const DEFAULT_STATE = [];
 
 /**
  * @typedef {Object} AlertAction
- * @property {string} text - String to show as a call to action.
+ * @property {string} text - string to show as a call to action.
  * @property {function} actionFn - Called when the user clicks the alert.
  *
  */

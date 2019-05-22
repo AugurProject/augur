@@ -19,7 +19,7 @@ export interface FilterBoxProps {
   switchView: Function;
   noSwitch?: Boolean;
   renderRows: Function;
-  filterLabel: String;
+  filterLabel: string;
   sortByStyles?: Object;
   noBackgroundBottom?: Boolean;
 }
