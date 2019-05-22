@@ -66,10 +66,6 @@ describe(`store.js`, () => {
       "alerts is not an empty array"
     );
 
-    assert.isOk(state.reports, "reports is not defined");
-    assert.isObject(state.reports, "reports is not an object");
-    assert.deepEqual(state.reports, {}, "reports is not an empty object");
-
     assert.isOk(state.outcomesData, "outcomes is not defined");
     assert.isObject(state.outcomesData, "outcomes is not an object");
     assert.deepEqual(state.outcomesData, {}, "outcomes is not an empty object");

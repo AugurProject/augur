@@ -1,18 +1,61 @@
 import { ReactNode } from "react";
 import { Market } from "./account/components/notifications/notifications-templates";
+import { BUY, SELL } from "./common-elements/constants";
 
+export interface UserReports {
+
+  markets: {
+    [universeId: string]: string;
+  };
+}
+export interface FormattedNumber {
+  fullPrecision: number;
+  roundedValue: number;
+  roundedFormatted: string;
+  formatted: string;
+  formattedValue: number;
+  minimized: string;
+  value: number;
+  rounded: number;
+  full: number;
+}
+export interface ReportingWindowStats {
+  startTime: string | null;
+  endTime: string | null;
+  stake: string | null;
+  reportingFees: {
+    unclaimedEth: FormattedNumber;
+    unclaimedRep: FormattedNumber;
+    unclaimedForkEth: FormattedNumber;
+    unclaimedForkRepStaked: FormattedNumber;
+    feeWindows: Array<string>;
+    forkedMarket: string | null;
+    nonforkedMarkets: Array<string>;
+    feeWindowEthFees: string;
+    feeWindowRepStaked: string;
+  };
+}
+export interface PendingQueue {
+  [pendingId: string]: {
+    [QueueName: string]: {
+      status: string;
+    };
+  };
+}
 export interface PendingOrders {
   [marketId: string]: Array<Order>;
 }
-export interface OrderBookOrders {
-  [id: string]: Order;
-}
-export interface OrderBookOrderType {
-  [orderType: string]: OrderBookOrders;
-}
+
 export interface OrderBook {
-  marketId: string;
-  [outcome: number]: OrderBookOrderType;
+  marketId: string | undefined;
+  [outcome: number]: {
+    [BUY]: {
+      [id: string]: Order;
+    };
+    [SELL]: {
+      [id: string]: Order;
+    };
+  };
 }
 export interface OrderBooks {
   [marketId: string]: OrderBook;
@@ -24,7 +67,7 @@ export interface Notification {
   isNew: boolean;
   title: string;
   buttonLabel: string;
-  buttonAction: Function;
+  buttonAction: ButtonActionType;
   Template: ReactNode;
   market: Market | null;
   markets: Array<string>;
@@ -47,29 +90,31 @@ export interface Order {
   outcomeName: string;
 }
 export interface NewMarketPropertiesValidations {
-  description: string|null;
-  category: string|null;
-  tag1: string|null;
-  tag2: string|null;
-  type: string|null;
-  designatedReporterType: string|null;
-  designatedReporterAddress: string|null;
-  expirySourceType: string|null;
-  endTime: string|null;
-  hour: string|null;
-  minute: string|null;
-  meridiem: string|null;
+  description: string | null;
+  category: string | null;
+  tag1: string | null;
+  tag2: string | null;
+  type: string | null;
+  designatedReporterType: string | null;
+  designatedReporterAddress: string | null;
+  expirySourceType: string | null;
+  endTime: string | null;
+  hour: string | null;
+  minute: string | null;
+  meridiem: string | null;
 }
 
 export interface NewMarketPropertyValidations {
-  settlementFee: string|null;
+  settlementFee: string | null;
 }
 export interface NewMarket {
   isValid: boolean;
-  validations: Array<NewMarketPropertiesValidations|NewMarketPropertyValidations>;
+  validations: Array<
+    NewMarketPropertiesValidations | NewMarketPropertyValidations
+  >;
   currentStep: number;
   type: string;
-  outcomes: Array<string|number>;
+  outcomes: Array<string | number>;
   scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
@@ -177,10 +222,10 @@ export interface Blockchain {
 }
 
 export interface AppStatus {
-  isLogged: boolean|undefined;
-  edgeLoading: boolean|undefined;
-  edgeContext: string|undefined;
-  isConnectionTrayOpen: boolean|undefined;
+  isLogged: boolean | undefined;
+  edgeLoading: boolean | undefined;
+  edgeContext: string | undefined;
+  isConnectionTrayOpen: boolean | undefined;
 }
 
 export interface PositionData {
@@ -222,6 +267,7 @@ export interface LoginAccount {
   dai: string;
 }
 
+type ButtonActionType = (el: React.Component) => void;
 export interface BaseAction {
   type: string;
   data: any | undefined;

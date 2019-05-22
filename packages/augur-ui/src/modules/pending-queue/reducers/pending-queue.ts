@@ -3,13 +3,14 @@ import {
   LOAD_PENDING_QUEUE,
   REMOVE_PENDING_DATA
 } from "modules/pending-queue/actions/pending-queue-management";
+import { PendingQueue, BaseAction } from "src/modules/types";
 
-const DEFAULT_STATE = () => ({});
+const DEFAULT_STATE: PendingQueue = {};
 
-export default function(pendingQueue = DEFAULT_STATE(), { type, data }) {
-  switch (type) {
+export default function(pendingQueue: PendingQueue = DEFAULT_STATE, action: BaseAction) {
+  switch (action.type) {
     case ADD_PENDING_DATA: {
-      const { pendingId, queueName, status } = data;
+      const { pendingId, queueName, status } = action.data;
       if (pendingQueue[queueName]) {
         pendingQueue[queueName][pendingId] = {
           status
@@ -26,14 +27,14 @@ export default function(pendingQueue = DEFAULT_STATE(), { type, data }) {
       };
     }
     case REMOVE_PENDING_DATA: {
-      const { pendingId, queueName } = data;
+      const { pendingId, queueName } = action.data;
       delete pendingQueue[queueName][pendingId];
       return {
         ...pendingQueue
       };
     }
     case LOAD_PENDING_QUEUE: {
-      return data.pendingQueue;
+      return action.data.pendingQueue;
     }
     default:
       return pendingQueue;

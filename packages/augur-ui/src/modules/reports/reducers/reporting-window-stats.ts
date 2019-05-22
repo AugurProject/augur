@@ -1,8 +1,9 @@
 import { UPDATE_REPORTING_WINDOW_STATS } from "modules/reports/actions/update-reporting-window-stats";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { formatAttoRep, formatAttoEth } from "utils/format-number";
+import { ReportingWindowStats, BaseAction } from "src/modules/types";
 
-const DEFAULT_STATE = {
+const DEFAULT_STATE: ReportingWindowStats = {
   startTime: null,
   endTime: null,
   stake: null,
@@ -15,14 +16,17 @@ const DEFAULT_STATE = {
     forkedMarket: null,
     nonforkedMarkets: [],
     feeWindowEthFees: "0",
-    feeWindowRepStaked: "0"
-  }
+    feeWindowRepStaked: "0",
+  },
 };
 
-export default function(reportingWindowStats = DEFAULT_STATE, { type, data }) {
-  switch (type) {
+export default function(
+  reportingWindowStats: ReportingWindowStats = DEFAULT_STATE,
+  action: BaseAction,
+) {
+  switch (action.type) {
     case UPDATE_REPORTING_WINDOW_STATS: {
-      const { windowStats } = data;
+      const { windowStats } = action.data;
       return {
         ...reportingWindowStats,
         ...windowStats
