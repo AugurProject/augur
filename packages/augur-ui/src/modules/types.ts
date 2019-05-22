@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, MouseEvent } from "react";
 import { Market } from "./account/components/notifications/notifications-templates";
 import { BUY, SELL } from "./common-elements/constants";
 
@@ -308,7 +308,7 @@ export interface LoginAccount {
   dai: string;
 }
 
-type ButtonActionType = (el: React.Component) => void;
+type ButtonActionType = (event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
 export interface BaseAction {
   type: string;
   data: any | undefined;
