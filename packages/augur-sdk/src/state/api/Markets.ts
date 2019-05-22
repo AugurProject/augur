@@ -158,7 +158,7 @@ export class Markets<TBigNumber> {
         ) {
           return previousValue;
         }
-        previousValue[currentValue.market] = currentValue;
+        previousValue[currentValue.market.to0xString()] = currentValue;
         return previousValue;
       },
       []
@@ -247,7 +247,7 @@ export class Markets<TBigNumber> {
       }
     );
 
-    return Object.keys(filteredKeyedMarketCreatedLogs);
+    return Object.keys(filteredKeyedMarketCreatedLogs).map((address) => Address.fromStringLiteral(address));
   }
 
   private static async getMarketOutcomes<TBigNumber>(db: DB<TBigNumber>, marketCreatedLog: MarketCreatedLog): Promise<Array<MarketInfoOutcome>> {

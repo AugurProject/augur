@@ -73,9 +73,9 @@ export class Trading {
     return orderFilledResponse.reduce((trades: Array<MarketTradingHistory>, orderFilledDoc) => {
       const orderDoc = orders[orderFilledDoc.orderId];
       if (!orderDoc) return trades;
-      const marketDoc = markets[orderFilledDoc.market];
+      const marketDoc = markets[orderFilledDoc.market.to0xString()];
       if (!marketDoc) return trades;
-      const isMaker: boolean | null = params.account == null ? false : params.account === orderFilledDoc.addressData[OrderEventAddressValue.orderCreator];
+      const isMaker: boolean | null = params.account == null ? false : params.account === orderFilledDoc.addressData[OrderEventAddressValue.orderCreator].to0xString();
       const orderType = orderDoc.orderType === 0 ? "buy" : "sell";
       const fees = new BigNumber(orderFilledDoc.uint256Data[OrderEventUint256Value.fees]);
       const minPrice = new BigNumber(marketDoc.prices[0]);
@@ -88,9 +88,9 @@ export class Trading {
         "transactionHash",
         "logIndex",
         "orderId",
-        "tradeGroupId",
+        "tradeGroupId"
       ]), {
-          marketId: orderFilledDoc.market,
+          marketId: orderFilledDoc.market.to0xString(),
           outcome: new BigNumber(orderFilledDoc.uint256Data[OrderEventUint256Value.outcome]).toNumber(),
           maker: isMaker,
           type: isMaker ? orderType : (orderType === "buy" ? "sell" : "buy"),
