@@ -19,7 +19,7 @@ const FilledOrdersTable = ({ filledOrders, scalarDenomination }) => (
         {filledOrders.length > 0 && (
           <div className={Styles["MarketOpenOrdersList__table-body"]}>
             {filledOrders.map((order, i) => (
-              <FilledOrder filledOrder={order} extendedViewNotOnMobile />
+              <FilledOrder key={i} filledOrder={order} extendedViewNotOnMobile />
             ))}
           </div>
         )}

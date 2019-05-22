@@ -16,7 +16,7 @@ const OpenOrdersTable = ({ openOrders }) => (
         {openOrders.length > 0 && (
           <div className={Styles["MarketOpenOrdersList__table-body"]}>
             {openOrders.map((order, i) => (
-              <OpenOrder openOrder={order} extendedViewNotOnMobile />
+              <OpenOrder key={i} openOrder={order} extendedViewNotOnMobile />
             ))}
           </div>
         )}

@@ -49,6 +49,8 @@ const RowContent = (props: RowProps) => {
         [Styles.Row2]: filledOrder,
         [Styles.Row2_a]:
           filledOrder && extendedView,
+        [Styles.Row1]:
+          openOrder && !extendedView,
         [Styles.Row_a]:
           openOrder && extendedView,
         [Styles.Row3]: position,
@@ -92,7 +94,7 @@ const Row = (props: RowProps) => {
 
   const rowContent = (
     <Media query={SMALL_MOBILE}>
-      {matches => (matches && !extendedViewNotOnMobile) ?
+      {matches => (matches && extendedViewNotOnMobile) ?
         (<RowContent {...props} extendedView={extendedView} />) : 
         (<RowContent {...props} extendedView={extendedViewNotOnMobile || extendedView}/>)
       }
