@@ -2,7 +2,7 @@ import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 
 export const getDisputeInfo = (
-  marketIds: Array<String>,
+  marketIds: Array<string>,
   callback: Function = logError
 ) => (dispatch: Function, getState: Function) => {
   const { loginAccount } = getState();

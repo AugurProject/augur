@@ -12,10 +12,10 @@ export default function(
 }
 
 /**
- * @param {String} orderId
- * @param {String} marketId
+ * @param {string} orderId
+ * @param {string} marketId
  * @param {int} outcome
- * @param {String} orderTypeLabel
+ * @param {string} orderTypeLabel
  * @param {Object} orderBooks
  * @return {Object|null}
  */

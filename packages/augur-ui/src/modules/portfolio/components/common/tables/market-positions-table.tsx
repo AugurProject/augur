@@ -17,7 +17,7 @@ export interface MarketPositionsTableProps {
   transactionsStatus: any;
   sellCompleteSets: Function;
   extendedView: Boolean;
-  marketId: String;
+  marketId: string;
 }
 
 export interface MarketPositionsTableState {

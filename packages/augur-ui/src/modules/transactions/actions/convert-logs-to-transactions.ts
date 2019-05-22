@@ -1,6 +1,7 @@
 import { deleteTransactionsWithTransactionHash } from "modules/transactions/actions/update-transactions-data";
 import { constructTransaction } from "modules/transactions/actions/construct-transaction";
 
+// TODO: when integrating with SDK need to use SDK's log types
 export const updateLoggedTransactions = (log: any) => (
   dispatch: Function,
   getState: Function

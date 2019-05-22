@@ -8,7 +8,7 @@ export const wrapLogHandler = (logHandler: Function = defaultLogHandler) => (
   if (err) return console.error((log || {}).eventName, err, log);
   if (log) {
     // console.info(`${new Date().toISOString()} LOG ${log.removed ? 'REMOVED' : 'ADDED'} ${log.eventName} ${JSON.stringify(log)}`)
-    const universeId: String = getState().universe.id;
+    const universeId: string = getState().universe.id;
     const isInCurrentUniverse = find(
       Object.values(log),
       value => universeId === value

@@ -30,7 +30,7 @@ export const submitMigrateREP = ({
 
   augur.api.Universe.getReputationToken(
     { tx: { to: universeID } },
-    (err: any, reputationTokenAddress: String) => {
+    (err: any, reputationTokenAddress: string) => {
       if (err) return callback(err);
       augur.api.ReputationToken.migrateOutByPayout({
         meta: loginAccount.meta,

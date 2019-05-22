@@ -3,10 +3,11 @@ import {
   LOAD_PENDING_QUEUE,
   REMOVE_PENDING_DATA
 } from "modules/pending-queue/actions/pending-queue-management";
+import { PendingQueue, BaseAction } from "modules/types";
 
-const DEFAULT_STATE = () => ({});
+const DEFAULT_STATE: PendingQueue = {};
 
-export default function(pendingQueue = DEFAULT_STATE(), { type, data }) {
+export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data }: BaseAction) {
   switch (type) {
     case ADD_PENDING_DATA: {
       const { pendingId, queueName, status } = data;

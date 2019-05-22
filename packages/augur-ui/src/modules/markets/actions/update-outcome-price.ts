@@ -1,9 +1,9 @@
 export const UPDATE_OUTCOME_PRICE = "UPDATE_OUTCOME_PRICE";
 
 export function updateOutcomePrice(
-  marketId: String,
-  outcomeId: String | Number,
-  price: String
+  marketId: string,
+  outcomeId: string | Number,
+  price: string
 ) {
   return {
     type: UPDATE_OUTCOME_PRICE,

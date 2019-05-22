@@ -20,7 +20,7 @@ import { has } from "lodash";
 import { formatShares, formatEther } from "utils/format-number";
 
 /**
- * @param {String} outcomeId
+ * @param {string} outcomeId
  * @param {Object} marketOrderBook
  */
 export const selectAggregateOrderBook = memoize(
@@ -95,9 +95,9 @@ export const selectTopAsk = memoize(
 /**
  * Selects price points with aggregated amount of shares
  *
- * @param {String} outcomeId
- * @param {String} side
- * @param {{String, Object}} orders Key is order ID, value is order
+ * @param {string} outcomeId
+ * @param {string} side
+ * @param {{string, Object}} orders Key is order ID, value is order
  */
 const selectAggregatePricePoints = memoize(
   (outcomeId, side, orders, orderCancellation) => {

@@ -14,27 +14,27 @@ import MarketOutcomeTradingIndicator from "modules/market/containers/market-outc
 const { COLUMN_TYPES } = constants;
 
 export interface Properties {
-  text?: String;
-  keyId?: String;
-  type?: String;
+  text?: string;
+  keyId?: string;
+  type?: string;
   pastTense?: Boolean;
   pending?: Boolean;
   disabled?: Boolean;
   action?: Function;
-  showPercent?: String;
-  showBrackets?: String;
-  showPlusMinus?: String;
+  showPercent?: string;
+  showBrackets?: string;
+  showPlusMinus?: string;
   showColors?: Boolean;
-  value?: String;
-  size?: String;
+  value?: string;
+  size?: string;
   showEmptyDash?: Boolean;
   addIndicator?: Boolean;
-  outcome?: String;
-  location?: String;
+  outcome?: string;
+  location?: string;
   showExtraNumber?: Boolean;
 }
 
-function selectColumn(columnType: String, properties: Properties) {
+function selectColumn(columnType: string, properties: Properties) {
   switch (columnType) {
     case COLUMN_TYPES.TEXT:
       return (
@@ -56,7 +56,7 @@ function selectColumn(columnType: String, properties: Properties) {
       return (
         (properties.value || properties.showEmptyDash) && (
           <>
-            {properties.addIndicator && 
+            {properties.addIndicator &&
               <MarketOutcomeTradingIndicator
                 outcome={properties.outcome}
                 location={properties.location}
@@ -98,7 +98,7 @@ function selectColumn(columnType: String, properties: Properties) {
 }
 
 export interface RowColumnProps {
-  columnType: String;
+  columnType: string;
   hide?: Boolean;
   properties: Properties;
 }

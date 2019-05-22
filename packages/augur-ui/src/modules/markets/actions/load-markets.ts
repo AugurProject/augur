@@ -28,7 +28,7 @@ export const loadMarkets = (type: any, callback = logError) => (
     if (err) return callback(err);
 
     const marketsData = marketsArray.reduce(
-      (p: any, id: String) => ({
+      (p: any, id: string) => ({
         ...p,
         [id]: { id }
       }),

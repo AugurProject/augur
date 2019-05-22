@@ -88,7 +88,7 @@ const Outcome = ({ className, outcome, marketId }) => {
                 className={
                   Styles["MarketReportingPayouts__progress-bar-percentage-user"]
                 }
-                style={{ width: String(outcome.percentageAccount) + "%" }}
+                style={{ width: string(outcome.percentageAccount) + "%" }}
                 data-tip
                 data-for={"tooltip--rep-progress-" + outcome.id + marketId}
               />
@@ -96,7 +96,7 @@ const Outcome = ({ className, outcome, marketId }) => {
                 className={
                   Styles["MarketReportingPayouts__progress-bar-percentage"]
                 }
-                style={{ width: String(outcome.percentageComplete) + "%" }}
+                style={{ width: string(outcome.percentageComplete) + "%" }}
               />
             </div>
             <span

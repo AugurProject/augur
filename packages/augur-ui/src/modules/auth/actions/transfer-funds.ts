@@ -5,15 +5,15 @@ import { selectCurrentTimestampInSeconds as getTime } from "src/select-state";
 import { ETH, REP, CONFIRMED, FAILED } from "modules/common-elements/constants";
 
 export function transferFunds(
-  amount: String,
-  currency: String,
-  toAddress: String
+  amount: string,
+  currency: string,
+  toAddress: string
 ) {
   return (dispatch: Function, getState: Function) => {
     const { universe, loginAccount } = getState();
     const fromAddress = loginAccount.address;
     const to = speedomatic.formatEthereumAddress(toAddress);
-    const update = (id: String, status: String) => {
+    const update = (id: string, status: string) => {
       dispatch(
         updateAlert(id, {
           id,

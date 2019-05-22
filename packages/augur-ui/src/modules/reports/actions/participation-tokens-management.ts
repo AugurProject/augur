@@ -8,27 +8,6 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
-export const UPDATE_PARTICIPATION_TOKENS_DATA =
-  "UPDATE_PARTICIPATION_TOKENS_DATA";
-export const UPDATE_PARTICIPATION_TOKENS_BALANCE =
-  "UPDATE_PARTICIPATION_TOKENS_BALANCE";
-
-export const updateParticipationTokensData = (
-  participationTokensDataUpdated: any
-) => ({
-  type: UPDATE_PARTICIPATION_TOKENS_DATA,
-  data: { participationTokensDataUpdated }
-});
-export const updateParticipationTokenBalance = (
-  feeWindowID: String,
-  balance: String
-) => ({
-  type: UPDATE_PARTICIPATION_TOKENS_BALANCE,
-  data: {
-    feeWindowID,
-    balance
-  }
-});
 
 // TODO: is this even in use? on a search, i never see it imported...
 export const loadParticipationTokens = (
@@ -41,9 +20,8 @@ export const loadParticipationTokens = (
   augur.augurNode.submitRequest(
     "getFeeWindows",
     { universe: universeID, account: loginAccount.address, includeCurrent },
-    (err: any, feeWindowsWithUnclaimedTokens: String) => {
+    (err: any, feeWindowsWithUnclaimedTokens: string) => {
       if (err) return callback(err);
-      dispatch(updateParticipationTokensData(feeWindowsWithUnclaimedTokens));
       Object.keys(feeWindowsWithUnclaimedTokens).forEach(feeWindowID => {
         augur.api.FeeWindow.withdrawInEmergency({
           tx: { estimateGas: true, to: feeWindowID },
@@ -59,7 +37,7 @@ export const loadParticipationTokens = (
 };
 
 export const purchaseParticipationTokens = (
-  amount: String,
+  amount: string,
   estimateGas = false,
   callback = logError
 ) => (dispatch: Function, getState: Function) => {
@@ -83,8 +61,8 @@ export const purchaseParticipationTokens = (
 
 const callMethod = (
   method: Function,
-  amount: String,
-  address: String,
+  amount: string,
+  address: string,
   estimateGas: Boolean = false,
   callback: Function
 ) => (dispatch: Function, getState: Function) => {
