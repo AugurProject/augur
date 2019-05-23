@@ -13,12 +13,12 @@
     height: 100%;
   }
 
-  > .TopBar__augurLogoContainer {
+  > div:first-of-type {
     display: none;
 
     > svg {
       fill: @color-secondary-text;
-      width: 2rem;
+      width: @size-32;
     }
 
     @media @breakpoint-mobile {
@@ -28,7 +28,7 @@
   }
 }
 
-.TopBar__statsContainer {
+.statsContainer {
   width: 400px;
 
   @media @breakpoint-mobile {
@@ -36,17 +36,21 @@
   }
 }
 
-.TopBar__rightContent {
+.rightContent {
   align-items: center;
   flex: 1;
   justify-content: flex-end;
+
+  @media @breakpoint-mobile {
+    flex: unset;
+  }
 
   > div {
     height: 100%;
   }
 }
 
-div.TopBar__stats {
+div.stats {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -59,7 +63,7 @@ div.TopBar__stats {
   }
 
   &:first-of-type {
-    margin: 0.75rem 1.5rem 0.75rem 2rem;
+    margin: @size-12 @size-24 @size-12 @size-32;
 
     > div:nth-of-type(3) {
       margin-bottom: 0;
@@ -89,8 +93,8 @@ div.TopBar__stats {
 
   &:last-of-type {
     border-left: 1px solid @color-primary-background;
-    margin: 1rem 0;
-    padding-left: 1.5rem;
+    margin: @size-16 0;
+    padding-left: @size-24;
 
     > div {
       display: flex;
@@ -120,7 +124,7 @@ div.TopBar__stats {
   }
 }
 
-div.TopBar__alerts {
+div.alerts {
   color: @color-secondary-text;
   cursor: pointer;
   display: flex;
@@ -135,9 +139,13 @@ div.TopBar__alerts {
   &:focus {
     outline: none;
   }
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
 }
 
-div.TopBar__alertsDisabled {
+div.alertsDisabled {
   cursor: default;
 
   &:hover {
@@ -149,34 +157,34 @@ div.TopBar__alertsDisabled {
   }
 }
 
-.TopBar__alertsDark {
+.alertsDark {
   background-color: @color-primary-light;
 }
 
-.TopBar__alerts-container {
+.alertsContainer {
   display: flex;
-  padding-left: 1.5rem;
+  padding-left: @size-24;
 
   @media @breakpoint-mobile-extra-small {
-    padding-left: 1rem;
+    padding-left: @size-16;
   }
 }
 
-.TopBar__alert-icon {
+.alertIcon {
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin-right: 1.8rem;
-  width: 1.25rem;
+  width: @size-20;
 
   @media @breakpoint-mobile-extra-small {
-    margin-right: 1rem;
+    margin-right: @size-16;
   }
 }
 
-div.TopBar__tooltip {
-  margin-top: -1rem !important;
-  padding: 0.75rem 0.75rem 0.5rem !important;
+div.tooltip {
+  margin-top: -@size-16 !important;
+  padding: @size-12 @size-12 @size-8 !important;
 
   &::before {
     margin-left: -0.5625rem !important;
@@ -187,35 +195,27 @@ div.TopBar__tooltip {
 
     color: @color-neutral;
     line-height: normal;
-    margin-bottom: 0.125rem;
+    margin-bottom: 2px;
   }
 
   > p {
     color: @color-secondary-text;
     font-size: @size-12;
     line-height: normal;
-    margin-bottom: 0.5rem;
+    margin-bottom: @size-8;
   }
 }
 
-.TopBar__tooltip-denomination {
+.tooltip-denomination {
   font-size: @size-9;
 }
 
 @media @breakpoint-mobile {
-  .TopBar__alerts {
-    display: none;
-  }
-
-  .TopBar__rightContent {
-    flex: unset;
-  }
-
-  .TopBar__regular-stats {
+  .regularStats {
     border: 0;
   }
 
-  .TopBar__hideForSmallScreens {
+  .hideForSmallScreens {
     display: none !important;
   }
 }

@@ -6,7 +6,6 @@ import { withRouter } from "react-router-dom";
 import App from "modules/app/components/app/app";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
-import { selectCoreStats } from "modules/account/selectors/core-stats";
 import {
   IS_MOBILE,
   IS_MOBILE_SMALL,
@@ -19,14 +18,11 @@ import {
   selectCategoriesState,
   selectConnectionState,
   selectEnvState,
-  selectIsLogged,
   selectIsMobile,
-  selectIsMobileSmall,
   selectLoginAccountState,
   selectModal,
   selectUniverseState,
-  selectUrlState,
-  selectSidebarStatus
+  selectUrlState
 } from "src/select-state";
 import { RewriteUrlParams } from "src/modules/app/hocs/rewrite-url-params";
 import { windowRef } from "src/utils/window-ref";
@@ -44,18 +40,16 @@ const mapStateToProps = state => ({
   blockchain: selectBlockchainState(state),
   categories: selectCategoriesState(state),
   connection: selectConnectionState(state),
-  coreStats: selectCoreStats(state),
   env: selectEnvState(state),
-  isLogged: selectIsLogged(state),
+  isLogged: state.authStatus.isLogged,
   isMobile: selectIsMobile(state),
-  isMobileSmall: selectIsMobileSmall(state),
   loginAccount: selectLoginAccountState(state),
   modal: selectModal(state),
   alerts: selectInfoAlertsAndSeenCount(state),
   universe: selectUniverseState(state),
   url: selectUrlState(state),
   useWeb3Transport: isGlobalWeb3(),
-  sidebarStatus: selectSidebarStatus(state)
+  sidebarStatus: state.sidebarStatus
 });
 
 const mapDispatchToProps = dispatch => ({

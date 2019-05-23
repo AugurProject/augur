@@ -13,18 +13,14 @@ interface LogoState {
 }
 
 class LoadingLogo extends Component<LogoProps, LogoState> {
-  propTypes = {
-    isLoading: PropTypes.bool.isRequired
-  };
-
   state: LogoState = {
     loading: this.props.isLoading
   }
 
-  componentWillReceiveProps(newProps: LogoProps) {
-    if (newProps.isLoading) {
+  componentWillReceiveProps({ isLoading: loading }: LogoProps) {
+    if (loading) {
       this.setState({
-        loading: newProps.isLoading
+        loading
       });
     }
   }

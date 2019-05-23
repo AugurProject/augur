@@ -13,9 +13,7 @@ export const selectEnvState = state => state.env;
 export const selectFavoritesState = state => state.favorites;
 export const selectGasPriceInfo = state => state.gasPriceInfo;
 export const selectReportingWindowStats = state => state.reportingWindowStats;
-export const selectIsLogged = state => state.authStatus.isLogged;
 export const selectIsMobile = state => state.appStatus.isMobile;
-export const selectIsMobileSmall = state => state.appStatus.isMobileSmall;
 export const selectLoginAccountState = state => state.loginAccount;
 export const selectLoginAccountTotalsState = state =>
   state.loginAccount.tradingPositionsTotal;
@@ -37,7 +35,6 @@ export const selectMarketTradingHistoryState = state =>
 export const selectReportsState = state => state.reports;
 export const selectSelectedMarketsSubsetState = state =>
   state.selectedMarketsSubset;
-export const selectSidebarStatus = state => state.sidebarStatus;
 export const selectSmallestPositionsState = state => state.smallestPositions;
 export const selectUniverseState = state => state.universe;
 export const selectUrlState = state => state.url;

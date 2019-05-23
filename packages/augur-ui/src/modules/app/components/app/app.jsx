@@ -14,7 +14,7 @@ import { tween } from "shifty";
 import { isEqual } from "lodash";
 
 import Modal from "modules/modal/containers/modal-view";
-import TopBar from "modules/app/components/top-bar/top-bar";
+import TopBar from "modules/app/containers/top-bar";
 import ForkingAlert from "modules/forking/components/forking-alert/forking-alert";
 import AccountInnerNav from "modules/app/components/inner-nav/account-inner-nav";
 import SideNav from "modules/app/components/side-nav/side-nav";
@@ -81,13 +81,11 @@ const navTypes = {
 export default class AppView extends Component {
   static propTypes = {
     blockchain: PropTypes.object.isRequired,
-    coreStats: PropTypes.array.isRequired,
     env: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     initAugur: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
-    isMobileSmall: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
     loginAccount: PropTypes.object.isRequired,
     modal: PropTypes.object.isRequired,
@@ -469,7 +467,6 @@ export default class AppView extends Component {
   render() {
     const {
       blockchain,
-      coreStats,
       history,
       isLogged,
       isMobile,
@@ -478,7 +475,6 @@ export default class AppView extends Component {
       modal,
       universe,
       finalizeMarket,
-      isMobileSmall,
       sidebarStatus,
       updateMobileMenuState,
       alerts
@@ -506,7 +502,7 @@ export default class AppView extends Component {
 
       tagsMargin = 110 * subMenu.scalar;
     }
-    // console.log(coreStats);
+
     return (
       <main>
         <Helmet
@@ -552,14 +548,7 @@ export default class AppView extends Component {
               onClick={this.mainSectionClickHandler}
               role="presentation"
             >
-              <TopBar
-                isMobileSmall={isMobileSmall}
-                isLogged={isLogged}
-                stats={coreStats}
-                unseenCount={unseenCount}
-                toggleAlerts={this.toggleAlerts}
-                alertsVisible={isLogged && sidebarStatus.isAlertsVisible}
-              />
+              <TopBar />
             </section>
             <AlertsContainer
               alertsVisible={isLogged && sidebarStatus.isAlertsVisible}
