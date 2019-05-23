@@ -117,8 +117,8 @@ export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.
 
       const nonZeroPositionOutcomePls = _.filter(sortedOutcomes, (outcome) => !outcome.position.eq(ZERO));
       const minimumPosition = new BigNumber(BigNumberJS.minimum(..._.map(nonZeroPositionOutcomePls, "position").map((p) =>new BigNumberJS(p.toString()))).toString());
-      const adjustedOutcomePls = _.map(nonZeroPositionOutcomePls, (outcomePl) => Object.assign({}, outcomePl, { netPosition: outcomePl.netPosition.sub(minimumPosition) }));
-      const shortOutcome = Object.assign({}, _.first(outcomesWithZeroPosition)!, { netPosition: minimumPosition.mul(new BigNumber(-1)) });
+      const adjustedOutcomePls = _.map(nonZeroPositionOutcomePls, (outcomePl) => Object.assign({}, outcomePl, { netPosition: outcomePl.netPosition.minus(minimumPosition) }));
+      const shortOutcome = Object.assign({}, _.first(outcomesWithZeroPosition)!, { netPosition: minimumPosition.multipliedBy(new BigNumber(-1)) });
 
       if (marketType === "categorical") return _.concat(adjustedOutcomePls, shortOutcome);
       if (shortOutcome.outcome === 1) {

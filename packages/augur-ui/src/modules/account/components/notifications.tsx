@@ -38,7 +38,6 @@ import {
 
 export interface NotificationsProps extends RouteComponentProps {
   notifications: Array<Notification>;
-  isMobile: boolean;
   updateReadNotifications: Function;
   getReportingFees: Function;
   currentAugurTimestamp: number;
@@ -318,10 +317,9 @@ class Notifications extends React.Component<
 
     const labelContent = (
       <div>
-        {!this.props.isMobile &&
-          newNotificationCount > 0 && (
-            <PillLabel label={`${newNotificationCount} ${NEW}`} />
-          )}
+        {newNotificationCount > 0 && (
+          <PillLabel label={`${newNotificationCount} ${NEW}`} hideOnMobile />
+        )}
       </div>
     );
 

@@ -15,7 +15,7 @@ beforeEach(async () => {
   await mock.wipeDB();
 });
 
-let augur: Augur<ethers.utils.BigNumber>;
+let augur: Augur;
 let ethersProvider: EthersProvider;
 beforeAll(async () => {
   const {provider, dependencies, addresses} = await deployContracts(ACCOUNTS, compilerOutput);

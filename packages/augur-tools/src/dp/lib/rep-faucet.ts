@@ -8,7 +8,7 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 // var connectionEndpoints = require("../connection-endpoints");
 // var debugOptions = require("./debug-options");
 
-export async function repFaucet(augur:Augur<BigNumber>, amount:BigNumber) {
+export async function repFaucet(augur:Augur, amount:BigNumber) {
   return augur.contracts.cash.faucet(amount);
 }
 

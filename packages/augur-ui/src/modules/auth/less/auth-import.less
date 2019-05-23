@@ -1,6 +1,6 @@
 .auth-import-form {
   .auth-import-file {
-    z-index: 30;
+    z-index: @mask-above;
 
     &.input-error {
       border-color: @color-red;
@@ -11,7 +11,7 @@
     border-top: 0;
     height: 0;
     opacity: 0;
-    z-index: 20;
+    z-index: @mask;
   }
 
   .auth-import-actions {
@@ -19,6 +19,6 @@
     flex-direction: column;
     height: 0;
     opacity: 0;
-    z-index: 10;
+    z-index: @above-all-content;
   }
 }

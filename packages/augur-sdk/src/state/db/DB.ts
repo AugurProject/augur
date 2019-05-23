@@ -27,14 +27,14 @@ import {
 } from "../logs/types";
 
 
-export class DB<TBigNumber> {
+export class DB {
   private networkId: number;
   private blockstreamDelay: number;
   private trackedUsers: TrackedUsers;
   private genericEventNames: Array<string>;
   private userSpecificEvents: Array<UserSpecificEvent>;
-  private syncableDatabases: { [dbName: string]: SyncableDB<TBigNumber> } = {};
-  private metaDatabase: MetaDB<TBigNumber>; // TODO Remove this if derived DBs are not used.
+  private syncableDatabases: { [dbName: string]: SyncableDB } = {};
+  private metaDatabase: MetaDB; // TODO Remove this if derived DBs are not used.
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
   public readonly pouchDBFactory: PouchDBFactoryType;
   public syncStatus: SyncStatus;
@@ -54,10 +54,10 @@ export class DB<TBigNumber> {
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
    * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
-   * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
+   * @returns {Promise<DB>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB<TBigNumber>> {
-    const dbController = new DB<TBigNumber>(pouchDBFactory);
+  public static async createAndInitializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+    const dbController = new DB(pouchDBFactory);
     await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents, blockAndLogStreamerListener);
     return dbController;
   }
@@ -105,14 +105,14 @@ export class DB<TBigNumber> {
           },
         };
       }
-      new SyncableDB<TBigNumber>(this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
+      new SyncableDB(this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
     }
     // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
     // Also update topics/indexes for user-specific events once these changes are made to the contracts.
     for (let trackedUser of trackedUsers) {
       await this.trackedUsers.setUserTracked(trackedUser);
       for (let userSpecificEvent of userSpecificEvents) {
-        new UserSyncableDB<TBigNumber>(this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
+        new UserSyncableDB(this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
       }
     }
 
@@ -130,9 +130,9 @@ export class DB<TBigNumber> {
   /**
    * Called from SyncableDB constructor once SyncableDB is successfully created.
    *
-   * @param {SyncableDB<TBigNumber>} db dbController that utilizes the SyncableDB
+   * @param {SyncableDB} db dbController that utilizes the SyncableDB
    */
-  public notifySyncableDBAdded(db: SyncableDB<TBigNumber>): void {
+  public notifySyncableDBAdded(db: SyncableDB): void {
     this.syncableDatabases[db.dbName] = db;
   }
 
@@ -143,11 +143,11 @@ export class DB<TBigNumber> {
   /**
    * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
    *
-   * @param {Augur<TBigNumber>} augur Augur object with which to sync
+   * @param {Augur} augur Augur object with which to sync
    * @param {number} chunkSize Number of blocks to retrieve at a time when syncing logs
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
    */
-  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
+  public async sync(augur: Augur, chunkSize: number, blockstreamDelay: number): Promise<void> {
     let dbSyncPromises = [];
     const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
 
@@ -225,7 +225,7 @@ export class DB<TBigNumber> {
    *
    * @param {string} dbName The name of the database
    */
-  public getSyncableDatabase(dbName: string): SyncableDB<TBigNumber> {
+  public getSyncableDatabase(dbName: string): SyncableDB {
     return this.syncableDatabases[dbName];
   }
 

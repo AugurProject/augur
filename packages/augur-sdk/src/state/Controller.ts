@@ -4,11 +4,11 @@ import { DB } from "./db/DB";
 import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
 const settings = require("./settings.json");
 
-export class Controller<TBigNumber> {
-  private db: DB<TBigNumber>;
+export class Controller {
+  private db: DB;
 
   public constructor(
-    private augur: Augur<TBigNumber>,
+    private augur: Augur,
     private networkId: number,
     private blockstreamDelay: number,
     private defaultStartSyncBlockNumber: number,
