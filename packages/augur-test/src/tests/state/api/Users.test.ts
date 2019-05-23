@@ -8,10 +8,9 @@ import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import {API} from "@augurproject/sdk/build/state/api/API";
 import {DB} from "@augurproject/sdk/build/state/db/DB";
 import { convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, numTicksToTickSize } from "@augurproject/sdk";
-import { GenericAugurInterfaces } from "@augurproject/core";
-import { ethers } from "ethers";
-import { stringTo32ByteHex } from "../../../libs/Utils";
+import { ContractInterfaces } from "@augurproject/core";
 import { BigNumber } from "bignumber.js";
+import { stringTo32ByteHex } from "../../../libs/Utils";
 import * as _ from "lodash";
 
 const ZERO_BYTES = stringTo32ByteHex("");
@@ -51,7 +50,7 @@ export interface UTPTradeData extends TradeData {
 }
 
 export interface PLTradeData extends TradeData {
-    market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>;
+    market: ContractInterfaces.Market;
     timestamp: number;
     realizedPL: number;
     unrealizedPL: number;
@@ -59,8 +58,8 @@ export interface PLTradeData extends TradeData {
 
 const mock = makeDbMock();
 
-let db: DB<any>;
-let api: API<any>;
+let db: DB;
+let api: API;
 let john: ContractAPI;
 let mary: ContractAPI;
 
@@ -70,7 +69,7 @@ beforeAll(async () => {
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
   db = await mock.makeDB(john.augur, ACCOUNTS);
-  api = new API<any>(john.augur, db);
+  api = new API(john.augur, db);
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
 }, 120000);
@@ -101,7 +100,7 @@ test("State API :: Users :: getProfitLoss & getProfitLossSummary ", async () => 
             "price": .3,
             "realizedPL": 0,
             "market": market1,
-            "timestamp": startTime.add(day * 2).toNumber(),
+            "timestamp": startTime.plus(day * 2).toNumber(),
             "unrealizedPL": -2,
         }, {
             "direction": LONG,
@@ -110,7 +109,7 @@ test("State API :: Users :: getProfitLoss & getProfitLossSummary ", async () => 
             "price": .3,
             "realizedPL": 0,
             "market": market2,
-            "timestamp": startTime.add(30 * day).toNumber(),
+            "timestamp": startTime.plus(30 * day).toNumber(),
             "unrealizedPL": -2,
         }, {
             "direction": SHORT,
@@ -119,13 +118,13 @@ test("State API :: Users :: getProfitLoss & getProfitLossSummary ", async () => 
             "price": .4,
             "realizedPL": .5,
             "market": market2,
-            "timestamp": startTime.add(32 * day).toNumber(),
+            "timestamp": startTime.plus(32 * day).toNumber(),
             "unrealizedPL": -1.5,
         }
     ];
 
     for (let trade of trades) {
-        await john.setTimestamp(new ethers.utils.BigNumber(trade.timestamp));
+        await john.setTimestamp(new BigNumber(trade.timestamp));
         await doTrade(trade, trade.market);
     }
 
@@ -444,7 +443,7 @@ test("State API :: Users :: getUserTradingPositions scalar", async () => {
     await processTrades(trades, market, john.augur.contracts.universe.address, new BigNumber(50), new BigNumber(250));
 }, 60000);
 
-async function processTrades(tradeData: Array<UTPTradeData>, market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, universe: string, minPrice: BigNumber = DEFAULT_MIN_PRICE, maxPrice: BigNumber = DEFAULT_DISPLAY_RANGE) : Promise<void> {
+async function processTrades(tradeData: Array<UTPTradeData>, market: ContractInterfaces.Market, universe: string, minPrice: BigNumber = DEFAULT_MIN_PRICE, maxPrice: BigNumber = DEFAULT_DISPLAY_RANGE) : Promise<void> {
     for (let trade of tradeData) {
         await doTrade(trade, market, minPrice, maxPrice);
 
@@ -469,20 +468,20 @@ async function processTrades(tradeData: Array<UTPTradeData>, market: GenericAugu
     };
 }
 
-async function doTrade(trade: TradeData, market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>, minPrice: BigNumber = DEFAULT_MIN_PRICE, maxPrice: BigNumber = DEFAULT_DISPLAY_RANGE) : Promise<void> {
-    const numTicks = new BigNumber((await market.getNumTicks_()).toNumber());
-        const price = new BigNumber(trade.price);
-        const tickSize = numTicksToTickSize(numTicks, minPrice.multipliedBy(10**18), maxPrice.multipliedBy(10**18));
-        const quantity = convertDisplayAmountToOnChainAmount(new BigNumber(trade.quantity), tickSize);
+async function doTrade(trade: TradeData, market: ContractInterfaces.Market, minPrice: BigNumber = DEFAULT_MIN_PRICE, maxPrice: BigNumber = DEFAULT_DISPLAY_RANGE) : Promise<void> {
+    const numTicks = await market.getNumTicks_();
+    const price = new BigNumber(trade.price);
+    const tickSize = numTicksToTickSize(numTicks, minPrice.multipliedBy(10**18), maxPrice.multipliedBy(10**18));
+    const quantity = convertDisplayAmountToOnChainAmount(new BigNumber(trade.quantity), tickSize);
 
-        const onChainLongPrice = convertDisplayPriceToOnChainPrice(price, minPrice, tickSize);
-        const onChainShortPrice = numTicks.minus(onChainLongPrice);
-        const direction = trade.direction === SHORT ? BID : ASK;
-        const longCost = quantity.multipliedBy(onChainLongPrice);
-        const shortCost = quantity.multipliedBy(onChainShortPrice);
-        const fillerCost = trade.direction === ASK ? longCost : shortCost;
+    const onChainLongPrice = convertDisplayPriceToOnChainPrice(price, minPrice, tickSize);
+    const onChainShortPrice = numTicks.minus(onChainLongPrice);
+    const direction = trade.direction === SHORT ? BID : ASK;
+    const longCost = quantity.multipliedBy(onChainLongPrice);
+    const shortCost = quantity.multipliedBy(onChainShortPrice);
+    const fillerCost = trade.direction === ASK ? longCost : shortCost;
 
-        const orderID = await john.placeOrder(market.address, new ethers.utils.BigNumber(direction), new ethers.utils.BigNumber(quantity.toFixed()), new ethers.utils.BigNumber(onChainLongPrice.toFixed()), new ethers.utils.BigNumber(trade.outcome), ZERO_BYTES, ZERO_BYTES, ZERO_BYTES);
+    const orderID = await john.placeOrder(market.address, new BigNumber(direction), quantity, onChainLongPrice, new BigNumber(trade.outcome), ZERO_BYTES, ZERO_BYTES, ZERO_BYTES);
 
-        await mary.fillOrder(orderID, new ethers.utils.BigNumber(fillerCost.toFixed()), new ethers.utils.BigNumber(quantity.toFixed()), "");
+    await mary.fillOrder(orderID, fillerCost, quantity, "");
 }

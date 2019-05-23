@@ -44,7 +44,7 @@ export async function getTradingHistory(db: Knex, augur: Augur, params: t.TypeOf
       selfFilled: trade.creator === trade.filler,
       marketCreatorFees: trade.marketCreatorFees.toString(),
       reporterFees: trade.reporterFees.toString(),
-      settlementFees: new BigNumber(trade.reporterFees.toString()).add(new BigNumber(trade.marketCreatorFees.toString())).toString(),
+      settlementFees: new BigNumber(trade.reporterFees.toString()).plus(new BigNumber(trade.marketCreatorFees.toString())).toString(),
     });
   });
 }

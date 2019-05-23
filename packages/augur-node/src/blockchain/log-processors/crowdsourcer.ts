@@ -103,7 +103,7 @@ export async function processDisputeCrowdsourcerContributionLog(augur: Augur, lo
     });
     await db.insert(disputeToInsert).into("disputes");
     const result: { amountStaked: BigNumber } = await db("crowdsourcers").first("amountStaked").where("crowdsourcerId", log.disputeCrowdsourcer);
-    const amountStaked = result.amountStaked.add(new BigNumber(log.amountStaked)).toString();
+    const amountStaked = result.amountStaked.plus(new BigNumber(log.amountStaked)).toString();
     await db("crowdsourcers").update({ amountStaked }).where("crowdsourcerId", log.disputeCrowdsourcer);
     augurEmitter.emit(SubscriptionEventNames.DisputeCrowdsourcerContribution, Object.assign({},
       log,
@@ -119,7 +119,7 @@ export async function processDisputeCrowdsourcerContributionLogRemoval(augur: Au
       logIndex: log.logIndex,
     }).del();
     const result: { amountStaked: BigNumber } = await db("crowdsourcers").first("amountStaked").where("crowdsourcerId", log.disputeCrowdsourcer);
-    const amountStaked = result.amountStaked.sub(new BigNumber(log.amountStaked)).toString();
+    const amountStaked = result.amountStaked.minus(new BigNumber(log.amountStaked)).toString();
     await db("crowdsourcers").update({ amountStaked }).where("crowdsourcerId", log.disputeCrowdsourcer);
     augurEmitter.emit(SubscriptionEventNames.DisputeCrowdsourcerContribution, Object.assign({},
       log,
