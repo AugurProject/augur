@@ -9,6 +9,106 @@ import { ASKS, BIDS, BUY, SELL } from "modules/common-elements/constants";
 import Styles from "modules/market-charts/components/market-outcome--orders/market-outcome--orders.styles";
 import { isEmpty, isEqual } from "lodash";
 
+const OrderBookSide = (props) => {
+  const {
+      fixedPrecision,
+      pricePrecision,
+      orderBook,
+      updateSelectedOrderProperties,
+      hasOrders,
+      orderBookKeys,
+      toggle,
+      extend,
+      hide,
+      hoveredSide,
+      hoveredOrderIndex
+    } = props;
+
+  const orderBookAsks = orderBook.asks || [];
+  return (
+    <div
+      className={classNames(
+        Styles.MarketOutcomeOrderBook__Side,
+        Styles["MarketOutcomeOrderBook__side--asks"]
+      )}
+    >
+      <div
+        className={classNames(
+          Styles.MarketOutcomeOrderBook__container,
+          Styles["MarketOutcomeOrderBook__container--asks"]
+        )}
+        
+      >
+        {orderBookAsks.map((order, i) => (
+          <button
+            key={order.cumulativeShares}
+            className={classNames(
+              Styles.MarketOutcomeOrderBook__row,
+              Styles.MarketOutcomeOrderBook__rowPositive,
+              {
+                [Styles["MarketOutcomeOrderBook__row--head-bid"]]:
+                  i === orderBook.asks.length - 1,
+                [Styles["MarketOutcomeOrderBook__row--hover"]]:
+                  i === hoveredOrderIndex && hoveredSide === ASKS,
+                [Styles["MarketOutcomeOrderbook__row--hover-encompassed"]]:
+                  hoveredOrderIndex !== null &&
+                  hoveredSide === ASKS &&
+                  i > s.hoveredOrderIndex
+              }
+            )}
+            onMouseEnter={() => {
+              this.setState({
+                hoveredOrderIndex: i,
+                hoveredSide: ASKS
+              });
+            }}
+            onMouseLeave={() => {
+              this.setState({
+                hoveredOrderIndex: null,
+                hoveredSide: null
+              });
+            }}
+            onClick={() =>
+              updateSelectedOrderProperties({
+                orderPrice: order.price.value.toString(),
+                orderQuantity: order.cumulativeShares.toString(),
+                selectedNav: BUY,
+                selfTrade: order.mySize !== null
+              })
+            }
+          >
+            <div
+              className={classNames(
+                Styles.MarketOutcomeOrderBook__rowScale,
+                Styles.MarketOutcomeOrderBook__rowScaleNeg
+              )}
+              style={{ right: order.quantityScale + "%" }}
+            />
+            <div
+              className={Styles.MarketOutcomeOrderBook__RowItem_ask}
+              style={{ justifyContent: "flex-start" }}
+            >
+              <HoverValueLabel value={order.shares} />
+            </div>
+            <div
+              className={Styles.MarketOutcomeOrderBook__RowItem_ask}
+              style={{ justifyContent: "center" }}
+            >
+              <span>{order.price.value.toFixed(pricePrecision)}</span>
+            </div>
+            <div className={Styles.MarketOutcomeOrderBook__RowItem_ask}>
+              <span>
+                {order.mySize
+                  ? order.mySize.value.toFixed(fixedPrecision).toString()
+                  : "—"}
+              </span>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 export default class MarketOutcomeChartsOrders extends Component {
   static propTypes = {
     orderBook: PropTypes.object.isRequired,
@@ -17,14 +117,12 @@ export default class MarketOutcomeChartsOrders extends Component {
     updateSelectedOrderProperties: PropTypes.func.isRequired,
     hasOrders: PropTypes.bool.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
-    onMobileTradingPage: PropTypes.bool,
     toggle: PropTypes.func,
     extend: PropTypes.bool,
     hide: PropTypes.bool
   };
 
   static defaultProps = {
-    onMobileTradingPage: false,
     toggle: () => {},
     extend: false,
     hide: false,
@@ -63,7 +161,6 @@ export default class MarketOutcomeChartsOrders extends Component {
       updateSelectedOrderProperties,
       hasOrders,
       orderBookKeys,
-      onMobileTradingPage,
       toggle,
       extend,
       hide
@@ -73,11 +170,7 @@ export default class MarketOutcomeChartsOrders extends Component {
     const orderBookAsks = orderBook.asks || [];
 
     return (
-      <section
-        className={classNames(Styles.MarketOutcomeOrderBook, {
-          [Styles.MarketOutcomeOrderBook__trading]: onMobileTradingPage
-        })}
-      >
+      <section className={Styles.OrderBook}>
         <MarketOutcomeHeaderOrders
           title="Order Book"
           headers={["quantity", "price", "my quantity"]}
@@ -85,90 +178,7 @@ export default class MarketOutcomeChartsOrders extends Component {
           extended={extend}
           hide={hide}
         />
-        <div
-          className={classNames(
-            Styles.MarketOutcomeOrderBook__Side,
-            Styles["MarketOutcomeOrderBook__side--asks"]
-          )}
-        >
-          <div
-            className={classNames(
-              Styles.MarketOutcomeOrderBook__container,
-              Styles["MarketOutcomeOrderBook__container--asks"]
-            )}
-            ref={asks => {
-              this.asks = asks;
-            }}
-          >
-            {orderBookAsks.map((order, i) => (
-              <button
-                key={order.cumulativeShares}
-                className={classNames(
-                  Styles.MarketOutcomeOrderBook__row,
-                  Styles.MarketOutcomeOrderBook__rowPositive,
-                  {
-                    [Styles["MarketOutcomeOrderBook__row--head-bid"]]:
-                      i === orderBook.asks.length - 1,
-                    [Styles["MarketOutcomeOrderBook__row--hover"]]:
-                      i === s.hoveredOrderIndex && s.hoveredSide === ASKS,
-                    [Styles["MarketOutcomeOrderbook__row--hover-encompassed"]]:
-                      s.hoveredOrderIndex !== null &&
-                      s.hoveredSide === ASKS &&
-                      i > s.hoveredOrderIndex,
-                    [Styles.MarketOutcomeOrderBook__row__trading]: onMobileTradingPage
-                  }
-                )}
-                onMouseEnter={() => {
-                  this.setState({
-                    hoveredOrderIndex: i,
-                    hoveredSide: ASKS
-                  });
-                }}
-                onMouseLeave={() => {
-                  this.setState({
-                    hoveredOrderIndex: null,
-                    hoveredSide: null
-                  });
-                }}
-                onClick={() =>
-                  updateSelectedOrderProperties({
-                    orderPrice: order.price.value.toString(),
-                    orderQuantity: order.cumulativeShares.toString(),
-                    selectedNav: BUY,
-                    selfTrade: order.mySize !== null
-                  })
-                }
-              >
-                <div
-                  className={classNames(
-                    Styles.MarketOutcomeOrderBook__rowScale,
-                    Styles.MarketOutcomeOrderBook__rowScaleNeg
-                  )}
-                  style={{ right: order.quantityScale + "%" }}
-                />
-                <div
-                  className={Styles.MarketOutcomeOrderBook__RowItem_ask}
-                  style={{ justifyContent: "flex-start" }}
-                >
-                  <HoverValueLabel value={order.shares} />
-                </div>
-                <div
-                  className={Styles.MarketOutcomeOrderBook__RowItem_ask}
-                  style={{ justifyContent: "center" }}
-                >
-                  <span>{order.price.value.toFixed(pricePrecision)}</span>
-                </div>
-                <div className={Styles.MarketOutcomeOrderBook__RowItem_ask}>
-                  <span>
-                    {order.mySize
-                      ? order.mySize.value.toFixed(fixedPrecision).toString()
-                      : "—"}
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
+        <OrderBookSide {...this.props} hoveredSide={s.hoveredSide} hoveredOrderIndex={s.hoveredOrderIndex}/>
         {!hide && (
           <div className={Styles.MarketOutcomeOrderBook__Midmarket}>
             {hasOrders && (
@@ -212,8 +222,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                   [Styles["MarketOutcomeOrderbook__row--hover-encompassed"]]:
                     s.hoveredOrderIndex !== null &&
                     s.hoveredSide === BIDS &&
-                    i < s.hoveredOrderIndex,
-                  [Styles.MarketOutcomeOrderBook__row__trading]: onMobileTradingPage
+                    i < s.hoveredOrderIndex
                 })}
                 onMouseEnter={() => {
                   this.setState({
