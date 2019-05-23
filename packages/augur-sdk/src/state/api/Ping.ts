@@ -6,11 +6,11 @@ export interface Pong {
   response: string;
 }
 
-export class Ping<TBigNumber> {
+export class Ping {
   public static PingParams = t.type({});
 
   @Getter()
-  public static async ping<TBigNumber>(db: DB<TBigNumber>, params: t.TypeOf<typeof Ping.PingParams>): Promise<Pong> {
+  public static async ping(db: DB, params: t.TypeOf<typeof Ping.PingParams>): Promise<Pong> {
     return {
       response: "pong",
     };

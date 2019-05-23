@@ -1,4 +1,3 @@
-import {BigNumber as EthersBigNumber} from "ethers/utils";
 import {Augur} from "../Augur";
 import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
@@ -21,7 +20,7 @@ export async function start() {
   const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, eventLogDBRouter, Addresses.Augur, augur.events.getEventTopics);
   const pouchDBFactory = PouchDBFactory({});
   const networkId = Number(augur.networkId);
-  const controller = new Controller<EthersBigNumber>(augur, networkId, settings.blockstreamDelay, UploadBlockNumbers[networkId], [settings.testAccounts[0]], pouchDBFactory, blockAndLogStreamerListener);
+  const controller = new Controller(augur, networkId, settings.blockstreamDelay, UploadBlockNumbers[networkId], [settings.testAccounts[0]], pouchDBFactory, blockAndLogStreamerListener);
 
   console.log("Starting controller");
   return controller.run();

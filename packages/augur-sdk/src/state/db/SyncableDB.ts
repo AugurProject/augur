@@ -23,7 +23,7 @@ export interface Document extends BaseDocument {
 /**
  * Stores event logs for non-user-specific events.
  */
-export class SyncableDB<TBigNumber> extends AbstractDB {
+export class SyncableDB extends AbstractDB {
   protected eventName: string;
   protected contractName: string; // TODO Remove if unused
   private syncStatus: SyncStatus;
@@ -31,7 +31,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   private flexSearch?: FlexSearch;
 
   constructor(
-    db: DB<TBigNumber>,
+    db: DB,
     networkId: number,
     eventName: string,
     dbName: string = db.getDatabaseName(eventName),
@@ -64,7 +64,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     return this.db.getIndexes();
   }
 
-  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
+  public async sync(augur: Augur, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const goalBlock = highestAvailableBlockNumber - blockStreamDelay;
     while (highestSyncedBlockNumber < goalBlock) {
@@ -78,7 +78,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     // TODO Make any external calls as needed (such as pushing user's balance to UI)
   }
 
-  private async syncFullTextSearch<TBigNumber>(): Promise<void> {
+  private async syncFullTextSearch(): Promise<void> {
     if (this.flexSearch) {
       const previousDocumentEntries = await this.db.allDocs({include_docs: true});
 
@@ -215,7 +215,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     }
   }
 
-  protected async getLogs(augur: Augur<TBigNumber>, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {
+  protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {
     return augur.events.getLogs(this.eventName, startBlock, endBlock);
   }
 

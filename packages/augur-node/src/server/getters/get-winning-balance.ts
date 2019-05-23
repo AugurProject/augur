@@ -48,7 +48,7 @@ export async function getWinningBalance(db: Knex, augur: {}, params: t.TypeOf<ty
   const calculatedWinnings = _.map(winningPayoutRows, (winningPayoutRow) => {
     const payoutKey = `payout${winningPayoutRow.outcome}` as keyof PayoutRow<BigNumber>;
     const payout = winningPayoutRow[payoutKey] as BigNumber;
-    const winnings: BigNumber = payout.mul(winningPayoutRow.balance);
+    const winnings: BigNumber = payout.multipliedBy(winningPayoutRow.balance);
 
     return { marketId: winningPayoutRow.marketId, winnings: new BigNumber(roundToPrecision(winnings, 0, "", BigNumberJS.ROUND_DOWN)) };
   });

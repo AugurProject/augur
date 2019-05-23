@@ -3,7 +3,6 @@ import * as HTTPEndpoint from "./HTTPEndpoint";
 import * as WebsocketEndpoint from "./WebsocketEndpoint";
 import { API } from "./api/API";
 import { Augur } from "../Augur";
-import { BigNumber as EthersBigNumber } from "ethers/utils";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { DB } from "./db/DB";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
@@ -21,7 +20,7 @@ export async function run() {
 
   const pouchDBFactory = PouchDBFactory({});
 
-  const db = new DB<EthersBigNumber>(pouchDBFactory);
+  const db = new DB(pouchDBFactory);
   const api = new API(augur, db);
   const endpointSettings = {} as EndpointSettings;
 

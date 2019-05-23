@@ -37,14 +37,14 @@ export class GenerateReplacementTypesForGenerics {
             ts.ScriptTarget.Latest
         );
 
-        // Import 'ethers'
-        const ethersIdentifier = ts.createIdentifier("ethers");
-        const ethersNamedImports = ts.createNamedImports([ts.createImportSpecifier(undefined, ethersIdentifier)]);
-        const ethersModuleName = ts.createStringLiteral("ethers");
-        const ethersImportClause = ts.createImportClause(undefined, ethersNamedImports);
-        statements.push(ts.createImportDeclaration(undefined, undefined, ethersImportClause, ethersModuleName));
+        // Import 'bignumber.js'
+        const bignumberIdentifier = ts.createIdentifier("BigNumber");
+        const bignumberNamedImports = ts.createNamedImports([ts.createImportSpecifier(undefined, bignumberIdentifier)]);
+        const bignumberModuleName = ts.createStringLiteral("bignumber.js");
+        const bignumberImportClause = ts.createImportClause(undefined, bignumberNamedImports);
+        statements.push(ts.createImportDeclaration(undefined, undefined, bignumberImportClause, bignumberModuleName));
 
-        const ethersBigNumberTypeNode = ts.createTypeReferenceNode("ethers.utils.BigNumber", undefined);
+        const bignumberBigNumberTypeNode = ts.createTypeReferenceNode("BigNumber", undefined);
 
         // GenericContractInterface file import.
         const genericFileName = path.parse(genericFilePath).name;
@@ -63,7 +63,7 @@ export class GenerateReplacementTypesForGenerics {
         this.nodesToAlias.forEach((t) => {
             if(t.name) {
                 const r = ts.createPropertyAccess(sourceFileNamespaceIdentifier, t.name);
-                const i = ts.createExpressionWithTypeArguments([ethersBigNumberTypeNode], r);
+                const i = ts.createExpressionWithTypeArguments([bignumberBigNumberTypeNode], r);
                 const h = ts.createHeritageClause(ts.SyntaxKind.ExtendsKeyword, [i]);
                 const e = ts.createClassDeclaration(undefined, [
                     ts.createToken(ts.SyntaxKind.ExportKeyword)
