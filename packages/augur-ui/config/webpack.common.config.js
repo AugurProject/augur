@@ -117,7 +117,7 @@ module.exports = {
   plugins: [
     new DeadCodePlugin({
       // failOnHint: true, // (default: false), if true will stop the build if unused code/files are found.
-      patterns: ["src/**/*.(js|jsx|css)"],
+      patterns: ["src/**/*.(js|jsx|css|ts|tsx)"],
       exclude: [
         "**/*.(stories|spec).(js|jsx)",
         "**/*.test.js", // certain test files (executed by `yarn test`) live in the src/ dir and so DeadCodePlugin interprets them as dead even though they're not
