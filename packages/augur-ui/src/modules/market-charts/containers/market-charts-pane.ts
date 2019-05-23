@@ -5,7 +5,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { createBigNumber } from "src/utils/create-big-number";
 import { getMarketAgeInDays } from "utils/format-date";
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state: any, ownProps: any) => {
   const {
     currentTimestamp
   } = state;
@@ -23,12 +23,10 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => ({});
 
 const MarketChartsPaneContainer = withRouter(
   connect(
-    mapStateToProps,
-    mapDispatchToProps
+    mapStateToProps
   )(MarketChartsPane)
 );
 

@@ -730,7 +730,7 @@ export const MovementLabel = (props: MovementLabelProps) => {
   );
 };
 
-export const PillLabel = (props: PillLabelProps) => (
+export const PillLabel = ({ label, hideOnMobile }: PillLabelProps) => (
   <span className={classNames(Styles.PillLabel, {[Styles.HideOnMobile]: props.hideOnMobile})}>{props.label}</span>
 );
 
