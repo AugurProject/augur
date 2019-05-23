@@ -38,7 +38,7 @@ export default class MarketTradeHistory extends Component {
     } = this.props;
 
     return (
-      <section className={Styles.MarketTradeHistory__container}>
+      <section className={Styles.TradeHistory}>
         <MarketOutcomeHeaderOrders
           title="Trade History"
           headers={["quantity", "price", "time"]}
@@ -46,7 +46,7 @@ export default class MarketTradeHistory extends Component {
           extended={extend}
           hide={hide}
         />
-        <div className={Styles.MarketTradeHistory__table__data}>
+        <div>
           {groupedTradeHistory &&
             Object.keys(groupedTradeHistory).map((date, index) => (
               <div key={index}>

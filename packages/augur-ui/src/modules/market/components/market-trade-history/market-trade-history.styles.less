@@ -1,6 +1,6 @@
 @import (reference) "~assets/styles/shared";
 
-.MarketTradeHistory__container {
+.TradeHistory {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -9,18 +9,14 @@
   @media @breakpoint-mobile {
     max-height: 400px;
   }
-}
 
-.MarketTradeHistory__heading {
-  align-items: center;
-  background-color: @color-theme-primary;
-  border-bottom: 1px solid @color-extra-darkpurple;
-  display: flex;
-  font-size: 16px;
-  justify-content: space-between;
-  max-height: inherit;
-  padding: 18px 24px;
-  width: 100%;
+  > div {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: overlay;
+    overflow-y: auto;
+  }
 }
 
 .MarketTradeHistory__table {
@@ -29,26 +25,6 @@
   top: 0;
   width: 100%;
   z-index: @above-all-content;
-}
-
-.MarketTradeHistory__table-header {
-  background-color: @color-theme-primary;
-  color: @color-neutral;
-  display: flex;
-  font-size: @font-size-small;
-  justify-content: space-between;
-  padding: 0.5625rem 1.5rem 0.5625rem 1.875rem;
-  width: 100%;
-
-  > li {
-    &:first-child {
-      padding-right: 0.8rem;
-    }
-
-    &:nth-child(2) {
-      padding-right: 2rem;
-    }
-  }
 }
 
 .MarketTradeHistory__table__trade__data {
@@ -132,14 +108,6 @@
   background-color: @color-theme-primary;
   display: table;
   width: 100%;
-}
-
-.MarketTradeHistory__table__data {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow: overlay;
-  overflow-y: auto;
 }
 
 .MarketTradeHistory__trade__indicatorDown,
