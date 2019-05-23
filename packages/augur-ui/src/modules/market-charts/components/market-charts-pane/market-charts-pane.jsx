@@ -101,8 +101,6 @@ export default class MarketChartsPane extends Component {
               <MarketOutcomesChart
                 marketId={marketId}
                 selectedOutcome={selectedOutcome}
-                pricePrecision={4}
-                daysPassed={daysPassed}
               />
             </ModulePane>
             <ModulePane label="Candlesticks">
