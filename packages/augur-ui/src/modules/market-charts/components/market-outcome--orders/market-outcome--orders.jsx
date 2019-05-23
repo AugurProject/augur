@@ -21,7 +21,8 @@ const OrderBookSide = (props) => {
       extend,
       hide,
       hoveredSide,
-      hoveredOrderIndex
+      hoveredOrderIndex,
+      setHovers
     } = props;
 
   const orderBookAsks = orderBook.asks || [];
@@ -53,21 +54,11 @@ const OrderBookSide = (props) => {
                 [Styles["MarketOutcomeOrderbook__row--hover-encompassed"]]:
                   hoveredOrderIndex !== null &&
                   hoveredSide === ASKS &&
-                  i > s.hoveredOrderIndex
+                  i > hoveredOrderIndex
               }
             )}
-            onMouseEnter={() => {
-              this.setState({
-                hoveredOrderIndex: i,
-                hoveredSide: ASKS
-              });
-            }}
-            onMouseLeave={() => {
-              this.setState({
-                hoveredOrderIndex: null,
-                hoveredSide: null
-              });
-            }}
+            onMouseEnter={() => { setHovers(i, ASKS) } } 
+            onMouseLeave={() => { setHovers(null, null) } }
             onClick={() =>
               updateSelectedOrderProperties({
                 orderPrice: order.price.value.toString(),
@@ -137,10 +128,12 @@ export default class MarketOutcomeChartsOrders extends Component {
       hoveredOrderIndex: null,
       hoveredSide: null
     };
+
+    this.setHovers = this.setHovers.bind(this);
   }
 
   componentDidMount() {
-    this.asks.scrollTop = this.asks.scrollHeight;
+    //this.asks.scrollTop = this.asks.scrollHeight;
   }
 
   componentDidUpdate(prevProps) {
@@ -149,8 +142,15 @@ export default class MarketOutcomeChartsOrders extends Component {
       isEmpty(prevProps.orderBook.asks) &&
       !isEqual(prevProps.orderBook.asks, orderBook.asks)
     ) {
-      this.asks.scrollTop = this.asks.scrollHeight;
+     // this.asks.scrollTop = this.asks.scrollHeight;
     }
+  }
+
+  setHovers(hoveredOrderIndex, hoveredSide) {
+    this.setState({
+      hoveredOrderIndex: hoveredOrderIndex,
+      hoveredSide: hoveredSide
+    });
   }
 
   render() {
@@ -178,7 +178,7 @@ export default class MarketOutcomeChartsOrders extends Component {
           extended={extend}
           hide={hide}
         />
-        <OrderBookSide {...this.props} hoveredSide={s.hoveredSide} hoveredOrderIndex={s.hoveredOrderIndex}/>
+        <OrderBookSide {...this.props} setHovers={this.setHovers} hoveredSide={s.hoveredSide} hoveredOrderIndex={s.hoveredOrderIndex}/>
         {!hide && (
           <div className={Styles.MarketOutcomeOrderBook__Midmarket}>
             {hasOrders && (
