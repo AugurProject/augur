@@ -129,7 +129,7 @@ export async function processMarketCreatedLog(augur: Augur, log: FormattedEventL
       };
       const outcomesDataToInsert: Partial<OutcomesRow<string>> = formatBigNumberAsFixed<Partial<OutcomesRow<BigNumber>>, Partial<OutcomesRow<string>>>({
         marketId: log.market,
-        price: new BigNumber(log.prices[0]).add(new BigNumber(log.prices[1])).div(new BigNumber(getOutcomes.numOutcomes)),
+        price: new BigNumber(log.prices[0]).plus(new BigNumber(log.prices[1])).div(new BigNumber(getOutcomes.numOutcomes)),
         volume: ZERO,
         shareVolume: ZERO
       });

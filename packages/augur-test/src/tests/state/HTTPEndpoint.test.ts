@@ -3,7 +3,6 @@ import request from "supertest";
 import { API } from "@augurproject/sdk/build/state/api/API";
 import { Augur } from "@augurproject/sdk";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { ethers } from "ethers";
 import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../libs";
 
 const mock = makeDbMock();
@@ -12,8 +11,8 @@ beforeEach(async () => {
   await mock.wipeDB();
 });
 
-let augur: Augur<ethers.utils.BigNumber>;
-let db: DB<ethers.utils.BigNumber>;
+let augur: Augur;
+let db: DB;
 
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
