@@ -1138,6 +1138,57 @@
 					"type": "address"
 				},
 				{
+					"name": "_shareToken",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_numShares",
+					"type": "uint256"
+				},
+				{
+					"name": "_numPayoutTokens",
+					"type": "uint256"
+				},
+				{
+					"name": "_finalTokenBalance",
+					"type": "uint256"
+				},
+				{
+					"name": "_fees",
+					"type": "uint256"
+				}
+			],
+			"name": "logTradingProceedsClaimed",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
 					"name": "_target",
 					"type": "address"
 				},
@@ -1361,53 +1412,6 @@
 				}
 			],
 			"name": "logParticipationTokensRedeemed",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_shareToken",
-					"type": "address"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_numShares",
-					"type": "uint256"
-				},
-				{
-					"name": "_numPayoutTokens",
-					"type": "uint256"
-				},
-				{
-					"name": "_finalTokenBalance",
-					"type": "uint256"
-				},
-				{
-					"name": "_fees",
-					"type": "uint256"
-				}
-			],
-			"name": "logTradingProceedsClaimed",
 			"outputs": [
 				{
 					"name": "",
@@ -2515,6 +2519,11 @@
 					"indexed": false,
 					"name": "market",
 					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "_outcome",
+					"type": "uint256"
 				},
 				{
 					"indexed": false,

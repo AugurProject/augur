@@ -22,6 +22,7 @@ import {
 import { SortLimit } from "./types";
 import { Augur } from "../../index";
 import { ethers } from "ethers";
+import { toAscii } from "../utils/utils";
 
 import * as t from "io-ts";
 
@@ -118,10 +119,10 @@ export class Accounts<TBigNumber> {
     if (params.action === Action.CLAIM_WINNING_CROWDSOURCERS || params.action === Action.ALL) {
       const disputeCrowdsourcerRedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs({selector: {universe: params.universe, reporter: params.account}});
       let marketInfo = await Accounts.getMarketCreatedInfo(db, disputeCrowdsourcerRedeemedLogs);
-      allFormattedLogs = allFormattedLogs.concat(formatCrowdsourcerRedeemedLogs(disputeCrowdsourcerRedeemedLogs, marketInfo, params));
+      allFormattedLogs = allFormattedLogs.concat(await formatCrowdsourcerRedeemedLogs(disputeCrowdsourcerRedeemedLogs, augur, marketInfo, params));
       const initialReporterRedeemedLogs = await db.findInitialReporterRedeemedLogs({selector: {universe: params.universe, reporter: params.account}});
       marketInfo = await Accounts.getMarketCreatedInfo(db, initialReporterRedeemedLogs);
-      allFormattedLogs = allFormattedLogs.concat(formatCrowdsourcerRedeemedLogs(initialReporterRedeemedLogs, marketInfo, params));
+      allFormattedLogs = allFormattedLogs.concat(formatCrowdsourcerRedeemedLogs(initialReporterRedeemedLogs, augur, marketInfo, params));
       actionCoinComboIsValid = true;
     }
 
@@ -135,14 +136,14 @@ export class Accounts<TBigNumber> {
     if ((params.action === Action.DISPUTE || params.action === Action.ALL) && (params.coin === Coin.REP || params.coin === Coin.ALL)) {
       const disputeCrowdsourcerContributionLogs = await db.findDisputeCrowdsourcerContributionLogs({selector: {universe: params.universe, reporter: params.account}});
       const marketInfo = await Accounts.getMarketCreatedInfo(db, disputeCrowdsourcerContributionLogs);
-      allFormattedLogs = allFormattedLogs.concat(formatDisputeCrowdsourcerContributionLogs(disputeCrowdsourcerContributionLogs, marketInfo, params));
+      allFormattedLogs = allFormattedLogs.concat(await formatDisputeCrowdsourcerContributionLogs(disputeCrowdsourcerContributionLogs, augur, marketInfo, params));
       actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.INITIAL_REPORT || params.action === Action.ALL) && (params.coin === Coin.REP || params.coin === Coin.ALL)) {
       const initialReportSubmittedLogs = await db.findInitialReportSubmittedLogs({selector: {universe: params.universe, reporter: params.account}});
       const marketInfo = await Accounts.getMarketCreatedInfo(db, initialReportSubmittedLogs);
-      allFormattedLogs = allFormattedLogs.concat(formatInitialReportSubmittedLogs(initialReportSubmittedLogs, marketInfo, params));
+      allFormattedLogs = allFormattedLogs.concat(await formatInitialReportSubmittedLogs(initialReportSubmittedLogs, augur, marketInfo, params));
       actionCoinComboIsValid = true;
     }
 
@@ -191,19 +192,19 @@ function getOutcomeDescriptionFromOutcome(outcome: number, market: MarketCreated
     if (outcome === 0) {
       return "Invalid"
     } else if (outcome === 1) {
-      return market.outcomes[1].toString();
+      return new BigNumber(market.prices[0]).toString(10);
     } else {
-      return market.outcomes[2].toString();
+      return new BigNumber(market.prices[1]).toString(10);
     }
   } else {
-    return market.outcomes[new BigNumber(outcome).toNumber()];
+    return toAscii(market.outcomes[new BigNumber(outcome).toNumber()]);
   }
 }
 
-function getOutcomeFromPayoutNumerators(payoutNumerators: Array<string>, market: MarketCreatedLog): number {
+function getOutcomeFromPayoutNumerators(payoutNumerators: Array<ethers.utils.BigNumber>, market: MarketCreatedLog): number {
   let outcome = 0;
   for (; outcome < payoutNumerators.length; outcome++) {
-    if (new BigNumber(payoutNumerators[outcome]).toNumber() > 0) {
+    if (payoutNumerators[outcome].toNumber() > 0) {
       break;
     }
   }
@@ -226,7 +227,7 @@ function formatOrderFilledLogs(transactionLogs: Array<OrderEventLog>, marketInfo
           action: Action.BUY,
           coin: Coin.ETH,
           details: "Buy order",
-          fee: "", // TODO: reporterFees + marketCreatorFees
+          fee: "", // TODO reporterFees + marketCreatorFees
           marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
           outcome: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(),
           outcomeDescription: getOutcomeDescriptionFromOutcome(new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(), marketInfo[transactionLogs[i].market]),
@@ -248,7 +249,7 @@ function formatOrderFilledLogs(transactionLogs: Array<OrderEventLog>, marketInfo
           action: Action.SELL,
           coin: Coin.ETH,
           details: "Sell order",
-          fee: "", // TODO: reporterFees + marketCreatorFees
+          fee: "", // TODO reporterFees + marketCreatorFees
           marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
           outcome: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(),
           outcomeDescription: getOutcomeDescriptionFromOutcome(new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(), marketInfo[transactionLogs[i].market]),
@@ -296,13 +297,13 @@ function formatParticipationTokensRedeemedLogs(transactionLogs: Array<Participat
         coin: Coin.ETH,
         details: "Claimed reporting fees from participation tokens",
         fee: "0",
-        marketDescription: "", // TODO: look up market?
+        marketDescription: "",
         outcome: null,
         outcomeDescription: null,
-        price: "0", // TODO: look up market numTicks
+        price: "0",
         quantity: transactionLogs[i].attoParticipationTokens,
         timestamp: 0, // TODO?
-        total: "0",
+        total: transactionLogs[i].feePayoutShare,
         transactionHash: transactionLogs[i].transactionHash,
       }
     );
@@ -334,10 +335,11 @@ function formatTradingProceedsClaimedLogs(transactionLogs: Array<TradingProceeds
   return formattedLogs;
 }
 
-function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrowdsourcerRedeemedLog>|Array<InitialReporterRedeemedLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+async function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrowdsourcerRedeemedLog>|Array<InitialReporterRedeemedLog>, augur: Augur<ethers.utils.BigNumber>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
-    const outcome = getOutcomeFromPayoutNumerators(transactionLogs[i].payoutNumerators, marketInfo[transactionLogs[i].market]);
+    const reportingParticipant = augur.contracts.getReportingParticipant(transactionLogs[i].reporter);
+    const outcome = getOutcomeFromPayoutNumerators(await reportingParticipant.getPayoutNumerators_(), marketInfo[transactionLogs[i].market]);
     const outcomeDescription = getOutcomeDescriptionFromOutcome(outcome, marketInfo[transactionLogs[i].market]);
     if (params.coin === "ETH" || params.coin === "ALL") {
       formattedLogs.push(
@@ -387,7 +389,7 @@ function formatMarketCreatedLogs(transactionLogs: MarketCreatedLog[], params: t.
         action: Action.MARKET_CREATION,
         coin: Coin.ETH,
         details: "ETH validity bond for market creation",
-        fee: "", // TODO
+        fee: "", // TODO?
         marketDescription: transactionLogs[i].extraInfo && JSON.parse(transactionLogs[i].extraInfo).description ? JSON.parse(transactionLogs[i].extraInfo).description : "",
         outcome: null,
         outcomeDescription: null,
@@ -402,10 +404,11 @@ function formatMarketCreatedLogs(transactionLogs: MarketCreatedLog[], params: t.
   return formattedLogs;
 }
 
-function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<DisputeCrowdsourcerContributionLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+async function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<DisputeCrowdsourcerContributionLog>, augur: Augur<ethers.utils.BigNumber>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
-    const outcome = getOutcomeFromPayoutNumerators(transactionLogs[i].payoutNumerators, marketInfo[transactionLogs[i].market]);
+    const reportingParticipant = augur.contracts.getReportingParticipant(transactionLogs[i].reporter);
+    const outcome = getOutcomeFromPayoutNumerators(await reportingParticipant.getPayoutNumerators_(), marketInfo[transactionLogs[i].market]);
     const outcomeDescription = getOutcomeDescriptionFromOutcome(outcome, marketInfo[transactionLogs[i].market]);
     formattedLogs.push(
       {
@@ -427,10 +430,11 @@ function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<Disput
   return formattedLogs;
 }
 
-function formatInitialReportSubmittedLogs(transactionLogs: Array<InitialReportSubmittedLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+async function formatInitialReportSubmittedLogs(transactionLogs: Array<InitialReportSubmittedLog>, augur: Augur<ethers.utils.BigNumber>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
-    const outcome = getOutcomeFromPayoutNumerators(transactionLogs[i].payoutNumerators, marketInfo[transactionLogs[i].market]);
+    const reportingParticipant = augur.contracts.getReportingParticipant(transactionLogs[i].reporter);
+    const outcome = getOutcomeFromPayoutNumerators(await reportingParticipant.getPayoutNumerators_(), marketInfo[transactionLogs[i].market]);
     const outcomeDescription = getOutcomeDescriptionFromOutcome(outcome, marketInfo[transactionLogs[i].market]);
     formattedLogs.push(
       {
@@ -464,7 +468,7 @@ function formatCompleteSetsPurchasedLogs(transactionLogs: Array<CompleteSetsPurc
         marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
         outcome: null,
         outcomeDescription: null,
-        price: "0", // TODO: look up market numTicks
+        price: marketInfo[transactionLogs[i].market].numTicks,
         quantity: transactionLogs[i].numCompleteSets,
         timestamp: 0, // TODO?
         total: "0",
@@ -487,7 +491,7 @@ function formatCompleteSetsSoldLogs(transactionLogs: Array<CompleteSetsSoldLog>,
         marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
         outcome: null,
         outcomeDescription: null,
-        price: "0", // TODO: look up market numTicks
+        price: marketInfo[transactionLogs[i].market].numTicks,
         quantity: transactionLogs[i].numCompleteSets,
         timestamp: 0, // TODO?
         total: "0",

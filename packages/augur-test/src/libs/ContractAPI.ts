@@ -5,6 +5,7 @@ import { GenericAugurInterfaces, EthersFastSubmitWallet } from "@augurproject/co
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { AccountList, makeDependencies, makeSigner } from "./LocalAugur";
 import { ContractAddresses } from "@augurproject/artifacts";
+import { Universe } from "@augurproject/core/build/libraries/ContractInterfaces";
 
 const ETERNAL_APPROVAL_VALUE = new ethers.utils.BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
 
@@ -244,6 +245,16 @@ export class ContractAPI {
   public async getWinningReportingParticipant(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>): Promise<GenericAugurInterfaces.DisputeCrowdsourcer<ethers.utils.BigNumber>> {
     const reportingParticipantAddress = await market.getWinningReportingParticipant_();
     return this.augur.contracts.getReportingParticipant(reportingParticipantAddress);
+  }
+
+  public async buyParticipationTokens(disputeWindowAddress: string, amount: ethers.utils.BigNumber, sender: string=this.account): Promise<void> {
+    const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
+    await disputeWindow.buy(amount, {sender});
+  }
+
+  public async redeemParticipationTokens(disputeWindowAddress: string, account: string=this.account): Promise<void> {
+    const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
+    await disputeWindow.redeem(account);
   }
 
   public async getUniverse(market: GenericAugurInterfaces.Market<ethers.utils.BigNumber>): Promise<GenericAugurInterfaces.Universe<ethers.utils.BigNumber>> {
