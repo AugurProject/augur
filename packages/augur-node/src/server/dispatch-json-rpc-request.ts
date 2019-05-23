@@ -47,7 +47,9 @@ import {
   TradingHistoryParams,
   UnclaimedMarketCreatorFeesParams,
   UniverseInfoParams,
-  UserShareBalancesParams, UserTradingPositionsParams, WinningBalanceParams
+  UserShareBalancesParams,
+  UserTradingPositionsParams,
+  WinningBalanceParams
 } from "./getters";
 
 type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
