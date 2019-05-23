@@ -49,14 +49,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     {
       key: "tokensEscrowed",
       columnType: COLUMN_TYPES.VALUE,
-      hide: !oP.extendedView,
       value: tokensEscrowed,
       keyId: "openOrder-tokensEscrowed-" + openOrder.id
     },
     {
       key: "sharesEscrowed",
       columnType: COLUMN_TYPES.VALUE,
-      hide: !oP.extendedView,
       value: sharesEscrowed,
       keyId: "openOrder-sharesEscrowed-" + openOrder.id
     },
