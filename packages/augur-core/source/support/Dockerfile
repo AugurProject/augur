@@ -41,6 +41,8 @@ RUN apk add --no-cache \
 COPY --from=augur-build /usr/local/bin/solc /usr/local/bin/solc
 COPY --from=augur-build /augur/packages/augur-core/ /augur/packages/augur-core
 COPY --from=augur-build /augur/packages/augur-artifacts/ /augur/packages/augur-artifacts
+COPY --from=augur-build /augur/packages/contract-dependencies/ /augur/packages/contract-dependencies
+COPY --from=augur-build /augur/packages/contract-dependencies-ethers/ /augur/packages/contract-dependencies-ethers
 COPY --from=augur-build /augur/package.json /augur
 COPY --from=augur-build /augur/tsconfig.json /augur
 COPY --from=augur-build /augur/tsconfig-base.json /augur

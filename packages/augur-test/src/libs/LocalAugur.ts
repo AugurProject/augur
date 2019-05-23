@@ -72,7 +72,7 @@ export function makeDependencies(account: Account, provider: EthersProvider, sig
   return new ContractDependenciesEthers(provider, signer, account.publicKey);
 }
 
-export async function makeTestAugur(accounts: AccountList): Promise<Augur<ethers.utils.BigNumber>> {
+export async function makeTestAugur(accounts: AccountList): Promise<Augur> {
   const {provider, dependencies, addresses} = await deployContracts(accounts, compilerOutput);
   return Augur.create(provider, dependencies, addresses);
 }

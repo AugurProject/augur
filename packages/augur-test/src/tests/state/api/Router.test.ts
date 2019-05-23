@@ -11,8 +11,8 @@ beforeEach(async () => {
   await mock.wipeDB();
 });
 
-let augur: Augur<ethers.utils.BigNumber>;
-let db: DB<ethers.utils.BigNumber>;
+let augur: Augur;
+let db: DB;
 
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);

@@ -102,7 +102,7 @@ export function makeDbMock() {
       mockState.failCountdown = -1;
       mockState.alwaysFail = false;
     },
-    makeDB: (augur: Augur<ethers.utils.BigNumber>, accounts: AccountList) => DB.createAndInitializeDB<ethers.utils.BigNumber>(
+    makeDB: (augur: Augur, accounts: AccountList) => DB.createAndInitializeDB(
       constants.networkId,
       constants.blockstreamDelay,
       constants.defaultStartSyncBlockNumber,

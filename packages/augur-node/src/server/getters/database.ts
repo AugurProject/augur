@@ -112,7 +112,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithTime, outcome
       numOutcomes: row.numOutcomes,
       minPrice: row.minPrice,
       maxPrice: row.maxPrice,
-      cumulativeScale: row.maxPrice.sub(row.minPrice),
+      cumulativeScale: row.maxPrice.minus(row.minPrice),
       author: row.marketCreator,
       consensus: null,
       creationTime: row.creationTime,
@@ -286,7 +286,7 @@ export function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields:
           if (sumFields.indexOf(key) === -1 || typeof previousValue === "undefined" || value === null || typeof value === "undefined") {
             return [key, value];
           } else if (BigNumber.isBigNumber(value)) {
-            return [key, (value as BigNumber).add(result[key] as BigNumber)];
+            return [key, (value as BigNumber).plus(result[key] as BigNumber)];
           } else {
             return [key, value + previousValue];
           }
@@ -310,7 +310,7 @@ export function sumBy<T extends Dictionary, K extends keyof T>(rows: Array<T>, .
         if (sumFields.indexOf(key) === -1 || typeof previousValue === "undefined" || value === null || typeof value === "undefined") {
           return [key, value];
         } else if (BigNumber.isBigNumber(value)) {
-          return [key, (value as BigNumber).add(result[key] as BigNumber)];
+          return [key, (value as BigNumber).plus(result[key] as BigNumber)];
         } else if (typeof value === "number") {
           return [key, value + previousValue];
         }

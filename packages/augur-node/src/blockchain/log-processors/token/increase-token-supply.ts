@@ -11,7 +11,7 @@ export async function increaseTokenSupply(db: Knex, augur: Augur, token: Address
   if (oldSupply == null) {
     await db.insert({ token, supply: amount.toString() }).into("token_supply");
   } else {
-    const supply = oldSupply.supply.add(amount);
+    const supply = oldSupply.supply.plus(amount);
     await db.update({ supply: supply.toString() }).into("token_supply").where({ token });
   }
 }

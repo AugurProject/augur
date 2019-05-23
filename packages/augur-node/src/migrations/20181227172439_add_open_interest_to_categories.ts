@@ -19,7 +19,7 @@ async function backfillCategoryOpenInterestFromMarkets(knex: Knex, marketRows: A
     if (oi === undefined) {
       oiByCategory.set(r.category, new BigNumber(r.openInterest));
     } else {
-      oiByCategory.set(r.category, oi.add(new BigNumber(r.openInterest)));
+      oiByCategory.set(r.category, oi.plus(new BigNumber(r.openInterest)));
     }
   });
 

@@ -16,7 +16,7 @@ export async function increaseTokenBalance(db: Knex, augur: Augur, token: Addres
   if (oldBalance == null) {
     await db.insert({ owner, token, balance: balance.toString() }).into("balances");
   } else {
-    balance = oldBalance.balance.add(amount);
+    balance = oldBalance.balance.plus(amount);
     await db.update({ balance: balance.toString() }).into("balances").where({ token, owner });
   }
 
