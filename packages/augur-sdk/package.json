@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "ts-node -r tsconfig-paths/register ./src/state/Server",
-    "connect": "ts-node -r tsconfig-paths/register ./src/connector/http-connector.test",
+    "connect": "ts-node -r tsconfig-paths/register ./src/connector/ws-connector.test",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
     "test": "jest",
     "version": "yarn rebuild",
@@ -57,7 +57,6 @@
     "pouchdb": "7.0.0",
     "pouchdb-adapter-memory": "7.0.0",
     "pouchdb-find": "7.0.0",
-    "rxjs": "6.5.2",
     "speedomatic": "2.1.5",
     "ts-loader": "5.3.3",
     "webpack": "4.29.6",

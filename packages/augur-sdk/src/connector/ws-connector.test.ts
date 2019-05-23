@@ -1,6 +1,5 @@
 import { WebsocketConnector } from "./ws-connector";
 import { Markets } from "../state/api/Markets"
-import { WebsocketConnector } from "./ws-connector";
 
 (async function() {
   try {
