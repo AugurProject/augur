@@ -24,7 +24,7 @@ declare module "ganache-core" {
         mnemonic?: string;
         gasLimit?: number;
         db_path?: string;
-      db: Object;
+        db?: Object;
 
         fork?: boolean;
         blockTime?: number;
