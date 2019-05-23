@@ -1,6 +1,6 @@
 import * as GenericAugurInterfaces from "./libraries/GenericContractInterfaces";
-import * as EthersAugurInterfaces from "./libraries/ContractInterfaces";
+import * as ContractInterfaces from "./libraries/ContractInterfaces";
 export {
     GenericAugurInterfaces,
-    EthersAugurInterfaces
+    ContractInterfaces
 }

@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import {
   MovementLabel,
-  LinearPropertyLabel
+  LinearPropertyLabel,
 } from "modules/common-elements/labels";
 import { DaiLogoIcon, RepLogoIcon } from "modules/common-elements/icons";
 import {
@@ -11,7 +11,7 @@ import {
   TOTAL_FROZEN_FUNDS,
   REP_BALANCE,
   REP_STAKED,
-  TOTAL_ACCOUNT_VALUE_IN_ETH
+  TOTAL_ACCOUNT_VALUE_IN_ETH,
 } from "modules/common-elements/constants";
 
 import Styles from "modules/account/components/funds.styles";
