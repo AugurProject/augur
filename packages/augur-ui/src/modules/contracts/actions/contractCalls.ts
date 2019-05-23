@@ -6,7 +6,7 @@
 // put all calls to contracts here that need conversion from display values to onChain values
 import { augurSdk } from "services/augursdk";
 import { BigNumber } from "bignumber.js";
-import { formatRep, formatDai, formatEther } from "utils/format-number";
+import { formatAttoRep, formatAttoEth } from "utils/format-number";
 
 export function clearUserTx(): void {
   const Augur = augurSdk.get();
@@ -70,19 +70,19 @@ export async function getRepBalance(address: string) {
   const { contracts } = augurSdk.get();
   const RepToken = contracts.getReputationToken();
   const balance = await RepToken.balanceOf_(address);
-  return formatRep(balance);
+  return formatAttoRep(balance).formattedValue;
 }
 
 export async function getEthBalance(address: string) {
   const Augur = augurSdk.get();
   const balance = await Augur.provider.getBalance(address);
-  return { balance: formatEther(balance), address };
+  return { balance: formatAttoEth(balance).formattedValue, address };
 }
 
 export async function getDaiBalance(address: string) {
   const { contracts } = augurSdk.get();
   const balance = await contracts.cash.balanceOf_(address);
-  return formatDai(balance);
+  return formatAttoEth(balance).formattedValue;
 }
 
 export async function getDisputeThresholdForFork() {
