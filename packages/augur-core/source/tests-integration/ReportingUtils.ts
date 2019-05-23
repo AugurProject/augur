@@ -1,4 +1,5 @@
 import { ethers } from "ethers"
+import { BigNumber } from "bignumber.js";
 import { expect } from "chai";
 import { TestFixture } from './TestFixture';
 import { Market } from '../libraries/ContractInterfaces';
@@ -8,12 +9,12 @@ const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export class ReportingUtils {
     public async proceedToDesignatedReporting(fixture: TestFixture, market: Market) {
         const marketEndTime = await market.getEndTime_();
-        await fixture.setTimestamp(marketEndTime.add(new ethers.utils.BigNumber(1)));
+        await fixture.setTimestamp(marketEndTime.plus(new BigNumber(1)));
     }
 
     public async proceedToInitialReporting(fixture: TestFixture, market: Market) {
         const designatedReportingEndTime = await market.getDesignatedReportingEndTime_();
-        await fixture.setTimestamp(designatedReportingEndTime.add(new ethers.utils.BigNumber(1)));
+        await fixture.setTimestamp(designatedReportingEndTime.plus(new BigNumber(1)));
     }
 
     // TODO: Add `contributor` param, like `proceedToNextRound` function in Python tests
@@ -22,14 +23,14 @@ export class ReportingUtils {
         const marketEndTime = await market.getEndTime_();
         if (currentTimestamp.lt(marketEndTime)) {
             const marketDesignatedReportingEndTime = await market.getDesignatedReportingEndTime_();
-            await fixture.setTimestamp(marketDesignatedReportingEndTime.add(new ethers.utils.BigNumber(1)));
+            await fixture.setTimestamp(marketDesignatedReportingEndTime.plus(new BigNumber(1)));
         }
 
         const disputeWindowAddress = await market.getDisputeWindow_();
 
         const numberOfOutcomes = await market.getNumberOfOutcomes_();
         const numTicks = await market.getNumTicks_();
-        let payoutNumerators = new Array(numberOfOutcomes.toNumber()).fill(new ethers.utils.BigNumber(0));
+        let payoutNumerators = new Array(numberOfOutcomes.toNumber()).fill(new BigNumber(0));
         payoutNumerators[1] = numTicks;
 
         let winningPayoutHash = "";
@@ -39,8 +40,8 @@ export class ReportingUtils {
             console.log("Submitted initial report");
 
             // Buy and sell complete sets to generate reporting fees
-            let outcome = new ethers.utils.BigNumber(0);
-            let numShares = new ethers.utils.BigNumber(10000000000000);
+            let outcome = new BigNumber(0);
+            let numShares = new BigNumber(10000000000000);
             // Buy complete sets
             await fixture.buyCompleteSets(market, numShares);
             let numOwnedShares = await fixture.getNumSharesInMarket(market, outcome);
@@ -62,21 +63,21 @@ export class ReportingUtils {
         } else {
             const disputeWindow = await fixture.getDisputeWindow(market);
             const disputeWindowStartTime = await disputeWindow.getStartTime_();
-            await fixture.setTimestamp(disputeWindowStartTime.add(new ethers.utils.BigNumber(1)));
+            await fixture.setTimestamp(disputeWindowStartTime.plus(new BigNumber(1)));
             // This will also use the InitialReporter which is not a DisputeCrowdsourcer, but has the called function from abstract inheritance
             const winningReport = await fixture.getWinningReportingParticipant(market);
             winningPayoutHash = await winningReport.getPayoutDistributionHash_();
 
-            let chosenPayoutNumerators = new Array(numberOfOutcomes.toNumber()).fill(new ethers.utils.BigNumber(0));
+            let chosenPayoutNumerators = new Array(numberOfOutcomes.toNumber()).fill(new BigNumber(0));
             chosenPayoutNumerators[1] = numTicks;
             if (randomPayoutNumerators) {
                 // Set chosenPayoutNumerators[1] to number >= 0 and <= numTicks
-                chosenPayoutNumerators[1] = new ethers.utils.BigNumber(Math.floor(Math.random() * Math.floor(numTicks.toNumber() + 1)));
-                chosenPayoutNumerators[2] = numTicks.sub(chosenPayoutNumerators[1]);
+                chosenPayoutNumerators[1] = new BigNumber(Math.floor(Math.random() * Math.floor(numTicks.toNumber() + 1)));
+                chosenPayoutNumerators[2] = numTicks.minus(chosenPayoutNumerators[1]);
             } else {
                 const firstReportWinning = await market.derivePayoutDistributionHash_(payoutNumerators) === winningPayoutHash;
                 if (firstReportWinning) {
-                    chosenPayoutNumerators[1] = new ethers.utils.BigNumber(0);
+                    chosenPayoutNumerators[1] = new BigNumber(0);
                     chosenPayoutNumerators[2] = numTicks;
                 }
             }
@@ -85,7 +86,7 @@ export class ReportingUtils {
             const chosenPayoutHash = await market.derivePayoutDistributionHash_(chosenPayoutNumerators);
             const participantStake = await market.getParticipantStake_();
             const stakeInOutcome = await market.getStakeInOutcome_(chosenPayoutHash);
-            const amount = participantStake.mul(new ethers.utils.BigNumber(2)).sub(stakeInOutcome.mul(new ethers.utils.BigNumber(3)));
+            const amount = participantStake.multipliedBy(new BigNumber(2)).minus(stakeInOutcome.multipliedBy(new BigNumber(3)));
             await fixture.contribute(market, chosenPayoutNumerators, amount);
             console.log("Staked", amount.toString());
             const forkingMarket = await market.getForkingMarket_();
@@ -100,7 +101,7 @@ export class ReportingUtils {
         if (moveTimeForward) {
             let disputeWindow = await fixture.getDisputeWindow(market);
             let disputeWindowStartTime = await disputeWindow.getStartTime_();
-            await fixture.setTimestamp(disputeWindowStartTime.add(new ethers.utils.BigNumber(1)));
+            await fixture.setTimestamp(disputeWindowStartTime.plus(new BigNumber(1)));
         }
     }
 
@@ -119,12 +120,12 @@ export class ReportingUtils {
 
         const numParticipants = await market.getNumParticipants_();
         for (let i = 0; i < numParticipants.toNumber(); i++) {
-            const reportingParticipantAddress = await market.getReportingParticipant_(new ethers.utils.BigNumber(i));
+            const reportingParticipantAddress = await market.getReportingParticipant_(new BigNumber(i));
             const reportingParticipant = await fixture.getReportingParticipant(reportingParticipantAddress);
             await reportingParticipant.forkAndRedeem();
 
             const reportingParticipantStake = await reportingParticipant.getStake_();
-            expect(reportingParticipantStake === new ethers.utils.BigNumber(0));
+            expect(reportingParticipantStake === new BigNumber(0));
         }
 
         ethBalance = await fixture.getEthBalance();

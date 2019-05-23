@@ -7,5 +7,5 @@ export function denormalizePrice(minPrice: string|number|BigNumber, maxPrice: st
   if (bnMinPrice.gt(bnMaxPrice)) throw new Error("Minimum value larger than maximum value");
   if (bnNormalizedPrice.lt(0)) throw new Error("Normalized price is below 0");
   if (bnNormalizedPrice.gt(1)) throw new Error("Normalized price is above 1");
-  return bnNormalizedPrice.mul(bnMaxPrice.sub(bnMinPrice)).add(bnMinPrice);
+  return bnNormalizedPrice.multipliedBy(bnMaxPrice.minus(bnMinPrice)).plus(bnMinPrice);
 }

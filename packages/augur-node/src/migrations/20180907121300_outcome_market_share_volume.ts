@@ -20,10 +20,10 @@ function getVolumesFromTrades(marketOutcomes: Array<MinimalTradeRow>, minPrice: 
   const volumes = _.reduce(marketOutcomes, (acc, trade) => {
     const tradeAmount = new BigNumber(trade.amount);
     const tradePrice = new BigNumber(trade.price);
-    const price = tradePrice.sub(minPrice);
+    const price = tradePrice.minus(minPrice);
     return {
-      shareVolume: acc.shareVolume.add(tradeAmount),
-      volume: acc.volume.add(tradeAmount.mul(price)),
+      shareVolume: acc.shareVolume.plus(tradeAmount),
+      volume: acc.volume.plus(tradeAmount.multipliedBy(price)),
     };
   }, { shareVolume: ZERO, volume: ZERO });
   return _.mapValues(volumes, (volume) => volume.toString());

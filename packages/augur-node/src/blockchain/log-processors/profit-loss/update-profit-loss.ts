@@ -47,7 +47,7 @@ export async function updateProfitLossBuyShares(db: Knex, marketId: Address, acc
     .whereIn("outcome", outcomes)
     .orderBy("timestamp", "DESC");
   for (const moneySpentRow of moneySpentRows) {
-    const newMoneySpent = tokensSpentPerOutcome.add(moneySpentRow.moneySpent || ZERO).toString();
+    const newMoneySpent = tokensSpentPerOutcome.plus(moneySpentRow.moneySpent || ZERO).toString();
     await db("profit_loss_timeseries")
       .update({ moneySpent: newMoneySpent })
       .where({ account, transactionHash, marketId, outcome: moneySpentRow.outcome });
@@ -70,11 +70,11 @@ export async function updateProfitLossSellEscrowedShares(db: Knex, marketId: Add
     const oldMoneySpent = updateData.moneySpent || ZERO;
     const oldProfit = updateData.profit || ZERO;
     const numEscrowed = updateData.numEscrowed || ZERO;
-    const originalNumOwned = numShares.add(numOwned);
-    const totalOwned = originalNumOwned.add(numEscrowed);
-    const profit = oldProfit.add(numShares.mul(sellPrice.sub(oldMoneySpent.div(totalOwned)))).toString();
-    const moneySpent = oldMoneySpent.mul(numOwned.div(totalOwned)).toString();
-    const newNumEscrowed = numEscrowed.sub(numShares).toString();
+    const originalNumOwned = numShares.plus(numOwned);
+    const totalOwned = originalNumOwned.plus(numEscrowed);
+    const profit = oldProfit.plus(numShares.multipliedBy(sellPrice.minus(oldMoneySpent.div(totalOwned)))).toString();
+    const moneySpent = oldMoneySpent.multipliedBy(numOwned.div(totalOwned)).toString();
+    const newNumEscrowed = numEscrowed.minus(numShares).toString();
     const insertData = {
       marketId,
       account,
@@ -112,10 +112,10 @@ export async function updateProfitLossSellShares(db: Knex, marketId: Address, nu
     const oldMoneySpent = new BigNumber(updateData.moneySpent || 0);
     const oldProfit = new BigNumber(updateData.profit || 0);
     const numEscrowed = new BigNumber(updateData.numEscrowed || 0);
-    const originalNumOwned = numShares.add(numOwned);
-    const totalOwned = originalNumOwned.add(numEscrowed);
-    const profit = oldProfit.add(numShares.mul(sellPrice.sub(oldMoneySpent.div(totalOwned)))).toString();
-    const moneySpent = oldMoneySpent.mul(numOwned.div(totalOwned)).toString();
+    const originalNumOwned = numShares.plus(numOwned);
+    const totalOwned = originalNumOwned.plus(numEscrowed);
+    const profit = oldProfit.plus(numShares.multipliedBy(sellPrice.minus(oldMoneySpent.div(totalOwned)))).toString();
+    const moneySpent = oldMoneySpent.multipliedBy(numOwned.div(totalOwned)).toString();
     await db("profit_loss_timeseries")
       .update({ moneySpent, profit })
       .where({ account, transactionHash, marketId, outcome: updateData.outcome });
@@ -199,7 +199,7 @@ export async function updateProfitLossNumEscrowed(db: Knex, marketId: Address, n
     .whereIn("outcome", outcomes)
     .orderBy("timestamp", "DESC");
   for (const numEscrowedRow of numEscrowedRows) {
-    const newNumEscrowed = new BigNumber(numEscrowedDelta).add(numEscrowedRow.numEscrowed || 0).toString();
+    const newNumEscrowed = new BigNumber(numEscrowedDelta).plus(numEscrowedRow.numEscrowed || 0).toString();
     await db("profit_loss_timeseries")
       .update({ numEscrowed: newNumEscrowed })
       .where({ account, transactionHash, marketId, outcome: numEscrowedRow.outcome });

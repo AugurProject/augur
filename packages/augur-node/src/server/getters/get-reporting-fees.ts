@@ -247,22 +247,22 @@ async function getStakedRepResults(db: Knex, reporter: Address, universe: Addres
     const earnsRep = disputeWindowCompletionStake.completed && (disputeWindowCompletionStake.winning > 0);
     const lostRep = disputeWindowCompletionStake.completed && (disputeWindowCompletionStake.winning === 0);
     return {
-      unclaimedRepStaked: acc.unclaimedRepStaked.add(disputeWindowCompletionStake.forking ? ZERO : (!getsRep ? ZERO : (disputeWindowCompletionStake.amountStaked || ZERO))),
-      unclaimedRepEarned: acc.unclaimedRepEarned.add(disputeWindowCompletionStake.forking ? ZERO : (!earnsRep ? ZERO : (disputeWindowCompletionStake.amountStaked || ZERO)).mul(2).div(5)),
-      lostRep: acc.lostRep.add(lostRep ? (disputeWindowCompletionStake.amountStaked || ZERO) : ZERO),
-      unclaimedForkRepStaked: acc.unclaimedForkRepStaked.add(disputeWindowCompletionStake.forking ? (disputeWindowCompletionStake.amountStaked || ZERO) : ZERO),
+      unclaimedRepStaked: acc.unclaimedRepStaked.plus(disputeWindowCompletionStake.forking ? ZERO : (!getsRep ? ZERO : (disputeWindowCompletionStake.amountStaked || ZERO))),
+      unclaimedRepEarned: acc.unclaimedRepEarned.plus(disputeWindowCompletionStake.forking ? ZERO : (!earnsRep ? ZERO : (disputeWindowCompletionStake.amountStaked || ZERO)).multipliedBy(2).div(5)),
+      lostRep: acc.lostRep.plus(lostRep ? (disputeWindowCompletionStake.amountStaked || ZERO) : ZERO),
+      unclaimedForkRepStaked: acc.unclaimedForkRepStaked.plus(disputeWindowCompletionStake.forking ? (disputeWindowCompletionStake.amountStaked || ZERO) : ZERO),
     };
   }, { unclaimedRepStaked: ZERO, unclaimedRepEarned: ZERO, lostRep: ZERO, unclaimedForkRepStaked: ZERO });
   fees = _.reduce(initialReporters, (acc: RepStakeResults, initialReporterStake: InitialReporterStakeRow) => {
     let unclaimedRepEarned = acc.unclaimedRepEarned;
     if (marketDisputed[initialReporterStake.marketId] && !initialReporterStake.forking && initialReporterStake.winning) {
-      unclaimedRepEarned = unclaimedRepEarned.add((initialReporterStake.amountStaked || ZERO).mul(2).div(5));
+      unclaimedRepEarned = unclaimedRepEarned.plus((initialReporterStake.amountStaked || ZERO).multipliedBy(2).div(5));
     }
     return {
-      unclaimedRepStaked: acc.unclaimedRepStaked.add(initialReporterStake.forking ? ZERO : (initialReporterStake.winning === 0 ? ZERO : (initialReporterStake.amountStaked || ZERO))),
+      unclaimedRepStaked: acc.unclaimedRepStaked.plus(initialReporterStake.forking ? ZERO : (initialReporterStake.winning === 0 ? ZERO : (initialReporterStake.amountStaked || ZERO))),
       unclaimedRepEarned,
-      lostRep: acc.lostRep.add(initialReporterStake.winning === 0 ? (initialReporterStake.amountStaked || ZERO) : ZERO),
-      unclaimedForkRepStaked: acc.unclaimedForkRepStaked.add(initialReporterStake.forking ? (initialReporterStake.amountStaked || ZERO) : ZERO),
+      lostRep: acc.lostRep.plus(initialReporterStake.winning === 0 ? (initialReporterStake.amountStaked || ZERO) : ZERO),
+      unclaimedForkRepStaked: acc.unclaimedForkRepStaked.plus(initialReporterStake.forking ? (initialReporterStake.amountStaked || ZERO) : ZERO),
     };
   }, fees);
   return { fees };

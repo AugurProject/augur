@@ -72,7 +72,7 @@ export async function getProceedTradeRows (db: Knex, augur: Augur, marketIds: Ar
       const payout = row[payoutKey] as BigNumber;
       const tickSize = numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice);
       const amount = convertOnChainAmountToDisplayAmount(row.balance, tickSize);
-      const price = payout.mul(tickSize).add(row.minPrice);
+      const price = payout.multipliedBy(tickSize).plus(row.minPrice);
       return {
         blockNumber: row.blockNumber,
         logIndex: row.logIndex,
