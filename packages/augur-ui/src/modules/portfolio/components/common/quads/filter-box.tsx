@@ -28,7 +28,7 @@ export interface FilterBoxProps {
   dataObj: MarketsObj;
   noToggle?: Boolean;
   renderToggleContent?: Function;
-  filterLabel: String;
+  filterLabel: string;
   sortByStyles?: Object;
   currentAugurTimestamp: Number;
 }

@@ -43,7 +43,7 @@ export const cancelOrder = (
     outcomesData[marketId] &&
     outcomesData[marketId][outcome]
   ) {
-    const updateStatus = (status: String | null) => {
+    const updateStatus = (status: string | null) => {
       dispatch(
         updateOrderStatus({
           orderId,

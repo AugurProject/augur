@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { ethers } from 'ethers';
-import { ContractDependenciesEthers } from '../libraries/ContractDependenciesEthers';
+import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import { ContractDeployer } from "../libraries/ContractDeployer";
 import { DeployerConfiguration } from '../libraries/DeployerConfiguration';
 import { NetworkConfiguration } from '../libraries/NetworkConfiguration';
@@ -15,7 +15,7 @@ export async function deployContracts() {
 
     const provider = new ethers.providers.JsonRpcProvider(networkConfiguration.http);
     const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
-    const dependencies = new ContractDependenciesEthers(provider, signer, networkConfiguration.gasPrice.toNumber());
+    const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);
 
     await ContractDeployer.deployToNetwork(networkConfiguration, dependencies, provider, signer, DeployerConfiguration.create());
 }

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import Notifications from "modules/account/components/notifications/notifications";
+import Notifications from "modules/account/components/notifications";
 import { selectNotifications } from "modules/notifications/selectors/notification-state";
 import { updateReadNotifications } from "modules/notifications/actions/update-notifications";
 import { updateModal } from "modules/modal/actions/update-modal";
@@ -20,7 +20,6 @@ const mapStateToProps = (state: any) => {
 
   return {
     notifications,
-    isMobile: state.appStatus.isMobile,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     reportingWindowStatsEndTime: state.reportingWindowStats.endTime
   };

@@ -12,10 +12,9 @@ import { isEmpty, isEqual } from "lodash";
 export default class MarketOutcomeChartsOrders extends Component {
   static propTypes = {
     orderBook: PropTypes.object.isRequired,
-    fixedPrecision: PropTypes.number.isRequired,
-    pricePrecision: PropTypes.number.isRequired,
+    fixedPrecision: PropTypes.number,
+    pricePrecision: PropTypes.number,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool.isRequired,
     hasOrders: PropTypes.bool.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     onMobileTradingPage: PropTypes.bool,
@@ -28,7 +27,9 @@ export default class MarketOutcomeChartsOrders extends Component {
     onMobileTradingPage: false,
     toggle: () => {},
     extend: false,
-    hide: false
+    hide: false,
+    fixedPrecision: 4,
+    pricePrecision: 4
   };
 
   constructor(props) {
@@ -60,7 +61,6 @@ export default class MarketOutcomeChartsOrders extends Component {
       pricePrecision,
       orderBook,
       updateSelectedOrderProperties,
-      isMobile,
       hasOrders,
       orderBookKeys,
       onMobileTradingPage,
@@ -79,7 +79,6 @@ export default class MarketOutcomeChartsOrders extends Component {
         })}
       >
         <MarketOutcomeHeaderOrders
-          isMobile={isMobile}
           title="Order Book"
           headers={["quantity", "price", "my quantity"]}
           toggle={toggle}

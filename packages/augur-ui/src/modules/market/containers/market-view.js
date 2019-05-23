@@ -11,7 +11,6 @@ import {
   MARKET_REVIEWS
 } from "modules/common-elements/constants";
 import { windowRef } from "utils/window-ref";
-import getPrecision from "utils/get-number-precision";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 import { createBigNumber } from "src/utils/create-big-number";
 import { updateModal } from "modules/modal/actions/update-modal";
@@ -19,16 +18,13 @@ import { loadMarketTradingHistory } from "modules/markets/actions/market-trading
 
 const mapStateToProps = (state, ownProps) => {
   const {
-    marketsData,
     authStatus,
     appStatus,
     connection,
-    universe,
-    orderBooks
+    universe
   } = state;
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const market = selectMarket(marketId);
-  const pricePrecision = market && getPrecision(market.tickSize, 4);
   let marketReviewSeen =
     windowRef &&
     windowRef.localStorage &&
@@ -45,22 +41,16 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   return {
-    availableFunds: createBigNumber(state.loginAccount.eth || 0),
     currentTimestamp: selectCurrentTimestampInSeconds(state),
     outcomes: market.outcomes || [],
     isConnected: connection.isConnected && universe.id != null,
     marketType: market.marketType,
     description: market.description || "",
-    isLogged: authStatus.isLogged,
     market,
     minPrice: market.minPrice || createBigNumber(0),
     maxPrice: market.maxPrice || createBigNumber(0),
-    universe,
-    orderBooks,
-    isMobile: appStatus.isMobile,
     marketId,
-    marketsData,
-    pricePrecision,
+    universe,
     marketReviewSeen: !!marketReviewSeen
   };
 };

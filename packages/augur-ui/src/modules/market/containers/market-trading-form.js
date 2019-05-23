@@ -18,7 +18,7 @@ import { placeTrade } from "modules/trades/actions/place-trade";
 import {
   updateAuthStatus,
   IS_CONNECTION_TRAY_OPEN
-} from "modules/auth/actions/update-auth-status";
+} from "modules/auth/actions/auth-status";
 
 const mapStateToProps = (state, ownProps) => {
   const { authStatus, appStatus } = state;
@@ -28,7 +28,6 @@ const mapStateToProps = (state, ownProps) => {
     availableFunds: createBigNumber(state.loginAccount.eth || 0),
     isLogged: authStatus.isLogged,
     isConnectionTrayOpen: authStatus.isConnectionTrayOpen,
-    isMobile: appStatus.isMobile
   };
 };
 

@@ -1,0 +1,147 @@
+@import (reference) '~assets/styles/shared';
+
+.NotificationCard {
+  background: @color-tertiary-background;
+  border-radius: @border-radius-default;
+  display: flex;
+  flex-direction: column;
+  margin: 0.125rem;
+  padding: @size-16;
+}
+
+.NotificationCard.new {
+  background: @color-theme-primary;
+  border: 1px solid fade(@color-highlight, 50%);
+}
+
+.TitleBar {
+  align-items: center;
+  display: flex;
+  margin: 0 0 @size-8;
+
+  > span:last-of-type {
+    min-height: @size-16;
+    min-width: 1.9375rem;
+  }
+}
+
+.Importance {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0 @size-8 0 0;
+
+  > svg {
+    height: @size-12;
+    width: @size-12;
+
+    > circle {
+      fill: none;
+      stroke: @color-outcome-four;
+    }
+
+    > rect {
+      fill: @color-outcome-four;
+    }
+
+    > path {
+      fill: @color-outcome-four;
+    }
+  }
+}
+
+.Title {
+  .mono-11-bold;
+
+  color: @color-shadow-text;
+  margin: 0 @size-9 0 0;
+  text-transform: uppercase;
+
+  @media @breakpoint-mobile {
+    .mono-10-bold;
+  }
+}
+
+.Message {
+  .text-11;
+
+  color: @color-shadow-text;
+  line-height: 0.9375rem;
+
+  @media @breakpoint-mobile {
+    .text-10;
+
+    line-height: @size-14;
+  }
+}
+
+.TitleNew {
+  color: @color-secondary-text;
+}
+
+.MessageNew {
+  color: @color-tertiary-text;
+
+  > span > span {
+    font-weight: bold;
+  }
+}
+
+.NotificationCard button {
+  .mono-11;
+
+  border-radius: @size-9;
+  color: @color-primary-action;
+  line-height: normal;
+  margin-left: auto;
+  margin-top: @size-8;
+  text-align: right;
+  text-transform: uppercase;
+
+  &:not(:disabled):hover {
+    color: fade(@color-primary-action, 90%);
+  }
+
+  &:disabled {
+    color: fade(@color-primary-action, 40%);
+
+    &:hover {
+      color: fade(@color-primary-action, 40%);
+      cursor: wait;
+      font-weight: normal;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    .mono-10;
+  }
+}
+
+.BottomRow {
+  align-items: flex-end;
+  display: flex;
+}
+
+.Countdown {
+  margin: @size-12 0 0;
+
+  > span {
+    > span {
+      width: max-content !important;
+    }
+
+    > span:first-of-type {
+      .mono-10;
+
+      color: @color-shadow-text;
+      line-height: normal;
+      text-transform: uppercase;
+    }
+
+    > span:last-of-type {
+      .mono-12;
+
+      line-height: normal;
+    }
+  }
+}

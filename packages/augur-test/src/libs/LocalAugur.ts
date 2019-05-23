@@ -19,7 +19,7 @@ export type Account = {
 
 export type AccountList = Array<Account>;
 
-const augurCorePath = path.join(__dirname, "../../augur-core/");
+const augurCorePath = path.join(__dirname, "../../../augur-core/");
 
 function makeDeployerConfiguration() {
   const contractInputRoot = path.join(augurCorePath, "../augur-artifacts/src");
@@ -72,7 +72,7 @@ export function makeDependencies(account: Account, provider: EthersProvider, sig
   return new ContractDependenciesEthers(provider, signer, account.publicKey);
 }
 
-export async function makeTestAugur(accounts: AccountList): Promise<Augur<ethers.utils.BigNumber>> {
+export async function makeTestAugur(accounts: AccountList): Promise<Augur> {
   const {provider, dependencies, addresses} = await deployContracts(accounts, compilerOutput);
   return Augur.create(provider, dependencies, addresses);
 }

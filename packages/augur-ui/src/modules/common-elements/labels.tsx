@@ -111,6 +111,7 @@ export interface LinearPropertyLabelPercentMovementProps {
 
 export interface PillLabelProps {
   label: string;
+  hideOnMobile?: Boolean;
 }
 
 export interface PositionTypeLabelProps {
@@ -180,7 +181,7 @@ export function formatExpandedValue(
   const testValue = createBigNumber(fullPrecision);
   const isGreaterThan = testValue.abs().gt(max);
   const isLessThan = testValue.abs().lt(min) && !testValue.eq(ZERO);
-  let postfix = isGreaterThan || isLessThan ? String.fromCodePoint(0x2026) : "";
+  let postfix = isGreaterThan || isLessThan ? string.fromCodePoint(0x2026) : "";
   let frontFacingLabel = isGreaterThan ? fullWithoutDecimals : roundedFormatted;
   const denominationLabel = showDenomination ? `${denomination}` : "";
 
@@ -246,7 +247,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
       >
         {`${frontFacingLabel}${postfix}${denominationLabel}`}
       </label>
-      {postfix.length !== 0 && 
+      {postfix.length !== 0 &&
         <ReactTooltip
           id={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
           className={TooltipStyles.Tooltip}
@@ -308,7 +309,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
         >
           {text}
         </label>
-        {!isDisabled && 
+        {!isDisabled &&
           <ReactTooltip
             id={`${keyId}-${text.replace(/\s+/g, "-")}`}
             className={TooltipStyles.Tooltip}
@@ -729,8 +730,8 @@ export const MovementLabel = (props: MovementLabelProps) => {
   );
 };
 
-export const PillLabel = (props: PillLabelProps) => (
-  <span className={Styles.PillLabel}>{props.label}</span>
+export const PillLabel = ({ label, hideOnMobile }: PillLabelProps) => (
+  <span className={classNames(Styles.PillLabel, {[Styles.HideOnMobile]: hideOnMobile})}>{label}</span>
 );
 
 export const RepBalance = (props: RepBalanceProps) => (

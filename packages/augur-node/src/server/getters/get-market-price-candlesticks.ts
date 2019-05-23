@@ -61,7 +61,7 @@ export async function getMarketPriceCandlesticks(db: Knex, augur: {}, params: t.
         end: _.maxBy(trades, "timestamp")!.price.toString(),
         min: _.minBy(trades, "price")!.price.toString(),
         max: _.maxBy(trades, "price")!.price.toString(),
-        volume: _.reduce(trades, (totalAmount: BigNumber, tradeRow: MarketPriceHistoryRow) => totalAmount.add(tradeRow.amount), ZERO)!.toString(),
+        volume: _.reduce(trades, (totalAmount: BigNumber, tradeRow: MarketPriceHistoryRow) => totalAmount.plus(tradeRow.amount), ZERO)!.toString(),
       };
     });
   });

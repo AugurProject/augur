@@ -253,7 +253,6 @@ const testState = {
       }
     }
   },
-  selectedMarketId: "testMarketId",
   selectedFilterSort: {
     type: "open",
     sort: "volume",

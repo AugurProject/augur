@@ -1,40 +1,16 @@
-import { BigNumber } from "ethers/utils";
-import { BigNumber as BigNumberJS } from "bignumber.js";
+import { utils as ethersUtils } from "ethers";
+import { BigNumber } from "bignumber.js";
 
-export interface Precision {
-  decimals: number;
-  limit: string;
-  zero: string;
-  multiple: string;
-}
-
-const ten = new BigNumberJS(10);
-const decimals = new BigNumberJS(18);
-const multiple: BigNumberJS = ten.pow(decimals.toNumber());
-
-export const PRECISION: Precision = {
-  decimals: decimals.toNumber(),
-  limit: ten.div(multiple).toString(),
-  zero: new BigNumberJS(1).div(multiple).toString(),
-  multiple: multiple.toString(),
+export enum ACCOUNT_TYPES {
+  U_PORT = "uPort",
+  LEDGER = "ledger",
+  PRIVATE_KEY = "privateKey",
+  UNLOCKED_ETHEREUM_NODE = "unlockedEthereumNode",
+  META_MASK = "metaMask",
+  TREZOR = "trezor",
+  EDGE = "edge",
 };
 
-// WARNING: Update this only if this release requires destroying all existing Augur Node Databases
-export const DB_VERSION = 3;
-export const DB_FILE = "augur-%s-%s.db";
-export const DB_WARP_SYNC_FILE = "%s-%s-%s.warp";
-export const DB_WARP_SYNC_FILE_ENDING = "-%s-%s.warp";
-export const POUCH_DB_DIR = "augur-pouch-%s-%s";
-export const DUMP_EVERY_BLOCKS = 100;
-
-export const ETHER = "ether";
-export const MINIMUM_TRADE_SIZE = "0.000001";
-
-export const BN_WEI_PER_ETHER: BigNumber = new BigNumber(10).pow(18);
-export const WEI_PER_ETHER: string = BN_WEI_PER_ETHER.toString();
-
-export const ZERO = new BigNumber(0);
-export const ONE = new BigNumber(1);
 
 export enum TokenType {
   ReputationToken,
@@ -104,6 +80,44 @@ export const NETWORK_NAMES: NetworkNames = {
 const SECONDS_PER_DAY = 3600 * 24;
 export const CONTRACT_INTERVAL = {
   DESIGNATED_REPORTING_DURATION_SECONDS: 3 * SECONDS_PER_DAY,
-    DISPUTE_ROUND_DURATION_SECONDS: 7 * SECONDS_PER_DAY,
-    FORK_DURATION_SECONDS: 60 * SECONDS_PER_DAY,
+  DISPUTE_ROUND_DURATION_SECONDS: 7 * SECONDS_PER_DAY,
+  FORK_DURATION_SECONDS: 60 * SECONDS_PER_DAY,
+};
+
+export const ETHER = new ethersUtils.BigNumber(10).pow(18)
+
+export const TRADE_GAS_BUFFER = new BigNumber("100000", 10);
+
+export const MAX_FILLS_PER_TX = new BigNumber("3", 10);
+
+export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber("3500000", 10);
+
+export const PLACE_ORDER_NO_SHARES = {
+  2: new BigNumber("547694", 10),
+  3: new BigNumber("562138", 10),
+  4: new BigNumber("576582", 10),
+  5: new BigNumber("591026", 10),
+  6: new BigNumber("605470", 10),
+  7: new BigNumber("619914", 10),
+  8: new BigNumber("634358", 10),
+};
+
+export const PLACE_ORDER_WITH_SHARES = {
+  2: new BigNumber("695034", 10),
+  3: new BigNumber("794664", 10),
+  4: new BigNumber("894294", 10),
+  5: new BigNumber("993924", 10),
+  6: new BigNumber("1093554", 10),
+  7: new BigNumber("1193184", 10),
+  8: new BigNumber("1292814", 10),
+};
+
+export const WORST_CASE_FILL = {
+  2: new BigNumber("933495", 10),
+  3: new BigNumber("1172245", 10),
+  4: new BigNumber("1410995", 10),
+  5: new BigNumber("1649744", 10),
+  6: new BigNumber("1888494", 10),
+  7: new BigNumber("2127244", 10),
+  8: new BigNumber("2365994", 10),
 };

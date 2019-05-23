@@ -9,29 +9,42 @@ import {
   MovementLabel
 } from "modules/common-elements/labels";
 import { CancelTextButton } from "modules/common-elements/buttons";
+import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 
 const { COLUMN_TYPES } = constants;
 
 export interface Properties {
-  text?: String;
-  keyId?: String;
-  type?: String;
+  text?: string;
+  keyId?: string;
+  type?: string;
   pastTense?: Boolean;
   pending?: Boolean;
   disabled?: Boolean;
   action?: Function;
-  showPercent?: String;
-  showBrackets?: String;
-  showPlusMinus?: String;
+  showPercent?: string;
+  showBrackets?: string;
+  showPlusMinus?: string;
   showColors?: Boolean;
-  value?: String;
-  size?: String;
+  value?: string;
+  size?: string;
+  showEmptyDash?: Boolean;
+  addIndicator?: Boolean;
+  outcome?: string;
+  location?: string;
+  showExtraNumber?: Boolean;
 }
 
-function selectColumn(columnType: String, properties: Properties) {
+function selectColumn(columnType: string, properties: Properties) {
   switch (columnType) {
     case COLUMN_TYPES.TEXT:
-      return <TextLabel text={properties.text} keyId={properties.keyId} />;
+      return (
+        <>
+          <TextLabel text={properties.text} keyId={properties.keyId} />
+          {properties.showExtraNumber &&
+            <span>{properties.value}</span>
+          }
+        </>
+      );
     case COLUMN_TYPES.POSITION_TYPE:
       return (
         <PositionTypeLabel
@@ -41,8 +54,16 @@ function selectColumn(columnType: String, properties: Properties) {
       );
     case COLUMN_TYPES.VALUE:
       return (
-        properties.value && (
-          <ValueLabel value={properties.value} keyId={properties.keyId} />
+        (properties.value || properties.showEmptyDash) && (
+          <>
+            {properties.addIndicator &&
+              <MarketOutcomeTradingIndicator
+                outcome={properties.outcome}
+                location={properties.location}
+              />
+            }
+            <ValueLabel value={properties.value} keyId={properties.keyId} showEmptyDash={properties.showEmptyDash} />
+          </>
         )
       );
     case COLUMN_TYPES.CANCEL_TEXT_BUTTON:
@@ -77,7 +98,7 @@ function selectColumn(columnType: String, properties: Properties) {
 }
 
 export interface RowColumnProps {
-  columnType: String;
+  columnType: string;
   hide?: Boolean;
   properties: Properties;
 }

@@ -7,9 +7,9 @@ export default function(marketId, outcome, orderTypeLabel, orderBooks) {
 }
 
 /**
- * @param {String} marketId
+ * @param {string} marketId
  * @param {int} outcome
- * @param {String} orderTypeLabel
+ * @param {string} orderTypeLabel
  * @param {Object} orderBooks
  * @return {Object|null}
  */

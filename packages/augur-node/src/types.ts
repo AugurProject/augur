@@ -1,6 +1,5 @@
-import { BigNumber as BigNumberJS } from "bignumber.js";
-import { BigNumber } from "ethers/utils";
-export { BigNumber } from "ethers/utils";
+import { BigNumber } from "bignumber.js";
+export { BigNumber } from "bignumber.js";
 export { Block as BlockDetail } from "ethers/providers";
 
 import { EventEmitter } from "events";
@@ -14,7 +13,7 @@ import * as t from "io-ts";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { Augur as GenericAugur, ParsedLog } from "@augurproject/sdk";
 
-export class Augur extends GenericAugur<BigNumber, EthersProvider> { };
+export class Augur extends GenericAugur<EthersProvider> { };
 export { ParsedLog as FormattedEventLog } from "@augurproject/sdk";
 
 export type BlockRange = { fromBlock: number; toBlock: number };

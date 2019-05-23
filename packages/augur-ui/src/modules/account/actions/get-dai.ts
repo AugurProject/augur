@@ -8,7 +8,7 @@ import { getDai } from "modules/contracts/actions/contractCalls";
 
 export default function(callback = logError) {
   return async (dispatch: Function, getState: Function) => {
-    const update = (id: String, status: String) =>
+    const update = (id: string, status: string) =>
       dispatch(
         updateAlert(id, {
           id,

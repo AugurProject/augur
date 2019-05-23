@@ -36,7 +36,7 @@ function safePing(websocket: WebSocket) {
     websocket.ping();
 }
 
-export async function run<TBigNumber>(api: API<TBigNumber>, endpointSettings: EndpointSettings, controlEmitter: EventEmitter): Promise<void> {
+export async function run<TBigNumber>(api: API, endpointSettings: EndpointSettings, controlEmitter: EventEmitter): Promise<void> {
   const servers: Array<WebSocket.Server> = [];
   const app = express();
 

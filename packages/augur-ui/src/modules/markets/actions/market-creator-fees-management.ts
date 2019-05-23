@@ -2,7 +2,7 @@ import logError from "utils/log-error";
 import { augur } from "services/augurjs";
 
 export const collectMarketCreatorFees = (
-  marketId: String,
+  marketId: string,
   callback: Function = logError
 ) => (dispatch: Function, getState: Function) => {
   const { loginAccount } = getState();

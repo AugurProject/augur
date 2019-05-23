@@ -2,7 +2,7 @@
 
 .ValueLabel {
   color: inherit;
-  z-index: 2;
+  z-index: @default-z-index;
 
   > label {
     color: inherit;
@@ -13,7 +13,7 @@
 
 .TextLabel {
   color: inherit;
-  z-index: 2;
+  z-index: @default-z-index;
 
   > label {
     color: inherit;
@@ -166,7 +166,7 @@
     min-width: 0.625rem;
 
     > line {
-      stroke: fade(@color-white, 40%);
+      stroke: fade(@color-secondary-text, 40%);
     }
   }
 
@@ -439,20 +439,20 @@ div.LinearPropertyViewTransaction {
   background: fade(@color-open, 40%);
 
   > svg {
-    fill: @color-white;
+    fill: @color-secondary-text;
     height: @size-10;
     margin-left: 0.3125rem;
     width: @size-10;
 
     > path {
-      fill: @color-white;
+      fill: @color-secondary-text;
     }
   }
 }
 
 .MovementLabel {
   align-items: center;
-  color: @color-less-neutral;
+  color: @color-tertiary-text;
   display: flex;
   justify-content: flex-end;
 }
@@ -534,6 +534,14 @@ div.LinearPropertyViewTransaction {
   display: flex;
   justify-content: center;
   padding: 0 0.375rem;
+
+  &.HideOnMobile {
+    display: flex;
+
+    @media @breakpoint-mobile-mid {
+      display: none;
+    }
+  }
 }
 
 .PositionTypeLabel {
@@ -542,7 +550,7 @@ div.LinearPropertyViewTransaction {
   text-transform: uppercase;
 
   &.Sell {
-    color: @color-negative2;
+    color: @color-negative;
   }
 
   &.Closed {

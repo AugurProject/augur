@@ -26,7 +26,6 @@ class TradingWrapper extends Component {
     marketReviewTradeModal: PropTypes.func.isRequired,
     selectedOrderProperties: PropTypes.object.isRequired,
     availableFunds: PropTypes.instanceOf(BigNumber).isRequired,
-    isMobile: PropTypes.bool.isRequired,
     selectedOutcome: PropTypes.object,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
     handleFilledOnly: PropTypes.func.isRequired,
@@ -34,7 +33,6 @@ class TradingWrapper extends Component {
     updateSelectedOutcome: PropTypes.func.isRequired,
     updateTradeCost: PropTypes.func.isRequired,
     updateTradeShares: PropTypes.func.isRequired,
-    showSelectOutcome: PropTypes.func.isRequired,
     onSubmitPlaceTrade: PropTypes.func.isRequired
   };
 
@@ -304,12 +302,10 @@ class TradingWrapper extends Component {
   render() {
     const {
       availableFunds,
-      isMobile,
       market,
       selectedOutcome,
       gasPrice,
       updateSelectedOutcome,
-      showSelectOutcome,
       marketReviewTradeSeen,
       marketReviewTradeModal
     } = this.props;
@@ -402,12 +398,10 @@ class TradingWrapper extends Component {
                 selectedOutcome={selectedOutcome}
                 updateState={this.updateState}
                 updateOrderProperty={this.updateOrderProperty}
-                isMobile={isMobile}
                 clearOrderForm={this.clearOrderForm}
                 updateSelectedOutcome={updateSelectedOutcome}
                 updateTradeTotalCost={this.updateTradeTotalCost}
                 updateTradeNumShares={this.updateTradeNumShares}
-                showSelectOutcome={showSelectOutcome}
                 updateNewOrderProperties={this.updateNewOrderProperties}
                 clearOrderConfirmation={this.clearOrderConfirmation}
               />
@@ -421,7 +415,6 @@ class TradingWrapper extends Component {
               maxPrice={getValue(this.props, "market.maxPrice")}
               minPrice={getValue(this.props, "market.minPrice")}
               trade={s.trade.displayTrade}
-              isMobile={isMobile}
               gasPrice={gasPrice}
               availableFunds={availableFunds}
               selectedOutcome={selectedOutcome}

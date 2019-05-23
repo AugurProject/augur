@@ -13,7 +13,7 @@
 
 .MarketTradeHistory__heading {
   align-items: center;
-  background-color: @color-light-purple;
+  background-color: @color-theme-primary;
   border-bottom: 1px solid @color-extra-darkpurple;
   display: flex;
   font-size: 16px;
@@ -28,12 +28,12 @@
   position: sticky;
   top: 0;
   width: 100%;
-  z-index: 5;
+  z-index: @above-all-content;
 }
 
 .MarketTradeHistory__table-header {
-  background-color: @color-light-purple;
-  color: @color-light-gray;
+  background-color: @color-theme-primary;
+  color: @color-neutral;
   display: flex;
   font-size: @font-size-small;
   justify-content: space-between;
@@ -52,8 +52,8 @@
 }
 
 .MarketTradeHistory__table__trade__data {
-  background-color: @color-grayish-purple;
-  color: @color-white;
+  background-color: @color-tertiary-background;
+  color: @color-secondary-text;
   display: flex;
   font-size: @size-11;
   padding-bottom: 0.25rem;
@@ -82,7 +82,7 @@
     }
 
     &:last-child {
-      color: @color-light-gray;
+      color: @color-neutral;
       padding-right: 25px;
       text-align: right;
     }
@@ -125,11 +125,11 @@
 }
 
 .MarketTradeHistory__trade__barNeg {
-  background-color: @color-negative2;
+  background-color: @color-negative;
 }
 
 .MarketTradeHistory__table__price {
-  background-color: @color-light-purple;
+  background-color: @color-theme-primary;
   display: table;
   width: 100%;
 }
@@ -156,7 +156,7 @@
 }
 
 .MarketTradeHistory__sell {
-  color: @color-negative2;
+  color: @color-negative;
 }
 
 .MarketTradeHistory__trade__indicatorUp {

@@ -25,7 +25,7 @@
 .CreateMarketForm_form_inner_wrapper {
   > div {
     border-bottom: 1px solid @color-primary-light;
-    color: @color-text-light;
+    color: @color-secondary-text;
     display: flex;
     font-size: @font-size-kinda-large;
     justify-content: space-between;
@@ -110,7 +110,7 @@
       display: block;
       margin-bottom: 1rem;
       width: 100%;
-      z-index: 5;
+      z-index: @above-all-content;
     }
 
     .SingleDatePickerInput {
@@ -235,7 +235,7 @@
 
 .CreateMarketForm__submitWarning,
 .CreateMarketForm__error {
-  color: @color-error;
+  color: @color-error-text;
   display: inline-block;
   font-size: 1rem;
   line-height: 1rem;
@@ -300,7 +300,7 @@
 }
 
 .CreateMarketForm__error--field {
-  border-color: @color-error;
+  border-color: @color-error-text;
   border-width: 0.1rem;
 }
 
@@ -449,7 +449,7 @@
     }
 
     > button {
-      color: @color-white;
+      color: @color-secondary-text;
       cursor: pointer;
       display: block;
       font-size: 1.125rem;
@@ -541,7 +541,7 @@
   .CreateMarketForm__next,
   .CreateMarketForm__submit {
     background-color: @color-purple;
-    color: @color-white;
+    color: @color-secondary-text;
 
     &:hover {
       background-color: @color-purple;
@@ -623,7 +623,7 @@
   .CreateMarketForm__next,
   .CreateMarketForm__submit {
     background-color: @color-purple;
-    color: @color-white;
+    color: @color-secondary-text;
   }
 
   .CreateMarketForm__prev.hide-button + .CreateMarketForm__next {

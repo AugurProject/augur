@@ -1,8 +1,8 @@
 @import (reference) "~assets/styles/shared";
 
 .MarketTradingForm {
-  background-color: @color-light-purple;
-  border-bottom: 8px solid @color-light-purple;
+  background-color: @color-theme-primary;
+  border-bottom: @size-8 solid @color-theme-primary;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -14,7 +14,7 @@
   align-items: center;
   background-color: @color-purple;
   bottom: 0;
-  color: @color-white;
+  color: @color-secondary-text;
   display: flex;
   font-weight: 500;
   justify-content: space-between;
@@ -51,7 +51,7 @@
     padding-top: 1rem;
     position: fixed;
     width: 100%;
-    z-index: 20;
+    z-index: @mask;
   }
 }
 
@@ -68,7 +68,7 @@
 
 .MarketTradingForm__initial-message {
   align-items: center;
-  background: fade(@color-dark-grayish-purple, 80%);
+  background: fade(@color-secondary-action, 80%);
   bottom: 0;
   display: flex;
   flex-direction: column;
@@ -81,7 +81,7 @@
   right: 0;
   text-align: center;
   top: 0;
-  z-index: 2;
+  z-index: @default-z-index;
 }
 
 .MarketTradingForm__deposit-button {

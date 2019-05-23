@@ -6,17 +6,11 @@ import {
   updateAugurNodeConnectionStatus
 } from "modules/app/actions/update-connection";
 import { getAugurNodeNetworkId } from "modules/app/actions/get-augur-node-network-id";
-import { updateContractAddresses } from "modules/contracts/actions/update-contract-addresses";
-import {
-  updateFunctionsAPI,
-  updateEventsAPI
-} from "modules/contracts/actions/update-contract-api";
 import { useUnlockedAccount } from "modules/auth/actions/use-unlocked-account";
 import { logout } from "modules/auth/actions/logout";
 import { verifyMatchingNetworkIds } from "modules/app/actions/verify-matching-network-ids";
 import { checkIfMainnet } from "modules/app/actions/check-if-mainnet";
 import { updateUniverse } from "modules/universe/actions/update-universe";
-import { registerTransactionRelay } from "modules/transactions/actions/register-transaction-relay";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
 import logError from "utils/log-error";
@@ -88,7 +82,7 @@ function pollForAccount(
 function loadAccount(
   dispatch: Function,
   existing: any,
-  accountType: String,
+  accountType: string,
   callback: Function
 ) {
   let loggedInAccount: any = null;
@@ -139,7 +133,7 @@ function pollForNetwork(dispatch: Function, getState: Function) {
   setInterval(() => {
     const { modal } = getState();
     dispatch(
-      verifyMatchingNetworkIds((err: any, expectedNetworkId: String) => {
+      verifyMatchingNetworkIds((err: any, expectedNetworkId: string) => {
         if (err) return console.error("pollForNetwork failed", err);
         if (expectedNetworkId != null && isEmpty(modal)) {
           dispatch(
@@ -191,14 +185,9 @@ export function connectAugur(
         if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
           return callback(err, ConnectionInfo);
         }
-        const ethereumNodeConnectionInfo = ConnectionInfo.ethereumNode;
         dispatch(updateConnectionStatus(true));
-        dispatch(updateContractAddresses(ethereumNodeConnectionInfo.contracts));
-        dispatch(updateFunctionsAPI(ethereumNodeConnectionInfo.abi.functions));
-        dispatch(updateEventsAPI(ethereumNodeConnectionInfo.abi.events));
         dispatch(updateAugurNodeConnectionStatus(true));
         dispatch(getAugurNodeNetworkId());
-        dispatch(registerTransactionRelay());
         AugurJS.augur.augurNode.getSyncData((err: any, res: any) => {
           if (!err && res) {
             dispatch(
@@ -254,9 +243,9 @@ export function connectAugur(
 }
 
 interface initAugurParams {
-  augurNode: String | null;
-  ethereumNodeHttp: String | null;
-  ethereumNodeWs: String | null;
+  augurNode: string | null;
+  ethereumNodeHttp: string | null;
+  ethereumNodeWs: string | null;
   useWeb3Transport: Boolean;
 }
 

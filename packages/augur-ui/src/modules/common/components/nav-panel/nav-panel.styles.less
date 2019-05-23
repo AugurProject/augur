@@ -21,8 +21,8 @@
 .NavPanel__control {
   align-items: center;
   background: @color-purple;
-  border-bottom: 1px solid @color-grayish-purple;
-  color: @color-white;
+  border-bottom: 1px solid @color-tertiary-background;
+  color: @color-secondary-text;
   cursor: pointer;
   display: flex;
   flex: 1;
@@ -31,7 +31,7 @@
   padding: 0 2rem;
 
   &:hover {
-    background: @color-grayish-purple;
+    background: @color-tertiary-background;
   }
 
   &:last-child {
@@ -40,7 +40,7 @@
 
   @media @breakpoint-mobile {
     & {
-      border-left: 1px solid @color-grayish-purple;
+      border-left: 1px solid @color-tertiary-background;
       flex-basis: 33%;
       flex-flow: wrap column;
       height: 6em;
@@ -61,11 +61,11 @@
 }
 
 .NavPanel__control--active {
-  background: @color-grayish-purple;
+  background: @color-tertiary-background;
 }
 
 .NavPanel__icon {
-  color: @color-text-light;
+  color: @color-secondary-text;
   margin-right: 1.5em;
   vertical-align: middle;
   width: 2.25em;

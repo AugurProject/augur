@@ -1,0 +1,195 @@
+@import (reference) '~assets/styles/shared';
+
+.Funds {
+  align-items: center;
+  background: @color-secondary-action;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0 0 @size-16;
+  text-transform: uppercase;
+
+  @media @breakpoint-mobile {
+    background: unset;
+    margin: 0;
+  }
+
+  > div:first-of-type {
+    .mono-11;
+
+    color: @color-secondary-text;
+
+    @media @breakpoint-mobile {
+      .mono-12-bold;
+    }
+  }
+
+  > div:nth-of-type(2) {
+    margin-top: @size-8;
+  }
+
+  > div:nth-of-type(3) {
+    .text-24-bold;
+
+    margin: 0 @size-4;
+
+    @media @breakpoint-mobile {
+      color: @color-tertiary-text;
+      margin-bottom: @size-12;
+    }
+
+    > svg {
+      fill: @color-secondary-text;
+      height: @size-16;
+      margin: 0 0 0 @size-4;
+      width: @size-16;
+    }
+  }
+
+  > div:last-of-type {
+    display: flex;
+    width: 100%;
+  }
+}
+
+.BalanceFrozenFunds {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px 0 0;
+  text-align: center;
+  width: 100%;
+
+  > div {
+    flex: 1;
+    flex-direction: column;
+
+    > div:first-of-type {
+      .mono-10;
+
+      color: @color-shadow-text;
+      text-align: center;
+    }
+
+    > div:nth-of-type(2) {
+      .mono-14;
+
+      color: @color-secondary-text;
+      margin: @size-4 0 0;
+      text-align: center;
+    }
+
+    > div svg {
+      fill: @color-secondary-text;
+      height: @size-16;
+      margin: 0 0 0 @size-4;
+      width: @size-16;
+      vertical-align: -@size-4;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    > span {
+      > div:first-of-type {
+        > span {
+          .mono-10;
+        }
+
+        > span:last-of-type {
+          .mono-14-bold;
+        }
+      }
+
+      > div:last-of-type {
+        margin: 0 0 @border-radius-default;
+      }
+    }
+
+    > div:first-of-type {
+      flex-direction: row;
+    }
+
+    > div:last-of-type {
+      flex-grow: unset;
+
+      > svg {
+        fill: @color-secondary-text;
+        height: @size-12;
+        margin: 0 0 0 @size-4;
+        width: @size-8;
+      }
+    }
+  }
+}
+
+.RepBalanceStaked {
+  align-items: center;
+  border: 2px solid @color-tertiary-background;
+  border-radius: @border-radius-default;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: @size-16 @size-24 0;
+  text-align: center;
+  width: 100%;
+
+  @media @breakpoint-mobile {
+    background: unset;
+    margin: @size-16 @size-32 @size-24;
+  }
+
+  > div {
+    > svg {
+      fill: @color-secondary-text;
+      height: @size-32;
+      margin: 0 @size-40;
+      width: 29.5px;
+    }
+
+    > div:first-of-type {
+      .mono-10;
+
+      color: @color-shadow-text;
+      margin: @size-16 0 0;
+      text-align: center;
+    }
+
+    > div:nth-of-type(2) {
+      .mono-12;
+
+      color: @color-secondary-text;
+      margin: 0 0 @size-16;
+      text-align: center;
+
+      @media @breakpoint-mobile {
+        .mono-12-bold;
+
+        color: @color-tertiary-text;
+      }
+    }
+  }
+}
+
+.ShowOnMobile {
+  display: none;
+
+  @media @breakpoint-mobile {
+    display: flex;
+    margin-top: 0;
+  }
+}
+
+.HideOnMobile {
+  display: flex;
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
+}
+
+.ChangeForMobile {
+  @media @breakpoint-mobile {
+    flex-direction: column;
+  }
+}

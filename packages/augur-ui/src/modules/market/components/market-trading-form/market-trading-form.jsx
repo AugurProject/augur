@@ -16,7 +16,6 @@ class MarketTradingForm extends Component {
   static propTypes = {
     availableFunds: PropTypes.instanceOf(BigNumber).isRequired,
     isLogged: PropTypes.bool.isRequired,
-    isMobile: PropTypes.bool.isRequired,
     isConnectionTrayOpen: PropTypes.bool.isRequired,
     market: PropTypes.object.isRequired,
     marketReviewTradeSeen: PropTypes.bool.isRequired,
@@ -29,7 +28,6 @@ class MarketTradingForm extends Component {
     updateSelectedOutcome: PropTypes.func.isRequired,
     updateTradeCost: PropTypes.func.isRequired,
     updateTradeShares: PropTypes.func.isRequired,
-    showSelectOutcome: PropTypes.func.isRequired,
     toggleConnectionTray: PropTypes.func.isRequired,
     onSubmitPlaceTrade: PropTypes.func.isRequired
   };
@@ -81,7 +79,6 @@ class MarketTradingForm extends Component {
     const {
       availableFunds,
       isLogged,
-      isMobile,
       isConnectionTrayOpen,
       market,
       selectedOrderProperties,
@@ -90,7 +87,6 @@ class MarketTradingForm extends Component {
       updateSelectedOutcome,
       updateTradeCost,
       updateTradeShares,
-      showSelectOutcome,
       toggleConnectionTray,
       onSubmitPlaceTrade,
       marketReviewTradeSeen,
@@ -124,7 +120,6 @@ class MarketTradingForm extends Component {
           isLogged={isLogged}
           selectedOutcome={s.selectedOutcome}
           selectedOrderProperties={selectedOrderProperties}
-          isMobile={isMobile}
           toggleForm={this.toggleForm}
           availableFunds={availableFunds}
           updateSelectedOrderProperties={
@@ -135,7 +130,6 @@ class MarketTradingForm extends Component {
           updateSelectedOutcome={updateSelectedOutcome}
           updateTradeCost={updateTradeCost}
           updateTradeShares={updateTradeShares}
-          showSelectOutcome={showSelectOutcome}
           onSubmitPlaceTrade={onSubmitPlaceTrade}
           marketReviewTradeModal={marketReviewTradeModal}
           marketReviewTradeSeen={marketReviewTradeSeen}

@@ -16,7 +16,6 @@ jest.mock("modules/app/actions/update-connection");
 jest.mock("modules/contracts/actions/update-contract-addresses");
 jest.mock("modules/contracts/actions/update-contract-api");
 jest.mock("modules/transactions/actions/register-transaction-relay");
-jest.mock("modules/app/actions/load-universe");
 jest.mock("modules/app/actions/verify-matching-network-ids");
 jest.mock("modules/auth/actions/use-unlocked-account", () => {});
 
@@ -31,8 +30,6 @@ jest.mock("config/network.json", () => ({
       connectionTimeout: 60000
     },
     universe: null,
-    "bug-bounty": false,
-    "bug-bounty-address": null,
     debug: {
       connect: true,
       broadcast: false
@@ -120,12 +117,8 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(store.getActions()).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
-            { type: "UPDATE_FUNCTIONS_API" },
-            { type: "UPDATE_EVENTS_API" },
             { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
             { type: "REGISTER_TRANSACTION_RELAY" },
-            { type: "LOAD_UNIVERSE" },
             { type: "CLOSE_MODAL" }
           ]);
         })
@@ -159,12 +152,8 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(store.getActions).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
-            { type: "UPDATE_FUNCTIONS_API" },
-            { type: "UPDATE_EVENTS_API" },
             { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
             { type: "REGISTER_TRANSACTION_RELAY" },
-            { type: "LOAD_UNIVERSE" },
             { type: "CLOSE_MODAL" },
             { type: "LOGOUT" }
           ]);
@@ -205,12 +194,8 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(store.getActions()).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
-            { type: "UPDATE_FUNCTIONS_API" },
-            { type: "UPDATE_EVENTS_API" },
             { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
             { type: "REGISTER_TRANSACTION_RELAY" },
-            { type: "LOAD_UNIVERSE" },
             { type: "UPDATE_MODAL" },
             { type: "LOGOUT" }
           ]);
@@ -245,12 +230,8 @@ describe("modules/app/actions/init-augur.js", () => {
             expect(connInfo).toBeUndefined();
             expect(store.getActions()).deepEqual([
               { type: "UPDATE_CONNECTION_STATUS" },
-              { type: "UPDATE_CONTRACT_ADDRESSES" },
-              { type: "UPDATE_FUNCTIONS_API" },
-              { type: "UPDATE_EVENTS_API" },
               { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
               { type: "REGISTER_TRANSACTION_RELAY" },
-              { type: "LOAD_UNIVERSE" },
               { type: "CLOSE_MODAL" },
               { type: "SET_LOGIN_ACCOUNT" }
             ]);
@@ -286,12 +267,8 @@ describe("modules/app/actions/init-augur.js", () => {
           expect(store.getActions()).deepEqual([
             { type: "UPDATE_ENV" },
             { type: "UPDATE_CONNECTION_STATUS" },
-            { type: "UPDATE_CONTRACT_ADDRESSES" },
-            { type: "UPDATE_FUNCTIONS_API" },
-            { type: "UPDATE_EVENTS_API" },
             { type: "UPDATE_AUGUR_NODE_CONNECTION_STATUS" },
             { type: "REGISTER_TRANSACTION_RELAY" },
-            { type: "LOAD_UNIVERSE" }
           ]);
         })
       );

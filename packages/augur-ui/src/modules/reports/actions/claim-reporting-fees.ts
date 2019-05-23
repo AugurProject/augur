@@ -56,12 +56,12 @@ export function redeemStake(options: any, callback: Function = logError) {
       estimateGas
     } = options;
 
-    const reportingParticipants: Array<String> = [];
+    const reportingParticipants: Array<string> = [];
     nonforkedMarkets.forEach((nonforkedMarket: any) => {
       if (nonforkedMarket.initialReporter) {
         reportingParticipants.push(nonforkedMarket.initialReporter);
       }
-      nonforkedMarket.crowdsourcers.forEach((crowdsourcer: String) => {
+      nonforkedMarket.crowdsourcers.forEach((crowdsourcer: string) => {
         reportingParticipants.push(crowdsourcer);
       });
     });
@@ -107,7 +107,7 @@ export function redeemStake(options: any, callback: Function = logError) {
 
   function batchContractIds(
     feeWindows: Array<any>,
-    reportingParticipants: Array<String>
+    reportingParticipants: Array<string>
   ) {
     const batches = [];
     const feeWindowBatchSize = Math.ceil(

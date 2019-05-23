@@ -17,7 +17,7 @@
 
     & > section {
       align-items: center;
-      color: @color-white;
+      color: @color-secondary-text;
       display: flex;
       flex-direction: column;
     }
@@ -25,10 +25,10 @@
 }
 
 .ModalContainer {
-  background: @color-grayish-purple;
-  border: 2px solid @color-dark-gray;
+  background: @color-tertiary-background;
+  border: 2px solid @color-primary-alternate;
   border-radius: 5px;
-  color: @color-white;
+  color: @color-secondary-text;
   max-width: 35rem;
   padding: 1.5rem 0;
   position: relative;
@@ -41,7 +41,7 @@
 
   form.ModalTightForm > h1,
   h1 {
-    color: @color-white;
+    color: @color-secondary-text;
     font-size: @font-size-somewhat-large;
     font-weight: 500;
     line-height: 1.75rem;
@@ -50,7 +50,7 @@
   }
 
   form.ModalTightForm > label {
-    color: @color-white;
+    color: @color-secondary-text;
     font-size: @font-size-medium;
     font-weight: 600;
     line-height: @font-size-large;
@@ -61,7 +61,7 @@
 
   form.ModalTightForm > p,
   > p {
-    color: @color-white;
+    color: @color-secondary-text;
     font-size: @font-size-small;
     line-height: @font-size-large;
     margin: 0;
@@ -113,19 +113,19 @@
 }
 
 .ModalForm {
-  background: @color-grayish-purple;
-  color: @color-white;
+  background: @color-tertiary-background;
+  color: @color-secondary-text;
   max-width: 35rem;
   text-align: left;
   width: 100%;
 
   > * {
-    color: @color-white;
+    color: @color-secondary-text;
     width: 100%;
   }
 
   h1 {
-    color: @color-white;
+    color: @color-secondary-text;
     font-size: @font-size-somewhat-large;
     font-weight: 500;
     line-height: 1.75rem;
@@ -138,7 +138,7 @@
   }
 
   label {
-    color: @color-white;
+    color: @color-secondary-text;
     font-size: @font-size-medium;
     font-weight: 600;
     line-height: @font-size-large;
@@ -171,10 +171,10 @@
 }
 
 .TightModalContainer {
-  background: @color-grayish-purple;
-  border: 2px solid @color-dark-gray;
+  background: @color-tertiary-background;
+  border: 2px solid @color-primary-alternate;
   border-radius: 5px;
-  color: @color-white;
+  color: @color-secondary-text;
   max-width: 20rem;
   padding: 1.5rem 0;
   position: relative;
@@ -186,7 +186,7 @@
   }
 
   h1 {
-    color: @color-white;
+    color: @color-secondary-text;
     font-size: @font-size-somewhat-large;
     font-weight: 500;
     line-height: 1.75rem;
@@ -195,7 +195,7 @@
   }
 
   h2 {
-    color: @color-white;
+    color: @color-secondary-text;
     font-size: @font-size-normal;
     font-weight: 500;
     line-height: @font-size-large;
@@ -205,7 +205,7 @@
   }
 
   h3 {
-    color: @color-white;
+    color: @color-secondary-text;
     font-size: @font-size-small;
     font-weight: 400;
     line-height: @font-size-large;
@@ -245,7 +245,7 @@ div.ErrorField:focus {
 }
 
 .Warning {
-  color: @color-white;
+  color: @color-secondary-text;
   font-size: @font-size-medium;
   line-height: @font-size-normal;
   margin: 0 0 1.5rem;
@@ -272,8 +272,8 @@ div.ErrorField:focus {
 }
 
 .Receipt {
-  background-color: @color-dark-grayish-purple;
-  color: @color-white;
+  background-color: @color-secondary-action;
+  color: @color-secondary-text;
   list-style: none;
   margin: 0 2rem 1.5rem;
   padding: 1rem 0;
@@ -287,7 +287,7 @@ div.ErrorField:focus {
     padding: 0.5rem 0;
 
     > label {
-      color: @color-white;
+      color: @color-secondary-text;
       flex: 1;
       font-weight: 600;
       margin: 0 1rem 0 auto;
@@ -295,7 +295,7 @@ div.ErrorField:focus {
     }
 
     > span:first-of-type {
-      color: @color-white;
+      color: @color-secondary-text;
       flex: 3;
       margin: 0 auto 0 0;
       text-align: left;
@@ -309,7 +309,7 @@ div.ErrorField:focus {
 }
 
 .Description {
-  color: @color-white;
+  color: @color-secondary-text;
   font-size: @font-size-small;
   line-height: @font-size-large;
   margin: 0 0 1.5rem;
@@ -317,22 +317,22 @@ div.ErrorField:focus {
 }
 
 .ModalTable {
-  border-left: 1px solid @color-dark-gray;
-  border-top: 1px solid @color-dark-gray;
-  color: @color-white;
+  border-left: 1px solid @color-primary-alternate;
+  border-top: 1px solid @color-primary-alternate;
+  color: @color-secondary-text;
   display: flex;
   flex-flow: column;
   margin: 0 0 1.5rem;
 }
 
 .ModalTableRow {
-  border-bottom: 1px solid @color-dark-gray;
+  border-bottom: 1px solid @color-primary-alternate;
   display: flex;
   flex: 1;
   flex-flow: row;
 
   &:hover {
-    color: @color-light-gray;
+    color: @color-neutral;
   }
 }
 
@@ -341,12 +341,12 @@ div.ErrorField:focus {
   line-height: @font-size-normal;
 
   &:hover {
-    color: @color-white;
+    color: @color-secondary-text;
   }
 }
 
 .ModalTableColumn {
-  border-right: 1px solid @color-dark-gray;
+  border-right: 1px solid @color-primary-alternate;
   flex: 1;
   font-size: @font-size-small;
   line-height: @font-size-medium;
@@ -393,19 +393,19 @@ div.ErrorField:focus {
 
   background-color: transparent;
   border: 0;
-  color: @color-white;
+  color: @color-secondary-text;
   text-transform: capitalize;
 
   &.disabled {
     background-color: transparent;
     border: 0;
-    color: @color-light-gray;
+    color: @color-neutral;
   }
 
   &:hover {
     background-color: transparent;
     border: 0;
-    color: @color-light-gray;
+    color: @color-neutral;
   }
 }
 
@@ -424,10 +424,10 @@ div.ErrorField:focus {
 }
 
 .ModalDisclaimer {
-  background: @color-grayish-purple;
-  border: 2px solid @color-dark-gray;
+  background: @color-tertiary-background;
+  border: 2px solid @color-primary-alternate;
   border-radius: 5px;
-  color: @color-white;
+  color: @color-secondary-text;
   flex-flow: row nowrap;
   max-width: 35rem;
   -webkit-overflow-scrolling: touch;
@@ -442,7 +442,7 @@ div.ErrorField:focus {
   }
 
   h1 {
-    color: @color-white;
+    color: @color-secondary-text;
     font-size: @font-size-somewhat-large;
     font-weight: 500;
     line-height: 1.75rem;
@@ -451,7 +451,7 @@ div.ErrorField:focus {
 }
 
 .ModalDisclaimer__TextBox {
-  background-color: @color-dark-grayish-purple;
+  background-color: @color-secondary-action;
   margin: 0 2rem 1.5rem;
   max-height: 25rem;
   max-width: 35rem;
@@ -462,7 +462,7 @@ div.ErrorField:focus {
   width: auto;
 
   > p {
-    color: @color-white;
+    color: @color-secondary-text;
     font-size: @font-size-medium;
     line-height: @font-size-somewhat-large;
     margin: 0 0 1.5rem;
@@ -476,7 +476,7 @@ div.ErrorField:focus {
 
   > label {
     align-items: center;
-    color: @color-white;
+    color: @color-secondary-text;
     display: flex;
     font-size: @font-size-medium;
     font-weight: normal;
@@ -495,7 +495,7 @@ div.ErrorField:focus {
 
   > label {
     align-items: center;
-    color: @color-white;
+    color: @color-secondary-text;
     display: flex;
     font-size: @font-size-medium;
     font-weight: bold;
@@ -554,7 +554,7 @@ div.ErrorField:focus {
   background: transparent;
   border: 0;
   border-radius: 0;
-  color: @color-white;
+  color: @color-secondary-text;
   max-height: 100vh;
   max-width: unset;
   -webkit-overflow-scrolling: touch;

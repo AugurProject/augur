@@ -82,6 +82,8 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
       .mockImplementation(() => ({
         type: "UPDATE_GAS_PRICE_INFO"
       }));
+
+
   });
 
   afterAll(() => {

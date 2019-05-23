@@ -7,7 +7,7 @@ html,
 }
 
 body {
-  background: @color-almost-black;
+  background: @color-primary-background;
 
   @media @breakpoint-mobile {
     --is-mobile: true;
@@ -90,8 +90,8 @@ h6 {
 }
 
 .SideBar {
-  background: @color-light-purple;
-  border-right: 0.0625rem solid @color-almost-black;
+  background: @color-theme-primary;
+  border-right: 0.0625rem solid @color-primary-background;
   height: 100vh;
   padding-top: 71px;
   z-index: @mask-above;
@@ -102,8 +102,8 @@ h6 {
 }
 
 .Logo {
-  background: @color-light-purple;
-  border-bottom: 1px solid @color-almost-black;
+  background: @color-theme-primary;
+  border-bottom: 1px solid @color-primary-background;
   left: 1rem;
   position: absolute;
   top: -1px;
@@ -114,8 +114,8 @@ h6 {
 }
 
 .SideBar__mobile-bars {
-  background: @color-light-purple;
-  border-bottom: 1px solid @color-almost-black;
+  background: @color-theme-primary;
+  border-bottom: 1px solid @color-primary-background;
   display: none;
   height: @top-bar-height-mobile;
   outline: none;
@@ -146,7 +146,7 @@ h6 {
   left: 0;
   position: absolute;
   right: 0;
-  z-index: 100;
+  z-index: @mask-modal;
 }
 
 svg.SideBar__mobile-bars-unseen {
@@ -164,7 +164,7 @@ svg.SideBar__mobile-bars-unseen {
 }
 
 .TopBar__floatAbove {
-  border-bottom: 1px solid @color-almost-black;
+  border-bottom: 1px solid @color-primary-background;
   margin-left: 3.15rem;
   z-index: @mask-above;
 

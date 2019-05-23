@@ -2,7 +2,7 @@
 
 // TODO: Add checks to ensure ETH redeemed for shares/reporting fees is correct, since fixture.getEthBalance returns the same amount every time it's called.
 
-import { ethers } from "ethers";
+import { BigNumber } from "bignumber.js";
 import { expect } from "chai";
 import "jest";
 import { stringTo32ByteHex } from "../libraries/HelperFunctions";
@@ -25,10 +25,10 @@ describe("TradeAndReport", () => {
         const market = await fixture.createReasonableMarket(fixture.universe!, [stringTo32ByteHex(" "), stringTo32ByteHex(" ")]);
 
         // Place an order
-        let type = new ethers.utils.BigNumber(0); // BID
-        let outcome = new ethers.utils.BigNumber(0);
-        let numShares = new ethers.utils.BigNumber(10000000000000);
-        let price = new ethers.utils.BigNumber(21);
+        let type = new BigNumber(0); // BID
+        let outcome = new BigNumber(0);
+        let numShares = new BigNumber(10000000000000);
+        let price = new BigNumber(21);
 
         await fixture.placeOrder(market.address, type, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 
@@ -62,14 +62,14 @@ describe("TradeAndReport", () => {
 
         const numTicks = await market.getNumTicks_();
         const reputationToken = await fixture.getReputationToken();
-        const payoutDistributionHash = await fixture.derivePayoutDistributionHash(market, [new ethers.utils.BigNumber(0), numTicks, new ethers.utils.BigNumber(0)]);
+        const payoutDistributionHash = await fixture.derivePayoutDistributionHash(market, [new BigNumber(0), numTicks, new BigNumber(0)]);
         const childUniverseReputationToken = await fixture.getChildUniverseReputationToken(payoutDistributionHash);
         const initialRepTotalMigrated = await childUniverseReputationToken.getTotalMigrated_();
-        expect(initialRepTotalMigrated === new ethers.utils.BigNumber("366666666666666667016192")); // TODO: calculate this value instead of hard-coding it
-        const repAmountToMigrate = new ethers.utils.BigNumber(9000000).mul(new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(18)));
-        await fixture.migrateOutByPayout(reputationToken, [new ethers.utils.BigNumber(0), numTicks, new ethers.utils.BigNumber(0)], repAmountToMigrate);
+        expect(initialRepTotalMigrated === new BigNumber("366666666666666667016192")); // TODO: calculate this value instead of hard-coding it
+        const repAmountToMigrate = new BigNumber(9000000).multipliedBy(new BigNumber(10).pow(18));
+        await fixture.migrateOutByPayout(reputationToken, [new BigNumber(0), numTicks, new BigNumber(0)], repAmountToMigrate);
         const finalRepTotalMigrated = await childUniverseReputationToken.getTotalMigrated_();
-        expect(finalRepTotalMigrated.sub(initialRepTotalMigrated).toString()).to.equal(repAmountToMigrate.toString());
+        expect(finalRepTotalMigrated.minus(initialRepTotalMigrated).toString()).to.equal(repAmountToMigrate.toString());
 
         let isFinalized = await market.isFinalized_();
         expect(isFinalized).to.be.true;

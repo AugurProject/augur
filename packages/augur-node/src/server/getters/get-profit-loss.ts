@@ -92,11 +92,11 @@ export function sumProfitLossResults<T extends ProfitLossResult>(left: T, right:
   const leftPosition = new BigNumber(left.position);
   const rightPosition = new BigNumber(right.position);
 
-  const position = leftPosition.add(rightPosition);
-  const realized = left.realized.add(right.realized);
-  const unrealized = left.unrealized.add(right.unrealized);
-  const total = realized.add(unrealized);
-  const cost = left.cost.add(right.cost);
+  const position = leftPosition.plus(rightPosition);
+  const realized = left.realized.plus(right.realized);
+  const unrealized = left.unrealized.plus(right.unrealized);
+  const total = realized.plus(unrealized);
+  const cost = left.cost.plus(right.cost);
   const averagePrice = position.gt(ZERO) ? cost.div(position) : ZERO;
 
   return Object.assign(_.clone(left), {
@@ -172,10 +172,10 @@ function getProfitAtTimestamps(pl: Array<ProfitLossTimeseries>, outcomeValues: A
       const ovResultIndex = Math.max(0, _.sortedLastIndexBy(outcomeValues, bucket, "timestamp") - 1);
       const ovResult = outcomeValues[ovResultIndex];
       lastPrice = ovResult.value;
-      unrealized = lastPrice.mul(position).sub(cost);
+      unrealized = lastPrice.multipliedBy(position).minus(cost);
     }
 
-    const total = realized.add(unrealized);
+    const total = realized.plus(unrealized);
     return {
       timestamp: bucket.timestamp,
       position,
@@ -285,11 +285,11 @@ export async function getProfitLossSummary(db: Knex, augur: Augur, params: GetPr
 
     const negativeStartProfit: ProfitLossResult = {
       timestamp: startProfit.timestamp,
-      position: startProfit.position.mul(new BigNumber(-1)),
-      realized: startProfit.realized.mul(new BigNumber(-1)),
-      unrealized: startProfit.unrealized.mul(new BigNumber(-1)),
-      total: startProfit.total.mul(new BigNumber(-1)),
-      cost: startProfit.cost.mul(new BigNumber(-1)),
+      position: startProfit.position.multipliedBy(new BigNumber(-1)),
+      realized: startProfit.realized.multipliedBy(new BigNumber(-1)),
+      unrealized: startProfit.unrealized.multipliedBy(new BigNumber(-1)),
+      total: startProfit.total.multipliedBy(new BigNumber(-1)),
+      cost: startProfit.cost.multipliedBy(new BigNumber(-1)),
       averagePrice: startProfit.averagePrice,
     };
 

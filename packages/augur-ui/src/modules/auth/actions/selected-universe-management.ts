@@ -2,7 +2,7 @@ import { windowRef } from "utils/window-ref";
 import { augur } from "services/augurjs";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
-export const setSelectedUniverse = (selectedUniverseId: String) => (
+export const setSelectedUniverse = (selectedUniverseId: string) => (
   dispatch: Function,
   getState: Function
 ) => {

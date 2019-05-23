@@ -6,18 +6,18 @@ import {
 } from "../../libs";
 import { UserSyncableDB } from "@augurproject/sdk/build/state/db/UserSyncableDB";
 import {Augur} from "@augurproject/sdk";
-import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
+import { stringTo32ByteHex } from "@augurproject/core/build/libraries/HelperFunctions";
 import { Contracts } from "@augurproject/sdk/build/api/Contracts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import {ethers} from "ethers";
+import { BigNumber } from "bignumber.js";
 import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
 
 const mock = makeDbMock();
 
-let augur: Augur<ethers.utils.BigNumber>;
+let augur: Augur;
 let addresses: ContractAddresses;
 let dependencies: ContractDependenciesEthers;
-let contracts: Contracts<ethers.utils.BigNumber>;
+let contracts: Contracts;
 
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
@@ -38,7 +38,7 @@ test.skip("sync", async () => {
   const eventName = "TokensTransferred";
   const sender = ACCOUNTS[0].publicKey;
   const highestAvailableBlockNumber = 0;
-  const db = new UserSyncableDB<ethers.utils.BigNumber>(dbController, mock.constants.networkId, eventName, sender, 0, [0]);
+  const db = new UserSyncableDB(dbController, mock.constants.networkId, eventName, sender, 0, [0]);
 
   // Generate logs to be synced
   // TODO generate user-specific TokensTransferred
@@ -47,9 +47,9 @@ test.skip("sync", async () => {
   const marketCreationCost = await universe.getOrCacheMarketCreationCost_();
   await cash.faucet(marketCreationCost, { sender });
   await cash.approve(addresses.Augur, marketCreationCost, { sender });
-  const endTime = new ethers.utils.BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
-  const fee = (new ethers.utils.BigNumber(10)).pow(new ethers.utils.BigNumber(16));
-  const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
+  const endTime = new BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
+  const fee = (new BigNumber(10)).pow(16);
+  const affiliateFeeDivisor = new BigNumber(25);
   const outcomes: Array<string> = [stringTo32ByteHex("big"), stringTo32ByteHex("small")];
   const topic = stringTo32ByteHex("boba");
   const description = "Will big or small boba be the most popular in 2019?";
@@ -83,7 +83,7 @@ test("props", async () => {
 
   const eventName = "foo";
   const user = "artistotle";
-  const db = new UserSyncableDB<ethers.utils.BigNumber>(dbController, mock.constants.networkId, eventName, user, 2, [0]);
+  const db = new UserSyncableDB(dbController, mock.constants.networkId, eventName, user, 2, [0]);
 
   // @ts-ignore - verify private property "additionalTopics"
   expect(db.additionalTopics).toEqual([[

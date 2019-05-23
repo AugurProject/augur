@@ -8,9 +8,9 @@
       > span {
         &:extend(.button--mediumgray all);
 
-        background-color: @color-medium-gray;
+        background-color: @color-primary-light;
         border-radius: 0.5rem;
-        color: @color-white;
+        color: @color-secondary-text;
         cursor: default;
         left: 0;
         margin-left: 1rem;
@@ -40,7 +40,7 @@ div.Order__cancelContainer {
   position: absolute;
   right: 10px;
   top: unset;
-  z-index: 5;
+  z-index: @above-all-content5;
 }
 
 @media @breakpoint-mobile {

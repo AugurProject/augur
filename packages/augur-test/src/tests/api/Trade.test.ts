@@ -1,91 +1,36 @@
-import { ACCOUNTS, deployContracts } from "../../libs";
-import { Contracts } from "@augurproject/sdk/build/api/Contracts";
-import { GenericAugurInterfaces } from "@augurproject/core";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
-import { ethers } from "ethers";
-import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
+import {
+  ACCOUNTS,
+  deployContracts,
+  ContractAPI,
+} from "../../libs";
+import { BigNumber } from "bignumber.js";
+import { Contracts as compilerOutput } from "@augurproject/artifacts";
 
-interface MarketCreatedEvent {
-  name: "MarketCreated";
-  parameters: {
-    market: string;
-  };
-}
+let john: ContractAPI;
+let mary: ContractAPI;
 
-let addresses: ContractAddresses;
-let dependencies: ContractDependenciesEthers;
-let contracts: Contracts<ethers.utils.BigNumber>;
 beforeAll(async () => {
-  const result = await deployContracts(ACCOUNTS, compilerOutput);
-  addresses = result.addresses;
-  dependencies = result.dependencies;
-  contracts = new Contracts(addresses, dependencies);
+  const {provider, addresses} = await deployContracts(ACCOUNTS, compilerOutput);
+
+  john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+  mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
+  await john.approveCentralAuthority();
+  await mary.approveCentralAuthority();
 }, 120000);
 
-test("Contract :: ReputationToken", async () => {
-  expect(contracts.reputationToken).toBe(null);
+test("Trade :: placeTrade", async () => {
+  const market1 = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
 
-  await contracts.setReputationToken("1");  // "1" -> production network
-  expect(contracts.reputationToken).toBeInstanceOf(GenericAugurInterfaces.ReputationToken);
+  await john.placeBasicYesNoTrade(0, market1, 1, new BigNumber(1), new BigNumber(0.4), new BigNumber(0));
 
-  await contracts.setReputationToken("2");  // not-"1" -> test network
-  expect(contracts.reputationToken).toBeInstanceOf(GenericAugurInterfaces.TestNetReputationToken);
+  const orderId = await john.getBestOrderId(new BigNumber(0), market1.address, new BigNumber(1));
 
-  if (contracts.reputationToken instanceof GenericAugurInterfaces.TestNetReputationToken) {
-    const initialBalance = new ethers.utils.BigNumber(await contracts.reputationToken.balanceOf_(ACCOUNTS[0].publicKey));
-    const delta = new ethers.utils.BigNumber("1000");
-    await contracts.reputationToken.faucet(delta, {sender: ACCOUNTS[0].publicKey});
-    const newBalance = await contracts.reputationToken.balanceOf_(ACCOUNTS[0].publicKey);
-    expect(new ethers.utils.BigNumber(newBalance)).toEqual(initialBalance.add(delta));
-  }
-});
+  let amountInOrder = await john.augur.contracts.orders.getAmount_(orderId);
+  await expect(amountInOrder.toNumber()).toEqual(10**16);
 
-test("Contract :: Cash", async () => {
-  const cash = contracts.cash;
-  const universe = contracts.universe;
-  const marketCreationCost = await universe.getOrCacheMarketCreationCost_();
-  await cash.faucet(marketCreationCost, { sender: ACCOUNTS[0].publicKey });
-  await cash.approve(addresses.Augur, marketCreationCost, { sender: ACCOUNTS[0].publicKey });
-  expect((await cash.allowance_(ACCOUNTS[0].publicKey, addresses.Augur))).toEqual(marketCreationCost);
-});
+  await mary.placeBasicYesNoTrade(1, market1, 1, new BigNumber(0.5), new BigNumber(0.4), new BigNumber(0));
 
-test("Contract :: Universe :: Create Market", async() => {
-  const cash = contracts.cash;
-  const universe = contracts.universe;
-  const marketCreationCost = await universe.getOrCacheMarketCreationCost_();
-  await cash.faucet(marketCreationCost, { sender: ACCOUNTS[0].publicKey });
-  await cash.approve(addresses.Augur, marketCreationCost, { sender: ACCOUNTS[0].publicKey });
+  amountInOrder = await john.augur.contracts.orders.getAmount_(orderId);
+  await expect(amountInOrder.toNumber()).toEqual(10**16 / 2);
 
-  const endTime = new ethers.utils.BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
-  const fee = (new ethers.utils.BigNumber(10)).pow(new ethers.utils.BigNumber(16));
-  const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
-  const outcomes: Array<string> = [stringTo32ByteHex("big"), stringTo32ByteHex("small")];
-  const topic = stringTo32ByteHex("boba");
-  const description = "Will big or small boba be the most popular in 2019?";
-  const extraInfo = "";
-  const maybeMarketCreatedEvent = (await universe.createCategoricalMarket(
-    endTime,
-    fee,
-    affiliateFeeDivisor,
-    ACCOUNTS[0].publicKey,
-    outcomes,
-    topic,
-    extraInfo,
-    { sender: ACCOUNTS[0].publicKey },
-  )).pop();
-
-  if (typeof(maybeMarketCreatedEvent) === "undefined") {
-    throw Error("universe.createCategoricalMarket(...) returned no logs");
-  } else if (maybeMarketCreatedEvent.name !== "MarketCreated") {
-    throw Error(`Expected "MarketCreated" log but got ${maybeMarketCreatedEvent.name}`);
-  }
-
-  const marketCreatedEvent = maybeMarketCreatedEvent as MarketCreatedEvent;
-
-  const marketAddress = marketCreatedEvent.parameters.market;
-  const market = contracts.marketFromAddress(marketAddress);
-
-  const numticks = new ethers.utils.BigNumber("0x64");
-  await expect(await market.getNumTicks_()).toEqual(numticks);
 }, 15000);

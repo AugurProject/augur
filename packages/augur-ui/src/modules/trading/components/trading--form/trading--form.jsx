@@ -16,13 +16,11 @@ import Styles from "modules/trading/components/trading--form/trading--form.style
 import { darkBgExclamationCircle } from "modules/common/components/icons";
 import { SquareDropdown } from "modules/common-elements/selection";
 import Checkbox from "src/modules/common/components/checkbox/checkbox";
-import MarketOutcomeOrders from "modules/market-charts/containers/market-outcome--orders";
 import getPrecision from "utils/get-number-precision";
 import convertExponentialToDecimal from "utils/convert-exponential";
 
 class TradingForm extends Component {
   static propTypes = {
-    isMobile: PropTypes.bool.isRequired,
     market: PropTypes.object.isRequired,
     marketType: PropTypes.string.isRequired,
     maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
@@ -486,7 +484,6 @@ class TradingForm extends Component {
       maxPrice,
       minPrice,
       updateState,
-      isMobile,
       updateNewOrderProperties,
       orderEscrowdEth
     } = this.props;
@@ -513,42 +510,25 @@ class TradingForm extends Component {
     return (
       <div className={Styles.TradingForm__form__container}>
         {market.marketType === CATEGORICAL &&
-          (!isMobile && (
-            <div className={Styles.TradingForm__outcome__container}>
-              <SquareDropdown
-                defaultValue={defaultOutcome}
-                onChange={this.changeOutcomeDropdown}
-                options={market.outcomes.map(outcome => ({
-                  label: outcome.name,
-                  value: outcome.id
-                }))}
-                large
-              />
-            </div>
-          ))}
+          <div className={classNames(Styles.TradingForm__outcome__container, Styles.HideOnMobile)}>
+            <SquareDropdown
+              defaultValue={defaultOutcome}
+              onChange={this.changeOutcomeDropdown}
+              options={market.outcomes.map(outcome => ({
+                label: outcome.name,
+                value: outcome.id
+              }))}
+              large
+            />
+          </div>
+        }
         {market.marketType === YES_NO &&
-          !isMobile && (
-            <div className={Styles.TradingForm__outcome__container}>
-              <div className={Styles.TradingForm__outcome__container__yes}>
-                <span>Outcome:</span> Yes
-              </div>
+          <div className={classNames(Styles.TradingForm__outcome__container, Styles.HideOnMobile)}>
+            <div className={Styles.TradingForm__outcome__container__yes}>
+              <span>Outcome:</span> Yes
             </div>
-          )}
-        {isMobile && (
-          <MarketOutcomeOrders
-            headerHeight={0}
-            isMobile={isMobile}
-            fixedPrecision={4}
-            pricePrecision={4}
-            hoveredPrice={null}
-            updateHoveredPrice={null}
-            updatePrecision={null}
-            updateSelectedOrderProperties={updateNewOrderProperties}
-            marketId={market.id}
-            selectedOutcome={selectedOutcome && selectedOutcome.id}
-            onMobileTradingPage
-          />
-        )}
+          </div>
+        }
         <ul className={Styles["TradingForm__form-body"]}>
           <li className={Styles["TradingForm__limit-quantity"]}>
             <label htmlFor="tr__input--quantity">Quantity</label>
@@ -684,8 +664,7 @@ class TradingForm extends Component {
               type="checkbox"
               isChecked={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
               value={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
-              large={!!isMobile}
-              small={!isMobile}
+              smallOnDesktop
               onClick={e =>
                 updateState({
                   [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: !s[

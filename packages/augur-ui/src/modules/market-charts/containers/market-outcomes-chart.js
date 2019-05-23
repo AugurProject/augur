@@ -14,7 +14,6 @@ const mapStateToProps = (state, ownProps) => {
     isScalar,
     scalarDenomination
   } = selectMarket(ownProps.marketId);
-
   const bucketedPriceTimeSeries = selectBucketedPriceTimeSeries(
     ownProps.marketId
   );
@@ -23,6 +22,7 @@ const mapStateToProps = (state, ownProps) => {
     maxPrice: maxPrice.toNumber(),
     minPrice: minPrice.toNumber(),
     fixedPrecision: 4,
+    pricePrecision: 4,
     outcomes,
     bucketedPriceTimeSeries,
     isScalar,

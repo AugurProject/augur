@@ -4,7 +4,7 @@ import ConnectAccount from "modules/auth/components/connect-account/connect-acco
 import {
   updateAuthStatus,
   IS_CONNECTION_TRAY_OPEN
-} from "modules/auth/actions/update-auth-status";
+} from "modules/auth/actions/auth-status";
 
 const mapStateToProps = state => ({
   isLogged: state.authStatus.isLogged,
