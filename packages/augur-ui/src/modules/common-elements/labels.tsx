@@ -731,7 +731,7 @@ export const MovementLabel = (props: MovementLabelProps) => {
 };
 
 export const PillLabel = ({ label, hideOnMobile }: PillLabelProps) => (
-  <span className={classNames(Styles.PillLabel, {[Styles.HideOnMobile]: props.hideOnMobile})}>{props.label}</span>
+  <span className={classNames(Styles.PillLabel, {[Styles.HideOnMobile]: hideOnMobile})}>{label}</span>
 );
 
 export const RepBalance = (props: RepBalanceProps) => (
