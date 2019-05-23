@@ -9,26 +9,6 @@ export enum ACCOUNT_TYPES {
   META_MASK = "metaMask",
   TREZOR = "trezor",
   EDGE = "edge",
-};
-
-
-export enum TokenType {
-  ReputationToken,
-  ShareToken,
-  DisputeCrowdsourcer,
-  DisputeWindow,
-  FeeToken,
-}
-
-export enum ControlMessageType {
-  ServerStart = "ServerStart",
-  ServerError = "ServerError",
-  WebsocketError = "WebsocketError",
-  WebsocketClose = "WebsocketClose",
-  BulkSyncStarted = "BulkSyncStarted",
-  BulkSyncFinished = "BulkSyncFinished",
-  BulkOrphansCheckStarted = "BulkOrphansCheckStarted",
-  BulkOrphansCheckFinished = "BulkOrphansCheckFinished",
 }
 
 export enum SubscriptionEventNames {
@@ -60,31 +40,18 @@ export enum SubscriptionEventNames {
   Approval = "Approval",
 }
 
-export enum MarketType {
-  yesNo,
-  categorical,
-  scalar,
+export enum ControlMessageType {
+  ServerStart = "ServerStart",
+  ServerError = "ServerError",
+  WebsocketError = "WebsocketError",
+  WebsocketClose = "WebsocketClose",
+  BulkSyncStarted = "BulkSyncStarted",
+  BulkSyncFinished = "BulkSyncFinished",
+  BulkOrphansCheckStarted = "BulkOrphansCheckStarted",
+  BulkOrphansCheckFinished = "BulkOrphansCheckFinished",
 }
 
-export interface NetworkNames {
-  [key: number]: string;
-}
-
-export const NETWORK_NAMES: NetworkNames = {
-  1: "Mainnet",
-  3: "Ropsten",
-  4: "Rinkeby",
-  42: "Kovan",
-};
-
-const SECONDS_PER_DAY = 3600 * 24;
-export const CONTRACT_INTERVAL = {
-  DESIGNATED_REPORTING_DURATION_SECONDS: 3 * SECONDS_PER_DAY,
-  DISPUTE_ROUND_DURATION_SECONDS: 7 * SECONDS_PER_DAY,
-  FORK_DURATION_SECONDS: 60 * SECONDS_PER_DAY,
-};
-
-export const ETHER = new ethersUtils.BigNumber(10).pow(18)
+export const ETHER = new ethersUtils.BigNumber(10).pow(18);
 
 export const TRADE_GAS_BUFFER = new BigNumber("100000", 10);
 
