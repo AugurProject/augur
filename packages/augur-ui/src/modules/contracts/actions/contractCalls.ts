@@ -73,10 +73,12 @@ export async function getRepBalance(address: string) {
   return formatAttoRep(balance).formattedValue;
 }
 
-export async function getEthBalance(address: string) {
+export async function getEthBalance(address: string): Promise<string> {
   const Augur = augurSdk.get();
   const balance = await Augur.provider.getBalance(address);
-  return { balance: formatAttoEth(balance).formattedValue, address };
+  const balances =  formatAttoEth(balance).formattedValue;
+  console.log("address balance", address, balances);
+  return balances;
 }
 
 export async function getDaiBalance(address: string) {

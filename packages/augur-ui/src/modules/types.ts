@@ -303,12 +303,14 @@ export interface LoginAccount {
   meta: { accontType: string; address: string; signer: object | null };
   totalFrozenFunds: string;
   tradingPositionsTotal: UnrealizedRevenue;
-  eth: string;
-  rep: string;
-  dai: string;
+  eth: string | undefined;
+  rep: string | undefined;
+  dai: string | undefined;
 }
 
-type ButtonActionType = (event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
+type ButtonActionType = (
+  event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+) => void;
 export interface BaseAction {
   type: string;
   data: any | undefined;

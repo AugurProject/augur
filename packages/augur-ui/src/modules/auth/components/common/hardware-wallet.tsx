@@ -37,7 +37,7 @@ interface HardwareWalletProps {
 interface HardwareWalletState {
   displayInstructions: boolean;
   baseDerivationPath: string;
-  walletAddresses: Array<number>;
+  walletAddresses: Array<WalletObject>;
   addressPageNumber: number;
   showWallet: boolean;
   cachedAddresses: boolean;
@@ -85,7 +85,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     this.getWalletAddressesWithBalance = this.getWalletAddressesWithBalance.bind(this);
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     const { validation, setIsLoading } = this.props;
     if (!validation()) {
       this.updateDisplayInstructions(true);
@@ -93,7 +93,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     }
   }
 
-  componentWillUpdate(nextProps: HardwareWalletProps, nextState: HardwareWalletState) {
+  public componentWillUpdate(nextProps: HardwareWalletProps, nextState: HardwareWalletState) {
     const { isLoading, isClicked, showAdvanced } = this.props;
     if (
       nextState.walletAddresses !== this.state.walletAddresses &&
@@ -136,7 +136,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     }
   }
 
-  async getWalletAddresses(derivationPath: string, pageNumber: number, clearAddresses: boolean = true) {
+  public async getWalletAddresses(derivationPath: string, pageNumber: number, clearAddresses: boolean = true) {
     const { validation, setIsLoading } = this.props;
     if (!validation()) {
       this.updateDisplayInstructions(true);
@@ -150,7 +150,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
 
     if (clearAddresses) {
       this.setState({
-        walletAddresses: []
+        walletAddresses: [],
       });
     }
     const walletAddresses = await this.getBulkWalletAddressesWithBalances(
@@ -168,7 +168,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     setIsLoading(false);
   }
 
-  async getWalletAddressesWithBalance() {
+  public async getWalletAddressesWithBalance() {
     const { validation, setIsLoading, walletName } = this.props;
     if (!validation()) {
       this.updateDisplayInstructions(true);
@@ -185,7 +185,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
 
     const walletAddresses = await this.getBulkWalletAddressesWithBalances(
       derivationPath,
-      1
+      1,
     );
 
     if (walletAddresses.length > 0) {
@@ -201,13 +201,13 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     }
   }
 
-  async getBulkWalletAddressesWithBalances(
+  private async getBulkWalletAddressesWithBalances(
     paths: Array<string>,
     pageNumber: number,
-    sortAndfilterBalances: boolean = true
-  ) {
+    sortAndfilterBalances: boolean = true,
+  ): Promise<Array<WalletObject>> {
     const { setIsLoading, onDerivationPathChange } = this.props;
-    let walletAddresses: Array<object> = [];
+    let walletAddresses: Array<WalletObject> = [];
     return new Promise((resolve, reject) => {
       onDerivationPathChange(paths, pageNumber) // only get 1 pages worth of addresses
         .catch((err: any) => {
@@ -223,51 +223,33 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
             setIsLoading(false);
             reject(new Error("no addresses found")); // no addresses found
           }
-          const promises: Array<Promise<object>> = [];
-          walletAddresses.forEach((addr: any) => {
-            const getPromise = new Promise((resolve, reject) => {
-              getEthBalance(addr.address)
-                .then((balance: number) => resolve(balance))
-                .catch((err: any) => reject(err));
-            });
-            promises.push(getPromise);
-          });
 
-          await Promise.all(promises)
-          .then((results: any) => {
-            results.forEach((result: any) => {
-              if (result && result.address) {
-                const value: any = walletAddresses.find(
-                  (addr: any) => addr.address === result.address,
-                );
-                if (value) {
-                  value.balance = result.balance;
-                }
-              }
-            })
+          for (const wallet of walletAddresses) {
+            wallet.balance = await getEthBalance(wallet.address);
+          }
 
-            const walletAddressesWithBalances = sortAndfilterBalances
-              ? filter(walletAddresses, (item: { balance: string }) => item.balance !== "0").sort(
-                  HardwareWallet.sortBalanceDesc,
-                )
-              : walletAddresses;
+          const walletAddressesWithBalances = sortAndfilterBalances
+            ? filter(walletAddresses, (item: { balance: string }) => item.balance !== "0").sort(
+                HardwareWallet.sortBalanceDesc,
+              )
+            : walletAddresses;
 
-            resolve(walletAddressesWithBalances);
-          });
+          resolve(walletAddressesWithBalances);
+
         });
     });
   }
 
-  updateDisplayInstructions(displayInstructions: boolean) {
+  private updateDisplayInstructions(displayInstructions: boolean) {
     this.setState({ displayInstructions });
   }
 
-  async connectWallet(addressObject: WalletObject) {
+  private async connectWallet(addressObject: WalletObject) {
     const { loginWithWallet } = this.props;
     return loginWithWallet(addressObject.derivationPath);
   }
 
-  async validatePath(value: string) {
+  private async validatePath(value: string) {
     const { hideError, showError, walletName } = this.props;
     if (DerivationPath.validate(value)) {
       await this.getWalletAddresses(value, 1);
@@ -277,17 +259,17 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     }
   }
 
-  showHardwareWallet() {
+  private showHardwareWallet() {
     this.setState({ showWallet: true });
   }
 
-  hideHardwareWallet() {
+  private hideHardwareWallet() {
     const { setShowAdvancedButton } = this.props;
     setShowAdvancedButton(false);
     this.setState({ showWallet: false });
   }
 
-  async next() {
+  private async next() {
     const { cachedAddresses, addressPageNumber } = this.state;
     if (!cachedAddresses) {
       await this.getWalletAddresses(
@@ -301,14 +283,14 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     });
   }
 
-  previous() {
+  private previous() {
     const { addressPageNumber } = this.state;
     this.setState({
       addressPageNumber: addressPageNumber - 1,
     });
   }
 
-  render() {
+  private render() {
     const {
       isLoading,
       error,
@@ -357,7 +339,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
           ToggleHeightStyles.target,
           {
             [ToggleHeightStyles.open]: s.showWallet,
-          }
+          },
         )}
       >
         <div>
@@ -370,7 +352,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
               ToggleHeightStyles.target,
               {
                 [ToggleHeightStyles.open]: showAdvanced,
-              }
+              },
             )}
           >
             <DerivationPathEditor
