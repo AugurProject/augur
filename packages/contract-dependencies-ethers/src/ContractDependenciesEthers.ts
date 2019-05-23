@@ -87,8 +87,9 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
         if (!this.signer) throw new Error("Attempting to sign a transaction while not providing a signer");
         // TODO: figure out a way to propagate a warning up to the user in this scenario, we don't currently have a mechanism for error propagation, so will require infrastructure work
         // TODO: https://github.com/ethers-io/ethers.js/issues/321
-        delete transaction.from;
-        const receipt = await (await this.signer.sendTransaction(this.transactionToEthersTransaction(transaction))).wait();
+        const tx = this.transactionToEthersTransaction(transaction);
+        delete tx.from;
+        const receipt = await (await this.signer.sendTransaction(tx)).wait();
         // ethers has `status` on the receipt as optional, even though it isn't and never will be undefined if using a modern network (which this is designed for)
         return <TransactionReceipt>receipt
     }
