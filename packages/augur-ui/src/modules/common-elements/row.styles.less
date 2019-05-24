@@ -60,6 +60,15 @@
   }
 }
 
+.Row1 {
+  > li {
+    &:nth-of-type(5),
+    &:nth-of-type(6) {
+      display: none;
+    }
+  }
+}
+
 .GroupRow {
   padding: 0 1.75rem 0 1.5rem;
 }
@@ -105,6 +114,10 @@
   > li {
     &:first-child {
       padding-left: 0;
+    }
+
+    &:nth-of-type(3) {
+      display: none;
     }
   }
 }

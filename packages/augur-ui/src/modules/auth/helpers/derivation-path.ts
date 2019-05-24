@@ -1,16 +1,26 @@
 export const DEFAULT_DERIVATION_PATH = "m/44'/60'/0'/0/0";
 export const NUM_DERIVATION_PATHS_TO_DISPLAY = 5;
-export const DERIVATION_PATHS = ["m/44'/60'/0'/0/0", "m/44'/60'/0'/0"];
+export const DERIVATION_PATH_TREZOR = ["m/44'/60'/0'/0/0"];
+export const DERIVATION_PATH_LEDGER = ["m/44'/60'/0'/0"];
+
+interface PathComponents {
+  purpose: number;
+  coinType: number;
+  account: number;
+  change: number;
+  index: number;
+}
+
 export default class DerivationPath {
-  static validate(derivationPath) {
+  static validate(derivationPath: string) {
     return /^m\/(44)'\/(60)'\/(\d+)'(?:\/|\/(\d+))?(?:\/|\/(\d+))?$/.test(
-      derivationPath
+      derivationPath,
     );
   }
 
-  static parse(derivationPath) {
+  static parse(derivationPath: string) {
     const result = /^m\/(44)'\/(60)'\/(\d+)'(?:\/|\/(\d+))?(?:\/|\/(\d+))?$/.exec(
-      derivationPath
+      derivationPath,
     );
     if (result) {
       return {
@@ -24,7 +34,7 @@ export default class DerivationPath {
     return null;
   }
 
-  static buildString(components) {
+  static buildString(components: PathComponents) {
     const { purpose, coinType, account, change, index } = components;
     let path = `m/${purpose}'/${coinType}'/${account}'`;
     if (change !== null) {
@@ -36,7 +46,7 @@ export default class DerivationPath {
     return path;
   }
 
-  static increment(components, n = 1) {
+  static increment(components: PathComponents, n: number = 1) {
     const newComponents = { ...components };
     // add n to the last provided component
     if (newComponents.index !== null) {

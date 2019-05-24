@@ -38,7 +38,7 @@ export default class MarketTradeHistory extends Component {
     } = this.props;
 
     return (
-      <section className={Styles.MarketTradeHistory__container}>
+      <section className={Styles.TradeHistory}>
         <MarketOutcomeHeaderOrders
           title="Trade History"
           headers={["quantity", "price", "time"]}
@@ -46,59 +46,48 @@ export default class MarketTradeHistory extends Component {
           extended={extend}
           hide={hide}
         />
-        <div className={Styles.MarketTradeHistory__table__data}>
+        <div>
           {groupedTradeHistory &&
             Object.keys(groupedTradeHistory).map((date, index) => (
-              <div key={index}>
-                <div className={Styles.MarketTradeHistory__table}>
-                  <ul className={Styles.MarketTradeHistory__table__header__day}>
-                    <li>{groupedTradeHistoryVolume[date]} Shares</li>
-                    <li>|</li>
-                    <li>{date}</li>
-                  </ul>
-                </div>
-                <div className={Styles.MarketTradeHistory__table__price}>
-                  {groupedTradeHistory[date].map((priceTime, indexJ) => (
-                    <ul
-                      key={priceTime.key + index + indexJ}
-                      className={Styles.MarketTradeHistory__table__trade__data}
-                    >
-                      <li
-                        className={classNames(
-                          Styles.MarketTradeHistory__trade__bar,
-                          {
-                            [Styles.MarketTradeHistory__trade__barNeg]:
-                              priceTime.type === SELL
-                          }
-                        )}
+              <div className={Styles.TradeHistoryTable} key={index}>
+                <ul>
+                  <li>{groupedTradeHistoryVolume[date]} Shares</li>
+                  <li>|</li>
+                  <li>{date}</li>
+                </ul>
+                {groupedTradeHistory[date].map((priceTime, indexJ) => (
+                  <ul key={index + indexJ}>
+                    <li
+                      className={classNames({
+                        [Styles.Neg]: priceTime.type === SELL
+                      })}
+                    />
+                    <li>
+                      <HoverValueLabel
+                        value={formatShares(priceTime.amount)}
                       />
-                      <li>
-                        <HoverValueLabel
-                          value={formatShares(priceTime.amount)}
-                        />
-                      </li>
-                      <li
+                    </li>
+                    <li
+                      className={classNames({
+                        [Styles.Buy]:
+                          priceTime.type !== SELL,
+                        [Styles.Sell]:
+                          priceTime.type === SELL
+                      })}
+                    >
+                      {priceTime.price.toFixed(4)}
+                      <span
                         className={classNames({
-                          [`${Styles.MarketTradeHistory__buy}`]:
+                          [Styles.Up]:
                             priceTime.type !== SELL,
-                          [`${Styles.MarketTradeHistory__sell}`]:
+                          [Styles.Down]:
                             priceTime.type === SELL
                         })}
-                      >
-                        {priceTime.price.toFixed(4)}
-                        <span
-                          className={classNames({
-                            [Styles.MarketTradeHistory__trade__indicatorUp]:
-                              priceTime.type !== SELL,
-                            [Styles.MarketTradeHistory__trade__indicatorDown]:
-                              priceTime.type === SELL
-                          })}
-                        />
-                      </li>
-                      <li>{priceTime.time}</li>
-                    </ul>
-                  ))}
-                </div>
+                      />
+                    </li>
+                    <li>{priceTime.time}</li>
+                  </ul>
+                ))}
               </div>
             ))}
         </div>

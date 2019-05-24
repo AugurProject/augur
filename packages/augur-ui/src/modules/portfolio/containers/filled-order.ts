@@ -41,7 +41,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "originalQuantity",
       columnType: COLUMN_TYPES.VALUE,
       value: originalQuantity,
-      hide: oP.extendedView,
       keyId: "filledOrder-originalQuantity-" + filledOrder.id
     },
     {

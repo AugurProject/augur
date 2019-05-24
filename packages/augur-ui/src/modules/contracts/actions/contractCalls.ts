@@ -5,9 +5,8 @@
  */
 // put all calls to contracts here that need conversion from display values to onChain values
 import { augurSdk } from "services/augursdk";
-import { ethers } from "ethers";
-import { BigNumber } from "ethers/utils";
-import { Web3Provider } from "ethers/providers";
+import { BigNumber } from "bignumber.js";
+import { formatAttoRep, formatAttoEth } from "utils/format-number";
 
 export function clearUserTx(): void {
   const Augur = augurSdk.get();
@@ -25,7 +24,7 @@ export async function getTransaction(): Promise<string> {
   return tx;
 }
 
-export async function getGasPrice(): Promise<string> {
+export async function getGasPrice(): Promise<BigNumber> {
   const Augur = augurSdk.get();
   const gasPrice = await Augur.provider.getGasPrice();
   return gasPrice;
@@ -71,19 +70,21 @@ export async function getRepBalance(address: string) {
   const { contracts } = augurSdk.get();
   const RepToken = contracts.getReputationToken();
   const balance = await RepToken.balanceOf_(address);
-  return ethers.utils.formatEther(balance);
+  return formatAttoRep(balance).formattedValue;
 }
 
-export async function getEthBalance(address: string) {
+export async function getEthBalance(address: string): Promise<string> {
   const Augur = augurSdk.get();
   const balance = await Augur.provider.getBalance(address);
-  return { balance: ethers.utils.formatEther(balance), address };
+  const balances =  formatAttoEth(balance).formattedValue;
+  console.log("address balance", address, balances);
+  return balances;
 }
 
 export async function getDaiBalance(address: string) {
   const { contracts } = augurSdk.get();
   const balance = await contracts.cash.balanceOf_(address);
-  return ethers.utils.formatEther(balance);
+  return formatAttoEth(balance).formattedValue;
 }
 
 export async function getDisputeThresholdForFork() {

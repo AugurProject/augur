@@ -19,7 +19,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     showPercent,
     extendedView,
     isFirst,
-    showExpandedToggle
+    showExpandedToggleOnMobile
   } = oP;
 
   const columnProperties: Array<Properties> = [
@@ -108,7 +108,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     columnProperties,
     styleOptions: {
       position: true,
-      showExpandedToggle,
+      showExpandedToggleOnMobile,
       noToggle: extendedView,
       isFirst
     }
