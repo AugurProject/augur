@@ -9,7 +9,6 @@ import {
   FILTER_SEARCH_PARAM
 } from "modules/common-elements/constants";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
-import { selectIsMobile, selectCategoriesState } from "src/select-state";
 
 import { isEmpty } from "lodash/fp";
 import { curriedToggleMemberOfArray } from "utils/toggle-member-of-array";
@@ -32,8 +31,8 @@ const mapStateToProps = (
     keywords
   } = getSelectedTagsAndCategoriesFromLocation(location);
 
-  const isMobile = selectIsMobile(state);
-  const categories = selectCategoriesState(state);
+  const { isMobile } = state;
+  const { categories } = state;
 
   const toggleTagFn = curriedToggleMemberOfArray(selectedTagNames);
 
