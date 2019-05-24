@@ -81,7 +81,7 @@ export class Accounts<TBigNumber> {
   public static GetAccountTransactionHistoryParams = t.intersection([GetAccountTransactionHistoryParamsSpecific, SortLimit]);
 
   @Getter("GetAccountTransactionHistoryParams")
-  public static async getAccountTransactionHistory<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
+  public static async getAccountTransactionHistory<TBigNumber>(augur: Augur, db: DB, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
     if (!params.earliestTransactionTime) params.earliestTransactionTime = 0;
     if (!params.latestTransactionTime) params.latestTransactionTime = Math.floor(Date.now() / 1000);
     if (!params.coin) params.coin = Coin.ALL;
@@ -168,7 +168,7 @@ export class Accounts<TBigNumber> {
     return allFormattedLogs;
   }
 
-  static async getMarketCreatedInfo<TBigNumber>(db: DB<TBigNumber>, transactionLogs: Array<OrderEventLog|TradingProceedsClaimedLog|DisputeCrowdsourcerRedeemedLog|InitialReporterRedeemedLog|DisputeCrowdsourcerContributionLog|InitialReportSubmittedLog|CompleteSetsPurchasedLog|CompleteSetsSoldLog>): Promise<MarketCreatedInfo> {
+  static async getMarketCreatedInfo<TBigNumber>(db: DB, transactionLogs: Array<OrderEventLog|TradingProceedsClaimedLog|DisputeCrowdsourcerRedeemedLog|InitialReporterRedeemedLog|DisputeCrowdsourcerContributionLog|InitialReportSubmittedLog|CompleteSetsPurchasedLog|CompleteSetsSoldLog>): Promise<MarketCreatedInfo> {
     const markets = transactionLogs.map(transactionLogs => transactionLogs.market);
     let marketCreatedLogs = await db.findMarketCreatedLogs({selector: {market: {$in: markets}}});
     const marketCreatedInfo: MarketCreatedInfo = {};
@@ -201,7 +201,7 @@ function getOutcomeDescriptionFromOutcome(outcome: number, market: MarketCreated
   }
 }
 
-function getOutcomeFromPayoutNumerators(payoutNumerators: Array<ethers.utils.BigNumber>, market: MarketCreatedLog): number {
+function getOutcomeFromPayoutNumerators(payoutNumerators: Array<BigNumber>, market: MarketCreatedLog): number {
   let outcome = 0;
   for (; outcome < payoutNumerators.length; outcome++) {
     if (payoutNumerators[outcome].toNumber() > 0) {
@@ -335,7 +335,7 @@ function formatTradingProceedsClaimedLogs(transactionLogs: Array<TradingProceeds
   return formattedLogs;
 }
 
-async function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrowdsourcerRedeemedLog>|Array<InitialReporterRedeemedLog>, augur: Augur<ethers.utils.BigNumber>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
+async function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrowdsourcerRedeemedLog>|Array<InitialReporterRedeemedLog>, augur: Augur, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     const reportingParticipant = augur.contracts.getReportingParticipant(transactionLogs[i].reporter);
@@ -404,7 +404,7 @@ function formatMarketCreatedLogs(transactionLogs: MarketCreatedLog[], params: t.
   return formattedLogs;
 }
 
-async function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<DisputeCrowdsourcerContributionLog>, augur: Augur<ethers.utils.BigNumber>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
+async function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<DisputeCrowdsourcerContributionLog>, augur: Augur, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     const reportingParticipant = augur.contracts.getReportingParticipant(transactionLogs[i].reporter);
@@ -430,7 +430,7 @@ async function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<
   return formattedLogs;
 }
 
-async function formatInitialReportSubmittedLogs(transactionLogs: Array<InitialReportSubmittedLog>, augur: Augur<ethers.utils.BigNumber>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
+async function formatInitialReportSubmittedLogs(transactionLogs: Array<InitialReportSubmittedLog>, augur: Augur, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     const reportingParticipant = augur.contracts.getReportingParticipant(transactionLogs[i].reporter);
