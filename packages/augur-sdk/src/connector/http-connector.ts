@@ -7,7 +7,7 @@ export class HTTPConnector extends Connector {
     super();
   }
 
-  public async connect(params: any): Promise<any> {
+  public async connect(params?: any): Promise<any> {
     return Promise.resolve();
   }
 
