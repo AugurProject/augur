@@ -80,10 +80,7 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
-        options: {
-          projectReferences: true
-        }
+        loader: "babel-loader"
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
