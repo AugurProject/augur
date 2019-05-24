@@ -79,8 +79,8 @@ module.exports = {
         }
       },
       {
-        test: /\.tsx?$/,
-        loader: "babel-loader"
+        test: /\.tsx$/,
+        loader: "ts-loader"
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,

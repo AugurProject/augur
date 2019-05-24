@@ -99,8 +99,8 @@
     "shifty": "2.6.1",
     "speedomatic": "2.1.5",
     "trezor-connect": "7.0.3",
-    "webpack-cli": "^3.3.1",
     "webpack": "4.19.1",
+    "webpack-cli": "^3.3.1",
     "webpack-dev-middleware": "3.3.0"
   },
   "devDependencies": {
