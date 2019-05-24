@@ -4,12 +4,11 @@ import ConnectDropdown from "modules/auth/components/connect-dropdown/connect-dr
 import { loginWithMetaMask } from "src/modules/auth/actions/login-with-metamask";
 import { logout } from "modules/auth/actions/logout";
 import { showEdgeLogin } from "modules/auth/actions/show-edge-login";
-import { selectEdgeLoadingState } from "src/select-state";
 
 const mapStateToProps = state => ({
   isMobile: state.appStatus.isMobile,
   isLogged: state.authStatus.isLogged,
-  edgeLoading: selectEdgeLoadingState(state)
+  edgeLoading: state.authStatus.edgeLoading,
 });
 
 const mapDispatchToProps = (dispatch, { history }) => ({
