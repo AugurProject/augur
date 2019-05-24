@@ -12,7 +12,7 @@ import MarketOrdersPositionsTable from "modules/market/containers/market-orders-
 import MarketOutcomesList from "modules/market/containers/market-outcomes-list";
 import MarketOutcomeOrders from "modules/market-charts/containers/market-outcome--orders";
 import MarketTradingForm from "modules/market/containers/market-trading-form";
-import MarketChartsPane from "modules/market-charts/components/market-charts-pane/market-charts-pane";
+import MarketChartsPane from "modules/market-charts/containers/market-charts-pane";
 import parseMarketTitle from "modules/markets/helpers/parse-market-title";
 import MarketTradeHistory from "modules/market/containers/market-trade-history";
 import {
@@ -48,7 +48,6 @@ export default class MarketView extends Component {
     location: PropTypes.object.isRequired,
     marketType: PropTypes.string,
     outcomes: PropTypes.array,
-    isLogged: PropTypes.bool,
     updateModal: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired
   };
@@ -56,7 +55,6 @@ export default class MarketView extends Component {
   static defaultProps = {
     marketType: undefined,
     outcomes: [],
-    isLogged: false,
     currentTimestamp: 0
   };
 
@@ -67,11 +65,6 @@ export default class MarketView extends Component {
       orderPrice: "",
       orderQuantity: "",
       selectedNav: BUY
-    };
-
-    this.sharedChartMargins = {
-      top: 0,
-      bottom: 30
     };
 
     this.state = {
@@ -203,7 +196,6 @@ export default class MarketView extends Component {
 
   showModal() {
     const {
-      isLogged,
       marketId,
       outcomes,
       market,
@@ -214,7 +206,6 @@ export default class MarketView extends Component {
     updateModal({
       type: MODAL_TRADING_OVERLAY,
       market,
-      isLogged,
       selectedOrderProperties: s.selectedOrderProperties,
       selectedOutcome: s.selectedOutcome,
       toggleForm: this.toggleForm,
@@ -299,8 +290,6 @@ export default class MarketView extends Component {
                         <MarketOutcomesChart
                           marketId={marketId}
                           selectedOutcome={s.selectedOutcome}
-                          pricePrecision={4}
-                          daysPassed={daysPassed}
                         />
                       </div>
                     </div>
@@ -339,12 +328,6 @@ export default class MarketView extends Component {
                         <ModulePane label="Order Book">
                           <div className={Styles.MarketView__orders}>
                             <MarketOutcomeOrders
-                              sharedChartMargins={this.sharedChartMargins}
-                              fixedPrecision={4}
-                              pricePrecision={4}
-                              hoveredPrice={null}
-                              updateHoveredPrice={null}
-                              updatePrecision={null}
                               updateSelectedOrderProperties={
                                 this.updateSelectedOrderProperties
                               }
@@ -388,12 +371,9 @@ export default class MarketView extends Component {
                         marketId={marketId}
                         selectedOutcome={s.selectedOutcome}
                         currentTimestamp={currentTimestamp}
-                        maxPrice={maxPrice}
-                        minPrice={minPrice}
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
                         }
-                        daysPassed={daysPassed}
                       />
                     </div>
                   </ModulePane>
@@ -453,13 +433,9 @@ export default class MarketView extends Component {
                           <MarketChartsPane
                             marketId={marketId}
                             selectedOutcome={s.selectedOutcome}
-                            currentTimestamp={currentTimestamp}
-                            maxPrice={maxPrice}
-                            minPrice={minPrice}
                             updateSelectedOrderProperties={
                               this.updateSelectedOrderProperties
                             }
-                            daysPassed={daysPassed}
                           />
                         </div>
                       </div>
@@ -487,11 +463,6 @@ export default class MarketView extends Component {
                       )}
                     >
                       <MarketOutcomeOrders
-                        fixedPrecision={4}
-                        pricePrecision={4}
-                        hoveredPrice={null}
-                        updateHoveredPrice={null}
-                        updatePrecision={null}
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
                         }
