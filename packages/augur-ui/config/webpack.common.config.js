@@ -35,14 +35,13 @@ module.exports = {
     modules: ["node_modules", PATHS.APP],
     extensions: [".html", ".less", ".json", ".js", ".jsx", ".ts", ".tsx"],
     alias: {
-      src: PATHS.APP,
-      config: path.resolve(PATHS.APP, "config"),
       assets: path.resolve(PATHS.APP, "assets"),
+      config: path.resolve(PATHS.APP, "config"),
       modules: path.resolve(PATHS.APP, "modules"),
-      utils: path.resolve(PATHS.APP, "utils"),
       reducers: path.resolve(PATHS.APP, "reducers"),
       services: path.resolve(PATHS.APP, "services"),
       store: path.resolve(PATHS.APP, "store"),
+      utils: path.resolve(PATHS.APP, "utils"),
       test: PATHS.TEST,
       assertions: path.resolve(PATHS.TEST, "assertions")
     },
@@ -67,7 +66,7 @@ module.exports = {
         }
       },
       {
-        test: /\.jsx?$/,
+        test: /\.[jt]sx?$/,
         loader: "babel-loader",
         exclude: function(modulePath) {
           return (
@@ -77,10 +76,6 @@ module.exports = {
             )
           );
         }
-      },
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader"
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
@@ -99,7 +94,7 @@ module.exports = {
         use: [
           "style-loader",
           {
-            loader: "typings-for-css-modules-loader",
+            loader: "css-loader",
             options: {
               camelCase:true,
               modules: true,
