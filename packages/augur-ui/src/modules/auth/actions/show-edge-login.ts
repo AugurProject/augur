@@ -4,10 +4,6 @@ import {
   EDGE_LOADING,
   EDGE_CONTEXT
 } from "modules/auth/actions/auth-status";
-import {
-  selectEdgeContextState,
-  selectEdgeLoadingState
-} from "src/select-state";
 import { makeEdgeUiContext } from "edge-login-ui-web";
 
 export const BEGIN_EDGE_LOADING = "BEGIN_EDGE_LOADING";
@@ -18,8 +14,8 @@ export const showEdgeLogin = (history: any) => (
   getState: Function
 ) => {
   const state = getState();
-  const edgeContext = selectEdgeContextState(state);
-  const edgeLoading = selectEdgeLoadingState(state);
+  const { edgeContext } = state.authStatus;
+  const { edgeLoading } = state.authStatus;
 
   if (edgeContext) {
     edgeContext.on("login", (edgeAccount: any) =>
