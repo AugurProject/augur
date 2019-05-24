@@ -14,20 +14,6 @@ import {
 } from "modules/app/actions/update-app-status";
 import { initAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
-import {
-  selectBlockchainState,
-  selectCategoriesState,
-  selectConnectionState,
-  selectEnvState,
-  selectIsLogged,
-  selectIsMobile,
-  selectIsMobileSmall,
-  selectLoginAccountState,
-  selectModal,
-  selectUniverseState,
-  selectUrlState,
-  selectSidebarStatus
-} from "src/select-state";
 import { RewriteUrlParams } from "src/modules/app/hocs/rewrite-url-params";
 import { windowRef } from "src/utils/window-ref";
 import isGlobalWeb3 from "modules/auth/helpers/is-global-web3";
@@ -41,21 +27,21 @@ import {
 } from "modules/app/actions/update-sidebar-status";
 
 const mapStateToProps = state => ({
-  blockchain: selectBlockchainState(state),
-  categories: selectCategoriesState(state),
-  connection: selectConnectionState(state),
+  blockchain: state.blockchain,
+  categories: state.categories,
+  connection: state.connection,
   coreStats: selectCoreStats(state),
-  env: selectEnvState(state),
-  isLogged: selectIsLogged(state),
-  isMobile: selectIsMobile(state),
-  isMobileSmall: selectIsMobileSmall(state),
-  loginAccount: selectLoginAccountState(state),
-  modal: selectModal(state),
+  env: state.env,
+  isLogged: state.authStatus.isLogged,
+  isMobile: state.appStatus.isMobile,
+  isMobileSmall: state.appStatus.isMobileSmall,
+  loginAccount: state.loginAccount,
+  modal: state.modal,
   alerts: selectInfoAlertsAndSeenCount(state),
-  universe: selectUniverseState(state),
-  url: selectUrlState(state),
+  universe: state.universe,
+  url: state.url,
   useWeb3Transport: isGlobalWeb3(),
-  sidebarStatus: selectSidebarStatus(state)
+  sidebarStatus: state.sidebarStatus
 });
 
 const mapDispatchToProps = dispatch => ({

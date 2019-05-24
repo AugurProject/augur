@@ -1,8 +1,5 @@
 import { createSelector } from "reselect";
-import {
-  selectLoginAccountState,
-  selectAccountNameState
-} from "src/select-state";
+import { selectLoginAccountState } from "src/select-state";
 import { formatRep, formatEther, formatDai } from "utils/format-number";
 import generateDownloadAccountLink from "modules/auth/helpers/generate-download-account-link";
 import store from "src/store";
@@ -16,24 +13,32 @@ export default function() {
 
 export const selectLoginAccount = createSelector(
   selectLoginAccountState,
-  selectAccountNameState,
-  (loginAccount, accountName) => ({
-    ...loginAccount,
-    ...generateDownloadAccountLink(
+  loginAccount => {
+    const genAccountProperties = generateDownloadAccountLink(
       loginAccount.address,
       loginAccount.keystore,
       getValue(loginAccount, "privateKey.data")
         ? loginAccount.privateKey.data
         : loginAccount.privateKey
-    ), // Ternary due to differences in the way data is stored between Airbitz + local -- TODO -- unify
-    accountName,
-    rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 4 }),
-    dai: formatDai(loginAccount.dai, { zeroStyled: false, decimalsRounded: 4 }),
-    eth: formatEther(loginAccount.eth, {
-      zeroStyled: false,
-      decimalsRounded: 4
-    })
-  })
+    );
+
+    return {
+      ...loginAccount,
+      ...genAccountProperties,
+      rep: formatRep(loginAccount.rep, {
+        zeroStyled: false,
+        decimalsRounded: 4
+      }),
+      dai: formatDai(loginAccount.dai, {
+        zeroStyled: false,
+        decimalsRounded: 4
+      }),
+      eth: formatEther(loginAccount.eth, {
+        zeroStyled: false,
+        decimalsRounded: 4
+      })
+    };
+  }
 );
 
 export const selectAccountFunds = createSelector(
