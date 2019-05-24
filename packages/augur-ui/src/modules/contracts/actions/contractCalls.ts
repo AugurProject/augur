@@ -27,7 +27,7 @@ export async function getTransaction(): Promise<string> {
 export async function getGasPrice(): Promise<BigNumber> {
   const Augur = augurSdk.get();
   const gasPrice = await Augur.provider.getGasPrice();
-  return gasPrice
+  return gasPrice;
 }
 
 export async function isUnlocked(address: string): Promise<boolean> {
