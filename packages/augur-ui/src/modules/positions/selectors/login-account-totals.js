@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { ZERO } from "modules/common-elements/constants";
-import store from "src/store";
-import { selectLoginAccountTotalsState } from "src/select-state";
+import store from "store";
+import { selectLoginAccountTotalsState } from "store/select-state";
 import { formatPercent } from "utils/format-number";
 import { createBigNumber } from "utils/create-big-number";
 

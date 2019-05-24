@@ -12,7 +12,7 @@ import getOrderBookKeys from "modules/markets/helpers/get-orderbook-keys";
 import { selectMarket } from "modules/markets/selectors/market";
 
 import { ASKS, BIDS } from "modules/common-elements/constants";
-import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { selectCurrentTimestampInSeconds } from "store/select-state";
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId);

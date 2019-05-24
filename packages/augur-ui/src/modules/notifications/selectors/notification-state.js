@@ -1,12 +1,12 @@
 import { createSelector } from "reselect";
-import { selectMarkets } from "src/modules/markets/selectors/markets-all";
+import { selectMarkets } from "modules/markets/selectors/markets-all";
 import {
   selectLoginAccountAddress,
   selectReportingWindowStats,
   selectPendingLiquidityOrders,
   selectCurrentTimestampInSeconds,
   selectReadNotificationState
-} from "src/select-state";
+} from "store/select-state";
 
 import { createBigNumber } from "utils/create-big-number";
 import canClaimProceeds from "utils/can-claim-proceeds";

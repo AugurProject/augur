@@ -10,7 +10,7 @@ import { JsonRpcProvider } from "ethers/providers";
 import { Addresses } from "@augurproject/artifacts";
 
 export class SDK {
-  public _sdk: Augur<EthersProvider> | null = null;
+  public _sdk: Augur | null = null;
   public isWeb3Transport: boolean = false;
 
   public async makeApi(
@@ -28,14 +28,14 @@ export class SDK {
       account,
     );
 
-    this._sdk = await Augur.create<BigNumber, EthersProvider>(
+    this._sdk = await Augur.create(
       ethersProvider,
       contractDependencies,
       Addresses[networkId],
     );
   }
 
-  public get(): Augur<EthersProvider> {
+  public get(): Augur {
     if (this._sdk) {
       return this._sdk;
     }

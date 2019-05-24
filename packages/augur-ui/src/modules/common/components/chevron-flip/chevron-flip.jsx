@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import {
   ChevronFlipIcon,
   ChevronFlipFilledIcon
-} from "src/modules/common/components/icons";
+} from "modules/common/components/icons";
 import Styles from "modules/common/components/chevron-flip/chevron-flip.styles";
 
 const ChevronFlip = ({

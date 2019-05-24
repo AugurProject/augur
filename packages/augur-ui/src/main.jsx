@@ -5,7 +5,7 @@ import { HashRouter } from "react-router-dom";
 
 import MainErrorBoundary from "modules/common/components/main-error-boundary/main-error-boundary";
 
-import store from "src/store";
+import store from "store";
 
 import { augur } from "services/augurjs";
 

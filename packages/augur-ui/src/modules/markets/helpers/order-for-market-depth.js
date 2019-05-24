@@ -1,7 +1,7 @@
 import memoize from "memoizee";
 
 import { BIDS, ASKS } from "modules/common-elements/constants";
-import { createBigNumber } from "src/utils/create-big-number";
+import { createBigNumber } from "utils/create-big-number";
 
 // The last entry in the order array is a boolean denoting whether the order is selectable or not.
 const orderForMarketDepth = orderBook => {

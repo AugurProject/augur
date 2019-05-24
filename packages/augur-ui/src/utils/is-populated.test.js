@@ -1,4 +1,4 @@
-import isPopulated from "src/utils/is-populated";
+import isPopulated from "utils/is-populated";
 
 describe("is-populated", () => {
   describe("should return false", () => {

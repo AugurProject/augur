@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 
 import ReportingHeader from "modules/reporting/containers/reporting-header";
-import ReportDisputeNoRepState from "src/modules/reporting/components/reporting-dispute-no-rep-state/reporting-dispute-no-rep-state";
+import ReportDisputeNoRepState from "modules/reporting/components/reporting-dispute-no-rep-state/reporting-dispute-no-rep-state";
 import DisputingMarkets from "modules/reporting/components/common/disputing-markets";
 
 const Styles = require("./reporting-dispute-markets.styles");

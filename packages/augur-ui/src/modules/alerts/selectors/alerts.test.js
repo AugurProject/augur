@@ -2,7 +2,7 @@ import {
   selectAlertsByLevel,
   selectInfoAlertsAndSeenCount
 } from "modules/alerts/selectors/alerts";
-import * as alertLevels from "src/modules/common-elements/constants";
+import * as alertLevels from "modules/common-elements/constants";
 
 describe("modules/alerts/selectors/alerts", () => {
   let state;

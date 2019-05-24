@@ -16,12 +16,12 @@ import { YES_NO, SCALAR, CATEGORICAL } from "modules/common-elements/constants";
 
 import CommonStyles from "modules/market/components/common/market-common.styles";
 import Styles from "modules/market/components/market-basics/market-basics.styles";
-import SingleSlicePieGraph from "src/modules/market/components/common/single-slice-pie-graph/single-slice-pie-graph";
-import TimeRemainingIndicatorWrapper from "src/modules/market/components/common/time-remaining-indicator/time-remaining-indicator";
+import SingleSlicePieGraph from "modules/market/components/common/single-slice-pie-graph/single-slice-pie-graph";
+import TimeRemainingIndicatorWrapper from "modules/market/components/common/time-remaining-indicator/time-remaining-indicator";
 import { constants } from "services/augurjs";
 import moment from "moment";
 import { compact } from "lodash";
-import { CategoryTagTrail } from "src/modules/common/components/category-tag-trail/category-tag-trail";
+import { CategoryTagTrail } from "modules/common/components/category-tag-trail/category-tag-trail";
 import { MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
 

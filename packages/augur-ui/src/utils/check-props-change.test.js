@@ -1,4 +1,4 @@
-import { checkPropsChange } from "src/utils/check-props-change";
+import { checkPropsChange } from "utils/check-props-change";
 
 describe("checkPropsChange", () => {
   const obj1 = {

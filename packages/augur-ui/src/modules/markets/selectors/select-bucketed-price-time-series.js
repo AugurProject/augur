@@ -1,7 +1,7 @@
 import { createBigNumber } from "utils/create-big-number";
 import createCachedSelector from "re-reselect";
 import { head, each, pullAll } from "lodash";
-import store from "src/store";
+import store from "store";
 import { ZERO } from "modules/common-elements/constants";
 import {
   convertUnixToFormattedDate,
@@ -12,7 +12,7 @@ import {
   selectOutcomesDataState,
   selectCurrentTimestamp,
   selectMarketTradingHistoryState
-} from "src/select-state";
+} from "store/select-state";
 import { selectPriceTimeSeries } from "modules/markets/selectors/price-time-series";
 
 function selectMarketsDataStateMarket(state, marketId) {

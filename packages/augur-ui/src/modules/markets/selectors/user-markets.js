@@ -2,7 +2,7 @@ import { createSelector } from "reselect";
 import {
   selectLoginAccountAddress,
   selectMarketTradingHistoryState
-} from "src/select-state";
+} from "store/select-state";
 import selectAllMarkets from "modules/markets/selectors/markets-all";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
 

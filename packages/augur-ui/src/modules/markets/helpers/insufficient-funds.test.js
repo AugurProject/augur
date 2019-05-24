@@ -2,7 +2,7 @@ import insufficientFunds from "modules/markets/helpers/insufficient-funds";
 
 jest.mock("utils/log-error");
 
-describe("src/modules/markets/helpers/insufficient-funds.js", () => {
+describe("modules/markets/helpers/insufficient-funds.js", () => {
   describe("when user has insufficient ETH", () => {
     test("should output 'ETH'", () => {
       const validityBond = 0.01;

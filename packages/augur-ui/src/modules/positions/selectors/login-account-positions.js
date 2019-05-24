@@ -1,8 +1,8 @@
 import { createSelector } from "reselect";
 
-import store from "src/store";
+import store from "store";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
-import { selectAccountPositionsState } from "src/select-state";
+import { selectAccountPositionsState } from "store/select-state";
 
 // TODO
 export default function() {

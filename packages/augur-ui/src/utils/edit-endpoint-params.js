@@ -1,6 +1,6 @@
-import parseQuery from "src/modules/routes/helpers/parse-query";
+import parseQuery from "modules/routes/helpers/parse-query";
 import { createPath } from "history";
-import makeQuery from "src/modules/routes/helpers/make-query";
+import makeQuery from "modules/routes/helpers/make-query";
 import { isEmpty } from "lodash";
 
 export const editEndpointParams = (

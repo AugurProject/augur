@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 
-import { selectAlertsState } from "src/select-state";
-import store from "src/store";
+import { selectAlertsState } from "store/select-state";
+import store from "store";
 
 import * as alertLevels from "modules/common-elements/constants";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";

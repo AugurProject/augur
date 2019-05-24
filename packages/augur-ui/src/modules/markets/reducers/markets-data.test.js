@@ -1,5 +1,5 @@
 import reducer from "modules/markets/reducers/markets-data";
-import { UPDATE_MARKET_REP_BALANCE } from "src/modules/markets/actions/update-markets-data";
+import { UPDATE_MARKET_REP_BALANCE } from "modules/markets/actions/update-markets-data";
 
 describe(`modules/markets/reducers/markets-data.js`, () => {
   describe("UPDATE_MARKET_CATEGORY", () => {

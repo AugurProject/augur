@@ -27,9 +27,9 @@ import {
   selectUniverseState,
   selectUrlState,
   selectSidebarStatus
-} from "src/select-state";
-import { RewriteUrlParams } from "src/modules/app/hocs/rewrite-url-params";
-import { windowRef } from "src/utils/window-ref";
+} from "store/select-state";
+import { RewriteUrlParams } from "modules/app/hocs/rewrite-url-params";
+import { windowRef } from "utils/window-ref";
 import isGlobalWeb3 from "modules/auth/helpers/is-global-web3";
 import { logout } from "modules/auth/actions/logout";
 import {

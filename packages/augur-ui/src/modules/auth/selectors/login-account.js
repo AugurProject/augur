@@ -2,10 +2,10 @@ import { createSelector } from "reselect";
 import {
   selectLoginAccountState,
   selectAccountNameState
-} from "src/select-state";
+} from "store/select-state";
 import { formatRep, formatEther, formatDai } from "utils/format-number";
 import generateDownloadAccountLink from "modules/auth/helpers/generate-download-account-link";
-import store from "src/store";
+import store from "store";
 
 import getValue from "utils/get-value";
 import { createBigNumber } from "utils/create-big-number";

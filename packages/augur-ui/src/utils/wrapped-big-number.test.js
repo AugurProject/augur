@@ -1,9 +1,9 @@
-import { BigNumber, createBigNumber } from "src/utils/create-big-number";
+import { BigNumber, createBigNumber } from "utils/create-big-number";
 import logError from "utils/log-error";
 
 jest.mock("utils/log-error");
 
-describe("src/utils/wrapped-big-number.js", () => {
+describe("utils/wrapped-big-number.js", () => {
   test("should console an error when a undefined is passed", () => {
     const result = createBigNumber(undefined);
     expect(result).toBeUndefined();

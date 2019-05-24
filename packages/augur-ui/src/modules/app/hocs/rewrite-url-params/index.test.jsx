@@ -1,8 +1,8 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { RewriteUrlParams } from "src/modules/app/hocs/rewrite-url-params";
+import { RewriteUrlParams } from "modules/app/hocs/rewrite-url-params";
 
-describe("src/modules/app/hocs/rewrite-url-params/index.jsx", () => {
+describe("modules/app/hocs/rewrite-url-params/index.jsx", () => {
   const EmptyComponent = () => null;
 
   let windowRef;

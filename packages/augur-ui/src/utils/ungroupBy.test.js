@@ -1,6 +1,6 @@
-import { ungroupBy } from "src/utils/ungroupBy";
+import { ungroupBy } from "utils/ungroupBy";
 
-describe("src/utils/ungroupBy.js", () => {
+describe("utils/ungroupBy.js", () => {
   describe("ungroupBy method", () => {
     // This is the omnibus example.
     it("should collapse trees into an array of flattish objects", () => {

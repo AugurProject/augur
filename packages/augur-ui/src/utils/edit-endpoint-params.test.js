@@ -1,7 +1,7 @@
-import { editEndpointParams } from "src/utils/edit-endpoint-params";
+import { editEndpointParams } from "utils/edit-endpoint-params";
 import * as sinon from "sinon";
 
-describe("src/utils/edit-endpoint-params.js", () => {
+describe("utils/edit-endpoint-params.js", () => {
   let windowRef;
   let spy;
   beforeEach(() => {

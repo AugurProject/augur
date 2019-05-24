@@ -40,7 +40,9 @@ module.exports = {
       assets: path.resolve(PATHS.APP, "assets"),
       modules: path.resolve(PATHS.APP, "modules"),
       utils: path.resolve(PATHS.APP, "utils"),
+      reducers: path.resolve(PATHS.APP, "reducers"),
       services: path.resolve(PATHS.APP, "services"),
+      store: path.resolve(PATHS.APP, "store"),
       test: PATHS.TEST,
       assertions: path.resolve(PATHS.TEST, "assertions")
     },
@@ -65,7 +67,7 @@ module.exports = {
         }
       },
       {
-        test: /\.[jt]sx?$/,
+        test: /\.jsx?$/,
         loader: "babel-loader",
         exclude: function(modulePath) {
           return (
@@ -74,6 +76,13 @@ module.exports = {
               modulePath
             )
           );
+        }
+      },
+      {
+        test: /\.tsx?$/,
+        loader: "ts-loader",
+        options: {
+          projectReferences: true
         }
       },
       {
@@ -93,9 +102,11 @@ module.exports = {
         use: [
           "style-loader",
           {
-            loader: "css-loader",
+            loader: "typings-for-css-modules-loader",
             options: {
+              camelCase:true,
               modules: true,
+              namedExport: true,
               localIdentName: "[name]_[local]"
             }
           },
@@ -105,7 +116,10 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "postcss-loader"]
+        use: [
+          "style-loader",
+          "postcss-loader"
+        ]
       }
     ]
   },

@@ -4,7 +4,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import MarketHeaderReporting from "modules/market/components/market-header/market-header-reporting";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
-import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/common-elements/constants";
 

@@ -1,10 +1,10 @@
 import React from "react";
 
 import * as PropTypes from "prop-types";
-import { loadCandleStickData } from "src/modules/markets/actions/load-candlestick-data";
-import logError from "src/utils/log-error";
-import { checkPropsChange } from "src/utils/check-props-change";
-import MarketOutcomeCandlestick from "src/modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick";
+import { loadCandleStickData } from "modules/markets/actions/load-candlestick-data";
+import logError from "utils/log-error";
+import { checkPropsChange } from "utils/check-props-change";
+import MarketOutcomeCandlestick from "modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick";
 import { BigNumber } from "bignumber.js";
 import {
   DEFAULT_SHORT_PERIODS_VALUE,

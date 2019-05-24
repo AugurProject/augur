@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 
 import MarketBasics from "modules/market/components/market-basics/market-basics";
 
-import { selectCurrentTimestamp } from "src/select-state";
+import { selectCurrentTimestamp } from "store/select-state";
 
 const mapStateToProps = state => ({
   currentTimestamp: selectCurrentTimestamp(state),

@@ -6,7 +6,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import {
   MODAL_CLAIM_TRADING_PROCEEDS
 } from "modules/common-elements/constants";
-import { selectCurrentTimestamp } from "src/select-state";
+import { selectCurrentTimestamp } from "store/select-state";
 import { constants } from "services/augurjs";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { createBigNumber } from "utils/create-big-number";

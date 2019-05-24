@@ -1,16 +1,16 @@
-import { useUnlockedAccount } from "src/modules/auth/actions/use-unlocked-account";
+import { useUnlockedAccount } from "modules/auth/actions/use-unlocked-account";
 import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
 import logError from "utils/log-error";
-import { selectMarkets } from "src/modules/markets/selectors/markets-all";
+import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { loadMarkets } from "modules/markets/actions/load-markets";
-import store from "src/store";
+import store from "store";
 import { DISCLAIMER_SEEN } from "modules/common-elements/constants";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import {
   selectCurrentTimestamp,
   selectBlockchainState,
   selectLoginAccountState
-} from "src/select-state";
+} from "store/select-state";
 import { logout } from "modules/auth/actions/logout";
 import { formatRep, formatEther } from "utils/format-number";
 import getRep from "modules/account/actions/get-rep";

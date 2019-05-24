@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
 
 import Styles from "modules/common/components/category-tag-trail/category-tag-trail.styles";
-import WordTrail from "src/modules/common/components/word-trail/word-trail";
+import WordTrail from "modules/common/components/word-trail/word-trail";
 
 export const CategoryTagTrail = ({ categories, tags }) => (
   <div className={Styles.CategoryTagTrail}>

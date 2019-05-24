@@ -11,8 +11,8 @@ import {
   MARKET_REVIEWS
 } from "modules/common-elements/constants";
 import { windowRef } from "utils/window-ref";
-import { selectCurrentTimestampInSeconds } from "src/select-state";
-import { createBigNumber } from "src/utils/create-big-number";
+import { selectCurrentTimestampInSeconds } from "store/select-state";
+import { createBigNumber } from "utils/create-big-number";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { loadMarketTradingHistory } from "modules/markets/actions/market-trading-history-management";
 

@@ -1,10 +1,10 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import ConnectDropdown from "modules/auth/components/connect-dropdown/connect-dropdown";
-import { loginWithMetaMask } from "src/modules/auth/actions/login-with-metamask";
+import { loginWithMetaMask } from "modules/auth/actions/login-with-metamask";
 import { logout } from "modules/auth/actions/logout";
 import { showEdgeLogin } from "modules/auth/actions/show-edge-login";
-import { selectEdgeLoadingState } from "src/select-state";
+import { selectEdgeLoadingState } from "store/select-state";
 
 const mapStateToProps = state => ({
   isMobile: state.appStatus.isMobile,

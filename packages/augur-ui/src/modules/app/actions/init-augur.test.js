@@ -1,6 +1,6 @@
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
-import realStore from "src/store";
+import realStore from "store";
 import * as augur from "services/augurjs";
 
 import { initAugur, connectAugur } from "modules/app/actions/init-augur";

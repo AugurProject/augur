@@ -1,4 +1,4 @@
-import store from "src/store";
+import store from "store";
 import { selectMarket } from "modules/markets/selectors/market";
 import {
   selectMarketsDataState,
@@ -10,7 +10,7 @@ import {
   selectAccountShareBalance,
   selectLoginAccountAddress,
   selectAccountPositionsState
-} from "src/select-state";
+} from "store/select-state";
 import { createSelector } from "reselect";
 
 export default function() {

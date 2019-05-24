@@ -24,7 +24,7 @@ import {
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 import MarketOutcomeSelector from "modules/market/components/market-view/market-outcome-selector";
-import MarketOutcomesChart from "src/modules/market-charts/containers/market-outcomes-chart";
+import MarketOutcomesChart from "modules/market-charts/containers/market-outcomes-chart";
 import { getMarketAgeInDays } from "utils/format-date";
 import Styles from "modules/market/components/market-view/market-view.styles";
 import { precisionClampFunction } from "modules/markets/helpers/clamp-fixed-precision";

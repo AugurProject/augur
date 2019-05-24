@@ -2,9 +2,9 @@ import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 
-import SingleSlicePieGraph from "src/modules/market/components/common/single-slice-pie-graph/single-slice-pie-graph";
+import SingleSlicePieGraph from "modules/market/components/common/single-slice-pie-graph/single-slice-pie-graph";
 import { convertUnixToFormattedDate } from "utils/format-date";
-import TimeRemainingIndicatorWrapper from "src/modules/market/components/common/time-remaining-indicator/time-remaining-indicator";
+import TimeRemainingIndicatorWrapper from "modules/market/components/common/time-remaining-indicator/time-remaining-indicator";
 import { createBigNumber } from "utils/create-big-number";
 import moment from "moment";
 import { TYPE_CLAIM_PROCEEDS } from "modules/common-elements/constants";

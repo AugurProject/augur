@@ -1,7 +1,7 @@
 import { createBigNumber } from "utils/create-big-number";
 import memoize from "memoizee";
 
-import store from "src/store";
+import store from "store";
 
 import { isOrderOfUser } from "modules/orders/helpers/is-order-of-user";
 

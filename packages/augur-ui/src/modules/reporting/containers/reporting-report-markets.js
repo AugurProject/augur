@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import ReportingReportMarkets from "modules/reporting/components/reporting-report-markets/reporting-report-markets";
 import { loadReporting } from "modules/reports/actions/load-reporting";
 import { selectMarketsToReport } from "modules/reports/selectors/select-markets-to-report";
-import { selectMarkets } from "src/modules/markets/selectors/markets-all";
-import { selectMarketReportState } from "src/select-state";
+import { selectMarkets } from "modules/markets/selectors/markets-all";
+import { selectMarketReportState } from "store/select-state";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 
 const mapStateToProps = state => {

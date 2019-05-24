@@ -1,12 +1,12 @@
 import { createSelector } from "reselect";
-import store from "src/store";
-import * as constants from "src/modules/common-elements/constants";
+import store from "store";
+import * as constants from "modules/common-elements/constants";
 import {
   selectMarketReportState,
   selectLoginAccountAddress,
   selectFilledOrders,
   selectMarketsDataState
-} from "src/select-state";
+} from "store/select-state";
 import { selectMarket } from "modules/markets/selectors/market";
 import { keyArrayBy } from "utils/key-by";
 import getUserFilledOrders from "modules/orders/selectors/filled-orders";

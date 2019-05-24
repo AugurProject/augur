@@ -3,7 +3,7 @@ import {
   calculatePercentage,
   calculateTentativeCurrentRep
 } from "modules/reports/helpers/progress-calculations";
-import { createBigNumber } from "src/utils/create-big-number";
+import { createBigNumber } from "utils/create-big-number";
 import { formatAttoRep } from "utils/format-number";
 
 jest.mock("utils/format-number");

@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 
 import { createBigNumber } from "utils/create-big-number";
-import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { selectCurrentTimestampInSeconds } from "store/select-state";
 import MarketOutcomeCharts from "modules/market-charts/components/market-outcome-charts/market-outcome-charts";
 import orderAndAssignCumulativeShares from "modules/markets/helpers/order-and-assign-cumulative-shares";
 import orderForMarketDepth from "modules/markets/helpers/order-for-market-depth";

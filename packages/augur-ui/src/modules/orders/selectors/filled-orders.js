@@ -1,4 +1,4 @@
-import store from "src/store";
+import store from "store";
 import { createBigNumber } from "utils/create-big-number";
 import { BUY, SELL } from "modules/common-elements/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
@@ -7,7 +7,7 @@ import {
   selectOutcomesDataState,
   selectMarketTradingHistoryState,
   selectLoginAccountAddress
-} from "src/select-state";
+} from "store/select-state";
 import createCachedSelector from "re-reselect";
 import { selectUserOpenOrders } from "modules/orders/selectors/user-open-orders";
 import { getOutcomeName } from "utils/get-outcome";

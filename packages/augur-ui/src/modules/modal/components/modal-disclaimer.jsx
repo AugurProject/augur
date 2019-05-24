@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Styles from "modules/modal/components/common/common.styles";
 
 import ModalActions from "modules/modal/components/common/modal-actions";
-import Checkbox from "src/modules/common/components/checkbox/checkbox";
+import Checkbox from "modules/common/components/checkbox/checkbox";
 
 const EST_HEIGHT_PERCENT = 0.98;
 

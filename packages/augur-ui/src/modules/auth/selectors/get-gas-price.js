@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
-import { selectGasPriceInfo } from "src/select-state";
+import { selectGasPriceInfo } from "store/select-state";
 import { createBigNumber } from "utils/create-big-number";
-import store from "src/store";
+import store from "store";
 
 const GWEI_CONVERSION = 1000000000;
 

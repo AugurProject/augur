@@ -1,7 +1,7 @@
 import memoize from "memoizee";
 import { createBigNumber } from "utils/create-big-number";
 import createCachedSelector from "re-reselect";
-import store from "src/store";
+import store from "store";
 
 import { isOrderOfUser } from "modules/orders/helpers/is-order-of-user";
 
@@ -18,7 +18,7 @@ import {
   selectOrderCancellationState,
   selectPendingOrdersState,
   selectLoginAccountAddress
-} from "src/select-state";
+} from "store/select-state";
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketsDataState(state)[marketId];

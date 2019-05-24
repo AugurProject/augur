@@ -9,7 +9,7 @@ import {
   ACCOUNT_TYPES,
   ERROR_TYPES
 } from "modules/common-elements/constants";
-import isMetaMaskPresent from "src/modules/auth/helpers/is-meta-mask";
+import isMetaMaskPresent from "modules/auth/helpers/is-meta-mask";
 import { logoutIcon } from "modules/common/components/icons";
 
 import Styles from "modules/auth/components/connect-dropdown/connect-dropdown.styles";

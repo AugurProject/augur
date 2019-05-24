@@ -23,7 +23,7 @@ import {
 import { constants } from "services/constants";
 import { getOutcomeName } from "utils/get-outcome";
 
-import store from "src/store";
+import store from "store";
 
 import {
   selectAggregateOrderBook,
@@ -45,7 +45,7 @@ import {
   selectOrderCancellationState,
   selectAccountShareBalance,
   selectAccountPositionsState
-} from "src/select-state";
+} from "store/select-state";
 
 export const selectMarket = marketId => {
   const state = store.getState();

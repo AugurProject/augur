@@ -1,4 +1,4 @@
-import store from "src/store";
+import store from "store";
 import { constants } from "services/augurjs";
 
 function filterForkedMarket(market) {

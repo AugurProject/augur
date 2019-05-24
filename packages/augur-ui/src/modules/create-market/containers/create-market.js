@@ -10,7 +10,7 @@ import CreateMarketView from "modules/create-market/components/create-market-vie
 import {
   selectCategoriesState,
   selectCurrentTimestamp
-} from "src/select-state";
+} from "store/select-state";
 import { estimateSubmitNewMarket } from "modules/markets/actions/estimate-submit-new-market";
 
 import getValue from "utils/get-value";

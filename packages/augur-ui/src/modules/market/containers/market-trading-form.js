@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import MarketTradingForm from "modules/market/components/market-trading-form/market-trading-form";
-import { createBigNumber } from "src/utils/create-big-number";
+import { createBigNumber } from "utils/create-big-number";
 import { windowRef } from "utils/window-ref";
 import {
   MARKET_REVIEW_TRADE_SEEN,

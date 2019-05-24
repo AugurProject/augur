@@ -9,7 +9,7 @@ import {
   FILTER_SEARCH_PARAM
 } from "modules/common-elements/constants";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
-import { selectIsMobile, selectCategoriesState } from "src/select-state";
+import { selectIsMobile, selectCategoriesState } from "store/select-state";
 
 import { isEmpty } from "lodash/fp";
 import { curriedToggleMemberOfArray } from "utils/toggle-member-of-array";
@@ -19,7 +19,7 @@ import { MARKETS } from "modules/routes/constants/views";
 import BaseInnerNavPure from "modules/app/components/inner-nav/base-inner-nav-pure";
 import { updateMobileMenuState } from "modules/app/actions/update-sidebar-status";
 import { getSelectedTagsAndCategoriesFromLocation } from "modules/markets/helpers/get-selected-tags-and-categories-from-location";
-import noop from "src/utils/noop";
+import noop from "utils/noop";
 
 const mapStateToProps = (
   state,

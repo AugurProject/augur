@@ -4,7 +4,7 @@ import configureMockStore from "redux-mock-store";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
 import { removeAccountDispute } from "modules/reports/actions/update-account-disputes";
 import { augur } from "services/augurjs";
-import { getPayoutNumerators } from "src/modules/reports/selectors/get-payout-numerators";
+import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { submitMarketContribute } from "modules/reports/actions/submit-market-contribute";
 
 jest.mock("services/augurjs");

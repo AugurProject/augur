@@ -1,8 +1,8 @@
-import { getSelectedTagsAndCategoriesFromLocation } from "src/modules/markets/helpers/get-selected-tags-and-categories-from-location";
+import { getSelectedTagsAndCategoriesFromLocation } from "modules/markets/helpers/get-selected-tags-and-categories-from-location";
 
 import { compose } from "lodash/fp";
 
-describe("src/modules/markets/helpers/get-tags-and-categories-from-location.js", () => {
+describe("modules/markets/helpers/get-tags-and-categories-from-location.js", () => {
   // Works from bottom to top.
   const composedGetTagsAndCategoriesFromLocation = compose(
     getSelectedTagsAndCategoriesFromLocation,

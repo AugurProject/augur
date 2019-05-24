@@ -15,7 +15,7 @@ import toggleCategory from "modules/routes/helpers/toggle-category";
 import classNames from "classnames";
 
 import { compact } from "lodash";
-import { CategoryTagTrail } from "src/modules/common/components/category-tag-trail/category-tag-trail";
+import { CategoryTagTrail } from "modules/common/components/category-tag-trail/category-tag-trail";
 
 const DisputeMarketCard = ({
   history,

@@ -5,7 +5,7 @@ import ReportingDisputeMarkets from "modules/reporting/components/reporting-disp
 import makePath from "modules/routes/helpers/make-path";
 import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
 import { selectLoginAccount } from "modules/auth/selectors/login-account";
-import { selectMarketReportState } from "src/select-state";
+import { selectMarketReportState } from "store/select-state";
 import { selectMarketsInDispute } from "modules/reports/selectors/select-dispute-markets";
 import awaitingDisputeMarkets from "modules/reports/selectors/select-awaiting-dispute-markets";
 import { loadDisputing } from "modules/reports/actions/load-disputing";

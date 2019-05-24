@@ -1,14 +1,14 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-import { helpers } from "src/helpers/helpers";
+import { helpers } from "helpers/helpers";
 
 import thunk from "redux-thunk";
 
-import { createReducer } from "src/reducers";
-import { windowRef } from "src/utils/window-ref";
+import { createReducer } from "reducers";
+import { windowRef } from "utils/window-ref";
 import { augur } from "services/augurjs";
-import { processFavorites } from "src/modules/markets/helpers/favorites-processor";
+import { processFavorites } from "modules/markets/helpers/favorites-processor";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 // console log middleware
@@ -117,7 +117,7 @@ if (process.env.NODE_ENV === "development") {
 
 if (module.hot) {
   module.hot.accept("./reducers", changed => {
-    const nextReducers = require("src/reducers");
+    const nextReducers = require("reducers");
     store.replaceReducer(
       combineReducers({
         ...nextReducers.createReducer()

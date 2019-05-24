@@ -9,7 +9,7 @@ import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 
 jest.mock("services/augurjs");
-jest.mock("src/select-state");
+jest.mock("store/select-state");
 jest.mock("modules/alerts/actions/alerts", () => ({
   updateAlert: () => ({
     type: "UPDATE_ALERT"

@@ -1,7 +1,7 @@
 import { constants } from "services/augurjs";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { selectCurrentTimestamp } from "src/select-state";
+import { selectCurrentTimestamp } from "store/select-state";
 import { each, orderBy } from "lodash";
 import PortfolioReports from "modules/portfolio/components/portfolio-reports/portfolio-reports";
 import { updateModal } from "modules/modal/actions/update-modal";

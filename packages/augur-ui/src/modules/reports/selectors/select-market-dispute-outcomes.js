@@ -1,11 +1,11 @@
 import { createSelector } from "reselect";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { constants } from "services/augurjs";
-import store from "src/store";
+import store from "store";
 import { isEmpty } from "lodash";
 
 import selectDisputeOutcomes from "modules/reports/selectors/select-dispute-outcomes";
-import { selectUniverseState } from "src/select-state";
+import { selectUniverseState } from "store/select-state";
 import fillDisputeOutcomeProgress from "modules/reports/selectors/fill-dispute-outcome-progress";
 
 export default function() {

@@ -5,12 +5,12 @@ import {
   AUGUR_NODE_URL,
   ETHEREUM_NODE_HTTP,
   ETHEREUM_NODE_WS
-} from "src/modules/common-elements/constants";
+} from "modules/common-elements/constants";
 
 import { createPath } from "history";
 
 import { camelCase, compose, isEmpty, mapKeys, omit, pick } from "lodash/fp";
-import makeQuery from "src/modules/routes/helpers/make-query";
+import makeQuery from "modules/routes/helpers/make-query";
 
 const keys = {
   AUGUR_NODE_URL,

@@ -1,6 +1,6 @@
-import { formatEther, formatShares } from "src/utils/format-number";
+import { formatEther, formatShares } from "utils/format-number";
 import orderForMarketDepth from "modules/markets/helpers/order-for-market-depth";
-import { createBigNumber } from "src/utils/create-big-number";
+import { createBigNumber } from "utils/create-big-number";
 
 describe("modules/markets/helpers/order-for-market-depth.js", () => {
   let exampleOrderBook;

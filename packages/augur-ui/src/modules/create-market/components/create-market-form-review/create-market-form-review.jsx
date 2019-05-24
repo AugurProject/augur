@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { augur } from "services/augurjs";
 import { createBigNumber } from "utils/create-big-number";
-import getValue from "src/utils/get-value";
+import getValue from "utils/get-value";
 import insufficientFunds from "modules/markets/helpers/insufficient-funds";
 
 import MarkdownRenderer from "modules/common/components/markdown-renderer/markdown-renderer";

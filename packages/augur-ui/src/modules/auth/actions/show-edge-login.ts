@@ -7,7 +7,7 @@ import {
 import {
   selectEdgeContextState,
   selectEdgeLoadingState
-} from "src/select-state";
+} from "store/select-state";
 import { makeEdgeUiContext } from "edge-login-ui-web";
 
 export const BEGIN_EDGE_LOADING = "BEGIN_EDGE_LOADING";

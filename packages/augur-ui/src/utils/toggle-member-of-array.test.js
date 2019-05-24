@@ -1,4 +1,4 @@
-import toggleMemberOfArray from "src/utils/toggle-member-of-array";
+import toggleMemberOfArray from "utils/toggle-member-of-array";
 
 describe("toggle-member-of-array", () => {
   const needle = "some-needle";

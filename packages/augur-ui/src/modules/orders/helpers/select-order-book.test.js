@@ -4,9 +4,9 @@ import {
   selectTopAsk
 } from "modules/orders/helpers/select-order-book";
 
-import store from "src/store";
+import store from "store";
 
-jest.mock("src/store");
+jest.mock("store");
 
 describe("modules/orders/helpers/select-order-book.js", () => {
   beforeEach(() => {

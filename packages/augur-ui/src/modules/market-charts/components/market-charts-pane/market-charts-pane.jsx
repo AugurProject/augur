@@ -4,10 +4,10 @@ import Media from "react-media";
 
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
-import MarketOutcomesChart from "src/modules/market-charts/containers/market-outcomes-chart";
+import MarketOutcomesChart from "modules/market-charts/containers/market-outcomes-chart";
 import { TEMP_TABLET } from "modules/common-elements/constants";
 
-import { Candlestick } from "src/modules/market/components/market-view-charts/candlestick";
+import { Candlestick } from "modules/market/components/market-view-charts/candlestick";
 import MarketDepth from "modules/market-charts/containers/market-outcome-chart-depth";
 import { BigNumber } from "bignumber.js";
 

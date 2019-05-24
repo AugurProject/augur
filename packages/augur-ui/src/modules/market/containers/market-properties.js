@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import { selectCurrentTimestamp } from "src/select-state";
+import { selectCurrentTimestamp } from "store/select-state";
 import { determineMarketLinkType } from "modules/markets/helpers/determine-market-link-type";
 import MarketProperties from "modules/market/components/market-properties/market-properties";
 import { selectMarket } from "modules/markets/selectors/market";

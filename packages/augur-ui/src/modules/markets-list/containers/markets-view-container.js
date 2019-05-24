@@ -6,8 +6,8 @@ import { toggleFavorite } from "modules/markets/actions/update-favorites";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 
 import { compose } from "redux";
-import { selectMarkets } from "src/modules/markets/selectors/markets-all";
-import { getSelectedTagsAndCategoriesFromLocation } from "src/modules/markets/helpers/get-selected-tags-and-categories-from-location";
+import { selectMarkets } from "modules/markets/selectors/markets-all";
+import { getSelectedTagsAndCategoriesFromLocation } from "modules/markets/helpers/get-selected-tags-and-categories-from-location";
 import { loadMarketsByFilter } from "modules/markets/actions/load-markets";
 import { buildSearchString } from "modules/markets/selectors/build-search-string";
 import debounce from "utils/debounce";

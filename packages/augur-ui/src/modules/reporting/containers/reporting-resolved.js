@@ -2,11 +2,11 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { constants } from "services/augurjs";
 import ReportingResolved from "modules/reporting/components/reporting-resolved/reporting-resolved";
-import { selectMarketReportState } from "src/select-state";
-import { loadReportingFinal } from "src/modules/reports/actions/load-reporting-final";
+import { selectMarketReportState } from "store/select-state";
+import { loadReportingFinal } from "modules/reports/actions/load-reporting-final";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
-import { selectMarkets } from "src/modules/markets/selectors/markets-all";
+import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { selectMarket } from "modules/markets/selectors/market";
 
 const mapStateToProps = state => {
