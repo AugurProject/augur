@@ -23,7 +23,7 @@ import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { repFaucet } from "./lib/rep-faucet";
 import { UploadBlockNumbers } from "@augurproject/artifacts";
 import { createCannedMarketsAndOrders} from "@augurproject/test";
-import { createSeedFile } from "@augurproject/test/build/scripts/GenerateGanacheSeed";
+import { createSeedFile, seedFileIsOutOfDate } from "@augurproject/test/build/scripts/GenerateGanacheSeed";
 
 const COMMANDS = [
   "create-markets",
@@ -218,7 +218,14 @@ async function runCommandForNetwork(networkConfiguration: NetworkConfiguration, 
       break;
     }
     case "create-seed-file": {
-      await createSeedFile("../augur-test/seed.json");
+      console.log("Creating ganache seed file.");
+      const seedFilepath = `${__dirname}/../../../augur-test/seed.json`;
+      if (await seedFileIsOutOfDate(seedFilepath)) {
+        console.log("Seed file out of date. Creating/updating...");
+        await createSeedFile(seedFilepath);
+      } else {
+        console.log("Seed file is up-to-date. No need to update.");
+      }
       break;
     }
     case "gas-limit": {

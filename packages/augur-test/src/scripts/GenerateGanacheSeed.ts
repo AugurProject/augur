@@ -13,6 +13,7 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import {ContractDeployer} from "@augurproject/core";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import * as path from "path";
+import crypto from "crypto";
 
 const memdown = require("memdown");
 const levelup = require("levelup");
@@ -43,15 +44,35 @@ function makeGanacheProvider(accounts: AccountList): ethers.providers.Web3Provid
   }));
 }
 
+const DEFAULT_SEED_FILE = "./seed.json";
+
+function hashContracts(): string {
+  const md5 = crypto.createHash("md5");
+  md5.update(JSON.stringify(compilerOutput));
+  return md5.digest("hex");
+}
+
+export async function seedFileIsOutOfDate(filePath: string = DEFAULT_SEED_FILE): Promise<boolean> {
+  const exists = await fs.exists(filePath);
+  if (!exists) {
+    return true;
+  }
+
+  const contractsHash = hashContracts();
+  const seed = require(filePath);
+  return contractsHash !== seed.contractsHash;
+}
+
 interface LevelDBRow {
   key: string;
   value: string;
   type: "put";
 }
 
-export async function createSeedFile(filePath: string = "./seed.json") {
+export async function createSeedFile(filePath: string = DEFAULT_SEED_FILE): Promise<void> {
   const ganacheProvider = makeGanacheProvider(ACCOUNTS);
   const { addresses } = await deployContracts(ganacheProvider, ACCOUNTS, compilerOutput);
+  const contractsHash = hashContracts();
 
   const leveledDB = levelup(db);
 
@@ -80,6 +101,7 @@ export async function createSeedFile(filePath: string = "./seed.json") {
 
   await fs.writeFile(resolvedPath, JSON.stringify({
     addresses,
+    contractsHash,
     data: payload,
   }));
 
