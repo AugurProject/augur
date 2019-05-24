@@ -8,14 +8,13 @@ import {
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 
 const mapStateToProps = (state: any) => {
-  const { sidebarStatus, authStatus, appStatus } = state;
+  const { sidebarStatus, authStatus } = state;
   const { unseenCount } = selectInfoAlertsAndSeenCount(state);
   return {
     stats: selectCoreStats(state),
     sidebarStatus,
     unseenCount,
     isLogged: authStatus.isLogged,
-    isMobileSmall: appStatus.isMobileSmall,
     alertsVisible: authStatus.isLogged && sidebarStatus.isAlertsVisible
   };
 };

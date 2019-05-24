@@ -3,7 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import App from "modules/app/components/app/app";
+import App from "modules/app/components/app";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import {

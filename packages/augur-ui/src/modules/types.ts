@@ -2,6 +2,16 @@ import { ReactNode, MouseEvent } from "react";
 import { Market } from "./account/components/notifications/notifications-templates";
 import { BUY, SELL } from "./common-elements/constants";
 
+export interface ValueLabelPair {
+  label: string;
+  value: string;
+}
+export interface CoreStats {
+  availableFunds: ValueLabelPair;
+  frozenFunds: ValueLabelPair;
+  totalFunds: ValueLabelPair;
+  realizedPL: ValueLabelPair;
+}
 export interface MarketsData {
   [marketId: string]: MarketData;
 }
