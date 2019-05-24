@@ -5,7 +5,6 @@ import ReportingDisputeMarkets from "modules/reporting/components/reporting-disp
 import makePath from "modules/routes/helpers/make-path";
 import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
 import { selectLoginAccount } from "modules/auth/selectors/login-account";
-import { selectMarketReportState } from "store/select-state";
 import { selectMarketsInDispute } from "modules/reports/selectors/select-dispute-markets";
 import awaitingDisputeMarkets from "modules/reports/selectors/select-awaiting-dispute-markets";
 import { loadDisputing } from "modules/reports/actions/load-disputing";
@@ -18,9 +17,8 @@ const mapStateToProps = (state, { history }) => {
   const disputeOutcomes = marketDisputeOutcomes() || {};
   const disputableMarkets = selectMarketsInDispute(state) || [];
   const upcomingDisputableMarkets = awaitingDisputeMarkets() || [];
-  const disputableMarketIds = selectMarketReportState(state).dispute || [];
-  const upcomingDisputableMarketIds =
-    selectMarketReportState(state).awaiting || [];
+  const disputableMarketIds = state.marketReportState.dispute || [];
+  const upcomingDisputableMarketIds = state.marketReportState.awaiting || [];
   const { isForking, forkEndTime, forkingMarket, id } = state.universe;
   return {
     isLogged: state.authStatus.isLogged,

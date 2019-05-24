@@ -1,14 +1,11 @@
 import { createSelector } from "reselect";
-
-import { selectAlertsState } from "store/select-state";
 import store from "store";
-
 import * as alertLevels from "modules/common-elements/constants";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import getValue from "utils/get-value";
 
 export const selectAlertsByLevel = level => state =>
-  selectAlertsState(state).filter(it => it.level === level);
+  state.alerts.filter(it => it.level === level);
 
 export const selectCriticalAlerts = selectAlertsByLevel(alertLevels.CRITICAL);
 export const selectInfoAlerts = selectAlertsByLevel(alertLevels.INFO);

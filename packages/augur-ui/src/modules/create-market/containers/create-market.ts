@@ -7,12 +7,8 @@ import {
   updateNewMarket
 } from "modules/markets/actions/update-new-market";
 import CreateMarketView from "modules/create-market/components/create-market-view/create-market-view";
-import {
-  selectCategoriesState,
-  selectCurrentTimestamp
-} from "store/select-state";
+import { selectCurrentTimestamp } from "select-state";
 import { estimateSubmitNewMarket } from "modules/markets/actions/estimate-submit-new-market";
-
 import getValue from "utils/get-value";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
@@ -22,7 +18,7 @@ const mapStateToProps = state => ({
   availableRep: getValue(state, "loginAccount.rep"),
   meta: getValue(state, "loginAccount.meta"),
   newMarket: state.newMarket,
-  categories: selectCategoriesState(state),
+  categories: state.categories,
   isMobileSmall: state.appStatus.isMobileSmall,
   currentTimestamp: selectCurrentTimestamp(state),
   gasPrice: getGasPrice(state)

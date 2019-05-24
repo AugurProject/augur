@@ -1,5 +1,4 @@
-import { BigNumber } from "ethers/utils";
-import { Augur } from "@augurproject/sdk";
+import { Augur, Provider } from "@augurproject/sdk";
 import {
   ContractDependenciesEthers,
   EthersSigner,
@@ -10,7 +9,7 @@ import { JsonRpcProvider } from "ethers/providers";
 import { Addresses } from "@augurproject/artifacts";
 
 export class SDK {
-  public _sdk: Augur | null = null;
+  public sdk: Augur<Provider> | null = null;
   public isWeb3Transport: boolean = false;
 
   public async makeApi(
@@ -28,16 +27,16 @@ export class SDK {
       account,
     );
 
-    this._sdk = await Augur.create(
+    this.sdk = await Augur.create<Provider>(
       ethersProvider,
       contractDependencies,
       Addresses[networkId],
     );
   }
 
-  public get(): Augur {
-    if (this._sdk) {
-      return this._sdk;
+  public get(): Augur<Provider> {
+    if (this.sdk) {
+      return this.sdk;
     }
     throw new Error("API must be initialized before use.");
   }

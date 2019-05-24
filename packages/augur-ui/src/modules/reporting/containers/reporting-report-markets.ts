@@ -4,14 +4,13 @@ import ReportingReportMarkets from "modules/reporting/components/reporting-repor
 import { loadReporting } from "modules/reports/actions/load-reporting";
 import { selectMarketsToReport } from "modules/reports/selectors/select-markets-to-report";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
-import { selectMarketReportState } from "store/select-state";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 
 const mapStateToProps = state => {
   const drAddress = state.loginAccount.address;
   const marketsData = selectMarkets(state);
   const markets = selectMarketsToReport(marketsData, drAddress);
-  const { designated, open, upcoming } = selectMarketReportState(state);
+  const { designated, open, upcoming } = state.marketReportState;
 
   return {
     isLogged: state.authStatus.isLogged,
