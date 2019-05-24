@@ -31,7 +31,7 @@ const mapStateToProps = (
     keywords
   } = getSelectedTagsAndCategoriesFromLocation(location);
 
-  const { isMobile } = state;
+  const { isMobile } = state.appStatus;
   const { categories } = state;
 
   const toggleTagFn = curriedToggleMemberOfArray(selectedTagNames);
