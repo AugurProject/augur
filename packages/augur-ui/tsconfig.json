@@ -41,18 +41,17 @@
     // "noFallthroughCasesInSwitch": true,    /* Report errors for fallthrough cases in switch statement. */
 
     /* Module Resolution Options */
-    "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
-    "baseUrl": "./src" /* Base directory to resolve non-absolute module names. */,
-    "paths": {
-      "*": ["types/*"],
-      "assets/*": ["./assests/*"],
-      "config/*": ["./config/*"],
-      "modules/*": ["./modules/*"],
-      "reducers/*": ["./reducers/*"],
-      "services/*": ["./services/*"],
-      "store/*": ["./store/*"],
-      "utils/*": ["./utils/*"]
-   } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
+    // "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
+     "baseUrl": "src",                       /* Base directory to resolve non-absolute module names. */
+     "paths": {
+       "assets/*": ["./assets/*"],
+       "config/*": ["./config/*"],
+       "modules/*": ["./modules/*"],
+       "reducers/*": ["./reducers/*"],
+       "services/*": ["./services/*"],
+       "store/*": ["./store/*"],
+       "utils/*": ["./utils/*"]
+     },                           /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     // "typeRoots": [],                       /* List of folders to include type definitions from. */
     "typeRoots": ["types", "node_modules/@types"],
