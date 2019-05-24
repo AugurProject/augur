@@ -9,11 +9,11 @@ import "./Trading";
 import "./Users";
 import "./Accounts";
 
-export class API<TBigNumber> {
-  private readonly router: Router<TBigNumber>;
+export class API {
+  private readonly router: Router;
 
-  constructor(augurAPI: Augur<TBigNumber>, db: DB<TBigNumber>) {
-    this.router = new Router<TBigNumber>(augurAPI, db);
+  constructor(augurAPI: Augur, db: DB) {
+    this.router = new Router(augurAPI, db);
   }
 
   public async route(name: string, params: any) {

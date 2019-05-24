@@ -1,7 +1,7 @@
 #!/usr/bin/env ts-node
 
-import { BigNumber as DecimalBigNumber } from "bignumber.js";
-import { BigNumber, formatBytes32String } from "ethers/utils";
+import { BigNumber } from "bignumber.js";
+import { formatBytes32String } from "ethers/utils";
 
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { GenericAugurInterfaces } from "@augurproject/core";
@@ -38,9 +38,9 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         throw Error(`Scalar market must have minPrice, maxPrice, and tickSize.`);
       }
 
-      const minDisplayPrice = new DecimalBigNumber(can.minPrice);
-      const maxDisplayPrice = new DecimalBigNumber(can.maxPrice);
-      const tickSize = new DecimalBigNumber(can.tickSize).times(QUINTILLION);
+      const minDisplayPrice = new BigNumber(can.minPrice);
+      const maxDisplayPrice = new BigNumber(can.maxPrice);
+      const tickSize = new BigNumber(can.tickSize).times(QUINTILLION);
 
       const minPrice = minDisplayPrice.times(QUINTILLION);
       const maxPrice = maxDisplayPrice.times(QUINTILLION);
@@ -52,8 +52,8 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         feePerEthInWei,
         new BigNumber(affiliateFeeDivisor),
         designatedReporter,
-        [dbn2bn(minPrice), dbn2bn(maxPrice)],
-        dbn2bn(numTicks),
+        [minPrice, maxPrice],
+        numTicks,
         can.topic,
         JSON.stringify(can.extraInfo),
       );
@@ -85,29 +85,21 @@ function generateRandom32ByteHex() {
   return formatBytes32String(String(Date.now()));
 }
 
-function dbn2bn (dbn: DecimalBigNumber): BigNumber {
-  return new BigNumber(dbn.toFixed());
-}
-
-function bn2dbn (dbn: BigNumber): DecimalBigNumber {
-  return new DecimalBigNumber(dbn.toHexString());
-}
-
 async function placeOrder(person: ContractAPI,
                           market: GenericAugurInterfaces.Market<BigNumber>,
                           can: CannedMarket,
                           tradeGroupId: string,
                           outcome: BigNumber,
                           orderType: BigNumber,
-                          shares: DecimalBigNumber,
-                          price: DecimalBigNumber) {
+                          shares: BigNumber,
+                          price: BigNumber) {
   const tickSize = can.tickSize
-    ? new DecimalBigNumber(can.tickSize)
-    : numTicksToTickSize(new DecimalBigNumber("100"), new DecimalBigNumber("0"), new DecimalBigNumber("0x0de0b6b3a7640000"));
+    ? new BigNumber(can.tickSize)
+    : numTicksToTickSize(new BigNumber("100"), new BigNumber("0"), new BigNumber("0x0de0b6b3a7640000"));
 
-  const minDisplayPrice = new DecimalBigNumber(can.minPrice || "0");
-  const attoShares = dbn2bn(convertDisplayAmountToOnChainAmount(shares, tickSize));
-  const attoPrice = dbn2bn(convertDisplayPriceToOnChainPrice(price, minDisplayPrice, tickSize));
+  const minDisplayPrice = new BigNumber(can.minPrice || "0");
+  const attoShares = convertDisplayAmountToOnChainAmount(shares, tickSize);
+  const attoPrice = convertDisplayPriceToOnChainPrice(price, minDisplayPrice, tickSize);
   const betterOrderId = formatBytes32String("");
   const worseOrderId = formatBytes32String("");
 
@@ -139,12 +131,12 @@ async function createOrderBook(person: ContractAPI, market: GenericAugurInterfac
 
     for (const { shares, price } of buy) {
       const buyOrderType = new BigNumber(0);
-      promises.push(placeOrder(person, market, can, tradeGroupId, new BigNumber(outcome), buyOrderType, new DecimalBigNumber(shares), new DecimalBigNumber(price)));
+      promises.push(placeOrder(person, market, can, tradeGroupId, new BigNumber(outcome), buyOrderType, new BigNumber(shares), new BigNumber(price)));
     }
 
     for (const { shares, price } of sell) {
       const sellOrderType = new BigNumber(1);
-      promises.push(placeOrder(person, market, can, tradeGroupId, new BigNumber(outcome), sellOrderType, new DecimalBigNumber(shares), new DecimalBigNumber(price)));
+      promises.push(placeOrder(person, market, can, tradeGroupId, new BigNumber(outcome), sellOrderType, new BigNumber(shares), new BigNumber(price)));
     }
 
     await Promise.all(promises);
@@ -155,7 +147,7 @@ export async function createCannedMarketsAndOrders(accounts: AccountList, provid
   const person = await ContractAPI.userWrapper(accounts, 0, provider, addresses);
   await person.approveCentralAuthority();
 
-  await person.faucet(new BigNumber(10).pow(18).mul(1000000));
+  await person.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
 
   await Promise.all(cannedMarkets.map(async (can) => {
     const market = await createCannedMarket(person, can);

@@ -57,7 +57,7 @@ export async function updateOutcomeValuesFromFinalization(db: Knex, augur: Augur
     const column = `payout${i}`;
     const payoutValue = payouts[column as keyof PayoutAndMarket<BigNumber>];
     if (payoutValue != null) {
-      const value = payoutValue.mul(tickSize).add(minPrice);
+      const value = payoutValue.multipliedBy(tickSize).plus(minPrice);
       insertValues.push(<FinalizationValue>{
         marketId,
         transactionHash,

@@ -4,14 +4,14 @@
   }
 
   .auth-signup-password {
-    z-index: 30;
+    z-index: @mask-above;
   }
 
   .auth-signup-password-confirm {
     border-top: 0;
     height: 0;
     opacity: 0;
-    z-index: 20;
+    z-index: @mask;
   }
 
   .auth-signup-password-suggestions {
@@ -40,7 +40,7 @@
     height: 0;
     justify-content: center;
     opacity: 0;
-    z-index: 10;
+    z-index: @above-all-content;
 
     span {
       align-self: center;
@@ -57,7 +57,7 @@
     flex-direction: column;
     height: 0;
     opacity: 0;
-    z-index: 10;
+    z-index: @above-all-content;
 
     .login-id {
       resize: none;

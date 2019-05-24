@@ -28,19 +28,19 @@ export function Getter(alternateInterface?: string) {
   };
 }
 
-type GetterFunction<T, TBigNumber> = (db: DB<TBigNumber>, params: T) => Promise<unknown>;
+type GetterFunction<T, TBigNumber> = (db: DB, params: T) => Promise<unknown>;
 
-export class Router<TBigNumber> {
+export class Router {
   public static Add<T, R, TBigNumber>(name: string, getterFunction: GetterFunction<T, TBigNumber>, decodedParams: t.Validation<T>) {
     Router.routings.set(name, { func: getterFunction, params: decodedParams });
   }
 
   private static routings = new Map();
 
-  private readonly augurAPI: Augur<TBigNumber>;
-  private readonly db: DB<TBigNumber>;
+  private readonly augurAPI: Augur;
+  private readonly db: DB;
 
-  constructor(augurAPI: Augur<TBigNumber>, db: DB<TBigNumber>) {
+  constructor(augurAPI: Augur, db: DB) {
     this.augurAPI = augurAPI;
     this.db = db;
   }

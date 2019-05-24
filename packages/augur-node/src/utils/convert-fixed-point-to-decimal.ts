@@ -9,7 +9,7 @@ export function convertFixedPointToDecimal(fixedPointValue: string|number|BigNum
 }
 
 export function decimalToFixedPoint(decimalValue: BigNumber, conversionFactor: BigNumber): BigNumber {
-  return decimalValue.mul(conversionFactor);
+  return decimalValue.multipliedBy(conversionFactor);
 }
 
 export function convertDecimalToFixedPoint(decimalValue: string|number, conversionFactor: string|number): string {
@@ -17,7 +17,7 @@ export function convertDecimalToFixedPoint(decimalValue: string|number, conversi
 }
 
 export function numTicksToTickSize<TBigNumber>(numTicks: BigNumber, minPrice: BigNumber, maxPrice: BigNumber): BigNumber {
-  return maxPrice.sub(minPrice).div(numTicks);
+  return maxPrice.minus(minPrice).div(numTicks);
 }
 
 export function convertNumTicksToTickSize(numTicks: string|number, minPrice: string|number, maxPrice: string|number): string {
