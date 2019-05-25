@@ -29,7 +29,7 @@ export class WebWorkerConnector extends Connector {
     const controller = new Controller(augur, Number(augur.networkId), settings.blockstreamDelay, UploadBlockNumbers[augur.networkId], [settings.testAccounts[0]], pouchDBFactory, blockAndLogStreamerListener);
     await controller.createDb();
 
-    this.api = new API(augur, controller.getDb());
+    this.api = new API(augur, controller.db);
     this.worker = new RunWorker();
 
     // this.worker.onmessage = (event: MessageEvent) => {

@@ -5,7 +5,7 @@ import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
 const settings = require("./settings.json");
 
 export class Controller {
-  private db: DB;
+  public db: DB;
 
   public constructor(
     private augur: Augur,
@@ -14,12 +14,8 @@ export class Controller {
     private defaultStartSyncBlockNumber: number,
     private trackedUsers: Array<string>,
     private pouchDBFactory: PouchDBFactoryType,
-    private blockAndLogStreamerListener: BlockAndLogStreamerListener
+    private blockAndLogStreamerListener: BlockAndLogStreamerListener,
   ) {
-  }
-
-  public getDb(): DB {
-    return this.db;
   }
 
   public fullTextSearch(eventName: string, query: string): Array<object> {
