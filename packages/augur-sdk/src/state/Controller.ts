@@ -18,22 +18,31 @@ export class Controller {
   ) {
   }
 
+  public getDb(): DB {
+    return this.db;
+  }
+
   public fullTextSearch(eventName: string, query: string): Array<object> {
     return this.db.fullTextSearch(eventName, query);
   }
 
+  public async createDb() {
+    this.db = await DB.createAndInitializeDB(
+      this.networkId,
+      this.blockstreamDelay,
+      this.defaultStartSyncBlockNumber,
+      this.trackedUsers,
+      this.augur.genericEventNames,
+      this.augur.userSpecificEvents,
+      this.pouchDBFactory,
+      this.blockAndLogStreamerListener,
+    );
+  }
+
   public async run(): Promise<void> {
     try {
-      this.db = await DB.createAndInitializeDB(
-        this.networkId,
-        this.blockstreamDelay,
-        this.defaultStartSyncBlockNumber,
-        this.trackedUsers,
-        this.augur.genericEventNames,
-        this.augur.userSpecificEvents,
-        this.pouchDBFactory,
-        this.blockAndLogStreamerListener,
-      );
+      await this.createDb();
+
       await this.db.sync(
         this.augur,
         settings.chunkSize,
