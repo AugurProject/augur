@@ -12,6 +12,7 @@ process.env.FORCE_COLOR = true;
 const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(
   arg => arg.indexOf("--") !== -1
 );
+process.env.TYPE_CHECKING = FLAGS.indexOf("--type-checking") !== -1 ? true : false;
 process.env.USE_SSL = FLAGS.indexOf("--ssl") !== -1 ? true : false;
 process.env.AUTO_LOGIN = FLAGS.indexOf("--auto-login") !== -1 ? true : false;
 process.env.ENABLE_MAINNET = FLAGS.indexOf("--disableMainnet") === -1;
@@ -26,6 +27,14 @@ ${
 
 ${colors.notice("SSL Enabled -- make sure key + cert are present")}
 
+`
+    : ""
+}
+${
+  process.env.TYPE_CHECKING=== "true"
+    ? `
+
+${colors.notice("Typescript Type checking enabled.")}
 `
     : ""
 }

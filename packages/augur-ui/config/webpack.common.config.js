@@ -11,6 +11,87 @@ const PATHS = {
 };
 
 // COMMON CONFIG
+const rules = [
+  {
+    test: /npm-cli|node-hid/,
+    loader: "null-loader"
+  },
+  {
+    test: /\.less$/,
+    enforce: "pre",
+    loader: "import-glob-loader"
+  },
+  {
+    test: /\.html$/,
+    loader: "html-loader",
+    query: {
+      minimize: true
+    }
+  },
+  {
+    test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+    use: [
+      {
+        loader: "file-loader",
+        options: {
+          name: "[name].[ext]",
+          outputPath: "fonts/"
+        }
+      }
+    ]
+  },
+  {
+    test: /\.less$/,
+    use: [
+      "style-loader",
+      {
+        loader: "css-loader",
+        options: {
+          camelCase:true,
+          modules: true,
+          namedExport: true,
+          localIdentName: "[name]_[local]"
+        }
+      },
+      "postcss-loader",
+      "less-loader"
+    ]
+  },
+  {
+    test: /\.css$/,
+    use: [
+      "style-loader",
+      "postcss-loader"
+    ]
+  }
+];
+
+const babelConfig = {
+  test: /\.[jt]sx?$/,
+  loader: "babel-loader",
+  exclude: function(modulePath) {
+    return (
+      /node_modules/.test(modulePath) &&
+      /node_modules\/(core-js|lodash|react|websocket|autolinker|remarkable|moment|regenerator-runtime)/.test(
+        modulePath
+      )
+    );
+  }
+};
+
+if(process.env.TYPE_CHECKING === "true") {
+  rules.push({
+    test: /\.tsx?$/,
+    loader: "ts-loader",
+    options: {
+      projectReferences: true
+    }
+  });
+  babelConfig.test = /\.jsx?$/;
+}
+
+rules.push(babelConfig);
+
 module.exports = {
   mode: "development",
   entry: [
@@ -48,72 +129,7 @@ module.exports = {
     symlinks: false
   },
   module: {
-    rules: [
-      {
-        test: /npm-cli|node-hid/,
-        loader: "null-loader"
-      },
-      {
-        test: /\.less$/,
-        enforce: "pre",
-        loader: "import-glob-loader"
-      },
-      {
-        test: /\.html$/,
-        loader: "html-loader",
-        query: {
-          minimize: true
-        }
-      },
-      {
-        test: /\.[jt]sx?$/,
-        loader: "babel-loader",
-        exclude: function(modulePath) {
-          return (
-            /node_modules/.test(modulePath) &&
-            /node_modules\/(core-js|lodash|react|websocket|autolinker|remarkable|moment|regenerator-runtime)/.test(
-              modulePath
-            )
-          );
-        }
-      },
-      {
-        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              name: "[name].[ext]",
-              outputPath: "fonts/"
-            }
-          }
-        ]
-      },
-      {
-        test: /\.less$/,
-        use: [
-          "style-loader",
-          {
-            loader: "css-loader",
-            options: {
-              camelCase:true,
-              modules: true,
-              namedExport: true,
-              localIdentName: "[name]_[local]"
-            }
-          },
-          "postcss-loader",
-          "less-loader"
-        ]
-      },
-      {
-        test: /\.css$/,
-        use: [
-          "style-loader",
-          "postcss-loader"
-        ]
-      }
-    ]
+    rules: rules
   },
   optimization: {
     // https://webpack.js.org/configuration/optimization/#optimization-usedexports

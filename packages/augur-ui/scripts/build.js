@@ -11,6 +11,7 @@ const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(
   arg => arg.indexOf("--") !== -1
 );
 
+process.env.TYPE_CHECKING = FLAGS.indexOf("--type-checking") !== -1 ? true : false;
 process.env.NODE_ENV = process.env.BABEL_ENV =
   FLAGS.indexOf("--dev") !== -1 ? "development" : "production";
 process.env.AUGUR_HOSTED = FLAGS.indexOf("--augur-hosted") !== -1;
