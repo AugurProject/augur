@@ -5,7 +5,7 @@ import { constants } from "services/constants";
 export default function canClaimProceeds(
   finalizationTime,
   outstandingReturns,
-  currentTimestamp
+  currentTimestamp,
 ) {
   let canClaim = false;
   if (finalizationTime && outstandingReturns && currentTimestamp) {

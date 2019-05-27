@@ -29,6 +29,10 @@ export interface MarketsData {
 export interface MarketData {
   id: string;
   description: string;
+  maxPrice: BigNumber;
+  minPrice: BigNumber;
+  numTicks: number;
+  marketType: string;
   // TODO: this should come from SDK types
 }
 export interface OutcomesData {
@@ -82,6 +86,19 @@ export interface FormattedNumber {
   value: number;
   rounded: number | string;
   full: number | string;
+}
+
+export interface FormattedNumberOptions {
+    decimals: number;
+    decimalsRounded: number;
+    denomination: string;
+    roundUp: boolean;
+    roundDown: boolean;
+    positiveSign: boolean;
+    zeroStyled: boolean;
+    minimized: boolean;
+    blankZero: boolean;
+    bigUnitPostfix: boolean;
 }
 export interface ReportingWindowStats {
   startTime: string | null;

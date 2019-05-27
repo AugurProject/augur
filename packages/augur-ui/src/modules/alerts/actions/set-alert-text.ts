@@ -352,22 +352,21 @@ export default function setAlertText(alert: any, callback: any) {
               const outcome = calculatePayoutNumeratorsValue(
                 marketInfo,
                 alert.params._payoutNumerators,
-                alert.params._invalid
+                alert.params._invalid,
               );
               const outcomeDescription = getOutcomeName(
                 marketInfo,
                 outcome,
-                false
+                false,
               );
               alert.description = `Migrate ${
                 formatRep(
                   createBigNumber(alert.log.value).dividedBy(
-                    TEN_TO_THE_EIGHTEENTH_POWER
-                  )
-                ).formatted
+                    TEN_TO_THE_EIGHTEENTH_POWER,
+                  )).formatted
               } REP to child universe "${outcomeDescription}"`;
               return dispatch(callback(alert));
-            })
+            }),
           );
         }
         break;
