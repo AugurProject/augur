@@ -72,15 +72,16 @@ export interface UserReports {
   };
 }
 export interface FormattedNumber {
-  fullPrecision: number;
+  fullPrecision: number | string;
   roundedValue: number;
   roundedFormatted: string;
   formatted: string;
-  formattedValue: number;
+  formattedValue: number | string;
+  denomination: string;
   minimized: string;
   value: number;
-  rounded: number;
-  full: number;
+  rounded: number | string;
+  full: number | string;
 }
 export interface ReportingWindowStats {
   startTime: string | null;

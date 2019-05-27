@@ -2,12 +2,12 @@ import { BigNumber, createBigNumber } from "utils/create-big-number";
 import {
   encodeNumberAsBase10String,
   encodeNumberAsJSNumber,
-  unfix
+  unfix,
 } from "speedomatic";
-import { augur } from "services/augurjs";
 import { constants } from "services/constants";
 import { ZERO, TEN, ETHER } from "modules/common-elements/constants";
 import addCommas from "utils/add-commas-to-number";
+import { FormattedNumber } from "modules/types";
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   Produces a formatted number object used for display and calculations
@@ -61,7 +61,7 @@ export const SHARES_NUMBER_OF_DECIMALS = 4;
 const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 const USUAL_NUMBER_DECIMAL_PLACES = 4;
 
-export function formatEther(num, opts) {
+export function formatEther(num, opts): FormattedNumber {
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -70,11 +70,11 @@ export function formatEther(num, opts) {
     zeroStyled: false,
     blankZero: false,
     bigUnitPostfix: false,
-    ...opts
+    ...opts,
   });
 }
 
-export function formatEtherEstimate(num, opts) {
+export function formatEtherEstimate(num, opts): FormattedNumber {
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -83,11 +83,11 @@ export function formatEtherEstimate(num, opts) {
     zeroStyled: false,
     blankZero: false,
     bigUnitPostfix: false,
-    ...opts
+    ...opts,
   });
 }
 
-export function formatPercent(num, opts) {
+export function formatPercent(num, opts): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 0,
@@ -96,21 +96,21 @@ export function formatPercent(num, opts) {
     zeroStyled: false,
     blankZero: false,
     bigUnitPostfix: false,
-    ...opts
+    ...opts,
   });
 }
 
-export function formatShares(num, opts) {
+export function formatShares(num, opts): FormattedNumber {
   const formattedShares = formatNumber(num, {
     decimals: SHARES_NUMBER_OF_DECIMALS,
     decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
-    denomination: ` Share${encodeNumberAsJSNumber(num) !== 1 ? "s" : ""}`,
+    denomination: ` Share${encodeNumberAsJSNumber(num, false) !== 1 ? "s" : ""}`,
     minimized: false,
     zeroStyled: false,
     blankZero: false,
     roundDown: true,
     bigUnitPostfix: true,
-    ...opts
+    ...opts,
   });
 
   if (formattedShares.formattedValue === 1) {
@@ -120,7 +120,7 @@ export function formatShares(num, opts) {
   return formattedShares;
 }
 
-export function formatDai(num, opts) {
+export function formatDai(num, opts): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
@@ -129,11 +129,11 @@ export function formatDai(num, opts) {
     zeroStyled: false,
     blankZero: false,
     bigUnitPostfix: false,
-    ...opts
+    ...opts,
   });
 }
 
-export function formatRep(num, opts) {
+export function formatRep(num, opts): FormattedNumber {
   return formatNumber(num, {
     decimals: 4,
     decimalsRounded: 0,
@@ -142,11 +142,11 @@ export function formatRep(num, opts) {
     zeroStyled: false,
     blankZero: false,
     bigUnitPostfix: false,
-    ...opts
+    ...opts,
   });
 }
 
-export function formatRepTokens(num, opts) {
+export function formatRepTokens(num, opts): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
@@ -155,11 +155,11 @@ export function formatRepTokens(num, opts) {
     zeroStyled: false,
     blankZero: false,
     bigUnitPostfix: false,
-    ...opts
+    ...opts,
   });
 }
 
-export function formatConfirmations(num, opts) {
+export function formatConfirmations(num, opts): FormattedNumber {
   return formatNumber(Math.max(num, 0), {
     decimals: 0,
     decimalsRounded: 0,
@@ -168,11 +168,11 @@ export function formatConfirmations(num, opts) {
     zeroStyled: false,
     blankZero: false,
     bigUnitPostfix: false,
-    ...opts
+    ...opts,
   });
 }
 
-export function formatNone() {
+export function formatNone(): FormattedNumber {
   return {
     value: 0,
     formattedValue: 0,
@@ -183,11 +183,11 @@ export function formatNone() {
     minimized: "-",
     denomination: "",
     full: "-",
-    fullPrecision: "0"
+    fullPrecision: "0",
   };
 }
 
-export function formatBlank() {
+export function formatBlank(): FormattedNumber {
   return {
     value: 0,
     formattedValue: 0,
@@ -198,48 +198,49 @@ export function formatBlank() {
     minimized: "",
     denomination: "",
     full: "",
-    fullPrecision: "0"
+    fullPrecision: "0",
   };
 }
 
-export function sumAndformatGasCostToEther(gases, opts, gasPrice) {
+export function sumAndformatGasCostToEther(gases: Array<string>, opts: object, gasPrice: string): string {
   const summedGas = gases.reduce(
     (p, g) => createBigNumber(unfix(g, "number")).plus(p),
-    ZERO
+    ZERO,
   );
 
   const estimatedGasCost = createBigNumber(summedGas).times(
-    createBigNumber(gasPrice)
+    createBigNumber(gasPrice),
   );
+
   return formatGasCost(estimatedGasCost, opts).roundedFormatted;
 }
 
-export function formatGasCostToEther(num, opts, gasPrice) {
+export function formatGasCostToEther(num: string, opts: object, gasPrice: string): string {
   return sumAndformatGasCostToEther([num], opts, gasPrice);
 }
 
-export function formatAttoRep(num, opts) {
-  if (!num || num === 0 || isNaN(num)) return 0;
+export function formatAttoRep(num, opts): FormattedNumber {
+  if (!num || num === 0 || isNaN(num)) return formatBlank();
   return formatNumber(
     createBigNumber(num.toString())
       .dividedBy(ETHER)
       .toNumber(),
-    { blankZero: false, ...opts }
+    { blankZero: false, ...opts },
   );
 }
 
 // At some point potentially refactor all this to be more generic (e.g formatAttoAmount)
-export function formatAttoEth(num, opts) {
-  if (!num || num === 0 || isNaN(num)) return 0;
+export function formatAttoEth(num, opts): FormattedNumber {
+  if (!num || num === 0 || isNaN(num)) return formatBlank();
   return formatNumber(
     createBigNumber(num.toString())
       .dividedBy(ETHER)
       .toNumber(),
-    { blankZero: false, ...opts }
+    { blankZero: false, ...opts },
   );
 }
 
-export function formatGasCost(num, opts) {
+export function formatGasCost(num, opts): FormattedNumber {
   return formatNumber(num, {
     decimals: 0,
     decimalsRounded: 0,
@@ -248,7 +249,7 @@ export function formatGasCost(num, opts) {
     zeroStyled: false,
     blankZero: false,
     bigUnitPostfix: false,
-    ...opts
+    ...opts,
   });
 }
 
@@ -264,12 +265,12 @@ export function formatNumber(
     zeroStyled: true,
     minimized: false,
     blankZero: false,
-    bigUnitPostfix: false
-  }
-) {
+    bigUnitPostfix: false,
+  },
+): FormattedNumber {
   const value = num != null ? createBigNumber(num, 10) : ZERO;
   const { minimized, bigUnitPostfix } = opts;
-  const o = {};
+  const o: FormattedNumber = formatBlank();
   let {
     decimals,
     decimalsRounded,
@@ -278,7 +279,7 @@ export function formatNumber(
     roundDown,
     positiveSign,
     zeroStyled,
-    blankZero
+    blankZero,
   } = opts;
 
   decimals = decimals || 0;
@@ -321,7 +322,7 @@ export function formatNumber(
       new BigNumber(decimals, 10)
         .minus(1)
         .negated()
-        .toNumber()
+        .toNumber(),
     );
     const roundToZeroThreshold = constants.PRECISION.zero;
     o.value = value.toNumber();
@@ -344,7 +345,7 @@ export function formatNumber(
     }
 
     const zeroFixed = constants.PRECISION.zero.toFixed(
-      USUAL_NUMBER_DECIMAL_PLACES
+      USUAL_NUMBER_DECIMAL_PLACES,
     );
 
     if (bigUnitPostfix && !formatSigFig) {
@@ -366,7 +367,7 @@ export function formatNumber(
           formatted = zeroFixed; // if there are no significant digits in the 8 decimal places, just use zero
         } else {
           formatted = value.toFixed(
-            1 - Math.floor(Math.log(value.abs()) / Math.log(10))
+            1 - Math.floor(Math.log(value.abs()) / Math.log(10)),
           ); // find first two significant digit
         }
       }
@@ -384,12 +385,12 @@ export function formatNumber(
       : addCommas(o.roundedValue.toFixed(decimalsRounded));
     o.minimized = addCommas(encodeNumberAsBase10String(o.formattedValue));
     o.rounded = encodeNumberAsBase10String(o.roundedValue);
-    o.formattedValue = encodeNumberAsJSNumber(o.formattedValue);
-    o.roundedValue = o.roundedValue.toNumber();
+    o.formattedValue = encodeNumberAsJSNumber(o.formattedValue, false);
+    o.roundedValue = o.roundedValue;
   }
 
   if (positiveSign && !bigUnitPostfix) {
-    if (o.formattedValue >= 0) {
+    if (o.formattedValue || 0 >= 0) {
       o.formatted = `+${o.formatted}`;
       o.minimized = `+${o.minimized}`;
     }
