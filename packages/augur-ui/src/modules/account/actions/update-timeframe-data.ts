@@ -18,7 +18,7 @@ export const updateTimeframeData = (
       startTime: options.startTime || null,
       endTime: null
     },
-    (err: any, timeframeData: any) => {
+    (err, timeframeData) => {
       if (err) return callback(err);
       dispatch(updateLoginAccount({timeframeData}));
     },

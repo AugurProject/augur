@@ -4,7 +4,7 @@ import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import { loadAccountHistory } from "modules/auth/actions/load-account-history";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
-import { windowRef } from "src/utils/window-ref";
+import { windowRef } from "utils/window-ref";
 import getValue from "utils/get-value";
 import logError from "utils/log-error";
 import { loadDesignatedReporterMarkets } from "modules/reports/actions/load-designated-reporter-markets";
