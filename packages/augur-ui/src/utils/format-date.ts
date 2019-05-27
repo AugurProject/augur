@@ -161,14 +161,14 @@ export function dateHasPassed(
   return date.unix() > unixTimestamp;
 }
 
-export function getDaysRemaining(endUnixTimestamp, startUnixTimestamp) {
+export function getDaysRemaining(endUnixTimestamp: number, startUnixTimestamp: number): number {
   if (!endUnixTimestamp || !startUnixTimestamp) return 0;
   if (startUnixTimestamp > endUnixTimestamp) return 0;
   const remainingTicks = endUnixTimestamp - startUnixTimestamp;
   return Math.floor(remainingTicks / NUMBER_OF_SECONDS_IN_A_DAY);
 }
 
-export function getHoursRemaining(endUnixTimestamp, startUnixTimestamp) {
+export function getHoursRemaining(endUnixTimestamp: number, startUnixTimestamp: number): number {
   if (!endUnixTimestamp || !startUnixTimestamp) return 0;
   if (startUnixTimestamp > endUnixTimestamp) return 0;
   const remainingTicks = endUnixTimestamp - startUnixTimestamp;
@@ -177,7 +177,7 @@ export function getHoursRemaining(endUnixTimestamp, startUnixTimestamp) {
   );
 }
 
-export function getMinutesRemaining(endUnixTimestamp, startUnixTimestamp) {
+export function getMinutesRemaining(endUnixTimestamp: number, startUnixTimestamp: number): number {
   if (!endUnixTimestamp || !startUnixTimestamp) return 0;
   if (startUnixTimestamp > endUnixTimestamp) return 0;
   const remainingTicks = endUnixTimestamp - startUnixTimestamp;

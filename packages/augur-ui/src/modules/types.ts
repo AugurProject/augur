@@ -7,6 +7,7 @@ export interface MarketsData {
 }
 export interface MarketData {
   id: string;
+  description: string;
   // TODO: this should come from SDK types
 }
 export interface OutcomesData {
@@ -297,20 +298,36 @@ export interface UnrealizedRevenue {
   unrealizedRevenue24hChangePercent: string;
 }
 
+// TODO: to be provided by SDK the comes from user stats
+export interface TimeframeData {
+  positions: number;
+  numberOfTrades: number;
+  marketsTraded: number;
+  marketsCreated: number;
+  successfulDisputes: number;
+  redeemedPositions: number;
+}
 export interface LoginAccount {
-  address: string;
-  displayAddress: string;
-  meta: { accontType: string; address: string; signer: object | null };
-  totalFrozenFunds: string;
-  tradingPositionsTotal: UnrealizedRevenue;
-  eth: string | undefined;
-  rep: string | undefined;
-  dai: string | undefined;
+  address?: string;
+  displayAddress?: string;
+  meta?: { accountType: string; address: string; signer: object | null };
+  totalFrozenFunds?: string;
+  tradingPositionsTotal?: UnrealizedRevenue;
+  timeframeData?: TimeframeData;
+  allowance?: string;
+  eth?: string;
+  rep?: string;
+  dai?: string;
+}
+
+export interface WindowApp extends Window {
+  app: object;
 }
 
 type ButtonActionType = (
   event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>
 ) => void;
+
 export interface BaseAction {
   type: string;
   data: any | undefined;

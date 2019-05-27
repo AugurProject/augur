@@ -6,10 +6,8 @@ import { HashRouter } from "react-router-dom";
 import MainErrorBoundary from "modules/common/components/main-error-boundary/main-error-boundary";
 
 import store from "store";
+import { WindowApp } from "modules/types";
 
-import { augur } from "services/augurjs";
-
-window.augur = augur;
 console.log(`
   *******************************************
               DEBUGGING INFO
@@ -18,7 +16,6 @@ console.log(`
 
     branch            -- ${process.env.CURRENT_BRANCH}
     network           -- ${process.env.ETHEREUM_NETWORK}
-    augur.js          -- v${augur.version}
   -------------------------------------------
   ATTACHED PROPERTIES
 
@@ -48,7 +45,7 @@ function handleRender() {
 
   // NOTE --  These are attached for convenience when built for development or debug
   if (process.env.NODE_ENV === "development") {
-    window.app = UpdatedRoot;
+    (window as WindowApp).app = UpdatedRoot;
   }
 
   render(UpdatedRoot);

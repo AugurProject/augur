@@ -12,16 +12,19 @@ import { loadDisputing } from "modules/reports/actions/load-disputing";
 import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
 import { ACCOUNT_TYPES } from "modules/common-elements/constants";
+import { LoginAccount } from "modules/types";
+
+
 
 export const loadAccountData = (
-  account: any,
+  account: LoginAccount,
   callback: Function = logError
 ) => (dispatch: Function) => {
   const address: string = getValue(account, "address");
   if (!address) return callback("account address required");
   if (
     windowRef &&
-    windowRef.localStorage.setItem &&
+    windowRef.localStorage.setItem && account && account.meta &&
     account.meta.accountType === ACCOUNT_TYPES.METAMASK
   ) {
     windowRef.localStorage.setItem("loggedInAccount", address);
