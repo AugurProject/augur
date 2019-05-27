@@ -1,12 +1,34 @@
 import { ReactNode, MouseEvent } from "react";
-import { Market } from "./account/components/notifications/notifications-templates";
-import { BUY, SELL } from "./common-elements/constants";
+import { BUY, SELL } from "modules/common-elements/constants";
+
+export interface DateFormattedObject {
+  value: Date;
+  simpleDate: string;
+  formatted: string;
+  formattedShortDate: string;
+  formattedShortTime: string;
+  formattedShort: string;
+  formattedLocal: string;
+  formattedLocalShortDate: string;
+  formattedLocalShort: string;
+  formattedLocalShortTime: string;
+  full: string;
+  timestamp: number;
+  utcLocalOffset: number;
+  clockTimeLocal: string;
+  formattedTimezone: string;
+  formattedSimpleData: string;
+  formattedUtcShortDate: string;
+  clockTimeUtc: string;
+  formattedUtc: string;
+}
 
 export interface MarketsData {
   [marketId: string]: MarketData;
 }
 export interface MarketData {
   id: string;
+  description: string;
   // TODO: this should come from SDK types
 }
 export interface OutcomesData {
@@ -50,15 +72,16 @@ export interface UserReports {
   };
 }
 export interface FormattedNumber {
-  fullPrecision: number;
+  fullPrecision: number | string;
   roundedValue: number;
   roundedFormatted: string;
   formatted: string;
-  formattedValue: number;
+  formattedValue: number | string;
+  denomination: string;
   minimized: string;
   value: number;
-  rounded: number;
-  full: number;
+  rounded: number | string;
+  full: number | string;
 }
 export interface ReportingWindowStats {
   startTime: string | null;
@@ -101,6 +124,30 @@ export interface OrderBook {
 export interface OrderBooks {
   [marketId: string]: OrderBook;
 }
+
+export interface DisputeInfo {
+  disputeRound: number;
+}
+
+export interface MyPositionsSummary {
+  currentValue: any;
+  numCompleteSets: any;
+  totalPercent: any;
+  totalReturns: any;
+}
+
+export interface Market {
+  id: string;
+  description: string;
+  reportingState: string;
+  endTime: number;
+  marketStatus: string;
+  disputeInfo?: DisputeInfo;
+  myPositionsSummary?: MyPositionsSummary;
+  outstandingReturns?: string;
+  finalizationTimeWithHold?: number;
+}
+
 export interface Notification {
   id: string;
   type: string;
@@ -297,20 +344,36 @@ export interface UnrealizedRevenue {
   unrealizedRevenue24hChangePercent: string;
 }
 
+// TODO: to be provided by SDK the comes from user stats
+export interface TimeframeData {
+  positions: number;
+  numberOfTrades: number;
+  marketsTraded: number;
+  marketsCreated: number;
+  successfulDisputes: number;
+  redeemedPositions: number;
+}
 export interface LoginAccount {
-  address: string;
-  displayAddress: string;
-  meta: { accontType: string; address: string; signer: object | null };
-  totalFrozenFunds: string;
-  tradingPositionsTotal: UnrealizedRevenue;
-  eth: string | undefined;
-  rep: string | undefined;
-  dai: string | undefined;
+  address?: string;
+  displayAddress?: string;
+  meta?: { accountType: string; address: string; signer: object | null };
+  totalFrozenFunds?: string;
+  tradingPositionsTotal?: UnrealizedRevenue;
+  timeframeData?: TimeframeData;
+  allowance?: string;
+  eth?: string;
+  rep?: string;
+  dai?: string;
+}
+
+export interface WindowApp extends Window {
+  app: object;
 }
 
 type ButtonActionType = (
-  event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
 ) => void;
+
 export interface BaseAction {
   type: string;
   data: any | undefined;

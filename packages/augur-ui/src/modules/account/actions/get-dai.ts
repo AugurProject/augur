@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import { updateAlert } from "modules/alerts/actions/alerts";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds as getTime } from "store/select-state";
