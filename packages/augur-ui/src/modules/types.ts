@@ -1,6 +1,27 @@
 import { ReactNode, MouseEvent } from "react";
-import { Market } from "./account/components/notifications/notifications-templates";
-import { BUY, SELL } from "./common-elements/constants";
+import { BUY, SELL } from "modules/common-elements/constants";
+
+export interface DateFormattedObject {
+  value: Date;
+  simpleDate: string;
+  formatted: string;
+  formattedShortDate: string;
+  formattedShortTime: string;
+  formattedShort: string;
+  formattedLocal: string;
+  formattedLocalShortDate: string;
+  formattedLocalShort: string;
+  formattedLocalShortTime: string;
+  full: string;
+  timestamp: number;
+  utcLocalOffset: number;
+  clockTimeLocal: string;
+  formattedTimezone: string;
+  formattedSimpleData: string;
+  formattedUtcShortDate: string;
+  clockTimeUtc: string;
+  formattedUtc: string;
+}
 
 export interface MarketsData {
   [marketId: string]: MarketData;
@@ -102,6 +123,30 @@ export interface OrderBook {
 export interface OrderBooks {
   [marketId: string]: OrderBook;
 }
+
+export interface DisputeInfo {
+  disputeRound: number;
+}
+
+export interface MyPositionsSummary {
+  currentValue: any;
+  numCompleteSets: any;
+  totalPercent: any;
+  totalReturns: any;
+}
+
+export interface Market {
+  id: string;
+  description: string;
+  reportingState: string;
+  endTime: number;
+  marketStatus: string;
+  disputeInfo?: DisputeInfo;
+  myPositionsSummary?: MyPositionsSummary;
+  outstandingReturns?: string;
+  finalizationTimeWithHold?: number;
+}
+
 export interface Notification {
   id: string;
   type: string;
@@ -325,7 +370,7 @@ export interface WindowApp extends Window {
 }
 
 type ButtonActionType = (
-  event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
 ) => void;
 
 export interface BaseAction {
