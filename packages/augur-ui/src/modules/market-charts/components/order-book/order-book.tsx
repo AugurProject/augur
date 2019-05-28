@@ -45,10 +45,6 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
     scrollToTop: false,
   };
 
-  constructor(props: OrderBookSideProps) {
-    super(props);
-  }
-
   componentDidMount() {
     if (this.props.scrollToTop) this.side.scrollTop = this.side.scrollHeight;
   }
