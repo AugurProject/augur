@@ -5101,7 +5101,7 @@ child_process@1.0.2:
   resolved "https://registry.yarnpkg.com/child_process/-/child_process-1.0.2.tgz#b1f7e7fc73d25e7fd1d455adc94e143830182b5a"
   integrity sha1-sffn/HPSXn/R1FWtyU4UODAYK1o=
 
-chnl@^0.4.1:
+chnl@^0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/chnl/-/chnl-0.4.2.tgz#ff6fc529ae90dfa63f740343021d9871b5914bdf"
   integrity sha512-RX0RsFTepIGn3fqg6E+FWVfk228Y5ndwaT6Gn6VbipxTWZr5aicJ/spbNQR2COMlQwidMLwtpfE3so+MMc2GvQ==
@@ -16531,10 +16531,10 @@ progress@^2.0.0, progress@^2.0.1:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-promise-controller@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/promise-controller/-/promise-controller-0.3.0.tgz#e512a5059075a0c2dedd1488695412f0650c33f7"
-  integrity sha512-w1RTaOwD5bNtYjIj5L8+ruDtMgnKC0pLtOogA3kcS4LRtiwLOpAdokjYbkjJMa6AGV0oasHa8RRNa8qEpG1qyw==
+promise-controller@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/promise-controller/-/promise-controller-0.5.2.tgz#f32d2156dc1f8e62703bf9fb0b8158335660c212"
+  integrity sha512-ymVCGfCxN+A+6TqESLnGZhGfQdQJ08SpIMyft4xQPUDrOgoqzKcQnLIYaqQk7/rPyg4wpKpxBKefeGkvumWgUg==
 
 promise-inflight@^1.0.1:
   version "1.0.1"
@@ -21652,14 +21652,13 @@ webpack@4.29.6:
     watchpack "^1.5.0"
     webpack-sources "^1.3.0"
 
-websocket-as-promised@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/websocket-as-promised/-/websocket-as-promised-0.9.0.tgz#be072a88094383f169f82d14cd4c022104fa1567"
-  integrity sha512-6Pm5Tl528UloGWY13gTphOYBknH/+kjMEAVmS/oFVKHc9LMAVy5xWpFRZWiu+qOjQk14NOTxvHTBCBEzvUZFlA==
+websocket-as-promised@brianosaurus/websocket-as-promised#a104f774d702c0fbefe7ac2438b682676cf7d005:
+  version "0.9.1"
+  resolved "https://codeload.github.com/brianosaurus/websocket-as-promised/tar.gz/a104f774d702c0fbefe7ac2438b682676cf7d005"
   dependencies:
-    chnl "^0.4.1"
+    chnl "^0.4.2"
     flat-options "^0.1.3"
-    promise-controller "^0.3.0"
+    promise-controller "^0.5.2"
     promise.prototype.finally "^3.1.0"
 
 websocket-driver@>=0.5.1:

@@ -12,26 +12,12 @@ export class WebsocketConnector extends Connector {
 
   public async connect(params?: any): Promise<any> {
     this.socket = new WebSocketAsPromised(this.endpoint, {
-      packMessage: (data: any) => {
-        console.log("ZZZZZ: " + JSON.stringify(data));
-        return JSON.stringify(data);
-      },
-      unpackMessage: (message: string) => {
-        console.log("YYYYZY: " + message);
-        if (message) {
-          return JSON.parse(message);
-        } else {
-          return "";
-        }
-      },
+      packMessage: (data: any) => JSON.stringify(data),
+      unpackMessage: (message: string) => JSON.parse(message),
       attachRequestId: (data: any, requestId: number) => Object.assign({ id: requestId }, data),
       extractRequestId: (data: any) => data && data.id,
       createWebSocket: (url: string) => new WebSocket(url),
     } as any);
-
-    this.socket.onMessage.addListener((message) => console.log("ON MESSAGE: " + message));
-    this.socket.onResponse.addListener((message) => console.log("ON RESPONSE: " + message));
-    this.socket.onError.addListener((message) => console.log("ON ERROR: " + message));
 
     return this.socket.open();
   }
