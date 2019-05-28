@@ -90,9 +90,10 @@ import {
   SENDREPUTATION
 } from "modules/common-elements/constants";
 import { Outcomes } from "modules/types";
+import { AppState } from "store";
 
 export default function setAlertText(alert: any, callback: any) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     if (!alert || isEmpty(alert)) {
       return dispatch(callback(alert));
     }

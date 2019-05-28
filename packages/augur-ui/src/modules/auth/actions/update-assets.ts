@@ -8,9 +8,10 @@ import {
   getDaiBalance,
   getRepBalance
 } from "modules/contracts/actions/contractCalls";
+import { AppState } from "store";
 
 export function updateAssets(callback: Function = logError) {
-  return async (dispatch: Function, getState: Function) => {
+  return async (dispatch: Function, getState: () => AppState) => {
     const { loginAccount } = getState();
     const balances: LoginAccount = Object.assign(loginAccount, {
       eth: undefined,

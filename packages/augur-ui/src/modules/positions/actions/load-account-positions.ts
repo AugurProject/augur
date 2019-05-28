@@ -6,6 +6,7 @@ import {
   updateAccountPositionsData,
 } from "modules/positions/actions/account-positions";
 import { AccountPosition } from "modules/types";
+import { AppState } from "store";
 
 export const loadAccountPositions = (
   options: any = {},
@@ -60,7 +61,7 @@ export const loadAccountPositionsTotals = (callback = logError) => (
 const loadAccountPositionsInternal = (
   options: any = {},
   callback: Function,
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
     return callback(null, {});

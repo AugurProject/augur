@@ -8,6 +8,7 @@ import {
 import { updateOrderStatus } from "modules/orders/actions/update-order-status";
 import selectOrder from "modules/orders/selectors/select-order";
 import logError from "utils/log-error";
+import { AppState } from "store";
 
 const TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS = 3000;
 // orderDetails: {
@@ -27,7 +28,7 @@ export const cancelAllOpenOrders = (orders: any, cb: Function) => (
 export const cancelOrder = (
   { orderId, marketId, outcome, orderTypeLabel }: any,
   callback = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount, orderBooks, outcomesData, marketsData } = getState();
   const order = selectOrder(
     orderId,
