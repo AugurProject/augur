@@ -9,7 +9,36 @@ import { ASKS, BIDS, BUY, SELL } from "modules/common-elements/constants";
 import Styles from "modules/market-charts/components/order-book/order-book.styles";
 import { isEmpty, isEqual } from "lodash";
 
-class OrderBookSide extends Component {
+interface OrderBookSideProps {
+  orderBook: Object;
+  updateSelectedOrderProperties: Function;
+  hasOrders: Boolean;
+  orderBookKeys: Object;
+  fixedPrecision: Number;
+  pricePrecision: Number;
+  setHovers: Function;
+  type: String;
+  scrollToTop: Boolean;
+}
+
+interface OrderBookProps {
+  orderBook: Object;
+  updateSelectedOrderProperties: Function;
+  hasOrders: Boolean;
+  orderBookKeys: Object;
+  fixedPrecision: Number;
+  pricePrecision: Number;
+  toggle: Boolean;
+  extend: Boolean;
+  hide: Boolean;
+}
+
+interface OrderBookState {
+  hoveredOrderIndex: Number;
+  hoveredSide: Number;
+}
+
+class OrderBookSide extends Component<OrderBookSideProps, {}> {
   static propTypes = {
     orderBook: PropTypes.object.isRequired,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
@@ -28,7 +57,7 @@ class OrderBookSide extends Component {
     scrollToTop: false,
   };
 
-  constructor(props) {
+  constructor(props: OrderBookSideProps) {
     super(props);
   }
 
@@ -36,7 +65,7 @@ class OrderBookSide extends Component {
     if (this.props.scrollToTop) this.side.scrollTop = this.side.scrollHeight;
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: OrderBookSideProps) {
     const { orderBook, scrollToTop } = this.props;
     if (
       scrollToTop && isEmpty(prevProps.orderBook.asks) &&
@@ -114,7 +143,7 @@ class OrderBookSide extends Component {
   }
 }
 
-export default class OrderBook extends Component {
+export default class OrderBook extends Component<OrderBookProps, OrderBookState> {
   static propTypes = {
     orderBook: PropTypes.object.isRequired,
     fixedPrecision: PropTypes.number,
@@ -135,7 +164,7 @@ export default class OrderBook extends Component {
     pricePrecision: 4
   };
 
-  constructor(props) {
+  constructor(props: OrderBookProps) {
     super(props);
 
     this.state = {
@@ -146,7 +175,7 @@ export default class OrderBook extends Component {
     this.setHovers = this.setHovers.bind(this);
   }
 
-  setHovers(hoveredOrderIndex, hoveredSide) {
+  setHovers(hoveredOrderIndex: Number, hoveredSide: Number) {
     this.setState({
       hoveredOrderIndex: hoveredOrderIndex,
       hoveredSide: hoveredSide
