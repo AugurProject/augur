@@ -1,6 +1,6 @@
 @import (reference) "~assets/styles/shared";
 
-.MarketTradingForm {
+.TradingForm {
   background-color: @color-theme-primary;
   border-bottom: @size-8 solid @color-theme-primary;
   display: flex;
@@ -8,112 +8,36 @@
   flex-grow: 1;
   min-height: 575px;
   position: relative;
-}
 
-.MarketTradingForm__button--order-placed {
-  align-items: center;
-  background-color: @color-purple;
-  bottom: 0;
-  color: @color-secondary-text;
-  display: flex;
-  font-weight: 500;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
-  position: absolute;
-  width: 100%;
-
-  > span {
+  > div {
     align-items: center;
-    display: flex;
-
-    > svg {
-      height: 1.25rem;
-      margin-right: 0.5rem;
-      width: 1.25rem;
-    }
-  }
-
-  > button > svg {
-    height: 0.875rem;
-    width: 0.875rem;
-  }
-}
-
-.MarketTradingForm__button--trade {
-  min-height: 3.125rem;
-
-  > button {
-    &:extend(.button--bright all);
-
-    border-radius: 0;
+    background: fade(@color-secondary-action, 80%);
     bottom: 0;
-    padding-bottom: 1rem;
-    padding-top: 1rem;
-    position: fixed;
-    width: 100%;
-    z-index: @mask;
+    display: flex;
+    flex-direction: column;
+    font-size: @font-size-rather-large;
+    justify-content: center;
+    left: 0;
+    line-height: @font-size-maximum;
+    padding: 0 2.5rem;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    z-index: @default-z-index;
   }
-}
-
-.MarketTradingForm__button--message {
-  &:extend(.button--bright all);
-
-  max-width: 9.5rem;
-  white-space: nowrap;
-
-  > button {
-    padding-top: 1rem;
-  }
-}
-
-.MarketTradingForm__initial-message {
-  align-items: center;
-  background: fade(@color-secondary-action, 80%);
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  font-size: @font-size-rather-large;
-  justify-content: center;
-  left: 0;
-  line-height: @font-size-maximum;
-  padding: 0 2.5rem;
-  position: absolute;
-  right: 0;
-  text-align: center;
-  top: 0;
-  z-index: @default-z-index;
-}
-
-.MarketTradingForm__deposit-button {
-  &:extend(.button--bright all);
-
-  margin: 2rem auto 0;
-  max-width: 9.5rem;
-}
-
-.MarketTradingForm__close {
-  height: 1rem;
-  left: 0.45rem;
-  position: absolute;
-  top: 0.7rem;
-  width: 1rem;
 }
 
 @media @breakpoint-mobile {
-  .MarketTradingForm {
+  .TradingForm {
     flex-grow: 1;
     margin-bottom: @size-8;
     min-height: auto;
     -webkit-overflow-scrolling: touch;
     overflow-y: auto;
-  }
 
-  .MarketTradingForm__initial-message {
-    color: @color-secondary-text;
-  }
-
-  .MarketTradingForm__button--order-placed {
-    bottom: 0;
-    position: fixed;
+    > div {
+      color: @color-secondary-text;
+    }
   }
 }

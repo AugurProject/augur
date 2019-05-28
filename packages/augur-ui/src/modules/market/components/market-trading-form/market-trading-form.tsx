@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 import TradingWrapper from "modules/trading/components/trading--wrapper/trading--wrapper";
 import { isEqual } from "lodash";
-import classNames from "classnames";
 import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
 import { BigNumber } from "utils/create-big-number";
 import makePath from "modules/routes/helpers/make-path";
@@ -114,7 +113,7 @@ class MarketTradingForm extends Component {
     }
 
     return (
-      <section className={classNames(Styles.MarketTradingForm)}>
+      <section className={Styles.TradingForm}>
         <TradingWrapper
           market={market}
           isLogged={isLogged}
@@ -135,7 +134,7 @@ class MarketTradingForm extends Component {
           marketReviewTradeSeen={marketReviewTradeSeen}
         />
         {initialMessage && (
-          <div className={Styles["MarketTradingForm__initial-message"]}>
+          <div>
             {initialMessage && <p>{initialMessage}</p>}
             {!isLogged && (
               <PrimaryButton
@@ -147,9 +146,11 @@ class MarketTradingForm extends Component {
             {!hasFunds &&
               isLogged && (
                 <Link to={makePath(ACCOUNT_DEPOSIT)}>
-                  <span className={Styles["MarketTradingForm__deposit-button"]}>
-                    Add Funds
-                  </span>
+                  <PrimaryButton
+                    id="add-funds"
+                    action={() => {}}
+                    text="Add Funds"
+                  />
                 </Link>
               )}
           </div>
