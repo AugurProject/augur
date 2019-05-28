@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
-import TermsAndConditions from "modules/app/components/terms-and-conditions/terms-and-conditions";
+import TermsAndConditions from "modules/app/components/terms-and-conditions";
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: any) => ({
   versions: state.versions
 });
 

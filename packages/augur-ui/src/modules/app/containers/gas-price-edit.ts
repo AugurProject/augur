@@ -1,18 +1,18 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
+import { GAS_SPEED_LABELS } from "modules/common-elements/constants";
 import { updateModal } from "modules/modal/actions/update-modal";
-import GasPriceEdit from "modules/app/components/gas-price-edit/gas-price-edit";
+import GasPriceEdit from "modules/app/components/gas-price-edit";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   const { fast, average, safeLow, userDefinedGasPrice } = state.gasPriceInfo;
 
   const userDefined = userDefinedGasPrice || average || 0;
-  let gasPriceSpeed = "Standard";
+  let gasPriceSpeed = GAS_SPEED_LABELS.STANDARD;
   if (userDefined > fast && fast !== 0) {
-    gasPriceSpeed = "Fast";
+    gasPriceSpeed = GAS_SPEED_LABELS.FAST;
   } else if (userDefined < safeLow && safeLow !== 0) {
-    gasPriceSpeed = "Slow";
+    gasPriceSpeed = GAS_SPEED_LABELS.SLOW;
   }
 
   return {
@@ -22,8 +22,8 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  updateModal: modal => dispatch(updateModal(modal))
+const mapDispatchToProps = (dispatch: Function) => ({
+  updateModal: (modal: any) => dispatch(updateModal(modal))
 });
 
 export default withRouter(
