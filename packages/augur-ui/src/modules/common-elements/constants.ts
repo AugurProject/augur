@@ -47,6 +47,12 @@ export const NETWORK_IDS = {
   Private3: "103",
   Private4: "104"
 };
+
+export const GAS_SPEED_LABELS = {
+  STANDARD: "Standard",
+  FAST: "Fast",
+  SLOW: "Slow"
+};
 // augurNode
 export const AUGUR_NODE_URL = "augur_node";
 // ethereumNodeHttp

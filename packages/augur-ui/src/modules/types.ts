@@ -23,6 +23,16 @@ export interface DateFormattedObject {
   formattedUtc: string;
 }
 
+export interface ValueLabelPair {
+  label: string;
+  value: string;
+}
+export interface CoreStats {
+  availableFunds: ValueLabelPair;
+  frozenFunds: ValueLabelPair;
+  totalFunds: ValueLabelPair;
+  realizedPL: ValueLabelPair;
+}
 export interface MarketsData {
   [marketId: string]: MarketData;
 }
