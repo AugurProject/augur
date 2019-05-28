@@ -19,7 +19,7 @@ interface TradingFormProps {
   marketReviewTradeSeen: Boolean;
   marketReviewTradeModal: Function;
   selectedOrderProperties: Object;
-  selectedOutcome: PropTypes.string,
+  selectedOutcome: String;
   updateSelectedOrderProperties: Function;
   handleFilledOnly: Function;
   gasPrice: Number;
