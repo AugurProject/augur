@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 
 // This is a factory function
-function createCustomPropType(isRequired) {
+function createCustomPropType(isRequired: boolean) {
   // The factory returns a custom prop type
   return function customPropType(props, propName, componentName) {
     const prop = props[propName];
@@ -14,7 +14,7 @@ function createCustomPropType(isRequired) {
             propName +
             "` wasn't supplied to `" +
             componentName +
-            "`."
+            "`.",
         );
       }
       // Prop is optional. Do nothing.
@@ -31,7 +31,7 @@ function createCustomPropType(isRequired) {
 }
 
 const CustomPropTypes = {
-  bigNumber: createCustomPropType(false)
+  bigNumber: createCustomPropType(false),
 };
 CustomPropTypes.bigNumber.isRequired = createCustomPropType(true);
 

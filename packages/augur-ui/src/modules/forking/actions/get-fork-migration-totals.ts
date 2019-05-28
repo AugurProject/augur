@@ -4,7 +4,7 @@ import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-va
 
 export const getForkMigrationTotals = (
   universeId: string,
-  callback: Function = logError
+  callback: Function = logError,
 ) => (dispatch: Function, getState: Function) => {
   const { marketsData, universe } = getState();
 
@@ -16,7 +16,7 @@ export const getForkMigrationTotals = (
       augur.augurNode.submitRequest(
         "getForkMigrationTotals",
         {
-          parentUniverse: universeId
+          parentUniverse: universeId,
         },
         (err: any, result: any) => {
           if (err) return callback(err);
@@ -25,21 +25,21 @@ export const getForkMigrationTotals = (
             Object.keys(result).reduce((acc, key) => {
               const cur = result[key];
               const isInvalidKey = "0.5"; // used as indetermine id in market reportable outcomes
-              const payoutKey = calculatePayoutNumeratorsValue(
+              const payoutKey: string | null = calculatePayoutNumeratorsValue(
                 forkingMarket,
                 cur.payout,
-                cur.isInvalid
+                cur.isInvalid,
               );
               acc[payoutKey == null ? isInvalidKey : payoutKey] = {
                 repTotal: cur.repTotal,
                 winner: cur.universe === universe.winningChildUniverse,
-                isInvalid: !!cur.isInvalid
+                isInvalid: !!cur.isInvalid,
               };
               return acc;
-            }, {})
+            }, {}),
           );
-        }
+        },
       );
-    }
+    },
   );
 };

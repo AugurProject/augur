@@ -1,8 +1,6 @@
-export default function debounce(func, wait) {
+export default function debounce(func: () => void, wait: number = 250): () => void {
   let timeout;
-  const realWait = wait || 250;
-
-  return (...args) => {
+  return (...args: any) => {
     const context = this;
 
     const later = () => {
@@ -11,6 +9,6 @@ export default function debounce(func, wait) {
     };
 
     clearTimeout(timeout);
-    timeout = setTimeout(later, realWait);
+    timeout = setTimeout(later, wait);
   };
 }
