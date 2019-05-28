@@ -1,14 +1,25 @@
-import RunWorker from "./Sync.worker";
+import { WebWorkerConnector } from "../connector/ww-connector";
+import { Markets } from "./api/Markets";
 
 console.log("Starting web worker");
 
-// assumption is this will fail if the browser doesn't support web workers
-try {
-  const worker = new RunWorker();
+(async function() {
+  try {
+    const connector = new WebWorkerConnector();
+    console.log("connecting");
+    await connector.connect();
+    console.log("connected");
 
-  worker.onmessage = (event: MessageEvent) => {
-    console.log(event.data);
-  };
-} catch (error) {
-  console.log("Your browser does not support web workers");
-}
+    setTimeout(async () => {
+      console.log("Querying");
+      const getMarkets = connector.bindTo(Markets.getMarkets);
+      console.log(await getMarkets({
+        universe: "0x02149d40d255fceac54a3ee3899807b0539bad60",
+      }));
+    }, 10000);
+    console.log("Done");
+  } catch (e) {
+    console.log(e);
+  }
+})();
+
