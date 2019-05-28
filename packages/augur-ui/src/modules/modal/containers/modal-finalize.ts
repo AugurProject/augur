@@ -6,7 +6,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
 
   return {

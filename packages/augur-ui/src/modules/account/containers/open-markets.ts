@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
+import { AppState } from "store";
 import OpenMarkets from "modules/account/components/open-markets";
 import { pick } from "lodash";
 import { CLOSED, MARKET_CLOSED } from "modules/common-elements/constants";
@@ -9,7 +9,7 @@ import getSelectLoginAccountTotals from "modules/positions/selectors/login-accou
 import memoize from "memoizee";
 import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const positions = getLoginAccountPositions();
   const totalPercentage = getSelectLoginAccountTotals();
   const timestamps = getMarketsPositionsRecentlyTraded(state);

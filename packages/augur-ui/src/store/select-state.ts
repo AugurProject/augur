@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { LoginAccount } from "modules/types";
-import { AppState } from ".";
+import { AppState } from "store";
 
 export const selectAccountNameState = (state: AppState) => state.accountName;
 export const selectAccountPositionsState = (state: AppState) =>

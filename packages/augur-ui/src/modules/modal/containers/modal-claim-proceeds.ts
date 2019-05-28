@@ -15,8 +15,9 @@ import { Proceeds } from "modules/modal/proceeds";
 import { constants } from "services/augurjs";
 import { ActionRowsProps } from "modules/modal/common";
 import { CLAIM_PROCEEDS } from "modules/common-elements/constants";
+import { AppState } from "store";
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   pendingQueue: state.pendingQueue || [],
   gasCost: formatGasCostToEther(

@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-
+import { AppState } from "store";
 import AlertsView from "modules/alerts/components/alerts-view";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import {
@@ -8,7 +8,7 @@ import {
   clearAlerts
 } from "modules/alerts/actions/alerts";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   return {
     alerts
