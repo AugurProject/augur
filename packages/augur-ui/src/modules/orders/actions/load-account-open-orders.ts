@@ -1,9 +1,6 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
-import { ungroupBy } from "utils/ungroupBy";
 import { updateOrderBook } from "modules/orders/actions/update-order-book";
-import { OPEN } from "modules/common-elements/constants";
-import { formatEther, formatShares } from "utils/format-number";
 import { shapeGetOrders } from "modules/orders/helpers/shape-getOrders";
 
 export const loadAccountOpenOrders = (
