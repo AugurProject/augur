@@ -206,6 +206,7 @@ export default class AppView extends Component<AppProps, AppState> {
     }
   ];
 
+  // TODO: can we refactor this out or just remove it?
   shouldComponentUpdate = shouldComponentUpdatePure;
 
   componentWillMount() {

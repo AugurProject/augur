@@ -1,11 +1,12 @@
 import { SCALAR, MALFORMED_OUTCOME } from "modules/common-elements/constants";
 import { createBigNumber } from "utils/create-big-number";
+import { MarketData } from "modules/types";
 
 export default function calculatePayoutNumeratorsValue(
-  market,
-  payout,
-  isInvalid
-) {
+  market: MarketData,
+  payout: Array<number>,
+  isInvalid: boolean,
+): string | null {
   const { maxPrice, minPrice, numTicks, marketType } = market;
   const isScalar = marketType === SCALAR;
 
@@ -16,7 +17,7 @@ export default function calculatePayoutNumeratorsValue(
   if (isScalar) {
     const longPayout = createBigNumber(payout[1], 10);
     const priceRange = createBigNumber(maxPrice, 10).minus(
-      createBigNumber(minPrice, 10)
+      createBigNumber(minPrice, 10),
     );
     // calculation: ((longPayout * priceRange) / numTicks) + minPrice
     return longPayout
@@ -30,5 +31,5 @@ export default function calculatePayoutNumeratorsValue(
     return MALFORMED_OUTCOME;
   }
 
-  return payout.findIndex(item => item > 0).toString();
+  return payout.findIndex((item: number) => item > 0).toString();
 }
