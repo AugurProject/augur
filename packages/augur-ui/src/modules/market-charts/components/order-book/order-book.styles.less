@@ -1,0 +1,159 @@
+@import (reference) '~assets/styles/shared';
+
+.OrderBook {
+  background-color: @color-tertiary-background;
+  border-bottom: @size-8 solid @color-theme-primary;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.Side {
+  &:extend(.caps--small);
+
+  flex: 1 1;
+  height: auto;
+  justify-content: flex-end;
+  position: relative;
+
+  > div {
+    bottom: 0;
+    left: 0;
+    max-height: 100%;
+    overflow: overlay;
+    overflow-y: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    &.Asks {
+      top: unset;
+    }
+
+    > button {
+      display: flex;
+      padding: 4.5px @size-24 4.5px @size-10;
+      position: relative;
+      width: 100%;
+
+      &::before {
+        background-color: @color-positive;
+        bottom: 0;
+        content: "";
+        display: block;
+        height: 20px;
+        left: 0;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 1px;
+      }
+
+      &.Positive {
+        &::before {
+          background-color: @color-negative;
+        }
+      }
+
+      &.Hover {
+        background-color: @color-theme-primary;
+
+        &::before {
+          width: @size-6;
+        }
+      }
+
+      > div:first-of-type {
+        background-color: @color-positive;
+        bottom: 1px;
+        cursor: pointer;
+        left: 0;
+        opacity: 0.1;
+        pointer-events: none;
+        position: absolute;
+        top: 1px;
+
+        &.Neg {
+          background-color: @color-negative;
+        }
+      }
+    }
+  }
+}
+
+.EncompassedHover {
+  background-color: @color-theme-primary;
+}
+
+.AskHead {
+  .Ask {
+    color: @color-secondary-text;
+  }
+}
+
+.BidHead {
+  .Bid {
+    color: @color-secondary-text;
+  }
+}
+
+.Ask, .Bid {
+  &:nth-of-type(2) {
+    justify-content: flex-start;
+  }
+
+  &:nth-of-type(3) {
+    justify-content: center;
+  }
+}
+
+.Ask {
+  .mono-11;
+
+  color: @color-secondary-text;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  overflow: hidden;
+
+  &:nth-child(3) {
+    color: @color-negative;
+  }
+}
+
+.Bid {
+  .mono-11;
+
+  color: @color-secondary-text;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  overflow: hidden;
+
+  &:nth-child(3) {
+    color: @color-positive;
+  }
+}
+
+.Midmarket {
+  .mono-10;
+
+  background-color: fade(@color-primary-alternate, 70%);
+  color: @color-neutral;
+  margin: 1px 0;
+  padding: @size-10 @size-12;
+
+  > div {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+    > span:first-of-type {
+      margin-right: @size-6;
+    }
+
+    > span:last-of-type {
+      margin-left: 2px;
+    }
+  }
+}
