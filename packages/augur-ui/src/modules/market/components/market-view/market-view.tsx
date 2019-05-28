@@ -10,7 +10,7 @@ import { FindReact } from "utils/find-react";
 import MarketHeader from "modules/market/containers/market-header";
 import MarketOrdersPositionsTable from "modules/market/containers/market-orders-positions-table";
 import MarketOutcomesList from "modules/market/containers/market-outcomes-list";
-import MarketOutcomeOrders from "modules/market-charts/containers/market-outcome--orders";
+import OrderBook from "modules/market-charts/containers/order-book";
 import MarketTradingForm from "modules/market/containers/market-trading-form";
 import MarketChartsPane from "modules/market-charts/containers/market-charts-pane";
 import parseMarketTitle from "modules/markets/helpers/parse-market-title";
@@ -327,7 +327,7 @@ export default class MarketView extends Component {
                       <ModuleTabs selected={0} fillForMobile>
                         <ModulePane label="Order Book">
                           <div className={Styles.MarketView__orders}>
-                            <MarketOutcomeOrders
+                            <OrderBook
                               updateSelectedOrderProperties={
                                 this.updateSelectedOrderProperties
                               }

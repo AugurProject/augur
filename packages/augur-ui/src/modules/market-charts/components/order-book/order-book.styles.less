@@ -2,7 +2,7 @@
 
 .OrderBook {
   background-color: @color-tertiary-background;
-  border-bottom: 8px solid @color-theme-primary;
+  border-bottom: @size-8 solid @color-theme-primary;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -32,7 +32,7 @@
 
     > button {
       display: flex;
-      padding: 4.5px 24px 4.5px 10px;
+      padding: 4.5px @size-24 4.5px @size-10;
       position: relative;
       width: 100%;
 
@@ -59,7 +59,7 @@
         background-color: @color-theme-primary;
 
         &::before {
-          width: 6px;
+          width: @size-6;
         }
       }
 
@@ -149,7 +149,7 @@
     justify-content: center;
 
     > span:first-of-type {
-      margin-right: 6px;
+      margin-right: @size-6;
     }
 
     > span:last-of-type {
