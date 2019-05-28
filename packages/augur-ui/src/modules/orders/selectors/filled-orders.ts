@@ -66,7 +66,7 @@ function findOrders(
 
       const outcomeName = getOutcomeName(
         marketsData,
-        (outcomesData || {})[outcome]
+        (outcomesData || {})[outcome],
       );
 
       let originalQuantity = amountBN;

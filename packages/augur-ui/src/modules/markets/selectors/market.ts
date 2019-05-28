@@ -212,7 +212,7 @@ const assembleMarket = (
       const outcome = market.outcomes[position.outcome];
       return {
         ...positionSummary(position, outcome),
-        outcomeName: getOutcomeName(market, outcome)
+        outcomeName: getOutcomeName(market, outcome),
       };
     });
   }

@@ -36,9 +36,20 @@ export interface CoreStats {
 export interface MarketsData {
   [marketId: string]: MarketData;
 }
+export interface Outcomes {
+  id: string;
+  description?: string;
+  name?: string;
+}
 export interface MarketData {
   id: string;
   description: string;
+  maxPrice: BigNumber;
+  minPrice: BigNumber;
+  numTicks: number;
+  marketType: string;
+  outcomes: Array<Outcomes>;
+  scalarDenomination: string;
   // TODO: this should come from SDK types
 }
 export interface OutcomesData {
@@ -92,6 +103,19 @@ export interface FormattedNumber {
   value: number;
   rounded: number | string;
   full: number | string;
+}
+
+export interface FormattedNumberOptions {
+    decimals: number;
+    decimalsRounded: number;
+    denomination: string;
+    roundUp: boolean;
+    roundDown: boolean;
+    positiveSign: boolean;
+    zeroStyled: boolean;
+    minimized: boolean;
+    blankZero: boolean;
+    bigUnitPostfix: boolean;
 }
 export interface ReportingWindowStats {
   startTime: string | null;
@@ -296,6 +320,17 @@ export interface EnvObject {
   "ethereum-node": EthereumNodeOptions;
   universe: string | null;
   useWeb3Transport: boolean;
+}
+
+export interface QueryEndpoints {
+  ethereum_node_http?: string;
+  augur_node?: string;
+  ethereum_node_ws?: string;
+}
+export interface Endpoints {
+  ethereumNodeHTTP: string;
+  augurNode: string;
+  ethereumNodeWS: string;
 }
 
 export interface Connection {
