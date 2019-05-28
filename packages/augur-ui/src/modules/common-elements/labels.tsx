@@ -20,6 +20,7 @@ import {
 } from "modules/common-elements/constants";
 import { ViewTransactionDetailsButton } from "modules/common-elements/buttons";
 import { formatNumber } from "utils/format-number";
+import { FormattedNumber } from "modules/types";
 
 const { REPORTING_STATE } = serviceConstants;
 
@@ -80,7 +81,7 @@ export interface PropertyLabelProps {
 
 export interface LinearPropertyLabelProps {
   label: string;
-  value: string | FormattedValue;
+  value: string | FormattedNumber;
   accentValue?: boolean;
   highlightFirst?: boolean;
   highlight?: boolean;
@@ -112,7 +113,7 @@ export interface LinearPropertyLabelPercentMovementProps {
 
 export interface PillLabelProps {
   label: string;
-  hideOnMobile?: Boolean;
+  hideOnMobile?: boolean;
 }
 
 export interface PositionTypeLabelProps {
@@ -125,20 +126,8 @@ export interface LinearPropertyLabelViewTransactionProps {
   highlightFirst?: boolean;
 }
 
-export interface FormattedValue {
-  value: number;
-  formattedValue: number;
-  formatted: string;
-  roundedValue: number;
-  roundedFormatted: string;
-  minimized: string;
-  denomination: string;
-  full: string;
-  fullPrecision: string;
-}
-
 export interface ValueLabelProps {
-  value: FormattedValue;
+  value: FormattedNumber;
   showDenomination: boolean;
   keyId: string;
   showEmptyDash: boolean;

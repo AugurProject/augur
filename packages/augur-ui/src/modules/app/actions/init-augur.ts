@@ -15,7 +15,7 @@ import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
 import logError from "utils/log-error";
 import networkConfig from "config/network";
-import { version } from "src/version";
+import { version } from "version";
 import { updateVersions } from "modules/app/actions/update-versions";
 import { defaultTo, isEmpty } from "lodash";
 import {
