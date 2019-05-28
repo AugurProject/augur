@@ -1,5 +1,5 @@
 import { augur, constants } from "services/augurjs";
-import logError from "src/utils/log-error";
+import logError from "utils/log-error";
 import {
   updateAwaitingDisputeMarkets,
   updateCrowdDisputeMarkets

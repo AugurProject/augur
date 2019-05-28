@@ -100,8 +100,10 @@ Deploying to: ${networkConfiguration.networkName}
             }
         }
 
-        await this.generateUploadBlockNumberFile(blockNumber);
-        await this.generateAddressMappingFile();
+        if (this.configuration.writeArtifacts) {
+          await this.generateUploadBlockNumberFile(blockNumber);
+          await this.generateAddressMappingFile();
+        }
 
         return this.generateCompleteAddressMapping();
     }

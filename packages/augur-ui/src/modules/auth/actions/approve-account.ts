@@ -2,7 +2,7 @@ import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { updateLoginAccount } from "modules/account/actions/login-account";
 import { updateAlert } from "modules/alerts/actions/alerts";
-import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 export function checkAccountAllowance(callback: Function = logError) {

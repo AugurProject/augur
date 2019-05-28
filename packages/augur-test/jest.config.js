@@ -15,4 +15,5 @@ module.exports = {
     "node",
   ],
   "testURL": "http://localhost:8080/",
+  "globalSetup": "./setup.js",
 };

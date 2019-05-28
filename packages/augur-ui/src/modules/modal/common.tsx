@@ -5,7 +5,7 @@ import QRCode from "qrcode.react";
 import Clipboard from "clipboard";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip.styles";
-import Checkbox from "src/modules/common/components/checkbox/checkbox";
+import Checkbox from "modules/common/components/checkbox/checkbox";
 import {
   XIcon,
   CopyIcon,

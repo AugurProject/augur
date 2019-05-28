@@ -7,24 +7,23 @@ import {
   getEthBalance,
   getDaiBalance,
   getRepBalance
-} from "src/modules/contracts/actions/contractCalls";
+} from "modules/contracts/actions/contractCalls";
 
 export function updateAssets(callback: Function = logError) {
   return async (dispatch: Function, getState: Function) => {
     const { loginAccount } = getState();
-    let balances: LoginAccount = {
+    const balances: LoginAccount = Object.assign(loginAccount, {
       eth: undefined,
       rep: undefined,
-      dai: undefined
-    };
+      dai: undefined,
+    });
 
     if (!loginAccount.address)
       return dispatch(updateLoginAccount(balances));
     const { address } = loginAccount;
-    const rep = await getRepBalance(address);
-    const dai = await getDaiBalance(address);
-    const { balance: eth } = await getEthBalance(address);
-    balances = { rep, eth, dai };
+    balances.rep = await getRepBalance(address);
+    balances.dai = await getDaiBalance(address);
+    balances.eth = await getEthBalance(address);
     dispatch(updateLoginAccount(balances));
     callback(null, balances);
   };
