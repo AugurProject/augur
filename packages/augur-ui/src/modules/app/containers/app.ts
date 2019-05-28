@@ -29,7 +29,6 @@ const mapStateToProps = state => ({
   blockchain: state.blockchain,
   categories: state.categories,
   connection: state.connection,
-  coreStats: selectCoreStats(state),
   env: state.env,
   isLogged: state.authStatus.isLogged,
   isMobile: state.appStatus.isMobile,
