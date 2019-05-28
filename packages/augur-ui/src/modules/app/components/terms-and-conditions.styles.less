@@ -1,18 +1,19 @@
 @import (reference) '~assets/styles/shared';
 
 .TermsAndConditions {
+  .text-12;
+
   color: @color-secondary-text;
   display: flex;
   flex: 0 0 auto;
-  font-size: 0.75rem;
   justify-content: space-between;
-  margin: 1em 0;
+  margin: @size-16 0;
   text-align: center;
   white-space: nowrap;
 
-  .TermsAndConditions__grouping {
+  > div {
     flex: 0 0 auto;
-    padding: 0 2rem;
+    padding: 0 @size-32;
 
     a,
     span {
@@ -25,13 +26,13 @@
 
     span {
       align-self: flex-end;
-      font-weight: bold;
+      font-weight: @weight-bold;
     }
 
     a::after,
     span::after {
       content: "|";
-      padding: 0 0.5em;
+      padding: 0 @size-8;
 
       @media @breakpoint-mobile-medium {
         content: "";
@@ -61,17 +62,18 @@
       flex-grow: 0;
     }
 
-    .TermsAndConditions__grouping {
+    > div {
       align-content: space-around;
       display: flex;
       flex-flow: column wrap;
 
       a,
       span {
+        .text-12;
+
         align-self: flex-start;
         flex-basis: 100%;
-        font-size: 0.75rem;
-        padding: 0.5em 0;
+        padding: @size-8 0;
       }
     }
   }

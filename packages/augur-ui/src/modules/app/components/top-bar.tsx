@@ -12,7 +12,7 @@ import {
   LinearPropertyLabelMovement
 } from "modules/common-elements/labels";
 import { RepLogoIcon } from "modules/common-elements/icons";
-import Styles from "modules/app/components/top-bar/top-bar.styles";
+import Styles from "modules/app/components/top-bar.styles";
 
 const TopBar = props => (
   <header className={Styles.TopBar}>

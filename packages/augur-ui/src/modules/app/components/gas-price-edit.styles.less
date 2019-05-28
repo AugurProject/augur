@@ -1,0 +1,98 @@
+@import (reference) "~assets/styles/shared";
+
+.GasPriceEdit {
+  align-items: center;
+  color: @color-secondary-text;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 162px;
+  width: unset;
+
+  @media @breakpoint-mobile-mid {
+    max-width: unset;
+  }
+
+  &:hover {
+    background-color: @color-primary-light;
+  }
+
+  > button {
+    cursor: pointer;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: @size-18 @size-24;
+    width: 100%;
+  
+    &:focus {
+      outline: none;
+    }
+  
+    @media @breakpoint-mobile {
+      padding-bottom: @size-10;
+      padding-top: @size-8;
+    }
+  
+    @media @breakpoint-mobile-mid {
+      flex-direction: row;
+      padding: @size-16 @size-24;
+    }
+
+    > h3 {
+      .text-10;
+
+      color: @color-tertiary-text;
+      line-height: 2;
+
+      @media @breakpoint-mobile-mid {
+        > span {
+          display: none;
+        }
+      }
+    }
+
+    > div {
+      align-items: flex-end;
+      display: flex;
+    
+      @media @breakpoint-mobile-mid {
+        align-items: center;
+        flex-grow: 1;
+        justify-content: flex-end;
+      }
+
+      > span:first-of-type {
+        .mono-14-bold;
+      
+        color: @color-secondary-text;
+        margin-bottom: -2px;
+        margin-right: 2px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      
+        @media @breakpoint-mobile-mid {
+          max-width: @size-40;
+        }
+      }
+
+      > span:last-of-type {
+        .text-10;
+
+        color: @color-secondary-text;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.description {
+  .text-10-bold;
+
+  color: @color-secondary-text;
+  margin-right: @size-4;
+}
+
+.nonStandard {
+  color: @color-in-reporting;
+}
