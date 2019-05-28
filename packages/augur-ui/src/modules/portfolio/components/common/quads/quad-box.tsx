@@ -13,7 +13,7 @@ export interface QuadBoxProps {
   sortByOptions: Array<NameValuePair>;
   updateDropdown: Function;
   onSearchChange: Function;
-  children?: ReactNode;
+  content?: ReactNode;
   bottomBarContent: ReactNode;
   bottomRightBarContent?: ReactNode;
   rightContent?: ReactNode;
@@ -66,7 +66,7 @@ const QuadBox = (props: QuadBoxProps) => (
             switchHeaders={props.switchHeaders}
           />
         </div>
-        {(props.children) ? props.children : null}
+        {(props.content) ? props.content : null}
       </div>
     </div>
   </div>
