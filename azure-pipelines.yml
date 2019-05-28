@@ -133,10 +133,6 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn test
-        displayName: yarn test
-      - bash: |
-          set -euo pipefail
           yarn docker:build:augur
           docker images
           docker tag augurproject/augur-build:latest augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
@@ -175,27 +171,6 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'
-      - bash: |
-          set -euo pipefail
-          # checked what files changed in merge to master
-          for f in $(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion));
-            do
-              echo "$f"
-              if [[ $f =~ .*augur-core/source.* ]] || [[ $f =~ .*augur-core/package.json ]]
-              then
-                echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-              fi
-            done
-          echo "Build SourceBranch: $(Build.SourceBranch)"
-          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
-            do
-              echo "$f"
-              if [[ $f =~ .*augur-core/source.* ]] || [[ $f =~ .*augur-core/package.json ]]
-              then
-                echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-              fi
-            done
-        displayName: check git for augur-core changes
       - task: Docker@1
         displayName: docker login
         inputs:
@@ -213,12 +188,6 @@ jobs:
           docker images
           yarn workspace @augurproject/core docker:build;
         displayName: augur-core docker image
-        condition: |
-          and
-          (
-              succeeded(),
-              eq(variables.JOB_TRIGGER, 'true')
-          )
       - script: |
           contract_sha=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
           docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
@@ -275,9 +244,6 @@ jobs:
           TESTS: integration:parity
         security_mithril:
           TESTS: security:mythril
-          #security_main:
-          #  TESTS: security:maian
-
     steps:
       - checkout: self
         fetchDepth: 5
@@ -287,17 +253,6 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'
-      - bash: |
-          set -euo pipefail
-          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
-            do
-              echo "$f"
-              if [[ $f =~ .*augur-core.* ]]
-              then
-                echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-              fi
-            done
-        displayName: check git for augur-core changes
       - script: |
           set -euo pipefail
           which node
@@ -324,69 +279,6 @@ jobs:
             yarn workspace @augurproject/core docker:run:test:unit -- $TESTS;
           fi
         displayName: integration tests
-        condition: eq(variables.JOB_TRIGGER, 'true')
-
-  # - job: Test_Augur_UI_and_Node
-  #   displayName: 'Test augur UI and augur-node'
-  #   pool:
-  #     vmImage: 'Ubuntu 16.04'
-  #   strategy:
-  #     matrix:
-  #       node_8_x:
-  #         node_version: 8.x
-  #       node_9_x:
-  #         node_version: 9.x
-  #       node_10_x:
-  #         node_version: 10.x
-  #   steps:
-  #     - task: NodeTool@0
-  #       inputs:
-  #         versionSpec: $(node_version)
-  #     - script: |
-  #         set -euo pipefail
-  #         which node
-  #         node --version
-  #         yarn workspace @augurproject/node add sqlite3 --force --build-from-source
-  #         yarn install --ignore-scripts --frozen-lockfile
-  #       displayName: 'Install Dependencies'
-  #     - script: |
-  #         yarn test --forceExit --detectOpenHandles
-  #       displayName: 'Run Tests'
-  #     - task: PublishTestResults@2
-  #       inputs:
-  #         testResultsFormat: 'JUnit'
-  #         testResultsFiles: 'junit.xml'
-
-  - job: Test_Augur_js
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    strategy:
-      matrix:
-        node_10_x:
-          node_version: 10.x
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(node_version)
-      - bash: |
-          set -euo pipefail
-          for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
-            do
-              echo "$f"
-              if [[ $f =~ .*augur\.js.* ]]
-              then
-                echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-              fi
-            done
-        displayName: check git for augur.js changes
-      - script: |
-          set -euo pipefail
-          which node
-          node --version
-          yarn install --ignore-scripts --frozen-lockfile
-          npx lerna run test --stream --scope augur.js
-        displayName: 'test augur.js'
-        condition: eq(variables.AUGUR, 'true')
 
   - job: Docker_populated_geth_images
     dependsOn:
@@ -406,28 +298,6 @@ jobs:
       vmImage: 'Ubuntu 16.04'
     timeoutInMinutes: 120
     steps:
-    - bash: |
-        set -euo pipefail
-        # checked what files changed in merge to master
-        for f in $(git show --name-only --oneline $(Build.SourceVersion));
-          do
-            echo "$f"
-            if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.*Dockerfile ]]
-            then
-              echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-            fi
-          done
-
-        # checked what files changed in PR
-        for f in $(git whatchanged --name-only --pretty="" origin/master..HEAD);
-          do
-            echo "$f"
-            if [[ $f =~ .*augur-core.* ]] || [[ $f =~ .*augur-tools.*Dockerfile ]]
-            then
-              echo "##vso[task.setVariable variable=JOB_TRIGGER]true";
-            fi
-          done
-      displayName: check git for augur-core changes
     - task: Docker@1
       displayName: docker login
       inputs:
