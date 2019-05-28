@@ -7,7 +7,7 @@ import {
 import { constants } from "services/constants";
 import { ZERO, TEN, ETHER } from "modules/common-elements/constants";
 import addCommas from "utils/add-commas-to-number";
-import { FormattedNumber } from "modules/types";
+import { FormattedNumber, FormattedNumberOptions } from "modules/types";
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   Produces a formatted number object used for display and calculations
@@ -61,7 +61,7 @@ export const SHARES_NUMBER_OF_DECIMALS = 4;
 const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 const USUAL_NUMBER_DECIMAL_PLACES = 4;
 
-export function formatEther(num, opts): FormattedNumber {
+export function formatEther(num: number, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -74,7 +74,7 @@ export function formatEther(num, opts): FormattedNumber {
   });
 }
 
-export function formatEtherEstimate(num, opts): FormattedNumber {
+export function formatEtherEstimate(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -87,7 +87,7 @@ export function formatEtherEstimate(num, opts): FormattedNumber {
   });
 }
 
-export function formatPercent(num, opts): FormattedNumber {
+export function formatPercent(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 0,
@@ -100,7 +100,7 @@ export function formatPercent(num, opts): FormattedNumber {
   });
 }
 
-export function formatShares(num, opts): FormattedNumber {
+export function formatShares(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   const formattedShares = formatNumber(num, {
     decimals: SHARES_NUMBER_OF_DECIMALS,
     decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
@@ -120,7 +120,7 @@ export function formatShares(num, opts): FormattedNumber {
   return formattedShares;
 }
 
-export function formatDai(num, opts): FormattedNumber {
+export function formatDai(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
@@ -133,7 +133,7 @@ export function formatDai(num, opts): FormattedNumber {
   });
 }
 
-export function formatRep(num, opts): FormattedNumber {
+export function formatRep(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: 4,
     decimalsRounded: 0,
@@ -146,7 +146,7 @@ export function formatRep(num, opts): FormattedNumber {
   });
 }
 
-export function formatRepTokens(num, opts): FormattedNumber {
+export function formatRepTokens(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
@@ -159,7 +159,7 @@ export function formatRepTokens(num, opts): FormattedNumber {
   });
 }
 
-export function formatConfirmations(num, opts): FormattedNumber {
+export function formatConfirmations(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(Math.max(num, 0), {
     decimals: 0,
     decimalsRounded: 0,
@@ -202,7 +202,21 @@ export function formatBlank(): FormattedNumber {
   };
 }
 
-export function sumAndformatGasCostToEther(gases: Array<string>, opts: object, gasPrice: string): string {
+export function optionsBlank(): FormattedNumberOptions {
+  return {
+    decimals: 0,
+    decimalsRounded: 0,
+    denomination: "",
+    roundUp: false,
+    roundDown: false,
+    positiveSign: false,
+    zeroStyled: true,
+    minimized: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+  };
+}
+export function sumAndformatGasCostToEther(gases: Array<string>, opts: FormattedNumberOptions = optionsBlank(), gasPrice: string): string {
   const summedGas = gases.reduce(
     (p, g) => createBigNumber(unfix(g, "number")).plus(p),
     ZERO,
@@ -215,11 +229,11 @@ export function sumAndformatGasCostToEther(gases: Array<string>, opts: object, g
   return formatGasCost(estimatedGasCost, opts).roundedFormatted;
 }
 
-export function formatGasCostToEther(num: string, opts: object, gasPrice: string): string {
+export function formatGasCostToEther(num: string, opts: FormattedNumberOptions = optionsBlank(), gasPrice: string): string {
   return sumAndformatGasCostToEther([num], opts, gasPrice);
 }
 
-export function formatAttoRep(num, opts): FormattedNumber {
+export function formatAttoRep(num: number, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   if (!num || num === 0 || isNaN(num)) return formatBlank();
   return formatNumber(
     createBigNumber(num.toString())
@@ -230,7 +244,7 @@ export function formatAttoRep(num, opts): FormattedNumber {
 }
 
 // At some point potentially refactor all this to be more generic (e.g formatAttoAmount)
-export function formatAttoEth(num, opts): FormattedNumber {
+export function formatAttoEth(num: number, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   if (!num || num === 0 || isNaN(num)) return formatBlank();
   return formatNumber(
     createBigNumber(num.toString())
@@ -240,7 +254,7 @@ export function formatAttoEth(num, opts): FormattedNumber {
   );
 }
 
-export function formatGasCost(num, opts): FormattedNumber {
+export function formatGasCost(num: number, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: 0,
     decimalsRounded: 0,
@@ -255,18 +269,7 @@ export function formatGasCost(num, opts): FormattedNumber {
 
 export function formatNumber(
   num,
-  opts = {
-    decimals: 0,
-    decimalsRounded: 0,
-    denomination: "",
-    roundUp: false,
-    roundDown: false,
-    positiveSign: false,
-    zeroStyled: true,
-    minimized: false,
-    blankZero: false,
-    bigUnitPostfix: false,
-  },
+  opts: FormattedNumberOptions = optionsBlank(),
 ): FormattedNumber {
   const value = num != null ? createBigNumber(num, 10) : ZERO;
   const { minimized, bigUnitPostfix } = opts;
