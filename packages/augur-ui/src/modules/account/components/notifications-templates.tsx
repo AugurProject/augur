@@ -4,7 +4,7 @@ import MarketLink from "modules/market/components/market-link/market-link";
 import {
   CountdownProgress,
   MarketProgress,
-  formatTime
+  formatTime,
 } from "modules/common-elements/progress";
 import { SubmitTextButton } from "modules/common-elements/buttons";
 
@@ -13,31 +13,9 @@ import Styles from "modules/account/components/notification.styles";
 import {
   NOTIFICATION_TYPES,
   MARKET_STATUS_MESSAGES,
-  REPORTING_ENDS
+  REPORTING_ENDS,
 } from "modules/common-elements/constants";
-
-export interface DisputeInfo {
-  disputeRound: number;
-}
-
-export interface MyPositionsSummary {
-  currentValue: any;
-  numCompleteSets: any;
-  totalPercent: any;
-  totalReturns: any;
-}
-
-export interface Market {
-  id: string;
-  description: string;
-  reportingState: string;
-  endTime: number;
-  marketStatus: string;
-  disputeInfo?: DisputeInfo;
-  myPositionsSummary?: MyPositionsSummary;
-  outstandingReturns?: string;
-  finalizationTimeWithHold?: number;
-}
+import { Market } from "modules/types";
 
 export interface TemplateProps {
   type: string;

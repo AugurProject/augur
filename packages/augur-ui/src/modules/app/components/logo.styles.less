@@ -1,0 +1,178 @@
+@import (reference) '~assets/styles/shared';
+
+@keyframes drawout-inner {
+  0% {
+    stroke-dashoffset: 335;
+  }
+
+  49% {
+    stroke-dashoffset: 455;
+  }
+
+  51% {
+    stroke-dashoffset: 455;
+  }
+
+  100% {
+    stroke-dashoffset: 335;
+  }
+}
+
+@keyframes drawout-inner-fill {
+  0% {
+    stroke-dashoffset: 335;
+  }
+
+  100% {
+    stroke-dashoffset: 455;
+  }
+}
+
+@keyframes drawout-inner-inverse {
+  0% {
+    stroke-dashoffset: 82;
+  }
+
+  49% {
+    stroke-dashoffset: 0;
+  }
+
+  51% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: 82;
+  }
+}
+
+@keyframes drawout-inner-inverse-fill {
+  0% {
+    stroke-dashoffset: 82;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.Logo {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+  height: @top-bar-height;
+  justify-content: center;
+  position: relative;
+  z-index: @mask-above;
+
+  > * {
+    display: flex;
+    flex-direction: column;
+  }
+
+  > span {
+    color: @color-secondary-text;
+    font-weight: @weight-light;
+    letter-spacing: 1.2px;
+    line-height: 2.75rem;
+    margin-left: @size-8;
+    text-transform: uppercase;
+    vertical-align: top;
+  }
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
+}
+
+.LoadingLogo {
+  backface-visibility: hidden; /* VERY IMPORTANT - PREVENTS FLICKER */
+  width: @size-40;
+
+  svg {
+    :global {
+      .outer-lines {
+        fill: none;
+        stroke: @color-secondary-text;
+        stroke-dashoffset: 0;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .inner-lines {
+        :local {
+          transition: 1.25s;
+        }
+
+        fill: none;
+        stroke: @color-secondary-text;
+        stroke-dasharray: 230;
+        stroke-dashoffset: 230;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .inner-bottom-line {
+        :local {
+          transition: 1.25s;
+        }
+
+        fill: none;
+        stroke: @color-secondary-text;
+        stroke-dasharray: 82;
+        stroke-dashoffset: 82;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .mask {
+        fill: @color-theme-primary;
+      }
+    }
+  }
+}
+
+.running {
+  svg {
+    :global {
+      .inner-lines {
+        :local {
+          animation: drawout-inner 2.5s both 1;
+          animation-direction: alternate;
+        }
+      }
+
+      .inner-bottom-line {
+        :local {
+          animation: drawout-inner-inverse 2.5s both 1;
+          animation-direction: alternate;
+        }
+      }
+    }
+  }
+}
+
+.paused {
+  svg {
+    :global {
+      .inner-lines {
+        :local {
+          animation: drawout-inner-fill 1.25s both;
+        }
+      }
+
+      .inner-bottom-line {
+        :local {
+          animation: drawout-inner-inverse-fill 1.25s both;
+        }
+      }
+    }
+  }
+}
+
