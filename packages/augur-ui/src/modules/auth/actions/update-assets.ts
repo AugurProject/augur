@@ -7,7 +7,7 @@ import {
   getEthBalance,
   getDaiBalance,
   getRepBalance
-} from "src/modules/contracts/actions/contractCalls";
+} from "modules/contracts/actions/contractCalls";
 
 export function updateAssets(callback: Function = logError) {
   return async (dispatch: Function, getState: Function) => {

@@ -3,47 +3,54 @@ import { PathReporter } from "io-ts/lib/PathReporter";
 import Knex from "knex";
 import { Augur, JsonRpcRequest } from "../types";
 import { logger } from "../utils/logger";
-import { AccountTransferHistoryParams, getAccountTransferHistory } from "./getters/get-account-transfer-history";
-import { getReportingHistory, ReportingHistoryParams } from "./getters/get-reporting-history";
-import { getReportingSummary, ReportingSummaryParams } from "./getters/get-reporting-summary";
-import { getTradingHistory, TradingHistoryParams } from "./getters/get-trading-history";
-import { getMarketPriceHistory, MarketPriceHistoryParams } from "./getters/get-market-price-history";
-import { getMarketPriceCandlesticks, MarketPriceCandlesticksParams } from "./getters/get-market-price-candlesticks";
-import { getUserTradingPositions, UserTradingPositionsParams } from "./getters/get-user-trading-positions";
-import { getUserShareBalances, UserShareBalancesParams } from "./getters/get-user-share-balances";
-import { getAccountTransactionHistory, GetAccountTransactionHistoryParams } from "./getters/get-account-transaction-history";
-import { FeeWindowParams, getFeeWindow } from "./getters/get-fee-window";
 import {
-  getUnclaimedMarketCreatorFees,
-  UnclaimedMarketCreatorFeesParams
-} from "./getters/get-unclaimed-market-creator-fees";
-import { DisputeTokensParams, getDisputeTokens } from "./getters/get-dispute-tokens";
-import { getMarkets, GetMarketsParams } from "./getters/get-markets";
-import {
+  AccountTimeRangedStatsParams,
+  AccountTransferHistoryParams,
+  AllOrdersParams,
+  BetterWorseOrdersParams, CategoriesParams,
+  CompleteSetsParams,
+  DisputeInfoParams,
+  DisputeTokensParams,
+  FeeWindowParams,
+  ForkMigrationTotalsParams,
+  getAccountTimeRangedStats,
+  getAccountTransactionHistory,
+  GetAccountTransactionHistoryParams, getAccountTransferHistory,
+  getAllOrders, getBetterWorseOrders,
+  getCategories,
+  getCompleteSets,
+  getDisputeInfo,
+  getDisputeTokens,
+  getFeeWindow, getForkMigrationTotals, getInitialReporters, getMarketPriceCandlesticks, getMarketPriceHistory,
+  getMarkets,
   getMarketsClosingInDateRange,
-  MarketsClosingInDateRangeParams
-} from "./getters/get-markets-closing-in-date-range";
-import { getMarketsInfo, MarketsInfoParams } from "./getters/get-markets-info";
-import { getOrders, OrdersParams } from "./getters/get-orders";
-import { AllOrdersParams, getAllOrders } from "./getters/get-all-orders";
-import { CompleteSetsParams, getCompleteSets } from "./getters/get-complete-sets";
-import { BetterWorseOrdersParams, getBetterWorseOrders } from "./getters/get-better-worse-orders";
-import { getSyncData, NoParams } from "./getters/get-sync-data";
-import { DisputeInfoParams, getDisputeInfo } from "./getters/get-dispute-info";
-import { getInitialReporters, InitialReportersParams } from "./getters/get-initial-reporters";
-import { ForkMigrationTotalsParams, getForkMigrationTotals } from "./getters/get-fork-migration-totals";
-import { getReportingFees, ReportingFeesParams } from "./getters/get-reporting-fees";
-import { getUniversesInfo, UniverseInfoParams } from "./getters/get-universes-info";
-import {
-  getProfitLoss,
+  getMarketsInfo,
+  GetMarketsParams,
+  getOrders,
+  getPlatformActivityStats, getProfitLoss,
   GetProfitLossParams,
   getProfitLossSummary,
-  GetProfitLossSummaryParams
-} from "./getters/get-profit-loss";
-import { getWinningBalance, WinningBalanceParams } from "./getters/get-winning-balance";
-import { CategoriesParams, getCategories } from "./getters/get-categories";
-import { getAccountTimeRangedStats, AccountTimeRangedStatsParams } from "./getters/get-account-time-ranged-stats";
-import { getPlatformActivityStats, PlatformActivityStatsParams, PlatformActivityStatsParamsType } from "./getters/get-platform-activity-stats";
+  GetProfitLossSummaryParams, getReportingFees, getReportingHistory,
+  getReportingSummary,
+  getSyncData,
+  getTradingHistory, getUnclaimedMarketCreatorFees,
+  getUniversesInfo,
+  getUserShareBalances,
+  getUserTradingPositions, getWinningBalance,
+  InitialReportersParams,
+  MarketPriceCandlesticksParams,
+  MarketPriceHistoryParams,
+  MarketsClosingInDateRangeParams, MarketsInfoParams,
+  NoParams, OrdersParams, PlatformActivityStatsParams,
+  ReportingFeesParams, ReportingHistoryParams,
+  ReportingSummaryParams,
+  TradingHistoryParams,
+  UnclaimedMarketCreatorFeesParams,
+  UniverseInfoParams,
+  UserShareBalancesParams,
+  UserTradingPositionsParams,
+  WinningBalanceParams
+} from "./getters";
 
 type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
 

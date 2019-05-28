@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
 import { ImmediateImportance } from "modules/common-elements/icons";
-import { FormattedValue } from "modules/common-elements/labels";
 import { SquareDropdown } from "modules/common-elements/selection";
 import {
   Title,
@@ -15,13 +14,14 @@ import isAddress from "modules/auth/helpers/is-address";
 import Styles from "modules/modal/modal.styles";
 import { createBigNumber } from "utils/create-big-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
+import { FormattedNumber } from "modules/types";
 
 interface WithdrawFormProps {
   closeAction: Function;
   transferFunds: Function;
   GasCosts: {
-    eth: FormattedValue;
-    rep: FormattedValue;
+    eth: FormattedNumber;
+    rep: FormattedNumber;
   };
   loginAccount: {
     rep: string;

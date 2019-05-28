@@ -29,15 +29,14 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "@augurproject/sdk": "1.0.0-0",
     "@augurproject/artifacts": "1.0.0-0",
     "@augurproject/core": "2.0.0-0",
     "@augurproject/ethersjs-provider": "1.0.0-0",
+    "@augurproject/sdk": "1.0.0-0",
     "contract-dependencies-ethers": "1.0.0-0",
     "ethers": "4.0.24",
-    "ganache-core": "2.4.0",
-    "memdown": "4.0.0",
-    "ganache-core": "2.4.0"
+    "levelup": "4.0.1",
+    "memdown": "4.0.0"
   },
   "devDependencies": {
     "@types/argparse": "^1.0.36",
@@ -49,9 +48,11 @@
     "supertest": "4.0.2",
     "ts-jest": "23.10.5",
     "ts-node": "8.0.3",
-    "tsconfig-paths": "3.7.0"
+    "tsconfig-paths": "3.7.0",
+    "ganache-core": "2.5.0"
   },
   "resolutions": {
-    "**/sha3": "2.0.1"
+    "**/sha3": "2.0.1",
+    "**/memdown": "4.0.0"
   }
 }
