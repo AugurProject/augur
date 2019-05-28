@@ -10,16 +10,16 @@
   margin-left: 0.9375rem;
   position: relative;
 
-  &.small {
-    border-width: 0.325rem;
+  @media @breakpoint-mobile {
+    border-width: 0.325rem; 
   }
 }
 
 .TradingIndicator_arrow_up {
-  border-bottom-color: @color-light-gray;
+  border-bottom-color: @color-neutral;
 }
 
 .TradingIndicator_arrow_down {
-  border-top-color: @color-light-gray;
+  border-top-color: @color-neutral;
   border-width: 8px 7px 0;
 }

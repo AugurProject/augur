@@ -12,10 +12,10 @@ export interface SequenceIds {
  *
  * TODO Remove this class if derived DBs are not used.
  */
-export class MetaDB<TBigNumber> extends AbstractDB {
+export class MetaDB extends AbstractDB {
   private syncStatus: SyncStatus;
 
-  constructor(dbController: DB<TBigNumber>, networkId: number, dbFactory: PouchDBFactoryType) {
+  constructor(dbController: DB, networkId: number, dbFactory: PouchDBFactoryType) {
     super(networkId, networkId + "-BlockNumbersSequenceIds", dbFactory);
     this.syncStatus = dbController.syncStatus;
     this.db.createIndex({

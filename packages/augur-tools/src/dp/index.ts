@@ -1,5 +1,6 @@
 import { Augur } from "@augurproject/sdk";
 import { providers } from "ethers";
+import { computeAddress } from "ethers/utils";
 import { BigNumber } from "./types";
 import { Addresses } from "@augurproject/artifacts";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
@@ -18,19 +19,22 @@ import parrotSay from "parrotsay-api";
 
 import chalk from "chalk";
 import columnify from "columnify";
-import { createMarkets } from "./lib/create-markets";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { repFaucet } from "./lib/rep-faucet";
 import { UploadBlockNumbers } from "@augurproject/artifacts";
+import { createCannedMarketsAndOrders} from "@augurproject/test";
+import { createSeedFile, seedFileIsOutOfDate } from "@augurproject/test/build/scripts/GenerateGanacheSeed";
 
 const COMMANDS = [
   "create-markets",
   "create-orders",
+  "create-markets-and-orders",
   "deploy",
   "gas-limit",
   "rep-faucet",
   "upload",
-  "all-logs"
+  "all-logs",
+  "create-seed-file",
 ] as const;
 
 type COMMANDS = typeof COMMANDS[number];
@@ -194,21 +198,33 @@ async function runCommandForNetwork(networkConfiguration: NetworkConfiguration, 
       }
       break;
     }
-    case "create-markets": {
+    case "create-markets-and-orders": {
       if (networkConfiguration.privateKey) {
         const provider = new providers.JsonRpcProvider(networkConfiguration.http);
         const ethersProvider = new EthersProvider(provider, 5, 0, 40);
-        const signer = await EthersFastSubmitWallet.create(networkConfiguration.privateKey, provider);
-        const dependencies = new ContractDependenciesEthers(provider, signer);
+
         const networkId = await ethersProvider.getNetworkId();
-
         const addresses = Addresses[networkId];
-        const augur = await Augur.create(ethersProvider, dependencies, addresses);
+        const accounts = [{
+          secretKey: networkConfiguration.privateKey,
+          publicKey: computeAddress(`0x${networkConfiguration.privateKey!}`),
+          balance: 0
+        }];
 
-        const ETERNAL_APPROVAL_VALUE_ = await augur.contracts.cash.ETERNAL_APPROVAL_VALUE_();
-        await augur.contracts.cash.approve(augur.addresses.Augur, ETERNAL_APPROVAL_VALUE_);
+        console.log(JSON.stringify(accounts, null, 2));
 
-        await createMarkets(augur, await signer.getAddress(), signer);
+        await createCannedMarketsAndOrders(accounts, ethersProvider, addresses);
+      }
+      break;
+    }
+    case "create-seed-file": {
+      console.log("Creating ganache seed file.");
+      const seedFilepath = `${__dirname}/../../../augur-test/seed.json`;
+      if (await seedFileIsOutOfDate(seedFilepath)) {
+        console.log("Seed file out of date. Creating/updating...");
+        await createSeedFile(seedFilepath);
+      } else {
+        console.log("Seed file is up-to-date. No need to update.");
       }
       break;
     }

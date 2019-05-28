@@ -15,8 +15,8 @@
 .PrimaryButton {
   .Button;
 
-  background: @color-primary-button-background;
-  color: @color-primary-button-text;
+  background: @color-primary-action;
+  color: @color-primary-background;
   max-height: @button-height-default;
   padding: @size-12 @size-24;
 
@@ -52,8 +52,8 @@
   .Button;
 
   background: @color-buy-order-button-background;
-  border-color: @color-buy-order-button-border;
-  color: @color-secondary-button-text;
+  border-color: @color-positive;
+  color: @color-secondary-text;
   height: @button-height-orders;
   max-height: @button-height-orders;
   padding: @button-padding-orders;
@@ -73,8 +73,8 @@
   .Button;
 
   background: @color-sell-order-button-background;
-  border-color: @color-sell-order-button-border;
-  color: @color-secondary-button-text;
+  border-color: @color-negative;
+  color: @color-secondary-text;
   height: @button-height-orders;
   max-height: @button-height-orders;
   padding: @button-padding-orders;
@@ -94,7 +94,7 @@
   .text-12;
 
   align-items: center;
-  color: @color-secondary-button-text;
+  color: @color-secondary-text;
   cursor: @button-cursor;
   display: flex;
   flex-flow: row nowrap;
@@ -106,9 +106,9 @@
   }
 
   > svg > path {
-    fill: @color-secondary-button-text;
+    fill: @color-secondary-text;
     fill-opacity: 0.1;
-    stroke: @color-secondary-button-text;
+    stroke: @color-secondary-text;
   }
 
   &:disabled {
@@ -170,7 +170,7 @@
 
   &:hover:enabled {
     background: @color-primary-light;
-    color: @color-secondary-button-text;
+    color: @color-secondary-text;
   }
 }
 
@@ -196,10 +196,10 @@
   }
 
   &:hover {
-    color: @color-secondary-button-text;
+    color: @color-secondary-text;
 
     > svg > path {
-      stroke: @color-secondary-button-text;
+      stroke: @color-secondary-text;
     }
   }
 
@@ -230,10 +230,10 @@
   }
 
   &:disabled {
-    color: fade(@color-white, 20%);
+    color: fade(@color-secondary-text, 20%);
 
     &:hover {
-      color: fade(@color-white, 20%);
+      color: fade(@color-secondary-text, 20%);
     }
   }
 }
@@ -255,7 +255,7 @@
 
   &:hover {
     > svg > path {
-      fill: @color-secondary-button-text;
+      fill: @color-secondary-text;
     }
   }
 }
@@ -266,7 +266,7 @@
   align-content: center;
   background: @color-theme-primary;
   border: 1px solid @color-primary-alternate-two;
-  color: @color-secondary-button-text;
+  color: @color-secondary-text;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
@@ -281,7 +281,7 @@
     width: @size-16;
 
     > path {
-      fill: @color-secondary-button-text;
+      fill: @color-secondary-text;
     }
   }
 
@@ -315,13 +315,13 @@
 
     > path {
       &:nth-child(even) {
-        fill: @color-secondary-button-text;
+        fill: @color-secondary-text;
         stroke: none;
       }
 
       &:nth-child(odd) {
         fill: none;
-        stroke: @color-secondary-button-text;
+        stroke: @color-secondary-text;
       }
     }
   }
@@ -359,7 +359,7 @@
 
     > path {
       &:nth-child(odd) {
-        fill: @color-secondary-button-text;
+        fill: @color-secondary-text;
         stroke: none;
       }
     }
@@ -377,7 +377,7 @@
 
 .DAIFaucetButton {
   > svg > path {
-    fill: @color-secondary-button-text
+    fill: @color-secondary-text;
   }
 }
 

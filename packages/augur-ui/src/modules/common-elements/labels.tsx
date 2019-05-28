@@ -20,6 +20,7 @@ import {
 } from "modules/common-elements/constants";
 import { ViewTransactionDetailsButton } from "modules/common-elements/buttons";
 import { formatNumber } from "utils/format-number";
+import { FormattedNumber } from "modules/types";
 
 const { REPORTING_STATE } = serviceConstants;
 
@@ -80,11 +81,12 @@ export interface PropertyLabelProps {
 
 export interface LinearPropertyLabelProps {
   label: string;
-  value: string | FormattedValue;
+  value: string | FormattedNumber;
   accentValue?: boolean;
   highlightFirst?: boolean;
   highlight?: boolean;
   highlightAlternateBolded?: boolean;
+  highlightAlternate?: boolean;
   useValueLabel?: boolean;
   showDenomination?: boolean;
 }
@@ -111,6 +113,7 @@ export interface LinearPropertyLabelPercentMovementProps {
 
 export interface PillLabelProps {
   label: string;
+  hideOnMobile?: boolean;
 }
 
 export interface PositionTypeLabelProps {
@@ -123,20 +126,8 @@ export interface LinearPropertyLabelViewTransactionProps {
   highlightFirst?: boolean;
 }
 
-export interface FormattedValue {
-  value: number;
-  formattedValue: number;
-  formatted: string;
-  roundedValue: number;
-  roundedFormatted: string;
-  minimized: string;
-  denomination: string;
-  full: string;
-  fullPrecision: string;
-}
-
 export interface ValueLabelProps {
-  value: FormattedValue;
+  value: FormattedNumber;
   showDenomination: boolean;
   keyId: string;
   showEmptyDash: boolean;
@@ -180,7 +171,7 @@ export function formatExpandedValue(
   const testValue = createBigNumber(fullPrecision);
   const isGreaterThan = testValue.abs().gt(max);
   const isLessThan = testValue.abs().lt(min) && !testValue.eq(ZERO);
-  let postfix = isGreaterThan || isLessThan ? String.fromCodePoint(0x2026) : "";
+  let postfix = isGreaterThan || isLessThan ? string.fromCodePoint(0x2026) : "";
   let frontFacingLabel = isGreaterThan ? fullWithoutDecimals : roundedFormatted;
   const denominationLabel = showDenomination ? `${denomination}` : "";
 
@@ -246,7 +237,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
       >
         {`${frontFacingLabel}${postfix}${denominationLabel}`}
       </label>
-      {postfix.length !== 0 && 
+      {postfix.length !== 0 &&
         <ReactTooltip
           id={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
           className={TooltipStyles.Tooltip}
@@ -308,7 +299,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
         >
           {text}
         </label>
-        {!isDisabled && 
+        {!isDisabled &&
           <ReactTooltip
             id={`${keyId}-${text.replace(/\s+/g, "-")}`}
             className={TooltipStyles.Tooltip}
@@ -729,8 +720,8 @@ export const MovementLabel = (props: MovementLabelProps) => {
   );
 };
 
-export const PillLabel = (props: PillLabelProps) => (
-  <span className={Styles.PillLabel}>{props.label}</span>
+export const PillLabel = ({ label, hideOnMobile }: PillLabelProps) => (
+  <span className={classNames(Styles.PillLabel, {[Styles.HideOnMobile]: hideOnMobile})}>{label}</span>
 );
 
 export const RepBalance = (props: RepBalanceProps) => (

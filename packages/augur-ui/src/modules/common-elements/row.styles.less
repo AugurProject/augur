@@ -1,0 +1,372 @@
+@import (reference) '~assets/styles/shared';
+
+.Row {
+  display: grid;
+  flex-direction: row;
+  flex-grow: 1;
+  grid-template-columns: repeat(5, 1fr);
+
+  > li {
+    align-items: center;
+    color: @color-tertiary-text;
+    display: flex;
+    flex-grow: 1;
+    font-family: @roboto-mono;
+    font-size: @size-11;
+    white-space: nowrap;
+
+    > span > label {
+      font-size: @size-11;
+      font-weight: 500;
+      margin-bottom: 0;
+    }
+
+    &:first-child {
+      .text-12-bold;
+
+      display: block;
+      font-family: @roboto;
+      font-weight: 500;
+      margin: auto 0;
+      max-width: 100%;
+      overflow: hidden;
+      padding-left: 0.5rem;
+      text-overflow: ellipsis;
+    }
+
+    &:nth-of-type(2) {
+      font-family: @roboto;
+      position: relative;
+
+      > span:nth-of-type(2) {
+        display: none;
+        left: 0;
+        position: absolute;
+      }
+    }
+
+    &:last-of-type {
+      position: relative;
+
+      > span {
+        position: absolute;
+        right: -2px;
+      }
+    }
+
+    &:not(:first-child) {
+      justify-content: flex-end;
+    }
+  }
+}
+
+.Row1 {
+  > li {
+    &:nth-of-type(5),
+    &:nth-of-type(6) {
+      display: none;
+    }
+  }
+}
+
+.GroupRow {
+  padding: 0 1.75rem 0 1.5rem;
+}
+
+.InnerGroupRow {
+  border-top: 0.0625rem solid @color-primary-background;
+  padding: 0.5rem 0;
+}
+
+.InnerGroupRow_a {
+  border: 0;
+}
+
+.ParentSingleRow {
+  &:not(:first-of-type) {
+    border-top: 0.0625rem solid @color-primary-background;
+  }
+}
+
+.SingleRow {
+  padding: 0.5rem 1.75rem 0.5rem 1rem;
+}
+
+.BottomBorder {
+  border-bottom: 0.0625rem solid @color-primary-background;
+}
+
+.TopBorder {
+  border-top: 0.0625rem solid @color-primary-background;
+}
+
+.Row_a {
+  grid-template-columns: repeat(6, 1fr) 6.2rem;
+}
+
+.Row2 {
+  grid-template-columns: repeat(5, 1fr) minmax(5rem, 1fr) 3.2rem;
+}
+
+.Row2_a {
+  grid-template-columns: repeat(5, 1fr) 6rem;
+
+  > li {
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:nth-of-type(3) {
+      display: none;
+    }
+  }
+}
+
+.Row3 {
+  grid-template-columns: repeat(8, 1fr);
+
+  > li {
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      position: relative;
+
+      > button {
+        height: 1.25rem;
+        left: 100%;
+        margin-left: 0.375rem;
+        position: absolute;
+        width: 1.5rem;
+      }
+    }
+  }
+}
+
+.SingleRow3 {
+  background-color: @color-active-hover;
+  padding: 0 1.75rem 0 1.5rem;
+
+  > div {
+    padding: 0.5rem 0;
+  }
+}
+
+.Arrow {
+  margin-left: 1.25rem;
+  padding-right: 0;
+}
+
+.Row3_a {
+  grid-template-columns: repeat(6, 1fr);
+
+  > li {
+    &:first-child {
+      padding-left: 0.5rem;
+    }
+  }
+}
+
+.Row4Parent {
+  padding: 0;
+}
+
+.Row4 {
+  grid-template-columns: 2fr repeat(5, 1fr);
+  padding: 0.5rem 1.75rem 0.5rem 1.5rem;
+  position: relative;
+
+  > li {
+    &:first-child {
+      display: flex;
+      padding-left: 0;
+
+      > span:nth-of-type(2) {
+        color: @color-lightgray;
+        display: inline-block;
+        margin-left: 0.5rem;
+      }
+    }
+
+    &:last-child {
+      > span:first-of-type {
+        right: -0.75rem;
+      }
+    }
+  }
+
+  .generate-indexed-color-outcome-classes({
+    &.Row4-@{newIndex} {
+      cursor: pointer;
+      &:hover {
+        box-shadow: inset 0 0 0 1000px fade(@value, 5%);
+      };
+      &.active {
+        box-shadow: inset 0 0 0 1000px fade(@value, 10%);
+      };
+      &::before {
+        background-color: @value;
+      };
+    }
+  });
+
+  &.active::before {
+    left: 1px;
+    width: 3px;
+  }
+
+  &::before {
+    background-color: none;
+    bottom: 0;
+    content: "";
+    display: block;
+    height: 96%;
+    left: 1px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 1px;
+  }
+}
+
+@media @breakpoint-mobile-mid {
+  .Row {
+    grid-template-columns: repeat(3, 1fr);
+    position: relative;
+
+    > li {
+      > span > label {
+        font-size: @size-10;
+      }
+
+      &:first-child {
+        .text-11-bold;
+
+        grid-column: 1 / span 6;
+        margin-bottom: 0.375rem;
+        padding-left: 0;
+      }
+
+      &:nth-of-type(2) {
+        justify-content: flex-start;
+        position: static;
+        text-align: left;
+
+        > span:nth-of-type(2) {
+          display: block;
+          left: unset;
+          right: 0;
+          top: 0;
+        }
+      }
+
+      &:last-of-type {
+        > button,
+        > span {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .SingleRow {
+    border: 1px solid @color-primary-alternate;
+    border-radius: @border-radius-default;
+    padding-bottom: @size-12;
+    padding-left: @size-16;
+    padding-right: @size-20;
+  }
+
+  .ParentSingleRow {
+    border-radius: @border-radius-default;
+    border-top: 0;
+    margin-top: 0.125rem;
+  }
+
+  .GroupRow {
+    padding-left: @size-16;
+    padding-right: @size-20;
+  }
+
+  .Row2 {
+    grid-template-columns: repeat(5, 1fr);
+    position: relative;
+
+    > li {
+      &:first-child {
+        grid-column: 1 / span 8;
+      }
+
+      &:nth-of-type(6) {
+        display: none;
+      }
+    }
+  }
+
+  .Row3 {
+    grid-template-columns: repeat(6, 1fr);
+
+    > li {
+      &:first-child {
+        grid-column: 1 / span 8;
+      }
+
+      &:last-child {
+        display: none;
+      }
+    }
+  }
+
+  .Row3_a {
+    grid-template-columns: repeat(5, 1fr);
+
+     > li {
+      &:last-child {
+        display: flex;
+      }
+    }
+  }
+
+  .InnerSingleRow3 {
+    padding: 0.75rem 0;
+  }
+
+  .SingleRow3 {
+    background: fade(@color-primary-alternate, 40%);
+    border: 0;
+    padding: 0 1rem;
+  }
+
+  .Row2__a {
+    grid-template-columns: repeat(5, 1fr);
+
+    > li {
+      &:last-child {
+        display: flex;
+      }
+    }
+  }
+
+  .Row4Parent {
+    border: 0;
+    border-bottom: 0.0625rem solid @color-primary-background;
+    padding: 0;
+  }
+
+  .Row4 {
+    grid-template-columns: repeat(5, 1fr);
+
+    &::before {
+      width: 2px;
+    }
+
+    > li {
+      &:last-of-type {
+        > span {
+          display: flex;
+        }
+      }
+    }
+  }
+}

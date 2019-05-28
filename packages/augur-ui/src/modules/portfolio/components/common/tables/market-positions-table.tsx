@@ -1,7 +1,7 @@
 import React from "react";
 
 import PositionsHeader from "modules/portfolio/components/common/headers/positions-header";
-import PositionRow from "modules/portfolio/components/common/rows/position-row";
+import PositionRow from "modules/portfolio/containers/position-row";
 import { Position } from "modules/portfolio/types";
 import classNames from "classnames";
 import CompleteSets from "modules/market/components/complete-sets/complete-sets";
@@ -15,6 +15,7 @@ export interface MarketPositionsTableProps {
   transactionsStatus: any;
   sellCompleteSets: Function;
   extendedView: Boolean;
+  marketId: string;
 }
 
 export interface MarketPositionsTableState {
@@ -62,19 +63,21 @@ export class MarketPositionsTable extends React.Component<
         >
           {positions.map((position: Position, index: number) => (
             <PositionRow
-              key={"positionRow_" + position.marketId + position.outcomeId}
-              isFirst={index === 0}
+              key={
+                "positionRow_" + position.marketId + position.outcomeId
+              }
               position={position}
               showPercent={showPercent}
               extendedView={extendedView}
               isSingle={extendedView}
+              showExpandedToggleOnMobile
+              isFirst={index === 0}
             />
           ))}
         </div>
-        {extendedView &&
-          positions.length === 0 && (
-            <div className={SharedStyles.MarketOpenOrdersList__empty} />
-          )}
+        {extendedView && positions.length === 0 && (
+          <div className={SharedStyles.MarketOpenOrdersList__empty} />
+        )}
         {extendedView && (
           <CompleteSets
             marketId={marketId}

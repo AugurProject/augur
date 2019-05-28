@@ -14,7 +14,6 @@ const mapStateToProps = (state: any) => {
     userOpenOrders,
     market,
     loginAccount: state.loginAccount,
-    isMobile: state.appStatus.isMobile
   };
 };
 
@@ -27,7 +26,6 @@ const mergeProps = (sP, dP, oP) => {
   const openOrders = sP.userOpenOrders;
   const { description: marketTitle } = sP.market;
   return {
-    isMobile: sP.isMobile,
     title: "Open Orders in resolved market",
     description: ["You have open orders in this resolved market:"],
     openOrders: true,

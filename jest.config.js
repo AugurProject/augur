@@ -4,4 +4,5 @@ module.exports = {
     "<rootDir>/packages/augur-ui",
   ],
   reporters: ["default", "jest-junit"],
+  globalSetup: "./packages/augur-test/setup.js",
 };

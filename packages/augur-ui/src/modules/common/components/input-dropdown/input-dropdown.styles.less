@@ -8,7 +8,7 @@
   padding: 0.5rem 1rem;
   position: relative;
   width: 100%;
-  z-index: 1;
+  z-index: @default-z-index;
 
   &:focus {
     outline: none;
@@ -28,7 +28,7 @@
 }
 
 .InputDropdown__list {
-  background-color: @color-white;
+  background-color: @color-secondary-text;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   color: @color-darkpurple;
   display: none;

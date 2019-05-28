@@ -3,26 +3,7 @@ import Styles from "modules/common-elements/progress.styles";
 import * as format from "utils/format-date";
 import classNames from "classnames";
 import { constants } from "services/augurjs";
-
-export interface DateFormattedObject {
-  value: Date;
-  simpleDate: string;
-  formatted: string;
-  formattedShortDate: string;
-  formattedShortTime: string;
-  formattedShort: string;
-  formattedLocal: string;
-  formattedLocalShortDate: string;
-  formattedLocalShort: string;
-  formattedLocalShortTime: string;
-  full: string;
-  timestamp: number;
-  utcLocalOffset: string;
-  clockTimeLocal: string;
-  formattedSimpleData: string;
-  formattedUtcShortDate: string;
-  clockTimeUtc: string;
-}
+import { DateFormattedObject } from "modules/types";
 
 export interface CountdownProgressProps {
   time: DateFormattedObject | null;

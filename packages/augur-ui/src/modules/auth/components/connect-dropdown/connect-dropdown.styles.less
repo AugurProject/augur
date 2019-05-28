@@ -6,7 +6,7 @@
 
 .ConnectDropdown__item {
   align-items: center;
-  color: @color-white;
+  color: @color-secondary-text;
   cursor: pointer;
   display: flex;
   flex-direction: row;
@@ -16,10 +16,10 @@
   max-height: 48px;
   padding: 14px 0 14px 24px;
   position: relative;
-  z-index: 1;
+  z-index: @default-z-index;
 
   &:hover {
-    background-color: @color-light-purple;
+    background-color: @color-theme-primary;
   }
 
   &:focus {
@@ -34,12 +34,12 @@
   padding-right: 24px;
 
   &:hover {
-    background-color: @color-medium-gray;
+    background-color: @color-primary-light;
   }
 }
 
 .ConnectDropdown__itemSelected {
-  background-color: @color-grayish-purple;
+  background-color: @color-tertiary-background;
 }
 
 .ConnectDropdown__itemHardwareSelected {
@@ -54,7 +54,7 @@
 }
 
 .ConnectDropdown__hardwareContent {
-  background-color: @color-grayish-purple;
+  background-color: @color-tertiary-background;
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
   height: 0;
@@ -89,7 +89,7 @@
 }
 
 .ConnectDropdown__header {
-  color: @color-white;
+  color: @color-secondary-text;
   font-family: @roboto !important;
   font-size: 13px;
   font-weight: bold;
@@ -110,7 +110,7 @@
 }
 
 .ConnectDropdown__row {
-  color: @color-white;
+  color: @color-secondary-text;
   cursor: pointer;
   display: flex;
   font-family: 'Roboto Mono', monospace;

@@ -6,5 +6,5 @@ export function convertOnChainAmountToDisplayAmount(onChainAmount:BigNumber, tic
 }
 
 export function convertOnChainPriceToDisplayPrice(onChainPrice:BigNumber, minDisplayPrice:BigNumber, tickSize:BigNumber) {
-  return onChainPrice.mul(tickSize).add(minDisplayPrice);
+  return onChainPrice.multipliedBy(tickSize).plus(minDisplayPrice);
 }

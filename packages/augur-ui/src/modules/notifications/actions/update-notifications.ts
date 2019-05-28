@@ -1,8 +1,8 @@
-import { INotifications } from "modules/account/components/notifications/notifications";
+import { Notification, BaseAction } from "modules/types";
 
 export const UPDATE_READ_NOTIFICATIONS = "UPDATE_READ_NOTIFICATIONS";
 
-export const updateReadNotifications = (notifications: INotifications) => ({
+export const updateReadNotifications = (notifications: Notification): BaseAction => ({
   type: UPDATE_READ_NOTIFICATIONS,
   data: { notifications }
 });

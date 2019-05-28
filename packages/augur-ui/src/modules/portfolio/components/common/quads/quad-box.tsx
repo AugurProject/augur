@@ -13,7 +13,7 @@ export interface QuadBoxProps {
   sortByOptions: Array<NameValuePair>;
   updateDropdown: Function;
   onSearchChange: Function;
-  content?: ReactNode;
+  children?: ReactNode;
   bottomBarContent: ReactNode;
   bottomRightBarContent?: ReactNode;
   rightContent?: ReactNode;
@@ -33,7 +33,6 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
           updateDropdown={props.updateDropdown}
           sortByStyles={props.sortByStyles}
           onChange={props.onSearchChange}
-          isMobile={props.isMobile}
         />
       )) ||
       props.rightContent
@@ -64,11 +63,10 @@ const QuadBox = (props: QuadBoxProps) => (
         <div className={Styles.ShowOnMobile}>
           <BoxHeaderElement
             {...props}
-            isMobile
             switchHeaders={props.switchHeaders}
           />
         </div>
-        {props.content}
+        {(props.children) ? props.children : null}
       </div>
     </div>
   </div>

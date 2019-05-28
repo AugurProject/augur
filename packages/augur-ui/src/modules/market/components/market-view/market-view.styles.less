@@ -15,7 +15,7 @@
 }
 
 .MarketView__overlay {
-  background-color: @color-light-purple;
+  background-color: @color-theme-primary;
   bottom: 0;
   color: white;
   height: 100vh;
@@ -25,7 +25,7 @@
   right: 0;
   top: 0;
   width: 100vw;
-  z-index: 100;
+  z-index: @mask-modal;
 }
 
 .MarketView__paneContainer--mobile {
@@ -75,7 +75,7 @@
 }
 
 .MarketView__component {
-  background-color: @color-grayish-purple;
+  background-color: @color-tertiary-background;
   display: flex;
   flex: 1 auto;
   flex-flow: column nowrap;
@@ -128,7 +128,7 @@
 }
 
 .Market__details {
-  background-color: @color-white;
+  background-color: @color-secondary-text;
   display: flex;
   justify-content: space-between;
 }
@@ -159,7 +159,7 @@
 }
 
 .MarketView__history {
-  border-bottom: 8px solid @color-light-purple;
+  border-bottom: 8px solid @color-theme-primary;
   height: 50vh;
 }
 
@@ -175,11 +175,11 @@
 }
 
 .MarketView__priceHistoryChart {
-  background-color: @color-light-purple;
+  background-color: @color-theme-primary;
 
   > p {
-    background-color: @color-light-purple;
-    border-bottom: 1px solid @color-very-dark-purple;
+    background-color: @color-theme-primary;
+    border-bottom: 1px solid @color-tertiary-one;
     color: white;
     font-size: 1rem;
     margin-top: 1rem;
@@ -253,7 +253,7 @@ div.OutcomeNameDisplay {
   }
 
   .MarketView__history {
-    background: @color-grayish-purple;
+    background: @color-tertiary-background;
     margin-bottom: 0;
     max-height: unset;
   }

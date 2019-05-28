@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .ModuleTabs__tab {
-  border-bottom: 1px solid @color-very-dark-purple;
+  border-bottom: 1px solid @color-tertiary-one;
   display: flex;
   flex: 1;
 
@@ -35,7 +35,7 @@
 }
 
 .ModuleTabs__activeTab {
-  background-color: @color-light-purple;
+  background-color: @color-theme-primary;
   color: white !important;
 
   .ModuleTabs__isNew::before {
@@ -90,7 +90,7 @@
 }
 
 .ModuleTabs__tabFillWidth {
-  background-color: @color-grayish-purple;
+  background-color: @color-tertiary-background;
 
   > li {
     align-content: center;
@@ -106,11 +106,17 @@
   }
 }
 
+.ModuleTabs__tabFillWidthMobile {
+  @media @breakpoint-mobile {
+    .ModuleTabs__tabFillWidth;
+  }
+}
+
 .ModuleTabs__tabFill {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   left: 0;
   right: 0;
-  z-index: 5;
+  z-index: @above-all-content;
 
   > li {
     > button {

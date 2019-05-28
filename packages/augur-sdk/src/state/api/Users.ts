@@ -86,13 +86,13 @@ export interface ProfitLossResult {
   total: string;
 }
 
-export class Users<TBigNumber> {
+export class Users {
   public static GetUserTradingPositionsParams = t.intersection([UserTradingPositionsParams, SortLimit]);
   public static GetProfitLossParams = GetProfitLossParams;
   public static GetProfitLossSummaryParams = GetProfitLossSummaryParams;
 
   @Getter("GetUserTradingPositionsParams")
-  public static async getUserTradingPositions<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<UserTradingPositions> {
+  public static async getUserTradingPositions(augur: Augur, db: DB, params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>): Promise<UserTradingPositions> {
     if (!params.universe && !params.marketId) {
       throw new Error("'getUserTradingPositions' requires a 'universe' or 'marketId' param be provided");
     }
@@ -184,7 +184,7 @@ export class Users<TBigNumber> {
   }
 
   @Getter("GetProfitLossParams")
-  public static async getProfitLoss(augur: Augur<ethers.utils.BigNumber>, db: DB<ethers.utils.BigNumber>, params: t.TypeOf<typeof Users.GetProfitLossParams>): Promise<Array<MarketTradingPosition>> {
+  public static async getProfitLoss(augur: Augur, db: DB, params: t.TypeOf<typeof Users.GetProfitLossParams>): Promise<Array<MarketTradingPosition>> {
     if (!params.startTime) {
       throw new Error("'getProfitLoss' requires a 'startTime' param be provided");
     }
@@ -278,7 +278,7 @@ export class Users<TBigNumber> {
   }
 
   @Getter("GetProfitLossSummaryParams")
-  public static async getProfitLossSummary(augur: Augur<ethers.utils.BigNumber>, db: DB<ethers.utils.BigNumber>, params: t.TypeOf<typeof Users.GetProfitLossSummaryParams>): Promise<NumericDictionary<MarketTradingPosition>> {
+  public static async getProfitLossSummary(augur: Augur, db: DB, params: t.TypeOf<typeof Users.GetProfitLossSummaryParams>): Promise<NumericDictionary<MarketTradingPosition>> {
     const result: NumericDictionary<MarketTradingPosition> = {};
     const now = await augur.contracts.augur.getTimestamp_();
     const endTime = params.endTime || now.toNumber();
@@ -394,12 +394,12 @@ function bucketRangeByInterval(startTime: number, endTime: number, periodInterva
   return buckets;
 }
 
-async function getProfitLossRecordsByMarketAndOutcome<TBigNumber>(db: DB<TBigNumber>, account: string, request: PouchDB.Find.FindRequest<{}>): Promise<_.Dictionary<_.Dictionary<Array<ProfitLossChangedLog>>>> {
+async function getProfitLossRecordsByMarketAndOutcome(db: DB, account: string, request: PouchDB.Find.FindRequest<{}>): Promise<_.Dictionary<_.Dictionary<Array<ProfitLossChangedLog>>>> {
   const profitLossResult = await db.findProfitLossChangedLogs(account, request);
   return groupDocumentsByMarketAndOutcome<ProfitLossChangedLog>(profitLossResult);
 }
 
-async function getOrderFilledRecordsByMarketAndOutcome<TBigNumber>(db: DB<TBigNumber>, request: PouchDB.Find.FindRequest<{}>): Promise<_.Dictionary<_.Dictionary<Array<OrderEventLog>>>> {
+async function getOrderFilledRecordsByMarketAndOutcome(db: DB, request: PouchDB.Find.FindRequest<{}>): Promise<_.Dictionary<_.Dictionary<Array<OrderEventLog>>>> {
   const orderFilled = await db.findOrderFilledLogs(request);
   return groupDocumentsByMarketAndOutcome<OrderEventLog>(orderFilled, ORDER_EVENT_OUTCOME);
 }

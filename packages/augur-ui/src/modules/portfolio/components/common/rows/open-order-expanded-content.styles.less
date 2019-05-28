@@ -1,0 +1,140 @@
+@import (reference) '~assets/styles/shared';
+
+.OpenOrder_infoContainer {
+  background: @color-active-hover;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+}
+
+.OpenOrder__info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 0.5rem 1.625rem 0.5rem 2rem;
+
+  > div {
+    display: flex;
+    flex: 1;
+
+    > button {
+      display: none;
+    }
+  }
+
+  > span {
+    color: @color-secondary-text;
+    display: flex;
+    flex-direction: column;
+    font-size: @size-11;
+    font-weight: 500;
+    margin-bottom: 0.625rem;
+  }
+}
+
+.OpenOrder__infoSingle {
+  padding-left: 1.5rem;
+}
+
+div.OpenOrder__labels {
+  margin-bottom: 0;
+  max-width: 12rem;
+
+  > div:nth-of-type(2) {
+    margin-bottom: 0;
+  }
+
+  > div:nth-of-type(3) {
+    display: none;
+  }
+}
+
+.OpenOrder__timestamp {
+  align-items: flex-end;
+  color: @color-alternate-text;
+  display: flex;
+  flex: 1;
+  font-family: @roboto-mono;
+  font-size: @size-11;
+  justify-content: flex-end;
+  text-align: right;
+}
+
+
+.Position_infoContainer {
+  background-color: @color-active-hover;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding: 0.5rem 4rem 0.5rem 0;
+}
+
+.Position__info {
+  align-items: flex-end;
+  flex: 1;
+  flex-direction: column;
+  grid-template-rows: repeat(2, 1fr);
+  max-width: 250px;
+
+  > span:first-of-type {
+    display: none;
+  }
+}
+
+@media @breakpoint-mobile-mid {
+  .Position_infoContainer {
+    padding: 0 0 0.75rem;
+  }
+
+  .Position__info {
+    max-width: unset;
+
+    > span:first-of-type {
+      display: flex;
+    }
+  }
+
+  div.OpenOrder__labels {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    max-width: unset;
+
+    > div:nth-of-type(2) {
+      margin-bottom: 0.375rem;
+    }
+
+    > div:nth-of-type(3) {
+      display: flex;
+    }
+  }
+
+  .OpenOrder__timestamp {
+    display: none;
+  }
+
+  .OpenOrder__info {
+    padding: 0 @size-16 @size-8;
+
+    > div {
+      flex-direction: column;
+
+      > button {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: @size-16;
+        padding-bottom: @size-8;
+      }
+    }
+  }
+
+  .OpenOrder__infoSingle {
+    border: 1px solid @color-primary-alternate;
+    border-radius: @border-radius-default;
+    border-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    padding-left: 1rem;
+  }
+}

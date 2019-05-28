@@ -13,6 +13,7 @@ import {
   timeSecond,
   timeFormat
 } from "d3";
+
 import { createBigNumber } from "utils/create-big-number";
 // All named constants go here
 
@@ -46,6 +47,12 @@ export const NETWORK_IDS = {
   Private3: "103",
   Private4: "104"
 };
+
+export const GAS_SPEED_LABELS = {
+  STANDARD: "Standard",
+  FAST: "Fast",
+  SLOW: "Slow"
+};
 // augurNode
 export const AUGUR_NODE_URL = "augur_node";
 // ethereumNodeHttp
@@ -72,11 +79,12 @@ export const DEFAULT_AUTH_TYPE = REGISTER;
 export const EDGE_WALLET_TYPE = "wallet:ethereum";
 
 // # Connect Nav Constants
-export const PARAMS = {
+export const ACCOUNT_TYPES = {
   EDGE: "edge",
   LEDGER: "ledger",
-  METAMASK: "metamask",
-  TREZOR: "trezor"
+  METAMASK: "metaMask",
+  TREZOR: "trezor",
+  UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
 };
 
 export const WALLET_TYPE = {
@@ -102,19 +110,19 @@ export const ERROR_TYPES = {
 const DEFAULT_ITEM_INDEX = 0;
 export const ITEMS = [
   {
-    param: PARAMS.METAMASK,
+    param: ACCOUNT_TYPES.METAMASK,
     title: "Metamask / Web 3 Provider",
     icon: MetaMask,
     type: WALLET_TYPE.SOFTWARE
   },
   {
-    param: PARAMS.TREZOR,
+    param: ACCOUNT_TYPES.TREZOR,
     title: "Trezor",
     icon: Trezor,
     type: WALLET_TYPE.HARDWARE
   },
   {
-    param: PARAMS.LEDGER,
+    param: ACCOUNT_TYPES.LEDGER,
     title: "Ledger",
     icon: Ledger,
     type: WALLET_TYPE.HARDWARE
@@ -122,7 +130,7 @@ export const ITEMS = [
 ];
 if (!process.env.AUGUR_HOSTED) {
   ITEMS.unshift({
-    param: PARAMS.EDGE,
+    param: ACCOUNT_TYPES.EDGE,
     title: "Edge",
     icon: Edge,
     type: WALLET_TYPE.SOFTWARE
@@ -148,7 +156,6 @@ export const OPEN_APP = "OPEN_APP";
 export const SWITCH_MODE = "SWITCH_MODE";
 export const ENABLE_CONTRACT_SUPPORT = "ENABLE_CONTRACT_SUPPORT";
 export const OTHER_ISSUE = "OTHER_ISSUE";
-export const NOT_CONNECTED = "NOT_CONNECTED";
 
 // # Market Max Fees
 export const MAX_FEE_100_PERCENT = "1";
@@ -422,7 +429,6 @@ export const MODAL_OPEN_ORDERS = "MODAL_OPEN_ORDERS";
 export const CRITICAL = "CRITICAL";
 export const INFO = "INFO";
 export const CREATEGENESISUNIVERSE = "CREATEGENESISUNIVERSE";
-export const CANCELORPHANEDORDER = "CANCELORPHANEDORDER";
 export const CANCELORDER = "CANCELORDER";
 export const WITHDRAWETHERTOIFPOSSIBLE = "WITHDRAWETHERTOIFPOSSIBLE";
 export const CALCULATEREPORTINGFEE = "CALCULATEREPORTINGFEE";
@@ -530,6 +536,7 @@ export const TEN = createBigNumber(10, 10);
 export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber("0.00000001");
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
+export const ETHER = createBigNumber(10).pow(18);
 
 // # Positions
 export const LONG = "long";
@@ -537,13 +544,11 @@ export const SHORT = "short";
 export const CLOSED = "closed";
 export const NO_POSITION = "—";
 
-// # Transaction Constants
-export const NO_RELAY = ["buyCompleteSets"];
-
 export const AWAITING_SIGNATURE = "awaiting signature";
 export const PENDING = "pending";
 export const SUCCESS = "success";
-export const FAILED = "failed";
+export const FAILED = "Failed";
+export const CONFIRMED = "Confirmed";
 export const COMMITTING = "committing";
 export const SUBMITTED = "submitted";
 export const INTERRUPTED = "interrupted";
@@ -602,12 +607,12 @@ export const VOLUME_ETH_SHARES = [
 
 // Account Summary - Your Overview
 export const YOUR_OVERVIEW_TITLE = "Your Overview";
-export const PROFIT_LOSS_CHART_TITLE = "Profit and Loss (ETH)";
+export const PROFIT_LOSS_CHART_TITLE = "Profit and Loss (DAI)";
 export const AVAILABLE_TRADING_BALANCE = "Available Trading Balance";
 export const TOTAL_FROZEN_FUNDS = "Total Frozen Funds";
 export const REP_BALANCE = "REP Balance";
 export const REP_STAKED = "REP Staked";
-export const TOTAL_ACCOUNT_VALUE_IN_ETH = "Total Account Value (ETH)";
+export const TOTAL_ACCOUNT_VALUE_IN_ETH = "Total Account Value (DAI)";
 
 // Account Summary - Augur Status
 export const AUGUR_STATUS_TITLE = "Augur Status";
@@ -635,7 +640,6 @@ export const SELL_COMPLETE_SETS_TITLE = "Sell Complete Sets";
 export const UNSIGNED_ORDERS_TITLE = "Unsigned Orders";
 export const CLAIM_REPORTING_FEES_TITLE = "Claim Stake and Fees";
 export const PROCEEDS_TO_CLAIM_TITLE = "Claim Proceeds";
-export const ORPHAN_ORDERS_TITLE = "Orphaned Orders";
 export const OPEN_ORDERS_RESOLVED_MARKET = "resolvedMarketsOpenOrders";
 export const REPORT_ON_MARKET = "reportOnMarkets";
 export const FINALIZE_MARKET = "finalizeMarkets";
@@ -645,7 +649,6 @@ export const CLAIM_REPORTING_FEES = "claimReportingFees";
 export const UNSIGNED_ORDERS = "unsignedOrders";
 export const PROCEEDS_TO_CLAIM = "proceedsToClaim";
 export const PROCEEDS_TO_CLAIM_ON_HOLD = "proceedsToClaimOnHold";
-export const ORPHAN_ORDERS = "orphanOrders";
 
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
@@ -657,7 +660,6 @@ export const NOTIFICATION_TYPES = {
   [UNSIGNED_ORDERS]: UNSIGNED_ORDERS,
   [PROCEEDS_TO_CLAIM]: PROCEEDS_TO_CLAIM,
   [PROCEEDS_TO_CLAIM_ON_HOLD]: PROCEEDS_TO_CLAIM_ON_HOLD,
-  [ORPHAN_ORDERS]: ORPHAN_ORDERS
 };
 
 // Account View - Timeframe selection options
@@ -687,6 +689,26 @@ export const SMALL_MOBILE = "(max-width: 900px)"; // matches @breakpoint-mobile-
 export const TABLET = "(min-width: 901px) and (max-width: 1280px)";
 export const DESKTOP = "(min-width:1281px) and (max-width: 2000px)";
 export const LARGE_DESKTOP = "(min-width: 2001px)";
+// temp tablet breakpoint until trading pg additional breakpoints are implemented
+export const TEMP_TABLET = "(max-width: 1280px)";
 
 // Sort variables
 export const END_TIME = "endTime";
+
+
+// Table Column types
+export const PLAIN = "PLAIN";
+export const TEXT = "TEXT";
+export const POSITION_TYPE = "POSITION_TYPE";
+export const VALUE = "VALUE";
+export const CANCEL_TEXT_BUTTON = "CANCEL_TEXT_BUTTON";
+export const MOVEMENT_LABEL = "MOVEMENT_LABEL";
+
+export const COLUMN_TYPES = {
+  [TEXT]: TEXT,
+  [POSITION_TYPE]: POSITION_TYPE,
+  [VALUE]: VALUE,
+  [CANCEL_TEXT_BUTTON]: CANCEL_TEXT_BUTTON,
+  [MOVEMENT_LABEL]: MOVEMENT_LABEL,
+};
+

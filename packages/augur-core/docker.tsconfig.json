@@ -14,7 +14,7 @@
     "outDir": "build",
     "rootDir": "source",
     "baseUrl": ".",
-    "typeRoots": ["../augur-types/types", "../../node_modules/@types", "node_modules/@types", "../augur-artifacts"]
+    "typeRoots": ["../augur-types/types", "../../node_modules/@types", "node_modules/@types", "../augur-artifacts", "../contract-dependencies", "../contract-dependencies-ethers"]
   },
   "extends": "../../tsconfig-base.json"
 }

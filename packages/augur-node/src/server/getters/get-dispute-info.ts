@@ -118,7 +118,7 @@ async function getAccountStakes(db: Knex, marketIds: Array<Address>, account: Ad
 }
 
 function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completedStakeAmount: BigNumber): BigNumber {
-  return totalCompletedStakeOnAllPayouts.mul(2).sub(completedStakeAmount.mul(3));
+  return totalCompletedStakeOnAllPayouts.multipliedBy(2).minus(completedStakeAmount.multipliedBy(3));
 }
 
 export async function getDisputeInfo(db: Knex, augur: Augur, params: t.TypeOf<typeof DisputeInfoParams>): Promise<Array<UIStakeInfo<string>|null>> {
@@ -151,7 +151,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
   if (marketRow == null) return null;
   const totalCompletedStakeOnAllPayouts = _.reduce(
     stakeRows.stakesCompleted,
-    (result: BigNumber, completedStake: StakeRow): BigNumber => result.add(completedStake.amountStaked),
+    (result: BigNumber, completedStake: StakeRow): BigNumber => result.plus(completedStake.amountStaked),
     ZERO,
   );
 
@@ -187,9 +187,9 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
         bondSizeCurrent,
         stakeCurrent,
         accountStakeCurrent,
-        accountStakeTotal: accountStakeCurrent.add(accountStakeCompleted),
-        stakeRemaining: bondSizeCurrent.sub(stakeCurrent),
-        bondSizeTotal: bondSizeCurrent.add(stakeCompleted),
+        accountStakeTotal: accountStakeCurrent.plus(accountStakeCompleted),
+        stakeRemaining: bondSizeCurrent.minus(stakeCurrent),
+        bondSizeTotal: bondSizeCurrent.plus(stakeCompleted),
       };
     }
     currentAmounts.accountStakeCompleted = accountStakeCompleted;
@@ -213,7 +213,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
   return uiStakeInfoToFixed({
     marketId: marketRow.marketId,
     stakeCompletedTotal: totalCompletedStakeOnAllPayouts,
-    bondSizeOfNewStake: totalCompletedStakeOnAllPayouts.mul(2),
+    bondSizeOfNewStake: totalCompletedStakeOnAllPayouts.multipliedBy(2),
     stakes: stakeResults,
     disputeRound,
   });

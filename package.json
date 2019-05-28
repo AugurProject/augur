@@ -27,7 +27,11 @@
     "docker:geth:pop-15": "yarn workspace @augurproject/tools docker:geth:pop-15",
     "docker:geth:pop-normal-time": "yarn workspace @augurproject/tools docker:geth:pop-normal-time",
     "docker:geth": "yarn workspace @augurproject/tools docker:geth",
-    "flash": "yarn workspace @augurproject/tools flash"
+    "sdk": "yarn workspace @augurproject/sdk",
+    "tools": "yarn workspace @augurproject/tools",
+    "an": "yarn workspace @augurproject/node",
+    "flash": "yarn workspace @augurproject/tools flash",
+    "dp": "yarn workspace @augurproject/tools dp"
   },
   "devDependencies": {
     "babel-core": "7.0.0-bridge.0",

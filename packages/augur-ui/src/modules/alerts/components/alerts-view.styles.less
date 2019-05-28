@@ -1,0 +1,115 @@
+@import (reference) '~assets/styles/shared';
+
+.AlertsView {
+  background-color: @color-theme-primary;
+  border: 1px solid @color-primary-alternate;
+  border-top: 0;
+  box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
+  color: @color-secondary-text;
+  display: flex;
+  flex-direction: column;
+  max-height: 470px;
+  position: relative;
+  text-align: left;
+  width: 360px;
+  z-index: @mask-above;
+
+  @media @breakpoint-mobile {
+    bottom: 0;
+    flex-flow: column nowrap;
+    height: 100%;
+    left: 0;
+    max-height: 100%;
+    padding-bottom: @size-4;
+    right: 0;
+    top: 0;
+    width: 100%;
+
+    &::after {
+      border: none;
+      bottom: 0;
+      content: "";
+      display: none;
+      right: 0;
+    }
+  }
+}
+
+.dark {
+  background-color: @color-darkpurple;
+}
+
+.parent {
+  position: absolute;
+  right: 0;
+  top: @top-bar-height;
+
+  @media @breakpoint-mobile {
+    bottom: 0;
+    left: 0;
+    top: 0;
+  }
+}
+
+.box {
+  overflow-y: auto;
+  width: 100%;
+
+  @media @breakpoint-mobile {
+    margin-top: @size-40;
+    max-height: unset;
+  }
+}
+
+.close {
+  cursor: pointer;
+  display: none;
+  height: @size-16;
+  left: @size-16;
+  position: absolute;
+  top: @size-16;
+  width: @size-16;
+
+  @media @breakpoint-mobile {
+    display: block;
+  }
+}
+
+.NullStateMessage {
+  .text-16;
+
+  align-self: center;
+  color: @color-lightgray;
+  margin-top: @size-8;
+  padding: @size-30;
+  text-align: center;
+  width: 100%;
+}
+
+.dismissContainer {
+  align-items: flex-end;
+  background-color: @color-theme-primary;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  min-height: 27px;
+  padding: @size-8 @size-16;
+
+  > button {
+    align-self: flex-end;
+    border-bottom: dotted 0.5px @color-lightergray;
+    color: @color-lightergray;
+    cursor: pointer;
+    display: inline;
+    font-size: @size-12;
+
+    &:hover {
+      border-bottom: dotted 0.5px @color-secondary-text;
+      color: @color-secondary-text;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+}

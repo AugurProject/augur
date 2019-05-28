@@ -1,0 +1,187 @@
+@import (reference) '~assets/styles/shared';
+
+.TopBar {
+  align-items: center;
+  background: @color-theme-primary;
+  display: flex;
+  font-size: @size-14;
+  height: 100%;
+  justify-content: flex-end;
+
+  > div {
+    display: flex;
+    height: 100%;
+  }
+
+  > div:first-of-type {
+    display: none;
+
+    > svg {
+      fill: @color-secondary-text;
+      width: @size-32;
+    }
+
+    @media @breakpoint-mobile {
+      display: flex;
+      flex: 2;
+    }
+  }
+
+  > div:last-of-type {
+    align-items: center;
+    flex: 1;
+    justify-content: flex-end;
+
+    @media @breakpoint-mobile {
+      flex: unset;
+
+      > div {
+        display: none;
+      }
+    }
+
+    > div {
+      height: 100%;
+    }
+  }
+}
+
+.statsContainer {
+  width: 400px;
+
+  @media @breakpoint-mobile {
+    width: auto;
+  }
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  > label {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0;
+  }
+
+  > div:first-of-type {
+    margin: @size-12 @size-24 @size-12 @size-32;
+
+    > div:nth-of-type(3) {
+      margin-bottom: 0;
+    }
+
+    > span {
+      display: none;
+    }
+
+    > div {
+      margin-bottom: 0;
+    }
+
+    > span > div {
+      margin-bottom: 0;
+    }
+
+    @media @breakpoint-mobile {
+      border: 0;
+      margin: @size-12 @size-16;
+      max-width: 175px;
+
+      > span {
+        display: flex;
+      }
+    }
+  }
+
+  > div:last-of-type {
+    border-left: 1px solid @color-primary-background;
+    margin: @size-16 0;
+    padding-left: @size-24;
+    display: flex;
+    flex-direction: column;
+
+    > span {
+      .mono-9;
+
+      color: @color-shadow-text;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    > div {
+      justify-content: flex-start;
+    }
+
+    @media @breakpoint-mobile {
+      display: none;
+    }
+  }
+}
+
+.alerts {
+  color: @color-secondary-text;
+  cursor: pointer;
+  display: flex;
+  height: 100%;
+  justify-content: flex-end;
+  padding: 0 @size-16 0 @size-24;
+  width: unset;
+
+  &:hover {
+    background-color: @color-primary-light;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
+}
+
+.alertsDisabled {
+  cursor: default;
+
+  &:hover {
+    background-color: @color-theme-primary;
+  }
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
+}
+
+.alertsDark {
+  background-color: @color-primary-light;
+}
+
+div.tooltip {
+  margin-top: -@size-16 !important;
+  padding: @size-12 @size-12 @size-8 !important;
+
+  &::before {
+    margin-left: -0.5625rem !important;
+  }
+
+  > h4 {
+    .text-10;
+
+    color: @color-neutral;
+    line-height: normal;
+    margin-bottom: 2px;
+  }
+
+  > p {
+    color: @color-secondary-text;
+    font-size: @size-12;
+    line-height: normal;
+    margin-bottom: @size-8;
+  }
+}
+
+.tooltip-denomination {
+  font-size: @size-9;
+}
