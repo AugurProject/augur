@@ -7,7 +7,7 @@ import { isEqual } from "lodash";
 import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
 import { BigNumber } from "utils/create-big-number";
 import makePath from "modules/routes/helpers/make-path";
-import Styles from "modules/market/components/market-trading-form/market-trading-form.styles";
+import Styles from "modules/market/components/trading-form/trading-form.styles";
 
 import { PrimaryButton } from "modules/common-elements/buttons";
 
@@ -35,7 +35,7 @@ interface TradingFormState {
   selectedOutcome: Number;
 }
 
-class MarketTradingForm extends Component<TradingFormProps, TradingFormState> {
+class TradingForm extends Component<TradingFormProps, TradingFormState> {
 
   static defaultProps = {
     selectedOutcome: null
@@ -160,4 +160,4 @@ class MarketTradingForm extends Component<TradingFormProps, TradingFormState> {
   }
 }
 
-export default MarketTradingForm;
+export default TradingForm;

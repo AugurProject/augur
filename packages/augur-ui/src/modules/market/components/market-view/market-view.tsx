@@ -11,7 +11,7 @@ import MarketHeader from "modules/market/containers/market-header";
 import MarketOrdersPositionsTable from "modules/market/containers/market-orders-positions-table";
 import MarketOutcomesList from "modules/market/containers/market-outcomes-list";
 import MarketOutcomeOrders from "modules/market-charts/containers/market-outcome--orders";
-import MarketTradingForm from "modules/market/containers/market-trading-form";
+import TradingForm from "modules/market/containers/trading-form";
 import MarketChartsPane from "modules/market-charts/containers/market-charts-pane";
 import parseMarketTitle from "modules/markets/helpers/parse-market-title";
 import MarketTradeHistory from "modules/market/containers/market-trade-history";
@@ -356,7 +356,7 @@ export default class MarketView extends Component {
                         </ModulePane>
                       </ModuleTabs>
 
-                      <MarketTradingForm
+                      <TradingForm
                         market={market}
                         selectedOrderProperties={s.selectedOrderProperties}
                         selectedOutcome={s.selectedOutcome}
@@ -403,7 +403,7 @@ export default class MarketView extends Component {
                     <div className={Styles.MarketView__firstRow}>
                       <div className={Styles.MarketView__innerFirstColumn}>
                         <div className={Styles.MarketView__component}>
-                          <MarketTradingForm
+                          <TradingForm
                             market={market}
                             selectedOrderProperties={s.selectedOrderProperties}
                             selectedOutcome={s.selectedOutcome}
