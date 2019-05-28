@@ -13,6 +13,8 @@ export class WebsocketConnector extends Connector {
     this.socket = new WebSocketAsPromised(this.endpoint, {
       packMessage: (data) => JSON.stringify(data),
       unpackMessage: (message: string) => JSON.parse(message),
+      attachRequestId: (data, requestId) => Object.assign({ id: requestId }, data),
+      extractRequestId: (data) => data && data.id,
     });
 
     return this.socket.open();

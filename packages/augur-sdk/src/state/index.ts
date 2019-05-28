@@ -1,11 +1,11 @@
-import { WebWorkerConnector } from "../connector/ww-connector";
+import { WebsocketConnector } from "../connector/ws-connector";
 import { Markets } from "./api/Markets";
 
 console.log("Starting web worker");
 
 (async function() {
   try {
-    const connector = new WebWorkerConnector();
+    const connector = new WebsocketConnector("ws://localhost:9001");
     console.log("connecting");
     await connector.connect();
     console.log("connected");
