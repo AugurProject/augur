@@ -1,5 +1,5 @@
-import { ethers } from "ethers";
 import { API } from "@augurproject/sdk/build/state/api/API";
+import { SECONDS_IN_A_DAY } from "@augurproject/sdk/build/state/api/Markets";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import {
@@ -8,7 +8,7 @@ import {
   deployContracts,
   ContractAPI,
 } from "../../../libs";
-import { stringTo32ByteHex, NULL_ADDRESS } from "../../../libs/Utils";
+import { stringTo32ByteHex } from "../../../libs/Utils";
 import { BigNumber } from "bignumber.js";
 
 const mock = makeDbMock();
@@ -76,23 +76,33 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
 
   // Purchase participation tokens
   const disputeWindowAddress = await john.augur.contracts.universe.getCurrentDisputeWindow_(false);
-  john.buyParticipationTokens(disputeWindowAddress, new BigNumber(1));
+  await john.buyParticipationTokens(disputeWindowAddress, new BigNumber(1));
 
-  // const newTime = (await john.getTimestamp()).add(SECONDS_IN_A_DAY);
-  // await john.setTimestamp(newTime);
+  console.log("Current TIMESTAMP");
+  console.log((await john.getTimestamp()).toNumber());
+
+  const newTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
+  await john.setTimestamp(newTime);
+
+  console.log("New TIMESTAMP");
+  console.log((await john.getTimestamp()).toNumber());
 
   // Submit initial reports & dispute outcomes
 
   // Finalize market & redeem crowdsourcer funds
 
   // Redeem participation tokens
-  john.redeemParticipationTokens(disputeWindowAddress);
+  // await john.redeemParticipationTokens(disputeWindowAddress);
+
+  // Test universe/account/timestamp params
 
   await db.sync(john.augur, mock.constants.chunkSize, 0);
 
   let accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address,
-    account: ACCOUNTS[0].publicKey
+    account: ACCOUNTS[0].publicKey,
+    earliestTransactionTime: 0,
+    latestTransactionTime: (await john.getTimestamp()).toNumber(),
   });
   console.log(accountTransactionHistory);
   // expect(yesNoMarketTransactionHistory).toMatchObject(

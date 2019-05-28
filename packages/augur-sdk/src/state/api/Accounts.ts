@@ -12,6 +12,7 @@ import {
   OrderEventAddressValue,
   ORDER_EVENT_CREATOR,
   ORDER_EVENT_FILLER,
+  ORDER_EVENT_TIMESTAMP,
   OrderEventLog,
   OrderEventUint256Value,
   ParticipationTokensRedeemedLog,
@@ -21,7 +22,6 @@ import {
 } from "../logs/types";
 import { SortLimit } from "./types";
 import { Augur } from "../../index";
-import { ethers } from "ethers";
 import { toAscii } from "../utils/utils";
 
 import * as t from "io-ts";
@@ -83,81 +83,167 @@ export class Accounts<TBigNumber> {
   @Getter("GetAccountTransactionHistoryParams")
   public static async getAccountTransactionHistory<TBigNumber>(augur: Augur, db: DB, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
     if (!params.earliestTransactionTime) params.earliestTransactionTime = 0;
-    if (!params.latestTransactionTime) params.latestTransactionTime = Math.floor(Date.now() / 1000);
+    if (!params.latestTransactionTime) params.latestTransactionTime = (await augur.contracts.augur.getTimestamp_()).toNumber();
     if (!params.coin) params.coin = Coin.ALL;
     if (!params.action) params.action = Action.ALL;
 
     let actionCoinComboIsValid = false;
     let allFormattedLogs: any = [];
     if ((params.action === Action.BUY || params.action === Action.SELL || params.action === Action.ALL) && (params.coin === Coin.ETH || params.coin === Coin.ALL)) {
-      const orderFilledLogs = await db.findOrderFilledLogs({selector: {universe: params.universe, $or: [{[ORDER_EVENT_CREATOR]: params.account}, {[ORDER_EVENT_FILLER]: params.account}]}});
+      const orderFilledLogs = await db.findOrderFilledLogs(
+        {
+          selector: {
+            universe: params.universe,
+            $or: [{[ORDER_EVENT_CREATOR]: params.account}, {[ORDER_EVENT_FILLER]: params.account}],
+            $and: [{[ORDER_EVENT_TIMESTAMP]: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {[ORDER_EVENT_TIMESTAMP]: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+          }
+        }
+      );
       const marketInfo = await Accounts.getMarketCreatedInfo(db, orderFilledLogs);
       allFormattedLogs = allFormattedLogs.concat(formatOrderFilledLogs(orderFilledLogs, marketInfo, params));
       actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.CANCEL || params.action === Action.ALL) && (params.coin === Coin.ETH || params.coin === Coin.ALL)) {
-      const orderCanceledLogs = await db.findOrderCanceledLogs({selector: {universe: params.universe}});
+      const orderCanceledLogs = await db.findOrderCanceledLogs(
+        {
+          selector: {
+            universe: params.universe,
+            [ORDER_EVENT_CREATOR]: params.account,
+            $and: [{[ORDER_EVENT_TIMESTAMP]: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {[ORDER_EVENT_TIMESTAMP]: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+          }
+        }
+      );
       const marketInfo = await Accounts.getMarketCreatedInfo(db, orderCanceledLogs);
       allFormattedLogs = allFormattedLogs.concat(formatOrderCanceledLogs(orderCanceledLogs, marketInfo, params));
       actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.CLAIM_PARTICIPATION_TOKENS || params.action === Action.ALL) && (params.coin === Coin.ETH || params.coin === Coin.ALL)) {
-      const participationTokensRedeemedLogs = await db.findParticipationTokensRedeemedLogs({selector: {universe: params.universe, account: params.account}});
+      const participationTokensRedeemedLogs = await db.findParticipationTokensRedeemedLogs(
+        {
+          selector: {
+            universe: params.universe,
+            account: params.account,
+            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+          }
+        }
+      );
       allFormattedLogs = allFormattedLogs.concat(formatParticipationTokensRedeemedLogs(participationTokensRedeemedLogs, params));
       actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.CLAIM_TRADING_PROCEEDS || params.action === Action.ALL) && (params.coin === Coin.ETH || params.coin === Coin.ALL)) {
-      const tradingProceedsClaimedLogs = await db.findTradingProceedsClaimedLogs({selector: {universe: params.universe, sender: params.account}});
+      const tradingProceedsClaimedLogs = await db.findTradingProceedsClaimedLogs(
+        {
+          selector: {
+            universe: params.universe,
+            sender: params.account,
+            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+          }
+        }
+      );
       const marketInfo = await Accounts.getMarketCreatedInfo(db, tradingProceedsClaimedLogs);
-      allFormattedLogs = allFormattedLogs.concat(formatTradingProceedsClaimedLogs(tradingProceedsClaimedLogs, marketInfo, params));
+      allFormattedLogs = allFormattedLogs.concat(formatTradingProceedsClaimedLogs(tradingProceedsClaimedLogs, marketInfo, db, params));
       actionCoinComboIsValid = true;
     }
 
     if (params.action === Action.CLAIM_WINNING_CROWDSOURCERS || params.action === Action.ALL) {
-      const disputeCrowdsourcerRedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs({selector: {universe: params.universe, reporter: params.account}});
+      const disputeCrowdsourcerRedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(
+        {
+          selector: {
+            universe: params.universe,
+            reporter: params.account,
+            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+          }
+        }
+      );
       let marketInfo = await Accounts.getMarketCreatedInfo(db, disputeCrowdsourcerRedeemedLogs);
       allFormattedLogs = allFormattedLogs.concat(await formatCrowdsourcerRedeemedLogs(disputeCrowdsourcerRedeemedLogs, augur, marketInfo, params));
-      const initialReporterRedeemedLogs = await db.findInitialReporterRedeemedLogs({selector: {universe: params.universe, reporter: params.account}});
+      const initialReporterRedeemedLogs = await db.findInitialReporterRedeemedLogs(
+        {
+          selector: {
+            universe: params.universe,
+            reporter: params.account,
+            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+          }
+        }
+      );
       marketInfo = await Accounts.getMarketCreatedInfo(db, initialReporterRedeemedLogs);
-      allFormattedLogs = allFormattedLogs.concat(formatCrowdsourcerRedeemedLogs(initialReporterRedeemedLogs, augur, marketInfo, params));
+      allFormattedLogs = allFormattedLogs.concat(await formatCrowdsourcerRedeemedLogs(initialReporterRedeemedLogs, augur, marketInfo, params));
       actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.MARKET_CREATION || params.action === Action.ALL) && (params.coin === Coin.ETH || params.coin === Coin.ALL)) {
-      const marketCreatedLogs = await db.findMarketCreatedLogs({selector: {universe: params.universe, marketCreator: params.account}});
-      const asdf = formatMarketCreatedLogs(marketCreatedLogs, params);
-      allFormattedLogs = allFormattedLogs.concat(asdf);
+      const marketCreatedLogs = await db.findMarketCreatedLogs(
+        {
+          selector: {
+            universe: params.universe,
+            marketCreator: params.account,
+            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+          }
+        }
+      );
+      const marketInfo = formatMarketCreatedLogs(marketCreatedLogs, params);
+      allFormattedLogs = allFormattedLogs.concat(marketInfo);
       actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.DISPUTE || params.action === Action.ALL) && (params.coin === Coin.REP || params.coin === Coin.ALL)) {
-      const disputeCrowdsourcerContributionLogs = await db.findDisputeCrowdsourcerContributionLogs({selector: {universe: params.universe, reporter: params.account}});
+      const disputeCrowdsourcerContributionLogs = await db.findDisputeCrowdsourcerContributionLogs(
+        {
+          selector: {
+            universe: params.universe,
+            reporter: params.account,
+            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+          }
+        }
+      );
       const marketInfo = await Accounts.getMarketCreatedInfo(db, disputeCrowdsourcerContributionLogs);
       allFormattedLogs = allFormattedLogs.concat(await formatDisputeCrowdsourcerContributionLogs(disputeCrowdsourcerContributionLogs, augur, marketInfo, params));
       actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.INITIAL_REPORT || params.action === Action.ALL) && (params.coin === Coin.REP || params.coin === Coin.ALL)) {
-      const initialReportSubmittedLogs = await db.findInitialReportSubmittedLogs({selector: {universe: params.universe, reporter: params.account}});
+      const initialReportSubmittedLogs = await db.findInitialReportSubmittedLogs(
+        {
+          selector: {
+            universe: params.universe,
+            reporter: params.account,
+            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+          }
+        }
+      );
       const marketInfo = await Accounts.getMarketCreatedInfo(db, initialReportSubmittedLogs);
       allFormattedLogs = allFormattedLogs.concat(await formatInitialReportSubmittedLogs(initialReportSubmittedLogs, augur, marketInfo, params));
       actionCoinComboIsValid = true;
     }
 
     if ((params.action === Action.COMPLETE_SETS || params.action === Action.ALL) && (params.coin === Coin.ETH || params.coin === Coin.ALL)) {
-      const completeSetsPurchasedLogs = await db.findCompleteSetsPurchasedLogs({selector: {universe: params.universe, account: params.account}});
+      const completeSetsPurchasedLogs = await db.findCompleteSetsPurchasedLogs(
+        {
+          selector: {
+            universe: params.universe,
+            account: params.account,
+            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+          }
+        }
+      );
       let marketInfo = await Accounts.getMarketCreatedInfo(db, completeSetsPurchasedLogs);
       allFormattedLogs = allFormattedLogs.concat(formatCompleteSetsPurchasedLogs(completeSetsPurchasedLogs, marketInfo, params));
-      const completeSetsSoldLogs = await db.findCompleteSetsSoldLogs({selector: {universe: params.universe, account: params.account}});
+      const completeSetsSoldLogs = await db.findCompleteSetsSoldLogs(
+        {
+          selector: {
+            universe: params.universe,
+            account: params.account,
+            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+          }
+        }
+      );
       marketInfo = await Accounts.getMarketCreatedInfo(db, completeSetsSoldLogs);
       allFormattedLogs = allFormattedLogs.concat(formatCompleteSetsSoldLogs(completeSetsSoldLogs, marketInfo, params));
       actionCoinComboIsValid = true;
     }
-
-    // TODO Filter logs by earliestTransactionTime & latestTransactionTime
 
     if (!actionCoinComboIsValid) {
       throw new Error("Invalid action/coin combination");
@@ -302,7 +388,7 @@ function formatParticipationTokensRedeemedLogs(transactionLogs: Array<Participat
         outcomeDescription: null,
         price: "0",
         quantity: transactionLogs[i].attoParticipationTokens,
-        timestamp: 0, // TODO?
+        timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
         total: transactionLogs[i].feePayoutShare,
         transactionHash: transactionLogs[i].transactionHash,
       }
@@ -311,9 +397,11 @@ function formatParticipationTokensRedeemedLogs(transactionLogs: Array<Participat
   return formattedLogs;
 }
 
-function formatTradingProceedsClaimedLogs(transactionLogs: Array<TradingProceedsClaimedLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+function formatTradingProceedsClaimedLogs(transactionLogs: Array<TradingProceedsClaimedLog>, marketInfo: MarketCreatedInfo, db: DB, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
+    const outcome = new BigNumber(transactionLogs[i].outcome).toNumber();
+    const outcomeDescription = getOutcomeDescriptionFromOutcome(outcome, marketInfo[transactionLogs[i].market]);
     const price = 0; // TODO: look up outcome price
     formattedLogs.push(
       {
@@ -322,11 +410,11 @@ function formatTradingProceedsClaimedLogs(transactionLogs: Array<TradingProceeds
         details: "Claimed trading proceeds",
         fee: (new BigNumber(transactionLogs[i].numShares).times(price)).minus(transactionLogs[i].numPayoutTokens).toString(),
         marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
-        outcome: null, // TODO: look up market
-        outcomeDescription: null, // TODO: look up market
+        outcome,
+        outcomeDescription,
         price: price.toString(),
         quantity: transactionLogs[i].numShares,
-        timestamp: 0, // TODO?
+        timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
         total: transactionLogs[i].numPayoutTokens.toString(),
         transactionHash: transactionLogs[i].transactionHash,
       }
@@ -353,7 +441,7 @@ async function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrow
           outcomeDescription,
           price: "0",
           quantity: "0",
-          timestamp: 0, // TODO?
+          timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
           total: transactionLogs[i].amountRedeemed,
           transactionHash: transactionLogs[i].transactionHash,
         }
@@ -371,7 +459,7 @@ async function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrow
           outcomeDescription,
           price: "0",
           quantity: "0",
-          timestamp: 0, // TODO?
+          timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
           total: transactionLogs[i].repReceived,
           transactionHash: transactionLogs[i].transactionHash,
         }
@@ -395,7 +483,7 @@ function formatMarketCreatedLogs(transactionLogs: MarketCreatedLog[], params: t.
         outcomeDescription: null,
         price: "0",
         quantity: "0",
-        timestamp: 0, // TODO?
+        timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
         total: "0",
         transactionHash: transactionLogs[i].transactionHash,
       }
@@ -421,7 +509,7 @@ async function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<
         outcomeDescription,
         price: "0",
         quantity: transactionLogs[i].amountStaked,
-        timestamp: 0, // TODO?
+        timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
         total: "0",
         transactionHash: transactionLogs[i].transactionHash,
       }
@@ -447,7 +535,7 @@ async function formatInitialReportSubmittedLogs(transactionLogs: Array<InitialRe
         outcomeDescription,
         price: "0",
         quantity: transactionLogs[i].amountStaked,
-        timestamp: 0, // TODO?
+        timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
         total: "0",
         transactionHash: transactionLogs[i].transactionHash,
       }
@@ -470,7 +558,7 @@ function formatCompleteSetsPurchasedLogs(transactionLogs: Array<CompleteSetsPurc
         outcomeDescription: null,
         price: marketInfo[transactionLogs[i].market].numTicks,
         quantity: transactionLogs[i].numCompleteSets,
-        timestamp: 0, // TODO?
+        timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
         total: "0",
         transactionHash: transactionLogs[i].transactionHash,
       }
@@ -493,7 +581,7 @@ function formatCompleteSetsSoldLogs(transactionLogs: Array<CompleteSetsSoldLog>,
         outcomeDescription: null,
         price: marketInfo[transactionLogs[i].market].numTicks,
         quantity: transactionLogs[i].numCompleteSets,
-        timestamp: 0, // TODO?
+        timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
         total: "0",
         transactionHash: transactionLogs[i].transactionHash,
       }

@@ -2027,6 +2027,11 @@
 					"indexed": false,
 					"name": "outcomes",
 					"type": "bytes32[]"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "MarketCreated",
@@ -2069,6 +2074,11 @@
 					"indexed": false,
 					"name": "description",
 					"type": "string"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "InitialReportSubmitted",
@@ -2138,6 +2148,11 @@
 					"indexed": false,
 					"name": "description",
 					"type": "string"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "DisputeCrowdsourcerContribution",
@@ -2207,6 +2222,11 @@
 					"indexed": false,
 					"name": "payoutNumerators",
 					"type": "uint256[]"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "InitialReporterRedeemed",
@@ -2249,6 +2269,11 @@
 					"indexed": false,
 					"name": "payoutNumerators",
 					"type": "uint256[]"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "DisputeCrowdsourcerRedeemed",
@@ -2455,6 +2480,11 @@
 					"indexed": false,
 					"name": "marketOI",
 					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "CompleteSetsPurchased",
@@ -2491,6 +2521,11 @@
 				{
 					"indexed": false,
 					"name": "fees",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
 					"type": "uint256"
 				}
 			],
@@ -2543,6 +2578,11 @@
 				{
 					"indexed": false,
 					"name": "fees",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
 					"type": "uint256"
 				}
 			],
@@ -2913,6 +2953,11 @@
 				{
 					"indexed": false,
 					"name": "feePayoutShare",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
 					"type": "uint256"
 				}
 			],

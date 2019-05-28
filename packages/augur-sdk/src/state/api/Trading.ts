@@ -4,7 +4,6 @@ import * as _ from "lodash";
 import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "../../index";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
-import { ethers } from "ethers";
 import { OrderEventAddressValue, OrderEventUint256Value, ORDER_EVENT_CREATOR, ORDER_EVENT_FILLER, ORDER_EVENT_OUTCOME } from "../logs/types";
 
 import * as t from "io-ts";

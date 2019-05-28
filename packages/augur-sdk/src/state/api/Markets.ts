@@ -14,7 +14,6 @@ import {
 } from "../logs/types";
 import { SortLimit } from "./types";
 import { Augur, numTicksToTickSize } from "../../index";
-import { ethers } from "ethers";
 import { toAscii } from "../utils/utils";
 
 import * as _ from "lodash";

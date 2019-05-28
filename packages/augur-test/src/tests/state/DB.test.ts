@@ -1,7 +1,6 @@
 import { TrackedUsers } from "@augurproject/sdk/build/state/db/TrackedUsers";
 import { Augur } from "@augurproject/sdk";
 import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../libs";
-import { ethers } from "ethers";
 
 const mock = makeDbMock();
 
