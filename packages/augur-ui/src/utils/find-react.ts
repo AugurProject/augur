@@ -1,9 +1,14 @@
-export function FindReact(dom) {
-  const key = Object.keys(dom).find(key =>
-    key.startsWith("__reactInternalInstance$")
+import { ReactDOM } from "react";
+
+export function FindReact(dom: HTMLElement) {
+  const key: string | undefined = Object.keys(dom).find((key: string) =>
+    key.startsWith("__reactInternalInstance$"),
   );
-  const internalInstance = dom[key];
-  if (internalInstance == null) return null;
+  let internalInstance: HTMLElement | null = null;
+  if (key !== undefined) {
+    internalInstance = dom[key];
+  }
+  if (!internalInstance) return null;
 
   if (internalInstance.return) {
     // react 16+

@@ -89,6 +89,7 @@ import {
   SENDETHER,
   SENDREPUTATION
 } from "modules/common-elements/constants";
+import { Outcomes } from "modules/types";
 
 export default function setAlertText(alert: any, callback: any) {
   return (dispatch: Function, getState: Function) => {
@@ -118,7 +119,7 @@ export default function setAlertText(alert: any, callback: any) {
               const marketInfo = selectMarket(alert.log.marketId);
               const outcomeDescription = getOutcomeName(
                 marketInfo,
-                alert.log.outcome
+                { id: alert.log.outcome },
               );
               alert.description = `Cancel order for ${formatShares(
                 alert.log.quantity
@@ -164,7 +165,7 @@ export default function setAlertText(alert: any, callback: any) {
               const marketInfo = selectMarket(alert.params._market);
               const outcomeDescription = getOutcomeName(
                 marketInfo,
-                alert.log.outcome
+                { id: alert.log.outcome },
               );
               alert.description = `Create ${alert.log.orderType} order for ${
                 formatShares(alert.log.amount).formatted
@@ -209,10 +210,10 @@ export default function setAlertText(alert: any, callback: any) {
               const outcomeDescription = getOutcomeName(
                 marketInfo,
                 marketInfo.outcomes.find(
-                  (outcome: any) =>
+                  (outcome: Outcomes) =>
                     outcome.id ===
-                    createBigNumber(alert.params._outcome).toFixed()
-                ).name
+                    createBigNumber(alert.params._outcome).toFixed(),
+                ).name,
               );
 
               alert.description = `Fill ${
@@ -268,7 +269,7 @@ export default function setAlertText(alert: any, callback: any) {
               const outcomeDescription =
                 outcome === null
                   ? "Market Is Invalid"
-                  : getOutcomeName(marketInfo, outcome, false);
+                  : getOutcomeName(marketInfo, { id: outcome }, false);
               alert.description = `Place ${
                 formatRep(
                   createBigNumber(alert.params._amount).dividedBy(
@@ -298,7 +299,7 @@ export default function setAlertText(alert: any, callback: any) {
               const outcomeDescription =
                 outcome === null
                   ? "Market Is Invalid"
-                  : getOutcomeName(marketInfo, outcome, false);
+                  : getOutcomeName(marketInfo, { id: outcome }, false);
               alert.description = `Report "${outcomeDescription}" on "${
                 marketInfo.description
               }"`;
@@ -356,7 +357,7 @@ export default function setAlertText(alert: any, callback: any) {
               );
               const outcomeDescription = getOutcomeName(
                 marketInfo,
-                outcome,
+                { id: outcome },
                 false,
               );
               alert.description = `Migrate ${
@@ -397,13 +398,13 @@ export default function setAlertText(alert: any, callback: any) {
               const outcome =
                 alert.log.outcome !== undefined &&
                 marketInfo.outcomes.find(
-                  (o: any) => o.id === alert.log.outcome.toString()
+                  (o: any) => o.id === alert.log.outcome.toString(),
                 );
               const outcomeDescription = getOutcomeName(marketInfo, outcome);
               alert.description = `Place ${orderType} order for ${
                 formatShares(alert.amount || alert.log.amount).formatted
               } ${formatShares(
-                alert.log.amount
+                alert.log.amount,
               ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
                 formatEther(alert.log.price).formatted
               } ETH`;

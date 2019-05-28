@@ -172,6 +172,7 @@ export default class AppView extends Component {
       }
     ];
 
+    // TODO: can we refactor this out or just remove it?
     this.shouldComponentUpdate = shouldComponentUpdatePure;
 
     this.openSubMenu = this.openSubMenu.bind(this);

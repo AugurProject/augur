@@ -1,5 +1,5 @@
 export default function convertExponentialToDecimal(
-  exponentialNumber: number
+  exponentialNumber: number,
 ): number | string {
   // got from davidjs blog
   // sanity check - is it exponential number
