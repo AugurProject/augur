@@ -151,8 +151,8 @@ export default class ProfitLossChart extends Component<
     const max = formatEther(bnMax, { decimalsRounded: 4 }).formattedValue;
     const min = formatEther(bnMin, { decimalsRounded: 4 }).formattedValue;
     const tickInterval = bnMax.abs().gt(bnMin.abs())
-      ? formatEther(bnMax.abs(), {}).formattedValue
-      : formatEther(bnMin.abs(), {}).formattedValue;
+      ? formatEther(bnMax.abs()).formattedValue
+      : formatEther(bnMin.abs()).formattedValue;
 
     return {
       tickInterval,

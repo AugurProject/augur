@@ -24,11 +24,11 @@ const mapStateToProps = (state: any) => {
         denomination: " REP",
       }).formattedValue || 0,
     repBalance: rep.formatted || "0",
-    totalFrozenFunds: formatEther(totalFrozenFunds, {}).formatted,
-    totalAvailableTradingBalance: formatEther(totalAvailableTradingBalance, {})
+    totalFrozenFunds: formatEther(totalFrozenFunds).formatted,
+    totalAvailableTradingBalance: formatEther(totalAvailableTradingBalance)
       .formatted,
-    totalAccountValue: formatEther(totalAccountValue, {}).formatted,
-    realizedPLPercent: formatPercent(realizedPLPercent, {})
+    totalAccountValue: formatEther(totalAccountValue).formatted,
+    realizedPLPercent: formatPercent(realizedPLPercent)
       .formattedValue,
   };
 };

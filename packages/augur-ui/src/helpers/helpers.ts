@@ -68,10 +68,10 @@ const getLoggedInAccountData = (callback = logError) => (dispatch) =>
   callback({ err: null, data: store.getState().loginAccount });
 
 const formatRepValue = (value, callback = logError) => (dispatch) =>
-  callback({ err: null, data: formatRep(value, {}) });
+  callback({ err: null, data: formatRep(value) });
 
 const formatEthValue = (value, callback = logError) => (dispatch) =>
-  callback(formatEther(value, {}));
+  callback(formatEther(value));
 
 const getRepTokens = (callback = logError) => (dispatch) => {
   dispatch(

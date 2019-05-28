@@ -119,12 +119,12 @@ export default class OverviewChart extends React.Component<
 
         this.setState({
           profitLossData,
-          profitLossChange: formatEther(lastData.realizedPercent || 0, {})
+          profitLossChange: formatEther(lastData.realizedPercent || 0)
             .formatted,
           profitLossChangeHasValue: !createBigNumber(
             lastData.realizedPercent || 0
           ).eq(constants.ZERO),
-          profitLossValue: formatEther(lastData.realized, {}).formatted,
+          profitLossValue: formatEther(lastData.realized).formatted,
           noTrades,
         });
       },

@@ -13,15 +13,15 @@ export const selectCoreStats = createSelector(
     ({
       availableFunds: {
         label: "Available Funds",
-        value: formatEther(accountFunds.totalAvailableTradingBalance, {}).formatted,
+        value: formatEther(accountFunds.totalAvailableTradingBalance).formatted,
       },
       frozenFunds: {
         label: "Frozen Funds",
-        value: formatEther(accountFunds.totalFrozenFunds, {}).formatted,
+        value: formatEther(accountFunds.totalFrozenFunds).formatted,
       },
       totalFunds: {
         label: "Total Funds",
-        value: formatEther(accountFunds.totalAccountValue, {}).formatted,
+        value: formatEther(accountFunds.totalAccountValue).formatted,
       },
       realizedPL: {
         label: "Realized P/L",
