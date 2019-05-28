@@ -3,10 +3,9 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import App from "modules/app/components/app/app";
+import App from "modules/app/components/app";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
-import { selectCoreStats } from "modules/account/selectors/core-stats";
 import {
   IS_MOBILE,
   IS_MOBILE_SMALL,
@@ -30,7 +29,6 @@ const mapStateToProps = state => ({
   blockchain: state.blockchain,
   categories: state.categories,
   connection: state.connection,
-  coreStats: selectCoreStats(state),
   env: state.env,
   isLogged: state.authStatus.isLogged,
   isMobile: state.appStatus.isMobile,

@@ -1,11 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Versions } from "modules/types";
+import Styles from "modules/app/components/terms-and-conditions.styles";
 
-import Styles from "modules/app/components/terms-and-conditions/terms-and-conditions.styles";
-
-const TermsAndConditions = ({ versions }) => (
+const TermsAndConditions = ({
+  augurui,
+  augurjs,
+  augurNode
+}: Versions) => (
   <div className={Styles.TermsAndConditions}>
-    <div className={Styles.TermsAndConditions__grouping}>
+    <div>
       <a
         href="https://raw.githubusercontent.com/AugurProject/augur-core/master/LICENSE"
         target="blank"
@@ -19,15 +23,15 @@ const TermsAndConditions = ({ versions }) => (
         Augur UI License
       </a>
     </div>
-    <div className={Styles.TermsAndConditions__grouping}>
+    <div>
       <span>
-        AugurUI: <span>{versions.augurui}</span>
+        AugurUI: <span>{augurui}</span>
       </span>
       <span>
-        AugurJS: <span>{versions.augurjs}</span>
+        AugurJS: <span>{augurjs}</span>
       </span>
       <span>
-        AugurNode: <span>{versions.augurNode}</span>
+        AugurNode: <span>{augurNode}</span>
       </span>
     </div>
   </div>

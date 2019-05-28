@@ -1,4 +1,4 @@
-@import (reference) "~assets/styles/shared";
+@import (reference) '~assets/styles/shared';
 
 @keyframes drawout-inner {
   0% {
@@ -56,9 +56,38 @@
   }
 }
 
+.Logo {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+  height: @top-bar-height;
+  justify-content: center;
+  position: relative;
+  z-index: @mask-above;
+
+  > * {
+    display: flex;
+    flex-direction: column;
+  }
+
+  > span {
+    color: @color-secondary-text;
+    font-weight: @weight-light;
+    letter-spacing: 1.2px;
+    line-height: 2.75rem;
+    margin-left: @size-8;
+    text-transform: uppercase;
+    vertical-align: top;
+  }
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
+}
+
 .LoadingLogo {
   backface-visibility: hidden; /* VERY IMPORTANT - PREVENTS FLICKER */
-  width: 2.5rem;
+  width: @size-40;
 
   svg {
     :global {
@@ -146,3 +175,4 @@
     }
   }
 }
+

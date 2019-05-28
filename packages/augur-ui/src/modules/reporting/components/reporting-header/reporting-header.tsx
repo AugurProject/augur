@@ -15,7 +15,8 @@ export default class ReportingHeader extends Component {
     heading: PropTypes.string.isRequired,
     loadReportingWindowBounds: PropTypes.func.isRequired,
     reportingWindowStats: PropTypes.object.isRequired,
-    repBalance: PropTypes.string.isRequired,
+    repBalance: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
     updateModal: PropTypes.func.isRequired,
     currentTime: PropTypes.number,
     doesUserHaveRep: PropTypes.bool.isRequired,
