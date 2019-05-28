@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import MarketChartsPane from "modules/market-charts/components/market-charts-pane/market-charts-pane";
 import { selectMarket } from "modules/markets/selectors/market";
-import { createBigNumber } from "src/utils/create-big-number";
+import { createBigNumber } from "utils/create-big-number";
 import { getMarketAgeInDays } from "utils/format-date";
 
 const mapStateToProps = (state: any, ownProps: any) => {

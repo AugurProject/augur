@@ -1,0 +1,80 @@
+@import (reference) '~assets/styles/shared';
+
+.TermsAndConditions {
+  .text-12;
+
+  color: @color-secondary-text;
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: space-between;
+  margin: @size-16 0;
+  text-align: center;
+  white-space: nowrap;
+
+  > div {
+    flex: 0 0 auto;
+    padding: 0 @size-32;
+
+    a,
+    span {
+      flex: none;
+    }
+
+    a {
+      align-self: flex-start;
+    }
+
+    span {
+      align-self: flex-end;
+      font-weight: @weight-bold;
+    }
+
+    a::after,
+    span::after {
+      content: "|";
+      padding: 0 @size-8;
+
+      @media @breakpoint-mobile-medium {
+        content: "";
+        padding: 0;
+      }
+    }
+
+    a:last-child::after,
+    span:last-child::after {
+      content: "";
+    }
+
+    span > span {
+      font-weight: normal;
+    }
+
+    span > span::after {
+      content: "";
+      padding: 0;
+    }
+  }
+
+  @media @breakpoint-mobile-medium {
+    & {
+      display: flex;
+      flex-flow: column wrap;
+      flex-grow: 0;
+    }
+
+    > div {
+      align-content: space-around;
+      display: flex;
+      flex-flow: column wrap;
+
+      a,
+      span {
+        .text-12;
+
+        align-self: flex-start;
+        flex-basis: 100%;
+        padding: @size-8 0;
+      }
+    }
+  }
+}

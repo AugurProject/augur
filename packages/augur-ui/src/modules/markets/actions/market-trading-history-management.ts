@@ -1,6 +1,6 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
-import { loadReportingFinal } from "src/modules/reports/actions/load-reporting-final";
+import { loadReportingFinal } from "modules/reports/actions/load-reporting-final";
 import { keyArrayBy } from "utils/key-by";
 import { MarketTradingHistory, TradingHistory } from "modules/types";
 

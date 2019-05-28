@@ -1,7 +1,7 @@
 import * as speedomatic from "speedomatic";
 import { augur } from "services/augurjs";
 import { updateAlert, addAlert } from "modules/alerts/actions/alerts";
-import { selectCurrentTimestampInSeconds as getTime } from "src/select-state";
+import { selectCurrentTimestampInSeconds as getTime } from "store/select-state";
 import { ETH, REP, CONFIRMED, FAILED } from "modules/common-elements/constants";
 
 export function transferFunds(
