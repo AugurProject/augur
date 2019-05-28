@@ -462,7 +462,7 @@ export default class MarketView extends Component {
                         }
                       )}
                     >
-                      <MarketOutcomeOrders
+                      <OrderBook
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
                         }

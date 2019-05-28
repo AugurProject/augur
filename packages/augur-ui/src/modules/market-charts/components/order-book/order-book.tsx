@@ -9,7 +9,6 @@ import { ASKS, BIDS, BUY, SELL } from "modules/common-elements/constants";
 import Styles from "modules/market-charts/components/order-book/order-book.styles";
 import { isEmpty, isEqual } from "lodash";
 
-// to do:  remame file to something normal, clean up css styles, do scroll to top thing on component
 class OrderBookSide extends Component {
   static propTypes = {
     orderBook: PropTypes.object.isRequired,
@@ -31,13 +30,6 @@ class OrderBookSide extends Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      hoveredOrderIndex: null,
-      hoveredSide: null
-    };
-
-    this.setHovers = this.setHovers.bind(this);
   }
 
   componentDidMount() {
@@ -62,7 +54,7 @@ class OrderBookSide extends Component {
       hoveredOrderIndex,
       setHovers,
       type
-    } = props;
+    } = this.props;
 
     const orderBookOrders = type === ASKS ? orderBook.asks || [] : orderBook.bids || [];
 

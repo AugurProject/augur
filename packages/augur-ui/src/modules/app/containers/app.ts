@@ -24,6 +24,7 @@ import {
   updateIsAlertVisible,
   updateSidebarStatus
 } from "modules/app/actions/update-sidebar-status";
+import { selectCoreStats } from "modules/account/selectors/core-stats";
 
 const mapStateToProps = state => ({
   blockchain: state.blockchain,
