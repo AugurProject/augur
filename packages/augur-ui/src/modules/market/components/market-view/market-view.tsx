@@ -35,8 +35,6 @@ import { TEMP_TABLET } from "modules/common-elements/constants";
 export default class MarketView extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
-    maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    minPrice: PropTypes.instanceOf(BigNumber).isRequired,
     marketId: PropTypes.string.isRequired,
     marketReviewSeen: PropTypes.bool.isRequired,
     marketReviewModal: PropTypes.func.isRequired,
@@ -221,8 +219,6 @@ export default class MarketView extends Component {
       currentTimestamp,
       description,
       marketId,
-      maxPrice,
-      minPrice,
       location,
       outcomes,
       market,
