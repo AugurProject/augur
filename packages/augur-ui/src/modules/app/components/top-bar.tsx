@@ -57,15 +57,15 @@ const TopBar = ({
             />
             <LinearPropertyLabelMovement
               showColors
-              {...realizedPL}
-              numberValue={parseFloat(realizedPL.value)}
+              label={realizedPL.label}
+              numberValue={realizedPL.value}
             />
           </div>
           <div>
             <span>{realizedPL.label}</span>
             <MovementLabel
               showColors
-              value={parseFloat(realizedPL.value)}
+              value={realizedPL.value}
               size="normal"
             />
           </div>

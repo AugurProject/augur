@@ -7,7 +7,6 @@ import { Helmet } from "react-helmet";
 import classNames from "classnames";
 
 import shouldComponentUpdatePure from "utils/should-component-update-pure";
-import debounce from "utils/debounce";
 import isWindows from "utils/is-windows";
 
 import { tween } from "shifty";
@@ -206,6 +205,8 @@ export default class AppView extends Component<AppProps, AppState> {
       onlyForMobile: true
     }
   ];
+
+  shouldComponentUpdate = shouldComponentUpdatePure;
 
   componentWillMount() {
     const {
