@@ -39,18 +39,6 @@ interface OrderBookState {
 }
 
 class OrderBookSide extends Component<OrderBookSideProps, {}> {
-  static propTypes = {
-    orderBook: PropTypes.object.isRequired,
-    updateSelectedOrderProperties: PropTypes.func.isRequired,
-    hasOrders: PropTypes.bool.isRequired,
-    orderBookKeys: PropTypes.object.isRequired,
-    fixedPrecision: PropTypes.number,
-    pricePrecision: PropTypes.number,
-    setHovers: PropTypes.func.isRequired,
-    type: PropTypes.string.isRequired,
-    scrollToTop: PropTypes.bool,
-  };
-
   static defaultProps = {
     fixedPrecision: 4,
     pricePrecision: 4,
@@ -144,17 +132,6 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
 }
 
 export default class OrderBook extends Component<OrderBookProps, OrderBookState> {
-  static propTypes = {
-    orderBook: PropTypes.object.isRequired,
-    fixedPrecision: PropTypes.number,
-    pricePrecision: PropTypes.number,
-    updateSelectedOrderProperties: PropTypes.func.isRequired,
-    hasOrders: PropTypes.bool.isRequired,
-    orderBookKeys: PropTypes.object.isRequired,
-    toggle: PropTypes.func,
-    extend: PropTypes.bool,
-    hide: PropTypes.bool
-  };
 
   static defaultProps = {
     toggle: () => {},
@@ -164,18 +141,12 @@ export default class OrderBook extends Component<OrderBookProps, OrderBookState>
     pricePrecision: 4
   };
 
-  constructor(props: OrderBookProps) {
-    super(props);
+  state: OrderBookState = {
+    hoveredOrderIndex: null,
+    hoveredSide: null
+  };
 
-    this.state = {
-      hoveredOrderIndex: null,
-      hoveredSide: null
-    };
-
-    this.setHovers = this.setHovers.bind(this);
-  }
-
-  setHovers(hoveredOrderIndex: Number, hoveredSide: Number) {
+  setHovers = (hoveredOrderIndex: Number, hoveredSide: Number) => {
     this.setState({
       hoveredOrderIndex: hoveredOrderIndex,
       hoveredSide: hoveredSide
