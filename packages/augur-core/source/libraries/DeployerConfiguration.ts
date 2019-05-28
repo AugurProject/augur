@@ -15,18 +15,32 @@ export class DeployerConfiguration {
     public readonly isProduction: boolean;
     public readonly legacyRepAddress: string;
     public readonly cashAddress: string;
+    public readonly writeArtifacts: boolean;
 
-    public constructor(contractInputRoot: string, artifactOutputRoot: string, augurAddress: string|undefined, createGenesisUniverse: boolean=true, isProduction: boolean=false, useNormalTime: boolean=true, legacyRepAddress: string=PRODUCTION_LEGACY_REP_CONTRACT_ADDRESS, cashAddress: string=PRODUCTION_CASH_CONTRACT_ADDRESS) {
+    public constructor(
+      contractInputRoot: string,
+      artifactOutputRoot: string|null,
+      augurAddress: string|undefined,
+      createGenesisUniverse: boolean = true,
+      isProduction: boolean = false,
+      useNormalTime: boolean = true,
+      legacyRepAddress: string = PRODUCTION_LEGACY_REP_CONTRACT_ADDRESS,
+      cashAddress: string = PRODUCTION_CASH_CONTRACT_ADDRESS,
+    ) {
         this.isProduction = isProduction;
         this.augurAddress = augurAddress;
         this.createGenesisUniverse = createGenesisUniverse;
         this.useNormalTime = isProduction || useNormalTime;
         this.legacyRepAddress = legacyRepAddress;
         this.cashAddress = cashAddress;
+        this.writeArtifacts = artifactOutputRoot !== null;
 
-        this.contractAddressesOutputPath = path.join(artifactOutputRoot, 'addresses.json');
-        this.uploadBlockNumbersOutputPath = path.join(artifactOutputRoot, 'upload-block-numbers.json');
         this.contractInputPath = path.join(contractInputRoot, 'contracts.json');
+
+        if (artifactOutputRoot !== null) {
+          this.contractAddressesOutputPath = path.join(artifactOutputRoot, 'addresses.json');
+          this.uploadBlockNumbersOutputPath = path.join(artifactOutputRoot, 'upload-block-numbers.json');
+        }
     }
 
     public static create(contractInputRoot:string=path.join(__dirname, '../../output/contracts'), artifactOutputRoot: string=ARTIFACT_OUTPUT_ROOT, isProduction: boolean=false, legacyRepAddress: string=PRODUCTION_LEGACY_REP_CONTRACT_ADDRESS, cashAddress: string=PRODUCTION_CASH_CONTRACT_ADDRESS): DeployerConfiguration {

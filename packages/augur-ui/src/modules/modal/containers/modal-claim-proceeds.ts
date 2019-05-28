@@ -5,7 +5,7 @@ import claimTradingProceeds, {
   CLAIM_SHARES_GAS_COST,
   claimMultipleTradingProceeds
 } from "modules/positions/actions/claim-trading-proceeds";
-import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { createBigNumber } from "utils/create-big-number";
 import canClaimProceeds from "utils/can-claim-proceeds";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";

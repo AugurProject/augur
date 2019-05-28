@@ -15,7 +15,7 @@ import { isCurrentMarket } from "modules/trades/helpers/is-current-market";
 import logError from "utils/log-error";
 import makePath from "modules/routes/helpers/make-path";
 import { MY_MARKETS, TRANSACTIONS } from "modules/routes/constants/views";
-import { loadReporting } from "src/modules/reports/actions/load-reporting";
+import { loadReporting } from "modules/reports/actions/load-reporting";
 import { loadDisputing } from "modules/reports/actions/load-disputing";
 import loadCategories from "modules/categories/actions/load-categories";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
@@ -23,7 +23,7 @@ import {
   loadMarketsInfo,
   loadMarketsInfoIfNotLoaded,
   loadMarketsDisputeInfo
-} from "src/modules/markets/actions/load-markets-info";
+} from "modules/markets/actions/load-markets-info";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { startOrderSending } from "modules/orders/actions/liquidity-management";
 import {
@@ -31,7 +31,7 @@ import {
   loadUserMarketTradingHistory
 } from "modules/markets/actions/market-trading-history-management";
 import { updateAssets } from "modules/auth/actions/update-assets";
-import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { appendCategoryIfNew } from "modules/categories/actions/append-category";
 import { removePendingOrder } from "modules/orders/actions/pending-orders-management";
 import { loadAccountOpenOrders } from "modules/orders/actions/load-account-open-orders";

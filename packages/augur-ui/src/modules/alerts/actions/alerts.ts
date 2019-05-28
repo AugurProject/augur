@@ -1,11 +1,11 @@
-import store from "src/store";
+import store from "store";
 import { augur } from "services/augurjs";
 import * as constants from "modules/common-elements/constants";
 import setAlertText from "modules/alerts/actions/set-alert-text";
 import { createBigNumber } from "utils/create-big-number";
 import makePath from "modules/routes/helpers/make-path";
 import { TRANSACTIONS } from "modules/routes/constants/views";
-import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 export const ADD_ALERT = "ADD_ALERT";

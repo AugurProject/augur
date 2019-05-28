@@ -16,11 +16,12 @@ export const updatePlatformTimeframeData = (
       startTime: options.startTime || null,
       endTime: null
     },
-    (err: any, timeframeData: any) => {
+    (err, result) => {
       if (err) return callback(err);
+
       dispatch(
         updateUniverse({
-          timeframeData
+          result
         })
       );
     }

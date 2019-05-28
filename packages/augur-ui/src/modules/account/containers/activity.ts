@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { formatAttoEth } from "utils/format-number";
 import Activity from "modules/account/components/activity";
 import { updatePlatformTimeframeData } from "modules/account/actions/update-platform-timeframe-data";
-import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { selectCurrentTimestampInSeconds } from "store/select-state";
 
 const mapStateToProps = (state: any) => {
   const value =
