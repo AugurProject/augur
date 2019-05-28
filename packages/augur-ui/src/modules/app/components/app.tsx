@@ -7,7 +7,6 @@ import { Helmet } from "react-helmet";
 import classNames from "classnames";
 
 import shouldComponentUpdatePure from "utils/should-component-update-pure";
-import debounce from "utils/debounce";
 import isWindows from "utils/is-windows";
 
 import { tween } from "shifty";
@@ -156,68 +155,58 @@ export default class AppView extends Component<AppProps, AppState> {
     useWeb3Transport: false
   };
 
-  constructor(props: AppProps) {
-    super(props);
+  state: AppState = {
+    mainMenu: { scalar: 0, open: false, currentTween: null },
+    subMenu: { scalar: 0, open: false, currentTween: null }
+  };
+  sideNavMenuData = [
+    {
+      title: "Markets",
+      icon: NavMarketsIcon,
+      route: MARKETS
+    },
+    {
+      title: "Create",
+      iconName: "nav-create-icon",
+      icon: NavCreateIcon,
+      route: CREATE_MARKET,
+      requireLogin: true,
+      disabled: this.props.universe.isForking
+    },
+    {
+      title: "Portfolio",
+      iconName: "nav-portfolio-icon",
+      icon: NavPortfolioIcon,
+      route: MY_POSITIONS,
+      requireLogin: true
+    },
+    {
+      title: "Reporting",
+      iconName: "nav-reporting-icon",
+      icon: NavReportingIcon,
+      mobileClick: () =>
+        this.props.updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN),
+      route: REPORTING_DISPUTE_MARKETS
+    },
+    {
+      title: "Account",
+      iconName: "nav-account-icon",
+      icon: NavAccountIcon,
+      route: ACCOUNT_DEPOSIT,
+      requireLogin: true
+    },
+    {
+      title: "Logout",
+      iconName: "nav-logout-icon",
+      icon: NavLogoutIcon,
+      mobileClick: () => this.props.logout(),
+      route: ACCOUNT_DEPOSIT,
+      requireLogin: true,
+      onlyForMobile: true
+    }
+  ];
 
-    this.state = {
-      mainMenu: { scalar: 0, open: false, currentTween: null },
-      subMenu: { scalar: 0, open: false, currentTween: null }
-    };
-    const { logout, universe, updateMobileMenuState } = props;
-    this.sideNavMenuData = [
-      {
-        title: "Markets",
-        icon: NavMarketsIcon,
-        route: MARKETS
-      },
-      {
-        title: "Create",
-        iconName: "nav-create-icon",
-        icon: NavCreateIcon,
-        route: CREATE_MARKET,
-        requireLogin: true,
-        disabled: universe.isForking
-      },
-      {
-        title: "Portfolio",
-        iconName: "nav-portfolio-icon",
-        icon: NavPortfolioIcon,
-        route: MY_POSITIONS,
-        requireLogin: true
-      },
-      {
-        title: "Reporting",
-        iconName: "nav-reporting-icon",
-        icon: NavReportingIcon,
-        mobileClick: () =>
-          updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN),
-        route: REPORTING_DISPUTE_MARKETS
-      },
-      {
-        title: "Account",
-        iconName: "nav-account-icon",
-        icon: NavAccountIcon,
-        route: ACCOUNT_DEPOSIT,
-        requireLogin: true
-      },
-      {
-        title: "Logout",
-        iconName: "nav-logout-icon",
-        icon: NavLogoutIcon,
-        mobileClick: () => logout(),
-        route: ACCOUNT_DEPOSIT,
-        requireLogin: true,
-        onlyForMobile: true
-      }
-    ];
-
-    this.shouldComponentUpdate = shouldComponentUpdatePure;
-    this.openSubMenu = this.openSubMenu.bind(this);
-    this.handleWindowResize = debounce(this.handleWindowResize.bind(this));
-    this.checkIsMobile = this.checkIsMobile.bind(this);
-    this.toggleAlerts = this.toggleAlerts.bind(this);
-    this.mainSectionClickHandler = this.mainSectionClickHandler.bind(this);
-  }
+  shouldComponentUpdate = shouldComponentUpdatePure;
 
   componentWillMount() {
     const {
