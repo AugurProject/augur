@@ -143,10 +143,10 @@ contract Foo {
 """
 
 def uploadSolidityContract(chain, compileResult, name, contractName):
-    print compileResult['contracts'][name][contractName]['evm']['bytecode']['object']
+    print(compileResult['contracts'][name][contractName]['evm']['bytecode']['object'])
     bytecode = bytearray.fromhex(compileResult['contracts'][name][contractName]['evm']['bytecode']['object'])
     signature = compileResult['contracts'][name][contractName]['abi']
-    address = long(hexlify(chain.contract(bytecode, language='evm')), 16)
+    address = int(hexlify(chain.contract(bytecode, language='evm')), 16)
     contract = ABIContract(chain, ContractTranslator(signature), address)
     return contract
 
@@ -174,6 +174,6 @@ compileAndUpload(chain, 'uint256.sol', uint256, ['uint256Math'])
 compileAndUpload(chain, 'int256.sol', int256, ['int256Math'])
 foo, = compileAndUpload(chain, 'Sol', solCode, ['Foo'])
 chain.head_state.log_listeners.append(lambda log: logs.append(foo.translator.listen(log)))
-print foo.apple()
-print foo.banana()
-print logs
+print(foo.apple())
+print(foo.banana())
+print(logs)

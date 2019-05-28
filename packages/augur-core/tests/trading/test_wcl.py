@@ -6,7 +6,7 @@ from pytest import raises, mark
 from utils import longTo32Bytes, fix, AssertLog, TokenDelta, BuyWithCash, nullAddress, bytesToHexString
 from constants import BID, ASK, YES, NO
 
-tester.STARTGAS = long(6.7 * 10**6)
+tester.STARTGAS = int(6.7 * 10**6)
 
 
 def test_create_ask_with_shares_fill_with_shares(contractsFixture, cash, market):
@@ -44,8 +44,8 @@ def test_create_ask_with_shares_fill_with_shares(contractsFixture, cash, market)
     creatorFee = completeSetFees * 0.6
     fillerFee = completeSetFees * 0.4
     assert amountRemaining == 0
-    assert cash.balanceOf(tester.a1) == fix('12', '60') - long(creatorFee)
-    assert cash.balanceOf(tester.a2) == fix('12', '40') - long(fillerFee)
+    assert cash.balanceOf(tester.a1) == fix('12', '60') - int(creatorFee)
+    assert cash.balanceOf(tester.a2) == fix('12', '40') - int(fillerFee)
     assert contractsFixture.chain.head_state.get_balance(tester.a1) == initialMakerETH
     assert contractsFixture.chain.head_state.get_balance(tester.a2) == initialFillerETH
     assert yesShareToken.balanceOf(tester.a1) == 0
@@ -198,10 +198,10 @@ def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market,
 
     creatorFee = completeSetFees * 0.4
     fillerFee = completeSetFees * 0.6
-    creatorPayment = fix('12', '40') - long(creatorFee)
-    fillerPayment = fix('12', '60') - long(fillerFee)
-    assert cash.balanceOf(tester.a1) == long(creatorPayment)
-    assert cash.balanceOf(tester.a2) == long(fillerPayment)
+    creatorPayment = fix('12', '40') - int(creatorFee)
+    fillerPayment = fix('12', '60') - int(fillerFee)
+    assert cash.balanceOf(tester.a1) == int(creatorPayment)
+    assert cash.balanceOf(tester.a2) == int(fillerPayment)
     assert yesShareToken.balanceOf(tester.a1) == fix(12)
     assert yesShareToken.balanceOf(tester.a2) == 0
     assert noShareToken.balanceOf(tester.a1) == 0

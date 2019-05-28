@@ -55,7 +55,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     fixture.resetToSnapshot(snapshot)
 
     legacyReputationToken = fixture.contracts['LegacyReputationToken']
-    legacyReputationToken.faucet(long(11 * 10**6 * 10**18))
+    legacyReputationToken.faucet(int(11 * 10**6 * 10**18))
     fixture.chain.head_state.timestamp += 15000
 
     orders = fixture.contracts['Orders']
@@ -112,14 +112,14 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
             assert shareToken.balanceOf(fillerAddress) == expectedFillerShortShares
 
 def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amount, fxpPrice, numTicks):
-    longCost = long(amount * fxpPrice)
-    shortCost = long(amount * (numTicks - fxpPrice))
-    totalProceeds = long(amount * numTicks)
+    longCost = int(amount * fxpPrice)
+    shortCost = int(amount * (numTicks - fxpPrice))
+    totalProceeds = int(amount * numTicks)
     completeSetFees = totalProceeds / 100 + totalProceeds / 100
     shortFee = Decimal(completeSetFees * shortCost) / Decimal(longCost + shortCost)
     longFee = completeSetFees - shortFee
 
-    print "creator escrows ETH, filler pays with ETH"
+    print("creator escrows ETH, filler pays with ETH")
     execute(
         fixture = fixture,
         snapshot = kitchenSinkSnapshot,
@@ -143,7 +143,7 @@ def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amoun
         expectedFillerTokens = 0,
         numTicks = numTicks)
 
-    print "creator escrows shares, filler pays with shares"
+    print("creator escrows shares, filler pays with shares")
     execute(
         fixture = fixture,
         snapshot = kitchenSinkSnapshot,
@@ -167,7 +167,7 @@ def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amoun
         expectedFillerTokens = (longCost - longFee).quantize(Decimal('1.'), rounding=ROUND_DOWN),
         numTicks = numTicks)
 
-    print "creator escrows ETH, filler pays with shares"
+    print("creator escrows ETH, filler pays with shares")
     execute(
         fixture = fixture,
         snapshot = kitchenSinkSnapshot,
@@ -191,7 +191,7 @@ def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amoun
         expectedFillerTokens = longCost,
         numTicks = numTicks)
 
-    print "creator escrows shares, filler pays with ETH"
+    print("creator escrows shares, filler pays with ETH")
     execute(
         fixture = fixture,
         snapshot = kitchenSinkSnapshot,
@@ -216,14 +216,14 @@ def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amoun
         numTicks = numTicks)
 
 def execute_askOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amount, fxpPrice, numTicks):
-    longCost = long(amount * fxpPrice)
-    shortCost = long(amount * (numTicks - fxpPrice))
-    totalProceeds = long(amount * numTicks)
+    longCost = int(amount * fxpPrice)
+    shortCost = int(amount * (numTicks - fxpPrice))
+    totalProceeds = int(amount * numTicks)
     completeSetFees = totalProceeds / 100 + totalProceeds / 100
     longFee = Decimal(completeSetFees * longCost) / Decimal(longCost + shortCost)
     shortFee = completeSetFees - longFee
 
-    print "creator escrows ETH, filler pays with ETH"
+    print("creator escrows ETH, filler pays with ETH")
     execute(
         fixture = fixture,
         snapshot = kitchenSinkSnapshot,
@@ -247,7 +247,7 @@ def execute_askOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amoun
         expectedFillerTokens = 0,
         numTicks = numTicks)
 
-    print "creator escrows shares, filler pays with shares"
+    print("creator escrows shares, filler pays with shares")
     execute(
         fixture = fixture,
         snapshot = kitchenSinkSnapshot,
@@ -271,7 +271,7 @@ def execute_askOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amoun
         expectedFillerTokens = (shortCost - shortFee).quantize(Decimal('1.'), rounding=ROUND_UP),
         numTicks = numTicks)
 
-    print "creator escrows ETH, filler pays with shares"
+    print("creator escrows ETH, filler pays with shares")
     execute(
         fixture = fixture,
         snapshot = kitchenSinkSnapshot,
@@ -295,7 +295,7 @@ def execute_askOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amoun
         expectedFillerTokens = shortCost,
         numTicks = numTicks)
 
-    print "creator escrows shares, filler pays with ETH"
+    print("creator escrows shares, filler pays with ETH")
     execute(
         fixture = fixture,
         snapshot = kitchenSinkSnapshot,
@@ -320,55 +320,55 @@ def execute_askOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amoun
         numTicks = numTicks)
 
 def test_yesNo(fixture, kitchenSinkSnapshot, universe, yesNoMarket, randomAmount, randomNormalizedPrice):
-    print ""
-    print 'Random amount: ' + str(randomAmount)
-    print 'Random price: ' + str(randomNormalizedPrice)
-    print ""
+    print("")
+    print('Random amount: ' + str(randomAmount))
+    print('Random price: ' + str(randomNormalizedPrice))
+    print("")
     amount = randomAmount
     numTicks = yesNoMarket.getNumTicks()
-    fxpPrice = long(randomNormalizedPrice * numTicks)
-    print "Start Fuzzy WCL tests - YesNo Market - bidOrders."
+    fxpPrice = int(randomNormalizedPrice * numTicks)
+    print("Start Fuzzy WCL tests - YesNo Market - bidOrders.")
     execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, yesNoMarket, amount, fxpPrice, numTicks)
-    print "Finished Fuzzy WCL tests - YesNo Market - bidOrders."
-    print ""
-    print "Start Fuzzy WCL tests - YesNo Market - askOrders."
+    print("Finished Fuzzy WCL tests - YesNo Market - bidOrders.")
+    print("")
+    print("Start Fuzzy WCL tests - YesNo Market - askOrders.")
     execute_askOrder_tests(fixture, kitchenSinkSnapshot, universe, yesNoMarket, amount, fxpPrice, numTicks)
-    print "Finished Fuzzy WCL tests - YesNo Market - askOrders."
-    print ""
+    print("Finished Fuzzy WCL tests - YesNo Market - askOrders.")
+    print("")
 
 def test_categorical(fixture, kitchenSinkSnapshot, universe, categoricalMarket, randomAmount, randomNormalizedPrice):
-    print ""
-    print 'Random amount: ' + str(randomAmount)
-    print 'Random price: ' + str(randomNormalizedPrice)
-    print ""
+    print("")
+    print('Random amount: ' + str(randomAmount))
+    print('Random price: ' + str(randomNormalizedPrice))
+    print("")
     amount = randomAmount
     numTicks = categoricalMarket.getNumTicks()
-    fxpPrice = long(randomNormalizedPrice * numTicks)
-    print "Start Fuzzy WCL tests - Categorical Market - bidOrders."
+    fxpPrice = int(randomNormalizedPrice * numTicks)
+    print("Start Fuzzy WCL tests - Categorical Market - bidOrders.")
     execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, categoricalMarket, amount, fxpPrice, numTicks)
-    print "Finished Fuzzy WCL tests - Categorical Market - bidOrders."
-    print ""
-    print "Start Fuzzy WCL tests - Categorical Market - askOrders."
+    print("Finished Fuzzy WCL tests - Categorical Market - bidOrders.")
+    print("")
+    print("Start Fuzzy WCL tests - Categorical Market - askOrders.")
     execute_askOrder_tests(fixture, kitchenSinkSnapshot, universe, categoricalMarket, amount, fxpPrice, numTicks)
-    print "Finished Fuzzy WCL tests - Categorical Market - askOrders."
-    print ""
+    print("Finished Fuzzy WCL tests - Categorical Market - askOrders.")
+    print("")
 
 def test_scalar(fixture, kitchenSinkSnapshot, universe, scalarMarket, randomAmount, randomNormalizedPrice):
-    print ""
-    print 'Random amount: ' + str(randomAmount)
-    print 'Random price: ' + str(randomNormalizedPrice)
-    print ""
+    print("")
+    print('Random amount: ' + str(randomAmount))
+    print('Random price: ' + str(randomNormalizedPrice))
+    print("")
     amount = randomAmount / 40
     numTicks = scalarMarket.getNumTicks()
-    fxpPrice = long(randomNormalizedPrice * numTicks)
-    print "Start Fuzzy WCL tests - Scalar Market - bidOrders."
+    fxpPrice = int(randomNormalizedPrice * numTicks)
+    print("Start Fuzzy WCL tests - Scalar Market - bidOrders.")
     execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, scalarMarket, amount, fxpPrice, numTicks)
-    print "Finished Fuzzy WCL tests - Scalar Market - bidOrders."
-    print ""
-    print "Start Fuzzy WCL tests - Scalar Market - askOrders."
+    print("Finished Fuzzy WCL tests - Scalar Market - bidOrders.")
+    print("")
+    print("Start Fuzzy WCL tests - Scalar Market - askOrders.")
     execute_askOrder_tests(fixture, kitchenSinkSnapshot, universe, scalarMarket, amount, fxpPrice, numTicks)
-    print "Finished Fuzzy WCL tests - Scalar Market - askOrders."
-    print ""
+    print("Finished Fuzzy WCL tests - Scalar Market - askOrders.")
+    print("")
 
 # Check randomly generated numbers to make sure they aren't unreasonable
 def check_randoms(market, price, numTicks):

@@ -88,8 +88,8 @@ def test_delegationInputsAndOutputs(localFixture):
     clone.manyInputsNoReturn(1, 2, 3, 4)
 
     # We can return dynamic arrays or arrays of fixed size.
-    assert clone.returnDynamic() == [1L, 0L, 0L, 0L, 0L]
-    assert clone.returnFixed() == [1L, 0L, 0L, 0L, 0L]
+    assert clone.returnDynamic() == [1, 0, 0, 0, 0]
+    assert clone.returnFixed() == [1, 0, 0, 0, 0]
 
 @fixture(scope="session")
 def localSnapshot(fixture, baseSnapshot):

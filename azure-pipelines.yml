@@ -298,36 +298,41 @@ jobs:
       vmImage: 'Ubuntu 16.04'
     timeoutInMinutes: 120
     steps:
-      - checkout: self
-        fetchDepth: 5
-      - task: Docker@1
-        displayName: docker login
-        inputs:
-          command: login
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-      - script: |
-          set -exuo pipefail
-          sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
-          sudo systemctl status docker
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker pull augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-          docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
-          docker images
-          yarn
-          yarn workspace @augurproject/tools docker:build
-          if [[ "$(Build.SourceBranchName)" == "master" ]]; then
-              docker push augurproject/augur-core:monorepo
-          fi
-          yarn workspace @augurproject/tools docker:push
-        displayName: 'build and push core images'
-      - task: Docker@1
-        displayName: docker logout
-        inputs:
-          command: logout
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
+    - task: Docker@1
+      displayName: docker login
+      inputs:
+        command: login
+        containerRegistryType: Container Registry
+        dockerRegistryEndpoint: dockerhub-augurproject
+    - script: |
+        set -exuo pipefail
+        sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
+        sudo systemctl status docker
+        docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
+        docker pull augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
+        docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+        docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
+        docker images
+        yarn
+        yarn workspace @augurproject/tools docker:build
+
+        if [[ "$(Build.SourceBranchName)" == "master" ]]; then
+            docker push augurproject/augur-core:monorepo
+        fi
+        yarn workspace @augurproject/tools docker:push
+      condition: |
+        and
+        (
+            succeeded(),
+            eq(variables.JOB_TRIGGER, 'true')
+        )
+      displayName: 'build and push core images'
+    - task: Docker@1
+      displayName: docker logout
+      inputs:
+        command: logout
+        containerRegistryType: Container Registry
+        dockerRegistryEndpoint: dockerhub-augurproject
 
   - job: publish_docker_images
     dependsOn:

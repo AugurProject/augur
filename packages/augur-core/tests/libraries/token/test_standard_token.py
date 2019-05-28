@@ -38,7 +38,7 @@ def test_basic_token_emit(testStandardTokenFixture):
     standardToken = testStandardTokenFixture.contracts['StandardTokenHelper']
     assert standardToken.faucet(101, sender = tester.k1)
     transferLog = {
-        'value': 101L
+        'value': 101
     }
     with AssertLog(testStandardTokenFixture, "Transfer", transferLog, contract=standardToken):
         assert standardToken.transfer(tester.a2, 101, sender=tester.k1)

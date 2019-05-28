@@ -19,7 +19,7 @@ def test_publicBuyCompleteSets(contractsFixture, universe, cash, market):
     assert universe.getOpenInterestInAttoCash() == 0
 
     cost = 10 * market.getNumTicks()
-    print cash.faucet(cost, sender=tester.k1)
+    print(cash.faucet(cost, sender=tester.k1))
 
     completeSetsPurchasedLog = {
         "universe": universe.address,
@@ -67,7 +67,7 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
     assert not noShareToken.totalSupply()
 
     cost = 10 * market.getNumTicks()
-    print cash.faucet(cost, sender=tester.k1)
+    print(cash.faucet(cost, sender=tester.k1))
     assert universe.getOpenInterestInAttoCash() == 0
     completeSets.publicBuyCompleteSets(market.address, 10, sender = tester.k1)
     assert universe.getOpenInterestInAttoCash() == 10 * market.getNumTicks()

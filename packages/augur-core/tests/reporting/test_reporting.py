@@ -5,7 +5,7 @@ from pytest import fixture, mark, raises
 from utils import longTo32Bytes, bytesToHexString, TokenDelta, AssertLog, EtherDelta, longToHexString, BuyWithCash
 from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToNextRound, proceedToFork, finalize
 
-tester.STARTGAS = long(6.7 * 10**6)
+tester.STARTGAS = int(6.7 * 10**6)
 
 def test_designatedReportHappyPath(localFixture, universe, market):
     # proceed to the designated reporting period
@@ -353,7 +353,7 @@ def test_fork_migration_no_report(localFixture, universe, market):
         proceedToNextRound(localFixture, market)
 
     # Create a market before the fork occurs which has an end date past the forking window
-    endTime = long(localFixture.contracts["Time"].getTimestamp() + timedelta(days=90).total_seconds())
+    endTime = int(localFixture.contracts["Time"].getTimestamp() + timedelta(days=90).total_seconds())
     longMarket = localFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
 
     # Go to the forking period
@@ -420,8 +420,8 @@ def test_forking_values(localFixture, universe, market):
     # The universe uses this theoretical total to calculate values such as the fork goal, fork dispute threshhold and the initial reporting defaults and floors
     assert childUniverse.updateForkValues()
     assert childUniverse.getForkReputationGoal() == childUniverseTheoreticalSupply / 2
-    assert childUniverse.getDisputeThresholdForFork() == long(childUniverseTheoreticalSupply / 40L)
-    assert childUniverse.getInitialReportMinValue() == long(childUniverse.getDisputeThresholdForFork() / 3L / 2**18 + 1)
+    assert childUniverse.getDisputeThresholdForFork() == int(childUniverseTheoreticalSupply / 40)
+    assert childUniverse.getInitialReportMinValue() == int(childUniverse.getDisputeThresholdForFork() / 3 / 2**18 + 1)
 
     # Now we'll fork again and confirm it still takes only 20 dispute rounds in the worst case
     newMarket = localFixture.createReasonableYesNoMarket(childUniverse)

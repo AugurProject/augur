@@ -74,7 +74,7 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
     expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
     expectedMarketCreatorFees = expectedValue / market.getMarketCreatorSettlementFeeDivisor()
     expectedSettlementFees = expectedReporterFees + expectedMarketCreatorFees
-    expectedPayout = long(expectedValue - expectedSettlementFees)
+    expectedPayout = int(expectedValue - expectedSettlementFees)
 
     assert universe.getOpenInterestInAttoCash() == 0
 
@@ -125,7 +125,7 @@ def test_redeem_shares_in_categorical_market(kitchenSinkFixture, universe, cash,
     numTicks = market.getNumTicks()
     expectedValue = numTicks
     expectedSettlementFees = expectedValue * 0.02
-    expectedPayout = long(expectedValue - expectedSettlementFees)
+    expectedPayout = int(expectedValue - expectedSettlementFees)
 
     assert universe.getOpenInterestInAttoCash() == 0
 
@@ -168,7 +168,7 @@ def test_redeem_shares_in_scalar_market(kitchenSinkFixture, universe, cash, scal
     noShareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(NO))
     expectedValue = 1 * market.getNumTicks()
     expectedSettlementFees = expectedValue * 0.02
-    expectedPayout = long(expectedValue - expectedSettlementFees)
+    expectedPayout = int(expectedValue - expectedSettlementFees)
 
     assert universe.getOpenInterestInAttoCash() == 0
 
@@ -229,14 +229,14 @@ def test_redeem_shares_in_multiple_markets(kitchenSinkFixture, universe, cash, m
     # Get scalar LONG shares with a1
     expectedValue = 1 * scalarMarket.getNumTicks()
     expectedSettlementFees = expectedValue * 0.02
-    expectedPayout = long(expectedValue - expectedSettlementFees) * 3 / 4
-    acquireLongShares(kitchenSinkFixture, cash, scalarMarket, YES, 1, claimTradingProceeds.address, sender = tester.k1)
+    expectedPayout = int(expectedValue - expectedSettlementFees) * 3 / 4
+    acquireint(kitchenSinkFixture, cash, scalarMarket, YES, 1, claimTradingProceeds.address, sender = tester.k1)
     finalizeMarket(kitchenSinkFixture, scalarMarket, [0, 10**5, 3*10**5])
 
     # get YES shares with a1
     expectedValue = 1 * market.getNumTicks()
     expectedSettlementFees = expectedValue * 0.02
-    expectedPayout += long(expectedValue - expectedSettlementFees)
+    expectedPayout += int(expectedValue - expectedSettlementFees)
     acquireLongShares(kitchenSinkFixture, cash, market, YES, 1, claimTradingProceeds.address, sender = tester.k1)
     finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**2])
 

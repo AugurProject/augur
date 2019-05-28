@@ -235,5 +235,5 @@ def augur(localFixture, kitchenSinkSnapshot):
 
 def createOrder(orderHash, key=tester.k0):
     key = normalize_key(key)
-    v, r, s = ecsign(sha3("\x19Ethereum Signed Message:\n32" + orderHash), key)
+    v, r, s = ecsign(sha3(b"\x19Ethereum Signed Message:\n32" + orderHash), key)
     return v, zpad(bytearray_to_bytestr(int_to_32bytearray(r)), 32), zpad(bytearray_to_bytestr(int_to_32bytearray(s)), 32)

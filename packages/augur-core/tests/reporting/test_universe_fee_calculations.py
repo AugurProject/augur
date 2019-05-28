@@ -24,7 +24,7 @@ ONE = 10 ** 18
 
     # Decrease
     (1, 10, 10 * ONE, 9.1 * ONE),
-    (2, 10, 10 * ONE, 9200000000000000000L), # Python rounding requires this be directly specified
+    (2, 10, 10 * ONE, 9200000000000000000), # Python rounding requires this be directly specified
     (4, 10, 10 * ONE, 9.4 * ONE),
     (8, 10, 10 * ONE, 9.8 * ONE),
     (9, 10, 10 * ONE, 9.9 * ONE),

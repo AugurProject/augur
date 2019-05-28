@@ -191,7 +191,7 @@ class ContractsFixture:
 
     def __init__(self):
         tester.GASPRICE = 0
-        tester.STARTGAS = long(6.7 * 10**7)
+        tester.STARTGAS = int(6.7 * 10**7)
         config_metropolis['GASLIMIT_ADJMAX_FACTOR'] = .000000000001
         config_metropolis['GENESIS_GAS_LIMIT'] = 2**60
         config_metropolis['MIN_GAS_LIMIT'] = 2**60
@@ -264,7 +264,7 @@ class ContractsFixture:
         # abstract contracts have a 0-length array for bytecode
         if len(compiledCode) == 0:
             if ("libraries" in relativeFilePath or lookupKey.startswith("I") or lookupKey.startswith("Base") or lookupKey.startswith("DS")):
-                pass#print "Skipping upload of " + lookupKey + " because it had no bytecode (likely a abstract class/interface)."
+                pass#print("Skipping upload of " + lookupKey + " because it had no bytecode (likely a abstract class/interface).")
             else:
                 raise Exception("Contract: " + lookupKey + " has no bytecode, but this is not expected. It probably doesn't implement all its abstract methods")
             return None
@@ -281,7 +281,7 @@ class ContractsFixture:
 
     def applySignature(self, signatureName, address):
         assert address
-        if type(address) is long:
+        if type(address) is int:
             address = longToHexString(address)
         translator = ContractTranslator(ContractsFixture.signatures[signatureName])
         contract = ABIContract(self.chain, translator, address)
@@ -459,7 +459,7 @@ class ContractsFixture:
     def createReasonableYesNoMarket(self, universe, sender=tester.k0, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
         return self.createYesNoMarket(
             universe = universe,
-            endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
+            endTime = int(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 4,
             designatedReporterAddress = tester.a0,
@@ -472,7 +472,7 @@ class ContractsFixture:
         return self.createCategoricalMarket(
             universe = universe,
             numOutcomes = numOutcomes,
-            endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
+            endTime = int(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 0,
             designatedReporterAddress = tester.a0,
@@ -481,7 +481,7 @@ class ContractsFixture:
     def createReasonableScalarMarket(self, universe, maxPrice, minPrice, numTicks, sender=tester.k0):
         return self.createScalarMarket(
             universe = universe,
-            endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
+            endTime = int(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 0,
             maxPrice= maxPrice,
@@ -537,7 +537,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     yesNoMarket = fixture.createReasonableYesNoMarket(universe)
     startingGas = fixture.chain.head_state.gas_used
     categoricalMarket = fixture.createReasonableCategoricalMarket(universe, 3)
-    print 'Gas Used: %s' % (fixture.chain.head_state.gas_used - startingGas)
+    print('Gas Used: {}'.format(fixture.chain.head_state.gas_used - startingGas))
     scalarMarket = fixture.createReasonableScalarMarket(universe, 30, -10, 400000)
     fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
     snapshot = fixture.createSnapshot()
