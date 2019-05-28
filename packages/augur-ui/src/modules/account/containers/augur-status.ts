@@ -4,7 +4,7 @@ import { selectBlockInfoData } from "modules/block-info/selectors/block-info-dat
 import AugurStatus from "modules/account/components/augur-status";
 
 const mapStateToProps = (state: any) => ({
-  syncingInfo: selectBlockInfoData(state)
+  syncingInfo: selectBlockInfoData(state),
 });
 
 export default connect(mapStateToProps)(AugurStatus);

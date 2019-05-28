@@ -1,6 +1,12 @@
 import { ReactNode, MouseEvent } from "react";
 import { BUY, SELL } from "modules/common-elements/constants";
 
+export enum SizeTypes {
+  SMALL = "small",
+  NORMAL = "normal",
+  LARGE = "large",
+}
+
 export interface DateFormattedObject {
   value: Date;
   simpleDate: string;
@@ -150,7 +156,7 @@ export interface Market {
   id: string;
   description: string;
   reportingState: string;
-  endTime: number;
+  endTime: DateFormattedObject;
   marketStatus: string;
   disputeInfo?: DisputeInfo;
   myPositionsSummary?: MyPositionsSummary;
@@ -167,7 +173,7 @@ export interface Notification {
   buttonLabel: string;
   buttonAction: ButtonActionType;
   Template: ReactNode;
-  market: Market | null;
+  market: Market;
   markets: Array<string>;
   claimReportingFees?: object;
   totalProceeds?: number;

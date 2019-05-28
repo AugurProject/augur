@@ -9,23 +9,23 @@ export const selectOutcomeLastPrice = (marketOutcomeData: any, outcomeId: any) =
 
 export const selectCoreStats = createSelector(
   selectAccountFunds,
-  (accountFunds: any) => 
+  (accountFunds: any) =>
     ({
       availableFunds: {
         label: "Available Funds",
-        value: formatEther(accountFunds.totalAvailableTradingBalance).formatted
+        value: formatEther(accountFunds.totalAvailableTradingBalance, {}).formatted,
       },
       frozenFunds: {
         label: "Frozen Funds",
-        value: formatEther(accountFunds.totalFrozenFunds).formatted
+        value: formatEther(accountFunds.totalFrozenFunds, {}).formatted,
       },
       totalFunds: {
         label: "Total Funds",
-        value: formatEther(accountFunds.totalAccountValue).formatted
+        value: formatEther(accountFunds.totalAccountValue, {}).formatted,
       },
       realizedPL: {
         label: "Realized P/L",
-        value: "0" // need to get realized PnL from contract log emitted
-      }
-    })
+        value: "0", // need to get realized PnL from contract log emitted
+      },
+    }),
 );

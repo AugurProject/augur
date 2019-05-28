@@ -4,7 +4,7 @@ import logError from "utils/log-error";
 
 export const updatePlatformTimeframeData = (
   options: any = {},
-  callback: any = logError
+  callback: any = logError,
 ) => (dispatch: Function, getState: Function) => {
   const { universe } = getState();
   if (universe.id == null) return callback(null);
@@ -14,16 +14,16 @@ export const updatePlatformTimeframeData = (
     {
       universe: universe.id,
       startTime: options.startTime || null,
-      endTime: null
+      endTime: null,
     },
     (err, result) => {
       if (err) return callback(err);
 
       dispatch(
         updateUniverse({
-          result
-        })
+          result,
+        } as any),
       );
-    }
+    },
   );
 };

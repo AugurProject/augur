@@ -13,16 +13,16 @@ const mapStateToProps = (state: any) => {
   const openInterest = formatAttoEth(value, { decimals: 4 });
   return {
     openInterest,
-    currentAugurTimestamp: selectCurrentTimestampInSeconds(state)
+    currentAugurTimestamp: selectCurrentTimestampInSeconds(state),
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  updatePlatformTimeframeData: startTime =>
-    dispatch(updatePlatformTimeframeData({ startTime }))
+const mapDispatchToProps = (dispatch) => ({
+  updatePlatformTimeframeData: (startTime) =>
+    dispatch(updatePlatformTimeframeData({ startTime })),
 });
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Activity);

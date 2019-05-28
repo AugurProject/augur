@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import Highcharts from "highcharts/highstock";
 import { createBigNumber } from "utils/create-big-number";
-import Styles from "modules/account/components/overview-chart.styles";
+import Styles from "modules/account/components/overview-chart.styles.less";
 import { UserTimeRangeData } from "modules/account/components/overview-chart";
 import { isEqual } from "lodash";
 import { formatEther } from "utils/format-number";
@@ -30,21 +30,21 @@ export default class ProfitLossChart extends Component<
   state: ChartState = {
     options: {
       title: {
-        text: ""
+        text: "",
       },
       chart: {
         type: "areaspline",
-        height: 100
+        height: 100,
       },
       credits: {
-        enabled: false
+        enabled: false,
       },
       plotOptions: {
         areaspline: {
           threshold: null,
           color: "#09CFE1",
           dataGrouping: {
-            units: [["hour", [1]], ["day", [1]]]
+            units: [["hour", [1]], ["day", [1]]],
           },
           marker: false,
           // remove these values when migrating to styleMode
@@ -53,11 +53,11 @@ export default class ProfitLossChart extends Component<
               x1: 0,
               y1: 0,
               x2: 0,
-              y2: 1
+              y2: 1,
             },
-            stops: [[0, "#09CFE1"], [1, "#211A32"]]
-          }
-        }
+            stops: [[0, "#09CFE1"], [1, "#211A32"]],
+          },
+        },
       },
       scrollbar: { enabled: false },
       navigator: { enabled: false },
@@ -70,13 +70,16 @@ export default class ProfitLossChart extends Component<
           style: Styles.Labels,
           format: "{value:%b %d}",
           formatter() {
+            // @ts-ignore
             if (this.isLast) return "Today";
+            // @ts-ignore
             if (this.isFirst) {
+              // @ts-ignore
               return Highcharts.dateFormat("%d %b %Y", this.value);
             }
-          }
+          },
         },
-        crosshair: false
+        crosshair: false,
       },
       yAxis: {
         opposite: false,
@@ -87,76 +90,78 @@ export default class ProfitLossChart extends Component<
         labels: {
           format: "{value:.4f} <span class='eth-label'>ETH</span>",
           formatter() {
+            // @ts-ignore
             if (this.value === 0) return "0 <span class='eth-label'>ETH</span>";
+            // @ts-ignore
             return this.axis.defaultLabelFormatter.call(this);
           },
           align: "left",
           x: 0,
-          y: -2
+          y: -2,
         },
         resize: {
-          enabled: false
+          enabled: false,
         },
-        crosshair: false
+        crosshair: false,
       },
       tooltip: { enabled: false },
       rangeSelector: {
-        enabled: false
-      }
-    }
+        enabled: false,
+      },
+    },
   };
 
+  public container: any = null;
+  public chart: any = null;
+
   componentDidMount() {
-    const { data } = this.props;
+    const { data }: any = this.props;
     this.buidOptions(data);
   }
 
-  componentWillUpdate(nextProps: ChartProps) {
+  componentWillUpdate(nextProps: ChartProps | any) {
     if (!isEqual(this.props.data, nextProps.data)) {
       this.buidOptions(nextProps.data);
     }
   }
 
   componentWillUnmount() {
-    if (this.chart) {
+    if (this.chart && this.chart) {
       this.chart.destroy();
       this.chart = null;
     }
   }
 
-  container: HTMLDivElement | null = null;
-  chart: Object | null = null;
-
-  calculateTickInterval = (data: UserTimeRangeData) => {
-    const values = data.map(d => d[1]);
+  calculateTickInterval = (data: Array<UserTimeRangeData>) => {
+    const values = data.map((d) => d[1]);
 
     const bnMin = createBigNumber(
       values.reduce(
         (a, b) => (createBigNumber(a).lte(createBigNumber(b)) ? a : b),
-        0
-      )
+        0,
+      ),
     );
     const bnMax = createBigNumber(
       values.reduce(
         (a, b) => (createBigNumber(a).gte(createBigNumber(b)) ? a : b),
-        0
-      )
+        0,
+      ),
     );
 
     const max = formatEther(bnMax, { decimalsRounded: 4 }).formattedValue;
     const min = formatEther(bnMin, { decimalsRounded: 4 }).formattedValue;
     const tickInterval = bnMax.abs().gt(bnMin.abs())
-      ? formatEther(bnMax.abs()).formattedValue
-      : formatEther(bnMin.abs()).formattedValue;
+      ? formatEther(bnMax.abs(), {}).formattedValue
+      : formatEther(bnMin.abs(), {}).formattedValue;
 
     return {
       tickInterval,
       max,
-      min
+      min,
     };
-  };
+  }
 
-  buidOptions(data: UserTimeRangeData) {
+  buidOptions(data: Array<UserTimeRangeData>) {
     const { options } = this.state;
     const { width } = this.props;
 
@@ -165,30 +170,30 @@ export default class ProfitLossChart extends Component<
 
     options.chart = {
       ...options.chart,
-      width: width - 10
+      width: width - 10,
     };
 
     if (Array.isArray(options.xAxis)) {
       options.xAxis[0] = {
         ...options.xAxis[0],
-        tickPositions
+        tickPositions,
       };
     } else {
       options.xAxis = {
         ...options.xAxis,
-        tickPositions
+        tickPositions,
       };
     }
 
     if (Array.isArray(options.yAxis)) {
       options.yAxis[0] = {
         ...options.yAxis[0],
-        ...intervalInfo
+        ...intervalInfo,
       };
     } else {
       options.yAxis = {
         ...options.yAxis,
-        ...intervalInfo
+        ...intervalInfo,
       };
     }
 
@@ -196,8 +201,8 @@ export default class ProfitLossChart extends Component<
       {
         type: "areaspline",
         lineWidth: HIGHLIGHTED_LINE_WIDTH,
-        data
-      }
+        data,
+      },
     ];
 
     const newOptions = Object.assign(options, { series });
@@ -212,7 +217,7 @@ export default class ProfitLossChart extends Component<
     return (
       <div
         className={Styles.ProfitLossChart}
-        ref={container => {
+        ref={(container) => {
           this.container = container;
         }}
       />

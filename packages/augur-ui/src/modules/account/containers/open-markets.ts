@@ -12,10 +12,10 @@ import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/selec
 const mapStateToProps = (state: any) => {
   const positions = getLoginAccountPositions();
   const totalPercentage = getSelectLoginAccountTotals();
-  const timestamps = getMarketsPositionsRecentlyTraded(state);
+  const timestamps = getMarketsPositionsRecentlyTraded();
 
   const markets = getPositionsMarkets(timestamps, positions).sort(
-    (a: any, b: any) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
+    (a: any, b: any) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp,
   );
 
   const marketsObj = markets.reduce((obj: any, market: any) => {
@@ -24,14 +24,14 @@ const mapStateToProps = (state: any) => {
   }, {});
 
   const marketsPick = markets.map((
-    market: any // when these things change then component will re-render/re-sort
+    market: any, // when these things change then component will re-render/re-sort
   ) => pick(market, ["id", "description", "reportingState", "recentlyTraded"]));
 
   return {
     isLogged: state.authStatus.isLogged,
     markets: marketsPick,
     marketsObj,
-    totalPercentage
+    totalPercentage,
   };
 };
 
@@ -49,11 +49,11 @@ const getPositionsMarkets = memoize(
             {
               ...m,
               userPositions: pos,
-              recentlyTraded: marketsPositionsRecentlyTraded[m.id]
-            }
+              recentlyTraded: marketsPositionsRecentlyTraded[m.id],
+            },
           ];
     }, []),
-  { max: 1 }
+  { max: 1 },
 );
 
 export default OpenMarketsContainer;

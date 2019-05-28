@@ -9,18 +9,18 @@ const mapStateToProps = (state: any) => {
 
   return {
     universe: state.universe.id,
-    currentAugurTimestamp
+    currentAugurTimestamp,
   };
 };
 
 const mapDispatchToProps = (dispatch: Function) => ({
   getProfitLoss: (
-    universe: String,
+    universe: string,
     startTime: number,
     endTime: number,
     periodInterval: number,
-    marketId: String,
-    callback: Function
+    marketId: string,
+    callback: Function,
   ) =>
     dispatch(
       getProfitLoss({
@@ -29,14 +29,14 @@ const mapDispatchToProps = (dispatch: Function) => ({
         endTime,
         periodInterval,
         marketId,
-        callback
-      })
-    )
+        callback,
+      }),
+    ),
 });
 
 const OverviewChartContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(OverviewChart);
 
 export default OverviewChartContainer;

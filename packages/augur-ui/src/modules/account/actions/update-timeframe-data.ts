@@ -5,7 +5,7 @@ import { TimeframeData, LoginAccount } from "modules/types";
 
 export const updateTimeframeData = (
   options: any = {},
-  callback: any = logError
+  callback: any = logError,
 ) => (dispatch: Function, getState: Function) => {
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
@@ -17,7 +17,7 @@ export const updateTimeframeData = (
       account: loginAccount.address,
       universe: universe.id,
       startTime: options.startTime || null,
-      endTime: null
+      endTime: null,
     },
     (err, timeframeData: TimeframeData) => {
       if (err) return callback(err);

@@ -11,7 +11,7 @@ import {
   MODAL_CLAIM_PROCEEDS,
   MODAL_CLAIM_FEES,
   MODAL_UNSIGNED_ORDERS,
-  MODAL_OPEN_ORDERS
+  MODAL_OPEN_ORDERS,
 } from "modules/common-elements/constants";
 
 // TODO create state Interface
@@ -21,7 +21,7 @@ const mapStateToProps = (state: any) => {
   return {
     notifications,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
-    reportingWindowStatsEndTime: state.reportingWindowStats.endTime
+    reportingWindowStatsEndTime: state.reportingWindowStats.endTime,
   };
 };
 
@@ -37,8 +37,8 @@ const mapDispatchToProps = (dispatch: Function) => ({
       updateModal({
         type: MODAL_CLAIM_FEES,
         cb,
-        ...reportingFees
-      })
+        ...reportingFees,
+      }),
     ),
   sellCompleteSetsModal: (marketId: any, numCompleteSets: any, cb: Function) =>
     dispatch(
@@ -46,32 +46,32 @@ const mapDispatchToProps = (dispatch: Function) => ({
         type: MODAL_SELL_COMPLETE_SETS,
         marketId,
         numCompleteSets,
-        cb
-      })
+        cb,
+      }),
     ),
   unsignedOrdersModal: (marketId: string, cb: Function) =>
     dispatch(
       updateModal({
         type: MODAL_UNSIGNED_ORDERS,
         marketId,
-        cb
-      })
+        cb,
+      }),
     ),
   openOrdersModal: (marketId: string, cb: Function) =>
     dispatch(
       updateModal({
         type: MODAL_OPEN_ORDERS,
         marketId,
-        cb
-      })
-    )
+        cb,
+      }),
+    ),
 });
 
 const NotificationsContainer = withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(Notifications)
+    mapDispatchToProps,
+  )(Notifications),
 );
 
 export default NotificationsContainer;

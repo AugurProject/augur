@@ -10,7 +10,7 @@ const mapStateToProps = (state: any) => {
   return {
     newNotifications:
       notifications &&
-      notifications.filter((notification: any) => notification.isNew).length > 0
+      notifications.filter((notification: any) => notification.isNew).length > 0,
   };
 };
 

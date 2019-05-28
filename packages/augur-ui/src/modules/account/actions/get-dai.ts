@@ -13,7 +13,7 @@ export default function(callback = logError) {
           id,
           status,
           timestamp: getTime(getState())
-        })
+        }),
       );
     // TODO: this will change when pending tx exists
     await getDai().catch((err: Error) => {
