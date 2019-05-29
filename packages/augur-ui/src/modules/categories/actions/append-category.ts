@@ -27,7 +27,7 @@ function makeUICategory(
 }
 
 export function appendCategoryIfNew(
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   categories: Array<any>,
   marketWithMaybeNewCategory: any
 ) {

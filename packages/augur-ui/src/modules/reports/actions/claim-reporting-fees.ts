@@ -13,6 +13,9 @@ import {
   removePendingData
 } from "modules/pending-queue/actions/pending-queue-management";
 import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const CLAIM_FEES_GAS_COST = 3000000;
 export const CLAIM_WINDOW_GAS_COST = 210000;
@@ -21,9 +24,9 @@ export const FEE_WINDOW_BATCH_SIZE = 10;
 
 export function claimReportingFeesForkedMarket(
   options: any,
-  callback: Function = logError
+  callback: NodeStyleCallback = logError
 ) {
-  return (dispatch: Function, getState: () => AppState) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
     const payload = {
       ...options,
@@ -41,8 +44,8 @@ export function claimReportingFeesForkedMarket(
   };
 }
 
-export function redeemStake(options: any, callback: Function = logError) {
-  return (dispatch: Function, getState: () => AppState) => {
+export function redeemStake(options: any, callback: NodeStyleCallback = logError) {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount, universe } = getState();
     const universeId = universe.id || UNIVERSE_ID;
     const gasPrice = getGasPrice(getState());

@@ -8,11 +8,14 @@ import {
   updateOpenMarkets
 } from "modules/reports/actions/update-markets-in-reporting-state";
 import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const loadReporting = (
   marketIdsParam: any,
-  callback: Function = logError
-) => (dispatch: Function, getState: () => AppState) => {
+  callback: NodeStyleCallback = logError
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   const designatedReportingParams = {
     universe: universe.id,

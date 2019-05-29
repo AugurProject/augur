@@ -15,7 +15,7 @@ const mapStateToProps = (state: AppState) => ({
   augurNodeNetworkId: state.connection.augurNodeNetworkId
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   openZeroExInstant: () => {
     augur.api.Universe.getReputationToken(

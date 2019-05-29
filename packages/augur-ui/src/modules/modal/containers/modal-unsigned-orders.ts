@@ -29,7 +29,7 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   startOrderSending: (options: Object) => dispatch(startOrderSending(options)),
   clearMarketLiquidityOrders: (marketId: string) =>
