@@ -1,15 +1,16 @@
-import * as Sync from "./Sync";
 import * as HTTPEndpoint from "./HTTPEndpoint";
+import * as Sync from "./Sync";
 import * as WebsocketEndpoint from "./WebsocketEndpoint";
 import { API } from "./api/API";
+import { Addresses } from "@augurproject/artifacts";
 import { Augur } from "../Augur";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { DB } from "./db/DB";
+import { EndpointSettings } from "./api/types";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
+import { EventEmitter } from "events";
 import { JsonRpcProvider } from "ethers/providers";
 import { PouchDBFactory } from "./db/AbstractDB";
-import { Addresses } from "@augurproject/artifacts";
-import { EndpointSettings } from "./api/types";
 
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");
@@ -84,7 +85,7 @@ export async function run() {
   Sync.start();
   console.log("Starting websocket and http endpoints");
   HTTPEndpoint.run(api, endpointSettings);
-  await WebsocketEndpoint.run(api, endpointSettings);
+  await WebsocketEndpoint.run(api, endpointSettings, new EventEmitter());
 }
 
 run();
