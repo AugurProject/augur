@@ -3,7 +3,7 @@ import WebSocket from "isomorphic-ws";
 import WebSocketAsPromised from "websocket-as-promised";
 
 export class WebsocketConnector extends Connector {
-  private socket: WebSocketAsPromised;
+  public socket: WebSocketAsPromised;
   private callback: Callback;
 
   constructor(public readonly endpoint: string) {
@@ -27,7 +27,7 @@ export class WebsocketConnector extends Connector {
   }
 
   public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {
-    return async (params: P): Promise<any> => {
+    return async (params: P): Promise<R> => {
       return this.socket.sendRequest({ method: f.name, params, jsonrpc: "2.0" });
     };
   }
