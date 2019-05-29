@@ -3,7 +3,7 @@ import { isEmpty } from "lodash";
 
 import { createBigNumber } from "utils/create-big-number";
 
-import MarketOutcomeOrders from "modules/market-charts/components/market-outcome--orders/market-outcome--orders";
+import OrderBook from "modules/market-charts/components/order-book/order-book";
 
 import orderAndAssignCumulativeShares from "modules/markets/helpers/order-and-assign-cumulative-shares";
 import orderForMarketDepth from "modules/markets/helpers/order-for-market-depth";
@@ -49,4 +49,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(MarketOutcomeOrders);
+export default connect(mapStateToProps)(OrderBook);
