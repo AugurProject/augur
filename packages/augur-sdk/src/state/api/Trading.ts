@@ -4,7 +4,6 @@ import * as _ from "lodash";
 import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertDisplayPriceToOnChainPrice } from "../../index";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
-import { ethers } from "ethers";
 import { OrderEventLog, OrderEventAddressValue, OrderEventUint256Value, ORDER_EVENT_CREATOR, ORDER_EVENT_FILLER, ORDER_EVENT_OUTCOME, ORDER_EVENT_AMOUNT, ORDER_EVENT_TIMESTAMP } from "../logs/types";
 
 import * as t from "io-ts";
@@ -183,7 +182,7 @@ export class Trading {
   }
 
   @Getter("GetOrdersParams")
-  public static async getOrders<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Trading.GetOrdersParams>): Promise<Orders> {
+  public static async getOrders(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetOrdersParams>): Promise<Orders> {
     if (!params.universe && !params.marketId) {
       throw new Error("'getOrders' requires a 'universe' or 'marketId' param be provided");
     }
@@ -275,7 +274,7 @@ export class Trading {
   }
 
   @Getter("GetBetterWorseOrdersParams")
-  public static async getBetterWorseOrders<TBigNumber>(augur: Augur<ethers.utils.BigNumber>, db: DB<TBigNumber>, params: t.TypeOf<typeof Trading.GetBetterWorseOrdersParams>): Promise<BetterWorseResult> {
+  public static async getBetterWorseOrders(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetBetterWorseOrdersParams>): Promise<BetterWorseResult> {
     const request = {
       selector: {
         market: params.marketId,

@@ -7,7 +7,7 @@ import {
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { API } from "@augurproject/sdk/build/state/api/API";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { MarketTradingHistory } from "@augurproject/sdk/build/state/api/Trading";
+import { MarketTradingHistory, Orders } from "@augurproject/sdk/build/state/api/Trading";
 import { BigNumber } from "bignumber.js";
 import { stringTo32ByteHex } from "../../../libs/Utils";
 
@@ -83,14 +83,14 @@ test("State API :: Trading :: getOrders", async () => {
   const market = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
 
   // Place an order
-  const bid = new ethers.utils.BigNumber(0);
-  const outcome = new ethers.utils.BigNumber(0);
-  const numShares = new ethers.utils.BigNumber(10000000000000);
-  const price = new ethers.utils.BigNumber(22);
+  const bid = new BigNumber(0);
+  const outcome = new BigNumber(0);
+  const numShares = new BigNumber(10000000000000);
+  const price = new BigNumber(22);
   await john.placeOrder(market.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 
   // Take half the order using the same account
-  const cost = numShares.mul(78).div(2);
+  const cost = numShares.multipliedBy(78).div(2);
   const orderId = await john.getBestOrderId(bid, market.address, outcome);
   await john.fillOrder(orderId, cost, numShares.div(2), "42");
 
@@ -108,7 +108,7 @@ test("State API :: Trading :: getOrders", async () => {
   await expect(order.sharesEscrowed).toEqual("0");
 
   // Change order Price
-  const newPrice = new ethers.utils.BigNumber(25);
+  const newPrice = new BigNumber(25);
   await john.setOrderPrice(orderId, newPrice, stringTo32ByteHex(""), stringTo32ByteHex(""));
 
   await db.sync(john.augur, mock.constants.chunkSize, 0);
@@ -157,7 +157,7 @@ test("State API :: Trading :: getOrders", async () => {
 
   // Move time forward and place a new order
   const initialTimestamp = await john.getTimestamp();
-  const newTimestamp = initialTimestamp.add(24 * 60 * 60);
+  const newTimestamp = initialTimestamp.plus(24 * 60 * 60);
   await john.setTimestamp(newTimestamp);
 
   await john.placeOrder(market.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
@@ -168,7 +168,7 @@ test("State API :: Trading :: getOrders", async () => {
   // Get orders for the market after the initial time
   orders = await api.route("getOrders", {
     marketId: market.address,
-    latestCreationTime: initialTimestamp.add(1).toNumber()
+    latestCreationTime: initialTimestamp.plus(1).toNumber()
   });
 
   order = orders[market.address][0]["0"][orderId];
@@ -177,7 +177,7 @@ test("State API :: Trading :: getOrders", async () => {
   // Get order for the market before the new time
   orders = await api.route("getOrders", {
     marketId: market.address,
-    earliestCreationTime: initialTimestamp.add(1).toNumber()
+    earliestCreationTime: initialTimestamp.plus(1).toNumber()
   });
 
   order = orders[market.address][0]["0"][newOrderId];
@@ -192,11 +192,11 @@ test("State API :: Trading :: getBetterWorseOrders", async () => {
   const market = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
 
   // Place orders of varying price
-  const bid = new ethers.utils.BigNumber(0);
-  const outcome = new ethers.utils.BigNumber(0);
-  const numShares = new ethers.utils.BigNumber(10000000000000);
-  const lowPrice = new ethers.utils.BigNumber(10);
-  const highPrice = new ethers.utils.BigNumber(20);
+  const bid = new BigNumber(0);
+  const outcome = new BigNumber(0);
+  const numShares = new BigNumber(10000000000000);
+  const lowPrice = new BigNumber(10);
+  const highPrice = new BigNumber(20);
   await john.placeOrder(market.address, bid, numShares, lowPrice, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
   const lowOrderId = await john.getBestOrderId(bid, market.address, outcome);
   await john.placeOrder(market.address, bid, numShares, highPrice, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));

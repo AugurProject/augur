@@ -29,6 +29,7 @@ export class Controller {
       this.defaultStartSyncBlockNumber,
       this.trackedUsers,
       this.augur.genericEventNames,
+      this.augur.customEvents,
       this.augur.userSpecificEvents,
       this.pouchDBFactory,
       this.blockAndLogStreamerListener,

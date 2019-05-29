@@ -58,7 +58,7 @@ export class DB {
    * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
    * @returns {Promise<DB>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB<TBigNumber>> {
+  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     const dbController = new DB(pouchDBFactory);
     await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, customEvents, userSpecificEvents, blockAndLogStreamerListener);
     return dbController;
@@ -112,7 +112,7 @@ export class DB {
     }
 
     for (let customEvent of customEvents) {
-      new SyncableDB<TBigNumber>(this, networkId, customEvent.eventName ? customEvent.eventName: customEvent.name, this.getDatabaseName(customEvent.name), customEvent.idFields);
+      new SyncableDB(this, networkId, customEvent.eventName ? customEvent.eventName: customEvent.name, this.getDatabaseName(customEvent.name), customEvent.idFields);
     }
 
     for (let trackedUser of trackedUsers) {
