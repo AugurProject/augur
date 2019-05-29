@@ -16,7 +16,23 @@ export interface EthersProvider {
     listAccounts(): Promise<string[]>;
 }
 
-export type OnSentCallback = (data: any) => void;
+export enum TransactionStatus {
+    AWAITING_SIGNING,
+    PENDING,
+    SUCCESS,
+    FAILURE
+}
+
+export type TransactionStatusCallback = (transaction: TransactionMetadata, status: TransactionStatus, hash?: string) => void;
+
+export interface TransactionMetadataParams {
+    [paramName: string]: any;
+}
+
+export interface TransactionMetadata {
+    name: string;
+    params: TransactionMetadataParams;
+}
 
 export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     public readonly provider: EthersProvider;
@@ -25,7 +41,8 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
 
     private readonly abiCoder: ethers.utils.AbiCoder;
 
-    private onSentCallbacks: { [key: string]: OnSentCallback } = {};
+    private transactionDataMetaData: { [data: string]: TransactionMetadata } = {};
+    private transactionStatusCallbacks: { [key: string]: TransactionStatusCallback } = {};
 
     public constructor(provider: EthersProvider, signer?: EthersSigner, address?: string) {
         this.provider = provider;
@@ -57,7 +74,20 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
             }
             return param;
         });
-        return this.abiCoder.encode(abiFunction.inputs, ethersParams).substr(2);
+        const txData = this.abiCoder.encode(abiFunction.inputs, ethersParams);
+        this.storeTxMetadata(abiFunction, parameters, txData);
+        return txData.substr(2);
+    }
+
+    public storeTxMetadata(abiFunction: AbiFunction, parameters: Array<any>, txData: string): void {
+        const txParams = _.reduce(abiFunction.inputs, (result, input, index) => {
+            result[input.name] = parameters[index];
+            return result;
+        }, {} as {[paramName: string]: any});
+        this.transactionDataMetaData[txData] = {
+            name: abiFunction.name,
+            params: txParams
+        };
     }
 
     public decodeParams(abiParameters: Array<AbiParameter>, encoded: string) {
@@ -87,21 +117,21 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
         return <string>this.address;
     }
 
-    public registerOnSentCallback(key: string, callback: OnSentCallback): void {
-        this.onSentCallbacks[key] = callback;
+    public registerTransactionStatusCallback(key: string, callback: TransactionStatusCallback): void {
+        this.transactionStatusCallbacks[key] = callback;
     }
 
-    public deRegisterOnSentCallback(key: string): void {
-        delete this.onSentCallbacks[key];
+    public deRegisterTransactionStatusCallback(key: string): void {
+        delete this.transactionStatusCallbacks[key];
     }
 
-    public deRegisterAllOnSentCallbacks(): void {
-        Object.keys(this.onSentCallbacks).map((key) => this.deRegisterOnSentCallback(key));
+    public deRegisterAllTransactionStatusCallbacks(): void {
+        Object.keys(this.transactionStatusCallbacks).map((key) => this.deRegisterTransactionStatusCallback(key));
     }
 
-    public onSend(transaction: Transaction<BigNumber>, response: ethers.providers.TransactionResponse): void {
-        for (let callback of Object.values(this.onSentCallbacks)) {
-            callback(response);
+    public onTransactionStatusChanged(txMetadata: TransactionMetadata, status: TransactionStatus, hash?: string): void {
+        for (let callback of Object.values(this.transactionStatusCallbacks)) {
+            callback(txMetadata, status, hash);
         }
     }
 
@@ -111,7 +141,15 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
         // TODO: https://github.com/ethers-io/ethers.js/issues/321
         const tx = this.transactionToEthersTransaction(transaction);
         delete tx.from;
-        const receipt = await (await this.signer.sendTransaction(tx)).wait();
+        const txMetadataKey = `0x${transaction.data.substring(10)}`;
+        const txMetadata = this.transactionDataMetaData[txMetadataKey];
+        this.onTransactionStatusChanged(txMetadata, TransactionStatus.AWAITING_SIGNING);
+        const response = await this.signer.sendTransaction(tx);
+        this.onTransactionStatusChanged(txMetadata, TransactionStatus.PENDING, response.hash);
+        const receipt = await response.wait();
+        const status = receipt.status == 1 ? TransactionStatus.SUCCESS : TransactionStatus.FAILURE;
+        this.onTransactionStatusChanged(txMetadata, status, response.hash);
+        delete this.transactionDataMetaData[txMetadataKey];
         // ethers has `status` on the receipt as optional, even though it isn't and never will be undefined if using a modern network (which this is designed for)
         return <TransactionReceipt>receipt
     }

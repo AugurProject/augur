@@ -4,7 +4,7 @@ import { Contracts } from "./api/Contracts";
 import { Trade } from "./api/Trade";
 import { ContractInterfaces } from "@augurproject/core";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
-import { OnSentCallback, ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { TransactionStatusCallback, ContractDependenciesEthers } from "contract-dependencies-ethers";
 
 export interface UserSpecificEvent {
   name: string;
@@ -102,15 +102,15 @@ export class Augur<TProvider extends Provider = Provider> {
     return new ContractInterfaces.Orders(this.dependencies, this.addresses.Orders);
   }
 
-  public registerOnSentCallback(key: string, callback: OnSentCallback): void {
-    this.contractDepen
+  public registerTransactionStatusCallback(key: string, callback: TransactionStatusCallback): void {
+    this.dependencies.registerTransactionStatusCallback(key, callback);
+}
+
+  public deRegisterTransactionStatusCallback(key: string): void {
+    this.dependencies.deRegisterTransactionStatusCallback(key);
   }
 
-  public deRegisterOnSentCallback(key: string): void {
-      delete this.onSentCallbacks[key];
-  }
-
-  public deRegisterAllOnSentCallbacks(): void {
-      Object.keys(this.onSentCallbacks).map((key) => this.deRegisterOnSentCallback(key));
+  public deRegisterAllTransactionStatusCallbacks(): void {
+    this.dependencies.deRegisterAllTransactionStatusCallbacks();
   }
 }
