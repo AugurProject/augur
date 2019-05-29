@@ -144,14 +144,23 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
         const txMetadataKey = `0x${transaction.data.substring(10)}`;
         const txMetadata = this.transactionDataMetaData[txMetadataKey];
         this.onTransactionStatusChanged(txMetadata, TransactionStatus.AWAITING_SIGNING);
-        const response = await this.signer.sendTransaction(tx);
-        this.onTransactionStatusChanged(txMetadata, TransactionStatus.PENDING, response.hash);
-        const receipt = await response.wait();
-        const status = receipt.status == 1 ? TransactionStatus.SUCCESS : TransactionStatus.FAILURE;
-        this.onTransactionStatusChanged(txMetadata, status, response.hash);
-        delete this.transactionDataMetaData[txMetadataKey];
-        // ethers has `status` on the receipt as optional, even though it isn't and never will be undefined if using a modern network (which this is designed for)
-        return <TransactionReceipt>receipt
+        let hash = undefined;
+        try {
+            const response = await this.signer.sendTransaction(tx);
+            hash = response.hash;
+            this.onTransactionStatusChanged(txMetadata, TransactionStatus.PENDING, hash);
+            const receipt = await response.wait();
+            const status = receipt.status == 1 ? TransactionStatus.SUCCESS : TransactionStatus.FAILURE;
+            this.onTransactionStatusChanged(txMetadata, status, hash);
+            // ethers has `status` on the receipt as optional, even though it isn't and never will be undefined if using a modern network (which this is designed for)
+            return <TransactionReceipt>receipt;
+        } catch (e) {
+            this.onTransactionStatusChanged(txMetadata, TransactionStatus.FAILURE, hash);
+            throw e;
+        } finally {
+            delete this.transactionDataMetaData[txMetadataKey];
+        }
+        
     }
 
     public async estimateGas(transaction: Transaction<BigNumber>): Promise<BigNumber> {
