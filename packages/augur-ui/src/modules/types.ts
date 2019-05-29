@@ -106,16 +106,16 @@ export interface FormattedNumber {
 }
 
 export interface FormattedNumberOptions {
-  decimals: number;
-  decimalsRounded: number;
-  denomination: string;
-  roundUp: boolean;
-  roundDown: boolean;
-  positiveSign: boolean;
-  zeroStyled: boolean;
-  minimized: boolean;
-  blankZero: boolean;
-  bigUnitPostfix: boolean;
+  decimals?: number;
+  decimalsRounded?: number;
+  denomination?: string;
+  roundUp?: boolean;
+  roundDown?: boolean;
+  positiveSign?: boolean;
+  zeroStyled?: boolean;
+  minimized?: boolean;
+  blankZero?: boolean;
+  bigUnitPostfix?: boolean;
 }
 export interface ReportingWindowStats {
   startTime: string | null;
