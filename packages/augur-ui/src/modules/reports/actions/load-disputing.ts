@@ -6,10 +6,14 @@ import {
 } from "modules/reports/actions/update-markets-in-reporting-state";
 import async from "async";
 import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-info";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
-export const loadDisputing = (callback: Function = logError) => (
-  dispatch: Function,
-  getState: Function
+export const loadDisputing = (callback: NodeStyleCallback = logError) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const { universe } = getState();
   const args = {

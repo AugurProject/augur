@@ -16,19 +16,13 @@ import {
   SOLD,
   CLOSED,
   SHORT,
-  ZERO
+  ZERO,
 } from "modules/common-elements/constants";
 import { ViewTransactionDetailsButton } from "modules/common-elements/buttons";
 import { formatNumber } from "utils/format-number";
-import { FormattedNumber } from "modules/types";
+import { FormattedNumber, SizeTypes, DateFormattedObject } from "modules/types";
 
 const { REPORTING_STATE } = serviceConstants;
-
-enum SizeTypes {
-  SMALL = constants.SMALL,
-  NORMAL = constants.NORMAL,
-  LARGE = constants.LARGE
-}
 
 export interface MarketTypeProps {
   marketType: string;
@@ -171,7 +165,7 @@ export function formatExpandedValue(
   const testValue = createBigNumber(fullPrecision);
   const isGreaterThan = testValue.abs().gt(max);
   const isLessThan = testValue.abs().lt(min) && !testValue.eq(ZERO);
-  let postfix = isGreaterThan || isLessThan ? string.fromCodePoint(0x2026) : "";
+  let postfix = isGreaterThan || isLessThan ? String.fromCodePoint(0x2026) : "";
   let frontFacingLabel = isGreaterThan ? fullWithoutDecimals : roundedFormatted;
   const denominationLabel = showDenomination ? `${denomination}` : "";
 

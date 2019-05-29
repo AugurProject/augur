@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { selectMarket } from "modules/markets/selectors/market";
 import claimTradingProceeds, {
   CLAIM_SHARES_GAS_COST,
-  claimMultipleTradingProceeds
+  claimMultipleTradingProceeds,
 } from "modules/positions/actions/claim-trading-proceeds";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { createBigNumber } from "utils/create-big-number";
@@ -15,27 +15,31 @@ import { Proceeds } from "modules/modal/proceeds";
 import { constants } from "services/augurjs";
 import { ActionRowsProps } from "modules/modal/common";
 import { CLAIM_PROCEEDS } from "modules/common-elements/constants";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   pendingQueue: state.pendingQueue || [],
   gasCost: formatGasCostToEther(
     CLAIM_SHARES_GAS_COST,
     { decimalsRounded: 4 },
-    getGasPrice(state)
+    getGasPrice(state),
   ),
   accountShareBalances: state.accountShareBalances,
-  currentTimestamp: selectCurrentTimestampInSeconds(state)
+  currentTimestamp: selectCurrentTimestampInSeconds(state),
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  claimTradingProceeds: (marketId: string, callback: Function) =>
+  claimTradingProceeds: (marketId: string, callback: NodeStyleCallback) =>
     dispatch(claimTradingProceeds(marketId, callback)),
   claimMultipleTradingProceeds: (
     marketIds: Array<string>,
-    callback: Function
-  ) => dispatch(claimMultipleTradingProceeds(marketIds, callback))
+    callback: NodeStyleCallback,
+  ) => dispatch(claimMultipleTradingProceeds(marketIds, callback)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
@@ -43,7 +47,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const markets: Array<ActionRowsProps> = [];
   const marketIds: Array<string> = [];
   let totalProceeds: any = createBigNumber(0); // BigNumber @type required
-  marketIdsToTest.forEach(marketId => {
+  marketIdsToTest.forEach((marketId) => {
     const market = selectMarket(marketId);
     if (
       market &&
@@ -55,7 +59,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         canClaimProceeds(
           market.finalizationTime,
           market.outstandingReturns,
-          sP.currentTimestamp
+          sP.currentTimestamp,
         ) &&
         winningOutcomeShares.value > 0
       ) {
@@ -68,11 +72,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           properties: [
             {
               label: "Proceeds",
-              value: winningOutcomeShares.full
-            }
+              value: winningOutcomeShares.full,
+            },
           ],
           text: "Claim Proceeds",
-          action: () => dP.claimTradingProceeds(marketId, () => {})
+          action: () => dP.claimTradingProceeds(marketId, () => {}),
         });
         marketIds.push(marketId);
         totalProceeds = totalProceeds.plus(winningOutcomeShares.formatted);
@@ -80,7 +84,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     }
   });
   const totalGas = formatEther(
-    createBigNumber(sP.gasCost).times(markets.length)
+    createBigNumber(sP.gasCost).times(markets.length),
   );
   const multiMarket = markets.length > 1 ? "s" : "";
   totalProceeds = formatEther(totalProceeds);
@@ -90,19 +94,19 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       {
         preText: "You currently have a total of",
         boldText: totalProceeds.full,
-        postText: `to be claimed in the following market${multiMarket}:`
-      }
+        postText: `to be claimed in the following market${multiMarket}:`,
+      },
     ],
     rows: markets,
     breakdown: [
       {
         label: "Estimated Gas",
-        value: totalGas.full
+        value: totalGas.full,
       },
       {
         label: "Total Proceeds",
-        value: totalProceeds.full
-      }
+        value: totalProceeds.full,
+      },
     ],
     closeAction: () => {
       dP.closeModal();
@@ -113,7 +117,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     buttons: [
       {
         text: `${multiMarket ? "Claim All" : "Claim Proceeds"}`,
-        disabled: markets.find(market => market.status === "pending"),
+        disabled: markets.find((market) => market.status === "pending"),
         action: () => {
           dP.closeModal();
           if (multiMarket) {
@@ -121,9 +125,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           } else {
             dP.claimTradingProceeds(marketIds[0], sP.modal.cb);
           }
-        }
-      }
-    ]
+        },
+      },
+    ],
   };
 };
 
@@ -131,6 +135,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(Proceeds)
+    mergeProps,
+  )(Proceeds),
 );

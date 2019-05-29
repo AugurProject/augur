@@ -16,8 +16,9 @@ import {
 } from "modules/common-elements/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { formatGasCostToEther, formatEther } from "utils/format-number";
+import { AppState } from "store";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
   return {
     modal: state.modal,
@@ -28,7 +29,7 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   startOrderSending: (options: Object) => dispatch(startOrderSending(options)),
   clearMarketLiquidityOrders: (marketId: string) =>

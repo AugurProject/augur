@@ -6,8 +6,9 @@ import {
   updateIsAlertVisible
 } from "modules/app/actions/update-sidebar-status";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
+import { AppState } from "store";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const { sidebarStatus, authStatus } = state;
   const { unseenCount } = selectInfoAlertsAndSeenCount(state);
   return {
@@ -19,7 +20,7 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   updateIsAlertVisible: (data: Boolean) => dispatch(updateIsAlertVisible(data))
 });
 

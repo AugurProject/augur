@@ -14,13 +14,17 @@ import { MY_POSITIONS } from "modules/routes/constants/views";
 import { buildCreateMarket } from "modules/markets/helpers/build-create-market";
 import { sortOrders } from "modules/orders/helpers/liquidity";
 import { addMarketLiquidityOrders } from "modules/orders/actions/liquidity-management";
+import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export function submitNewMarket(
   newMarket: any,
   history: any,
-  callback: Function = noop
+  callback: NodeStyleCallback = noop
 ) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { universe, loginAccount, contractAddresses } = getState();
     const { createMarket, formattedNewMarket } = buildCreateMarket(
       newMarket,
@@ -66,8 +70,8 @@ export function submitNewMarket(
   };
 }
 
-function getHasApproval(hasOrders: Boolean, callback: Function) {
-  return (dispatch: Function, getState: Function) => {
+function getHasApproval(hasOrders: Boolean, callback: NodeStyleCallback) {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
     if (hasOrders && createBigNumber(loginAccount.allowance).lte(ZERO)) {
       dispatch(

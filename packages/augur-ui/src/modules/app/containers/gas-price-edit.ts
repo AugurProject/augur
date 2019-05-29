@@ -3,8 +3,11 @@ import { withRouter } from "react-router-dom";
 import { GAS_SPEED_LABELS } from "modules/common-elements/constants";
 import { updateModal } from "modules/modal/actions/update-modal";
 import GasPriceEdit from "modules/app/components/gas-price-edit";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const { fast, average, safeLow, userDefinedGasPrice } = state.gasPriceInfo;
 
   const userDefined = userDefinedGasPrice || average || 0;
@@ -22,7 +25,7 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   updateModal: (modal: any) => dispatch(updateModal(modal))
 });
 

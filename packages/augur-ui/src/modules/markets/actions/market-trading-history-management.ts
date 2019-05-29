@@ -2,7 +2,10 @@ import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { loadReportingFinal } from "modules/reports/actions/load-reporting-final";
 import { keyArrayBy } from "utils/key-by";
-import { MarketTradingHistory, TradingHistory } from "modules/types";
+import { MarketTradingHistory, TradingHistory, NodeStyleCallback } from "modules/types";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const UPDATE_MARKET_TRADING_HISTORY = "UPDATE_MARKET_TRADING_HISTORY";
 export const UPDATE_USER_TRADING_HISTORY = "UPDATE_USER_TRADING_HISTORY";
@@ -62,8 +65,8 @@ export function updateUserMarketTradingHistory(
 
 export const loadMarketTradingHistory = (
   options: any,
-  callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+  callback: NodeStyleCallback = logError
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (options === null || !options.marketId) return callback(null);
   getTradingHistory(options, (err: any, tradingHistory: any) => {
     if (err) return callback(err);
@@ -75,9 +78,9 @@ export const loadMarketTradingHistory = (
 
 export const loadUserMarketTradingHistory = (
   options = {},
-  callback = logError,
+  callback: NodeStyleCallback = logError,
   marketIdAggregator: any
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(
     loadUserMarketTradingHistoryInternal(
       options,
@@ -91,8 +94,8 @@ export const loadUserMarketTradingHistory = (
 
 export const loadUserMarketTradingHistoryInternal = (
   options: any,
-  callback: Function,
-) => (dispatch: Function, getState: Function) => {
+  callback: NodeStyleCallback,
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount, universe } = getState();
   if (!loginAccount.address) return callback(null, []);
   const allOptions = Object.assign(
@@ -149,7 +152,7 @@ export const loadUserMarketTradingHistoryInternal = (
   });
 };
 
-const getTradingHistory = (options: any, callback: Function) => {
+const getTradingHistory = (options: any, callback: NodeStyleCallback) => {
   const allOptions = Object.assign(
     { sortBy: "timestamp", isSortDescending: true },
     options,

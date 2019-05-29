@@ -13,8 +13,9 @@ import {
   REP_STAKED,
   TOTAL_ACCOUNT_VALUE_IN_ETH,
 } from "modules/common-elements/constants";
+import { SizeTypes } from "modules/types";
 
-import Styles from "modules/account/components/funds.styles";
+import Styles from "modules/account/components/funds.styles.less";
 
 export interface FundsProps {
   repStaked: number;
@@ -32,28 +33,28 @@ const Funds = (props: FundsProps) => {
     totalAccountValue,
     repBalance,
     repStaked,
-    realizedPLPercent
+    realizedPLPercent,
   } = props;
 
   const tradingBalanceFrozenFunds = [
     {
       title: AVAILABLE_TRADING_BALANCE,
-      value: totalAvailableTradingBalance
+      value: totalAvailableTradingBalance,
     },
     {
       title: TOTAL_FROZEN_FUNDS,
-      value: totalFrozenFunds
+      value: totalFrozenFunds,
     }
   ];
 
   const repBalanceStaked = [
     {
       title: REP_BALANCE,
-      value: repBalance
+      value: repBalance,
     },
     {
       title: REP_STAKED,
-      value: repStaked
+      value: repStaked,
     }
   ];
 
@@ -62,12 +63,12 @@ const Funds = (props: FundsProps) => {
       <div>{TOTAL_ACCOUNT_VALUE_IN_ETH}</div>
       <MovementLabel
         showColors
-        size="large"
+        size={SizeTypes.LARGE}
         showPlusMinus
         showPercent
         showIcon
         showBrackets
-        value={realizedPLPercent}
+        value={Number(realizedPLPercent)}
       />
       <div>
         {totalAccountValue}
@@ -123,7 +124,7 @@ const FundDataRow = (props: FundDataRowProps) => {
   return (
     <div
       className={classNames(props.className, {
-        [Styles.ChangeForMobile]: changeForMobile
+        [Styles.ChangeForMobile]: changeForMobile,
       })}
     >
       {rows[0]}

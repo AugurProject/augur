@@ -2,12 +2,16 @@ import { augur } from "services/augurjs";
 import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-info";
 import { addMarketsReport } from "modules/reports/actions/update-reports";
 import logError from "utils/log-error";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
 
 export const loadReportingHistory = (
   options = {},
-  callback = logError,
+  callback: NodeStyleCallback = logError,
   marketIdAggregator: Function
-) => (dispatch: Function) => {
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
     loadReportingHistoryInternal(
       options,
@@ -25,8 +29,8 @@ export const loadReportingHistory = (
 
 const loadReportingHistoryInternal = (
   options: any = {},
-  callback: Function
-) => (dispatch: Function, getState: Function) => {
+  callback: NodeStyleCallback,
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   if (!loginAccount.address) return callback(null, {});
   augur.reporting.getReportingHistory(

@@ -5,8 +5,11 @@ import { Message } from "modules/modal/message";
 import { selectMarket } from "modules/markets/selectors/market";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
 
   return {
@@ -15,7 +18,7 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   finalizeMarket: (marketId: string, cb: Function) =>
     dispatch(sendFinalizeMarket(marketId, cb))

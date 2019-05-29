@@ -1,5 +1,4 @@
-import store from "store";
-import { augur } from "services/augurjs";
+import store, { AppState } from "store";
 import * as constants from "modules/common-elements/constants";
 import setAlertText from "modules/alerts/actions/set-alert-text";
 import { createBigNumber } from "utils/create-big-number";
@@ -7,13 +6,15 @@ import makePath from "modules/routes/helpers/make-path";
 import { TRANSACTIONS } from "modules/routes/constants/views";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const ADD_ALERT = "ADD_ALERT";
 export const REMOVE_ALERT = "REMOVE_ALERT";
 export const UPDATE_ALERT = "UPDATE_ALERT";
 export const CLEAR_ALERTS = "CLEAR_ALERTS";
 
-function packageAlertInfo(id: string, timestamp: Number, transaction: any) {
+function packageAlertInfo(id: string, timestamp: number, transaction: any) {
   return {
     id,
     timestamp,
@@ -32,7 +33,7 @@ function packageAlertInfo(id: string, timestamp: Number, transaction: any) {
 }
 
 export function handleFilledOnly(tradeInProgress: any = null) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { alerts, transactionsData } = store.getState();
     for (let i = 0; i < alerts.length; i++) {
       if (alerts[i].status.toLowerCase() === constants.PENDING) {
@@ -107,7 +108,7 @@ export function handleFilledOnly(tradeInProgress: any = null) {
 }
 
 export function loadAlerts() {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { alerts, transactionsData } = store.getState();
     for (let i = 0; i < alerts.length; i++) {
       if (alerts[i].status.toLowerCase() === constants.PENDING) {
@@ -219,14 +220,14 @@ export function loadAlerts() {
 export function addCriticalAlert(alert: any) {
   return addAlert({
     level: constants.CRITICAL,
-    ...alert
+    ...alert,
   });
 }
 
 export function addAlert(alert: any) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: ThunkDispatch<void, any, Action>) => {
     if (alert != null) {
-      const { universe } = store.getState();
+      const { universe } = store.getState() as AppState;
       const callback = (alert: any) => {
         const fullAlert = {
           type: ADD_ALERT,
@@ -236,13 +237,13 @@ export function addAlert(alert: any) {
               level: constants.INFO,
               networkId: getNetworkId(),
               universe: universe.id,
-              ...alert
-            }
-          }
+              ...alert,
+            },
+          },
         };
         return fullAlert;
       };
-      return dispatch(setAlertText(alert, callback));
+      dispatch(setAlertText(alert, callback));
     }
   };
 }
@@ -255,14 +256,14 @@ export function removeAlert(id: string) {
 }
 
 export function updateAlert(id: string, alert: any) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: ThunkDispatch<void, any, Action>): void => {
     const callback = (alert: any) => {
       const fullAlert = {
         type: UPDATE_ALERT,
         data: {
           id,
-          alert
-        }
+          alert,
+        },
       };
       return fullAlert;
     };

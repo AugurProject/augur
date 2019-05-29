@@ -15,15 +15,16 @@ import {
 } from "modules/orders/actions/pending-orders-management";
 import { formatEther, formatShares } from "utils/format-number";
 import { getOutcomeName } from "utils/get-outcome";
+import { AppState } from "store";
 
 export const placeTrade = ({
   marketId,
   outcomeId,
   tradeInProgress,
   doNotCreateOrders,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
   onComplete = noop
-}: any) => (dispatch: Function, getState: Function) => {
+}: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
   const { loginAccount, marketsData, blockchain, outcomesData } = getState();
   const market = marketsData[marketId];

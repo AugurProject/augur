@@ -1,12 +1,16 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
 
 export function loadCreateMarketHistory(
   options = {},
-  callback = logError,
+  callback: NodeStyleCallback = logError,
   marketIdAggregator: Function | undefined
 ) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     dispatch(
       loadCreateMarketHistoryInternal(
         options,
@@ -18,8 +22,8 @@ export function loadCreateMarketHistory(
     );
   };
 
-  function loadCreateMarketHistoryInternal(options = {}, callback: Function) {
-    return (dispatch: Function, getState: Function) => {
+  function loadCreateMarketHistoryInternal(options = {}, callback: NodeStyleCallback) {
+    return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
       const { universe, loginAccount } = getState();
       if (!loginAccount.address) return callback(null);
       augur.markets.getMarkets(

@@ -4,9 +4,13 @@ import { updateLoginAccount } from "modules/account/actions/login-account";
 import { updateAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
+import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-export function checkAccountAllowance(callback: Function = logError) {
-  return (dispatch: Function, getState: Function) => {
+export function checkAccountAllowance(callback: NodeStyleCallback = logError) {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
     if (loginAccount.allowance && loginAccount.allowance !== "0") {
       callback(null, loginAccount.allowance);

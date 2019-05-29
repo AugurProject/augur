@@ -5,19 +5,19 @@ import * as constants from "modules/common-elements/constants";
 import { ImmediateImportance } from "modules/common-elements/icons";
 import { PillLabel } from "modules/common-elements/labels";
 
-import Styles from "modules/account/components/notification.styles";
+import Styles from "modules/account/components/notification.styles.less";
 
 export interface NotificationProps {
   isImportant: boolean;
   isNew: boolean;
   title: string;
-  children: React.StatelessComponent;
+  children: React.StatelessComponent | Array<React.StatelessComponent>;
 }
 
 export const NotificationCard = (props: NotificationProps) => (
   <div
     className={classNames(Styles.NotificationCard, {
-      [Styles.new]: props.isNew
+      [Styles.NewNotificationCard]: props.isNew,
     })}
   >
     <section>
@@ -29,7 +29,7 @@ export const NotificationCard = (props: NotificationProps) => (
         )}
         <span
           className={classNames(Styles.Title, {
-            [Styles.TitleNew]: props.isNew
+            [Styles.TitleNew]: props.isNew,
           })}
         >
           {props.title}
@@ -38,7 +38,7 @@ export const NotificationCard = (props: NotificationProps) => (
       </div>
       <div
         className={classNames(Styles.Message, {
-          [Styles.MessageNew]: props.isNew
+          [Styles.MessageNew]: props.isNew,
         })}
       >
         {props.children}

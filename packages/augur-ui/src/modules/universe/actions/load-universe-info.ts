@@ -19,14 +19,18 @@ import {
   NULL_ADDRESS,
   UNIVERSE_ID
 } from "modules/common-elements/constants";
+import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const REQUIRED_GENESIS_SUPPLY = createBigNumber(
   "1100000000000000000000000",
   10
 );
 
-export function loadUniverseInfo(callback: Function = logError) {
-  return (dispatch: Function, getState: Function) => {
+export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { universe, loginAccount, marketsData } = getState();
     const universeId = universe.id || UNIVERSE_ID;
 
@@ -105,7 +109,7 @@ export function loadUniverseInfo(callback: Function = logError) {
   };
 }
 
-function getUniverseInfo(universeId: string, callback: Function) {
+function getUniverseInfo(universeId: string, callback: NodeStyleCallback) {
   const universeData: any = {
     id: universeId,
     reportableOutcomes: null,
@@ -156,7 +160,7 @@ function getUniversesInfoWithParentContext(
   currentUniverseData: any,
   parentUniverseData: any,
   grandParentUniverseData: any,
-  callback: Function
+  callback: NodeStyleCallback
 ) {
   augur.augurNode.submitRequest(
     "getUniversesInfo",
@@ -174,7 +178,7 @@ function getUniversesInfoWithParentContext(
 
       async.forEachOf(
         result,
-        (obj: any, key, callback: Function) => {
+        (obj: any, key, callback: NodeStyleCallback) => {
           augur.api.Universe.getOpenInterestInAttoEth(
             { tx: { to: obj.universe } },
             (err: any, openInterest: number) => {
@@ -260,8 +264,8 @@ function getUniverseName(parentUniverseData: any, universeData: any) {
 }
 
 // TODO: this whole thing will be refactored
-export function getForkingInfo(universe: any, callback = logError) {
-  return async (dispatch: Function) => {
+export function getForkingInfo(universe: any, callback: NodeStyleCallback = logError) {
+  return async (dispatch: ThunkDispatch<void, any, Action>) => {
     // Getting current fork data
     const forkingMarket = await getForkingMarket();
     const isForking =
@@ -287,7 +291,7 @@ export function getForkingInfo(universe: any, callback = logError) {
 
 // TODO: this whole thing will be refactored
 function updateUniverseIfForkingDataChanged(
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   oldUniverseData: any,
   universeData: any
 ) {
@@ -304,8 +308,8 @@ function updateUniverseIfForkingDataChanged(
   }
 }
 
-export function getUniverseProperties(universe: any, callback: Function) {
-  return async (dispatch: Function) => {
+export function getUniverseProperties(universe: any, callback: NodeStyleCallback) {
+  return async (dispatch: ThunkDispatch<void, any, Action>) => {
     const openInterest = await getOpenInterestInAttoCash();
     const forkThreshold = await getDisputeThresholdForFork();
     const universeData = { openInterest, forkThreshold };

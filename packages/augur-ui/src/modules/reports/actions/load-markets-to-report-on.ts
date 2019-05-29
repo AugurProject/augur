@@ -3,11 +3,15 @@ import { augur } from "services/augurjs";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 import { updateMarketsWithAccountReportData } from "modules/reports/actions/update-markets-with-account-report-data";
 import logError from "utils/log-error";
+import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const loadMarketsToReportOn = (
   options: any,
-  callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+  callback: NodeStyleCallback = logError
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { env, universe, loginAccount } = getState();
   if (!loginAccount.address) return callback(null);
   if (!loginAccount.rep || loginAccount.rep === "0") return callback(null);

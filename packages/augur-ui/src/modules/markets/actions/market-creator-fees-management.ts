@@ -1,10 +1,14 @@
 import logError from "utils/log-error";
 import { augur } from "services/augurjs";
+import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const collectMarketCreatorFees = (
   marketId: string,
-  callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+  callback: NodeStyleCallback = logError
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount } = getState();
   if (!loginAccount.address) return callback(null);
   augur.api.Market.marketCreatorFeesAttoCash(

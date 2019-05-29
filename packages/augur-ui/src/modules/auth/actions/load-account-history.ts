@@ -8,10 +8,14 @@ import { loadAlerts } from "modules/alerts/actions/alerts";
 import { loadUsershareBalances } from "modules/positions/actions/load-user-share-balances";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
+import { AppState } from "store";
 
 export const loadAccountHistory = () => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   dispatch(clearTransactions());
   loadTransactions(dispatch, () => {
@@ -19,7 +23,7 @@ export const loadAccountHistory = () => (
   });
 };
 
-function loadTransactions(dispatch: Function, callback: Function) {
+function loadTransactions(dispatch: ThunkDispatch<void, any, Action>, callback: NodeStyleCallback) {
   const options = {};
   const promises = [];
   promises.push(

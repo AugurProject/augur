@@ -7,8 +7,9 @@ import {
   formatTime,
 } from "modules/common-elements/progress";
 import { SubmitTextButton } from "modules/common-elements/buttons";
+import { DateFormattedObject } from "modules/types";
 
-import Styles from "modules/account/components/notification.styles";
+import Styles from "modules/account/components/notification.styles.less";
 
 import {
   NOTIFICATION_TYPES,
@@ -17,30 +18,82 @@ import {
 } from "modules/common-elements/constants";
 import { Market } from "modules/types";
 
-export interface TemplateProps {
-  type: string;
-  message: string;
+interface BaseProps {
   market: Market;
+  type: string;
+  currentTime?: DateFormattedObject;
+  reportingWindowStatsEndTime?: DateFormattedObject;
   isDisabled: boolean;
   buttonAction: Function;
   buttonLabel: string;
-  markets?: Array<string>;
-  currentTime?: Date;
-  reportingWindowStatsEndTime?: number;
-  claimReportingFees?: any;
-  totalProceeds?: number;
 }
 
-export interface TemplateBodyProps {
-  market?: Market;
+interface OpenOrdersResolvedMarketsTemplateProps extends BaseProps {
+  market: Market;
+}
+
+interface FinalizeTemplateProps extends BaseProps {
+  market: Market;
+}
+
+interface UnsignedOrdersTemplateProps extends BaseProps {
+  market: Market;
+}
+
+interface ReportEndingSoonTemplateProps extends BaseProps {
+  market: Market;
+}
+
+
+interface DisputeTemplateProps extends BaseProps {
+  market: Market;
+}
+
+interface SellCompleteSetTemplateProps extends BaseProps {
+  market: Market;
+}
+
+interface ClaimReportingFeesTemplateTemplateProps extends BaseProps {
+  market: Market;
+  claimReportingFees: any;
+}
+
+interface ProceedsToClaimTemplateProps extends BaseProps {
+  market: Market;
+  totalProceeds: number | undefined;
+}
+
+interface ProceedsToClaimOnHoldTemplateProps extends BaseProps {
+  market: Market;
+}
+
+interface TemplateProps extends BaseProps {
   message: string;
 }
 
-export interface CounterProps {
-  type: string;
-  market?: Market;
-  currentTime?: Date;
-  reportingWindowStatsEndTime?: number;
+const Template = (props: TemplateProps) => (
+  <>
+    <TemplateBody market={props.market} message={props.message} />
+    <div className={Styles.BottomRow}>
+      <Counter
+        type={props.type}
+        market={props.market}
+        reportingWindowStatsEndTime={props.reportingWindowStatsEndTime}
+        currentTime={props.currentTime}
+      />
+
+      <SubmitTextButton
+        text={props.buttonLabel}
+        action={() => props.buttonAction()}
+        disabled={props.isDisabled}
+      />
+    </div>
+  </>
+);
+
+export interface TemplateBodyProps {
+  market: Market;
+  message: string;
 }
 
 const TemplateBody = (props: TemplateBodyProps) => {
@@ -49,7 +102,7 @@ const TemplateBody = (props: TemplateBodyProps) => {
   }
 
   const { description, id } = props.market;
-  const parts: Array<string> = props.message.split(`"${description}"`);
+  const parts: Array<string> = props.message ? props.message.split(`"${description}"`) : [];
 
   if (parts.length > 1) {
     return (
@@ -64,18 +117,25 @@ const TemplateBody = (props: TemplateBodyProps) => {
   return <span>{props.message}</span>;
 };
 
+interface CounterProps {
+  type: string;
+  market: Market;
+  currentTime?: DateFormattedObject;
+  reportingWindowStatsEndTime?: DateFormattedObject;
+}
+
 const Counter = (props: CounterProps) => {
-  let counter = null;
+  let counter: any = null;
   const notificationsWithCountdown = [
     NOTIFICATION_TYPES.marketsInDispute,
     NOTIFICATION_TYPES.reportOnMarkets,
-    NOTIFICATION_TYPES.proceedsToClaimOnHold
+    NOTIFICATION_TYPES.proceedsToClaimOnHold,
   ];
 
   if (props.market && notificationsWithCountdown.includes(props.type)) {
     const { endTime, reportingState, finalizationTimeWithHold } = props.market;
 
-    if (props.type === NOTIFICATION_TYPES.proceedsToClaimOnHold) {
+    if (props.type === NOTIFICATION_TYPES.proceedsToClaimOnHold && finalizationTimeWithHold && props.currentTime) {
       counter = (
         <div className={Styles.Countdown}>
           <CountdownProgress
@@ -86,44 +146,25 @@ const Counter = (props: CounterProps) => {
         </div>
       );
     } else {
-      counter = (
-        <div className={Styles.Countdown}>
-          <MarketProgress
-            reportingState={reportingState}
-            currentTime={props.currentTime}
-            endTime={endTime}
-            reportingWindowEndtime={props.reportingWindowStatsEndTime}
-            customLabel={REPORTING_ENDS}
-          />
-        </div>
-      );
+      if (props.currentTime && props.reportingWindowStatsEndTime) {
+        counter = (
+          <div className={Styles.Countdown}>
+            <MarketProgress
+              reportingState={reportingState}
+              currentTime={props.currentTime}
+              endTime={endTime}
+              reportingWindowEndtime={props.reportingWindowStatsEndTime}
+              customLabel={REPORTING_ENDS}
+            />
+          </div>
+        );
+      }
     }
   }
   return counter;
 };
 
-const Template = (props: TemplateProps) => (
-  <>
-    <TemplateBody market={props.market} message={props.message} />
-    <div className={Styles.BottomRow}>
-      <Counter
-        type={props.type}
-        market={props.market || null}
-        reportingWindowStatsEndTime={props.reportingWindowStatsEndTime}
-        currentTime={props.currentTime}
-      />
-
-      <SubmitTextButton
-        text={props.buttonLabel}
-        action={() => props.buttonAction()}
-        disabled={props.isDisabled}
-      />
-    </div>
-  </>
-);
-
-// Notifications Tempalates
-export const OpenOrdersResolvedMarketsTemplate = (props: TemplateProps) => {
+export const OpenOrdersResolvedMarketsTemplate = (props: OpenOrdersResolvedMarketsTemplateProps) => {
   const { description } = props.market;
 
   return (
@@ -134,7 +175,7 @@ export const OpenOrdersResolvedMarketsTemplate = (props: TemplateProps) => {
   );
 };
 
-export const FinalizeTemplate = (props: TemplateProps) => {
+export const FinalizeTemplate = (props: FinalizeTemplateProps) => {
   const { description } = props.market;
 
   return (
@@ -145,7 +186,7 @@ export const FinalizeTemplate = (props: TemplateProps) => {
   );
 };
 
-export const UnsignedOrdersTemplate = (props: TemplateProps) => {
+export const UnsignedOrdersTemplate = (props: UnsignedOrdersTemplateProps) => {
   const { description } = props.market;
 
   return (
@@ -156,7 +197,7 @@ export const UnsignedOrdersTemplate = (props: TemplateProps) => {
   );
 };
 
-export const ReportEndingSoonTemplate = (props: TemplateProps) => {
+export const ReportEndingSoonTemplate = (props: ReportEndingSoonTemplateProps) => {
   const { description } = props.market;
 
   return (
@@ -167,7 +208,7 @@ export const ReportEndingSoonTemplate = (props: TemplateProps) => {
   );
 };
 
-export const DisputeTemplate = (props: TemplateProps) => {
+export const DisputeTemplate = (props: DisputeTemplateProps) => {
   const { description, disputeInfo } = props.market;
 
   if (!disputeInfo) {
@@ -184,7 +225,7 @@ export const DisputeTemplate = (props: TemplateProps) => {
   );
 };
 
-export const SellCompleteSetTemplate = (props: TemplateProps) => {
+export const SellCompleteSetTemplate = (props: SellCompleteSetTemplateProps) => {
   const { description, myPositionsSummary } = props.market;
 
   if (!myPositionsSummary) {
@@ -203,7 +244,7 @@ export const SellCompleteSetTemplate = (props: TemplateProps) => {
   );
 };
 
-export const ClaimReportingFeesTemplate = (props: TemplateProps) => {
+export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemplateProps) => {
   const { claimReportingFees } = props;
   const unclaimedREP = claimReportingFees.unclaimedRep.formattedValue || 0;
   const unclaimedETH = claimReportingFees.unclaimedEth.formattedValue || 0;
@@ -216,7 +257,7 @@ export const ClaimReportingFeesTemplate = (props: TemplateProps) => {
   );
 };
 
-export const ProceedsToClaimTemplate = (props: TemplateProps) => {
+export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => {
   const { totalProceeds } = props;
 
   return (
@@ -227,7 +268,7 @@ export const ProceedsToClaimTemplate = (props: TemplateProps) => {
   );
 };
 
-export const ProceedsToClaimOnHoldTemplate = (props: TemplateProps) => {
+export const ProceedsToClaimOnHoldTemplate = (props: ProceedsToClaimOnHoldTemplateProps) => {
   const { market } = props;
   const { outstandingReturns, description } = market;
 

@@ -2,14 +2,14 @@ import React from "react";
 
 import {
   YOUR_OVERVIEW_TITLE,
-  TIMEFRAME_OPTIONS
+  TIMEFRAME_OPTIONS,
 } from "modules/common-elements/constants";
 import QuadBox from "modules/portfolio/components/common/quads/quad-box";
 import { PillSelection } from "modules/common-elements/selection";
 import Funds from "modules/account/containers/funds";
 import Stats from "modules/account/containers/stats";
 import OverviewChart from "modules/account/containers/overview-chart";
-import Styles from "modules/account/components/overview.styles";
+import Styles from "modules/account/components/overview.styles.less";
 
 export interface OverviewProps {
   currentAugurTimestamp: number;
@@ -25,7 +25,7 @@ export default class Overview extends React.Component<
   OverviewState
 > {
   state: OverviewState = {
-    selected: TIMEFRAME_OPTIONS[3].id
+    selected: TIMEFRAME_OPTIONS[3].id,
   };
 
   componentDidMount() {
@@ -38,7 +38,7 @@ export default class Overview extends React.Component<
     const startTime =
       period === 0 ? null : this.props.currentAugurTimestamp - period;
     this.props.updateTimeframeData({ startTime });
-  };
+  }
 
   render() {
     const { selected } = this.state;
