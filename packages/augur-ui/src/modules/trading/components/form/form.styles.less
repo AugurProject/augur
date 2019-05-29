@@ -2,7 +2,7 @@
 
 .Form {
   > ul {
-  padding: 0.75rem 1rem 0;
+  padding: @size-12 @size-16 0;
 
     > li {
       color: @color-secondary-text;
@@ -12,11 +12,11 @@
       width: 100%;
 
       &.yesOption {
-        padding: 1rem 2rem;
+        padding: @size-16 @size-32;
       }
 
       &:not(:last-child) {
-        margin-bottom: 0.5rem;
+        margin-bottom: @size-8;
 
         > label {
           .mono-10;
@@ -33,21 +33,21 @@
 
         > label {
           color: @color-secondary-text;
-          padding: 0.125rem 0 0 @size-24;
+          padding: 2px 0 0 @size-24;
         }
       }
 
       > label {
         color: @color-shadow-text;
         margin-bottom: 0;
-        padding-bottom: 0.25rem;
+        padding-bottom: @size-4;
         width: 100%;
 
         &.smallLabel {
           .text-10;
 
           color: @color-secondary-text;
-          padding-top: 0.5rem;
+          padding-top: @size-8;
           text-transform: none;
 
           > svg {
@@ -76,7 +76,7 @@
           display: flex;
 
           > svg {
-            margin-right: 0.375rem;
+            margin-right: @size-6;
           }
         }
       }
@@ -158,7 +158,7 @@
   border-radius: @border-radius-default;
   font-size: @size-14;
   font-weight: 500;
-  padding: 0.625rem 0.625rem 0.625rem 1rem;
+  padding: @size-10 @size-10 @size-10 @size-16;
 
   > span {
     .mono-11;
@@ -171,7 +171,7 @@
 .TradingForm__input {
   display: flex;
   flex-grow: 1;
-  padding: 0.4375rem 1rem;
+  padding: 0.4375rem @size-16;
   width: auto;
 }
 
@@ -198,22 +198,22 @@
   }
 
   &.error {
-    border: 0.0625rem solid fade(@color-error-text, 50%);
+    border: 1px solid fade(@color-error-text, 50%);
 
     &:focus-within,
     &:focus {
-      border: 0.0625rem solid fade(@color-error-text, 50%);
+      border: 1px solid fade(@color-error-text, 50%);
     }
   }
 
   > span {
     background: @color-tertiary-background;
-    border-left: 0.0625rem solid @color-primary-alternate;
+    border-left: 1px solid @color-primary-alternate;
     color: @color-tertiary-text;
     font-size: @font-size-small;
     min-width: 4.28rem;
     overflow: hidden;
-    padding: 0.59375rem 0.75rem;
+    padding: 0.59375rem @size-12;
     text-align: center;
     text-overflow: ellipsis;
     text-transform: uppercase;
@@ -240,7 +240,7 @@
   }
 
   &:focus-within {
-    border: 0.0625rem solid @color-highlight;
+    border: 1px solid @color-highlight;
 
     > span {
       background: @color-highlight;
@@ -279,8 +279,8 @@
 @media @breakpoint-mobile {
   .Outcome {
     background: @color-extra-darkpurple;
-    margin-bottom: 24px;
-    margin-top: 16px;
+    margin-bottom: @size-24;
+    margin-top: @size-16;
     padding-bottom: 0;
     padding-top: 0;
   }
@@ -331,7 +331,7 @@
         > label {
           .text-12;
 
-          padding: 0.125rem 0 0 @size-32;
+          padding: 2px 0 0 @size-32;
         }
       }
 
@@ -365,8 +365,8 @@
       border-radius: 0;
       bottom: 0;
       left: 0;
-      padding-bottom: 1rem;
-      padding-top: 1rem;
+      padding-bottom: @size-16;
+      padding-top: @size-16;
       position: fixed;
       width: 100%;
     }
