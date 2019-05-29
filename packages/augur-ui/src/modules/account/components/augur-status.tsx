@@ -34,18 +34,18 @@ const AugurStatus = ({ syncingInfo }: AugurStatusProps) => {
   return (
     <QuadBox
       title={AUGUR_STATUS_TITLE}
-
-    >
-      <div className={Styles.AugurStatusContent}>
-        <SyncStatus syncPercent={percent} />
-        <BlockStatus
-          blocksBehind={blocksBehind}
-          highestBlockBn={highestBlockBn}
-          lastProcessedBlockBn={lastProcessedBlockBn}
-        />
-        <Activity />
-      </div>
-    </QuadBox>
+      content={
+        <div className={Styles.AugurStatusContent}>
+          <SyncStatus syncPercent={percent} />
+          <BlockStatus
+            blocksBehind={blocksBehind}
+            highestBlockBn={highestBlockBn}
+            lastProcessedBlockBn={lastProcessedBlockBn}
+          />
+          <Activity />
+        </div>
+      }
+    />
   );
 };
 

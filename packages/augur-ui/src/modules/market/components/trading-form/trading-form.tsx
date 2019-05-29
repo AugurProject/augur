@@ -4,55 +4,54 @@ import { Link } from "react-router-dom";
 
 import TradingWrapper from "modules/trading/components/trading--wrapper/trading--wrapper";
 import { isEqual } from "lodash";
-import classNames from "classnames";
 import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
 import { BigNumber } from "utils/create-big-number";
 import makePath from "modules/routes/helpers/make-path";
-import Styles from "modules/market/components/market-trading-form/market-trading-form.styles";
+import Styles from "modules/market/components/trading-form/trading-form.styles";
 
 import { PrimaryButton } from "modules/common-elements/buttons";
 
-class MarketTradingForm extends Component {
-  static propTypes = {
-    availableFunds: PropTypes.instanceOf(BigNumber).isRequired,
-    isLogged: PropTypes.bool.isRequired,
-    isConnectionTrayOpen: PropTypes.bool.isRequired,
-    market: PropTypes.object.isRequired,
-    marketReviewTradeSeen: PropTypes.bool.isRequired,
-    marketReviewTradeModal: PropTypes.func.isRequired,
-    selectedOrderProperties: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.string,
-    updateSelectedOrderProperties: PropTypes.func.isRequired,
-    handleFilledOnly: PropTypes.func.isRequired,
-    gasPrice: PropTypes.number.isRequired,
-    updateSelectedOutcome: PropTypes.func.isRequired,
-    updateTradeCost: PropTypes.func.isRequired,
-    updateTradeShares: PropTypes.func.isRequired,
-    toggleConnectionTray: PropTypes.func.isRequired,
-    onSubmitPlaceTrade: PropTypes.func.isRequired
-  };
+interface TradingFormProps {
+  availableFunds: Object;
+  isLogged: Boolean;
+  isConnectionTrayOpen: Boolean;
+  market: Object;
+  marketReviewTradeSeen: Boolean;
+  marketReviewTradeModal: Function;
+  selectedOrderProperties: Object;
+  selectedOutcome: String;
+  updateSelectedOrderProperties: Function;
+  handleFilledOnly: Function;
+  gasPrice: Number;
+  updateSelectedOutcome: Function;
+  updateTradeCost: Function;
+  updateTradeShares: Function;
+  toggleConnectionTray: Function;
+  onSubmitPlaceTrade: Function;
+}
+
+interface TradingFormState {
+  showForm: Boolean;
+  selectedOutcome: Number;
+}
+
+class TradingForm extends Component<TradingFormProps, TradingFormState> {
 
   static defaultProps = {
     selectedOutcome: null
   };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showForm: false,
-      selectedOutcome:
-        props.selectedOutcome !== null && props.market.outcomes
-          ? props.market.outcomes.find(
-              outcome => outcome.id === props.selectedOutcome
-            )
-          : null
-    };
-
-    this.toggleForm = this.toggleForm.bind(this);
+  
+  state: TradingFormState = {
+    showForm: false,
+    selectedOutcome:
+      this.props.selectedOutcome !== null && this.props.market.outcomes
+        ? this.props.market.outcomes.find(
+            outcome => outcome.id === this.props.selectedOutcome
+          )
+        : null
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: TradingFormProps) {
     const { market, selectedOutcome } = this.props;
     if (
       (!isEqual(selectedOutcome, nextProps.selectedOutcome) ||
@@ -71,7 +70,7 @@ class MarketTradingForm extends Component {
     }
   }
 
-  toggleForm() {
+  toggleForm = () => {
     this.setState({ showForm: !this.state.showForm });
   }
 
@@ -114,7 +113,7 @@ class MarketTradingForm extends Component {
     }
 
     return (
-      <section className={classNames(Styles.MarketTradingForm)}>
+      <section className={Styles.TradingForm}>
         <TradingWrapper
           market={market}
           isLogged={isLogged}
@@ -135,7 +134,7 @@ class MarketTradingForm extends Component {
           marketReviewTradeSeen={marketReviewTradeSeen}
         />
         {initialMessage && (
-          <div className={Styles["MarketTradingForm__initial-message"]}>
+          <div>
             {initialMessage && <p>{initialMessage}</p>}
             {!isLogged && (
               <PrimaryButton
@@ -147,9 +146,11 @@ class MarketTradingForm extends Component {
             {!hasFunds &&
               isLogged && (
                 <Link to={makePath(ACCOUNT_DEPOSIT)}>
-                  <span className={Styles["MarketTradingForm__deposit-button"]}>
-                    Add Funds
-                  </span>
+                  <PrimaryButton
+                    id="add-funds"
+                    action={() => {}}
+                    text="Add Funds"
+                  />
                 </Link>
               )}
           </div>
@@ -159,4 +160,4 @@ class MarketTradingForm extends Component {
   }
 }
 
-export default MarketTradingForm;
+export default TradingForm;

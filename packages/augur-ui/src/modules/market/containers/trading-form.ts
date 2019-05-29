@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import MarketTradingForm from "modules/market/components/market-trading-form/market-trading-form";
+import TradingForm from "modules/market/components/trading-form/trading-form";
 import { createBigNumber } from "utils/create-big-number";
 import { windowRef } from "utils/window-ref";
 import {
@@ -80,12 +80,12 @@ const mergeProps = (sP, dP, oP) => {
   };
 };
 
-const MarketTradingFormContainer = withRouter(
+const TradingFormContainer = withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
     mergeProps
-  )(MarketTradingForm)
+  )(TradingForm)
 );
 
-export default MarketTradingFormContainer;
+export default TradingFormContainer;
