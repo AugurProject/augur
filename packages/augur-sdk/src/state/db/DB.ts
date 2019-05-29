@@ -518,6 +518,20 @@ export class DB {
     return logs;
   }
 
+  /**
+   * Queries the OrderFilled DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<OrderEventLog>>}
+   */
+  public async findOrderPriceChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<OrderEventLog>> {
+    request.selector["eventType"] = OrderEventType.PriceChanged;
+    const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
+    const logs = results.docs as unknown as Array<OrderEventLog>;
+    for (const log of logs) log.timestamp = log.uint256Data[OrderEventUint256Value.timestamp];
+    return logs;
+  }
+
   /*
    * Queries the ParticipationTokensRedeemed DB
    *

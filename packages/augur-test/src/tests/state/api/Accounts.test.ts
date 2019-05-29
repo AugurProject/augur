@@ -103,6 +103,10 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
     account: ACCOUNTS[0].publicKey,
     earliestTransactionTime: 0,
     latestTransactionTime: (await john.getTimestamp()).toNumber(),
+    sortBy: "action",
+    isSortDescending: true,
+    // limit: ,
+    // offset: ,
   });
   console.log(accountTransactionHistory);
   // expect(yesNoMarketTransactionHistory).toMatchObject(
