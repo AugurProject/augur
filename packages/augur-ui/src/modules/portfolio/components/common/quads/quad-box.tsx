@@ -13,7 +13,7 @@ export interface QuadBoxProps {
   sortByOptions?: any;
   updateDropdown?: any;
   onSearchChange?: any;
-  children?: ReactNode;
+  content?: ReactNode;
   bottomBarContent?: ReactNode;
 }
 
