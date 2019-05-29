@@ -1,5 +1,4 @@
-import store from "store";
-import { augur } from "services/augurjs";
+import store, { AppState } from "store";
 import * as constants from "modules/common-elements/constants";
 import setAlertText from "modules/alerts/actions/set-alert-text";
 import { createBigNumber } from "utils/create-big-number";
@@ -32,7 +31,7 @@ function packageAlertInfo(id: string, timestamp: Number, transaction: any) {
 }
 
 export function handleFilledOnly(tradeInProgress: any = null) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const { alerts, transactionsData } = store.getState();
     for (let i = 0; i < alerts.length; i++) {
       if (alerts[i].status.toLowerCase() === constants.PENDING) {
@@ -107,7 +106,7 @@ export function handleFilledOnly(tradeInProgress: any = null) {
 }
 
 export function loadAlerts() {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const { alerts, transactionsData } = store.getState();
     for (let i = 0; i < alerts.length; i++) {
       if (alerts[i].status.toLowerCase() === constants.PENDING) {
@@ -224,7 +223,7 @@ export function addCriticalAlert(alert: any) {
 }
 
 export function addAlert(alert: any) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     if (alert != null) {
       const { universe } = store.getState();
       const callback = (alert: any) => {
@@ -255,7 +254,7 @@ export function removeAlert(id: string) {
 }
 
 export function updateAlert(id: string, alert: any) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const callback = (alert: any) => {
       const fullAlert = {
         type: UPDATE_ALERT,

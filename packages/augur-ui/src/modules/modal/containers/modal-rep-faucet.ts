@@ -1,11 +1,11 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Message } from "modules/modal/message";
-
+import { AppState } from "store";
 import { closeModal } from "modules/modal/actions/close-modal";
 import getRep from "modules/account/actions/get-rep";
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   modal: state.modal
 });
 

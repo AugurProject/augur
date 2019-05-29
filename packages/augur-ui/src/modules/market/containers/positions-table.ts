@@ -1,12 +1,12 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
+import { AppState } from "store";
 import { selectMarket } from "modules/markets/selectors/market";
 import { MarketPositionsTable } from "modules/portfolio/components/common/tables/market-positions-table";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { MODAL_SELL_COMPLETE_SETS } from "modules/common-elements/constants";
 
-const mapStateToProps = (state: any, ownProps: any) => {
+const mapStateToProps = (state: AppState, ownProps: any) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const positions = market.userPositions || [];
 

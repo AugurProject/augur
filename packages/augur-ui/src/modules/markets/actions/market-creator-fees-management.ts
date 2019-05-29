@@ -1,10 +1,11 @@
 import logError from "utils/log-error";
 import { augur } from "services/augurjs";
+import { AppState } from "store";
 
 export const collectMarketCreatorFees = (
   marketId: string,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount } = getState();
   if (!loginAccount.address) return callback(null);
   augur.api.Market.marketCreatorFeesAttoCash(

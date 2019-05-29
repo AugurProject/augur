@@ -13,13 +13,14 @@ import {
   PENDING,
   SUCCESS
 } from "modules/common-elements/constants";
+import { AppState } from "store";
 
 export const CLAIM_SHARES_GAS_COST = 3000000;
 
 const claimTradingProceeds = (
   marketId: string,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount } = getState();
   if (!loginAccount.address || !marketId) return callback(null);
 
@@ -44,7 +45,7 @@ const claimTradingProceeds = (
 export const claimMultipleTradingProceeds = (
   marketIds: Array<string>,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount } = getState();
   if (!loginAccount.address || !marketIds || !marketIds.length)
     return callback(null);

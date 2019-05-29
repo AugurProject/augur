@@ -12,6 +12,7 @@ import {
   addPendingData,
   removePendingData
 } from "modules/pending-queue/actions/pending-queue-management";
+import { AppState } from "store";
 
 export const CLAIM_FEES_GAS_COST = 3000000;
 export const CLAIM_WINDOW_GAS_COST = 210000;
@@ -22,7 +23,7 @@ export function claimReportingFeesForkedMarket(
   options: any,
   callback: Function = logError
 ) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const { loginAccount } = getState();
     const payload = {
       ...options,
@@ -41,7 +42,7 @@ export function claimReportingFeesForkedMarket(
 }
 
 export function redeemStake(options: any, callback: Function = logError) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const { loginAccount, universe } = getState();
     const universeId = universe.id || UNIVERSE_ID;
     const gasPrice = getGasPrice(getState());

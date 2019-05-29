@@ -3,6 +3,7 @@ import logError from "utils/log-error";
 import { loadReportingFinal } from "modules/reports/actions/load-reporting-final";
 import { keyArrayBy } from "utils/key-by";
 import { MarketTradingHistory, TradingHistory } from "modules/types";
+import { AppState } from "store";
 
 export const UPDATE_MARKET_TRADING_HISTORY = "UPDATE_MARKET_TRADING_HISTORY";
 export const UPDATE_USER_TRADING_HISTORY = "UPDATE_USER_TRADING_HISTORY";
@@ -63,7 +64,7 @@ export function updateUserMarketTradingHistory(
 export const loadMarketTradingHistory = (
   options: any,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   if (options === null || !options.marketId) return callback(null);
   getTradingHistory(options, (err: any, tradingHistory: any) => {
     if (err) return callback(err);
@@ -77,7 +78,7 @@ export const loadUserMarketTradingHistory = (
   options = {},
   callback = logError,
   marketIdAggregator: any
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   dispatch(
     loadUserMarketTradingHistoryInternal(
       options,
@@ -92,7 +93,7 @@ export const loadUserMarketTradingHistory = (
 export const loadUserMarketTradingHistoryInternal = (
   options: any,
   callback: Function,
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount, universe } = getState();
   if (!loginAccount.address) return callback(null, []);
   const allOptions = Object.assign(

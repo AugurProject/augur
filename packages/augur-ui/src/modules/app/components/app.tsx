@@ -155,7 +155,7 @@ export default class AppView extends Component<AppProps, AppState> {
     useWeb3Transport: false
   };
 
-  state: AppState = {
+  state = {
     mainMenu: { scalar: 0, open: false, currentTween: null },
     subMenu: { scalar: 0, open: false, currentTween: null }
   };
