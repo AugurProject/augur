@@ -3,7 +3,7 @@ import WebSocket from "isomorphic-ws";
 import WebSocketAsPromised from "websocket-as-promised";
 
 export class WebsocketConnector extends Connector {
-  public socket: WebSocketAsPromised;
+  private socket: WebSocketAsPromised;
   private callback: Callback;
 
   constructor(public readonly endpoint: string) {
