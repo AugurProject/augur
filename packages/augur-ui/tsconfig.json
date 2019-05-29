@@ -73,6 +73,9 @@
   "include": [
     "./src/**/*"
   ],
+  "exclude": [
+    "./src/**/*.test.ts"
+  ],
   "references": [
     {
       "path": "../augur-sdk"

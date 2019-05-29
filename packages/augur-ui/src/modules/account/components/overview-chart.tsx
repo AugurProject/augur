@@ -5,8 +5,9 @@ import { createBigNumber } from "utils/create-big-number";
 import { EthIcon } from "modules/common-elements/icons";
 import ProfitLossChart from "modules/account/components/profit-loss-chart";
 import { MovementLabel } from "modules/common-elements/labels";
-import Styles from "modules/account/components/overview-chart.styles";
+import Styles from "modules/account/components/overview-chart.styles.less";
 import { formatEther } from "utils/format-number";
+import { SizeTypes } from "modules/types";
 
 const ALL_TIME = 3;
 export interface OverviewChartProps {
@@ -27,6 +28,7 @@ export interface UserTimeRangeData {
   realized: number;
   realizedPercent: number;
   totalCost: number;
+  length: any;
 }
 
 interface OverviewChartState {
@@ -47,8 +49,10 @@ export default class OverviewChart extends React.Component<
     profitLossChange: null,
     profitLossValue: null,
     profitLossChangeHasValue: false,
-    noTrades: true
+    noTrades: true,
   };
+
+  public container: object | null = null;
 
   componentDidMount = () => {
     const timeRangeDataConfig =
@@ -83,7 +87,7 @@ export default class OverviewChart extends React.Component<
         const noTrades = data
           .reduce(
             (p, d) => createBigNumber(d.totalCost || constants.ZERO).plus(p),
-            constants.ZERO
+            constants.ZERO,
           )
           .eq(constants.ZERO);
         let profitLossData: Array<Array<number>> = [];
@@ -103,9 +107,9 @@ export default class OverviewChart extends React.Component<
 
         profitLossData = profitLossData.concat(
           Object.keys(chartValues).reduce(
-            (p, t) => [...p, [parseInt(t, 10), chartValues[t]]],
-            []
-          )
+            (p, t): any => [...p, [parseInt(t, 10), chartValues[t]]],
+            [],
+          ),
         );
 
         profitLossData.push([
@@ -121,13 +125,11 @@ export default class OverviewChart extends React.Component<
             lastData.realizedPercent || 0
           ).eq(constants.ZERO),
           profitLossValue: formatEther(lastData.realized).formatted,
-          noTrades
+          noTrades,
         });
-      }
+      },
     );
-  };
-
-  container: Object | null = null;
+  }
 
   render() {
     const {
@@ -135,9 +137,9 @@ export default class OverviewChart extends React.Component<
       profitLossChange,
       profitLossValue,
       profitLossChangeHasValue,
-      noTrades
+      noTrades,
     } = this.state;
-    let content = null;
+    let content: any = null;
 
     if (noTrades) {
       content = (
@@ -156,8 +158,8 @@ export default class OverviewChart extends React.Component<
               showIcon={profitLossChangeHasValue}
               showPlusMinus
               showBrackets
-              value={profitLossChange}
-              size="medium"
+              value={Number(profitLossChange)}
+              size={SizeTypes.NORMAL}
             />
           </div>
           <div>
@@ -165,7 +167,9 @@ export default class OverviewChart extends React.Component<
             {EthIcon}
           </div>
           <ProfitLossChart
+            // @ts-ignore
             data={profitLossData}
+            // @ts-ignore
             width={this.container.clientWidth}
           />
         </>
@@ -174,7 +178,7 @@ export default class OverviewChart extends React.Component<
     return (
       <div
         className={Styles.OverviewChart}
-        ref={container => {
+        ref={(container) => {
           this.container = container;
         }}
       >
