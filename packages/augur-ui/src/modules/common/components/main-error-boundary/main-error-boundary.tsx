@@ -8,20 +8,24 @@ import { SecondaryButton } from "modules/common-elements/buttons";
 import Styles from "modules/common/components/main-error-boundary/main-error-boundary.styles";
 import ButtonStyles from "modules/common-elements/buttons.styles";
 
-export default class MainErrorBoundary extends Component {
+interface MEBProps {
+  children: Element;
+}
+
+interface MEBState {
+  hasError: Boolean;
+}
+
+export default class MainErrorBoundary extends Component<MEBProps, MEBState> {
   static propTypes = {
     children: PropTypes.element.isRequired
   };
 
-  constructor(props) {
-    super(props);
+  state: MEBState = {
+    hasError: false
+  };
 
-    this.state = {
-      hasError: false
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: MEBProps) {
     if (this.state.hasError) {
       this.setState({ hasError: false });
     }
@@ -33,7 +37,8 @@ export default class MainErrorBoundary extends Component {
 
   render() {
     const { children } = this.props;
-    if (this.state.hasError) {
+    const { hasError } = this.state;
+    if (hasError) {
       return (
         <section className={Styles.MainErrorBoundary}>
           <div className={Styles.MainErrorBoundary__container}>

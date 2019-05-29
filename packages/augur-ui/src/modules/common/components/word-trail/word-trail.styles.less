@@ -9,7 +9,7 @@
     color: @color-lightgray;
 
     &::after {
-      margin: 0 4px;
+      margin: 0 @size-4;
     }
   }
 
@@ -17,17 +17,17 @@
     .overflow-ellipsis;
 
     &:not(:first-of-type)::before {
-      margin: 0 4px;
+      margin: 0 @size-4;
     }
   }
 }
 
-.WordTrail__button {
+.button {
   &:extend(.button--transparent--rounded all);
+  .text-10;
 
   border-width: 1px;
   color: @color-alternate-text;
-  font-size: @font-size-extra-small;
   text-transform: capitalize;
   white-space: nowrap;
 

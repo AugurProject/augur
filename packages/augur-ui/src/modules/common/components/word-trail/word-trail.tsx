@@ -9,7 +9,7 @@ const WordTrail = ({ items, typeLabel, children }) => (
     {items.map(({ label, onClick }, index) => (
       <SimpleButton
         testid={typeLabel + "-" + index}
-        className={Styles.WordTrail__button}
+        className={Styles.button}
         key={label}
         text={label}
         onClick={onClick}
