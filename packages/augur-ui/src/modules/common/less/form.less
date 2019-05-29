@@ -11,10 +11,10 @@
 }
 
 .Form__error {
+  .text-16;
+
   color: @color-error-text;
   display: inline-block;
-  font-size: 1rem;
-  line-height: 1rem;
   margin-left: 2.32rem;
   margin-right: 1.5rem;
   position: absolute;
@@ -25,16 +25,16 @@
 .Form__error__space {
   &:extend(.Form__error);
 
-  margin-top: 0.5rem;
+  margin-top: @size-8;
 }
 
 .Form__error--even {
+  .text-16;
+
   color: @color-error-text;
   display: inline-block;
-  font-size: 1rem;
-  line-height: 1rem;
   margin-left: 0;
-  margin-right: 1.5rem;
+  margin-right: @size-24;
   position: absolute;
   text-transform: none;
   white-space: nowrap;
@@ -43,7 +43,7 @@
 .Form__error--even__space {
   &:extend(.Form__error--even);
 
-  margin-top: 0.5rem;
+  margin-top: @size-8;
   position: relative;
 }
 
@@ -51,9 +51,9 @@
 .Form__error--even > svg,
 .Form__error--even__space > svg,
 .Form__error--field-50 > svg {
-  margin: 0 0.2rem;
-  max-height: 1rem;
-  max-width: 1rem;
+  margin: 0 @size-4;
+  max-height: @size-16;
+  max-width: @size-16;
   vertical-align: top;
 }
 
@@ -61,22 +61,22 @@
   &:extend(.Form__error);
 
   left: 52%;
-  line-height: 0.8rem;
+  line-height: @size-13;
   position: absolute;
   top: -3px;
 }
 
 .Form__error > svg,
 .Form__error--field-50 > svg {
-  margin: 0 0.2rem;
-  max-height: 1rem;
-  max-width: 1rem;
+  margin: 0 @size-4;
+  max-height: @size-16;
+  max-width: @size-16;
   vertical-align: top;
 }
 
 .Form__error--field {
   border-color: @color-error-text;
-  border-width: 0.1rem;
+  border-width: 1px;
 }
 
 .Form__input::-webkit-inner-spin-button,
@@ -91,7 +91,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   min-height: 30rem;
-  padding: 0 2rem;
+  padding: 0 @size-32;
 
   > li {
     margin-bottom: 3.7rem;
@@ -104,59 +104,59 @@
 
     > label {
       display: inline-block;
-      font-weight: bold;
-      margin-bottom: 1rem;
+      font-weight: @weight-bold;
+      margin-bottom: @size-16;
       position: relative;
 
       > span:first-child {
-        margin-right: 0.5rem;
+        margin-right: @size-8;
       }
     }
 
     p {
+      .text-18;
+
       color: @color-secondary-text;
       display: flex;
-      font-size: @font-size-large;
-      line-height: @font-size-large;
       margin: 0;
       text-transform: capitalize;
 
       label {
-        margin: 0.3rem 1rem;
+        margin: @size-5 @size-16;
       }
 
       &.text--field-style {
+        .text-18;
+
         color: @color-secondary-text;
-        font-size: @font-size-large;
-        line-height: @font-size-rather-large;
       }
 
       &.error {
-        color: @color-red;
-        font-size: @font-size-medium;
+        .text-16;
+
+        color: @color-error-text;
       }
     }
 
     input[type="text"],
     input[type="number"],
     textarea {
+      .text-18;
+
       background-color: @color-lightergray;
-      font-size: @font-size-large;
-      line-height: @font-size-rather-large;
 
       &.error {
-        border-color: @color-red;
+        border-color: @color-error-text;
       }
 
       &::placeholder {
         color: @color-lightgray;
-        line-height: @font-size-rather-large;
       }
     }
 
     textarea {
       height: 3.5rem;
-      padding-top: 1rem;
+      padding-top: @size-16;
     }
   }
 }
@@ -168,7 +168,7 @@ li.field--short {
 .Form__navigation {
   display: flex;
   justify-content: space-between;
-  padding: 0 2rem;
+  padding: 0 @size-32;
 }
 
 .Form__next,
@@ -206,13 +206,13 @@ li.field--short {
     }
 
     > button {
+      .text-18;
+
       color: @color-secondary-text;
       cursor: pointer;
       display: block;
-      font-size: @font-size-large;
-      line-height: @font-size-large;
       min-height: 1.7rem;
-      padding-left: 2.5rem;
+      padding-left: @size-40;
       position: relative;
       text-align: left;
 
@@ -220,12 +220,12 @@ li.field--short {
         border: 1px solid @color-lightgray;
         border-radius: 100%;
         content: "";
-        height: 1.5rem;
+        height: @size-24;
         left: 0;
         margin: auto;
         position: absolute;
         top: 0;
-        width: 1.5rem;
+        width: @size-24;
       }
 
       &::after {
@@ -233,12 +233,12 @@ li.field--short {
         border-radius: 100%;
         content: "";
         display: none;
-        height: 0.875rem;
-        left: 0.38rem;
+        height: @size-14;
+        left: @size-6;
         margin: auto;
         position: absolute;
-        top: 0.38rem;
-        width: 0.875rem;
+        top: @size-6;
+        width: @size-14;
       }
 
       &.active::after {
@@ -265,7 +265,7 @@ li.field--short {
 
   > li:not(:first-child) {
     margin-left: 0;
-    margin-top: 1rem;
+    margin-top: @size-16;
 
     &.field--inline {
       display: block;
@@ -295,7 +295,7 @@ li.field--short {
 
     &:not(:first-child) {
       margin-left: 0;
-      margin-top: 1rem;
+      margin-top: @size-16;
 
       &.field--inline {
         display: block;
@@ -304,13 +304,13 @@ li.field--short {
     }
 
     > button {
+      .text-12;
+
       color: @color-secondary-text;
       cursor: pointer;
       display: block;
-      font-size: @font-size-small;
-      line-height: @font-size-large;
       min-height: 1.7rem;
-      padding-left: 2.5rem;
+      padding-left: @size-40;
       position: absolute;
       text-align: left;
 
@@ -319,12 +319,12 @@ li.field--short {
         border-radius: 100%;
         content: "";
         display: none;
-        height: 0.875rem;
-        left: 0.38rem;
+        height: @size-14;
+        left: @size-6;
         margin: auto;
         position: absolute;
-        top: 0.38rem;
-        width: 0.875rem;
+        top: @size-6;
+        width: @size-14;
       }
 
       &.active::after {
@@ -346,7 +346,7 @@ li.field--short {
 .Form__radio-buttons--per-line-long {
   &:extend(.Form__radio-buttons--per-line all);
 
-  margin-top: 1rem;
+  margin-top: @size-16;
   white-space: nowrap;
   width: 18rem;
 }
@@ -361,19 +361,19 @@ li.field--short {
 
     > li:not(:first-child) {
       margin-left: 0;
-      margin-top: 1rem;
+      margin-top: @size-16;
     }
   }
 }
 
 @media @breakpoint-mobile-medium {
   .Form {
-    padding-bottom: 3rem;
+    padding-bottom: @size-48;
   }
 
   .Form__fields {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: @size-16;
+    padding-right: @size-16;
   }
 
   .Form__navigation {
@@ -411,11 +411,11 @@ li.field--short {
 
   .Form__error--field {
     border-color: @color-error-text;
-    border-width: 0.1rem;
+    border-width: 1px;
   }
 
   .Form__error + .Form__error--field-50 {
-    left: 0.5rem;
+    left: @size-8;
   }
 
   .Form__fields > li.field--50 {
