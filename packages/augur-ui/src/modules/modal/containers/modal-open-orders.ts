@@ -5,8 +5,9 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { closeModal } from "modules/modal/actions/close-modal";
 import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
 import { cancelAllOpenOrders } from "modules/orders/actions/cancel-order";
+import { AppState } from "store";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
   const userOpenOrders = getUserOpenOrders(state.modal.marketId) || [];
   return {

@@ -4,9 +4,10 @@ import { updateLoginAccount } from "modules/account/actions/login-account";
 import { updateAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
+import { AppState } from "store";
 
 export function checkAccountAllowance(callback: Function = logError) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const { loginAccount } = getState();
     if (loginAccount.allowance && loginAccount.allowance !== "0") {
       callback(null, loginAccount.allowance);

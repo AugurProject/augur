@@ -4,8 +4,9 @@ import MarketChartsPane from "modules/market-charts/components/market-charts-pan
 import { selectMarket } from "modules/markets/selectors/market";
 import { createBigNumber } from "utils/create-big-number";
 import { getMarketAgeInDays } from "utils/format-date";
+import { AppState } from "store";
 
-const mapStateToProps = (state: any, ownProps: any) => {
+const mapStateToProps = (state: AppState, ownProps: any) => {
   const {
     currentTimestamp
   } = state;

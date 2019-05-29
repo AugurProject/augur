@@ -1,11 +1,12 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
+import { AppState } from "store";
 
 export const getForkMigrationTotals = (
   universeId: string,
   callback: Function = logError,
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { marketsData, universe } = getState();
 
   augur.api.Universe.getForkingMarket(

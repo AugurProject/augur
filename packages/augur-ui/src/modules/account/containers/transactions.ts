@@ -9,8 +9,9 @@ import {
   MODAL_DEPOSIT,
   MODAL_TRANSACTIONS
 } from "modules/common-elements/constants";
-// made state an ANY for now.
-const mapStateToProps = (state: any) => ({
+import { AppState } from "store";
+
+const mapStateToProps = (state: AppState) => ({
   isMainnet: state.connection.augurNodeNetworkId === NETWORK_IDS.Mainnet,
 });
 

@@ -1,5 +1,6 @@
 import selectOrder from "modules/orders/selectors/select-order";
 import { OrderStatus } from "modules/types";
+import { AppState } from "store";
 
 export const UPDATE_ORDER_STATUS = "UPDATE_ORDER_STATUS";
 export const UPDATE_ORDER_REMOVE = "UPDATE_ORDER_REMOVE";
@@ -18,7 +19,7 @@ export const updateOrderStatus = ({
   marketId,
   outcome,
   orderTypeLabel
-}: OrderStatus) => (dispatch: Function, getState: Function) => {
+}: OrderStatus) => (dispatch: Function, getState: () => AppState) => {
   const { orderBooks } = getState();
   const order = selectOrder(
     orderId,

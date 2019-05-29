@@ -2,9 +2,11 @@ import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { updateTopBarPL } from "modules/positions/actions/update-top-bar-pl";
 import { updateLoginAccount } from "modules/account/actions/login-account";
+import { AppState } from "store";
 import { updateAccountPositionsData } from "modules/positions/actions/account-positions";
 import { PositionData, AccountPositionAction, PositionsTotal, AccountPosition, TradingPositionsPerMarket } from "modules/types";
 
+// TODO: this is the shape from augur-node will change from SDK getter
 interface UserTradingPositions {
   frozenFundsTotal: {
     frozenFunds: string;
@@ -13,7 +15,6 @@ interface UserTradingPositions {
   tradingPositionsPerMarket: TradingPositionsPerMarket;
   tradingPositionsTotal?: PositionsTotal;
 }
-
 
 export const loadAccountPositions = (
   options: any = {},
@@ -67,8 +68,9 @@ export const loadAccountPositionsTotals = (callback = logError) => (
 
 const loadAccountPositionsInternal = (
   options: any = {},
-  callback: Function
-) => (dispatch: Function, getState: Function) => {
+  callback: Function,
+) => (dispatch: Function, getState: () => AppState) => {
+
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
     return callback(null, {});

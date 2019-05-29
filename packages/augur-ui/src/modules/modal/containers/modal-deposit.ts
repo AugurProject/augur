@@ -7,8 +7,9 @@ import { augur } from "services/augurjs";
 import { NETWORK_IDS } from "modules/common-elements/constants";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
+import { AppState } from "store";
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   address: state.loginAccount.displayAddress,
   augurNodeNetworkId: state.connection.augurNodeNetworkId

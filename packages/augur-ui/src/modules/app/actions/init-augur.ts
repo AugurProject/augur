@@ -29,6 +29,7 @@ import {
 } from "modules/common-elements/constants";
 import { windowRef } from "utils/window-ref";
 import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
+import { AppState } from "store";
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -129,7 +130,7 @@ function loadAccount(
   });
 }
 
-function pollForNetwork(dispatch: Function, getState: Function) {
+function pollForNetwork(dispatch: Function, getState: () => AppState) {
   setInterval(() => {
     const { modal } = getState();
     dispatch(
@@ -176,7 +177,7 @@ export function connectAugur(
   isInitialConnection: Boolean = false,
   callback: Function = logError
 ) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const { modal, loginAccount } = getState();
     AugurJS.connect(
       env,
@@ -254,7 +255,7 @@ export function initAugur(
   { augurNode, ethereumNodeHttp, ethereumNodeWs, useWeb3Transport }: initAugurParams,
   callback = logError
 ) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const env = networkConfig[`${process.env.ETHEREUM_NETWORK}`];
     console.log(env);
     env.useWeb3Transport = useWeb3Transport;
