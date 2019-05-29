@@ -27,10 +27,7 @@ export interface PlaceTradeParams {
   ignoreShares: boolean,
   affiliateAddress: string,
   kycToken: string,
-  doNotCreateOrders: boolean,
-  onSuccess: GenericCallback,
-  onFailed: GenericCallback,
-  onSent?: GenericCallback
+  doNotCreateOrders: boolean
 };
 
 export interface PlaceTradeDisplayParams extends PlaceTradeParams {
@@ -78,27 +75,20 @@ export class Trade {
 
   public async placeOnChainTrade(params: PlaceTradeChainParams): Promise<void> {
     const invalidReason = await this.checkIfTradeValid(params);
-    if (invalidReason) return params.onFailed(invalidReason);
+    if (invalidReason) throw new Error(invalidReason);
 
     const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
 
     let result: Array<Event> = [];
 
-    if (params.onSent) params.onSent(params);
     // TODO: Use the calculated gasLimit above instead of relying on an estimate once we can send an override gasLimit
-    try {
-      if (params.doNotCreateOrders) {
-        result = await this.augur.contracts.trade.publicFillBestOrder(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, params.tradeGroupId, loopLimit, params.ignoreShares, params.affiliateAddress, params.kycToken);
-      } else {
-        // TODO: Use the state provided better worse orders
-        const nullOrderId = stringTo32ByteHex("");
-        result = await this.augur.contracts.trade.publicTrade(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, nullOrderId, nullOrderId, params.tradeGroupId, loopLimit, params.ignoreShares, params.affiliateAddress, params.kycToken);
-      }
-    } catch (e) {
-      return params.onFailed(`Failed with error: ${JSON.stringify(e)}`)
+    if (params.doNotCreateOrders) {
+      result = await this.augur.contracts.trade.publicFillBestOrder(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, params.tradeGroupId, loopLimit, params.ignoreShares, params.affiliateAddress, params.kycToken);
+    } else {
+      // TODO: Use the state provided better worse orders
+      const nullOrderId = stringTo32ByteHex("");
+      result = await this.augur.contracts.trade.publicTrade(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, nullOrderId, nullOrderId, params.tradeGroupId, loopLimit, params.ignoreShares, params.affiliateAddress, params.kycToken);
     }
-
-    params.onSuccess(result);
 
     const amountRemaining = this.getTradeAmountRemaining(result);
     if (amountRemaining.gt(0)) {

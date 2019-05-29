@@ -16,12 +16,16 @@ export interface EthersProvider {
     listAccounts(): Promise<string[]>;
 }
 
+export type OnSentCallback = (data: any) => void;
+
 export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     public readonly provider: EthersProvider;
     public readonly signer?: EthersSigner;
     public readonly address?: string;
 
     private readonly abiCoder: ethers.utils.AbiCoder;
+
+    private onSentCallbacks: { [key: string]: OnSentCallback } = {};
 
     public constructor(provider: EthersProvider, signer?: EthersSigner, address?: string) {
         this.provider = provider;
@@ -81,6 +85,24 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
         if (addresses.length > 0) return addresses[0];
 
         return <string>this.address;
+    }
+
+    public registerOnSentCallback(key: string, callback: OnSentCallback): void {
+        this.onSentCallbacks[key] = callback;
+    }
+
+    public deRegisterOnSentCallback(key: string): void {
+        delete this.onSentCallbacks[key];
+    }
+
+    public deRegisterAllOnSentCallbacks(): void {
+        Object.keys(this.onSentCallbacks).map((key) => this.deRegisterOnSentCallback(key));
+    }
+
+    public onSend(transaction: Transaction<BigNumber>, response: ethers.providers.TransactionResponse): void {
+        for (let callback of Object.values(this.onSentCallbacks)) {
+            callback(response);
+        }
     }
 
     public async submitTransaction(transaction: Transaction<BigNumber>): Promise<TransactionReceipt> {
