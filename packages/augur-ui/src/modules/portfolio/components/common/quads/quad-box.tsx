@@ -13,15 +13,14 @@ export interface QuadBoxProps {
   sortByOptions?: any;
   updateDropdown?: any;
   onSearchChange?: any;
-  children?: ReactNode;
-  bottomBarContent?: ReactNode;
-  bottomRightBarContent?: ReactNode;
-  rightContent?: ReactNode;
-  sortByStyles?: object;
-  switchHeaders?: boolean;
-  noBackgroundBottom?: boolean;
-  search?: string;
   content?: ReactNode;
+  bottomBarContent?: ReactNode;
+  bottomRightBarContent?: ReactNode;  
+  rightContent?: ReactNode;  
+  sortByStyles?: object;  
+  switchHeaders?: boolean;  
+  noBackgroundBottom?: boolean;  
+  search?: string;  
 }
 
 const BoxHeaderElement = (props: QuadBoxProps) => (
@@ -68,7 +67,7 @@ const QuadBox = (props: QuadBoxProps) => (
             switchHeaders={props.switchHeaders}
           />
         </div>
-        {(props.children) ? props.children : null}
+        {(props.content) ? props.content : null}
       </div>
     </div>
   </div>
