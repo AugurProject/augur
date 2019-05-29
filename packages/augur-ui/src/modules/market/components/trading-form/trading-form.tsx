@@ -46,7 +46,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
     selectedOutcome:
       this.props.selectedOutcome !== null && this.props.market.outcomes
         ? this.props.market.outcomes.find(
-            outcome => outcome.id === props.selectedOutcome
+            outcome => outcome.id === this.props.selectedOutcome
           )
         : null
   }
