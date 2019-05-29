@@ -14,13 +14,14 @@ import { MY_POSITIONS } from "modules/routes/constants/views";
 import { buildCreateMarket } from "modules/markets/helpers/build-create-market";
 import { sortOrders } from "modules/orders/helpers/liquidity";
 import { addMarketLiquidityOrders } from "modules/orders/actions/liquidity-management";
+import { AppState } from "store";
 
 export function submitNewMarket(
   newMarket: any,
   history: any,
   callback: Function = noop
 ) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const { universe, loginAccount, contractAddresses } = getState();
     const { createMarket, formattedNewMarket } = buildCreateMarket(
       newMarket,
@@ -67,7 +68,7 @@ export function submitNewMarket(
 }
 
 function getHasApproval(hasOrders: Boolean, callback: Function) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const { loginAccount } = getState();
     if (hasOrders && createBigNumber(loginAccount.allowance).lte(ZERO)) {
       dispatch(

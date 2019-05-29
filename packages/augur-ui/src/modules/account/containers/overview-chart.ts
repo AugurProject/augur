@@ -1,9 +1,9 @@
 import { connect } from "react-redux";
-
+import { AppState } from "store";
 import OverviewChart from "modules/account/components/overview-chart";
 import getProfitLoss from "modules/positions/actions/get-profit-loss";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const { blockchain } = state;
   const { currentAugurTimestamp } = blockchain;
 

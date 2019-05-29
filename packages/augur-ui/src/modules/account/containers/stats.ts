@@ -1,10 +1,10 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
+import { AppState } from "store";
 import getValue from "utils/get-value";
 import Stats from "modules/account/components/stats";
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   timeframeData: state.loginAccount.timeframeData,
 });
 

@@ -6,8 +6,9 @@ import {
   selectLoginAccount,
   selectAccountFunds,
 } from "modules/auth/selectors/login-account";
+import { AppState } from "store";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const loginAccount = selectLoginAccount(state);
   const {
     totalAvailableTradingBalance,

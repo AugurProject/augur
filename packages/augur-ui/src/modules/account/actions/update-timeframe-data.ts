@@ -1,12 +1,13 @@
 import { augur } from "services/augurjs";
 import { updateLoginAccount } from "modules/account/actions/login-account";
 import logError from "utils/log-error";
-import { TimeframeData, LoginAccount } from "modules/types";
+import { TimeframeData } from "modules/types";
+import { AppState } from "store";
 
 export const updateTimeframeData = (
   options: any = {},
   callback: any = logError,
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
     return callback(null);
@@ -22,6 +23,6 @@ export const updateTimeframeData = (
     (err, timeframeData: TimeframeData) => {
       if (err) return callback(err);
       dispatch(updateLoginAccount({ timeframeData }));
-    }
+    },
   );
 };

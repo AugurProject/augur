@@ -9,9 +9,10 @@ import {
 } from "modules/common-elements/constants";
 import logError from "utils/log-error";
 import noop from "utils/noop";
+import { AppState } from "store";
 
 export default function(callback = logError) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const { universe, loginAccount } = getState();
     const universeID = universe.id || UNIVERSE_ID;
     const update = (id: string, status: string) =>

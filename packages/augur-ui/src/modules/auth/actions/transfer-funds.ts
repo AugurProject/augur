@@ -3,13 +3,14 @@ import { augur } from "services/augurjs";
 import { updateAlert, addAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds as getTime } from "store/select-state";
 import { ETH, REP, CONFIRMED, FAILED } from "modules/common-elements/constants";
+import { AppState } from "store";
 
 export function transferFunds(
   amount: string,
   currency: string,
-  toAddress: string
+  toAddress: string,
 ) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const { universe, loginAccount } = getState();
     const fromAddress = loginAccount.address;
     const to = speedomatic.formatEthereumAddress(toAddress);

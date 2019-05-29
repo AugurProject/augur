@@ -2,10 +2,10 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Transactions } from "modules/modal/transactions";
 import { augur } from "services/augurjs";
-
+import { AppState } from "store";
 import { closeModal } from "modules/modal/actions/close-modal";
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   now: state.blockchain.currentAugurTimestamp,
   account: state.loginAccount.address,
