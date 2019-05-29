@@ -3,8 +3,9 @@ import { withRouter } from "react-router-dom";
 import { GAS_SPEED_LABELS } from "modules/common-elements/constants";
 import { updateModal } from "modules/modal/actions/update-modal";
 import GasPriceEdit from "modules/app/components/gas-price-edit";
+import { AppState } from "store";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const { fast, average, safeLow, userDefinedGasPrice } = state.gasPriceInfo;
 
   const userDefined = userDefinedGasPrice || average || 0;

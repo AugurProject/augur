@@ -24,8 +24,8 @@ export default class SideNav extends Component {
     currentBasePath: null
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       selectedItem: null,
       selectedKey: null

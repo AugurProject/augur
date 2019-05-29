@@ -1,10 +1,11 @@
 import { augur, constants } from "services/augurjs";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import logError from "utils/log-error";
+import { AppState } from "store";
 
 export const loadDesignatedReporterMarkets = (
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   if (!loginAccount.address) return callback(null);
   if (!universe.id) return callback(null);

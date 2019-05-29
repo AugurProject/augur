@@ -5,21 +5,22 @@ import { NameValuePair } from "modules/portfolio/types";
 import { SearchSort } from "modules/common-elements/search-sort";
 import { SquareDropdown } from "modules/common-elements/selection";
 
-import Styles from "modules/portfolio/components/common/quads/filter-box.styles";
+import Styles from "modules/portfolio/components/common/quads/filter-box.styles.less";
 
 export interface QuadBoxProps {
   title: string;
-  showFilterSearch: Boolean;
-  sortByOptions: Array<NameValuePair>;
-  updateDropdown: Function;
-  onSearchChange: Function;
-  children?: ReactNode;
-  bottomBarContent: ReactNode;
-  bottomRightBarContent?: ReactNode;
-  rightContent?: ReactNode;
-  sortByStyles?: Object;
-  switchHeaders?: Boolean;
-  noBackgroundBottom?: Boolean;
+  showFilterSearch?: boolean | undefined;
+  sortByOptions?: any;
+  updateDropdown?: any;
+  onSearchChange?: any;
+  content?: ReactNode;
+  bottomBarContent?: ReactNode;
+  bottomRightBarContent?: ReactNode;  
+  rightContent?: ReactNode;  
+  sortByStyles?: object;  
+  switchHeaders?: boolean;  
+  noBackgroundBottom?: boolean;  
+  search?: string;  
 }
 
 const BoxHeaderElement = (props: QuadBoxProps) => (
@@ -66,7 +67,7 @@ const QuadBox = (props: QuadBoxProps) => (
             switchHeaders={props.switchHeaders}
           />
         </div>
-        {(props.children) ? props.children : null}
+        {(props.content) ? props.content : null}
       </div>
     </div>
   </div>

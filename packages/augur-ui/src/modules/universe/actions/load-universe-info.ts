@@ -19,6 +19,7 @@ import {
   NULL_ADDRESS,
   UNIVERSE_ID
 } from "modules/common-elements/constants";
+import { AppState } from "store";
 
 const REQUIRED_GENESIS_SUPPLY = createBigNumber(
   "1100000000000000000000000",
@@ -26,7 +27,7 @@ const REQUIRED_GENESIS_SUPPLY = createBigNumber(
 );
 
 export function loadUniverseInfo(callback: Function = logError) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const { universe, loginAccount, marketsData } = getState();
     const universeId = universe.id || UNIVERSE_ID;
 

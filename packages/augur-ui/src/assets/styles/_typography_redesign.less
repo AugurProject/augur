@@ -8,6 +8,7 @@
 
 // sizes
 @size-4: 0.25rem; // 4px
+@size-5: 0.3125rem; // 5px
 @size-6: 0.375rem; // 6px
 @size-8: 0.5rem; // 8px
 @size-9: 0.5625rem; // 9px
@@ -27,6 +28,7 @@
 @size-36: 2.25rem; // 36px
 @size-38: 2.375rem; // 38px
 @size-40: 2.5rem; // 40px
+@size-48: 3rem; // 48px
 
 // font-weights
 @weight-light: 300; // 300
@@ -73,6 +75,13 @@
   font-weight: @weight-bold;
 }
 
+.text-24 {
+  .text-default;
+
+  font-size: @size-24;
+  line-height: @size-18;
+}
+
 .text-24-bold {
   .text-default;
 
@@ -80,10 +89,15 @@
   font-weight: @weight-bold;
 }
 
-.text-18-bold {
+.text-18 {
   .text-default;
 
   font-size: @size-18;
+}
+
+.text-18-bold {
+  .text-18;
+
   font-weight: @weight-bold;
 }
 

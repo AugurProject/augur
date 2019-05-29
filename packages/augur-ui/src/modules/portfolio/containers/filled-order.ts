@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
+import { AppState } from "store";
 import getValue from "utils/get-value";
 import { formatEther, formatShares } from "utils/format-number";
 import * as constants from "modules/common-elements/constants";
@@ -9,7 +9,7 @@ import Row from "modules/common-elements/row";
 
 const { COLUMN_TYPES } = constants;
 
-const mapStateToProps = (state: any) => ({});
+const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: Function) => ({});
 

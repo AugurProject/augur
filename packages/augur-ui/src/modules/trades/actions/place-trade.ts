@@ -14,10 +14,8 @@ import {
   removePendingOrder
 } from "modules/orders/actions/pending-orders-management";
 import { formatEther, formatShares } from "utils/format-number";
-
-function getOutcomeName(outcomesData: any, outcomeId: any) {
-  return outcomesData[outcomeId].name || outcomesData[outcomeId].description;
-}
+import { getOutcomeName } from "utils/get-outcome";
+import { AppState } from "store";
 
 export const placeTrade = ({
   marketId,
@@ -26,7 +24,7 @@ export const placeTrade = ({
   doNotCreateOrders,
   callback = logError,
   onComplete = noop
-}: any) => (dispatch: Function, getState: Function) => {
+}: any) => (dispatch: Function, getState: () => AppState) => {
   if (!marketId) return null;
   const { loginAccount, marketsData, blockchain, outcomesData } = getState();
   const market = marketsData[marketId];
@@ -81,7 +79,7 @@ export const placeTrade = ({
             unmatchedShares: formatShares(tradeInProgress.numShares),
             name: getOutcomeName(
               outcomesData[marketId],
-              parseInt(outcomeId, 10)
+              { id: outcomeId },
             ),
             type: tradeInProgress.side,
             pendingOrder: true,

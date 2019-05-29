@@ -6,7 +6,7 @@ import Activity from "modules/account/containers/activity";
 import QuadBox from "modules/portfolio/components/common/quads/quad-box";
 import { AUGUR_STATUS_TITLE } from "modules/common-elements/constants";
 
-import Styles from "modules/account/components/status.styles";
+import Styles from "modules/account/components/status.styles.less";
 
 export interface SyncingInfo {
   percent: number;
@@ -28,24 +28,24 @@ const AugurStatus = ({ syncingInfo }: AugurStatusProps) => {
     percent,
     blocksBehind,
     highestBlockBn,
-    lastProcessedBlockBn
+    lastProcessedBlockBn,
   } = syncingInfo;
 
   return (
     <QuadBox
       title={AUGUR_STATUS_TITLE}
-
-    >
-      <div className={Styles.AugurStatusContent}>
-        <SyncStatus syncPercent={percent} />
-        <BlockStatus
-          blocksBehind={blocksBehind}
-          highestBlockBn={highestBlockBn}
-          lastProcessedBlockBn={lastProcessedBlockBn}
-        />
-        <Activity />
-      </div>
-    </QuadBox>
+      content={
+        <div className={Styles.AugurStatusContent}>
+          <SyncStatus syncPercent={percent} />
+          <BlockStatus
+            blocksBehind={blocksBehind}
+            highestBlockBn={highestBlockBn}
+            lastProcessedBlockBn={lastProcessedBlockBn}
+          />
+          <Activity />
+        </div>
+      }
+    />
   );
 };
 

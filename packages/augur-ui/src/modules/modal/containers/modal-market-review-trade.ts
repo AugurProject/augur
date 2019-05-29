@@ -4,8 +4,9 @@ import { MARKET_REVIEW_TRADE_SEEN } from "modules/common-elements/constants";
 import { Message } from "modules/modal/message";
 import { selectMarket } from "modules/markets/selectors/market";
 import { closeModal } from "modules/modal/actions/close-modal";
+import { AppState } from "store";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
 
   return {

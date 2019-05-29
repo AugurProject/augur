@@ -3,6 +3,7 @@ import makePath from "modules/routes/helpers/make-path";
 import logError from "utils/log-error";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { augur } from "services/augurjs";
+import { AppState } from "store";
 
 export const submitInitialReport = ({
   estimateGas,
@@ -12,7 +13,7 @@ export const submitInitialReport = ({
   history,
   returnPath = REPORTING_REPORT_MARKETS,
   callback = logError
-}: any) => (dispatch: Function, getState: Function) => {
+}: any) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount, marketsData } = getState();
   const outcome = parseFloat(selectedOutcome);
 

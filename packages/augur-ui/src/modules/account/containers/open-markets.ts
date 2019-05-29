@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
+import { AppState } from "store";
 import OpenMarkets from "modules/account/components/open-markets";
 import { pick } from "lodash";
 import { CLOSED, MARKET_CLOSED } from "modules/common-elements/constants";
@@ -9,13 +9,13 @@ import getSelectLoginAccountTotals from "modules/positions/selectors/login-accou
 import memoize from "memoizee";
 import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const positions = getLoginAccountPositions();
   const totalPercentage = getSelectLoginAccountTotals();
-  const timestamps = getMarketsPositionsRecentlyTraded(state);
+  const timestamps = getMarketsPositionsRecentlyTraded();
 
   const markets = getPositionsMarkets(timestamps, positions).sort(
-    (a: any, b: any) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
+    (a: any, b: any) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp,
   );
 
   const marketsObj = markets.reduce((obj: any, market: any) => {
@@ -24,14 +24,14 @@ const mapStateToProps = (state: any) => {
   }, {});
 
   const marketsPick = markets.map((
-    market: any // when these things change then component will re-render/re-sort
+    market: any, // when these things change then component will re-render/re-sort
   ) => pick(market, ["id", "description", "reportingState", "recentlyTraded"]));
 
   return {
     isLogged: state.authStatus.isLogged,
     markets: marketsPick,
     marketsObj,
-    totalPercentage
+    totalPercentage,
   };
 };
 
@@ -49,11 +49,11 @@ const getPositionsMarkets = memoize(
             {
               ...m,
               userPositions: pos,
-              recentlyTraded: marketsPositionsRecentlyTraded[m.id]
-            }
+              recentlyTraded: marketsPositionsRecentlyTraded[m.id],
+            },
           ];
     }, []),
-  { max: 1 }
+  { max: 1 },
 );
 
 export default OpenMarketsContainer;

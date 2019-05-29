@@ -7,13 +7,14 @@ import { formatGasCostToEther } from "utils/format-number";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
+import { AppState } from "store";
 
 
 // TODO: is this even in use? on a search, i never see it imported...
 export const loadParticipationTokens = (
   includeCurrent: Boolean = true,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount, universe } = getState();
   const universeID = universe.id || UNIVERSE_ID;
 
@@ -40,7 +41,7 @@ export const purchaseParticipationTokens = (
   amount: string,
   estimateGas = false,
   callback = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { universe } = getState();
   augur.reporting.getFeeWindowCurrent(
     { universe: universe.id },
@@ -65,7 +66,7 @@ const callMethod = (
   address: string,
   estimateGas: Boolean = false,
   callback: Function
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount } = getState();
   method({
     tx: {

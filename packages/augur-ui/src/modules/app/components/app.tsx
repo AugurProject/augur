@@ -155,7 +155,7 @@ export default class AppView extends Component<AppProps, AppState> {
     useWeb3Transport: false
   };
 
-  state: AppState = {
+  state = {
     mainMenu: { scalar: 0, open: false, currentTween: null },
     subMenu: { scalar: 0, open: false, currentTween: null }
   };
@@ -206,6 +206,7 @@ export default class AppView extends Component<AppProps, AppState> {
     }
   ];
 
+  // TODO: can we refactor this out or just remove it?
   shouldComponentUpdate = shouldComponentUpdatePure;
 
   componentWillMount() {
@@ -465,7 +466,7 @@ export default class AppView extends Component<AppProps, AppState> {
     const { sidebarStatus } = this.props;
     const { mobileMenuState: menuState } = sidebarStatus;
 
-    let icon = null;
+    let icon: any = null;
     if (menuState === MOBILE_MENU_STATES.CLOSED)
       icon = <MobileNavHamburgerIcon />;
     else if (menuState === MOBILE_MENU_STATES.SIDEBAR_OPEN)

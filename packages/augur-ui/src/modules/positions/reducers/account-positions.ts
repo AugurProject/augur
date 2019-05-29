@@ -15,13 +15,13 @@ export default function(accountPositions = DEFAULT_STATE, { type, data }: BaseAc
           return {
             ...accountPositions,
             [marketId]: {
-              ...positionData[marketId]
-            }
+              ...positionData[marketId],
+            },
           };
         }
         return {
           ...accountPositions,
-          ...positionData
+          ...positionData,
         };
       }
       return accountPositions;

@@ -4,24 +4,24 @@ import Notifications from "modules/account/components/notifications";
 import { selectNotifications } from "modules/notifications/selectors/notification-state";
 import { updateReadNotifications } from "modules/notifications/actions/update-notifications";
 import { updateModal } from "modules/modal/actions/update-modal";
-
+import { AppState } from "store";
 import {
   MODAL_FINALIZE_MARKET,
   MODAL_SELL_COMPLETE_SETS,
   MODAL_CLAIM_PROCEEDS,
   MODAL_CLAIM_FEES,
   MODAL_UNSIGNED_ORDERS,
-  MODAL_OPEN_ORDERS
+  MODAL_OPEN_ORDERS,
 } from "modules/common-elements/constants";
 
 // TODO create state Interface
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const notifications = selectNotifications(state);
 
   return {
     notifications,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
-    reportingWindowStatsEndTime: state.reportingWindowStats.endTime
+    reportingWindowStatsEndTime: state.reportingWindowStats.endTime,
   };
 };
 
@@ -37,8 +37,8 @@ const mapDispatchToProps = (dispatch: Function) => ({
       updateModal({
         type: MODAL_CLAIM_FEES,
         cb,
-        ...reportingFees
-      })
+        ...reportingFees,
+      }),
     ),
   sellCompleteSetsModal: (marketId: any, numCompleteSets: any, cb: Function) =>
     dispatch(
@@ -46,32 +46,32 @@ const mapDispatchToProps = (dispatch: Function) => ({
         type: MODAL_SELL_COMPLETE_SETS,
         marketId,
         numCompleteSets,
-        cb
-      })
+        cb,
+      }),
     ),
   unsignedOrdersModal: (marketId: string, cb: Function) =>
     dispatch(
       updateModal({
         type: MODAL_UNSIGNED_ORDERS,
         marketId,
-        cb
-      })
+        cb,
+      }),
     ),
   openOrdersModal: (marketId: string, cb: Function) =>
     dispatch(
       updateModal({
         type: MODAL_OPEN_ORDERS,
         marketId,
-        cb
-      })
-    )
+        cb,
+      }),
+    ),
 });
 
 const NotificationsContainer = withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(Notifications)
+    mapDispatchToProps,
+  )(Notifications),
 );
 
 export default NotificationsContainer;

@@ -1,7 +1,8 @@
 import { connect } from "react-redux";
 import TermsAndConditions from "modules/app/components/terms-and-conditions";
+import { AppState } from "store";
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   versions: state.versions
 });
 

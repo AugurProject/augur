@@ -1,6 +1,0 @@
-export const createMarketResolutionExpirySourceSpecific: string;
-export const createMarketResolutionDesignatedReporterSpecific: string;
-export const CreateMarketResolution__tooltip: string;
-export const createMarketResolutionTooltip: string;
-export const CreateMarketResolution__tooltipContainer: string;
-export const createMarketResolutionTooltipContainer: string;

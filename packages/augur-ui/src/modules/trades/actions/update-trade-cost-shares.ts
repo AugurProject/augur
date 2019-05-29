@@ -4,6 +4,7 @@ import { BUY, ZERO } from "modules/common-elements/constants";
 import logError from "utils/log-error";
 import { generateTrade } from "modules/trades/helpers/generate-trade";
 import { buildDisplayTrade } from "modules/trades/helpers/build-display-trade";
+import { AppState } from "store";
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
 export function updateTradeCost({
@@ -15,7 +16,7 @@ export function updateTradeCost({
   selfTrade,
   callback = logError
 }: any) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     if (!side || !numShares || !limitPrice) {
       return callback("side or numShare or limitPrice is not provided");
     }
@@ -63,7 +64,7 @@ export function updateTradeShares({
   limitPrice,
   callback = logError
 }: any) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     if (!side || !maxCost || !limitPrice) {
       return callback("side or numShare or limitPrice is not provided");
     }
