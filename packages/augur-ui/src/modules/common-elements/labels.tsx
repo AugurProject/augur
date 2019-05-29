@@ -177,7 +177,7 @@ export function formatExpandedValue(
   const testValue = createBigNumber(fullPrecision);
   const isGreaterThan = testValue.abs().gt(max);
   const isLessThan = testValue.abs().lt(min) && !testValue.eq(ZERO);
-  let postfix = isGreaterThan || isLessThan ? string.fromCodePoint(0x2026) : "";
+  let postfix = isGreaterThan || isLessThan ? String.fromCodePoint(0x2026) : "";
   let frontFacingLabel = isGreaterThan ? fullWithoutDecimals : roundedFormatted;
   const denominationLabel = showDenomination ? `${denomination}` : "";
 

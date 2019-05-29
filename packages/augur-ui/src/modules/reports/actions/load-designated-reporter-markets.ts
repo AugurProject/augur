@@ -2,10 +2,13 @@ import { augur, constants } from "services/augurjs";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import logError from "utils/log-error";
 import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const loadDesignatedReporterMarkets = (
-  callback: Function = logError
-) => (dispatch: Function, getState: () => AppState) => {
+  callback: NodeStyleCallback = logError
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   if (!loginAccount.address) return callback(null);
   if (!universe.id) return callback(null);

@@ -1,6 +1,8 @@
 import selectOrder from "modules/orders/selectors/select-order";
 import { OrderStatus } from "modules/types";
 import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const UPDATE_ORDER_STATUS = "UPDATE_ORDER_STATUS";
 export const UPDATE_ORDER_REMOVE = "UPDATE_ORDER_REMOVE";
@@ -19,7 +21,7 @@ export const updateOrderStatus = ({
   marketId,
   outcome,
   orderTypeLabel
-}: OrderStatus) => (dispatch: Function, getState: () => AppState) => {
+}: OrderStatus) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { orderBooks } = getState();
   const order = selectOrder(
     orderId,
@@ -46,7 +48,7 @@ export const updateOrderStatus = ({
   });
 };
 
-export const removeCanceledOrder = (orderId: string) => (dispatch: Function) =>
+export const removeCanceledOrder = (orderId: string) => (dispatch: ThunkDispatch<void, any, Action>) =>
   dispatch({ type: UPDATE_ORDER_REMOVE, data: { orderId } });
 
 function warnNonExistingOrder(

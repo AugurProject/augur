@@ -8,13 +8,16 @@ import {
   getGasPrice
 } from "modules/contracts/actions/contractCalls";
 import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const GAS_PRICE_API_ENDPOINT = "https://ethgasstation.info/json/ethgasAPI.json";
 const GWEI_CONVERSION = 1000000000;
 const MAINNET_ID = "1";
 
-export function loadGasPriceInfo(callback: Function = logError) {
-  return (dispatch: Function, getState: () => AppState) => {
+export function loadGasPriceInfo(callback: NodeStyleCallback = logError) {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount, blockchain } = getState();
     if (!loginAccount.address) return callback(null);
     const networkId = getNetworkId();
@@ -32,12 +35,12 @@ export function loadGasPriceInfo(callback: Function = logError) {
   };
 }
 
-function getGasPriceRanges(networkId: string, callback: Function) {
+function getGasPriceRanges(networkId: string, callback: NodeStyleCallback) {
   const defaultGasPrice = setDefaultGasInfo();
   getGasPriceValues(defaultGasPrice, (result: any) => callback(result));
 }
 
-function getGasPriceValues(defaultGasPrice: any, callback: Function) {
+function getGasPriceValues(defaultGasPrice: any, callback: NodeStyleCallback) {
   fetch(GAS_PRICE_API_ENDPOINT)
     .then(
       res => res.json()

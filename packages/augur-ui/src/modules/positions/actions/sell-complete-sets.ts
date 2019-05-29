@@ -7,13 +7,16 @@ import {
 } from "modules/transactions/actions/update-transactions-status";
 import { AWAITING_SIGNATURE, PENDING } from "modules/common-elements/constants";
 import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export function sellCompleteSets(
   marketId: string,
   numCompleteSets: any,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
 ) {
-  return (dispatch: Function, getState: () => AppState) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount, marketsData } = getState();
     if (!loginAccount.address) return callback(null);
     const { numTicks, maxPrice, minPrice } = marketsData[marketId];

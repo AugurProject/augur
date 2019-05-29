@@ -9,10 +9,13 @@ import { updateUniverse } from "modules/universe/actions/update-universe";
 import { isNewFavoritesStyle } from "modules/markets/helpers/favorites-processor";
 import { loadPendingQueue } from "modules/pending-queue/actions/pending-queue-management";
 import { setSelectedUniverse } from "./selected-universe-management";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 export const loadAccountDataFromLocalStorage = (address: string) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const localStorageRef = typeof window !== "undefined" && window.localStorage;
   const { universe, connection } = getState();

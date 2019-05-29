@@ -4,12 +4,14 @@ import { Message } from "modules/modal/message";
 import { AppState } from "store";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { approveAccount } from "modules/auth/actions/approve-account";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   approveAccount: (onSent: Function, onSuccess: Function) =>
     dispatch(approveAccount(onSent, onSuccess))

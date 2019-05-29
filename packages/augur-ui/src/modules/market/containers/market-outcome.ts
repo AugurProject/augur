@@ -7,12 +7,14 @@ import * as constants from "modules/common-elements/constants";
 import { CATEGORICAL } from "modules/common-elements/constants";
 
 import Row from "modules/common-elements/row";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const { COLUMN_TYPES } = constants;
 
 const mapStateToProps = (state: AppState) => ({});
 
-const mapDispatchToProps = (dispatch: Function) => ({});
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const outcome = oP.outcome;

@@ -7,6 +7,8 @@ import { sellCompleteSets } from "modules/positions/actions/sell-complete-sets";
 import { createBigNumber } from "utils/create-big-number";
 import { formatEther } from "utils/format-number";
 import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
@@ -31,7 +33,7 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   sellCompleteSets: (marketId: string, numCompleteSets: any, cb: Function) =>
     dispatch(sellCompleteSets(marketId, numCompleteSets, cb))

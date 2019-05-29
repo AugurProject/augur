@@ -2,11 +2,14 @@ import { augur } from "services/augurjs";
 import { updateLoginAccount } from "modules/account/actions/login-account";
 import logError from "utils/log-error";
 import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const updateTopBarPL = (
   options: any = {},
-  callback: Function = logError,
-) => (dispatch: Function, getState: () => AppState) => {
+  callback: NodeStyleCallback = logError,
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
     return callback(null);
