@@ -97,7 +97,6 @@ export function PouchDBFactory(dbArgs: object) {
   const dbDir = "db";
 
   if (fs && fs.existsSync && !fs.existsSync(dbDir)) {
-    console.log("making filesystem stuff");
     fs.mkdirSync(dbDir);
   }
 
