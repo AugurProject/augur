@@ -1,6 +1,7 @@
 import { Augur } from "../../Augur";
 import { DB } from "../db/DB";
 import { PathReporter } from "io-ts/lib/PathReporter";
+import { AddressFormatReviver } from "@AugurProject/sdk/src/state/addressFormatReviver";
 
 import * as t from "io-ts";
 
@@ -60,6 +61,10 @@ export class Router {
 
     if (!decodedParams.isRight()) {
       throw new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`);
+    }
+
+    for (let key in decodedParams.value) {
+      decodedParams.value[key] = AddressFormatReviver(key, decodedParams.value[key]);
     }
 
     return getter.func(this.augurAPI, this.db, decodedParams.value);
