@@ -16240,7 +16240,7 @@ pouchdb-adapter-leveldb-core@7.0.0:
     sublevel-pouchdb "7.0.0"
     through2 "2.0.3"
 
-pouchdb-adapter-memory@7.0.0:
+pouchdb-adapter-memory@7.0.0, pouchdb-adapter-memory@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/pouchdb-adapter-memory/-/pouchdb-adapter-memory-7.0.0.tgz#ba7a9719f2679b3f857a474e7c6be899640b3ca8"
   integrity sha512-ZBg3SRtyEjgNOriB2k6PGqjCE/v2dertiN/L/tk84tWqi2J4UScWzIOiIbuhY7eUrHQK1Lj1Eq2vpYilYCG8eQ==

@@ -1,3 +1,3 @@
-import { WebWorkerConnector } from "../connector/ww-connector";
+import { SEOConnector } from "../connector/seo-connector";
 import { Markets } from "./api/Markets";
 

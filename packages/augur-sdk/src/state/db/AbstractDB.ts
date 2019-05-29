@@ -28,7 +28,7 @@ export abstract class AbstractDB {
   }
 
   public async allDocs(): Promise<PouchDB.Core.AllDocsResponse<{}>> {
-    return this.db.allDocs({include_docs: true});
+    return this.db.allDocs({ include_docs: true });
   }
 
   protected async getDocument<Document>(id: string): Promise<Document | undefined> {
@@ -45,14 +45,14 @@ export abstract class AbstractDB {
   protected async upsertDocument(id: string, document: object): Promise<PouchDB.Core.Response> {
     const previousBlockRev = await this.getPouchRevFromId(id);
     return this.db.put(Object.assign(
-      previousBlockRev ? {_rev: previousBlockRev} : {},
-      {_id: id},
+      previousBlockRev ? { _rev: previousBlockRev } : {},
+      { _id: id },
       document,
     ));
   }
 
   protected async bulkUpsertDocuments(startkey: string, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
-    const previousDocumentEntries = await this.db.allDocs({startkey, include_docs: true});
+    const previousDocumentEntries = await this.db.allDocs({ startkey, include_docs: true });
     const previousDocs = _.reduce(previousDocumentEntries.rows, (result, prevDoc) => {
       result[prevDoc.id] = prevDoc.doc!._rev;
       return result;
@@ -63,7 +63,7 @@ export abstract class AbstractDB {
 
       const previousRev = previousDocs[doc._id!];
       return Object.assign(
-        previousRev ? {_rev: previousRev} : {},
+        previousRev ? { _rev: previousRev } : {},
         doc,
       );
     });
@@ -97,6 +97,7 @@ export function PouchDBFactory(dbArgs: object) {
   const dbDir = "db";
 
   if (fs && fs.existsSync && !fs.existsSync(dbDir)) {
+    console.log("making filesystem stuff");
     fs.mkdirSync(dbDir);
   }
 
