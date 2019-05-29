@@ -12,7 +12,7 @@ import { IsJsonRpcRequest } from "./IsJsonRpcRequest";
 import { JsonRpcRequest, EndpointSettings } from "./api/types";
 import { MakeJsonRpcError, JsonRpcErrorCode } from "./MakeJsonRpcError";
 import { MakeJsonRpcResponse } from "./MakeJsonRpcResponse";
-import { Subscriptions } from "../Subscriptions";
+import { Subscriptions } from "../subscriptions";
 import { augurEmitter } from "../events";
 
 function isSafe(websocket: WebSocket) {
