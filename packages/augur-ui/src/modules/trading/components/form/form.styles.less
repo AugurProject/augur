@@ -1,81 +1,83 @@
 @import (reference) "~assets/styles/shared";
 
-.TradingForm__form-body {
+.Form {
+  > ul {
   padding: 0.75rem 1rem 0;
 
-  > li {
-    color: @color-secondary-text;
-    display: flex;
-    flex-flow: column nowrap;
-    font-size: @font-size-normal;
-    width: 100%;
-
-    &.yesOption {
-      padding: 1rem 2rem;
-    }
-
-    &:not(:last-child) {
-      margin-bottom: 0.5rem;
-
-      > label {
-        .mono-10;
-
-        text-transform: uppercase;
-      }
-    }
-
-    &:last-child {
-      align-items: center;
-      border: none;
-      flex-direction: row;
-      font-size: @size-12;
-
-      > label {
-        color: @color-secondary-text;
-        padding: 0.125rem 0 0 @size-24;
-      }
-    }
-
-    > label {
-      color: @color-shadow-text;
-      margin-bottom: 0;
-      padding-bottom: 0.25rem;
+    > li {
+      color: @color-secondary-text;
+      display: flex;
+      flex-flow: column nowrap;
+      font-size: @font-size-normal;
       width: 100%;
 
-      &.smallLabel {
-        .text-10;
+      &.yesOption {
+        padding: 1rem 2rem;
+      }
 
-        color: @color-secondary-text;
-        padding-top: 0.5rem;
-        text-transform: none;
+      &:not(:last-child) {
+        margin-bottom: 0.5rem;
 
-        > svg {
-          height: @size-12;
-          width: @size-12;
+        > label {
+          .mono-10;
 
-          > circle {
-            fill: @color-theme-primary;
-            opacity: 1;
-            stroke: @color-highlight;
-          }
-
-          > rect {
-            fill: @color-neutral;
-          }
-
-          > path {
-            fill: @color-neutral;
-          }
+          text-transform: uppercase;
         }
       }
 
       &:last-child {
         align-items: center;
         border: none;
-        display: flex;
+        flex-direction: row;
+        font-size: @size-12;
 
-        > svg {
-          margin-right: 0.375rem;
+        > label {
+          color: @color-secondary-text;
+          padding: 0.125rem 0 0 @size-24;
+        }
+      }
+
+      > label {
+        color: @color-shadow-text;
+        margin-bottom: 0;
+        padding-bottom: 0.25rem;
+        width: 100%;
+
+        &.smallLabel {
+          .text-10;
+
+          color: @color-secondary-text;
+          padding-top: 0.5rem;
+          text-transform: none;
+
+          > svg {
+            height: @size-12;
+            width: @size-12;
+
+            > circle {
+              fill: @color-theme-primary;
+              opacity: 1;
+              stroke: @color-highlight;
+            }
+
+            > rect {
+              fill: @color-neutral;
+            }
+
+            > path {
+              fill: @color-neutral;
+            }
+          }
+        }
+
+        &:last-child {
+          align-items: center;
+          border: none;
+          display: flex;
+
+          > svg {
+            margin-right: 0.375rem;
+          }
         }
       }
     }
@@ -140,7 +142,7 @@
   }
 }
 
-.TradingForm__outcome__container {
+.Outcome {
   padding: @size-8 @size-16 0;
 }
 
@@ -150,7 +152,7 @@
   }
 }
 
-.TradingForm__outcome__container__yes {
+.Yes {
   background-color: @color-theme-primary;
   border: 1px solid @color-primary-alternate;
   border-radius: @border-radius-default;
@@ -275,7 +277,7 @@
 }
 
 @media @breakpoint-mobile {
-  .TradingForm__outcome__container {
+  .Outcome {
     background: @color-extra-darkpurple;
     margin-bottom: 24px;
     margin-top: 16px;
