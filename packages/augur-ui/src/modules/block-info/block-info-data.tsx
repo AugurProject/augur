@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { formatNumber } from "utils/format-number";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 
-import Styles from "modules/block-info/components/block-info-data/block-info-data.styles";
+import Styles from "modules/block-info/block-info-data.styles";
 import ToggleHeightStyles from "utils/toggle-height.styles";
 
 export interface SyncInfo {
@@ -77,14 +77,12 @@ class BlockInfoData extends Component<BlockInfoDataProps, BlockInfoDataState> {
           this.blockInfoData = blockInfoData;
         }}
       >
-        <div
-          className={Styles.container}
-          role="button"
+        <button
           tabIndex={0}
           onClick={() => this.setState({ dropdownOpen: !dropdownOpen })}
         >
-          <div className={Styles.title}>Blocks Behind</div>
-          <div className={Styles.info}>
+          <h3>Blocks Behind</h3>
+          <div>
             {blocksBehind}
             <span className={Styles.blocksBehind}>
               <ChevronFlip
@@ -95,7 +93,7 @@ class BlockInfoData extends Component<BlockInfoDataProps, BlockInfoDataState> {
               />
             </span>
           </div>
-        </div>
+        </button>
         <div
           ref={blockInfoDropdown => {
             this.blockInfoDropdown = blockInfoDropdown;
@@ -110,14 +108,14 @@ class BlockInfoData extends Component<BlockInfoDataProps, BlockInfoDataState> {
             }
           )}
         >
-          <div className={Styles.dropdownContainer}>
-            <div className={Styles.dropdownTitle}>Processing Market Data</div>
+          <div>
+            <h3>Processing Market Data</h3>
             <div className={Styles.percent}>{percent}%</div>
-            <div className={Styles.dropdownTitle}>Blocks Processed</div>
-            <div className={Styles.processed}>
+            <h3>Blocks Processed</h3>
+            <div>
               {formatNumber(lastProcessedBlockBn.toString()).formatted}
               <span className={Styles.bottom}>
-                <span className={Styles.slash}>/</span>
+                <span>/</span>
                 {formatNumber(highestBlockBn.toString()).formatted}
               </span>
             </div>
