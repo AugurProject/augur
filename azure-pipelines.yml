@@ -43,11 +43,22 @@ jobs:
                 echo "found a ui change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_UI;isOutput=true]true"
               fi
+              if [[ $f =~ .*augur-sdk.* ]]
+              then
+                echo "found a ui change: $f"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_SDK;isOutput=true]true"
+              fi
             done
         displayName: check git for changes
         name: setVars
 
   - job: TestAndLint
+    dependsOn:
+    - PreFlightCheck
+    variables:
+      JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
+      JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
+      JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -81,6 +92,26 @@ jobs:
           set -euo pipefail
           yarn test
         displayName: yarn test
+#     - bash: |
+#         set -euo pipefail
+#         yarn workspace @augurproject/ui test
+#       displayName: augur-ui test
+#       condition: |
+#         and
+#         (
+#           succeeded(),
+#           eq(variables['JOB_TRIGGER_UI'], 'true')
+#         )
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/sdk test
+        displayName: augur-sdk test
+        condition: |
+          and
+          (
+            succeeded(),
+            eq(variables['JOB_TRIGGER_SDK'], 'true')
+          )
 
 
   - job: Augur_build_docker_image
