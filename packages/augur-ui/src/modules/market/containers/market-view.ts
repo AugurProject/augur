@@ -12,7 +12,6 @@ import {
 } from "modules/common-elements/constants";
 import { windowRef } from "utils/window-ref";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
-import { createBigNumber } from "utils/create-big-number";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { loadMarketTradingHistory } from "modules/markets/actions/market-trading-history-management";
 
@@ -47,8 +46,6 @@ const mapStateToProps = (state, ownProps) => {
     marketType: market.marketType,
     description: market.description || "",
     market,
-    minPrice: market.minPrice || createBigNumber(0),
-    maxPrice: market.maxPrice || createBigNumber(0),
     marketId,
     universe,
     marketReviewSeen: !!marketReviewSeen

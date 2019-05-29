@@ -10,8 +10,8 @@ import { FindReact } from "utils/find-react";
 import MarketHeader from "modules/market/containers/market-header";
 import MarketOrdersPositionsTable from "modules/market/containers/market-orders-positions-table";
 import MarketOutcomesList from "modules/market/containers/market-outcomes-list";
-import MarketOutcomeOrders from "modules/market-charts/containers/market-outcome--orders";
 import TradingForm from "modules/market/containers/trading-form";
+import OrderBook from "modules/market-charts/containers/order-book";
 import MarketChartsPane from "modules/market-charts/containers/market-charts-pane";
 import parseMarketTitle from "modules/markets/helpers/parse-market-title";
 import MarketTradeHistory from "modules/market/containers/market-trade-history";
@@ -19,7 +19,7 @@ import {
   CATEGORICAL,
   BUY,
   MODAL_TRADING_OVERLAY,
-  MARKET_REVIEWS
+  MARKET_REVIEWS,
 } from "modules/common-elements/constants";
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
@@ -27,16 +27,12 @@ import MarketOutcomeSelector from "modules/market/components/market-view/market-
 import MarketOutcomesChart from "modules/market-charts/containers/market-outcomes-chart";
 import { getMarketAgeInDays } from "utils/format-date";
 import Styles from "modules/market/components/market-view/market-view.styles";
-import { precisionClampFunction } from "modules/markets/helpers/clamp-fixed-precision";
-import { BigNumber } from "bignumber.js";
 import { LeftChevron } from "modules/common-elements/icons";
 import { TEMP_TABLET } from "modules/common-elements/constants";
 
 export default class MarketView extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
-    maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    minPrice: PropTypes.instanceOf(BigNumber).isRequired,
     marketId: PropTypes.string.isRequired,
     marketReviewSeen: PropTypes.bool.isRequired,
     marketReviewModal: PropTypes.func.isRequired,
@@ -221,8 +217,6 @@ export default class MarketView extends Component {
       currentTimestamp,
       description,
       marketId,
-      maxPrice,
-      minPrice,
       location,
       outcomes,
       market,
@@ -327,7 +321,7 @@ export default class MarketView extends Component {
                       <ModuleTabs selected={0} fillForMobile>
                         <ModulePane label="Order Book">
                           <div className={Styles.MarketView__orders}>
-                            <MarketOutcomeOrders
+                            <OrderBook
                               updateSelectedOrderProperties={
                                 this.updateSelectedOrderProperties
                               }
@@ -462,7 +456,7 @@ export default class MarketView extends Component {
                         }
                       )}
                     >
-                      <MarketOutcomeOrders
+                      <OrderBook
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
                         }

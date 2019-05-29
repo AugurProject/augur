@@ -1,5 +1,5 @@
 import { curry, without } from "lodash/fp";
-
+// TODO: this will be deleted when side nav is removed
 const toggleMemberOfArray = (stack, needle) => {
   if (stack.includes(needle)) {
     return without([needle], stack);

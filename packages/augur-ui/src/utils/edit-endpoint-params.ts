@@ -2,13 +2,14 @@ import parseQuery from "modules/routes/helpers/parse-query";
 import { createPath } from "history";
 import makeQuery from "modules/routes/helpers/make-query";
 import { isEmpty } from "lodash";
+import { WindowApp, Endpoints, QueryEndpoints } from "modules/types";
 
 export const editEndpointParams = (
-  windowRef,
-  { augurNode, ethereumNodeHTTP, ethereumNodeWS }
+  windowRef: WindowApp,
+  { augurNode, ethereumNodeHTTP, ethereumNodeWS }: Endpoints,
 ) => {
   const existingParams = parseQuery(windowRef.location.search);
-  const paramsToModify = {};
+  const paramsToModify: QueryEndpoints = {};
 
   if (augurNode && existingParams.augur_node !== augurNode) {
     paramsToModify.augur_node = augurNode;
@@ -28,9 +29,9 @@ export const editEndpointParams = (
       pathname: windowRef.location.origin,
       search: makeQuery({
         ...existingParams,
-        ...paramsToModify
+        ...paramsToModify,
       }),
-      hash: windowRef.location.hash
+      hash: windowRef.location.hash,
     });
   } else {
     windowRef.location.reload();
