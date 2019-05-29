@@ -6,11 +6,12 @@ import {
 } from "modules/markets/actions/update-markets-data";
 import { getDisputeInfo } from "modules/reports/actions/get-dispute-info";
 import logError from "utils/log-error";
+import { AppState } from "store";
 
 export const loadMarketsInfo = (
   marketIds: Array<string>,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   if (!marketIds || marketIds.length === 0) {
     return callback(null, []);
   }
@@ -52,7 +53,7 @@ export const loadMarketsInfo = (
 export const loadMarketsInfoIfNotLoaded = (
   marketIds: Array<string>,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { marketsData } = getState();
   const marketIdsToLoad = marketIds.filter(
     marketId => !isMarketLoaded(marketId, marketsData)
@@ -65,7 +66,7 @@ export const loadMarketsInfoIfNotLoaded = (
 export const loadMarketsDisputeInfo = (
   marketIds: Array<string>,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   dispatch(
     getDisputeInfo(
       marketIds,

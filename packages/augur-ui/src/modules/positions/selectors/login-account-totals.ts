@@ -11,17 +11,17 @@ export default function() {
 
 export const selectLoginAccountTotals = createSelector(
   selectLoginAccountTotalsState,
-  totals => {
+  (totals) => {
     if (!totals) {
       return formatPercent(ZERO, { decimalsRounded: 2 }).formatted;
     }
     return formatPercent(
       createBigNumber(totals.unrealizedRevenue24hChangePercent || ZERO).times(
-        100
+        100,
       ),
       {
-        decimalsRounded: 2
-      }
+        decimalsRounded: 2,
+      },
     ).formatted;
-  }
+  },
 );

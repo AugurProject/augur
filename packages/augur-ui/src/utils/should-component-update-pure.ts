@@ -1,22 +1,22 @@
-export default function(nextProps, nextState) {
+export default function(nextProps: object, nextState: object): boolean {
   return (
     isShallowUnEqual(nextProps, this.props) ||
     isShallowUnEqual(nextState, this.state)
   );
 }
 
-export function shouldComponentUpdateLog(nextProps, nextState) {
+export function shouldComponentUpdateLog(nextProps: object, nextState: object): boolean {
   return (
-    isShallowUnEqual(nextProps, this.props, true) ||
-    isShallowUnEqual(nextState, this.state, true)
+    isShallowUnEqual(nextProps, this.props) ||
+    isShallowUnEqual(nextState, this.state)
   );
 }
 
-export function shouldComponentUpdateOnStateChangeOnly(nextProps, nextState) {
+export function shouldComponentUpdateOnStateChangeOnly(nextProps: object, nextState: object): boolean {
   return isShallowUnEqual(nextState, this.state);
 }
 
-function isShallowUnEqual(obj1, obj2, log) {
+function isShallowUnEqual(obj1: object, obj2: object): boolean {
   // both arguments reference the same object
   if (obj1 === obj2) {
     return false;
@@ -47,7 +47,6 @@ function isShallowUnEqual(obj1, obj2, log) {
       obj1[keysA[i]] !== obj2[keysA[i]] &&
       typeof obj1[keysA[i]] !== "function"
     ) {
-      log && console.log("------->", keysA[i], obj1[keysA[i]], obj2[keysA[i]]);
       return true;
     }
   }

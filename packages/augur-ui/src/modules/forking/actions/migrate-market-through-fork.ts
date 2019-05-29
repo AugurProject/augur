@@ -3,12 +3,13 @@ import logError from "utils/log-error";
 import { formatGasCostToEther } from "utils/format-number";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
+import { AppState } from "store";
 
 export const migrateMarketThroughFork = (
   marketId: string,
   estimateGas: Boolean = false,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount } = getState();
   augur.api.Market.migrateThroughOneFork({
     tx: {

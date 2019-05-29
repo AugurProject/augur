@@ -5,7 +5,7 @@ export const CLEAR_TRANSACTION_STATUS = "CLEAR_TRANSACTION_STATUS";
 
 export const updateTransactionStatus = (
   pendingId: string,
-  transactionHash: string,
+  transactionHash: string | null,
   status: string,
 ): BaseAction => ({
   type: UPDATE_TRANSACTION_STATUS,

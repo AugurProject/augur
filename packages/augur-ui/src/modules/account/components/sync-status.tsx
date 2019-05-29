@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import {
   Syncing as SyncingIcon,
-  ImmediateImportance
+  ImmediateImportance,
 } from "modules/common-elements/icons";
 import {
   SYNCED,
@@ -12,12 +12,12 @@ import {
   SYNC_MESSAGE_SYNCED,
   SYNC_MESSAGE_SYNCING,
   SYNC_MESSAGE_BLOCKSBEHIND,
-  SYNCING_TITLE
+  SYNCING_TITLE,
 } from "modules/common-elements/constants";
 
-import Styles from "modules/account/components/status.styles";
+import Styles from "modules/account/components/status.styles.less";
 
-export interface dataProps {
+export interface DataProps {
   status: ReactNode;
   message: string;
 }
@@ -48,9 +48,9 @@ const SyncStatus = (props: SyncStatusProps) => {
     </div>
   );
 
-  let data: dataProps = {
+  let data: DataProps = {
     message: SYNC_MESSAGE_BLOCKSBEHIND,
-    status: BlocksBehind
+    status: BlocksBehind,
   };
 
   const { syncPercent } = props;
@@ -58,12 +58,12 @@ const SyncStatus = (props: SyncStatusProps) => {
   if (syncPercent >= 99.99) {
     data = {
       message: SYNC_MESSAGE_SYNCED,
-      status: Synced
+      status: Synced,
     };
   } else if (syncPercent >= 99.9) {
     data = {
       message: SYNC_MESSAGE_SYNCING,
-      status: Syncing
+      status: Syncing,
     };
   }
 
@@ -74,7 +74,7 @@ const SyncStatus = (props: SyncStatusProps) => {
       className={classNames(Styles.SyncStatus, {
         [Styles.green]: status === Synced,
         [Styles.yellow]: status === Syncing,
-        [Styles.red]: status === BlocksBehind
+        [Styles.red]: status === BlocksBehind,
       })}
     >
       <div>{SYNCING_TITLE}</div>

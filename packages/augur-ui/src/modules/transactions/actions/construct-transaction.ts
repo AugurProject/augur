@@ -4,6 +4,7 @@ import { SUCCESS } from "modules/common-elements/constants";
 import { formatEther } from "utils/format-number";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import logError from "utils/log-error";
+import { AppState } from "store";
 
 export const constructBasicTransaction = ({
   eventName,
@@ -28,7 +29,7 @@ export const constructBasicTransaction = ({
 export const constructTransaction = (
   log: any,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   switch (log.eventName) {
     case "OrderCreated":
     case "OrderFilled":

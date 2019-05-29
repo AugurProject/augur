@@ -6,20 +6,21 @@ import logError from "utils/log-error";
 // Note: the returns: "null" is due to this geth bug: https://github.com/ethereum/go-ethereum/issues/16999. By including this and a hardcoded gas estimate we bypass any eth_call usage and avoid sprurious failures
 import {
   addPendingData,
-  removePendingData
+  removePendingData,
 } from "modules/pending-queue/actions/pending-queue-management";
 import {
   CLAIM_PROCEEDS,
   PENDING,
-  SUCCESS
+  SUCCESS,
 } from "modules/common-elements/constants";
+import { AppState } from "store";
 
 export const CLAIM_SHARES_GAS_COST = 3000000;
 
 const claimTradingProceeds = (
   marketId: string,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount } = getState();
   if (!loginAccount.address || !marketId) return callback(null);
 
@@ -31,20 +32,21 @@ const claimTradingProceeds = (
     onSent: () => dispatch(addPendingData(marketId, CLAIM_PROCEEDS, PENDING)),
     onSuccess: () => {
       dispatch(addPendingData(marketId, CLAIM_PROCEEDS, SUCCESS));
+      // @ts-ignore
       dispatch(getWinningBalance([marketId]));
       callback();
     },
     onFailed: (err: any) => {
       dispatch(removePendingData(marketId, CLAIM_PROCEEDS));
       callback(err);
-    }
+    },
   });
 };
 
 export const claimMultipleTradingProceeds = (
   marketIds: Array<string>,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount } = getState();
   if (!loginAccount.address || !marketIds || !marketIds.length)
     return callback(null);
@@ -60,16 +62,17 @@ export const claimMultipleTradingProceeds = (
         _shareHolder: loginAccount.address,
         onSent: noop,
         onSuccess: () => {
+          // @ts-ignore
           dispatch(getWinningBalance([marketId]));
           seriesCB(null);
         },
-        onFailed: (err: any) => seriesCB(err)
+        onFailed: (err: any) => seriesCB(err),
       });
     },
-    err => {
+    (err) => {
       if (err !== null) console.error("ERROR: ", err);
       callback(err);
-    }
+    },
   );
 };
 

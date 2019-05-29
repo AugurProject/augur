@@ -2,10 +2,19 @@ import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { updateTopBarPL } from "modules/positions/actions/update-top-bar-pl";
 import { updateLoginAccount } from "modules/account/actions/login-account";
-import {
-  updateAccountPositionsData,
-} from "modules/positions/actions/account-positions";
-import { AccountPosition } from "modules/types";
+import { AppState } from "store";
+import { updateAccountPositionsData } from "modules/positions/actions/account-positions";
+import { PositionData, AccountPositionAction, PositionsTotal, AccountPosition, TradingPositionsPerMarket } from "modules/types";
+
+// TODO: this is the shape from augur-node will change from SDK getter
+interface UserTradingPositions {
+  frozenFundsTotal: {
+    frozenFunds: string;
+  };
+  tradingPositions: Array<PositionData>;
+  tradingPositionsPerMarket: TradingPositionsPerMarket;
+  tradingPositionsTotal?: PositionsTotal;
+}
 
 export const loadAccountPositions = (
   options: any = {},
@@ -51,22 +60,23 @@ export const loadAccountPositionsTotals = (callback = logError) => (
         updateLoginAccount({
           totalFrozenFunds: positions.frozenFundsTotal.frozenFunds,
           tradingPositionsTotal: positions.tradingPositionsTotal,
-        }),
+        })
       );
-    },
+    }
   );
 };
 
 const loadAccountPositionsInternal = (
   options: any = {},
   callback: Function,
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
+
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
     return callback(null, {});
   augur.trading.getUserTradingPositions(
     { ...options, account: loginAccount.address, universe: universe.id },
-    (err: any, positions: any) => {
+    (err: any, positions: UserTradingPositions) => {
       if (err) return callback(err, {});
       if (positions == null || positions.tradingPositions == null) {
         return callback(null, {});
@@ -99,38 +109,42 @@ const loadAccountPositionsInternal = (
 const postProcessing = (
   marketIds: Array<string>,
   dispatch: Function,
-  positions: any,
-  callback: Function,
+  positions: UserTradingPositions,
+  callback: Function
 ) => {
-  marketIds.forEach((marketId) => {
-    const marketPositionData = {};
+  marketIds.forEach((marketId: string) => {
+    const marketPositionData: AccountPosition = {};
     const marketPositions = positions.tradingPositions.filter(
       (position: any) => position.marketId === marketId,
     );
-    const outcomeIds = Array.from(
+    const outcomeIds: Array<number> = Array.from(
       new Set([
         ...marketPositions.reduce(
-          (p: any, position: any) => [...p, position.outcome],
+          (p: Array<number>, position: PositionData) => [
+            ...p,
+            position.outcome,
+          ],
           [],
         ),
       ]),
     );
     marketPositionData[marketId] = {
-      tradingPositionsPerMarket:
-        (positions.tradingPositionsPerMarket &&
-          positions.tradingPositionsPerMarket[marketId]) ||
-        {},
       tradingPositions: {},
     };
-    outcomeIds.forEach((outcomeId) => {
+
+    if (positions.tradingPositionsPerMarket && positions.tradingPositionsPerMarket[marketId]) {
+      marketPositionData[marketId].tradingPositionsPerMarket = positions.tradingPositionsPerMarket[marketId];
+    }
+
+    outcomeIds.forEach((outcomeId: number) => {
       marketPositionData[marketId].tradingPositions[
         outcomeId
       ] = positions.tradingPositions.filter(
-        (position: any) =>
+        (position: PositionData) =>
           position.marketId === marketId && position.outcome === outcomeId,
       )[0];
     });
-    const positionData: AccountPosition = {
+    const positionData: AccountPositionAction = {
       marketId,
       positionData: marketPositionData,
     };

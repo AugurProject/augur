@@ -1,7 +1,7 @@
 import logError from "utils/log-error";
 import { BigNumber } from "bignumber.js";
 
-export const createBigNumber = (value, ...args) => {
+export const createBigNumber = (value, ...args): BigNumber => {
   let newBigNumber;
   try {
     let useValue = value;
