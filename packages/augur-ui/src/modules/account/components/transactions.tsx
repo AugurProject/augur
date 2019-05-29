@@ -8,7 +8,7 @@ import {
   REPFaucetButton,
   DAIFaucetButton,
 } from "modules/common-elements/buttons";
-import Styles from "modules/account/components/transactions.styles";
+import Styles from "modules/account/components/transactions.styles.less";
 
 interface TransactionsProps {
   isMainnet: boolean;
@@ -25,7 +25,7 @@ export const Transactions = ({
   withdraw,
   isMainnet,
   repFaucet,
-  daiFaucet
+  daiFaucet,
 }: TransactionsProps) => (
   <QuadBox
     title="Transactions"

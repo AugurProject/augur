@@ -4,11 +4,10 @@ import { selectCurrentTimestampInSeconds as getTime } from "store/select-state";
 import { CONFIRMED, FAILED } from "modules/common-elements/constants";
 import logError from "utils/log-error";
 import { getDai } from "modules/contracts/actions/contractCalls";
-import { Dispatch } from "redux";
 import { AppState } from "store";
 
 export default function(callback = logError) {
-  return async (dispatch: Dispatch, getState: () => AppState) => {
+  return async (dispatch: Function, getState: () => AppState) => {
     const update = (id: string, status: string) =>
       dispatch(
         updateAlert(id, {

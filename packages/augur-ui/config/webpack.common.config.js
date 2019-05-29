@@ -45,7 +45,7 @@ const rules = [
     use: [
       "style-loader",
       {
-        loader: "css-loader",
+        loader: "typings-for-css-modules-loader",
         options: {
           camelCase:true,
           modules: true,

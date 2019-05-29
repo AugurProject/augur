@@ -3,7 +3,7 @@ import React from "react";
 import { LinearPropertyLabel } from "modules/common-elements/labels";
 import { formatNumber } from "utils/format-number";
 
-import Styles from "modules/account/components/stats.styles";
+import Styles from "modules/account/components/stats.styles.less";
 
 export interface StatsProps {
   properties: Array<any>;
@@ -21,8 +21,8 @@ const Stats = (props: StatsProps) => (
             decimalsRounded: 2,
             denomination: "",
             positiveSign: false,
-            zeroStyled: true
-          }).minimized
+            zeroStyled: true,
+          } as any).minimized
         }
       />
     ))}

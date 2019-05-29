@@ -5,7 +5,7 @@ import { formatNumber } from "utils/format-number";
 import * as constants from "modules/common-elements/constants";
 import { LinearPropertyLabel } from "modules/common-elements/labels";
 
-import Styles from "modules/account/components/status.styles";
+import Styles from "modules/account/components/status.styles.less";
 
 export interface BlockStatusProps {
   blocksBehind: number;
@@ -17,7 +17,7 @@ const BlockStatus = (props: BlockStatusProps) => {
   const { blocksBehind, lastProcessedBlockBn, highestBlockBn } = props;
   return (
     <>
-      <div className={classNames(Styles.BlockStatus, Styles.HideOnMobile)}>
+      <div className={classNames(Styles.BlockStatus)}>
         <div>
           <div>{constants.SYNC_BENIND}</div>
           <div>{blocksBehind}</div>
@@ -35,7 +35,7 @@ const BlockStatus = (props: BlockStatusProps) => {
         <LinearPropertyLabel
           highlight
           label={constants.SYNC_BENIND}
-          value={blocksBehind}
+          value={String(blocksBehind)}
         />
         <LinearPropertyLabel
           highlight

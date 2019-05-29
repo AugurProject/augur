@@ -5,7 +5,7 @@ import { selectCurrentTimestampInSeconds as getTime } from "store/select-state";
 import {
   UNIVERSE_ID,
   CONFIRMED,
-  FAILED
+  FAILED,
 } from "modules/common-elements/constants";
 import logError from "utils/log-error";
 import noop from "utils/noop";
@@ -21,7 +21,7 @@ export default function(callback = logError) {
           id,
           status,
           timestamp: getTime(getState())
-        })
+        }),
       );
     augur.api.Universe.getReputationToken(
       { tx: { to: universeID } },
