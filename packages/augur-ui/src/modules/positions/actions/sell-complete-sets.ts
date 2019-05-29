@@ -3,7 +3,7 @@ import { createBigNumber } from "utils/create-big-number";
 import logError from "utils/log-error";
 import {
   updateTransactionStatus,
-  clearTransactionStatus
+  clearTransactionStatus,
 } from "modules/transactions/actions/update-transactions-status";
 import { AWAITING_SIGNATURE, PENDING } from "modules/common-elements/constants";
 import { AppState } from "store";
@@ -11,7 +11,7 @@ import { AppState } from "store";
 export function sellCompleteSets(
   marketId: string,
   numCompleteSets: any,
-  callback = logError
+  callback = logError,
 ) {
   return (dispatch: Function, getState: () => AppState) => {
     const { loginAccount, marketsData } = getState();
@@ -20,7 +20,7 @@ export function sellCompleteSets(
     const numCompleteSetsOnChain = augur.utils.convertDisplayAmountToOnChainAmount(
       createBigNumber(numCompleteSets.fullPrecision),
       createBigNumber(maxPrice - minPrice),
-      numTicks
+      numTicks,
     );
     const pendingHash = `pending-${marketId}-${numCompleteSets.fullPrecision}`;
     const sellCompleteSetsParams = {
@@ -28,18 +28,18 @@ export function sellCompleteSets(
       meta: loginAccount.meta,
       _market: marketId,
       _amount: numCompleteSetsOnChain,
-      onSent: res => {
+      onSent: (res) => {
         dispatch(updateTransactionStatus(pendingHash, res.hash, PENDING));
         callback(null, res);
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         dispatch(clearTransactionStatus(pendingHash));
         callback(null, res);
       },
-      onFailed: err => {
+      onFailed: (err) => {
         dispatch(clearTransactionStatus(pendingHash));
         callback(err);
-      }
+      },
     };
     dispatch(updateTransactionStatus(pendingHash, null, AWAITING_SIGNATURE));
     augur.api.CompleteSets.publicSellCompleteSets(sellCompleteSetsParams);

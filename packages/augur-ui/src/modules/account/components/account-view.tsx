@@ -16,36 +16,42 @@ import {
   AUGUR_STATUS_TITLE,
   TABLET,
   DESKTOP,
-  LARGE_DESKTOP
+  LARGE_DESKTOP,
 } from "modules/common-elements/constants";
 
-import Styles from "modules/account/components/account-view.styles";
+import Styles from "modules/account/components/account-view.styles.less";
 
 export interface AccountViewProps {
-  newNotifications?: Boolean;
+  newNotifications?: boolean;
 }
 
 const AccountView = (props: AccountViewProps) => (
   <>
     <Media query={SMALL_MOBILE}>
-      {matches =>
+      {(matches) =>
         matches ? (
           <ModuleTabs selected={0} fillWidth noBorder>
+            // @ts-ignore
             <ModulePane label={YOUR_OVERVIEW_TITLE}>
               <Overview />
             </ModulePane>
+            // @ts-ignore
             <ModulePane label="Notifications" isNew={props.newNotifications}>
               <Notifications />
             </ModulePane>
+            // @ts-ignore
             <ModulePane label="Watchlist">
               <Favorites />
             </ModulePane>
+            // @ts-ignore
             <ModulePane label="My Active Markets">
               <OpenMarkets />
             </ModulePane>
+            // @ts-ignore
             <ModulePane label={AUGUR_STATUS_TITLE}>
               <AugurStatus />
             </ModulePane>
+            // @ts-ignore
             <ModulePane label="Transactions">
               <Transactions />
             </ModulePane>
@@ -54,7 +60,7 @@ const AccountView = (props: AccountViewProps) => (
           <section className={Styles.AccountView}>
             <div className={Styles.AccountView__container}>
               <Media query={TABLET}>
-                {matches =>
+                {(matches) =>
                   matches && (
                     <>
                       <div>
@@ -72,7 +78,7 @@ const AccountView = (props: AccountViewProps) => (
                 }
               </Media>
               <Media query={DESKTOP}>
-                {matches =>
+                {(matches) =>
                   matches && (
                     <>
                       <div>
@@ -92,7 +98,7 @@ const AccountView = (props: AccountViewProps) => (
                 }
               </Media>
               <Media query={LARGE_DESKTOP}>
-                {matches =>
+                {(matches) =>
                   matches && (
                     <>
                       <div>

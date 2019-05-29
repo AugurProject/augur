@@ -12,16 +12,16 @@ export interface MarketsByReportingState {
 export interface FilterBoxProps {
   title: string;
   bottomBarContent?: ReactNode;
-  sortByOptions: Array<NameValuePair>;
+  sortByOptions?: Array<NameValuePair>;
   data: Array<Market>;
   filterComp: Function;
-  showFilterSearch?: Boolean;
-  switchView: Function;
-  noSwitch?: Boolean;
+  showFilterSearch?: boolean;
+  switchView?: Function;
+  noSwitch?: boolean;
   renderRows: Function;
   filterLabel: string;
-  sortByStyles?: Object;
-  noBackgroundBottom?: Boolean;
+  sortByStyles?: object;
+  noBackgroundBottom?: boolean;
 }
 
 interface FilterBoxState {
@@ -37,7 +37,7 @@ export default class FilterSwitchBox extends React.Component<
   state: FilterBoxState = {
     search: "",
     filteredData: this.props.data,
-    view: false
+    view: false,
   };
 
   componentWillUpdate(nextProps: FilterBoxProps, nextState: FilterBoxState) {
@@ -87,7 +87,7 @@ export default class FilterSwitchBox extends React.Component<
       renderRows,
       filterLabel,
       sortByStyles,
-      noBackgroundBottom
+      noBackgroundBottom,
     } = this.props;
 
     const { search, filteredData } = this.state;
@@ -113,7 +113,7 @@ export default class FilterSwitchBox extends React.Component<
               />
             )}
             {filteredData.length > 0 &&
-              filteredData.map(data => renderRows(data))}
+              filteredData.map((data) => renderRows(data))}
           </>
         }
       />

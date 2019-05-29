@@ -5,7 +5,7 @@ import { AppState } from "store";
 
 export const updateTopBarPL = (
   options: any = {},
-  callback: Function = logError
+  callback: Function = logError,
 ) => (dispatch: Function, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
@@ -18,16 +18,17 @@ export const updateTopBarPL = (
       startTime: null,
       endTime: null,
       periodInterval: null,
-      marketId: null
+      marketId: null,
     },
     (err: any, data: any) => {
       if (err) return callback(err);
       dispatch(
         updateLoginAccount({
+          // @ts-ignore
           realizedPL: data[data.length - 1].realized,
-          realizedPLPercent: data[data.length - 1].realizedPercent
-        })
+          realizedPLPercent: data[data.length - 1].realizedPercent,
+        }),
       );
-    }
+    },
   );
 };

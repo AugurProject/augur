@@ -5,7 +5,7 @@ import AugurStatus from "modules/account/components/augur-status";
 import { AppState } from "store";
 
 const mapStateToProps = (state: AppState) => ({
-  syncingInfo: selectBlockInfoData(state)
+  syncingInfo: selectBlockInfoData(state),
 });
 
 export default connect(mapStateToProps)(AugurStatus);

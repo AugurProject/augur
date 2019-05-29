@@ -1,6 +1,12 @@
 import { ReactNode, MouseEvent } from "react";
 import { BUY, SELL } from "modules/common-elements/constants";
 
+export enum SizeTypes {
+  SMALL = "small",
+  NORMAL = "normal",
+  LARGE = "large",
+}
+
 export interface DateFormattedObject {
   value: Date;
   simpleDate: string;
@@ -106,16 +112,16 @@ export interface FormattedNumber {
 }
 
 export interface FormattedNumberOptions {
-    decimals: number;
-    decimalsRounded: number;
-    denomination: string;
-    roundUp: boolean;
-    roundDown: boolean;
-    positiveSign: boolean;
-    zeroStyled: boolean;
-    minimized: boolean;
-    blankZero: boolean;
-    bigUnitPostfix: boolean;
+  decimals?: number;
+  decimalsRounded?: number;
+  denomination?: string;
+  roundUp?: boolean;
+  roundDown?: boolean;
+  positiveSign?: boolean;
+  zeroStyled?: boolean;
+  minimized?: boolean;
+  blankZero?: boolean;
+  bigUnitPostfix?: boolean;
 }
 export interface ReportingWindowStats {
   startTime: string | null;
@@ -174,7 +180,7 @@ export interface Market {
   id: string;
   description: string;
   reportingState: string;
-  endTime: number;
+  endTime: DateFormattedObject;
   marketStatus: string;
   disputeInfo?: DisputeInfo;
   myPositionsSummary?: MyPositionsSummary;
@@ -191,7 +197,7 @@ export interface Notification {
   buttonLabel: string;
   buttonAction: ButtonActionType;
   Template: ReactNode;
-  market: Market | null;
+  market: Market;
   markets: Array<string>;
   claimReportingFees?: object;
   totalProceeds?: number;
@@ -361,28 +367,54 @@ export interface AppStatus {
   isConnectionTrayOpen: boolean | undefined;
 }
 
-export interface PositionData {
-  marketId: string;
-  netPosition: string;
-  outcome: string;
-  position: string;
-  averagePrice: string;
+export interface PositionsTotal {
+  frozenFunds: string;
   realized: string;
-  timestamp: number;
-  total: string;
-  unrealized: string;
-  cost: string;
-  unrealizedCost: string;
-  unrealizedRevenue: string;
-  totalPercent: string;
-  unrealizedPercent: string;
+  realizedCost: string;
   realizedPercent: string;
+  total: string;
+  totalCost: string;
+  totalPercent: string;
+  unrealized: string;
+  unrealizedCost: string;
+  unrealizedPercent: string;
+  unrealizedRevenue: string;
+  unrealizedRevenue24hAgo: string;
   unrealizedRevenue24hChangePercent: string;
 }
 
+export interface MarketPositionsTotal extends PositionsTotal {
+  marketId: string;
+}
+export interface PositionData extends PositionsTotal {
+  averagePrice: string;
+  frozenFunds: string;
+  lastTradePrice: string;
+  lastTradePrice24hAgo: string;
+  lastTradePrice24hChangePercent: string;
+  marketId: string;
+  netPosition: string;
+  outcome: number;
+  position: string;
+  timestamp: number;
+}
+
+export interface TradingPositionsPerMarket {
+  [marketId: string]: PositionsTotal;
+}
+
+export interface AccountPositionAction {
+  marketId: string;
+  positionData: AccountPosition;
+}
+
 export interface AccountPosition {
-  marketId: string | null;
-  positionData: PositionData;
+  [market: string]: {
+    tradingPositionsPerMarket?: MarketPositionsTotal;
+    tradingPositions: {
+      [outcomeId: number]: PositionData;
+    };
+  };
 }
 
 export interface UnrealizedRevenue {
@@ -416,7 +448,7 @@ export interface WindowApp extends Window {
 }
 
 type ButtonActionType = (
-  event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+  event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>
 ) => void;
 
 export interface BaseAction {

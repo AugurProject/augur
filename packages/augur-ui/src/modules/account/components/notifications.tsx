@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { orderBy } from "lodash";
 
@@ -12,10 +12,9 @@ import { PillLabel } from "modules/common-elements/labels";
 import { MARKET, REPORT, DISPUTE } from "modules/routes/constants/views";
 import {
   MARKET_ID_PARAM_NAME,
-  RETURN_PARAM_NAME
+  RETURN_PARAM_NAME,
 } from "modules/routes/constants/param-names";
 import {
-  Market,
   FinalizeTemplate,
   OpenOrdersResolvedMarketsTemplate,
   ReportEndingSoonTemplate,
@@ -27,21 +26,21 @@ import {
   ProceedsToClaimOnHoldTemplate,
 } from "modules/account/components/notifications-templates";
 
-import { Notification } from "modules/types";
+import { Notification, DateFormattedObject } from "modules/types";
 
 import {
   NOTIFICATION_TYPES,
   NOTIFICATIONS_TITLE,
   NOTIFICATIONS_LABEL,
-  NEW
+  NEW,
 } from "modules/common-elements/constants";
 
 export interface NotificationsProps extends RouteComponentProps {
   notifications: Array<Notification>;
   updateReadNotifications: Function;
   getReportingFees: Function;
-  currentAugurTimestamp: number;
-  reportingWindowStatsEndTime: number;
+  currentAugurTimestamp: DateFormattedObject;
+  reportingWindowStatsEndTime: DateFormattedObject;
   sellCompleteSetsModal: Function;
   finalizeMarketModal: Function;
   claimTradingProceeds: Function;
@@ -59,7 +58,7 @@ class Notifications extends React.Component<
   NotificationsState
 > {
   state: NotificationsState = {
-    disabledNotifications: {}
+    disabledNotifications: {},
   };
 
   getButtonAction(notification: Notification) {
@@ -71,9 +70,11 @@ class Notifications extends React.Component<
         buttonAction = () => {
           this.markAsRead(notification);
           this.disableNotification(notification.id, true);
-          this.props.openOrdersModal(notification.market.id, () =>
-            this.disableNotification(notification.id, false)
-          );
+          if (notification.market) {
+            this.props.openOrdersModal(notification.market.id, () =>
+              this.disableNotification(notification.id, false),
+            );
+          }
         };
         break;
 
@@ -81,12 +82,12 @@ class Notifications extends React.Component<
         buttonAction = () => {
           this.markAsRead(notification);
           const queryLink = {
-            [MARKET_ID_PARAM_NAME]: notification.market.id,
-            [RETURN_PARAM_NAME]: location.hash
+            [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
+            [RETURN_PARAM_NAME]: location.hash,
           };
           history.push({
-            pathname: makePath(REPORT),
-            search: makeQuery(queryLink)
+            pathname: makePath(REPORT, null),
+            search: makeQuery(queryLink),
           });
         };
         break;
@@ -95,9 +96,11 @@ class Notifications extends React.Component<
         buttonAction = () => {
           this.markAsRead(notification);
           this.disableNotification(notification.id, true);
-          this.props.finalizeMarketModal(notification.market.id, () =>
-            this.disableNotification(notification.id, false)
-          );
+          if (notification.market) {
+            this.props.finalizeMarketModal(notification.market.id, () =>
+              this.disableNotification(notification.id, false),
+            );
+          }
         };
         break;
 
@@ -105,12 +108,12 @@ class Notifications extends React.Component<
         buttonAction = () => {
           this.markAsRead(notification);
           const queryLink = {
-            [MARKET_ID_PARAM_NAME]: notification.market.id,
-            [RETURN_PARAM_NAME]: location.hash
+            [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
+            [RETURN_PARAM_NAME]: location.hash,
           };
           history.push({
-            pathname: makePath(DISPUTE),
-            search: makeQuery(queryLink)
+            pathname: makePath(DISPUTE, null),
+            search: makeQuery(queryLink),
           });
         };
         break;
@@ -119,11 +122,13 @@ class Notifications extends React.Component<
         buttonAction = () => {
           this.markAsRead(notification);
           this.disableNotification(notification.id, true);
-          this.props.sellCompleteSetsModal(
-            notification.market.id,
-            notification.market.myPositionsSummary.numCompleteSets,
-            () => this.disableNotification(notification.id, false)
-          );
+          if (notification.market && notification.market.myPositionsSummary) {
+            this.props.sellCompleteSetsModal(
+              notification.market.id,
+              notification.market.myPositionsSummary.numCompleteSets,
+              () => this.disableNotification(notification.id, false),
+            );
+          }
         };
         break;
 
@@ -131,9 +136,11 @@ class Notifications extends React.Component<
         buttonAction = () => {
           this.markAsRead(notification);
           this.disableNotification(notification.id, true);
-          this.props.unsignedOrdersModal(notification.market.id, () =>
-            this.disableNotification(notification.id, false)
-          );
+          if (notification.market) {
+            this.props.unsignedOrdersModal(notification.market.id, () =>
+              this.disableNotification(notification.id, false),
+            );
+          }
         };
         break;
 
@@ -142,7 +149,7 @@ class Notifications extends React.Component<
           this.markAsRead(notification);
           this.disableNotification(notification.id, true);
           this.props.claimReportingFees(notification.claimReportingFees, () =>
-            this.disableNotification(notification.id, false)
+            this.disableNotification(notification.id, false),
           );
         };
         break;
@@ -152,7 +159,7 @@ class Notifications extends React.Component<
           this.markAsRead(notification);
           this.disableNotification(notification.id, true);
           this.props.claimTradingProceeds(() =>
-            this.disableNotification(notification.id, false)
+            this.disableNotification(notification.id, false),
           );
         };
         break;
@@ -161,12 +168,12 @@ class Notifications extends React.Component<
         buttonAction = () => {
           this.markAsRead(notification);
           const queryLink = {
-            [MARKET_ID_PARAM_NAME]: notification.market.id,
-            [RETURN_PARAM_NAME]: location.hash
+            [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
+            [RETURN_PARAM_NAME]: location.hash,
           };
           history.push({
-            pathname: makePath(MARKET),
-            search: makeQuery(queryLink)
+            pathname: makePath(MARKET, null),
+            search: makeQuery(queryLink),
           });
         };
         break;
@@ -180,7 +187,7 @@ class Notifications extends React.Component<
 
     return {
       ...notification,
-      buttonAction
+      buttonAction,
     };
   }
 
@@ -188,7 +195,7 @@ class Notifications extends React.Component<
     this.setState({
       disabledNotifications: {
         ...this.state.disabledNotifications,
-        [id]: disabled
+        [id]: disabled,
       }
     });
   }
@@ -209,14 +216,14 @@ class Notifications extends React.Component<
 
   render() {
     const { currentAugurTimestamp, reportingWindowStatsEndTime } = this.props;
-    const notifications = this.props.notifications.map(notification =>
-      this.getButtonAction(notification)
+    const notifications = this.props.notifications.map((notification) =>
+      this.getButtonAction(notification),
     );
     const notificationCount = notifications.length;
-    const newNotificationCount = notifications.filter(item => item.isNew)
+    const newNotificationCount = notifications.filter((item) => item.isNew)
       .length;
 
-    const rows = orderBy(notifications, "isNew", ["desc"]).map(notification => {
+    const rows = orderBy(notifications, "isNew", ["desc"]).map((notification) => {
       const {
         id,
         isImportant,
@@ -228,7 +235,7 @@ class Notifications extends React.Component<
         markets,
         claimReportingFees,
         totalProceeds,
-        type
+        type,
       } = notification;
 
       const templateProps = {
@@ -240,7 +247,7 @@ class Notifications extends React.Component<
         reportingWindowStatsEndTime,
         buttonAction,
         buttonLabel,
-        type
+        type,
       };
 
       const notificationCardProps = {
@@ -250,7 +257,7 @@ class Notifications extends React.Component<
         isNew,
         title,
         buttonLabel,
-        buttonAction
+        buttonAction,
       };
 
       const isDisabled: boolean =
@@ -261,56 +268,55 @@ class Notifications extends React.Component<
         <NotificationCard
           key={id}
           {...notificationCardProps}
-          isDisabled={isDisabled}
         >
           {type === NOTIFICATION_TYPES.resolvedMarketsOpenOrders ? (
             <OpenOrdersResolvedMarketsTemplate
               isDisabled={isDisabled}
               {...templateProps}
             />
-          ) : null}
+          ) as any : null}
           {type === NOTIFICATION_TYPES.reportOnMarkets ? (
             <ReportEndingSoonTemplate
               isDisabled={isDisabled}
               {...templateProps}
             />
-          ) : null}
+          ) as any : null}
           {type === NOTIFICATION_TYPES.finalizeMarkets ? (
             <FinalizeTemplate isDisabled={isDisabled} {...templateProps} />
-          ) : null}
+          ) as any : null}
           {type === NOTIFICATION_TYPES.marketsInDispute ? (
             <DisputeTemplate isDisabled={isDisabled} {...templateProps} />
-          ) : null}
+          ) as any : null}
           {type === NOTIFICATION_TYPES.completeSetPositions ? (
             <SellCompleteSetTemplate
               isDisabled={isDisabled}
               {...templateProps}
             />
-          ) : null}
+          ) as any : null}
           {type === NOTIFICATION_TYPES.unsignedOrders ? (
             <UnsignedOrdersTemplate
               isDisabled={isDisabled}
               {...templateProps}
             />
-          ) : null}
+          ) as any : null}
           {type === NOTIFICATION_TYPES.claimReportingFees ? (
             <ClaimReportingFeesTemplate
               isDisabled={isDisabled}
               {...templateProps}
             />
-          ) : null}
+          ) as any : null}
           {type === NOTIFICATION_TYPES.proceedsToClaimOnHold ? (
             <ProceedsToClaimOnHoldTemplate
               isDisabled={isDisabled}
               {...templateProps}
             />
-          ) : null}
+          ) as any : null}
           {type === NOTIFICATION_TYPES.proceedsToClaim ? (
             <ProceedsToClaimTemplate
               isDisabled={isDisabled}
               {...templateProps}
             />
-          ) : null}
+          ) as any : null}
         </NotificationCard>
       );
     });
@@ -332,6 +338,7 @@ class Notifications extends React.Component<
             <EmptyDisplay
               selectedTab=""
               filterLabel={NOTIFICATIONS_LABEL}
+              search=""
             />
           ) : (
             rows
