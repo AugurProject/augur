@@ -1,11 +1,12 @@
 import { augur } from "services/augurjs";
 import { updateLoginAccount } from "modules/account/actions/login-account";
 import logError from "utils/log-error";
+import { AppState } from "store";
 
 export const updateTopBarPL = (
   options: any = {},
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
     return callback(null);

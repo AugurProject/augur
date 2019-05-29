@@ -2,6 +2,7 @@ import { augur } from "services/augurjs";
 import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-info";
 import { addMarketsReport } from "modules/reports/actions/update-reports";
 import logError from "utils/log-error";
+import { AppState } from "store";
 
 export const loadReportingHistory = (
   options = {},
@@ -26,7 +27,7 @@ export const loadReportingHistory = (
 const loadReportingHistoryInternal = (
   options: any = {},
   callback: Function
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   if (!loginAccount.address) return callback(null, {});
   augur.reporting.getReportingHistory(

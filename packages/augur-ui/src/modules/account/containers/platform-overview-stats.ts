@@ -3,8 +3,9 @@ import { withRouter } from "react-router-dom";
 import { formatAttoRep } from "utils/format-number";
 import getValue from "utils/get-value";
 import Stats from "modules/account/components/stats";
+import { AppState } from "store";
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   timeframeData: state.universe.timeframeData
 });
 

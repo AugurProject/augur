@@ -1,10 +1,11 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
+import { AppState } from "store";
 
 export const getDisputeInfo = (
   marketIds: Array<string>,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount } = getState();
   augur.augurNode.submitRequest(
     "getDisputeInfo",

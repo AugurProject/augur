@@ -4,7 +4,7 @@ import Notifications from "modules/account/components/notifications";
 import { selectNotifications } from "modules/notifications/selectors/notification-state";
 import { updateReadNotifications } from "modules/notifications/actions/update-notifications";
 import { updateModal } from "modules/modal/actions/update-modal";
-
+import { AppState } from "store";
 import {
   MODAL_FINALIZE_MARKET,
   MODAL_SELL_COMPLETE_SETS,
@@ -15,7 +15,7 @@ import {
 } from "modules/common-elements/constants";
 
 // TODO create state Interface
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const notifications = selectNotifications(state);
 
   return {

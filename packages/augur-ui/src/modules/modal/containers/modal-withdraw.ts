@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { WithdrawForm } from "modules/modal/withdraw-form";
-
+import { AppState } from "store";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { formatGasCostToEther, formatEtherEstimate } from "utils/format-number";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
@@ -10,7 +10,7 @@ import { transferFunds } from "modules/auth/actions/transfer-funds";
 const TRANSFER_ETH_GAS_COST = 21000;
 const TRANSFER_REP_GAS_COST = 80000;
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   loginAccount: state.loginAccount,
   GasCosts: {

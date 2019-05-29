@@ -66,6 +66,6 @@ export function createReducer() {
     transactionsStatus,
     universe,
     versions,
-    accountShareBalances
+    accountShareBalances,
   };
 }

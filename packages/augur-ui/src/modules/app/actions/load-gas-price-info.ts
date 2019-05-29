@@ -7,13 +7,14 @@ import {
   getNetworkId,
   getGasPrice
 } from "modules/contracts/actions/contractCalls";
+import { AppState } from "store";
 
 const GAS_PRICE_API_ENDPOINT = "https://ethgasstation.info/json/ethgasAPI.json";
 const GWEI_CONVERSION = 1000000000;
 const MAINNET_ID = "1";
 
 export function loadGasPriceInfo(callback: Function = logError) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     const { loginAccount, blockchain } = getState();
     if (!loginAccount.address) return callback(null);
     const networkId = getNetworkId();

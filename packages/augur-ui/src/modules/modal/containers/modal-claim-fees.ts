@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
+import { AppState } from "store";
 import { selectMarket } from "modules/markets/selectors/market";
 import { createBigNumber } from "utils/create-big-number";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
@@ -24,7 +24,7 @@ import {
   CLAIM_STAKE_FEES
 } from "modules/common-elements/constants";
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   gasCost: formatGasCostToEther(
     CLAIM_FEES_GAS_COST,
