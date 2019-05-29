@@ -4,6 +4,8 @@ import { updateAlert, addAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds as getTime } from "store/select-state";
 import { ETH, REP, CONFIRMED, FAILED } from "modules/common-elements/constants";
 import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export function transferFunds(
   amount: string,

@@ -6,6 +6,8 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
 import { cancelAllOpenOrders } from "modules/orders/actions/cancel-order";
 import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);

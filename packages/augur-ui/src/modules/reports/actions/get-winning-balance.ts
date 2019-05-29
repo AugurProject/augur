@@ -3,9 +3,9 @@ import logError from "utils/log-error";
 import * as speedomatic from "speedomatic";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 
-export const getWinningBalance = (marketIds = [], callback = logError) => (
+export const getWinningBalance = (marketIds = [], callback: NodeStyleCallback = logError) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   const { loginAccount } = getState();
   augur.augurNode.submitRequest(

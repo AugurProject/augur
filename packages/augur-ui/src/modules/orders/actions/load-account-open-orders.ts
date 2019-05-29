@@ -24,7 +24,7 @@ export const loadAccountOpenOrders = (
 
 const loadUserAccountOrders = (options = {}, callback: NodeStyleCallback) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState,
 ) => {
   const { universe, loginAccount } = getState();
   if (!options.orderState)

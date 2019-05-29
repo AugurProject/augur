@@ -5,10 +5,13 @@ import {
 } from "modules/app/actions/update-connection";
 import { reInitAugur } from "modules/app/actions/re-init-augur";
 import { MODAL_NETWORK_DISCONNECTED } from "modules/common-elements/constants";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 export const handleAugurNodeDisconnect = (history: any, event: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   console.warn("Disconnected from augur-node", event);
   const { connection, env } = getState();
@@ -23,7 +26,7 @@ export const handleAugurNodeDisconnect = (history: any, event: any) => (
 
 export const handleEthereumDisconnect = (history: any, event: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   console.warn("Disconnected from Ethereum", event);
   const { connection, env } = getState();

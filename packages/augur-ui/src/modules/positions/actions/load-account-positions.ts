@@ -36,7 +36,7 @@ export const loadAccountPositions = (
 
 export const loadMarketAccountPositions = (
   marketId: string,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
     loadAccountPositionsInternal(
@@ -49,9 +49,9 @@ export const loadMarketAccountPositions = (
   );
 };
 
-export const loadAccountPositionsTotals = (callback = logError) => (
+export const loadAccountPositionsTotals = (callback: NodeStyleCallback = logError) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function,
+  getState: () => AppState,
 ) => {
   const { universe, loginAccount } = getState();
   augur.trading.getUserTradingPositions(

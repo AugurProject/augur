@@ -12,8 +12,9 @@ import noop from "utils/noop";
 import { AppState } from "store";
 import { Action } from "redux";
 import { ThunkDispatch } from "redux-thunk";
+import { NodeStyleCallback } from "modules/types";
 
-export default function(callback = logError) {
+export default function(callback: NodeStyleCallback = logError) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { universe, loginAccount } = getState();
     const universeID = universe.id || UNIVERSE_ID;

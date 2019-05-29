@@ -5,13 +5,16 @@ import {
   EDGE_CONTEXT
 } from "modules/auth/actions/auth-status";
 import { makeEdgeUiContext } from "edge-login-ui-web";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 export const BEGIN_EDGE_LOADING = "BEGIN_EDGE_LOADING";
 export const UPDATE_EDGE_CONTEXT = "UPDATE_EDGE_CONTEXT";
 
 export const showEdgeLogin = (history: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   const state = getState();
   const { edgeContext } = state.authStatus;

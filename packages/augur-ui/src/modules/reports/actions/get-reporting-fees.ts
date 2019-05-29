@@ -16,10 +16,11 @@ import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { AppState } from "store";
 
 export const getReportingFees = (callback: NodeStyleCallback = logError) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   const { universe, loginAccount } = getState();
   if (loginAccount.address === undefined) return callback(null);

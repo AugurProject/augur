@@ -4,6 +4,8 @@ import { AppState } from "store";
 import * as constants from "modules/common-elements/constants";
 import Row from "modules/common-elements/row";
 import { Properties } from "modules/common-elements/row-column";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const { COLUMN_TYPES } = constants;
 

@@ -264,7 +264,7 @@ function getUniverseName(parentUniverseData: any, universeData: any) {
 }
 
 // TODO: this whole thing will be refactored
-export function getForkingInfo(universe: any, callback = logError) {
+export function getForkingInfo(universe: any, callback: NodeStyleCallback = logError) {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
     // Getting current fork data
     const forkingMarket = await getForkingMarket();

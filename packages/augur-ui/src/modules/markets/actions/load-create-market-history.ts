@@ -7,7 +7,7 @@ import { NodeStyleCallback } from "modules/types";
 
 export function loadCreateMarketHistory(
   options = {},
-  callback = logError,
+  callback: NodeStyleCallback = logError,
   marketIdAggregator: Function | undefined
 ) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {

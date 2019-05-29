@@ -9,10 +9,11 @@ import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-inf
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { AppState } from "store";
 
 export const loadDisputing = (callback: NodeStyleCallback = logError) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   const { universe } = getState();
   const args = {

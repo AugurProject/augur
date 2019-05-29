@@ -4,6 +4,8 @@ import { Message } from "modules/modal/message";
 import { AppState } from "store";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { approveAccount } from "modules/auth/actions/approve-account";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal

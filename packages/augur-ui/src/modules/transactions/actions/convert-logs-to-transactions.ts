@@ -1,10 +1,13 @@
 import { deleteTransactionsWithTransactionHash } from "modules/transactions/actions/update-transactions-data";
 import { constructTransaction } from "modules/transactions/actions/construct-transaction";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 // TODO: when integrating with SDK need to use SDK's log types
 export const updateLoggedTransactions = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   if (log.removed) {
     dispatch(removeLogFromTransactions(log));
@@ -15,7 +18,7 @@ export const updateLoggedTransactions = (log: any) => (
 
 export const removeLogFromTransactions = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   if (!log.transactionHash)
     return console.error(
@@ -26,7 +29,7 @@ export const removeLogFromTransactions = (log: any) => (
 
 export const addLogToTransactions = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   if (!log.transactionHash)
     return console.error(

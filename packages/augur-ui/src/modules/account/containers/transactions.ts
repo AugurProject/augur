@@ -10,6 +10,8 @@ import {
   MODAL_TRANSACTIONS,
 } from "modules/common-elements/constants";
 import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => ({
   isMainnet: state.connection.augurNodeNetworkId === NETWORK_IDS.Mainnet,

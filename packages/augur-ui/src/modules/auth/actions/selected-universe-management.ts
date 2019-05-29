@@ -1,10 +1,13 @@
 import { windowRef } from "utils/window-ref";
 import { augur } from "services/augurjs";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 export const setSelectedUniverse = (selectedUniverseId: string) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   const { loginAccount, env, connection } = getState();
   const { address } = loginAccount;

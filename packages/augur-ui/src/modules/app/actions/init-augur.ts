@@ -39,7 +39,7 @@ const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
 function pollForAccount(
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function,
+  getState: () => AppState,
   callback: any,
 ) {
   const { loginAccount } = getState();
@@ -256,7 +256,7 @@ interface initAugurParams {
 export function initAugur(
   history: any,
   { augurNode, ethereumNodeHttp, ethereumNodeWs, useWeb3Transport }: initAugurParams,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
 ) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const env = networkConfig[`${process.env.ETHEREUM_NETWORK}`];

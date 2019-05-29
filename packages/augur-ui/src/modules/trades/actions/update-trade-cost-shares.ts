@@ -17,7 +17,7 @@ export function updateTradeCost({
   numShares,
   limitPrice,
   selfTrade,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
 }: any) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     if (!side || !numShares || !limitPrice) {
@@ -65,7 +65,7 @@ export function updateTradeShares({
   side,
   maxCost,
   limitPrice,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
 }: any) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     if (!side || !maxCost || !limitPrice) {

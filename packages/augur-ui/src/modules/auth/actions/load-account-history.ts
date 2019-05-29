@@ -11,10 +11,11 @@ import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";
+import { AppState } from "store";
 
 export const loadAccountHistory = () => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   dispatch(clearTransactions());
   loadTransactions(dispatch, () => {

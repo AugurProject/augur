@@ -30,10 +30,13 @@ import {
 } from "modules/events/actions/log-handlers";
 import { wrapLogHandler } from "modules/events/actions/wrap-log-handler";
 import logError from "utils/log-error";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 export const listenToUpdates = (history: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   augur.events.stopBlockListeners();
   augur.events.stopAugurNodeEventListeners();

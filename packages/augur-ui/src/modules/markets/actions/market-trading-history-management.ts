@@ -78,7 +78,7 @@ export const loadMarketTradingHistory = (
 
 export const loadUserMarketTradingHistory = (
   options = {},
-  callback = logError,
+  callback: NodeStyleCallback = logError,
   marketIdAggregator: any
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(

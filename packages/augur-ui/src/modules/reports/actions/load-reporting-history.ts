@@ -9,7 +9,7 @@ import { NodeStyleCallback } from "modules/types";
 
 export const loadReportingHistory = (
   options = {},
-  callback = logError,
+  callback: NodeStyleCallback = logError,
   marketIdAggregator: Function
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
@@ -29,7 +29,7 @@ export const loadReportingHistory = (
 
 const loadReportingHistoryInternal = (
   options: any = {},
-  callback: NodeStyleCallback
+  callback: NodeStyleCallback,
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   if (!loginAccount.address) return callback(null, {});

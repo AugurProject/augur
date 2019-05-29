@@ -42,7 +42,7 @@ export const loadParticipationTokens = (
 export const purchaseParticipationTokens = (
   amount: string,
   estimateGas = false,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { universe } = getState();
   augur.reporting.getFeeWindowCurrent(

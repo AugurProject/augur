@@ -1,9 +1,12 @@
 import { find } from "lodash";
 import { defaultLogHandler } from "modules/events/actions/default-log-handler";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 export const wrapLogHandler = (logHandler: Function = defaultLogHandler) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => (err: any, log: any) => {
   if (err) return console.error((log || {}).eventName, err, log);
   if (log) {

@@ -41,7 +41,7 @@ const mutateOutcome = mapValues(mutatePeriod);
  * @param {LoadCandleStickDataOptions} options
  * @param {function} callback
  */
-export const loadCandleStickData = (options = {}, callback = logError) => {
+export const loadCandleStickData = (options = {}, callback: NodeStyleCallback = logError) => {
   augur.augurNode.submitRequest(
     "getMarketPriceCandlesticks",
     options,

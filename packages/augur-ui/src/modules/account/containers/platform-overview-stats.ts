@@ -4,6 +4,8 @@ import { formatAttoRep } from "utils/format-number";
 import getValue from "utils/get-value";
 import Stats from "modules/account/components/stats";
 import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => ({
   timeframeData: state.universe.timeframeData

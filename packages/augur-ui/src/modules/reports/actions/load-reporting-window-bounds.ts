@@ -5,10 +5,11 @@ import { updateReportingWindowStats } from "modules/reports/actions/update-repor
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { AppState } from "store";
 
 export const loadReportingWindowBounds = (callback: NodeStyleCallback = logError) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: Function
+  getState: () => AppState
 ) => {
   const { universe, loginAccount } = getState();
   augur.augurNode.submitRequest(

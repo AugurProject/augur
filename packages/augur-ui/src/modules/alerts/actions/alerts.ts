@@ -14,7 +14,7 @@ export const REMOVE_ALERT = "REMOVE_ALERT";
 export const UPDATE_ALERT = "UPDATE_ALERT";
 export const CLEAR_ALERTS = "CLEAR_ALERTS";
 
-function packageAlertInfo(id: string, timestamp: Number, transaction: any) {
+function packageAlertInfo(id: string, timestamp: number, transaction: any) {
   return {
     id,
     timestamp,
