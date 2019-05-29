@@ -101,7 +101,7 @@ def test_order_creation_best_case(numOutcomes, localFixture, markets):
     localFixture.contracts["Cash"].faucet(fix(1, 50))
     orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
     maxGas = localFixture.chain.head_state.gas_used - startGas
-    print "MAX GAS: %i FOR %i OUTCOMES" % (maxGas, numOutcomes)
+    print("MAX GAS: {} FOR {} OUTCOMES".format(maxGas, numOutcomes))
     assert maxGas == CREATE_ORDER_BEST_CASE[marketIndex]
 
 @mark.parametrize('numOutcomes', range(2,8))
@@ -124,7 +124,7 @@ def test_orderCreationMax(numOutcomes, localFixture, markets):
     localFixture.contracts["Cash"].faucet(fix(1, 50))
     orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
     maxGas = localFixture.chain.head_state.gas_used - startGas
-    print "MAX GAS: %i FOR %i OUTCOMES" % (maxGas, numOutcomes)
+    print("MAX GAS: {} FOR {} OUTCOMES".format(maxGas, numOutcomes))
     assert maxGas == CREATE_ORDER_MAXES[marketIndex]
 
 @mark.parametrize('numOutcomes', range(2,8))
@@ -147,7 +147,7 @@ def test_orderCancelationMax(numOutcomes, localFixture, markets):
     startGas = localFixture.chain.head_state.gas_used
     cancelOrder.cancelOrder(orderID)
     maxGas = localFixture.chain.head_state.gas_used - startGas
-    print "MAX GAS: %i FOR %i OUTCOMES" % (maxGas, numOutcomes)
+    print("MAX GAS: {} FOR {} OUTCOMES".format(maxGas, numOutcomes))
     assert maxGas == CANCEL_ORDER_MAXES[marketIndex]
 
 @mark.parametrize('numOutcomes', range(2,8))
@@ -171,7 +171,7 @@ def test_order_filling_take_shares(numOutcomes, localFixture, markets):
         startGas = localFixture.chain.head_state.gas_used
         fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1)
         maxGas = localFixture.chain.head_state.gas_used - startGas
-        print "MAX GAS: %i FOR %i OUTCOMES" % (maxGas, numOutcomes)
+        print("MAX GAS: {} FOR {} OUTCOMES".format(maxGas, numOutcomes))
         assert maxGas == FILL_ORDER_TAKE_SHARES[marketIndex]
 
 @mark.parametrize('numOutcomes', range(2,8))
@@ -219,7 +219,7 @@ def test_order_filling_maker_reverse(numOutcomes, localFixture, markets):
     localFixture.contracts["Cash"].faucet(cost, sender = tester.k1)
     fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1)
     maxGas = localFixture.chain.head_state.gas_used - startGas
-    print "MAX GAS: %i FOR %i OUTCOMES" % (maxGas, numOutcomes)
+    print("MAX GAS: {} FOR {} OUTCOMES".format(maxGas, numOutcomes))
     assert maxGas == FILL_ORDER_MAKER_REVERSE_POSITION[marketIndex]
 
 @mark.parametrize('numOutcomes', range(2,8))
@@ -245,7 +245,7 @@ def test_order_filling_taker_reverse(numOutcomes, localFixture, markets):
     localFixture.contracts["Cash"].faucet(cost, sender = tester.k1)
     fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1)
     maxGas = localFixture.chain.head_state.gas_used - startGas
-    print "MAX GAS: %i FOR %i OUTCOMES" % (maxGas, numOutcomes)
+    print("MAX GAS: {} FOR {} OUTCOMES".format(maxGas, numOutcomes))
     assert maxGas == FILL_ORDER_TAKER_REVERSE_POSITION[marketIndex]
 
 @mark.parametrize('numOutcomes', range(2,8))
@@ -271,7 +271,7 @@ def test_order_filling_double_reverse(numOutcomes, localFixture, markets):
     localFixture.contracts["Cash"].faucet(cost, sender = tester.k1)
     fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k1)
     maxGas = localFixture.chain.head_state.gas_used - startGas
-    print "MAX GAS: %i FOR %i OUTCOMES" % (maxGas, numOutcomes)
+    print("MAX GAS: {} FOR {} OUTCOMES".format(maxGas, numOutcomes))
     assert maxGas == FILL_ORDER_DOUBLE_REVERSE_POSITION[marketIndex]
 
 
