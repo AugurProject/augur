@@ -1,7 +1,7 @@
 import { Augur } from "../../Augur";
 import { DB } from "../db/DB";
 import { PathReporter } from "io-ts/lib/PathReporter";
-import { AddressFormatReviver } from "@AugurProject/sdk/src/state/addressFormatReviver";
+import { AddressFormatReviver } from "@AugurProject/sdk/src/state/AddressFormatReviver";
 
 import * as t from "io-ts";
 
