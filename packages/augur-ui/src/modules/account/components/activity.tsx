@@ -4,7 +4,7 @@ import { PillSelection } from "modules/common-elements/selection";
 import PlatformOverviewStats from "modules/account/containers/platform-overview-stats";
 import * as constants from "modules/common-elements/constants";
 import { LinearPropertyLabel } from "modules/common-elements/labels";
-import Styles from "modules/account/components/activity.styles";
+import Styles from "modules/account/components/activity.styles.less";
 
 export interface ActivityProps {
   updatePlatformTimeframeData: Function;
@@ -21,7 +21,7 @@ export default class Activity extends React.Component<
   ActivityState
 > {
   state: ActivityState = {
-    selected: constants.TIMEFRAME_OPTIONS[3].id
+    selected: constants.TIMEFRAME_OPTIONS[3].id,
   };
 
   componentDidMount() {
@@ -34,7 +34,7 @@ export default class Activity extends React.Component<
     const startTime =
       period === 0 ? 0 : this.props.currentAugurTimestamp - period;
     this.props.updatePlatformTimeframeData(startTime);
-  };
+  }
 
   render() {
     return (

@@ -1,12 +1,13 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
+import { AppState } from "store";
 
 export function loadCreateMarketHistory(
   options = {},
   callback = logError,
   marketIdAggregator: Function | undefined
 ) {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: () => AppState) => {
     dispatch(
       loadCreateMarketHistoryInternal(
         options,
@@ -19,7 +20,7 @@ export function loadCreateMarketHistory(
   };
 
   function loadCreateMarketHistoryInternal(options = {}, callback: Function) {
-    return (dispatch: Function, getState: Function) => {
+    return (dispatch: Function, getState: () => AppState) => {
       const { universe, loginAccount } = getState();
       if (!loginAccount.address) return callback(null);
       augur.markets.getMarkets(

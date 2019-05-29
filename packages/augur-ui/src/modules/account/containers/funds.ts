@@ -4,15 +4,16 @@ import Funds from "modules/account/components/funds";
 import { formatEther, formatAttoRep, formatPercent } from "utils/format-number";
 import {
   selectLoginAccount,
-  selectAccountFunds
+  selectAccountFunds,
 } from "modules/auth/selectors/login-account";
+import { AppState } from "store";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const loginAccount = selectLoginAccount(state);
   const {
     totalAvailableTradingBalance,
     totalFrozenFunds,
-    totalAccountValue
+    totalAccountValue,
   } = selectAccountFunds(state);
   const { reportingWindowStats } = state;
   const { rep, realizedPLPercent } = loginAccount;
@@ -21,7 +22,7 @@ const mapStateToProps = (state: any) => {
     repStaked:
       formatAttoRep(reportingWindowStats.stake, {
         decimals: 4,
-        denomination: " REP"
+        denomination: " REP",
       }).formattedValue || 0,
     repBalance: rep.formatted || "0",
     totalFrozenFunds: formatEther(totalFrozenFunds).formatted,
@@ -29,7 +30,7 @@ const mapStateToProps = (state: any) => {
       .formatted,
     totalAccountValue: formatEther(totalAccountValue).formatted,
     realizedPLPercent: formatPercent(realizedPLPercent)
-      .formattedValue
+      .formattedValue,
   };
 };
 

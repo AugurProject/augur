@@ -7,11 +7,12 @@ import {
   updateUpcomingDesignatedReportingMarkets,
   updateOpenMarkets
 } from "modules/reports/actions/update-markets-in-reporting-state";
+import { AppState } from "store";
 
 export const loadReporting = (
   marketIdsParam: any,
   callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+) => (dispatch: Function, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   const designatedReportingParams = {
     universe: universe.id,

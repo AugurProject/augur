@@ -9,7 +9,7 @@ export default function() {
   const markets = selectLoginAccountPositionsMarkets(store.getState());
 
   return {
-    markets
+    markets,
   };
 }
 
@@ -20,6 +20,6 @@ export const selectLoginAccountPositionsMarkets = createSelector(
     if (!markets || !positions || Object.keys(positions).length === 0) {
       return [];
     }
-    return markets.filter(market => positions[market.id] != null);
-  }
+    return markets.filter((market) => positions[market.id] != null);
+  },
 );

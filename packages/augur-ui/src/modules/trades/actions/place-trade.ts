@@ -15,6 +15,7 @@ import {
 } from "modules/orders/actions/pending-orders-management";
 import { formatEther, formatShares } from "utils/format-number";
 import { getOutcomeName } from "utils/get-outcome";
+import { AppState } from "store";
 
 export const placeTrade = ({
   marketId,
@@ -23,7 +24,7 @@ export const placeTrade = ({
   doNotCreateOrders,
   callback = logError,
   onComplete = noop
-}: any) => (dispatch: Function, getState: Function) => {
+}: any) => (dispatch: Function, getState: () => AppState) => {
   if (!marketId) return null;
   const { loginAccount, marketsData, blockchain, outcomesData } = getState();
   const market = marketsData[marketId];

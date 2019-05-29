@@ -93,13 +93,13 @@ if (process.env.NODE_ENV === "production") {
   );
 }
 
+const rootReducers = createReducer();
 // middleware
 const store = createStore(
-  combineReducers({
-    ...createReducer()
-  }),
-  middleware
+  combineReducers({...rootReducers }), middleware,
 );
+
+export type AppState = ReturnType<typeof rootReducer>
 
 // Keep a copy of the state on the window object for debugging.
 if (process.env.NODE_ENV !== "test") {

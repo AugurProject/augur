@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import FilterSwitchBox from "modules/portfolio/components/common/quads/filter-switch-box";
 import MarketRow from "modules/portfolio/components/common/rows/market-row";
 import { MovementLabel } from "modules/common-elements/labels";
+import { SizeTypes } from "modules/types";
 
-import Styles from "modules/account/components/open-markets.styles";
+import Styles from "modules/account/components/open-markets.styles.less";
 
 function filterComp(input: any, market: any) {
   return market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -13,17 +13,11 @@ function filterComp(input: any, market: any) {
 
 interface OpenMarketsProps {
   markets: Array<any>;
-  marketsObj: any;
-  totalPercentage: String;
+  marketsObj: object;
+  totalPercentage: string;
 }
 
 export default class OpenMarkets extends Component<OpenMarketsProps> {
-  static propTypes = {
-    markets: PropTypes.array.isRequired,
-    marketsObj: PropTypes.object.isRequired,
-    totalPercentage: PropTypes.string.isRequired
-  };
-
   constructor(props: OpenMarketsProps) {
     super(props);
 
@@ -48,7 +42,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
             value={
               marketsObj[market.id].myPositionsSummary.valueChange.formatted
             }
-            size="medium"
+            size={SizeTypes.NORMAL}
           />
         }
         toggleContent={
@@ -63,7 +57,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
                   showIcon
                   showPlusMinus
                   value={position.valueChange.formatted}
-                  size="small"
+                  size={SizeTypes.SMALL}
                 />
               </div>
             ))}
@@ -93,8 +87,8 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
                 showPercent
                 showIcon
                 showPlusMinus
-                value={totalPercentage}
-                size="large"
+                value={Number(totalPercentage)}
+                size={SizeTypes.LARGE}
               />
             </div>
           </div>
