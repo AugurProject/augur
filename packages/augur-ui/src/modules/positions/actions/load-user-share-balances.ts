@@ -6,7 +6,7 @@ export const LOAD_USER_SHARE_BALANCES = "LOAD_USER_SHARE_BALANCES";
 
 export const loadUsershareBalances = (
   marketIds: Array<string>,
-  callback: Function = logError
+  callback: Function = logError,
 ) => (dispatch: Function, getState: () => AppState) => {
   const { loginAccount } = getState();
   if (loginAccount.address == null) return callback(null);
@@ -14,13 +14,13 @@ export const loadUsershareBalances = (
     "getUserShareBalances",
     {
       marketIds,
-      account: loginAccount.address
+      account: loginAccount.address,
     },
     (err: any, data: any) => {
       if (err) return callback(err);
       dispatch({ type: LOAD_USER_SHARE_BALANCES, data });
       callback(null, data);
-    }
+    },
   );
 };
 
