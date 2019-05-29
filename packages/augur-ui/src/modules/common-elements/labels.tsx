@@ -9,7 +9,7 @@ import { MarketProgress } from "modules/common-elements/progress";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip.styles";
 import { createBigNumber } from "utils/create-big-number";
-import { DashlineNormal } from "modules/common/components/dashline/dashline";
+// import { DashlineNormal } from "modules/common/components/dashline/dashline";
 import {
   SELL,
   BOUGHT,
@@ -20,7 +20,7 @@ import {
 } from "modules/common-elements/constants";
 import { ViewTransactionDetailsButton } from "modules/common-elements/buttons";
 import { formatNumber } from "utils/format-number";
-import { FormattedNumber, SizeTypes, DateFormattedObject } from "modules/types";
+import { FormattedNumber, SizeTypes } from "modules/types";
 
 const { REPORTING_STATE } = serviceConstants;
 
@@ -145,6 +145,18 @@ export interface TextLabelState {
 export interface RepBalanceProps {
   rep: string;
 }
+
+export const DashlineNormal = () => (
+  <svg width="100%" height="1">
+    <line x1="0" x2="100%" y1="0" y2="0" className={Styles.Dashline} />
+  </svg>
+);
+
+export const DashlineLong = () => (
+  <svg width="100%" height="1">
+    <line x1="0" x2="100%" y1="0" y2="0" className={Styles.DashlineL} />
+  </svg>
+);
 
 export function formatExpandedValue(
   value,
