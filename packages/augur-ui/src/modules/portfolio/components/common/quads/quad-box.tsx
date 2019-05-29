@@ -15,6 +15,12 @@ export interface QuadBoxProps {
   onSearchChange?: any;
   content?: ReactNode;
   bottomBarContent?: ReactNode;
+  bottomRightBarContent?: ReactNode;  
+  rightContent?: ReactNode;  
+  sortByStyles?: object;  
+  switchHeaders?: boolean;  
+  noBackgroundBottom?: boolean;  
+  search?: string;  
 }
 
 const BoxHeaderElement = (props: QuadBoxProps) => (
