@@ -10,7 +10,7 @@ import { FindReact } from "utils/find-react";
 import MarketHeader from "modules/market/containers/market-header";
 import MarketOrdersPositionsTable from "modules/market/containers/market-orders-positions-table";
 import MarketOutcomesList from "modules/market/containers/market-outcomes-list";
-import MarketOutcomeOrders from "modules/market-charts/containers/market-outcome--orders";
+import OrderBook from "modules/market-charts/containers/order-book";
 import MarketTradingForm from "modules/market/containers/market-trading-form";
 import MarketChartsPane from "modules/market-charts/containers/market-charts-pane";
 import parseMarketTitle from "modules/markets/helpers/parse-market-title";
@@ -35,8 +35,6 @@ import { TEMP_TABLET } from "modules/common-elements/constants";
 export default class MarketView extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
-    maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    minPrice: PropTypes.instanceOf(BigNumber).isRequired,
     marketId: PropTypes.string.isRequired,
     marketReviewSeen: PropTypes.bool.isRequired,
     marketReviewModal: PropTypes.func.isRequired,
@@ -221,8 +219,6 @@ export default class MarketView extends Component {
       currentTimestamp,
       description,
       marketId,
-      maxPrice,
-      minPrice,
       location,
       outcomes,
       market,
@@ -327,7 +323,7 @@ export default class MarketView extends Component {
                       <ModuleTabs selected={0} fillForMobile>
                         <ModulePane label="Order Book">
                           <div className={Styles.MarketView__orders}>
-                            <MarketOutcomeOrders
+                            <OrderBook
                               updateSelectedOrderProperties={
                                 this.updateSelectedOrderProperties
                               }
@@ -462,7 +458,7 @@ export default class MarketView extends Component {
                         }
                       )}
                     >
-                      <MarketOutcomeOrders
+                      <OrderBook
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
                         }
