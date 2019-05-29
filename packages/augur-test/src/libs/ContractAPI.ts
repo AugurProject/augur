@@ -208,9 +208,6 @@ export class ContractAPI {
       displayAmount,
       displayPrice,
       displayShares,
-      onSuccess: function (r) { console.log(`SUCCESS: ${JSON.stringify(r)}`); },
-      onFailed: function (r) { console.log(`FAIL: ${r}`); },
-      onSent: function (r) { console.log(`SENT: ${JSON.stringify(r)}`); },
     });
   }
 

@@ -4,7 +4,7 @@ import { Contracts } from "./api/Contracts";
 import { Trade } from "./api/Trade";
 import { ContractInterfaces } from "@augurproject/core";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers/build";
+import { TransactionStatusCallback, ContractDependenciesEthers } from "contract-dependencies-ethers";
 
 export interface CustomEvent {
   name: string;
@@ -113,5 +113,17 @@ export class Augur<TProvider extends Provider = Provider> {
 
   public getOrders():ContractInterfaces.Orders {
     return new ContractInterfaces.Orders(this.dependencies, this.addresses.Orders);
+  }
+
+  public registerTransactionStatusCallback(key: string, callback: TransactionStatusCallback): void {
+    this.dependencies.registerTransactionStatusCallback(key, callback);
+}
+
+  public deRegisterTransactionStatusCallback(key: string): void {
+    this.dependencies.deRegisterTransactionStatusCallback(key);
+  }
+
+  public deRegisterAllTransactionStatusCallbacks(): void {
+    this.dependencies.deRegisterAllTransactionStatusCallbacks();
   }
 }
