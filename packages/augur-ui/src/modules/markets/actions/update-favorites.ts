@@ -15,7 +15,7 @@ const toggleFavoriteAction = (marketId: string, timestamp: number) => ({
 });
 
 export const toggleFavorite = (marketId: string) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { blockchain } = getState();
@@ -23,7 +23,7 @@ export const toggleFavorite = (marketId: string) => (
 };
 
 export const loadFavoritesMarkets = (favorites: Array<Favorite>) => (
-  dispatch: Function
+  dispatch: ThunkDispatch<void, any, Action>
 ) => {
   if (favorites) {
     dispatch(

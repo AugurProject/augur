@@ -10,7 +10,7 @@ export function transferFunds(
   currency: string,
   toAddress: string,
 ) {
-  return (dispatch: Function, getState: () => AppState) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { universe, loginAccount } = getState();
     const fromAddress = loginAccount.address;
     const to = speedomatic.formatEthereumAddress(toAddress);

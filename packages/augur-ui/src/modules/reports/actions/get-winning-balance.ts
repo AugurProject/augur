@@ -4,7 +4,7 @@ import * as speedomatic from "speedomatic";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 
 export const getWinningBalance = (marketIds = [], callback = logError) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { loginAccount } = getState();

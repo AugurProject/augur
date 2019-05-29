@@ -7,7 +7,7 @@ import { closeModal } from "modules/modal/actions/close-modal";
 const RETRY_TIMER = 3000; // attempt re-initAugur every 3 seconds.
 
 export const reInitAugur = (history: any) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const debounceCall = debounce((callback = cb) => {

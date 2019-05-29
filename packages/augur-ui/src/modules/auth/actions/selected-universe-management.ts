@@ -3,7 +3,7 @@ import { augur } from "services/augurjs";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 export const setSelectedUniverse = (selectedUniverseId: string) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { loginAccount, env, connection } = getState();

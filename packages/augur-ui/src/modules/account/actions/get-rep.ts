@@ -10,9 +10,11 @@ import {
 import logError from "utils/log-error";
 import noop from "utils/noop";
 import { AppState } from "store";
+import { Action } from "redux";
+import { ThunkDispatch } from "redux-thunk";
 
 export default function(callback = logError) {
-  return (dispatch: Function, getState: () => AppState) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { universe, loginAccount } = getState();
     const universeID = universe.id || UNIVERSE_ID;
     const update = (id: string, status: string) =>
@@ -20,7 +22,7 @@ export default function(callback = logError) {
         updateAlert(id, {
           id,
           status,
-          timestamp: getTime(getState())
+          timestamp: getTime(getState()),
         }),
       );
     augur.api.Universe.getReputationToken(
@@ -42,9 +44,9 @@ export default function(callback = logError) {
           onFailed: (res: any) => {
             update(res.hash, FAILED);
             logError(res);
-          }
+          },
         });
-      }
+      },
     );
   };
 }

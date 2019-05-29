@@ -5,9 +5,11 @@ import { CONFIRMED, FAILED } from "modules/common-elements/constants";
 import logError from "utils/log-error";
 import { getDai } from "modules/contracts/actions/contractCalls";
 import { AppState } from "store";
+import { Action } from "redux";
+import { ThunkDispatch } from "redux-thunk";
 
 export default function(callback = logError) {
-  return async (dispatch: Function, getState: () => AppState) => {
+  return async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const update = (id: string, status: string) =>
       dispatch(
         updateAlert(id, {

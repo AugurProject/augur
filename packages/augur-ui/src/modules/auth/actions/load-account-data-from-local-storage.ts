@@ -11,7 +11,7 @@ import { loadPendingQueue } from "modules/pending-queue/actions/pending-queue-ma
 import { setSelectedUniverse } from "./selected-universe-management";
 
 export const loadAccountDataFromLocalStorage = (address: string) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const localStorageRef = typeof window !== "undefined" && window.localStorage;

@@ -4,7 +4,7 @@ import { shapeGetOrders } from "modules/orders/helpers/shape-getOrders";
 import logError from "utils/log-error";
 
 export const loadMarketOpenOrders = (marketId: string, callback = logError) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { marketsData } = getState();

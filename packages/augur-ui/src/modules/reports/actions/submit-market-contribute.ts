@@ -15,7 +15,7 @@ export const submitMarketContribute = ({
   history,
   returnPath = REPORTING_DISPUTE_MARKETS,
   callback = logError
-}: any) => (dispatch: Function, getState: () => AppState) => {
+}: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount, marketsData } = getState();
   const outcome = parseFloat(selectedOutcome);
 

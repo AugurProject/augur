@@ -18,7 +18,7 @@ const { REPORTING_STATE } = constants;
 // NOTE -- We ONLY load the market ids during this step.
 // From here we populate the marketsData
 export const loadMarkets = (type: any, callback = logError) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { universe } = getState();
@@ -41,7 +41,7 @@ export const loadMarkets = (type: any, callback = logError) => (
 };
 
 export const loadMarketsByFilter = (filterOptions: any, cb:Function = () => {}) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { universe } = getState();

@@ -3,7 +3,7 @@ import { constructTransaction } from "modules/transactions/actions/construct-tra
 
 // TODO: when integrating with SDK need to use SDK's log types
 export const updateLoggedTransactions = (log: any) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   if (log.removed) {
@@ -14,7 +14,7 @@ export const updateLoggedTransactions = (log: any) => (
 };
 
 export const removeLogFromTransactions = (log: any) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   if (!log.transactionHash)
@@ -25,7 +25,7 @@ export const removeLogFromTransactions = (log: any) => (
 };
 
 export const addLogToTransactions = (log: any) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   if (!log.transactionHash)

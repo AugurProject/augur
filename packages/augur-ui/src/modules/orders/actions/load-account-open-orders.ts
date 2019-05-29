@@ -2,12 +2,15 @@ import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { updateOrderBook } from "modules/orders/actions/update-order-book";
 import { shapeGetOrders } from "modules/orders/helpers/shape-getOrders";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const loadAccountOpenOrders = (
   options: any = {},
-  callback: Function = logError,
+  callback: NodeStyleCallback = logError,
   marketIdAggregator: Function
-) => (dispatch: Function) => {
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
     loadUserAccountOrders(options, (err: any, { marketIds = [], orders = {} }: any) => {
       let allMarketIds = marketIds;
@@ -19,8 +22,8 @@ export const loadAccountOpenOrders = (
   );
 };
 
-const loadUserAccountOrders = (options = {}, callback: Function) => (
-  dispatch: Function,
+const loadUserAccountOrders = (options = {}, callback: NodeStyleCallback) => (
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { universe, loginAccount } = getState();
@@ -35,7 +38,7 @@ const loadUserAccountOrders = (options = {}, callback: Function) => (
   );
 };
 
-const postProcessing = (marketIds: Array<string>, dispatch: Function, orders: any, callback: Function | undefined) => {
+const postProcessing = (marketIds: Array<string>, dispatch: ThunkDispatch<void, any, Action>, orders: any, callback: NodeStyleCallback | undefined) => {
   marketIds.forEach(marketId =>
     dispatch(updateOrderBook(shapeGetOrders(orders, marketId)))
   );

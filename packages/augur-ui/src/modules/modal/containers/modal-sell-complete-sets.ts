@@ -31,7 +31,7 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   sellCompleteSets: (marketId: string, numCompleteSets: any, cb: Function) =>
     dispatch(sellCompleteSets(marketId, numCompleteSets, cb))

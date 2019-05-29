@@ -5,6 +5,9 @@ import logError from "utils/log-error";
 import { generateTrade } from "modules/trades/helpers/generate-trade";
 import { buildDisplayTrade } from "modules/trades/helpers/build-display-trade";
 import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
 export function updateTradeCost({
@@ -14,9 +17,9 @@ export function updateTradeCost({
   numShares,
   limitPrice,
   selfTrade,
-  callback = logError
+  callback = logError,
 }: any) {
-  return (dispatch: Function, getState: () => AppState) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     if (!side || !numShares || !limitPrice) {
       return callback("side or numShare or limitPrice is not provided");
     }
@@ -27,7 +30,7 @@ export function updateTradeCost({
       orderBooks,
       outcomesData,
       accountPositions,
-      accountShareBalances
+      accountShareBalances,
     } = getState();
     const market = marketsData[marketId];
     const outcome = outcomesData[marketId][outcomeId];
@@ -38,7 +41,7 @@ export function updateTradeCost({
       limitPrice,
       totalFee: "0",
       totalCost: "0",
-      selfTrade
+      selfTrade,
     };
 
     return runSimulateTrade(
@@ -51,7 +54,7 @@ export function updateTradeCost({
       outcome,
       accountPositions,
       accountShareBalances,
-      callback
+      callback,
     );
   };
 }
@@ -62,9 +65,9 @@ export function updateTradeShares({
   side,
   maxCost,
   limitPrice,
-  callback = logError
+  callback = logError,
 }: any) {
-  return (dispatch: Function, getState: () => AppState) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     if (!side || !maxCost || !limitPrice) {
       return callback("side or numShare or limitPrice is not provided");
     }
@@ -75,7 +78,7 @@ export function updateTradeShares({
       outcomesData,
       accountPositions,
       accountShareBalances,
-      orderBooks
+      orderBooks,
     } = getState();
     const market = marketsData[marketId];
 
@@ -84,7 +87,7 @@ export function updateTradeShares({
       maxCost,
       limitPrice,
       totalFee: "0",
-      totalCost: "0"
+      totalCost: "0",
     };
 
     /*
@@ -110,7 +113,7 @@ export function updateTradeShares({
     const scaledPrice = createBigNumber(limitPrice).plus(marketMinPrice.abs());
 
     let newShares = createBigNumber(maxCost).dividedBy(
-      marketRange.minus(scaledPrice)
+      marketRange.minus(scaledPrice),
     );
     if (side === BUY) {
       newShares = createBigNumber(maxCost).dividedBy(scaledPrice);
@@ -131,7 +134,7 @@ export function updateTradeShares({
       outcome,
       accountPositions,
       accountShareBalances,
-      callback
+      callback,
     );
   };
 }
@@ -146,7 +149,7 @@ function runSimulateTrade(
   outcome: any,
   accountPositions: any,
   accountShareBalances: any,
-  callback: Function
+  callback: NodeStyleCallback,
 ) {
   let userShareBalance = new Array(market.numOutcomes).fill("0");
   let userNetPositions = new Array(market.numOutcomes).fill("0");
@@ -175,7 +178,7 @@ function runSimulateTrade(
         quantity: createBigNumber(quantity)
           .abs()
           .toString(),
-        price
+        price,
       };
     }
   }
@@ -195,7 +198,7 @@ function runSimulateTrade(
       (orderBooks && orderBooks[marketId] && orderBooks[marketId][outcomeId]) ||
       {},
     shouldCollectReportingFees: !market.isDisowned,
-    reportingFeeRate: market.reportingFeeRate
+    reportingFeeRate: market.reportingFeeRate,
   });
   const totalFee = createBigNumber(simulatedTrade.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();
@@ -215,7 +218,7 @@ function runSimulateTrade(
     sharesFilledAvgPrice,
     userNetPositions,
     userShareBalance,
-    reversal
+    reversal,
   };
 
   const order = generateTrade(market, tradeInfo);
@@ -225,8 +228,8 @@ function runSimulateTrade(
     market,
     buildDisplayTrade({
       ...tradeInfo,
-      outcomeId
-    })
+      outcomeId,
+    }),
   );
 
   if (callback) callback(null, { ...order, ...simulatedTrade, displayTrade });

@@ -5,6 +5,9 @@ import { formatEther } from "utils/format-number";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import logError from "utils/log-error";
 import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const constructBasicTransaction = ({
   eventName,
@@ -28,8 +31,8 @@ export const constructBasicTransaction = ({
 
 export const constructTransaction = (
   log: any,
-  callback: Function = logError
-) => (dispatch: Function, getState: () => AppState) => {
+  callback: NodeStyleCallback = logError
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   switch (log.eventName) {
     case "OrderCreated":
     case "OrderFilled":

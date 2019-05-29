@@ -9,7 +9,7 @@ const GET_GAS_BLOCK_LIMIT = 100;
 const MAINNET_ID = "1";
 
 export const syncBlockchain = (cb: Function) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function,
 ) => {
   const networkId = getNetworkId();

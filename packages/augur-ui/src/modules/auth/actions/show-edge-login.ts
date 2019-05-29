@@ -10,7 +10,7 @@ export const BEGIN_EDGE_LOADING = "BEGIN_EDGE_LOADING";
 export const UPDATE_EDGE_CONTEXT = "UPDATE_EDGE_CONTEXT";
 
 export const showEdgeLogin = (history: any) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const state = getState();

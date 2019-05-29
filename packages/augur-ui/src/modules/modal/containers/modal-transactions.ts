@@ -12,7 +12,7 @@ const mapStateToProps = (state: AppState) => ({
   universe: state.universe.id
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal())
 });
 

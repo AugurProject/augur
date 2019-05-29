@@ -13,7 +13,7 @@ export const submitInitialReport = ({
   history,
   returnPath = REPORTING_REPORT_MARKETS,
   callback = logError
-}: any) => (dispatch: Function, getState: () => AppState) => {
+}: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount, marketsData } = getState();
   const outcome = parseFloat(selectedOutcome);
 

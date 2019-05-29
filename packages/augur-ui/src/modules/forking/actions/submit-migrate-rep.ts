@@ -14,7 +14,7 @@ export const submitMigrateREP = ({
   amount,
   history,
   callback = logError
-}: any) => (dispatch: Function, getState: () => AppState) => {
+}: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount, marketsData, universe } = getState();
   const outcome = parseFloat(selectedOutcome);
   const universeID = universe.id || UNIVERSE_ID;

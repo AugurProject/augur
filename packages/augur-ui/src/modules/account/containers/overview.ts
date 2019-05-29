@@ -8,7 +8,7 @@ const mapStateToProps = (state: AppState) => ({
   currentAugurTimestamp: selectCurrentTimestampInSeconds(state),
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   updateTimeframeData: (options: any) => dispatch(updateTimeframeData(options)),
 });
 

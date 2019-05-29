@@ -4,9 +4,12 @@ import {
   updateCategories
 } from "modules/categories/actions/update-categories";
 import logError from "utils/log-error";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-const loadCategories = (callback: Function = logError) => (
-  dispatch: Function,
+const loadCategories = (callback: NodeStyleCallback = logError) => (
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { universe } = getState();

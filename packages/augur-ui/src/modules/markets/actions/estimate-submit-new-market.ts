@@ -6,7 +6,7 @@ import { AppState } from "store";
 export const estimateSubmitNewMarket = (
   newMarket: any,
   callback = logError
-) => (dispatch: Function, getState: () => AppState) => {
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { universe, loginAccount, contractAddresses } = getState();
   const { createMarket, formattedNewMarket } = buildCreateMarket(
     newMarket,

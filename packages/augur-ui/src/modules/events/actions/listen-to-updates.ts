@@ -32,7 +32,7 @@ import { wrapLogHandler } from "modules/events/actions/wrap-log-handler";
 import logError from "utils/log-error";
 
 export const listenToUpdates = (history: any) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   augur.events.stopBlockListeners();

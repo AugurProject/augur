@@ -2,7 +2,7 @@ import { updateLoggedTransactions } from "modules/transactions/actions/convert-l
 import { getTransaction } from "modules/contracts/actions/contractCalls";
 
 export const defaultLogHandler = (log: any) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   if (log.transactionHash == null)

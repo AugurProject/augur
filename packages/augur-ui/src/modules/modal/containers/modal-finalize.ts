@@ -15,7 +15,7 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   finalizeMarket: (marketId: string, cb: Function) =>
     dispatch(sendFinalizeMarket(marketId, cb))

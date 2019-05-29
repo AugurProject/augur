@@ -25,7 +25,7 @@ export const removePendingOrder = (id: string, marketId: string) => ({
 });
 
 export const clearPendingOrders = () => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { blockchain, pendingOrders } = getState();

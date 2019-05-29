@@ -9,7 +9,7 @@ const mapStateToProps = (state: AppState) => ({
   modal: state.modal
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   approveAccount: (onSent: Function, onSuccess: Function) =>
     dispatch(approveAccount(onSent, onSuccess))

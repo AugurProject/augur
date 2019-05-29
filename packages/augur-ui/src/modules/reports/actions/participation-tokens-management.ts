@@ -8,13 +8,15 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { AppState } from "store";
-
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 // TODO: is this even in use? on a search, i never see it imported...
 export const loadParticipationTokens = (
-  includeCurrent: Boolean = true,
-  callback: Function = logError
-) => (dispatch: Function, getState: () => AppState) => {
+  includeCurrent: boolean = true,
+  callback: NodeStyleCallback = logError,
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount, universe } = getState();
   const universeID = universe.id || UNIVERSE_ID;
 
@@ -23,25 +25,25 @@ export const loadParticipationTokens = (
     { universe: universeID, account: loginAccount.address, includeCurrent },
     (err: any, feeWindowsWithUnclaimedTokens: string) => {
       if (err) return callback(err);
-      Object.keys(feeWindowsWithUnclaimedTokens).forEach(feeWindowID => {
+      Object.keys(feeWindowsWithUnclaimedTokens).forEach((feeWindowID) => {
         augur.api.FeeWindow.withdrawInEmergency({
           tx: { estimateGas: true, to: feeWindowID },
           meta: loginAccount.meta,
           onSent: noop,
           onSuccess: noop,
-          onFailed: callback
+          onFailed: callback,
         });
       });
       callback(null, feeWindowsWithUnclaimedTokens);
-    }
+    },
   );
 };
 
 export const purchaseParticipationTokens = (
   amount: string,
   estimateGas = false,
-  callback = logError
-) => (dispatch: Function, getState: () => AppState) => {
+  callback = logError,
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { universe } = getState();
   augur.reporting.getFeeWindowCurrent(
     { universe: universe.id },
@@ -54,9 +56,9 @@ export const purchaseParticipationTokens = (
         address = universe.id;
       }
       return dispatch(
-        callMethod(methodFunc, amount, address, estimateGas, callback)
+        callMethod(methodFunc, amount, address, estimateGas, callback),
       );
-    }
+    },
   );
 };
 
@@ -64,14 +66,14 @@ const callMethod = (
   method: Function,
   amount: string,
   address: string,
-  estimateGas: Boolean = false,
-  callback: Function
-) => (dispatch: Function, getState: () => AppState) => {
+  estimateGas: boolean = false,
+  callback: NodeStyleCallback,
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount } = getState();
   method({
     tx: {
       to: address,
-      estimateGas
+      estimateGas,
     },
     meta: loginAccount.meta,
     _attotokens: speedomatic.fix(amount, "hex"),
@@ -84,12 +86,12 @@ const callMethod = (
         const gasPrice = getGasPrice(getState());
         return callback(
           null,
-          formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice)
+          formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice),
         );
       }
       dispatch(loadReportingWindowBounds());
       return callback(null, res);
     },
-    onFailed: (err: any) => callback(err)
+    onFailed: (err: any) => callback(err),
   });
 };

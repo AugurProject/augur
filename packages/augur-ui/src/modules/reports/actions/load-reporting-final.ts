@@ -1,9 +1,12 @@
 import { augur, constants } from "services/augurjs";
 import logError from "utils/log-error";
 import { updateResolvedMarkets } from "modules/reports/actions/update-markets-in-reporting-state";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-export const loadReportingFinal = (callback: Function = logError) => (
-  dispatch: Function,
+export const loadReportingFinal = (callback: NodeStyleCallback = logError) => (
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { universe } = getState();

@@ -2,7 +2,7 @@ import { find } from "lodash";
 import { defaultLogHandler } from "modules/events/actions/default-log-handler";
 
 export const wrapLogHandler = (logHandler: Function = defaultLogHandler) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => (err: any, log: any) => {
   if (err) return console.error((log || {}).eventName, err, log);

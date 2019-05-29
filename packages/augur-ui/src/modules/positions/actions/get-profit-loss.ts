@@ -13,7 +13,7 @@ export default function getProfitLoss({
   // NOTE: PL data isn't going to be saved to the application state
   // only the performanceGraph Component. Always pass a callback or you won't
   // have access to the data.
-  return (dispatch: Function, getState: () => AppState) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
     if (!loginAccount.address) return callback("not logged in");
     augur.augurNode.submitRequest(

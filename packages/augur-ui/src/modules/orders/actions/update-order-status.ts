@@ -19,7 +19,7 @@ export const updateOrderStatus = ({
   marketId,
   outcome,
   orderTypeLabel
-}: OrderStatus) => (dispatch: Function, getState: () => AppState) => {
+}: OrderStatus) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { orderBooks } = getState();
   const order = selectOrder(
     orderId,
@@ -46,7 +46,7 @@ export const updateOrderStatus = ({
   });
 };
 
-export const removeCanceledOrder = (orderId: string) => (dispatch: Function) =>
+export const removeCanceledOrder = (orderId: string) => (dispatch: ThunkDispatch<void, any, Action>) =>
   dispatch({ type: UPDATE_ORDER_REMOVE, data: { orderId } });
 
 function warnNonExistingOrder(

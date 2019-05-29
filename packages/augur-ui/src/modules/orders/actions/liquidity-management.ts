@@ -66,7 +66,7 @@ export const removeLiquidityOrder = ({
 });
 
 export const sendLiquidityOrder = (options: any) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const {
@@ -165,7 +165,7 @@ export const sendLiquidityOrder = (options: any) => (
   }
 };
 export const startOrderSending = (options: any) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { marketId } = options;

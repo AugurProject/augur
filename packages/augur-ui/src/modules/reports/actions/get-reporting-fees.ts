@@ -13,9 +13,12 @@ import {
 } from "modules/reports/actions/claim-reporting-fees";
 import { ALL, CLAIM_FEE_WINDOWS } from "modules/common-elements/constants";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-export const getReportingFees = (callback: Function = logError) => (
-  dispatch: Function,
+export const getReportingFees = (callback: NodeStyleCallback = logError) => (
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { universe, loginAccount } = getState();

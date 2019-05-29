@@ -3,8 +3,8 @@ import { updateAugurNodeNetworkId } from "modules/app/actions/update-connection"
 import logError from "utils/log-error";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
-export const getAugurNodeNetworkId = (callback: Function = logError) => (
-  dispatch: Function,
+export const getAugurNodeNetworkId = (callback: NodeStyleCallback = logError) => (
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { connection } = getState();

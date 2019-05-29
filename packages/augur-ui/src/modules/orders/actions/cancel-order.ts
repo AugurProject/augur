@@ -19,7 +19,7 @@ const TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS = 3000;
 // }
 
 export const cancelAllOpenOrders = (orders: any, cb: Function) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   eachOf(orders, (order: any) => order.cancelOrder(order));
@@ -28,7 +28,7 @@ export const cancelAllOpenOrders = (orders: any, cb: Function) => (
 export const cancelOrder = (
   { orderId, marketId, outcome, orderTypeLabel }: any,
   callback = logError
-) => (dispatch: Function, getState: () => AppState) => {
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount, orderBooks, outcomesData, marketsData } = getState();
   const order = selectOrder(
     orderId,

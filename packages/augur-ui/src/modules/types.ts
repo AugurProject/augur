@@ -56,6 +56,7 @@ export interface MarketData {
   marketType: string;
   outcomes: Array<Outcomes>;
   scalarDenomination: string;
+  universe: string;
   // TODO: this should come from SDK types
 }
 export interface OutcomesData {
@@ -448,8 +449,10 @@ export interface WindowApp extends Window {
 }
 
 type ButtonActionType = (
-  event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
 ) => void;
+
+export type NodeStyleCallback = (err: Error | string | null, result?: any) => void;
 
 export interface BaseAction {
   type: string;

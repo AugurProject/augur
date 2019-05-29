@@ -8,7 +8,7 @@ import makePath from "modules/routes/helpers/make-path";
 import { TRANSACTIONS } from "modules/routes/constants/views";
 
 export const constructRelayTransaction = (tx: any) => (
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: Function
 ) => {
   const { alerts } = getState();

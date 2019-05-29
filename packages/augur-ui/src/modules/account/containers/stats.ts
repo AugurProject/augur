@@ -8,7 +8,7 @@ const mapStateToProps = (state: AppState) => ({
   timeframeData: state.loginAccount.timeframeData,
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({});
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const properties = [

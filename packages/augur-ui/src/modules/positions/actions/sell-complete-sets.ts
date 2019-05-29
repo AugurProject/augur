@@ -13,7 +13,7 @@ export function sellCompleteSets(
   numCompleteSets: any,
   callback = logError,
 ) {
-  return (dispatch: Function, getState: () => AppState) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount, marketsData } = getState();
     if (!loginAccount.address) return callback(null);
     const { numTicks, maxPrice, minPrice } = marketsData[marketId];
