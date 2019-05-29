@@ -824,7 +824,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets).toMatchObject(
     [
       {
-        "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
+        "author": john.account,
         "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "consensus": null,
         "cumulativeScale": "1000000000000000000",
@@ -858,11 +858,11 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "resolutionSource": null,
         "scalarDenomination": null,
         "tickSize": "0.01",
-        "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
+        "universe": john.augur.contracts.universe.address,
         "volume": "1000000000000000",
       },
       {
-        "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
+        "author": john.account,
         "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "consensus": [
           "100",
@@ -905,11 +905,11 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "resolutionSource": null,
         "scalarDenomination": null,
         "tickSize": "0.0001",
-        "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
+        "universe": john.augur.contracts.universe.address,
         "volume": "610000000000000",
       },
       {
-        "author": "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
+        "author": john.account,
         "category": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "consensus": null,
         "cumulativeScale": "200000000000000000000",
@@ -943,7 +943,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "resolutionSource": null,
         "scalarDenomination": null,
         "tickSize": "0.01",
-        "universe": "0x4112a78f07D155884b239A29e378D1f853Edd128",
+        "universe": john.augur.contracts.universe.address,
         "volume": "100110000000000000",
       },
     ]
