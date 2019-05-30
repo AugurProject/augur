@@ -190,7 +190,7 @@ def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market,
     orderFilledEventLog = {
 	    "eventType": 3,
 	    "addressData": [nullAddress, bytesToHexString(tester.a1) , bytesToHexString(tester.a2)],
-	    "uint256Data": [60, 0, YES, 0, 0, completeSetFees, fix(12),  contractsFixture.contracts['Time'].getTimestamp()],
+	    "uint256Data": [60, 0, YES, 0, 0, completeSetFees, fix(12),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     with AssertLog(contractsFixture, 'OrderEvent', orderFilledEventLog):
         leftoverInOrder = fillOrder.publicFillOrder(orderID, fix(12), longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = tester.k2)

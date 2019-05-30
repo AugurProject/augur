@@ -1,7 +1,7 @@
 @import (reference) "~assets/styles/shared";
 @import (reference) "~modules/market/components/market-view/market-view.styles";
 
-.MarketHeaderBar {
+.HeaderBar {
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -28,39 +28,40 @@
       stroke-width: 0.5;
     }
   }
-}
 
-.MarketHeaderBar__watchlist__container {
-  align-items: flex-end;
-  display: flex;
-  flex-grow: 1;
-  justify-content: flex-end;
+  > div:not(:last-of-type) {
+    align-items: flex-end;
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
 
-  @media @breakpoint-mobile {
-    min-width: 10px;
-    width: 67px;
+    @media @breakpoint-mobile {
+      min-width: @size-10;
+      width: 67px;
+    }
+  }
+
+  > div:last-of-type > div {
+    > div {
+      > svg {
+        height: @size-16;
+        margin-right: @size-12;
+        width: @size-15;
+      }
+    }
+
+    > div:first-of-type {
+      > svg {
+        transform: scale(1.5);
+      }
+    }
   }
 }
 
-.MarketHeaderBar_menuItem:first-of-type {
-  > svg {
-    height: 16px;
-    margin-right: @size-12;
-    transform: scale(1.5);
-    width: 15px;
-  }
-}
 
-.MarketHeaderBar_menuItem:last-of-type {
-  > svg {
-    height: 16px;
-    margin-right: @size-12;
-    width: 15px;
-  }
-}
 
 @media @breakpoint-mobile {
-  .MarketHeaderBar {
+  .HeaderBar {
     border-top: 1px solid @color-primary-alternate;
     display: flex;
     margin: 0 @size-8 @size-16;

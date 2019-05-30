@@ -108,6 +108,7 @@ export function makeDbMock() {
       constants.defaultStartSyncBlockNumber,
       _.map(accounts, "publicKey"),
       augur.genericEventNames,
+      augur.customEvents,
       augur.userSpecificEvents,
       makeFactory(),
       makeBlockAndLogStreamerListener(),
