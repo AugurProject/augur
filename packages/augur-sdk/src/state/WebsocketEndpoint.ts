@@ -6,7 +6,7 @@ import WebSocket from "ws";
 
 import { API } from "./api/API";
 import { AddressFormatReviver } from "./AddressFormatReviver";
-import { ControlMessageType } from "../constants";
+import { ControlMessageType, SubscriptionEventNames } from "../constants";
 import { EventEmitter } from "events";
 import { IsJsonRpcRequest } from "./IsJsonRpcRequest";
 import { JsonRpcRequest, EndpointSettings } from "./api/types";
@@ -64,10 +64,8 @@ export async function run<TBigNumber>(api: API, endpointSettings: EndpointSettin
       const pingInterval = setInterval(() => safePing(websocket), 12000);
 
       websocket.on("message", (data: WebSocket.Data): void => {
-
-        console.log("Received: " + data);
-
         let message: any;
+
         try {
           message = JSON.parse(data as string, AddressFormatReviver);
           if (!IsJsonRpcRequest(message))

@@ -11,6 +11,8 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { EventEmitter } from "events";
 import { JsonRpcProvider } from "ethers/providers";
 import { PouchDBFactory } from "./db/AbstractDB";
+import { augurEmitter } from "../events";
+import { SubscriptionEventNames } from "../constants";
 
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");
@@ -83,6 +85,7 @@ export async function run() {
   }
 
   Sync.start({});
+
   console.log("Starting websocket and http endpoints");
   HTTPEndpoint.run(api, endpointSettings);
   await WebsocketEndpoint.run(api, endpointSettings, new EventEmitter());

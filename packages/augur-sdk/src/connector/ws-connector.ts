@@ -5,7 +5,6 @@ import WebSocketAsPromised from "websocket-as-promised";
 
 export class WebsocketConnector extends Connector {
   private socket: WebSocketAsPromised;
-  private callback: Callback;
 
   constructor(public readonly endpoint: string) {
     super();
@@ -20,7 +19,14 @@ export class WebsocketConnector extends Connector {
       createWebSocket: (url: string) => new WebSocket(url),
     } as any);
 
+    this.socket.onMessage.addListener((message: string) => {
+      console.log("have a message in the ws connector");
+      console.log(message);
+      console.log("done");
+    });
+
     return this.socket.open();
+
   }
 
   public async disconnect(): Promise<any> {
@@ -33,15 +39,19 @@ export class WebsocketConnector extends Connector {
     };
   }
 
-  public async subscribe(event: SubscriptionEventNames, callback: Callback): Promise<any> {
-    this.callback = callback;
-
-    const response = await this.socket.sendRequest({ method: "subscribe", event, jsonrpc: "2.0" });
-    callback({ subscribed: event, subscription: response.subscription });
-    return response.subscription;
+  public on(eventName: SubscriptionEventNames, callback: Callback): void {
+    console.log("sending subscribe request");
+    this.socket.sendRequest({ method: "subscribe", event, jsonrpc: "2.0", params: [eventName] }).then((response: any) => {
+      console.log("subscrivbed");
+      console.log(response);
+      this.subscriptions[eventName] = { id: response.subscription, callback };
+    });
   }
 
-  public async unsubscribe(subscription: string): Promise<any> {
-    return this.socket.sendRequest({ method: "unsubscribe", subscription, jsonrpc: "2.0" });
+  public off(eventName: SubscriptionEventNames): void {
+    const subscription = this.subscriptions[eventName];
+    this.socket.sendRequest({ method: "unsubscribe", subscription, jsonrpc: "2.0", params: [subscription] }).then(() => {
+      delete this.subscriptions[eventName];
+    });
   }
 }

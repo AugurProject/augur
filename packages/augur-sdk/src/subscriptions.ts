@@ -35,6 +35,7 @@ export class Subscriptions extends EventEmitter {
 
     this.on(eventName, publish)
       .once(`unsubscribe:${subscription}`, (): void => {
+        console.log("received unsubscribe in subscriptions");
         this.removeListener(eventName, publish);
         this.parentEmitter.removeListener(eventName, handler);
       })

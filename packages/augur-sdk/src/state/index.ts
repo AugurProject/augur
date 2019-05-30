@@ -1,4 +1,5 @@
-import { WebWorkerConnector } from "../connector/ww-connector";
+//import { WebWorkerConnector } from "../connector/ww-connector";
+import { WebsocketConnector } from "../connector/ws-connector";
 import { Markets } from "./api/Markets";
 import { SubscriptionEventNames } from "../constants";
 
@@ -6,15 +7,16 @@ console.log("Starting web worker");
 
 (async function() {
   try {
-    const connector = new WebWorkerConnector();
+    const connector = new WebsocketConnector("ws://localhost:9001");
     console.log("connecting");
     await connector.connect();
     console.log("connected");
 
-    connector.subscribe(SubscriptionEventNames.CompleteSetsPurchased, (data: any): void => {
+    connector.on(SubscriptionEventNames.CompleteSetsPurchased, (data: any): void => {
       console.log("Callback for subscribe");
       console.log(data);
       console.log("done");
+      connector.off(SubscriptionEventNames.CompleteSetsPurchased);
     });
 
     // setTimeout(async () => {

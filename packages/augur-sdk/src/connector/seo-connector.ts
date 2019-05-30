@@ -18,8 +18,7 @@ const settings = require("@augurproject/sdk/src/state/settings.json");
 
 export class SEOConnector extends Connector {
   private api: API;
-  private callback: Callback;
-  private subscriptions = new Subscriptions(augurEmitter);
+  private events = new Subscriptions(augurEmitter);
 
   public async connect(params?: any): Promise<any> {
     Sync.start({ adapter: "memory" });
@@ -46,16 +45,14 @@ export class SEOConnector extends Connector {
     };
   }
 
-  public async subscribe(event: SubscriptionEventNames, callback: Callback): Promise<any> {
-    this.callback = callback;
-
-    const subscription: string = this.subscriptions.subscribe(event, callback);
-    callback({ subscribed: event, subscription });
-
-    return subscription;
+  public on(eventName: SubscriptionEventNames, callback: Callback): void {
+    const subscription: string = this.events.subscribe(eventName, callback);
+    this.subscriptions[eventName] = { id: subscription, callback };
   }
 
-  public async unsubscribe(subscription: string): Promise<any> {
-    return this.subscriptions.unsubscribe(subscription);
+  public off(eventName: SubscriptionEventNames): void {
+    const subscription = this.subscriptions[eventName].id;
+    delete this.subscriptions[eventName];
+    return this.events.unsubscribe(subscription);
   }
 }
