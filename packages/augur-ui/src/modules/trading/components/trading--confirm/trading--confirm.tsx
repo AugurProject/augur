@@ -23,6 +23,9 @@ import {
   darkBgExclamationCircle,
   closeIcon
 } from "modules/common/components/icons";
+import {
+  XIcon
+} from "modules/common-elements/icons";
 import Styles from "modules/trading/components/trading--confirm/trading--confirm.styles";
 import { formatGasCostToEther, formatShares } from "utils/format-number";
 import { BigNumber, createBigNumber } from "utils/create-big-number";

@@ -456,6 +456,24 @@ export const NavPortfolioIcon = () => (
   </svg>
 );
 
+export const NavReportingIcon = () => (
+  <svg viewBox="0 0 23 15">
+    <g
+      id="Symbols"
+      fill="none"
+      fillRule="evenodd"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <g id="Navigation/Section/Left-Nav" stroke="#FFF">
+        <g id="Icon/Reporting">
+          <path id="Page-1" d="M0 8.124l8.63 6.306L22 0" />
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
 export const NavAccountIcon = () => (
   <svg
     viewBox="0 0 24 24"

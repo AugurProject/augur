@@ -29,9 +29,9 @@ import {
   NavAccountIcon,
   NavCreateIcon,
   NavMarketsIcon,
-  NavPortfolioIcon
+  NavPortfolioIcon,
+  NavReportingIcon
 } from "modules/common-elements/icons";
-import { NavReportingIcon } from "modules/common/components/icons";
 import { Link } from "react-router-dom";
 import makePath from "modules/routes/helpers/make-path";
 import parsePath from "modules/routes/helpers/parse-path";
