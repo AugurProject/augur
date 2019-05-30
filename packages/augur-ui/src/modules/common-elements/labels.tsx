@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 import * as constants from "modules/common-elements/constants";
 import { constants as serviceConstants } from "services/constants";
@@ -145,6 +146,17 @@ export interface TextLabelState {
 export interface RepBalanceProps {
   rep: string;
 }
+
+interface ButtonObj {
+  label: string;
+  onClick: Function;
+};
+
+interface WordTrailProps {
+  typeLabel: string;
+  items: Array<ButtonObj>;
+  children: Array<any>;
+};
 
 export const DashlineNormal = () => (
   <svg width="100%" height="1">
@@ -793,3 +805,35 @@ export const LinearPropertyViewTransaction = (
     <ViewTransactionDetailsButton transactionHash={props.transactionHash} />
   </div>
 );
+
+export const WordTrail = ({ items, typeLabel, children }: WordTrailProps) => (
+  <div className={Styles.WordTrail}>
+    {children}
+    {items.map(({ label, onClick }, index) => (
+      <button
+        key={label}
+        data-testid={`${typeLabel}-${index}`}
+        className={Styles.WordTrailButton}
+        onClick={e => onClick()}>
+        {label}
+      </button>
+    ))}
+  </div>
+);
+
+WordTrail.propTypes = {
+  typeLabel: PropTypes.string,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      onClick: PropTypes.func.isRequired
+    })
+  ),
+  children: PropTypes.array
+};
+
+WordTrail.defaultProps = {
+  children: [],
+  items: [],
+  typeLabel: "label-type"
+};
