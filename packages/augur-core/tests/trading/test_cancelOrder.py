@@ -35,7 +35,7 @@ def test_cancelBid(contractsFixture, cash, market, universe):
         "market": market.address,
 	    "eventType": 1,
 	    "addressData": [nullAddress, bytesToHexString(tester.a1), nullAddress],
-	    "uint256Data": [0, 0, 0, fix('1', '60'), 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp()],
+	    "uint256Data": [0, 0, 0, fix('1', '60'), 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     with AssertLog(contractsFixture, 'OrderEvent', orderEventLog):
         assert(cancelOrder.cancelOrder(orderID, sender=tester.k1) == 1), "cancelOrder should succeed"

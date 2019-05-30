@@ -6,11 +6,15 @@ import { ContractInterfaces } from "@augurproject/core";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
 import { TransactionStatusCallback, ContractDependenciesEthers } from "contract-dependencies-ethers";
 
-export interface UserSpecificEvent {
+export interface CustomEvent {
   name: string;
+  eventName?: string;
+  idFields?: Array<string>;
+}
+
+export interface UserSpecificEvent extends CustomEvent {
   numAdditionalTopics: number;
   userTopicIndicies: Array<number>;
-  idFields?: Array<string>;
 }
 
 export class Augur<TProvider extends Provider = Provider> {
@@ -49,6 +53,15 @@ export class Augur<TProvider extends Provider = Provider> {
     "UniverseCreated",
     "UniverseForked",
   ];
+
+  public readonly customEvents: Array<CustomEvent> = [
+    {
+      "name": "CurrentOrders",
+      "eventName": "OrderEvent",
+      "idFields": ["orderId"]
+    },
+  ]
+
   // TODO Update numAdditionalTopics/userTopicIndexes once contract events are updated
   public readonly userSpecificEvents: Array<UserSpecificEvent> = [
     {

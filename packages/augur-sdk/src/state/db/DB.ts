@@ -1,4 +1,4 @@
-import { Augur, UserSpecificEvent } from "../../Augur";
+import { Augur, UserSpecificEvent, CustomEvent } from "../../Augur";
 import { MetaDB, SequenceIds } from "./MetaDB";
 import { PouchDBFactoryType } from "./AbstractDB";
 import { SyncableDB } from "./SyncableDB";
@@ -32,6 +32,7 @@ export class DB {
   private blockstreamDelay: number;
   private trackedUsers: TrackedUsers;
   private genericEventNames: Array<string>;
+  private customEvents: Array<CustomEvent>;
   private userSpecificEvents: Array<UserSpecificEvent>;
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private metaDatabase: MetaDB; // TODO Remove this if derived DBs are not used.
@@ -51,14 +52,15 @@ export class DB {
    * @param {number} defaultStartSyncBlockNumber Block number at which to start sycing (if no higher block number has been synced)
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
    * @param {Array<string>} genericEventNames Array of names for generic event types
+   * @param {Array<CustomEvent>} customEvents Array of custom event objects
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
    * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
    * @returns {Promise<DB>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     const dbController = new DB(pouchDBFactory);
-    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents, blockAndLogStreamerListener);
+    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, customEvents, userSpecificEvents, blockAndLogStreamerListener);
     return dbController;
   }
 
@@ -74,13 +76,14 @@ export class DB {
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<void> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<void> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
     this.trackedUsers = new TrackedUsers(networkId, this.pouchDBFactory);
     this.metaDatabase = new MetaDB(this, networkId, this.pouchDBFactory);
     this.genericEventNames = genericEventNames;
+    this.customEvents = customEvents;
     this.userSpecificEvents = userSpecificEvents;
     this.blockAndLogStreamerListener = blockAndLogStreamerListener;
 
@@ -107,8 +110,11 @@ export class DB {
       }
       new SyncableDB(this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
     }
-    // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
-    // Also update topics/indexes for user-specific events once these changes are made to the contracts.
+
+    for (let customEvent of customEvents) {
+      new SyncableDB(this, networkId, customEvent.eventName ? customEvent.eventName: customEvent.name, this.getDatabaseName(customEvent.name), customEvent.idFields);
+    }
+
     for (let trackedUser of trackedUsers) {
       await this.trackedUsers.setUserTracked(trackedUser);
       for (let userSpecificEvent of userSpecificEvents) {
@@ -166,6 +172,17 @@ export class DB {
 
     for (let genericEventName of this.genericEventNames) {
       let dbName = this.getDatabaseName(genericEventName);
+      dbSyncPromises.push(
+        this.syncableDatabases[dbName].sync(
+          augur,
+          chunkSize,
+          blockstreamDelay,
+          highestAvailableBlockNumber
+        ));
+    }
+
+    for (let customEvent of this.customEvents) {
+      let dbName = this.getDatabaseName(customEvent.name);
       dbSyncPromises.push(
         this.syncableDatabases[dbName].sync(
           augur,
@@ -536,5 +553,18 @@ export class DB {
   public async findUniverseForkedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<UniverseForkedLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("UniverseForked"), request);
     return results.docs as unknown as Array<UniverseForkedLog>;
+  }
+
+  /**
+   * Queries the CurrentOrders DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<OrderEventLog>>}
+   */
+  public async findCurrentOrders(request: PouchDB.Find.FindRequest<{}>): Promise<Array<OrderEventLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("CurrentOrders"), request);
+    const logs = results.docs as unknown as Array<OrderEventLog>;
+    for (const log of logs) log.timestamp = log.uint256Data[OrderEventUint256Value.timestamp];
+    return logs;
   }
 }

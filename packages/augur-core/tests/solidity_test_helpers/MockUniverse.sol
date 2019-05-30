@@ -419,12 +419,12 @@ contract MockUniverse is Initializable, IUniverse {
     }
 
     function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, address _designatedReporterAddress, bytes32 _topic, string _description, string _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _designatedReporterAddress, msg.sender, 2, 10000);
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _designatedReporterAddress, msg.sender, 2, 100);
         return _newMarket;
     }
 
     function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, address _designatedReporterAddress, bytes32[] _outcomes, bytes32 _topic, string _description, string _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 10000);
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 100);
         return _newMarket;
     }
 
