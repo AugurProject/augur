@@ -20,7 +20,7 @@ const mapStateToProps = (state: AppState, ownProps: any) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   sellCompleteSets: (marketId: string, numCompleteSets: any, cb: Function) =>
     dispatch(
       updateModal({

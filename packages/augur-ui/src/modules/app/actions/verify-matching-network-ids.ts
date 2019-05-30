@@ -10,7 +10,7 @@ interface NetworkIdsObject {
   netVersion?: string | null;
 }
 
-const allNetworkIdsMatch = (networkIds: NetworkIdsObject, callback: Function = logError) => {
+const allNetworkIdsMatch = (networkIds: NetworkIdsObject, callback: NodeStyleCallback = logError) => {
   const networkIdValues: any = Object.values(networkIds);
   if (networkIdValues.indexOf(null) > -1) {
     return callback(
@@ -24,7 +24,7 @@ const allNetworkIdsMatch = (networkIds: NetworkIdsObject, callback: Function = l
   callback(null);
 };
 
-export const verifyMatchingNetworkIds = (callback: Function = logError) => (dispatch: Function) =>
+export const verifyMatchingNetworkIds = (callback: NodeStyleCallback = logError) => (dispatch: ThunkDispatch<void, any, Action>) =>
   dispatch(
     getAugurNodeNetworkId((err: any, augurNodeNetworkId: string) => {
       if (err) return callback(err);

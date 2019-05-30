@@ -876,7 +876,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "minPrice": "0",
         "needsMigration": false,
         "numOutcomes": 4,
-        "numTicks": "10000",
+        "numTicks": "100",
         "openInterest": "1500000000000000",
         "outcomes": [
           {
@@ -903,7 +903,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "reportingState": "FINALIZED",
         "resolutionSource": null,
         "scalarDenomination": null,
-        "tickSize": "0.0001",
+        "tickSize": "0.01",
         "universe": john.augur.contracts.universe.address,
         "volume": "610000000000000",
       },

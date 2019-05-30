@@ -4,7 +4,9 @@ import { updateTopBarPL } from "modules/positions/actions/update-top-bar-pl";
 import { updateLoginAccount } from "modules/account/actions/login-account";
 import { AppState } from "store";
 import { updateAccountPositionsData } from "modules/positions/actions/account-positions";
-import { PositionData, AccountPositionAction, PositionsTotal, AccountPosition, TradingPositionsPerMarket } from "modules/types";
+import { PositionData, AccountPositionAction, PositionsTotal, AccountPosition, TradingPositionsPerMarket, NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 // TODO: this is the shape from augur-node will change from SDK getter
 interface UserTradingPositions {
@@ -18,9 +20,9 @@ interface UserTradingPositions {
 
 export const loadAccountPositions = (
   options: any = {},
-  callback: Function = logError,
+  callback: NodeStyleCallback = logError,
   marketIdAggregator: Function | undefined,
-) => (dispatch: Function) => {
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
     loadAccountPositionsInternal(
       options,
@@ -34,8 +36,8 @@ export const loadAccountPositions = (
 
 export const loadMarketAccountPositions = (
   marketId: string,
-  callback = logError,
-) => (dispatch: Function) => {
+  callback: NodeStyleCallback = logError,
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
     loadAccountPositionsInternal(
       { marketId },
@@ -47,9 +49,9 @@ export const loadMarketAccountPositions = (
   );
 };
 
-export const loadAccountPositionsTotals = (callback = logError) => (
-  dispatch: Function,
-  getState: Function,
+export const loadAccountPositionsTotals = (callback: NodeStyleCallback = logError) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
 ) => {
   const { universe, loginAccount } = getState();
   augur.trading.getUserTradingPositions(
@@ -68,8 +70,8 @@ export const loadAccountPositionsTotals = (callback = logError) => (
 
 const loadAccountPositionsInternal = (
   options: any = {},
-  callback: Function,
-) => (dispatch: Function, getState: () => AppState) => {
+  callback: NodeStyleCallback,
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
 
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
@@ -108,9 +110,9 @@ const loadAccountPositionsInternal = (
 
 const postProcessing = (
   marketIds: Array<string>,
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   positions: UserTradingPositions,
-  callback: Function
+  callback: NodeStyleCallback
 ) => {
   marketIds.forEach((marketId: string) => {
     const marketPositionData: AccountPosition = {};

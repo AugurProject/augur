@@ -3,7 +3,7 @@ import { checkIsKnownUniverse, getNetworkId, getAccounts } from "modules/contrac
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
-  updateAugurNodeConnectionStatus
+  updateAugurNodeConnectionStatus,
 } from "modules/app/actions/update-connection";
 import { getAugurNodeNetworkId } from "modules/app/actions/get-augur-node-network-id";
 import { useUnlockedAccount } from "modules/auth/actions/use-unlocked-account";
@@ -25,19 +25,22 @@ import {
   MODAL_NETWORK_DISABLED,
   NETWORK_NAMES,
   ACCOUNT_TYPES,
-  DISCLAIMER_SEEN
+  DISCLAIMER_SEEN,
 } from "modules/common-elements/constants";
 import { windowRef } from "utils/window-ref";
 import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
 import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
 function pollForAccount(
-  dispatch: Function,
-  getState: Function,
-  callback: any
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
+  callback: any,
 ) {
   const { loginAccount } = getState();
   let accountType =
@@ -62,7 +65,7 @@ function pollForAccount(
           (err: any, loadedAccount: any) => {
             if (err) console.error(err);
             account = loadedAccount;
-          }
+          },
         );
       }
       const disclaimerSeen =
@@ -72,8 +75,8 @@ function pollForAccount(
       if (!disclaimerSeen) {
         dispatch(
           updateModal({
-            type: MODAL_DISCLAIMER
-          })
+            type: MODAL_DISCLAIMER,
+          }),
         );
       }
     }, ACCOUNTS_POLL_INTERVAL_DURATION);
@@ -81,10 +84,10 @@ function pollForAccount(
 }
 
 function loadAccount(
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   existing: any,
   accountType: string,
-  callback: Function
+  callback: NodeStyleCallback,
 ) {
   let loggedInAccount: any = null;
   const usingMetaMask = accountType === ACCOUNT_TYPES.METAMASK;
@@ -130,7 +133,7 @@ function loadAccount(
   });
 }
 
-function pollForNetwork(dispatch: Function, getState: () => AppState) {
+function pollForNetwork(dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) {
   setInterval(() => {
     const { modal } = getState();
     dispatch(
@@ -141,8 +144,8 @@ function pollForNetwork(dispatch: Function, getState: () => AppState) {
             updateModal({
               type: MODAL_NETWORK_MISMATCH,
               expectedNetwork:
-                NETWORK_NAMES[expectedNetworkId] || expectedNetworkId
-            })
+                NETWORK_NAMES[expectedNetworkId] || expectedNetworkId,
+            }),
           );
         } else if (
           expectedNetworkId == null &&
@@ -150,7 +153,7 @@ function pollForNetwork(dispatch: Function, getState: () => AppState) {
         ) {
           dispatch(closeModal());
         }
-      })
+      }),
     );
     if (!process.env.ENABLE_MAINNET) {
       dispatch(
@@ -159,13 +162,13 @@ function pollForNetwork(dispatch: Function, getState: () => AppState) {
           if (isMainnet && isEmpty(modal)) {
             dispatch(
               updateModal({
-                type: MODAL_NETWORK_DISABLED
-              })
+                type: MODAL_NETWORK_DISABLED,
+              }),
             );
           } else if (!isMainnet && modal.type === MODAL_NETWORK_DISABLED) {
             dispatch(closeModal());
           }
-        })
+        }),
       );
     }
   }, NETWORK_ID_POLL_INTERVAL_DURATION);
@@ -174,10 +177,10 @@ function pollForNetwork(dispatch: Function, getState: () => AppState) {
 export function connectAugur(
   history: any,
   env: any,
-  isInitialConnection: Boolean = false,
-  callback: Function = logError
+  isInitialConnection: boolean = false,
+  callback: NodeStyleCallback = logError,
 ) {
-  return (dispatch: Function, getState: () => AppState) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { modal, loginAccount } = getState();
     AugurJS.connect(
       env,
@@ -195,8 +198,8 @@ export function connectAugur(
               updateVersions({
                 augurjs: res.version,
                 augurNode: res.augurNodeVersion,
-                augurui: version
-              })
+                augurui: version,
+              }),
             );
           }
         });
@@ -210,7 +213,7 @@ export function connectAugur(
           loginAccount.address
         ) {
           const storedUniverseId = JSON.parse(
-            windowRef.localStorage.getItem(loginAccount.address)
+            windowRef.localStorage.getItem(loginAccount.address),
           ).selectedUniverse[
             getState().connection.augurNodeNetworkId ||
             getNetworkId().toString()
@@ -238,7 +241,7 @@ export function connectAugur(
         } else {
           doIt();
         }
-      }
+      },
     );
   };
 }
@@ -253,22 +256,22 @@ interface initAugurParams {
 export function initAugur(
   history: any,
   { augurNode, ethereumNodeHttp, ethereumNodeWs, useWeb3Transport }: initAugurParams,
-  callback = logError
+  callback: NodeStyleCallback = logError,
 ) {
-  return (dispatch: Function, getState: () => AppState) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const env = networkConfig[`${process.env.ETHEREUM_NETWORK}`];
     console.log(env);
     env.useWeb3Transport = useWeb3Transport;
     env["augur-node"] = defaultTo(augurNode, env["augur-node"]);
     env["ethereum-node"].http = defaultTo(
       ethereumNodeHttp,
-      env["ethereum-node"].http
+      env["ethereum-node"].http,
     );
 
     env["ethereum-node"].ws = defaultTo(
       ethereumNodeWs,
       // If only the http param is provided we need to prevent this "default from taking precedence.
-      isEmpty(ethereumNodeHttp) ? env["ethereum-node"].ws : ""
+      isEmpty(ethereumNodeHttp) ? env["ethereum-node"].ws : "",
     );
 
     dispatch(updateEnv(env));

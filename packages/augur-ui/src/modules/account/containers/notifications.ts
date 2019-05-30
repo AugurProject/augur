@@ -13,6 +13,9 @@ import {
   MODAL_UNSIGNED_ORDERS,
   MODAL_OPEN_ORDERS,
 } from "modules/common-elements/constants";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
 
 // TODO create state Interface
 const mapStateToProps = (state: AppState) => {
@@ -25,14 +28,14 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   updateReadNotifications: (notifications: any) =>
     dispatch(updateReadNotifications(notifications)),
-  finalizeMarketModal: (marketId: any, cb: Function) =>
+  finalizeMarketModal: (marketId: any, cb: NodeStyleCallback) =>
     dispatch(updateModal({ type: MODAL_FINALIZE_MARKET, marketId, cb })),
-  claimTradingProceeds: (cb: Function) =>
+  claimTradingProceeds: (cb: NodeStyleCallback) =>
     dispatch(updateModal({ type: MODAL_CLAIM_PROCEEDS, cb })),
-  claimReportingFees: (reportingFees: any, cb: Function) =>
+  claimReportingFees: (reportingFees: any, cb: NodeStyleCallback) =>
     dispatch(
       updateModal({
         type: MODAL_CLAIM_FEES,
@@ -40,7 +43,7 @@ const mapDispatchToProps = (dispatch: Function) => ({
         ...reportingFees,
       }),
     ),
-  sellCompleteSetsModal: (marketId: any, numCompleteSets: any, cb: Function) =>
+  sellCompleteSetsModal: (marketId: any, numCompleteSets: any, cb: NodeStyleCallback) =>
     dispatch(
       updateModal({
         type: MODAL_SELL_COMPLETE_SETS,

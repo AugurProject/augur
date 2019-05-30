@@ -31,7 +31,7 @@ const mapStateToProps = (state: AppState) => ({
   }
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   transferFunds: (amount: string, asset: string, to: string) => {
     dispatch(transferFunds(amount, asset, to));

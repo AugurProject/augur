@@ -11,6 +11,9 @@ import {
   BID
 } from "modules/common-elements/constants";
 import { OrderBook, BaseAction } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 export const UPDATE_LIQUIDITY_ORDER = "UPDATE_LIQUIDITY_ORDER";
 export const ADD_MARKET_LIQUIDITY_ORDERS = "ADD_MARKET_LIQUIDITY_ORDERS";
@@ -66,8 +69,8 @@ export const removeLiquidityOrder = ({
 });
 
 export const sendLiquidityOrder = (options: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const {
     marketId,
@@ -165,8 +168,8 @@ export const sendLiquidityOrder = (options: any) => (
   }
 };
 export const startOrderSending = (options: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const { marketId } = options;
   const { loginAccount, marketsData, pendingLiquidityOrders } = getState();

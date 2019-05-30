@@ -192,6 +192,8 @@ export enum OrderEventUint256Value {
   fees = 5,
   amountFilled = 6,
   timestamp = 7,
+  sharesEscrowed = 8,
+  tokensEscrowed = 9,
 }
 
 export const ORDER_EVENT_KYC_TOKEN = "addressData.0";
@@ -205,6 +207,8 @@ export const ORDER_EVENT_SHARES_REFUND = "uint256Data.4";
 export const ORDER_EVENT_FEES = "uint256Data.5";
 export const ORDER_EVENT_AMOUNT_FILLED = "uint256Data.6";
 export const ORDER_EVENT_TIMESTAMP = "uint256Data.7";
+export const ORDER_EVENT_SHARES_ESCROWED = "uint256Data.8";
+export const ORDER_EVENT_TOKENS_ESCROWED = "uint256Data.9";
 
 export interface ParticipationTokensRedeemedLog extends Log, Doc, Timestamped {
   universe: Address;

@@ -2,6 +2,9 @@ import { connect } from "react-redux";
 import { AppState } from "store";
 import OverviewChart from "modules/account/components/overview-chart";
 import getProfitLoss from "modules/positions/actions/get-profit-loss";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
 
 const mapStateToProps = (state: AppState) => {
   const { blockchain } = state;
@@ -13,14 +16,14 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   getProfitLoss: (
     universe: string,
     startTime: number,
     endTime: number,
     periodInterval: number,
     marketId: string,
-    callback: Function,
+    callback: NodeStyleCallback,
   ) =>
     dispatch(
       getProfitLoss({

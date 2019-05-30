@@ -12,7 +12,7 @@ export default function loginWithTrezor(
   connect: Function,
   addressPath: string
 ) {
-  return (dispatch: Function) => {
+  return (dispatch: ThunkDispatch<void, any, Action>) => {
     dispatch(updateAuthStatus(IS_LOGGED, true));
     dispatch(
       loadAccountData({

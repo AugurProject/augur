@@ -14,13 +14,16 @@ import {
   SUCCESS,
 } from "modules/common-elements/constants";
 import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const CLAIM_SHARES_GAS_COST = 3000000;
 
 const claimTradingProceeds = (
   marketId: string,
-  callback: Function = logError
-) => (dispatch: Function, getState: () => AppState) => {
+  callback: NodeStyleCallback = logError
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount } = getState();
   if (!loginAccount.address || !marketId) return callback(null);
 
@@ -45,8 +48,8 @@ const claimTradingProceeds = (
 
 export const claimMultipleTradingProceeds = (
   marketIds: Array<string>,
-  callback: Function = logError
-) => (dispatch: Function, getState: () => AppState) => {
+  callback: NodeStyleCallback = logError
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount } = getState();
   if (!loginAccount.address || !marketIds || !marketIds.length)
     return callback(null);

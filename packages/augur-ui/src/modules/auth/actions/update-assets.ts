@@ -1,4 +1,4 @@
-import { LoginAccount } from "modules/types";
+import { LoginAccount, NodeStyleCallback } from "modules/types";
 import {
   updateLoginAccount
 } from "modules/account/actions/login-account";
@@ -9,9 +9,11 @@ import {
   getRepBalance
 } from "modules/contracts/actions/contractCalls";
 import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-export function updateAssets(callback: Function = logError) {
-  return async (dispatch: Function, getState: () => AppState) => {
+export function updateAssets(callback: NodeStyleCallback = logError) {
+  return async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
     const balances: LoginAccount = Object.assign(loginAccount, {
       eth: undefined,
@@ -26,6 +28,6 @@ export function updateAssets(callback: Function = logError) {
     balances.dai = await getDaiBalance(address);
     balances.eth = await getEthBalance(address);
     dispatch(updateLoginAccount(balances));
-    callback(null, balances);
+    return callback(null, balances);
   };
 }

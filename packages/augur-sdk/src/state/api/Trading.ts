@@ -1,12 +1,14 @@
 import { SortLimit } from './types';
 import { DB } from "../db/DB";
 import * as _ from "lodash";
-import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "../../index";
+import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertDisplayPriceToOnChainPrice } from "../../index";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
-import { OrderEventAddressValue, OrderEventUint256Value, ORDER_EVENT_CREATOR, ORDER_EVENT_FILLER, ORDER_EVENT_OUTCOME } from "../logs/types";
+import { OrderEventLog, OrderEventAddressValue, OrderEventUint256Value, ORDER_EVENT_CREATOR, ORDER_EVENT_FILLER, ORDER_EVENT_OUTCOME, ORDER_EVENT_AMOUNT, ORDER_EVENT_TIMESTAMP } from "../logs/types";
 
 import * as t from "io-ts";
+
+const ZERO = new BigNumber(0);
 
 const TradingHistoryParams = t.partial({
   universe: t.string,
@@ -17,6 +19,27 @@ const TradingHistoryParams = t.partial({
   latestCreationTime: t.number,
 });
 
+export const OutcomeParam = t.keyof({
+  0: null,
+  1: null,
+  2: null,
+  3: null,
+  4: null,
+  5: null,
+  6: null,
+  7: null,
+});
+
+export const OrdersParams = t.partial({
+  universe: t.string,
+  marketId: t.string,
+  outcome: OutcomeParam,
+  orderType: t.string,
+  creator: t.string,
+  orderState: t.string,
+  earliestCreationTime: t.number,
+  latestCreationTime: t.number,
+});
 
 export interface MarketTradingHistory {
   transactionHash: string;
@@ -34,8 +57,64 @@ export interface MarketTradingHistory {
   tradeGroupId: string | null;
 }
 
+export enum OrderState {
+  ALL = "ALL",
+  OPEN = "OPEN",
+  FILLED = "FILLED",
+  CANCELED = "CANCELED",
+}
+
+export interface Order {
+  orderId: string;
+  transactionHash: string;
+  logIndex: number;
+  owner: string;
+  orderState: OrderState;
+  price: string;
+  amount: string;
+  fullPrecisionPrice: string;
+  fullPrecisionAmount: string;
+  tokensEscrowed: string; // TODO add to log
+  sharesEscrowed: string; // TODO add to log
+  canceledBlockNumber?: string;
+  canceledTransactionHash?: string;
+  canceledTime?: string;
+  creationTime: number;
+  creationBlockNumber: number;
+  originalFullPrecisionAmount: string;
+}
+
+export interface Orders {
+  [marketId: string]: {
+    [outcome: number]: {
+      [orderType: string]: {
+        [orderId: string]: Order;
+      };
+    };
+  };
+}
+
+export const OrderType = t.keyof({
+  buy: null,
+  sell: null,
+});
+
+export const BetterWorseOrdersParams = t.type({
+  marketId: t.string,
+  outcome: t.number,
+  orderType: OrderType,
+  price: t.number,
+});
+
+export interface BetterWorseResult {
+  betterOrderId: string|null;
+  worseOrderId: string|null;
+}
+
 export class Trading {
   public static GetTradingHistoryParams = t.intersection([SortLimit, TradingHistoryParams]);
+  public static GetOrdersParams = t.intersection([SortLimit, OrdersParams]);
+  public static GetBetterWorseOrdersParams = BetterWorseOrdersParams;
 
   @Getter("GetTradingHistoryParams")
   public static async getTradingHistory(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetTradingHistoryParams>): Promise<Array<any>> {
@@ -100,5 +179,133 @@ export class Trading {
         }) as MarketTradingHistory);
       return trades;
     }, [] as Array<MarketTradingHistory>);
+  }
+
+  @Getter("GetOrdersParams")
+  public static async getOrders(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetOrdersParams>): Promise<Orders> {
+    if (!params.universe && !params.marketId) {
+      throw new Error("'getOrders' requires a 'universe' or 'marketId' param be provided");
+    }
+    const request = {
+      selector: {
+        universe: params.universe,
+        market: params.marketId,
+        [ORDER_EVENT_OUTCOME]: params.outcome,
+        orderType: params.orderType,
+        [ORDER_EVENT_CREATOR] : params.creator,
+      },
+      sort: params.sortBy ? [params.sortBy] : undefined,
+      limit: params.limit,
+      skip: params.offset,
+    };
+
+    if (params.orderState === "OPEN") request.selector = Object.assign(request.selector, {[ORDER_EVENT_AMOUNT] : { $gt: "0x00"}});
+    if (params.orderState === "CANCELED") request.selector = Object.assign(request.selector, {"eventType" : 1});
+    if (params.orderState === "FILLED") request.selector = Object.assign(request.selector, {"eventType" : 3});
+
+    if (params.latestCreationTime && params.earliestCreationTime) {
+      request.selector = Object.assign(request.selector, {
+        $and: [
+          { [ORDER_EVENT_TIMESTAMP]: { $lte: `0x${params.latestCreationTime.toString(16)}` } },
+          { [ORDER_EVENT_TIMESTAMP]: { $gte: `0x${params.earliestCreationTime.toString(16)}` } }
+        ]
+      });
+    } else if (params.latestCreationTime) {
+      request.selector = Object.assign(request.selector, {[ORDER_EVENT_TIMESTAMP]: { $lte: `0x${params.latestCreationTime.toString(16)}` }});
+    } else if (params.earliestCreationTime) {
+      request.selector = Object.assign(request.selector, {[ORDER_EVENT_TIMESTAMP]: { $gte: `0x${params.earliestCreationTime.toString(16)}` }});
+    }
+
+    const currentOrdersResponse = await db.findCurrentOrders(request);
+
+    const orderIds = _.map(currentOrdersResponse, "orderId");
+    const originalOrdersResponse = await db.findOrderCreatedLogs({ selector: { orderId: { $in: orderIds } } });
+    const originalOrders = _.keyBy(originalOrdersResponse, "orderId");
+
+    const marketIds = _.map(currentOrdersResponse, "market");
+    const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
+    const markets = _.keyBy(marketsResponse, "market");
+
+    return currentOrdersResponse.reduce((orders: Orders, orderEventDoc: OrderEventLog) => {
+      const marketDoc = markets[orderEventDoc.market];
+      if (!marketDoc) return orders;
+      const originalOrderDoc = originalOrders[orderEventDoc.orderId];
+      const minPrice = new BigNumber(marketDoc.prices[0]);
+      const maxPrice = new BigNumber(marketDoc.prices[1]);
+      const numTicks = new BigNumber(marketDoc.numTicks);
+      const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.uint256Data[OrderEventUint256Value.amountFilled], 16), tickSize).toString(10);
+      const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderEventDoc.uint256Data[OrderEventUint256Value.price], 16), minPrice, tickSize).toString(10);
+      const market = orderEventDoc.market;
+      const outcome = new BigNumber(orderEventDoc.uint256Data[OrderEventUint256Value.outcome]).toNumber();
+      const orderType = orderEventDoc.orderType;
+      const orderId = orderEventDoc.orderId;
+      const sharesEscrowed = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.uint256Data[OrderEventUint256Value.sharesEscrowed], 16), tickSize).toString(10);
+      const tokensEscrowed = new BigNumber(orderEventDoc.uint256Data[OrderEventUint256Value.tokensEscrowed], 16).dividedBy(10 ** 18).toString(10);
+      let orderState = "OPEN";
+      if (amount === "0") {
+        orderState = orderEventDoc.eventType == 1 ? "CANCELED" : "FILLED";
+      }
+      if (!orders[market]) orders[market] = {};
+      if (!orders[market][outcome]) orders[market][outcome] = {};
+      if (!orders[market][outcome][orderType]) orders[market][outcome][orderType] = {};
+      orders[market][outcome][orderType][orderId] = Object.assign(_.pick(orderEventDoc, [
+        "transactionHash",
+        "logIndex",
+        "orderId",
+      ]), {
+          owner: orderEventDoc.addressData[OrderEventAddressValue.orderCreator],
+          orderState,
+          price,
+          amount,
+          fullPrecisionPrice: price,
+          fullPrecisionAmount: amount,
+          tokensEscrowed,
+          sharesEscrowed,
+          canceledBlockNumber: orderEventDoc.eventType == 1 ? orderEventDoc.blockNumber : undefined,
+          canceledTransactionHash: orderEventDoc.eventType == 1 ? orderEventDoc.transactionHash : undefined,
+          canceledTime: orderEventDoc.eventType == 1 ? orderEventDoc.timestamp : undefined,
+          creationTime: originalOrderDoc ? originalOrderDoc.timestamp : 0,
+          creationBlockNumber: originalOrderDoc ? originalOrderDoc.blockNumber : 0,
+          originalFullPrecisionAmount: originalOrderDoc ? convertOnChainAmountToDisplayAmount(new BigNumber(originalOrderDoc.uint256Data[OrderEventUint256Value.amount], 16), tickSize).toString(10) : 0,
+        } as Order);
+       return orders;
+    }, {} as Orders);
+  }
+
+  @Getter("GetBetterWorseOrdersParams")
+  public static async getBetterWorseOrders(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetBetterWorseOrdersParams>): Promise<BetterWorseResult> {
+    const request = {
+      selector: {
+        market: params.marketId,
+        [ORDER_EVENT_OUTCOME]: `0x0${params.outcome.toString()}`,
+        orderType: params.orderType === "buy" ? 0 : 1,
+        [ORDER_EVENT_AMOUNT] : { $gt: "0x00"}
+      }
+    };
+
+    const currentOrdersResponse = await db.findCurrentOrders(request);
+    const marketReponse = await db.findMarketCreatedLogs({selector: {market: params.marketId }});
+    if (marketReponse.length < 1) throw new Error(`Market ${params.marketId} not found.`);
+    const marketDoc = marketReponse[0];
+    const minPrice = new BigNumber(marketDoc.prices[0]);
+    const maxPrice = new BigNumber(marketDoc.prices[1]);
+    const numTicks = new BigNumber(marketDoc.numTicks);
+    const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+    const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(params.price), minPrice, tickSize);
+    const [lesserOrders, greaterOrders] = _.partition(currentOrdersResponse, (order) => new BigNumber(order.uint256Data[OrderEventUint256Value.price]).lt(onChainPrice));
+    const greaterOrder = _.reduce(greaterOrders, (result, order) => (result.orderId === null || new BigNumber(order.uint256Data[OrderEventUint256Value.price]).lt(result.price) ? { orderId: order.orderId, price: new BigNumber(order.uint256Data[OrderEventUint256Value.price]) } : result), { orderId: null, price: ZERO });
+    const lesserOrder = _.reduce(lesserOrders, (result, order) => (result.orderId === null || new BigNumber(order.uint256Data[OrderEventUint256Value.price]).gt(result.price) ? { orderId: order.orderId, price: new BigNumber(order.uint256Data[OrderEventUint256Value.price]) } : result), { orderId: null, price: ZERO });
+    if (params.orderType === "buy") {
+      return {
+        betterOrderId: greaterOrder.orderId,
+        worseOrderId: lesserOrder.orderId,
+      };
+    } else {
+      return {
+        betterOrderId: lesserOrder.orderId,
+        worseOrderId: greaterOrder.orderId,
+      };
+    }
   }
 }
