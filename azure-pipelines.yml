@@ -45,7 +45,7 @@ jobs:
               fi
               if [[ $f =~ .*augur-sdk.* ]]
               then
-                echo "found a ui change: $f"
+                echo "found a sdk change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_SDK;isOutput=true]true"
               fi
             done
