@@ -269,10 +269,7 @@ export default class MarketView extends Component {
                 >
                   <ModulePane label="Market Info">
                     <div className={Styles["MarketView__paneContainer--mobile"]}>
-                      <MarketHeader
-                        marketId={marketId}
-                        location={location}
-                      />
+                      <MarketHeader marketId={marketId} />
                       <MarketOutcomesList
                         marketId={marketId}
                         outcomes={outcomes}
@@ -387,10 +384,7 @@ export default class MarketView extends Component {
             ) : (
               <>
                 <div className={Styles.Market__upper}>
-                  <MarketHeader
-                    marketId={marketId}
-                    location={location}
-                  />
+                  <MarketHeader marketId={marketId} />
                 </div>
                 <section className={Styles.MarketView__body}>
                   <div className={Styles.MarketView__firstColumn}>

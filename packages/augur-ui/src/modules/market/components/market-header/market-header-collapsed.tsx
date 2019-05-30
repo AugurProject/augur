@@ -7,13 +7,11 @@ import MarketHeaderReporting from "modules/market/containers/market-header-repor
 import Styles from "modules/market/components/market-header/market-header-collapsed.styles";
 
 export const MarketHeaderCollapsed = ({ description, market }) => (
-  <div className={Styles.MarketHeaderCollapsed_mainValues}>
-    <div className={classNames(Styles.MarketHeaderCollapsed__descContainer)}>
-      <section>
-        <h1>{description}</h1>
-      </section>
+  <div className={Styles.HeaderCollapsed}>
+    <div>
+      {description}
     </div>
-    <div className={Styles.MarketHeaderCollapsed__marketStatus}>
+    <div>
       <MarketHeaderReporting marketId={market.id} />
     </div>
   </div>
