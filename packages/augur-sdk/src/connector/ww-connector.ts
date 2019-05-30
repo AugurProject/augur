@@ -10,6 +10,7 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { EventLogDBRouter } from "../state//db/EventLogDBRouter";
 import { JsonRpcProvider } from "ethers/providers";
 import { PouchDBFactory } from "../state//db/AbstractDB";
+import { SubscriptionEventNames } from "../constants";
 import { UploadBlockNumbers, Addresses } from "@augurproject/artifacts";
 import { Controller } from "../state/Controller";
 
@@ -18,6 +19,7 @@ const settings = require("@augurproject/sdk/src/state/settings.json");
 export class WebWorkerConnector extends Connector {
   private api: API;
   private worker: any;
+  private callback: Callback;
 
   public async connect(params?: any): Promise<any> {
     const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
@@ -32,13 +34,15 @@ export class WebWorkerConnector extends Connector {
     this.api = new API(augur, controller.db);
     this.worker = new RunWorker();
 
-    // this.worker.onmessage = (event: MessageEvent) => {
-    //   console.log("Worker data: " + event.data);
-    // };
+    this.worker.onmessage = (event: MessageEvent) => {
+      console.log("Worker message");
+      console.log(event.data);
+      this.callback(event);
+    };
   }
 
   public async disconnect(): Promise<any> {
-    return;
+    this.worker.terminate();
   }
 
   public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {
@@ -47,11 +51,12 @@ export class WebWorkerConnector extends Connector {
     };
   }
 
-  public async subscribe(event: string, callback: Callback): Promise<any> {
-    return;
+  public async subscribe(event: SubscriptionEventNames, callback: Callback): Promise<any> {
+    this.callback = callback;
+    this.worker.postMessage({ subscribe: event });
   }
 
-  public async unsubscribe(event: string): Promise<any> {
-    return;
+  public async unsubscribe(subscription: string): Promise<any> {
+    this.worker.postMessage({ unsubscribe: subscription });
   }
 }

@@ -1,4 +1,5 @@
 import { Connector, Callback } from "./connector";
+import { SubscriptionEventNames } from "../constants";
 import fetch from "cross-fetch";
 
 export class HTTPConnector extends Connector {
@@ -25,11 +26,11 @@ export class HTTPConnector extends Connector {
     }
   }
 
-  public async subscribe(event: string, callback: Callback): Promise<any> {
+  public async subscribe(event: SubscriptionEventNames, callback: Callback): Promise<any> {
 
   }
 
-  public async unsubscribe(event: string): Promise<any> {
+  public async unsubscribe(subscription: string): Promise<any> {
 
   }
 }

@@ -24,7 +24,7 @@ export function makeConnectorMock(json: object): Connector {
       return true;
     }
 
-    public async unsubscribe(event: string): Promise<any> {
+    public async unsubscribe(subscription: string): Promise<any> {
       return true;
     }
   }

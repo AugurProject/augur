@@ -81,7 +81,7 @@ export async function run<TBigNumber>(api: API, endpointSettings: EndpointSettin
             const eventName: string = message.params.shift();
 
             try {
-              const subscription: string = subscriptions.subscribe(eventName, message.params, (data: {}): void => {
+              const subscription: string = subscriptions.subscribe(eventName, (data: {}): void => {
                 safeSend(websocket, MakeJsonRpcResponse(null, { subscription, result: data }));
               });
               safeSend(websocket, MakeJsonRpcResponse(message.id, { subscription }));
@@ -107,7 +107,7 @@ export async function run<TBigNumber>(api: API, endpointSettings: EndpointSettin
 
       websocket.on("close", () => {
         clearInterval(pingInterval);
-        // subscriptions.removeAllListeners();
+        subscriptions.removeAllListeners();
       });
 
       websocket.on("error", (err) => {

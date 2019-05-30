@@ -1,4 +1,5 @@
 import { Connector, Callback } from "./connector";
+import { SubscriptionEventNames } from "../constants";
 import WebSocket from "isomorphic-ws";
 import WebSocketAsPromised from "websocket-as-promised";
 
@@ -32,13 +33,15 @@ export class WebsocketConnector extends Connector {
     };
   }
 
-  public async subscribe(event: string, callback: Callback): Promise<any> {
+  public async subscribe(event: SubscriptionEventNames, callback: Callback): Promise<any> {
     this.callback = callback;
 
-    return this.socket.sendRequest({ method: "subscribe", event, jsonrpc: "2.0" });
+    const response = await this.socket.sendRequest({ method: "subscribe", event, jsonrpc: "2.0" });
+    callback({ subscribed: event, subscription: response.subscription });
+    return response.subscription;
   }
 
-  public async unsubscribe(event: string): Promise<any> {
-    return this.socket.sendRequest({ method: "unsubscribe", event, jsonrpc: "2.0" });
+  public async unsubscribe(subscription: string): Promise<any> {
+    return this.socket.sendRequest({ method: "unsubscribe", subscription, jsonrpc: "2.0" });
   }
 }
