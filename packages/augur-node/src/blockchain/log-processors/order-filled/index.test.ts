@@ -73,7 +73,7 @@ describe("blockchain/log-processors/order-filled", () => {
       amountFilled: "100000000000000",
       numCreatorShares: "0",
       numCreatorTokens: fix("1", "string"),
-      numFillerShares: augur.utils.convertDisplayAmountToOnChainAmount("2", new BigNumber(1), new BigNumber(10000)).toString(),
+      numFillerShares: augur.utils.convertDisplayAmountToOnChainAmount("2", new BigNumber(1), new BigNumber(100)).toString(),
       numFillerTokens: "0",
       marketCreatorFees: "0",
       reporterFees: "0",

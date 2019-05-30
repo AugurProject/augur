@@ -20,7 +20,7 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   updateIsAlertVisible: (data: Boolean) => dispatch(updateIsAlertVisible(data))
 });
 

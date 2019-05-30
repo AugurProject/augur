@@ -107,7 +107,7 @@ def test_publicCreateOrder_bid2(contractsFixture, cash, market):
     orderCreatedEventLog = {
 	    "eventType": 0,
 	    "addressData": [nullAddress, bytesToHexString(tester.a1) , nullAddress],
-	    "uint256Data": [fxpPrice, amount, outcome, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp()],
+	    "uint256Data": [fxpPrice, amount, outcome, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp(), 0, fix(1, 40)],
     }
 
     with BuyWithCash(cash, fix('1', '40'), tester.k1, "create order"):
@@ -182,7 +182,7 @@ def test_ask_withPartialShares(contractsFixture, universe, cash, market):
     orderCreatedEventLog = {
 	    "eventType": 0,
 	    "addressData": [nullAddress, bytesToHexString(tester.a1) , nullAddress],
-	    "uint256Data": [40, fix(3), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp()],
+	    "uint256Data": [40, fix(3), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp(), fix(2), fix(60)],
     }
     with BuyWithCash(cash, fix('60'), tester.k1, "buy complete set"):
         with AssertLog(contractsFixture, "OrderEvent", orderCreatedEventLog):
@@ -235,7 +235,7 @@ def test_ask_withSharesIgnored(contractsFixture, cash, market):
     orderCreatedEventLog = {
 	    "eventType": 0,
 	    "addressData": [nullAddress, bytesToHexString(tester.a1) , nullAddress],
-	    "uint256Data": [50, fix(1), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp()],
+	    "uint256Data": [50, fix(1), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp(), 0, fix(50)],
     }
     with BuyWithCash(cash, fix('50'), tester.k1, "create order"):
         with AssertLog(contractsFixture, "OrderEvent", orderCreatedEventLog):

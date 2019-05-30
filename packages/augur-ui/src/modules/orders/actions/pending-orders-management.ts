@@ -1,4 +1,7 @@
 import { Order } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 const blockComparison = 3;
 
@@ -25,8 +28,8 @@ export const removePendingOrder = (id: string, marketId: string) => ({
 });
 
 export const clearPendingOrders = () => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const { blockchain, pendingOrders } = getState();
 

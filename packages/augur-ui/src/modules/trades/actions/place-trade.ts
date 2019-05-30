@@ -22,9 +22,9 @@ export const placeTrade = ({
   outcomeId,
   tradeInProgress,
   doNotCreateOrders,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
   onComplete = noop
-}: any) => (dispatch: Function, getState: () => AppState) => {
+}: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
   const { loginAccount, marketsData, blockchain, outcomesData } = getState();
   const market = marketsData[marketId];

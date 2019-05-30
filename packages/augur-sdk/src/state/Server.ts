@@ -82,7 +82,7 @@ export async function run() {
     endpointSettings.certificateKeyFile = "./certs/ssl-cert-snakeoil.pem";
   }
 
-  Sync.start();
+  Sync.start({});
   console.log("Starting websocket and http endpoints");
   HTTPEndpoint.run(api, endpointSettings);
   await WebsocketEndpoint.run(api, endpointSettings, new EventEmitter());

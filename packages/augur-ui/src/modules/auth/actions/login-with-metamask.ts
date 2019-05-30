@@ -2,9 +2,12 @@ import logError from "utils/log-error";
 import { useUnlockedAccount } from "modules/auth/actions/use-unlocked-account";
 import { windowRef } from "utils/window-ref";
 import { getAccounts } from "modules/contracts/actions/contractCalls";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-export const loginWithMetaMask = (callback: Function = logError) => (
-  dispatch: Function
+export const loginWithMetaMask = (callback: NodeStyleCallback = logError) => (
+  dispatch: ThunkDispatch<void, any, Action>
 ) => {
   const failure = () => callback("NOT_SIGNED_IN");
   const success = (account: string) => {

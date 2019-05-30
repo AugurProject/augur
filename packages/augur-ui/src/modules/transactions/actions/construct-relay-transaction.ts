@@ -6,10 +6,13 @@ import { selectCurrentTimestampInSeconds } from "store/select-state";
 import makePath from "modules/routes/helpers/make-path";
 
 import { TRANSACTIONS } from "modules/routes/constants/views";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 export const constructRelayTransaction = (tx: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const { alerts } = getState();
   const { hash, status } = tx;

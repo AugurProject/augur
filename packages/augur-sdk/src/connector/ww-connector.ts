@@ -2,7 +2,7 @@ import RunWorker from "../state//Sync.worker";
 
 import { API } from "../state/api/API";
 import { Augur } from "../Augur";
-import { BlockAndLogStreamerListener } from "../state//db/BlockAndLogStreamerListener";
+import { BlockAndLogStreamerListener } from "../state/db/BlockAndLogStreamerListener";
 import { Connector, Callback } from "./connector";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { DB } from "../state//db/DB";

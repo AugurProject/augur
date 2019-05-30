@@ -7,7 +7,7 @@ export const CLEAR_NEW_MARKET = "CLEAR_NEW_MARKET";
 
 export function invalidateMarketCreation(error: Error) {
   // error param is currently not utilized
-  return (dispatch: Function) => {
+  return (dispatch: ThunkDispatch<void, any, Action>) => {
     dispatch(updateNewMarket({ isValid: false }));
   };
 }

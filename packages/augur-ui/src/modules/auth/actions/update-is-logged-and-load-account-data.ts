@@ -10,7 +10,7 @@ import { clearUserTx } from "modules/contracts/actions/contractCalls";
 export const updateIsLoggedAndLoadAccountData = (
   unlockedAddress: string,
   accountType: string
-) => (dispatch: Function) => {
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   clearUserTx();
   dispatch(clearLoginAccount()); // clear the loginAccount data in local state
   const displayAddress = toChecksumAddress(unlockedAddress);
