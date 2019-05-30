@@ -40,7 +40,7 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
       reportingWindowStatsEndTime
     } = this.props;
     return (
-      <section className={Styles.MarketHeaderBar}>
+      <section className={Styles.HeaderBar}>
         <InReportingLabel
           marketStatus={marketStatus}
           reportingState={reportingState}
@@ -51,7 +51,7 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
         />
 
         {addToFavorites && (
-          <div className={Styles.MarketHeaderBar__watchlist__container}>
+          <div>
             <FavoritesButton
               action={() => addToFavorites()}
               isFavorite={isFavorite}
@@ -62,14 +62,12 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
         )}
         <DotSelection>
           <div
-            className={Styles.MarketHeaderBar_menuItem}
             id="copy_marketId"
             data-clipboard-text={marketId}
           >
             {PaperClip} {constants.COPY_MARKET_ID}
           </div>
           <div
-            className={Styles.MarketHeaderBar_menuItem}
             id="copy_author"
             data-clipboard-text={author}
           >
