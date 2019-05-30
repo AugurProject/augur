@@ -1,4 +1,4 @@
-export { Augur, UserSpecificEvent } from "./Augur";
+export { Augur, UserSpecificEvent, CustomEvent } from "./Augur";
 export * from "./api/Trade";
 export *  from "@augurproject/types";
 export { Provider } from './ethereum/Provider';

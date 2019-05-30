@@ -4,13 +4,16 @@ import { updateAssets } from "modules/auth/actions/update-assets";
 import { createBigNumber } from "utils/create-big-number";
 import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
 import { getNetworkId, getTimestamp, getCurrentBlock } from "modules/contracts/actions/contractCalls";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const GET_GAS_BLOCK_LIMIT = 100;
 const MAINNET_ID = "1";
 
 export const syncBlockchain = (cb: Function) => (
-  dispatch: Function,
-  getState: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
 ) => {
   const networkId = getNetworkId();
   const { gasPriceInfo } = getState();

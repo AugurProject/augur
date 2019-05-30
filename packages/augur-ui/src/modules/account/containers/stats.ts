@@ -3,12 +3,14 @@ import { withRouter } from "react-router-dom";
 import { AppState } from "store";
 import getValue from "utils/get-value";
 import Stats from "modules/account/components/stats";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => ({
   timeframeData: state.loginAccount.timeframeData,
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({});
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const properties = [

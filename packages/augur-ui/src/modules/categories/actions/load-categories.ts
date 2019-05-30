@@ -4,10 +4,14 @@ import {
   updateCategories
 } from "modules/categories/actions/update-categories";
 import logError from "utils/log-error";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
-const loadCategories = (callback: Function = logError) => (
-  dispatch: Function,
-  getState: Function
+const loadCategories = (callback: NodeStyleCallback = logError) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const { universe } = getState();
   if (!universe.id) return callback(null);

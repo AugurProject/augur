@@ -4,13 +4,15 @@ import { updateAlert, addAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds as getTime } from "store/select-state";
 import { ETH, REP, CONFIRMED, FAILED } from "modules/common-elements/constants";
 import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export function transferFunds(
   amount: string,
   currency: string,
   toAddress: string,
 ) {
-  return (dispatch: Function, getState: () => AppState) => {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { universe, loginAccount } = getState();
     const fromAddress = loginAccount.address;
     const to = speedomatic.formatEthereumAddress(toAddress);

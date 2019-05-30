@@ -13,7 +13,7 @@ console.log = (msg: string) => {
 };
 
 // the main reason for the worker, to sync in another thread
-Sync.start();
+Sync.start({});
 
 // to stop typescript from complaining
 export default null as any;

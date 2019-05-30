@@ -12,14 +12,18 @@ import {
   MARKET_CLOSED
 } from "modules/common-elements/constants";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 const { REPORTING_STATE } = constants;
 
 // NOTE -- We ONLY load the market ids during this step.
 // From here we populate the marketsData
-export const loadMarkets = (type: any, callback = logError) => (
-  dispatch: Function,
-  getState: Function
+export const loadMarkets = (type: any, callback: NodeStyleCallback = logError) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
 ) => {
   const { universe } = getState();
   const params = { universe: universe.id };
@@ -41,8 +45,8 @@ export const loadMarkets = (type: any, callback = logError) => (
 };
 
 export const loadMarketsByFilter = (filterOptions: any, cb:Function = () => {}) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const { universe } = getState();
   const filter: Array<any> = [];

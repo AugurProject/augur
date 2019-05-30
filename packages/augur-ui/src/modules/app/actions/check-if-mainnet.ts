@@ -1,8 +1,11 @@
 import { getAugurNodeNetworkId } from "modules/app/actions/get-augur-node-network-id";
 import logError from "utils/log-error";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-export const checkIfMainnet = (callback: Function = logError) => (
-  dispatch: Function
+export const checkIfMainnet = (callback: NodeStyleCallback = logError) => (
+  dispatch: ThunkDispatch<void, any, Action>,
 ) => {
   dispatch(
     getAugurNodeNetworkId((err: any, augurNodeNetworkId: string) => {

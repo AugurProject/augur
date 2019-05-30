@@ -37,7 +37,7 @@ const mapStateToProps = (state: AppState) => ({
   nonforkedMarkets: state.reportingWindowStats.reportingFees.nonforkedMarkets
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   redeemStake: (options, callback) => dispatch(redeemStake(options, callback))
 });

@@ -5,6 +5,8 @@ import { UNIVERSE_ID } from "modules/common-elements/constants";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
 import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const submitMigrateREP = ({
   estimateGas,
@@ -13,8 +15,8 @@ export const submitMigrateREP = ({
   invalid,
   amount,
   history,
-  callback = logError
-}: any) => (dispatch: Function, getState: () => AppState) => {
+  callback: NodeStyleCallback = logError
+}: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount, marketsData, universe } = getState();
   const outcome = parseFloat(selectedOutcome);
   const universeID = universe.id || UNIVERSE_ID;

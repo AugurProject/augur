@@ -26,7 +26,7 @@ const localStorageRef = typeof window !== "undefined" && window.localStorage;
 
 const findMarketByDesc = (
   marketDescription: string,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
 ) => (dispatch) => {
   const marketsData: Array<MarketData> = selectMarkets(store.getState());
   const market = marketsData.find(
@@ -54,7 +54,7 @@ const findMarketByDesc = (
   }
 };
 
-const createMarket = (marketData, callback = logError) => (dispatch) => {
+const createMarket = (marketData, callback: NodeStyleCallback = logError) => (dispatch) => {
   dispatch(
     submitNewMarket(marketData, [], (err, marketId) => {
       if (err) return callback({ err });
@@ -64,16 +64,16 @@ const createMarket = (marketData, callback = logError) => (dispatch) => {
   );
 };
 
-const getLoggedInAccountData = (callback = logError) => (dispatch) =>
+const getLoggedInAccountData = (callback: NodeStyleCallback = logError) => (dispatch) =>
   callback({ err: null, data: store.getState().loginAccount });
 
-const formatRepValue = (value, callback = logError) => (dispatch) =>
+const formatRepValue = (value, callback: NodeStyleCallback = logError) => (dispatch) =>
   callback({ err: null, data: formatRep(value) });
 
-const formatEthValue = (value, callback = logError) => (dispatch) =>
+const formatEthValue = (value, callback: NodeStyleCallback = logError) => (dispatch) =>
   callback(formatEther(value));
 
-const getRepTokens = (callback = logError) => (dispatch) => {
+const getRepTokens = (callback: NodeStyleCallback = logError) => (dispatch) => {
   dispatch(
     getRep((err: Error) => {
       if (err) return callback({ err });
@@ -82,7 +82,7 @@ const getRepTokens = (callback = logError) => (dispatch) => {
   );
 };
 
-const getMarketCosts = (callback = logError) => (dispatch) => {
+const getMarketCosts = (callback: NodeStyleCallback = logError) => (dispatch) => {
   const { universe } = store.getState();
 
   augur.createMarket.getMarketCreationCostBreakdown(
@@ -97,21 +97,21 @@ const getMarketCosts = (callback = logError) => (dispatch) => {
 const getDaysRemainingTime = (
   endTime,
   startTime,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
 ) => (dispatch) => callback({ err: null, data: getDaysRemaining(endTime, startTime) });
 const getHoursRemainingTime = (
   endTime,
   startTime,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
 ) => (dispatch) => callback({ err: null, data: getHoursRemaining(endTime, startTime) });
 const getMinutesRemainingTime = (
   endTime,
   startTime,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
 ) => (dispatch) => callback({ err: null, data: getMinutesRemaining(endTime, startTime) });
 const convertUnixToFormattedDateTime = (
   date,
-  callback = logError,
+  callback: NodeStyleCallback = logError,
 ) => (dispatch) => callback({ err: null, data: convertUnixToFormattedDate(date) });
 
 const getReportingWindowStats = () => {
