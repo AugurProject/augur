@@ -11,8 +11,6 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { EventEmitter } from "events";
 import { JsonRpcProvider } from "ethers/providers";
 import { PouchDBFactory } from "./db/AbstractDB";
-import { augurEmitter } from "../events";
-import { SubscriptionEventNames } from "../constants";
 
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");

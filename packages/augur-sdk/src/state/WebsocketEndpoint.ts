@@ -6,7 +6,7 @@ import WebSocket from "ws";
 
 import { API } from "./api/API";
 import { AddressFormatReviver } from "./AddressFormatReviver";
-import { ControlMessageType, SubscriptionEventNames } from "../constants";
+import { ControlMessageType } from "../constants";
 import { EventEmitter } from "events";
 import { IsJsonRpcRequest } from "./IsJsonRpcRequest";
 import { JsonRpcRequest, EndpointSettings } from "./api/types";

@@ -1,7 +1,6 @@
 import * as Sync from "./Sync";
 import { Subscriptions } from "../subscriptions";
 import { augurEmitter } from "../events";
-import { SubscriptionEventNames } from "../constants";
 
 // this to be as typesafe as possible with self and addEventListener + postMessage
 const ctx: Worker = self as any;
