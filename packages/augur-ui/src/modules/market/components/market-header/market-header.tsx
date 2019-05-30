@@ -165,16 +165,16 @@ export default class MarketHeader extends Component {
           ToggleHeightStyles.open,
           ToggleHeightStyles.quick,
           {
-            [Styles.MarketHeader__container__collapsed]: headerCollapsed,
+            [Styles.Collapsed]: headerCollapsed,
             [ToggleHeightStyles.open]: !headerCollapsed
           }
         )}
       >
-        <h1 className={Styles.MarketHeaderMobile_description}>{description}</h1>
-        <div className={Styles.MarketHeader__topContainer}>
+        <h1>{description}</h1>
+        <div>
           <WordTrail items={[...categoriesWithClick, ...tagsWithClick]}>
             <button
-              className={Styles.MarketHeader__backButton}
+              className={Styles.BackButton}
               onClick={() => history.goBack()}
             >
               {BackArrow}
@@ -182,7 +182,7 @@ export default class MarketHeader extends Component {
 
             <MarketTypeLabel marketType={marketType} />
           </WordTrail>
-          <div className={Styles.MarketHeader__properties}>
+          <div className={Styles.Properties}>
             {market.id && (
               <MarketHeaderBar
                 marketId={market.id}
@@ -204,7 +204,7 @@ export default class MarketHeader extends Component {
         )}
 
         {!headerCollapsed && (
-          <div className={Styles[`MarketHeader__main-values`]}>
+          <div className={Styles.MainValues}>
             <div
               className={classNames(Styles.MarketHeader__descContainer, {
                 [Styles.MarketHeader__collapsed]: headerCollapsed
@@ -260,7 +260,7 @@ export default class MarketHeader extends Component {
                 )}
               </div>
             </div>
-            <div className={Styles.MarketHeader__properties}>
+            <div className={Styles.Properties}>
               {market.id && (
                 <MarketHeaderBar
                   marketId={market.id}
@@ -274,12 +274,10 @@ export default class MarketHeader extends Component {
                   isLogged={isLogged}
                 />
               )}
-              <div className={Styles.MarketHeader__properties__reporting}>
-                <MarketHeaderReporting marketId={market.id} />
-              </div>
-              <div className={Styles.MarketHeader__properties__core}>
+              <MarketHeaderReporting marketId={market.id} />
+              <div className={Styles.Core}>
                 {market.id && <CoreProperties market={market} />}
-                <div className={Styles.MarketHeader__timeStuff}>
+                <div className={Styles.TimeStuff}>
                   <MarketTimeline
                     startTime={market.creationTime || 0}
                     currentTime={currentTime || 0}
@@ -291,13 +289,11 @@ export default class MarketHeader extends Component {
           </div>
         )}
         <div
-          className={classNames(Styles.MarketHeader_toggleContainer, {
-            [Styles.MarketHeader_toggleContainer_collapsed]: headerCollapsed
+          className={classNames(Styles.Toggle, {
+            [Styles.Collapsed]: headerCollapsed
           })}
         >
-          <button
-            onClick={() => this.setState({ headerCollapsed: !headerCollapsed })}
-          >
+          <button onClick={() => this.setState({ headerCollapsed: !headerCollapsed })}>
             <ChevronFlip
               stroke="#999999"
               quick
