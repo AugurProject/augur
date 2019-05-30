@@ -24,6 +24,7 @@ const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   pendingQueue: state.pendingQueue || [],
   gasCost: formatGasCostToEther(
+    // @ts-ignore
     CLAIM_SHARES_GAS_COST,
     { decimalsRounded: 4 },
     getGasPrice(state),
@@ -67,6 +68,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           sP.pendingQueue[CLAIM_PROCEEDS] &&
           sP.pendingQueue[CLAIM_PROCEEDS][marketId];
         markets.push({
+          // @ts-ignore
           title: market.description,
           status: pending && pending.status,
           properties: [
@@ -84,6 +86,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     }
   });
   const totalGas = formatEther(
+    // @ts-ignore
     createBigNumber(sP.gasCost).times(markets.length),
   );
   const multiMarket = markets.length > 1 ? "s" : "";
@@ -117,6 +120,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     buttons: [
       {
         text: `${multiMarket ? "Claim All" : "Claim Proceeds"}`,
+        // @ts-ignore
         disabled: markets.find((market) => market.status === "pending"),
         action: () => {
           dP.closeModal();

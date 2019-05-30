@@ -123,7 +123,7 @@ export interface LinearPropertyLabelViewTransactionProps {
 export interface ValueLabelProps {
   value: FormattedNumber;
   showDenomination: boolean;
-  keyId: string;
+  keyId?: string;
   showEmptyDash: boolean;
 }
 
@@ -133,7 +133,7 @@ interface HoverValueLabelState {
 
 export interface TextLabelProps {
   text: string;
-  keyId: string;
+  keyId?: string;
 }
 
 export interface TextLabelState {

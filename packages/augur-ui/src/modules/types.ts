@@ -207,7 +207,11 @@ export interface Notification {
 export interface OrderStatus {
   orderId: string;
   status: string;
+  marketId: string;
+  outcome: any;
+  orderTypeLabel: string;
 }
+
 export interface Order {
   id: string;
   outcome: string | number; // TODO: need to be consistent with outcome naming and type

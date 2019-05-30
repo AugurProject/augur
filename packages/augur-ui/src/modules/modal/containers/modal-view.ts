@@ -7,16 +7,16 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal
+  modal: state.modal,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal())
+  closeModal: () => dispatch(closeModal()),
 });
 
 export default withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(ModalView)
+    mapDispatchToProps,
+  )(ModalView),
 );
