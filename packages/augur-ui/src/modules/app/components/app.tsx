@@ -21,15 +21,16 @@ import Logo from "modules/app/components/logo";
 import Routes from "modules/routes/components/routes/routes";
 import AlertsContainer from "modules/alerts/containers/alerts-view";
 
-import MobileNavHamburgerIcon from "modules/common/components/mobile-nav-hamburger-icon";
-import MobileNavCloseIcon from "modules/common/components/mobile-nav-close-icon";
-import MobileNavBackIcon from "modules/common/components/mobile-nav-back-icon";
-
-import NavLogoutIcon from "modules/common/components/nav-logout-icon";
-import NavAccountIcon from "modules/common/components/nav-account-icon";
-import NavCreateIcon from "modules/common/components/nav-create-icon";
-import NavMarketsIcon from "modules/common/components/nav-markets-icon";
-import NavPortfolioIcon from "modules/common/components/nav-portfolio-icon";
+import {
+  MobileNavHamburgerIcon,
+  MobileNavCloseIcon,
+  MobileNavBackIcon,
+  NavLogoutIcon,
+  NavAccountIcon,
+  NavCreateIcon,
+  NavMarketsIcon,
+  NavPortfolioIcon
+} from "modules/common-elements/icons";
 import { NavReportingIcon } from "modules/common/components/icons";
 import { Link } from "react-router-dom";
 import makePath from "modules/routes/helpers/make-path";
