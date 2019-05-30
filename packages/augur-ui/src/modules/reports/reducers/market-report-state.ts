@@ -21,8 +21,8 @@ const DEFAULT_STATE: MarketsInReporting = {
 
 export default function(
   marketReportState: MarketsInReporting = DEFAULT_STATE,
-  { type, data }: BaseAction
-) {
+  { type, data }: BaseAction,
+): MarketsInReporting {
   switch (type) {
     case UPDATE_DESIGNATED_REPORTING_MARKETS:
       return {
@@ -59,7 +59,7 @@ export default function(
         resolved: data.marketIds
       };
     case REMOVE_MARKET:
-      return Object.keys(marketReportState).reduce((p, reportType) => {
+      return Object.keys(marketReportState).reduce((p: MarketsInReporting, reportType) => {
         const markets = marketReportState[reportType].filter(
           marketId => marketId !== data.marketId
         );

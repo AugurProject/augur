@@ -10,7 +10,7 @@ const DEFAULT_STATE: PendingOrders = {};
 export default function(
   pendingOrders: PendingOrders = DEFAULT_STATE,
   { type, data }: BaseAction,
-) {
+): PendingOrders {
   switch (type) {
     case ADD_PENDING_ORDER: {
       const { pendingOrder, marketId } = data;

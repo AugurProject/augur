@@ -4,11 +4,11 @@ import {
 } from "modules/markets/actions/update-favorites";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { BaseAction } from "modules/types";
+import { Favorite, BaseAction } from "modules/types";
 
 const DEFAULT_STATE = {};
 
-export default function(favorites = DEFAULT_STATE, { type, data }: BaseAction) {
+export default function(favorites = DEFAULT_STATE, { type, data }: BaseAction): Favorite {
   switch (type) {
     case UPDATE_FAVORITES:
       return {
