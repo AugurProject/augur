@@ -13,6 +13,6 @@ export abstract class Connector {
   // bind API calls
   public abstract bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R>;
 
-  public abstract on(eventName: SubscriptionEventNames, callback: Callback): void;
-  public abstract off(eventName: SubscriptionEventNames, callback: Callback): void;
+  public abstract on(eventName: SubscriptionEventNames | string, callback: Callback): void;
+  public abstract off(eventName: SubscriptionEventNames | string): void;
 }

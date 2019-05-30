@@ -1,7 +1,6 @@
-//import { WebWorkerConnector } from "../connector/ww-connector";
 import { WebsocketConnector } from "../connector/ws-connector";
 import { Markets } from "./api/Markets";
-import { SubscriptionEventNames } from "../constants";
+import { SubscriptionEventNames, isSubscriptionEventName } from "../constants";
 
 console.log("Starting web worker");
 
@@ -16,7 +15,7 @@ console.log("Starting web worker");
       console.log("Callback for subscribe");
       console.log(data);
       console.log("done");
-      connector.off(SubscriptionEventNames.CompleteSetsPurchased);
+      connector.off(SubscriptionEventNames["CompleteSetsPurchased"]);
     });
 
     // setTimeout(async () => {

@@ -22,7 +22,6 @@ export class WebsocketConnector extends Connector {
     this.socket.onMessage.addListener((message: string) => {
       console.log("have a message in the ws connector");
       console.log(message);
-      console.log("done");
     });
 
     return this.socket.open();
@@ -39,16 +38,13 @@ export class WebsocketConnector extends Connector {
     };
   }
 
-  public on(eventName: SubscriptionEventNames, callback: Callback): void {
-    console.log("sending subscribe request");
+  public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
     this.socket.sendRequest({ method: "subscribe", event, jsonrpc: "2.0", params: [eventName] }).then((response: any) => {
-      console.log("subscrivbed");
-      console.log(response);
       this.subscriptions[eventName] = { id: response.subscription, callback };
     });
   }
 
-  public off(eventName: SubscriptionEventNames): void {
+  public off(eventName: SubscriptionEventNames | string): void {
     const subscription = this.subscriptions[eventName];
     this.socket.sendRequest({ method: "unsubscribe", subscription, jsonrpc: "2.0", params: [subscription] }).then(() => {
       delete this.subscriptions[eventName];

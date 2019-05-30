@@ -5,7 +5,7 @@ import { Contracts } from "./api/Contracts";
 import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { Provider } from "./ethereum/Provider";
-import { SubscriptionEventNames } from "./constants";
+import { SubscriptionEventNames, isSubscriptionEventName } from "./constants";
 import { Trade } from "./api/Trade";
 import { TransactionStatusCallback, ContractDependenciesEthers } from "contract-dependencies-ethers";
 
@@ -133,7 +133,15 @@ export class Augur<TProvider extends Provider = Provider> {
     this.dependencies.deRegisterAllTransactionStatusCallbacks();
   }
 
-  public on(eventName: SubscriptionEventNames, callback: Callback): void {
-    this.connector.on(eventName, callback);
+  public on(eventName: string, callback: Callback): void {
+    if (isSubscriptionEventName(eventName)) {
+      this.connector.on(eventName, callback);
+    }
+  }
+
+  public off(eventName: string): void {
+    if (isSubscriptionEventName(eventName)) {
+      this.connector.off(eventName);
+    }
   }
 }

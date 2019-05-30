@@ -45,12 +45,12 @@ export class SEOConnector extends Connector {
     };
   }
 
-  public on(eventName: SubscriptionEventNames, callback: Callback): void {
+  public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
     const subscription: string = this.events.subscribe(eventName, callback);
     this.subscriptions[eventName] = { id: subscription, callback };
   }
 
-  public off(eventName: SubscriptionEventNames): void {
+  public off(eventName: SubscriptionEventNames | string): void {
     const subscription = this.subscriptions[eventName].id;
     delete this.subscriptions[eventName];
     return this.events.unsubscribe(subscription);

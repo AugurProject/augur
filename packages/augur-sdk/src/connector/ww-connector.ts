@@ -56,12 +56,12 @@ export class WebWorkerConnector extends Connector {
     };
   }
 
-  public on(eventName: SubscriptionEventNames, callback: Callback): void {
+  public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
     this.subscriptions[eventName] = { id: "", callback };
     this.worker.postMessage({ subscribe: eventName });
   }
 
-  public off(eventName: SubscriptionEventNames): void {
+  public off(eventName: SubscriptionEventNames | string): void {
     const subscription = this.subscriptions[eventName].id;
     delete this.subscriptions[eventName];
 

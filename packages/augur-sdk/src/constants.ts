@@ -40,6 +40,23 @@ export enum SubscriptionEventNames {
   Approval = "Approval",
 }
 
+export function isSubscriptionEventName(eventName: string): string | null {
+  let retVal: number = -1;
+
+  Object.values(SubscriptionEventNames).every((value: any, index: number): boolean => {
+    if (value === eventName) {
+      retVal = index;
+    }
+    return true;
+  });
+
+  if (retVal !== -1) {
+    return SubscriptionEventNames[retVal];
+  }
+
+  return null;
+}
+
 export enum ControlMessageType {
   ServerStart = "ServerStart",
   ServerError = "ServerError",
