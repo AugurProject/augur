@@ -13,7 +13,7 @@ import {
 import { isEqual } from "lodash";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/trading/components/trading--form/trading--form.styles";
-import { darkBgExclamationCircle } from "modules/common/components/icons";
+import { ExclamationCircle } from "modules/common-elements/icons";
 import { SquareDropdown } from "modules/common-elements/selection";
 import Checkbox from "modules/common/components/checkbox/checkbox";
 import getPrecision from "utils/get-number-precision";
@@ -653,7 +653,7 @@ class TradingForm extends Component {
             </div>
             {orderEscrowdEth && (
               <label className={Styles.smallLabel}>
-                {darkBgExclamationCircle}
+                {ExclamationCircle}
                 {` Max cost of ${orderEscrowdEth} ETH will be escrowed`}
               </label>
             )}
@@ -688,7 +688,7 @@ class TradingForm extends Component {
           <div className={Styles.TradingForm__error_message_container}>
             {errors.map(error => (
               <div key={error} className={Styles.TradingForm__error_message}>
-                {darkBgExclamationCircle} <span>{error}</span>
+                {ExclamationCircle} <span>{error}</span>
               </div>
             ))}
           </div>

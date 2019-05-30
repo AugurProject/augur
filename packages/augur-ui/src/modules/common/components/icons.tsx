@@ -1,18 +1,5 @@
 import React from "react";
 
-export const closeIcon = (
-  <svg
-    width="10"
-    height="10"
-    viewBox="0 0 10 10"
-    fill="none"
-   
-  >
-    <path d="M1 1L9 9" stroke="white" strokeLinecap="round" />
-    <path d="M9 1L1 9" stroke="white" strokeLinecap="round" />
-  </svg>
-);
-
 export const collapseIcon = (
   <svg
     width="20"
@@ -630,20 +617,6 @@ export const Alert = (
         </g>
       </g>
     </g>
-  </svg>
-);
-
-export const darkBgExclamationCircle = (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 16 16"
-    fill="none"
-   
-  >
-    <circle cx="8" cy="8" r="7.5" fill="#1A1627" stroke="#443B59" />
-    <rect x="7.55566" y="3.55554" width="1.15556" height="6.22222" />
-    <path d="M7.57252 10.8973C7.44279 11.0463 7.37793 11.2313 7.37793 11.4523C7.37793 11.6685 7.44279 11.8487 7.57252 11.9928C7.70706 12.137 7.90886 12.209 8.17793 12.209C8.44219 12.209 8.64159 12.137 8.77613 11.9928C8.91066 11.8487 8.97793 11.6685 8.97793 11.4523C8.97793 11.2313 8.91066 11.0463 8.77613 10.8973C8.64159 10.7436 8.44219 10.6667 8.17793 10.6667C7.90886 10.6667 7.70706 10.7436 7.57252 10.8973Z" />
   </svg>
 );
 
