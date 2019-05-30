@@ -26,7 +26,7 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
     orderEventLog = {
 	    "eventType": 3,
 	    "addressData": [nullAddress, bytesToHexString(tester.a2 if withSelf else tester.a1) , bytesToHexString(tester.a2)],
-	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp()],
+	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     with BuyWithCash(cash, fix('2', '40'), tester.k2, "fill order"):
         with AssertLog(contractsFixture, "OrderEvent", orderEventLog):
@@ -56,7 +56,7 @@ def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
     orderEventLog = {
 	    "eventType": 3,
 	    "addressData": [nullAddress, bytesToHexString(tester.a1) , bytesToHexString(tester.a2)],
-	    "uint256Data": [60, fix(1), YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp()],
+	    "uint256Data": [60, fix(1), YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp(), 0, fix(1, 60)],
     }
     with BuyWithCash(cash, fix('1', '40'), tester.k2, "trade"):
         with AssertLog(contractsFixture, "OrderEvent", orderEventLog):
@@ -86,7 +86,7 @@ def test_one_bid_on_books_buy_partial_order_fill_loop_limit(contractsFixture, ca
     orderEventLog = {
 	    "eventType": 3,
 	    "addressData": [nullAddress, bytesToHexString(tester.a1) , bytesToHexString(tester.a2)],
-	    "uint256Data": [60, fix(1), YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp()],
+	    "uint256Data": [60, fix(1), YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp(), 0, fix(1, 60)],
     }
     with BuyWithCash(cash, fix('1', '40'), tester.k2, "trade 2"):
         with AssertLog(contractsFixture, "OrderEvent", orderEventLog):
@@ -121,12 +121,12 @@ def test_one_bid_on_books_buy_excess_order(withTotalCost, contractsFixture, cash
     orderFilledEventLog = {
 	    "eventType": 3,
 	    "addressData": [nullAddress, bytesToHexString(tester.a1) , bytesToHexString(tester.a2)],
-	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(4),  contractsFixture.contracts['Time'].getTimestamp()],
+	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(4),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     orderCreatedEventLog = {
         "eventType": 0,
 	    "addressData": [nullAddress, bytesToHexString(tester.a2) , nullAddress],
-	    "uint256Data": [60, fix(1), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp()],
+	    "uint256Data": [60, fix(1), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp(), 0, fix(1, 40)],
     }
     with AssertLog(contractsFixture, "OrderEvent", orderFilledEventLog):
         with AssertLog(contractsFixture, "OrderEvent", orderCreatedEventLog, skip=1):
@@ -659,12 +659,12 @@ def test_trade_with_self(contractsFixture, cash, market, universe):
     orderFilledEventLog = {
 	    "eventType": 3,
 	    "addressData": [nullAddress, bytesToHexString(tester.a1) , bytesToHexString(tester.a1)],
-	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(4),  contractsFixture.contracts['Time'].getTimestamp()],
+	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(4),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     orderCreatedEventLog = {
 	    "eventType": 0,
 	    "addressData": [nullAddress, bytesToHexString(tester.a1) , nullAddress],
-	    "uint256Data": [60, fix(1), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp()],
+	    "uint256Data": [60, fix(1), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp(), 0, fix(1, 40)],
     }
     with BuyWithCash(cash, fix('5', '40'), tester.k1, "trade"):
         with AssertLog(contractsFixture, "OrderEvent", orderFilledEventLog):

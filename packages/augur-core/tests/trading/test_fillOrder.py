@@ -26,7 +26,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
         "market": market.address,
         "eventType": 3,
         "addressData": [nullAddress, bytesToHexString(tester.a1), bytesToHexString(tester.a2)],
-        "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp()],
+        "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
 
     marketVolumeChangedLog = {
