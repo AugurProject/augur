@@ -183,6 +183,7 @@ export interface Market {
   reportingState: string;
   endTime: DateFormattedObject;
   marketStatus: string;
+  outcomes: string;
   disputeInfo?: DisputeInfo;
   myPositionsSummary?: MyPositionsSummary;
   outstandingReturns?: string;

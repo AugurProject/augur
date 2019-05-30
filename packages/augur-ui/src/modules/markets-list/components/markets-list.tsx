@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 import MarketPreview from "modules/market/containers/market-preview";
@@ -8,33 +7,40 @@ import NullStateMessage from "modules/common/components/null-state-message/null-
 import { TYPE_TRADE } from "modules/common-elements/constants";
 import isEqual from "lodash/isEqual";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
-
 import debounce from "utils/debounce";
+import { Market } from "modules/types";
 
 const PAGINATION_COUNT = 10;
 
-export default class MarketsList extends Component {
-  static propTypes = {
-    testid: PropTypes.string,
-    history: PropTypes.object.isRequired,
-    isLogged: PropTypes.bool.isRequired,
-    markets: PropTypes.array.isRequired,
-    filteredMarkets: PropTypes.array.isRequired,
-    location: PropTypes.object.isRequired,
-    toggleFavorite: PropTypes.func.isRequired,
-    loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
-    paginationPageParam: PropTypes.string,
-    linkType: PropTypes.string,
-    isMobile: PropTypes.bool.isRequired,
-    pendingLiquidityOrders: PropTypes.object,
-    nullMessage: PropTypes.string,
-    addNullPadding: PropTypes.bool,
-    style: PropTypes.object,
-    showDisputingCard: PropTypes.bool,
-    outcomes: PropTypes.object,
-    showOutstandingReturns: PropTypes.bool
-  };
+interface MarketsListProps {
+  testid?: string;
+  history: object;
+  isLogged: boolean;
+  markets: Array<Market>;
+  filteredMarkets: Array<string>;
+  location: object;
+  toggleFavorite: Function;
+  loadMarketsInfoIfNotLoaded: Function;
+  paginationPageParam?: string;
+  linkType?: string;
+  isMobile: boolean;
+  pendingLiquidityOrders?: object;
+  nullMessage?: string;
+  addNullPadding?: boolean;
+  style?: object;
+  showDisputingCard?: boolean;
+  outcomes?: object;
+  showOutstandingReturns?: boolean;
+}
 
+interface MarketsListState {
+  lowerBound: number;
+  boundedLength: number;
+  marketIdsMissingInfo: Array<any>;
+  showPagination: boolean;
+}
+
+export default class MarketsList extends Component<MarketsListProps, MarketsListState> {
   static defaultProps = {
     testid: null,
     linkType: TYPE_TRADE,
@@ -45,7 +51,7 @@ export default class MarketsList extends Component {
     style: null,
     showDisputingCard: false,
     outcomes: null,
-    showOutstandingReturns: false
+    showOutstandingReturns: false,
   };
 
   constructor(props) {
@@ -56,12 +62,13 @@ export default class MarketsList extends Component {
       boundedLength: 10,
       marketIdsMissingInfo: [], // This is ONLY the currently displayed markets that are missing info
       showPagination:
-        props.filteredMarkets && props.filteredMarkets.length > PAGINATION_COUNT
+        props.filteredMarkets && props.filteredMarkets.length > PAGINATION_COUNT,
     };
 
     this.setSegment = this.setSegment.bind(this);
     this.setMarketIDsMissingInfo = this.setMarketIDsMissingInfo.bind(this);
     this.loadMarketsInfoIfNotLoaded = debounce(
+      // @ts-ignore
       this.loadMarketsInfoIfNotLoaded.bind(this)
     );
   }
@@ -84,7 +91,7 @@ export default class MarketsList extends Component {
       this.setMarketIDsMissingInfo(
         nextProps.filteredMarkets,
         nextState.lowerBound,
-        nextState.boundedLength
+        nextState.boundedLength,
       );
     }
 
@@ -104,7 +111,7 @@ export default class MarketsList extends Component {
       const marketIdLength = boundedLength + (lowerBound - 1);
       const marketIdsMissingInfo = filteredMarkets.slice(
         lowerBound - 1,
-        marketIdLength
+        marketIdLength,
       );
       const showPagination = filteredMarkets.length > PAGINATION_COUNT;
       this.setState({ marketIdsMissingInfo, showPagination });
@@ -136,7 +143,7 @@ export default class MarketsList extends Component {
       showDisputingCard,
       outcomes,
       linkType,
-      showOutstandingReturns
+      showOutstandingReturns,
     } = this.props;
     const s = this.state;
 
@@ -147,7 +154,7 @@ export default class MarketsList extends Component {
         {marketsLength && s.boundedLength ? (
           [...Array(s.boundedLength)].map((unused, i) => {
             const id = filteredMarkets[s.lowerBound - 1 + i];
-            const market = markets.find(market => market.id === id);
+            const market = markets.find((market: Market) => market.id === id);
 
             if (market && market.id) {
               if (showDisputingCard) {
