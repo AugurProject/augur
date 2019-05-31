@@ -128,7 +128,7 @@ jobs:
       and
       (
         succeeded(),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true') # currently we only use build for core images, fix if that changes
       )
     pool:
       vmImage: 'Ubuntu 16.04'
