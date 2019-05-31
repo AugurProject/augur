@@ -26,7 +26,6 @@ import {
   XIcon,
   ExclamationCircle
 } from "modules/common-elements/icons";
-import Styles from "modules/trading/components/trading--confirm/trading--confirm.styles";
 import { formatGasCostToEther, formatShares } from "utils/format-number";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { isEqual } from "lodash";

@@ -5,10 +5,11 @@
   padding: @size-12 @size-16 0;
 
     > li {
+      .text-16;
+
       color: @color-secondary-text;
       display: flex;
       flex-flow: column nowrap;
-      font-size: @font-size-normal;
       width: 100%;
 
       &.yesOption {
@@ -153,11 +154,11 @@
 }
 
 .Yes {
+  .text-14-medium;
+
   background-color: @color-theme-primary;
   border: 1px solid @color-primary-alternate;
   border-radius: @border-radius-default;
-  font-size: @size-14;
-  font-weight: 500;
   padding: @size-10 @size-10 @size-10 @size-16;
 
   > span {
@@ -171,7 +172,7 @@
 .TradingForm__input {
   display: flex;
   flex-grow: 1;
-  padding: 0.4375rem @size-16;
+  padding: @size-7 @size-16;
   width: auto;
 }
 
@@ -207,13 +208,14 @@
   }
 
   > span {
+    .text-12;
+
     background: @color-tertiary-background;
     border-left: 1px solid @color-primary-alternate;
     color: @color-tertiary-text;
-    font-size: @font-size-small;
     min-width: 4.28rem;
     overflow: hidden;
-    padding: 0.59375rem @size-12;
+    padding: @size-10 @size-12;
     text-align: center;
     text-overflow: ellipsis;
     text-transform: uppercase;
@@ -365,8 +367,7 @@
       border-radius: 0;
       bottom: 0;
       left: 0;
-      padding-bottom: @size-16;
-      padding-top: @size-16;
+      padding: @size-16 0;
       position: fixed;
       width: 100%;
     }
