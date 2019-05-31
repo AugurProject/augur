@@ -112,7 +112,7 @@ export class DB {
     }
 
     for (let customEvent of customEvents) {
-      new SyncableDB(this, networkId, customEvent.eventName ? customEvent.eventName: customEvent.name, this.getDatabaseName(customEvent.name), customEvent.idFields);
+      new SyncableDB(this, networkId, customEvent.eventName ? customEvent.eventName : customEvent.name, this.getDatabaseName(customEvent.name), customEvent.idFields);
     }
 
     for (let trackedUser of trackedUsers) {
@@ -390,12 +390,12 @@ export class DB {
     return results.docs as unknown as Array<DisputeCrowdsourcerCompletedLog>;
   }
 
-    /**
-   * Queries the DisputeCrowdsourcerContribution DB
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<DisputeCrowdsourcerContributionLog>>}
-   */
+  /**
+ * Queries the DisputeCrowdsourcerContribution DB
+ *
+ * @param {PouchDB.Find.FindRequest<{}>} request Query object
+ * @returns {Promise<Array<DisputeCrowdsourcerContributionLog>>}
+ */
   public async findDisputeCrowdsourcerContributionLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeCrowdsourcerContributionLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerContribution"), request);
     return results.docs as unknown as Array<DisputeCrowdsourcerContributionLog>;

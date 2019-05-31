@@ -1,4 +1,4 @@
-import { createStore, combineReducers, applyMiddleware, compose } from "redux";
+import { createStore, combineReducers, applyMiddleware, compose, Middleware, ReducersMapObject } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 import { helpers } from "helpers/helpers";
@@ -10,6 +10,7 @@ import { windowRef } from "utils/window-ref";
 import { augur } from "services/augurjs";
 import { processFavorites } from "modules/markets/helpers/favorites-processor";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
+import { WindowApp } from "modules/types";
 
 // console log middleware
 const consoleLog = store => next => action => {
@@ -24,7 +25,7 @@ const consoleLog = store => next => action => {
 // local storage middleware
 const localStorageMiddleware = store => next => action => {
   next(action);
-  const state = store.getState();
+  const state = store.getState() as AppState;
   if (!state || !state.loginAccount || !state.loginAccount.address) {
     return;
   }
@@ -40,13 +41,15 @@ const localStorageMiddleware = store => next => action => {
     env,
     connection
   } = state;
-  if (windowRef.localStorage && windowRef.localStorage.setItem) {
-    const { localStorage } = windowRef;
+  const windowApp: WindowApp = windowRef as WindowApp;
+  if (windowApp.localStorage && windowApp.localStorage.setItem) {
+    const { localStorage } = windowApp;
     const { augurNodeNetworkId, isConnected } = connection;
     const networkIdToUse = isConnected ? getNetworkId() : augurNodeNetworkId;
     const universeIdToUse =
       env.universe || augur.contracts.addresses[networkIdToUse].Universe;
-    let storedAccountData = JSON.parse(localStorage.getItem(address));
+    const accountValue = localStorage.getItem(address) || "";
+    let storedAccountData = JSON.parse(accountValue);
     if (!storedAccountData || !storedAccountData.selectedUniverse) {
       storedAccountData = {
         selectedUniverse: { [networkIdToUse]: universeIdToUse }
@@ -82,13 +85,13 @@ const localStorageMiddleware = store => next => action => {
 let middleware;
 
 if (process.env.NODE_ENV === "production") {
-  middleware = applyMiddleware(thunk, localStorageMiddleware);
+  middleware = applyMiddleware(thunk, localStorageMiddleware as Middleware);
 } else {
   const whenever = require("redux-whenever");
   middleware = compose(
     whenever,
     composeWithDevTools({})(
-      applyMiddleware(consoleLog, thunk, localStorageMiddleware)
+      applyMiddleware(consoleLog, thunk, localStorageMiddleware as Middleware)
     )
   );
 }
@@ -99,7 +102,7 @@ const store = createStore(
   combineReducers({...rootReducers }), middleware,
 );
 
-export type AppState = ReturnType<typeof rootReducer>
+export type AppState = ReturnType<typeof rootReducers>
 
 // Keep a copy of the state on the window object for debugging.
 if (process.env.NODE_ENV !== "test") {
@@ -110,11 +113,11 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 if (process.env.NODE_ENV === "development") {
-  window.integrationHelpers = helpers(store);
+  (window as WindowApp).integrationHelpers = helpers(store);
 }
 
-if (module.hot) {
-  module.hot.accept("./reducers", changed => {
+if ((module as any).hot) {
+  (module as any).hot.accept("./reducers", changed => {
     const nextReducers = require("reducers");
     store.replaceReducer(
       combineReducers({

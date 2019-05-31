@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { CheckMark } from "modules/common-elements/icons";
 import Styles from "modules/common/components/checkbox/checkbox.styles";
 
-const Checkbox = ({ id, smallOnDesktop, isChecked, value, onClick, disabled }) => (
+const Checkbox = ({ id, smallOnDesktop = false, isChecked, value, onClick, disabled }) => (
   <div
     className={classNames(Styles.Checkbox, { [Styles.Checkbox__small]: smallOnDesktop })}
   >

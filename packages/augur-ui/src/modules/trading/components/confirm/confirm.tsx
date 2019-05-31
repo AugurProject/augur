@@ -19,11 +19,14 @@ import {
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip.styles";
 import {
-  infoIcon,
-  darkBgExclamationCircle,
-  closeIcon
+  infoIcon
 } from "modules/common/components/icons";
 import Styles from "modules/trading/components/confirm/confirm.styles";
+import {
+  XIcon,
+  ExclamationCircle
+} from "modules/common-elements/icons";
+import Styles from "modules/trading/components/trading--confirm/trading--confirm.styles";
 import { formatGasCostToEther, formatShares } from "utils/format-number";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { isEqual } from "lodash";
@@ -303,10 +306,10 @@ class Confirm extends Component {
                 [Styles.TradingConfirm__message__error]: messages.type === ERROR
               })}
             >
-              {darkBgExclamationCircle}
+              {ExclamationCircle}
               <span>{messages.header}</span>
               {messages.type !== ERROR && (
-                <button onClick={this.clearErrorMessage}>{closeIcon}</button>
+                <button onClick={this.clearErrorMessage}>{XIcon}</button>
               )}
             </div>
             <div>{messages.message}</div>

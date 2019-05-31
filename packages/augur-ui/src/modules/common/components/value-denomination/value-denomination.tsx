@@ -3,6 +3,20 @@ import PropTypes from "prop-types";
 
 import Styles from "modules/common/components/value-denomination/value-denomination.styles";
 
+interface ValueDenominationProps {
+  valueClassname?: string | null;
+  className?: string | null;
+  value?: number | null;
+  formatted?: string | null;
+  fullPrecision?: string | null;
+  denomination?: string | null;
+  hidePrefix?: Boolean;
+  hidePostfix?: Boolean;
+  prefix?: string | null;
+  postfix?: string | null;
+  hideDenomination?: Boolean;
+}
+
 const ValueDenomination = ({
   className,
   prefix,
@@ -19,7 +33,7 @@ const ValueDenomination = ({
   <span className={Styles[className]}>
     {prefix &&
       !hidePrefix && (
-        <span className={Styles.ValueDenomination__prefix}>{prefix}</span>
+        <span className={Styles.prefix}>{prefix}</span>
       )}
     {formatted &&
       fullPrecision && (
@@ -37,13 +51,13 @@ const ValueDenomination = ({
       )}
     {denomination &&
       !hideDenomination && (
-        <span className={Styles.ValueDenomination__denomination}>
+        <span className={Styles.denomination}>
           {denomination}
         </span>
       )}
     {postfix &&
       !hidePostfix && (
-        <span className={Styles.ValueDenomimntion__postfix}>{postfix}</span>
+        <span className={Styles.postfix}>{postfix}</span>
       )}
     {!value &&
       value !== 0 &&

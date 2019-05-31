@@ -3,16 +3,15 @@
 .Confirm {
   color: @color-secondary-text;
   margin-bottom: 3.7rem;
-  padding: 0 2rem;
+  padding: 0 @size-32;
   width: 36rem;
 }
 
 .Confirm__heading {
-  &:extend(.caps--large);
+  .text-16-medium;
 
-  font-size: @font-size-large;
-  font-weight: 500;
-  margin-bottom: 1rem;
+  margin-bottom: @size-16;
+  text-transform: capitalize;
 }
 
 .Confirm__list {
@@ -22,7 +21,7 @@
     justify-content: space-between;
 
     &:not(:last-child) {
-      margin-bottom: 1rem;
+      margin-bottom: @size-16;
     }
 
     > span {
@@ -31,11 +30,11 @@
       white-space: nowrap;
 
       &:first-child {
-        &:extend(.caps--small);
+        .text-16;
 
         color: @color-lightergray;
-        font-size: @font-size-normal;
         line-height: unset;
+        text-transform: capitalize;
       }
     }
   }
@@ -54,7 +53,7 @@
   &:extend(.caps);
 
   font-size: @font-size-large;
-  margin-bottom: 1.875rem;
+  margin-bottom: @size-30;
 }
 
 .Confirm__wrapper {
@@ -72,22 +71,21 @@
   > div {
     border-bottom: 1px solid @color-input-background;
     border-top: 1px solid @color-input-background;
-    padding: 2rem 0;
+    padding: @size-32 0;
     width: 50rem;
   }
 }
 
 .Confirm__note_text {
+  .text-12;
+
   color: fadeout(@color-secondary-text, 25);
-  font-size: @font-size-small;
-  line-height: @font-size-small;
-  padding-top: 2rem;
+  padding-top: @size-32;
 }
 
 @media @breakpoint-mobile-medium {
   .Confirm {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding: 0 @size-16;
     width: 100%;
   }
 
@@ -98,7 +96,7 @@
       width: 100%;
 
       &:first-child {
-        margin-bottom: 2rem;
+        margin-bottom: @size-32;
       }
     }
   }

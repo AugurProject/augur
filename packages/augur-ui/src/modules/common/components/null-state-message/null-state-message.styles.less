@@ -1,10 +1,11 @@
 @import (reference) '~assets/styles/shared';
 
 .NullState {
+  .text-18;
+
   color: @color-lightgray;
-  font-size: @font-size-large;
-  line-height: @font-size-rather-large;
-  padding: 0 2rem;
+  line-height: @size-24;
+  padding: 0 @size-32;
 }
 
 .NullState__padding {
@@ -12,5 +13,5 @@
 }
 
 @media @breakpoint-mobile {
-  padding: 0 1rem;
+  padding: 0 @size-16;
 }

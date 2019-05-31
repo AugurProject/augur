@@ -42,7 +42,7 @@
         margin-bottom: 0;
         padding-bottom: @size-4;
         width: 100%;
-
+        
         &.smallLabel {
           .text-10;
 
@@ -374,8 +374,14 @@
 
   .TradingForm__error_message {
     > svg {
+      fill: none;
       height: @size-16;
       width: @size-16;
+
+      > circle {
+        stroke: @color-primary-light;
+        fill: @color-tertiary-one;
+      }
     }
   }
 }

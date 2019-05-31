@@ -1,33 +1,32 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-
 import { formatGasCostToEther } from "utils/format-number";
-
-import Styles from "modules/modal/components/common/common.styles";
 import ModalReview from "modules/modal/components/modal-review";
+import { FormattedNumber } from "modules/types";
 
-export default class ModalClaimReportingFeesForkedMarket extends Component {
-  static propTypes = {
-    claimReportingFeesForkedMarket: PropTypes.func.isRequired,
-    closeModal: PropTypes.func.isRequired,
-    recipient: PropTypes.string.isRequired,
-    forkedMarket: PropTypes.object.isRequired,
-    unclaimedEth: PropTypes.object.isRequired,
-    unclaimedRep: PropTypes.object.isRequired,
-    modalCallback: PropTypes.func.isRequired,
-    type: PropTypes.string.isRequired,
-    gasPrice: PropTypes.number.isRequired
-  };
+import Styles from "modules/modal/components/common/common.styles.less";
 
+interface ModalClaimReportingFeesForkedMarketProps {
+  claimReportingFeesForkedMarket: Function;
+  closeModal: Function;
+  recipient: string;
+  forkedMarket: object;
+  unclaimedEth: FormattedNumber;
+  unclaimedRep: FormattedNumber;
+  modalCallback: Function;
+  type: string;
+  gasPrice: string;
+}
+
+export default class ModalClaimReportingFeesForkedMarket extends Component<ModalClaimReportingFeesForkedMarketProps, any> {
   constructor(props) {
     super(props);
 
     this.state = {
-      ClaimReportingFeesForkedMarketGasEstimate: "0"
+      ClaimReportingFeesForkedMarketGasEstimate: "0",
     };
 
     this.handleClaimReportingFeesForkedMarket = this.handleClaimReportingFeesForkedMarket.bind(
-      this
+      this,
     );
   }
 
@@ -36,30 +35,30 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
       forkedMarket: this.props.forkedMarket,
       estimateGas: true,
       onSent: () => {},
-      onSuccess: result => {
+      onSuccess: (result) => {
         const ClaimReportingFeesForkedMarketGasEstimate = result.gasEstimates.totals.all.toString();
         this.setState({
           ClaimReportingFeesForkedMarketGasEstimate: formatGasCostToEther(
             ClaimReportingFeesForkedMarketGasEstimate,
             { decimalsRounded: 4 },
-            this.props.gasPrice
-          )
+            this.props.gasPrice,
+          ),
         });
       },
-      onFailed: err => {
+      onFailed: (err) => {
         // Default to 0 for now if we recieve an error.
         const ClaimReportingFeesForkedMarketGasEstimate = "0";
         this.setState({
           ClaimReportingFeesForkedMarketGasEstimate: formatGasCostToEther(
             ClaimReportingFeesForkedMarketGasEstimate,
             { decimalsRounded: 4 },
-            this.props.gasPrice
-          )
+            this.props.gasPrice,
+          ),
         });
-      }
+      },
     };
     this.props.claimReportingFeesForkedMarket(
-      ClaimReportingFeesForkedMarketOptions
+      ClaimReportingFeesForkedMarketOptions,
     );
   }
 
@@ -68,16 +67,16 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
       forkedMarket: this.props.forkedMarket,
       estimateGas: false,
       onSent: () => {},
-      onSuccess: result => {
+      onSuccess: (result) => {
         this.props.modalCallback(result);
         this.props.closeModal();
       },
-      onFailed: err => {
+      onFailed: (err) => {
         this.props.closeModal();
-      }
+      },
     };
     this.props.claimReportingFeesForkedMarket(
-      ClaimReportingFeesForkedMarketOptions
+      ClaimReportingFeesForkedMarketOptions,
     );
   }
 
@@ -87,7 +86,7 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
       unclaimedRep,
       unclaimedEth,
       closeModal,
-      type
+      type,
     } = this.props;
     const s = this.state;
 
@@ -104,40 +103,40 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
         {
           label: "Recipient",
           value: recipient,
-          denomination: ""
+          denomination: "",
         },
         {
           label: "REP",
           value: unclaimedRep.formatted,
-          denomination: "REP"
+          denomination: "REP",
         },
         {
           label: "ETH",
           value: unclaimedEth.formatted,
-          denomination: "ETH"
+          denomination: "ETH",
         },
         {
           label: "GAS",
           value: s.ClaimReportingFeesForkedMarketGasEstimate,
-          denomination: "ETH"
-        }
+          denomination: "ETH",
+        },
       ],
       description: [
-        "Transferring all funds may require multiple signed transactions."
+        "Transferring all funds may require multiple signed transactions.",
       ],
       buttons: [
         {
           label: "cancel",
           action: closeModal,
-          type: "gray"
+          type: "gray",
         },
         {
           label: "submit",
           action: this.handleClaimReportingFeesForkedMarket,
           type: "purple",
-          isDisabled: disableClaimReportingFeesForkedMarketButton
-        }
-      ]
+          isDisabled: disableClaimReportingFeesForkedMarketButton,
+        },
+      ],
     };
 
     return (

@@ -1,24 +1,27 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import { formatEther } from "utils/format-number";
-import Styles from "modules/modal/components/common/common.styles";
+import Styles from "modules/modal/components/common/common.styles.less";
 import ModalReview from "modules/modal/components/modal-review";
 
-export default class ModalMigrateMarket extends Component {
-  static propTypes = {
-    marketId: PropTypes.string.isRequired,
-    marketDescription: PropTypes.string.isRequired,
-    migrateMarketThroughFork: PropTypes.func.isRequired,
-    closeModal: PropTypes.func.isRequired,
-    type: PropTypes.string.isRequired
-  };
+interface ModalMigrateMarketProps {
+  marketId: string;
+  marketDescription: string;
+  migrateMarketThroughFork: Function;
+  closeModal: Function;
+  type: string;
+}
 
+interface ModalMigrateMarketState {
+  gasEstimate: string;
+}
+
+export default class ModalMigrateMarket extends Component<ModalMigrateMarketProps, ModalMigrateMarketState> {
   constructor(props) {
     super(props);
 
     this.state = {
-      gasEstimate: "0.0023"
+      gasEstimate: "0.0023",
     };
 
     this.submitForm = this.submitForm.bind(this);
@@ -48,26 +51,26 @@ export default class ModalMigrateMarket extends Component {
         {
           label: "Market",
           value: marketDescription,
-          denomination: ""
+          denomination: "",
         },
         {
           label: "gas",
-          value: formatEther(gasEstimate).fullPrecision,
-          denomination: "ETH"
-        }
+          value: formatEther(Number(gasEstimate)).fullPrecision,
+          denomination: "ETH",
+        },
       ],
       buttons: [
         {
           label: "back",
           action: closeModal,
-          type: "gray"
+          type: "gray",
         },
         {
           label: "submit",
           action: this.submitForm,
-          type: "purple"
-        }
-      ]
+          type: "purple",
+        },
+      ],
     };
     return (
       <section className={Styles.ModalContainer}>

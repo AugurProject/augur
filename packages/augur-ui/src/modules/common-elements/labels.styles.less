@@ -1,5 +1,13 @@
 @import (reference) "~assets/styles/shared";
 
+.Dashline {
+  .dashline-normal;
+}
+
+.DashlineLong {
+  .dashline-long;
+}
+
 .ValueLabel {
   color: inherit;
   z-index: @default-z-index;
@@ -557,3 +565,37 @@ div.LinearPropertyViewTransaction {
     color: unset;
   }
 }
+
+.WordTrail {
+  display: inline-flex;
+  // Required to make ellipsis work.
+  min-width: 0;
+
+  > button {
+    .overflow-ellipsis;
+
+    &:not(:first-of-type)::before {
+      margin: 0 @size-4;
+    }
+  }
+}
+
+.WordTrailButton {
+  &:extend(.button--transparent--rounded all);
+  .text-10;
+
+  border-width: 1px;
+  color: @color-alternate-text;
+  text-transform: capitalize;
+  white-space: nowrap;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    border-width: 1px;
+    color: @color-secondary-text;
+  }
+}
+
