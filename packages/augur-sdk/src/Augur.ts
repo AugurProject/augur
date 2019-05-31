@@ -133,13 +133,13 @@ export class Augur<TProvider extends Provider = Provider> {
     this.dependencies.deRegisterAllTransactionStatusCallbacks();
   }
 
-  public on(eventName: string, callback: Callback): void {
+  public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
     if (isSubscriptionEventName(eventName)) {
       this.connector.on(eventName, callback);
     }
   }
 
-  public off(eventName: string): void {
+  public off(eventName: SubscriptionEventNames | string): void {
     if (isSubscriptionEventName(eventName)) {
       this.connector.off(eventName);
     }

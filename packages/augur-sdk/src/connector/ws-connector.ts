@@ -20,8 +20,19 @@ export class WebsocketConnector extends Connector {
     } as any);
 
     this.socket.onMessage.addListener((message: string) => {
-      console.log("have a message in the ws connector");
-      console.log(message);
+      try {
+        const response = JSON.parse(message);
+        if (response.result.result) {
+          const events = response.result.result;
+          events.map((data: any) => {
+            if (this.subscriptions[data.eventName]) {
+              this.subscriptions[data.eventName].callback(data);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Bad JSON RPC response: " + message);
+      }
     });
 
     return this.socket.open();
@@ -40,12 +51,12 @@ export class WebsocketConnector extends Connector {
 
   public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
     this.socket.sendRequest({ method: "subscribe", event, jsonrpc: "2.0", params: [eventName] }).then((response: any) => {
-      this.subscriptions[eventName] = { id: response.subscription, callback };
+      this.subscriptions[eventName] = { id: response.result.subscription, callback };
     });
   }
 
   public off(eventName: SubscriptionEventNames | string): void {
-    const subscription = this.subscriptions[eventName];
+    const subscription = this.subscriptions[eventName].id;
     this.socket.sendRequest({ method: "unsubscribe", subscription, jsonrpc: "2.0", params: [subscription] }).then(() => {
       delete this.subscriptions[eventName];
     });

@@ -46,12 +46,13 @@ export function isSubscriptionEventName(eventName: string): string | null {
   Object.values(SubscriptionEventNames).every((value: any, index: number): boolean => {
     if (value === eventName) {
       retVal = index;
+      return false;
     }
     return true;
   });
 
   if (retVal !== -1) {
-    return SubscriptionEventNames[retVal];
+    return eventName;
   }
 
   return null;

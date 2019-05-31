@@ -35,13 +35,19 @@ export class WebWorkerConnector extends Connector {
     this.worker = new RunWorker();
 
     this.worker.onmessage = (event: MessageEvent) => {
-      if (event.data.subscribed) {
-        this.subscriptions[event.data.subscribed].id = event.data.subscription;
-        console.log(this.subscriptions[event.data.subscribed]);
-      } else {
-        event.data.map((data: any) => {
-          this.subscriptions[data.eventName].callback(data);
-        });
+      try {
+        if (event.data.subscribed) {
+          this.subscriptions[event.data.subscribed].id = event.data.subscription;
+          console.log(this.subscriptions[event.data.subscribed]);
+        } else {
+          event.data.map((data: any) => {
+            if (this.subscriptions[data.eventName]) {
+              this.subscriptions[data.eventName].callback(data);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Bad Web Worker response: " + event);
       }
     };
   }
