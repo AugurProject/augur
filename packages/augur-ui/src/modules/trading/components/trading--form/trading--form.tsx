@@ -15,7 +15,7 @@ import FormStyles from "modules/common/less/form";
 import Styles from "modules/trading/components/trading--form/trading--form.styles";
 import { ExclamationCircle } from "modules/common-elements/icons";
 import { SquareDropdown } from "modules/common-elements/selection";
-import Checkbox from "modules/common/components/checkbox/checkbox";
+import { Checkbox } from "modules/common-elements/form";
 import getPrecision from "utils/get-number-precision";
 import convertExponentialToDecimal from "utils/convert-exponential";
 

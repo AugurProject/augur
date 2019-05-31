@@ -7,45 +7,45 @@
   margin-bottom: @size-8;
   position: relative;
   user-select: none;
-}
 
-.Checkbox__checkmark {
-  background-color: @color-theme-primary;
-  border: 1px solid @color-highlight;
-  border-radius: @border-radius-default;
-  height: @size-24;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: @size-24;
+  > input {
+    visibility: hidden;
+  }
 
-  > svg {
-    display: none;
-    height: @size-9;
-    left: @size-6;
+  > span {
+    background-color: @color-theme-primary;
+    border: 1px solid @color-highlight;
+    border-radius: @border-radius-default;
+    height: @size-24;
+    left: 0;
     position: absolute;
-    top: @size-6;
-    width: @size-11;
+    top: 0;
+    width: @size-24;
 
-    > path {
-      stroke: @color-secondary-text;
+    &:focus {
+      outline: none;
+    }
+
+    > svg {
+      display: none;
+      height: @size-9;
+      left: @size-6;
+      position: absolute;
+      top: @size-6;
+      width: @size-11;
+
+      > path {
+        stroke: @color-secondary-text;
+      }
     }
   }
 }
 
-.Checkbox__checkmark:focus {
-  outline: none;
-}
-
-.Checkbox input {
-  visibility: hidden;
-}
-
-.Checkbox:hover input ~ .Checkbox__checkmark {
+.Checkbox:hover input ~ span {
   filter: brightness(95%);
 }
 
-.Checkbox input:checked ~ .Checkbox__checkmark {
+.Checkbox input:checked ~ span {
   background: fade(@color-highlight, 30%);
   border: 1px solid @color-highlight;
 
@@ -54,7 +54,7 @@
   }
 }
 
-.Checkbox__small {
+.CheckboxSmall {
   margin-bottom: 0;
 
   @media @breakpoint-mobile {
@@ -62,7 +62,7 @@
   }
 }
 
-.Checkbox__checkmark__small {
+.CheckmarkSmall {
   height: @size-16;
   width: @size-16;
 
@@ -72,7 +72,7 @@
   }
 }
 
-.Checkbox__small .Checkbox__checkmark__small {
+.CheckboxSmall .CheckmarkSmall {
   > svg {
     height: @size-6;
     left: 3px;
