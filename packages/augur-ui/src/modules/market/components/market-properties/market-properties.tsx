@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import MarketLink from "modules/market/components/market-link/market-link";
-import ValueDenomination from "modules/common/components/value-denomination/value-denomination";
 
 import {
   TYPE_FINALIZE_MARKET,
@@ -14,7 +13,7 @@ import {
   SCALAR,
   MODAL_MIGRATE_MARKET
 } from "modules/common-elements/constants";
-
+import { ValueDenomination } from "modules/common-elements/labels";
 import getValue from "utils/get-value";
 import { dateHasPassed } from "utils/format-date";
 import Styles from "modules/market/components/market-properties/market-properties.styles";
