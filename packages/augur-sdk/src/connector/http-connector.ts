@@ -1,4 +1,5 @@
 import { Connector, Callback } from "./connector";
+import { SubscriptionEventNames } from "../constants";
 import fetch from "cross-fetch";
 
 export class HTTPConnector extends Connector {
@@ -18,18 +19,13 @@ export class HTTPConnector extends Connector {
   public bindTo<R, P>(f: (db: any, augur: any, params: P) => R) {
     return async (params: P): Promise<R> => {
       return <R>(await (await fetch(this.endpoint, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({ id: 42, method: f.name, params, jsonrpc: "2.0" }),
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
       })).json());
-    }
+    };
   }
 
-  public async subscribe(event: string, callback: Callback): Promise<any> {
-
-  }
-
-  public async unsubscribe(event: string): Promise<any> {
-
-  }
+  public on(eventName: SubscriptionEventNames | string, callback: Callback): void { }
+  public off(eventName: SubscriptionEventNames | string): void { }
 }
