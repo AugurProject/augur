@@ -6,7 +6,7 @@ import WebSocket from "ws";
 
 import { API } from "./api/API";
 import { AddressFormatReviver } from "./AddressFormatReviver";
-import { ControlMessageType } from "../constants";
+import { ControlMessageType, SubscriptionEventNames } from "../constants";
 import { EventEmitter } from "events";
 import { IsJsonRpcRequest } from "./IsJsonRpcRequest";
 import { JsonRpcRequest, EndpointSettings } from "./api/types";
@@ -26,9 +26,7 @@ function isSafe(websocket: WebSocket) {
 
 function safeSend(websocket: WebSocket, payload: string) {
   if (isSafe(websocket))
-    websocket.send(payload, (_) => {
-      websocket.terminate();
-    });
+    websocket.send(payload);
 }
 
 function safePing(websocket: WebSocket) {

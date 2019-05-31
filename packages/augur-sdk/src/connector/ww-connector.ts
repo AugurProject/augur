@@ -6,14 +6,12 @@ import { BlockAndLogStreamerListener } from "../state/db/BlockAndLogStreamerList
 import { Connector, Callback } from "./connector";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { Controller } from "../state/Controller";
-import { DB } from "../state//db/DB";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { EventLogDBRouter } from "../state//db/EventLogDBRouter";
 import { JsonRpcProvider } from "ethers/providers";
 import { PouchDBFactory } from "../state//db/AbstractDB";
 import { SubscriptionEventNames } from "../constants";
 import { UploadBlockNumbers, Addresses } from "@augurproject/artifacts";
-import { augurEmitter } from "../events";
 
 const settings = require("@augurproject/sdk/src/state/settings.json");
 
