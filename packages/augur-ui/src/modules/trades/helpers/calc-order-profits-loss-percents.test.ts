@@ -1,10 +1,13 @@
+// @ts-ignore
 import { createBigNumber } from "utils/create-big-number";
 
 import {
   calcOrderProfitLossPercents as calcProfits,
-  calcOrderShareProfitLoss
+  calcOrderShareProfitLoss,
+  // @ts-ignore
 } from "modules/trades/helpers/calc-order-profit-loss-percents";
 
+// @ts-ignore
 import { YES_NO, SCALAR, BUY, SELL } from "modules/common-elements/constants";
 
 describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
@@ -23,7 +26,7 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
       SELL,
       "190-242nota valid number",
       "10",
-      SCALAR
+      SCALAR,
     );
 
     const expected = null;
@@ -39,7 +42,7 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
       "-1",
       "10abc this is not a valid number",
       SCALAR,
-      "0"
+      "0",
     );
 
     const expected = null;
@@ -55,7 +58,7 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
       potentialEthLoss: createBigNumber("4"),
       potentialProfitPercent: createBigNumber("150"),
       potentialLossPercent: createBigNumber("100"),
-      tradingFees: createBigNumber("0.2")
+      tradingFees: createBigNumber("0.2"),
     };
 
     expect(actual).toEqual(expected);
@@ -69,7 +72,7 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
       potentialEthLoss: createBigNumber("6"),
       potentialProfitPercent: createBigNumber("66.666666666666666667"),
       potentialLossPercent: createBigNumber("100"),
-      tradingFees: createBigNumber("0.4")
+      tradingFees: createBigNumber("0.4"),
     };
 
     expect(actual).toEqual(expected);
@@ -83,7 +86,7 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
       potentialEthLoss: createBigNumber("60"),
       potentialProfitPercent: createBigNumber("150"),
       potentialLossPercent: createBigNumber("100"),
-      tradingFees: createBigNumber("37.5")
+      tradingFees: createBigNumber("37.5"),
     };
 
     expect(actual).toEqual(expected);
@@ -97,7 +100,7 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
       potentialEthLoss: createBigNumber("90"),
       potentialProfitPercent: createBigNumber("66.666666666666666667"),
       potentialLossPercent: createBigNumber("100"),
-      tradingFees: createBigNumber("30")
+      tradingFees: createBigNumber("30"),
     };
 
     expect(actual).toEqual(expected);
@@ -112,12 +115,12 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
       YES_NO,
       "10",
       "0.25",
-      "0.2"
+      "0.2",
     );
 
     const expected = {
       potentialEthProfit: createBigNumber("3"),
-      tradingFees: createBigNumber("2")
+      tradingFees: createBigNumber("2"),
     };
 
     expect(actual).toEqual(expected);
