@@ -1,0 +1,50 @@
+@import (reference) '~assets/styles/shared';
+
+.MainErrorBoundary {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+
+  > div {
+    background: @color-tertiary-background;
+    border: 1px solid @color-primary-light;
+    border-radius: @border-radius-default;
+    color: @color-secondary-text;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    max-width: 35rem;
+    padding: @size-24 0;
+    text-align: center;
+    width: 100%;
+    
+    > h1 {
+      .text-24-bold;
+
+      margin: @size-8 0 @size-24;
+      padding: 0;
+    }
+
+    > p {
+      margin: 0 0 @size-24;
+      padding: 0 @size-24;
+    }
+
+    > div {
+      align-items: center;
+      border-top: 1px solid @color-primary-background;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      padding: @size-24 0 0;
+
+      > a,
+      > button {
+        margin: auto;
+      }
+    }
+  }
+}

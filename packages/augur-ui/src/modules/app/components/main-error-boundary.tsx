@@ -5,7 +5,7 @@ import makePath from "modules/routes/helpers/make-path";
 import { DEFAULT_VIEW } from "modules/routes/constants/views";
 import { SecondaryButton } from "modules/common-elements/buttons";
 
-import Styles from "modules/common/components/main-error-boundary/main-error-boundary.styles";
+import Styles from "modules/app/components/main-error-boundary.styles";
 import ButtonStyles from "modules/common-elements/buttons.styles";
 
 interface MEBProps {
@@ -41,13 +41,13 @@ export default class MainErrorBoundary extends Component<MEBProps, MEBState> {
     if (hasError) {
       return (
         <section className={Styles.MainErrorBoundary}>
-          <div className={Styles.MainErrorBoundary__container}>
-            <h1 className={Styles.MainErrorBoundary__header}>Error</h1>
-            <p className={Styles.MainErrorBoundary__description}>
+          <div>
+            <h1>Error</h1>
+            <p>
               Sorry, something went wrong! Try reloading this page or returning
               home.
             </p>
-            <div className={Styles.MainErrorBoundary__buttons}>
+            <div>
               <SecondaryButton
                 text="Refresh Page"
                 action={() => window.location.reload()}
@@ -55,7 +55,7 @@ export default class MainErrorBoundary extends Component<MEBProps, MEBState> {
               <Link
                 className={ButtonStyles.PrimaryButton}
                 to={{
-                  pathname: makePath(DEFAULT_VIEW)
+                  pathname: makePath(DEFAULT_VIEW, false)
                 }}
                 onClick={e => {
                   // change location to DEFAULT_VIEW and update state.
