@@ -5,7 +5,7 @@ import { helpers } from "helpers/helpers";
 
 import thunk from "redux-thunk";
 
-import { createReducer } from "reducers";
+import { createReducer, AppStateInterface } from "reducers";
 import { windowRef } from "utils/window-ref";
 import { augur } from "services/augurjs";
 import { processFavorites } from "modules/markets/helpers/favorites-processor";
@@ -44,8 +44,9 @@ const localStorageMiddleware = store => next => action => {
   const windowApp: WindowApp = windowRef as WindowApp;
   if (windowApp.localStorage && windowApp.localStorage.setItem) {
     const { localStorage } = windowApp;
-    const { augurNodeNetworkId, isConnected } = connection;
-    const networkIdToUse = isConnected ? getNetworkId() : augurNodeNetworkId;
+    // TODO: defaulting augur node, all augur-node references will be removed
+    const { augurNodeNetworkId = 0, isConnected } = connection;
+    const networkIdToUse: number = isConnected ? getNetworkId() : augurNodeNetworkId;
     const universeIdToUse =
       env.universe || augur.contracts.addresses[networkIdToUse].Universe;
     const accountValue = localStorage.getItem(address) || "";
@@ -102,7 +103,7 @@ const store = createStore(
   combineReducers({...rootReducers }), middleware,
 );
 
-export type AppState = ReturnType<typeof rootReducers>
+export type AppState = AppStateInterface;
 
 // Keep a copy of the state on the window object for debugging.
 if (process.env.NODE_ENV !== "test") {
