@@ -25,7 +25,7 @@ jobs:
           set -euo pipefail
           echo "Build Source Branch: $(Build.SourceBranchName)"
           if [[ "$(Build.SourceBranchName)" == "master" ]]; then
-            GIT_COMMAND='git show --name-only --oneline $(Build.SourceVersion)'
+            GIT_COMMAND='git log -m -1 --name-only --pretty="format:" $(Build.SourceVersion)'
           else
             GIT_COMMAND='git diff --name-only origin/master..HEAD'
           fi
@@ -55,6 +55,12 @@ jobs:
   - job: TestAndLint
     dependsOn:
     - PreFlightCheck
+    condition: |
+      and
+      (
+        succeeded(),
+        ne(variables['Build.SourceBranch'], 'refs/heads/master')
+      )
     variables:
       JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
       JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
@@ -122,11 +128,7 @@ jobs:
       and
       (
         succeeded(),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        )
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'), # currently we only use build for core images, fix if that changes
       )
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -185,11 +187,7 @@ jobs:
       and
       (
         succeeded(),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        )
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
       )
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -242,11 +240,8 @@ jobs:
       and
       (
         succeeded(),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        )
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
+        ne(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -319,11 +314,7 @@ jobs:
       and
       (
         succeeded(),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        )
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
       )
     pool:
       vmImage: 'Ubuntu 16.04'
