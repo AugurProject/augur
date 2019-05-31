@@ -26,9 +26,7 @@ function isSafe(websocket: WebSocket) {
 
 function safeSend(websocket: WebSocket, payload: string) {
   if (isSafe(websocket))
-    websocket.send(payload, (_) => {
-      websocket.terminate();
-    });
+    websocket.send(payload);
 }
 
 function safePing(websocket: WebSocket) {
