@@ -119,17 +119,28 @@
       float: right;
 
       > svg {
-        min-height: unset;
-        min-width: unset;
+        height: @size-10;
+        width: @size-10;
+        fill: none;
+
+        > path {
+          stroke: @color-secondary-text;
+        }
       }
     }
   }
 
   > svg {
-    min-height: 1.75em;
-    min-width: 1.75em;
+    fill: none;
+    min-height: @size-28;
+    min-width: @size-28;
     vertical-align: middle;
-    width: 1.75em;
+    width: @size-28;
+
+    > circle {
+      stroke: @color-primary-light;
+      fill: @color-tertiary-one;
+    }
   }
 
   div:last-child {

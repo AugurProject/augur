@@ -1,4 +1,4 @@
-import WordTrail from "modules/common/components/word-trail/word-trail";
+import { WordTrail } from "modules/common-elements/labels";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";

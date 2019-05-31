@@ -9,7 +9,26 @@ import makeQuery from "modules/routes/helpers/make-query";
 
 import Styles from "modules/common/components/paginator/paginator.styles";
 
-class Paginator extends Component {
+interface PaginatorProps {
+  itemsLength: number;
+  itemsPerPage: number;
+  location: any;
+  history: any;
+  setSegment: Function;
+  pageParam?: string;
+};
+
+interface PaginatorState {
+  currentPage: null | number;
+  lastPage: null | number;
+  lowerBound: null | number;
+  upperBound: null | number;
+  backQuery: null| any;
+  forwardQuery: null| any;
+  totalItems: null | number;
+};
+
+class Paginator extends Component<PaginatorProps, PaginatorState> {
   static propTypes = {
     itemsLength: PropTypes.number.isRequired,
     itemsPerPage: PropTypes.number.isRequired,
@@ -23,21 +42,15 @@ class Paginator extends Component {
     pageParam: PAGINATION_PARAM_NAME
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentPage: null,
-      lastPage: null,
-      lowerBound: null,
-      upperBound: null,
-      backQuery: null,
-      forwardQuery: null,
-      totalItems: null
-    };
-
-    this.setCurrentSegment = this.setCurrentSegment.bind(this);
-  }
+  state: PaginatorState = {
+    currentPage: null,
+    lastPage: null,
+    lowerBound: null,
+    upperBound: null,
+    backQuery: null,
+    forwardQuery: null,
+    totalItems: null
+  };
 
   componentWillMount() {
     const {
@@ -48,10 +61,11 @@ class Paginator extends Component {
       pageParam,
       setSegment
     } = this.props;
+    const { currentPage, lowerBound, upperBound } = this.state;
     this.setCurrentSegment({
-      lastPage: this.state.currentPage,
-      lastLowerBound: this.state.lowerBound,
-      lastUpperBound: this.state.upperBound,
+      lastPage: currentPage,
+      lastLowerBound: lowerBound,
+      lastUpperBound: upperBound,
       itemsLength,
       itemsPerPage,
       location,
@@ -63,15 +77,16 @@ class Paginator extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { itemsLength, itemsPerPage, location, pageParam } = this.props;
+    const { currentPage, lowerBound, upperBound } = this.state;
     if (
       itemsLength !== nextProps.itemsLength ||
       itemsPerPage !== nextProps.itemsPerPage ||
       location !== nextProps.location
     ) {
       this.setCurrentSegment({
-        lastPage: this.state.currentPage,
-        lastLowerBound: this.state.lowerBound,
-        lastUpperBound: this.state.upperBound,
+        lastPage: currentPage,
+        lastLowerBound: lowerBound,
+        lastUpperBound: upperBound,
         itemsLength: nextProps.itemsLength,
         itemsPerPage: nextProps.itemsPerPage,
         location: nextProps.location,
@@ -222,18 +237,26 @@ class Paginator extends Component {
 
   render() {
     const { location } = this.props;
-    const s = this.state;
+    const {
+      backQuery,
+      currentPage,
+      lowerBound,
+      upperBound,
+      totalItems,
+      lastPage,
+      forwardQuery
+    } = this.state;
 
     return (
       <article className={Styles.Paginator}>
-        <div className={Styles.Paginator__controls}>
-          <div className={Styles.Paginator__back}>
-            {s.currentPage !== 1 && (
+        <div className={Styles.controls}>
+          <div className={Styles.back}>
+            {currentPage !== 1 && (
               <Link
-                className={Styles.Paginator__button}
+                className={Styles.button}
                 to={{
                   ...location,
-                  search: s.backQuery
+                  search: backQuery
                 }}
               >
                 <button aria-label="Previous page">{PaginationArrorw}</button>
@@ -241,25 +264,25 @@ class Paginator extends Component {
             )}
           </div>
 
-          <div className={Styles.Paginator__location}>
+          <div className={Styles.location}>
             <span>
-              {s.lowerBound}
-              {!!s.upperBound && s.upperBound > 1 && ` - ${s.upperBound}`}{" "}
-              <strong>of</strong> {s.totalItems}
+              {lowerBound}
+              {!!upperBound && upperBound > 1 && ` - ${upperBound}`}{" "}
+              <strong>of</strong> {totalItems}
             </span>
           </div>
 
-          <div className={Styles.Paginator__forward}>
-            {s.currentPage !== s.lastPage && (
+          <div className={Styles.forward}>
+            {currentPage !== lastPage && (
               <Link
-                className={Styles.Paginator__button}
+                className={Styles.button}
                 to={{
                   ...location,
-                  search: s.forwardQuery
+                  search: forwardQuery
                 }}
               >
                 <button
-                  className={Styles.Paginator__forwardArrorw}
+                  className={Styles.forwardArrorw}
                   aria-label="Next page"
                 >
                   {PaginationArrorw}

@@ -10,20 +10,22 @@ import { SingleDatePicker } from "react-dates";
 
 export interface NameValuePair {
   label: string;
-  value: string;
+  value: string | number;
 }
 
 export interface DropdownProps {
-  onChange(value: string): void;
+  id?: string;
+  onChange: any;
   className?: string;
-  defaultValue?: string;
+  defaultValue?: string | number;
   options: Array<NameValuePair>;
   large?: boolean;
   staticLabel?: string;
   stretchOutOnMobile?: boolean;
-  sortByStyles?: Object;
+  sortByStyles?: object;
   openTop?: boolean;
   highlight?: boolean;
+  stretchOut?: boolean;
 }
 
 interface DropdownState {

@@ -39,6 +39,7 @@ export default class MarketsView extends Component<MarketsViewProps, MarketsView
     category: null,
     universe: null,
   };
+  loadMarketsByFilter: any;
 
   private componentWrapper!: HTMLElement | null;
 
@@ -56,6 +57,7 @@ export default class MarketsView extends Component<MarketsViewProps, MarketsView
 
     this.updateFilter = this.updateFilter.bind(this);
     this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this);
+    this.loadMarketsByFilter = props.loadMarketsByFilter.bind(this);
   }
 
   componentDidMount() {
@@ -84,10 +86,10 @@ export default class MarketsView extends Component<MarketsViewProps, MarketsView
   }
 
   updateFilteredMarkets() {
-    const { search, category, loadMarketsByFilter } = this.props;
+    const { search, category } = this.props;
     const { filter, sort, maxFee, hasOrders } = this.state;
     this.setState({ isSearchingMarkets: true });
-    loadMarketsByFilter(
+    this.loadMarketsByFilter(
       { category, search, filter, sort, maxFee, hasOrders },
       (err, filterSortedMarkets) => {
         if (err) return console.log("Error loadMarketsFilter:", err);

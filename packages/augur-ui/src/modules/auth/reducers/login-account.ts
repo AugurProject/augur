@@ -13,8 +13,8 @@ const DEFAULT_STATE: LoginAccount = {
 
 export default function(
   loginAccount: LoginAccount = DEFAULT_STATE,
-  { type, data }: BaseAction
-) {
+  { type, data }: BaseAction,
+): LoginAccount {
   switch (type) {
     case UPDATE_LOGIN_ACCOUNT:
       return {

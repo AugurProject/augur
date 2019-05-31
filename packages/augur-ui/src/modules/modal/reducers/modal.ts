@@ -5,7 +5,7 @@ import { BaseAction } from "modules/types";
 
 const DEFAULT_STATE = {};
 
-export default function(modal = DEFAULT_STATE, { type, data }: BaseAction) {
+export default function(modal = DEFAULT_STATE, { type, data }: BaseAction): any {
   switch (type) {
     case UPDATE_MODAL:
       return data.modalOptions;

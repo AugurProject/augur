@@ -14,7 +14,7 @@ const DEFAULT_STATE: TransacitonData = {};
 export default function(
   transactionsData: TransacitonData = DEFAULT_STATE,
   { type, data }: BaseAction
-) {
+): TransacitonData {
   switch (type) {
     case UPDATE_TRANSACTIONS_DATA:
       return Object.keys(data.updatedTransactionsData).reduce(

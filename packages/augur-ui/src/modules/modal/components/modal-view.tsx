@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import ModalSignTransaction from "modules/modal/containers/modal-sign-transaction";
@@ -33,7 +32,7 @@ import ModalOpenOrders from "modules/modal/containers/modal-open-orders";
 
 import * as TYPES from "modules/common-elements/constants";
 
-import Styles from "modules/modal/components/common/common.styles";
+import Styles from "modules/modal/components/common/common.styles.less";
 
 const ESCAPE_KEYCODE = 27;
 
@@ -101,12 +100,15 @@ function selectModal(type, props, closeModal, modal) {
   }
 }
 
-export default class ModalView extends Component {
-  static propTypes = {
-    modal: PropTypes.object.isRequired,
-    closeModal: PropTypes.func.isRequired
+interface ModalViewProps {
+  modal: {
+    cb: Function;
+    type: string;
   };
+  closeModal: Function;
+}
 
+export default class ModalView extends Component<ModalViewProps> {
   constructor(props) {
     super(props);
 
@@ -149,7 +151,7 @@ export default class ModalView extends Component {
             [`${Styles["ModalView__content--taller"]}`]:
               modal.type === TYPES.MODAL_DISCLAIMER,
             [`${Styles["ModalView__content--full"]}`]:
-              modal.type === TYPES.MODAL_TRADING_OVERLAY
+              modal.type === TYPES.MODAL_TRADING_OVERLAY,
           })}
         >
           {Modal}

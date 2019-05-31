@@ -1,10 +1,17 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import Styles from "modules/modal/components/common/common.styles";
+import Styles from "modules/modal/components/common/common.styles.less";
 
-const ModalButton = ({ type, label, action, isDisabled, continueDefault }) => {
+interface ModalButtonProps {
+  label: string;
+  action: Function;
+  type?: string;
+  continueDefault?: boolean;
+  isDisabled?: boolean;
+}
+
+const ModalButton = ({ type = "purple", label, action, isDisabled = false, continueDefault = false }: ModalButtonProps) => {
   let styleType = `${Styles["ActionButtons__button-purple"]}`;
   switch (type) {
     case "gray":
@@ -20,10 +27,10 @@ const ModalButton = ({ type, label, action, isDisabled, continueDefault }) => {
   return (
     <button
       className={classNames(Styles.ActionButtons__button, {
-        [`${styleType}`]: true
+        [`${styleType}`]: true,
       })}
       disabled={!!isDisabled}
-      onClick={e => {
+      onClick={(e) => {
         if (!continueDefault) e.preventDefault();
         action(e);
       }}
@@ -31,20 +38,6 @@ const ModalButton = ({ type, label, action, isDisabled, continueDefault }) => {
       {label}
     </button>
   );
-};
-
-ModalButton.propTypes = {
-  label: PropTypes.string.isRequired,
-  action: PropTypes.func.isRequired,
-  type: PropTypes.string,
-  continueDefault: PropTypes.bool,
-  isDisabled: PropTypes.bool
-};
-
-ModalButton.defaultProps = {
-  type: "purple",
-  continueDefault: false,
-  isDisabled: false
 };
 
 export default ModalButton;

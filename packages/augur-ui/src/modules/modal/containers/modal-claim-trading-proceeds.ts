@@ -3,26 +3,30 @@ import { withRouter } from "react-router-dom";
 import ModalReview from "modules/modal/components/modal-review";
 import { selectMarket } from "modules/markets/selectors/market";
 import claimTradingProceeds, {
-  CLAIM_SHARES_GAS_COST
+  CLAIM_SHARES_GAS_COST,
 } from "modules/positions/actions/claim-trading-proceeds";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { formatGasCostToEther } from "utils/format-number";
 import { MODAL_REVIEW } from "modules/common-elements/constants";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   gasCost: formatGasCostToEther(
+    // @ts-ignore
     CLAIM_SHARES_GAS_COST,
     { decimalsRounded: 4 },
-    getGasPrice(state)
-  )
+    getGasPrice(state),
+  ),
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   claimTradingProceeds: (marketId, callback) =>
-    dispatch(claimTradingProceeds(marketId, callback))
+    dispatch(claimTradingProceeds(marketId, callback)),
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -40,35 +44,35 @@ const mergeProps = (sP, dP, oP) => {
           if (cb) cb("modal closed");
           closeModal();
         },
-        type: "gray"
+        type: "gray",
       },
       {
         label: "confirm",
         action: () => {
           closeModal();
           claimTradingProceeds(marketId, cb);
-        }
-      }
+        },
+      },
     ],
     items: [
       {
         label: "Market",
         value: description,
-        denomination: ""
+        denomination: "",
       },
       {
         label: "Returns",
         value: outstandingReturns,
-        denomination: "ETH"
+        denomination: "ETH",
       },
       {
         label: "Gas Cost",
         value: gasCost,
-        denomination: "ETH"
-      }
+        denomination: "ETH",
+      },
     ],
     title: "Claim Outstanding Returns",
-    type: MODAL_REVIEW
+    type: MODAL_REVIEW,
   };
 };
 
@@ -76,6 +80,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(ModalReview)
+    mergeProps,
+  )(ModalReview),
 );

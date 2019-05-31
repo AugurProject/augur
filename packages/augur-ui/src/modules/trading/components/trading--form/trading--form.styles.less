@@ -50,6 +50,7 @@
         text-transform: none;
 
         > svg {
+          fill: none;
           height: @size-12;
           width: @size-12;
 
@@ -372,8 +373,14 @@
 
   .TradingForm__error_message {
     > svg {
+      fill: none;
       height: @size-16;
       width: @size-16;
+
+      > circle {
+        stroke: @color-primary-light;
+        fill: @color-tertiary-one;
+      }
     }
   }
 }

@@ -5,20 +5,20 @@ import isMetaMask from "modules/auth/helpers/is-meta-mask";
 import { AppState } from "store";
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal
+  modal: state.modal,
 });
 
 const mapDispatchToProps = () => ({});
 
-const mergeProps = (sP: any) => {
+const mergeProps = (sP: AppState) => {
   const { expectedNetwork } = sP.modal;
-  const description = [];
+  const description: Array<string> | undefined = [];
   if (isMetaMask()) {
     description.push(`MetaMask is connected to the wrong Ethereum network.`);
     description.push(`Please set the MetaMask network to: ${expectedNetwork}.`);
   } else {
     description.push(
-      `Your Ethereum node and Augur node are connected to different networks.`
+      `Your Ethereum node and Augur node are connected to different networks.`,
     );
     description.push(`Please connect to a ${expectedNetwork} Ethereum node.`);
   }
@@ -26,7 +26,7 @@ const mergeProps = (sP: any) => {
   return {
     title: "Network Mismatch",
     description,
-    buttons: []
+    buttons: [],
   };
 };
 
@@ -34,6 +34,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(Message)
+    mergeProps,
+  )(Message),
 );

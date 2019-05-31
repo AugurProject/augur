@@ -10,14 +10,14 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 const DEFAULT_STATE: Connection = {
   isConnected: false,
   isConnectedToAugurNode: false,
-  augurNodeNetworkId: null,
+  augurNodeNetworkId: undefined,
   isReconnectionPaused: false
 };
 
 export default function(
   connection: Connection = DEFAULT_STATE,
   { type, data }: BaseAction,
-) {
+): Connection {
   switch (type) {
     case UPDATE_CONNECTION_STATUS: {
       const { isConnected } = data;

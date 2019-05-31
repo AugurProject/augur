@@ -28,7 +28,7 @@ const KEYS = Object.keys(DEFAULT_STATE);
 export default function(
   filterSortOptions: FilterSortOptions = DEFAULT_STATE,
   { type, data }: BaseAction
-) {
+): FilterSortOptions {
   switch (type) {
     case UPDATE_FILTER_SORT_OPTIONS: {
       const { optionKey, optionValue } = data;
