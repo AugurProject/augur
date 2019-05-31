@@ -7,7 +7,7 @@ import {
   ChevronUp,
   BackArrow
 } from "modules/common/components/icons";
-import MarkdownRenderer from "modules/common/components/markdown-renderer/markdown-renderer";
+import MarkdownRenderer from "modules/common-elements/markdown-renderer";
 import MarketHeaderBar from "modules/market/containers/market-header-bar";
 import { BigNumber } from "bignumber.js";
 import Styles from "modules/market/components/market-header/market-header.styles";

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 import MarketPreview from "modules/market/containers/market-preview";
 import Paginator from "modules/common/components/paginator/paginator";
-import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
+import NullStateMessage from "modules/common-elements/null-state-message";
 import { TYPE_TRADE } from "modules/common-elements/constants";
 import isEqual from "lodash/isEqual";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";

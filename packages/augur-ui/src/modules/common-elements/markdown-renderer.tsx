@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import ReactHtmlParser from "react-html-parser";
-import Styles from "modules/common/components/markdown-renderer/markdown-renderer.styles";
+import Styles from "modules/common-elements/markdown-renderer.styles";
 
 const Remarkable = require("remarkable");
 
