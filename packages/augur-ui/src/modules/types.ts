@@ -72,6 +72,7 @@ export interface MarketData {
   outcomes: Array<Outcomes>;
   scalarDenomination: string;
   universe: string;
+  tickSize: BigNumber;
   // TODO: this should come from SDK types
 }
 export interface OutcomesData {
@@ -91,9 +92,10 @@ export interface Universe {
   forkReputationGoal?: string;
   forkingMarket?: string;
   isForking?: boolean;
+  isForkingMarketFinalized?: boolean;
   winningChildUniverse?: string;
-  openInterest?: string;
-  forkThreshold?: string;
+  openInterest?: BigNumber;
+  forkThreshold?: BigNumber;
 }
 export interface AccountShareBalances {
   [marketId: string]: Array<string>;
