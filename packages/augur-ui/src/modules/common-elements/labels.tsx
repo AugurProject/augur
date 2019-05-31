@@ -10,7 +10,6 @@ import { MarketProgress } from "modules/common-elements/progress";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip.styles";
 import { createBigNumber } from "utils/create-big-number";
-// import { DashlineNormal } from "modules/common/components/dashline/dashline";
 import {
   SELL,
   BOUGHT,
