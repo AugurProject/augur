@@ -8,7 +8,7 @@ import { TYPE_TRADE } from "modules/common-elements/constants";
 import isEqual from "lodash/isEqual";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
 import debounce from "utils/debounce";
-import { Market } from "modules/types";
+import { MarketData } from "modules/types";
 
 const PAGINATION_COUNT = 10;
 
@@ -16,7 +16,7 @@ interface MarketsListProps {
   testid?: string;
   history: object;
   isLogged: boolean;
-  markets: Array<Market>;
+  markets: Array<MarketData>;
   filteredMarkets: Array<string>;
   location: object;
   toggleFavorite: Function;
@@ -154,7 +154,7 @@ export default class MarketsList extends Component<MarketsListProps, MarketsList
         {marketsLength && s.boundedLength ? (
           [...Array(s.boundedLength)].map((unused, i) => {
             const id = filteredMarkets[s.lowerBound - 1 + i];
-            const market = markets.find((market: Market) => market.id === id);
+            const market = markets.find((market: MarketData) => market.id === id);
 
             if (market && market.id) {
               if (showDisputingCard) {
