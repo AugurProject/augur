@@ -8,18 +8,18 @@ const mapStateToProps = (state, { location }) => {
   const {
     selectedCategoryName,
     selectedTagNames,
-    keywords
+    keywords,
   } = getSelectedTagsAndCategoriesFromLocation(location);
 
   return {
     category: selectedCategoryName,
     tags: selectedTagNames,
-    keywords
+    keywords,
   };
 };
 
 const FilterSearchContainer = withRouter(
-  connect(mapStateToProps)(FilterSearch)
-);
+  connect(mapStateToProps)(FilterSearch),
+) as any;
 
 export default FilterSearchContainer;

@@ -7,7 +7,7 @@ import {
   MARKET_FILTER,
   MARKET_SORT,
   MARKET_MAX_FEES,
-  HAS_OPEN_ORDERS
+  HAS_OPEN_ORDERS,
 } from "modules/filter-sort/actions/update-filter-sort-options";
 import { updateMobileMenuState } from "modules/app/actions/update-sidebar-status";
 
@@ -32,8 +32,8 @@ const mapDispatchToProps = dispatch => ({
 const FilterDropdownsContainer = withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(FilterDropdown)
-);
+    mapDispatchToProps,
+  )(FilterDropdown),
+) as any;
 
 export default FilterDropdownsContainer;
