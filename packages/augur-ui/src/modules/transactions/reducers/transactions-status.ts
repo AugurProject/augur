@@ -8,7 +8,7 @@ import { TransacitonStatus, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: TransacitonStatus = {};
 
-export default function(transactionsStatus: TransacitonStatus = DEFAULT_STATE, { type, data }: BaseAction) {
+export default function(transactionsStatus: TransacitonStatus = DEFAULT_STATE, { type, data }: BaseAction): TransacitonStatus {
   switch (type) {
     case UPDATE_TRANSACTION_STATUS: {
       const { pendingId, transactionHash, status } = data;

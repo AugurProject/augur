@@ -5,9 +5,9 @@ import {
   LOAD_PENDING_LIQUIDITY_ORDERS,
   CLEAR_ALL_MARKET_ORDERS
 } from "modules/orders/actions/liquidity-management";
-import { OrderBooks, BaseAction } from "modules/types";
+import { LiquidityOrders, LiquidityOrder, BaseAction } from "modules/types";
 
-const DEFAULT_STATE: OrderBooks = {};
+const DEFAULT_STATE: LiquidityOrders = {};
 
 /*
 Example:
@@ -21,9 +21,9 @@ Example:
 */
 
 export default function(
-  pendingLiquidityOrders: OrderBooks = DEFAULT_STATE,
+  pendingLiquidityOrders: LiquidityOrders = DEFAULT_STATE,
   { type, data }: BaseAction,
-) {
+): LiquidityOrders {
   switch (type) {
     case LOAD_PENDING_LIQUIDITY_ORDERS:
       return {
@@ -84,7 +84,7 @@ export default function(
       // just remove a single order
       const updatedOutcomeOrders = pendingLiquidityOrders[marketId][
         outcomeId
-      ].reduce((acc, order) => {
+      ].reduce((acc: Array<LiquidityOrder>, order) => {
         if (order.index === orderId) return acc;
         acc.push(order);
         return acc;

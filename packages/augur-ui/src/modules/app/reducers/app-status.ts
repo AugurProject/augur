@@ -4,6 +4,7 @@ import {
   UPDATE_APP_STATUS
 } from "modules/app/actions/update-app-status";
 import { RESET_STATE } from "modules/app/actions/reset-state";
+import { AppStatus, BaseAction } from "modules/types";
 
 const DEFAULT_STATE = {
   [IS_MOBILE]: false,
@@ -12,7 +13,7 @@ const DEFAULT_STATE = {
 
 const KEYS = Object.keys(DEFAULT_STATE);
 
-export default function(appStatus = DEFAULT_STATE, { type, data }) {
+export default function(appStatus = DEFAULT_STATE, { type, data }: BaseAction): AppStatus {
   switch (type) {
     case UPDATE_APP_STATUS: {
       const { statusKey, value } = data;

@@ -9,7 +9,7 @@ const DEFAULT_STATE: Blockchain = {
   lastProcessedBlock: 0,
 };
 
-export default function(blockchain = DEFAULT_STATE, { type, data }: BaseAction) {
+export default function(blockchain = DEFAULT_STATE, { type, data }: BaseAction): Blockchain {
   switch (type) {
     case UPDATE_BLOCKCHAIN:
       return {

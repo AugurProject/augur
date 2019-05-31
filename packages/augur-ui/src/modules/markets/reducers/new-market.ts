@@ -9,9 +9,9 @@ import { SETTLEMENT_FEE_DEFAULT } from "modules/common-elements/constants";
 import { DEFAULT_SCALAR_TICK_SIZE } from "@augurproject/augur.js/src/constants";
 
 import { createBigNumber } from "utils/create-big-number";
-import { NewMarket, BaseAction } from "modules/types";
+import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
 
-const DEFAULT_STATE: NewMarket = () => ({
+const DEFAULT_STATE: NewMarket = {
   isValid: false,
   validations: [
     {
@@ -60,9 +60,9 @@ const DEFAULT_STATE: NewMarket = () => ({
   initialLiquidityGas: createBigNumber(0),
   creationError:
     "Unable to create market.  Ensure your market is unique and all values are valid."
-});
+};
 
-export default function(newMarket: NewMarket = DEFAULT_STATE(), { type, data }: BaseAction) {
+export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: BaseAction): NewMarket {
   switch (type) {
     case ADD_ORDER_TO_NEW_MARKET: {
       const orderToAdd = data.order;
@@ -76,7 +76,7 @@ export default function(newMarket: NewMarket = DEFAULT_STATE(), { type, data }: 
       } = orderToAdd;
       const existingOrders = newMarket.orderBook[outcome] || [];
       let orderAdded = false;
-      const updatedOrders = existingOrders.reduce((Orders, order) => {
+      const updatedOrders = existingOrders.reduce((Orders: Array<LiquidityOrder>, order) => {
         const orderInfo = Object.assign({}, order);
         if (order.price.eq(price) && order.type === type) {
           orderInfo.quantity = order.quantity.plus(quantity);
@@ -131,7 +131,7 @@ export default function(newMarket: NewMarket = DEFAULT_STATE(), { type, data }: 
     }
     case RESET_STATE:
     case CLEAR_NEW_MARKET:
-      return DEFAULT_STATE();
+      return DEFAULT_STATE;
     default:
       return newMarket;
   }

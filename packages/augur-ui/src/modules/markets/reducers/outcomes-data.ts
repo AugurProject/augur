@@ -16,7 +16,7 @@ const DEFAULT_STATE: OutcomesData = {};
 export default function(
   outcomesData: OutcomesData = DEFAULT_STATE,
   {type, data}: BaseAction,
-) {
+): OutcomesData {
   switch (type) {
     case UPDATE_MARKETS_DATA:
       return {
@@ -73,14 +73,14 @@ function parseOutcomes(newMarketsData, outcomesData) {
       case CATEGORICAL:
         p[marketId] = {
           ...outcomesData[marketId],
-          ...parseCategoricalOutcomes(marketData, marketId)
+          ...parseCategoricalOutcomes(marketData)
         };
         return p;
 
       case SCALAR:
         p[marketId] = {
           ...outcomesData[marketId],
-          ...parseScalarOutcomes(marketData, marketId)
+          ...parseScalarOutcomes(marketData)
         };
         return p;
 
@@ -95,8 +95,8 @@ function parseOutcomes(newMarketsData, outcomesData) {
     }
   }, {});
 
-  function parseYesNoOutcomes(marketData, marketId) {
-    return marketData.outcomes.reduce((p, outcome, i) => {
+  function parseYesNoOutcomes(marketData) {
+    return marketData.outcomes.reduce((p, outcome) => {
       if (outcome.id === YES_NO_YES_ID) {
         p[outcome.id] = { ...outcome };
         p[outcome.id].name = YES_NO_YES_OUTCOME_NAME;
@@ -107,8 +107,8 @@ function parseOutcomes(newMarketsData, outcomesData) {
     }, {});
   }
 
-  function parseCategoricalOutcomes(marketData, marketId) {
-    return marketData.outcomes.reduce((p, outcome, i) => {
+  function parseCategoricalOutcomes(marketData) {
+    return marketData.outcomes.reduce((p, outcome) => {
       p[outcome.id] = { ...outcome };
       p[outcome.id].name = outcome.description.toString().trim();
       delete p[outcome.id].id;
@@ -116,7 +116,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
     }, {});
   }
 
-  function parseScalarOutcomes(marketData, marketId) {
+  function parseScalarOutcomes(marketData) {
     return marketData.outcomes.reduce((p, outcome) => {
       if (outcome.id !== SCALAR_UP_ID) return p;
       p[outcome.id] = { ...outcome };
