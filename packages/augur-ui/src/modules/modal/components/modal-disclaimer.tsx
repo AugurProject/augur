@@ -1,36 +1,37 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-
-import Styles from "modules/modal/components/common/common.styles";
 
 import ModalActions from "modules/modal/components/common/modal-actions";
 import Checkbox from "modules/common/components/checkbox/checkbox";
 
+import Styles from "modules/modal/components/common/common.styles.less";
+
 const EST_HEIGHT_PERCENT = 0.98;
 
-export default class ModalDisclaimer extends Component {
-  static propTypes = {
-    closeModal: PropTypes.func.isRequired
-  };
+interface ModalDisclaimerProps {
+  closeModal: Function;
+}
 
+interface ModalDisclaimerState {
+  didScroll: boolean;
+  didCheck: boolean;
+}
+
+export default class ModalDisclaimer extends Component<ModalDisclaimerProps, ModalDisclaimerState> {
   constructor(props) {
     super(props);
 
     this.state = {
       didScroll: false,
-      didCheck: false
+      didCheck: false,
     };
-
     this.checkScroll = this.checkScroll.bind(this);
     this.checkCheckbox = this.checkCheckbox.bind(this);
   }
 
   checkScroll(e) {
     this.setState({
-      didScroll:
-        this.refs.containerText.scrollTop +
-          this.refs.containerText.clientHeight >=
-        this.refs.containerText.scrollHeight * EST_HEIGHT_PERCENT
+      // @ts-ignore
+      didScroll: this.refs.containerText.scrollTop + this.refs.containerText.clientHeight >= this.refs.containerText.scrollHeight * EST_HEIGHT_PERCENT,
     });
   }
 
@@ -48,7 +49,7 @@ export default class ModalDisclaimer extends Component {
         <div
           ref="containerText"
           className={Styles.ModalDisclaimer__TextBox}
-          onScroll={e => this.checkScroll(e)}
+          onScroll={(e) => this.checkScroll(e)}
         >
           <p>
             Augur is a decentralized oracle and peer to peer protocol for
@@ -154,11 +155,10 @@ export default class ModalDisclaimer extends Component {
           <label htmlFor="i_have_read_disclaimer">
             <Checkbox
               id="i_have_read_disclaimer"
-              type="checkbox"
               value={didCheck && didScroll}
               isChecked={didCheck && didScroll}
               disabled={!didScroll}
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 this.checkCheckbox(!didCheck);
               }}
@@ -168,12 +168,13 @@ export default class ModalDisclaimer extends Component {
         </div>
         <ModalActions
           buttons={[
+            // @ts-ignore
             {
               label: "I Agree and Accept the above",
               type: "purple",
               isDisabled: !didScroll || !didCheck,
-              action: closeModal
-            }
+              action: closeModal,
+            },
           ]}
         />
       </section>

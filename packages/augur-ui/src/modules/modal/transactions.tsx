@@ -8,19 +8,18 @@ import {
   ExportButton,
   ViewTransactionDetailsButton,
   SortButton,
-  SortOptions
 } from "modules/common-elements/buttons";
 import {
   ASCENDING,
   DESCENDING,
-  NEUTRAL
+  NEUTRAL,
 } from "modules/common-elements/constants";
 import { Pagination } from "modules/common-elements/pagination";
 import { ValueLabel, TextLabel } from "modules/common-elements/labels";
 import { SquareDropdown, DatePicker } from "modules/common-elements/selection";
 import { Title } from "modules/modal/common";
 import { formatEther, formatShares } from "utils/format-number";
-import Styles from "modules/modal/modal.styles";
+import Styles from "modules/modal/modal.styles.less";
 
 interface TransactionsProps {
   closeAction: Function;
@@ -55,101 +54,101 @@ interface TransactionsState {
   endFocused: boolean;
   AllTransactions: Array<TransactionInfo>;
   filteredTransactions: Array<TransactionInfo>;
-  priceSort: SortOptions;
-  quantitySort: SortOptions;
+  priceSort: typeof ASCENDING | typeof DESCENDING | typeof NEUTRAL;
+  quantitySort: typeof ASCENDING | typeof DESCENDING | typeof NEUTRAL;
 }
 
 const coinOptions = [
   {
     label: "All",
-    value: "ALL"
+    value: "ALL",
   },
   {
     label: "ETH",
-    value: "ETH"
+    value: "ETH",
   },
   {
     label: "REP",
-    value: "REP"
-  }
+    value: "REP",
+  },
 ];
 
 const actionOptions = [
   {
     label: "All",
-    value: "ALL"
+    value: "ALL",
   },
   {
     label: "Buy",
-    value: "BUY"
+    value: "BUY",
   },
   {
     label: "Sell",
-    value: "SELL"
+    value: "SELL",
   },
   {
     label: "Cancelled",
-    value: "CANCEL"
+    value: "CANCEL",
   },
   {
     label: "Claim Market Creator Fees",
-    value: "CLAIM_MARKET_CREATOR_FEES"
+    value: "CLAIM_MARKET_CREATOR_FEES",
   },
   {
     label: "Claim Participation Tokens",
-    value: "CLAIM_PARTICIPATION_TOKENS"
+    value: "CLAIM_PARTICIPATION_TOKENS",
   },
   {
     label: "Claim Staked REP & Reporting Fees",
-    value: "CLAIM_WINNING_CROWDSOURCERS"
+    value: "CLAIM_WINNING_CROWDSOURCERS",
   },
   {
     label: "Claim Trading Proceeds",
-    value: "CLAIM_TRADING_PROCEEDS"
+    value: "CLAIM_TRADING_PROCEEDS",
   },
   {
     label: "Dispute",
-    value: "DISPUTE"
+    value: "DISPUTE",
   },
   {
     label: "Initial Report",
-    value: "INITIAL_REPORT"
+    value: "INITIAL_REPORT",
   },
   // { // Removed until V2
   //   label: "Finalize Market",
-  //   value: "FINALIZE_MARKET"
+  //   value: "FINALIZE_MARKET",
   // },
   {
     label: "Market Creation",
-    value: "MARKET_CREATION"
+    value: "MARKET_CREATION",
   },
   {
     label: "Complete Sets",
-    value: "COMPLETE_SETS"
-  }
+    value: "COMPLETE_SETS",
+  },
 ];
 
 const paginationOptions = [
   {
     label: "10 per page",
-    value: 10
+    value: 10,
   },
   {
     label: "20 per page",
-    value: 20
+    value: 20,
   },
   {
     label: "30 per page",
-    value: 30
+    value: 30,
   },
   {
     label: "40 per page",
-    value: 40
+    value: 40,
   },
   {
     label: "50 per page",
-    value: 50
-  }
+    value: 50,
+  },
 ];
 
 const DEFAULT_STATE = {
@@ -158,13 +157,14 @@ const DEFAULT_STATE = {
   itemsPerPage: 20,
   page: 1,
   priceSort: NEUTRAL,
-  quantitySort: NEUTRAL
+  quantitySort: NEUTRAL,
 };
 
 export class Transactions extends React.Component<
   TransactionsProps,
   TransactionsState
 > {
+  // @ts-ignore
   state: TransactionsState = {
     ...DEFAULT_STATE,
     startDate: moment(this.props.currentTimestamp * 1000).subtract(6, "M"),
@@ -172,25 +172,25 @@ export class Transactions extends React.Component<
     startFocused: false,
     endFocused: false,
     AllTransactions: [],
-    filteredTransactions: []
+    filteredTransactions: [],
   };
+
+  public tableHeaderRef: any = null;
+  public tableBodyRef: any = null;
 
   componentWillMount = () => {
     this.triggerSearch();
-  };
+  }
 
   componentDidMount = () => {
     this.tableBodyRef.addEventListener("scroll", this.handleScroll);
     this.tableHeaderRef.addEventListener("scroll", this.handleScroll);
-  };
+  }
 
   componentWillUnmount = () => {
     this.tableBodyRef.removeEventListener("scroll", this.handleScroll);
     this.tableHeaderRef.removeEventListener("scroll", this.handleScroll);
-  };
-
-  tableHeaderRef: any = null;
-  tableBodyRef: any = null;
+  }
 
   handleScroll = () => {
     const body = this.tableBodyRef.scrollLeft;
@@ -198,9 +198,9 @@ export class Transactions extends React.Component<
     if (body !== head) {
       this.tableHeaderRef.scrollTo(body, 0);
     }
-  };
+  }
 
-  cyclePriceSort = (e: any) => {
+  cyclePriceSort = (e: Event) => {
     const { filteredTransactions, priceSort } = this.state;
     let updatedPriceSort = NEUTRAL;
     switch (priceSort) {
@@ -208,14 +208,14 @@ export class Transactions extends React.Component<
         // if ascending cycle to descending
         updatedPriceSort = DESCENDING;
         filteredTransactions.sort(
-          (a, b) => parseFloat(b.price) - parseFloat(a.price)
+          (a, b) => parseFloat(b.price) - parseFloat(a.price),
         );
         break;
       case NEUTRAL:
         // if neutral cycle to ascending
         updatedPriceSort = ASCENDING;
         filteredTransactions.sort(
-          (a, b) => parseFloat(a.price) - parseFloat(b.price)
+          (a, b) => parseFloat(a.price) - parseFloat(b.price),
         );
         break;
       default:
@@ -223,8 +223,9 @@ export class Transactions extends React.Component<
         filteredTransactions.sort((a, b) => b.timestamp - a.timestamp);
         break;
     }
+    // @ts-ignore
     this.setState({ priceSort: updatedPriceSort, filteredTransactions });
-  };
+  }
 
   cycleQuantitySort = (e: any) => {
     const { filteredTransactions, quantitySort } = this.state;
@@ -234,7 +235,7 @@ export class Transactions extends React.Component<
         // if ascending cycle to descending
         updatedQuantitySort = DESCENDING;
         filteredTransactions.sort(
-          (a, b) => parseFloat(b.quantity) - parseFloat(a.quantity)
+          (a, b) => parseFloat(b.quantity) - parseFloat(a.quantity),
         );
         break;
       case NEUTRAL:
@@ -249,6 +250,7 @@ export class Transactions extends React.Component<
         filteredTransactions.sort((a, b) => b.timestamp - a.timestamp);
         break;
     }
+    // @ts-ignore
     this.setState({ quantitySort: updatedQuantitySort, filteredTransactions });
   };
 
@@ -278,20 +280,21 @@ export class Transactions extends React.Component<
     const { currentTimestamp } = this.props;
     const { AllTransactions } = this.state;
     this.setState(
+      // @ts-ignore
       {
         ...DEFAULT_STATE,
         startDate: moment(currentTimestamp * 1000).subtract(6, "M"),
         endDate: moment(currentTimestamp * 1000),
-        filteredTransactions: AllTransactions
+        filteredTransactions: AllTransactions,
       },
-      () => this.triggerSearch()
+      () => this.triggerSearch(),
     );
   };
 
   filterTransactions = (
     transactions: Array<TransactionInfo>,
     coin: string,
-    action: string
+    action: string,
   ) => {
     const filteredTransactions = transactions.filter(
       (Transaction: TransactionInfo) =>
@@ -309,7 +312,7 @@ export class Transactions extends React.Component<
     const csv = items.map((row: any) =>
       header
         .map((fieldName: any) => JSON.stringify(row[fieldName], replacer))
-        .join(",")
+        .join(","),
     );
     csv.unshift(header.join(","));
     const exportCSV = csv.join("\r\n");
@@ -347,19 +350,19 @@ export class Transactions extends React.Component<
         <span>
           <TextLabel
             text={
-              actionLabel.label || tx.action.replace(/_/g, " ").toLowerCase()
+              (actionLabel && actionLabel.label) || tx.action.replace(/_/g, " ").toLowerCase()
             }
           />
         </span>
-        <ValueLabel value={formatEther(tx.price)} />
-        <ValueLabel value={quantity} />
+        <ValueLabel value={formatEther(Number(tx.price))} showDenomination={false} showEmptyDash={false} />
+        <ValueLabel value={quantity} showDenomination={false} showEmptyDash={false} />
         <span>{tx.coin}</span>
-        <ValueLabel value={formatEther(tx.fee)} />
-        <ValueLabel value={formatEther(tx.total)} />
+        <ValueLabel value={formatEther(Number(tx.fee))} showDenomination={false} showEmptyDash={false} />
+        <ValueLabel value={formatEther(Number(tx.total))} showDenomination={false} showEmptyDash={false} />
         <ViewTransactionDetailsButton transactionHash={tx.transactionHash} />
       </React.Fragment>
     );
-  };
+  }
 
   render() {
     const { title, closeAction, currentTimestamp } = this.props;
@@ -374,17 +377,17 @@ export class Transactions extends React.Component<
       page,
       filteredTransactions,
       priceSort,
-      quantitySort
+      quantitySort,
     } = this.state;
     const pageInfo = {
       page,
       itemsPerPage,
       itemCount: filteredTransactions.length,
-      action: (page: number) => this.setState({ page })
+      action: (page: number) => this.setState({ page }),
     };
     const pageTransactions = filteredTransactions.slice(
       page * itemsPerPage - itemsPerPage,
-      page * itemsPerPage
+      page * itemsPerPage,
     );
 
     const startDatePicker = {
@@ -397,14 +400,14 @@ export class Transactions extends React.Component<
         if (this.state.startDate == null) {
           const startDate = moment(currentTimestamp * 1000);
           this.setState({
-            startDate
+            startDate,
           });
         }
         this.setState({ startFocused: focused });
       },
       focused: startFocused,
       displayFormat: "D MMM YYYY",
-      numberOfMonths: 1
+      numberOfMonths: 1,
     };
 
     const endDatePicker = {
@@ -417,7 +420,7 @@ export class Transactions extends React.Component<
         if (this.state.endDate == null) {
           const endDate = moment(currentTimestamp * 1000);
           this.setState({
-            endDate
+            endDate,
           });
         }
         this.setState({ endFocused: focused });
@@ -427,7 +430,7 @@ export class Transactions extends React.Component<
         day.isBefore(startDate),
       focused: endFocused,
       displayFormat: "D MMM YYYY",
-      numberOfMonths: 1
+      numberOfMonths: 1,
     };
 
     return (
@@ -449,11 +452,11 @@ export class Transactions extends React.Component<
             options={actionOptions}
             defaultValue={action}
             onChange={(action: string) =>
-              this.setState(state => {
+              this.setState((state) => {
                 const filteredTransactions = this.filterTransactions(
                   state.AllTransactions,
                   state.coin,
-                  action
+                  action,
                 );
                 return { filteredTransactions, action };
               })
@@ -463,11 +466,11 @@ export class Transactions extends React.Component<
             options={coinOptions}
             defaultValue={coin}
             onChange={(coin: string) =>
-              this.setState(state => {
+              this.setState((state) => {
                 const filteredTransactions = this.filterTransactions(
                   state.AllTransactions,
                   coin,
-                  state.action
+                  state.action,
                 );
                 return { filteredTransactions, coin };
               })
@@ -480,7 +483,7 @@ export class Transactions extends React.Component<
           <ExportButton action={this.triggerTransactionsExport} />
         </section>
         <div
-          ref={tableHeader => {
+          ref={(tableHeader) => {
             this.tableHeaderRef = tableHeader;
           }}
         >
@@ -508,7 +511,7 @@ export class Transactions extends React.Component<
           <span>Etherscan</span>
         </div>
         <section
-          ref={tableBody => {
+          ref={(tableBody) => {
             this.tableBodyRef = tableBody;
           }}
         >
@@ -516,7 +519,7 @@ export class Transactions extends React.Component<
             <span className={Styles.NullTransactionsRow}>No Transactions</span>
           )}
           {pageTransactions.map((transaction: TransactionInfo) =>
-            this.addTransactionRow(transaction)
+            this.addTransactionRow(transaction),
           )}
         </section>
         <div>

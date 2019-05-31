@@ -3,21 +3,32 @@ import PropTypes from "prop-types";
 
 import ModalDescription from "modules/modal/components/common/modal-description";
 import ModalActions from "modules/modal/components/common/modal-actions";
+import Styles from "modules/modal/components/common/common.styles.less";
 
-import Styles from "modules/modal/components/common/common.styles";
+type ModalAction = (...args: Array<any>) => any;
+
+interface ModalConfirm {
+  closeModal: ModalAction;
+  description: Array<string>;
+  title: string;
+  submitAction: ModalAction;
+  cancelButtonText?: string;
+  submitButtonText?: string;
+  cancelAction?: ModalAction;
+}
 
 const ModalConfirm = ({
   closeModal,
   description,
   title,
   submitAction,
-  cancelButtonText,
-  submitButtonText,
-  cancelAction
-}) => (
+  cancelButtonText = "cancel",
+  submitButtonText = "submit",
+  cancelAction,
+}: ModalConfirm) => (
   <section className={Styles.ModalContainer}>
     <h1>{title}</h1>
-    {description.map(text => (
+    {description.map((text) => (
       <ModalDescription text={text} key={text} />
     ))}
     <ModalActions
@@ -25,32 +36,16 @@ const ModalConfirm = ({
         {
           label: cancelButtonText,
           action: cancelAction || closeModal,
-          type: "gray"
+          type: "gray",
         },
         {
           label: submitButtonText,
           action: submitAction,
-          type: "purple"
+          type: "purple",
         }
       ]}
     />
   </section>
 );
-
-ModalConfirm.propTypes = {
-  closeModal: PropTypes.func.isRequired,
-  description: PropTypes.arrayOf(PropTypes.string).isRequired,
-  title: PropTypes.string.isRequired,
-  submitAction: PropTypes.func.isRequired,
-  cancelButtonText: PropTypes.string,
-  submitButtonText: PropTypes.string,
-  cancelAction: PropTypes.func
-};
-
-ModalConfirm.defaultProps = {
-  cancelButtonText: "cancel",
-  submitButtonText: "submit",
-  cancelAction: undefined
-};
 
 export default ModalConfirm;

@@ -1,3 +1,4 @@
+// @ts-ignore
 import { UPDATE_MODAL, updateModal } from "modules/modal/actions/update-modal";
 
 describe("modules/modal/actions/update-modal", () => {
@@ -7,7 +8,7 @@ describe("modules/modal/actions/update-modal", () => {
     const expected = {
       type: UPDATE_MODAL,
       data: {
-        modalOptions: { test: "TEST" }
+        modalOptions: { test: "TEST" },
       }
     };
 

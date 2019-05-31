@@ -107,8 +107,8 @@ export const BetterWorseOrdersParams = t.type({
 });
 
 export interface BetterWorseResult {
-  betterOrderId: string|null;
-  worseOrderId: string|null;
+  betterOrderId: string | null;
+  worseOrderId: string | null;
 }
 
 export class Trading {
@@ -127,7 +127,7 @@ export class Trading {
         market: params.marketId,
         [ORDER_EVENT_OUTCOME]: params.outcome,
         $or: [
-          { [ORDER_EVENT_CREATOR] : params.account },
+          { [ORDER_EVENT_CREATOR]: params.account },
           { [ORDER_EVENT_FILLER]: params.account },
         ],
       },
@@ -192,16 +192,16 @@ export class Trading {
         market: params.marketId,
         [ORDER_EVENT_OUTCOME]: params.outcome,
         orderType: params.orderType,
-        [ORDER_EVENT_CREATOR] : params.creator,
+        [ORDER_EVENT_CREATOR]: params.creator,
       },
       sort: params.sortBy ? [params.sortBy] : undefined,
       limit: params.limit,
       skip: params.offset,
     };
 
-    if (params.orderState === "OPEN") request.selector = Object.assign(request.selector, {[ORDER_EVENT_AMOUNT] : { $gt: "0x00"}});
-    if (params.orderState === "CANCELED") request.selector = Object.assign(request.selector, {"eventType" : 1});
-    if (params.orderState === "FILLED") request.selector = Object.assign(request.selector, {"eventType" : 3});
+    if (params.orderState === "OPEN") request.selector = Object.assign(request.selector, { [ORDER_EVENT_AMOUNT]: { $gt: "0x00" } });
+    if (params.orderState === "CANCELED") request.selector = Object.assign(request.selector, { "eventType": 1 });
+    if (params.orderState === "FILLED") request.selector = Object.assign(request.selector, { "eventType": 3 });
 
     if (params.latestCreationTime && params.earliestCreationTime) {
       request.selector = Object.assign(request.selector, {
@@ -211,9 +211,9 @@ export class Trading {
         ]
       });
     } else if (params.latestCreationTime) {
-      request.selector = Object.assign(request.selector, {[ORDER_EVENT_TIMESTAMP]: { $lte: `0x${params.latestCreationTime.toString(16)}` }});
+      request.selector = Object.assign(request.selector, { [ORDER_EVENT_TIMESTAMP]: { $lte: `0x${params.latestCreationTime.toString(16)}` } });
     } else if (params.earliestCreationTime) {
-      request.selector = Object.assign(request.selector, {[ORDER_EVENT_TIMESTAMP]: { $gte: `0x${params.earliestCreationTime.toString(16)}` }});
+      request.selector = Object.assign(request.selector, { [ORDER_EVENT_TIMESTAMP]: { $gte: `0x${params.earliestCreationTime.toString(16)}` } });
     }
 
     const currentOrdersResponse = await db.findCurrentOrders(request);
@@ -254,22 +254,22 @@ export class Trading {
         "logIndex",
         "orderId",
       ]), {
-          owner: orderEventDoc.addressData[OrderEventAddressValue.orderCreator],
-          orderState,
-          price,
-          amount,
-          fullPrecisionPrice: price,
-          fullPrecisionAmount: amount,
-          tokensEscrowed,
-          sharesEscrowed,
-          canceledBlockNumber: orderEventDoc.eventType == 1 ? orderEventDoc.blockNumber : undefined,
-          canceledTransactionHash: orderEventDoc.eventType == 1 ? orderEventDoc.transactionHash : undefined,
-          canceledTime: orderEventDoc.eventType == 1 ? orderEventDoc.timestamp : undefined,
-          creationTime: originalOrderDoc ? originalOrderDoc.timestamp : 0,
-          creationBlockNumber: originalOrderDoc ? originalOrderDoc.blockNumber : 0,
-          originalFullPrecisionAmount: originalOrderDoc ? convertOnChainAmountToDisplayAmount(new BigNumber(originalOrderDoc.uint256Data[OrderEventUint256Value.amount], 16), tickSize).toString(10) : 0,
-        } as Order);
-       return orders;
+        owner: orderEventDoc.addressData[OrderEventAddressValue.orderCreator],
+        orderState,
+        price,
+        amount,
+        fullPrecisionPrice: price,
+        fullPrecisionAmount: amount,
+        tokensEscrowed,
+        sharesEscrowed,
+        canceledBlockNumber: orderEventDoc.eventType == 1 ? orderEventDoc.blockNumber : undefined,
+        canceledTransactionHash: orderEventDoc.eventType == 1 ? orderEventDoc.transactionHash : undefined,
+        canceledTime: orderEventDoc.eventType == 1 ? orderEventDoc.timestamp : undefined,
+        creationTime: originalOrderDoc ? originalOrderDoc.timestamp : 0,
+        creationBlockNumber: originalOrderDoc ? originalOrderDoc.blockNumber : 0,
+        originalFullPrecisionAmount: originalOrderDoc ? convertOnChainAmountToDisplayAmount(new BigNumber(originalOrderDoc.uint256Data[OrderEventUint256Value.amount], 16), tickSize).toString(10) : 0,
+      } as Order);
+      return orders;
     }, {} as Orders);
   }
 
@@ -280,12 +280,12 @@ export class Trading {
         market: params.marketId,
         [ORDER_EVENT_OUTCOME]: `0x0${params.outcome.toString()}`,
         orderType: params.orderType === "buy" ? 0 : 1,
-        [ORDER_EVENT_AMOUNT] : { $gt: "0x00"}
+        [ORDER_EVENT_AMOUNT]: { $gt: "0x00" }
       }
     };
 
     const currentOrdersResponse = await db.findCurrentOrders(request);
-    const marketReponse = await db.findMarketCreatedLogs({selector: {market: params.marketId }});
+    const marketReponse = await db.findMarketCreatedLogs({ selector: { market: params.marketId } });
     if (marketReponse.length < 1) throw new Error(`Market ${params.marketId} not found.`);
     const marketDoc = marketReponse[0];
     const minPrice = new BigNumber(marketDoc.prices[0]);

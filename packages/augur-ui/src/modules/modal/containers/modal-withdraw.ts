@@ -6,6 +6,8 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { formatGasCostToEther, formatEtherEstimate } from "utils/format-number";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { transferFunds } from "modules/auth/actions/transfer-funds";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const TRANSFER_ETH_GAS_COST = 21000;
 const TRANSFER_REP_GAS_COST = 80000;
@@ -16,19 +18,21 @@ const mapStateToProps = (state: AppState) => ({
   GasCosts: {
     eth: formatEtherEstimate(
       formatGasCostToEther(
+        // @ts-ignore
         TRANSFER_ETH_GAS_COST,
         { decimalsRounded: 4 },
-        getGasPrice(state)
-      )
+        getGasPrice(state),
+      ),
     ),
     rep: formatEtherEstimate(
       formatGasCostToEther(
+        // @ts-ignore
         TRANSFER_REP_GAS_COST,
         { decimalsRounded: 4 },
-        getGasPrice(state)
-      )
-    )
-  }
+        getGasPrice(state),
+      ),
+    ),
+  },
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -36,7 +40,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   transferFunds: (amount: string, asset: string, to: string) => {
     dispatch(transferFunds(amount, asset, to));
     dispatch(closeModal());
-  }
+  },
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -44,13 +48,13 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   loginAccount: sP.loginAccount,
   closeAction: () => dP.closeModal(),
   transferFunds: (amount: string, asset: string, to: string) =>
-    dP.transferFunds(amount, asset, to)
+    dP.transferFunds(amount, asset, to),
 });
 
 export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(WithdrawForm)
+    mergeProps,
+  )(WithdrawForm),
 );

@@ -5,13 +5,15 @@ import { Augur } from "../Augur";
 import { BlockAndLogStreamerListener } from "../state/db/BlockAndLogStreamerListener";
 import { Connector, Callback } from "./connector";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { Controller } from "../state/Controller";
 import { DB } from "../state//db/DB";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { EventLogDBRouter } from "../state//db/EventLogDBRouter";
 import { JsonRpcProvider } from "ethers/providers";
 import { PouchDBFactory } from "../state//db/AbstractDB";
+import { SubscriptionEventNames } from "../constants";
 import { UploadBlockNumbers, Addresses } from "@augurproject/artifacts";
-import { Controller } from "../state/Controller";
+import { augurEmitter } from "../events";
 
 const settings = require("@augurproject/sdk/src/state/settings.json");
 
@@ -32,13 +34,26 @@ export class WebWorkerConnector extends Connector {
     this.api = new API(augur, controller.db);
     this.worker = new RunWorker();
 
-    // this.worker.onmessage = (event: MessageEvent) => {
-    //   console.log("Worker data: " + event.data);
-    // };
+    this.worker.onmessage = (event: MessageEvent) => {
+      try {
+        if (event.data.subscribed) {
+          this.subscriptions[event.data.subscribed].id = event.data.subscription;
+          console.log(this.subscriptions[event.data.subscribed]);
+        } else {
+          event.data.map((data: any) => {
+            if (this.subscriptions[data.eventName]) {
+              this.subscriptions[data.eventName].callback(data);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Bad Web Worker response: " + event);
+      }
+    };
   }
 
   public async disconnect(): Promise<any> {
-    return;
+    this.worker.terminate();
   }
 
   public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {
@@ -47,11 +62,15 @@ export class WebWorkerConnector extends Connector {
     };
   }
 
-  public async subscribe(event: string, callback: Callback): Promise<any> {
-    return;
+  public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
+    this.subscriptions[eventName] = { id: "", callback };
+    this.worker.postMessage({ subscribe: eventName });
   }
 
-  public async unsubscribe(event: string): Promise<any> {
-    return;
+  public off(eventName: SubscriptionEventNames | string): void {
+    const subscription = this.subscriptions[eventName].id;
+    delete this.subscriptions[eventName];
+
+    this.worker.postMessage({ unsubscribe: subscription });
   }
 }

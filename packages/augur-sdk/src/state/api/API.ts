@@ -11,8 +11,8 @@ import "./Users";
 export class API {
   private readonly router: Router;
 
-  constructor(augurAPI: Augur, db: DB) {
-    this.router = new Router(augurAPI, db);
+  constructor(augur: Augur, db: DB) {
+    this.router = new Router(augur, db);
   }
 
   public async route(name: string, params: any) {
