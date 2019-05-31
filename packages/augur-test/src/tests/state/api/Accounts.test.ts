@@ -552,7 +552,6 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   await johnYesNoMarket.finalize();
 
   // Redeem participation tokens
-  await john.augur.contracts.cash.faucet(new BigNumber(2000000), { sender: ACCOUNTS[0].publicKey });
   await john.redeemParticipationTokens(disputeWindow.address, john.account);
 
   // Claim trading proceeds
