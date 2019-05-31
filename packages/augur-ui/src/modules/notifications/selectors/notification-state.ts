@@ -10,7 +10,6 @@ import {
 
 import { createBigNumber } from "utils/create-big-number";
 import canClaimProceeds from "utils/can-claim-proceeds";
-import { constants } from "services/constants";
 import {
   NOTIFICATION_TYPES,
   TYPE_DISPUTE,
@@ -24,7 +23,9 @@ import {
   CLAIM_REPORTING_FEES_TITLE,
   UNSIGNED_ORDERS_TITLE,
   PROCEEDS_TO_CLAIM_TITLE,
-  MARKET_CLOSED
+  MARKET_CLOSED,
+  REPORTING_STATE,
+  CONTRACT_INTERVAL,
 } from "modules/common-elements/constants";
 import userOpenOrders from "modules/orders/selectors/user-open-orders";
 
@@ -52,7 +53,7 @@ export const selectReportOnMarkets = createSelector(
         .filter(
           market =>
             market.reportingState ===
-            constants.REPORTING_STATE.DESIGNATED_REPORTING
+            REPORTING_STATE.DESIGNATED_REPORTING
         )
         .filter(market => market.designatedReporter === address)
         .map(getRequiredMarketData);
@@ -71,7 +72,7 @@ export const selectFinalizeMarkets = createSelector(
         .filter(
           market =>
             market.reportingState ===
-            constants.REPORTING_STATE.AWAITING_FINALIZATION
+            REPORTING_STATE.AWAITING_FINALIZATION
         )
         .filter(
           market => market.userPositions.length > 0 || address === market.author
@@ -111,7 +112,7 @@ export const selectMarketsInDispute = createSelector(
         .filter(
           market =>
             market.reportingState ===
-            constants.REPORTING_STATE.CROWDSOURCING_DISPUTE
+            REPORTING_STATE.CROWDSOURCING_DISPUTE
         )
         .filter(
           market =>
@@ -132,7 +133,7 @@ export const selectAllProceedsToClaim = createSelector(
       return markets
         .filter(
           market =>
-            market.reportingState === constants.REPORTING_STATE.FINALIZED
+            market.reportingState === REPORTING_STATE.FINALIZED
         )
         .filter(market => market.outstandingReturns);
     }
@@ -182,7 +183,7 @@ export const selectProceedsToClaimOnHold = createSelector(
           )
             .plus(
               createBigNumber(
-                constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME
+                CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME
               )
             )
             .toNumber();

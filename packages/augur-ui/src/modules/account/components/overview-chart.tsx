@@ -100,7 +100,7 @@ export default class OverviewChart extends React.Component<
         const chartValues = data.reduce(
           (p, d) => ({
             ...p,
-            [d.timestamp * 1000]: createBigNumber(d.realized).toNumber(4)
+            [d.timestamp * 1000]: createBigNumber(d.realized).toNumber()
           }),
           {}
         );
@@ -114,7 +114,7 @@ export default class OverviewChart extends React.Component<
 
         profitLossData.push([
           currentAugurTimestamp * 1000,
-          createBigNumber(data[data.length - 1].realized).toNumber(4)
+          createBigNumber(data[data.length - 1].realized).toNumber()
         ]);
 
         this.setState({

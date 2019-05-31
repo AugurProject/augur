@@ -1,5 +1,4 @@
 import { augur } from "services/augurjs";
-import { constants } from "services/constants";
 import logError from "utils/log-error";
 import { parallel } from "async";
 import {
@@ -9,15 +8,14 @@ import {
   MARKET_FEE,
   MARKET_OPEN_INTEREST,
   MARKET_REPORTING,
-  MARKET_CLOSED
+  MARKET_CLOSED,
+  REPORTING_STATE,
 } from "modules/common-elements/constants";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
-
-const { REPORTING_STATE } = constants;
 
 // NOTE -- We ONLY load the market ids during this step.
 // From here we populate the marketsData

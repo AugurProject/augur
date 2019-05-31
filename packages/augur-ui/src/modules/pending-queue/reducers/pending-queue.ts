@@ -7,7 +7,7 @@ import { PendingQueue, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: PendingQueue = {};
 
-export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data }: BaseAction) {
+export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data }: BaseAction): PendingQueue {
   switch (type) {
     case ADD_PENDING_DATA: {
       const { pendingId, queueName, status } = data;
@@ -16,7 +16,7 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
           status
         };
       } else {
-        pendingQueue[queueName] = [];
+        pendingQueue[queueName] = {};
         pendingQueue[queueName][pendingId] = {
           status
         };
