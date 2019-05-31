@@ -1,25 +1,12 @@
 import React from "react";
 
-export const closeIcon = (
-  <svg
-    width="10"
-    height="10"
-    viewBox="0 0 10 10"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M1 1L9 9" stroke="white" strokeLinecap="round" />
-    <path d="M9 1L1 9" stroke="white" strokeLinecap="round" />
-  </svg>
-);
-
 export const collapseIcon = (
   <svg
     width="20"
     height="30"
     viewBox="0 0 20 30"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <rect
       x="1"
@@ -53,7 +40,7 @@ export const expandIcon = (
     height="28"
     viewBox="0 0 20 28"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <g opacity="0.87">
       <rect
@@ -104,7 +91,7 @@ export const downChevron = (strokeWidth = 4) => (
     height="9"
     viewBox="0 0 18 9"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <path
       fillRule="evenodd"
@@ -123,7 +110,7 @@ export const BackArrow = (
     height="10"
     viewBox="0 0 18 10"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <path
       d="M5 1L1 5L5 9"
@@ -143,7 +130,7 @@ export const twoArrows = (
     height="40"
     viewBox="0 0 60 54"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <path
       d="M34 31L30 35L26 31"
@@ -170,7 +157,7 @@ export const threeDots = (
     height="32"
     viewBox="0 0 32 32"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <circle cx="16" cy="9.5" r="1.5" fill="#76737E" />
     <circle cx="16" cy="22.5" r="1.5" fill="#76737E" />
@@ -184,7 +171,7 @@ export const RightChevron = (
     height="14"
     viewBox="0 0 7 14"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <path
       opacity="0.5"
@@ -195,7 +182,7 @@ export const RightChevron = (
 );
 
 export const CreateMarketEdit = (
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 24 24">
     <g id="Symbols" fill="none" fillRule="evenodd" strokeLinejoin="round">
       <g id="New-Market/Market-Card/2" stroke="#A7A2B2" fillRule="nonzero">
         <g id="Icon/Edit">
@@ -210,7 +197,7 @@ export const CreateMarketEdit = (
 );
 
 export const Check = (
-  <svg viewBox="0 0 21 14" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 21 14">
     <g
       id="Trading"
       fill="none"
@@ -230,7 +217,7 @@ export const Check = (
 );
 
 export const IconSearch = (
-  <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 12 12">
     <g id="Symbols" fill="none" fillRule="evenodd" fillOpacity="1">
       <g id="Markets/Header" fill="#9592a4">
         <g id="Group-5">
@@ -244,26 +231,8 @@ export const IconSearch = (
   </svg>
 );
 
-export const NavReportingIcon = () => (
-  <svg viewBox="0 0 23 15" xmlns="http://www.w3.org/2000/svg">
-    <g
-      id="Symbols"
-      fill="none"
-      fillRule="evenodd"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <g id="Navigation/Section/Left-Nav" stroke="#FFF">
-        <g id="Icon/Reporting">
-          <path id="Page-1" d="M0 8.124l8.63 6.306L22 0" />
-        </g>
-      </g>
-    </g>
-  </svg>
-);
-
 export const ExportIcon = (
-  <svg viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 16 15">
     <g
       id="Symbols"
       fill="none"
@@ -326,7 +295,7 @@ export const Edge = (
     height="18px"
     viewBox="0 0 18 18"
     version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <defs />
     <g
@@ -359,7 +328,7 @@ export const uPort = (
   <svg
     id="d05ce26b-14ad-4d9e-84cb-0faf489e50ed"
     data-name="Layer 1"
-    xmlns="http://www.w3.org/2000/svg"
+   
     viewBox="0 0 46 43.91"
   >
     <defs>
@@ -390,7 +359,7 @@ export const Trezor = (
     height="18px"
     viewBox="0 0 13 18"
     version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <defs />
     <g
@@ -423,7 +392,7 @@ export const Keystore = (
   <svg
     id="d7c32dda-f36e-456a-9079-f98a93957648"
     data-name="Layer 1"
-    xmlns="http://www.w3.org/2000/svg"
+   
     viewBox="0 0 32.8 45.87"
   >
     <defs>
@@ -481,7 +450,7 @@ export const Key = (
   <svg
     id="986dc871-bd7c-4cd5-a999-a53f5690d6ab"
     data-name="Layer 1"
-    xmlns="http://www.w3.org/2000/svg"
+   
     viewBox="0 0 44.93 32.02"
   >
     <defs>
@@ -541,7 +510,7 @@ export const MetaMask = (
     height="20px"
     viewBox="0 0 19 20"
     version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <defs />
     <g
@@ -610,7 +579,7 @@ export const Alert = (
   <svg
     id="a26f05d9-644c-4f17-afbc-46d4647e9dc7"
     data-name="Layer 1"
-    xmlns="http://www.w3.org/2000/svg"
+   
     viewBox="0 0 37.48 37.48"
   >
     <defs>
@@ -648,20 +617,6 @@ export const Alert = (
         </g>
       </g>
     </g>
-  </svg>
-);
-
-export const darkBgExclamationCircle = (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <circle cx="8" cy="8" r="7.5" fill="#1A1627" stroke="#443B59" />
-    <rect x="7.55566" y="3.55554" width="1.15556" height="6.22222" />
-    <path d="M7.57252 10.8973C7.44279 11.0463 7.37793 11.2313 7.37793 11.4523C7.37793 11.6685 7.44279 11.8487 7.57252 11.9928C7.70706 12.137 7.90886 12.209 8.17793 12.209C8.44219 12.209 8.64159 12.137 8.77613 11.9928C8.91066 11.8487 8.97793 11.6685 8.97793 11.4523C8.97793 11.2313 8.91066 11.0463 8.77613 10.8973C8.64159 10.7436 8.44219 10.6667 8.17793 10.6667C7.90886 10.6667 7.70706 10.7436 7.57252 10.8973Z" />
   </svg>
 );
 
@@ -703,7 +658,7 @@ export const Hint = (
     height="18"
     viewBox="0 0 18 18"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <circle
       cx="9"
@@ -724,7 +679,7 @@ export const CheckboxOff = (
   <svg
     id="13de3723-afc4-43e5-966e-01b702ca5297"
     data-name="Layer 1"
-    xmlns="http://www.w3.org/2000/svg"
+   
     viewBox="0 0 21.16 21.16"
   >
     <defs>
@@ -759,7 +714,7 @@ export const CheckboxOn = (
   <svg
     id="9777b652-807f-44b2-b0f5-08d8f20182df"
     data-name="Layer 1"
-    xmlns="http://www.w3.org/2000/svg"
+   
     viewBox="0 0 21.95 21.95"
   >
     <defs>
@@ -821,7 +776,7 @@ export const Export = (
   <svg
     id="953e0014-1cef-4429-aafa-e42c291ab42f"
     data-name="Layer 1"
-    xmlns="http://www.w3.org/2000/svg"
+   
     viewBox="0 0 22 21.56"
     width="22"
     height="21.56"
@@ -996,7 +951,7 @@ export const Close = (
 
 export const CloseDark = (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+   
     width="23"
     height="23"
     viewBox="0 0 23 23"
@@ -1060,7 +1015,7 @@ export const CloseWithCircle = (
   xFillColor = "#FFF"
 ) => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+   
     viewBox="0 0 23 23"
     className={className}
   >
@@ -1118,7 +1073,7 @@ export const ChevronFlipFilledIcon = (className = "", fillColor = "#FFF") => (
     height="6"
     viewBox="0 0 10 6"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <path
       d="M9 1L5 5L1 1"
@@ -1276,7 +1231,7 @@ export const ChevronLeft = (
 );
 
 export const ChevronRight = (
-  <svg viewBox="0 0 9 14" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 9 14">
     <g
       id="Symbols"
       fill="none"
@@ -1843,7 +1798,7 @@ export const prevIcon = (
     height="11px"
     viewBox="0 0 7 11"
     version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <defs />
     <g
@@ -1881,7 +1836,7 @@ export const nextIcon = (
     height="11px"
     viewBox="0 0 7 11"
     version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <defs />
     <g
@@ -1955,7 +1910,7 @@ export const yellowAlertIcon = (
 
 export const logoutIcon = (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+   
     width="18"
     height="18"
     viewBox="0 0 18 18"
@@ -1973,7 +1928,7 @@ export const infoIcon = (
     height="18"
     viewBox="0 0 18 18"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <circle
       cx="9"
@@ -1996,7 +1951,7 @@ export const PaginationArrorw = (
     height="10"
     viewBox="0 0 6 10"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+   
   >
     <path
       d="M5 9L1 5L5 1"

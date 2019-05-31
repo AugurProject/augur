@@ -5,30 +5,30 @@
 
   color: @color-tertiary-text;
   height: 3.125rem;
-  margin: 2.5rem 0;
+  margin: @size-40 0;
 }
 
-.Paginator__controls {
+.controls {
   display: flex;
   height: 100%;
 }
 
-.Paginator__back,
-.Paginator__location,
-.Paginator__forward {
+.back,
+.location,
+.forward {
   flex: 1;
   height: 100%;
 }
 
-.Paginator__location {
+.location {
   align-items: center;
   display: flex;
   justify-content: center;
-  margin: 0 2rem;
+  margin: 0 @size-32;
   max-width: fit-content;
 }
 
-.Paginator__button {
+.button {
   align-items: center;
   background: none;
   display: flex;
@@ -43,9 +43,9 @@
     border-radius: 3px;
     box-sizing: border-box;
     display: flex;
-    height: 2rem;
+    height: @size-32;
     justify-content: center;
-    width: 2rem;
+    width: @size-32;
 
     svg path {
       stroke: @color-neutral;
@@ -61,22 +61,22 @@
   }
 }
 
-.Paginator__back > .Paginator__button {
+.back > .button {
   justify-content: flex-end;
-  padding-left: 1.25rem;
+  padding-left: @size-20;
 }
 
-.Paginator__forward > .Paginator__button {
+.forward > .button {
   justify-content: flex-start;
-  padding-right: 1.25rem;
+  padding-right: @size-20;
 }
 
-.Paginator__forwardArrorw {
+.forwardArrorw {
   transform: rotateY(180deg);
 }
 
 @media @breakpoint-mobile-small {
-  .Paginator__location {
+  .location {
     flex: 2;
     max-width: none;
   }

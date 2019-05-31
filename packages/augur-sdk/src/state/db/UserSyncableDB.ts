@@ -1,7 +1,7 @@
-import {SyncableDB} from "./SyncableDB";
-import {Augur} from "../../Augur";
-import {ParsedLog} from "@augurproject/types";
-import {DB} from "./DB";
+import { SyncableDB } from "./SyncableDB";
+import { Augur } from "../../Augur";
+import { ParsedLog } from "@augurproject/types";
+import { DB } from "./DB";
 
 /**
  * Stores event logs for user-specific events.

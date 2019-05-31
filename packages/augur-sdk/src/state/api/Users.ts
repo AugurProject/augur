@@ -136,11 +136,13 @@ export class Users {
     const marketFinalizedResults = await db.findMarketFinalizedLogs(marketFinalizedRequest);
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, "market");
 
-    const shareTokenBalances = await db.findTokenBalanceChangedLogs(params.account, {selector: {
-      universe: params.universe,
-      owner: params.account,
-      tokenType: 1 // ShareToken  TODO: Get from constants somewhere
-    }});
+    const shareTokenBalances = await db.findTokenBalanceChangedLogs(params.account, {
+      selector: {
+        universe: params.universe,
+        owner: params.account,
+        tokenType: 1 // ShareToken  TODO: Get from constants somewhere
+      }
+    });
     const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, "market");
     const shareTokenBalancesByMarketandOutcome = _.mapValues(shareTokenBalancesByMarket, (marketShares) => {
       return _.keyBy(marketShares, "outcome");

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 import * as constants from "modules/common-elements/constants";
 import Styles from "modules/common-elements/labels.styles";
@@ -8,7 +9,6 @@ import { MarketProgress } from "modules/common-elements/progress";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip.styles";
 import { createBigNumber } from "utils/create-big-number";
-import { DashlineNormal } from "modules/common/components/dashline/dashline";
 import {
   SELL,
   BOUGHT,
@@ -20,7 +20,7 @@ import {
 } from "modules/common-elements/constants";
 import { ViewTransactionDetailsButton } from "modules/common-elements/buttons";
 import { formatNumber } from "utils/format-number";
-import { FormattedNumber, SizeTypes, DateFormattedObject } from "modules/types";
+import { FormattedNumber, SizeTypes } from "modules/types";
 
 export interface MarketTypeProps {
   marketType: string;
@@ -143,6 +143,29 @@ export interface TextLabelState {
 export interface RepBalanceProps {
   rep: string;
 }
+
+interface ButtonObj {
+  label: string;
+  onClick: Function;
+};
+
+interface WordTrailProps {
+  typeLabel: string;
+  items: Array<ButtonObj>;
+  children: Array<any>;
+};
+
+export const DashlineNormal = () => (
+  <svg width="100%" height="1">
+    <line x1="0" x2="100%" y1="0" y2="0" className={Styles.Dashline} />
+  </svg>
+);
+
+export const DashlineLong = () => (
+  <svg width="100%" height="1">
+    <line x1="0" x2="100%" y1="0" y2="0" className={Styles.DashlineL} />
+  </svg>
+);
 
 export function formatExpandedValue(
   value,
@@ -779,3 +802,35 @@ export const LinearPropertyViewTransaction = (
     <ViewTransactionDetailsButton transactionHash={props.transactionHash} />
   </div>
 );
+
+export const WordTrail = ({ items, typeLabel, children }: WordTrailProps) => (
+  <div className={Styles.WordTrail}>
+    {children}
+    {items.map(({ label, onClick }, index) => (
+      <button
+        key={label}
+        data-testid={`${typeLabel}-${index}`}
+        className={Styles.WordTrailButton}
+        onClick={e => onClick()}>
+        {label}
+      </button>
+    ))}
+  </div>
+);
+
+WordTrail.propTypes = {
+  typeLabel: PropTypes.string,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      onClick: PropTypes.func.isRequired
+    })
+  ),
+  children: PropTypes.array
+};
+
+WordTrail.defaultProps = {
+  children: [],
+  items: [],
+  typeLabel: "label-type"
+};
