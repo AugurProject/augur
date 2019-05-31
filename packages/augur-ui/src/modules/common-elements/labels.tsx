@@ -151,17 +151,12 @@ export interface RepBalanceProps {
 interface ButtonObj {
   label: string;
   onClick: Function;
-<<<<<<< HEAD
 }
-=======
-};
->>>>>>> master
 
 interface WordTrailProps {
   typeLabel: string;
   items: Array<ButtonObj>;
   children: Array<any>;
-<<<<<<< HEAD
 }
 
 interface CategoryTagTrailProps {
@@ -182,9 +177,6 @@ interface ValueDenominationProps {
   postfix?: string | null;
   hideDenomination?: Boolean;
 }
-=======
-};
->>>>>>> master
 
 export const DashlineNormal = () => (
   <svg width="100%" height="1">
