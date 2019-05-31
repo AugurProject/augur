@@ -16,7 +16,7 @@ console.log("Starting web worker");
     const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
     const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], new WebsocketConnector("ws://localhost:9001"));
-    await augur.connector.connect();
+    await augur.connect();
 
     augur.on(SubscriptionEventNames.CompleteSetsPurchased, (data: any): void => {
       console.log(data);
@@ -25,7 +25,7 @@ console.log("Starting web worker");
 
     setTimeout(async () => {
       console.log("getMarkets");
-      const getMarkets = augur.connector.bindTo(Markets.getMarkets);
+      const getMarkets = augur.bindTo(Markets.getMarkets);
       console.log(await getMarkets({
         universe: "0x02149d40d255fceac54a3ee3899807b0539bad60",
       }));

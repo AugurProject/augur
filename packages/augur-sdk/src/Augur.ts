@@ -133,6 +133,18 @@ export class Augur<TProvider extends Provider = Provider> {
     this.dependencies.deRegisterAllTransactionStatusCallbacks();
   }
 
+  public async connect(params?: any): Promise<any> {
+    return this.connector.connect(params);
+  }
+
+  public async disconnect(): Promise<any> {
+    return this.connector.disconnect();
+  }
+
+  public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {
+    return this.connector.bindTo(f);
+  }
+
   public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
     if (isSubscriptionEventName(eventName)) {
       this.connector.on(eventName, callback);
